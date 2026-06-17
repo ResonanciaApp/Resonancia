@@ -646,15 +646,6 @@ export default function MezcladorScreen() {
                 </View>
                 <View style={styles.headerActions}>
                   <Pressable
-                    onPress={() => router.push("/mezclas" as never)}
-                    style={styles.heartBtn}
-                    hitSlop={8}
-                    accessibilityRole="button"
-                    accessibilityLabel="Mis mezclas guardadas"
-                  >
-                    <MaterialCommunityIcons name="bookmark-outline" size={20} color="#F4DAD5" />
-                  </Pressable>
-                  <Pressable
                     onPress={() => setSettingsVisible(true)}
                     style={styles.heartBtn}
                     hitSlop={8}
