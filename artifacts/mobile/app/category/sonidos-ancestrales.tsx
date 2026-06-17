@@ -391,7 +391,7 @@ export default function SonidosAncestalesScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#3A1020","#1B060F"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
+      <LinearGradient colors={["#481010","#1E0707"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
       <View style={[styles.header,{height:HERO_HEIGHT+topPad}]}>
         <Image source={HERO_IMG} style={[StyleSheet.absoluteFill,{width:"100%",height:"100%"}]} contentFit="cover" contentPosition="top" />
         <View style={[StyleSheet.absoluteFill,{backgroundColor:"rgba(0,0,0,0.28)"}]} pointerEvents="none" />
