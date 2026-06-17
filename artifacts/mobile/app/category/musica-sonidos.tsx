@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
   heroSearchBtn:{width:36,height:36,alignItems:"center",justifyContent:"center"},
   heroSubtitle:{fontSize:13,color:"rgba(255,255,255,0.72)",marginTop:3},
   chipsArea:{paddingTop:7,paddingBottom:8,overflow:"visible"},
-  chipsShadow:{position:"absolute",left:0,right:0,bottom:-14,height:14},
+  chipsShadow:{position:"absolute",left:0,right:0,bottom:-7,height:7},
   animChipWrap:{flexDirection:"row",alignItems:"center"},
   animCloseBtn:{position:"absolute",left:0,top:0,bottom:0,justifyContent:"center",zIndex:3},
   chipCloseBtn:{width:30,height:30,borderRadius:15,backgroundColor:"rgba(74,12,12,0.08)",alignItems:"center",justifyContent:"center"},
