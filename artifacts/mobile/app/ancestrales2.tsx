@@ -453,7 +453,7 @@ const acStyles = StyleSheet.create({
   hImage:   { width: 70, height: 62 },
   hContent: { flex: 1, justifyContent: "center", gap: 2 },
   hDuration: {
-    fontSize: 8,
+    fontSize: 9,
     fontWeight: "500",
     color: "rgba(255,255,255,0.8)",
   },
@@ -889,7 +889,7 @@ const styles = StyleSheet.create({
   // ── SortSheet ────────────────────────────────────────────────────────────────
   sortSheet: {
     position: "absolute", bottom: 0, left: 0, right: 0,
-    backgroundColor: "#0E1326",
+    backgroundColor: "#1B060F",
     borderTopLeftRadius: 22, borderTopRightRadius: 22,
     paddingTop: 10, paddingHorizontal: 20,
   },
