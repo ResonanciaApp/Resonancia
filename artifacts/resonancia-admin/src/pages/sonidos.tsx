@@ -19,36 +19,88 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 
 // ── Constantes ────────────────────────────────────────────────────────────────
 
-const CATEGORIES = [
-  { id: "animales",          label: "Animales" },
-  { id: "bosque",            label: "Bosque" },
-  { id: "mar",               label: "Mar" },
-  { id: "fuego",             label: "Fuego" },
-  { id: "desierto",          label: "Desierto" },
-  { id: "cuencos_tibetanos", label: "Cuencos Tibetanos" },
-  { id: "cuencos_cuarzo",    label: "Cuencos de Cuarzo" },
-  { id: "gongs",             label: "Gongs" },
-  { id: "campanas_viento",   label: "Campanas de Viento" },
-  { id: "vientos",           label: "Vientos" },
-  { id: "cantos",            label: "Cantos" },
-  { id: "percusion",         label: "Percusión" },
-  { id: "mantras",           label: "Mantras" },
-  { id: "solfeggio",         label: "Solfeggio" },
-  { id: "ruidos",            label: "Ruidos" },
-  { id: "frecuencias",       label: "Frecuencias" },
-  { id: "asmr",              label: "ASMR" },
-  { id: "bpm",               label: "BPM" },
-  { id: "binaural",          label: "Binaurales" },
+// Grupos de categorías → reflejan los tabs del mixer en la app
+const CATEGORY_GROUPS = [
+  {
+    tab: "Naturales",
+    items: [
+      { id: "animales",  label: "Animales" },
+      { id: "bosque",    label: "Bosque" },
+      { id: "mar",       label: "Mar" },
+      { id: "fuego",     label: "Fuego" },
+      { id: "desierto",  label: "Desierto" },
+    ],
+  },
+  {
+    tab: "Sagrados",
+    items: [
+      { id: "cuencos_tibetanos", label: "Cuencos Tibetanos" },
+      { id: "cuencos_cuarzo",    label: "Cuencos de Cuarzo" },
+      { id: "gongs",             label: "Gongs" },
+      { id: "campanas_viento",   label: "Campanas de Viento" },
+      { id: "vientos",           label: "Vientos" },
+      { id: "cantos",            label: "Cantos" },
+      { id: "percusion",         label: "Percusión" },
+    ],
+  },
+  {
+    tab: "Voces",
+    items: [
+      { id: "mantras", label: "Mantras" },
+    ],
+  },
+  {
+    tab: "Digital",
+    items: [
+      { id: "solfeggio", label: "Solfeggio" },
+    ],
+  },
+  {
+    tab: "Binaurales",
+    items: [
+      { id: "frecuencias", label: "Frecuencias" },
+      { id: "binaural",    label: "Binaurales" },
+    ],
+  },
+  {
+    tab: "ASMR",
+    items: [
+      { id: "asmr", label: "ASMR" },
+    ],
+  },
+  {
+    tab: "Ruidos",
+    items: [
+      { id: "ruidos", label: "Ruidos" },
+    ],
+  },
+  {
+    tab: "BPM",
+    items: [
+      { id: "bpm", label: "BPM" },
+    ],
+  },
 ] as const;
 
-type CategoryId = (typeof CATEGORIES)[number]["id"];
+type CategoryId =
+  | "animales" | "bosque" | "mar" | "fuego" | "desierto"
+  | "cuencos_tibetanos" | "cuencos_cuarzo" | "gongs" | "campanas_viento"
+  | "vientos" | "cantos" | "percusion"
+  | "mantras" | "solfeggio" | "frecuencias" | "binaural"
+  | "asmr" | "ruidos" | "bpm";
+
+// Lista plana derivada — usada para catLabel y chips de filtro
+const CATEGORIES: { id: CategoryId; label: string }[] =
+  CATEGORY_GROUPS.flatMap((g) => [...g.items] as { id: CategoryId; label: string }[]);
 
 const ICON_SETS = ["feather", "ionicons"] as const;
 
@@ -368,8 +420,17 @@ export default function SonidosPage() {
                   <SelectValue placeholder="Seleccionar categoría" />
                 </SelectTrigger>
                 <SelectContent>
-                  {CATEGORIES.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>{c.label}</SelectItem>
+                  {CATEGORY_GROUPS.map((g) => (
+                    <SelectGroup key={g.tab}>
+                      <SelectLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 py-1">
+                        {g.tab}
+                      </SelectLabel>
+                      {g.items.map((c) => (
+                        <SelectItem key={c.id} value={c.id} className="pl-5">
+                          {c.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
                   ))}
                 </SelectContent>
               </Select>

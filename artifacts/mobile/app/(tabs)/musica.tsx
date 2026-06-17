@@ -45,6 +45,7 @@ import {
   type MixerBgPaletteId,
 } from "@/data/mixer-bg-palettes";
 import { MixerSettingsSheet } from "@/components/MixerSettingsSheet";
+import { useSounds } from "@/context/SoundsContext";
 import { GoldGradient } from "@/components/GoldGradient";
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
@@ -429,6 +430,7 @@ const bpmStyles = StyleSheet.create({
 export default function MezcladorScreen() {
   const insets      = useSafeAreaInsets();
   const { isPremium }    = usePremium();
+  const { refresh: refreshSounds } = useSounds();
   const { open: openDrawer } = useDrawer();
   const { isActive, toggleSound, activeBpm } = useMixer();
   const { lastSavedAt } = useSaveEvent();
@@ -518,12 +520,13 @@ export default function MezcladorScreen() {
     }
   }, [mainTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Al volver al Mezclador → "Todos"; al salir → resetear color del menú
+  // Al volver al Mezclador → "Todos"; refrescar sonidos remotos; al salir → resetear color del menú
   useFocusEffect(
     React.useCallback(() => {
       setMainTab("popular");
+      refreshSounds();
       return () => { setTabBarColors(null); };
-    }, [setTabBarColors]),
+    }, [setTabBarColors, refreshSounds]),
   );
 
   const [bannerIdx,     setBannerIdx]     = useState(0);
