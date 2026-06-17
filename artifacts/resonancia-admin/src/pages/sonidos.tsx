@@ -728,7 +728,7 @@ export default function SonidosPage() {
                   {/* Thumbnail */}
                   <td className="px-4 py-2">
                     {s.thumbnailObjectPath ? (
-                      <div className="w-[72px] h-[72px] rounded-md overflow-hidden flex-shrink-0">
+                      <div className="w-[110px] h-[110px] rounded-md overflow-hidden flex-shrink-0">
                         <img
                           src={storageUrl(s.thumbnailObjectPath)}
                           alt=""
@@ -736,7 +736,7 @@ export default function SonidosPage() {
                         />
                       </div>
                     ) : (
-                      <div className="w-[72px] h-[72px] rounded-md bg-secondary flex items-center justify-center flex-shrink-0">
+                      <div className="w-[110px] h-[110px] rounded-md bg-secondary flex items-center justify-center flex-shrink-0">
                         <Music2 className="w-4 h-4 text-muted-foreground" />
                       </div>
                     )}
