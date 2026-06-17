@@ -225,6 +225,59 @@ class BpmAudioEngine {
     }
   }
 
+  /**
+   * Reproduce un audio en loop gapless SIN BPM (p. ej. binaurales).
+   * Usa `buffer.duration` como `loopEnd` → empalme exacto al final del PCM
+   * decodificado (sin silencio de encoder delay), igual de preciso que el
+   * loop BPM pero sin necesidad de tempo ni reloj maestro.
+   */
+  async playLoop(id: string, volume: number): Promise<void> {
+    if (!this.isReady()) return;
+    const token = ++this.playSeq;
+    this.wanted.set(id, token);
+    const buffer = await this.getBuffer(id);
+    const ctx = this.ctx;
+    const masterGain = this.masterGain;
+    if (!buffer || !ctx || !masterGain || this.wanted.get(id) !== token) return;
+
+    const prev = this.voices.get(id) ?? null;
+    const now = ctx.currentTime;
+    const source = ctx.createBufferSource({ pitchCorrection: false });
+    source.buffer = buffer;
+    source.loop = true;
+    source.loopStart = 0;
+    source.loopEnd = buffer.duration; // todo el buffer, sin hueco de encoder
+    const target = clamp01(volume);
+    const gain = ctx.createGain();
+    if (prev) {
+      try {
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(target, now + XFADE_SEC);
+      } catch {
+        gain.gain.value = target;
+      }
+    } else {
+      gain.gain.value = target;
+    }
+    source.connect(gain);
+    gain.connect(masterGain);
+    try {
+      source.start(now, 0);
+    } catch {
+      /* ignore */
+    }
+    if (prev) this.fadeOutAndStop(prev, now, XFADE_SEC);
+    this.voices.set(id, { source, gain, base: volume });
+
+    if (ctx.state !== "running") {
+      try {
+        await ctx.resume();
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+
   /** Corta una voz al instante, sin fade (uso interno: re-tap, reset). */
   private stopImmediate(id: string): void {
     const v = this.voices.get(id);

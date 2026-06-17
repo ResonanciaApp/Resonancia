@@ -242,6 +242,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
    * "expo" = reloj maestro + expo-audio (fallback si el motor no está listo).
    */
   const bpmSystemRef = useRef<"engine" | "expo" | null>(null);
+  /** IDs de binaurales sonando por el motor (AudioContext). Usado para incluir
+   *  ctx.suspend()/resume() en applyPlaying aunque no haya sonidos BPM activos. */
+  const binauralEngineActiveRef = useRef<Set<string>>(new Set());
 
   const activeSoundsRef = useRef<ActiveSound[]>([]);
   activeSoundsRef.current = activeSounds;
@@ -361,8 +364,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       }
     });
 
-    // ── Motor BPM (react-native-audio-api): pausar/reanudar en fase ────────
-    if (bpmSystemRef.current === "engine") {
+    // ── Motor BPM + binaurales (react-native-audio-api): pausar/reanudar ───
+    if (bpmSystemRef.current === "engine" || binauralEngineActiveRef.current.size > 0) {
       if (next) void bpmAudioEngine.resume();
       else void bpmAudioEngine.suspend();
     }
@@ -1120,6 +1123,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         // sonidos que nunca tuvieron player expo).
         if (getSoundById(id)?.bpm !== undefined && bpmSystemRef.current === "engine") {
           bpmAudioEngine.stop(id);
+        } else if (getSoundById(id)?.category === "binaural" && binauralEngineActiveRef.current.has(id)) {
+          bpmAudioEngine.stop(id);
+          binauralEngineActiveRef.current.delete(id);
         }
         parkPlayer(id);
         const next = prev.filter((s) => s.id !== id);
@@ -1188,6 +1194,20 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         }
       }
 
+      // ── Sonido binaural por el MOTOR (AudioBufferSourceNode, gapless) ─────
+      // El loop nativo de expo-audio deja un hueco de ~48 ms por el encoder
+      // delay del AAC. `AudioBufferSourceNode` decodifica a PCM (sin delay) y
+      // loopea a precisión de muestra: empalme completamente imperceptible.
+      if (getSoundById(id)?.category === "binaural" && bpmAudioEngine.isReady()) {
+        void bpmAudioEngine.playLoop(id, DEFAULT_VOLUME);
+        binauralEngineActiveRef.current.add(id);
+        if (!isPlayingRef.current) applyPlaying(true);
+        setActiveSounds([...prev, { id, volume: DEFAULT_VOLUME }]);
+        setLoadedPresetId(null);
+        syncLockScreen();
+        return true;
+      }
+
       // ── Camino expo-audio (sonidos no-BPM, o BPM en fallback) ─────────────
       // Si está estacionado (apagado hace poco), retomarlo al instante; si no,
       // crear el player desde cero (decodifica el mp3).
@@ -1249,6 +1269,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     // empalme del loop.
     if (getSoundById(id)?.bpm !== undefined && bpmSystemRef.current === "engine") {
       bpmAudioEngine.setVolume(id, volume);
+    } else if (getSoundById(id)?.category === "binaural" && binauralEngineActiveRef.current.has(id)) {
+      bpmAudioEngine.setVolume(id, volume);
     }
     baseVolumesRef.current.set(id, volume);
     setActiveSounds((prev) => prev.map((s) => (s.id === id ? { ...s, volume } : s)));
@@ -1275,6 +1297,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       // Si el sonido corre en el motor BPM, apagarlo ahí (parkPlayer es no-op).
       if (getSoundById(id)?.bpm !== undefined && bpmSystemRef.current === "engine") {
         bpmAudioEngine.stop(id);
+      } else if (getSoundById(id)?.category === "binaural" && binauralEngineActiveRef.current.has(id)) {
+        bpmAudioEngine.stop(id);
+        binauralEngineActiveRef.current.delete(id);
       }
       // Estacionar (no destruir): si lo vuelven a agregar, arranca al instante.
       parkPlayer(id);
@@ -1323,6 +1348,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     bpmSystemRef.current = null;
     setActiveBpm(null);
     bpmAudioEngine.stopAll();
+    binauralEngineActiveRef.current.clear();
 
     // Cancelar cualquier fade-out de audio en curso (re-entradas rápidas) y
     // apagar de inmediato sus players: ya están desacoplados de los refs, así
@@ -1591,6 +1617,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         bpmSystemRef.current = bpmAudioEngine.isReady() ? "engine" : "expo";
       }
 
+      binauralEngineActiveRef.current.clear();
       const created: ActiveSound[] = [];
       playable.forEach((s) => {
         const def = getSoundById(s.id);
@@ -1600,6 +1627,10 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
             loopBars: def.loopBars ?? 2,
             volume: s.volume,
           });
+          created.push({ id: s.id, volume: s.volume });
+        } else if (def?.category === "binaural" && bpmAudioEngine.isReady()) {
+          void bpmAudioEngine.playLoop(s.id, s.volume);
+          binauralEngineActiveRef.current.add(s.id);
           created.push({ id: s.id, volume: s.volume });
         } else {
           const p = createPlayerFor(s.id, s.volume);
