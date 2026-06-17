@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
   heroTitle:{ fontSize:32, fontWeight:"800", color:"#fff", letterSpacing:0.5, textShadowColor:"rgba(0,0,0,0.6)", textShadowOffset:{width:0,height:1}, textShadowRadius:6, flex:1 },
   heroSearchBtn:{ width:36, height:36, alignItems:"center", justifyContent:"center" },
   heroSubtitle:{ fontSize:13, color:"rgba(255,255,255,0.72)", marginTop:3 },
-  chipsArea:{ paddingHorizontal:H_PAD, paddingTop:10, paddingBottom:8, overflow:"visible", backgroundColor:"rgba(39,7,14,0.9)" },
+  chipsArea:{ paddingHorizontal:H_PAD, paddingTop:10, paddingBottom:8, overflow:"visible", backgroundColor:"rgba(39,7,14,0.6)" },
   chipsShadow:{ position:"absolute", left:0, right:0, bottom:-14, height:14 },
   animChipWrap:{ flexDirection:"row", alignItems:"center" },
   animCloseBtn:{ position:"absolute", left:0, top:0, bottom:0, justifyContent:"center", zIndex:3 },
