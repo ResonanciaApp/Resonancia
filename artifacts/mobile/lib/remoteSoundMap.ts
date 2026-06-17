@@ -8,6 +8,9 @@
  */
 export const REMOTE_SOUND_MAP: Record<string, string> = {};
 
+/** URLs de thumbnail para sonidos cargados desde la API. */
+export const REMOTE_SOUND_IMAGE_MAP: Record<string, string> = {};
+
 /** Convierte un objectPath del servidor a URL de serving. */
 function resolveObjectUrl(objectPath: string): string {
   const base = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
@@ -21,11 +24,14 @@ function resolveObjectUrl(objectPath: string): string {
 
 /** Popula el mapa desde la respuesta de GET /api/sounds. */
 export function applyRemoteSounds(
-  sounds: { id: string; objectPath: string | null }[]
+  sounds: { id: string; objectPath: string | null; thumbnailObjectPath?: string | null }[]
 ) {
   for (const s of sounds) {
     if (s.objectPath) {
       REMOTE_SOUND_MAP[s.id] = resolveObjectUrl(s.objectPath);
+    }
+    if (s.thumbnailObjectPath) {
+      REMOTE_SOUND_IMAGE_MAP[s.id] = resolveObjectUrl(s.thumbnailObjectPath);
     }
   }
 }

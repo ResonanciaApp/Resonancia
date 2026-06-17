@@ -47,7 +47,7 @@ import {
 } from "@/data/mixer-bg-palettes";
 import { MixerSettingsSheet } from "@/components/MixerSettingsSheet";
 import { useSounds } from "@/context/SoundsContext";
-import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
+import { REMOTE_SOUND_MAP, REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 import { GoldGradient } from "@/components/GoldGradient";
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
@@ -206,7 +206,7 @@ type SoundCardProps = {
   active: boolean;
   locked: boolean;
   available: boolean;
-  image: ReturnType<typeof getSoundImage>;
+  image: ReturnType<typeof getSoundImage> | string;
   onPress: () => void;
 };
 
@@ -242,7 +242,7 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
       >
         <View style={styles.cardClipInner}>
           {image ? (
-            <Image source={image} style={StyleSheet.absoluteFill} contentFit="cover" />
+            <Image source={typeof image === "string" ? { uri: image } : image} style={StyleSheet.absoluteFill} contentFit="cover" />
           ) : (
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(212,175,55,0.12)" }]} />
           )}
@@ -808,8 +808,8 @@ export default function MezcladorScreen() {
                     idx={i}
                     active={isActive(s.id)}
                     locked={!!s.isPremium && !isPremium}
-                    available={hasSoundFile(s.id)}
-                    image={getSoundImage(s.id)}
+                    available={hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id]}
+                    image={getSoundImage(s.id) ?? REMOTE_SOUND_IMAGE_MAP[s.id]}
                     onPress={() => handleSoundPress(s)}
                   />
                 ))}
