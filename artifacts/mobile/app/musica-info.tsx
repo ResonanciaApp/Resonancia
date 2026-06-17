@@ -21,7 +21,7 @@ const R5 = 1260;
 const TOTAL_SCROLL = H + 1500;
 
 const HERO_IMG = require("@/assets/images/cat-musica.png");
-const IMG2     = require("@/assets/images/sessions/session-18.jpg");
+const IMG2     = require("@/assets/images/sessions/session-2-musica-dark.jpg");
 const IMG3     = require("@/assets/images/sessions/session-20.jpg");
 
 function mkReveal(scrollY: Animated.Value, start: number, range = 180, dy = 40) {
