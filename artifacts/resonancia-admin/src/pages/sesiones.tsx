@@ -26,7 +26,7 @@ const CATS = [
   { id: "sonidos-ancestrales", label: "Ancestrales",  categoryLabel: "Ancestrales", color: "#D4AF37" },
   { id: "meditaciones-guiadas", label: "Meditaciones", categoryLabel: "Meditaciones", color: "#E9C46A" },
   { id: "musica-sonidos",       label: "Música",       categoryLabel: "Música",       color: "#C4956A" },
-  { id: "podcast",              label: "Sonidos",      categoryLabel: "Sonidos",      color: "#9B8A86" },
+  { id: "reflexiones",           label: "Reflexiones",  categoryLabel: "Reflexiones",  color: "#C4A0D4" },
 ] as const;
 
 type CatId = typeof CATS[number]["id"];
@@ -37,7 +37,7 @@ const SOUND_TAGS = ["Música Ambient","Música Enteógena","Música Étnica"];
 const SONIDOS_TAGS = ["Sonidos Binaurales","Sonidos Naturaleza","Sonidos Atmosféricos"];
 const PODCAST_TAGS = ["Espiritualidad","Salud y Bienestar","Disciplinas","Psicología Transpersonal","Enteógenos","Sobrenatural","Neurociencia"];
 const SLEEP_TAGS = ["Sonidos Binaurales","Sonidos Ancestrales","ASMR Expansivos"];
-const THEME_TAGS = ["Mañanas","Noches","Yoga","Respiración","Ansiedad","Rituales","Crecimiento","ASMR","Estrés","Spa","Familia"];
+const THEME_TAGS = ["Yoga","Respiración","Ansiedad","Rituales","Crecimiento","ASMR","Estrés","Spa","Familia"];
 const OTHER_THEME_TAGS = ["Para la ansiedad","Energiza tus mañanas","Foco y concentración","Suelto la Rabia","Crecimiento personal","Armonía familiar","Respiración consciente","Meditaciones Activas","Astrología"];
 const AUDIO_ROLES = ["main","voice","ambient","base","sound"] as const;
 
@@ -369,7 +369,7 @@ export default function SesionesPage() {
                 if (cat.id === "sonidos-ancestrales" || cat.id === "meditaciones-guiadas") {
                   setShowAudio2(true);
                   setAudio2((a) => ({ ...a, role: "voice" }));
-                } else if (cat.id === "podcast") {
+                } else if (cat.id === "reflexiones") {
                   setShowAudio2(true);
                   setAudio2((a) => ({ ...a, role: "ambient" }));
                 } else {
@@ -543,7 +543,7 @@ export default function SesionesPage() {
               </Field>
             )}
 
-            {categoryId === "podcast" && (
+            {categoryId === "reflexiones" && (
               <>
                 <div className="flex gap-2">
                   <button
@@ -558,7 +558,7 @@ export default function SesionesPage() {
                     onClick={() => { setPodcastMode("podcast"); setSonidosTag(""); }}
                     className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${podcastMode === "podcast" ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-foreground"}`}
                   >
-                    Podcast / Charla
+                    Charla / Reflexión
                   </button>
                 </div>
                 {podcastMode === "sonidos" ? (
@@ -637,7 +637,7 @@ export default function SesionesPage() {
       >
         {(() => {
           const isAncestralOrMed = categoryId === "sonidos-ancestrales" || categoryId === "meditaciones-guiadas";
-          const isPodcast = categoryId === "podcast";
+          const isPodcast = categoryId === "reflexiones";
           const audio1Label = isPodcast ? "Sonido base *" : "Audio base *";
           const audio2Label = isPodcast ? "Sonido ambiente (opcional)" : "Voz guía (opcional)";
           return (
