@@ -839,13 +839,6 @@ export default function Ancestrales2Screen() {
         />
       </View>
 
-      {/* ── SOMBRA bajo chips ───────────────────────────────────────────── */}
-      <LinearGradient
-        colors={["rgba(0,0,0,0.55)", "rgba(0,0,0,0)"]}
-        style={{ height: 16, zIndex: 9, marginTop: -1 }}
-        pointerEvents="none"
-      />
-
       {/* ── CONTENIDO ───────────────────────────────────────────────────── */}
       <ScrollView
         style={styles.scroll}
@@ -953,9 +946,11 @@ const styles = StyleSheet.create({
   chipsArea: {
     paddingHorizontal: H_PAD,
     paddingTop: 12,
-    paddingBottom: 8,
+    paddingBottom: 10,
     backgroundColor: "#27070E",
     zIndex: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.10)",
   },
 
   // ── Chips ────────────────────────────────────────────────────────────────────
