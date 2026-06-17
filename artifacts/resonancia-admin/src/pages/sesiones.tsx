@@ -73,6 +73,7 @@ export default function SesionesPage() {
   const [description, setDescription] = useState("");
   const [duration, setDuration] = useState("");
   const [isPremium, setIsPremium] = useState(false);
+  const [skipDetail, setSkipDetail] = useState(false);
   const [frequency, setFrequency] = useState("");
   const [voiceTag, setVoiceTag] = useState("");
 
@@ -264,6 +265,7 @@ export default function SesionesPage() {
         categoryLabel: cat.categoryLabel,
         duration: Number(duration),
         isPremium,
+        skipDetail,
         frequency: frequency.trim() || null,
         voiceTag: (voiceTag as Parameters<typeof createSubmission>[0]["data"]["voiceTag"]) || undefined,
         benefits: benefits.length ? benefits : undefined,
@@ -304,7 +306,7 @@ export default function SesionesPage() {
   const handleReset = () => {
     setDone(false);
     setCategoryId(""); setTitle(""); setSubtitle(""); setDescription("");
-    setDuration(""); setIsPremium(false); setFrequency(""); setVoiceTag("");
+    setDuration(""); setIsPremium(false); setSkipDetail(false); setFrequency(""); setVoiceTag("");
     setAncestralTag(""); setMeditationTag("");
     setSonidosTag(""); setPodcastTag(""); setSleepTag(""); setThemeTag([]);
     setGuideId("");
@@ -466,6 +468,13 @@ export default function SesionesPage() {
             <Label htmlFor="premium" className="cursor-pointer">
               Sesión Premium
               <span className="ml-2 text-xs text-muted-foreground">(muestra estrellita dorada en la app)</span>
+            </Label>
+          </div>
+          <div className="flex items-center gap-3">
+            <Switch id="skipDetail" checked={skipDetail} onCheckedChange={setSkipDetail} />
+            <Label htmlFor="skipDetail" className="cursor-pointer">
+              Pasar directo al reproductor
+              <span className="ml-2 text-xs text-muted-foreground">(omite la pantalla de descripción)</span>
             </Label>
           </div>
         </div>

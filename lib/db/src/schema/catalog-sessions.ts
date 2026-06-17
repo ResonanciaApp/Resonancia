@@ -42,6 +42,8 @@ export const catalogSessionsTable = pgTable("catalog_sessions", {
   isFeatured: boolean("is_featured").notNull().default(false),
   isNew: boolean("is_new").notNull().default(false),
   isPremium: boolean("is_premium").notNull().default(false),
+  /** Si es true, el tap en la card lanza el reproductor directo (sin pantalla de descripción). */
+  skipDetail: boolean("skip_detail").notNull().default(false),
   frequency: text("frequency"),
   soundTag: text("sound_tag"),
   meditationTag: text("meditation_tag"),

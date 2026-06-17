@@ -2973,6 +2973,9 @@ components:
           type: boolean
         isPremium:
           type: boolean
+        skipDetail:
+          type: boolean
+          default: false
         frequency:
           type: string
           nullable: true
@@ -3115,6 +3118,9 @@ components:
             maxLength: 80
         isPremium:
           type: boolean
+        skipDetail:
+          type: boolean
+          default: false
         imageObjectPath:
           type: string
           nullable: true
@@ -3212,6 +3218,9 @@ components:
           type: boolean
         isPremium:
           type: boolean
+        skipDetail:
+          type: boolean
+          default: false
         frequency:
           type: string
           nullable: true
@@ -3326,6 +3335,9 @@ components:
             maxLength: 80
         isPremium:
           type: boolean
+        skipDetail:
+          type: boolean
+          default: false
         isFeatured:
           type: boolean
         isNew:

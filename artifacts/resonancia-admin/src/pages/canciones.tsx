@@ -60,6 +60,7 @@ export default function CancionesPage() {
   const [description, setDescription] = useState("");
   const [duration, setDuration] = useState("");
   const [isPremium, setIsPremium] = useState(false);
+  const [skipDetail, setSkipDetail] = useState(false);
   const [frequency, setFrequency] = useState("");
   const [voiceTag, setVoiceTag] = useState("");
 
@@ -242,6 +243,7 @@ export default function CancionesPage() {
         categoryLabel: "Música",
         duration: Number(duration),
         isPremium,
+        skipDetail,
         frequency: frequency.trim() || null,
         voiceTag: (voiceTag as Parameters<typeof createSubmission>[0]["data"]["voiceTag"]) || undefined,
         benefits: benefits.length ? benefits : undefined,
@@ -278,7 +280,7 @@ export default function CancionesPage() {
   const handleReset = () => {
     setDone(false);
     setTitle(""); setSubtitle(""); setDescription("");
-    setDuration(""); setIsPremium(false); setFrequency(""); setVoiceTag("");
+    setDuration(""); setIsPremium(false); setSkipDetail(false); setFrequency(""); setVoiceTag("");
     setSoundTag(""); setSleepTag(""); setThemeTag([]);
     setArtistId("");
     setBenefits([]); setInstruments([]);
@@ -386,6 +388,13 @@ export default function CancionesPage() {
             <Label htmlFor="premium" className="cursor-pointer">
               Canción Premium
               <span className="ml-2 text-xs text-muted-foreground">(muestra estrellita dorada en la app)</span>
+            </Label>
+          </div>
+          <div className="flex items-center gap-3">
+            <Switch id="skipDetail" checked={skipDetail} onCheckedChange={setSkipDetail} />
+            <Label htmlFor="skipDetail" className="cursor-pointer">
+              Pasar directo al reproductor
+              <span className="ml-2 text-xs text-muted-foreground">(omite la pantalla de descripción)</span>
             </Label>
           </div>
         </div>

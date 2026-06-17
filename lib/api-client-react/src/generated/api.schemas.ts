@@ -661,6 +661,7 @@ export interface CatalogSession {
   isFeatured: boolean;
   isNew: boolean;
   isPremium: boolean;
+  skipDetail?: boolean;
   frequency?: string | null;
   soundTag?: string | null;
   meditationTag?: string | null;
@@ -761,6 +762,7 @@ export interface CreatorSubmissionInput {
   /** @maxItems 12 */
   instruments?: string[];
   isPremium?: boolean;
+  skipDetail?: boolean;
   imageObjectPath?: string | null;
   imageContentType?: string | null;
   /** @minimum 1 */
@@ -819,6 +821,7 @@ export interface Submission {
   isFeatured: boolean;
   isNew: boolean;
   isPremium: boolean;
+  skipDetail?: boolean;
   frequency?: string | null;
   soundTag?: string | null;
   meditationTag?: string | null;
@@ -892,6 +895,7 @@ export interface ReviewEditBody {
   /** @maxItems 12 */
   instruments?: string[];
   isPremium?: boolean;
+  skipDetail?: boolean;
   isFeatured?: boolean;
   isNew?: boolean;
   voiceTag?: ReviewEditBodyVoiceTag;

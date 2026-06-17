@@ -78,6 +78,7 @@ function serializeSession(s: CatalogSession, audioFiles: CatalogAudioFile[]) {
     isFeatured: s.isFeatured,
     isNew: s.isNew,
     isPremium: s.isPremium,
+    skipDetail: s.skipDetail,
     frequency: s.frequency,
     soundTag: s.soundTag,
     meditationTag: s.meditationTag,
@@ -348,6 +349,7 @@ router.post(
           imageKey: body.imageObjectPath ?? null,
           imageUrl: body.imageObjectPath ?? null,
           isPremium: body.isPremium ?? false,
+          skipDetail: body.skipDetail ?? false,
           frequency: body.frequency ?? null,
           soundTag: body.soundTag ?? null,
           meditationTag: body.meditationTag ?? null,
@@ -553,6 +555,7 @@ router.patch(
     if (data.benefits !== undefined) updates.benefits = data.benefits;
     if (data.instruments !== undefined) updates.instruments = data.instruments;
     if (data.isPremium !== undefined) updates.isPremium = data.isPremium;
+    if (data.skipDetail !== undefined) updates.skipDetail = data.skipDetail;
     if (data.isFeatured !== undefined) updates.isFeatured = data.isFeatured;
     if (data.isNew !== undefined) updates.isNew = data.isNew;
     if (data.voiceTag !== undefined) updates.voiceTag = data.voiceTag;

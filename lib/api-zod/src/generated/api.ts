@@ -1026,6 +1026,8 @@ export const SetMyProgressResponse = zod.object({
 /**
  * @summary Catálogo público (categorías, sesiones y metadata de audio publicadas)
  */
+export const getCatalogResponseSessionsItemSkipDetailDefault = false;
+
 export const GetCatalogResponse = zod.object({
   "categories": zod.array(zod.object({
   "id": zod.string(),
@@ -1056,6 +1058,7 @@ export const GetCatalogResponse = zod.object({
   "isFeatured": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "skipDetail": zod.boolean().default(getCatalogResponseSessionsItemSkipDetailDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1103,6 +1106,8 @@ export const GetPopularSessionsQueryParams = zod.object({
   "limit": zod.coerce.number().min(1).max(getPopularSessionsQueryLimitMax).optional()
 })
 
+export const getPopularSessionsResponseSessionsItemSkipDetailDefault = false;
+
 export const GetPopularSessionsResponse = zod.object({
   "sessions": zod.array(zod.object({
   "id": zod.string(),
@@ -1120,6 +1125,7 @@ export const GetPopularSessionsResponse = zod.object({
   "isFeatured": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "skipDetail": zod.boolean().default(getPopularSessionsResponseSessionsItemSkipDetailDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1178,7 +1184,7 @@ export const createSubmissionBodyInstrumentsItemMax = 80;
 
 export const createSubmissionBodyInstrumentsMax = 12;
 
-
+export const createSubmissionBodySkipDetailDefault = false;
 export const createSubmissionBodyFrequencyMax = 60;
 
 
@@ -1203,6 +1209,7 @@ export const CreateSubmissionBody = zod.object({
   "benefits": zod.array(zod.string().max(createSubmissionBodyBenefitsItemMax)).max(createSubmissionBodyBenefitsMax).optional(),
   "instruments": zod.array(zod.string().max(createSubmissionBodyInstrumentsItemMax)).max(createSubmissionBodyInstrumentsMax).optional(),
   "isPremium": zod.boolean().optional(),
+  "skipDetail": zod.boolean().default(createSubmissionBodySkipDetailDefault),
   "imageObjectPath": zod.string().nullish(),
   "imageContentType": zod.string().nullish(),
   "imageSizeBytes": zod.number().min(1).nullish(),
@@ -1237,6 +1244,8 @@ export const GetPendingSubmissionsQueryParams = zod.object({
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']).optional()
 })
 
+export const getPendingSubmissionsResponseSubmissionsItemSkipDetailDefault = false;
+
 export const GetPendingSubmissionsResponse = zod.object({
   "submissions": zod.array(zod.object({
   "id": zod.string(),
@@ -1254,6 +1263,7 @@ export const GetPendingSubmissionsResponse = zod.object({
   "isFeatured": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "skipDetail": zod.boolean().default(getPendingSubmissionsResponseSubmissionsItemSkipDetailDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1298,6 +1308,8 @@ export const GetPendingSubmissionsResponse = zod.object({
 /**
  * @summary Envíos del creador autenticado (con estado y motivo de rechazo)
  */
+export const getMySubmissionsResponseSubmissionsItemSkipDetailDefault = false;
+
 export const GetMySubmissionsResponse = zod.object({
   "submissions": zod.array(zod.object({
   "id": zod.string(),
@@ -1315,6 +1327,7 @@ export const GetMySubmissionsResponse = zod.object({
   "isFeatured": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "skipDetail": zod.boolean().default(getMySubmissionsResponseSubmissionsItemSkipDetailDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1363,6 +1376,8 @@ export const ApproveSubmissionParams = zod.object({
   "id": zod.coerce.string()
 })
 
+export const approveSubmissionResponseSkipDetailDefault = false;
+
 export const ApproveSubmissionResponse = zod.object({
   "id": zod.string(),
   "title": zod.string(),
@@ -1379,6 +1394,7 @@ export const ApproveSubmissionResponse = zod.object({
   "isFeatured": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "skipDetail": zod.boolean().default(approveSubmissionResponseSkipDetailDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1434,6 +1450,8 @@ export const RejectSubmissionBody = zod.object({
   "reason": zod.string().min(1).max(rejectSubmissionBodyReasonMax)
 })
 
+export const rejectSubmissionResponseSkipDetailDefault = false;
+
 export const RejectSubmissionResponse = zod.object({
   "id": zod.string(),
   "title": zod.string(),
@@ -1450,6 +1468,7 @@ export const RejectSubmissionResponse = zod.object({
   "isFeatured": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "skipDetail": zod.boolean().default(rejectSubmissionResponseSkipDetailDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1516,7 +1535,7 @@ export const editSubmissionBodyInstrumentsItemMax = 80;
 
 export const editSubmissionBodyInstrumentsMax = 12;
 
-
+export const editSubmissionBodySkipDetailDefault = false;
 
 export const EditSubmissionBody = zod.object({
   "title": zod.string().min(1).max(editSubmissionBodyTitleMax).optional(),
@@ -1528,10 +1547,13 @@ export const EditSubmissionBody = zod.object({
   "benefits": zod.array(zod.string().max(editSubmissionBodyBenefitsItemMax)).max(editSubmissionBodyBenefitsMax).optional(),
   "instruments": zod.array(zod.string().max(editSubmissionBodyInstrumentsItemMax)).max(editSubmissionBodyInstrumentsMax).optional(),
   "isPremium": zod.boolean().optional(),
+  "skipDetail": zod.boolean().default(editSubmissionBodySkipDetailDefault),
   "isFeatured": zod.boolean().optional(),
   "isNew": zod.boolean().optional(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish()
 })
+
+export const editSubmissionResponseSkipDetailDefault = false;
 
 export const EditSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -1549,6 +1571,7 @@ export const EditSubmissionResponse = zod.object({
   "isFeatured": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "skipDetail": zod.boolean().default(editSubmissionResponseSkipDetailDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1596,6 +1619,8 @@ export const HideSubmissionParams = zod.object({
   "id": zod.coerce.string()
 })
 
+export const hideSubmissionResponseSkipDetailDefault = false;
+
 export const HideSubmissionResponse = zod.object({
   "id": zod.string(),
   "title": zod.string(),
@@ -1612,6 +1637,7 @@ export const HideSubmissionResponse = zod.object({
   "isFeatured": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "skipDetail": zod.boolean().default(hideSubmissionResponseSkipDetailDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1659,6 +1685,8 @@ export const UnhideSubmissionParams = zod.object({
   "id": zod.coerce.string()
 })
 
+export const unhideSubmissionResponseSkipDetailDefault = false;
+
 export const UnhideSubmissionResponse = zod.object({
   "id": zod.string(),
   "title": zod.string(),
@@ -1675,6 +1703,7 @@ export const UnhideSubmissionResponse = zod.object({
   "isFeatured": zod.boolean(),
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
+  "skipDetail": zod.boolean().default(unhideSubmissionResponseSkipDetailDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
