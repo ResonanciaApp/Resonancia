@@ -1041,7 +1041,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 13, paddingVertical: 4,
     borderRadius: 999,
   },
-  subTabText: { fontSize: 12, fontWeight: "600" },
+  subTabText: { fontSize: 13, fontWeight: "600" },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "space-evenly" },
   soundCard: { width: "28%" },
