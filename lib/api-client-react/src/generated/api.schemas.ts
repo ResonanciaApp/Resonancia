@@ -436,6 +436,8 @@ export interface UserSearchResult {
   displayName: string;
   /** @nullable */
   avatarUrl?: string | null;
+  /** @nullable */
+  location?: string | null;
   friendshipStatus: UserSearchResultFriendshipStatus;
 }
 

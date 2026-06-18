@@ -317,7 +317,9 @@ function SearchResultRow({
       <Avatar user={user} />
       <View style={{ flex: 1 }}>
         <Text style={[styles.friendName, { color: colors.foreground }]}>{user.displayName}</Text>
-        <Text style={[styles.friendSub, { color: colors.mutedForeground }]}>@{user.username}</Text>
+        <Text style={[styles.friendSub, { color: colors.mutedForeground }]}>
+          {user.location ?? `@${user.username}`}
+        </Text>
       </View>
       {status === "pending_outgoing" && (
         <Text style={[styles.statusBadge, { color: colors.mutedForeground }]}>Enviada</Text>

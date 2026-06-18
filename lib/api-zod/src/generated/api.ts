@@ -424,6 +424,7 @@ export const SearchUsersResponseItem = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "location": zod.string().nullish(),
   "friendshipStatus": zod.enum(['none', 'pending_outgoing', 'pending_incoming', 'accepted', 'self'])
 })
 export const SearchUsersResponse = zod.array(SearchUsersResponseItem)

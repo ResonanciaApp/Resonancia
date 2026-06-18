@@ -121,6 +121,7 @@ router.get("/users/search", requireAuth, async (req, res) => {
     res.json(
       matches.map((u) => ({
         ...toProfile(u),
+        location: u.location ?? null,
         friendshipStatus: statusFor(u.id),
       })),
     );

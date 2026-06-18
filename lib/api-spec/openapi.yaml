@@ -2835,6 +2835,8 @@ components:
           type: string
         avatarUrl:
           type: ["string", "null"]
+        location:
+          type: ["string", "null"]
         friendshipStatus:
           type: string
           enum: ["none", "pending_outgoing", "pending_incoming", "accepted", "self"]
