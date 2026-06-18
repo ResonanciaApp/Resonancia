@@ -81,7 +81,7 @@ const VIDEO_REG_W = 200;
 // 1 card completa + 25% del siguiente visible: W = (screenWidth - leftPad - gap) / 1.25
 const RECENT_CARD_W = Math.floor((width - GRID_PAD - 16) / 1.25 * 0.75);
 
-const SECTION_GAP = 33;
+const SECTION_GAP = 40;
 const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 
 const ND = Platform.OS !== "web";
@@ -494,7 +494,7 @@ export default function HomeScreen2() {
         {/* ── ESTADO DE ÁNIMO ── */}
         <Pressable
           onPress={() => setMoodSheetVisible(true)}
-          style={({ pressed }) => [styles.moodRow, { opacity: pressed ? 0.78 : 1, marginTop: 7 }]}
+          style={({ pressed }) => [styles.moodRow, { opacity: pressed ? 0.78 : 1 }]}
         >
           <Text style={styles.moodEmoji}>🙂</Text>
           <Text style={styles.moodRowLabel}>¿Cómo te sientes?</Text>
