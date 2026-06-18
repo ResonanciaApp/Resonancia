@@ -340,7 +340,7 @@ export default function ExploreScreen() {
                         colors={["#D6AD5F", "#B47344"]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
-                        style={StyleSheet.absoluteFill}
+                        style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
                       />
                     )}
                     <Text style={[styles.durPillText, sel && styles.durPillTextActive]}>
@@ -595,7 +595,6 @@ const styles = StyleSheet.create({
   },
   durPill: {
     flex: 1,
-    overflow: "hidden",
     borderRadius: 20,
     paddingHorizontal: 8,
     paddingVertical: 8,
