@@ -24,7 +24,7 @@ import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 18;
 const CARD_GAP = 10;
-const BG: [string, string, string] = ["#4A0C0C", "#27070E", "#1B060F"];
+const BG: [string, string] = ["#2E0510", "#160108"];
 
 // ── Filtros ───────────────────────────────────────────────────────────────────
 const ARTISTA_FILTERS = ["Todos", "Ambient", "Enteógena", "Meditación", "Cuencos"];
