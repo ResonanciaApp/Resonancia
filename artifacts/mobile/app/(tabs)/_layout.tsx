@@ -236,7 +236,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           onPress={showMenu}
           hitSlop={12}
           style={{
-            backgroundColor: "rgba(255,255,255,0.18)",
+            backgroundColor: "rgba(255,255,255,0.10)",
             borderRadius: 999,
             paddingHorizontal: 18,
             paddingVertical: 5,
