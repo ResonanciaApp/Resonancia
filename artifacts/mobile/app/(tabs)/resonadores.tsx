@@ -316,18 +316,24 @@ export default function ResonadoresScreen() {
 
       {/* ── Header ── */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        {/* Título + icono búsqueda */}
+        {/* Título + iconos */}
         <View style={styles.titleRow}>
           <View>
             <Text style={styles.title}>Equipo</Text>
+            <Text style={styles.subtitle}>Únete a la red de Resonancia</Text>
           </View>
-          <Pressable onPress={toggleSearch} hitSlop={10} style={styles.searchIconBtn}>
-            <Feather
-              name={searchVisible ? "x" : "search"}
-              size={20}
-              color={searchVisible ? "#D4AF37" : "rgba(212,175,55,0.65)"}
-            />
-          </Pressable>
+          <View style={styles.titleIcons}>
+            <Pressable hitSlop={10} style={styles.searchIconBtn}>
+              <Feather name="info" size={20} color="#FFFFFF" />
+            </Pressable>
+            <Pressable onPress={toggleSearch} hitSlop={10} style={styles.searchIconBtn}>
+              <Feather
+                name={searchVisible ? "x" : "search"}
+                size={20}
+                color="#FFFFFF"
+              />
+            </Pressable>
+          </View>
         </View>
 
         {/* Buscador inline (visible al tocar el icono) */}
@@ -423,6 +429,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 14,
+  },
+  titleIcons: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
   },
   searchIconBtn: {
     width: 36,
