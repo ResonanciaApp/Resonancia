@@ -165,14 +165,7 @@ export default function ResonadoresScreen() {
         {/* Título + icono búsqueda */}
         <View style={styles.titleRow}>
           <View>
-            <Text style={styles.title}>
-              {activeTab === "artistas" ? "Artistas" : "Expansores"}
-            </Text>
-            <Text style={styles.subtitle}>
-              {activeTab === "artistas"
-                ? "La esencia de resonancia"
-                : "Los que expanden la vibración"}
-            </Text>
+            <Text style={styles.title}>Resonadores</Text>
           </View>
           <Pressable onPress={toggleSearch} hitSlop={10} style={styles.searchIconBtn}>
             <Feather
@@ -206,17 +199,23 @@ export default function ResonadoresScreen() {
 
         {/* Tab switcher — ancho completo */}
         <View style={styles.tabPill}>
-          {(["artistas", "expansores"] as const).map((t) => (
-            <Pressable
-              key={t}
-              onPress={() => switchTab(t)}
-              style={[styles.tabBtn, activeTab === t && styles.tabBtnActive]}
-            >
-              <Text style={[styles.tabBtnText, activeTab === t && styles.tabBtnTextActive]}>
-                {t === "artistas" ? "Artistas" : "Expansores"}
-              </Text>
-            </Pressable>
-          ))}
+          {(["artistas", "expansores"] as const).map((t) => {
+            const isActive = activeTab === t;
+            return (
+              <Pressable
+                key={t}
+                onPress={() => switchTab(t)}
+                style={[styles.tabBtn, isActive && styles.tabBtnActive]}
+              >
+                <Text style={[styles.tabBtnText, isActive && styles.tabBtnTextActive]}>
+                  {t === "artistas" ? "Artistas" : "Expansores"}
+                </Text>
+                <Text style={[styles.tabBtnSub, isActive && styles.tabBtnSubActive]}>
+                  {t === "artistas" ? "La esencia de resonancia" : "Los que expanden la vibración"}
+                </Text>
+              </Pressable>
+            );
+          })}
         </View>
       </View>
 
@@ -335,6 +334,15 @@ const styles = StyleSheet.create({
   tabBtnTextActive: {
     color: "#D4AF37",
     fontWeight: "700",
+  },
+  tabBtnSub: {
+    fontSize: 10,
+    color: "rgba(244,218,213,0.30)",
+    marginTop: 2,
+    textAlign: "center",
+  },
+  tabBtnSubActive: {
+    color: "rgba(212,175,55,0.55)",
   },
 
   // Filters
