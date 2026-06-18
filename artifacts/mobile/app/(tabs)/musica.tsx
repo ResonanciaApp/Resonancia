@@ -184,7 +184,7 @@ const PillTab = memo(function PillTab({
         <View style={[styles.pillTab, {
           backgroundColor: "transparent",
           borderWidth: 1,
-          borderColor: "rgba(255,255,255,0.25)",
+          borderColor: "rgba(255,255,255,0.45)",
         }]}>
           <MaterialCommunityIcons name={tab.icon as any} size={17} color="rgba(255,255,255,0.4)" />
           <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "rgba(255,255,255,0.4)", fontWeight: "400" }]}>
