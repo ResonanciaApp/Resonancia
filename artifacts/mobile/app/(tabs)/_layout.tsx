@@ -47,8 +47,9 @@ const TAB_CONFIG: Record<
   index:      { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
   explore:    { label: "Buscar",     sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
   musica:     { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",  featherIcon: "sliders" },
-  biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
-  profile:    { label: "Perfil",     sfIcon: "person",              sfIconFill: "person.fill",           featherIcon: "user" },
+  biblioteca:   { label: "Biblioteca",  sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
+  resonadores:  { label: "Resonadores", sfIcon: "person.2",            sfIconFill: "person.2.fill",         featherIcon: "users" },
+  profile:      { label: "Perfil",      sfIcon: "person",              sfIconFill: "person.fill",           featherIcon: "user" },
 };
 
 function TabItem({
@@ -277,6 +278,7 @@ function TabLayoutInner() {
         <Tabs.Screen name="coleccion/[id]" options={{ href: null }} />
         <Tabs.Screen name="explore"        options={{ title: "Buscar" }} />
         <Tabs.Screen name="biblioteca"     options={{ title: "Biblioteca" }} />
+        <Tabs.Screen name="resonadores"    options={{ title: "Resonadores" }} />
         <Tabs.Screen name="geometrix"      options={{ title: "Geometrix", href: null }} />
         <Tabs.Screen name="musica2"        options={{ title: "Música 2", href: null }} />
         <Tabs.Screen name="musica3"        options={{ title: "Mi Música", href: null }} />

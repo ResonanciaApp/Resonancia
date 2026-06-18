@@ -1,0 +1,360 @@
+import { Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
+import { memo, useState, useMemo } from "react";
+import {
+  FlatList,
+  Platform,
+  Pressable,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
+import { ARTISTS, type Artist } from "@/data/artists";
+import { EXPANSORES, type Expansor } from "@/data/expansores";
+import { useColors } from "@/hooks/useColors";
+
+const H_PAD = 18;
+const CARD_GAP = 10;
+const BG: [string, string, string] = ["#4A0C0C", "#27070E", "#1B060F"];
+
+// ── Filtros ───────────────────────────────────────────────────────────────────
+const ARTISTA_FILTERS = ["Todos", "Ambient", "Enteógena", "Meditación", "Cuencos"];
+const EXPANSOR_FILTERS = ["Todos", "Cuencos Tibetanos", "Cuencos de Cristal", "Gong", "Campanas"];
+
+// ── Card de Resonador (artista o expansor) ────────────────────────────────────
+type CardItem =
+  | { kind: "artista"; data: Artist }
+  | { kind: "expansor"; data: Expansor };
+
+const ResonadorCard = memo(function ResonadorCard({
+  item,
+  cardW,
+}: {
+  item: CardItem;
+  cardW: number;
+}) {
+  const isArtista = item.kind === "artista";
+  const d = item.data;
+  const certified = d.certified;
+  const subtitle = isArtista
+    ? (d as Artist).genre
+    : (d as Expansor).specialty.join(" · ");
+  const location = isArtista
+    ? (d as Artist).country
+    : `${(d as Expansor).city}, ${(d as Expansor).country}`;
+
+  function handlePress() {
+    if (isArtista) router.push(`/artista/${d.id}` as never);
+    else router.push(`/expansor/${d.id}` as never);
+  }
+
+  return (
+    <Pressable
+      onPress={handlePress}
+      style={({ pressed }) => [styles.card, { width: cardW, opacity: pressed ? 0.82 : 1 }]}
+    >
+      {/* Foto */}
+      <View style={[styles.photoWrap, { width: cardW, height: cardW }]}>
+        <Image
+          source={d.photo}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+          placeholder={BLUR_PLACEHOLDER}
+          transition={IMAGE_TRANSITION}
+        />
+        <LinearGradient
+          colors={["transparent", "rgba(10,2,4,0.80)"]}
+          style={StyleSheet.absoluteFill}
+        />
+        {certified && (
+          <View style={styles.certBadge}>
+            <Text style={styles.certStar}>✦</Text>
+          </View>
+        )}
+      </View>
+
+      {/* Info */}
+      <View style={styles.cardInfo}>
+        <Text style={styles.cardName} numberOfLines={1}>{d.name}</Text>
+        <Text style={styles.cardSub} numberOfLines={1}>{subtitle}</Text>
+        <View style={styles.locationRow}>
+          <Feather name={isArtista ? "globe" : "map-pin"} size={10} color="rgba(212,175,55,0.6)" />
+          <Text style={styles.cardLocation} numberOfLines={1}>{location}</Text>
+        </View>
+      </View>
+    </Pressable>
+  );
+});
+
+// ── Pantalla principal ────────────────────────────────────────────────────────
+export default function ResonadoresScreen() {
+  const colors = useColors();
+  const insets = useSafeAreaInsets();
+  const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+
+  const [activeTab, setActiveTab] = useState<"artistas" | "expansores">("artistas");
+  const [activeFilter, setActiveFilter] = useState("Todos");
+  const [query, setQuery] = useState("");
+
+  const filters = activeTab === "artistas" ? ARTISTA_FILTERS : EXPANSOR_FILTERS;
+
+  // Reset filter when switching tab
+  function switchTab(t: "artistas" | "expansores") {
+    setActiveTab(t);
+    setActiveFilter("Todos");
+    setQuery("");
+  }
+
+  const items: CardItem[] = useMemo(() => {
+    const q = query.toLowerCase().trim();
+    if (activeTab === "artistas") {
+      return ARTISTS.filter((a) => a.id !== "resonancia")
+        .filter((a) => {
+          if (activeFilter !== "Todos") {
+            if (!a.genre.toLowerCase().includes(activeFilter.toLowerCase())) return false;
+          }
+          if (q) return a.name.toLowerCase().includes(q) || a.genre.toLowerCase().includes(q);
+          return true;
+        })
+        .map((a) => ({ kind: "artista" as const, data: a }));
+    } else {
+      return EXPANSORES.filter((e) => {
+        if (activeFilter !== "Todos") {
+          if (!e.specialty.some((s) => s.toLowerCase().includes(activeFilter.toLowerCase()))) return false;
+        }
+        if (q) {
+          return (
+            e.name.toLowerCase().includes(q) ||
+            e.city.toLowerCase().includes(q) ||
+            e.specialty.some((s) => s.toLowerCase().includes(q))
+          );
+        }
+        return true;
+      }).map((e) => ({ kind: "expansor" as const, data: e }));
+    }
+  }, [activeTab, activeFilter, query]);
+
+  // Card width: 2 columns with gap
+  const numCols = 2;
+  // We compute this as a fixed value to pass to the key extractor and card
+  const SCREEN_PAD = H_PAD * 2;
+  const cardW = Math.floor((370 - SCREEN_PAD - CARD_GAP) / numCols);
+
+  return (
+    <View style={styles.root}>
+      <StatusBar barStyle="light-content" />
+      <LinearGradient colors={BG} style={StyleSheet.absoluteFill} />
+
+      {/* ── Header ── */}
+      <View style={[styles.header, { paddingTop: topPad + 8 }]}>
+        <Text style={styles.title}>Resonadores</Text>
+        <Text style={styles.subtitle}>Creadores y terapeutas de la comunidad</Text>
+
+        {/* Buscador */}
+        <View style={styles.searchWrap}>
+          <Feather name="search" size={14} color="rgba(212,175,55,0.55)" style={{ marginRight: 8 }} />
+          <TextInput
+            value={query}
+            onChangeText={setQuery}
+            placeholder={activeTab === "artistas" ? "Buscar artista..." : "Buscar por nombre o ciudad..."}
+            placeholderTextColor="rgba(244,218,213,0.30)"
+            style={styles.searchInput}
+            returnKeyType="search"
+          />
+          {query.length > 0 && (
+            <Pressable onPress={() => setQuery("")} hitSlop={8}>
+              <Feather name="x" size={14} color="rgba(244,218,213,0.45)" />
+            </Pressable>
+          )}
+        </View>
+
+        {/* Tab switcher */}
+        <View style={styles.tabPill}>
+          {(["artistas", "expansores"] as const).map((t) => (
+            <Pressable
+              key={t}
+              onPress={() => switchTab(t)}
+              style={[styles.tabBtn, activeTab === t && styles.tabBtnActive]}
+            >
+              <Text style={[styles.tabBtnText, activeTab === t && styles.tabBtnTextActive]}>
+                {t === "artistas" ? "Artistas" : "Expansores"}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      </View>
+
+      {/* ── Filtros chip ── */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.filtersRow}
+        style={styles.filtersScroll}
+      >
+        {filters.map((f) => (
+          <Pressable
+            key={f}
+            onPress={() => setActiveFilter(f)}
+            style={[styles.chip, activeFilter === f && styles.chipActive]}
+          >
+            <Text style={[styles.chipText, activeFilter === f && styles.chipTextActive]}>{f}</Text>
+          </Pressable>
+        ))}
+      </ScrollView>
+
+      {/* ── Grid ── */}
+      <FlatList
+        data={items}
+        keyExtractor={(item) => item.data.id}
+        numColumns={numCols}
+        columnWrapperStyle={styles.row}
+        contentContainerStyle={[styles.grid, { paddingBottom: bottomPad + 90 }]}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <View style={styles.empty}>
+            <Feather name="users" size={36} color="rgba(244,218,213,0.20)" />
+            <Text style={styles.emptyText}>Sin resultados</Text>
+          </View>
+        }
+        renderItem={({ item }) => <ResonadorCard item={item} cardW={cardW} />}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  root: { flex: 1 },
+  header: {
+    paddingHorizontal: H_PAD,
+    paddingBottom: 12,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "700",
+    color: "#F4DAD5",
+    letterSpacing: 0.3,
+  },
+  subtitle: {
+    fontSize: 13,
+    color: "rgba(244,218,213,0.45)",
+    marginTop: 2,
+    marginBottom: 14,
+  },
+
+  // Search
+  searchWrap: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(74,12,12,0.30)",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.12)",
+    paddingHorizontal: 12,
+    height: 38,
+    marginBottom: 12,
+  },
+  searchInput: {
+    flex: 1,
+    color: "#F4DAD5",
+    fontSize: 13,
+    paddingVertical: 0,
+  },
+
+  // Tab pill
+  tabPill: {
+    flexDirection: "row",
+    backgroundColor: "rgba(74,12,12,0.35)",
+    borderRadius: 999,
+    padding: 3,
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.12)",
+    alignSelf: "flex-start",
+  },
+  tabBtn: {
+    paddingHorizontal: 20,
+    paddingVertical: 7,
+    borderRadius: 999,
+  },
+  tabBtnActive: {
+    backgroundColor: "rgba(212,175,55,0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.35)",
+  },
+  tabBtnText: {
+    fontSize: 13,
+    fontWeight: "500",
+    color: "rgba(244,218,213,0.45)",
+  },
+  tabBtnTextActive: {
+    color: "#D4AF37",
+    fontWeight: "700",
+  },
+
+  // Filters
+  filtersScroll: { maxHeight: 44, flexGrow: 0 },
+  filtersRow: {
+    paddingHorizontal: H_PAD,
+    paddingVertical: 6,
+    gap: 8,
+    alignItems: "center",
+  },
+  chip: {
+    paddingHorizontal: 14,
+    paddingVertical: 5,
+    borderRadius: 999,
+    backgroundColor: "rgba(74,12,12,0.25)",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.10)",
+  },
+  chipActive: {
+    backgroundColor: "rgba(212,175,55,0.14)",
+    borderColor: "rgba(212,175,55,0.40)",
+  },
+  chipText: {
+    fontSize: 12,
+    color: "rgba(244,218,213,0.45)",
+    fontWeight: "500",
+  },
+  chipTextActive: {
+    color: "#D4AF37",
+    fontWeight: "700",
+  },
+
+  // Grid
+  grid: { paddingHorizontal: H_PAD, paddingTop: 10 },
+  row: { gap: CARD_GAP, marginBottom: CARD_GAP },
+
+  // Card
+  card: { borderRadius: 14, overflow: "hidden", backgroundColor: "rgba(74,12,12,0.20)" },
+  photoWrap: { borderRadius: 14, overflow: "hidden", position: "relative" },
+  certBadge: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    backgroundColor: "rgba(212,175,55,0.90)",
+    borderRadius: 99,
+    width: 22,
+    height: 22,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  certStar: { fontSize: 11, color: "#1B060F", fontWeight: "800" },
+  cardInfo: { paddingHorizontal: 10, paddingVertical: 8 },
+  cardName: { fontSize: 13, fontWeight: "700", color: "#F4DAD5", marginBottom: 2 },
+  cardSub: { fontSize: 11, color: "rgba(212,175,55,0.75)", marginBottom: 4 },
+  locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },
+  cardLocation: { fontSize: 10, color: "rgba(244,218,213,0.40)", flex: 1 },
+
+  // Empty
+  empty: { alignItems: "center", paddingTop: 60, gap: 12 },
+  emptyText: { fontSize: 14, color: "rgba(244,218,213,0.30)" },
+});
