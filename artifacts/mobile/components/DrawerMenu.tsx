@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { useUser } from "@clerk/expo";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -95,50 +96,60 @@ export function DrawerMenu() {
 
       <Animated.View style={[styles.drawer, visible && styles.drawerShadow, { transform: [{ translateX }] }]}>
         <View
-          style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24, backgroundColor: "#130107" }]}
+          style={[styles.drawerInner, { paddingBottom: bottomPad + 24, backgroundColor: "#130107" }]}
         >
-          {/* Sección de perfil — siempre visible; cambia según estado de sesión */}
-          <View style={styles.profileSection}>
-            {/* Avatar: foto → inicial → ícono genérico */}
-            {displayPhoto ? (
-              <Image source={{ uri: displayPhoto }} style={styles.profilePhoto} contentFit="cover" />
-            ) : loggedIn && initial ? (
-              <View style={styles.profilePhotoFallback}>
-                <Text style={styles.profileInitial}>{initial}</Text>
-              </View>
-            ) : (
-              <View style={[styles.profilePhotoFallback, !loggedIn && styles.profilePhotoGuest]}>
-                <Feather name="user" size={22} color={loggedIn ? "#D4AF37" : "rgba(242,231,228,0.45)"} />
-              </View>
-            )}
-
-            <View style={styles.profileInfo}>
-              {loggedIn ? (
-                <>
-                  <Text style={styles.profileName} numberOfLines={1}>{fullName || "Mi perfil"}</Text>
-                  <Pressable onPress={() => navigate("/(tabs)/profile")} style={styles.verPerfilBtn}>
-                    <Text style={styles.verPerfilText}>Ver Perfil</Text>
-                    <Feather name="chevron-right" size={11} color="#D4AF37" />
-                  </Pressable>
-                </>
+          {/* ── Header de perfil con gradiente de Inicio ── */}
+          <LinearGradient
+            colors={["#2E0510", "#160108"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={[styles.profileHeader, { paddingTop: topPad + 16 }]}
+          >
+            <View style={styles.profileSection}>
+              {/* Avatar: foto → inicial → ícono genérico */}
+              {displayPhoto ? (
+                <Image source={{ uri: displayPhoto }} style={styles.profilePhoto} contentFit="cover" />
+              ) : loggedIn && initial ? (
+                <View style={styles.profilePhotoFallback}>
+                  <Text style={styles.profileInitial}>{initial}</Text>
+                </View>
               ) : (
-                <>
-                  <Text style={styles.profileNameMuted}>No conectado</Text>
-                  <Pressable onPress={() => navigate("/(auth)/sign-in")} style={styles.verPerfilBtn}>
-                    <Text style={styles.verPerfilText}>Iniciar sesión</Text>
-                    <Feather name="chevron-right" size={11} color="#D4AF37" />
-                  </Pressable>
-                </>
+                <View style={[styles.profilePhotoFallback, !loggedIn && styles.profilePhotoGuest]}>
+                  <Feather name="user" size={22} color={loggedIn ? "#D4AF37" : "rgba(242,231,228,0.45)"} />
+                </View>
               )}
-            </View>
 
-            <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
-              <Feather name="x" size={20} color="#D4AF37" />
-            </Pressable>
-          </View>
+              <View style={styles.profileInfo}>
+                {loggedIn ? (
+                  <>
+                    <Text style={styles.profileName} numberOfLines={1}>{fullName || "Mi perfil"}</Text>
+                    <Pressable onPress={() => navigate("/(tabs)/profile")} style={styles.verPerfilBtn}>
+                      <Text style={styles.verPerfilText}>Ver Perfil</Text>
+                      <Feather name="chevron-right" size={11} color="#D4AF37" />
+                    </Pressable>
+                  </>
+                ) : (
+                  <>
+                    <Text style={styles.profileNameMuted}>No conectado</Text>
+                    <Pressable onPress={() => navigate("/(auth)/sign-in")} style={styles.verPerfilBtn}>
+                      <Text style={styles.verPerfilText}>Iniciar sesión</Text>
+                      <Feather name="chevron-right" size={11} color="#D4AF37" />
+                    </Pressable>
+                  </>
+                )}
+              </View>
+
+              <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
+                <Feather name="x" size={20} color="#D4AF37" />
+              </Pressable>
+            </View>
+          </LinearGradient>
+
+          {/* Divisor sutil */}
+          <View style={styles.headerDivider} />
 
           {/* Items principales + secundarios — scrollable */}
-          <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+          <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 20 }}>
             <View style={styles.itemGroup}>
               {MAIN_ITEMS.map((item) => (
                 <Pressable
@@ -213,9 +224,18 @@ const styles = StyleSheet.create({
   },
   drawerInner: {
     flex: 1,
-    paddingHorizontal: 20,
     borderRightWidth: StyleSheet.hairlineWidth,
     borderRightColor: "rgba(180,180,180,0.10)",
+  },
+  profileHeader: {
+    marginBottom: 0,
+    paddingHorizontal: 20,
+    paddingBottom: 4,
+  },
+  headerDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(212,175,55,0.18)",
+    marginBottom: 8,
   },
   closeBtnRow: {
     alignItems: "flex-end",
