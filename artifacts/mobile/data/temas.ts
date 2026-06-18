@@ -48,14 +48,6 @@ export const TEMAS: TemaItem[] = [
     image: require("@/assets/images/cat-rituales.png"),
   },
   {
-    id: "crecimiento",
-    label: "Crecimiento",
-    icon: "sprout",
-    color: "#4A7C59",
-    description: "Herramientas para cultivar tu desarrollo personal desde adentro hacia afuera.",
-    image: require("@/assets/images/tema-crecimiento.png"),
-  },
-  {
     id: "asmr",
     label: "ASMR",
     icon: "ear-hearing",
