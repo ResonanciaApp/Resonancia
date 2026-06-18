@@ -35,6 +35,7 @@ const { width } = Dimensions.get("window");
 const H_PAD = 15;
 const GOLD_BORDER_PILL = ["transparent", "rgba(212,175,55,0.22)", "rgba(233,196,106,0.35)", "rgba(212,175,55,0.22)", "transparent"] as const;
 const GAP = 10;
+const SECTION_GAP = 40;
 
 /** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
 function hexTint(hex: string, alpha: number): string {
@@ -287,7 +288,7 @@ export default function ExploreScreen() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={{ marginHorizontal: H_PAD, marginBottom: 33 }}
+            style={{ marginHorizontal: H_PAD, marginBottom: SECTION_GAP }}
             contentContainerStyle={{ gap: CAT_CARD_GAP, paddingBottom: 2 }}
             decelerationRate="fast"
             snapToInterval={CAT_CARD_W + CAT_CARD_GAP}
@@ -425,7 +426,7 @@ export default function ExploreScreen() {
         ) : (
           <>
             {/* ── Explorar todo (TEMAS 6×2) ── */}
-            <View style={[styles.section, { marginBottom: 33 }]}>
+            <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
               <View style={styles.sectionRow}>
                 <Text style={styles.sectionTitle}>Explorar todo</Text>
               </View>
@@ -462,7 +463,7 @@ export default function ExploreScreen() {
             </View>
 
             {/* ── Otras temáticas ── */}
-            <View style={[styles.section, { marginBottom: 23 }]}>
+            <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
               <View style={styles.sectionRow}>
                 <Text style={styles.sectionTitle}>Otras temáticas</Text>
               </View>
@@ -517,7 +518,7 @@ const styles = StyleSheet.create({
   root:   { flex: 1 },
   scroll: { flex: 1 },
   communityWrap: {
-    marginBottom: 33,
+    marginBottom: SECTION_GAP,
     borderRadius: 16,
     overflow: "hidden",
     marginHorizontal: H_PAD,
@@ -559,7 +560,7 @@ const styles = StyleSheet.create({
   },
   searchInput: { flex: 1, fontSize: 14, color: "#1B060F" },
 
-  section:      { paddingHorizontal: H_PAD, marginBottom: 23 },
+  section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 11 },
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, color: "#FFFFFF", marginBottom: 7 },
 
@@ -571,7 +572,7 @@ const styles = StyleSheet.create({
   // Recomendado para ti
   recoSection: {
     paddingHorizontal: H_PAD,
-    marginBottom: 33,
+    marginBottom: SECTION_GAP,
   },
   recoSub: {
     fontSize: 12,
@@ -589,7 +590,7 @@ const styles = StyleSheet.create({
 
   // ¿Cuánto tiempo tienes?
   durSection: {
-    marginBottom: 33,
+    marginBottom: SECTION_GAP,
   },
   durPillRow: {
     paddingHorizontal: H_PAD,
