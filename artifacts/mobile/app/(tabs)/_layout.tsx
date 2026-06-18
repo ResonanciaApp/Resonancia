@@ -95,6 +95,24 @@ function TabItem({
       <View style={styles.pillWrap}>
         <Animated.View style={[styles.pill, { opacity: pillOpacity }]} />
 
+        {/* Borde superior dorado con fade en esquinas + halo glow */}
+        <Animated.View style={[styles.pillDecor, { opacity: pillOpacity }]}>
+          {/* Halo suave — difumina hacia abajo */}
+          <LinearGradient
+            colors={["rgba(212,175,55,0.28)", "transparent"]}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+          {/* Línea 1.5 px con fade en esquinas */}
+          <LinearGradient
+            colors={["transparent", "rgba(212,175,55,0.75)", "#E9C46A", "rgba(212,175,55,0.75)", "transparent"]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={styles.pillBorderLine}
+          />
+        </Animated.View>
+
         {/* Ícono con glow dorado cuando está activo */}
         <View style={isFocused ? styles.iconGlow : undefined}>
           {icon}
@@ -326,6 +344,23 @@ const styles = StyleSheet.create({
     right: -12,
     borderRadius: 13,
     backgroundColor: PILL_BG,
+  },
+  pillDecor: {
+    position: "absolute",
+    top: -9,
+    left: -12,
+    right: -12,
+    height: 11,
+    borderTopLeftRadius: 13,
+    borderTopRightRadius: 13,
+    overflow: "hidden",
+  },
+  pillBorderLine: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 1.5,
   },
   iconGlow: {
     shadowColor: "#D4AF37",
