@@ -5,12 +5,14 @@ import {
   ActivityIndicator,
   Alert,
   Linking,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -132,6 +134,9 @@ export default function UsuarioScreen() {
 
   const [epDescExpanded, setEpDescExpanded] = React.useState(false);
   const [epDescOverflows, setEpDescOverflows] = React.useState(false);
+  const [epLightboxUri, setEpLightboxUri] = React.useState<string | null>(null);
+  const { width: screenWidth } = useWindowDimensions();
+  const epCellSize = Math.floor((screenWidth - H_PAD * 2 - 2 * 8) / 3);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -462,6 +467,26 @@ export default function UsuarioScreen() {
               </View>
             )}
 
+            {/* Galería */}
+            {(expansorProfile?.photos ?? []).length > 0 && (
+              <View style={styles.epGalleryWrap}>
+                <View style={styles.epGalleryGrid}>
+                  {(expansorProfile?.photos ?? []).map((objectPath, i) => {
+                    const uri = resolveAvatarUrl(objectPath) ?? objectPath;
+                    return (
+                      <Pressable key={i} onPress={() => setEpLightboxUri(uri)} style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}>
+                        <ExpoImage
+                          source={{ uri }}
+                          style={{ width: epCellSize, height: Math.floor(epCellSize * 1.3), borderRadius: 10 }}
+                          contentFit="cover"
+                        />
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </View>
+            )}
+
             {/* Quote */}
             {expansorProfile?.quote ? (
               <View style={styles.epQuoteWrap}>
@@ -472,6 +497,15 @@ export default function UsuarioScreen() {
           </View>
         )}
       </ScrollView>
+
+      {/* Lightbox */}
+      <Modal visible={epLightboxUri !== null} transparent animationType="fade" onRequestClose={() => setEpLightboxUri(null)}>
+        <Pressable style={styles.lbBackdrop} onPress={() => setEpLightboxUri(null)}>
+          {epLightboxUri && (
+            <ExpoImage source={{ uri: epLightboxUri }} style={styles.lbImg} contentFit="contain" />
+          )}
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -631,4 +665,17 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   epCertStar: { fontSize: 13, color: "#D4AF37" },
+  epGalleryWrap: { marginTop: 12 },
+  epGalleryGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  lbBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.88)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  lbImg: { width: "90%", height: "75%" },
 });

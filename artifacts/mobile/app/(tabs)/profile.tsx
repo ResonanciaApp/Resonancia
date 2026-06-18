@@ -1136,15 +1136,18 @@ export default function ProfileScreen() {
             {(expansorProfile?.photos ?? []).length > 0 && (
               <View style={styles.dvGallerySection}>
                 <View style={styles.dvGalleryGrid}>
-                  {(expansorProfile?.photos ?? []).map((uri, i) => (
-                    <Pressable key={i} onPress={() => setDvLightboxUri(uri)} style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}>
-                      <Image
-                        source={{ uri }}
-                        style={[styles.dvGalleryCell, { width: dvCellSize, height: dvCellSize * 1.3 }]}
-                        contentFit="cover"
-                      />
-                    </Pressable>
-                  ))}
+                  {(expansorProfile?.photos ?? []).map((objectPath, i) => {
+                    const uri = resolveAvatarUrl(objectPath) ?? objectPath;
+                    return (
+                      <Pressable key={i} onPress={() => setDvLightboxUri(uri)} style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}>
+                        <Image
+                          source={{ uri }}
+                          style={[styles.dvGalleryCell, { width: dvCellSize, height: dvCellSize * 1.3 }]}
+                          contentFit="cover"
+                        />
+                      </Pressable>
+                    );
+                  })}
                 </View>
               </View>
             )}
