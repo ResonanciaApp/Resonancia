@@ -309,7 +309,7 @@ function UserPlaylistRow({ pl, onPress, onLongPress }: { pl: UserPlaylist; onPre
     <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
       <View style={styles.userPlCover}>
         {pl.coverType === "geometrix" && pl.coverGeometryId ? (
-          <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={28} strokeWidth={1.6} opacity={1} />
+          <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={62} strokeWidth={1.2} opacity={1} />
         ) : pl.coverType === "creation" && pl.coverCreationId ? (
           <CreationCoverPreview creationId={pl.coverCreationId} size={36} />
         ) : pl.coverUri ? (
@@ -805,9 +805,9 @@ export default function BibliotecaScreen() {
                       style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                       onPress={() => router.push(`/playlist/${pl.id}` as never)}
                     >
-                      <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(212,175,55,0.08)", alignItems: "center", justifyContent: "center" }]}>
+                      <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(212,175,55,0.08)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
                         {pl.coverType === "geometrix" && pl.coverGeometryId ? (
-                          <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={cellW * 0.55} strokeWidth={1.6} opacity={1} />
+                          <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={cellW} strokeWidth={1.2} opacity={1} />
                         ) : pl.coverType === "creation" && pl.coverCreationId ? (
                           <CreationCoverPreview creationId={pl.coverCreationId} size={cellW} />
                         ) : pl.coverUri ? (
@@ -909,9 +909,9 @@ export default function BibliotecaScreen() {
             {displayPl.map((pl) => (
               <Pressable key={pl.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                 onPress={() => router.push(`/playlist/${pl.id}` as never)}>
-                <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(212,175,55,0.08)", alignItems: "center", justifyContent: "center" }]}>
+                <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(212,175,55,0.08)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
                   {pl.coverType === "geometrix" && pl.coverGeometryId ? (
-                    <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={cellW * 0.55} strokeWidth={1.6} opacity={1} />
+                    <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={cellW} strokeWidth={1.2} opacity={1} />
                   ) : pl.coverType === "creation" && pl.coverCreationId ? (
                     <CreationCoverPreview creationId={pl.coverCreationId} size={cellW} />
                   ) : pl.coverUri ? (
@@ -1589,6 +1589,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 62,
     borderRadius: 8,
+    overflow: "hidden",
     backgroundColor: "rgba(212,175,55,0.08)",
     alignItems: "center",
     justifyContent: "center",
