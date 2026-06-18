@@ -937,7 +937,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(74,12,12,0.08)",
+    backgroundColor: "rgba(255,255,255,0.10)",
     borderRadius: 8,
     overflow: "hidden",
     height: 62,
