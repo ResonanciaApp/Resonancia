@@ -780,6 +780,12 @@ uri = "file://artifacts/mobile/assets/images/cat-reflexiones-hero.png"
 type = "image"
 title = "person writing journal dark cozy"
 
+[[generated]]
+id = "VFH0UEA57CPFC6lQs46ul"
+uri = "file://attached_assets/sagrados-opciones.png"
+type = "image"
+title = "sagrados header gradient options"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
@@ -1379,3 +1385,9 @@ id = "7VIqbs9fgCa1y-ZbA1NW5"
 uri = "file://.local/outputs/Decisiones-de-Lanzamiento.pdf"
 type = "pdf"
 title = "Decisiones de Lanzamiento (PDF)"
+
+[[outputs]]
+id = "HldHil9WSUVknSrBLLCX3"
+uri = "file://attached_assets/sagrados-opciones.png"
+type = "image"
+title = "Opciones de header — Sagrados"
