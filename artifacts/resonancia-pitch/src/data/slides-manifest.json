@@ -142,5 +142,69 @@
     "title": "Anexo Financiero · Desglose de costos mensuales",
     "description": "Costos fijos, variables (contenido), marketing ramp-up y totales por fase.",
     "speakerNotes": ""
+  },
+  {
+    "id": "dec0a000-dec0-4000-a000-dec000000001",
+    "position": 19,
+    "filepath": "src/pages/slides/Dec01Portada.tsx",
+    "title": "Decisiones de Lanzamiento · Portada",
+    "description": "Portada del deck interno de decisiones técnicas y estratégicas.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "dec0a000-dec0-4000-a000-dec000000002",
+    "position": 20,
+    "filepath": "src/pages/slides/Dec02Premium.tsx",
+    "title": "Decisión 1 · ¿Premium desde el lanzamiento?",
+    "description": "Comparativa Opción A (free) vs Opción B (RevenueCat activo). Recomendación: lanzar free.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "dec0a000-dec0-4000-a000-dec000000003",
+    "position": 21,
+    "filepath": "src/pages/slides/Dec03PremiumContext.tsx",
+    "title": "Estado actual · PremiumContext",
+    "description": "Lo ya codificado vs lo que falta para activar el cobro real con RevenueCat.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "dec0a000-dec0-4000-a000-dec000000004",
+    "position": 22,
+    "filepath": "src/pages/slides/Dec04EAS.tsx",
+    "title": "Decisión 2 · EAS Build",
+    "description": "Estado del código EAS y pasos externos pendientes para publicar en las tiendas.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "dec0a000-dec0-4000-a000-dec000000005",
+    "position": 23,
+    "filepath": "src/pages/slides/Dec05GitHub.tsx",
+    "title": "Decisión 3 · GitHub",
+    "description": "El código está listo para subir. Beneficios y recomendación de repo privado.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "dec0a000-dec0-4000-a000-dec000000006",
+    "position": 24,
+    "filepath": "src/pages/slides/Dec06AudioVideo.tsx",
+    "title": "Decisiones 4–5 · Audio y Video",
+    "description": "AAC como estándar de audio (decisión tomada) y migración a Bunny.net para video (pendiente).",
+    "speakerNotes": ""
+  },
+  {
+    "id": "dec0a000-dec0-4000-a000-dec000000007",
+    "position": 25,
+    "filepath": "src/pages/slides/Dec07CloudSync.tsx",
+    "title": "Decisión 6 · Sincronización en la Nube",
+    "description": "Fase 1 activa. Reglas de merge y limitación conocida (sin tombstones/LWW).",
+    "speakerNotes": ""
+  },
+  {
+    "id": "dec0a000-dec0-4000-a000-dec000000008",
+    "position": 26,
+    "filepath": "src/pages/slides/Dec08Checklist.tsx",
+    "title": "Checklist de Lanzamiento",
+    "description": "10 pasos en orden — del código a las tiendas.",
+    "speakerNotes": ""
   }
 ]
