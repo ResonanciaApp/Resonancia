@@ -47,3 +47,12 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Env files (environment-specific, never commit)
+.env
+.env.local
+.env.*.local
+
+# Google Play service account key (credentials, never commit)
+google-play-service-account.json
+**/google-play-service-account.json
