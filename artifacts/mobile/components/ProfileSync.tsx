@@ -48,7 +48,7 @@ function avatarMeta(uri: string): { contentType: string; fileName: string } {
 
 export function ProfileSync() {
   const { isSignedIn } = useAuth();
-  const { username, photoUri, profileLoaded } = useUserProfile();
+  const { username, location, photoUri, profileLoaded } = useUserProfile();
   const queryClient = useQueryClient();
 
   const { data: me } = useGetMe({
@@ -92,6 +92,22 @@ export function ProfileSync() {
       },
     );
   }, [isSignedIn, me, username, profileLoaded, updateMe, queryClient]);
+
+  // ── Sync de location ─────────────────────────────────────────────────────
+  const lastLocationSynced = useRef<string | null>(null);
+  useEffect(() => {
+    if (!isSignedIn || !me || !profileLoaded) return;
+    const desired = location?.trim() ?? null;
+    const serverLocation = me.location ?? null;
+    if (desired === serverLocation) return;
+    const key = `${me.id}:loc:${desired ?? ""}`;
+    if (lastLocationSynced.current === key || updateMe.isPending) return;
+    lastLocationSynced.current = key;
+    updateMe.mutate(
+      { data: { location: desired } },
+      { onSuccess: () => queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() }) },
+    );
+  }, [isSignedIn, me, location, profileLoaded, updateMe, queryClient]);
 
   // ── Sync de avatar ───────────────────────────────────────────────────────
   // La foto vive como URI local (data URL en web, file:// en native). Las

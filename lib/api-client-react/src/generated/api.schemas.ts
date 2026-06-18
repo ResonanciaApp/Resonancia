@@ -164,6 +164,8 @@ export interface UserProfile {
   displayName: string;
   /** @nullable */
   avatarUrl?: string | null;
+  /** @nullable */
+  location?: string | null;
   role?: UserProfileRole;
   createdAt: string;
 }
