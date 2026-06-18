@@ -34,6 +34,7 @@ const CLOSE_SLOT = 38;
 // ── Filtros artistas ──────────────────────────────────────────────────────────
 type FilterId = string;
 const ARTISTA_FILTER_TABS: { id: FilterId; label: string }[] = [
+  { id: "Sonoterapeuta", label: "Sonoterapeuta" },
   { id: "Productor", label: "Productor" },
   { id: "Músico", label: "Músico" },
   { id: "Voz guía", label: "Voz guía" },
