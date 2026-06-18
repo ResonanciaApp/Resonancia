@@ -2,8 +2,10 @@ import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { memo, useState, useMemo } from "react";
+import { memo, useState, useMemo, useRef, useEffect } from "react";
 import {
+  Animated,
+  Easing,
   FlatList,
   Platform,
   Pressable,
@@ -25,10 +27,149 @@ import { useColors } from "@/hooks/useColors";
 const H_PAD = 18;
 const CARD_GAP = 10;
 const BG: [string, string] = ["#2E0510", "#160108"];
+const MUTED = "rgba(242,231,228,0.45)";
+const CHIP_ANIM_DURATION = 600;
+const CLOSE_SLOT = 38;
 
 // ── Filtros ───────────────────────────────────────────────────────────────────
-const ARTISTA_FILTERS = ["Todos", "Ambient", "Enteógena", "Meditación", "Cuencos"];
-const EXPANSOR_FILTERS = ["Todos", "Cuencos Tibetanos", "Cuencos de Cristal", "Gong", "Campanas"];
+type FilterId = string;
+const ARTISTA_FILTER_TABS: { id: FilterId; label: string }[] = [
+  { id: "Ambient", label: "Ambient" },
+  { id: "Enteógena", label: "Enteógena" },
+  { id: "Meditación", label: "Meditación" },
+  { id: "Cuencos", label: "Cuencos" },
+];
+const EXPANSOR_FILTER_TABS: { id: FilterId; label: string }[] = [
+  { id: "Cuencos Tibetanos", label: "Cuencos Tibetanos" },
+  { id: "Cuencos de Cristal", label: "Cuencos de Cristal" },
+  { id: "Gong", label: "Gong" },
+  { id: "Campanas", label: "Campanas" },
+];
+
+// ── Chip individual (igual a LibChip de Biblioteca) ───────────────────────────
+function ResoChip({ label, sel, onPress }: { label: string; sel: boolean; onPress: () => void }) {
+  return (
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
+      {sel && (
+        <LinearGradient
+          colors={["#D6AD5F", "#B47344"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={StyleSheet.absoluteFill}
+        />
+      )}
+      <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
+    </Pressable>
+  );
+}
+
+// ── Fila de chips animada (mismo patrón que Biblioteca) ───────────────────────
+function AnimatedFilterRow({
+  tabs,
+  activeFilter,
+  onSelect,
+  onClear,
+}: {
+  tabs: { id: FilterId; label: string }[];
+  activeFilter: FilterId | null;
+  onSelect: (id: FilterId) => void;
+  onClear: () => void;
+}) {
+  const progress = useRef(new Animated.Value(activeFilter ? 1 : 0)).current;
+  const offsetsRef = useRef<Record<string, number>>({});
+  const scrollXRef = useRef(0);
+  const [displayTab, setDisplayTab] = useState<FilterId | null>(activeFilter);
+  const [colorTab, setColorTab] = useState<FilterId | null>(activeFilter);
+  const [targetTranslate, setTargetTranslate] = useState(0);
+
+  const filtered = displayTab !== null;
+
+  const animate = (toValue: number, onDone?: () => void) => {
+    Animated.timing(progress, {
+      toValue,
+      duration: CHIP_ANIM_DURATION,
+      easing: Easing.inOut(Easing.cubic),
+      useNativeDriver: true,
+    }).start(({ finished }) => { if (finished) onDone?.(); });
+  };
+
+  const handleSelect = (id: FilterId) => {
+    const off = offsetsRef.current[id] ?? 0;
+    const visualLeft = off - scrollXRef.current;
+    setTargetTranslate(CLOSE_SLOT - visualLeft);
+    setDisplayTab(id);
+    setColorTab(id);
+    onSelect(id);
+    animate(1);
+  };
+
+  const handleClear = () => {
+    setColorTab(null);
+    onClear();
+    animate(0, () => setDisplayTab(null));
+  };
+
+  useEffect(() => () => progress.stopAnimation(), [progress]);
+
+  return (
+    <View style={styles.animChipWrap}>
+      <Animated.View
+        pointerEvents={filtered ? "auto" : "none"}
+        style={[styles.animCloseBtn, { opacity: progress }]}
+      >
+        <Pressable onPress={handleClear} hitSlop={10} style={styles.chipCloseBtn}>
+          <Feather name="x" size={15} color={MUTED} />
+        </Pressable>
+      </Animated.View>
+
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        scrollEnabled={!filtered}
+        scrollEventThrottle={16}
+        onScroll={(e) => { scrollXRef.current = e.nativeEvent.contentOffset.x; }}
+        style={styles.chipRow}
+        contentContainerStyle={styles.chipRowContent}
+      >
+        {tabs.map((t) => {
+          const isSelected = displayTab === t.id;
+          const chipStyle = isSelected
+            ? {
+                opacity: 1 as number,
+                zIndex: 2,
+                transform: [{
+                  translateX: progress.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, targetTranslate],
+                  }),
+                }],
+              }
+            : {
+                opacity: progress.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [1, 0],
+                }),
+              };
+
+          return (
+            <Animated.View
+              key={t.id}
+              pointerEvents={filtered && !isSelected ? "none" : "auto"}
+              onLayout={(e) => { offsetsRef.current[t.id] = e.nativeEvent.layout.x; }}
+              style={chipStyle}
+            >
+              <ResoChip
+                label={t.label}
+                sel={colorTab === t.id}
+                onPress={() => (isSelected ? handleClear() : handleSelect(t.id))}
+              />
+            </Animated.View>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+}
 
 // ── Card de Resonador (artista o expansor) ────────────────────────────────────
 type CardItem =
@@ -112,7 +253,8 @@ export default function ResonadoresScreen() {
     setSearchVisible((v) => !v);
   }
 
-  const filters = activeTab === "artistas" ? ARTISTA_FILTERS : EXPANSOR_FILTERS;
+  const filterTabs = activeTab === "artistas" ? ARTISTA_FILTER_TABS : EXPANSOR_FILTER_TABS;
+  const activeFilterKey = activeFilter === "Todos" ? null : activeFilter;
 
   // Reset filter when switching tab
   function switchTab(t: "artistas" | "expansores") {
@@ -227,23 +369,16 @@ export default function ResonadoresScreen() {
         </View>
       </View>
 
-      {/* ── Filtros chip ── */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.filtersRow}
-        style={styles.filtersScroll}
-      >
-        {filters.map((f) => (
-          <Pressable
-            key={f}
-            onPress={() => setActiveFilter(f)}
-            style={[styles.chip, activeFilter === f && styles.chipActive]}
-          >
-            <Text style={[styles.chipText, activeFilter === f && styles.chipTextActive]}>{f}</Text>
-          </Pressable>
-        ))}
-      </ScrollView>
+      {/* ── Filtros chip animados (mismo sistema que Biblioteca) ── */}
+      <View style={styles.filtersScroll}>
+        <AnimatedFilterRow
+          key={activeTab}
+          tabs={filterTabs}
+          activeFilter={activeFilterKey}
+          onSelect={(id) => setActiveFilter(id)}
+          onClear={() => setActiveFilter("Todos")}
+        />
+      </View>
 
       {/* ── Grid ── */}
       <FlatList
@@ -350,35 +485,29 @@ const styles = StyleSheet.create({
     color: "rgba(27,6,15,0.65)",
   },
 
-  // Filters
-  filtersScroll: { maxHeight: 44, flexGrow: 0 },
-  filtersRow: {
-    paddingHorizontal: H_PAD,
-    paddingVertical: 6,
-    gap: 8,
+  // Filters — igual que Biblioteca
+  filtersScroll: { paddingHorizontal: H_PAD, paddingBottom: 6 },
+  animChipWrap: { flexDirection: "row", alignItems: "center" },
+  animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
+  chipCloseBtn: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "rgba(74,12,12,0.08)",
     alignItems: "center",
+    justifyContent: "center",
   },
+  chipRow: { flexGrow: 0 },
+  chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2 },
   chip: {
     paddingHorizontal: 14,
-    paddingVertical: 5,
+    paddingVertical: 8,
     borderRadius: 999,
-    backgroundColor: "rgba(74,12,12,0.25)",
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.10)",
+    backgroundColor: "rgba(255,255,255,0.08)",
+    overflow: "hidden",
   },
-  chipActive: {
-    backgroundColor: "rgba(212,175,55,0.14)",
-    borderColor: "rgba(212,175,55,0.40)",
-  },
-  chipText: {
-    fontSize: 12,
-    color: "rgba(244,218,213,0.45)",
-    fontWeight: "500",
-  },
-  chipTextActive: {
-    color: "#D4AF37",
-    fontWeight: "700",
-  },
+  chipText: { fontSize: 13, fontWeight: "500", color: "rgba(242,231,228,0.45)" },
+  chipTextSel: { color: "#1B060F", fontWeight: "700" },
 
   // Grid
   grid: { paddingHorizontal: H_PAD, paddingTop: 10 },
