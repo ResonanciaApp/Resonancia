@@ -168,6 +168,9 @@ export const EXPANSORES: Expansor[] = [
     region: "Bogotá D.C.",
     specialty: ["Cuencos Tibetanos", "Meditación"],
     certified: true,
+    memberSince: "marzo de 2024",
+    followersCount: 128,
+    followingCount: 47,
   },
   {
     id: "carlos-medina",
@@ -180,6 +183,9 @@ export const EXPANSORES: Expansor[] = [
     specialty: ["Cuencos de Cristal", "Gong"],
     certified: true,
     links: [{ label: "Instagram", url: "https://instagram.com" }],
+    memberSince: "enero de 2024",
+    followersCount: 214,
+    followingCount: 62,
   },
   {
     id: "valeria-rios",
@@ -191,6 +197,9 @@ export const EXPANSORES: Expansor[] = [
     region: "Buenos Aires",
     specialty: ["Cuencos Tibetanos", "Campanas"],
     certified: true,
+    memberSince: "junio de 2024",
+    followersCount: 89,
+    followingCount: 31,
   },
   {
     id: "martin-paz",
@@ -203,6 +212,9 @@ export const EXPANSORES: Expansor[] = [
     specialty: ["Gong", "Cuencos de Cuarzo"],
     certified: false,
     links: [{ label: "YouTube", url: "https://youtube.com" }],
+    memberSince: "agosto de 2024",
+    followersCount: 55,
+    followingCount: 28,
   },
   {
     id: "daniela-vega",
@@ -214,6 +226,9 @@ export const EXPANSORES: Expansor[] = [
     region: "Metropolitana",
     specialty: ["Cuencos Tibetanos", "Yoga"],
     certified: true,
+    memberSince: "febrero de 2025",
+    followersCount: 176,
+    followingCount: 54,
   },
   {
     id: "andres-morales",
@@ -225,6 +240,9 @@ export const EXPANSORES: Expansor[] = [
     region: "Antioquia",
     specialty: ["Cuencos de Metal", "Cuencos Tibetanos"],
     certified: true,
+    memberSince: "octubre de 2023",
+    followersCount: 302,
+    followingCount: 88,
   },
   {
     id: "lucia-rojas-ve",
@@ -236,6 +254,9 @@ export const EXPANSORES: Expansor[] = [
     region: "Caracas",
     specialty: ["Cuencos Tibetanos", "Respiración Consciente"],
     certified: true,
+    memberSince: "mayo de 2024",
+    followersCount: 143,
+    followingCount: 39,
   },
   {
     id: "gabriel-flores-bo",
@@ -247,6 +268,9 @@ export const EXPANSORES: Expansor[] = [
     region: "La Paz",
     specialty: ["Instrumentos Andinos", "Cuencos de Cuarzo"],
     certified: false,
+    memberSince: "noviembre de 2024",
+    followersCount: 67,
+    followingCount: 22,
   },
   {
     id: "isabel-torres-ec",
@@ -258,6 +282,9 @@ export const EXPANSORES: Expansor[] = [
     region: "Pichincha",
     specialty: ["Cuencos Tibetanos", "Medicina Ancestral"],
     certified: true,
+    memberSince: "abril de 2024",
+    followersCount: 198,
+    followingCount: 71,
   },
   {
     id: "roberto-silva-uy",
@@ -270,6 +297,9 @@ export const EXPANSORES: Expansor[] = [
     specialty: ["Gong", "Cuencos de Cuarzo"],
     certified: true,
     links: [{ label: "Instagram", url: "https://instagram.com" }],
+    memberSince: "septiembre de 2023",
+    followersCount: 241,
+    followingCount: 56,
   },
   {
     id: "sofia-ayala-py",
@@ -281,6 +311,9 @@ export const EXPANSORES: Expansor[] = [
     region: "Central",
     specialty: ["Cuencos Tibetanos", "Respiración Consciente"],
     certified: false,
+    memberSince: "enero de 2025",
+    followersCount: 44,
+    followingCount: 19,
   },
   {
     id: "diego-ramirez-mx",
@@ -292,6 +325,9 @@ export const EXPANSORES: Expansor[] = [
     region: "Oaxaca",
     specialty: ["Instrumentos Prehispánicos", "Cuencos de Cristal"],
     certified: true,
+    memberSince: "julio de 2024",
+    followersCount: 157,
+    followingCount: 43,
   },
   {
     id: "camila-herrera-ar",
@@ -304,6 +340,9 @@ export const EXPANSORES: Expansor[] = [
     specialty: ["Cuencos Tibetanos", "Meditación"],
     certified: true,
     links: [{ label: "Instagram", url: "https://instagram.com" }],
+    memberSince: "diciembre de 2023",
+    followersCount: 183,
+    followingCount: 60,
   },
 ];
 

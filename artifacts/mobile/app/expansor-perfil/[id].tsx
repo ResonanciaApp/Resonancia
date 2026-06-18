@@ -19,7 +19,6 @@ import { COUNTRY_FLAGS, getExpansorById } from "@/data/expansores";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
-const AVATAR_SIZE = 84;
 
 export default function ExpansorPerfilScreen() {
   const colors = useColors();
@@ -33,9 +32,8 @@ export default function ExpansorPerfilScreen() {
 
   if (!expansor) {
     return (
-      <View style={[styles.root, { backgroundColor: "#160108" }]}>
+      <View style={[styles.root, { backgroundColor: "#1B060F" }]}>
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
           <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
@@ -53,9 +51,8 @@ export default function ExpansorPerfilScreen() {
   const locationStr = `${flag} ${expansor.city}, ${expansor.country}`.trim();
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: "#1B060F" }]}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
 
       {/* Header barra */}
       <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
@@ -70,8 +67,8 @@ export default function ExpansorPerfilScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[styles.scroll, { paddingBottom: bottomPad + 40 }]}
       >
-        {/* ── Profile Card (idéntico a profile.tsx) ── */}
-        <View style={[styles.profileCard, { backgroundColor: "rgba(74,12,12,0.28)", borderColor: colors.border ?? "#3D0E16" }]}>
+        {/* ── Profile Card — mismo layout que profile.tsx ── */}
+        <View style={styles.profileCard}>
 
           {/* Avatar */}
           <View style={styles.avatarWrapper}>
@@ -93,9 +90,9 @@ export default function ExpansorPerfilScreen() {
           <Text style={[styles.userName, { color: colors.foreground }]}>{expansor.name}</Text>
 
           {/* Ubicación */}
-          <View style={styles.metaRow}>
+          <View style={styles.locationRow}>
             <Feather name="map-pin" size={12} color={colors.mutedForeground} />
-            <Text style={[styles.metaText, { color: colors.mutedForeground }]}>{locationStr}</Text>
+            <Text style={[styles.locationText, { color: colors.mutedForeground }]}>{locationStr}</Text>
           </View>
 
           {/* Bio */}
@@ -103,28 +100,28 @@ export default function ExpansorPerfilScreen() {
 
           {/* Miembro desde */}
           {expansor.memberSince ? (
-            <View style={styles.metaRow}>
+            <View style={styles.locationRow}>
               <Feather name="calendar" size={12} color={colors.mutedForeground} />
-              <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
+              <Text style={[styles.locationText, { color: colors.mutedForeground }]}>
                 Miembro desde {expansor.memberSince}
               </Text>
             </View>
           ) : null}
 
-          {/* Seguidores / Siguiendo */}
-          <View style={styles.followRow}>
-            <View style={styles.followItem}>
-              <Text style={[styles.followNum, { color: colors.foreground }]}>
+          {/* Seguidores / Siguiendo — idéntico a profile.tsx */}
+          <View style={styles.followCountsRow}>
+            <View style={styles.followCountItem}>
+              <Text style={[styles.followCountNum, { color: colors.foreground }]}>
                 {expansor.followersCount ?? 0}
               </Text>
-              <Text style={[styles.followLabel, { color: colors.mutedForeground }]}>seguidores</Text>
+              <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>seguidores</Text>
             </View>
-            <View style={[styles.followDivider, { backgroundColor: colors.border ?? "#3D0E16" }]} />
-            <View style={styles.followItem}>
-              <Text style={[styles.followNum, { color: colors.foreground }]}>
+            <View style={[styles.followCountDivider, { backgroundColor: colors.border ?? "#3D0E16" }]} />
+            <View style={styles.followCountItem}>
+              <Text style={[styles.followCountNum, { color: colors.foreground }]}>
                 {expansor.followingCount ?? 0}
               </Text>
-              <Text style={[styles.followLabel, { color: colors.mutedForeground }]}>siguiendo</Text>
+              <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>siguiendo</Text>
             </View>
           </View>
         </View>
@@ -178,7 +175,7 @@ export default function ExpansorPerfilScreen() {
             </View>
           )}
 
-          {/* Sello de certificación */}
+          {/* Sello */}
           {expansor.certified && (
             <View style={styles.certCard}>
               <LinearGradient
@@ -203,12 +200,11 @@ export default function ExpansorPerfilScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 6,
+    marginBottom: 4,
   },
   headerTitle: { fontSize: 17, fontWeight: "700" },
   backBtn: {
@@ -222,49 +218,48 @@ const styles = StyleSheet.create({
   centered: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12 },
   notFoundTitle: { fontSize: 18, fontWeight: "700" },
 
-  scroll: { paddingTop: 8, gap: 16 },
+  scroll: { paddingTop: 4, gap: 16 },
 
-  /* ── Profile card ── */
+  /* ── Profile card — sin fondo, igual que profile.tsx ── */
   profileCard: {
-    marginHorizontal: 20,
-    borderRadius: 20,
-    borderWidth: 1,
-    padding: 20,
+    borderRadius: 24,
+    padding: 24,
     alignItems: "center",
-    gap: 8,
+    gap: 6,
   },
-  avatarWrapper: {
-    width: AVATAR_SIZE,
-    height: AVATAR_SIZE,
-    borderRadius: AVATAR_SIZE / 2,
-    overflow: "hidden",
-    borderWidth: 2,
-    borderColor: "rgba(212,175,55,0.45)",
-    marginBottom: 4,
-  },
-  avatarImage: { width: "100%", height: "100%" },
+  avatarWrapper: { position: "relative", marginBottom: 8 },
+  avatarImage: { width: 80, height: 80, borderRadius: 40 },
   certBadge: {
     position: "absolute",
-    bottom: 2,
-    right: 2,
+    bottom: 0,
+    right: 0,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     backgroundColor: "#D4AF37",
-    borderRadius: 99,
-    width: 20,
-    height: 20,
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "#1B060F",
   },
   certBadgeStar: { fontSize: 10, color: "#1B060F", fontWeight: "800" },
-  userName: { fontSize: 21, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
-  metaRow: { flexDirection: "row", alignItems: "center", gap: 5 },
-  metaText: { fontSize: 13 },
-  bioText: { fontSize: 14, lineHeight: 21, textAlign: "center", marginTop: 2 },
+  userName: { fontSize: 20, fontWeight: "700", textAlign: "center" },
+  locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },
+  locationText: { fontSize: 12 },
+  bioText: {
+    fontSize: 13,
+    lineHeight: 19,
+    textAlign: "center",
+    paddingHorizontal: 8,
+    fontStyle: "italic",
+  },
 
-  followRow: { flexDirection: "row", alignItems: "center", marginTop: 6 },
-  followItem: { flex: 1, alignItems: "center", gap: 2 },
-  followNum: { fontSize: 18, fontWeight: "700" },
-  followLabel: { fontSize: 12 },
-  followDivider: { width: 1, height: 32, marginHorizontal: 12 },
+  /* — Seguidores/Siguiendo — copiado exacto de profile.tsx — */
+  followCountsRow: { flexDirection: "row", alignItems: "center", marginTop: 14, marginBottom: 4 },
+  followCountItem: { alignItems: "center", paddingHorizontal: 20 },
+  followCountNum: { fontSize: 18, fontWeight: "700" },
+  followCountLabel: { fontSize: 11, marginTop: 1 },
+  followCountDivider: { width: 1, height: 28 },
 
   /* ── Bloque Expansor ── */
   expansorSection: {
