@@ -41,7 +41,7 @@ function initialsFor(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
+const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 
 export default function UsuarioScreen() {
   const colors = useColors();
@@ -99,7 +99,7 @@ export default function UsuarioScreen() {
       end={{ x: 0, y: 1 }}
     >
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#4A0C0C", "#1B060F"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
         {Header}
         <View style={styles.notFound}>
           <ActivityIndicator color={colors.primary} />
@@ -118,7 +118,7 @@ export default function UsuarioScreen() {
       end={{ x: 0, y: 1 }}
     >
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#4A0C0C", "#1B060F"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
         {Header}
         <View style={styles.notFound}>
           <Feather name="user-x" size={40} color={colors.mutedForeground} />

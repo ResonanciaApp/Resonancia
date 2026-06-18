@@ -115,7 +115,7 @@ function computeStreak(events: { playedAt: string }[]): number {
   return count;
 }
 
-const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
+const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 
 // ── Personalize sheet styles (defined before component to avoid TDZ on Hermes)
 const pStyles = StyleSheet.create({
@@ -971,7 +971,7 @@ export default function ProfileScreen() {
         {!isPremium && (
           <Pressable onPress={() => router.push("/membresia" as never)} style={styles.premiumBanner}>
             <LinearGradient
-              colors={["#4A0C0C", "#27070E", "#1B060F"]}
+              colors={["#2E0510", "#160108"]}
               start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
               style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
             />
