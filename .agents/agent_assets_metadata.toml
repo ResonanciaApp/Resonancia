@@ -786,6 +786,12 @@ uri = "file://attached_assets/sagrados-opciones.png"
 type = "image"
 title = "sagrados header gradient options"
 
+[[generated]]
+id = "OiKpLneqYmy7DoG9ivghn"
+uri = "file://attached_assets/sagrados-dorados.png"
+type = "image"
+title = "sagrados gold gradient options"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
@@ -1391,3 +1397,9 @@ id = "HldHil9WSUVknSrBLLCX3"
 uri = "file://attached_assets/sagrados-opciones.png"
 type = "image"
 title = "Opciones de header — Sagrados"
+
+[[outputs]]
+id = "jO4oS2M-tRJwID3ypYJA4"
+uri = "file://attached_assets/sagrados-dorados.png"
+type = "image"
+title = "4 opciones doradas — Sagrados"
