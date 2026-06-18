@@ -235,13 +235,17 @@ export default function ExpansorPerfilScreen() {
           {/* Me especializo en + chips */}
           <View style={styles.sectionBlock}>
             <Text style={styles.sectionLabel}>Me especializo en</Text>
-            <View style={styles.specialtyWrap}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.specialtyWrap}
+            >
               {expansor.specialty.map((s) => (
                 <View key={s} style={styles.specialtyChip}>
                   <Text style={styles.specialtyText}>{s}</Text>
                 </View>
               ))}
-            </View>
+            </ScrollView>
           </View>
 
           {/* Mis servicios + descripción */}
@@ -527,7 +531,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#D4AF37",
   },
-  specialtyWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  specialtyWrap: { flexDirection: "row", gap: 8, alignItems: "center" },
   specialtyChip: {
     borderRadius: 20,
     paddingHorizontal: 14,
