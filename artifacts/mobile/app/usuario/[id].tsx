@@ -13,7 +13,6 @@ import {
   Text,
   View,
 } from "react-native";
-import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -218,23 +217,6 @@ export default function UsuarioScreen() {
           {/* Nombre */}
           <Text style={[styles.userName, { color: colors.foreground }]}>{profile.displayName}</Text>
 
-          {/* Badge expansor */}
-          {isExpansor && (
-            <View style={styles.expansorBadge}>
-              <LinearGradient
-                colors={["rgba(212,175,55,0.18)", "rgba(184,134,11,0.10)"]}
-                start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-                style={StyleSheet.absoluteFill}
-              />
-              <Text style={styles.expansorBadgeStar}>✦</Text>
-              <MaskedView maskElement={<Text style={styles.expansorBadgeText}>EXPANSOR CERTIFICADO</Text>}>
-                <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-                  <Text style={[styles.expansorBadgeText, { opacity: 0 }]}>EXPANSOR CERTIFICADO</Text>
-                </LinearGradient>
-              </MaskedView>
-            </View>
-          )}
-
           {/* País / ubicación */}
           {profile.location ? (
             <View style={styles.metaRow}>
@@ -391,8 +373,10 @@ export default function UsuarioScreen() {
           </View>
         ) : null}
 
-        {/* ── Sección Expansor ── */}
-        {isExpansor && (
+        {/* ── Sección Expansor (solo si tiene contenido) ── */}
+        {isExpansor && expansorProfile && (
+          !!(expansorProfile.specialties?.length || expansorProfile.description || expansorProfile.phone || expansorProfile.email || expansorProfile.instagram || expansorProfile.quote)
+        ) && (
           <View style={[styles.expansorSection, { marginHorizontal: H_PAD }]}>
 
             {/* Especialidades */}
