@@ -288,7 +288,7 @@ function FolderRow({ folder, onPress, onLongPress }: { folder: UserFolder; onPre
   return (
     <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
       <View style={styles.userPlCover}>
-        <Feather name="folder" size={22} color={folder.pinned ? GOLD : GOLD} />
+        <Feather name="folder" size={22} color={folder.pinned ? GOLD : MUTED} />
       </View>
       <View style={styles.rowInfo}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
