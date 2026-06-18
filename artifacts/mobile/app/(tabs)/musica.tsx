@@ -17,6 +17,7 @@ import {
 } from "react-native";
 
 import { LinearGradient } from "expo-linear-gradient";
+import MaskedView from "@react-native-masked-view/masked-view";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -152,10 +153,24 @@ const PillTab = memo(function PillTab({
             end={{ x: 0, y: 1 }}
             style={styles.pillTabInner}
           >
-            <MaterialCommunityIcons name={tab.icon as any} size={17} color="#FFFFFF" />
-            <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "#FFFFFF", fontWeight: "700" }]}>
-              {tab.label}
-            </Text>
+            <MaskedView
+              style={styles.pillTabMask}
+              maskElement={
+                <View style={styles.pillTabMaskContent}>
+                  <MaterialCommunityIcons name={tab.icon as any} size={17} color="black" />
+                  <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "black", fontWeight: "700" }]}>
+                    {tab.label}
+                  </Text>
+                </View>
+              }
+            >
+              <LinearGradient
+                colors={GOLD_BORDER}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={StyleSheet.absoluteFill}
+              />
+            </MaskedView>
           </LinearGradient>
         </LinearGradient>
       ) : (
@@ -921,6 +936,18 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     overflow: "hidden",
     gap: 4,
+  },
+  pillTabMask: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  pillTabMaskContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
+    backgroundColor: "transparent",
   },
   pillTabLabel: { fontSize: 12, letterSpacing: 0.1, fontWeight: "700" },
 
