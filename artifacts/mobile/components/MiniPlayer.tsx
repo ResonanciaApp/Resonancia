@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
+import { Image as ExpoImage } from "expo-image";
 import {
   Animated,
   Image,
@@ -207,10 +208,11 @@ export function MiniPlayer() {
                         accessibilityLabel="Sonido activo — presionar para colapsar, mantener para quitar"
                       >
                         {image ? (
-                          <Image
+                          <ExpoImage
                             source={image}
                             style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                            resizeMode="cover"
+                            contentFit="cover"
+                            transition={200}
                           />
                         ) : (
                           <View style={styles.stackFallback}>
