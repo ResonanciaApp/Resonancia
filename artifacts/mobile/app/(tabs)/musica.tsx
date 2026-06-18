@@ -184,10 +184,10 @@ const PillTab = memo(function PillTab({
         <View style={[styles.pillTab, {
           backgroundColor: "transparent",
           borderWidth: 1,
-          borderColor: "rgba(233,196,106,0.25)",
+          borderColor: "rgba(255,255,255,0.25)",
         }]}>
-          <MaterialCommunityIcons name={tab.icon as any} size={17} color="rgba(233,196,106,0.4)" />
-          <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "rgba(233,196,106,0.4)", fontWeight: "400" }]}>
+          <MaterialCommunityIcons name={tab.icon as any} size={17} color="rgba(255,255,255,0.4)" />
+          <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "rgba(255,255,255,0.4)", fontWeight: "400" }]}>
             {tab.label}
           </Text>
         </View>
