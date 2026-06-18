@@ -278,7 +278,7 @@ export default function UsuarioScreen() {
                     } else if (friendRequested) {
                       Alert.alert("Solicitud enviada", "Ya enviaste una solicitud de amistad.");
                     } else {
-                      sendFriendRequest.mutate({ data: { recipientId: userId } });
+                      sendFriendRequest.mutate({ data: { addresseeId: userId } });
                     }
                   }}
                   style={({ pressed }) => [
