@@ -154,7 +154,7 @@ export default function PlaylistDetailScreen() {
                 <SacredGlyph
                   id={playlist.coverGeometryId as GeometryId}
                   color={GOLD}
-                  size={80}
+                  size={110}
                   strokeWidth={1.2}
                   opacity={1}
                 />
@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
   addIconBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
 
   // Cover glyph
-  coverGlyph: { flex: 1, alignItems: "center", justifyContent: "center" },
+  coverGlyph: { flex: 1, alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 8 },
   coverCreation: { flex: 1, overflow: "hidden", borderRadius: 8 },
   coverEmpty: {
     width: "100%",
