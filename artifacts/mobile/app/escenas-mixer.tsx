@@ -4,11 +4,6 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { CreationCoverPreviewDirect } from "@/components/CreationCoverPreview";
-import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
-import { GEOMETRIX_PRESETS, isPreset } from "@/data/geometrix-presets";
-import type { GeometrixCreation } from "@/data/geometrix-creations";
-
 import {
   Alert,
   Dimensions,
@@ -31,9 +26,6 @@ import {
   GRADIENT_PRESETS,
   MIXER_BG_KEY,
   emitBgPresetChange,
-  MIXER_GEO_BG_KEY,
-  subscribeGeoBg,
-  emitGeoBgChange,
 } from "@/config/immersive-presets";
 
 const TIMER_OPTIONS: Array<{ label: string; value: number | null }> = [
@@ -97,36 +89,6 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
   const [previewScene, setPreviewScene] = useState<(typeof IMAGE_SCENES)[0] | null>(null);
   const [timerMinutes, setTimerMinutes] = useState<number | null>(null);
   const [timerOpen, setTimerOpen] = useState(false);
-
-  const { creations } = useGeometrixCreations();
-  const userCreations = creations.filter((c) => !isPreset(c.id));
-  const allGeometrix: GeometrixCreation[] = [...userCreations, ...GEOMETRIX_PRESETS];
-
-  const [selectedGeoId, setSelectedGeoId] = useState<string | null>(null);
-
-  // Cargar selección guardada + escuchar cambios en vivo
-  useEffect(() => {
-    AsyncStorage.getItem(MIXER_GEO_BG_KEY).then((v) => { if (v) setSelectedGeoId(v); }).catch(() => {});
-    const unsub = subscribeGeoBg((id) => setSelectedGeoId(id));
-    return unsub;
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handleGeoTap = async (c: GeometrixCreation) => {
-    if (isPreset(c.id)) {
-      const raw = await AsyncStorage.getItem("@geometrix_creations");
-      const existing: GeometrixCreation[] = raw ? JSON.parse(raw) : [];
-      if (!existing.find((e) => e.id === c.id)) {
-        await AsyncStorage.setItem(
-          "@geometrix_creations",
-          JSON.stringify([c, ...existing]),
-        );
-      }
-    }
-    const newId = selectedGeoId === c.id ? null : c.id;
-    setSelectedGeoId(newId);
-    await AsyncStorage.setItem(MIXER_GEO_BG_KEY, newId ?? "").catch(() => {});
-    emitGeoBgChange(newId);
-  };
 
   useEffect(() => {
     AsyncStorage.getItem(MIXER_BG_KEY).then((bg) => {
@@ -378,59 +340,6 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
                   </LinearGradient>
                   <Text style={[styles.swatchLabel, active && styles.swatchLabelActive]} numberOfLines={1}>
                     {sw.label}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-
-          {/* ── Geometrix ── */}
-          <View style={[styles.scenesTitleRow, { marginTop: 28 }]}>
-            <Text style={styles.sectionTitle}>Geometrix</Text>
-            <Pressable
-              onPress={() => router.push("/geometrix-creaciones" as never)}
-              hitSlop={8}
-              style={styles.verMasBtn}
-            >
-              <Text style={styles.verMasText}>Ver todas</Text>
-              <Feather name="chevron-right" size={13} color="#8C1A2B" />
-            </Pressable>
-          </View>
-
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.thumbRow}
-            decelerationRate="fast"
-            snapToInterval={THUMB + THUMB_GAP}
-            snapToAlignment="start"
-          >
-            {allGeometrix.map((c) => {
-              const geoActive = selectedGeoId === c.id;
-              return (
-                <Pressable
-                  key={c.id}
-                  onPress={() => handleGeoTap(c)}
-                  style={styles.thumbWrap}
-                >
-                  <View style={styles.thumb}>
-                    <CreationCoverPreviewDirect creation={c} size={THUMB} />
-                    {geoActive && (
-                      <>
-                        <View style={styles.thumbActiveOverlay}>
-                          <Feather name="check-circle" size={24} color="#FFF" />
-                        </View>
-                        <View style={styles.thumbActiveBorder} pointerEvents="none" />
-                      </>
-                    )}
-                    {isPreset(c.id) && (
-                      <View style={styles.presetBadge}>
-                        <Text style={styles.presetBadgeText}>Muestra</Text>
-                      </View>
-                    )}
-                  </View>
-                  <Text style={[styles.thumbLabel, geoActive && styles.thumbLabelActive]} numberOfLines={1}>
-                    {c.name}
                   </Text>
                 </Pressable>
               );
@@ -715,22 +624,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     textAlign: "center",
     width: THUMB,
-  },
-  thumbLabelActive: {
-    color: "#D4AF37",
-    fontWeight: "700",
-  },
-  thumbActiveOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.30)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  thumbActiveBorder: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 16,
-    borderWidth: 2.5,
-    borderColor: "#D4AF37",
   },
   presetBadge: {
     position: "absolute",
