@@ -33,7 +33,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
-const GOLD_BORDER_PILL = ["transparent", "rgba(212,175,55,0.55)", "#E9C46A", "rgba(212,175,55,0.55)", "transparent"] as const;
+const GOLD_BORDER_PILL = ["transparent", "rgba(212,175,55,0.22)", "rgba(233,196,106,0.35)", "rgba(212,175,55,0.22)", "transparent"] as const;
 const GAP = 10;
 
 /** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
@@ -543,8 +543,8 @@ const styles = StyleSheet.create({
     padding: 1,
     shadowColor: "#D4AF37",
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.45,
-    shadowRadius: 8,
+    shadowOpacity: 0.18,
+    shadowRadius: 6,
     elevation: 0,
   },
   searchBar: {
