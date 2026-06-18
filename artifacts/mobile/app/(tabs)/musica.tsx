@@ -119,7 +119,7 @@ const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
   naturaleza:     ["#0A1A0E", "#071309", "#040D06"],
   ancestrales:    ["#221510", "#1E0F0B", "#100904"],
   sintetizadores: ["#061A2E", "#041220", "#030A18"],
-  voces:          ["#250810", "#1A060C", "#0F0408"],
+  voces:          ["#220830", "#180622", "#0E0416"],
   bpm:            ["#0A2020", "#071818", "#040F0F"],
 };
 
@@ -129,7 +129,7 @@ const TAB_NOCHE_BG: Record<MainTabId, [string, string, string]> = {
   naturaleza:     ["#0A1A0E", "#071309", "#040D06"],
   ancestrales:    ["#221510", "#1E0F0B", "#100904"],
   sintetizadores: ["#061A2E", "#041220", "#030A18"],
-  voces:          ["#250810", "#1A060C", "#0F0408"],
+  voces:          ["#220830", "#180622", "#0E0416"],
   bpm:            ["#0A2020", "#071818", "#040F0F"],
 };
 
