@@ -29,6 +29,9 @@ import {
   useUnfollowUser,
   useSendFriendRequest,
   getGetFriendRequestsQueryKey,
+  useGetFriends,
+  getGetFriendsQueryKey,
+  useRemoveFriend,
 } from "@workspace/api-client-react";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { resolveAvatarUrl } from "@/lib/avatar";
@@ -62,6 +65,11 @@ export default function UsuarioScreen() {
   const { data: me } = useGetMe();
   const queryClient = useQueryClient();
 
+  const { data: friendsList } = useGetFriends({
+    query: { queryKey: getGetFriendsQueryKey(), enabled: !!me?.id },
+  });
+  const isFriend = (friendsList ?? []).some((f) => f.id === userId);
+
   const { data: myFollowing } = useGetUserFollowing(me?.id ?? 0, {
     query: { enabled: !!me?.id, queryKey: getGetUserFollowingQueryKey(me?.id ?? 0) },
   });
@@ -75,6 +83,12 @@ export default function UsuarioScreen() {
 
   const followMutation = useFollowUser({ mutation: { onSuccess: invalidateFollows } });
   const unfollowMutation = useUnfollowUser({ mutation: { onSuccess: invalidateFollows } });
+
+  const removeFriendMutation = useRemoveFriend({
+    mutation: {
+      onSuccess: () => queryClient.invalidateQueries({ queryKey: getGetFriendsQueryKey() }),
+    },
+  });
 
   const sendFriendRequest = useSendFriendRequest({
     mutation: {
@@ -246,7 +260,20 @@ export default function UsuarioScreen() {
                 {/* Amistad */}
                 <Pressable
                   onPress={() => {
-                    if (friendRequested) {
+                    if (isFriend) {
+                      Alert.alert(
+                        "Eliminar amigo",
+                        `¿Querés eliminar a ${profile.displayName} de tus amigos?`,
+                        [
+                          { text: "Cancelar", style: "cancel" },
+                          {
+                            text: "Eliminar",
+                            style: "destructive",
+                            onPress: () => removeFriendMutation.mutate({ friendId: userId }),
+                          },
+                        ]
+                      );
+                    } else if (friendRequested) {
                       Alert.alert("Solicitud enviada", "Ya enviaste una solicitud de amistad.");
                     } else {
                       sendFriendRequest.mutate({ data: { recipientId: userId } });
@@ -254,17 +281,30 @@ export default function UsuarioScreen() {
                   }}
                   style={({ pressed }) => [
                     styles.actionPill,
-                    friendRequested && styles.actionPillSent,
+                    isFriend && styles.actionPillActive,
+                    !isFriend && friendRequested && styles.actionPillSent,
                     { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
                   ]}
                 >
+                  {isFriend && (
+                    <LinearGradient
+                      colors={["#D6AD5F", "#B47344"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={StyleSheet.absoluteFill}
+                    />
+                  )}
                   <Feather
-                    name={friendRequested ? "user-x" : "users"}
+                    name={isFriend ? "user-check" : friendRequested ? "user-x" : "users"}
                     size={13}
-                    color={friendRequested ? "rgba(242,231,228,0.55)" : "#FFFFFF"}
+                    color={isFriend ? "#1B060F" : friendRequested ? "rgba(242,231,228,0.55)" : "#FFFFFF"}
                   />
-                  <Text style={[styles.actionPillText, friendRequested && styles.actionPillTextSent]}>
-                    {friendRequested ? "Solicitado" : "Amistad"}
+                  <Text style={[
+                    styles.actionPillText,
+                    isFriend && styles.actionPillTextActive,
+                    !isFriend && friendRequested && styles.actionPillTextSent,
+                  ]}>
+                    {isFriend ? "Amigos" : friendRequested ? "Solicitado" : "Amistad"}
                   </Text>
                 </Pressable>
               </View>
