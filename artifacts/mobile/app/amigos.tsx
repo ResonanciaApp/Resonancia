@@ -228,6 +228,7 @@ function SignedInAmigos() {
             <SearchResultRow
               key={u.id}
               user={u}
+              onPress={() => router.push(`/usuario/${u.id}` as never)}
               onAdd={() => sendReq.mutate({ data: { addresseeId: u.id } })}
             />
           ))}
@@ -296,22 +297,30 @@ function Avatar({ user }: { user: UserProfile | UserSearchResult }) {
 
 function SearchResultRow({
   user,
+  onPress,
   onAdd,
 }: {
   user: UserSearchResult;
+  onPress: () => void;
   onAdd: () => void;
 }) {
   const colors = useColors();
   const status = user.friendshipStatus;
   return (
-    <View style={[styles.friendRow, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)" }]}>
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.friendRow,
+        { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.75 : 1 },
+      ]}
+    >
       <Avatar user={user} />
       <View style={{ flex: 1 }}>
         <Text style={[styles.friendName, { color: colors.foreground }]}>{user.displayName}</Text>
         <Text style={[styles.friendSub, { color: colors.mutedForeground }]}>@{user.username}</Text>
       </View>
       {status === "none" && (
-        <Pressable onPress={onAdd} style={styles.acceptBtn}>
+        <Pressable onPress={(e) => { e.stopPropagation?.(); onAdd(); }} style={styles.acceptBtn}>
           <GoldGradientFill />
           <View style={styles.acceptGrad}>
             <Feather name="user-plus" size={14} color="#1B060F" />
@@ -322,7 +331,7 @@ function SearchResultRow({
         <Text style={[styles.statusBadge, { color: colors.mutedForeground }]}>Enviada</Text>
       )}
       {status === "pending_incoming" && (
-        <Pressable onPress={onAdd} style={styles.acceptBtn}>
+        <Pressable onPress={(e) => { e.stopPropagation?.(); onAdd(); }} style={styles.acceptBtn}>
           <GoldGradientFill />
           <View style={styles.acceptGrad}>
             <Feather name="check" size={14} color="#1B060F" />
@@ -332,7 +341,7 @@ function SearchResultRow({
       {status === "accepted" && (
         <Text style={[styles.statusBadge, { color: colors.primary }]}>Amigos</Text>
       )}
-    </View>
+    </Pressable>
   );
 }
 
