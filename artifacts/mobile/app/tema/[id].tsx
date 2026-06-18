@@ -23,7 +23,7 @@ import { getTemaById } from "@/data/temas";
 import { useColors } from "@/hooks/useColors";
 const H_PAD = 20;
 
-const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
+const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 
 export default function TemaScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

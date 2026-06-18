@@ -21,7 +21,7 @@ import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 
-const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
+const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 
 export default function PlaylistsScreen() {
   const colors = useColors();

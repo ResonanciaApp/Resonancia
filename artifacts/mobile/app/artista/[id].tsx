@@ -39,9 +39,9 @@ export default function ArtistaScreen() {
 
   if (!artist) {
     return (
-      <View style={[styles.root, { backgroundColor: "#4A0C0C" }]}>
+      <View style={[styles.root, { backgroundColor: "#2E0510" }]}>
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
           <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />

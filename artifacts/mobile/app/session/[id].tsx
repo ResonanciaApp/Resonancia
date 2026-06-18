@@ -155,7 +155,7 @@ export default function SessionDetailScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
       <StatusBar barStyle="light-content" />
 
       <ScrollView

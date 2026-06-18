@@ -38,7 +38,7 @@ const DURATION_FILTERS = [
   { label: "30+ min",   min: 31, max: 9999 },
 ];
 
-const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
+const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 
 export default function TagScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -108,7 +108,7 @@ export default function TagScreen() {
           styles.stickyHeader,
           {
             paddingTop: topPad,
-            backgroundColor: "#4A0C0C",
+            backgroundColor: "#2E0510",
             borderBottomColor: "rgba(212,175,55,0.15)",
             opacity: headerOpacity,
           },

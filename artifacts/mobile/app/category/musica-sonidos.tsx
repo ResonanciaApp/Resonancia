@@ -184,7 +184,7 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: ()=>vo
           </Animated.View>
         )}
         {results.length>0&&(
-          <ScrollView style={{flex:1,backgroundColor:"#1B060F"}} contentContainerStyle={{padding:H_PAD,gap:9}}>
+          <ScrollView style={{flex:1,backgroundColor:"#160108"}} contentContainerStyle={{padding:H_PAD,gap:9}}>
             {results.map((s)=><CategoryCard key={s.id} session={s} horizontal />)}
           </ScrollView>
         )}
@@ -473,14 +473,14 @@ const styles = StyleSheet.create({
   emptyState:{alignItems:"center",paddingTop:80,paddingHorizontal:H_PAD},
   emptyTitle:{fontSize:17,fontWeight:"700",color:TEXT,textAlign:"center",marginBottom:8},
   emptySub:{fontSize:13,color:MUTED,textAlign:"center",lineHeight:20},
-  sortSheet:{position:"absolute",bottom:0,left:0,right:0,backgroundColor:"#1B060F",borderTopLeftRadius:22,borderTopRightRadius:22,paddingTop:10,paddingHorizontal:20},
+  sortSheet:{position:"absolute",bottom:0,left:0,right:0,backgroundColor:"#160108",borderTopLeftRadius:22,borderTopRightRadius:22,paddingTop:10,paddingHorizontal:20},
   sortSheetHandle:{alignSelf:"center",width:36,height:4,borderRadius:2,backgroundColor:"rgba(74,12,12,0.35)",marginBottom:16},
   sortSheetTitle:{color:TEXT,fontSize:15,fontWeight:"700",marginBottom:12},
   sortSheetRow:{flexDirection:"row",alignItems:"center",gap:14,paddingVertical:14,borderBottomWidth:StyleSheet.hairlineWidth,borderBottomColor:"rgba(61,14,22,0.40)"},
   sortSheetLabel:{color:MUTED,fontSize:15,flex:1},
   sortSheetLabelActive:{color:TEXT,fontWeight:"600"},
   qsBackdrop:{...StyleSheet.absoluteFillObject,backgroundColor:"rgba(0,0,0,0.55)"},
-  qsSheet:{position:"absolute",bottom:0,left:0,right:0,backgroundColor:"#1B060F",borderTopLeftRadius:22,borderTopRightRadius:22,paddingTop:10,paddingHorizontal:20,borderTopWidth:StyleSheet.hairlineWidth,borderColor:"#3D0E16"},
+  qsSheet:{position:"absolute",bottom:0,left:0,right:0,backgroundColor:"#160108",borderTopLeftRadius:22,borderTopRightRadius:22,paddingTop:10,paddingHorizontal:20,borderTopWidth:StyleSheet.hairlineWidth,borderColor:"#3D0E16"},
   qsHandle:{alignSelf:"center",width:36,height:4,borderRadius:2,backgroundColor:"rgba(212,175,55,0.25)",marginBottom:14},
   qsHeader:{flexDirection:"row",alignItems:"center",gap:12,marginBottom:14},
   qsThumb:{width:54,height:54,borderRadius:10},
@@ -492,13 +492,13 @@ const styles = StyleSheet.create({
   qsRowBorder:{borderBottomWidth:StyleSheet.hairlineWidth,borderBottomColor:"#3D0E16"},
   qsIcon:{width:22},
   qsLabel:{flex:1,fontSize:15,color:TEXT},
-  searchModalRoot:{flex:1,backgroundColor:"#4A0C0C"},
-  searchOverlay:{flexDirection:"row",alignItems:"center",backgroundColor:"#4A0C0C",paddingTop:Platform.OS==="ios"?56:36,paddingHorizontal:H_PAD,paddingBottom:14,gap:10},
+  searchModalRoot:{flex:1,backgroundColor:"#2E0510"},
+  searchOverlay:{flexDirection:"row",alignItems:"center",backgroundColor:"#2E0510",paddingTop:Platform.OS==="ios"?56:36,paddingHorizontal:H_PAD,paddingBottom:14,gap:10},
   searchBar:{flex:1,flexDirection:"row",alignItems:"center",gap:8,backgroundColor:"#FFFFFF",borderRadius:10,paddingHorizontal:12,paddingVertical:12},
   searchInput:{flex:1,fontSize:14,color:"#111"},
   cancelBtn:{paddingVertical:6},
   cancelText:{color:GOLD,fontSize:14,fontWeight:"600"},
-  searchEmpty:{flex:1,backgroundColor:"#4A0C0C",alignItems:"center",justifyContent:"center",paddingHorizontal:32},
+  searchEmpty:{flex:1,backgroundColor:"#160108",alignItems:"center",justifyContent:"center",paddingHorizontal:32},
   searchEmptyTitle:{fontSize:18,fontWeight:"700",color:TEXT,textAlign:"center",marginBottom:10},
   searchEmptySub:{fontSize:14,color:MUTED,textAlign:"center",lineHeight:20},
 });

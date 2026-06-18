@@ -33,7 +33,7 @@ import { getGuideById } from "@/data/guides";
 import { GEOMETRIES, type GeometryId } from "@/data/geometries";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 
-const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
+const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 const GOLD = "#D4AF37";
 const TEXT = "#F4DAD5";
 const MUTED = "rgba(242,231,228,0.45)";
@@ -626,7 +626,7 @@ const modalStyles = StyleSheet.create({
   sheet: {
     position: "absolute",
     bottom: 0, left: 0, right: 0,
-    backgroundColor: "#27070E",
+    backgroundColor: "#2E0510",
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     paddingHorizontal: 20,

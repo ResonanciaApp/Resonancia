@@ -891,7 +891,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.45,
     shadowRadius: 12,
     elevation: 16,
-    backgroundColor: "#4A0C0C",
+    backgroundColor: "#2E0510",
   },
   topPanel: { backgroundColor: "transparent" },
 
