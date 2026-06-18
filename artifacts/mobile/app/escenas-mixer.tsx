@@ -4,6 +4,10 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
+import { CreationCoverPreviewDirect } from "@/components/CreationCoverPreview";
+import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
+import { GEOMETRIX_PRESETS, isPreset } from "@/data/geometrix-presets";
+import type { GeometrixCreation } from "@/data/geometrix-creations";
 
 import {
   Alert,
@@ -45,6 +49,21 @@ const CARD_GAP = 12;
 const CARD_W = Math.floor(SCREEN_W / 2.2 - CARD_GAP);
 const CARD_H = Math.floor(CARD_W * 4 / 3) + 150;
 
+const THUMB      = 110;
+const THUMB_GAP  = 10;
+const SWATCH_SZ  = 60;
+
+const COLOR_SWATCHES: { id: string; label: string; colors: [string, string] }[] = [
+  { id: "borgona",  label: "Borgoña",  colors: ["#27070E", "#0F0308"] },
+  { id: "cosmos",   label: "Cosmos",   colors: ["#060B1A", "#030509"] },
+  { id: "nebulosa", label: "Nebulosa", colors: ["#0A0825", "#050412"] },
+  { id: "luna",     label: "Luna",     colors: ["#0A0A1A", "#060608"] },
+  { id: "oceano",   label: "Océano",   colors: ["#010F1F", "#010810"] },
+  { id: "amanecer", label: "Amanecer", colors: ["#2B1800", "#150C00"] },
+  { id: "selva",    label: "Selva",    colors: ["#051205", "#030903"] },
+  { id: "fuego",    label: "Fuego",    colors: ["#200800", "#100400"] },
+];
+
 const IMAGE_SCENES = GRADIENT_PRESETS.filter((p) => p.image);
 /** Todas las escenas: primero los degradados (sin imagen), luego las de imagen */
 const ALL_SCENES = [
@@ -75,6 +94,24 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
   const [previewScene, setPreviewScene] = useState<(typeof IMAGE_SCENES)[0] | null>(null);
   const [timerMinutes, setTimerMinutes] = useState<number | null>(null);
   const [timerOpen, setTimerOpen] = useState(false);
+
+  const { creations } = useGeometrixCreations();
+  const userCreations = creations.filter((c) => !isPreset(c.id));
+  const allGeometrix: GeometrixCreation[] = [...userCreations, ...GEOMETRIX_PRESETS];
+
+  const handleGeoTap = async (c: GeometrixCreation) => {
+    if (isPreset(c.id)) {
+      const raw = await AsyncStorage.getItem("@geometrix_creations");
+      const existing: GeometrixCreation[] = raw ? JSON.parse(raw) : [];
+      if (!existing.find((e) => e.id === c.id)) {
+        await AsyncStorage.setItem(
+          "@geometrix_creations",
+          JSON.stringify([c, ...existing]),
+        );
+      }
+    }
+    router.push({ pathname: "/(tabs)/geometrix", params: { load: c.id } } as never);
+  };
 
   useEffect(() => {
     AsyncStorage.getItem(MIXER_BG_KEY).then((bg) => {
@@ -299,6 +336,79 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
             })}
           </ScrollView>
 
+          {/* ── Color de fondo ── */}
+          <View style={[styles.scenesTitleRow, { marginTop: 28 }]}>
+            <Text style={styles.sectionTitle}>Color de fondo</Text>
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.swatchRow}
+          >
+            {COLOR_SWATCHES.map((sw) => {
+              const active = selectedId === sw.id;
+              return (
+                <Pressable
+                  key={sw.id}
+                  onPress={() => applyScene(sw.id)}
+                  style={styles.swatchItem}
+                >
+                  <LinearGradient
+                    colors={sw.colors}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={[styles.swatchCircle, active && styles.swatchCircleActive]}
+                  >
+                    {active && <Feather name="check" size={18} color="#FFF" />}
+                  </LinearGradient>
+                  <Text style={[styles.swatchLabel, active && styles.swatchLabelActive]} numberOfLines={1}>
+                    {sw.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+
+          {/* ── Geometrix ── */}
+          <View style={[styles.scenesTitleRow, { marginTop: 28 }]}>
+            <Text style={styles.sectionTitle}>Geometrix</Text>
+            <Pressable
+              onPress={() => router.push("/geometrix-creaciones" as never)}
+              hitSlop={8}
+              style={styles.verMasBtn}
+            >
+              <Text style={styles.verMasText}>Ver todas</Text>
+              <Feather name="chevron-right" size={13} color="#8C1A2B" />
+            </Pressable>
+          </View>
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.thumbRow}
+            decelerationRate="fast"
+            snapToInterval={THUMB + THUMB_GAP}
+            snapToAlignment="start"
+          >
+            {allGeometrix.map((c) => (
+              <Pressable
+                key={c.id}
+                onPress={() => handleGeoTap(c)}
+                style={styles.thumbWrap}
+              >
+                <View style={styles.thumb}>
+                  <CreationCoverPreviewDirect creation={c} size={THUMB} />
+                  {isPreset(c.id) && (
+                    <View style={styles.presetBadge}>
+                      <Text style={styles.presetBadgeText}>Muestra</Text>
+                    </View>
+                  )}
+                </View>
+                <Text style={styles.thumbLabel} numberOfLines={1}>{c.name}</Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+
           <Text style={styles.hint}>
             Toca una escena para previsualizarla antes de elegirla.
           </Text>
@@ -507,10 +617,104 @@ const styles = StyleSheet.create({
 
   hint: {
     marginTop: 20,
+    marginBottom: 8,
     fontSize: 11,
     color: "#AAA",
     textAlign: "center",
     lineHeight: 16,
+  },
+
+  swatchRow: {
+    flexDirection: "row",
+    paddingHorizontal: H_PAD,
+    paddingBottom: 4,
+    gap: 12,
+  },
+  swatchItem: {
+    alignItems: "center",
+    gap: 6,
+  },
+  swatchCircle: {
+    width: SWATCH_SZ,
+    height: SWATCH_SZ,
+    borderRadius: SWATCH_SZ / 2,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "transparent",
+  },
+  swatchCircleActive: {
+    borderColor: "#D4AF37",
+    shadowColor: "#D4AF37",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.55,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  swatchLabel: {
+    fontSize: 10,
+    color: "#888",
+    fontWeight: "500",
+    textAlign: "center",
+    width: SWATCH_SZ,
+  },
+  swatchLabelActive: {
+    color: "#D4AF37",
+    fontWeight: "700",
+  },
+
+  thumbRow: {
+    flexDirection: "row",
+    paddingHorizontal: H_PAD,
+    paddingBottom: 4,
+    gap: THUMB_GAP,
+  },
+  thumbWrap: {
+    width: THUMB,
+    alignItems: "center",
+  },
+  thumb: {
+    width: THUMB,
+    height: THUMB,
+    borderRadius: 16,
+    overflow: "hidden",
+    backgroundColor: "#111",
+  },
+  thumbLabel: {
+    marginTop: 6,
+    fontSize: 11,
+    color: "#555",
+    fontWeight: "500",
+    textAlign: "center",
+    width: THUMB,
+  },
+  presetBadge: {
+    position: "absolute",
+    bottom: 6,
+    left: 6,
+    backgroundColor: "rgba(212,175,55,0.85)",
+    borderRadius: 8,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+  },
+  presetBadgeText: {
+    fontSize: 8,
+    fontWeight: "700",
+    color: "#1A1A22",
+    letterSpacing: 0.3,
+  },
+
+  verMasBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  verMasText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#8C1A2B",
   },
 
   previewRoot: { flex: 1, backgroundColor: "#000" },

@@ -11,12 +11,10 @@ import {
   scaleColors,
   scaleHex,
   HOME_GRADIENT,
+  type GeometrixCreation,
 } from "@/data/geometrix-creations";
 
-export function CreationCoverPreview({ creationId, size }: { creationId: string; size: number }) {
-  const { creations } = useGeometrixCreations();
-  const c = creations.find((x) => x.id === creationId);
-  if (!c) return null;
+function CreationPreviewContent({ c, size }: { c: GeometrixCreation; size: number }) {
   const bgFactor = brightnessFactor(c.master.bgBrightness);
   const bgGrad = bgGradientColors(c.master.bgGradientId ?? null);
   const bgColors = c.master.bgColor
@@ -53,4 +51,17 @@ export function CreationCoverPreview({ creationId, size }: { creationId: string;
       </View>
     </View>
   );
+}
+
+/** Busca la creación por ID dentro del hook (uso normal). */
+export function CreationCoverPreview({ creationId, size }: { creationId: string; size: number }) {
+  const { creations } = useGeometrixCreations();
+  const c = creations.find((x) => x.id === creationId);
+  if (!c) return null;
+  return <CreationPreviewContent c={c} size={size} />;
+}
+
+/** Acepta la creación directamente como prop — para presets hardcodeados que no están en AsyncStorage. */
+export function CreationCoverPreviewDirect({ creation, size }: { creation: GeometrixCreation; size: number }) {
+  return <CreationPreviewContent c={creation} size={size} />;
 }

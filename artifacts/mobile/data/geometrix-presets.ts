@@ -1,0 +1,130 @@
+import type { GeometrixCreation, GeoSettings } from "@/data/geometrix-creations";
+
+const BASE_DATE = "2024-01-01T00:00:00.000Z";
+
+const defaultGeo = (overrides: Partial<GeoSettings> & { color: string }): GeoSettings => ({
+  gradientId: null,
+  rotate: false,
+  rotateLeft: false,
+  rotateSpeed: 0.25,
+  opacity: 1,
+  breatheAmount: 0.2,
+  fadeLoopAmount: 0,
+  glow: 0.3,
+  thickness: 0.22,
+  scale: 0.85,
+  zoom: 1,
+  manualAngle: 0,
+  offsetX: 0,
+  offsetY: 0,
+  kaleidoscope: false,
+  kaleidSegments: 6,
+  saturation: 0.55,
+  bloom: 0,
+  halo: 0.15,
+  ripple: 0,
+  expansionAmount: 0,
+  ...overrides,
+});
+
+export const GEOMETRIX_PRESETS: GeometrixCreation[] = [
+  {
+    id: "__preset_flor_dorada",
+    name: "Flor Dorada",
+    createdAt: BASE_DATE,
+    updatedAt: BASE_DATE,
+    liked: false,
+    hiddenIds: [],
+    audio: null,
+    active: ["flor-vida"],
+    master: {
+      opacity: 1,
+      motion: true,
+      glow: 0.3,
+      bgColor: null,
+      bgGradientId: "indigo-noche",
+      bgBrightness: 0.5,
+      bgPattern: null,
+    },
+    settings: {
+      "flor-vida": defaultGeo({
+        color: "#D4AF37",
+        gradientId: "dorado-rosa",
+        rotate: true,
+        rotateSpeed: 0.28,
+        breatheAmount: 0.25,
+        glow: 0.4,
+        thickness: 0.25,
+        halo: 0.2,
+        saturation: 0.6,
+      }),
+    },
+  },
+  {
+    id: "__preset_metatron_violeta",
+    name: "Metatrón",
+    createdAt: BASE_DATE,
+    updatedAt: BASE_DATE,
+    liked: false,
+    hiddenIds: [],
+    audio: null,
+    active: ["metatron"],
+    master: {
+      opacity: 1,
+      motion: true,
+      glow: 0.5,
+      bgColor: null,
+      bgGradientId: "violeta-noche",
+      bgBrightness: 0.5,
+      bgPattern: null,
+    },
+    settings: {
+      "metatron": defaultGeo({
+        color: "#C8B4E0",
+        gradientId: "lavanda-azul",
+        rotateLeft: true,
+        rotateSpeed: 0.2,
+        glow: 0.5,
+        thickness: 0.2,
+        scale: 0.9,
+        bloom: 0.1,
+        halo: 0.3,
+      }),
+    },
+  },
+  {
+    id: "__preset_sri_yantra",
+    name: "Sri Yantra",
+    createdAt: BASE_DATE,
+    updatedAt: BASE_DATE,
+    liked: false,
+    hiddenIds: [],
+    audio: null,
+    active: ["sri-yantra"],
+    master: {
+      opacity: 1,
+      motion: true,
+      glow: 0.2,
+      bgColor: null,
+      bgGradientId: "verdeagua-noche",
+      bgBrightness: 0.5,
+      bgPattern: null,
+    },
+    settings: {
+      "sri-yantra": defaultGeo({
+        color: "#7ECFD0",
+        gradientId: "azul-verdeagua",
+        rotate: true,
+        rotateSpeed: 0.15,
+        breatheAmount: 0.3,
+        glow: 0.25,
+        scale: 0.88,
+        halo: 0.15,
+      }),
+    },
+  },
+];
+
+export function isPreset(id: string): boolean {
+  return id.startsWith("__preset_");
+}
