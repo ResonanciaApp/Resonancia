@@ -1154,7 +1154,7 @@ const styles = StyleSheet.create({
   // Banner premium compacto
   premBannerOuter: {
     marginHorizontal: GRID_PAD,
-    marginTop: -7,
+    marginTop: 7,
     marginBottom: SECTION_GAP,
   },
   premBannerWrap: {
