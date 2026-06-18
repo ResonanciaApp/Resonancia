@@ -253,7 +253,7 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
     return () => a.stop();
   }, [active, anim]);
 
-  const tiltDir = idx % 2 === 0 ? "-4deg" : "4deg";
+  const tiltDir = idx % 2 === 0 ? "-8deg" : "8deg";
   const rotate  = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", tiltDir] });
   const scale   = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
 
