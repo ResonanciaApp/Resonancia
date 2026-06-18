@@ -1373,3 +1373,9 @@ id = "lkV80nLe1qcmLwB1lnR_f"
 uri = "file://artifacts/mobile/assets/images/mixer/binaural_5.png"
 type = "image"
 title = "Thumbnail 5 — Arpegio Calma"
+
+[[outputs]]
+id = "7VIqbs9fgCa1y-ZbA1NW5"
+uri = "file://.local/outputs/Decisiones-de-Lanzamiento.pdf"
+type = "pdf"
+title = "Decisiones de Lanzamiento (PDF)"
