@@ -83,11 +83,6 @@ const ResonadorCard = memo(function ResonadorCard({
             placeholder={BLUR_PLACEHOLDER}
             transition={IMAGE_TRANSITION}
           />
-          {certified && (
-            <View style={styles.certBadge}>
-              <Text style={styles.certStar}>✦</Text>
-            </View>
-          )}
         </View>
       </View>
 
