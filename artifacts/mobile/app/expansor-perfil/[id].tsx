@@ -310,13 +310,6 @@ export default function ExpansorPerfilScreen() {
           )}
         </View>
 
-        {/* ── Quote — fuera del módulo ── */}
-        {expansor.quote ? (
-          <View style={[styles.quoteWrap, { marginHorizontal: H_PAD }]}>
-            <Text style={styles.quoteText}>"{expansor.quote}"</Text>
-          </View>
-        ) : null}
-
         {/* ── Descubre lo que hago — galería ── */}
         {hasGallery && (
           <View style={[styles.gallerySection, { marginHorizontal: H_PAD }]}>
@@ -340,6 +333,13 @@ export default function ExpansorPerfilScreen() {
             </View>
           </View>
         )}
+
+        {/* ── Quote — al final ── */}
+        {expansor.quote ? (
+          <View style={[styles.quoteWrap, { marginHorizontal: H_PAD }]}>
+            <Text style={styles.quoteText}>"{expansor.quote}"</Text>
+          </View>
+        ) : null}
       </ScrollView>
 
       {/* ── Lightbox ── */}
