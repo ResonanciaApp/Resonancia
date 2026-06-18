@@ -20,6 +20,8 @@ import {
   MIXER_GEO_BG_KEY,
   subscribeGeoBg,
 } from "@/config/immersive-presets";
+import type { GeometrixCreation } from "@/data/geometrix-creations";
+import { GEOMETRIX_PRESETS } from "@/data/geometrix-presets";
 import {
   registerMixStopper,
   stopSessionPlayback,
@@ -173,8 +175,8 @@ type MixerContextType = {
   inmersivoPresetId: string | null;
   openImmersivo: (presetId: string) => void;
   closeImmersivo: () => void;
-  /** ID de la creación de Geometrix seleccionada como fondo inmersivo. null = sin Geometrix. */
-  inmersivoGeoBgId: string | null;
+  /** Creación de Geometrix seleccionada como fondo inmersivo. null = sin Geometrix. */
+  inmersivoGeoBgCreation: GeometrixCreation | null;
 };
 
 const MixerContext = createContext<MixerContextType | null>(null);
@@ -1471,14 +1473,35 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   }, []);
   const closeImmersivo = useCallback(() => setInmersivoOpen(false), []);
 
-  const [inmersivoGeoBgId, setInmersivoGeoBgId] = useState<string | null>(null);
+  const [inmersivoGeoBgCreation, setInmersivoGeoBgCreation] = useState<GeometrixCreation | null>(null);
+
+  const resolveGeoBgCreation = useCallback(async (id: string | null): Promise<GeometrixCreation | null> => {
+    if (!id) return null;
+    // 1. Buscar en presets hardcodeados (inmediato, sin async)
+    const preset = GEOMETRIX_PRESETS.find((p) => p.id === id);
+    if (preset) return preset;
+    // 2. Buscar en creaciones guardadas del usuario
+    try {
+      const raw = await AsyncStorage.getItem("@geometrix_creations");
+      if (raw) {
+        const list = JSON.parse(raw) as GeometrixCreation[];
+        return list.find((c) => c.id === id) ?? null;
+      }
+    } catch { /* silent */ }
+    return null;
+  }, []);
+
   useEffect(() => {
+    // Cargar al inicio desde AsyncStorage
     AsyncStorage.getItem(MIXER_GEO_BG_KEY)
-      .then((v) => { if (v) setInmersivoGeoBgId(v); })
+      .then((id) => id ? resolveGeoBgCreation(id).then(setInmersivoGeoBgCreation) : null)
       .catch(() => {});
-    const unsub = subscribeGeoBg((id) => setInmersivoGeoBgId(id));
+    // Escuchar cambios en vivo desde EscenasMixerContent
+    const unsub = subscribeGeoBg((id) => {
+      resolveGeoBgCreation(id).then(setInmersivoGeoBgCreation).catch(() => {});
+    });
     return unsub;
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [resolveGeoBgCreation]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const importPreset = useCallback(
     (preset: MixPreset) => {
@@ -1882,7 +1905,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         inmersivoPresetId,
         openImmersivo,
         closeImmersivo,
-        inmersivoGeoBgId,
+        inmersivoGeoBgCreation,
       }}
     >
       {children}

@@ -25,8 +25,6 @@ import { useMixer } from "@/context/MixerContext";
 import { getSoundById } from "@/data/sounds";
 import { GRADIENT_PRESETS, DEFAULT_BG_PRESET_ID } from "@/config/immersive-presets";
 import { MESSAGE_PACKS, DEFAULT_MESSAGE_PACK_ID } from "@/data/immersive-messages";
-import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
-import { GEOMETRIX_PRESETS, isPreset } from "@/data/geometrix-presets";
 import { CreationCoverPreviewDirect } from "@/components/CreationCoverPreview";
 import { Dimensions } from "react-native";
 
@@ -64,16 +62,8 @@ export function InmersivoContent() {
     activeSounds, isPlaying, togglePlay,
     sleepTimerRemaining, setSleepTimer,
     inmersivoPresetId, closeImmersivo,
-    inmersivoGeoBgId,
+    inmersivoGeoBgCreation,
   } = useMixer();
-
-  const { creations } = useGeometrixCreations();
-
-  const geoBgCreation = inmersivoGeoBgId
-    ? (creations.find((c) => c.id === inmersivoGeoBgId)
-        ?? GEOMETRIX_PRESETS.find((p) => p.id === inmersivoGeoBgId)
-        ?? null)
-    : null;
 
   const bgPreset =
     GRADIENT_PRESETS.find((p) => p.id === inmersivoPresetId) ??
@@ -190,12 +180,12 @@ export function InmersivoContent() {
       <View style={styles.root}>
         <StatusBar hidden />
 
-        {geoBgCreation ? (
+        {inmersivoGeoBgCreation ? (
           <Animated.View
             style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center", transform: [{ scale: breathScale }] }]}
             pointerEvents="none"
           >
-            <CreationCoverPreviewDirect creation={geoBgCreation} size={GEO_BG_SIZE} />
+            <CreationCoverPreviewDirect creation={inmersivoGeoBgCreation} size={GEO_BG_SIZE} />
           </Animated.View>
         ) : (
           <>
