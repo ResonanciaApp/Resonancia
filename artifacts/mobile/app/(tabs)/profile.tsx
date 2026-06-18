@@ -951,7 +951,7 @@ export default function ProfileScreen() {
                 )}
               </View>
               <Pressable
-                onPress={() => router.push(`/expansor/${expansorData.id}` as never)}
+                onPress={() => router.push(`/expansor-perfil/${expansorData.id}` as never)}
                 style={({ pressed }) => [styles.expansorViewBtn, { opacity: pressed ? 0.7 : 1 }]}
               >
                 <Text style={styles.expansorViewText}>Ver público</Text>

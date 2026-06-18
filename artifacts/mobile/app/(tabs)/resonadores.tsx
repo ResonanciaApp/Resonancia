@@ -215,7 +215,7 @@ const ResonadorCard = memo(function ResonadorCard({
 
   function handlePress() {
     if (isArtista) router.push(`/artista/${d.id}` as never);
-    else router.push(`/expansor/${d.id}` as never);
+    else router.push(`/expansor-perfil/${d.id}` as never);
   }
 
   return (
