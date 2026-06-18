@@ -870,6 +870,60 @@ uri = "file://artifacts/mobile/assets/images/expansores/camila-herrera.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "DzgKN7HkDMvF8mU01WXNU"
+uri = "file://artifacts/mobile/assets/images/artists/lumen-sonora.png"
+type = "image"
+title = "lumen-sonora-hippie-woman"
+
+[[generated]]
+id = "OvhNQxKPVwE182WiwHYfd"
+uri = "file://artifacts/mobile/assets/images/artists/raiz-profunda.png"
+type = "image"
+title = "raiz-profunda-hippie-man"
+
+[[generated]]
+id = "66feHfTaWyvJVqcrmZw28"
+uri = "file://artifacts/mobile/assets/images/artists/luna-cosmica.png"
+type = "image"
+title = "luna-cosmica-andean-woman"
+
+[[generated]]
+id = "wqhmx4wZ6sHXskpPw6-tq"
+uri = "file://artifacts/mobile/assets/images/artists/arbol-sagrado.png"
+type = "image"
+title = "arbol-sagrado-shaman-man"
+
+[[generated]]
+id = "k1R0ruzNL96JLyTcfcgZo"
+uri = "file://artifacts/mobile/assets/images/artists/vuelo-del-condor.png"
+type = "image"
+title = "vuelo-condor-musician"
+
+[[generated]]
+id = "V_kpGiASP0fUnk51Lspv3"
+uri = "file://artifacts/mobile/assets/images/artists/kai-amara.png"
+type = "image"
+title = "kai-amara-crystal-artist"
+
+[[generated]]
+id = "kM3W24c1-X4gacO0BG96u"
+uri = "file://artifacts/mobile/assets/images/artists/misterio-verde.png"
+type = "image"
+title = "misterio-verde-forest-woman"
+
+[[generated]]
+id = "NqCr9kQEW4-_Sdg_GDfpS"
+uri = "file://artifacts/mobile/assets/images/artists/pulso-de-tierra.png"
+type = "image"
+title = "pulso-tierra-drummer"
+
+[[generated]]
+id = "DoKxjVegt6KwxtGniGBv5"
+uri = "file://artifacts/mobile/assets/images/artists/flor-de-quartz.png"
+type = "image"
+title = "flor-quartz-ceremonial-woman"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"

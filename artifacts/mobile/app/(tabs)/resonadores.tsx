@@ -482,7 +482,6 @@ export default function ResonadoresScreen() {
               {/* ── Recientes de Resonadores ── */}
               <View style={styles.recentHeader}>
                 <Text style={styles.recentTitle}>Recientes de Resonadores</Text>
-                <Text style={styles.recentSub}>Las últimas sesiones añadidas</Text>
               </View>
               <ScrollView
                 horizontal
@@ -779,18 +778,18 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   recentCard: {
-    width: 126,
+    width: 164,
   },
   recentImgWrap: {
-    width: 126,
-    height: 94,
+    width: 164,
+    height: 122,
     borderRadius: 10,
     overflow: "hidden",
     marginBottom: 7,
   },
   recentImg: {
-    width: 126,
-    height: 94,
+    width: 164,
+    height: 122,
   },
   recentPremiumBadge: {
     position: "absolute",
