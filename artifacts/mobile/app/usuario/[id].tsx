@@ -271,7 +271,7 @@ export default function UsuarioScreen() {
                           {
                             text: "Eliminar",
                             style: "destructive",
-                            onPress: () => removeFriendMutation.mutate({ friendId: userId }),
+                            onPress: () => removeFriendMutation.mutate({ userId }),
                           },
                         ]
                       );
