@@ -46,8 +46,8 @@ import { PlaylistActionsSheet } from "@/components/PlaylistActionsSheet";
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
 const GOLD = "#D4AF37";
-const NAVY = "#1B060F";
-const DARK_BLUE = "#27070E";
+const NAVY = "#160108";
+const DARK_BLUE = "#2E0510";
 const TEXT = "#F4DAD5";
 const MUTED = "rgba(242,231,228,0.45)";
 
@@ -589,7 +589,7 @@ function GeometrixRow({ creation, onPress }: { creation: GeometrixCreation; onPr
       {/* Miniatura: cuadrado oscuro con las primeras capas superpuestas */}
       <View style={styles.geoThumb}>
         <LinearGradient
-          colors={["#27070E", "#1B060F"]}
+          colors={["#2E0510", "#160108"]}
           style={StyleSheet.absoluteFill}
         />
         {firstLayers.map((instId, idx) => {
@@ -1054,7 +1054,7 @@ export default function BibliotecaScreen() {
                     onPress={() => router.navigate({ pathname: "/(tabs)/geometrix", params: { load: c.id } } as never)}
                   >
                     <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
-                      <LinearGradient colors={["#27070E", "#1B060F"]} style={StyleSheet.absoluteFill} />
+                      <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
                       {firstLayers.map((instId, idx) => {
                         const geoId = baseOf(instId);
                         const settings = c.settings[instId];
