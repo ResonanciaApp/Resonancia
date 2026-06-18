@@ -27,7 +27,7 @@ const CAROUSEL_MAX_OPEN_W = 280;  // techo para que el texto nunca desaparezca d
 
 const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
 const MIX_BG      = "#4f1a6b";
-const MIX_GRAD    = ["#71269c", "#4f1a6b"] as const;
+const MIX_GRAD    = ["#66228c", "#471760"] as const;
 const PILL_BORDER = "rgba(110,80,200,0.5)";
 const BORDER_R    = 12;
 
