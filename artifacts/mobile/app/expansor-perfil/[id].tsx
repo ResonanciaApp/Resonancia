@@ -132,67 +132,71 @@ export default function ExpansorPerfilScreen() {
             </View>
           </View>
 
-          {/* ── 3 pills de acción ── */}
-          <View style={styles.actionPillsRow}>
-            {/* Seguir */}
-            <Pressable
-              onPress={() => setFollowing((v) => !v)}
-              style={({ pressed }) => [
-                styles.actionPill,
-                following && styles.actionPillActive,
-                { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
-              ]}
-            >
-              {following && (
-                <LinearGradient
-                  colors={["#D6AD5F", "#B47344"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={StyleSheet.absoluteFill}
+          {/* ── Pills de acción ── */}
+          <View style={styles.actionPillsWrap}>
+            {/* Fila 1: Seguir + Amistad */}
+            <View style={styles.actionPillsRow}>
+              {/* Seguir */}
+              <Pressable
+                onPress={() => setFollowing((v) => !v)}
+                style={({ pressed }) => [
+                  styles.actionPill,
+                  following && styles.actionPillActive,
+                  { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
+                ]}
+              >
+                {following && (
+                  <LinearGradient
+                    colors={["#D6AD5F", "#B47344"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={StyleSheet.absoluteFill}
+                  />
+                )}
+                <Feather
+                  name={following ? "user-check" : "user-plus"}
+                  size={13}
+                  color={following ? "#1B060F" : "#FFFFFF"}
                 />
-              )}
-              <Feather
-                name={following ? "user-check" : "user-plus"}
-                size={13}
-                color={following ? "#1B060F" : "#FFFFFF"}
-              />
-              <Text style={[styles.actionPillText, following && styles.actionPillTextActive]}>
-                {following ? "Siguiendo" : "Seguir"}
-              </Text>
-            </Pressable>
+                <Text style={[styles.actionPillText, following && styles.actionPillTextActive]}>
+                  {following ? "Siguiendo" : "Seguir"}
+                </Text>
+              </Pressable>
 
-            {/* Solicitud amistad */}
-            <Pressable
-              onPress={() => {
-                if (friendRequested) {
-                  Alert.alert("Solicitud enviada", "Ya enviaste una solicitud de amistad a este usuario.");
-                } else {
-                  setFriendRequested(true);
-                  Alert.alert("¡Listo!", "Solicitud de amistad enviada.");
-                }
-              }}
-              style={({ pressed }) => [
-                styles.actionPill,
-                friendRequested && styles.actionPillSent,
-                { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
-              ]}
-            >
-              <Feather
-                name={friendRequested ? "user-x" : "users"}
-                size={13}
-                color={friendRequested ? "rgba(242,231,228,0.55)" : "#FFFFFF"}
-              />
-              <Text style={[styles.actionPillText, friendRequested && styles.actionPillTextSent]}>
-                {friendRequested ? "Solicitado" : "Amistad"}
-              </Text>
-            </Pressable>
+              {/* Amistad */}
+              <Pressable
+                onPress={() => {
+                  if (friendRequested) {
+                    Alert.alert("Solicitud enviada", "Ya enviaste una solicitud de amistad a este usuario.");
+                  } else {
+                    setFriendRequested(true);
+                    Alert.alert("¡Listo!", "Solicitud de amistad enviada.");
+                  }
+                }}
+                style={({ pressed }) => [
+                  styles.actionPill,
+                  friendRequested && styles.actionPillSent,
+                  { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
+                ]}
+              >
+                <Feather
+                  name={friendRequested ? "user-x" : "users"}
+                  size={13}
+                  color={friendRequested ? "rgba(242,231,228,0.55)" : "#FFFFFF"}
+                />
+                <Text style={[styles.actionPillText, friendRequested && styles.actionPillTextSent]}>
+                  {friendRequested ? "Solicitado" : "Amistad"}
+                </Text>
+              </Pressable>
+            </View>
 
-            {/* Enviar mensaje */}
+            {/* Fila 2: Enviar mensaje — mismo ancho total */}
             <Pressable
               onPress={() => router.push("/mensajes" as never)}
               style={({ pressed }) => [
                 styles.actionPill,
-                { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
+                styles.actionPillFull,
+                { opacity: pressed ? 0.75 : 1 },
               ]}
             >
               <Feather name="message-circle" size={13} color="#FFFFFF" />
@@ -337,11 +341,18 @@ const styles = StyleSheet.create({
   followCountDivider: { width: 1, height: 28 },
 
   /* — Pills de acción (mismo estilo que headerTabChip de Inicio) — */
-  actionPillsRow: {
-    flexDirection: "row",
+  actionPillsWrap: {
     alignSelf: "stretch",
     gap: 8,
     marginTop: 14,
+  },
+  actionPillsRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  actionPillFull: {
+    alignSelf: "stretch",
+    justifyContent: "center",
   },
   actionPill: {
     flexDirection: "row",
