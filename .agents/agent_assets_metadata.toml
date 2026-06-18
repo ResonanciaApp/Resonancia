@@ -840,6 +840,36 @@ uri = "file://artifacts/mobile/assets/images/expansores/gabriel-flores.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "do_ndv7r96QReguLZWDWB"
+uri = "file://artifacts/mobile/assets/images/expansores/isabel-torres.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "HiDsYf-FKC3WACbVkI48a"
+uri = "file://artifacts/mobile/assets/images/expansores/roberto-silva.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "iSV5l9Pb0W2tWmScOw--F"
+uri = "file://artifacts/mobile/assets/images/expansores/sofia-ayala.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "Olc05VGwF3_I7-4eVqmi2"
+uri = "file://artifacts/mobile/assets/images/expansores/diego-ramirez.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "5Nic14nY7gBRSbNwk3S6G"
+uri = "file://artifacts/mobile/assets/images/expansores/camila-herrera.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
