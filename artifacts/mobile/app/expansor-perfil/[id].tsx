@@ -15,6 +15,8 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import MaskedView from "@react-native-masked-view/masked-view";
+
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { COUNTRY_FLAGS, getExpansorById } from "@/data/expansores";
 import { useColors } from "@/hooks/useColors";
@@ -216,9 +218,23 @@ export default function ExpansorPerfilScreen() {
               style={StyleSheet.absoluteFill}
             />
             <Text style={styles.certBannerStar}>✦</Text>
-            <Text style={styles.certBannerText}>
-              {expansor.certified ? "Expansor Certificado" : "Expansor Resonancia"}
-            </Text>
+            <MaskedView
+              maskElement={
+                <Text style={styles.certBannerText}>
+                  {expansor.certified ? "Expansor Certificado" : "Expansor Resonancia"}
+                </Text>
+              }
+            >
+              <LinearGradient
+                colors={["#D4AF37", "#E9C46A"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+              >
+                <Text style={[styles.certBannerText, { opacity: 0 }]}>
+                  {expansor.certified ? "Expansor Certificado" : "Expansor Resonancia"}
+                </Text>
+              </LinearGradient>
+            </MaskedView>
           </View>
 
           {/* Mis servicios */}
