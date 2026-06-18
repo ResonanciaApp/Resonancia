@@ -13,6 +13,7 @@ import {
   Animated,
   Easing,
   KeyboardAvoidingView,
+  Linking,
   Modal,
   PanResponder,
   Platform,
@@ -41,6 +42,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
 import { useColors } from "@/hooks/useColors";
 import { getSessionById } from "@/data/sessions";
+import { getExpansorById } from "@/data/expansores";
 import { usePremium } from "@/context/PremiumContext";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import {
@@ -414,9 +416,12 @@ export default function ProfileScreen() {
     location,
     description,
     photoUri,
+    expansorId,
     updateProfile,
     setPhotoUri,
   } = useUserProfile();
+
+  const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 
   const { data: me } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 60_000 } });
   const { data: followCounts } = useGetMyFollowCounts({
@@ -928,6 +933,61 @@ export default function ProfileScreen() {
             <Text style={[styles.editBtnText, { color: colors.primary }]}>Editar Detalles</Text>
           </Pressable>
         </View>
+
+        {/* ── Bloque Expansor ── */}
+        {expansorData && (
+          <View style={styles.expansorSection}>
+            {/* Cabecera */}
+            <View style={styles.expansorHeader}>
+              <View style={styles.expansorBadge}>
+                <Text style={styles.expansorBadgeStar}>✦</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.expansorTitle}>Perfil Expansor</Text>
+                {expansorData.certified && (
+                  <Text style={styles.expansorCertLabel}>
+                    Certificado · {expansorData.city}, {expansorData.country}
+                  </Text>
+                )}
+              </View>
+              <Pressable
+                onPress={() => router.push(`/expansor/${expansorData.id}` as never)}
+                style={({ pressed }) => [styles.expansorViewBtn, { opacity: pressed ? 0.7 : 1 }]}
+              >
+                <Text style={styles.expansorViewText}>Ver público</Text>
+                <Feather name="external-link" size={12} color="#D4AF37" />
+              </Pressable>
+            </View>
+
+            {/* Especialidades */}
+            <View style={styles.expansorSpecWrap}>
+              {expansorData.specialty.map((s) => (
+                <View key={s} style={styles.expansorChip}>
+                  <Text style={styles.expansorChipText}>{s}</Text>
+                </View>
+              ))}
+            </View>
+
+            {/* Bio */}
+            <Text style={styles.expansorBio}>{expansorData.bio}</Text>
+
+            {/* Links */}
+            {expansorData.links && expansorData.links.length > 0 && (
+              <View style={styles.expansorLinksRow}>
+                {expansorData.links.map((link) => (
+                  <Pressable
+                    key={link.label}
+                    onPress={() => Linking.openURL(link.url)}
+                    style={({ pressed }) => [styles.expansorLinkBtn, { opacity: pressed ? 0.7 : 1 }]}
+                  >
+                    <Feather name="external-link" size={12} color="#D4AF37" />
+                    <Text style={styles.expansorLinkText}>{link.label}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            )}
+          </View>
+        )}
 
         {/* ── Secciones colapsables (ocultas con el ojo) ── */}
         <Animated.View style={{ opacity: sectionsAnim, maxHeight: sectionsAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 2400] }), overflow: "hidden" }}>
@@ -1625,4 +1685,61 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   communityLabel: { fontSize: 12, fontWeight: "500", textAlign: "center", letterSpacing: 0.2 },
+
+  // Expansor section
+  expansorSection: {
+    backgroundColor: "rgba(212,175,55,0.06)",
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.18)",
+    padding: 16,
+    marginBottom: 16,
+    gap: 12,
+  },
+  expansorHeader: { flexDirection: "row", alignItems: "center", gap: 10 },
+  expansorBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#D4AF37",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  expansorBadgeStar: { fontSize: 14, color: "#1B060F", fontWeight: "800" },
+  expansorTitle: { fontSize: 14, fontWeight: "700", color: "#D4AF37" },
+  expansorCertLabel: { fontSize: 11, color: "rgba(212,175,55,0.60)", marginTop: 1 },
+  expansorViewBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 10,
+    backgroundColor: "rgba(212,175,55,0.10)",
+  },
+  expansorViewText: { fontSize: 12, color: "#D4AF37", fontWeight: "600" },
+  expansorSpecWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  expansorChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 999,
+    backgroundColor: "rgba(74,12,12,0.45)",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.20)",
+  },
+  expansorChipText: { fontSize: 12, color: "#F4DAD5", fontWeight: "500" },
+  expansorBio: { fontSize: 13, lineHeight: 20, color: "rgba(244,218,213,0.75)" },
+  expansorLinksRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  expansorLinkBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 10,
+    backgroundColor: "rgba(212,175,55,0.10)",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.20)",
+  },
+  expansorLinkText: { fontSize: 12, color: "#D4AF37", fontWeight: "600" },
 });

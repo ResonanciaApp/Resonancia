@@ -21,6 +21,8 @@ interface UserProfile {
   sentMessageIds: number[];
   earnedCrowns: number;
   lastCrownDate: string | null;
+  /** ID del entry en EXPANSORES vinculado a este usuario (null = no es Expansor). */
+  expansorId: string | null;
 }
 
 const DEFAULT_PROFILE: UserProfile = {
@@ -32,6 +34,7 @@ const DEFAULT_PROFILE: UserProfile = {
   sentMessageIds: [],
   earnedCrowns: 0,
   lastCrownDate: null,
+  expansorId: null,
 };
 
 interface ProfileUpdate {
@@ -50,6 +53,7 @@ interface UserProfileContextValue extends UserProfile {
   setDescription: (v: string) => void;
   updateProfile: (fields: ProfileUpdate) => void;
   setPhotoUri: (uri: string | null) => void;
+  setExpansorId: (id: string | null) => void;
   recordSentMessage: (id: number) => void;
   checkAndAwardCrown: (topMessageId: number | null) => void;
 }
@@ -115,6 +119,11 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
     [profile, persist],
   );
 
+  const setExpansorId = useCallback(
+    (id: string | null) => persist({ ...profile, expansorId: id }),
+    [profile, persist],
+  );
+
   const recordSentMessage = useCallback(
     (id: number) => {
       const updated = [...profile.sentMessageIds, id].slice(-50);
@@ -150,6 +159,7 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
         setDescription,
         updateProfile,
         setPhotoUri,
+        setExpansorId,
         recordSentMessage,
         checkAndAwardCrown,
       }}

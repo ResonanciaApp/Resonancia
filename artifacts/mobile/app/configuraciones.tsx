@@ -27,6 +27,8 @@ import { VolumeSlider } from "@/components/VolumeSlider";
 import { useAuth } from "@/context/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
+import { useUserProfile } from "@/context/UserProfileContext";
+import { EXPANSORES } from "@/data/expansores";
 import { useBrightness } from "@/context/BrightnessContext";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
@@ -107,6 +109,7 @@ export default function ConfiguracionesScreen() {
 
   const { logout, isCreator, isAdmin } = useAuth();
   const { isPremium: isPremiumDev, setPremium: setPremiumDev } = usePremium();
+  const { expansorId, setExpansorId } = useUserProfile();
   const { updateDefaultSleepTimer } = usePlayer();
   const { brightness, setBrightness } = useBrightness();
 
@@ -554,6 +557,37 @@ export default function ConfiguracionesScreen() {
                   thumbColor={isPremiumDev ? colors.primary : "#888"}
                 />
               </View>
+              <Pressable
+                onPress={() => {
+                  const options = [
+                    { text: "Sin vínculo (ninguno)", onPress: () => setExpansorId(null) },
+                    ...EXPANSORES.map((e) => ({
+                      text: `${e.name} (${e.country})`,
+                      onPress: () => setExpansorId(e.id),
+                    })),
+                    { text: "Cancelar", style: "cancel" as const },
+                  ];
+                  Alert.alert(
+                    "Vincular perfil Expansor",
+                    expansorId
+                      ? `Actualmente: ${EXPANSORES.find((e) => e.id === expansorId)?.name ?? expansorId}`
+                      : "Sin vínculo",
+                    options,
+                  );
+                }}
+                style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}
+              >
+                <RowIcon icon="user-check" colors={colors} />
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.rowLabel, { color: colors.foreground }]}>Simular perfil Expansor</Text>
+                  {expansorId && (
+                    <Text style={{ fontSize: 11, color: colors.mutedForeground, marginTop: 1 }}>
+                      {EXPANSORES.find((e) => e.id === expansorId)?.name ?? expansorId}
+                    </Text>
+                  )}
+                </View>
+                <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+              </Pressable>
               <Pressable
                 onPress={async () => {
                   await AsyncStorage.setItem("@resonance_streak_force", "1");
