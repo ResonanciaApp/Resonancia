@@ -603,7 +603,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderWidth: 1,
     borderColor: "rgba(190,150,80,0.30)",
-    backgroundColor: "rgba(74,12,12,0.50)",
+    backgroundColor: "rgba(74,12,12,0.08)",
   },
   durPillActive: {
     borderColor: "transparent",
@@ -621,7 +621,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginHorizontal: H_PAD,
     gap: 6,
-    backgroundColor: "rgba(255,255,255,0.10)",
+    backgroundColor: "rgba(74,12,12,0.50)",
     borderRadius: 16,
     padding: 12,
   },
