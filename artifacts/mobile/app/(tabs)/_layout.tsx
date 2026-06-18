@@ -30,14 +30,6 @@ const GRAD_END       = "#E9C46A";
 const ICON_SIZE = 23;
 const PILL_BG   = "rgba(212,175,55,0.09)";
 
-/** Borde superior asimétrico: fade en ambos extremos */
-const BAR_BORDER_COLORS = [
-  "transparent",
-  "rgba(212,175,55,0.38)",
-  "rgba(233,196,106,0.45)",
-  "rgba(212,175,55,0.38)",
-  "transparent",
-] as const;
 
 // Rutas que nunca aparecen en el menú inferior
 const HIDDEN_ROUTES = new Set(["descanzo", "profile"]);
@@ -191,13 +183,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           />
         </Animated.View>
 
-        {/* Borde superior asimétrico dorado con fade en esquinas */}
-        <LinearGradient
-          colors={BAR_BORDER_COLORS}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={styles.topBorder}
-        />
 
         <View style={[styles.row, isWeb && styles.rowWeb, { paddingTop: 8 + extra, height: 31 + extra }]}>
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
@@ -310,13 +295,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-  },
-  topBorder: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 1,
   },
   row: {
     flexDirection: "row",
