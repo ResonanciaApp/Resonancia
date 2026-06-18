@@ -389,17 +389,17 @@ export function MixerSheet() {
 
   const palette = {
     handle:         isLight ? "rgba(0,0,0,0.12)"    : WARM.handle,
-    sliderThumb:    hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#3B1B6E" : WARM.sliderThumb,
-    sliderTrack:    hasCustomBg ? "rgba(255,255,255,0.40)" : isLight ? "rgba(59,27,110,0.15)" : activeBgPreset.image ? "rgba(255,255,255,0.22)" : WARM.sliderTrack,
-    addText:        hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "rgba(0,0,0,0.32)" : "rgba(255,255,255,0.80)",
-    separator:      isLight ? "rgba(0,0,0,0.07)" : activeBgPreset.image ? "rgba(255,255,255,0.18)" : WARM.separator,
-    iconColor:      hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#1A1E2B" : "rgba(255,255,255,0.90)",
-    fg:             hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#1A1E2B" : colors.foreground,
-    muted:          isLight ? "#6B7A96"             : colors.mutedForeground,
-    inputBg:        hasCustomBg ? "rgba(255,255,255,0.10)" : isLight ? "rgba(74,12,12,0.05)" : activeBgPreset.image ? "rgba(255,255,255,0.10)" : "rgba(74,12,12,0.08)",
-    footerCircleBg: hasCustomBg ? "rgba(255,255,255,0.10)" : isLight ? "rgba(0,0,0,0.07)" : activeBgPreset.image ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.30)",
-    footerLabel:    hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "rgba(0,0,0,0.45)" : activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(244,218,213,0.45)",
-    headerFg:       hasCustomBg ? "rgba(255,255,255,0.90)" : "rgba(92,31,126,0.85)",
+    sliderThumb:    hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#180202" : WARM.sliderThumb,
+    sliderTrack:    hasCustomBg ? "rgba(255,255,255,0.40)" : isLight ? "rgba(24,2,2,0.18)" : activeBgPreset.image ? "rgba(255,255,255,0.22)" : WARM.sliderTrack,
+    addText:        hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "rgba(24,2,2,0.55)" : "rgba(255,255,255,0.80)",
+    separator:      isLight ? "rgba(24,2,2,0.10)" : activeBgPreset.image ? "rgba(255,255,255,0.18)" : WARM.separator,
+    iconColor:      hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#180202" : "rgba(255,255,255,0.90)",
+    fg:             hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#180202" : colors.foreground,
+    muted:          isLight ? "rgba(24,2,2,0.45)"  : colors.mutedForeground,
+    inputBg:        hasCustomBg ? "rgba(255,255,255,0.10)" : isLight ? "rgba(24,2,2,0.05)" : activeBgPreset.image ? "rgba(255,255,255,0.10)" : "rgba(74,12,12,0.08)",
+    footerCircleBg: hasCustomBg ? "rgba(255,255,255,0.10)" : isLight ? "rgba(24,2,2,0.07)" : activeBgPreset.image ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.30)",
+    footerLabel:    hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "rgba(24,2,2,0.65)" : activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(244,218,213,0.45)",
+    headerFg:       hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#180202" : "rgba(92,31,126,0.85)",
   };
   const { isPremium } = usePremium();
   const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -862,15 +862,15 @@ export function MixerSheet() {
             >
               {/* Ícono: ojo dentro de fullscreen */}
               <View style={styles.immersivoIconWrap}>
-                <MaterialCommunityIcons name="fullscreen" size={30} color={hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#3d304e" : "rgba(212,175,55,0.90)"} />
+                <MaterialCommunityIcons name="fullscreen" size={30} color={hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#180202" : "rgba(212,175,55,0.90)"} />
                 <MaterialCommunityIcons
                   name="eye"
                   size={13}
-                  color={hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#3d304e" : "rgba(212,175,55,0.90)"}
+                  color={hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#180202" : "rgba(212,175,55,0.90)"}
                   style={styles.immersivoIconEye}
                 />
               </View>
-              <Text style={[styles.immersivoBtnText, hasCustomBg ? { color: "rgba(255,255,255,0.90)" } : isLight ? { color: "#3d304e" } : undefined]}>
+              <Text style={[styles.immersivoBtnText, hasCustomBg ? { color: "rgba(255,255,255,0.90)" } : isLight ? { color: "#180202" } : undefined]}>
                 Modo Inmersivo
               </Text>
             </Pressable>
