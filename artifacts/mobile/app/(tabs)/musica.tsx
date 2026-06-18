@@ -120,7 +120,7 @@ const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
   ancestrales:    ["#221510", "#1E0F0B", "#100904"],
   sintetizadores: ["#061A2E", "#041220", "#030A18"],
   voces:          ["#250810", "#1A060C", "#0F0408"],
-  bpm:            ["#201A04", "#161302", "#0C0A02"],
+  bpm:            ["#0A2020", "#071818", "#040F0F"],
 };
 
 /** Gradiente de fondo de contenido en modo "noche" — último stop neutro oscuro (sin bordeaux) */
@@ -130,7 +130,7 @@ const TAB_NOCHE_BG: Record<MainTabId, [string, string, string]> = {
   ancestrales:    ["#221510", "#1E0F0B", "#100904"],
   sintetizadores: ["#061A2E", "#041220", "#030A18"],
   voces:          ["#250810", "#1A060C", "#0F0408"],
-  bpm:            ["#201A04", "#161302", "#0C0A02"],
+  bpm:            ["#0A2020", "#071818", "#040F0F"],
 };
 
 const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
@@ -139,7 +139,7 @@ const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
   ancestrales:    ["#A3631F", "#A3631F"],
   sintetizadores: ["#2C62AB", "#2C62AB"],
   voces:          ["#FF6B6B", "#C9184A"],
-  bpm:            ["#FFD166", "#B8860B"],
+  bpm:            ["#1A5454", "#0D3535"],
 };
 
 // ── PillTab ───────────────────────────────────────────────────────────────────
