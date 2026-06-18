@@ -33,6 +33,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
+const GOLD_BORDER_PILL = ["transparent", "rgba(212,175,55,0.55)", "#E9C46A", "rgba(212,175,55,0.55)", "transparent"] as const;
 const GAP = 10;
 
 /** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
@@ -254,21 +255,28 @@ export default function ExploreScreen() {
         </View>
 
         {/* ── Search bar ── */}
-        <View style={[styles.searchBar, { backgroundColor: "#FFFFFF", borderColor: "transparent" }]}>
-          <Feather name="search" size={16} color="#9AA5B8" />
+        <LinearGradient
+          colors={GOLD_BORDER_PILL}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={styles.searchBarBorder}
+        >
+        <View style={styles.searchBar}>
+          <Feather name="search" size={16} color="rgba(212,175,55,0.65)" />
           <TextInput
             value={query}
             onChangeText={setQuery}
             placeholder="Buscar sesiones, músicas, sonidos..."
-            placeholderTextColor="#9AA5B8"
+            placeholderTextColor="rgba(244,218,213,0.35)"
             style={styles.searchInput}
           />
           {query.length > 0 && (
             <Pressable onPress={() => setQuery("")}>
-              <Feather name="x" size={16} color="#9AA5B8" />
+              <Feather name="x" size={16} color="rgba(244,218,213,0.45)" />
             </Pressable>
           )}
         </View>
+        </LinearGradient>
 
         {/* ── Carrusel de categorías ── */}
         {query.length === 0 && (
@@ -528,18 +536,27 @@ const styles = StyleSheet.create({
   pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#FFFFFF" },
   pageSubtitle: { fontSize: 14, color: "rgba(244,218,213,0.55)", marginTop: 2 },
 
+  searchBarBorder: {
+    marginHorizontal: H_PAD,
+    marginBottom: 33,
+    borderRadius: 10,
+    padding: 1,
+    shadowColor: "#D4AF37",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.45,
+    shadowRadius: 8,
+    elevation: 0,
+  },
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
-    marginHorizontal: H_PAD,
     paddingHorizontal: 14,
     paddingVertical: 15,
-    borderRadius: 10,
-    borderWidth: 1,
+    borderRadius: 9,
+    backgroundColor: "#160108",
     gap: 10,
-    marginBottom: 33,
   },
-  searchInput: { flex: 1, fontSize: 14, color: "#0D1520" },
+  searchInput: { flex: 1, fontSize: 14, color: "#F4DAD5" },
 
   section:      { paddingHorizontal: H_PAD, marginBottom: 23 },
   sectionRow:   { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 11 },
