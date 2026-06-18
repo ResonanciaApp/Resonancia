@@ -207,6 +207,14 @@ export default function ResonadoresScreen() {
                 onPress={() => switchTab(t)}
                 style={[styles.tabBtn, isActive && styles.tabBtnActive]}
               >
+                {isActive && (
+                  <LinearGradient
+                    colors={["#D6AD5F", "#B47344"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={StyleSheet.absoluteFill}
+                  />
+                )}
                 <Text style={[styles.tabBtnText, isActive && styles.tabBtnTextActive]}>
                   {t === "artistas" ? "Artistas" : "Expansores"}
                 </Text>
@@ -320,19 +328,16 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 999,
     alignItems: "center",
+    overflow: "hidden",
   },
-  tabBtnActive: {
-    backgroundColor: "rgba(212,175,55,0.15)",
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.35)",
-  },
+  tabBtnActive: {},
   tabBtnText: {
     fontSize: 13,
-    fontWeight: "500",
+    fontWeight: "600",
     color: "rgba(244,218,213,0.45)",
   },
   tabBtnTextActive: {
-    color: "#D4AF37",
+    color: "#1B060F",
     fontWeight: "700",
   },
   tabBtnSub: {
@@ -342,7 +347,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   tabBtnSubActive: {
-    color: "rgba(212,175,55,0.55)",
+    color: "rgba(27,6,15,0.65)",
   },
 
   // Filters
