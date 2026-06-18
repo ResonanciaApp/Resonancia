@@ -21,7 +21,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { ARTISTS, type Artist } from "@/data/artists";
-import { EXPANSORES, type Expansor } from "@/data/expansores";
+import { EXPANSORES, REGIONS_BY_COUNTRY, COUNTRY_FLAGS, type Expansor } from "@/data/expansores";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 18;
@@ -31,33 +31,15 @@ const MUTED = "rgba(242,231,228,0.45)";
 const CHIP_ANIM_DURATION = 600;
 const CLOSE_SLOT = 38;
 
-// ── Filtros ───────────────────────────────────────────────────────────────────
+// ── Filtros artistas ──────────────────────────────────────────────────────────
 type FilterId = string;
 const ARTISTA_FILTER_TABS: { id: FilterId; label: string }[] = [
   { id: "Productor", label: "Productor" },
   { id: "Músico", label: "Músico" },
   { id: "Voz guía", label: "Voz guía" },
 ];
-const EXPANSOR_FILTER_TABS: { id: FilterId; label: string }[] = [
-  { id: "Arica y Parinacota", label: "Arica y Parinacota" },
-  { id: "Tarapacá", label: "Tarapacá" },
-  { id: "Antofagasta", label: "Antofagasta" },
-  { id: "Atacama", label: "Atacama" },
-  { id: "Coquimbo", label: "Coquimbo" },
-  { id: "Valparaíso", label: "Valparaíso" },
-  { id: "Metropolitana", label: "Metropolitana" },
-  { id: "O'Higgins", label: "O'Higgins" },
-  { id: "Maule", label: "Maule" },
-  { id: "Ñuble", label: "Ñuble" },
-  { id: "Biobío", label: "Biobío" },
-  { id: "La Araucanía", label: "La Araucanía" },
-  { id: "Los Ríos", label: "Los Ríos" },
-  { id: "Los Lagos", label: "Los Lagos" },
-  { id: "Aysén", label: "Aysén" },
-  { id: "Magallanes", label: "Magallanes" },
-];
 
-// ── Chip individual (igual a LibChip de Biblioteca) ───────────────────────────
+// ── Chip individual ───────────────────────────────────────────────────────────
 function ResoChip({ label, sel, onPress }: { label: string; sel: boolean; onPress: () => void }) {
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
@@ -74,7 +56,7 @@ function ResoChip({ label, sel, onPress }: { label: string; sel: boolean; onPres
   );
 }
 
-// ── Fila de chips animada (mismo patrón que Biblioteca) ───────────────────────
+// ── Fila de chips animada ─────────────────────────────────────────────────────
 function AnimatedFilterRow({
   tabs,
   activeFilter,
@@ -182,7 +164,36 @@ function AnimatedFilterRow({
   );
 }
 
-// ── Card de Resonador (artista o expansor) ────────────────────────────────────
+// ── Fila de países (sin animación — persistente) ──────────────────────────────
+function CountryChipRow({
+  countries,
+  selected,
+  onSelect,
+}: {
+  countries: string[];
+  selected: string | null;
+  onSelect: (c: string | null) => void;
+}) {
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.chipRowContent}
+      style={styles.chipRow}
+    >
+      {countries.map((c) => (
+        <ResoChip
+          key={c}
+          label={`${COUNTRY_FLAGS[c] ?? ""} ${c}`}
+          sel={selected === c}
+          onPress={() => onSelect(selected === c ? null : c)}
+        />
+      ))}
+    </ScrollView>
+  );
+}
+
+// ── Card de Resonador ─────────────────────────────────────────────────────────
 type CardItem =
   | { kind: "artista"; data: Artist }
   | { kind: "expansor"; data: Expansor };
@@ -196,13 +207,6 @@ const ResonadorCard = memo(function ResonadorCard({
 }) {
   const isArtista = item.kind === "artista";
   const d = item.data;
-  const certified = d.certified;
-  const subtitle = isArtista
-    ? (d as Artist).genre
-    : (d as Expansor).specialty[0] ?? "";
-  const location = isArtista
-    ? (d as Artist).country
-    : `${(d as Expansor).city}`;
 
   const photoSize = cardW - 16;
 
@@ -216,7 +220,6 @@ const ResonadorCard = memo(function ResonadorCard({
       onPress={handlePress}
       style={({ pressed }) => [styles.card, { width: cardW, opacity: pressed ? 0.82 : 1 }]}
     >
-      {/* Foto circular */}
       <View style={styles.photoOuter}>
         <View
           style={[
@@ -238,7 +241,6 @@ const ResonadorCard = memo(function ResonadorCard({
         </View>
       </View>
 
-      {/* Nombre */}
       <View style={styles.cardInfo}>
         <Text style={styles.cardName} numberOfLines={2}>{d.name}</Text>
       </View>
@@ -255,7 +257,14 @@ export default function ResonadoresScreen() {
 
   const { width: screenWidth } = useWindowDimensions();
   const [activeTab, setActiveTab] = useState<"artistas" | "expansores">("artistas");
+
+  // Artistas filter
   const [activeFilter, setActiveFilter] = useState("Todos");
+
+  // Expansores filters — cascada país → región
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+
   const [query, setQuery] = useState("");
   const [searchVisible, setSearchVisible] = useState(false);
 
@@ -264,13 +273,30 @@ export default function ResonadoresScreen() {
     setSearchVisible((v) => !v);
   }
 
-  const filterTabs = activeTab === "artistas" ? ARTISTA_FILTER_TABS : EXPANSOR_FILTER_TABS;
+  // Países presentes en EXPANSORES, ordenados alfabéticamente
+  const availableCountries = useMemo(() => {
+    const set = new Set(EXPANSORES.map((e) => e.country));
+    return [...set].sort();
+  }, []);
+
+  // Regiones del país seleccionado
+  const regionTabs = useMemo(() => {
+    if (!selectedCountry) return [];
+    return (REGIONS_BY_COUNTRY[selectedCountry] ?? []).map((r) => ({ id: r, label: r }));
+  }, [selectedCountry]);
+
+  function handleSelectCountry(c: string | null) {
+    setSelectedCountry(c);
+    setSelectedRegion(null);
+  }
+
   const activeFilterKey = activeFilter === "Todos" ? null : activeFilter;
 
-  // Reset filter when switching tab
   function switchTab(t: "artistas" | "expansores") {
     setActiveTab(t);
     setActiveFilter("Todos");
+    setSelectedCountry(null);
+    setSelectedRegion(null);
     setQuery("");
   }
 
@@ -288,23 +314,22 @@ export default function ResonadoresScreen() {
         .map((a) => ({ kind: "artista" as const, data: a }));
     } else {
       return EXPANSORES.filter((e) => {
-        if (activeFilter !== "Todos") {
-          if (!e.region?.toLowerCase().includes(activeFilter.toLowerCase())) return false;
-        }
+        if (selectedCountry && e.country !== selectedCountry) return false;
+        if (selectedRegion && e.region !== selectedRegion) return false;
         if (q) {
           return (
             e.name.toLowerCase().includes(q) ||
             e.city.toLowerCase().includes(q) ||
             (e.region ?? "").toLowerCase().includes(q) ||
+            e.country.toLowerCase().includes(q) ||
             e.specialty.some((s) => s.toLowerCase().includes(q))
           );
         }
         return true;
       }).map((e) => ({ kind: "expansor" as const, data: e }));
     }
-  }, [activeTab, activeFilter, query]);
+  }, [activeTab, activeFilter, selectedCountry, selectedRegion, query]);
 
-  // Card width: 3 columnas exactas llenando el ancho real del dispositivo
   const numCols = 3;
   const SCREEN_PAD = H_PAD * 2;
   const cardW = Math.floor((screenWidth - SCREEN_PAD - CARD_GAP * 2) / numCols);
@@ -316,7 +341,6 @@ export default function ResonadoresScreen() {
 
       {/* ── Header ── */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        {/* Título + iconos */}
         <View style={styles.titleRow}>
           <View>
             <Text style={styles.title}>Equipo</Text>
@@ -336,14 +360,13 @@ export default function ResonadoresScreen() {
           </View>
         </View>
 
-        {/* Buscador inline (visible al tocar el icono) */}
         {searchVisible && (
           <View style={styles.searchWrap}>
             <Feather name="search" size={14} color="rgba(212,175,55,0.55)" style={{ marginRight: 8 }} />
             <TextInput
               value={query}
               onChangeText={setQuery}
-              placeholder={activeTab === "artistas" ? "Buscar artista..." : "Buscar por nombre o ciudad..."}
+              placeholder={activeTab === "artistas" ? "Buscar artista..." : "Buscar por nombre, ciudad o país..."}
               placeholderTextColor="rgba(244,218,213,0.30)"
               style={styles.searchInput}
               returnKeyType="search"
@@ -357,7 +380,7 @@ export default function ResonadoresScreen() {
           </View>
         )}
 
-        {/* Tab switcher — ancho completo */}
+        {/* Tab switcher */}
         <View style={styles.tabPill}>
           {(["artistas", "expansores"] as const).map((t) => {
             const isActive = activeTab === t;
@@ -387,15 +410,39 @@ export default function ResonadoresScreen() {
         </View>
       </View>
 
-      {/* ── Filtros chip animados (mismo sistema que Biblioteca) ── */}
+      {/* ── Filtros ── */}
       <View style={styles.filtersScroll}>
-        <AnimatedFilterRow
-          key={activeTab}
-          tabs={filterTabs}
-          activeFilter={activeFilterKey}
-          onSelect={(id) => setActiveFilter(id)}
-          onClear={() => setActiveFilter("Todos")}
-        />
+        {activeTab === "artistas" ? (
+          <AnimatedFilterRow
+            key="artistas"
+            tabs={ARTISTA_FILTER_TABS}
+            activeFilter={activeFilterKey}
+            onSelect={(id) => setActiveFilter(id)}
+            onClear={() => setActiveFilter("Todos")}
+          />
+        ) : (
+          <View style={styles.expansorFilters}>
+            {/* Nivel 1: Países */}
+            <CountryChipRow
+              countries={availableCountries}
+              selected={selectedCountry}
+              onSelect={handleSelectCountry}
+            />
+
+            {/* Nivel 2: Regiones (solo cuando hay país seleccionado) */}
+            {selectedCountry && regionTabs.length > 0 && (
+              <View style={styles.regionRow}>
+                <AnimatedFilterRow
+                  key={selectedCountry}
+                  tabs={regionTabs}
+                  activeFilter={selectedRegion}
+                  onSelect={(id) => setSelectedRegion(id)}
+                  onClear={() => setSelectedRegion(null)}
+                />
+              </View>
+            )}
+          </View>
+        )}
       </View>
 
       {/* ── Grid ── */}
@@ -453,7 +500,6 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 
-  // Search
   searchWrap: {
     flexDirection: "row",
     alignItems: "center",
@@ -472,7 +518,6 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
 
-  // Tab pill — ancho completo
   tabPill: {
     flexDirection: "row",
     backgroundColor: "rgba(74,12,12,0.35)",
@@ -500,7 +545,7 @@ const styles = StyleSheet.create({
   },
   tabBtnSub: {
     fontSize: 10,
-    color: "rgba(244,218,213,0.30)",
+    color: "rgba(244,218,214,0.30)",
     marginTop: 2,
     textAlign: "center",
   },
@@ -508,8 +553,13 @@ const styles = StyleSheet.create({
     color: "rgba(27,6,15,0.65)",
   },
 
-  // Filters — igual que Biblioteca
   filtersScroll: { paddingHorizontal: H_PAD, paddingBottom: 6 },
+
+  // Expansores: dos niveles de filtro
+  expansorFilters: { gap: 6 },
+  regionRow: { marginTop: 2 },
+
+  // Chips
   animChipWrap: { flexDirection: "row", alignItems: "center" },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
   chipCloseBtn: {
@@ -580,7 +630,6 @@ const styles = StyleSheet.create({
   locationRow: { flexDirection: "row", alignItems: "center", gap: 3 },
   cardLocation: { fontSize: 10, color: "rgba(244,218,213,0.40)", textAlign: "center" },
 
-  // Empty
   empty: { alignItems: "center", paddingTop: 60, gap: 12 },
   emptyText: { fontSize: 14, color: "rgba(244,218,213,0.30)" },
 });
