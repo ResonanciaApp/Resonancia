@@ -183,6 +183,7 @@ const PillTab = memo(function PillTab({
       ) : (
         <View style={[styles.pillTab, {
           backgroundColor: "transparent",
+          borderWidth: 1,
           borderColor: "rgba(233,196,106,0.4)",
         }]}>
           <MaterialCommunityIcons name={tab.icon as any} size={17} color="rgba(233,196,106,0.4)" />
