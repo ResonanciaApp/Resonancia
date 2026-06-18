@@ -140,7 +140,7 @@ export default function ExpansorPerfilScreen() {
               style={({ pressed }) => [
                 styles.actionPill,
                 following && styles.actionPillActive,
-                { opacity: pressed ? 0.75 : 1, width: 110, justifyContent: "center" },
+                { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
               ]}
             >
               {following && (
@@ -174,7 +174,7 @@ export default function ExpansorPerfilScreen() {
               style={({ pressed }) => [
                 styles.actionPill,
                 friendRequested && styles.actionPillSent,
-                { opacity: pressed ? 0.75 : 1 },
+                { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
               ]}
             >
               <Feather
@@ -183,14 +183,17 @@ export default function ExpansorPerfilScreen() {
                 color={friendRequested ? "rgba(242,231,228,0.55)" : "#FFFFFF"}
               />
               <Text style={[styles.actionPillText, friendRequested && styles.actionPillTextSent]}>
-                {friendRequested ? "Solicitado" : "Solicitud amistad"}
+                {friendRequested ? "Solicitado" : "Amistad"}
               </Text>
             </Pressable>
 
             {/* Enviar mensaje */}
             <Pressable
               onPress={() => router.push("/mensajes" as never)}
-              style={({ pressed }) => [styles.actionPill, { opacity: pressed ? 0.75 : 1 }]}
+              style={({ pressed }) => [
+                styles.actionPill,
+                { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
+              ]}
             >
               <Feather name="message-circle" size={13} color="#FFFFFF" />
               <Text style={styles.actionPillText}>Enviar mensaje</Text>
@@ -336,7 +339,7 @@ const styles = StyleSheet.create({
   /* — Pills de acción (mismo estilo que headerTabChip de Inicio) — */
   actionPillsRow: {
     flexDirection: "row",
-    justifyContent: "center",
+    alignSelf: "stretch",
     gap: 8,
     marginTop: 14,
   },
