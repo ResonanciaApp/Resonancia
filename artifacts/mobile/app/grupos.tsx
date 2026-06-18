@@ -20,7 +20,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
 import { type GrupoLocal, isAdminGrupo, useGrupos } from "@/hooks/useGrupos";
 
-const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
+const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 
 // ─── Image gallery (same as crear.tsx) ───────────────────────────────────────
 const GALLERY = [

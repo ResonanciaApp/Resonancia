@@ -42,7 +42,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
 
-const BG_GRADIENT = ["#4A0C0C", "#27070E", "#1B060F"] as const;
+const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 
 const AVATAR_PALETTE = ["#D4709A", "#8AAAD4", "#f4c993", "#A8C4A8", "#C8B4E0", "#EDD9B8"];
 
