@@ -547,6 +547,10 @@ export default function MezcladorScreen() {
     setMoodFilter(null);
     setTagFilters([]);
     setBgPaletteId(DEFAULT_MIXER_BG_PALETTE);
+    AsyncStorage.setItem(
+      SETTINGS_KEY,
+      JSON.stringify({ moodFilter: null, tagFilters: [], bgPaletteId: DEFAULT_MIXER_BG_PALETTE }),
+    ).catch(() => {});
   };
 
   const bgPalette = getMixerBgPalette(bgPaletteId);
