@@ -2,7 +2,9 @@ import { Feather } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import React from "react";
 import {
+  Alert,
   Linking,
   Platform,
   Pressable,
@@ -24,6 +26,9 @@ export default function ExpansorPerfilScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
+
+  const [following, setFollowing] = React.useState(false);
+  const [friendRequested, setFriendRequested] = React.useState(false);
 
   const expansor = getExpansorById(id);
 
@@ -125,6 +130,71 @@ export default function ExpansorPerfilScreen() {
               </Text>
               <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>siguiendo</Text>
             </View>
+          </View>
+
+          {/* ── 3 pills de acción ── */}
+          <View style={styles.actionPillsRow}>
+            {/* Seguir */}
+            <Pressable
+              onPress={() => setFollowing((v) => !v)}
+              style={({ pressed }) => [
+                styles.actionPill,
+                following && styles.actionPillActive,
+                { opacity: pressed ? 0.75 : 1 },
+              ]}
+            >
+              {following && (
+                <LinearGradient
+                  colors={["#D6AD5F", "#B47344"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={StyleSheet.absoluteFill}
+                />
+              )}
+              <Feather
+                name={following ? "user-check" : "user-plus"}
+                size={13}
+                color={following ? "#1B060F" : "#FFFFFF"}
+              />
+              <Text style={[styles.actionPillText, following && styles.actionPillTextActive]}>
+                {following ? "Siguiendo" : "Seguir"}
+              </Text>
+            </Pressable>
+
+            {/* Solicitud amistad */}
+            <Pressable
+              onPress={() => {
+                if (friendRequested) {
+                  Alert.alert("Solicitud enviada", "Ya enviaste una solicitud de amistad a este usuario.");
+                } else {
+                  setFriendRequested(true);
+                  Alert.alert("¡Listo!", "Solicitud de amistad enviada.");
+                }
+              }}
+              style={({ pressed }) => [
+                styles.actionPill,
+                friendRequested && styles.actionPillSent,
+                { opacity: pressed ? 0.75 : 1 },
+              ]}
+            >
+              <Feather
+                name={friendRequested ? "user-x" : "users"}
+                size={13}
+                color={friendRequested ? "rgba(242,231,228,0.55)" : "#FFFFFF"}
+              />
+              <Text style={[styles.actionPillText, friendRequested && styles.actionPillTextSent]}>
+                {friendRequested ? "Solicitado" : "Solicitud amistad"}
+              </Text>
+            </Pressable>
+
+            {/* Enviar mensaje */}
+            <Pressable
+              onPress={() => router.push("/mensajes" as never)}
+              style={({ pressed }) => [styles.actionPill, { opacity: pressed ? 0.75 : 1 }]}
+            >
+              <Feather name="message-circle" size={13} color="#FFFFFF" />
+              <Text style={styles.actionPillText}>Enviar mensaje</Text>
+            </Pressable>
           </View>
         </View>
 
@@ -262,6 +332,44 @@ const styles = StyleSheet.create({
   followCountNum: { fontSize: 18, fontWeight: "700" },
   followCountLabel: { fontSize: 11, marginTop: 1 },
   followCountDivider: { width: 1, height: 28 },
+
+  /* — Pills de acción (mismo estilo que headerTabChip de Inicio) — */
+  actionPillsRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: 8,
+    marginTop: 14,
+  },
+  actionPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    borderRadius: 20,
+    paddingHorizontal: 14,
+    height: 34,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.07)",
+  },
+  actionPillActive: {
+    backgroundColor: "transparent",
+  },
+  actionPillSent: {
+    backgroundColor: "rgba(255,255,255,0.04)",
+  },
+  actionPillText: {
+    fontSize: 13,
+    fontWeight: "400",
+    color: "#FFFFFF",
+    letterSpacing: 0.1,
+  },
+  actionPillTextActive: {
+    color: "#1B060F",
+    fontWeight: "600",
+  },
+  actionPillTextSent: {
+    color: "rgba(242,231,228,0.45)",
+  },
 
   /* ── Bloque Expansor ── */
   expansorSection: {
