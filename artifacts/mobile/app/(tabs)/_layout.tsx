@@ -338,9 +338,9 @@ const styles = StyleSheet.create({
   pillWrap: {
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 10,
-    paddingTop: 5,
-    paddingBottom: 4,
+    paddingHorizontal: 13,
+    paddingTop: 8,
+    paddingBottom: 7,
     gap: 2,
   },
   pill: {
