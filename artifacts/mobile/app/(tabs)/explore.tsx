@@ -262,17 +262,17 @@ export default function ExploreScreen() {
           style={styles.searchBarBorder}
         >
         <View style={styles.searchBar}>
-          <Feather name="search" size={16} color="rgba(212,175,55,0.65)" />
+          <Feather name="search" size={16} color="rgba(0,0,0,0.40)" />
           <TextInput
             value={query}
             onChangeText={setQuery}
             placeholder="Buscar sesiones, músicas, sonidos..."
-            placeholderTextColor="rgba(244,218,213,0.35)"
+            placeholderTextColor="rgba(0,0,0,0.35)"
             style={styles.searchInput}
           />
           {query.length > 0 && (
             <Pressable onPress={() => setQuery("")}>
-              <Feather name="x" size={16} color="rgba(244,218,213,0.45)" />
+              <Feather name="x" size={16} color="rgba(0,0,0,0.40)" />
             </Pressable>
           )}
         </View>
@@ -553,10 +553,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 15,
     borderRadius: 9,
-    backgroundColor: "#160108",
+    backgroundColor: "#FFFFFF",
     gap: 10,
   },
-  searchInput: { flex: 1, fontSize: 14, color: "#F4DAD5" },
+  searchInput: { flex: 1, fontSize: 14, color: "#1B060F" },
 
   section:      { paddingHorizontal: H_PAD, marginBottom: 23 },
   sectionRow:   { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 11 },
