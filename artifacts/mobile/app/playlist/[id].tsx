@@ -154,7 +154,7 @@ export default function PlaylistDetailScreen() {
                 <SacredGlyph
                   id={playlist.coverGeometryId as GeometryId}
                   color={GOLD}
-                  size={110}
+                  size={142}
                   strokeWidth={1.2}
                   opacity={1}
                 />
