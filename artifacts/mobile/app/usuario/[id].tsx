@@ -94,12 +94,10 @@ export default function UsuarioScreen() {
           <LinearGradient
       style={styles.root}
       colors={BG_GRADIENT}
-      locations={[0, 0.5, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
         {Header}
         <View style={styles.notFound}>
           <ActivityIndicator color={colors.primary} />
@@ -113,12 +111,10 @@ export default function UsuarioScreen() {
           <LinearGradient
       style={styles.root}
       colors={BG_GRADIENT}
-      locations={[0, 0.5, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
         {Header}
         <View style={styles.notFound}>
           <Feather name="user-x" size={40} color={colors.mutedForeground} />
@@ -149,12 +145,10 @@ export default function UsuarioScreen() {
         <LinearGradient
       style={styles.root}
       colors={BG_GRADIENT}
-      locations={[0, 0.5, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#4A0C0C", "#1B060F"]} style={StyleSheet.absoluteFill} />
 
       <ScrollView
         style={styles.scroll}
