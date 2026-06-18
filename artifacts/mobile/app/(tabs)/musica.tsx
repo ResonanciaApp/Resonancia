@@ -148,7 +148,7 @@ const PillTab = memo(function PillTab({
           style={styles.pillTabBorder}
         >
           <LinearGradient
-            colors={TAB_GRADIENT[tab.id]}
+            colors={TAB_HEADER_GRADIENT[tab.id]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={styles.pillTabInner}
