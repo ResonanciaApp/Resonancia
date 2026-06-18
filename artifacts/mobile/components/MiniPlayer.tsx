@@ -26,7 +26,7 @@ const CAROUSEL_THUMB_GAP  = 10;   // separación fija entre thumbnails en el car
 const CAROUSEL_MAX_OPEN_W = 280;  // techo para que el texto nunca desaparezca del todo
 
 const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
-const MIX_BG      = "rgba(0,0,0,0.30)";
+const MIX_BG      = "rgba(0,0,0,0.70)";
 const PILL_BORDER = "rgba(110,80,200,0.5)";
 const BORDER_R    = 12;
 
