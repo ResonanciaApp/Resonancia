@@ -737,7 +737,7 @@ export default function MezcladorScreen() {
                         <Pressable key={catId} onPress={() => setSubTab(sel ? null : catId)}>
                           {sel ? (
                             <LinearGradient
-                              colors={GOLD_BORDER_PILL}
+                              colors={["rgba(212,175,55,0.35)", "rgba(212,175,55,0.65)", "rgba(212,175,55,0.65)", "rgba(212,175,55,0.35)"]}
                               start={{ x: 0, y: 0.5 }}
                               end={{ x: 1, y: 0.5 }}
                               style={styles.subTabBorderOuter}
