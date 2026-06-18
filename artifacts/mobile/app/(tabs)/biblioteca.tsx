@@ -311,7 +311,7 @@ function UserPlaylistRow({ pl, onPress, onLongPress }: { pl: UserPlaylist; onPre
         {pl.coverType === "geometrix" && pl.coverGeometryId ? (
           <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={120} strokeWidth={1.2} opacity={1} />
         ) : pl.coverType === "creation" && pl.coverCreationId ? (
-          <CreationCoverPreview creationId={pl.coverCreationId} size={70} />
+          <CreationCoverPreview creationId={pl.coverCreationId} size={72} />
         ) : pl.coverUri ? (
           <Image source={{ uri: pl.coverUri }} style={styles.userPlCover} contentFit="cover" />
         ) : (
@@ -1586,8 +1586,8 @@ const styles = StyleSheet.create({
 
   // ── User playlist cover ──────────────────────────────────────────────────────
   userPlCover: {
-    width: 70,
-    height: 62,
+    width: 72,
+    height: 68,
     borderRadius: 8,
     overflow: "hidden",
     backgroundColor: "rgba(212,175,55,0.08)",
