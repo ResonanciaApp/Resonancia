@@ -611,7 +611,7 @@ export default function HomeScreen2() {
           sessions={filteredRecent}
           isPremium={isPremium}
           onPress={(s) => { playSession(s); router.push("/player" as never); }}
-          style={{ marginBottom: 33 }}
+          style={{ marginBottom: SECTION_GAP }}
           titleOffset={10}
           cardWidth={RECENT_CARD_W}
         />
@@ -622,7 +622,7 @@ export default function HomeScreen2() {
           sessions={filteredPopular}
           isPremium={isPremium}
           onPress={(s) => { playSession(s); router.push("/player" as never); }}
-          style={{ marginBottom: 33 }}
+          style={{ marginBottom: SECTION_GAP }}
           titleOffset={10}
           cardWidth={RECENT_CARD_W}
         />
