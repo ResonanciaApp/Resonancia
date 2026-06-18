@@ -1011,39 +1011,6 @@ export default function ProfileScreen() {
           )}
         </Pressable>
 
-        {/* Banner premium (solo Free) */}
-        {!isPremium && (
-          <Pressable onPress={() => router.push("/membresia" as never)} style={styles.premiumBanner}>
-            <LinearGradient
-              colors={["#2E0510", "#160108"]}
-              start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
-              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-            />
-            <View style={styles.premiumGlow} />
-            <View style={styles.premiumLeft}>
-              <View style={styles.premiumTitleRow}>
-                <Image source={require("../../assets/images/estrella-premium.png")} style={{ width: 13, height: 13, marginRight: 6 }} contentFit="contain" />
-                <Text style={[styles.premiumTitle, { color: "#EDE7DA" }]}>Prueba Premium</Text>
-              </View>
-              <Text style={[styles.premiumSub, { color: "#FFFFFF", marginBottom: 10 }]}>
-                Lleva tu relajación al siguiente nivel y accede a:
-              </Text>
-              {[
-                { icon: "headphones", text: "+500 meditaciones" },
-                { icon: "music",      text: "+50 Música y sonidos relajantes" },
-                { icon: "users",      text: "Muro general de la comunidad" },
-              ].map((f) => (
-                <View key={f.text} style={styles.premiumFeatureRow}>
-                  <Feather name={f.icon as never} size={11} color="#D4AF37" />
-                  <Text style={[styles.premiumFeatureText, { color: "#FFFFFF" }]}>{f.text}</Text>
-                </View>
-              ))}
-            </View>
-            <View style={[styles.premiumBadge, { backgroundColor: "#3D0E16", borderColor: "#D4AF37" }]}>
-              <Image source={require("../../assets/images/estrella-premium.png")} style={{ width: 20, height: 20 }} contentFit="contain" />
-            </View>
-          </Pressable>
-        )}
 
         {/* ── Accesos rápidos ── */}
         <QuickAccessGrid
@@ -1509,34 +1476,6 @@ const styles = StyleSheet.create({
   membershipSub: { fontSize: 12 },
   membershipAction: { fontSize: 13, fontWeight: "600" },
 
-  // Premium
-  premiumBanner: {
-    borderRadius: 20,
-    padding: 18,
-    flexDirection: "row",
-    alignItems: "center",
-    overflow: "hidden",
-    marginBottom: 32,
-    gap: 14,
-    borderWidth: 1,
-    borderColor: "rgba(169,122,52,0.45)",
-  },
-  premiumGlow: {
-    position: "absolute",
-    top: -20,
-    left: -20,
-    width: 100,
-    height: 60,
-    borderRadius: 50,
-    backgroundColor: "rgba(35,66,54,0.5)",
-  },
-  premiumLeft: { flex: 1 },
-  premiumTitleRow: { flexDirection: "row", alignItems: "center", marginBottom: 4 },
-  premiumTitle: { fontSize: 15, fontWeight: "700" },
-  premiumSub: { fontSize: 12, lineHeight: 17 },
-  premiumFeatureRow: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 3 },
-  premiumFeatureText: { fontSize: 11, lineHeight: 16 },
-  premiumBadge: { width: 36, height: 36, borderRadius: 18, borderWidth: 1, alignItems: "center", justifyContent: "center" },
 
   // Favoritos
   favRow: {
