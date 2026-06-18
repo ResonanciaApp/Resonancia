@@ -6,6 +6,7 @@ import React from "react";
 import {
   Alert,
   Linking,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -35,6 +36,7 @@ export default function ExpansorPerfilScreen() {
 
   const [following, setFollowing] = React.useState(false);
   const [friendRequested, setFriendRequested] = React.useState(false);
+  const [lightboxUri, setLightboxUri] = React.useState<string | null>(null);
 
   const expansor = getExpansorById(id);
 
@@ -321,19 +323,43 @@ export default function ExpansorPerfilScreen() {
             <Text style={[styles.galleryTitle, { color: colors.foreground }]}>Descubre lo que hago</Text>
             <View style={styles.galleryGrid}>
               {(expansor.gallery ?? []).slice(0, 9).map((uri, i) => (
-                <Image
+                <Pressable
                   key={i}
-                  source={{ uri }}
-                  style={[styles.galleryCell, { width: cellSize, height: cellSize * 1.3 }]}
-                  contentFit="cover"
-                  placeholder={BLUR_PLACEHOLDER}
-                  transition={IMAGE_TRANSITION}
-                />
+                  onPress={() => setLightboxUri(uri)}
+                  style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
+                >
+                  <Image
+                    source={{ uri }}
+                    style={[styles.galleryCell, { width: cellSize, height: cellSize * 1.3 }]}
+                    contentFit="cover"
+                    placeholder={BLUR_PLACEHOLDER}
+                    transition={IMAGE_TRANSITION}
+                  />
+                </Pressable>
               ))}
             </View>
           </View>
         )}
       </ScrollView>
+
+      {/* ── Lightbox ── */}
+      <Modal visible={!!lightboxUri} transparent animationType="fade" onRequestClose={() => setLightboxUri(null)}>
+        <Pressable style={styles.lightboxBackdrop} onPress={() => setLightboxUri(null)}>
+          <Image
+            source={{ uri: lightboxUri ?? "" }}
+            style={styles.lightboxImage}
+            contentFit="contain"
+            placeholder={BLUR_PLACEHOLDER}
+          />
+          <Pressable
+            onPress={() => setLightboxUri(null)}
+            style={[styles.lightboxClose, { top: (Platform.OS === "web" ? 20 : insets.top) + 12 }]}
+            hitSlop={12}
+          >
+            <Feather name="x" size={20} color="#FFFFFF" />
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -514,5 +540,27 @@ const styles = StyleSheet.create({
   galleryCell: {
     borderRadius: 10,
     backgroundColor: "rgba(255,255,255,0.05)",
+  },
+
+  /* ── Lightbox ── */
+  lightboxBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.92)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  lightboxImage: {
+    width: "100%",
+    height: "80%",
+  },
+  lightboxClose: {
+    position: "absolute",
+    right: 18,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: "rgba(255,255,255,0.12)",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
