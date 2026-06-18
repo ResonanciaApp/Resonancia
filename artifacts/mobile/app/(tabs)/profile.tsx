@@ -9,6 +9,7 @@ import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Animated,
   Easing,
@@ -49,6 +50,8 @@ import { useMixer } from "@/context/MixerContext";
 import { useColors } from "@/hooks/useColors";
 import { getSessionById } from "@/data/sessions";
 import { getExpansorById } from "@/data/expansores";
+import { uploadLocalFile } from "@/lib/upload";
+import { resolveAvatarUrl } from "@/lib/avatar";
 import { usePremium } from "@/context/PremiumContext";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import {
@@ -486,6 +489,8 @@ export default function ProfileScreen() {
   const [epEmail, setEpEmail] = useState("");
   const [epInstagram, setEpInstagram] = useState("");
   const [epQuote, setEpQuote] = useState("");
+  const [epPhotos, setEpPhotos] = useState<string[]>([]);
+  const [epPhotoUploading, setEpPhotoUploading] = useState(false);
 
   function openExpansorEdit() {
     setEpSpecialties((expansorProfile?.specialties ?? []).join(", "));
@@ -494,7 +499,38 @@ export default function ProfileScreen() {
     setEpEmail(expansorProfile?.email ?? "");
     setEpInstagram(expansorProfile?.instagram ?? "");
     setEpQuote(expansorProfile?.quote ?? "");
+    setEpPhotos(expansorProfile?.photos ?? []);
     setExpansorEditVisible(true);
+  }
+
+  async function pickAndUploadExpansorPhoto() {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permiso necesario", "Necesitamos acceso a tu galería para subir fotos.");
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [4, 5],
+      quality: 0.8,
+    });
+    if (result.canceled || !result.assets[0]) return;
+    const asset = result.assets[0];
+    setEpPhotoUploading(true);
+    try {
+      const ext = asset.uri.split(".").pop()?.split("?")[0] ?? "jpg";
+      const objectPath = await uploadLocalFile(asset.uri, "image/jpeg", `expansor_photo_${Date.now()}.${ext}`, asset.fileSize ?? 500_000);
+      setEpPhotos((prev) => [...prev, objectPath]);
+    } catch {
+      Alert.alert("Error", "No se pudo subir la foto. Intentá de nuevo.");
+    } finally {
+      setEpPhotoUploading(false);
+    }
+  }
+
+  function removeExpansorPhoto(idx: number) {
+    setEpPhotos((prev) => prev.filter((_, i) => i !== idx));
   }
 
   function saveExpansorProfile() {
@@ -505,7 +541,7 @@ export default function ProfileScreen() {
         phone: epPhone || null,
         email: epEmail || null,
         instagram: epInstagram || null,
-        photos: expansorProfile?.photos ?? [],
+        photos: epPhotos,
         quote: epQuote || null,
       },
     });
@@ -1489,6 +1525,41 @@ export default function ProfileScreen() {
                     <TextInput value={epQuote} onChangeText={setEpQuote} placeholder="Tu frase inspiracional..." placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} />
                   </View>
                 </View>
+
+                {/* ── Galería de fotos ── */}
+                <View style={styles.fieldWrap}>
+                  <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Galería de fotos</Text>
+                  <View style={styles.epPhotoGrid}>
+                    {epPhotos.map((objectPath, idx) => {
+                      const uri = resolveAvatarUrl(objectPath) ?? objectPath;
+                      return (
+                        <View key={idx} style={styles.epPhotoCell}>
+                          <Image source={{ uri }} style={styles.epPhotoCellImg} contentFit="cover" />
+                          <Pressable
+                            onPress={() => removeExpansorPhoto(idx)}
+                            style={styles.epPhotoRemoveBtn}
+                            hitSlop={4}
+                          >
+                            <Feather name="x" size={11} color="#FFFFFF" />
+                          </Pressable>
+                        </View>
+                      );
+                    })}
+                    {epPhotos.length < 9 && (
+                      <Pressable
+                        onPress={pickAndUploadExpansorPhoto}
+                        disabled={epPhotoUploading}
+                        style={({ pressed }) => [styles.epPhotoAddBtn, { opacity: (pressed || epPhotoUploading) ? 0.6 : 1 }]}
+                      >
+                        {epPhotoUploading
+                          ? <ActivityIndicator size="small" color="#D4AF37" />
+                          : <Feather name="plus" size={22} color="#D4AF37" />
+                        }
+                      </Pressable>
+                    )}
+                  </View>
+                </View>
+
                 <Pressable
                   onPress={saveExpansorProfile}
                   disabled={updateExpansorMutation.isPending}
@@ -1881,4 +1952,43 @@ const styles = StyleSheet.create({
     flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 4,
   },
   epModalTitle: { fontSize: 17, fontWeight: "700", color: "#F4DAD5" },
+  epPhotoGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginTop: 4,
+  },
+  epPhotoCell: {
+    width: 80,
+    height: 96,
+    borderRadius: 10,
+    overflow: "hidden",
+    position: "relative",
+  },
+  epPhotoCellImg: {
+    width: "100%",
+    height: "100%",
+  },
+  epPhotoRemoveBtn: {
+    position: "absolute",
+    top: 4,
+    right: 4,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: "rgba(0,0,0,0.65)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  epPhotoAddBtn: {
+    width: 80,
+    height: 96,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderStyle: "dashed",
+    borderColor: "rgba(212,175,55,0.40)",
+    backgroundColor: "rgba(212,175,55,0.05)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
