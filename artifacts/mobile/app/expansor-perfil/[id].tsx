@@ -521,8 +521,8 @@ const styles = StyleSheet.create({
     fontSize: 11, color: "rgba(212,175,55,0.55)", marginTop: 2,
   },
   certBannerIcon: {
-    width: 38, height: 38, borderRadius: 19, overflow: "hidden",
-    borderWidth: 1.5, borderColor: "rgba(212,175,55,0.50)",
+    width: 35, height: 35, borderRadius: 18, overflow: "hidden",
+    borderWidth: 1.5, borderColor: "rgba(212,175,55,0.20)",
     alignItems: "center", justifyContent: "center", flexShrink: 0,
   },
   certBannerStar: { fontSize: 17, color: "rgba(212,175,55,0.90)", fontWeight: "800" },
