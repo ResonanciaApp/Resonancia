@@ -223,6 +223,28 @@ export const EXPANSORES: Expansor[] = [
     specialty: ["Cuencos de Metal", "Cuencos Tibetanos"],
     certified: true,
   },
+  {
+    id: "lucia-rojas-ve",
+    name: "Lucía Rojas",
+    photo: require("@/assets/images/meditation-person.png"),
+    bio: "Terapeuta holística y facilitadora de baños de sonido en Caracas. Integra cuencos tibetanos con técnicas de respiración consciente para el equilibrio emocional y la reducción del estrés.",
+    city: "Caracas",
+    country: "Venezuela",
+    region: "Caracas",
+    specialty: ["Cuencos Tibetanos", "Respiración Consciente"],
+    certified: true,
+  },
+  {
+    id: "gabriel-flores-bo",
+    name: "Gabriel Flores",
+    photo: require("@/assets/images/crystal-bowls.png"),
+    bio: "Músico y sanador sonoro con raíces en la tradición andina. Fusiona instrumentos ancestrales de los Andes con cuencos de cuarzo en ceremonias de sonido en La Paz y el altiplano boliviano.",
+    city: "La Paz",
+    country: "Bolivia",
+    region: "La Paz",
+    specialty: ["Instrumentos Andinos", "Cuencos de Cuarzo"],
+    certified: false,
+  },
 ];
 
 export function getExpansorById(id?: string): Expansor | undefined {
