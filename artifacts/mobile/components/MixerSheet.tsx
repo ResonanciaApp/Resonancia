@@ -584,9 +584,9 @@ export function MixerSheet() {
                 accessibilityRole="button"
                 accessibilityLabel="Cerrar editor de mezcla"
               >
-                <Feather name="chevron-down" size={24} color="rgba(0,0,0,0.90)" />
+                <Feather name="chevron-down" size={24} color="rgba(92,31,126,0.85)" />
               </Pressable>
-              <Text style={[styles.title, { color: "rgba(0,0,0,0.90)", flex: 1 }]} numberOfLines={1}>
+              <Text style={[styles.title, { color: "rgba(92,31,126,0.85)", flex: 1 }]} numberOfLines={1}>
                 {originPreset?.name ?? "Tu mezcla"}
               </Text>
               <Pressable
@@ -599,9 +599,9 @@ export function MixerSheet() {
                 <MaterialCommunityIcons
                   name="tune-variant"
                   size={15}
-                  color="rgba(0,0,0,0.90)"
+                  color="rgba(92,31,126,0.85)"
                 />
-                <Text style={[styles.ajustesPillText, { color: "rgba(0,0,0,0.90)" }]}>
+                <Text style={[styles.ajustesPillText, { color: "rgba(92,31,126,0.85)" }]}>
                   Ajustes generales
                 </Text>
               </Pressable>
@@ -612,7 +612,7 @@ export function MixerSheet() {
                 accessibilityRole="button"
                 accessibilityLabel="Cerrar mezcla"
               >
-                <Feather name="x" size={22} color="rgba(0,0,0,0.90)" />
+                <Feather name="x" size={22} color="rgba(92,31,126,0.85)" />
               </Pressable>
             </View>
 
