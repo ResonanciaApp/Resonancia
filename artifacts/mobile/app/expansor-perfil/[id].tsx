@@ -219,7 +219,7 @@ export default function ExpansorPerfilScreen() {
             />
 
             {/* Texto */}
-            <View style={{ flex: 1, paddingLeft: 12 }}>
+            <View style={{ flex: 1, paddingLeft: 12, paddingVertical: 10, justifyContent: "center" }}>
               <MaskedView
                 maskElement={
                   <Text style={styles.certBannerTitle}>
@@ -237,12 +237,14 @@ export default function ExpansorPerfilScreen() {
             </View>
 
             {/* Ícono circular derecha */}
-            <View style={styles.certBannerIcon}>
-              <LinearGradient
-                colors={["rgba(212,175,55,0.30)", "rgba(184,134,11,0.20)"]}
-                style={StyleSheet.absoluteFill}
-              />
-              <Text style={styles.certBannerStar}>✦</Text>
+            <View style={{ paddingRight: 14, justifyContent: "center" }}>
+              <View style={styles.certBannerIcon}>
+                <LinearGradient
+                  colors={["rgba(212,175,55,0.30)", "rgba(184,134,11,0.20)"]}
+                  style={StyleSheet.absoluteFill}
+                />
+                <Text style={styles.certBannerStar}>✦</Text>
+              </View>
             </View>
           </View>
 
@@ -502,18 +504,15 @@ const styles = StyleSheet.create({
   },
   certBanner: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "stretch",
     borderRadius: 12,
     overflow: "hidden",
-    paddingRight: 14,
-    paddingVertical: 10,
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.18)",
     backgroundColor: "rgba(212,175,55,0.05)",
   },
   certBannerBar: {
     width: 5,
-    alignSelf: "stretch",
   },
   certBannerTitle: {
     fontSize: 13, fontWeight: "800", letterSpacing: 0.4, color: "#D4AF37",
