@@ -93,7 +93,7 @@ const MAIN_TABS: {
   color: string;
   categories: SoundCategoryId[] | null;
 }[] = [
-  { id: "popular",        label: "Todos",      icon: "music-note-eighth", color: "#1A1E2B", categories: null },
+  { id: "popular",        label: "Todos",      icon: "music-note-eighth", color: "#8C1A2B", categories: null },
   { id: "naturaleza",     label: "Naturales",  icon: "leaf",              color: "#3A9060", categories: ["animales", "bosque", "mar", "fuego", "desierto"] },
   { id: "ancestrales",    label: "Sagrados",   icon: "bell",              color: "#B09040", categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento", "vientos", "cantos", "percusion"] },
   { id: "sintetizadores", label: "Digital",    icon: "sine-wave",         color: "#3A80B0", categories: ["solfeggio"] },
@@ -198,10 +198,11 @@ type SoundCardProps = {
   locked: boolean;
   available: boolean;
   image: ReturnType<typeof getSoundImage> | string;
+  activeColor: string;
   onPress: () => void;
 };
 
-const SoundCard = memo(function SoundCard({ sound, idx, active, locked, available, image, onPress }: SoundCardProps) {
+const SoundCard = memo(function SoundCard({ sound, idx, active, locked, available, image, activeColor, onPress }: SoundCardProps) {
   const anim = useRef(new Animated.Value(active ? 1 : 0)).current;
   const [decorated, setDecorated] = useState(active);
 
@@ -220,7 +221,7 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
   const tiltDir   = idx % 2 === 0 ? "-4deg" : "4deg";
   const rotate    = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", tiltDir] });
   const scale     = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
-  const borderCol = anim.interpolate({ inputRange: [0, 1], outputRange: ["rgba(140,26,43,0)", "rgba(140,26,43,1)"] });
+  const borderCol = anim.interpolate({ inputRange: [0, 1], outputRange: [activeColor + "00", activeColor + "FF"] });
 
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
@@ -809,6 +810,7 @@ export default function MezcladorScreen() {
                     locked={!!s.isPremium && !isPremium}
                     available={hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id]}
                     image={getSoundImage(s.id) ?? REMOTE_SOUND_IMAGE_MAP[s.id]}
+                    activeColor={currentTabDef?.color ?? "#8C1A2B"}
                     onPress={() => handleSoundPress(s)}
                   />
                 ))}
