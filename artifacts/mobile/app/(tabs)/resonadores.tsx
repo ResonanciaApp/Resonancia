@@ -46,10 +46,12 @@ const ResonadorCard = memo(function ResonadorCard({
   const certified = d.certified;
   const subtitle = isArtista
     ? (d as Artist).genre
-    : (d as Expansor).specialty.join(" · ");
+    : (d as Expansor).specialty[0] ?? "";
   const location = isArtista
     ? (d as Artist).country
-    : `${(d as Expansor).city}, ${(d as Expansor).country}`;
+    : `${(d as Expansor).city}`;
+
+  const photoSize = cardW - 16;
 
   function handlePress() {
     if (isArtista) router.push(`/artista/${d.id}` as never);
@@ -61,32 +63,39 @@ const ResonadorCard = memo(function ResonadorCard({
       onPress={handlePress}
       style={({ pressed }) => [styles.card, { width: cardW, opacity: pressed ? 0.82 : 1 }]}
     >
-      {/* Foto */}
-      <View style={[styles.photoWrap, { width: cardW, height: cardW }]}>
-        <Image
-          source={d.photo}
-          style={StyleSheet.absoluteFill}
-          contentFit="cover"
-          placeholder={BLUR_PLACEHOLDER}
-          transition={IMAGE_TRANSITION}
-        />
-        <LinearGradient
-          colors={["transparent", "rgba(10,2,4,0.80)"]}
-          style={StyleSheet.absoluteFill}
-        />
-        {certified && (
-          <View style={styles.certBadge}>
-            <Text style={styles.certStar}>✦</Text>
-          </View>
-        )}
+      {/* Foto circular */}
+      <View style={styles.photoOuter}>
+        <View
+          style={[
+            styles.photoWrap,
+            {
+              width: photoSize,
+              height: photoSize,
+              borderRadius: photoSize / 2,
+            },
+          ]}
+        >
+          <Image
+            source={d.photo}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+            placeholder={BLUR_PLACEHOLDER}
+            transition={IMAGE_TRANSITION}
+          />
+          {certified && (
+            <View style={styles.certBadge}>
+              <Text style={styles.certStar}>✦</Text>
+            </View>
+          )}
+        </View>
       </View>
 
-      {/* Info */}
+      {/* Info centrada */}
       <View style={styles.cardInfo}>
-        <Text style={styles.cardName} numberOfLines={1}>{d.name}</Text>
+        <Text style={styles.cardName} numberOfLines={2}>{d.name}</Text>
         <Text style={styles.cardSub} numberOfLines={1}>{subtitle}</Text>
         <View style={styles.locationRow}>
-          <Feather name={isArtista ? "globe" : "map-pin"} size={10} color="rgba(212,175,55,0.6)" />
+          <Feather name={isArtista ? "globe" : "map-pin"} size={9} color="rgba(212,175,55,0.55)" />
           <Text style={styles.cardLocation} numberOfLines={1}>{location}</Text>
         </View>
       </View>
@@ -143,11 +152,10 @@ export default function ResonadoresScreen() {
     }
   }, [activeTab, activeFilter, query]);
 
-  // Card width: 2 columns with gap
-  const numCols = 2;
-  // We compute this as a fixed value to pass to the key extractor and card
+  // Card width: 3 columns with 2 gaps
+  const numCols = 3;
   const SCREEN_PAD = H_PAD * 2;
-  const cardW = Math.floor((370 - SCREEN_PAD - CARD_GAP) / numCols);
+  const cardW = Math.floor((370 - SCREEN_PAD - CARD_GAP * 2) / numCols);
 
   return (
     <View style={styles.root}>
@@ -331,28 +339,54 @@ const styles = StyleSheet.create({
 
   // Grid
   grid: { paddingHorizontal: H_PAD, paddingTop: 10 },
-  row: { gap: CARD_GAP, marginBottom: CARD_GAP },
+  row: { gap: CARD_GAP, marginBottom: 16 },
 
   // Card
-  card: { borderRadius: 14, overflow: "hidden", backgroundColor: "rgba(74,12,12,0.20)" },
-  photoWrap: { borderRadius: 14, overflow: "hidden", position: "relative" },
+  card: {
+    borderRadius: 14,
+    overflow: "hidden",
+    backgroundColor: "rgba(74,12,12,0.18)",
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  photoOuter: {
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  photoWrap: {
+    overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "rgba(212,175,55,0.30)",
+    position: "relative",
+  },
   certBadge: {
     position: "absolute",
-    top: 8,
-    right: 8,
-    backgroundColor: "rgba(212,175,55,0.90)",
+    bottom: 2,
+    right: 2,
+    backgroundColor: "#D4AF37",
     borderRadius: 99,
-    width: 22,
-    height: 22,
+    width: 18,
+    height: 18,
     alignItems: "center",
     justifyContent: "center",
   },
-  certStar: { fontSize: 11, color: "#1B060F", fontWeight: "800" },
-  cardInfo: { paddingHorizontal: 10, paddingVertical: 8 },
-  cardName: { fontSize: 13, fontWeight: "700", color: "#F4DAD5", marginBottom: 2 },
-  cardSub: { fontSize: 11, color: "rgba(212,175,55,0.75)", marginBottom: 4 },
-  locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },
-  cardLocation: { fontSize: 10, color: "rgba(244,218,213,0.40)", flex: 1 },
+  certStar: { fontSize: 9, color: "#1B060F", fontWeight: "800" },
+  cardInfo: { alignItems: "center", paddingHorizontal: 6 },
+  cardName: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#F4DAD5",
+    marginBottom: 3,
+    textAlign: "center",
+  },
+  cardSub: {
+    fontSize: 10,
+    color: "rgba(212,175,55,0.75)",
+    marginBottom: 4,
+    textAlign: "center",
+  },
+  locationRow: { flexDirection: "row", alignItems: "center", gap: 3 },
+  cardLocation: { fontSize: 10, color: "rgba(244,218,213,0.40)", textAlign: "center" },
 
   // Empty
   empty: { alignItems: "center", paddingTop: 60, gap: 12 },
