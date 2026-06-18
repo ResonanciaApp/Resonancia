@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { Tabs } from "expo-router";
+import { Tabs, usePathname } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef } from "react";
@@ -260,8 +260,10 @@ function TabLayoutInner() {
   const tabBarHeight       = 31 + Math.round(bottomPb / 2) + bottomPb;
   const { hidden }         = useTabBarVisibility();
 
+  const pathname       = usePathname();
+  const onMezclador   = pathname === "/musica";
   const mixActive      = !currentSession && activeSounds.length > 0;
-  const showMiniPlayer = currentSession || mixActive;
+  const showMiniPlayer = onMezclador && (currentSession || mixActive);
   const miniPlayerBottom = hidden ? bottomPb : tabBarHeight;
 
   return (
