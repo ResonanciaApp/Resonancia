@@ -358,6 +358,8 @@ const styles = StyleSheet.create({
     height: STACK_SIZE,
     borderRadius: 9,
     overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.3)",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.35,
