@@ -139,6 +139,8 @@ export function MixerSheet() {
     GRADIENT_PRESETS.find((p) => p.id === DEFAULT_BG_PRESET_ID)!;
   const sheetGradient = activeBgPreset.colors;
   const isLight = activeBgPreset.isLight ?? false;
+  /** true cuando hay cualquier escena o color seleccionado (no el fondo por defecto) */
+  const hasCustomBg = bgPresetId !== DEFAULT_BG_PRESET_ID;
 
   // Cargar preset y overlay guardados
   useEffect(() => {
@@ -187,16 +189,17 @@ export function MixerSheet() {
 
   const palette = {
     handle:         isLight ? "rgba(0,0,0,0.12)"    : WARM.handle,
-    sliderThumb:    isLight ? "#3B1B6E"                   : WARM.sliderThumb,
-    sliderTrack:    isLight ? "rgba(59,27,110,0.15)" : activeBgPreset.image ? "rgba(255,255,255,0.22)" : WARM.sliderTrack,
-    addText:        isLight ? "rgba(0,0,0,0.32)"    : "rgba(255,255,255,0.80)",
+    sliderThumb:    hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#3B1B6E" : WARM.sliderThumb,
+    sliderTrack:    hasCustomBg ? "rgba(255,255,255,0.40)" : isLight ? "rgba(59,27,110,0.15)" : activeBgPreset.image ? "rgba(255,255,255,0.22)" : WARM.sliderTrack,
+    addText:        hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "rgba(0,0,0,0.32)" : "rgba(255,255,255,0.80)",
     separator:      isLight ? "rgba(0,0,0,0.07)" : activeBgPreset.image ? "rgba(255,255,255,0.18)" : WARM.separator,
-    iconColor:      isLight ? "#1A1E2B"             : "rgba(255,255,255,0.90)",
-    fg:             isLight ? "#1A1E2B"             : colors.foreground,
+    iconColor:      hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#1A1E2B" : "rgba(255,255,255,0.90)",
+    fg:             hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#1A1E2B" : colors.foreground,
     muted:          isLight ? "#6B7A96"             : colors.mutedForeground,
-    inputBg:        isLight ? "rgba(74,12,12,0.05)" : activeBgPreset.image ? "rgba(255,255,255,0.10)" : "rgba(74,12,12,0.08)",
-    footerCircleBg: isLight ? "rgba(0,0,0,0.07)"  : activeBgPreset.image ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.30)",
-    footerLabel:    isLight ? "rgba(0,0,0,0.45)"   : activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(244,218,213,0.45)",
+    inputBg:        hasCustomBg ? "rgba(255,255,255,0.40)" : isLight ? "rgba(74,12,12,0.05)" : activeBgPreset.image ? "rgba(255,255,255,0.10)" : "rgba(74,12,12,0.08)",
+    footerCircleBg: hasCustomBg ? "rgba(255,255,255,0.40)" : isLight ? "rgba(0,0,0,0.07)" : activeBgPreset.image ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.30)",
+    footerLabel:    hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "rgba(0,0,0,0.45)" : activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(244,218,213,0.45)",
+    headerFg:       hasCustomBg ? "rgba(255,255,255,0.90)" : "rgba(92,31,126,0.85)",
   };
   const { isPremium } = usePremium();
   const {
@@ -584,9 +587,9 @@ export function MixerSheet() {
                 accessibilityRole="button"
                 accessibilityLabel="Cerrar editor de mezcla"
               >
-                <Feather name="chevron-down" size={24} color="rgba(92,31,126,0.85)" />
+                <Feather name="chevron-down" size={24} color={palette.headerFg} />
               </Pressable>
-              <Text style={[styles.title, { color: "rgba(92,31,126,0.85)", flex: 1 }]} numberOfLines={1}>
+              <Text style={[styles.title, { color: palette.headerFg, flex: 1 }]} numberOfLines={1}>
                 {originPreset?.name ?? "Tu mezcla"}
               </Text>
               <Pressable
@@ -599,9 +602,9 @@ export function MixerSheet() {
                 <MaterialCommunityIcons
                   name="tune-variant"
                   size={15}
-                  color="rgba(92,31,126,0.85)"
+                  color={palette.headerFg}
                 />
-                <Text style={[styles.ajustesPillText, { color: "rgba(92,31,126,0.85)" }]}>
+                <Text style={[styles.ajustesPillText, { color: palette.headerFg }]}>
                   Ajustes generales
                 </Text>
               </Pressable>
@@ -612,7 +615,7 @@ export function MixerSheet() {
                 accessibilityRole="button"
                 accessibilityLabel="Cerrar mezcla"
               >
-                <Feather name="x" size={22} color="rgba(92,31,126,0.85)" />
+                <Feather name="x" size={22} color={palette.headerFg} />
               </Pressable>
             </View>
 
@@ -636,7 +639,7 @@ export function MixerSheet() {
                 <TrackThumb sound={sound} />
 
                 <View style={styles.trackInfo}>
-                  <Text style={[styles.trackName, { color: activeBgPreset.image ? "#FFFFFF" : palette.fg }]} numberOfLines={1}>
+                  <Text style={[styles.trackName, { color: palette.fg }]} numberOfLines={1}>
                     {sound.name}
                   </Text>
                   <VolumeSlider
@@ -680,15 +683,15 @@ export function MixerSheet() {
             >
               {/* Ícono: ojo dentro de fullscreen */}
               <View style={styles.immersivoIconWrap}>
-                <MaterialCommunityIcons name="fullscreen" size={30} color={isLight ? "#3d304e" : activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(212,175,55,0.90)"} />
+                <MaterialCommunityIcons name="fullscreen" size={30} color={hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#3d304e" : "rgba(212,175,55,0.90)"} />
                 <MaterialCommunityIcons
                   name="eye"
                   size={13}
-                  color={isLight ? "#3d304e" : activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(212,175,55,0.90)"}
+                  color={hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#3d304e" : "rgba(212,175,55,0.90)"}
                   style={styles.immersivoIconEye}
                 />
               </View>
-              <Text style={[styles.immersivoBtnText, isLight && { color: "#3d304e" }, !!activeBgPreset.image && { color: "rgba(255,255,255,0.85)" }]}>
+              <Text style={[styles.immersivoBtnText, hasCustomBg ? { color: "rgba(255,255,255,0.90)" } : isLight ? { color: "#3d304e" } : undefined]}>
                 Modo Inmersivo
               </Text>
             </Pressable>
