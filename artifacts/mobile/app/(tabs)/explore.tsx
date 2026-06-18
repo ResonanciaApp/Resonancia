@@ -252,7 +252,6 @@ export default function ExploreScreen() {
           <View style={styles.headerRow}>
             <Text style={[styles.pageTitle, { flex: 1 }]}>Buscar</Text>
           </View>
-          <Text style={styles.pageSubtitle}>Explora entre todas nuestras categorías</Text>
         </View>
 
         {/* ── Search bar ── */}
