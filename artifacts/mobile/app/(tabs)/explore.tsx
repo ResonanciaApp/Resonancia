@@ -343,7 +343,12 @@ export default function ExploreScreen() {
                         style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
                       />
                     )}
-                    <Text style={[styles.durPillText, sel && styles.durPillTextActive]}>
+                    <Text
+                      style={[styles.durPillText, sel && styles.durPillTextActive]}
+                      numberOfLines={1}
+                      adjustsFontSizeToFit
+                      minimumFontScale={0.7}
+                    >
                       {slot.label}
                     </Text>
                   </Pressable>
