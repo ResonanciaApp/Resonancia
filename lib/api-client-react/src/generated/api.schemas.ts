@@ -156,6 +156,8 @@ export const UserProfileRole = {
   user: 'user',
   creator: 'creator',
   admin: 'admin',
+  expansor: 'expansor',
+  resonador: 'resonador',
 } as const;
 
 export interface UserProfile {
@@ -358,6 +360,38 @@ export interface ErrorResponse {
   error: string;
 }
 
+export interface ExpansorProfile {
+  userId: number;
+  specialties: string[];
+  /** @nullable */
+  description?: string | null;
+  /** @nullable */
+  phone?: string | null;
+  /** @nullable */
+  email?: string | null;
+  /** @nullable */
+  instagram?: string | null;
+  photos: string[];
+  /** @nullable */
+  quote?: string | null;
+  updatedAt?: string;
+}
+
+export interface ExpansorProfileUpdate {
+  specialties?: string[];
+  /** @nullable */
+  description?: string | null;
+  /** @nullable */
+  phone?: string | null;
+  /** @nullable */
+  email?: string | null;
+  /** @nullable */
+  instagram?: string | null;
+  photos?: string[];
+  /** @nullable */
+  quote?: string | null;
+}
+
 export interface PublicUserStats {
   totalSessions: number;
   totalMinutes: number;
@@ -375,6 +409,8 @@ export const PublicUserProfileRole = {
   user: 'user',
   creator: 'creator',
   admin: 'admin',
+  expansor: 'expansor',
+  resonador: 'resonador',
 } as const;
 
 export interface PublicUserProfile {
@@ -397,6 +433,8 @@ export const UserRoleUpdateRole = {
   user: 'user',
   creator: 'creator',
   admin: 'admin',
+  expansor: 'expansor',
+  resonador: 'resonador',
 } as const;
 
 export interface UserRoleUpdate {
@@ -1011,6 +1049,8 @@ export const AdminUserRole = {
   user: 'user',
   creator: 'creator',
   admin: 'admin',
+  expansor: 'expansor',
+  resonador: 'resonador',
 } as const;
 
 export interface AdminUser {
@@ -1459,6 +1499,8 @@ export const GetAdminUsersRole = {
   user: 'user',
   creator: 'creator',
   admin: 'admin',
+  expansor: 'expansor',
+  resonador: 'resonador',
 } as const;
 
 export type GetMixerSounds200 = {

@@ -41,6 +41,8 @@ import type {
   DirectMessage,
   ErrorEnvelope,
   ErrorResponse,
+  ExpansorProfile,
+  ExpansorProfileUpdate,
   FavoritesInput,
   FavoritesList,
   FollowCounts,
@@ -1763,6 +1765,231 @@ export function useGetMyFollowCounts<TData = Awaited<ReturnType<typeof getMyFoll
 
 
 
+
+export const getGetExpansorProfileUrl = (userId: number,) => {
+
+
+
+
+  return `/api/users/${userId}/expansor-profile`
+}
+
+/**
+ * @summary Get the expansor profile of a user
+ */
+export const getExpansorProfile = async (userId: number, options?: RequestInit): Promise<ExpansorProfile> => {
+
+  return customFetch<ExpansorProfile>(getGetExpansorProfileUrl(userId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetExpansorProfileQueryKey = (userId: number,) => {
+    return [
+    `/api/users/${userId}/expansor-profile`
+    ] as const;
+    }
+
+
+export const getGetExpansorProfileQueryOptions = <TData = Awaited<ReturnType<typeof getExpansorProfile>>, TError = ErrorType<ErrorResponse>>(userId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getExpansorProfile>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetExpansorProfileQueryKey(userId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getExpansorProfile>>> = ({ signal }) => getExpansorProfile(userId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(userId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getExpansorProfile>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetExpansorProfileQueryResult = NonNullable<Awaited<ReturnType<typeof getExpansorProfile>>>
+export type GetExpansorProfileQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Get the expansor profile of a user
+ */
+
+export function useGetExpansorProfile<TData = Awaited<ReturnType<typeof getExpansorProfile>>, TError = ErrorType<ErrorResponse>>(
+ userId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getExpansorProfile>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetExpansorProfileQueryOptions(userId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetMyExpansorProfileUrl = () => {
+
+
+
+
+  return `/api/me/expansor-profile`
+}
+
+/**
+ * @summary Get the current user's expansor profile
+ */
+export const getMyExpansorProfile = async ( options?: RequestInit): Promise<ExpansorProfile> => {
+
+  return customFetch<ExpansorProfile>(getGetMyExpansorProfileUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetMyExpansorProfileQueryKey = () => {
+    return [
+    `/api/me/expansor-profile`
+    ] as const;
+    }
+
+
+export const getGetMyExpansorProfileQueryOptions = <TData = Awaited<ReturnType<typeof getMyExpansorProfile>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyExpansorProfile>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMyExpansorProfileQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyExpansorProfile>>> = ({ signal }) => getMyExpansorProfile({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyExpansorProfile>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetMyExpansorProfileQueryResult = NonNullable<Awaited<ReturnType<typeof getMyExpansorProfile>>>
+export type GetMyExpansorProfileQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Get the current user's expansor profile
+ */
+
+export function useGetMyExpansorProfile<TData = Awaited<ReturnType<typeof getMyExpansorProfile>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyExpansorProfile>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetMyExpansorProfileQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateMyExpansorProfileUrl = () => {
+
+
+
+
+  return `/api/me/expansor-profile`
+}
+
+/**
+ * @summary Create or update the current user's expansor profile
+ */
+export const updateMyExpansorProfile = async (expansorProfileUpdate: ExpansorProfileUpdate, options?: RequestInit): Promise<ExpansorProfile> => {
+
+  return customFetch<ExpansorProfile>(getUpdateMyExpansorProfileUrl(),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      expansorProfileUpdate,)
+  }
+);}
+
+
+
+
+export const getUpdateMyExpansorProfileMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateMyExpansorProfile>>, TError,{data: BodyType<ExpansorProfileUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateMyExpansorProfile>>, TError,{data: BodyType<ExpansorProfileUpdate>}, TContext> => {
+
+const mutationKey = ['updateMyExpansorProfile'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateMyExpansorProfile>>, {data: BodyType<ExpansorProfileUpdate>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateMyExpansorProfile(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateMyExpansorProfileMutationResult = NonNullable<Awaited<ReturnType<typeof updateMyExpansorProfile>>>
+    export type UpdateMyExpansorProfileMutationBody = BodyType<ExpansorProfileUpdate>
+    export type UpdateMyExpansorProfileMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Create or update the current user's expansor profile
+ */
+export const useUpdateMyExpansorProfile = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateMyExpansorProfile>>, TError,{data: BodyType<ExpansorProfileUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateMyExpansorProfile>>,
+        TError,
+        {data: BodyType<ExpansorProfileUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdateMyExpansorProfileMutationOptions(options));
+    }
 
 export const getFollowUserUrl = (userId: number,) => {
 

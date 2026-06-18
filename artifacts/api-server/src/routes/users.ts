@@ -6,9 +6,10 @@ import {
   friendshipsTable,
   followsTable,
   playbackHistoryTable,
+  expansorProfilesTable,
   type User,
 } from "@workspace/db";
-import { UpdateMeBody, SearchUsersQueryParams, SetUserRoleBody } from "@workspace/api-zod";
+import { UpdateMeBody, SearchUsersQueryParams, SetUserRoleBody, UpdateMyExpansorProfileBody } from "@workspace/api-zod";
 import { requireAuth } from "../middlewares/requireAuth";
 import { requireRole } from "../middlewares/requireRole";
 
@@ -213,6 +214,82 @@ router.get("/users/:userId/public", requireAuth, async (req, res) => {
     req.log.error(err);
     res.status(500).json({ error: "Error al obtener el perfil" });
   }
+});
+
+// ── Expansor profile ────────────────────────────────────────────────────────
+
+function toExpansorProfile(p: typeof expansorProfilesTable.$inferSelect) {
+  return {
+    userId: p.userId,
+    specialties: p.specialties ?? [],
+    description: p.description ?? null,
+    phone: p.phone ?? null,
+    email: p.email ?? null,
+    instagram: p.instagram ?? null,
+    photos: p.photos ?? [],
+    quote: p.quote ?? null,
+    updatedAt: p.updatedAt.toISOString(),
+  };
+}
+
+router.get("/me/expansor-profile", requireAuth, async (req, res) => {
+  const [profile] = await db
+    .select()
+    .from(expansorProfilesTable)
+    .where(eq(expansorProfilesTable.userId, req.currentUser!.id));
+  if (!profile) {
+    res.status(404).json({ error: "Perfil expansor no encontrado" });
+    return;
+  }
+  res.json(toExpansorProfile(profile));
+});
+
+router.patch("/me/expansor-profile", requireAuth, async (req, res) => {
+  const me = req.currentUser!;
+  if (me.role !== "expansor" && me.role !== "admin") {
+    res.status(403).json({ error: "Solo los expansores pueden editar este perfil" });
+    return;
+  }
+  const parsed = UpdateMyExpansorProfileBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Datos inválidos" });
+    return;
+  }
+  const updates: Partial<typeof expansorProfilesTable.$inferInsert> = {};
+  if (parsed.data.specialties !== undefined) updates.specialties = parsed.data.specialties;
+  if (parsed.data.description !== undefined) updates.description = parsed.data.description;
+  if (parsed.data.phone !== undefined) updates.phone = parsed.data.phone;
+  if (parsed.data.email !== undefined) updates.email = parsed.data.email;
+  if (parsed.data.instagram !== undefined) updates.instagram = parsed.data.instagram;
+  if (parsed.data.photos !== undefined) updates.photos = parsed.data.photos;
+  if (parsed.data.quote !== undefined) updates.quote = parsed.data.quote;
+
+  const [profile] = await db
+    .insert(expansorProfilesTable)
+    .values({ userId: me.id, ...updates })
+    .onConflictDoUpdate({
+      target: expansorProfilesTable.userId,
+      set: { ...updates, updatedAt: new Date() },
+    })
+    .returning();
+  res.json(toExpansorProfile(profile));
+});
+
+router.get("/users/:userId/expansor-profile", requireAuth, async (req, res) => {
+  const userId = Number(req.params.userId);
+  if (!Number.isInteger(userId) || userId <= 0) {
+    res.status(400).json({ error: "ID inválido" });
+    return;
+  }
+  const [profile] = await db
+    .select()
+    .from(expansorProfilesTable)
+    .where(eq(expansorProfilesTable.userId, userId));
+  if (!profile) {
+    res.status(404).json({ error: "Perfil expansor no encontrado" });
+    return;
+  }
+  res.json(toExpansorProfile(profile));
 });
 
 router.patch("/users/:userId/role", requireAuth, requireRole("admin"), async (req, res) => {

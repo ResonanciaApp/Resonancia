@@ -35,7 +35,12 @@ import {
   getGetMeQueryKey,
   useGetMyFollowCounts,
   getGetMyFollowCountsQueryKey,
+  useGetMyExpansorProfile,
+  getGetMyExpansorProfileQueryKey,
+  useUpdateMyExpansorProfile,
+  type ExpansorProfile,
 } from "@workspace/api-client-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { QuickAccessGrid } from "@/components/QuickAccessGrid";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useUserProfile } from "@/context/UserProfileContext";
@@ -448,11 +453,62 @@ export default function ProfileScreen() {
     }, [reloadCreations])
   );
 
-  // ── Expansor section (Daniela Vega) ──────────────────────────────────────
+  // ── Expansor profile ──────────────────────────────────────────────────────
+  const isExpansor = me?.role === "expansor";
+  const qc = useQueryClient();
+  const { data: expansorProfile } = useGetMyExpansorProfile({
+    query: {
+      queryKey: getGetMyExpansorProfileQueryKey(),
+      enabled: isExpansor,
+      retry: false,
+    },
+  });
+  const updateExpansorMutation = useUpdateMyExpansorProfile({
+    mutation: {
+      onSuccess: () => {
+        qc.invalidateQueries({ queryKey: getGetMyExpansorProfileQueryKey() });
+        setExpansorEditVisible(false);
+      },
+    },
+  });
+
   const [dvDescExpanded, setDvDescExpanded] = useState(false);
   const [dvDescOverflows, setDvDescOverflows] = useState(false);
   const [dvLightboxUri, setDvLightboxUri] = useState<string | null>(null);
   const dvCellSize = Math.floor((width - 40 - 32 - 8) / 3);
+
+  // ── Expansor edit sheet ───────────────────────────────────────────────────
+  const [expansorEditVisible, setExpansorEditVisible] = useState(false);
+  const [epSpecialties, setEpSpecialties] = useState("");
+  const [epDescription, setEpDescription] = useState("");
+  const [epPhone, setEpPhone] = useState("");
+  const [epEmail, setEpEmail] = useState("");
+  const [epInstagram, setEpInstagram] = useState("");
+  const [epQuote, setEpQuote] = useState("");
+
+  function openExpansorEdit() {
+    setEpSpecialties((expansorProfile?.specialties ?? []).join(", "));
+    setEpDescription(expansorProfile?.description ?? "");
+    setEpPhone(expansorProfile?.phone ?? "");
+    setEpEmail(expansorProfile?.email ?? "");
+    setEpInstagram(expansorProfile?.instagram ?? "");
+    setEpQuote(expansorProfile?.quote ?? "");
+    setExpansorEditVisible(true);
+  }
+
+  function saveExpansorProfile() {
+    updateExpansorMutation.mutate({
+      data: {
+        specialties: epSpecialties.split(",").map((s) => s.trim()).filter(Boolean),
+        description: epDescription || null,
+        phone: epPhone || null,
+        email: epEmail || null,
+        instagram: epInstagram || null,
+        photos: expansorProfile?.photos ?? [],
+        quote: epQuote || null,
+      },
+    });
+  }
 
   // ── Personalize sheet ─────────────────────────────────────────────────────
   const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -847,6 +903,15 @@ export default function ProfileScreen() {
         {/* ── Header ── */}
         <View style={styles.header}>
           <Text style={[styles.pageTitle, { color: "#FFFFFF" }]}>Perfil</Text>
+          {isExpansor && (
+            <Pressable
+              onPress={openExpansorEdit}
+              style={({ pressed }) => [styles.expansorEditIconBtn, { opacity: pressed ? 0.7 : 1 }]}
+              hitSlop={10}
+            >
+              <Feather name="edit" size={17} color="#D4AF37" />
+            </Pressable>
+          )}
         </View>
 
         {/* ── Profile Card ── */}
@@ -925,115 +990,136 @@ export default function ProfileScreen() {
           </Pressable>
         </View>
 
-        {/* ── Sección Expansor (Daniela Vega) ── */}
-        <View style={styles.dvExpansorSection}>
+        {/* ── Sección Expansor (solo si role === "expansor") ── */}
+        {isExpansor && (
+          <>
+            <View style={styles.dvExpansorSection}>
 
-          {/* Banner certificado */}
-          <View style={styles.dvCertBanner}>
-            <LinearGradient
-              colors={["#E9C46A", "#B8860B"]}
-              start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-              style={styles.dvCertBannerBar}
-            />
-            <View style={{ flex: 1, paddingLeft: 12, paddingVertical: 10, justifyContent: "center" }}>
-              <MaskedView maskElement={<Text style={styles.dvCertBannerTitle}>EXPANSOR CERTIFICADO</Text>}>
-                <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-                  <Text style={[styles.dvCertBannerTitle, { opacity: 0 }]}>EXPANSOR CERTIFICADO</Text>
-                </LinearGradient>
-              </MaskedView>
-              <Text style={styles.dvCertBannerSub}>Verificado · Resonancia</Text>
-            </View>
-            <View style={{ paddingRight: 14, justifyContent: "center" }}>
-              <View style={styles.dvCertBannerIconBorder}>
-                <View style={styles.dvCertBannerIcon}>
-                  <LinearGradient
-                    colors={["rgba(212,175,55,0.30)", "rgba(184,134,11,0.20)"]}
-                    style={StyleSheet.absoluteFill}
-                  />
-                  <Text style={styles.dvCertBannerStar}>✦</Text>
+              {/* Banner certificado */}
+              <View style={styles.dvCertBanner}>
+                <LinearGradient
+                  colors={["#E9C46A", "#B8860B"]}
+                  start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+                  style={styles.dvCertBannerBar}
+                />
+                <View style={{ flex: 1, paddingLeft: 12, paddingVertical: 10, justifyContent: "center" }}>
+                  <MaskedView maskElement={<Text style={styles.dvCertBannerTitle}>EXPANSOR CERTIFICADO</Text>}>
+                    <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+                      <Text style={[styles.dvCertBannerTitle, { opacity: 0 }]}>EXPANSOR CERTIFICADO</Text>
+                    </LinearGradient>
+                  </MaskedView>
+                  <Text style={styles.dvCertBannerSub}>Verificado · Resonancia</Text>
+                </View>
+                <View style={{ paddingRight: 14, justifyContent: "center" }}>
+                  <View style={styles.dvCertBannerIconBorder}>
+                    <View style={styles.dvCertBannerIcon}>
+                      <LinearGradient
+                        colors={["rgba(212,175,55,0.30)", "rgba(184,134,11,0.20)"]}
+                        style={StyleSheet.absoluteFill}
+                      />
+                      <Text style={styles.dvCertBannerStar}>✦</Text>
+                    </View>
+                  </View>
                 </View>
               </View>
-            </View>
-          </View>
 
-          {/* Me especializo en */}
-          <View style={{ gap: 10 }}>
-            <Text style={styles.dvServiceTitle}>Me especializo en</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.dvSpecialtyWrap}>
-              {["Cuencos Tibetanos", "Yoga"].map((s) => (
-                <View key={s} style={styles.dvSpecialtyChip}>
-                  <Text style={styles.dvSpecialtyText}>{s}</Text>
+              {/* Me especializo en */}
+              {(expansorProfile?.specialties ?? []).length > 0 && (
+                <View style={{ gap: 10 }}>
+                  <Text style={styles.dvServiceTitle}>Me especializo en</Text>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.dvSpecialtyWrap}>
+                    {(expansorProfile?.specialties ?? []).map((s) => (
+                      <View key={s} style={styles.dvSpecialtyChip}>
+                        <Text style={styles.dvSpecialtyText}>{s}</Text>
+                      </View>
+                    ))}
+                  </ScrollView>
                 </View>
-              ))}
-            </ScrollView>
-          </View>
+              )}
 
-          {/* Mis servicios */}
-          <View style={{ gap: 10 }}>
-            <Text style={styles.dvServiceTitle}>Mis servicios</Text>
-            <Text
-              style={styles.dvServiceDesc}
-              numberOfLines={dvDescExpanded ? undefined : 7}
-              onTextLayout={(e) => { if (!dvDescOverflows && e.nativeEvent.lines.length > 7) setDvDescOverflows(true); }}
-            >
-              Instructora de yoga y sonoterapia. Integra los baños de sonido con prácticas de yin yoga para una experiencia de relajación total mente-cuerpo.
-            </Text>
-            {dvDescOverflows && (
-              <Pressable onPress={() => setDvDescExpanded((v) => !v)} style={({ pressed }) => [styles.dvReadMoreBtn, { opacity: pressed ? 0.7 : 1 }]}>
-                <Text style={styles.dvReadMoreText}>{dvDescExpanded ? "Leer menos" : "Leer más"}</Text>
-                <Feather name={dvDescExpanded ? "chevron-up" : "chevron-down"} size={13} color="#D4AF37" />
-              </Pressable>
+              {/* Mis servicios */}
+              {expansorProfile?.description ? (
+                <View style={{ gap: 10 }}>
+                  <Text style={styles.dvServiceTitle}>Mis servicios</Text>
+                  <Text
+                    style={styles.dvServiceDesc}
+                    numberOfLines={dvDescExpanded ? undefined : 7}
+                    onTextLayout={(e) => { if (!dvDescOverflows && e.nativeEvent.lines.length > 7) setDvDescOverflows(true); }}
+                  >
+                    {expansorProfile.description}
+                  </Text>
+                  {dvDescOverflows && (
+                    <Pressable onPress={() => setDvDescExpanded((v) => !v)} style={({ pressed }) => [styles.dvReadMoreBtn, { opacity: pressed ? 0.7 : 1 }]}>
+                      <Text style={styles.dvReadMoreText}>{dvDescExpanded ? "Leer menos" : "Leer más"}</Text>
+                      <Feather name={dvDescExpanded ? "chevron-up" : "chevron-down"} size={13} color="#D4AF37" />
+                    </Pressable>
+                  )}
+                </View>
+              ) : null}
+
+              {/* Contacto */}
+              {(expansorProfile?.phone || expansorProfile?.email) && (
+                <View style={styles.dvContactRow}>
+                  {expansorProfile.phone ? (
+                    <Pressable onPress={() => Linking.openURL(`tel:${expansorProfile.phone}`)} style={({ pressed }) => [styles.dvActionPill, { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" }]}>
+                      <Feather name="phone" size={13} color="#FFFFFF" />
+                      <Text style={styles.dvActionPillText}>Teléfono</Text>
+                    </Pressable>
+                  ) : null}
+                  {expansorProfile.email ? (
+                    <Pressable onPress={() => Linking.openURL(`mailto:${expansorProfile.email}`)} style={({ pressed }) => [styles.dvActionPill, { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" }]}>
+                      <Feather name="mail" size={13} color="#FFFFFF" />
+                      <Text style={styles.dvActionPillText}>Email</Text>
+                    </Pressable>
+                  ) : null}
+                </View>
+              )}
+
+              {/* Instagram */}
+              {expansorProfile?.instagram ? (
+                <View style={styles.dvContactRow}>
+                  <Pressable onPress={() => Linking.openURL(expansorProfile.instagram!)} style={({ pressed }) => [styles.dvActionPill, { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" }]}>
+                    <Feather name="instagram" size={13} color="#FFFFFF" />
+                    <Text style={styles.dvActionPillText}>Instagram</Text>
+                  </Pressable>
+                </View>
+              ) : null}
+
+              {/* Placeholder si el perfil está vacío */}
+              {!expansorProfile && (
+                <Pressable onPress={openExpansorEdit} style={({ pressed }) => [styles.dvEmptyPrompt, { opacity: pressed ? 0.7 : 1 }]}>
+                  <Feather name="plus-circle" size={16} color="#D4AF37" />
+                  <Text style={styles.dvEmptyPromptText}>Completa tu perfil expansor</Text>
+                </Pressable>
+              )}
+
+            </View>
+
+            {/* Galería */}
+            {(expansorProfile?.photos ?? []).length > 0 && (
+              <View style={styles.dvGallerySection}>
+                <View style={styles.dvGalleryGrid}>
+                  {(expansorProfile?.photos ?? []).map((uri, i) => (
+                    <Pressable key={i} onPress={() => setDvLightboxUri(uri)} style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}>
+                      <Image
+                        source={{ uri }}
+                        style={[styles.dvGalleryCell, { width: dvCellSize, height: dvCellSize * 1.3 }]}
+                        contentFit="cover"
+                      />
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
             )}
-          </View>
 
-          {/* Contacto */}
-          <View style={styles.dvContactRow}>
-            <Pressable onPress={() => Linking.openURL("tel:+56912345678")} style={({ pressed }) => [styles.dvActionPill, { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" }]}>
-              <Feather name="phone" size={13} color="#FFFFFF" />
-              <Text style={styles.dvActionPillText}>Teléfono</Text>
-            </Pressable>
-            <Pressable onPress={() => Linking.openURL("mailto:daniela@resonancia.com")} style={({ pressed }) => [styles.dvActionPill, { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" }]}>
-              <Feather name="mail" size={13} color="#FFFFFF" />
-              <Text style={styles.dvActionPillText}>Email</Text>
-            </Pressable>
-          </View>
-
-          {/* Redes sociales */}
-          <View style={styles.dvContactRow}>
-            <Pressable onPress={() => Linking.openURL("https://instagram.com/danielavega")} style={({ pressed }) => [styles.dvActionPill, { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" }]}>
-              <Feather name="instagram" size={13} color="#FFFFFF" />
-              <Text style={styles.dvActionPillText}>Instagram</Text>
-            </Pressable>
-          </View>
-
-        </View>
-
-        {/* ── Galería ── */}
-        <View style={styles.dvGallerySection}>
-          <View style={styles.dvGalleryGrid}>
-            {[
-              "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400",
-              "https://images.unsplash.com/photo-1545389336-cf090694435e?w=400",
-              "https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?w=400",
-              "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=400",
-              "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400",
-              "https://images.unsplash.com/photo-1508672019048-805c876b67e2?w=400",
-            ].map((uri, i) => (
-              <Pressable key={i} onPress={() => setDvLightboxUri(uri)} style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}>
-                <Image
-                  source={{ uri }}
-                  style={[styles.dvGalleryCell, { width: dvCellSize, height: dvCellSize * 1.3 }]}
-                  contentFit="cover"
-                />
-              </Pressable>
-            ))}
-          </View>
-        </View>
-
-        {/* ── Quote ── */}
-        <View style={styles.dvQuoteWrap}>
-          <Text style={styles.dvQuoteText}>"El sonido es el puente entre el mundo interior y el exterior."</Text>
-        </View>
+            {/* Quote */}
+            {expansorProfile?.quote ? (
+              <View style={styles.dvQuoteWrap}>
+                <Text style={styles.dvQuoteText}>"{expansorProfile.quote}"</Text>
+              </View>
+            ) : null}
+          </>
+        )}
 
         {/* ── Secciones colapsables (ocultas con el ojo) ── */}
         <Animated.View style={{ opacity: sectionsAnim, maxHeight: sectionsAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 2400] }), overflow: "hidden" }}>
@@ -1347,6 +1433,74 @@ export default function ProfileScreen() {
               <Text style={[styles.saveBtnText, { color: colors.primaryForeground }]}>Guardar</Text>
             </Pressable>
           </ScrollView>
+        </KeyboardAvoidingView>
+      </Modal>
+
+      {/* ── Modal edición perfil Expansor ── */}
+      <Modal visible={expansorEditVisible} transparent animationType="slide" onRequestClose={() => setExpansorEditVisible(false)}>
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
+          <View style={[styles.epModalBackdrop]}>
+            <View style={[styles.epModalSheet, { paddingBottom: bottomPad + 20 }]}>
+              {/* Header */}
+              <View style={styles.epModalHeader}>
+                <Text style={styles.epModalTitle}>Perfil Expansor</Text>
+                <Pressable onPress={() => setExpansorEditVisible(false)} hitSlop={12} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+                  <Feather name="x" size={20} color="rgba(242,231,228,0.55)" />
+                </Pressable>
+              </View>
+              <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 14 }}>
+                <View style={styles.fieldWrap}>
+                  <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Especialidades (separadas por coma)</Text>
+                  <View style={[styles.fieldBox, { borderColor: colors.border, backgroundColor: "rgba(74,12,12,0.08)" }]}>
+                    <TextInput value={epSpecialties} onChangeText={setEpSpecialties} placeholder="Cuencos Tibetanos, Yoga" placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} />
+                  </View>
+                </View>
+                <View style={styles.fieldWrap}>
+                  <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Descripción de servicios</Text>
+                  <View style={[styles.fieldBox, { borderColor: colors.border, backgroundColor: "rgba(74,12,12,0.08)", minHeight: 90, alignItems: "flex-start" }]}>
+                    <TextInput value={epDescription} onChangeText={setEpDescription} placeholder="Describe lo que ofrecés..." placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground, textAlignVertical: "top", paddingTop: 2 }]} multiline numberOfLines={4} />
+                  </View>
+                </View>
+                <View style={styles.fieldWrap}>
+                  <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Teléfono</Text>
+                  <View style={[styles.fieldBox, { borderColor: colors.border, backgroundColor: "rgba(74,12,12,0.08)" }]}>
+                    <Feather name="phone" size={15} color={colors.mutedForeground} />
+                    <TextInput value={epPhone} onChangeText={setEpPhone} placeholder="+54 9 11 1234 5678" placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} keyboardType="phone-pad" />
+                  </View>
+                </View>
+                <View style={styles.fieldWrap}>
+                  <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Email de contacto</Text>
+                  <View style={[styles.fieldBox, { borderColor: colors.border, backgroundColor: "rgba(74,12,12,0.08)" }]}>
+                    <Feather name="mail" size={15} color={colors.mutedForeground} />
+                    <TextInput value={epEmail} onChangeText={setEpEmail} placeholder="tu@email.com" placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} keyboardType="email-address" autoCapitalize="none" />
+                  </View>
+                </View>
+                <View style={styles.fieldWrap}>
+                  <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Instagram (URL)</Text>
+                  <View style={[styles.fieldBox, { borderColor: colors.border, backgroundColor: "rgba(74,12,12,0.08)" }]}>
+                    <Feather name="instagram" size={15} color={colors.mutedForeground} />
+                    <TextInput value={epInstagram} onChangeText={setEpInstagram} placeholder="https://instagram.com/tu_usuario" placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} autoCapitalize="none" />
+                  </View>
+                </View>
+                <View style={styles.fieldWrap}>
+                  <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Frase / Quote</Text>
+                  <View style={[styles.fieldBox, { borderColor: colors.border, backgroundColor: "rgba(74,12,12,0.08)" }]}>
+                    <TextInput value={epQuote} onChangeText={setEpQuote} placeholder="Tu frase inspiracional..." placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} />
+                  </View>
+                </View>
+                <Pressable
+                  onPress={saveExpansorProfile}
+                  disabled={updateExpansorMutation.isPending}
+                  style={({ pressed }) => [styles.saveBtn, { overflow: "hidden", opacity: (pressed || updateExpansorMutation.isPending) ? 0.75 : 1 }]}
+                >
+                  <GoldGradientFill />
+                  <Text style={[styles.saveBtnText, { color: colors.primaryForeground }]}>
+                    {updateExpansorMutation.isPending ? "Guardando..." : "Guardar"}
+                  </Text>
+                </Pressable>
+              </ScrollView>
+            </View>
+          </View>
         </KeyboardAvoidingView>
       </Modal>
 
@@ -1703,4 +1857,27 @@ const styles = StyleSheet.create({
     position: "absolute", right: 18, width: 38, height: 38, borderRadius: 19,
     backgroundColor: "rgba(255,255,255,0.12)", alignItems: "center", justifyContent: "center",
   },
+  dvEmptyPrompt: {
+    flexDirection: "row", alignItems: "center", gap: 8,
+    paddingVertical: 12, justifyContent: "center",
+  },
+  dvEmptyPromptText: { fontSize: 14, color: "#D4AF37", fontWeight: "600" },
+  expansorEditIconBtn: {
+    width: 34, height: 34, borderRadius: 17,
+    backgroundColor: "rgba(212,175,55,0.10)",
+    alignItems: "center", justifyContent: "center",
+  },
+  epModalBackdrop: {
+    flex: 1, backgroundColor: "rgba(0,0,0,0.55)", justifyContent: "flex-end",
+  },
+  epModalSheet: {
+    backgroundColor: "#1B060F",
+    borderTopLeftRadius: 24, borderTopRightRadius: 24,
+    paddingTop: 20, paddingHorizontal: 20, gap: 16,
+    maxHeight: "90%",
+  },
+  epModalHeader: {
+    flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 4,
+  },
+  epModalTitle: { fontSize: 17, fontWeight: "700", color: "#F4DAD5" },
 });

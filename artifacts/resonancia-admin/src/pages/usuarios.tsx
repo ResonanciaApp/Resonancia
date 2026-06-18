@@ -41,11 +41,17 @@ const ROLE_LABEL: Record<AdminUserRole, string> = {
   user: "Usuario",
   creator: "Creador",
   admin: "Admin",
+  expansor: "Expansor",
+  resonador: "Resonador",
 };
 
 function RoleBadge({ role }: { role: AdminUserRole }) {
   const variant =
-    role === "admin" ? "default" : role === "creator" ? "secondary" : "outline";
+    role === "admin" ? "default"
+    : role === "creator" ? "secondary"
+    : role === "expansor" ? "secondary"
+    : role === "resonador" ? "secondary"
+    : "outline";
   return <Badge variant={variant}>{ROLE_LABEL[role]}</Badge>;
 }
 
@@ -79,6 +85,8 @@ function RoleSelect({ user }: { user: AdminUser }) {
         <SelectItem value="user">Usuario</SelectItem>
         <SelectItem value="creator">Creador</SelectItem>
         <SelectItem value="admin">Admin</SelectItem>
+        <SelectItem value="expansor">Expansor</SelectItem>
+        <SelectItem value="resonador">Resonador</SelectItem>
       </SelectContent>
     </Select>
   );

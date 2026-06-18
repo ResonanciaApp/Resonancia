@@ -100,7 +100,7 @@ export const GetSharedMixesResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 }),
   "createdAt": zod.coerce.date()
@@ -164,7 +164,7 @@ export const ToggleSharedMixLikeResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 }),
   "createdAt": zod.coerce.date()
@@ -213,7 +213,7 @@ export const GetMixCommentsResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 }),
   "isMine": zod.boolean(),
@@ -285,7 +285,7 @@ export const GetSharedGlyphsResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 }),
   "createdAt": zod.coerce.date()
@@ -357,7 +357,7 @@ export const ToggleSharedGlyphLikeResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 }),
   "createdAt": zod.coerce.date()
@@ -381,7 +381,7 @@ export const GetMeResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 })
 
@@ -411,7 +411,7 @@ export const UpdateMeResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 })
 
@@ -450,7 +450,7 @@ export const GetPublicUserProfileResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date(),
   "stats": zod.object({
   "totalSessions": zod.number(),
@@ -471,7 +471,7 @@ export const SetUserRoleParams = zod.object({
 })
 
 export const SetUserRoleBody = zod.object({
-  "role": zod.enum(['user', 'creator', 'admin'])
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador'])
 })
 
 export const SetUserRoleResponse = zod.object({
@@ -480,7 +480,7 @@ export const SetUserRoleResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 })
 
@@ -491,6 +491,68 @@ export const SetUserRoleResponse = zod.object({
 export const GetMyFollowCountsResponse = zod.object({
   "followersCount": zod.number(),
   "followingCount": zod.number()
+})
+
+
+/**
+ * @summary Get the expansor profile of a user
+ */
+export const GetExpansorProfileParams = zod.object({
+  "userId": zod.coerce.number()
+})
+
+export const GetExpansorProfileResponse = zod.object({
+  "userId": zod.number(),
+  "specialties": zod.array(zod.string()),
+  "description": zod.string().nullish(),
+  "phone": zod.string().nullish(),
+  "email": zod.string().nullish(),
+  "instagram": zod.string().nullish(),
+  "photos": zod.array(zod.string()),
+  "quote": zod.string().nullish(),
+  "updatedAt": zod.coerce.date().optional()
+})
+
+
+/**
+ * @summary Get the current user's expansor profile
+ */
+export const GetMyExpansorProfileResponse = zod.object({
+  "userId": zod.number(),
+  "specialties": zod.array(zod.string()),
+  "description": zod.string().nullish(),
+  "phone": zod.string().nullish(),
+  "email": zod.string().nullish(),
+  "instagram": zod.string().nullish(),
+  "photos": zod.array(zod.string()),
+  "quote": zod.string().nullish(),
+  "updatedAt": zod.coerce.date().optional()
+})
+
+
+/**
+ * @summary Create or update the current user's expansor profile
+ */
+export const UpdateMyExpansorProfileBody = zod.object({
+  "specialties": zod.array(zod.string()).optional(),
+  "description": zod.string().nullish(),
+  "phone": zod.string().nullish(),
+  "email": zod.string().nullish(),
+  "instagram": zod.string().nullish(),
+  "photos": zod.array(zod.string()).optional(),
+  "quote": zod.string().nullish()
+})
+
+export const UpdateMyExpansorProfileResponse = zod.object({
+  "userId": zod.number(),
+  "specialties": zod.array(zod.string()),
+  "description": zod.string().nullish(),
+  "phone": zod.string().nullish(),
+  "email": zod.string().nullish(),
+  "instagram": zod.string().nullish(),
+  "photos": zod.array(zod.string()),
+  "quote": zod.string().nullish(),
+  "updatedAt": zod.coerce.date().optional()
 })
 
 
@@ -553,7 +615,7 @@ export const GetFriendsResponseItem = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 })
 export const GetFriendsResponse = zod.array(GetFriendsResponseItem)
@@ -580,7 +642,7 @@ export const GetFriendRequestsResponseItem = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 }),
   "addressee": zod.object({
@@ -589,7 +651,7 @@ export const GetFriendRequestsResponseItem = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 })
 })
@@ -621,7 +683,7 @@ export const AcceptFriendRequestResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 }),
   "addressee": zod.object({
@@ -630,7 +692,7 @@ export const AcceptFriendRequestResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 })
 })
@@ -659,7 +721,7 @@ export const GetNotificationsResponseItem = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 })
 })
@@ -730,7 +792,7 @@ export const GetConversationsResponseItem = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 }),
   "lastMessage": zod.union([zod.object({
@@ -1319,7 +1381,7 @@ export const GetPendingSubmissionsResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 }).nullish(),
   "createdAt": zod.coerce.date(),
@@ -1384,7 +1446,7 @@ export const GetMySubmissionsResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 }).nullish(),
   "createdAt": zod.coerce.date(),
@@ -1452,7 +1514,7 @@ export const ApproveSubmissionResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 }).nullish(),
   "createdAt": zod.coerce.date(),
@@ -1527,7 +1589,7 @@ export const RejectSubmissionResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 }).nullish(),
   "createdAt": zod.coerce.date(),
@@ -1631,7 +1693,7 @@ export const EditSubmissionResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 }).nullish(),
   "createdAt": zod.coerce.date(),
@@ -1698,7 +1760,7 @@ export const HideSubmissionResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 }).nullish(),
   "createdAt": zod.coerce.date(),
@@ -1765,7 +1827,7 @@ export const UnhideSubmissionResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 }).nullish(),
   "createdAt": zod.coerce.date(),
@@ -1796,7 +1858,7 @@ export const getAdminUsersQueryPageSizeMax = 100;
 
 export const GetAdminUsersQueryParams = zod.object({
   "q": zod.coerce.string().optional(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "page": zod.coerce.number().min(1).optional(),
   "pageSize": zod.coerce.number().min(1).max(getAdminUsersQueryPageSizeMax).optional()
 })
@@ -1808,7 +1870,7 @@ export const GetAdminUsersResponse = zod.object({
   "displayName": zod.string(),
   "email": zod.string().nullable(),
   "avatarUrl": zod.string().nullable(),
-  "role": zod.enum(['user', 'creator', 'admin']),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']),
   "submissionCount": zod.number(),
   "createdAt": zod.coerce.date()
 })),
@@ -1870,7 +1932,7 @@ export const GetAdminMixesResponse = zod.object({
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
   "location": zod.string().nullish(),
-  "role": zod.enum(['user', 'creator', 'admin']).optional(),
+  "role": zod.enum(['user', 'creator', 'admin', 'expansor', 'resonador']).optional(),
   "createdAt": zod.coerce.date()
 }),
   "createdAt": zod.coerce.date()
