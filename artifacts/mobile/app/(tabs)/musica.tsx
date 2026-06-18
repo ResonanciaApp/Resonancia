@@ -259,23 +259,18 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
   const r = parseInt(activeColor.slice(1, 3), 16);
   const g = parseInt(activeColor.slice(3, 5), 16);
   const b = parseInt(activeColor.slice(5, 7), 16);
+  const borderCol = anim.interpolate({ inputRange: [0, 1], outputRange: [`rgba(${r},${g},${b},0)`, `rgba(${r},${g},${b},1)`] });
 
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
-      <Animated.View style={[styles.cardImageWrap, { transform: [{ rotate }, { scale }] }]}>
-        {/* Borde asimétrico: gradiente llena todo, la imagen encima con margin:4 expone el anillo */}
-        {decorated && (
-          <Animated.View style={[StyleSheet.absoluteFill, { opacity: anim, borderRadius: 16 }]} pointerEvents="none">
-            <LinearGradient
-              colors={[`rgba(${r},${g},${b},0)`, `rgba(${r},${g},${b},0.9)`, `rgba(${r},${g},${b},0)`]}
-              start={{ x: 0, y: 0.5 }}
-              end={{ x: 1, y: 0.5 }}
-              style={{ flex: 1, borderRadius: 16 }}
-            />
-          </Animated.View>
-        )}
-        {/* Imagen con margin:4 siempre — cubre el centro del gradiente, deja visible solo el anillo */}
-        <View style={[styles.cardClipInner, { margin: 4, borderRadius: 11 }]}>
+      <Animated.View
+        style={[
+          styles.cardImageWrap,
+          decorated && styles.cardImageWrapActive,
+          { transform: [{ rotate }, { scale }], borderColor: borderCol },
+        ]}
+      >
+        <View style={styles.cardClipInner}>
           {image ? (
             <Image source={typeof image === "string" ? { uri: image } : image} style={StyleSheet.absoluteFill} contentFit="cover" />
           ) : (
@@ -1052,12 +1047,13 @@ const styles = StyleSheet.create({
   soundCard: { width: "28%" },
   cardImageWrap: {
     width: "79%", aspectRatio: 1, alignSelf: "center",
-    borderRadius: 16,
+    borderRadius: 16, borderWidth: 5, borderColor: "transparent",
   },
   cardClipInner: {
     flex: 1, borderRadius: 14, overflow: "hidden",
     backgroundColor: "rgba(212,175,55,0.08)",
   },
+  cardImageWrapActive: { borderWidth: 4 },
   cardFooter: { paddingHorizontal: 4, paddingTop: 8, paddingBottom: 2 },
   soundName:  { fontSize: 11.5, fontWeight: "600", letterSpacing: 0.1, textAlign: "center", color: DARK },
   lockBadge:  { position: "absolute", top: 4, right: 4 },
