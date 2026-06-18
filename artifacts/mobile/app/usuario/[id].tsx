@@ -79,6 +79,7 @@ export default function UsuarioScreen() {
   const invalidateFollows = () => {
     if (me?.id) queryClient.invalidateQueries({ queryKey: getGetUserFollowingQueryKey(me.id) });
     queryClient.invalidateQueries({ queryKey: getGetMyFollowCountsQueryKey() });
+    queryClient.invalidateQueries({ queryKey: getGetPublicUserProfileQueryKey(userId) });
   };
 
   const followMutation = useFollowUser({ mutation: { onSuccess: invalidateFollows } });
