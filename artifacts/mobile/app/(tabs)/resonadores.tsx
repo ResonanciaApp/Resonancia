@@ -12,6 +12,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -110,6 +111,7 @@ export default function ResonadoresScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
+  const { width: screenWidth } = useWindowDimensions();
   const [activeTab, setActiveTab] = useState<"artistas" | "expansores">("artistas");
   const [activeFilter, setActiveFilter] = useState("Todos");
   const [query, setQuery] = useState("");
@@ -152,10 +154,10 @@ export default function ResonadoresScreen() {
     }
   }, [activeTab, activeFilter, query]);
 
-  // Card width: 3 columns with 2 gaps
+  // Card width: 3 columnas exactas llenando el ancho real del dispositivo
   const numCols = 3;
   const SCREEN_PAD = H_PAD * 2;
-  const cardW = Math.floor((370 - SCREEN_PAD - CARD_GAP * 2) / numCols);
+  const cardW = Math.floor((screenWidth - SCREEN_PAD - CARD_GAP * 2) / numCols);
 
   return (
     <View style={styles.root}>
