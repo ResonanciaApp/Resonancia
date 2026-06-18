@@ -1155,7 +1155,6 @@ const styles = StyleSheet.create({
   premBannerOuter: {
     marginHorizontal: GRID_PAD,
     marginBottom: SECTION_GAP,
-    marginTop: SECTION_GAP,
   },
   premBannerWrap: {
     height: 68,
