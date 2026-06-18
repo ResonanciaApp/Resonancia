@@ -615,7 +615,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   durPillTextActive: {
-    color: "#FFFFFF",
+    color: "#1B060F",
   },
   durResults: {
     marginTop: 16,
