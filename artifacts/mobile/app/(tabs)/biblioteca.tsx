@@ -1586,8 +1586,8 @@ const styles = StyleSheet.create({
 
   // ── User playlist cover ──────────────────────────────────────────────────────
   userPlCover: {
-    width: 70,
-    height: 62,
+    width: 56,
+    height: 56,
     borderRadius: 8,
     overflow: "hidden",
     backgroundColor: "rgba(212,175,55,0.08)",
