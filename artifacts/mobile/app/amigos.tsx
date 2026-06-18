@@ -319,14 +319,6 @@ function SearchResultRow({
         <Text style={[styles.friendName, { color: colors.foreground }]}>{user.displayName}</Text>
         <Text style={[styles.friendSub, { color: colors.mutedForeground }]}>@{user.username}</Text>
       </View>
-      {status === "none" && (
-        <Pressable onPress={(e) => { e.stopPropagation?.(); onAdd(); }} style={styles.acceptBtn}>
-          <GoldGradientFill />
-          <View style={styles.acceptGrad}>
-            <Feather name="user-plus" size={14} color="#1B060F" />
-          </View>
-        </Pressable>
-      )}
       {status === "pending_outgoing" && (
         <Text style={[styles.statusBadge, { color: colors.mutedForeground }]}>Enviada</Text>
       )}
