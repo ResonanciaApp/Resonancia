@@ -347,8 +347,6 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 20,
     backgroundColor: MIX_BG,
-    borderWidth: 1,
-    borderColor: PILL_BORDER,
   },
   openPillText: {
     color: "#FFFFFF",
