@@ -311,18 +311,20 @@ export default function UsuarioScreen() {
                 </Pressable>
               </View>
 
-              {/* Fila 2: Enviar mensaje */}
-              <Pressable
-                onPress={() => router.push(`/chat/${profile.id}` as never)}
-                style={({ pressed }) => [
-                  styles.actionPill,
-                  styles.actionPillFull,
-                  { opacity: pressed ? 0.75 : 1 },
-                ]}
-              >
-                <Feather name="message-circle" size={13} color="#FFFFFF" />
-                <Text style={styles.actionPillText}>Enviar mensaje</Text>
-              </Pressable>
+              {/* Fila 2: Enviar mensaje — solo si son amigos */}
+              {isFriend && (
+                <Pressable
+                  onPress={() => router.push(`/chat/${profile.id}` as never)}
+                  style={({ pressed }) => [
+                    styles.actionPill,
+                    styles.actionPillFull,
+                    { opacity: pressed ? 0.75 : 1 },
+                  ]}
+                >
+                  <Feather name="message-circle" size={13} color="#FFFFFF" />
+                  <Text style={styles.actionPillText}>Enviar mensaje</Text>
+                </Pressable>
+              )}
             </View>
           )}
         </View>
