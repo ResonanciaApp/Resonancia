@@ -322,11 +322,7 @@ export default function ExploreScreen() {
             <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 12 }]}>
               ¿Cuánto tiempo tienes?
             </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.durPillRow}
-            >
+            <View style={styles.durPillRow}>
               {DURATION_SLOTS.map((slot) => {
                 const sel = selectedDur === slot.label;
                 return (
@@ -353,7 +349,7 @@ export default function ExploreScreen() {
                   </Pressable>
                 );
               })}
-            </ScrollView>
+            </View>
 
             {selectedDur && (
               <View style={styles.durResults}>
@@ -592,6 +588,8 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
   },
   durPillRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
     paddingHorizontal: H_PAD,
     gap: 8,
     paddingBottom: 2,
