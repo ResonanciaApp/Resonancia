@@ -28,6 +28,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import MaskedView from "@react-native-masked-view/masked-view";
 
 import {
   useGetMe,
@@ -446,6 +447,12 @@ export default function ProfileScreen() {
       reloadCreations();
     }, [reloadCreations])
   );
+
+  // ── Expansor section (Daniela Vega) ──────────────────────────────────────
+  const [dvDescExpanded, setDvDescExpanded] = useState(false);
+  const [dvDescOverflows, setDvDescOverflows] = useState(false);
+  const [dvLightboxUri, setDvLightboxUri] = useState<string | null>(null);
+  const dvCellSize = Math.floor((width - 40 - 8) / 3);
 
   // ── Personalize sheet ─────────────────────────────────────────────────────
   const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -918,60 +925,115 @@ export default function ProfileScreen() {
           </Pressable>
         </View>
 
-        {/* ── Bloque Expansor ── */}
-        {expansorData && (
-          <View style={styles.expansorSection}>
-            {/* Cabecera */}
-            <View style={styles.expansorHeader}>
-              <View style={styles.expansorBadge}>
-                <Text style={styles.expansorBadgeStar}>✦</Text>
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.expansorTitle}>Perfil Expansor</Text>
-                {expansorData.certified && (
-                  <Text style={styles.expansorCertLabel}>
-                    Certificado · {expansorData.city}, {expansorData.country}
-                  </Text>
-                )}
-              </View>
-              <Pressable
-                onPress={() => router.push(`/expansor-perfil/${expansorData.id}` as never)}
-                style={({ pressed }) => [styles.expansorViewBtn, { opacity: pressed ? 0.7 : 1 }]}
-              >
-                <Text style={styles.expansorViewText}>Ver público</Text>
-                <Feather name="external-link" size={12} color="#D4AF37" />
-              </Pressable>
-            </View>
+        {/* ── Sección Expansor (Daniela Vega) ── */}
+        <View style={[styles.dvExpansorSection, { marginHorizontal: 20 }]}>
 
-            {/* Especialidades */}
-            <View style={styles.expansorSpecWrap}>
-              {expansorData.specialty.map((s) => (
-                <View key={s} style={styles.expansorChip}>
-                  <Text style={styles.expansorChipText}>{s}</Text>
+          {/* Banner certificado */}
+          <View style={styles.dvCertBanner}>
+            <LinearGradient
+              colors={["#E9C46A", "#B8860B"]}
+              start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+              style={styles.dvCertBannerBar}
+            />
+            <View style={{ flex: 1, paddingLeft: 12, paddingVertical: 10, justifyContent: "center" }}>
+              <MaskedView maskElement={<Text style={styles.dvCertBannerTitle}>EXPANSOR CERTIFICADO</Text>}>
+                <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+                  <Text style={[styles.dvCertBannerTitle, { opacity: 0 }]}>EXPANSOR CERTIFICADO</Text>
+                </LinearGradient>
+              </MaskedView>
+              <Text style={styles.dvCertBannerSub}>Verificado · Resonancia</Text>
+            </View>
+            <View style={{ paddingRight: 14, justifyContent: "center" }}>
+              <View style={styles.dvCertBannerIconBorder}>
+                <View style={styles.dvCertBannerIcon}>
+                  <LinearGradient
+                    colors={["rgba(212,175,55,0.30)", "rgba(184,134,11,0.20)"]}
+                    style={StyleSheet.absoluteFill}
+                  />
+                  <Text style={styles.dvCertBannerStar}>✦</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          {/* Me especializo en */}
+          <View style={{ gap: 10 }}>
+            <Text style={styles.dvServiceTitle}>Me especializo en</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.dvSpecialtyWrap}>
+              {["Cuencos Tibetanos", "Yoga"].map((s) => (
+                <View key={s} style={styles.dvSpecialtyChip}>
+                  <Text style={styles.dvSpecialtyText}>{s}</Text>
                 </View>
               ))}
-            </View>
+            </ScrollView>
+          </View>
 
-            {/* Bio */}
-            <Text style={styles.expansorBio}>{expansorData.bio}</Text>
-
-            {/* Links */}
-            {expansorData.links && expansorData.links.length > 0 && (
-              <View style={styles.expansorLinksRow}>
-                {expansorData.links.map((link) => (
-                  <Pressable
-                    key={link.label}
-                    onPress={() => Linking.openURL(link.url)}
-                    style={({ pressed }) => [styles.expansorLinkBtn, { opacity: pressed ? 0.7 : 1 }]}
-                  >
-                    <Feather name="external-link" size={12} color="#D4AF37" />
-                    <Text style={styles.expansorLinkText}>{link.label}</Text>
-                  </Pressable>
-                ))}
-              </View>
+          {/* Mis servicios */}
+          <View style={{ gap: 10 }}>
+            <Text style={styles.dvServiceTitle}>Mis servicios</Text>
+            <Text
+              style={styles.dvServiceDesc}
+              numberOfLines={dvDescExpanded ? undefined : 7}
+              onTextLayout={(e) => { if (!dvDescOverflows && e.nativeEvent.lines.length > 7) setDvDescOverflows(true); }}
+            >
+              Instructora de yoga y sonoterapia. Integra los baños de sonido con prácticas de yin yoga para una experiencia de relajación total mente-cuerpo.
+            </Text>
+            {dvDescOverflows && (
+              <Pressable onPress={() => setDvDescExpanded((v) => !v)} style={({ pressed }) => [styles.dvReadMoreBtn, { opacity: pressed ? 0.7 : 1 }]}>
+                <Text style={styles.dvReadMoreText}>{dvDescExpanded ? "Leer menos" : "Leer más"}</Text>
+                <Feather name={dvDescExpanded ? "chevron-up" : "chevron-down"} size={13} color="#D4AF37" />
+              </Pressable>
             )}
           </View>
-        )}
+
+          {/* Contacto */}
+          <View style={styles.dvContactRow}>
+            <Pressable onPress={() => Linking.openURL("tel:+56912345678")} style={({ pressed }) => [styles.dvActionPill, { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" }]}>
+              <Feather name="phone" size={13} color="#FFFFFF" />
+              <Text style={styles.dvActionPillText}>Teléfono</Text>
+            </Pressable>
+            <Pressable onPress={() => Linking.openURL("mailto:daniela@resonancia.com")} style={({ pressed }) => [styles.dvActionPill, { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" }]}>
+              <Feather name="mail" size={13} color="#FFFFFF" />
+              <Text style={styles.dvActionPillText}>Email</Text>
+            </Pressable>
+          </View>
+
+          {/* Redes sociales */}
+          <View style={styles.dvContactRow}>
+            <Pressable onPress={() => Linking.openURL("https://instagram.com/danielavega")} style={({ pressed }) => [styles.dvActionPill, { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" }]}>
+              <Feather name="instagram" size={13} color="#FFFFFF" />
+              <Text style={styles.dvActionPillText}>Instagram</Text>
+            </Pressable>
+          </View>
+
+        </View>
+
+        {/* ── Galería ── */}
+        <View style={[styles.dvGallerySection, { marginHorizontal: 20 }]}>
+          <View style={styles.dvGalleryGrid}>
+            {[
+              "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400",
+              "https://images.unsplash.com/photo-1545389336-cf090694435e?w=400",
+              "https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?w=400",
+              "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=400",
+              "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400",
+              "https://images.unsplash.com/photo-1508672019048-805c876b67e2?w=400",
+            ].map((uri, i) => (
+              <Pressable key={i} onPress={() => setDvLightboxUri(uri)} style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}>
+                <Image
+                  source={{ uri }}
+                  style={[styles.dvGalleryCell, { width: dvCellSize, height: dvCellSize * 1.3 }]}
+                  contentFit="cover"
+                />
+              </Pressable>
+            ))}
+          </View>
+        </View>
+
+        {/* ── Quote ── */}
+        <View style={[styles.dvQuoteWrap, { marginHorizontal: 20 }]}>
+          <Text style={styles.dvQuoteText}>"El sonido es el puente entre el mundo interior y el exterior."</Text>
+        </View>
 
         {/* ── Secciones colapsables (ocultas con el ojo) ── */}
         <Animated.View style={{ opacity: sectionsAnim, maxHeight: sectionsAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 2400] }), overflow: "hidden" }}>
@@ -1321,6 +1383,16 @@ export default function ProfileScreen() {
           </ScrollView>
         </KeyboardAvoidingView>
       </Modal>
+
+      {/* ── Lightbox galería Daniela Vega ── */}
+      <Modal visible={!!dvLightboxUri} transparent animationType="fade" onRequestClose={() => setDvLightboxUri(null)}>
+        <Pressable style={styles.dvLightboxBackdrop} onPress={() => setDvLightboxUri(null)}>
+          <Image source={{ uri: dvLightboxUri ?? "" }} style={styles.dvLightboxImage} contentFit="contain" />
+          <Pressable onPress={() => setDvLightboxUri(null)} style={[styles.dvLightboxClose, { top: (Platform.OS === "web" ? 20 : insets.top) + 12 }]} hitSlop={12}>
+            <Feather name="x" size={20} color="#FFFFFF" />
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -1605,4 +1677,64 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.20)",
   },
   expansorLinkText: { fontSize: 12, color: "#D4AF37", fontWeight: "600" },
+
+  // ── Sección Daniela Vega (expansor) ──
+  dvExpansorSection: {
+    backgroundColor: "rgba(212,175,55,0.06)",
+    borderRadius: 18,
+    padding: 16,
+    gap: 16,
+    marginBottom: 16,
+  },
+  dvCertBanner: {
+    flexDirection: "row",
+    alignItems: "stretch",
+    borderRadius: 12,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.18)",
+    backgroundColor: "rgba(212,175,55,0.05)",
+  },
+  dvCertBannerBar: { width: 5 },
+  dvCertBannerTitle: { fontSize: 13, fontWeight: "800", letterSpacing: 0.4, color: "#D4AF37" },
+  dvCertBannerSub: { fontSize: 11, color: "rgba(255,255,255,0.90)", marginTop: 2 },
+  dvCertBannerIconBorder: {
+    width: 35, height: 35, borderRadius: 18,
+    borderWidth: 1.5, borderColor: "rgba(212,175,55,0.20)", flexShrink: 0,
+  },
+  dvCertBannerIcon: { flex: 1, borderRadius: 16, overflow: "hidden", alignItems: "center", justifyContent: "center" },
+  dvCertBannerStar: { fontSize: 17, color: "rgba(212,175,55,0.90)", fontWeight: "800" },
+  dvServiceTitle: { fontSize: 15, fontWeight: "700", color: "#F4DAD5", letterSpacing: 0.2 },
+  dvServiceDesc: { fontSize: 13, lineHeight: 20, color: "rgba(244,218,213,0.65)" },
+  dvReadMoreBtn: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 6, alignSelf: "flex-start" },
+  dvReadMoreText: { fontSize: 13, fontWeight: "600", color: "#D4AF37" },
+  dvSpecialtyWrap: { flexDirection: "row", gap: 8, alignItems: "center" },
+  dvSpecialtyChip: {
+    borderRadius: 20, paddingHorizontal: 14, height: 34, overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.07)", alignItems: "center", justifyContent: "center",
+  },
+  dvSpecialtyText: { fontSize: 13, color: "#FFFFFF", fontWeight: "400", letterSpacing: 0.1 },
+  dvContactRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  dvActionPill: {
+    flexDirection: "row", alignItems: "center", gap: 6,
+    borderRadius: 20, paddingHorizontal: 14, height: 34, overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.07)",
+  },
+  dvActionPillText: { fontSize: 13, fontWeight: "400", color: "#FFFFFF", letterSpacing: 0.1 },
+  dvGallerySection: {
+    backgroundColor: "rgba(74,12,12,0.08)", borderRadius: 18, padding: 16, gap: 12, marginBottom: 16,
+  },
+  dvGalleryGrid: { flexDirection: "row", flexWrap: "wrap", gap: 4 },
+  dvGalleryCell: { borderRadius: 10, backgroundColor: "rgba(255,255,255,0.05)" },
+  dvQuoteWrap: { alignItems: "center", paddingVertical: 8, paddingHorizontal: 8, marginBottom: 16 },
+  dvQuoteText: {
+    fontSize: 18, fontStyle: "italic", color: "rgba(244,218,213,0.70)",
+    textAlign: "center", lineHeight: 28, letterSpacing: 0.2,
+  },
+  dvLightboxBackdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.92)", alignItems: "center", justifyContent: "center" },
+  dvLightboxImage: { width: "100%", height: "80%" },
+  dvLightboxClose: {
+    position: "absolute", right: 18, width: 38, height: 38, borderRadius: 19,
+    backgroundColor: "rgba(255,255,255,0.12)", alignItems: "center", justifyContent: "center",
+  },
 });
