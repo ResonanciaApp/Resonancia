@@ -117,7 +117,7 @@ const MEZ_PLACEHOLDERS = [
 const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
   popular:        ["#4A0C0C", "#27070E", "#1B060F"],
   naturaleza:     ["#0E2416", "#0B1A10", "#1B060F"],
-  ancestrales:    ["#DBA874", "#BF824B", "#83572E"],
+  ancestrales:    ["#836546", "#734E2D", "#4F341C"],
   sintetizadores: ["#061A2E", "#041220", "#1B060F"],
   voces:          ["#250810", "#1A060C", "#1B060F"],
   bpm:            ["#201A04", "#161302", "#1B060F"],
