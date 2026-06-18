@@ -906,7 +906,7 @@ const styles = StyleSheet.create({
     width: 104,
     height: 38,
     borderRadius: 999,
-    padding: 2,
+    padding: 1,
   },
   pillTabInner: {
     flex: 1,
