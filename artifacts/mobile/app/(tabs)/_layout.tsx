@@ -24,7 +24,7 @@ import {
 } from "@/context/TabBarVisibilityContext";
 
 const ACTIVE_COLOR   = "#E9C46A";
-const INACTIVE_COLOR = "rgba(233,196,106,0.4)";
+const INACTIVE_COLOR = "rgba(244,218,213,0.55)";
 const GRAD_END       = "#E9C46A";
 
 const ICON_SIZE = 23;
@@ -63,17 +63,11 @@ function TabItem({
   const conf = TAB_CONFIG[route.name];
   if (!conf) return null;
 
-  const pillOpacity   = useRef(new Animated.Value(isFocused ? 1 : 0)).current;
-  const borderOpacity = useRef(new Animated.Value(isFocused ? 1 : 0.4)).current;
+  const pillOpacity = useRef(new Animated.Value(isFocused ? 1 : 0)).current;
 
   useEffect(() => {
     Animated.timing(pillOpacity, {
       toValue: isFocused ? 1 : 0,
-      duration: 180,
-      useNativeDriver: true,
-    }).start();
-    Animated.timing(borderOpacity, {
-      toValue: isFocused ? 1 : 0.4,
       duration: 180,
       useNativeDriver: true,
     }).start();
@@ -102,7 +96,7 @@ function TabItem({
         <Animated.View style={[styles.pill, { opacity: pillOpacity }]} />
 
         {/* Borde superior dorado con fade en esquinas + halo glow */}
-        <Animated.View style={[styles.pillDecor, { opacity: borderOpacity }]}>
+        <Animated.View style={[styles.pillDecor, { opacity: pillOpacity }]}>
           <LinearGradient
             colors={["transparent", "rgba(212,175,55,0.75)", "#E9C46A", "rgba(212,175,55,0.75)", "transparent"]}
             start={{ x: 0, y: 0.5 }}

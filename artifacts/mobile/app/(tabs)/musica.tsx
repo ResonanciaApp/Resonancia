@@ -181,12 +181,19 @@ const PillTab = memo(function PillTab({
           </LinearGradient>
         </LinearGradient>
       ) : (
-        <View style={[styles.pillTab, { backgroundColor: "#F5F4F2", borderWidth: 1, borderColor: "#DEDEDE" }]}>
-          <MaterialCommunityIcons name={tab.icon as any} size={17} color="rgba(0,0,0,0.6)" />
-          <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "rgba(0,0,0,0.6)", fontWeight: "400" }]}>
-            {tab.label}
-          </Text>
-        </View>
+        <LinearGradient
+          colors={GOLD_BORDER_PILL}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={[styles.pillTabBorder, { opacity: 0.4 }]}
+        >
+          <View style={[styles.pillTabInner, { backgroundColor: "transparent" }]}>
+            <MaterialCommunityIcons name={tab.icon as any} size={17} color="#E9C46A" />
+            <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "#E9C46A", fontWeight: "400" }]}>
+              {tab.label}
+            </Text>
+          </View>
+        </LinearGradient>
       )}
     </Pressable>
   );
