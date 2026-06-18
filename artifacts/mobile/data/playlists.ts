@@ -1,3 +1,5 @@
+import { resolveAvatarUrl } from "@/lib/avatar";
+
 export type Playlist = {
   id: string;
   title: string;
@@ -73,7 +75,7 @@ export function applyPlaylistsSnapshot(snapshots: PlaylistSnapshot[]): void {
       title: snap.title,
       description: snap.description,
       cover: resolveCover(snap.sessionIds),
-      coverUrl: snap.coverUrl ?? null,
+      coverUrl: resolveAvatarUrl(snap.coverUrl ?? null),
       durationLabel: snap.durationLabel,
       savedCount: snap.savedCount,
       sessionIds: snap.sessionIds,
