@@ -64,17 +64,7 @@ function TabItem({
   const conf = TAB_CONFIG[route.name];
   if (!conf) return null;
 
-  const pillOpacity = useRef(new Animated.Value(isFocused ? 1 : 0)).current;
-
-  useEffect(() => {
-    Animated.timing(pillOpacity, {
-      toValue: isFocused ? 1 : 0,
-      duration: 180,
-      useNativeDriver: true,
-    }).start();
-  }, [isFocused]);
-
-  const isIOS    = Platform.OS === "ios";
+  const isIOS     = Platform.OS === "ios";
   const iconColor = isFocused ? ACTIVE_COLOR : INACTIVE_COLOR;
 
   const icon = conf.image ? (
@@ -92,26 +82,12 @@ function TabItem({
       accessibilityRole="button"
       accessibilityState={{ selected: isFocused }}
     >
-      {/* Pill cubre ícono + label */}
       <View style={styles.pillWrap}>
-        <Animated.View style={[styles.pill, { opacity: pillOpacity }]} />
-
-        {/* Borde superior dorado con fade en esquinas + halo glow */}
-        <Animated.View style={[styles.pillDecor, { opacity: pillOpacity }]}>
-          <LinearGradient
-            colors={["transparent", "rgba(212,175,55,0.75)", "#E9C46A", "rgba(212,175,55,0.75)", "transparent"]}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
-            style={styles.pillBorderLine}
-          />
-        </Animated.View>
-
         {/* Ícono con glow dorado cuando está activo */}
         <View style={isFocused ? styles.iconGlow : undefined}>
           {icon}
         </View>
 
-        {/* Label siempre dentro del pillWrap */}
         <Text
           style={[
             styles.label,
@@ -325,30 +301,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 2,
-  },
-  pill: {
-    position: "absolute",
-    width: 72,
-    top: -9,
-    bottom: -8,
-    borderRadius: 13,
-    backgroundColor: PILL_BG,
-  },
-  pillDecor: {
-    position: "absolute",
-    width: 72,
-    top: -9,
-    height: 11,
-    borderTopLeftRadius: 13,
-    borderTopRightRadius: 13,
-    overflow: "hidden",
-  },
-  pillBorderLine: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 1,
   },
   iconGlow: {
     shadowColor: "#D4AF37",
