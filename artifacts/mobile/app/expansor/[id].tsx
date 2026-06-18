@@ -55,7 +55,7 @@ export default function ExpansorScreen() {
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
 
       {/* Back button */}
       <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
