@@ -253,14 +253,13 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
     return () => a.stop();
   }, [active, anim]);
 
-  const tiltDir   = idx % 2 === 0 ? "-8deg" : "8deg";
-  const rotate    = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", tiltDir] });
-  const scale     = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
-  const borderCol = anim.interpolate({ inputRange: [0, 1], outputRange: ["transparent", borderGradient[0]] });
+  const tiltDir = idx % 2 === 0 ? "-8deg" : "8deg";
+  const rotate  = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", tiltDir] });
+  const scale   = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
 
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
-      <Animated.View style={[styles.cardImageWrap, { transform: [{ rotate }, { scale }], borderColor: borderCol }]}>
+      <Animated.View style={[styles.cardImageWrap, { transform: [{ rotate }, { scale }], borderColor: active ? borderGradient[0] : "transparent" }]}>
         <View style={styles.cardClipInner}>
           {image ? (
             <Image source={typeof image === "string" ? { uri: image } : image} style={StyleSheet.absoluteFill} contentFit="cover" />
