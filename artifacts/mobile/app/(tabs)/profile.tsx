@@ -1272,7 +1272,19 @@ export default function ProfileScreen() {
               </ScrollView>
 
               {/* ── Paleta de degradado ── */}
-              <Text style={pStyles.sectionTitle}>Color de fondo</Text>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 0 }}>
+                <Text style={pStyles.sectionTitle}>Color de fondo</Text>
+                {(profileBgGradientId !== null || profileBgCreationId !== null) && (
+                  <Pressable
+                    onPress={() => selectGradient(null)}
+                    hitSlop={10}
+                    style={({ pressed }) => ({ flexDirection: "row", alignItems: "center", gap: 4, opacity: pressed ? 0.6 : 1 })}
+                  >
+                    <Feather name="rotate-ccw" size={11} color="#C0304A" />
+                    <Text style={{ color: "#C0304A", fontSize: 12, fontWeight: "600" }}>Restablecer</Text>
+                  </Pressable>
+                )}
+              </View>
 
               <View style={[pStyles.swatchRow, { marginTop: 13, marginBottom: 28 }]}>
                 {/* Por defecto */}
