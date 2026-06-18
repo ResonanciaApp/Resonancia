@@ -733,14 +733,21 @@ export default function MezcladorScreen() {
                         <Pressable key={catId} onPress={() => setSubTab(sel ? null : catId)}>
                           {sel ? (
                             <LinearGradient
-                              colors={grad}
-                              start={{ x: 0, y: 0 }}
-                              end={{ x: 0, y: 1 }}
-                              style={[styles.subTabPill, { borderWidth: 0 }]}
+                              colors={GOLD_BORDER_PILL}
+                              start={{ x: 0, y: 0.5 }}
+                              end={{ x: 1, y: 0.5 }}
+                              style={styles.subTabBorderOuter}
                             >
-                              <Text style={[styles.subTabText, { color: "#FFFFFF", fontWeight: "700" }]}>
-                                {SUB_TAB_LABELS[catId] ?? cat.label}
-                              </Text>
+                              <LinearGradient
+                                colors={grad}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 0, y: 1 }}
+                                style={styles.subTabBorderInner}
+                              >
+                                <Text style={[styles.subTabText, { color: "#E9C46A", fontWeight: "700" }]}>
+                                  {SUB_TAB_LABELS[catId] ?? cat.label}
+                                </Text>
+                              </LinearGradient>
                             </LinearGradient>
                           ) : (
                             <View style={[styles.subTabPill, { backgroundColor: "#F7F7F7", borderColor: "#E8E8E8" }]}>
@@ -1020,6 +1027,15 @@ const styles = StyleSheet.create({
     flexDirection: "row", alignItems: "center",
     paddingHorizontal: 14, paddingVertical: 5,
     borderRadius: 999, borderWidth: 1,
+  },
+  subTabBorderOuter: {
+    borderRadius: 999,
+    padding: 1,
+  },
+  subTabBorderInner: {
+    flexDirection: "row", alignItems: "center",
+    paddingHorizontal: 13, paddingVertical: 4,
+    borderRadius: 999,
   },
   subTabText: { fontSize: 12, fontWeight: "600" },
 
