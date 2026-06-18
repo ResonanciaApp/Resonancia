@@ -25,6 +25,7 @@ import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
 const GALLERY_GAP = 4;
+const SECTION_PAD = 16;
 
 export default function ExpansorPerfilScreen() {
   const colors = useColors();
@@ -40,7 +41,7 @@ export default function ExpansorPerfilScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const cellSize = (screenWidth - H_PAD * 2 - GALLERY_GAP * 2) / 3;
+  const cellSize = (screenWidth - H_PAD * 2 - SECTION_PAD * 2 - GALLERY_GAP * 2) / 3;
 
   if (!expansor) {
     return (
