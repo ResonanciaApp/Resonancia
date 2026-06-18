@@ -48,7 +48,7 @@ function hexTint(hex: string, alpha: number): string {
 }
 
 const SQCARD_W = Math.round((width - H_PAD * 2) / 2.2);
-const TEMA_COL_W = Math.floor((width - H_PAD * 2 - GAP * 2) / 3);
+const TEMA_COL_W = Math.floor((width - H_PAD * 2 - GAP) / 2);
 
 const CAT_CARD_GAP = 12;
 const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.25);
@@ -720,7 +720,7 @@ const styles = StyleSheet.create({
     marginTop: 3,
   },
 
-  // Explorar todo — grid 3 columnas, icono arriba + texto centrado
+  // Explorar todo — grid 2 columnas, icono arriba + texto centrado
   temaGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
