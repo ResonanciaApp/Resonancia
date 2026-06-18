@@ -110,18 +110,28 @@ function MixRow({
 }
 
 // ── Chip de tab ───────────────────────────────────────────────────────────────
+const CHIP_BORDER = ["transparent", "rgba(212,175,55,0.75)", "#E9C46A", "rgba(212,175,55,0.75)", "transparent"] as const;
+
 function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress: () => void }) {
+  if (sel) {
+    return (
+      <Pressable onPress={onPress} style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}>
+        <LinearGradient
+          colors={CHIP_BORDER}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={styles.chipBorderOuter}
+        >
+          <View style={styles.chipBorderInner}>
+            <Text style={[styles.chipText, styles.chipTextSel]}>{label}</Text>
+          </View>
+        </LinearGradient>
+      </Pressable>
+    );
+  }
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
-      {sel && (
-        <LinearGradient
-          colors={["#D6AD5F", "#B47344"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={StyleSheet.absoluteFill}
-        />
-      )}
-      <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
+      <Text style={styles.chipText}>{label}</Text>
     </Pressable>
   );
 }
@@ -1392,10 +1402,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14, paddingVertical: 8,
     borderRadius: 999,
     backgroundColor: "rgba(255,255,255,0.08)",
-    overflow: "hidden",
+  },
+  chipBorderOuter: {
+    borderRadius: 999,
+    padding: 1,
+  },
+  chipBorderInner: {
+    borderRadius: 999,
+    backgroundColor: "rgba(255,255,255,0.075)",
+    paddingHorizontal: 13,
+    paddingVertical: 7,
   },
   chipText: { fontSize: 13, fontWeight: "500", color: TEXT },
-  chipTextSel: { color: "#1B060F", fontWeight: "700" },
+  chipTextSel: { color: "#E9C46A", fontWeight: "700" },
 
   controlRow: {
     flexDirection: "row",
