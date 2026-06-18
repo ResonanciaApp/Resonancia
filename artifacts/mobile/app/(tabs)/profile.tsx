@@ -429,7 +429,7 @@ export default function ProfileScreen() {
 
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 
-  const { data: me } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 60_000 } });
+  const { data: me, refetch: refetchMe } = useGetMe({ query: { queryKey: getGetMeQueryKey(), staleTime: 0 } });
   const { data: followCounts } = useGetMyFollowCounts({
     query: { queryKey: getGetMyFollowCountsQueryKey(), staleTime: 30_000 },
   });
@@ -450,11 +450,12 @@ export default function ProfileScreen() {
   useFocusEffect(
     useCallback(() => {
       reloadCreations();
-    }, [reloadCreations])
+      refetchMe();
+    }, [reloadCreations, refetchMe])
   );
 
   // ── Expansor profile ──────────────────────────────────────────────────────
-  const isExpansor = me?.role === "expansor";
+  const isExpansor = me?.role === "expansor" || me?.role === "admin";
   const qc = useQueryClient();
   const { data: expansorProfile } = useGetMyExpansorProfile({
     query: {
