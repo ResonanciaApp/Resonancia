@@ -17,7 +17,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { getExpansorById } from "@/data/expansores";
 import { useColors } from "@/hooks/useColors";
-import { useUserProfile } from "@/context/UserProfileContext";
 
 const H_PAD = 20;
 const PHOTO_SIZE = 120;
@@ -26,10 +25,7 @@ export default function ExpansorScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { expansorId } = useUserProfile();
-
   const expansor = getExpansorById(id);
-  const isMyProfile = expansorId === id;
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -65,15 +61,13 @@ export default function ExpansorScreen() {
         <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
           <Feather name="arrow-left" size={22} color={colors.foreground} />
         </Pressable>
-        {isMyProfile && (
-          <Pressable
-            onPress={() => router.push("/(tabs)/profile" as never)}
-            style={({ pressed }) => [styles.verPerfilBtn, { opacity: pressed ? 0.7 : 1 }]}
-          >
-            <Feather name="user" size={13} color="#D4AF37" />
-            <Text style={styles.verPerfilText}>Ver perfil</Text>
-          </Pressable>
-        )}
+        <Pressable
+          onPress={() => router.push(`/expansor-perfil/${id}` as never)}
+          style={({ pressed }) => [styles.verPerfilBtn, { opacity: pressed ? 0.7 : 1 }]}
+        >
+          <Feather name="user" size={13} color="#D4AF37" />
+          <Text style={styles.verPerfilText}>Ver perfil</Text>
+        </Pressable>
       </View>
 
       <ScrollView
