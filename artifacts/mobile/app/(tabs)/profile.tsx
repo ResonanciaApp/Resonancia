@@ -840,22 +840,6 @@ export default function ProfileScreen() {
         {/* ── Header ── */}
         <View style={styles.header}>
           <Text style={[styles.pageTitle, { color: "#FFFFFF" }]}>Perfil</Text>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
-            <Pressable
-              onPress={toggleSections}
-              hitSlop={12}
-              style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-            >
-              <Feather name={sectionsHidden ? "eye-off" : "eye"} size={20} color="#FFFFFF" />
-            </Pressable>
-            <Pressable
-              onPress={() => setPersonalizeVisible(true)}
-              hitSlop={12}
-              style={({ pressed }) => [styles.settingsBtn, { opacity: pressed ? 0.6 : 1 }]}
-            >
-              <Feather name="sliders" size={20} color="#FFFFFF" />
-            </Pressable>
-          </View>
         </View>
 
         {/* ── Profile Card ── */}
