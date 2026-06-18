@@ -595,7 +595,7 @@ export function MixerSheet() {
               <Pressable
                 onPress={() => setEscenasOpen(true)}
                 hitSlop={10}
-                style={styles.ajustesPill}
+                style={[styles.ajustesPill, hasCustomBg && styles.ajustesPillCustom]}
                 accessibilityRole="button"
                 accessibilityLabel="Escenas y ajustes de fondo"
               >
@@ -604,9 +604,6 @@ export function MixerSheet() {
                   size={15}
                   color={palette.headerFg}
                 />
-                <Text style={[styles.ajustesPillText, { color: palette.headerFg }]}>
-                  Ajustes generales
-                </Text>
               </Pressable>
               <Pressable
                 onPress={() => { stopAll(); closeSheet(); }}
@@ -677,7 +674,7 @@ export function MixerSheet() {
               onPress={() => {
                 openImmersivo(bgPresetId);
               }}
-              style={[styles.immersivoBtn, isLight && styles.immersivoBtnLight, !!activeBgPreset.image && styles.immersivoBtnImage]}
+              style={[styles.immersivoBtn, isLight && styles.immersivoBtnLight, !!activeBgPreset.image && styles.immersivoBtnImage, hasCustomBg && styles.immersivoBtnCustom]}
               accessibilityRole="button"
               accessibilityLabel="Entrar en Modo Inmersivo"
             >
@@ -1193,6 +1190,14 @@ const styles = StyleSheet.create({
   immersivoBtnImage: {
     backgroundColor: "rgba(255,255,255,0.10)",
     borderColor: "rgba(255,255,255,0.22)",
+  },
+  immersivoBtnCustom: {
+    backgroundColor: "rgba(255,255,255,0.10)",
+    borderColor: "rgba(255,255,255,0.20)",
+  },
+  ajustesPillCustom: {
+    backgroundColor: "rgba(255,255,255,0.10)",
+    borderColor: "rgba(255,255,255,0.20)",
   },
   immersivoIconWrap: {
     width: 30,
