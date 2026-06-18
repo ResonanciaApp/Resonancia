@@ -6,12 +6,8 @@
  */
 
 export type MixerBgPaletteId =
-  | "lavanda"
   | "arena"
-  | "noche"
-  | "rosa"
-  | "menta"
-  | "cielo";
+  | "noche";
 
 export interface MixerBgPalette {
   id: MixerBgPaletteId;
@@ -21,12 +17,8 @@ export interface MixerBgPalette {
 }
 
 export const MIXER_BG_PALETTES: MixerBgPalette[] = [
-  { id: "arena",   label: "Arena dorada", colors: ["#FBF6E9", "#F3E7CC", "#EFDFC0"] },
-  { id: "noche",   label: "Noche borgoña", colors: ["#2E0510", "#1B060F", "#160108"] },
-  { id: "lavanda", label: "Lavanda", colors: ["#F7F6E5", "#EBE3F5", "#EBE3F5"] },
-  { id: "rosa",    label: "Rosa borgoña", colors: ["#FBEFEF", "#F3DEE0", "#EAD2D6"] },
-  { id: "menta",   label: "Bruma menta", colors: ["#EEF6EE", "#DFEFE3", "#D6E9DC"] },
-  { id: "cielo",   label: "Cielo sereno", colors: ["#EEF3FA", "#DEE8F4", "#D4E0F0"] },
+  { id: "arena", label: "Arena dorada",  colors: ["#FBF6E9", "#F3E7CC", "#EFDFC0"] },
+  { id: "noche", label: "Noche borgoña", colors: ["#2E0510", "#1B060F", "#160108"] },
 ];
 
 export const DEFAULT_MIXER_BG_PALETTE: MixerBgPaletteId = "arena";
