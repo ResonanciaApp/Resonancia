@@ -85,7 +85,7 @@ export default function DiarioEntradaScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={[styles.root, { backgroundColor: colors.background }]}
+      style={[styles.root, { backgroundColor: "#160108" }]}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <StatusBar barStyle="light-content" />
