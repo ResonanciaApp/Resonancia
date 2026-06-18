@@ -140,7 +140,7 @@ export default function ExpansorPerfilScreen() {
               style={({ pressed }) => [
                 styles.actionPill,
                 following && styles.actionPillActive,
-                { opacity: pressed ? 0.75 : 1 },
+                { opacity: pressed ? 0.75 : 1, width: 110, justifyContent: "center" },
               ]}
             >
               {following && (
@@ -336,7 +336,6 @@ const styles = StyleSheet.create({
   /* — Pills de acción (mismo estilo que headerTabChip de Inicio) — */
   actionPillsRow: {
     flexDirection: "row",
-    flexWrap: "wrap",
     justifyContent: "center",
     gap: 8,
     marginTop: 14,
