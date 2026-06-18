@@ -238,12 +238,14 @@ export default function ExpansorPerfilScreen() {
 
             {/* Ícono circular derecha */}
             <View style={{ paddingRight: 14, justifyContent: "center" }}>
-              <View style={styles.certBannerIcon}>
-                <LinearGradient
-                  colors={["rgba(212,175,55,0.30)", "rgba(184,134,11,0.20)"]}
-                  style={StyleSheet.absoluteFill}
-                />
-                <Text style={styles.certBannerStar}>✦</Text>
+              <View style={styles.certBannerIconBorder}>
+                <View style={styles.certBannerIcon}>
+                  <LinearGradient
+                    colors={["rgba(212,175,55,0.30)", "rgba(184,134,11,0.20)"]}
+                    style={StyleSheet.absoluteFill}
+                  />
+                  <Text style={styles.certBannerStar}>✦</Text>
+                </View>
               </View>
             </View>
           </View>
@@ -520,10 +522,14 @@ const styles = StyleSheet.create({
   certBannerSub: {
     fontSize: 11, color: "rgba(212,175,55,0.55)", marginTop: 2,
   },
-  certBannerIcon: {
-    width: 35, height: 35, borderRadius: 18, overflow: "hidden",
+  certBannerIconBorder: {
+    width: 35, height: 35, borderRadius: 18,
     borderWidth: 1.5, borderColor: "rgba(212,175,55,0.20)",
-    alignItems: "center", justifyContent: "center", flexShrink: 0,
+    flexShrink: 0,
+  },
+  certBannerIcon: {
+    flex: 1, borderRadius: 16, overflow: "hidden",
+    alignItems: "center", justifyContent: "center",
   },
   certBannerStar: { fontSize: 17, color: "rgba(212,175,55,0.90)", fontWeight: "800" },
 
