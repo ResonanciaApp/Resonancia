@@ -777,7 +777,7 @@ export default function MezcladorScreen() {
         {/* ── Scroll principal ── */}
         <View style={styles.scrollBg}>
           <LinearGradient
-            colors={bgPalette.colors}
+            colors={bgPaletteId === "noche" ? TAB_HEADER_GRADIENT[mainTab] : bgPalette.colors}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={StyleSheet.absoluteFill}
