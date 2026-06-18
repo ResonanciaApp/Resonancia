@@ -214,14 +214,8 @@ const ResonadorCard = memo(function ResonadorCard({
   const photoSize = cardW - 16;
 
   function handlePress() {
-    if (isArtista) {
-      router.push(`/artista/${d.id}` as never);
-    } else if (!isArtista && d.id === expansorId) {
-      // Es mi propio perfil Expansor → abrir mi perfil
-      router.push("/(tabs)/profile" as never);
-    } else {
-      router.push(`/expansor/${d.id}` as never);
-    }
+    if (isArtista) router.push(`/artista/${d.id}` as never);
+    else router.push(`/expansor/${d.id}` as never);
   }
 
   return (

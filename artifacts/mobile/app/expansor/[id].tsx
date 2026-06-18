@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { getExpansorById } from "@/data/expansores";
 import { useColors } from "@/hooks/useColors";
+import { useUserProfile } from "@/context/UserProfileContext";
 
 const H_PAD = 20;
 const PHOTO_SIZE = 120;
@@ -25,8 +26,10 @@ export default function ExpansorScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { expansorId } = useUserProfile();
 
   const expansor = getExpansorById(id);
+  const isMyProfile = expansorId === id;
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -57,11 +60,20 @@ export default function ExpansorScreen() {
       <StatusBar barStyle="light-content" />
       <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
 
-      {/* Back button */}
+      {/* Header */}
       <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
         <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
           <Feather name="arrow-left" size={22} color={colors.foreground} />
         </Pressable>
+        {isMyProfile && (
+          <Pressable
+            onPress={() => router.push("/(tabs)/profile" as never)}
+            style={({ pressed }) => [styles.verPerfilBtn, { opacity: pressed ? 0.7 : 1 }]}
+          >
+            <Feather name="user" size={13} color="#D4AF37" />
+            <Text style={styles.verPerfilText}>Ver perfil</Text>
+          </Pressable>
+        )}
       </View>
 
       <ScrollView
@@ -162,7 +174,19 @@ export default function ExpansorScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  headerRow: { flexDirection: "row", alignItems: "center" },
+  headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  verPerfilBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: "rgba(212,175,55,0.10)",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.25)",
+  },
+  verPerfilText: { fontSize: 13, color: "#D4AF37", fontWeight: "600" },
   backBtn: {
     width: 38,
     height: 38,
