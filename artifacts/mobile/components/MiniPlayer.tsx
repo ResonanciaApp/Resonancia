@@ -26,7 +26,8 @@ const CAROUSEL_THUMB_GAP  = 10;   // separación fija entre thumbnails en el car
 const CAROUSEL_MAX_OPEN_W = 280;  // techo para que el texto nunca desaparezca del todo
 
 const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
-const MIX_BG      = "#423454";
+const MIX_BG      = "#4f1a6b";
+const MIX_GRAD    = ["#71269c", "#4f1a6b"] as const;
 const PILL_BORDER = "rgba(110,80,200,0.5)";
 const BORDER_R    = 12;
 
@@ -214,7 +215,7 @@ export function MiniPlayer() {
 
         {/* ── Card del miniplayer ── */}
         <View style={styles.wrapper}>
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
+          <LinearGradient colors={MIX_GRAD} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
 
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
