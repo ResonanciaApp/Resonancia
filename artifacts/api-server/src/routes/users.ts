@@ -251,14 +251,6 @@ router.patch("/me/expansor-profile", requireAuth, async (req, res) => {
     return;
   }
   const parsed = UpdateMyExpansorProfileBody.safeParse(req.body);
-  req.log.info(
-    {
-      rawPhotos: (req.body as { photos?: unknown } | undefined)?.photos,
-      parsedOk: parsed.success,
-      parsedPhotos: parsed.success ? parsed.data.photos : null,
-    },
-    "[DEBUG expansor-photos] PATCH /me/expansor-profile body",
-  );
   if (!parsed.success) {
     res.status(400).json({ error: "Datos inválidos" });
     return;

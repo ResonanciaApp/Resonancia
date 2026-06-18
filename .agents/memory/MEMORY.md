@@ -15,6 +15,7 @@
 - [expo-av launch SIGABRT](expo-av-launch-crash.md) — expo-av audio-session call at launch under SDK54 New Arch = uncatchable NSException→SIGABRT; keep expo-av off launch path, expo-audio owns session
 - [Diario structure](diario-structure.md) — free Diario = list (diario.tsx) + modal editor (diario-entrada.tsx); useDiario mutators must read-modify-write storage (parallel hook instances); Voz/Favoritos kept for premium
 - [Avatar sync](avatar-sync.md) — foto de perfil local se sube a storage + PATCH /me avatarUrl en ProfileSync; resolveAvatarUrl mapea objectPath a serving URL
+- [api-server stale bundle](api-server-stale-bundle.md) — campo zod-validado se descarta en silencio pese a source correcto → bundle esbuild viejo; grep el dist (no source), fix = restart workflow (rebuild)
 - [Artistas feature](artistas-feature.md) — perfiles curados; artistId solo Ambient/Enteógena; getArtist (con fallback, player) vs getArtistById (sin fallback, perfil); artists.ts→sessions.ts no al revés
 - [Listen-time stats](listen-time-stats.md) — stat minutes = wall-clock accumulator gated on isPlaying, NEVER elapsed/position (seek corrupts position; loop interval ticks while paused)
 - [Streak fire animation](streak-fire.md) — NotificationBell = racha; meta = GOAL_MINUTES/día; fuego en reposo 0.2, anima 1×/día al abrir Inicio cumplida la meta (número solo con animación)
