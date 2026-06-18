@@ -850,7 +850,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: 32,
     overflow: "hidden",
-    backgroundColor: "rgba(27,6,15,0.30)",
+    backgroundColor: "rgba(255,255,255,0.10)",
     alignItems: "center",
     justifyContent: "center",
   },
