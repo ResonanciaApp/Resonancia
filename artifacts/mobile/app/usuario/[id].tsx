@@ -3,6 +3,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Image as ExpoImage } from "expo-image";
 import {
   ActivityIndicator,
+  Alert,
   Platform,
   Pressable,
   ScrollView,
@@ -15,7 +16,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
-
+import React from "react";
 
 import {
   useGetPublicUserProfile,
@@ -26,13 +27,15 @@ import {
   getGetMyFollowCountsQueryKey,
   useFollowUser,
   useUnfollowUser,
+  useSendFriendRequest,
+  getGetFriendRequestsQueryKey,
 } from "@workspace/api-client-react";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
-const PHOTO_SIZE = 120;
+const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 
 function initialsFor(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -41,13 +44,13 @@ function initialsFor(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-const BG_GRADIENT = ["#2E0510", "#160108"] as const;
-
 export default function UsuarioScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const userId = Number(id);
+
+  const [friendRequested, setFriendRequested] = React.useState(false);
 
   const { data: profile, isLoading, isError } = useGetPublicUserProfile(userId, {
     query: {
@@ -58,6 +61,7 @@ export default function UsuarioScreen() {
 
   const { data: me } = useGetMe();
   const queryClient = useQueryClient();
+
   const { data: myFollowing } = useGetUserFollowing(me?.id ?? 0, {
     query: { enabled: !!me?.id, queryKey: getGetUserFollowingQueryKey(me?.id ?? 0) },
   });
@@ -65,65 +69,64 @@ export default function UsuarioScreen() {
   const isOwnProfile = me?.id === userId;
 
   const invalidateFollows = () => {
-    if (me?.id) {
-      queryClient.invalidateQueries({ queryKey: getGetUserFollowingQueryKey(me.id) });
-    }
+    if (me?.id) queryClient.invalidateQueries({ queryKey: getGetUserFollowingQueryKey(me.id) });
     queryClient.invalidateQueries({ queryKey: getGetMyFollowCountsQueryKey() });
   };
 
-  const followMutation = useFollowUser({
-    mutation: { onSuccess: invalidateFollows },
-  });
-  const unfollowMutation = useUnfollowUser({
-    mutation: { onSuccess: invalidateFollows },
+  const followMutation = useFollowUser({ mutation: { onSuccess: invalidateFollows } });
+  const unfollowMutation = useUnfollowUser({ mutation: { onSuccess: invalidateFollows } });
+
+  const sendFriendRequest = useSendFriendRequest({
+    mutation: {
+      onSuccess: () => {
+        setFriendRequested(true);
+        queryClient.invalidateQueries({ queryKey: getGetFriendRequestsQueryKey() });
+        Alert.alert("¡Listo!", "Solicitud de amistad enviada.");
+      },
+      onError: () => Alert.alert("Error", "No se pudo enviar la solicitud."),
+    },
   });
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const Header = (
+  const HeaderBar = (
     <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
       <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
         <Feather name="arrow-left" size={22} color={colors.foreground} />
       </Pressable>
+      <Text style={[styles.headerTitle, { color: colors.foreground }]}>Perfil</Text>
+      <View style={{ width: 38 }} />
     </View>
   );
 
   if (isLoading) {
     return (
-          <LinearGradient
-      style={styles.root}
-      colors={BG_GRADIENT}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
+      <View style={styles.root}>
         <StatusBar barStyle="light-content" />
-        {Header}
-        <View style={styles.notFound}>
+        <LinearGradient colors={BG_GRADIENT} style={StyleSheet.absoluteFill} />
+        {HeaderBar}
+        <View style={styles.centered}>
           <ActivityIndicator color={colors.primary} />
         </View>
-      </LinearGradient>
+      </View>
     );
   }
 
   if (isError || !profile) {
     return (
-          <LinearGradient
-      style={styles.root}
-      colors={BG_GRADIENT}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
+      <View style={styles.root}>
         <StatusBar barStyle="light-content" />
-        {Header}
-        <View style={styles.notFound}>
+        <LinearGradient colors={BG_GRADIENT} style={StyleSheet.absoluteFill} />
+        {HeaderBar}
+        <View style={styles.centered}>
           <Feather name="user-x" size={40} color={colors.mutedForeground} />
           <Text style={[styles.notFoundTitle, { color: colors.foreground }]}>Perfil no disponible</Text>
           <Text style={[styles.notFoundSub, { color: colors.mutedForeground }]}>
             Este perfil no existe o no se pudo cargar.
           </Text>
         </View>
-      </LinearGradient>
+      </View>
     );
   }
 
@@ -132,44 +135,32 @@ export default function UsuarioScreen() {
     ? new Date(profile.createdAt).toLocaleDateString("es", { month: "long", year: "numeric" })
     : null;
 
-  const statCards: { label: string; value: string }[] = [
-    { label: "Sesiones", value: profile.stats.totalSessions.toString() },
-    {
-      label: "Minutos",
-      value: profile.stats.totalMinutes > 0 ? profile.stats.totalMinutes.toString() : "—",
-    },
-    { label: "Amigos", value: profile.stats.friendsCount.toString() },
-  ];
-
   return (
-        <LinearGradient
-      style={styles.root}
-      colors={BG_GRADIENT}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
+    <View style={styles.root}>
       <StatusBar barStyle="light-content" />
+      <LinearGradient colors={BG_GRADIENT} style={StyleSheet.absoluteFill} />
+
+      {HeaderBar}
 
       <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 120 + bottomPad }}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={[styles.scroll, { paddingBottom: bottomPad + 40 }]}
       >
-        {Header}
+        {/* ── Profile Card — mismo layout que profile.tsx ── */}
+        <View style={styles.profileCard}>
 
-        {/* Profile */}
-        <View style={styles.profile}>
-          <View style={styles.photoWrap}>
+          {/* Avatar */}
+          <View style={styles.avatarWrapper}>
             {avatarUri ? (
               <ExpoImage
                 source={{ uri: avatarUri }}
-                style={styles.photo}
+                style={styles.avatarImage}
                 contentFit="cover"
                 placeholder={BLUR_PLACEHOLDER}
                 transition={IMAGE_TRANSITION}
               />
             ) : (
-              <View style={[styles.photo, styles.photoFallback, { backgroundColor: colors.secondary }]}>
+              <View style={[styles.avatarImage, styles.avatarFallback, { backgroundColor: colors.secondary }]}>
                 <Text style={[styles.initials, { color: colors.primary }]}>
                   {initialsFor(profile.displayName)}
                 </Text>
@@ -177,153 +168,229 @@ export default function UsuarioScreen() {
             )}
           </View>
 
-          <Text style={[styles.name, { color: colors.foreground }]}>{profile.displayName}</Text>
+          {/* Nombre */}
+          <Text style={[styles.userName, { color: colors.foreground }]}>{profile.displayName}</Text>
+
+          {/* Handle */}
           <Text style={[styles.handle, { color: colors.mutedForeground }]}>@{profile.username}</Text>
 
+          {/* Miembro desde */}
           {memberSince ? (
-            <View style={styles.metaItem}>
+            <View style={styles.metaRow}>
               <Feather name="calendar" size={12} color={colors.mutedForeground} />
               <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
                 Miembro desde {memberSince}
               </Text>
             </View>
           ) : null}
-        </View>
 
-        {/* Stats */}
-        <View style={[styles.statsRow, { paddingHorizontal: H_PAD }]}>
-          {statCards.map((stat) => (
-            <View key={stat.label} style={[styles.statCard, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
-              <Text style={[styles.statValue, { color: colors.foreground }]}>{stat.value}</Text>
-              <Text style={[styles.statLabel, { color: colors.mutedForeground }]}>{stat.label}</Text>
+          {/* Seguidores / Siguiendo */}
+          <View style={styles.followCountsRow}>
+            <View style={styles.followCountItem}>
+              <Text style={[styles.followCountNum, { color: colors.foreground }]}>
+                {profile.stats.friendsCount ?? 0}
+              </Text>
+              <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>amigos</Text>
             </View>
-          ))}
-        </View>
-
-        {profile.stats.topCategoryLabel ? (
-          <View style={[styles.section, { paddingHorizontal: H_PAD }]}>
-            <View style={[styles.topCatCard, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
-              <Feather name="headphones" size={16} color={colors.accent} />
-              <Text style={[styles.topCatLabel, { color: colors.mutedForeground }]}>
-                Categoría más escuchada
+            <View style={[styles.followCountDivider, { backgroundColor: colors.border ?? "#3D0E16" }]} />
+            <View style={styles.followCountItem}>
+              <Text style={[styles.followCountNum, { color: colors.foreground }]}>
+                {profile.stats.totalSessions ?? 0}
               </Text>
-              <Text style={[styles.topCatValue, { color: colors.foreground }]} numberOfLines={1}>
-                {profile.stats.topCategoryLabel}
+              <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>sesiones</Text>
+            </View>
+            <View style={[styles.followCountDivider, { backgroundColor: colors.border ?? "#3D0E16" }]} />
+            <View style={styles.followCountItem}>
+              <Text style={[styles.followCountNum, { color: colors.foreground }]}>
+                {profile.stats.totalMinutes > 0 ? profile.stats.totalMinutes : 0}
               </Text>
+              <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>minutos</Text>
             </View>
           </View>
-        ) : null}
 
-        {/* Actions */}
-        <View style={[styles.section, { paddingHorizontal: H_PAD, marginTop: 20, gap: 10 }]}>
+          {/* ── Pills de acción (solo para perfiles ajenos) ── */}
           {!isOwnProfile && (
-            <Pressable
-              onPress={() => {
-                if (isFollowing) {
-                  unfollowMutation.mutate({ userId });
-                } else {
-                  followMutation.mutate({ userId });
-                }
-              }}
-              style={({ pressed }) => [
-                styles.followBtn,
-                {
-                  backgroundColor: isFollowing ? "transparent" : undefined,
-                  overflow: "hidden",
-                  borderColor: "#D4AF37",
-                  opacity: pressed ? 0.8 : 1,
-                },
-              ]}
-            >
-              {!isFollowing && <GoldGradientFill />}
-              <Feather
-                name={isFollowing ? "user-check" : "user-plus"}
-                size={15}
-                color={isFollowing ? "#D4AF37" : "#1B060F"}
-              />
-              <Text style={[styles.followBtnText, { color: isFollowing ? "#D4AF37" : "#1B060F" }]}>
-                {isFollowing ? "Siguiendo" : "Seguir"}
-              </Text>
-            </Pressable>
+            <View style={styles.actionPillsWrap}>
+              {/* Fila 1: Seguir + Amistad */}
+              <View style={styles.actionPillsRow}>
+                {/* Seguir */}
+                <Pressable
+                  onPress={() => {
+                    if (isFollowing) unfollowMutation.mutate({ userId });
+                    else followMutation.mutate({ userId });
+                  }}
+                  style={({ pressed }) => [
+                    styles.actionPill,
+                    isFollowing && styles.actionPillActive,
+                    { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
+                  ]}
+                >
+                  {isFollowing && (
+                    <LinearGradient
+                      colors={["#D6AD5F", "#B47344"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={StyleSheet.absoluteFill}
+                    />
+                  )}
+                  <Feather
+                    name={isFollowing ? "user-check" : "user-plus"}
+                    size={13}
+                    color={isFollowing ? "#1B060F" : "#FFFFFF"}
+                  />
+                  <Text style={[styles.actionPillText, isFollowing && styles.actionPillTextActive]}>
+                    {isFollowing ? "Siguiendo" : "Seguir"}
+                  </Text>
+                </Pressable>
+
+                {/* Amistad */}
+                <Pressable
+                  onPress={() => {
+                    if (friendRequested) {
+                      Alert.alert("Solicitud enviada", "Ya enviaste una solicitud de amistad.");
+                    } else {
+                      sendFriendRequest.mutate({ data: { recipientId: userId } });
+                    }
+                  }}
+                  style={({ pressed }) => [
+                    styles.actionPill,
+                    friendRequested && styles.actionPillSent,
+                    { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
+                  ]}
+                >
+                  <Feather
+                    name={friendRequested ? "user-x" : "users"}
+                    size={13}
+                    color={friendRequested ? "rgba(242,231,228,0.55)" : "#FFFFFF"}
+                  />
+                  <Text style={[styles.actionPillText, friendRequested && styles.actionPillTextSent]}>
+                    {friendRequested ? "Solicitado" : "Amistad"}
+                  </Text>
+                </Pressable>
+              </View>
+
+              {/* Fila 2: Enviar mensaje */}
+              <Pressable
+                onPress={() => router.push(`/chat/${profile.id}` as never)}
+                style={({ pressed }) => [
+                  styles.actionPill,
+                  styles.actionPillFull,
+                  { opacity: pressed ? 0.75 : 1 },
+                ]}
+              >
+                <Feather name="message-circle" size={13} color="#FFFFFF" />
+                <Text style={styles.actionPillText}>Enviar mensaje</Text>
+              </Pressable>
+            </View>
           )}
-          <Pressable
-            onPress={() => router.push(`/chat/${profile.id}` as never)}
-            style={({ pressed }) => [
-              styles.messageBtn,
-              { backgroundColor: "rgba(74,12,12,0.08)", opacity: pressed ? 0.85 : 1 },
-            ]}
-          >
-            <Feather name="message-circle" size={16} color={colors.primary} />
-            <Text style={[styles.messageText, { color: colors.primary }]}>
-              Enviar mensaje
-            </Text>
-          </Pressable>
         </View>
+
+        {/* ── Stats card (categoría más escuchada) ── */}
+        {profile.stats.topCategoryLabel ? (
+          <View style={[styles.topCatCard, { marginHorizontal: H_PAD, backgroundColor: "rgba(74,12,12,0.08)" }]}>
+            <Feather name="headphones" size={16} color={colors.accent} />
+            <Text style={[styles.topCatLabel, { color: colors.mutedForeground }]}>
+              Categoría más escuchada
+            </Text>
+            <Text style={[styles.topCatValue, { color: colors.foreground }]} numberOfLines={1}>
+              {profile.stats.topCategoryLabel}
+            </Text>
+          </View>
+        ) : null}
       </ScrollView>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  scroll: { flex: 1 },
-  headerRow: { flexDirection: "row", alignItems: "center", marginBottom: 8 },
-  backBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center", marginLeft: -8 },
-
-  profile: { alignItems: "center", paddingHorizontal: H_PAD, marginBottom: 18 },
-  photoWrap: { width: PHOTO_SIZE, height: PHOTO_SIZE, marginBottom: 14 },
-  photo: {
-    width: PHOTO_SIZE,
-    height: PHOTO_SIZE,
-    borderRadius: PHOTO_SIZE / 2,
-    backgroundColor: "rgba(74,12,12,0.08)",
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 4,
   },
-  photoFallback: { alignItems: "center", justifyContent: "center" },
-  initials: { fontSize: 38, fontWeight: "700" },
-  name: { fontSize: 24, fontWeight: "700", letterSpacing: 0.3 },
-  handle: { fontSize: 14, marginTop: 4 },
-  metaItem: { flexDirection: "row", alignItems: "center", gap: 5, marginTop: 12 },
+  headerTitle: { fontSize: 17, fontWeight: "700" },
+  backBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: "rgba(244,218,213,0.08)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  centered: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12, paddingHorizontal: 32 },
+  notFoundTitle: { fontSize: 18, fontWeight: "700" },
+  notFoundSub: { fontSize: 14, textAlign: "center", lineHeight: 21 },
+
+  scroll: { paddingTop: 4, gap: 16 },
+
+  /* ── Profile card — sin fondo, igual que profile.tsx ── */
+  profileCard: {
+    borderRadius: 24,
+    padding: 24,
+    alignItems: "center",
+    gap: 6,
+  },
+  avatarWrapper: { position: "relative", marginBottom: 8 },
+  avatarImage: { width: 80, height: 80, borderRadius: 40 },
+  avatarFallback: { alignItems: "center", justifyContent: "center" },
+  initials: { fontSize: 28, fontWeight: "700" },
+  userName: { fontSize: 20, fontWeight: "700", textAlign: "center" },
+  handle: { fontSize: 13 },
+  metaRow: { flexDirection: "row", alignItems: "center", gap: 4 },
   metaText: { fontSize: 12 },
 
-  statsRow: { flexDirection: "row", gap: 10, marginBottom: 4 },
-  statCard: { flex: 1, borderRadius: 16, paddingVertical: 16, alignItems: "center" },
-  statValue: { fontSize: 20, fontWeight: "700" },
-  statLabel: { fontSize: 12, marginTop: 4 },
+  /* — Seguidores/stats row — */
+  followCountsRow: { flexDirection: "row", alignItems: "center", marginTop: 14, marginBottom: 4 },
+  followCountItem: { alignItems: "center", paddingHorizontal: 16 },
+  followCountNum: { fontSize: 18, fontWeight: "700" },
+  followCountLabel: { fontSize: 11, marginTop: 1 },
+  followCountDivider: { width: 1, height: 28 },
 
-  section: {},
+  /* — Pills de acción — */
+  actionPillsWrap: {
+    alignSelf: "stretch",
+    gap: 8,
+    marginTop: 14,
+  },
+  actionPillsRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  actionPillFull: {
+    alignSelf: "stretch",
+    justifyContent: "center",
+  },
+  actionPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    borderRadius: 20,
+    paddingHorizontal: 14,
+    height: 34,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.07)",
+  },
+  actionPillActive: { backgroundColor: "transparent" },
+  actionPillSent: { backgroundColor: "rgba(255,255,255,0.04)" },
+  actionPillText: {
+    fontSize: 13,
+    fontWeight: "400",
+    color: "#FFFFFF",
+    letterSpacing: 0.1,
+  },
+  actionPillTextActive: { color: "#1B060F", fontWeight: "600" },
+  actionPillTextSent: { color: "rgba(242,231,228,0.45)" },
+
+  /* ── Categoría más escuchada ── */
   topCatCard: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
     borderRadius: 14,
     padding: 14,
-    marginTop: 14,
   },
-  topCatLabel: { fontSize: 13 },
-  topCatValue: { fontSize: 14, fontWeight: "700", flex: 1, textAlign: "right" },
-
-  followBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    borderRadius: 999,
-    borderWidth: 1.5,
-    paddingVertical: 13,
-  },
-  followBtnText: { fontSize: 15, fontWeight: "700" },
-
-  messageBtn: {
-    borderRadius: 999,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    paddingVertical: 14,
-  },
-  messageText: { fontSize: 15, fontWeight: "700" },
-
-  notFound: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, gap: 10 },
-  notFoundTitle: { fontSize: 18, fontWeight: "700" },
-  notFoundSub: { fontSize: 14, textAlign: "center", lineHeight: 21 },
+  topCatLabel: { fontSize: 13, flex: 1 },
+  topCatValue: { fontSize: 14, fontWeight: "700" },
 });
