@@ -616,8 +616,8 @@ export function MixerSheet() {
               </Pressable>
             </View>
 
-            {/* Línea divisora — solo en tema sin imagen */}
-            {!activeBgPreset.image && (
+            {/* Línea divisora — solo en tema por defecto */}
+            {!hasCustomBg && !activeBgPreset.image && (
               <View style={[styles.headerDivider, { backgroundColor: palette.separator }]} />
             )}
           </View>
