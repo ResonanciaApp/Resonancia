@@ -26,7 +26,6 @@ import RAnimated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { NotificationBell } from "@/components/NotificationBell";
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
@@ -181,16 +180,6 @@ export default function HomeScreen2() {
     opacity:   pillOpacitySV.value,
     transform: [{ translateX: pillTranslateSV.value }],
   }));
-
-  // Fuego: fade out rápido cuando el panel de Sesiones se abre desde la derecha
-  const fireOpacity = useRef(new Animated.Value(1)).current;
-  useEffect(() => {
-    Animated.timing(fireOpacity, {
-      toValue: sesionesOpen ? 0 : 1,
-      duration: sesionesOpen ? 120 : 280,
-      useNativeDriver: true,
-    }).start();
-  }, [sesionesOpen, fireOpacity]);
 
   useEffect(() => {
     const easeOut = { duration: 200, easing: Easing.out(Easing.quad) };
@@ -427,13 +416,6 @@ export default function HomeScreen2() {
               );
             })}
           </ScrollView>
-          {/* Fuego — derecha del header */}
-          <Animated.View
-            style={{ opacity: fireOpacity }}
-            pointerEvents={sesionesOpen ? "none" : "auto"}
-          >
-            <NotificationBell />
-          </Animated.View>
         </View>
       </View>
 
