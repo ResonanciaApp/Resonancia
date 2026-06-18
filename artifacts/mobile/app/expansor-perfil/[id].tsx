@@ -18,7 +18,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import MaskedView from "@react-native-masked-view/masked-view";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { COUNTRY_FLAGS, getExpansorById } from "@/data/expansores";
@@ -207,48 +206,6 @@ export default function ExpansorPerfilScreen() {
 
         {/* ── Sección Expansor ── */}
         <View style={[styles.expansorSection, { marginHorizontal: H_PAD }]}>
-
-          {/* Banner certificado — V5 */}
-          <View style={styles.certBanner}>
-            {/* Barra lateral izquierda */}
-            <LinearGradient
-              colors={["#E9C46A", "#B8860B"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={styles.certBannerBar}
-            />
-
-            {/* Texto */}
-            <View style={{ flex: 1, paddingLeft: 12, paddingVertical: 10, justifyContent: "center" }}>
-              <MaskedView
-                maskElement={
-                  <Text style={styles.certBannerTitle}>
-                    {expansor.certified ? "EXPANSOR CERTIFICADO" : "EXPANSOR RESONANCIA"}
-                  </Text>
-                }
-              >
-                <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-                  <Text style={[styles.certBannerTitle, { opacity: 0 }]}>
-                    {expansor.certified ? "EXPANSOR CERTIFICADO" : "EXPANSOR RESONANCIA"}
-                  </Text>
-                </LinearGradient>
-              </MaskedView>
-              <Text style={styles.certBannerSub}>Verificado · Resonancia</Text>
-            </View>
-
-            {/* Ícono circular derecha */}
-            <View style={{ paddingRight: 14, justifyContent: "center" }}>
-              <View style={styles.certBannerIconBorder}>
-                <View style={styles.certBannerIcon}>
-                  <LinearGradient
-                    colors={["rgba(212,175,55,0.30)", "rgba(184,134,11,0.20)"]}
-                    style={StyleSheet.absoluteFill}
-                  />
-                  <Text style={styles.certBannerStar}>✦</Text>
-                </View>
-              </View>
-            </View>
-          </View>
 
           {/* Me especializo en + chips */}
           <View style={styles.sectionBlock}>
@@ -504,34 +461,6 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 16,
   },
-  certBanner: {
-    flexDirection: "row",
-    alignItems: "stretch",
-    borderRadius: 12,
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.18)",
-    backgroundColor: "rgba(212,175,55,0.05)",
-  },
-  certBannerBar: {
-    width: 5,
-  },
-  certBannerTitle: {
-    fontSize: 13, fontWeight: "800", letterSpacing: 0.4, color: "#D4AF37",
-  },
-  certBannerSub: {
-    fontSize: 11, color: "rgba(255,255,255,0.90)", marginTop: 2,
-  },
-  certBannerIconBorder: {
-    width: 35, height: 35, borderRadius: 18,
-    borderWidth: 1.5, borderColor: "rgba(212,175,55,0.20)",
-    flexShrink: 0,
-  },
-  certBannerIcon: {
-    flex: 1, borderRadius: 16, overflow: "hidden",
-    alignItems: "center", justifyContent: "center",
-  },
-  certBannerStar: { fontSize: 17, color: "rgba(212,175,55,0.90)", fontWeight: "800" },
 
   sectionBlock: { gap: 10 },
   sectionLabel: {
