@@ -116,7 +116,7 @@ const MEZ_PLACEHOLDERS = [
 // ── Colores de tab ────────────────────────────────────────────────────────────
 const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
   popular:        ["#4A0C0C", "#27070E", "#1B060F"],
-  naturaleza:     ["#101F14", "#0D1A0F", "#1B060F"],
+  naturaleza:     ["#101F14", "#183520", "#1B060F"],
   ancestrales:    ["#221510", "#1E0F0B", "#100904"],
   sintetizadores: ["#061A2E", "#041220", "#1B060F"],
   voces:          ["#250810", "#1A060C", "#1B060F"],
