@@ -1038,40 +1038,6 @@ export default function ProfileScreen() {
         {/* ── Secciones colapsables (ocultas con el ojo) ── */}
         <Animated.View style={{ opacity: sectionsAnim, maxHeight: sectionsAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 2400] }), overflow: "hidden" }}>
 
-        {/* ── Plan ── */}
-        <Pressable
-          onPress={() => router.push("/membresia" as never)}
-          style={({ pressed }) => [
-            styles.planCard,
-            { backgroundColor: "rgba(74,12,12,0.08)", opacity: pressed ? 0.85 : 1 },
-          ]}
-        >
-          {isPremium ? (
-            <View style={[styles.planIconWrap, { backgroundColor: "rgba(26,90,60,0.5)" }]}>
-              <MaterialCommunityIcons name="star" size={20} color={colors.primary} />
-            </View>
-          ) : (
-            <View style={[styles.planIconWrap, { backgroundColor: "rgba(122,143,168,0.12)" }]}>
-              <Feather name="user" size={20} color={colors.mutedForeground} />
-            </View>
-          )}
-          <View style={{ flex: 1 }}>
-            <Text style={[styles.planTitle, { color: isPremium ? colors.primary : colors.foreground }]}>
-              {isPremium ? "Plan Premium" : "Plan Free"}
-            </Text>
-            <Text style={[styles.planSub, { color: colors.mutedForeground }]}>
-              {isPremium ? "¡Tienes acceso completo al catálogo!" : "Acceso limitado al catálogo"}
-            </Text>
-          </View>
-          {isPremium ? (
-            <Feather name="chevron-right" size={16} color={colors.mutedForeground} />
-          ) : (
-            <View style={styles.planMejorar}>
-              <Text style={[styles.planMejorarText, { color: colors.primary }]}>Mejorar</Text>
-              <Feather name="chevron-right" size={15} color={colors.primary} />
-            </View>
-          )}
-        </Pressable>
 
 
         {/* ── Accesos rápidos ── */}
