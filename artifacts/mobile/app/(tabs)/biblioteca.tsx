@@ -1191,14 +1191,14 @@ export default function BibliotecaScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: "#27070E" }]}>
+    <View style={[styles.root, { backgroundColor: "#25070D" }]}>
       <SacredBackground variant="solid" />
 
       {/* ── STICKY HEADER ────────────────────────────────────────────────── */}
       <View
         style={[styles.stickyHeader, {
           paddingTop: topPad + 2,
-          backgroundColor: "#27070E",
+          backgroundColor: "#25070D",
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 9 },
           shadowOpacity: 0.22,
