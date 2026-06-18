@@ -202,9 +202,9 @@ export default function CarpetaDetailScreen() {
                   {pl.coverType === "geometrix" && pl.coverGeometryId ? (
                     <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={28} strokeWidth={1.6} opacity={1} />
                   ) : pl.coverType === "creation" && pl.coverCreationId ? (
-                    <CreationCoverPreview creationId={pl.coverCreationId} size={36} />
+                    <CreationCoverPreview creationId={pl.coverCreationId} size={52} />
                   ) : pl.coverUri ? (
-                    <Image source={{ uri: pl.coverUri }} style={{ width: 36, height: 36, borderRadius: 6 }} contentFit="cover" />
+                    <Image source={{ uri: pl.coverUri }} style={{ width: 52, height: 52, borderRadius: 6 }} contentFit="cover" />
                   ) : (
                     <Feather name="music" size={18} color={MUTED} />
                   )}
