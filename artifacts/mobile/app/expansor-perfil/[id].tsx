@@ -520,7 +520,7 @@ const styles = StyleSheet.create({
     fontSize: 13, fontWeight: "800", letterSpacing: 0.4, color: "#D4AF37",
   },
   certBannerSub: {
-    fontSize: 11, color: "rgba(212,175,55,0.55)", marginTop: 2,
+    fontSize: 11, color: "rgba(255,255,255,0.90)", marginTop: 2,
   },
   certBannerIconBorder: {
     width: 35, height: 35, borderRadius: 18,
