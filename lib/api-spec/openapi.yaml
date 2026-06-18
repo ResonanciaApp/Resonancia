@@ -2774,7 +2774,11 @@ components:
           type: ["string", "null"]
         friendsCount:
           type: integer
-      required: [totalSessions, totalMinutes, friendsCount]
+        followersCount:
+          type: integer
+        followingCount:
+          type: integer
+      required: [totalSessions, totalMinutes, friendsCount, followersCount, followingCount]
     PublicUserProfile:
       type: object
       properties:
@@ -2785,6 +2789,8 @@ components:
         displayName:
           type: string
         avatarUrl:
+          type: ["string", "null"]
+        location:
           type: ["string", "null"]
         role:
           type: string
@@ -2815,6 +2821,8 @@ components:
           minLength: 1
           maxLength: 60
         avatarUrl:
+          type: ["string", "null"]
+        location:
           type: ["string", "null"]
     UserSearchResult:
       type: object

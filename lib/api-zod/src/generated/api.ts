@@ -395,7 +395,8 @@ export const updateMeBodyDisplayNameMax = 60;
 export const UpdateMeBody = zod.object({
   "username": zod.string().min(updateMeBodyUsernameMin).max(updateMeBodyUsernameMax).regex(updateMeBodyUsernameRegExp).optional(),
   "displayName": zod.string().min(1).max(updateMeBodyDisplayNameMax).optional(),
-  "avatarUrl": zod.string().nullish()
+  "avatarUrl": zod.string().nullish(),
+  "location": zod.string().nullish()
 })
 
 export const UpdateMeResponse = zod.object({
@@ -440,13 +441,16 @@ export const GetPublicUserProfileResponse = zod.object({
   "username": zod.string(),
   "displayName": zod.string(),
   "avatarUrl": zod.string().nullish(),
+  "location": zod.string().nullish(),
   "role": zod.enum(['user', 'creator', 'admin']).optional(),
   "createdAt": zod.coerce.date(),
   "stats": zod.object({
   "totalSessions": zod.number(),
   "totalMinutes": zod.number(),
   "topCategoryLabel": zod.string().nullish(),
-  "friendsCount": zod.number()
+  "friendsCount": zod.number(),
+  "followersCount": zod.number(),
+  "followingCount": zod.number()
 })
 })
 

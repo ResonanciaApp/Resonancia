@@ -4,6 +4,7 @@ import {
   db,
   usersTable,
   friendshipsTable,
+  followsTable,
   playbackHistoryTable,
   type User,
 } from "@workspace/db";
@@ -39,6 +40,7 @@ router.patch("/me", requireAuth, async (req, res) => {
   if (parsed.data.username !== undefined) updates.username = parsed.data.username;
   if (parsed.data.displayName !== undefined) updates.displayName = parsed.data.displayName;
   if (parsed.data.avatarUrl !== undefined) updates.avatarUrl = parsed.data.avatarUrl;
+  if (parsed.data.location !== undefined) updates.location = parsed.data.location;
 
   if (Object.keys(updates).length === 0) {
     res.json(toProfile(me));
@@ -178,11 +180,22 @@ router.get("/users/:userId/public", requireAuth, async (req, res) => {
         ),
       );
 
+    const [followersRow] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(followsTable)
+      .where(eq(followsTable.followingId, userId));
+
+    const [followingRow] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(followsTable)
+      .where(eq(followsTable.followerId, userId));
+
     res.json({
       id: user.id,
       username: user.username,
       displayName: user.displayName,
       avatarUrl: user.avatarUrl,
+      location: user.location ?? null,
       role: user.role,
       createdAt: user.createdAt.toISOString(),
       stats: {
@@ -190,6 +203,8 @@ router.get("/users/:userId/public", requireAuth, async (req, res) => {
         totalMinutes: Math.round(Number(agg?.totalMinutes ?? 0)),
         topCategoryLabel: topCategory?.categoryLabel ?? null,
         friendsCount: Number(friends?.count ?? 0),
+        followersCount: Number(followersRow?.count ?? 0),
+        followingCount: Number(followingRow?.count ?? 0),
       },
     });
   } catch (err) {

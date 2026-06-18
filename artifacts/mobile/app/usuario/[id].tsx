@@ -185,6 +185,14 @@ export default function UsuarioScreen() {
           {/* Nombre */}
           <Text style={[styles.userName, { color: colors.foreground }]}>{profile.displayName}</Text>
 
+          {/* País / ubicación */}
+          {profile.location ? (
+            <View style={styles.metaRow}>
+              <Feather name="map-pin" size={12} color={colors.mutedForeground} />
+              <Text style={[styles.metaText, { color: colors.mutedForeground }]}>{profile.location}</Text>
+            </View>
+          ) : null}
+
           {/* Handle */}
           <Text style={[styles.handle, { color: colors.mutedForeground }]}>@{profile.username}</Text>
 
@@ -202,23 +210,16 @@ export default function UsuarioScreen() {
           <View style={styles.followCountsRow}>
             <View style={styles.followCountItem}>
               <Text style={[styles.followCountNum, { color: colors.foreground }]}>
-                {profile.stats.friendsCount ?? 0}
+                {profile.stats.followersCount ?? 0}
               </Text>
-              <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>amigos</Text>
+              <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>seguidores</Text>
             </View>
             <View style={[styles.followCountDivider, { backgroundColor: colors.border ?? "#3D0E16" }]} />
             <View style={styles.followCountItem}>
               <Text style={[styles.followCountNum, { color: colors.foreground }]}>
-                {profile.stats.totalSessions ?? 0}
+                {profile.stats.followingCount ?? 0}
               </Text>
-              <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>sesiones</Text>
-            </View>
-            <View style={[styles.followCountDivider, { backgroundColor: colors.border ?? "#3D0E16" }]} />
-            <View style={styles.followCountItem}>
-              <Text style={[styles.followCountNum, { color: colors.foreground }]}>
-                {profile.stats.totalMinutes > 0 ? profile.stats.totalMinutes : 0}
-              </Text>
-              <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>minutos</Text>
+              <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>siguiendo</Text>
             </View>
           </View>
 

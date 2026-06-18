@@ -362,6 +362,8 @@ export interface PublicUserStats {
   /** @nullable */
   topCategoryLabel?: string | null;
   friendsCount: number;
+  followersCount: number;
+  followingCount: number;
 }
 
 export type PublicUserProfileRole = typeof PublicUserProfileRole[keyof typeof PublicUserProfileRole];
@@ -379,6 +381,8 @@ export interface PublicUserProfile {
   displayName: string;
   /** @nullable */
   avatarUrl?: string | null;
+  /** @nullable */
+  location?: string | null;
   role?: PublicUserProfileRole;
   createdAt: string;
   stats: PublicUserStats;
@@ -411,6 +415,8 @@ export interface UserProfileUpdate {
   displayName?: string;
   /** @nullable */
   avatarUrl?: string | null;
+  /** @nullable */
+  location?: string | null;
 }
 
 export type UserSearchResultFriendshipStatus = typeof UserSearchResultFriendshipStatus[keyof typeof UserSearchResultFriendshipStatus];
