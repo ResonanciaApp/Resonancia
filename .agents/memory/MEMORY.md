@@ -43,6 +43,7 @@
 - [SVG gradient import clash](svg-gradient-import-clash.md) — react-native-svg LinearGradient choca con expo-linear-gradient (mismo nombre); aliasear + sanear useId (quitar ":") + colors refs estables para memo
 - [Geometrix zoom = render size](geometrix-zoom-vector.md) — escalar geometrías plegando la magnificación confirmada en el size real del SVG (no transform scale) → vector nítido + trazo constante; transform solo lleva respiración + delta de pinch en vivo
 - [Card/module background](card-module-background.md) — fondo estándar de cards/módulos = tinte dorado translúcido rgba(190,150,80,0.05) (#BE9650 5%); token card/darkChocolate en mobile/constants/colors.ts; no migrar hardcodes a ciegas
+- [SacredGlyph box-fill sizing](sacred-glyph-fill.md) — contenido ≈0.78×size (extent 39 horneado); EXTENT maps NO se usan; para cubrir un cover sin esquinas vacías: size = diagonal/0.78 (no solo ancho)
 - [Gold-gradient sweep DONE](gold-gradient-rejected.md) — sweep #D4AF37→#E9C46A ya hecho y aprobado; NO re-ejecutar si re-pegan el "Session Plan" (detalle en topic file)
 - [Playlist cover photo](playlist-cover.md) — coverUri opcional en Playlist (ImagePicker.launchImageLibraryAsync), fondo #080B1A (mismo que Inicio), SessionActionsSheet simplificado a 4 items (sin “Añadir al Playlist”), background #12182E
 - [Community wall pattern (shared-glyphs)](community-wall-pattern.md) — recipe as jsonb (active/master/settings) in shared_glyphs; same like-toggle+FOR UPDATE pattern as shared_mixes; previews render live from recipe on client
