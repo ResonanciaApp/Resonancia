@@ -37,6 +37,8 @@ export default function ExpansorPerfilScreen() {
   const [following, setFollowing] = React.useState(false);
   const [friendRequested, setFriendRequested] = React.useState(false);
   const [lightboxUri, setLightboxUri] = React.useState<string | null>(null);
+  const [descExpanded, setDescExpanded] = React.useState(false);
+  const [descOverflows, setDescOverflows] = React.useState(false);
 
   const expansor = getExpansorById(id);
 
@@ -246,9 +248,33 @@ export default function ExpansorPerfilScreen() {
           <View style={styles.sectionBlock}>
             <Text style={styles.serviceTitle}>Mis servicios</Text>
             {(expansor.servicesDescription || expansor.bio) ? (
-              <Text style={styles.serviceDesc}>
-                {expansor.servicesDescription ?? expansor.bio}
-              </Text>
+              <View>
+                <Text
+                  style={styles.serviceDesc}
+                  numberOfLines={descExpanded ? undefined : 7}
+                  onTextLayout={(e) => {
+                    if (!descOverflows && e.nativeEvent.lines.length > 7)
+                      setDescOverflows(true);
+                  }}
+                >
+                  {expansor.servicesDescription ?? expansor.bio}
+                </Text>
+                {descOverflows && (
+                  <Pressable
+                    onPress={() => setDescExpanded((v) => !v)}
+                    style={({ pressed }) => [styles.readMoreBtn, { opacity: pressed ? 0.7 : 1 }]}
+                  >
+                    <Text style={styles.readMoreText}>
+                      {descExpanded ? "Leer menos" : "Leer más"}
+                    </Text>
+                    <Feather
+                      name={descExpanded ? "chevron-up" : "chevron-down"}
+                      size={13}
+                      color="#D4AF37"
+                    />
+                  </Pressable>
+                )}
+              </View>
             ) : null}
           </View>
 
@@ -488,6 +514,18 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 20,
     color: "rgba(244,218,213,0.65)",
+  },
+  readMoreBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    marginTop: 6,
+    alignSelf: "flex-start",
+  },
+  readMoreText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#D4AF37",
   },
   specialtyWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   specialtyChip: {
