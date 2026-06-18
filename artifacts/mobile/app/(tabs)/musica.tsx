@@ -233,11 +233,11 @@ type SoundCardProps = {
   locked: boolean;
   available: boolean;
   image: ReturnType<typeof getSoundImage> | string;
-  activeColor: string;
+  borderGradient: [string, string, string];
   onPress: () => void;
 };
 
-const SoundCard = memo(function SoundCard({ sound, idx, active, locked, available, image, activeColor, onPress }: SoundCardProps) {
+const SoundCard = memo(function SoundCard({ sound, idx, active, locked, available, image, borderGradient, onPress }: SoundCardProps) {
   const anim = useRef(new Animated.Value(active ? 1 : 0)).current;
   const [decorated, setDecorated] = useState(active);
 
@@ -253,23 +253,25 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
     return () => a.stop();
   }, [active, anim]);
 
-  const tiltDir   = idx % 2 === 0 ? "-4deg" : "4deg";
-  const rotate    = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", tiltDir] });
-  const scale     = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
-  const r = parseInt(activeColor.slice(1, 3), 16);
-  const g = parseInt(activeColor.slice(3, 5), 16);
-  const b = parseInt(activeColor.slice(5, 7), 16);
-  const borderCol = anim.interpolate({ inputRange: [0, 1], outputRange: [`rgba(${r},${g},${b},0)`, `rgba(${r},${g},${b},1)`] });
+  const tiltDir = idx % 2 === 0 ? "-4deg" : "4deg";
+  const rotate  = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", tiltDir] });
+  const scale   = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
 
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
-      <Animated.View
-        style={[
-          styles.cardImageWrap,
-          decorated && styles.cardImageWrapActive,
-          { transform: [{ rotate }, { scale }], borderColor: borderCol },
-        ]}
-      >
+      <Animated.View style={[styles.cardImageWrap, { transform: [{ rotate }, { scale }] }]}>
+        {/* Degradado del header como borde — detrás de la imagen (z:0) */}
+        {decorated && (
+          <Animated.View style={[StyleSheet.absoluteFill, { opacity: anim, borderRadius: 16 }]} pointerEvents="none">
+            <LinearGradient
+              colors={borderGradient}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={{ flex: 1, borderRadius: 16 }}
+            />
+          </Animated.View>
+        )}
+        {/* Imagen ocupa el área inset — cubre el centro, deja visible el anillo del borde (z:1) */}
         <View style={styles.cardClipInner}>
           {image ? (
             <Image source={typeof image === "string" ? { uri: image } : image} style={StyleSheet.absoluteFill} contentFit="cover" />
@@ -855,7 +857,7 @@ export default function MezcladorScreen() {
                     locked={!!s.isPremium && !isPremium}
                     available={hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id]}
                     image={getSoundImage(s.id) ?? REMOTE_SOUND_IMAGE_MAP[s.id]}
-                    activeColor={currentTabDef?.color ?? "#8C1A2B"}
+                    borderGradient={TAB_HEADER_GRADIENT[mainTab]}
                     onPress={() => handleSoundPress(s)}
                   />
                 ))}
@@ -1053,7 +1055,6 @@ const styles = StyleSheet.create({
     flex: 1, borderRadius: 14, overflow: "hidden",
     backgroundColor: "rgba(212,175,55,0.08)",
   },
-  cardImageWrapActive: { borderWidth: 4 },
   cardFooter: { paddingHorizontal: 4, paddingTop: 8, paddingBottom: 2 },
   soundName:  { fontSize: 11.5, fontWeight: "600", letterSpacing: 0.1, textAlign: "center", color: DARK },
   lockBadge:  { position: "absolute", top: 4, right: 4 },
