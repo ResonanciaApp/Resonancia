@@ -28,7 +28,7 @@ const INACTIVE_COLOR = "rgba(244,218,213,0.55)";
 const GRAD_END       = "#E9C46A";
 
 const ICON_SIZE = 23;
-const PILL_BG   = "rgba(212,175,55,0.16)";
+const PILL_BG   = "rgba(212,175,55,0.22)";
 
 
 // Rutas que nunca aparecen en el menú inferior
