@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
   },
   tabBtnActive: {},
   tabBtnText: {
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: "600",
     color: "rgba(244,218,213,0.45)",
   },
