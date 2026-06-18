@@ -494,7 +494,7 @@ export default function HomeScreen2() {
         {/* ── ESTADO DE ÁNIMO ── */}
         <Pressable
           onPress={() => setMoodSheetVisible(true)}
-          style={({ pressed }) => [styles.moodRow, { opacity: pressed ? 0.78 : 1, marginTop: 40 }]}
+          style={({ pressed }) => [styles.moodRow, { opacity: pressed ? 0.78 : 1, marginTop: 7 }]}
         >
           <Text style={styles.moodEmoji}>🙂</Text>
           <Text style={styles.moodRowLabel}>¿Cómo te sientes?</Text>
