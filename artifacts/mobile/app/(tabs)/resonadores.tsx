@@ -307,7 +307,7 @@ export default function ResonadoresScreen() {
         {/* Título + icono búsqueda */}
         <View style={styles.titleRow}>
           <View>
-            <Text style={styles.title}>Resonadores</Text>
+            <Text style={styles.title}>Equipo</Text>
           </View>
           <Pressable onPress={toggleSearch} hitSlop={10} style={styles.searchIconBtn}>
             <Feather
@@ -358,7 +358,7 @@ export default function ResonadoresScreen() {
                   />
                 )}
                 <Text style={[styles.tabBtnText, isActive && styles.tabBtnTextActive]}>
-                  {t === "artistas" ? "Artistas" : "Expansores"}
+                  {t === "artistas" ? "Resonadores" : "Expansores"}
                 </Text>
                 <Text style={[styles.tabBtnSub, isActive && styles.tabBtnSubActive]}>
                   {t === "artistas" ? "La esencia de resonancia" : "Los que expanden la vibración"}
