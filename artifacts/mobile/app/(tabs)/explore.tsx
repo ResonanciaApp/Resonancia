@@ -589,19 +589,20 @@ const styles = StyleSheet.create({
   },
   durPillRow: {
     flexDirection: "row",
-    flexWrap: "wrap",
     paddingHorizontal: H_PAD,
-    gap: 8,
+    gap: 6,
     paddingBottom: 2,
   },
   durPill: {
+    flex: 1,
     overflow: "hidden",
     borderRadius: 20,
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
     paddingVertical: 8,
     borderWidth: 1,
     borderColor: "rgba(190,150,80,0.30)",
     backgroundColor: "rgba(74,12,12,0.08)",
+    alignItems: "center",
   },
   durPillActive: {
     borderColor: "transparent",
