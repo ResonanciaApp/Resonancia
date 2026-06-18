@@ -154,7 +154,6 @@ const PillTab = memo(function PillTab({
             style={styles.pillTabInner}
           >
             <MaskedView
-              style={styles.pillTabMask}
               maskElement={
                 <View style={styles.pillTabMaskContent}>
                   <MaterialCommunityIcons name={tab.icon as any} size={17} color="black" />
@@ -168,8 +167,14 @@ const PillTab = memo(function PillTab({
                 colors={GOLD_BORDER}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
-                style={StyleSheet.absoluteFill}
-              />
+              >
+                <View style={styles.pillTabMaskContent}>
+                  <MaterialCommunityIcons name={tab.icon as any} size={17} color="transparent" />
+                  <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "transparent", fontWeight: "700" }]}>
+                    {tab.label}
+                  </Text>
+                </View>
+              </LinearGradient>
             </MaskedView>
           </LinearGradient>
         </LinearGradient>
@@ -936,11 +941,6 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     overflow: "hidden",
     gap: 4,
-  },
-  pillTabMask: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
   },
   pillTabMaskContent: {
     flexDirection: "row",
