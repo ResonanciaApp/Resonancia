@@ -23,6 +23,7 @@ import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder
 import { ARTISTS, type Artist } from "@/data/artists";
 import { EXPANSORES, REGIONS_BY_COUNTRY, COUNTRY_FLAGS, type Expansor } from "@/data/expansores";
 import { useColors } from "@/hooks/useColors";
+import { useUserProfile } from "@/context/UserProfileContext";
 
 const H_PAD = 18;
 const CARD_GAP = 10;
@@ -208,12 +209,19 @@ const ResonadorCard = memo(function ResonadorCard({
 }) {
   const isArtista = item.kind === "artista";
   const d = item.data;
+  const { expansorId } = useUserProfile();
 
   const photoSize = cardW - 16;
 
   function handlePress() {
-    if (isArtista) router.push(`/artista/${d.id}` as never);
-    else router.push(`/expansor/${d.id}` as never);
+    if (isArtista) {
+      router.push(`/artista/${d.id}` as never);
+    } else if (!isArtista && d.id === expansorId) {
+      // Es mi propio perfil Expansor → abrir mi perfil
+      router.push("/(tabs)/profile" as never);
+    } else {
+      router.push(`/expansor/${d.id}` as never);
+    }
   }
 
   return (
