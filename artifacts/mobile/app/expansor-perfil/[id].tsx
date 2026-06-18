@@ -5,12 +5,14 @@ import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
   Alert,
+  Linking,
   Platform,
   Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -22,10 +24,12 @@ import { COUNTRY_FLAGS, getExpansorById } from "@/data/expansores";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
+const GALLERY_GAP = 4;
 
 export default function ExpansorPerfilScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { width: screenWidth } = useWindowDimensions();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const [following, setFollowing] = React.useState(false);
@@ -35,6 +39,8 @@ export default function ExpansorPerfilScreen() {
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+
+  const cellSize = (screenWidth - H_PAD * 2 - GALLERY_GAP * 2) / 3;
 
   if (!expansor) {
     return (
@@ -57,12 +63,16 @@ export default function ExpansorPerfilScreen() {
   const flag = COUNTRY_FLAGS[expansor.country] ?? "";
   const locationStr = `${flag} ${expansor.city}, ${expansor.country}`.trim();
 
+  const hasContactRow = !!(expansor.phone || expansor.email);
+  const hasSocialRow = !!(expansor.instagram || expansor.linktree || expansor.facebook);
+  const hasGallery = !!(expansor.gallery && expansor.gallery.length > 0);
+
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
       <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
 
-      {/* Header barra */}
+      {/* Header */}
       <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
         <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
           <Feather name="arrow-left" size={22} color={colors.foreground} />
@@ -75,7 +85,7 @@ export default function ExpansorPerfilScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[styles.scroll, { paddingBottom: bottomPad + 40 }]}
       >
-        {/* ── Profile Card — mismo layout que profile.tsx ── */}
+        {/* ── Profile Card ── */}
         <View style={styles.profileCard}>
 
           {/* Avatar */}
@@ -94,19 +104,15 @@ export default function ExpansorPerfilScreen() {
             )}
           </View>
 
-          {/* Nombre */}
           <Text style={[styles.userName, { color: colors.foreground }]}>{expansor.name}</Text>
 
-          {/* Ubicación */}
           <View style={styles.locationRow}>
             <Feather name="map-pin" size={12} color={colors.mutedForeground} />
             <Text style={[styles.locationText, { color: colors.mutedForeground }]}>{locationStr}</Text>
           </View>
 
-          {/* Bio */}
           <Text style={[styles.bioText, { color: colors.mutedForeground }]}>{expansor.bio}</Text>
 
-          {/* Miembro desde */}
           {expansor.memberSince ? (
             <View style={styles.locationRow}>
               <Feather name="calendar" size={12} color={colors.mutedForeground} />
@@ -116,7 +122,7 @@ export default function ExpansorPerfilScreen() {
             </View>
           ) : null}
 
-          {/* Seguidores / Siguiendo — idéntico a profile.tsx */}
+          {/* Seguidores / Siguiendo */}
           <View style={styles.followCountsRow}>
             <View style={styles.followCountItem}>
               <Text style={[styles.followCountNum, { color: colors.foreground }]}>
@@ -133,11 +139,9 @@ export default function ExpansorPerfilScreen() {
             </View>
           </View>
 
-          {/* ── Pills de acción ── */}
+          {/* Pills de acción */}
           <View style={styles.actionPillsWrap}>
-            {/* Fila 1: Seguir + Amistad */}
             <View style={styles.actionPillsRow}>
-              {/* Seguir */}
               <Pressable
                 onPress={() => setFollowing((v) => !v)}
                 style={({ pressed }) => [
@@ -154,17 +158,12 @@ export default function ExpansorPerfilScreen() {
                     style={StyleSheet.absoluteFill}
                   />
                 )}
-                <Feather
-                  name={following ? "user-check" : "user-plus"}
-                  size={13}
-                  color={following ? "#1B060F" : "#FFFFFF"}
-                />
+                <Feather name={following ? "user-check" : "user-plus"} size={13} color={following ? "#1B060F" : "#FFFFFF"} />
                 <Text style={[styles.actionPillText, following && styles.actionPillTextActive]}>
                   {following ? "Siguiendo" : "Seguir"}
                 </Text>
               </Pressable>
 
-              {/* Amistad */}
               <Pressable
                 onPress={() => {
                   if (friendRequested) {
@@ -180,18 +179,13 @@ export default function ExpansorPerfilScreen() {
                   { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
                 ]}
               >
-                <Feather
-                  name={friendRequested ? "user-x" : "users"}
-                  size={13}
-                  color={friendRequested ? "rgba(242,231,228,0.55)" : "#FFFFFF"}
-                />
+                <Feather name={friendRequested ? "user-x" : "users"} size={13} color={friendRequested ? "rgba(242,231,228,0.55)" : "#FFFFFF"} />
                 <Text style={[styles.actionPillText, friendRequested && styles.actionPillTextSent]}>
                   {friendRequested ? "Solicitado" : "Amistad"}
                 </Text>
               </Pressable>
             </View>
 
-            {/* Fila 2: Enviar mensaje — mismo ancho total */}
             <Pressable
               onPress={() => router.push("/mensajes" as never)}
               style={({ pressed }) => [
@@ -225,11 +219,7 @@ export default function ExpansorPerfilScreen() {
                 </Text>
               }
             >
-              <LinearGradient
-                colors={["#D4AF37", "#E9C46A"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-              >
+              <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
                 <Text style={[styles.certBannerText, { opacity: 0 }]}>
                   {expansor.certified ? "Expansor Certificado" : "Expansor Resonancia"}
                 </Text>
@@ -237,24 +227,111 @@ export default function ExpansorPerfilScreen() {
             </MaskedView>
           </View>
 
-          {/* Mis servicios */}
-          <Text style={styles.serviceTitle}>Mis servicios</Text>
-
-          {/* Chips de servicios */}
-          <View style={styles.specialtyWrap}>
-            {expansor.specialty.map((s) => (
-              <View key={s} style={styles.specialtyChip}>
-                <Text style={styles.specialtyText}>{s}</Text>
-              </View>
-            ))}
+          {/* Me especializo en + chips */}
+          <View style={styles.sectionBlock}>
+            <Text style={styles.sectionLabel}>Me especializo en</Text>
+            <View style={styles.specialtyWrap}>
+              {expansor.specialty.map((s) => (
+                <View key={s} style={styles.specialtyChip}>
+                  <Text style={styles.specialtyText}>{s}</Text>
+                </View>
+              ))}
+            </View>
           </View>
 
-          {/* Descripción de servicios */}
-          {expansor.bio ? (
-            <Text style={styles.serviceDesc}>{expansor.bio}</Text>
-          ) : null}
+          {/* Mis servicios + descripción */}
+          <View style={styles.sectionBlock}>
+            <Text style={styles.serviceTitle}>Mis servicios</Text>
+            {(expansor.servicesDescription || expansor.bio) ? (
+              <Text style={styles.serviceDesc}>
+                {expansor.servicesDescription ?? expansor.bio}
+              </Text>
+            ) : null}
+          </View>
 
+          {/* Botones contacto: teléfono + email */}
+          {hasContactRow && (
+            <View style={styles.contactRow}>
+              {expansor.phone && (
+                <Pressable
+                  onPress={() => Linking.openURL(`tel:${expansor.phone}`)}
+                  style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
+                >
+                  <Feather name="phone" size={13} color="#FFFFFF" />
+                  <Text style={styles.actionPillText}>Teléfono</Text>
+                </Pressable>
+              )}
+              {expansor.email && (
+                <Pressable
+                  onPress={() => Linking.openURL(`mailto:${expansor.email}`)}
+                  style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
+                >
+                  <Feather name="mail" size={13} color="#FFFFFF" />
+                  <Text style={styles.actionPillText}>Email</Text>
+                </Pressable>
+              )}
+            </View>
+          )}
+
+          {/* Botones sociales: Instagram + Linktree + Facebook */}
+          {hasSocialRow && (
+            <View style={styles.contactRow}>
+              {expansor.instagram && (
+                <Pressable
+                  onPress={() => Linking.openURL(expansor.instagram!)}
+                  style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
+                >
+                  <Feather name="instagram" size={13} color="#FFFFFF" />
+                  <Text style={styles.actionPillText}>Instagram</Text>
+                </Pressable>
+              )}
+              {expansor.linktree && (
+                <Pressable
+                  onPress={() => Linking.openURL(expansor.linktree!)}
+                  style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
+                >
+                  <Feather name="link" size={13} color="#FFFFFF" />
+                  <Text style={styles.actionPillText}>Linktree</Text>
+                </Pressable>
+              )}
+              {expansor.facebook && (
+                <Pressable
+                  onPress={() => Linking.openURL(expansor.facebook!)}
+                  style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
+                >
+                  <Feather name="facebook" size={13} color="#FFFFFF" />
+                  <Text style={styles.actionPillText}>Facebook</Text>
+                </Pressable>
+              )}
+            </View>
+          )}
         </View>
+
+        {/* ── Quote — fuera del módulo ── */}
+        {expansor.quote ? (
+          <View style={[styles.quoteWrap, { marginHorizontal: H_PAD }]}>
+            <Text style={styles.quoteText}>"{expansor.quote}"</Text>
+          </View>
+        ) : null}
+
+        {/* ── Descubre lo que hago — galería ── */}
+        {hasGallery && (
+          <View style={[styles.gallerySection, { marginHorizontal: H_PAD }]}>
+            <Text style={[styles.galleryTitle, { color: colors.foreground }]}>Descubre lo que hago</Text>
+            <View style={styles.galleryGrid}>
+              {(expansor.gallery ?? []).slice(0, 9).map((uri, i) => (
+                <Image
+                  key={i}
+                  source={{ uri }}
+                  style={[styles.galleryCell, { width: cellSize, height: cellSize * 1.3 }]}
+                  contentFit="cover"
+                  placeholder={BLUR_PLACEHOLDER}
+                  transition={IMAGE_TRANSITION}
+                />
+              ))}
+            </View>
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -282,7 +359,7 @@ const styles = StyleSheet.create({
 
   scroll: { paddingTop: 4, gap: 16 },
 
-  /* ── Profile card — sin fondo, igual que profile.tsx ── */
+  /* ── Profile card ── */
   profileCard: {
     borderRadius: 24,
     padding: 24,
@@ -315,28 +392,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     fontStyle: "italic",
   },
-
-  /* — Seguidores/Siguiendo — copiado exacto de profile.tsx — */
   followCountsRow: { flexDirection: "row", alignItems: "center", marginTop: 14, marginBottom: 4 },
   followCountItem: { alignItems: "center", paddingHorizontal: 20 },
   followCountNum: { fontSize: 18, fontWeight: "700" },
   followCountLabel: { fontSize: 11, marginTop: 1 },
   followCountDivider: { width: 1, height: 28 },
 
-  /* — Pills de acción (mismo estilo que headerTabChip de Inicio) — */
-  actionPillsWrap: {
-    alignSelf: "stretch",
-    gap: 8,
-    marginTop: 14,
-  },
-  actionPillsRow: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  actionPillFull: {
-    alignSelf: "stretch",
-    justifyContent: "center",
-  },
+  /* ── Pills de acción ── */
+  actionPillsWrap: { alignSelf: "stretch", gap: 8, marginTop: 14 },
+  actionPillsRow: { flexDirection: "row", gap: 8 },
+  actionPillFull: { alignSelf: "stretch", justifyContent: "center" },
   actionPill: {
     flexDirection: "row",
     alignItems: "center",
@@ -347,32 +412,23 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.07)",
   },
-  actionPillActive: {
-    backgroundColor: "transparent",
-  },
-  actionPillSent: {
-    backgroundColor: "rgba(255,255,255,0.04)",
-  },
+  actionPillActive: { backgroundColor: "transparent" },
+  actionPillSent: { backgroundColor: "rgba(255,255,255,0.04)" },
   actionPillText: {
     fontSize: 13,
     fontWeight: "400",
     color: "#FFFFFF",
     letterSpacing: 0.1,
   },
-  actionPillTextActive: {
-    color: "#1B060F",
-    fontWeight: "600",
-  },
-  actionPillTextSent: {
-    color: "rgba(242,231,228,0.45)",
-  },
+  actionPillTextActive: { color: "#1B060F", fontWeight: "600" },
+  actionPillTextSent: { color: "rgba(242,231,228,0.45)" },
 
   /* ── Sección Expansor ── */
   expansorSection: {
     backgroundColor: "rgba(212,175,55,0.06)",
     borderRadius: 18,
     padding: 16,
-    gap: 14,
+    gap: 16,
   },
   certBanner: {
     flexDirection: "row",
@@ -387,11 +443,25 @@ const styles = StyleSheet.create({
   },
   certBannerStar: { fontSize: 15, color: "#D4AF37", fontWeight: "800" },
   certBannerText: { fontSize: 13, fontWeight: "700", color: "#D4AF37" },
+
+  sectionBlock: { gap: 10 },
+  sectionLabel: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "rgba(212,175,55,0.70)",
+    letterSpacing: 0.3,
+    textTransform: "uppercase",
+  },
   serviceTitle: {
     fontSize: 15,
     fontWeight: "700",
     color: "#F4DAD5",
     letterSpacing: 0.2,
+  },
+  serviceDesc: {
+    fontSize: 13,
+    lineHeight: 20,
+    color: "rgba(244,218,213,0.65)",
   },
   specialtyWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   specialtyChip: {
@@ -404,9 +474,44 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   specialtyText: { fontSize: 13, color: "#FFFFFF", fontWeight: "400", letterSpacing: 0.1 },
-  serviceDesc: {
-    fontSize: 13,
-    lineHeight: 20,
-    color: "rgba(244,218,213,0.65)",
+
+  contactRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  contactPill: { flex: 1, justifyContent: "center" },
+
+  /* ── Quote ── */
+  quoteWrap: {
+    alignItems: "center",
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+  },
+  quoteText: {
+    fontSize: 18,
+    fontStyle: "italic",
+    color: "rgba(244,218,213,0.70)",
+    textAlign: "center",
+    lineHeight: 28,
+    letterSpacing: 0.2,
+  },
+
+  /* ── Galería ── */
+  gallerySection: {
+    backgroundColor: "rgba(74,12,12,0.08)",
+    borderRadius: 18,
+    padding: 16,
+    gap: 12,
+  },
+  galleryTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+  },
+  galleryGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: GALLERY_GAP,
+  },
+  galleryCell: {
+    borderRadius: 10,
+    backgroundColor: "rgba(255,255,255,0.05)",
   },
 });

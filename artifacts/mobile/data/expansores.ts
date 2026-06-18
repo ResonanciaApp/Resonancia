@@ -14,6 +14,15 @@ export type Expansor = {
   memberSince?: string;
   followersCount?: number;
   followingCount?: number;
+  /** Campos de perfil extendido */
+  servicesDescription?: string;
+  phone?: string;
+  email?: string;
+  instagram?: string;
+  linktree?: string;
+  facebook?: string;
+  quote?: string;
+  gallery?: string[];
 };
 
 export const COUNTRY_FLAGS: Record<string, string> = {
