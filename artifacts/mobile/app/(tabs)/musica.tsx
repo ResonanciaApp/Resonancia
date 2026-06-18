@@ -752,10 +752,12 @@ export default function MezcladorScreen() {
                               </LinearGradient>
                             </LinearGradient>
                           ) : (
-                            <View style={[styles.subTabPill, { backgroundColor: "transparent", borderColor: "rgba(255,255,255,0.10)" }]}>
-                              <Text style={[styles.subTabText, { color: "rgba(255,255,255,0.5)" }]}>
-                                {SUB_TAB_LABELS[catId] ?? cat.label}
-                              </Text>
+                            <View style={styles.subTabBorderOuter}>
+                              <View style={[styles.subTabBorderInner, { borderWidth: 1, borderColor: "rgba(255,255,255,0.10)" }]}>
+                                <Text style={[styles.subTabText, { color: "rgba(255,255,255,0.5)" }]}>
+                                  {SUB_TAB_LABELS[catId] ?? cat.label}
+                                </Text>
+                              </View>
                             </View>
                           )}
                         </Pressable>
@@ -1025,11 +1027,6 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)",
   },
   subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 16 },
-  subTabPill: {
-    flexDirection: "row", alignItems: "center",
-    paddingHorizontal: 14, paddingVertical: 5,
-    borderRadius: 999, borderWidth: 1,
-  },
   subTabBorderOuter: {
     borderRadius: 999,
     padding: 1,
