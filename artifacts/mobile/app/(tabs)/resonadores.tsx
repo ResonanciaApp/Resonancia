@@ -468,12 +468,18 @@ export default function ResonadoresScreen() {
           </View>
         }
         ListFooterComponent={
-          activeTab === "expansores" && items.length > expansorLimit ? (
+          activeTab === "expansores" && items.length > EXPANSOR_PAGE ? (
             <Pressable
-              onPress={() => setExpansorLimit((l) => l + EXPANSOR_PAGE)}
+              onPress={() =>
+                expansorLimit >= items.length
+                  ? setExpansorLimit(EXPANSOR_PAGE)
+                  : setExpansorLimit((l) => l + EXPANSOR_PAGE)
+              }
               style={({ pressed }) => [styles.loadMoreBtn, { opacity: pressed ? 0.6 : 1 }]}
             >
-              <Text style={styles.loadMoreText}>Cargar más</Text>
+              <Text style={styles.loadMoreText}>
+                {expansorLimit >= items.length ? "Cargar menos" : "Cargar más"}
+              </Text>
             </Pressable>
           ) : null
         }
