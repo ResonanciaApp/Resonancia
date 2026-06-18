@@ -253,25 +253,15 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
     return () => a.stop();
   }, [active, anim]);
 
-  const tiltDir = idx % 2 === 0 ? "-8deg" : "8deg";
-  const rotate  = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", tiltDir] });
-  const scale   = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
+  const tiltDir   = idx % 2 === 0 ? "-8deg" : "8deg";
+  const rotate    = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", tiltDir] });
+  const scale     = anim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] });
+  const darkColor = borderGradient[2];
+  const borderCol = anim.interpolate({ inputRange: [0, 1], outputRange: ["transparent", darkColor] });
 
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
-      <Animated.View style={[styles.cardImageWrap, { transform: [{ rotate }, { scale }] }]}>
-        {/* Degradado del header como borde — detrás de la imagen (z:0) */}
-        {decorated && (
-          <Animated.View style={[StyleSheet.absoluteFill, { opacity: anim, borderRadius: 16 }]} pointerEvents="none">
-            <LinearGradient
-              colors={borderGradient}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={{ flex: 1, borderRadius: 16 }}
-            />
-          </Animated.View>
-        )}
-        {/* Imagen ocupa el área inset — cubre el centro, deja visible el anillo del borde (z:1) */}
+      <Animated.View style={[styles.cardImageWrap, { transform: [{ rotate }, { scale }], borderColor: borderCol }]}>
         <View style={styles.cardClipInner}>
           {image ? (
             <Image source={typeof image === "string" ? { uri: image } : image} style={StyleSheet.absoluteFill} contentFit="cover" />
@@ -1057,7 +1047,7 @@ const styles = StyleSheet.create({
   soundCard: { width: "28%" },
   cardImageWrap: {
     width: "79%", aspectRatio: 1, alignSelf: "center",
-    borderRadius: 16, borderWidth: 5, borderColor: "transparent",
+    borderRadius: 16, borderWidth: 1, borderColor: "transparent",
   },
   cardClipInner: {
     flex: 1, borderRadius: 14, overflow: "hidden",
