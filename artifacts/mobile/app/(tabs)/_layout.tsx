@@ -333,7 +333,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: -8,
+    marginTop: -13,
   },
   pillWrap: {
     alignItems: "center",
