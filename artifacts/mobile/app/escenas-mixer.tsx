@@ -42,21 +42,21 @@ const H_PAD = 16;
 const CARD_GAP = 12;
 // ~2.2 tarjetas visibles → indica que hay más para deslizar
 const CARD_W = Math.floor(SCREEN_W / 2.2 - CARD_GAP);
-const CARD_H = Math.floor(CARD_W * 4 / 3) + 150;
+const CARD_H = Math.floor((CARD_W * 4 / 3 + 150) * 0.6);
 
 const THUMB      = 110;
 const THUMB_GAP  = 10;
 const SWATCH_SZ  = 60;
 
 const COLOR_SWATCHES: { id: string; label: string; colors: [string, string] }[] = [
-  { id: "borgona",  label: "Borgoña",  colors: ["#27070E", "#0F0308"] },
-  { id: "cosmos",   label: "Cosmos",   colors: ["#060B1A", "#030509"] },
-  { id: "nebulosa", label: "Nebulosa", colors: ["#0A0825", "#050412"] },
-  { id: "luna",     label: "Luna",     colors: ["#0A0A1A", "#060608"] },
-  { id: "oceano",   label: "Océano",   colors: ["#010F1F", "#010810"] },
-  { id: "amanecer", label: "Amanecer", colors: ["#2B1800", "#150C00"] },
-  { id: "selva",    label: "Selva",    colors: ["#051205", "#030903"] },
-  { id: "fuego",    label: "Fuego",    colors: ["#200800", "#100400"] },
+  { id: "borgona",  label: "Borgoña",  colors: ["#6B1828", "#3D0A15"] },
+  { id: "cosmos",   label: "Cosmos",   colors: ["#1A2550", "#0D1230"] },
+  { id: "nebulosa", label: "Nebulosa", colors: ["#221A5C", "#110D30"] },
+  { id: "luna",     label: "Luna",     colors: ["#1A1A40", "#0D0D22"] },
+  { id: "oceano",   label: "Océano",   colors: ["#0A2848", "#051422"] },
+  { id: "amanecer", label: "Amanecer", colors: ["#6B3800", "#382000"] },
+  { id: "selva",    label: "Selva",    colors: ["#0D3010", "#061808"] },
+  { id: "fuego",    label: "Fuego",    colors: ["#541200", "#2B0800"] },
 ];
 
 const IMAGE_SCENES = GRADIENT_PRESETS.filter((p) => p.image);
