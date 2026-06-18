@@ -4,6 +4,7 @@ import { Image as ExpoImage } from "expo-image";
 import {
   ActivityIndicator,
   Alert,
+  Linking,
   Platform,
   Pressable,
   ScrollView,
@@ -12,6 +13,7 @@ import {
   Text,
   View,
 } from "react-native";
+import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -32,6 +34,8 @@ import {
   useGetFriends,
   getGetFriendsQueryKey,
   useRemoveFriend,
+  useGetExpansorProfile,
+  getGetExpansorProfileQueryKey,
 } from "@workspace/api-client-react";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { resolveAvatarUrl } from "@/lib/avatar";
@@ -117,6 +121,19 @@ export default function UsuarioScreen() {
     },
   });
 
+  const isExpansor = profile?.role === "expansor";
+
+  const { data: expansorProfile } = useGetExpansorProfile(userId, {
+    query: {
+      queryKey: getGetExpansorProfileQueryKey(userId),
+      enabled: isExpansor && Number.isInteger(userId) && userId > 0,
+      retry: false,
+    },
+  });
+
+  const [epDescExpanded, setEpDescExpanded] = React.useState(false);
+  const [epDescOverflows, setEpDescOverflows] = React.useState(false);
+
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -200,6 +217,23 @@ export default function UsuarioScreen() {
 
           {/* Nombre */}
           <Text style={[styles.userName, { color: colors.foreground }]}>{profile.displayName}</Text>
+
+          {/* Badge expansor */}
+          {isExpansor && (
+            <View style={styles.expansorBadge}>
+              <LinearGradient
+                colors={["rgba(212,175,55,0.18)", "rgba(184,134,11,0.10)"]}
+                start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <Text style={styles.expansorBadgeStar}>✦</Text>
+              <MaskedView maskElement={<Text style={styles.expansorBadgeText}>EXPANSOR CERTIFICADO</Text>}>
+                <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+                  <Text style={[styles.expansorBadgeText, { opacity: 0 }]}>EXPANSOR CERTIFICADO</Text>
+                </LinearGradient>
+              </MaskedView>
+            </View>
+          )}
 
           {/* País / ubicación */}
           {profile.location ? (
@@ -356,6 +390,81 @@ export default function UsuarioScreen() {
             </Text>
           </View>
         ) : null}
+
+        {/* ── Sección Expansor ── */}
+        {isExpansor && (
+          <View style={[styles.expansorSection, { marginHorizontal: H_PAD }]}>
+
+            {/* Especialidades */}
+            {(expansorProfile?.specialties ?? []).length > 0 && (
+              <View style={{ gap: 8 }}>
+                <Text style={[styles.epSectionTitle, { color: colors.foreground }]}>Se especializa en</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6, paddingRight: 4 }}>
+                  {(expansorProfile?.specialties ?? []).map((s) => (
+                    <View key={s} style={[styles.epChip, { borderColor: "rgba(212,175,55,0.30)", backgroundColor: "rgba(212,175,55,0.07)" }]}>
+                      <Text style={[styles.epChipText, { color: "#D4AF37" }]}>{s}</Text>
+                    </View>
+                  ))}
+                </ScrollView>
+              </View>
+            )}
+
+            {/* Descripción */}
+            {expansorProfile?.description ? (
+              <View style={{ gap: 6 }}>
+                <Text style={[styles.epSectionTitle, { color: colors.foreground }]}>Servicios</Text>
+                <Text
+                  style={[styles.epDesc, { color: colors.mutedForeground }]}
+                  numberOfLines={epDescExpanded ? undefined : 5}
+                  onTextLayout={(e) => { if (!epDescOverflows && e.nativeEvent.lines.length > 5) setEpDescOverflows(true); }}
+                >
+                  {expansorProfile.description}
+                </Text>
+                {epDescOverflows && (
+                  <Pressable onPress={() => setEpDescExpanded((v) => !v)} style={({ pressed }) => [styles.epReadMore, { opacity: pressed ? 0.7 : 1 }]}>
+                    <Text style={{ fontSize: 13, color: "#D4AF37", fontWeight: "600" }}>{epDescExpanded ? "Leer menos" : "Leer más"}</Text>
+                    <Feather name={epDescExpanded ? "chevron-up" : "chevron-down"} size={13} color="#D4AF37" />
+                  </Pressable>
+                )}
+              </View>
+            ) : null}
+
+            {/* Contacto */}
+            {(expansorProfile?.phone || expansorProfile?.email || expansorProfile?.instagram) && (
+              <View style={{ gap: 8 }}>
+                <Text style={[styles.epSectionTitle, { color: colors.foreground }]}>Contacto</Text>
+                <View style={styles.epContactRow}>
+                  {expansorProfile.phone ? (
+                    <Pressable onPress={() => Linking.openURL(`tel:${expansorProfile.phone}`)} style={({ pressed }) => [styles.epContactPill, { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" }]}>
+                      <Feather name="phone" size={13} color="#FFFFFF" />
+                      <Text style={styles.epContactPillText}>Teléfono</Text>
+                    </Pressable>
+                  ) : null}
+                  {expansorProfile.email ? (
+                    <Pressable onPress={() => Linking.openURL(`mailto:${expansorProfile.email}`)} style={({ pressed }) => [styles.epContactPill, { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" }]}>
+                      <Feather name="mail" size={13} color="#FFFFFF" />
+                      <Text style={styles.epContactPillText}>Email</Text>
+                    </Pressable>
+                  ) : null}
+                  {expansorProfile.instagram ? (
+                    <Pressable onPress={() => Linking.openURL(expansorProfile.instagram!)} style={({ pressed }) => [styles.epContactPill, { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" }]}>
+                      <Feather name="instagram" size={13} color="#FFFFFF" />
+                      <Text style={styles.epContactPillText}>Instagram</Text>
+                    </Pressable>
+                  ) : null}
+                </View>
+              </View>
+            )}
+
+            {/* Quote */}
+            {expansorProfile?.quote ? (
+              <View style={styles.epQuoteWrap}>
+                <Text style={[styles.epQuoteText, { color: colors.mutedForeground }]}>"{expansorProfile.quote}"</Text>
+              </View>
+            ) : null}
+
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -452,4 +561,53 @@ const styles = StyleSheet.create({
   },
   topCatLabel: { fontSize: 13, flex: 1 },
   topCatValue: { fontSize: 14, fontWeight: "700" },
+
+  /* ── Badge expansor ── */
+  expansorBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.35)",
+    overflow: "hidden",
+  },
+  expansorBadgeStar: { fontSize: 10, color: "#D4AF37" },
+  expansorBadgeText: { fontSize: 10, fontWeight: "700", letterSpacing: 1.2 },
+
+  /* ── Sección expansor ── */
+  expansorSection: {
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.15)",
+    backgroundColor: "rgba(74,12,12,0.08)",
+    padding: 16,
+    gap: 16,
+  },
+  epSectionTitle: { fontSize: 13, fontWeight: "700", letterSpacing: 0.3 },
+  epChip: {
+    paddingHorizontal: 11,
+    paddingVertical: 5,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  epChipText: { fontSize: 12, fontWeight: "600" },
+  epDesc: { fontSize: 14, lineHeight: 21 },
+  epReadMore: { flexDirection: "row", alignItems: "center", gap: 4 },
+  epContactRow: { flexDirection: "row", gap: 8 },
+  epContactPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    borderRadius: 20,
+    paddingHorizontal: 14,
+    height: 34,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.07)",
+  },
+  epContactPillText: { fontSize: 13, color: "#FFFFFF" },
+  epQuoteWrap: { paddingTop: 4 },
+  epQuoteText: { fontSize: 13, fontStyle: "italic", lineHeight: 20, textAlign: "center" },
 });
