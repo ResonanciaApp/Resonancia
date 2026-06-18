@@ -452,7 +452,7 @@ export default function ExploreScreen() {
                         contentFit="contain"
                       />
                     ) : (
-                      <MaterialCommunityIcons name={t.icon} size={26} color={t.color} />
+                      <MaterialCommunityIcons name={t.icon} size={30} color={t.color} />
                     )}
                     <Text style={[styles.temaCellLabel, { color: colors.foreground }]} numberOfLines={2}>
                       {t.label}
@@ -737,14 +737,14 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   temaCellIcon: {
-    width: 26,
-    height: 26,
+    width: 30,
+    height: 30,
   },
   temaCellLabel: {
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: "600",
     textAlign: "center",
-    lineHeight: 16,
+    lineHeight: 20,
   },
 
   // Otras temáticas
