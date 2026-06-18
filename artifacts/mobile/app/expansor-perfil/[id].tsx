@@ -250,7 +250,7 @@ export default function ExpansorPerfilScreen() {
 
           {/* Me especializo en + chips */}
           <View style={styles.sectionBlock}>
-            <Text style={styles.sectionLabel}>Me especializo en</Text>
+            <Text style={styles.serviceTitle}>Me especializo en</Text>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
