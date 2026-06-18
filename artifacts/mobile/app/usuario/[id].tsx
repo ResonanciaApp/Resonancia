@@ -373,11 +373,33 @@ export default function UsuarioScreen() {
           </View>
         ) : null}
 
-        {/* ── Sección Expansor (solo si tiene contenido) ── */}
-        {isExpansor && expansorProfile && (
-          !!(expansorProfile.specialties?.length || expansorProfile.description || expansorProfile.phone || expansorProfile.email || expansorProfile.instagram || expansorProfile.quote)
-        ) && (
+        {/* ── Sección Expansor ── */}
+        {isExpansor && (
           <View style={[styles.expansorSection, { marginHorizontal: H_PAD }]}>
+
+            {/* Banner certificado — siempre visible */}
+            <View style={styles.epCertBanner}>
+              <LinearGradient
+                colors={["#E9C46A", "#B8860B"]}
+                start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+                style={styles.epCertBannerBar}
+              />
+              <View style={{ flex: 1, paddingLeft: 12, paddingVertical: 10, justifyContent: "center" }}>
+                <Text style={styles.epCertBannerTitle}>EXPANSOR CERTIFICADO</Text>
+                <Text style={[styles.epCertBannerSub, { color: "rgba(212,175,55,0.65)" }]}>Verificado · Resonancia</Text>
+              </View>
+              <View style={{ paddingRight: 14, justifyContent: "center" }}>
+                <View style={styles.epCertIconBorder}>
+                  <View style={styles.epCertIcon}>
+                    <LinearGradient
+                      colors={["rgba(212,175,55,0.30)", "rgba(184,134,11,0.20)"]}
+                      style={StyleSheet.absoluteFill}
+                    />
+                    <Text style={styles.epCertStar}>✦</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
 
             {/* Especialidades */}
             {(expansorProfile?.specialties ?? []).length > 0 && (
@@ -546,21 +568,6 @@ const styles = StyleSheet.create({
   topCatLabel: { fontSize: 13, flex: 1 },
   topCatValue: { fontSize: 14, fontWeight: "700" },
 
-  /* ── Badge expansor ── */
-  expansorBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.35)",
-    overflow: "hidden",
-  },
-  expansorBadgeStar: { fontSize: 10, color: "#D4AF37" },
-  expansorBadgeText: { fontSize: 10, fontWeight: "700", letterSpacing: 1.2 },
-
   /* ── Sección expansor ── */
   expansorSection: {
     borderRadius: 18,
@@ -594,4 +601,34 @@ const styles = StyleSheet.create({
   epContactPillText: { fontSize: 13, color: "#FFFFFF" },
   epQuoteWrap: { paddingTop: 4 },
   epQuoteText: { fontSize: 13, fontStyle: "italic", lineHeight: 20, textAlign: "center" },
+
+  /* ── Banner certificado ── */
+  epCertBanner: {
+    flexDirection: "row",
+    alignItems: "stretch",
+    borderRadius: 12,
+    overflow: "hidden",
+    backgroundColor: "rgba(212,175,55,0.06)",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.20)",
+  },
+  epCertBannerBar: { width: 4 },
+  epCertBannerTitle: {
+    fontSize: 11,
+    fontWeight: "800",
+    letterSpacing: 1.4,
+    color: "#D4AF37",
+  },
+  epCertBannerSub: { fontSize: 11, marginTop: 2 },
+  epCertIconBorder: {
+    width: 34, height: 34, borderRadius: 17,
+    borderWidth: 1, borderColor: "rgba(212,175,55,0.35)",
+    alignItems: "center", justifyContent: "center",
+  },
+  epCertIcon: {
+    width: 28, height: 28, borderRadius: 14,
+    alignItems: "center", justifyContent: "center",
+    overflow: "hidden",
+  },
+  epCertStar: { fontSize: 13, color: "#D4AF37" },
 });
