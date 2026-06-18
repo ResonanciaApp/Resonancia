@@ -123,6 +123,16 @@ const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
   bpm:            ["#201A04", "#161302", "#1B060F"],
 };
 
+/** Gradiente de fondo de contenido en modo "noche" — último stop neutro oscuro (sin bordeaux) */
+const TAB_NOCHE_BG: Record<MainTabId, [string, string, string]> = {
+  popular:        ["#2E0410", "#27030D", "#1A0209"],
+  naturaleza:     ["#101F14", "#0D1A0F", "#0A1510"],
+  ancestrales:    ["#221510", "#1E0F0B", "#100904"],
+  sintetizadores: ["#061A2E", "#041220", "#030A18"],
+  voces:          ["#250810", "#1A060C", "#0F0408"],
+  bpm:            ["#201A04", "#161302", "#0C0A02"],
+};
+
 const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
   popular:        ["#5E1E2D", "#5E1E2D"],
   naturaleza:     ["#3B4933", "#303E27"],
@@ -777,7 +787,7 @@ export default function MezcladorScreen() {
         {/* ── Scroll principal ── */}
         <View style={styles.scrollBg}>
           <LinearGradient
-            colors={bgPaletteId === "noche" ? TAB_HEADER_GRADIENT[mainTab] : bgPalette.colors}
+            colors={bgPaletteId === "noche" ? TAB_NOCHE_BG[mainTab] : bgPalette.colors}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={StyleSheet.absoluteFill}
