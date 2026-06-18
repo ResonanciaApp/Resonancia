@@ -338,13 +338,14 @@ const styles = StyleSheet.create({
   pillWrap: {
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 13,
-    paddingTop: 8,
-    paddingBottom: 7,
     gap: 2,
   },
   pill: {
-    ...StyleSheet.absoluteFillObject,
+    position: "absolute",
+    top: -7,
+    bottom: -6,
+    left: -12,
+    right: -12,
     borderRadius: 13,
     backgroundColor: PILL_BG,
   },
