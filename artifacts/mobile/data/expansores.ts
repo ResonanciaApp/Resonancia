@@ -7,6 +7,8 @@ export type Expansor = {
   bio: string;
   city: string;
   country: string;
+  /** Región de Chile, ej: "Metropolitana" */
+  region?: string;
   specialty: string[];
   certified?: boolean;
   links?: ArtistLink[];

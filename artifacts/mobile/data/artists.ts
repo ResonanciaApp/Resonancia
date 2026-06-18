@@ -16,6 +16,8 @@ export type Artist = {
   country: string;
   /** Género o estilo musical, ej: "Ambient · Frecuencias" */
   genre: string;
+  /** Rol principal: "Productor" | "Músico" | "Voz guía" */
+  role?: string;
   /** Redes sociales / links (opcional) */
   links?: ArtistLink[];
   /** Sello certificado por Resonancia (true por defecto en artistas reales) */

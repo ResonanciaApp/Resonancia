@@ -34,16 +34,27 @@ const CLOSE_SLOT = 38;
 // ── Filtros ───────────────────────────────────────────────────────────────────
 type FilterId = string;
 const ARTISTA_FILTER_TABS: { id: FilterId; label: string }[] = [
-  { id: "Ambient", label: "Ambient" },
-  { id: "Enteógena", label: "Enteógena" },
-  { id: "Meditación", label: "Meditación" },
-  { id: "Cuencos", label: "Cuencos" },
+  { id: "Productor", label: "Productor" },
+  { id: "Músico", label: "Músico" },
+  { id: "Voz guía", label: "Voz guía" },
 ];
 const EXPANSOR_FILTER_TABS: { id: FilterId; label: string }[] = [
-  { id: "Cuencos Tibetanos", label: "Cuencos Tibetanos" },
-  { id: "Cuencos de Cristal", label: "Cuencos de Cristal" },
-  { id: "Gong", label: "Gong" },
-  { id: "Campanas", label: "Campanas" },
+  { id: "Arica y Parinacota", label: "Arica y Parinacota" },
+  { id: "Tarapacá", label: "Tarapacá" },
+  { id: "Antofagasta", label: "Antofagasta" },
+  { id: "Atacama", label: "Atacama" },
+  { id: "Coquimbo", label: "Coquimbo" },
+  { id: "Valparaíso", label: "Valparaíso" },
+  { id: "Metropolitana", label: "Metropolitana" },
+  { id: "O'Higgins", label: "O'Higgins" },
+  { id: "Maule", label: "Maule" },
+  { id: "Ñuble", label: "Ñuble" },
+  { id: "Biobío", label: "Biobío" },
+  { id: "La Araucanía", label: "La Araucanía" },
+  { id: "Los Ríos", label: "Los Ríos" },
+  { id: "Los Lagos", label: "Los Lagos" },
+  { id: "Aysén", label: "Aysén" },
+  { id: "Magallanes", label: "Magallanes" },
 ];
 
 // ── Chip individual (igual a LibChip de Biblioteca) ───────────────────────────
@@ -269,21 +280,22 @@ export default function ResonadoresScreen() {
       return ARTISTS.filter((a) => a.id !== "resonancia")
         .filter((a) => {
           if (activeFilter !== "Todos") {
-            if (!a.genre.toLowerCase().includes(activeFilter.toLowerCase())) return false;
+            if (!a.role?.toLowerCase().includes(activeFilter.toLowerCase())) return false;
           }
-          if (q) return a.name.toLowerCase().includes(q) || a.genre.toLowerCase().includes(q);
+          if (q) return a.name.toLowerCase().includes(q) || a.genre.toLowerCase().includes(q) || (a.role ?? "").toLowerCase().includes(q);
           return true;
         })
         .map((a) => ({ kind: "artista" as const, data: a }));
     } else {
       return EXPANSORES.filter((e) => {
         if (activeFilter !== "Todos") {
-          if (!e.specialty.some((s) => s.toLowerCase().includes(activeFilter.toLowerCase()))) return false;
+          if (!e.region?.toLowerCase().includes(activeFilter.toLowerCase())) return false;
         }
         if (q) {
           return (
             e.name.toLowerCase().includes(q) ||
             e.city.toLowerCase().includes(q) ||
+            (e.region ?? "").toLowerCase().includes(q) ||
             e.specialty.some((s) => s.toLowerCase().includes(q))
           );
         }
