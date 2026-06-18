@@ -926,7 +926,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Sección Expansor (Daniela Vega) ── */}
-        <View style={[styles.dvExpansorSection, { marginHorizontal: 20 }]}>
+        <View style={styles.dvExpansorSection}>
 
           {/* Banner certificado */}
           <View style={styles.dvCertBanner}>
@@ -1009,7 +1009,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Galería ── */}
-        <View style={[styles.dvGallerySection, { marginHorizontal: 20 }]}>
+        <View style={styles.dvGallerySection}>
           <View style={styles.dvGalleryGrid}>
             {[
               "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400",
@@ -1031,7 +1031,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Quote ── */}
-        <View style={[styles.dvQuoteWrap, { marginHorizontal: 20 }]}>
+        <View style={styles.dvQuoteWrap}>
           <Text style={styles.dvQuoteText}>"El sonido es el puente entre el mundo interior y el exterior."</Text>
         </View>
 
