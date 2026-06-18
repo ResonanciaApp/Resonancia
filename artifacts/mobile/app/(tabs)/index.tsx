@@ -852,14 +852,14 @@ const styles = StyleSheet.create({
   headerTabChip: {
     borderRadius: 20,
     paddingHorizontal: 10,
-    height: 32,
+    height: 34,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.07)",
     alignItems: "center",
     justifyContent: "center",
   },
   sesSubSpacer: {
-    height: 32,
+    height: 34,
     overflow: "visible",
     marginLeft: -6,
   },
@@ -871,12 +871,13 @@ const styles = StyleSheet.create({
   },
   headerTabText: {
     fontSize: 13,
-    fontWeight: "600",
+    fontWeight: "400",
     color: "#FFFFFF",
     letterSpacing: 0.1,
   },
   headerTabTextActive: {
     color: "#1B060F",
+    fontWeight: "600",
   },
   intentionCard: {
     paddingVertical: 10,
