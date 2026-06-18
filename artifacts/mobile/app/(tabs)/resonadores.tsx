@@ -276,7 +276,11 @@ export default function ResonadoresScreen() {
   // Países presentes en EXPANSORES, ordenados alfabéticamente
   const availableCountries = useMemo(() => {
     const set = new Set(EXPANSORES.map((e) => e.country));
-    return [...set].sort();
+    return [...set].sort((a, b) => {
+      if (a === "Chile") return -1;
+      if (b === "Chile") return 1;
+      return a.localeCompare(b);
+    });
   }, []);
 
   // Regiones del país seleccionado
