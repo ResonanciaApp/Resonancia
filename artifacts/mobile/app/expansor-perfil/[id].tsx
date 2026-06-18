@@ -32,8 +32,9 @@ export default function ExpansorPerfilScreen() {
 
   if (!expansor) {
     return (
-      <View style={[styles.root, { backgroundColor: "#1B060F" }]}>
+      <View style={styles.root}>
         <StatusBar barStyle="light-content" />
+        <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
           <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
@@ -51,8 +52,9 @@ export default function ExpansorPerfilScreen() {
   const locationStr = `${flag} ${expansor.city}, ${expansor.country}`.trim();
 
   return (
-    <View style={[styles.root, { backgroundColor: "#1B060F" }]}>
+    <View style={styles.root}>
       <StatusBar barStyle="light-content" />
+      <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
 
       {/* Header barra */}
       <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
