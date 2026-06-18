@@ -15,7 +15,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router } from "expo-router";
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Animated,
@@ -32,7 +32,14 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ScrollView as GHScrollView } from "react-native-gesture-handler";
+import { GestureDetector, Gesture, ScrollView as GHScrollView } from "react-native-gesture-handler";
+import Reanimated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  runOnJS,
+  type SharedValue,
+} from "react-native-reanimated";
 
 import { EscenasMixerContent } from "@/app/escenas-mixer";
 import { useSaveEvent } from "@/context/SaveEventContext";
@@ -108,6 +115,199 @@ const WARM = {
 } as const;
 
 /** Miniatura cuadrada de la pista: imagen del sonido (fallback degradé negro). */
+// ─── Drag-and-drop reorder ────────────────────────────────────────────────────
+const ITEM_H = 62; // height of each slot (row content ~54px + 8px gap)
+
+type TrackPalette = {
+  muted: string; fg: string; sliderThumb: string;
+  sliderTrack: string; inputBg: string;
+};
+
+interface DraggableTrackRowProps {
+  id: string;
+  sound: MixSound;
+  volume: number;
+  n: number;
+  orderSV: SharedValue<string[]>;
+  draggingId: SharedValue<string>;
+  dragOriginSlot: SharedValue<number>;
+  dragDeltaY: SharedValue<number>;
+  insertAt: SharedValue<number>;
+  palette: TrackPalette;
+  setVolume: (id: string, v: number) => void;
+  removeSound: (id: string) => void;
+  onDragStart: () => void;
+  onDragEnd: (from: number, to: number) => void;
+}
+
+function DraggableTrackRow({
+  id, sound, volume, n,
+  orderSV, draggingId, dragOriginSlot, dragDeltaY, insertAt,
+  palette, setVolume, removeSound, onDragStart, onDragEnd,
+}: DraggableTrackRowProps) {
+  const didActivate = useSharedValue(0);
+
+  const pan = Gesture.Pan()
+    .activateAfterLongPress(250)
+    .onStart(() => {
+      didActivate.value = 1;
+      const s = orderSV.value.indexOf(id);
+      dragOriginSlot.value = s;
+      dragDeltaY.value = 0;
+      insertAt.value = s;
+      draggingId.value = id;
+      runOnJS(onDragStart)();
+    })
+    .onUpdate((e) => {
+      if (didActivate.value !== 1) return;
+      dragDeltaY.value = e.translationY;
+      const raw = Math.round((dragOriginSlot.value * ITEM_H + e.translationY) / ITEM_H);
+      insertAt.value = Math.max(0, Math.min(n - 1, raw));
+    })
+    .onFinalize(() => {
+      if (didActivate.value !== 1) return;
+      didActivate.value = 0;
+      const orig = dragOriginSlot.value;
+      const ins = insertAt.value;
+      const newOrder = [...orderSV.value];
+      const [moved] = newOrder.splice(orig, 1);
+      newOrder.splice(ins, 0, moved);
+      orderSV.value = newOrder;
+      draggingId.value = "";
+      dragDeltaY.value = 0;
+      dragOriginSlot.value = -1;
+      insertAt.value = -1;
+      runOnJS(onDragEnd)(orig, ins);
+    });
+
+  const animStyle = useAnimatedStyle(() => {
+    const isDragging = draggingId.value === id;
+    const mySlot = orderSV.value.indexOf(id);
+    if (isDragging) {
+      return {
+        transform: [{ translateY: dragOriginSlot.value * ITEM_H + dragDeltaY.value }],
+        zIndex: 50,
+        shadowOpacity: 0.25,
+      };
+    }
+    const orig = dragOriginSlot.value;
+    const ins = insertAt.value;
+    let effective = mySlot;
+    if (draggingId.value !== "" && orig >= 0 && ins >= 0) {
+      if (ins <= orig) {
+        if (mySlot >= ins && mySlot < orig) effective = mySlot + 1;
+      } else {
+        if (mySlot > orig && mySlot <= ins) effective = mySlot - 1;
+      }
+    }
+    return {
+      transform: [{ translateY: withTiming(effective * ITEM_H, { duration: 180 }) }],
+      zIndex: 1,
+      shadowOpacity: 0,
+    };
+  });
+
+  return (
+    <Reanimated.View style={[styles.trackRowAbs, animStyle]}>
+      <View style={[styles.trackRow, { backgroundColor: palette.inputBg }]}>
+        <TrackThumb sound={sound} />
+        <View style={styles.trackInfo}>
+          <Text style={[styles.trackName, { color: palette.fg }]} numberOfLines={1}>
+            {sound.name}
+          </Text>
+          <VolumeSlider
+            value={volume}
+            onChange={(v) => setVolume(id, v)}
+            color={palette.sliderThumb}
+            trackColor={palette.sliderTrack}
+          />
+        </View>
+        <GestureDetector gesture={pan}>
+          <View style={styles.dragHandle}>
+            <MaterialCommunityIcons name="drag-vertical" size={22} color={palette.muted} />
+          </View>
+        </GestureDetector>
+        <Pressable
+          onPress={() => removeSound(id)}
+          hitSlop={10}
+          style={styles.removeBtn}
+          accessibilityRole="button"
+          accessibilityLabel={`Quitar ${sound.name} de la mezcla`}
+        >
+          <Feather name="x" size={16} color={palette.muted} />
+        </Pressable>
+      </View>
+    </Reanimated.View>
+  );
+}
+
+interface DraggableSoundListProps {
+  activeMix: { active: { id: string; volume: number }; sound: MixSound }[];
+  palette: TrackPalette;
+  setVolume: (id: string, v: number) => void;
+  removeSound: (id: string) => void;
+  reorderSounds: (from: number, to: number) => void;
+  onScrollEnabled: (enabled: boolean) => void;
+}
+
+function DraggableSoundList({
+  activeMix, palette, setVolume, removeSound, reorderSounds, onScrollEnabled,
+}: DraggableSoundListProps) {
+  const n = activeMix.length;
+  const ids = activeMix.map((x) => x.sound.id);
+  const idsKey = ids.join(",");
+
+  const orderSV = useSharedValue<string[]>(ids);
+  const draggingId = useSharedValue("");
+  const dragOriginSlot = useSharedValue(-1);
+  const dragDeltaY = useSharedValue(0);
+  const insertAt = useSharedValue(-1);
+
+  const prevIdsKey = useRef(idsKey);
+  useEffect(() => {
+    if (prevIdsKey.current === idsKey) return;
+    prevIdsKey.current = idsKey;
+    const cur = orderSV.value;
+    const merged = cur.filter((id) => ids.includes(id));
+    ids.forEach((id) => { if (!merged.includes(id)) merged.push(id); });
+    orderSV.value = merged;
+  }, [idsKey]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleDragStart = useCallback(() => {
+    onScrollEnabled(false);
+  }, [onScrollEnabled]);
+
+  const handleDragEnd = useCallback((from: number, to: number) => {
+    reorderSounds(from, to);
+    onScrollEnabled(true);
+  }, [reorderSounds, onScrollEnabled]);
+
+  return (
+    <View style={{ height: n * ITEM_H, position: "relative" }}>
+      {activeMix.map(({ active, sound }) => (
+        <DraggableTrackRow
+          key={sound.id}
+          id={sound.id}
+          sound={sound}
+          volume={active.volume}
+          n={n}
+          orderSV={orderSV}
+          draggingId={draggingId}
+          dragOriginSlot={dragOriginSlot}
+          dragDeltaY={dragDeltaY}
+          insertAt={insertAt}
+          palette={palette}
+          setVolume={setVolume}
+          removeSound={removeSound}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        />
+      ))}
+    </View>
+  );
+}
+
+// ─── TrackThumb ───────────────────────────────────────────────────────────────
 function TrackThumb({ sound }: { sound: MixSound }) {
   const image = getSoundImage(sound.id);
   if (image) {
@@ -202,11 +402,14 @@ export function MixerSheet() {
     headerFg:       hasCustomBg ? "rgba(255,255,255,0.90)" : "rgba(92,31,126,0.85)",
   };
   const { isPremium } = usePremium();
+  const [scrollEnabled, setScrollEnabled] = useState(true);
+
   const {
     activeSounds,
     setVolume,
     removeSound,
     moveSound,
+    reorderSounds,
     isPlaying,
     togglePlay,
     stopAll,
@@ -627,37 +830,16 @@ export function MixerSheet() {
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
             nestedScrollEnabled
+            scrollEnabled={scrollEnabled}
           >
-            {activeMix.map(({ active, sound }, index) => (
-              <View
-                key={sound.id}
-                style={[styles.trackRow, { backgroundColor: palette.inputBg }]}
-              >
-                <TrackThumb sound={sound} />
-
-                <View style={styles.trackInfo}>
-                  <Text style={[styles.trackName, { color: palette.fg }]} numberOfLines={1}>
-                    {sound.name}
-                  </Text>
-                  <VolumeSlider
-                    value={active.volume}
-                    onChange={(v) => setVolume(sound.id, v)}
-                    color={palette.sliderThumb}
-                    trackColor={palette.sliderTrack}
-                  />
-                </View>
-
-                <Pressable
-                  onPress={() => removeSound(sound.id)}
-                  hitSlop={10}
-                  style={styles.removeBtn}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Quitar ${sound.name} de la mezcla`}
-                >
-                  <Feather name="x" size={16} color={palette.muted} />
-                </Pressable>
-              </View>
-            ))}
+            <DraggableSoundList
+              activeMix={activeMix}
+              palette={palette}
+              setVolume={setVolume}
+              removeSound={removeSound}
+              reorderSounds={reorderSounds}
+              onScrollEnabled={setScrollEnabled}
+            />
 
             <Pressable
               onPress={handleAddSounds}
@@ -1320,5 +1502,21 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
     letterSpacing: 0.3,
+  },
+  trackRowAbs: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+  },
+  dragHandle: {
+    width: 28,
+    height: 36,
+    alignItems: "center",
+    justifyContent: "center",
+    opacity: 0.5,
   },
 });

@@ -134,6 +134,8 @@ type MixerContextType = {
   removeSound: (id: string) => void;
   /** Reordena la mezcla activa (cosmético: el orden no afecta el audio). */
   moveSound: (id: string, direction: "up" | "down") => void;
+  /** Reordena por índice (drag-and-drop). */
+  reorderSounds: (from: number, to: number) => void;
   isPlaying: boolean;
   togglePlay: () => void;
   stopAll: () => void;
@@ -1307,6 +1309,17 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  const reorderSounds = useCallback((from: number, to: number) => {
+    if (from === to) return;
+    setActiveSounds((prev) => {
+      if (from < 0 || to < 0 || from >= prev.length || to >= prev.length) return prev;
+      const next = [...prev];
+      const [moved] = next.splice(from, 1);
+      next.splice(to, 0, moved);
+      return next;
+    });
+  }, []);
+
   const removeSound = useCallback(
     (id: string) => {
       const removingOwner = lockOwnerRef.current === playersRef.current.get(id)?.a;
@@ -1879,6 +1892,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         setVolume,
         removeSound,
         moveSound,
+        reorderSounds,
         isPlaying,
         togglePlay,
         stopAll,
