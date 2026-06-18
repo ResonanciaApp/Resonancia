@@ -1565,8 +1565,8 @@ export default function ProfileScreen() {
 
                 <Pressable
                   onPress={saveExpansorProfile}
-                  disabled={updateExpansorMutation.isPending}
-                  style={({ pressed }) => [styles.saveBtn, { overflow: "hidden", opacity: (pressed || updateExpansorMutation.isPending) ? 0.75 : 1 }]}
+                  disabled={updateExpansorMutation.isPending || epPhotoUploading}
+                  style={({ pressed }) => [styles.saveBtn, { overflow: "hidden", opacity: (pressed || updateExpansorMutation.isPending || epPhotoUploading) ? 0.75 : 1 }]}
                 >
                   <GoldGradientFill />
                   <Text style={[styles.saveBtnText, { color: colors.primaryForeground }]}>
