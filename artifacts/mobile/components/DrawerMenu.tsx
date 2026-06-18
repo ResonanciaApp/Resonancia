@@ -95,7 +95,7 @@ export function DrawerMenu() {
 
       <Animated.View style={[styles.drawer, visible && styles.drawerShadow, { transform: [{ translateX }] }]}>
         <View
-          style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24, backgroundColor: "#27070E" }]}
+          style={[styles.drawerInner, { paddingTop: topPad + 16, paddingBottom: bottomPad + 24, backgroundColor: "#130107" }]}
         >
           {/* Sección de perfil — siempre visible; cambia según estado de sesión */}
           <View style={styles.profileSection}>
