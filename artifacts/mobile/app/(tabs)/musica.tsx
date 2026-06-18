@@ -263,7 +263,19 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
       <Animated.View style={[styles.cardImageWrap, { transform: [{ rotate }, { scale }] }]}>
-        <View style={styles.cardClipInner}>
+        {/* Borde asimétrico: gradiente llena todo, la imagen encima con margin:4 expone el anillo */}
+        {decorated && (
+          <Animated.View style={[StyleSheet.absoluteFill, { opacity: anim, borderRadius: 16 }]} pointerEvents="none">
+            <LinearGradient
+              colors={[`rgba(${r},${g},${b},0)`, `rgba(${r},${g},${b},0.9)`, `rgba(${r},${g},${b},0)`]}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={{ flex: 1, borderRadius: 16 }}
+            />
+          </Animated.View>
+        )}
+        {/* Imagen con margin:4 siempre — cubre el centro del gradiente, deja visible solo el anillo */}
+        <View style={[styles.cardClipInner, { margin: 4, borderRadius: 11 }]}>
           {image ? (
             <Image source={typeof image === "string" ? { uri: image } : image} style={StyleSheet.absoluteFill} contentFit="cover" />
           ) : (
@@ -277,19 +289,6 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
             />
           )}
         </View>
-        {/* Borde asimétrico encima del contenido: fade horizontal transparent → color → transparent */}
-        {decorated && (
-          <Animated.View style={[StyleSheet.absoluteFill, { opacity: anim, borderRadius: 16 }]} pointerEvents="none">
-            <LinearGradient
-              colors={[`rgba(${r},${g},${b},0)`, `rgba(${r},${g},${b},0.9)`, `rgba(${r},${g},${b},0)`]}
-              start={{ x: 0, y: 0.5 }}
-              end={{ x: 1, y: 0.5 }}
-              style={{ flex: 1, padding: 4, borderRadius: 16 }}
-            >
-              <View style={{ flex: 1, borderRadius: 12 }} />
-            </LinearGradient>
-          </Animated.View>
-        )}
       </Animated.View>
       <View style={styles.cardFooter}>
         <Text style={styles.soundName} numberOfLines={1}>{sound.name}</Text>
@@ -1053,13 +1052,12 @@ const styles = StyleSheet.create({
   soundCard: { width: "28%" },
   cardImageWrap: {
     width: "79%", aspectRatio: 1, alignSelf: "center",
-    borderRadius: 16, borderWidth: 5, borderColor: "transparent",
+    borderRadius: 16,
   },
   cardClipInner: {
     flex: 1, borderRadius: 14, overflow: "hidden",
     backgroundColor: "rgba(212,175,55,0.08)",
   },
-  cardImageWrapActive: { borderWidth: 4 },
   cardFooter: { paddingHorizontal: 4, paddingTop: 8, paddingBottom: 2 },
   soundName:  { fontSize: 11.5, fontWeight: "600", letterSpacing: 0.1, textAlign: "center", color: DARK },
   lockBadge:  { position: "absolute", top: 4, right: 4 },
