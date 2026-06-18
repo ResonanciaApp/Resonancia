@@ -792,6 +792,54 @@ uri = "file://attached_assets/sagrados-dorados.png"
 type = "image"
 title = "sagrados gold gradient options"
 
+[[generated]]
+id = "MHGy1ZOmPH6-3B9VOP4Ge"
+uri = "file://artifacts/mobile/assets/images/expansores/ana-sofia-luna.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "yYsKaTm0R86kTKkTUCtoi"
+uri = "file://artifacts/mobile/assets/images/expansores/carlos-medina.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "JS-0lKVvzcXjpBBwQubdR"
+uri = "file://artifacts/mobile/assets/images/expansores/valeria-rios.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "PbtXschjPPkLhqegD1F80"
+uri = "file://artifacts/mobile/assets/images/expansores/martin-paz.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "X_m7tHREguCJi1Hd-Sigc"
+uri = "file://artifacts/mobile/assets/images/expansores/daniela-vega.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "LIZH8W5b610ZFxoHbcXXF"
+uri = "file://artifacts/mobile/assets/images/expansores/andres-morales.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "LYWPpNdfvGRSes6tfH5nD"
+uri = "file://artifacts/mobile/assets/images/expansores/lucia-rojas.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "BU6oBKbM5hLlDXfZlspPH"
+uri = "file://artifacts/mobile/assets/images/expansores/gabriel-flores.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"

@@ -258,6 +258,8 @@ export default function ResonadoresScreen() {
 
   const { width: screenWidth } = useWindowDimensions();
   const [activeTab, setActiveTab] = useState<"artistas" | "expansores">("artistas");
+  const EXPANSOR_PAGE = 9;
+  const [expansorLimit, setExpansorLimit] = useState(EXPANSOR_PAGE);
 
   // Artistas filter
   const [activeFilter, setActiveFilter] = useState("Todos");
@@ -303,6 +305,7 @@ export default function ResonadoresScreen() {
     setSelectedCountry(null);
     setSelectedRegion(null);
     setQuery("");
+    setExpansorLimit(EXPANSOR_PAGE);
   }
 
   const items: CardItem[] = useMemo(() => {
@@ -452,7 +455,7 @@ export default function ResonadoresScreen() {
 
       {/* ── Grid ── */}
       <FlatList
-        data={items}
+        data={activeTab === "expansores" ? items.slice(0, expansorLimit) : items}
         keyExtractor={(item) => item.data.id}
         numColumns={numCols}
         columnWrapperStyle={styles.row}
@@ -463,6 +466,16 @@ export default function ResonadoresScreen() {
             <Feather name="users" size={36} color="rgba(244,218,213,0.20)" />
             <Text style={styles.emptyText}>Sin resultados</Text>
           </View>
+        }
+        ListFooterComponent={
+          activeTab === "expansores" && items.length > expansorLimit ? (
+            <Pressable
+              onPress={() => setExpansorLimit((l) => l + EXPANSOR_PAGE)}
+              style={({ pressed }) => [styles.loadMoreBtn, { opacity: pressed ? 0.6 : 1 }]}
+            >
+              <Text style={styles.loadMoreText}>Cargar más</Text>
+            </Pressable>
+          ) : null
         }
         renderItem={({ item }) => <ResonadorCard item={item} cardW={cardW} />}
       />
@@ -637,4 +650,17 @@ const styles = StyleSheet.create({
 
   empty: { alignItems: "center", paddingTop: 60, gap: 12 },
   emptyText: { fontSize: 14, color: "rgba(244,218,213,0.30)" },
+  loadMoreBtn: {
+    alignSelf: "center",
+    marginTop: 16,
+    marginBottom: 8,
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+  },
+  loadMoreText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#FFFFFF",
+    letterSpacing: 0.3,
+  },
 });

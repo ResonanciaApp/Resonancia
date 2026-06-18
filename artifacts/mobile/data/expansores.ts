@@ -158,7 +158,7 @@ export const EXPANSORES: Expansor[] = [
   {
     id: "ana-sofia-luna",
     name: "Ana Sofía Luna",
-    photo: require("@/assets/images/meditation-person.png"),
+    photo: require("@/assets/images/expansores/ana-sofia-luna.png"),
     bio: "Practicante de sonoterapia con cuencos tibetanos desde 2018. Ofrece sesiones individuales y grupales en Bogotá, acompañando procesos de relajación profunda y equilibrio energético.",
     city: "Bogotá",
     country: "Colombia",
@@ -169,7 +169,7 @@ export const EXPANSORES: Expansor[] = [
   {
     id: "carlos-medina",
     name: "Carlos Medina",
-    photo: require("@/assets/images/crystal-bowls.png"),
+    photo: require("@/assets/images/expansores/carlos-medina.png"),
     bio: "Terapeuta de sonido especializado en cuencos de cristal cuántico. Sus sesiones integran frecuencias reparadoras con respiración consciente para liberar bloqueos emocionales.",
     city: "Ciudad de México",
     country: "México",
@@ -181,7 +181,7 @@ export const EXPANSORES: Expansor[] = [
   {
     id: "valeria-rios",
     name: "Valeria Ríos",
-    photo: require("@/assets/images/meditation-person.png"),
+    photo: require("@/assets/images/expansores/valeria-rios.png"),
     bio: "Facilitadora de círculos de sonido y meditación. Lleva más de cinco años guiando experiencias de sanación colectiva con cuencos tibetanos y campanas.",
     city: "Buenos Aires",
     country: "Argentina",
@@ -192,7 +192,7 @@ export const EXPANSORES: Expansor[] = [
   {
     id: "martin-paz",
     name: "Martín Paz",
-    photo: require("@/assets/images/crystal-bowls.png"),
+    photo: require("@/assets/images/expansores/martin-paz.png"),
     bio: "Músico y terapeuta de sonido. Combina el poder del gong con cuencos de cuarzo en retiros de fin de semana y sesiones privadas enfocadas en el descanso profundo.",
     city: "Lima",
     country: "Perú",
@@ -204,7 +204,7 @@ export const EXPANSORES: Expansor[] = [
   {
     id: "daniela-vega",
     name: "Daniela Vega",
-    photo: require("@/assets/images/meditation-person.png"),
+    photo: require("@/assets/images/expansores/daniela-vega.png"),
     bio: "Instructora de yoga y sonoterapia. Integra los baños de sonido con prácticas de yin yoga para una experiencia de relajación total mente-cuerpo.",
     city: "Santiago",
     country: "Chile",
@@ -215,7 +215,7 @@ export const EXPANSORES: Expansor[] = [
   {
     id: "andres-morales",
     name: "Andrés Morales",
-    photo: require("@/assets/images/crystal-bowls.png"),
+    photo: require("@/assets/images/expansores/andres-morales.png"),
     bio: "Experto en frecuencias sagradas y cuencos de metal. Realiza talleres de iniciación y sesiones privadas de sonoterapia en centros de bienestar de Medellín.",
     city: "Medellín",
     country: "Colombia",
@@ -226,7 +226,7 @@ export const EXPANSORES: Expansor[] = [
   {
     id: "lucia-rojas-ve",
     name: "Lucía Rojas",
-    photo: require("@/assets/images/meditation-person.png"),
+    photo: require("@/assets/images/expansores/lucia-rojas.png"),
     bio: "Terapeuta holística y facilitadora de baños de sonido en Caracas. Integra cuencos tibetanos con técnicas de respiración consciente para el equilibrio emocional y la reducción del estrés.",
     city: "Caracas",
     country: "Venezuela",
@@ -237,7 +237,7 @@ export const EXPANSORES: Expansor[] = [
   {
     id: "gabriel-flores-bo",
     name: "Gabriel Flores",
-    photo: require("@/assets/images/crystal-bowls.png"),
+    photo: require("@/assets/images/expansores/gabriel-flores.png"),
     bio: "Músico y sanador sonoro con raíces en la tradición andina. Fusiona instrumentos ancestrales de los Andes con cuencos de cuarzo en ceremonias de sonido en La Paz y el altiplano boliviano.",
     city: "La Paz",
     country: "Bolivia",
