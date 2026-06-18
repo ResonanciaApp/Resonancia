@@ -288,7 +288,9 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
           {/* Ícono de sonido activo — fade in/out con anim */}
           {decorated && (
             <Animated.View style={[styles.activeIconWrap, { opacity: anim }]} pointerEvents="none">
-              <MaterialCommunityIcons name="volume-high" size={16} color="#fff" />
+              <View style={styles.activeIconCircle}>
+                <MaterialCommunityIcons name="volume-high" size={16} color="#fff" />
+              </View>
             </Animated.View>
           )}
         </View>
@@ -1065,8 +1067,12 @@ const styles = StyleSheet.create({
   soundName:  { fontSize: 11.5, fontWeight: "600", letterSpacing: 0.1, textAlign: "center", color: DARK },
   lockBadge:      { position: "absolute", top: 4, right: 4 },
   activeIconWrap: {
-    position: "absolute", top: 6, left: 6,
-    width: 28, height: 28, borderRadius: 14,
+    position: "absolute",
+    top: 0, left: 0, right: 0, bottom: 0,
+    alignItems: "center", justifyContent: "center",
+  },
+  activeIconCircle: {
+    width: 32, height: 32, borderRadius: 16,
     backgroundColor: "rgba(0,0,0,0.5)",
     alignItems: "center", justifyContent: "center",
   },
