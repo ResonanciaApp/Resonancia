@@ -452,7 +452,7 @@ export default function ProfileScreen() {
   const [dvDescExpanded, setDvDescExpanded] = useState(false);
   const [dvDescOverflows, setDvDescOverflows] = useState(false);
   const [dvLightboxUri, setDvLightboxUri] = useState<string | null>(null);
-  const dvCellSize = Math.floor((width - 40 - 8) / 3);
+  const dvCellSize = Math.floor((width - 40 - 32 - 8) / 3);
 
   // ── Personalize sheet ─────────────────────────────────────────────────────
   const [scrollEnabled, setScrollEnabled] = useState(true);
