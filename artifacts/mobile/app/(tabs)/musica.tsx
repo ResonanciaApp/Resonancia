@@ -118,9 +118,9 @@ const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
   popular:        ["#2E0410", "#27030D", "#1A0209"],
   naturaleza:     ["#101F14", "#0D1A0F", "#0A1510"],
   ancestrales:    ["#221510", "#1E0F0B", "#100904"],
-  sintetizadores: ["#061A2E", "#041220", "#1B060F"],
-  voces:          ["#250810", "#1A060C", "#1B060F"],
-  bpm:            ["#201A04", "#161302", "#1B060F"],
+  sintetizadores: ["#061A2E", "#041220", "#030A18"],
+  voces:          ["#250810", "#1A060C", "#0F0408"],
+  bpm:            ["#201A04", "#161302", "#0C0A02"],
 };
 
 /** Gradiente de fondo de contenido en modo "noche" — último stop neutro oscuro (sin bordeaux) */
