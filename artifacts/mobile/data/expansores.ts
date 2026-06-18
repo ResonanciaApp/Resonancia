@@ -11,6 +11,9 @@ export type Expansor = {
   specialty: string[];
   certified?: boolean;
   links?: ArtistLink[];
+  memberSince?: string;
+  followersCount?: number;
+  followingCount?: number;
 };
 
 export const COUNTRY_FLAGS: Record<string, string> = {

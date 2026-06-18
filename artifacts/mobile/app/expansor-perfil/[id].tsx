@@ -15,11 +15,11 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
-import { getExpansorById } from "@/data/expansores";
+import { COUNTRY_FLAGS, getExpansorById } from "@/data/expansores";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
-const PHOTO_SIZE = 96;
+const AVATAR_SIZE = 84;
 
 export default function ExpansorPerfilScreen() {
   const colors = useColors();
@@ -41,7 +41,7 @@ export default function ExpansorPerfilScreen() {
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
         </View>
-        <View style={styles.notFound}>
+        <View style={styles.centered}>
           <Feather name="user-x" size={40} color={colors.mutedForeground} />
           <Text style={[styles.notFoundTitle, { color: colors.foreground }]}>Perfil no encontrado</Text>
         </View>
@@ -49,12 +49,15 @@ export default function ExpansorPerfilScreen() {
     );
   }
 
+  const flag = COUNTRY_FLAGS[expansor.country] ?? "";
+  const locationStr = `${flag} ${expansor.city}, ${expansor.country}`.trim();
+
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
       <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
 
-      {/* Header */}
+      {/* Header barra */}
       <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
         <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
           <Feather name="arrow-left" size={22} color={colors.foreground} />
@@ -65,37 +68,69 @@ export default function ExpansorPerfilScreen() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[styles.scroll, { paddingBottom: bottomPad + 40, paddingHorizontal: H_PAD }]}
+        contentContainerStyle={[styles.scroll, { paddingBottom: bottomPad + 40 }]}
       >
-        {/* ── Avatar + nombre ── */}
-        <View style={styles.profileCard}>
-          <View style={styles.avatarWrap}>
+        {/* ── Profile Card (idéntico a profile.tsx) ── */}
+        <View style={[styles.profileCard, { backgroundColor: "rgba(74,12,12,0.28)", borderColor: colors.border ?? "#3D0E16" }]}>
+
+          {/* Avatar */}
+          <View style={styles.avatarWrapper}>
             <Image
               source={expansor.photo}
-              style={styles.avatar}
+              style={styles.avatarImage}
               contentFit="cover"
               placeholder={BLUR_PLACEHOLDER}
               transition={IMAGE_TRANSITION}
             />
             {expansor.certified && (
               <View style={styles.certBadge}>
-                <Text style={styles.certStar}>✦</Text>
+                <Text style={styles.certBadgeStar}>✦</Text>
               </View>
             )}
           </View>
 
-          <Text style={[styles.name, { color: colors.foreground }]}>{expansor.name}</Text>
+          {/* Nombre */}
+          <Text style={[styles.userName, { color: colors.foreground }]}>{expansor.name}</Text>
 
-          <View style={styles.locationRow}>
-            <Feather name="map-pin" size={12} color="rgba(212,175,55,0.7)" />
-            <Text style={styles.location}>{expansor.city}, {expansor.country}</Text>
+          {/* Ubicación */}
+          <View style={styles.metaRow}>
+            <Feather name="map-pin" size={12} color={colors.mutedForeground} />
+            <Text style={[styles.metaText, { color: colors.mutedForeground }]}>{locationStr}</Text>
           </View>
 
-          <Text style={[styles.bio, { color: colors.mutedForeground }]}>{expansor.bio}</Text>
+          {/* Bio */}
+          <Text style={[styles.bioText, { color: colors.mutedForeground }]}>{expansor.bio}</Text>
+
+          {/* Miembro desde */}
+          {expansor.memberSince ? (
+            <View style={styles.metaRow}>
+              <Feather name="calendar" size={12} color={colors.mutedForeground} />
+              <Text style={[styles.metaText, { color: colors.mutedForeground }]}>
+                Miembro desde {expansor.memberSince}
+              </Text>
+            </View>
+          ) : null}
+
+          {/* Seguidores / Siguiendo */}
+          <View style={styles.followRow}>
+            <View style={styles.followItem}>
+              <Text style={[styles.followNum, { color: colors.foreground }]}>
+                {expansor.followersCount ?? 0}
+              </Text>
+              <Text style={[styles.followLabel, { color: colors.mutedForeground }]}>seguidores</Text>
+            </View>
+            <View style={[styles.followDivider, { backgroundColor: colors.border ?? "#3D0E16" }]} />
+            <View style={styles.followItem}>
+              <Text style={[styles.followNum, { color: colors.foreground }]}>
+                {expansor.followingCount ?? 0}
+              </Text>
+              <Text style={[styles.followLabel, { color: colors.mutedForeground }]}>siguiendo</Text>
+            </View>
+          </View>
         </View>
 
-        {/* ── Sección Expansor certificado ── */}
-        <View style={styles.expansorSection}>
+        {/* ── Bloque Expansor Certificado ── */}
+        <View style={[styles.expansorSection, { marginHorizontal: H_PAD }]}>
           {/* Cabecera */}
           <View style={styles.expansorHeader}>
             <View style={styles.expansorBadge}>
@@ -103,16 +138,18 @@ export default function ExpansorPerfilScreen() {
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.expansorTitle}>
-                {expansor.certified ? "Expansor Certificado" : "Expansor"}
+                {expansor.certified ? "Expansor Certificado" : "Expansor Resonancia"}
               </Text>
-              <Text style={styles.expansorSub}>por Resonancia</Text>
+              <Text style={styles.expansorSub}>
+                {expansor.city}, {expansor.country}
+              </Text>
             </View>
             <Pressable
               onPress={() => router.push(`/expansor/${expansor.id}` as never)}
               style={({ pressed }) => [styles.verPublicoBtn, { opacity: pressed ? 0.7 : 1 }]}
             >
               <Text style={styles.verPublicoText}>Ver pantalla pública</Text>
-              <Feather name="external-link" size={12} color="#D4AF37" />
+              <Feather name="chevron-right" size={13} color="#D4AF37" />
             </Pressable>
           </View>
 
@@ -166,11 +203,12 @@ export default function ExpansorPerfilScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
+
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 8,
+    marginBottom: 6,
   },
   headerTitle: { fontSize: 17, fontWeight: "700" },
   backBtn: {
@@ -181,45 +219,54 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  notFound: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12 },
+  centered: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12 },
   notFoundTitle: { fontSize: 18, fontWeight: "700" },
-  scroll: { paddingTop: 12, gap: 16 },
 
+  scroll: { paddingTop: 8, gap: 16 },
+
+  /* ── Profile card ── */
   profileCard: {
-    backgroundColor: "rgba(74,12,12,0.08)",
+    marginHorizontal: 20,
     borderRadius: 20,
+    borderWidth: 1,
     padding: 20,
     alignItems: "center",
     gap: 8,
   },
-  avatarWrap: {
-    width: PHOTO_SIZE,
-    height: PHOTO_SIZE,
-    borderRadius: PHOTO_SIZE / 2,
+  avatarWrapper: {
+    width: AVATAR_SIZE,
+    height: AVATAR_SIZE,
+    borderRadius: AVATAR_SIZE / 2,
     overflow: "hidden",
     borderWidth: 2,
-    borderColor: "rgba(212,175,55,0.35)",
-    position: "relative",
+    borderColor: "rgba(212,175,55,0.45)",
     marginBottom: 4,
   },
-  avatar: { width: "100%", height: "100%" },
+  avatarImage: { width: "100%", height: "100%" },
   certBadge: {
     position: "absolute",
-    bottom: 4,
-    right: 4,
+    bottom: 2,
+    right: 2,
     backgroundColor: "#D4AF37",
     borderRadius: 99,
-    width: 22,
-    height: 22,
+    width: 20,
+    height: 20,
     alignItems: "center",
     justifyContent: "center",
   },
-  certStar: { fontSize: 11, color: "#1B060F", fontWeight: "800" },
-  name: { fontSize: 22, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
-  locationRow: { flexDirection: "row", alignItems: "center", gap: 5 },
-  location: { fontSize: 13, color: "rgba(244,218,213,0.55)" },
-  bio: { fontSize: 14, lineHeight: 21, textAlign: "center", marginTop: 4 },
+  certBadgeStar: { fontSize: 10, color: "#1B060F", fontWeight: "800" },
+  userName: { fontSize: 21, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
+  metaRow: { flexDirection: "row", alignItems: "center", gap: 5 },
+  metaText: { fontSize: 13 },
+  bioText: { fontSize: 14, lineHeight: 21, textAlign: "center", marginTop: 2 },
 
+  followRow: { flexDirection: "row", alignItems: "center", marginTop: 6 },
+  followItem: { flex: 1, alignItems: "center", gap: 2 },
+  followNum: { fontSize: 18, fontWeight: "700" },
+  followLabel: { fontSize: 12 },
+  followDivider: { width: 1, height: 32, marginHorizontal: 12 },
+
+  /* ── Bloque Expansor ── */
   expansorSection: {
     backgroundColor: "rgba(212,175,55,0.06)",
     borderRadius: 18,
@@ -236,14 +283,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#D4AF37",
     alignItems: "center",
     justifyContent: "center",
+    flexShrink: 0,
   },
   expansorBadgeStar: { fontSize: 14, color: "#1B060F", fontWeight: "800" },
-  expansorTitle: { fontSize: 14, fontWeight: "700", color: "#D4AF37" },
+  expansorTitle: { fontSize: 13, fontWeight: "700", color: "#D4AF37" },
   expansorSub: { fontSize: 11, color: "rgba(212,175,55,0.60)", marginTop: 1 },
   verPublicoBtn: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
+    gap: 3,
     paddingHorizontal: 8,
     paddingVertical: 6,
     borderRadius: 10,
@@ -255,7 +303,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 999,
-    backgroundColor: "rgba(74,12,12,0.45)",
+    backgroundColor: "rgba(74,12,12,0.50)",
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.20)",
   },
