@@ -149,12 +149,7 @@ const PillTab = memo(function PillTab({
           end={{ x: 1, y: 0.5 }}
           style={styles.pillTabBorder}
         >
-          <LinearGradient
-            colors={TAB_HEADER_GRADIENT[tab.id]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={styles.pillTabInner}
-          >
+          <View style={[styles.pillTabInner, { backgroundColor: "rgba(255,255,255,0.075)" }]}>
             <MaskedView
               maskElement={
                 <View style={styles.pillTabMaskContent}>
@@ -178,7 +173,7 @@ const PillTab = memo(function PillTab({
                 </View>
               </LinearGradient>
             </MaskedView>
-          </LinearGradient>
+          </View>
         </LinearGradient>
       ) : (
         <View style={[styles.pillTab, { backgroundColor: "#F5F4F2", borderWidth: 1, borderColor: "#DEDEDE" }]}>
