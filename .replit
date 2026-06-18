@@ -67,3 +67,4 @@ packages = ["eas-cli"]
 
 [userenv.shared]
 EXPO_PUBLIC_GIPHY_API_KEY = "nAHzNrm5z7fZdPj4bOeSUG3zUOXGqJXa"
+ADMIN_CLERK_USER_IDS = "user_3ECVn1xpKVsSPmgGfGtGsuoUfbg"
