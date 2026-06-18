@@ -782,15 +782,20 @@ export default function BibliotecaScreen() {
       const visibleRecent = sortedRecent.slice(0, recentLimit);
       const hasMoreRecent = sortedRecent.length > recentLimit;
 
+      const sortedFoldersGeneral = [...userFolders].sort((a, b) => {
+        if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
       const sortedPlaylists = [...userPlaylists].sort((a, b) => {
         if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       });
+      const hasUserContent = sortedFoldersGeneral.length > 0 || sortedPlaylists.length > 0;
 
       return (
         <>
-          {/* ── Mis playlists (siempre al tope en vista general) ── */}
-          {sortedPlaylists.length > 0 && (
+          {/* ── Carpetas y playlists del usuario (siempre al tope en vista general) ── */}
+          {hasUserContent && (
             <>
               {viewMode === "grid" ? (
                 <View style={styles.gridWrap}>
@@ -817,6 +822,14 @@ export default function BibliotecaScreen() {
                 </View>
               ) : (
                 <View style={{ gap: 9 }}>
+                  {sortedFoldersGeneral.map((folder) => (
+                    <FolderRow
+                      key={folder.id}
+                      folder={folder}
+                      onPress={() => router.push(`/carpeta/${folder.id}` as never)}
+                      onLongPress={() => { setActionsItemId(folder.id); setActionsItemKind("folder"); }}
+                    />
+                  ))}
                   {sortedPlaylists.map((pl) => (
                     <UserPlaylistRow
                       key={pl.id}
