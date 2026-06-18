@@ -5,7 +5,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
   Alert,
-  Linking,
   Platform,
   Pressable,
   ScrollView,
@@ -205,31 +204,27 @@ export default function ExpansorPerfilScreen() {
           </View>
         </View>
 
-        {/* ── Bloque Expansor Certificado ── */}
+        {/* ── Sección Expansor ── */}
         <View style={[styles.expansorSection, { marginHorizontal: H_PAD }]}>
-          {/* Cabecera */}
-          <View style={styles.expansorHeader}>
-            <View style={styles.expansorBadge}>
-              <Text style={styles.expansorBadgeStar}>✦</Text>
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.expansorTitle}>
-                {expansor.certified ? "Expansor Certificado" : "Expansor Resonancia"}
-              </Text>
-              <Text style={styles.expansorSub}>
-                {expansor.city}, {expansor.country}
-              </Text>
-            </View>
-            <Pressable
-              onPress={() => router.push(`/expansor/${expansor.id}` as never)}
-              style={({ pressed }) => [styles.verPublicoBtn, { opacity: pressed ? 0.7 : 1 }]}
-            >
-              <Text style={styles.verPublicoText}>Ver pantalla pública</Text>
-              <Feather name="chevron-right" size={13} color="#D4AF37" />
-            </Pressable>
+
+          {/* Banner certificado */}
+          <View style={styles.certBanner}>
+            <LinearGradient
+              colors={["rgba(212,175,55,0.12)", "rgba(212,175,55,0.04)"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={StyleSheet.absoluteFill}
+            />
+            <Text style={styles.certBannerStar}>✦</Text>
+            <Text style={styles.certBannerText}>
+              {expansor.certified ? "Expansor Certificado" : "Expansor Resonancia"}
+            </Text>
           </View>
 
-          {/* Especialidades */}
+          {/* Mis servicios */}
+          <Text style={styles.serviceTitle}>Mis servicios</Text>
+
+          {/* Chips de servicios */}
           <View style={styles.specialtyWrap}>
             {expansor.specialty.map((s) => (
               <View key={s} style={styles.specialtyChip}>
@@ -238,39 +233,11 @@ export default function ExpansorPerfilScreen() {
             ))}
           </View>
 
-          {/* Links */}
-          {expansor.links && expansor.links.length > 0 && (
-            <View style={styles.linksRow}>
-              {expansor.links.map((link) => (
-                <Pressable
-                  key={link.label}
-                  onPress={() => Linking.openURL(link.url)}
-                  style={({ pressed }) => [styles.linkBtn, { opacity: pressed ? 0.7 : 1 }]}
-                >
-                  <Feather name="external-link" size={12} color="#D4AF37" />
-                  <Text style={styles.linkLabel}>{link.label}</Text>
-                </Pressable>
-              ))}
-            </View>
-          )}
+          {/* Descripción de servicios */}
+          {expansor.bio ? (
+            <Text style={styles.serviceDesc}>{expansor.bio}</Text>
+          ) : null}
 
-          {/* Sello */}
-          {expansor.certified && (
-            <View style={styles.certCard}>
-              <LinearGradient
-                colors={["rgba(212,175,55,0.12)", "rgba(212,175,55,0.04)"]}
-                style={StyleSheet.absoluteFill}
-              />
-              <Text style={styles.certCardStar}>✦</Text>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.certCardTitle}>Expansor Certificado por Resonancia</Text>
-                <Text style={styles.certCardSub}>
-                  Este practicante ha sido verificado por el equipo de Resonancia y ofrece sesiones
-                  de sonoterapia con cuencos en su ciudad.
-                </Text>
-              </View>
-            </View>
-          )}
         </View>
       </ScrollView>
     </View>
@@ -384,38 +351,34 @@ const styles = StyleSheet.create({
     color: "rgba(242,231,228,0.45)",
   },
 
-  /* ── Bloque Expansor ── */
+  /* ── Sección Expansor ── */
   expansorSection: {
     backgroundColor: "rgba(212,175,55,0.06)",
     borderRadius: 18,
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.18)",
     padding: 16,
-    gap: 12,
+    gap: 14,
   },
-  expansorHeader: { flexDirection: "row", alignItems: "center", gap: 10 },
-  expansorBadge: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: "#D4AF37",
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-  },
-  expansorBadgeStar: { fontSize: 14, color: "#1B060F", fontWeight: "800" },
-  expansorTitle: { fontSize: 13, fontWeight: "700", color: "#D4AF37" },
-  expansorSub: { fontSize: 11, color: "rgba(212,175,55,0.60)", marginTop: 1 },
-  verPublicoBtn: {
+  certBanner: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 3,
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-    borderRadius: 10,
-    backgroundColor: "rgba(212,175,55,0.10)",
+    gap: 8,
+    borderRadius: 12,
+    overflow: "hidden",
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.22)",
   },
-  verPublicoText: { fontSize: 11, color: "#D4AF37", fontWeight: "600" },
+  certBannerStar: { fontSize: 15, color: "#D4AF37", fontWeight: "800" },
+  certBannerText: { fontSize: 13, fontWeight: "700", color: "#D4AF37" },
+  serviceTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#F4DAD5",
+    letterSpacing: 0.2,
+  },
   specialtyWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   specialtyChip: {
     paddingHorizontal: 12,
@@ -426,30 +389,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.20)",
   },
   specialtyText: { fontSize: 12, color: "#F4DAD5", fontWeight: "500" },
-  linksRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  linkBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 10,
-    backgroundColor: "rgba(212,175,55,0.10)",
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.20)",
+  serviceDesc: {
+    fontSize: 13,
+    lineHeight: 20,
+    color: "rgba(244,218,213,0.65)",
   },
-  linkLabel: { fontSize: 12, color: "#D4AF37", fontWeight: "600" },
-  certCard: {
-    borderRadius: 14,
-    overflow: "hidden",
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 12,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.20)",
-  },
-  certCardStar: { fontSize: 18, color: "#D4AF37", marginTop: 2 },
-  certCardTitle: { fontSize: 12, fontWeight: "700", color: "#D4AF37", marginBottom: 4 },
-  certCardSub: { fontSize: 11, color: "rgba(244,218,213,0.55)", lineHeight: 17 },
 });
