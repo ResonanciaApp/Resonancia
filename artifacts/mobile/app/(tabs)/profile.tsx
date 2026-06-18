@@ -708,7 +708,7 @@ export default function ProfileScreen() {
       const bg = bgGradientColors(profileBgGradientId);
       if (bg) return bg;
     }
-    return [BG_GRADIENT[0], BG_GRADIENT[2]];
+    return [BG_GRADIENT[0], BG_GRADIENT[1]];
   }, [profileBgCreationId, profileBgGradientId, geoCreations]);
 
   // Creación activa (para renderizar glyphs en el fondo)
@@ -720,7 +720,7 @@ export default function ProfileScreen() {
   const glyphSize = width * 0.96;
 
   // ── Crossfade de fondo ────────────────────────────────────────────────────
-  const defaultBg = [BG_GRADIENT[0], BG_GRADIENT[2]] as const;
+  const defaultBg = [BG_GRADIENT[0], BG_GRADIENT[1]] as const;
   const [bgFrom, setBgFrom] = useState<readonly [string, string]>(defaultBg);
   const [bgTo, setBgTo] = useState<readonly [string, string]>(defaultBg);
   const crossFadeAnim = useRef(new Animated.Value(1)).current;
