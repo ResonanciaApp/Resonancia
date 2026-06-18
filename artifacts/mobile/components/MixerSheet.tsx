@@ -570,7 +570,7 @@ export function MixerSheet() {
           )}
 
           {/* ── Cabecera con fondo propio — solo visible en tema sin imagen ── */}
-          <View style={[styles.headerBg, { marginTop: -(insets.top + 8), paddingTop: insets.top + 8, backgroundColor: activeBgPreset.image ? "transparent" : "#3d304e" }]}>
+          <View style={[styles.headerBg, { marginTop: -(insets.top + 8), paddingTop: insets.top + 8, backgroundColor: "transparent" }]}>
             {/* Handle con PanResponder para arrastrar y cerrar */}
             <View style={styles.handleZone} {...panResponder.panHandlers}>
               <View style={[styles.handle, { backgroundColor: "rgba(255,255,255,0.25)" }]} />
@@ -963,7 +963,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   headerBg: {
-    backgroundColor: "#3d304e",
+    backgroundColor: "transparent",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     marginHorizontal: -20,
