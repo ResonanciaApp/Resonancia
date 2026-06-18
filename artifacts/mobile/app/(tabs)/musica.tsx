@@ -132,6 +132,8 @@ const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
 };
 
 // ── PillTab ───────────────────────────────────────────────────────────────────
+const GOLD_BORDER: [string, string] = ["#D4AF37", "#E9C46A"];
+
 const PillTab = memo(function PillTab({
   tab, sel, onPress,
 }: { tab: (typeof MAIN_TABS)[0]; sel: boolean; onPress: () => void }) {
@@ -139,15 +141,22 @@ const PillTab = memo(function PillTab({
     <Pressable onPress={onPress}>
       {sel ? (
         <LinearGradient
-          colors={TAB_GRADIENT[tab.id]}
+          colors={GOLD_BORDER}
           start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={styles.pillTab}
+          end={{ x: 1, y: 0 }}
+          style={styles.pillTabBorder}
         >
-          <MaterialCommunityIcons name={tab.icon as any} size={17} color="#FFFFFF" />
-          <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "#FFFFFF", fontWeight: "700" }]}>
-            {tab.label}
-          </Text>
+          <LinearGradient
+            colors={TAB_GRADIENT[tab.id]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={styles.pillTabInner}
+          >
+            <MaterialCommunityIcons name={tab.icon as any} size={17} color="#FFFFFF" />
+            <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "#FFFFFF", fontWeight: "700" }]}>
+              {tab.label}
+            </Text>
+          </LinearGradient>
         </LinearGradient>
       ) : (
         <View style={[styles.pillTab, { backgroundColor: "#F5F4F2", borderWidth: 1, borderColor: "#DEDEDE" }]}>
@@ -889,6 +898,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 104,
     height: 38,
+    borderRadius: 999,
+    overflow: "hidden",
+    gap: 4,
+  },
+  pillTabBorder: {
+    width: 104,
+    height: 38,
+    borderRadius: 999,
+    padding: 2,
+  },
+  pillTabInner: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 999,
     overflow: "hidden",
     gap: 4,
