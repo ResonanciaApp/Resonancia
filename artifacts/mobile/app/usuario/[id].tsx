@@ -87,7 +87,10 @@ export default function UsuarioScreen() {
 
   const removeFriendMutation = useRemoveFriend({
     mutation: {
-      onSuccess: () => queryClient.invalidateQueries({ queryKey: getGetFriendsQueryKey() }),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: getGetFriendsQueryKey() });
+        queryClient.invalidateQueries({ queryKey: getGetPublicUserProfileQueryKey(userId) });
+      },
     },
   });
 
@@ -96,9 +99,21 @@ export default function UsuarioScreen() {
       onSuccess: () => {
         setFriendRequested(true);
         queryClient.invalidateQueries({ queryKey: getGetFriendRequestsQueryKey() });
+        queryClient.invalidateQueries({ queryKey: getGetFriendsQueryKey() });
+        queryClient.invalidateQueries({ queryKey: getGetPublicUserProfileQueryKey(userId) });
         Alert.alert("¡Listo!", "Solicitud de amistad enviada.");
       },
-      onError: () => Alert.alert("Error", "No se pudo enviar la solicitud."),
+      onError: (error) => {
+        const status = (error as { status?: number })?.status;
+        if (status === 409) {
+          // Ya existe una relación — refrescamos y actualizamos el estado local
+          queryClient.invalidateQueries({ queryKey: getGetFriendsQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getGetPublicUserProfileQueryKey(userId) });
+          setFriendRequested(true);
+        } else {
+          Alert.alert("Error", "No se pudo enviar la solicitud.");
+        }
+      },
     },
   });
 
