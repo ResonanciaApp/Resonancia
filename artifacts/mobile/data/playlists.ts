@@ -36,6 +36,29 @@ export type PlaylistSnapshot = {
 /** Fallback cover para playlists sin imagen bundleada y sin coverUrl remota. */
 const FALLBACK_COVER = require("../assets/images/sessions/session-2.jpg");
 
+/** Imágenes bundleadas indexadas por ID de sesión para usar como portada. */
+const SESSION_COVER_MAP: Record<string, ReturnType<typeof require>> = {
+  "1":  require("../assets/images/sessions/session-1.jpg"),
+  "2":  require("../assets/images/sessions/session-2.jpg"),
+  "3":  require("../assets/images/sessions/session-3-musica-dark.jpg"),
+  "5":  require("../assets/images/sessions/session-5.jpg"),
+  "6":  require("../assets/images/sessions/session-5-musica-dark.jpg"),
+  "7":  require("../assets/images/sessions/session-7.jpg"),
+  "9":  require("../assets/images/sessions/session-9.jpg"),
+  "10": require("../assets/images/sessions/session-10.jpg"),
+  "20": require("../assets/images/sessions/session-20.jpg"),
+  "27": require("../assets/images/sessions/session-27.jpg"),
+  "28": require("../assets/images/sessions/session-28.jpg"),
+  "29": require("../assets/images/sessions/session-29.jpg"),
+};
+
+function resolveCover(sessionIds: string[]): ReturnType<typeof require> {
+  for (const sid of sessionIds) {
+    if (SESSION_COVER_MAP[sid]) return SESSION_COVER_MAP[sid];
+  }
+  return FALLBACK_COVER;
+}
+
 /**
  * Reemplaza PLAYLISTS con los datos del servidor.
  * El servidor solo envía las playlists marcadas showOnHome=true, ordenadas
@@ -49,7 +72,7 @@ export function applyPlaylistsSnapshot(snapshots: PlaylistSnapshot[]): void {
       id: snap.slug,
       title: snap.title,
       description: snap.description,
-      cover: FALLBACK_COVER,
+      cover: resolveCover(snap.sessionIds),
       coverUrl: snap.coverUrl ?? null,
       durationLabel: snap.durationLabel,
       savedCount: snap.savedCount,

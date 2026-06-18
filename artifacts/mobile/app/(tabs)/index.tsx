@@ -473,7 +473,11 @@ export default function HomeScreen2() {
                   onPress={() => router.push(`/coleccion/${pl.id}` as never)}
                   style={({ pressed }) => [styles.coleccionCard, { opacity: pressed ? 0.75 : 1 }]}
                 >
-                  <Image source={pl.cover as number} style={styles.coleccionThumb} resizeMode="cover" />
+                  <Image
+                    source={pl.coverUrl ? { uri: pl.coverUrl } : pl.cover as number}
+                    style={styles.coleccionThumb}
+                    resizeMode="cover"
+                  />
                   <View style={styles.coleccionTitleRow}>
                     <Text style={styles.coleccionTitle} numberOfLines={2}>{pl.title}</Text>
                     {isPlaying && currentSession && pl.sessionIds.includes(currentSession.id) && (
