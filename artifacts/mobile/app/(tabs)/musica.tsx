@@ -975,7 +975,7 @@ const styles = StyleSheet.create({
     flex: 1, borderRadius: 14, overflow: "hidden",
     backgroundColor: "rgba(212,175,55,0.08)",
   },
-  cardImageWrapActive: {},
+  cardImageWrapActive: { borderWidth: 4 },
   cardFooter: { paddingHorizontal: 4, paddingTop: 8, paddingBottom: 2 },
   soundName:  { fontSize: 11.5, fontWeight: "600", letterSpacing: 0.1, textAlign: "center", color: DARK },
   lockBadge:  { position: "absolute", top: 4, right: 4 },
