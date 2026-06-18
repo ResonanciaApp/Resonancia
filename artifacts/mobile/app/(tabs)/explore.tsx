@@ -540,7 +540,7 @@ const styles = StyleSheet.create({
 
   searchBarBorder: {
     marginHorizontal: H_PAD,
-    marginBottom: 33,
+    marginBottom: SECTION_GAP,
     borderRadius: 10,
     padding: 1,
     shadowColor: "#D4AF37",
