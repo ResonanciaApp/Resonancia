@@ -23,14 +23,21 @@ import {
   useTabBarVisibility,
 } from "@/context/TabBarVisibilityContext";
 
-const ACTIVE_COLOR = "#FFFFFF";
+const ACTIVE_COLOR  = "#E9C46A";
 const INACTIVE_COLOR = "rgba(244,218,213,0.55)";
-const GRAD_START = "#D4AF37";
-const GRAD_END   = "#E9C46A";
+const GRAD_END       = "#E9C46A";
 
 const ICON_SIZE = 23;
-const PILL_BG = "rgba(244,218,213,0.18)";
-const BAR_BORDER = "rgba(244,218,213,0.10)";
+const PILL_BG   = "rgba(212,175,55,0.09)";
+
+/** Borde superior asimétrico: fade en ambos extremos */
+const BAR_BORDER_COLORS = [
+  "transparent",
+  "rgba(212,175,55,0.38)",
+  "rgba(233,196,106,0.45)",
+  "rgba(212,175,55,0.38)",
+  "transparent",
+] as const;
 
 // Rutas que nunca aparecen en el menú inferior
 const HIDDEN_ROUTES = new Set(["descanzo", "profile"]);
@@ -42,15 +49,14 @@ const TAB_CONFIG: Record<
     sfIcon: string;
     sfIconFill: string;
     featherIcon: string;
-    /** Si está presente, se usa esta imagen (tintada) en vez del ícono. */
     image?: number;
   }
 > = {
-  index:      { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",              featherIcon: "home" },
-  explore:    { label: "Buscar",     sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",         featherIcon: "search" },
-  musica:     { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",    featherIcon: "sliders" },
-  biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",    featherIcon: "bookmark" },
-  profile:    { label: "Perfil",     sfIcon: "person",              sfIconFill: "person.fill",             featherIcon: "user" },
+  index:      { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
+  explore:    { label: "Buscar",     sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
+  musica:     { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",  featherIcon: "sliders" },
+  biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
+  profile:    { label: "Perfil",     sfIcon: "person",              sfIconFill: "person.fill",           featherIcon: "user" },
 };
 
 function TabItem({
@@ -75,10 +81,16 @@ function TabItem({
     }).start();
   }, [isFocused]);
 
-  const isIOS = Platform.OS === "ios";
-  const iconColor = isFocused ? GRAD_END : INACTIVE_COLOR;
-  const labelColor = isFocused ? "#FFFFFF" : INACTIVE_COLOR;
-  const labelWeight = isFocused ? "700" : "400";
+  const isIOS    = Platform.OS === "ios";
+  const iconColor = isFocused ? ACTIVE_COLOR : INACTIVE_COLOR;
+
+  const icon = conf.image ? (
+    <Image source={conf.image} style={{ width: ICON_SIZE, height: ICON_SIZE }} tintColor={iconColor} resizeMode="contain" />
+  ) : isIOS ? (
+    <SymbolView name={(isFocused ? conf.sfIconFill : conf.sfIcon) as never} tintColor={iconColor} size={ICON_SIZE} />
+  ) : (
+    <Feather name={conf.featherIcon as never} size={ICON_SIZE} color={iconColor} />
+  );
 
   return (
     <Pressable
@@ -87,17 +99,33 @@ function TabItem({
       accessibilityRole="button"
       accessibilityState={{ selected: isFocused }}
     >
-      <View style={styles.iconWrap}>
+      {/* Pill cubre ícono + label */}
+      <View style={styles.pillWrap}>
         <Animated.View style={[styles.pill, { opacity: pillOpacity }]} />
-        {conf.image ? (
-          <Image source={conf.image} style={{ width: ICON_SIZE, height: ICON_SIZE }} tintColor={iconColor} resizeMode="contain" />
-        ) : isIOS ? (
-          <SymbolView name={(isFocused ? conf.sfIconFill : conf.sfIcon) as never} tintColor={iconColor} size={ICON_SIZE} />
-        ) : (
-          <Feather name={conf.featherIcon as never} size={ICON_SIZE} color={iconColor} />
-        )}
+
+        {/* Ícono con glow dorado cuando está activo */}
+        <View style={isFocused ? styles.iconGlow : undefined}>
+          {icon}
+        </View>
+
+        {/* Label siempre dentro del pillWrap */}
+        <Text
+          style={[
+            styles.label,
+            {
+              color: isFocused ? GRAD_END : INACTIVE_COLOR,
+              fontWeight: isFocused ? "700" : "400",
+              ...(isFocused && {
+                textShadowColor: "rgba(212,175,55,0.55)",
+                textShadowOffset: { width: 0, height: 0 },
+                textShadowRadius: 5,
+              }),
+            },
+          ]}
+        >
+          {conf.label}
+        </Text>
       </View>
-      <Text style={[styles.label, { color: labelColor, fontWeight: labelWeight }]}>{conf.label}</Text>
     </Pressable>
   );
 }
@@ -106,18 +134,16 @@ type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>["tab
 
 function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const insets = useSafeAreaInsets();
-  const isWeb = Platform.OS === "web";
-  const pb = isWeb ? 8 : insets.bottom;
-  const extra = Math.round(pb / 2);
+  const isWeb  = Platform.OS === "web";
+  const pb     = isWeb ? 8 : insets.bottom;
+  const extra  = Math.round(pb / 2);
 
-  // Alto total de la barra: se desliza esa distancia (+ holgura) para esconderse.
   const barHeight = 31 + extra + pb;
   const { hidden, showMenu, tabBarColors } = useTabBarVisibility();
-  const translateY  = useRef(new Animated.Value(0)).current;
+  const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const accentOpacity = useRef(new Animated.Value(0)).current;
 
-  // Crossfade entre el gradiente por defecto y el color del tab activo
   useEffect(() => {
     Animated.timing(accentOpacity, {
       toValue: tabBarColors ? 1 : 0,
@@ -143,11 +169,10 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
   return (
     <>
-      {/* Tab bar principal — se desliza hacia abajo al ocultarse */}
       <Animated.View
         style={[styles.bar, { paddingBottom: pb, transform: [{ translateY }] }]}
       >
-        {/* Gradiente base (siempre visible) */}
+        {/* Gradiente base */}
         <LinearGradient
           colors={["#27070E", "#1B060F"]}
           locations={[0, 1]}
@@ -155,7 +180,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
-        {/* Gradiente de acento del tab del mezclador (crossfade) */}
+        {/* Gradiente de acento del tab activo (crossfade) */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity }]}>
           <LinearGradient
             colors={tabBarColors ? [tabBarColors[0], tabBarColors[1]] : ["#27070E", "#1B060F"]}
@@ -165,12 +190,21 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
             style={StyleSheet.absoluteFill}
           />
         </Animated.View>
+
+        {/* Borde superior asimétrico dorado con fade en esquinas */}
+        <LinearGradient
+          colors={BAR_BORDER_COLORS}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={styles.topBorder}
+        />
+
         <View style={[styles.row, isWeb && styles.rowWeb, { paddingTop: 8 + extra, height: 31 + extra }]}>
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
             if (HIDDEN_ROUTES.has(route.name)) return null;
 
             const isFocused = state.index === index;
-            const onPress = () => {
+            const onPress   = () => {
               const event = navigation.emit({
                 type: "tabPress",
                 target: route.key,
@@ -218,26 +252,21 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           <MaterialCommunityIcons name="chevron-up" size={14} color="rgba(255,255,255,0.75)" />
         </Pressable>
       </Animated.View>
-
     </>
   );
 }
 
 function TabLayoutInner() {
   const { currentSession } = usePlayer();
-  const { activeSounds } = useMixer();
-  const insets = useSafeAreaInsets();
-  const isWeb = Platform.OS === "web";
-  const bottomPb = isWeb ? 8 : insets.bottom;
-  const tabBarHeight = 31 + Math.round(bottomPb / 2) + bottomPb;
-  const { hidden } = useTabBarVisibility();
+  const { activeSounds }   = useMixer();
+  const insets             = useSafeAreaInsets();
+  const isWeb              = Platform.OS === "web";
+  const bottomPb           = isWeb ? 8 : insets.bottom;
+  const tabBarHeight       = 31 + Math.round(bottomPb / 2) + bottomPb;
+  const { hidden }         = useTabBarVisibility();
 
-  // La barra flotante (sesión o mezcla) abre el editor en hoja inferior; se
-  // muestra en todas las tabs, incluida "Mi Música".
-  const mixActive = !currentSession && activeSounds.length > 0;
+  const mixActive      = !currentSession && activeSounds.length > 0;
   const showMiniPlayer = currentSession || mixActive;
-  // Cuando el menú está oculto (Geometrix), el mini player baja para no quedar
-  // flotando sobre el espacio vacío que dejó la tab bar.
   const miniPlayerBottom = hidden ? bottomPb : tabBarHeight;
 
   return (
@@ -282,12 +311,12 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
   },
-  barBorder: {
+  topBorder: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
-    borderTopWidth: StyleSheet.hairlineWidth,
+    height: 1,
   },
   row: {
     flexDirection: "row",
@@ -304,19 +333,26 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    gap: 3,
     marginTop: -3,
   },
-  iconWrap: {
-    width: 52,
-    height: 32,
+  pillWrap: {
     alignItems: "center",
     justifyContent: "center",
+    paddingHorizontal: 10,
+    paddingTop: 5,
+    paddingBottom: 4,
+    gap: 2,
   },
   pill: {
     ...StyleSheet.absoluteFillObject,
-    borderRadius: 10,
+    borderRadius: 13,
     backgroundColor: PILL_BG,
+  },
+  iconGlow: {
+    shadowColor: "#D4AF37",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.55,
+    shadowRadius: 6,
   },
   label: {
     fontSize: 11,
