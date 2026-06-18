@@ -680,7 +680,7 @@ export default function MezcladorScreen() {
         {/* ── Zona superior ── */}
         <View style={styles.topPanelShadow}>
           <LinearGradient
-            colors={TAB_HEADER_GRADIENT[mainTab]}
+            colors={bgPaletteId === "noche" ? TAB_NOCHE_BG[mainTab] : TAB_HEADER_GRADIENT[mainTab]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={[styles.topPanel, { paddingTop: topPad + 2 }]}
