@@ -571,38 +571,36 @@ export default function HomeScreen2() {
 
         {/* ── BANNER PREMIUM ── */}
         {!isPremium && (
-          <Pressable
-            onPress={() => router.push("/membresia" as never)}
-            style={({ pressed }) => [styles.premBannerWrap, { opacity: pressed ? 0.82 : 1 }]}
-          >
-            <LinearGradient
-              colors={["#4A1212", "#2C0909", "#1E0608"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
-            />
-            {/* Shimmer top-left */}
-            <LinearGradient
-              colors={["rgba(255,255,255,0.06)", "transparent"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0.6, y: 1 }}
-              style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
-              pointerEvents="none"
-            />
-            {/* Crown circle */}
-            <View style={styles.premCrownCircle}>
-              <Text style={{ fontSize: 18 }}>👑</Text>
-            </View>
-            {/* Text */}
-            <View style={{ flex: 1 }}>
-              <Text style={styles.premTitle}>Prueba Premium</Text>
-              <Text style={styles.premSub}>Desbloquea todo el contenido</Text>
-            </View>
-            {/* Chevron */}
-            <View style={styles.premChevron}>
-              <Feather name="chevron-right" size={14} color="#D4AF37" />
-            </View>
-          </Pressable>
+          <View style={styles.premBannerOuter}>
+            <Pressable
+              onPress={() => router.push("/membresia" as never)}
+              style={({ pressed }) => [styles.premBannerWrap, { opacity: pressed ? 0.82 : 1 }]}
+            >
+              <LinearGradient
+                colors={["#4A1212", "#2C0909", "#1E0608"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
+              />
+              <LinearGradient
+                colors={["rgba(255,255,255,0.06)", "transparent"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0.6, y: 1 }}
+                style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
+                pointerEvents="none"
+              />
+              <View style={styles.premCrownCircle}>
+                <Text style={{ fontSize: 18 }}>👑</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.premTitle}>Prueba Premium</Text>
+                <Text style={styles.premSub}>Desbloquea todo el contenido</Text>
+              </View>
+              <View style={styles.premChevron}>
+                <Feather name="chevron-right" size={14} color="#D4AF37" />
+              </View>
+            </Pressable>
+          </View>
         )}
 
         {/* ── RECIENTES ── */}
@@ -1154,9 +1152,12 @@ const styles = StyleSheet.create({
   heroSub: { fontSize: 13, marginBottom: 18, opacity: 0.85 },
 
   // Banner premium compacto
-  premBannerWrap: {
+  premBannerOuter: {
     marginHorizontal: GRID_PAD,
     marginBottom: SECTION_GAP,
+    marginTop: SECTION_GAP,
+  },
+  premBannerWrap: {
     height: 68,
     borderRadius: 16,
     overflow: "hidden",
