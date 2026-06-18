@@ -4,6 +4,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { memo, useState, useMemo, useRef, useEffect } from "react";
 import {
+  Alert,
   Animated,
   Easing,
   FlatList,
@@ -22,6 +23,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { ARTISTS, type Artist } from "@/data/artists";
 import { EXPANSORES, REGIONS_BY_COUNTRY, COUNTRY_FLAGS, type Expansor } from "@/data/expansores";
+import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { useUserProfile } from "@/context/UserProfileContext";
 
@@ -340,6 +342,11 @@ export default function ResonadoresScreen() {
     }
   }, [activeTab, activeFilter, selectedCountry, selectedRegion, query]);
 
+  const recentSessions = useMemo(
+    () => [...SESSIONS].sort((a, b) => parseInt(b.id) - parseInt(a.id)).slice(0, 10),
+    [],
+  );
+
   const numCols = 3;
   const SCREEN_PAD = H_PAD * 2;
   const cardW = Math.floor((screenWidth - SCREEN_PAD - CARD_GAP * 2) / numCols);
@@ -470,7 +477,75 @@ export default function ResonadoresScreen() {
           </View>
         }
         ListFooterComponent={
-          activeTab === "expansores" && items.length > EXPANSOR_PAGE ? (
+          activeTab === "artistas" ? (
+            <View style={styles.footerSections}>
+              {/* ── Recientes de Resonadores ── */}
+              <View style={styles.recentHeader}>
+                <Text style={styles.recentTitle}>Recientes de Resonadores</Text>
+                <Text style={styles.recentSub}>Las últimas sesiones añadidas</Text>
+              </View>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.recentScrollWrap}
+                contentContainerStyle={styles.recentScrollContent}
+              >
+                {recentSessions.map((session) => (
+                  <Pressable
+                    key={session.id}
+                    onPress={() => router.push(`/session/${session.id}` as any)}
+                    style={({ pressed }) => [styles.recentCard, { opacity: pressed ? 0.75 : 1 }]}
+                  >
+                    <View style={styles.recentImgWrap}>
+                      <Image
+                        source={session.image}
+                        style={styles.recentImg}
+                        contentFit="cover"
+                        placeholder={BLUR_PLACEHOLDER}
+                        transition={IMAGE_TRANSITION}
+                      />
+                      {session.isPremium && (
+                        <View style={styles.recentPremiumBadge}>
+                          <Text style={styles.recentPremiumStar}>★</Text>
+                        </View>
+                      )}
+                    </View>
+                    <Text style={styles.recentCardTitle} numberOfLines={2}>{session.title}</Text>
+                    <Text style={styles.recentCardCat} numberOfLines={1}>{session.categoryLabel}</Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+
+              {/* ── CTA ── */}
+              <Pressable
+                onPress={() =>
+                  Alert.alert(
+                    "¿Sos artista o creador?",
+                    "Pronto podrás postularte para unirte al equipo de Resonancia como resonador.",
+                    [{ text: "Entendido" }],
+                  )
+                }
+                style={({ pressed }) => [styles.ctaBtn, { opacity: pressed ? 0.85 : 1 }]}
+              >
+                <LinearGradient
+                  colors={["rgba(74,12,12,0.70)", "rgba(27,6,15,0.92)"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={StyleSheet.absoluteFill}
+                />
+                <View style={styles.ctaInner}>
+                  <View style={styles.ctaIconCircle}>
+                    <Text style={styles.ctaIconText}>✦</Text>
+                  </View>
+                  <View style={styles.ctaTextWrap}>
+                    <Text style={styles.ctaQuestion}>¿Te gustaría ser resonador?</Text>
+                    <Text style={styles.ctaHint}>Sumate a la red de artistas y guías</Text>
+                  </View>
+                  <Feather name="chevron-right" size={18} color="rgba(212,175,55,0.7)" />
+                </View>
+              </Pressable>
+            </View>
+          ) : activeTab === "expansores" && items.length > EXPANSOR_PAGE ? (
             <Pressable
               onPress={() =>
                 expansorLimit >= items.length
@@ -670,5 +745,122 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#FFFFFF",
     letterSpacing: 0.3,
+  },
+
+  // ── Footer sections ──────────────────────────────────────────────────────────
+  footerSections: {
+    marginTop: 24,
+    paddingBottom: 16,
+  },
+
+  // Recent sessions header
+  recentHeader: {
+    marginBottom: 14,
+  },
+  recentTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#F4DAD5",
+    letterSpacing: 0.2,
+  },
+  recentSub: {
+    fontSize: 11,
+    color: "rgba(244,218,213,0.45)",
+    marginTop: 3,
+  },
+
+  // Recent sessions carousel
+  recentScrollWrap: {
+    marginHorizontal: -H_PAD,
+  },
+  recentScrollContent: {
+    paddingHorizontal: H_PAD,
+    gap: 10,
+    paddingBottom: 4,
+  },
+  recentCard: {
+    width: 126,
+  },
+  recentImgWrap: {
+    width: 126,
+    height: 94,
+    borderRadius: 10,
+    overflow: "hidden",
+    marginBottom: 7,
+  },
+  recentImg: {
+    width: 126,
+    height: 94,
+  },
+  recentPremiumBadge: {
+    position: "absolute",
+    top: 5,
+    right: 5,
+    backgroundColor: "#D4AF37",
+    borderRadius: 99,
+    width: 16,
+    height: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  recentPremiumStar: {
+    fontSize: 8,
+    color: "#1B060F",
+    fontWeight: "800",
+  },
+  recentCardTitle: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#F4DAD5",
+    lineHeight: 15,
+  },
+  recentCardCat: {
+    fontSize: 10,
+    color: "rgba(212,175,55,0.70)",
+    marginTop: 2,
+  },
+
+  // CTA button
+  ctaBtn: {
+    marginTop: 22,
+    borderRadius: 14,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.35)",
+  },
+  ctaInner: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 18,
+    paddingVertical: 16,
+    gap: 14,
+  },
+  ctaIconCircle: {
+    width: 38,
+    height: 38,
+    borderRadius: 99,
+    backgroundColor: "rgba(212,175,55,0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.35)",
+  },
+  ctaIconText: {
+    fontSize: 16,
+    color: "#D4AF37",
+  },
+  ctaTextWrap: {
+    flex: 1,
+  },
+  ctaQuestion: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#F4DAD5",
+    letterSpacing: 0.2,
+  },
+  ctaHint: {
+    fontSize: 11,
+    color: "rgba(244,218,213,0.50)",
+    marginTop: 2,
   },
 });
