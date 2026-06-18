@@ -658,14 +658,14 @@ const styles = StyleSheet.create({
   emptyText: { fontSize: 14, color: "rgba(244,218,213,0.30)" },
   loadMoreBtn: {
     alignSelf: "center",
-    marginTop: 16,
+    marginTop: -9,
     marginBottom: 8,
     paddingHorizontal: 24,
     paddingVertical: 10,
   },
   loadMoreText: {
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: "400",
     color: "#FFFFFF",
     letterSpacing: 0.3,
   },
