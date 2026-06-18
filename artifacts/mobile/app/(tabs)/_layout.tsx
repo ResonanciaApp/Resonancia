@@ -97,14 +97,6 @@ function TabItem({
 
         {/* Borde superior dorado con fade en esquinas + halo glow */}
         <Animated.View style={[styles.pillDecor, { opacity: pillOpacity }]}>
-          {/* Halo suave — difumina hacia abajo */}
-          <LinearGradient
-            colors={["rgba(212,175,55,0.28)", "transparent"]}
-            start={{ x: 0.5, y: 0 }}
-            end={{ x: 0.5, y: 1 }}
-            style={StyleSheet.absoluteFill}
-          />
-          {/* Línea 1.5 px con fade en esquinas */}
           <LinearGradient
             colors={["transparent", "rgba(212,175,55,0.75)", "#E9C46A", "rgba(212,175,55,0.75)", "transparent"]}
             start={{ x: 0, y: 0.5 }}
