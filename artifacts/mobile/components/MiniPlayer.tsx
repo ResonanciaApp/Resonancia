@@ -30,6 +30,51 @@ const MIX_BG      = "#3d304e";
 const PILL_BORDER = "rgba(110,80,200,0.5)";
 const BORDER_R    = 12;
 
+type StackThumbItemProps = {
+  image: ReturnType<typeof require> | undefined;
+  style: object;
+  onPress: () => void;
+  onLongPress: () => void;
+  primaryColor: string;
+};
+
+function StackThumbItem({ image, style, onPress, onLongPress, primaryColor }: StackThumbItemProps) {
+  const opacity = useRef(new Animated.Value(image ? 0 : 1)).current;
+
+  const handleLoad = () => {
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  return (
+    <Animated.View style={[style, { opacity }]}>
+      <Pressable
+        onPress={onPress}
+        onLongPress={onLongPress}
+        delayLongPress={400}
+        style={{ width: STACK_SIZE, height: STACK_SIZE }}
+        accessibilityLabel="Sonido activo — presionar para colapsar, mantener para quitar"
+      >
+        {image ? (
+          <ExpoImage
+            source={image}
+            style={{ width: STACK_SIZE, height: STACK_SIZE }}
+            contentFit="cover"
+            onLoad={handleLoad}
+          />
+        ) : (
+          <View style={styles.stackFallback}>
+            <Feather name="music" size={14} color={primaryColor} />
+          </View>
+        )}
+      </Pressable>
+    </Animated.View>
+  );
+}
+
 export function MiniPlayer() {
   const { currentSession, isPlaying, progress, pauseResume } = usePlayer();
   const {
@@ -196,31 +241,14 @@ export function MiniPlayer() {
                     outputRange: [0, i * OPEN_DELTA],
                   });
                   return (
-                    <Animated.View
+                    <StackThumbItem
                       key={s.id}
+                      image={image}
                       style={[styles.stackThumb, { position: 'absolute', left: i * STACK_SHIFT, zIndex: i, transform: [{ translateX }] }]}
-                    >
-                      <Pressable
-                        onPress={toggleStack}
-                        onLongPress={() => removeSound(s.id)}
-                        delayLongPress={400}
-                        style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                        accessibilityLabel="Sonido activo — presionar para colapsar, mantener para quitar"
-                      >
-                        {image ? (
-                          <ExpoImage
-                            source={image}
-                            style={{ width: STACK_SIZE, height: STACK_SIZE }}
-                            contentFit="cover"
-                            transition={200}
-                          />
-                        ) : (
-                          <View style={styles.stackFallback}>
-                            <Feather name="music" size={14} color={colors.primary} />
-                          </View>
-                        )}
-                      </Pressable>
-                    </Animated.View>
+                      onPress={toggleStack}
+                      onLongPress={() => removeSound(s.id)}
+                      primaryColor={colors.primary}
+                    />
                   );
                 })}
               </ScrollView>
