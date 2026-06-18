@@ -238,6 +238,18 @@ export const EXPANSORES: Expansor[] = [
     memberSince: "febrero de 2025",
     followersCount: 176,
     followingCount: 54,
+    phone: "+56 9 1234 5678",
+    email: "daniela@resonancia.com",
+    instagram: "https://instagram.com/danielavega",
+    quote: "El sonido es el puente entre el mundo interior y el exterior.",
+    gallery: [
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400",
+      "https://images.unsplash.com/photo-1545389336-cf090694435e?w=400",
+      "https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?w=400",
+      "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=400",
+      "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400",
+      "https://images.unsplash.com/photo-1508672019048-805c876b67e2?w=400",
+    ],
   },
   {
     id: "andres-morales",
