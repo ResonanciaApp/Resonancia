@@ -576,10 +576,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: "rgba(255,255,255,0.07)",
     overflow: "hidden",
   },
-  chipText: { fontSize: 13, fontWeight: "500", color: "rgba(242,231,228,0.45)" },
+  chipText: { fontSize: 13, fontWeight: "400", color: "#FFFFFF" },
   chipTextSel: { color: "#1B060F", fontWeight: "700" },
 
   // Grid
