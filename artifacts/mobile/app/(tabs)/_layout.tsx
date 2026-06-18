@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: -16,
+    marginTop: -12,
   },
   pillWrap: {
     alignItems: "center",
