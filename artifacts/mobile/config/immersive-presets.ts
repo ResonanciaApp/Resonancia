@@ -132,6 +132,7 @@ export const DEFAULT_BG_PRESET_ID = "blanco";
 export const MIXER_BG_KEY = "@resonance_mixer_bg";
 export const MIXER_OVERLAY_KEY = "@resonance_mixer_overlay";
 export const DEFAULT_OVERLAY = 0.65;
+export const MIXER_GEO_BG_KEY = "@resonance_mixer_geo_bg";
 
 let _bgListeners: Array<(id: string) => void> = [];
 export function subscribeBgPreset(fn: (id: string) => void) {
@@ -140,6 +141,15 @@ export function subscribeBgPreset(fn: (id: string) => void) {
 }
 export function emitBgPresetChange(id: string) {
   _bgListeners.forEach((l) => l(id));
+}
+
+let _geoListeners: Array<(id: string | null) => void> = [];
+export function subscribeGeoBg(fn: (id: string | null) => void) {
+  _geoListeners.push(fn);
+  return () => { _geoListeners = _geoListeners.filter((l) => l !== fn); };
+}
+export function emitGeoBgChange(id: string | null) {
+  _geoListeners.forEach((l) => l(id));
 }
 
 let _overlayListeners: Array<(v: number) => void> = [];

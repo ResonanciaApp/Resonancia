@@ -17,6 +17,10 @@ import { getSoundById, soundMatchesBpm, resolveSoundBpm } from "@/data/sounds";
 import { getMixImage } from "@/config/mix-images";
 import type { MixCategory } from "@/data/mix-categories";
 import {
+  MIXER_GEO_BG_KEY,
+  subscribeGeoBg,
+} from "@/config/immersive-presets";
+import {
   registerMixStopper,
   stopSessionPlayback,
 } from "@/context/audioBridge";
@@ -169,6 +173,8 @@ type MixerContextType = {
   inmersivoPresetId: string | null;
   openImmersivo: (presetId: string) => void;
   closeImmersivo: () => void;
+  /** ID de la creación de Geometrix seleccionada como fondo inmersivo. null = sin Geometrix. */
+  inmersivoGeoBgId: string | null;
 };
 
 const MixerContext = createContext<MixerContextType | null>(null);
@@ -1465,6 +1471,15 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   }, []);
   const closeImmersivo = useCallback(() => setInmersivoOpen(false), []);
 
+  const [inmersivoGeoBgId, setInmersivoGeoBgId] = useState<string | null>(null);
+  useEffect(() => {
+    AsyncStorage.getItem(MIXER_GEO_BG_KEY)
+      .then((v) => { if (v) setInmersivoGeoBgId(v); })
+      .catch(() => {});
+    const unsub = subscribeGeoBg((id) => setInmersivoGeoBgId(id));
+    return unsub;
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const importPreset = useCallback(
     (preset: MixPreset) => {
       const alreadyExists = presetsRef.current.some((p) => p.id === preset.id);
@@ -1867,6 +1882,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         inmersivoPresetId,
         openImmersivo,
         closeImmersivo,
+        inmersivoGeoBgId,
       }}
     >
       {children}

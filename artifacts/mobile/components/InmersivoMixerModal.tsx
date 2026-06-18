@@ -25,6 +25,10 @@ import { useMixer } from "@/context/MixerContext";
 import { getSoundById } from "@/data/sounds";
 import { GRADIENT_PRESETS, DEFAULT_BG_PRESET_ID } from "@/config/immersive-presets";
 import { MESSAGE_PACKS, DEFAULT_MESSAGE_PACK_ID } from "@/data/immersive-messages";
+import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
+import { GEOMETRIX_PRESETS, isPreset } from "@/data/geometrix-presets";
+import { CreationCoverPreviewDirect } from "@/components/CreationCoverPreview";
+import { Dimensions } from "react-native";
 
 const CONTROLS_TIMEOUT = 2000;
 const MSG_DISPLAY_MS   = 10000;
@@ -51,13 +55,25 @@ function formatTimer(s: number | null): string {
   return h > 0 ? `${h}:${p(m)}:${p(sec)}` : `${m}:${p(sec)}`;
 }
 
+const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get("window");
+const GEO_BG_SIZE = Math.max(SCREEN_W, SCREEN_H) * 1.05;
+
 export function InmersivoContent() {
   const insets = useSafeAreaInsets();
   const {
     activeSounds, isPlaying, togglePlay,
     sleepTimerRemaining, setSleepTimer,
     inmersivoPresetId, closeImmersivo,
+    inmersivoGeoBgId,
   } = useMixer();
+
+  const { creations } = useGeometrixCreations();
+
+  const geoBgCreation = inmersivoGeoBgId
+    ? (creations.find((c) => c.id === inmersivoGeoBgId)
+        ?? GEOMETRIX_PRESETS.find((p) => p.id === inmersivoGeoBgId)
+        ?? null)
+    : null;
 
   const bgPreset =
     GRADIENT_PRESETS.find((p) => p.id === inmersivoPresetId) ??
@@ -174,21 +190,31 @@ export function InmersivoContent() {
       <View style={styles.root}>
         <StatusBar hidden />
 
-        <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ scale: breathScale }] }]}>
-          {bgPreset.image ? (
-            <Image source={bgPreset.image} style={StyleSheet.absoluteFill} contentFit="cover" transition={600} />
-          ) : (
-            <LinearGradient
-              colors={bgPreset.isLight ? ["#362a46", "#22112a", "#362a46"] : [...bgPreset.colors]}
-              start={{ x: 0.5, y: 0 }}
-              end={{ x: 0.5, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-          )}
-        </Animated.View>
-
-        {bgPreset.image && bgPreset.imageOverlay && (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: bgPreset.imageOverlay }]} pointerEvents="none" />
+        {geoBgCreation ? (
+          <Animated.View
+            style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center", transform: [{ scale: breathScale }] }]}
+            pointerEvents="none"
+          >
+            <CreationCoverPreviewDirect creation={geoBgCreation} size={GEO_BG_SIZE} />
+          </Animated.View>
+        ) : (
+          <>
+            <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ scale: breathScale }] }]}>
+              {bgPreset.image ? (
+                <Image source={bgPreset.image} style={StyleSheet.absoluteFill} contentFit="cover" transition={600} />
+              ) : (
+                <LinearGradient
+                  colors={bgPreset.isLight ? ["#362a46", "#22112a", "#362a46"] : [...bgPreset.colors]}
+                  start={{ x: 0.5, y: 0 }}
+                  end={{ x: 0.5, y: 1 }}
+                  style={StyleSheet.absoluteFill}
+                />
+              )}
+            </Animated.View>
+            {bgPreset.image && bgPreset.imageOverlay && (
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: bgPreset.imageOverlay }]} pointerEvents="none" />
+            )}
+          </>
         )}
 
         {/* Hint intro — 2s visible luego desvanece */}

@@ -31,6 +31,9 @@ import {
   GRADIENT_PRESETS,
   MIXER_BG_KEY,
   emitBgPresetChange,
+  MIXER_GEO_BG_KEY,
+  subscribeGeoBg,
+  emitGeoBgChange,
 } from "@/config/immersive-presets";
 
 const TIMER_OPTIONS: Array<{ label: string; value: number | null }> = [
@@ -99,6 +102,15 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
   const userCreations = creations.filter((c) => !isPreset(c.id));
   const allGeometrix: GeometrixCreation[] = [...userCreations, ...GEOMETRIX_PRESETS];
 
+  const [selectedGeoId, setSelectedGeoId] = useState<string | null>(null);
+
+  // Cargar selección guardada + escuchar cambios en vivo
+  useEffect(() => {
+    AsyncStorage.getItem(MIXER_GEO_BG_KEY).then((v) => { if (v) setSelectedGeoId(v); }).catch(() => {});
+    const unsub = subscribeGeoBg((id) => setSelectedGeoId(id));
+    return unsub;
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleGeoTap = async (c: GeometrixCreation) => {
     if (isPreset(c.id)) {
       const raw = await AsyncStorage.getItem("@geometrix_creations");
@@ -110,8 +122,10 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
         );
       }
     }
-    onClose();
-    router.navigate({ pathname: "/(tabs)/geometrix", params: { load: c.id } } as never);
+    const newId = selectedGeoId === c.id ? null : c.id;
+    setSelectedGeoId(newId);
+    await AsyncStorage.setItem(MIXER_GEO_BG_KEY, newId ?? "").catch(() => {});
+    emitGeoBgChange(newId);
   };
 
   useEffect(() => {
@@ -391,23 +405,36 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
             snapToInterval={THUMB + THUMB_GAP}
             snapToAlignment="start"
           >
-            {allGeometrix.map((c) => (
-              <Pressable
-                key={c.id}
-                onPress={() => handleGeoTap(c)}
-                style={styles.thumbWrap}
-              >
-                <View style={styles.thumb}>
-                  <CreationCoverPreviewDirect creation={c} size={THUMB} />
-                  {isPreset(c.id) && (
-                    <View style={styles.presetBadge}>
-                      <Text style={styles.presetBadgeText}>Muestra</Text>
-                    </View>
-                  )}
-                </View>
-                <Text style={styles.thumbLabel} numberOfLines={1}>{c.name}</Text>
-              </Pressable>
-            ))}
+            {allGeometrix.map((c) => {
+              const geoActive = selectedGeoId === c.id;
+              return (
+                <Pressable
+                  key={c.id}
+                  onPress={() => handleGeoTap(c)}
+                  style={styles.thumbWrap}
+                >
+                  <View style={styles.thumb}>
+                    <CreationCoverPreviewDirect creation={c} size={THUMB} />
+                    {geoActive && (
+                      <>
+                        <View style={styles.thumbActiveOverlay}>
+                          <Feather name="check-circle" size={24} color="#FFF" />
+                        </View>
+                        <View style={styles.thumbActiveBorder} pointerEvents="none" />
+                      </>
+                    )}
+                    {isPreset(c.id) && (
+                      <View style={styles.presetBadge}>
+                        <Text style={styles.presetBadgeText}>Muestra</Text>
+                      </View>
+                    )}
+                  </View>
+                  <Text style={[styles.thumbLabel, geoActive && styles.thumbLabelActive]} numberOfLines={1}>
+                    {c.name}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </ScrollView>
 
           <Text style={styles.hint}>
@@ -688,6 +715,22 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     textAlign: "center",
     width: THUMB,
+  },
+  thumbLabelActive: {
+    color: "#D4AF37",
+    fontWeight: "700",
+  },
+  thumbActiveOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.30)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  thumbActiveBorder: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 16,
+    borderWidth: 2.5,
+    borderColor: "#D4AF37",
   },
   presetBadge: {
     position: "absolute",
