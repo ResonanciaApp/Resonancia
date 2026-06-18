@@ -262,7 +262,7 @@ export default function ResonadoresScreen() {
   const [activeFilter, setActiveFilter] = useState("Todos");
 
   // Expansores filters — cascada país → región
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<string | null>("Chile");
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
 
   const [query, setQuery] = useState("");
