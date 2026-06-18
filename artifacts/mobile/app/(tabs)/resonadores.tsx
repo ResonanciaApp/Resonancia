@@ -91,14 +91,9 @@ const ResonadorCard = memo(function ResonadorCard({
         </View>
       </View>
 
-      {/* Info centrada */}
+      {/* Nombre */}
       <View style={styles.cardInfo}>
         <Text style={styles.cardName} numberOfLines={2}>{d.name}</Text>
-        <Text style={styles.cardSub} numberOfLines={1}>{subtitle}</Text>
-        <View style={styles.locationRow}>
-          <Feather name={isArtista ? "globe" : "map-pin"} size={9} color="rgba(212,175,55,0.55)" />
-          <Text style={styles.cardLocation} numberOfLines={1}>{location}</Text>
-        </View>
       </View>
     </Pressable>
   );
@@ -345,11 +340,8 @@ const styles = StyleSheet.create({
 
   // Card
   card: {
-    borderRadius: 14,
-    overflow: "hidden",
-    backgroundColor: "rgba(74,12,12,0.18)",
-    paddingVertical: 14,
     alignItems: "center",
+    paddingVertical: 8,
   },
   photoOuter: {
     alignItems: "center",
