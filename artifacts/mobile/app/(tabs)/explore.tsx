@@ -621,7 +621,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginHorizontal: H_PAD,
     gap: 6,
-    backgroundColor: "rgba(255,255,255,0.10)",
+    backgroundColor: "rgba(255,255,255,0.07)",
     borderRadius: 16,
     padding: 12,
   },
