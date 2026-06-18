@@ -728,7 +728,7 @@ export default function MezcladorScreen() {
                       const cat = SOUND_CATEGORIES.find((c) => c.id === catId);
                       if (!cat) return null;
                       const sel  = subTab === catId;
-                      const grad = TAB_GRADIENT[mainTab];
+                      const grad = TAB_HEADER_GRADIENT[mainTab];
                       return (
                         <Pressable key={catId} onPress={() => setSubTab(sel ? null : catId)}>
                           {sel ? (
