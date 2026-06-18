@@ -281,7 +281,9 @@ export default function PlaylistDetailScreen() {
       <CoverPickerModal
         visible={coverModalVisible}
         onClose={() => setCoverModalVisible(false)}
-        onPickImage={async () => {
+        onPickImage={async (closeFn) => {
+          closeFn();
+          await new Promise<void>((r) => setTimeout(r, 350));
           const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
@@ -505,12 +507,12 @@ function CoverPickerModal({
 }: {
   visible: boolean;
   onClose: () => void;
-  onPickImage: () => void;
+  onPickImage: (closeFn: () => void) => void;
   onPickGeometry: (geoId: string) => void;
   onPickCreation: (creationId: string) => void;
 }) {
   const [showGeometries, setShowGeometries] = useState(false);
-  const [geoTab, setGeoTab] = useState<"library" | "creations">("library");
+  const [geoTab, setGeoTab] = useState<"library" | "creations">("creations");
   const { creations } = useGeometrixCreations();
   const insets = useSafeAreaInsets();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
@@ -604,14 +606,14 @@ function CoverPickerModal({
         <Text style={modalStyles.sheetTitle}>Foto de la playlist</Text>
         <Pressable
           style={({ pressed }) => [modalStyles.sheetRow, { opacity: pressed ? 0.7 : 1 }]}
-          onPress={() => { onPickImage(); onClose(); }}
+          onPress={() => { onPickImage(onClose); }}
         >
           <Feather name="image" size={22} color={GOLD} />
           <Text style={modalStyles.sheetRowText}>Foto de la galería</Text>
         </Pressable>
         <Pressable
           style={({ pressed }) => [modalStyles.sheetRow, { opacity: pressed ? 0.7 : 1 }]}
-          onPress={() => setShowGeometries(true)}
+          onPress={() => { setGeoTab("creations"); setShowGeometries(true); }}
         >
           <Feather name="hexagon" size={22} color={GOLD} />
           <Text style={modalStyles.sheetRowText}>Geometría sagrada</Text>
