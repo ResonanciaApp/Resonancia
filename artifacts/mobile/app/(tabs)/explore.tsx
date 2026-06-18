@@ -500,7 +500,7 @@ export default function ExploreScreen() {
             {/* ── Mezclas de la comunidad ── */}
             <View style={styles.communityWrap}>
               <LinearGradient
-                colors={["rgba(130,107,232,0.04)", "rgba(188,164,199,0.04)", "rgba(134,89,153,0.04)"]}
+                colors={["rgba(130,107,232,0.1)", "rgba(188,164,199,0.1)", "rgba(134,89,153,0.1)"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={StyleSheet.absoluteFill}
