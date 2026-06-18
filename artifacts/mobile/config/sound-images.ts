@@ -68,11 +68,11 @@ export const SOUND_IMAGE_MAP: Record<string, ReturnType<typeof require> | undefi
   tren: require("@/assets/images/mixer/tren.jpg"),
 
   // ── Binaurales ──────────────────────────────────────────────
-  binaural_1: require("@/assets/images/mixer/binaural_1.png"),
-  binaural_2: require("@/assets/images/mixer/binaural_2.png"),
-  binaural_3: require("@/assets/images/mixer/binaural_3.png"),
-  binaural_4: require("@/assets/images/mixer/binaural_4.png"),
-  binaural_5: require("@/assets/images/mixer/binaural_5.png"),
+  binaural_1: require("@/assets/images/mixer/binaural_1_opt.jpg"),
+  binaural_2: require("@/assets/images/mixer/binaural_2_opt.jpg"),
+  binaural_3: require("@/assets/images/mixer/binaural_3_opt.jpg"),
+  binaural_4: require("@/assets/images/mixer/binaural_4_opt.jpg"),
+  binaural_5: require("@/assets/images/mixer/binaural_5_opt.jpg"),
 };
 
 export function getSoundImage(id: string): ReturnType<typeof require> | undefined {
