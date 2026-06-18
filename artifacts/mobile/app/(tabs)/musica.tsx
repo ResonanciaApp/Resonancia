@@ -263,19 +263,6 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
       <Animated.View style={[styles.cardImageWrap, { transform: [{ rotate }, { scale }] }]}>
-        {/* Borde asimétrico: fade horizontal transparent → color → transparent */}
-        {decorated && (
-          <Animated.View style={[StyleSheet.absoluteFill, { opacity: anim, borderRadius: 16 }]} pointerEvents="none">
-            <LinearGradient
-              colors={[`rgba(${r},${g},${b},0)`, `rgba(${r},${g},${b},0.9)`, `rgba(${r},${g},${b},0)`]}
-              start={{ x: 0, y: 0.5 }}
-              end={{ x: 1, y: 0.5 }}
-              style={{ flex: 1, padding: 4, borderRadius: 16 }}
-            >
-              <View style={{ flex: 1, borderRadius: 12 }} />
-            </LinearGradient>
-          </Animated.View>
-        )}
         <View style={styles.cardClipInner}>
           {image ? (
             <Image source={typeof image === "string" ? { uri: image } : image} style={StyleSheet.absoluteFill} contentFit="cover" />
@@ -290,6 +277,19 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
             />
           )}
         </View>
+        {/* Borde asimétrico encima del contenido: fade horizontal transparent → color → transparent */}
+        {decorated && (
+          <Animated.View style={[StyleSheet.absoluteFill, { opacity: anim, borderRadius: 16 }]} pointerEvents="none">
+            <LinearGradient
+              colors={[`rgba(${r},${g},${b},0)`, `rgba(${r},${g},${b},0.9)`, `rgba(${r},${g},${b},0)`]}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={{ flex: 1, padding: 4, borderRadius: 16 }}
+            >
+              <View style={{ flex: 1, borderRadius: 12 }} />
+            </LinearGradient>
+          </Animated.View>
+        )}
       </Animated.View>
       <View style={styles.cardFooter}>
         <Text style={styles.soundName} numberOfLines={1}>{sound.name}</Text>
