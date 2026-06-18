@@ -105,6 +105,12 @@ export default function ResonadoresScreen() {
   const [activeTab, setActiveTab] = useState<"artistas" | "expansores">("artistas");
   const [activeFilter, setActiveFilter] = useState("Todos");
   const [query, setQuery] = useState("");
+  const [searchVisible, setSearchVisible] = useState(false);
+
+  function toggleSearch() {
+    if (searchVisible) { setQuery(""); }
+    setSearchVisible((v) => !v);
+  }
 
   const filters = activeTab === "artistas" ? ARTISTA_FILTERS : EXPANSOR_FILTERS;
 
@@ -156,28 +162,49 @@ export default function ResonadoresScreen() {
 
       {/* ── Header ── */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        <Text style={styles.title}>Resonadores</Text>
-        <Text style={styles.subtitle}>Creadores y terapeutas de la comunidad</Text>
-
-        {/* Buscador */}
-        <View style={styles.searchWrap}>
-          <Feather name="search" size={14} color="rgba(212,175,55,0.55)" style={{ marginRight: 8 }} />
-          <TextInput
-            value={query}
-            onChangeText={setQuery}
-            placeholder={activeTab === "artistas" ? "Buscar artista..." : "Buscar por nombre o ciudad..."}
-            placeholderTextColor="rgba(244,218,213,0.30)"
-            style={styles.searchInput}
-            returnKeyType="search"
-          />
-          {query.length > 0 && (
-            <Pressable onPress={() => setQuery("")} hitSlop={8}>
-              <Feather name="x" size={14} color="rgba(244,218,213,0.45)" />
-            </Pressable>
-          )}
+        {/* Título + icono búsqueda */}
+        <View style={styles.titleRow}>
+          <View>
+            <Text style={styles.title}>
+              {activeTab === "artistas" ? "Artistas" : "Expansores"}
+            </Text>
+            <Text style={styles.subtitle}>
+              {activeTab === "artistas"
+                ? "La esencia de resonancia"
+                : "Los que expanden la vibración"}
+            </Text>
+          </View>
+          <Pressable onPress={toggleSearch} hitSlop={10} style={styles.searchIconBtn}>
+            <Feather
+              name={searchVisible ? "x" : "search"}
+              size={20}
+              color={searchVisible ? "#D4AF37" : "rgba(212,175,55,0.65)"}
+            />
+          </Pressable>
         </View>
 
-        {/* Tab switcher */}
+        {/* Buscador inline (visible al tocar el icono) */}
+        {searchVisible && (
+          <View style={styles.searchWrap}>
+            <Feather name="search" size={14} color="rgba(212,175,55,0.55)" style={{ marginRight: 8 }} />
+            <TextInput
+              value={query}
+              onChangeText={setQuery}
+              placeholder={activeTab === "artistas" ? "Buscar artista..." : "Buscar por nombre o ciudad..."}
+              placeholderTextColor="rgba(244,218,213,0.30)"
+              style={styles.searchInput}
+              returnKeyType="search"
+              autoFocus
+            />
+            {query.length > 0 && (
+              <Pressable onPress={() => setQuery("")} hitSlop={8}>
+                <Feather name="x" size={14} color="rgba(244,218,213,0.45)" />
+              </Pressable>
+            )}
+          </View>
+        )}
+
+        {/* Tab switcher — ancho completo */}
         <View style={styles.tabPill}>
           {(["artistas", "expansores"] as const).map((t) => (
             <Pressable
@@ -237,6 +264,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     paddingBottom: 12,
   },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 14,
+  },
+  searchIconBtn: {
+    width: 36,
+    height: 36,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   title: {
     fontSize: 26,
     fontWeight: "700",
@@ -247,7 +286,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "rgba(244,218,213,0.45)",
     marginTop: 2,
-    marginBottom: 14,
   },
 
   // Search
@@ -269,7 +307,7 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
 
-  // Tab pill
+  // Tab pill — ancho completo
   tabPill: {
     flexDirection: "row",
     backgroundColor: "rgba(74,12,12,0.35)",
@@ -277,12 +315,12 @@ const styles = StyleSheet.create({
     padding: 3,
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.12)",
-    alignSelf: "flex-start",
   },
   tabBtn: {
-    paddingHorizontal: 20,
-    paddingVertical: 7,
+    flex: 1,
+    paddingVertical: 8,
     borderRadius: 999,
+    alignItems: "center",
   },
   tabBtnActive: {
     backgroundColor: "rgba(212,175,55,0.15)",
