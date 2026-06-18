@@ -355,8 +355,6 @@ const styles = StyleSheet.create({
   expansorSection: {
     backgroundColor: "rgba(212,175,55,0.06)",
     borderRadius: 18,
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.18)",
     padding: 16,
     gap: 14,
   },
