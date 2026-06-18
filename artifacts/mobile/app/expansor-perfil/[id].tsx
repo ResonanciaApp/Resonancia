@@ -313,7 +313,6 @@ export default function ExpansorPerfilScreen() {
         {/* ── Descubre lo que hago — galería ── */}
         {hasGallery && (
           <View style={[styles.gallerySection, { marginHorizontal: H_PAD }]}>
-            <Text style={[styles.galleryTitle, { color: colors.foreground }]}>Descubre lo que hago</Text>
             <View style={styles.galleryGrid}>
               {(expansor.gallery ?? []).slice(0, 9).map((uri, i) => (
                 <Pressable
