@@ -116,7 +116,7 @@ const WARM = {
 
 /** Miniatura cuadrada de la pista: imagen del sonido (fallback degradé negro). */
 // ─── Drag-and-drop reorder ────────────────────────────────────────────────────
-const ITEM_H = 67; // height of each slot (row content ~54px + 5px gap between items)
+const ITEM_H = 73; // height of each slot (row content ~54px + 11px gap between items)
 
 type TrackPalette = {
   muted: string; fg: string; sliderThumb: string;
