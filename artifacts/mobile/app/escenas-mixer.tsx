@@ -110,7 +110,8 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
         );
       }
     }
-    router.push({ pathname: "/(tabs)/geometrix", params: { load: c.id } } as never);
+    onClose();
+    router.navigate({ pathname: "/(tabs)/geometrix", params: { load: c.id } } as never);
   };
 
   useEffect(() => {
