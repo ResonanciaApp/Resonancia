@@ -342,8 +342,8 @@ const styles = StyleSheet.create({
   },
   pill: {
     position: "absolute",
-    top: -7,
-    bottom: -6,
+    top: -9,
+    bottom: -8,
     left: -12,
     right: -12,
     borderRadius: 13,
