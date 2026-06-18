@@ -259,17 +259,23 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
   const r = parseInt(activeColor.slice(1, 3), 16);
   const g = parseInt(activeColor.slice(3, 5), 16);
   const b = parseInt(activeColor.slice(5, 7), 16);
-  const borderCol = anim.interpolate({ inputRange: [0, 1], outputRange: [`rgba(${r},${g},${b},0)`, `rgba(${r},${g},${b},1)`] });
 
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
-      <Animated.View
-        style={[
-          styles.cardImageWrap,
-          decorated && styles.cardImageWrapActive,
-          { transform: [{ rotate }, { scale }], borderColor: borderCol },
-        ]}
-      >
+      <Animated.View style={[styles.cardImageWrap, { transform: [{ rotate }, { scale }] }]}>
+        {/* Borde asimétrico: fade horizontal transparent → color → transparent */}
+        {decorated && (
+          <Animated.View style={[StyleSheet.absoluteFill, { opacity: anim, borderRadius: 16 }]} pointerEvents="none">
+            <LinearGradient
+              colors={[`rgba(${r},${g},${b},0)`, `rgba(${r},${g},${b},0.9)`, `rgba(${r},${g},${b},0)`]}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={{ flex: 1, padding: 4, borderRadius: 16 }}
+            >
+              <View style={{ flex: 1, borderRadius: 12 }} />
+            </LinearGradient>
+          </Animated.View>
+        )}
         <View style={styles.cardClipInner}>
           {image ? (
             <Image source={typeof image === "string" ? { uri: image } : image} style={StyleSheet.absoluteFill} contentFit="cover" />
