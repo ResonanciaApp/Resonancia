@@ -18,7 +18,7 @@ export const GRADIENT_PRESETS: GradientPreset[] = [
   {
     id: "blanco",
     name: "Claro",
-    colors: ["#F7F6E5", "#EBE3F5", "#F7F6E5"],
+    colors: ["#FBF6E9", "#F3E7CC", "#EFDFC0"],
     emoji: "☁️",
     isLight: true,
   },
