@@ -309,7 +309,7 @@ function TabLayoutInner() {
             hitSlop={12}
             style={({ pressed }) => [styles.playlistPlayBtn, { opacity: pressed ? 0.7 : 1 }]}
           >
-            <Feather name={isPlaying ? "pause" : "play"} size={26} color="#D4AF37" />
+            <Feather name={isPlaying ? "pause" : "play"} size={26} color="#FFFFFF" />
           </Pressable>
         </View>
       )}
