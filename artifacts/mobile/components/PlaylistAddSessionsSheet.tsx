@@ -386,14 +386,15 @@ export function PlaylistAddSessionsSheet({
     snapshot.current.recent = recent.slice(0, 30);
   }, [visible]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [, forceUpdate] = useState(0);
+  const [tick, forceUpdate] = useState(0);
   useEffect(() => { if (visible) forceUpdate((n) => n + 1); }, [visible]);
 
   const data = useMemo(() => {
     if (activeTab === "Sesiones sugeridas") return snapshot.current.suggested;
     if (activeTab === "Música sugerida")    return snapshot.current.music;
     return snapshot.current.recent;
-  }, [activeTab, visible]); // eslint-disable-line react-hooks/exhaustive-deps
+  // tick se incrementa tras poblar el snapshot → memo re-lee datos frescos
+  }, [activeTab, tick]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const renderItem = useCallback(
     ({ item }: { item: Session }) => (
