@@ -797,7 +797,7 @@ function CoverPickerModal({
                 onPress={() => { onPickCreation(item.id); setShowGeometries(false); onClose(); }}
               >
                 <View style={modalStyles.creationThumb}>
-                  <CreationCoverPreview creationId={item.id} size={100} />
+                  <CreationCoverPreview creationId={item.id} size={170} />
                 </View>
                 <Text style={modalStyles.creationName} numberOfLines={1}>{item.name}</Text>
               </Pressable>
@@ -894,9 +894,9 @@ const modalStyles = StyleSheet.create({
     borderRadius: 12,
   },
   creationThumb: {
-    width: 100,
-    height: 100,
-    borderRadius: 8,
+    width: 170,
+    height: 170,
+    borderRadius: 12,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
