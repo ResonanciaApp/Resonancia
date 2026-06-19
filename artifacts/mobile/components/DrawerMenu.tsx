@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { LinearGradient } from "expo-linear-gradient";
 import { useAuth } from "@/context/AuthContext";
 import { DrawerStats } from "@/components/DrawerStats";
 import { useDrawer, DRAWER_W, DRAWER_PUSH } from "@/context/DrawerContext";
@@ -90,7 +91,12 @@ export function DrawerMenu() {
       )}
 
       <Animated.View style={[styles.drawer, visible && styles.drawerShadow, { transform: [{ translateX }] }]}>
-        <View style={[styles.drawerInner, { paddingBottom: bottomPad + 24, backgroundColor: "#1B060F" }]}>
+        <LinearGradient
+          style={[styles.drawerInner, { paddingBottom: bottomPad + 24 }]}
+          colors={["#2E0510", "#160108"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+        >
 
           {/* ── Header de perfil ── */}
           <View style={[styles.profileHeader, { paddingTop: topPad + 16 }]}>
@@ -193,7 +199,7 @@ export function DrawerMenu() {
             {/* ── Estadísticas ── */}
             <DrawerStats />
           </ScrollView>
-        </View>
+        </LinearGradient>
       </Animated.View>
     </View>
   );
