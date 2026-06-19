@@ -9,11 +9,19 @@ type StatCardProps = {
   icon: React.ComponentProps<typeof Feather>["name"];
   value: string | number;
   label: string;
+  innerCorner?: "bottomRight" | "bottomLeft" | "topRight" | "topLeft";
 };
 
-function StatCard({ icon, value, label }: StatCardProps) {
+const innerCornerStyle: Record<NonNullable<StatCardProps["innerCorner"]>, object> = {
+  bottomRight: { borderBottomRightRadius: 0 },
+  bottomLeft:  { borderBottomLeftRadius:  0 },
+  topRight:    { borderTopRightRadius:    0 },
+  topLeft:     { borderTopLeftRadius:     0 },
+};
+
+function StatCard({ icon, value, label, innerCorner }: StatCardProps) {
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, innerCorner && innerCornerStyle[innerCorner]]}>
       <Feather name={icon} size={20} color="#D4AF37" />
       <View style={styles.cardText}>
         <Text style={styles.cardValue}>{value}</Text>
@@ -36,10 +44,10 @@ export function DrawerStats() {
   return (
     <View style={styles.container}>
       <View style={styles.grid}>
-        <StatCard icon="activity"   value={sessions}    label="Sesiones"       />
-        <StatCard icon="clock"      value={totalTime}   label="Tiempo total"   />
-        <StatCard icon="calendar"   value={activeDays}  label="Días activos"   />
-        <StatCard icon="zap"        value={streak > 0 ? `${streak} 🔥` : "—"} label="Racha actual" />
+        <StatCard icon="activity" value={sessions}   label="Sesiones"     innerCorner="bottomRight" />
+        <StatCard icon="clock"    value={totalTime}  label="Tiempo total"  innerCorner="bottomLeft"  />
+        <StatCard icon="calendar" value={activeDays} label="Días activos"  innerCorner="topRight"    />
+        <StatCard icon="zap"      value={streak > 0 ? `${streak} 🔥` : "—"} label="Racha actual" innerCorner="topLeft" />
       </View>
 
       <Pressable onPress={goToProgreso} style={({ pressed }) => [styles.link, pressed && styles.linkPressed]}>
