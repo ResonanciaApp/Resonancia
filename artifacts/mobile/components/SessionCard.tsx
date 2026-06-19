@@ -175,7 +175,8 @@ const styles = StyleSheet.create({
   },
   hContent: {
     flex: 1,
-    paddingHorizontal: 10,
+    paddingLeft: 14,
+    paddingRight: 6,
     paddingVertical: 8,
     justifyContent: "center",
   },
