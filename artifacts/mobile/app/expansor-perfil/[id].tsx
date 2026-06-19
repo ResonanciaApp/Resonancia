@@ -220,19 +220,13 @@ export default function ExpansorPerfilScreen() {
             {/* Texto */}
             <View style={{ flex: 1, paddingLeft: 12, paddingVertical: 10, justifyContent: "center" }}>
               <MaskedView
-                maskElement={
-                  <Text style={styles.certBannerTitle}>
-                    {expansor.certified ? "EXPANSOR CERTIFICADO" : "EXPANSOR RESONANCIA"}
-                  </Text>
-                }
+                maskElement={<Text style={styles.certBannerTitle}>EXPANSOR</Text>}
               >
                 <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-                  <Text style={[styles.certBannerTitle, { opacity: 0 }]}>
-                    {expansor.certified ? "EXPANSOR CERTIFICADO" : "EXPANSOR RESONANCIA"}
-                  </Text>
+                  <Text style={[styles.certBannerTitle, { opacity: 0 }]}>EXPANSOR</Text>
                 </LinearGradient>
               </MaskedView>
-              <Text style={styles.certBannerSub}>Verificado · Resonancia</Text>
+              <Text style={styles.certBannerSub}>Verificado por Resonancia</Text>
             </View>
 
             {/* Ícono circular derecha */}

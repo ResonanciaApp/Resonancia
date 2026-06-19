@@ -1040,12 +1040,12 @@ export default function ProfileScreen() {
                   style={styles.dvCertBannerBar}
                 />
                 <View style={{ flex: 1, paddingLeft: 12, paddingVertical: 10, justifyContent: "center" }}>
-                  <MaskedView maskElement={<Text style={styles.dvCertBannerTitle}>EXPANSOR CERTIFICADO</Text>}>
+                  <MaskedView maskElement={<Text style={styles.dvCertBannerTitle}>EXPANSOR</Text>}>
                     <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-                      <Text style={[styles.dvCertBannerTitle, { opacity: 0 }]}>EXPANSOR CERTIFICADO</Text>
+                      <Text style={[styles.dvCertBannerTitle, { opacity: 0 }]}>EXPANSOR</Text>
                     </LinearGradient>
                   </MaskedView>
-                  <Text style={styles.dvCertBannerSub}>Verificado · Resonancia</Text>
+                  <Text style={styles.dvCertBannerSub}>Verificado por Resonancia</Text>
                 </View>
                 <View style={{ paddingRight: 14, justifyContent: "center" }}>
                   <View style={styles.dvCertBannerIconBorder}>
