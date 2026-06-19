@@ -603,8 +603,8 @@ export default function ConfiguracionesScreen() {
               </Pressable>
               <Pressable
                 onPress={() => {
-                  forceAnimate();
                   router.replace("/(tabs)" as never);
+                  setTimeout(() => forceAnimate(), 600);
                 }}
                 style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}
               >
