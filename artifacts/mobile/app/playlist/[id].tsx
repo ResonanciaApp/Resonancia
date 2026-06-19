@@ -473,7 +473,7 @@ function RecommendedRow({ session, onAdd }: { session: Session; onAdd: () => voi
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  root: { flex: 1 },
+  root: { flex: 1, backgroundColor: "#160108" },
 
   header: {
     flexDirection: "row",
