@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { GoldGradient } from "@/components/GoldGradient";
 import { useAuth as useClerkAuth } from "@clerk/expo";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -9,6 +8,7 @@ import {
   useMarkAllNotificationsRead,
   type Notification,
 } from "@workspace/api-client-react";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useMemo } from "react";
 import {
@@ -23,8 +23,11 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { GoldGradient } from "@/components/GoldGradient";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
+
+const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 
 const AVATAR_PALETTE = ["#D4709A", "#8AAAD4", "#f4c993", "#A8C4A8", "#C8B4E0", "#EDD9B8"];
 
@@ -161,9 +164,15 @@ export default function NotificacionesScreen() {
   const list = useMemo(() => groupNotifications(rawList), [rawList]);
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <LinearGradient
+      style={styles.root}
+      colors={BG_GRADIENT}
+      locations={[0, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
+      <SacredBackground variant="solid" />
 
       <ScrollView
         contentContainerStyle={{
@@ -242,7 +251,7 @@ export default function NotificacionesScreen() {
             );
           })}
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 
