@@ -453,7 +453,7 @@ export default function PlaylistDetailScreen() {
         onRequestClose={() => setColorPickerVisible(false)}
       >
         <View style={cpStyles.backdrop}>
-          <View style={cpStyles.sheet}>
+          <View style={[cpStyles.sheet, { backgroundColor: buildPanelColor(selectedAccent, 0.85, 0.55) }]}>
             <Text style={cpStyles.title}>Tono del encabezado</Text>
             <Text style={cpStyles.sub}>Elige el tono que combina con tu portada</Text>
 
@@ -942,7 +942,6 @@ const cpStyles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   sheet: {
-    backgroundColor: "#1E0810",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 24,
