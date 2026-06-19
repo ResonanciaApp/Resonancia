@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
+import { LinearGradient } from "expo-linear-gradient";
 import { useColors } from "@/hooks/useColors";
 
 const SEEN_KEY = "cdc_intencion_onboarding_seen";
@@ -38,9 +38,13 @@ export default function IntencionOnboardingScreen() {
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <LinearGradient
+      style={styles.root}
+      colors={["#2E0510", "#160108"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
 
       <ScrollView
         style={styles.scroll}
@@ -94,7 +98,7 @@ export default function IntencionOnboardingScreen() {
           <Feather name="arrow-right" size={18} color="#070E09" />
         </Pressable>
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 
