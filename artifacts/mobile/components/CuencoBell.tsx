@@ -15,7 +15,7 @@ export function CuencoBell() {
     const t = setTimeout(() => forceAnimate(), 800);
     return () => clearTimeout(t);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  const hasBadge = unreadCount > 0;
+  const hasBadge = unreadCount > 0 || shouldAnimate;
 
   // Animated values — todos usables con native driver
   const glowOpacity = useRef(new Animated.Value(0)).current;
