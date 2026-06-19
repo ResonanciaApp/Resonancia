@@ -1522,8 +1522,8 @@ const styles = StyleSheet.create({
 
   // ── Resonadores ─────────────────────────────────────────────────────────────
   resonadorAvatar: {
-    width: 62, height: 62,
-    borderRadius: 31,
+    width: 65, height: 65,
+    borderRadius: 33,
     backgroundColor: "rgba(212,175,55,0.12)",
     overflow: "hidden",
   },
