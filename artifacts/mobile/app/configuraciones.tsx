@@ -24,6 +24,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { VolumeSlider } from "@/components/VolumeSlider";
+import { useAuth as useClerkAuth } from "@clerk/expo";
 import { useAuth } from "@/context/AuthContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
@@ -109,6 +110,7 @@ export default function ConfiguracionesScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
+  const { getToken } = useClerkAuth();
   const { logout, isCreator, isAdmin } = useAuth();
   const { isPremium: isPremiumDev, setPremium: setPremiumDev } = usePremium();
   const { expansorId, setExpansorId } = useUserProfile();
@@ -610,6 +612,31 @@ export default function ConfiguracionesScreen() {
               >
                 <RowIcon icon="bell" colors={colors} />
                 <Text style={[styles.rowLabel, { color: colors.foreground }]}>Probar animación cuenco</Text>
+                <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+              </Pressable>
+              <Pressable
+                onPress={async () => {
+                  try {
+                    const token = await getToken();
+                    const res = await fetch("/api/notifications/seed-dev", {
+                      method: "POST",
+                      headers: token ? { Authorization: `Bearer ${token}` } : {},
+                    });
+                    if (!res.ok) throw new Error(`${res.status}`);
+                    router.push("/notificaciones" as never);
+                  } catch (e) {
+                    Alert.alert("Error", String(e));
+                  }
+                }}
+                style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}
+              >
+                <RowIcon icon="layers" colors={colors} />
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.rowLabel, { color: colors.foreground }]}>Sembrar notificaciones de prueba</Text>
+                  <Text style={{ fontSize: 11, color: colors.mutedForeground, marginTop: 1 }}>
+                    Crea una de cada tipo y abre la pantalla
+                  </Text>
+                </View>
                 <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
               </Pressable>
               <Pressable

@@ -1,6 +1,13 @@
 import { Router, type IRouter } from "express";
 import { and, desc, eq, isNull, sql } from "drizzle-orm";
-import { db, notificationsTable, usersTable, type Notification, type User } from "@workspace/db";
+import {
+  db,
+  notificationsTable,
+  usersTable,
+  NOTIFICATION_TYPES,
+  type Notification,
+  type User,
+} from "@workspace/db";
 import { requireAuth } from "../middlewares/requireAuth";
 
 const router: IRouter = Router();
@@ -69,6 +76,41 @@ router.post("/notifications/read-all", requireAuth, async (req, res) => {
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "Error" });
+  }
+});
+
+// ── DEV ONLY: seed one notification of each type for the current user ─────────
+router.post("/notifications/seed-dev", requireAuth, async (req, res) => {
+  if (process.env.NODE_ENV === "production") {
+    return res.status(404).json({ error: "Not found" });
+  }
+  const me = req.currentUser!;
+  try {
+    // Remove any previous seed (self-as-actor) so we can re-seed cleanly.
+    await db
+      .delete(notificationsTable)
+      .where(
+        and(
+          eq(notificationsTable.userId, me.id),
+          eq(notificationsTable.actorUserId, me.id),
+        ),
+      );
+
+    // Insert one notification per type; entityId=1 for types that use it.
+    const ENTITY_TYPES = new Set(["mix_like", "mix_comment", "group_message"]);
+    await db.insert(notificationsTable).values(
+      NOTIFICATION_TYPES.map((type) => ({
+        userId: me.id,
+        actorUserId: me.id,
+        type,
+        entityId: ENTITY_TYPES.has(type) ? 1 : null,
+      })),
+    );
+
+    res.json({ ok: true, count: NOTIFICATION_TYPES.length });
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Error al sembrar notificaciones" });
   }
 });
 
