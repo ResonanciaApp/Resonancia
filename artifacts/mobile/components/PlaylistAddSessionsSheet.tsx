@@ -70,6 +70,7 @@ type Tab = (typeof TABS)[number];
 const SUGGESTED_CATEGORIES = new Set([
   "sonidos-ancestrales",
   "meditaciones-guiadas",
+  "reflexiones",
 ]);
 const MUSIC_CATEGORIES = new Set([
   "musica-sonidos",
