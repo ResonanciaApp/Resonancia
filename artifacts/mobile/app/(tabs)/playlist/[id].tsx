@@ -217,6 +217,7 @@ export default function PlaylistDetailScreen() {
 
   return (
     <View style={styles.root}>
+      <LinearGradient colors={BG_GRADIENT} style={StyleSheet.absoluteFill} />
       <StatusBar barStyle="light-content" />
 
       <ScrollView
@@ -621,7 +622,7 @@ function RecommendedRow({ session, onAdd }: { session: Session; onAdd: () => voi
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#161212" },
+  root: { flex: 1, backgroundColor: "#160108" },
 
   header: {
     flexDirection: "row",
