@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   cardLabel: {
-    color: "rgba(242,231,228,0.45)",
+    color: "rgba(255,255,255,0.9)",
     fontSize: 11,
     fontWeight: "400",
     letterSpacing: 0.3,
