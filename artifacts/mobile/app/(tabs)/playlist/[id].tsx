@@ -97,6 +97,32 @@ export default function PlaylistDetailScreen() {
   const playlistSessionIds = playlists.find((p) => p.id === id)?.sessionIds ?? [];
   const miniPlayerVisible = !!currentSession && playlistSessionIds.includes(currentSession.id);
   const MINI_H = 68;
+
+  // ── Anti-flicker para el botón play/pause ────────────────────────────────
+  // pauseResume() hace un update optimista pero el status listener del audio lo
+  // sobrescribe durante ~200ms antes de que el audio arranque. Guardamos el
+  // estado esperado y lo usamos para el ícono hasta que el contexto se asiente.
+  const [pendingPlayState, setPendingPlayState] = useState<boolean | null>(null);
+  const displayIsPlaying = pendingPlayState !== null ? pendingPlayState : isPlaying;
+
+  useEffect(() => {
+    if (pendingPlayState !== null && isPlaying === pendingPlayState) {
+      setPendingPlayState(null);
+    }
+  }, [isPlaying, pendingPlayState]);
+
+  const handleTogglePlay = () => {
+    if (miniPlayerVisible) {
+      // Ya hay una sesión de esta playlist sonando → toggle
+      const next = !displayIsPlaying;
+      setPendingPlayState(next);
+      pauseResume();
+    } else {
+      // No hay sesión activa → Play All
+      handlePlayAll();
+      setPendingPlayState(true);
+    }
+  };
   // tab bar height (misma fórmula que (tabs)/_layout.tsx)
   const tabBarH = 31 + Math.round(bottomPad / 2) + bottomPad;
 
@@ -291,14 +317,18 @@ export default function PlaylistDetailScreen() {
           <Pressable style={({ pressed }) => [styles.toolBtn, { opacity: pressed ? 0.6 : 1 }]} hitSlop={10} onPress={handleShuffle}>
             <Feather name="shuffle" size={22} color={MUTED} />
           </Pressable>
-          {/* Play */}
+          {/* Play / Pause */}
           {sessions.length > 0 && (
             <Pressable
               style={({ pressed }) => [styles.playAllFab, { opacity: pressed ? 0.8 : 1 }]}
-              onPress={handlePlayAll}
+              onPress={handleTogglePlay}
             >
               <GoldGradientFill />
-              <Feather name="play" size={20} color="#1B060F" />
+              <Feather
+                name={miniPlayerVisible && displayIsPlaying ? "pause" : "play"}
+                size={20}
+                color="#1B060F"
+              />
             </Pressable>
           )}
         </View>
@@ -512,12 +542,12 @@ export default function PlaylistDetailScreen() {
             </Text>
           </View>
           <Pressable
-            onPress={pauseResume}
+            onPress={handleTogglePlay}
             hitSlop={12}
             style={({ pressed }) => [mpSt.playBtn, { opacity: pressed ? 0.7 : 1 }]}
           >
             <Feather
-              name={isPlaying ? "pause" : "play"}
+              name={displayIsPlaying ? "pause" : "play"}
               size={26}
               color={GOLD}
             />
