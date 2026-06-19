@@ -45,7 +45,7 @@ import Svg, { Circle } from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
-import { AUDIO_MAP } from "@/config/audio-map";
+import { AMBIENT_MAP, AUDIO_MAP } from "@/config/audio-map";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { SESSIONS, type Session } from "@/data/sessions";
@@ -318,8 +318,8 @@ export function PlaylistAddSessionsSheet({
     setPreviewId(null);
     if (old) { await cleanupSound(old); }
 
-    // Fuente: bundleado primero, luego audioUri remoto
-    const bundled = AUDIO_MAP[session.id];
+    // Fuente: AUDIO_MAP → AMBIENT_MAP → audioUri remoto
+    const bundled = AUDIO_MAP[session.id] ?? AMBIENT_MAP[session.id];
     const src: number | { uri: string } | undefined =
       bundled ?? (session.audioUri ? { uri: session.audioUri } : undefined);
     if (!src) return;
