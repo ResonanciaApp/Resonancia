@@ -456,7 +456,7 @@ export function PlaylistAddSessionsSheet({
 
         {/* Lista — animada con slide */}
         <Animated.View
-          style={[{ flex: 1, overflow: "hidden" }, slideStyle]}
+          style={[{ flex: 1 }, slideStyle]}
           onLayout={(e) => { contentWidth.current = e.nativeEvent.layout.width; }}
         >
           {data.length === 0 ? (
