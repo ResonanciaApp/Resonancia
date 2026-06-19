@@ -4,21 +4,20 @@ import { router } from "expo-router";
 import { useNotifications } from "@/context/NotificationsContext";
 
 const CUENCO_ICON = require("@/assets/images/cuenco-icon.png");
-
 const MUTED_OPACITY = 0.38;
 const GOLD = "#D4AF37";
 
 export function CuencoBell() {
-  const { unreadCount } = useNotifications();
+  const { unreadCount, shouldAnimate, clearAnimation } = useNotifications();
   const hasBadge = unreadCount > 0;
 
-  const glowOpacity  = useRef(new Animated.Value(0)).current;
-  const goldOpacity  = useRef(new Animated.Value(0)).current;
-  const iconOpacity  = useRef(new Animated.Value(hasBadge ? 1 : MUTED_OPACITY)).current;
-  const scaleAnim    = useRef(new Animated.Value(1)).current;
+  // Animated values — todos usables con native driver
+  const glowOpacity = useRef(new Animated.Value(0)).current;
+  const goldOpacity = useRef(new Animated.Value(0)).current;
+  const scaleAnim   = useRef(new Animated.Value(1)).current;
+  const iconOpacity = useRef(new Animated.Value(hasBadge ? 1 : MUTED_OPACITY)).current;
 
-  const timersRef  = useRef<ReturnType<typeof setTimeout>[]>([]);
-  const firedRef   = useRef(false);
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const clearTimers = useCallback(() => {
     timersRef.current.forEach(clearTimeout);
@@ -28,13 +27,15 @@ export function CuencoBell() {
   const runGlow = useCallback(() => {
     clearTimers();
 
+    // Reset
     glowOpacity.setValue(0);
     goldOpacity.setValue(0);
     scaleAnim.setValue(1);
     iconOpacity.setValue(1);
 
-    // ── Encendido: aparece oro + glow + leve pulso de escala ──
     const FADE_IN = 480;
+
+    // ── Encendido: aparece glow dorado + pulso de escala ──
     Animated.parallel([
       Animated.timing(glowOpacity, {
         toValue: 1,
@@ -50,8 +51,8 @@ export function CuencoBell() {
       }),
       Animated.sequence([
         Animated.timing(scaleAnim, {
-          toValue: 1.18,
-          duration: 240,
+          toValue: 1.2,
+          duration: 220,
           easing: Easing.out(Easing.quad),
           useNativeDriver: true,
         }),
@@ -64,41 +65,40 @@ export function CuencoBell() {
       ]),
     ]).start();
 
-    // ── Apagado después de hold ──
+    // ── Apagado después del hold ──
     const t = setTimeout(() => {
-      const FADE_OUT = 900;
       Animated.parallel([
         Animated.timing(glowOpacity, {
           toValue: 0,
-          duration: FADE_OUT,
+          duration: 900,
           easing: Easing.in(Easing.quad),
           useNativeDriver: true,
         }),
         Animated.timing(goldOpacity, {
           toValue: 0,
-          duration: FADE_OUT,
+          duration: 900,
           easing: Easing.in(Easing.quad),
           useNativeDriver: true,
         }),
-      ]).start();
+      ]).start(() => clearAnimation());
     }, FADE_IN + 1800);
-    timersRef.current.push(t);
-  }, [clearTimers, glowOpacity, goldOpacity, scaleAnim, iconOpacity]);
 
+    timersRef.current.push(t);
+  }, [clearTimers, clearAnimation, glowOpacity, goldOpacity, scaleAnim, iconOpacity]);
+
+  // Reacciona a shouldAnimate (notificación real o botón forzado)
   useEffect(() => {
-    if (hasBadge && !firedRef.current) {
-      firedRef.current = true;
-      const t = setTimeout(runGlow, 320);
-      timersRef.current.push(t);
-    } else if (!hasBadge) {
-      firedRef.current = false;
-      clearTimers();
-      iconOpacity.setValue(MUTED_OPACITY);
-      glowOpacity.setValue(0);
-      goldOpacity.setValue(0);
-      scaleAnim.setValue(1);
+    if (shouldAnimate) {
+      runGlow();
     }
-  }, [hasBadge, runGlow, clearTimers, iconOpacity, glowOpacity, goldOpacity, scaleAnim]);
+  }, [shouldAnimate, runGlow]);
+
+  // Actualiza opacidad base cuando cambia hasBadge
+  useEffect(() => {
+    if (!shouldAnimate) {
+      iconOpacity.setValue(hasBadge ? 1 : MUTED_OPACITY);
+    }
+  }, [hasBadge, shouldAnimate, iconOpacity]);
 
   return (
     <Pressable
@@ -106,28 +106,30 @@ export function CuencoBell() {
       hitSlop={10}
       style={styles.btn}
     >
-      {/* ── Glow dorado detrás del ícono ── */}
+      {/* Glow dorado detrás */}
       <Animated.View
         pointerEvents="none"
         style={[styles.glow, { opacity: glowOpacity }]}
       />
 
-      {/* ── Ícono base (blanco, atenuado sin badge) ── */}
-      <Animated.Image
-        source={CUENCO_ICON}
-        style={[styles.icon, { opacity: iconOpacity, transform: [{ scale: scaleAnim }] }]}
-        resizeMode="contain"
-      />
+      {/* Ícono base — blanco, atenuado sin badge */}
+      <Animated.View style={{ opacity: iconOpacity, transform: [{ scale: scaleAnim }] }}>
+        <Image source={CUENCO_ICON} style={styles.icon} resizeMode="contain" />
+      </Animated.View>
 
-      {/* ── Capa dorada encima: se funde sobre el blanco ── */}
-      <Animated.Image
-        source={CUENCO_ICON}
-        // @ts-ignore tintColor no está en los typings de Animated.Image pero funciona
-        style={[styles.icon, styles.goldOverlay, { opacity: goldOpacity, tintColor: GOLD }]}
-        resizeMode="contain"
-      />
+      {/* Capa dorada: View animado con Image+tintColor estático adentro */}
+      <Animated.View
+        pointerEvents="none"
+        style={[styles.iconAbsolute, { opacity: goldOpacity, transform: [{ scale: scaleAnim }] }]}
+      >
+        <Image
+          source={CUENCO_ICON}
+          style={[styles.icon, { tintColor: GOLD }]}
+          resizeMode="contain"
+        />
+      </Animated.View>
 
-      {/* ── Badge de conteo ── */}
+      {/* Badge de conteo */}
       {hasBadge && (
         <View style={styles.badge}>
           <Text style={styles.badgeText}>
@@ -148,21 +150,21 @@ const styles = StyleSheet.create({
   },
   glow: {
     position: "absolute",
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: "transparent",
     shadowColor: GOLD,
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.9,
-    shadowRadius: 14,
+    shadowOpacity: 1,
+    shadowRadius: 16,
     elevation: 0,
   },
   icon: {
     width: 26,
     height: 26,
   },
-  goldOverlay: {
+  iconAbsolute: {
     position: "absolute",
   },
   badge: {
