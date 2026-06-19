@@ -190,7 +190,7 @@ export default function PlaylistDetailScreen() {
         <View style={styles.topPanel}>
           <LinearGradient
             colors={[panelColor, "transparent"]}
-            style={StyleSheet.absoluteFill}
+            style={[StyleSheet.absoluteFill, { bottom: -140 }]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
           />
@@ -549,8 +549,7 @@ const styles = StyleSheet.create({
 
   // Top panel (segundo fondo con fade)
   topPanel: {
-    overflow: "hidden",
-    paddingBottom: 160,
+    paddingBottom: 16,
   },
 
   // Add button
