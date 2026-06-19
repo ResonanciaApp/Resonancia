@@ -46,6 +46,10 @@ import {
   getMixerBgPalette,
   type MixerBgPaletteId,
 } from "@/data/mixer-bg-palettes";
+import {
+  DEFAULT_BG_PRESET_ID,
+  emitBgPresetChange,
+} from "@/config/immersive-presets";
 import { MixerSettingsSheet } from "@/components/MixerSettingsSheet";
 import { useSounds } from "@/context/SoundsContext";
 import { REMOTE_SOUND_MAP, REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
@@ -890,7 +894,11 @@ export default function MezcladorScreen() {
         tagFilters={tagFilters}
         onToggleTag={toggleTagFilter}
         bgPaletteId={bgPaletteId}
-        onBgPaletteChange={setBgPaletteId}
+        onBgPaletteChange={(id) => {
+          setBgPaletteId(id);
+          // Sincroniza el fondo de "Tu Mezcla" con la escena elegida
+          emitBgPresetChange(id === "noche" ? "borgona" : DEFAULT_BG_PRESET_ID);
+        }}
         onClear={clearFilters}
       />
 
