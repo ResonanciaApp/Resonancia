@@ -701,6 +701,7 @@ function CoverPickerModal({
           </View>
           {geoTab === "library" ? (
             <FlatList
+              key="library-3col"
               data={GEOMETRIES}
               keyExtractor={(g) => g.id}
               numColumns={3}
@@ -719,6 +720,7 @@ function CoverPickerModal({
             />
           ) : (
             <FlatList
+              key="creations-2col"
               data={creationItems}
               keyExtractor={(c) => c.id}
               numColumns={2}
