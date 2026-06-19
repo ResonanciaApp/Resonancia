@@ -1491,27 +1491,27 @@ export default function ProfileScreen() {
               <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 14, paddingBottom: 8 }}>
                 <View style={styles.fieldWrap}>
                   <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Especialidades (separadas por coma)</Text>
-                  <View style={[styles.fieldBox, { borderColor: colors.border, backgroundColor: "rgba(74,12,12,0.08)" }]}>
+                  <View style={[styles.fieldBox, { backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 0 }]}>
                     <TextInput value={epSpecialties} onChangeText={setEpSpecialties} placeholder="Cuencos Tibetanos, Yoga" placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} />
                   </View>
                 </View>
                 <View style={styles.fieldWrap}>
                   <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Descripción de servicios</Text>
-                  <View style={[styles.fieldBox, { borderColor: colors.border, backgroundColor: "rgba(74,12,12,0.08)", minHeight: 90, alignItems: "flex-start" }]}>
+                  <View style={[styles.fieldBox, { backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 0, minHeight: 90, alignItems: "flex-start" }]}>
                     <TextInput value={epDescription} onChangeText={setEpDescription} placeholder="Describe lo que ofrecés..." placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground, textAlignVertical: "top", paddingTop: 2 }]} multiline numberOfLines={4} />
                   </View>
                 </View>
                 <View style={{ flexDirection: "row", gap: 10 }}>
                   <View style={[styles.fieldWrap, { flex: 1 }]}>
                     <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Teléfono</Text>
-                    <View style={[styles.fieldBox, { borderColor: colors.border, backgroundColor: "rgba(74,12,12,0.08)" }]}>
+                    <View style={[styles.fieldBox, { backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 0 }]}>
                       <Feather name="phone" size={15} color={colors.mutedForeground} />
                       <TextInput value={epPhone} onChangeText={setEpPhone} placeholder="+54 11 1234" placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} keyboardType="phone-pad" />
                     </View>
                   </View>
                   <View style={[styles.fieldWrap, { flex: 1 }]}>
                     <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Email</Text>
-                    <View style={[styles.fieldBox, { borderColor: colors.border, backgroundColor: "rgba(74,12,12,0.08)" }]}>
+                    <View style={[styles.fieldBox, { backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 0 }]}>
                       <Feather name="mail" size={15} color={colors.mutedForeground} />
                       <TextInput value={epEmail} onChangeText={setEpEmail} placeholder="tu@email.com" placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} keyboardType="email-address" autoCapitalize="none" />
                     </View>
@@ -1519,14 +1519,14 @@ export default function ProfileScreen() {
                 </View>
                 <View style={styles.fieldWrap}>
                   <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Instagram (URL)</Text>
-                  <View style={[styles.fieldBox, { borderColor: colors.border, backgroundColor: "rgba(74,12,12,0.08)" }]}>
+                  <View style={[styles.fieldBox, { backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 0 }]}>
                     <Feather name="instagram" size={15} color={colors.mutedForeground} />
                     <TextInput value={epInstagram} onChangeText={setEpInstagram} placeholder="https://instagram.com/tu_usuario" placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} autoCapitalize="none" />
                   </View>
                 </View>
                 <View style={styles.fieldWrap}>
                   <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Frase / Quote</Text>
-                  <View style={[styles.fieldBox, { borderColor: colors.border, backgroundColor: "rgba(74,12,12,0.08)" }]}>
+                  <View style={[styles.fieldBox, { backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 0 }]}>
                     <TextInput value={epQuote} onChangeText={setEpQuote} placeholder="Tu frase inspiracional..." placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} />
                   </View>
                 </View>
