@@ -27,6 +27,7 @@ import { PlaylistAddSessionsSheet } from "@/components/PlaylistAddSessionsSheet"
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
+import { EqualizerBars } from "@/components/EqualizerBars";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
@@ -532,7 +533,12 @@ export default function PlaylistDetailScreen() {
             contentFit="cover"
           />
           <View style={mpSt.info}>
-            <Text style={mpSt.title} numberOfLines={1}>{currentSession.title}</Text>
+            <View style={mpSt.titleRow}>
+              <Text style={[mpSt.title, { flex: 1 }]} numberOfLines={1}>{currentSession.title}</Text>
+              {displayIsPlaying && (
+                <EqualizerBars color="#D4AF37" size="sm" />
+              )}
+            </View>
             <Text style={mpSt.artist} numberOfLines={1}>
               {currentSession.guideId
                 ? (getGuideById(currentSession.guideId)?.name ?? "Casa del Cuenco")
@@ -1437,6 +1443,11 @@ const mpSt = StyleSheet.create({
   info: {
     flex: 1,
     gap: 3,
+  },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   title: {
     color: TEXT,
