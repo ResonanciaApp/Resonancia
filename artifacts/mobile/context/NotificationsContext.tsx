@@ -18,6 +18,7 @@ interface NotificationsCtx {
   shouldAnimate: boolean;
   clearAnimation: () => void;
   forceAnimate: () => void;
+  refetchCount: () => void;
 }
 
 const Ctx = createContext<NotificationsCtx>({
@@ -25,6 +26,7 @@ const Ctx = createContext<NotificationsCtx>({
   shouldAnimate: false,
   clearAnimation: () => {},
   forceAnimate: () => {},
+  refetchCount: () => {},
 });
 
 export function useNotifications() {
@@ -35,6 +37,7 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
   const { isSignedIn } = useClerkAuth();
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const prevCountRef = useRef(0);
+  const qc = useQueryClient();
 
   const countQ = useGetUnreadNotificationCount({
     query: {
@@ -61,8 +64,12 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
     setShouldAnimate(true);
   }, []);
 
+  const refetchCount = useCallback(() => {
+    qc.invalidateQueries({ queryKey: getGetUnreadNotificationCountQueryKey() });
+  }, [qc]);
+
   return (
-    <Ctx.Provider value={{ unreadCount, shouldAnimate, clearAnimation, forceAnimate }}>
+    <Ctx.Provider value={{ unreadCount, shouldAnimate, clearAnimation, forceAnimate, refetchCount }}>
       {children}
     </Ctx.Provider>
   );

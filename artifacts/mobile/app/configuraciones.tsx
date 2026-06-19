@@ -105,7 +105,7 @@ async function cancelDailyReminder() {
 
 export default function ConfiguracionesScreen() {
   const colors = useColors();
-  const { forceAnimate } = useNotifications();
+  const { forceAnimate, refetchCount } = useNotifications();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -623,7 +623,8 @@ export default function ConfiguracionesScreen() {
                       headers: token ? { Authorization: `Bearer ${token}` } : {},
                     });
                     if (!res.ok) throw new Error(`${res.status}`);
-                    router.push("/notificaciones" as never);
+                    refetchCount();
+                    router.replace("/(tabs)" as never);
                   } catch (e) {
                     Alert.alert("Error", String(e));
                   }
