@@ -9,6 +9,7 @@
  * ─────────────────────────────────────────────────────────────────
  */
 import { Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React, { useMemo } from "react";
 import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -54,7 +55,7 @@ export function MixerPanel() {
   const title = loadedPreset?.name ?? "Tu mezcla";
 
   return (
-    <Pressable onPress={openSheet} style={styles.wrapper}>
+    <Pressable onPress={() => router.push("/(tabs)/musica" as never)} style={styles.wrapper}>
       {/* Fondo */}
       <View style={[StyleSheet.absoluteFill, { backgroundColor: "#502b7e", borderRadius: 18 }]} />
       <View style={styles.border} />
