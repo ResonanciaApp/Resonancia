@@ -17,7 +17,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import { useIntencion } from "@/context/IntencionContext";
 import { useColors } from "@/hooks/useColors";
 
@@ -77,9 +76,13 @@ export default function IntencionScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={[styles.root, { backgroundColor: colors.background }]}>
+      <LinearGradient
+        style={styles.root}
+        colors={["#2E0510", "#160108"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      >
         <StatusBar barStyle="light-content" />
-        <SacredBackground />
 
         {/* ── Header ── */}
         <View style={[styles.topBar, { paddingTop: topPad + 6 }]}>
@@ -267,7 +270,7 @@ export default function IntencionScreen() {
             )
           )}
         </ScrollView>
-      </View>
+      </LinearGradient>
     </TouchableWithoutFeedback>
   );
 }
