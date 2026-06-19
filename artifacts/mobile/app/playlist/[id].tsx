@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 8,
-    marginTop: -30,
+    marginTop: -10,
   },
 
   // Session rows
