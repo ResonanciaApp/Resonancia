@@ -135,14 +135,8 @@ export function CuencoBell() {
         />
       </Animated.View>
 
-      {/* Badge de conteo */}
-      {hasBadge && (
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>
-            {unreadCount > 9 ? "9+" : String(unreadCount)}
-          </Text>
-        </View>
-      )}
+      {/* Punto dorado — indica notificaciones sin leer */}
+      {hasBadge && <View style={styles.dot} />}
     </Pressable>
   );
 }
@@ -173,22 +167,15 @@ const styles = StyleSheet.create({
   iconAbsolute: {
     position: "absolute",
   },
-  badge: {
+  dot: {
     position: "absolute",
-    top: 2,
-    right: 2,
-    minWidth: 15,
-    height: 15,
-    borderRadius: 8,
+    top: 4,
+    right: 4,
+    width: 7,
+    height: 7,
+    borderRadius: 4,
     backgroundColor: GOLD,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 3,
-  },
-  badgeText: {
-    color: "#1B060F",
-    fontSize: 8,
-    fontWeight: "800",
-    lineHeight: 11,
+    borderWidth: 1,
+    borderColor: "#1B060F",
   },
 });
