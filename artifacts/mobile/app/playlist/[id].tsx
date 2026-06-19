@@ -312,6 +312,15 @@ export default function PlaylistDetailScreen() {
           />
         ))}
 
+        {/* + Agregar a esta playlist */}
+        <Pressable
+          style={({ pressed }) => [styles.addBtn, { opacity: pressed ? 0.8 : 1 }]}
+          onPress={() => setAddSheetVisible(true)}
+        >
+          <Feather name="plus" size={16} color={TEXT} style={{ marginRight: 8 }} />
+          <Text style={styles.addBtnText}>Agregar a esta Playlist</Text>
+        </Pressable>
+
         {/* Sesiones recomendadas */}
         {recommended.length > 0 && (
           <>
@@ -609,6 +618,20 @@ const styles = StyleSheet.create({
   topPanel: {
     paddingBottom: 16,
   },
+
+  // Add button
+  addBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 40,
+    marginTop: 4,
+    marginBottom: 20,
+    paddingVertical: 9,
+    borderRadius: 30,
+    backgroundColor: "rgba(255,255,255,0.10)",
+  },
+  addBtnText: { color: TEXT, fontSize: 14, fontWeight: "600" },
 
   // Section header
   sectionHeader: {
