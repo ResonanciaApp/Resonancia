@@ -95,7 +95,12 @@ export default function PlaylistDetailScreen() {
   const [nameInput, setNameInput] = useState("");
   const [addSheetVisible, setAddSheetVisible] = useState(false);
   const [coverModalVisible, setCoverModalVisible] = useState(false);
-  const [pendingCoverUri, setPendingCoverUri] = useState<string | null>(null);
+  const [pendingCover, setPendingCover] = useState<
+    | { type: "image"; uri: string }
+    | { type: "geometry"; geoId: string }
+    | { type: "creation"; creationId: string }
+    | null
+  >(null);
   const [colorPickerVisible, setColorPickerVisible] = useState(false);
   const [selectedAccent, setSelectedAccent] = useState<string>(ACCENT_PALETTE[0]);
 
@@ -342,13 +347,21 @@ export default function PlaylistDetailScreen() {
             quality: 0.85,
           });
           if (!result.canceled && result.assets[0]?.uri) {
-            setPendingCoverUri(result.assets[0].uri);
+            setPendingCover({ type: "image", uri: result.assets[0].uri });
             setSelectedAccent(playlist.coverColor ?? ACCENT_PALETTE[0]);
             setColorPickerVisible(true);
           }
         }}
-        onPickGeometry={(geoId) => setPlaylistCoverGeometry(playlist.id, geoId)}
-        onPickCreation={(cid) => setPlaylistCoverCreation(playlist.id, cid)}
+        onPickGeometry={(geoId) => {
+          setPendingCover({ type: "geometry", geoId });
+          setSelectedAccent(playlist.coverColor ?? ACCENT_PALETTE[0]);
+          setColorPickerVisible(true);
+        }}
+        onPickCreation={(cid) => {
+          setPendingCover({ type: "creation", creationId: cid });
+          setSelectedAccent(playlist.coverColor ?? ACCENT_PALETTE[0]);
+          setColorPickerVisible(true);
+        }}
       />
 
       {/* ── Color picker de encabezado ──────────────────────────────────────── */}
@@ -361,12 +374,22 @@ export default function PlaylistDetailScreen() {
         <View style={cpStyles.backdrop}>
           <View style={cpStyles.sheet}>
             <Text style={cpStyles.title}>Tono del encabezado</Text>
-            <Text style={cpStyles.sub}>Elige el color que combina con tu foto</Text>
+            <Text style={cpStyles.sub}>Elige el tono que combina con tu portada</Text>
 
             {/* Preview del header con el color seleccionado */}
             <View style={[cpStyles.preview, { backgroundColor: buildPanelColor(selectedAccent) }]}>
-              {pendingCoverUri && (
-                <Image source={{ uri: pendingCoverUri }} style={cpStyles.previewImg} contentFit="cover" />
+              {pendingCover?.type === "image" && (
+                <Image source={{ uri: pendingCover.uri }} style={cpStyles.previewImg} contentFit="cover" />
+              )}
+              {pendingCover?.type === "geometry" && (
+                <View style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center", opacity: 0.35 }]}>
+                  <SacredGlyph id={pendingCover.geoId as GeometryId} color={GOLD} size={56} strokeWidth={1.2} opacity={1} />
+                </View>
+              )}
+              {pendingCover?.type === "creation" && (
+                <View style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center", opacity: 0.35 }]}>
+                  <CreationCoverPreview creationId={pendingCover.creationId} size={52} />
+                </View>
               )}
               <View style={[StyleSheet.absoluteFill, { backgroundColor: buildPanelColor(selectedAccent), opacity: 0.7 }]} />
               <Text style={cpStyles.previewLabel}>Vista previa</Text>
@@ -398,12 +421,16 @@ export default function PlaylistDetailScreen() {
               <Pressable
                 style={cpStyles.btnConfirm}
                 onPress={() => {
-                  if (pendingCoverUri) {
-                    setPlaylistCover(playlist.id, pendingCoverUri);
-                    setPlaylistCoverColor(playlist.id, selectedAccent);
+                  if (pendingCover?.type === "image") {
+                    setPlaylistCover(playlist.id, pendingCover.uri);
+                  } else if (pendingCover?.type === "geometry") {
+                    setPlaylistCoverGeometry(playlist.id, pendingCover.geoId);
+                  } else if (pendingCover?.type === "creation") {
+                    setPlaylistCoverCreation(playlist.id, pendingCover.creationId);
                   }
+                  if (pendingCover) setPlaylistCoverColor(playlist.id, selectedAccent);
                   setColorPickerVisible(false);
-                  setPendingCoverUri(null);
+                  setPendingCover(null);
                 }}
               >
                 <Text style={cpStyles.btnConfirmText}>Guardar</Text>
