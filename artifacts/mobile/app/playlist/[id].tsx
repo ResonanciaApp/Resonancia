@@ -204,7 +204,7 @@ export default function PlaylistDetailScreen() {
           {/* Cover art — tap para elegir foto o geometría */}
           <Pressable style={styles.cover} onPress={() => setCoverModalVisible(true)}>
             {playlist.coverType === "geometrix" && playlist.coverGeometryId ? (
-              <View style={styles.coverGlyph}>
+              <View style={[styles.coverGlyph, { backgroundColor: panelColor }]}>
                 <SacredGlyph
                   id={playlist.coverGeometryId as GeometryId}
                   color={GOLD}
