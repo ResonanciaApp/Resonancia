@@ -19,6 +19,7 @@ interface NotificationsCtx {
   clearAnimation: () => void;
   forceAnimate: () => void;
   refetchCount: () => void;
+  devSeedAndAnimate: () => Promise<void>;
 }
 
 const Ctx = createContext<NotificationsCtx>({
@@ -27,6 +28,7 @@ const Ctx = createContext<NotificationsCtx>({
   clearAnimation: () => {},
   forceAnimate: () => {},
   refetchCount: () => {},
+  devSeedAndAnimate: async () => {},
 });
 
 export function useNotifications() {
@@ -34,7 +36,7 @@ export function useNotifications() {
 }
 
 export function NotificationsProvider({ children }: { children: React.ReactNode }) {
-  const { isSignedIn } = useClerkAuth();
+  const { isSignedIn, getToken } = useClerkAuth();
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const prevCountRef = useRef(0);
   const qc = useQueryClient();
@@ -68,8 +70,22 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
     qc.invalidateQueries({ queryKey: getGetUnreadNotificationCountQueryKey() });
   }, [qc]);
 
+  const devSeedAndAnimate = useCallback(async () => {
+    try {
+      const token = await getToken();
+      await fetch("/api/notifications/seed-dev", {
+        method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+    } catch {
+      // en DEV — ignorar errores de red
+    }
+    qc.invalidateQueries({ queryKey: getGetUnreadNotificationCountQueryKey() });
+    setShouldAnimate(true);
+  }, [getToken, qc]);
+
   return (
-    <Ctx.Provider value={{ unreadCount, shouldAnimate, clearAnimation, forceAnimate, refetchCount }}>
+    <Ctx.Provider value={{ unreadCount, shouldAnimate, clearAnimation, forceAnimate, refetchCount, devSeedAndAnimate }}>
       {children}
     </Ctx.Provider>
   );
