@@ -175,16 +175,6 @@ export default function PlaylistDetailScreen() {
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
 
-      {/* Header */}
-      <View style={[styles.header, { paddingTop: topPad + 8, backgroundColor: panelColor }]}>
-        <Pressable onPress={() => router.back()} style={styles.iconBtn}>
-          <Feather name="arrow-left" size={22} color={TEXT} />
-        </Pressable>
-        <Pressable onPress={handleDelete} style={[styles.iconBtn, { marginLeft: "auto" }]} hitSlop={8}>
-          <Feather name="trash-2" size={18} color={MUTED} />
-        </Pressable>
-      </View>
-
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: bottomPad + 32 }}
@@ -192,6 +182,16 @@ export default function PlaylistDetailScreen() {
       >
         {/* Relleno para el rubber-band de iOS: invisible en reposo, muestra panelColor al hacer pull-down */}
         <View style={{ position: "absolute", top: -600, left: 0, right: 0, height: 600, backgroundColor: panelColor }} />
+
+        {/* Header — scrollea con el contenido (sin sticky) */}
+        <View style={[styles.header, { paddingTop: topPad + 8, backgroundColor: panelColor }]}>
+          <Pressable onPress={() => router.back()} style={styles.iconBtn}>
+            <Feather name="arrow-left" size={22} color={TEXT} />
+          </Pressable>
+          <Pressable onPress={handleDelete} style={[styles.iconBtn, { marginLeft: "auto" }]} hitSlop={8}>
+            <Feather name="trash-2" size={18} color={MUTED} />
+          </Pressable>
+        </View>
 
         {/* ── Panel superior (segundo fondo con fade) ─────────────────────── */}
         <View style={styles.topPanel}>
