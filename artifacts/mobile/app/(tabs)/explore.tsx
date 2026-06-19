@@ -281,7 +281,7 @@ export default function ExploreScreen() {
         {/* ── Carrusel de categorías ── */}
         {query.length === 0 && (
           <>
-          <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 12 }]}>
+          <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 12, marginTop: -25 }]}>
             Explora por categoría
           </Text>
           <ScrollView
