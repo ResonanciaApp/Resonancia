@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   // ── Header ──
   profileHeader: {
     paddingHorizontal: 20,
-    paddingBottom: 24,      // ajustado
+    paddingBottom: 0,
   },
   headerDivider: {
     height: StyleSheet.hairlineWidth,
