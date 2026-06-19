@@ -52,39 +52,39 @@ function relativeTime(iso: string): string {
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
 
+// Tipos silenciados: se guardan en DB y cuentan como no leídas,
+// pero no se muestran en la lista (sin pantalla de destino todavía).
+const SILENT_TYPES: Notification["type"][] = ["content_approved", "content_rejected"];
+
 function iconFor(type: Notification["type"]): { name: FeatherName; color: string } {
   switch (type) {
-    case "friend_request":    return { name: "user-plus",     color: "#8AAAD4" };
-    case "friend_accepted":   return { name: "user-check",    color: "#A8C4A8" };
-    case "new_follower":      return { name: "user",          color: "#D4AF37" };
-    case "dm":                return { name: "message-circle", color: "#D4AF37" };
-    case "group_message":     return { name: "users",          color: "#C8B4E0" };
-    case "mix_like":          return { name: "heart",          color: "#D4709A" };
-    case "mix_comment":       return { name: "message-square", color: "#D4AF37" };
-    case "content_approved":  return { name: "check-circle",   color: "#A8C4A8" };
-    case "content_rejected":  return { name: "x-circle",       color: "#D4709A" };
-    default:                  return { name: "bell",           color: "#FFFFFF" };
+    case "friend_request":  return { name: "user-plus",      color: "#8AAAD4" };
+    case "friend_accepted": return { name: "user-check",     color: "#A8C4A8" };
+    case "new_follower":    return { name: "user",           color: "#D4AF37" };
+    case "dm":              return { name: "message-circle", color: "#D4AF37" };
+    case "group_message":   return { name: "users",          color: "#C8B4E0" };
+    case "mix_like":        return { name: "heart",          color: "#D4709A" };
+    case "mix_comment":     return { name: "message-square", color: "#D4AF37" };
+    default:                return { name: "bell",           color: "#FFFFFF" };
   }
 }
 
 function messageFor(n: Notification): string {
   switch (n.type) {
-    case "friend_request":    return "te envió una solicitud de amistad";
-    case "friend_accepted":   return "aceptó tu solicitud de amistad";
-    case "new_follower":      return "empezó a seguirte";
-    case "dm":                return "te envió un mensaje";
-    case "group_message":     return "publicó en el grupo";
-    case "mix_like":          return "le dio me gusta a tu mezcla";
-    case "mix_comment":       return "comentó tu mezcla";
-    case "content_approved":  return "Tu contenido fue aprobado";
-    case "content_rejected":  return "Tu contenido fue rechazado";
-    default:                  return "tiene una novedad";
+    case "friend_request":  return "te envió una solicitud de amistad";
+    case "friend_accepted": return "aceptó tu solicitud de amistad";
+    case "new_follower":    return "empezó a seguirte";
+    case "dm":              return "te envió un mensaje";
+    case "group_message":   return "publicó en el grupo";
+    case "mix_like":        return "le dio me gusta a tu mezcla";
+    case "mix_comment":     return "comentó tu mezcla";
+    default:                return "tiene una novedad";
   }
 }
 
 function routeFor(n: Notification): string {
   if (n.type === "dm")            return `/chat/${n.actor.id}`;
-  if (n.type === "group_message") return "/grupos";
+  if (n.type === "group_message") return n.entityId != null ? `/grupo/${n.entityId}` : "/grupos";
   if (n.type === "new_follower")  return `/expansor-perfil/${n.actor.id}`;
   if (n.type === "mix_like" || n.type === "mix_comment") {
     return n.entityId != null ? `/mezcla/${n.entityId}` : "/";
@@ -153,7 +153,9 @@ export default function NotificacionesScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSignedIn, notifsQ.data]);
 
-  const rawList = notifsQ.data ?? [];
+  const rawList = (notifsQ.data ?? []).filter(
+    (n) => !SILENT_TYPES.includes(n.type),
+  );
 
   // Group consecutive `dm` notifications from the same actor into a single row.
   const list = useMemo(() => groupNotifications(rawList), [rawList]);
