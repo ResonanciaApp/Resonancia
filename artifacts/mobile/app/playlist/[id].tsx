@@ -674,7 +674,8 @@ function CoverPickerModal({
     return (
       <Modal visible={visible} animationType="slide" transparent onRequestClose={() => { setShowGeometries(false); onClose(); }}>
         <Pressable style={modalStyles.backdrop} onPress={() => { setShowGeometries(false); onClose(); }} />
-        <View style={[modalStyles.sheet, { paddingBottom: bottomPad }]}>
+        <View style={[modalStyles.sheet, { paddingBottom: bottomPad, height: "78%" }]}>
+          <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
           <View style={modalStyles.handle} />
           <View style={modalStyles.headerRow}>
             <Pressable onPress={() => setShowGeometries(false)} hitSlop={12} style={modalStyles.headerClose}>
@@ -750,6 +751,7 @@ function CoverPickerModal({
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={modalStyles.backdrop} onPress={onClose} />
       <View style={[modalStyles.sheet, { paddingBottom: bottomPad }]}>
+        <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
         <View style={modalStyles.handle} />
         <Text style={modalStyles.sheetTitle}>Foto de la playlist</Text>
         <Pressable
@@ -764,7 +766,7 @@ function CoverPickerModal({
           onPress={() => { setGeoTab("creations"); setShowGeometries(true); }}
         >
           <Feather name="hexagon" size={22} color={GOLD} />
-          <Text style={modalStyles.sheetRowText}>Geometría sagrada</Text>
+          <Text style={modalStyles.sheetRowText}>Mis Geometrix</Text>
         </Pressable>
       </View>
     </Modal>
@@ -776,10 +778,11 @@ const modalStyles = StyleSheet.create({
   sheet: {
     position: "absolute",
     bottom: 0, left: 0, right: 0,
-    backgroundColor: "#2E0510",
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     paddingHorizontal: 20,
+    overflow: "hidden",
+    backgroundColor: "#160108",
   },
   handle: {
     alignSelf: "center",
