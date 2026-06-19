@@ -200,8 +200,8 @@ export function MiniPlayer() {
 
     return (
       <View style={styles.mixOuter}>
-        {/* ── Card del miniplayer — pressable para abrir el mezclador ── */}
-        <Pressable style={styles.wrapper} onPress={handleOpen} accessibilityRole="button" accessibilityLabel="Abrir mezclador">
+        {/* ── Card del miniplayer ── */}
+        <View style={styles.wrapper}>
           <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
 
           {/* ── Row principal ── */}
@@ -272,7 +272,7 @@ export function MiniPlayer() {
             </View>
           </View>
 
-        </Pressable>
+        </View>
       </View>
     );
   }
