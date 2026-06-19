@@ -187,8 +187,6 @@ export function DrawerMenu() {
                       <Text style={styles.verPerfilText}>Ver Perfil</Text>
                       <Feather name="chevron-right" size={11} color="#D4AF37" />
                     </Pressable>
-                    {/* Chip de estado Premium */}
-                    <PremiumChip isPremium={isPremium} />
                   </>
                 ) : (
                   <>
@@ -216,7 +214,10 @@ export function DrawerMenu() {
             style={{ flex: 1 }}
             contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 5 }}
           >
-            <View style={styles.itemGroup}>
+            {/* Chip Premium — encima de Historial */}
+            <PremiumChip isPremium={isPremium} />
+
+            <View style={[styles.itemGroup, { marginTop: 8 }]}>
               {MAIN_ITEMS.map((item) => (
                 <Pressable
                   key={item.label}
