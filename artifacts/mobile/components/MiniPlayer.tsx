@@ -145,11 +145,11 @@ export function MiniPlayer() {
     // stackWidthAnim usa JS driver (layout property); openProgress usa native driver (transform)
     Animated.spring(stackWidthAnim, {
       toValue: next ? carouselOpenW : stackWidthStacked,
-      useNativeDriver: false, damping: 18, stiffness: 200,
+      useNativeDriver: false, damping: 28, stiffness: 200, overshootClamping: true,
     }).start();
     Animated.spring(openProgress, {
       toValue: next ? 1 : 0,
-      useNativeDriver: true, damping: 18, stiffness: 200,
+      useNativeDriver: true, damping: 28, stiffness: 200, overshootClamping: true,
     }).start();
   };
 
