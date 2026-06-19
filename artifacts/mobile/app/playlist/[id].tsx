@@ -464,6 +464,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderWidth: 1.5,
     borderColor: "rgba(61,14,22,0.40)",
+    backgroundColor: "rgba(255,255,255,0.10)",
   },
   addBtnText: { color: TEXT, fontSize: 14, fontWeight: "600" },
 
