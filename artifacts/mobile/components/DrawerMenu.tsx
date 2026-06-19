@@ -203,10 +203,10 @@ export function DrawerMenu() {
                 <Feather name="x" size={20} color="#D4AF37" />
               </Pressable>
             </View>
-          </LinearGradient>
 
-          {/* Divisor */}
-          <View style={styles.headerDivider} />
+            {/* Divisor — dentro del gradiente */}
+            <View style={styles.headerDivider} />
+          </LinearGradient>
 
           {/* ── Menú scrollable ── */}
           <ScrollView
@@ -299,8 +299,7 @@ const styles = StyleSheet.create({
   headerDivider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(212,175,55,0.18)",
-    marginTop: -25,
-    marginBottom: 8,
+    marginBottom: 0,
   },
   profileSection: {
     flexDirection: "row",
