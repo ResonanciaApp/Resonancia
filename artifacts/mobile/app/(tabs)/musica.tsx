@@ -250,10 +250,11 @@ type SoundCardProps = {
   borderGradient: [string, string, string];
   textColor?: string;
   bgPaletteId?: string;
+  accentColor?: string;
   onPress: () => void;
 };
 
-const SoundCard = memo(function SoundCard({ sound, idx, active, locked, available, image, borderGradient, textColor, bgPaletteId, onPress }: SoundCardProps) {
+const SoundCard = memo(function SoundCard({ sound, idx, active, locked, available, image, borderGradient, textColor, bgPaletteId, accentColor, onPress }: SoundCardProps) {
   const anim = useRef(new Animated.Value(active ? 1 : 0)).current;
   const [decorated, setDecorated] = useState(active);
 
@@ -275,7 +276,7 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
 
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
-      <Animated.View style={[styles.cardImageWrap, { transform: [{ rotate }, { scale }], borderColor: active ? (bgPaletteId === "noche" ? borderGradient[0] : "#D6AD5F") : "transparent" }]}>
+      <Animated.View style={[styles.cardImageWrap, { transform: [{ rotate }, { scale }], borderColor: active ? (bgPaletteId === "noche" ? borderGradient[0] : (accentColor ?? borderGradient[0])) : "transparent" }]}>
         <View style={styles.cardClipInner}>
           {image ? (
             <Image source={typeof image === "string" ? { uri: image } : image} style={StyleSheet.absoluteFill} contentFit="cover" />
@@ -870,6 +871,7 @@ export default function MezcladorScreen() {
                     borderGradient={TAB_HEADER_GRADIENT[mainTab]}
                     textColor={bgPaletteId === "noche" ? "#FFFFFF" : undefined}
                     bgPaletteId={bgPaletteId}
+                    accentColor={TAB_GRADIENT[mainTab][0]}
                     onPress={() => handleSoundPress(s)}
                   />
                 ))}
