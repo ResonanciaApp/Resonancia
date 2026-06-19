@@ -1873,6 +1873,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 16,
     gap: 16,
+    marginTop: -15,
     marginBottom: 16,
   },
   dvCertBanner: {
