@@ -504,7 +504,7 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   heroInfo: { flex: 1, gap: 8, paddingTop: 4 },
-  playlistName: { color: TEXT, fontSize: 20, fontWeight: "800", lineHeight: 26 },
+  playlistName: { color: "#FFFFFF", fontSize: 20, fontWeight: "400", lineHeight: 26 },
   renameInput: {
     color: TEXT, fontSize: 20, fontWeight: "800",
     borderBottomWidth: 1.5, borderBottomColor: GOLD, paddingVertical: 2, padding: 0,
