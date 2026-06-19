@@ -207,15 +207,9 @@ export function MiniPlayer() {
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
 
-            {/* Texto: flex:1 al inicio */}
-            <View style={styles.textBlock}>
-              <Text style={styles.mixTitle} numberOfLines={1}>{title}</Text>
-              <Text style={styles.mixSub} numberOfLines={1}>
-                {n} {n === 1 ? "sonido" : "sonidos"}
-              </Text>
-            </View>
-
-            {/* Stack / carrusel — frame con ancho animado (JS driver) que clipea */}
+            {/* Stack / carrusel — frame con ancho animado (JS driver) que clipea;
+                cuando está abierto, un ScrollView horizontal permite deslizar
+                entre los thumbnails si no caben todos en el ancho visible. */}
             <Animated.View style={[styles.stackArea, { width: stackWidthAnim }]}>
               <ScrollView
                 ref={scrollRef}
@@ -245,14 +239,13 @@ export function MiniPlayer() {
               </ScrollView>
             </Animated.View>
 
-            {/* Flechita "Abrir" al lado del stack */}
-            <Pressable
-              onPress={(e) => { e.stopPropagation(); handleOpen(); }}
-              hitSlop={8}
-              accessibilityLabel="Abrir mezclador"
-            >
-              <Feather name="chevron-up" size={18} color="rgba(255,255,255,0.2)" />
-            </Pressable>
+            {/* Texto: flex:1, se empuja cuando el stack crece */}
+            <View style={styles.textBlock}>
+              <Text style={styles.mixTitle} numberOfLines={1}>{title}</Text>
+              <Text style={styles.mixSub} numberOfLines={1}>
+                {n} {n === 1 ? "sonido" : "sonidos"}
+              </Text>
+            </View>
 
             {/* Botón play/pause — siempre visible */}
             <View style={styles.waveWrap}>
