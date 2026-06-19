@@ -4,14 +4,16 @@ import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   FlatList,
   Modal,
+  PanResponder,
   Platform,
   Pressable,
   ScrollView,
+  Share,
   StatusBar,
   StyleSheet,
   Text,
@@ -85,15 +87,16 @@ export default function PlaylistDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
-  const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistCover, setPlaylistCoverColor, setPlaylistCoverGeometry, setPlaylistCoverCreation } = useFoldersPlaylists();
+  const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistDescription, reorderPlaylist, setPlaylistCover, setPlaylistCoverColor, setPlaylistCoverGeometry, setPlaylistCoverCreation } = useFoldersPlaylists();
   const { playSession, pauseResume, isPlaying, currentSession } = usePlayer();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
-  const [renaming, setRenaming] = useState(false);
-  const [nameInput, setNameInput] = useState("");
   const [addSheetVisible, setAddSheetVisible] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [editOrderVisible, setEditOrderVisible] = useState(false);
+  const [editInfoVisible, setEditInfoVisible] = useState(false);
   const [coverModalVisible, setCoverModalVisible] = useState(false);
   const [pendingCover, setPendingCover] = useState<
     | { type: "image"; uri: string }
@@ -158,17 +161,25 @@ export default function PlaylistDetailScreen() {
     );
   };
 
-  const handleRename = () => {
-    if (!nameInput.trim()) { setRenaming(false); return; }
-    renamePlaylist(playlist.id, nameInput.trim());
-    setRenaming(false);
-  };
-
   const handlePlayAll = () => {
     const first = sessions.find((s) => !s.isPremium || isPremium);
     if (!first) return;
     playSession(first);
     router.push("/player" as never);
+  };
+
+  const handleShuffle = () => {
+    const available = sessions.filter((s) => !s.isPremium || isPremium);
+    if (!available.length) return;
+    const random = available[Math.floor(Math.random() * available.length)];
+    playSession(random);
+    router.push("/player" as never);
+  };
+
+  const handleShare = async () => {
+    try {
+      await Share.share({ message: `Escucha mi playlist "${playlist.name}" en Resonancia 🎵` });
+    } catch (_) {}
   };
 
   return (
@@ -187,9 +198,6 @@ export default function PlaylistDetailScreen() {
         <View style={[styles.header, { paddingTop: topPad + 8, backgroundColor: panelColor }]}>
           <Pressable onPress={() => router.back()} style={styles.iconBtn}>
             <Feather name="arrow-left" size={22} color={TEXT} />
-          </Pressable>
-          <Pressable onPress={handleDelete} style={[styles.iconBtn, { marginLeft: "auto" }]} hitSlop={8}>
-            <Feather name="trash-2" size={18} color={MUTED} />
           </Pressable>
         </View>
 
@@ -240,26 +248,10 @@ export default function PlaylistDetailScreen() {
 
           {/* Info */}
           <View style={styles.heroInfo}>
-            {renaming ? (
-              <TextInput
-                style={styles.renameInput}
-                value={nameInput}
-                onChangeText={setNameInput}
-                autoFocus
-                returnKeyType="done"
-                onSubmitEditing={handleRename}
-                onBlur={handleRename}
-                selectTextOnFocus
-              />
-            ) : (
-              <Text style={styles.playlistName} numberOfLines={3}>{playlist.name}</Text>
+            <Text style={styles.playlistName} numberOfLines={3}>{playlist.name}</Text>
+            {!!playlist.description && (
+              <Text style={styles.playlistDesc} numberOfLines={2}>{playlist.description}</Text>
             )}
-            <Pressable
-              style={styles.cambiarBtn}
-              onPress={() => { setNameInput(playlist.name); setRenaming(true); }}
-            >
-              <Text style={styles.cambiarBtnText}>Cambiar</Text>
-            </Pressable>
             <View style={styles.creatorRow}>
               <GoldGradient style={styles.creatorDot} />
               <Text style={styles.creatorText}>Casa del Cuenco</Text>
@@ -273,8 +265,27 @@ export default function PlaylistDetailScreen() {
           <Text style={styles.statsText}>{totalMin} min</Text>
         </View>
 
-        {/* Actions */}
+        {/* ── Toolbar Spotify-style ─────────────────────────────────────── */}
         <View style={styles.actionsRow}>
+          {/* Descargar */}
+          <Pressable style={({ pressed }) => [styles.toolBtn, { opacity: pressed ? 0.6 : 1 }]} hitSlop={10}>
+            <Feather name="download" size={22} color={MUTED} />
+          </Pressable>
+          {/* Compartir */}
+          <Pressable style={({ pressed }) => [styles.toolBtn, { opacity: pressed ? 0.6 : 1 }]} hitSlop={10} onPress={handleShare}>
+            <Feather name="share" size={22} color={MUTED} />
+          </Pressable>
+          {/* Tres puntos */}
+          <Pressable style={({ pressed }) => [styles.toolBtn, { opacity: pressed ? 0.6 : 1 }]} hitSlop={10} onPress={() => setMenuVisible(true)}>
+            <Feather name="more-horizontal" size={22} color={MUTED} />
+          </Pressable>
+          {/* Spacer */}
+          <View style={{ flex: 1 }} />
+          {/* Modo aleatorio */}
+          <Pressable style={({ pressed }) => [styles.toolBtn, { opacity: pressed ? 0.6 : 1 }]} hitSlop={10} onPress={handleShuffle}>
+            <Feather name="shuffle" size={22} color={MUTED} />
+          </Pressable>
+          {/* Play */}
           {sessions.length > 0 && (
             <Pressable
               style={({ pressed }) => [styles.playAllFab, { opacity: pressed ? 0.8 : 1 }]}
@@ -287,15 +298,6 @@ export default function PlaylistDetailScreen() {
         </View>
 
         </View>{/* fin topPanel */}
-
-        {/* + Agregar a esta playlist */}
-        <Pressable
-          style={({ pressed }) => [styles.addBtn, { opacity: pressed ? 0.8 : 1 }]}
-          onPress={() => setAddSheetVisible(true)}
-        >
-          <Feather name="plus" size={16} color={TEXT} style={{ marginRight: 8 }} />
-          <Text style={styles.addBtnText}>Agregar a esta Playlist</Text>
-        </Pressable>
 
         {/* Sessions list */}
         {sessions.map((session, idx) => (
@@ -334,6 +336,34 @@ export default function PlaylistDetailScreen() {
         visible={addSheetVisible}
         playlistId={playlist.id}
         onClose={() => setAddSheetVisible(false)}
+      />
+
+      {/* ── Menú tres puntos ─────────────────────────────────────────────── */}
+      <PlaylistMenuSheet
+        visible={menuVisible}
+        onClose={() => setMenuVisible(false)}
+        onShare={handleShare}
+        onAddSessions={() => { setMenuVisible(false); setTimeout(() => setAddSheetVisible(true), 300); }}
+        onEditOrder={() => { setMenuVisible(false); setTimeout(() => setEditOrderVisible(true), 300); }}
+        onEditInfo={() => { setMenuVisible(false); setTimeout(() => setEditInfoVisible(true), 300); }}
+      />
+
+      {/* ── Editar orden (drag & drop) ───────────────────────────────────── */}
+      <DragReorderModal
+        visible={editOrderVisible}
+        sessions={sessions}
+        onClose={() => setEditOrderVisible(false)}
+        onSave={(newIds) => reorderPlaylist(playlist.id, newIds)}
+      />
+
+      {/* ── Nombre y datos ───────────────────────────────────────────────── */}
+      <EditInfoModal
+        visible={editInfoVisible}
+        playlist={playlist}
+        onClose={() => setEditInfoVisible(false)}
+        onSave={(name, desc) => { renamePlaylist(playlist.id, name); setPlaylistDescription(playlist.id, desc); }}
+        onChangeCover={() => { setEditInfoVisible(false); setTimeout(() => setCoverModalVisible(true), 300); }}
+        onDelete={handleDelete}
       />
 
       {/* Modal de selección de cover */}
@@ -534,18 +564,6 @@ const styles = StyleSheet.create({
   },
   heroInfo: { flex: 1, gap: 8, paddingTop: 4 },
   playlistName: { color: "#FFFFFF", fontSize: 20, fontWeight: "400", lineHeight: 26 },
-  renameInput: {
-    color: TEXT, fontSize: 20, fontWeight: "800",
-    borderBottomWidth: 1.5, borderBottomColor: GOLD, paddingVertical: 2, padding: 0,
-  },
-  cambiarBtn: {
-    backgroundColor: "rgba(74,12,12,0.08)",
-    borderRadius: 20,
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    alignSelf: "flex-start",
-  },
-  cambiarBtnText: { color: TEXT, fontSize: 13, fontWeight: "600" },
   creatorRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   creatorDot: { width: 18, height: 18, borderRadius: 9 },
   creatorText: { color: MUTED, fontSize: 12 },
@@ -560,12 +578,19 @@ const styles = StyleSheet.create({
   },
   statsText: { color: MUTED, fontSize: 12 },
 
-  // Actions
+  // Actions / Toolbar
   actionsRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingBottom: 12,
+    gap: 4,
+  },
+  toolBtn: {
+    width: 44,
+    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
   },
   playAllFab: {
     width: 52,
@@ -574,26 +599,16 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
+    marginLeft: 8,
   },
+
+  // Playlist description
+  playlistDesc: { color: MUTED, fontSize: 13, lineHeight: 18 },
 
   // Top panel (segundo fondo con fade)
   topPanel: {
     paddingBottom: 16,
   },
-
-  // Add button
-  addBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginHorizontal: 40,
-    marginTop: -5,
-    marginBottom: 20,
-    paddingVertical: 9,
-    borderRadius: 30,
-    backgroundColor: "rgba(255,255,255,0.10)",
-  },
-  addBtnText: { color: TEXT, fontSize: 14, fontWeight: "600" },
 
   // Section header
   sectionHeader: {
@@ -913,4 +928,322 @@ const cpStyles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
   },
+});
+
+// ── PlaylistMenuSheet (tres puntos) ────────────────────────────────────────
+function PlaylistMenuSheet({
+  visible, onClose, onShare, onAddSessions, onEditOrder, onEditInfo,
+}: {
+  visible: boolean; onClose: () => void; onShare: () => void;
+  onAddSessions: () => void; onEditOrder: () => void; onEditInfo: () => void;
+}) {
+  const insets = useSafeAreaInsets();
+  const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
+  return (
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
+      <Pressable style={menuSt.backdrop} onPress={onClose} />
+      <View style={[menuSt.sheet, { paddingBottom: bottomPad + 8 }]}>
+        <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
+        <View style={menuSt.handle} />
+        {([
+          { icon: "share", label: "Compartir", action: () => { onClose(); onShare(); } },
+          { icon: "plus-circle", label: "Agregar a esta playlist", action: onAddSessions },
+          { icon: "list", label: "Editar Playlist", action: onEditOrder },
+          { icon: "edit-2", label: "Nombre y datos", action: onEditInfo },
+        ] as { icon: React.ComponentProps<typeof Feather>["name"]; label: string; action: () => void }[]).map(({ icon, label, action }) => (
+          <Pressable key={label} style={({ pressed }) => [menuSt.row, { opacity: pressed ? 0.7 : 1 }]} onPress={action}>
+            <Feather name={icon} size={20} color={GOLD} />
+            <Text style={menuSt.rowText}>{label}</Text>
+          </Pressable>
+        ))}
+      </View>
+    </Modal>
+  );
+}
+
+const menuSt = StyleSheet.create({
+  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.55)" },
+  sheet: {
+    position: "absolute", bottom: 0, left: 0, right: 0,
+    borderTopLeftRadius: 22, borderTopRightRadius: 22,
+    paddingHorizontal: 20, overflow: "hidden",
+  },
+  handle: {
+    alignSelf: "center", width: 36, height: 4, borderRadius: 2,
+    backgroundColor: "rgba(212,175,55,0.25)", marginTop: 10, marginBottom: 8,
+  },
+  row: {
+    flexDirection: "row", alignItems: "center", gap: 14,
+    paddingVertical: 16,
+    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(61,14,22,0.35)",
+  },
+  rowText: { color: TEXT, fontSize: 15, fontWeight: "600" },
+});
+
+// ── DragReorderModal ────────────────────────────────────────────────────────
+const DRAG_ROW_H = 68;
+
+function DragReorderModal({ visible, sessions, onClose, onSave }: {
+  visible: boolean; sessions: Session[]; onClose: () => void;
+  onSave: (newIds: string[]) => void;
+}) {
+  const insets = useSafeAreaInsets();
+  const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
+  const [draftIds, setDraftIds] = useState<string[]>([]);
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [overIdx, setOverIdx] = useState<number | null>(null);
+  const draftLenRef = useRef(0);
+  draftLenRef.current = draftIds.length;
+
+  useEffect(() => {
+    if (visible) setDraftIds(sessions.map((s) => s.id));
+  }, [visible, sessions]);
+
+  const idMap = useMemo(() => {
+    const m: Record<string, Session> = {};
+    sessions.forEach((s) => { m[s.id] = s; });
+    return m;
+  }, [sessions]);
+
+  const makePan = (idx: number) => PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onPanResponderGrant: () => { setDragIdx(idx); setOverIdx(idx); },
+    onPanResponderMove: (_, gs) => {
+      const n = draftLenRef.current;
+      setOverIdx(Math.max(0, Math.min(n - 1, Math.round(idx + gs.dy / DRAG_ROW_H))));
+    },
+    onPanResponderRelease: (_, gs) => {
+      const n = draftLenRef.current;
+      const to = Math.max(0, Math.min(n - 1, Math.round(idx + gs.dy / DRAG_ROW_H)));
+      if (to !== idx) {
+        setDraftIds((prev) => {
+          const next = [...prev];
+          const [item] = next.splice(idx, 1);
+          next.splice(to, 0, item);
+          return next;
+        });
+      }
+      setDragIdx(null); setOverIdx(null);
+    },
+    onPanResponderTerminate: () => { setDragIdx(null); setOverIdx(null); },
+  });
+
+  return (
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
+      <View style={dreSt.backdrop}>
+        <View style={[dreSt.sheet, { paddingBottom: bottomPad }]}>
+          <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
+          <View style={dreSt.handle} />
+          <View style={dreSt.header}>
+            <Pressable onPress={onClose} hitSlop={12} style={dreSt.closeBtn}>
+              <Feather name="x" size={20} color={MUTED} />
+            </Pressable>
+            <Text style={dreSt.title}>Editar Playlist</Text>
+            <View style={{ width: 32 }} />
+          </View>
+          <Text style={dreSt.hint}>Mantén ≡ y arrastra para reordenar</Text>
+          <ScrollView style={{ flex: 1 }} scrollEnabled={dragIdx === null} showsVerticalScrollIndicator={false}>
+            {draftIds.map((sid, idx) => {
+              const session = idMap[sid];
+              if (!session) return null;
+              const isDragging = dragIdx === idx;
+              const isOver = overIdx === idx && dragIdx !== null && dragIdx !== idx;
+              const pan = makePan(idx);
+              return (
+                <View key={sid} style={{ height: DRAG_ROW_H }}>
+                  {isOver && dragIdx !== null && dragIdx > idx && <View style={dreSt.dropLine} />}
+                  <View style={[dreSt.row, isDragging && dreSt.rowActive]}>
+                    <View {...pan.panHandlers} style={dreSt.dragHandle} hitSlop={{ top: 12, bottom: 12, left: 8, right: 8 }}>
+                      <Feather name="menu" size={20} color={isDragging ? GOLD : MUTED} />
+                    </View>
+                    <Image source={session.image as never} style={dreSt.thumb} contentFit="cover" />
+                    <View style={{ flex: 1 }}>
+                      <Text style={dreSt.rowTitle} numberOfLines={2}>{session.title}</Text>
+                    </View>
+                  </View>
+                  {isOver && dragIdx !== null && dragIdx < idx && <View style={dreSt.dropLine} />}
+                </View>
+              );
+            })}
+          </ScrollView>
+          <Pressable
+            style={({ pressed }) => [dreSt.saveBtn, { opacity: pressed ? 0.8 : 1 }]}
+            onPress={() => { onSave(draftIds); onClose(); }}
+          >
+            <Text style={dreSt.saveBtnText}>Guardar</Text>
+          </Pressable>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+const dreSt = StyleSheet.create({
+  backdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.6)", justifyContent: "flex-end" },
+  sheet: {
+    height: "82%", borderTopLeftRadius: 22, borderTopRightRadius: 22,
+    overflow: "hidden", paddingHorizontal: 0,
+  },
+  handle: {
+    alignSelf: "center", width: 36, height: 4, borderRadius: 2,
+    backgroundColor: "rgba(212,175,55,0.25)", marginTop: 10,
+  },
+  header: { flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingVertical: 12 },
+  closeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
+  title: { flex: 1, textAlign: "center", color: TEXT, fontSize: 16, fontWeight: "700" },
+  hint: { color: MUTED, fontSize: 12, textAlign: "center", marginBottom: 8, paddingHorizontal: 20 },
+  row: {
+    flex: 1, flexDirection: "row", alignItems: "center", gap: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(61,14,22,0.30)",
+  },
+  rowActive: { backgroundColor: "rgba(212,175,55,0.08)", borderRadius: 10 },
+  dragHandle: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
+  thumb: { width: 44, height: 44, borderRadius: 6 },
+  rowTitle: { color: TEXT, fontSize: 14, fontWeight: "600", lineHeight: 18 },
+  dropLine: { height: 2, backgroundColor: GOLD, marginHorizontal: 16, borderRadius: 1 },
+  saveBtn: {
+    margin: 16, height: 50, borderRadius: 14, backgroundColor: GOLD,
+    alignItems: "center", justifyContent: "center",
+  },
+  saveBtnText: { color: "#1B060F", fontSize: 15, fontWeight: "700" },
+});
+
+// ── EditInfoModal (Nombre y datos) ─────────────────────────────────────────
+function EditInfoModal({ visible, playlist, onClose, onSave, onChangeCover, onDelete }: {
+  visible: boolean;
+  playlist: { id: string; name: string; description?: string; coverUri?: string; coverType?: string };
+  onClose: () => void;
+  onSave: (name: string, description: string) => void;
+  onChangeCover: () => void;
+  onDelete: () => void;
+}) {
+  const insets = useSafeAreaInsets();
+  const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
+  const [name, setName] = useState("");
+  const [desc, setDesc] = useState("");
+
+  useEffect(() => {
+    if (visible) { setName(playlist.name); setDesc(playlist.description ?? ""); }
+  }, [visible, playlist.name, playlist.description]);
+
+  const handleSave = () => {
+    if (!name.trim()) return;
+    onSave(name.trim(), desc.trim());
+    onClose();
+  };
+
+  return (
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
+      <View style={eiSt.backdrop}>
+        <View style={[eiSt.sheet, { paddingBottom: bottomPad }]}>
+          <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
+          <View style={eiSt.handle} />
+          <View style={eiSt.header}>
+            <Pressable onPress={onClose} hitSlop={12} style={eiSt.closeBtn}>
+              <Feather name="x" size={20} color={MUTED} />
+            </Pressable>
+            <Text style={eiSt.title}>Nombre y datos</Text>
+            <Pressable onPress={handleSave} hitSlop={12}>
+              <Text style={eiSt.saveText}>Guardar</Text>
+            </Pressable>
+          </View>
+
+          <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+            {/* Portada */}
+            <Pressable style={({ pressed }) => [eiSt.coverRow, { opacity: pressed ? 0.7 : 1 }]} onPress={onChangeCover}>
+              <View style={eiSt.coverThumb}>
+                {playlist.coverUri ? (
+                  <Image source={{ uri: playlist.coverUri }} style={StyleSheet.absoluteFill} contentFit="cover" />
+                ) : (
+                  <Feather name="music" size={24} color={MUTED} />
+                )}
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={eiSt.coverLabel}>Foto de portada</Text>
+                <Text style={eiSt.coverSub}>Toca para cambiar</Text>
+              </View>
+              <Feather name="chevron-right" size={18} color={MUTED} />
+            </Pressable>
+
+            {/* Nombre */}
+            <Text style={eiSt.fieldLabel}>Nombre</Text>
+            <TextInput
+              style={eiSt.input}
+              value={name}
+              onChangeText={setName}
+              placeholder="Nombre de la playlist"
+              placeholderTextColor={MUTED}
+              returnKeyType="next"
+              maxLength={80}
+            />
+
+            {/* Descripción */}
+            <Text style={eiSt.fieldLabel}>Descripción</Text>
+            <TextInput
+              style={[eiSt.input, eiSt.inputMulti]}
+              value={desc}
+              onChangeText={setDesc}
+              placeholder="Agrega una descripción opcional"
+              placeholderTextColor={MUTED}
+              multiline
+              numberOfLines={3}
+              maxLength={300}
+            />
+
+            {/* Eliminar */}
+            <Pressable
+              style={({ pressed }) => [eiSt.deleteBtn, { opacity: pressed ? 0.7 : 1 }]}
+              onPress={() => { onClose(); setTimeout(onDelete, 300); }}
+            >
+              <Feather name="trash-2" size={16} color="#E05252" />
+              <Text style={eiSt.deleteBtnText}>Eliminar playlist</Text>
+            </Pressable>
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+const eiSt = StyleSheet.create({
+  backdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.6)", justifyContent: "flex-end" },
+  sheet: {
+    height: "80%", borderTopLeftRadius: 22, borderTopRightRadius: 22,
+    overflow: "hidden", paddingHorizontal: 20,
+  },
+  handle: {
+    alignSelf: "center", width: 36, height: 4, borderRadius: 2,
+    backgroundColor: "rgba(212,175,55,0.25)", marginTop: 10,
+  },
+  header: { flexDirection: "row", alignItems: "center", paddingVertical: 14 },
+  closeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
+  title: { flex: 1, textAlign: "center", color: TEXT, fontSize: 16, fontWeight: "700" },
+  saveText: { color: GOLD, fontSize: 15, fontWeight: "700" },
+  coverRow: {
+    flexDirection: "row", alignItems: "center", gap: 14,
+    paddingVertical: 14, marginBottom: 8,
+    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(61,14,22,0.35)",
+  },
+  coverThumb: {
+    width: 52, height: 52, borderRadius: 8, overflow: "hidden",
+    backgroundColor: "rgba(212,175,55,0.08)",
+    alignItems: "center", justifyContent: "center",
+  },
+  coverLabel: { color: TEXT, fontSize: 14, fontWeight: "600" },
+  coverSub: { color: MUTED, fontSize: 12, marginTop: 2 },
+  fieldLabel: { color: MUTED, fontSize: 12, fontWeight: "600", marginTop: 16, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 },
+  input: {
+    backgroundColor: "rgba(74,12,12,0.18)", borderRadius: 10, padding: 12,
+    color: TEXT, fontSize: 15,
+    borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(212,175,55,0.2)",
+  },
+  inputMulti: { height: 90, textAlignVertical: "top" },
+  deleteBtn: {
+    flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8,
+    marginTop: 32, marginBottom: 8, paddingVertical: 14, borderRadius: 12,
+    borderWidth: 1, borderColor: "rgba(224,82,82,0.35)",
+    backgroundColor: "rgba(224,82,82,0.08)",
+  },
+  deleteBtnText: { color: "#E05252", fontSize: 15, fontWeight: "600" },
 });
