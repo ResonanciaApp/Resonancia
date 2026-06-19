@@ -263,19 +263,11 @@ export function MiniPlayer() {
             </View>
 
             {/* Botón play/pause — siempre visible */}
-            <View style={styles.waveWrap}>
-              {[wave1, wave2].map((w, idx) => (
-                <Animated.View key={idx} pointerEvents="none" style={[styles.wave, styles.waveMix, {
-                  opacity:   w.interpolate({ inputRange: [0, 0.15, 1], outputRange: [0, 0.60, 0] }),
-                  transform: [{ scale: w.interpolate({ inputRange: [0, 1], outputRange: [1, 2.2] }) }],
-                }]} />
-              ))}
-              <Pressable onPress={(e) => { e.stopPropagation(); togglePlay(); }} style={styles.playPauseBtn}>
-                <View style={mixPlaying ? undefined : styles.playIconNudge}>
-                  <Feather name={mixPlaying ? "pause" : "play"} size={22} color="#FFFFFF" />
-                </View>
-              </Pressable>
-            </View>
+            <Pressable onPress={(e) => { e.stopPropagation(); togglePlay(); }} style={styles.playPauseBtn}>
+              <View style={mixPlaying ? undefined : styles.playIconNudge}>
+                <Feather name={mixPlaying ? "pause" : "play"} size={22} color="#FFFFFF" />
+              </View>
+            </Pressable>
           </View>
 
         </Pressable>
@@ -428,7 +420,6 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
   },
   playIconNudge: { marginLeft: 2 },
   waveWrap: {
