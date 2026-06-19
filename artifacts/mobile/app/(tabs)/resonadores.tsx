@@ -397,6 +397,13 @@ export default function ResonadoresScreen() {
           </View>
         )}
 
+        {/* Banner */}
+        <Image
+          source={require("@/assets/images/banner-equipo.jpg")}
+          style={styles.banner}
+          contentFit="cover"
+        />
+
         {/* Tab switcher */}
         <View style={styles.tabPill}>
           {(["artistas", "expansores"] as const).map((t) => {
@@ -570,6 +577,13 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: H_PAD,
     paddingBottom: 12,
+  },
+  banner: {
+    width: "100%",
+    height: 160,
+    borderRadius: 12,
+    marginBottom: 14,
+    overflow: "hidden",
   },
   titleRow: {
     flexDirection: "row",
