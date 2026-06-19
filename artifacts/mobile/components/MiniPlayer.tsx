@@ -213,7 +213,12 @@ export function MiniPlayer() {
         </View>
 
         {/* ── Card del miniplayer ── */}
-        <View style={styles.wrapper}>
+        <Pressable
+          onPress={() => router.push("/(tabs)/musica" as never)}
+          style={styles.wrapper}
+          accessibilityRole="button"
+          accessibilityLabel="Ir a Tu Mezcla"
+        >
           <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
 
           {/* ── Row principal ── */}
@@ -278,7 +283,7 @@ export function MiniPlayer() {
             </View>
           </View>
 
-        </View>
+        </Pressable>
       </View>
     );
   }
