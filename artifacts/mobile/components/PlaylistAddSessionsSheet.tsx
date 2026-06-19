@@ -12,6 +12,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import React, {
   useCallback,
@@ -21,10 +22,12 @@ import React, {
   useState,
 } from "react";
 import {
+  Dimensions,
   FlatList,
   Modal,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -256,6 +259,23 @@ export function PlaylistAddSessionsSheet({
   const { history } = usePlayer();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
 
+  // ── Slide entre tabs ─────────────────────────────────────────────────────
+  const slideX = useSharedValue(0);
+  const contentWidth = useRef(Dimensions.get("window").width);
+  const slideStyle = useAnimatedStyle(() => ({ transform: [{ translateX: slideX.value }] }));
+
+  const switchTab = useCallback((newTab: Tab) => {
+    setActiveTab((prev) => {
+      const prevIdx = TABS.indexOf(prev);
+      const newIdx  = TABS.indexOf(newTab);
+      if (prevIdx === newIdx) return prev;
+      const dir = newIdx > prevIdx ? 1 : -1;
+      slideX.value = dir * contentWidth.current;
+      slideX.value = withTiming(0, { duration: 240, easing: Easing.out(Easing.cubic) });
+      return newTab;
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   // ── Preview state ────────────────────────────────────────────────────────
   const [previewId, setPreviewId] = useState<string | null>(null);
   const progressSV   = useSharedValue(0);
@@ -386,53 +406,63 @@ export function PlaylistAddSessionsSheet({
       <Pressable style={styles.backdrop} onPress={onClose} />
 
       <View style={[styles.sheet, { paddingBottom: bottomPad }]}>
+        <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
         <View style={styles.handle} />
 
         {/* Header — título centrado */}
         <View style={styles.headerRow}>
           <View style={styles.headerSpacer} />
-          <Text style={styles.headerTitle}>Agregar a una playlist</Text>
+          <Text style={styles.headerTitle}>Agregar a una Playlist</Text>
           <Pressable onPress={onClose} hitSlop={12} style={styles.headerClose}>
             <Feather name="x" size={20} color={MUTED} />
           </Pressable>
         </View>
 
-        {/* Tabs — centrados, 15 px bajo el título */}
-        <View style={styles.tabsWrapper}>
+        {/* Tabs — scroll horizontal para que no se corten */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.tabsWrapper}
+        >
           {TABS.map((tab) => {
             const active = tab === activeTab;
             return (
               <Pressable
                 key={tab}
                 style={({ pressed }) => [styles.tabChip, active && styles.tabChipActive, { opacity: pressed ? 0.8 : 1 }]}
-                onPress={() => setActiveTab(tab)}
+                onPress={() => switchTab(tab)}
               >
                 {active && <GoldGradientFill />}
                 <Text style={[styles.tabText, active && styles.tabTextActive]}>{tab}</Text>
               </Pressable>
             );
           })}
-        </View>
+        </ScrollView>
 
-        {/* Lista */}
-        {data.length === 0 ? (
-          <View style={styles.emptyWrap}>
-            <Feather name="music" size={40} color={MUTED} style={{ marginBottom: 12 }} />
-            <Text style={styles.emptyText}>
-              {activeTab === "Recientes" ? "Aún no escuchaste ninguna sesión" : "No hay más sesiones disponibles"}
-            </Text>
-          </View>
-        ) : (
-          <FlatList
-            data={data}
-            keyExtractor={(s) => s.id}
-            renderItem={renderItem}
-            extraData={previewId}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingTop: 4 }}
-            getItemLayout={(_, index) => ({ length: 68, offset: 68 * index, index })}
-          />
-        )}
+        {/* Lista — animada con slide */}
+        <Animated.View
+          style={[{ flex: 1, overflow: "hidden" }, slideStyle]}
+          onLayout={(e) => { contentWidth.current = e.nativeEvent.layout.width; }}
+        >
+          {data.length === 0 ? (
+            <View style={styles.emptyWrap}>
+              <Feather name="music" size={40} color={MUTED} style={{ marginBottom: 12 }} />
+              <Text style={styles.emptyText}>
+                {activeTab === "Recientes" ? "Aún no escuchaste ninguna sesión" : "No hay más sesiones disponibles"}
+              </Text>
+            </View>
+          ) : (
+            <FlatList
+              data={data}
+              keyExtractor={(s) => s.id}
+              renderItem={renderItem}
+              extraData={previewId}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ paddingTop: 4 }}
+              getItemLayout={(_, index) => ({ length: 68, offset: 68 * index, index })}
+            />
+          )}
+        </Animated.View>
       </View>
     </Modal>
   );
@@ -445,9 +475,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0, left: 0, right: 0,
     height: "82%",
-    backgroundColor: BG_SHEET,
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
+    overflow: "hidden",
   },
   handle: {
     alignSelf: "center",
@@ -477,16 +507,14 @@ const styles = StyleSheet.create({
   // Tabs
   tabsWrapper: {
     flexDirection: "row",
-    justifyContent: "center",
     gap: 8,
-    marginTop: 15,
-    marginBottom: 8,
     paddingHorizontal: 16,
+    paddingVertical: 10,
   },
   tabChip: {
     paddingHorizontal: 18, paddingVertical: 9,
     borderRadius: 20,
-    backgroundColor: "rgba(74,12,12,0.35)",
+    backgroundColor: "rgba(255,255,255,0.10)",
   },
   tabChipActive: { overflow: "hidden" },
   tabText: { color: TEXT, fontSize: 14, fontWeight: "600" },
