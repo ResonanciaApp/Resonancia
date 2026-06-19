@@ -11,7 +11,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { MOODS, type MoodId } from "@/data/moods";
 import { SOUND_TAGS, type SoundTagId } from "@/data/sounds";
 import {
   MIXER_BG_PALETTES,
@@ -23,8 +22,8 @@ import {
 type Props = {
   visible: boolean;
   onClose: () => void;
-  moodFilter: MoodId | null;
-  onMoodChange: (m: MoodId | null) => void;
+  moodFilter: null;
+  onMoodChange: (m: null) => void;
   tagFilters: SoundTagId[];
   onToggleTag: (t: SoundTagId) => void;
   bgPaletteId: MixerBgPaletteId;
@@ -48,8 +47,6 @@ function sheetColors(bgPaletteId: MixerBgPaletteId) {
 export function MixerSettingsSheet({
   visible,
   onClose,
-  moodFilter,
-  onMoodChange,
   tagFilters,
   onToggleTag,
   bgPaletteId,
@@ -61,9 +58,12 @@ export function MixerSettingsSheet({
   const c = sheetColors(bgPaletteId);
 
   const hasFilters =
-    moodFilter !== null ||
     tagFilters.length > 0 ||
     bgPaletteId !== DEFAULT_MIXER_BG_PALETTE;
+
+  function handleEscenaChange(id: MixerBgPaletteId) {
+    onBgPaletteChange(id);
+  }
 
   return (
     <Modal
@@ -79,45 +79,51 @@ export function MixerSettingsSheet({
         end={{ x: 0, y: 1 }}
         style={[styles.sheet, { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 16 }]}
       >
-        <Pressable onPress={onClose} style={[styles.closeBtn, { top: insets.top + 10 }]} hitSlop={8}>
-          <Text style={[styles.closeX, { color: c.mutedDim }]}>✕</Text>
-        </Pressable>
-
-        <Text style={[styles.title, { marginTop: insets.top + 36, color: c.fg }]}>
-          Ajustes del Mezclador
-        </Text>
+        {/* ── Header: X + título en la misma fila ── */}
+        <View style={[styles.headerRow, { marginTop: insets.top + 2 }]}>
+          <Pressable onPress={onClose} style={styles.closeBtn} hitSlop={8}>
+            <Text style={[styles.closeX, { color: c.mutedDim }]}>✕</Text>
+          </Pressable>
+          <Text style={[styles.title, { color: c.fg }]}>
+            Ajustes del Mezclador
+          </Text>
+          <View style={styles.closePlaceholder} />
+        </View>
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 8 }}>
 
-          {/* ── ¿Cómo te sientes? ── */}
-          <Text style={[styles.sectionTitle, { color: c.fg }]}>¿Cómo te sientes?</Text>
+          {/* ── Escenas ── */}
+          <Text style={[styles.sectionTitle, { color: c.fg }]}>Escenas</Text>
           <Text style={[styles.sectionHint, { color: c.mutedDim }]}>
-            Mostramos los sonidos afines a tu ánimo.
+            Tono del área de sonidos (no afecta la cabecera).
           </Text>
-          <View style={styles.chipWrap}>
-            {MOODS.map((mood) => {
-              const sel = moodFilter === mood.id;
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.paletteRow}
+          >
+            {MIXER_BG_PALETTES.map((p) => {
+              const sel = bgPaletteId === p.id;
               return (
-                <Pressable
-                  key={mood.id}
-                  onPress={() => onMoodChange(sel ? null : mood.id)}
-                  style={({ pressed }) => [
-                    styles.chip,
-                    {
-                      backgroundColor: sel ? c.chipSel : c.chipBg,
-                      borderColor: sel ? PRIMARY : c.chipBorder,
-                      opacity: pressed ? 0.8 : 1,
-                    },
-                  ]}
-                >
-                  <Text style={styles.chipEmoji}>{mood.emoji}</Text>
-                  <Text style={[styles.chipText, { color: sel ? PRIMARY : c.fg }]}>
-                    {mood.label}
+                <Pressable key={p.id} onPress={() => handleEscenaChange(p.id)} style={styles.paletteItem}>
+                  <LinearGradient
+                    colors={p.colors}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={[styles.swatch, sel && styles.swatchSel]}
+                  >
+                    {sel && <Text style={styles.swatchCheck}>✓</Text>}
+                  </LinearGradient>
+                  <Text
+                    style={[styles.swatchLabel, { color: sel ? PRIMARY : c.mutedDim }, sel && styles.swatchLabelSel]}
+                    numberOfLines={1}
+                  >
+                    {p.label}
                   </Text>
                 </Pressable>
               );
             })}
-          </View>
+          </ScrollView>
 
           {/* ── Etiquetas ── */}
           <Text style={[styles.sectionTitle, { marginTop: 22, color: c.fg }]}>Etiquetas</Text>
@@ -148,38 +154,6 @@ export function MixerSettingsSheet({
             })}
           </View>
 
-          {/* ── Color de fondo ── */}
-          <Text style={[styles.sectionTitle, { marginTop: 22, color: c.fg }]}>Color de fondo</Text>
-          <Text style={[styles.sectionHint, { color: c.mutedDim }]}>
-            Tono del área de sonidos (no afecta la cabecera).
-          </Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.paletteRow}
-          >
-            {MIXER_BG_PALETTES.map((p) => {
-              const sel = bgPaletteId === p.id;
-              return (
-                <Pressable key={p.id} onPress={() => onBgPaletteChange(p.id)} style={styles.paletteItem}>
-                  <LinearGradient
-                    colors={p.colors}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={[styles.swatch, sel && styles.swatchSel]}
-                  >
-                    {sel && <Text style={styles.swatchCheck}>✓</Text>}
-                  </LinearGradient>
-                  <Text
-                    style={[styles.swatchLabel, { color: sel ? PRIMARY : c.mutedDim }, sel && styles.swatchLabelSel]}
-                    numberOfLines={1}
-                  >
-                    {p.label}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
         </ScrollView>
 
         {/* ── Limpiar filtros ── */}
@@ -207,10 +181,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
   },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 18,
+  },
   closeBtn: {
-    position: "absolute",
-    top: 20,
-    left: 20,
     width: 32,
     height: 32,
     alignItems: "center",
@@ -219,12 +195,14 @@ const styles = StyleSheet.create({
   closeX: {
     fontSize: 16,
   },
+  closePlaceholder: {
+    width: 32,
+  },
   title: {
+    flex: 1,
     fontSize: 20,
     fontWeight: "700",
     textAlign: "center",
-    marginBottom: 18,
-    marginTop: 4,
   },
   sectionTitle: {
     fontSize: 15,
@@ -249,9 +227,6 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     gap: 5,
   },
-  chipEmoji: {
-    fontSize: 14,
-  },
   chipText: {
     fontSize: 13,
     fontWeight: "500",
@@ -260,6 +235,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 14,
     paddingRight: 4,
+    marginBottom: 4,
   },
   paletteItem: {
     width: 64,

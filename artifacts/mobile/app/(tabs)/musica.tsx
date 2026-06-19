@@ -885,8 +885,8 @@ export default function MezcladorScreen() {
       <MixerSettingsSheet
         visible={settingsVisible}
         onClose={() => setSettingsVisible(false)}
-        moodFilter={moodFilter}
-        onMoodChange={setMoodFilter}
+        moodFilter={null}
+        onMoodChange={() => {}}
         tagFilters={tagFilters}
         onToggleTag={toggleTagFilter}
         bgPaletteId={bgPaletteId}
