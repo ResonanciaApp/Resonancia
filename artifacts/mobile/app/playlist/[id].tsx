@@ -794,7 +794,6 @@ const modalStyles = StyleSheet.create({
     alignItems: "center",
     margin: 6,
     paddingVertical: 10,
-    backgroundColor: "rgba(212,175,55,0.05)",
     borderRadius: 12,
   },
   creationThumb: {
