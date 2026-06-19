@@ -992,11 +992,15 @@ function DragReorderModal({ visible, sessions, onClose, onSave }: {
   const [draftIds, setDraftIds] = useState<string[]>([]);
   const [dragIdx, setDragIdx] = useState<number | null>(null);
   const [overIdx, setOverIdx] = useState<number | null>(null);
-  const draftLenRef = useRef(0);
-  draftLenRef.current = draftIds.length;
+
+  // Sync refs — gestures read these, React state drives the UI
+  const dragIdxRef = useRef<number | null>(null);
+  const draftIdsRef = useRef<string[]>([]);
+  draftIdsRef.current = draftIds;
+  const scrollOffsetRef = useRef(0);
 
   useEffect(() => {
-    if (visible) setDraftIds(sessions.map((s) => s.id));
+    if (visible) { setDraftIds(sessions.map((s) => s.id)); }
   }, [visible, sessions]);
 
   const idMap = useMemo(() => {
@@ -1005,28 +1009,52 @@ function DragReorderModal({ visible, sessions, onClose, onSave }: {
     return m;
   }, [sessions]);
 
-  const makePan = (idx: number) => PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onPanResponderGrant: () => { setDragIdx(idx); setOverIdx(idx); },
-    onPanResponderMove: (_, gs) => {
-      const n = draftLenRef.current;
-      setOverIdx(Math.max(0, Math.min(n - 1, Math.round(idx + gs.dy / DRAG_ROW_H))));
-    },
-    onPanResponderRelease: (_, gs) => {
-      const n = draftLenRef.current;
-      const to = Math.max(0, Math.min(n - 1, Math.round(idx + gs.dy / DRAG_ROW_H)));
-      if (to !== idx) {
-        setDraftIds((prev) => {
-          const next = [...prev];
-          const [item] = next.splice(idx, 1);
-          next.splice(to, 0, item);
-          return next;
-        });
-      }
-      setDragIdx(null); setOverIdx(null);
-    },
-    onPanResponderTerminate: () => { setDragIdx(null); setOverIdx(null); },
-  });
+  // Single PanResponder on the list container — avoids per-item closure/stale-idx issues.
+  // Gesture starts only when touching the handle zone (left 56px of each row).
+  const pan = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: (e) => e.nativeEvent.locationX <= 56,
+      onStartShouldSetPanResponderCapture: (e) => e.nativeEvent.locationX <= 56,
+      onPanResponderTerminationRequest: () => false, // never let ScrollView steal the gesture
+      onPanResponderGrant: (e) => {
+        // locationY relative to the container view + scroll offset = item position
+        const relY = e.nativeEvent.locationY + scrollOffsetRef.current;
+        const idx = Math.max(0, Math.min(draftIdsRef.current.length - 1, Math.floor(relY / DRAG_ROW_H)));
+        dragIdxRef.current = idx;
+        setDragIdx(idx);
+        setOverIdx(idx);
+      },
+      onPanResponderMove: (_, gs) => {
+        const idx = dragIdxRef.current;
+        if (idx === null) return;
+        const n = draftIdsRef.current.length;
+        const newOver = Math.max(0, Math.min(n - 1, Math.round(idx + gs.dy / DRAG_ROW_H)));
+        setOverIdx(newOver);
+      },
+      onPanResponderRelease: (_, gs) => {
+        const idx = dragIdxRef.current;
+        if (idx === null) return;
+        const n = draftIdsRef.current.length;
+        const to = Math.max(0, Math.min(n - 1, Math.round(idx + gs.dy / DRAG_ROW_H)));
+        if (to !== idx) {
+          setDraftIds((prev) => {
+            const next = [...prev];
+            const [item] = next.splice(idx, 1);
+            next.splice(to, 0, item);
+            return next;
+          });
+        }
+        dragIdxRef.current = null;
+        setDragIdx(null);
+        setOverIdx(null);
+      },
+      onPanResponderTerminate: () => {
+        dragIdxRef.current = null;
+        setDragIdx(null);
+        setOverIdx(null);
+      },
+    })
+  ).current;
 
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
@@ -1041,31 +1069,42 @@ function DragReorderModal({ visible, sessions, onClose, onSave }: {
             <Text style={dreSt.title}>Editar Playlist</Text>
             <View style={{ width: 32 }} />
           </View>
-          <Text style={dreSt.hint}>Mantén ≡ y arrastra para reordenar</Text>
-          <ScrollView style={{ flex: 1 }} scrollEnabled={dragIdx === null} showsVerticalScrollIndicator={false}>
-            {draftIds.map((sid, idx) => {
-              const session = idMap[sid];
-              if (!session) return null;
-              const isDragging = dragIdx === idx;
-              const isOver = overIdx === idx && dragIdx !== null && dragIdx !== idx;
-              const pan = makePan(idx);
-              return (
-                <View key={sid} style={{ height: DRAG_ROW_H }}>
-                  {isOver && dragIdx !== null && dragIdx > idx && <View style={dreSt.dropLine} />}
-                  <View style={[dreSt.row, isDragging && dreSt.rowActive]}>
-                    <View {...pan.panHandlers} style={dreSt.dragHandle} hitSlop={{ top: 12, bottom: 12, left: 8, right: 8 }}>
-                      <Feather name="menu" size={20} color={isDragging ? GOLD : MUTED} />
+          <Text style={dreSt.hint}>Toca y arrastra ≡ para reordenar</Text>
+          {/* PanResponder container — wraps the scroll list */}
+          <View style={{ flex: 1 }} {...pan.panHandlers}>
+            <ScrollView
+              style={{ flex: 1 }}
+              scrollEnabled={dragIdx === null}
+              showsVerticalScrollIndicator={false}
+              scrollEventThrottle={16}
+              onScroll={(e) => { scrollOffsetRef.current = e.nativeEvent.contentOffset.y; }}
+            >
+              {draftIds.map((sid, idx) => {
+                const session = idMap[sid];
+                if (!session) return null;
+                const isDragging = dragIdx === idx;
+                const isOver = overIdx === idx && dragIdx !== null && dragIdx !== idx;
+                const showAbove = isOver && dragIdx !== null && dragIdx > idx;
+                const showBelow = isOver && dragIdx !== null && dragIdx < idx;
+                return (
+                  <View key={sid} style={{ minHeight: DRAG_ROW_H }}>
+                    {showAbove && <View style={dreSt.dropLine} />}
+                    <View style={[dreSt.row, isDragging && dreSt.rowActive]}>
+                      {/* Handle zone */}
+                      <View style={dreSt.dragHandle}>
+                        <Feather name="menu" size={22} color={isDragging ? GOLD : MUTED} />
+                      </View>
+                      <Image source={session.image as never} style={dreSt.thumb} contentFit="cover" />
+                      <View style={{ flex: 1 }}>
+                        <Text style={dreSt.rowTitle} numberOfLines={2}>{session.title}</Text>
+                      </View>
                     </View>
-                    <Image source={session.image as never} style={dreSt.thumb} contentFit="cover" />
-                    <View style={{ flex: 1 }}>
-                      <Text style={dreSt.rowTitle} numberOfLines={2}>{session.title}</Text>
-                    </View>
+                    {showBelow && <View style={dreSt.dropLine} />}
                   </View>
-                  {isOver && dragIdx !== null && dragIdx < idx && <View style={dreSt.dropLine} />}
-                </View>
-              );
-            })}
-          </ScrollView>
+                );
+              })}
+            </ScrollView>
+          </View>
           <Pressable
             style={({ pressed }) => [dreSt.saveBtn, { opacity: pressed ? 0.8 : 1 }]}
             onPress={() => { onSave(draftIds); onClose(); }}
@@ -1091,17 +1130,17 @@ const dreSt = StyleSheet.create({
   header: { flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingVertical: 12 },
   closeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
   title: { flex: 1, textAlign: "center", color: TEXT, fontSize: 16, fontWeight: "700" },
-  hint: { color: MUTED, fontSize: 12, textAlign: "center", marginBottom: 8, paddingHorizontal: 20 },
+  hint: { color: MUTED, fontSize: 12, textAlign: "center", marginBottom: 4, paddingHorizontal: 20 },
   row: {
-    flex: 1, flexDirection: "row", alignItems: "center", gap: 12,
-    paddingHorizontal: 16,
+    height: DRAG_ROW_H, flexDirection: "row", alignItems: "center", gap: 12,
+    paddingHorizontal: 4,
     borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(61,14,22,0.30)",
   },
-  rowActive: { backgroundColor: "rgba(212,175,55,0.08)", borderRadius: 10 },
-  dragHandle: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
+  rowActive: { backgroundColor: "rgba(212,175,55,0.12)", opacity: 0.7 },
+  dragHandle: { width: 56, height: DRAG_ROW_H, alignItems: "center", justifyContent: "center" },
   thumb: { width: 44, height: 44, borderRadius: 6 },
   rowTitle: { color: TEXT, fontSize: 14, fontWeight: "600", lineHeight: 18 },
-  dropLine: { height: 2, backgroundColor: GOLD, marginHorizontal: 16, borderRadius: 1 },
+  dropLine: { height: 3, backgroundColor: GOLD, marginHorizontal: 16, borderRadius: 2 },
   saveBtn: {
     margin: 16, height: 50, borderRadius: 14, backgroundColor: GOLD,
     alignItems: "center", justifyContent: "center",
