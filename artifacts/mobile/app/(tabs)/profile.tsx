@@ -1919,7 +1919,7 @@ const styles = StyleSheet.create({
   },
   dvActionPillText: { fontSize: 13, fontWeight: "400", color: "#FFFFFF", letterSpacing: 0.1 },
   dvGallerySection: {
-    backgroundColor: "rgba(255,255,255,0.05)", borderRadius: 18, padding: 16, gap: 12, marginBottom: 16,
+    borderRadius: 18, padding: 16, gap: 12, marginBottom: 16,
   },
   dvGalleryGrid: { flexDirection: "row", flexWrap: "wrap", gap: 4 },
   dvGalleryCell: { borderRadius: 10, backgroundColor: "rgba(255,255,255,0.05)" },
