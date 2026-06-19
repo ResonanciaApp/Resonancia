@@ -337,12 +337,13 @@ export default function PlaylistDetailScreen() {
         </View>{/* fin topPanel */}
 
         {/* Sessions list */}
-        {sessions.map((session, idx) => (
+        {sessions.map((session) => (
           <PlaylistSessionRow
             key={session.id}
             session={session}
-            index={idx + 1}
             isPremium={isPremium}
+            isActive={currentSession?.id === session.id}
+            isPlaying={displayIsPlaying}
             onPlay={() => playSession(session)}
             onActionsPress={() => setActionsSession(session)}
             onRemove={() => removeFromPlaylist(playlist.id, session.id)}
@@ -533,12 +534,7 @@ export default function PlaylistDetailScreen() {
             contentFit="cover"
           />
           <View style={mpSt.info}>
-            <View style={mpSt.titleRow}>
-              <Text style={[mpSt.title, { flex: 1 }]} numberOfLines={1}>{currentSession.title}</Text>
-              {displayIsPlaying && (
-                <EqualizerBars color="#D4AF37" size="sm" />
-              )}
-            </View>
+            <Text style={mpSt.title} numberOfLines={1}>{currentSession.title}</Text>
             <Text style={mpSt.artist} numberOfLines={1}>
               {currentSession.guideId
                 ? (getGuideById(currentSession.guideId)?.name ?? "Casa del Cuenco")
@@ -566,9 +562,10 @@ export default function PlaylistDetailScreen() {
 
 // ─── Playlist session row ──────────────────────────────────────────────────────
 function PlaylistSessionRow({
-  session, index, isPremium, onPlay, onActionsPress, onRemove,
+  session, isPremium, isActive, isPlaying, onPlay, onActionsPress, onRemove,
 }: {
-  session: Session; index: number; isPremium: boolean;
+  session: Session; isPremium: boolean;
+  isActive: boolean; isPlaying: boolean;
   onPlay: () => void; onActionsPress: () => void; onRemove: () => void;
 }) {
   const locked = !!session.isPremium && !isPremium;
@@ -577,7 +574,6 @@ function PlaylistSessionRow({
 
   return (
     <View style={styles.sessionRow}>
-      <Text style={styles.orderNum}>{index}</Text>
       <Pressable onPress={locked ? () => router.push("/membresia" as never) : onPlay}
         style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1 }]}>
         <Image source={session.image as never} style={styles.thumb}
@@ -585,7 +581,12 @@ function PlaylistSessionRow({
       </Pressable>
       <Pressable onPress={locked ? () => router.push("/membresia" as never) : onPlay}
         style={({ pressed }) => [{ flex: 1, opacity: pressed ? 0.75 : 1 }]}>
-        <Text style={styles.rowName} numberOfLines={2}>{session.title}</Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+          <Text style={[styles.rowName, isActive && { color: "#D4AF37" }]} numberOfLines={2}>
+            {session.title}
+          </Text>
+          {isActive && isPlaying && <EqualizerBars color="#D4AF37" size="sm" />}
+        </View>
         <Text style={styles.rowMeta}>{author} · {session.durationLabel}</Text>
       </Pressable>
       <Pressable onPress={onActionsPress} hitSlop={10} style={styles.moreBtn}>
@@ -1443,11 +1444,6 @@ const mpSt = StyleSheet.create({
   info: {
     flex: 1,
     gap: 3,
-  },
-  titleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
   },
   title: {
     color: TEXT,
