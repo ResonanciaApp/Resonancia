@@ -200,18 +200,6 @@ export function MiniPlayer() {
 
     return (
       <View style={styles.mixOuter}>
-        {/* ── Píldora "Abrir" — SOBRE la card ── */}
-        <View style={styles.pillRow}>
-          <Pressable
-            onPress={handleOpen}
-            style={styles.openPill}
-            accessibilityRole="button"
-            accessibilityLabel="Abrir Tu Mezcla"
-          >
-            <Feather name="chevron-up" size={15} color="#FFFFFF" />
-          </Pressable>
-        </View>
-
         {/* ── Card del miniplayer — pressable para abrir el mezclador ── */}
         <Pressable style={styles.wrapper} onPress={handleOpen} accessibilityRole="button" accessibilityLabel="Abrir mezclador">
           <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
