@@ -17,12 +17,14 @@ interface NotificationsCtx {
   unreadCount: number;
   shouldAnimate: boolean;
   clearAnimation: () => void;
+  forceAnimate: () => void;
 }
 
 const Ctx = createContext<NotificationsCtx>({
   unreadCount: 0,
   shouldAnimate: false,
   clearAnimation: () => {},
+  forceAnimate: () => {},
 });
 
 export function useNotifications() {
@@ -55,8 +57,12 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
     setShouldAnimate(false);
   }, []);
 
+  const forceAnimate = useCallback(() => {
+    setShouldAnimate(true);
+  }, []);
+
   return (
-    <Ctx.Provider value={{ unreadCount, shouldAnimate, clearAnimation }}>
+    <Ctx.Provider value={{ unreadCount, shouldAnimate, clearAnimation, forceAnimate }}>
       {children}
     </Ctx.Provider>
   );

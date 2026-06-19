@@ -32,6 +32,7 @@ import { EXPANSORES } from "@/data/expansores";
 import { useBrightness } from "@/context/BrightnessContext";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
+import { useNotifications } from "@/context/NotificationsContext";
 
 const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 
@@ -103,6 +104,7 @@ async function cancelDailyReminder() {
 
 export default function ConfiguracionesScreen() {
   const colors = useColors();
+  const { forceAnimate } = useNotifications();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -597,6 +599,17 @@ export default function ConfiguracionesScreen() {
               >
                 <RowIcon icon="zap" colors={colors} />
                 <Text style={[styles.rowLabel, { color: colors.foreground }]}>Probar animación de racha</Text>
+                <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  forceAnimate();
+                  router.replace("/(tabs)" as never);
+                }}
+                style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}
+              >
+                <RowIcon icon="bell" colors={colors} />
+                <Text style={[styles.rowLabel, { color: colors.foreground }]}>Probar animación cuenco</Text>
                 <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
               </Pressable>
               <Pressable
