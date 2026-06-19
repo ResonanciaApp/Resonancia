@@ -212,8 +212,8 @@ export function MiniPlayer() {
           </Pressable>
         </View>
 
-        {/* ── Card del miniplayer ── */}
-        <View style={styles.wrapper}>
+        {/* ── Card del miniplayer — pressable para abrir el mezclador ── */}
+        <Pressable style={styles.wrapper} onPress={handleOpen} accessibilityRole="button" accessibilityLabel="Abrir mezclador">
           <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
 
           {/* ── Row principal ── */}
@@ -270,7 +270,7 @@ export function MiniPlayer() {
                   transform: [{ scale: w.interpolate({ inputRange: [0, 1], outputRange: [1, 2.2] }) }],
                 }]} />
               ))}
-              <Pressable onPress={togglePlay} style={styles.playPauseBtn}>
+              <Pressable onPress={(e) => { e.stopPropagation(); togglePlay(); }} style={styles.playPauseBtn}>
                 <View style={mixPlaying ? undefined : styles.playIconNudge}>
                   <Feather name={mixPlaying ? "pause" : "play"} size={22} color="#FFFFFF" />
                 </View>
@@ -278,7 +278,7 @@ export function MiniPlayer() {
             </View>
           </View>
 
-        </View>
+        </Pressable>
       </View>
     );
   }
