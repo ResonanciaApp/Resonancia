@@ -28,6 +28,8 @@ export type Playlist = {
   coverType?: "image" | "geometrix" | "creation";
   coverGeometryId?: string;
   coverCreationId?: string;
+  /** Hex del tono de acento elegido por el usuario para el header */
+  coverColor?: string;
   createdAt: string;
   pinned?: boolean;
 };
@@ -51,6 +53,7 @@ interface FoldersPlaylistsCtx {
   createPlaylist: (name: string, initialSessionId?: string) => Playlist;
   renamePlaylist: (playlistId: string, name: string) => void;
   setPlaylistCover: (playlistId: string, uri: string) => void;
+  setPlaylistCoverColor: (playlistId: string, color: string) => void;
   setPlaylistCoverGeometry: (playlistId: string, geometryId: string) => void;
   setPlaylistCoverCreation: (playlistId: string, creationId: string) => void;
   addToPlaylist: (playlistId: string, sessionId: string) => void;
@@ -229,6 +232,12 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     );
   }, [updatePlaylists]);
 
+  const setPlaylistCoverColor = useCallback((playlistId: string, color: string) => {
+    updatePlaylists((prev) =>
+      prev.map((p) => p.id === playlistId ? { ...p, coverColor: color } : p)
+    );
+  }, [updatePlaylists]);
+
   const setPlaylistCoverGeometry = useCallback((playlistId: string, geometryId: string) => {
     updatePlaylists((prev) =>
       prev.map((p) => p.id === playlistId ? { ...p, coverType: "geometrix" as const, coverGeometryId: geometryId } : p)
@@ -302,6 +311,7 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
         createPlaylist,
         renamePlaylist,
         setPlaylistCover,
+        setPlaylistCoverColor,
         setPlaylistCoverGeometry,
         setPlaylistCoverCreation,
         addToPlaylist,

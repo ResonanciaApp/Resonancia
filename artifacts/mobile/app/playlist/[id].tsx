@@ -20,15 +20,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-// react-native-image-colors requiere módulo nativo compilado en el dev client.
-// Lo cargamos una sola vez al nivel del módulo para que el try-catch funcione
-// correctamente incluso con React Compiler activado.
-let _ImageColors: { getColors: (uri: string, opts: object) => Promise<Record<string, string>> } | null = null;
-try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  _ImageColors = require("react-native-image-colors").default ?? require("react-native-image-colors");
-} catch { /* módulo nativo no disponible aún */ }
-
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { PlaylistAddSessionsSheet } from "@/components/PlaylistAddSessionsSheet";
 import { SacredGlyph } from "@/components/SacredGlyph";
@@ -47,6 +38,17 @@ const GOLD = "#D4AF37";
 const TEXT = "#F4DAD5";
 const MUTED = "rgba(242,231,228,0.45)";
 const DEFAULT_PANEL_BG = "rgba(74,12,12,0.28)";
+
+const ACCENT_PALETTE = [
+  "#7B2D52", // borgoña
+  "#2C4A8C", // azul marino
+  "#2C6B4A", // verde
+  "#6B2C8C", // violeta
+  "#8C4A2C", // terra
+  "#2C6B7B", // teal
+  "#8C7B2C", // dorado
+  "#4A1C8C", // índigo
+] as const;
 
 /** Convierte hex a [r,g,b] (0-255). */
 function hexToRgb(hex: string): [number, number, number] | null {
@@ -83,7 +85,7 @@ export default function PlaylistDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
-  const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistCover, setPlaylistCoverGeometry, setPlaylistCoverCreation } = useFoldersPlaylists();
+  const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistCover, setPlaylistCoverColor, setPlaylistCoverGeometry, setPlaylistCoverCreation } = useFoldersPlaylists();
   const { playSession, pauseResume, isPlaying, currentSession } = usePlayer();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -93,30 +95,15 @@ export default function PlaylistDetailScreen() {
   const [nameInput, setNameInput] = useState("");
   const [addSheetVisible, setAddSheetVisible] = useState(false);
   const [coverModalVisible, setCoverModalVisible] = useState(false);
-  const [panelColor, setPanelColor] = useState<string>(DEFAULT_PANEL_BG);
+  const [pendingCoverUri, setPendingCoverUri] = useState<string | null>(null);
+  const [colorPickerVisible, setColorPickerVisible] = useState(false);
+  const [selectedAccent, setSelectedAccent] = useState<string>(ACCENT_PALETTE[0]);
 
   const playlist = playlists.find((p) => p.id === id);
 
-  // Extrae color dominante cuando hay foto de portada.
-  // _ImageColors es null si el módulo nativo no está compilado en el dev client.
-  useEffect(() => {
-    const uri = playlist?.coverUri ?? null;
-    if (!uri || !_ImageColors) { setPanelColor(DEFAULT_PANEL_BG); return; }
-    let cancelled = false;
-    _ImageColors.getColors(uri, { fallback: "#4A0C0C", cache: true, key: uri })
-      .then((result) => {
-        if (cancelled) return;
-        let hex = "#4A0C0C";
-        if (result["platform"] === "ios") {
-          hex = result["background"] || result["primary"] || hex;
-        } else if (result["platform"] === "android") {
-          hex = result["dominant"] || result["vibrant"] || result["darkVibrant"] || hex;
-        }
-        setPanelColor(buildPanelColor(hex));
-      })
-      .catch(() => { if (!cancelled) setPanelColor(DEFAULT_PANEL_BG); });
-    return () => { cancelled = true; };
-  }, [playlist?.coverUri]);
+  const panelColor = playlist?.coverColor
+    ? buildPanelColor(playlist.coverColor)
+    : DEFAULT_PANEL_BG;
 
   const sessions = useMemo(
     () =>
@@ -356,12 +343,76 @@ export default function PlaylistDetailScreen() {
             quality: 0.85,
           });
           if (!result.canceled && result.assets[0]?.uri) {
-            setPlaylistCover(playlist.id, result.assets[0].uri);
+            setPendingCoverUri(result.assets[0].uri);
+            setSelectedAccent(playlist.coverColor ?? ACCENT_PALETTE[0]);
+            setColorPickerVisible(true);
           }
         }}
         onPickGeometry={(geoId) => setPlaylistCoverGeometry(playlist.id, geoId)}
         onPickCreation={(cid) => setPlaylistCoverCreation(playlist.id, cid)}
       />
+
+      {/* ── Color picker de encabezado ──────────────────────────────────────── */}
+      <Modal
+        visible={colorPickerVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setColorPickerVisible(false)}
+      >
+        <View style={cpStyles.backdrop}>
+          <View style={cpStyles.sheet}>
+            <Text style={cpStyles.title}>Tono del encabezado</Text>
+            <Text style={cpStyles.sub}>Elige el color que combina con tu foto</Text>
+
+            {/* Preview del header con el color seleccionado */}
+            <View style={[cpStyles.preview, { backgroundColor: buildPanelColor(selectedAccent) }]}>
+              {pendingCoverUri && (
+                <Image source={{ uri: pendingCoverUri }} style={cpStyles.previewImg} contentFit="cover" />
+              )}
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: buildPanelColor(selectedAccent), opacity: 0.7 }]} />
+              <Text style={cpStyles.previewLabel}>Vista previa</Text>
+            </View>
+
+            {/* Paleta de colores */}
+            <View style={cpStyles.palette}>
+              {ACCENT_PALETTE.map((hex) => (
+                <Pressable
+                  key={hex}
+                  onPress={() => setSelectedAccent(hex)}
+                  style={[
+                    cpStyles.swatch,
+                    { backgroundColor: hex },
+                    selectedAccent === hex && cpStyles.swatchSelected,
+                  ]}
+                />
+              ))}
+            </View>
+
+            {/* Botones */}
+            <View style={cpStyles.actions}>
+              <Pressable
+                style={cpStyles.btnCancel}
+                onPress={() => setColorPickerVisible(false)}
+              >
+                <Text style={cpStyles.btnCancelText}>Cancelar</Text>
+              </Pressable>
+              <Pressable
+                style={cpStyles.btnConfirm}
+                onPress={() => {
+                  if (pendingCoverUri) {
+                    setPlaylistCover(playlist.id, pendingCoverUri);
+                    setPlaylistCoverColor(playlist.id, selectedAccent);
+                  }
+                  setColorPickerVisible(false);
+                  setPendingCoverUri(null);
+                }}
+              >
+                <Text style={cpStyles.btnConfirmText}>Guardar</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -813,5 +864,104 @@ const modalStyles = StyleSheet.create({
     marginTop: 8,
     textAlign: "center",
     paddingHorizontal: 4,
+  },
+});
+
+const cpStyles = StyleSheet.create({
+  backdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    justifyContent: "flex-end",
+  },
+  sheet: {
+    backgroundColor: "#1E0810",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 40,
+  },
+  title: {
+    color: TEXT,
+    fontSize: 17,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 4,
+  },
+  sub: {
+    color: MUTED,
+    fontSize: 13,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  preview: {
+    height: 72,
+    borderRadius: 14,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 24,
+  },
+  previewImg: {
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0.45,
+  },
+  previewLabel: {
+    color: "rgba(255,255,255,0.6)",
+    fontSize: 12,
+    letterSpacing: 1,
+    zIndex: 1,
+  },
+  palette: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: 14,
+    marginBottom: 28,
+  },
+  swatch: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+  },
+  swatchSelected: {
+    borderWidth: 3,
+    borderColor: GOLD,
+    shadowColor: GOLD,
+    shadowOpacity: 0.6,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 0 },
+    elevation: 6,
+  },
+  actions: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  btnCancel: {
+    flex: 1,
+    height: 48,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.3)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  btnCancelText: {
+    color: MUTED,
+    fontSize: 15,
+    fontWeight: "600",
+  },
+  btnConfirm: {
+    flex: 1,
+    height: 48,
+    borderRadius: 14,
+    backgroundColor: GOLD,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  btnConfirmText: {
+    color: "#1B060F",
+    fontSize: 15,
+    fontWeight: "700",
   },
 });
