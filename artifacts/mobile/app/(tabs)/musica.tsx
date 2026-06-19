@@ -127,15 +127,6 @@ const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
   bpm:            ["#0A2020", "#071818", "#040F0F"],
 };
 
-/** Colores del borde activo = TAB_HEADER_GRADIENT[0] aclarado 20% (+51/canal) */
-const TAB_ACTIVE_BORDER: Record<MainTabId, string> = {
-  popular:        "#613743",
-  naturaleza:     "#3D4D41",
-  ancestrales:    "#554843",
-  sintetizadores: "#394D61",
-  voces:          "#553B63",
-  bpm:            "#3D5353",
-};
 
 /** Gradiente de fondo de contenido en modo "noche" — último stop neutro oscuro (sin bordeaux) */
 const TAB_NOCHE_BG: Record<MainTabId, [string, string, string]> = {
@@ -877,7 +868,7 @@ export default function MezcladorScreen() {
                     locked={!!s.isPremium && !isPremium}
                     available={hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id]}
                     image={getSoundImage(s.id) ?? REMOTE_SOUND_IMAGE_MAP[s.id]}
-                    borderGradient={[TAB_ACTIVE_BORDER[mainTab], TAB_HEADER_GRADIENT[mainTab][1], TAB_HEADER_GRADIENT[mainTab][2]]}
+                    borderGradient={TAB_HEADER_GRADIENT[mainTab]}
                     textColor={bgPaletteId === "noche" ? "#FFFFFF" : undefined}
                     bgPaletteId={bgPaletteId}
                     onPress={() => handleSoundPress(s)}
