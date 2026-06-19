@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import { Animated, Easing, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Easing, Image, Pressable, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { useNotifications } from "@/context/NotificationsContext";
 
@@ -15,6 +15,7 @@ export function CuencoBell() {
     const t = setTimeout(() => { devSeedAndAnimate(); }, 800);
     return () => clearTimeout(t);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const hasBadge = unreadCount > 0 || shouldAnimate;
 
   // Animated values — todos usables con native driver
@@ -22,6 +23,7 @@ export function CuencoBell() {
   const goldOpacity = useRef(new Animated.Value(0)).current;
   const scaleAnim   = useRef(new Animated.Value(1)).current;
   const iconOpacity = useRef(new Animated.Value(hasBadge ? 1 : MUTED_OPACITY)).current;
+  const dotOpacity  = useRef(new Animated.Value(hasBadge ? 1 : 0)).current;
 
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -70,7 +72,7 @@ export function CuencoBell() {
       ]),
     ]).start();
 
-    // ── Apagado después del hold ──
+    // ── Apagado del glow/dorado después del hold ──
     const t = setTimeout(() => {
       const FADE_OUT = 900;
       Animated.parallel([
@@ -99,12 +101,28 @@ export function CuencoBell() {
     }
   }, [shouldAnimate, runGlow]);
 
-  // Actualiza opacidad base cuando cambia hasBadge (sin tocar la animación en curso)
+  // Sincroniza iconOpacity y dotOpacity con hasBadge, con transición suave
   useEffect(() => {
     if (!shouldAnimate) {
-      iconOpacity.setValue(hasBadge ? 1 : MUTED_OPACITY);
+      const targetIcon = hasBadge ? 1 : MUTED_OPACITY;
+      const targetDot  = hasBadge ? 1 : 0;
+      const duration   = hasBadge ? 200 : 500;
+      Animated.parallel([
+        Animated.timing(iconOpacity, {
+          toValue: targetIcon,
+          duration,
+          easing: Easing.inOut(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(dotOpacity, {
+          toValue: targetDot,
+          duration,
+          easing: Easing.inOut(Easing.quad),
+          useNativeDriver: true,
+        }),
+      ]).start();
     }
-  }, [hasBadge, shouldAnimate, iconOpacity]);
+  }, [hasBadge, shouldAnimate, iconOpacity, dotOpacity]);
 
   return (
     <Pressable
@@ -135,8 +153,8 @@ export function CuencoBell() {
         />
       </Animated.View>
 
-      {/* Punto dorado — indica notificaciones sin leer */}
-      {hasBadge && <View style={styles.dot} />}
+      {/* Punto dorado — animado para entrar/salir suavemente */}
+      <Animated.View style={[styles.dot, { opacity: dotOpacity }]} />
     </Pressable>
   );
 }
