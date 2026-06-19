@@ -169,8 +169,8 @@ const styles = StyleSheet.create({
   },
   dot: {
     position: "absolute",
-    top: 4,
-    right: 4,
+    top: 2,
+    alignSelf: "center",
     width: 7,
     height: 7,
     borderRadius: 4,
