@@ -14,9 +14,11 @@ type StatCardProps = {
 function StatCard({ icon, value, label }: StatCardProps) {
   return (
     <View style={styles.card}>
-      <Feather name={icon} size={16} color="#D4AF37" style={styles.cardIcon} />
-      <Text style={styles.cardValue}>{value}</Text>
-      <Text style={styles.cardLabel}>{label}</Text>
+      <Feather name={icon} size={20} color="#D4AF37" />
+      <View style={styles.cardText}>
+        <Text style={styles.cardValue}>{value}</Text>
+        <Text style={styles.cardLabel}>{label}</Text>
+      </View>
     </View>
   );
 }
@@ -68,10 +70,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 12,
-    gap: 3,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
-  cardIcon: {
-    marginBottom: 4,
+  cardText: {
+    gap: 2,
   },
   cardValue: {
     color: "#F4DAD5",
