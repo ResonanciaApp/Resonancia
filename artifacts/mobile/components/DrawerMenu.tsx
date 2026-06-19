@@ -16,6 +16,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useAuth } from "@/context/AuthContext";
+import { DrawerStats } from "@/components/DrawerStats";
 import { useDrawer, DRAWER_W, DRAWER_PUSH } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePremium } from "@/context/PremiumContext";
@@ -258,6 +259,9 @@ export function DrawerMenu() {
                 </Pressable>
               ))}
             </View>
+
+            {/* ── Estadísticas ── */}
+            <DrawerStats />
           </ScrollView>
         </View>
       </Animated.View>
