@@ -1062,9 +1062,10 @@ const styles = StyleSheet.create({
   cardImageWrap: {
     width: "79%", aspectRatio: 1, alignSelf: "center",
     borderRadius: 16, borderWidth: 4, borderColor: "transparent",
+    backgroundColor: "transparent",
   },
   cardClipInner: {
-    flex: 1, borderRadius: 14, overflow: "hidden",
+    flex: 1, borderRadius: 12, overflow: "hidden",
     backgroundColor: "rgba(212,175,55,0.08)",
   },
   cardFooter: { paddingHorizontal: 4, paddingTop: 8, paddingBottom: 2 },
