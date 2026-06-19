@@ -29,19 +29,84 @@ type MenuItem = {
 };
 
 const MAIN_ITEMS: MenuItem[] = [
-  { label: "Premium",   icon: "star",     route: "/membresia" },
-  { label: "Geometrix", icon: "hexagon",  route: "/(tabs)/geometrix" },
-  { label: "Diario",    icon: "book-open", route: "/diario" },
-  { label: "Amigos",    icon: "users",    route: "/amigos" },
-  { label: "Grupos",    icon: "globe",    route: "/grupos" },
+  { label: "Historial",   icon: "clock",     route: "/historial" },
+  { label: "Geometrix",   icon: "hexagon",   route: "/(tabs)/geometrix" },
+  { label: "Diario",      icon: "book-open", route: "/diario" },
+  { label: "Amigos",      icon: "users",     route: "/amigos" },
+  { label: "Grupos",      icon: "globe",     route: "/grupos" },
+  { label: "Tu Premium",  icon: "star",      route: "/membresia" },
 ];
 
 const SECONDARY_ITEMS: MenuItem[] = [
-  { label: "Invitar a un amigo", icon: "share-2",    route: "/invitar" },
-  { label: "Ayuda",              icon: "help-circle", route: "/ayuda" },
-  { label: "Configuraciones",    icon: "settings",    route: "/configuraciones" },
+  { label: "Invita a un amigo", icon: "share-2",    route: "/invitar" },
+  { label: "Ayuda",             icon: "help-circle", route: "/ayuda" },
+  { label: "Configuraciones",   icon: "settings",    route: "/configuraciones" },
 ];
 
+// ── Chip de estado Premium ────────────────────────────────────────────────────
+function PremiumChip({ isPremium }: { isPremium: boolean }) {
+  if (isPremium) {
+    return (
+      <View style={chipStyles.chipPremium}>
+        <Image
+          source={require("../assets/images/estrella-premium.png")}
+          style={{ width: 13, height: 13 }}
+          contentFit="contain"
+        />
+        <Text style={chipStyles.chipTextPremium}>Premium</Text>
+      </View>
+    );
+  }
+  return (
+    <View style={chipStyles.chipFree}>
+      <Feather name="lock" size={11} color="rgba(242,231,228,0.45)" />
+      <Text style={chipStyles.chipTextFree}>Plan Gratuito</Text>
+    </View>
+  );
+}
+
+const chipStyles = StyleSheet.create({
+  chipPremium: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
+    backgroundColor: "rgba(212,175,55,0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.45)",
+    marginTop: 6,
+  },
+  chipTextPremium: {
+    color: "#D4AF37",
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 0.4,
+  },
+  chipFree: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderWidth: 1,
+    borderColor: "rgba(242,231,228,0.12)",
+    marginTop: 6,
+  },
+  chipTextFree: {
+    color: "rgba(242,231,228,0.40)",
+    fontSize: 11,
+    fontWeight: "500",
+    letterSpacing: 0.3,
+  },
+});
+
+// ── Drawer principal ──────────────────────────────────────────────────────────
 export function DrawerMenu() {
   const { isOpen: visible, drawerAnim, close: onClose, markInstantNav } = useDrawer();
   const insets = useSafeAreaInsets();
@@ -62,11 +127,6 @@ export function DrawerMenu() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  // Panel siempre montado y sincronizado con el contenido (drawerAnim), así no
-  // hay desfase ni "salto" al abrir. El rango coincide con el empuje del contenido
-  // para que el borde del panel y el contenido queden alineados durante todo el arco.
-  // La sombra (que se filtraría en el borde de la pantalla cuando está cerrado) solo
-  // se aplica mientras el drawer está abierto/visible.
   const translateX = drawerAnim.interpolate({
     inputRange: [0, 1],
     outputRange: [-DRAWER_PUSH, 0],
@@ -86,7 +146,6 @@ export function DrawerMenu() {
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-      {/* Tap-outside to close — only active when drawer is open */}
       {visible && (
         <Pressable
           style={[StyleSheet.absoluteFill, { left: DRAWER_PUSH }]}
@@ -95,18 +154,17 @@ export function DrawerMenu() {
       )}
 
       <Animated.View style={[styles.drawer, visible && styles.drawerShadow, { transform: [{ translateX }] }]}>
-        <View
-          style={[styles.drawerInner, { paddingBottom: bottomPad + 24, backgroundColor: "#130107" }]}
-        >
-          {/* ── Header de perfil con gradiente de Inicio ── */}
+        <View style={[styles.drawerInner, { paddingBottom: bottomPad + 24, backgroundColor: "#130107" }]}>
+
+          {/* ── Header de perfil ── */}
           <LinearGradient
             colors={["#2E0510", "#160108"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={[styles.profileHeader, { paddingTop: topPad + 16 }]}
           >
+            {/* Fila avatar + nombre + cerrar */}
             <View style={styles.profileSection}>
-              {/* Avatar: foto → inicial → ícono genérico */}
               {displayPhoto ? (
                 <Image source={{ uri: displayPhoto }} style={styles.profilePhoto} contentFit="cover" />
               ) : loggedIn && initial ? (
@@ -127,6 +185,8 @@ export function DrawerMenu() {
                       <Text style={styles.verPerfilText}>Ver Perfil</Text>
                       <Feather name="chevron-right" size={11} color="#D4AF37" />
                     </Pressable>
+                    {/* Chip de estado Premium */}
+                    <PremiumChip isPremium={isPremium} />
                   </>
                 ) : (
                   <>
@@ -145,11 +205,15 @@ export function DrawerMenu() {
             </View>
           </LinearGradient>
 
-          {/* Divisor sutil */}
+          {/* Divisor */}
           <View style={styles.headerDivider} />
 
-          {/* Items principales + secundarios — scrollable */}
-          <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 20 }}>
+          {/* ── Menú scrollable ── */}
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={{ flex: 1 }}
+            contentContainerStyle={{ paddingHorizontal: 20 }}
+          >
             <View style={styles.itemGroup}>
               {MAIN_ITEMS.map((item) => (
                 <Pressable
@@ -157,29 +221,25 @@ export function DrawerMenu() {
                   onPress={() => navigate(item.route)}
                   style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
                 >
-                  {item.label === "Premium" ? (
-                    <View style={styles.itemIcon}>
-                      <Image source={require("../assets/images/estrella-premium.png")} style={{ width: 18, height: 18 }} contentFit="contain" />
-                    </View>
-                  ) : (
-                    <View style={styles.itemIcon}>
+                  <View style={styles.itemIcon}>
+                    {item.label === "Tu Premium" ? (
+                      <Image
+                        source={require("../assets/images/estrella-premium.png")}
+                        style={{ width: 17, height: 17 }}
+                        contentFit="contain"
+                      />
+                    ) : (
                       <Feather name={item.icon} size={17} color="#FFFFFF" />
-                    </View>
-                  )}
-                  {item.label === "Premium" ? (
-                    <View style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
-                      <Text style={[styles.itemLabel, { color: "#D4AF37" }]}>Premium</Text>
-                      {isPremium && (
-                        <View style={styles.premiumCheck}>
-                          <Feather name="check" size={11} color="#5FB98C" />
-                        </View>
-                      )}
-                    </View>
-                  ) : (
-                    <Text style={[styles.itemLabel, { color: "#FFFFFF" }]}>
-                      {item.label}
-                    </Text>
-                  )}
+                    )}
+                  </View>
+                  <Text
+                    style={[
+                      styles.itemLabel,
+                      item.label === "Tu Premium" && { color: "#D4AF37" },
+                    ]}
+                  >
+                    {item.label}
+                  </Text>
                 </Pressable>
               ))}
             </View>
@@ -196,7 +256,7 @@ export function DrawerMenu() {
                   <View style={styles.itemIcon}>
                     <Feather name={item.icon} size={17} color="#FFFFFF" />
                   </View>
-                  <Text style={[styles.itemLabel, styles.itemLabelMuted, { color: "#FFFFFF" }]}>{item.label}</Text>
+                  <Text style={[styles.itemLabel, styles.itemLabelMuted]}>{item.label}</Text>
                 </Pressable>
               ))}
             </View>
@@ -227,39 +287,23 @@ const styles = StyleSheet.create({
     borderRightWidth: StyleSheet.hairlineWidth,
     borderRightColor: "rgba(180,180,180,0.10)",
   },
+
+  // ── Header ──
   profileHeader: {
-    marginBottom: 0,
     paddingHorizontal: 20,
-    paddingBottom: 4,
+    paddingBottom: 74,      // +70px → baja la línea divisora
   },
   headerDivider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(212,175,55,0.18)",
     marginBottom: 8,
   },
-  closeBtnRow: {
-    alignItems: "flex-end",
-    marginBottom: 8,
-  },
-  closeBtn: {
-    width: 32,
-    height: 32,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  divider: {
-    height: 1,
-    marginBottom: 8,
-  },
-
-  // Perfil
   profileSection: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",  // flex-start para que el chip no estire el avatar
     gap: 12,
     paddingVertical: 16,
     paddingHorizontal: 4,
-    marginBottom: 4,
   },
   profilePhoto: {
     width: 48,
@@ -267,6 +311,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     borderWidth: 2,
     borderColor: "#D4AF37",
+    marginTop: 2,
   },
   profilePhotoFallback: {
     width: 48,
@@ -277,10 +322,15 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.12)",
     alignItems: "center",
     justifyContent: "center",
+    marginTop: 2,
+  },
+  profilePhotoGuest: {
+    borderColor: "rgba(242,231,228,0.18)",
+    backgroundColor: "rgba(255,255,255,0.04)",
   },
   profileInfo: {
     flex: 1,
-    gap: 4,
+    gap: 3,
   },
   profileName: {
     color: "#FFFFFF",
@@ -300,10 +350,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 0.5,
   },
-  profilePhotoGuest: {
-    borderColor: "rgba(242,231,228,0.18)",
-    backgroundColor: "rgba(255,255,255,0.04)",
-  },
   verPerfilBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -316,9 +362,17 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     letterSpacing: 0.3,
   },
+  closeBtn: {
+    width: 32,
+    height: 32,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 2,
+  },
 
-  // Items
+  // ── Items ──
   itemGroup: { gap: 2 },
+  divider: { height: 1, marginBottom: 8 },
   item: {
     flexDirection: "row",
     alignItems: "center",
@@ -329,17 +383,6 @@ const styles = StyleSheet.create({
   },
   itemPressed: { backgroundColor: "rgba(212,175,55,0.08)" },
   itemIcon: { width: 26, alignItems: "center" },
-  premiumCheck: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    backgroundColor: "rgba(95,185,140,0.14)",
-    borderWidth: 1,
-    borderColor: "rgba(95,185,140,0.45)",
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "center",
-  },
   itemLabel: {
     color: "#FFFFFF",
     fontSize: 15,
@@ -347,7 +390,8 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   itemLabelMuted: {
-    color: "#9E8060",
+    color: "rgba(242,231,228,0.55)",
     fontSize: 14,
+    fontWeight: "400",
   },
 });
