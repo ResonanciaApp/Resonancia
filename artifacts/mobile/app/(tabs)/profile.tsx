@@ -1877,7 +1877,7 @@ const styles = StyleSheet.create({
 
   // ── Sección Daniela Vega (expansor) ──
   dvExpansorSection: {
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(255,255,255,0.03)",
     borderRadius: 18,
     padding: 16,
     gap: 16,
