@@ -168,7 +168,6 @@ export default function PlaylistDetailScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={BG_GRADIENT} style={StyleSheet.absoluteFill} />
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
