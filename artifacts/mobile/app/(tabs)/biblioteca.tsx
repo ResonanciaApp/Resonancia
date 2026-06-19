@@ -309,9 +309,9 @@ function UserPlaylistRow({ pl, onPress, onLongPress }: { pl: UserPlaylist; onPre
     <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
       <View style={styles.userPlCover}>
         {pl.coverType === "geometrix" && pl.coverGeometryId ? (
-          <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={72} strokeWidth={1.2} opacity={1} />
+          <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={78} strokeWidth={1.2} opacity={1} />
         ) : pl.coverType === "creation" && pl.coverCreationId ? (
-          <CreationCoverPreview creationId={pl.coverCreationId} size={56} />
+          <CreationCoverPreview creationId={pl.coverCreationId} size={61} />
         ) : pl.coverUri ? (
           <Image source={{ uri: pl.coverUri }} style={styles.userPlCover} contentFit="cover" />
         ) : (
@@ -1586,8 +1586,8 @@ const styles = StyleSheet.create({
 
   // ── User playlist cover ──────────────────────────────────────────────────────
   userPlCover: {
-    width: 56,
-    height: 56,
+    width: 61,
+    height: 61,
     borderRadius: 6,
     overflow: "hidden",
     backgroundColor: "rgba(212,175,55,0.08)",
