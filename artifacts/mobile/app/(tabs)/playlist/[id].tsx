@@ -343,6 +343,7 @@ export default function PlaylistDetailScreen() {
         </View>{/* fin topPanel */}
 
         {/* Sessions list */}
+        <View style={{ marginTop: -25 }}>
         {sessions.map((session) => (
           <PlaylistSessionRow
             key={session.id}
@@ -355,6 +356,7 @@ export default function PlaylistDetailScreen() {
             onRemove={() => removeFromPlaylist(playlist.id, session.id)}
           />
         ))}
+        </View>
 
         {/* + Agregar a esta playlist */}
         <Pressable
