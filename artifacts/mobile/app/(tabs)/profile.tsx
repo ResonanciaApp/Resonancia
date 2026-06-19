@@ -1166,14 +1166,6 @@ export default function ProfileScreen() {
 
 
 
-        {/* ── Accesos rápidos ── */}
-        <QuickAccessGrid
-          onDragStart={() => setScrollEnabled(false)}
-          onDragEnd={()   => setScrollEnabled(true)}
-        />
-
-
-
         <Text style={[styles.footer, { color: colors.border }]}>
           RESONANCE · Sonidos que te regresan a ti mismo.
         </Text>
