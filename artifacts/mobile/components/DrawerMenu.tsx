@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
   },
   profileSection: {
     flexDirection: "row",
-    alignItems: "flex-start",  // flex-start para que el chip no estire el avatar
+    alignItems: "center",
     gap: 12,
     paddingTop: 1,
     paddingBottom: 16,
@@ -316,7 +316,6 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     borderWidth: 2,
     borderColor: "#D4AF37",
-    marginTop: 2,
   },
   profilePhotoFallback: {
     width: 48,
@@ -327,7 +326,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.12)",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 2,
   },
   profilePhotoGuest: {
     borderColor: "rgba(242,231,228,0.18)",
