@@ -253,7 +253,7 @@ export function DrawerMenu() {
                   style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
                 >
                   <View style={styles.itemIcon}>
-                    <Feather name={item.icon} size={17} color="#FFFFFF" />
+                    <Feather name={item.icon} size={17} color="rgba(255,255,255,0.7)" />
                   </View>
                   <Text style={[styles.itemLabel, styles.itemLabelMuted]}>{item.label}</Text>
                 </Pressable>
@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   itemLabelMuted: {
-    color: "rgba(242,231,228,0.55)",
+    color: "rgba(255,255,255,0.7)",
     fontSize: 14,
     fontWeight: "400",
   },
