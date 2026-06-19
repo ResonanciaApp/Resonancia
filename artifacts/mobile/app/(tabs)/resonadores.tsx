@@ -580,7 +580,7 @@ const styles = StyleSheet.create({
   },
   banner: {
     width: "100%",
-    height: 160,
+    height: 110,
     borderRadius: 12,
     marginBottom: 14,
     overflow: "hidden",
