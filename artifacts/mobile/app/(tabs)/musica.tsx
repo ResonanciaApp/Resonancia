@@ -274,7 +274,7 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
 
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
-      <Animated.View style={[styles.cardImageWrap, { transform: [{ rotate }, { scale }], borderColor: active ? borderGradient[0] : "transparent" }]}>
+      <Animated.View style={[styles.cardImageWrap, { transform: [{ rotate }, { scale }], borderColor: active ? "#D6AD5F" : "transparent" }]}>
         <View style={styles.cardClipInner}>
           {image ? (
             <Image source={typeof image === "string" ? { uri: image } : image} style={StyleSheet.absoluteFill} contentFit="cover" />
@@ -1066,7 +1066,7 @@ const styles = StyleSheet.create({
   soundCard: { width: "28%" },
   cardImageWrap: {
     width: "79%", aspectRatio: 1, alignSelf: "center",
-    borderRadius: 16, borderWidth: 2, borderColor: "transparent",
+    borderRadius: 16, borderWidth: 4, borderColor: "transparent",
   },
   cardClipInner: {
     flex: 1, borderRadius: 14, overflow: "hidden",
