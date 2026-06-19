@@ -33,11 +33,10 @@ export function CuencoBell() {
   const runGlow = useCallback(() => {
     clearTimers();
 
-    // Reset
+    // Reset — NO tocar iconOpacity (el ícono base se queda donde está)
     glowOpacity.setValue(0);
     goldOpacity.setValue(0);
     scaleAnim.setValue(1);
-    iconOpacity.setValue(1);
 
     const FADE_IN = 480;
 
@@ -73,7 +72,6 @@ export function CuencoBell() {
 
     // ── Apagado después del hold ──
     const t = setTimeout(() => {
-      const targetIcon = hasBadge ? 1 : MUTED_OPACITY;
       const FADE_OUT = 900;
       Animated.parallel([
         Animated.timing(glowOpacity, {
@@ -88,17 +86,11 @@ export function CuencoBell() {
           easing: Easing.in(Easing.quad),
           useNativeDriver: true,
         }),
-        Animated.timing(iconOpacity, {
-          toValue: targetIcon,
-          duration: FADE_OUT,
-          easing: Easing.in(Easing.quad),
-          useNativeDriver: true,
-        }),
       ]).start(() => clearAnimation());
     }, FADE_IN + 1800);
 
     timersRef.current.push(t);
-  }, [clearTimers, clearAnimation, glowOpacity, goldOpacity, scaleAnim, iconOpacity]);
+  }, [clearTimers, clearAnimation, glowOpacity, goldOpacity, scaleAnim]);
 
   // Reacciona a shouldAnimate (notificación real o botón forzado)
   useEffect(() => {
@@ -107,16 +99,9 @@ export function CuencoBell() {
     }
   }, [shouldAnimate, runGlow]);
 
-  // Actualiza opacidad base solo cuando no hay animación en curso ni pendiente
-  const animatingRef = useRef(false);
+  // Actualiza opacidad base cuando cambia hasBadge (sin tocar la animación en curso)
   useEffect(() => {
-    if (shouldAnimate) {
-      animatingRef.current = true;
-    } else if (animatingRef.current) {
-      // La animación acaba de terminar — iconOpacity ya fue llevado al valor
-      // correcto por el fade-out, no resetear instantáneamente.
-      animatingRef.current = false;
-    } else {
+    if (!shouldAnimate) {
       iconOpacity.setValue(hasBadge ? 1 : MUTED_OPACITY);
     }
   }, [hasBadge, shouldAnimate, iconOpacity]);
