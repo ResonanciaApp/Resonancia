@@ -1488,7 +1488,7 @@ export default function ProfileScreen() {
                   <Feather name="x" size={20} color="rgba(242,231,228,0.55)" />
                 </Pressable>
               </View>
-              <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 14 }}>
+              <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 14, paddingBottom: 8 }}>
                 <View style={styles.fieldWrap}>
                   <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Especialidades (separadas por coma)</Text>
                   <View style={[styles.fieldBox, { borderColor: colors.border, backgroundColor: "rgba(74,12,12,0.08)" }]}>
@@ -1501,18 +1501,20 @@ export default function ProfileScreen() {
                     <TextInput value={epDescription} onChangeText={setEpDescription} placeholder="Describe lo que ofrecés..." placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground, textAlignVertical: "top", paddingTop: 2 }]} multiline numberOfLines={4} />
                   </View>
                 </View>
-                <View style={styles.fieldWrap}>
-                  <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Teléfono</Text>
-                  <View style={[styles.fieldBox, { borderColor: colors.border, backgroundColor: "rgba(74,12,12,0.08)" }]}>
-                    <Feather name="phone" size={15} color={colors.mutedForeground} />
-                    <TextInput value={epPhone} onChangeText={setEpPhone} placeholder="+54 9 11 1234 5678" placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} keyboardType="phone-pad" />
+                <View style={{ flexDirection: "row", gap: 10 }}>
+                  <View style={[styles.fieldWrap, { flex: 1 }]}>
+                    <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Teléfono</Text>
+                    <View style={[styles.fieldBox, { borderColor: colors.border, backgroundColor: "rgba(74,12,12,0.08)" }]}>
+                      <Feather name="phone" size={15} color={colors.mutedForeground} />
+                      <TextInput value={epPhone} onChangeText={setEpPhone} placeholder="+54 11 1234" placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} keyboardType="phone-pad" />
+                    </View>
                   </View>
-                </View>
-                <View style={styles.fieldWrap}>
-                  <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Email de contacto</Text>
-                  <View style={[styles.fieldBox, { borderColor: colors.border, backgroundColor: "rgba(74,12,12,0.08)" }]}>
-                    <Feather name="mail" size={15} color={colors.mutedForeground} />
-                    <TextInput value={epEmail} onChangeText={setEpEmail} placeholder="tu@email.com" placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} keyboardType="email-address" autoCapitalize="none" />
+                  <View style={[styles.fieldWrap, { flex: 1 }]}>
+                    <Text style={[styles.fieldLabel, { color: colors.mutedForeground }]}>Email</Text>
+                    <View style={[styles.fieldBox, { borderColor: colors.border, backgroundColor: "rgba(74,12,12,0.08)" }]}>
+                      <Feather name="mail" size={15} color={colors.mutedForeground} />
+                      <TextInput value={epEmail} onChangeText={setEpEmail} placeholder="tu@email.com" placeholderTextColor={colors.mutedForeground} style={[styles.fieldInput, { color: colors.foreground }]} keyboardType="email-address" autoCapitalize="none" />
+                    </View>
                   </View>
                 </View>
                 <View style={styles.fieldWrap}>
@@ -1946,6 +1948,7 @@ const styles = StyleSheet.create({
     flex: 1, backgroundColor: "rgba(0,0,0,0.55)", justifyContent: "flex-end",
   },
   epModalSheet: {
+    flex: 1,
     backgroundColor: "#1B060F",
     borderTopLeftRadius: 24, borderTopRightRadius: 24,
     paddingTop: 20, paddingHorizontal: 20, gap: 16,
