@@ -157,14 +157,14 @@ const pStyles = StyleSheet.create({
   sectionTitle: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#F4DAD5",
+    color: "#FAF0EE",
     letterSpacing: 0.8,
     textTransform: "uppercase",
     marginBottom: 4,
   },
   sectionSub: {
     fontSize: 12,
-    color: "rgba(242,231,228,0.45)",
+    color: "rgba(250,240,238,0.45)",
     marginBottom: 14,
     lineHeight: 17,
   },
@@ -193,12 +193,12 @@ const pStyles = StyleSheet.create({
   },
   thumbLabel: {
     fontSize: 11,
-    color: "rgba(242,231,228,0.45)",
+    color: "rgba(250,240,238,0.45)",
     textAlign: "center",
   },
   emptyText: {
     fontSize: 12,
-    color: "rgba(242,231,228,0.45)",
+    color: "rgba(250,240,238,0.45)",
     fontStyle: "italic",
     paddingVertical: 20,
   },
@@ -243,7 +243,7 @@ const pStyles = StyleSheet.create({
   reminderLabel: {
     flex: 1,
     fontSize: 14,
-    color: "#F4DAD5",
+    color: "#FAF0EE",
     fontWeight: "500",
   },
   timePicker: {
@@ -255,7 +255,7 @@ const pStyles = StyleSheet.create({
   },
   timeLabel: {
     fontSize: 10,
-    color: "rgba(242,231,228,0.45)",
+    color: "rgba(250,240,238,0.45)",
     letterSpacing: 1.2,
     textTransform: "uppercase",
     marginBottom: 14,
@@ -279,7 +279,7 @@ const pStyles = StyleSheet.create({
   timeValue: {
     fontSize: 38,
     fontWeight: "200",
-    color: "#F4DAD5",
+    color: "#FAF0EE",
     letterSpacing: 3,
     minWidth: 120,
     textAlign: "center",
@@ -299,7 +299,7 @@ const pStyles = StyleSheet.create({
   },
   minuteText: {
     fontSize: 13,
-    color: "rgba(242,231,228,0.45)",
+    color: "rgba(250,240,238,0.45)",
     fontWeight: "500",
   },
 });
@@ -1350,7 +1350,7 @@ export default function ProfileScreen() {
                     value={reminderEnabled}
                     onValueChange={(v) => saveReminder(v, reminderHour, reminderMinute)}
                     trackColor={{ false: "#3D0E16", true: "#4A0C0C" }}
-                    thumbColor={reminderEnabled ? "#D4AF37" : "rgba(242,231,228,0.45)"}
+                    thumbColor={reminderEnabled ? "#D4AF37" : "rgba(250,240,238,0.45)"}
                   />
                 </View>
 
@@ -1477,7 +1477,7 @@ export default function ProfileScreen() {
               <View style={styles.epModalHeader}>
                 <Text style={styles.epModalTitle}>Perfil Expansor</Text>
                 <Pressable onPress={() => setExpansorEditVisible(false)} hitSlop={12} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-                  <Feather name="x" size={20} color="rgba(242,231,228,0.55)" />
+                  <Feather name="x" size={20} color="rgba(250,240,238,0.55)" />
                 </Pressable>
               </View>
               <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 14, paddingBottom: 8 }}>
@@ -1851,7 +1851,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.20)",
   },
-  expansorChipText: { fontSize: 12, color: "#F4DAD5", fontWeight: "500" },
+  expansorChipText: { fontSize: 12, color: "#FAF0EE", fontWeight: "500" },
   expansorBio: { fontSize: 13, lineHeight: 20, color: "rgba(244,218,213,0.75)" },
   expansorLinksRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   expansorLinkBtn: {
@@ -1894,7 +1894,7 @@ const styles = StyleSheet.create({
   },
   dvCertBannerIcon: { flex: 1, borderRadius: 16, overflow: "hidden", alignItems: "center", justifyContent: "center" },
   dvCertBannerStar: { fontSize: 17, color: "rgba(212,175,55,0.90)", fontWeight: "800" },
-  dvServiceTitle: { fontSize: 15, fontWeight: "700", color: "#F4DAD5", letterSpacing: 0.2 },
+  dvServiceTitle: { fontSize: 15, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.2 },
   dvServiceDesc: { fontSize: 13, lineHeight: 20, color: "rgba(244,218,213,0.65)" },
   dvReadMoreBtn: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 6, alignSelf: "flex-start" },
   dvReadMoreText: { fontSize: 13, fontWeight: "600", color: "#D4AF37" },
@@ -1950,7 +1950,7 @@ const styles = StyleSheet.create({
   epModalHeader: {
     flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 4,
   },
-  epModalTitle: { fontSize: 17, fontWeight: "700", color: "#F4DAD5" },
+  epModalTitle: { fontSize: 17, fontWeight: "700", color: "#FAF0EE" },
   epPhotoGrid: {
     flexDirection: "row",
     flexWrap: "wrap",

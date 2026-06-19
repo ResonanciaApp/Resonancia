@@ -111,7 +111,7 @@ const WARM = {
   saveBg: "transparent",
   saveBorder: "transparent",
   saveText: "rgba(212,175,55,0.80)",
-  caption: "rgba(242,231,228,0.45)",
+  caption: "rgba(250,240,238,0.45)",
 } as const;
 
 /** Miniatura cuadrada de la pista: imagen del sonido (fallback degradé negro). */
@@ -1423,7 +1423,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   bgPickerTitle: {
-    color: "#F4DAD5",
+    color: "#FAF0EE",
     fontSize: 17,
     fontWeight: "700",
     letterSpacing: 0.3,

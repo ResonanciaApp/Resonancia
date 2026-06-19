@@ -14,7 +14,7 @@ const C = {
   gold:     "#D4AF37",
   goldSoft: "#A97A34",
   fg:       "#FFFFFF",
-  muted:    "rgba(242,231,228,0.45)",
+  muted:    "rgba(250,240,238,0.45)",
   card:     "rgba(74,12,12,0.08)",
   border:   "rgba(212,175,55,0.18)",
   certified: "#5FB98C",

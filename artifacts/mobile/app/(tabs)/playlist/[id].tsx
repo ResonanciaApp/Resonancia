@@ -39,8 +39,8 @@ import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 
 const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 const GOLD = "#D4AF37";
-const TEXT = "#F4DAD5";
-const MUTED = "rgba(242,231,228,0.45)";
+const TEXT = "#FAF0EE";
+const MUTED = "rgba(250,240,238,0.45)";
 const DEFAULT_PANEL_BG = "rgba(74,12,12,0.28)";
 
 const DEFAULT_ACCENT = ""; // sentinel = borgoña degradado por defecto

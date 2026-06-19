@@ -270,7 +270,7 @@ function ActionRow({
         <Text style={[styles.actionRight, { color: colors.mutedForeground }]}>{right}</Text>
       )}
       {!right && (
-        <Feather name="chevron-right" size={16} color="rgba(242,231,228,0.25)" />
+        <Feather name="chevron-right" size={16} color="rgba(250,240,238,0.25)" />
       )}
     </Pressable>
   );

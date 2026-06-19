@@ -708,7 +708,7 @@ export default function MezcladorScreen() {
                     accessibilityRole="button"
                     accessibilityLabel="Ajustes del Mezclador"
                   >
-                    <MaterialCommunityIcons name="cog-outline" size={20} color="#F4DAD5" />
+                    <MaterialCommunityIcons name="cog-outline" size={20} color="#FAF0EE" />
                     {(moodFilter !== null || tagFilters.length > 0) && (
                       <GoldGradient style={styles.filterBadge} />
                     )}
@@ -928,7 +928,7 @@ const styles = StyleSheet.create({
   emptyState: { alignItems: "center", justifyContent: "center", paddingTop: 70, paddingHorizontal: 40, gap: 8 },
   emptyTitle: { fontSize: 15, fontWeight: "700", color: "rgba(26,30,43,0.7)", textAlign: "center" },
   emptyHint:  { fontSize: 13, color: "rgba(26,30,43,0.45)", textAlign: "center", lineHeight: 19 },
-  pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#F4DAD5" },
+  pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#FAF0EE" },
   pageSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(244,218,213,0.55)", marginTop: 2 },
   heartBtn: {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",

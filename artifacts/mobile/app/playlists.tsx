@@ -109,7 +109,7 @@ export default function PlaylistsScreen() {
                   <Feather name="play" size={14} color="#1B060F" />
                 </Pressable>
               )}
-              <Feather name="chevron-right" size={18} color="rgba(242,231,228,0.25)" />
+              <Feather name="chevron-right" size={18} color="rgba(250,240,238,0.25)" />
             </Pressable>
           ))
         )}

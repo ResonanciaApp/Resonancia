@@ -27,8 +27,8 @@ import { useColors } from "@/hooks/useColors";
 import { useLoadMix } from "@/hooks/useLoadMix";
 
 const BG_GRADIENT = ["#2E0510", "#160108"] as const;
-const FG      = "#F4DAD5";
-const MUTED   = "rgba(242,231,228,0.45)";
+const FG      = "#FAF0EE";
+const MUTED   = "rgba(250,240,238,0.45)";
 const GOLD    = "#D4AF37";
 const BORDER  = "#1E2733";
 const THUMB   = 44;

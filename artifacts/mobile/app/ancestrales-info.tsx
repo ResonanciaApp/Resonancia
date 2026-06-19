@@ -19,8 +19,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 const { width: W, height: H } = Dimensions.get("window");
 const GOLD   = "#D4AF37";
 const GOLD2  = "#E9C46A";
-const TEXT   = "#F4DAD5";
-const MUTED  = "rgba(242,231,228,0.5)";
+const TEXT   = "#FAF0EE";
+const MUTED  = "rgba(250,240,238,0.5)";
 const BG     = "#1B060F";
 const BG_MID = "#27070E";
 

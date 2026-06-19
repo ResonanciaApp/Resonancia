@@ -183,7 +183,7 @@ export default function ExpansorPerfilScreen() {
                   { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
                 ]}
               >
-                <Feather name={friendRequested ? "user-x" : "users"} size={13} color={friendRequested ? "rgba(242,231,228,0.55)" : "#FFFFFF"} />
+                <Feather name={friendRequested ? "user-x" : "users"} size={13} color={friendRequested ? "rgba(250,240,238,0.55)" : "#FFFFFF"} />
                 <Text style={[styles.actionPillText, friendRequested && styles.actionPillTextSent]}>
                   {friendRequested ? "Solicitado" : "Amistad"}
                 </Text>
@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.1,
   },
   actionPillTextActive: { color: "#1B060F", fontWeight: "600" },
-  actionPillTextSent: { color: "rgba(242,231,228,0.45)" },
+  actionPillTextSent: { color: "rgba(250,240,238,0.45)" },
 
   /* ── Sección Expansor ── */
   expansorSection: {
@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
   serviceTitle: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#F4DAD5",
+    color: "#FAF0EE",
     letterSpacing: 0.2,
   },
   serviceDesc: {

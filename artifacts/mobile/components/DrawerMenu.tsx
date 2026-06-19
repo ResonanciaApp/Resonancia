@@ -110,7 +110,7 @@ export function DrawerMenu() {
                 </View>
               ) : (
                 <View style={[styles.profilePhotoFallback, !loggedIn && styles.profilePhotoGuest]}>
-                  <Feather name="user" size={22} color={loggedIn ? "#D4AF37" : "rgba(242,231,228,0.45)"} />
+                  <Feather name="user" size={22} color={loggedIn ? "#D4AF37" : "rgba(250,240,238,0.45)"} />
                 </View>
               )}
 
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   profilePhotoGuest: {
-    borderColor: "rgba(242,231,228,0.18)",
+    borderColor: "rgba(250,240,238,0.18)",
     backgroundColor: "rgba(255,255,255,0.04)",
   },
   profileInfo: {
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   profileNameMuted: {
-    color: "rgba(242,231,228,0.45)",
+    color: "rgba(250,240,238,0.45)",
     fontSize: 14,
     fontWeight: "500",
     letterSpacing: 0.2,

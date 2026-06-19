@@ -4,7 +4,7 @@ import { Feather } from "@expo/vector-icons";
 import { getQuoteOfTheDay } from "@/data/quotes";
 
 const GOLD    = "#D4AF37";
-const MUTED   = "rgba(242,231,228,0.45)";
+const MUTED   = "rgba(250,240,238,0.45)";
 const CARD_BG = "rgba(72,40,120,0.10)";
 
 export default function QuoteOfTheDay() {
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   },
   menuItemText: {
     fontSize: 16,
-    color: "#F4DAD5",
+    color: "#FAF0EE",
     fontWeight: "500",
   },
   menuDivider: {

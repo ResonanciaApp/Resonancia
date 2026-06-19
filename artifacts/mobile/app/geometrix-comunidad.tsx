@@ -345,7 +345,7 @@ export default function GeometrixComunidadScreen() {
                       <Feather
                         name="heart"
                         size={13}
-                        color={g.likedByMe ? "#D4AF37" : "rgba(242,231,228,0.5)"}
+                        color={g.likedByMe ? "#D4AF37" : "rgba(250,240,238,0.5)"}
                       />
                       {g.likes > 0 && (
                         <Text style={[styles.likeCount, { color: g.likedByMe ? "#D4AF37" : colors.mutedForeground }]}>
@@ -364,7 +364,7 @@ export default function GeometrixComunidadScreen() {
                         <Feather
                           name={isPlaying ? "pause" : "play"}
                           size={13}
-                          color="#F4DAD5"
+                          color="#FAF0EE"
                           style={isPlaying ? undefined : { marginLeft: 1 }}
                         />
                       </Pressable>
@@ -534,9 +534,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(239,68,68,0.4)",
     marginBottom: 2,
   },
-  confirmTitle: { fontSize: 19, fontWeight: "700", color: "#F4DAD5" },
-  confirmSubtitle: { fontSize: 13.5, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
-  confirmName: { color: "#F4DAD5", fontWeight: "600" },
+  confirmTitle: { fontSize: 19, fontWeight: "700", color: "#FAF0EE" },
+  confirmSubtitle: { fontSize: 13.5, color: "rgba(250,240,238,0.45)", textAlign: "center", lineHeight: 20 },
+  confirmName: { color: "#FAF0EE", fontWeight: "600" },
   confirmActions: { flexDirection: "row", gap: 10, marginTop: 14, alignSelf: "stretch" },
   btnGhost: {
     flex: 1,
@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
     borderColor: "#161f33",
     alignItems: "center",
   },
-  btnGhostText: { fontSize: 14, fontWeight: "600", color: "rgba(242,231,228,0.45)" },
+  btnGhostText: { fontSize: 14, fontWeight: "600", color: "rgba(250,240,238,0.45)" },
   btnDanger: { flex: 1, paddingVertical: 12, borderRadius: 12, backgroundColor: "#ef4444", alignItems: "center" },
   btnDangerText: { fontSize: 14, fontWeight: "700", color: "#ffffff" },
 });

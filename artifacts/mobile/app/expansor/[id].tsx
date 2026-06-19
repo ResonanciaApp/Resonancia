@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.20)",
   },
-  specialtyText: { fontSize: 13, color: "#F4DAD5", fontWeight: "500" },
+  specialtyText: { fontSize: 13, color: "#FAF0EE", fontWeight: "500" },
   bio: { fontSize: 15, lineHeight: 23, opacity: 0.85 },
 
   linksRow: { flexDirection: "row", flexWrap: "wrap", gap: 10 },

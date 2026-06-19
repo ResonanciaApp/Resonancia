@@ -25,8 +25,8 @@ import { baseOf, type GeometryId } from "@/data/geometries";
 
 const BG = ["#2E0510", "#160108"] as const;
 const GOLD = "#D4AF37";
-const TEXT = "#F4DAD5";
-const MUTED = "rgba(242,231,228,0.45)";
+const TEXT = "#FAF0EE";
+const MUTED = "rgba(250,240,238,0.45)";
 const SHEET_BG = "#0E1326";
 
 export default function CarpetaDetailScreen() {

@@ -371,7 +371,7 @@ export default function HomeScreen2() {
               </View>
             ) : (
               <View style={styles.avatarFallback}>
-                <Feather name="user" size={15} color="rgba(242,231,228,0.45)" />
+                <Feather name="user" size={15} color="rgba(250,240,238,0.45)" />
               </View>
             )}
           </Pressable>
@@ -901,7 +901,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 11,
   },
-  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 7, color: "#F4DAD5" },
+  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 7, color: "#FAF0EE" },
   verTodasLink: { fontSize: 13, fontWeight: "400" },
   videosEmpty: {
     borderRadius: 16,
@@ -945,7 +945,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 13,
     fontWeight: "700",
-    color: "#F4DAD5",
+    color: "#FAF0EE",
     lineHeight: 18,
   },
   catGrid: {
@@ -977,7 +977,7 @@ const styles = StyleSheet.create({
   catCardLabel: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#F4DAD5",
+    color: "#FAF0EE",
     lineHeight: 18,
   },
 
@@ -1020,7 +1020,7 @@ const styles = StyleSheet.create({
   recentTitle: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#F4DAD5",
+    color: "#FAF0EE",
     lineHeight: 17,
     marginTop: 8,
   },
@@ -1038,7 +1038,7 @@ const styles = StyleSheet.create({
   },
   recentCreatorName: {
     fontSize: 11,
-    color: "rgba(242,231,228,0.45)",
+    color: "rgba(250,240,238,0.45)",
     flex: 1,
     marginTop: 4,
   },
@@ -1116,7 +1116,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  squareTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2, marginTop: 12, textAlign: "center", color: "#F4DAD5" },
+  squareTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2, marginTop: 12, textAlign: "center", color: "#FAF0EE" },
   squareSub: { fontSize: 12.5, lineHeight: 17, marginTop: 4, textAlign: "center" },
   diarioList: { gap: 10 },
 

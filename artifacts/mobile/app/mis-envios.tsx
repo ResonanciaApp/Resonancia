@@ -27,7 +27,7 @@ const STATUS_META: Record<
   Submission["status"],
   { label: string; icon: keyof typeof Feather.glyphMap; color: string }
 > = {
-  draft: { label: "Borrador", icon: "edit-3", color: "rgba(242,231,228,0.45)" },
+  draft: { label: "Borrador", icon: "edit-3", color: "rgba(250,240,238,0.45)" },
   pending: { label: "En revisión", icon: "clock", color: "#D6A85B" },
   published: { label: "Publicado", icon: "check-circle", color: "#5FAE7A" },
   rejected: { label: "Rechazado", icon: "x-circle", color: "#C46A6A" },

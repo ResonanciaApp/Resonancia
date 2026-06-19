@@ -556,7 +556,7 @@ export default function GeometrixCreacionesScreen() {
                       <Feather
                         name={isPlaying ? "pause" : "play"}
                         size={14}
-                        color="#F4DAD5"
+                        color="#FAF0EE"
                         style={isPlaying ? undefined : { marginLeft: 1 }}
                       />
                     </Pressable>
@@ -1061,7 +1061,7 @@ const styles = StyleSheet.create({
   sheetTitle: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#F4DAD5",
+    color: "#FAF0EE",
     paddingHorizontal: 8,
     paddingBottom: 10,
   },
@@ -1087,8 +1087,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(239,68,68,0.12)",
     borderColor: "rgba(239,68,68,0.4)",
   },
-  sheetRowText: { fontSize: 15, fontWeight: "600", color: "#F4DAD5" },
-  sheetRowSub: { fontSize: 12, color: "rgba(242,231,228,0.45)", marginTop: 1 },
+  sheetRowText: { fontSize: 15, fontWeight: "600", color: "#FAF0EE" },
+  sheetRowSub: { fontSize: 12, color: "rgba(250,240,238,0.45)", marginTop: 1 },
   exportHidden: {
     position: "absolute",
     left: 0,
@@ -1121,7 +1121,7 @@ const styles = StyleSheet.create({
     borderColor: "#151c3a",
     backgroundColor: "#130A3A",
   },
-  exportToastText: { fontSize: 14, fontWeight: "600", color: "#F4DAD5" },
+  exportToastText: { fontSize: 14, fontWeight: "600", color: "#FAF0EE" },
   sheetCancel: {
     marginTop: 6,
     paddingVertical: 12,
@@ -1131,7 +1131,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  sheetCancelText: { fontSize: 14, fontWeight: "600", color: "rgba(242,231,228,0.45)" },
+  sheetCancelText: { fontSize: 14, fontWeight: "600", color: "rgba(250,240,238,0.45)" },
 
   confirmCard: {
     width: "100%",
@@ -1158,14 +1158,14 @@ const styles = StyleSheet.create({
     borderColor: "rgba(239,68,68,0.4)",
     marginBottom: 2,
   },
-  confirmTitle: { fontSize: 19, fontWeight: "700", color: "#F4DAD5" },
+  confirmTitle: { fontSize: 19, fontWeight: "700", color: "#FAF0EE" },
   confirmSubtitle: {
     fontSize: 13.5,
-    color: "rgba(242,231,228,0.45)",
+    color: "rgba(250,240,238,0.45)",
     textAlign: "center",
     lineHeight: 20,
   },
-  confirmName: { color: "#F4DAD5", fontWeight: "600" },
+  confirmName: { color: "#FAF0EE", fontWeight: "600" },
   confirmActions: {
     flexDirection: "row",
     gap: 10,
@@ -1181,7 +1181,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  confirmBtnGhostText: { fontSize: 14, fontWeight: "600", color: "rgba(242,231,228,0.45)" },
+  confirmBtnGhostText: { fontSize: 14, fontWeight: "600", color: "rgba(250,240,238,0.45)" },
   confirmBtnDanger: {
     flex: 1,
     paddingVertical: 12,

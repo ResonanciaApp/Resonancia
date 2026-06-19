@@ -178,5 +178,5 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     lineHeight: 17,
   },
-  cardCreator: { fontSize: 11, color: "rgba(242,231,228,0.45)", marginTop: 4 },
+  cardCreator: { fontSize: 11, color: "rgba(250,240,238,0.45)", marginTop: 4 },
 });

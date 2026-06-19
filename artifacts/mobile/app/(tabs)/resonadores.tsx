@@ -30,7 +30,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 const H_PAD = 18;
 const CARD_GAP = 10;
 const BG: [string, string] = ["#2E0510", "#160108"];
-const MUTED = "rgba(242,231,228,0.45)";
+const MUTED = "rgba(250,240,238,0.45)";
 const CHIP_ANIM_DURATION = 600;
 const CLOSE_SLOT = 38;
 
@@ -591,7 +591,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: "700",
-    color: "#F4DAD5",
+    color: "#FAF0EE",
     letterSpacing: 0.3,
   },
   subtitle: {
@@ -613,7 +613,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    color: "#F4DAD5",
+    color: "#FAF0EE",
     fontSize: 13,
     paddingVertical: 0,
   },
@@ -717,7 +717,7 @@ const styles = StyleSheet.create({
   cardName: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#F4DAD5",
+    color: "#FAF0EE",
     marginBottom: 3,
     textAlign: "center",
   },
@@ -759,7 +759,7 @@ const styles = StyleSheet.create({
   recentTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#F4DAD5",
+    color: "#FAF0EE",
     letterSpacing: 0.2,
   },
   recentSub: {
@@ -810,7 +810,7 @@ const styles = StyleSheet.create({
   recentCardTitle: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#F4DAD5",
+    color: "#FAF0EE",
     lineHeight: 15,
   },
   recentCardCat: {
@@ -854,7 +854,7 @@ const styles = StyleSheet.create({
   ctaQuestion: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#F4DAD5",
+    color: "#FAF0EE",
     letterSpacing: 0.2,
   },
   ctaHint: {

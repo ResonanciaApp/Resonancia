@@ -31,8 +31,8 @@ const SAVED_KEY = "@resonance_saved_colecciones";
 
 const BG = "#160108";
 const GOLD = "#D4AF37";
-const FG = "#F4DAD5";
-const MUTED = "rgba(242,231,228,0.45)";
+const FG = "#FAF0EE";
+const MUTED = "rgba(250,240,238,0.45)";
 
 export default function ColeccionScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

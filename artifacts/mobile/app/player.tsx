@@ -802,7 +802,7 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   durationChipText: {
-    color: "#F4DAD5",
+    color: "#FAF0EE",
     fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.3,

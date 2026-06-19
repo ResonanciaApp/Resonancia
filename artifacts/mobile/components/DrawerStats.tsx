@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   cardValue: {
-    color: "#F4DAD5",
+    color: "#FAF0EE",
     fontSize: 20,
     fontWeight: "700",
     letterSpacing: 0.2,

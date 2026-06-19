@@ -32,7 +32,7 @@ const BG       = "#4A0C0C";
 const CARD     = "rgba(74,12,12,0.08)";
 const GOLD     = "#D4AF37";
 const GOLD_LT  = "#D4AF37";
-const MUTED    = "rgba(242,231,228,0.45)";
+const MUTED    = "rgba(250,240,238,0.45)";
 const FG       = "#FFFFFF";
 const BORDER   = "rgba(212,175,55,0.25)";
 

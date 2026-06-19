@@ -48,8 +48,8 @@ const H_PAD = 15;
 const GOLD = "#D4AF37";
 const NAVY = "#160108";
 const DARK_BLUE = "#2E0510";
-const TEXT = "#F4DAD5";
-const MUTED = "rgba(242,231,228,0.45)";
+const TEXT = "#FAF0EE";
+const MUTED = "rgba(250,240,238,0.45)";
 
 type LibTab = "playlists" | "mezclas" | "geometrix" | "favoritos" | "resonadores";
 type SortMode = "recientes" | "agregado" | "alfabetico";

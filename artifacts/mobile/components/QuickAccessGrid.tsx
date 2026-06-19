@@ -221,8 +221,8 @@ export function QuickAccessGrid({ onDragStart, onDragEnd }: Props) {
             },
           ]}
         >
-          <Feather name={draggingItem.icon} size={22} color="#F4DAD5" />
-          <Text style={[styles.label, { color: "#F4DAD5" }]} numberOfLines={1}>
+          <Feather name={draggingItem.icon} size={22} color="#FAF0EE" />
+          <Text style={[styles.label, { color: "#FAF0EE" }]} numberOfLines={1}>
             {draggingItem.label}
           </Text>
         </Animated.View>
