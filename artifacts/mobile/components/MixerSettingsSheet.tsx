@@ -32,6 +32,19 @@ type Props = {
   onClear: () => void;
 };
 
+const PRIMARY = "#BE9650";
+
+function sheetColors(bgPaletteId: MixerBgPaletteId) {
+  const dark = bgPaletteId === "noche";
+  return {
+    fg:         dark ? "rgba(255,255,255,0.9)"  : "rgba(20,10,5,0.88)",
+    mutedDim:   dark ? "rgba(255,255,255,0.6)"  : "rgba(20,10,5,0.5)",
+    chipBg:     dark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.05)",
+    chipBorder: dark ? "rgba(255,255,255,0.18)" : "rgba(0,0,0,0.12)",
+    chipSel:    dark ? "rgba(190,150,80,0.22)"  : "rgba(190,150,80,0.18)",
+  };
+}
+
 export function MixerSettingsSheet({
   visible,
   onClose,
@@ -44,10 +57,8 @@ export function MixerSettingsSheet({
   onClear,
 }: Props) {
   const insets = useSafeAreaInsets();
-
-  // El fondo del sheet refleja la paleta elegida (regla: elegir fondo cambia
-  // también el fondo de Ajustes del Mezclador).
   const sheetGradient = getMixerBgPalette(bgPaletteId).colors;
+  const c = sheetColors(bgPaletteId);
 
   const hasFilters =
     moodFilter !== null ||
@@ -62,148 +73,134 @@ export function MixerSettingsSheet({
       onRequestClose={onClose}
       statusBarTranslucent
     >
-        <LinearGradient
-          colors={sheetGradient}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={[styles.sheet, { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 16 }]}
-        >
+      <LinearGradient
+        colors={sheetGradient}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={[styles.sheet, { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 16 }]}
+      >
+        <Pressable onPress={onClose} style={[styles.closeBtn, { top: insets.top + 10 }]} hitSlop={8}>
+          <Text style={[styles.closeX, { color: c.mutedDim }]}>✕</Text>
+        </Pressable>
 
-          <Pressable onPress={onClose} style={[styles.closeBtn, { top: insets.top + 10 }]} hitSlop={8}>
-            <Text style={styles.closeX}>✕</Text>
-          </Pressable>
+        <Text style={[styles.title, { marginTop: insets.top + 36, color: c.fg }]}>
+          Ajustes del Mezclador
+        </Text>
 
-          <Text style={[styles.title, { marginTop: insets.top + 36 }]}>Ajustes del Mezclador</Text>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 8 }}>
 
+          {/* ── ¿Cómo te sientes? ── */}
+          <Text style={[styles.sectionTitle, { color: c.fg }]}>¿Cómo te sientes?</Text>
+          <Text style={[styles.sectionHint, { color: c.mutedDim }]}>
+            Mostramos los sonidos afines a tu ánimo.
+          </Text>
+          <View style={styles.chipWrap}>
+            {MOODS.map((mood) => {
+              const sel = moodFilter === mood.id;
+              return (
+                <Pressable
+                  key={mood.id}
+                  onPress={() => onMoodChange(sel ? null : mood.id)}
+                  style={({ pressed }) => [
+                    styles.chip,
+                    {
+                      backgroundColor: sel ? c.chipSel : c.chipBg,
+                      borderColor: sel ? PRIMARY : c.chipBorder,
+                      opacity: pressed ? 0.8 : 1,
+                    },
+                  ]}
+                >
+                  <Text style={styles.chipEmoji}>{mood.emoji}</Text>
+                  <Text style={[styles.chipText, { color: sel ? PRIMARY : c.fg }]}>
+                    {mood.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          {/* ── Etiquetas ── */}
+          <Text style={[styles.sectionTitle, { marginTop: 22, color: c.fg }]}>Etiquetas</Text>
+          <Text style={[styles.sectionHint, { color: c.mutedDim }]}>
+            Combina varias para afinar la búsqueda.
+          </Text>
+          <View style={styles.chipWrap}>
+            {SOUND_TAGS.map((tag) => {
+              const sel = tagFilters.includes(tag.id);
+              return (
+                <Pressable
+                  key={tag.id}
+                  onPress={() => onToggleTag(tag.id)}
+                  style={({ pressed }) => [
+                    styles.chip,
+                    {
+                      backgroundColor: sel ? c.chipSel : c.chipBg,
+                      borderColor: sel ? PRIMARY : c.chipBorder,
+                      opacity: pressed ? 0.8 : 1,
+                    },
+                  ]}
+                >
+                  <Text style={[styles.chipText, { color: sel ? PRIMARY : c.fg, fontWeight: sel ? "700" : "500" }]}>
+                    {tag.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          {/* ── Color de fondo ── */}
+          <Text style={[styles.sectionTitle, { marginTop: 22, color: c.fg }]}>Color de fondo</Text>
+          <Text style={[styles.sectionHint, { color: c.mutedDim }]}>
+            Tono del área de sonidos (no afecta la cabecera).
+          </Text>
           <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 8 }}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.paletteRow}
           >
-            {/* ── ¿Cómo te sientes? ── */}
-            <Text style={styles.sectionTitle}>¿Cómo te sientes?</Text>
-            <Text style={styles.sectionHint}>
-              Mostramos los sonidos afines a tu ánimo.
-            </Text>
-            <View style={styles.chipWrap}>
-              {MOODS.map((mood) => {
-                const sel = moodFilter === mood.id;
-                return (
-                  <Pressable
-                    key={mood.id}
-                    onPress={() => onMoodChange(sel ? null : mood.id)}
-                    style={({ pressed }) => [
-                      styles.chip,
-                      sel && styles.chipSel,
-                      { opacity: pressed ? 0.8 : 1 },
-                    ]}
+            {MIXER_BG_PALETTES.map((p) => {
+              const sel = bgPaletteId === p.id;
+              return (
+                <Pressable key={p.id} onPress={() => onBgPaletteChange(p.id)} style={styles.paletteItem}>
+                  <LinearGradient
+                    colors={p.colors}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={[styles.swatch, sel && styles.swatchSel]}
                   >
-                    <Text style={styles.chipEmoji}>{mood.emoji}</Text>
-                    <Text style={[styles.chipText, sel && styles.chipTextSel]}>
-                      {mood.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-
-            {/* ── Etiquetas ── */}
-            <Text style={[styles.sectionTitle, { marginTop: 22 }]}>Etiquetas</Text>
-            <Text style={styles.sectionHint}>
-              Combiná varias para afinar la búsqueda.
-            </Text>
-            <View style={styles.chipWrap}>
-              {SOUND_TAGS.map((tag) => {
-                const sel = tagFilters.includes(tag.id);
-                return (
-                  <Pressable
-                    key={tag.id}
-                    onPress={() => onToggleTag(tag.id)}
-                    style={({ pressed }) => [
-                      styles.chip,
-                      sel && styles.chipSel,
-                      { opacity: pressed ? 0.8 : 1 },
-                    ]}
+                    {sel && <Text style={styles.swatchCheck}>✓</Text>}
+                  </LinearGradient>
+                  <Text
+                    style={[styles.swatchLabel, { color: sel ? PRIMARY : c.mutedDim }, sel && styles.swatchLabelSel]}
+                    numberOfLines={1}
                   >
-                    <Text style={[styles.chipText, sel && styles.chipTextSel]}>
-                      {tag.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-
-            {/* ── Color de fondo ── */}
-            <Text style={[styles.sectionTitle, { marginTop: 22 }]}>
-              Color de fondo
-            </Text>
-            <Text style={styles.sectionHint}>
-              Tono del área de sonidos (no afecta la cabecera).
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.paletteRow}
-            >
-              {MIXER_BG_PALETTES.map((p) => {
-                const sel = bgPaletteId === p.id;
-                return (
-                  <Pressable
-                    key={p.id}
-                    onPress={() => onBgPaletteChange(p.id)}
-                    style={styles.paletteItem}
-                  >
-                    <LinearGradient
-                      colors={p.colors}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={[styles.swatch, sel && styles.swatchSel]}
-                    >
-                      {sel && <Text style={styles.swatchCheck}>✓</Text>}
-                    </LinearGradient>
-                    <Text
-                      style={[styles.swatchLabel, sel && styles.swatchLabelSel]}
-                      numberOfLines={1}
-                    >
-                      {p.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
+                    {p.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </ScrollView>
+        </ScrollView>
 
-          {/* ── Limpiar filtros ── */}
-          <Pressable
-            onPress={onClear}
-            disabled={!hasFilters}
-            style={({ pressed }) => [
-              styles.clearBtn,
-              !hasFilters && styles.clearBtnDisabled,
-              { opacity: pressed ? 0.85 : 1 },
-            ]}
-          >
-            {hasFilters && <GoldGradientFill />}
-            <Text
-              style={[
-                styles.clearBtnText,
-                !hasFilters && styles.clearBtnTextDisabled,
-              ]}
-            >
-              Limpiar filtros
-            </Text>
-          </Pressable>
-        </LinearGradient>
+        {/* ── Limpiar filtros ── */}
+        <Pressable
+          onPress={onClear}
+          disabled={!hasFilters}
+          style={({ pressed }) => [
+            styles.clearBtn,
+            !hasFilters && styles.clearBtnDisabled,
+            { opacity: pressed ? 0.85 : 1 },
+          ]}
+        >
+          {hasFilters && <GoldGradientFill />}
+          <Text style={[styles.clearBtnText, !hasFilters && { color: c.mutedDim }]}>
+            Limpiar filtros
+          </Text>
+        </Pressable>
+      </LinearGradient>
     </Modal>
   );
 }
-
-const PRIMARY = "#BE9650";
-const FG = "rgba(255,255,255,0.9)";
-const MUTED = "rgba(255,255,255,0.9)";
-const MUTED_DIM = "rgba(255,255,255,0.6)";
-const CHIP_BG = "rgba(255,255,255,0.07)";
-const CHIP_BORDER = "rgba(255,255,255,0.18)";
-const CHIP_SEL_BG = "rgba(190,150,80,0.22)";
 
 const styles = StyleSheet.create({
   sheet: {
@@ -221,12 +218,10 @@ const styles = StyleSheet.create({
   },
   closeX: {
     fontSize: 16,
-    color: MUTED,
   },
   title: {
     fontSize: 20,
     fontWeight: "700",
-    color: FG,
     textAlign: "center",
     marginBottom: 18,
     marginTop: 4,
@@ -234,12 +229,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 15,
     fontWeight: "700",
-    color: FG,
     marginBottom: 2,
   },
   sectionHint: {
     fontSize: 12,
-    color: MUTED_DIM,
     marginBottom: 12,
   },
   chipWrap: {
@@ -253,14 +246,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 9,
     borderRadius: 999,
-    backgroundColor: CHIP_BG,
     borderWidth: 1.5,
-    borderColor: CHIP_BORDER,
     gap: 5,
-  },
-  chipSel: {
-    backgroundColor: CHIP_SEL_BG,
-    borderColor: PRIMARY,
   },
   chipEmoji: {
     fontSize: 14,
@@ -268,11 +255,6 @@ const styles = StyleSheet.create({
   chipText: {
     fontSize: 13,
     fontWeight: "500",
-    color: MUTED,
-  },
-  chipTextSel: {
-    color: PRIMARY,
-    fontWeight: "700",
   },
   paletteRow: {
     flexDirection: "row",
@@ -302,12 +284,10 @@ const styles = StyleSheet.create({
   },
   swatchLabel: {
     fontSize: 10,
-    color: MUTED_DIM,
     marginTop: 6,
     textAlign: "center",
   },
   swatchLabelSel: {
-    color: PRIMARY,
     fontWeight: "700",
   },
   clearBtn: {
@@ -324,8 +304,5 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
     color: "#0B0F14",
-  },
-  clearBtnTextDisabled: {
-    color: MUTED_DIM,
   },
 });

@@ -507,10 +507,13 @@ export type NotificationType = typeof NotificationType[keyof typeof Notification
 export const NotificationType = {
   friend_request: 'friend_request',
   friend_accepted: 'friend_accepted',
+  new_follower: 'new_follower',
   dm: 'dm',
   group_message: 'group_message',
   mix_like: 'mix_like',
   mix_comment: 'mix_comment',
+  content_approved: 'content_approved',
+  content_rejected: 'content_rejected',
 } as const;
 
 export interface Notification {

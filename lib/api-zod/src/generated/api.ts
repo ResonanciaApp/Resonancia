@@ -711,7 +711,7 @@ export const DeclineFriendRequestParams = zod.object({
  */
 export const GetNotificationsResponseItem = zod.object({
   "id": zod.number(),
-  "type": zod.enum(['friend_request', 'friend_accepted', 'dm', 'group_message', 'mix_like', 'mix_comment']),
+  "type": zod.enum(['friend_request', 'friend_accepted', 'new_follower', 'dm', 'group_message', 'mix_like', 'mix_comment', 'content_approved', 'content_rejected']),
   "entityId": zod.number().nullable().describe('ID de la entidad relacionada (p. ej. la mezcla para mix_like\/mix_comment)'),
   "createdAt": zod.coerce.date(),
   "readAt": zod.coerce.date().nullable(),
