@@ -249,10 +249,11 @@ type SoundCardProps = {
   image: ReturnType<typeof getSoundImage> | string;
   borderGradient: [string, string, string];
   textColor?: string;
+  bgPaletteId?: string;
   onPress: () => void;
 };
 
-const SoundCard = memo(function SoundCard({ sound, idx, active, locked, available, image, borderGradient, textColor, onPress }: SoundCardProps) {
+const SoundCard = memo(function SoundCard({ sound, idx, active, locked, available, image, borderGradient, textColor, bgPaletteId, onPress }: SoundCardProps) {
   const anim = useRef(new Animated.Value(active ? 1 : 0)).current;
   const [decorated, setDecorated] = useState(active);
 
@@ -274,7 +275,7 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
 
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
-      <Animated.View style={[styles.cardImageWrap, { transform: [{ rotate }, { scale }], borderColor: active ? "#D6AD5F" : "transparent" }]}>
+      <Animated.View style={[styles.cardImageWrap, { transform: [{ rotate }, { scale }], borderColor: active ? (bgPaletteId === "noche" ? borderGradient[0] : "#D6AD5F") : "transparent" }]}>
         <View style={styles.cardClipInner}>
           {image ? (
             <Image source={typeof image === "string" ? { uri: image } : image} style={StyleSheet.absoluteFill} contentFit="cover" />
@@ -868,6 +869,7 @@ export default function MezcladorScreen() {
                     image={getSoundImage(s.id) ?? REMOTE_SOUND_IMAGE_MAP[s.id]}
                     borderGradient={TAB_HEADER_GRADIENT[mainTab]}
                     textColor={bgPaletteId === "noche" ? "#FFFFFF" : undefined}
+                    bgPaletteId={bgPaletteId}
                     onPress={() => handleSoundPress(s)}
                   />
                 ))}
