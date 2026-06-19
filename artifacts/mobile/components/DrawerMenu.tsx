@@ -43,23 +43,19 @@ const SECONDARY_ITEMS: MenuItem[] = [
   { label: "Configuraciones",   icon: "settings",    route: "/configuraciones" },
 ];
 
-// ── Chip de estado Premium ────────────────────────────────────────────────────
+// ── Chip de estado Premium — Variante A (borde fino) ─────────────────────────
 function PremiumChip({ isPremium }: { isPremium: boolean }) {
   if (isPremium) {
     return (
       <View style={chipStyles.chipPremium}>
-        <Image
-          source={require("../assets/images/estrella-premium.png")}
-          style={{ width: 13, height: 13 }}
-          contentFit="contain"
-        />
+        <Feather name="star" size={11} color="#D4AF37" />
         <Text style={chipStyles.chipTextPremium}>Premium</Text>
       </View>
     );
   }
   return (
     <View style={chipStyles.chipFree}>
-      <Feather name="lock" size={11} color="rgba(242,231,228,0.45)" />
+      <Feather name="lock" size={11} color="rgba(242,231,228,0.38)" />
       <Text style={chipStyles.chipTextFree}>Plan Gratuito</Text>
     </View>
   );
@@ -70,36 +66,36 @@ const chipStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     alignSelf: "flex-start",
-    gap: 5,
-    paddingHorizontal: 10,
+    gap: 6,
+    paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 20,
-    backgroundColor: "rgba(212,175,55,0.15)",
+    backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.45)",
+    borderColor: "rgba(212,175,55,0.55)",
     marginTop: 6,
   },
   chipTextPremium: {
     color: "#D4AF37",
     fontSize: 11,
     fontWeight: "700",
-    letterSpacing: 0.4,
+    letterSpacing: 0.5,
   },
   chipFree: {
     flexDirection: "row",
     alignItems: "center",
     alignSelf: "flex-start",
-    gap: 5,
-    paddingHorizontal: 10,
+    gap: 6,
+    paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.04)",
+    backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: "rgba(242,231,228,0.12)",
+    borderColor: "rgba(242,231,228,0.18)",
     marginTop: 6,
   },
   chipTextFree: {
-    color: "rgba(242,231,228,0.40)",
+    color: "rgba(242,231,228,0.38)",
     fontSize: 11,
     fontWeight: "500",
     letterSpacing: 0.3,
