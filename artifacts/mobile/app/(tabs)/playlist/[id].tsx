@@ -92,7 +92,7 @@ export default function PlaylistDetailScreen() {
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
   const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistDescription, reorderPlaylist, setPlaylistCover, setPlaylistCoverColor, setPlaylistCoverGeometry, setPlaylistCoverCreation } = useFoldersPlaylists();
-  const { playSession, pauseResume, isPlaying, currentSession } = usePlayer();
+  const { playSession, pauseResume, isPlaying, currentSession, stop } = usePlayer();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -538,6 +538,13 @@ export default function PlaylistDetailScreen() {
             { bottom: tabBarH },
           ]}
         >
+          <Pressable
+            onPress={stop}
+            hitSlop={12}
+            style={({ pressed }) => [mpSt.closeBtn, { opacity: pressed ? 0.6 : 1 }]}
+          >
+            <Feather name="x" size={18} color={MUTED} />
+          </Pressable>
           <Image
             source={currentSession.image as never}
             style={mpSt.cover}
@@ -1473,6 +1480,12 @@ const mpSt = StyleSheet.create({
   artist: {
     color: MUTED,
     fontSize: 12,
+  },
+  closeBtn: {
+    width: 32,
+    height: 32,
+    alignItems: "center",
+    justifyContent: "center",
   },
   playBtn: {
     width: 44,
