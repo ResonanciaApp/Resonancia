@@ -212,6 +212,7 @@ export function MiniPlayer() {
               onPress={(e) => { e.stopPropagation(); handleOpen(); }}
               hitSlop={10}
               accessibilityLabel="Abrir mezclador"
+              style={{ marginLeft: -3 }}
             >
               <Feather name="chevron-up" size={18} color="rgba(255,255,255,0.25)" />
             </Pressable>
