@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   FlatList,
@@ -37,6 +37,29 @@ const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 const GOLD = "#D4AF37";
 const TEXT = "#F4DAD5";
 const MUTED = "rgba(242,231,228,0.45)";
+const DEFAULT_PANEL_BG = "rgba(74,12,12,0.28)";
+
+/** Convierte hex a [r,g,b] (0-255). */
+function hexToRgb(hex: string): [number, number, number] | null {
+  const m = hex.replace("#", "").match(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+  if (!m) return null;
+  return [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)];
+}
+
+/**
+ * Mezcla el color extraído con un tono plomo oscuro y lo devuelve como
+ * color CSS rgba con opacidad baja para superponerlo sobre el gradiente raíz.
+ * ratio=0.4 → 40% color imagen, 60% plomo #2A2A35.
+ */
+function buildPanelColor(hex: string, alpha = 0.55, ratio = 0.4): string {
+  const src = hexToRgb(hex);
+  if (!src) return DEFAULT_PANEL_BG;
+  const lead: [number, number, number] = [42, 42, 53]; // #2A2A35
+  const r = Math.round(src[0] * ratio + lead[0] * (1 - ratio));
+  const g = Math.round(src[1] * ratio + lead[1] * (1 - ratio));
+  const b = Math.round(src[2] * ratio + lead[2] * (1 - ratio));
+  return `rgba(${r},${g},${b},${alpha})`;
+}
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -61,8 +84,38 @@ export default function PlaylistDetailScreen() {
   const [nameInput, setNameInput] = useState("");
   const [addSheetVisible, setAddSheetVisible] = useState(false);
   const [coverModalVisible, setCoverModalVisible] = useState(false);
+  const [panelColor, setPanelColor] = useState<string>(DEFAULT_PANEL_BG);
 
   const playlist = playlists.find((p) => p.id === id);
+
+  // Extrae color dominante cuando hay foto de portada.
+  // Usa require() dinámico para no romper el bundle si el módulo nativo
+  // aún no está compilado en el dev client (requiere rebuild con EAS).
+  useEffect(() => {
+    const uri = playlist?.coverUri ?? null;
+    if (!uri) { setPanelColor(DEFAULT_PANEL_BG); return; }
+    let cancelled = false;
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const ImageColors = require("react-native-image-colors").default;
+      ImageColors.getColors(uri, { fallback: "#4A0C0C", cache: true, key: uri })
+        .then((result: { platform: string; background?: string; primary?: string; dominant?: string; vibrant?: string; darkVibrant?: string }) => {
+          if (cancelled) return;
+          let hex = "#4A0C0C";
+          if (result.platform === "ios") {
+            hex = result.background || result.primary || hex;
+          } else if (result.platform === "android") {
+            hex = result.dominant || result.vibrant || result.darkVibrant || hex;
+          }
+          setPanelColor(buildPanelColor(hex));
+        })
+        .catch(() => { if (!cancelled) setPanelColor(DEFAULT_PANEL_BG); });
+    } catch {
+      // Módulo nativo no disponible aún — usar color por defecto
+      setPanelColor(DEFAULT_PANEL_BG);
+    }
+    return () => { cancelled = true; };
+  }, [playlist?.coverUri]);
 
   const sessions = useMemo(
     () =>
@@ -131,7 +184,7 @@ export default function PlaylistDetailScreen() {
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
-      <View style={[styles.header, { paddingTop: topPad + 8, backgroundColor: "rgba(74,12,12,0.28)" }]}>
+      <View style={[styles.header, { paddingTop: topPad + 8, backgroundColor: panelColor }]}>
         <Pressable onPress={() => router.back()} style={styles.iconBtn}>
           <Feather name="arrow-left" size={22} color={TEXT} />
         </Pressable>
@@ -148,7 +201,7 @@ export default function PlaylistDetailScreen() {
         {/* ── Panel superior (segundo fondo con fade) ─────────────────────── */}
         <View style={styles.topPanel}>
           <LinearGradient
-            colors={["rgba(74,12,12,0.28)", "transparent"]}
+            colors={[panelColor, "transparent"]}
             style={StyleSheet.absoluteFill}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
