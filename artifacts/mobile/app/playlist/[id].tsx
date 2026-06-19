@@ -442,7 +442,7 @@ const styles = StyleSheet.create({
   // Top panel (segundo fondo)
   topPanel: {
     backgroundColor: "rgba(74,12,12,0.28)",
-    paddingBottom: 12,
+    paddingBottom: 2,
   },
 
   // Divider
