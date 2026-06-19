@@ -675,8 +675,8 @@ const styles = StyleSheet.create({
   },
   catCardTitle: {
     fontSize: 12,
-    fontWeight: "700",
-    color: "#FFFFFF",
+    fontWeight: "400",
+    color: "#D4AF37",
     letterSpacing: 0.2,
     textAlign: "center",
   },
