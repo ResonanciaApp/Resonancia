@@ -1030,35 +1030,35 @@ export default function ProfileScreen() {
         {/* ── Sección Expansor (solo si role === "expansor") ── */}
         {isExpansor && (
           <>
-            <View style={styles.dvExpansorSection}>
-
-              {/* Banner certificado */}
-              <View style={styles.dvCertBanner}>
-                <LinearGradient
-                  colors={["#E9C46A", "#B8860B"]}
-                  start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-                  style={styles.dvCertBannerBar}
-                />
-                <View style={{ flex: 1, paddingLeft: 12, paddingVertical: 10, justifyContent: "center" }}>
-                  <MaskedView maskElement={<Text style={styles.dvCertBannerTitle}>EXPANSOR</Text>}>
-                    <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-                      <Text style={[styles.dvCertBannerTitle, { opacity: 0 }]}>EXPANSOR</Text>
-                    </LinearGradient>
-                  </MaskedView>
-                  <Text style={styles.dvCertBannerSub}>Verificado por Resonancia</Text>
-                </View>
-                <View style={{ paddingRight: 14, justifyContent: "center" }}>
-                  <View style={styles.dvCertBannerIconBorder}>
-                    <View style={styles.dvCertBannerIcon}>
-                      <LinearGradient
-                        colors={["rgba(212,175,55,0.30)", "rgba(184,134,11,0.20)"]}
-                        style={StyleSheet.absoluteFill}
-                      />
-                      <Text style={styles.dvCertBannerStar}>✦</Text>
-                    </View>
+            {/* Banner certificado — fuera del fondo */}
+            <View style={styles.dvCertBanner}>
+              <LinearGradient
+                colors={["#E9C46A", "#B8860B"]}
+                start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+                style={styles.dvCertBannerBar}
+              />
+              <View style={{ flex: 1, paddingLeft: 12, paddingVertical: 10, justifyContent: "center" }}>
+                <MaskedView maskElement={<Text style={styles.dvCertBannerTitle}>EXPANSOR</Text>}>
+                  <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+                    <Text style={[styles.dvCertBannerTitle, { opacity: 0 }]}>EXPANSOR</Text>
+                  </LinearGradient>
+                </MaskedView>
+                <Text style={styles.dvCertBannerSub}>Verificado por Resonancia</Text>
+              </View>
+              <View style={{ paddingRight: 14, justifyContent: "center" }}>
+                <View style={styles.dvCertBannerIconBorder}>
+                  <View style={styles.dvCertBannerIcon}>
+                    <LinearGradient
+                      colors={["rgba(212,175,55,0.30)", "rgba(184,134,11,0.20)"]}
+                      style={StyleSheet.absoluteFill}
+                    />
+                    <Text style={styles.dvCertBannerStar}>✦</Text>
                   </View>
                 </View>
               </View>
+            </View>
+
+            <View style={styles.dvExpansorSection}>
 
               {/* Me especializo en */}
               {(expansorProfile?.specialties ?? []).length > 0 && (
