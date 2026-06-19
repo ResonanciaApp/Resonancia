@@ -43,7 +43,9 @@ const TEXT = "#F4DAD5";
 const MUTED = "rgba(242,231,228,0.45)";
 const DEFAULT_PANEL_BG = "rgba(74,12,12,0.28)";
 
-const ACCENT_PALETTE = [
+const DEFAULT_ACCENT = ""; // sentinel = borgoña degradado por defecto
+const ACCENT_PALETTE: readonly string[] = [
+  DEFAULT_ACCENT, // borgoña degradado (por defecto)
   "#7B2D52", // borgoña
   "#2C4A8C", // azul marino
   "#2C6B4A", // verde
@@ -52,7 +54,7 @@ const ACCENT_PALETTE = [
   "#2C6B7B", // teal
   "#8C7B2C", // dorado
   "#4A1C8C", // índigo
-] as const;
+];
 
 /** Convierte hex a [r,g,b] (0-255). */
 function hexToRgb(hex: string): [number, number, number] | null {
@@ -140,7 +142,7 @@ export default function PlaylistDetailScreen() {
     | null
   >(null);
   const [colorPickerVisible, setColorPickerVisible] = useState(false);
-  const [selectedAccent, setSelectedAccent] = useState<string>(ACCENT_PALETTE[0]);
+  const [selectedAccent, setSelectedAccent] = useState<string>(DEFAULT_ACCENT);
 
   const playlist = playlists.find((p) => p.id === id);
 
@@ -217,7 +219,10 @@ export default function PlaylistDetailScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={[panelColor, "#100105"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient
+        colors={playlist.coverColor ? [panelColor, "#100105"] as const : BG_GRADIENT}
+        style={StyleSheet.absoluteFill}
+      />
       <StatusBar barStyle="light-content" />
 
       <ScrollView
@@ -429,18 +434,18 @@ export default function PlaylistDetailScreen() {
           });
           if (!result.canceled && result.assets[0]?.uri) {
             setPendingCover({ type: "image", uri: result.assets[0].uri });
-            setSelectedAccent(playlist.coverColor ?? ACCENT_PALETTE[0]);
+            setSelectedAccent(playlist.coverColor ?? DEFAULT_ACCENT);
             setColorPickerVisible(true);
           }
         }}
         onPickGeometry={(geoId) => {
           setPendingCover({ type: "geometry", geoId });
-          setSelectedAccent(playlist.coverColor ?? ACCENT_PALETTE[0]);
+          setSelectedAccent(playlist.coverColor ?? DEFAULT_ACCENT);
           setColorPickerVisible(true);
         }}
         onPickCreation={(cid) => {
           setPendingCover({ type: "creation", creationId: cid });
-          setSelectedAccent(playlist.coverColor ?? ACCENT_PALETTE[0]);
+          setSelectedAccent(playlist.coverColor ?? DEFAULT_ACCENT);
           setColorPickerVisible(true);
         }}
       />
@@ -454,8 +459,8 @@ export default function PlaylistDetailScreen() {
       >
         <View style={cpStyles.backdrop}>
           <View style={cpStyles.sheet}>
-            <Text style={cpStyles.title}>Tono del encabezado</Text>
-            <Text style={cpStyles.sub}>Elige el tono que combina con tu portada</Text>
+            <Text style={cpStyles.title}>Fondo de tu Playlist</Text>
+            <Text style={cpStyles.sub}>Elige el color que resuena con tus canciones</Text>
 
             {/* Preview del header con el color seleccionado */}
             <View style={[cpStyles.preview, { backgroundColor: buildPanelColor(selectedAccent) }]}>
@@ -480,14 +485,18 @@ export default function PlaylistDetailScreen() {
             <View style={cpStyles.palette}>
               {ACCENT_PALETTE.map((hex) => (
                 <Pressable
-                  key={hex}
+                  key={hex === DEFAULT_ACCENT ? "__default__" : hex}
                   onPress={() => setSelectedAccent(hex)}
                   style={[
                     cpStyles.swatch,
-                    { backgroundColor: hex },
+                    { backgroundColor: hex === DEFAULT_ACCENT ? "#2E0510" : hex },
                     selectedAccent === hex && cpStyles.swatchSelected,
                   ]}
-                />
+                >
+                  {hex === DEFAULT_ACCENT && (
+                    <View style={cpStyles.swatchDefaultStripe} />
+                  )}
+                </Pressable>
               ))}
             </View>
 
@@ -509,7 +518,7 @@ export default function PlaylistDetailScreen() {
                   } else if (pendingCover?.type === "creation") {
                     setPlaylistCoverCreation(playlist.id, pendingCover.creationId);
                   }
-                  if (pendingCover) setPlaylistCoverColor(playlist.id, selectedAccent);
+                  if (pendingCover) setPlaylistCoverColor(playlist.id, selectedAccent === DEFAULT_ACCENT ? "" : selectedAccent);
                   setColorPickerVisible(false);
                   setPendingCover(null);
                 }}
@@ -991,6 +1000,16 @@ const cpStyles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
+  },
+  swatchDefaultStripe: {
+    position: "absolute",
+    top: 8,
+    left: 8,
+    right: 8,
+    bottom: 8,
+    borderRadius: 14,
+    backgroundColor: "#160108",
+    opacity: 0.45,
   },
   swatchSelected: {
     borderWidth: 3,
