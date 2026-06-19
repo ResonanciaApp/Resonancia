@@ -186,10 +186,13 @@ export default function PlaylistDetailScreen() {
       </View>
 
       <ScrollView
-        style={{ flex: 1, backgroundColor: panelColor }}
+        style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: bottomPad + 32 }}
         showsVerticalScrollIndicator={false}
       >
+        {/* Relleno para el rubber-band de iOS: invisible en reposo, muestra panelColor al hacer pull-down */}
+        <View style={{ position: "absolute", top: -600, left: 0, right: 0, height: 600, backgroundColor: panelColor }} />
+
         {/* ── Panel superior (segundo fondo con fade) ─────────────────────── */}
         <View style={styles.topPanel}>
           <LinearGradient
