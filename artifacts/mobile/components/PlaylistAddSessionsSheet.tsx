@@ -286,6 +286,14 @@ export function PlaylistAddSessionsSheet({
   // cambia de preview mientras el createAsync aún no terminó).
   const loadingForRef = useRef<string | null>(null);
 
+  // Limpia un Sound de forma secuencial con timeout de seguridad
+  const cleanupSound = useCallback(async (s: Audio.Sound) => {
+    const withTimeout = (p: Promise<unknown>) =>
+      Promise.race([p, new Promise<void>((r) => setTimeout(r, 1500))]);
+    try { await withTimeout(s.stopAsync()); } catch { /* ignorar */ }
+    try { await withTimeout(s.unloadAsync()); } catch { /* ignorar */ }
+  }, []);
+
   const stopPreview = useCallback(async () => {
     loadingForRef.current = null;
     if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
@@ -293,24 +301,28 @@ export function PlaylistAddSessionsSheet({
     progressSV.value = 0;
     const s = soundRef.current;
     soundRef.current = null;
-    if (s) { void s.stopAsync().catch(() => {}); void s.unloadAsync().catch(() => {}); }
     setPreviewId(null);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    if (s) { void cleanupSound(s); }
+  }, [cleanupSound]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const startPreview = useCallback(async (session: Session) => {
-    // Parar sonido anterior sin bloquear — fire-and-forget
+    // Cancelar temporizador y animación actuales
     loadingForRef.current = null;
     if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
     cancelAnimation(progressSV);
+    progressSV.value = 0;
+
+    // Limpiar sonido anterior de forma secuencial (stop → unload) antes de crear el nuevo
     const old = soundRef.current;
     soundRef.current = null;
-    if (old) { void old.stopAsync().catch(() => {}); void old.unloadAsync().catch(() => {}); }
+    setPreviewId(null);
+    if (old) { await cleanupSound(old); }
 
     // Fuente: bundleado primero, luego audioUri remoto
     const bundled = AUDIO_MAP[session.id];
     const src: number | { uri: string } | undefined =
       bundled ?? (session.audioUri ? { uri: session.audioUri } : undefined);
-    if (!src) { setPreviewId(null); return; }
+    if (!src) return;
 
     // ── Arrancar UI inmediatamente ──────────────────────────────────────────
     setPreviewId(session.id);
@@ -321,18 +333,14 @@ export function PlaylistAddSessionsSheet({
 
     // ── Cargar audio en background (no bloquea la animación) ────────────────
     try {
-      const { sound } = await Audio.Sound.createAsync(
-        typeof src === "number" ? src : src,
-        { shouldPlay: true },
-      );
+      const { sound } = await Audio.Sound.createAsync(src, { shouldPlay: true });
       if (loadingForRef.current === session.id) {
         soundRef.current = sound;
       } else {
-        void sound.stopAsync().catch(() => {});
-        void sound.unloadAsync().catch(() => {});
+        void cleanupSound(sound);
       }
     } catch { /* ignorar */ }
-  }, [stopPreview]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [cleanupSound, stopPreview]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePreviewToggle = useCallback((session: Session) => {
     if (previewId === session.id) {
