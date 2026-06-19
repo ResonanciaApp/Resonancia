@@ -30,7 +30,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { getGuideById } from "@/data/guides";
-import { GEOMETRIES, type GeometryId } from "@/data/geometries";
+import { type GeometryId } from "@/data/geometries";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 
 const BG_GRADIENT = ["#2E0510", "#160108"] as const;
@@ -660,7 +660,6 @@ function CoverPickerModal({
   onPickCreation: (creationId: string) => void;
 }) {
   const [showGeometries, setShowGeometries] = useState(false);
-  const [geoTab, setGeoTab] = useState<"library" | "creations">("creations");
   const { creations } = useGeometrixCreations();
   const insets = useSafeAreaInsets();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
@@ -681,69 +680,32 @@ function CoverPickerModal({
             <Pressable onPress={() => setShowGeometries(false)} hitSlop={12} style={modalStyles.headerClose}>
               <Feather name="arrow-left" size={20} color={MUTED} />
             </Pressable>
-            <Text style={modalStyles.headerTitle}>Elige una geometría</Text>
+            <Text style={modalStyles.headerTitle}>Mis Geometrix</Text>
             <View style={modalStyles.headerSpacer} />
           </View>
-          {/* Tabs */}
-          <View style={modalStyles.tabRow}>
-            <Pressable
-              style={[modalStyles.tab, geoTab === "library" && modalStyles.tabActive]}
-              onPress={() => setGeoTab("library")}
-            >
-              <Text style={[modalStyles.tabText, geoTab === "library" && modalStyles.tabTextActive]}>Biblioteca</Text>
-            </Pressable>
-            <Pressable
-              style={[modalStyles.tab, geoTab === "creations" && modalStyles.tabActive]}
-              onPress={() => setGeoTab("creations")}
-            >
-              <Text style={[modalStyles.tabText, geoTab === "creations" && modalStyles.tabTextActive]}>Mis creaciones</Text>
-            </Pressable>
-          </View>
-          {geoTab === "library" ? (
-            <FlatList
-              key="library-3col"
-              data={GEOMETRIES}
-              keyExtractor={(g) => g.id}
-              numColumns={3}
-              contentContainerStyle={{ paddingTop: 12, paddingBottom: 12 }}
-              renderItem={({ item }) => (
-                <Pressable
-                  style={({ pressed }) => [modalStyles.geometryItem, { opacity: pressed ? 0.7 : 1 }]}
-                  onPress={() => { onPickGeometry(item.id); setShowGeometries(false); onClose(); }}
-                >
-                  <View style={modalStyles.geometryThumb}>
-                    <SacredGlyph id={item.id as any} color={item.color} size={56} strokeWidth={1} opacity={1} />
-                  </View>
-                  <Text style={modalStyles.geometryName} numberOfLines={1}>{item.name}</Text>
-                </Pressable>
-              )}
-            />
-          ) : (
-            <FlatList
-              key="creations-2col"
-              data={creationItems}
-              keyExtractor={(c) => c.id}
-              numColumns={2}
-              contentContainerStyle={{ paddingTop: 12, paddingBottom: 12 }}
-              ListEmptyComponent={
-                <View style={{ paddingVertical: 40, alignItems: "center" }}>
-                  <Text style={{ color: MUTED, fontSize: 14 }}>No tienes creaciones aún</Text>
-                  <Text style={{ color: MUTED, fontSize: 12, marginTop: 6, opacity: 0.7 }}>Ve a Geometrix y crea una</Text>
+          <FlatList
+            data={creationItems}
+            keyExtractor={(c) => c.id}
+            numColumns={2}
+            contentContainerStyle={{ paddingTop: 12, paddingBottom: 12 }}
+            ListEmptyComponent={
+              <View style={{ paddingVertical: 40, alignItems: "center" }}>
+                <Text style={{ color: MUTED, fontSize: 14 }}>No tienes creaciones aún</Text>
+                <Text style={{ color: MUTED, fontSize: 12, marginTop: 6, opacity: 0.7 }}>Ve a Geometrix y crea una</Text>
+              </View>
+            }
+            renderItem={({ item }) => (
+              <Pressable
+                style={({ pressed }) => [modalStyles.creationItem, { opacity: pressed ? 0.7 : 1 }]}
+                onPress={() => { onPickCreation(item.id); setShowGeometries(false); onClose(); }}
+              >
+                <View style={modalStyles.creationThumb}>
+                  <CreationCoverPreview creationId={item.id} size={100} />
                 </View>
-              }
-              renderItem={({ item }) => (
-                <Pressable
-                  style={({ pressed }) => [modalStyles.creationItem, { opacity: pressed ? 0.7 : 1 }]}
-                  onPress={() => { onPickCreation(item.id); setShowGeometries(false); onClose(); }}
-                >
-                  <View style={modalStyles.creationThumb}>
-                    <CreationCoverPreview creationId={item.id} size={100} />
-                  </View>
-                  <Text style={modalStyles.creationName} numberOfLines={1}>{item.name}</Text>
-                </Pressable>
-              )}
-            />
-          )}
+                <Text style={modalStyles.creationName} numberOfLines={1}>{item.name}</Text>
+              </Pressable>
+            )}
+          />
         </View>
       </Modal>
     );
@@ -765,7 +727,7 @@ function CoverPickerModal({
         </Pressable>
         <Pressable
           style={({ pressed }) => [modalStyles.sheetRow, { opacity: pressed ? 0.7 : 1 }]}
-          onPress={() => { setGeoTab("creations"); setShowGeometries(true); }}
+          onPress={() => setShowGeometries(true)}
         >
           <Feather name="hexagon" size={22} color={GOLD} />
           <Text style={modalStyles.sheetRowText}>Mis Geometrix</Text>
@@ -827,49 +789,6 @@ const modalStyles = StyleSheet.create({
     fontWeight: "700",
   },
   headerClose: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
-  geometryItem: {
-    flex: 1,
-    alignItems: "center",
-    margin: 6,
-    paddingVertical: 12,
-    backgroundColor: "rgba(212,175,55,0.05)",
-    borderRadius: 12,
-  },
-  geometryThumb: {
-    width: 64,
-    height: 64,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  geometryName: {
-    color: TEXT,
-    fontSize: 12,
-    marginTop: 6,
-    textAlign: "center",
-  },
-  tabRow: {
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 8,
-    marginBottom: 12,
-  },
-  tab: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 16,
-    backgroundColor: "rgba(74,12,12,0.08)",
-  },
-  tabActive: {
-    backgroundColor: "rgba(212,175,55,0.15)",
-  },
-  tabText: {
-    color: MUTED,
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  tabTextActive: {
-    color: GOLD,
-  },
   creationItem: {
     flex: 1,
     alignItems: "center",
