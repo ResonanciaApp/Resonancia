@@ -67,8 +67,10 @@ export const requireAuth: RequestHandler = async (req, res, next) => {
         .returning();
     }
 
-    // Promote configured admins (idempotent; never demotes).
-    if (user.role !== "admin" && adminClerkUserIds().has(clerkUserId)) {
+    // Promote configured admins on first login (role === "user" means never
+    // explicitly assigned). If an admin manually changes their own role via
+    // the admin panel, respect that choice instead of reverting.
+    if (user.role === "user" && adminClerkUserIds().has(clerkUserId)) {
       [user] = await db
         .update(usersTable)
         .set({ role: "admin" })
