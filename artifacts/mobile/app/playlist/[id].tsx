@@ -145,8 +145,14 @@ export default function PlaylistDetailScreen() {
         contentContainerStyle={{ paddingBottom: bottomPad + 32 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── Panel superior (segundo fondo) ─────────────────────────────── */}
+        {/* ── Panel superior (segundo fondo con fade) ─────────────────────── */}
         <View style={styles.topPanel}>
+          <LinearGradient
+            colors={["rgba(74,12,12,0.28)", "transparent"]}
+            style={StyleSheet.absoluteFill}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+          />
 
         {/* ── Hero ────────────────────────────────────────────────────────── */}
         <View style={styles.hero}>
@@ -233,9 +239,6 @@ export default function PlaylistDetailScreen() {
         </View>
 
         </View>{/* fin topPanel */}
-
-        {/* Divisor */}
-        <View style={styles.divider} />
 
         {/* + Agregar a esta playlist */}
         <Pressable
@@ -439,17 +442,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  // Top panel (segundo fondo)
+  // Top panel (segundo fondo con fade)
   topPanel: {
-    backgroundColor: "rgba(74,12,12,0.28)",
-    paddingBottom: 2,
-  },
-
-  // Divider
-  divider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(212,175,55,0.20)",
-    marginHorizontal: 0,
+    overflow: "hidden",
+    paddingBottom: 20,
   },
 
   // Add button
