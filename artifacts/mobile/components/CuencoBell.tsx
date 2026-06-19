@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -7,63 +7,10 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
-import Svg, { Ellipse, Line, Path } from "react-native-svg";
 import { router } from "expo-router";
 import { useNotifications } from "@/context/NotificationsContext";
 
-function CuencoSvg({ color }: { color: string }) {
-  return (
-    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-      {/* Rim superior — elipse plana */}
-      <Ellipse
-        cx="12"
-        cy="7"
-        rx="9"
-        ry="2.2"
-        stroke={color}
-        strokeWidth="1.6"
-        fill="none"
-      />
-      {/* Cuerpo del cuenco — curva hacia abajo */}
-      <Path
-        d="M 3 7 C 2.5 13 4.5 19.5 12 19.5 C 19.5 19.5 21.5 13 21 7"
-        stroke={color}
-        strokeWidth="1.6"
-        fill="none"
-        strokeLinecap="round"
-      />
-      {/* Patas del soporte */}
-      <Line
-        x1="9.5"
-        y1="19.5"
-        x2="9"
-        y2="22"
-        stroke={color}
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <Line
-        x1="14.5"
-        y1="19.5"
-        x2="15"
-        y2="22"
-        stroke={color}
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      {/* Base horizontal */}
-      <Line
-        x1="7"
-        y1="22"
-        x2="17"
-        y2="22"
-        stroke={color}
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
-    </Svg>
-  );
-}
+const CUENCO_ICON = require("@/assets/images/cuenco-icon.png");
 
 export function CuencoBell() {
   const { unreadCount, shouldAnimate, clearAnimation } = useNotifications();
@@ -93,7 +40,6 @@ export function CuencoBell() {
   }));
 
   const hasBadge = unreadCount > 0;
-  const iconColor = hasBadge ? "#D4AF37" : "rgba(244,218,213,0.55)";
 
   return (
     <Pressable
@@ -102,7 +48,11 @@ export function CuencoBell() {
       style={styles.btn}
     >
       <Animated.View style={animStyle}>
-        <CuencoSvg color={iconColor} />
+        <Image
+          source={CUENCO_ICON}
+          style={[styles.icon, !hasBadge && styles.iconMuted]}
+          resizeMode="contain"
+        />
       </Animated.View>
       {hasBadge && (
         <View style={styles.badge}>
@@ -122,10 +72,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  icon: {
+    width: 26,
+    height: 26,
+  },
+  iconMuted: {
+    opacity: 0.42,
+  },
   badge: {
     position: "absolute",
-    top: 3,
-    right: 3,
+    top: 2,
+    right: 2,
     minWidth: 15,
     height: 15,
     borderRadius: 8,
