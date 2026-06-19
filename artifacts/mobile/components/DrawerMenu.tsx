@@ -19,7 +19,6 @@ import { useAuth } from "@/context/AuthContext";
 import { DrawerStats } from "@/components/DrawerStats";
 import { useDrawer, DRAWER_W, DRAWER_PUSH } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
-import { usePremium } from "@/context/PremiumContext";
 
 const ND = Platform.OS !== "web";
 
@@ -44,71 +43,6 @@ const SECONDARY_ITEMS: MenuItem[] = [
   { label: "Configuraciones",   icon: "settings",    route: "/configuraciones" },
 ];
 
-// ── Chip de estado Premium — Variante A (borde fino) ─────────────────────────
-function PremiumChip({ isPremium }: { isPremium: boolean }) {
-  if (isPremium) {
-    return (
-      <View style={chipStyles.chipPremium}>
-        <Feather name="star" size={11} color="#D4AF37" />
-        <Text style={chipStyles.chipTextPremium}>Premium</Text>
-      </View>
-    );
-  }
-  return (
-    <View style={chipStyles.chipFree}>
-      <Feather name="lock" size={11} color="rgba(242,231,228,0.38)" />
-      <Text style={chipStyles.chipTextFree}>Plan Gratuito</Text>
-    </View>
-  );
-}
-
-const chipStyles = StyleSheet.create({
-  chipPremium: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "flex-start",
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 20,
-    backgroundColor: "transparent",
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.55)",
-    marginTop: 6,
-    // glow asimétrico — anclado abajo-derecha (65% 60%)
-    shadowColor: "#D4AF37",
-    shadowOffset: { width: 2, height: 3 },
-    shadowOpacity: 0.55,
-    shadowRadius: 10,
-    elevation: 8,
-  },
-  chipTextPremium: {
-    color: "#D4AF37",
-    fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 0.5,
-  },
-  chipFree: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "flex-start",
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 20,
-    backgroundColor: "transparent",
-    borderWidth: 1,
-    borderColor: "rgba(242,231,228,0.18)",
-    marginTop: 6,
-  },
-  chipTextFree: {
-    color: "rgba(242,231,228,0.38)",
-    fontSize: 11,
-    fontWeight: "500",
-    letterSpacing: 0.3,
-  },
-});
-
 // ── Drawer principal ──────────────────────────────────────────────────────────
 export function DrawerMenu() {
   const { isOpen: visible, drawerAnim, close: onClose, markInstantNav } = useDrawer();
@@ -116,7 +50,6 @@ export function DrawerMenu() {
   const { isRegistered, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
   const { username, lastName, photoUri } = useUserProfile();
-  const { isPremium } = usePremium();
 
   const loggedIn = isRegistered || isSignedIn;
   const clerkName =
@@ -210,9 +143,6 @@ export function DrawerMenu() {
             style={{ flex: 1 }}
             contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 5 }}
           >
-            {/* Chip Premium — encima de Historial */}
-            <PremiumChip isPremium={isPremium} />
-
             <View style={[styles.itemGroup, { marginTop: 8 }]}>
               {MAIN_ITEMS.map((item) => (
                 <Pressable
