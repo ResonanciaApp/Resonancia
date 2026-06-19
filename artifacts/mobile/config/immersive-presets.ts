@@ -14,14 +14,13 @@ export type GradientPreset = {
 };
 
 export const GRADIENT_PRESETS: GradientPreset[] = [
-  // ── Universo (default) ────────────────────────────────────────────────────
+  // ── Tema claro (default) ───────────────────────────────────────────────────
   {
     id: "blanco",
-    name: "Universo",
-    colors: ["#060B1A", "#0D1533", "#030509"],
-    emoji: "🌌",
-    image: require("../assets/images/cosmic-bg.png"),
-    imageOverlay: "rgba(4,6,18,0.45)",
+    name: "Claro",
+    colors: ["#FBF7EB", "#F4E9D0", "#F0E1C4"],
+    emoji: "☁️",
+    isLight: true,
   },
   // ── Imágenes de naturaleza ─────────────────────────────────────────────────
   {
