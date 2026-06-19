@@ -20,6 +20,15 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+// react-native-image-colors requiere módulo nativo compilado en el dev client.
+// Lo cargamos una sola vez al nivel del módulo para que el try-catch funcione
+// correctamente incluso con React Compiler activado.
+let _ImageColors: { getColors: (uri: string, opts: object) => Promise<Record<string, string>> } | null = null;
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  _ImageColors = require("react-native-image-colors").default ?? require("react-native-image-colors");
+} catch { /* módulo nativo no disponible aún */ }
+
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { PlaylistAddSessionsSheet } from "@/components/PlaylistAddSessionsSheet";
 import { SacredGlyph } from "@/components/SacredGlyph";
@@ -89,31 +98,23 @@ export default function PlaylistDetailScreen() {
   const playlist = playlists.find((p) => p.id === id);
 
   // Extrae color dominante cuando hay foto de portada.
-  // Usa require() dinámico para no romper el bundle si el módulo nativo
-  // aún no está compilado en el dev client (requiere rebuild con EAS).
+  // _ImageColors es null si el módulo nativo no está compilado en el dev client.
   useEffect(() => {
     const uri = playlist?.coverUri ?? null;
-    if (!uri) { setPanelColor(DEFAULT_PANEL_BG); return; }
+    if (!uri || !_ImageColors) { setPanelColor(DEFAULT_PANEL_BG); return; }
     let cancelled = false;
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const ImageColors = require("react-native-image-colors").default;
-      ImageColors.getColors(uri, { fallback: "#4A0C0C", cache: true, key: uri })
-        .then((result: { platform: string; background?: string; primary?: string; dominant?: string; vibrant?: string; darkVibrant?: string }) => {
-          if (cancelled) return;
-          let hex = "#4A0C0C";
-          if (result.platform === "ios") {
-            hex = result.background || result.primary || hex;
-          } else if (result.platform === "android") {
-            hex = result.dominant || result.vibrant || result.darkVibrant || hex;
-          }
-          setPanelColor(buildPanelColor(hex));
-        })
-        .catch(() => { if (!cancelled) setPanelColor(DEFAULT_PANEL_BG); });
-    } catch {
-      // Módulo nativo no disponible aún — usar color por defecto
-      setPanelColor(DEFAULT_PANEL_BG);
-    }
+    _ImageColors.getColors(uri, { fallback: "#4A0C0C", cache: true, key: uri })
+      .then((result) => {
+        if (cancelled) return;
+        let hex = "#4A0C0C";
+        if (result["platform"] === "ios") {
+          hex = result["background"] || result["primary"] || hex;
+        } else if (result["platform"] === "android") {
+          hex = result["dominant"] || result["vibrant"] || result["darkVibrant"] || hex;
+        }
+        setPanelColor(buildPanelColor(hex));
+      })
+      .catch(() => { if (!cancelled) setPanelColor(DEFAULT_PANEL_BG); });
     return () => { cancelled = true; };
   }, [playlist?.coverUri]);
 
