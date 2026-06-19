@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 8,
-    marginTop: 15,
+    marginTop: 17,
   },
   card: {
     width: "47.5%",
