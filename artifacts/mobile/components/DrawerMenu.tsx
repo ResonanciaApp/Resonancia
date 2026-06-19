@@ -245,7 +245,7 @@ export function DrawerMenu() {
 
             <View style={[styles.divider, { backgroundColor: "#D4AF3710", marginVertical: 16 }]} />
 
-            <View style={[styles.itemGroup, { marginTop: 15 }]}>
+            <View style={[styles.itemGroup, { marginTop: 11 }]}>
               {SECONDARY_ITEMS.map((item) => (
                 <Pressable
                   key={item.label}
