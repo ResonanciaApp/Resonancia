@@ -207,6 +207,15 @@ export function MiniPlayer() {
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
 
+            {/* Flechita "Abrir" — extremo izquierdo */}
+            <Pressable
+              onPress={(e) => { e.stopPropagation(); handleOpen(); }}
+              hitSlop={10}
+              accessibilityLabel="Abrir mezclador"
+            >
+              <Feather name="chevron-up" size={18} color="rgba(255,255,255,0.25)" />
+            </Pressable>
+
             {/* Stack / carrusel — frame con ancho animado (JS driver) que clipea;
                 cuando está abierto, un ScrollView horizontal permite deslizar
                 entre los thumbnails si no caben todos en el ancho visible. */}
