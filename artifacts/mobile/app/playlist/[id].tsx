@@ -550,7 +550,7 @@ const styles = StyleSheet.create({
   // Top panel (segundo fondo con fade)
   topPanel: {
     overflow: "hidden",
-    paddingBottom: 72,
+    paddingBottom: 160,
   },
 
   // Add button
