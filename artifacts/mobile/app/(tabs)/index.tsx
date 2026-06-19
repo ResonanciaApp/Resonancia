@@ -787,7 +787,10 @@ const styles = StyleSheet.create({
     borderRadius: 16.5,
     overflow: "hidden",
   },
-  avatarBtnLoggedIn: {},
+  avatarBtnLoggedIn: {
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
+  },
   avatarSmall: {
     width: 33,
     height: 33,
