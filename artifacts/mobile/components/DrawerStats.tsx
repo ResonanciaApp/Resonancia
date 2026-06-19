@@ -60,7 +60,7 @@ export function DrawerStats() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 24,
+    marginTop: 21,
     paddingTop: 16,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: "rgba(212,175,55,0.18)",
