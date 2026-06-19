@@ -1062,6 +1062,9 @@ function DragReorderModal({ visible, sessions, onClose, onSave }: {
   const draftIdsRef = useRef<string[]>([]);
   draftIdsRef.current = draftIds;
   const scrollOffsetRef = useRef(0);
+  // pageY of the list container on screen (measured on layout, re-measured on scroll)
+  const containerRef = useRef<View>(null);
+  const containerTopRef = useRef(0);
 
   useEffect(() => {
     if (visible) { setDraftIds(sessions.map((s) => s.id)); }
@@ -1073,33 +1076,35 @@ function DragReorderModal({ visible, sessions, onClose, onSave }: {
     return m;
   }, [sessions]);
 
-  // Single PanResponder on the list container — avoids per-item closure/stale-idx issues.
-  // Gesture starts only when touching the handle zone (left 56px of each row).
+  // dragStartPageY: absolute pageY at the moment the handle was pressed.
+  // This is the ground truth for "which row was grabbed" — computed from onTouchStart
+  // on each individual handle icon (not from the container PanResponder, where
+  // locationY is relative to the touched element, not the container).
+  const dragStartPageYRef = useRef(0);
+
+  // Container PanResponder: only takes the gesture when a drag is already in progress.
+  // The handle's onTouchStart sets dragIdxRef/dragStartPageYRef before any move event.
   const pan = useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: (e) => e.nativeEvent.locationX <= 56,
-      onStartShouldSetPanResponderCapture: (e) => e.nativeEvent.locationX <= 56,
-      onPanResponderTerminationRequest: () => false, // never let ScrollView steal the gesture
-      onPanResponderGrant: (e) => {
-        // locationY relative to the container view + scroll offset = item position
-        const relY = e.nativeEvent.locationY + scrollOffsetRef.current;
-        const idx = Math.max(0, Math.min(draftIdsRef.current.length - 1, Math.floor(relY / DRAG_ROW_H)));
-        dragIdxRef.current = idx;
-        setDragIdx(idx);
-        setOverIdx(idx);
-      },
-      onPanResponderMove: (_, gs) => {
+      // Only offer to become responder if user has already pressed a handle
+      onMoveShouldSetPanResponder: () => dragIdxRef.current !== null,
+      onMoveShouldSetPanResponderCapture: () => dragIdxRef.current !== null,
+      onPanResponderTerminationRequest: () => false,
+      onPanResponderGrant: () => { /* dragIdx already set by handle onTouchStart */ },
+      onPanResponderMove: (e) => {
         const idx = dragIdxRef.current;
         if (idx === null) return;
         const n = draftIdsRef.current.length;
-        const newOver = Math.max(0, Math.min(n - 1, Math.round(idx + gs.dy / DRAG_ROW_H)));
+        const dy = e.nativeEvent.pageY - dragStartPageYRef.current;
+        const newOver = Math.max(0, Math.min(n - 1, Math.round(idx + dy / DRAG_ROW_H)));
         setOverIdx(newOver);
       },
-      onPanResponderRelease: (_, gs) => {
+      onPanResponderRelease: (e) => {
         const idx = dragIdxRef.current;
         if (idx === null) return;
         const n = draftIdsRef.current.length;
-        const to = Math.max(0, Math.min(n - 1, Math.round(idx + gs.dy / DRAG_ROW_H)));
+        const dy = e.nativeEvent.pageY - dragStartPageYRef.current;
+        const to = Math.max(0, Math.min(n - 1, Math.round(idx + dy / DRAG_ROW_H)));
         if (to !== idx) {
           setDraftIds((prev) => {
             const next = [...prev];
@@ -1135,7 +1140,16 @@ function DragReorderModal({ visible, sessions, onClose, onSave }: {
           </View>
           <Text style={dreSt.hint}>Toca y arrastra ≡ para reordenar</Text>
           {/* PanResponder container — wraps the scroll list */}
-          <View style={{ flex: 1 }} {...pan.panHandlers}>
+          <View
+            ref={containerRef}
+            style={{ flex: 1 }}
+            onLayout={() => {
+              containerRef.current?.measure((_x, _y, _w, _h, _px, py) => {
+                containerTopRef.current = py;
+              });
+            }}
+            {...pan.panHandlers}
+          >
             <ScrollView
               style={{ flex: 1 }}
               scrollEnabled={dragIdx === null}
@@ -1154,8 +1168,24 @@ function DragReorderModal({ visible, sessions, onClose, onSave }: {
                   <View key={sid} style={{ minHeight: DRAG_ROW_H }}>
                     {showAbove && <View style={dreSt.dropLine} />}
                     <View style={[dreSt.row, isDragging && dreSt.rowActive]}>
-                      {/* Handle zone */}
-                      <View style={dreSt.dragHandle}>
+                      {/* Handle zone: onTouchStart records which row & absolute pageY */}
+                      <View
+                        style={dreSt.dragHandle}
+                        onTouchStart={(e) => {
+                          dragIdxRef.current = idx;
+                          dragStartPageYRef.current = e.nativeEvent.pageY;
+                          setDragIdx(idx);
+                          setOverIdx(idx);
+                        }}
+                        onTouchEnd={() => {
+                          // Only fires if PanResponder never claimed the gesture (tap, no drag)
+                          if (dragIdxRef.current !== null) {
+                            dragIdxRef.current = null;
+                            setDragIdx(null);
+                            setOverIdx(null);
+                          }
+                        }}
+                      >
                         <Feather name="menu" size={22} color={isDragging ? GOLD : MUTED} />
                       </View>
                       <Image source={session.image as never} style={dreSt.thumb} contentFit="cover" />
