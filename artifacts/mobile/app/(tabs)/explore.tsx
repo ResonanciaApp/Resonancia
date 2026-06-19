@@ -262,6 +262,12 @@ export default function ExploreScreen() {
           style={styles.searchBarBorder}
         >
         <View style={styles.searchBar}>
+          <LinearGradient
+            colors={["#FDF6EE", "#FFF9F4"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
           <Feather name="search" size={16} color="rgba(0,0,0,0.40)" />
           <TextInput
             value={query}
@@ -555,7 +561,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 15,
     borderRadius: 9,
-    backgroundColor: "#FFFFFF",
     gap: 10,
   },
   searchInput: { flex: 1, fontSize: 14, color: "#1B060F" },
