@@ -30,12 +30,12 @@ type MenuItem = {
 };
 
 const MAIN_ITEMS: MenuItem[] = [
+  { label: "Tu Premium",  icon: "star",      route: "/membresia" },
   { label: "Historial",   icon: "clock",     route: "/historial" },
   { label: "Geometrix",   icon: "hexagon",   route: "/(tabs)/geometrix" },
   { label: "Diario",      icon: "book-open", route: "/diario" },
   { label: "Amigos",      icon: "users",     route: "/amigos" },
   { label: "Grupos",      icon: "globe",     route: "/grupos" },
-  { label: "Tu Premium",  icon: "star",      route: "/membresia" },
 ];
 
 const SECONDARY_ITEMS: MenuItem[] = [
