@@ -186,7 +186,7 @@ export default function PlaylistDetailScreen() {
       </View>
 
       <ScrollView
-        style={{ flex: 1 }}
+        style={{ flex: 1, backgroundColor: panelColor }}
         contentContainerStyle={{ paddingBottom: bottomPad + 32 }}
         showsVerticalScrollIndicator={false}
       >
