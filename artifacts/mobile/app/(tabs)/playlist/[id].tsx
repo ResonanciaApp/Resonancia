@@ -217,7 +217,7 @@ export default function PlaylistDetailScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={BG_GRADIENT} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={[panelColor, "#100105"]} style={StyleSheet.absoluteFill} />
       <StatusBar barStyle="light-content" />
 
       <ScrollView
