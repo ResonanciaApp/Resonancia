@@ -97,6 +97,8 @@ export default function PlaylistDetailScreen() {
   const playlistSessionIds = playlists.find((p) => p.id === id)?.sessionIds ?? [];
   const miniPlayerVisible = !!currentSession && playlistSessionIds.includes(currentSession.id);
   const MINI_H = 68;
+  // tab bar height (misma fórmula que (tabs)/_layout.tsx)
+  const tabBarH = 31 + Math.round(bottomPad / 2) + bottomPad;
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [addSheetVisible, setAddSheetVisible] = useState(false);
@@ -192,7 +194,7 @@ export default function PlaylistDetailScreen() {
 
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingBottom: bottomPad + 32 + (miniPlayerVisible ? MINI_H + 16 : 0) }}
+        contentContainerStyle={{ paddingBottom: bottomPad + 32 + (miniPlayerVisible ? MINI_H : 0) }}
         showsVerticalScrollIndicator={false}
       >
         {/* Relleno para el rubber-band de iOS: invisible en reposo, muestra panelColor al hacer pull-down */}
@@ -491,7 +493,7 @@ export default function PlaylistDetailScreen() {
         <View
           style={[
             mpSt.bar,
-            { bottom: bottomPad + 16 },
+            { bottom: tabBarH },
           ]}
         >
           <Image
@@ -1385,22 +1387,16 @@ const eiSt = StyleSheet.create({
 const mpSt = StyleSheet.create({
   bar: {
     position: "absolute",
-    left: 16,
-    right: 16,
+    left: 0,
+    right: 0,
     height: 68,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#2A0A10",
-    borderRadius: 16,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(212,175,55,0.25)",
-    paddingHorizontal: 12,
+    backgroundColor: "rgba(0,0,0,0.8)",
+    paddingHorizontal: 16,
     gap: 12,
-    shadowColor: "#000",
-    shadowOpacity: 0.5,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 8,
+    zIndex: 100,
+    elevation: 100,
   },
   cover: {
     width: 44,
