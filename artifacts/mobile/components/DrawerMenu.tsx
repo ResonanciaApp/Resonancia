@@ -74,6 +74,12 @@ const chipStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.55)",
     marginTop: 6,
+    // glow asimétrico — anclado abajo-derecha (65% 60%)
+    shadowColor: "#D4AF37",
+    shadowOffset: { width: 2, height: 3 },
+    shadowOpacity: 0.55,
+    shadowRadius: 10,
+    elevation: 8,
   },
   chipTextPremium: {
     color: "#D4AF37",
