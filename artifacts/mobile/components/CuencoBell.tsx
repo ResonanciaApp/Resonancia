@@ -8,7 +8,13 @@ const MUTED_OPACITY = 0.38;
 const GOLD = "#D4AF37";
 
 export function CuencoBell() {
-  const { unreadCount, shouldAnimate, clearAnimation } = useNotifications();
+  const { unreadCount, shouldAnimate, clearAnimation, forceAnimate } = useNotifications();
+
+  // ── DEV: auto-disparo al montar para previsualizar la animación ──
+  useEffect(() => {
+    const t = setTimeout(() => forceAnimate(), 800);
+    return () => clearTimeout(t);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const hasBadge = unreadCount > 0;
 
   // Animated values — todos usables con native driver
