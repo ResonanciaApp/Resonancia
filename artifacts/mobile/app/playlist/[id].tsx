@@ -32,6 +32,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { getGuideById } from "@/data/guides";
+import { getArtist } from "@/data/artists";
 import { type GeometryId } from "@/data/geometries";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 
@@ -91,6 +92,11 @@ export default function PlaylistDetailScreen() {
   const { playSession, pauseResume, isPlaying, currentSession } = usePlayer();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+
+  // ¿Está sonando una sesión de ESTA playlist?
+  const playlistSessionIds = playlists.find((p) => p.id === id)?.sessionIds ?? [];
+  const miniPlayerVisible = !!currentSession && playlistSessionIds.includes(currentSession.id);
+  const MINI_H = 68;
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [addSheetVisible, setAddSheetVisible] = useState(false);
@@ -165,7 +171,6 @@ export default function PlaylistDetailScreen() {
     const first = sessions.find((s) => !s.isPremium || isPremium);
     if (!first) return;
     playSession(first);
-    router.push("/player" as never);
   };
 
   const handleShuffle = () => {
@@ -173,7 +178,6 @@ export default function PlaylistDetailScreen() {
     if (!available.length) return;
     const random = available[Math.floor(Math.random() * available.length)];
     playSession(random);
-    router.push("/player" as never);
   };
 
   const handleShare = async () => {
@@ -188,7 +192,7 @@ export default function PlaylistDetailScreen() {
 
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingBottom: bottomPad + 32 }}
+        contentContainerStyle={{ paddingBottom: bottomPad + 32 + (miniPlayerVisible ? MINI_H + 16 : 0) }}
         showsVerticalScrollIndicator={false}
       >
         {/* Relleno para el rubber-band de iOS: invisible en reposo, muestra panelColor al hacer pull-down */}
@@ -306,7 +310,7 @@ export default function PlaylistDetailScreen() {
             session={session}
             index={idx + 1}
             isPremium={isPremium}
-            onPlay={() => { playSession(session); router.push("/player" as never); }}
+            onPlay={() => playSession(session)}
             onActionsPress={() => setActionsSession(session)}
             onRemove={() => removeFromPlaylist(playlist.id, session.id)}
           />
@@ -481,6 +485,43 @@ export default function PlaylistDetailScreen() {
           </View>
         </View>
       </Modal>
+
+      {/* ── Playlist MiniPlayer ──────────────────────────────────────────────── */}
+      {miniPlayerVisible && currentSession && (
+        <View
+          style={[
+            mpSt.bar,
+            { bottom: bottomPad + 16 },
+          ]}
+        >
+          <Image
+            source={currentSession.image as never}
+            style={mpSt.cover}
+            contentFit="cover"
+          />
+          <View style={mpSt.info}>
+            <Text style={mpSt.title} numberOfLines={1}>{currentSession.title}</Text>
+            <Text style={mpSt.artist} numberOfLines={1}>
+              {currentSession.guideId
+                ? (getGuideById(currentSession.guideId)?.name ?? "Casa del Cuenco")
+                : currentSession.artistId
+                  ? (getArtist(currentSession.artistId)?.name ?? "Resonancia")
+                  : "Casa del Cuenco"}
+            </Text>
+          </View>
+          <Pressable
+            onPress={pauseResume}
+            hitSlop={12}
+            style={({ pressed }) => [mpSt.playBtn, { opacity: pressed ? 0.7 : 1 }]}
+          >
+            <Feather
+              name={isPlaying ? "pause" : "play"}
+              size={26}
+              color={GOLD}
+            />
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 }
@@ -1308,4 +1349,52 @@ const eiSt = StyleSheet.create({
     backgroundColor: "rgba(224,82,82,0.08)",
   },
   deleteBtnText: { color: "#E05252", fontSize: 15, fontWeight: "600" },
+});
+
+// ─── Playlist MiniPlayer styles ────────────────────────────────────────────────
+const mpSt = StyleSheet.create({
+  bar: {
+    position: "absolute",
+    left: 16,
+    right: 16,
+    height: 68,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#2A0A10",
+    borderRadius: 16,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(212,175,55,0.25)",
+    paddingHorizontal: 12,
+    gap: 12,
+    shadowColor: "#000",
+    shadowOpacity: 0.5,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 8,
+  },
+  cover: {
+    width: 44,
+    height: 44,
+    borderRadius: 8,
+    backgroundColor: "rgba(212,175,55,0.08)",
+  },
+  info: {
+    flex: 1,
+    gap: 3,
+  },
+  title: {
+    color: TEXT,
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  artist: {
+    color: MUTED,
+    fontSize: 12,
+  },
+  playBtn: {
+    width: 44,
+    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
