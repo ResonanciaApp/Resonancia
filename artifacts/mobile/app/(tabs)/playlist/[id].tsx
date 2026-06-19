@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   FlatList,
@@ -1072,6 +1072,54 @@ const menuSt = StyleSheet.create({
 // ── DragReorderModal ────────────────────────────────────────────────────────
 const DRAG_ROW_H = 68;
 
+// ─ DragHandle: PanResponder propio por handle para capturar el gesto
+//   confiablemente dentro del ScrollView.
+function DragHandle({
+  idx, isDragging,
+  onDragStart, onDragMove, onDragEnd,
+}: {
+  idx: number; isDragging: boolean;
+  onDragStart: (idx: number, pageY: number) => void;
+  onDragMove: (dy: number) => void;
+  onDragEnd: (dy: number) => void;
+}) {
+  // Refs estables para evitar closures obsoletos dentro del PanResponder
+  const idxRef = useRef(idx);
+  idxRef.current = idx;
+  const startRef = useRef(onDragStart);
+  startRef.current = onDragStart;
+  const moveRef = useRef(onDragMove);
+  moveRef.current = onDragMove;
+  const endRef = useRef(onDragEnd);
+  endRef.current = onDragEnd;
+
+  const pan = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponderCapture: () => true,
+      onPanResponderTerminationRequest: () => false,
+      onPanResponderGrant: (e) => {
+        startRef.current(idxRef.current, e.nativeEvent.pageY);
+      },
+      onPanResponderMove: (_, gs) => {
+        moveRef.current(gs.dy);
+      },
+      onPanResponderRelease: (_, gs) => {
+        endRef.current(gs.dy);
+      },
+      onPanResponderTerminate: () => {
+        endRef.current(0);
+      },
+    })
+  ).current;
+
+  return (
+    <View style={dreSt.dragHandle} {...pan.panHandlers}>
+      <Feather name="menu" size={22} color={isDragging ? GOLD : MUTED} />
+    </View>
+  );
+}
+
 function DragReorderModal({ visible, sessions, onClose, onSave }: {
   visible: boolean; sessions: Session[]; onClose: () => void;
   onSave: (newIds: string[]) => void;
@@ -1082,14 +1130,9 @@ function DragReorderModal({ visible, sessions, onClose, onSave }: {
   const [dragIdx, setDragIdx] = useState<number | null>(null);
   const [overIdx, setOverIdx] = useState<number | null>(null);
 
-  // Sync refs — gestures read these, React state drives the UI
   const dragIdxRef = useRef<number | null>(null);
   const draftIdsRef = useRef<string[]>([]);
   draftIdsRef.current = draftIds;
-  const scrollOffsetRef = useRef(0);
-  // pageY of the list container on screen (measured on layout, re-measured on scroll)
-  const containerRef = useRef<View>(null);
-  const containerTopRef = useRef(0);
 
   useEffect(() => {
     if (visible) { setDraftIds(sessions.map((s) => s.id)); }
@@ -1101,54 +1144,37 @@ function DragReorderModal({ visible, sessions, onClose, onSave }: {
     return m;
   }, [sessions]);
 
-  // dragStartPageY: absolute pageY at the moment the handle was pressed.
-  // This is the ground truth for "which row was grabbed" — computed from onTouchStart
-  // on each individual handle icon (not from the container PanResponder, where
-  // locationY is relative to the touched element, not the container).
-  const dragStartPageYRef = useRef(0);
+  const handleDragStart = useCallback((idx: number, _pageY: number) => {
+    dragIdxRef.current = idx;
+    setDragIdx(idx);
+    setOverIdx(idx);
+  }, []);
 
-  // Container PanResponder: only takes the gesture when a drag is already in progress.
-  // The handle's onTouchStart sets dragIdxRef/dragStartPageYRef before any move event.
-  const pan = useRef(
-    PanResponder.create({
-      // Only offer to become responder if user has already pressed a handle
-      onMoveShouldSetPanResponder: () => dragIdxRef.current !== null,
-      onMoveShouldSetPanResponderCapture: () => dragIdxRef.current !== null,
-      onPanResponderTerminationRequest: () => false,
-      onPanResponderGrant: () => { /* dragIdx already set by handle onTouchStart */ },
-      onPanResponderMove: (e) => {
-        const idx = dragIdxRef.current;
-        if (idx === null) return;
-        const n = draftIdsRef.current.length;
-        const dy = e.nativeEvent.pageY - dragStartPageYRef.current;
-        const newOver = Math.max(0, Math.min(n - 1, Math.round(idx + dy / DRAG_ROW_H)));
-        setOverIdx(newOver);
-      },
-      onPanResponderRelease: (e) => {
-        const idx = dragIdxRef.current;
-        if (idx === null) return;
-        const n = draftIdsRef.current.length;
-        const dy = e.nativeEvent.pageY - dragStartPageYRef.current;
-        const to = Math.max(0, Math.min(n - 1, Math.round(idx + dy / DRAG_ROW_H)));
-        if (to !== idx) {
-          setDraftIds((prev) => {
-            const next = [...prev];
-            const [item] = next.splice(idx, 1);
-            next.splice(to, 0, item);
-            return next;
-          });
-        }
-        dragIdxRef.current = null;
-        setDragIdx(null);
-        setOverIdx(null);
-      },
-      onPanResponderTerminate: () => {
-        dragIdxRef.current = null;
-        setDragIdx(null);
-        setOverIdx(null);
-      },
-    })
-  ).current;
+  const handleDragMove = useCallback((dy: number) => {
+    const idx = dragIdxRef.current;
+    if (idx === null) return;
+    const n = draftIdsRef.current.length;
+    const newOver = Math.max(0, Math.min(n - 1, Math.round(idx + dy / DRAG_ROW_H)));
+    setOverIdx(newOver);
+  }, []);
+
+  const handleDragEnd = useCallback((dy: number) => {
+    const idx = dragIdxRef.current;
+    if (idx === null) return;
+    const n = draftIdsRef.current.length;
+    const to = Math.max(0, Math.min(n - 1, Math.round(idx + dy / DRAG_ROW_H)));
+    if (to !== idx) {
+      setDraftIds((prev) => {
+        const next = [...prev];
+        const [item] = next.splice(idx, 1);
+        next.splice(to, 0, item);
+        return next;
+      });
+    }
+    dragIdxRef.current = null;
+    setDragIdx(null);
+    setOverIdx(null);
+  }, []);
 
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
@@ -1164,66 +1190,39 @@ function DragReorderModal({ visible, sessions, onClose, onSave }: {
             <View style={{ width: 32 }} />
           </View>
           <Text style={dreSt.hint}>Toca y arrastra ≡ para reordenar</Text>
-          {/* PanResponder container — wraps the scroll list */}
-          <View
-            ref={containerRef}
+          <ScrollView
             style={{ flex: 1 }}
-            onLayout={() => {
-              containerRef.current?.measure((_x, _y, _w, _h, _px, py) => {
-                containerTopRef.current = py;
-              });
-            }}
-            {...pan.panHandlers}
+            scrollEnabled={dragIdx === null}
+            showsVerticalScrollIndicator={false}
           >
-            <ScrollView
-              style={{ flex: 1 }}
-              scrollEnabled={dragIdx === null}
-              showsVerticalScrollIndicator={false}
-              scrollEventThrottle={16}
-              onScroll={(e) => { scrollOffsetRef.current = e.nativeEvent.contentOffset.y; }}
-            >
-              {draftIds.map((sid, idx) => {
-                const session = idMap[sid];
-                if (!session) return null;
-                const isDragging = dragIdx === idx;
-                const isOver = overIdx === idx && dragIdx !== null && dragIdx !== idx;
-                const showAbove = isOver && dragIdx !== null && dragIdx > idx;
-                const showBelow = isOver && dragIdx !== null && dragIdx < idx;
-                return (
-                  <View key={sid} style={{ minHeight: DRAG_ROW_H }}>
-                    {showAbove && <View style={dreSt.dropLine} />}
-                    <View style={[dreSt.row, isDragging && dreSt.rowActive]}>
-                      {/* Handle zone: onTouchStart records which row & absolute pageY */}
-                      <View
-                        style={dreSt.dragHandle}
-                        onTouchStart={(e) => {
-                          dragIdxRef.current = idx;
-                          dragStartPageYRef.current = e.nativeEvent.pageY;
-                          setDragIdx(idx);
-                          setOverIdx(idx);
-                        }}
-                        onTouchEnd={() => {
-                          // Only fires if PanResponder never claimed the gesture (tap, no drag)
-                          if (dragIdxRef.current !== null) {
-                            dragIdxRef.current = null;
-                            setDragIdx(null);
-                            setOverIdx(null);
-                          }
-                        }}
-                      >
-                        <Feather name="menu" size={22} color={isDragging ? GOLD : MUTED} />
-                      </View>
-                      <Image source={session.image as never} style={dreSt.thumb} contentFit="cover" />
-                      <View style={{ flex: 1 }}>
-                        <Text style={dreSt.rowTitle} numberOfLines={2}>{session.title}</Text>
-                      </View>
+            {draftIds.map((sid, idx) => {
+              const session = idMap[sid];
+              if (!session) return null;
+              const isDragging = dragIdx === idx;
+              const isOver = overIdx === idx && dragIdx !== null && dragIdx !== idx;
+              const showAbove = isOver && dragIdx !== null && dragIdx > idx;
+              const showBelow = isOver && dragIdx !== null && dragIdx < idx;
+              return (
+                <View key={sid} style={{ minHeight: DRAG_ROW_H }}>
+                  {showAbove && <View style={dreSt.dropLine} />}
+                  <View style={[dreSt.row, isDragging && dreSt.rowActive]}>
+                    <DragHandle
+                      idx={idx}
+                      isDragging={isDragging}
+                      onDragStart={handleDragStart}
+                      onDragMove={handleDragMove}
+                      onDragEnd={handleDragEnd}
+                    />
+                    <Image source={session.image as never} style={dreSt.thumb} contentFit="cover" />
+                    <View style={{ flex: 1 }}>
+                      <Text style={dreSt.rowTitle} numberOfLines={2}>{session.title}</Text>
                     </View>
-                    {showBelow && <View style={dreSt.dropLine} />}
                   </View>
-                );
-              })}
-            </ScrollView>
-          </View>
+                  {showBelow && <View style={dreSt.dropLine} />}
+                </View>
+              );
+            })}
+          </ScrollView>
           <Pressable
             style={({ pressed }) => [dreSt.saveBtn, { opacity: pressed ? 0.8 : 1 }]}
             onPress={() => { onSave(draftIds); onClose(); }}
