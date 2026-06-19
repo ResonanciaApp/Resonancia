@@ -198,11 +198,12 @@ export function MixerSettingsSheet({
 }
 
 const PRIMARY = "#BE9650";
-const FG = "#1A1E2B";
-const MUTED = "#6B7A96";
-const CHIP_BG = "rgba(74,12,12,0.05)";
-const CHIP_BORDER = "rgba(0,0,0,0.08)";
-const CHIP_SEL_BG = "rgba(190,150,80,0.16)";
+const FG = "rgba(255,255,255,0.9)";
+const MUTED = "rgba(255,255,255,0.9)";
+const MUTED_DIM = "rgba(255,255,255,0.6)";
+const CHIP_BG = "rgba(255,255,255,0.07)";
+const CHIP_BORDER = "rgba(255,255,255,0.18)";
+const CHIP_SEL_BG = "rgba(190,150,80,0.22)";
 
 const styles = StyleSheet.create({
   sheet: {
@@ -238,7 +239,7 @@ const styles = StyleSheet.create({
   },
   sectionHint: {
     fontSize: 12,
-    color: MUTED,
+    color: MUTED_DIM,
     marginBottom: 12,
   },
   chipWrap: {
@@ -301,7 +302,7 @@ const styles = StyleSheet.create({
   },
   swatchLabel: {
     fontSize: 10,
-    color: MUTED,
+    color: MUTED_DIM,
     marginTop: 6,
     textAlign: "center",
   },
@@ -325,6 +326,6 @@ const styles = StyleSheet.create({
     color: "#0B0F14",
   },
   clearBtnTextDisabled: {
-    color: MUTED,
+    color: MUTED_DIM,
   },
 });
