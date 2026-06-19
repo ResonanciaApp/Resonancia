@@ -153,7 +153,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       >
         {/* Fondo: degradado de Inicio */}
         <LinearGradient
-          colors={["#25040D", "#120106"]}
+          colors={["#21040C", "#100105"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
@@ -161,7 +161,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         {/* Acento del tab activo (crossfade) */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity }]}>
           <LinearGradient
-            colors={tabBarColors ? [tabBarColors[0], tabBarColors[1]] : ["#25040D", "#120106"]}
+            colors={tabBarColors ? [tabBarColors[0], tabBarColors[1]] : ["#21040C", "#100105"]}
             locations={[0, 1]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
