@@ -448,9 +448,13 @@ export default function HomeScreen2() {
 
         {/* ── 1. COLECCIONES ── */}
         {filteredPlaylists.length > 0 && (
-        <View style={styles.header}>
+        <View style={[styles.header, { marginTop: -3 }]}>
 
-          <View style={styles.coleccionGrid}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.coleccionGrid}
+          >
               {filteredPlaylists.map((pl) => (
                 <Pressable
                   key={pl.id}
@@ -470,7 +474,7 @@ export default function HomeScreen2() {
                   </View>
                 </Pressable>
               ))}
-          </View>
+          </ScrollView>
 
         </View>
         )}
@@ -916,12 +920,11 @@ const styles = StyleSheet.create({
   // Categories — 2×2 grid cards
   coleccionGrid: {
     flexDirection: "row",
-    flexWrap: "wrap",
     gap: 10,
+    paddingRight: 4,
   },
   coleccionCard: {
-    flexBasis: "47%",
-    flexGrow: 1,
+    width: 200,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "rgba(255,255,255,0.07)",
