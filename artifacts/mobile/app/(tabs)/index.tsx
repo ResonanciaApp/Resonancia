@@ -789,7 +789,7 @@ const styles = StyleSheet.create({
   },
   avatarBtnLoggedIn: {
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(255,255,255,0.5)",
   },
   avatarSmall: {
     width: 33,
