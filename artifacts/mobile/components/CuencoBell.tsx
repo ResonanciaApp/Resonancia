@@ -67,16 +67,24 @@ export function CuencoBell() {
 
     // ── Apagado después del hold ──
     const t = setTimeout(() => {
+      const targetIcon = hasBadge ? 1 : MUTED_OPACITY;
+      const FADE_OUT = 900;
       Animated.parallel([
         Animated.timing(glowOpacity, {
           toValue: 0,
-          duration: 900,
+          duration: FADE_OUT,
           easing: Easing.in(Easing.quad),
           useNativeDriver: true,
         }),
         Animated.timing(goldOpacity, {
           toValue: 0,
-          duration: 900,
+          duration: FADE_OUT,
+          easing: Easing.in(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(iconOpacity, {
+          toValue: targetIcon,
+          duration: FADE_OUT,
           easing: Easing.in(Easing.quad),
           useNativeDriver: true,
         }),
@@ -93,9 +101,16 @@ export function CuencoBell() {
     }
   }, [shouldAnimate, runGlow]);
 
-  // Actualiza opacidad base cuando cambia hasBadge
+  // Actualiza opacidad base solo cuando no hay animación en curso ni pendiente
+  const animatingRef = useRef(false);
   useEffect(() => {
-    if (!shouldAnimate) {
+    if (shouldAnimate) {
+      animatingRef.current = true;
+    } else if (animatingRef.current) {
+      // La animación acaba de terminar — iconOpacity ya fue llevado al valor
+      // correcto por el fade-out, no resetear instantáneamente.
+      animatingRef.current = false;
+    } else {
       iconOpacity.setValue(hasBadge ? 1 : MUTED_OPACITY);
     }
   }, [hasBadge, shouldAnimate, iconOpacity]);
