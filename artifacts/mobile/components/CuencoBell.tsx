@@ -1,44 +1,12 @@
-import React, { useCallback, useEffect } from "react";
+import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withSequence,
-  withTiming,
-} from "react-native-reanimated";
 import { router } from "expo-router";
 import { useNotifications } from "@/context/NotificationsContext";
 
 const CUENCO_ICON = require("@/assets/images/cuenco-icon.png");
 
 export function CuencoBell() {
-  const { unreadCount, shouldAnimate, clearAnimation } = useNotifications();
-  const rotation = useSharedValue(0);
-
-  const triggerGong = useCallback(() => {
-    rotation.value = withSequence(
-      withTiming(7, { duration: 70, easing: Easing.out(Easing.quad) }),
-      withTiming(-6, { duration: 110, easing: Easing.inOut(Easing.quad) }),
-      withTiming(4.5, { duration: 95, easing: Easing.inOut(Easing.quad) }),
-      withTiming(-3.5, { duration: 90 }),
-      withTiming(2, { duration: 75 }),
-      withTiming(-1, { duration: 65 }),
-      withTiming(0, { duration: 80, easing: Easing.in(Easing.quad) }),
-    );
-  }, [rotation]);
-
-  useEffect(() => {
-    if (shouldAnimate) {
-      triggerGong();
-      clearAnimation();
-    }
-  }, [shouldAnimate, triggerGong, clearAnimation]);
-
-  const animStyle = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${rotation.value}deg` }],
-  }));
-
+  const { unreadCount } = useNotifications();
   const hasBadge = unreadCount > 0;
 
   return (
@@ -47,13 +15,11 @@ export function CuencoBell() {
       hitSlop={10}
       style={styles.btn}
     >
-      <Animated.View style={animStyle}>
-        <Image
-          source={CUENCO_ICON}
-          style={[styles.icon, !hasBadge && styles.iconMuted]}
-          resizeMode="contain"
-        />
-      </Animated.View>
+      <Image
+        source={CUENCO_ICON}
+        style={[styles.icon, !hasBadge && styles.iconMuted]}
+        resizeMode="contain"
+      />
       {hasBadge && (
         <View style={styles.badge}>
           <Text style={styles.badgeText}>
@@ -73,8 +39,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   icon: {
-    width: 26,
-    height: 26,
+    width: 28,
+    height: 28,
   },
   iconMuted: {
     opacity: 0.42,
