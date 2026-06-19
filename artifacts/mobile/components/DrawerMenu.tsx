@@ -298,13 +298,15 @@ const styles = StyleSheet.create({
   headerDivider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(212,175,55,0.18)",
+    marginTop: -25,
     marginBottom: 8,
   },
   profileSection: {
     flexDirection: "row",
     alignItems: "flex-start",  // flex-start para que el chip no estire el avatar
     gap: 12,
-    paddingVertical: 16,
+    paddingTop: 1,
+    paddingBottom: 16,
     paddingHorizontal: 4,
   },
   profilePhoto: {
