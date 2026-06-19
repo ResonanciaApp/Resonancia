@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
+import { LinearGradient } from "expo-linear-gradient";
 import { SessionCard } from "@/components/SessionCard";
 import { usePlayer } from "@/context/PlayerContext";
 import { SESSIONS } from "@/data/sessions";
@@ -80,9 +80,13 @@ export default function HistorialScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <LinearGradient
+      style={styles.root}
+      colors={["#2E0510", "#160108"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
 
       <ScrollView
         style={styles.scroll}
@@ -168,7 +172,7 @@ export default function HistorialScreen() {
           </View>
         )}
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 
