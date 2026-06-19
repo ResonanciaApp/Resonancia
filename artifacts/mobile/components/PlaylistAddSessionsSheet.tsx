@@ -422,6 +422,7 @@ export function PlaylistAddSessionsSheet({
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
+          style={styles.tabsScroll}
           contentContainerStyle={styles.tabsWrapper}
         >
           {TABS.map((tab) => {
@@ -505,8 +506,13 @@ const styles = StyleSheet.create({
   headerClose: { width: 28, alignItems: "flex-end" },
 
   // Tabs
+  tabsScroll: {
+    flexGrow: 0,
+    flexShrink: 0,
+  },
   tabsWrapper: {
     flexDirection: "row",
+    alignItems: "center",
     gap: 8,
     paddingHorizontal: 16,
     paddingVertical: 10,
