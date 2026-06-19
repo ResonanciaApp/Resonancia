@@ -131,7 +131,7 @@ export default function PlaylistDetailScreen() {
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
-      <View style={[styles.header, { paddingTop: topPad + 8 }]}>
+      <View style={[styles.header, { paddingTop: topPad + 8, backgroundColor: "rgba(74,12,12,0.28)" }]}>
         <Pressable onPress={() => router.back()} style={styles.iconBtn}>
           <Feather name="arrow-left" size={22} color={TEXT} />
         </Pressable>
