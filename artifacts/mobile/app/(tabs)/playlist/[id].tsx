@@ -92,7 +92,7 @@ export default function PlaylistDetailScreen() {
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
   const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistDescription, reorderPlaylist, setPlaylistCover, setPlaylistCoverColor, setPlaylistCoverGeometry, setPlaylistCoverCreation } = useFoldersPlaylists();
-  const { playSession, pauseResume, isPlaying, currentSession, stop } = usePlayer();
+  const { playSession, pauseResume, isPlaying, currentSession } = usePlayer();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -530,49 +530,6 @@ export default function PlaylistDetailScreen() {
         </View>
       </Modal>
 
-      {/* ── Playlist MiniPlayer ──────────────────────────────────────────────── */}
-      {miniPlayerVisible && currentSession && (
-        <View
-          style={[
-            mpSt.bar,
-            { bottom: tabBarH },
-          ]}
-        >
-          <Pressable
-            onPress={stop}
-            hitSlop={12}
-            style={({ pressed }) => [mpSt.closeBtn, { opacity: pressed ? 0.6 : 1 }]}
-          >
-            <Feather name="x" size={18} color={MUTED} />
-          </Pressable>
-          <Image
-            source={currentSession.image as never}
-            style={mpSt.cover}
-            contentFit="cover"
-          />
-          <View style={mpSt.info}>
-            <Text style={mpSt.title} numberOfLines={1}>{currentSession.title}</Text>
-            <Text style={mpSt.artist} numberOfLines={1}>
-              {currentSession.guideId
-                ? (getGuideById(currentSession.guideId)?.name ?? "Casa del Cuenco")
-                : currentSession.artistId
-                  ? (getArtist(currentSession.artistId)?.name ?? "Resonancia")
-                  : "Casa del Cuenco"}
-            </Text>
-          </View>
-          <Pressable
-            onPress={handleTogglePlay}
-            hitSlop={12}
-            style={({ pressed }) => [mpSt.playBtn, { opacity: pressed ? 0.7 : 1 }]}
-          >
-            <Feather
-              name={displayIsPlaying ? "pause" : "play"}
-              size={26}
-              color={GOLD}
-            />
-          </Pressable>
-        </View>
-      )}
     </View>
   );
 }
@@ -1447,50 +1404,3 @@ const eiSt = StyleSheet.create({
   deleteBtnText: { color: "#E05252", fontSize: 15, fontWeight: "600" },
 });
 
-// ─── Playlist MiniPlayer styles ────────────────────────────────────────────────
-const mpSt = StyleSheet.create({
-  bar: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    height: 68,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.8)",
-    paddingHorizontal: 16,
-    gap: 12,
-    zIndex: 100,
-    elevation: 100,
-  },
-  cover: {
-    width: 44,
-    height: 44,
-    borderRadius: 8,
-    backgroundColor: "rgba(212,175,55,0.08)",
-  },
-  info: {
-    flex: 1,
-    gap: 3,
-  },
-  title: {
-    color: TEXT,
-    fontSize: 14,
-    fontWeight: "700",
-  },
-  artist: {
-    color: MUTED,
-    fontSize: 12,
-  },
-  closeBtn: {
-    width: 32,
-    height: 32,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  playBtn: {
-    width: 44,
-    height: 44,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

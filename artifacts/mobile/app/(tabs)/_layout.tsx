@@ -1,4 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
+import { Image as ExpoImage } from "expo-image";
 import { Tabs, usePathname } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -18,10 +19,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MiniPlayer } from "@/components/MiniPlayer";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
+import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import {
   TabBarVisibilityProvider,
   useTabBarVisibility,
 } from "@/context/TabBarVisibilityContext";
+import { getGuideById } from "@/data/guides";
+import { getArtist } from "@/data/artists";
 
 const ACTIVE_COLOR   = "#E9C46A";
 const INACTIVE_COLOR = "rgba(244,218,213,0.55)";
@@ -228,8 +232,9 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 }
 
 function TabLayoutInner() {
-  const { currentSession } = usePlayer();
+  const { currentSession, isPlaying, pauseResume, stop } = usePlayer();
   const { activeSounds }   = useMixer();
+  const { playlists }      = useFoldersPlaylists();
   const insets             = useSafeAreaInsets();
   const isWeb              = Platform.OS === "web";
   const bottomPb           = isWeb ? 8 : insets.bottom;
@@ -237,10 +242,17 @@ function TabLayoutInner() {
   const { hidden }         = useTabBarVisibility();
 
   const pathname       = usePathname();
-  const onMezclador   = pathname === "/musica";
+  const onMezclador    = pathname === "/musica";
   const mixActive      = !currentSession && activeSounds.length > 0;
-  const showMiniPlayer = onMezclador && (currentSession || mixActive);
   const miniPlayerBottom = hidden ? bottomPb : tabBarHeight;
+
+  // ¿La sesión actual pertenece a alguna playlist? → PlaylistMiniPlayer persistente
+  const activePlaylist = currentSession
+    ? (playlists.find((p) => p.sessionIds.includes(currentSession.id)) ?? null)
+    : null;
+
+  // El MiniPlayer global del Mezclador no aparece cuando hay playlist activa
+  const showMiniPlayer = onMezclador && !activePlaylist && (currentSession || mixActive);
 
   return (
     <View style={{ flex: 1 }}>
@@ -264,6 +276,41 @@ function TabLayoutInner() {
       {showMiniPlayer && (
         <View style={[styles.miniPlayerFloat, { bottom: miniPlayerBottom }]}>
           <MiniPlayer />
+        </View>
+      )}
+
+      {/* ── PlaylistMiniPlayer persistente (visible en todos los tabs) ─────── */}
+      {activePlaylist && currentSession && (
+        <View style={[styles.playlistBar, { bottom: miniPlayerBottom }]}>
+          <Pressable
+            onPress={stop}
+            hitSlop={12}
+            style={({ pressed }) => [styles.playlistCloseBtn, { opacity: pressed ? 0.6 : 1 }]}
+          >
+            <Feather name="x" size={18} color="rgba(242,231,228,0.45)" />
+          </Pressable>
+          <ExpoImage
+            source={currentSession.image as never}
+            style={styles.playlistCover}
+            contentFit="cover"
+          />
+          <View style={{ flex: 1, gap: 3 }}>
+            <Text style={styles.playlistTitle} numberOfLines={1}>{currentSession.title}</Text>
+            <Text style={styles.playlistArtist} numberOfLines={1}>
+              {currentSession.guideId
+                ? (getGuideById(currentSession.guideId)?.name ?? "Casa del Cuenco")
+                : currentSession.artistId
+                  ? (getArtist(currentSession.artistId)?.name ?? "Resonancia")
+                  : "Casa del Cuenco"}
+            </Text>
+          </View>
+          <Pressable
+            onPress={pauseResume}
+            hitSlop={12}
+            style={({ pressed }) => [styles.playlistPlayBtn, { opacity: pressed ? 0.7 : 1 }]}
+          >
+            <Feather name={isPlaying ? "pause" : "play"} size={26} color="#D4AF37" />
+          </Pressable>
         </View>
       )}
     </View>
@@ -322,5 +369,45 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
+  },
+  playlistBar: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    height: 68,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.8)",
+    paddingHorizontal: 16,
+    gap: 12,
+    zIndex: 100,
+    elevation: 100,
+  },
+  playlistCover: {
+    width: 44,
+    height: 44,
+    borderRadius: 8,
+    backgroundColor: "rgba(212,175,55,0.08)",
+  },
+  playlistTitle: {
+    color: "#F4DAD5",
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  playlistArtist: {
+    color: "rgba(242,231,228,0.45)",
+    fontSize: 12,
+  },
+  playlistCloseBtn: {
+    width: 32,
+    height: 32,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  playlistPlayBtn: {
+    width: 44,
+    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
