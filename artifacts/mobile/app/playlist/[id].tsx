@@ -674,7 +674,7 @@ function CoverPickerModal({
       <Modal visible={visible} animationType="slide" transparent onRequestClose={() => { setShowGeometries(false); onClose(); }}>
         <Pressable style={modalStyles.backdrop} onPress={() => { setShowGeometries(false); onClose(); }} />
         <View style={[modalStyles.sheet, { paddingBottom: bottomPad, height: "78%" }]}>
-          <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={["#1A1030", "#06070F"]} style={StyleSheet.absoluteFill} />
           <View style={modalStyles.handle} />
           <View style={modalStyles.headerRow}>
             <Pressable onPress={() => setShowGeometries(false)} hitSlop={12} style={modalStyles.headerClose}>
