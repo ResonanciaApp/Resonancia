@@ -477,7 +477,7 @@ function NombrePlaylistModal({ visible, onClose }: { visible: boolean; onClose: 
   const [name, setName] = useState("");
   const inputRef = useRef<TextInput>(null);
 
-  const suggestedName = `Mi playlist n.° ${playlists.length + 1}`;
+  const suggestedName = `Mi Playlist n.° ${playlists.length + 1}`;
 
   useEffect(() => {
     if (visible) setName(suggestedName);

@@ -240,7 +240,7 @@ export default function CarpetaDetailScreen() {
       <NamingModal
         visible={nombrePlaylistVisible}
         title="Ponle un nombre a tu playlist"
-        defaultName={`Mi playlist n.° ${allPlaylists.length + 1}`}
+        defaultName={`Mi Playlist n.° ${allPlaylists.length + 1}`}
         onClose={() => setNombrePlaylistVisible(false)}
         onCreate={handleCreatePlaylist}
       />

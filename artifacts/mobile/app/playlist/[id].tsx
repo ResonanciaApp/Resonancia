@@ -291,7 +291,7 @@ export default function PlaylistDetailScreen() {
           onPress={() => setAddSheetVisible(true)}
         >
           <Feather name="plus" size={16} color={TEXT} style={{ marginRight: 8 }} />
-          <Text style={styles.addBtnText}>Agregar a esta playlist</Text>
+          <Text style={styles.addBtnText}>Agregar a esta Playlist</Text>
         </Pressable>
 
         {/* Sessions list */}
