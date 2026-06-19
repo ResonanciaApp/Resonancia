@@ -306,7 +306,10 @@ export function PlaylistAddSessionsSheet({
     soundRef.current = null;
     if (old) { void old.stopAsync().catch(() => {}); void old.unloadAsync().catch(() => {}); }
 
-    const src = AUDIO_MAP[session.id];
+    // Fuente: bundleado primero, luego audioUri remoto
+    const bundled = AUDIO_MAP[session.id];
+    const src: number | { uri: string } | undefined =
+      bundled ?? (session.audioUri ? { uri: session.audioUri } : undefined);
     if (!src) { setPreviewId(null); return; }
 
     // ── Arrancar UI inmediatamente ──────────────────────────────────────────
@@ -318,11 +321,13 @@ export function PlaylistAddSessionsSheet({
 
     // ── Cargar audio en background (no bloquea la animación) ────────────────
     try {
-      const { sound } = await Audio.Sound.createAsync(src as number, { shouldPlay: true });
+      const { sound } = await Audio.Sound.createAsync(
+        typeof src === "number" ? src : src,
+        { shouldPlay: true },
+      );
       if (loadingForRef.current === session.id) {
         soundRef.current = sound;
       } else {
-        // Otro preview arrancó antes de que terminara de cargar → descartar
         void sound.stopAsync().catch(() => {});
         void sound.unloadAsync().catch(() => {});
       }
