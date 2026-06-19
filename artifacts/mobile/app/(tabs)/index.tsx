@@ -60,6 +60,7 @@ import { useColors } from "@/hooks/useColors";
 import { useUserProfile } from "@/context/UserProfileContext";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
+import { CuencoBell } from "@/components/CuencoBell";
 
 const { width } = Dimensions.get("window");
 
@@ -416,6 +417,7 @@ export default function HomeScreen2() {
               );
             })}
           </ScrollView>
+          <CuencoBell />
         </View>
       </View>
 

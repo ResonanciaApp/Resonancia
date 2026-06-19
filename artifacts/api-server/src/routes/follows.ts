@@ -1,7 +1,8 @@
 import { Router, type IRouter } from "express";
 import { and, eq, sql } from "drizzle-orm";
-import { db, usersTable, followsTable } from "@workspace/db";
+import { db, usersTable, followsTable, notificationsTable } from "@workspace/db";
 import { requireAuth } from "../middlewares/requireAuth";
+import { sendPushToUsers } from "../lib/push";
 
 const router: IRouter = Router();
 
@@ -61,10 +62,28 @@ router.post("/users/:userId/follow", requireAuth, async (req, res) => {
       return;
     }
 
+    const [alreadyFollowing] = await db
+      .select({ id: followsTable.followerId })
+      .from(followsTable)
+      .where(and(eq(followsTable.followerId, me.id), eq(followsTable.followingId, userId)))
+      .limit(1);
+
     await db
       .insert(followsTable)
       .values({ followerId: me.id, followingId: userId })
       .onConflictDoNothing();
+
+    if (!alreadyFollowing) {
+      void db
+        .insert(notificationsTable)
+        .values({ userId, actorUserId: me.id, type: "new_follower" })
+        .catch(() => {});
+      void sendPushToUsers([userId], {
+        title: "Nuevo seguidor",
+        body: `${me.displayName || me.username || "Alguien"} empezó a seguirte`,
+        data: { kind: "new_follower", fromUserId: me.id },
+      });
+    }
 
     res.status(204).send();
   } catch (err) {

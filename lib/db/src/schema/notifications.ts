@@ -15,6 +15,7 @@ import { usersTable } from "./users";
 export const NOTIFICATION_TYPES = [
   "friend_request",
   "friend_accepted",
+  "new_follower",
   "dm",
   "group_message",
   "mix_like",

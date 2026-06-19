@@ -41,6 +41,7 @@ import { PlayerProvider } from "@/context/PlayerContext";
 import { PremiumProvider } from "@/context/PremiumContext";
 import { UserProfileProvider } from "@/context/UserProfileContext";
 import { ProfileSync } from "@/components/ProfileSync";
+import { NotificationsProvider } from "@/context/NotificationsContext";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 if (apiUrl) setBaseUrl(apiUrl);
@@ -317,6 +318,7 @@ export default function RootLayout() {
               <SoundsProvider>
               <CatalogProvider>
               <AuthProvider>
+                <NotificationsProvider>
                 <PremiumProvider>
                 <PlayerProvider>
                   <AmbientPlayerProvider>
@@ -342,6 +344,7 @@ export default function RootLayout() {
                   </AmbientPlayerProvider>
                 </PlayerProvider>
                 </PremiumProvider>
+              </NotificationsProvider>
               </AuthProvider>
               </CatalogProvider>
               </SoundsProvider>
