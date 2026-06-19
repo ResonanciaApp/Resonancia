@@ -90,7 +90,7 @@ export function DrawerMenu() {
       )}
 
       <Animated.View style={[styles.drawer, visible && styles.drawerShadow, { transform: [{ translateX }] }]}>
-        <View style={[styles.drawerInner, { paddingBottom: bottomPad + 24, backgroundColor: "#130107" }]}>
+        <View style={[styles.drawerInner, { paddingBottom: bottomPad + 24, backgroundColor: "#1B060F" }]}>
 
           {/* ── Header de perfil ── */}
           <View style={[styles.profileHeader, { paddingTop: topPad + 16 }]}>
