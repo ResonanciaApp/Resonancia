@@ -1031,7 +1031,7 @@ export default function ProfileScreen() {
         {isExpansor && (
           <>
             {/* Banner certificado — fuera del fondo */}
-            <View style={[styles.dvCertBanner, { marginTop: 15, marginBottom: 20 }]}>
+            <View style={[styles.dvCertBanner, { marginBottom: 20 }]}>
               <LinearGradient
                 colors={["#E9C46A", "#B8860B"]}
                 start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
