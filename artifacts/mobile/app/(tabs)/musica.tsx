@@ -300,7 +300,7 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
         </Animated.View>
       </View>
       <View style={styles.cardFooter}>
-        <Text style={[styles.soundName, textColor ? { color: textColor } : null]} numberOfLines={1}>{sound.name}</Text>
+        <Text style={[styles.soundName, textColor ? { color: textColor } : null]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.65}>{sound.name}</Text>
       </View>
     </Pressable>
   );
