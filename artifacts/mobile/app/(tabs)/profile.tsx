@@ -1166,9 +1166,6 @@ export default function ProfileScreen() {
 
 
 
-        <Text style={[styles.footer, { color: colors.border }]}>
-          RESONANCE · Sonidos que te regresan a ti mismo.
-        </Text>
 
         </Animated.View>
       </ScrollView>

@@ -267,7 +267,7 @@ export default function ConfiguracionesScreen() {
     const build = Application.nativeBuildVersion ?? "—";
     Alert.alert(
       "RESONANCIA · Casa del Cuenco",
-      `Versión ${version} (${build})\n\nSonidos que te regresan a ti mismo.`,
+      `Versión ${version} (${build})`,
     );
   };
 
