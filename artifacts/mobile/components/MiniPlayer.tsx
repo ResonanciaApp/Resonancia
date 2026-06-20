@@ -355,6 +355,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     maxWidth: MAX_PLAYER_WIDTH,
     width: "100%",
+    borderRadius: 10,
   },
 
   // ── Fila de mezcla ────────────────────────────────────────────
