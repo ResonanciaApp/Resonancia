@@ -934,7 +934,7 @@ export default function MezcladorScreen() {
 
 const styles = StyleSheet.create({
   root:  { flex: 1, backgroundColor: "#FFFFFF" },
-  inner: { flex: 1, backgroundColor: "transparent" },
+  inner: { flex: 1, backgroundColor: "transparent", marginHorizontal: 10 },
 
   topPanelShadow: {
     zIndex: 10,

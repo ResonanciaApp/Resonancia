@@ -389,8 +389,8 @@ const styles = StyleSheet.create({
   },
   miniPlayerFloat: {
     position: "absolute",
-    left: 0,
-    right: 0,
+    left: 10,
+    right: 10,
   },
   playlistBar: {
     position: "absolute",
