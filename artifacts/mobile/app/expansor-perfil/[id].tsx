@@ -206,7 +206,7 @@ export default function ExpansorPerfilScreen() {
         </View>
 
         {/* ── Sección Expansor ── */}
-        <View style={[styles.expansorSection, { marginHorizontal: H_PAD }]}>
+        <View style={[styles.expansorSection, { marginHorizontal: H_PAD, marginTop: -20 }]}>
 
           {/* Banner certificado — V5 */}
           <View style={styles.certBanner}>
