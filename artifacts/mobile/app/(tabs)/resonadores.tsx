@@ -20,6 +20,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { GhostPill } from "@/components/GhostPill";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { EXPANSORES, REGIONS_BY_COUNTRY, COUNTRY_FLAGS, type Expansor } from "@/data/expansores";
 import { RESONADORES, type Resonador } from "@/data/resonadores";
@@ -358,7 +359,7 @@ export default function ResonadoresScreen() {
           <View style={{ flex: 1 }}>
             <Text style={styles.title}>Equipo</Text>
           </View>
-          <View style={styles.titleIcons}>
+          <GhostPill>
             <Pressable hitSlop={10} style={styles.searchIconBtn}>
               <Feather name="info" size={20} color="#FFFFFF" />
             </Pressable>
@@ -369,7 +370,7 @@ export default function ResonadoresScreen() {
                 color="#FFFFFF"
               />
             </Pressable>
-          </View>
+          </GhostPill>
         </View>
         <Text style={styles.subtitle}>Únete a la red de Resonancia</Text>
 
