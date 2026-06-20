@@ -750,14 +750,13 @@ const styles = StyleSheet.create({
   photoGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 3,
-    borderRadius: 16,
-    overflow: "hidden",
+    gap: 10,
   },
   photoCell: {
-    width: "32.5%",
-    aspectRatio: 1,
+    width: "30.5%",
+    aspectRatio: 3 / 4,
     backgroundColor: "rgba(255,255,255,0.04)",
+    borderRadius: 10,
     overflow: "hidden",
   },
   photoCellMore: {
