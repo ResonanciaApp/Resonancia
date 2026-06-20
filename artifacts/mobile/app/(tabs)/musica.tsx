@@ -275,15 +275,9 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
 
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
-      {/* Outer: tamaño fijo, sin borde propio para que el layout no cambie */}
       <View style={styles.cardImageWrap}>
-        {/* Borde: overlay absoluto que hace fade via opacity — sin zoom */}
-        <Animated.View
-          pointerEvents="none"
-          style={[styles.cardBorderRing, { opacity: anim, borderColor: borderGradient[0] }]}
-        />
-        {/* Imagen: rota independientemente */}
         <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ rotate }] }]}>
+          {/* Imagen recortada */}
           <View style={styles.cardClipInner}>
             {image ? (
               <Image source={typeof image === "string" ? { uri: image } : image} style={StyleSheet.absoluteFill} contentFit="cover" />
@@ -298,6 +292,11 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
               />
             )}
           </View>
+          {/* Borde encima de la imagen, rota junto con ella, fade in/out via opacity */}
+          <Animated.View
+            pointerEvents="none"
+            style={[styles.cardBorderRing, { opacity: anim, borderColor: borderGradient[0] }]}
+          />
         </Animated.View>
       </View>
       <View style={styles.cardFooter}>
