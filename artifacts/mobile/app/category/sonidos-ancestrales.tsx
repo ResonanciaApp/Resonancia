@@ -397,109 +397,197 @@ export default function SonidosAncestalesScreen() {
   return (
     <View style={styles.root}>
       <LinearGradient colors={["#481010","#1E0707"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
-      <View style={[styles.header,{height:HERO_HEIGHT+topPad}]}>
-        <Image source={HERO_IMG} style={[StyleSheet.absoluteFill,{width:"100%",height:"100%"}]} contentFit="cover" contentPosition="top" />
-        <View style={[StyleSheet.absoluteFill,{backgroundColor:"rgba(0,0,0,0.28)"}]} pointerEvents="none" />
-        <View style={{height:topPad}} />
-        <View style={styles.headerTopRow}>
-          <Pressable onPress={()=>router.back()} hitSlop={10} style={styles.backBtn}><Feather name="arrow-left" size={22} color="#fff" /></Pressable>
-          <Pressable hitSlop={10} style={styles.headerIconBtn} onPress={()=>router.push("/ancestrales-info" as never)}><Feather name="plus" size={24} color="#fff" /></Pressable>
-        </View>
-        <View style={styles.heroTitleArea}>
-          <View style={styles.heroTitleRow}>
-            <Text style={styles.heroTitle}>Ancestrales</Text>
-            <Pressable hitSlop={10} onPress={()=>setSearchVisible(true)} style={styles.heroSearchBtn}><Feather name="search" size={21} color="rgba(255,255,255,0.85)" /></Pressable>
+
+      {/* ── Sticky header ── */}
+      <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>
+        <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
+          <Feather name="arrow-left" size={22} color="#fff" />
+        </Pressable>
+        <Text style={styles.headerTitle}>Ancestrales</Text>
+        <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
+          <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
+        </Pressable>
+      </View>
+
+      <ScrollView style={styles.scroll} contentContainerStyle={{ paddingBottom: 140 + bottomPad }} showsVerticalScrollIndicator={false}>
+
+        {/* ── Hero banner ── */}
+        <View style={styles.heroArea}>
+          <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="top" />
+          <LinearGradient
+            colors={["transparent", "rgba(0,0,0,0.28)", "rgba(0,0,0,0.60)"]}
+            locations={[0.50, 0.80, 1]}
+            style={StyleSheet.absoluteFill}
+          />
+          {/* Ícono flotante en borde inferior del hero */}
+          <View style={styles.heroIconFloat}>
+            <View style={styles.heroIconCircle}>
+              <LinearGradient
+                colors={["rgba(212,175,55,0.22)", "rgba(184,134,11,0.14)"]}
+                style={StyleSheet.absoluteFill}
+              />
+              <Feather name="music" size={32} color={GOLD} />
+            </View>
           </View>
-          <Text style={styles.heroSubtitle}>{`${sessions.length} sesione${sessions.length!==1?"s":""}`}</Text>
         </View>
-      </View>
 
-      <View style={styles.chipsArea}>
-        <ChipRow activeTab={activeTab} onSelect={(id)=>setActiveTab(id)} onClear={()=>setActiveTab(null)} />
-      </View>
+        {/* ── Profile card ── */}
+        <View style={styles.profileCard}>
+          <Text style={styles.profileTitle}>Sonidos Ancestrales</Text>
+          <Text style={styles.profileDesc}>
+            Instrumentos milenarios — cuencos tibetanos, gongs y campanas — que inducen estados profundos de relajación, meditación y coherencia interior.
+          </Text>
+        </View>
 
-      <ScrollView style={styles.scroll} contentContainerStyle={{paddingBottom:140+bottomPad}} showsVerticalScrollIndicator={false}>
-        <AnimatedTabContent animKey={activeTab??"all"}>
+        {/* ── Tabs ── */}
+        <View style={styles.chipsArea}>
+          <ChipRow activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+        </View>
+
+        {/* ── Contenido (sort + lista) ── */}
+        <AnimatedTabContent animKey={activeTab ?? "all"}>
           <View style={styles.controlRow}>
-            <Pressable onPress={()=>setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
+            <Pressable onPress={() => setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
               <Feather name="chevrons-down" size={14} color={MUTED} />
               <Text style={styles.sortText}>{sortLabel}</Text>
             </Pressable>
-            <Pressable onPress={toggleView} hitSlop={10} style={styles.viewToggleBtn}>
-              {viewMode==="list" ? <MaterialCommunityIcons name="view-grid-outline" size={21} color={MUTED} /> : <MaterialCommunityIcons name="view-list-outline" size={21} color={MUTED} />}
-            </Pressable>
+            <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
+              <Pressable onPress={() => setSearchVisible(true)} hitSlop={10} style={styles.viewToggleBtn}>
+                <Feather name="search" size={19} color={MUTED} />
+              </Pressable>
+              <Pressable onPress={toggleView} hitSlop={10} style={styles.viewToggleBtn}>
+                {viewMode === "list"
+                  ? <MaterialCommunityIcons name="view-grid-outline" size={21} color={MUTED} />
+                  : <MaterialCommunityIcons name="view-list-outline" size={21} color={MUTED} />}
+              </Pressable>
+            </View>
           </View>
           {renderContent()}
         </AnimatedTabContent>
       </ScrollView>
 
-      <SearchOverlay visible={searchVisible} onClose={()=>setSearchVisible(false)} categoryId="sonidos-ancestrales" placeholderTxt="Buscar en Ancestrales..." />
-      <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={()=>setSortVisible(false)} />
-      <SessionQuickSheet session={selectedSession} onClose={()=>setSelectedSession(null)}
-        onPlaylist={()=>{ if (selectedSession) setPlaylistSessionId(selectedSession.id); setSelectedSession(null); }}
+      <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} categoryId="sonidos-ancestrales" placeholderTxt="Buscar en Ancestrales..." />
+      <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={() => setSortVisible(false)} />
+      <SessionQuickSheet session={selectedSession} onClose={() => setSelectedSession(null)}
+        onPlaylist={() => { if (selectedSession) setPlaylistSessionId(selectedSession.id); setSelectedSession(null); }}
         isFavorite={isFavorite} onToggleFavorite={toggleFavorite} />
-      <AddToPlaylistSheet visible={playlistSessionId!==null} sessionId={playlistSessionId??""} onClose={()=>setPlaylistSessionId(null)} />
+      <AddToPlaylistSheet visible={playlistSessionId !== null} sessionId={playlistSessionId ?? ""} onClose={() => setPlaylistSessionId(null)} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root:{ flex:1, backgroundColor:"#2E0510" },
-  header:{ overflow:"hidden", backgroundColor:"#2E0510" },
-  headerTopRow:{ flexDirection:"row", alignItems:"center", justifyContent:"space-between", paddingHorizontal:H_PAD, paddingTop:8 },
-  backBtn:     { width:36, height:36, alignItems:"center", justifyContent:"center" },
-  headerIconBtn:{ width:36, height:36, alignItems:"center", justifyContent:"center" },
-  heroTitleArea:{ flex:1, justifyContent:"flex-end", paddingHorizontal:H_PAD, paddingBottom:12 },
-  heroTitleRow:{ flexDirection:"row", alignItems:"center", justifyContent:"space-between" },
-  heroTitle:{ fontSize:32, fontWeight:"800", color:"#fff", letterSpacing:0.5, textShadowColor:"rgba(0,0,0,0.6)", textShadowOffset:{width:0,height:1}, textShadowRadius:6, flex:1 },
-  heroSearchBtn:{ width:36, height:36, alignItems:"center", justifyContent:"center" },
-  heroSubtitle:{ fontSize:13, color:"rgba(255,255,255,0.72)", marginTop:3 },
-  chipsArea:{ paddingTop:7, paddingBottom:7, overflow:"visible", backgroundColor:"rgba(0,0,0,0.25)" },
-  chipsShadow:{ position:"absolute", left:0, right:0, bottom:-7, height:7 },
-  animChipWrap:{ flexDirection:"row", alignItems:"center" },
-  animCloseBtn:{ position:"absolute", left:0, top:0, bottom:0, justifyContent:"center", zIndex:3 },
-  chipCloseBtn:{ width:30, height:30, borderRadius:15, backgroundColor:"rgba(74,12,12,0.08)", alignItems:"center", justifyContent:"center" },
-  chipRow:{ flexGrow:0 },
-  chipRowContent:{ flexDirection:"row", gap:8, paddingVertical:2, paddingHorizontal:H_PAD },
-  chip:{ paddingHorizontal:14, paddingVertical:8, borderRadius:999, backgroundColor:"rgba(255,255,255,0.08)", overflow:"hidden" },
-  chipText:{ fontSize:13, fontWeight:"600", color:TEXT },
-  chipTextSel:{ color:"#1B060F" },
-  scroll:{ flex:1 },
-  controlRow:{ flexDirection:"row", alignItems:"center", justifyContent:"space-between", paddingHorizontal:H_PAD, paddingVertical:10 },
-  sortBtn:{ flexDirection:"row", alignItems:"center", gap:4 },
-  sortText:{ fontSize:13, color:MUTED, fontWeight:"500" },
-  viewToggleBtn:{ padding:2 },
-  gridOuter:{ paddingHorizontal:H_PAD, gap:GRID_GAP },
-  gridRow:{ flexDirection:"row", gap:GRID_GAP },
-  emptyState:{ alignItems:"center", paddingTop:80, paddingHorizontal:H_PAD },
-  emptyTitle:{ fontSize:17, fontWeight:"700", color:TEXT, textAlign:"center", marginBottom:8 },
-  emptySub:  { fontSize:13, color:MUTED, textAlign:"center", lineHeight:20 },
-  sortSheet:{ position:"absolute", bottom:0, left:0, right:0, backgroundColor:"#160108", borderTopLeftRadius:22, borderTopRightRadius:22, paddingTop:10, paddingHorizontal:20 },
-  sortSheetHandle:{ alignSelf:"center", width:36, height:4, borderRadius:2, backgroundColor:"rgba(74,12,12,0.35)", marginBottom:16 },
-  sortSheetTitle:{ color:TEXT, fontSize:15, fontWeight:"700", marginBottom:12 },
-  sortSheetRow:{ flexDirection:"row", alignItems:"center", gap:14, paddingVertical:14, borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:"rgba(61,14,22,0.40)" },
-  sortSheetLabel:      { color:MUTED, fontSize:15, flex:1 },
-  sortSheetLabelActive:{ color:TEXT, fontWeight:"600" },
-  qsBackdrop:{ ...StyleSheet.absoluteFillObject, backgroundColor:"rgba(0,0,0,0.55)" },
-  qsSheet:{ position:"absolute", bottom:0, left:0, right:0, backgroundColor:"#160108", borderTopLeftRadius:22, borderTopRightRadius:22, paddingTop:10, paddingHorizontal:20, borderTopWidth:StyleSheet.hairlineWidth, borderColor:"#3D0E16" },
-  qsHandle:{ alignSelf:"center", width:36, height:4, borderRadius:2, backgroundColor:"rgba(212,175,55,0.25)", marginBottom:14 },
-  qsHeader:{ flexDirection:"row", alignItems:"center", gap:12, marginBottom:14 },
-  qsThumb: { width:54, height:54, borderRadius:10 },
-  qsTitle: { fontSize:15, fontWeight:"700", color:TEXT, marginBottom:2 },
-  qsSub:   { fontSize:12, color:MUTED },
-  qsClose: { padding:4 },
-  qsDivider:{ height:StyleSheet.hairlineWidth, backgroundColor:"#3D0E16", marginBottom:6 },
-  qsRow:   { flexDirection:"row", alignItems:"center", paddingVertical:16, gap:14 },
-  qsRowBorder:{ borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:"#3D0E16" },
-  qsIcon:  { width:22 },
-  qsLabel: { flex:1, fontSize:15, color:TEXT },
-  searchModalRoot:{ flex:1, backgroundColor:"#2E0510" },
-  searchOverlay:{ flexDirection:"row", alignItems:"center", backgroundColor:"#2E0510", paddingTop:Platform.OS==="ios"?56:36, paddingHorizontal:H_PAD, paddingBottom:14, gap:10 },
-  searchBar:{ flex:1, flexDirection:"row", alignItems:"center", gap:8, backgroundColor:"#FFFFFF", borderRadius:10, paddingHorizontal:12, paddingVertical:12 },
-  searchInput:  { flex:1, fontSize:14, color:"#111" },
-  cancelBtn:    { paddingVertical:6 },
-  cancelText:   { color:GOLD, fontSize:14, fontWeight:"600" },
-  searchEmpty:  { flex:1, backgroundColor:"#160108", alignItems:"center", justifyContent:"center", paddingHorizontal:32 },
-  searchEmptyTitle:{ fontSize:18, fontWeight:"700", color:TEXT, textAlign:"center", marginBottom:10 },
-  searchEmptySub:  { fontSize:14, color:MUTED, textAlign:"center", lineHeight:20 },
+  root: { flex: 1, backgroundColor: "#2E0510" },
+
+  /* ── Sticky header ── */
+  stickyHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: H_PAD,
+    paddingBottom: 10,
+  },
+  headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
+  headerTitle: { fontSize: 17, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },
+
+  /* ── Hero ── */
+  heroArea: { height: 220, position: "relative" },
+  heroIconFloat: {
+    position: "absolute",
+    bottom: -36,
+    left: H_PAD,
+    zIndex: 2,
+  },
+  heroIconCircle: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: "rgba(60,8,18,0.92)",
+    borderWidth: 3,
+    borderColor: "rgba(212,175,55,0.35)",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+
+  /* ── Profile card ── */
+  profileCard: {
+    marginHorizontal: H_PAD,
+    marginTop: 48,
+    paddingBottom: 14,
+    gap: 8,
+  },
+  profileTitle: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: TEXT,
+    letterSpacing: 0.3,
+  },
+  profileDesc: {
+    fontSize: 14,
+    color: MUTED,
+    lineHeight: 21,
+  },
+
+  /* ── Tabs (chips) ── */
+  chipsArea: { paddingTop: 4, paddingBottom: 10, overflow: "visible" },
+  animChipWrap: { flexDirection: "row", alignItems: "center" },
+  animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
+  chipCloseBtn: { width: 30, height: 30, borderRadius: 15, backgroundColor: "rgba(74,12,12,0.08)", alignItems: "center", justifyContent: "center" },
+  chipRow: { flexGrow: 0 },
+  chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
+  chip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 999, backgroundColor: "rgba(255,255,255,0.08)", overflow: "hidden" },
+  chipText: { fontSize: 13, fontWeight: "600", color: TEXT },
+  chipTextSel: { color: "#1B060F" },
+
+  /* ── Content ── */
+  scroll: { flex: 1 },
+  controlRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingVertical: 10 },
+  sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
+  sortText: { fontSize: 13, color: MUTED, fontWeight: "500" },
+  viewToggleBtn: { padding: 2 },
+  gridOuter: { paddingHorizontal: H_PAD, gap: GRID_GAP },
+  gridRow: { flexDirection: "row", gap: GRID_GAP },
+  emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },
+  emptyTitle: { fontSize: 17, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 8 },
+  emptySub: { fontSize: 13, color: MUTED, textAlign: "center", lineHeight: 20 },
+
+  /* ── Sort sheet ── */
+  sortSheet: { position: "absolute", bottom: 0, left: 0, right: 0, backgroundColor: "#160108", borderTopLeftRadius: 22, borderTopRightRadius: 22, paddingTop: 10, paddingHorizontal: 20 },
+  sortSheetHandle: { alignSelf: "center", width: 36, height: 4, borderRadius: 2, backgroundColor: "rgba(74,12,12,0.35)", marginBottom: 16 },
+  sortSheetTitle: { color: TEXT, fontSize: 15, fontWeight: "700", marginBottom: 12 },
+  sortSheetRow: { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 14, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(61,14,22,0.40)" },
+  sortSheetLabel: { color: MUTED, fontSize: 15, flex: 1 },
+  sortSheetLabelActive: { color: TEXT, fontWeight: "600" },
+
+  /* ── Quick sheet ── */
+  qsBackdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.55)" },
+  qsSheet: { position: "absolute", bottom: 0, left: 0, right: 0, backgroundColor: "#160108", borderTopLeftRadius: 22, borderTopRightRadius: 22, paddingTop: 10, paddingHorizontal: 20, borderTopWidth: StyleSheet.hairlineWidth, borderColor: "#3D0E16" },
+  qsHandle: { alignSelf: "center", width: 36, height: 4, borderRadius: 2, backgroundColor: "rgba(212,175,55,0.25)", marginBottom: 14 },
+  qsHeader: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 14 },
+  qsThumb: { width: 54, height: 54, borderRadius: 10 },
+  qsTitle: { fontSize: 15, fontWeight: "700", color: TEXT, marginBottom: 2 },
+  qsSub: { fontSize: 12, color: MUTED },
+  qsClose: { padding: 4 },
+  qsDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "#3D0E16", marginBottom: 6 },
+  qsRow: { flexDirection: "row", alignItems: "center", paddingVertical: 16, gap: 14 },
+  qsRowBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "#3D0E16" },
+  qsIcon: { width: 22 },
+  qsLabel: { flex: 1, fontSize: 15, color: TEXT },
+
+  /* ── Search overlay ── */
+  searchModalRoot: { flex: 1, backgroundColor: "#2E0510" },
+  searchOverlay: { flexDirection: "row", alignItems: "center", backgroundColor: "#2E0510", paddingTop: Platform.OS === "ios" ? 56 : 36, paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
+  searchBar: { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "#FFFFFF", borderRadius: 10, paddingHorizontal: 12, paddingVertical: 12 },
+  searchInput: { flex: 1, fontSize: 14, color: "#111" },
+  cancelBtn: { paddingVertical: 6 },
+  cancelText: { color: GOLD, fontSize: 14, fontWeight: "600" },
+  searchEmpty: { flex: 1, backgroundColor: "#160108", alignItems: "center", justifyContent: "center", paddingHorizontal: 32 },
+  searchEmptyTitle: { fontSize: 18, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 10 },
+  searchEmptySub: { fontSize: 14, color: MUTED, textAlign: "center", lineHeight: 20 },
+
+  /* ── Compat ── */
+  backBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
+  headerIconBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
+  chipsShadow: { position: "absolute", left: 0, right: 0, bottom: -7, height: 7 },
 });
