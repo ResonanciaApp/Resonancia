@@ -1,6 +1,7 @@
 import React from "react";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import {
+  Dimensions,
   Modal,
   Pressable,
   ScrollView,
@@ -69,59 +70,61 @@ export function MixerSettingsSheet({
     onBgPaletteChange(id);
   }
 
+  const screenH = Dimensions.get("window").height;
+  const sheetSizing =
+    mode === "palette"
+      ? { height: screenH * 0.5 }
+      : { maxHeight: screenH * 0.85 };
+
   return (
     <Modal
       visible={visible}
-      transparent={false}
+      transparent
       animationType="slide"
       onRequestClose={onClose}
       statusBarTranslucent
     >
-      <LinearGradient
-        colors={sheetGradient}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={[styles.sheet, { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 16 }]}
-      >
-        {/* ── Header: X + título en la misma fila ── */}
-        <View style={[styles.headerRow, { marginTop: insets.top + 2 }]}>
-          <Pressable onPress={onClose} style={styles.closeBtn} hitSlop={8}>
-            <Text style={[styles.closeX, { color: c.mutedDim }]}>✕</Text>
-          </Pressable>
-          <Text style={[styles.title, { color: c.fg }]}>
-            {mode === "palette" ? "Paleta de color" : "Filtros"}
-          </Text>
-          <View style={styles.closePlaceholder} />
-        </View>
+      <View style={styles.root}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+        <LinearGradient
+          colors={sheetGradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={[styles.sheet, sheetSizing, { paddingBottom: insets.bottom + 16 }]}
+        >
+          {/* ── Header: X + título en la misma fila ── */}
+          <View style={styles.headerRow}>
+            <Pressable onPress={onClose} style={styles.closeBtn} hitSlop={8}>
+              <Text style={[styles.closeX, { color: c.mutedDim }]}>✕</Text>
+            </Pressable>
+            <Text style={[styles.title, { color: c.fg }]}>
+              {mode === "palette" ? "Paleta de color" : "Filtros"}
+            </Text>
+            <View style={styles.closePlaceholder} />
+          </View>
 
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 8 }}>
-
-          {/* ── Escenas (paleta de color) ── */}
-          {mode === "palette" && (
-            <>
+          {/* ── Escenas (paleta de color) — grilla de 2 columnas ── */}
+          {mode === "palette" ? (
+            <View style={styles.paletteBody}>
               <Text style={[styles.sectionTitle, { color: c.fg }]}>Escenas</Text>
               <Text style={[styles.sectionHint, { color: c.mutedDim }]}>
                 Tono del área de sonidos (no afecta la cabecera).
               </Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.paletteRow}
-              >
+              <View style={styles.paletteGrid}>
                 {MIXER_BG_PALETTES.map((p) => {
                   const sel = bgPaletteId === p.id;
                   return (
-                    <Pressable key={p.id} onPress={() => handleEscenaChange(p.id)} style={styles.paletteItem}>
+                    <Pressable key={p.id} onPress={() => handleEscenaChange(p.id)} style={styles.paletteGridItem}>
                       <LinearGradient
                         colors={p.colors}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
-                        style={[styles.swatch, sel && styles.swatchSel]}
+                        style={[styles.swatchBig, sel && styles.swatchSel]}
                       >
                         {sel && <Text style={styles.swatchCheck}>✓</Text>}
                       </LinearGradient>
                       <Text
-                        style={[styles.swatchLabel, { color: sel ? PRIMARY : c.mutedDim }, sel && styles.swatchLabelSel]}
+                        style={[styles.swatchLabelBig, { color: sel ? PRIMARY : c.mutedDim }, sel && styles.swatchLabelSel]}
                         numberOfLines={1}
                       >
                         {p.label}
@@ -129,13 +132,10 @@ export function MixerSettingsSheet({
                     </Pressable>
                   );
                 })}
-              </ScrollView>
-            </>
-          )}
-
-          {/* ── Etiquetas (filtros) ── */}
-          {mode === "filters" && (
-            <>
+              </View>
+            </View>
+          ) : (
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 8 }}>
               <Text style={[styles.sectionTitle, { color: c.fg }]}>Etiquetas</Text>
               <Text style={[styles.sectionHint, { color: c.mutedDim }]}>
                 Combina varias para afinar la búsqueda.
@@ -163,35 +163,42 @@ export function MixerSettingsSheet({
                   );
                 })}
               </View>
-            </>
+            </ScrollView>
           )}
 
-        </ScrollView>
-
-        {/* ── Limpiar filtros ── */}
-        <Pressable
-          onPress={onClear}
-          disabled={!hasFilters}
-          style={({ pressed }) => [
-            styles.clearBtn,
-            !hasFilters && styles.clearBtnDisabled,
-            { opacity: pressed ? 0.85 : 1 },
-          ]}
-        >
-          {hasFilters && <GoldGradientFill />}
-          <Text style={[styles.clearBtnText, !hasFilters && { color: c.mutedDim }]}>
-            {mode === "palette" ? "Restablecer color" : "Limpiar filtros"}
-          </Text>
-        </Pressable>
-      </LinearGradient>
+          {/* ── Limpiar / restablecer ── */}
+          <Pressable
+            onPress={onClear}
+            disabled={!hasFilters}
+            style={({ pressed }) => [
+              styles.clearBtn,
+              !hasFilters && styles.clearBtnDisabled,
+              { opacity: pressed ? 0.85 : 1 },
+            ]}
+          >
+            {hasFilters && <GoldGradientFill />}
+            <Text style={[styles.clearBtnText, !hasFilters && { color: c.mutedDim }]}>
+              {mode === "palette" ? "Restablecer color" : "Limpiar filtros"}
+            </Text>
+          </Pressable>
+        </LinearGradient>
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  sheet: {
+  root: {
     flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.45)",
+  },
+  sheet: {
     paddingHorizontal: 20,
+    paddingTop: 14,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    overflow: "hidden",
   },
   headerRow: {
     flexDirection: "row",
@@ -243,20 +250,24 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "500",
   },
-  paletteRow: {
-    flexDirection: "row",
-    gap: 14,
-    paddingRight: 4,
-    marginBottom: 4,
+  paletteBody: {
+    flex: 1,
   },
-  paletteItem: {
-    width: 64,
+  paletteGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 14,
+    rowGap: 16,
+    marginTop: 4,
+  },
+  paletteGridItem: {
+    flex: 1,
     alignItems: "center",
   },
-  swatch: {
+  swatchBig: {
     width: "100%",
     aspectRatio: 1,
-    borderRadius: 14,
+    borderRadius: 20,
     borderWidth: 2,
     borderColor: "rgba(0,0,0,0.08)",
     alignItems: "center",
@@ -266,13 +277,14 @@ const styles = StyleSheet.create({
     borderColor: PRIMARY,
   },
   swatchCheck: {
-    fontSize: 18,
+    fontSize: 26,
     fontWeight: "900",
     color: "#1B060F",
   },
-  swatchLabel: {
-    fontSize: 10,
-    marginTop: 6,
+  swatchLabelBig: {
+    fontSize: 14,
+    fontWeight: "500",
+    marginTop: 10,
     textAlign: "center",
   },
   swatchLabelSel: {
