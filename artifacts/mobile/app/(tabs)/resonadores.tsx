@@ -279,6 +279,29 @@ export default function ResonadoresScreen() {
     setSearchVisible((v) => !v);
   }
 
+  // Texto cinemático sobre el banner: aparece al 1s, fade in, 4s, fade out
+  const bannerTextOpacity = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    const seq = Animated.sequence([
+      Animated.delay(1000),
+      Animated.timing(bannerTextOpacity, {
+        toValue: 1,
+        duration: 1200,
+        easing: Easing.out(Easing.ease),
+        useNativeDriver: true,
+      }),
+      Animated.delay(4000),
+      Animated.timing(bannerTextOpacity, {
+        toValue: 0,
+        duration: 1200,
+        easing: Easing.in(Easing.ease),
+        useNativeDriver: true,
+      }),
+    ]);
+    seq.start();
+    return () => seq.stop();
+  }, [bannerTextOpacity]);
+
   // Países presentes en EXPANSORES, ordenados alfabéticamente
   const availableCountries = useMemo(() => {
     const set = new Set(EXPANSORES.map((e) => e.country));
@@ -395,11 +418,19 @@ export default function ResonadoresScreen() {
         )}
 
         {/* Banner */}
-        <Image
-          source={require("@/assets/images/banner-equipo.jpg")}
-          style={styles.banner}
-          contentFit="cover"
-        />
+        <View style={styles.banner}>
+          <Image
+            source={require("@/assets/images/banner-equipo.jpg")}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+          />
+          <Animated.View
+            pointerEvents="none"
+            style={[styles.bannerTextWrap, { opacity: bannerTextOpacity }]}
+          >
+            <Text style={styles.bannerText}>Juntos expandimos la vibración</Text>
+          </Animated.View>
+        </View>
 
         {/* Tab switcher */}
         <View style={styles.tabPill}>
@@ -511,6 +542,22 @@ const styles = StyleSheet.create({
     marginTop: -15,
     marginBottom: 14,
     overflow: "hidden",
+  },
+  bannerTextWrap: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 28,
+  },
+  bannerText: {
+    fontSize: 22,
+    fontWeight: "600",
+    color: "#FFFFFF",
+    textAlign: "center",
+    letterSpacing: 0.5,
+    textShadowColor: "rgba(0,0,0,0.6)",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 8,
   },
   titleRow: {
     flexDirection: "row",
