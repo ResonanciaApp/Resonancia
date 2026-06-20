@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import { Animated, Easing, Image, Pressable, StyleSheet } from "react-native";
+import { Animated, Easing, Image, Pressable, StyleSheet, Text } from "react-native";
 import { router } from "expo-router";
 import { useNotifications } from "@/context/NotificationsContext";
 
-const CUENCO_ICON = require("@/assets/images/cuenco-icon.png");
+const CUENCO_ICON = require("@/assets/images/cuenco-bell-icon.png");
 const MUTED_OPACITY = 0.38;
 const GOLD = "#D4AF37";
 
@@ -153,8 +153,14 @@ export function CuencoBell() {
         />
       </Animated.View>
 
-      {/* Punto dorado — animado para entrar/salir suavemente */}
-      <Animated.View style={[styles.dot, { opacity: dotOpacity }]} />
+      {/* Badge con el número de notificaciones — entra/sale suavemente */}
+      {unreadCount > 0 && (
+        <Animated.View style={[styles.badge, { opacity: dotOpacity }]}>
+          <Text style={styles.badgeText} numberOfLines={1}>
+            {unreadCount > 99 ? "99+" : unreadCount}
+          </Text>
+        </Animated.View>
+      )}
     </Pressable>
   );
 }
@@ -185,15 +191,24 @@ const styles = StyleSheet.create({
   iconAbsolute: {
     position: "absolute",
   },
-  dot: {
+  badge: {
     position: "absolute",
-    top: 2,
-    alignSelf: "center",
-    width: 7,
-    height: 7,
-    borderRadius: 4,
+    top: -2,
+    right: -3,
+    minWidth: 16,
+    height: 16,
+    borderRadius: 8,
+    paddingHorizontal: 4,
     backgroundColor: GOLD,
     borderWidth: 1,
     borderColor: "#1B060F",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  badgeText: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: "#1B060F",
+    textAlign: "center",
   },
 });
