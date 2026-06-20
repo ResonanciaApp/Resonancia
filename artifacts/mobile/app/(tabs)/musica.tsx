@@ -703,7 +703,7 @@ export default function MezcladorScreen() {
             <View style={styles.header}>
               <View style={styles.headerRow}>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.pageTitle}>Mezclador</Text>
+                  <Text style={[styles.pageTitle, { transform: [{ translateX: -3 }, { translateY: 2 }] }]}>Mezclador</Text>
                   <Text style={styles.pageSubtitle}>Sonidos de la tierra y el universo.</Text>
                 </View>
                 <View style={styles.headerActions}>
