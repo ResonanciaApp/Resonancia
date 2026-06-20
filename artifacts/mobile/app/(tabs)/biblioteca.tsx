@@ -220,7 +220,6 @@ function AnimatedChipRow({
           const chipStyle = isSelected
             ? {
                 opacity: 1,
-                zIndex: 2,
                 transform: [
                   {
                     translateX: progress.interpolate({
