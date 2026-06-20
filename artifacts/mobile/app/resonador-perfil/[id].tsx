@@ -99,7 +99,7 @@ export default function ResonadorPerfilScreen() {
 
   const flag = COUNTRY_FLAGS[resonador.country] ?? "";
   const locationStr = `${flag} ${resonador.city}, ${resonador.country}`.trim();
-  const hasSocials = !!(resonador.instagram || resonador.linktree);
+  const hasContacts = !!(resonador.instagram || resonador.phone || resonador.email || resonador.linktree);
   const sessions = (resonador.sessionIds ?? [])
     .map((sid) => getSessionById(sid))
     .filter(Boolean) as NonNullable<ReturnType<typeof getSessionById>>[];
@@ -382,9 +382,9 @@ export default function ResonadorPerfilScreen() {
 
         </View>
 
-        {/* Redes sociales */}
-        {hasSocials && (
-          <View style={[styles.contactRow, { marginHorizontal: H_PAD }]}>
+        {/* Contacto y redes — grilla 2×2 */}
+        {hasContacts && (
+          <View style={[styles.contactGrid, { marginHorizontal: H_PAD }]}>
             {resonador.instagram && (
               <Pressable
                 onPress={() => Linking.openURL(resonador.instagram!)}
@@ -392,6 +392,24 @@ export default function ResonadorPerfilScreen() {
               >
                 <Feather name="instagram" size={13} color="#FFFFFF" />
                 <Text style={styles.actionPillText}>Instagram</Text>
+              </Pressable>
+            )}
+            {resonador.phone && (
+              <Pressable
+                onPress={() => Linking.openURL(`tel:${resonador.phone}`)}
+                style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
+              >
+                <Feather name="phone" size={13} color="#FFFFFF" />
+                <Text style={styles.actionPillText}>Teléfono</Text>
+              </Pressable>
+            )}
+            {resonador.email && (
+              <Pressable
+                onPress={() => Linking.openURL(`mailto:${resonador.email}`)}
+                style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
+              >
+                <Feather name="mail" size={13} color="#FFFFFF" />
+                <Text style={styles.actionPillText}>Correo</Text>
               </Pressable>
             )}
             {resonador.linktree && (
@@ -709,7 +727,8 @@ const styles = StyleSheet.create({
   actionPillTextActive: { color: "#1B060F", fontWeight: "600" },
   actionPillTextSent: { color: "rgba(250,240,238,0.45)" },
   contactRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  contactPill: { flex: 1, justifyContent: "center" },
+  contactGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  contactPill: { flexBasis: "47%", flexGrow: 1, justifyContent: "center" },
 
   /* ── Sección Resonador ── */
   resonadorSection: {
