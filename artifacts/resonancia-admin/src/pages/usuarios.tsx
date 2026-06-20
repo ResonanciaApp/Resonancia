@@ -194,6 +194,11 @@ export default function UsuariosPage() {
                           <div className="text-xs text-muted-foreground">
                             @{u.username}
                           </div>
+                          {u.clerkUserId && (
+                            <div className="text-xs font-mono text-muted-foreground/60 mt-0.5">
+                              {u.clerkUserId}
+                            </div>
+                          )}
                         </TableCell>
                         <TableCell className="text-muted-foreground">
                           {u.email ?? "—"}

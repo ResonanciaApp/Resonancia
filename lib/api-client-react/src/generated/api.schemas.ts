@@ -1058,6 +1058,7 @@ export const AdminUserRole = {
 
 export interface AdminUser {
   id: number;
+  clerkUserId: string;
   username: string;
   displayName: string;
   /** @nullable */

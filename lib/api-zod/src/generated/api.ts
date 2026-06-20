@@ -1866,6 +1866,7 @@ export const GetAdminUsersQueryParams = zod.object({
 export const GetAdminUsersResponse = zod.object({
   "users": zod.array(zod.object({
   "id": zod.number(),
+  "clerkUserId": zod.string(),
   "username": zod.string(),
   "displayName": zod.string(),
   "email": zod.string().nullable(),

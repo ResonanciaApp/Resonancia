@@ -100,6 +100,7 @@ router.get("/admin/users", requireAuth, requireRole("admin"), async (req, res) =
     res.json({
       users: rows.map((u) => ({
         id: u.id,
+        clerkUserId: u.clerkUserId,
         username: u.username,
         displayName: u.displayName,
         email: u.email,

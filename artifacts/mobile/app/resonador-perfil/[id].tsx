@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { useUser } from "@clerk/expo";
+import { useAuth } from "@clerk/expo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
 import { Image } from "expo-image";
@@ -49,7 +49,7 @@ export default function ResonadorPerfilScreen() {
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
 
-  const { user: clerkUser } = useUser();
+  const { userId: clerkUserId } = useAuth();
   const [following, setFollowing] = React.useState(false);
   const [friendRequested, setFriendRequested] = React.useState(false);
   const [descExpanded, setDescExpanded] = React.useState(false);
@@ -89,7 +89,7 @@ export default function ResonadorPerfilScreen() {
   const resonador = overrides
     ? ({ ..._resonador, ...overrides } as Resonador)
     : _resonador;
-  const isOwn = !!(clerkUser?.id && resonador.clerkId && clerkUser.id === resonador.clerkId);
+  const isOwn = !!(clerkUserId && resonador.clerkId && clerkUserId === resonador.clerkId);
 
   const flag = COUNTRY_FLAGS[resonador.country] ?? "";
   const locationStr = `${flag} ${resonador.city}, ${resonador.country}`.trim();

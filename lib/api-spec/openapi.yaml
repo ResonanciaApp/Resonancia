@@ -3752,6 +3752,8 @@ components:
       properties:
         id:
           type: integer
+        clerkUserId:
+          type: string
         username:
           type: string
         displayName:
@@ -3768,7 +3770,7 @@ components:
         createdAt:
           type: string
           format: date-time
-      required: [id, username, displayName, email, avatarUrl, role, submissionCount, createdAt]
+      required: [id, clerkUserId, username, displayName, email, avatarUrl, role, submissionCount, createdAt]
     AdminUsersPage:
       type: object
       properties:
