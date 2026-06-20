@@ -380,30 +380,31 @@ export default function ResonadorPerfilScreen() {
             </View>
           ) : null}
 
-          {/* Redes sociales */}
-          {hasSocials && (
-            <View style={styles.contactRow}>
-              {resonador.instagram && (
-                <Pressable
-                  onPress={() => Linking.openURL(resonador.instagram!)}
-                  style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
-                >
-                  <Feather name="instagram" size={13} color="#FFFFFF" />
-                  <Text style={styles.actionPillText}>Instagram</Text>
-                </Pressable>
-              )}
-              {resonador.linktree && (
-                <Pressable
-                  onPress={() => Linking.openURL(resonador.linktree!)}
-                  style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
-                >
-                  <Feather name="link" size={13} color="#FFFFFF" />
-                  <Text style={styles.actionPillText}>Linktree</Text>
-                </Pressable>
-              )}
-            </View>
-          )}
         </View>
+
+        {/* Redes sociales */}
+        {hasSocials && (
+          <View style={[styles.contactRow, { marginHorizontal: H_PAD }]}>
+            {resonador.instagram && (
+              <Pressable
+                onPress={() => Linking.openURL(resonador.instagram!)}
+                style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
+              >
+                <Feather name="instagram" size={13} color="#FFFFFF" />
+                <Text style={styles.actionPillText}>Instagram</Text>
+              </Pressable>
+            )}
+            {resonador.linktree && (
+              <Pressable
+                onPress={() => Linking.openURL(resonador.linktree!)}
+                style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
+              >
+                <Feather name="link" size={13} color="#FFFFFF" />
+                <Text style={styles.actionPillText}>Linktree</Text>
+              </Pressable>
+            )}
+          </View>
+        )}
 
         {/* ── Grilla de imágenes ── */}
         {(() => {

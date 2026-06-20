@@ -294,63 +294,64 @@ export default function ExpansorPerfilScreen() {
             ) : null}
           </View>
 
-          {/* Botones contacto: teléfono + email */}
-          {hasContactRow && (
-            <View style={styles.contactRow}>
-              {expansor.phone && (
-                <Pressable
-                  onPress={() => Linking.openURL(`tel:${expansor.phone}`)}
-                  style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
-                >
-                  <Feather name="phone" size={13} color="#FFFFFF" />
-                  <Text style={styles.actionPillText}>Teléfono</Text>
-                </Pressable>
-              )}
-              {expansor.email && (
-                <Pressable
-                  onPress={() => Linking.openURL(`mailto:${expansor.email}`)}
-                  style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
-                >
-                  <Feather name="mail" size={13} color="#FFFFFF" />
-                  <Text style={styles.actionPillText}>Email</Text>
-                </Pressable>
-              )}
-            </View>
-          )}
-
-          {/* Botones sociales: Instagram + Linktree + Facebook */}
-          {hasSocialRow && (
-            <View style={styles.contactRow}>
-              {expansor.instagram && (
-                <Pressable
-                  onPress={() => Linking.openURL(expansor.instagram!)}
-                  style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
-                >
-                  <Feather name="instagram" size={13} color="#FFFFFF" />
-                  <Text style={styles.actionPillText}>Instagram</Text>
-                </Pressable>
-              )}
-              {expansor.linktree && (
-                <Pressable
-                  onPress={() => Linking.openURL(expansor.linktree!)}
-                  style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
-                >
-                  <Feather name="link" size={13} color="#FFFFFF" />
-                  <Text style={styles.actionPillText}>Linktree</Text>
-                </Pressable>
-              )}
-              {expansor.facebook && (
-                <Pressable
-                  onPress={() => Linking.openURL(expansor.facebook!)}
-                  style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
-                >
-                  <Feather name="facebook" size={13} color="#FFFFFF" />
-                  <Text style={styles.actionPillText}>Facebook</Text>
-                </Pressable>
-              )}
-            </View>
-          )}
         </View>
+
+        {/* Botones contacto: teléfono + email */}
+        {hasContactRow && (
+          <View style={[styles.contactRow, { marginHorizontal: H_PAD }]}>
+            {expansor.phone && (
+              <Pressable
+                onPress={() => Linking.openURL(`tel:${expansor.phone}`)}
+                style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
+              >
+                <Feather name="phone" size={13} color="#FFFFFF" />
+                <Text style={styles.actionPillText}>Teléfono</Text>
+              </Pressable>
+            )}
+            {expansor.email && (
+              <Pressable
+                onPress={() => Linking.openURL(`mailto:${expansor.email}`)}
+                style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
+              >
+                <Feather name="mail" size={13} color="#FFFFFF" />
+                <Text style={styles.actionPillText}>Email</Text>
+              </Pressable>
+            )}
+          </View>
+        )}
+
+        {/* Botones sociales: Instagram + Linktree + Facebook */}
+        {hasSocialRow && (
+          <View style={[styles.contactRow, { marginHorizontal: H_PAD }]}>
+            {expansor.instagram && (
+              <Pressable
+                onPress={() => Linking.openURL(expansor.instagram!)}
+                style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
+              >
+                <Feather name="instagram" size={13} color="#FFFFFF" />
+                <Text style={styles.actionPillText}>Instagram</Text>
+              </Pressable>
+            )}
+            {expansor.linktree && (
+              <Pressable
+                onPress={() => Linking.openURL(expansor.linktree!)}
+                style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
+              >
+                <Feather name="link" size={13} color="#FFFFFF" />
+                <Text style={styles.actionPillText}>Linktree</Text>
+              </Pressable>
+            )}
+            {expansor.facebook && (
+              <Pressable
+                onPress={() => Linking.openURL(expansor.facebook!)}
+                style={({ pressed }) => [styles.actionPill, styles.contactPill, { opacity: pressed ? 0.75 : 1 }]}
+              >
+                <Feather name="facebook" size={13} color="#FFFFFF" />
+                <Text style={styles.actionPillText}>Facebook</Text>
+              </Pressable>
+            )}
+          </View>
+        )}
 
         {/* ── Descubre lo que hago — galería ── */}
         {hasGallery && (
