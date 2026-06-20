@@ -233,6 +233,7 @@ const ResonadorCard = memo(function ResonadorCard({
               height: photoSize,
               borderRadius: photoSize / 2,
             },
+            item.kind === "expansor" && { borderWidth: 0 },
           ]}
         >
           <Image
