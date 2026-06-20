@@ -358,7 +358,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     maxWidth: MAX_PLAYER_WIDTH,
     width: "100%",
-    borderRadius: 20,
+    borderRadius: 25,
     borderWidth: 1,
     borderTopColor:    "rgba(255,255,255,0.30)",
     borderLeftColor:   "rgba(255,255,255,0.65)",
