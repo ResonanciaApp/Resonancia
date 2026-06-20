@@ -204,7 +204,7 @@ export function MiniPlayer() {
         {/* ── Card del miniplayer ── */}
         <View style={styles.wrapper}>
           {/* Fondo glassmorphism */}
-          <BlurView intensity={60} tint="dark" style={StyleSheet.absoluteFill} />
+          <BlurView intensity={60} tint="dark" style={[StyleSheet.absoluteFill, { borderRadius: 30, overflow: "hidden" }]} />
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(20,5,12,0.45)" }]} />
 
           {/* ── Row principal ── */}
