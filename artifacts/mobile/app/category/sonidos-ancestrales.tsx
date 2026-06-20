@@ -526,7 +526,7 @@ const styles = StyleSheet.create({
   },
   profileDesc: {
     fontSize: 14,
-    color: "rgba(255,255,255,0.90)",
+    color: "rgba(255,255,255,0.70)",
     lineHeight: 21,
     textAlign: "center",
   },
