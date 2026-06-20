@@ -273,7 +273,7 @@ const ac = StyleSheet.create({
   progressBar:{ position:"absolute", bottom:0, left:0, height:3, overflow:"hidden" },
   hPlayBtn:{ position:"absolute", top:0, left:0, right:0, bottom:0, alignItems:"center", justifyContent:"center", backgroundColor:"rgba(0,0,0,0.38)" },
   gridPlayOverlay:{ position:"absolute", bottom:10, right:8 },
-  gridPlayBtn:{ width:30, height:30, borderRadius:15, backgroundColor:"rgba(27,6,15,0.65)", alignItems:"center", justifyContent:"center", overflow:"hidden", borderWidth:1, borderColor:"rgba(255,255,255,0.60)" },
+  gridPlayBtn:{ width:30, height:30, borderRadius:15, backgroundColor:"rgba(27,6,15,0.50)", alignItems:"center", justifyContent:"center", overflow:"hidden", borderWidth:1, borderColor:"rgba(255,255,255,0.60)" },
 });
 
 function SessionQuickSheet({ session, onClose, onPlaylist, isFavorite, onToggleFavorite }: { session: Session|null; onClose:()=>void; onPlaylist:()=>void; isFavorite:(id:string)=>boolean; onToggleFavorite:(id:string)=>void }) {
