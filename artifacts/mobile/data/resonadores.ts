@@ -31,6 +31,7 @@ export type Resonador = {
   servicesDescription?: string;
   instagram?: string;
   linktree?: string;
+  donationUrl?: string;
   sessionIds?: string[];
   projects?: ExternalProject[];
   formacion?: FormacionItem[];
@@ -67,6 +68,7 @@ export const RESONADORES: Resonador[] = [
     followingCount: 234,
     servicesDescription: "Ofrezco sesiones individuales y grupales de sonoterapia. Cada experiencia es diseñada para liberar bloqueos emocionales y restaurar el equilibrio energético a través de frecuencias específicas.",
     instagram: "https://instagram.com/lunacosmica",
+    donationUrl: "https://cafecito.app/lunacosmica",
     sessionIds: ["1", "2", "4"],
     projects: [
       { platform: "spotify", label: "Luna Cósmica en Spotify", url: "https://spotify.com" },
@@ -95,6 +97,7 @@ export const RESONADORES: Resonador[] = [
     servicesDescription: "Guío meditaciones personalizadas para individuos y empresas. También ofrezco retiros de silencio y talleres de mindfulness aplicado al estrés y la ansiedad.",
     instagram: "https://instagram.com/kaiamara",
     linktree: "https://linktr.ee/kaiamara",
+    donationUrl: "https://ko-fi.com/kaiamara",
     sessionIds: ["3", "5", "7"],
     projects: [
       { platform: "youtube", label: "Meditaciones en YouTube", url: "https://youtube.com" },

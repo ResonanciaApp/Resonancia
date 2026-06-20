@@ -212,6 +212,38 @@ export default function ResonadorPerfilScreen() {
           </View>
         </View>
 
+        {/* ── Botón de apoyo ── */}
+        {resonador.donationUrl ? (
+          <Pressable
+            onPress={() => Linking.openURL(resonador.donationUrl!)}
+            style={({ pressed }) => [
+              styles.donationBtn,
+              { marginHorizontal: H_PAD, opacity: pressed ? 0.80 : 1 },
+            ]}
+          >
+            <LinearGradient
+              colors={["rgba(212,175,55,0.08)", "rgba(212,175,55,0.03)"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={StyleSheet.absoluteFill}
+            />
+            <View style={styles.donationIconWrap}>
+              <LinearGradient
+                colors={["rgba(212,175,55,0.18)", "rgba(184,134,11,0.10)"]}
+                style={StyleSheet.absoluteFill}
+              />
+              <Feather name="heart" size={15} color={GOLD} />
+            </View>
+            <View style={styles.donationTextWrap}>
+              <Text style={styles.donationTitle}>
+                Apoyar a {resonador.name.split(" ")[0]}
+              </Text>
+              <Text style={styles.donationSub}>Tu apoyo llega directo a su obra</Text>
+            </View>
+            <Feather name="external-link" size={14} color="rgba(212,175,55,0.45)" />
+          </Pressable>
+        ) : null}
+
         {/* ── Sección Resonador ── */}
         <View style={[styles.resonadorSection, { marginHorizontal: H_PAD }]}>
 
@@ -697,6 +729,42 @@ const styles = StyleSheet.create({
   formacionTitulo: { fontSize: 13, fontWeight: "700", color: "#FAF0EE" },
   formacionInst: { fontSize: 12, color: "rgba(244,218,213,0.65)", marginTop: 1 },
   formacionYears: { fontSize: 11, color: GOLD_MUTED, marginTop: 2 },
+
+  /* ── Botón de apoyo ── */
+  donationBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 13,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.20)",
+  },
+  donationIconWrap: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.25)",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    flexShrink: 0,
+  },
+  donationTextWrap: { flex: 1, gap: 2 },
+  donationTitle: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: GOLD_MUTED,
+    letterSpacing: 0.1,
+  },
+  donationSub: {
+    fontSize: 11,
+    color: "rgba(212,175,55,0.40)",
+    letterSpacing: 0.1,
+  },
 
   /* ── Quote ── */
   quoteWrap: { alignItems: "center", paddingVertical: 8, paddingHorizontal: 8 },
