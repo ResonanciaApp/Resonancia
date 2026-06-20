@@ -923,7 +923,7 @@ const styles = StyleSheet.create({
     width: "48.5%",
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.07)",
+    backgroundColor: "rgba(0,0,0,0.25)",
     borderRadius: 8,
     overflow: "hidden",
     height: 62,
@@ -944,7 +944,7 @@ const styles = StyleSheet.create({
   coleccionTitle: {
     flex: 1,
     fontSize: 13,
-    fontWeight: "700",
+    fontWeight: "400",
     color: "#FAF0EE",
     lineHeight: 18,
   },
