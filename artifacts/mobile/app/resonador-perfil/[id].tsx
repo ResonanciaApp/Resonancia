@@ -84,6 +84,13 @@ export default function ResonadorPerfilScreen() {
 
   const SESSION_PAGE = 10;
   const [sessionLimit, setSessionLimit] = useState(SESSION_PAGE);
+  const [sessionSort, setSessionSort] = useState<"recientes" | "escuchadas">("recientes");
+
+  const sortedSessions = [...sessions].sort((a, b) => {
+    if (sessionSort === "recientes") return parseInt(b.id) - parseInt(a.id);
+    // "escuchadas": mantener orden original (sin datos reales de escuchas)
+    return 0;
+  });
 
   return (
     <View style={styles.root}>
@@ -400,17 +407,46 @@ export default function ResonadorPerfilScreen() {
 
         {/* ── SECCIÓN 1: Mi obra en Resonancia ── */}
         {sessions.length > 0 && (
-          <View style={[styles.card, { marginHorizontal: H_PAD }]}>
-            <View style={styles.cardHeader}>
+          <View style={[styles.card, { marginHorizontal: H_PAD, backgroundColor: "transparent", paddingHorizontal: 0 }]}>
+            <View style={[styles.cardHeader, { paddingHorizontal: 0 }]}>
               <Text style={styles.cardTitle}>Mi obra en Resonancia</Text>
-              <Text style={styles.cardCount}>{sessions.length} {sessions.length === 1 ? "sesión" : "sesiones"}</Text>
+              <Pressable
+                onPress={() => {/* TODO: nav a catálogo del resonador */}}
+                hitSlop={8}
+                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+              >
+                <Text style={styles.verTodasText}>Ver todas</Text>
+              </Pressable>
             </View>
+
+            {/* Filtro de orden */}
+            <View style={styles.sessionSortRow}>
+              {([
+                { key: "recientes", label: "Más recientes" },
+                { key: "escuchadas", label: "Más escuchadas" },
+              ] as const).map(({ key, label }) => (
+                <Pressable
+                  key={key}
+                  onPress={() => { setSessionSort(key); setSessionLimit(SESSION_PAGE); }}
+                  style={({ pressed }) => [
+                    styles.sessionSortChip,
+                    sessionSort === key && styles.sessionSortChipActive,
+                    { opacity: pressed ? 0.75 : 1 },
+                  ]}
+                >
+                  <Text style={[styles.sessionSortLabel, sessionSort === key && styles.sessionSortLabelActive]}>
+                    {label}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+
             <View style={styles.sessionList}>
-              {sessions.slice(0, sessionLimit).map((session) => (
+              {sortedSessions.slice(0, sessionLimit).map((session) => (
                 <SessionCard key={session.id} session={session} horizontal />
               ))}
             </View>
-            {sessions.length > sessionLimit && (
+            {sortedSessions.length > sessionLimit && (
               <Pressable
                 onPress={() => setSessionLimit((v) => v + SESSION_PAGE)}
                 style={({ pressed }) => [styles.verMasBtn, { opacity: pressed ? 0.7 : 1 }]}
@@ -419,7 +455,7 @@ export default function ResonadorPerfilScreen() {
                 <Feather name="chevron-down" size={14} color={GOLD} />
               </Pressable>
             )}
-            {sessionLimit > SESSION_PAGE && sessions.length <= sessionLimit && (
+            {sessionLimit > SESSION_PAGE && sortedSessions.length <= sessionLimit && (
               <Pressable
                 onPress={() => setSessionLimit(SESSION_PAGE)}
                 style={({ pressed }) => [styles.verMasBtn, { opacity: pressed ? 0.7 : 1 }]}
@@ -766,7 +802,23 @@ const styles = StyleSheet.create({
   },
 
   /* ── Sección 1: Sesiones ── */
-  sessionList: { gap: 2 },
+  verTodasText: { fontSize: 12, fontWeight: "600", color: GOLD, letterSpacing: 0.2 },
+  sessionSortRow: { flexDirection: "row", gap: 8, marginBottom: 4 },
+  sessionSortChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.18)",
+    backgroundColor: "rgba(255,255,255,0.04)",
+  },
+  sessionSortChipActive: {
+    borderColor: "rgba(212,175,55,0.55)",
+    backgroundColor: "rgba(212,175,55,0.10)",
+  },
+  sessionSortLabel: { fontSize: 12, color: "rgba(244,218,213,0.55)", fontWeight: "500" },
+  sessionSortLabelActive: { color: GOLD, fontWeight: "600" },
+  sessionList: { gap: 4 },
   verMasBtn: {
     flexDirection: "row",
     alignItems: "center",
