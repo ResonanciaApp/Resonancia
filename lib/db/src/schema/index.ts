@@ -41,3 +41,4 @@ export * from "./shared-glyph-likes";
 export * from "./geometrix-settings";
 export * from "./catalog-playlists";
 export * from "./expansor-profiles";
+export * from "./applications";

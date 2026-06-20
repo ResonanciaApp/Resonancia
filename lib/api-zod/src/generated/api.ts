@@ -2170,6 +2170,87 @@ export const UpdateAdminCategoryResponse = zod.object({
 
 
 /**
+ * @summary Enviar una postulación (Resonador o Expansor)
+ */
+export const createApplicationBodyNameMax = 120;
+
+export const createApplicationBodyLocationMax = 120;
+
+export const createApplicationBodyPhoneMax = 40;
+
+export const createApplicationBodyAporteMax = 120;
+
+export const createApplicationBodyServicesMax = 2000;
+
+export const createApplicationBodyAudioPathMax = 500;
+
+
+
+export const CreateApplicationBody = zod.object({
+  "type": zod.enum(['resonador', 'expansor']),
+  "name": zod.string().min(1).max(createApplicationBodyNameMax),
+  "location": zod.string().max(createApplicationBodyLocationMax).nullish(),
+  "phone": zod.string().min(1).max(createApplicationBodyPhoneMax),
+  "aporte": zod.string().min(1).max(createApplicationBodyAporteMax),
+  "services": zod.string().max(createApplicationBodyServicesMax).nullish(),
+  "audioPath": zod.string().max(createApplicationBodyAudioPathMax).nullish()
+})
+
+
+/**
+ * @summary Listar postulaciones (admin)
+ */
+export const GetAdminApplicationsQueryParams = zod.object({
+  "status": zod.enum(['pending', 'reviewed', 'accepted', 'rejected']).optional(),
+  "type": zod.enum(['resonador', 'expansor']).optional()
+})
+
+export const GetAdminApplicationsResponse = zod.object({
+  "applications": zod.array(zod.object({
+  "id": zod.number(),
+  "type": zod.enum(['resonador', 'expansor']),
+  "name": zod.string(),
+  "location": zod.string().nullish(),
+  "phone": zod.string(),
+  "aporte": zod.string(),
+  "services": zod.string().nullish(),
+  "audioPath": zod.string().nullish(),
+  "status": zod.enum(['pending', 'reviewed', 'accepted', 'rejected']),
+  "userId": zod.string().nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Cambiar el estado de una postulación (admin)
+ */
+export const UpdateApplicationStatusParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateApplicationStatusBody = zod.object({
+  "status": zod.enum(['pending', 'reviewed', 'accepted', 'rejected'])
+})
+
+export const UpdateApplicationStatusResponse = zod.object({
+  "id": zod.number(),
+  "type": zod.enum(['resonador', 'expansor']),
+  "name": zod.string(),
+  "location": zod.string().nullish(),
+  "phone": zod.string(),
+  "aporte": zod.string(),
+  "services": zod.string().nullish(),
+  "audioPath": zod.string().nullish(),
+  "status": zod.enum(['pending', 'reviewed', 'accepted', 'rejected']),
+  "userId": zod.string().nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
  * @summary Listar sonidos activos del mixer
  */
 export const GetMixerSoundsResponse = zod.object({

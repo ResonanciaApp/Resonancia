@@ -2116,6 +2116,121 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /applications:
+    post:
+      operationId: createApplication
+      tags: [applications]
+      summary: Enviar una postulación (Resonador o Expansor)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateApplicationInput"
+      responses:
+        "201":
+          description: Postulación recibida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/applications:
+    get:
+      operationId: getAdminApplications
+      tags: [admin]
+      summary: Listar postulaciones (admin)
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [pending, reviewed, accepted, rejected]
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [resonador, expansor]
+      responses:
+        "200":
+          description: Lista de postulaciones
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [applications]
+                properties:
+                  applications:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Application"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado (requiere rol admin)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/applications/{id}:
+    patch:
+      operationId: updateApplicationStatus
+      tags: [admin]
+      summary: Cambiar el estado de una postulación (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateApplicationStatusInput"
+      responses:
+        "200":
+          description: Postulación actualizada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado (requiere rol admin)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Postulación no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /sounds:
     get:
       operationId: getMixerSounds
@@ -3580,6 +3695,81 @@ components:
             $ref: "#/components/schemas/CreatorSubmissionAudioInput"
       required:
         [title, subtitle, categoryId, categoryLabel, duration, description, audioFiles]
+    Application:
+      type: object
+      required:
+        [id, type, name, phone, aporte, status, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [resonador, expansor]
+        name:
+          type: string
+        location:
+          type: string
+          nullable: true
+        phone:
+          type: string
+        aporte:
+          type: string
+        services:
+          type: string
+          nullable: true
+        audioPath:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [pending, reviewed, accepted, rejected]
+        userId:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    CreateApplicationInput:
+      type: object
+      required: [type, name, phone, aporte]
+      properties:
+        type:
+          type: string
+          enum: [resonador, expansor]
+        name:
+          type: string
+          minLength: 1
+          maxLength: 120
+        location:
+          type: string
+          maxLength: 120
+          nullable: true
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 40
+        aporte:
+          type: string
+          minLength: 1
+          maxLength: 120
+        services:
+          type: string
+          maxLength: 2000
+          nullable: true
+        audioPath:
+          type: string
+          maxLength: 500
+          nullable: true
+    UpdateApplicationStatusInput:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [pending, reviewed, accepted, rejected]
     Submission:
       type: object
       properties:

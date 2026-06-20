@@ -931,6 +931,86 @@ export interface CreatorSubmissionInput {
   audioFiles: CreatorSubmissionAudioInput[];
 }
 
+export type ApplicationType = typeof ApplicationType[keyof typeof ApplicationType];
+
+
+export const ApplicationType = {
+  resonador: 'resonador',
+  expansor: 'expansor',
+} as const;
+
+export type ApplicationStatus = typeof ApplicationStatus[keyof typeof ApplicationStatus];
+
+
+export const ApplicationStatus = {
+  pending: 'pending',
+  reviewed: 'reviewed',
+  accepted: 'accepted',
+  rejected: 'rejected',
+} as const;
+
+export interface Application {
+  id: number;
+  type: ApplicationType;
+  name: string;
+  location?: string | null;
+  phone: string;
+  aporte: string;
+  services?: string | null;
+  audioPath?: string | null;
+  status: ApplicationStatus;
+  userId?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type CreateApplicationInputType = typeof CreateApplicationInputType[keyof typeof CreateApplicationInputType];
+
+
+export const CreateApplicationInputType = {
+  resonador: 'resonador',
+  expansor: 'expansor',
+} as const;
+
+export interface CreateApplicationInput {
+  type: CreateApplicationInputType;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  name: string;
+  /** @maxLength 120 */
+  location?: string | null;
+  /**
+     * @minLength 1
+     * @maxLength 40
+     */
+  phone: string;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  aporte: string;
+  /** @maxLength 2000 */
+  services?: string | null;
+  /** @maxLength 500 */
+  audioPath?: string | null;
+}
+
+export type UpdateApplicationStatusInputStatus = typeof UpdateApplicationStatusInputStatus[keyof typeof UpdateApplicationStatusInputStatus];
+
+
+export const UpdateApplicationStatusInputStatus = {
+  pending: 'pending',
+  reviewed: 'reviewed',
+  accepted: 'accepted',
+  rejected: 'rejected',
+} as const;
+
+export interface UpdateApplicationStatusInput {
+  status: UpdateApplicationStatusInputStatus;
+}
+
 export type SubmissionVoiceTag = typeof SubmissionVoiceTag[keyof typeof SubmissionVoiceTag] | null;
 
 
@@ -1506,6 +1586,33 @@ export const GetAdminUsersRole = {
   expansor: 'expansor',
   resonador: 'resonador',
 } as const;
+
+export type GetAdminApplicationsParams = {
+status?: GetAdminApplicationsStatus;
+type?: GetAdminApplicationsType;
+};
+
+export type GetAdminApplicationsStatus = typeof GetAdminApplicationsStatus[keyof typeof GetAdminApplicationsStatus];
+
+
+export const GetAdminApplicationsStatus = {
+  pending: 'pending',
+  reviewed: 'reviewed',
+  accepted: 'accepted',
+  rejected: 'rejected',
+} as const;
+
+export type GetAdminApplicationsType = typeof GetAdminApplicationsType[keyof typeof GetAdminApplicationsType];
+
+
+export const GetAdminApplicationsType = {
+  resonador: 'resonador',
+  expansor: 'expansor',
+} as const;
+
+export type GetAdminApplications200 = {
+  applications: Application[];
+};
 
 export type GetMixerSounds200 = {
   sounds: MixerSoundItem[];

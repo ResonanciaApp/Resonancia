@@ -17,13 +17,12 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useCreateApplication } from "@workspace/api-client-react";
 
 import { useColors } from "@/hooks/useColors";
 import { EXPANSOR_SUBTIPO_OPTIONS, type ExpansorSubtipo } from "@/data/expansores";
 
 const BG_GRADIENT = ["#2E0510", "#160108"] as const;
-const APPLICATIONS_KEY = "@expansor_applications";
 const GOLD = "#D4AF37";
 
 export default function ExpansorPostularScreen() {
@@ -38,47 +37,48 @@ export default function ExpansorPostularScreen() {
   const [aporte, setAporte] = useState<ExpansorSubtipo | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [services, setServices] = useState("");
-  const [busy, setBusy] = useState(false);
+  const { mutateAsync: createApplication, isPending: busy } = useCreateApplication();
 
   function onSubmit() {
     if (!name.trim()) {
-      Alert.alert("Falta tu nombre", "Contanos cómo te llamas.");
+      Alert.alert("Falta tu nombre", "Cuéntanos cómo te llamas.");
       return;
     }
     if (!location.trim()) {
-      Alert.alert("Falta tu ubicación", "Contanos de dónde eres.");
+      Alert.alert("Falta tu ubicación", "Cuéntanos de dónde eres.");
       return;
     }
     if (!phone.trim()) {
-      Alert.alert("Falta tu teléfono", "Dejanos un teléfono de contacto.");
+      Alert.alert("Falta tu teléfono", "Déjanos un teléfono de contacto.");
       return;
     }
     if (!aporte) {
-      Alert.alert("Falta tu aporte", "Elegí cómo te gustaría aportar.");
+      Alert.alert("Falta tu aporte", "Elige cómo te gustaría aportar.");
       return;
     }
-    setBusy(true);
     (async () => {
       try {
-        const raw = await AsyncStorage.getItem(APPLICATIONS_KEY);
-        const prev: unknown[] = raw ? JSON.parse(raw) : [];
-        prev.push({
-          name: name.trim(),
-          location: location.trim(),
-          phone: phone.trim(),
-          aporte,
-          services: services.trim(),
-          createdAt: new Date().toISOString(),
+        await createApplication({
+          data: {
+            type: "expansor",
+            name: name.trim(),
+            location: location.trim(),
+            phone: phone.trim(),
+            aporte,
+            services: services.trim() || null,
+          },
         });
-        await AsyncStorage.setItem(APPLICATIONS_KEY, JSON.stringify(prev));
       } catch {
-        // si falla el guardado local seguimos: no perdemos la confirmación al usuario
+        Alert.alert(
+          "No se pudo enviar",
+          "Hubo un problema al enviar tu postulación. Revisa tu conexión e inténtalo de nuevo.",
+        );
+        return;
       }
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
-      setBusy(false);
       Alert.alert(
         "¡Postulación recibida!",
-        "Guardamos tu información. La casa la revisará y te contactará al teléfono que dejaste.",
+        "La casa revisará tu información y te contactará al teléfono que dejaste.",
         [{ text: "Listo", onPress: () => router.back() }],
       );
     })();
@@ -163,7 +163,7 @@ export default function ExpansorPostularScreen() {
                 { color: aporte ? colors.foreground : colors.mutedForeground, flex: 1 },
               ]}
             >
-              {aporte ?? "Elegí una opción"}
+              {aporte ?? "Elige una opción"}
             </Text>
             <Feather name={dropdownOpen ? "chevron-up" : "chevron-down"} size={18} color={colors.mutedForeground} />
           </Pressable>
@@ -197,7 +197,7 @@ export default function ExpansorPostularScreen() {
             <TextInput
               value={services}
               onChangeText={setServices}
-              placeholder="Contanos qué ofreces y tu experiencia..."
+              placeholder="Cuéntanos qué ofreces y tu experiencia..."
               placeholderTextColor={colors.mutedForeground}
               selectionColor={GOLD}
               multiline

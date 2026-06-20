@@ -17,13 +17,13 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useCreateApplication } from "@workspace/api-client-react";
 
 import { useColors } from "@/hooks/useColors";
+import { uploadLocalFile } from "@/lib/upload";
 import type { ResonadorSubtipo } from "@/data/resonadores";
 
 const BG_GRADIENT = ["#2E0510", "#160108"] as const;
-const APPLICATIONS_KEY = "@resonador_applications";
 const GOLD = "#D4AF37";
 const APORTE_OPTIONS: ResonadorSubtipo[] = ["Voz guía", "Sonoterapeuta", "Músico", "Productor"];
 
@@ -47,6 +47,7 @@ export default function ResonadorPostularScreen() {
   const [services, setServices] = useState("");
   const [audio, setAudio] = useState<PickedAudio | null>(null);
   const [busy, setBusy] = useState(false);
+  const { mutateAsync: createApplication } = useCreateApplication();
 
   async function pickAudio() {
     try {
@@ -72,44 +73,63 @@ export default function ResonadorPostularScreen() {
 
   function onSubmit() {
     if (!name.trim()) {
-      Alert.alert("Falta tu nombre", "Contanos cómo te llamas.");
+      Alert.alert("Falta tu nombre", "Cuéntanos cómo te llamas.");
       return;
     }
     if (!phone.trim()) {
-      Alert.alert("Falta tu teléfono", "Dejanos un teléfono de contacto.");
+      Alert.alert("Falta tu teléfono", "Déjanos un teléfono de contacto.");
       return;
     }
     if (!aporte) {
-      Alert.alert("Falta tu aporte", "Elegí cómo te gustaría aportar.");
+      Alert.alert("Falta tu aporte", "Elige cómo te gustaría aportar.");
       return;
     }
     if (!audio) {
-      Alert.alert("Falta tu muestra", "Subí un audio de muestra de tu arte.");
+      Alert.alert("Falta tu muestra", "Sube un audio de muestra de tu arte.");
       return;
     }
     setBusy(true);
     (async () => {
+      let audioPath: string | null = null;
       try {
-        const raw = await AsyncStorage.getItem(APPLICATIONS_KEY);
-        const prev: unknown[] = raw ? JSON.parse(raw) : [];
-        prev.push({
-          name: name.trim(),
-          phone: phone.trim(),
-          aporte,
-          services: services.trim(),
-          audioName: audio?.name ?? null,
-          audioUri: audio?.uri ?? null,
-          createdAt: new Date().toISOString(),
-        });
-        await AsyncStorage.setItem(APPLICATIONS_KEY, JSON.stringify(prev));
+        audioPath = await uploadLocalFile(
+          audio.uri,
+          audio.contentType,
+          audio.name,
+          audio.sizeBytes,
+        );
       } catch {
-        // si falla el guardado local seguimos: no perdemos la confirmación al usuario
+        setBusy(false);
+        Alert.alert(
+          "No se pudo subir el audio",
+          "Hubo un problema al subir tu muestra. Revisa tu conexión e inténtalo de nuevo.",
+        );
+        return;
+      }
+      try {
+        await createApplication({
+          data: {
+            type: "resonador",
+            name: name.trim(),
+            phone: phone.trim(),
+            aporte,
+            services: services.trim() || null,
+            audioPath,
+          },
+        });
+      } catch {
+        setBusy(false);
+        Alert.alert(
+          "No se pudo enviar",
+          "Hubo un problema al enviar tu postulación. Revisa tu conexión e inténtalo de nuevo.",
+        );
+        return;
       }
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
       setBusy(false);
       Alert.alert(
         "¡Postulación recibida!",
-        "Guardamos tu información. La casa la revisará y te contactará al teléfono que dejaste.",
+        "La casa revisará tu información y te contactará al teléfono que dejaste.",
         [{ text: "Listo", onPress: () => router.back() }],
       );
     })();
@@ -180,7 +200,7 @@ export default function ResonadorPostularScreen() {
                 { color: aporte ? colors.foreground : colors.mutedForeground, flex: 1 },
               ]}
             >
-              {aporte ?? "Elegí una opción"}
+              {aporte ?? "Elige una opción"}
             </Text>
             <Feather name={dropdownOpen ? "chevron-up" : "chevron-down"} size={18} color={colors.mutedForeground} />
           </Pressable>
@@ -211,7 +231,7 @@ export default function ResonadorPostularScreen() {
             <TextInput
               value={services}
               onChangeText={setServices}
-              placeholder="Contanos qué ofreces y tu experiencia..."
+              placeholder="Cuéntanos qué ofreces y tu experiencia..."
               placeholderTextColor={colors.mutedForeground}
               selectionColor={GOLD}
               multiline

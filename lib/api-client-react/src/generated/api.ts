@@ -30,11 +30,13 @@ import type {
   AdminPlaylistUpdate,
   AdminStats,
   AdminUsersPage,
+  Application,
   CatalogCategory,
   CatalogPlaylist,
   CatalogResponse,
   CommunityMessage,
   Conversation,
+  CreateApplicationInput,
   CreateMessageBody,
   CreateMixerSoundBody,
   CreatorSubmissionInput,
@@ -50,6 +52,8 @@ import type {
   FriendRequest,
   FriendRequestInput,
   GeometrixSettingUpdate,
+  GetAdminApplications200,
+  GetAdminApplicationsParams,
   GetAdminGeometrix200,
   GetAdminSounds200,
   GetAdminUsersParams,
@@ -96,6 +100,7 @@ import type {
   UnreadCount,
   UnregisterPushTokenBody,
   UpdateAdminGeometrix200,
+  UpdateApplicationStatusInput,
   UpdateMixerSoundBody,
   UserProfile,
   UserProfileUpdate,
@@ -5845,6 +5850,233 @@ export const useUpdateAdminCategory = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getUpdateAdminCategoryMutationOptions(options));
+    }
+
+export const getCreateApplicationUrl = () => {
+
+
+
+
+  return `/api/applications`
+}
+
+/**
+ * @summary Enviar una postulación (Resonador o Expansor)
+ */
+export const createApplication = async (createApplicationInput: CreateApplicationInput, options?: RequestInit): Promise<Application> => {
+
+  return customFetch<Application>(getCreateApplicationUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createApplicationInput,)
+  }
+);}
+
+
+
+
+export const getCreateApplicationMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createApplication>>, TError,{data: BodyType<CreateApplicationInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createApplication>>, TError,{data: BodyType<CreateApplicationInput>}, TContext> => {
+
+const mutationKey = ['createApplication'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createApplication>>, {data: BodyType<CreateApplicationInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createApplication(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateApplicationMutationResult = NonNullable<Awaited<ReturnType<typeof createApplication>>>
+    export type CreateApplicationMutationBody = BodyType<CreateApplicationInput>
+    export type CreateApplicationMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Enviar una postulación (Resonador o Expansor)
+ */
+export const useCreateApplication = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createApplication>>, TError,{data: BodyType<CreateApplicationInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createApplication>>,
+        TError,
+        {data: BodyType<CreateApplicationInput>},
+        TContext
+      > => {
+      return useMutation(getCreateApplicationMutationOptions(options));
+    }
+
+export const getGetAdminApplicationsUrl = (params?: GetAdminApplicationsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/applications?${stringifiedParams}` : `/api/admin/applications`
+}
+
+/**
+ * @summary Listar postulaciones (admin)
+ */
+export const getAdminApplications = async (params?: GetAdminApplicationsParams, options?: RequestInit): Promise<GetAdminApplications200> => {
+
+  return customFetch<GetAdminApplications200>(getGetAdminApplicationsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminApplicationsQueryKey = (params?: GetAdminApplicationsParams,) => {
+    return [
+    `/api/admin/applications`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetAdminApplicationsQueryOptions = <TData = Awaited<ReturnType<typeof getAdminApplications>>, TError = ErrorType<ErrorResponse>>(params?: GetAdminApplicationsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminApplications>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminApplicationsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminApplications>>> = ({ signal }) => getAdminApplications(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminApplications>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminApplicationsQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminApplications>>>
+export type GetAdminApplicationsQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Listar postulaciones (admin)
+ */
+
+export function useGetAdminApplications<TData = Awaited<ReturnType<typeof getAdminApplications>>, TError = ErrorType<ErrorResponse>>(
+ params?: GetAdminApplicationsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminApplications>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminApplicationsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateApplicationStatusUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/applications/${id}`
+}
+
+/**
+ * @summary Cambiar el estado de una postulación (admin)
+ */
+export const updateApplicationStatus = async (id: number,
+    updateApplicationStatusInput: UpdateApplicationStatusInput, options?: RequestInit): Promise<Application> => {
+
+  return customFetch<Application>(getUpdateApplicationStatusUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateApplicationStatusInput,)
+  }
+);}
+
+
+
+
+export const getUpdateApplicationStatusMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateApplicationStatus>>, TError,{id: number;data: BodyType<UpdateApplicationStatusInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateApplicationStatus>>, TError,{id: number;data: BodyType<UpdateApplicationStatusInput>}, TContext> => {
+
+const mutationKey = ['updateApplicationStatus'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateApplicationStatus>>, {id: number;data: BodyType<UpdateApplicationStatusInput>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateApplicationStatus(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateApplicationStatusMutationResult = NonNullable<Awaited<ReturnType<typeof updateApplicationStatus>>>
+    export type UpdateApplicationStatusMutationBody = BodyType<UpdateApplicationStatusInput>
+    export type UpdateApplicationStatusMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Cambiar el estado de una postulación (admin)
+ */
+export const useUpdateApplicationStatus = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateApplicationStatus>>, TError,{id: number;data: BodyType<UpdateApplicationStatusInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateApplicationStatus>>,
+        TError,
+        {id: number;data: BodyType<UpdateApplicationStatusInput>},
+        TContext
+      > => {
+      return useMutation(getUpdateApplicationStatusMutationOptions(options));
     }
 
 export const getGetMixerSoundsUrl = () => {

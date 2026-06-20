@@ -24,6 +24,7 @@
 - [Expo pkg versions = SDK](expo-package-versions-sdk-match.md) — usar `expo install`, no versiones adivinadas; mismatch → "Cannot find native module" SOLO en builds de device; fix: expo install --fix + rebuild dev client
 - [UserProfile serializer contract](userprofile-serializer-contract.md) — `toProfile` está duplicado en varios routes; hacer requerido un campo en un schema OpenAPI compartido obliga a actualizar TODAS las copias (typecheck no lo atrapa)
 - [Admin web panel auth](admin-web-auth.md) — resonancia-admin usa Clerk cookie same-origin (NO Bearer/setBaseUrl como mobile); gating real solo server requireRole("admin"), front es UX
+- [Postulaciones (applications)](postulaciones-applications.md) — forms Resonador/Expansor→admin panel; validación condicional por type vive en la ruta (no en zod); audio URL = /objects/→/api/storage/objects/; DB push interactivo→usar push-force
 - [Creator approval flow](creator-approval-flow.md) — catálogo DB pending→published/rejected; admin solo vía ADMIN_CLERK_USER_IDS; no hay UI para nombrar creadores; valida metadata en server; Orval query option exige queryKey
 - [Cloud sync activity](cloud-sync-activity.md) — historial derivable de eventos (no entidad); firstSync solo se marca si recovered (lecturas OK) o local vacío pisa la nube; merge post-await con update funcional
 - [Cloud sync merge rules](cloud-sync-merge.md) — actividad offline-first; favoritos/progreso: unión solo en firstSync, luego local autoritativo (o los borrados reaparecen); eventos = unión append-only
