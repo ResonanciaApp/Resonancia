@@ -164,13 +164,13 @@ const styles = StyleSheet.create({
   },
   swatchRow: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
+    flexWrap: "nowrap",
+    gap: 8,
   },
   swatch: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     overflow: "hidden",
     borderWidth: 2,
     borderColor: "transparent",
