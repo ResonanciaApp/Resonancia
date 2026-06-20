@@ -1078,7 +1078,7 @@ const styles = StyleSheet.create({
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 10, rowGap: 22, justifyContent: "space-evenly" },
   soundCard: { width: "28%" },
   cardImageWrap: {
-    width: "79%", aspectRatio: 1, alignSelf: "center", marginTop: 20,
+    width: "79%", aspectRatio: 1, alignSelf: "center", marginTop: 13,
     borderRadius: 16, borderWidth: 4, borderColor: "transparent",
     backgroundColor: "transparent",
   },
