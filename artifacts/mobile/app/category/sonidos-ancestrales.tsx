@@ -438,6 +438,16 @@ export default function SonidosAncestalesScreen() {
           </Text>
         </View>
 
+        {/* ── Divisor ── */}
+        <View style={styles.dividerWrap}>
+          <LinearGradient
+            colors={["transparent", "rgba(255,255,255,0.18)", "transparent"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.dividerLine}
+          />
+        </View>
+
         {/* ── Tabs ── */}
         <View style={styles.chipsArea}>
           <ChipRow activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
@@ -531,6 +541,10 @@ const styles = StyleSheet.create({
     lineHeight: 21,
     textAlign: "center",
   },
+
+  /* ── Divisor ── */
+  dividerWrap: { paddingHorizontal: 32, paddingVertical: 6 },
+  dividerLine: { height: StyleSheet.hairlineWidth + 0.5, borderRadius: 1 },
 
   /* ── Tabs (chips) ── */
   chipsArea: { paddingTop: 4, paddingBottom: 10, overflow: "visible" },
