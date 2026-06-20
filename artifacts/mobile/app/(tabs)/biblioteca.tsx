@@ -691,13 +691,13 @@ function AnimatedTabContent({
     Animated.parallel([
       Animated.timing(opacity, {
         toValue: 1,
-        duration: 600,
+        duration: 1200,
         easing: Easing.out(Easing.quad),
         useNativeDriver: true,
       }),
       Animated.timing(tx, {
         toValue: 0,
-        duration: 600,
+        duration: 1200,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
