@@ -17,7 +17,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import AsyncStorage from "@ln/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { useColors } from "@/hooks/useColors";
 import { EXPANSOR_SUBTIPO_OPTIONS, type ExpansorSubtipo } from "@/data/expansores";
