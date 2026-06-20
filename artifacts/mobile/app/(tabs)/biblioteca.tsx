@@ -22,6 +22,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
+import { GhostPill } from "@/components/GhostPill";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { SessionCard } from "@/components/SessionCard";
 import { useDrawer } from "@/context/DrawerContext";
@@ -1241,14 +1242,14 @@ export default function BibliotecaScreen() {
           <View style={{ flex: 1 }}>
             <Text style={styles.headerTitle}>Tu Biblioteca</Text>
           </View>
-          <View style={styles.headerIcons}>
+          <GhostPill>
             <Pressable hitSlop={10} onPress={() => setSearchVisible(true)} style={styles.headerIconBtn}>
               <Feather name="search" size={21} color={TEXT} />
             </Pressable>
             <Pressable hitSlop={10} onPress={() => setCreateVisible(true)} style={styles.headerIconBtn}>
               <Feather name="plus" size={24} color={TEXT} />
             </Pressable>
-          </View>
+          </GhostPill>
         </View>
 
         {/* Fila 2: chips de tab (animados) */}
