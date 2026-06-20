@@ -69,7 +69,7 @@ export const RESONADORES: Resonador[] = [
     servicesDescription: "Ofrezco sesiones individuales y grupales de sonoterapia. Cada experiencia es diseñada para liberar bloqueos emocionales y restaurar el equilibrio energético a través de frecuencias específicas.",
     instagram: "https://instagram.com/lunacosmica",
     donationUrl: "https://cafecito.app/lunacosmica",
-    sessionIds: ["1", "2", "4", "6", "7", "8"],
+    sessionIds: ["1", "5", "7", "8", "9", "10"],
     projects: [
       { platform: "spotify", label: "Luna Cósmica en Spotify", url: "https://spotify.com" },
       { platform: "youtube", label: "Canal de YouTube", url: "https://youtube.com" },
@@ -98,7 +98,7 @@ export const RESONADORES: Resonador[] = [
     instagram: "https://instagram.com/kaiamara",
     linktree: "https://linktr.ee/kaiamara",
     donationUrl: "https://ko-fi.com/kaiamara",
-    sessionIds: ["3", "5", "7", "9", "10", "11"],
+    sessionIds: ["20", "21", "22", "23", "24", "25"],
     projects: [
       { platform: "youtube", label: "Meditaciones en YouTube", url: "https://youtube.com" },
       { platform: "soundcloud", label: "SoundCloud", url: "https://soundcloud.com" },
@@ -126,7 +126,7 @@ export const RESONADORES: Resonador[] = [
     followingCount: 412,
     servicesDescription: "Produzco música original para proyectos de bienestar, yoga, meditación y experiencias inmersivas. También ofrezco colaboraciones con artistas y estudios de grabación.",
     instagram: "https://instagram.com/lumensonora",
-    sessionIds: ["8", "9", "10", "12", "13", "1"],
+    sessionIds: ["26", "27", "28", "29", "30", "31"],
     projects: [
       { platform: "spotify", label: "Lumen Sonora en Spotify", url: "https://spotify.com" },
       { platform: "bandcamp", label: "Bandcamp", url: "https://bandcamp.com" },
@@ -154,7 +154,7 @@ export const RESONADORES: Resonador[] = [
     followingCount: 309,
     servicesDescription: "Realizo conciertos de cuencos y gongs en formato individual, grupal y ceremonial. Cada sesión es diseñada según la intención del grupo, desde la relajación profunda hasta la activación energética.",
     instagram: "https://instagram.com/arbolsagrado",
-    sessionIds: ["11", "12", "13", "2", "4", "5"],
+    sessionIds: ["32", "33", "34", "35", "36", "37"],
     projects: [
       { platform: "spotify", label: "Álbumes en Spotify", url: "https://spotify.com" },
       { platform: "youtube", label: "Conciertos en vivo", url: "https://youtube.com" },
