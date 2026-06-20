@@ -363,12 +363,12 @@ export default function ResonadoresScreen() {
             <Pressable onPress={toggleSearch} hitSlop={10} style={styles.searchIconBtn}>
               <Feather
                 name={searchVisible ? "x" : "search"}
-                size={20}
+                size={22}
                 color="#FFFFFF"
               />
             </Pressable>
             <Pressable hitSlop={10} style={styles.searchIconBtn}>
-              <Feather name="info" size={20} color="#FFFFFF" />
+              <Feather name="info" size={22} color="#FFFFFF" />
             </Pressable>
           </GhostPill>
         </View>
@@ -525,8 +525,8 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   searchIconBtn: {
-    width: 36,
-    height: 36,
+    width: 38,
+    height: 38,
     alignItems: "center",
     justifyContent: "center",
   },

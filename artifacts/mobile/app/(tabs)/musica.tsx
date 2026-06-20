@@ -715,7 +715,7 @@ export default function MezcladorScreen() {
                       accessibilityRole="button"
                       accessibilityLabel="Paleta de color del Mezclador"
                     >
-                      <MaterialCommunityIcons name="brush" size={20} color="#FAF0EE" />
+                      <MaterialCommunityIcons name="brush" size={22} color="#FAF0EE" />
                       {bgPaletteId !== DEFAULT_MIXER_BG_PALETTE && (
                         <GoldGradient style={styles.filterBadge} />
                       )}
@@ -727,7 +727,7 @@ export default function MezcladorScreen() {
                       accessibilityRole="button"
                       accessibilityLabel="Filtros del Mezclador"
                     >
-                      <MaterialCommunityIcons name="filter-variant" size={20} color="#FAF0EE" />
+                      <MaterialCommunityIcons name="filter-variant" size={22} color="#FAF0EE" />
                       {tagFilters.length > 0 && (
                         <GoldGradient style={styles.filterBadge} />
                       )}
@@ -957,7 +957,7 @@ const styles = StyleSheet.create({
     borderRadius: 12, backgroundColor: "rgba(0,0,0,0.05)",
   },
   headerPillBtn: {
-    width: 36, height: 36, alignItems: "center", justifyContent: "center",
+    width: 38, height: 38, alignItems: "center", justifyContent: "center",
   },
   filterBadge: {
     position: "absolute", top: 6, right: 6,

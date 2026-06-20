@@ -1244,10 +1244,10 @@ export default function BibliotecaScreen() {
           </View>
           <GhostPill>
             <Pressable hitSlop={10} onPress={() => setSearchVisible(true)} style={styles.headerIconBtn}>
-              <Feather name="search" size={21} color={TEXT} />
+              <Feather name="search" size={23} color={TEXT} />
             </Pressable>
             <Pressable hitSlop={10} onPress={() => setCreateVisible(true)} style={styles.headerIconBtn}>
-              <Feather name="plus" size={24} color={TEXT} />
+              <Feather name="plus" size={26} color={TEXT} />
             </Pressable>
           </GhostPill>
         </View>
@@ -1398,7 +1398,7 @@ const styles = StyleSheet.create({
   headerTitle: { fontSize: 27, fontWeight: "700", color: TEXT, letterSpacing: 0.5 },
   headerSubtitle: { fontSize: 13, color: MUTED, marginTop: 3, fontWeight: "400" },
   headerIcons: { flexDirection: "row", alignItems: "center", gap: 4 },
-  headerIconBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
+  headerIconBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
 
   animChipWrap: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },

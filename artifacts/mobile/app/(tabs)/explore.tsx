@@ -254,10 +254,10 @@ export default function ExploreScreen() {
             <Text style={[styles.pageTitle, { flex: 1 }]}>Buscar</Text>
             <GhostPill style={{ transform: [{ translateX: 0 }, { translateY: -1 }] }}>
               <Pressable hitSlop={10} onPress={() => router.push("/favorites")} style={styles.headerPillBtn}>
-                <Feather name="heart" size={20} color="#FFFFFF" />
+                <Feather name="heart" size={22} color="#FFFFFF" />
               </Pressable>
               <Pressable hitSlop={10} onPress={() => router.push("/historial")} style={styles.headerPillBtn}>
-                <Feather name="clock" size={20} color="#FFFFFF" />
+                <Feather name="clock" size={22} color="#FFFFFF" />
               </Pressable>
             </GhostPill>
           </View>
@@ -541,7 +541,7 @@ const styles = StyleSheet.create({
   },
 
   header:         { paddingHorizontal: H_PAD, marginBottom: 18 },
-  headerPillBtn:  { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
+  headerPillBtn:  { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   headerRow:      { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   avatarBtn:      { width: 32, height: 32, borderRadius: 16, overflow: "hidden" },
   avatarSmall:    { width: 32, height: 32, borderRadius: 16 },
