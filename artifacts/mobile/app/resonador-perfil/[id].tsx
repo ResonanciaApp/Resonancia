@@ -99,11 +99,22 @@ export default function ResonadorPerfilScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[styles.scroll, { paddingBottom: bottomPad + 40 }]}
       >
-        {/* ── Tarjeta de perfil ── */}
-        <View style={styles.profileCard}>
-
-          {/* Avatar */}
-          <View style={styles.avatarWrapper}>
+        {/* ── Hero banner + avatar flotante ── */}
+        <View style={styles.heroArea}>
+          <Image
+            source={resonador.photo}
+            style={styles.heroImg}
+            contentFit="cover"
+            placeholder={BLUR_PLACEHOLDER}
+            transition={IMAGE_TRANSITION}
+          />
+          <LinearGradient
+            colors={["transparent", "rgba(27,6,15,0.75)", "#1B060F"]}
+            locations={[0.35, 0.72, 1]}
+            style={styles.heroFade}
+          />
+          {/* Avatar flotando a la mitad del borde inferior */}
+          <View style={styles.heroAvatarFloat}>
             <Image
               source={resonador.photo}
               style={styles.avatarImage}
@@ -117,6 +128,10 @@ export default function ResonadorPerfilScreen() {
               </View>
             )}
           </View>
+        </View>
+
+        {/* ── Tarjeta de perfil ── */}
+        <View style={styles.profileCard}>
 
           <Text style={[styles.userName, { color: colors.foreground }]}>{resonador.name}</Text>
 
@@ -517,17 +532,58 @@ const styles = StyleSheet.create({
   },
   centered: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12 },
   notFoundTitle: { fontSize: 18, fontWeight: "700" },
-  scroll: { paddingTop: 4, gap: 16 },
+  scroll: { gap: 16 },
+  /* ── Hero banner ── */
+  heroArea: {
+    height: 192, // 150 hero + 42 mitad del avatar
+    position: "relative",
+    overflow: "visible",
+  },
+  heroImg: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 150,
+  },
+  heroFade: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 110,
+  },
+  heroAvatarFloat: {
+    position: "absolute",
+    bottom: 0,
+    alignSelf: "center",
+    width: 84,
+    height: 84,
+    borderRadius: 42,
+    // Sombra para efecto flotante
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.40,
+    shadowRadius: 12,
+    elevation: 10,
+  },
 
   /* ── Tarjeta de perfil ── */
   profileCard: {
     borderRadius: 24,
     padding: 24,
+    paddingTop: 14,
     alignItems: "center",
     gap: 6,
   },
   avatarWrapper: { position: "relative", marginBottom: 8 },
-  avatarImage: { width: 84, height: 84, borderRadius: 42 },
+  avatarImage: {
+    width: 84,
+    height: 84,
+    borderRadius: 42,
+    borderWidth: 2.5,
+    borderColor: "#1B060F",
+  },
   certBadge: {
     position: "absolute",
     bottom: 0,
