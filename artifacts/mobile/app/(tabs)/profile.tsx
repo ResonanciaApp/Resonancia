@@ -215,14 +215,15 @@ const pStyles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "#3D0E16",
   },
-  swatchOn: {
-    borderColor: "#4A0C0C",
-  },
+  swatchOn: {},
   swatchGrad: {
     flex: 1,
+  },
+  swatchCheck: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
   },
   geoToggleRow: {
     flexDirection: "row",
@@ -1221,7 +1222,7 @@ export default function ProfileScreen() {
             onPress={() => setPersonalizeVisible(false)}
           />
           <LinearGradient
-            colors={["#0A0E1F", "#070918"]}
+            colors={[HOME_GRADIENT[0], HOME_GRADIENT[1], HOME_GRADIENT[2]]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={[pStyles.sheet, { paddingBottom: bottomPad + 24 }]}
@@ -1245,92 +1246,6 @@ export default function ProfileScreen() {
 
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 0 }}>
 
-              {/* ── Geometrix ── */}
-              <Text style={pStyles.sectionTitle}>Fondo de Geometrix</Text>
-              <Text style={pStyles.sectionSub}>Elige una de tus creaciones como fondo de perfil</Text>
-
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={{ marginBottom: 28 }}
-                contentContainerStyle={{ paddingRight: 4 }}
-              >
-                {/* Ninguno — solo si no hay creaciones guardadas */}
-                {geoCreations.length === 0 && (
-                  <Pressable
-                    onPress={() => selectCreation(null)}
-                    style={pStyles.creationThumb}
-                  >
-                    <View
-                      style={[
-                        pStyles.thumbBg,
-                        { backgroundColor: "#2E0510", alignItems: "center", justifyContent: "center" },
-                        profileBgCreationId === null && pStyles.thumbBgOn,
-                      ]}
-                    >
-                      <Feather name="x" size={22} color="#4A5568" />
-                    </View>
-                    <Text style={pStyles.thumbLabel}>Ninguno</Text>
-                  </Pressable>
-                )}
-
-                {geoCreations.length === 0 ? (
-                  <View style={{ justifyContent: "center", paddingHorizontal: 16 }}>
-                    <Text style={pStyles.emptyText}>Aún no tienes creaciones en Geometrix</Text>
-                  </View>
-                ) : (
-                  geoCreations.map((c) => {
-                    const bgFactor = brightnessFactor(c.master.bgBrightness);
-                    const bgGrad = bgGradientColors(c.master.bgGradientId);
-                    const bgColors = c.master.bgColor
-                      ? ([scaleHex(c.master.bgColor, bgFactor), scaleHex(c.master.bgColor, bgFactor)] as const)
-                      : scaleColors(bgGrad ?? HOME_GRADIENT, bgFactor);
-                    const isSelected = profileBgCreationId === c.id;
-                    return (
-                      <Pressable
-                        key={c.id}
-                        onPress={() => selectCreation(c.id)}
-                        style={pStyles.creationThumb}
-                      >
-                        <View style={[pStyles.thumbBg, isSelected && pStyles.thumbBgOn]}>
-                          {/* Fondo fiel a la receta */}
-                          <LinearGradient
-                            colors={bgColors as readonly [string, string, ...string[]]}
-                            start={{ x: 0.5, y: 0 }}
-                            end={{ x: 0.5, y: 1 }}
-                            style={StyleSheet.absoluteFill}
-                          />
-                          {/* Capas de geometría (estáticas) */}
-                          {c.active.map((id) => {
-                            const s = c.settings[id];
-                            if (!s) return null;
-                            const opacity = Math.max(0.15, s.opacity * c.master.opacity);
-                            return (
-                              <View
-                                key={id}
-                                style={[
-                                  StyleSheet.absoluteFill,
-                                  { alignItems: "center", justifyContent: "center", opacity },
-                                ]}
-                                pointerEvents="none"
-                              >
-                                <SacredGlyph
-                                  id={baseOf(id)}
-                                  color={s.color}
-                                  gradient={gradientColors(s.gradientId)}
-                                  size={60}
-                                  strokeWidth={1 + s.thickness * 2}
-                                />
-                              </View>
-                            );
-                          })}
-                        </View>
-                      </Pressable>
-                    );
-                  })
-                )}
-              </ScrollView>
-
               {/* ── Paleta de degradado ── */}
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 0 }}>
                 <Text style={pStyles.sectionTitle}>Color de fondo</Text>
@@ -1348,36 +1263,41 @@ export default function ProfileScreen() {
 
               <View style={[pStyles.swatchRow, { marginTop: 13, marginBottom: 28 }]}>
                 {/* Por defecto */}
-                <Pressable
-                  onPress={() => selectGradient(null)}
-                  style={[pStyles.swatch, profileBgGradientId === null && profileBgCreationId === null && pStyles.swatchOn]}
-                >
+                <Pressable onPress={() => selectGradient(null)} style={pStyles.swatch}>
                   <LinearGradient
                     colors={[HOME_GRADIENT[0], HOME_GRADIENT[2]]}
                     style={pStyles.swatchGrad}
                   />
+                  {profileBgGradientId === null && profileBgCreationId === null && (
+                    <View style={pStyles.swatchCheck}>
+                      <Feather name="check" size={12} color="#D4AF37" />
+                    </View>
+                  )}
                 </Pressable>
-                {BG_GRADIENTS.map((gr) => (
+                {BG_GRADIENTS.filter((gr) => gr.id !== "ambar-noche").map((gr) => (
                   <Pressable
                     key={gr.id}
                     onPress={() => selectGradient(gr.id)}
-                    style={[pStyles.swatch, profileBgGradientId === gr.id && pStyles.swatchOn]}
+                    style={pStyles.swatch}
                   >
                     <LinearGradient
                       colors={[...gr.colors] as [string, string]}
                       style={pStyles.swatchGrad}
                     />
+                    {profileBgGradientId === gr.id && (
+                      <View style={pStyles.swatchCheck}>
+                        <Feather name="check" size={12} color="#D4AF37" />
+                      </View>
+                    )}
                   </Pressable>
                 ))}
               </View>
 
-              {/* ── Geometría en el fondo ── */}
-              <Text style={pStyles.sectionTitle}>Geometría sagrada</Text>
-              <Text style={pStyles.sectionSub}>Formas animadas sutiles de fondo en tu perfil</Text>
+              {/* ── Geometrix toggle ── */}
               <View style={pStyles.geoToggleRow}>
                 <View style={pStyles.geoToggleLeft}>
-                  <Feather name="feather" size={16} color="#D4AF37" />
-                  <Text style={pStyles.geoToggleLabel}>Activar geometría</Text>
+                  <SacredGlyph id="hexaedro" color="#D4AF37" size={20} strokeWidth={1.2} />
+                  <Text style={pStyles.geoToggleLabel}>Geometrix</Text>
                 </View>
                 <Switch
                   value={profileGeoActive}
@@ -1388,8 +1308,6 @@ export default function ProfileScreen() {
               </View>
 
               {/* ── Recordatorio ── */}
-              <Text style={pStyles.sectionTitle}>Recordatorio diario</Text>
-              <Text style={pStyles.sectionSub}>Recibe una notificación para meditar cada día</Text>
 
               <View style={pStyles.reminderCard}>
                 <View style={pStyles.reminderRow}>
