@@ -297,7 +297,7 @@ export default function ResonadorPerfilScreen() {
 
 
         {/* ── Sección Resonador ── */}
-        <View style={[styles.resonadorSection, { marginHorizontal: H_PAD, marginTop: -10 }]}>
+        <View style={[styles.resonadorSection, { marginHorizontal: H_PAD, marginTop: -18 }]}>
 
           {/* ── Banner RESONADOR ── */}
           <LinearGradient
