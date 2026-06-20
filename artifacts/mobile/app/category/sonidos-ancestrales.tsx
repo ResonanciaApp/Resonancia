@@ -543,7 +543,7 @@ const styles = StyleSheet.create({
   },
 
   /* ── Divisor ── */
-  dividerWrap: { paddingHorizontal: 32, paddingVertical: 6 },
+  dividerWrap: { paddingHorizontal: 12, paddingVertical: 6 },
   dividerLine: { height: StyleSheet.hairlineWidth + 0.5, borderRadius: 1 },
 
   /* ── Tabs (chips) ── */
