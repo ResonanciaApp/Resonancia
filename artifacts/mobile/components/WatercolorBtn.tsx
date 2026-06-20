@@ -1,10 +1,9 @@
 /**
- * WatercolorBtn — ícono de acuarela (pluma dorada) para personalizar el perfil.
+ * WatercolorBtn — ícono de personalización de perfil (dorado).
  * Visible para todos: opaco para premium, atenuado para users gratuitos.
  */
-import { Feather } from "@expo/vector-icons";
 import React from "react";
-import { Pressable, StyleSheet } from "react-native";
+import { Image, Pressable, StyleSheet } from "react-native";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -13,6 +12,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 const GOLD = "#D4AF37";
+const ICON = require("@/assets/images/personalize-icon.png") as number;
 
 interface Props {
   isPremium: boolean;
@@ -20,7 +20,7 @@ interface Props {
   size?: number;
 }
 
-export function WatercolorBtn({ isPremium, onPress, size = 18 }: Props) {
+export function WatercolorBtn({ isPremium, onPress, size = 26 }: Props) {
   const glow = useSharedValue(0);
 
   const glowStyle = useAnimatedStyle(() => ({ opacity: glow.value }));
@@ -41,28 +41,28 @@ export function WatercolorBtn({ isPremium, onPress, size = 18 }: Props) {
       style={[styles.btn, { opacity: isPremium ? 1 : 0.32 }]}
     >
       <Animated.View pointerEvents="none" style={[styles.glow, glowStyle]} />
-      <Feather name="feather" size={size} color={GOLD} />
+      <Image source={ICON} style={{ width: size, height: size }} resizeMode="contain" />
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   btn: {
-    width: 34,
-    height: 34,
+    width: 36,
+    height: 36,
     alignItems: "center",
     justifyContent: "center",
   },
   glow: {
     position: "absolute",
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: "transparent",
     shadowColor: GOLD,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 1,
-    shadowRadius: 12,
+    shadowRadius: 14,
     elevation: 0,
   },
 });
