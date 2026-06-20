@@ -672,7 +672,7 @@ const styles = StyleSheet.create({
   },
   heroAvatarFloat: {
     position: "absolute",
-    bottom: 0,
+    bottom: -15,
     alignSelf: "center",
     width: 84,
     height: 84,
@@ -693,7 +693,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
   },
-  avatarWrapper: { position: "relative", marginTop: 15, marginBottom: 8 },
+  avatarWrapper: { position: "relative", marginBottom: 8 },
   avatarImage: {
     width: 84,
     height: 84,
