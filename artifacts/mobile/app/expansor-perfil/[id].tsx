@@ -205,44 +205,44 @@ export default function ExpansorPerfilScreen() {
 
         </View>
 
-        {/* Banner certificado — V5 */}
-        <View style={[styles.certBanner, { marginHorizontal: H_PAD }]}>
-          {/* Barra lateral izquierda */}
-          <LinearGradient
-            colors={["#E9C46A", "#B8860B"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={styles.certBannerBar}
-          />
+        {/* ── Sección Expansor ── */}
+        <View style={[styles.expansorSection, { marginHorizontal: H_PAD }]}>
 
-          {/* Texto */}
-          <View style={{ flex: 1, paddingLeft: 12, paddingVertical: 10, justifyContent: "center" }}>
-            <MaskedView
-              maskElement={<Text style={styles.certBannerTitle}>EXPANSOR</Text>}
-            >
-              <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-                <Text style={[styles.certBannerTitle, { opacity: 0 }]}>EXPANSOR</Text>
-              </LinearGradient>
-            </MaskedView>
-            <Text style={styles.certBannerSub}>Verificado por Resonancia</Text>
-          </View>
+          {/* Banner certificado — V5 */}
+          <View style={styles.certBanner}>
+            {/* Barra lateral izquierda */}
+            <LinearGradient
+              colors={["#E9C46A", "#B8860B"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={styles.certBannerBar}
+            />
 
-          {/* Ícono circular derecha */}
-          <View style={{ paddingRight: 14, justifyContent: "center" }}>
-            <View style={styles.certBannerIconBorder}>
-              <View style={styles.certBannerIcon}>
-                <LinearGradient
-                  colors={["rgba(212,175,55,0.30)", "rgba(184,134,11,0.20)"]}
-                  style={StyleSheet.absoluteFill}
-                />
-                <Text style={styles.certBannerStar}>✦</Text>
+            {/* Texto */}
+            <View style={{ flex: 1, paddingLeft: 12, paddingVertical: 10, justifyContent: "center" }}>
+              <MaskedView
+                maskElement={<Text style={styles.certBannerTitle}>EXPANSOR</Text>}
+              >
+                <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+                  <Text style={[styles.certBannerTitle, { opacity: 0 }]}>EXPANSOR</Text>
+                </LinearGradient>
+              </MaskedView>
+              <Text style={styles.certBannerSub}>Verificado por Resonancia</Text>
+            </View>
+
+            {/* Ícono circular derecha */}
+            <View style={{ paddingRight: 14, justifyContent: "center" }}>
+              <View style={styles.certBannerIconBorder}>
+                <View style={styles.certBannerIcon}>
+                  <LinearGradient
+                    colors={["rgba(212,175,55,0.30)", "rgba(184,134,11,0.20)"]}
+                    style={StyleSheet.absoluteFill}
+                  />
+                  <Text style={styles.certBannerStar}>✦</Text>
+                </View>
               </View>
             </View>
           </View>
-        </View>
-
-        {/* ── Sección Expansor ── */}
-        <View style={[styles.expansorSection, { marginHorizontal: H_PAD }]}>
 
           {/* Me especializo en + chips */}
           <View style={styles.sectionBlock}>
