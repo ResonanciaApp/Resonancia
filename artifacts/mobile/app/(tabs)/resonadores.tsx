@@ -424,23 +424,23 @@ export default function ResonadoresScreen() {
             style={StyleSheet.absoluteFill}
             contentFit="cover"
           />
-          {/* Luz asimétrica: esquina superior izquierda */}
+          {/* Borde dorado superior: luz que llega por las dos esquinas */}
           <LinearGradient
             pointerEvents="none"
-            colors={["rgba(212,175,55,0.40)", "rgba(212,175,55,0.10)", "transparent"]}
-            locations={[0, 0.35, 1]}
+            colors={["#F4D77A", "rgba(212,175,55,0.25)", "#F4D77A"]}
+            locations={[0, 0.5, 1]}
             start={{ x: 0, y: 0 }}
-            end={{ x: 0.7, y: 0.7 }}
-            style={StyleSheet.absoluteFill}
+            end={{ x: 1, y: 0 }}
+            style={styles.bannerBorderTop}
           />
-          {/* Luz asimétrica: esquina inferior izquierda */}
+          {/* Borde dorado inferior: luz que llega por las dos esquinas */}
           <LinearGradient
             pointerEvents="none"
-            colors={["rgba(212,175,55,0.40)", "rgba(212,175,55,0.10)", "transparent"]}
-            locations={[0, 0.35, 1]}
-            start={{ x: 0, y: 1 }}
-            end={{ x: 0.7, y: 0.3 }}
-            style={StyleSheet.absoluteFill}
+            colors={["#F4D77A", "rgba(212,175,55,0.25)", "#F4D77A"]}
+            locations={[0, 0.5, 1]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.bannerBorderBottom}
           />
           <Animated.View
             pointerEvents="none"
@@ -560,9 +560,20 @@ const styles = StyleSheet.create({
     marginTop: -15,
     marginBottom: 14,
     overflow: "hidden",
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: "#D4AF37",
+  },
+  bannerBorderTop: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 1,
+  },
+  bannerBorderBottom: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 1,
   },
   bannerTextWrap: {
     ...StyleSheet.absoluteFillObject,
