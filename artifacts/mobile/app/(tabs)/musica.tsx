@@ -54,7 +54,6 @@ import { MixerSettingsSheet } from "@/components/MixerSettingsSheet";
 import { GhostPill } from "@/components/GhostPill";
 import { useSounds } from "@/context/SoundsContext";
 import { REMOTE_SOUND_MAP, REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
-import { GoldGradient } from "@/components/GoldGradient";
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
 const GOLD  = "#D4AF37";
@@ -716,9 +715,6 @@ export default function MezcladorScreen() {
                       accessibilityLabel="Paleta de color del Mezclador"
                     >
                       <MaterialCommunityIcons name="brush" size={22} color="#FAF0EE" />
-                      {bgPaletteId !== DEFAULT_MIXER_BG_PALETTE && (
-                        <GoldGradient style={styles.filterBadge} />
-                      )}
                     </Pressable>
                     <Pressable
                       onPress={() => { setSettingsMode("filters"); setSettingsVisible(true); }}
@@ -728,9 +724,6 @@ export default function MezcladorScreen() {
                       accessibilityLabel="Filtros del Mezclador"
                     >
                       <MaterialCommunityIcons name="filter-variant" size={22} color="#FAF0EE" />
-                      {tagFilters.length > 0 && (
-                        <GoldGradient style={styles.filterBadge} />
-                      )}
                     </Pressable>
                   </GhostPill>
                 </View>
@@ -958,10 +951,6 @@ const styles = StyleSheet.create({
   },
   headerPillBtn: {
     width: 38, height: 38, alignItems: "center", justifyContent: "center",
-  },
-  filterBadge: {
-    position: "absolute", top: 6, right: 6,
-    width: 7, height: 7, borderRadius: 4,
   },
 
   pillRow:        { flexGrow: 0, marginTop: -3, marginBottom: -5, backgroundColor: "transparent" },
