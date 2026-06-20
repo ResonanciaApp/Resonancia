@@ -422,10 +422,6 @@ export default function SonidosAncestalesScreen() {
           {/* Ícono flotante en borde inferior del hero */}
           <View style={styles.heroIconFloat}>
             <View style={styles.heroIconCircle}>
-              <LinearGradient
-                colors={["rgba(212,175,55,0.22)", "rgba(184,134,11,0.14)"]}
-                style={StyleSheet.absoluteFill}
-              />
               <Feather name="music" size={32} color={GOLD} />
             </View>
           </View>
