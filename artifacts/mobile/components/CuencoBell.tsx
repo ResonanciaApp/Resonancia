@@ -5,8 +5,8 @@ import { router } from "expo-router";
 import { useNotifications } from "@/context/NotificationsContext";
 
 const ICON_SIZE = 24;
-const MUTED_OPACITY = 0.38;
 const GOLD = "#D4AF37";
+const MUTED_COLOR = "rgba(242,231,228,0.45)"; // mutedForeground — campana en reposo
 
 export function CuencoBell() {
   const { unreadCount, shouldAnimate, clearAnimation } = useNotifications();
@@ -21,7 +21,7 @@ export function CuencoBell() {
   const glowOpacity = useRef(new Animated.Value(0)).current;
   const goldOpacity = useRef(new Animated.Value(0)).current;
   const scaleAnim   = useRef(new Animated.Value(1)).current;
-  const iconOpacity = useRef(new Animated.Value(showBadge ? 1 : MUTED_OPACITY)).current;
+  const iconOpacity = useRef(new Animated.Value(showBadge ? 1 : 0)).current;
   const dotOpacity  = useRef(new Animated.Value(showBadge ? 1 : 0)).current;
 
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -104,7 +104,7 @@ export function CuencoBell() {
   // transición suave. NO depende del glow: al leer, la campana se atenúa
   // siempre, aunque la animación dorada siga corriendo.
   useEffect(() => {
-    const targetIcon = showBadge ? 1 : MUTED_OPACITY;
+    const targetIcon = showBadge ? 1 : 0;
     const targetDot  = showBadge ? 1 : 0;
     const duration   = showBadge ? 200 : 500;
     Animated.parallel([
@@ -135,8 +135,16 @@ export function CuencoBell() {
         style={[styles.glow, { opacity: glowOpacity }]}
       />
 
-      {/* Ícono base — blanco, atenuado sin badge */}
-      <Animated.View style={{ opacity: iconOpacity, transform: [{ scale: scaleAnim }] }}>
+      {/* Ícono base en reposo — gris atenuado, siempre visible */}
+      <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+        <Ionicons name="notifications" size={ICON_SIZE} color={MUTED_COLOR} />
+      </Animated.View>
+
+      {/* Ícono blanco — sólo visible cuando hay no leídas (crossfade) */}
+      <Animated.View
+        pointerEvents="none"
+        style={[styles.iconAbsolute, { opacity: iconOpacity, transform: [{ scale: scaleAnim }] }]}
+      >
         <Ionicons name="notifications" size={ICON_SIZE} color="#FFFFFF" />
       </Animated.View>
 
