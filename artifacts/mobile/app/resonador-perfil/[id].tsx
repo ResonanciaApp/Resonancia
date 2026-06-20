@@ -407,7 +407,7 @@ export default function ResonadorPerfilScreen() {
 
         {/* ── SECCIÓN 1: Mi obra en Resonancia ── */}
         {sessions.length > 0 && (
-          <View style={[styles.card, { marginHorizontal: H_PAD, backgroundColor: "transparent", paddingHorizontal: 0, marginTop: 9 }]}>
+          <View style={[styles.card, { marginHorizontal: H_PAD, backgroundColor: "transparent", paddingHorizontal: 0, marginTop: 5 }]}>
             <View style={[styles.cardHeader, { paddingHorizontal: 0 }]}>
               <Text style={styles.cardTitle}>Mi obra en Resonancia</Text>
               <Pressable
@@ -462,7 +462,7 @@ export default function ResonadorPerfilScreen() {
 
         {/* ── SECCIÓN 4: Proyectos externos ── */}
         {resonador.projects && resonador.projects.length > 0 && (
-          <View style={[styles.card, { marginHorizontal: H_PAD, marginTop: -11 }]}>
+          <View style={[styles.card, { marginHorizontal: H_PAD, marginTop: -15 }]}>
             <Text style={styles.cardTitle}>Proyectos externos</Text>
             <View style={styles.projectsList}>
               {resonador.projects.map((proj, i) => (
@@ -491,7 +491,7 @@ export default function ResonadorPerfilScreen() {
 
         {/* ── SECCIÓN 5: Formación ── */}
         {resonador.formacion && resonador.formacion.length > 0 && (
-          <View style={[styles.card, { marginHorizontal: H_PAD, marginTop: -11 }]}>
+          <View style={[styles.card, { marginHorizontal: H_PAD, marginTop: -15 }]}>
             <Text style={styles.cardTitle}>Formación</Text>
             <View style={styles.formacionList}>
               {resonador.formacion.map((f, i) => (
@@ -512,7 +512,7 @@ export default function ResonadorPerfilScreen() {
 
         {/* Quote */}
         {resonador.quote ? (
-          <View style={[styles.quoteWrap, { marginHorizontal: H_PAD, marginTop: -11 }]}>
+          <View style={[styles.quoteWrap, { marginHorizontal: H_PAD, marginTop: -15 }]}>
             <Text style={styles.quoteText}>"{resonador.quote}"</Text>
           </View>
         ) : null}
