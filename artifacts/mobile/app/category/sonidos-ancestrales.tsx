@@ -543,7 +543,7 @@ const styles = StyleSheet.create({
   dividerShadow: { height: 12, marginTop: -6 },
 
   /* ── Tabs (chips) ── */
-  chipsArea: { paddingTop: 7, paddingBottom: 10, overflow: "visible" },
+  chipsArea: { paddingTop: 7, paddingBottom: 5, overflow: "visible" },
   animChipWrap: { flexDirection: "row", alignItems: "center" },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
   chipCloseBtn: { width: 30, height: 30, borderRadius: 15, backgroundColor: "rgba(74,12,12,0.08)", alignItems: "center", justifyContent: "center" },
@@ -555,7 +555,7 @@ const styles = StyleSheet.create({
 
   /* ── Content ── */
   scroll: { flex: 1 },
-  controlRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingVertical: 10 },
+  controlRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingTop: 0, paddingBottom: 10 },
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
   sortText: { fontSize: 13, color: MUTED, fontWeight: "500" },
   viewToggleBtn: { padding: 2 },
