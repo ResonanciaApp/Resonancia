@@ -424,6 +424,24 @@ export default function ResonadoresScreen() {
             style={StyleSheet.absoluteFill}
             contentFit="cover"
           />
+          {/* Luz asimétrica: esquina superior izquierda */}
+          <LinearGradient
+            pointerEvents="none"
+            colors={["rgba(212,175,55,0.40)", "rgba(212,175,55,0.10)", "transparent"]}
+            locations={[0, 0.35, 1]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0.7, y: 0.7 }}
+            style={StyleSheet.absoluteFill}
+          />
+          {/* Luz asimétrica: esquina inferior izquierda */}
+          <LinearGradient
+            pointerEvents="none"
+            colors={["rgba(212,175,55,0.40)", "rgba(212,175,55,0.10)", "transparent"]}
+            locations={[0, 0.35, 1]}
+            start={{ x: 0, y: 1 }}
+            end={{ x: 0.7, y: 0.3 }}
+            style={StyleSheet.absoluteFill}
+          />
           <Animated.View
             pointerEvents="none"
             style={[styles.bannerTextWrap, { opacity: bannerTextOpacity }]}
