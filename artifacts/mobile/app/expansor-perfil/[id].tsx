@@ -18,6 +18,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MaskedView from "@react-native-masked-view/masked-view";
+import { DrawerStats } from "@/components/DrawerStats";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
@@ -422,6 +423,11 @@ export default function ExpansorPerfilScreen() {
             <Text style={styles.quoteText}>"{expansor.quote}"</Text>
           </View>
         ) : null}
+
+        {/* ── Stats del usuario ── */}
+        <View style={{ marginHorizontal: H_PAD }}>
+          <DrawerStats />
+        </View>
       </ScrollView>
 
       {/* ── Lightbox ── */}

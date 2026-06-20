@@ -17,6 +17,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MaskedView from "@react-native-masked-view/masked-view";
+import { DrawerStats } from "@/components/DrawerStats";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { COUNTRY_FLAGS, getResonadorById, type ExternalProject, type Resonador } from "@/data/resonadores";
@@ -584,6 +585,11 @@ export default function ResonadorPerfilScreen() {
             <Text style={styles.quoteText}>"{resonador.quote}"</Text>
           </View>
         ) : null}
+
+        {/* ── Stats del usuario ── */}
+        <View style={{ marginHorizontal: H_PAD }}>
+          <DrawerStats />
+        </View>
       </ScrollView>
     </View>
   );
