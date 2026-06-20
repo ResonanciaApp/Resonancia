@@ -114,6 +114,14 @@ export default function ResonadorPerfilScreen() {
       <StatusBar barStyle="light-content" />
       <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
 
+      {__DEV__ && clerkUserId && (
+        <View style={{ position: "absolute", top: 60, left: 10, right: 10, zIndex: 999, backgroundColor: "rgba(0,0,0,0.85)", padding: 6, borderRadius: 6 }}>
+          <Text style={{ color: "#FFD700", fontSize: 9, fontFamily: "monospace" }} selectable>
+            uid: {clerkUserId}{"\n"}clerkId: {resonador.clerkId ?? "—"}{"\n"}match: {String(isOwn)}
+          </Text>
+        </View>
+      )}
+
       {/* ── Header ── */}
       <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
         <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
