@@ -44,6 +44,8 @@ interface AuthContextValue extends AuthState {
   authLoading: boolean;
   /** True only when the user has a Clerk session (for social features). */
   isSignedIn: boolean;
+  /** Clerk user ID (null if not signed in with Clerk). */
+  clerkUserId: string | null;
   /** Rol del usuario en el server (user | creator | admin). Solo con cuenta Clerk. */
   role: UserProfileRole | null;
   isCreator: boolean;
@@ -130,6 +132,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       method: localState.method,
       authLoading: localLoading || !clerkLoaded,
       isSignedIn,
+      clerkUserId: clerkUser?.id ?? null,
       role,
       isCreator: role === "creator" || role === "admin",
       isAdmin: role === "admin",
