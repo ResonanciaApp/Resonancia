@@ -120,7 +120,6 @@ function RoleCard({ role, delay }: { role: RoleData; delay: number }) {
       </View>
 
       {/* CTA */}
-      <Text style={styles.ctaQuestion}>{role.cta}</Text>
       <Pressable
         onPress={() =>
           Linking.openURL(
@@ -274,17 +273,9 @@ const styles = StyleSheet.create({
     color: TEXT,
     lineHeight: 20,
   },
-  ctaQuestion: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: GOLD2,
-    textAlign: "center",
-    marginTop: 16,
-    marginBottom: 12,
-    paddingHorizontal: 18,
-  },
   ctaBtn: {
     marginHorizontal: 18,
+    marginTop: 18,
     marginBottom: 18,
     height: 50,
     borderRadius: 25,
