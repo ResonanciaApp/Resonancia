@@ -217,7 +217,7 @@ export function MiniPlayer() {
               accessibilityLabel="Abrir mezclador"
               style={{ marginLeft: -3 }}
             >
-              <Feather name="chevron-up" size={18} color="rgba(255,255,255,0.6)" />
+              <Feather name="chevron-up" size={22} color="rgba(255,255,255,0.6)" />
             </Pressable>
 
             {/* Stack / carrusel — frame con ancho animado (JS driver) que clipea;
