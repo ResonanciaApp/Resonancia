@@ -108,14 +108,9 @@ export default function ResonadorPerfilScreen() {
             onPress={() => Linking.openURL(resonador.donationUrl!)}
             style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}
           >
-            <LinearGradient
-              colors={["#8E9BAA", "#5C6A78", "#3A4552"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.apoyaloChip}
-            >
+            <View style={styles.apoyaloChip}>
               <Text style={styles.apoyaloChipText}>Apóyalo</Text>
-            </LinearGradient>
+            </View>
           </Pressable>
         ) : (
           <View style={{ width: 38 }} />
@@ -846,12 +841,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 13,
     paddingVertical: 6,
-    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.30)",
   },
   apoyaloChipText: {
     fontSize: 12,
-    fontWeight: "700",
-    color: "#E8EDF2",
+    fontWeight: "600",
+    color: "#FFFFFF",
     letterSpacing: 0.3,
   },
 
