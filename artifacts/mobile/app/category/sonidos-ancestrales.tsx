@@ -396,7 +396,7 @@ export default function SonidosAncestalesScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#481010","#1E0707"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
+      <LinearGradient colors={["#2E0510","#160108"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
 
       {/* ── Sticky header ── */}
       <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>
@@ -431,9 +431,8 @@ export default function SonidosAncestalesScreen() {
           </View>
         </View>
 
-        {/* ── Profile card ── */}
+        {/* ── Description ── */}
         <View style={styles.profileCard}>
-          <Text style={styles.profileTitle}>Sonidos Ancestrales</Text>
           <Text style={styles.profileDesc}>
             Instrumentos milenarios — cuencos tibetanos, gongs y campanas — que inducen estados profundos de relajación, meditación y coherencia interior.
           </Text>
@@ -477,7 +476,7 @@ export default function SonidosAncestalesScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#2E0510" },
+  root: { flex: 1, backgroundColor: "#160108" },
 
   /* ── Sticky header ── */
   stickyHeader: {
@@ -494,8 +493,10 @@ const styles = StyleSheet.create({
   heroArea: { height: 220, position: "relative" },
   heroIconFloat: {
     position: "absolute",
-    bottom: -36,
-    left: H_PAD,
+    bottom: -6,
+    left: 0,
+    right: 0,
+    alignItems: "center",
     zIndex: 2,
   },
   heroIconCircle: {
@@ -513,9 +514,10 @@ const styles = StyleSheet.create({
   /* ── Profile card ── */
   profileCard: {
     marginHorizontal: H_PAD,
-    marginTop: 48,
+    marginTop: 20,
     paddingBottom: 14,
     gap: 8,
+    alignItems: "center",
   },
   profileTitle: {
     fontSize: 22,
@@ -525,8 +527,9 @@ const styles = StyleSheet.create({
   },
   profileDesc: {
     fontSize: 14,
-    color: MUTED,
+    color: "rgba(255,255,255,0.90)",
     lineHeight: 21,
+    textAlign: "center",
   },
 
   /* ── Tabs (chips) ── */
