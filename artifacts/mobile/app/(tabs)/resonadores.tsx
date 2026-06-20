@@ -393,15 +393,14 @@ export default function ResonadoresScreen() {
           </View>
         )}
 
-        {/* Banner */}
-        <Image
-          source={require("@/assets/images/banner-equipo.jpg")}
-          style={styles.banner}
-          contentFit="cover"
-        />
-
-        {/* Tab switcher */}
-        <View style={styles.tabPill}>
+        {/* Tab block: banner + switcher */}
+        <View style={styles.tabBlock}>
+          <Image
+            source={require("@/assets/images/banner-equipo.jpg")}
+            style={styles.banner}
+            contentFit="cover"
+          />
+          <View style={styles.tabPill}>
           {(["resonadores", "expansores"] as const).map((t) => {
             const isActive = activeTab === t;
             const label = t === "resonadores" ? "Resonadores" : "Expansores";
@@ -425,6 +424,7 @@ export default function ResonadoresScreen() {
               </Pressable>
             );
           })}
+          </View>
         </View>
       </View>
 
@@ -505,11 +505,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     paddingBottom: 12,
   },
+  tabBlock: {
+    backgroundColor: "rgba(74,12,12,0.30)",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.10)",
+    padding: 10,
+    gap: 10,
+  },
   banner: {
     width: "100%",
     height: 110,
-    borderRadius: 12,
-    marginBottom: 14,
+    borderRadius: 9,
     overflow: "hidden",
   },
   titleRow: {
