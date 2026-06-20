@@ -512,7 +512,7 @@ export default function ResonadorPerfilScreen() {
 
         {/* Quote */}
         {resonador.quote ? (
-          <View style={[styles.quoteWrap, { marginHorizontal: H_PAD, marginTop: -8 }]}>
+          <View style={[styles.quoteWrap, { marginHorizontal: H_PAD, marginTop: 7 }]}>
             <Text style={styles.quoteText}>"{resonador.quote}"</Text>
           </View>
         ) : null}
