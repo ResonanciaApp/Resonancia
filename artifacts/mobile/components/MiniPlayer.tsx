@@ -360,10 +360,10 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 20,
     borderWidth: 1,
-    borderTopColor:    "rgba(255,255,255,0.80)",
-    borderLeftColor:   "rgba(255,255,255,0.45)",
-    borderRightColor:  "rgba(255,255,255,0.25)",
-    borderBottomColor: "rgba(255,255,255,0.10)",
+    borderTopColor:    "rgba(255,255,255,0.30)",
+    borderLeftColor:   "rgba(255,255,255,0.65)",
+    borderRightColor:  "rgba(255,255,255,0.45)",
+    borderBottomColor: "rgba(255,255,255,0.40)",
   },
 
   // ── Fila de mezcla ────────────────────────────────────────────
