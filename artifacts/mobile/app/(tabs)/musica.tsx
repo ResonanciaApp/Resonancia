@@ -876,7 +876,7 @@ export default function MezcladorScreen() {
                 </Text>
               </View>
             ) : (
-              <View style={[styles.grid, { marginTop: 14 }]}>
+              <View style={[styles.grid, { marginTop: 4 }]}>
                 {displayedSounds.map((s, i) => (
                   <SoundCard
                     key={s.id}
