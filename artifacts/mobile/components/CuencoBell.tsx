@@ -11,14 +11,18 @@ const GOLD = "#D4AF37";
 export function CuencoBell() {
   const { unreadCount, shouldAnimate, clearAnimation } = useNotifications();
 
-  const hasBadge = unreadCount > 0 || shouldAnimate;
+  // El estado de reposo (ícono encendido/atenuado + badge) depende SOLO del
+  // conteo de no leídas. El glow dorado es un efecto aparte (shouldAnimate),
+  // así que al leer las notificaciones la campana siempre vuelve a su estado
+  // neutro aunque el glow no haya terminado.
+  const showBadge = unreadCount > 0;
 
   // Animated values — todos usables con native driver
   const glowOpacity = useRef(new Animated.Value(0)).current;
   const goldOpacity = useRef(new Animated.Value(0)).current;
   const scaleAnim   = useRef(new Animated.Value(1)).current;
-  const iconOpacity = useRef(new Animated.Value(hasBadge ? 1 : MUTED_OPACITY)).current;
-  const dotOpacity  = useRef(new Animated.Value(hasBadge ? 1 : 0)).current;
+  const iconOpacity = useRef(new Animated.Value(showBadge ? 1 : MUTED_OPACITY)).current;
+  const dotOpacity  = useRef(new Animated.Value(showBadge ? 1 : 0)).current;
 
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -96,28 +100,28 @@ export function CuencoBell() {
     }
   }, [shouldAnimate, runGlow]);
 
-  // Sincroniza iconOpacity y dotOpacity con hasBadge, con transición suave
+  // Sincroniza iconOpacity y dotOpacity con el conteo de no leídas, con
+  // transición suave. NO depende del glow: al leer, la campana se atenúa
+  // siempre, aunque la animación dorada siga corriendo.
   useEffect(() => {
-    if (!shouldAnimate) {
-      const targetIcon = hasBadge ? 1 : MUTED_OPACITY;
-      const targetDot  = hasBadge ? 1 : 0;
-      const duration   = hasBadge ? 200 : 500;
-      Animated.parallel([
-        Animated.timing(iconOpacity, {
-          toValue: targetIcon,
-          duration,
-          easing: Easing.inOut(Easing.quad),
-          useNativeDriver: true,
-        }),
-        Animated.timing(dotOpacity, {
-          toValue: targetDot,
-          duration,
-          easing: Easing.inOut(Easing.quad),
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }
-  }, [hasBadge, shouldAnimate, iconOpacity, dotOpacity]);
+    const targetIcon = showBadge ? 1 : MUTED_OPACITY;
+    const targetDot  = showBadge ? 1 : 0;
+    const duration   = showBadge ? 200 : 500;
+    Animated.parallel([
+      Animated.timing(iconOpacity, {
+        toValue: targetIcon,
+        duration,
+        easing: Easing.inOut(Easing.quad),
+        useNativeDriver: true,
+      }),
+      Animated.timing(dotOpacity, {
+        toValue: targetDot,
+        duration,
+        easing: Easing.inOut(Easing.quad),
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [showBadge, iconOpacity, dotOpacity]);
 
   return (
     <Pressable
