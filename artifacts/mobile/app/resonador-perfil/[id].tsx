@@ -248,7 +248,13 @@ export default function ResonadorPerfilScreen() {
         <View style={[styles.resonadorSection, { marginHorizontal: H_PAD }]}>
 
           {/* ── Banner RESONADOR ── */}
-          <View style={styles.resonadorBannerOuter}>
+          <LinearGradient
+            colors={["rgba(212,175,55,0.50)", "rgba(212,175,55,0.05)", "rgba(212,175,55,0.50)"]}
+            locations={[0, 0.5, 1]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.resonadorBannerOuter}
+          >
           <View style={styles.resonadorBanner}>
             <LinearGradient
               colors={["rgba(74,12,12,0.80)", "rgba(27,6,15,0.95)"]}
@@ -278,7 +284,7 @@ export default function ResonadorPerfilScreen() {
               <Text style={styles.bannerVerified}>Verificado por Resonancia</Text>
             </View>
           </View>
-          </View>
+          </LinearGradient>
 
           {/* Me especializo en */}
           <View style={styles.sectionBlock}>
@@ -575,12 +581,11 @@ const styles = StyleSheet.create({
   /* Banner */
   resonadorBannerOuter: {
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.40)",
+    padding: 1,
     shadowColor: "#D4AF37",
     shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.18,
-    shadowRadius: 4,
+    shadowOpacity: 0.14,
+    shadowRadius: 3,
     elevation: 1,
   },
   resonadorBanner: {
