@@ -67,6 +67,7 @@ type EditForm = {
   projects: ExternalProject[];
   formacion: FormacionItem[];
   photoUri?: string;
+  photos: string[];
 };
 
 export default function ResonadorEditarScreen() {
@@ -93,6 +94,7 @@ export default function ResonadorEditarScreen() {
     donationUrl: resonador?.donationUrl ?? "",
     projects: resonador?.projects ? [...resonador.projects] : [],
     formacion: resonador?.formacion ? [...resonador.formacion] : [],
+    photos: resonador?.photos ? [...resonador.photos] : [],
   }));
 
   useEffect(() => {
@@ -124,6 +126,31 @@ export default function ResonadorEditarScreen() {
     if (!result.canceled && result.assets[0]) {
       set("photoUri", result.assets[0].uri);
     }
+  }
+
+  async function pickGridPhoto() {
+    if (form.photos.length >= 6) {
+      Alert.alert("Límite alcanzado", "Podés agregar hasta 6 fotos en la galería.");
+      return;
+    }
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!perm.granted) {
+      Alert.alert("Permiso requerido", "Necesitamos acceso a tu galería.");
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.85,
+    });
+    if (!result.canceled && result.assets[0]) {
+      set("photos", [...form.photos, result.assets[0].uri]);
+    }
+  }
+
+  function removeGridPhoto(index: number) {
+    set("photos", form.photos.filter((_, i) => i !== index));
   }
 
   async function handleSave() {
@@ -487,6 +514,34 @@ export default function ResonadorEditarScreen() {
             </Pressable>
           </SectionCard>
 
+          {/* ── Galería de fotos ── */}
+          <SectionCard title="Galería de fotos" hint="Hasta 6 fotos para tu perfil">
+            <View style={styles.gridWrap}>
+              {form.photos.map((uri, i) => (
+                <View key={i} style={styles.gridCell}>
+                  <Image
+                    source={{ uri }}
+                    style={{ width: "100%", height: "100%" }}
+                    contentFit="cover"
+                  />
+                  <Pressable
+                    onPress={() => removeGridPhoto(i)}
+                    style={styles.gridRemoveBtn}
+                    hitSlop={6}
+                  >
+                    <Feather name="x" size={12} color="#fff" />
+                  </Pressable>
+                </View>
+              ))}
+              {form.photos.length < 6 && (
+                <Pressable onPress={pickGridPhoto} style={styles.gridAddCell}>
+                  <Feather name="plus" size={22} color={GOLD} />
+                  <Text style={styles.gridAddText}>Agregar</Text>
+                </Pressable>
+              )}
+            </View>
+          </SectionCard>
+
           {/* ── Guardar (bottom) ── */}
           <Pressable
             onPress={handleSave}
@@ -694,4 +749,40 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   saveBottomBtnText: { fontSize: 15, fontWeight: "700", color: "#1B060F" },
+  gridWrap: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  gridCell: {
+    width: 88,
+    height: 88,
+    borderRadius: 10,
+    overflow: "hidden",
+    backgroundColor: CARD_BG,
+  },
+  gridRemoveBtn: {
+    position: "absolute",
+    top: 5,
+    right: 5,
+    backgroundColor: "rgba(0,0,0,0.60)",
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  gridAddCell: {
+    width: 88,
+    height: 88,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.35)",
+    borderStyle: "dashed",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
+    backgroundColor: "rgba(212,175,55,0.04)",
+  },
+  gridAddText: { fontSize: 10, color: GOLD },
 });

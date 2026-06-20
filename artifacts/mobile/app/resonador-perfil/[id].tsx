@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { useAuth } from "@/context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
@@ -63,12 +63,14 @@ export default function ResonadorPerfilScreen() {
 
   const _resonador = getResonadorById(id);
 
-  React.useEffect(() => {
-    if (!id) return;
-    AsyncStorage.getItem(`@resonancia_resonador_overrides_${id}`)
-      .then((raw) => { if (raw) setOverrides(JSON.parse(raw)); })
-      .catch(() => {});
-  }, [id]);
+  useFocusEffect(
+    React.useCallback(() => {
+      if (!id) return;
+      AsyncStorage.getItem(`@resonancia_resonador_overrides_${id}`)
+        .then((raw) => { if (raw) setOverrides(JSON.parse(raw)); })
+        .catch(() => {});
+    }, [id])
+  );
 
   if (!_resonador) {
     return (
@@ -404,30 +406,53 @@ export default function ResonadorPerfilScreen() {
         </View>
 
         {/* ── Grilla de imágenes ── */}
-        {sessions.length > 0 && (
-          <View style={[styles.photoGrid, { marginHorizontal: H_PAD, marginTop: 9 }]}>
-            {sessions.slice(0, 6).map((session, i) => (
-              <Pressable
-                key={session.id}
-                onPress={() => router.push(`/session/${session.id}` as never)}
-                style={({ pressed }) => [styles.photoCell, { opacity: pressed ? 0.8 : 1 }]}
-              >
-                <Image
-                  source={session.image}
-                  style={{ width: "100%", height: "100%" }}
-                  contentFit="cover"
-                  placeholder={BLUR_PLACEHOLDER}
-                  transition={IMAGE_TRANSITION}
-                />
-                {i === 5 && sessions.length > 6 && (
-                  <View style={styles.photoCellMore}>
-                    <Text style={styles.photoCellMoreText}>+{sessions.length - 5}</Text>
+        {(() => {
+          const customPhotos = resonador.photos ?? [];
+          if (customPhotos.length > 0) {
+            return (
+              <View style={[styles.photoGrid, { marginHorizontal: H_PAD, marginTop: 9 }]}>
+                {customPhotos.slice(0, 6).map((uri, i) => (
+                  <View key={i} style={styles.photoCell}>
+                    <Image
+                      source={{ uri }}
+                      style={{ width: "100%", height: "100%" }}
+                      contentFit="cover"
+                      placeholder={BLUR_PLACEHOLDER}
+                      transition={IMAGE_TRANSITION}
+                    />
                   </View>
-                )}
-              </Pressable>
-            ))}
-          </View>
-        )}
+                ))}
+              </View>
+            );
+          }
+          if (sessions.length > 0) {
+            return (
+              <View style={[styles.photoGrid, { marginHorizontal: H_PAD, marginTop: 9 }]}>
+                {sessions.slice(0, 6).map((session, i) => (
+                  <Pressable
+                    key={session.id}
+                    onPress={() => router.push(`/session/${session.id}` as never)}
+                    style={({ pressed }) => [styles.photoCell, { opacity: pressed ? 0.8 : 1 }]}
+                  >
+                    <Image
+                      source={session.image}
+                      style={{ width: "100%", height: "100%" }}
+                      contentFit="cover"
+                      placeholder={BLUR_PLACEHOLDER}
+                      transition={IMAGE_TRANSITION}
+                    />
+                    {i === 5 && sessions.length > 6 && (
+                      <View style={styles.photoCellMore}>
+                        <Text style={styles.photoCellMoreText}>+{sessions.length - 5}</Text>
+                      </View>
+                    )}
+                  </Pressable>
+                ))}
+              </View>
+            );
+          }
+          return null;
+        })()}
 
         {/* ── SECCIÓN 1: Mi obra en Resonancia ── */}
         {sessions.length > 0 && (

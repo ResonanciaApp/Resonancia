@@ -37,6 +37,7 @@ export type Resonador = {
   projects?: ExternalProject[];
   formacion?: FormacionItem[];
   quote?: string;
+  photos?: string[];
 };
 
 export const COUNTRY_FLAGS: Record<string, string> = {
