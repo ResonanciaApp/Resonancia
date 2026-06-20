@@ -13,6 +13,7 @@ import {
 } from "react-native";
 
 import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
 
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
@@ -202,7 +203,9 @@ export function MiniPlayer() {
       <View style={styles.mixOuter}>
         {/* ── Card del miniplayer ── */}
         <View style={styles.wrapper}>
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: MIX_BG }]} />
+          {/* Fondo glassmorphism */}
+          <BlurView intensity={60} tint="dark" style={StyleSheet.absoluteFill} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(20,5,12,0.45)" }]} />
 
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
