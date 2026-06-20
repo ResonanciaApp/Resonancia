@@ -91,7 +91,7 @@ function SortSheet({ visible, current, onSelect, onClose }: { visible: boolean; 
 
 function AnimatedTabContent({ animKey, children }: { animKey: string; children: React.ReactNode }) {
   const opacity = useRef(new Animated.Value(0)).current;
-  useEffect(()=>{ opacity.setValue(0); Animated.timing(opacity,{toValue:1,duration:220,useNativeDriver:true}).start(); },[animKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(()=>{ opacity.setValue(0); Animated.timing(opacity,{toValue:1,duration:1200,easing:Easing.out(Easing.quad),useNativeDriver:true}).start(); },[animKey]); // eslint-disable-line react-hooks/exhaustive-deps
   return <Animated.View style={{opacity}}>{children}</Animated.View>;
 }
 
