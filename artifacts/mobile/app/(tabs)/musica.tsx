@@ -707,7 +707,7 @@ export default function MezcladorScreen() {
                   <Text style={styles.pageSubtitle}>Sonidos de la tierra y el universo.</Text>
                 </View>
                 <View style={styles.headerActions}>
-                  <GhostPill style={{ transform: [{ translateX: 5 }, { translateY: -8 }] }}>
+                  <GhostPill style={{ transform: [{ translateX: 5 }, { translateY: -6 }] }}>
                     <Pressable
                       onPress={() => { setSettingsMode("palette"); setSettingsVisible(true); }}
                       style={styles.headerPillBtn}
