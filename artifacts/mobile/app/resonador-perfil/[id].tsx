@@ -1,4 +1,6 @@
 import { Feather } from "@expo/vector-icons";
+import { useUser } from "@clerk/expo";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -17,7 +19,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MaskedView from "@react-native-masked-view/masked-view";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
-import { COUNTRY_FLAGS, getResonadorById, type ExternalProject } from "@/data/resonadores";
+import { COUNTRY_FLAGS, getResonadorById, type ExternalProject, type Resonador } from "@/data/resonadores";
 import { getSessionById } from "@/data/sessions";
 import { SessionCard } from "@/components/SessionCard";
 import { useColors } from "@/hooks/useColors";
@@ -47,17 +49,26 @@ export default function ResonadorPerfilScreen() {
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
 
+  const { user: clerkUser } = useUser();
   const [following, setFollowing] = React.useState(false);
   const [friendRequested, setFriendRequested] = React.useState(false);
   const [descExpanded, setDescExpanded] = React.useState(false);
   const [descOverflows, setDescOverflows] = React.useState(false);
+  const [overrides, setOverrides] = React.useState<(Partial<Resonador> & { photoUri?: string }) | null>(null);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const resonador = getResonadorById(id);
+  const _resonador = getResonadorById(id);
 
-  if (!resonador) {
+  React.useEffect(() => {
+    if (!id) return;
+    AsyncStorage.getItem(`@resonancia_resonador_overrides_${id}`)
+      .then((raw) => { if (raw) setOverrides(JSON.parse(raw)); })
+      .catch(() => {});
+  }, [id]);
+
+  if (!_resonador) {
     return (
       <View style={styles.root}>
         <StatusBar barStyle="light-content" />
@@ -74,6 +85,11 @@ export default function ResonadorPerfilScreen() {
       </View>
     );
   }
+
+  const resonador = overrides
+    ? ({ ..._resonador, ...overrides } as Resonador)
+    : _resonador;
+  const isOwn = !!(clerkUser?.id && resonador.clerkId && clerkUser.id === resonador.clerkId);
 
   const flag = COUNTRY_FLAGS[resonador.country] ?? "";
   const locationStr = `${flag} ${resonador.city}, ${resonador.country}`.trim();
@@ -103,7 +119,15 @@ export default function ResonadorPerfilScreen() {
           <Feather name="arrow-left" size={22} color={colors.foreground} />
         </Pressable>
         <Text style={[styles.headerTitle, { color: colors.foreground }]}>Perfil</Text>
-        {resonador.donationUrl ? (
+        {isOwn ? (
+          <Pressable
+            onPress={() => router.push(`/resonador-editar/${resonador.id}` as never)}
+            style={styles.backBtn}
+            hitSlop={8}
+          >
+            <Feather name="edit-2" size={18} color={colors.foreground} />
+          </Pressable>
+        ) : resonador.donationUrl ? (
           <Pressable
             onPress={() => Linking.openURL(resonador.donationUrl!)}
             style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}
@@ -196,57 +220,73 @@ export default function ResonadorPerfilScreen() {
           </View>
 
           {/* Pills de acción */}
-          <View style={styles.actionPillsWrap}>
-            <View style={styles.actionPillsRow}>
+          {isOwn ? (
+            <View style={styles.actionPillsWrap}>
               <Pressable
-                onPress={() => setFollowing((v) => !v)}
+                onPress={() => router.push(`/resonador-editar/${resonador.id}` as never)}
                 style={({ pressed }) => [
                   styles.actionPill,
-                  following && styles.actionPillActive,
-                  { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
+                  styles.actionPillFull,
+                  { opacity: pressed ? 0.75 : 1 },
                 ]}
               >
-                {following && (
-                  <LinearGradient
-                    colors={["#D6AD5F", "#B47344"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    style={StyleSheet.absoluteFill}
-                  />
-                )}
-                <Feather name={following ? "user-check" : "user-plus"} size={13} color={following ? "#1B060F" : "#FFFFFF"} />
-                <Text style={[styles.actionPillText, following && styles.actionPillTextActive]}>
-                  {following ? "Siguiendo" : "Seguir"}
-                </Text>
-              </Pressable>
-
-              <Pressable
-                onPress={() => setFriendRequested((v) => !v)}
-                style={({ pressed }) => [
-                  styles.actionPill,
-                  friendRequested && styles.actionPillSent,
-                  { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
-                ]}
-              >
-                <Feather name={friendRequested ? "user-x" : "users"} size={13} color={friendRequested ? "rgba(250,240,238,0.55)" : "#FFFFFF"} />
-                <Text style={[styles.actionPillText, friendRequested && styles.actionPillTextSent]}>
-                  {friendRequested ? "Solicitado" : "Amistad"}
-                </Text>
+                <Feather name="edit-2" size={13} color="#FFFFFF" />
+                <Text style={styles.actionPillText}>Editar mi perfil</Text>
               </Pressable>
             </View>
+          ) : (
+            <View style={styles.actionPillsWrap}>
+              <View style={styles.actionPillsRow}>
+                <Pressable
+                  onPress={() => setFollowing((v) => !v)}
+                  style={({ pressed }) => [
+                    styles.actionPill,
+                    following && styles.actionPillActive,
+                    { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
+                  ]}
+                >
+                  {following && (
+                    <LinearGradient
+                      colors={["#D6AD5F", "#B47344"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={StyleSheet.absoluteFill}
+                    />
+                  )}
+                  <Feather name={following ? "user-check" : "user-plus"} size={13} color={following ? "#1B060F" : "#FFFFFF"} />
+                  <Text style={[styles.actionPillText, following && styles.actionPillTextActive]}>
+                    {following ? "Siguiendo" : "Seguir"}
+                  </Text>
+                </Pressable>
 
-            <Pressable
-              onPress={() => router.push("/mensajes" as never)}
-              style={({ pressed }) => [
-                styles.actionPill,
-                styles.actionPillFull,
-                { opacity: pressed ? 0.75 : 1 },
-              ]}
-            >
-              <Feather name="message-circle" size={13} color="#FFFFFF" />
-              <Text style={styles.actionPillText}>Enviar mensaje</Text>
-            </Pressable>
-          </View>
+                <Pressable
+                  onPress={() => setFriendRequested((v) => !v)}
+                  style={({ pressed }) => [
+                    styles.actionPill,
+                    friendRequested && styles.actionPillSent,
+                    { opacity: pressed ? 0.75 : 1, flex: 1, justifyContent: "center" },
+                  ]}
+                >
+                  <Feather name={friendRequested ? "user-x" : "users"} size={13} color={friendRequested ? "rgba(250,240,238,0.55)" : "#FFFFFF"} />
+                  <Text style={[styles.actionPillText, friendRequested && styles.actionPillTextSent]}>
+                    {friendRequested ? "Solicitado" : "Amistad"}
+                  </Text>
+                </Pressable>
+              </View>
+
+              <Pressable
+                onPress={() => router.push("/mensajes" as never)}
+                style={({ pressed }) => [
+                  styles.actionPill,
+                  styles.actionPillFull,
+                  { opacity: pressed ? 0.75 : 1 },
+                ]}
+              >
+                <Feather name="message-circle" size={13} color="#FFFFFF" />
+                <Text style={styles.actionPillText}>Enviar mensaje</Text>
+              </Pressable>
+            </View>
+          )}
         </View>
 
 

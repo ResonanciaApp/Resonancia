@@ -16,6 +16,7 @@ export type FormacionItem = {
 
 export type Resonador = {
   id: string;
+  clerkId?: string;
   name: string;
   photo: ImageSourcePropType;
   subtipo: ResonadorSubtipo;
