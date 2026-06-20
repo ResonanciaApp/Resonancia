@@ -207,6 +207,8 @@ function AnimatedChipRow({
         showsHorizontalScrollIndicator={false}
         scrollEnabled={!filtered}
         scrollEventThrottle={16}
+        automaticallyAdjustContentInsets={false}
+        automaticallyAdjustsScrollIndicatorInsets={false}
         onScroll={(e) => {
           scrollXRef.current = e.nativeEvent.contentOffset.x;
         }}
