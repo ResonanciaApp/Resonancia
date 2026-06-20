@@ -34,6 +34,7 @@ type RoleData = {
   beneficios: { icon: keyof typeof Feather.glyphMap; texto: string }[];
   cta: string;
   emailSubject: string;
+  route?: string;
 };
 
 const ROLES: RoleData[] = [
@@ -49,6 +50,7 @@ const ROLES: RoleData[] = [
     ],
     cta: "¿Te gustaría ser Resonador?",
     emailSubject: "Quiero ser Resonador",
+    route: "/resonador-postular",
   },
   {
     banner: EXPANSOR_IMG,
@@ -122,9 +124,11 @@ function RoleCard({ role, delay }: { role: RoleData; delay: number }) {
       {/* CTA */}
       <Pressable
         onPress={() =>
-          Linking.openURL(
-            `mailto:hola@resonancia.app?subject=${encodeURIComponent(role.emailSubject)}`,
-          )
+          role.route
+            ? router.push(role.route as never)
+            : Linking.openURL(
+                `mailto:hola@resonancia.app?subject=${encodeURIComponent(role.emailSubject)}`,
+              )
         }
         style={({ pressed }) => [styles.ctaBtn, { opacity: pressed ? 0.85 : 1 }]}
       >
