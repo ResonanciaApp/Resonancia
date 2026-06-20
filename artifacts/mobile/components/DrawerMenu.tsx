@@ -17,7 +17,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { LinearGradient } from "expo-linear-gradient";
 import { useAuth } from "@/context/AuthContext";
-import { DrawerStats } from "@/components/DrawerStats";
 import { useDrawer, DRAWER_W, DRAWER_PUSH } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 
@@ -196,8 +195,6 @@ export function DrawerMenu() {
               ))}
             </View>
 
-            {/* ── Estadísticas ── */}
-            <DrawerStats />
           </ScrollView>
         </LinearGradient>
       </Animated.View>
