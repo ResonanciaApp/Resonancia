@@ -17,6 +17,7 @@ import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { LinearGradient } from "expo-linear-gradient";
+import { GhostPill } from "@/components/GhostPill";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
@@ -251,6 +252,14 @@ export default function ExploreScreen() {
         <View style={styles.header}>
           <View style={styles.headerRow}>
             <Text style={[styles.pageTitle, { flex: 1 }]}>Buscar</Text>
+            <GhostPill style={{ transform: [{ translateX: 3 }, { translateY: -6 }] }}>
+              <Pressable hitSlop={10} onPress={() => router.push("/favorites")} style={styles.headerPillBtn}>
+                <Feather name="heart" size={20} color="#FFFFFF" />
+              </Pressable>
+              <Pressable hitSlop={10} onPress={() => router.push("/historial")} style={styles.headerPillBtn}>
+                <Feather name="clock" size={20} color="#FFFFFF" />
+              </Pressable>
+            </GhostPill>
           </View>
         </View>
 
@@ -532,6 +541,7 @@ const styles = StyleSheet.create({
   },
 
   header:         { paddingHorizontal: H_PAD, marginBottom: 18 },
+  headerPillBtn:  { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
   headerRow:      { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   avatarBtn:      { width: 32, height: 32, borderRadius: 16, overflow: "hidden" },
   avatarSmall:    { width: 32, height: 32, borderRadius: 16 },
