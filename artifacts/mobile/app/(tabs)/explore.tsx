@@ -676,6 +676,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.25)",
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(212,175,55,0.40)",
     alignItems: "center",
   },
   catCardTitle: {
