@@ -202,31 +202,49 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         </View>
       </Animated.View>
 
-      {/* Pestañita para recuperar el menú cuando está oculto */}
-      <Animated.View
-        pointerEvents={hidden ? "auto" : "none"}
-        style={{
-          position: "absolute",
-          bottom: pb + 6,
-          alignSelf: "center",
-          opacity: handleOpacity,
-        }}
-      >
-        <Pressable
-          onPress={showMenu}
-          hitSlop={12}
+      {/* Pestañita para recuperar el menú cuando está oculto (todos los tabs menos Mezclador) */}
+      {state.routes[state.index]?.name !== "musica" && (
+        <Animated.View
+          pointerEvents={hidden ? "auto" : "none"}
           style={{
-            backgroundColor: "rgba(255,255,255,0.10)",
-            borderRadius: 999,
-            paddingHorizontal: 18,
-            paddingVertical: 5,
-            borderWidth: 0.5,
-            borderColor: "rgba(255,255,255,0.25)",
+            position: "absolute",
+            bottom: pb + 6,
+            alignSelf: "center",
+            opacity: handleOpacity,
           }}
         >
-          <MaterialCommunityIcons name="chevron-up" size={14} color="rgba(255,255,255,0.75)" />
-        </Pressable>
-      </Animated.View>
+          <Pressable
+            onPress={showMenu}
+            hitSlop={12}
+            style={{
+              backgroundColor: "rgba(255,255,255,0.10)",
+              borderRadius: 999,
+              paddingHorizontal: 18,
+              paddingVertical: 5,
+              borderWidth: 0.5,
+              borderColor: "rgba(255,255,255,0.25)",
+            }}
+          >
+            <MaterialCommunityIcons name="chevron-up" size={14} color="rgba(255,255,255,0.75)" />
+          </Pressable>
+        </Animated.View>
+      )}
+
+      {/* Indicador pasivo de 50 px para el Mezclador — no hace nada, solo indica que el menú está oculto */}
+      {state.routes[state.index]?.name === "musica" && (
+        <Animated.View
+          pointerEvents="none"
+          style={[styles.mezcladorHandle, { opacity: handleOpacity }]}
+        >
+          <LinearGradient
+            colors={["#21040C", "#100105"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+          <View style={styles.mezcladorPill} />
+        </Animated.View>
+      )}
     </>
   );
 }
@@ -364,6 +382,21 @@ const styles = StyleSheet.create({
     fontSize: 11,
     letterSpacing: 0.3,
     fontWeight: "500",
+  },
+  mezcladorHandle: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  mezcladorPill: {
+    width: 36,
+    height: 4,
+    borderRadius: 99,
+    backgroundColor: "rgba(255,255,255,0.18)",
   },
   miniPlayerFloat: {
     position: "absolute",

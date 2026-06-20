@@ -494,7 +494,7 @@ export default function MezcladorScreen() {
     });
   }, [lastSavedAt]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const { setTabBarColors } = useTabBarVisibility();
+  const { setTabBarColors, requestHide, showMenu } = useTabBarVisibility();
 
   const [mainTab,        setMainTab]        = useState<MainTabId>("popular");
   const [subTab,         setSubTab]         = useState<SoundCategoryId | null>(null);
@@ -581,13 +581,17 @@ export default function MezcladorScreen() {
     }
   }, [mainTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Al volver al Mezclador → "Todos"; refrescar sonidos remotos; al salir → resetear color del menú
+  // Al entrar al Mezclador → esconder menú; al salir → restaurarlo y resetear color
   useFocusEffect(
     React.useCallback(() => {
+      requestHide();
       setMainTab("popular");
       refreshSounds();
-      return () => { setTabBarColors(null); };
-    }, [setTabBarColors, refreshSounds]),
+      return () => {
+        showMenu();
+        setTabBarColors(null);
+      };
+    }, [requestHide, showMenu, setTabBarColors, refreshSounds]),
   );
 
   const [bannerIdx,     setBannerIdx]     = useState(0);
