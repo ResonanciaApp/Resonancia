@@ -960,6 +960,18 @@ uri = "file://artifacts/mobile/assets/images/ancestral/flautas.png"
 type = "image"
 title = "flautas nativas"
 
+[[generated]]
+id = "z67UJO9lhIokEDeaPP7i2"
+uri = "file://artifacts/mobile/assets/images/banner-resonador.png"
+type = "image"
+title = "resonador role banner"
+
+[[generated]]
+id = "LTDLRHpEs-LuBqjsfmIXB"
+uri = "file://artifacts/mobile/assets/images/banner-expansor.png"
+type = "image"
+title = "expansor role banner"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"

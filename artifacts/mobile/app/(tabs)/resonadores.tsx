@@ -391,7 +391,11 @@ export default function ResonadoresScreen() {
                 color="#FFFFFF"
               />
             </Pressable>
-            <Pressable hitSlop={10} style={styles.searchIconBtn}>
+            <Pressable
+              hitSlop={10}
+              style={styles.searchIconBtn}
+              onPress={() => router.push("/equipo-info" as never)}
+            >
               <Feather name="info" size={22} color="#FFFFFF" />
             </Pressable>
           </GhostPill>
