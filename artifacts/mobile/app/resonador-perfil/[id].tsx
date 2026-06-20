@@ -91,9 +91,6 @@ export default function ResonadorPerfilScreen() {
     : _resonador;
   const isOwn = !!(clerkUserId && resonador.clerkId && clerkUserId === resonador.clerkId);
 
-  if (__DEV__) {
-    console.log("[resonador-perfil] clerkUserId=", clerkUserId, "isSignedIn=", isSignedIn, "resonador.clerkId=", resonador.clerkId, "isOwn=", isOwn);
-  }
 
   const flag = COUNTRY_FLAGS[resonador.country] ?? "";
   const locationStr = `${flag} ${resonador.city}, ${resonador.country}`.trim();
@@ -116,18 +113,6 @@ export default function ResonadorPerfilScreen() {
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
       <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
-
-      {/* ── DEV debug overlay ── */}
-      {__DEV__ && (
-        <View style={{ position: "absolute", top: 120, left: 10, right: 10, zIndex: 999, backgroundColor: "rgba(0,0,0,0.85)", padding: 8, borderRadius: 6 }}>
-          <Text style={{ color: "#FFD700", fontFamily: "monospace", fontSize: 10 }}>
-            isSignedIn: {String(isSignedIn)}{"\n"}
-            clerkUserId: {clerkUserId ?? "null"}{"\n"}
-            resonador.clerkId: {resonador.clerkId ?? "null"}{"\n"}
-            isOwn: {String(isOwn)}
-          </Text>
-        </View>
-      )}
 
       {/* ── Header ── */}
       <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
