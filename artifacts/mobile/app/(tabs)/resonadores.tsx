@@ -21,10 +21,8 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
-import { ARTISTS, type Artist } from "@/data/artists";
 import { EXPANSORES, REGIONS_BY_COUNTRY, COUNTRY_FLAGS, type Expansor } from "@/data/expansores";
 import { RESONADORES, type Resonador } from "@/data/resonadores";
-import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { useUserProfile } from "@/context/UserProfileContext";
 
@@ -35,7 +33,7 @@ const MUTED = "rgba(250,240,238,0.45)";
 const CHIP_ANIM_DURATION = 600;
 const CLOSE_SLOT = 38;
 
-// ── Filtros artistas ──────────────────────────────────────────────────────────
+// ── Filtros resonadores ───────────────────────────────────────────────────────
 type FilterId = string;
 const ARTISTA_FILTER_TABS: { id: FilterId; label: string }[] = [
   { id: "Sonoterapeuta", label: "Sonoterapeuta" },
@@ -200,7 +198,6 @@ function CountryChipRow({
 
 // ── Card de Resonador ─────────────────────────────────────────────────────────
 type CardItem =
-  | { kind: "artista"; data: Artist }
   | { kind: "expansor"; data: Expansor }
   | { kind: "resonador"; data: Resonador };
 
@@ -211,15 +208,13 @@ const ResonadorCard = memo(function ResonadorCard({
   item: CardItem;
   cardW: number;
 }) {
-  const isArtista = item.kind === "artista";
   const d = item.data;
   const { expansorId } = useUserProfile();
 
   const photoSize = cardW - 16;
 
   function handlePress() {
-    if (item.kind === "artista") router.push(`/artista/${d.id}` as never);
-    else if (item.kind === "expansor") router.push(`/expansor-perfil/${d.id}` as never);
+    if (item.kind === "expansor") router.push(`/expansor-perfil/${d.id}` as never);
     else router.push(`/resonador-perfil/${d.id}` as never);
   }
 
@@ -264,11 +259,11 @@ export default function ResonadoresScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const { width: screenWidth } = useWindowDimensions();
-  const [activeTab, setActiveTab] = useState<"artistas" | "expansores" | "resonadores">("artistas");
+  const [activeTab, setActiveTab] = useState<"resonadores" | "expansores">("resonadores");
   const EXPANSOR_PAGE = 9;
   const [expansorLimit, setExpansorLimit] = useState(EXPANSOR_PAGE);
 
-  // Artistas filter
+  // Resonadores filter
   const [activeFilter, setActiveFilter] = useState("Todos");
 
   // Expansores filters — cascada país → región
@@ -306,7 +301,7 @@ export default function ResonadoresScreen() {
 
   const activeFilterKey = activeFilter === "Todos" ? null : activeFilter;
 
-  function switchTab(t: "artistas" | "expansores" | "resonadores") {
+  function switchTab(t: "resonadores" | "expansores") {
     setActiveTab(t);
     setActiveFilter("Todos");
     setSelectedCountry(null);
@@ -317,17 +312,7 @@ export default function ResonadoresScreen() {
 
   const items: CardItem[] = useMemo(() => {
     const q = query.toLowerCase().trim();
-    if (activeTab === "artistas") {
-      return ARTISTS.filter((a) => a.id !== "resonancia")
-        .filter((a) => {
-          if (activeFilter !== "Todos") {
-            if (!a.role?.toLowerCase().includes(activeFilter.toLowerCase())) return false;
-          }
-          if (q) return a.name.toLowerCase().includes(q) || a.genre.toLowerCase().includes(q) || (a.role ?? "").toLowerCase().includes(q);
-          return true;
-        })
-        .map((a) => ({ kind: "artista" as const, data: a }));
-    } else if (activeTab === "resonadores") {
+    if (activeTab === "resonadores") {
       return RESONADORES.filter((r) => {
         if (activeFilter !== "Todos" && r.subtipo !== activeFilter) return false;
         if (q) {
@@ -357,11 +342,6 @@ export default function ResonadoresScreen() {
       }).map((e) => ({ kind: "expansor" as const, data: e }));
     }
   }, [activeTab, activeFilter, selectedCountry, selectedRegion, query]);
-
-  const recentSessions = useMemo(
-    () => [...SESSIONS].sort((a, b) => parseInt(b.id) - parseInt(a.id)).slice(0, 10),
-    [],
-  );
 
   const numCols = 3;
   const SCREEN_PAD = H_PAD * 2;
@@ -399,7 +379,7 @@ export default function ResonadoresScreen() {
             <TextInput
               value={query}
               onChangeText={setQuery}
-              placeholder={activeTab === "artistas" ? "Buscar artista..." : activeTab === "resonadores" ? "Buscar resonador..." : "Buscar por nombre, ciudad o país..."}
+              placeholder={activeTab === "resonadores" ? "Buscar resonador..." : "Buscar por nombre, ciudad o país..."}
               placeholderTextColor="rgba(244,218,213,0.30)"
               style={styles.searchInput}
               returnKeyType="search"
@@ -422,10 +402,10 @@ export default function ResonadoresScreen() {
 
         {/* Tab switcher */}
         <View style={styles.tabPill}>
-          {(["artistas", "resonadores", "expansores"] as const).map((t) => {
+          {(["resonadores", "expansores"] as const).map((t) => {
             const isActive = activeTab === t;
-            const label = t === "artistas" ? "Artistas" : t === "resonadores" ? "Resonadores" : "Expansores";
-            const sub = t === "artistas" ? "La esencia de resonancia" : t === "resonadores" ? "El equipo creador" : "Los que expanden la vibración";
+            const label = t === "resonadores" ? "Resonadores" : "Expansores";
+            const sub = t === "resonadores" ? "El equipo creador" : "Los que expanden la vibración";
             return (
               <Pressable
                 key={t}
@@ -450,15 +430,7 @@ export default function ResonadoresScreen() {
 
       {/* ── Filtros ── */}
       <View style={styles.filtersScroll}>
-        {activeTab === "artistas" ? (
-          <AnimatedFilterRow
-            key="artistas"
-            tabs={ARTISTA_FILTER_TABS}
-            activeFilter={activeFilterKey}
-            onSelect={(id) => setActiveFilter(id)}
-            onClear={() => setActiveFilter("Todos")}
-          />
-        ) : activeTab === "resonadores" ? (
+        {activeTab === "resonadores" ? (
           <AnimatedFilterRow
             key="resonadores"
             tabs={ARTISTA_FILTER_TABS}
@@ -506,74 +478,7 @@ export default function ResonadoresScreen() {
           </View>
         }
         ListFooterComponent={
-          activeTab === "artistas" ? (
-            <View style={styles.footerSections}>
-              {/* ── Recientes de Resonadores ── */}
-              <View style={styles.recentHeader}>
-                <Text style={styles.recentTitle}>Recientes de Resonadores</Text>
-              </View>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={styles.recentScrollWrap}
-                contentContainerStyle={styles.recentScrollContent}
-              >
-                {recentSessions.map((session) => (
-                  <Pressable
-                    key={session.id}
-                    onPress={() => router.push(`/session/${session.id}` as any)}
-                    style={({ pressed }) => [styles.recentCard, { opacity: pressed ? 0.75 : 1 }]}
-                  >
-                    <View style={styles.recentImgWrap}>
-                      <Image
-                        source={session.image}
-                        style={styles.recentImg}
-                        contentFit="cover"
-                        placeholder={BLUR_PLACEHOLDER}
-                        transition={IMAGE_TRANSITION}
-                      />
-                      {session.isPremium && (
-                        <View style={styles.recentPremiumBadge}>
-                          <Text style={styles.recentPremiumStar}>★</Text>
-                        </View>
-                      )}
-                    </View>
-                    <Text style={styles.recentCardTitle} numberOfLines={2}>{session.title}</Text>
-                    <Text style={styles.recentCardCat} numberOfLines={1}>{session.categoryLabel}</Text>
-                  </Pressable>
-                ))}
-              </ScrollView>
-
-              {/* ── CTA ── */}
-              <Pressable
-                onPress={() =>
-                  Alert.alert(
-                    "¿Sos artista o creador?",
-                    "Pronto podrás postularte para unirte al equipo de Resonancia como resonador.",
-                    [{ text: "Entendido" }],
-                  )
-                }
-                style={({ pressed }) => [styles.ctaBtn, { opacity: pressed ? 0.85 : 1 }]}
-              >
-                <LinearGradient
-                  colors={["rgba(74,12,12,0.70)", "rgba(27,6,15,0.92)"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={StyleSheet.absoluteFill}
-                />
-                <View style={styles.ctaInner}>
-                  <View style={styles.ctaIconCircle}>
-                    <Text style={styles.ctaIconText}>✦</Text>
-                  </View>
-                  <View style={styles.ctaTextWrap}>
-                    <Text style={styles.ctaQuestion}>¿Te gustaría ser resonador?</Text>
-                    <Text style={styles.ctaHint}>Sumate a la red de artistas y guías</Text>
-                  </View>
-                  <Feather name="chevron-right" size={18} color="rgba(212,175,55,0.7)" />
-                </View>
-              </Pressable>
-            </View>
-          ) : activeTab === "expansores" && items.length > EXPANSOR_PAGE ? (
+          activeTab === "expansores" && items.length > EXPANSOR_PAGE ? (
             <Pressable
               onPress={() =>
                 expansorLimit >= items.length
