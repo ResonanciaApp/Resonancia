@@ -1029,7 +1029,9 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Stats (sesiones, tiempo, días, racha) ── */}
-        <DrawerStats />
+        <View style={{ marginTop: -30 }}>
+          <DrawerStats />
+        </View>
 
         {/* ── Sección Expansor (solo si role === "expansor") ── */}
         {isExpansor && (
