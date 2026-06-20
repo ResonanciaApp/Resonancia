@@ -147,6 +147,7 @@ function AnimatedChipRow({
   const progress = useRef(new Animated.Value(activeTab ? 1 : 0)).current;
   const offsetsRef = useRef<Record<string, number>>({});
   const scrollXRef = useRef(0);
+  const scrollViewRef = useRef<ScrollView>(null);
   // Chip que se está mostrando como seleccionado (se conserva durante el
   // regreso para que pueda volver a su lugar antes de desmontarse).
   const [displayTab, setDisplayTab] = useState<LibTab | null>(activeTab);
@@ -173,6 +174,8 @@ function AnimatedChipRow({
   const handleSelect = (id: LibTab) => {
     const off = offsetsRef.current[id] ?? 0;
     const visualLeft = off - scrollXRef.current;
+    // Bloquear scroll offset ANTES de que scrollEnabled=false cause ajuste de iOS
+    scrollViewRef.current?.scrollTo({ x: scrollXRef.current, animated: false });
     setTargetTranslate(CLOSE_SLOT - visualLeft); // negativo: lo lleva al margen
     setDisplayTab(id);
     setColorTab(id); // se pone oro al instante
@@ -203,9 +206,11 @@ function AnimatedChipRow({
       </Animated.View>
 
       <ScrollView
+        ref={scrollViewRef}
         horizontal
         showsHorizontalScrollIndicator={false}
         scrollEnabled={!filtered}
+        bounces={false}
         scrollEventThrottle={16}
         automaticallyAdjustContentInsets={false}
         automaticallyAdjustsScrollIndicatorInsets={false}
