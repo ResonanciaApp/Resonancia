@@ -251,7 +251,7 @@ export default function ResonadorPerfilScreen() {
 
 
         {/* ── Sección Resonador ── */}
-        <View style={[styles.resonadorSection, { marginHorizontal: H_PAD }]}>
+        <View style={[styles.resonadorSection, { marginHorizontal: H_PAD, marginTop: -10 }]}>
 
           {/* ── Banner RESONADOR ── */}
           <LinearGradient
@@ -361,7 +361,7 @@ export default function ResonadorPerfilScreen() {
 
         {/* ── Grilla de imágenes ── */}
         {sessions.length > 0 && (
-          <View style={[styles.photoGrid, { marginHorizontal: H_PAD, marginTop: 19 }]}>
+          <View style={[styles.photoGrid, { marginHorizontal: H_PAD, marginTop: 9 }]}>
             {sessions.slice(0, 6).map((session, i) => (
               <Pressable
                 key={session.id}
@@ -387,7 +387,7 @@ export default function ResonadorPerfilScreen() {
 
         {/* ── SECCIÓN 1: Mi obra en Resonancia ── */}
         {sessions.length > 0 && (
-          <View style={[styles.card, { marginHorizontal: H_PAD, backgroundColor: "transparent", paddingHorizontal: 0, marginTop: 1 }]}>
+          <View style={[styles.card, { marginHorizontal: H_PAD, backgroundColor: "transparent", paddingHorizontal: 0, marginTop: -9 }]}>
             <View style={[styles.cardHeader, { paddingHorizontal: 0 }]}>
               <Text style={styles.cardTitle}>Mi obra en Resonancia</Text>
               <Pressable
@@ -442,7 +442,7 @@ export default function ResonadorPerfilScreen() {
 
         {/* ── SECCIÓN 4: Proyectos externos ── */}
         {resonador.projects && resonador.projects.length > 0 && (
-          <View style={[styles.card, { marginHorizontal: H_PAD, marginTop: -5 }]}>
+          <View style={[styles.card, { marginHorizontal: H_PAD, marginTop: -15 }]}>
             <Text style={styles.cardTitle}>Proyectos externos</Text>
             <View style={styles.projectsList}>
               {resonador.projects.map((proj, i) => (
@@ -471,7 +471,7 @@ export default function ResonadorPerfilScreen() {
 
         {/* ── SECCIÓN 5: Formación ── */}
         {resonador.formacion && resonador.formacion.length > 0 && (
-          <View style={[styles.card, { marginHorizontal: H_PAD, marginTop: 22 }]}>
+          <View style={[styles.card, { marginHorizontal: H_PAD, marginTop: 12 }]}>
             <Text style={styles.cardTitle}>Formación</Text>
             <View style={styles.formacionList}>
               {resonador.formacion.map((f, i) => (
@@ -492,7 +492,7 @@ export default function ResonadorPerfilScreen() {
 
         {/* Quote */}
         {resonador.quote ? (
-          <View style={[styles.quoteWrap, { marginHorizontal: H_PAD, marginTop: 11 }]}>
+          <View style={[styles.quoteWrap, { marginHorizontal: H_PAD, marginTop: 1 }]}>
             <Text style={styles.quoteText}>"{resonador.quote}"</Text>
           </View>
         ) : null}
