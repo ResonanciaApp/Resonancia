@@ -63,6 +63,7 @@ const ROLES: RoleData[] = [
     ],
     cta: "¿Te gustaría ser Expansor?",
     emailSubject: "Quiero ser Expansor",
+    route: "/expansor-postular",
   },
 ];
 
