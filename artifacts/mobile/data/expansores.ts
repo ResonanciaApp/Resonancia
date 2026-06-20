@@ -1,5 +1,32 @@
 import type { ArtistLink } from "./artists";
 
+export type ExpansorSubtipo =
+  | "Psicólogo/a"
+  | "Medicina Complementaria"
+  | "Medicina Ayurvédica"
+  | "Sonoterapeuta"
+  | "Reiki"
+  | "Terapias Holísticas"
+  | "Instructor/a de Yoga"
+  | "Coach"
+  | "Naturópata"
+  | "Facilitador/a Mindfulness"
+  | "Terapeuta Transpersonal";
+
+export const EXPANSOR_SUBTIPO_OPTIONS: ExpansorSubtipo[] = [
+  "Psicólogo/a",
+  "Medicina Complementaria",
+  "Medicina Ayurvédica",
+  "Sonoterapeuta",
+  "Reiki",
+  "Terapias Holísticas",
+  "Instructor/a de Yoga",
+  "Coach",
+  "Naturópata",
+  "Facilitador/a Mindfulness",
+  "Terapeuta Transpersonal",
+];
+
 export type Expansor = {
   id: string;
   name: string;
@@ -8,6 +35,7 @@ export type Expansor = {
   city: string;
   country: string;
   region?: string;
+  subtipo?: ExpansorSubtipo;
   specialty: string[];
   certified?: boolean;
   links?: ArtistLink[];

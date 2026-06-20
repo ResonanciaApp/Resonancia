@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
@@ -18,10 +18,16 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MaskedView from "@react-native-masked-view/masked-view";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
-import { COUNTRY_FLAGS, getExpansorById } from "@/data/expansores";
+import { COUNTRY_FLAGS, getExpansorById, type Expansor } from "@/data/expansores";
 import { useColors } from "@/hooks/useColors";
+import { useAuth } from "@/context/AuthContext";
+import { useGetMe, getGetMeQueryKey } from "@workspace/api-client-react";
+
+export const EXPANSOR_OVERRIDE_KEY = (id: string) =>
+  `@resonancia_expansor_overrides_${id}`;
 
 const H_PAD = 20;
 const GALLERY_GAP = 4;
@@ -33,13 +39,33 @@ export default function ExpansorPerfilScreen() {
   const { width: screenWidth } = useWindowDimensions();
   const { id } = useLocalSearchParams<{ id: string }>();
 
+  const { clerkUserId, isSignedIn } = useAuth();
+  const { data: me } = useGetMe({ query: { queryKey: getGetMeQueryKey(), enabled: isSignedIn } });
+
   const [following, setFollowing] = React.useState(false);
   const [friendRequested, setFriendRequested] = React.useState(false);
   const [lightboxUri, setLightboxUri] = React.useState<string | null>(null);
   const [descExpanded, setDescExpanded] = React.useState(false);
   const [descOverflows, setDescOverflows] = React.useState(false);
+  const [overrides, setOverrides] = React.useState<Partial<Expansor> | null>(null);
 
-  const expansor = getExpansorById(id);
+  const _expansor = getExpansorById(id);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (!id) return;
+      AsyncStorage.getItem(EXPANSOR_OVERRIDE_KEY(id))
+        .then((raw) => { if (raw) setOverrides(JSON.parse(raw)); })
+        .catch(() => {});
+    }, [id])
+  );
+
+  const expansor = overrides && _expansor
+    ? ({ ..._expansor, ...overrides } as Expansor)
+    : _expansor;
+
+  const isAdmin = me?.role === "admin";
+  const isOwn = isAdmin || !!(clerkUserId && expansor && (expansor as any).clerkId && clerkUserId === (expansor as any).clerkId);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -82,7 +108,17 @@ export default function ExpansorPerfilScreen() {
           <Feather name="arrow-left" size={22} color={colors.foreground} />
         </Pressable>
         <Text style={[styles.headerTitle, { color: colors.foreground }]}>Perfil</Text>
-        <View style={{ width: 38 }} />
+        {isOwn ? (
+          <Pressable
+            onPress={() => router.push(`/expansor-editar/${expansor.id}` as never)}
+            style={styles.editBtn}
+            hitSlop={8}
+          >
+            <Feather name="edit-2" size={18} color="#D4AF37" />
+          </Pressable>
+        ) : (
+          <View style={{ width: 38 }} />
+        )}
       </View>
 
       <ScrollView
@@ -240,7 +276,10 @@ export default function ExpansorPerfilScreen() {
                     <Text style={[styles.certBannerTitle, { opacity: 0 }]}>EXPANSOR</Text>
                   </LinearGradient>
                 </MaskedView>
-                <Text style={styles.certBannerSub}>Verificado por Resonancia</Text>
+                {expansor.subtipo ? (
+                  <Text style={styles.certBannerSub}>{expansor.subtipo}</Text>
+                ) : null}
+                <Text style={styles.certBannerVerified}>Verificado por Resonancia</Text>
               </View>
             </View>
           </View>
@@ -537,6 +576,8 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
   },
   certBannerStar: { fontSize: 18, color: "rgba(212,175,55,0.90)", fontWeight: "800" },
+  certBannerVerified: { fontSize: 10, color: "rgba(255,255,255,0.55)", marginTop: 2, letterSpacing: 0.2 },
+  editBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
 
   sectionBlock: { gap: 10 },
   sectionLabel: {
