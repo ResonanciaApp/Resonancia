@@ -1406,9 +1406,15 @@ export default function ProfileScreen() {
         onRequestClose={() => setEditVisible(false)}
       >
         <KeyboardAvoidingView
-          style={[styles.modalRoot, { backgroundColor: colors.background }]}
+          style={styles.modalRoot}
           behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
+          <LinearGradient
+            colors={["#2E0510", "#160108"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
           {/* Modal header */}
           <View style={[styles.modalHeader, { borderBottomColor: colors.border, paddingTop: insets.top + 16 }]}>
             <Pressable onPress={() => setEditVisible(false)} hitSlop={12}>
