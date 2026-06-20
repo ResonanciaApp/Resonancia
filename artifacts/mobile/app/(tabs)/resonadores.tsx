@@ -426,24 +426,8 @@ export default function ResonadoresScreen() {
           />
           {/* Overlay rojizo sutil */}
           <View pointerEvents="none" style={styles.bannerTint} />
-          {/* Borde dorado superior: luz que llega por las dos esquinas */}
-          <LinearGradient
-            pointerEvents="none"
-            colors={["#F4D77A", "rgba(212,175,55,0.25)", "#F4D77A"]}
-            locations={[0, 0.5, 1]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.bannerBorderTop}
-          />
-          {/* Borde dorado inferior: luz que llega por las dos esquinas */}
-          <LinearGradient
-            pointerEvents="none"
-            colors={["#F4D77A", "rgba(212,175,55,0.25)", "#F4D77A"]}
-            locations={[0, 0.5, 1]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.bannerBorderBottom}
-          />
+          {/* Borde dorado inferior */}
+          <View pointerEvents="none" style={styles.bannerBorderBottom} />
           <Animated.View
             pointerEvents="none"
             style={[styles.bannerTextWrap, { opacity: bannerTextOpacity }]}
@@ -568,20 +552,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#7A1212",
     opacity: 0.15,
   },
-  bannerBorderTop: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 1,
-    opacity: 0.5,
-  },
   bannerBorderBottom: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
     height: 1,
+    backgroundColor: "#D4AF37",
     opacity: 0.5,
   },
   bannerTextWrap: {
