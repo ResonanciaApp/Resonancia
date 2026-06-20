@@ -424,6 +424,8 @@ export default function ResonadoresScreen() {
             style={StyleSheet.absoluteFill}
             contentFit="cover"
           />
+          {/* Overlay rojizo sutil */}
+          <View pointerEvents="none" style={styles.bannerTint} />
           {/* Borde dorado superior: luz que llega por las dos esquinas */}
           <LinearGradient
             pointerEvents="none"
@@ -560,6 +562,11 @@ const styles = StyleSheet.create({
     marginTop: -15,
     marginBottom: 14,
     overflow: "hidden",
+  },
+  bannerTint: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#7A1212",
+    opacity: 0.15,
   },
   bannerBorderTop: {
     position: "absolute",
