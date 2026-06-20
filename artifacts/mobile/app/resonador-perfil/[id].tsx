@@ -420,26 +420,19 @@ export default function ResonadorPerfilScreen() {
             </View>
 
             {/* Filtro de orden */}
-            <View style={styles.sessionSortRow}>
-              {([
-                { key: "recientes", label: "Más recientes" },
-                { key: "escuchadas", label: "Más escuchadas" },
-              ] as const).map(({ key, label }) => (
-                <Pressable
-                  key={key}
-                  onPress={() => { setSessionSort(key); setSessionLimit(SESSION_PAGE); }}
-                  style={({ pressed }) => [
-                    styles.sessionSortChip,
-                    sessionSort === key && styles.sessionSortChipActive,
-                    { opacity: pressed ? 0.75 : 1 },
-                  ]}
-                >
-                  <Text style={[styles.sessionSortLabel, sessionSort === key && styles.sessionSortLabelActive]}>
-                    {label}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
+            <Pressable
+              hitSlop={8}
+              onPress={() => {
+                setSessionSort((v) => v === "recientes" ? "escuchadas" : "recientes");
+                setSessionLimit(SESSION_PAGE);
+              }}
+              style={({ pressed }) => [styles.sessionSortBtn, { opacity: pressed ? 0.7 : 1 }]}
+            >
+              <Feather name="chevrons-down" size={13} color="rgba(250,240,238,0.40)" />
+              <Text style={styles.sessionSortText}>
+                {sessionSort === "recientes" ? "Más recientes" : "Más escuchadas"}
+              </Text>
+            </Pressable>
 
             <View style={styles.sessionList}>
               {sortedSessions.slice(0, sessionLimit).map((session) => (
@@ -803,21 +796,8 @@ const styles = StyleSheet.create({
 
   /* ── Sección 1: Sesiones ── */
   verTodasText: { fontSize: 12, fontWeight: "600", color: GOLD, letterSpacing: 0.2 },
-  sessionSortRow: { flexDirection: "row", gap: 8, marginBottom: 4 },
-  sessionSortChip: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.18)",
-    backgroundColor: "rgba(255,255,255,0.04)",
-  },
-  sessionSortChipActive: {
-    borderColor: "rgba(212,175,55,0.55)",
-    backgroundColor: "rgba(212,175,55,0.10)",
-  },
-  sessionSortLabel: { fontSize: 12, color: "rgba(244,218,213,0.55)", fontWeight: "500" },
-  sessionSortLabelActive: { color: GOLD, fontWeight: "600" },
+  sessionSortBtn: { flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 4, alignSelf: "flex-start" },
+  sessionSortText: { fontSize: 12, color: "rgba(250,240,238,0.40)", fontWeight: "500" },
   sessionList: { gap: 4 },
   verMasBtn: {
     flexDirection: "row",
