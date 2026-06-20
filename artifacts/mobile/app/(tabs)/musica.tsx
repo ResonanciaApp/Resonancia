@@ -270,28 +270,36 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
     return () => a.stop();
   }, [active, anim]);
 
-  const tiltDir     = idx % 2 === 0 ? "-8deg" : "8deg";
-  const rotate      = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", tiltDir] });
-  const borderColor = anim.interpolate({ inputRange: [0, 1], outputRange: ["transparent", borderGradient[0]] });
+  const tiltDir = idx % 2 === 0 ? "-8deg" : "8deg";
+  const rotate  = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", tiltDir] });
 
   return (
     <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
-      <Animated.View style={[styles.cardImageWrap, { transform: [{ rotate }], borderColor }]}>
-        <View style={styles.cardClipInner}>
-          {image ? (
-            <Image source={typeof image === "string" ? { uri: image } : image} style={StyleSheet.absoluteFill} contentFit="cover" />
-          ) : (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(212,175,55,0.12)" }]} />
-          )}
-          {locked && (
-            <Image
-              source={require("../../assets/images/estrella-premium.png")}
-              style={[styles.lockBadge, { width: 20, height: 20 }]}
-              contentFit="contain"
-            />
-          )}
-        </View>
-      </Animated.View>
+      {/* Outer: tamaño fijo, sin borde propio para que el layout no cambie */}
+      <View style={styles.cardImageWrap}>
+        {/* Borde: overlay absoluto que hace fade via opacity — sin zoom */}
+        <Animated.View
+          pointerEvents="none"
+          style={[styles.cardBorderRing, { opacity: anim, borderColor: borderGradient[0] }]}
+        />
+        {/* Imagen: rota independientemente */}
+        <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ rotate }] }]}>
+          <View style={styles.cardClipInner}>
+            {image ? (
+              <Image source={typeof image === "string" ? { uri: image } : image} style={StyleSheet.absoluteFill} contentFit="cover" />
+            ) : (
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(212,175,55,0.12)" }]} />
+            )}
+            {locked && (
+              <Image
+                source={require("../../assets/images/estrella-premium.png")}
+                style={[styles.lockBadge, { width: 20, height: 20 }]}
+                contentFit="contain"
+              />
+            )}
+          </View>
+        </Animated.View>
+      </View>
       <View style={styles.cardFooter}>
         <Text style={[styles.soundName, textColor ? { color: textColor } : null]} numberOfLines={1}>{sound.name}</Text>
       </View>
@@ -1080,8 +1088,10 @@ const styles = StyleSheet.create({
   soundCard: { width: "28%" },
   cardImageWrap: {
     width: "79%", aspectRatio: 1, alignSelf: "center", marginTop: 13,
-    borderRadius: 16, borderWidth: 5, borderColor: "transparent",
-    backgroundColor: "transparent",
+  },
+  cardBorderRing: {
+    position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
+    borderRadius: 16, borderWidth: 5,
   },
   cardClipInner: {
     flex: 1, borderRadius: 12, overflow: "hidden",
