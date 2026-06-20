@@ -230,18 +230,12 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         </Animated.View>
       )}
 
-      {/* Indicador pasivo de 50 px para el Mezclador — no hace nada, solo indica que el menú está oculto */}
+      {/* Indicador pasivo de 50 px para el Mezclador — solo la barrita blanca */}
       {state.routes[state.index]?.name === "musica" && (
         <Animated.View
           pointerEvents="none"
           style={[styles.mezcladorHandle, { opacity: handleOpacity }]}
         >
-          <LinearGradient
-            colors={["#21040C", "#100105"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={StyleSheet.absoluteFill}
-          />
           <View style={styles.mezcladorPill} />
         </Animated.View>
       )}
