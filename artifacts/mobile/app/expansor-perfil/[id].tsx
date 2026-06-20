@@ -219,7 +219,7 @@ export default function ExpansorPerfilScreen() {
             />
 
             {/* Texto */}
-            <View style={{ flex: 1, paddingLeft: 12, paddingVertical: 10, justifyContent: "center" }}>
+            <View style={{ flex: 1, paddingLeft: 12, paddingVertical: 14, justifyContent: "center" }}>
               <MaskedView
                 maskElement={<Text style={styles.certBannerTitle}>EXPANSOR</Text>}
               >
@@ -502,7 +502,7 @@ const styles = StyleSheet.create({
   certBanner: {
     flexDirection: "row",
     alignItems: "stretch",
-    borderRadius: 12,
+    borderRadius: 13,
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.18)",
@@ -512,21 +512,21 @@ const styles = StyleSheet.create({
     width: 5,
   },
   certBannerTitle: {
-    fontSize: 13, fontWeight: "800", letterSpacing: 0.4, color: "#D4AF37",
+    fontSize: 14, fontWeight: "800", letterSpacing: 0.6, color: "#D4AF37",
   },
   certBannerSub: {
-    fontSize: 11, color: "rgba(255,255,255,0.90)", marginTop: 2,
+    fontSize: 12, color: "rgba(255,255,255,0.90)", marginTop: 2,
   },
   certBannerIconBorder: {
-    width: 35, height: 35, borderRadius: 18,
-    borderWidth: 1.5, borderColor: "rgba(212,175,55,0.20)",
+    width: 42, height: 42, borderRadius: 21,
+    borderWidth: 1.5, borderColor: "rgba(212,175,55,0.35)",
     flexShrink: 0,
   },
   certBannerIcon: {
-    flex: 1, borderRadius: 16, overflow: "hidden",
+    flex: 1, borderRadius: 21, overflow: "hidden",
     alignItems: "center", justifyContent: "center",
   },
-  certBannerStar: { fontSize: 17, color: "rgba(212,175,55,0.90)", fontWeight: "800" },
+  certBannerStar: { fontSize: 18, color: "rgba(212,175,55,0.90)", fontWeight: "800" },
 
   sectionBlock: { gap: 10 },
   sectionLabel: {
