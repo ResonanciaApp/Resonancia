@@ -458,7 +458,7 @@ export default function ProfileScreen() {
   );
 
   // ── Expansor profile ──────────────────────────────────────────────────────
-  const isExpansor = me?.role === "expansor" || me?.role === "admin";
+  const isExpansor = false;
   const qc = useQueryClient();
   const { data: expansorProfile } = useGetMyExpansorProfile({
     query: {
