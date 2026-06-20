@@ -147,7 +147,6 @@ function AnimatedChipRow({
   const progress = useRef(new Animated.Value(activeTab ? 1 : 0)).current;
   const offsetsRef = useRef<Record<string, number>>({});
   const scrollXRef = useRef(0);
-  const scrollViewRef = useRef<ScrollView>(null);
   // Chip que se está mostrando como seleccionado (se conserva durante el
   // regreso para que pueda volver a su lugar antes de desmontarse).
   const [displayTab, setDisplayTab] = useState<LibTab | null>(activeTab);
@@ -204,14 +203,10 @@ function AnimatedChipRow({
       </Animated.View>
 
       <ScrollView
-        ref={scrollViewRef}
         horizontal
         showsHorizontalScrollIndicator={false}
         scrollEnabled={!filtered}
-        bounces={false}
         scrollEventThrottle={16}
-        automaticallyAdjustContentInsets={false}
-        automaticallyAdjustsScrollIndicatorInsets={false}
         onScroll={(e) => {
           scrollXRef.current = e.nativeEvent.contentOffset.x;
         }}
@@ -1382,7 +1377,6 @@ const styles = StyleSheet.create({
   // ── Sticky header ───────────────────────────────────────────────────────────
   stickyHeader: {
     zIndex: 10,
-    paddingHorizontal: H_PAD,
   },
   stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(244,218,213,0.15)", marginTop: 10, marginHorizontal: -15 },
   headerRow: {
@@ -1390,6 +1384,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     paddingBottom: 12,
+    paddingHorizontal: H_PAD,
   },
   avatarBtn: { width: 32, height: 32, borderRadius: 16, overflow: "hidden" },
   avatarImg: { width: 32, height: 32, borderRadius: 16 },
@@ -1404,7 +1399,7 @@ const styles = StyleSheet.create({
   headerIcons: { flexDirection: "row", alignItems: "center", gap: 4 },
   headerIconBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
 
-  animChipWrap: { flexDirection: "row", alignItems: "center", marginBottom: 10, marginHorizontal: -H_PAD },
+  animChipWrap: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
