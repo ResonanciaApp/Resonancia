@@ -55,7 +55,7 @@ export const COUNTRY_FLAGS: Record<string, string> = {
 export const RESONADORES: Resonador[] = [
   {
     id: "luna-cosmica",
-    clerkId: "user_3ecvn1xpkv",
+    clerkId: "user_3ECVn1xpkVssPmgGFOtGsuoUFbg",
     name: "Luna Cósmica",
     photo: require("@/assets/images/artists/luna-cosmica.png"),
     subtipo: "Sonoterapeuta",
