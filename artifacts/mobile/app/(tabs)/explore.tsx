@@ -671,13 +671,13 @@ const styles = StyleSheet.create({
   },
   catCardText: {
     marginTop: 0,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
+    paddingHorizontal: 13,
+    paddingVertical: 10,
     backgroundColor: "rgba(0,0,0,0.25)",
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(212,175,55,0.40)",
+    borderColor: "rgba(212,175,55,0.30)",
     alignItems: "center",
   },
   catCardTitle: {
