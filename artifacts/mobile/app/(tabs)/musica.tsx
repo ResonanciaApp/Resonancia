@@ -793,7 +793,7 @@ export default function MezcladorScreen() {
                           ) : (
                             <View style={styles.subTabBorderOuter}>
                               <View style={[styles.subTabBorderInner, { borderWidth: 1, borderColor: "rgba(255,255,255,0.10)" }]}>
-                                <Text style={[styles.subTabText, { color: "rgba(255,255,255,0.5)" }]}>
+                                <Text style={[styles.subTabText, { color: "rgba(255,255,255,0.65)" }]}>
                                   {SUB_TAB_LABELS[catId] ?? cat.label}
                                 </Text>
                               </View>
