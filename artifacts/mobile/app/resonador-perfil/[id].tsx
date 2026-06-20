@@ -19,6 +19,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { DrawerStats } from "@/components/DrawerStats";
 import { WatercolorBtn } from "@/components/WatercolorBtn";
+import { GhostPill } from "@/components/GhostPill";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { GeometrixOverlay } from "@/components/GeometrixToggle";
 import { usePremium } from "@/context/PremiumContext";
@@ -138,7 +139,7 @@ export default function ResonadorPerfilScreen() {
         </Pressable>
         <Text style={[styles.headerTitle, { color: colors.foreground }]}>Perfil</Text>
         {isOwn ? (
-          <View style={styles.iconPill}>
+          <GhostPill>
             <WatercolorBtn
               isPremium={isPremium}
               onPress={() => setPersonalizeVisible(true)}
@@ -151,7 +152,7 @@ export default function ResonadorPerfilScreen() {
             >
               <Feather name="edit-2" size={17} color={colors.foreground} />
             </Pressable>
-          </View>
+          </GhostPill>
         ) : resonador.donationUrl ? (
           <Pressable
             onPress={() => Linking.openURL(resonador.donationUrl!)}
@@ -638,15 +639,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(244,218,213,0.08)",
     alignItems: "center",
     justifyContent: "center",
-  },
-  iconPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-    backgroundColor: "transparent",
-    paddingHorizontal: 2,
   },
   pillBtn: {
     width: 36,
