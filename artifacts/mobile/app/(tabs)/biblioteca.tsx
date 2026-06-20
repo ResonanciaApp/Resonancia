@@ -174,8 +174,6 @@ function AnimatedChipRow({
   const handleSelect = (id: LibTab) => {
     const off = offsetsRef.current[id] ?? 0;
     const visualLeft = off - scrollXRef.current;
-    // Bloquear scroll offset ANTES de que scrollEnabled=false cause ajuste de iOS
-    scrollViewRef.current?.scrollTo({ x: scrollXRef.current, animated: false });
     setTargetTranslate(CLOSE_SLOT - visualLeft); // negativo: lo lleva al margen
     setDisplayTab(id);
     setColorTab(id); // se pone oro al instante
@@ -209,7 +207,6 @@ function AnimatedChipRow({
         ref={scrollViewRef}
         horizontal
         showsHorizontalScrollIndicator={false}
-        scrollEnabled={!filtered}
         bounces={false}
         scrollEventThrottle={16}
         automaticallyAdjustContentInsets={false}
