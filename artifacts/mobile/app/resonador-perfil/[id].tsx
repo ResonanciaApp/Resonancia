@@ -460,20 +460,6 @@ export default function ResonadorPerfilScreen() {
           </View>
         )}
 
-        {/* ── SECCIÓN 2: Géneros y estilos ── */}
-        {resonador.genres && resonador.genres.length > 0 && (
-          <View style={[styles.card, { marginHorizontal: H_PAD, backgroundColor: "transparent" }]}>
-            <Text style={styles.cardTitle}>Géneros y estilos</Text>
-            <View style={styles.genresWrap}>
-              {resonador.genres.map((g) => (
-                <View key={g} style={styles.genreChip}>
-                  <Text style={styles.genreText}>{g}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-        )}
-
         {/* ── SECCIÓN 4: Proyectos externos ── */}
         {resonador.projects && resonador.projects.length > 0 && (
           <View style={[styles.card, { marginHorizontal: H_PAD }]}>
