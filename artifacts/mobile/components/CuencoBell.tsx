@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { Animated, Easing, Pressable, StyleSheet, Text } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useNotifications } from "@/context/NotificationsContext";
 
@@ -139,7 +139,7 @@ export function CuencoBell() {
 
       {/* Ícono base — blanco, atenuado sin badge */}
       <Animated.View style={{ opacity: iconOpacity, transform: [{ scale: scaleAnim }] }}>
-        <Feather name="bell" size={ICON_SIZE} color="#FFFFFF" />
+        <Ionicons name="notifications" size={ICON_SIZE} color="#FFFFFF" />
       </Animated.View>
 
       {/* Capa dorada: View animado con el ícono dorado adentro */}
@@ -147,7 +147,7 @@ export function CuencoBell() {
         pointerEvents="none"
         style={[styles.iconAbsolute, { opacity: goldOpacity, transform: [{ scale: scaleAnim }] }]}
       >
-        <Feather name="bell" size={ICON_SIZE} color={GOLD} />
+        <Ionicons name="notifications" size={ICON_SIZE} color={GOLD} />
       </Animated.View>
 
       {/* Badge con el número de notificaciones — entra/sale suavemente */}
