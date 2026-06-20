@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import { Animated, Easing, Image, Pressable, StyleSheet, Text } from "react-native";
+import { Animated, Easing, Pressable, StyleSheet, Text } from "react-native";
+import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useNotifications } from "@/context/NotificationsContext";
 
-const CUENCO_ICON = require("@/assets/images/cuenco-bell-icon.png");
+const ICON_SIZE = 24;
 const MUTED_OPACITY = 0.38;
 const GOLD = "#D4AF37";
 
@@ -138,19 +139,15 @@ export function CuencoBell() {
 
       {/* Ícono base — blanco, atenuado sin badge */}
       <Animated.View style={{ opacity: iconOpacity, transform: [{ scale: scaleAnim }] }}>
-        <Image source={CUENCO_ICON} style={styles.icon} resizeMode="contain" />
+        <Feather name="bell" size={ICON_SIZE} color="#FFFFFF" />
       </Animated.View>
 
-      {/* Capa dorada: View animado con Image+tintColor estático adentro */}
+      {/* Capa dorada: View animado con el ícono dorado adentro */}
       <Animated.View
         pointerEvents="none"
         style={[styles.iconAbsolute, { opacity: goldOpacity, transform: [{ scale: scaleAnim }] }]}
       >
-        <Image
-          source={CUENCO_ICON}
-          style={[styles.icon, { tintColor: GOLD }]}
-          resizeMode="contain"
-        />
+        <Feather name="bell" size={ICON_SIZE} color={GOLD} />
       </Animated.View>
 
       {/* Badge con el número de notificaciones — entra/sale suavemente */}
@@ -183,10 +180,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 16,
     elevation: 0,
-  },
-  icon: {
-    width: 26,
-    height: 26,
   },
   iconAbsolute: {
     position: "absolute",
