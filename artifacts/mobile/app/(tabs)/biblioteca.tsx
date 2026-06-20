@@ -1424,8 +1424,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.08)",
     overflow: "hidden",
   },
-  chipText: { fontSize: 13, fontWeight: "500", color: TEXT },
-  chipTextSel: { color: "#1B060F", fontWeight: "700" },
+  chipText: { fontSize: 13, fontWeight: "600", color: TEXT },
+  chipTextSel: { color: "#1B060F" },
 
   controlRow: {
     flexDirection: "row",
