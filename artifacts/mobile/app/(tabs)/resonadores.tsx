@@ -279,11 +279,11 @@ export default function ResonadoresScreen() {
     setSearchVisible((v) => !v);
   }
 
-  // Texto cinemático sobre el banner: aparece al 1s, fade in, 4s, fade out
+  // Texto cinemático sobre el banner: aparece al 0.6s, fade in, 4s, fade out
   const bannerTextOpacity = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     const seq = Animated.sequence([
-      Animated.delay(1000),
+      Animated.delay(600),
       Animated.timing(bannerTextOpacity, {
         toValue: 1,
         duration: 1200,
@@ -548,9 +548,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 28,
+    transform: [{ translateY: -5 }],
   },
   bannerText: {
-    fontSize: 22,
+    fontSize: 17,
     fontWeight: "600",
     color: "#FFFFFF",
     textAlign: "center",
