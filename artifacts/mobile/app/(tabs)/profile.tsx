@@ -16,7 +16,6 @@ import {
   KeyboardAvoidingView,
   Linking,
   Modal,
-  PanResponder,
   Platform,
   Pressable,
   ScrollView,
@@ -55,6 +54,7 @@ import { uploadLocalFile } from "@/lib/upload";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { usePremium } from "@/context/PremiumContext";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
+import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import {
   BG_GRADIENTS,
   bgGradientColors,
@@ -131,204 +131,6 @@ function computeStreak(events: { playedAt: string }[]): number {
 
 const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 
-// ── Personalize sheet styles (defined before component to avoid TDZ on Hermes)
-const pStyles = StyleSheet.create({
-  sheet: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    borderTopLeftRadius: 26,
-    borderTopRightRadius: 26,
-    borderWidth: 1,
-    borderColor: "#3D0E16",
-    borderBottomColor: "transparent",
-    borderLeftColor: "transparent",
-    borderRightColor: "transparent",
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    maxHeight: "88%",
-  },
-  handle: {
-    width: 40,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: "rgba(74,12,12,0.08)",
-    alignSelf: "center",
-    marginBottom: 22,
-  },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: "#FAF0EE",
-    letterSpacing: 0.8,
-    textTransform: "uppercase",
-    marginBottom: 4,
-  },
-  sectionSub: {
-    fontSize: 12,
-    color: "rgba(250,240,238,0.45)",
-    marginBottom: 14,
-    lineHeight: 17,
-  },
-  creationThumb: {
-    width: 88,
-    marginRight: -5,
-    alignItems: "center",
-  },
-  thumbBg: {
-    width: 80,
-    height: 80,
-    borderRadius: 16,
-    marginBottom: 6,
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "#3D0E16",
-  },
-  thumbBgOn: {
-    borderColor: "#4A0C0C",
-  },
-  thumbCheck: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.3)",
-  },
-  thumbLabel: {
-    fontSize: 11,
-    color: "rgba(250,240,238,0.45)",
-    textAlign: "center",
-  },
-  emptyText: {
-    fontSize: 12,
-    color: "rgba(250,240,238,0.45)",
-    fontStyle: "italic",
-    paddingVertical: 20,
-  },
-  swatchRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-  },
-  swatch: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    overflow: "hidden",
-  },
-  swatchOn: {},
-  swatchGrad: {
-    flex: 1,
-  },
-  swatchCheck: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  geoToggleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "rgba(255,255,255,0.04)",
-    borderRadius: 12,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(212,175,55,0.12)",
-    paddingVertical: 14,
-    paddingHorizontal: 14,
-    marginBottom: 24,
-  },
-  geoToggleLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  geoToggleLabel: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#FAF0EE",
-  },
-  reminderCard: {
-    backgroundColor: "rgba(74,12,12,0.08)",
-    borderRadius: 18,
-    padding: 16,
-    marginBottom: 24,
-  },
-  reminderRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  reminderBell: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "rgba(212,175,55,0.10)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  reminderLabel: {
-    flex: 1,
-    fontSize: 14,
-    color: "#FAF0EE",
-    fontWeight: "500",
-  },
-  timePicker: {
-    marginTop: 16,
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: "#3D0E16",
-    alignItems: "center",
-  },
-  timeLabel: {
-    fontSize: 10,
-    color: "rgba(250,240,238,0.45)",
-    letterSpacing: 1.2,
-    textTransform: "uppercase",
-    marginBottom: 14,
-    alignSelf: "flex-start",
-  },
-  timeRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 24,
-    marginBottom: 16,
-  },
-  timeBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: "rgba(212,175,55,0.10)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  timeValue: {
-    fontSize: 38,
-    fontWeight: "200",
-    color: "#FAF0EE",
-    letterSpacing: 3,
-    minWidth: 120,
-    textAlign: "center",
-  },
-  minuteRow: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  minuteBtn: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: 20,
-    backgroundColor: "rgba(74,12,12,0.08)",
-  },
-  minuteBtnOn: {
-    backgroundColor: "rgba(212,175,55,0.12)",
-  },
-  minuteText: {
-    fontSize: 13,
-    color: "rgba(250,240,238,0.45)",
-    fontWeight: "500",
-  },
-});
 
 // ── BgGlyph: renderiza una capa de geometría animada en el fondo del perfil ─
 function BgGlyph({
@@ -861,15 +663,6 @@ export default function ProfileScreen() {
   // Fade-in del glifo al montar (carga async desde AsyncStorage → aparición suave).
   const glyphMountAnim = useRef(new Animated.Value(0)).current;
 
-  // Gesto de deslizar hacia abajo en el handle para cerrar el sheet.
-  const dismissPan = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: (_, { dy, dx }) => dy > 8 && Math.abs(dy) > Math.abs(dx),
-      onPanResponderRelease: (_, { dy }) => {
-        if (dy > 50) setPersonalizeVisible(false);
-      },
-    }),
-  ).current;
 
   useEffect(() => {
     if (!bgMountedRef.current) {
@@ -1210,162 +1003,14 @@ export default function ProfileScreen() {
       </ScrollView>
 
       {/* ── Personalize Sheet ── */}
-      <Modal
+      <SimplePersonalizeSheet
         visible={personalizeVisible}
-        animationType="slide"
-        transparent
-        onRequestClose={() => setPersonalizeVisible(false)}
-      >
-        <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-          <Pressable
-            style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]}
-            onPress={() => setPersonalizeVisible(false)}
-          />
-          <LinearGradient
-            colors={[HOME_GRADIENT[0], HOME_GRADIENT[1], HOME_GRADIENT[2]]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={[pStyles.sheet, { paddingBottom: bottomPad + 24 }]}
-          >
-            {/* Handle + botón cerrar — panHandlers habilitan swipe-down para cerrar */}
-            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 22 }} {...dismissPan.panHandlers}>
-              <View style={{ flex: 1 }} />
-              <View style={[pStyles.handle, { marginBottom: 0 }]} />
-              <View style={{ flex: 1, alignItems: "flex-end" }}>
-                <Pressable
-                  onPress={() => setPersonalizeVisible(false)}
-                  hitSlop={10}
-                  accessibilityRole="button"
-                  accessibilityLabel="Cerrar"
-                  style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1 })}
-                >
-                  <Feather name="x" size={20} color="#FFFFFF" />
-                </Pressable>
-              </View>
-            </View>
-
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 0 }}>
-
-              {/* ── Paleta de degradado ── */}
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 0 }}>
-                <Text style={pStyles.sectionTitle}>Color de fondo</Text>
-                {(profileBgGradientId !== null || profileBgCreationId !== null) && (
-                  <Pressable
-                    onPress={() => selectGradient(null)}
-                    hitSlop={10}
-                    style={({ pressed }) => ({ flexDirection: "row", alignItems: "center", gap: 4, opacity: pressed ? 0.6 : 1 })}
-                  >
-                    <Feather name="rotate-ccw" size={11} color="#C0304A" />
-                    <Text style={{ color: "#C0304A", fontSize: 12, fontWeight: "600" }}>Restablecer</Text>
-                  </Pressable>
-                )}
-              </View>
-
-              <View style={[pStyles.swatchRow, { marginTop: 13, marginBottom: 28 }]}>
-                {/* Por defecto — muestra el rojo real del perfil */}
-                <Pressable onPress={() => selectGradient(null)} style={pStyles.swatch}>
-                  <LinearGradient
-                    colors={[BG_GRADIENT[0], BG_GRADIENT[1]]}
-                    style={pStyles.swatchGrad}
-                  />
-                  {profileBgGradientId === null && profileBgCreationId === null && (
-                    <View style={pStyles.swatchCheck}>
-                      <Feather name="check" size={12} color="#D4AF37" />
-                    </View>
-                  )}
-                </Pressable>
-                {BG_GRADIENTS.filter((gr) => gr.id !== "ambar-noche").map((gr) => (
-                  <Pressable
-                    key={gr.id}
-                    onPress={() => selectGradient(gr.id)}
-                    style={pStyles.swatch}
-                  >
-                    <LinearGradient
-                      colors={[...gr.colors] as [string, string]}
-                      style={pStyles.swatchGrad}
-                    />
-                    {profileBgGradientId === gr.id && (
-                      <View style={pStyles.swatchCheck}>
-                        <Feather name="check" size={12} color="#D4AF37" />
-                      </View>
-                    )}
-                  </Pressable>
-                ))}
-              </View>
-
-              {/* ── Geometrix toggle ── */}
-              <View style={pStyles.geoToggleRow}>
-                <View style={pStyles.geoToggleLeft}>
-                  <SacredGlyph id="hexaedro" color="#D4AF37" size={20} strokeWidth={1.2} />
-                  <Text style={pStyles.geoToggleLabel}>Geometrix</Text>
-                </View>
-                <Switch
-                  value={profileGeoActive}
-                  onValueChange={setProfileGeoActive}
-                  trackColor={{ false: "#3D0E16", true: "#4A0C0C" }}
-                  thumbColor={profileGeoActive ? "#D4AF37" : "rgba(250,240,238,0.45)"}
-                />
-              </View>
-
-              {/* ── Recordatorio ── */}
-
-              <View style={pStyles.reminderCard}>
-                <View style={pStyles.reminderRow}>
-                  <View style={pStyles.reminderBell}>
-                    <Feather name="bell" size={18} color="#D4AF37" />
-                  </View>
-                  <Text style={pStyles.reminderLabel}>Activar recordatorio</Text>
-                  <Switch
-                    value={reminderEnabled}
-                    onValueChange={(v) => saveReminder(v, reminderHour, reminderMinute)}
-                    trackColor={{ false: "#3D0E16", true: "#4A0C0C" }}
-                    thumbColor={reminderEnabled ? "#D4AF37" : "rgba(250,240,238,0.45)"}
-                  />
-                </View>
-
-                {reminderEnabled && (
-                  <View style={pStyles.timePicker}>
-                    <Text style={pStyles.timeLabel}>Hora del recordatorio</Text>
-                    <View style={pStyles.timeRow}>
-                      <Pressable
-                        hitSlop={10}
-                        onPress={() => saveReminder(reminderEnabled, (reminderHour - 1 + 24) % 24, reminderMinute)}
-                        style={pStyles.timeBtn}
-                      >
-                        <Feather name="minus" size={16} color="#D4AF37" />
-                      </Pressable>
-                      <Text style={pStyles.timeValue}>
-                        {String(reminderHour).padStart(2, "0")}:{String(reminderMinute).padStart(2, "0")}
-                      </Text>
-                      <Pressable
-                        hitSlop={10}
-                        onPress={() => saveReminder(reminderEnabled, (reminderHour + 1) % 24, reminderMinute)}
-                        style={pStyles.timeBtn}
-                      >
-                        <Feather name="plus" size={16} color="#D4AF37" />
-                      </Pressable>
-                    </View>
-                    <View style={pStyles.minuteRow}>
-                      {[0, 15, 30, 45].map((m) => (
-                        <Pressable
-                          key={m}
-                          onPress={() => saveReminder(reminderEnabled, reminderHour, m)}
-                          style={[pStyles.minuteBtn, reminderMinute === m && pStyles.minuteBtnOn]}
-                        >
-                          <Text style={[pStyles.minuteText, reminderMinute === m && { color: "#D4AF37" }]}>
-                            :{String(m).padStart(2, "0")}
-                          </Text>
-                        </Pressable>
-                      ))}
-                    </View>
-                  </View>
-                )}
-              </View>
-
-            </ScrollView>
-          </LinearGradient>
-        </View>
-      </Modal>
+        onClose={() => setPersonalizeVisible(false)}
+        selectedBgId={profileBgGradientId}
+        onSelectBg={selectGradient}
+        geoActive={profileGeoActive}
+        onToggleGeo={setProfileGeoActive}
+      />
 
       {/* ── Edit Details Modal ── */}
       <Modal
