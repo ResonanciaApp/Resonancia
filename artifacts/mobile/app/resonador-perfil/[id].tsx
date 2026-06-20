@@ -353,6 +353,32 @@ export default function ResonadorPerfilScreen() {
           )}
         </View>
 
+        {/* ── Grilla de imágenes ── */}
+        {sessions.length > 0 && (
+          <View style={[styles.photoGrid, { marginHorizontal: H_PAD }]}>
+            {sessions.slice(0, 6).map((session, i) => (
+              <Pressable
+                key={session.id}
+                onPress={() => router.push(`/session/${session.id}` as never)}
+                style={({ pressed }) => [styles.photoCell, { opacity: pressed ? 0.8 : 1 }]}
+              >
+                <Image
+                  source={session.image}
+                  style={StyleSheet.absoluteFill}
+                  contentFit="cover"
+                  placeholder={BLUR_PLACEHOLDER}
+                  transition={IMAGE_TRANSITION}
+                />
+                {i === 5 && sessions.length > 6 && (
+                  <View style={styles.photoCellMore}>
+                    <Text style={styles.photoCellMoreText}>+{sessions.length - 5}</Text>
+                  </View>
+                )}
+              </Pressable>
+            ))}
+          </View>
+        )}
+
         {/* ── SECCIÓN 1: Mi obra en Resonancia ── */}
         {sessions.length > 0 && (
           <View style={[styles.card, { marginHorizontal: H_PAD }]}>
@@ -662,6 +688,33 @@ const styles = StyleSheet.create({
   cardHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   cardTitle: { fontSize: 15, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.2 },
   cardCount: { fontSize: 11, color: GOLD_MUTED, fontWeight: "500" },
+
+  /* ── Grilla de fotos ── */
+  photoGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 3,
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  photoCell: {
+    width: "32.5%",
+    aspectRatio: 1,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    overflow: "hidden",
+  },
+  photoCellMore: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(27,6,15,0.62)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  photoCellMoreText: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#FAF0EE",
+    letterSpacing: 0.5,
+  },
 
   /* ── Sección 1: Sesiones ── */
   sessionScroll: { gap: 10, paddingRight: 4 },
