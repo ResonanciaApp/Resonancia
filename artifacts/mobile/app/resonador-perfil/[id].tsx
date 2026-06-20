@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
+import React, { useState } from "react";
 import {
   Linking,
   Platform,
@@ -19,6 +19,7 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { COUNTRY_FLAGS, getResonadorById, type ExternalProject } from "@/data/resonadores";
 import { getSessionById } from "@/data/sessions";
+import { SessionCard } from "@/components/SessionCard";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
@@ -80,6 +81,9 @@ export default function ResonadorPerfilScreen() {
   const sessions = (resonador.sessionIds ?? [])
     .map((sid) => getSessionById(sid))
     .filter(Boolean) as NonNullable<ReturnType<typeof getSessionById>>[];
+
+  const SESSION_PAGE = 10;
+  const [sessionLimit, setSessionLimit] = useState(SESSION_PAGE);
 
   return (
     <View style={styles.root}>
@@ -401,40 +405,29 @@ export default function ResonadorPerfilScreen() {
               <Text style={styles.cardTitle}>Mi obra en Resonancia</Text>
               <Text style={styles.cardCount}>{sessions.length} {sessions.length === 1 ? "sesión" : "sesiones"}</Text>
             </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.sessionScroll}
-            >
-              {sessions.map((session) => (
-                <Pressable
-                  key={session.id}
-                  onPress={() => router.push(`/session/${session.id}` as never)}
-                  style={({ pressed }) => [styles.sessionCard, { opacity: pressed ? 0.8 : 1 }]}
-                >
-                  <View style={styles.sessionImgWrap}>
-                    <Image
-                      source={session.image}
-                      style={styles.sessionImg}
-                      contentFit="cover"
-                      placeholder={BLUR_PLACEHOLDER}
-                      transition={IMAGE_TRANSITION}
-                    />
-                    <LinearGradient
-                      colors={["transparent", "rgba(27,6,15,0.70)"]}
-                      style={styles.sessionImgGrad}
-                    />
-                    {session.isPremium && (
-                      <View style={styles.sessionPremiumBadge}>
-                        <Text style={styles.sessionPremiumStar}>★</Text>
-                      </View>
-                    )}
-                  </View>
-                  <Text style={styles.sessionTitle} numberOfLines={2}>{session.title}</Text>
-                  <Text style={styles.sessionCat} numberOfLines={1}>{session.categoryLabel}</Text>
-                </Pressable>
+            <View style={styles.sessionList}>
+              {sessions.slice(0, sessionLimit).map((session) => (
+                <SessionCard key={session.id} session={session} horizontal />
               ))}
-            </ScrollView>
+            </View>
+            {sessions.length > sessionLimit && (
+              <Pressable
+                onPress={() => setSessionLimit((v) => v + SESSION_PAGE)}
+                style={({ pressed }) => [styles.verMasBtn, { opacity: pressed ? 0.7 : 1 }]}
+              >
+                <Text style={styles.verMasText}>Ver más</Text>
+                <Feather name="chevron-down" size={14} color={GOLD} />
+              </Pressable>
+            )}
+            {sessionLimit > SESSION_PAGE && sessions.length <= sessionLimit && (
+              <Pressable
+                onPress={() => setSessionLimit(SESSION_PAGE)}
+                style={({ pressed }) => [styles.verMasBtn, { opacity: pressed ? 0.7 : 1 }]}
+              >
+                <Text style={styles.verMasText}>Ver menos</Text>
+                <Feather name="chevron-up" size={14} color={GOLD} />
+              </Pressable>
+            )}
           </View>
         )}
 
@@ -773,25 +766,16 @@ const styles = StyleSheet.create({
   },
 
   /* ── Sección 1: Sesiones ── */
-  sessionScroll: { gap: 10, paddingRight: 4 },
-  sessionCard: { width: 130, gap: 6 },
-  sessionImgWrap: { borderRadius: 12, overflow: "hidden", position: "relative" },
-  sessionImg: { width: 130, height: 130, borderRadius: 12 },
-  sessionImgGrad: { ...StyleSheet.absoluteFillObject, borderRadius: 12 },
-  sessionPremiumBadge: {
-    position: "absolute",
-    top: 6,
-    right: 6,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: "rgba(212,175,55,0.88)",
+  sessionList: { gap: 2 },
+  verMasBtn: {
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    gap: 5,
+    paddingVertical: 10,
+    marginTop: 4,
   },
-  sessionPremiumStar: { fontSize: 10, color: "#1B060F" },
-  sessionTitle: { fontSize: 12, fontWeight: "600", color: "#FAF0EE", lineHeight: 16 },
-  sessionCat: { fontSize: 10, color: "rgba(244,218,213,0.50)" },
+  verMasText: { fontSize: 13, fontWeight: "600", color: GOLD },
 
   /* ── Sección 2: Géneros ── */
   genresWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
