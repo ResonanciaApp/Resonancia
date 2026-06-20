@@ -1262,10 +1262,10 @@ export default function ProfileScreen() {
               </View>
 
               <View style={[pStyles.swatchRow, { marginTop: 13, marginBottom: 28 }]}>
-                {/* Por defecto */}
+                {/* Por defecto — muestra el rojo real del perfil */}
                 <Pressable onPress={() => selectGradient(null)} style={pStyles.swatch}>
                   <LinearGradient
-                    colors={[HOME_GRADIENT[0], HOME_GRADIENT[2]]}
+                    colors={[BG_GRADIENT[0], BG_GRADIENT[1]]}
                     style={pStyles.swatchGrad}
                   />
                   {profileBgGradientId === null && profileBgCreationId === null && (
