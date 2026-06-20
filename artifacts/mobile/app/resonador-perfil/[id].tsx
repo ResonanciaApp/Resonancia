@@ -109,8 +109,8 @@ export default function ResonadorPerfilScreen() {
             transition={IMAGE_TRANSITION}
           />
           <LinearGradient
-            colors={["transparent", "rgba(27,6,15,0.75)", "#1B060F"]}
-            locations={[0.35, 0.72, 1]}
+            colors={["transparent", "rgba(0,0,0,0.55)", "#000000"]}
+            locations={[0.4, 0.75, 1]}
             style={styles.heroFade}
           />
           {/* Avatar flotando a la mitad del borde inferior */}
