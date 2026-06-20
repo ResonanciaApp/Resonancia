@@ -491,7 +491,7 @@ export default function ResonadorPerfilScreen() {
 
         {/* ── SECCIÓN 5: Formación ── */}
         {resonador.formacion && resonador.formacion.length > 0 && (
-          <View style={[styles.card, { marginHorizontal: H_PAD, marginTop: -8 }]}>
+          <View style={[styles.card, { marginHorizontal: H_PAD, marginTop: 22 }]}>
             <Text style={styles.cardTitle}>Formación</Text>
             <View style={styles.formacionList}>
               {resonador.formacion.map((f, i) => (
