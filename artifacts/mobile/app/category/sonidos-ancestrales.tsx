@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
     borderRadius: 36,
     backgroundColor: "rgba(80,5,25,0.95)",
     borderWidth: 3,
-    borderColor: "rgba(255,255,255,0.80)",
+    borderColor: "rgba(255,255,255,0.30)",
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
