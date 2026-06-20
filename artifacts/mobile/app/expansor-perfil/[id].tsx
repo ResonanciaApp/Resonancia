@@ -202,10 +202,6 @@ export default function ExpansorPerfilScreen() {
               <Text style={styles.actionPillText}>Enviar mensaje</Text>
             </Pressable>
           </View>
-        </View>
-
-        {/* ── Sección Expansor ── */}
-        <View style={[styles.expansorSection, { marginHorizontal: H_PAD }]}>
 
           {/* Banner certificado — V5 */}
           <View style={styles.certBanner}>
@@ -242,6 +238,11 @@ export default function ExpansorPerfilScreen() {
               </View>
             </View>
           </View>
+
+        </View>
+
+        {/* ── Sección Expansor ── */}
+        <View style={[styles.expansorSection, { marginHorizontal: H_PAD }]}>
 
           {/* Me especializo en + chips */}
           <View style={styles.sectionBlock}>
