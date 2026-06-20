@@ -120,26 +120,24 @@ export default function ExpansorPerfilScreen() {
           <Feather name="arrow-left" size={22} color={colors.foreground} />
         </Pressable>
         <Text style={[styles.headerTitle, { color: colors.foreground }]}>Perfil</Text>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-          {isOwn && (
+        {isOwn ? (
+          <View style={styles.iconPill}>
             <WatercolorBtn
               isPremium={isPremium}
               onPress={() => setPersonalizeVisible(true)}
               size={17}
             />
-          )}
-          {isOwn ? (
             <Pressable
               onPress={() => router.push(`/expansor-editar/${expansor.id}` as never)}
-              style={styles.editBtn}
+              style={styles.pillBtn}
               hitSlop={8}
             >
-              <Feather name="edit-2" size={18} color="#D4AF37" />
+              <Feather name="edit-2" size={17} color="#D4AF37" />
             </Pressable>
-          ) : (
-            <View style={{ width: 38 }} />
-          )}
-        </View>
+          </View>
+        ) : (
+          <View style={{ width: 38 }} />
+        )}
       </View>
 
       <ScrollView
@@ -613,6 +611,21 @@ const styles = StyleSheet.create({
   certBannerStar: { fontSize: 18, color: "rgba(212,175,55,0.90)", fontWeight: "800" },
   certBannerVerified: { fontSize: 10, color: "rgba(255,255,255,0.55)", marginTop: 2, letterSpacing: 0.2 },
   editBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
+  iconPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "transparent",
+    paddingHorizontal: 2,
+  },
+  pillBtn: {
+    width: 36,
+    height: 36,
+    alignItems: "center",
+    justifyContent: "center",
+  },
 
   sectionBlock: { gap: 10 },
   sectionLabel: {

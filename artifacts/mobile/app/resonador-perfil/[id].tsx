@@ -138,7 +138,7 @@ export default function ResonadorPerfilScreen() {
         </Pressable>
         <Text style={[styles.headerTitle, { color: colors.foreground }]}>Perfil</Text>
         {isOwn ? (
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+          <View style={styles.iconPill}>
             <WatercolorBtn
               isPremium={isPremium}
               onPress={() => setPersonalizeVisible(true)}
@@ -146,10 +146,10 @@ export default function ResonadorPerfilScreen() {
             />
             <Pressable
               onPress={() => router.push(`/resonador-editar/${resonador.id}` as never)}
-              style={styles.backBtn}
+              style={styles.pillBtn}
               hitSlop={8}
             >
-              <Feather name="edit-2" size={18} color={colors.foreground} />
+              <Feather name="edit-2" size={17} color={colors.foreground} />
             </Pressable>
           </View>
         ) : resonador.donationUrl ? (
@@ -636,6 +636,21 @@ const styles = StyleSheet.create({
     height: 38,
     borderRadius: 19,
     backgroundColor: "rgba(244,218,213,0.08)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  iconPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "transparent",
+    paddingHorizontal: 2,
+  },
+  pillBtn: {
+    width: 36,
+    height: 36,
     alignItems: "center",
     justifyContent: "center",
   },
