@@ -41,7 +41,7 @@ export function WatercolorBtn({ isPremium, onPress, size = 26 }: Props) {
       style={[styles.btn, { opacity: isPremium ? 1 : 0.32 }]}
     >
       <Animated.View pointerEvents="none" style={[styles.glow, glowStyle]} />
-      <Image source={ICON} style={{ width: size, height: size }} resizeMode="contain" />
+      <Image source={ICON} style={{ width: size, height: size, tintColor: "rgba(255,255,255,0.9)" }} resizeMode="contain" />
     </Pressable>
   );
 }
