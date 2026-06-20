@@ -355,9 +355,8 @@ export default function ResonadoresScreen() {
       {/* ── Header ── */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <View style={styles.titleRow}>
-          <View>
+          <View style={{ flex: 1 }}>
             <Text style={styles.title}>Equipo</Text>
-            <Text style={styles.subtitle}>Únete a la red de Resonancia</Text>
           </View>
           <View style={styles.titleIcons}>
             <Pressable hitSlop={10} style={styles.searchIconBtn}>
@@ -372,6 +371,7 @@ export default function ResonadoresScreen() {
             </Pressable>
           </View>
         </View>
+        <Text style={styles.subtitle}>Únete a la red de Resonancia</Text>
 
         {searchVisible && (
           <View style={styles.searchWrap}>
@@ -515,8 +515,8 @@ const styles = StyleSheet.create({
   titleRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 14,
+    gap: 10,
+    paddingBottom: 4,
   },
   titleIcons: {
     flexDirection: "row",
@@ -530,15 +530,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {
-    fontSize: 26,
+    fontSize: 27,
     fontWeight: "700",
     color: "#FAF0EE",
-    letterSpacing: 0.3,
+    letterSpacing: 0.5,
   },
   subtitle: {
     fontSize: 13,
     color: "rgba(244,218,213,0.45)",
-    marginTop: 2,
+    marginBottom: 10,
   },
 
   searchWrap: {
