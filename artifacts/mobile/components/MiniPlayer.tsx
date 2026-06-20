@@ -371,6 +371,7 @@ const styles = StyleSheet.create({
   stackArea: {
     height: STACK_SIZE,
     overflow: "hidden",  // clip cuando el ancho crece/achica
+    marginTop: 10,
   },
   stackScroll: {
     width: "100%",
