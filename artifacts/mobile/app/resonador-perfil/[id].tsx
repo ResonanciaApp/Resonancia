@@ -699,7 +699,7 @@ const styles = StyleSheet.create({
     height: 84,
     borderRadius: 42,
     borderWidth: 2.5,
-    borderColor: "#1B060F",
+    borderColor: "rgba(212,175,55,0.50)",
   },
   certBadge: {
     position: "absolute",
