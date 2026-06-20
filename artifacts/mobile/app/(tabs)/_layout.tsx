@@ -49,7 +49,7 @@ const TAB_CONFIG: Record<
   }
 > = {
   index:      { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
-  explore:    { label: "Buscar",     sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
+  explore:    { label: "Explorar",     sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
   musica:     { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",  featherIcon: "sliders" },
   biblioteca:   { label: "Biblioteca",  sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
   resonadores:  { label: "Equipo",       sfIcon: "person.2",            sfIconFill: "person.2.fill",         featherIcon: "users" },
@@ -263,7 +263,7 @@ function TabLayoutInner() {
         <Tabs.Screen name="index"          options={{ title: "Inicio" }} />
         <Tabs.Screen name="musica"         options={{ title: "Mezclador" }} />
         <Tabs.Screen name="coleccion/[id]" options={{ href: null }} />
-        <Tabs.Screen name="explore"        options={{ title: "Buscar" }} />
+        <Tabs.Screen name="explore"        options={{ title: "Explorar" }} />
         <Tabs.Screen name="biblioteca"     options={{ title: "Biblioteca" }} />
         <Tabs.Screen name="resonadores"    options={{ title: "Equipo" }} />
         <Tabs.Screen name="geometrix"      options={{ title: "Geometrix", href: null }} />
