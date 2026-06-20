@@ -542,6 +542,9 @@ const styles = StyleSheet.create({
     marginTop: -15,
     marginBottom: 14,
     overflow: "hidden",
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: "#D4AF37",
   },
   bannerTextWrap: {
     ...StyleSheet.absoluteFillObject,
