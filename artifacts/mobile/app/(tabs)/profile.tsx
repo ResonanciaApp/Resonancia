@@ -1029,7 +1029,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* ── Stats (sesiones, tiempo, días, racha) ── */}
-        <View style={{ marginTop: -30 }}>
+        <View style={{ marginTop: -46 }}>
           <DrawerStats />
         </View>
 
