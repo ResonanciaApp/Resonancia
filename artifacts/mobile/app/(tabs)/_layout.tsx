@@ -251,7 +251,7 @@ function TabLayoutInner() {
   const pathname       = usePathname();
   const onMezclador    = pathname === "/musica";
   const mixActive      = !currentSession && activeSounds.length > 0;
-  const miniPlayerBottom = hidden ? bottomPb + 20 : tabBarHeight;
+  const miniPlayerBottom = hidden ? bottomPb - 10 : tabBarHeight - 30;
 
   // ¿La sesión actual pertenece a alguna playlist? → PlaylistMiniPlayer persistente
   const activePlaylist = currentSession
