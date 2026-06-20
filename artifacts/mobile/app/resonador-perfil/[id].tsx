@@ -23,6 +23,7 @@ import { COUNTRY_FLAGS, getResonadorById, type ExternalProject, type Resonador }
 import { getSessionById } from "@/data/sessions";
 import { SessionCard } from "@/components/SessionCard";
 import { useColors } from "@/hooks/useColors";
+import { useGetMe, getGetMeQueryKey } from "@workspace/api-client-react";
 
 const H_PAD = 20;
 const GOLD = "#D4AF37";
@@ -50,6 +51,7 @@ export default function ResonadorPerfilScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const { clerkUserId, isSignedIn } = useAuth();
+  const { data: me } = useGetMe({ query: { queryKey: getGetMeQueryKey(), enabled: isSignedIn } });
   const [following, setFollowing] = React.useState(false);
   const [friendRequested, setFriendRequested] = React.useState(false);
   const [descExpanded, setDescExpanded] = React.useState(false);
@@ -89,7 +91,8 @@ export default function ResonadorPerfilScreen() {
   const resonador = overrides
     ? ({ ..._resonador, ...overrides } as Resonador)
     : _resonador;
-  const isOwn = !!(clerkUserId && resonador.clerkId && clerkUserId === resonador.clerkId);
+  const isAdmin = me?.role === "admin";
+  const isOwn = isAdmin || !!(clerkUserId && resonador.clerkId && clerkUserId === resonador.clerkId);
 
 
   const flag = COUNTRY_FLAGS[resonador.country] ?? "";
@@ -113,14 +116,6 @@ export default function ResonadorPerfilScreen() {
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
       <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
-
-      {__DEV__ && clerkUserId && (
-        <View style={{ position: "absolute", top: 60, left: 10, right: 10, zIndex: 999, backgroundColor: "rgba(0,0,0,0.85)", padding: 6, borderRadius: 6 }}>
-          <Text style={{ color: "#FFD700", fontSize: 9, fontFamily: "monospace" }} selectable>
-            uid: {clerkUserId}{"\n"}clerkId: {resonador.clerkId ?? "—"}{"\n"}match: {String(isOwn)}
-          </Text>
-        </View>
-      )}
 
       {/* ── Header ── */}
       <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
