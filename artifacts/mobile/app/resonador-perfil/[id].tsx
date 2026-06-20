@@ -145,7 +145,7 @@ export default function ResonadorPerfilScreen() {
             <WatercolorBtn
               isPremium={isPremium}
               onPress={() => setPersonalizeVisible(true)}
-              size={17}
+              size={20}
             />
             <Pressable
               onPress={() => router.push(`/resonador-editar/${resonador.id}` as never)}
