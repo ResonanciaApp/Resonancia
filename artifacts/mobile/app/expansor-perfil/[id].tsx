@@ -509,7 +509,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
   },
-  avatarWrapper: { position: "relative", marginBottom: 8 },
+  avatarWrapper: { position: "relative", marginTop: 25, marginBottom: 8 },
   avatarImage: { width: 80, height: 80, borderRadius: 40 },
   certBadge: {
     position: "absolute",
