@@ -567,6 +567,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 1,
+    opacity: 0.5,
   },
   bannerBorderBottom: {
     position: "absolute",
@@ -574,6 +575,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 1,
+    opacity: 0.5,
   },
   bannerTextWrap: {
     ...StyleSheet.absoluteFillObject,
