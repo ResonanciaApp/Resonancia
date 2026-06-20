@@ -22,6 +22,8 @@ import {
 type Props = {
   visible: boolean;
   onClose: () => void;
+  /** "palette" → solo paleta de color (Escenas); "filters" → solo filtros (Etiquetas). */
+  mode: "palette" | "filters";
   moodFilter: null;
   onMoodChange: (m: null) => void;
   tagFilters: SoundTagId[];
@@ -47,6 +49,7 @@ function sheetColors(bgPaletteId: MixerBgPaletteId) {
 export function MixerSettingsSheet({
   visible,
   onClose,
+  mode,
   tagFilters,
   onToggleTag,
   bgPaletteId,
@@ -58,8 +61,9 @@ export function MixerSettingsSheet({
   const c = sheetColors(bgPaletteId);
 
   const hasFilters =
-    tagFilters.length > 0 ||
-    bgPaletteId !== DEFAULT_MIXER_BG_PALETTE;
+    mode === "palette"
+      ? bgPaletteId !== DEFAULT_MIXER_BG_PALETTE
+      : tagFilters.length > 0;
 
   function handleEscenaChange(id: MixerBgPaletteId) {
     onBgPaletteChange(id);
@@ -85,74 +89,82 @@ export function MixerSettingsSheet({
             <Text style={[styles.closeX, { color: c.mutedDim }]}>✕</Text>
           </Pressable>
           <Text style={[styles.title, { color: c.fg }]}>
-            Ajustes del Mezclador
+            {mode === "palette" ? "Paleta de color" : "Filtros"}
           </Text>
           <View style={styles.closePlaceholder} />
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 8 }}>
 
-          {/* ── Escenas ── */}
-          <Text style={[styles.sectionTitle, { color: c.fg }]}>Escenas</Text>
-          <Text style={[styles.sectionHint, { color: c.mutedDim }]}>
-            Tono del área de sonidos (no afecta la cabecera).
-          </Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.paletteRow}
-          >
-            {MIXER_BG_PALETTES.map((p) => {
-              const sel = bgPaletteId === p.id;
-              return (
-                <Pressable key={p.id} onPress={() => handleEscenaChange(p.id)} style={styles.paletteItem}>
-                  <LinearGradient
-                    colors={p.colors}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={[styles.swatch, sel && styles.swatchSel]}
-                  >
-                    {sel && <Text style={styles.swatchCheck}>✓</Text>}
-                  </LinearGradient>
-                  <Text
-                    style={[styles.swatchLabel, { color: sel ? PRIMARY : c.mutedDim }, sel && styles.swatchLabelSel]}
-                    numberOfLines={1}
-                  >
-                    {p.label}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
+          {/* ── Escenas (paleta de color) ── */}
+          {mode === "palette" && (
+            <>
+              <Text style={[styles.sectionTitle, { color: c.fg }]}>Escenas</Text>
+              <Text style={[styles.sectionHint, { color: c.mutedDim }]}>
+                Tono del área de sonidos (no afecta la cabecera).
+              </Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.paletteRow}
+              >
+                {MIXER_BG_PALETTES.map((p) => {
+                  const sel = bgPaletteId === p.id;
+                  return (
+                    <Pressable key={p.id} onPress={() => handleEscenaChange(p.id)} style={styles.paletteItem}>
+                      <LinearGradient
+                        colors={p.colors}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={[styles.swatch, sel && styles.swatchSel]}
+                      >
+                        {sel && <Text style={styles.swatchCheck}>✓</Text>}
+                      </LinearGradient>
+                      <Text
+                        style={[styles.swatchLabel, { color: sel ? PRIMARY : c.mutedDim }, sel && styles.swatchLabelSel]}
+                        numberOfLines={1}
+                      >
+                        {p.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
+            </>
+          )}
 
-          {/* ── Etiquetas ── */}
-          <Text style={[styles.sectionTitle, { marginTop: 22, color: c.fg }]}>Etiquetas</Text>
-          <Text style={[styles.sectionHint, { color: c.mutedDim }]}>
-            Combina varias para afinar la búsqueda.
-          </Text>
-          <View style={styles.chipWrap}>
-            {SOUND_TAGS.map((tag) => {
-              const sel = tagFilters.includes(tag.id);
-              return (
-                <Pressable
-                  key={tag.id}
-                  onPress={() => onToggleTag(tag.id)}
-                  style={({ pressed }) => [
-                    styles.chip,
-                    {
-                      backgroundColor: sel ? c.chipSel : c.chipBg,
-                      borderColor: sel ? PRIMARY : c.chipBorder,
-                      opacity: pressed ? 0.8 : 1,
-                    },
-                  ]}
-                >
-                  <Text style={[styles.chipText, { color: sel ? PRIMARY : c.fg, fontWeight: sel ? "700" : "500" }]}>
-                    {tag.label}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
+          {/* ── Etiquetas (filtros) ── */}
+          {mode === "filters" && (
+            <>
+              <Text style={[styles.sectionTitle, { color: c.fg }]}>Etiquetas</Text>
+              <Text style={[styles.sectionHint, { color: c.mutedDim }]}>
+                Combina varias para afinar la búsqueda.
+              </Text>
+              <View style={styles.chipWrap}>
+                {SOUND_TAGS.map((tag) => {
+                  const sel = tagFilters.includes(tag.id);
+                  return (
+                    <Pressable
+                      key={tag.id}
+                      onPress={() => onToggleTag(tag.id)}
+                      style={({ pressed }) => [
+                        styles.chip,
+                        {
+                          backgroundColor: sel ? c.chipSel : c.chipBg,
+                          borderColor: sel ? PRIMARY : c.chipBorder,
+                          opacity: pressed ? 0.8 : 1,
+                        },
+                      ]}
+                    >
+                      <Text style={[styles.chipText, { color: sel ? PRIMARY : c.fg, fontWeight: sel ? "700" : "500" }]}>
+                        {tag.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </>
+          )}
 
         </ScrollView>
 
@@ -168,7 +180,7 @@ export function MixerSettingsSheet({
         >
           {hasFilters && <GoldGradientFill />}
           <Text style={[styles.clearBtnText, !hasFilters && { color: c.mutedDim }]}>
-            Limpiar filtros
+            {mode === "palette" ? "Restablecer color" : "Limpiar filtros"}
           </Text>
         </Pressable>
       </LinearGradient>

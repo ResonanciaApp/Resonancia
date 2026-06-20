@@ -51,6 +51,7 @@ import {
   emitBgPresetChange,
 } from "@/config/immersive-presets";
 import { MixerSettingsSheet } from "@/components/MixerSettingsSheet";
+import { GhostPill } from "@/components/GhostPill";
 import { useSounds } from "@/context/SoundsContext";
 import { REMOTE_SOUND_MAP, REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 import { GoldGradient } from "@/components/GoldGradient";
@@ -497,8 +498,9 @@ export default function MezcladorScreen() {
   const [contentDir,     setContentDir]     = useState<"right" | "left">("right");
   const [subTabAnimKey,  setSubTabAnimKey]  = useState(0);
 
-  // ── Ajustes del Mezclador (engranaje) ──
+  // ── Ajustes del Mezclador (pincel = paleta · filtro = etiquetas) ──
   const [settingsVisible, setSettingsVisible] = useState(false);
+  const [settingsMode,    setSettingsMode]    = useState<"palette" | "filters">("filters");
   const [moodFilter,      setMoodFilter]      = useState<MoodId | null>(null);
   const [tagFilters,      setTagFilters]      = useState<SoundTagId[]>([]);
   const [bgPaletteId,     setBgPaletteId]     = useState<MixerBgPaletteId>(DEFAULT_MIXER_BG_PALETTE);
@@ -549,6 +551,16 @@ export default function MezcladorScreen() {
       SETTINGS_KEY,
       JSON.stringify({ moodFilter: null, tagFilters: [], bgPaletteId: DEFAULT_MIXER_BG_PALETTE }),
     ).catch(() => {});
+  };
+
+  // Limpieza según el modo abierto: pincel resetea solo el color, filtro solo las etiquetas
+  const clearForMode = () => {
+    if (settingsMode === "palette") {
+      setBgPaletteId(DEFAULT_MIXER_BG_PALETTE);
+      emitBgPresetChange(DEFAULT_BG_PRESET_ID);
+    } else {
+      setTagFilters([]);
+    }
   };
 
   const bgPalette = getMixerBgPalette(bgPaletteId);
@@ -695,18 +707,32 @@ export default function MezcladorScreen() {
                   <Text style={styles.pageSubtitle}>Sonidos de la tierra y el universo.</Text>
                 </View>
                 <View style={styles.headerActions}>
-                  <Pressable
-                    onPress={() => setSettingsVisible(true)}
-                    style={styles.heartBtn}
-                    hitSlop={8}
-                    accessibilityRole="button"
-                    accessibilityLabel="Ajustes del Mezclador"
-                  >
-                    <MaterialCommunityIcons name="cog-outline" size={20} color="#FAF0EE" />
-                    {(moodFilter !== null || tagFilters.length > 0) && (
-                      <GoldGradient style={styles.filterBadge} />
-                    )}
-                  </Pressable>
+                  <GhostPill style={{ transform: [{ translateX: 3 }, { translateY: -6 }] }}>
+                    <Pressable
+                      onPress={() => { setSettingsMode("filters"); setSettingsVisible(true); }}
+                      style={styles.headerPillBtn}
+                      hitSlop={8}
+                      accessibilityRole="button"
+                      accessibilityLabel="Filtros del Mezclador"
+                    >
+                      <MaterialCommunityIcons name="filter-variant" size={20} color="#FAF0EE" />
+                      {tagFilters.length > 0 && (
+                        <GoldGradient style={styles.filterBadge} />
+                      )}
+                    </Pressable>
+                    <Pressable
+                      onPress={() => { setSettingsMode("palette"); setSettingsVisible(true); }}
+                      style={styles.headerPillBtn}
+                      hitSlop={8}
+                      accessibilityRole="button"
+                      accessibilityLabel="Paleta de color del Mezclador"
+                    >
+                      <MaterialCommunityIcons name="brush" size={20} color="#FAF0EE" />
+                      {bgPaletteId !== DEFAULT_MIXER_BG_PALETTE && (
+                        <GoldGradient style={styles.filterBadge} />
+                      )}
+                    </Pressable>
+                  </GhostPill>
                 </View>
               </View>
             </View>
@@ -884,6 +910,7 @@ export default function MezcladorScreen() {
       <MixerSettingsSheet
         visible={settingsVisible}
         onClose={() => setSettingsVisible(false)}
+        mode={settingsMode}
         moodFilter={null}
         onMoodChange={() => {}}
         tagFilters={tagFilters}
@@ -894,7 +921,7 @@ export default function MezcladorScreen() {
           // Sincroniza el fondo de "Tu Mezcla" con la escena elegida
           emitBgPresetChange(id === "noche" ? "borgona" : DEFAULT_BG_PRESET_ID);
         }}
-        onClear={clearFilters}
+        onClear={clearForMode}
       />
 
     </ImageBackground>
@@ -928,6 +955,9 @@ const styles = StyleSheet.create({
   heartBtn: {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
     borderRadius: 12, backgroundColor: "rgba(0,0,0,0.05)",
+  },
+  headerPillBtn: {
+    width: 36, height: 36, alignItems: "center", justifyContent: "center",
   },
   filterBadge: {
     position: "absolute", top: 6, right: 6,
