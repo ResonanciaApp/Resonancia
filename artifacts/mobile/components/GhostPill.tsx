@@ -70,5 +70,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 2,
+    borderRadius: 999,
+    backgroundColor: "rgba(255,255,255,0.02)",
   },
 });
