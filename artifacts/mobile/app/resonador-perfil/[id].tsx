@@ -218,7 +218,7 @@ export default function ResonadorPerfilScreen() {
             onPress={() => Linking.openURL(resonador.donationUrl!)}
             style={({ pressed }) => [
               styles.donationBtn,
-              { marginHorizontal: H_PAD, marginTop: -23, opacity: pressed ? 0.80 : 1 },
+              { marginHorizontal: H_PAD, marginTop: -24, opacity: pressed ? 0.80 : 1 },
             ]}
           >
             <LinearGradient
