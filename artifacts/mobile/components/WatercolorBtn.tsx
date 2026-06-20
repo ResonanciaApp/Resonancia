@@ -2,8 +2,9 @@
  * WatercolorBtn — ícono de personalización de perfil (dorado).
  * Visible para todos: opaco para premium, atenuado para users gratuitos.
  */
+import { Image } from "expo-image";
 import React from "react";
-import { Image, Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import Animated, {
   Easing,
   useAnimatedStyle,
