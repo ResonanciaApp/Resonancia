@@ -924,6 +924,42 @@ uri = "file://artifacts/mobile/assets/images/artists/flor-de-quartz.png"
 type = "image"
 title = "flor-quartz-ceremonial-woman"
 
+[[generated]]
+id = "HAm6ZBjKztp0Bxo8_dUNm"
+uri = "file://artifacts/mobile/assets/images/ancestral/cuencos.png"
+type = "image"
+title = "cuencos tibetanos"
+
+[[generated]]
+id = "32h6um3ExQsEz8YEPPb5B"
+uri = "file://artifacts/mobile/assets/images/ancestral/gongs.png"
+type = "image"
+title = "gong ceremonial"
+
+[[generated]]
+id = "q15RTMgV_hr2yt3ruZVUf"
+uri = "file://artifacts/mobile/assets/images/ancestral/digeridoos.png"
+type = "image"
+title = "digeridoo ancestral"
+
+[[generated]]
+id = "1bryvTtDiSyPpSQXpyDNr"
+uri = "file://artifacts/mobile/assets/images/ancestral/tambores.png"
+type = "image"
+title = "tambor chamanico"
+
+[[generated]]
+id = "_ShlPZyG2_tSPEETEUH0B"
+uri = "file://artifacts/mobile/assets/images/ancestral/naturaleza.png"
+type = "image"
+title = "sonidos naturaleza"
+
+[[generated]]
+id = "IUUDcTpROtrkE4H3fdEYG"
+uri = "file://artifacts/mobile/assets/images/ancestral/flautas.png"
+type = "image"
+title = "flautas nativas"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"

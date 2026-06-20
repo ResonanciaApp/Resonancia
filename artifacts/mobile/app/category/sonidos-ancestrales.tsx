@@ -21,6 +21,18 @@ import { SESSIONS, type Session } from "@/data/sessions";
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
 const GOLD  = "#D4AF37";
+
+const GRID_CELL_W = (width - H_PAD * 2 - 8) / 2;
+const GRID_CELL_H = GRID_CELL_W * 0.62;
+
+const ANCESTRAL_GRID = [
+  { slug: "cuencos",    title: "Cuencos",           image: require("@/assets/images/ancestral/cuencos.png") },
+  { slug: "gongs",      title: "Gongs",              image: require("@/assets/images/ancestral/gongs.png") },
+  { slug: "digeridoos", title: "Digeridoos",         image: require("@/assets/images/ancestral/digeridoos.png") },
+  { slug: "tambores",   title: "Tambores",           image: require("@/assets/images/ancestral/tambores.png") },
+  { slug: "naturaleza", title: "Sonidos Naturaleza", image: require("@/assets/images/ancestral/naturaleza.png") },
+  { slug: "flautas",    title: "Flautas",            image: require("@/assets/images/ancestral/flautas.png") },
+] as const;
 const TEXT  = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
 const HERO_HEIGHT = 160;
@@ -469,6 +481,27 @@ export default function SonidosAncestalesScreen() {
           </View>
           {renderContent()}
         </AnimatedTabContent>
+
+        {/* ── Explorar por Instrumento ── */}
+        <View style={styles.instrSection}>
+          <Text style={styles.instrTitle}>Explorar por Instrumento</Text>
+          <View style={styles.instrGrid}>
+            {ANCESTRAL_GRID.map((item) => (
+              <Pressable
+                key={item.slug}
+                style={styles.instrCell}
+                onPress={() => router.push(`/ancestral/${item.slug}` as never)}
+              >
+                <Image source={item.image} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" />
+                <LinearGradient
+                  colors={["rgba(0,0,0,0.10)", "rgba(0,0,0,0.62)"]}
+                  style={StyleSheet.absoluteFill}
+                />
+                <Text style={styles.instrCellTitle}>{item.title}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
       </ScrollView>
 
       <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} categoryId="sonidos-ancestrales" placeholderTxt="Buscar en Ancestrales..." />
@@ -598,6 +631,22 @@ const styles = StyleSheet.create({
   searchEmpty: { flex: 1, backgroundColor: "#160108", alignItems: "center", justifyContent: "center", paddingHorizontal: 32 },
   searchEmptyTitle: { fontSize: 18, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 10 },
   searchEmptySub: { fontSize: 14, color: MUTED, textAlign: "center", lineHeight: 20 },
+
+  /* ── Grilla de Instrumentos ── */
+  instrSection: { marginTop: 28, paddingHorizontal: H_PAD, paddingBottom: 10 },
+  instrTitle: { fontSize: 15, fontWeight: "700", color: TEXT, letterSpacing: 0.2, marginBottom: 12 },
+  instrGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  instrCell: {
+    width: GRID_CELL_W, height: GRID_CELL_H,
+    borderRadius: 12, overflow: "hidden",
+    alignItems: "center", justifyContent: "center",
+  },
+  instrCellTitle: {
+    fontSize: 13, fontWeight: "700", color: "#fff",
+    textAlign: "center", letterSpacing: 0.3,
+    textShadowColor: "rgba(0,0,0,0.70)", textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4,
+    paddingHorizontal: 6,
+  },
 
   /* ── Compat ── */
   backBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
