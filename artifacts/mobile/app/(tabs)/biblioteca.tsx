@@ -684,14 +684,23 @@ function AnimatedTabContent({
   animType: "slide" | "fade" | "none";
   children: React.ReactNode;
 }) {
-  const opacity = useRef(new Animated.Value(animType === "none" ? 1 : 0)).current;
-  const tx      = useRef(new Animated.Value(animType === "slide" ? 28 : 0)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
+  const tx      = useRef(new Animated.Value(animType === "slide" ? 20 : 0)).current;
 
   useEffect(() => {
-    if (animType === "none") return;
     Animated.parallel([
-      Animated.timing(opacity, { toValue: 1, duration: 240, useNativeDriver: true }),
-      Animated.timing(tx,      { toValue: 0, duration: 240, useNativeDriver: true }),
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: animType === "none" ? 320 : 480,
+        easing: Easing.out(Easing.quad),
+        useNativeDriver: true,
+      }),
+      Animated.timing(tx, {
+        toValue: 0,
+        duration: 480,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
     ]).start();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
