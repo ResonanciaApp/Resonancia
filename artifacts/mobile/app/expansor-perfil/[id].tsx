@@ -210,7 +210,7 @@ export default function ExpansorPerfilScreen() {
 
           {/* Banner certificado — V5 */}
           <View style={styles.certBanner}>
-            {/* Barra lateral izquierda */}
+            {/* Barra lateral izquierda — absolute para cubrir toda la altura */}
             <LinearGradient
               colors={["#E9C46A", "#B8860B"]}
               start={{ x: 0, y: 0 }}
@@ -218,20 +218,9 @@ export default function ExpansorPerfilScreen() {
               style={styles.certBannerBar}
             />
 
-            {/* Texto */}
-            <View style={{ flex: 1, paddingLeft: 12, paddingVertical: 14, justifyContent: "center" }}>
-              <MaskedView
-                maskElement={<Text style={styles.certBannerTitle}>EXPANSOR</Text>}
-              >
-                <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-                  <Text style={[styles.certBannerTitle, { opacity: 0 }]}>EXPANSOR</Text>
-                </LinearGradient>
-              </MaskedView>
-              <Text style={styles.certBannerSub}>Verificado por Resonancia</Text>
-            </View>
-
-            {/* Ícono circular derecha */}
-            <View style={{ paddingRight: 14, justifyContent: "center" }}>
+            {/* Contenido con mismo padding que resonador */}
+            <View style={styles.certBannerContent}>
+              {/* Ícono circular izquierda */}
               <View style={styles.certBannerIconBorder}>
                 <View style={styles.certBannerIcon}>
                   <LinearGradient
@@ -240,6 +229,18 @@ export default function ExpansorPerfilScreen() {
                   />
                   <Text style={styles.certBannerStar}>✦</Text>
                 </View>
+              </View>
+
+              {/* Texto */}
+              <View style={{ flex: 1, gap: 1 }}>
+                <MaskedView
+                  maskElement={<Text style={styles.certBannerTitle}>EXPANSOR</Text>}
+                >
+                  <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+                    <Text style={[styles.certBannerTitle, { opacity: 0 }]}>EXPANSOR</Text>
+                  </LinearGradient>
+                </MaskedView>
+                <Text style={styles.certBannerSub}>Verificado por Resonancia</Text>
               </View>
             </View>
           </View>
@@ -510,6 +511,15 @@ const styles = StyleSheet.create({
   },
   certBannerBar: {
     width: 5,
+  },
+  certBannerContent: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 14,
+    paddingLeft: 12,
+    paddingRight: 16,
+    gap: 14,
   },
   certBannerTitle: {
     fontSize: 14, fontWeight: "800", letterSpacing: 0.6, color: "#D4AF37",
