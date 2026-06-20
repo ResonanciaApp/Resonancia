@@ -1,3 +1,4 @@
+- [Chip fontWeight shift](chip-fontweight-shift.md) — cambiar fontWeight al seleccionar un chip empuja los adyacentes; solo cambiar color; paddingHorizontal va en contentContainerStyle no en el View padre
 - [Slide decks](slide-decks.md) — tres artifacts slides distintos: resonancia-deck (Brochure), resonancia-pitch (Pitch Inversionistas), resonancia-plantilla (Invitación); no mezclarlos
 - [Pitch financial coherence](pitch-financial-coherence.md) — cifras del modelo (ronda/equity/uso de fondos/valle/stakes) viven en 6+ slides hardcodeadas; cambiar una = propagar a todas o se contradicen
 - [Navy + gold palette (rebrand)](warm-theme.md) — marca migrada de café/bronce a azul marina #060A0F + dorado #BE9650; mapeo de reemplazo + slides hardcodean hex inline (no usan CSS vars); mockups de decks pendientes
