@@ -505,9 +505,10 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   banner: {
-    width: "100%",
+    width: undefined,
     height: 110,
-    borderRadius: 12,
+    marginHorizontal: -H_PAD,
+    marginTop: -15,
     marginBottom: 14,
     overflow: "hidden",
   },
