@@ -379,7 +379,7 @@ export default function ResonadorPerfilScreen() {
               >
                 <Image
                   source={session.image}
-                  style={StyleSheet.absoluteFill}
+                  style={{ width: "100%", height: "100%" }}
                   contentFit="cover"
                   placeholder={BLUR_PLACEHOLDER}
                   transition={IMAGE_TRANSITION}
