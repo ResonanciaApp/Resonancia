@@ -435,7 +435,14 @@ export default function SonidosAncestalesScreen() {
         </View>
 
         {/* ── Divisor ── */}
-        <View style={styles.dividerLine} />
+        <View>
+          <View style={styles.dividerLine} />
+          <LinearGradient
+            colors={["rgba(0,0,0,0.28)", "transparent"]}
+            style={styles.dividerShadow}
+            pointerEvents="none"
+          />
+        </View>
 
         {/* ── Tabs ── */}
         <View style={styles.chipsArea}>
@@ -533,6 +540,7 @@ const styles = StyleSheet.create({
 
   /* ── Divisor ── */
   dividerLine: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.08)", marginVertical: 6 },
+  dividerShadow: { height: 12, marginTop: -1 },
 
   /* ── Tabs (chips) ── */
   chipsArea: { paddingTop: 7, paddingBottom: 10, overflow: "visible" },
