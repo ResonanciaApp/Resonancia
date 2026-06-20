@@ -19,6 +19,11 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { DrawerStats } from "@/components/DrawerStats";
+import { WatercolorBtn } from "@/components/WatercolorBtn";
+import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
+import { GeometrixOverlay } from "@/components/GeometrixToggle";
+import { usePremium } from "@/context/PremiumContext";
+import { bgGradientColors } from "@/data/geometrix-creations";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
@@ -43,12 +48,17 @@ export default function ExpansorPerfilScreen() {
   const { clerkUserId, isSignedIn } = useAuth();
   const { data: me } = useGetMe({ query: { queryKey: getGetMeQueryKey(), enabled: isSignedIn } });
 
+  const { isPremium } = usePremium();
   const [following, setFollowing] = React.useState(false);
   const [friendRequested, setFriendRequested] = React.useState(false);
   const [lightboxUri, setLightboxUri] = React.useState<string | null>(null);
+  const [profileGeoActive, setProfileGeoActive] = React.useState(false);
+  const [profileBgId, setProfileBgId] = React.useState<string | null>(null);
+  const [personalizeVisible, setPersonalizeVisible] = React.useState(false);
   const [descExpanded, setDescExpanded] = React.useState(false);
   const [descOverflows, setDescOverflows] = React.useState(false);
   const [overrides, setOverrides] = React.useState<Partial<Expansor> | null>(null);
+  const bgColors: readonly [string, string] = bgGradientColors(profileBgId) ?? ["#2E0510", "#160108"];
 
   const _expansor = getExpansorById(id);
 
@@ -101,7 +111,8 @@ export default function ExpansorPerfilScreen() {
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={bgColors} style={StyleSheet.absoluteFill} />
+      <GeometrixOverlay active={profileGeoActive} />
 
       {/* Header */}
       <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
@@ -109,17 +120,26 @@ export default function ExpansorPerfilScreen() {
           <Feather name="arrow-left" size={22} color={colors.foreground} />
         </Pressable>
         <Text style={[styles.headerTitle, { color: colors.foreground }]}>Perfil</Text>
-        {isOwn ? (
-          <Pressable
-            onPress={() => router.push(`/expansor-editar/${expansor.id}` as never)}
-            style={styles.editBtn}
-            hitSlop={8}
-          >
-            <Feather name="edit-2" size={18} color="#D4AF37" />
-          </Pressable>
-        ) : (
-          <View style={{ width: 38 }} />
-        )}
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+          {isOwn && (
+            <WatercolorBtn
+              isPremium={isPremium}
+              onPress={() => setPersonalizeVisible(true)}
+              size={17}
+            />
+          )}
+          {isOwn ? (
+            <Pressable
+              onPress={() => router.push(`/expansor-editar/${expansor.id}` as never)}
+              style={styles.editBtn}
+              hitSlop={8}
+            >
+              <Feather name="edit-2" size={18} color="#D4AF37" />
+            </Pressable>
+          ) : (
+            <View style={{ width: 38 }} />
+          )}
+        </View>
       </View>
 
       <ScrollView
@@ -429,6 +449,15 @@ export default function ExpansorPerfilScreen() {
           <DrawerStats />
         </View>
       </ScrollView>
+
+      <SimplePersonalizeSheet
+        visible={personalizeVisible}
+        onClose={() => setPersonalizeVisible(false)}
+        selectedBgId={profileBgId}
+        onSelectBg={setProfileBgId}
+        geoActive={profileGeoActive}
+        onToggleGeo={setProfileGeoActive}
+      />
 
       {/* ── Lightbox ── */}
       <Modal visible={!!lightboxUri} transparent animationType="fade" onRequestClose={() => setLightboxUri(null)}>

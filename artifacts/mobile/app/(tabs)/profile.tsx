@@ -67,6 +67,8 @@ import {
 } from "@/data/geometrix-creations";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
+import { GeometrixOverlay } from "@/components/GeometrixToggle";
+import { WatercolorBtn } from "@/components/WatercolorBtn";
 
 type FeatherIconName = React.ComponentProps<typeof Feather>["name"];
 
@@ -221,6 +223,28 @@ const pStyles = StyleSheet.create({
   },
   swatchGrad: {
     flex: 1,
+  },
+  geoToggleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderRadius: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(212,175,55,0.12)",
+    paddingVertical: 14,
+    paddingHorizontal: 14,
+    marginBottom: 24,
+  },
+  geoToggleLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  geoToggleLabel: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#FAF0EE",
   },
   reminderCard: {
     backgroundColor: "rgba(74,12,12,0.08)",
@@ -551,6 +575,7 @@ export default function ProfileScreen() {
   // ── Personalize sheet ─────────────────────────────────────────────────────
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [personalizeVisible, setPersonalizeVisible] = useState(false);
+  const [profileGeoActive, setProfileGeoActive] = useState(false);
   const [profileBgGradientId, setProfileBgGradientId] = useState<string | null>(null);
   const [profileBgCreationId, setProfileBgCreationId] = useState<string | null>(null);
   const [reminderEnabled, setReminderEnabled] = useState(false);
@@ -931,6 +956,7 @@ export default function ProfileScreen() {
       )}
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="solid" />
+      <GeometrixOverlay active={profileGeoActive} />
 
       <ScrollView
         style={styles.scroll}
@@ -941,15 +967,21 @@ export default function ProfileScreen() {
         {/* ── Header ── */}
         <View style={styles.header}>
           <Text style={[styles.pageTitle, { color: "#FFFFFF" }]}>Perfil</Text>
-          {isExpansor && (
-            <Pressable
-              onPress={openExpansorEdit}
-              style={({ pressed }) => [styles.expansorEditIconBtn, { opacity: pressed ? 0.7 : 1 }]}
-              hitSlop={10}
-            >
-              <Feather name="edit" size={17} color="#D4AF37" />
-            </Pressable>
-          )}
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+            {isExpansor && (
+              <Pressable
+                onPress={openExpansorEdit}
+                style={({ pressed }) => [styles.expansorEditIconBtn, { opacity: pressed ? 0.7 : 1 }]}
+                hitSlop={10}
+              >
+                <Feather name="edit" size={17} color="#D4AF37" />
+              </Pressable>
+            )}
+            <WatercolorBtn
+              isPremium={isPremium}
+              onPress={() => setPersonalizeVisible(true)}
+            />
+          </View>
         </View>
 
         {/* ── Profile Card ── */}
@@ -1337,6 +1369,22 @@ export default function ProfileScreen() {
                     />
                   </Pressable>
                 ))}
+              </View>
+
+              {/* ── Geometría en el fondo ── */}
+              <Text style={pStyles.sectionTitle}>Geometría sagrada</Text>
+              <Text style={pStyles.sectionSub}>Formas animadas sutiles de fondo en tu perfil</Text>
+              <View style={pStyles.geoToggleRow}>
+                <View style={pStyles.geoToggleLeft}>
+                  <Feather name="feather" size={16} color="#D4AF37" />
+                  <Text style={pStyles.geoToggleLabel}>Activar geometría</Text>
+                </View>
+                <Switch
+                  value={profileGeoActive}
+                  onValueChange={setProfileGeoActive}
+                  trackColor={{ false: "#3D0E16", true: "#4A0C0C" }}
+                  thumbColor={profileGeoActive ? "#D4AF37" : "rgba(250,240,238,0.45)"}
+                />
               </View>
 
               {/* ── Recordatorio ── */}
