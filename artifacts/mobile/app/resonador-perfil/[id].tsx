@@ -545,14 +545,14 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: 150,
+    bottom: 0, // llena todo el heroArea (192px)
   },
   heroFade: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
-    height: 110,
+    height: 130,
   },
   heroAvatarFloat: {
     position: "absolute",
