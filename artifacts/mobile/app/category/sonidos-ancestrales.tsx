@@ -441,7 +441,8 @@ export default function SonidosAncestalesScreen() {
         {/* ── Divisor ── */}
         <View style={styles.dividerWrap}>
           <LinearGradient
-            colors={["transparent", "rgba(255,255,255,0.18)", "transparent"]}
+            colors={["transparent", "rgba(255,255,255,0.18)", "rgba(255,255,255,0.18)", "transparent"]}
+            locations={[0, 0.12, 0.88, 1]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.dividerLine}
