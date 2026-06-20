@@ -696,7 +696,7 @@ const styles = StyleSheet.create({
   photoWrap: {
     overflow: "hidden",
     borderWidth: 2,
-    borderColor: "rgba(212,175,55,0.30)",
+    borderColor: "rgba(212,175,55,0.90)",
     position: "relative",
   },
   certBadge: {
