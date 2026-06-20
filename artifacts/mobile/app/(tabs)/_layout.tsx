@@ -230,14 +230,9 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         </Animated.View>
       )}
 
-      {/* Indicador pasivo de 50 px para el Mezclador — solo la barrita blanca */}
+      {/* Espacio pasivo de 50 px para el Mezclador — sin indicador visual */}
       {state.routes[state.index]?.name === "musica" && (
-        <Animated.View
-          pointerEvents="none"
-          style={[styles.mezcladorHandle, { opacity: handleOpacity }]}
-        >
-          <View style={styles.mezcladorPill} />
-        </Animated.View>
+        <View pointerEvents="none" style={styles.mezcladorHandle} />
       )}
     </>
   );
