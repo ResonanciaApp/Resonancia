@@ -203,7 +203,7 @@ export default function ResonadorPerfilScreen() {
         </View>
 
         {/* ── Tarjeta de perfil ── */}
-        <View style={[styles.profileCard, { marginTop: -16 }]}>
+        <View style={[styles.profileCard, { marginTop: -1 }]}>
 
           <Text style={[styles.userName, { color: colors.foreground }]}>{resonador.name}</Text>
 
