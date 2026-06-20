@@ -372,7 +372,7 @@ export default function ResonadoresScreen() {
             </Pressable>
           </GhostPill>
         </View>
-        <Text style={[styles.subtitle, { transform: [{ translateY: -9 }] }]}>Únete a la red de Resonancia</Text>
+        <Text style={[styles.subtitle, { transform: [{ translateY: -11 }] }]}>Únete a la red de Resonancia</Text>
 
         {searchVisible && (
           <View style={styles.searchWrap}>
