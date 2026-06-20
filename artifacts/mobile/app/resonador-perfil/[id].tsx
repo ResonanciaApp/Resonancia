@@ -134,10 +134,12 @@ export default function ResonadorPerfilScreen() {
 
       {/* ── Header ── */}
       <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
+        <View pointerEvents="none" style={[styles.headerTitleAbs, { top: topPad + 8 }]}>
+          <Text style={[styles.headerTitle, { color: colors.foreground }]}>Perfil</Text>
+        </View>
         <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
           <Feather name="arrow-left" size={22} color={colors.foreground} />
         </Pressable>
-        <Text style={[styles.headerTitle, { color: colors.foreground }]}>Perfil</Text>
         {isOwn ? (
           <GhostPill>
             <WatercolorBtn
@@ -632,6 +634,14 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   headerTitle: { fontSize: 17, fontWeight: "700" },
+  headerTitleAbs: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    height: 38,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   backBtn: {
     width: 38,
     height: 38,
