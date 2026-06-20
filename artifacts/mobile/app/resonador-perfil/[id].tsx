@@ -584,8 +584,8 @@ const styles = StyleSheet.create({
     padding: 1,
     shadowColor: "#D4AF37",
     shadowOffset: { width: 0, height: -1 },
-    shadowOpacity: 0.70,
-    shadowRadius: 1,
+    shadowOpacity: 0.45,
+    shadowRadius: 2,
     elevation: 2,
   },
   resonadorBanner: {
