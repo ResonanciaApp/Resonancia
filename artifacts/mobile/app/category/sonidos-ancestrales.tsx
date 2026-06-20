@@ -540,7 +540,7 @@ const styles = StyleSheet.create({
 
   /* ── Divisor ── */
   dividerLine: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.08)", marginVertical: 6 },
-  dividerShadow: { height: 12, marginTop: -1 },
+  dividerShadow: { height: 12, marginTop: -12 },
 
   /* ── Tabs (chips) ── */
   chipsArea: { paddingTop: 7, paddingBottom: 10, overflow: "visible" },
