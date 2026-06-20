@@ -300,7 +300,7 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
         </Animated.View>
       </View>
       <View style={styles.cardFooter}>
-        <Text style={[styles.soundName, textColor ? { color: textColor } : null]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.65}>{sound.name}</Text>
+        <Text style={[styles.soundName, textColor ? { color: textColor } : null]} numberOfLines={2}>{sound.name}</Text>
       </View>
     </Pressable>
   );
@@ -1100,7 +1100,7 @@ const styles = StyleSheet.create({
     flex: 1, borderRadius: 12, overflow: "hidden",
     backgroundColor: "rgba(212,175,55,0.08)",
   },
-  cardFooter: { paddingHorizontal: 4, paddingTop: 8, paddingBottom: 2 },
+  cardFooter: { paddingHorizontal: 4, paddingTop: 8, paddingBottom: 2, height: 36 },
   soundName:  { fontSize: 11.5, fontWeight: "500", letterSpacing: 0.1, textAlign: "center", color: DARK },
   lockBadge:      { position: "absolute", top: 4, right: 4 },
   activeIconWrap: {
