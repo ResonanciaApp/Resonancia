@@ -61,7 +61,6 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 import { CuencoBell } from "@/components/CuencoBell";
-import { GeometrixBtn, GeometrixOverlay } from "@/components/GeometrixToggle";
 
 const { width } = Dimensions.get("window");
 
@@ -119,7 +118,6 @@ export default function HomeScreen2() {
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
-  const [geoActive, setGeoActive] = useState(false);
 
   function handleIntentionPress() {
     router.push("/intencion-onboarding" as never);
@@ -351,7 +349,6 @@ export default function HomeScreen2() {
     >
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="solid" />
-      <GeometrixOverlay active={geoActive} />
 
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
       <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
@@ -421,7 +418,6 @@ export default function HomeScreen2() {
             })}
           </ScrollView>
           <CuencoBell />
-          <GeometrixBtn active={geoActive} onToggle={setGeoActive} />
         </View>
       </View>
 
