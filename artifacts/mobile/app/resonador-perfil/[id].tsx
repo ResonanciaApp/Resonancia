@@ -131,7 +131,7 @@ export default function ResonadorPerfilScreen() {
         </View>
 
         {/* ── Tarjeta de perfil ── */}
-        <View style={styles.profileCard}>
+        <View style={[styles.profileCard, { marginTop: -16 }]}>
 
           <Text style={[styles.userName, { color: colors.foreground }]}>{resonador.name}</Text>
 
@@ -538,6 +538,7 @@ const styles = StyleSheet.create({
     height: 192, // 150 hero + 42 mitad del avatar
     position: "relative",
     overflow: "visible",
+    backgroundColor: "#1B060F", // cubre los 42px bajo la imagen
   },
   heroImg: {
     position: "absolute",
