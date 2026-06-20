@@ -707,19 +707,7 @@ export default function MezcladorScreen() {
                   <Text style={styles.pageSubtitle}>Sonidos de la tierra y el universo.</Text>
                 </View>
                 <View style={styles.headerActions}>
-                  <GhostPill style={{ transform: [{ translateX: 3 }, { translateY: -6 }] }}>
-                    <Pressable
-                      onPress={() => { setSettingsMode("filters"); setSettingsVisible(true); }}
-                      style={styles.headerPillBtn}
-                      hitSlop={8}
-                      accessibilityRole="button"
-                      accessibilityLabel="Filtros del Mezclador"
-                    >
-                      <MaterialCommunityIcons name="filter-variant" size={20} color="#FAF0EE" />
-                      {tagFilters.length > 0 && (
-                        <GoldGradient style={styles.filterBadge} />
-                      )}
-                    </Pressable>
+                  <GhostPill style={{ transform: [{ translateX: 4 }, { translateY: -7 }] }}>
                     <Pressable
                       onPress={() => { setSettingsMode("palette"); setSettingsVisible(true); }}
                       style={styles.headerPillBtn}
@@ -729,6 +717,18 @@ export default function MezcladorScreen() {
                     >
                       <MaterialCommunityIcons name="brush" size={20} color="#FAF0EE" />
                       {bgPaletteId !== DEFAULT_MIXER_BG_PALETTE && (
+                        <GoldGradient style={styles.filterBadge} />
+                      )}
+                    </Pressable>
+                    <Pressable
+                      onPress={() => { setSettingsMode("filters"); setSettingsVisible(true); }}
+                      style={styles.headerPillBtn}
+                      hitSlop={8}
+                      accessibilityRole="button"
+                      accessibilityLabel="Filtros del Mezclador"
+                    >
+                      <MaterialCommunityIcons name="filter-variant" size={20} color="#FAF0EE" />
+                      {tagFilters.length > 0 && (
                         <GoldGradient style={styles.filterBadge} />
                       )}
                     </Pressable>
