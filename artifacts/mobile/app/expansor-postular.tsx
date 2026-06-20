@@ -108,7 +108,7 @@ export default function ExpansorPostularScreen() {
           contentContainerStyle={{ paddingHorizontal: 18, paddingBottom: bottomPad + 40, paddingTop: 6 }}
         >
           {/* Nombre */}
-          <Text style={[styles.label, { color: colors.mutedForeground }]}>¿Cómo te llamas?</Text>
+          <Text style={[styles.label, { color: "rgba(255,255,255,0.8)" }]}>¿Cómo te llamas?</Text>
           <View style={[styles.inputRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <Feather name="user" size={15} color={colors.mutedForeground} />
             <TextInput
@@ -122,7 +122,7 @@ export default function ExpansorPostularScreen() {
           </View>
 
           {/* Ubicación */}
-          <Text style={[styles.label, { color: colors.mutedForeground }]}>¿De dónde eres?</Text>
+          <Text style={[styles.label, { color: "rgba(255,255,255,0.8)" }]}>¿De dónde eres?</Text>
           <View style={[styles.inputRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <Feather name="map-pin" size={15} color={colors.mutedForeground} />
             <TextInput
@@ -136,7 +136,7 @@ export default function ExpansorPostularScreen() {
           </View>
 
           {/* Teléfono */}
-          <Text style={[styles.label, { color: colors.mutedForeground }]}>Teléfono</Text>
+          <Text style={[styles.label, { color: "rgba(255,255,255,0.8)" }]}>Teléfono</Text>
           <View style={[styles.inputRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <Feather name="phone" size={15} color={colors.mutedForeground} />
             <TextInput
@@ -151,7 +151,7 @@ export default function ExpansorPostularScreen() {
           </View>
 
           {/* ¿Cómo te gustaría aportar? — dropdown */}
-          <Text style={[styles.label, { color: colors.mutedForeground }]}>¿Cómo te gustaría aportar?</Text>
+          <Text style={[styles.label, { color: "rgba(255,255,255,0.8)" }]}>¿Cómo te gustaría aportar?</Text>
           <Pressable
             onPress={() => setDropdownOpen((v) => !v)}
             style={[styles.inputRow, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -192,7 +192,7 @@ export default function ExpansorPostularScreen() {
           )}
 
           {/* Describe tus servicios */}
-          <Text style={[styles.label, { color: colors.mutedForeground }]}>Describe tus servicios</Text>
+          <Text style={[styles.label, { color: "rgba(255,255,255,0.8)" }]}>Describe tus servicios</Text>
           <View style={[styles.textareaRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <TextInput
               value={services}
