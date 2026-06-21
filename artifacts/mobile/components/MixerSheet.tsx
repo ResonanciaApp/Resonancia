@@ -811,7 +811,7 @@ export function MixerSheet() {
                   />
                 </Pressable>
                 <Pressable
-                  onPress={openImmersivo}
+                  onPress={() => openImmersivo(bgPresetId)}
                   hitSlop={8}
                   style={styles.headerPillBtn}
                   accessibilityRole="button"
