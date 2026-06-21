@@ -223,10 +223,16 @@ export function MiniPlayer() {
               <Feather name="chevron-up" size={22} color="rgba(255,255,255,0.6)" />
             </Pressable>
 
-            {/* Stack / carrusel — ancho fijo en layout (cap 5 thumbs); overflow visible
-                para que ≥6 thumbnails pasen por detrás del play (zIndex) */}
-            <View style={[styles.stackArea, { width: stackWidthStackedCap, marginTop: -2 }]}>
-              <View style={styles.stackScroll}>
+            {/* Stack / carrusel — ancho animado + maxWidth para que nunca empuje el play */}
+            <Animated.View style={[styles.stackArea, { width: stackWidthAnim, marginTop: -2 }]}>
+              <ScrollView
+                ref={scrollRef}
+                horizontal
+                scrollEnabled={stackOpen}
+                showsHorizontalScrollIndicator={false}
+                style={styles.stackScroll}
+                contentContainerStyle={{ width: carouselContentW, height: STACK_SIZE }}
+              >
                 {activeSounds.map((s, i) => {
                   const image      = getSoundImage(s.id);
                   const translateX = openProgress.interpolate({
@@ -244,14 +250,11 @@ export function MiniPlayer() {
                     />
                   );
                 })}
-              </View>
-            </View>
+              </ScrollView>
+            </Animated.View>
 
-            {/* Texto eliminado — espacio flex para empujar el play a la derecha */}
-            <View style={styles.textBlock} />
-
-            {/* Botón play/pause — siempre visible */}
-            <View style={[styles.waveWrap, { zIndex: 2 }]}>
+            {/* Botón play/pause — absoluto a la derecha, nunca se empuja */}
+            <View style={[styles.waveWrap, { position: "absolute", right: 10, zIndex: 2 }]}>
               {[wave1, wave2].map((w, idx) => (
                 <Animated.View key={idx} pointerEvents="none" style={[styles.wave, styles.waveMix, {
                   opacity:   w.interpolate({ inputRange: [0, 0.15, 1], outputRange: [0, 0.28, 0] }),
@@ -358,7 +361,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingLeft: 12,
-    paddingRight: 10,
+    paddingRight: 64,
     paddingVertical: 13,
     gap: 10,
   },
