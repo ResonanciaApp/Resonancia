@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { SOUND_TAGS, type SoundTagId } from "@/data/sounds";
 import {
@@ -118,12 +119,19 @@ export function MixerSettingsSheet({
                           <Text style={[styles.swatchCheck, { color: p.id === "noche" ? "#FFFFFF" : "#5C1A1A" }]}>✓</Text>
                         )}
                       </LinearGradient>
-                      <Text
-                        style={[styles.swatchLabelBig, { color: sel ? PRIMARY : c.mutedDim }, sel && styles.swatchLabelSel]}
-                        numberOfLines={1}
-                      >
-                        {p.label}
-                      </Text>
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: 5, marginTop: 6 }}>
+                        <MaterialCommunityIcons
+                          name={p.id === "arena" ? "white-balance-sunny" : "moon-waning-crescent"}
+                          size={13}
+                          color={sel ? PRIMARY : c.mutedDim}
+                        />
+                        <Text
+                          style={[styles.swatchLabelBig, { color: sel ? PRIMARY : c.mutedDim, marginTop: 0 }, sel && styles.swatchLabelSel]}
+                          numberOfLines={1}
+                        >
+                          {p.label}
+                        </Text>
+                      </View>
                     </Pressable>
                   );
                 })}
@@ -161,21 +169,23 @@ export function MixerSettingsSheet({
             </ScrollView>
           )}
 
-          {/* ── Limpiar / restablecer ── */}
-          <Pressable
-            onPress={onClear}
-            disabled={!hasFilters}
-            style={({ pressed }) => [
-              styles.clearBtn,
-              !hasFilters && styles.clearBtnDisabled,
-              { opacity: pressed ? 0.85 : 1 },
-            ]}
-          >
-            {hasFilters && <GoldGradientFill />}
-            <Text style={[styles.clearBtnText, !hasFilters && { color: c.mutedDim }]}>
-              {mode === "palette" ? "Restablecer color" : "Limpiar filtros"}
-            </Text>
-          </Pressable>
+          {/* ── Limpiar filtros (solo en modo filtros) ── */}
+          {mode === "filters" && (
+            <Pressable
+              onPress={onClear}
+              disabled={!hasFilters}
+              style={({ pressed }) => [
+                styles.clearBtn,
+                !hasFilters && styles.clearBtnDisabled,
+                { opacity: pressed ? 0.85 : 1 },
+              ]}
+            >
+              {hasFilters && <GoldGradientFill />}
+              <Text style={[styles.clearBtnText, !hasFilters && { color: c.mutedDim }]}>
+                Limpiar filtros
+              </Text>
+            </Pressable>
+          )}
         </View>
       </View>
     </Modal>
