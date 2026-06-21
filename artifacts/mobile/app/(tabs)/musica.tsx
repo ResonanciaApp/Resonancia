@@ -169,23 +169,6 @@ const PillTab = memo(function PillTab({
     <Pressable onPress={onPress}>
       {sel ? (
         <View style={styles.pillTabBorder}>
-          {/* Ghost border invertido: luz desde la derecha */}
-          <Svg width={104} height={38} style={StyleSheet.absoluteFill} pointerEvents="none">
-            <Defs>
-              <SvgLG id="gsel-a" x1="1" y1="0" x2="0.35" y2="1">
-                <Stop offset="0"   stopColor="#E9C46A" stopOpacity={0.7} />
-                <Stop offset="0.4" stopColor="#D4AF37" stopOpacity={0.18} />
-                <Stop offset="1"   stopColor="#D4AF37" stopOpacity={0.03} />
-              </SvgLG>
-              <SvgLG id="gsel-b" x1="0" y1="1" x2="0.65" y2="0">
-                <Stop offset="0"    stopColor="#D4AF37" stopOpacity={0.28} />
-                <Stop offset="0.45" stopColor="#D4AF37" stopOpacity={0.06} />
-                <Stop offset="1"    stopColor="#D4AF37" stopOpacity={0} />
-              </SvgLG>
-            </Defs>
-            <Rect x={0.75} y={0.75} width={102.5} height={36.5} rx={19} ry={19} fill="none" stroke="url(#gsel-a)" strokeWidth={1.5} />
-            <Rect x={0.75} y={0.75} width={102.5} height={36.5} rx={19} ry={19} fill="none" stroke="url(#gsel-b)" strokeWidth={1.5} />
-          </Svg>
           <LinearGradient
             colors={TAB_HEADER_GRADIENT[tab.id]}
             start={{ x: 0, y: 0 }}
@@ -1013,6 +996,8 @@ const styles = StyleSheet.create({
     height: 38,
     borderRadius: 999,
     padding: 1,
+    borderWidth: 1.5,
+    borderColor: "rgba(212,175,55,0.55)",
     shadowColor: "#D4AF37",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.25,
