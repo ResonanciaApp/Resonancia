@@ -446,6 +446,11 @@ export default function SonidosAncestalesScreen() {
           </Text>
         </View>
 
+        {/* ── Tabs ── */}
+        <View style={styles.chipsArea}>
+          <ChipRow activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+        </View>
+
         {/* ── Divisor ── */}
         <View>
           <View style={styles.dividerLine} />
@@ -454,11 +459,6 @@ export default function SonidosAncestalesScreen() {
             style={styles.dividerShadow}
             pointerEvents="none"
           />
-        </View>
-
-        {/* ── Tabs ── */}
-        <View style={styles.chipsArea}>
-          <ChipRow activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
         </View>
 
         {/* ── Contenido (sort + lista) ── */}
