@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Image as ExpoImage } from "expo-image";
 import {
   Animated,
+  Easing,
   Image,
   Pressable,
   ScrollView,
@@ -144,6 +145,10 @@ export function MiniPlayer() {
     if (!next) scrollRef.current?.scrollTo({ x: 0, animated: false });
     setStackOpen(next);
     // stackWidthAnim usa JS driver (layout property); openProgress usa native driver (transform)
+    Animated.timing(stackWidthAnim, {
+      toValue: next ? carouselOpenW : stackWidthStacked,
+      useNativeDriver: false, duration: 220, easing: Easing.out(Easing.cubic),
+    }).start();
     Animated.spring(openProgress, {
       toValue: next ? 1 : 0,
       useNativeDriver: true, damping: 28, stiffness: 200, overshootClamping: true,
@@ -216,10 +221,16 @@ export function MiniPlayer() {
               <Feather name="chevron-up" size={22} color="rgba(255,255,255,0.6)" />
             </Pressable>
 
-            {/* Stack / carrusel — ancho fijo en layout; thumbnails se expanden
-                por translateX con overflow:visible, pasando por detrás del texto */}
-            <View style={[styles.stackArea, { width: stackWidthStacked }]}>
-              <View style={styles.stackScroll}>
+            {/* Stack / carrusel — ancho animado empuja el texto; timing suave sin rebote */}
+            <Animated.View style={[styles.stackArea, { width: stackWidthAnim }]}>
+              <ScrollView
+                ref={scrollRef}
+                horizontal
+                scrollEnabled={stackOpen}
+                showsHorizontalScrollIndicator={false}
+                style={styles.stackScroll}
+                contentContainerStyle={{ width: carouselContentW, height: STACK_SIZE }}
+              >
                 {activeSounds.map((s, i) => {
                   const image      = getSoundImage(s.id);
                   const translateX = openProgress.interpolate({
@@ -237,11 +248,11 @@ export function MiniPlayer() {
                     />
                   );
                 })}
-              </View>
-            </View>
+              </ScrollView>
+            </Animated.View>
 
-            {/* Texto: flex:1, zIndex superior para que thumbnails pasen por detrás */}
-            <View style={[styles.textBlock, { zIndex: 2 }]}>
+            {/* Texto: flex:1 */}
+            <View style={styles.textBlock}>
               <Text style={styles.mixTitle} numberOfLines={1}>{title}</Text>
               <Text style={styles.mixSub} numberOfLines={1}>
                 {n} {n === 1 ? "sonido" : "sonidos"}
@@ -249,7 +260,7 @@ export function MiniPlayer() {
             </View>
 
             {/* Botón play/pause — siempre visible */}
-            <View style={[styles.waveWrap, { zIndex: 2 }]}>
+            <View style={styles.waveWrap}>
               {[wave1, wave2].map((w, idx) => (
                 <Animated.View key={idx} pointerEvents="none" style={[styles.wave, styles.waveMix, {
                   opacity:   w.interpolate({ inputRange: [0, 0.15, 1], outputRange: [0, 0.28, 0] }),
@@ -361,10 +372,10 @@ const styles = StyleSheet.create({
     gap: 10,
   },
 
-  // ── Stack / carrusel: ancho fijo en layout, overflow visible ─
+  // ── Stack / carrusel: ancho animado, clip al crecer/achicarse ─
   stackArea: {
     height: STACK_SIZE,
-    overflow: "visible",
+    overflow: "hidden",
   },
   stackScroll: {
     width: "100%",
