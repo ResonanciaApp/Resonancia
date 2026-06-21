@@ -878,8 +878,8 @@ export function MixerSheet() {
               <View style={[styles.footerTimerCircle, { backgroundColor: palette.footerCircleBg }]}>
                 <MaterialCommunityIcons name="clock" size={24} color={palette.iconColor} />
               </View>
-              <Text style={[styles.footerLabel, { color: palette.footerLabel }]}>
-                {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "Timer"}
+              <Text style={[styles.footerLabel, { color: palette.footerLabel, textAlign: "center" }]}>
+                {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "Timer para\ndormir"}
               </Text>
             </Pressable>
 
@@ -904,7 +904,7 @@ export function MixerSheet() {
                 <View style={[styles.footerHeartCircle, { backgroundColor: palette.footerCircleBg }]}>
                   <MaterialCommunityIcons name="heart" size={24} color={palette.iconColor} />
                 </View>
-                <Text style={[styles.footerLabel, { color: palette.footerLabel }]}>Guardar</Text>
+                <Text style={[styles.footerLabel, { color: palette.footerLabel, textAlign: "center" }]}>{"Guardar tu\nmezcla"}</Text>
               </Pressable>
             </View>
 
