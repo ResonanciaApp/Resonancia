@@ -140,8 +140,8 @@ const TAB_NOCHE_BG: Record<MainTabId, [string, string, string]> = {
   bpm:            ["#0A2020", "#071818", "#040F0F"],
 };
 
-/** Fondo fijo de la grilla en modo Noche Borgoña — igual para todos los tabs */
-const TAB_NOCHE_GRID_BG = "#191919";
+/** Fondo fijo de la grilla en modo Noche Borgoña — #191919 con 15% de saturación en matiz borgoña */
+const TAB_NOCHE_GRID_BG = "#1D1518";
 
 const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
   popular:        ["#5E1E2D", "#5E1E2D"],
