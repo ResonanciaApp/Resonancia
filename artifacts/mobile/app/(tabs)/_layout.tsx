@@ -1,3 +1,4 @@
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { Image as ExpoImage } from "expo-image";
 import { Tabs, usePathname } from "expo-router";
@@ -130,6 +131,18 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const accentOpacity = useRef(new Animated.Value(0)).current;
+  const homeOpacity   = useRef(new Animated.Value(0)).current;
+
+  const isHome = state.routes[state.index]?.name === "index";
+
+  useEffect(() => {
+    Animated.timing(homeOpacity, {
+      toValue: isHome ? 1 : 0,
+      duration: 350,
+      easing: Easing.out(Easing.quad),
+      useNativeDriver: true,
+    }).start();
+  }, [isHome]);
 
   useEffect(() => {
     Animated.timing(accentOpacity, {
@@ -159,7 +172,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       <Animated.View
         style={[styles.bar, { paddingBottom: pb, transform: [{ translateY }] }]}
       >
-        {/* Fondo: degradado de Inicio */}
+        {/* Fondo base: borgoña (otras tabs) */}
         <LinearGradient
           colors={["#21040C", "#100105"]}
           start={{ x: 0, y: 0 }}
@@ -175,6 +188,23 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
             end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFill}
           />
+        </Animated.View>
+        {/* Glass negro+dorado: solo en Inicio */}
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: homeOpacity }]} pointerEvents="none">
+          <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
+          <View style={StyleSheet.absoluteFill} pointerEvents="none">
+            <LinearGradient
+              colors={["rgba(0,0,0,0.72)", "rgba(10,6,0,0.85)"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={StyleSheet.absoluteFill}
+            />
+            {/* tinte dorado sutil */}
+            <View
+              pointerEvents="none"
+              style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(212,175,55,0.06)" }]}
+            />
+          </View>
         </Animated.View>
 
 
