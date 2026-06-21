@@ -859,18 +859,6 @@ export default function BibliotecaScreen() {
           )}
 
 
-          {/* ── Resonadores ── */}
-          <View style={{ gap: 15 }}>
-            {resonadores.slice(0, 2).map((r) => (
-              <ResonadorRow
-                key={r.id}
-                name={r.name}
-                photo={r.photo}
-                tags={r.tags}
-                onPress={() => router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never)}
-              />
-            ))}
-          </View>
           <Pressable
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={() => setNombreVisible(true)}
