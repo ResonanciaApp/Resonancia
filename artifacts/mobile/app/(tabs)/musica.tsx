@@ -726,7 +726,7 @@ export default function MezcladorScreen() {
         {/* ── Zona superior ── */}
         <View style={styles.topPanelShadow}>
           <LinearGradient
-            colors={isDark ? TAB_NOCHE_BG[mainTab] : TAB_HEADER_GRADIENT[mainTab]}
+            colors={bgPaletteId === "noche" ? TAB_NOCHE_BG[mainTab] : TAB_HEADER_GRADIENT[mainTab]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={[styles.topPanel, { paddingTop: topPad + 2 }]}
@@ -928,8 +928,8 @@ export default function MezcladorScreen() {
                     locked={!!s.isPremium && !isPremium}
                     available={hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id]}
                     image={getSoundImage(s.id) ?? REMOTE_SOUND_IMAGE_MAP[s.id]}
-                    borderGradient={isDark ? ["#FFFFFF", "#FFFFFF", "#FFFFFF"] : [TAB_GRADIENT[mainTab][0], TAB_HEADER_GRADIENT[mainTab][1], TAB_HEADER_GRADIENT[mainTab][2]]}
-                    textColor={isDark ? "#FFFFFF" : undefined}
+                    borderGradient={bgPaletteId === "noche" ? ["#FFFFFF", "#FFFFFF", "#FFFFFF"] : [TAB_GRADIENT[mainTab][0], TAB_HEADER_GRADIENT[mainTab][1], TAB_HEADER_GRADIENT[mainTab][2]]}
+                    textColor={bgPaletteId === "noche" ? "#FFFFFF" : undefined}
                     bgPaletteId={bgPaletteId}
                     onPress={() => handleSoundPress(s)}
                   />
@@ -953,7 +953,7 @@ export default function MezcladorScreen() {
         onBgPaletteChange={(id) => {
           setBgPaletteId(id);
           // Sincroniza el fondo de "Tu Mezcla" con la escena elegida
-          emitBgPresetChange(id === "noche" || id === "plomo" ? "oscuro" : DEFAULT_BG_PRESET_ID);
+          emitBgPresetChange(id === "noche" ? "oscuro" : DEFAULT_BG_PRESET_ID);
         }}
         onClear={clearForMode}
       />
