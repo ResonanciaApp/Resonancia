@@ -873,6 +873,24 @@ export default function BibliotecaScreen() {
           </View>
           <Pressable
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
+            onPress={() => setNombreVisible(true)}
+          >
+            <View style={styles.addResonadorIcon}>
+              <Feather name="music" size={20} color={GOLD} />
+            </View>
+            <Text style={styles.addResonadorLabel}>Crear una Playlist</Text>
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
+            onPress={() => setNombreCarpetaVisible(true)}
+          >
+            <View style={styles.addResonadorIcon}>
+              <Feather name="folder" size={20} color={GOLD} />
+            </View>
+            <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={() => { setAddResonadorQ(""); setAddResonadorVisible(true); }}
           >
             <View style={styles.addResonadorIcon}>
