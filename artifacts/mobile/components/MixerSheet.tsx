@@ -211,6 +211,11 @@ function DraggableTrackRow({
   return (
     <Reanimated.View style={[styles.trackRowAbs, animStyle]}>
       <View style={styles.trackRow}>
+        <GestureDetector gesture={pan}>
+          <View style={styles.dragHandle}>
+            <MaterialCommunityIcons name="drag-vertical" size={22} color={palette.muted} />
+          </View>
+        </GestureDetector>
         <TrackThumb sound={sound} />
         <View style={styles.trackInfo}>
           <Text style={[styles.trackName, { color: palette.fg }]} numberOfLines={1}>
@@ -223,11 +228,6 @@ function DraggableTrackRow({
             trackColor={palette.sliderTrack}
           />
         </View>
-        <GestureDetector gesture={pan}>
-          <View style={styles.dragHandle}>
-            <MaterialCommunityIcons name="drag-vertical" size={22} color={palette.muted} />
-          </View>
-        </GestureDetector>
         <Pressable
           onPress={() => removeSound(id)}
           hitSlop={10}
