@@ -124,7 +124,6 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, 
 
   useEffect(() => {
     if (visible) {
-      setShowTimer(false);
       setToastVisible(false);
     }
     return () => {
