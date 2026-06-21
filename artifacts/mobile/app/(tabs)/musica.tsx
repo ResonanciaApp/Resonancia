@@ -585,7 +585,7 @@ export default function MezcladorScreen() {
   const clearForMode = () => {
     if (settingsMode === "palette") {
       setBgPaletteId(DEFAULT_MIXER_BG_PALETTE);
-      emitBgPresetChange(DEFAULT_BG_PRESET_ID);
+      emitBgPresetChange("oscuro");
     } else {
       setTagFilters([]);
     }
