@@ -1101,11 +1101,11 @@ const styles = StyleSheet.create({
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 17, justifyContent: "space-evenly" },
   soundCard: { width: "28%" },
   cardImageWrap: {
-    width: "79%", aspectRatio: 1, alignSelf: "center", marginTop: 13,
+    width: "75%", aspectRatio: 1, alignSelf: "center", marginTop: 13,
   },
   cardBorderRing: {
-    position: "absolute", top: -2, left: -2, right: -2, bottom: -2,
-    borderRadius: 18, borderWidth: 5,
+    position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
+    borderRadius: 12, borderWidth: 5,
   },
   cardClipInner: {
     flex: 1, borderRadius: 12, overflow: "hidden",
