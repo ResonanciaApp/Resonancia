@@ -238,7 +238,7 @@ function CoverPickerSheet({
           <Text style={ms.rowText}>Foto del carrete</Text>
           <Feather name="chevron-right" size={16} color={MUTED} />
         </Pressable>
-        <Pressable style={({ pressed }) => [ms.row, { opacity: pressed ? 0.7 : 1 }]} onPress={() => setView("geometrix")}>
+        <Pressable style={({ pressed }) => [ms.row, { opacity: pressed ? 0.7 : 1, marginLeft: -2 }]} onPress={() => setView("geometrix")}>
           <Image source={require("@/assets/images/cubo-geometrix.png")} style={{ width: 26, height: 26 }} contentFit="contain" />
           <Text style={ms.rowText}>Portada Geometrix</Text>
           <Feather name="chevron-right" size={16} color={MUTED} />
