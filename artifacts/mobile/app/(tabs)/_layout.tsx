@@ -76,11 +76,11 @@ function TabItem({
   const iconOffset = conf.iconOffset ?? 0;
 
   const icon = conf.image ? (
-    <Image source={conf.image} style={{ width: iconSize, height: iconSize, marginTop: iconOffset }} tintColor={iconColor} resizeMode="contain" />
+    <Image source={conf.image} style={{ width: iconSize, height: iconSize, transform: [{ translateY: iconOffset }] }} tintColor={iconColor} resizeMode="contain" />
   ) : isIOS ? (
-    <SymbolView name={(isFocused ? conf.sfIconFill : conf.sfIcon) as never} tintColor={iconColor} size={iconSize} style={{ marginTop: iconOffset }} />
+    <SymbolView name={(isFocused ? conf.sfIconFill : conf.sfIcon) as never} tintColor={iconColor} size={iconSize} style={{ transform: [{ translateY: iconOffset }] }} />
   ) : (
-    <Feather name={conf.featherIcon as never} size={iconSize} color={iconColor} style={{ marginTop: iconOffset }} />
+    <Feather name={conf.featherIcon as never} size={iconSize} color={iconColor} style={{ transform: [{ translateY: iconOffset }] }} />
   );
 
   return (
