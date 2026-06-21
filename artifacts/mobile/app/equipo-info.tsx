@@ -7,7 +7,6 @@ import { GoldGradient } from "@/components/GoldGradient";
 import React, { useEffect, useRef } from "react";
 import {
   Animated,
-  ImageBackground,
   Linking,
   Pressable,
   ScrollView,
@@ -27,7 +26,6 @@ const H_PAD = 18;
 
 const RESONADOR_IMG = require("@/assets/images/banner-resonador.png");
 const EXPANSOR_IMG  = require("@/assets/images/banner-expansor.png");
-const EQUIPO_BG     = require("@/assets/images/equipo-bg.jpg");
 
 type RoleData = {
   banner: ReturnType<typeof require>;
@@ -153,12 +151,8 @@ export default function EquipoInfoScreen() {
   const insets = useSafeAreaInsets();
 
   return (
-    <ImageBackground source={EQUIPO_BG} style={styles.root} resizeMode="cover">
-      <LinearGradient
-        colors={["rgba(0,0,0,0.45)", "rgba(10,0,4,0.72)", "#0A0004"]}
-        locations={[0, 0.55, 1]}
-        style={StyleSheet.absoluteFill}
-      />
+    <View style={styles.root}>
+      <LinearGradient colors={BG} style={StyleSheet.absoluteFill} />
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
@@ -182,12 +176,12 @@ export default function EquipoInfoScreen() {
           <RoleCard key={role.titulo} role={role} delay={120 + i * 140} />
         ))}
       </ScrollView>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#000000" },
+  root: { flex: 1, backgroundColor: "#160108" },
   header: {
     paddingHorizontal: H_PAD,
     paddingBottom: 10,

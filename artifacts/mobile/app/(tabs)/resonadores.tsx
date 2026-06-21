@@ -8,6 +8,7 @@ import {
   Animated,
   Easing,
   FlatList,
+  ImageBackground,
   Platform,
   Pressable,
   ScrollView,
@@ -30,6 +31,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 const H_PAD = 18;
 const CARD_GAP = 10;
 const BG: [string, string] = ["#2E0510", "#160108"];
+const EQUIPO_BG = require("@/assets/images/equipo-bg.jpg");
 const MUTED = "rgba(250,240,238,0.45)";
 const CHIP_ANIM_DURATION = 600;
 const CLOSE_SLOT = 38;
@@ -373,9 +375,13 @@ export default function ResonadoresScreen() {
   const cardW = Math.floor((screenWidth - SCREEN_PAD - CARD_GAP * 2) / numCols);
 
   return (
-    <View style={styles.root}>
+    <ImageBackground source={EQUIPO_BG} style={styles.root} resizeMode="cover">
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={BG} style={StyleSheet.absoluteFill} />
+      <LinearGradient
+        colors={["rgba(0,0,0,0.35)", "rgba(10,0,4,0.65)", "#0A0004"]}
+        locations={[0, 0.5, 1]}
+        style={StyleSheet.absoluteFill}
+      />
 
       {/* ── Header ── */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
@@ -531,7 +537,7 @@ export default function ResonadoresScreen() {
         }
         renderItem={({ item }) => <ResonadorCard item={item} cardW={cardW} />}
       />
-    </View>
+    </ImageBackground>
   );
 }
 
