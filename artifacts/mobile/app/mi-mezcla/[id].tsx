@@ -185,13 +185,16 @@ function CoverPickerSheet({
     return (
       <Modal visible animationType="slide" transparent onRequestClose={() => { setView("menu"); onClose(); }}>
         <Pressable style={ms.backdrop} onPress={() => { setView("menu"); onClose(); }} />
-        <LinearGradient colors={["#2E0510", "#160108"]} style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
+        <LinearGradient colors={["#2D1B4E", "#0D0518"]} style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
           <View style={ms.handle} />
           <View style={ms.headerRow}>
             <Pressable onPress={() => setView("menu")} hitSlop={12}>
               <Feather name="arrow-left" size={20} color={MUTED} />
             </Pressable>
-            <Text style={ms.sheetTitle}>Elige una geometría</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flex: 1, justifyContent: "center" }}>
+              <Image source={require("@/assets/images/cubo-geometrix.png")} style={{ width: 22, height: 22 }} contentFit="contain" />
+              <Text style={ms.sheetTitle}>Portada Geometrix</Text>
+            </View>
             <View style={{ width: 28 }} />
           </View>
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: 12 }}>
@@ -201,15 +204,15 @@ function CoverPickerSheet({
                 <Text style={{ color: MUTED, fontSize: 12, marginTop: 6, opacity: 0.7 }}>Ve a Geometrix y crea una</Text>
               </View>
             ) : (
-              <View style={[ms.gridRow, { gap: 10 }]}>
+              <View style={ms.creationGrid}>
                 {creations.map((item) => (
                   <Pressable
                     key={item.id}
-                    style={({ pressed }) => [ms.creationItem, { opacity: pressed ? 0.7 : 1 }]}
+                    style={({ pressed }) => [ms.creationItem2col, { opacity: pressed ? 0.7 : 1 }]}
                     onPress={() => { onPickCreation(item.id); handleClose(); }}
                   >
-                    <View style={ms.creationThumb}>
-                      <CreationCoverPreview creationId={item.id} size={100} />
+                    <View style={ms.creationThumb2col}>
+                      <CreationCoverPreview creationId={item.id} size={150} />
                     </View>
                     <Text style={ms.geoName} numberOfLines={1}>{item.name}</Text>
                   </Pressable>
@@ -641,6 +644,23 @@ const ms = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 12,
+    overflow: "hidden",
+  },
+  creationGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 12,
+    justifyContent: "space-between",
+  },
+  creationItem2col: {
+    width: "47%",
+    alignItems: "center",
+    gap: 8,
+  },
+  creationThumb2col: {
+    width: "100%",
+    aspectRatio: 1,
+    borderRadius: 14,
     overflow: "hidden",
   },
 });
