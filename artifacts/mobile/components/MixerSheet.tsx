@@ -341,7 +341,7 @@ export function MixerSheet() {
   const sheetGradient = activeBgPreset.colors;
   const isLight = activeBgPreset.isLight ?? false;
   /** true cuando hay cualquier escena o color seleccionado (no el fondo por defecto) */
-  const hasCustomBg = bgPresetId !== "oscuro";
+  const hasCustomBg = bgPresetId !== DEFAULT_BG_PRESET_ID;
 
   // Cargar preset y overlay guardados
   useEffect(() => {
@@ -355,10 +355,7 @@ export function MixerSheet() {
 
   // Escucha cambios en vivo desde EscenasMixer
   useEffect(() => {
-    const unsubBg = subscribeBgPreset((id) => {
-      setBgPresetId(id);
-      AsyncStorage.setItem(MIXER_BG_KEY, id).catch(() => {});
-    });
+    const unsubBg = subscribeBgPreset((id) => setBgPresetId(id));
     const unsubOv = subscribeOverlay((v) => setOverlayOpacity(v));
     return () => { unsubBg(); unsubOv(); };
   }, []);
@@ -982,9 +979,9 @@ export function MixerSheet() {
             <View style={styles.bgPickerHandle} />
             <View style={styles.bgPickerTitleRow}>
               <Text style={styles.bgPickerTitle}>Elige tu fondo</Text>
-              {bgPresetId !== "oscuro" && (
+              {bgPresetId !== DEFAULT_BG_PRESET_ID && (
                 <Pressable
-                  onPress={() => selectBgPreset("oscuro")}
+                  onPress={() => selectBgPreset(DEFAULT_BG_PRESET_ID)}
                   style={styles.restablecerBtn}
                   hitSlop={8}
                 >
