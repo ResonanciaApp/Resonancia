@@ -240,6 +240,44 @@ const SubTabSlide = memo(function SubTabSlide({ children }: { children: React.Re
   return <Animated.View style={{ opacity, transform: [{ translateX: slideX }] }}>{children}</Animated.View>;
 });
 
+// ── MarqueeText ───────────────────────────────────────────────────────────────
+function MarqueeText({ text, style }: { text: string; style?: object }) {
+  const translateX    = useRef(new Animated.Value(0)).current;
+  const [containerW, setContainerW] = useState(0);
+  const [textW,      setTextW]      = useState(0);
+  const anim = useRef<Animated.CompositeAnimation | null>(null);
+
+  useEffect(() => {
+    anim.current?.stop();
+    translateX.setValue(0);
+    if (textW > containerW && containerW > 0) {
+      const dist = textW - containerW + 6;
+      anim.current = Animated.loop(
+        Animated.sequence([
+          Animated.delay(1200),
+          Animated.timing(translateX, { toValue: -dist, duration: dist * 35, useNativeDriver: true, easing: Easing.linear }),
+          Animated.delay(800),
+          Animated.timing(translateX, { toValue: 0,     duration: 400,        useNativeDriver: true }),
+        ]),
+      );
+      anim.current.start();
+    }
+    return () => anim.current?.stop();
+  }, [textW, containerW]);
+
+  return (
+    <View style={{ overflow: "hidden" }} onLayout={e => setContainerW(e.nativeEvent.layout.width)}>
+      <Animated.Text
+        style={[style, { transform: [{ translateX }] }]}
+        numberOfLines={1}
+        onLayout={e => setTextW(e.nativeEvent.layout.width)}
+      >
+        {text}
+      </Animated.Text>
+    </View>
+  );
+}
+
 // ── SoundCard ─────────────────────────────────────────────────────────────────
 type SoundCardProps = {
   sound: MixSound;
@@ -300,7 +338,7 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
         </Animated.View>
       </View>
       <View style={styles.cardFooter}>
-        <Text style={[styles.soundName, textColor ? { color: textColor } : null]} numberOfLines={1}>{sound.name}</Text>
+        <MarqueeText text={sound.name} style={[styles.soundName, textColor ? { color: textColor } : null]} />
       </View>
     </Pressable>
   );
