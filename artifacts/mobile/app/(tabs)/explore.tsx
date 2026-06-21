@@ -619,7 +619,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.30)",
+    borderColor: "rgba(190,150,80,0.10)",
     backgroundColor: "rgba(74,12,12,0.08)",
     alignItems: "center",
   },
