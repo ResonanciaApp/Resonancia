@@ -14,6 +14,7 @@ import React, { useMemo } from "react";
 import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { getSoundImage } from "@/config/sound-images";
+import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
 import { type MixSound, getSoundById } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
@@ -65,11 +66,11 @@ export function MixerPanel() {
         {/* Stack de imágenes */}
         <View style={[styles.stackWrap, { width: stackWidth }]}>
           {visible.map((x, i) => {
-            const img = getSoundImage(x.sound.id);
+            const img = getSoundImage(x.sound.id) ?? REMOTE_SOUND_IMAGE_MAP[x.sound.id];
             return (
               <View key={x.sound.id} style={[styles.stackThumb, { left: i * STACK_SHIFT, zIndex: i }]}>
                 {img ? (
-                  <Image source={img} style={styles.stackThumbImg} resizeMode="cover" />
+                  <Image source={typeof img === "string" ? { uri: img } : img} style={styles.stackThumbImg} resizeMode="cover" />
                 ) : (
                   <View style={[styles.stackThumbImg, { backgroundColor: "rgba(212,175,55,0.18)" }]}>
                     <Feather name="music" size={12} color={colors.primary} />

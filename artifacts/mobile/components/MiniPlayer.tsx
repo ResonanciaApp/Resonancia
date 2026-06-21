@@ -19,6 +19,7 @@ import { BlurView } from "expo-blur";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
 import { getSoundImage } from "@/config/sound-images";
+import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 import { useColors } from "@/hooks/useColors";
 
 const MAX_PLAYER_WIDTH    = 438;
@@ -34,7 +35,7 @@ const PILL_BORDER = "rgba(110,80,200,0.5)";
 const BORDER_R    = 12;
 
 type StackThumbItemProps = {
-  image: ReturnType<typeof require> | undefined;
+  image: ReturnType<typeof require> | string | undefined;
   style: object;
   onPress: () => void;
   onLongPress: () => void;
@@ -266,7 +267,7 @@ export function MiniPlayer() {
                 contentContainerStyle={{ width: carouselContentW, height: STACK_SIZE }}
               >
                 {activeSounds.map((s, i) => {
-                  const image      = getSoundImage(s.id);
+                  const image      = getSoundImage(s.id) ?? REMOTE_SOUND_IMAGE_MAP[s.id];
                   const translateX = openProgress.interpolate({
                     inputRange:  [0, 1],
                     outputRange: [0, i * openDelta],
