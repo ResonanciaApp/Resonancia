@@ -820,7 +820,7 @@ export default function MezcladorScreen() {
                               </LinearGradient>
                             </LinearGradient>
                           ) : (
-                            <View style={[styles.subTabBorderOuter, { borderWidth: 1, borderColor: "rgba(255,255,255,0.10)", padding: 0 }]}>
+                            <View style={[styles.subTabBorderOuter, { padding: 0 }]}>
                               <View style={styles.subTabBorderInner}>
                                 <Text style={[styles.subTabText, { color: "rgba(255,255,255,0.80)" }]}>
                                   {SUB_TAB_LABELS[catId] ?? cat.label}
