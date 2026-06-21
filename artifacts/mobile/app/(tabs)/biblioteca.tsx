@@ -1276,7 +1276,7 @@ export default function BibliotecaScreen() {
         }]}
       >
         <LinearGradient
-          colors={["#2E0510", "#230E15"]}
+          colors={["#2E0510", "#19040B"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
