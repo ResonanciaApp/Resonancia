@@ -150,7 +150,7 @@ const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
 
 // ── PillTab ───────────────────────────────────────────────────────────────────
 const GOLD_BORDER: [string, string] = ["#D4AF37", "#E9C46A"];
-const GOLD_BORDER_PILL = ["#D4AF37", "#E9C46A", "#D4AF37"] as const;
+const GOLD_BORDER_PILL = ["rgba(212,175,55,0.20)", "rgba(233,196,106,0.20)", "rgba(212,175,55,0.20)"] as const;
 
 const PillTab = memo(function PillTab({
   tab, sel, onPress,
