@@ -255,7 +255,7 @@ export function MiniPlayer() {
     return (
       <View style={styles.mixOuter}>
         {/* ── Card del miniplayer ── */}
-        <View style={[styles.wrapper, { paddingTop: 10, paddingBottom: insets.bottom }]}>
+        <View style={[styles.wrapper, { paddingTop: 9, paddingBottom: insets.bottom }]}>
           {/* Fondo glassmorphism */}
           <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingLeft: 12,
     paddingRight: 64,
-    paddingVertical: 15,
+    paddingVertical: 8,
     gap: 10,
   },
 
