@@ -29,7 +29,7 @@ const STACK_SIZE          = 43;
 const STACK_SHIFT         = 13;   // offset apilado (cerrado)
 const CAROUSEL_THUMB_GAP  = 6;    // separación fija entre thumbnails en el carrusel
 const CAROUSEL_MAX_OPEN_W = 280;  // techo para que el texto nunca desaparezca del todo
-const MAX_STACK_LAYOUT_W  = STACK_SIZE + 4 * STACK_SHIFT; // máx 5 thumbs en layout (≥6 pasan por detrás)
+const MAX_STACK_LAYOUT_W  = STACK_SIZE + 5 * STACK_SHIFT; // máx 6 thumbs en layout
 
 const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
 const MIX_BG      = "rgba(0,0,0,0.85)";
