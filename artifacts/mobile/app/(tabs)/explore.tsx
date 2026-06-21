@@ -60,7 +60,7 @@ const DURATION_SLOTS = [
   { label: "10 min",  min: 6,  max: 10 },
   { label: "20 min",  min: 11, max: 25 },
   { label: "30 min",  min: 26, max: 35 },
-  { label: "45+ min", min: 36, max: Infinity },
+  { label: "60 min",  min: 36, max: Infinity },
 ] as const;
 type DurSlot = (typeof DURATION_SLOTS)[number]["label"];
 
