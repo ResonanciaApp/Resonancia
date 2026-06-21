@@ -548,7 +548,7 @@ function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGo
   ];
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
-      <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+      <Pressable style={[StyleSheet.absoluteFill, styles.sheetBackdrop]} onPress={onClose} />
       <View style={styles.sheet}>
         <View style={styles.sheetHandle} />
         <Text style={styles.sheetTitle}>¿Qué quieres crear?</Text>
@@ -1699,6 +1699,9 @@ const styles = StyleSheet.create({
   searchEmptySub:   { fontSize: 14, color: MUTED, textAlign: "center", lineHeight: 20 },
 
   // ── Hoja de crear ────────────────────────────────────────────────────────────
+  sheetBackdrop: {
+    backgroundColor: "rgba(0,0,0,0.55)",
+  },
   sheet: {
     position: "absolute", left: 0, right: 0, bottom: 0,
     backgroundColor: "#290A12",
