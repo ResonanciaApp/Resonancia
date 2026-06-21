@@ -74,7 +74,7 @@ export function MixerSettingsSheet({
   const screenH = Dimensions.get("window").height;
   const sheetSizing =
     mode === "palette"
-      ? { height: screenH * 0.5 }
+      ? { height: screenH * 0.36 }
       : { maxHeight: screenH * 0.85 };
 
   return (
@@ -255,9 +255,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "500",
   },
-  paletteBody: {
-    flex: 1,
-  },
+  paletteBody: {},
   paletteGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
