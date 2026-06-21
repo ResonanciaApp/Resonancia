@@ -144,7 +144,7 @@ function CoverPickerSheet({
     return (
       <Modal visible animationType="slide" transparent onRequestClose={() => { setView("menu"); onClose(); }}>
         <Pressable style={ms.backdrop} onPress={() => { setView("menu"); onClose(); }} />
-        <View style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
+        <LinearGradient colors={["#2E0510", "#160108"]} style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
           <View style={ms.handle} />
           <View style={ms.headerRow}>
             <Pressable onPress={() => setView("menu")} hitSlop={12}>
@@ -185,7 +185,7 @@ function CoverPickerSheet({
     return (
       <Modal visible animationType="slide" transparent onRequestClose={() => { setView("menu"); onClose(); }}>
         <Pressable style={ms.backdrop} onPress={() => { setView("menu"); onClose(); }} />
-        <View style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
+        <LinearGradient colors={["#2E0510", "#160108"]} style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
           <View style={ms.handle} />
           <View style={ms.headerRow}>
             <Pressable onPress={() => setView("menu")} hitSlop={12}>
@@ -225,7 +225,7 @@ function CoverPickerSheet({
   return (
     <Modal visible animationType="slide" transparent onRequestClose={handleClose}>
       <Pressable style={ms.backdrop} onPress={handleClose} />
-      <View style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
+      <LinearGradient colors={["#2E0510", "#160108"]} style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
         <View style={ms.handle} />
         <Text style={ms.sheetTitle}>Portada de la mezcla</Text>
         <Pressable style={({ pressed }) => [ms.row, { opacity: pressed ? 0.7 : 1 }]} onPress={() => setView("presets")}>
@@ -250,7 +250,7 @@ function CoverPickerSheet({
           <Feather name="x-circle" size={22} color={MUTED} />
           <Text style={[ms.rowText, { color: MUTED }]}>Quitar portada</Text>
         </Pressable>
-      </View>
+      </LinearGradient>
     </Modal>
   );
 }
@@ -555,7 +555,6 @@ const ms = StyleSheet.create({
   sheet: {
     position: "absolute",
     bottom: 0, left: 0, right: 0,
-    backgroundColor: "#2E0510",
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     paddingHorizontal: 20,
