@@ -953,7 +953,7 @@ export default function MezcladorScreen() {
         onBgPaletteChange={(id) => {
           setBgPaletteId(id);
           // Sincroniza el fondo de "Tu Mezcla" con la escena elegida
-          emitBgPresetChange(id === "noche" ? "borgona" : DEFAULT_BG_PRESET_ID);
+          emitBgPresetChange(id === "noche" ? "oscuro" : DEFAULT_BG_PRESET_ID);
         }}
         onClear={clearForMode}
       />
