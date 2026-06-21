@@ -808,7 +808,7 @@ export default function BibliotecaScreen() {
       const hasUserContent = sortedFoldersGeneral.length > 0 || sortedPlaylists.length > 0;
 
       return (
-        <>
+        <View style={{ gap: 15 }}>
           {/* ── Carpetas y playlists del usuario (siempre al tope en vista general) ── */}
           {hasUserContent && (
             <>
@@ -836,7 +836,7 @@ export default function BibliotecaScreen() {
                   ))}
                 </View>
               ) : (
-                <View style={{ gap: 14 }}>
+                <View style={{ gap: 15 }}>
                   {sortedFoldersGeneral.map((folder) => (
                     <FolderRow
                       key={folder.id}
@@ -860,7 +860,7 @@ export default function BibliotecaScreen() {
 
 
           {/* ── Resonadores ── */}
-          <View style={{ gap: 14, marginTop: 14 }}>
+          <View style={{ gap: 15 }}>
             {resonadores.slice(0, 2).map((r) => (
               <ResonadorRow
                 key={r.id}
@@ -898,7 +898,7 @@ export default function BibliotecaScreen() {
             </View>
             <Text style={styles.addResonadorLabel}>Agregar Resonador</Text>
           </Pressable>
-        </>
+        </View>
       );
     }
 
