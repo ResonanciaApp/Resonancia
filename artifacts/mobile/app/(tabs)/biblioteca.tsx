@@ -832,7 +832,7 @@ export default function BibliotecaScreen() {
                   ))}
                 </View>
               ) : (
-                <View style={{ gap: 9 }}>
+                <View style={{ gap: 5 }}>
                   {sortedFoldersGeneral.map((folder) => (
                     <FolderRow
                       key={folder.id}
@@ -864,7 +864,7 @@ export default function BibliotecaScreen() {
                   ))}
                 </View>
               ) : (
-                <View style={{ paddingHorizontal: H_PAD, gap: 9, marginTop: sortedPlaylists.length > 0 ? 9 : 0 }}>
+                <View style={{ paddingHorizontal: H_PAD, gap: 5, marginTop: sortedPlaylists.length > 0 ? 5 : 0 }}>
                   {visibleRecent.map((s) => (
                     <SessionCard key={s.id} session={s} horizontal />
                   ))}
@@ -874,7 +874,7 @@ export default function BibliotecaScreen() {
           )}
 
           {/* ── Resonadores ── */}
-          <View style={{ gap: 9, marginTop: 9 }}>
+          <View style={{ gap: 5, marginTop: 5 }}>
             {resonadores.slice(0, 2).map((r) => (
               <ResonadorRow
                 key={r.id}
