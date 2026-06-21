@@ -250,6 +250,11 @@ const ResonadorCard = memo(function ResonadorCard({
 
       <View style={styles.cardInfo}>
         <Text style={styles.cardName} numberOfLines={2}>{d.name}</Text>
+        <Text style={styles.cardTag} numberOfLines={1}>
+          {item.kind === "resonador"
+            ? item.data.subtipo
+            : item.data.region ?? item.data.country}
+        </Text>
       </View>
     </Pressable>
   );
@@ -453,8 +458,8 @@ export default function ResonadoresScreen() {
         </View>
       </View>
 
-      {/* ── Filtros ── */}
-      <View style={styles.filtersScroll}>
+      {/* ── Filtros ── (oculto) */}
+      <View style={[styles.filtersScroll, { display: "none" }]}>
         {activeTab === "resonadores" ? (
           <AnimatedFilterRow
             key="resonadores"
@@ -711,8 +716,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "700",
     color: "#FAF0EE",
-    marginBottom: 3,
+    marginBottom: 2,
     textAlign: "center",
+  },
+  cardTag: {
+    fontSize: 10,
+    fontWeight: "400",
+    color: "rgba(255,255,255,0.55)",
+    textAlign: "center",
+    marginBottom: 3,
   },
   cardSub: {
     fontSize: 10,
