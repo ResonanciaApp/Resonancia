@@ -359,11 +359,6 @@ const styles = StyleSheet.create({
     maxWidth: MAX_PLAYER_WIDTH,
     width: "100%",
     borderRadius: 25,
-    borderWidth: 1,
-    borderTopColor:    "rgba(255,255,255,0.30)",
-    borderLeftColor:   "rgba(255,255,255,0.65)",
-    borderRightColor:  "rgba(255,255,255,0.45)",
-    borderBottomColor: "rgba(255,255,255,0.40)",
   },
 
   // ── Fila de mezcla ────────────────────────────────────────────
