@@ -116,12 +116,12 @@ export function MixerSettingsSheet({
                         style={[styles.swatchBig, sel && styles.swatchSel]}
                       >
                         {sel && (
-                          <Text style={[styles.swatchCheck, { color: p.id === "noche" ? "#FFFFFF" : "#5C1A1A" }]}>✓</Text>
+                          <Text style={[styles.swatchCheck, { color: p.id === "noche" || p.id === "plomo" ? "#FFFFFF" : "#5C1A1A" }]}>✓</Text>
                         )}
                       </LinearGradient>
                       <View style={{ flexDirection: "row", alignItems: "center", gap: 5, marginTop: 6 }}>
                         <MaterialCommunityIcons
-                          name={p.id === "arena" ? "white-balance-sunny" : "moon-waning-crescent"}
+                          name={p.id === "arena" ? "white-balance-sunny" : p.id === "noche" ? "moon-waning-crescent" : "weather-cloudy"}
                           size={13}
                           color={sel ? PRIMARY : c.mutedDim}
                         />

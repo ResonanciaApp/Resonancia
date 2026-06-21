@@ -6,6 +6,7 @@
  */
 
 export type MixerBgPaletteId =
+  | "plomo"
   | "arena"
   | "noche";
 
@@ -17,11 +18,12 @@ export interface MixerBgPalette {
 }
 
 export const MIXER_BG_PALETTES: MixerBgPalette[] = [
-  { id: "arena", label: "Día",           colors: ["#FEFCF5", "#FAF3E4", "#F5ECDA"] },
-  { id: "noche", label: "Noche",         colors: ["#252525", "#1E1E1E", "#191919"] },
+  { id: "plomo", label: "Plomo",          colors: ["#707070", "#555555", "#454545"] },
+  { id: "arena", label: "Día",            colors: ["#FEFCF5", "#FAF3E4", "#F5ECDA"] },
+  { id: "noche", label: "Noche",          colors: ["#252525", "#1E1E1E", "#191919"] },
 ];
 
-export const DEFAULT_MIXER_BG_PALETTE: MixerBgPaletteId = "noche";
+export const DEFAULT_MIXER_BG_PALETTE: MixerBgPaletteId = "plomo";
 
 export function getMixerBgPalette(id: string | null | undefined): MixerBgPalette {
   return (
