@@ -202,18 +202,12 @@ function CountryChipRow({
 // ── Filtro chevron expansores ──────────────────────────────────────────────────
 function ExpansorChevronFilter({
   availableCountries,
-  regionTabs,
   selectedCountry,
-  selectedRegion,
   onSelectCountry,
-  onSelectRegion,
 }: {
   availableCountries: string[];
-  regionTabs: { id: string; label: string }[];
   selectedCountry: string | null;
-  selectedRegion: string | null;
   onSelectCountry: (c: string | null) => void;
-  onSelectRegion: (r: string | null) => void;
 }) {
   const [open, setOpen] = useState(false);
   const anim = useRef(new Animated.Value(0)).current;
@@ -236,30 +230,17 @@ function ExpansorChevronFilter({
 
   function handleCountry(c: string) {
     onSelectCountry(selectedCountry === c ? null : c);
-    onSelectRegion(null);
-  }
-
-  function handleRegion(r: string) {
-    onSelectRegion(selectedRegion === r ? null : r);
     close();
   }
 
   const chevronRotate = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "180deg"] });
-
   const label = selectedCountry
-    ? selectedRegion
-      ? `${COUNTRY_FLAGS[selectedCountry] ?? ""} ${selectedCountry} · ${selectedRegion}`
-      : `${COUNTRY_FLAGS[selectedCountry] ?? ""} ${selectedCountry}`
+    ? `${COUNTRY_FLAGS[selectedCountry] ?? ""} ${selectedCountry}`
     : "Todos los países";
-
-  const maxH = anim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, selectedCountry && regionTabs.length > 0 ? 160 : 90],
-  });
+  const maxH = anim.interpolate({ inputRange: [0, 1], outputRange: [0, 120] });
 
   return (
     <View style={styles.chevronWrap}>
-      {/* Trigger */}
       <Pressable onPress={toggle} style={({ pressed }) => [styles.chevronTrigger, { opacity: pressed ? 0.75 : 1 }]}>
         <Text style={styles.chevronTriggerText}>{label}</Text>
         <Animated.View style={{ transform: [{ rotate: chevronRotate }] }}>
@@ -267,47 +248,20 @@ function ExpansorChevronFilter({
         </Animated.View>
       </Pressable>
 
-      {/* Dropdown */}
       <Animated.View style={[styles.chevronDropdown, { maxHeight: maxH, overflow: "hidden" }]}>
-        {/* Nivel 1: países */}
-        <View style={styles.chevronSection}>
-          <Text style={styles.chevronSectionLabel}>País</Text>
-          <View style={styles.chevronChips}>
-            {availableCountries.map((c) => (
-              <Pressable
-                key={c}
-                onPress={() => handleCountry(c)}
-                style={[styles.chevronChip, selectedCountry === c && styles.chevronChipSel]}
-              >
-                <Text style={[styles.chevronChipText, selectedCountry === c && styles.chevronChipTextSel]}>
-                  {COUNTRY_FLAGS[c] ?? ""} {c}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
+        <View style={styles.chevronChips}>
+          {availableCountries.map((c) => (
+            <Pressable
+              key={c}
+              onPress={() => handleCountry(c)}
+              style={[styles.chevronChip, selectedCountry === c && styles.chevronChipSel]}
+            >
+              <Text style={[styles.chevronChipText, selectedCountry === c && styles.chevronChipTextSel]}>
+                {COUNTRY_FLAGS[c] ?? ""} {c}
+              </Text>
+            </Pressable>
+          ))}
         </View>
-
-        {/* Nivel 2: regiones */}
-        {selectedCountry && regionTabs.length > 0 && (
-          <View style={styles.chevronSection}>
-            <Text style={styles.chevronSectionLabel}>Ciudad / Región</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <View style={styles.chevronChips}>
-                {regionTabs.map((r) => (
-                  <Pressable
-                    key={r.id}
-                    onPress={() => handleRegion(r.id)}
-                    style={[styles.chevronChip, selectedRegion === r.id && styles.chevronChipSel]}
-                  >
-                    <Text style={[styles.chevronChipText, selectedRegion === r.id && styles.chevronChipTextSel]}>
-                      {r.label}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-            </ScrollView>
-          </View>
-        )}
       </Animated.View>
     </View>
   );
@@ -578,11 +532,8 @@ export default function ResonadoresScreen() {
       {activeTab === "expansores" && (
         <ExpansorChevronFilter
           availableCountries={availableCountries}
-          regionTabs={regionTabs}
           selectedCountry={selectedCountry}
-          selectedRegion={selectedRegion}
           onSelectCountry={handleSelectCountry}
-          onSelectRegion={setSelectedRegion}
         />
       )}
 
