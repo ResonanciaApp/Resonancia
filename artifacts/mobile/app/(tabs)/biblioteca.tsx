@@ -1215,14 +1215,7 @@ export default function BibliotecaScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: "#160108" }]}>
-      <LinearGradient
-        colors={["#2E0510", "#160108"]}
-        locations={[0, 1]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
+    <View style={[styles.root, { backgroundColor: "#2E0510" }]}>
       <SacredBackground variant="solid" />
 
       {/* ── STICKY HEADER ────────────────────────────────────────────────── */}
