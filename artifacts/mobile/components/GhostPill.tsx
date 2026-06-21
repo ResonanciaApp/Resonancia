@@ -91,6 +91,6 @@ const styles = StyleSheet.create({
     gap: 2,
     paddingHorizontal: 2,
     borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.07)",
+    backgroundColor: "rgba(255,255,255,0.02)",
   },
 });
