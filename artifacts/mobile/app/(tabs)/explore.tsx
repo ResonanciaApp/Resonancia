@@ -52,7 +52,7 @@ const SQCARD_W = Math.round((width - H_PAD * 2) / 2.2);
 const TEMA_COL_W = Math.floor((width - H_PAD * 2 - GAP) / 2);
 
 const CAT_CARD_GAP = 12;
-const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.25);
+const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.625);
 const CAT_CARD_IMG_H = Math.round(CAT_CARD_W * 1.15);
 
 const DURATION_SLOTS = [
@@ -689,16 +689,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   catCardTitle: {
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: "700",
     color: "#FFFFFF",
     letterSpacing: 0.2,
     textAlign: "center",
   },
   catCardSubtitle: {
-    fontSize: 11,
+    fontSize: 14,
     color: "rgba(244,218,213,0.65)",
-    lineHeight: 15,
+    lineHeight: 19,
     fontWeight: "400",
   },
 
