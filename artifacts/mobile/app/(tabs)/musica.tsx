@@ -150,8 +150,7 @@ const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
 
 // ── PillTab ───────────────────────────────────────────────────────────────────
 const GOLD_BORDER: [string, string] = ["#D4AF37", "#E9C46A"];
-/** Borde asimétrico: opaco en el centro, se disuelve hacia los extremos */
-const GOLD_BORDER_PILL = ["transparent", "rgba(212,175,55,0.55)", "#E9C46A", "rgba(212,175,55,0.55)", "transparent"] as const;
+const GOLD_BORDER_PILL = ["#D4AF37", "#E9C46A", "#D4AF37"] as const;
 
 const PillTab = memo(function PillTab({
   tab, sel, onPress,
@@ -1001,7 +1000,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     padding: 1,
     shadowColor: "#D4AF37",
-    shadowOffset: { width: 0, height: -3 },
+    shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.60,
     shadowRadius: 7,
     elevation: 0,
