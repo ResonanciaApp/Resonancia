@@ -44,14 +44,14 @@ export function GhostPill({ children, style }: Props) {
           <Defs>
             {/* Luz principal: entra por arriba/izquierda */}
             <SvgLinearGradient id={gradId} x1="0" y1="0" x2="0.65" y2="1">
-              <Stop offset="0" stopColor="#FFFFFF" stopOpacity={0.5} />
-              <Stop offset="0.4" stopColor="#FFFFFF" stopOpacity={0.12} />
-              <Stop offset="1" stopColor="#FFFFFF" stopOpacity={0.03} />
+              <Stop offset="0" stopColor="#FFFFFF" stopOpacity={0.35} />
+              <Stop offset="0.4" stopColor="#FFFFFF" stopOpacity={0.08} />
+              <Stop offset="1" stopColor="#FFFFFF" stopOpacity={0.02} />
             </SvgLinearGradient>
             {/* Luz secundaria sutil: roza la esquina derecha y un poco abajo */}
             <SvgLinearGradient id={gradId2} x1="1" y1="1" x2="0.3" y2="0">
-              <Stop offset="0" stopColor="#FFFFFF" stopOpacity={0.22} />
-              <Stop offset="0.45" stopColor="#FFFFFF" stopOpacity={0.05} />
+              <Stop offset="0" stopColor="#FFFFFF" stopOpacity={0.14} />
+              <Stop offset="0.45" stopColor="#FFFFFF" stopOpacity={0.03} />
               <Stop offset="1" stopColor="#FFFFFF" stopOpacity={0} />
             </SvgLinearGradient>
           </Defs>
