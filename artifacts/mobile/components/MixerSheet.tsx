@@ -1021,7 +1021,7 @@ export function MixerSheet() {
                   <Pressable
                     key={preset.id}
                     onPress={() => selectBgPreset(preset.id)}
-                    style={[styles.bgPresetCard, sel && styles.bgPresetCardSel]}
+                    style={[styles.bgPresetCard, sel && styles.bgPresetCardSel, sel && isLight && { borderWidth: 3.5 }]}
                   >
                     {preset.image ? (
                       <>
