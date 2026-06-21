@@ -48,7 +48,7 @@ const { width } = Dimensions.get("window");
 const H_PAD = 15;
 const GOLD = "#D4AF37";
 const NAVY = "#160108";
-const DARK_BLUE = "#2E0510";
+const DARK_BLUE = "#290A12";
 const TEXT = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
 
@@ -591,7 +591,7 @@ function GeometrixRow({ creation, onPress }: { creation: GeometrixCreation; onPr
       {/* Miniatura: cuadrado oscuro con las primeras capas superpuestas */}
       <View style={styles.geoThumb}>
         <LinearGradient
-          colors={["#2E0510", "#160108"]}
+          colors={["#290A12", "#160108"]}
           style={StyleSheet.absoluteFill}
         />
         {firstLayers.map((instId, idx) => {
@@ -1215,14 +1215,14 @@ export default function BibliotecaScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: "#2E0510" }]}>
+    <View style={[styles.root, { backgroundColor: "#290A12" }]}>
       <SacredBackground variant="solid" />
 
       {/* ── STICKY HEADER ────────────────────────────────────────────────── */}
       <View
         style={[styles.stickyHeader, {
           paddingTop: topPad + 2,
-          backgroundColor: "#2E0510",
+          backgroundColor: "#290A12",
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 9 },
           shadowOpacity: 0.22,
@@ -1664,12 +1664,12 @@ const styles = StyleSheet.create({
   // ── Búsqueda overlay ──────────────────────────────────────────────────────────
   searchModalRoot: {
     flex: 1,
-    backgroundColor: "#2E0510",
+    backgroundColor: "#290A12",
   },
   searchOverlay: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#2E0510",
+    backgroundColor: "#290A12",
     paddingTop: Platform.OS === "ios" ? 56 : 36,
     paddingHorizontal: H_PAD,
     paddingBottom: 14,
@@ -1768,7 +1768,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   addResModalSheet: {
-    backgroundColor: "#2E0510",
+    backgroundColor: "#290A12",
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     paddingTop: 18,
