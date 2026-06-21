@@ -11,7 +11,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
 import {
   Alert,
-  FlatList,
   Keyboard,
   Modal,
   Platform,
@@ -155,31 +154,29 @@ function CoverPickerSheet({
             <Text style={ms.sheetTitle}>Elige una imagen</Text>
             <View style={{ width: 28 }} />
           </View>
-          <FlatList
-            data={MIX_IMAGE_GALLERY}
-            keyExtractor={(k) => k}
-            numColumns={3}
-            columnWrapperStyle={{ gap: 8, justifyContent: "flex-start" }}
-            contentContainerStyle={{ paddingVertical: 12, gap: 8 }}
-            renderItem={({ item: key }) => {
-              const img = getMixImage(key);
-              return (
-                <Pressable
-                  style={({ pressed }) => [ms.presetThumb, { opacity: pressed ? 0.7 : 1 }]}
-                  onPress={() => { onPickPreset(key); handleClose(); }}
-                >
-                  {img ? (
-                    <Image source={img as number} style={ms.presetThumbImg} contentFit="cover" />
-                  ) : (
-                    <View style={[ms.presetThumbImg, { backgroundColor: "rgba(212,175,55,0.15)", alignItems: "center", justifyContent: "center" }]}>
-                      <Feather name="image" size={20} color={MUTED} />
-                    </View>
-                  )}
-                  <Text style={ms.presetLabel} numberOfLines={1}>{key}</Text>
-                </Pressable>
-              );
-            }}
-          />
+          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: 12 }}>
+            <View style={ms.gridRow}>
+              {MIX_IMAGE_GALLERY.map((key) => {
+                const img = getMixImage(key);
+                return (
+                  <Pressable
+                    key={key}
+                    style={({ pressed }) => [ms.presetThumb, { opacity: pressed ? 0.7 : 1 }]}
+                    onPress={() => { onPickPreset(key); handleClose(); }}
+                  >
+                    {img ? (
+                      <Image source={img as number} style={ms.presetThumbImg} contentFit="cover" />
+                    ) : (
+                      <View style={[ms.presetThumbImg, { backgroundColor: "rgba(212,175,55,0.15)", alignItems: "center", justifyContent: "center" }]}>
+                        <Feather name="image" size={20} color={MUTED} />
+                      </View>
+                    )}
+                    <Text style={ms.presetLabel} numberOfLines={1}>{key}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </ScrollView>
         </View>
       </Modal>
     );
@@ -206,53 +203,44 @@ function CoverPickerSheet({
               <Text style={[ms.tabText, geoTab === "creations" && ms.tabTextActive]}>Mis creaciones</Text>
             </Pressable>
           </View>
-          {geoTab === "library" ? (
-            <FlatList
-              key="library"
-              data={GEOMETRIES}
-              keyExtractor={(g) => g.id}
-              numColumns={3}
-              columnWrapperStyle={{ gap: 8, justifyContent: "flex-start" }}
-              contentContainerStyle={{ paddingVertical: 12, gap: 8 }}
-              renderItem={({ item }) => (
-                <Pressable
-                  style={({ pressed }) => [ms.geoItem, { opacity: pressed ? 0.7 : 1 }]}
-                  onPress={() => { onPickGeometry(item.id); handleClose(); }}
-                >
-                  <View style={ms.geoThumb}>
-                    <SacredGlyph id={item.id as GeometryId} color={GOLD} size={52} strokeWidth={1} opacity={1} />
-                  </View>
-                  <Text style={ms.geoName} numberOfLines={1}>{item.name}</Text>
-                </Pressable>
-              )}
-            />
-          ) : (
-            <FlatList
-              key="creations"
-              data={creations}
-              keyExtractor={(c) => c.id}
-              numColumns={2}
-              columnWrapperStyle={{ gap: 8, justifyContent: "flex-start" }}
-              contentContainerStyle={{ paddingVertical: 12, gap: 8 }}
-              ListEmptyComponent={
-                <View style={{ paddingVertical: 40, alignItems: "center" }}>
-                  <Text style={{ color: MUTED, fontSize: 14 }}>No tienes creaciones aún</Text>
-                  <Text style={{ color: MUTED, fontSize: 12, marginTop: 6, opacity: 0.7 }}>Ve a Geometrix y crea una</Text>
-                </View>
-              }
-              renderItem={({ item }) => (
-                <Pressable
-                  style={({ pressed }) => [ms.creationItem, { opacity: pressed ? 0.7 : 1 }]}
-                  onPress={() => { onPickCreation(item.id); handleClose(); }}
-                >
-                  <View style={ms.creationThumb}>
-                    <CreationCoverPreview creationId={item.id} size={100} />
-                  </View>
-                  <Text style={ms.geoName} numberOfLines={1}>{item.name}</Text>
-                </Pressable>
-              )}
-            />
-          )}
+          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: 12 }}>
+            {geoTab === "library" ? (
+              <View style={ms.gridRow}>
+                {GEOMETRIES.map((item) => (
+                  <Pressable
+                    key={item.id}
+                    style={({ pressed }) => [ms.geoItem, { opacity: pressed ? 0.7 : 1 }]}
+                    onPress={() => { onPickGeometry(item.id); handleClose(); }}
+                  >
+                    <View style={ms.geoThumb}>
+                      <SacredGlyph id={item.id as GeometryId} color={GOLD} size={52} strokeWidth={1} opacity={1} />
+                    </View>
+                    <Text style={ms.geoName} numberOfLines={1}>{item.name}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            ) : creations.length === 0 ? (
+              <View style={{ paddingVertical: 40, alignItems: "center" }}>
+                <Text style={{ color: MUTED, fontSize: 14 }}>No tienes creaciones aún</Text>
+                <Text style={{ color: MUTED, fontSize: 12, marginTop: 6, opacity: 0.7 }}>Ve a Geometrix y crea una</Text>
+              </View>
+            ) : (
+              <View style={[ms.gridRow, { gap: 10 }]}>
+                {creations.map((item) => (
+                  <Pressable
+                    key={item.id}
+                    style={({ pressed }) => [ms.creationItem, { opacity: pressed ? 0.7 : 1 }]}
+                    onPress={() => { onPickCreation(item.id); handleClose(); }}
+                  >
+                    <View style={ms.creationThumb}>
+                      <CreationCoverPreview creationId={item.id} size={100} />
+                    </View>
+                    <Text style={ms.geoName} numberOfLines={1}>{item.name}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            )}
+          </ScrollView>
         </View>
       </Modal>
     );
@@ -326,6 +314,11 @@ export default function MiMezclaScreen() {
   }, [mix, isThisLoaded, togglePlay, loadMix]);
 
   const handlePickPhoto = useCallback(async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permiso requerido", "Necesitamos acceso a tu galería para elegir una foto.");
+      return;
+    }
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       allowsEditing: true,
@@ -625,8 +618,14 @@ const ms = StyleSheet.create({
     color: TEXT,
     fontSize: 15,
   },
+  gridRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    justifyContent: "flex-start",
+  },
   presetThumb: {
-    flex: 1,
+    width: "30%",
     alignItems: "center",
     gap: 4,
   },
@@ -641,7 +640,7 @@ const ms = StyleSheet.create({
     textTransform: "capitalize",
   },
   geoItem: {
-    flex: 1,
+    width: "30%",
     alignItems: "center",
     gap: 4,
   },
@@ -659,7 +658,7 @@ const ms = StyleSheet.create({
     textAlign: "center",
   },
   creationItem: {
-    flex: 1,
+    width: "47%",
     alignItems: "center",
     gap: 6,
   },
