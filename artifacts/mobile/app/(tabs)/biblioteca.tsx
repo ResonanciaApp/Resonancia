@@ -5,6 +5,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState, useCallback, useMemo, useEffect } from "react";
 import {
+  Alert,
   Animated,
   Dimensions,
   Easing,
@@ -801,7 +802,16 @@ export default function BibliotecaScreen() {
   const followResonador = (id: string) => {
     if (!followedIds.includes(id)) saveFollowed([...followedIds, id]);
   };
-  const unfollowResonador = (id: string) => saveFollowed(followedIds.filter((x) => x !== id));
+  const unfollowResonador = (id: string, name?: string) => {
+    Alert.alert(
+      "Dejar de seguir",
+      `¿Querés dejar de seguir a ${name ?? "este resonador"}?`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        { text: "Eliminar", style: "destructive", onPress: () => saveFollowed(followedIds.filter((x) => x !== id)) },
+      ]
+    );
+  };
 
   const resonadores = useMemo(
     () => allResonadores.filter((r) => followedIds.includes(r.id)),
@@ -881,6 +891,23 @@ export default function BibliotecaScreen() {
             </>
           )}
 
+
+          {/* ── Resonadores seguidos ── */}
+          {resonadores.map((r) => (
+            <Pressable
+              key={r.id}
+              style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.8 : 1 }]}
+              onPress={() => router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never)}
+              onLongPress={() => unfollowResonador(r.id, r.name)}
+              delayLongPress={600}
+            >
+              <Image source={r.photo} style={{ width: 62, height: 62, borderRadius: 31 }} resizeMode="cover" />
+              <View style={styles.rowInfo}>
+                <Text style={styles.addResonadorLabel} numberOfLines={1}>{r.name}</Text>
+                <Text style={[styles.rowSub, { marginTop: 2 }]} numberOfLines={1}>{r.tags[0]}</Text>
+              </View>
+            </Pressable>
+          ))}
 
           <Pressable
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
@@ -1206,7 +1233,7 @@ export default function BibliotecaScreen() {
                 key={r.id}
                 style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                 onPress={() => router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never)}
-                onLongPress={() => unfollowResonador(r.id)}
+                onLongPress={() => unfollowResonador(r.id, r.name)}
                 delayLongPress={600}
               >
                 <Image source={r.photo} style={[styles.gridThumb, { width: cellW, height: cellW, borderRadius: cellW / 2 }]} resizeMode="cover" />
@@ -1226,7 +1253,7 @@ export default function BibliotecaScreen() {
               photo={r.photo}
               tags={r.tags}
               onPress={() => router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never)}
-              onLongPress={() => unfollowResonador(r.id)}
+              onLongPress={() => unfollowResonador(r.id, r.name)}
             />
           ))}
         </View>
@@ -1378,7 +1405,6 @@ export default function BibliotecaScreen() {
                       key={r.id}
                       style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}
                       onPress={() => {
-                        followResonador(r.id);
                         setAddResonadorVisible(false);
                         setAddResonadorQ("");
                         router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never);
@@ -1389,7 +1415,13 @@ export default function BibliotecaScreen() {
                         <Text style={styles.rowTitle} numberOfLines={1}>{r.name}</Text>
                         <Text style={styles.rowSub} numberOfLines={1}>{r.tags[0]}</Text>
                       </View>
-                      {isFollowed && <Feather name="check" size={18} color={GOLD} />}
+                      <Pressable
+                        hitSlop={12}
+                        onPress={() => isFollowed ? saveFollowed(followedIds.filter((x) => x !== r.id)) : followResonador(r.id)}
+                        style={[styles.addResonadorIcon, { width: 36, height: 36, borderRadius: 18, backgroundColor: isFollowed ? "rgba(212,175,55,0.18)" : "rgba(255,255,255,0.07)" }]}
+                      >
+                        <Feather name={isFollowed ? "check" : "plus"} size={18} color={isFollowed ? GOLD : TEXT} />
+                      </Pressable>
                     </Pressable>
                   );
                 })}
