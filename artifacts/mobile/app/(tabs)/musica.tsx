@@ -61,7 +61,7 @@ import { REMOTE_SOUND_MAP, REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 // Tamaños fijos de card e imagen — iguales en todos los tiles
 const SCREEN_W = Dimensions.get("window").width;
 const CARD_W   = Math.floor((SCREEN_W - 28 - 40) / 3); // padding 14×2 + gaps 20×2
-const IMG_SIZE  = Math.floor(CARD_W * 0.75);
+const IMG_SIZE  = Math.floor(CARD_W * 0.75) - 5;
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
 const GOLD  = "#D4AF37";
