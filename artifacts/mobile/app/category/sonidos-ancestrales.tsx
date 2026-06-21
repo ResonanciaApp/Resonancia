@@ -172,9 +172,9 @@ function SearchOverlay({ visible, onClose, categoryId, placeholderTxt }: { visib
   const [kbH,setKbH]   = useState(0);
   const [kbOk,setKbOk] = useState(false);
   const fade = useRef(new Animated.Value(0)).current;
-  const results = useMemo(() => q.length>=2 ? SESSIONS.filter((s) => s.categoryId===categoryId && s.title.toLowerCase().includes(q.toLowerCase())) : [], [q, categoryId]);
+  const results = useMemo(() => q.trim().length>=1 ? SESSIONS.filter((s) => s.categoryId===categoryId && s.title.toLowerCase().includes(q.toLowerCase())) : [], [q, categoryId]);
   useEffect(() => {
-    if (!visible) { setKbOk(false); setKbH(0); fade.setValue(0); return; }
+    if (!visible) { setQ(""); setKbOk(false); setKbH(0); fade.setValue(0); return; }
     const show = Keyboard.addListener("keyboardDidShow", (e) => { setKbH(e.endCoordinates.height); setKbOk(true); Animated.timing(fade,{toValue:1,duration:180,useNativeDriver:true}).start(); });
     const hide = Keyboard.addListener("keyboardDidHide", () => { setKbOk(false); fade.setValue(0); });
     return () => { show.remove(); hide.remove(); };
@@ -196,7 +196,7 @@ function SearchOverlay({ visible, onClose, categoryId, placeholderTxt }: { visib
           </Animated.View>
         )}
         {results.length>0 && (
-          <ScrollView style={{ flex:1, backgroundColor:"#160108" }} contentContainerStyle={{ padding: H_PAD, gap: 9 }}>
+          <ScrollView style={{ flex:1, backgroundColor:"#160108" }} contentContainerStyle={{ padding: H_PAD, gap: 9 }} keyboardShouldPersistTaps="handled">
             {results.map((s) => <CategoryCard key={s.id} session={s} horizontal />)}
           </ScrollView>
         )}
