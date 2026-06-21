@@ -328,7 +328,7 @@ export function MixerSheet() {
   const insets = useSafeAreaInsets();
 
   // ── Fondo personalizable ──────────────────────────────────────────────────
-  const [bgPresetId,    setBgPresetId]    = useState<string>(DEFAULT_BG_PRESET_ID);
+  const [bgPresetId,    setBgPresetId]    = useState<string>("borgona");
   const [overlayOpacity, setOverlayOpacity] = useState<number>(DEFAULT_OVERLAY);
   const [bgPickerOpen, setBgPickerOpen] = useState(false);
   const bgPickerY = useRef(new Animated.Value(700)).current;
