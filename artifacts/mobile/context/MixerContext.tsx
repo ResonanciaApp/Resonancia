@@ -10,6 +10,7 @@ import React, {
   useState,
 } from "react";
 
+import { DEFAULT_MIXER_BG_PALETTE, getMixerBgPalette, type MixerBgPaletteId } from "@/data/mixer-bg-palettes";
 import { SOUND_MAP } from "@/config/sound-map";
 import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 import { bpmAudioEngine } from "@/lib/bpmAudioEngine";
@@ -179,6 +180,9 @@ type MixerContextType = {
   closeImmersivo: () => void;
   /** Creación de Geometrix seleccionada como fondo inmersivo. null = sin Geometrix. */
   inmersivoGeoBgCreation: GeometrixCreation | null;
+  /** Paleta de fondo del Mezclador (noche / arena). Sincronizada desde musica.tsx. */
+  bgPaletteId: MixerBgPaletteId;
+  setBgPaletteId: (id: MixerBgPaletteId) => void;
 };
 
 const MixerContext = createContext<MixerContextType | null>(null);
@@ -191,6 +195,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const [loadedPresetId, setLoadedPresetId] = useState<string | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [masterVolume, setMasterVolumeSt] = useState(1.0);
+  const [bgPaletteId, setBgPaletteId] = useState<MixerBgPaletteId>(DEFAULT_MIXER_BG_PALETTE);
   const masterVolumeRef = useRef(1.0);
 
   const setMasterVolume = useCallback((v: number) => {
@@ -1920,6 +1925,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         openImmersivo,
         closeImmersivo,
         inmersivoGeoBgCreation,
+        bgPaletteId,
+        setBgPaletteId,
       }}
     >
       {children}

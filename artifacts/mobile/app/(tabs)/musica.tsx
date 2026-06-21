@@ -500,7 +500,7 @@ export default function MezcladorScreen() {
   const { isPremium }    = usePremium();
   const { sounds: allSounds, refresh: refreshSounds } = useSounds();
   const { open: openDrawer } = useDrawer();
-  const { isActive, toggleSound, activeBpm } = useMixer();
+  const { isActive, toggleSound, activeBpm, bgPaletteId, setBgPaletteId } = useMixer();
   const { lastSavedAt } = useSaveEvent();
 
   const heartGlow = useRef(new Animated.Value(0)).current;
@@ -531,7 +531,6 @@ export default function MezcladorScreen() {
   const [settingsMode,    setSettingsMode]    = useState<"palette" | "filters">("filters");
   const [moodFilter,      setMoodFilter]      = useState<MoodId | null>(null);
   const [tagFilters,      setTagFilters]      = useState<SoundTagId[]>([]);
-  const [bgPaletteId,     setBgPaletteId]     = useState<MixerBgPaletteId>(DEFAULT_MIXER_BG_PALETTE);
   const settingsLoaded = useRef(false);
 
   // Carga inicial de los ajustes guardados
