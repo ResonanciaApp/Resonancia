@@ -216,13 +216,13 @@ export function MiniPlayer() {
               onPress={(e) => { e.stopPropagation(); handleOpen(); }}
               hitSlop={10}
               accessibilityLabel="Abrir mezclador"
-              style={{ marginLeft: -3 }}
+              style={{ marginLeft: -3, marginTop: -2 }}
             >
               <Feather name="chevron-up" size={22} color="rgba(255,255,255,0.6)" />
             </Pressable>
 
             {/* Stack / carrusel — ancho animado empuja el texto; timing suave sin rebote */}
-            <Animated.View style={[styles.stackArea, { width: stackWidthAnim }]}>
+            <Animated.View style={[styles.stackArea, { width: stackWidthAnim, marginTop: -2 }]}>
               <ScrollView
                 ref={scrollRef}
                 horizontal
