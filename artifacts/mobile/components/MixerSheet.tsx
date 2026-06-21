@@ -853,7 +853,7 @@ export function MixerSheet() {
               >
                 <MaterialCommunityIcons
                   name="tune-variant"
-                  size={18}
+                  size={22}
                   color={palette.headerFg}
                 />
               </Pressable>
@@ -864,7 +864,7 @@ export function MixerSheet() {
                 accessibilityRole="button"
                 accessibilityLabel="Modo Inmersivo"
               >
-                <Feather name="eye" size={18} color={palette.headerFg} />
+                <Feather name="eye" size={22} color={palette.headerFg} />
               </Pressable>
             </GhostPill>
           </View>
@@ -1119,7 +1119,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   headerBtn: { paddingHorizontal: 4, justifyContent: "center" },
-  headerPillBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
+  headerPillBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   caption: { fontSize: 10, letterSpacing: 1.8, textTransform: "uppercase", marginBottom: 4, fontWeight: "400" },
   title: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
   subtitle: { fontSize: 12, marginTop: 2 },
