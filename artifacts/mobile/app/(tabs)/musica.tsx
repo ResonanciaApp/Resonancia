@@ -998,11 +998,6 @@ const styles = StyleSheet.create({
     padding: 1,
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.30)",
-    shadowColor: "#D4AF37",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3,
-    elevation: 0,
   },
   pillTabInner: {
     flex: 1,
