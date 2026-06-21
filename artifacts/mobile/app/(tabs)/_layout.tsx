@@ -133,7 +133,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const accentOpacity = useRef(new Animated.Value(0)).current;
   const homeOpacity   = useRef(new Animated.Value(0)).current;
 
-  const isHome = state.routes[state.index]?.name === "index";
+  const isHome = state.routes[state.index]?.name === "resonadores";
 
   useEffect(() => {
     Animated.timing(homeOpacity, {
