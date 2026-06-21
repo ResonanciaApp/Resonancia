@@ -1092,10 +1092,10 @@ const styles = StyleSheet.create({
   },
   subTabBorderInner: {
     flexDirection: "row", alignItems: "center", justifyContent: "center",
-    paddingHorizontal: 13, paddingVertical: 4,
+    paddingHorizontal: 14, paddingVertical: 5,
     borderRadius: 999,
   },
-  subTabText: { fontSize: 12, fontWeight: "400", includeFontPadding: false, textAlignVertical: "center" },
+  subTabText: { fontSize: 13, fontWeight: "400", includeFontPadding: false, textAlignVertical: "center" },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 17, justifyContent: "space-evenly" },
   soundCard: { width: "28%" },
