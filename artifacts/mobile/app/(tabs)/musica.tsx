@@ -132,12 +132,12 @@ const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
 
 /** Gradiente de fondo de contenido en modo "noche" — último stop neutro oscuro (sin bordeaux) */
 const TAB_NOCHE_BG: Record<MainTabId, [string, string, string]> = {
-  popular:        ["#2E0410", "#27030D", "#1A0209"],
-  naturaleza:     ["#0A1A0E", "#071309", "#040D06"],
-  ancestrales:    ["#221510", "#1E0F0B", "#100904"],
-  sintetizadores: ["#061A2E", "#041220", "#030A18"],
-  voces:          ["#220830", "#180622", "#0E0416"],
-  bpm:            ["#0A2020", "#071818", "#040F0F"],
+  popular:        ["#2c0611", "#25050e", "#190309"],
+  naturaleza:     ["#0b190e", "#081209", "#040d06"],
+  ancestrales:    ["#211511", "#1d100c", "#0f0905"],
+  sintetizadores: ["#081a2c", "#05121f", "#040a17"],
+  voces:          ["#210a2e", "#180721", "#0e0515"],
+  bpm:            ["#0b1f1f", "#081717", "#050e0e"],
 };
 
 const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
