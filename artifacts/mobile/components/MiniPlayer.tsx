@@ -23,7 +23,7 @@ import { useColors } from "@/hooks/useColors";
 const MAX_PLAYER_WIDTH    = 438;
 const STACK_SIZE          = 43;
 const STACK_SHIFT         = 13;   // offset apilado (cerrado)
-const CAROUSEL_THUMB_GAP  = 10;   // separación fija entre thumbnails en el carrusel
+const CAROUSEL_THUMB_GAP  = 8;    // separación fija entre thumbnails en el carrusel
 const CAROUSEL_MAX_OPEN_W = 280;  // techo para que el texto nunca desaparezca del todo
 
 const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
