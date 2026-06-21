@@ -436,7 +436,8 @@ export default function ResonadoresScreen() {
         <View style={styles.tabPill}>
           {(["resonadores", "expansores"] as const).map((t) => {
             const isActive = activeTab === t;
-            const label = t === "resonadores" ? "Resonadores" : "Expansores";
+            const label   = t === "resonadores" ? "Resonadores" : "Expansores";
+            const bajada  = t === "resonadores" ? "La esencia de Resonancia" : "Los que expanden la vibración";
             return (
               <Pressable
                 key={t}
@@ -452,6 +453,7 @@ export default function ResonadoresScreen() {
                   />
                 )}
                 <Text style={[styles.tabBtnText, isActive && styles.tabBtnTextActive]}>{label}</Text>
+                <Text style={[styles.tabBtnBajada, isActive && styles.tabBtnBajadaActive]}>{bajada}</Text>
               </Pressable>
             );
           })}
@@ -642,6 +644,17 @@ const styles = StyleSheet.create({
   tabBtnTextActive: {
     color: "#1B060F",
     fontWeight: "700",
+  },
+  tabBtnBajada: {
+    fontSize: 9,
+    fontWeight: "400",
+    color: "rgba(255,255,255,0.50)",
+    textAlign: "center",
+    marginTop: 1,
+    letterSpacing: 0.2,
+  },
+  tabBtnBajadaActive: {
+    color: "rgba(27,6,15,0.65)",
   },
 
   filtersScroll: { paddingHorizontal: H_PAD, paddingBottom: 6 },
