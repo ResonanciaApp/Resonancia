@@ -164,13 +164,13 @@ const PillTab = memo(function PillTab({
           <Svg width={104} height={38} style={StyleSheet.absoluteFill} pointerEvents="none">
             <Defs>
               <SvgLG id="gsel-a" x1="1" y1="0" x2="0.35" y2="1">
-                <Stop offset="0"   stopColor="#E9C46A" stopOpacity={0.7} />
-                <Stop offset="0.4" stopColor="#D4AF37" stopOpacity={0.18} />
-                <Stop offset="1"   stopColor="#D4AF37" stopOpacity={0.03} />
+                <Stop offset="0"   stopColor="#E9C46A" stopOpacity={0.28} />
+                <Stop offset="0.4" stopColor="#D4AF37" stopOpacity={0.07} />
+                <Stop offset="1"   stopColor="#D4AF37" stopOpacity={0.01} />
               </SvgLG>
               <SvgLG id="gsel-b" x1="0" y1="1" x2="0.65" y2="0">
-                <Stop offset="0"    stopColor="#D4AF37" stopOpacity={0.28} />
-                <Stop offset="0.45" stopColor="#D4AF37" stopOpacity={0.06} />
+                <Stop offset="0"    stopColor="#D4AF37" stopOpacity={0.10} />
+                <Stop offset="0.45" stopColor="#D4AF37" stopOpacity={0.02} />
                 <Stop offset="1"    stopColor="#D4AF37" stopOpacity={0} />
               </SvgLG>
             </Defs>
