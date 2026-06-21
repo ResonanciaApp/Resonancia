@@ -974,7 +974,7 @@ const styles = StyleSheet.create({
     elevation: 9,
     backgroundColor: "#2E0510",
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(212,175,55,0.10)",
+    borderBottomColor: "rgba(212,175,55,0.28)",
   },
   topPanel: { backgroundColor: "transparent" },
 
