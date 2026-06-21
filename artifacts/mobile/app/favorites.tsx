@@ -378,7 +378,7 @@ export default function FavoritesScreen() {
         </View>
 
         {/* ── Contenido del tab activo ── */}
-        <View style={{ marginTop: 20 }}>
+        <View style={{ marginTop: 5 }}>
           {activeTab === "sesiones" && renderSesiones()}
           {activeTab === "mezclas"  && renderMezclas()}
           {activeTab === "musica"   && renderMusica()}
