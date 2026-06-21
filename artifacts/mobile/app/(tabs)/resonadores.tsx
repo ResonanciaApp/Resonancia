@@ -619,7 +619,7 @@ const styles = StyleSheet.create({
 
   tabPill: {
     flexDirection: "row",
-    backgroundColor: "rgba(74,12,12,0.35)",
+    backgroundColor: "rgba(255,255,255,0.50)",
     borderRadius: 999,
     padding: 3,
     borderWidth: 1,
