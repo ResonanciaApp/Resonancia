@@ -34,7 +34,6 @@ import { useLoadMix } from "@/hooks/useLoadMix";
 import { MixActionsSheet } from "@/components/MixActionsSheet";
 import { MixCover } from "@/app/mi-mezcla/[id]";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
-import { PLAYLISTS, type Playlist } from "@/data/playlists";
 import { ARTISTS, type Artist } from "@/data/artists";
 import { GUIDES, type Guide } from "@/data/guides";
 import { SESSIONS, getSessionById } from "@/data/sessions";
@@ -255,30 +254,6 @@ function AnimatedChipRow({
         })}
       </ScrollView>
     </View>
-  );
-}
-
-// ── Fila de playlist (vista lista) ───────────────────────────────────────────
-function PlaylistRow({ pl, onPress }: { pl: Playlist; onPress: () => void }) {
-  return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
-      <Image source={pl.cover as number} style={styles.rowThumb} resizeMode="cover" />
-      <View style={styles.rowInfo}>
-        <Text style={styles.rowTitle} numberOfLines={1}>{pl.title}</Text>
-        <Text style={styles.rowSub} numberOfLines={1}>Playlist · Casa del Cuenco</Text>
-      </View>
-    </Pressable>
-  );
-}
-
-// ── Card de playlist (vista grilla) ──────────────────────────────────────────
-function PlaylistGrid({ pl, onPress }: { pl: Playlist; onPress: () => void }) {
-  const cardW = (width - H_PAD * 2 - 12) / 3;
-  return (
-    <Pressable onPress={onPress} style={({ pressed }) => [{ width: cardW, opacity: pressed ? 0.8 : 1 }]}>
-      <Image source={pl.cover as number} style={[styles.gridThumb, { width: cardW, height: cardW }]} resizeMode="cover" />
-      <Text style={styles.gridTitle} numberOfLines={2}>{pl.title}</Text>
-    </Pressable>
   );
 }
 
@@ -945,9 +920,6 @@ export default function BibliotecaScreen() {
                 <Text style={styles.gridTitle} numberOfLines={2}>{pl.name}</Text>
               </Pressable>
             ))}
-            {PLAYLISTS.map((pl) => (
-              <PlaylistGrid key={pl.id} pl={pl} onPress={() => router.push(`/coleccion/${pl.id}` as never)} />
-            ))}
           </View>
         );
       }
@@ -973,9 +945,6 @@ export default function BibliotecaScreen() {
               onPress={() => router.push(`/playlist/${pl.id}` as never)}
               onLongPress={() => { setActionsItemId(pl.id); setActionsItemKind("playlist"); }}
             />
-          ))}
-          {PLAYLISTS.map((pl) => (
-            <PlaylistRow key={pl.id} pl={pl} onPress={() => router.push(`/coleccion/${pl.id}` as never)} />
           ))}
         </View>
       );
