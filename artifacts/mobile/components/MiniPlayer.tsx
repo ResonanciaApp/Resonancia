@@ -532,7 +532,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     color: "#FFFFFF",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "600",
     letterSpacing: 1.0,
     textAlign: "center",
