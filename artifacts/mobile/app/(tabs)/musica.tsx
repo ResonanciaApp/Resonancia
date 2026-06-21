@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Alert,
   Animated,
+  Dimensions,
   Easing,
   ImageBackground,
   Platform,
@@ -56,6 +57,11 @@ import { GhostPill } from "@/components/GhostPill";
 import Svg, { Defs, LinearGradient as SvgLG, Stop, Rect } from "react-native-svg";
 import { useSounds } from "@/context/SoundsContext";
 import { REMOTE_SOUND_MAP, REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
+
+// Tamaños fijos de card e imagen — iguales en todos los tiles
+const SCREEN_W = Dimensions.get("window").width;
+const CARD_W   = Math.floor((SCREEN_W - 28 - 40) / 3); // padding 14×2 + gaps 20×2
+const IMG_SIZE  = Math.floor(CARD_W * 0.75);
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
 const GOLD  = "#D4AF37";
@@ -1112,9 +1118,9 @@ const styles = StyleSheet.create({
   subTabText: { fontSize: 13, fontWeight: "400", includeFontPadding: false, textAlignVertical: "center" },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 17, justifyContent: "space-evenly" },
-  soundCard: { width: "28%" },
+  soundCard: { width: CARD_W },
   cardImageWrap: {
-    width: "75%", aspectRatio: 1, alignSelf: "center", marginTop: 13,
+    width: IMG_SIZE, height: IMG_SIZE, alignSelf: "center", marginTop: 13,
   },
   cardBorderRing: {
     position: "absolute", top: -3, left: -3, right: -3, bottom: -3,
