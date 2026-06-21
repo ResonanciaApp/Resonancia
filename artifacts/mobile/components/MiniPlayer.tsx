@@ -401,8 +401,6 @@ const styles = StyleSheet.create({
     maxWidth: MAX_PLAYER_WIDTH,
     width: "100%",
     borderRadius: 25,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
   },
 
   // ── Fila de mezcla ────────────────────────────────────────────
