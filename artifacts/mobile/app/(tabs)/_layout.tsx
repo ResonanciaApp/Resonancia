@@ -191,10 +191,10 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         </Animated.View>
         {/* Glass negro+dorado: solo en Inicio */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: homeOpacity }]} pointerEvents="none">
-          <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
+          <BlurView intensity={60} tint="dark" style={StyleSheet.absoluteFill} />
           <View style={StyleSheet.absoluteFill} pointerEvents="none">
             <LinearGradient
-              colors={["rgba(0,0,0,0.72)", "rgba(10,6,0,0.85)"]}
+              colors={["rgba(0,0,0,0.45)", "rgba(10,6,0,0.55)"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={StyleSheet.absoluteFill}
@@ -202,7 +202,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
             {/* tinte dorado sutil */}
             <View
               pointerEvents="none"
-              style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(212,175,55,0.06)" }]}
+              style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(212,175,55,0.09)" }]}
             />
           </View>
         </Animated.View>
