@@ -850,31 +850,6 @@ export function MixerSheet() {
             </Pressable>
           </GHScrollView>
 
-          {/* Modo Inmersivo */}
-          <Animated.View style={{ opacity: immersivoFade, alignSelf: "center", marginBottom: 20, marginTop: 6 }}>
-            <Pressable
-              onPress={() => {
-                openImmersivo(bgPresetId);
-              }}
-              style={[styles.immersivoBtn, isLight && styles.immersivoBtnLight, !!activeBgPreset.image && styles.immersivoBtnImage, hasCustomBg && styles.immersivoBtnCustom]}
-              accessibilityRole="button"
-              accessibilityLabel="Entrar en Modo Inmersivo"
-            >
-              {/* Ícono: ojo dentro de fullscreen */}
-              <View style={styles.immersivoIconWrap}>
-                <MaterialCommunityIcons name="fullscreen" size={30} color={hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#180202" : "rgba(212,175,55,0.90)"} />
-                <MaterialCommunityIcons
-                  name="eye"
-                  size={13}
-                  color={hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#180202" : "rgba(212,175,55,0.90)"}
-                  style={styles.immersivoIconEye}
-                />
-              </View>
-              <Text style={[styles.immersivoBtnText, hasCustomBg ? { color: "rgba(255,255,255,0.90)" } : isLight ? { color: "#180202" } : undefined]}>
-                Modo Inmersivo
-              </Text>
-            </Pressable>
-          </Animated.View>
 
           {/* Separador sonidos / tab — oculto */}
 
