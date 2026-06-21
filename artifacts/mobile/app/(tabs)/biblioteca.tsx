@@ -364,50 +364,98 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    if (!visible) {
-      setKbReady(false);
-      setKbHeight(0);
-      fadeAnim.setValue(0);
-      return;
-    }
+    if (!visible) { setQ(""); setKbReady(false); setKbHeight(0); fadeAnim.setValue(0); return; }
     const show = Keyboard.addListener("keyboardDidShow", (e) => {
       setKbHeight(e.endCoordinates.height);
       setKbReady(true);
       Animated.timing(fadeAnim, { toValue: 1, duration: 180, useNativeDriver: true }).start();
     });
-    const hide = Keyboard.addListener("keyboardDidHide", () => {
-      setKbReady(false);
-      fadeAnim.setValue(0);
-    });
+    const hide = Keyboard.addListener("keyboardDidHide", () => { setKbReady(false); fadeAnim.setValue(0); });
     return () => { show.remove(); hide.remove(); };
   }, [visible, fadeAnim]);
+
+  const results = useMemo(() => {
+    const term = q.trim().toLowerCase();
+    if (!term) return [];
+    return SESSIONS.filter((s) =>
+      s.title.toLowerCase().includes(term) ||
+      s.categoryLabel.toLowerCase().includes(term) ||
+      (s.description ?? "").toLowerCase().includes(term)
+    ).slice(0, 30);
+  }, [q]);
+
+  const handleSelect = (id: string) => {
+    onClose();
+    router.push(`/session/${id}` as never);
+  };
 
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose} onShow={() => inputRef.current?.focus()}>
       <View style={[styles.searchModalRoot, { paddingBottom: kbHeight }]}>
+        {/* Barra de búsqueda */}
         <View style={styles.searchOverlay}>
           <View style={styles.searchBar}>
             <Feather name="search" size={16} color={MUTED} />
             <TextInput
               ref={inputRef}
               style={styles.searchInput}
-              placeholder="Buscar en tu biblioteca..."
+              placeholder="Buscar sesiones..."
               placeholderTextColor={MUTED}
               value={q}
               onChangeText={setQ}
               returnKeyType="search"
+              autoCorrect={false}
             />
+            {q.length > 0 && (
+              <Pressable onPress={() => setQ("")} hitSlop={10}>
+                <Feather name="x" size={15} color={MUTED} />
+              </Pressable>
+            )}
           </View>
           <Pressable onPress={onClose} style={styles.cancelBtn}>
             <Text style={styles.cancelText}>Cancelar</Text>
           </Pressable>
         </View>
+
+        {/* Estado vacío */}
         {q.length === 0 && kbReady && (
           <Animated.View style={[styles.searchEmpty, { opacity: fadeAnim }]}>
             <Feather name="headphones" size={48} color={GOLD} style={{ marginBottom: 16 }} />
             <Text style={styles.searchEmptyTitle}>Encuentra tus sesiones favoritas</Text>
-            <Text style={styles.searchEmptySub}>Busca todo lo que guardaste, seguiste o creaste.</Text>
+            <Text style={styles.searchEmptySub}>Busca meditaciones, sonidos, historias…</Text>
           </Animated.View>
+        )}
+
+        {/* Resultados */}
+        {q.length > 0 && (
+          <FlatList
+            data={results}
+            keyExtractor={(s) => s.id}
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 24 }}
+            ListEmptyComponent={
+              <View style={styles.searchEmpty}>
+                <Feather name="search" size={36} color={MUTED} style={{ marginBottom: 12 }} />
+                <Text style={styles.searchEmptyTitle}>Sin resultados</Text>
+                <Text style={styles.searchEmptySub}>Intenta con otro término</Text>
+              </View>
+            }
+            renderItem={({ item }) => (
+              <Pressable
+                onPress={() => handleSelect(item.id)}
+                style={({ pressed }) => [styles.searchResultRow, { opacity: pressed ? 0.7 : 1 }]}
+              >
+                <View style={styles.searchResultIcon}>
+                  <Feather name="play-circle" size={18} color={GOLD} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.searchResultTitle} numberOfLines={1}>{item.title}</Text>
+                  <Text style={styles.searchResultSub} numberOfLines={1}>{item.categoryLabel}</Text>
+                </View>
+                <Feather name="chevron-right" size={15} color={MUTED} />
+              </Pressable>
+            )}
+          />
         )}
       </View>
     </Modal>
@@ -1697,6 +1745,21 @@ const styles = StyleSheet.create({
   },
   searchEmptyTitle: { fontSize: 18, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 10 },
   searchEmptySub:   { fontSize: 14, color: MUTED, textAlign: "center", lineHeight: 20 },
+  searchResultRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "rgba(255,255,255,0.07)",
+  },
+  searchResultIcon: {
+    width: 36, height: 36, borderRadius: 10,
+    backgroundColor: "rgba(212,175,55,0.10)",
+    alignItems: "center", justifyContent: "center",
+  },
+  searchResultTitle: { fontSize: 14, fontWeight: "600", color: TEXT, marginBottom: 2 },
+  searchResultSub:   { fontSize: 12, color: MUTED },
 
   // ── Hoja de crear ────────────────────────────────────────────────────────────
   sheetBackdrop: {
