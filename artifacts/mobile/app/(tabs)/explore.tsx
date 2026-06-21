@@ -530,7 +530,7 @@ export default function ExploreScreen() {
 }
 
 const styles = StyleSheet.create({
-  root:   { flex: 1 },
+  root:   { flex: 1, backgroundColor: "#290A12" },
   scroll: { flex: 1 },
   communityWrap: {
     marginBottom: SECTION_GAP,
