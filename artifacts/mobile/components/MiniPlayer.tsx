@@ -242,7 +242,7 @@ export function MiniPlayer() {
                     <StackThumbItem
                       key={s.id}
                       image={image}
-                      style={[styles.stackThumb, { position: 'absolute', left: i * STACK_SHIFT, zIndex: i, transform: [{ translateX }] }]}
+                      style={[styles.stackThumb, { position: 'absolute', left: i * STACK_SHIFT, zIndex: n - 1 - i, transform: [{ translateX }] }]}
                       onPress={toggleStack}
                       onLongPress={() => removeSound(s.id)}
                       primaryColor={colors.primary}
