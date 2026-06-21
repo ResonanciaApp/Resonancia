@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.30)",
+    borderColor: "rgba(255,255,255,0.15)",
   },
 
   // ── Fila de mezcla ────────────────────────────────────────────
