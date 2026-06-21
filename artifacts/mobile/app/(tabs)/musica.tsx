@@ -1093,8 +1093,8 @@ const styles = StyleSheet.create({
     width: "79%", aspectRatio: 1, alignSelf: "center", marginTop: 13,
   },
   cardBorderRing: {
-    position: "absolute", top: -1, left: -1, right: -1, bottom: -1,
-    borderRadius: 17, borderWidth: 5,
+    position: "absolute", top: -2, left: -2, right: -2, bottom: -2,
+    borderRadius: 18, borderWidth: 5,
   },
   cardClipInner: {
     flex: 1, borderRadius: 12, overflow: "hidden",
