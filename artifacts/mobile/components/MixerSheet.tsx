@@ -842,79 +842,79 @@ export function MixerSheet() {
 
           {/* Separador sonidos / tab — oculto */}
 
-          {/* ── Glass footer: Píldora + controles ── */}
-          <BlurView intensity={70} tint="dark" style={styles.glassFooter}>
-            <View style={styles.pillAboveFooter}>
-              <GhostPill>
-                <Pressable
-                  onPress={() => setEscenasOpen(true)}
-                  hitSlop={8}
-                  style={styles.headerPillBtn}
-                  accessibilityRole="button"
-                  accessibilityLabel="Escenas y ajustes de fondo"
-                >
-                  <MaterialCommunityIcons
-                    name="tune-variant"
-                    size={22}
-                    color={palette.headerFg}
-                  />
-                </Pressable>
-                <Pressable
-                  onPress={() => openImmersivo(bgPresetId)}
-                  hitSlop={8}
-                  style={styles.headerPillBtn}
-                  accessibilityRole="button"
-                  accessibilityLabel="Modo Inmersivo"
-                >
-                  <Feather name="eye" size={22} color={palette.headerFg} />
-                </Pressable>
-              </GhostPill>
-            </View>
-
-          {/* Footer: Timer | Play | Guardar + Actualizar */}
-          <View style={styles.footerRow}>
-
-            {/* Izquierda: Timer */}
-            <Pressable
-              onPress={handleTimerPress}
-              style={styles.footerSide}
-              accessibilityRole="button"
-              accessibilityLabel={sleepTimerRemaining != null ? "Temporizador activo" : "Configurar temporizador"}
-            >
-              <View style={[styles.footerTimerCircle, { backgroundColor: palette.footerCircleBg }]}>
-                <MaterialCommunityIcons name="clock" size={24} color={palette.iconColor} />
-              </View>
-              <Text style={[styles.footerLabel, { color: palette.footerLabel, textAlign: "center" }]}>
-                {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "Timer para\ndormir"}
-              </Text>
-            </Pressable>
-
-            {/* Centro: Play/Pause sin label */}
-            <Pressable
-              onPress={togglePlay}
-              style={styles.footerCenter}
-              accessibilityRole="button"
-            >
-              <View style={[styles.footerPlayCircle, { backgroundColor: palette.footerCircleBg }]}>
+          {/* Píldora flotante — encima del glass */}
+          <View style={styles.pillAboveFooter}>
+            <GhostPill>
+              <Pressable
+                onPress={() => setEscenasOpen(true)}
+                hitSlop={8}
+                style={styles.headerPillBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Escenas y ajustes de fondo"
+              >
                 <MaterialCommunityIcons
-                  name={isPlaying ? "pause" : "play"}
-                  size={56}
-                  color={palette.iconColor}
+                  name="tune-variant"
+                  size={22}
+                  color={palette.headerFg}
                 />
-              </View>
-            </Pressable>
-
-            {/* Derecha: Guardar */}
-            <View style={styles.footerSide}>
-              <Pressable style={styles.footerSaveBtn} onPress={() => openSaveModal(originPreset ? "update" : "new")}>
-                <View style={[styles.footerHeartCircle, { backgroundColor: palette.footerCircleBg }]}>
-                  <MaterialCommunityIcons name="heart" size={24} color={palette.iconColor} />
-                </View>
-                <Text style={[styles.footerLabel, { color: palette.footerLabel, textAlign: "center" }]}>{"Guardar tu\nmezcla"}</Text>
               </Pressable>
-            </View>
-
+              <Pressable
+                onPress={() => openImmersivo(bgPresetId)}
+                hitSlop={8}
+                style={styles.headerPillBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Modo Inmersivo"
+              >
+                <Feather name="eye" size={22} color={palette.headerFg} />
+              </Pressable>
+            </GhostPill>
           </View>
+
+          {/* ── Glass footer: Timer | Play | Guardar ── */}
+          <BlurView intensity={70} tint="dark" style={styles.glassFooter}>
+            <View style={styles.footerRow}>
+
+              {/* Izquierda: Timer */}
+              <Pressable
+                onPress={handleTimerPress}
+                style={styles.footerSide}
+                accessibilityRole="button"
+                accessibilityLabel={sleepTimerRemaining != null ? "Temporizador activo" : "Configurar temporizador"}
+              >
+                <View style={[styles.footerTimerCircle, { backgroundColor: palette.footerCircleBg }]}>
+                  <MaterialCommunityIcons name="clock" size={24} color={palette.iconColor} />
+                </View>
+                <Text style={[styles.footerLabel, { color: palette.footerLabel, textAlign: "center" }]}>
+                  {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "Timer para\ndormir"}
+                </Text>
+              </Pressable>
+
+              {/* Centro: Play/Pause — subido 20 px */}
+              <Pressable
+                onPress={togglePlay}
+                style={[styles.footerCenter, { marginTop: -20 }]}
+                accessibilityRole="button"
+              >
+                <View style={[styles.footerPlayCircle, { backgroundColor: palette.footerCircleBg }]}>
+                  <MaterialCommunityIcons
+                    name={isPlaying ? "pause" : "play"}
+                    size={56}
+                    color={palette.iconColor}
+                  />
+                </View>
+              </Pressable>
+
+              {/* Derecha: Guardar */}
+              <View style={styles.footerSide}>
+                <Pressable style={styles.footerSaveBtn} onPress={() => openSaveModal(originPreset ? "update" : "new")}>
+                  <View style={[styles.footerHeartCircle, { backgroundColor: palette.footerCircleBg }]}>
+                    <MaterialCommunityIcons name="heart" size={24} color={palette.iconColor} />
+                  </View>
+                  <Text style={[styles.footerLabel, { color: palette.footerLabel, textAlign: "center" }]}>{"Guardar tu\nmezcla"}</Text>
+                </Pressable>
+              </View>
+
+            </View>
           </BlurView>
 
         </Pressable>
@@ -1135,11 +1135,13 @@ const styles = StyleSheet.create({
   },
   glassFooter: {
     overflow: "hidden",
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
     borderTopWidth: 1,
     borderColor: "rgba(255,255,255,0.05)",
     backgroundColor: "rgba(255,255,255,0.005)",
+    paddingTop: 6,
+    paddingBottom: 10,
   },
   pillAboveFooter: {
     alignItems: "center",
