@@ -241,7 +241,7 @@ export function MiniPlayer() {
         <View style={styles.wrapper}>
           {/* Fondo glassmorphism */}
           <BlurView intensity={60} tint="dark" style={StyleSheet.absoluteFill} />
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(20,5,12,0.45)" }]} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.45)" }]} />
 
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
