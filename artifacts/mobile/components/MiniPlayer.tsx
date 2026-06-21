@@ -118,6 +118,22 @@ export function MiniPlayer() {
 
   const mixActive = !currentSession && activeSounds.length > 0;
 
+  // ── Título cinemático "Esta es tu mezcla" ──────────────────────
+  const cinematicOpacity = useRef(new Animated.Value(0)).current;
+  const prevMixActive    = useRef(false);
+
+  useEffect(() => {
+    if (mixActive && !prevMixActive.current) {
+      cinematicOpacity.setValue(0);
+      Animated.sequence([
+        Animated.timing(cinematicOpacity, { toValue: 1, duration: 1000, useNativeDriver: true }),
+        Animated.delay(1500),
+        Animated.timing(cinematicOpacity, { toValue: 0, duration: 800, useNativeDriver: true }),
+      ]).start();
+    }
+    prevMixActive.current = mixActive;
+  }, [mixActive]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // ── De-stack / carrusel ────────────────────────────────────────
   // El área del stack anima su ANCHO: cerrado = stackWidthStackedCap,
   // abierto = CAROUSEL_OPEN_W. El textBlock (flex:1) se empuja
@@ -268,6 +284,14 @@ export function MiniPlayer() {
                 })}
               </ScrollView>
             </Animated.View>
+
+            {/* Título cinemático — fade in/out al aparecer el miniplayer */}
+            <Animated.Text
+              numberOfLines={1}
+              style={[styles.cinematicText, { opacity: cinematicOpacity }]}
+            >
+              Esta es tu mezcla
+            </Animated.Text>
 
             {/* Botón play/pause — absoluto a la derecha, nunca se empuja */}
             <View style={[styles.waveWrap, { position: "absolute", right: 10, zIndex: 2 }]}>
@@ -439,6 +463,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.2)",
+  },
+  cinematicText: {
+    flex: 1,
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontWeight: "300",
+    letterSpacing: 1.0,
+    textAlign: "right",
+    paddingRight: 10,
   },
   playIconNudge: { marginLeft: 2 },
   waveWrap: {
