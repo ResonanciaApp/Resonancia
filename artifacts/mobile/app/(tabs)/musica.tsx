@@ -218,7 +218,7 @@ const PillTab = memo(function PillTab({
           </LinearGradient>
         </View>
       ) : (
-        <View style={styles.pillTab}>
+        <View style={[styles.pillTab, { borderWidth: 1, borderColor: "rgba(212,175,55,0.05)" }]}>
           <MaterialCommunityIcons name={tab.icon as any} size={17} color="rgba(255,255,255,0.80)" />
           <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "rgba(255,255,255,0.80)", fontWeight: "400" }]}>
             {tab.label}
