@@ -400,7 +400,6 @@ export default function ResonadoresScreen() {
             </Pressable>
           </GhostPill>
         </View>
-        <Text style={[styles.subtitle, { transform: [{ translateY: -11 }] }]}>Únete a la red de Resonancia</Text>
 
         {searchVisible && (
           <View style={styles.searchWrap}>
@@ -431,8 +430,6 @@ export default function ResonadoresScreen() {
           />
           {/* Overlay rojizo sutil */}
           <View pointerEvents="none" style={styles.bannerTint} />
-          {/* Borde dorado inferior */}
-          <View pointerEvents="none" style={styles.bannerBorderBottom} />
           <Animated.View
             pointerEvents="none"
             style={[styles.bannerTextWrap, { opacity: bannerTextOpacity }]}
@@ -548,7 +545,7 @@ const styles = StyleSheet.create({
     width: undefined,
     aspectRatio: 1536 / 508,
     marginHorizontal: -H_PAD,
-    marginTop: -15,
+    marginTop: -20,
     marginBottom: 14,
     overflow: "hidden",
   },
