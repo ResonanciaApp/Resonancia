@@ -592,7 +592,6 @@ export default function MezcladorScreen() {
   };
 
   const bgPalette = getMixerBgPalette(bgPaletteId);
-  const isDark = bgPaletteId === "noche" || bgPaletteId === "plomo";
 
   // Sincroniza el color del menú inferior con el banner del tab activo
   useEffect(() => {
