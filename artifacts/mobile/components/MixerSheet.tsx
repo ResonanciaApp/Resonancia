@@ -341,7 +341,7 @@ export function MixerSheet() {
   const sheetGradient = activeBgPreset.colors;
   const isLight = activeBgPreset.isLight ?? false;
   /** true cuando hay cualquier escena o color seleccionado (no el fondo por defecto) */
-  const hasCustomBg = bgPresetId !== DEFAULT_BG_PRESET_ID;
+  const hasCustomBg = bgPresetId !== "oscuro";
 
   // Cargar preset y overlay guardados
   useEffect(() => {
@@ -979,9 +979,9 @@ export function MixerSheet() {
             <View style={styles.bgPickerHandle} />
             <View style={styles.bgPickerTitleRow}>
               <Text style={styles.bgPickerTitle}>Elige tu fondo</Text>
-              {bgPresetId !== DEFAULT_BG_PRESET_ID && (
+              {bgPresetId !== "oscuro" && (
                 <Pressable
-                  onPress={() => selectBgPreset(DEFAULT_BG_PRESET_ID)}
+                  onPress={() => selectBgPreset("oscuro")}
                   style={styles.restablecerBtn}
                   hitSlop={8}
                 >
