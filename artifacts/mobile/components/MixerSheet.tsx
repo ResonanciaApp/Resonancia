@@ -842,36 +842,36 @@ export function MixerSheet() {
 
           {/* Separador sonidos / tab — oculto */}
 
-          {/* Píldora flotante — encima del glass */}
-          <View style={styles.pillAboveFooter}>
-            <GhostPill>
-              <Pressable
-                onPress={() => setEscenasOpen(true)}
-                hitSlop={8}
-                style={styles.headerPillBtn}
-                accessibilityRole="button"
-                accessibilityLabel="Escenas y ajustes de fondo"
-              >
-                <MaterialCommunityIcons
-                  name="tune-variant"
-                  size={22}
-                  color={palette.headerFg}
-                />
-              </Pressable>
-              <Pressable
-                onPress={() => openImmersivo(bgPresetId)}
-                hitSlop={8}
-                style={styles.headerPillBtn}
-                accessibilityRole="button"
-                accessibilityLabel="Modo Inmersivo"
-              >
-                <Feather name="eye" size={22} color={palette.headerFg} />
-              </Pressable>
-            </GhostPill>
-          </View>
-
-          {/* ── Glass footer: Timer | Play | Guardar ── */}
+          {/* ── Glass footer: Píldora + controles ── */}
           <BlurView intensity={70} tint="dark" style={styles.glassFooter}>
+            <View style={styles.pillAboveFooter}>
+              <GhostPill>
+                <Pressable
+                  onPress={() => setEscenasOpen(true)}
+                  hitSlop={8}
+                  style={styles.headerPillBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel="Escenas y ajustes de fondo"
+                >
+                  <MaterialCommunityIcons
+                    name="tune-variant"
+                    size={22}
+                    color={palette.headerFg}
+                  />
+                </Pressable>
+                <Pressable
+                  onPress={() => openImmersivo(bgPresetId)}
+                  hitSlop={8}
+                  style={styles.headerPillBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel="Modo Inmersivo"
+                >
+                  <Feather name="eye" size={22} color={palette.headerFg} />
+                </Pressable>
+              </GhostPill>
+            </View>
+
+            {/* Footer: Timer | Play | Guardar + Actualizar */}
             <View style={styles.footerRow}>
 
               {/* Izquierda: Timer */}
@@ -889,10 +889,10 @@ export function MixerSheet() {
                 </Text>
               </Pressable>
 
-              {/* Centro: Play/Pause — subido 20 px */}
+              {/* Centro: Play/Pause sin label */}
               <Pressable
                 onPress={togglePlay}
-                style={[styles.footerCenter, { marginTop: -20 }]}
+                style={styles.footerCenter}
                 accessibilityRole="button"
               >
                 <View style={[styles.footerPlayCircle, { backgroundColor: palette.footerCircleBg }]}>
@@ -1135,13 +1135,11 @@ const styles = StyleSheet.create({
   },
   glassFooter: {
     overflow: "hidden",
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
     borderTopWidth: 1,
     borderColor: "rgba(255,255,255,0.05)",
     backgroundColor: "rgba(255,255,255,0.005)",
-    paddingTop: 6,
-    paddingBottom: 10,
   },
   pillAboveFooter: {
     alignItems: "center",
