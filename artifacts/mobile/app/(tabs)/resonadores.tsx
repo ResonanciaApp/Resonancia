@@ -433,8 +433,9 @@ export default function ResonadoresScreen() {
           {/* Fade inferior sutil */}
           <LinearGradient
             pointerEvents="none"
-            colors={["transparent", "rgba(22,1,8,0.96)"]}
-            start={{ x: 0, y: 0.3 }}
+            colors={["transparent", "rgba(22,1,8,0.85)", "#160108"]}
+            locations={[0.25, 0.72, 1]}
+            start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFill}
           />
