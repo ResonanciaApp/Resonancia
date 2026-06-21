@@ -725,7 +725,7 @@ export function MixerSheet() {
         <Pressable
           style={[
             styles.sheet,
-            { backgroundColor: sheetGradient[2], paddingTop: 8, paddingBottom: insets.bottom + 16 },
+            { backgroundColor: sheetGradient[2], paddingTop: insets.top + 8, paddingBottom: insets.bottom + 16 },
           ]}
           onPress={(e) => e.stopPropagation()}
         >
@@ -777,7 +777,7 @@ export function MixerSheet() {
           )}
 
           {/* ── Cabecera con fondo propio — solo visible en tema sin imagen ── */}
-          <View style={[styles.headerBg, { marginTop: -8, paddingTop: 8, backgroundColor: "transparent" }]}>
+          <View style={[styles.headerBg, { marginTop: -(insets.top + 8), paddingTop: insets.top + 8, backgroundColor: "transparent" }]}>
             {/* Handle con PanResponder para arrastrar y cerrar */}
             <View style={styles.handleZone} {...panResponder.panHandlers}>
               <View style={[styles.handle, { backgroundColor: "rgba(255,255,255,0.25)" }]} />
@@ -1109,11 +1109,8 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   sheet: {
-    height: Dimensions.get("window").height - 80,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    height: Dimensions.get("window").height,
     paddingHorizontal: 20,
-    overflow: "hidden",
   },
   sheetGradient: {
     ...StyleSheet.absoluteFillObject,
