@@ -155,9 +155,9 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       <Animated.View
         style={[styles.bar, { paddingBottom: pb, transform: [{ translateY }] }]}
       >
-        {/* Fondo blanco translúcido */}
+        {/* Fondo: degradado de Inicio */}
         <LinearGradient
-          colors={["rgba(255,255,255,0.4)", "rgba(255,255,255,0.4)"]}
+          colors={["#21040C", "#100105"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
