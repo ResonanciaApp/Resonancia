@@ -407,7 +407,7 @@ export default function ExploreScreen() {
         {/* ── Recomendado para ti ── */}
         {query.length === 0 && (
           <View style={styles.recoSection}>
-            <Text style={[styles.sectionTitle, { marginBottom: 14 }]}>Meditaciones recomendadas para ti</Text>
+            <Text style={[styles.sectionTitle, { marginBottom: 14 }]}>Meditaciones recomendadas</Text>
             <View style={styles.recoList}>
               {dailyRecs.map((s, i) => (
                 <React.Fragment key={s.id}>
