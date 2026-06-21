@@ -172,13 +172,15 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       <Animated.View
         style={[styles.bar, { paddingBottom: pb, transform: [{ translateY }] }]}
       >
-        {/* Fondo base: borgoña (otras tabs) */}
-        <LinearGradient
-          colors={["#21040C", "#100105"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
+        {/* Fondo base: borgoña (otras tabs) — se desvanece en Equipo para dejar ver el blur */}
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: Animated.subtract(1, homeOpacity) }]}>
+          <LinearGradient
+            colors={["#21040C", "#100105"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+        </Animated.View>
         {/* Acento del tab activo (crossfade) */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity }]}>
           <LinearGradient
