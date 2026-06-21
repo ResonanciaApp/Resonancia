@@ -20,7 +20,6 @@ import { BlurView } from "expo-blur";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
-import { SOUNDS } from "@/data/sounds";
 import { getSoundImage } from "@/config/sound-images";
 import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 import { useColors } from "@/hooks/useColors";
@@ -96,17 +95,6 @@ export function MiniPlayer() {
   } = useMixer();
 
   const colors = useColors();
-
-  // ── Nombre de sonidos activos ───────────────────────────────────
-  const soundLabel = (() => {
-    if (activeSounds.length === 0) return "";
-    const names = activeSounds.map(
-      (s) => SOUNDS.find((x) => x.id === s.id)?.name ?? s.id
-    );
-    if (names.length === 1) return names[0];
-    if (names.length === 2) return `${names[0]} · ${names[1]}`;
-    return `${names[0]} +${names.length - 1}`;
-  })();
 
   // ── Swipe-up en handle → abre la sheet ─────────────────────────
   const openSheetRef = useRef(openSheet);
@@ -342,11 +330,6 @@ export function MiniPlayer() {
             </View>
           </View>
 
-          {/* ── Nombre del sonido ── */}
-          {soundLabel ? (
-            <Text numberOfLines={1} style={styles.soundLabel}>{soundLabel}</Text>
-          ) : null}
-
         </View>
       </View>
     );
@@ -422,15 +405,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
     letterSpacing: 0.2,
-  },
-
-  // ── Nombre sonido ─────────────────────────────────────────────
-  soundLabel: {
-    fontSize: 11,
-    color: "rgba(255,255,255,0.45)",
-    textAlign: "center",
-    paddingBottom: 6,
-    letterSpacing: 0.3,
   },
 
   // ── Handle ────────────────────────────────────────────────────
