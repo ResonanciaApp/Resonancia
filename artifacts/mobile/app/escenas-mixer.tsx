@@ -253,16 +253,6 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
           {/* ── Sección escenas ── */}
           <View style={styles.scenesTitleRow}>
             <Text style={styles.sectionTitle}>Escenas</Text>
-            {selectedId !== DEFAULT_BG_PRESET_ID && (
-              <Pressable
-                onPress={() => applyScene(DEFAULT_BG_PRESET_ID)}
-                style={styles.restablecerBtn}
-                hitSlop={8}
-              >
-                <Feather name="rotate-ccw" size={11} color="#8C1A2B" />
-                <Text style={styles.restablecerText}>Restablecer</Text>
-              </Pressable>
-            )}
           </View>
 
           <ScrollView
