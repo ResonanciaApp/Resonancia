@@ -1222,7 +1222,7 @@ export default function BibliotecaScreen() {
       <View
         style={[styles.stickyHeader, {
           paddingTop: topPad + 2,
-          backgroundColor: "#290A12",
+          backgroundColor: "#2E0510",
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 9 },
           shadowOpacity: 0.22,
