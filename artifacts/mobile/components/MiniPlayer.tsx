@@ -119,18 +119,20 @@ export function MiniPlayer() {
   const mixActive = !currentSession && activeSounds.length > 0;
 
   // ── De-stack / carrusel ────────────────────────────────────────
-  // El área del stack anima su ANCHO: cerrado = stackWidthStacked,
+  // El área del stack anima su ANCHO: cerrado = stackWidthStackedCap,
   // abierto = CAROUSEL_OPEN_W. El textBlock (flex:1) se empuja
   // naturalmente cuando el área crece. Sin botón separado de colapso.
 
   const n = activeSounds.length;
-  const stackWidthStacked    = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
-  const stackWidthStackedCap = Math.min(stackWidthStacked, MAX_STACK_LAYOUT_W);
+  // dynamicShift comprime el apilamiento para que TODOS los thumbnails quepan
+  // dentro del ancho cap (MAX_STACK_LAYOUT_W), sin importar cuántos haya.
+  const dynamicShift       = n <= 1 ? 0 : Math.min(STACK_SHIFT, (MAX_STACK_LAYOUT_W - STACK_SIZE) / (n - 1));
+  const stackWidthStackedCap = STACK_SIZE + Math.max(0, n - 1) * dynamicShift;
   const stackWidthAnim = useRef(new Animated.Value(stackWidthStackedCap)).current;
   // openProgress: 0 = apilado, 1 = abierto — driver NATIVO (slide por translateX)
   const openProgress   = useRef(new Animated.Value(0)).current;
-  // Cada thumb mueve (STACK_SIZE + gap - STACK_SHIFT) px por índice al abrirse
-  const OPEN_DELTA = STACK_SIZE + CAROUSEL_THUMB_GAP - STACK_SHIFT; // 38+8-15 = 31
+  // Cada thumb viaja (STACK_SIZE + gap - dynamicShift) al abrirse
+  const openDelta = STACK_SIZE + CAROUSEL_THUMB_GAP - dynamicShift;
 
   const [stackOpen, setStackOpen] = useState(false);
   const scrollRef = useRef<ScrollView>(null);
@@ -187,15 +189,10 @@ export function MiniPlayer() {
 
   // ── Modo mezcla ───────────────────────────────────────────────
   if (mixActive) {
-    const n = activeSounds.length;
-
     const presetName = loadedPresetId
       ? presets.find((p) => p.id === loadedPresetId)?.name
       : null;
     const title = presetName || "Tu mezcla";
-
-    // Ancho fijo del stack apilado en el row principal (nunca cambia)
-    const stackWidthStacked = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
 
     const handleOpen = () =>
       loadedPresetId?.startsWith("community-")
@@ -237,13 +234,13 @@ export function MiniPlayer() {
                   const image      = getSoundImage(s.id);
                   const translateX = openProgress.interpolate({
                     inputRange:  [0, 1],
-                    outputRange: [0, i * OPEN_DELTA],
+                    outputRange: [0, i * openDelta],
                   });
                   return (
                     <StackThumbItem
                       key={s.id}
                       image={image}
-                      style={[styles.stackThumb, { position: 'absolute', left: i * STACK_SHIFT, zIndex: n - 1 - i, transform: [{ translateX }] }]}
+                      style={[styles.stackThumb, { position: 'absolute', left: i * dynamicShift, zIndex: n - 1 - i, transform: [{ translateX }] }]}
                       onPress={toggleStack}
                       onLongPress={() => removeSound(s.id)}
                       primaryColor={colors.primary}
