@@ -900,7 +900,7 @@ export function MixerSheet() {
 
             {/* Derecha: Guardar */}
             <View style={styles.footerSide}>
-              <Pressable style={styles.footerSaveBtn} onPress={() => openSaveModal("new")}>
+              <Pressable style={styles.footerSaveBtn} onPress={() => openSaveModal(originPreset ? "update" : "new")}>
                 <View style={[styles.footerHeartCircle, { backgroundColor: palette.footerCircleBg }]}>
                   <MaterialCommunityIcons name="heart" size={24} color={palette.iconColor} />
                 </View>

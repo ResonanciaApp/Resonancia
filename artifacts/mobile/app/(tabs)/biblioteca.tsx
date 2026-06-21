@@ -746,7 +746,7 @@ export default function BibliotecaScreen() {
 
   const toggleView = () => setViewMode((v) => (v === "list" ? "grid" : "list"));
 
-  const { presets, loadedPresetId, isPlaying: mixerPlaying, deletePreset, duplicatePreset } = useMixer();
+  const { presets, loadedPresetId, isPlaying: mixerPlaying, deletePreset, duplicatePreset, openSheet } = useMixer();
   const loadMix = useLoadMix();
   const [mixMenuPreset, setMixMenuPreset] = useState<MixPreset | null>(null);
 
@@ -994,7 +994,7 @@ export default function BibliotecaScreen() {
                   <View key={mix.id} style={{ width: cellW }}>
                     <Pressable
                       style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1 }]}
-                      onPress={() => router.push(`/mi-mezcla/${mix.id}` as never)}
+                      onPress={() => { if (loadMix(mix)) openSheet(); }}
                     >
                       <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
                         <MixCover mix={mix} size={cellW} radius={8} />
@@ -1005,7 +1005,7 @@ export default function BibliotecaScreen() {
                         )}
                       </View>
                     </Pressable>
-                    <Pressable onPress={() => loadMix(mix)}>
+                    <Pressable onPress={() => { if (loadMix(mix)) openSheet(); }}>
                       <Text style={styles.gridTitle} numberOfLines={2}>{mix.name}</Text>
                     </Pressable>
                     <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>
@@ -1025,15 +1025,15 @@ export default function BibliotecaScreen() {
       }
       return (
         <>
-          <View style={{ gap: 9 }}>
+          <View style={{ gap: 4 }}>
             {visibleMixes.map((mix) => (
               <MixRow
                 key={mix.id}
                 mix={mix}
                 isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
-                onPress={() => loadMix(mix)}
+                onPress={() => { if (loadMix(mix)) openSheet(); }}
                 onLongPress={() => setMixMenuPreset(mix)}
-                onPressThumb={() => router.push(`/mi-mezcla/${mix.id}` as never)}
+                onPressThumb={() => { if (loadMix(mix)) openSheet(); }}
                 onPressMenu={() => setMixMenuPreset(mix)}
               />
             ))}
@@ -1464,7 +1464,6 @@ const styles = StyleSheet.create({
     gap: 14,
     paddingHorizontal: H_PAD,
     height: 62,
-    marginBottom: 7,
   },
   rowThumb: {
     width: 56, height: 56,
@@ -1485,7 +1484,7 @@ const styles = StyleSheet.create({
   gridWrap: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 10,
+    gap: 4,
     paddingHorizontal: H_PAD,
     paddingTop: 4,
   },
