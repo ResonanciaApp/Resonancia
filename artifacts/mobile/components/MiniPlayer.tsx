@@ -278,7 +278,7 @@ export function MiniPlayer() {
 
             {/* Chevron arriba — toca para abrir la sheet */}
             <Pressable onPress={() => openSheetRef.current()} hitSlop={8} style={styles.chevronLeft}>
-              <GhostPill>
+              <GhostPill style={{ paddingHorizontal: 4, paddingVertical: 2 }}>
                 <Feather name="chevron-up" size={22} color="rgba(255,255,255,0.95)" />
               </GhostPill>
             </Pressable>
