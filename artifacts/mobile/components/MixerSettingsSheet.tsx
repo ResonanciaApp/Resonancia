@@ -36,14 +36,14 @@ type Props = {
 
 const PRIMARY = "#BE9650";
 
-function sheetColors(bgPaletteId: MixerBgPaletteId) {
-  const dark = bgPaletteId === "noche";
+function sheetColors(_bgPaletteId: MixerBgPaletteId) {
+  // El sheet siempre tiene fondo oscuro (#1B060F), así que los textos siempre claros.
   return {
-    fg:         dark ? "rgba(255,255,255,0.9)"  : "rgba(20,10,5,0.88)",
-    mutedDim:   dark ? "rgba(255,255,255,0.6)"  : "rgba(20,10,5,0.5)",
-    chipBg:     dark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.05)",
-    chipBorder: dark ? "rgba(255,255,255,0.18)" : "rgba(0,0,0,0.12)",
-    chipSel:    dark ? "rgba(190,150,80,0.22)"  : "rgba(190,150,80,0.18)",
+    fg:         "rgba(255,255,255,0.9)",
+    mutedDim:   "rgba(255,255,255,0.6)",
+    chipBg:     "rgba(255,255,255,0.07)",
+    chipBorder: "rgba(255,255,255,0.18)",
+    chipSel:    "rgba(190,150,80,0.22)",
   };
 }
 
