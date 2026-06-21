@@ -381,7 +381,7 @@ export default function ResonadoresScreen() {
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <View style={styles.titleRow}>
           <View style={{ flex: 1 }}>
-            <Text style={[styles.title, { transform: [{ translateY: -8 }] }]}>Equipo</Text>
+            <Text style={[styles.title, { transform: [{ translateY: -6 }] }]}>Equipo</Text>
           </View>
           <GhostPill style={{ transform: [{ translateX: 3 }, { translateY: -6 }] }}>
             <Pressable onPress={toggleSearch} hitSlop={10} style={styles.searchIconBtn}>
