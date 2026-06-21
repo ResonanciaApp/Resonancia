@@ -716,9 +716,11 @@ export default function MezcladorScreen() {
             {/* ── Header ── */}
             <View style={styles.header}>
               <View style={styles.headerRow}>
-                <Pressable onPress={() => router.back()} hitSlop={10} style={{ marginLeft: -11, marginRight: 30 }}>
-                  <MaterialCommunityIcons name="chevron-left" size={28} color="#FAF0EE" />
-                </Pressable>
+                <GhostPill style={{ marginLeft: -11, marginRight: 30 }}>
+                  <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerPillBtn}>
+                    <MaterialCommunityIcons name="chevron-left" size={28} color="#FAF0EE" />
+                  </Pressable>
+                </GhostPill>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.pageTitle, { transform: [{ translateX: -4 }, { translateY: -1 }] }]}>Mezclador</Text>
                 </View>
