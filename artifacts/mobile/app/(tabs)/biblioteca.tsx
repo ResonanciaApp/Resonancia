@@ -20,6 +20,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { GhostPill } from "@/components/GhostPill";
@@ -307,14 +308,15 @@ function UserPlaylistRow({ pl, onPress, onLongPress }: { pl: UserPlaylist; onPre
 }
 
 // ── Resonador fila ───────────────────────────────────────────────────────────
-function ResonadorRow({ name, photo, tags, onPress }: {
+function ResonadorRow({ name, photo, tags, onPress, onLongPress }: {
   name: string;
   photo: import("react-native").ImageSourcePropType;
   tags: string[];
   onPress: () => void;
+  onLongPress?: () => void;
 }) {
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
+    <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
       <Image source={photo} style={styles.resonadorAvatar} resizeMode="cover" />
       <View style={styles.rowInfo}>
         <Text style={styles.rowTitle} numberOfLines={1}>{name}</Text>
@@ -774,16 +776,37 @@ export default function BibliotecaScreen() {
   const { isPremium } = usePremium();
 
 
-  // Resonadores = artistas featured + guías featured
-  const resonadores = useMemo(() => {
-    const artists = ARTISTS.filter((a) => a.featured !== false && a.id !== "resonancia").map((a) => ({
+  // Resonadores = todos los artistas + guías disponibles para seguir
+  const allResonadores = useMemo(() => {
+    const artists = ARTISTS.filter((a) => a.id !== "resonancia").map((a) => ({
       id: a.id, name: a.name, photo: a.photo, tags: ["Músico"], kind: "artist" as const,
     }));
-    const guides = GUIDES.filter((g) => g.featured !== false && g.id !== "casa-cuenco").map((g) => ({
+    const guides = GUIDES.filter((g) => g.id !== "casa-cuenco").map((g) => ({
       id: g.id, name: g.name, photo: g.photo, tags: ["Voz Guía"], kind: "guide" as const,
     }));
     return [...artists, ...guides];
   }, []);
+
+  const FOLLOWED_KEY = "@biblioteca_followed_resonadores";
+  const [followedIds, setFollowedIds] = useState<string[]>([]);
+  useEffect(() => {
+    AsyncStorage.getItem(FOLLOWED_KEY).then((val) => {
+      if (val) setFollowedIds(JSON.parse(val));
+    });
+  }, []);
+  const saveFollowed = (ids: string[]) => {
+    setFollowedIds(ids);
+    AsyncStorage.setItem(FOLLOWED_KEY, JSON.stringify(ids));
+  };
+  const followResonador = (id: string) => {
+    if (!followedIds.includes(id)) saveFollowed([...followedIds, id]);
+  };
+  const unfollowResonador = (id: string) => saveFollowed(followedIds.filter((x) => x !== id));
+
+  const resonadores = useMemo(
+    () => allResonadores.filter((r) => followedIds.includes(r.id)),
+    [allResonadores, followedIds]
+  );
 
   const renderContent = () => {
     // ── Modo general (sin tab seleccionado) ──────────────────────────────────
@@ -1183,6 +1206,8 @@ export default function BibliotecaScreen() {
                 key={r.id}
                 style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                 onPress={() => router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never)}
+                onLongPress={() => unfollowResonador(r.id)}
+                delayLongPress={600}
               >
                 <Image source={r.photo} style={[styles.gridThumb, { width: cellW, height: cellW, borderRadius: cellW / 2 }]} resizeMode="cover" />
                 <Text style={styles.gridTitle} numberOfLines={2}>{r.name}</Text>
@@ -1201,6 +1226,7 @@ export default function BibliotecaScreen() {
               photo={r.photo}
               tags={r.tags}
               onPress={() => router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never)}
+              onLongPress={() => unfollowResonador(r.id)}
             />
           ))}
         </View>
@@ -1343,21 +1369,30 @@ export default function BibliotecaScreen() {
               />
             </View>
             <ScrollView showsVerticalScrollIndicator={false}>
-              {resonadores
+              {allResonadores
                 .filter((r) => addResonadorQ.length === 0 || r.name.toLowerCase().includes(addResonadorQ.toLowerCase()))
-                .map((r) => (
-                  <ResonadorRow
-                    key={r.id}
-                    name={r.name}
-                    photo={r.photo}
-                    tags={r.tags}
-                    onPress={() => {
-                      setAddResonadorVisible(false);
-                      setAddResonadorQ("");
-                      router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never);
-                    }}
-                  />
-                ))}
+                .map((r) => {
+                  const isFollowed = followedIds.includes(r.id);
+                  return (
+                    <Pressable
+                      key={r.id}
+                      style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}
+                      onPress={() => {
+                        followResonador(r.id);
+                        setAddResonadorVisible(false);
+                        setAddResonadorQ("");
+                        router.push((r.kind === "artist" ? `/artista/${r.id}` : `/guiador/${r.id}`) as never);
+                      }}
+                    >
+                      <Image source={r.photo} style={[styles.rowThumb, { borderRadius: 28 }]} resizeMode="cover" />
+                      <View style={styles.rowInfo}>
+                        <Text style={styles.rowTitle} numberOfLines={1}>{r.name}</Text>
+                        <Text style={styles.rowSub} numberOfLines={1}>{r.tags[0]}</Text>
+                      </View>
+                      {isFollowed && <Feather name="check" size={18} color={GOLD} />}
+                    </Pressable>
+                  );
+                })}
             </ScrollView>
           </View>
         </View>
