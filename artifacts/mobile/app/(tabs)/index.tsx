@@ -356,24 +356,9 @@ export default function HomeScreen2() {
           <Pressable
             onPress={() => openDrawer()}
             hitSlop={8}
-            style={[styles.avatarBtn, headerLoggedIn && styles.avatarBtnLoggedIn]}
+            style={styles.avatarBtn}
           >
-            {headerPhoto && !headerPhotoError ? (
-              <ExpoImage
-                source={{ uri: headerPhoto }}
-                style={styles.avatarSmall}
-                contentFit="cover"
-                onError={() => setHeaderPhotoError(true)}
-              />
-            ) : headerLoggedIn && headerInitial ? (
-              <View style={styles.avatarInitial}>
-                <Text style={styles.avatarInitialText}>{headerInitial}</Text>
-              </View>
-            ) : (
-              <View style={styles.avatarFallback}>
-                <Feather name="user" size={15} color="rgba(250,240,238,0.45)" />
-              </View>
-            )}
+            <Feather name="menu" size={22} color="rgba(250,240,238,0.80)" />
           </Pressable>
           <ScrollView
             horizontal
