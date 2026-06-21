@@ -141,17 +141,20 @@ export function MiniPlayer() {
 
   const mixActive = !currentSession && activeSounds.length > 0;
 
-  // ── Título cinemático "Esta es tu mezcla" ──────────────────────
+  // ── Título cinemático "Esta es tu mezcla" + contador de sonidos ──
   const cinematicOpacity = useRef(new Animated.Value(0)).current;
+  const counterOpacity   = useRef(new Animated.Value(0)).current;
   const prevMixActive    = useRef(false);
 
   useEffect(() => {
     if (mixActive && !prevMixActive.current) {
       cinematicOpacity.setValue(0);
+      counterOpacity.setValue(0);
       Animated.sequence([
         Animated.timing(cinematicOpacity, { toValue: 1, duration: 1000, useNativeDriver: true }),
         Animated.delay(1100),
         Animated.timing(cinematicOpacity, { toValue: 0, duration: 800, useNativeDriver: true }),
+        Animated.timing(counterOpacity,   { toValue: 1, duration: 600, useNativeDriver: true }),
       ]).start();
     }
     prevMixActive.current = mixActive;
@@ -331,13 +334,22 @@ export function MiniPlayer() {
 
         </View>
 
-        {/* Título cinemático — centrado, 10px del fondo de pantalla */}
+        {/* Título cinemático — centrado, fondo de pantalla */}
         <Animated.Text
           numberOfLines={1}
           pointerEvents="none"
           style={[styles.cinematicText, { opacity: cinematicOpacity }]}
         >
           Esta es tu mezcla
+        </Animated.Text>
+
+        {/* Contador de sonidos — aparece al terminar el cinematic */}
+        <Animated.Text
+          numberOfLines={1}
+          pointerEvents="none"
+          style={[styles.cinematicText, { opacity: counterOpacity }]}
+        >
+          {n === 1 ? "1 sonido" : `${n} sonidos`}
         </Animated.Text>
 
       </View>
