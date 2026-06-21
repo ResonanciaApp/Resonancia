@@ -796,7 +796,10 @@ export default function MezcladorScreen() {
                                 end={{ x: 0, y: 1 }}
                                 style={styles.subTabBorderInner}
                               >
-                                <Text style={[styles.subTabText, { color: "#E9C46A", fontWeight: "700" }]}>
+                                <Text style={[styles.subTabText, { color: "transparent", fontWeight: "700" }]} aria-hidden>
+                                  {SUB_TAB_LABELS[catId] ?? cat.label}
+                                </Text>
+                                <Text style={[styles.subTabText, { color: "#E9C46A", fontWeight: "700", ...StyleSheet.absoluteFillObject, textAlignVertical: "center" }]}>
                                   {SUB_TAB_LABELS[catId] ?? cat.label}
                                 </Text>
                               </LinearGradient>
@@ -804,7 +807,10 @@ export default function MezcladorScreen() {
                           ) : (
                             <View style={styles.subTabBorderOuter}>
                               <View style={[styles.subTabBorderInner, { borderWidth: 1, borderColor: "rgba(255,255,255,0.10)" }]}>
-                                <Text style={[styles.subTabText, { color: "rgba(255,255,255,0.80)" }]}>
+                                <Text style={[styles.subTabText, { color: "transparent", fontWeight: "700" }]} aria-hidden>
+                                  {SUB_TAB_LABELS[catId] ?? cat.label}
+                                </Text>
+                                <Text style={[styles.subTabText, { color: "rgba(255,255,255,0.80)", fontWeight: "400", ...StyleSheet.absoluteFillObject, textAlignVertical: "center" }]}>
                                   {SUB_TAB_LABELS[catId] ?? cat.label}
                                 </Text>
                               </View>
