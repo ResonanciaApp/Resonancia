@@ -23,6 +23,7 @@ import { useMixer } from "@/context/MixerContext";
 import { getSoundImage } from "@/config/sound-images";
 import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 import { useColors } from "@/hooks/useColors";
+import { GhostPill } from "@/components/GhostPill";
 
 const MAX_PLAYER_WIDTH    = 438;
 const STACK_SIZE          = 43;
@@ -277,7 +278,9 @@ export function MiniPlayer() {
 
             {/* Chevron arriba — toca para abrir la sheet */}
             <Pressable onPress={() => openSheetRef.current()} hitSlop={8} style={styles.chevronLeft}>
-              <Feather name="chevron-up" size={22} color="rgba(255,255,255,0.95)" />
+              <GhostPill>
+                <Feather name="chevron-up" size={22} color="rgba(255,255,255,0.95)" />
+              </GhostPill>
             </Pressable>
 
             {/* Stack / carrusel — ancho animado + maxWidth para que nunca empuje el play */}
