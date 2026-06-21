@@ -377,8 +377,10 @@ function ActionRow({
 }
 
 const styles = StyleSheet.create({
-  backdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.55)" },
+  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.55)" },
   sheet: {
+    position: "absolute",
+    bottom: 0, left: 0, right: 0,
     backgroundColor: "#27070E",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
