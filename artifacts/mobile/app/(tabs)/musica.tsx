@@ -717,7 +717,7 @@ export default function MezcladorScreen() {
             {/* ── Header ── */}
             <View style={styles.header}>
               <View style={styles.headerRow}>
-                <Pressable onPress={() => router.back()} hitSlop={10} style={{ marginLeft: -8, marginRight: 4 }}>
+                <Pressable onPress={() => router.back()} hitSlop={10} style={{ marginLeft: -11, marginRight: 4 }}>
                   <MaterialCommunityIcons name="chevron-left" size={28} color="#FAF0EE" />
                 </Pressable>
                 <View style={{ flex: 1 }}>
