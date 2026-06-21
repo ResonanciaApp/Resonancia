@@ -105,7 +105,11 @@ export function MiniPlayer() {
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder:  (_, g) => g.dy < -4,
       onPanResponderRelease: (_, g) => {
-        if (g.dy < -10) openSheetRef.current();
+        if (Math.abs(g.dy) < 8) {
+          openSheetRef.current();
+        } else if (g.dy < -10) {
+          openSheetRef.current();
+        }
       },
     })
   ).current;
@@ -269,13 +273,9 @@ export function MiniPlayer() {
           />
 
           {/* ── Handle (swipe-up o tap → abre sheet) ── */}
-          <Pressable
-            style={styles.handleHitArea}
-            onPress={() => openSheetRef.current()}
-            {...handlePan.panHandlers}
-          >
+          <View style={styles.handleHitArea} {...handlePan.panHandlers}>
             <View style={styles.handle} />
-          </Pressable>
+          </View>
 
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
