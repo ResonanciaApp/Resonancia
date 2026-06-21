@@ -253,6 +253,9 @@ export function MiniPlayer() {
             pointerEvents="none"
           />
 
+          {/* ── Handle ── */}
+          <View style={styles.handle} />
+
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
 
@@ -395,6 +398,16 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
     letterSpacing: 0.2,
+  },
+
+  // ── Handle ────────────────────────────────────────────────────
+  handle: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "rgba(255,255,255,0.25)",
+    alignSelf: "center",
+    marginBottom: 8,
   },
 
   // ── Card ──────────────────────────────────────────────────────
