@@ -52,6 +52,7 @@ const SQCARD_W = Math.round((width - H_PAD * 2) / 2.2);
 const TEMA_COL_W = Math.floor((width - H_PAD * 2 - GAP) / 2);
 
 const CAT_CARD_GAP = 12;
+const DUR_PILL_W   = Math.round((width - H_PAD * 2 - 6 * 4) / 4.3);
 const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.625);
 const CAT_CARD_IMG_H = Math.round(CAT_CARD_W * 1.15);
 
@@ -337,7 +338,11 @@ export default function ExploreScreen() {
             <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 12 }]}>
               ¿Cuánto tiempo tienes?
             </Text>
-            <View style={styles.durPillRow}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.durPillRow}
+            >
               {DURATION_SLOTS.map((slot) => {
                 const sel = selectedDur === slot.label;
                 return (
@@ -369,7 +374,7 @@ export default function ExploreScreen() {
                   </Pressable>
                 );
               })}
-            </View>
+            </ScrollView>
 
             {selectedDur && (
               <View style={styles.durResults}>
@@ -610,11 +615,12 @@ const styles = StyleSheet.create({
   durPillRow: {
     flexDirection: "row",
     paddingHorizontal: H_PAD,
+    paddingRight: H_PAD + DUR_PILL_W * 0.3,
     gap: 6,
     paddingBottom: 2,
   },
   durPill: {
-    flex: 1,
+    width: DUR_PILL_W,
     borderRadius: 20,
     paddingHorizontal: 8,
     paddingVertical: 12,
