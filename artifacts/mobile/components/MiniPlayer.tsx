@@ -240,8 +240,34 @@ export function MiniPlayer() {
         {/* ── Card del miniplayer ── */}
         <View style={styles.wrapper}>
           {/* Fondo glassmorphism */}
-          <BlurView intensity={60} tint="dark" style={StyleSheet.absoluteFill} />
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.45)" }]} />
+          <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
+          {/* Reflejo de luz diagonal — cristal */}
+          <LinearGradient
+            colors={["rgba(255,255,255,0.13)", "rgba(255,255,255,0.03)", "transparent"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
+          {/* Acento esquina sup-izq */}
+          <View pointerEvents="none" style={{
+            position: "absolute", top: 0, left: 0,
+            width: 60, height: 60,
+            borderTopLeftRadius: 25,
+            borderTopWidth: 1.5, borderLeftWidth: 1.5,
+            borderColor: "rgba(255,255,255,0.45)",
+            backgroundColor: "transparent",
+          }} />
+          {/* Acento esquina inf-der */}
+          <View pointerEvents="none" style={{
+            position: "absolute", bottom: 0, right: 0,
+            width: 44, height: 44,
+            borderBottomRightRadius: 25,
+            borderBottomWidth: 1, borderRightWidth: 1,
+            borderColor: "rgba(255,255,255,0.18)",
+            backgroundColor: "transparent",
+          }} />
 
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
@@ -394,7 +420,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.15)",
+    borderColor: "rgba(255,255,255,0.28)",
   },
 
   // ── Fila de mezcla ────────────────────────────────────────────
