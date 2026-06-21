@@ -1765,7 +1765,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 14,
     paddingHorizontal: H_PAD,
-    paddingVertical: 10,
+    height: 62,
   },
   addResonadorIcon: {
     width: 62,
