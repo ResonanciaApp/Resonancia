@@ -6,6 +6,7 @@ import {
   Animated,
   Easing,
   Image,
+  PanResponder,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -94,6 +95,16 @@ export function MiniPlayer() {
   } = useMixer();
 
   const colors = useColors();
+
+  // ── Swipe-up en handle → abre la sheet ─────────────────────────
+  const handlePan = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_, g) => Math.abs(g.dy) > 6 && g.dy < 0,
+      onPanResponderRelease: (_, g) => {
+        if (g.dy < -15) openSheet();
+      },
+    })
+  ).current;
 
   // ── Ondas sutiles ──────────────────────────────────────────────
   const wave1 = useRef(new Animated.Value(0)).current;
@@ -253,8 +264,8 @@ export function MiniPlayer() {
             pointerEvents="none"
           />
 
-          {/* ── Handle ── */}
-          <View style={styles.handle} />
+          {/* ── Handle (swipe-up → abre sheet) ── */}
+          <View style={styles.handle} {...handlePan.panHandlers} />
 
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
