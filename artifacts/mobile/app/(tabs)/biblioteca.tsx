@@ -445,9 +445,7 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
                 onPress={() => handleSelect(item.id)}
                 style={({ pressed }) => [styles.searchResultRow, { opacity: pressed ? 0.7 : 1 }]}
               >
-                <View style={styles.searchResultIcon}>
-                  <Feather name="play-circle" size={18} color={GOLD} />
-                </View>
+                <Image source={item.image} style={styles.searchResultThumb} contentFit="cover" />
                 <View style={{ flex: 1 }}>
                   <Text style={styles.searchResultTitle} numberOfLines={1}>{item.title}</Text>
                   <Text style={styles.searchResultSub} numberOfLines={1}>{item.categoryLabel}</Text>
@@ -1753,10 +1751,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "rgba(255,255,255,0.07)",
   },
-  searchResultIcon: {
-    width: 36, height: 36, borderRadius: 10,
+  searchResultThumb: {
+    width: 44, height: 44, borderRadius: 10,
     backgroundColor: "rgba(212,175,55,0.10)",
-    alignItems: "center", justifyContent: "center",
   },
   searchResultTitle: { fontSize: 14, fontWeight: "600", color: TEXT, marginBottom: 2 },
   searchResultSub:   { fontSize: 12, color: MUTED },
