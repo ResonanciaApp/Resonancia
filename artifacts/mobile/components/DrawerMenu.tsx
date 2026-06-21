@@ -85,8 +85,12 @@ export function DrawerMenu() {
       },
       onPanResponderRelease: (_, { dx, vx }) => {
         if (dx < -60 || vx < -0.5) {
-          dragX.setValue(0);
+          // No resetear dragX aquí: si se hace setValue(0) antes del cierre,
+          // el drawer salta de vuelta a abierto y luego cierra (doble movimiento).
+          // Dejamos dragX en su posición arrastrada; drawerAnim lleva el panel
+          // fuera de pantalla y reseteamos dragX al terminar.
           onClose();
+          setTimeout(() => dragX.setValue(0), 440);
         } else {
           Animated.spring(dragX, { toValue: 0, useNativeDriver: true, bounciness: 0 }).start();
         }
