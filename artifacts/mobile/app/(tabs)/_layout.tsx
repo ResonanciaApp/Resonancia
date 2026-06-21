@@ -194,7 +194,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
           <View style={StyleSheet.absoluteFill} pointerEvents="none">
             <LinearGradient
-              colors={["rgba(0,0,0,0.15)", "rgba(10,6,0,0.15)"]}
+              colors={["rgba(0,0,0,0.72)", "rgba(10,6,0,0.85)"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={StyleSheet.absoluteFill}
