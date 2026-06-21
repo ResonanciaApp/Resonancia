@@ -176,7 +176,7 @@ function CoverPickerSheet({
               })}
             </View>
           </ScrollView>
-        </View>
+        </LinearGradient>
       </Modal>
     );
   }
@@ -217,7 +217,7 @@ function CoverPickerSheet({
               </View>
             )}
           </ScrollView>
-        </View>
+        </LinearGradient>
       </Modal>
     );
   }
