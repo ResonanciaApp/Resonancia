@@ -112,7 +112,7 @@ export const GRADIENT_PRESETS: GradientPreset[] = [
     imageOverlay: "rgba(14,8,2,0.38)",
   },
   // ── Degradados puros ───────────────────────────────────────────────────────
-  { id: "borgona",  name: "Borgoña",           colors: ["#27070E", "#1B060F", "#0F0308"], emoji: "🍷" },
+  { id: "borgona",  name: "Borgoña",           colors: ["#5C2929", "#3D1A1A", "#1B060F"], emoji: "🍷" },
   { id: "cosmos",   name: "Cosmos",             colors: ["#060B1A", "#0D1533", "#030509"], emoji: "🌌" },
   { id: "aurora",   name: "Aurora Boreal",      colors: ["#022B18", "#053D24", "#010F09"], emoji: "🌿" },
   { id: "oceano",   name: "Océano Profundo",    colors: ["#010F1F", "#022444", "#010810"], emoji: "🌊" },
