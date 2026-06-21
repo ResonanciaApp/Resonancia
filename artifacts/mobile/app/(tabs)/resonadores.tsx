@@ -496,7 +496,7 @@ export default function ResonadoresScreen() {
       {/* ── Grid ── */}
       <FlatList
         style={{ marginTop: -2 }}
-        data={activeTab === "expansores" ? items.slice(0, expansorLimit) : items}
+        data={items.slice(0, 9)}
         keyExtractor={(item) => item.data.id}
         numColumns={numCols}
         columnWrapperStyle={styles.row}
@@ -509,18 +509,12 @@ export default function ResonadoresScreen() {
           </View>
         }
         ListFooterComponent={
-          activeTab === "expansores" && items.length > EXPANSOR_PAGE ? (
+          items.length > 9 ? (
             <Pressable
-              onPress={() =>
-                expansorLimit >= items.length
-                  ? setExpansorLimit(EXPANSOR_PAGE)
-                  : setExpansorLimit((l) => l + EXPANSOR_PAGE)
-              }
-              style={({ pressed }) => [styles.loadMoreBtn, { opacity: pressed ? 0.6 : 1 }]}
+              onPress={() => router.push("/equipo-info" as never)}
+              style={({ pressed }) => [styles.loadMoreBtn, { opacity: pressed ? 0.7 : 1 }]}
             >
-              <Text style={styles.loadMoreText}>
-                {expansorLimit >= items.length ? "Cargar menos" : "Cargar más"}
-              </Text>
+              <Text style={styles.loadMoreText}>Adentro</Text>
             </Pressable>
           ) : null
         }
@@ -740,16 +734,20 @@ const styles = StyleSheet.create({
   emptyText: { fontSize: 14, color: "rgba(244,218,213,0.30)" },
   loadMoreBtn: {
     alignSelf: "center",
-    marginTop: -9,
+    marginTop: 8,
     marginBottom: 8,
-    paddingHorizontal: 24,
-    paddingVertical: 10,
+    paddingHorizontal: 36,
+    paddingVertical: 12,
+    borderRadius: 999,
+    backgroundColor: "rgba(255,255,255,0.20)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.30)",
   },
   loadMoreText: {
     fontSize: 14,
-    fontWeight: "400",
+    fontWeight: "600",
     color: "#FFFFFF",
-    letterSpacing: 0.3,
+    letterSpacing: 0.5,
   },
 
   // ── Footer sections ──────────────────────────────────────────────────────────
