@@ -117,12 +117,7 @@ function seededRandom(seed: number) {
 }
 
 function getDailyRecommendations(count = 5): Session[] {
-  const pool = SESSIONS.filter((s) =>
-    s.categoryId === "sonidos-ancestrales" ||
-    s.categoryId === "meditaciones-guiadas" ||
-    s.categoryId === "musica-sonidos" ||
-    s.categoryId === "reflexiones",
-  );
+  const pool = SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas");
   const rng = seededRandom(dateSeed());
   const shuffled = [...pool].sort(() => rng() - 0.5);
   return shuffled.slice(0, count);
@@ -412,7 +407,7 @@ export default function ExploreScreen() {
         {/* ── Recomendado para ti ── */}
         {query.length === 0 && (
           <View style={styles.recoSection}>
-            <Text style={[styles.sectionTitle, { marginBottom: 14 }]}>Recomendado para ti</Text>
+            <Text style={[styles.sectionTitle, { marginBottom: 14 }]}>Meditaciones recomendadas para ti</Text>
             <View style={styles.recoList}>
               {dailyRecs.map((s, i) => (
                 <React.Fragment key={s.id}>
