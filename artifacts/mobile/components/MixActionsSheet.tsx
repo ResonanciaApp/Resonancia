@@ -18,7 +18,6 @@ import {
   Image,
   Modal,
   Pressable,
-  Share,
   StyleSheet,
   Text,
   View,
@@ -32,7 +31,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useShareMix, getGetSharedMixesQueryKey } from "@workspace/api-client-react";
-import { TimerSheet } from "@/components/TimerSheet";
 import { getSoundImage } from "@/config/sound-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { useColors } from "@/hooks/useColors";
@@ -114,11 +112,9 @@ function MiniStack({ sounds }: { sounds: { id: string }[] }) {
 export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, onEdit }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { togglePresetFavorite, sleepTimerRemaining, setSleepTimer } = useMixer();
+  const { togglePresetFavorite } = useMixer();
   const queryClient = useQueryClient();
   const shareMixMutation = useShareMix();
-
-  const [showTimer, setShowTimer] = useState(false);
 
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
@@ -141,13 +137,6 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, 
 
   const favorited = mix.favorited ?? false;
 
-  const timerLabel =
-    sleepTimerRemaining === null
-      ? "Apagado"
-      : sleepTimerRemaining >= 3600
-        ? `${Math.round(sleepTimerRemaining / 3600)}h`
-        : `${Math.round(sleepTimerRemaining / 60)} min`;
-
   const showToast = (msg: string, autoClose = false) => {
     setToastMsg(msg);
     setToastVisible(true);
@@ -160,15 +149,6 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, 
     ]).start(() => setToastVisible(false));
     if (autoClose) {
       closeTimer.current = setTimeout(onClose, 2000);
-    }
-  };
-
-  const handleShare = async () => {
-    onClose();
-    try {
-      await Share.share({ message: `"${mix.name}" — mezcla de Resonancia` });
-    } catch {
-      // silent
     }
   };
 
@@ -285,14 +265,6 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, 
           onPress={handleShareToCommunity}
           colors={colors}
         />
-        <ActionRow icon="share-2" label="Compartir" onPress={handleShare} colors={colors} />
-        <ActionRow
-          icon="clock"
-          label="Temporizador"
-          right={timerLabel}
-          onPress={() => setShowTimer(true)}
-          colors={colors}
-        />
         <ActionRow
           icon="heart"
           label={favorited ? "Quitar de favoritas" : "Marcar como favorita"}
@@ -332,13 +304,6 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, 
         )}
       </View>
 
-      {/* TimerSheet va DENTRO del Modal padre — usa el timer del MixerContext */}
-      <TimerSheet
-        visible={showTimer}
-        onClose={() => setShowTimer(false)}
-        sleepTimerRemaining={sleepTimerRemaining}
-        setSleepTimer={setSleepTimer}
-      />
     </Modal>
   );
 }
