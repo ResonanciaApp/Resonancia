@@ -199,6 +199,120 @@ function CountryChipRow({
   );
 }
 
+// ── Filtro chevron expansores ──────────────────────────────────────────────────
+function ExpansorChevronFilter({
+  availableCountries,
+  regionTabs,
+  selectedCountry,
+  selectedRegion,
+  onSelectCountry,
+  onSelectRegion,
+}: {
+  availableCountries: string[];
+  regionTabs: { id: string; label: string }[];
+  selectedCountry: string | null;
+  selectedRegion: string | null;
+  onSelectCountry: (c: string | null) => void;
+  onSelectRegion: (r: string | null) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const anim = useRef(new Animated.Value(0)).current;
+
+  function toggle() {
+    const next = !open;
+    setOpen(next);
+    Animated.timing(anim, {
+      toValue: next ? 1 : 0,
+      duration: 220,
+      easing: Easing.out(Easing.quad),
+      useNativeDriver: false,
+    }).start();
+  }
+
+  function close() {
+    setOpen(false);
+    Animated.timing(anim, { toValue: 0, duration: 180, easing: Easing.in(Easing.quad), useNativeDriver: false }).start();
+  }
+
+  function handleCountry(c: string) {
+    onSelectCountry(selectedCountry === c ? null : c);
+    onSelectRegion(null);
+  }
+
+  function handleRegion(r: string) {
+    onSelectRegion(selectedRegion === r ? null : r);
+    close();
+  }
+
+  const chevronRotate = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "180deg"] });
+
+  const label = selectedCountry
+    ? selectedRegion
+      ? `${COUNTRY_FLAGS[selectedCountry] ?? ""} ${selectedCountry} · ${selectedRegion}`
+      : `${COUNTRY_FLAGS[selectedCountry] ?? ""} ${selectedCountry}`
+    : "Todos los países";
+
+  const maxH = anim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, selectedCountry && regionTabs.length > 0 ? 160 : 90],
+  });
+
+  return (
+    <View style={styles.chevronWrap}>
+      {/* Trigger */}
+      <Pressable onPress={toggle} style={({ pressed }) => [styles.chevronTrigger, { opacity: pressed ? 0.75 : 1 }]}>
+        <Text style={styles.chevronTriggerText}>{label}</Text>
+        <Animated.View style={{ transform: [{ rotate: chevronRotate }] }}>
+          <Feather name="chevron-down" size={14} color="rgba(255,255,255,0.70)" />
+        </Animated.View>
+      </Pressable>
+
+      {/* Dropdown */}
+      <Animated.View style={[styles.chevronDropdown, { maxHeight: maxH, overflow: "hidden" }]}>
+        {/* Nivel 1: países */}
+        <View style={styles.chevronSection}>
+          <Text style={styles.chevronSectionLabel}>País</Text>
+          <View style={styles.chevronChips}>
+            {availableCountries.map((c) => (
+              <Pressable
+                key={c}
+                onPress={() => handleCountry(c)}
+                style={[styles.chevronChip, selectedCountry === c && styles.chevronChipSel]}
+              >
+                <Text style={[styles.chevronChipText, selectedCountry === c && styles.chevronChipTextSel]}>
+                  {COUNTRY_FLAGS[c] ?? ""} {c}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+
+        {/* Nivel 2: regiones */}
+        {selectedCountry && regionTabs.length > 0 && (
+          <View style={styles.chevronSection}>
+            <Text style={styles.chevronSectionLabel}>Ciudad / Región</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View style={styles.chevronChips}>
+                {regionTabs.map((r) => (
+                  <Pressable
+                    key={r.id}
+                    onPress={() => handleRegion(r.id)}
+                    style={[styles.chevronChip, selectedRegion === r.id && styles.chevronChipSel]}
+                  >
+                    <Text style={[styles.chevronChipText, selectedRegion === r.id && styles.chevronChipTextSel]}>
+                      {r.label}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            </ScrollView>
+          </View>
+        )}
+      </Animated.View>
+    </View>
+  );
+}
+
 // ── Card de Resonador ─────────────────────────────────────────────────────────
 type CardItem =
   | { kind: "expansor"; data: Expansor }
@@ -460,6 +574,18 @@ export default function ResonadoresScreen() {
         </View>
       </View>
 
+      {/* ── Filtro chevron expansores ── */}
+      {activeTab === "expansores" && (
+        <ExpansorChevronFilter
+          availableCountries={availableCountries}
+          regionTabs={regionTabs}
+          selectedCountry={selectedCountry}
+          selectedRegion={selectedRegion}
+          onSelectCountry={handleSelectCountry}
+          onSelectRegion={setSelectedRegion}
+        />
+      )}
+
       {/* ── Filtros ── (oculto) */}
       <View style={[styles.filtersScroll, { display: "none" }]}>
         {activeTab === "resonadores" ? (
@@ -655,6 +781,74 @@ const styles = StyleSheet.create({
   },
   tabBtnBajadaActive: {
     color: "rgba(27,6,15,0.65)",
+  },
+
+  // ── Chevron filter ──────────────────────────────────────────────────────────
+  chevronWrap: {
+    marginHorizontal: H_PAD,
+    marginTop: 10,
+    marginBottom: 4,
+  },
+  chevronTrigger: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "rgba(0,0,0,0.35)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.15)",
+    borderRadius: 999,
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+  },
+  chevronTriggerText: {
+    fontSize: 13,
+    fontWeight: "500",
+    color: "rgba(255,255,255,0.85)",
+    letterSpacing: 0.2,
+  },
+  chevronDropdown: {
+    marginTop: 6,
+    backgroundColor: "rgba(0,0,0,0.45)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.10)",
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    gap: 10,
+  },
+  chevronSection: { gap: 6 },
+  chevronSectionLabel: {
+    fontSize: 10,
+    fontWeight: "600",
+    color: "rgba(255,255,255,0.40)",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+  },
+  chevronChips: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+  },
+  chevronChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.12)",
+  },
+  chevronChipSel: {
+    backgroundColor: "rgba(212,175,55,0.25)",
+    borderColor: "rgba(212,175,55,0.50)",
+  },
+  chevronChipText: {
+    fontSize: 12,
+    fontWeight: "400",
+    color: "rgba(255,255,255,0.75)",
+  },
+  chevronChipTextSel: {
+    color: "#E9C46A",
+    fontWeight: "600",
   },
 
   filtersScroll: { paddingHorizontal: H_PAD, paddingBottom: 6 },
