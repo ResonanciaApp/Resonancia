@@ -717,9 +717,11 @@ export default function MezcladorScreen() {
             {/* ── Header ── */}
             <View style={styles.header}>
               <View style={styles.headerRow}>
+                <Pressable onPress={() => router.back()} hitSlop={10} style={{ marginRight: 6, marginTop: 2 }}>
+                  <MaterialCommunityIcons name="arrow-left" size={24} color="#FAF0EE" />
+                </Pressable>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.pageTitle, { transform: [{ translateX: -4 }, { translateY: 2 }] }]}>Mezclador</Text>
-                  <Text style={[styles.pageSubtitle, { transform: [{ translateX: -4 }, { translateY: 2 }] }]}>Sonidos de la tierra y el universo.</Text>
                 </View>
                 <View style={styles.headerActions}>
                   <GhostPill style={{ transform: [{ translateX: 5 }, { translateY: -6 }] }}>
