@@ -430,15 +430,6 @@ export default function ResonadoresScreen() {
           />
           {/* Overlay rojizo sutil */}
           <View pointerEvents="none" style={styles.bannerTint} />
-          {/* Fade inferior sutil */}
-          <LinearGradient
-            pointerEvents="none"
-            colors={["transparent", "rgba(22,1,8,0.85)", "#160108"]}
-            locations={[0.25, 0.72, 1]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={StyleSheet.absoluteFill}
-          />
           <Animated.View
             pointerEvents="none"
             style={[styles.bannerTextWrap, { opacity: bannerTextOpacity }]}
