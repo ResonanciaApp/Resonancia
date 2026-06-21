@@ -877,7 +877,7 @@ export function MixerSheet() {
               {/* Izquierda: Timer */}
               <Pressable
                 onPress={handleTimerPress}
-                style={styles.footerSide}
+                style={[styles.footerSide, { transform: [{ translateY: 10 }] }]}
                 accessibilityRole="button"
                 accessibilityLabel={sleepTimerRemaining != null ? "Temporizador activo" : "Configurar temporizador"}
               >
@@ -905,7 +905,7 @@ export function MixerSheet() {
               </Pressable>
 
               {/* Derecha: Guardar */}
-              <View style={styles.footerSide}>
+              <View style={[styles.footerSide, { transform: [{ translateY: 10 }] }]}>
                 <Pressable style={styles.footerSaveBtn} onPress={() => openSaveModal(originPreset ? "update" : "new")}>
                   <View style={[styles.footerHeartCircle, { backgroundColor: palette.footerCircleBg }]}>
                     <MaterialCommunityIcons name="heart" size={24} color={palette.iconColor} />
