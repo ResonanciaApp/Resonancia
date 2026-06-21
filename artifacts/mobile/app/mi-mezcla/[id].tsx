@@ -131,7 +131,6 @@ function CoverPickerSheet({
   const insets = useSafeAreaInsets();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
   const [view, setView] = useState<"menu" | "presets" | "geometrix">("menu");
-  const [geoTab, setGeoTab] = useState<"library" | "creations">("library");
   const { creations } = useGeometrixCreations();
 
   const handleClose = useCallback(() => {
@@ -195,31 +194,8 @@ function CoverPickerSheet({
             <Text style={ms.sheetTitle}>Elige una geometría</Text>
             <View style={{ width: 28 }} />
           </View>
-          <View style={ms.tabRow}>
-            <Pressable style={[ms.tab, geoTab === "library" && ms.tabActive]} onPress={() => setGeoTab("library")}>
-              <Text style={[ms.tabText, geoTab === "library" && ms.tabTextActive]}>Biblioteca</Text>
-            </Pressable>
-            <Pressable style={[ms.tab, geoTab === "creations" && ms.tabActive]} onPress={() => setGeoTab("creations")}>
-              <Text style={[ms.tabText, geoTab === "creations" && ms.tabTextActive]}>Mis creaciones</Text>
-            </Pressable>
-          </View>
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: 12 }}>
-            {geoTab === "library" ? (
-              <View style={ms.gridRow}>
-                {GEOMETRIES.map((item) => (
-                  <Pressable
-                    key={item.id}
-                    style={({ pressed }) => [ms.geoItem, { opacity: pressed ? 0.7 : 1 }]}
-                    onPress={() => { onPickGeometry(item.id); handleClose(); }}
-                  >
-                    <View style={ms.geoThumb}>
-                      <SacredGlyph id={item.id as GeometryId} color={GOLD} size={52} strokeWidth={1} opacity={1} />
-                    </View>
-                    <Text style={ms.geoName} numberOfLines={1}>{item.name}</Text>
-                  </Pressable>
-                ))}
-              </View>
-            ) : creations.length === 0 ? (
+            {creations.length === 0 ? (
               <View style={{ paddingVertical: 40, alignItems: "center" }}>
                 <Text style={{ color: MUTED, fontSize: 14 }}>No tienes creaciones aún</Text>
                 <Text style={{ color: MUTED, fontSize: 12, marginTop: 6, opacity: 0.7 }}>Ve a Geometrix y crea una</Text>
@@ -667,28 +643,5 @@ const ms = StyleSheet.create({
     height: 100,
     borderRadius: 12,
     overflow: "hidden",
-  },
-  tabRow: {
-    flexDirection: "row",
-    marginBottom: 8,
-    gap: 8,
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 8,
-    borderRadius: 8,
-    alignItems: "center",
-    backgroundColor: "rgba(74,12,12,0.25)",
-  },
-  tabActive: {
-    backgroundColor: "rgba(212,175,55,0.15)",
-  },
-  tabText: {
-    color: MUTED,
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  tabTextActive: {
-    color: GOLD,
   },
 });
