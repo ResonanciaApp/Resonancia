@@ -922,7 +922,7 @@ export default function MezcladorScreen() {
                     locked={!!s.isPremium && !isPremium}
                     available={hasSoundFile(s.id) || !!REMOTE_SOUND_MAP[s.id]}
                     image={getSoundImage(s.id) ?? REMOTE_SOUND_IMAGE_MAP[s.id]}
-                    borderGradient={bgPaletteId === "noche" ? ["#FFFFFF", "#FFFFFF", "#FFFFFF"] : [TAB_GRADIENT[mainTab][0], TAB_HEADER_GRADIENT[mainTab][1], TAB_HEADER_GRADIENT[mainTab][2]]}
+                    borderGradient={bgPaletteId === "noche" ? ["#D4AF37", "#D4AF37", "#D4AF37"] : [TAB_GRADIENT[mainTab][0], TAB_HEADER_GRADIENT[mainTab][1], TAB_HEADER_GRADIENT[mainTab][2]]}
                     textColor={bgPaletteId === "noche" ? "#FFFFFF" : undefined}
                     bgPaletteId={bgPaletteId}
                     onPress={() => handleSoundPress(s)}
