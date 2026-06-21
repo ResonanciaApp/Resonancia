@@ -751,7 +751,7 @@ const styles = StyleSheet.create({
   // ── Chevron filter ──────────────────────────────────────────────────────────
   chevronWrap: {
     marginHorizontal: H_PAD,
-    marginTop: 10,
+    marginTop: -5,
     marginBottom: 4,
     zIndex: 100,
   },
