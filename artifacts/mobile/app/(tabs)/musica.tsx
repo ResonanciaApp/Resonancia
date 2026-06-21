@@ -731,13 +731,6 @@ export default function MezcladorScreen() {
             end={{ x: 0, y: 1 }}
             style={[styles.topPanel, { paddingTop: topPad + 2 }]}
           >
-            {/* ── Textura decorativa del header ── */}
-            <Image
-              source={require("../../assets/images/textura-header.png")}
-              style={[StyleSheet.absoluteFill, { opacity: 0.40, zIndex: -1 }]}
-              contentFit="cover"
-              pointerEvents="none"
-            />
             {/* ── Header ── */}
             <View style={styles.header}>
               <View style={styles.headerRow}>
