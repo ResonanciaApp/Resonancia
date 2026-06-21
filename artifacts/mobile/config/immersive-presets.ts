@@ -128,7 +128,7 @@ export const GRADIENT_PRESETS: GradientPreset[] = [
   { id: "fuego",    name: "Fuego Sagrado",      colors: ["#200800", "#380E00", "#100400"], emoji: "🔥" },
 ];
 
-export const DEFAULT_BG_PRESET_ID = "blanco";
+export const DEFAULT_BG_PRESET_ID = "borgona";
 export const MIXER_BG_KEY = "@resonance_mixer_bg";
 export const MIXER_OVERLAY_KEY = "@resonance_mixer_overlay";
 export const DEFAULT_OVERLAY = 0.65;
