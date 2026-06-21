@@ -436,31 +436,31 @@ export default function ResonadoresScreen() {
           >
             <Text style={styles.bannerText}>Juntos expandimos la vibración</Text>
           </Animated.View>
+        </View>
 
-          {/* Tab switcher — superpuesto en el borde inferior del banner */}
-          <View style={[styles.tabPill, { position: "absolute", bottom: 0, left: H_PAD, right: H_PAD }]}>
-            {(["resonadores", "expansores"] as const).map((t) => {
-              const isActive = activeTab === t;
-              const label = t === "resonadores" ? "Resonadores" : "Expansores";
-              return (
-                <Pressable
-                  key={t}
-                  onPress={() => switchTab(t)}
-                  style={[styles.tabBtn, isActive && styles.tabBtnActive]}
-                >
-                  {isActive && (
-                    <LinearGradient
-                      colors={["#D6AD5F", "#B47344"]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={StyleSheet.absoluteFill}
-                    />
-                  )}
-                  <Text style={[styles.tabBtnText, isActive && styles.tabBtnTextActive]}>{label}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
+        {/* Tab switcher */}
+        <View style={styles.tabPill}>
+          {(["resonadores", "expansores"] as const).map((t) => {
+            const isActive = activeTab === t;
+            const label = t === "resonadores" ? "Resonadores" : "Expansores";
+            return (
+              <Pressable
+                key={t}
+                onPress={() => switchTab(t)}
+                style={[styles.tabBtn, isActive && styles.tabBtnActive]}
+              >
+                {isActive && (
+                  <LinearGradient
+                    colors={["#D6AD5F", "#B47344"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={StyleSheet.absoluteFill}
+                  />
+                )}
+                <Text style={[styles.tabBtnText, isActive && styles.tabBtnTextActive]}>{label}</Text>
+              </Pressable>
+            );
+          })}
         </View>
       </View>
 
@@ -543,7 +543,7 @@ const styles = StyleSheet.create({
   },
   banner: {
     width: undefined,
-    aspectRatio: 1536 / 650,
+    aspectRatio: 1536 / 508,
     marginHorizontal: -H_PAD,
     marginTop: -15,
     marginBottom: 14,
@@ -635,6 +635,7 @@ const styles = StyleSheet.create({
     padding: 3,
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.12)",
+    marginTop: 20,
   },
   tabBtn: {
     flex: 1,
