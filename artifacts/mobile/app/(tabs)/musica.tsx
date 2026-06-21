@@ -734,7 +734,7 @@ export default function MezcladorScreen() {
             {/* ── Textura decorativa del header ── */}
             <Image
               source={require("../../assets/images/textura-header.png")}
-              style={[StyleSheet.absoluteFill, { opacity: 0.18 }]}
+              style={[StyleSheet.absoluteFill, { opacity: 0.40 }]}
               contentFit="cover"
               pointerEvents="none"
             />
