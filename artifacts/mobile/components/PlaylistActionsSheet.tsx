@@ -127,9 +127,9 @@ export function PlaylistActionsSheet({ itemId, itemKind, visible, onClose }: Pro
       onRequestClose={onClose}
       statusBarTranslucent
     >
-      <Pressable style={styles.backdrop} onPress={onClose} />
-
-      <View style={[styles.sheet, { paddingBottom: insets.bottom + 8 }]}>
+      <View style={styles.container}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+        <View style={[styles.sheet, { paddingBottom: insets.bottom + 8 }]}>
         <View style={styles.handle} />
 
         {step === "main" ? (
@@ -231,18 +231,20 @@ export function PlaylistActionsSheet({ itemId, itemKind, visible, onClose }: Pro
             </ScrollView>
           </>
         )}
+        </View>
       </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  backdrop: {
+  container: {
     flex: 1,
+    justifyContent: "flex-end",
     backgroundColor: "rgba(0,0,0,0.55)",
   },
   sheet: {
-    backgroundColor: "#27070E",
+    backgroundColor: "#290A12",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 20,
