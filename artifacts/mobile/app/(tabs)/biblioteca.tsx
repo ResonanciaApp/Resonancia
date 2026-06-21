@@ -1222,7 +1222,6 @@ export default function BibliotecaScreen() {
       <View
         style={[styles.stickyHeader, {
           paddingTop: topPad + 2,
-          backgroundColor: "#2E0510",
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 9 },
           shadowOpacity: 0.22,
@@ -1230,6 +1229,12 @@ export default function BibliotecaScreen() {
           elevation: 7,
         }]}
       >
+        <LinearGradient
+          colors={["#2E0510", "#160108"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
         {/* Fila 1: título + iconos */}
         <View style={styles.headerRow}>
           <View style={{ flex: 1 }}>
