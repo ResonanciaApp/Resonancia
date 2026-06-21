@@ -275,7 +275,11 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
   const rotate  = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", tiltDir] });
 
   return (
-    <Pressable onPress={onPress} disabled={!available} style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}>
+    <Pressable
+      onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onPress(); }}
+      disabled={!available}
+      style={[styles.soundCard, { opacity: available ? 1 : 0.45 }]}
+    >
       <View style={styles.cardImageWrap}>
         <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ rotate }] }]}>
           {/* Imagen recortada */}
@@ -639,7 +643,6 @@ export default function MezcladorScreen() {
 
   const handleSoundPress = (sound: MixSound) => {
     if (!hasSoundFile(sound.id) && !REMOTE_SOUND_MAP[sound.id]) return;
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (sound.isPremium && !isPremium) {
       router.push("/membresia" as never);
       return;
