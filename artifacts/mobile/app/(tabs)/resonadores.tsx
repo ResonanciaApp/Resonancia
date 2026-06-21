@@ -667,7 +667,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.07)",
+    backgroundColor: "rgba(0,0,0,0.50)",
     overflow: "hidden",
   },
   chipText: { fontSize: 13, fontWeight: "400", color: "#FFFFFF" },
