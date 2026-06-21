@@ -798,15 +798,24 @@ export function MixerSheet() {
               <Pressable
                 onPress={() => setEscenasOpen(true)}
                 hitSlop={10}
-                style={[styles.ajustesPill, hasCustomBg && styles.ajustesPillCustom]}
+                style={styles.headerBtn}
                 accessibilityRole="button"
                 accessibilityLabel="Escenas y ajustes de fondo"
               >
                 <MaterialCommunityIcons
                   name="tune-variant"
-                  size={15}
+                  size={18}
                   color={palette.headerFg}
                 />
+              </Pressable>
+              <Pressable
+                onPress={openImmersivo}
+                hitSlop={10}
+                style={styles.headerBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Modo Inmersivo"
+              >
+                <Feather name="eye" size={18} color={palette.headerFg} />
               </Pressable>
               <Pressable
                 onPress={() => { stopAll(); closeSheet(); }}
