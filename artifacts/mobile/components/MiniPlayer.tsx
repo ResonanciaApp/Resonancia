@@ -223,16 +223,10 @@ export function MiniPlayer() {
               <Feather name="chevron-up" size={22} color="rgba(255,255,255,0.6)" />
             </Pressable>
 
-            {/* Stack / carrusel — ancho animado empuja el texto; timing suave sin rebote */}
-            <Animated.View style={[styles.stackArea, { width: stackWidthAnim, marginTop: -2 }]}>
-              <ScrollView
-                ref={scrollRef}
-                horizontal
-                scrollEnabled={stackOpen}
-                showsHorizontalScrollIndicator={false}
-                style={styles.stackScroll}
-                contentContainerStyle={{ width: carouselContentW, height: STACK_SIZE }}
-              >
+            {/* Stack / carrusel — ancho fijo en layout (cap 5 thumbs); overflow visible
+                para que ≥6 thumbnails pasen por detrás del play (zIndex) */}
+            <View style={[styles.stackArea, { width: stackWidthStackedCap, marginTop: -2 }]}>
+              <View style={styles.stackScroll}>
                 {activeSounds.map((s, i) => {
                   const image      = getSoundImage(s.id);
                   const translateX = openProgress.interpolate({
@@ -250,8 +244,8 @@ export function MiniPlayer() {
                     />
                   );
                 })}
-              </ScrollView>
-            </Animated.View>
+              </View>
+            </View>
 
             {/* Texto eliminado — espacio flex para empujar el play a la derecha */}
             <View style={styles.textBlock} />
