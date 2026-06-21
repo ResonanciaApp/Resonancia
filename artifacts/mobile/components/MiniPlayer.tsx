@@ -250,24 +250,6 @@ export function MiniPlayer() {
             style={StyleSheet.absoluteFill}
             pointerEvents="none"
           />
-          {/* Acento esquina sup-izq */}
-          <View pointerEvents="none" style={{
-            position: "absolute", top: 0, left: 0,
-            width: 60, height: 60,
-            borderTopLeftRadius: 25,
-            borderTopWidth: 1.5, borderLeftWidth: 1.5,
-            borderColor: "rgba(255,255,255,0.45)",
-            backgroundColor: "transparent",
-          }} />
-          {/* Acento esquina inf-der */}
-          <View pointerEvents="none" style={{
-            position: "absolute", bottom: 0, right: 0,
-            width: 44, height: 44,
-            borderBottomRightRadius: 25,
-            borderBottomWidth: 1, borderRightWidth: 1,
-            borderColor: "rgba(255,255,255,0.18)",
-            backgroundColor: "transparent",
-          }} />
 
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
