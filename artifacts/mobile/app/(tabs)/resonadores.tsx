@@ -427,23 +427,6 @@ export default function ResonadoresScreen() {
           </View>
         )}
 
-        {/* Banner */}
-        <View style={styles.banner}>
-          <Image
-            source={require("@/assets/images/banner-equipo.jpg")}
-            style={StyleSheet.absoluteFill}
-            contentFit="cover"
-          />
-          {/* Overlay rojizo sutil */}
-          <View pointerEvents="none" style={styles.bannerTint} />
-          <Animated.View
-            pointerEvents="none"
-            style={[styles.bannerTextWrap, { opacity: bannerTextOpacity }]}
-          >
-            <Text style={styles.bannerText}>Juntos expandimos la vibración</Text>
-          </Animated.View>
-        </View>
-
         {/* Tab switcher */}
         <View style={styles.tabPill}>
           {(["resonadores", "expansores"] as const).map((t) => {
