@@ -994,7 +994,7 @@ export default function BibliotecaScreen() {
                   <View key={mix.id} style={{ width: cellW }}>
                     <Pressable
                       style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1 }]}
-                      onPress={() => { if (loadMix(mix)) openSheet(); }}
+                      onPress={() => { if (loadedPresetId === mix.id) { openSheet(); } else if (loadMix(mix)) { openSheet(); } }}
                     >
                       <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
                         <MixCover mix={mix} size={cellW} radius={8} />
@@ -1005,7 +1005,7 @@ export default function BibliotecaScreen() {
                         )}
                       </View>
                     </Pressable>
-                    <Pressable onPress={() => { if (loadMix(mix)) openSheet(); }}>
+                    <Pressable onPress={() => { if (loadedPresetId === mix.id) { openSheet(); } else if (loadMix(mix)) { openSheet(); } }}>
                       <Text style={styles.gridTitle} numberOfLines={2}>{mix.name}</Text>
                     </Pressable>
                     <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>
@@ -1031,9 +1031,9 @@ export default function BibliotecaScreen() {
                 key={mix.id}
                 mix={mix}
                 isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
-                onPress={() => { if (loadMix(mix)) openSheet(); }}
+                onPress={() => { if (loadedPresetId === mix.id) { openSheet(); } else if (loadMix(mix)) { openSheet(); } }}
                 onLongPress={() => setMixMenuPreset(mix)}
-                onPressThumb={() => { if (loadMix(mix)) openSheet(); }}
+                onPressThumb={() => { if (loadedPresetId === mix.id) { openSheet(); } else if (loadMix(mix)) { openSheet(); } }}
                 onPressMenu={() => setMixMenuPreset(mix)}
               />
             ))}
