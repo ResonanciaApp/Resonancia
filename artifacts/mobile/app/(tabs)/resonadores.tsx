@@ -217,30 +217,29 @@ function ExpansorChevronFilter({
     setOpen(next);
     Animated.timing(anim, {
       toValue: next ? 1 : 0,
-      duration: 220,
+      duration: 200,
       easing: Easing.out(Easing.quad),
       useNativeDriver: false,
     }).start();
   }
 
-  function close() {
-    setOpen(false);
-    Animated.timing(anim, { toValue: 0, duration: 180, easing: Easing.in(Easing.quad), useNativeDriver: false }).start();
-  }
-
   function handleCountry(c: string) {
     onSelectCountry(selectedCountry === c ? null : c);
-    close();
+    setOpen(false);
+    Animated.timing(anim, { toValue: 0, duration: 160, easing: Easing.in(Easing.quad), useNativeDriver: false }).start();
   }
 
   const chevronRotate = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "180deg"] });
+  const dropOpacity  = anim;
+  const dropScale    = anim.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] });
+
   const label = selectedCountry
     ? `${COUNTRY_FLAGS[selectedCountry] ?? ""} ${selectedCountry}`
     : "Todos los países";
-  const maxH = anim.interpolate({ inputRange: [0, 1], outputRange: [0, 120] });
 
   return (
     <View style={styles.chevronWrap}>
+      {/* Pill trigger */}
       <Pressable onPress={toggle} style={({ pressed }) => [styles.chevronTrigger, { opacity: pressed ? 0.75 : 1 }]}>
         <Text style={styles.chevronTriggerText}>{label}</Text>
         <Animated.View style={{ transform: [{ rotate: chevronRotate }] }}>
@@ -248,21 +247,36 @@ function ExpansorChevronFilter({
         </Animated.View>
       </Pressable>
 
-      <Animated.View style={[styles.chevronDropdown, { maxHeight: maxH, overflow: "hidden" }]}>
-        <View style={styles.chevronChips}>
-          {availableCountries.map((c) => (
+      {/* Dropdown flotante — posición absoluta bajo la pill */}
+      {open && (
+        <Animated.View style={[styles.chevronDropdown, { opacity: dropOpacity, transform: [{ scale: dropScale }] }]}>
+          {/* "Todos" option */}
+          <Pressable
+            onPress={() => handleCountry("")}
+            style={[styles.chevronOption, !selectedCountry && styles.chevronOptionSel]}
+          >
+            <Text style={[styles.chevronOptionText, !selectedCountry && styles.chevronOptionTextSel]}>
+              Todos los países
+            </Text>
+          </Pressable>
+          {availableCountries.map((c, i) => (
             <Pressable
               key={c}
               onPress={() => handleCountry(c)}
-              style={[styles.chevronChip, selectedCountry === c && styles.chevronChipSel]}
+              style={[
+                styles.chevronOption,
+                selectedCountry === c && styles.chevronOptionSel,
+                i < availableCountries.length - 1 && styles.chevronOptionDivider,
+              ]}
             >
-              <Text style={[styles.chevronChipText, selectedCountry === c && styles.chevronChipTextSel]}>
+              <Text style={[styles.chevronOptionText, selectedCountry === c && styles.chevronOptionTextSel]}>
                 {COUNTRY_FLAGS[c] ?? ""} {c}
               </Text>
+              {selectedCountry === c && <Feather name="check" size={13} color="#E9C46A" />}
             </Pressable>
           ))}
-        </View>
-      </Animated.View>
+        </Animated.View>
+      )}
     </View>
   );
 }
@@ -739,14 +753,15 @@ const styles = StyleSheet.create({
     marginHorizontal: H_PAD,
     marginTop: 10,
     marginBottom: 4,
+    zIndex: 100,
   },
   chevronTrigger: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "rgba(0,0,0,0.35)",
+    backgroundColor: "rgba(0,0,0,0.40)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.15)",
+    borderColor: "rgba(255,255,255,0.18)",
     borderRadius: 999,
     paddingHorizontal: 16,
     paddingVertical: 9,
@@ -758,46 +773,37 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   chevronDropdown: {
-    marginTop: 6,
-    backgroundColor: "rgba(0,0,0,0.45)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    borderRadius: 14,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    gap: 10,
-  },
-  chevronSection: { gap: 6 },
-  chevronSectionLabel: {
-    fontSize: 10,
-    fontWeight: "600",
-    color: "rgba(255,255,255,0.40)",
-    letterSpacing: 0.8,
-    textTransform: "uppercase",
-  },
-  chevronChips: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 6,
-  },
-  chevronChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    position: "absolute",
+    top: 44,
+    left: 0,
+    right: 0,
+    backgroundColor: "rgba(18,6,12,0.97)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.12)",
+    borderRadius: 14,
+    overflow: "hidden",
+    zIndex: 200,
   },
-  chevronChipSel: {
-    backgroundColor: "rgba(212,175,55,0.25)",
-    borderColor: "rgba(212,175,55,0.50)",
+  chevronOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
-  chevronChipText: {
-    fontSize: 12,
+  chevronOptionSel: {
+    backgroundColor: "rgba(212,175,55,0.12)",
+  },
+  chevronOptionDivider: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "rgba(255,255,255,0.08)",
+  },
+  chevronOptionText: {
+    fontSize: 13,
     fontWeight: "400",
-    color: "rgba(255,255,255,0.75)",
+    color: "rgba(255,255,255,0.80)",
   },
-  chevronChipTextSel: {
+  chevronOptionTextSel: {
     color: "#E9C46A",
     fontWeight: "600",
   },
