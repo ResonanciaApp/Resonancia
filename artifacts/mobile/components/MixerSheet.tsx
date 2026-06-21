@@ -14,6 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
+import { GhostPill } from "@/components/GhostPill";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
@@ -795,28 +796,30 @@ export function MixerSheet() {
               <Text style={[styles.title, { color: palette.headerFg, flex: 1 }]} numberOfLines={1}>
                 {originPreset?.name ?? "Tu mezcla"}
               </Text>
-              <Pressable
-                onPress={() => setEscenasOpen(true)}
-                hitSlop={10}
-                style={styles.headerBtn}
-                accessibilityRole="button"
-                accessibilityLabel="Escenas y ajustes de fondo"
-              >
-                <MaterialCommunityIcons
-                  name="tune-variant"
-                  size={18}
-                  color={palette.headerFg}
-                />
-              </Pressable>
-              <Pressable
-                onPress={openImmersivo}
-                hitSlop={10}
-                style={styles.headerBtn}
-                accessibilityRole="button"
-                accessibilityLabel="Modo Inmersivo"
-              >
-                <Feather name="eye" size={18} color={palette.headerFg} />
-              </Pressable>
+              <GhostPill>
+                <Pressable
+                  onPress={() => setEscenasOpen(true)}
+                  hitSlop={8}
+                  style={styles.headerPillBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel="Escenas y ajustes de fondo"
+                >
+                  <MaterialCommunityIcons
+                    name="tune-variant"
+                    size={18}
+                    color={palette.headerFg}
+                  />
+                </Pressable>
+                <Pressable
+                  onPress={openImmersivo}
+                  hitSlop={8}
+                  style={styles.headerPillBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel="Modo Inmersivo"
+                >
+                  <Feather name="eye" size={18} color={palette.headerFg} />
+                </Pressable>
+              </GhostPill>
               <Pressable
                 onPress={() => { stopAll(); closeSheet(); }}
                 hitSlop={10}
@@ -1142,6 +1145,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   headerBtn: { paddingHorizontal: 4, justifyContent: "center" },
+  headerPillBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
   caption: { fontSize: 10, letterSpacing: 1.8, textTransform: "uppercase", marginBottom: 4, fontWeight: "400" },
   title: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
   subtitle: { fontSize: 12, marginTop: 2 },
