@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
   },
   handle: {
     width: 36, height: 4, borderRadius: 2,
-    backgroundColor: "rgba(74,12,12,0.35)",
+    backgroundColor: "rgba(255,255,255,0.5)",
     alignSelf: "center", marginBottom: 16,
   },
   header: { flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 14 },
