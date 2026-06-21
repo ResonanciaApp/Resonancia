@@ -87,7 +87,7 @@ export function MixerSettingsSheet({
       <View style={styles.root}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
         <View
-          style={[styles.sheet, sheetSizing, { paddingBottom: insets.bottom + 16, backgroundColor: sheetGradient[2] }]}
+          style={[styles.sheet, sheetSizing, { paddingBottom: insets.bottom + 16, backgroundColor: sheetGradient[0] }]}
         >
           {/* ── Header: X + título en la misma fila ── */}
           <View style={styles.headerRow}>
