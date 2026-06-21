@@ -424,7 +424,7 @@ export default function ResonadoresScreen() {
         {/* Banner */}
         <View style={styles.banner}>
           <Image
-            source={require("@/assets/images/banner-equipo.jpg")}
+            source={require("@/assets/images/banner-equipo.png")}
             style={StyleSheet.absoluteFill}
             contentFit="cover"
           />
