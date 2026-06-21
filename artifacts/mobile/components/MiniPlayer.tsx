@@ -347,7 +347,7 @@ export function MiniPlayer() {
         <Animated.Text
           numberOfLines={1}
           pointerEvents="none"
-          style={[styles.cinematicText, { opacity: counterOpacity }]}
+          style={[styles.cinematicText, { opacity: counterOpacity, fontSize: 13, fontWeight: "400" }]}
         >
           {n === 1 ? "1 sonido" : `${n} sonidos`}
         </Animated.Text>
