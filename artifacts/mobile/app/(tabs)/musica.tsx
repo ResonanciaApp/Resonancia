@@ -1124,7 +1124,7 @@ const styles = StyleSheet.create({
     flex: 1, borderRadius: 12, overflow: "hidden",
     backgroundColor: "rgba(212,175,55,0.08)",
   },
-  cardFooter: { paddingHorizontal: 4, paddingTop: 5, height: 38, overflow: "hidden" },
+  cardFooter: { paddingHorizontal: 4, paddingTop: 9, height: 38, overflow: "hidden" },
   soundName:  { fontSize: 11.5, fontWeight: "500", letterSpacing: 0.1, textAlign: "center", color: DARK },
   lockBadge:      { position: "absolute", top: 4, right: 4 },
   activeIconWrap: {
