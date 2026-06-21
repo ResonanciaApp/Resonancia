@@ -118,7 +118,9 @@ export function MixerSettingsSheet({
                         end={{ x: 1, y: 1 }}
                         style={[styles.swatchBig, sel && styles.swatchSel]}
                       >
-                        {sel && <Text style={styles.swatchCheck}>✓</Text>}
+                        {sel && (
+                          <Text style={[styles.swatchCheck, { color: p.id === "noche" ? "#FFFFFF" : "#5C1A1A" }]}>✓</Text>
+                        )}
                       </LinearGradient>
                       <Text
                         style={[styles.swatchLabelBig, { color: sel ? PRIMARY : c.mutedDim }, sel && styles.swatchLabelSel]}
