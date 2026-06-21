@@ -280,6 +280,11 @@ export function MiniPlayer() {
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
 
+            {/* Chevron izquierdo — toca para abrir la sheet */}
+            <Pressable onPress={() => openSheetRef.current()} hitSlop={8} style={styles.chevronLeft}>
+              <Feather name="chevron-left" size={18} color="rgba(255,255,255,0.35)" />
+            </Pressable>
+
             {/* Stack / carrusel — ancho animado + maxWidth para que nunca empuje el play */}
             <Animated.View style={[styles.stackArea, { width: stackWidthAnim, marginTop: -2 }]}>
               <ScrollView
@@ -424,6 +429,12 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: 2,
     backgroundColor: "rgba(255,255,255,0.25)",
+  },
+
+  chevronLeft: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 2,
   },
 
   // ── Card ──────────────────────────────────────────────────────
