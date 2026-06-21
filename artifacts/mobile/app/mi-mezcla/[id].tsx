@@ -25,7 +25,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
-import { getMixImage, MIX_IMAGE_GALLERY } from "@/config/mix-images";
+import { formatMixImageLabel, getMixImage, MIX_IMAGE_GALLERY } from "@/config/mix-images";
 import { getSoundImage } from "@/config/sound-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { GEOMETRIES, type GeometryId } from "@/data/geometries";
@@ -170,7 +170,7 @@ function CoverPickerSheet({
                         <Feather name="image" size={20} color={MUTED} />
                       </View>
                     )}
-                    <Text style={ms.presetLabel} numberOfLines={1}>{key}</Text>
+                    <Text style={ms.presetLabel} numberOfLines={1}>{formatMixImageLabel(key)}</Text>
                   </Pressable>
                 );
               })}
