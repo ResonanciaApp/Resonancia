@@ -196,16 +196,12 @@ const PillTab = memo(function PillTab({
           </LinearGradient>
         </LinearGradient>
       ) : (
-        <View style={[styles.pillTab, {
-          backgroundColor: "transparent",
-          borderWidth: 1,
-          borderColor: "rgba(255,255,255,0.10)",
-        }]}>
+        <GhostPill style={{ width: 104, height: 38, justifyContent: "center", gap: 4 }}>
           <MaterialCommunityIcons name={tab.icon as any} size={17} color="rgba(255,255,255,0.80)" />
           <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "rgba(255,255,255,0.80)", fontWeight: "400" }]}>
             {tab.label}
           </Text>
-        </View>
+        </GhostPill>
       )}
     </Pressable>
   );
