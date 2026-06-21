@@ -42,7 +42,7 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
       drawerAnim.stopAnimation();
       Animated.timing(drawerAnim, {
         toValue: toOpen ? 1 : 0,
-        duration: toOpen ? 420 : 280,
+        duration: 420,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }).start();
