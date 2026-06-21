@@ -276,16 +276,6 @@ export function MiniPlayer() {
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
 
-            {/* Flechita "Abrir" — extremo izquierdo */}
-            <Pressable
-              onPress={(e) => { e.stopPropagation(); handleOpen(); }}
-              hitSlop={10}
-              accessibilityLabel="Abrir mezclador"
-              style={{ marginLeft: -3, marginTop: -2 }}
-            >
-              <Feather name="chevron-up" size={22} color="rgba(255,255,255,0.6)" />
-            </Pressable>
-
             {/* Stack / carrusel — ancho animado + maxWidth para que nunca empuje el play */}
             <Animated.View style={[styles.stackArea, { width: stackWidthAnim, marginTop: -2 }]}>
               <ScrollView
