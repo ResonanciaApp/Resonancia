@@ -635,7 +635,7 @@ const styles = StyleSheet.create({
   durPillText: {
     fontSize: 17,
     fontWeight: "600",
-    color: "rgba(244,218,213,0.70)",
+    color: "rgba(255,255,255,0.90)",
     letterSpacing: 0.2,
   },
   durPillTextActive: {
