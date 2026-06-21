@@ -268,10 +268,14 @@ export function MiniPlayer() {
             pointerEvents="none"
           />
 
-          {/* ── Handle (swipe-up → abre sheet) ── */}
-          <View style={styles.handleHitArea} {...handlePan.panHandlers}>
+          {/* ── Handle (swipe-up o tap → abre sheet) ── */}
+          <Pressable
+            style={styles.handleHitArea}
+            onPress={() => openSheetRef.current()}
+            {...handlePan.panHandlers}
+          >
             <View style={styles.handle} />
-          </View>
+          </Pressable>
 
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
