@@ -1138,8 +1138,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     borderTopWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    backgroundColor: "rgba(255,255,255,0.04)",
+    borderColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(255,255,255,0.01)",
   },
   pillAboveFooter: {
     alignItems: "center",
