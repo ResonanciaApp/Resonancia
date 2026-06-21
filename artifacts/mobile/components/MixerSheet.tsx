@@ -932,52 +932,22 @@ export function MixerSheet() {
                   style={StyleSheet.absoluteFill}
                   pointerEvents="none"
                 />
-                <Text style={[styles.modalTitle, { color: palette.fg }]}>
+                <Text style={[styles.modalTitle, { color: "#FFFFFF" }]}>
                   {saveMode === "update" ? "Actualizar mezcla" : "Guardar mezcla"}
                 </Text>
 
-                <ScrollView
-                  style={styles.modalScroll}
-                  showsVerticalScrollIndicator={false}
-                  keyboardShouldPersistTaps="handled"
-                >
-                  <Text style={[styles.modalLabel, { color: palette.muted }]}>Título</Text>
-                  <TextInput
-                    value={presetName}
-                    onChangeText={setPresetName}
-                    placeholder="Ej: Lluvia para dormir"
-                    placeholderTextColor={palette.muted}
-                    style={[
-                      styles.modalInput,
-                      { color: palette.fg, backgroundColor: palette.inputBg },
-                    ]}
-                    maxLength={40}
-                  />
-
-                  <Text style={[styles.modalLabel, { color: palette.muted }]}>Categoría</Text>
-                  <View style={styles.catTabRow} accessibilityRole="tablist">
-                    {MIX_CATEGORIES.map((cat) => {
-                      const selected = mixCategory === cat.id;
-                      return (
-                        <Pressable
-                          key={cat.id}
-                          onPress={() => setMixCategory(cat.id)}
-                          style={[styles.catTabBlock, selected && styles.catTabBlockSel]}
-                          accessibilityRole="tab"
-                          accessibilityState={{ selected }}
-                        >
-                          <Text
-                            numberOfLines={1}
-                            style={[styles.catTabLabel, { color: "#FFFFFF", fontWeight: selected ? "700" : "400" }]}
-                          >
-                            {cat.label}
-                          </Text>
-                        </Pressable>
-                      );
-                    })}
-                  </View>
-
-                </ScrollView>
+                <Text style={[styles.modalLabel, { color: "#FFFFFF" }]}>Título</Text>
+                <TextInput
+                  value={presetName}
+                  onChangeText={setPresetName}
+                  placeholder="Ej: Lluvia para dormir"
+                  placeholderTextColor={palette.muted}
+                  style={[
+                    styles.modalInput,
+                    { color: "#FFFFFF", backgroundColor: palette.inputBg },
+                  ]}
+                  maxLength={40}
+                />
 
                 <View style={styles.modalActions}>
                   <Pressable onPress={cancelSave} style={styles.modalBtn}>
@@ -1284,8 +1254,6 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 20,
     overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "#161f33",
   },
   modalTitle: { fontSize: 17, fontWeight: "700", marginBottom: 14 },
   modalScroll: { maxHeight: 420 },
