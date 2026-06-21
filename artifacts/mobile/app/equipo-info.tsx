@@ -7,6 +7,7 @@ import { GoldGradient } from "@/components/GoldGradient";
 import React, { useEffect, useRef } from "react";
 import {
   Animated,
+  ImageBackground,
   Linking,
   Pressable,
   ScrollView,
@@ -152,8 +153,7 @@ export default function EquipoInfoScreen() {
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={styles.root}>
-      <Image source={EQUIPO_BG} style={StyleSheet.absoluteFill} contentFit="cover" />
+    <ImageBackground source={EQUIPO_BG} style={styles.root} resizeMode="cover">
       <LinearGradient
         colors={["rgba(0,0,0,0.45)", "rgba(10,0,4,0.72)", "#0A0004"]}
         locations={[0, 0.55, 1]}
@@ -182,7 +182,7 @@ export default function EquipoInfoScreen() {
           <RoleCard key={role.titulo} role={role} delay={120 + i * 140} />
         ))}
       </ScrollView>
-    </View>
+    </ImageBackground>
   );
 }
 
