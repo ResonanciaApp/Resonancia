@@ -86,11 +86,8 @@ export function MixerSettingsSheet({
     >
       <View style={styles.root}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
-        <LinearGradient
-          colors={sheetGradient}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={[styles.sheet, sheetSizing, { paddingBottom: insets.bottom + 16 }]}
+        <View
+          style={[styles.sheet, sheetSizing, { paddingBottom: insets.bottom + 16, backgroundColor: sheetGradient[2] }]}
         >
           {/* ── Header: X + título en la misma fila ── */}
           <View style={styles.headerRow}>
@@ -181,7 +178,7 @@ export function MixerSettingsSheet({
               {mode === "palette" ? "Restablecer color" : "Limpiar filtros"}
             </Text>
           </Pressable>
-        </LinearGradient>
+        </View>
       </View>
     </Modal>
   );
