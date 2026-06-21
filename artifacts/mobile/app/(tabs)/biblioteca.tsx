@@ -902,6 +902,16 @@ export default function BibliotecaScreen() {
       };
       const displayPl = applySort(sortedUserPl);
 
+      if (displayPl.length === 0 && userFolders.length === 0) {
+        return (
+          <View style={styles.emptyState}>
+            <Feather name="music" size={48} color={GOLD} style={{ marginBottom: 16 }} />
+            <Text style={styles.emptyTitle}>Tus playlists aparecerán aquí</Text>
+            <Text style={styles.emptySub}>Crea una playlist para organizar tus sesiones favoritas.</Text>
+          </View>
+        );
+      }
+
       // Ancho de celda: 4 cols con 3 gaps entre ellas
       const GRID_GAP = 10;
       const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
