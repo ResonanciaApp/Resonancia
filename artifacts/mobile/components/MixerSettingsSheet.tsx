@@ -95,7 +95,7 @@ export function MixerSettingsSheet({
               <Text style={[styles.closeX, { color: c.mutedDim }]}>✕</Text>
             </Pressable>
             <Text style={[styles.title, { color: c.fg }]}>
-              {mode === "palette" ? "Paleta de color" : "Filtros"}
+              {mode === "palette" ? "Color de fondo" : "Filtros"}
             </Text>
             <View style={styles.closePlaceholder} />
           </View>
