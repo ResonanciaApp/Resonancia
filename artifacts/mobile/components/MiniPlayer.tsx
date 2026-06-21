@@ -128,18 +128,21 @@ export function MiniPlayer() {
   // dentro del ancho cap (MAX_STACK_LAYOUT_W), sin importar cuántos haya.
   const dynamicShift       = n <= 1 ? 0 : Math.min(STACK_SHIFT, (MAX_STACK_LAYOUT_W - STACK_SIZE) / (n - 1));
   const stackWidthStackedCap = STACK_SIZE + Math.max(0, n - 1) * dynamicShift;
-  const stackWidthAnim = useRef(new Animated.Value(stackWidthStackedCap)).current;
-  // openProgress: 0 = apilado, 1 = abierto — driver NATIVO (slide por translateX)
-  const openProgress   = useRef(new Animated.Value(0)).current;
-  // Cada thumb viaja (STACK_SIZE + gap - dynamicShift) al abrirse
-  const openDelta = STACK_SIZE + CAROUSEL_THUMB_GAP - dynamicShift;
-
-  const [stackOpen, setStackOpen] = useState(false);
-  const scrollRef = useRef<ScrollView>(null);
 
   // Ancho real del contenido del carrusel (sin scroll si cabe, con scroll si excede)
   const carouselContentW = n * STACK_SIZE + Math.max(0, n - 1) * CAROUSEL_THUMB_GAP + 12;
   const carouselOpenW    = Math.min(carouselContentW, CAROUSEL_MAX_OPEN_W);
+
+  // Por defecto abierto (desestaqueado); el usuario puede tocar para apilar
+  const stackWidthAnim = useRef(new Animated.Value(carouselOpenW)).current;
+  // openProgress: 0 = apilado, 1 = abierto — driver NATIVO (slide por translateX)
+  const openProgress   = useRef(new Animated.Value(1)).current;
+  // Cada thumb viaja (STACK_SIZE + gap - dynamicShift) al abrirse
+  const openDelta = STACK_SIZE + CAROUSEL_THUMB_GAP - dynamicShift;
+
+  const [stackOpen, setStackOpen] = useState(true);
+  const prevN = useRef(n);
+  const scrollRef = useRef<ScrollView>(null);
 
   const toggleStack = () => {
     const next = !stackOpen;
@@ -160,12 +163,28 @@ export function MiniPlayer() {
   };
 
   // Sincroniza el ancho cuando cambia n: cerrado → stacked, abierto → carousel
+  // Si se agrega un sonido mientras está apilado → auto-expandir
   useEffect(() => {
+    const added = n > prevN.current;
+    prevN.current = n;
     // Si al quitar un sonido el carrusel quedó scrolleado más allá del nuevo
     // contenido, el offset persistiría mostrando espacio vacío → reset a 0.
     scrollRef.current?.scrollTo({ x: 0, animated: false });
     if (!stackOpen) {
-      stackWidthAnim.setValue(stackWidthStackedCap);
+      if (added) {
+        // Nuevo sonido agregado mientras estaba apilado → auto-expandir
+        setStackOpen(true);
+        Animated.timing(stackWidthAnim, {
+          toValue: carouselOpenW,
+          useNativeDriver: false, duration: 220, easing: Easing.out(Easing.cubic),
+        }).start();
+        Animated.spring(openProgress, {
+          toValue: 1,
+          useNativeDriver: true, damping: 28, stiffness: 200, overshootClamping: true,
+        }).start();
+      } else {
+        stackWidthAnim.setValue(stackWidthStackedCap);
+      }
     } else {
       Animated.spring(stackWidthAnim, {
         toValue: carouselOpenW,
@@ -179,9 +198,9 @@ export function MiniPlayer() {
 
   useEffect(() => {
     if (!mixActive) {
-      setStackOpen(false);
+      setStackOpen(true);
       stackWidthAnim.setValue(0);
-      openProgress.setValue(0);
+      openProgress.setValue(1);
     }
   }, [mixActive]); // eslint-disable-line react-hooks/exhaustive-deps
 
