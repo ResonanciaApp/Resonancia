@@ -53,6 +53,7 @@ import {
 } from "@/config/immersive-presets";
 import { MixerSettingsSheet } from "@/components/MixerSettingsSheet";
 import { GhostPill } from "@/components/GhostPill";
+import Svg, { Defs, LinearGradient as SvgLG, Stop, Rect } from "react-native-svg";
 import { useSounds } from "@/context/SoundsContext";
 import { REMOTE_SOUND_MAP, REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 
@@ -158,12 +159,24 @@ const PillTab = memo(function PillTab({
   return (
     <Pressable onPress={onPress}>
       {sel ? (
-        <LinearGradient
-          colors={GOLD_BORDER_PILL}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={styles.pillTabBorder}
-        >
+        <View style={styles.pillTabBorder}>
+          {/* Ghost border invertido: luz desde la derecha */}
+          <Svg width={104} height={38} style={StyleSheet.absoluteFill} pointerEvents="none">
+            <Defs>
+              <SvgLG id="gsel-a" x1="1" y1="0" x2="0.35" y2="1">
+                <Stop offset="0"   stopColor="#E9C46A" stopOpacity={0.7} />
+                <Stop offset="0.4" stopColor="#D4AF37" stopOpacity={0.18} />
+                <Stop offset="1"   stopColor="#D4AF37" stopOpacity={0.03} />
+              </SvgLG>
+              <SvgLG id="gsel-b" x1="0" y1="1" x2="0.65" y2="0">
+                <Stop offset="0"    stopColor="#D4AF37" stopOpacity={0.28} />
+                <Stop offset="0.45" stopColor="#D4AF37" stopOpacity={0.06} />
+                <Stop offset="1"    stopColor="#D4AF37" stopOpacity={0} />
+              </SvgLG>
+            </Defs>
+            <Rect x={0.75} y={0.75} width={102.5} height={36.5} rx={19} ry={19} fill="none" stroke="url(#gsel-a)" strokeWidth={1.5} />
+            <Rect x={0.75} y={0.75} width={102.5} height={36.5} rx={19} ry={19} fill="none" stroke="url(#gsel-b)" strokeWidth={1.5} />
+          </Svg>
           <LinearGradient
             colors={TAB_HEADER_GRADIENT[tab.id]}
             start={{ x: 0, y: 0 }}
@@ -194,7 +207,7 @@ const PillTab = memo(function PillTab({
               </LinearGradient>
             </MaskedView>
           </LinearGradient>
-        </LinearGradient>
+        </View>
       ) : (
         <GhostPill style={{ width: 104, height: 38, justifyContent: "center", gap: 4 }}>
           <MaterialCommunityIcons name={tab.icon as any} size={17} color="rgba(255,255,255,0.80)" />
