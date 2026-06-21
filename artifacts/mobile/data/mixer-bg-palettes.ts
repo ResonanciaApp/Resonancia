@@ -21,7 +21,7 @@ export const MIXER_BG_PALETTES: MixerBgPalette[] = [
   { id: "noche", label: "Noche borgoña", colors: ["#2E0510", "#1B060F", "#160108"] },
 ];
 
-export const DEFAULT_MIXER_BG_PALETTE: MixerBgPaletteId = "arena";
+export const DEFAULT_MIXER_BG_PALETTE: MixerBgPaletteId = "noche";
 
 export function getMixerBgPalette(id: string | null | undefined): MixerBgPalette {
   return (
