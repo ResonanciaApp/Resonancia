@@ -495,6 +495,7 @@ export default function ResonadoresScreen() {
 
       {/* ── Grid ── */}
       <FlatList
+        style={{ marginTop: -2 }}
         data={activeTab === "expansores" ? items.slice(0, expansorLimit) : items}
         keyExtractor={(item) => item.data.id}
         numColumns={numCols}
@@ -681,7 +682,7 @@ const styles = StyleSheet.create({
   chipTextSel: { color: "#1B060F", fontWeight: "700" },
 
   // Grid
-  grid: { paddingHorizontal: H_PAD, paddingTop: 10 },
+  grid: { paddingHorizontal: H_PAD, paddingTop: 0 },
   row: { gap: CARD_GAP, marginBottom: 16 },
 
   // Card
