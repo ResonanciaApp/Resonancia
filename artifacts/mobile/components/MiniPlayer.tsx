@@ -97,11 +97,15 @@ export function MiniPlayer() {
   const colors = useColors();
 
   // ── Swipe-up en handle → abre la sheet ─────────────────────────
+  const openSheetRef = useRef(openSheet);
+  useEffect(() => { openSheetRef.current = openSheet; }, [openSheet]);
+
   const handlePan = useRef(
     PanResponder.create({
-      onMoveShouldSetPanResponder: (_, g) => Math.abs(g.dy) > 6 && g.dy < 0,
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder:  (_, g) => g.dy < -4,
       onPanResponderRelease: (_, g) => {
-        if (g.dy < -15) openSheet();
+        if (g.dy < -10) openSheetRef.current();
       },
     })
   ).current;
@@ -265,7 +269,9 @@ export function MiniPlayer() {
           />
 
           {/* ── Handle (swipe-up → abre sheet) ── */}
-          <View style={styles.handle} {...handlePan.panHandlers} />
+          <View style={styles.handleHitArea} {...handlePan.panHandlers}>
+            <View style={styles.handle} />
+          </View>
 
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
@@ -412,13 +418,18 @@ const styles = StyleSheet.create({
   },
 
   // ── Handle ────────────────────────────────────────────────────
+  handleHitArea: {
+    alignSelf: "stretch",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 14,
+    marginVertical: -6,
+  },
   handle: {
     width: 36,
     height: 4,
     borderRadius: 2,
     backgroundColor: "rgba(255,255,255,0.25)",
-    alignSelf: "center",
-    marginBottom: 8,
   },
 
   // ── Card ──────────────────────────────────────────────────────
