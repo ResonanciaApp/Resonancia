@@ -310,14 +310,6 @@ export function MiniPlayer() {
               </ScrollView>
             </Animated.View>
 
-            {/* Título cinemático — fade in/out al aparecer el miniplayer */}
-            <Animated.Text
-              numberOfLines={1}
-              style={[styles.cinematicText, { opacity: cinematicOpacity }]}
-            >
-              Esta es tu mezcla
-            </Animated.Text>
-
             {/* Botón play/pause — absoluto a la derecha, nunca se empuja */}
             <View style={[styles.waveWrap, { position: "absolute", right: 10, zIndex: 2 }]}>
               {[wave1, wave2].map((w, idx) => (
@@ -335,6 +327,16 @@ export function MiniPlayer() {
           </View>
 
         </View>
+
+        {/* Título cinemático — centrado, 10px del fondo de pantalla */}
+        <Animated.Text
+          numberOfLines={1}
+          pointerEvents="none"
+          style={[styles.cinematicText, { opacity: cinematicOpacity }]}
+        >
+          Esta es tu mezcla
+        </Animated.Text>
+
       </View>
     );
   }
@@ -510,13 +512,15 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.2)",
   },
   cinematicText: {
-    flex: 1,
+    position: "absolute",
+    bottom: 10,
+    left: 0,
+    right: 0,
     color: "#FFFFFF",
     fontSize: 13,
     fontWeight: "600",
     letterSpacing: 1.0,
-    textAlign: "right",
-    paddingRight: 10,
+    textAlign: "center",
   },
   playIconNudge: { marginLeft: 2 },
   waveWrap: {
