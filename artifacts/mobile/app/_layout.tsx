@@ -32,7 +32,7 @@ import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { preloadGeometrixIntro } from "@/lib/geometrixIntro";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
 import { FoldersPlaylistsProvider } from "@/context/FoldersPlaylistsContext";
-import { DrawerProvider, useDrawer, DRAWER_PUSH } from "@/context/DrawerContext";
+import { DrawerProvider, useDrawer } from "@/context/DrawerContext";
 import { IntencionProvider } from "@/context/IntencionContext";
 import { MixerProvider } from "@/context/MixerContext";
 import { SoundsProvider } from "@/context/SoundsContext";
@@ -116,16 +116,12 @@ function BrightnessOverlay() {
 
 function PushWrapper({ children }: { children: React.ReactNode }) {
   const { drawerAnim, isOpen } = useDrawer();
-  const translateX = drawerAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, DRAWER_PUSH],
-  });
   const overlayOpacity = drawerAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 0.52],
+    outputRange: [0, 0.6],
   });
   return (
-    <Animated.View style={{ flex: 1, transform: [{ translateX }] }}>
+    <Animated.View style={{ flex: 1 }}>
       {children}
       <Animated.View
         pointerEvents={isOpen ? "auto" : "none"}

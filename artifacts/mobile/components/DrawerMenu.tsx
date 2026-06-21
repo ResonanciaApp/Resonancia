@@ -68,6 +68,11 @@ export function DrawerMenu() {
     outputRange: [-DRAWER_PUSH, 0],
   });
 
+  const drawerOpacity = drawerAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
+
   const localFullName = [username, lastName].filter(Boolean).join(" ");
   const hasLocalName = !!localFullName && localFullName !== "Explorador de Sonido";
   const fullName = hasLocalName ? localFullName : (clerkName || "");
@@ -89,7 +94,7 @@ export function DrawerMenu() {
         />
       )}
 
-      <Animated.View style={[styles.drawer, visible && styles.drawerShadow, { transform: [{ translateX }] }]}>
+      <Animated.View style={[styles.drawer, visible && styles.drawerShadow, { transform: [{ translateX }], opacity: drawerOpacity }]}>
         <LinearGradient
           style={[styles.drawerInner, { paddingBottom: bottomPad + 24 }]}
           colors={["#2E0510", "#160108"]}
