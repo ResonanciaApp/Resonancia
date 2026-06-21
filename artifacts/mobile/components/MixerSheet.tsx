@@ -1160,7 +1160,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 6,
     marginBottom: 8,
-    backgroundColor: "rgba(255,255,255,0.05)",
   },
   warmSeparator: { height: 1, marginTop: 14, marginBottom: 0, marginHorizontal: -20, backgroundColor: "rgba(61,14,22,0.40)" },
   headerDivider: { height: 1, marginTop: 4, marginBottom: 4, marginHorizontal: -20 },
