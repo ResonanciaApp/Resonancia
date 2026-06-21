@@ -272,7 +272,7 @@ type SoundCardProps = {
   onPress: () => void;
 };
 
-const SoundCard = memo(function SoundCard({ sound, idx, active, locked, available, image, borderGradient, textColor, onPress }: SoundCardProps) {
+const SoundCard = memo(function SoundCard({ sound, idx, active, locked, available, image, borderGradient, textColor, bgPaletteId, onPress }: SoundCardProps) {
   const anim = useRef(new Animated.Value(active ? 1 : 0)).current;
   const [decorated, setDecorated] = useState(active);
 
@@ -317,7 +317,7 @@ const SoundCard = memo(function SoundCard({ sound, idx, active, locked, availabl
           {/* Borde encima de la imagen, rota junto con ella, fade in/out via opacity */}
           <Animated.View
             pointerEvents="none"
-            style={[styles.cardBorderRing, { opacity: anim, borderColor: borderGradient[0] }]}
+            style={[styles.cardBorderRing, { opacity: anim, borderColor: borderGradient[0], borderWidth: bgPaletteId === "arena" ? 6 : 4 }]}
           />
         </Animated.View>
       </View>
