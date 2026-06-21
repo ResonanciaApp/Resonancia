@@ -426,7 +426,8 @@ export default function ResonadoresScreen() {
           <Image
             source={require("@/assets/images/banner-equipo.png")}
             style={StyleSheet.absoluteFill}
-            contentFit="cover"
+            contentFit="contain"
+            backgroundColor="transparent"
           />
           {/* Overlay rojizo sutil */}
           <View pointerEvents="none" style={styles.bannerTint} />
