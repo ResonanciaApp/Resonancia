@@ -346,7 +346,7 @@ export function MixerSheet() {
   useEffect(() => {
     AsyncStorage.multiGet([MIXER_BG_KEY, MIXER_OVERLAY_KEY])
       .then(([bg, ov]) => {
-        if (bg[1]) setBgPresetId(bg[1]);
+        if (bg[1] && bg[1] !== "blanco") setBgPresetId(bg[1]);
         if (ov[1]) setOverlayOpacity(parseFloat(ov[1]));
       })
       .catch(() => {});
