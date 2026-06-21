@@ -251,13 +251,8 @@ export function MiniPlayer() {
               </ScrollView>
             </Animated.View>
 
-            {/* Texto: flex:1 */}
-            <View style={styles.textBlock}>
-              <Text style={styles.mixTitle} numberOfLines={1}>{title}</Text>
-              <Text style={styles.mixSub} numberOfLines={1}>
-                {n} {n === 1 ? "sonido" : "sonidos"}
-              </Text>
-            </View>
+            {/* Texto eliminado — espacio flex para empujar el play a la derecha */}
+            <View style={styles.textBlock} />
 
             {/* Botón play/pause — siempre visible */}
             <View style={styles.waveWrap}>
