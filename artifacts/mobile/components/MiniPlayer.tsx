@@ -270,7 +270,7 @@ export function MiniPlayer() {
 
           {/* ── Handle (swipe-up → abre sheet) ── */}
           <View style={styles.handleHitArea} {...handlePan.panHandlers}>
-            <View style={styles.handle} />
+            <Feather name="chevron-up" size={18} color="rgba(255,255,255,0.35)" />
           </View>
 
           {/* ── Row principal ── */}
@@ -415,13 +415,6 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     marginVertical: -6,
   },
-  handle: {
-    width: 36,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.25)",
-  },
-
   // ── Card ──────────────────────────────────────────────────────
   wrapper: {
     overflow: "hidden",
