@@ -285,7 +285,7 @@ function TabLayoutInner() {
       </Tabs>
 
       {showMiniPlayer && (
-        <View style={[styles.miniPlayerFloat, { bottom: miniPlayerBottom }]}>
+        <View style={[styles.miniPlayerFloat, { bottom: 0 }]}>
           <MiniPlayer />
         </View>
       )}

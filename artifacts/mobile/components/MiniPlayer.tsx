@@ -16,6 +16,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
 import { getSoundImage } from "@/config/sound-images";
@@ -80,6 +81,7 @@ function StackThumbItem({ image, style, onPress, onLongPress, primaryColor }: St
 }
 
 export function MiniPlayer() {
+  const insets = useSafeAreaInsets();
   const { currentSession, isPlaying, progress, pauseResume } = usePlayer();
   const {
     activeSounds,
@@ -238,7 +240,7 @@ export function MiniPlayer() {
     return (
       <View style={styles.mixOuter}>
         {/* ── Card del miniplayer ── */}
-        <View style={styles.wrapper}>
+        <View style={[styles.wrapper, { paddingBottom: insets.bottom }]}>
           {/* Fondo glassmorphism */}
           <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
@@ -400,7 +402,8 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     maxWidth: MAX_PLAYER_WIDTH,
     width: "100%",
-    borderRadius: 25,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
   },
 
   // ── Fila de mezcla ────────────────────────────────────────────
