@@ -89,7 +89,6 @@ export function MiniPlayer() {
     loadedPresetId,
     openSheet,
     removeSound,
-    bgPaletteId,
   } = useMixer();
 
   const colors = useColors();
@@ -236,20 +235,16 @@ export function MiniPlayer() {
         ? router.push("/(tabs)/musica" as never)
         : openSheet();
 
-    const isNoche = bgPaletteId === "noche";
-
     return (
       <View style={styles.mixOuter}>
         {/* ── Card del miniplayer ── */}
         <View style={styles.wrapper}>
           {/* Fondo glassmorphism */}
-          <BlurView intensity={90} tint={isNoche ? "light" : "dark"} style={StyleSheet.absoluteFill} />
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: isNoche ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.28)" }]} />
+          <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
           {/* Reflejo de luz diagonal — cristal */}
           <LinearGradient
-            colors={isNoche
-              ? ["rgba(255,255,255,0.55)", "rgba(255,255,255,0.15)", "transparent"]
-              : ["rgba(255,255,255,0.13)", "rgba(255,255,255,0.03)", "transparent"]}
+            colors={["rgba(255,255,255,0.13)", "rgba(255,255,255,0.03)", "transparent"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={StyleSheet.absoluteFill}
