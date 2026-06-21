@@ -46,14 +46,16 @@ const TAB_CONFIG: Record<
     sfIconFill: string;
     featherIcon: string;
     image?: number;
+    iconSize?: number;
+    iconOffset?: number;
   }
 > = {
   index:      { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
-  explore:    { label: "Explorar",     sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
+  explore:    { label: "Explorar",   sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
   musica:     { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",  featherIcon: "sliders" },
-  biblioteca:   { label: "Biblioteca",  sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
-  resonadores:  { label: "Equipo",       sfIcon: "person.2",            sfIconFill: "person.2.fill",         featherIcon: "users" },
-  profile:      { label: "Perfil",      sfIcon: "person",              sfIconFill: "person.fill",           featherIcon: "user" },
+  biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
+  resonadores:{ label: "Equipo",     sfIcon: "person.2",            sfIconFill: "person.2.fill",        featherIcon: "users", iconSize: ICON_SIZE + 2, iconOffset: 1 },
+  profile:    { label: "Perfil",     sfIcon: "person",              sfIconFill: "person.fill",          featherIcon: "user" },
 };
 
 function TabItem({
@@ -70,13 +72,15 @@ function TabItem({
 
   const isIOS     = Platform.OS === "ios";
   const iconColor = isFocused ? ACTIVE_COLOR : INACTIVE_COLOR;
+  const iconSize  = conf.iconSize ?? ICON_SIZE;
+  const iconOffset = conf.iconOffset ?? 0;
 
   const icon = conf.image ? (
-    <Image source={conf.image} style={{ width: ICON_SIZE, height: ICON_SIZE }} tintColor={iconColor} resizeMode="contain" />
+    <Image source={conf.image} style={{ width: iconSize, height: iconSize, marginTop: iconOffset }} tintColor={iconColor} resizeMode="contain" />
   ) : isIOS ? (
-    <SymbolView name={(isFocused ? conf.sfIconFill : conf.sfIcon) as never} tintColor={iconColor} size={ICON_SIZE} />
+    <SymbolView name={(isFocused ? conf.sfIconFill : conf.sfIcon) as never} tintColor={iconColor} size={iconSize} style={{ marginTop: iconOffset }} />
   ) : (
-    <Feather name={conf.featherIcon as never} size={ICON_SIZE} color={iconColor} />
+    <Feather name={conf.featherIcon as never} size={iconSize} color={iconColor} style={{ marginTop: iconOffset }} />
   );
 
   return (
