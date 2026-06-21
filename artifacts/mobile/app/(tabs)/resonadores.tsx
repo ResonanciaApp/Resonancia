@@ -589,7 +589,7 @@ export default function ResonadoresScreen() {
       {/* ── Grid ── */}
       <FlatList
         style={{ marginTop: -2 }}
-        data={items.slice(0, 9)}
+        data={items}
         keyExtractor={(item) => item.data.id}
         numColumns={numCols}
         columnWrapperStyle={styles.row}
@@ -600,16 +600,6 @@ export default function ResonadoresScreen() {
             <Feather name="users" size={36} color="rgba(244,218,213,0.20)" />
             <Text style={styles.emptyText}>Sin resultados</Text>
           </View>
-        }
-        ListFooterComponent={
-          items.length > 9 ? (
-            <Pressable
-              onPress={() => router.push("/equipo-info" as never)}
-              style={({ pressed }) => [styles.loadMoreBtn, { opacity: pressed ? 0.7 : 1 }]}
-            >
-              <Text style={styles.loadMoreText}>Adentro</Text>
-            </Pressable>
-          ) : null
         }
         renderItem={({ item }) => <ResonadorCard item={item} cardW={cardW} />}
       />
