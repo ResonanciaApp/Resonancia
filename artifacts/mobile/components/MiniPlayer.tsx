@@ -127,7 +127,7 @@ export function MiniPlayer() {
       cinematicOpacity.setValue(0);
       Animated.sequence([
         Animated.timing(cinematicOpacity, { toValue: 1, duration: 1000, useNativeDriver: true }),
-        Animated.delay(1500),
+        Animated.delay(1100),
         Animated.timing(cinematicOpacity, { toValue: 0, duration: 800, useNativeDriver: true }),
       ]).start();
     }
@@ -467,8 +467,8 @@ const styles = StyleSheet.create({
   cinematicText: {
     flex: 1,
     color: "#FFFFFF",
-    fontSize: 12,
-    fontWeight: "300",
+    fontSize: 13,
+    fontWeight: "600",
     letterSpacing: 1.0,
     textAlign: "right",
     paddingRight: 10,
