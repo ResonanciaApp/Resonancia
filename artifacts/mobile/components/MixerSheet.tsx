@@ -11,6 +11,7 @@
  */
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
@@ -841,33 +842,34 @@ export function MixerSheet() {
 
           {/* Separador sonidos / tab — oculto */}
 
-          {/* Píldora: Ajustes + Inmersivo */}
-          <View style={styles.pillAboveFooter}>
-            <GhostPill>
-              <Pressable
-                onPress={() => setEscenasOpen(true)}
-                hitSlop={8}
-                style={styles.headerPillBtn}
-                accessibilityRole="button"
-                accessibilityLabel="Escenas y ajustes de fondo"
-              >
-                <MaterialCommunityIcons
-                  name="tune-variant"
-                  size={22}
-                  color={palette.headerFg}
-                />
-              </Pressable>
-              <Pressable
-                onPress={() => openImmersivo(bgPresetId)}
-                hitSlop={8}
-                style={styles.headerPillBtn}
-                accessibilityRole="button"
-                accessibilityLabel="Modo Inmersivo"
-              >
-                <Feather name="eye" size={22} color={palette.headerFg} />
-              </Pressable>
-            </GhostPill>
-          </View>
+          {/* ── Glass footer: Píldora + controles ── */}
+          <BlurView intensity={70} tint="dark" style={styles.glassFooter}>
+            <View style={styles.pillAboveFooter}>
+              <GhostPill>
+                <Pressable
+                  onPress={() => setEscenasOpen(true)}
+                  hitSlop={8}
+                  style={styles.headerPillBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel="Escenas y ajustes de fondo"
+                >
+                  <MaterialCommunityIcons
+                    name="tune-variant"
+                    size={22}
+                    color={palette.headerFg}
+                  />
+                </Pressable>
+                <Pressable
+                  onPress={() => openImmersivo(bgPresetId)}
+                  hitSlop={8}
+                  style={styles.headerPillBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel="Modo Inmersivo"
+                >
+                  <Feather name="eye" size={22} color={palette.headerFg} />
+                </Pressable>
+              </GhostPill>
+            </View>
 
           {/* Footer: Timer | Play | Guardar + Actualizar */}
           <View style={styles.footerRow}>
@@ -913,6 +915,7 @@ export function MixerSheet() {
             </View>
 
           </View>
+          </BlurView>
 
         </Pressable>
         </Animated.View>
@@ -1130,9 +1133,18 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
     color: "#FFFFFF",
   },
+  glassFooter: {
+    overflow: "hidden",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    borderTopWidth: 1,
+    borderColor: "rgba(255,255,255,0.10)",
+    backgroundColor: "rgba(255,255,255,0.04)",
+  },
   pillAboveFooter: {
     alignItems: "center",
-    paddingVertical: 10,
+    paddingTop: 10,
+    paddingBottom: 4,
   },
   ajustesPill: {
     flexDirection: "row",
@@ -1191,8 +1203,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 12,
-    marginTop: 18,
-    marginBottom: 6,
+    marginTop: 4,
+    marginBottom: 10,
   },
   footerSide: {
     flex: 1,
