@@ -545,9 +545,10 @@ const styles = StyleSheet.create({
     width: undefined,
     aspectRatio: 1536 / 508,
     marginHorizontal: -H_PAD,
-    marginTop: 5,
+    marginTop: -15,
     marginBottom: 14,
     overflow: "hidden",
+    transform: [{ translateY: 20 }],
   },
   bannerTint: {
     ...StyleSheet.absoluteFillObject,
