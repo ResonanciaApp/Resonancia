@@ -844,7 +844,7 @@ export function MixerSheet() {
 
           {/* ── Glass footer: Píldora + controles ── */}
           <BlurView intensity={70} tint="dark" style={[styles.glassFooter, { paddingBottom: insets.bottom + 8, marginTop: -28, paddingTop: 28 }]}>
-            <View style={styles.pillAboveFooter}>
+            <View style={[styles.pillAboveFooter, { transform: [{ translateY: -20 }] }]}>
               <GhostPill>
                 <Pressable
                   onPress={() => setEscenasOpen(true)}
