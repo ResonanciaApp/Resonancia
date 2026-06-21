@@ -149,7 +149,10 @@ export function MiniPlayer() {
     // stackWidthAnim usa JS driver (layout property); openProgress usa native driver (transform)
     Animated.timing(stackWidthAnim, {
       toValue: next ? carouselOpenW : stackWidthStackedCap,
-      useNativeDriver: false, duration: 220, easing: Easing.out(Easing.cubic),
+      useNativeDriver: false,
+      duration: next ? 200 : 320,
+      delay:    next ? 0   : 180,
+      easing:   Easing.out(Easing.cubic),
     }).start();
     Animated.spring(openProgress, {
       toValue: next ? 1 : 0,
