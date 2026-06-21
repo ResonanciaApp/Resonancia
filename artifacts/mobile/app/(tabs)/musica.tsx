@@ -140,14 +140,14 @@ const TAB_NOCHE_BG: Record<MainTabId, [string, string, string]> = {
   bpm:            ["#0A2020", "#071818", "#040F0F"],
 };
 
-/** Mismo primer stop de TAB_NOCHE_BG pero con −10% de saturación (solo para el fondo de la grilla) */
+/** Mismo primer stop de TAB_NOCHE_BG pero con −30% de saturación (solo para el fondo de la grilla) */
 const TAB_NOCHE_GRID_BG: Record<MainTabId, string> = {
-  popular:        "#2c0611",
-  naturaleza:     "#0b190e",
-  ancestrales:    "#211511",
-  sintetizadores: "#081a2c",
-  voces:          "#210a2e",
-  bpm:            "#0b1f1f",
+  popular:        "#280a13",
+  naturaleza:     "#0c180f",
+  ancestrales:    "#1f1613",
+  sintetizadores: "#0c1a28",
+  voces:          "#200e2a",
+  bpm:            "#0d1d1d",
 };
 
 const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
