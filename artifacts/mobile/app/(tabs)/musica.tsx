@@ -140,15 +140,8 @@ const TAB_NOCHE_BG: Record<MainTabId, [string, string, string]> = {
   bpm:            ["#0A2020", "#071818", "#040F0F"],
 };
 
-/** Mismo primer stop de TAB_NOCHE_BG pero con −30% de saturación (solo para el fondo de la grilla) */
-const TAB_NOCHE_GRID_BG: Record<MainTabId, string> = {
-  popular:        "#280a13",
-  naturaleza:     "#0c180f",
-  ancestrales:    "#1f1613",
-  sintetizadores: "#0c1a28",
-  voces:          "#200e2a",
-  bpm:            "#0d1d1d",
-};
+/** Fondo fijo de la grilla en modo Noche Borgoña — igual para todos los tabs */
+const TAB_NOCHE_GRID_BG = "#191919";
 
 const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
   popular:        ["#5E1E2D", "#5E1E2D"],
@@ -846,7 +839,7 @@ export default function MezcladorScreen() {
         {/* ── Scroll principal ── */}
         <View style={styles.scrollBg}>
           {bgPaletteId === "noche" ? (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: TAB_NOCHE_GRID_BG[mainTab] }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: TAB_NOCHE_GRID_BG }]} />
           ) : (
             <LinearGradient
               colors={bgPalette.colors}
