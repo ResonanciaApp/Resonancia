@@ -229,12 +229,12 @@ function CoverPickerSheet({
         <View style={ms.handle} />
         <Text style={ms.sheetTitle}>Portada de la mezcla</Text>
         <Pressable style={({ pressed }) => [ms.row, { opacity: pressed ? 0.7 : 1 }]} onPress={() => setView("presets")}>
-          <Feather name="image" size={22} color={GOLD} />
+          <Feather name="image" size={22} color="#FFFFFF" />
           <Text style={ms.rowText}>Imagen predefinida</Text>
           <Feather name="chevron-right" size={16} color={MUTED} />
         </Pressable>
         <Pressable style={({ pressed }) => [ms.row, { opacity: pressed ? 0.7 : 1 }]} onPress={() => { onPickPhoto(); handleClose(); }}>
-          <Feather name="camera" size={22} color={GOLD} />
+          <Feather name="camera" size={22} color="#FFFFFF" />
           <Text style={ms.rowText}>Foto del carrete</Text>
           <Feather name="chevron-right" size={16} color={MUTED} />
         </Pressable>
