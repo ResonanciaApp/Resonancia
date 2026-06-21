@@ -355,7 +355,10 @@ export function MixerSheet() {
 
   // Escucha cambios en vivo desde EscenasMixer
   useEffect(() => {
-    const unsubBg = subscribeBgPreset((id) => setBgPresetId(id));
+    const unsubBg = subscribeBgPreset((id) => {
+      setBgPresetId(id);
+      AsyncStorage.setItem(MIXER_BG_KEY, id).catch(() => {});
+    });
     const unsubOv = subscribeOverlay((v) => setOverlayOpacity(v));
     return () => { unsubBg(); unsubOv(); };
   }, []);
