@@ -513,11 +513,11 @@ const styles = StyleSheet.create({
   },
   cinematicText: {
     position: "absolute",
-    bottom: 10,
+    bottom: 20,
     left: 0,
     right: 0,
     color: "#FFFFFF",
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: "600",
     letterSpacing: 1.0,
     textAlign: "center",
