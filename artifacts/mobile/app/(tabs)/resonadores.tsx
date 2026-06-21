@@ -543,7 +543,7 @@ const styles = StyleSheet.create({
   },
   banner: {
     width: undefined,
-    aspectRatio: 1536 / 508,
+    aspectRatio: 1536 / 650,
     marginHorizontal: -H_PAD,
     marginTop: -15,
     marginBottom: 14,
