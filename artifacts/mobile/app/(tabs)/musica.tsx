@@ -971,7 +971,7 @@ const styles = StyleSheet.create({
     width: 38, height: 38, alignItems: "center", justifyContent: "center",
   },
 
-  pillRow:        { flexGrow: 0, marginTop: -7, marginBottom: -5, backgroundColor: "transparent" },
+  pillRow:        { flexGrow: 0, marginTop: -12, marginBottom: -5, backgroundColor: "transparent" },
   pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingTop: 20, paddingBottom: 24 },
   pillGlow: {
     borderRadius: 999,
@@ -1077,7 +1077,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
 
-  subTabZone: { position: "relative", justifyContent: "center", marginTop: -14 },
+  subTabZone: { position: "relative", justifyContent: "center", marginTop: -19 },
   subTabLine: {
     position: "absolute", left: 16, right: 16, bottom: 0,
     height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)",
