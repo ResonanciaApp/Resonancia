@@ -396,7 +396,7 @@ export function MixerSheet() {
     iconColor:      hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#180202" : "rgba(255,255,255,0.90)",
     fg:             hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#180202" : colors.foreground,
     muted:          isLight ? "rgba(24,2,2,0.45)"  : colors.mutedForeground,
-    inputBg:        hasCustomBg ? "rgba(255,255,255,0.10)" : isLight ? "rgba(24,2,2,0.05)" : activeBgPreset.image ? "rgba(255,255,255,0.10)" : "rgba(74,12,12,0.08)",
+    inputBg:        hasCustomBg ? "rgba(255,255,255,0.15)" : isLight ? "rgba(24,2,2,0.05)" : activeBgPreset.image ? "rgba(255,255,255,0.15)" : "rgba(74,12,12,0.08)",
     footerCircleBg: hasCustomBg ? "rgba(255,255,255,0.10)" : isLight ? "rgba(24,2,2,0.07)" : activeBgPreset.image ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.30)",
     footerLabel:    hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "rgba(24,2,2,0.65)" : activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(244,218,213,0.45)",
     headerFg:       hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#180202" : "rgba(92,31,126,0.85)",
