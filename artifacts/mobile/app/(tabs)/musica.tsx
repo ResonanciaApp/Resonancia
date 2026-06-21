@@ -1077,9 +1077,9 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
 
-  subTabZone: { position: "relative", justifyContent: "center", marginTop: -19 },
+  subTabZone: { position: "relative", justifyContent: "center", marginTop: -19, paddingBottom: 4 },
   subTabLine: {
-    position: "absolute", left: 16, right: 16, bottom: 0,
+    position: "absolute", left: 16, right: 16, bottom: 4,
     height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)",
   },
   subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 16 },
