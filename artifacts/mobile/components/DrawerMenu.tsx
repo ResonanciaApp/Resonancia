@@ -6,6 +6,7 @@ import { router } from "expo-router";
 import React from "react";
 import {
   Animated,
+  PanResponder,
   Platform,
   Pressable,
   ScrollView,
@@ -73,6 +74,29 @@ export function DrawerMenu() {
     outputRange: [0, 1],
   });
 
+  const dragX = React.useRef(new Animated.Value(0)).current;
+
+  const panResponder = React.useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_, { dx, dy }) =>
+        dx < -8 && Math.abs(dx) > Math.abs(dy),
+      onPanResponderMove: (_, { dx }) => {
+        dragX.setValue(Math.min(0, dx));
+      },
+      onPanResponderRelease: (_, { dx, vx }) => {
+        if (dx < -60 || vx < -0.5) {
+          dragX.setValue(0);
+          onClose();
+        } else {
+          Animated.spring(dragX, { toValue: 0, useNativeDriver: true, bounciness: 0 }).start();
+        }
+      },
+      onPanResponderTerminate: () => {
+        Animated.spring(dragX, { toValue: 0, useNativeDriver: true, bounciness: 0 }).start();
+      },
+    })
+  ).current;
+
   const localFullName = [username, lastName].filter(Boolean).join(" ");
   const hasLocalName = !!localFullName && localFullName !== "Explorador de Sonido";
   const fullName = hasLocalName ? localFullName : (clerkName || "");
@@ -94,7 +118,10 @@ export function DrawerMenu() {
         />
       )}
 
-      <Animated.View style={[styles.drawer, visible && styles.drawerShadow, { transform: [{ translateX }], opacity: drawerOpacity }]}>
+      <Animated.View
+        {...panResponder.panHandlers}
+        style={[styles.drawer, visible && styles.drawerShadow, { transform: [{ translateX: Animated.add(translateX, dragX) }], opacity: drawerOpacity }]}
+      >
         <LinearGradient
           style={[styles.drawerInner, { paddingBottom: bottomPad + 24 }]}
           colors={["#2E0510", "#160108"]}
