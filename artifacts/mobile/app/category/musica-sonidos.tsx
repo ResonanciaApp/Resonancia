@@ -428,15 +428,15 @@ export default function MusicaSonidosScreen() {
           </Text>
         </View>
 
+        {/* ── Tabs ── */}
+        <View style={styles.chipsArea}>
+          <ChipRow activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+        </View>
+
         {/* ── Divisor ── */}
         <View>
           <View style={styles.dividerLine} />
           <LinearGradient colors={["rgba(0,0,0,0.28)","transparent"]} style={styles.dividerShadow} pointerEvents="none" />
-        </View>
-
-        {/* ── Tabs ── */}
-        <View style={styles.chipsArea}>
-          <ChipRow activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
         </View>
 
         {/* ── Contenido ── */}
