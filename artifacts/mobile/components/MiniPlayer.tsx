@@ -244,7 +244,7 @@ export function MiniPlayer() {
         <View style={styles.wrapper}>
           {/* Fondo glassmorphism */}
           <BlurView intensity={90} tint={isNoche ? "light" : "dark"} style={StyleSheet.absoluteFill} />
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: isNoche ? "rgba(255,255,255,0.22)" : "rgba(0,0,0,0.28)" }]} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: isNoche ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.28)" }]} />
           {/* Reflejo de luz diagonal — cristal */}
           <LinearGradient
             colors={isNoche
