@@ -1081,7 +1081,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
 
-  subTabZone: { position: "relative", justifyContent: "center", marginTop: -9 },
+  subTabZone: { position: "relative", justifyContent: "center", marginTop: -6 },
   subTabLine: {
     position: "absolute", left: 16, right: 16, bottom: 4,
     height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)",
