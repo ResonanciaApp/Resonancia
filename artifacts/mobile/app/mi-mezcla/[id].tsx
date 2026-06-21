@@ -208,6 +208,7 @@ function CoverPickerSheet({
           </View>
           {geoTab === "library" ? (
             <FlatList
+              key="library"
               data={GEOMETRIES}
               keyExtractor={(g) => g.id}
               numColumns={3}
@@ -227,6 +228,7 @@ function CoverPickerSheet({
             />
           ) : (
             <FlatList
+              key="creations"
               data={creations}
               keyExtractor={(c) => c.id}
               numColumns={2}
@@ -325,7 +327,7 @@ export default function MiMezclaScreen() {
 
   const handlePickPhoto = useCallback(async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.85,
