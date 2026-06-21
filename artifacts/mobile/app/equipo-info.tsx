@@ -25,7 +25,8 @@ const BG: [string, string] = ["#2E0510", "#160108"];
 const H_PAD = 18;
 
 const RESONADOR_IMG = require("@/assets/images/banner-resonador.png");
-const EXPANSOR_IMG = require("@/assets/images/banner-expansor.png");
+const EXPANSOR_IMG  = require("@/assets/images/banner-expansor.png");
+const EQUIPO_BG     = require("@/assets/images/equipo-bg.jpg");
 
 type RoleData = {
   banner: ReturnType<typeof require>;
@@ -152,7 +153,12 @@ export default function EquipoInfoScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={BG} style={StyleSheet.absoluteFill} />
+      <Image source={EQUIPO_BG} style={StyleSheet.absoluteFill} contentFit="cover" />
+      <LinearGradient
+        colors={["rgba(0,0,0,0.45)", "rgba(10,0,4,0.72)", "#0A0004"]}
+        locations={[0, 0.55, 1]}
+        style={StyleSheet.absoluteFill}
+      />
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
