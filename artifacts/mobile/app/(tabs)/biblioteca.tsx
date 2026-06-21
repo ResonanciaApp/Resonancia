@@ -772,7 +772,6 @@ export default function BibliotecaScreen() {
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [mixesLimit, setMixesLimit] = useState(12);
   const [geoLimit, setGeoLimit] = useState(8);
-  const [recentLimit, setRecentLimit] = useState(3);
   const [addResonadorVisible, setAddResonadorVisible] = useState(false);
   const [addResonadorQ, setAddResonadorQ] = useState("");
   const [favLimit, setFavLimit] = useState(12);
@@ -799,18 +798,6 @@ export default function BibliotecaScreen() {
   const { history, favorites } = usePlayer();
   const { isPremium } = usePremium();
 
-  const listenedRecently = useMemo(() => {
-    const seen = new Set<string>();
-    const result: import("@/data/sessions").Session[] = [];
-    for (let i = history.length - 1; i >= 0; i--) {
-      const h = history[i];
-      if (seen.has(h.sessionId)) continue;
-      seen.add(h.sessionId);
-      const s = getSessionById(h.sessionId);
-      if (s) result.push(s);
-    }
-    return result;
-  }, [history]);
 
   // Resonadores = artistas featured + guías featured
   const resonadores = useMemo(() => {
@@ -834,10 +821,6 @@ export default function BibliotecaScreen() {
         if (sort === "agregado")   return [...arr].sort((a, b) => parseInt(b.id) - parseInt(a.id));
         return arr; // "recientes" = orden natural
       };
-
-      const sortedRecent = sortSessions(listenedRecently);
-      const visibleRecent = sortedRecent.slice(0, recentLimit);
-      const hasMoreRecent = sortedRecent.length > recentLimit;
 
       const sortedFoldersGeneral = [...userFolders].sort((a, b) => {
         if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
@@ -900,24 +883,6 @@ export default function BibliotecaScreen() {
             </>
           )}
 
-          {/* ── Escuchadas recientemente ── */}
-          {listenedRecently.length > 0 && (
-            <>
-              {viewMode === "grid" ? (
-                <View style={[styles.gridWrap, sortedPlaylists.length > 0 && { marginTop: 9 }]}>
-                  {visibleRecent.map((s) => (
-                    <SessionCard key={s.id} session={s} width={cellW} />
-                  ))}
-                </View>
-              ) : (
-                <View style={{ paddingHorizontal: H_PAD, gap: 14, marginTop: sortedPlaylists.length > 0 ? 14 : 0 }}>
-                  {visibleRecent.map((s) => (
-                    <SessionCard key={s.id} session={s} horizontal />
-                  ))}
-                </View>
-              )}
-            </>
-          )}
 
           {/* ── Resonadores ── */}
           <View style={{ gap: 14, marginTop: 14 }}>
