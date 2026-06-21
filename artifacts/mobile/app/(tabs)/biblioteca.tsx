@@ -1025,7 +1025,7 @@ export default function BibliotecaScreen() {
       }
       return (
         <>
-          <View style={{ gap: 4 }}>
+          <View style={{ gap: 5 }}>
             {visibleMixes.map((mix) => (
               <MixRow
                 key={mix.id}
@@ -1484,7 +1484,7 @@ const styles = StyleSheet.create({
   gridWrap: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 4,
+    gap: 5,
     paddingHorizontal: H_PAD,
     paddingTop: 4,
   },
