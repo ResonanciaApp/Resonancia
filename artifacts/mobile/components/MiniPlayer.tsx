@@ -270,7 +270,7 @@ export function MiniPlayer() {
 
           {/* ── Handle (swipe-up → abre sheet) ── */}
           <View style={styles.handleHitArea} {...handlePan.panHandlers}>
-            <Feather name="arrow-up" size={20} color="rgba(255,255,255,0.40)" />
+            <Feather name="chevron-up" size={22} color="rgba(255,255,255,0.40)" />
           </View>
 
           {/* ── Row principal ── */}
