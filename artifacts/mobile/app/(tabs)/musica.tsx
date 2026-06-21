@@ -127,23 +127,23 @@ const MEZ_PLACEHOLDERS = [
 
 // ── Colores de tab ────────────────────────────────────────────────────────────
 const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
-  popular:        ["#2E0410", "#27030D", "#1A0209"],
-  naturaleza:     ["#0A1A0E", "#071309", "#040D06"],
-  ancestrales:    ["#221510", "#1E0F0B", "#100904"],
-  sintetizadores: ["#061A2E", "#041220", "#030A18"],
-  voces:          ["#220830", "#180622", "#0E0416"],
-  bpm:            ["#0A2020", "#071818", "#040F0F"],
+  popular:        ["#2E0410", "#27030D", "#270F16"],
+  naturaleza:     ["#0A1A0E", "#071309", "#111A13"],
+  ancestrales:    ["#221510", "#1E0F0B", "#1D1611"],
+  sintetizadores: ["#061A2E", "#041220", "#101725"],
+  voces:          ["#220830", "#180622", "#1B1123"],
+  bpm:            ["#0A2020", "#071818", "#111C1C"],
 };
 
 
 /** Gradiente de fondo de contenido en modo "noche" — último stop neutro oscuro (sin bordeaux) */
 const TAB_NOCHE_BG: Record<MainTabId, [string, string, string]> = {
-  popular:        ["#2E0410", "#27030D", "#1A0209"],
-  naturaleza:     ["#0A1A0E", "#071309", "#040D06"],
-  ancestrales:    ["#221510", "#1E0F0B", "#100904"],
-  sintetizadores: ["#061A2E", "#041220", "#030A18"],
-  voces:          ["#220830", "#180622", "#0E0416"],
-  bpm:            ["#0A2020", "#071818", "#040F0F"],
+  popular:        ["#2E0410", "#27030D", "#270F16"],
+  naturaleza:     ["#0A1A0E", "#071309", "#111A13"],
+  ancestrales:    ["#221510", "#1E0F0B", "#1D1611"],
+  sintetizadores: ["#061A2E", "#041220", "#101725"],
+  voces:          ["#220830", "#180622", "#1B1123"],
+  bpm:            ["#0A2020", "#071818", "#111C1C"],
 };
 
 /** Fondo fijo de la grilla en modo Noche Borgoña — igual para todos los tabs */
