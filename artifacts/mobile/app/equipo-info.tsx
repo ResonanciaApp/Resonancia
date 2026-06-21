@@ -27,7 +27,7 @@ const H_PAD = 18;
 
 const RESONADOR_IMG = require("@/assets/images/banner-resonador.png");
 const EXPANSOR_IMG  = require("@/assets/images/banner-expansor.png");
-const EQUIPO_BG     = require("@/assets/images/equipo-bg.jpg");
+const EQUIPO_BG     = require("@/assets/images/banner-equipo.jpg");
 
 type RoleData = {
   banner: ReturnType<typeof require>;
@@ -187,7 +187,7 @@ export default function EquipoInfoScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#160108" },
+  root: { flex: 1, backgroundColor: "#003366" },
   header: {
     paddingHorizontal: H_PAD,
     paddingBottom: 10,
