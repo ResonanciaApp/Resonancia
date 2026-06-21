@@ -794,16 +794,16 @@ export default function MezcladorScreen() {
                                 colors={grad}
                                 start={{ x: 0, y: 0 }}
                                 end={{ x: 0, y: 1 }}
-                                style={[styles.subTabBorderInner, { borderWidth: 1, borderColor: "transparent" }]}
+                                style={styles.subTabBorderInner}
                               >
-                                <Text style={[styles.subTabText, { color: "#E9C46A", fontWeight: "700" }]}>
+                                <Text style={[styles.subTabText, { color: "#E9C46A" }]}>
                                   {SUB_TAB_LABELS[catId] ?? cat.label}
                                 </Text>
                               </LinearGradient>
                             </LinearGradient>
                           ) : (
-                            <View style={styles.subTabBorderOuter}>
-                              <View style={[styles.subTabBorderInner, { borderWidth: 1, borderColor: "rgba(255,255,255,0.10)" }]}>
+                            <View style={[styles.subTabBorderOuter, { borderWidth: 1, borderColor: "rgba(255,255,255,0.10)", padding: 0 }]}>
+                              <View style={styles.subTabBorderInner}>
                                 <Text style={[styles.subTabText, { color: "rgba(255,255,255,0.80)" }]}>
                                   {SUB_TAB_LABELS[catId] ?? cat.label}
                                 </Text>
