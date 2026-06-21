@@ -161,7 +161,7 @@ export function MiniPlayer() {
   // dynamicShift comprime el apilamiento para que TODOS los thumbnails quepan
   // dentro del ancho cap (MAX_STACK_LAYOUT_W), sin importar cuántos haya.
   const dynamicShift       = n <= 1 ? 0 : Math.min(STACK_SHIFT, (MAX_STACK_LAYOUT_W - STACK_SIZE) / (n - 1));
-  const stackWidthStackedCap = STACK_SIZE + Math.max(0, n - 1) * dynamicShift;
+  const stackWidthStackedCap = STACK_SIZE + Math.max(0, n - 1) * dynamicShift + (n > 1 ? STACK_SHIFT : 0);
 
   // Ancho real del contenido del carrusel (sin scroll si cabe, con scroll si excede)
   const carouselContentW = n * STACK_SIZE + Math.max(0, n - 1) * CAROUSEL_THUMB_GAP + 12;
