@@ -967,11 +967,6 @@ const styles = StyleSheet.create({
 
   topPanelShadow: {
     zIndex: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.30,
-    shadowRadius: 12,
-    elevation: 9,
     backgroundColor: "#2E0510",
   },
   topPanel: { backgroundColor: "transparent" },
