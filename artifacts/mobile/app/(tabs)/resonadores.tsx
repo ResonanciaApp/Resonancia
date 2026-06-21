@@ -622,11 +622,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.40)",
     borderRadius: 999,
     padding: 3,
-    borderTopWidth: 1.5,
-    borderLeftWidth: 1.5,
-    borderBottomWidth: 0.5,
-    borderRightWidth: 0.5,
-    borderColor: "rgba(212,175,55,0.55)",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.12)",
     marginTop: 90,
   },
   tabBtn: {
