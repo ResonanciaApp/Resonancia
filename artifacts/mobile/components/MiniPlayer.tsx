@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Image as ExpoImage } from "expo-image";
 import {
   Animated,
-  Easing,
   Image,
   Pressable,
   ScrollView,
@@ -221,16 +220,10 @@ export function MiniPlayer() {
               <Feather name="chevron-up" size={22} color="rgba(255,255,255,0.6)" />
             </Pressable>
 
-            {/* Stack / carrusel — ancho animado empuja el texto; timing suave sin rebote */}
-            <Animated.View style={[styles.stackArea, { width: stackWidthAnim }]}>
-              <ScrollView
-                ref={scrollRef}
-                horizontal
-                scrollEnabled={stackOpen}
-                showsHorizontalScrollIndicator={false}
-                style={styles.stackScroll}
-                contentContainerStyle={{ width: carouselContentW, height: STACK_SIZE }}
-              >
+            {/* Stack / carrusel — ancho fijo en layout; thumbnails se expanden
+                por translateX con overflow:visible, pasando por detrás del texto */}
+            <View style={[styles.stackArea, { width: stackWidthStacked }]}>
+              <View style={styles.stackScroll}>
                 {activeSounds.map((s, i) => {
                   const image      = getSoundImage(s.id);
                   const translateX = openProgress.interpolate({
@@ -248,11 +241,11 @@ export function MiniPlayer() {
                     />
                   );
                 })}
-              </ScrollView>
-            </Animated.View>
+              </View>
+            </View>
 
-            {/* Texto: flex:1 */}
-            <View style={styles.textBlock}>
+            {/* Texto: flex:1, zIndex superior para que thumbnails pasen por detrás */}
+            <View style={[styles.textBlock, { zIndex: 2 }]}>
               <Text style={styles.mixTitle} numberOfLines={1}>{title}</Text>
               <Text style={styles.mixSub} numberOfLines={1}>
                 {n} {n === 1 ? "sonido" : "sonidos"}
@@ -260,7 +253,7 @@ export function MiniPlayer() {
             </View>
 
             {/* Botón play/pause — siempre visible */}
-            <View style={styles.waveWrap}>
+            <View style={[styles.waveWrap, { zIndex: 2 }]}>
               {[wave1, wave2].map((w, idx) => (
                 <Animated.View key={idx} pointerEvents="none" style={[styles.wave, styles.waveMix, {
                   opacity:   w.interpolate({ inputRange: [0, 0.15, 1], outputRange: [0, 0.28, 0] }),
@@ -372,10 +365,10 @@ const styles = StyleSheet.create({
     gap: 10,
   },
 
-  // ── Stack / carrusel: ancho animado, clip al crecer/achicarse ─
+  // ── Stack / carrusel: ancho fijo en layout, overflow visible ─
   stackArea: {
     height: STACK_SIZE,
-    overflow: "hidden",
+    overflow: "visible",
   },
   stackScroll: {
     width: "100%",
