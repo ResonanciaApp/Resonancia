@@ -726,7 +726,7 @@ export function MixerSheet() {
         <Pressable
           style={[
             styles.sheet,
-            { backgroundColor: sheetGradient[2], paddingTop: insets.top + 8, paddingBottom: insets.bottom + 16 },
+            { backgroundColor: sheetGradient[2], paddingTop: insets.top + 8 },
           ]}
           onPress={(e) => e.stopPropagation()}
         >
@@ -843,7 +843,7 @@ export function MixerSheet() {
           {/* Separador sonidos / tab — oculto */}
 
           {/* ── Glass footer: Píldora + controles ── */}
-          <BlurView intensity={70} tint="dark" style={styles.glassFooter}>
+          <BlurView intensity={70} tint="dark" style={[styles.glassFooter, { paddingBottom: insets.bottom + 8 }]}>
             <View style={styles.pillAboveFooter}>
               <GhostPill>
                 <Pressable
