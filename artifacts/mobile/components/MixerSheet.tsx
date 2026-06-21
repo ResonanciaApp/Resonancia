@@ -843,7 +843,20 @@ export function MixerSheet() {
           {/* Separador sonidos / tab — oculto */}
 
           {/* ── Glass footer: Píldora + controles ── */}
-          <BlurView intensity={70} tint="dark" style={[styles.glassFooter, { paddingBottom: insets.bottom + 8, marginTop: -28, paddingTop: 28 }]}>
+          <BlurView
+            intensity={70}
+            tint={isLight ? "light" : "dark"}
+            style={[
+              styles.glassFooter,
+              {
+                paddingBottom: insets.bottom + 8,
+                marginTop: -28,
+                paddingTop: 28,
+                borderColor: isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.05)",
+                backgroundColor: isLight ? "rgba(0,0,0,0.02)" : "rgba(255,255,255,0.005)",
+              },
+            ]}
+          >
             <View style={[styles.pillAboveFooter, { transform: [{ translateY: -20 }] }]}>
               <GhostPill>
                 <Pressable
