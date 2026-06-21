@@ -103,10 +103,6 @@ export function MixerSettingsSheet({
           {/* ── Escenas (paleta de color) — grilla de 2 columnas ── */}
           {mode === "palette" ? (
             <View style={styles.paletteBody}>
-              <Text style={[styles.sectionTitle, { color: c.fg }]}>Escenas</Text>
-              <Text style={[styles.sectionHint, { color: c.mutedDim }]}>
-                Tono del área de sonidos (no afecta la cabecera).
-              </Text>
               <View style={styles.paletteGrid}>
                 {MIXER_BG_PALETTES.map((p) => {
                   const sel = bgPaletteId === p.id;
