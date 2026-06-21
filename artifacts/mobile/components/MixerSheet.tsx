@@ -210,7 +210,7 @@ function DraggableTrackRow({
 
   return (
     <Reanimated.View style={[styles.trackRowAbs, animStyle]}>
-      <View style={[styles.trackRow, { backgroundColor: palette.inputBg }]}>
+      <View style={styles.trackRow}>
         <TrackThumb sound={sound} />
         <View style={styles.trackInfo}>
           <Text style={[styles.trackName, { color: palette.fg }]} numberOfLines={1}>
