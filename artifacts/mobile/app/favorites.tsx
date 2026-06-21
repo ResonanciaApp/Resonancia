@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { getSoundImage } from "@/config/sound-images";
@@ -303,9 +304,14 @@ export default function FavoritesScreen() {
   );
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <LinearGradient
+      style={styles.root}
+      colors={["#2E0510", "#160108"]}
+      locations={[0, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
-      <SacredBackground variant="solid" />
 
       <ScrollView
         style={styles.scroll}
@@ -384,7 +390,7 @@ export default function FavoritesScreen() {
           {activeTab === "musica"   && renderMusica()}
         </View>
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 
