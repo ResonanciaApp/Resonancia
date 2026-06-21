@@ -17,6 +17,7 @@ import {
 } from "react-native";
 
 import { LinearGradient } from "expo-linear-gradient";
+import * as Haptics from "expo-haptics";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -638,6 +639,7 @@ export default function MezcladorScreen() {
 
   const handleSoundPress = (sound: MixSound) => {
     if (!hasSoundFile(sound.id) && !REMOTE_SOUND_MAP[sound.id]) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (sound.isPremium && !isPremium) {
       router.push("/membresia" as never);
       return;
