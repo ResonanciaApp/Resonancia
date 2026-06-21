@@ -26,6 +26,7 @@ const STACK_SIZE          = 43;
 const STACK_SHIFT         = 13;   // offset apilado (cerrado)
 const CAROUSEL_THUMB_GAP  = 6;    // separación fija entre thumbnails en el carrusel
 const CAROUSEL_MAX_OPEN_W = 280;  // techo para que el texto nunca desaparezca del todo
+const MAX_STACK_LAYOUT_W  = STACK_SIZE + 4 * STACK_SHIFT; // máx 5 thumbs en layout (≥6 pasan por detrás)
 
 const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
 const MIX_BG      = "rgba(0,0,0,0.85)";
@@ -123,8 +124,9 @@ export function MiniPlayer() {
   // naturalmente cuando el área crece. Sin botón separado de colapso.
 
   const n = activeSounds.length;
-  const stackWidthStacked = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
-  const stackWidthAnim = useRef(new Animated.Value(stackWidthStacked)).current;
+  const stackWidthStacked    = STACK_SIZE + Math.max(0, n - 1) * STACK_SHIFT;
+  const stackWidthStackedCap = Math.min(stackWidthStacked, MAX_STACK_LAYOUT_W);
+  const stackWidthAnim = useRef(new Animated.Value(stackWidthStackedCap)).current;
   // openProgress: 0 = apilado, 1 = abierto — driver NATIVO (slide por translateX)
   const openProgress   = useRef(new Animated.Value(0)).current;
   // Cada thumb mueve (STACK_SIZE + gap - STACK_SHIFT) px por índice al abrirse
@@ -146,7 +148,7 @@ export function MiniPlayer() {
     setStackOpen(next);
     // stackWidthAnim usa JS driver (layout property); openProgress usa native driver (transform)
     Animated.timing(stackWidthAnim, {
-      toValue: next ? carouselOpenW : stackWidthStacked,
+      toValue: next ? carouselOpenW : stackWidthStackedCap,
       useNativeDriver: false, duration: 220, easing: Easing.out(Easing.cubic),
     }).start();
     Animated.spring(openProgress, {
@@ -161,7 +163,7 @@ export function MiniPlayer() {
     // contenido, el offset persistiría mostrando espacio vacío → reset a 0.
     scrollRef.current?.scrollTo({ x: 0, animated: false });
     if (!stackOpen) {
-      stackWidthAnim.setValue(stackWidthStacked);
+      stackWidthAnim.setValue(stackWidthStackedCap);
     } else {
       Animated.spring(stackWidthAnim, {
         toValue: carouselOpenW,
@@ -255,7 +257,7 @@ export function MiniPlayer() {
             <View style={styles.textBlock} />
 
             {/* Botón play/pause — siempre visible */}
-            <View style={styles.waveWrap}>
+            <View style={[styles.waveWrap, { zIndex: 2 }]}>
               {[wave1, wave2].map((w, idx) => (
                 <Animated.View key={idx} pointerEvents="none" style={[styles.wave, styles.waveMix, {
                   opacity:   w.interpolate({ inputRange: [0, 0.15, 1], outputRange: [0, 0.28, 0] }),
@@ -367,10 +369,10 @@ const styles = StyleSheet.create({
     gap: 10,
   },
 
-  // ── Stack / carrusel: ancho animado, clip al crecer/achicarse ─
+  // ── Stack / carrusel: ancho animado, overflow visible (≥6 thumbs pasan por detrás) ─
   stackArea: {
     height: STACK_SIZE,
-    overflow: "hidden",
+    overflow: "visible",
   },
   stackScroll: {
     width: "100%",
