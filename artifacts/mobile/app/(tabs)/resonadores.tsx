@@ -629,7 +629,7 @@ const styles = StyleSheet.create({
     padding: 3,
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.12)",
-    marginTop: 70,
+    marginTop: 50,
   },
   tabBtn: {
     flex: 1,
