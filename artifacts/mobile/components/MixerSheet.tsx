@@ -796,30 +796,6 @@ export function MixerSheet() {
               <Text style={[styles.title, { color: palette.headerFg, flex: 1 }]} numberOfLines={1}>
                 {originPreset?.name ?? "Tu mezcla"}
               </Text>
-              <GhostPill>
-                <Pressable
-                  onPress={() => setEscenasOpen(true)}
-                  hitSlop={8}
-                  style={styles.headerPillBtn}
-                  accessibilityRole="button"
-                  accessibilityLabel="Escenas y ajustes de fondo"
-                >
-                  <MaterialCommunityIcons
-                    name="tune-variant"
-                    size={18}
-                    color={palette.headerFg}
-                  />
-                </Pressable>
-                <Pressable
-                  onPress={() => openImmersivo(bgPresetId)}
-                  hitSlop={8}
-                  style={styles.headerPillBtn}
-                  accessibilityRole="button"
-                  accessibilityLabel="Modo Inmersivo"
-                >
-                  <Feather name="eye" size={18} color={palette.headerFg} />
-                </Pressable>
-              </GhostPill>
               <Pressable
                 onPress={() => { stopAll(); closeSheet(); }}
                 hitSlop={10}
@@ -864,6 +840,34 @@ export function MixerSheet() {
 
 
           {/* Separador sonidos / tab — oculto */}
+
+          {/* Píldora: Ajustes + Inmersivo */}
+          <View style={styles.pillAboveFooter}>
+            <GhostPill>
+              <Pressable
+                onPress={() => setEscenasOpen(true)}
+                hitSlop={8}
+                style={styles.headerPillBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Escenas y ajustes de fondo"
+              >
+                <MaterialCommunityIcons
+                  name="tune-variant"
+                  size={18}
+                  color={palette.headerFg}
+                />
+              </Pressable>
+              <Pressable
+                onPress={() => openImmersivo(bgPresetId)}
+                hitSlop={8}
+                style={styles.headerPillBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Modo Inmersivo"
+              >
+                <Feather name="eye" size={18} color={palette.headerFg} />
+              </Pressable>
+            </GhostPill>
+          </View>
 
           {/* Footer: Timer | Play | Guardar + Actualizar */}
           <View style={styles.footerRow}>
@@ -1125,6 +1129,10 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     letterSpacing: 0.3,
     color: "#FFFFFF",
+  },
+  pillAboveFooter: {
+    alignItems: "center",
+    paddingVertical: 10,
   },
   ajustesPill: {
     flexDirection: "row",
