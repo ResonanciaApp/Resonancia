@@ -997,7 +997,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     padding: 1,
     borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.30)",
+    borderColor: "rgba(212,175,55,0.50)",
   },
   pillTabInner: {
     flex: 1,
