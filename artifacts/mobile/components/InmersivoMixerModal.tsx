@@ -24,13 +24,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMixer } from "@/context/MixerContext";
 import { getSoundById } from "@/data/sounds";
 import { GRADIENT_PRESETS, DEFAULT_BG_PRESET_ID } from "@/config/immersive-presets";
-import { MESSAGE_PACKS, DEFAULT_MESSAGE_PACK_ID } from "@/data/immersive-messages";
 import { CreationCoverPreviewDirect } from "@/components/CreationCoverPreview";
 import { Dimensions } from "react-native";
 
 const CONTROLS_TIMEOUT = 2000;
-const MSG_DISPLAY_MS   = 10000;
-const MSG_FADE_MS      = 900;
 
 const TIMER_OPTIONS: Array<{ label: string; minutes: number }> = [
   { label: "5 min",  minutes: 5 },
@@ -80,29 +77,6 @@ export function InmersivoContent() {
     anim.start();
     return () => anim.stop();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const [packId, setPackId] = useState<string | "none">("none");
-  const [msgIdx, setMsgIdx] = useState(0);
-  const msgOpacity = useRef(new Animated.Value(1)).current;
-  const activePack = MESSAGE_PACKS.find((p) => p.id === packId) ?? MESSAGE_PACKS[0]!;
-
-  const advanceMsg = useCallback(() => {
-    Animated.timing(msgOpacity, { toValue: 0, duration: MSG_FADE_MS, useNativeDriver: true }).start(() => {
-      setMsgIdx((i) => (i + 1) % activePack.messages.length);
-      Animated.timing(msgOpacity, { toValue: 1, duration: MSG_FADE_MS, useNativeDriver: true }).start();
-    });
-  }, [activePack.messages.length, msgOpacity]);
-
-  useEffect(() => {
-    const t = setInterval(advanceMsg, MSG_DISPLAY_MS);
-    return () => clearInterval(t);
-  }, [advanceMsg]);
-
-  useEffect(() => {
-    msgOpacity.setValue(0);
-    setMsgIdx(0);
-    Animated.timing(msgOpacity, { toValue: 1, duration: MSG_FADE_MS, useNativeDriver: true }).start();
-  }, [packId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const controlsOpacity = useRef(new Animated.Value(0)).current;
   const hideTimer        = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -253,23 +227,6 @@ export function InmersivoContent() {
               />
             </Pressable>
 
-            <View style={styles.packRow}>
-              {MESSAGE_PACKS.map((pack) => {
-                const sel = pack.id === packId;
-                return (
-                  <Pressable
-                    key={pack.id}
-                    onPress={() => { showControls(); setPackId(sel ? "none" : pack.id); }}
-                    style={[styles.packPill, sel && styles.packPillSel]}
-                  >
-                    <Text style={[styles.packLabel, !sel && styles.packLabelOff]}>
-                      {pack.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-
             {soundNames.length > 0 && (
               <View style={styles.soundsRow}>
                 {soundNames.map((name) => (
@@ -281,14 +238,6 @@ export function InmersivoContent() {
             )}
           </View>
         </Animated.View>
-
-        {packId !== "none" && (
-          <View style={styles.msgCenter} pointerEvents="none">
-            <Animated.Text style={[styles.msgText, { opacity: msgOpacity }]}>
-              {activePack.messages[msgIdx]}
-            </Animated.Text>
-          </View>
-        )}
 
         {timerPanelOpen && (
           <Pressable style={StyleSheet.absoluteFill} onPress={closeTimerPanel}>
@@ -376,21 +325,10 @@ const styles = StyleSheet.create({
   timerText: { color: "rgba(255,255,255,0.65)", fontSize: 12, fontWeight: "600", fontVariant: ["tabular-nums"] },
   timerTextActive: { color: "#E9C46A" },
   footer: { alignItems: "center", gap: 14, paddingHorizontal: 20 },
-  packRow: { flexDirection: "row", gap: 8, alignItems: "center" },
-  packPill: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: "rgba(255,255,255,0.10)", borderRadius: 20, paddingHorizontal: 10, paddingVertical: 6, borderWidth: 1, borderColor: "rgba(255,255,255,0.12)" },
-  packPillSel: { backgroundColor: "#362a46", borderColor: "rgba(255,255,255,0.30)" },
-  packEmoji: { fontSize: 14 },
-  packLabel: { fontSize: 11, fontWeight: "700", color: "rgba(255,255,255,0.95)", letterSpacing: 0.2 },
-  packLabelOff: { color: "rgba(255,255,255,0.70)", fontWeight: "600" },
   soundsRow: { flexDirection: "row", flexWrap: "wrap", gap: 6, justifyContent: "center" },
   soundPill: { backgroundColor: "rgba(255,255,255,0.08)", borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4, borderWidth: 1, borderColor: "rgba(255,255,255,0.10)" },
   soundPillText: { color: "rgba(255,255,255,0.60)", fontSize: 10, fontWeight: "500" },
   playBtn: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(0,0,0,0.25)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)" },
-  msgCenter: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center", paddingHorizontal: 40, gap: 20 },
-  msgText: { fontSize: 22, fontWeight: "300", color: "rgba(255,255,255,0.88)", textAlign: "center", lineHeight: 34, letterSpacing: 0.4 },
-  msgDots: { flexDirection: "row", gap: 6 },
-  msgDot: { width: 5, height: 5, borderRadius: 3, backgroundColor: "rgba(255,255,255,0.22)" },
-  msgDotActive: { backgroundColor: "rgba(212,175,55,0.70)", width: 14 },
   timerPanel: { position: "absolute", right: 12, left: 12, backgroundColor: "rgba(12,6,10,0.92)", borderRadius: 18, borderWidth: 1, borderColor: "rgba(212,175,55,0.18)", overflow: "hidden", paddingBottom: 4 },
   timerPanelHeader: { flexDirection: "row", alignItems: "center", gap: 7, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 10 },
   timerPanelTitle: { fontSize: 13, fontWeight: "700", color: "rgba(255,255,255,0.80)", letterSpacing: 0.3 },
