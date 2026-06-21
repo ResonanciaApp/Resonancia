@@ -272,17 +272,12 @@ export function MiniPlayer() {
             pointerEvents="none"
           />
 
-          {/* ── Handle (swipe-up o tap → abre sheet) ── */}
-          <View style={styles.handleHitArea} {...handlePan.panHandlers}>
-            <View style={styles.handle} />
-          </View>
-
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
 
-            {/* Chevron izquierdo — toca para abrir la sheet */}
+            {/* Chevron arriba — toca para abrir la sheet */}
             <Pressable onPress={() => openSheetRef.current()} hitSlop={8} style={styles.chevronLeft}>
-              <Feather name="chevron-left" size={18} color="rgba(255,255,255,0.35)" />
+              <Feather name="chevron-up" size={18} color="rgba(255,255,255,0.35)" />
             </Pressable>
 
             {/* Stack / carrusel — ancho animado + maxWidth para que nunca empuje el play */}
