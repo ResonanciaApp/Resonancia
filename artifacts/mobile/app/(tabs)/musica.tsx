@@ -1012,8 +1012,8 @@ const styles = StyleSheet.create({
     padding: 1,
     shadowColor: "#D4AF37",
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.60,
-    shadowRadius: 7,
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
     elevation: 0,
   },
   pillTabInner: {
