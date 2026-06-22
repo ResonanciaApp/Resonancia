@@ -25,6 +25,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { CATEGORIES } from "@/data/categories";
 import { getSessionById, SESSIONS } from "@/data/sessions";
 import { getGuide } from "@/data/guides";
+import { TEMAS } from "@/data/temas";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
@@ -136,12 +137,17 @@ export default function SessionDetailScreen() {
       tag = session.categoryLabel;
     }
 
-    if (!tag && !session.isNew) return null;
+    if (!tag && !session.isNew && !session.sleepTag) return null;
     return (
       <View style={styles.badges}>
         {tag && (
-          <View style={[styles.badge, { backgroundColor: tagBg, borderColor: tagBorder }]}>
+          <View style={[styles.badge, { backgroundColor: tagBg, borderColor: tagBorder, borderWidth: 1 }]}>
             <Text style={[styles.badgeText, { color: tagColor }]}>{tag.toUpperCase()}</Text>
+          </View>
+        )}
+        {session.sleepTag && (
+          <View style={[styles.badge, { backgroundColor: "rgba(138,170,212,0.12)", borderColor: "rgba(138,170,212,0.28)", borderWidth: 1 }]}>
+            <Text style={[styles.badgeText, { color: "#8AAAD4" }]}>{session.sleepTag.toUpperCase()}</Text>
           </View>
         )}
         {session.isNew && (
@@ -211,6 +217,32 @@ export default function SessionDetailScreen() {
           <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]}>
             {session.description}
           </Text>
+
+          {/* ── Theme tags ──────────────────────────────────────────────── */}
+          {Array.isArray(session.themeTag) && session.themeTag.length > 0 && (
+            <View style={styles.tagsRow}>
+              {session.themeTag.map((t) => {
+                const tema = TEMAS.find((tm) => tm.themeTagMatch?.includes(t));
+                const chip = (
+                  <View style={[styles.tagChip, { borderColor: "rgba(212,175,55,0.25)", backgroundColor: "rgba(212,175,55,0.07)" }]}>
+                    <Text style={[styles.tagChipText, { color: colors.accent }]}>{t}</Text>
+                  </View>
+                );
+                if (tema) {
+                  return (
+                    <Pressable
+                      key={t}
+                      onPress={() => router.push(`/tema/${tema.id}` as never)}
+                      style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
+                    >
+                      {chip}
+                    </Pressable>
+                  );
+                }
+                return <View key={t}>{chip}</View>;
+              })}
+            </View>
+          )}
 
           {/* ── Action row ──────────────────────────────────────────────── */}
           <View style={styles.actionRow}>
@@ -422,6 +454,16 @@ const styles = StyleSheet.create({
     lineHeight: 25,
     marginBottom: 24,
   },
+
+  // Theme tag chips
+  tagsRow: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 20 },
+  tagChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  tagChipText: { fontSize: 12, fontWeight: "600", letterSpacing: 0.2 },
 
   // Action row
   actionRow: {
