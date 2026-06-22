@@ -51,6 +51,13 @@ import {
   SingleTagOptionSelector,
 } from "@/components/TagOptionSelector";
 
+function resolveImageUrl(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  // Paths relativos de Object Storage → pasar por el proxy API
+  if (raw.startsWith("/objects/")) return `/api/storage${raw}`;
+  return raw;
+}
+
 // ─── Destacada de hoy ────────────────────────────────────────────────────────
 
 function DestacadaDeHoy() {
@@ -115,9 +122,9 @@ function DestacadaDeHoy() {
           <p className="text-xs text-muted-foreground">Cargando…</p>
         ) : current ? (
           <div className="flex items-center gap-3 rounded-md border px-3 py-2 bg-muted/30">
-            {current.imageUrl && (
+            {resolveImageUrl(current.imageUrl) && (
               <img
-                src={current.imageUrl}
+                src={resolveImageUrl(current.imageUrl)!}
                 alt={current.title}
                 className="w-10 h-10 rounded object-cover shrink-0"
               />
@@ -162,9 +169,9 @@ function DestacadaDeHoy() {
                     onClick={() => pinMutation.mutate({ data: { sessionId: s.id } })}
                     disabled={pinMutation.isPending}
                   >
-                    {s.imageUrl && (
+                    {resolveImageUrl(s.imageUrl) && (
                       <img
-                        src={s.imageUrl}
+                        src={resolveImageUrl(s.imageUrl)!}
                         alt={s.title}
                         className="w-9 h-9 rounded object-cover shrink-0"
                       />
