@@ -489,12 +489,6 @@ export default function ExploreScreen() {
 
             {/* ── Mezclas de la comunidad ── */}
             <View style={styles.communityWrap}>
-              <LinearGradient
-                colors={["rgba(130,107,232,0.03)", "rgba(188,164,199,0.03)", "rgba(134,89,153,0.03)"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={StyleSheet.absoluteFill}
-              />
               <CommunityMixesCarousel />
             </View>
           </>
@@ -509,10 +503,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   communityWrap: {
     marginBottom: SECTION_GAP,
-    borderRadius: 16,
-    overflow: "hidden",
     marginHorizontal: H_PAD,
-    backgroundColor: "rgba(255,255,255,0.03)",
   },
 
   header:         { paddingHorizontal: H_PAD, marginBottom: 18 },
