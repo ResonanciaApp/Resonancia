@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import {
   Film, Plus, Trash2, Pencil, X, Loader2, Check,
@@ -246,12 +246,22 @@ function VideoFormModal({
   onSuccess: () => void;
 }) {
   const isEditing = !!editingVideo;
-  const [form, setForm] = useState<VideoForm>(editingVideo ? videoToForm(editingVideo) : EMPTY_FORM);
+  const [form, setForm] = useState<VideoForm>(EMPTY_FORM);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [thumbFile, setThumbFile] = useState<File | null>(null);
   const [uploadStage, setUploadStage] = useState<UploadStage>("idle");
   const [uploadProgress, setUploadProgress] = useState(0);
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setForm(editingVideo ? videoToForm(editingVideo) : EMPTY_FORM);
+      setVideoFile(null);
+      setThumbFile(null);
+      setUploadStage("idle");
+      setUploadProgress(0);
+    }
+  }, [open, editingVideo]);
   const videoInputRef = useRef<HTMLInputElement>(null);
   const thumbInputRef = useRef<HTMLInputElement>(null);
   const xhrRef = useRef<XMLHttpRequest | null>(null);
