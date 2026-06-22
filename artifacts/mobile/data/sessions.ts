@@ -674,6 +674,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     }
     local.guideId = r.guideId ?? undefined;
     local.artistId = r.artistId ?? undefined;
+    local.createdAt = r.createdAt ?? undefined;
     local.guests = r.guests
       ? r.guests.map((g) => ({
           name: g.name,
