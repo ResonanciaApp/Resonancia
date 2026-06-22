@@ -7,7 +7,7 @@ export type TemaItem = {
   icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
   color: string;
   description: string;
-  themeTagMatch?: string;
+  themeTagMatch?: string[];
   image?: number;
   /** Ruta personalizada (ej. categorías propias). Por defecto navega a /tema/{id}. */
   route?: string;
@@ -21,6 +21,7 @@ export const TEMAS: TemaItem[] = [
     color: "#A0554A",
     description: "Movimiento consciente y posturas para unir cuerpo, mente y espíritu en armonía.",
     image: require("@/assets/images/tema-yoga.png"),
+    themeTagMatch: ["Yoga"],
   },
   {
     id: "respiracion",
@@ -28,7 +29,7 @@ export const TEMAS: TemaItem[] = [
     icon: "weather-windy",
     color: "#A8D8EA",
     description: "Técnicas y prácticas guiadas para reconectar con tu respiración y recuperar la calma.",
-    themeTagMatch: "Respiración consciente",
+    themeTagMatch: ["Respiración", "Respiración consciente"],
   },
   {
     id: "angustia",
@@ -37,6 +38,7 @@ export const TEMAS: TemaItem[] = [
     color: "#C8A85C",
     description: "Acompañamiento sonoro y guiado para atravesar momentos de incertidumbre con serenidad.",
     image: require("@/assets/images/tema-angustia.png"),
+    themeTagMatch: ["Ansiedad"],
   },
   {
     id: "ansiedad",
@@ -44,7 +46,7 @@ export const TEMAS: TemaItem[] = [
     icon: "heart-pulse",
     color: "#0AA99A",
     description: "Sesiones diseñadas para calmar la mente y encontrar equilibrio en momentos de tensión.",
-    themeTagMatch: "Para la ansiedad",
+    themeTagMatch: ["Rituales", "Para la ansiedad"],
     image: require("@/assets/images/cat-rituales.png"),
   },
   {
@@ -54,6 +56,7 @@ export const TEMAS: TemaItem[] = [
     color: "#4455C7",
     description: "Sonidos suaves y texturas auditivas que relajan el sistema nervioso con delicadeza.",
     image: require("@/assets/images/tema-asmr.png"),
+    themeTagMatch: ["ASMR"],
   },
   {
     id: "estres",
@@ -62,6 +65,7 @@ export const TEMAS: TemaItem[] = [
     color: "#C98A44",
     description: "Prácticas para liberar la tensión acumulada y restaurar tu energía interior.",
     image: require("@/assets/images/tema-estres.png"),
+    themeTagMatch: ["Estrés"],
   },
   {
     id: "spa",
@@ -70,6 +74,7 @@ export const TEMAS: TemaItem[] = [
     color: "#E06BAA",
     description: "Experiencias sensoriales profundas para descansar el cuerpo y renovar la mente.",
     image: require("@/assets/images/tema-spa.png"),
+    themeTagMatch: ["Spa"],
   },
   {
     id: "familia",
@@ -78,6 +83,7 @@ export const TEMAS: TemaItem[] = [
     color: "#0AA99A",
     description: "Momentos de paz y presencia plena para compartir con quienes más queremos.",
     image: require("@/assets/images/tema-familia.png"),
+    themeTagMatch: ["Familia"],
   },
 ];
 

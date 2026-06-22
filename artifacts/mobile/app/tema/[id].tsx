@@ -37,11 +37,11 @@ export default function TemaScreen() {
   const tema = getTemaById(id ?? "");
   if (!tema) return null;
 
-  const sessions = tema.themeTagMatch
+  const sessions = tema.themeTagMatch?.length
     ? SESSIONS.filter(
         (s) =>
           Array.isArray(s.themeTag) &&
-          s.themeTag.includes(tema.themeTagMatch as never),
+          s.themeTag.some((t) => tema.themeTagMatch!.includes(t)),
       )
     : [];
 
