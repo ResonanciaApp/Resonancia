@@ -2,15 +2,16 @@
  * Sala de video en vivo — Daily.co
  *
  * Modos de operación:
- * 1. Modo nativo SDK (activo cuando SDK_AVAILABLE = true + rebuild EAS):
- *    La videollamada corre dentro de la app, sin salir al navegador.
- * 2. Modo navegador (fallback cuando SDK_AVAILABLE = false):
+ * 1. Modo nativo SDK (activo automáticamente tras rebuild EAS):
+ *    El módulo @daily-co/react-native-daily-js se detecta en runtime con try-catch.
+ *    Si carga OK → SDK_AVAILABLE = true → videollamada dentro de la app.
+ * 2. Modo navegador (fallback automático si el SDK nativo no está disponible):
  *    Abre la sala en el navegador del dispositivo. El usuario vuelve y valora.
  *
  * ── PARA ACTIVAR EL SDK NATIVO ──────────────────────────────────────────────
- *  1. Descomentar el import de Daily abajo
- *  2. Cambiar: const SDK_AVAILABLE = true
- *  3. Hacer rebuild EAS: eas build --profile development --platform ios/android
+ *  Solo se necesita hacer un rebuild EAS que incluya el módulo nativo:
+ *    eas build --profile development --platform ios   (o android)
+ *  No hay que cambiar nada en el código — la detección es automática.
  * ────────────────────────────────────────────────────────────────────────────
  *
  * Uso: navegar con params { roomUrl, sessionId, guideDisplayName }

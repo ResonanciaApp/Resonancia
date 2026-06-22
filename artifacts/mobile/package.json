@@ -64,6 +64,7 @@
   },
   "dependencies": {
     "@daily-co/react-native-daily-js": "^0.86.0",
+    "@daily-co/react-native-webrtc": "124.0.6-daily.2",
     "@expo-google-fonts/cinzel": "^0.4.2",
     "@expo-google-fonts/playfair-display": "^0.4.2",
     "@react-native-masked-view/masked-view": "0.3.2",
@@ -81,6 +82,8 @@
     "expo-updates": "~29.0.18",
     "expo-video": "~3.0.16",
     "react-native-audio-api": "0.12.2",
+    "react-native-background-timer": "^2.4.1",
+    "react-native-get-random-values": "^2.0.0",
     "react-native-purchases": "^10.2.0",
     "react-native-view-shot": "4.0.3",
     "react-native-webview": "13.12.5"
