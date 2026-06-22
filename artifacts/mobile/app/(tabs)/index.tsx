@@ -81,7 +81,7 @@ const VIDEO_REG_W = 200;
 // 1 card completa + 25% del siguiente visible: W = (screenWidth - leftPad - gap) / 1.25
 const RECENT_CARD_W = Math.floor((width - GRID_PAD - 16) / 1.25 * 0.75);
 
-const SECTION_GAP = 45;
+const SECTION_GAP = 48;
 const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 
 const ND = Platform.OS !== "web";
@@ -901,7 +901,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 11,
   },
-  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 12, color: "#FAF0EE" },
+  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 15, color: "#FAF0EE" },
   verTodasLink: { fontSize: 13, fontWeight: "400" },
   videosEmpty: {
     borderRadius: 16,

@@ -36,7 +36,7 @@ const { width } = Dimensions.get("window");
 const H_PAD = 15;
 const GOLD_BORDER_PILL = ["transparent", "rgba(212,175,55,0.22)", "rgba(233,196,106,0.35)", "rgba(212,175,55,0.22)", "transparent"] as const;
 const GAP = 10;
-const SECTION_GAP = 45;
+const SECTION_GAP = 48;
 
 /** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
 function hexTint(hex: string, alpha: number): string {
@@ -577,7 +577,7 @@ const styles = StyleSheet.create({
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 11 },
-  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, color: "#FFFFFF", marginBottom: 12 },
+  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, color: "#FFFFFF", marginBottom: 15 },
 
   resultsLabel: { fontSize: 12, marginBottom: 12 },
   emptyState:   { alignItems: "center", paddingVertical: 48, gap: 10 },
