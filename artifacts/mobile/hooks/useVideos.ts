@@ -1,4 +1,4 @@
-import { useListVideos } from "@workspace/api-client-react";
+import { useListVideos, getListVideosQueryKey } from "@workspace/api-client-react";
 import type { CatalogVideo as ApiVideo } from "@workspace/api-client-react";
 import { VIDEOS as STATIC_VIDEOS, type VideoItem } from "@/data/videos";
 
@@ -43,7 +43,7 @@ export function useVideos(): {
   isError: boolean;
 } {
   const { data, isLoading, isError } = useListVideos({
-    query: { retry: 1, staleTime: 5 * 60 * 1000 },
+    query: { queryKey: getListVideosQueryKey(), retry: 1, staleTime: 5 * 60 * 1000 },
   });
 
   const apiVideos = data?.videos;
