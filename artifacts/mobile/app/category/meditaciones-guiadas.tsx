@@ -17,6 +17,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { SESSIONS, type Session } from "@/data/sessions";
+import { useCatalog } from "@/context/CatalogContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -28,11 +29,11 @@ const GRID_GAP    = 10;
 const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
 const HERO_IMG = require("@/assets/images/cat-meditacion-hero.png");
 
-type CatTab   = "noduales" | "visual" | "mantras" | "escaneo" | "manifest" | "tres";
+type CatTab   = string;
 type SortMode = "recientes" | "nuevas" | "populares";
 type ViewMode = "list" | "grid";
 
-const TABS: { id: CatTab; label: string }[] = [
+const FIXED_TABS: { id: string; label: string }[] = [
   { id: "noduales", label: "No Duales" },
   { id: "visual",   label: "Visualizaciones" },
   { id: "mantras",  label: "Mantras" },
@@ -40,6 +41,9 @@ const TABS: { id: CatTab; label: string }[] = [
   { id: "manifest", label: "Manifestación" },
   { id: "tres",     label: "3 Min" },
 ];
+const FIXED_MED_TAGS = new Set([
+  "No Duales","Visualizaciones","Mantras","Escaneo Corporal","Manifestación","3 Minutos de Sabiduría",
+]);
 
 const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
   { id: "recientes", label: "Escuchadas recientemente", icon: "clock" },
@@ -47,7 +51,7 @@ const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
   { id: "populares", label: "Las más escuchadas",       icon: "headphones" },
 ];
 
-function getSessionsForTab(tab: CatTab | null) {
+function getSessionsForTab(tab: string | null) {
   const all = SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas");
   if (!tab) return all;
   switch (tab) {
@@ -57,6 +61,7 @@ function getSessionsForTab(tab: CatTab | null) {
     case "escaneo":  return all.filter((s) => s.meditationTag === "Escaneo Corporal");
     case "manifest": return all.filter((s) => s.meditationTag === "Manifestación");
     case "tres":     return all.filter((s) => s.meditationTag === "3 Minutos de Sabiduría");
+    default:         return all.filter((s) => s.meditationTag === tab);
   }
 }
 
@@ -107,7 +112,7 @@ function Chip({ label, sel, onPress }: { label: string; sel: boolean; onPress:()
 const CHIP_DUR = 600;
 const CLOSE_SLOT = 38;
 
-function ChipRow({ activeTab, onSelect, onClear }: { activeTab: CatTab|null; onSelect:(id:CatTab)=>void; onClear:()=>void }) {
+function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: { id: string; label: string }[]; activeTab: CatTab|null; onSelect:(id:CatTab)=>void; onClear:()=>void }) {
   const progress  = useRef(new Animated.Value(activeTab?1:0)).current;
   const offsetsRef= useRef<Record<string,number>>({});
   const scrollX   = useRef(0);
@@ -135,7 +140,7 @@ function ChipRow({ activeTab, onSelect, onClear }: { activeTab: CatTab|null; onS
       <ScrollView horizontal showsHorizontalScrollIndicator={false} scrollEnabled={!filtered}
         scrollEventThrottle={16} onScroll={(e)=>{ scrollX.current=e.nativeEvent.contentOffset.x; }}
         style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
-        {TABS.map((t)=>{
+        {tabs.map((t)=>{
           const isSel = displayTab===t.id;
           const chipStyle = isSel
             ? {opacity:1,zIndex:2,transform:[{translateX:progress.interpolate({inputRange:[0,1],outputRange:[0,targetTx]})}]}
@@ -315,6 +320,18 @@ export default function MeditacionesGuiadasScreen() {
   const topPad    = Platform.OS==="web" ? 0 : insets.top;
   const bottomPad = Platform.OS==="web" ? 34 : insets.bottom;
   const { isFavorite, toggleFavorite, history } = usePlayer();
+  const { version } = useCatalog();
+
+  const TABS = useMemo(() => {
+    const extra = Array.from(
+      new Set(
+        SESSIONS
+          .filter((s) => s.categoryId === "meditaciones-guiadas" && s.meditationTag && !FIXED_MED_TAGS.has(s.meditationTag))
+          .map((s) => s.meditationTag as string)
+      )
+    ).map((tag) => ({ id: tag, label: tag }));
+    return [...FIXED_TABS, ...extra];
+  }, [version]);
 
   const [activeTab,         setActiveTab]         = useState<CatTab|null>(null);
   const [sort,              setSort]              = useState<SortMode>("recientes");
@@ -426,7 +443,7 @@ export default function MeditacionesGuiadasScreen() {
 
         {/* ── Tabs ── */}
         <View style={styles.chipsArea}>
-          <ChipRow activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
         </View>
 
         {/* ── Divisor ── */}

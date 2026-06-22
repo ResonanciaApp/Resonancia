@@ -17,6 +17,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { SESSIONS, type Session } from "@/data/sessions";
+import { useCatalog } from "@/context/CatalogContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -28,11 +29,11 @@ const GRID_GAP    = 10;
 const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
 const HERO_IMG = require("@/assets/images/cat-reflexiones-hero.png");
 
-type CatTab   = "sabiduria" | "podcast" | "asmr" | "historias";
+type CatTab   = string;
 type SortMode = "recientes" | "nuevas" | "populares";
 type ViewMode = "list" | "grid";
 
-const TABS: { id: CatTab; label: string }[] = [
+const FIXED_TABS: { id: string; label: string }[] = [
   { id: "sabiduria", label: "Sabiduría" },
   { id: "podcast",   label: "Podcast" },
   { id: "asmr",      label: "ASMR" },
@@ -47,7 +48,7 @@ const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
 
 // Todas las reflexiones se muestran sin filtro de subcategoría por ahora
 // (los tabs son visuales — se completará cuando las sesiones tengan podcastTag/sabiduriaTag)
-function getSessionsForTab(_tab: CatTab | null) {
+function getSessionsForTab(_tab: string | null) {
   return SESSIONS.filter((s) => s.categoryId === "reflexiones");
 }
 
@@ -98,7 +99,7 @@ function Chip({ label, sel, onPress }: { label: string; sel: boolean; onPress:()
 const CHIP_DUR = 600;
 const CLOSE_SLOT = 38;
 
-function ChipRow({ activeTab, onSelect, onClear }: { activeTab: CatTab|null; onSelect:(id:CatTab)=>void; onClear:()=>void }) {
+function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: { id: string; label: string }[]; activeTab: CatTab|null; onSelect:(id:CatTab)=>void; onClear:()=>void }) {
   const progress  = useRef(new Animated.Value(activeTab?1:0)).current;
   const offsetsRef= useRef<Record<string,number>>({});
   const scrollX   = useRef(0);
@@ -126,7 +127,7 @@ function ChipRow({ activeTab, onSelect, onClear }: { activeTab: CatTab|null; onS
       <ScrollView horizontal showsHorizontalScrollIndicator={false} scrollEnabled={!filtered}
         scrollEventThrottle={16} onScroll={(e)=>{ scrollX.current=e.nativeEvent.contentOffset.x; }}
         style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
-        {TABS.map((t)=>{
+        {tabs.map((t)=>{
           const isSel = displayTab===t.id;
           const chipStyle = isSel
             ? {opacity:1,zIndex:2,transform:[{translateX:progress.interpolate({inputRange:[0,1],outputRange:[0,targetTx]})}]}
@@ -306,6 +307,11 @@ export default function ReflexionesScreen() {
   const topPad    = Platform.OS==="web" ? 0 : insets.top;
   const bottomPad = Platform.OS==="web" ? 34 : insets.bottom;
   const { isFavorite, toggleFavorite, history } = usePlayer();
+  const { version } = useCatalog();
+
+  // Tabs fijos — se expandirán cuando las sesiones usen podcastTag/sabiduriaTag
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const TABS = useMemo(() => FIXED_TABS, [version]);
 
   const [activeTab,         setActiveTab]         = useState<CatTab|null>(null);
   const [sort,              setSort]              = useState<SortMode>("recientes");
@@ -417,7 +423,7 @@ export default function ReflexionesScreen() {
 
         {/* ── Tabs ── */}
         <View style={styles.chipsArea}>
-          <ChipRow activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
         </View>
 
         {/* ── Divisor ── */}
