@@ -23,6 +23,7 @@ import {
   type User,
   type MixerSound,
   type GuideConfig,
+  catalogTagOptionsTable,
 } from "@workspace/db";
 import {
   GetAdminUsersQueryParams,
@@ -732,6 +733,59 @@ router.delete("/admin/guide-configs/:guideId", requireAuth, requireRole("admin")
   } catch (err) {
     req.log.error({ err }, "error deleting guide config");
     res.status(500).json({ error: "Error al eliminar la configuración" });
+  }
+});
+
+// ── Tag options ────────────────────────────────────────────────────────────
+
+router.get("/admin/tag-options", requireAuth, requireRole("admin"), async (req, res) => {
+  const type = req.query.type ? String(req.query.type) : undefined;
+  try {
+    const rows = await db
+      .select()
+      .from(catalogTagOptionsTable)
+      .where(type ? eq(catalogTagOptionsTable.type, type) : undefined)
+      .orderBy(catalogTagOptionsTable.createdAt);
+    res.json(rows);
+  } catch (err) {
+    req.log.error({ err }, "error fetching tag options");
+    res.status(500).json({ error: "Error al obtener etiquetas" });
+  }
+});
+
+router.post("/admin/tag-options", requireAuth, requireRole("admin"), async (req, res) => {
+  const { type, label } = req.body as { type?: string; label?: string };
+  if (!type || !label || !label.trim()) {
+    res.status(400).json({ error: "type y label son requeridos" });
+    return;
+  }
+  try {
+    const [row] = await db
+      .insert(catalogTagOptionsTable)
+      .values({ type: type.trim(), label: label.trim() })
+      .returning();
+    req.log.info({ type, label }, "tag option created");
+    res.status(201).json(row);
+  } catch (err) {
+    req.log.error({ err }, "error creating tag option");
+    res.status(500).json({ error: "Error al crear etiqueta" });
+  }
+});
+
+router.delete("/admin/tag-options/:id", requireAuth, requireRole("admin"), async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) { res.status(400).json({ error: "ID inválido" }); return; }
+  try {
+    const [deleted] = await db
+      .delete(catalogTagOptionsTable)
+      .where(eq(catalogTagOptionsTable.id, id))
+      .returning();
+    if (!deleted) { res.status(404).json({ error: "Etiqueta no encontrada" }); return; }
+    req.log.info({ id }, "tag option deleted");
+    res.status(204).end();
+  } catch (err) {
+    req.log.error({ err }, "error deleting tag option");
+    res.status(500).json({ error: "Error al eliminar etiqueta" });
   }
 });
 

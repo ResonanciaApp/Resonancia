@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Upload, X, Music, Loader2, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
+import { TagOptionSelector, SingleTagOptionSelector } from "@/components/TagOptionSelector";
 import {
   useCreateSubmission,
   useApproveSubmission,
@@ -489,49 +490,23 @@ export default function SesionesPage() {
         >
           <div className="space-y-4">
             {categoryId === "sonidos-ancestrales" && (
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Subcategoría *</Label>
-                <div className="flex flex-wrap gap-2">
-                  {ANCESTRAL_TAGS.map((tag) => (
-                    <button
-                      key={tag}
-                      type="button"
-                      onClick={() => setAncestralTag(tag)}
-                      className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
-                        ancestralTag === tag
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-border text-muted-foreground hover:border-foreground"
-                      }`}
-                    >
-                      {tag}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <SingleTagOptionSelector
+                tagType="ancestral"
+                defaults={ANCESTRAL_TAGS}
+                label="Subcategoría *"
+                selected={ancestralTag}
+                onSelect={setAncestralTag}
+              />
             )}
 
             {categoryId === "meditaciones-guiadas" && (
-              <>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Subcategoría *</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {MEDITATION_TAGS.map((tag) => (
-                      <button
-                        key={tag}
-                        type="button"
-                        onClick={() => setMeditationTag(tag)}
-                        className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
-                          meditationTag === tag
-                            ? "border-primary bg-primary/10 text-primary"
-                            : "border-border text-muted-foreground hover:border-foreground"
-                        }`}
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </>
+              <SingleTagOptionSelector
+                tagType="meditation"
+                defaults={MEDITATION_TAGS}
+                label="Subcategoría *"
+                selected={meditationTag}
+                onSelect={setMeditationTag}
+              />
             )}
 
             {categoryId === "reflexiones" && (
@@ -575,47 +550,23 @@ export default function SesionesPage() {
           onToggle={() => toggleSection("tags")}
         >
           <div className="space-y-4">
-            {/* Etiquetas Nivel 1 */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Etiquetas Nivel 1 (opcional)</Label>
-              <div className="flex flex-wrap gap-2">
-                {THEME_TAGS.map((tag) => (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => toggleTheme(tag)}
-                    className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-                      themeTag.includes(tag)
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border text-muted-foreground hover:border-foreground"
-                    }`}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <TagOptionSelector
+              tagType="theme"
+              defaults={THEME_TAGS}
+              label="Etiquetas Nivel 1 (opcional)"
+              selected={themeTag}
+              onToggle={toggleTheme}
+              pill
+            />
 
-            {/* Otras temáticas */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Otras temáticas (opcional)</Label>
-              <div className="flex flex-wrap gap-2">
-                {OTHER_THEME_TAGS.map((tag) => (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => toggleTheme(tag)}
-                    className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-                      themeTag.includes(tag)
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border text-muted-foreground hover:border-foreground"
-                    }`}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <TagOptionSelector
+              tagType="other_theme"
+              defaults={OTHER_THEME_TAGS}
+              label="Otras temáticas (opcional)"
+              selected={themeTag}
+              onToggle={toggleTheme}
+              pill
+            />
           </div>
         </Section>
       )}

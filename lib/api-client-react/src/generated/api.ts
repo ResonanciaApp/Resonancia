@@ -40,6 +40,7 @@ import type {
   CreateApplicationInput,
   CreateMessageBody,
   CreateMixerSoundBody,
+  CreateTagOptionBody,
   CreatorSubmissionInput,
   DirectMessage,
   ErrorEnvelope,
@@ -58,6 +59,7 @@ import type {
   GetAdminGeometrix200,
   GetAdminGuideConfigs200,
   GetAdminSounds200,
+  GetAdminTagOptionsParams,
   GetAdminUsersParams,
   GetDirectMessagesParams,
   GetGeometrixSettings200,
@@ -102,6 +104,7 @@ import type {
   SharedMixesPage,
   Submission,
   SubmissionList,
+  TagOption,
   TopMessageResponse,
   TypingStatus,
   UnreadCount,
@@ -6901,6 +6904,231 @@ export const useCalWebhook = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getCalWebhookMutationOptions(options));
+    }
+
+export const getGetAdminTagOptionsUrl = (params?: GetAdminTagOptionsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/admin/tag-options?${stringifiedParams}` : `/api/admin/tag-options`
+}
+
+/**
+ * @summary Listar opciones de etiquetas/subcategorías
+ */
+export const getAdminTagOptions = async (params?: GetAdminTagOptionsParams, options?: RequestInit): Promise<TagOption[]> => {
+
+  return customFetch<TagOption[]>(getGetAdminTagOptionsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminTagOptionsQueryKey = (params?: GetAdminTagOptionsParams,) => {
+    return [
+    `/api/admin/tag-options`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetAdminTagOptionsQueryOptions = <TData = Awaited<ReturnType<typeof getAdminTagOptions>>, TError = ErrorType<unknown>>(params?: GetAdminTagOptionsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminTagOptions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminTagOptionsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminTagOptions>>> = ({ signal }) => getAdminTagOptions(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminTagOptions>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminTagOptionsQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminTagOptions>>>
+export type GetAdminTagOptionsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Listar opciones de etiquetas/subcategorías
+ */
+
+export function useGetAdminTagOptions<TData = Awaited<ReturnType<typeof getAdminTagOptions>>, TError = ErrorType<unknown>>(
+ params?: GetAdminTagOptionsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminTagOptions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminTagOptionsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateAdminTagOptionUrl = () => {
+
+
+
+
+  return `/api/admin/tag-options`
+}
+
+/**
+ * @summary Crear nueva opción de etiqueta/subcategoría
+ */
+export const createAdminTagOption = async (createTagOptionBody: CreateTagOptionBody, options?: RequestInit): Promise<TagOption> => {
+
+  return customFetch<TagOption>(getCreateAdminTagOptionUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createTagOptionBody,)
+  }
+);}
+
+
+
+
+export const getCreateAdminTagOptionMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminTagOption>>, TError,{data: BodyType<CreateTagOptionBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createAdminTagOption>>, TError,{data: BodyType<CreateTagOptionBody>}, TContext> => {
+
+const mutationKey = ['createAdminTagOption'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAdminTagOption>>, {data: BodyType<CreateTagOptionBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createAdminTagOption(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateAdminTagOptionMutationResult = NonNullable<Awaited<ReturnType<typeof createAdminTagOption>>>
+    export type CreateAdminTagOptionMutationBody = BodyType<CreateTagOptionBody>
+    export type CreateAdminTagOptionMutationError = ErrorType<void>
+
+    /**
+ * @summary Crear nueva opción de etiqueta/subcategoría
+ */
+export const useCreateAdminTagOption = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminTagOption>>, TError,{data: BodyType<CreateTagOptionBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createAdminTagOption>>,
+        TError,
+        {data: BodyType<CreateTagOptionBody>},
+        TContext
+      > => {
+      return useMutation(getCreateAdminTagOptionMutationOptions(options));
+    }
+
+export const getDeleteAdminTagOptionUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/tag-options/${id}`
+}
+
+/**
+ * @summary Eliminar opción de etiqueta/subcategoría
+ */
+export const deleteAdminTagOption = async (id: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteAdminTagOptionUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteAdminTagOptionMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminTagOption>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAdminTagOption>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['deleteAdminTagOption'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAdminTagOption>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteAdminTagOption(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAdminTagOptionMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAdminTagOption>>>
+
+    export type DeleteAdminTagOptionMutationError = ErrorType<void>
+
+    /**
+ * @summary Eliminar opción de etiqueta/subcategoría
+ */
+export const useDeleteAdminTagOption = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminTagOption>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAdminTagOption>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getDeleteAdminTagOptionMutationOptions(options));
     }
 
 export const getGetAdminGuideConfigsUrl = () => {

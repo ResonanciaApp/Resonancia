@@ -2518,6 +2518,39 @@ export const CalWebhookResponse = zod.object({
 
 
 /**
+ * @summary Listar opciones de etiquetas/subcategorías
+ */
+export const GetAdminTagOptionsQueryParams = zod.object({
+  "type": zod.coerce.string().optional()
+})
+
+export const GetAdminTagOptionsResponseItem = zod.object({
+  "id": zod.number(),
+  "type": zod.string(),
+  "label": zod.string(),
+  "createdAt": zod.coerce.date()
+})
+export const GetAdminTagOptionsResponse = zod.array(GetAdminTagOptionsResponseItem)
+
+
+/**
+ * @summary Crear nueva opción de etiqueta/subcategoría
+ */
+export const CreateAdminTagOptionBody = zod.object({
+  "type": zod.string(),
+  "label": zod.string()
+})
+
+
+/**
+ * @summary Eliminar opción de etiqueta/subcategoría
+ */
+export const DeleteAdminTagOptionParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+/**
  * @summary Listar configuraciones de guiadores en vivo (admin)
  */
 export const GetAdminGuideConfigsResponse = zod.object({

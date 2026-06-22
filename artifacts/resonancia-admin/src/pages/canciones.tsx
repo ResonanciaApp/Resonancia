@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Upload, X, Music, Loader2, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
+import { TagOptionSelector, SingleTagOptionSelector } from "@/components/TagOptionSelector";
 import {
   useCreateSubmission,
   useApproveSubmission,
@@ -407,24 +408,15 @@ export default function CancionesPage() {
         onToggle={() => toggleSection("subcategoria")}
       >
         <div className="space-y-2">
-          <div className="flex flex-wrap gap-2">
-            {SOUND_TAGS.map((tag) => (
-              <button
-                key={tag}
-                type="button"
-                onClick={() => setSoundTag(tag)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
-                  soundTag === tag
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-border text-muted-foreground hover:border-foreground"
-                }`}
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
+          <SingleTagOptionSelector
+            tagType="sound"
+            defaults={SOUND_TAGS}
+            label="Subcategoría *"
+            selected={soundTag}
+            onSelect={setSoundTag}
+          />
           {soundTag && (
-            <p className="text-xs text-muted-foreground">Subcategoría seleccionada: <strong className="text-foreground">"{soundTag}"</strong></p>
+            <p className="text-xs text-muted-foreground">Seleccionada: <strong className="text-foreground">"{soundTag}"</strong></p>
           )}
         </div>
       </Section>
@@ -436,55 +428,31 @@ export default function CancionesPage() {
         onToggle={() => toggleSection("tags")}
       >
         <div className="space-y-4">
-          <Field label="Etiqueta de sueño (opcional)">
-            <SelectField
-              value={sleepTag}
-              onChange={setSleepTag}
-              placeholder="Sin etiqueta"
-              options={SLEEP_TAGS}
-              clearable
-            />
-          </Field>
+          <SingleTagOptionSelector
+            tagType="sleep"
+            defaults={SLEEP_TAGS}
+            label="Etiqueta de sueño (opcional)"
+            selected={sleepTag}
+            onSelect={setSleepTag}
+          />
 
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Temáticas (opcional)</Label>
-            <div className="flex flex-wrap gap-2">
-              {THEME_TAGS.map((tag) => (
-                <button
-                  key={tag}
-                  type="button"
-                  onClick={() => toggleTheme(tag)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-                    themeTag.includes(tag)
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-border text-muted-foreground hover:border-foreground"
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
+          <TagOptionSelector
+            tagType="theme"
+            defaults={THEME_TAGS}
+            label="Temáticas (opcional)"
+            selected={themeTag}
+            onToggle={toggleTheme}
+            pill
+          />
 
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Otras temáticas (opcional)</Label>
-            <div className="flex flex-wrap gap-2">
-              {OTHER_THEME_TAGS.map((tag) => (
-                <button
-                  key={tag}
-                  type="button"
-                  onClick={() => toggleTheme(tag)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-                    themeTag.includes(tag)
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-border text-muted-foreground hover:border-foreground"
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
+          <TagOptionSelector
+            tagType="other_theme"
+            defaults={OTHER_THEME_TAGS}
+            label="Otras temáticas (opcional)"
+            selected={themeTag}
+            onToggle={toggleTheme}
+            pill
+          />
         </div>
       </Section>
 

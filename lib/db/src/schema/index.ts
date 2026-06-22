@@ -44,3 +44,4 @@ export * from "./expansor-profiles";
 export * from "./applications";
 export * from "./live-sessions";
 export * from "./guide-configs";
+export * from "./catalog-tag-options";

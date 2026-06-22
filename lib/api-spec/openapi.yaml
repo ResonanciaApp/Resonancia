@@ -2558,6 +2558,61 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /admin/tag-options:
+    get:
+      operationId: getAdminTagOptions
+      tags: [admin]
+      summary: Listar opciones de etiquetas/subcategorías
+      parameters:
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Lista de opciones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TagOption"
+    post:
+      operationId: createAdminTagOption
+      tags: [admin]
+      summary: Crear nueva opción de etiqueta/subcategoría
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTagOptionBody"
+      responses:
+        "201":
+          description: Opción creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagOption"
+        "400":
+          description: Datos inválidos
+  /admin/tag-options/{id}:
+    delete:
+      operationId: deleteAdminTagOption
+      tags: [admin]
+      summary: Eliminar opción de etiqueta/subcategoría
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Eliminada
+        "404":
+          description: No encontrada
   /admin/guide-configs:
     get:
       operationId: getAdminGuideConfigs
@@ -4600,6 +4655,27 @@ components:
         updatedAt:
           type: string
           format: date-time
+    TagOption:
+      type: object
+      required: [id, type, label, createdAt]
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+        label:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    CreateTagOptionBody:
+      type: object
+      required: [type, label]
+      properties:
+        type:
+          type: string
+        label:
+          type: string
     GuideConfigInput:
       type: object
       required: [guideId, displayName]

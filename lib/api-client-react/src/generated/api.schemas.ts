@@ -1534,6 +1534,18 @@ export interface GuideConfig {
   updatedAt: string;
 }
 
+export interface TagOption {
+  id: number;
+  type: string;
+  label: string;
+  createdAt: string;
+}
+
+export interface CreateTagOptionBody {
+  type: string;
+  label: string;
+}
+
 export interface GuideConfigInput {
   guideId: string;
   displayName: string;
@@ -1699,6 +1711,10 @@ export type GetMyLiveSessions200 = {
 };
 
 export type CalWebhookBody = { [key: string]: unknown };
+
+export type GetAdminTagOptionsParams = {
+type?: string;
+};
 
 export type GetAdminGuideConfigs200 = {
   guideConfigs: GuideConfig[];
