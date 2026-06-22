@@ -448,6 +448,7 @@ export default function ExploreScreen() {
               <View style={[styles.temaGrid, { marginTop: -6 }]}>
                 {TEMAS.map((t, i) => {
                   const isLeft = i % 2 === 0;
+                  const isFirstRow = i < 2;
                   return (
                   <Pressable
                     key={t.id}
@@ -459,9 +460,9 @@ export default function ExploreScreen() {
                         height: 56,
                         opacity: pressed ? 0.75 : 1,
                         backgroundColor: "rgba(255,255,255,0.06)",
-                        borderTopRightRadius: isLeft ? 0 : 14,
+                        borderTopLeftRadius: isLeft ? 14 : (isFirstRow ? 14 : 0),
+                        borderTopRightRadius: isLeft ? (isFirstRow ? 14 : 0) : 14,
                         borderBottomRightRadius: isLeft ? 0 : 14,
-                        borderTopLeftRadius: isLeft ? 14 : 0,
                         borderBottomLeftRadius: isLeft ? 14 : 0,
                       },
                     ]}
