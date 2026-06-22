@@ -15,7 +15,7 @@ export function apiVideoToItem(v: ApiVideo): VideoItem {
           ? `/api/storage${v.thumbnailObjectPath}`
           : v.thumbnailObjectPath }
     : CDN_HOST
-      ? { uri: `https://${CDN_HOST}/${v.bunnyVideoId}/thumbnail.jpg` }
+      ? { uri: `https://${CDN_HOST}/${v.bunnyVideoId}/thumbnail.jpg?v=2` }
       : require("@/assets/images/videos/video-1.jpg");
 
   return {
