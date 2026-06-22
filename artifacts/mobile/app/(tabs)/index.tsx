@@ -54,7 +54,7 @@ import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/d
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { usePremium } from "@/context/PremiumContext";
-import { VIDEOS } from "@/data/videos";
+import { useVideos } from "@/hooks/useVideos";
 import { PLAYLISTS } from "@/data/playlists";
 import { useColors } from "@/hooks/useColors";
 import { useUserProfile } from "@/context/UserProfileContext";
@@ -116,6 +116,7 @@ export default function HomeScreen2() {
   const { playSession, currentSession, isPlaying, pauseResume, history } = usePlayer();
   const { isPremium } = usePremium();
   const { upcoming: upcomingLiveSessions } = useLiveSessions();
+  const { videos } = useVideos();
   const nextLiveSession = upcomingLiveSessions[0] ?? null;
   const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
@@ -687,14 +688,14 @@ export default function HomeScreen2() {
             <Text style={[styles.sectionTitle]}>
               Videos destacados
             </Text>
-            {VIDEOS.length > 0 && (
+            {videos.length > 0 && (
               <Pressable onPress={() => router.push("/videos" as never)} hitSlop={8}>
                 <Text style={[styles.verTodasLink, { color: colors.accent }]}>Ver todos</Text>
               </Pressable>
             )}
           </View>
 
-          {VIDEOS.length === 0 ? (
+          {videos.length === 0 ? (
             <View style={[styles.videosEmpty, { borderColor: "rgba(61,14,22,0.40)", backgroundColor: "rgba(74,12,12,0.08)" }]}>
               <Feather name="film" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
               <Text style={[styles.historyEmptyTitle, { color: colors.foreground }]}>Próximamente</Text>
@@ -709,7 +710,7 @@ export default function HomeScreen2() {
               style={{ marginHorizontal: -GRID_PAD }}
               contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 12 }}
             >
-              {VIDEOS.map((v) => (
+              {videos.map((v) => (
                 <VideoCard
                   key={v.id}
                   video={v}
