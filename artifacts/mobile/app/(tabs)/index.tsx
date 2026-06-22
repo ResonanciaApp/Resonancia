@@ -453,7 +453,17 @@ export default function HomeScreen2() {
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP }}>
-            <Text style={styles.sectionTitle}>Tu próxima sesión</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+              <Text style={styles.sectionTitle}>Tu próxima sesión</Text>
+              <Pressable
+                onPress={() => router.push("/mis-sesiones" as never)}
+                hitSlop={8}
+              >
+                <Text style={{ color: "#D4AF37", fontSize: 13, fontFamily: "Inter_400Regular" }}>
+                  Ver todas
+                </Text>
+              </Pressable>
+            </View>
             <LiveSessionCard
               session={nextLiveSession}
               onEnter={(s) => {

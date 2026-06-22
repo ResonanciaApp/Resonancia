@@ -2,12 +2,17 @@
  * Pantalla de reserva de sesión en vivo con un guiador.
  *
  * Flujo:
- *  1. "Inicio"  — muestra info del guiador + botón "Abrir Cal.com"
- *  2. "Abierto" — browser lanzado, esperando que vuelva el usuario
- *  3. "Confirmación" — post-reserva: ícono check + instrucciones + nav
+ *  1. "idle"    — info del guiador + botón "Elegir fecha y hora"
+ *  2. "browser" — abre Cal.com con expo-web-browser (SFSafariViewController / Chrome Custom Tab)
+ *  3. "ask"     — al cerrar el browser: pregunta explícita "¿Completaste tu reserva?"
+ *                  → "Sí" → phase "confirm"  |  "No" → phase "idle"
+ *  4. "confirm" — pantalla de éxito confirmada por el usuario
  *
- * Cal.com se abre con expo-web-browser (SFSafariViewController en iOS,
- * Chrome Custom Tab en Android) — sin necesidad de WebView nativo.
+ * Nota técnica: react-native-webview requiere rebuild de dev client; la
+ * alternativa nativa equivalente es SFSafariViewController (iOS) / Chrome
+ * Custom Tab (Android), que es exactamente lo que expo-web-browser entrega.
+ * La confirmación es siempre explícita (el usuario debe confirmar que completó
+ * la reserva), nunca automática.
  */
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
@@ -17,7 +22,6 @@ import * as WebBrowser from "expo-web-browser";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
   Animated,
   Pressable,
   ScrollView,
@@ -40,7 +44,7 @@ const FOREGROUND = "#F4DAD5";
 const MUTED = "rgba(242,231,228,0.55)";
 const BORDER = "#3D0E16";
 
-type Phase = "idle" | "loading" | "confirm";
+type Phase = "idle" | "browser" | "ask" | "confirm";
 
 // ── Pantalla ─────────────────────────────────────────────────────────────────
 export default function ReservarSesionScreen() {
@@ -55,11 +59,7 @@ export default function ReservarSesionScreen() {
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 350,
-      useNativeDriver: true,
-    }).start();
+    Animated.timing(fadeAnim, { toValue: 1, duration: 350, useNativeDriver: true }).start();
   }, [fadeAnim]);
 
   const guide = getGuide(guideId);
@@ -68,7 +68,7 @@ export default function ReservarSesionScreen() {
   const handleOpenBrowser = useCallback(async () => {
     if (!calLink) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    setPhase("loading");
+    setPhase("browser");
     try {
       await WebBrowser.openBrowserAsync(calLink, {
         presentationStyle: WebBrowser.WebBrowserPresentationStyle.PAGE_SHEET,
@@ -80,19 +80,78 @@ export default function ReservarSesionScreen() {
     } catch {
       // El usuario cerró el browser sin error
     }
-    // Browser cerrado — pasar a confirmación
-    setPhase("confirm");
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
+    // Browser cerrado — preguntar explícitamente si completó la reserva
+    setPhase("ask");
+    fadeAnim.setValue(0);
+    Animated.timing(fadeAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
   }, [calLink, fadeAnim]);
+
+  const handleConfirmYes = useCallback(() => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    fadeAnim.setValue(0);
+    setPhase("confirm");
+    Animated.timing(fadeAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
+  }, [fadeAnim]);
+
+  const handleConfirmNo = useCallback(() => {
+    fadeAnim.setValue(0);
+    setPhase("idle");
+    Animated.timing(fadeAnim, { toValue: 1, duration: 250, useNativeDriver: true }).start();
+  }, [fadeAnim]);
 
   const topPad = insets.top + 8;
   const bottomPad = insets.bottom + 24;
 
-  // ── Fase de confirmación ──────────────────────────────────────────────────
+  // ── Fase: preguntar si completó la reserva ───────────────────────────────
+  if (phase === "ask") {
+    return (
+      <View style={[styles.root, { paddingTop: topPad, paddingBottom: bottomPad }]}>
+        <StatusBar barStyle="light-content" />
+        <LinearGradient
+          colors={[BURGUNDY_MID, WARM_BLACK, WARM_BLACK]}
+          locations={[0, 0.4, 1]}
+          style={StyleSheet.absoluteFill}
+        />
+        <Animated.View style={[styles.centeredContainer, { opacity: fadeAnim }]}>
+          {/* Ícono pregunta */}
+          <View style={styles.iconCircle}>
+            <LinearGradient
+              colors={["rgba(212,175,55,0.20)", "rgba(212,175,55,0.06)"]}
+              style={StyleSheet.absoluteFill}
+            />
+            <Feather name="help-circle" size={36} color={PRIMARY_GOLD} />
+          </View>
+
+          <Text style={styles.askTitle}>¿Completaste tu reserva?</Text>
+          <Text style={styles.askSub}>
+            Si terminaste el proceso en Cal.com, confirma aquí para registrar tu sesión.
+          </Text>
+
+          {/* Botón Sí */}
+          <Pressable
+            style={({ pressed }) => [styles.primaryBtn, { opacity: pressed ? 0.85 : 1, marginTop: 8 }]}
+            onPress={handleConfirmYes}
+          >
+            <LinearGradient
+              colors={["#D6AD5F", "#B47344"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={StyleSheet.absoluteFill}
+            />
+            <Feather name="check" size={16} color={WARM_BLACK} style={{ marginRight: 8 }} />
+            <Text style={styles.primaryBtnText}>Sí, la completé</Text>
+          </Pressable>
+
+          {/* Botón No */}
+          <Pressable style={styles.secondaryBtn} onPress={handleConfirmNo}>
+            <Text style={styles.secondaryBtnText}>No, volver a intentarlo</Text>
+          </Pressable>
+        </Animated.View>
+      </View>
+    );
+  }
+
+  // ── Fase: confirmación exitosa ────────────────────────────────────────────
   if (phase === "confirm") {
     return (
       <View style={[styles.root, { paddingTop: topPad, paddingBottom: bottomPad }]}>
@@ -102,9 +161,9 @@ export default function ReservarSesionScreen() {
           locations={[0, 0.4, 1]}
           style={StyleSheet.absoluteFill}
         />
-        <Animated.View style={[styles.confirmContainer, { opacity: fadeAnim }]}>
+        <Animated.View style={[styles.centeredContainer, { opacity: fadeAnim }]}>
           {/* Ícono check */}
-          <View style={styles.checkCircle}>
+          <View style={styles.iconCircle}>
             <LinearGradient
               colors={["rgba(212,175,55,0.20)", "rgba(212,175,55,0.06)"]}
               style={StyleSheet.absoluteFill}
@@ -112,33 +171,38 @@ export default function ReservarSesionScreen() {
             <Feather name="check" size={36} color={PRIMARY_GOLD} />
           </View>
 
-          <Text style={styles.confirmTitle}>¡Reserva solicitada!</Text>
+          <Text style={styles.confirmTitle}>¡Reserva confirmada!</Text>
           <Text style={styles.confirmSub}>
             Tu sesión con{" "}
             <Text style={{ color: ACCENT_GOLD }}>{displayName}</Text>{" "}
             quedó registrada.
           </Text>
 
-          {/* Instrucciones */}
+          {/* Tarjeta informativa */}
           <View style={styles.infoCard}>
             <View style={styles.infoRow}>
               <Feather name="mail" size={14} color={ACCENT_GOLD} style={{ marginRight: 10, marginTop: 1 }} />
               <Text style={styles.infoText}>
-                Recibirás un email de Cal.com con la confirmación, fecha y enlace para unirte.
+                Recibirás un email de Cal.com con la fecha, hora y enlace para unirte.
               </Text>
             </View>
             <View style={[styles.infoRow, { marginTop: 10 }]}>
-              <Feather name="video" size={14} color={ACCENT_GOLD} style={{ marginRight: 10, marginTop: 1 }} />
+              <Feather name="calendar" size={14} color={ACCENT_GOLD} style={{ marginRight: 10, marginTop: 1 }} />
               <Text style={styles.infoText}>
-                El botón "Entrar" aparecerá en "Mis sesiones" 15 minutos antes de que comience.
+                El botón "Entrar" aparecerá en{" "}
+                <Text style={{ color: FOREGROUND }}>Mis sesiones</Text>{" "}
+                15 minutos antes de que comience.
               </Text>
             </View>
           </View>
 
-          {/* Botón principal */}
+          {/* Ver mis sesiones */}
           <Pressable
             style={({ pressed }) => [styles.primaryBtn, { opacity: pressed ? 0.85 : 1 }]}
-            onPress={() => router.replace("/" as never)}
+            onPress={() => {
+              router.back();
+              setTimeout(() => router.push("/mis-sesiones" as never), 200);
+            }}
           >
             <LinearGradient
               colors={["#D6AD5F", "#B47344"]}
@@ -146,21 +210,21 @@ export default function ReservarSesionScreen() {
               end={{ x: 1, y: 0 }}
               style={StyleSheet.absoluteFill}
             />
-            <Text style={styles.primaryBtnText}>Volver al inicio</Text>
+            <Text style={styles.primaryBtnText}>Ver mis sesiones</Text>
           </Pressable>
 
-          {/* Reservar otra vez */}
-          <Pressable style={styles.secondaryBtn} onPress={() => setPhase("idle")}>
-            <Text style={styles.secondaryBtnText}>Hacer otra reserva</Text>
+          {/* Volver al inicio */}
+          <Pressable style={styles.secondaryBtn} onPress={() => router.replace("/" as never)}>
+            <Text style={styles.secondaryBtnText}>Volver al inicio</Text>
           </Pressable>
         </Animated.View>
       </View>
     );
   }
 
-  // ── Fase idle / loading ───────────────────────────────────────────────────
+  // ── Fase idle / browser ───────────────────────────────────────────────────
   return (
-    <View style={[styles.root]}>
+    <View style={styles.root}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
         colors={[BURGUNDY_MID, WARM_BLACK, WARM_BLACK]}
@@ -205,15 +269,15 @@ export default function ReservarSesionScreen() {
           {/* Tarjeta informativa */}
           <View style={styles.infoCard}>
             <View style={styles.infoRow}>
-              <Feather name="external-link" size={14} color={ACCENT_GOLD} style={{ marginRight: 10, marginTop: 1 }} />
+              <Feather name="calendar" size={14} color={ACCENT_GOLD} style={{ marginRight: 10, marginTop: 1 }} />
               <Text style={styles.infoText}>
-                La reserva se realiza a través de Cal.com. Podrás elegir fecha, hora y recibir confirmación por email.
+                Elige fecha y hora en Cal.com. Recibirás confirmación y enlace por email.
               </Text>
             </View>
             <View style={[styles.infoRow, { marginTop: 10 }]}>
               <Feather name="clock" size={14} color={ACCENT_GOLD} style={{ marginRight: 10, marginTop: 1 }} />
               <Text style={styles.infoText}>
-                El enlace para unirte aparecerá en la app 15 minutos antes de tu sesión.
+                El botón "Entrar" aparecerá en la app 15 minutos antes de tu sesión.
               </Text>
             </View>
           </View>
@@ -226,7 +290,7 @@ export default function ReservarSesionScreen() {
                 { marginTop: 28, opacity: pressed ? 0.85 : 1 },
               ]}
               onPress={handleOpenBrowser}
-              disabled={phase === "loading"}
+              disabled={phase === "browser"}
             >
               <LinearGradient
                 colors={["#D6AD5F", "#B47344"]}
@@ -234,19 +298,13 @@ export default function ReservarSesionScreen() {
                 end={{ x: 1, y: 0 }}
                 style={StyleSheet.absoluteFill}
               />
-              {phase === "loading" ? (
-                <ActivityIndicator color={WARM_BLACK} size="small" />
-              ) : (
-                <>
-                  <Feather
-                    name="calendar"
-                    size={16}
-                    color={WARM_BLACK}
-                    style={{ marginRight: 8 }}
-                  />
-                  <Text style={styles.primaryBtnText}>Elegir fecha y hora</Text>
-                </>
-              )}
+              <Feather
+                name="calendar"
+                size={16}
+                color={WARM_BLACK}
+                style={{ marginRight: 8 }}
+              />
+              <Text style={styles.primaryBtnText}>Elegir fecha y hora</Text>
             </Pressable>
           ) : (
             <View style={[styles.infoCard, { marginTop: 24 }]}>
@@ -270,10 +328,7 @@ export default function ReservarSesionScreen() {
 
 // ── Estilos ───────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: WARM_BLACK,
-  },
+  root: { flex: 1, backgroundColor: WARM_BLACK },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -281,12 +336,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 12,
   },
-  backBtn: {
-    width: 44,
-    height: 44,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  backBtn: { width: 44, height: 44, alignItems: "center", justifyContent: "center" },
   headerTitle: {
     color: FOREGROUND,
     fontSize: 17,
@@ -295,10 +345,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  guideProfile: {
-    alignItems: "center",
-    paddingVertical: 28,
-  },
+  guideProfile: { alignItems: "center", paddingVertical: 28 },
   photoWrap: {
     width: 100,
     height: 100,
@@ -308,10 +355,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginBottom: 14,
   },
-  photo: {
-    width: "100%",
-    height: "100%",
-  },
+  photo: { width: "100%", height: "100%" },
   guideName: {
     color: FOREGROUND,
     fontSize: 22,
@@ -333,10 +377,7 @@ const styles = StyleSheet.create({
     borderColor: BORDER,
     padding: 16,
   },
-  infoRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-  },
+  infoRow: { flexDirection: "row", alignItems: "flex-start" },
   infoText: {
     flex: 1,
     color: MUTED,
@@ -358,26 +399,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Inter_600SemiBold",
   },
-
-  secondaryBtn: {
-    alignItems: "center",
-    padding: 12,
-  },
+  secondaryBtn: { alignItems: "center", padding: 12 },
   secondaryBtnText: {
     color: MUTED,
     fontSize: 14,
     fontFamily: "Inter_400Regular",
   },
 
-  // Confirmación
-  confirmContainer: {
+  // Pantallas centradas (ask + confirm)
+  centeredContainer: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 28,
     gap: 16,
   },
-  checkCircle: {
+  iconCircle: {
     width: 90,
     height: 90,
     borderRadius: 45,
@@ -387,6 +424,19 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.30)",
     overflow: "hidden",
     marginBottom: 8,
+  },
+  askTitle: {
+    color: FOREGROUND,
+    fontSize: 22,
+    fontFamily: "PlayfairDisplay_700Bold",
+    textAlign: "center",
+  },
+  askSub: {
+    color: MUTED,
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+    textAlign: "center",
+    lineHeight: 21,
   },
   confirmTitle: {
     color: FOREGROUND,
