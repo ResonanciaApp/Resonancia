@@ -197,21 +197,22 @@ function AddButton({ added, onPress }: { added: boolean; onPress: () => void }) 
 }
 
 // ─── Fila de sesión ───────────────────────────────────────────────────────────
-function SessionRow({
+const SessionRow = React.memo(function SessionRow({
   session,
   isAdded,
   onAddRemove,
-  isPreviewing,
+  previewId,
   progressSV,
   onPreviewToggle,
 }: {
   session: Session;
   isAdded: boolean;
   onAddRemove: () => void;
-  isPreviewing: boolean;
+  previewId: string | null;
   progressSV: ReturnType<typeof useSharedValue<number>>;
   onPreviewToggle: () => void;
 }) {
+  const isPreviewing = previewId === session.id;
   const guide  = session.guideId  ? getGuideById(session.guideId) : null;
   const artist = session.artistId ? getArtist(session.artistId)   : null;
   const author = guide?.name ?? artist?.name ?? "Casa del Cuenco";
@@ -231,7 +232,17 @@ function SessionRow({
       <AddButton added={isAdded} onPress={onAddRemove} />
     </Pressable>
   );
-}
+}, (prev, next) => {
+  // Solo re-renderizar si cambió isAdded o si el estado de preview de ESTA fila cambió
+  const prevPrev = prev.previewId === prev.session.id;
+  const nextPrev = next.previewId === next.session.id;
+  return (
+    prev.isAdded === next.isAdded &&
+    prevPrev === nextPrev &&
+    prev.onAddRemove === next.onAddRemove &&
+    prev.onPreviewToggle === next.onPreviewToggle
+  );
+});
 
 // ─── Snapshot helper ─────────────────────────────────────────────────────────
 function shuffle<T>(arr: T[]): T[] {
@@ -405,6 +416,8 @@ export function PlaylistAddSessionsSheet({
   // tick se incrementa tras poblar el snapshot → memo re-lee datos frescos
   }, [activeTab, tick]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // previewId sale de los deps: SessionRow.memo solo re-renderiza filas
+  // cuyo estado de preview cambia, no todas las 30 al mismo tiempo.
   const renderItem = useCallback(
     ({ item }: { item: Session }) => (
       <SessionRow
@@ -417,7 +430,7 @@ export function PlaylistAddSessionsSheet({
             addToPlaylist(playlistId, item.id);
           }
         }}
-        isPreviewing={previewId === item.id}
+        previewId={previewId}
         progressSV={progressSV}
         onPreviewToggle={() => handlePreviewToggle(item)}
       />
@@ -485,6 +498,10 @@ export function PlaylistAddSessionsSheet({
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{ paddingTop: 4 }}
               getItemLayout={(_, index) => ({ length: 68, offset: 68 * index, index })}
+              windowSize={5}
+              maxToRenderPerBatch={12}
+              initialNumToRender={12}
+              removeClippedSubviews
             />
           )}
         </Animated.View>
