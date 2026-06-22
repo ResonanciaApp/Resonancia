@@ -172,7 +172,7 @@ function EditDialog({
   const catId = submission.categoryId;
   const isAncestral   = catId === "sonidos-ancestrales";
   const isMeditation  = catId === "meditaciones-guiadas";
-  const isMusic       = catId === "musica-y-sonidos";
+  const isMusic       = catId === "musica-sonidos";
 
   const toggleTheme = (tag: string) =>
     setThemeTag((prev) =>
@@ -459,6 +459,7 @@ function SubmissionCard({ submission }: { submission: Submission }) {
         onOpenChange={setRejectOpen}
       />
       <EditDialog
+        key={String(editOpen)}
         submission={submission}
         open={editOpen}
         onOpenChange={setEditOpen}

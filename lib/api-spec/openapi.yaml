@@ -4058,6 +4058,11 @@ components:
         sonidosTag:
           type: string
           nullable: true
+        themeTag:
+          type: array
+          nullable: true
+          items:
+            type: string
         sleepTag:
           type: string
           nullable: true

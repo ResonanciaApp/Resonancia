@@ -1053,6 +1053,7 @@ export interface Submission {
   sabiduriaTag?: string | null;
   podcastTag?: string | null;
   sonidosTag?: string | null;
+  themeTag?: string[] | null;
   sleepTag?: string | null;
   voiceTag?: SubmissionVoiceTag;
   guideId?: string | null;
