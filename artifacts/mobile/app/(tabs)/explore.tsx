@@ -454,7 +454,7 @@ export default function ExploreScreen() {
                       styles.temaCell,
                       {
                         width: TEMA_COL_W,
-                        height: TEMA_COL_W,
+                        height: 56,
                         opacity: pressed ? 0.75 : 1,
                         backgroundColor: "rgba(255,255,255,0.06)",
                       },
@@ -467,7 +467,7 @@ export default function ExploreScreen() {
                         contentFit="contain"
                       />
                     ) : (
-                      <MaterialCommunityIcons name={t.icon} size={30} color={t.color} />
+                      <MaterialCommunityIcons name={t.icon} size={24} color={t.color} />
                     )}
                     <Text style={[styles.temaCellLabel, { color: colors.foreground }]} numberOfLines={2}>
                       {t.label}
@@ -712,23 +712,24 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   temaCell: {
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
+    justifyContent: "flex-start",
+    gap: 10,
     borderRadius: 14,
-    paddingHorizontal: 8,
-    paddingVertical: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 0,
   },
   temaCellIcon: {
-    width: 30,
-    height: 30,
+    width: 24,
+    height: 24,
   },
   temaCellLabel: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "600",
-    textAlign: "center",
-    lineHeight: 20,
+    textAlign: "left",
+    lineHeight: 18,
+    flex: 1,
   },
 
   // Otras temáticas
