@@ -82,6 +82,7 @@ import type {
   MixCommentsPage,
   Notification,
   OkResponse,
+  PinnedFeaturedResponse,
   PlaybackEventList,
   PopularSessionsResponse,
   ProgressInput,
@@ -95,6 +96,8 @@ import type {
   ReviewRejectBody,
   SearchUsersParams,
   SendDirectMessageBody,
+  SetPinnedFeatured200,
+  SetPinnedFeaturedBody,
   SharedGlyph,
   SharedGlyphInput,
   SharedGlyphsPage,
@@ -4378,6 +4381,154 @@ export function useGetCatalog<TData = Awaited<ReturnType<typeof getCatalog>>, TE
 
 
 
+
+export const getGetPinnedFeaturedUrl = () => {
+
+
+
+
+  return `/api/catalog/pinned-featured`
+}
+
+/**
+ * @summary Sesión "Destacada de hoy" elegida manualmente por el admin (o null)
+ */
+export const getPinnedFeatured = async ( options?: RequestInit): Promise<PinnedFeaturedResponse> => {
+
+  return customFetch<PinnedFeaturedResponse>(getGetPinnedFeaturedUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetPinnedFeaturedQueryKey = () => {
+    return [
+    `/api/catalog/pinned-featured`
+    ] as const;
+    }
+
+
+export const getGetPinnedFeaturedQueryOptions = <TData = Awaited<ReturnType<typeof getPinnedFeatured>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPinnedFeatured>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetPinnedFeaturedQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPinnedFeatured>>> = ({ signal }) => getPinnedFeatured({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPinnedFeatured>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetPinnedFeaturedQueryResult = NonNullable<Awaited<ReturnType<typeof getPinnedFeatured>>>
+export type GetPinnedFeaturedQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Sesión "Destacada de hoy" elegida manualmente por el admin (o null)
+ */
+
+export function useGetPinnedFeatured<TData = Awaited<ReturnType<typeof getPinnedFeatured>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPinnedFeatured>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetPinnedFeaturedQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getSetPinnedFeaturedUrl = () => {
+
+
+
+
+  return `/api/admin/pinned-featured`
+}
+
+/**
+ * @summary Fijar (o limpiar) la sesión "Destacada de hoy" — solo admin
+ */
+export const setPinnedFeatured = async (setPinnedFeaturedBody: SetPinnedFeaturedBody, options?: RequestInit): Promise<SetPinnedFeatured200> => {
+
+  return customFetch<SetPinnedFeatured200>(getSetPinnedFeaturedUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      setPinnedFeaturedBody,)
+  }
+);}
+
+
+
+
+export const getSetPinnedFeaturedMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setPinnedFeatured>>, TError,{data: BodyType<SetPinnedFeaturedBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof setPinnedFeatured>>, TError,{data: BodyType<SetPinnedFeaturedBody>}, TContext> => {
+
+const mutationKey = ['setPinnedFeatured'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof setPinnedFeatured>>, {data: BodyType<SetPinnedFeaturedBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  setPinnedFeatured(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SetPinnedFeaturedMutationResult = NonNullable<Awaited<ReturnType<typeof setPinnedFeatured>>>
+    export type SetPinnedFeaturedMutationBody = BodyType<SetPinnedFeaturedBody>
+    export type SetPinnedFeaturedMutationError = ErrorType<void>
+
+    /**
+ * @summary Fijar (o limpiar) la sesión "Destacada de hoy" — solo admin
+ */
+export const useSetPinnedFeatured = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setPinnedFeatured>>, TError,{data: BodyType<SetPinnedFeaturedBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof setPinnedFeatured>>,
+        TError,
+        {data: BodyType<SetPinnedFeaturedBody>},
+        TContext
+      > => {
+      return useMutation(getSetPinnedFeaturedMutationOptions(options));
+    }
 
 export const getGetPopularSessionsUrl = (params?: GetPopularSessionsParams,) => {
   const normalizedParams = new URLSearchParams();

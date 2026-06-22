@@ -251,6 +251,82 @@ router.get("/catalog", async (req, res) => {
   });
 });
 
+// GET /catalog/pinned-featured — sesión "Destacada de hoy" elegida por el admin.
+router.get("/catalog/pinned-featured", async (req, res) => {
+  const row = await db
+    .select()
+    .from(catalogSessionsTable)
+    .where(
+      and(
+        eq(catalogSessionsTable.isPinnedFeatured, true),
+        eq(catalogSessionsTable.status, "published"),
+      ),
+    )
+    .limit(1);
+
+  if (!row.length) {
+    res.json({ session: null });
+    return;
+  }
+
+  const session = row[0];
+  const audioFiles = await db
+    .select()
+    .from(catalogAudioFilesTable)
+    .where(eq(catalogAudioFilesTable.sessionId, session.id))
+    .orderBy(asc(catalogAudioFilesTable.id));
+
+  res.json({ session: serializeSession(session, audioFiles) });
+});
+
+// PUT /admin/pinned-featured — fija (o limpia) la sesión "Destacada de hoy".
+router.put(
+  "/admin/pinned-featured",
+  requireAuth,
+  requireRole("admin"),
+  async (req, res) => {
+    const { sessionId } = req.body as { sessionId: string | null };
+
+    // Validar que la sesión existe y está publicada (si se provee)
+    if (sessionId != null) {
+      if (typeof sessionId !== "string" || !sessionId.trim()) {
+        res.status(400).json({ error: "sessionId inválido" });
+        return;
+      }
+      const found = await db
+        .select({ id: catalogSessionsTable.id })
+        .from(catalogSessionsTable)
+        .where(
+          and(
+            eq(catalogSessionsTable.id, sessionId),
+            eq(catalogSessionsTable.status, "published"),
+          ),
+        )
+        .limit(1);
+      if (!found.length) {
+        res.status(404).json({ error: "Sesión no encontrada o no publicada" });
+        return;
+      }
+    }
+
+    // Desactivar cualquier sesión previamente pinneada
+    await db
+      .update(catalogSessionsTable)
+      .set({ isPinnedFeatured: false })
+      .where(eq(catalogSessionsTable.isPinnedFeatured, true));
+
+    // Activar la nueva (si se provee)
+    if (sessionId != null) {
+      await db
+        .update(catalogSessionsTable)
+        .set({ isPinnedFeatured: true })
+        .where(eq(catalogSessionsTable.id, sessionId));
+    }
+
+    res.json({ ok: true });
+  },
+);
+
 // GET /catalog/popular — sesiones más escuchadas (ranking real por reproducciones).
 router.get("/catalog/popular", async (req, res) => {
   const limitRaw = Number(req.query.limit);

@@ -40,6 +40,8 @@ export const catalogSessionsTable = pgTable("catalog_sessions", {
   imageKey: text("image_key"),
   imageUrl: text("image_url"),
   isFeatured: boolean("is_featured").notNull().default(false),
+  /** Si true, esta sesión se muestra como "Destacada de hoy" en la pantalla de inicio (solo una a la vez). */
+  isPinnedFeatured: boolean("is_pinned_featured").notNull().default(false),
   isNew: boolean("is_new").notNull().default(false),
   isPremium: boolean("is_premium").notNull().default(false),
   /** Si es true, el tap en la card lanza el reproductor directo (sin pantalla de descripción). */

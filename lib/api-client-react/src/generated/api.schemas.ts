@@ -829,6 +829,15 @@ export interface CatalogResponse {
   playlists?: CatalogPlaylist[];
 }
 
+export interface PinnedFeaturedResponse {
+  session: CatalogSession | null;
+}
+
+export interface SetPinnedFeaturedBody {
+  /** ID de la sesión a pinear como Destacada de hoy. null para limpiar. */
+  sessionId: string | null;
+}
+
 export interface PopularSessionsResponse {
   sessions: CatalogSession[];
 }
@@ -1612,6 +1621,10 @@ limit?: number;
 
 export type GetMyPlaysParams = {
 since?: string;
+};
+
+export type SetPinnedFeatured200 = {
+  ok: boolean;
 };
 
 export type GetPopularSessionsParams = {

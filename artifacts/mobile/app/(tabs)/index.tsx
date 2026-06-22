@@ -49,7 +49,7 @@ import { getSoundImage } from "@/config/sound-images";
 import { usePlayer } from "@/context/PlayerContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { CATEGORIES } from "@/data/categories";
-import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
+import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
@@ -141,14 +141,35 @@ export default function HomeScreen2() {
     return () => blink.stop();
   }, [cursorOpacity]);
 
-  const featured = getFeaturedSessions();
+  const { data: pinnedFeaturedData } = useGetPinnedFeatured();
+
   const featuredSession = React.useMemo(() => {
+    // Si el admin pineó una sesión, usarla directamente.
+    const pinned = pinnedFeaturedData?.session;
+    if (pinned) {
+      return getSessionById(pinned.id) ?? {
+        id: pinned.id,
+        title: pinned.title,
+        subtitle: pinned.subtitle ?? "",
+        description: pinned.description ?? "",
+        categoryId: pinned.categoryId ?? "",
+        categoryLabel: pinned.categoryLabel ?? "",
+        duration: pinned.duration ?? 0,
+        durationLabel: pinned.durationLabel ?? "",
+        isPremium: pinned.isPremium ?? false,
+        isFeatured: true,
+        imageKey: pinned.imageUrl ?? undefined,
+        themeTag: [],
+      } as unknown as Session;
+    }
+    // Fallback: sesión aleatoria del día desde las marcadas isFeatured.
+    const featured = getFeaturedSessions();
     if (!featured.length) return undefined;
     const now = new Date();
     const start = new Date(now.getFullYear(), 0, 0);
     const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
     return featured[dayOfYear % featured.length];
-  }, []);
+  }, [pinnedFeaturedData]);
 
   const { version: catalogVersion } = useCatalog();
   // Recientes — últimas sesiones agregadas al catálogo

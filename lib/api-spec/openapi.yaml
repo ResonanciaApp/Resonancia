@@ -1403,6 +1403,44 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CatalogResponse"
+  /catalog/pinned-featured:
+    get:
+      operationId: getPinnedFeatured
+      tags: [catalog]
+      summary: Sesión "Destacada de hoy" elegida manualmente por el admin (o null)
+      responses:
+        "200":
+          description: Sesión destacada pinned, o null si no hay ninguna seleccionada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PinnedFeaturedResponse"
+  /admin/pinned-featured:
+    put:
+      operationId: setPinnedFeatured
+      tags: [admin]
+      summary: Fijar (o limpiar) la sesión "Destacada de hoy" — solo admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetPinnedFeaturedBody"
+      responses:
+        "200":
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                required: [ok]
+        "400":
+          description: sessionId inválido
+        "404":
+          description: Sesión no encontrada
   /catalog/popular:
     get:
       operationId: getPopularSessions
@@ -3784,6 +3822,22 @@ components:
           items:
             $ref: "#/components/schemas/CatalogPlaylist"
       required: [categories, sessions]
+    PinnedFeaturedResponse:
+      type: object
+      properties:
+        session:
+          oneOf:
+            - $ref: "#/components/schemas/CatalogSession"
+            - type: "null"
+      required: [session]
+    SetPinnedFeaturedBody:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          nullable: true
+          description: ID de la sesión a pinear como Destacada de hoy. null para limpiar.
+      required: [sessionId]
     PopularSessionsResponse:
       type: object
       properties:
