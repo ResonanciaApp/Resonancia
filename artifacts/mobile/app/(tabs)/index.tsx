@@ -179,6 +179,13 @@ export default function HomeScreen2() {
     [popular],
   );
 
+  // Fallback cuando aún no hay plays sincronizados: sesiones destacadas
+  const popularFallback = React.useMemo<Session[]>(
+    () => SESSIONS.filter((s) => s.isFeatured).slice(0, 10),
+    [catalogVersion],
+  );
+  const usingPopularFallback = popularSessions.length === 0;
+
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [activeFilter, setActiveFilter] = useState<string[] | null>(null);
 
@@ -318,10 +325,10 @@ export default function HomeScreen2() {
   }, [moreLikeSessions, activeFilter]);
 
   const filteredPopular = React.useMemo(() => {
-    const list = popularSessions.slice(0, 10);
-    if (!activeFilter) return list;
-    return list.filter((s) => activeFilter.includes(s.categoryId));
-  }, [popularSessions, activeFilter]);
+    const base = usingPopularFallback ? popularFallback : popularSessions.slice(0, 10);
+    if (!activeFilter) return base;
+    return base.filter((s) => activeFilter.includes(s.categoryId));
+  }, [popularSessions, popularFallback, usingPopularFallback, activeFilter]);
 
   const filteredFeatured = React.useMemo(() => {
     if (!activeFilter) return featuredSession;
@@ -644,7 +651,7 @@ export default function HomeScreen2() {
 
         {/* ── LAS MÁS ESCUCHADAS ── */}
         <SessionCarousel
-          title="Las más escuchadas"
+          title={usingPopularFallback ? "Sesiones destacadas" : "Las más escuchadas"}
           sessions={filteredPopular}
           isPremium={isPremium}
           onPress={(s) => { playSession(s); router.push("/player" as never); }}
