@@ -1,58 +1,58 @@
 [
   {
-    "id": "a1b2c3d4-0001-4000-8000-resonancia001",
+    "id": "inv-deck-0001-4000-8000-resonancia001",
     "position": 1,
-    "filepath": "src/pages/slides/Slide01Portada.tsx",
-    "title": "RESONANCIA — Portada",
-    "description": "Slide de título: Tu refugio de sonido.",
+    "filepath": "src/pages/slides/Inv01Portada.tsx",
+    "title": "Portada",
+    "description": "RESONANCIA — La plataforma impulsada por sonido.",
     "speakerNotes": ""
   },
   {
-    "id": "a1b2c3d4-0002-4000-8000-resonancia002",
+    "id": "inv-deck-0002-4000-8000-resonancia002",
     "position": 2,
-    "filepath": "src/pages/slides/Slide02Refugio.tsx",
-    "title": "Tu refugio personal",
-    "description": "Onboarding, estética y diseño para Latinoamérica.",
+    "filepath": "src/pages/slides/Inv02Problema.tsx",
+    "title": "El Problema",
+    "description": "El bienestar digital llegó a todos menos al mundo hispanohablante.",
     "speakerNotes": ""
   },
   {
-    "id": "a1b2c3d4-0003-4000-8000-resonancianav",
+    "id": "inv-deck-0003-4000-8000-resonancia003",
     "position": 3,
-    "filepath": "src/pages/slides/SlideNavegacion.tsx",
-    "title": "4 secciones, todo organizado",
-    "description": "Los 4 menús de navegación: Inicio, Biblioteca, Mi Música y Perfil.",
+    "filepath": "src/pages/slides/Inv03Solucion.tsx",
+    "title": "La Solución",
+    "description": "¿Qué es Resonancia? Las 6 funcionalidades principales.",
     "speakerNotes": ""
   },
   {
-    "id": "a1b2c3d4-0004-4000-8000-resonancia003",
+    "id": "inv-deck-0004-4000-8000-resonancia004",
     "position": 4,
-    "filepath": "src/pages/slides/Slide03Biblioteca.tsx",
-    "title": "Biblioteca de sesiones",
-    "description": "300+ sesiones en 4 categorías — abanico de 4 mockups.",
+    "filepath": "src/pages/slides/Inv04Ventaja.tsx",
+    "title": "Nuestra Ventaja",
+    "description": "¿Por qué nosotros? 6 fortalezas + métricas clave.",
     "speakerNotes": ""
   },
   {
-    "id": "a1b2c3d4-0005-4000-8000-resonancia004",
+    "id": "inv-deck-0005-4000-8000-resonancia005",
     "position": 5,
-    "filepath": "src/pages/slides/Slide04Reproductor.tsx",
-    "title": "El reproductor",
-    "description": "Experiencia de escucha inmersiva.",
+    "filepath": "src/pages/slides/Inv05Modelo.tsx",
+    "title": "Modelo de Negocio",
+    "description": "Freemium + Suscripción — Free, Premium y Premium Plus.",
     "speakerNotes": ""
   },
   {
-    "id": "b5c6d7e8-0010-4000-8000-herramien01",
+    "id": "inv-deck-0006-4000-8000-resonancia006",
     "position": 6,
-    "filepath": "src/pages/slides/SlideB1Herramientas.tsx",
-    "title": "El ecosistema — Herramientas secundarias",
-    "description": "Muro de Agradecimiento, Diario, Amigos/Grupos y Respiración.",
+    "filepath": "src/pages/slides/Inv06Vision.tsx",
+    "title": "Visión y Oportunidad",
+    "description": "De Casa del Cuenco a un ecosistema digital global.",
     "speakerNotes": ""
   },
   {
-    "id": "a1b2c3d4-0006-4000-8000-resonancia007",
+    "id": "inv-deck-0007-4000-8000-resonancia007",
     "position": 7,
-    "filepath": "src/pages/slides/Slide07Cierre.tsx",
-    "title": "RESONANCIA — Cierre",
-    "description": "Casa del Cuenco, disponible en iOS y Android.",
+    "filepath": "src/pages/slides/Inv07Traccion.tsx",
+    "title": "Tracción",
+    "description": "Casa del Cuenco en números — métricas clave.",
     "speakerNotes": ""
   }
 ]
