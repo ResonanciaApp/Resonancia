@@ -36,14 +36,21 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-// ── SDK_NATIVE_INTEGRATION ───────────────────────────────────────────────────
-// Descomentar tras hacer rebuild EAS con @daily-co/react-native-daily-js:
-//
-// import Daily from "@daily-co/react-native-daily-js";
-//
+// ── Daily.co SDK — carga dinámica con detección automática ───────────────────
+// El módulo nativo solo está disponible tras un rebuild EAS que incluya el
+// paquete @daily-co/react-native-daily-js. Si el rebuild aún no se hizo, el
+// require() falla silenciosamente y la app cae al modo navegador (fallback).
+// No hay que cambiar nada manualmente: al hacer el rebuild el SDK se activa.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let _DailyModule: any = null;
+let SDK_AVAILABLE = false;
+try {
+  _DailyModule = require("@daily-co/react-native-daily-js");
+  SDK_AVAILABLE = !!_DailyModule?.default;
+} catch {
+  SDK_AVAILABLE = false;
+}
 // ─────────────────────────────────────────────────────────────────────────────
-
-const SDK_AVAILABLE = false; // Cambiar a true tras rebuild EAS
 
 // ── Paleta (coherente con el resto de la app) ─────────────────────────────────
 const WARM_BLACK = "#1B060F";
@@ -110,18 +117,16 @@ export default function SesionVivoScreen() {
     if (phase === "in-call") showControls();
   }, [phase, showControls]);
 
-  // ── SDK_NATIVE_INTEGRATION — lifecycle del call object ────────────────────
-  // Este bloque se activa únicamente cuando SDK_AVAILABLE = true.
-  // Requiere que el import de Daily esté descomentado y un rebuild EAS.
+  // ── SDK nativo Daily.co — lifecycle del call object ──────────────────────
+  // Se activa automáticamente si el módulo nativo cargó (SDK_AVAILABLE = true).
+  // Requiere rebuild EAS con @daily-co/react-native-daily-js instalado.
   const initialMicRef = useRef(micOn);
   const initialCamRef = useRef(camOn);
 
   useEffect(() => {
-    if (!SDK_AVAILABLE || !roomUrl) return;
+    if (!SDK_AVAILABLE || !roomUrl || !_DailyModule) return;
 
-    // Requiere el import descomentado arriba
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const Daily = require("@daily-co/react-native-daily-js").default as any;
+    const Daily = _DailyModule.default;
     const call = Daily.createCallObject();
     callRef.current = call;
 
@@ -329,11 +334,9 @@ export default function SesionVivoScreen() {
   }
 
   // ── Pantalla: sala de video nativa (SDK_AVAILABLE = true + in-call) ────────
-  if (SDK_AVAILABLE && phase === "in-call") {
-    // Requiere el import descomentado y rebuild EAS. El require() aquí adentro
-    // solo se evalúa en tiempo de ejecución cuando ambas condiciones son true.
+  if (SDK_AVAILABLE && phase === "in-call" && _DailyModule) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const DailyMediaView = require("@daily-co/react-native-daily-js").DailyMediaView as React.ComponentType<any>;
+    const DailyMediaView = _DailyModule.DailyMediaView as React.ComponentType<any>;
 
     const allParticipants = Object.values(participants);
     const localParticipant = allParticipants.find((p) => p.local) ?? null;
