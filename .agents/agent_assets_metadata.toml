@@ -1583,3 +1583,9 @@ id = "jO4oS2M-tRJwID3ypYJA4"
 uri = "file://attached_assets/sagrados-dorados.png"
 type = "image"
 title = "4 opciones doradas — Sagrados"
+
+[[outputs]]
+id = "4LUFrJMIfIJPuKzkzIhp3"
+uri = "file://pagos-resonancia.pdf"
+type = "pdf"
+title = "RESONANCIA — Guía de Pagos"
