@@ -158,7 +158,7 @@ function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: {id: string; la
       <ScrollView horizontal showsHorizontalScrollIndicator={false} scrollEnabled={!filtered}
         scrollEventThrottle={16} onScroll={(e) => { scrollX.current = e.nativeEvent.contentOffset.x; }}
         style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
-        {TABS.map((t) => {
+        {tabs.map((t) => {
           const isSel = displayTab === t.id;
           const chipStyle = isSel
             ? { opacity: 1, zIndex: 2, transform: [{ translateX: progress.interpolate({ inputRange: [0,1], outputRange: [0, targetTx] }) }] }
