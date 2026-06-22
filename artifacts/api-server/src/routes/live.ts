@@ -98,6 +98,7 @@ router.get("/live/sessions/me", requireAuth, async (req, res) => {
         status: s.status,
         dailyRoomUrl: s.status === "confirmed" ? (s.dailyRoomUrl ?? null) : null,
         attendeeName: s.attendeeName ?? null,
+        calLink: s.calLink ?? null,
         notes: s.notes ?? null,
       })),
     });
@@ -162,7 +163,7 @@ router.post("/live/webhook/cal", async (req, res) => {
   const calUsername = organizer?.["username"] as string | undefined;
 
   // Resolver guideId buscando en guide_configs cuál guiador tiene este cal username/email
-  let guideId = "casa-cuenco";
+  let guideId: string | null = null;
   let guideDisplayName: string | null = null;
   let dailyRoomUrl: string | null = null;
   let guideCalLink: string | null = null;
@@ -184,6 +185,17 @@ router.post("/live/webhook/cal", async (req, res) => {
     }
   } catch (err) {
     req.log.warn({ err }, "error resolving guideId from cal webhook");
+  }
+
+  // Si no se pudo resolver el guiador, rechazar con 202 (aceptado pero ignorado)
+  // para evitar persistir datos con guideId incorrecto.
+  if (!guideId) {
+    req.log.warn(
+      { uid, calUsername, organizerEmail, triggerEvent },
+      "cal webhook: organizer not matched to any guide_config — ignoring event",
+    );
+    res.status(202).json({ ok: false, reason: "guide not resolved" });
+    return;
   }
 
   // Resolver clerkUserId a partir del email del asistente
@@ -226,10 +238,12 @@ router.post("/live/webhook/cal", async (req, res) => {
           target: liveSessionsTable.calEventUid,
           set: {
             clerkUserId,
+            guideId,
             calEventTitle: title ?? null,
             scheduledAt: startTime ? new Date(startTime) : new Date(),
             scheduledEnd: endTime ? new Date(endTime) : null,
             status: "confirmed",
+            dailyRoomUrl,
             attendeeName,
             attendeeEmail,
             guideDisplayName,
