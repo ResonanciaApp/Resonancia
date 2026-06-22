@@ -62,7 +62,11 @@ function getSessionsForTab(tab: string | null) {
 }
 
 function applySort(arr: ReturnType<typeof getSessionsForTab>, sort: SortMode, playCounts: Record<string,number> = {}) {
-  if (sort === "nuevas")    return [...arr].sort((a,b) => parseInt(b.id) - parseInt(a.id));
+  if (sort === "nuevas")    return [...arr].sort((a,b) => {
+    if (a.isNew && !b.isNew) return -1;
+    if (!a.isNew && b.isNew) return 1;
+    return parseInt(b.id) - parseInt(a.id);
+  });
   if (sort === "populares") return [...arr].sort((a,b) => (playCounts[b.id]??0) - (playCounts[a.id]??0));
   return arr;
 }
@@ -373,7 +377,7 @@ export default function MusicaSonidosScreen() {
   const toggleView = useCallback(()=>setViewMode((v)=>(v==="list"?"grid":"list")),[]);
 
   const playCounts = useMemo(()=>{ const c:Record<string,number>={}; for (const e of history) c[e.sessionId]=(c[e.sessionId]??0)+1; return c; },[history]);
-  const sessions   = useMemo(()=>applySort(getSessionsForTab(activeTab),sort,playCounts),[activeTab,sort,playCounts]);
+  const sessions   = useMemo(()=>applySort(getSessionsForTab(activeTab),sort,playCounts),[activeTab,sort,playCounts,version]);
   const sortLabel  = sort==="recientes"?"Escuchadas recientemente":sort==="nuevas"?"Nuevas sesiones":"Las más escuchadas";
 
   const renderContent = () => {
