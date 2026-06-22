@@ -5,20 +5,31 @@ description: Cómo deben ordenarse y refrescarse las listas "más recientes / nu
 
 # Listas "más recientes / nuevas" en mobile
 
-Regla: las superficies que muestran "lo más nuevo" (inicio "Las más recientes",
-carrusel "Escuchados recientemente", pantalla `/nuevas-sesiones`) deben:
+Regla: las superficies que muestran "lo más nuevo" deben:
 
-1. Ordenar por `parseInt(id)` **descendente** (id mayor = más nueva), NO por
-   orden del array ni `.reverse()`.
-2. Recalcular con dependencia en `version` de `useCatalog()`.
+1. Sesiones con `isNew: true` → primero.
+2. Sesiones del admin (IDs `usr_*`, no numéricos) → ordenadas por `createdAt DESC`.
+3. Sesiones bundleadas (IDs numéricos) → ordenadas por `parseInt(id)` descendente.
+4. Recalcular con dependencia en `version` de `useCatalog()`.
 
-**Why:** las sesiones subidas por admin viven en la DB y se insertan en runtime
-con `SESSIONS.push(...)` (al final) durante `applyCatalogSnapshot`. Una lista
-calculada con deps `[]`, o un `const` a nivel de módulo (calculado al importar,
-antes de la hidratación), no las incluye ni las pone primeras. `.reverse()`
-depende del orden del array, que es frágil.
+**Why:** Las sesiones subidas por admin tienen IDs `usr_xxxxxxxxx` (texto). `parseInt("usr_...")` devuelve `NaN`, haciendo el sort inestable. `createdAt` (ISO string) es la única fuente confiable para ordenarlas entre sí. El campo debe propagarse en **ambos pasos** de `applyCatalogSnapshot`: paso 1 (actualizar in-place) Y paso 2 (push de nuevas). Si solo se agrega en paso 2, las sesiones ya en SESSIONS desde el snapshot anterior nunca reciben `createdAt`.
 
-**How to apply:** al tocar cualquier lista de "recientes/nuevas", usar
-`React.useMemo(() => [...SESSIONS].sort((a,b)=>parseInt(b.id)-parseInt(a.id))..., [version])`
-con `const { version } = useCatalog()`. Cuidado: una sección titulada "Las más
-recientes" llegó a renderizar por error un shuffle aleatorio (`recommended`).
+**How to apply:**
+```js
+if (sort === "nuevas") return [...arr].sort((a, b) => {
+  if (a.isNew && !b.isNew) return -1;
+  if (!a.isNew && b.isNew) return 1;
+  const aNum = parseInt(a.id); const bNum = parseInt(b.id);
+  const aIsNum = !isNaN(aNum);  const bIsNum = !isNaN(bNum);
+  if (!aIsNum && bIsNum)  return -1; // usr_* antes que numéricos
+  if (aIsNum  && !bIsNum) return  1;
+  if (!aIsNum && !bIsNum) {
+    const aT = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const bT = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return bT - aT;
+  }
+  return bNum - aNum;
+});
+```
+Y en `applyCatalogSnapshot` paso 1: `local.createdAt = r.createdAt ?? undefined;`
+La API debe incluir `createdAt: s.createdAt.toISOString()` en `serializeSession`.
