@@ -477,40 +477,6 @@ export default function ExploreScreen() {
               </View>
             </View>
 
-            {/* ── Otras temáticas ── */}
-            <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
-              <View style={styles.sectionRow}>
-                <Text style={styles.sectionTitle}>Otras temáticas</Text>
-              </View>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ gap: CAT_CARD_GAP, paddingBottom: 4 }}
-                decelerationRate="fast"
-              >
-                {TAG_CARDS.map((t) => (
-                  <Pressable
-                    key={t.id}
-                    onPress={() => router.push(`/tema/${t.id}` as never)}
-                    style={({ pressed }) => [styles.tagCard, { opacity: pressed ? 0.8 : 1 }]}
-                  >
-                    <View style={styles.tagCardImage}>
-                      <Image
-                        source={t.image}
-                        style={StyleSheet.absoluteFill}
-                        contentFit="cover"
-                        placeholder={BLUR_PLACEHOLDER}
-                        transition={IMAGE_TRANSITION}
-                        cachePolicy="memory-disk"
-                      />
-                      <View style={styles.tagCardOverlay}>
-                        <Text style={styles.tagCardLabel} numberOfLines={2}>{t.label}</Text>
-                      </View>
-                    </View>
-                  </Pressable>
-                ))}
-              </ScrollView>
-            </View>
 
             {/* ── Mezclas de la comunidad ── */}
             <View style={styles.communityWrap}>
