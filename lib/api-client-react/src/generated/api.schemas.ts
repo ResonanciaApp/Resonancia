@@ -1521,6 +1521,7 @@ export interface LiveSession {
   status: LiveSessionStatus;
   dailyRoomUrl: string | null;
   attendeeName: string | null;
+  calLink: string | null;
   notes: string | null;
 }
 

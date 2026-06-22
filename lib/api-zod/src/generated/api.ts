@@ -2499,6 +2499,7 @@ export const GetMyLiveSessionsResponse = zod.object({
   "status": zod.enum(['pending', 'confirmed', 'cancelled', 'completed']),
   "dailyRoomUrl": zod.string().nullable(),
   "attendeeName": zod.string().nullable(),
+  "calLink": zod.string().nullable(),
   "notes": zod.string().nullable()
 }))
 })

@@ -1,18 +1,28 @@
 import { Router, type IRouter } from "express";
 import { createHmac, timingSafeEqual } from "node:crypto";
-import { and, asc, eq, gt } from "drizzle-orm";
+import { and, asc, eq, gt, isNotNull } from "drizzle-orm";
 import {
   db,
   liveSessionsTable,
   guideConfigsTable,
+  usersTable,
 } from "@workspace/db";
 import { requireAuth } from "../middlewares/requireAuth";
 
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Express {
+    interface Request {
+      rawBody?: Buffer;
+    }
+  }
+}
+
 const router: IRouter = Router();
 
-/** Verifica la firma HMAC-SHA256 del webhook de Cal.com. */
+/** Verifica la firma HMAC-SHA256 del webhook de Cal.com usando el body crudo. */
 function verifyCalSignature(
-  rawBody: string,
+  rawBody: Buffer,
   signature: string | undefined,
   secret: string,
 ): boolean {
@@ -30,13 +40,18 @@ function verifyCalSignature(
   }
 }
 
-// GET /live/guides — guiadores con sesiones en vivo habilitadas (público).
+// GET /live/guides — guiadores con sesiones en vivo habilitadas y calLink configurado (público).
 router.get("/live/guides", async (req, res) => {
   try {
     const rows = await db
       .select()
       .from(guideConfigsTable)
-      .where(eq(guideConfigsTable.isLiveEnabled, true))
+      .where(
+        and(
+          eq(guideConfigsTable.isLiveEnabled, true),
+          isNotNull(guideConfigsTable.calLink),
+        ),
+      )
       .orderBy(asc(guideConfigsTable.guideId));
 
     res.json({
@@ -94,7 +109,7 @@ router.get("/live/sessions/me", requireAuth, async (req, res) => {
 
 // POST /live/webhook/cal — recibe eventos de Cal.com.
 // Requiere que la variable de entorno CAL_WEBHOOK_SECRET esté configurada.
-// Cal.com envía el HMAC-SHA256 del body en el header X-Cal-Signature-256.
+// Cal.com firma el body crudo con HMAC-SHA256 y lo envía en X-Cal-Signature-256.
 router.post("/live/webhook/cal", async (req, res) => {
   const secret = process.env["CAL_WEBHOOK_SECRET"];
   if (!secret) {
@@ -103,9 +118,14 @@ router.post("/live/webhook/cal", async (req, res) => {
     return;
   }
 
-  const rawBody = JSON.stringify(req.body);
-  const signature = req.headers["x-cal-signature-256"] as string | undefined;
+  const rawBody = req.rawBody;
+  if (!rawBody) {
+    req.log.error("rawBody not captured — cannot verify webhook signature");
+    res.status(500).json({ error: "Raw body unavailable" });
+    return;
+  }
 
+  const signature = req.headers["x-cal-signature-256"] as string | undefined;
   if (!verifyCalSignature(rawBody, signature, secret)) {
     req.log.warn({ signature }, "cal webhook signature mismatch");
     res.status(401).json({ error: "Invalid signature" });
@@ -137,19 +157,15 @@ router.post("/live/webhook/cal", async (req, res) => {
   const title = booking["title"] as string | undefined;
   const notes = booking["description"] as string | undefined;
 
-  // guideId: buscamos en la metadata o lo derivamos del eventTypeSlug
-  const eventTypeId = booking["eventTypeId"] as number | undefined;
   const organizer = booking["organizer"] as Record<string, unknown> | undefined;
   const organizerEmail = organizer?.["email"] as string | undefined;
-
-  // Buscar el guideId en la tabla guide_configs por el calLink que contiene el email/username
-  // Por ahora usamos el username del organizador del evento (slug estándar de Cal.com)
   const calUsername = organizer?.["username"] as string | undefined;
 
-  // Buscar en guide_configs cuál guiador tiene este cal username en su calLink
+  // Resolver guideId buscando en guide_configs cuál guiador tiene este cal username/email
   let guideId = "casa-cuenco";
   let guideDisplayName: string | null = null;
   let dailyRoomUrl: string | null = null;
+  let guideCalLink: string | null = null;
 
   try {
     const allConfigs = await db.select().from(guideConfigsTable);
@@ -164,9 +180,27 @@ router.post("/live/webhook/cal", async (req, res) => {
       guideId = matched.guideId;
       guideDisplayName = matched.displayName || null;
       dailyRoomUrl = matched.dailyRoomUrl ?? null;
+      guideCalLink = matched.calLink ?? null;
     }
   } catch (err) {
     req.log.warn({ err }, "error resolving guideId from cal webhook");
+  }
+
+  // Resolver clerkUserId a partir del email del asistente
+  let clerkUserId: string | null = null;
+  if (attendeeEmail) {
+    try {
+      const [user] = await db
+        .select()
+        .from(usersTable)
+        .where(eq(usersTable.email, attendeeEmail))
+        .limit(1);
+      if (user) {
+        clerkUserId = user.clerkUserId;
+      }
+    } catch (err) {
+      req.log.warn({ err, attendeeEmail }, "error resolving clerkUserId for attendee");
+    }
   }
 
   try {
@@ -174,7 +208,7 @@ router.post("/live/webhook/cal", async (req, res) => {
       await db
         .insert(liveSessionsTable)
         .values({
-          clerkUserId: null,
+          clerkUserId,
           guideId,
           calEventUid: uid,
           calEventTitle: title ?? null,
@@ -185,11 +219,13 @@ router.post("/live/webhook/cal", async (req, res) => {
           attendeeName,
           attendeeEmail,
           guideDisplayName,
+          calLink: guideCalLink,
           notes: notes ?? null,
         })
         .onConflictDoUpdate({
           target: liveSessionsTable.calEventUid,
           set: {
+            clerkUserId,
             calEventTitle: title ?? null,
             scheduledAt: startTime ? new Date(startTime) : new Date(),
             scheduledEnd: endTime ? new Date(endTime) : null,
@@ -197,11 +233,12 @@ router.post("/live/webhook/cal", async (req, res) => {
             attendeeName,
             attendeeEmail,
             guideDisplayName,
+            calLink: guideCalLink,
             notes: notes ?? null,
             updatedAt: new Date(),
           },
         });
-      req.log.info({ uid, guideId, triggerEvent }, "cal booking upserted");
+      req.log.info({ uid, guideId, clerkUserId, triggerEvent }, "cal booking upserted");
     } else if (triggerEvent === "BOOKING_CANCELLED") {
       await db
         .update(liveSessionsTable)

@@ -46,6 +46,8 @@ export const liveSessionsTable = pgTable("live_sessions", {
   attendeeEmail: text("attendee_email"),
   /** Nombre del guiador para mostrar en la app sin join adicional. */
   guideDisplayName: text("guide_display_name"),
+  /** Link de Cal.com del guiador al momento de la reserva (snapshot). */
+  calLink: text("cal_link"),
   /** Notas adicionales del asistente enviadas en la reserva. */
   notes: text("notes"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

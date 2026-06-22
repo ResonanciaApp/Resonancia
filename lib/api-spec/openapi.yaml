@@ -4545,7 +4545,7 @@ components:
           nullable: true
     LiveSession:
       type: object
-      required: [id, guideId, guideDisplayName, calEventUid, calEventTitle, scheduledAt, scheduledEnd, status, dailyRoomUrl, attendeeName, notes]
+      required: [id, guideId, guideDisplayName, calEventUid, calEventTitle, scheduledAt, scheduledEnd, status, dailyRoomUrl, attendeeName, calLink, notes]
       properties:
         id:
           type: integer
@@ -4573,6 +4573,9 @@ components:
           type: string
           nullable: true
         attendeeName:
+          type: string
+          nullable: true
+        calLink:
           type: string
           nullable: true
         notes:
