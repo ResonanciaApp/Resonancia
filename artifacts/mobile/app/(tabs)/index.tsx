@@ -61,6 +61,8 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 import { CuencoBell } from "@/components/CuencoBell";
+import { LiveSessionCard } from "@/components/LiveSessionCard";
+import { useLiveSessions } from "@/hooks/useLiveSessions";
 
 const { width } = Dimensions.get("window");
 
@@ -113,6 +115,8 @@ export default function HomeScreen2() {
   const insets = useSafeAreaInsets();
   const { playSession, currentSession, isPlaying, pauseResume, history } = usePlayer();
   const { isPremium } = usePremium();
+  const { upcoming: upcomingLiveSessions } = useLiveSessions();
+  const nextLiveSession = upcomingLiveSessions[0] ?? null;
   const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
@@ -445,6 +449,26 @@ export default function HomeScreen2() {
             )}
           </View>
         </Pressable>
+
+        {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
+        {nextLiveSession && (
+          <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP }}>
+            <Text style={styles.sectionTitle}>Tu próxima sesión</Text>
+            <LiveSessionCard
+              session={nextLiveSession}
+              onEnter={(s) => {
+                router.push({
+                  pathname: "/sesion-vivo/[id]" as never,
+                  params: {
+                    id: String(s.id),
+                    roomUrl: s.dailyRoomUrl ?? "",
+                    guideDisplayName: s.guideDisplayName ?? "",
+                  },
+                } as never);
+              }}
+            />
+          </View>
+        )}
 
         {/* ── 1. COLECCIONES ── */}
         {filteredPlaylists.length > 0 && (

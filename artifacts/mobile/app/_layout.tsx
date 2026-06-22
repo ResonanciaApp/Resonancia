@@ -171,6 +171,10 @@ function NavStack() {
           options={{ headerShown: false, presentation: "fullScreenModal", animation: "slide_from_bottom" }}
         />
         <Stack.Screen
+          name="reservar-sesion/[guideId]"
+          options={{ headerShown: false, animation: "slide_from_bottom", presentation: "modal" }}
+        />
+        <Stack.Screen
           name="session/[id]"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />

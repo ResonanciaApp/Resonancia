@@ -21,6 +21,10 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { getGuideById, getGuideSessions } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
+import {
+  getGetLiveGuidesQueryKey,
+  useGetLiveGuides,
+} from "@workspace/api-client-react";
 
 const H_PAD = 20;
 const PHOTO_SIZE = 120;
@@ -31,6 +35,12 @@ export default function GuiadorScreen() {
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
   const { id } = useLocalSearchParams<{ id: string }>();
+
+  const { data: liveGuidesData } = useGetLiveGuides({
+    query: { queryKey: getGetLiveGuidesQueryKey(), staleTime: 10 * 60_000 },
+  });
+  const liveGuide = liveGuidesData?.guides?.find((g) => g.guideId === id) ?? null;
+  const hasLiveBooking = !!liveGuide?.calLink;
 
   const guide = getGuideById(id);
 
@@ -153,6 +163,44 @@ export default function GuiadorScreen() {
                 <Text style={[styles.linkText, { color: colors.foreground }]}>{link.label}</Text>
               </Pressable>
             ))}
+          </View>
+        )}
+
+        {/* Botón reservar sesión en vivo */}
+        {hasLiveBooking && (
+          <View style={{ paddingHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }}>
+            <Pressable
+              style={({ pressed }) => [styles.bookingBtn, { opacity: pressed ? 0.85 : 1 }]}
+              onPress={() =>
+                router.push({
+                  pathname: "/reservar-sesion/[guideId]" as never,
+                  params: {
+                    guideId: guide.id,
+                    calLink: liveGuide!.calLink!,
+                    guideDisplayName: liveGuide!.displayName,
+                  },
+                } as never)
+              }
+            >
+              <LinearGradient
+                colors={["rgba(212,175,55,0.18)", "rgba(212,175,55,0.08)"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <View style={styles.bookingBtnLeft}>
+                <Feather name="calendar" size={18} color={colors.primary} />
+                <View style={{ marginLeft: 12 }}>
+                  <Text style={[styles.bookingBtnTitle, { color: colors.foreground }]}>
+                    Reservar sesión en vivo
+                  </Text>
+                  <Text style={[styles.bookingBtnSub, { color: colors.mutedForeground }]}>
+                    Sesión 1:1 vía videollamada
+                  </Text>
+                </View>
+              </View>
+              <Feather name="chevron-right" size={18} color={colors.primary} />
+            </Pressable>
           </View>
         )}
 
@@ -285,4 +333,29 @@ const styles = StyleSheet.create({
   notFound: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, gap: 10 },
   notFoundTitle: { fontSize: 18, fontWeight: "700" },
   notFoundSub: { fontSize: 14, textAlign: "center", lineHeight: 21 },
+
+  bookingBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 16,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.30)",
+    overflow: "hidden",
+  },
+  bookingBtnLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+  bookingBtnTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+  },
+  bookingBtnSub: {
+    fontSize: 12,
+    marginTop: 2,
+  },
 });
