@@ -167,6 +167,10 @@ function NavStack() {
           options={{ headerShown: false, presentation: "fullScreenModal", animation: "slide_from_bottom" }}
         />
         <Stack.Screen
+          name="sesion-vivo/[id]"
+          options={{ headerShown: false, presentation: "fullScreenModal", animation: "slide_from_bottom" }}
+        />
+        <Stack.Screen
           name="session/[id]"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />

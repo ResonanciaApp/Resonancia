@@ -106,6 +106,22 @@ Panel admin-only que reusa la misma DB/API. Auth = **Clerk cookie-based same-ori
 - **Precarga audios Sonidos Naturaleza (a producción)**: precalentar SOLO los ~4 base al ENTRAR a "Música y Sonidos" (no al abrir la app) + el ambient de la sesión; loops ~20-30s AAC 128-160 kbps (convertir WAV con ffmpeg).
 - **Versión web (futura)**: reusar DB/API/lógica, reescribir UI (RN no corre en web). Pago Stripe directo. ~2-4 semanas según scope.
 
+## Sesiones en vivo (Daily.co)
+
+Backend completo en Task #53 (tablas `live_sessions` + `guide_configs`, rutas `/live/*`, admin UI `/admin/guiadores-vivo`).
+
+### Pantalla mobile `app/sesion-vivo/[id].tsx`
+- Fullscreen modal registrado en `_layout.tsx` como `fullScreenModal + slide_from_bottom`
+- Params: `roomUrl` (Daily.co URL), `guideDisplayName`, `id` (session id para rating)
+- **Modo actual (sin SDK nativo)**: botón abre `roomUrl` en el navegador del dispositivo. Al volver, el usuario puede valorar la sesión (1-5 estrellas + nota).
+- **Modo SDK nativo (pendiente)**: requiere `@daily-co/react-native-daily-js` instalado + rebuild del dev client. El código esqueleto está comentado en `[id].tsx` con marca `SDK_NATIVE_INTEGRATION`. Para activar: instalar el paquete, establecer `SDK_AVAILABLE = true`, y descomentar los bloques marcados.
+- Rating guardado en `AsyncStorage` bajo clave `@live_session_ratings` (mismo patrón que `@resonance_ratings`).
+
+### Para activar el SDK nativo de Daily.co
+1. `pnpm --filter @workspace/mobile add @daily-co/react-native-daily-js`
+2. Rebuild del dev client (EAS o local)
+3. En `app/sesion-vivo/[id].tsx`: cambiar `SDK_AVAILABLE = true` y descomentar bloques marcados con `// SDK_NATIVE_INTEGRATION`
+
 ## Pointers
 
 - Estructura del monorepo, TypeScript y packages → skill `pnpm-workspace`
