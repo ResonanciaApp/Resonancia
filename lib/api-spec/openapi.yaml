@@ -2289,6 +2289,201 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/MixerSoundItem"
+  /videos:
+    get:
+      operationId: listVideos
+      tags: [catalog]
+      summary: Listar videos publicados
+      responses:
+        "200":
+          description: Lista de videos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VideosListResponse"
+  /videos/{id}:
+    get:
+      operationId: getVideo
+      tags: [catalog]
+      summary: Obtener un video por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Video encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CatalogVideo"
+        "404":
+          description: No encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/videos:
+    get:
+      operationId: listAdminVideos
+      tags: [admin]
+      summary: Listar todos los videos (admin)
+      responses:
+        "200":
+          description: Lista de videos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VideosListResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: createAdminVideo
+      tags: [admin]
+      summary: Crear registro de video (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateVideoBody"
+      responses:
+        "201":
+          description: Video creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CatalogVideo"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/videos/{id}:
+    patch:
+      operationId: updateAdminVideo
+      tags: [admin]
+      summary: Actualizar metadata de un video (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateVideoBody"
+      responses:
+        "200":
+          description: Video actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CatalogVideo"
+        "404":
+          description: No encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteAdminVideo
+      tags: [admin]
+      summary: Eliminar video (admin) — borra en DB y en Bunny
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Eliminado
+        "404":
+          description: No encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/videos/bunny/upload-url:
+    post:
+      operationId: createBunnyUploadUrl
+      tags: [admin]
+      summary: Crear video en Bunny y obtener URL de upload (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+      responses:
+        "200":
+          description: URL de upload lista
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BunnyUploadUrlResponse"
+        "503":
+          description: Bunny no configurado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/videos/bunny/{bunnyVideoId}/status:
+    get:
+      operationId: getBunnyVideoStatus
+      tags: [admin]
+      summary: Estado de procesamiento del video en Bunny (admin)
+      parameters:
+        - name: bunnyVideoId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Estado del video en Bunny
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BunnyVideoStatusResponse"
+        "404":
+          description: Video no encontrado en Bunny
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /admin/sounds:
     get:
       operationId: getAdminSounds
@@ -4781,3 +4976,145 @@ components:
           nullable: true
         isLiveEnabled:
           type: boolean
+    CatalogVideo:
+      type: object
+      required: [id, title, subtitle, description, durationLabel, bunnyVideoId, thumbnailObjectPath, author, isPremium, isNew, status, sortOrder, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        subtitle:
+          type: string
+        description:
+          type: string
+        durationLabel:
+          type: string
+        bunnyVideoId:
+          type: string
+        thumbnailObjectPath:
+          type: string
+          nullable: true
+        author:
+          type: string
+        isPremium:
+          type: boolean
+        isNew:
+          type: boolean
+        status:
+          type: string
+          enum: [published, draft]
+        sortOrder:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    VideosListResponse:
+      type: object
+      required: [videos]
+      properties:
+        videos:
+          type: array
+          items:
+            $ref: "#/components/schemas/CatalogVideo"
+    CreateVideoBody:
+      type: object
+      required: [title, bunnyVideoId]
+      properties:
+        title:
+          type: string
+        subtitle:
+          type: string
+        description:
+          type: string
+        durationLabel:
+          type: string
+        bunnyVideoId:
+          type: string
+        thumbnailObjectPath:
+          type: string
+          nullable: true
+        author:
+          type: string
+        isPremium:
+          type: boolean
+          default: false
+        isNew:
+          type: boolean
+          default: false
+        status:
+          type: string
+          enum: [published, draft]
+          default: published
+        sortOrder:
+          type: integer
+          default: 0
+    UpdateVideoBody:
+      type: object
+      properties:
+        title:
+          type: string
+        subtitle:
+          type: string
+        description:
+          type: string
+        durationLabel:
+          type: string
+        bunnyVideoId:
+          type: string
+        thumbnailObjectPath:
+          type: string
+          nullable: true
+        author:
+          type: string
+        isPremium:
+          type: boolean
+        isNew:
+          type: boolean
+        status:
+          type: string
+          enum: [published, draft]
+        sortOrder:
+          type: integer
+    BunnyUploadUrlResponse:
+      type: object
+      required: [bunnyVideoId, uploadUrl, uploadMethod, uploadHeaders]
+      properties:
+        bunnyVideoId:
+          type: string
+        uploadUrl:
+          type: string
+        uploadMethod:
+          type: string
+        uploadHeaders:
+          type: object
+          additionalProperties:
+            type: string
+    BunnyVideoStatusResponse:
+      type: object
+      required: [bunnyVideoId, status, ready]
+      properties:
+        bunnyVideoId:
+          type: string
+        status:
+          type: integer
+        ready:
+          type: boolean
+        lengthSeconds:
+          type: integer
+          nullable: true
+        framerate:
+          type: number
+          nullable: true
+        width:
+          type: integer
+          nullable: true
+        height:
+          type: integer
+          nullable: true
+        availableResolutions:
+          type: string
+          nullable: true

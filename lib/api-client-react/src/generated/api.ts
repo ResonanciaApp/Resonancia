@@ -31,16 +31,21 @@ import type {
   AdminStats,
   AdminUsersPage,
   Application,
+  BunnyUploadUrlResponse,
+  BunnyVideoStatusResponse,
   CalWebhookBody,
   CatalogCategory,
   CatalogPlaylist,
   CatalogResponse,
+  CatalogVideo,
   CommunityMessage,
   Conversation,
   CreateApplicationInput,
+  CreateBunnyUploadUrlBody,
   CreateMessageBody,
   CreateMixerSoundBody,
   CreateTagOptionBody,
+  CreateVideoBody,
   CreatorSubmissionInput,
   DirectMessage,
   ErrorEnvelope,
@@ -115,10 +120,12 @@ import type {
   UpdateAdminGeometrix200,
   UpdateApplicationStatusInput,
   UpdateMixerSoundBody,
+  UpdateVideoBody,
   UserProfile,
   UserProfileUpdate,
   UserRoleUpdate,
-  UserSearchResult
+  UserSearchResult,
+  VideosListResponse
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -6305,6 +6312,598 @@ export function useGetMixerSounds<TData = Awaited<ReturnType<typeof getMixerSoun
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
   const queryOptions = getGetMixerSoundsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getListVideosUrl = () => {
+
+
+
+
+  return `/api/videos`
+}
+
+/**
+ * @summary Listar videos publicados
+ */
+export const listVideos = async ( options?: RequestInit): Promise<VideosListResponse> => {
+
+  return customFetch<VideosListResponse>(getListVideosUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListVideosQueryKey = () => {
+    return [
+    `/api/videos`
+    ] as const;
+    }
+
+
+export const getListVideosQueryOptions = <TData = Awaited<ReturnType<typeof listVideos>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listVideos>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListVideosQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listVideos>>> = ({ signal }) => listVideos({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listVideos>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListVideosQueryResult = NonNullable<Awaited<ReturnType<typeof listVideos>>>
+export type ListVideosQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Listar videos publicados
+ */
+
+export function useListVideos<TData = Awaited<ReturnType<typeof listVideos>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listVideos>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListVideosQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetVideoUrl = (id: number,) => {
+
+
+
+
+  return `/api/videos/${id}`
+}
+
+/**
+ * @summary Obtener un video por ID
+ */
+export const getVideo = async (id: number, options?: RequestInit): Promise<CatalogVideo> => {
+
+  return customFetch<CatalogVideo>(getGetVideoUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetVideoQueryKey = (id: number,) => {
+    return [
+    `/api/videos/${id}`
+    ] as const;
+    }
+
+
+export const getGetVideoQueryOptions = <TData = Awaited<ReturnType<typeof getVideo>>, TError = ErrorType<ErrorResponse>>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getVideo>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetVideoQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getVideo>>> = ({ signal }) => getVideo(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getVideo>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetVideoQueryResult = NonNullable<Awaited<ReturnType<typeof getVideo>>>
+export type GetVideoQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Obtener un video por ID
+ */
+
+export function useGetVideo<TData = Awaited<ReturnType<typeof getVideo>>, TError = ErrorType<ErrorResponse>>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getVideo>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetVideoQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getListAdminVideosUrl = () => {
+
+
+
+
+  return `/api/admin/videos`
+}
+
+/**
+ * @summary Listar todos los videos (admin)
+ */
+export const listAdminVideos = async ( options?: RequestInit): Promise<VideosListResponse> => {
+
+  return customFetch<VideosListResponse>(getListAdminVideosUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListAdminVideosQueryKey = () => {
+    return [
+    `/api/admin/videos`
+    ] as const;
+    }
+
+
+export const getListAdminVideosQueryOptions = <TData = Awaited<ReturnType<typeof listAdminVideos>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminVideos>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListAdminVideosQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listAdminVideos>>> = ({ signal }) => listAdminVideos({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listAdminVideos>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListAdminVideosQueryResult = NonNullable<Awaited<ReturnType<typeof listAdminVideos>>>
+export type ListAdminVideosQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Listar todos los videos (admin)
+ */
+
+export function useListAdminVideos<TData = Awaited<ReturnType<typeof listAdminVideos>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminVideos>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListAdminVideosQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateAdminVideoUrl = () => {
+
+
+
+
+  return `/api/admin/videos`
+}
+
+/**
+ * @summary Crear registro de video (admin)
+ */
+export const createAdminVideo = async (createVideoBody: CreateVideoBody, options?: RequestInit): Promise<CatalogVideo> => {
+
+  return customFetch<CatalogVideo>(getCreateAdminVideoUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createVideoBody,)
+  }
+);}
+
+
+
+
+export const getCreateAdminVideoMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminVideo>>, TError,{data: BodyType<CreateVideoBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createAdminVideo>>, TError,{data: BodyType<CreateVideoBody>}, TContext> => {
+
+const mutationKey = ['createAdminVideo'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAdminVideo>>, {data: BodyType<CreateVideoBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createAdminVideo(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateAdminVideoMutationResult = NonNullable<Awaited<ReturnType<typeof createAdminVideo>>>
+    export type CreateAdminVideoMutationBody = BodyType<CreateVideoBody>
+    export type CreateAdminVideoMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Crear registro de video (admin)
+ */
+export const useCreateAdminVideo = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminVideo>>, TError,{data: BodyType<CreateVideoBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createAdminVideo>>,
+        TError,
+        {data: BodyType<CreateVideoBody>},
+        TContext
+      > => {
+      return useMutation(getCreateAdminVideoMutationOptions(options));
+    }
+
+export const getUpdateAdminVideoUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/videos/${id}`
+}
+
+/**
+ * @summary Actualizar metadata de un video (admin)
+ */
+export const updateAdminVideo = async (id: number,
+    updateVideoBody: UpdateVideoBody, options?: RequestInit): Promise<CatalogVideo> => {
+
+  return customFetch<CatalogVideo>(getUpdateAdminVideoUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateVideoBody,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminVideoMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminVideo>>, TError,{id: number;data: BodyType<UpdateVideoBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminVideo>>, TError,{id: number;data: BodyType<UpdateVideoBody>}, TContext> => {
+
+const mutationKey = ['updateAdminVideo'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminVideo>>, {id: number;data: BodyType<UpdateVideoBody>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateAdminVideo(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminVideoMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminVideo>>>
+    export type UpdateAdminVideoMutationBody = BodyType<UpdateVideoBody>
+    export type UpdateAdminVideoMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Actualizar metadata de un video (admin)
+ */
+export const useUpdateAdminVideo = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminVideo>>, TError,{id: number;data: BodyType<UpdateVideoBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminVideo>>,
+        TError,
+        {id: number;data: BodyType<UpdateVideoBody>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminVideoMutationOptions(options));
+    }
+
+export const getDeleteAdminVideoUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/videos/${id}`
+}
+
+/**
+ * @summary Eliminar video (admin) — borra en DB y en Bunny
+ */
+export const deleteAdminVideo = async (id: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteAdminVideoUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteAdminVideoMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminVideo>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAdminVideo>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['deleteAdminVideo'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAdminVideo>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteAdminVideo(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAdminVideoMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAdminVideo>>>
+
+    export type DeleteAdminVideoMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Eliminar video (admin) — borra en DB y en Bunny
+ */
+export const useDeleteAdminVideo = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminVideo>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAdminVideo>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getDeleteAdminVideoMutationOptions(options));
+    }
+
+export const getCreateBunnyUploadUrlUrl = () => {
+
+
+
+
+  return `/api/admin/videos/bunny/upload-url`
+}
+
+/**
+ * @summary Crear video en Bunny y obtener URL de upload (admin)
+ */
+export const createBunnyUploadUrl = async (createBunnyUploadUrlBody: CreateBunnyUploadUrlBody, options?: RequestInit): Promise<BunnyUploadUrlResponse> => {
+
+  return customFetch<BunnyUploadUrlResponse>(getCreateBunnyUploadUrlUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createBunnyUploadUrlBody,)
+  }
+);}
+
+
+
+
+export const getCreateBunnyUploadUrlMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createBunnyUploadUrl>>, TError,{data: BodyType<CreateBunnyUploadUrlBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createBunnyUploadUrl>>, TError,{data: BodyType<CreateBunnyUploadUrlBody>}, TContext> => {
+
+const mutationKey = ['createBunnyUploadUrl'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createBunnyUploadUrl>>, {data: BodyType<CreateBunnyUploadUrlBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createBunnyUploadUrl(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateBunnyUploadUrlMutationResult = NonNullable<Awaited<ReturnType<typeof createBunnyUploadUrl>>>
+    export type CreateBunnyUploadUrlMutationBody = BodyType<CreateBunnyUploadUrlBody>
+    export type CreateBunnyUploadUrlMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Crear video en Bunny y obtener URL de upload (admin)
+ */
+export const useCreateBunnyUploadUrl = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createBunnyUploadUrl>>, TError,{data: BodyType<CreateBunnyUploadUrlBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createBunnyUploadUrl>>,
+        TError,
+        {data: BodyType<CreateBunnyUploadUrlBody>},
+        TContext
+      > => {
+      return useMutation(getCreateBunnyUploadUrlMutationOptions(options));
+    }
+
+export const getGetBunnyVideoStatusUrl = (bunnyVideoId: string,) => {
+
+
+
+
+  return `/api/admin/videos/bunny/${bunnyVideoId}/status`
+}
+
+/**
+ * @summary Estado de procesamiento del video en Bunny (admin)
+ */
+export const getBunnyVideoStatus = async (bunnyVideoId: string, options?: RequestInit): Promise<BunnyVideoStatusResponse> => {
+
+  return customFetch<BunnyVideoStatusResponse>(getGetBunnyVideoStatusUrl(bunnyVideoId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetBunnyVideoStatusQueryKey = (bunnyVideoId: string,) => {
+    return [
+    `/api/admin/videos/bunny/${bunnyVideoId}/status`
+    ] as const;
+    }
+
+
+export const getGetBunnyVideoStatusQueryOptions = <TData = Awaited<ReturnType<typeof getBunnyVideoStatus>>, TError = ErrorType<ErrorResponse>>(bunnyVideoId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getBunnyVideoStatus>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetBunnyVideoStatusQueryKey(bunnyVideoId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getBunnyVideoStatus>>> = ({ signal }) => getBunnyVideoStatus(bunnyVideoId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(bunnyVideoId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getBunnyVideoStatus>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetBunnyVideoStatusQueryResult = NonNullable<Awaited<ReturnType<typeof getBunnyVideoStatus>>>
+export type GetBunnyVideoStatusQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Estado de procesamiento del video en Bunny (admin)
+ */
+
+export function useGetBunnyVideoStatus<TData = Awaited<ReturnType<typeof getBunnyVideoStatus>>, TError = ErrorType<ErrorResponse>>(
+ bunnyVideoId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getBunnyVideoStatus>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetBunnyVideoStatusQueryOptions(bunnyVideoId,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

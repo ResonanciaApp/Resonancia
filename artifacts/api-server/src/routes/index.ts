@@ -17,6 +17,7 @@ import glyphsRouter from "./glyphs";
 import geometrixRouter from "./geometrix";
 import applicationsRouter from "./applications";
 import liveRouter from "./live";
+import videosRouter from "./videos";
 
 const router: IRouter = Router();
 
@@ -38,5 +39,6 @@ router.use(glyphsRouter);
 router.use(geometrixRouter);
 router.use(applicationsRouter);
 router.use(liveRouter);
+router.use(videosRouter);
 
 export default router;

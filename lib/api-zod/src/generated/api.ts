@@ -2356,6 +2356,181 @@ export const GetMixerSoundsResponse = zod.object({
 
 
 /**
+ * @summary Listar videos publicados
+ */
+export const ListVideosResponse = zod.object({
+  "videos": zod.array(zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "description": zod.string(),
+  "durationLabel": zod.string(),
+  "bunnyVideoId": zod.string(),
+  "thumbnailObjectPath": zod.string().nullable(),
+  "author": zod.string(),
+  "isPremium": zod.boolean(),
+  "isNew": zod.boolean(),
+  "status": zod.enum(['published', 'draft']),
+  "sortOrder": zod.number(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Obtener un video por ID
+ */
+export const GetVideoParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetVideoResponse = zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "description": zod.string(),
+  "durationLabel": zod.string(),
+  "bunnyVideoId": zod.string(),
+  "thumbnailObjectPath": zod.string().nullable(),
+  "author": zod.string(),
+  "isPremium": zod.boolean(),
+  "isNew": zod.boolean(),
+  "status": zod.enum(['published', 'draft']),
+  "sortOrder": zod.number(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Listar todos los videos (admin)
+ */
+export const ListAdminVideosResponse = zod.object({
+  "videos": zod.array(zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "description": zod.string(),
+  "durationLabel": zod.string(),
+  "bunnyVideoId": zod.string(),
+  "thumbnailObjectPath": zod.string().nullable(),
+  "author": zod.string(),
+  "isPremium": zod.boolean(),
+  "isNew": zod.boolean(),
+  "status": zod.enum(['published', 'draft']),
+  "sortOrder": zod.number(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Crear registro de video (admin)
+ */
+export const createAdminVideoBodyIsPremiumDefault = false;
+export const createAdminVideoBodyIsNewDefault = false;
+export const createAdminVideoBodyStatusDefault = `published`;
+export const createAdminVideoBodySortOrderDefault = 0;
+
+export const CreateAdminVideoBody = zod.object({
+  "title": zod.string(),
+  "subtitle": zod.string().optional(),
+  "description": zod.string().optional(),
+  "durationLabel": zod.string().optional(),
+  "bunnyVideoId": zod.string(),
+  "thumbnailObjectPath": zod.string().nullish(),
+  "author": zod.string().optional(),
+  "isPremium": zod.boolean().default(createAdminVideoBodyIsPremiumDefault),
+  "isNew": zod.boolean().default(createAdminVideoBodyIsNewDefault),
+  "status": zod.enum(['published', 'draft']).default(createAdminVideoBodyStatusDefault),
+  "sortOrder": zod.number().default(createAdminVideoBodySortOrderDefault)
+})
+
+
+/**
+ * @summary Actualizar metadata de un video (admin)
+ */
+export const UpdateAdminVideoParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateAdminVideoBody = zod.object({
+  "title": zod.string().optional(),
+  "subtitle": zod.string().optional(),
+  "description": zod.string().optional(),
+  "durationLabel": zod.string().optional(),
+  "bunnyVideoId": zod.string().optional(),
+  "thumbnailObjectPath": zod.string().nullish(),
+  "author": zod.string().optional(),
+  "isPremium": zod.boolean().optional(),
+  "isNew": zod.boolean().optional(),
+  "status": zod.enum(['published', 'draft']).optional(),
+  "sortOrder": zod.number().optional()
+})
+
+export const UpdateAdminVideoResponse = zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "subtitle": zod.string(),
+  "description": zod.string(),
+  "durationLabel": zod.string(),
+  "bunnyVideoId": zod.string(),
+  "thumbnailObjectPath": zod.string().nullable(),
+  "author": zod.string(),
+  "isPremium": zod.boolean(),
+  "isNew": zod.boolean(),
+  "status": zod.enum(['published', 'draft']),
+  "sortOrder": zod.number(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Eliminar video (admin) — borra en DB y en Bunny
+ */
+export const DeleteAdminVideoParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+/**
+ * @summary Crear video en Bunny y obtener URL de upload (admin)
+ */
+export const CreateBunnyUploadUrlBody = zod.object({
+  "title": zod.string().optional()
+})
+
+export const CreateBunnyUploadUrlResponse = zod.object({
+  "bunnyVideoId": zod.string(),
+  "uploadUrl": zod.string(),
+  "uploadMethod": zod.string(),
+  "uploadHeaders": zod.record(zod.string(), zod.string())
+})
+
+
+/**
+ * @summary Estado de procesamiento del video en Bunny (admin)
+ */
+export const GetBunnyVideoStatusParams = zod.object({
+  "bunnyVideoId": zod.coerce.string()
+})
+
+export const GetBunnyVideoStatusResponse = zod.object({
+  "bunnyVideoId": zod.string(),
+  "status": zod.number(),
+  "ready": zod.boolean(),
+  "lengthSeconds": zod.number().nullish(),
+  "framerate": zod.number().nullish(),
+  "width": zod.number().nullish(),
+  "height": zod.number().nullish(),
+  "availableResolutions": zod.string().nullish()
+})
+
+
+/**
  * @summary Listar todos los sonidos del mixer (admin)
  */
 export const GetAdminSoundsResponse = zod.object({

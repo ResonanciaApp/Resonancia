@@ -83,3 +83,4 @@
 - [EAS iOS CocoaPods modular headers](eas-ios-modular-headers.md) — AppCheckCore (RevenueCat/Clerk) exige modular_headers en GoogleUtilities+RecaptchaInterop; fix = expo-build-properties ios.extraPods con modular_headers:true (NO plugin custom: falla silencioso)
 - [Metro require inside try-catch](metro-require-try-catch.md) — Metro resuelve TODOS los require() incluso en try-catch; SDK nativo opcional = import comentado + flag booleano, nunca require() dinámico
 - [pnpm add timeout deja node_modules corrupto](pnpm-add-timeout-corruption.md) — pnpm add interrumpido puede borrar binarios (expo) y desincronizar lockfile; fix = pnpm install --no-frozen-lockfile + mkdir tmp dir de Metro
+- [Bunny Stream videos](bunny-videos.md) — catalog_videos DB + /videos + /admin/videos routes; mobile useVideos hook con fallback a STATIC_VIDEOS; EXPO_PUBLIC_BUNNY_CDN_HOSTNAME requerido para HLS; VITE_BUNNY_CDN_HOSTNAME para admin

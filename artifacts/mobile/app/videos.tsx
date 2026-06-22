@@ -1,17 +1,18 @@
 import { Feather } from "@expo/vector-icons";
 import { Stack, router } from "expo-router";
 import React from "react";
-import { Platform, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Platform, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { VideoCard } from "@/components/VideoCard";
-import { VIDEOS } from "@/data/videos";
+import { useVideos } from "@/hooks/useVideos";
 import { useColors } from "@/hooks/useColors";
 
 export default function VideosScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { videos, isLoading } = useVideos();
 
   const topPad = Platform.OS === "web" ? 16 : insets.top;
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
@@ -37,7 +38,11 @@ export default function VideosScreen() {
         contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 80 + bottomPad, paddingTop: 8 }}
         showsVerticalScrollIndicator={false}
       >
-        {VIDEOS.length === 0 ? (
+        {isLoading ? (
+          <View style={styles.empty}>
+            <ActivityIndicator color={colors.primary} />
+          </View>
+        ) : videos.length === 0 ? (
           <View style={styles.empty}>
             <Feather name="film" size={36} color={colors.border} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
@@ -48,7 +53,7 @@ export default function VideosScreen() {
             </Text>
           </View>
         ) : (
-          VIDEOS.map((v) => <VideoCard key={v.id} video={v} horizontal />)
+          videos.map((v) => <VideoCard key={v.id} video={v} horizontal />)
         )}
       </ScrollView>
     </View>

@@ -45,3 +45,4 @@ export * from "./applications";
 export * from "./live-sessions";
 export * from "./guide-configs";
 export * from "./catalog-tag-options";
+export * from "./catalog-videos";

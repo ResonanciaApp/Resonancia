@@ -6,7 +6,7 @@ import { Platform, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } fr
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
-import { getVideoById, getVideoSourceUri } from "@/data/videos";
+import { useVideoById, getVideoSourceUri } from "@/hooks/useVideos";
 import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
 
@@ -16,14 +16,13 @@ export default function VideoPlayerScreen() {
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
 
-  const video = id ? getVideoById(id) : undefined;
+  const { video } = useVideoById(id);
   const locked = !!video?.isPremium && !isPremium;
 
   const player = useVideoPlayer(video ? getVideoSourceUri(video) : "", (p) => {
     p.loop = false;
   });
 
-  // Si el video es premium y el usuario no lo es, redirigir a membresía.
   useEffect(() => {
     if (locked) router.replace("/membresia" as never);
   }, [locked]);
@@ -55,7 +54,6 @@ export default function VideoPlayerScreen() {
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
-      {/* Header con botón volver */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <Pressable
           onPress={() => router.back()}

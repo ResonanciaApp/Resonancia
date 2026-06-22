@@ -8,6 +8,7 @@ import {
   useUnhideSubmission,
   useGetPinnedFeatured,
   useSetPinnedFeatured,
+  getGetPendingSubmissionsQueryKey,
 } from "@workspace/api-client-react";
 import type {
   Submission,
@@ -81,7 +82,7 @@ function DestacadaDeHoy() {
 
   const { data: publishedData, isLoading: loadingSessions } = useGetPendingSubmissions(
     { status: "published" },
-    { query: { enabled: pickerOpen } },
+    { query: { queryKey: getGetPendingSubmissionsQueryKey({ status: "published" }), enabled: pickerOpen } },
   );
 
   const filtered = (publishedData?.submissions ?? []).filter((s) =>

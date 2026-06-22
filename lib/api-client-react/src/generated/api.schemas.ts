@@ -1576,6 +1576,99 @@ export interface GuideConfigUpdate {
   isLiveEnabled?: boolean;
 }
 
+export type CatalogVideoStatus = typeof CatalogVideoStatus[keyof typeof CatalogVideoStatus];
+
+
+export const CatalogVideoStatus = {
+  published: 'published',
+  draft: 'draft',
+} as const;
+
+export interface CatalogVideo {
+  id: number;
+  title: string;
+  subtitle: string;
+  description: string;
+  durationLabel: string;
+  bunnyVideoId: string;
+  thumbnailObjectPath: string | null;
+  author: string;
+  isPremium: boolean;
+  isNew: boolean;
+  status: CatalogVideoStatus;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface VideosListResponse {
+  videos: CatalogVideo[];
+}
+
+export type CreateVideoBodyStatus = typeof CreateVideoBodyStatus[keyof typeof CreateVideoBodyStatus];
+
+
+export const CreateVideoBodyStatus = {
+  published: 'published',
+  draft: 'draft',
+} as const;
+
+export interface CreateVideoBody {
+  title: string;
+  subtitle?: string;
+  description?: string;
+  durationLabel?: string;
+  bunnyVideoId: string;
+  thumbnailObjectPath?: string | null;
+  author?: string;
+  isPremium?: boolean;
+  isNew?: boolean;
+  status?: CreateVideoBodyStatus;
+  sortOrder?: number;
+}
+
+export type UpdateVideoBodyStatus = typeof UpdateVideoBodyStatus[keyof typeof UpdateVideoBodyStatus];
+
+
+export const UpdateVideoBodyStatus = {
+  published: 'published',
+  draft: 'draft',
+} as const;
+
+export interface UpdateVideoBody {
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  durationLabel?: string;
+  bunnyVideoId?: string;
+  thumbnailObjectPath?: string | null;
+  author?: string;
+  isPremium?: boolean;
+  isNew?: boolean;
+  status?: UpdateVideoBodyStatus;
+  sortOrder?: number;
+}
+
+export type BunnyUploadUrlResponseUploadHeaders = {[key: string]: string};
+
+export interface BunnyUploadUrlResponse {
+  bunnyVideoId: string;
+  uploadUrl: string;
+  uploadMethod: string;
+  uploadHeaders: BunnyUploadUrlResponseUploadHeaders;
+}
+
+export interface BunnyVideoStatusResponse {
+  bunnyVideoId: string;
+  status: number;
+  ready: boolean;
+  lengthSeconds?: number | null;
+  framerate?: number | null;
+  width?: number | null;
+  height?: number | null;
+  availableResolutions?: string | null;
+}
+
 export type GetMessagesParams = {
 page?: number;
 };
@@ -1703,6 +1796,10 @@ export type GetAdminApplications200 = {
 
 export type GetMixerSounds200 = {
   sounds: MixerSoundItem[];
+};
+
+export type CreateBunnyUploadUrlBody = {
+  title?: string;
 };
 
 export type GetAdminSounds200 = {
