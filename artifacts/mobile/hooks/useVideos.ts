@@ -3,17 +3,26 @@ import type { CatalogVideo as ApiVideo } from "@workspace/api-client-react";
 import { VIDEOS as STATIC_VIDEOS, type VideoItem } from "@/data/videos";
 
 const CDN_HOST = process.env.EXPO_PUBLIC_BUNNY_CDN_HOSTNAME || "vz-881ead65-839.b-cdn.net";
+const API_BASE = (process.env.EXPO_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
+
+/** Convierte un objectPath de storage en URL absoluta cargable por <Image>. */
+function resolveStorageUrl(objectPath: string): string {
+  const servingPath = objectPath.startsWith("/objects/")
+    ? objectPath.replace(/^\/objects\//, "/api/storage/objects/")
+    : objectPath.startsWith("/")
+      ? objectPath
+      : `/${objectPath}`;
+  return `${API_BASE}${servingPath}`;
+}
 
 /**
  * Convierte un video de la API al tipo VideoItem que usa la app.
  * - HLS: `https://<CDN_HOST>/<bunnyVideoId>/playlist.m3u8`
- * - Thumbnail: objectPath de Object Storage o thumbnail de Bunny
+ * - Thumbnail: objectPath de Object Storage (URL absoluta) o thumbnail de Bunny CDN
  */
 export function apiVideoToItem(v: ApiVideo): VideoItem {
   const thumbnail = v.thumbnailObjectPath
-    ? { uri: v.thumbnailObjectPath.startsWith("/objects/")
-          ? `/api/storage${v.thumbnailObjectPath}`
-          : v.thumbnailObjectPath }
+    ? { uri: resolveStorageUrl(v.thumbnailObjectPath) }
     : CDN_HOST
       ? { uri: `https://${CDN_HOST}/${v.bunnyVideoId}/thumbnail.jpg?v=2` }
       : require("@/assets/images/videos/video-1.jpg");
