@@ -96,6 +96,7 @@ function serializeSession(s: CatalogSession, audioFiles: CatalogAudioFile[]) {
     guests: s.guests,
     status: s.status,
     sortOrder: s.sortOrder,
+    createdAt: s.createdAt.toISOString(),
     audioFiles: audioFiles.map(serializeAudioFile),
   };
 }

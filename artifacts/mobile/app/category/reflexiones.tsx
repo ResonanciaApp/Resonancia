@@ -60,7 +60,11 @@ function applySort(arr: ReturnType<typeof getSessionsForTab>, sort: SortMode, pl
     const aIsNum = !isNaN(aNum);  const bIsNum = !isNaN(bNum);
     if (!aIsNum && bIsNum)  return -1;
     if (aIsNum  && !bIsNum) return  1;
-    if (!aIsNum && !bIsNum) return  0;
+    if (!aIsNum && !bIsNum) {
+      const aT = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const bT = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return bT - aT;
+    }
     return bNum - aNum;
   });
   if (sort === "populares") return [...arr].sort((a,b) => (playCounts[b.id]??0) - (playCounts[a.id]??0));

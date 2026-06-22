@@ -82,6 +82,8 @@ export type Session = {
   audioUri?: string;
   /** URL de voz guía para sesiones subidas vía admin (no bundleadas). */
   voiceUri?: string;
+  /** Fecha de creación ISO (solo sesiones de DB; para ordenar "Nuevas sesiones"). */
+  createdAt?: string;
 };
 
 export const SESSIONS: Session[] = [
@@ -612,6 +614,8 @@ export type CatalogSessionSnapshot = {
   imageUrl?: string | null;
   /** Archivos de audio (para sesiones nuevas no bundleadas). */
   audioFiles?: { role: string; url?: string | null; name: string }[];
+  /** Fecha de creación ISO (para ordenar "Nuevas sesiones" entre sesiones del admin). */
+  createdAt?: string | null;
 };
 
 /** Convierte un objectPath de storage en URL absoluta cargable. */
@@ -724,6 +728,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
       artistId: r.artistId ?? undefined,
       audioUri: main ? resolveObjectPath(main.url) : undefined,
       voiceUri: voice ? resolveObjectPath(voice.url) : undefined,
+      createdAt: r.createdAt ?? undefined,
     });
   }
 }
