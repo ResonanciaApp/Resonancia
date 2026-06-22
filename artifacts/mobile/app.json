@@ -11,7 +11,7 @@
     "splash": {
       "image": "./assets/images/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#18110C"
+      "backgroundColor": "#1B060F"
     },
     "ios": {
       "supportsTablet": false,
@@ -29,7 +29,7 @@
     },
     "android": {
       "package": "com.resonancia.app",
-      "backgroundColor": "#18110C",
+      "backgroundColor": "#1B060F",
       "softwareKeyboardLayoutMode": "pan",
       "permissions": [
         "android.permission.RECORD_AUDIO",
