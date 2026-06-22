@@ -131,7 +131,8 @@ function RejectDialog({
 const ANCESTRAL_DEFAULTS = ["Cuencos Tibetanos","Cuencos de Cuarzo","Gongs","Gongs Planetarios","Cuencos y Gongs","Campanas","Flautas","Digeridoo","Tambores","Full Instrumentos","Vientos","Cantos","Percusión","Selva","Mix de Cuencos"];
 const MEDITATION_DEFAULTS = ["Mindfulness","Visualización","Respiración","Yoga Nidra","Meditación Zen","Kundalini","Metta","Body Scan"];
 const SOUND_DEFAULTS = ["Lluvia","Océano","Bosque","Río","Fuego","Viento","Ballenas","Pájaros","Cueva","Tormenta"];
-const THEME_DEFAULTS = ["Para la ansiedad","Para dormir","Para concentrarse","Para el estrés","Para el dolor","Para la tristeza","Para la energía","Para la calma"];
+const THEME_TAGS = ["Yoga","Respiración","Ansiedad","Rituales","Crecimiento","ASMR","Estrés","Spa","Familia"];
+const OTHER_THEME_TAGS = ["Para la ansiedad","Energiza tus mañanas","Foco y concentración","Suelto la Rabia","Crecimiento personal","Armonía familiar","Respiración consciente","Meditaciones Activas","Astrología"];
 const SLEEP_DEFAULTS = ["Sonidos Binaurales","Música Delta","Música Theta","ASMR Relajante","Meditación Nocturna"];
 
 function EditDialog({
@@ -284,13 +285,24 @@ function EditDialog({
               />
             )}
 
-            {/* Etiquetas temáticas (Grupo 1) */}
+            {/* Etiquetas Nivel 1 */}
             <TagOptionSelector
               tagType="theme"
-              defaults={THEME_DEFAULTS}
-              label="Etiquetas temáticas (Grupo 1)"
+              defaults={THEME_TAGS}
+              label="Etiquetas Nivel 1 (opcional)"
               selected={themeTag}
               onToggle={toggleTheme}
+              pill
+            />
+
+            {/* Otras temáticas */}
+            <TagOptionSelector
+              tagType="other_theme"
+              defaults={OTHER_THEME_TAGS}
+              label="Otras temáticas (opcional)"
+              selected={themeTag}
+              onToggle={toggleTheme}
+              pill
             />
 
             {/* Etiqueta de sueño (Grupo 2) */}
