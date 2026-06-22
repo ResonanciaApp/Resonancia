@@ -31,6 +31,7 @@ import type {
   AdminStats,
   AdminUsersPage,
   Application,
+  CalWebhookBody,
   CatalogCategory,
   CatalogPlaylist,
   CatalogResponse,
@@ -55,17 +56,23 @@ import type {
   GetAdminApplications200,
   GetAdminApplicationsParams,
   GetAdminGeometrix200,
+  GetAdminGuideConfigs200,
   GetAdminSounds200,
   GetAdminUsersParams,
   GetDirectMessagesParams,
   GetGeometrixSettings200,
+  GetLiveGuides200,
   GetMessagesParams,
   GetMixerSounds200,
+  GetMyLiveSessions200,
   GetMyPlaysParams,
   GetPendingSubmissionsParams,
   GetPopularSessionsParams,
   GetSharedGlyphsParams,
   GetSharedMixesParams,
+  GuideConfig,
+  GuideConfigInput,
+  GuideConfigUpdate,
   HealthStatus,
   MessagesPage,
   MixComment,
@@ -6670,4 +6677,519 @@ export function useGetGeometrixSettings<TData = Awaited<ReturnType<typeof getGeo
 
 
 
+
+export const getGetLiveGuidesUrl = () => {
+
+
+
+
+  return `/api/live/guides`
+}
+
+/**
+ * @summary Guiadores con sesiones en vivo habilitadas (público)
+ */
+export const getLiveGuides = async ( options?: RequestInit): Promise<GetLiveGuides200> => {
+
+  return customFetch<GetLiveGuides200>(getGetLiveGuidesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetLiveGuidesQueryKey = () => {
+    return [
+    `/api/live/guides`
+    ] as const;
+    }
+
+
+export const getGetLiveGuidesQueryOptions = <TData = Awaited<ReturnType<typeof getLiveGuides>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getLiveGuides>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetLiveGuidesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getLiveGuides>>> = ({ signal }) => getLiveGuides({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getLiveGuides>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetLiveGuidesQueryResult = NonNullable<Awaited<ReturnType<typeof getLiveGuides>>>
+export type GetLiveGuidesQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Guiadores con sesiones en vivo habilitadas (público)
+ */
+
+export function useGetLiveGuides<TData = Awaited<ReturnType<typeof getLiveGuides>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getLiveGuides>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetLiveGuidesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetMyLiveSessionsUrl = () => {
+
+
+
+
+  return `/api/live/sessions/me`
+}
+
+/**
+ * @summary Sesiones en vivo próximas del usuario autenticado
+ */
+export const getMyLiveSessions = async ( options?: RequestInit): Promise<GetMyLiveSessions200> => {
+
+  return customFetch<GetMyLiveSessions200>(getGetMyLiveSessionsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetMyLiveSessionsQueryKey = () => {
+    return [
+    `/api/live/sessions/me`
+    ] as const;
+    }
+
+
+export const getGetMyLiveSessionsQueryOptions = <TData = Awaited<ReturnType<typeof getMyLiveSessions>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyLiveSessions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMyLiveSessionsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyLiveSessions>>> = ({ signal }) => getMyLiveSessions({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyLiveSessions>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetMyLiveSessionsQueryResult = NonNullable<Awaited<ReturnType<typeof getMyLiveSessions>>>
+export type GetMyLiveSessionsQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Sesiones en vivo próximas del usuario autenticado
+ */
+
+export function useGetMyLiveSessions<TData = Awaited<ReturnType<typeof getMyLiveSessions>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyLiveSessions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetMyLiveSessionsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCalWebhookUrl = () => {
+
+
+
+
+  return `/api/live/webhook/cal`
+}
+
+/**
+ * @summary Webhook de Cal.com para eventos de reserva (uso interno)
+ */
+export const calWebhook = async (calWebhookBody: CalWebhookBody, options?: RequestInit): Promise<OkResponse> => {
+
+  return customFetch<OkResponse>(getCalWebhookUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      calWebhookBody,)
+  }
+);}
+
+
+
+
+export const getCalWebhookMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof calWebhook>>, TError,{data: BodyType<CalWebhookBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof calWebhook>>, TError,{data: BodyType<CalWebhookBody>}, TContext> => {
+
+const mutationKey = ['calWebhook'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof calWebhook>>, {data: BodyType<CalWebhookBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  calWebhook(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CalWebhookMutationResult = NonNullable<Awaited<ReturnType<typeof calWebhook>>>
+    export type CalWebhookMutationBody = BodyType<CalWebhookBody>
+    export type CalWebhookMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Webhook de Cal.com para eventos de reserva (uso interno)
+ */
+export const useCalWebhook = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof calWebhook>>, TError,{data: BodyType<CalWebhookBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof calWebhook>>,
+        TError,
+        {data: BodyType<CalWebhookBody>},
+        TContext
+      > => {
+      return useMutation(getCalWebhookMutationOptions(options));
+    }
+
+export const getGetAdminGuideConfigsUrl = () => {
+
+
+
+
+  return `/api/admin/guide-configs`
+}
+
+/**
+ * @summary Listar configuraciones de guiadores en vivo (admin)
+ */
+export const getAdminGuideConfigs = async ( options?: RequestInit): Promise<GetAdminGuideConfigs200> => {
+
+  return customFetch<GetAdminGuideConfigs200>(getGetAdminGuideConfigsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminGuideConfigsQueryKey = () => {
+    return [
+    `/api/admin/guide-configs`
+    ] as const;
+    }
+
+
+export const getGetAdminGuideConfigsQueryOptions = <TData = Awaited<ReturnType<typeof getAdminGuideConfigs>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminGuideConfigs>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminGuideConfigsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminGuideConfigs>>> = ({ signal }) => getAdminGuideConfigs({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminGuideConfigs>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminGuideConfigsQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminGuideConfigs>>>
+export type GetAdminGuideConfigsQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Listar configuraciones de guiadores en vivo (admin)
+ */
+
+export function useGetAdminGuideConfigs<TData = Awaited<ReturnType<typeof getAdminGuideConfigs>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminGuideConfigs>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminGuideConfigsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateAdminGuideConfigUrl = () => {
+
+
+
+
+  return `/api/admin/guide-configs`
+}
+
+/**
+ * @summary Crear configuración de guiador en vivo (admin)
+ */
+export const createAdminGuideConfig = async (guideConfigInput: GuideConfigInput, options?: RequestInit): Promise<GuideConfig> => {
+
+  return customFetch<GuideConfig>(getCreateAdminGuideConfigUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      guideConfigInput,)
+  }
+);}
+
+
+
+
+export const getCreateAdminGuideConfigMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminGuideConfig>>, TError,{data: BodyType<GuideConfigInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createAdminGuideConfig>>, TError,{data: BodyType<GuideConfigInput>}, TContext> => {
+
+const mutationKey = ['createAdminGuideConfig'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAdminGuideConfig>>, {data: BodyType<GuideConfigInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createAdminGuideConfig(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateAdminGuideConfigMutationResult = NonNullable<Awaited<ReturnType<typeof createAdminGuideConfig>>>
+    export type CreateAdminGuideConfigMutationBody = BodyType<GuideConfigInput>
+    export type CreateAdminGuideConfigMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Crear configuración de guiador en vivo (admin)
+ */
+export const useCreateAdminGuideConfig = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminGuideConfig>>, TError,{data: BodyType<GuideConfigInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createAdminGuideConfig>>,
+        TError,
+        {data: BodyType<GuideConfigInput>},
+        TContext
+      > => {
+      return useMutation(getCreateAdminGuideConfigMutationOptions(options));
+    }
+
+export const getUpdateAdminGuideConfigUrl = (guideId: string,) => {
+
+
+
+
+  return `/api/admin/guide-configs/${guideId}`
+}
+
+/**
+ * @summary Actualizar configuración de guiador en vivo (admin)
+ */
+export const updateAdminGuideConfig = async (guideId: string,
+    guideConfigUpdate: GuideConfigUpdate, options?: RequestInit): Promise<GuideConfig> => {
+
+  return customFetch<GuideConfig>(getUpdateAdminGuideConfigUrl(guideId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      guideConfigUpdate,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminGuideConfigMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminGuideConfig>>, TError,{guideId: string;data: BodyType<GuideConfigUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminGuideConfig>>, TError,{guideId: string;data: BodyType<GuideConfigUpdate>}, TContext> => {
+
+const mutationKey = ['updateAdminGuideConfig'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminGuideConfig>>, {guideId: string;data: BodyType<GuideConfigUpdate>}> = (props) => {
+          const {guideId,data} = props ?? {};
+
+          return  updateAdminGuideConfig(guideId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminGuideConfigMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminGuideConfig>>>
+    export type UpdateAdminGuideConfigMutationBody = BodyType<GuideConfigUpdate>
+    export type UpdateAdminGuideConfigMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Actualizar configuración de guiador en vivo (admin)
+ */
+export const useUpdateAdminGuideConfig = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminGuideConfig>>, TError,{guideId: string;data: BodyType<GuideConfigUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminGuideConfig>>,
+        TError,
+        {guideId: string;data: BodyType<GuideConfigUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminGuideConfigMutationOptions(options));
+    }
+
+export const getDeleteAdminGuideConfigUrl = (guideId: string,) => {
+
+
+
+
+  return `/api/admin/guide-configs/${guideId}`
+}
+
+/**
+ * @summary Eliminar configuración de guiador en vivo (admin)
+ */
+export const deleteAdminGuideConfig = async (guideId: string, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteAdminGuideConfigUrl(guideId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteAdminGuideConfigMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminGuideConfig>>, TError,{guideId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAdminGuideConfig>>, TError,{guideId: string}, TContext> => {
+
+const mutationKey = ['deleteAdminGuideConfig'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAdminGuideConfig>>, {guideId: string}> = (props) => {
+          const {guideId} = props ?? {};
+
+          return  deleteAdminGuideConfig(guideId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAdminGuideConfigMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAdminGuideConfig>>>
+
+    export type DeleteAdminGuideConfigMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Eliminar configuración de guiador en vivo (admin)
+ */
+export const useDeleteAdminGuideConfig = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminGuideConfig>>, TError,{guideId: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAdminGuideConfig>>,
+        TError,
+        {guideId: string},
+        TContext
+      > => {
+      return useMutation(getDeleteAdminGuideConfigMutationOptions(options));
+    }
 

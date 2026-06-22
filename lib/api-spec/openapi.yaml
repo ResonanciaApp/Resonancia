@@ -34,6 +34,8 @@ tags:
     description: Sonidos del mixer Mi Música
   - name: glyphs
     description: Muro de la comunidad — composiciones Geometrix compartidas
+  - name: live-sessions
+    description: Sesiones en vivo con guiadores (Cal.com + Daily.co)
 paths:
   /healthz:
     get:
@@ -2490,6 +2492,174 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/GeometrixSettingItem"
+  /live/guides:
+    get:
+      operationId: getLiveGuides
+      tags: [live-sessions]
+      summary: Guiadores con sesiones en vivo habilitadas (público)
+      responses:
+        "200":
+          description: Lista de guiadores con sesiones en vivo
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [guides]
+                properties:
+                  guides:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/LiveGuide"
+  /live/sessions/me:
+    get:
+      operationId: getMyLiveSessions
+      tags: [live-sessions]
+      summary: Sesiones en vivo próximas del usuario autenticado
+      responses:
+        "200":
+          description: Sesiones próximas del usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [sessions]
+                properties:
+                  sessions:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/LiveSession"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /live/webhook/cal:
+    post:
+      operationId: calWebhook
+      tags: [live-sessions]
+      summary: Webhook de Cal.com para eventos de reserva (uso interno)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Evento procesado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkResponse"
+        "401":
+          description: Firma inválida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/guide-configs:
+    get:
+      operationId: getAdminGuideConfigs
+      tags: [admin]
+      summary: Listar configuraciones de guiadores en vivo (admin)
+      responses:
+        "200":
+          description: Lista de configuraciones
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [guideConfigs]
+                properties:
+                  guideConfigs:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/GuideConfig"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: createAdminGuideConfig
+      tags: [admin]
+      summary: Crear configuración de guiador en vivo (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GuideConfigInput"
+      responses:
+        "201":
+          description: Configuración creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GuideConfig"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Guiador ya configurado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/guide-configs/{guideId}:
+    patch:
+      operationId: updateAdminGuideConfig
+      tags: [admin]
+      summary: Actualizar configuración de guiador en vivo (admin)
+      parameters:
+        - name: guideId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GuideConfigUpdate"
+      responses:
+        "200":
+          description: Configuración actualizada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GuideConfig"
+        "404":
+          description: Guiador no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteAdminGuideConfig
+      tags: [admin]
+      summary: Eliminar configuración de guiador en vivo (admin)
+      parameters:
+        - name: guideId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Eliminado
+        "404":
+          description: No encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     PlaybackEvent:
@@ -4359,3 +4529,101 @@ components:
         color:
           type: string
           nullable: true
+    LiveGuide:
+      type: object
+      required: [guideId, displayName, calLink, dailyRoomUrl]
+      properties:
+        guideId:
+          type: string
+        displayName:
+          type: string
+        calLink:
+          type: string
+          nullable: true
+        dailyRoomUrl:
+          type: string
+          nullable: true
+    LiveSession:
+      type: object
+      required: [id, guideId, guideDisplayName, calEventUid, calEventTitle, scheduledAt, scheduledEnd, status, dailyRoomUrl, attendeeName, notes]
+      properties:
+        id:
+          type: integer
+        guideId:
+          type: string
+        guideDisplayName:
+          type: string
+          nullable: true
+        calEventUid:
+          type: string
+        calEventTitle:
+          type: string
+          nullable: true
+        scheduledAt:
+          type: string
+          format: date-time
+        scheduledEnd:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          type: string
+          enum: [pending, confirmed, cancelled, completed]
+        dailyRoomUrl:
+          type: string
+          nullable: true
+        attendeeName:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+    GuideConfig:
+      type: object
+      required: [guideId, displayName, calLink, dailyRoomUrl, isLiveEnabled, updatedAt]
+      properties:
+        guideId:
+          type: string
+        displayName:
+          type: string
+        calLink:
+          type: string
+          nullable: true
+        dailyRoomUrl:
+          type: string
+          nullable: true
+        isLiveEnabled:
+          type: boolean
+        updatedAt:
+          type: string
+          format: date-time
+    GuideConfigInput:
+      type: object
+      required: [guideId, displayName]
+      properties:
+        guideId:
+          type: string
+        displayName:
+          type: string
+        calLink:
+          type: string
+          nullable: true
+        dailyRoomUrl:
+          type: string
+          nullable: true
+        isLiveEnabled:
+          type: boolean
+          default: false
+    GuideConfigUpdate:
+      type: object
+      properties:
+        displayName:
+          type: string
+        calLink:
+          type: string
+          nullable: true
+        dailyRoomUrl:
+          type: string
+          nullable: true
+        isLiveEnabled:
+          type: boolean

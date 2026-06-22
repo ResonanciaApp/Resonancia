@@ -10,15 +10,19 @@ import {
   sharedMixesTable,
   sharedMixReportsTable,
   mixerSoundsTable,
+  guideConfigsTable,
   insertMixerSoundSchema,
   updateMixerSoundSchema,
   insertCatalogPlaylistSchema,
   updateCatalogPlaylistSchema,
+  insertGuideConfigSchema,
+  updateGuideConfigSchema,
   type CatalogCategory,
   type CatalogPlaylist,
   type SharedMix,
   type User,
   type MixerSound,
+  type GuideConfig,
 } from "@workspace/db";
 import {
   GetAdminUsersQueryParams,
@@ -625,6 +629,109 @@ router.delete("/admin/mixes/:id", requireAuth, requireRole("admin"), async (req,
   } catch (err) {
     req.log.error({ err }, "error deleting mix");
     res.status(500).json({ error: "Error al eliminar la mezcla" });
+  }
+});
+
+// ── Configuración de guiadores en vivo ────────────────────────────────────
+
+function serializeGuideConfig(g: GuideConfig) {
+  return {
+    guideId: g.guideId,
+    displayName: g.displayName,
+    calLink: g.calLink ?? null,
+    dailyRoomUrl: g.dailyRoomUrl ?? null,
+    isLiveEnabled: g.isLiveEnabled,
+    updatedAt: g.updatedAt.toISOString(),
+  };
+}
+
+// GET /admin/guide-configs — listar todas las configuraciones de guiadores.
+router.get("/admin/guide-configs", requireAuth, requireRole("admin"), async (req, res) => {
+  try {
+    const rows = await db
+      .select()
+      .from(guideConfigsTable)
+      .orderBy(asc(guideConfigsTable.guideId));
+    res.json({ guideConfigs: rows.map(serializeGuideConfig) });
+  } catch (err) {
+    req.log.error({ err }, "error listing guide configs");
+    res.status(500).json({ error: "Error al obtener las configuraciones" });
+  }
+});
+
+// POST /admin/guide-configs — crear configuración de guiador.
+router.post("/admin/guide-configs", requireAuth, requireRole("admin"), async (req, res) => {
+  const parsed = insertGuideConfigSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Datos inválidos", details: parsed.error.issues });
+    return;
+  }
+  try {
+    const [existing] = await db
+      .select()
+      .from(guideConfigsTable)
+      .where(eq(guideConfigsTable.guideId, parsed.data.guideId))
+      .limit(1);
+    if (existing) {
+      res.status(409).json({ error: "Ya existe una configuración para ese guiador" });
+      return;
+    }
+    const [created] = await db.insert(guideConfigsTable).values(parsed.data).returning();
+    req.log.info({ guideId: created.guideId }, "guide config created");
+    res.status(201).json(serializeGuideConfig(created));
+  } catch (err) {
+    req.log.error({ err }, "error creating guide config");
+    res.status(500).json({ error: "Error al crear la configuración" });
+  }
+});
+
+// PATCH /admin/guide-configs/:guideId — actualizar configuración de guiador.
+router.patch("/admin/guide-configs/:guideId", requireAuth, requireRole("admin"), async (req, res) => {
+  const guideId = String(req.params.guideId);
+  const parsed = updateGuideConfigSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Datos inválidos", details: parsed.error.issues });
+    return;
+  }
+  if (Object.keys(parsed.data).length === 0) {
+    res.status(400).json({ error: "No hay campos para actualizar" });
+    return;
+  }
+  try {
+    const [updated] = await db
+      .update(guideConfigsTable)
+      .set({ ...parsed.data, updatedAt: new Date() })
+      .where(eq(guideConfigsTable.guideId, guideId))
+      .returning();
+    if (!updated) {
+      res.status(404).json({ error: "Configuración no encontrada" });
+      return;
+    }
+    req.log.info({ guideId }, "guide config updated");
+    res.json(serializeGuideConfig(updated));
+  } catch (err) {
+    req.log.error({ err }, "error updating guide config");
+    res.status(500).json({ error: "Error al actualizar la configuración" });
+  }
+});
+
+// DELETE /admin/guide-configs/:guideId — eliminar configuración de guiador.
+router.delete("/admin/guide-configs/:guideId", requireAuth, requireRole("admin"), async (req, res) => {
+  const guideId = String(req.params.guideId);
+  try {
+    const [deleted] = await db
+      .delete(guideConfigsTable)
+      .where(eq(guideConfigsTable.guideId, guideId))
+      .returning();
+    if (!deleted) {
+      res.status(404).json({ error: "Configuración no encontrada" });
+      return;
+    }
+    req.log.info({ guideId }, "guide config deleted");
+    res.status(204).end();
+  } catch (err) {
+    req.log.error({ err }, "error deleting guide config");
+    res.status(500).json({ error: "Error al eliminar la configuración" });
   }
 });
 

@@ -42,3 +42,5 @@ export * from "./geometrix-settings";
 export * from "./catalog-playlists";
 export * from "./expansor-profiles";
 export * from "./applications";
+export * from "./live-sessions";
+export * from "./guide-configs";

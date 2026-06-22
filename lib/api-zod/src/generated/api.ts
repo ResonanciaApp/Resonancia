@@ -2471,3 +2471,109 @@ export const GetGeometrixSettingsResponse = zod.object({
 })
 
 
+/**
+ * @summary Guiadores con sesiones en vivo habilitadas (público)
+ */
+export const GetLiveGuidesResponse = zod.object({
+  "guides": zod.array(zod.object({
+  "guideId": zod.string(),
+  "displayName": zod.string(),
+  "calLink": zod.string().nullable(),
+  "dailyRoomUrl": zod.string().nullable()
+}))
+})
+
+
+/**
+ * @summary Sesiones en vivo próximas del usuario autenticado
+ */
+export const GetMyLiveSessionsResponse = zod.object({
+  "sessions": zod.array(zod.object({
+  "id": zod.number(),
+  "guideId": zod.string(),
+  "guideDisplayName": zod.string().nullable(),
+  "calEventUid": zod.string(),
+  "calEventTitle": zod.string().nullable(),
+  "scheduledAt": zod.coerce.date(),
+  "scheduledEnd": zod.coerce.date().nullable(),
+  "status": zod.enum(['pending', 'confirmed', 'cancelled', 'completed']),
+  "dailyRoomUrl": zod.string().nullable(),
+  "attendeeName": zod.string().nullable(),
+  "notes": zod.string().nullable()
+}))
+})
+
+
+/**
+ * @summary Webhook de Cal.com para eventos de reserva (uso interno)
+ */
+export const CalWebhookBody = zod.object({
+
+}).passthrough()
+
+export const CalWebhookResponse = zod.object({
+  "ok": zod.boolean()
+})
+
+
+/**
+ * @summary Listar configuraciones de guiadores en vivo (admin)
+ */
+export const GetAdminGuideConfigsResponse = zod.object({
+  "guideConfigs": zod.array(zod.object({
+  "guideId": zod.string(),
+  "displayName": zod.string(),
+  "calLink": zod.string().nullable(),
+  "dailyRoomUrl": zod.string().nullable(),
+  "isLiveEnabled": zod.boolean(),
+  "updatedAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Crear configuración de guiador en vivo (admin)
+ */
+export const createAdminGuideConfigBodyIsLiveEnabledDefault = false;
+
+export const CreateAdminGuideConfigBody = zod.object({
+  "guideId": zod.string(),
+  "displayName": zod.string(),
+  "calLink": zod.string().nullish(),
+  "dailyRoomUrl": zod.string().nullish(),
+  "isLiveEnabled": zod.boolean().default(createAdminGuideConfigBodyIsLiveEnabledDefault)
+})
+
+
+/**
+ * @summary Actualizar configuración de guiador en vivo (admin)
+ */
+export const UpdateAdminGuideConfigParams = zod.object({
+  "guideId": zod.coerce.string()
+})
+
+export const UpdateAdminGuideConfigBody = zod.object({
+  "displayName": zod.string().optional(),
+  "calLink": zod.string().nullish(),
+  "dailyRoomUrl": zod.string().nullish(),
+  "isLiveEnabled": zod.boolean().optional()
+})
+
+export const UpdateAdminGuideConfigResponse = zod.object({
+  "guideId": zod.string(),
+  "displayName": zod.string(),
+  "calLink": zod.string().nullable(),
+  "dailyRoomUrl": zod.string().nullable(),
+  "isLiveEnabled": zod.boolean(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Eliminar configuración de guiador en vivo (admin)
+ */
+export const DeleteAdminGuideConfigParams = zod.object({
+  "guideId": zod.coerce.string()
+})
+
+

@@ -25,6 +25,7 @@ import {
   Hexagon,
   Library,
   UserPlus,
+  Radio,
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/queryClient";
@@ -41,6 +42,7 @@ import SonidosPage from "@/pages/sonidos";
 import GeometrixPage from "@/pages/geometrix";
 import PlaylistsPage from "@/pages/playlists";
 import PostulacionesPage from "@/pages/postulaciones";
+import GuiadoresVivoPage from "@/pages/guiadores-vivo";
 
 const clerkPubKey = publishableKeyFromHost(
   window.location.hostname,
@@ -164,6 +166,7 @@ const NAV = [
   { href: "/canciones/nueva", label: "Nueva canción", icon: Music },
   { href: "/sonidos", label: "Sonidos Mixer", icon: Music2 },
   { href: "/geometrix", label: "Geometrix", icon: Hexagon },
+  { href: "/guiadores-vivo", label: "Sesiones en vivo", icon: Radio },
 ];
 
 function isActive(location: string, href: string) {
@@ -282,6 +285,7 @@ function AdminGate() {
         <Route path="/playlists" component={PlaylistsPage} />
         <Route path="/sonidos" component={SonidosPage} />
         <Route path="/geometrix" component={GeometrixPage} />
+        <Route path="/guiadores-vivo" component={GuiadoresVivoPage} />
         <Route component={NotFound} />
       </Switch>
     </DashboardShell>

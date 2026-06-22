@@ -16,6 +16,7 @@ import soundsRouter from "./sounds";
 import glyphsRouter from "./glyphs";
 import geometrixRouter from "./geometrix";
 import applicationsRouter from "./applications";
+import liveRouter from "./live";
 
 const router: IRouter = Router();
 
@@ -36,5 +37,6 @@ router.use(soundsRouter);
 router.use(glyphsRouter);
 router.use(geometrixRouter);
 router.use(applicationsRouter);
+router.use(liveRouter);
 
 export default router;

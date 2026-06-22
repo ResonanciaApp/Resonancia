@@ -1493,6 +1493,61 @@ export interface GeometrixSettingUpdate {
   color?: string | null;
 }
 
+export interface LiveGuide {
+  guideId: string;
+  displayName: string;
+  calLink: string | null;
+  dailyRoomUrl: string | null;
+}
+
+export type LiveSessionStatus = typeof LiveSessionStatus[keyof typeof LiveSessionStatus];
+
+
+export const LiveSessionStatus = {
+  pending: 'pending',
+  confirmed: 'confirmed',
+  cancelled: 'cancelled',
+  completed: 'completed',
+} as const;
+
+export interface LiveSession {
+  id: number;
+  guideId: string;
+  guideDisplayName: string | null;
+  calEventUid: string;
+  calEventTitle: string | null;
+  scheduledAt: string;
+  scheduledEnd: string | null;
+  status: LiveSessionStatus;
+  dailyRoomUrl: string | null;
+  attendeeName: string | null;
+  notes: string | null;
+}
+
+export interface GuideConfig {
+  guideId: string;
+  displayName: string;
+  calLink: string | null;
+  dailyRoomUrl: string | null;
+  isLiveEnabled: boolean;
+  updatedAt: string;
+}
+
+export interface GuideConfigInput {
+  guideId: string;
+  displayName: string;
+  calLink?: string | null;
+  dailyRoomUrl?: string | null;
+  isLiveEnabled?: boolean;
+}
+
+export interface GuideConfigUpdate {
+  displayName?: string;
+  calLink?: string | null;
+  dailyRoomUrl?: string | null;
+  isLiveEnabled?: boolean;
+}
+
 export type GetMessagesParams = {
 page?: number;
 };
@@ -1632,5 +1687,19 @@ export type UpdateAdminGeometrix200 = {
 
 export type GetGeometrixSettings200 = {
   geometries: GeometrixSettingItem[];
+};
+
+export type GetLiveGuides200 = {
+  guides: LiveGuide[];
+};
+
+export type GetMyLiveSessions200 = {
+  sessions: LiveSession[];
+};
+
+export type CalWebhookBody = { [key: string]: unknown };
+
+export type GetAdminGuideConfigs200 = {
+  guideConfigs: GuideConfig[];
 };
 
