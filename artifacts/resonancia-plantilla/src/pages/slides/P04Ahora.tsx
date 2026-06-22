@@ -21,35 +21,35 @@ export default function P04Ahora() {
   ];
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden font-display" style={{ backgroundColor: "#060A0F", color: "#EDE1D3" }}>
+    <div className="relative w-screen h-screen overflow-hidden font-display" style={{ backgroundColor: "#1B060F", color: "#F4DAD5" }}>
 
       {/* Horizontal gold rule center */}
-      <div style={{ position: "absolute", top: "50%", left: 0, right: 0, height: "1px", backgroundColor: "rgba(190,150,80,0.08)" }} />
+      <div style={{ position: "absolute", top: "50%", left: 0, right: 0, height: "1px", backgroundColor: "rgba(212,175,55,0.08)" }} />
 
       <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", padding: "8vh 8vw", zIndex: 2 }}>
 
         <div style={{ marginBottom: "6vh" }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", color: "#BE9650", marginBottom: "1.5vh" }}>POR QUÉ AHORA</div>
-          <div style={{ width: "4vw", height: "1px", backgroundColor: "#BE9650", opacity: 0.5 }} />
+          <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", color: "#D4AF37", marginBottom: "1.5vh" }}>POR QUÉ AHORA</div>
+          <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.5 }} />
         </div>
 
         <div style={{ fontSize: "5.5vw", fontWeight: 700, lineHeight: 1.0, letterSpacing: "-0.03em", marginBottom: "8vh", maxWidth: "65vw" }}>
-          La ventana de oportunidad<br /><span style={{ color: "#BE9650" }}>se cierra.</span>
+          La ventana de oportunidad<br /><span style={{ color: "#D4AF37" }}>se cierra.</span>
         </div>
 
         <div style={{ display: "flex", gap: "3vw", flex: 1, alignItems: "flex-start" }}>
           {columns.map((c, i) => (
-            <div key={i} style={{ flex: 1, paddingLeft: i > 0 ? "3vw" : 0, borderLeft: i > 0 ? "1px solid rgba(190,150,80,0.15)" : "none" }}>
-              <div style={{ fontSize: "1.1vw", fontWeight: 500, letterSpacing: "0.15em", color: "rgba(237,225,211,0.4)", marginBottom: "2vh" }}>{c.label.toUpperCase()}</div>
-              <div style={{ fontSize: "8vw", fontWeight: 800, lineHeight: 0.9, letterSpacing: "-0.04em", color: "#BE9650", marginBottom: "2.5vh" }}>{c.stat}</div>
-              <div style={{ fontSize: "1.55vw", fontWeight: 400, lineHeight: 1.6, color: "rgba(237,225,211,0.75)", marginBottom: "1.5vh" }}>{c.context}</div>
-              <div style={{ fontSize: "1.1vw", fontWeight: 400, color: "rgba(237,225,211,0.3)", letterSpacing: "0.05em" }}>{c.sub}</div>
+            <div key={i} style={{ flex: 1, paddingLeft: i > 0 ? "3vw" : 0, borderLeft: i > 0 ? "1px solid rgba(212,175,55,0.15)" : "none" }}>
+              <div style={{ fontSize: "1.1vw", fontWeight: 500, letterSpacing: "0.15em", color: "rgba(244,218,213,0.4)", marginBottom: "2vh" }}>{c.label.toUpperCase()}</div>
+              <div style={{ fontSize: "8vw", fontWeight: 800, lineHeight: 0.9, letterSpacing: "-0.04em", color: "#D4AF37", marginBottom: "2.5vh" }}>{c.stat}</div>
+              <div style={{ fontSize: "1.55vw", fontWeight: 400, lineHeight: 1.6, color: "rgba(244,218,213,0.75)", marginBottom: "1.5vh" }}>{c.context}</div>
+              <div style={{ fontSize: "1.1vw", fontWeight: 400, color: "rgba(244,218,213,0.3)", letterSpacing: "0.05em" }}>{c.sub}</div>
             </div>
           ))}
         </div>
 
         <div style={{ marginTop: "auto", paddingTop: "4vh", display: "flex", justifyContent: "flex-end" }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(237,225,211,0.25)" }}>04 / 08</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>04 / 08</div>
         </div>
       </div>
     </div>

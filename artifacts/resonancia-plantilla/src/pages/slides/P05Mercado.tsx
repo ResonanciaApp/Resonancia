@@ -6,23 +6,23 @@ export default function P05Mercado() {
   ];
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden font-display" style={{ backgroundColor: "#060A0F", color: "#EDE1D3" }}>
+    <div className="relative w-screen h-screen overflow-hidden font-display" style={{ backgroundColor: "#1B060F", color: "#F4DAD5" }}>
 
       <div style={{ position: "relative", height: "100%", display: "flex", zIndex: 2 }}>
 
         {/* Left */}
         <div style={{ width: "42vw", padding: "8vh 4vw 8vh 8vw", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <div>
-            <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", color: "#BE9650", marginBottom: "1.5vh" }}>EL MERCADO</div>
-            <div style={{ width: "4vw", height: "1px", backgroundColor: "#BE9650", opacity: 0.5, marginBottom: "4vh" }} />
+            <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", color: "#D4AF37", marginBottom: "1.5vh" }}>EL MERCADO</div>
+            <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.5, marginBottom: "4vh" }} />
             <div style={{ fontSize: "5vw", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.03em", marginBottom: "3vh" }}>
-              Grande,<br />creciendo<br />y <span style={{ color: "#BE9650" }}>vacío.</span>
+              Grande,<br />creciendo<br />y <span style={{ color: "#D4AF37" }}>vacío.</span>
             </div>
-            <div style={{ fontSize: "1.5vw", fontWeight: 400, lineHeight: 1.7, color: "rgba(237,225,211,0.5)", maxWidth: "30vw" }}>
+            <div style={{ fontSize: "1.5vw", fontWeight: 400, lineHeight: 1.7, color: "rgba(244,218,213,0.5)", maxWidth: "30vw" }}>
               El bienestar digital en español crece a doble dígito anual. Ningún actor relevante está posicionado para liderarlo.
             </div>
           </div>
-          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(237,225,211,0.25)" }}>05 / 08</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>05 / 08</div>
         </div>
 
         {/* Right — TAM/SAM/SOM bars */}
@@ -30,15 +30,15 @@ export default function P05Mercado() {
           {tiers.map((t) => (
             <div key={t.label}>
               <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw", marginBottom: "1.2vh" }}>
-                <div style={{ fontSize: "1.6vw", fontWeight: 800, color: "#BE9650", width: "3.5vw" }}>{t.label}</div>
-                <div style={{ fontSize: "1.2vw", fontWeight: 400, color: "rgba(237,225,211,0.45)" }}>{t.sub}</div>
-                <div style={{ marginLeft: "auto", fontSize: "2.2vw", fontWeight: 700, color: "#EDE1D3" }}>{t.value}</div>
+                <div style={{ fontSize: "1.6vw", fontWeight: 800, color: "#D4AF37", width: "3.5vw" }}>{t.label}</div>
+                <div style={{ fontSize: "1.2vw", fontWeight: 400, color: "rgba(244,218,213,0.45)" }}>{t.sub}</div>
+                <div style={{ marginLeft: "auto", fontSize: "2.2vw", fontWeight: 700, color: "#F4DAD5" }}>{t.value}</div>
               </div>
               {/* Bar */}
-              <div style={{ width: "100%", height: "0.5vh", backgroundColor: "rgba(237,225,211,0.07)", borderRadius: "2px", marginBottom: "1vh" }}>
-                <div style={{ width: t.bar, height: "100%", backgroundColor: "#BE9650", borderRadius: "2px", opacity: t.label === "TAM" ? 0.35 : t.label === "SAM" ? 0.6 : 1 }} />
+              <div style={{ width: "100%", height: "0.5vh", backgroundColor: "rgba(244,218,213,0.07)", borderRadius: "2px", marginBottom: "1vh" }}>
+                <div style={{ width: t.bar, height: "100%", backgroundColor: "#D4AF37", borderRadius: "2px", opacity: t.label === "TAM" ? 0.35 : t.label === "SAM" ? 0.6 : 1 }} />
               </div>
-              <div style={{ fontSize: "1.1vw", fontWeight: 400, color: "rgba(237,225,211,0.35)", letterSpacing: "0.03em" }}>{t.note}</div>
+              <div style={{ fontSize: "1.1vw", fontWeight: 400, color: "rgba(244,218,213,0.35)", letterSpacing: "0.03em" }}>{t.note}</div>
             </div>
           ))}
         </div>
