@@ -1,22 +1,22 @@
 /**
- * Pantalla de reserva de sesión en vivo — WebView in-app.
+ * Pantalla de reserva de sesión en vivo — expo-web-browser (compatible con Expo Go).
  *
  * Flujo:
  *  1. "idle"    — info del guiador + botón "Elegir fecha y hora"
- *  2. "webview" — WebView fullscreen con Cal.com embebido
- *               — JS inyectado captura evento bookingSuccessful de Cal.com
- *               — onNavigationStateChange detecta URL de éxito (/booking/ path)
- *  3. "confirm" — pantalla de éxito con guiador, fecha y hora (si se parsearon)
+ *  2. Se abre Cal.com en el navegador del sistema (WebBrowser.openBrowserAsync)
+ *  3. Al volver: modal pregunta si la reserva se completó
+ *  4. "confirm" — pantalla de éxito
  */
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { Image as ExpoImage } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 import React, { useCallback, useRef, useState } from "react";
 import {
-  ActivityIndicator,
   Animated,
+  Modal,
   Pressable,
   ScrollView,
   StatusBar,
@@ -25,7 +25,6 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { WebView, type WebViewNavigation, type WebViewMessageEvent } from "react-native-webview";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { getGuide } from "@/data/guides";
@@ -39,92 +38,7 @@ const FOREGROUND = "#F4DAD5";
 const MUTED = "rgba(242,231,228,0.55)";
 const BORDER = "#3D0E16";
 
-type Phase = "idle" | "webview" | "confirm";
-
-interface BookingInfo {
-  date?: string;
-  time?: string;
-}
-
-// JS inyectado en el WebView para capturar evento bookingSuccessful de Cal.com
-const INJECTED_JS = `
-(function() {
-  window.addEventListener('message', function(e) {
-    try {
-      var raw = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
-      if (!raw) return;
-      var type = raw.type || raw.action || (raw.data && raw.data.type);
-      if (type === 'bookingSuccessful') {
-        window.ReactNativeWebView.postMessage(JSON.stringify({ _rn: 'bookingSuccessful', payload: raw }));
-      }
-    } catch(e) {}
-  });
-  var _lastUrl = location.href;
-  new MutationObserver(function() {
-    if (location.href !== _lastUrl) {
-      _lastUrl = location.href;
-      if (location.pathname.includes('/booking/')) {
-        setTimeout(function() {
-          try {
-            var dateEl = document.querySelector('[data-testid="booking-date"]') || document.querySelector('time');
-            var timeEl = document.querySelector('[data-testid="booking-time"]');
-            window.ReactNativeWebView.postMessage(JSON.stringify({
-              _rn: 'bookingUrl',
-              url: location.href,
-              dateText: dateEl ? dateEl.innerText : '',
-              timeText: timeEl ? timeEl.innerText : '',
-            }));
-          } catch(err) {
-            window.ReactNativeWebView.postMessage(JSON.stringify({ _rn: 'bookingUrl', url: location.href }));
-          }
-        }, 800);
-      }
-    }
-  }).observe(document, { subtree: true, childList: true });
-  true;
-})();
-`;
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-function parseBookingFromUrl(url: string): BookingInfo {
-  try {
-    const u = new URL(url);
-    const raw = u.searchParams.get("date") ?? u.searchParams.get("startTime") ?? u.searchParams.get("slot");
-    if (raw) {
-      const d = new Date(decodeURIComponent(raw));
-      if (!isNaN(d.getTime())) {
-        return {
-          date: d.toLocaleDateString("es", { weekday: "long", day: "numeric", month: "long" }),
-          time: d.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" }),
-        };
-      }
-    }
-  } catch {}
-  return {};
-}
-
-function parseBookingFromPayload(payload: unknown): BookingInfo {
-  try {
-    const p = payload as Record<string, unknown>;
-    const booking =
-      (p.data as Record<string, unknown>)?.booking ??
-      (p.booking as Record<string, unknown>) ??
-      p;
-    const start =
-      (booking as Record<string, unknown>)?.startTime ??
-      (booking as Record<string, unknown>)?.date;
-    if (typeof start === "string" || typeof start === "number") {
-      const d = new Date(start);
-      if (!isNaN(d.getTime())) {
-        return {
-          date: d.toLocaleDateString("es", { weekday: "long", day: "numeric", month: "long" }),
-          time: d.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" }),
-        };
-      }
-    }
-  } catch {}
-  return {};
-}
+type Phase = "idle" | "confirm";
 
 // ── Pantalla ──────────────────────────────────────────────────────────────────
 export default function ReservarSesionScreen() {
@@ -136,8 +50,7 @@ export default function ReservarSesionScreen() {
   const insets = useSafeAreaInsets();
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const [phase, setPhase] = useState<Phase>("idle");
-  const [bookingInfo, setBookingInfo] = useState<BookingInfo>({});
-  const [webviewLoading, setWebviewLoading] = useState(true);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const guide = getGuide(guideId);
   const displayName = guideDisplayName ?? guide.name;
@@ -154,92 +67,62 @@ export default function ReservarSesionScreen() {
     [fadeAnim],
   );
 
-  const handleOpenWebView = useCallback(() => {
+  const handleOpenBrowser = useCallback(async () => {
     if (!calLink) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    fadeTo(() => {
-      setWebviewLoading(true);
-      setPhase("webview");
+    await WebBrowser.openBrowserAsync(calLink, {
+      dismissButtonStyle: "close",
+      presentationStyle: WebBrowser.WebBrowserPresentationStyle.FULL_SCREEN,
+      toolbarColor: WARM_BLACK,
     });
-  }, [calLink, fadeTo]);
+    // Al cerrar el navegador, preguntamos si completó la reserva
+    setShowConfirmModal(true);
+  }, [calLink]);
 
-  const handleBookingSuccess = useCallback(
-    (info: BookingInfo) => {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      fadeTo(() => {
-        setBookingInfo(info);
-        setPhase("confirm");
-      });
-    },
-    [fadeTo],
-  );
+  const handleConfirmed = useCallback(() => {
+    setShowConfirmModal(false);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    fadeTo(() => setPhase("confirm"));
+  }, [fadeTo]);
 
-  const handleNavChange = useCallback(
-    (navState: WebViewNavigation) => {
-      if (phase !== "webview") return;
-      const { url } = navState;
-      if (!url) return;
-      if (/\/booking\/[a-zA-Z0-9_-]+/.test(url)) {
-        handleBookingSuccess(parseBookingFromUrl(url));
-      }
-    },
-    [phase, handleBookingSuccess],
-  );
+  const handleNotConfirmed = useCallback(() => {
+    setShowConfirmModal(false);
+  }, []);
 
-  const handleMessage = useCallback(
-    (e: WebViewMessageEvent) => {
-      try {
-        const msg = JSON.parse(e.nativeEvent.data) as Record<string, unknown>;
-        if (msg._rn === "bookingSuccessful") {
-          handleBookingSuccess(parseBookingFromPayload(msg.payload));
-        } else if (msg._rn === "bookingUrl") {
-          handleBookingSuccess(parseBookingFromUrl(String(msg.url ?? "")));
-        }
-      } catch {}
-    },
-    [handleBookingSuccess],
-  );
-
-  // ── Fase: webview ─────────────────────────────────────────────────────────
-  if (phase === "webview") {
-    return (
-      <View style={styles.root}>
-        <StatusBar barStyle="light-content" />
-        <View style={[styles.webviewHeader, { paddingTop: topPad }]}>
-          <Text style={styles.headerTitle} numberOfLines={1}>
-            Reservar con {displayName}
+  // ── Modal "¿Completaste la reserva?" ──────────────────────────────────────
+  const confirmModal = (
+    <Modal
+      visible={showConfirmModal}
+      transparent
+      animationType="fade"
+      onRequestClose={handleNotConfirmed}
+    >
+      <View style={styles.modalBackdrop}>
+        <View style={styles.modalCard}>
+          <Feather name="calendar" size={32} color={PRIMARY_GOLD} style={{ marginBottom: 12 }} />
+          <Text style={styles.modalTitle}>¿Completaste la reserva?</Text>
+          <Text style={styles.modalSub}>
+            Si elegiste fecha y hora en Cal.com, tu sesión quedó agendada.
           </Text>
           <Pressable
-            style={styles.closeBtn}
-            onPress={() => fadeTo(() => setPhase("idle"))}
-            hitSlop={12}
+            style={({ pressed }) => [styles.primaryBtn, { marginTop: 20, opacity: pressed ? 0.85 : 1 }]}
+            onPress={handleConfirmed}
           >
-            <Feather name="x" size={22} color={FOREGROUND} />
+            <LinearGradient
+              colors={["#D6AD5F", "#B47344"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={StyleSheet.absoluteFill}
+            />
+            <Text style={styles.primaryBtnText}>Sí, la completé</Text>
+          </Pressable>
+          <Pressable style={styles.secondaryBtn} onPress={handleNotConfirmed}>
+            <Text style={styles.secondaryBtnText}>Todavía no</Text>
           </Pressable>
         </View>
-        <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
-          <WebView
-            source={{ uri: calLink! }}
-            style={{ flex: 1, backgroundColor: WARM_BLACK }}
-            injectedJavaScript={INJECTED_JS}
-            onMessage={handleMessage}
-            onNavigationStateChange={handleNavChange}
-            onLoadStart={() => setWebviewLoading(true)}
-            onLoadEnd={() => setWebviewLoading(false)}
-            javaScriptEnabled
-            domStorageEnabled
-            allowsInlineMediaPlayback
-            mediaPlaybackRequiresUserAction={false}
-          />
-          {webviewLoading && (
-            <View style={styles.webviewLoader}>
-              <ActivityIndicator color={PRIMARY_GOLD} size="large" />
-            </View>
-          )}
-        </Animated.View>
       </View>
-    );
-  }
+    </Modal>
+  );
 
   // ── Fase: confirmación ────────────────────────────────────────────────────
   if (phase === "confirm") {
@@ -270,45 +153,20 @@ export default function ReservarSesionScreen() {
           </Text>
 
           <View style={styles.infoCard}>
-            {bookingInfo.date ? (
-              <>
-                <View style={styles.infoRow}>
-                  <Feather name="calendar" size={14} color={ACCENT_GOLD} style={styles.infoIcon} />
-                  <Text style={[styles.infoText, { color: FOREGROUND }]}>
-                    {bookingInfo.date}
-                  </Text>
-                </View>
-                {bookingInfo.time ? (
-                  <View style={[styles.infoRow, { marginTop: 10 }]}>
-                    <Feather name="clock" size={14} color={ACCENT_GOLD} style={styles.infoIcon} />
-                    <Text style={[styles.infoText, { color: FOREGROUND }]}>
-                      {bookingInfo.time}
-                    </Text>
-                  </View>
-                ) : null}
-                <View style={[styles.infoRow, { marginTop: 10 }]}>
-                  <Feather name="mail" size={14} color={MUTED} style={styles.infoIcon} />
-                  <Text style={styles.infoText}>Recibirás confirmación y enlace por email.</Text>
-                </View>
-              </>
-            ) : (
-              <>
-                <View style={styles.infoRow}>
-                  <Feather name="mail" size={14} color={ACCENT_GOLD} style={styles.infoIcon} />
-                  <Text style={styles.infoText}>
-                    Recibirás un email de Cal.com con fecha, hora y enlace para unirte.
-                  </Text>
-                </View>
-                <View style={[styles.infoRow, { marginTop: 10 }]}>
-                  <Feather name="calendar" size={14} color={ACCENT_GOLD} style={styles.infoIcon} />
-                  <Text style={styles.infoText}>
-                    El botón "Entrar" aparecerá en{" "}
-                    <Text style={{ color: FOREGROUND }}>Mis sesiones</Text>{" "}
-                    15 minutos antes de comenzar.
-                  </Text>
-                </View>
-              </>
-            )}
+            <View style={styles.infoRow}>
+              <Feather name="mail" size={14} color={ACCENT_GOLD} style={styles.infoIcon} />
+              <Text style={styles.infoText}>
+                Recibirás un email de Cal.com con fecha, hora y enlace para unirte.
+              </Text>
+            </View>
+            <View style={[styles.infoRow, { marginTop: 10 }]}>
+              <Feather name="calendar" size={14} color={ACCENT_GOLD} style={styles.infoIcon} />
+              <Text style={styles.infoText}>
+                El botón "Entrar" aparecerá en{" "}
+                <Text style={{ color: FOREGROUND }}>Mis sesiones</Text>{" "}
+                15 minutos antes de comenzar.
+              </Text>
+            </View>
           </View>
 
           <Pressable
@@ -394,7 +252,7 @@ export default function ReservarSesionScreen() {
           {calLink ? (
             <Pressable
               style={({ pressed }) => [styles.primaryBtn, { marginTop: 28, opacity: pressed ? 0.85 : 1 }]}
-              onPress={handleOpenWebView}
+              onPress={handleOpenBrowser}
             >
               <LinearGradient
                 colors={["#D6AD5F", "#B47344"]}
@@ -421,6 +279,8 @@ export default function ReservarSesionScreen() {
           </Pressable>
         </Animated.View>
       </ScrollView>
+
+      {confirmModal}
     </View>
   );
 }
@@ -428,24 +288,6 @@ export default function ReservarSesionScreen() {
 // ── Estilos ───────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: WARM_BLACK },
-
-  webviewHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: WARM_BLACK,
-    borderBottomWidth: 1,
-    borderBottomColor: BORDER,
-    paddingHorizontal: 16,
-    paddingBottom: 12,
-    gap: 8,
-  },
-  webviewLoader: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: WARM_BLACK,
-  },
-  closeBtn: { width: 44, height: 44, alignItems: "center", justifyContent: "center" },
 
   header: {
     flexDirection: "row",
@@ -547,5 +389,35 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_400Regular",
     textAlign: "center",
     lineHeight: 22,
+  },
+
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.65)",
+    justifyContent: "flex-end",
+    paddingHorizontal: 16,
+    paddingBottom: 32,
+  },
+  modalCard: {
+    backgroundColor: "#27070E",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: BORDER,
+    padding: 28,
+    alignItems: "center",
+  },
+  modalTitle: {
+    color: FOREGROUND,
+    fontSize: 20,
+    fontFamily: "PlayfairDisplay_700Bold",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  modalSub: {
+    color: MUTED,
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+    textAlign: "center",
+    lineHeight: 20,
   },
 });
