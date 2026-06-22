@@ -2,10 +2,16 @@
  * Sala de video en vivo — Daily.co
  *
  * Modos de operación:
- * 1. Modo nativo SDK (tras instalar @daily-co/react-native-daily-js y rebuild):
- *    Ver comentario "SDK_NATIVE_INTEGRATION" para activarlo.
- * 2. Modo navegador (modo actual, sin rebuild): abre la dailyRoomUrl en el
- *    navegador del dispositivo. El usuario vuelve a la app al terminar y valora.
+ * 1. Modo nativo SDK (activo cuando SDK_AVAILABLE = true + rebuild EAS):
+ *    La videollamada corre dentro de la app, sin salir al navegador.
+ * 2. Modo navegador (fallback cuando SDK_AVAILABLE = false):
+ *    Abre la sala en el navegador del dispositivo. El usuario vuelve y valora.
+ *
+ * ── PARA ACTIVAR EL SDK NATIVO ──────────────────────────────────────────────
+ *  1. Descomentar el import de Daily abajo
+ *  2. Cambiar: const SDK_AVAILABLE = true
+ *  3. Hacer rebuild EAS: eas build --profile development --platform ios/android
+ * ────────────────────────────────────────────────────────────────────────────
  *
  * Uso: navegar con params { roomUrl, sessionId, guideDisplayName }
  * router.push({ pathname: "/sesion-vivo/1", params: { roomUrl, guideDisplayName } })
@@ -30,17 +36,14 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-/* ── SDK_NATIVE_INTEGRATION ────────────────────────────────────────────────────
- * Cuando se instale @daily-co/react-native-daily-js y se haga rebuild del dev
- * client, descomentar la siguiente línea y el bloque "SDK nativo" más abajo:
- *
- * import Daily, { DailyCall, DailyMediaView } from "@daily-co/react-native-daily-js";
- *
- * El tipo SDK_AVAILABLE cambia a true y la sala usa video nativo en vez del
- * navegador del dispositivo.
- * ─────────────────────────────────────────────────────────────────────────── */
+// ── SDK_NATIVE_INTEGRATION ───────────────────────────────────────────────────
+// Descomentar tras hacer rebuild EAS con @daily-co/react-native-daily-js:
+//
+// import Daily from "@daily-co/react-native-daily-js";
+//
+// ─────────────────────────────────────────────────────────────────────────────
 
-const SDK_AVAILABLE = false; // Cambiar a true tras rebuild con SDK instalado
+const SDK_AVAILABLE = false; // Cambiar a true tras rebuild EAS
 
 // ── Paleta (coherente con el resto de la app) ─────────────────────────────────
 const WARM_BLACK = "#1B060F";
@@ -70,6 +73,13 @@ export default function SesionVivoScreen() {
   const [micOn, setMicOn] = useState(true);
   const [camOn, setCamOn] = useState(true);
   const [openingRoom, setOpeningRoom] = useState(false);
+  const [callError, setCallError] = useState<string | null>(null);
+
+  // Participantes Daily (activos solo con SDK_AVAILABLE = true)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [participants, setParticipants] = useState<Record<string, any>>({});
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const callRef = useRef<any>(null);
 
   const [rating, setRating] = useState(0);
   const [note, setNote] = useState("");
@@ -100,18 +110,57 @@ export default function SesionVivoScreen() {
     if (phase === "in-call") showControls();
   }, [phase, showControls]);
 
-  // ── SDK_NATIVE_INTEGRATION — callObject lifecycle ─────────────────────────
-  // Cuando SDK_AVAILABLE sea true y DailyCall esté importado, inicializar aquí:
-  //
-  // useEffect(() => {
-  //   if (!SDK_AVAILABLE || !roomUrl) return;
-  //   const call = Daily.createCallObject();
-  //   call.join({ url: roomUrl });
-  //   call.on("joined-meeting", () => setPhase("in-call"));
-  //   call.on("left-meeting", () => setPhase("rating"));
-  //   call.on("error", (e) => console.warn("daily error", e));
-  //   return () => { call.leave(); call.destroy(); };
-  // }, [roomUrl]);
+  // ── SDK_NATIVE_INTEGRATION — lifecycle del call object ────────────────────
+  // Este bloque se activa únicamente cuando SDK_AVAILABLE = true.
+  // Requiere que el import de Daily esté descomentado y un rebuild EAS.
+  const initialMicRef = useRef(micOn);
+  const initialCamRef = useRef(camOn);
+
+  useEffect(() => {
+    if (!SDK_AVAILABLE || !roomUrl) return;
+
+    // Requiere el import descomentado arriba
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const Daily = require("@daily-co/react-native-daily-js").default as any;
+    const call = Daily.createCallObject();
+    callRef.current = call;
+
+    const updateParticipants = () => {
+      setParticipants({ ...call.participants() });
+    };
+
+    call.on("joined-meeting", () => {
+      updateParticipants();
+      setPhase("in-call");
+    });
+    call.on("participant-joined", updateParticipants);
+    call.on("participant-updated", updateParticipants);
+    call.on("participant-left", updateParticipants);
+    call.on("left-meeting", () => setPhase("rating"));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    call.on("error", (e: any) => {
+      console.warn("[Daily] error", e);
+      setCallError("Ocurrió un error en la videollamada.");
+      setPhase("rating");
+    });
+
+    call
+      .join({
+        url: roomUrl,
+        startVideoOff: !initialCamRef.current,
+        startAudioOff: !initialMicRef.current,
+      })
+      .catch((err: unknown) => {
+        console.warn("[Daily] join error", err);
+        setCallError("No se pudo conectar a la sala.");
+        setPhase("rating");
+      });
+
+    return () => {
+      callRef.current = null;
+      call.leave().finally(() => call.destroy());
+    };
+  }, [roomUrl]);
   // ──────────────────────────────────────────────────────────────────────────
 
   const handleOpenInBrowser = useCallback(async () => {
@@ -131,19 +180,33 @@ export default function SesionVivoScreen() {
 
   const handleLeave = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    if (SDK_AVAILABLE && callRef.current) {
+      callRef.current.leave().catch(() => {});
+      // El evento "left-meeting" pone phase = "rating"; si falla, lo hacemos manual
+    }
     setPhase("rating");
   }, []);
 
   const handleToggleMic = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setMicOn((v) => !v);
-    // SDK_NATIVE_INTEGRATION: call.setLocalAudio(!micOn);
+    setMicOn((prev) => {
+      const next = !prev;
+      if (SDK_AVAILABLE && callRef.current) {
+        callRef.current.setLocalAudio(next);
+      }
+      return next;
+    });
   }, []);
 
   const handleToggleCam = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setCamOn((v) => !v);
-    // SDK_NATIVE_INTEGRATION: call.setLocalVideo(!camOn);
+    setCamOn((prev) => {
+      const next = !prev;
+      if (SDK_AVAILABLE && callRef.current) {
+        callRef.current.setLocalVideo(next);
+      }
+      return next;
+    });
   }, []);
 
   const handleSaveRating = useCallback(async () => {
@@ -186,6 +249,13 @@ export default function SesionVivoScreen() {
           <View style={styles.iconCircle}>
             <Feather name="star" size={40} color={PRIMARY_GOLD} />
           </View>
+
+          {callError && (
+            <View style={styles.errorCard}>
+              <Feather name="alert-circle" size={14} color={DESTRUCTIVE} style={{ marginRight: 8 }} />
+              <Text style={[styles.infoText, { color: DESTRUCTIVE }]}>{callError}</Text>
+            </View>
+          )}
 
           <Text style={styles.titleText}>
             ¿Cómo fue tu sesión
@@ -258,41 +328,88 @@ export default function SesionVivoScreen() {
     );
   }
 
-  // ── SDK_NATIVE_INTEGRATION — sala de video nativa ─────────────────────────
-  // Cuando SDK_AVAILABLE sea true y la sala esté conectada (phase === "in-call"):
-  //
-  // return (
-  //   <Pressable style={styles.root} onPress={showControls}>
-  //     <StatusBar hidden />
-  //     <View style={[StyleSheet.absoluteFill, { backgroundColor: WARM_BLACK }]} />
-  //     {/* Video del guiador pantalla completa */}
-  //     {remoteParticipant && (
-  //       <DailyMediaView sessionId={remoteParticipant.session_id}
-  //         style={StyleSheet.absoluteFill} objectFit="cover" zOrder={0} />
-  //     )}
-  //     {/* Miniatura propia esquina inferior derecha */}
-  //     {localParticipant && camOn && (
-  //       <View style={[styles.selfView, { bottom: bottomPad + 80, right: 16 }]}>
-  //         <DailyMediaView sessionId={localParticipant.session_id}
-  //           style={{ width: "100%", height: "100%" }} objectFit="cover" mirror zOrder={1} />
-  //       </View>
-  //     )}
-  //     <Animated.View style={[styles.callControls, { bottom: bottomPad, opacity: controlsAnim }]}>
-  //       <Pressable style={[styles.controlBtn, !micOn && styles.controlBtnOff]} onPress={handleToggleMic}>
-  //         <Feather name={micOn ? "mic" : "mic-off"} size={22} color={micOn ? FOREGROUND : MUTED} />
-  //       </Pressable>
-  //       <Pressable style={styles.leaveBtn} onPress={handleLeave}>
-  //         <Feather name="phone-off" size={22} color="#fff" />
-  //       </Pressable>
-  //       <Pressable style={[styles.controlBtn, !camOn && styles.controlBtnOff]} onPress={handleToggleCam}>
-  //         <Feather name={camOn ? "video" : "video-off"} size={22} color={camOn ? FOREGROUND : MUTED} />
-  //       </Pressable>
-  //     </Animated.View>
-  //   </Pressable>
-  // );
-  // ──────────────────────────────────────────────────────────────────────────
+  // ── Pantalla: sala de video nativa (SDK_AVAILABLE = true + in-call) ────────
+  if (SDK_AVAILABLE && phase === "in-call") {
+    // Requiere el import descomentado y rebuild EAS. El require() aquí adentro
+    // solo se evalúa en tiempo de ejecución cuando ambas condiciones son true.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const DailyMediaView = require("@daily-co/react-native-daily-js").DailyMediaView as React.ComponentType<any>;
 
-  // ── Pantalla: lobby / enlace al navegador ─────────────────────────────────
+    const allParticipants = Object.values(participants);
+    const localParticipant = allParticipants.find((p) => p.local) ?? null;
+    const remoteParticipant = allParticipants.find((p) => !p.local) ?? null;
+
+    return (
+      <Pressable style={styles.root} onPress={showControls}>
+        <StatusBar hidden />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: WARM_BLACK }]} />
+
+        {/* Video del guiador a pantalla completa */}
+        {remoteParticipant ? (
+          <DailyMediaView
+            sessionId={remoteParticipant.session_id}
+            style={StyleSheet.absoluteFill}
+            objectFit="cover"
+            zOrder={0}
+          />
+        ) : (
+          // Placeholder mientras el guía no tiene video
+          <View style={[StyleSheet.absoluteFill, styles.waitingOverlay]}>
+            <ActivityIndicator color={PRIMARY_GOLD} size="large" />
+            <Text style={[styles.subtitleText, { marginTop: 16 }]}>
+              Esperando al guía…
+            </Text>
+          </View>
+        )}
+
+        {/* Miniatura propia — esquina inferior derecha */}
+        {localParticipant && camOn && (
+          <View style={[styles.selfView, { bottom: bottomPad + 88, right: 16 }]}>
+            <DailyMediaView
+              sessionId={localParticipant.session_id}
+              style={{ width: "100%", height: "100%" }}
+              objectFit="cover"
+              mirror
+              zOrder={1}
+            />
+          </View>
+        )}
+
+        {/* Controles flotantes */}
+        <Animated.View
+          style={[styles.callControls, { bottom: bottomPad, opacity: controlsAnim }]}
+        >
+          <Pressable
+            style={[styles.controlBtn, !micOn && styles.controlBtnOff]}
+            onPress={handleToggleMic}
+          >
+            <Feather
+              name={micOn ? "mic" : "mic-off"}
+              size={22}
+              color={micOn ? FOREGROUND : MUTED}
+            />
+          </Pressable>
+
+          <Pressable style={styles.leaveBtn} onPress={handleLeave}>
+            <Feather name="phone-off" size={22} color="#fff" />
+          </Pressable>
+
+          <Pressable
+            style={[styles.controlBtn, !camOn && styles.controlBtnOff]}
+            onPress={handleToggleCam}
+          >
+            <Feather
+              name={camOn ? "video" : "video-off"}
+              size={22}
+              color={camOn ? FOREGROUND : MUTED}
+            />
+          </Pressable>
+        </Animated.View>
+      </Pressable>
+    );
+  }
+
+  // ── Pantalla: lobby / enlace al navegador (fallback o pre-call) ───────────
   return (
     <View style={[styles.root, { paddingTop: topPad, paddingBottom: bottomPad }]}>
       <StatusBar hidden />
@@ -326,7 +443,7 @@ export default function SesionVivoScreen() {
           <Text style={styles.subtitleText}>Con {guideDisplayName}</Text>
         ) : null}
 
-        {/* Info estado */}
+        {/* Info: modo navegador activo */}
         {!SDK_AVAILABLE && (
           <View style={styles.infoCard}>
             <Feather name="info" size={13} color={ACCENT_GOLD} style={{ marginRight: 8, marginTop: 1 }} />
@@ -370,26 +487,34 @@ export default function SesionVivoScreen() {
 
         {/* Botón entrar */}
         {roomUrl ? (
-          <Pressable
-            style={({ pressed }) => [styles.primaryBtn, { opacity: pressed ? 0.85 : 1 }]}
-            onPress={handleOpenInBrowser}
-            disabled={openingRoom}
-          >
-            <LinearGradient
-              colors={["#D6AD5F", "#B47344"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={StyleSheet.absoluteFill}
-            />
-            {openingRoom ? (
-              <ActivityIndicator color={WARM_BLACK} size="small" />
-            ) : (
-              <>
-                <Feather name="external-link" size={16} color={WARM_BLACK} style={{ marginRight: 8 }} />
-                <Text style={styles.primaryBtnText}>Entrar a la sala</Text>
-              </>
-            )}
-          </Pressable>
+          SDK_AVAILABLE ? (
+            // Modo SDK: el lifecycle useEffect ya llamó join(); este botón no se usa
+            <View style={styles.infoCard}>
+              <ActivityIndicator color={PRIMARY_GOLD} size="small" style={{ marginRight: 10 }} />
+              <Text style={styles.infoText}>Conectando a la sala…</Text>
+            </View>
+          ) : (
+            <Pressable
+              style={({ pressed }) => [styles.primaryBtn, { opacity: pressed ? 0.85 : 1 }]}
+              onPress={handleOpenInBrowser}
+              disabled={openingRoom}
+            >
+              <LinearGradient
+                colors={["#D6AD5F", "#B47344"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={StyleSheet.absoluteFill}
+              />
+              {openingRoom ? (
+                <ActivityIndicator color={WARM_BLACK} size="small" />
+              ) : (
+                <>
+                  <Feather name="external-link" size={16} color={WARM_BLACK} style={{ marginRight: 8 }} />
+                  <Text style={styles.primaryBtnText}>Entrar a la sala</Text>
+                </>
+              )}
+            </Pressable>
+          )
         ) : (
           <View style={styles.noRoomCard}>
             <Feather name="alert-circle" size={16} color={MUTED} style={{ marginRight: 8 }} />
@@ -498,6 +623,17 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
 
+  errorCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(230,57,70,0.12)",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "rgba(230,57,70,0.3)",
+    padding: 12,
+    alignSelf: "stretch",
+  },
+
   // Controles pre-llamada (mic/cam toggle)
   preCallControls: {
     flexDirection: "row",
@@ -574,7 +710,12 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_400Regular",
   },
 
-  // Sala de video (para uso con SDK nativo)
+  // ── Sala de video nativa (SDK_AVAILABLE = true) ───────────────────────────
+  waitingOverlay: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: WARM_BLACK,
+  },
   selfView: {
     position: "absolute",
     width: 100,
