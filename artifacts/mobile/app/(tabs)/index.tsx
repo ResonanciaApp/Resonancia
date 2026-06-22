@@ -152,10 +152,20 @@ export default function HomeScreen2() {
 
   const { version: catalogVersion } = useCatalog();
   // Recientes — últimas sesiones agregadas al catálogo
-  const recentSessions = React.useMemo<Session[]>(
-    () => [...SESSIONS].sort((a, b) => parseInt(b.id) - parseInt(a.id)).slice(0, 10),
-    [catalogVersion],
-  );
+  const recentSessions = React.useMemo<Session[]>(() => {
+    return [...SESSIONS].sort((a, b) => {
+      const aNum = parseInt(a.id); const bNum = parseInt(b.id);
+      const aIsNum = !isNaN(aNum);  const bIsNum = !isNaN(bNum);
+      if (!aIsNum && bIsNum)  return -1; // usr_* (admin) primero
+      if (aIsNum  && !bIsNum) return  1;
+      if (!aIsNum && !bIsNum) {
+        const aT = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bT = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bT - aT;
+      }
+      return bNum - aNum;
+    }).slice(0, 10);
+  }, [catalogVersion]);
 
   const { data: popular } = useGetPopularSessions(
     { limit: 10 },
