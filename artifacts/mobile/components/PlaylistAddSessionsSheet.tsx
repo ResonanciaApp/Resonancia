@@ -47,7 +47,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { AMBIENT_MAP, AUDIO_MAP } from "@/config/audio-map";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
-import { usePlayer } from "@/context/PlayerContext";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
@@ -257,7 +256,6 @@ export function PlaylistAddSessionsSheet({
   const insets    = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState<Tab>("Sesiones sugeridas");
   const { playlists, addToPlaylist, removeFromPlaylist, isInPlaylist } = useFoldersPlaylists();
-  const { history } = usePlayer();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
 
   // ── Slide entre tabs ─────────────────────────────────────────────────────
@@ -373,18 +371,28 @@ export function PlaylistAddSessionsSheet({
     snapshot.current.music = shuffle(
       pool.filter((s) => MUSIC_CATEGORIES.has(s.categoryId))
     ).slice(0, 30);
-    const recent: Session[] = [];
-    if (history?.length) {
-      const seen = new Set<string>();
-      // history ya está ordenado más-reciente-primero (PlayerContext prepend)
-      for (const entry of history) {
-        if (seen.has(entry.sessionId)) continue;
-        seen.add(entry.sessionId);
-        const s = SESSIONS.find((x) => x.id === entry.sessionId);
-        if (s && !inPl.has(s.id)) recent.push(s);
-      }
-    }
-    snapshot.current.recent = recent.slice(0, 30);
+    // Recientes = sesiones añadidas más recientemente al catálogo
+    // (misma lógica que "Nuevas sesiones" en la pantalla de inicio)
+    const recent = pool
+      .slice()
+      .sort((a, b) => {
+        const aNum = parseInt(a.id, 10);
+        const bNum = parseInt(b.id, 10);
+        const aIsNum = !isNaN(aNum);
+        const bIsNum = !isNaN(bNum);
+        if (a.isNew && !b.isNew) return -1;
+        if (!a.isNew && b.isNew) return 1;
+        if (!aIsNum && bIsNum) return -1;
+        if (aIsNum && !bIsNum) return 1;
+        if (!aIsNum && !bIsNum) {
+          const aT = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const bT = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return bT - aT;
+        }
+        return bNum - aNum;
+      })
+      .slice(0, 30);
+    snapshot.current.recent = recent;
   }, [visible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [tick, forceUpdate] = useState(0);
@@ -465,7 +473,7 @@ export function PlaylistAddSessionsSheet({
             <View style={styles.emptyWrap}>
               <Feather name="music" size={40} color={MUTED} style={{ marginBottom: 12 }} />
               <Text style={styles.emptyText}>
-                {activeTab === "Recientes" ? "Aún no escuchaste ninguna sesión" : "No hay más sesiones disponibles"}
+                {"No hay más sesiones disponibles"}
               </Text>
             </View>
           ) : (
