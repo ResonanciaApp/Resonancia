@@ -35,7 +35,6 @@ import {
 import Animated, {
   cancelAnimation,
   Easing,
-  runOnJS,
   useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
@@ -284,13 +283,13 @@ export function PlaylistAddSessionsSheet({
       const newIdx  = TABS.indexOf(newTab);
       if (prevIdx === newIdx) return prev;
       const dir = newIdx > prevIdx ? 1 : -1;
+      // Montar el nuevo contenido off-screen antes de empezar el slide:
+      // 40 ms de margen para que el primer frame de animación salga antes
+      // de que React monte las 30 filas nuevas (ambos pueden coexistir porque
+      // el translateX corre en el UI thread y no bloquea el JS thread).
       slideX.value = dir * contentWidth.current;
-      // Actualizar la lista DESPUÉS de que la animación termine (evita jank)
-      slideX.value = withTiming(
-        0,
-        { duration: 240, easing: Easing.out(Easing.cubic) },
-        (finished) => { if (finished) runOnJS(setDisplayTab)(newTab); },
-      );
+      setTimeout(() => setDisplayTab(newTab), 40);
+      slideX.value = withTiming(0, { duration: 260, easing: Easing.out(Easing.cubic) });
       return newTab;
     });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
