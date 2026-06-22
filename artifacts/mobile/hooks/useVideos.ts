@@ -2,7 +2,7 @@ import { useListVideos, getListVideosQueryKey } from "@workspace/api-client-reac
 import type { CatalogVideo as ApiVideo } from "@workspace/api-client-react";
 import { VIDEOS as STATIC_VIDEOS, type VideoItem } from "@/data/videos";
 
-const CDN_HOST = process.env.EXPO_PUBLIC_BUNNY_CDN_HOSTNAME ?? "";
+const CDN_HOST = process.env.EXPO_PUBLIC_BUNNY_CDN_HOSTNAME || "vz-881ead65-839.b-cdn.net";
 
 /**
  * Convierte un video de la API al tipo VideoItem que usa la app.
