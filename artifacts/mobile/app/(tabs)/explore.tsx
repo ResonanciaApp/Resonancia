@@ -446,7 +446,9 @@ export default function ExploreScreen() {
                 <Text style={styles.sectionTitle}>Explorar todo</Text>
               </View>
               <View style={[styles.temaGrid, { marginTop: -6 }]}>
-                {TEMAS.map((t) => (
+                {TEMAS.map((t, i) => {
+                  const isLeft = i % 2 === 0;
+                  return (
                   <Pressable
                     key={t.id}
                     onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
@@ -457,6 +459,10 @@ export default function ExploreScreen() {
                         height: 56,
                         opacity: pressed ? 0.75 : 1,
                         backgroundColor: "rgba(255,255,255,0.06)",
+                        borderTopRightRadius: isLeft ? 0 : 14,
+                        borderBottomRightRadius: isLeft ? 0 : 14,
+                        borderTopLeftRadius: isLeft ? 14 : 0,
+                        borderBottomLeftRadius: isLeft ? 14 : 0,
                       },
                     ]}
                   >
@@ -473,7 +479,8 @@ export default function ExploreScreen() {
                       {t.label}
                     </Text>
                   </Pressable>
-                ))}
+                  );
+                })}
               </View>
             </View>
 
