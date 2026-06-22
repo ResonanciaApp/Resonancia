@@ -69,7 +69,7 @@ const clerkAppearance = {
   options: {
     logoPlacement: "inside" as const,
     logoLinkUrl: basePath || "/",
-    logoImageUrl: `${window.location.origin}${basePath}/logo.svg`,
+    logoImageUrl: `${window.location.origin}${basePath}/logo.png`,
   },
   variables: {
     colorPrimary: "#D4AF37",
@@ -182,7 +182,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen bg-background text-foreground">
       <aside className="w-64 border-r border-border bg-card flex-col hidden md:flex">
         <div className="p-6 flex items-center gap-3">
-          <img src={`${basePath}/logo.svg`} alt="Resonancia" className="w-8 h-8" />
+          <img src={`${basePath}/logo.png`} alt="Resonancia" className="w-8 h-8 rounded-lg" />
           <span className="font-bold text-lg text-primary tracking-tight">
             RESONANCIA
           </span>
