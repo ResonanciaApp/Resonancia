@@ -35,6 +35,7 @@ import {
 import Animated, {
   cancelAnimation,
   Easing,
+  runOnJS,
   useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
@@ -265,7 +266,10 @@ export function PlaylistAddSessionsSheet({
   onClose: () => void;
 }) {
   const insets    = useSafeAreaInsets();
-  const [activeTab, setActiveTab] = useState<Tab>("Sesiones sugeridas");
+  // colorTab: chip dorado (actualización inmediata al tap)
+  // displayTab: datos del FlatList (actualización solo al terminar la animación)
+  const [colorTab,   setColorTab]   = useState<Tab>("Sesiones sugeridas");
+  const [displayTab, setDisplayTab] = useState<Tab>("Sesiones sugeridas");
   const { playlists, addToPlaylist, removeFromPlaylist, isInPlaylist } = useFoldersPlaylists();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
 
@@ -275,13 +279,18 @@ export function PlaylistAddSessionsSheet({
   const slideStyle = useAnimatedStyle(() => ({ transform: [{ translateX: slideX.value }] }));
 
   const switchTab = useCallback((newTab: Tab) => {
-    setActiveTab((prev) => {
+    setColorTab((prev) => {
       const prevIdx = TABS.indexOf(prev);
       const newIdx  = TABS.indexOf(newTab);
       if (prevIdx === newIdx) return prev;
       const dir = newIdx > prevIdx ? 1 : -1;
       slideX.value = dir * contentWidth.current;
-      slideX.value = withTiming(0, { duration: 240, easing: Easing.out(Easing.cubic) });
+      // Actualizar la lista DESPUÉS de que la animación termine (evita jank)
+      slideX.value = withTiming(
+        0,
+        { duration: 240, easing: Easing.out(Easing.cubic) },
+        (finished) => { if (finished) runOnJS(setDisplayTab)(newTab); },
+      );
       return newTab;
     });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -373,7 +382,8 @@ export function PlaylistAddSessionsSheet({
 
   useEffect(() => {
     if (!visible) return;
-    setActiveTab("Sesiones sugeridas");
+    setColorTab("Sesiones sugeridas");
+    setDisplayTab("Sesiones sugeridas");
     const inPl = new Set(playlist?.sessionIds ?? []);
     const pool = SESSIONS.filter((s) => !inPl.has(s.id));
     snapshot.current.suggested = shuffle(
@@ -410,11 +420,11 @@ export function PlaylistAddSessionsSheet({
   useEffect(() => { if (visible) forceUpdate((n) => n + 1); }, [visible]);
 
   const data = useMemo(() => {
-    if (activeTab === "Sesiones sugeridas") return snapshot.current.suggested;
-    if (activeTab === "Música sugerida")    return snapshot.current.music;
+    if (displayTab === "Sesiones sugeridas") return snapshot.current.suggested;
+    if (displayTab === "Música sugerida")    return snapshot.current.music;
     return snapshot.current.recent;
   // tick se incrementa tras poblar el snapshot → memo re-lee datos frescos
-  }, [activeTab, tick]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [displayTab, tick]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // previewId sale de los deps: SessionRow.memo solo re-renderiza filas
   // cuyo estado de preview cambia, no todas las 30 al mismo tiempo.
@@ -463,7 +473,7 @@ export function PlaylistAddSessionsSheet({
           contentContainerStyle={styles.tabsWrapper}
         >
           {TABS.map((tab) => {
-            const active = tab === activeTab;
+            const active = tab === colorTab;
             return (
               <Pressable
                 key={tab}
