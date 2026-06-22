@@ -1589,3 +1589,9 @@ id = "4LUFrJMIfIJPuKzkzIhp3"
 uri = "file://pagos-resonancia.pdf"
 type = "pdf"
 title = "RESONANCIA — Guía de Pagos"
+
+[[outputs]]
+id = "FITTYlFlb_1kRhAqWU3pQ"
+uri = "file://daily-eas-rebuild.pdf"
+type = "pdf"
+title = "Daily.co SDK — Recordatorio de Activación"
