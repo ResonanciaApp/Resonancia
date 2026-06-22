@@ -133,7 +133,7 @@ const MEDITATION_DEFAULTS = ["Mindfulness","Visualización","Respiración","Yoga
 const SOUND_DEFAULTS = ["Lluvia","Océano","Bosque","Río","Fuego","Viento","Ballenas","Pájaros","Cueva","Tormenta"];
 const THEME_TAGS = ["Yoga","Respiración","Ansiedad","Rituales","Crecimiento","ASMR","Estrés","Spa","Familia"];
 const OTHER_THEME_TAGS = ["Para la ansiedad","Energiza tus mañanas","Foco y concentración","Suelto la Rabia","Crecimiento personal","Armonía familiar","Respiración consciente","Meditaciones Activas","Astrología"];
-const SLEEP_DEFAULTS = ["Sonidos Binaurales","Música Delta","Música Theta","ASMR Relajante","Meditación Nocturna"];
+const SLEEP_DEFAULTS = ["Sonidos Binaurales","Sonidos Ancestrales","ASMR Expansivos"];
 
 function EditDialog({
   submission,
