@@ -376,7 +376,8 @@ export function PlaylistAddSessionsSheet({
     const recent: Session[] = [];
     if (history?.length) {
       const seen = new Set<string>();
-      for (const entry of [...history].reverse()) {
+      // history ya está ordenado más-reciente-primero (PlayerContext prepend)
+      for (const entry of history) {
         if (seen.has(entry.sessionId)) continue;
         seen.add(entry.sessionId);
         const s = SESSIONS.find((x) => x.id === entry.sessionId);
