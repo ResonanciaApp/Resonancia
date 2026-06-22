@@ -1651,7 +1651,12 @@ export const EditSubmissionBody = zod.object({
   "skipDetail": zod.boolean().default(editSubmissionBodySkipDetailDefault),
   "isFeatured": zod.boolean().optional(),
   "isNew": zod.boolean().optional(),
-  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish()
+  "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
+  "ancestralTag": zod.string().nullish(),
+  "meditationTag": zod.string().nullish(),
+  "soundTag": zod.string().nullish(),
+  "sleepTag": zod.string().nullish(),
+  "themeTag": zod.array(zod.string()).optional(),
 })
 
 export const editSubmissionResponseSkipDetailDefault = false;

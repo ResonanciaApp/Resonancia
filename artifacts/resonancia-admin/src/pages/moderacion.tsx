@@ -22,6 +22,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Tabs,
   TabsList,
@@ -42,6 +44,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  TagOptionSelector,
+  SingleTagOptionSelector,
+} from "@/components/TagOptionSelector";
 
 const STATUS_TABS: { value: GetPendingSubmissionsStatus; label: string }[] = [
   { value: "pending", label: "Pendientes" },
@@ -121,6 +127,13 @@ function RejectDialog({
   );
 }
 
+// Defaults por categoryId para los selectores de tags
+const ANCESTRAL_DEFAULTS = ["Cuencos Tibetanos","Cuencos de Cuarzo","Gongs","Gongs Planetarios","Cuencos y Gongs","Campanas","Flautas","Digeridoo","Tambores","Full Instrumentos","Vientos","Cantos","Percusión","Selva","Mix de Cuencos"];
+const MEDITATION_DEFAULTS = ["Mindfulness","Visualización","Respiración","Yoga Nidra","Meditación Zen","Kundalini","Metta","Body Scan"];
+const SOUND_DEFAULTS = ["Lluvia","Océano","Bosque","Río","Fuego","Viento","Ballenas","Pájaros","Cueva","Tormenta"];
+const THEME_DEFAULTS = ["Para la ansiedad","Para dormir","Para concentrarse","Para el estrés","Para el dolor","Para la tristeza","Para la energía","Para la calma"];
+const SLEEP_DEFAULTS = ["Sonidos Binaurales","Música Delta","Música Theta","ASMR Relajante","Meditación Nocturna"];
+
 function EditDialog({
   submission,
   open,
@@ -133,7 +146,18 @@ function EditDialog({
   const qc = useQueryClient();
   const [title, setTitle] = useState(submission.title);
   const [subtitle, setSubtitle] = useState(submission.subtitle);
+  const [duration, setDuration] = useState(String(submission.duration ?? ""));
+  const [description, setDescription] = useState(submission.description ?? "");
+  const [isPremium, setIsPremium] = useState(submission.isPremium);
+  const [isFeatured, setIsFeatured] = useState(submission.isFeatured);
+  const [isNew, setIsNew] = useState(submission.isNew);
   const [voiceTag, setVoiceTag] = useState(submission.voiceTag ?? "__none__");
+  const [ancestralTag, setAncestralTag] = useState(submission.ancestralTag ?? "");
+  const [meditationTag, setMeditationTag] = useState(submission.meditationTag ?? "");
+  const [soundTag, setSoundTag] = useState(submission.soundTag ?? "");
+  const [sleepTag, setSleepTag] = useState(submission.sleepTag ?? "");
+  const [themeTag, setThemeTag] = useState<string[]>(submission.themeTag ?? []);
+
   const mutation = useEditSubmission({
     mutation: {
       onSuccess: () => {
@@ -145,63 +169,167 @@ function EditDialog({
     },
   });
 
+  const catId = submission.categoryId;
+  const isAncestral   = catId === "sonidos-ancestrales";
+  const isMeditation  = catId === "meditaciones-guiadas";
+  const isMusic       = catId === "musica-y-sonidos";
+
+  const toggleTheme = (tag: string) =>
+    setThemeTag((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Editar envío</DialogTitle>
+          <DialogTitle>Editar sesión</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="edit-title">Título</Label>
-            <Input
-              id="edit-title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+        <ScrollArea className="max-h-[70vh] pr-4">
+          <div className="space-y-5 py-1">
+
+            {/* Básicos */}
+            <div className="space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Básicos</p>
+              <div className="space-y-2">
+                <Label htmlFor="edit-title">Título</Label>
+                <Input id="edit-title" value={title} onChange={(e) => setTitle(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-subtitle">Subtítulo</Label>
+                <Input id="edit-subtitle" value={subtitle} onChange={(e) => setSubtitle(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-duration">Duración (minutos)</Label>
+                <Input
+                  id="edit-duration"
+                  type="number"
+                  min={1}
+                  max={600}
+                  value={duration}
+                  onChange={(e) => setDuration(e.target.value)}
+                  placeholder="Ej: 30"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-description">Descripción</Label>
+                <Textarea
+                  id="edit-description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={3}
+                  placeholder="Descripción de la sesión…"
+                />
+              </div>
+            </div>
+
+            {/* Opciones */}
+            <div className="space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Opciones</p>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="edit-premium">Premium</Label>
+                <Switch id="edit-premium" checked={isPremium} onCheckedChange={setIsPremium} />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="edit-featured">Destacada</Label>
+                <Switch id="edit-featured" checked={isFeatured} onCheckedChange={setIsFeatured} />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="edit-new">Marcar como nueva</Label>
+                <Switch id="edit-new" checked={isNew} onCheckedChange={setIsNew} />
+              </div>
+            </div>
+
+            {/* Subcategoría según categoría */}
+            {isAncestral && (
+              <SingleTagOptionSelector
+                tagType="ancestral"
+                defaults={ANCESTRAL_DEFAULTS}
+                label="Subcategoría Ancestral"
+                selected={ancestralTag}
+                onSelect={setAncestralTag}
+              />
+            )}
+            {isMeditation && (
+              <>
+                <SingleTagOptionSelector
+                  tagType="meditation"
+                  defaults={MEDITATION_DEFAULTS}
+                  label="Subcategoría Meditación"
+                  selected={meditationTag}
+                  onSelect={setMeditationTag}
+                />
+                <div className="space-y-2">
+                  <Label>Etiqueta de voz</Label>
+                  <Select value={voiceTag} onValueChange={setVoiceTag}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sin etiqueta" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="__none__">Sin etiqueta</SelectItem>
+                      <SelectItem value="Guiada">Guiada</SelectItem>
+                      <SelectItem value="Sin voz">Sin voz</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </>
+            )}
+            {isMusic && (
+              <SingleTagOptionSelector
+                tagType="sound"
+                defaults={SOUND_DEFAULTS}
+                label="Subcategoría Música/Sonidos"
+                selected={soundTag}
+                onSelect={setSoundTag}
+              />
+            )}
+
+            {/* Etiquetas temáticas (Grupo 1) */}
+            <TagOptionSelector
+              tagType="theme"
+              defaults={THEME_DEFAULTS}
+              label="Etiquetas temáticas (Grupo 1)"
+              selected={themeTag}
+              onToggle={toggleTheme}
+            />
+
+            {/* Etiqueta de sueño (Grupo 2) */}
+            <SingleTagOptionSelector
+              tagType="sleep"
+              defaults={SLEEP_DEFAULTS}
+              label="Etiqueta de sueño (Grupo 2)"
+              selected={sleepTag}
+              onSelect={setSleepTag}
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-subtitle">Subtítulo</Label>
-            <Input
-              id="edit-subtitle"
-              value={subtitle}
-              onChange={(e) => setSubtitle(e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>Etiqueta de voz</Label>
-            <Select value={voiceTag} onValueChange={setVoiceTag}>
-              <SelectTrigger>
-                <SelectValue placeholder="Sin etiqueta" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="__none__">Sin etiqueta</SelectItem>
-                <SelectItem value="Guiada">Guiada</SelectItem>
-                <SelectItem value="Sin voz">Sin voz</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
+        </ScrollArea>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
           <Button
-            disabled={
-              title.trim().length === 0 ||
-              subtitle.trim().length === 0 ||
-              mutation.isPending
-            }
-            onClick={() =>
+            disabled={title.trim().length === 0 || subtitle.trim().length === 0 || mutation.isPending}
+            onClick={() => {
+              const dur = parseInt(duration, 10);
               mutation.mutate({
                 id: submission.id,
                 data: {
                   title: title.trim(),
                   subtitle: subtitle.trim(),
+                  ...(duration && !isNaN(dur) ? { duration: dur } : {}),
+                  ...(description.trim() ? { description: description.trim() } : {}),
+                  isPremium,
+                  isFeatured,
+                  isNew,
                   voiceTag: voiceTag === "__none__" ? null : (voiceTag as "Guiada" | "Sin voz"),
+                  ...(isAncestral ? { ancestralTag: ancestralTag || null } : {}),
+                  ...(isMeditation ? { meditationTag: meditationTag || null } : {}),
+                  ...(isMusic ? { soundTag: soundTag || null } : {}),
+                  sleepTag: sleepTag || null,
+                  themeTag,
                 },
-              })
-            }
+              });
+            }}
           >
             Guardar
           </Button>

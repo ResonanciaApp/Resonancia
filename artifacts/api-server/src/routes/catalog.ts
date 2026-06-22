@@ -581,6 +581,11 @@ router.patch(
     if (data.isFeatured !== undefined) updates.isFeatured = data.isFeatured;
     if (data.isNew !== undefined) updates.isNew = data.isNew;
     if (data.voiceTag !== undefined) updates.voiceTag = data.voiceTag;
+    if (data.ancestralTag !== undefined) updates.ancestralTag = data.ancestralTag ?? null;
+    if (data.meditationTag !== undefined) updates.meditationTag = data.meditationTag ?? null;
+    if (data.soundTag !== undefined) updates.soundTag = data.soundTag ?? null;
+    if (data.sleepTag !== undefined) updates.sleepTag = data.sleepTag ?? null;
+    if (data.themeTag !== undefined) updates.themeTag = data.themeTag;
 
     try {
       const [updated] = await db

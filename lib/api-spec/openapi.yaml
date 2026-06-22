@@ -4162,6 +4162,22 @@ components:
           type: string
           nullable: true
           enum: [Guiada, "Sin voz"]
+        ancestralTag:
+          type: string
+          nullable: true
+        meditationTag:
+          type: string
+          nullable: true
+        soundTag:
+          type: string
+          nullable: true
+        sleepTag:
+          type: string
+          nullable: true
+        themeTag:
+          type: array
+          items:
+            type: string
     AdminUser:
       type: object
       properties:

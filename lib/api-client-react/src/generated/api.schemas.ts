@@ -1123,6 +1123,11 @@ export interface ReviewEditBody {
   isFeatured?: boolean;
   isNew?: boolean;
   voiceTag?: ReviewEditBodyVoiceTag;
+  ancestralTag?: string | null;
+  meditationTag?: string | null;
+  soundTag?: string | null;
+  sleepTag?: string | null;
+  themeTag?: string[];
 }
 
 export type AdminUserRole = typeof AdminUserRole[keyof typeof AdminUserRole];

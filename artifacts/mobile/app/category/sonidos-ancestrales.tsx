@@ -14,6 +14,7 @@ import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { AUDIO_MAP } from "@/config/audio-map";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
+import { useCatalog } from "@/context/CatalogContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { SESSIONS, type Session } from "@/data/sessions";
@@ -40,16 +41,23 @@ const GRID_GAP    = 10;
 const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
 const HERO_IMG = require("@/assets/images/ancestrales-hero.jpg");
 
-type CatTab   = "cuencos" | "gongs" | "campanas" | "mix";
+type CatTab   = string;
 type SortMode = "recientes" | "nuevas" | "populares";
 type ViewMode = "list" | "grid";
 
-const TABS: { id: CatTab; label: string }[] = [
+// Tags agrupados bajo cada tab fija (no generan tab propia si ya están acá)
+const FIXED_TABS: { id: string; label: string }[] = [
   { id: "cuencos",  label: "Cuencos" },
   { id: "gongs",    label: "Gongs" },
   { id: "campanas", label: "Campanas" },
   { id: "mix",      label: "Mix Sonoterapia" },
 ];
+const MIX_TAGS = new Set(["Full Instrumentos","Vientos","Cantos","Percusión","Selva","Mix de Cuencos"]);
+
+function tagCoveredByFixed(tag: string): boolean {
+  const t = tag.toLowerCase();
+  return t.includes("cuenco") || t.includes("gong") || t.includes("campana") || MIX_TAGS.has(tag);
+}
 
 const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
   { id: "recientes", label: "Escuchadas recientemente", icon: "clock" },
@@ -57,14 +65,15 @@ const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
   { id: "populares", label: "Las más escuchadas",       icon: "headphones" },
 ];
 
-function getSessionsForTab(tab: CatTab | null) {
+function getSessionsForTab(tab: string | null) {
   const all = SESSIONS.filter((s) => s.categoryId === "sonidos-ancestrales");
   if (!tab) return all;
   switch (tab) {
     case "cuencos":  return all.filter((s) => s.ancestralTag?.toLowerCase().includes("cuenco"));
-    case "gongs":    return all.filter((s) => s.ancestralTag?.toLowerCase().includes("gong") || s.ancestralTag === "Gongs");
+    case "gongs":    return all.filter((s) => s.ancestralTag?.toLowerCase().includes("gong"));
     case "campanas": return all.filter((s) => s.ancestralTag?.toLowerCase().includes("campana"));
-    case "mix":      return all.filter((s) => ["Full Instrumentos","Vientos","Cantos","Percusión","Selva","Mix de Cuencos"].includes(s.ancestralTag ?? ""));
+    case "mix":      return all.filter((s) => MIX_TAGS.has(s.ancestralTag ?? ""));
+    default:         return all.filter((s) => s.ancestralTag === tab);
   }
 }
 
@@ -119,7 +128,7 @@ function Chip({ label, sel, onPress }: { label: string; sel: boolean; onPress: (
 const CHIP_DUR = 600;
 const CLOSE_SLOT = 38;
 
-function ChipRow({ activeTab, onSelect, onClear }: { activeTab: CatTab|null; onSelect: (id: CatTab)=>void; onClear: ()=>void }) {
+function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: {id: string; label: string}[]; activeTab: CatTab|null; onSelect: (id: CatTab)=>void; onClear: ()=>void }) {
   const progress  = useRef(new Animated.Value(activeTab ? 1 : 0)).current;
   const offsetsRef= useRef<Record<string,number>>({});
   const scrollX   = useRef(0);
@@ -332,6 +341,15 @@ export default function SonidosAncestalesScreen() {
   const topPad    = Platform.OS==="web" ? 0 : insets.top;
   const bottomPad = Platform.OS==="web" ? 34 : insets.bottom;
   const { isFavorite, toggleFavorite, history } = usePlayer();
+  const { version } = useCatalog();
+
+  // TABS dinámicas: fijas + cualquier ancestralTag nuevo no cubierto por los grupos fijos
+  const TABS = useMemo(() => {
+    const ancestralSessions = SESSIONS.filter((s) => s.categoryId === "sonidos-ancestrales");
+    const uniqueTags = [...new Set(ancestralSessions.map((s) => s.ancestralTag).filter(Boolean))] as string[];
+    const extraTags = uniqueTags.filter((tag) => !tagCoveredByFixed(tag));
+    return [...FIXED_TABS, ...extraTags.map((tag) => ({ id: tag, label: tag }))];
+  }, [version]);
 
   const [activeTab,         setActiveTab]         = useState<CatTab|null>(null);
   const [sort,              setSort]              = useState<SortMode>("recientes");
@@ -448,7 +466,7 @@ export default function SonidosAncestalesScreen() {
 
         {/* ── Tabs ── */}
         <View style={styles.chipsArea}>
-          <ChipRow activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
         </View>
 
         {/* ── Divisor ── */}
