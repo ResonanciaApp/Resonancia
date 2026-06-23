@@ -150,7 +150,7 @@ export default function PFuncionalidades() {
                     <img
                       src="/resonancia-plantilla/cubo-4.png"
                       alt="Geometrix"
-                      style={{ width: "1.5vw", height: "1.5vw", objectFit: "contain", flexShrink: 0 }}
+                      style={{ width: "2.2vw", height: "2.2vw", objectFit: "contain", flexShrink: 0, filter: "drop-shadow(0 0 5px rgba(212,175,55,0.75)) drop-shadow(0 0 2px rgba(233,196,106,0.5))" }}
                     />
                   ) : (
                     <GoldIcon paths={f.icon} />
