@@ -1,36 +1,23 @@
 const GoldIcon = ({ paths }: { paths: string[] }) => (
-  <div style={{
-    width: "2.6vw",
-    height: "2.6vw",
-    minWidth: "2.6vw",
-    borderRadius: "50%",
-    backgroundColor: "rgba(212,175,55,0.12)",
-    boxShadow: "0 0 14px 4px rgba(212,175,55,0.35), 0 0 6px 1px rgba(233,196,106,0.25)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-  }}>
-    <svg
-      viewBox="0 0 24 24"
-      width="1.45vw"
-      height="1.45vw"
-      fill="none"
-      stroke="url(#goldGrad)"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      style={{ filter: "drop-shadow(0 0 3px rgba(212,175,55,0.7))" }}
-    >
-      <defs>
-        <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#D4AF37" />
-          <stop offset="100%" stopColor="#E9C46A" />
-        </linearGradient>
-      </defs>
-      {paths.map((d, i) => <path key={i} d={d} />)}
-    </svg>
-  </div>
+  <svg
+    viewBox="0 0 24 24"
+    width="2.2vw"
+    height="2.2vw"
+    fill="none"
+    stroke="url(#goldGrad)"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    style={{ flexShrink: 0, minWidth: "2.2vw", filter: "drop-shadow(0 0 5px rgba(212,175,55,0.75)) drop-shadow(0 0 2px rgba(233,196,106,0.5))" }}
+  >
+    <defs>
+      <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#D4AF37" />
+        <stop offset="100%" stopColor="#E9C46A" />
+      </linearGradient>
+    </defs>
+    {paths.map((d, i) => <path key={i} d={d} />)}
+  </svg>
 );
 
 export default function PFuncionalidades() {
@@ -173,7 +160,7 @@ export default function PFuncionalidades() {
                     <div style={{ fontSize: "1.05vw", fontWeight: 400, color: "#D4AF37", opacity: 0.65 }}>{f.tag}</div>
                   </div>
                 </div>
-                <div style={{ fontSize: "1.1vw", fontWeight: 400, lineHeight: 1.55, color: "rgba(244,218,213,0.45)", paddingLeft: "3.4vw" }}>
+                <div style={{ fontSize: "1.1vw", fontWeight: 400, lineHeight: 1.55, color: "rgba(244,218,213,0.45)", paddingLeft: "3.0vw" }}>
                   {f.desc}
                 </div>
               </div>
