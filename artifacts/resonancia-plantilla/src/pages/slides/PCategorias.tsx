@@ -76,13 +76,15 @@ export default function PCategorias() {
                   border: `1px solid ${cat.color}30`,
                   boxShadow: `0 8px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.3)`,
                   backgroundColor: "#6B1020",
+                  position: "relative",
                 }}
               >
                 <img
                   src={cat.img}
                   alt={cat.name}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block", filter: "brightness(1.5) saturate(1.15)" }}
+                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
                 />
+                <div style={{ position: "absolute", inset: 0, background: "rgba(255,255,255,0.22)", pointerEvents: "none" }} />
               </div>
 
               {/* Color bar */}

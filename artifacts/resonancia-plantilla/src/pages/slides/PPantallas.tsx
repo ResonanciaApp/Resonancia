@@ -74,13 +74,15 @@ export default function PPantallas() {
                   border: `1px solid ${p.color}30`,
                   boxShadow: "0 8px 36px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.3)",
                   backgroundColor: "#6B1020",
+                  position: "relative",
                 }}
               >
                 <img
                   src={p.img}
                   alt={p.label}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block", filter: "brightness(1.55) saturate(1.15)" }}
+                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
                 />
+                <div style={{ position: "absolute", inset: 0, background: "rgba(255,255,255,0.22)", pointerEvents: "none" }} />
               </div>
               {/* title */}
               <div
