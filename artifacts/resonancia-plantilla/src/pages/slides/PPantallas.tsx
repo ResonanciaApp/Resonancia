@@ -1,25 +1,25 @@
 const pages = [
   {
     label: "INICIO",
-    caption: "Racha, frases del día y accesos rápidos personalizados.",
+    caption: "Racha, frases y accesos.",
     color: "#7BB8C4",
     img: "/resonancia-plantilla/screenshots/inicio.jpg",
   },
   {
     label: "MEZCLADOR",
-    caption: "Capas de sonido ambiente combinables en tiempo real.",
+    caption: "Mezcla sonidos en vivo.",
     color: "#D4AF37",
     img: "/resonancia-plantilla/screenshots/mezclador.jpg",
   },
   {
     label: "BIBLIOTECA",
-    caption: "Playlists, mezclas, favoritos y resonadores.",
+    caption: "Playlists, mezclas y favoritos.",
     color: "#A78BCA",
     img: "/resonancia-plantilla/screenshots/biblioteca.jpg",
   },
   {
     label: "EXPLORAR",
-    caption: "Descubre sesiones nuevas, artistas y tendencias.",
+    caption: "Descubre sesiones y artistas.",
     color: "#C4916B",
     img: "/resonancia-plantilla/screenshots/explorar2.jpg",
   },
@@ -64,9 +64,9 @@ export default function PPantallas() {
               {/* phone frame */}
               <div
                 style={{
-                  height: "40vh",
+                  height: "48vh",
                   width: "100%",
-                  maxWidth: "12vw",
+                  maxWidth: "14.4vw",
                   flexShrink: 0,
                   borderRadius: "1.2vw",
                   overflow: "hidden",
@@ -91,6 +91,7 @@ export default function PPantallas() {
                   color: "rgba(244,218,213,0.45)",
                   textAlign: "center",
                   flexShrink: 0,
+                  maxWidth: "14.4vw",
                 }}
               >
                 {p.caption}
