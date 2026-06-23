@@ -1,95 +1,27 @@
-const PhoneMock = ({
-  label,
-  accentColor = "#D4AF37",
-}: {
-  label: string;
-  accentColor?: string;
-}) => (
-  <div
-    style={{
-      width: "100%",
-      height: "100%",
-      borderRadius: "1.5vw",
-      backgroundColor: "#0B0108",
-      border: `1px solid ${accentColor}28`,
-      boxShadow: `0 8px 36px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.35)`,
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      position: "relative",
-      overflow: "hidden",
-    }}
-  >
-    <div
-      style={{
-        position: "absolute",
-        top: "4%",
-        left: "50%",
-        transform: "translateX(-50%)",
-        width: "22%",
-        height: "3.5%",
-        borderRadius: "4px",
-        backgroundColor: "#1A0210",
-      }}
-    />
-    <div
-      style={{
-        position: "absolute",
-        inset: 0,
-        background: `radial-gradient(ellipse at 50% 40%, ${accentColor}0A 0%, transparent 65%)`,
-        pointerEvents: "none",
-      }}
-    />
-    <div
-      style={{
-        fontSize: "1.0vw",
-        fontWeight: 600,
-        color: `${accentColor}99`,
-        letterSpacing: "0.12em",
-        textAlign: "center",
-        padding: "0 8%",
-        lineHeight: 1.4,
-        zIndex: 1,
-      }}
-    >
-      {label}
-    </div>
-    <div
-      style={{
-        position: "absolute",
-        bottom: "3.5%",
-        left: "50%",
-        transform: "translateX(-50%)",
-        width: "28%",
-        height: "2%",
-        borderRadius: "4px",
-        backgroundColor: "rgba(255,255,255,0.09)",
-      }}
-    />
-  </div>
-);
-
 const pages = [
   {
     label: "BIBLIOTECA",
-    caption: "Sesiones por categoría, estado de ánimo y duración.",
+    caption: "Playlists, mezclas, favoritos y resonadores.",
     color: "#A78BCA",
+    img: "/resonancia-plantilla/screenshots/biblioteca.jpg",
   },
   {
     label: "MEZCLADOR",
     caption: "Capas de sonido ambiente combinables en tiempo real.",
     color: "#D4AF37",
+    img: "/resonancia-plantilla/screenshots/mezclador.jpg",
   },
   {
     label: "INICIO",
     caption: "Racha, frases del día y accesos rápidos personalizados.",
     color: "#7BB8C4",
+    img: "/resonancia-plantilla/screenshots/inicio.jpg",
   },
   {
     label: "EXPLORAR",
     caption: "Descubre sesiones nuevas, artistas y tendencias.",
     color: "#C4916B",
+    img: "/resonancia-plantilla/screenshots/explorar.jpg",
   },
 ];
 
@@ -129,9 +61,23 @@ export default function PPantallas() {
         <div style={{ display: "flex", gap: "2vw", flex: 1, minHeight: 0 }}>
           {pages.map((p) => (
             <div key={p.label} style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-              {/* phone */}
-              <div style={{ flex: 1, minHeight: 0 }}>
-                <PhoneMock label={p.label} accentColor={p.color} />
+              {/* phone frame */}
+              <div
+                style={{
+                  flex: 1,
+                  minHeight: 0,
+                  borderRadius: "1.5vw",
+                  overflow: "hidden",
+                  border: `1px solid ${p.color}30`,
+                  boxShadow: "0 8px 36px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.3)",
+                  backgroundColor: "#0B0108",
+                }}
+              >
+                <img
+                  src={p.img}
+                  alt={p.label}
+                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
+                />
               </div>
               {/* caption */}
               <div
