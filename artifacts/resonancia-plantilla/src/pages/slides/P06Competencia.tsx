@@ -43,7 +43,7 @@ export default function P06Competencia() {
 
         {/* Title */}
         <div style={{ fontSize: "2.4vw", fontWeight: 700, letterSpacing: "-0.02em", color: "rgba(244,218,213,0.9)", flexShrink: 0, marginBottom: "1.8vh" }}>
-          Gigantes de la relajación — <span style={{ color: "#D4AF37" }}>todos hablan inglés.</span>
+          Gigantes de la <span style={{ color: "#D4AF37" }}>relajación.</span>
         </div>
 
         {/* Validation text */}
