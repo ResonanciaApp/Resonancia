@@ -1,24 +1,24 @@
 const pages = [
   {
-    label: "INICIO",
+    label: "Inicio",
     caption: "Racha, frases y accesos.",
     color: "#7BB8C4",
     img: "/resonancia-plantilla/screenshots/inicio.jpg",
   },
   {
-    label: "MEZCLADOR",
+    label: "Mezclador",
     caption: "Mezcla sonidos en vivo.",
     color: "#D4AF37",
     img: "/resonancia-plantilla/screenshots/mezclador.jpg",
   },
   {
-    label: "BIBLIOTECA",
+    label: "Biblioteca",
     caption: "Playlists, mezclas y favoritos.",
     color: "#A78BCA",
     img: "/resonancia-plantilla/screenshots/biblioteca.jpg",
   },
   {
-    label: "EXPLORAR",
+    label: "Explora",
     caption: "Descubre sesiones y artistas.",
     color: "#C4916B",
     img: "/resonancia-plantilla/screenshots/explorar2.jpg",
@@ -81,10 +81,24 @@ export default function PPantallas() {
                   style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
                 />
               </div>
+              {/* title */}
+              <div
+                style={{
+                  marginTop: "1.4vh",
+                  fontSize: "1.25vw",
+                  fontWeight: 700,
+                  letterSpacing: "0.01em",
+                  color: "#F4DAD5",
+                  textAlign: "center",
+                  maxWidth: "14.4vw",
+                }}
+              >
+                {p.label}
+              </div>
               {/* caption */}
               <div
                 style={{
-                  marginTop: "1.8vh",
+                  marginTop: "0.5vh",
                   fontSize: "1.0vw",
                   fontWeight: 400,
                   lineHeight: 1.55,
