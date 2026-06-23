@@ -6,7 +6,7 @@ export default function PContacto() {
     >
       {/* Full-screen background image */}
       <img
-        src="/resonancia-plantilla/screenshots/portada2.jpg"
+        src="/resonancia-plantilla/screenshots/portada-contacto.jpg"
         alt=""
         style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "fill", display: "block" }}
       />
