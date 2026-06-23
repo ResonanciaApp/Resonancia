@@ -46,14 +46,6 @@ export default function P06Competencia() {
           Gigantes de la <span style={{ display: "inline-block", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>relajación.</span>
         </div>
 
-        {/* Validation text */}
-        <div style={{ fontSize: "1.2vw", fontWeight: 400, lineHeight: 1.65, color: "rgba(244,218,213,0.5)", flexShrink: 0, marginBottom: "3vh", maxWidth: "82vw" }}>
-          Calm y Headspace validaron que los usuarios pagan por bienestar digital — juntos superan{" "}
-          <span style={{ color: "rgba(244,218,213,0.82)", fontWeight: 600 }}>USD 2.3B en valuación y 170M de usuarios</span>.
-          Ninguno habla español nativamente, ninguno tiene raíz cultural latina.{" "}
-          <span style={{ display: "inline-block", fontWeight: 600, background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>RESONANCIA entra donde los gigantes no llegan.</span>
-        </div>
-
         {/* Table */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
 
@@ -98,6 +90,14 @@ export default function P06Competencia() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Validation text */}
+        <div style={{ fontSize: "1.2vw", fontWeight: 400, lineHeight: 1.65, color: "rgba(244,218,213,0.5)", flexShrink: 0, marginTop: "2.5vh", maxWidth: "82vw" }}>
+          Calm y Headspace validaron que los usuarios pagan por bienestar digital — juntos superan{" "}
+          <span style={{ color: "rgba(244,218,213,0.82)", fontWeight: 600 }}>USD 2.3B en valuación y 170M de usuarios</span>.
+          Ninguno habla español nativamente, ninguno tiene raíz cultural latina.{" "}
+          <span style={{ display: "inline-block", fontWeight: 600, background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>RESONANCIA entra donde los gigantes no llegan.</span>
         </div>
 
         {/* Counter */}
