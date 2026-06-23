@@ -21,7 +21,7 @@ const pages = [
     label: "EXPLORAR",
     caption: "Descubre sesiones nuevas, artistas y tendencias.",
     color: "#C4916B",
-    img: "/resonancia-plantilla/screenshots/explorar.jpg",
+    img: "/resonancia-plantilla/screenshots/explorar2.jpg",
   },
 ];
 
