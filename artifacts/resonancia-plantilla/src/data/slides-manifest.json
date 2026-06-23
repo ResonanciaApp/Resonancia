@@ -24,19 +24,19 @@
     "speakerNotes": ""
   },
   {
-    "id": "p-deck-00fn-4000-8000-perspectiva00f",
-    "position": 4,
-    "filepath": "src/pages/slides/PFuncionalidades.tsx",
-    "title": "Funcionalidades",
-    "description": "8 funcionalidades — todo en una sola app.",
-    "speakerNotes": ""
-  },
-  {
     "id": "p-deck-00pt-4000-8000-perspectiva00p",
-    "position": 5,
+    "position": 4,
     "filepath": "src/pages/slides/PPantallas.tsx",
     "title": "Las pantallas principales",
     "description": "La experiencia — páginas del menú y reproductores.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "p-deck-00fn-4000-8000-perspectiva00f",
+    "position": 5,
+    "filepath": "src/pages/slides/PFuncionalidades.tsx",
+    "title": "Funcionalidades",
+    "description": "8 funcionalidades — todo en una sola app.",
     "speakerNotes": ""
   },
   {
