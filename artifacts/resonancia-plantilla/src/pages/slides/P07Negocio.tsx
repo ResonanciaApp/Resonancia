@@ -13,7 +13,7 @@ export default function P07Negocio() {
       bar: "#D4AF37",
       nameColor: "#D4AF37",
       monthly: "USD 7.5 / mes",
-      annual: "≈ USD 90 / año",
+      annual: "USD 75 / año",
       tag: "Biblioteca completa ilimitada.",
     },
     {
@@ -64,7 +64,7 @@ export default function P07Negocio() {
             <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>EL NEGOCIO</div>
             <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.5, marginBottom: "3.5vh" }} />
             <div style={{ fontSize: "3.8vw", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.03em", marginBottom: "3.5vh" }}>
-              Freemium →<br />suscripción →<br /><span style={{ display: "inline-block", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>ecosistema.</span>
+              Freemium,<br />suscripción,<br /><span style={{ display: "inline-block", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>ecosistema.</span>
             </div>
 
             {/* Tier cards */}
