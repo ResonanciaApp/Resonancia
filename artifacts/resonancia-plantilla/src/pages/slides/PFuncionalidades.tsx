@@ -54,9 +54,7 @@ export default function PFuncionalidades() {
       name: "Geometrix",
       tag: "meditación activa",
       desc: "Geometría sagrada interactiva como herramienta de enfoque y meditación visual. Único en su categoría.",
-      icon: [
-        "M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z",
-      ],
+      icon: null,
     },
     {
       name: "Video y Streaming",
@@ -148,7 +146,15 @@ export default function PFuncionalidades() {
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "0.7vw", marginBottom: "0.6vh" }}>
-                  <GoldIcon paths={f.icon} />
+                  {f.icon === null ? (
+                    <img
+                      src="/resonancia-plantilla/cubo-4.png"
+                      alt="Geometrix"
+                      style={{ width: "1.5vw", height: "1.5vw", objectFit: "contain", flexShrink: 0 }}
+                    />
+                  ) : (
+                    <GoldIcon paths={f.icon} />
+                  )}
                   <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#F4DAD5" }}>{f.name}</div>
                   <div style={{ fontSize: "1.05vw", fontWeight: 400, color: "#D4AF37", opacity: 0.65 }}>{f.tag}</div>
                 </div>
