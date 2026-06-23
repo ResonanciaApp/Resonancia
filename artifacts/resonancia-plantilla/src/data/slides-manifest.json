@@ -40,8 +40,16 @@
     "speakerNotes": ""
   },
   {
-    "id": "p-deck-0002-4000-8000-perspectiva002",
+    "id": "p-deck-00vs-4000-8000-perspectivavs0",
     "position": 6,
+    "filepath": "src/pages/slides/PVideoStreaming.tsx",
+    "title": "Video y Streaming",
+    "description": "El audio fue el comienzo. Ahora viene todo.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "p-deck-0002-4000-8000-perspectiva002",
+    "position": 7,
     "filepath": "src/pages/slides/P02Activo.tsx",
     "title": "Nuestro principal activo",
     "description": "10 años de comunidad. Este es el moat.",
@@ -49,7 +57,7 @@
   },
   {
     "id": "p-deck-00ma-4000-8000-perspectivama0",
-    "position": 7,
+    "position": 8,
     "filepath": "src/pages/slides/PMercadoApp.tsx",
     "title": "El sector",
     "description": "Un mercado en expansión sin dueño en español.",
@@ -57,7 +65,7 @@
   },
   {
     "id": "p-deck-0006-4000-8000-perspectiva006",
-    "position": 8,
+    "position": 9,
     "filepath": "src/pages/slides/P06Competencia.tsx",
     "title": "Competencia",
     "description": "El campo hispanohablante está abierto.",
@@ -65,7 +73,7 @@
   },
   {
     "id": "p-deck-0007-4000-8000-perspectiva007",
-    "position": 9,
+    "position": 10,
     "filepath": "src/pages/slides/P07Negocio.tsx",
     "title": "El negocio",
     "description": "Freemium → suscripción → ecosistema.",

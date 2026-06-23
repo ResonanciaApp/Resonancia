@@ -106,7 +106,7 @@ export default function P06Competencia() {
 
         {/* Counter */}
         <div style={{ display: "flex", justifyContent: "flex-end", flexShrink: 0, paddingTop: "1.5vh" }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>08 / 09</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>09 / 10</div>
         </div>
       </div>
     </div>
