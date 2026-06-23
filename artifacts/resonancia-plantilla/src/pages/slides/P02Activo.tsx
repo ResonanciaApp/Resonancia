@@ -88,7 +88,11 @@ export default function P02Activo() {
         <div style={{ width: "1px", backgroundColor: "rgba(212,175,55,0.15)", margin: "8vh 0" }} />
 
         {/* Right — attributes */}
-        <div style={{ flex: 1, padding: "8vh 7vw 8vh 4vw", display: "flex", flexDirection: "column", justifyContent: "center", gap: "3.2vh" }}>
+        <div style={{ flex: 1, padding: "8vh 7vw 8vh 4vw", display: "flex", flexDirection: "column", justifyContent: "flex-start", gap: "3.2vh" }}>
+          <div style={{ marginBottom: "0.5vh" }}>
+            <div style={{ fontSize: "1.0vw", fontWeight: 600, letterSpacing: "0.22em", color: "rgba(212,175,55,0.45)" }}>NUESTRA ESENCIA</div>
+            <div style={{ width: "3vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.25, marginTop: "0.8vh" }} />
+          </div>
           {attributes.map((a, i) => (
             <div key={i} style={{ display: "flex", flexDirection: "column", gap: "0.5vh" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.8vw" }}>
