@@ -1,25 +1,25 @@
 const pages = [
   {
     label: "Inicio",
-    caption: "Racha, frases y accesos.",
+    caption: "Más escuchadas, recientes y accesos rápidos.",
     color: "#7BB8C4",
     img: "/resonancia-plantilla/screenshots/inicio.jpg",
   },
   {
     label: "Mezclador",
-    caption: "Mezcla sonidos en vivo.",
+    caption: "Mezcla tus sonidos en vivo, guárdalos y compártelos.",
     color: "#D4AF37",
     img: "/resonancia-plantilla/screenshots/mezclador.jpg",
   },
   {
     label: "Biblioteca",
-    caption: "Playlists, mezclas y favoritos.",
+    caption: "Crea playlists y ordena tu contenido favorito.",
     color: "#A78BCA",
     img: "/resonancia-plantilla/screenshots/biblioteca.jpg",
   },
   {
     label: "Explora",
-    caption: "Descubre sesiones y artistas.",
+    caption: "El hábitat principal de nuestro contenido.",
     color: "#C4916B",
     img: "/resonancia-plantilla/screenshots/explorar2.jpg",
   },
