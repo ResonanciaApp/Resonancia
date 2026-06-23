@@ -73,13 +73,13 @@ export default function PPantallas() {
                   overflow: "hidden",
                   border: `1px solid ${p.color}30`,
                   boxShadow: "0 8px 36px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.3)",
-                  backgroundColor: "#2E0510",
+                  backgroundColor: "#6B1020",
                 }}
               >
                 <img
                   src={p.img}
                   alt={p.label}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block", filter: "brightness(1.25) saturate(1.1)" }}
+                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block", filter: "brightness(1.55) saturate(1.15)" }}
                 />
               </div>
               {/* title */}
