@@ -1,23 +1,36 @@
 const GoldIcon = ({ paths }: { paths: string[] }) => (
-  <svg
-    viewBox="0 0 24 24"
-    width="1.5vw"
-    height="1.5vw"
-    fill="none"
-    stroke="url(#goldGrad)"
-    strokeWidth="1.6"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    style={{ flexShrink: 0, minWidth: "1.5vw" }}
-  >
-    <defs>
-      <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor="#D4AF37" />
-        <stop offset="100%" stopColor="#E9C46A" />
-      </linearGradient>
-    </defs>
-    {paths.map((d, i) => <path key={i} d={d} />)}
-  </svg>
+  <div style={{
+    width: "2.6vw",
+    height: "2.6vw",
+    minWidth: "2.6vw",
+    borderRadius: "50%",
+    backgroundColor: "rgba(212,175,55,0.12)",
+    boxShadow: "0 0 14px 4px rgba(212,175,55,0.35), 0 0 6px 1px rgba(233,196,106,0.25)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  }}>
+    <svg
+      viewBox="0 0 24 24"
+      width="1.45vw"
+      height="1.45vw"
+      fill="none"
+      stroke="url(#goldGrad)"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{ filter: "drop-shadow(0 0 3px rgba(212,175,55,0.7))" }}
+    >
+      <defs>
+        <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#D4AF37" />
+          <stop offset="100%" stopColor="#E9C46A" />
+        </linearGradient>
+      </defs>
+      {paths.map((d, i) => <path key={i} d={d} />)}
+    </svg>
+  </div>
 );
 
 export default function PFuncionalidades() {
@@ -145,7 +158,7 @@ export default function PFuncionalidades() {
                   justifyContent: "center",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "0.7vw", marginBottom: "0.6vh" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.8vw", marginBottom: "0.6vh" }}>
                   {f.icon === null ? (
                     <img
                       src="/resonancia-plantilla/cubo-4.png"
@@ -155,10 +168,12 @@ export default function PFuncionalidades() {
                   ) : (
                     <GoldIcon paths={f.icon} />
                   )}
-                  <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#F4DAD5" }}>{f.name}</div>
-                  <div style={{ fontSize: "1.05vw", fontWeight: 400, color: "#D4AF37", opacity: 0.65 }}>{f.tag}</div>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: "0.5vw" }}>
+                    <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#F4DAD5" }}>{f.name}</div>
+                    <div style={{ fontSize: "1.05vw", fontWeight: 400, color: "#D4AF37", opacity: 0.65 }}>{f.tag}</div>
+                  </div>
                 </div>
-                <div style={{ fontSize: "1.1vw", fontWeight: 400, lineHeight: 1.55, color: "rgba(244,218,213,0.45)", paddingLeft: "2.2vw" }}>
+                <div style={{ fontSize: "1.1vw", fontWeight: 400, lineHeight: 1.55, color: "rgba(244,218,213,0.45)", paddingLeft: "3.4vw" }}>
                   {f.desc}
                 </div>
               </div>
