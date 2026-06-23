@@ -63,9 +63,9 @@ export default function PPantallas() {
               {/* phone frame */}
               <div
                 style={{
-                  height: "56vh",
+                  height: "67vh",
                   width: "100%",
-                  maxWidth: "17vw",
+                  maxWidth: "20vw",
                   flexShrink: 0,
                   borderRadius: "1.2vw",
                   overflow: "hidden",
@@ -89,7 +89,7 @@ export default function PPantallas() {
                   letterSpacing: "0.01em",
                   color: "#1B060F",
                   textAlign: "center",
-                  maxWidth: "17vw",
+                  maxWidth: "20vw",
                 }}
               >
                 {p.label}
@@ -104,7 +104,7 @@ export default function PPantallas() {
                   color: "rgba(27,6,15,0.55)",
                   textAlign: "center",
                   flexShrink: 0,
-                  maxWidth: "17vw",
+                  maxWidth: "20vw",
                 }}
               >
                 {p.caption}
