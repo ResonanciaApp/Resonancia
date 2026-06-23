@@ -78,5 +78,13 @@
     "title": "El negocio",
     "description": "Freemium → suscripción → ecosistema.",
     "speakerNotes": ""
+  },
+  {
+    "id": "p-deck-00co-4000-8000-perspectiva00co",
+    "position": 11,
+    "filepath": "src/pages/slides/PContacto.tsx",
+    "title": "¿Te gustaría participar?",
+    "description": "Datos de contacto — Nicolás Blanch, Founder.",
+    "speakerNotes": ""
   }
 ]
