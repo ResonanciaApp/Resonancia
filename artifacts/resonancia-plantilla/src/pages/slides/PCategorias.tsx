@@ -7,7 +7,7 @@ export default function PCategorias() {
       img: "/resonancia-plantilla/screenshots/meditaciones.jpg",
     },
     {
-      name: "Música y Sonidos",
+      name: "Música",
       color: "#7BB8C4",
       desc: "Música ambient, enteógena, tribal y étnica que acompaña el viaje interior — desde el silencio hasta la expansión.",
       img: "/resonancia-plantilla/screenshots/musica.jpg",
