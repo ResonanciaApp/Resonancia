@@ -34,7 +34,7 @@ export default function PCategorias() {
     >
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 0%, rgba(212,175,55,0.04) 0%, transparent 55%)" }} />
 
-      <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", padding: "4vh 7vw 3.5vh", zIndex: 2 }}>
+      <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", padding: "4vh 7vw 3.5vh", zIndex: 2 }}>
 
         {/* Header */}
         <div style={{ marginBottom: "2.5vh", flexShrink: 0 }}>
@@ -48,7 +48,7 @@ export default function PCategorias() {
         </div>
 
         {/* Columns */}
-        <div style={{ display: "flex", gap: "0" }}>
+        <div style={{ display: "flex", gap: "0", flex: 1, minHeight: 0, alignItems: "center" }}>
           {categories.map((cat, i) => (
             <div
               key={cat.name}
