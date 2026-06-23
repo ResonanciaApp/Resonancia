@@ -71,7 +71,7 @@ export default function P02Activo() {
             </div>
             <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.5, marginBottom: "4vh" }} />
 
-            <div style={{ fontSize: "5vw", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.03em", marginBottom: "4vh" }}>
+            <div style={{ fontSize: "5vw", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.03em", marginBottom: "4vh", marginTop: "20px" }}>
               10 años de comunidad.<br />
               <span style={{ display: "inline-block", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Este es el moat.</span>
             </div>
@@ -93,7 +93,7 @@ export default function P02Activo() {
             <div style={{ fontSize: "1.0vw", fontWeight: 600, letterSpacing: "0.22em", color: "rgba(212,175,55,0.45)" }}>NUESTRA ESENCIA</div>
             <div style={{ width: "3vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.25, marginTop: "0.8vh" }} />
           </div>
-          {attributes.map((a, i) => (
+          <div style={{ marginTop: "20px", display: "flex", flexDirection: "column", gap: "3.2vh" }}>{attributes.map((a, i) => (
             <div key={i} style={{ display: "flex", flexDirection: "column", gap: "0.5vh" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.8vw" }}>
                 <GoldIcon paths={a.icon} />
@@ -103,7 +103,7 @@ export default function P02Activo() {
                 {a.desc}
               </div>
             </div>
-          ))}
+          ))}</div>
         </div>
 
       </div>
