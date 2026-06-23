@@ -22,14 +22,14 @@ export default function PContacto() {
         {/* Right — contact */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "8vh 7vw 8vh 5vw", transform: "translateX(120px)" }}>
 
-          <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.22em", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>
+          <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.22em", color: "#BE9650", marginBottom: "1.5vh" }}>
             CONTACTO
           </div>
           <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.45, marginBottom: "4vh" }} />
 
           <div style={{ fontSize: "3.2vw", fontWeight: 700, lineHeight: 1.1, letterSpacing: "-0.03em", color: "#F4DAD5", marginBottom: "5vh" }}>
             ¿Te gustaría<br />ayudar a<br />
-            <span style={{ display: "inline-block", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>expandir?</span>
+            <span style={{ color: "#BE9650" }}>expandir?</span>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "2.5vh" }}>
@@ -45,7 +45,7 @@ export default function PContacto() {
 
             <div style={{ display: "flex", flexDirection: "column", gap: "0.3vh" }}>
               <div style={{ fontSize: "0.9vw", fontWeight: 600, letterSpacing: "0.18em", color: "rgba(212,175,55,0.45)" }}>FOUNDER</div>
-              <div style={{ fontSize: "1.3vw", fontWeight: 600, background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Nicolás Blanch</div>
+              <div style={{ fontSize: "1.3vw", fontWeight: 600, color: "#BE9650" }}>Nicolás Blanch</div>
             </div>
           </div>
         </div>

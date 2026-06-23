@@ -61,10 +61,10 @@ export default function P07Negocio() {
         {/* Left — tiers */}
         <div style={{ width: "52vw", padding: "7vh 4vw 6vh 7vw", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <div>
-            <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>EL NEGOCIO</div>
+            <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", color: "#BE9650", marginBottom: "1.5vh" }}>EL NEGOCIO</div>
             <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.5, marginBottom: "3.5vh" }} />
             <div style={{ fontSize: "3.8vw", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.03em", marginBottom: "3.5vh" }}>
-              Freemium,<br />suscripción,<br /><span style={{ display: "inline-block", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>ecosistema.</span>
+              Freemium,<br />suscripción,<br /><span style={{ color: "#BE9650" }}>ecosistema.</span>
             </div>
 
             {/* Tier cards */}
@@ -76,7 +76,7 @@ export default function P07Negocio() {
                   {/* Content */}
                   <div style={{ flex: 1 }}>
                     <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: "0.5vh" }}>
-                      <div style={{ fontSize: "1.35vw", fontWeight: 700, ...(t.nameColor === "#D4AF37" ? { background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" } : { color: t.nameColor }) }}>{t.name}</div>
+                      <div style={{ fontSize: "1.35vw", fontWeight: 700, ...(t.nameColor === "#D4AF37" ? { color: "#BE9650" } : { color: t.nameColor }) }}>{t.name}</div>
                       <div style={{ textAlign: "right", display: "flex", gap: "1.2vw", alignItems: "baseline" }}>
                         <span style={{ fontSize: "1.3vw", fontWeight: 700, color: t.name === "Premium" ? "#F4DAD5" : "rgba(244,218,213,0.55)" }}>{t.monthly}</span>
                         <span style={{ fontSize: "1.05vw", fontWeight: 400, color: "rgba(244,218,213,0.3)" }}>{t.annual}</span>
@@ -101,7 +101,7 @@ export default function P07Negocio() {
             <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", color: "rgba(244,218,213,0.3)", marginBottom: "1.5vh" }}>PROYECCIÓN AÑO 1</div>
             <div style={{ width: "3vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.4, marginBottom: "3vh" }} />
             <div style={{ fontSize: "2.6vw", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "3vh" }}>
-              Un primer año<br /><span style={{ display: "inline-block", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>realista.</span>
+              Un primer año<br /><span style={{ color: "#BE9650" }}>realista.</span>
             </div>
 
             {/* Scenario cards */}
@@ -117,7 +117,7 @@ export default function P07Negocio() {
                   alignItems: "center",
                   gap: "0 1vw",
                 }}>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, ...(s.highlight ? { background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" } : { color: "rgba(244,218,213,0.7)" }) }}>{s.label}</div>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, ...(s.highlight ? { color: "#BE9650" } : { color: "rgba(244,218,213,0.7)" }) }}>{s.label}</div>
                   <div>
                     <div style={{ fontSize: "0.85vw", color: "rgba(244,218,213,0.35)", letterSpacing: "0.08em", marginBottom: "0.2vh" }}>INSTALACIONES</div>
                     <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#F4DAD5" }}>{s.installs}</div>
@@ -128,7 +128,7 @@ export default function P07Negocio() {
                   </div>
                   <div>
                     <div style={{ fontSize: "0.85vw", color: "rgba(244,218,213,0.35)", letterSpacing: "0.08em", marginBottom: "0.2vh" }}>INGRESO NETO AÑO 1</div>
-                    <div style={{ fontSize: "1.2vw", fontWeight: 700, background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>{s.revenue}</div>
+                    <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#BE9650" }}>{s.revenue}</div>
                     <div style={{ fontSize: "0.9vw", color: "rgba(244,218,213,0.35)" }}>{s.revenueUSD}</div>
                   </div>
                 </div>

@@ -29,12 +29,12 @@ export default function PMercadoApp() {
       <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", padding: "8vh 8vw", zIndex: 2 }}>
 
         <div style={{ marginBottom: "6vh" }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>EL SECTOR</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", color: "#BE9650", marginBottom: "1.5vh" }}>EL SECTOR</div>
           <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.5 }} />
         </div>
 
         <div style={{ fontSize: "5.5vw", fontWeight: 700, lineHeight: 1.0, letterSpacing: "-0.03em", marginBottom: "8vh", maxWidth: "65vw" }}>
-          Un mercado en expansión<br /><span style={{ display: "inline-block", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>sin dueño en español.</span>
+          Un mercado en expansión<br /><span style={{ color: "#BE9650" }}>sin dueño en español.</span>
         </div>
 
         <div style={{ display: "flex", gap: "0", flex: 1, alignItems: "flex-start" }}>
@@ -46,7 +46,7 @@ export default function PMercadoApp() {
               borderLeft: i > 0 ? "1px solid rgba(212,175,55,0.15)" : "none",
             }}>
               <div style={{ fontSize: "1.1vw", fontWeight: 500, letterSpacing: "0.15em", color: "rgba(244,218,213,0.4)", marginBottom: "2vh" }}>{s.label.toUpperCase()}</div>
-              <div style={{ fontSize: "7vw", fontWeight: 800, lineHeight: 0.9, letterSpacing: "-0.04em", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "2.5vh" }}>{s.stat}</div>
+              <div style={{ fontSize: "7vw", fontWeight: 800, lineHeight: 0.9, letterSpacing: "-0.04em", color: "#BE9650", marginBottom: "2.5vh" }}>{s.stat}</div>
               <div style={{ fontSize: "1.55vw", fontWeight: 400, lineHeight: 1.6, color: "rgba(244,218,213,0.75)", marginBottom: "1.5vh" }}>{s.context}</div>
               <div style={{ fontSize: "1.1vw", fontWeight: 400, color: "rgba(244,218,213,0.3)", letterSpacing: "0.05em" }}>{s.sub}</div>
             </div>

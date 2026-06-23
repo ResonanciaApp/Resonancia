@@ -45,7 +45,7 @@ export default function PUsuarios() {
 
         {/* Header */}
         <div style={{ marginBottom: "4vh" }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.22em", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>
+          <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.22em", color: "#BE9650", marginBottom: "1.5vh" }}>
             ¿QUIÉNES SON NUESTROS USUARIOS?
           </div>
           <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.45 }} />
@@ -78,7 +78,7 @@ export default function PUsuarios() {
                 </div>
 
                 {/* Context tag */}
-                <div style={{ fontSize: "0.95vw", fontWeight: 500, letterSpacing: "0.04em", marginBottom: "2vh", opacity: 0.8, background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                <div style={{ fontSize: "0.95vw", fontWeight: 500, letterSpacing: "0.04em", marginBottom: "2vh", opacity: 0.8, color: "#BE9650" }}>
                   {p.context}
                 </div>
 

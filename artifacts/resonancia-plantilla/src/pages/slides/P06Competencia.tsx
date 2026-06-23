@@ -44,13 +44,13 @@ export default function P06Competencia() {
 
         {/* Label */}
         <div style={{ flexShrink: 0, marginBottom: "1.5vh" }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>COMPETENCIA</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", color: "#BE9650", marginBottom: "1.5vh" }}>COMPETENCIA</div>
           <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.5 }} />
         </div>
 
         {/* Title */}
         <div style={{ fontSize: "2.4vw", fontWeight: 700, letterSpacing: "-0.02em", color: "rgba(244,218,213,0.9)", flexShrink: 0, marginBottom: "1.8vh" }}>
-          Gigantes de la <span style={{ display: "inline-block", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>relajación.</span>
+          Gigantes de la <span style={{ color: "#BE9650" }}>relajación.</span>
         </div>
 
         {/* Table */}
@@ -104,7 +104,7 @@ export default function P06Competencia() {
           Calm y Headspace validaron que los usuarios pagan por bienestar digital — juntos superan{" "}
           <span style={{ color: "rgba(244,218,213,0.82)", fontWeight: 600 }}>USD 2.3B en valuación y 170M de usuarios</span>.
           Ninguno habla español nativamente, ninguno tiene raíz cultural latina.{" "}
-          <span style={{ display: "inline-block", fontWeight: 600, background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>RESONANCIA entra donde los gigantes no llegan.</span>
+          <span style={{ display: "inline-block", fontWeight: 600, color: "#BE9650" }}>RESONANCIA entra donde los gigantes no llegan.</span>
         </div>
 
         {/* Counter */}
