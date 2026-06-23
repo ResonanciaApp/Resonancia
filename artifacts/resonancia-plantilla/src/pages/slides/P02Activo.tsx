@@ -1,20 +1,60 @@
+const GoldIcon = ({ paths }: { paths: string[] }) => (
+  <svg
+    viewBox="0 0 24 24"
+    width="1.6vw"
+    height="1.6vw"
+    fill="none"
+    stroke="url(#goldGradActivo)"
+    strokeWidth="1.6"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    style={{ flexShrink: 0, minWidth: "1.6vw" }}
+  >
+    <defs>
+      <linearGradient id="goldGradActivo" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#D4AF37" />
+        <stop offset="100%" stopColor="#E9C46A" />
+      </linearGradient>
+    </defs>
+    {paths.map((d, i) => <path key={i} d={d} />)}
+  </svg>
+);
+
 export default function P02Activo() {
   const attributes = [
     {
-      label: "Especialización étnica y ancestral",
+      title: "Especialización étnica y ancestral",
       desc: "Contenido enraizado en la cosmovisión latinoamericana: cuencos tibetanos, sonoterapia chamánica y tradiciones indígenas. Ninguna app occidental replica esto.",
+      icon: [
+        "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+      ],
     },
     {
-      label: "Ecosistema de 10 años",
+      title: "Ecosistema de 10 años",
       desc: "Una década de presencia física, cursos, talleres y comunidad real antes de convertirnos en plataforma digital.",
+      icon: [
+        "M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z",
+        "M12 6v6l4 2",
+      ],
     },
     {
-      label: "Red de músicos y sonoterapeutas",
+      title: "Red de músicos y sonoterapeutas",
       desc: "Productores y guiadores seleccionados a mano. Catálogo propio, no crowdsourced. Identidad sonora coherente y auténtica.",
+      icon: [
+        "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2",
+        "M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+        "M23 21v-2a4 4 0 0 0-3-3.87",
+        "M16 3.13a4 4 0 0 1 0 7.75",
+      ],
     },
     {
-      label: "La voz y sabiduría de Nicolás",
-      desc: "El fundador es el rostro, la voz y el contenido. Una figura con credibilidad real en la comunidad hispanohablante.",
+      title: "La voz y sabiduría de Nicolás",
+      desc: "El fundador es el rostro, la voz y el contenido. Una figura con credibilidad real y presencia en toda la comunidad hispanohablante.",
+      icon: [
+        "M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z",
+        "M19 10v2a7 7 0 0 1-14 0v-2",
+        "M12 19v4M8 23h8",
+      ],
     },
   ];
 
@@ -48,30 +88,14 @@ export default function P02Activo() {
         <div style={{ width: "1px", backgroundColor: "rgba(212,175,55,0.15)", margin: "8vh 0" }} />
 
         {/* Right — attributes */}
-        <div style={{ flex: 1, padding: "8vh 7vw 8vh 4vw", display: "flex", flexDirection: "column", justifyContent: "center", gap: "3.5vh" }}>
+        <div style={{ flex: 1, padding: "8vh 7vw 8vh 4vw", display: "flex", flexDirection: "column", justifyContent: "center", gap: "3.2vh" }}>
           {attributes.map((a, i) => (
-            <div key={i} style={{ display: "flex", flexDirection: "column", gap: "0.8vh" }}>
-              {/* Chip */}
-              <div style={{
-                display: "inline-flex",
-                alignSelf: "flex-start",
-                paddingTop: "0.5vh",
-                paddingBottom: "0.5vh",
-                paddingLeft: "1.1vw",
-                paddingRight: "1.1vw",
-                borderRadius: "100px",
-                border: "1px solid rgba(212,175,55,0.45)",
-                backgroundColor: "rgba(212,175,55,0.07)",
-                fontSize: "1.05vw",
-                fontWeight: 600,
-                color: "#E9C46A",
-                letterSpacing: "0.02em",
-                whiteSpace: "nowrap",
-              }}>
-                {a.label}
+            <div key={i} style={{ display: "flex", flexDirection: "column", gap: "0.5vh" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.8vw" }}>
+                <GoldIcon paths={a.icon} />
+                <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#F4DAD5" }}>{a.title}</div>
               </div>
-              {/* Description */}
-              <div style={{ fontSize: "1.2vw", fontWeight: 400, lineHeight: 1.6, color: "rgba(244,218,213,0.55)", paddingLeft: "0.2vw" }}>
+              <div style={{ fontSize: "1.15vw", fontWeight: 400, lineHeight: 1.6, color: "rgba(244,218,213,0.5)", paddingLeft: "2.4vw" }}>
                 {a.desc}
               </div>
             </div>
