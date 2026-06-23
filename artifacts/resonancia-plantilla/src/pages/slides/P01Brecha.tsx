@@ -6,7 +6,7 @@ export default function P01Brecha() {
 
       {/* Atmospheric bg */}
       <div style={{ position: "absolute", inset: 0, backgroundImage: `url(${base}hero-atmosphere.png)`, backgroundSize: "cover", backgroundPosition: "center", opacity: 0.12 }} />
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, #1B060F 0%, rgba(27,6,15,0.75) 50%, #1B060F 100%)" }} />
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, #2E0510 0%, rgba(22,1,8,0.75) 50%, #160108 100%)" }} />
 
       {/* Content */}
       <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "7vh 8vw", zIndex: 2 }}>
