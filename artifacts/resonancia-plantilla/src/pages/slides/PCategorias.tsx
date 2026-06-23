@@ -79,7 +79,7 @@ export default function PCategorias() {
                 <img
                   src={cat.img}
                   alt={cat.name}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
+                  style={{ width: "100%", height: "auto", minHeight: "100%", display: "block", verticalAlign: "top" }}
                 />
               </div>
 
