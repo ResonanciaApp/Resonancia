@@ -6,16 +6,16 @@ const pages = [
     img: "/resonancia-plantilla/screenshots/inicio.jpg",
   },
   {
-    label: "BIBLIOTECA",
-    caption: "Playlists, mezclas, favoritos y resonadores.",
-    color: "#A78BCA",
-    img: "/resonancia-plantilla/screenshots/biblioteca.jpg",
-  },
-  {
     label: "MEZCLADOR",
     caption: "Capas de sonido ambiente combinables en tiempo real.",
     color: "#D4AF37",
     img: "/resonancia-plantilla/screenshots/mezclador.jpg",
+  },
+  {
+    label: "BIBLIOTECA",
+    caption: "Playlists, mezclas, favoritos y resonadores.",
+    color: "#A78BCA",
+    img: "/resonancia-plantilla/screenshots/biblioteca.jpg",
   },
   {
     label: "EXPLORAR",
