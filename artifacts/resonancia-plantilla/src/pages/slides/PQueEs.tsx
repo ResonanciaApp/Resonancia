@@ -16,7 +16,7 @@ export default function PQueEs() {
 
         {/* Headline */}
         <div style={{ fontSize: "5vw", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.03em", color: "#F4DAD5", marginBottom: "3.5vh" }}>
-          Una app diseñada<br />para el bienestar,<br /><span style={{ color: "#D4AF37" }}>y la expansión.</span>
+          Una app diseñada<br />para el bienestar,<br /><span style={{ background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>y la expansión.</span>
         </div>
 
         {/* Body */}
