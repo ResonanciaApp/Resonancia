@@ -149,7 +149,7 @@ function AllSlides() {
         <div
           key={slide.id}
           className="slide relative aspect-video overflow-hidden"
-          style={{ width: "1920px", height: "1080px" }}
+          style={{ width: "1920px", height: "1080px", border: "none", outline: "none" }}
         >
           <div className="h-full w-full [&_.h-screen]:!h-full [&_.w-screen]:!w-full">
             <slide.Component />
