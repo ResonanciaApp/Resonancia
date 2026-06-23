@@ -32,19 +32,19 @@
     "speakerNotes": ""
   },
   {
-    "id": "p-deck-00fn-4000-8000-perspectiva00f",
-    "position": 5,
-    "filepath": "src/pages/slides/PFuncionalidades.tsx",
-    "title": "Funcionalidades",
-    "description": "8 funcionalidades — todo en una sola app.",
-    "speakerNotes": ""
-  },
-  {
     "id": "p-deck-00ct-4000-8000-perspectiva00c",
-    "position": 6,
+    "position": 5,
     "filepath": "src/pages/slides/PCategorias.tsx",
     "title": "Catálogo de contenido",
     "description": "4 categorías principales con pantallazos reales.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "p-deck-00fn-4000-8000-perspectiva00f",
+    "position": 6,
+    "filepath": "src/pages/slides/PFuncionalidades.tsx",
+    "title": "Funcionalidades",
+    "description": "8 funcionalidades — todo en una sola app.",
     "speakerNotes": ""
   },
   {
