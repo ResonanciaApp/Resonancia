@@ -28,6 +28,13 @@ export default function P06Competencia() {
       users: "~500k",
       attrs: ["Español (mercado AR)", "Meditación guiada", "Sin raíz ancestral"],
     },
+    {
+      app: "myNoise",
+      origin: "Bélgica",
+      valuation: "No pública",
+      users: "~2M",
+      attrs: ["Solo generadores de ruido", "Sin contenido guiado", "Sin identidad cultural"],
+    },
   ];
 
   return (
