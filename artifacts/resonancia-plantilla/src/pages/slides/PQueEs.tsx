@@ -1,10 +1,27 @@
+const bullets = [
+  {
+    icon: "◎",
+    title: "Quienes buscan calmar la mente",
+    desc: "Meditadores, personas con estrés, ansiedad o insomnio.",
+  },
+  {
+    icon: "◈",
+    title: "Quienes exploran su espiritualidad",
+    desc: "Sin dogma, con intención propia y conexión interior.",
+  },
+  {
+    icon: "◇",
+    title: "Hispanohablantes que merecen más",
+    desc: "No una app traducida — una experiencia diseñada desde adentro.",
+  },
+];
+
 export default function PQueEs() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display"
       style={{ background: "linear-gradient(180deg, #2E0510 0%, #160108 100%)", color: "#F4DAD5" }}
     >
-      {/* Subtle radial glow */}
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 30% 45%, rgba(212,175,55,0.06) 0%, transparent 60%)" }} />
 
       <div style={{ position: "relative", height: "100%", display: "flex", zIndex: 2 }}>
@@ -14,18 +31,18 @@ export default function PQueEs() {
           <div>
             {/* Eyebrow */}
             <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.22em", color: "#D4AF37", marginBottom: "1.5vh" }}>
-              ¿QUÉ ES?
+              EL PROPÓSITO
             </div>
             <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.45, marginBottom: "4.5vh" }} />
 
             {/* Headline */}
-            <div style={{ fontSize: "4.2vw", fontWeight: 700, lineHeight: 1.08, letterSpacing: "-0.03em", color: "#F4DAD5", marginBottom: "3.5vh", maxWidth: "46vw" }}>
-              El primer santuario digital de bienestar para el mundo hispanohablante.
+            <div style={{ fontSize: "3.4vw", fontWeight: 700, lineHeight: 1.08, letterSpacing: "-0.03em", color: "#F4DAD5", marginBottom: "3.5vh", maxWidth: "46vw" }}>
+              Resonancia.
             </div>
 
             {/* Body */}
-            <div style={{ fontSize: "1.6vw", fontWeight: 400, lineHeight: 1.75, color: "rgba(244,218,213,0.6)", maxWidth: "42vw" }}>
-              No es una app de meditación genérica traducida al español. Es una plataforma nativa — con contenido propio, comunidad real y una experiencia diseñada desde adentro.
+            <div style={{ fontSize: "1.35vw", fontWeight: 400, lineHeight: 1.8, color: "rgba(244,218,213,0.6)", maxWidth: "42vw" }}>
+              Un santuario digital donde convergen sonidos ancestrales, música consciente, meditaciones y experiencias diseñadas para expandir la consciencia, cultivar la presencia y transformar la manera en que nos relacionamos con nosotros mismos.
             </div>
           </div>
 
@@ -35,19 +52,24 @@ export default function PQueEs() {
         {/* Vertical rule */}
         <div style={{ width: "1px", backgroundColor: "rgba(212,175,55,0.12)", margin: "8vh 0" }} />
 
-        {/* Right column — imagen */}
-        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <img
-            src="/resonancia-plantilla/screenshots/appstore-mockup.png"
-            alt="App Store Resonancia"
-            style={{
-              height: "82vh",
-              width: "auto",
-              objectFit: "contain",
-              display: "block",
-              filter: "drop-shadow(0 16px 48px rgba(0,0,0,0.7))",
-            }}
-          />
+        {/* Right column — Diseñada para */}
+        <div style={{ flex: 1, padding: "8vh 6vw 8vh 4vw", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.22em", color: "#D4AF37", marginBottom: "1.5vh" }}>
+            DISEÑADA PARA
+          </div>
+          <div style={{ width: "3vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.45, marginBottom: "4vh" }} />
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "3.5vh" }}>
+            {bullets.map((b) => (
+              <div key={b.title} style={{ display: "flex", alignItems: "flex-start", gap: "1.2vw" }}>
+                <div style={{ fontSize: "1.4vw", color: "#D4AF37", lineHeight: 1, marginTop: "0.15em", flexShrink: 0 }}>{b.icon}</div>
+                <div>
+                  <div style={{ fontSize: "1.3vw", fontWeight: 700, color: "#F4DAD5", marginBottom: "0.4vh", lineHeight: 1.2 }}>{b.title}</div>
+                  <div style={{ fontSize: "1.05vw", fontWeight: 400, lineHeight: 1.6, color: "rgba(244,218,213,0.5)" }}>{b.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
       </div>
