@@ -19,11 +19,8 @@ export default function PContacto() {
         {/* Left — spacer (image area) */}
         <div style={{ width: "50vw", flexShrink: 0 }} />
 
-        {/* Divider */}
-        <div style={{ width: "1px", backgroundColor: "rgba(212,175,55,0.25)", margin: "8vh 0", flexShrink: 0 }} />
-
         {/* Right — contact */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "8vh 7vw 8vh 5vw" }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "8vh 7vw 8vh calc(5vw - 40px)" }}>
 
           <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.22em", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>
             CONTACTO
