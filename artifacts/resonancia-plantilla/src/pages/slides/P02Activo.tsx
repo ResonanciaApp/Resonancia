@@ -44,8 +44,8 @@ export default function P02Activo() {
             <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.5, marginBottom: "4vh" }} />
 
             <div style={{ fontSize: "5vw", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.03em", marginBottom: "4vh" }}>
-              El activo que<br />
-              <span style={{ color: "#D4AF37" }}>no se compra.</span>
+              10 años de comunidad.<br />
+              <span style={{ color: "#D4AF37" }}>Este es el moat.</span>
             </div>
 
             <div style={{ fontSize: "1.5vw", fontWeight: 400, lineHeight: 1.75, color: "rgba(244,218,213,0.6)", maxWidth: "34vw" }}>
@@ -68,14 +68,15 @@ export default function P02Activo() {
               <div key={m.year} style={{ display: "flex", alignItems: "flex-start", gap: "1.8vw", paddingBottom: i < milestones.length - 1 ? "3.5vh" : 0 }}>
 
                 {/* Year + dot column */}
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0, width: "6vw" }}>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0, width: "8vw" }}>
                   <div style={{
                     fontSize: m.highlight ? "1.3vw" : "1.15vw",
                     fontWeight: m.highlight ? 800 : 600,
-                    color: m.highlight ? "#D4AF37" : "rgba(212,175,55,0.55)",
+                    color: "#D4AF37",
                     letterSpacing: "0.02em",
                     textAlign: "right",
                     width: "100%",
+                    whiteSpace: "nowrap",
                   }}>
                     {m.year}
                   </div>
