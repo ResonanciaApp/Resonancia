@@ -68,7 +68,7 @@ export default function PCategorias() {
               <div
                 style={{
                   flexShrink: 0,
-                  height: "31vh",
+                  height: "40vh",
                   width: "100%",
                   maxWidth: "12vw",
                   marginBottom: "2.5vh",
