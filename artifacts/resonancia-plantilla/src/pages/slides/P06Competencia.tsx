@@ -87,15 +87,11 @@ export default function P06Competencia() {
               <div style={{ fontSize: "1.1vw", fontWeight: 400, color: "rgba(244,218,213,0.4)" }}>{r.origin}</div>
               <div style={{ fontSize: "1.1vw", fontWeight: 400, color: "rgba(244,218,213,0.45)" }}>{r.valuation}</div>
               <div style={{ fontSize: "1.15vw", fontWeight: 400, color: "rgba(244,218,213,0.45)" }}>{r.users}</div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4vh 0.4vw", alignItems: "center" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4vh 1.2vw", alignItems: "center" }}>
                 {r.attrs.map((a) => (
                   <div key={a} style={{
                     fontSize: "0.95vw", fontWeight: 400,
                     color: "rgba(244,218,213,0.5)",
-                    backgroundColor: "rgba(244,218,213,0.04)",
-                    border: "1px solid rgba(244,218,213,0.08)",
-                    borderRadius: "999px",
-                    padding: "0.3vh 0.7vw",
                     whiteSpace: "nowrap",
                   }}>{a}</div>
                 ))}
