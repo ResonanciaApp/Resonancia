@@ -40,8 +40,16 @@
     "speakerNotes": ""
   },
   {
-    "id": "p-deck-0005-4000-8000-perspectiva005",
+    "id": "p-deck-0002-4000-8000-perspectiva002",
     "position": 6,
+    "filepath": "src/pages/slides/P02Activo.tsx",
+    "title": "Nuestro principal activo",
+    "description": "10 años de comunidad. Este es el moat.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "p-deck-0005-4000-8000-perspectiva005",
+    "position": 7,
     "filepath": "src/pages/slides/P05Mercado.tsx",
     "title": "El mercado",
     "description": "TAM / SAM / SOM.",
@@ -49,7 +57,7 @@
   },
   {
     "id": "p-deck-0006-4000-8000-perspectiva006",
-    "position": 7,
+    "position": 8,
     "filepath": "src/pages/slides/P06Competencia.tsx",
     "title": "Competencia",
     "description": "El campo hispanohablante está abierto.",
@@ -57,7 +65,7 @@
   },
   {
     "id": "p-deck-0007-4000-8000-perspectiva007",
-    "position": 8,
+    "position": 9,
     "filepath": "src/pages/slides/P07Negocio.tsx",
     "title": "El negocio",
     "description": "Freemium → suscripción → ecosistema.",

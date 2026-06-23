@@ -22,7 +22,7 @@ export default function P05Mercado() {
               El bienestar digital en español crece a doble dígito anual. Ningún actor relevante está posicionado para liderarlo.
             </div>
           </div>
-          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>06 / 08</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>07 / 09</div>
         </div>
 
         {/* Right — TAM/SAM/SOM bars */}
