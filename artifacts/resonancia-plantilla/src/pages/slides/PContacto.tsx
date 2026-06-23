@@ -2,23 +2,25 @@ export default function PContacto() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display"
-      style={{ background: "linear-gradient(180deg, #2E0510 0%, #160108 100%)", color: "#F4DAD5" }}
+      style={{ color: "#F4DAD5" }}
     >
+      {/* Full-screen background image */}
+      <img
+        src="/resonancia-plantilla/screenshots/portada2.jpg"
+        alt=""
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
+      />
+
+      {/* Dark overlay for readability on the right */}
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, transparent 45%, rgba(10,2,6,0.75) 65%, rgba(10,2,6,0.92) 100%)" }} />
+
       <div style={{ position: "relative", height: "100%", display: "flex", zIndex: 2 }}>
 
-        {/* Left — portada image */}
-        <div style={{ width: "52vw", position: "relative", flexShrink: 0, overflow: "hidden" }}>
-          <img
-            src="/resonancia-plantilla/screenshots/portada2.jpg"
-            alt=""
-            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }}
-          />
-          {/* right fade to blend into divider */}
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, transparent 60%, #160108 100%)" }} />
-        </div>
+        {/* Left — spacer (image area) */}
+        <div style={{ width: "50vw", flexShrink: 0 }} />
 
         {/* Divider */}
-        <div style={{ width: "1px", backgroundColor: "rgba(212,175,55,0.18)", margin: "8vh 0", flexShrink: 0 }} />
+        <div style={{ width: "1px", backgroundColor: "rgba(212,175,55,0.25)", margin: "8vh 0", flexShrink: 0 }} />
 
         {/* Right — contact */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "8vh 7vw 8vh 5vw" }}>
@@ -34,19 +36,16 @@ export default function PContacto() {
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "2.5vh" }}>
-            {/* Email */}
             <div style={{ display: "flex", flexDirection: "column", gap: "0.3vh" }}>
               <div style={{ fontSize: "0.9vw", fontWeight: 600, letterSpacing: "0.18em", color: "rgba(212,175,55,0.45)" }}>EMAIL</div>
-              <div style={{ fontSize: "1.3vw", fontWeight: 400, color: "rgba(244,218,213,0.75)" }}>contacto@casadelcuenco.cl</div>
+              <div style={{ fontSize: "1.3vw", fontWeight: 400, color: "rgba(244,218,213,0.8)" }}>contacto@casadelcuenco.cl</div>
             </div>
 
-            {/* Phone */}
             <div style={{ display: "flex", flexDirection: "column", gap: "0.3vh" }}>
               <div style={{ fontSize: "0.9vw", fontWeight: 600, letterSpacing: "0.18em", color: "rgba(212,175,55,0.45)" }}>TELÉFONO</div>
-              <div style={{ fontSize: "1.3vw", fontWeight: 400, color: "rgba(244,218,213,0.75)" }}>+56 9 9799 6771</div>
+              <div style={{ fontSize: "1.3vw", fontWeight: 400, color: "rgba(244,218,213,0.8)" }}>+56 9 9799 6771</div>
             </div>
 
-            {/* Founder */}
             <div style={{ display: "flex", flexDirection: "column", gap: "0.3vh" }}>
               <div style={{ fontSize: "0.9vw", fontWeight: 600, letterSpacing: "0.18em", color: "rgba(212,175,55,0.45)" }}>FOUNDER</div>
               <div style={{ fontSize: "1.3vw", fontWeight: 600, background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Nicolás Blanch</div>
