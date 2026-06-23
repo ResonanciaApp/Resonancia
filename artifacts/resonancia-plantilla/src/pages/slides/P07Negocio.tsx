@@ -26,11 +26,31 @@ export default function P07Negocio() {
     },
   ];
 
-  const steps = [
-    { n: "01", title: "Cobros", desc: "Activar suscripciones con RevenueCat y precios por región." },
-    { n: "02", title: "Publicación", desc: "Builds con EAS, aprobación en App Store y Google Play." },
-    { n: "03", title: "Lanzamiento", desc: "Salida en LatAm y España con prueba gratis de 7 días." },
-    { n: "04", title: "Crecimiento", desc: "Marketing, alianzas con artistas y expansión del catálogo." },
+  const scenarios = [
+    {
+      label: "Realista",
+      highlight: true,
+      installs: "400.000",
+      subs: "10.000",
+      revenue: "$241M CLP",
+      revenueUSD: "≈ US$ 268.000",
+    },
+    {
+      label: "Optimista",
+      highlight: false,
+      installs: "600.000",
+      subs: "15.000",
+      revenue: "$361M CLP",
+      revenueUSD: "≈ US$ 401.000",
+    },
+    {
+      label: "Agresivo",
+      highlight: false,
+      installs: "1.000.000",
+      subs: "25.000",
+      revenue: "$602M CLP",
+      revenueUSD: "≈ US$ 669.000",
+    },
   ];
 
   return (
@@ -75,31 +95,49 @@ export default function P07Negocio() {
         {/* Divider */}
         <div style={{ width: "1px", backgroundColor: "rgba(212,175,55,0.12)", margin: "7vh 0" }} />
 
-        {/* Right — roadmap */}
-        <div style={{ flex: 1, padding: "7vh 6vw 6vh 4vw", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        {/* Right — projections */}
+        <div style={{ flex: 1, padding: "7vh 5vw 6vh 3vw", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <div>
-            <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", color: "rgba(244,218,213,0.3)", marginBottom: "1.5vh" }}>HOJA DE RUTA</div>
-            <div style={{ width: "3vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.4, marginBottom: "3.5vh" }} />
-            <div style={{ fontSize: "2.8vw", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "3.5vh" }}>
-              El camino a<br /><span style={{ color: "#D4AF37" }}>las tiendas.</span>
+            <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", color: "rgba(244,218,213,0.3)", marginBottom: "1.5vh" }}>PROYECCIÓN AÑO 1</div>
+            <div style={{ width: "3vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.4, marginBottom: "3vh" }} />
+            <div style={{ fontSize: "2.6vw", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.02em", marginBottom: "3vh" }}>
+              Un primer año<br /><span style={{ color: "#D4AF37" }}>realista.</span>
             </div>
 
-            {/* Steps */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "2.2vh" }}>
-              {steps.map((s) => (
-                <div key={s.n} style={{ display: "flex", gap: "1.5vw", alignItems: "flex-start", paddingBottom: "2.2vh", borderBottom: "1px solid rgba(244,218,213,0.06)" }}>
-                  <div style={{ fontSize: "2vw", fontWeight: 800, color: "rgba(212,175,55,0.4)", flexShrink: 0, lineHeight: 1 }}>{s.n}</div>
+            {/* Scenario cards */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.4vh" }}>
+              {scenarios.map((s) => (
+                <div key={s.label} style={{
+                  border: s.highlight ? "1.5px solid rgba(212,175,55,0.6)" : "1.5px solid rgba(244,218,213,0.08)",
+                  borderRadius: "0.8vw",
+                  padding: "1.4vh 1.5vw",
+                  backgroundColor: s.highlight ? "rgba(212,175,55,0.05)" : "transparent",
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr 1fr 1.4fr",
+                  alignItems: "center",
+                  gap: "0 1vw",
+                }}>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: s.highlight ? "#D4AF37" : "rgba(244,218,213,0.7)" }}>{s.label}</div>
                   <div>
-                    <div style={{ fontSize: "1.3vw", fontWeight: 700, color: "#F4DAD5", marginBottom: "0.4vh" }}>{s.title}</div>
-                    <div style={{ fontSize: "1.1vw", fontWeight: 400, color: "rgba(244,218,213,0.45)", lineHeight: 1.5 }}>{s.desc}</div>
+                    <div style={{ fontSize: "0.85vw", color: "rgba(244,218,213,0.35)", letterSpacing: "0.08em", marginBottom: "0.2vh" }}>INSTALACIONES</div>
+                    <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#F4DAD5" }}>{s.installs}</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "0.85vw", color: "rgba(244,218,213,0.35)", letterSpacing: "0.08em", marginBottom: "0.2vh" }}>SUBS MES 12</div>
+                    <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#F4DAD5" }}>{s.subs}</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "0.85vw", color: "rgba(244,218,213,0.35)", letterSpacing: "0.08em", marginBottom: "0.2vh" }}>INGRESO NETO AÑO 1</div>
+                    <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#D4AF37" }}>{s.revenue}</div>
+                    <div style={{ fontSize: "0.9vw", color: "rgba(244,218,213,0.35)" }}>{s.revenueUSD}</div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div style={{ fontSize: "1.2vw", fontWeight: 400, color: "rgba(244,218,213,0.4)", lineHeight: 1.6, borderTop: "1px solid rgba(212,175,55,0.1)", paddingTop: "2vh" }}>
-            El equipo tiene el producto listo para ejecutar. La inversión activa el go-to-market.
+          <div style={{ fontSize: "1.0vw", fontWeight: 400, color: "rgba(244,218,213,0.3)", lineHeight: 1.6, borderTop: "1px solid rgba(212,175,55,0.1)", paddingTop: "1.8vh" }}>
+            ARPU neto ~$3.300/mes CLP (descontado IVA + comisión tienda 30%) · conversión free → premium ~2,5% · TC $900 CLP/USD. Escenarios ilustrativos.
           </div>
         </div>
 
