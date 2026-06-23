@@ -4,11 +4,9 @@ export default function P07Negocio() {
       name: "Free",
       bar: "rgba(244,218,213,0.2)",
       nameColor: "rgba(244,218,213,0.6)",
-      monthly: "$0",
-      annual: "Gratis",
-      annualSub: "sin tarjeta",
-      desc: "Acceso a sesiones seleccionadas, mezclador básico y comunidad.",
-      items: ["Sesiones de muestra", "Mezclador básico", "Comunidad abierta"],
+      monthly: "$0 / mes",
+      annual: "$0 / año",
+      tag: "Acceso gratuito sin tarjeta.",
     },
     {
       name: "Premium",
@@ -16,9 +14,7 @@ export default function P07Negocio() {
       nameColor: "#D4AF37",
       monthly: "USD 7.5 / mes",
       annual: "≈ USD 90 / año",
-      annualSub: "facturación anual",
-      desc: "Biblioteca completa, mezclador ilimitado, Geometrix y sesiones en vivo.",
-      items: ["Todo el catálogo", "Geometrix completo", "Sesiones en vivo", "Descarga offline"],
+      tag: "Biblioteca completa ilimitada.",
     },
     {
       name: "Up Sell Hi-Fi",
@@ -26,9 +22,7 @@ export default function P07Negocio() {
       nameColor: "rgba(244,218,213,0.85)",
       monthly: "USD 15 – 100",
       annual: "Ticket único",
-      annualSub: "por evento o curso",
-      desc: "Cursos especializados y Livestreams con maestros. Pago puntual, sin suscripción adicional.",
-      items: ["Cursos certificados", "Livestreams premium", "Masterclasses"],
+      tag: "Cursos y lives exclusivos.",
     },
   ];
 
@@ -61,19 +55,14 @@ export default function P07Negocio() {
                   <div style={{ width: "0.4vw", backgroundColor: t.bar, borderRadius: "2px", flexShrink: 0, minHeight: "100%" }} />
                   {/* Content */}
                   <div style={{ flex: 1 }}>
-                    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: "0.3vh" }}>
+                    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: "0.5vh" }}>
                       <div style={{ fontSize: "1.35vw", fontWeight: 700, color: t.nameColor }}>{t.name}</div>
-                      <div style={{ textAlign: "right" }}>
+                      <div style={{ textAlign: "right", display: "flex", gap: "1.2vw", alignItems: "baseline" }}>
                         <span style={{ fontSize: "1.3vw", fontWeight: 700, color: t.name === "Premium" ? "#F4DAD5" : "rgba(244,218,213,0.55)" }}>{t.monthly}</span>
-                        <span style={{ fontSize: "0.95vw", fontWeight: 400, color: "rgba(244,218,213,0.3)", marginLeft: "0.6vw" }}>{t.annual} · {t.annualSub}</span>
+                        <span style={{ fontSize: "1.05vw", fontWeight: 400, color: "rgba(244,218,213,0.3)" }}>{t.annual}</span>
                       </div>
                     </div>
-                    <div style={{ fontSize: "1.05vw", fontWeight: 400, color: "rgba(244,218,213,0.38)", lineHeight: 1.5 }}>{t.desc}</div>
-                    <div style={{ display: "flex", gap: "0.8vw", marginTop: "0.5vh", flexWrap: "wrap" }}>
-                      {t.items.map((item) => (
-                        <span key={item} style={{ fontSize: "0.9vw", color: "rgba(244,218,213,0.3)", borderLeft: "1px solid rgba(212,175,55,0.2)", paddingLeft: "0.5vw" }}>{item}</span>
-                      ))}
-                    </div>
+                    <div style={{ fontSize: "1.05vw", fontWeight: 400, color: "rgba(244,218,213,0.35)", letterSpacing: "0.01em" }}>{t.tag}</div>
                   </div>
                 </div>
               ))}
