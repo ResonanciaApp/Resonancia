@@ -36,7 +36,7 @@ export default function P03Producto() {
             </div>
           </div>
 
-          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>04 / 09</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>05 / 10</div>
         </div>
 
         {/* Right — Phone mockup */}
