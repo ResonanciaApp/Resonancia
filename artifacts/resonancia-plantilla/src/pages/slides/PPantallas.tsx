@@ -1,28 +1,33 @@
 import { GOLD_GRADIENT } from "@/utils/goldText";
+import imgInicio from "@/assets/screenshots/inicio.jpg";
+import imgMezclador from "@/assets/screenshots/mezclador.jpg";
+import imgBiblioteca from "@/assets/screenshots/biblioteca.jpg";
+import imgExplorar from "@/assets/screenshots/explorar2.jpg";
+
 const pages = [
   {
     label: "Inicio",
     caption: "Más escuchadas, recientes y accesos rápidos.",
     color: "#5A9BAA",
-    img: "/resonancia-plantilla/screenshots/inicio.jpg",
+    img: imgInicio,
   },
   {
     label: "Mezclador",
     caption: "Mezcla tus sonidos en vivo, guárdalos y compártelos.",
     color: "#B8922A",
-    img: "/resonancia-plantilla/screenshots/mezclador.jpg",
+    img: imgMezclador,
   },
   {
     label: "Biblioteca",
     caption: "Crea playlists y ordena tu contenido favorito.",
     color: "#7B5FA8",
-    img: "/resonancia-plantilla/screenshots/biblioteca.jpg",
+    img: imgBiblioteca,
   },
   {
     label: "Explora",
     caption: "El hábitat principal de nuestro contenido.",
     color: "#9A6040",
-    img: "/resonancia-plantilla/screenshots/explorar2.jpg",
+    img: imgExplorar,
   },
 ];
 

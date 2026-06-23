@@ -1,29 +1,34 @@
 import { GOLD_GRADIENT } from "@/utils/goldText";
+import imgMeditaciones from "@/assets/screenshots/meditaciones.jpg";
+import imgMusica from "@/assets/screenshots/musica.jpg";
+import imgAncrestrales from "@/assets/screenshots/ancestrales.jpg";
+import imgReflexiones from "@/assets/screenshots/reflexiones.jpg";
+
 export default function PCategorias() {
   const categories = [
     {
       name: "Meditaciones",
       color: "#7B5FA8",
       desc: "Meditaciones con voz guiada para aquietar la mente, profundizar la consciencia y despertar la presencia interior.",
-      img: "/resonancia-plantilla/screenshots/meditaciones.jpg",
+      img: imgMeditaciones,
     },
     {
       name: "Música",
       color: "#5A9BAA",
       desc: "Música ambient, enteógena, tribal y étnica que acompaña el viaje interior — desde el silencio hasta la expansión.",
-      img: "/resonancia-plantilla/screenshots/musica.jpg",
+      img: imgMusica,
     },
     {
       name: "Ancestrales",
       color: "#B8922A",
       desc: "Instrumentos milenarios — cuencos tibetanos, gongs y campanas — que inducen estados profundos de relajación y coherencia interior.",
-      img: "/resonancia-plantilla/screenshots/ancestrales.jpg",
+      img: imgAncrestrales,
     },
     {
       name: "Reflexiones",
       color: "#5A9BAA",
       desc: "Palabras, relatos y episodios que invitan a la contemplación — sabiduría, podcast, ASMR e historias para el alma.",
-      img: "/resonancia-plantilla/screenshots/reflexiones.jpg",
+      img: imgReflexiones,
     },
   ];
 
