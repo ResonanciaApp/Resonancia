@@ -24,7 +24,7 @@ export default function P02Activo() {
   const attributes = [
     {
       title: "Especialización étnica y ancestral",
-      desc: "Contenido enraizado en la cosmovisión latinoamericana: cuencos tibetanos, sonoterapia chamánica y tradiciones indígenas. Ninguna app occidental replica esto.",
+      desc: "Contenido enraizado en culturas milenarias: Tibetana, chamánica y distintas corrientes musicales del mundo. Ninguna otra app replica esto.",
       icon: [
         "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
       ],
