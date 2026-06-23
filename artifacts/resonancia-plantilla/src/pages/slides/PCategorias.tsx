@@ -73,12 +73,16 @@ export default function PCategorias() {
                   overflow: "hidden",
                   border: `1px solid ${cat.color}50`,
                   boxShadow: `0 6px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(244,218,213,0.06)`,
-                  backgroundImage: `url(${cat.img})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "top center",
-                  backgroundRepeat: "no-repeat",
+                  backgroundColor: "#1B060F",
                 }}
-              />
+              >
+                <img
+                  src={cat.img}
+                  alt={cat.name}
+                  loading="eager"
+                  style={{ display: "block", height: "100%", width: "auto", minWidth: "100%" }}
+                />
+              </div>
 
               {/* Color bar */}
               <div style={{ width: "2vw", height: "2px", backgroundColor: cat.color, marginBottom: "1.5vh", borderRadius: "2px", flexShrink: 0 }} />
