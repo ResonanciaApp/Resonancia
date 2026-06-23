@@ -76,6 +76,12 @@ body {
     box-shadow: none !important;
   }
 
+  .slide,
+  .slide * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
   /* Texto degradado: Chromium PDF produce bandas; usar color sólido dorado */
   [style*="-webkit-text-fill-color: transparent"],
   [style*="-webkit-text-fill-color:transparent"] {
