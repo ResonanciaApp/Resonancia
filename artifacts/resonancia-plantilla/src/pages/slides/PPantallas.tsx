@@ -1,5 +1,11 @@
 const pages = [
   {
+    label: "INICIO",
+    caption: "Racha, frases del día y accesos rápidos personalizados.",
+    color: "#7BB8C4",
+    img: "/resonancia-plantilla/screenshots/inicio.jpg",
+  },
+  {
     label: "BIBLIOTECA",
     caption: "Playlists, mezclas, favoritos y resonadores.",
     color: "#A78BCA",
@@ -10,12 +16,6 @@ const pages = [
     caption: "Capas de sonido ambiente combinables en tiempo real.",
     color: "#D4AF37",
     img: "/resonancia-plantilla/screenshots/mezclador.jpg",
-  },
-  {
-    label: "INICIO",
-    caption: "Racha, frases del día y accesos rápidos personalizados.",
-    color: "#7BB8C4",
-    img: "/resonancia-plantilla/screenshots/inicio.jpg",
   },
   {
     label: "EXPLORAR",
