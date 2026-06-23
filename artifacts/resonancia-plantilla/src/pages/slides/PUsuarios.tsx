@@ -103,7 +103,7 @@ export default function PUsuarios() {
 
         {/* Footer */}
         <div style={{ marginTop: "3vh", display: "flex", justifyContent: "flex-end" }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>03 / 11</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>03 / 10</div>
         </div>
       </div>
     </div>
