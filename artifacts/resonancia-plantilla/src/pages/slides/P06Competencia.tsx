@@ -47,7 +47,7 @@ export default function P06Competencia() {
               <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.5 }} />
             </div>
             <div style={{ fontSize: "2.2vw", fontWeight: 700, letterSpacing: "-0.02em", color: "rgba(244,218,213,0.9)" }}>
-              El campo hispanohablante está <span style={{ color: "#D4AF37" }}>abierto.</span>
+              Gigantes de la relajación — <span style={{ color: "#D4AF37" }}>todos hablan inglés.</span>
             </div>
           </div>
         </div>
@@ -126,9 +126,21 @@ export default function P06Competencia() {
           ))}
         </div>
 
-        {/* Footer */}
-        <div style={{ marginTop: "2.5vh", display: "flex", justifyContent: "flex-end", flexShrink: 0 }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>08 / 09</div>
+        {/* Validation text */}
+        <div style={{
+          marginTop: "2.5vh",
+          paddingTop: "2.5vh",
+          borderTop: "1px solid rgba(212,175,55,0.12)",
+          flexShrink: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "4vw",
+        }}>
+          <div style={{ fontSize: "1.2vw", fontWeight: 400, lineHeight: 1.65, color: "rgba(244,218,213,0.55)", maxWidth: "80vw" }}>
+            Calm y Headspace validaron que los usuarios pagan por bienestar digital — juntos superan <span style={{ color: "rgba(244,218,213,0.85)", fontWeight: 600 }}>USD 2.3B en valuación y 170M de usuarios</span>. Ninguno habla español nativamente, ninguno tiene raíz cultural latina. <span style={{ color: "#D4AF37", fontWeight: 600 }}>RESONANCIA entra donde los gigantes no llegan.</span>
+          </div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)", flexShrink: 0 }}>08 / 09</div>
         </div>
       </div>
     </div>
