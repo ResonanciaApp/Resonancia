@@ -56,8 +56,16 @@
     "speakerNotes": ""
   },
   {
-    "id": "p-deck-0006-4000-8000-perspectiva006",
+    "id": "p-deck-00ma-4000-8000-perspectivama0",
     "position": 8,
+    "filepath": "src/pages/slides/PMercadoApp.tsx",
+    "title": "El sector",
+    "description": "Un mercado en expansión sin dueño en español.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "p-deck-0006-4000-8000-perspectiva006",
+    "position": 9,
     "filepath": "src/pages/slides/P06Competencia.tsx",
     "title": "Competencia",
     "description": "El campo hispanohablante está abierto.",
@@ -65,7 +73,7 @@
   },
   {
     "id": "p-deck-0007-4000-8000-perspectiva007",
-    "position": 9,
+    "position": 10,
     "filepath": "src/pages/slides/P07Negocio.tsx",
     "title": "El negocio",
     "description": "Freemium → suscripción → ecosistema.",
