@@ -49,7 +49,7 @@ export default function P04Ahora() {
         </div>
 
         <div style={{ marginTop: "auto", paddingTop: "4vh", display: "flex", justifyContent: "flex-end" }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>07 / 11</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>08 / 12</div>
         </div>
       </div>
     </div>
