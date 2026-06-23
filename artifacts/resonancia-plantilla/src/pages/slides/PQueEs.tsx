@@ -31,13 +31,13 @@ export default function PQueEs() {
           <div>
             {/* Eyebrow */}
             <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.22em", color: "#D4AF37", marginBottom: "1.5vh" }}>
-              EL PROPÓSITO
+              ¿QUÉ ES?
             </div>
             <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.45, marginBottom: "4.5vh" }} />
 
             {/* Headline */}
             <div style={{ fontSize: "3.4vw", fontWeight: 700, lineHeight: 1.08, letterSpacing: "-0.03em", color: "#F4DAD5", marginBottom: "3.5vh", maxWidth: "46vw" }}>
-              Resonancia.
+              El propósito.
             </div>
 
             {/* Body */}
