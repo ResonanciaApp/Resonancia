@@ -20,7 +20,7 @@ export default function PCategorias() {
     },
     {
       name: "Reflexiones",
-      color: "#C4916B",
+      color: "#7BB8C4",
       desc: "Palabras, relatos y episodios que invitan a la contemplación — sabiduría, podcast, ASMR e historias para el alma.",
       img: "/resonancia-plantilla/screenshots/reflexiones.jpg",
     },
