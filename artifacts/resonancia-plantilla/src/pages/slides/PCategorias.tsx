@@ -102,7 +102,7 @@ export default function PCategorias() {
 
         {/* Footer */}
         <div style={{ position: "absolute", bottom: "3.5vh", right: "7vw" }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>05 / 10</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>06 / 10</div>
         </div>
       </div>
     </div>
