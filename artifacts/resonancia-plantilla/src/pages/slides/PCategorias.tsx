@@ -37,12 +37,12 @@ export default function PCategorias() {
 
         {/* Header */}
         <div style={{ marginBottom: "2.5vh", flexShrink: 0 }}>
+          <div style={{ fontSize: "1.05vw", fontWeight: 600, letterSpacing: "0.18em", color: "#D4AF37", marginBottom: "0.8vh" }}>
+            MÚSICA Y SONIDOS PARA EL DESCANSO, LA MEDITACIÓN Y EL BIENESTAR.
+          </div>
           <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.45, marginBottom: "1.2vh" }} />
           <div style={{ fontSize: "3.2vw", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.1, color: "#F4DAD5" }}>
             Catálogo de contenido.
-          </div>
-          <div style={{ fontSize: "1.2vw", fontWeight: 400, color: "rgba(244,218,213,0.45)", marginTop: "0.7vh" }}>
-            Música y sonidos para el descanso, la meditación y el bienestar.
           </div>
         </div>
 
