@@ -32,19 +32,6 @@ export default function P06Competencia() {
       attrs: ["Español (mercado AR)", "Meditación guiada", "Sin raíz ancestral"],
       isUs: false,
     },
-    {
-      app: "RESONANCIA",
-      origin: "Latam",
-      valuation: "—",
-      users: "800k comunidad",
-      attrs: [
-        "Especialización étnica y ancestral",
-        "Ecosistema de 10 años",
-        "Red de músicos y sonoterapeutas",
-        "La voz y sabiduría de Nicolás",
-      ],
-      isUs: true,
-    },
   ];
 
   return (
