@@ -73,6 +73,7 @@ export default function PPantallas() {
                   overflow: "hidden",
                   border: `1px solid ${p.color}30`,
                   boxShadow: "0 8px 36px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.3)",
+                  backgroundColor: "#2E0510",
                 }}
               >
                 <img
