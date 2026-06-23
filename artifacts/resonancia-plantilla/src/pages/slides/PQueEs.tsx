@@ -36,13 +36,13 @@ export default function PQueEs() {
             <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.45, marginBottom: "4.5vh" }} />
 
             {/* Headline */}
-            <div style={{ fontSize: "3.4vw", fontWeight: 700, lineHeight: 1.08, letterSpacing: "-0.03em", color: "#F4DAD5", marginBottom: "3.5vh", maxWidth: "46vw" }}>
-              El propósito.
+            <div style={{ fontSize: "3.4vw", fontWeight: 700, lineHeight: 1.12, letterSpacing: "-0.03em", color: "#F4DAD5", marginBottom: "3.5vh", maxWidth: "46vw" }}>
+              Una app diseñada<br />para el bienestar,<br />y la expansión.
             </div>
 
             {/* Body */}
             <div style={{ fontSize: "1.35vw", fontWeight: 400, lineHeight: 1.8, color: "rgba(244,218,213,0.6)", maxWidth: "42vw" }}>
-              Un santuario digital donde convergen sonidos ancestrales, música consciente, meditaciones y experiencias diseñadas para expandir la consciencia, cultivar la presencia y transformar la manera en que nos relacionamos con nosotros mismos.
+              Resonancia es un santuario digital donde convergen sonidos ancestrales, música consciente, meditaciones y experiencias diseñadas para expandir la consciencia, cultivar la presencia y transformar la manera en que nos relacionamos con nosotros mismos.
             </div>
           </div>
 
