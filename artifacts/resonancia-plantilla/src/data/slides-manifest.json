@@ -3,13 +3,21 @@
     "id": "p-deck-0001-4000-8000-perspectiva001",
     "position": 1,
     "filepath": "src/pages/slides/P01Brecha.tsx",
-    "title": "La brecha invisible",
-    "description": "500M+ hispanohablantes. Ninguna app de bienestar los entiende de verdad.",
+    "title": "Portada",
+    "description": "Hero image: RESONANCIA — Santuario de sonidos.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "p-deck-00qe-4000-8000-perspectiva00q",
+    "position": 2,
+    "filepath": "src/pages/slides/PQueEs.tsx",
+    "title": "¿Qué es?",
+    "description": "El primer santuario digital de bienestar para el mundo hispanohablante.",
     "speakerNotes": ""
   },
   {
     "id": "p-deck-0002-4000-8000-perspectiva002",
-    "position": 2,
+    "position": 3,
     "filepath": "src/pages/slides/P02Activo.tsx",
     "title": "El activo que no se compra",
     "description": "Casa del Cuenco: 10 años de IP, comunidad y confianza. Este es el moat.",
@@ -17,7 +25,7 @@
   },
   {
     "id": "p-deck-0003-4000-8000-perspectiva003",
-    "position": 3,
+    "position": 4,
     "filepath": "src/pages/slides/P03Producto.tsx",
     "title": "El producto",
     "description": "5 diferenciadores únicos que no tienen copia en el mercado.",
@@ -25,7 +33,7 @@
   },
   {
     "id": "p-deck-0004-4000-8000-perspectiva004",
-    "position": 4,
+    "position": 5,
     "filepath": "src/pages/slides/P04Ahora.tsx",
     "title": "Por qué ahora",
     "description": "Crisis de salud mental × saturación en inglés × ventana hispana abierta.",
@@ -33,7 +41,7 @@
   },
   {
     "id": "p-deck-0005-4000-8000-perspectiva005",
-    "position": 5,
+    "position": 6,
     "filepath": "src/pages/slides/P05Mercado.tsx",
     "title": "El mercado",
     "description": "TAM / SAM / SOM — grande, creciendo y vacío.",
@@ -41,7 +49,7 @@
   },
   {
     "id": "p-deck-0006-4000-8000-perspectiva006",
-    "position": 6,
+    "position": 7,
     "filepath": "src/pages/slides/P06Competencia.tsx",
     "title": "Competencia",
     "description": "Calm, Headspace, Insight Timer vs Resonancia — el campo está abierto.",
@@ -49,7 +57,7 @@
   },
   {
     "id": "p-deck-0007-4000-8000-perspectiva007",
-    "position": 7,
+    "position": 8,
     "filepath": "src/pages/slides/P07Negocio.tsx",
     "title": "El negocio",
     "description": "Freemium → suscripción → ecosistema. Economía unitaria.",
@@ -57,7 +65,7 @@
   },
   {
     "id": "p-deck-0008-4000-8000-perspectiva008",
-    "position": 8,
+    "position": 9,
     "filepath": "src/pages/slides/P08Ronda.tsx",
     "title": "La ronda",
     "description": "El ask, uso de fondos y hitos a 18 meses.",
