@@ -3,26 +3,26 @@ export default function PCategorias() {
     {
       name: "Meditaciones",
       color: "#A78BCA",
-      desc: "Guiadas por maestros para mente, cuerpo y espíritu",
-      img: "/resonancia-plantilla/screenshots/meditaciones.png",
+      desc: "Meditaciones con voz guiada para aquietar la mente, profundizar la consciencia y despertar la presencia interior.",
+      img: "/resonancia-plantilla/screenshots/meditaciones.jpg",
     },
     {
-      name: "Música",
+      name: "Música y Sonidos",
       color: "#7BB8C4",
-      desc: "Ambiente sonoro inmersivo para cada estado de ánimo",
-      img: "/resonancia-plantilla/screenshots/musica.png",
+      desc: "Música ambient, enteógena, tribal y étnica que acompaña el viaje interior — desde el silencio hasta la expansión.",
+      img: "/resonancia-plantilla/screenshots/musica.jpg",
     },
     {
       name: "Ancestrales",
       color: "#D4AF37",
-      desc: "Instrumentos sagrados de la tradición del sonido",
-      img: "/resonancia-plantilla/screenshots/ancestrales.png",
+      desc: "Instrumentos milenarios — cuencos tibetanos, gongs y campanas — que inducen estados profundos de relajación y coherencia interior.",
+      img: "/resonancia-plantilla/screenshots/ancestrales.jpg",
     },
     {
       name: "Reflexiones",
       color: "#C4916B",
-      desc: "Historias, voz interior y contenido narrativo",
-      img: "/resonancia-plantilla/screenshots/reflexiones.png",
+      desc: "Palabras, relatos y episodios que invitan a la contemplación — sabiduría, podcast, ASMR e historias para el alma.",
+      img: "/resonancia-plantilla/screenshots/reflexiones.jpg",
     },
   ];
 
@@ -36,7 +36,7 @@ export default function PCategorias() {
       <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", padding: "5vh 7vw 5vh", zIndex: 2 }}>
 
         {/* Header */}
-        <div style={{ marginBottom: "4vh", flexShrink: 0 }}>
+        <div style={{ marginBottom: "3.5vh", flexShrink: 0 }}>
           <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.22em", color: "#D4AF37", marginBottom: "1.5vh" }}>
             CATÁLOGO DE CONTENIDO
           </div>
@@ -58,52 +58,38 @@ export default function PCategorias() {
                 alignItems: "center",
               }}
             >
-              {/* Screenshot — phone frame */}
+              {/* Screenshot — fixed height, ~45% of column */}
               <div
                 style={{
-                  flex: 1,
-                  minHeight: 0,
+                  flexShrink: 0,
+                  height: "40vh",
                   width: "100%",
-                  maxWidth: "14vw",
-                  marginBottom: "3vh",
-                  borderRadius: "1.4vw",
+                  maxWidth: "12vw",
+                  marginBottom: "2.5vh",
+                  borderRadius: "1.2vw",
                   overflow: "hidden",
-                  border: `1px solid ${cat.color}35`,
-                  boxShadow: `0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.3)`,
+                  border: `1px solid ${cat.color}30`,
+                  boxShadow: `0 8px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.3)`,
                   backgroundColor: "#0D020A",
-                  position: "relative",
                 }}
               >
                 <img
                   src={cat.img}
                   alt={cat.name}
                   style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                 />
-                {/* Placeholder while no image */}
-                <div style={{
-                  position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center",
-                  flexDirection: "column", gap: "1vh", opacity: 0.25
-                }}>
-                  <div style={{ fontSize: "3vw", color: cat.color, fontWeight: 800 }}>
-                    {cat.name.charAt(0)}
-                  </div>
-                  <div style={{ fontSize: "0.85vw", color: cat.color, letterSpacing: "0.1em", textAlign: "center", lineHeight: 1.3 }}>
-                    pantallazo<br />aquí
-                  </div>
-                </div>
               </div>
 
               {/* Color bar */}
               <div style={{ width: "2vw", height: "2px", backgroundColor: cat.color, marginBottom: "1.5vh", borderRadius: "2px", flexShrink: 0 }} />
 
               {/* Category name */}
-              <div style={{ fontSize: "2.4vw", fontWeight: 800, color: "#F4DAD5", lineHeight: 1.0, letterSpacing: "-0.03em", marginBottom: "1vh", textAlign: "center", flexShrink: 0 }}>
+              <div style={{ fontSize: "1.9vw", fontWeight: 800, color: "#F4DAD5", lineHeight: 1.1, letterSpacing: "-0.02em", marginBottom: "1.2vh", textAlign: "center", flexShrink: 0 }}>
                 {cat.name}
               </div>
 
               {/* Description */}
-              <div style={{ fontSize: "1.05vw", fontWeight: 400, lineHeight: 1.55, color: "rgba(244,218,213,0.4)", textAlign: "center", flexShrink: 0 }}>
+              <div style={{ fontSize: "1.05vw", fontWeight: 400, lineHeight: 1.65, color: "rgba(244,218,213,0.45)", textAlign: "center" }}>
                 {cat.desc}
               </div>
             </div>
@@ -111,7 +97,7 @@ export default function PCategorias() {
         </div>
 
         {/* Footer */}
-        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "3vh", flexShrink: 0 }}>
+        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "2.5vh", flexShrink: 0 }}>
           <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>05 / 12</div>
         </div>
       </div>
