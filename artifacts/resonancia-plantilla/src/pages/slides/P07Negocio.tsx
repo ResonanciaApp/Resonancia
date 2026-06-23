@@ -137,7 +137,7 @@ export default function P07Negocio() {
           </div>
 
           <div style={{ fontSize: "1.0vw", fontWeight: 400, color: "rgba(244,218,213,0.3)", lineHeight: 1.6, borderTop: "1px solid rgba(212,175,55,0.1)", paddingTop: "1.8vh" }}>
-            ARPU neto ~$3.300/mes CLP (descontado IVA + comisión tienda 30%) · conversión free → premium ~2,5% · TC $900 CLP/USD. Escenarios ilustrativos.
+            Ingreso neto = subs promedio anual × ARPU neto × 12 meses · Subs promedio ≈ 61% del total mes 12 (crecimiento lineal durante el año) · ARPU neto ~$3.300/mes CLP (USD 7,5 → ~$6.750 CLP, descontado IVA + comisión tienda 30%) · Conversión free → premium ~2,5% · TC $900 CLP/USD · Escenarios ilustrativos.
           </div>
         </div>
 
