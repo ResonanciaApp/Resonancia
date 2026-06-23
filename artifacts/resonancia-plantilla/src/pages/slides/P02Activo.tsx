@@ -32,6 +32,7 @@ export default function P02Activo() {
     {
       title: "Ecosistema de 10 años",
       desc: "Una década de presencia física, cursos, talleres y comunidad real antes de convertirnos en plataforma digital.",
+      highlight: "Somos más de 800K en nuestras redes sociales.",
       icon: [
         "M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z",
         "M12 6v6l4 2",
@@ -100,7 +101,7 @@ export default function P02Activo() {
                 <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#F4DAD5" }}>{a.title}</div>
               </div>
               <div style={{ fontSize: "1.15vw", fontWeight: 400, lineHeight: 1.6, color: "rgba(244,218,213,0.5)", paddingLeft: "2.4vw" }}>
-                {a.desc}
+                {a.desc}{(a as any).highlight && <> <span style={{ display: "inline", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", fontWeight: 600 }}>{(a as any).highlight}</span></>}
               </div>
             </div>
           ))}</div>
