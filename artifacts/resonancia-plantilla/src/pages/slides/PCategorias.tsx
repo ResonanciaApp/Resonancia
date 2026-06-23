@@ -30,7 +30,7 @@ export default function PCategorias() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display"
-      style={{ background: "linear-gradient(180deg, #F2EDE4 0%, #E8E0D4 100%)", color: "#1B060F" }}
+      style={{ background: "linear-gradient(180deg, #2E0510 0%, #160108 100%)", color: "#F4DAD5" }}
     >
       <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", padding: "4vh 7vw 3.5vh", zIndex: 2 }}>
 
@@ -40,7 +40,7 @@ export default function PCategorias() {
             MÚSICA Y SONIDOS PARA EL DESCANSO, LA MEDITACIÓN Y EL BIENESTAR.
           </div>
           <div style={{ width: "4vw", height: "1px", backgroundColor: "#BE9650", opacity: 0.6, marginBottom: "1.2vh" }} />
-          <div style={{ fontSize: "3.2vw", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.1, color: "#1B060F" }}>
+          <div style={{ fontSize: "3.2vw", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.1, color: "#F4DAD5" }}>
             Catálogo de contenido.
           </div>
         </div>
@@ -54,7 +54,7 @@ export default function PCategorias() {
                 flex: 1,
                 paddingRight: i < 3 ? "2vw" : 0,
                 paddingLeft: i > 0 ? "2vw" : 0,
-                borderRight: i < 3 ? "1px solid rgba(27,6,15,0.1)" : "none",
+                borderRight: i < 3 ? "1px solid rgba(244,218,213,0.1)" : "none",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -72,8 +72,8 @@ export default function PCategorias() {
                   borderRadius: "1.2vw",
                   overflow: "hidden",
                   border: `1px solid ${cat.color}50`,
-                  boxShadow: `0 6px 28px rgba(27,6,15,0.18), 0 0 0 1px rgba(27,6,15,0.08)`,
-                  backgroundColor: "#D8CFBF",
+                  boxShadow: `0 6px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(244,218,213,0.06)`,
+                  backgroundColor: "#1B060F",
                 }}
               >
                 <img
@@ -87,12 +87,12 @@ export default function PCategorias() {
               <div style={{ width: "2vw", height: "2px", backgroundColor: cat.color, marginBottom: "1.5vh", borderRadius: "2px", flexShrink: 0 }} />
 
               {/* Category name */}
-              <div style={{ fontSize: "1.9vw", fontWeight: 800, color: "#1B060F", lineHeight: 1.1, letterSpacing: "-0.02em", marginBottom: "1.2vh", textAlign: "center", flexShrink: 0 }}>
+              <div style={{ fontSize: "1.9vw", fontWeight: 800, color: "#F4DAD5", lineHeight: 1.1, letterSpacing: "-0.02em", marginBottom: "1.2vh", textAlign: "center", flexShrink: 0 }}>
                 {cat.name}
               </div>
 
               {/* Description */}
-              <div style={{ fontSize: "1.05vw", fontWeight: 400, lineHeight: 1.65, color: "rgba(27,6,15,0.55)", textAlign: "center" }}>
+              <div style={{ fontSize: "1.05vw", fontWeight: 400, lineHeight: 1.65, color: "rgba(244,218,213,0.5)", textAlign: "center" }}>
                 {cat.desc}
               </div>
             </div>
@@ -101,7 +101,7 @@ export default function PCategorias() {
 
         {/* Footer */}
         <div style={{ position: "absolute", bottom: "3.5vh", right: "7vw" }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(27,6,15,0.3)" }}>05 / 10</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.3)" }}>05 / 10</div>
         </div>
       </div>
     </div>
