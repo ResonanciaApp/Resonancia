@@ -25,8 +25,13 @@ export default function PQueEs() {
           </div>
         </div>
 
-        {/* Phone mockup — right */}
-        <div style={{ width: "36vw", display: "flex", alignItems: "center", justifyContent: "center", height: "100%", flexShrink: 0 }}>
+        {/* Phone mockups — right */}
+        <div style={{ width: "40vw", display: "flex", alignItems: "center", justifyContent: "center", gap: "1vw", height: "100%", flexShrink: 0 }}>
+          <img
+            src="/resonancia-plantilla/screenshots/phone-player.png"
+            alt=""
+            style={{ height: "72%", width: "auto", objectFit: "contain", opacity: 0.5 }}
+          />
           <img
             src="/resonancia-plantilla/screenshots/phone-mockup.png"
             alt=""
