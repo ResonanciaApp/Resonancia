@@ -1601,3 +1601,9 @@ id = "sAGQnquk3WsXgN7S2sJQl"
 uri = "file://.local/outputs/RESONANCIA---Invitaci-n.pdf"
 type = "pdf"
 title = "RESONANCIA — Invitación.pdf"
+
+[[outputs]]
+id = "gvry8HaLw1iSWkUHVwu1C"
+uri = "file://.local/outputs/RESONANCIA-Plantilla-Test.pdf"
+type = "pdf"
+title = "RESONANCIA — Invitación (PDF de prueba)"

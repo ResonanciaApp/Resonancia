@@ -52,3 +52,27 @@ body {
   user-select: none;
   -webkit-user-select: none;
 }
+
+@media print {
+  @page {
+    margin: 0;
+    padding: 0;
+    size: 1920px 1080px;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #000 !important;
+  }
+
+  .slide {
+    page-break-after: always;
+    break-after: page;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
