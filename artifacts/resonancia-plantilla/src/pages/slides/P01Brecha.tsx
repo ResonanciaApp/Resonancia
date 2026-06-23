@@ -2,7 +2,7 @@ const base = import.meta.env.BASE_URL;
 
 export default function P01Brecha() {
   return (
-    <div className="relative w-screen h-screen overflow-hidden font-display" style={{ backgroundColor: "#1B060F", color: "#F4DAD5" }}>
+    <div className="relative w-screen h-screen overflow-hidden font-display" style={{ background: "linear-gradient(180deg, #2E0510 0%, #160108 100%)", color: "#F4DAD5" }}>
 
       {/* Atmospheric bg */}
       <div style={{ position: "absolute", inset: 0, backgroundImage: `url(${base}hero-atmosphere.png)`, backgroundSize: "cover", backgroundPosition: "center", opacity: 0.12 }} />

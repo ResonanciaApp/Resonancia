@@ -9,7 +9,7 @@ export default function P02Activo() {
   ];
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden font-display" style={{ backgroundColor: "#1B060F", color: "#F4DAD5" }}>
+    <div className="relative w-screen h-screen overflow-hidden font-display" style={{ background: "linear-gradient(180deg, #2E0510 0%, #160108 100%)", color: "#F4DAD5" }}>
 
       {/* Decorative large text watermark */}
       <div style={{ position: "absolute", bottom: "-4vh", right: "-2vw", fontSize: "28vw", fontWeight: 900, color: "rgba(212,175,55,0.04)", letterSpacing: "-0.06em", lineHeight: 1, userSelect: "none", pointerEvents: "none" }}>10</div>

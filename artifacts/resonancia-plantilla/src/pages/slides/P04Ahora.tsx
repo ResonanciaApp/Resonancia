@@ -21,7 +21,7 @@ export default function P04Ahora() {
   ];
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden font-display" style={{ backgroundColor: "#1B060F", color: "#F4DAD5" }}>
+    <div className="relative w-screen h-screen overflow-hidden font-display" style={{ background: "linear-gradient(180deg, #2E0510 0%, #160108 100%)", color: "#F4DAD5" }}>
 
       {/* Horizontal gold rule center */}
       <div style={{ position: "absolute", top: "50%", left: 0, right: 0, height: "1px", backgroundColor: "rgba(212,175,55,0.08)" }} />

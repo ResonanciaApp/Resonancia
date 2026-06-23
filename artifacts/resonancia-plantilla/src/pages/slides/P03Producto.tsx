@@ -10,7 +10,7 @@ export default function P03Producto() {
   ];
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden font-display" style={{ backgroundColor: "#1B060F", color: "#F4DAD5" }}>
+    <div className="relative w-screen h-screen overflow-hidden font-display" style={{ background: "linear-gradient(180deg, #2E0510 0%, #160108 100%)", color: "#F4DAD5" }}>
 
       <div style={{ position: "relative", height: "100%", display: "flex", zIndex: 2 }}>
 
@@ -47,7 +47,7 @@ export default function P03Producto() {
             boxShadow: "0 2vw 8vw rgba(0,0,0,0.9), 0 0 0 0.12vw rgba(255,255,255,0.06)", position: "relative", zIndex: 2
           }}>
             <div style={{ position: "absolute", top: "1.4vw", left: "50%", transform: "translateX(-50%)", width: "4vw", height: "0.85vw", backgroundColor: "#000", borderRadius: "0.58vw", zIndex: 10 }} />
-            <div style={{ width: "100%", height: "100%", borderRadius: "2.55vw", overflow: "hidden", backgroundColor: "#1B060F" }}>
+            <div style={{ width: "100%", height: "100%", borderRadius: "2.55vw", overflow: "hidden", background: "linear-gradient(180deg, #2E0510 0%, #160108 100%)" }}>
               <img src={`${base}mockup-home.jpg`} crossOrigin="anonymous" alt="App" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
             </div>
           </div>
