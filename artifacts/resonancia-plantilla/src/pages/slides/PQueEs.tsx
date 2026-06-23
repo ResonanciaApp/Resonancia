@@ -37,7 +37,17 @@ export default function PQueEs() {
 
         {/* Right column — imagen */}
         <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          {/* imagen aquí */}
+          <img
+            src="/resonancia-plantilla/screenshots/appstore-mockup.png"
+            alt="App Store Resonancia"
+            style={{
+              height: "82vh",
+              width: "auto",
+              objectFit: "contain",
+              display: "block",
+              filter: "drop-shadow(0 16px 48px rgba(0,0,0,0.7))",
+            }}
+          />
         </div>
 
       </div>
