@@ -22,6 +22,8 @@
   --font-display-family: 'Space Grotesk', sans-serif;
   --font-body-family: 'Space Grotesk', sans-serif;
   color-scheme: dark;
+  /* Neutralize Tailwind v4 default border color (evita líneas doradas en PDF) */
+  --color-border: transparent;
 }
 
 html,

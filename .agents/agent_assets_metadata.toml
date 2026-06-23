@@ -1595,3 +1595,9 @@ id = "FITTYlFlb_1kRhAqWU3pQ"
 uri = "file://daily-eas-rebuild.pdf"
 type = "pdf"
 title = "Daily.co SDK — Recordatorio de Activación"
+
+[[outputs]]
+id = "sAGQnquk3WsXgN7S2sJQl"
+uri = "file://.local/outputs/RESONANCIA---Invitaci-n.pdf"
+type = "pdf"
+title = "RESONANCIA — Invitación.pdf"
