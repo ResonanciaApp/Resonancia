@@ -22,13 +22,7 @@ export default function PQueEs() {
 
         {/* Left phone */}
         <div style={{ flex: "0 0 22vw", display: "flex", justifyContent: "flex-end", alignItems: "center", paddingRight: "1vw", overflow: "hidden", height: "100%" }}>
-          <div style={phoneStyle("-10deg", "right center")}>
-            <img
-              src="/resonancia-plantilla/screenshots/inicio.jpg"
-              alt="Inicio"
-              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
-            />
-          </div>
+          <div style={{ ...phoneStyle("-10deg", "right center"), backgroundColor: "#0D020A" }} />
         </div>
 
         {/* Center content */}
@@ -49,13 +43,7 @@ export default function PQueEs() {
 
         {/* Right phone */}
         <div style={{ flex: "0 0 22vw", display: "flex", justifyContent: "flex-start", alignItems: "center", paddingLeft: "1vw", overflow: "hidden", height: "100%" }}>
-          <div style={phoneStyle("10deg", "left center")}>
-            <img
-              src="/resonancia-plantilla/screenshots/mezclador.jpg"
-              alt="Mezclador"
-              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
-            />
-          </div>
+          <div style={{ ...phoneStyle("10deg", "left center"), backgroundColor: "#0D020A" }} />
         </div>
 
       </div>
