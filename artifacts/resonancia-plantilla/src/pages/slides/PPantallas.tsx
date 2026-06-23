@@ -45,7 +45,7 @@ export default function PPantallas() {
       >
         {/* ── Header ── */}
         <div style={{ marginBottom: "3vh", flexShrink: 0 }}>
-          <div style={{ fontSize: "1.05vw", fontWeight: 600, letterSpacing: "0.22em", color: "#D4AF37", marginBottom: "0.8vh" }}>
+          <div style={{ fontSize: "1.05vw", fontWeight: 600, letterSpacing: "0.22em", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "0.8vh" }}>
             LA EXPERIENCIA
           </div>
           <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.45, marginBottom: "1.2vh" }} />
