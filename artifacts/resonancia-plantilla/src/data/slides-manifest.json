@@ -24,56 +24,64 @@
     "speakerNotes": ""
   },
   {
-    "id": "p-deck-0002-4000-8000-perspectiva002",
+    "id": "p-deck-00fn-4000-8000-perspectiva00f",
     "position": 4,
+    "filepath": "src/pages/slides/PFuncionalidades.tsx",
+    "title": "Funcionalidades",
+    "description": "8 funcionalidades — todo en una sola app.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "p-deck-0002-4000-8000-perspectiva002",
+    "position": 5,
     "filepath": "src/pages/slides/P02Activo.tsx",
     "title": "El activo que no se compra",
-    "description": "Casa del Cuenco: 10 años de IP, comunidad y confianza. Este es el moat.",
+    "description": "Casa del Cuenco: 10 años de IP, comunidad y confianza.",
     "speakerNotes": ""
   },
   {
     "id": "p-deck-0003-4000-8000-perspectiva003",
-    "position": 5,
+    "position": 6,
     "filepath": "src/pages/slides/P03Producto.tsx",
     "title": "El producto",
-    "description": "5 diferenciadores únicos que no tienen copia en el mercado.",
+    "description": "5 diferenciadores únicos que no tienen copia.",
     "speakerNotes": ""
   },
   {
     "id": "p-deck-0004-4000-8000-perspectiva004",
-    "position": 6,
+    "position": 7,
     "filepath": "src/pages/slides/P04Ahora.tsx",
     "title": "Por qué ahora",
-    "description": "Crisis de salud mental × saturación en inglés × ventana hispana abierta.",
+    "description": "Crisis × saturación inglés × ventana hispana.",
     "speakerNotes": ""
   },
   {
     "id": "p-deck-0005-4000-8000-perspectiva005",
-    "position": 7,
+    "position": 8,
     "filepath": "src/pages/slides/P05Mercado.tsx",
     "title": "El mercado",
-    "description": "TAM / SAM / SOM — grande, creciendo y vacío.",
+    "description": "TAM / SAM / SOM.",
     "speakerNotes": ""
   },
   {
     "id": "p-deck-0006-4000-8000-perspectiva006",
-    "position": 8,
+    "position": 9,
     "filepath": "src/pages/slides/P06Competencia.tsx",
     "title": "Competencia",
-    "description": "Calm, Headspace, Insight Timer vs Resonancia — el campo está abierto.",
+    "description": "El campo está abierto.",
     "speakerNotes": ""
   },
   {
     "id": "p-deck-0007-4000-8000-perspectiva007",
-    "position": 9,
+    "position": 10,
     "filepath": "src/pages/slides/P07Negocio.tsx",
     "title": "El negocio",
-    "description": "Freemium → suscripción → ecosistema. Economía unitaria.",
+    "description": "Freemium → suscripción → ecosistema.",
     "speakerNotes": ""
   },
   {
     "id": "p-deck-0008-4000-8000-perspectiva008",
-    "position": 10,
+    "position": 11,
     "filepath": "src/pages/slides/P08Ronda.tsx",
     "title": "La ronda",
     "description": "El ask, uso de fondos y hitos a 18 meses.",

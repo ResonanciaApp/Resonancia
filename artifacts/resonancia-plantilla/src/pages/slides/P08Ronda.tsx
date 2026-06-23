@@ -46,7 +46,7 @@ export default function P08Ronda() {
               ))}
             </div>
           </div>
-          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>10 / 10</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>11 / 11</div>
         </div>
 
         {/* Divider */}
