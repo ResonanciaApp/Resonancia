@@ -60,13 +60,15 @@ export default function PPantallas() {
         {/* ── 4 Phones ── */}
         <div style={{ display: "flex", gap: "2vw", flex: 1, minHeight: 0 }}>
           {pages.map((p) => (
-            <div key={p.label} style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+            <div key={p.label} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
               {/* phone frame */}
               <div
                 style={{
-                  flex: 1,
-                  minHeight: 0,
-                  borderRadius: "1.5vw",
+                  height: "40vh",
+                  width: "100%",
+                  maxWidth: "12vw",
+                  flexShrink: 0,
+                  borderRadius: "1.2vw",
                   overflow: "hidden",
                   border: `1px solid ${p.color}30`,
                   boxShadow: "0 8px 36px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.3)",
