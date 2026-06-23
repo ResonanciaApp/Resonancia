@@ -1,23 +1,37 @@
 const GoldIcon = ({ paths }: { paths: string[] }) => (
-  <svg
-    viewBox="0 0 24 24"
-    width="2.2vw"
-    height="2.2vw"
-    fill="none"
-    stroke="url(#goldGrad)"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    style={{ flexShrink: 0, minWidth: "2.2vw", filter: "drop-shadow(0 0 5px rgba(212,175,55,0.75)) drop-shadow(0 0 2px rgba(233,196,106,0.5))" }}
-  >
-    <defs>
-      <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor="#D4AF37" />
-        <stop offset="100%" stopColor="#E9C46A" />
-      </linearGradient>
-    </defs>
-    {paths.map((d, i) => <path key={i} d={d} />)}
-  </svg>
+  <div style={{
+    width: "2.6vw",
+    height: "2.6vw",
+    minWidth: "2.6vw",
+    borderRadius: "50%",
+    backgroundColor: "#2E0510",
+    border: "1px solid rgba(212,175,55,0.35)",
+    boxShadow: "0 0 8px 1px rgba(212,175,55,0.15)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  }}>
+    <svg
+      viewBox="0 0 24 24"
+      width="1.4vw"
+      height="1.4vw"
+      fill="none"
+      stroke="url(#goldGrad)"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{ filter: "drop-shadow(0 0 3px rgba(212,175,55,0.6))" }}
+    >
+      <defs>
+        <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#D4AF37" />
+          <stop offset="100%" stopColor="#E9C46A" />
+        </linearGradient>
+      </defs>
+      {paths.map((d, i) => <path key={i} d={d} />)}
+    </svg>
+  </div>
 );
 
 export default function PFuncionalidades() {
@@ -120,7 +134,7 @@ export default function PFuncionalidades() {
               Todo en<br />una sola<br />app.
             </div>
           </div>
-          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>04 / 09</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>04 / 10</div>
         </div>
 
         {/* Vertical rule */}
@@ -137,7 +151,7 @@ export default function PFuncionalidades() {
               <div
                 key={f.name}
                 style={{
-                  padding: "2vh 2vw",
+                  padding: col === 0 ? "2vh 2vw 2vh 2vw" : "2vh 2vw 2vh 3.5vw",
                   borderRight,
                   borderBottom,
                   display: "flex",
@@ -147,11 +161,21 @@ export default function PFuncionalidades() {
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "0.8vw", marginBottom: "0.6vh" }}>
                   {f.icon === null ? (
-                    <img
-                      src="/resonancia-plantilla/cubo-4.png"
-                      alt="Geometrix"
-                      style={{ width: "2.2vw", height: "2.2vw", objectFit: "contain", flexShrink: 0, filter: "drop-shadow(0 0 5px rgba(212,175,55,0.75)) drop-shadow(0 0 2px rgba(233,196,106,0.5))" }}
-                    />
+                    <div style={{
+                      width: "2.6vw", height: "2.6vw", minWidth: "2.6vw",
+                      borderRadius: "50%",
+                      backgroundColor: "#2E0510",
+                      border: "1px solid rgba(212,175,55,0.35)",
+                      boxShadow: "0 0 8px 1px rgba(212,175,55,0.15)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      flexShrink: 0,
+                    }}>
+                      <img
+                        src="/resonancia-plantilla/cubo-4.png"
+                        alt="Geometrix"
+                        style={{ width: "1.4vw", height: "1.4vw", objectFit: "contain", filter: "drop-shadow(0 0 3px rgba(212,175,55,0.6))" }}
+                      />
+                    </div>
                   ) : (
                     <GoldIcon paths={f.icon} />
                   )}
@@ -160,7 +184,7 @@ export default function PFuncionalidades() {
                     <div style={{ fontSize: "1.05vw", fontWeight: 400, color: "#D4AF37", opacity: 0.65 }}>{f.tag}</div>
                   </div>
                 </div>
-                <div style={{ fontSize: "1.1vw", fontWeight: 400, lineHeight: 1.55, color: "rgba(244,218,213,0.45)", paddingLeft: "3.0vw" }}>
+                <div style={{ fontSize: "1.1vw", fontWeight: 400, lineHeight: 1.55, color: "rgba(244,218,213,0.45)", paddingLeft: "3.4vw" }}>
                   {f.desc}
                 </div>
               </div>
