@@ -28,8 +28,8 @@ export default function PContacto() {
           <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.45, marginBottom: "4vh" }} />
 
           <div style={{ fontSize: "3.2vw", fontWeight: 700, lineHeight: 1.1, letterSpacing: "-0.03em", color: "#F4DAD5", marginBottom: "5vh" }}>
-            ¿Te gustaría<br />
-            <span style={{ display: "inline-block", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>participar?</span>
+            ¿Te gustaría<br />ayudar a<br />
+            <span style={{ display: "inline-block", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>expandir?</span>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "2.5vh" }}>
