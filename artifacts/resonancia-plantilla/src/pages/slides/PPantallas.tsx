@@ -98,11 +98,6 @@ const pages = [
     color: "#A78BCA",
   },
   {
-    label: "MEZCLADOR",
-    caption: "Capas de sonido ambiente combinables en tiempo real.",
-    color: "#D4AF37",
-  },
-  {
     label: "INICIO",
     caption: "Racha, frases del día y accesos rápidos personalizados.",
     color: "#7BB8C4",
