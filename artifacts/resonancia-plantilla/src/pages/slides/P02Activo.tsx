@@ -64,7 +64,7 @@ export default function P02Activo() {
       <div style={{ position: "relative", height: "100%", display: "flex", zIndex: 2 }}>
 
         {/* Left */}
-        <div style={{ width: "44vw", padding: "8vh 4vw 8vh 8vw", display: "flex", flexDirection: "column", justifyContent: "space-between", marginTop: "30px" }}>
+        <div style={{ width: "44vw", padding: "8vh 4vw 8vh 8vw", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <div>
             <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", background: "linear-gradient(90deg, #D6AD5F, #B47344)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>
               NUESTRO PRINCIPAL ACTIVO
@@ -88,7 +88,7 @@ export default function P02Activo() {
         <div style={{ width: "1px", backgroundColor: "rgba(212,175,55,0.15)", margin: "8vh 0" }} />
 
         {/* Right — attributes */}
-        <div style={{ flex: 1, padding: "8vh 7vw 8vh 4vw", display: "flex", flexDirection: "column", justifyContent: "flex-start", gap: "3.2vh", marginTop: "30px" }}>
+        <div style={{ flex: 1, padding: "8vh 7vw 8vh 4vw", display: "flex", flexDirection: "column", justifyContent: "flex-start", gap: "3.2vh" }}>
           <div style={{ marginBottom: "0.5vh" }}>
             <div style={{ fontSize: "1.0vw", fontWeight: 600, letterSpacing: "0.22em", color: "rgba(212,175,55,0.45)" }}>NUESTRA ESENCIA</div>
             <div style={{ width: "3vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.25, marginTop: "0.8vh" }} />
