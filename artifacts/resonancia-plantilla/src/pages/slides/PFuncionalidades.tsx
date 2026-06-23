@@ -1,44 +1,101 @@
+const GoldIcon = ({ paths }: { paths: string[] }) => (
+  <svg
+    viewBox="0 0 24 24"
+    width="1.5vw"
+    height="1.5vw"
+    fill="none"
+    stroke="url(#goldGrad)"
+    strokeWidth="1.6"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    style={{ flexShrink: 0, minWidth: "1.5vw" }}
+  >
+    <defs>
+      <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#D4AF37" />
+        <stop offset="100%" stopColor="#E9C46A" />
+      </linearGradient>
+    </defs>
+    {paths.map((d, i) => <path key={i} d={d} />)}
+  </svg>
+);
+
 export default function PFuncionalidades() {
   const features = [
     {
       name: "Biblioteca",
       tag: "tipo Spotify",
       desc: "Sesiones organizadas por categoría, estado de ánimo y duración. Recientes, favoritos, playlists propias.",
+      icon: [
+        "M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z",
+        "M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 0 3-3h7z",
+      ],
     },
     {
       name: "Mezclador",
       tag: "de sonidos",
       desc: "Capas de sonido ambiente combinables en tiempo real. Presets guardables y mezclador personal.",
+      icon: [
+        "M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3",
+        "M1 14h6M9 8h6M17 16h6",
+      ],
     },
     {
       name: "Reproductores",
       tag: "inteligentes",
       desc: "Timer, loops, control de volumen por capa, lock-screen y reproducción en segundo plano.",
+      icon: [
+        "M3 18v-6a9 9 0 0 1 18 0v6",
+        "M21 18a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2h3z",
+        "M3 18a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2H3z",
+      ],
     },
     {
       name: "Geometrix",
       tag: "meditación activa",
       desc: "Geometría sagrada interactiva como herramienta de enfoque y meditación visual. Único en su categoría.",
+      icon: [
+        "M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z",
+      ],
     },
     {
       name: "Video y Streaming",
       tag: "contenido audiovisual",
       desc: "Sesiones en video bajo demanda + sesiones en vivo con guías certificados en tiempo real.",
+      icon: [
+        "M15 10l4.553-2.069A1 1 0 0 1 21 8.87V15.13a1 1 0 0 1-1.447.9L15 14",
+        "M3 8h12a0 0 0 0 1 0 0v8a0 0 0 0 1 0 0H3a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z",
+      ],
     },
     {
       name: "Ecosistema social",
       tag: "perfiles y comunidad",
       desc: "Resonadores, mezclas compartidas, perfil personalizable y conexión con la comunidad.",
+      icon: [
+        "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2",
+        "M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+        "M23 21v-2a4 4 0 0 0-3-3.87",
+        "M16 3.13a4 4 0 0 1 0 7.75",
+      ],
     },
     {
       name: "Sesiones en Vivo",
       tag: "guías certificados",
       desc: "Streaming directo con maestros del sonido y meditación. Valoración y seguimiento post-sesión.",
+      icon: [
+        "M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14",
+        "M12 12h.01",
+      ],
     },
     {
       name: "Diario personal",
       tag: "práctica y progreso",
       desc: "Registro de reflexiones, racha de escucha diaria y seguimiento de hábitos de bienestar.",
+      icon: [
+        "M4 19.5A2.5 2.5 0 0 1 6.5 17H20",
+        "M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z",
+        "M8 7h8M8 11h5",
+      ],
     },
   ];
 
@@ -51,7 +108,7 @@ export default function PFuncionalidades() {
 
       <div style={{ position: "relative", height: "100%", display: "flex", zIndex: 2 }}>
 
-        {/* Left — header + big number */}
+        {/* Left */}
         <div style={{ width: "28vw", padding: "8vh 3vw 8vh 7vw", display: "flex", flexDirection: "column", justifyContent: "space-between", flexShrink: 0 }}>
           <div>
             <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.22em", color: "#D4AF37", marginBottom: "1.5vh" }}>
@@ -90,11 +147,12 @@ export default function PFuncionalidades() {
                   justifyContent: "center",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "baseline", gap: "0.6vw", marginBottom: "0.6vh" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.7vw", marginBottom: "0.6vh" }}>
+                  <GoldIcon paths={f.icon} />
                   <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#F4DAD5" }}>{f.name}</div>
-                  <div style={{ fontSize: "1.1vw", fontWeight: 400, color: "#D4AF37", opacity: 0.7 }}>{f.tag}</div>
+                  <div style={{ fontSize: "1.05vw", fontWeight: 400, color: "#D4AF37", opacity: 0.65 }}>{f.tag}</div>
                 </div>
-                <div style={{ fontSize: "1.1vw", fontWeight: 400, lineHeight: 1.55, color: "rgba(244,218,213,0.45)" }}>
+                <div style={{ fontSize: "1.1vw", fontWeight: 400, lineHeight: 1.55, color: "rgba(244,218,213,0.45)", paddingLeft: "2.2vw" }}>
                   {f.desc}
                 </div>
               </div>
