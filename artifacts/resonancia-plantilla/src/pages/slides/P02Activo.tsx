@@ -1,59 +1,83 @@
 export default function P02Activo() {
-  const columns = [
+  const attributes = [
     {
-      label: "La crisis",
-      stat: "×3",
-      context: "El diagnóstico de ansiedad y depresión en LatAm se triplicó post-2020",
-      sub: "Fuente: OPS / OMS 2023",
+      label: "Especialización étnica y ancestral",
+      desc: "Contenido enraizado en la cosmovisión latinoamericana: cuencos tibetanos, sonoterapia chamánica y tradiciones indígenas. Ninguna app occidental replica esto.",
     },
     {
-      label: "La saturación",
-      stat: "94%",
-      context: "del contenido de las 10 apps de bienestar más descargadas está en inglés",
-      sub: "App Store · Google Play · 2025",
+      label: "Ecosistema de 10 años",
+      desc: "Una década de presencia física, cursos, talleres y comunidad real antes de convertirnos en plataforma digital.",
     },
     {
-      label: "La ventana",
-      stat: "Ahora",
-      context: "El mercado digital hispano crece a doble dígito. La posición de liderazgo aún no está tomada",
-      sub: "eMarketer · Statista 2024–2026",
+      label: "Red de músicos y sonoterapeutas",
+      desc: "Productores y guiadores seleccionados a mano. Catálogo propio, no crowdsourced. Identidad sonora coherente y auténtica.",
+    },
+    {
+      label: "La voz y sabiduría de Nicolás",
+      desc: "El fundador es el rostro, la voz y el contenido. Una figura con credibilidad real en la comunidad hispanohablante.",
     },
   ];
 
   return (
     <div className="relative w-screen h-screen overflow-hidden font-display" style={{ background: "linear-gradient(180deg, #2E0510 0%, #160108 100%)", color: "#F4DAD5" }}>
 
-      {/* Horizontal gold rule center */}
-      <div style={{ position: "absolute", top: "50%", left: 0, right: 0, height: "1px", backgroundColor: "rgba(212,175,55,0.08)" }} />
+      <div style={{ position: "relative", height: "100%", display: "flex", zIndex: 2 }}>
 
-      <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", padding: "8vh 8vw", zIndex: 2 }}>
+        {/* Left */}
+        <div style={{ width: "44vw", padding: "8vh 4vw 8vh 8vw", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <div>
+            <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", color: "#D4AF37", marginBottom: "1.5vh" }}>
+              NUESTRO PRINCIPAL ACTIVO
+            </div>
+            <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.5, marginBottom: "4vh" }} />
 
-        <div style={{ marginBottom: "5vh" }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", color: "#D4AF37", marginBottom: "1.5vh" }}>
-            NUESTRO PRINCIPAL ACTIVO
+            <div style={{ fontSize: "5vw", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.03em", marginBottom: "4vh" }}>
+              10 años de comunidad.<br />
+              <span style={{ color: "#D4AF37" }}>Este es el moat.</span>
+            </div>
+
+            <div style={{ fontSize: "1.45vw", fontWeight: 400, lineHeight: 1.75, color: "rgba(244,218,213,0.55)", maxWidth: "32vw" }}>
+              RESONANCIA no nace de cero. Nace de una década de presencia real, confianza ganada y una comunidad que eligió quedarse.
+            </div>
           </div>
-          <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.5 }} />
+
+          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>06 / 09</div>
         </div>
 
-        <div style={{ fontSize: "5vw", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.03em", marginBottom: "8vh", maxWidth: "65vw" }}>
-          10 años de comunidad.<br />
-          <span style={{ color: "#D4AF37" }}>Este es el moat.</span>
-        </div>
+        {/* Divider */}
+        <div style={{ width: "1px", backgroundColor: "rgba(212,175,55,0.15)", margin: "8vh 0" }} />
 
-        <div style={{ display: "flex", gap: "0", flex: 1, alignItems: "flex-start" }}>
-          {columns.map((c, i) => (
-            <div key={i} style={{ flex: 1, paddingLeft: i > 0 ? "3vw" : 0, paddingRight: i < columns.length - 1 ? "3vw" : 0, borderLeft: i > 0 ? "1px solid rgba(212,175,55,0.15)" : "none" }}>
-              <div style={{ fontSize: "1.1vw", fontWeight: 500, letterSpacing: "0.15em", color: "rgba(244,218,213,0.4)", marginBottom: "2vh" }}>{c.label.toUpperCase()}</div>
-              <div style={{ fontSize: "8vw", fontWeight: 800, lineHeight: 0.9, letterSpacing: "-0.04em", color: "#D4AF37", marginBottom: "2.5vh" }}>{c.stat}</div>
-              <div style={{ fontSize: "1.55vw", fontWeight: 400, lineHeight: 1.6, color: "rgba(244,218,213,0.75)", marginBottom: "1.5vh" }}>{c.context}</div>
-              <div style={{ fontSize: "1.1vw", fontWeight: 400, color: "rgba(244,218,213,0.3)", letterSpacing: "0.05em" }}>{c.sub}</div>
+        {/* Right — attributes */}
+        <div style={{ flex: 1, padding: "8vh 7vw 8vh 4vw", display: "flex", flexDirection: "column", justifyContent: "center", gap: "3.5vh" }}>
+          {attributes.map((a, i) => (
+            <div key={i} style={{ display: "flex", flexDirection: "column", gap: "0.8vh" }}>
+              {/* Chip */}
+              <div style={{
+                display: "inline-flex",
+                alignSelf: "flex-start",
+                paddingTop: "0.5vh",
+                paddingBottom: "0.5vh",
+                paddingLeft: "1.1vw",
+                paddingRight: "1.1vw",
+                borderRadius: "100px",
+                border: "1px solid rgba(212,175,55,0.45)",
+                backgroundColor: "rgba(212,175,55,0.07)",
+                fontSize: "1.05vw",
+                fontWeight: 600,
+                color: "#E9C46A",
+                letterSpacing: "0.02em",
+                whiteSpace: "nowrap",
+              }}>
+                {a.label}
+              </div>
+              {/* Description */}
+              <div style={{ fontSize: "1.2vw", fontWeight: 400, lineHeight: 1.6, color: "rgba(244,218,213,0.55)", paddingLeft: "0.2vw" }}>
+                {a.desc}
+              </div>
             </div>
           ))}
         </div>
 
-        <div style={{ marginTop: "auto", paddingTop: "4vh", display: "flex", justifyContent: "flex-end" }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>06 / 09</div>
-        </div>
       </div>
     </div>
   );
