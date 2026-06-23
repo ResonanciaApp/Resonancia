@@ -33,14 +33,20 @@ export default function PCategorias() {
     >
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 0%, rgba(212,175,55,0.04) 0%, transparent 55%)" }} />
 
-      <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", padding: "5vh 7vw 5vh", zIndex: 2 }}>
+      <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", padding: "4vh 7vw 3.5vh", zIndex: 2 }}>
 
         {/* Header */}
-        <div style={{ marginBottom: "3.5vh", flexShrink: 0 }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.22em", color: "#D4AF37", marginBottom: "1.5vh" }}>
+        <div style={{ marginBottom: "2.5vh", flexShrink: 0 }}>
+          <div style={{ fontSize: "1.05vw", fontWeight: 600, letterSpacing: "0.22em", color: "#D4AF37", marginBottom: "0.8vh" }}>
             CATÁLOGO DE CONTENIDO
           </div>
-          <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.45 }} />
+          <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.45, marginBottom: "1.2vh" }} />
+          <div style={{ fontSize: "3.2vw", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.1, color: "#F4DAD5" }}>
+            Catálogo de contenido.
+          </div>
+          <div style={{ fontSize: "1.2vw", fontWeight: 400, color: "rgba(244,218,213,0.45)", marginTop: "0.7vh" }}>
+            Música y sonidos para el descanso, la meditación y el bienestar.
+          </div>
         </div>
 
         {/* Columns */}
@@ -58,11 +64,11 @@ export default function PCategorias() {
                 alignItems: "center",
               }}
             >
-              {/* Screenshot — fixed height, ~45% of column */}
+              {/* Screenshot */}
               <div
                 style={{
                   flexShrink: 0,
-                  height: "40vh",
+                  height: "31vh",
                   width: "100%",
                   maxWidth: "12vw",
                   marginBottom: "2.5vh",
