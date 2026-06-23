@@ -1,8 +1,8 @@
 const GoldIcon = ({ paths }: { paths: string[] }) => (
   <div style={{
-    width: "3.0vw",
-    height: "3.0vw",
-    minWidth: "3.0vw",
+    width: "3.16vw",
+    height: "3.16vw",
+    minWidth: "3.16vw",
     borderRadius: "50%",
     backgroundColor: "#2E0510",
     border: "1px solid rgba(212,175,55,0.35)",
@@ -162,7 +162,7 @@ export default function PFuncionalidades() {
                 <div style={{ display: "flex", alignItems: "center", gap: "0.8vw", marginBottom: "0.6vh" }}>
                   {f.icon === null ? (
                     <div style={{
-                      width: "3.0vw", height: "3.0vw", minWidth: "3.0vw",
+                      width: "3.16vw", height: "3.16vw", minWidth: "3.16vw",
                       borderRadius: "50%",
                       backgroundColor: "#2E0510",
                       border: "1px solid rgba(212,175,55,0.35)",
