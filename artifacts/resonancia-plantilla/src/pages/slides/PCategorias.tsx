@@ -98,7 +98,7 @@ export default function PCategorias() {
 
         {/* Footer */}
         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "2.5vh", flexShrink: 0 }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>05 / 10</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>05 / 09</div>
         </div>
       </div>
     </div>

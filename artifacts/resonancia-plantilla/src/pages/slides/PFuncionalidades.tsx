@@ -120,7 +120,7 @@ export default function PFuncionalidades() {
               Todo en<br />una sola<br />app.
             </div>
           </div>
-          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>04 / 10</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>04 / 09</div>
         </div>
 
         {/* Vertical rule */}

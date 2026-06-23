@@ -44,7 +44,7 @@ export default function PQueEs() {
             </div>
           </div>
 
-          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>02 / 10</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>02 / 09</div>
         </div>
 
         {/* Vertical rule */}
