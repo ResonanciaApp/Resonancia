@@ -74,12 +74,13 @@ export default function PCategorias() {
                   border: `1px solid ${cat.color}50`,
                   boxShadow: `0 6px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(244,218,213,0.06)`,
                   backgroundColor: "#1B060F",
+                  position: "relative",
                 }}
               >
                 <img
                   src={cat.img}
                   alt={cat.name}
-                  style={{ width: "100%", height: "auto", minHeight: "100%", display: "block", verticalAlign: "top" }}
+                  style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", height: "100%", width: "auto", minWidth: "100%" }}
                 />
               </div>
 
