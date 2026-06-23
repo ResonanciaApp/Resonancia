@@ -1,3 +1,4 @@
+import { GOLD_GRADIENT } from "@/utils/goldText";
 export default function PUsuarios() {
   const profiles = [
     {
@@ -45,7 +46,7 @@ export default function PUsuarios() {
 
         {/* Header */}
         <div style={{ marginBottom: "4vh" }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.22em", color: "#BE9650", marginBottom: "1.5vh" }}>
+          <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.22em", ...GOLD_GRADIENT, marginBottom: "1.5vh" }}>
             ¿QUIÉNES SON NUESTROS USUARIOS?
           </div>
           <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.45 }} />
@@ -78,7 +79,7 @@ export default function PUsuarios() {
                 </div>
 
                 {/* Context tag */}
-                <div style={{ fontSize: "0.95vw", fontWeight: 500, letterSpacing: "0.04em", marginBottom: "2vh", opacity: 0.8, color: "#BE9650" }}>
+                <div style={{ fontSize: "0.95vw", fontWeight: 500, letterSpacing: "0.04em", marginBottom: "2vh", opacity: 0.8, ...GOLD_GRADIENT }}>
                   {p.context}
                 </div>
 

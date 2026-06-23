@@ -1,3 +1,4 @@
+import { GOLD_GRADIENT } from "@/utils/goldText";
 const GoldIcon = ({ paths }: { paths: string[] }) => (
   <svg
     viewBox="0 0 24 24"
@@ -67,14 +68,14 @@ export default function P02Activo() {
         {/* Left */}
         <div style={{ width: "44vw", padding: "8vh 4vw 8vh 8vw", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <div>
-            <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", color: "#BE9650", marginBottom: "1.5vh" }}>
+            <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.2em", ...GOLD_GRADIENT, marginBottom: "1.5vh" }}>
               NUESTRO PRINCIPAL ACTIVO
             </div>
             <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.5, marginBottom: "4vh" }} />
 
             <div style={{ fontSize: "5vw", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.03em", marginBottom: "4vh", marginTop: "20px" }}>
               10 años de comunidad.<br />
-              <span style={{ color: "#BE9650" }}>Este es el moat.</span>
+              <span style={GOLD_GRADIENT}>Este es el moat.</span>
             </div>
 
             <div style={{ fontSize: "1.45vw", fontWeight: 400, lineHeight: 1.75, color: "rgba(244,218,213,0.55)", maxWidth: "32vw" }}>
@@ -101,7 +102,7 @@ export default function P02Activo() {
                 <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#F4DAD5" }}>{a.title}</div>
               </div>
               <div style={{ fontSize: "1.15vw", fontWeight: 400, lineHeight: 1.6, color: "rgba(244,218,213,0.5)", paddingLeft: "2.4vw" }}>
-                {a.desc}{(a as any).highlight && <> <span style={{ display: "inline", color: "#BE9650", fontWeight: 600 }}>{(a as any).highlight}</span></>}
+                {a.desc}{(a as any).highlight && <> <span style={{ display: "inline", ...GOLD_GRADIENT, fontWeight: 600 }}>{(a as any).highlight}</span></>}
               </div>
             </div>
           ))}</div>

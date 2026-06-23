@@ -1,3 +1,4 @@
+import { GOLD_GRADIENT } from "@/utils/goldText";
 const GoldIcon = ({ paths }: { paths: string[] }) => (
   <div style={{
     width: "3.16vw",
@@ -123,7 +124,7 @@ export default function PFuncionalidades() {
         {/* Left */}
         <div style={{ width: "28vw", padding: "8vh 3vw 8vh 7vw", display: "flex", flexDirection: "column", justifyContent: "space-between", flexShrink: 0 }}>
           <div>
-            <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.22em", color: "#BE9650", marginBottom: "1.5vh" }}>
+            <div style={{ fontSize: "1.1vw", fontWeight: 600, letterSpacing: "0.22em", ...GOLD_GRADIENT, marginBottom: "1.5vh" }}>
               FUNCIONALIDADES
             </div>
             <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.45, marginBottom: "4vh" }} />
@@ -181,7 +182,7 @@ export default function PFuncionalidades() {
                   )}
                   <div style={{ display: "flex", alignItems: "baseline", gap: "0.5vw" }}>
                     <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#F4DAD5" }}>{f.name}</div>
-                    <div style={{ fontSize: "1.05vw", fontWeight: 400, opacity: 0.65, color: "#BE9650" }}>{f.tag}</div>
+                    <div style={{ fontSize: "1.05vw", fontWeight: 400, opacity: 0.65, ...GOLD_GRADIENT }}>{f.tag}</div>
                   </div>
                 </div>
                 <div style={{ fontSize: "1.1vw", fontWeight: 400, lineHeight: 1.55, color: "rgba(244,218,213,0.45)", paddingLeft: "3.8vw" }}>

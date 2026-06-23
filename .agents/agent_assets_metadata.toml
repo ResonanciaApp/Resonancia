@@ -1613,3 +1613,9 @@ id = "EORLTutoMljgGF6dGTQZo"
 uri = "file://.local/outputs/RESONANCIA-Plantilla-v3.pdf"
 type = "pdf"
 title = "RESONANCIA — Invitación (PDF sin líneas)"
+
+[[outputs]]
+id = "wh5wv_mOkck67jXTdcGO0"
+uri = "file://.local/outputs/RESONANCIA-Plantilla-final.pdf"
+type = "pdf"
+title = "RESONANCIA — Invitación (degradado en pantalla, limpio en PDF)"
