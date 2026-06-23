@@ -3,25 +3,25 @@ const pages = [
   {
     label: "Inicio",
     caption: "Más escuchadas, recientes y accesos rápidos.",
-    color: "#7BB8C4",
+    color: "#5A9BAA",
     img: "/resonancia-plantilla/screenshots/inicio.jpg",
   },
   {
     label: "Mezclador",
     caption: "Mezcla tus sonidos en vivo, guárdalos y compártelos.",
-    color: "#D4AF37",
+    color: "#B8922A",
     img: "/resonancia-plantilla/screenshots/mezclador.jpg",
   },
   {
     label: "Biblioteca",
     caption: "Crea playlists y ordena tu contenido favorito.",
-    color: "#A78BCA",
+    color: "#7B5FA8",
     img: "/resonancia-plantilla/screenshots/biblioteca.jpg",
   },
   {
     label: "Explora",
     caption: "El hábitat principal de nuestro contenido.",
-    color: "#C4916B",
+    color: "#9A6040",
     img: "/resonancia-plantilla/screenshots/explorar2.jpg",
   },
 ];
@@ -30,10 +30,8 @@ export default function PPantallas() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display"
-      style={{ background: "linear-gradient(180deg, #2E0510 0%, #160108 100%)", color: "#F4DAD5" }}
+      style={{ background: "linear-gradient(180deg, #F2EDE4 0%, #E8E0D4 100%)", color: "#1B060F" }}
     >
-      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 0%, rgba(212,175,55,0.04) 0%, transparent 55%)" }} />
-
       <div
         style={{
           position: "relative",
@@ -49,11 +47,11 @@ export default function PPantallas() {
           <div style={{ fontSize: "1.05vw", fontWeight: 600, letterSpacing: "0.22em", ...GOLD_GRADIENT, marginBottom: "0.8vh" }}>
             LA EXPERIENCIA
           </div>
-          <div style={{ width: "4vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.45, marginBottom: "1.2vh" }} />
-          <div style={{ fontSize: "3.2vw", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.1, color: "#F4DAD5" }}>
+          <div style={{ width: "4vw", height: "1px", backgroundColor: "#BE9650", opacity: 0.6, marginBottom: "1.2vh" }} />
+          <div style={{ fontSize: "3.2vw", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.1, color: "#1B060F" }}>
             Las pantallas principales.
           </div>
-          <div style={{ fontSize: "1.2vw", fontWeight: 400, color: "rgba(244,218,213,0.45)", marginTop: "0.7vh" }}>
+          <div style={{ fontSize: "1.2vw", fontWeight: 400, color: "rgba(27,6,15,0.5)", marginTop: "0.7vh" }}>
             Acá es donde el contenido vive.
           </div>
         </div>
@@ -71,10 +69,9 @@ export default function PPantallas() {
                   flexShrink: 0,
                   borderRadius: "1.2vw",
                   overflow: "hidden",
-                  border: `1px solid ${p.color}30`,
-                  boxShadow: "0 8px 36px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.3)",
-                  backgroundColor: "#6B1020",
-                  position: "relative",
+                  border: `1px solid ${p.color}50`,
+                  boxShadow: "0 6px 28px rgba(27,6,15,0.18), 0 0 0 1px rgba(27,6,15,0.08)",
+                  backgroundColor: "#D8CFBF",
                 }}
               >
                 <img
@@ -82,7 +79,6 @@ export default function PPantallas() {
                   alt={p.label}
                   style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
                 />
-                <div style={{ position: "absolute", inset: 0, background: "rgba(255,255,255,0.22)", pointerEvents: "none" }} />
               </div>
               {/* title */}
               <div
@@ -91,7 +87,7 @@ export default function PPantallas() {
                   fontSize: "1.25vw",
                   fontWeight: 700,
                   letterSpacing: "0.01em",
-                  color: "#F4DAD5",
+                  color: "#1B060F",
                   textAlign: "center",
                   maxWidth: "17vw",
                 }}
@@ -105,7 +101,7 @@ export default function PPantallas() {
                   fontSize: "1.0vw",
                   fontWeight: 400,
                   lineHeight: 1.55,
-                  color: "rgba(244,218,213,0.45)",
+                  color: "rgba(27,6,15,0.55)",
                   textAlign: "center",
                   flexShrink: 0,
                   maxWidth: "17vw",
@@ -119,7 +115,7 @@ export default function PPantallas() {
 
         {/* ── Footer ── */}
         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "2vh", flexShrink: 0 }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>04 / 10</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(27,6,15,0.3)" }}>04 / 10</div>
         </div>
       </div>
     </div>
