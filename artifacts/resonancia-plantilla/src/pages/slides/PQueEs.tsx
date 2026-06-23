@@ -1,16 +1,16 @@
 const bullets = [
   {
-    icon: "◎",
+    icon: "🧘",
     title: "Quienes buscan calmar la mente",
     desc: "Meditadores, personas con estrés, ansiedad o insomnio.",
   },
   {
-    icon: "◈",
+    icon: "✦",
     title: "Quienes exploran su espiritualidad",
     desc: "Sin dogma, con intención propia y conexión interior.",
   },
   {
-    icon: "◇",
+    icon: "🌎",
     title: "Hispanohablantes que merecen más",
     desc: "No una app traducida — una experiencia diseñada desde adentro.",
   },
@@ -59,14 +59,12 @@ export default function PQueEs() {
           </div>
           <div style={{ width: "3vw", height: "1px", backgroundColor: "#D4AF37", opacity: 0.45, marginBottom: "4vh" }} />
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "3.5vh" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "3vh" }}>
             {bullets.map((b) => (
-              <div key={b.title} style={{ display: "flex", alignItems: "flex-start", gap: "1.2vw" }}>
-                <div style={{ fontSize: "1.4vw", color: "#D4AF37", lineHeight: 1, marginTop: "0.15em", flexShrink: 0 }}>{b.icon}</div>
-                <div>
-                  <div style={{ fontSize: "1.3vw", fontWeight: 700, color: "#F4DAD5", marginBottom: "0.4vh", lineHeight: 1.2 }}>{b.title}</div>
-                  <div style={{ fontSize: "1.05vw", fontWeight: 400, lineHeight: 1.6, color: "rgba(244,218,213,0.5)" }}>{b.desc}</div>
-                </div>
+              <div key={b.title} style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+                <div style={{ fontSize: "2.8vw", marginBottom: "1vh", lineHeight: 1 }}>{b.icon}</div>
+                <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#F4DAD5", marginBottom: "0.4vh", lineHeight: 1.25 }}>{b.title}</div>
+                <div style={{ fontSize: "1.0vw", fontWeight: 400, lineHeight: 1.55, color: "rgba(244,218,213,0.5)", maxWidth: "26vw" }}>{b.desc}</div>
               </div>
             ))}
           </div>
