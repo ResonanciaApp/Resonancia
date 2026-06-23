@@ -40,19 +40,19 @@
     "speakerNotes": ""
   },
   {
-    "id": "p-deck-00vs-4000-8000-perspectivavs0",
-    "position": 6,
-    "filepath": "src/pages/slides/PVideoStreaming.tsx",
-    "title": "Video y Streaming",
-    "description": "El audio fue el comienzo. Ahora viene todo.",
-    "speakerNotes": ""
-  },
-  {
     "id": "p-deck-0002-4000-8000-perspectiva002",
-    "position": 7,
+    "position": 6,
     "filepath": "src/pages/slides/P02Activo.tsx",
     "title": "Nuestro principal activo",
     "description": "10 años de comunidad. Este es el moat.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "p-deck-00vs-4000-8000-perspectivavs0",
+    "position": 7,
+    "filepath": "src/pages/slides/PVideoStreaming.tsx",
+    "title": "Video y Streaming",
+    "description": "El audio fue el comienzo. Ahora viene todo.",
     "speakerNotes": ""
   },
   {

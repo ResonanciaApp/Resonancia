@@ -88,7 +88,7 @@ export default function PVideoStreaming() {
               Video, cursos y sesiones en vivo para los resonadores que quieren ir más lejos.
             </div>
           </div>
-          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>06 / 10</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 400, letterSpacing: "0.12em", color: "rgba(244,218,213,0.25)" }}>07 / 10</div>
         </div>
 
         {/* Vertical rule */}
