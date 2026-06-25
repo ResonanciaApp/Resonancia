@@ -1625,3 +1625,9 @@ id = "Sx4Nhg4j0Cin93kVIw41S"
 uri = "file://.local/outputs/RESONANCIA-Invitacion.pdf"
 type = "pdf"
 title = "RESONANCIA — Invitación (PDF)"
+
+[[outputs]]
+id = "fVjfdnLYYZbNtMpdhsQJN"
+uri = "file://screenshots/resonancia-expansion-slide12.jpg"
+type = "image"
+title = "Slide 12 — La expansión está recién comenzando"
