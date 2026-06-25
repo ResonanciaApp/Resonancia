@@ -86,5 +86,13 @@
     "title": "¿Te gustaría participar?",
     "description": "Datos de contacto — Nicolás Blanch, Founder.",
     "speakerNotes": ""
+  },
+  {
+    "id": "p-deck-00ex-4000-8000-perspectiva00ex",
+    "position": 12,
+    "filepath": "src/pages/slides/PExpansion.tsx",
+    "title": "La expansión",
+    "description": "La expansión está recién comenzando.",
+    "speakerNotes": ""
   }
 ]
