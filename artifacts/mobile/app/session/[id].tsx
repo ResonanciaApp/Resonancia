@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Image } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import {
@@ -55,9 +55,14 @@ export default function SessionDetailScreen() {
   const fav = localFav !== null ? localFav : isFavorite(session.id);
   const isCurrentlyPlaying = currentSession?.id === session.id && isPlaying;
 
-  const related = SESSIONS.filter(
-    (s) => s.categoryId === session.categoryId && s.id !== session.id
-  ).slice(0, 3);
+  const related = useMemo(() => {
+    const pool = SESSIONS.filter((s) => s.categoryId === session.categoryId && s.id !== session.id);
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool.slice(0, 3);
+  }, [session.id]);
 
   const handlePlay = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -212,31 +217,41 @@ export default function SessionDetailScreen() {
             ))}
           </View>
 
-          {/* ── Más en … ─────────────────────────────────────────────────── */}
-          {!isGuiada && !isAncestral && related.length > 0 && (
+          {/* ── Más sesiones como estas ──────────────────────────────────── */}
+          {related.length > 0 && (
             <View style={styles.relatedBlock}>
               <Text style={[styles.blockTitle, { color: colors.foreground }]}>
-                Más en {session.categoryLabel}
+                Más sesiones como estas
               </Text>
-              {related.map((s) => (
-                <Pressable
-                  key={s.id}
-                  onPress={() => router.push(`/session/${s.id}` as never)}
-                  style={({ pressed }) => [
-                    styles.relatedRow,
-                    { backgroundColor: "rgba(255,255,255,0.05)", opacity: pressed ? 0.8 : 1 },
-                  ]}
-                >
-                  <Image source={s.image as never} style={styles.relatedImg} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
-                  <View style={styles.relatedInfo}>
-                    <Text style={[styles.relatedTitle, { color: colors.foreground }]}>{s.title}</Text>
-                    <Text style={[styles.relatedSub, { color: colors.mutedForeground }]}>
-                      {s.subtitle} · {s.durationLabel}
-                    </Text>
-                  </View>
-                  <Feather name="chevron-right" size={16} color={colors.border} />
-                </Pressable>
-              ))}
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.relatedScroll}
+              >
+                {related.map((s) => (
+                  <Pressable
+                    key={s.id}
+                    onPress={() => router.push(`/session/${s.id}` as never)}
+                    style={({ pressed }) => [styles.relatedCard, { opacity: pressed ? 0.8 : 1 }]}
+                  >
+                    <Image
+                      source={s.image as never}
+                      style={styles.relatedCardImg}
+                      contentFit="cover"
+                      placeholder={BLUR_PLACEHOLDER}
+                      transition={IMAGE_TRANSITION}
+                    />
+                    <View style={styles.relatedCardBody}>
+                      <Text style={[styles.relatedCardTitle, { color: colors.foreground }]} numberOfLines={2}>
+                        {s.title}
+                      </Text>
+                      <Text style={[styles.relatedCardSub, { color: colors.mutedForeground }]} numberOfLines={1}>
+                        {s.durationLabel}
+                      </Text>
+                    </View>
+                  </Pressable>
+                ))}
+              </ScrollView>
             </View>
           )}
         </View>
@@ -388,25 +403,25 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
 
-  // Related
-  relatedBlock: { marginBottom: 10 },
-  relatedRow: {
-    flexDirection: "row",
-    alignItems: "center",
+  // Related horizontal cards
+  relatedBlock: { marginBottom: 20 },
+  relatedScroll: { gap: 12, paddingRight: 4 },
+  relatedCard: {
+    width: 148,
     borderRadius: 14,
     overflow: "hidden",
-    marginBottom: 10,
+    backgroundColor: "rgba(74,12,12,0.08)",
+  },
+  relatedCardImg: {
+    width: 148,
+    height: 110,
+  },
+  relatedCardBody: {
     padding: 10,
-    gap: 12,
+    gap: 4,
   },
-  relatedImg: {
-    width: 52,
-    height: 52,
-    borderRadius: 10,
-  },
-  relatedInfo: { flex: 1 },
-  relatedTitle: { fontSize: 14, fontWeight: "600", marginBottom: 2 },
-  relatedSub: { fontSize: 12 },
+  relatedCardTitle: { fontSize: 13, fontWeight: "700", lineHeight: 18 },
+  relatedCardSub: { fontSize: 11 },
 
   // Sticky play
   stickyPlay: {
