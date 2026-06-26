@@ -435,6 +435,9 @@ export default function SonidosAncestalesScreen() {
           </Pressable>
         </GhostPill>
       </View>
+      <View style={styles.chipsArea}>
+        <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+      </View>
 
       <ScrollView
         style={styles.scroll}
@@ -456,18 +459,6 @@ export default function SonidosAncestalesScreen() {
               <Feather name="music" size={32} color={GOLD} />
             </View>
           </View>
-        </View>
-
-        {/* ── Description ── */}
-        <View style={styles.profileCard}>
-          <Text style={styles.profileDesc}>
-            Instrumentos milenarios — cuencos tibetanos, gongs y campanas — que inducen estados profundos de relajación, meditación y coherencia interior.
-          </Text>
-        </View>
-
-        {/* ── Tabs ── */}
-        <View style={styles.chipsArea}>
-          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
         </View>
 
         {/* ── Divisor ── */}
