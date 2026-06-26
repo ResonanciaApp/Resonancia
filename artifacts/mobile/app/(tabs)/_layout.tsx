@@ -87,7 +87,7 @@ function TabItem({
   return (
     <Pressable
       onPress={onPress}
-      style={styles.tab}
+      style={({ pressed }) => [styles.tab, pressed && { transform: [{ scale: 0.90 }] }]}
       accessibilityRole="button"
       accessibilityState={{ selected: isFocused }}
     >
