@@ -214,7 +214,7 @@ export default function SessionDetailScreen() {
               <Feather name={categoryIcon as never} size={17} color={catBg.labelColor} />
               <Text style={[styles.categoryPillText, { color: catBg.labelColor }]}>{categoryPill}</Text>
               <Text style={[styles.categoryPillSep, { color: catBg.labelColor }]}>·</Text>
-              <Text style={[styles.durationText, { color: catBg.labelColor }]}>{session.durationLabel}</Text>
+              <Text style={[styles.durationText, { color: catBg.labelColor }]}>{session.durationLabel.replace(" min", "m")}</Text>
             </LinearGradient>
           )}
 
