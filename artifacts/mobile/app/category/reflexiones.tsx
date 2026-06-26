@@ -465,7 +465,7 @@ export default function ReflexionesScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#060A14" },
 
-  stickyHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14 },
+  stickyHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#0A0F20" },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   headerTitle: { fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },
 
