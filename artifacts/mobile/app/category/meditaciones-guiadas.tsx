@@ -8,11 +8,8 @@ import {
   Pressable, ScrollView, StyleSheet, Text, TextInput, View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { createAudioPlayer, type AudioPlayer } from "expo-audio";
-import { GoldGradientFill } from "@/components/GoldGradient";
 import { GhostPill } from "@/components/GhostPill";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
-import { AUDIO_MAP } from "@/config/audio-map";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { getArtist } from "@/data/artists";
@@ -212,19 +209,14 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose:()=>voi
   );
 }
 
-const PREVIEW_SECS = 19;
-
 function CategoryCard({
   session, width: cardWidth=200, horizontal=false, onLongPress,
-  isPreviewPlaying=false, previewProgress, onPreviewTap,
 }: {
   session: Session; width?: number; horizontal?: boolean; onLongPress?: ()=>void;
-  isPreviewPlaying?: boolean; previewProgress?: Animated.Value; onPreviewTap?: ()=>void;
 }) {
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
   const locked   = !!session.isPremium && !isPremium;
-  const hasAudio = !!AUDIO_MAP[session.id];
   const handlePress = () => {
     if (locked) { router.push("/membresia" as never); return; }
     if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
@@ -235,7 +227,6 @@ function CategoryCard({
   const authorPhoto = authorObj.photo;
 
   if (horizontal) {
-    const barW = previewProgress?.interpolate({inputRange:[0,1],outputRange:[0,70],extrapolate:"clamp"});
     return (
       <Pressable onPress={handlePress} onLongPress={onLongPress} style={({pressed})=>[ac.hRow,{opacity:pressed?0.8:1}]}>
         <View style={ac.hImgWrap}>
@@ -243,8 +234,6 @@ function CategoryCard({
           <View style={ac.hImgOverlay} />
           {locked&&<View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
           <Text style={ac.hDurLabel}>{session.durationLabel}</Text>
-          {hasAudio&&<Pressable onPress={onPreviewTap} hitSlop={6} style={ac.hPlayBtn}><Feather name={isPreviewPlaying?"pause":"play"} size={15} color="#fff" /></Pressable>}
-          {isPreviewPlaying&&barW&&<Animated.View style={[ac.progressBar,{width:barW}]}><GoldGradientFill /></Animated.View>}
         </View>
         <View style={ac.hContent}>
           <Text style={ac.hTitle} numberOfLines={2}>{session.title}</Text>
@@ -258,22 +247,12 @@ function CategoryCard({
       </Pressable>
     );
   }
-  const barW = previewProgress?.interpolate({inputRange:[0,1],outputRange:[0,cardWidth],extrapolate:"clamp"});
   return (
     <Pressable onPress={handlePress} onLongPress={onLongPress} style={({pressed})=>[ac.card,{width:cardWidth,opacity:pressed?0.85:1}]}>
       <View style={ac.imgContainer}>
         <Image source={session.image} style={ac.cardImage} contentFit="cover" />
         {locked&&<View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
         <View style={ac.durationBadge}><Text style={ac.durationBadgeText}>{session.durationLabel}</Text></View>
-        {hasAudio&&(
-          <Pressable onPress={onPreviewTap} hitSlop={8} style={ac.gridPlayOverlay}>
-            <View style={ac.gridPlayBtn}>
-              {isPreviewPlaying&&<GoldGradientFill />}
-              <Feather name={isPreviewPlaying?"pause":"play"} size={14} color={isPreviewPlaying?"#1B060F":"#fff"} />
-            </View>
-          </Pressable>
-        )}
-        {isPreviewPlaying&&barW&&<Animated.View style={[ac.progressBar,{width:barW}]}><GoldGradientFill /></Animated.View>}
       </View>
       <Text style={ac.cardTitle} numberOfLines={2}>{session.title}</Text>
       {!!author&&<Text style={ac.cardAuthor} numberOfLines={1}>{author}</Text>}
@@ -301,10 +280,6 @@ const ac = StyleSheet.create({
   durationBadge:{position:"absolute",bottom:8,left:8,backgroundColor:"rgba(27,6,15,0.72)",borderRadius:8,paddingHorizontal:8,paddingVertical:3},
   durationBadgeText:{fontSize:11,fontWeight:"600",color:"#fff"},
   lockDot:{position:"absolute",top:6,right:6,width:20,height:20,borderRadius:10,backgroundColor:"rgba(0,0,0,0.55)",alignItems:"center",justifyContent:"center"},
-  progressBar:{position:"absolute",bottom:0,left:0,height:3,overflow:"hidden"},
-  hPlayBtn:{position:"absolute",top:0,left:0,right:0,bottom:0,alignItems:"center",justifyContent:"center",backgroundColor:"rgba(0,0,0,0.38)"},
-  gridPlayOverlay:{position:"absolute",bottom:10,right:8},
-  gridPlayBtn:{width:30,height:30,borderRadius:15,backgroundColor:"rgba(27,6,15,0.65)",alignItems:"center",justifyContent:"center",overflow:"hidden"},
 });
 
 function SessionQuickSheet({ session, onClose, onPlaylist, isFavorite, onToggleFavorite }: { session: Session|null; onClose:()=>void; onPlaylist:()=>void; isFavorite:(id:string)=>boolean; onToggleFavorite:(id:string)=>void }) {
@@ -368,31 +343,6 @@ export default function MeditacionesGuiadasScreen() {
   const [selectedSession,   setSelectedSession]   = useState<Session|null>(null);
   const [playlistSessionId, setPlaylistSessionId] = useState<string|null>(null);
 
-  const [previewingId, setPreviewingId] = useState<string|null>(null);
-  const previewProgress = useRef(new Animated.Value(0)).current;
-  const previewPlayer   = useRef<AudioPlayer|null>(null);
-  const previewAnim     = useRef<Animated.CompositeAnimation|null>(null);
-  const previewTimer    = useRef<ReturnType<typeof setTimeout>|null>(null);
-
-  const stopPreview = useCallback(()=>{
-    if (previewTimer.current) clearTimeout(previewTimer.current);
-    previewAnim.current?.stop(); previewProgress.setValue(0); previewPlayer.current?.pause(); setPreviewingId(null);
-  },[previewProgress]);
-
-  const togglePreview = useCallback((session:Session)=>{
-    if (previewingId===session.id) { stopPreview(); return; }
-    stopPreview();
-    const src = AUDIO_MAP[session.id]; if (!src) return;
-    setPreviewingId(session.id); previewProgress.setValue(0);
-    if (!previewPlayer.current) previewPlayer.current = createAudioPlayer(src);
-    else previewPlayer.current.replace(src);
-    previewPlayer.current.play();
-    previewAnim.current = Animated.timing(previewProgress,{toValue:1,duration:PREVIEW_SECS*1000,useNativeDriver:false,easing:Easing.linear});
-    previewAnim.current.start(({finished})=>{ if (finished) stopPreview(); });
-    previewTimer.current = setTimeout(stopPreview,PREVIEW_SECS*1000+300);
-  },[previewingId,stopPreview,previewProgress]);
-
-  useEffect(()=>()=>{ stopPreview(); },[]);
   const toggleView = useCallback(()=>setViewMode((v)=>(v==="list"?"grid":"list")),[]);
 
   const playCounts = useMemo(()=>{ const c:Record<string,number>={}; for (const e of history) c[e.sessionId]=(c[e.sessionId]??0)+1; return c; },[history]);
@@ -415,8 +365,7 @@ export default function MeditacionesGuiadasScreen() {
           {triples.map((triple,ri)=>(
             <View key={ri} style={styles.gridRow}>
               {triple.map((s)=>(
-                <CategoryCard key={s.id} session={s} width={cellW} onLongPress={()=>setSelectedSession(s)}
-                  isPreviewPlaying={previewingId===s.id} previewProgress={previewProgress} onPreviewTap={()=>togglePreview(s)} />
+                <CategoryCard key={s.id} session={s} width={cellW} onLongPress={()=>setSelectedSession(s)} />
               ))}
             </View>
           ))}
@@ -426,8 +375,7 @@ export default function MeditacionesGuiadasScreen() {
     return (
       <View style={{paddingHorizontal:H_PAD}}>
         {sessions.map((s)=>(
-          <CategoryCard key={s.id} session={s} horizontal onLongPress={()=>setSelectedSession(s)}
-            isPreviewPlaying={previewingId===s.id} previewProgress={previewProgress} onPreviewTap={()=>togglePreview(s)} />
+          <CategoryCard key={s.id} session={s} horizontal onLongPress={()=>setSelectedSession(s)} />
         ))}
       </View>
     );
