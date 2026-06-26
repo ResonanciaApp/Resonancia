@@ -536,7 +536,7 @@ const styles = StyleSheet.create({
   headerDivider: { width: StyleSheet.hairlineWidth, height: 18, backgroundColor: "rgba(255,255,255,0.18)" },
 
   /* ── Hero ── */
-  heroArea: { height: 220, position: "relative" },
+  heroArea: { height: 250, position: "relative" },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
   heroOverlayRight: { position: "absolute", right: H_PAD, zIndex: 10 },
   heroIconFloat: {
