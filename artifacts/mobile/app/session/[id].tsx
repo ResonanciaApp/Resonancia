@@ -128,11 +128,6 @@ export default function SessionDetailScreen() {
         {/* ── Hero image ──────────────────────────────────────────────────── */}
         <View style={[styles.hero, { height: HEADER_H + topPad }]}>
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
-          <LinearGradient
-            colors={["rgba(46,5,16,0.15)", "transparent", "#2E0510"]}
-            locations={[0, 0.38, 1]}
-            style={StyleSheet.absoluteFill}
-          />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
             <Pressable onPress={() => router.back()} style={[styles.navBtn, { backgroundColor: "rgba(24,17,12,0.5)" }]}>
               <Feather name="arrow-left" size={20} color="#FFF" />
@@ -141,7 +136,7 @@ export default function SessionDetailScreen() {
         </View>
 
         {/* ── Content ─────────────────────────────────────────────────────── */}
-        <View style={[styles.content, { marginTop: -36 }]}>
+        <View style={styles.content}>
 
           {/* Meta row: duration */}
           <View style={styles.metaRow}>
