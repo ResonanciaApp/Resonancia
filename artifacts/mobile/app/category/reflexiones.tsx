@@ -481,7 +481,7 @@ const styles = StyleSheet.create({
   chipTextSel: { color: "#1B060F" },
 
   scroll: { flex: 1 },
-  controlRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingTop: 4, paddingBottom: 8 },
+  controlRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingTop: 8, paddingBottom: 8 },
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
   sortText: { fontSize: 13, color: MUTED, fontWeight: "500" },
   viewToggleBtn: { padding: 2 },
