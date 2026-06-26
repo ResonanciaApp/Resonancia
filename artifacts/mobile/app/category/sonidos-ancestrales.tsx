@@ -453,12 +453,6 @@ export default function SonidosAncestalesScreen() {
             locations={[0.50, 0.80, 1]}
             style={StyleSheet.absoluteFill}
           />
-          {/* Ícono flotante en borde inferior del hero */}
-          <View style={styles.heroIconFloat}>
-            <View style={styles.heroIconCircle}>
-              <Feather name="music" size={32} color={GOLD} />
-            </View>
-          </View>
         </View>
 
         {/* ── Divisor ── */}
