@@ -89,20 +89,16 @@ export default function TemaScreen() {
       >
         <View style={styles.stickyInner} pointerEvents="box-none">
           <GhostPill>
-            <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
-              <Feather name="arrow-left" size={20} color="#FFFFFF" />
+            <Pressable onPress={() => router.back()} hitSlop={10} style={styles.pillBtn}>
+              <Feather name="arrow-left" size={16} color="#FFFFFF" />
             </Pressable>
           </GhostPill>
           <Text style={[styles.stickyTitle, { color: colors.foreground }]} numberOfLines={1}>
             {tema.label}
           </Text>
           <GhostPill>
-            <Pressable
-              hitSlop={10}
-              style={styles.headerBtn}
-              onPress={() => Alert.alert(tema.label, tema.description ?? "")}
-            >
-              <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
+            <Pressable hitSlop={10} style={styles.pillBtn} onPress={() => Alert.alert(tema.label, tema.description ?? "")}>
+              <Feather name="info" size={16} color="rgba(255,255,255,0.85)" />
             </Pressable>
           </GhostPill>
         </View>
@@ -110,13 +106,15 @@ export default function TemaScreen() {
 
       {/* ── Floating back button (always visible, on top of hero area) ── */}
       <View style={[styles.floatingBack, { top: topPad + 8 }]} pointerEvents="box-none">
-        <Pressable
-          onPress={() => router.back()}
-          hitSlop={10}
-          style={({ pressed }) => [styles.backBtn, { opacity: pressed ? 0.7 : 1 }]}
-        >
-          <Feather name="arrow-left" size={16} color="#FFFFFF" />
-        </Pressable>
+        <GhostPill>
+          <Pressable
+            onPress={() => router.back()}
+            hitSlop={10}
+            style={({ pressed }) => [styles.pillBtn, { opacity: pressed ? 0.7 : 1 }]}
+          >
+            <Feather name="arrow-left" size={16} color="#FFFFFF" />
+          </Pressable>
+        </GhostPill>
       </View>
 
       <Animated.ScrollView
@@ -222,9 +220,9 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     paddingTop: 10,
   },
-  headerBtn: {
-    width: 38,
-    height: 38,
+  pillBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -241,16 +239,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: H_PAD,
     zIndex: 10,
-  },
-  backBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 50,
-    backgroundColor: "rgba(255,255,255,0.08)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.12)",
   },
 
   hero: {

@@ -65,16 +65,15 @@ export default function EstadoAnimoScreen() {
     <>
       {/* Floating back row — always visible */}
       <View style={[styles.heroHeader, { paddingTop: topPad + 8 }]}>
-        <Pressable
-          onPress={() => router.back()}
-          hitSlop={10}
-          style={({ pressed }) => [
-            styles.backBtn,
-            { backgroundColor: colors.card, borderColor: "rgba(212,175,55,0.20)", opacity: pressed ? 0.7 : 1 },
-          ]}
-        >
-          <Feather name="arrow-left" size={18} color={colors.foreground} />
-        </Pressable>
+        <GhostPill>
+          <Pressable
+            onPress={() => router.back()}
+            hitSlop={10}
+            style={({ pressed }) => [styles.pillBtn, { opacity: pressed ? 0.7 : 1 }]}
+          >
+            <Feather name="arrow-left" size={16} color="#FFFFFF" />
+          </Pressable>
+        </GhostPill>
       </View>
 
       {/* Mood chip */}
@@ -113,8 +112,8 @@ export default function EstadoAnimoScreen() {
       >
         <View style={styles.stickyInner} pointerEvents="box-none">
           <GhostPill>
-            <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
-              <Feather name="arrow-left" size={20} color="#FFFFFF" />
+            <Pressable onPress={() => router.back()} hitSlop={10} style={styles.pillBtn}>
+              <Feather name="arrow-left" size={16} color="#FFFFFF" />
             </Pressable>
           </GhostPill>
           <Text style={[styles.stickyTitle, { color: colors.foreground }]} numberOfLines={1}>
@@ -123,10 +122,10 @@ export default function EstadoAnimoScreen() {
           <GhostPill>
             <Pressable
               hitSlop={10}
-              style={styles.headerBtn}
+              style={styles.pillBtn}
               onPress={() => Alert.alert(mood.label, `Sesiones recomendadas para cuando te sientes ${mood.label.toLowerCase()}.`)}
             >
-              <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
+              <Feather name="info" size={16} color="rgba(255,255,255,0.85)" />
             </Pressable>
           </GhostPill>
         </View>
@@ -170,9 +169,9 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     paddingTop: 10,
   },
-  headerBtn: {
-    width: 38,
-    height: 38,
+  pillBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -189,15 +188,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     paddingBottom: 8,
   },
-  backBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
   // Mood chip
   moodChip: {
     flexDirection: "row",
