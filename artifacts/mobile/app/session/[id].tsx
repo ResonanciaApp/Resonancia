@@ -406,13 +406,12 @@ const styles = StyleSheet.create({
   relatedCard: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 14,
-    overflow: "hidden",
     gap: 12,
   },
   relatedCardImg: {
-    width: 90,
-    height: 90,
+    width: 110,
+    height: 72,
+    borderRadius: 10,
   },
   relatedCardBody: {
     flex: 1,
