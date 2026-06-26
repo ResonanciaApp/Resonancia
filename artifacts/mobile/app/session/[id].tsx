@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
   },
   categoryPillSep: {
-    fontSize: 15,
+    fontSize: 20,
     color: "#4A0C0C",
     opacity: 0.5,
   },
