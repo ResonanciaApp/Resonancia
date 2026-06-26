@@ -84,9 +84,9 @@ export default function TagScreen() {
     .concat(displaySessions.filter((s) => !s.isFeatured))
     .slice(0, 5);
 
-  // Sticky header opacity
+  // Sticky header: empieza tarde, rango amplio (sutil, como pantalla de sesión)
   const headerOpacity = scrollY.interpolate({
-    inputRange: [HERO_H - 60, HERO_H],
+    inputRange: [HERO_H * 0.72, HERO_H * 1.25],
     outputRange: [0, 1],
     extrapolate: "clamp",
   });

@@ -23,7 +23,8 @@ import { useColors } from "@/hooks/useColors";
 const H_PAD = 16;
 const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList<(typeof SESSIONS)[number]>);
-const STICKY_THRESHOLD = 80;
+const STICKY_START = 80;
+const STICKY_END   = 170;
 
 export default function EstadoAnimoScreen() {
   const { mood: moodId } = useLocalSearchParams<{ mood: string }>();
@@ -37,7 +38,7 @@ export default function EstadoAnimoScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const headerOpacity = scrollY.interpolate({
-    inputRange: [STICKY_THRESHOLD - 30, STICKY_THRESHOLD],
+    inputRange: [STICKY_START, STICKY_END],
     outputRange: [0, 1],
     extrapolate: "clamp",
   });

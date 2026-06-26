@@ -25,7 +25,8 @@ import { SESSIONS, type Session } from "@/data/sessions";
 import { getTemaById } from "@/data/temas";
 import { useColors } from "@/hooks/useColors";
 const H_PAD = 20;
-const STICKY_THRESHOLD = 160;
+const STICKY_START = 180;
+const STICKY_END   = 300;
 
 const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 
@@ -41,7 +42,7 @@ export default function TemaScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const headerOpacity = scrollY.interpolate({
-    inputRange: [STICKY_THRESHOLD - 40, STICKY_THRESHOLD],
+    inputRange: [STICKY_START, STICKY_END],
     outputRange: [0, 1],
     extrapolate: "clamp",
   });
