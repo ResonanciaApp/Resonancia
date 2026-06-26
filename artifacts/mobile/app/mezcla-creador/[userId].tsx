@@ -1,12 +1,10 @@
 /**
- * Perfil del creador de mezclas de la comunidad.
- * ─────────────────────────────────────────────────────────────────
- * Se abre desde el menú contextual de una mezcla ("Ver perfil del
- * creador"). Lista todas las mezclas públicas de ese autor usando el
- * filtro `author` del endpoint GET /mixes.
- * ─────────────────────────────────────────────────────────────────
+ * Mezclas del creador — pantalla pública.
+ * Se abre desde el menú contextual de una mezcla ("Ver mezclas del creador").
+ * Lista todas las mezclas públicas de ese autor usando el filtro `author`.
  */
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import { Image as ExpoImage } from "expo-image";
 import React from "react";
@@ -23,34 +21,28 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useGetSharedMixes } from "@workspace/api-client-react";
 import type { SharedMix } from "@workspace/api-client-react";
 
-import { getSoundImage } from "@/config/sound-images";
+import { MIX_CATEGORIES } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 import { resolveAvatarUrl } from "@/lib/avatar";
 
-const STACK_THUMB = 34;
-const STACK_SHIFT = 21;
-const STACK_MAX = 3;
+const BG_GRADIENT = ["#2E0510", "#160108"] as const;
+const COVER_SIZE = 46;
+const GOLD = "#D4AF37";
 
-function SoundStack({ sounds }: { sounds: SharedMix["sounds"] }) {
-  if (!sounds || sounds.length === 0) return null;
-  const visible = sounds.slice(0, STACK_MAX);
+function CategoryCover({ category }: { category?: string | null }) {
+  const catMeta = category ? MIX_CATEGORIES.find((c) => c.id === category) : undefined;
+  if (catMeta) {
+    return (
+      <ExpoImage
+        source={catMeta.image as number}
+        style={styles.cover}
+        contentFit="cover"
+      />
+    );
+  }
   return (
-    <View style={[styles.stack, { width: STACK_THUMB + (visible.length - 1) * STACK_SHIFT }]}>
-      {visible.map((s, i) => {
-        const img = getSoundImage(s.id);
-        return (
-          <View
-            key={`${s.id}-${i}`}
-            style={[styles.stackThumb, { left: i * STACK_SHIFT, zIndex: visible.length - i }]}
-          >
-            {img ? (
-              <ExpoImage source={img} style={styles.stackImg} contentFit="cover" />
-            ) : (
-              <View style={[styles.stackImg, { backgroundColor: "#1F2937" }]} />
-            )}
-          </View>
-        );
-      })}
+    <View style={[styles.cover, styles.coverFallback]}>
+      <Feather name="music" size={18} color="rgba(212,175,55,0.55)" />
     </View>
   );
 }
@@ -72,7 +64,7 @@ export default function CreatorProfileScreen() {
   const totalLikes = mixes.reduce((sum, m) => sum + m.likes, 0);
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <LinearGradient colors={BG_GRADIENT} style={styles.root}>
       <ScrollView
         contentContainerStyle={{
           paddingTop: insets.top + 8,
@@ -85,7 +77,7 @@ export default function CreatorProfileScreen() {
         <Pressable
           onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/explore" as never))}
           hitSlop={12}
-          style={[styles.backBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+          style={[styles.backBtn, { backgroundColor: "rgba(74,12,12,0.25)", borderColor: colors.border }]}
         >
           <Feather name="chevron-left" size={22} color={colors.foreground} />
         </Pressable>
@@ -99,8 +91,8 @@ export default function CreatorProfileScreen() {
               contentFit="cover"
             />
           ) : (
-            <View style={[styles.avatar, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Text style={[styles.avatarTxt, { color: colors.accent }]}>{initial}</Text>
+            <View style={[styles.avatar, { backgroundColor: "rgba(74,12,12,0.35)", borderColor: colors.border }]}>
+              <Text style={[styles.avatarTxt, { color: GOLD }]}>{initial}</Text>
             </View>
           )}
           <Text style={[styles.name, { color: colors.foreground }]} numberOfLines={1}>
@@ -114,7 +106,7 @@ export default function CreatorProfileScreen() {
 
         {/* Lista de mezclas */}
         {isLoading ? (
-          <ActivityIndicator color={colors.primary} style={{ marginTop: 40 }} />
+          <ActivityIndicator color={GOLD} style={{ marginTop: 40 }} />
         ) : mixes.length === 0 ? (
           <View style={styles.empty}>
             <Feather name="music" size={28} color="rgba(212,175,55,0.35)" />
@@ -133,10 +125,10 @@ export default function CreatorProfileScreen() {
                 }
                 style={({ pressed }) => [
                   styles.mixRow,
-                  { backgroundColor: "rgba(74,12,12,0.08)", opacity: pressed ? 0.7 : 1 },
+                  { backgroundColor: "rgba(74,12,12,0.20)", opacity: pressed ? 0.7 : 1 },
                 ]}
               >
-                <SoundStack sounds={mix.sounds} />
+                <CategoryCover category={mix.category} />
                 <View style={styles.mixInfo}>
                   <Text style={[styles.mixName, { color: colors.foreground }]} numberOfLines={1}>
                     {mix.name}
@@ -152,7 +144,7 @@ export default function CreatorProfileScreen() {
           </View>
         )}
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -190,18 +182,18 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 14,
   },
-  stack: { height: STACK_THUMB, flexShrink: 0 },
-  stackThumb: {
-    position: "absolute",
-    top: 0,
-    width: STACK_THUMB,
-    height: STACK_THUMB,
-    borderRadius: STACK_THUMB / 2,
-    borderWidth: 1.5,
-    borderColor: "#1B060F",
+  cover: {
+    width: COVER_SIZE,
+    height: COVER_SIZE,
+    borderRadius: 10,
     overflow: "hidden",
+    flexShrink: 0,
   },
-  stackImg: { width: "100%", height: "100%" },
+  coverFallback: {
+    backgroundColor: "rgba(212,175,55,0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   mixInfo: { flex: 1, minWidth: 0 },
   mixName: { fontSize: 15, fontWeight: "700" },
   mixMeta: { fontSize: 12, marginTop: 3 },

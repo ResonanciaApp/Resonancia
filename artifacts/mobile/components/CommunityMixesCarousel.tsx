@@ -359,14 +359,14 @@ function MixContextMenu({
 
         <View style={[menuStyles.sep, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
 
-        {/* Ver perfil del creador */}
+        {/* Ver mezclas del creador */}
         <Pressable
           onPress={() => onViewCreator(mix)}
           style={({ pressed }) => [menuStyles.action, { opacity: pressed ? 0.7 : 1 }]}
         >
           <Feather name="user" size={20} color={colors.foreground} style={menuStyles.actionIcon} />
           <Text style={[menuStyles.actionLabel, { color: colors.foreground }]}>
-            Ver perfil del creador
+            Ver mezclas del creador
           </Text>
           <Feather name="chevron-right" size={16} color="rgba(244,218,213,0.20)" />
         </Pressable>
