@@ -239,7 +239,7 @@ function CategoryCard({
         <View style={ac.hImgWrap}>
           <Image source={session.image} style={ac.hImage} contentFit="cover" />
           {locked&&<View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
-          <View style={ac.durationBadge}><Text style={ac.durationBadgeText}>{session.durationLabel}</Text></View>
+          <Text style={ac.hDurLabel}>{session.durationLabel}</Text>
           {hasAudio&&<Pressable onPress={onPreviewTap} hitSlop={6} style={ac.hPlayBtn}><Feather name={isPreviewPlaying?"pause":"play"} size={15} color="#fff" /></Pressable>}
           {isPreviewPlaying&&barW&&<Animated.View style={[ac.progressBar,{width:barW}]}><GoldGradientFill /></Animated.View>}
         </View>
@@ -279,6 +279,7 @@ const ac = StyleSheet.create({
   hImage:{width:112,height:99},
   hContent:{flex:1,justifyContent:"center",gap:2},
   hDuration:{fontSize:12,fontWeight:"500",color:"rgba(255,255,255,0.8)"},
+  hDurLabel:{position:"absolute",bottom:6,left:8,fontSize:13,fontWeight:"700",color:"#fff"},
   hTitle:{fontSize:16,fontWeight:"600",color:TEXT,lineHeight:21},
   hAuthor:{fontSize:14,color:MUTED,marginTop:1},
   card:{gap:6},
