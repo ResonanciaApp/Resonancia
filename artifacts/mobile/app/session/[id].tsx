@@ -170,7 +170,11 @@ export default function SessionDetailScreen() {
           {/* ── Sobre la voz guía ────────────────────────────────────────── */}
           <View style={styles.authorSection}>
             <Text style={[styles.blockTitle, { color: colors.foreground }]}>
-              {authors.length > 1 ? "Sobre las voces guía" : "Sobre la voz guía"}
+              {isAncestral
+                ? "Sobre el Sonoterapeuta"
+                : authors.length > 1
+                  ? "Sobre las voces guía"
+                  : "Sobre la voz guía"}
             </Text>
             {authors.map((a, idx) => (
               <View key={a.profilePath} style={[styles.authorCard, idx < authors.length - 1 && styles.authorCardDivider]}>
