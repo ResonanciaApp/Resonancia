@@ -29,26 +29,27 @@ const { width } = Dimensions.get("window");
 const HEADER_H = 300;
 
 function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: object }) {
-  const scale   = useRef(new Animated.Value(1)).current;
-  const bright  = useRef(new Animated.Value(0)).current;
+  const scale  = useRef(new Animated.Value(1)).current;
+  const bright = useRef(new Animated.Value(0)).current;
 
-  function handlePress() {
+  function handlePressIn() {
     Animated.parallel([
-      Animated.sequence([
-        Animated.timing(scale,  { toValue: 1.18, duration: 140, easing: Easing.out(Easing.back(2)), useNativeDriver: true }),
-        Animated.spring(scale,  { toValue: 1,    useNativeDriver: true, friction: 5, tension: 120 }),
-      ]),
-      Animated.sequence([
-        Animated.timing(bright, { toValue: 1, duration: 140, easing: Easing.out(Easing.quad), useNativeDriver: true }),
-        Animated.timing(bright, { toValue: 0, duration: 500, easing: Easing.in(Easing.quad),  useNativeDriver: true }),
-      ]),
+      Animated.timing(scale,  { toValue: 1.65, duration: 160, easing: Easing.out(Easing.back(1.5)), useNativeDriver: true }),
+      Animated.timing(bright, { toValue: 1,    duration: 160, easing: Easing.out(Easing.quad),       useNativeDriver: true }),
+    ]).start();
+  }
+
+  function handlePressOut() {
+    Animated.parallel([
+      Animated.spring(scale,  { toValue: 1, useNativeDriver: true, friction: 5, tension: 120 }),
+      Animated.timing(bright, { toValue: 0, duration: 400, easing: Easing.in(Easing.quad), useNativeDriver: true }),
     ]).start();
     onPress();
   }
 
   return (
     <Animated.View style={{ transform: [{ scale }] }}>
-      <Pressable onPress={handlePress} style={pillStyle}>
+      <Pressable onPressIn={handlePressIn} onPressOut={handlePressOut} style={pillStyle}>
         <Animated.View
           pointerEvents="none"
           style={{
