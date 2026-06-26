@@ -149,16 +149,15 @@ export default function SessionDetailScreen() {
               end={{ x: 1, y: 0 }}
               style={styles.categoryPill}
             >
+              <Feather name={categoryIcon as never} size={13} color="#E07A2B" />
               <Text style={styles.categoryPillText}>{categoryPill}</Text>
+              <Text style={styles.categoryPillSep}>·</Text>
+              <Text style={styles.durationText}>{session.durationLabel}</Text>
             </LinearGradient>
           )}
 
-          {/* Title row */}
-          <View style={styles.titleRow}>
-            <Feather name={categoryIcon as never} size={18} color="#E07A2B" />
-            <Text style={[styles.title, { color: colors.foreground }]}>{session.title}</Text>
-            <Text style={styles.durationText}>{session.durationLabel}</Text>
-          </View>
+          {/* Title */}
+          <Text style={[styles.title, { color: colors.foreground }]}>{session.title}</Text>
 
           {/* Description */}
           <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]}>
@@ -341,12 +340,13 @@ const styles = StyleSheet.create({
 
   // Category pill
   categoryPill: {
+    flexDirection: "row",
     alignSelf: "center",
     height: 25,
     borderRadius: 12.5,
     paddingHorizontal: 14,
     alignItems: "center",
-    justifyContent: "center",
+    gap: 5,
     marginTop: 25,
     marginBottom: 10,
   },
@@ -356,27 +356,24 @@ const styles = StyleSheet.create({
     color: "#4A0C0C",
     letterSpacing: 0.8,
   },
-
-  // Title row
-  titleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    paddingHorizontal: 16,
-    marginBottom: 12,
-    flexWrap: "wrap",
+  categoryPillSep: {
+    fontSize: 11,
+    color: "#4A0C0C",
+    opacity: 0.5,
   },
+  durationText: {
+    fontSize: 11,
+    fontWeight: "400",
+    color: "#4A0C0C",
+  },
+
+  // Title
   title: {
     fontSize: 28,
     fontWeight: "700",
     lineHeight: 34,
     textAlign: "center",
-  },
-  durationText: {
-    fontSize: 13,
-    fontWeight: "400",
-    color: "#4A0C0C",
+    marginBottom: 12,
   },
 
   // Description
