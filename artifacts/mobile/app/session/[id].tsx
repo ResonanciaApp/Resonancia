@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
 
   // Related vertical list
   relatedBlock: { marginBottom: 20 },
-  relatedList: { gap: 10 },
+  relatedList: { gap: 14 },
   relatedCard: {
     flexDirection: "row",
     alignItems: "center",
@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
   },
   relatedCardImg: {
     width: 110,
-    height: 72,
+    height: 77,
     borderRadius: 10,
   },
   relatedCardBody: {
