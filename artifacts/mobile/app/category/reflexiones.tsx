@@ -389,11 +389,6 @@ export default function ReflexionesScreen() {
           <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
         </View>
 
-        {/* ── Divisor ── */}
-        <View>
-          <View style={styles.dividerLine} />
-          <LinearGradient colors={["rgba(0,0,0,0.12)","transparent"]} style={styles.dividerShadow} pointerEvents="none" />
-        </View>
 
         {/* ── Contenido ── */}
         <AnimatedTabContent animKey={activeTab ?? "all"}>
