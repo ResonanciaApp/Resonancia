@@ -219,6 +219,9 @@ function MixRow({
 
         {/* Info */}
         <View style={styles.info}>
+          <Text style={[styles.mixCreator, { color: colors.mutedForeground }]} numberOfLines={1}>
+            Creada por {mix.author.displayName}
+          </Text>
           <View style={styles.nameRow}>
             <Text
               style={[styles.mixName, { color: colors.foreground }]}
@@ -462,6 +465,7 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   trendText: { fontSize: 8, fontWeight: "700", letterSpacing: 0.5 },
+  mixCreator: { fontSize: 9, marginBottom: 1 },
   mixAuthor: { fontSize: 10, marginTop: 2 },
   mixCount: { fontSize: 12, fontWeight: "500" },
   likeChip: { flexDirection: "row", alignItems: "center", gap: 3, flexShrink: 0 },
