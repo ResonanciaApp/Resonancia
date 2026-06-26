@@ -265,7 +265,10 @@ function MixRow({
 
 // ── Portada de la mezcla ───────────────────────────────────────────
 function MixCover({ image }: { image?: string | null }) {
-  const uri = resolveAvatarUrl(image ?? null);
+  // Solo resolver si es un objectPath real o URL completa; los valores como
+  // "noche"/"oceano" son etiquetas de categoría, no rutas de imagen.
+  const isRealPath = !!image && /^(https?:|data:|\/)/i.test(image);
+  const uri = isRealPath ? resolveAvatarUrl(image ?? null) : null;
   return (
     <View style={styles.avatarWrap}>
       {uri ? (
