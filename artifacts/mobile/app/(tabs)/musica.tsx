@@ -725,7 +725,7 @@ export default function MezcladorScreen() {
                   <Text style={[styles.pageTitle, { transform: [{ translateX: -19 }, { translateY: -1 }] }]}>Mezclador</Text>
                 </View>
                 <View style={styles.headerActions}>
-                  <GhostPill style={{ transform: [{ translateX: 17 }, { translateY: 0 }], gap: 6 }}>
+                  <GhostPill style={{ gap: 6 }}>
                     <Pressable
                       onPress={() => { setSettingsMode("palette"); setSettingsVisible(true); }}
                       style={[styles.headerPillBtn, { width: 45, height: 45 }]}
@@ -956,7 +956,7 @@ const styles = StyleSheet.create({
 
   header:    { paddingHorizontal: 20, marginBottom: 16 },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  headerActions: { flexDirection: "row", alignItems: "center", gap: 8 },
+  headerActions: { flexDirection: "row", alignItems: "center", gap: 8, marginRight: -12 },
 
   emptyState: { alignItems: "center", justifyContent: "center", paddingTop: 70, paddingHorizontal: 40, gap: 8 },
   emptyTitle: { fontSize: 15, fontWeight: "700", color: "rgba(26,30,43,0.7)", textAlign: "center" },
