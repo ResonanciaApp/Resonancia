@@ -373,6 +373,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     lineHeight: 38,
     textAlign: "center",
+    marginTop: 5,
     marginBottom: 12,
   },
 
