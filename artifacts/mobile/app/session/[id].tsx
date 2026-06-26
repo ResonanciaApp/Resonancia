@@ -92,11 +92,14 @@ export default function SessionDetailScreen() {
   const isGuiada = session.categoryId === "meditaciones-guiadas";
   const isAncestral = session.categoryId === "sonidos-ancestrales";
   const isReflexion = session.categoryId === "reflexiones";
-  const CATEGORY_BG: Record<string, { gradient: [string, string]; solid: string }> = {
-    "sonidos-ancestrales":  { gradient: ["#2E0510", "#160108"], solid: "#160108" },
-    "meditaciones-guiadas": { gradient: ["#1A0F2E", "#0D0A1A"], solid: "#0D0A1A" },
-    "reflexiones":          { gradient: ["#0A0F20", "#060A14"], solid: "#060A14" },
-    "musica-sonidos":       { gradient: ["#081409", "#030806"], solid: "#030806" },
+  const CATEGORY_BG: Record<string, {
+    gradient: [string, string]; solid: string;
+    pillBg: string; labelGradient: [string, string]; labelColor: string;
+  }> = {
+    "sonidos-ancestrales":  { gradient: ["#2E0510", "#160108"], solid: "#160108", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#E07A2B" },
+    "meditaciones-guiadas": { gradient: ["#1A0F2E", "#0D0A1A"], solid: "#0D0A1A", pillBg: "#2A1848", labelGradient: ["#EEE8FF", "#E0D5FF"], labelColor: "#7C5CBF" },
+    "reflexiones":          { gradient: ["#0A0F20", "#060A14"], solid: "#060A14", pillBg: "#0D1835", labelGradient: ["#E8EEFF", "#D8E6FF"], labelColor: "#4A72CC" },
+    "musica-sonidos":       { gradient: ["#081409", "#030806"], solid: "#030806", pillBg: "#0D2010", labelGradient: ["#E8F5EA", "#D5EDD8"], labelColor: "#3A8A40" },
   };
   const catBg = CATEGORY_BG[session.categoryId] ?? CATEGORY_BG["sonidos-ancestrales"];
   const categoryPill = isAncestral ? "Ancestral" : isGuiada ? "Meditación" : isReflexion ? "Reflexión" : null;
@@ -193,7 +196,7 @@ export default function SessionDetailScreen() {
         <View style={[styles.hero, { height: HEADER_H + topPad }]}>
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
-            <GlowPill onPress={() => router.back()} pillStyle={styles.heroBackPill} />
+            <GlowPill onPress={() => router.back()} pillStyle={[styles.heroBackPill, { backgroundColor: catBg.pillBg }]} />
           </View>
         </View>
 
@@ -203,15 +206,15 @@ export default function SessionDetailScreen() {
           {/* Category pill */}
           {categoryPill && (
             <LinearGradient
-              colors={["#FFFFFF", "#FFF8EE"]}
+              colors={catBg.labelGradient}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.categoryPill}
             >
-              <Feather name={categoryIcon as never} size={17} color="#E07A2B" />
-              <Text style={styles.categoryPillText}>{categoryPill}</Text>
-              <Text style={styles.categoryPillSep}>·</Text>
-              <Text style={styles.durationText}>{session.durationLabel}</Text>
+              <Feather name={categoryIcon as never} size={17} color={catBg.labelColor} />
+              <Text style={[styles.categoryPillText, { color: catBg.labelColor }]}>{categoryPill}</Text>
+              <Text style={[styles.categoryPillSep, { color: catBg.labelColor }]}>·</Text>
+              <Text style={[styles.durationText, { color: catBg.labelColor }]}>{session.durationLabel}</Text>
             </LinearGradient>
           )}
 
