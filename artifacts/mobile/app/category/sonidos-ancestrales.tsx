@@ -337,6 +337,11 @@ export default function SonidosAncestalesScreen() {
     outputRange: [0, 1],
     extrapolate: "clamp",
   });
+  const heroScale = scrollY.interpolate({
+    inputRange: [-150, 0],
+    outputRange: [1.5, 1],
+    extrapolate: "clamp",
+  });
   const [stickyActive, setStickyActive] = useState(false);
 
   const PAGE_SIZE = 20;
@@ -406,7 +411,9 @@ export default function SonidosAncestalesScreen() {
 
         {/* ── Hero banner ── */}
         <View style={styles.heroArea}>
-          <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="top" />
+          <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ scale: heroScale }] }]}>
+            <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="top" />
+          </Animated.View>
           <LinearGradient
             colors={["transparent", "rgba(0,0,0,0.28)", "rgba(0,0,0,0.60)"]}
             locations={[0.50, 0.80, 1]}
@@ -510,7 +517,7 @@ const styles = StyleSheet.create({
   headerDivider: { width: StyleSheet.hairlineWidth, height: 18, backgroundColor: "rgba(255,255,255,0.18)" },
 
   /* ── Hero ── */
-  heroArea: { height: 280, position: "relative" },
+  heroArea: { height: 280, position: "relative", overflow: "hidden" },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
   heroOverlayRight: { position: "absolute", right: H_PAD, zIndex: 10 },
   heroIconFloat: {
