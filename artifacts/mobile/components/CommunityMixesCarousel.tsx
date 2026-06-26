@@ -4,6 +4,7 @@
  * Tabs = píldoras (mismo diseño que "Mi Música").
  */
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useCallback, useState } from "react";
 import {
@@ -28,8 +29,20 @@ import { useColors } from "@/hooks/useColors";
 
 const GOLD = "#D4AF37";
 const STACK_THUMB = 62;
-
 const MAX_VISIBLE = 8;
+
+// Mapa etiqueta-de-categoría → degradado de portada
+const COVER_PALETTE: Record<string, [string, string]> = {
+  noche:      ["#0D0A2E", "#1A0F4A"],
+  oceano:     ["#063B4F", "#0A6080"],
+  lluvia:     ["#1A2535", "#2E3F55"],
+  bosque:     ["#0A2010", "#1A4020"],
+  onda_beta:  ["#2E1A0A", "#5A3010"],
+  fuego:      ["#3A0A00", "#7A2000"],
+  desierto:   ["#3A2A0A", "#6A4A15"],
+  viento:     ["#0A1A2A", "#152A40"],
+};
+const DEFAULT_COVER: [string, string] = ["#1B060F", "#2E0A18"];
 
 // ── Componente principal ───────────────────────────────────────────
 export function CommunityMixesCarousel() {
@@ -265,22 +278,23 @@ function MixRow({
 
 // ── Portada de la mezcla ───────────────────────────────────────────
 function MixCover({ image }: { image?: string | null }) {
-  // Solo resolver si es un objectPath real o URL completa; los valores como
-  // "noche"/"oceano" son etiquetas de categoría, no rutas de imagen.
   const isRealPath = !!image && /^(https?:|data:|\/)/i.test(image);
   const uri = isRealPath ? resolveAvatarUrl(image ?? null) : null;
+  const gradient = (!uri && image) ? (COVER_PALETTE[image] ?? DEFAULT_COVER) : DEFAULT_COVER;
+
   return (
     <View style={styles.avatarWrap}>
       {uri ? (
-        <ExpoImage
-          source={{ uri }}
-          style={styles.coverImg}
-          contentFit="cover"
-        />
+        <ExpoImage source={{ uri }} style={styles.coverImg} contentFit="cover" />
       ) : (
-        <View style={[styles.coverImg, styles.avatarFallback]}>
-          <Feather name="music" size={22} color={GOLD} />
-        </View>
+        <LinearGradient
+          colors={gradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.coverImg}
+        >
+          <Feather name="music" size={20} color="rgba(212,175,55,0.55)" />
+        </LinearGradient>
       )}
     </View>
   );
@@ -417,6 +431,8 @@ const styles = StyleSheet.create({
     height: STACK_THUMB,
     borderRadius: 10,
     overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
   },
   avatarFallback: {
     backgroundColor: "rgba(212,175,55,0.18)",
