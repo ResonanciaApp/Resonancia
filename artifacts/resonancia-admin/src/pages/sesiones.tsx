@@ -432,12 +432,25 @@ export default function SesionesPage() {
               <div className="flex flex-col gap-2">
                 {guideIds.map((gid, i) => (
                   <div key={i} className="flex items-center gap-2">
-                    <Input
-                      value={gid}
-                      onChange={(e) => setGuideSlot(i, e.target.value)}
-                      placeholder={i === 0 ? "sofia-ramirez" : "otro-guiador"}
-                      className="flex-1"
-                    />
+                    <Select value={gid} onValueChange={(val) => setGuideSlot(i, val === "__custom__" ? "" : val)}>
+                      <SelectTrigger className="flex-1">
+                        <SelectValue placeholder="Seleccionar autor…" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="casa-cuenco">Casa del Cuenco (default)</SelectItem>
+                        <SelectItem value="sofia-ramirez">Sofía Ramírez</SelectItem>
+                        <SelectItem value="mateo-luz">Mateo Luz</SelectItem>
+                        <SelectItem value="__custom__">Otro (escribir ID)…</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {(gid === "" || !["casa-cuenco","sofia-ramirez","mateo-luz"].includes(gid)) && gid !== "" && (
+                      <Input
+                        value={gid}
+                        onChange={(e) => setGuideSlot(i, e.target.value)}
+                        placeholder="id-del-autor"
+                        className="flex-1"
+                      />
+                    )}
                     {guideIds.length > 1 && (
                       <button
                         type="button"
@@ -461,7 +474,7 @@ export default function SesionesPage() {
                 )}
               </div>
               <span className="text-xs text-muted-foreground">
-                Slugs de guiadores en data/guides.ts · hasta 4 · default: casa-cuenco
+                Default si no se selecciona: Casa del Cuenco
               </span>
             </Field>
           )}
