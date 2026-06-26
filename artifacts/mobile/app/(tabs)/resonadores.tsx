@@ -482,7 +482,7 @@ export default function ResonadoresScreen() {
           <View style={{ flex: 1 }}>
             <Text style={[styles.title, { transform: [{ translateY: -6 }] }]}>Equipo</Text>
           </View>
-          <GhostPill style={{ transform: [{ translateX: 3 }, { translateY: -6 }] }}>
+          <GhostPill style={{ transform: [{ translateX: 3 }, { translateY: -6 }], gap: 6 }}>
             <Pressable onPress={toggleSearch} hitSlop={10} style={styles.searchIconBtn}>
               <Feather
                 name={searchVisible ? "x" : "search"}
