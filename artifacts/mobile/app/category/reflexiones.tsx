@@ -224,11 +224,11 @@ function CategoryCard({
         <View style={ac.hImgWrap}>
           <Image source={session.image} style={ac.hImage} contentFit="cover" />
           {locked&&<View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
+          <View style={ac.durationBadge}><Text style={ac.durationBadgeText}>{session.durationLabel}</Text></View>
           {hasAudio&&<Pressable onPress={onPreviewTap} hitSlop={6} style={ac.hPlayBtn}><Feather name={isPreviewPlaying?"pause":"play"} size={15} color="#fff" /></Pressable>}
           {isPreviewPlaying&&barW&&<Animated.View style={[ac.progressBar,{width:barW}]}><GoldGradientFill /></Animated.View>}
         </View>
         <View style={ac.hContent}>
-          <Text style={ac.hDuration}>{session.durationLabel}</Text>
           <Text style={ac.hTitle} numberOfLines={2}>{session.title}</Text>
           {!!author&&<Text style={ac.hAuthor} numberOfLines={1}>{author}</Text>}
         </View>
