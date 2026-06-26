@@ -287,8 +287,9 @@ export default function ReflexionesScreen() {
   const toggleView = useCallback(()=>setViewMode((v)=>(v==="list"?"grid":"list")),[]);
 
   const scrollY = useRef(new Animated.Value(0)).current;
+  const HERO_AREA_H = 280;
   const stickyOpacity = scrollY.interpolate({
-    inputRange: [HERO_H * 0.55, HERO_H * 0.90],
+    inputRange: [HERO_AREA_H * 0.30, HERO_AREA_H * 0.95],
     outputRange: [0, 1],
     extrapolate: "clamp",
   });
@@ -354,7 +355,7 @@ export default function ReflexionesScreen() {
         onScroll={(e) => {
           const y = e.nativeEvent.contentOffset.y;
           scrollY.setValue(y);
-          const active = y > HERO_H * 0.55;
+          const active = y > HERO_AREA_H * 0.50;
           if (active !== stickyActive) setStickyActive(active);
           const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
           if (hasMore && contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
@@ -372,6 +373,14 @@ export default function ReflexionesScreen() {
             <GhostPill style={{ backgroundColor: "#0A0F20" }}>
               <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
                 <Feather name="arrow-left" size={22} color="#fff" />
+              </Pressable>
+            </GhostPill>
+          </View>
+          {/* Info flotante */}
+          <View style={[styles.heroOverlayRight, { top: topPad + 8 }]}>
+            <GhostPill style={{ backgroundColor: "#0A0F20" }}>
+              <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/reflexiones-info" as never)}>
+                <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
               </Pressable>
             </GhostPill>
           </View>
@@ -448,6 +457,7 @@ const styles = StyleSheet.create({
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   headerTitle: { flex: 1, fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2, textAlign: "center" },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
+  heroOverlayRight: { position: "absolute", right: H_PAD, zIndex: 10 },
 
   heroArea: { height: 280, position: "relative" },
   heroIconFloat: { position: "absolute", bottom: -6, left: 0, right: 0, alignItems: "center", zIndex: 2 },

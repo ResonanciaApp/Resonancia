@@ -309,8 +309,9 @@ export default function MeditacionesGuiadasScreen() {
   const toggleView = useCallback(()=>setViewMode((v)=>(v==="list"?"grid":"list")),[]);
 
   const scrollY = useRef(new Animated.Value(0)).current;
+  const HERO_AREA_H = 280;
   const stickyOpacity = scrollY.interpolate({
-    inputRange: [HERO_H * 0.55, HERO_H * 0.90],
+    inputRange: [HERO_AREA_H * 0.30, HERO_AREA_H * 0.95],
     outputRange: [0, 1],
     extrapolate: "clamp",
   });
@@ -376,7 +377,7 @@ export default function MeditacionesGuiadasScreen() {
         onScroll={(e) => {
           const y = e.nativeEvent.contentOffset.y;
           scrollY.setValue(y);
-          const active = y > HERO_H * 0.55;
+          const active = y > HERO_AREA_H * 0.50;
           if (active !== stickyActive) setStickyActive(active);
           const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
           if (hasMore && contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
