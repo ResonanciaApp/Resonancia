@@ -113,6 +113,7 @@ function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: { id: string; l
   const progress  = useRef(new Animated.Value(activeTab?1:0)).current;
   const offsetsRef= useRef<Record<string,number>>({});
   const scrollX   = useRef(0);
+  const internalRef = useRef(false);
   const [displayTab,setDisplayTab] = useState<CatTab|null>(activeTab);
   const [colorTab,  setColorTab]   = useState<CatTab|null>(activeTab);
   const [targetTx,  setTargetTx]   = useState(0);
@@ -123,10 +124,23 @@ function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: { id: string; l
       .start(({finished})=>{ if (finished) done?.(); });
 
   const handleSelect = (id:CatTab) => {
+    internalRef.current = true;
     setTargetTx(CLOSE_SLOT-((offsetsRef.current[id]??0)-scrollX.current));
     setDisplayTab(id); setColorTab(id); onSelect(id); animate(1);
   };
-  const handleClear = () => { setColorTab(null); onClear(); animate(0,()=>setDisplayTab(null)); };
+  const handleClear = () => {
+    internalRef.current = true;
+    setColorTab(null); onClear(); animate(0,()=>setDisplayTab(null));
+  };
+  useEffect(()=>{
+    if (internalRef.current) { internalRef.current = false; return; }
+    if (activeTab !== null) {
+      setDisplayTab(activeTab); setColorTab(activeTab); progress.setValue(1);
+    } else {
+      setDisplayTab(null); setColorTab(null); progress.setValue(0);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[activeTab]);
   useEffect(()=>()=>progress.stopAnimation(),[progress]);
 
   return (
