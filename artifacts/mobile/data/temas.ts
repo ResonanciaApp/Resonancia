@@ -85,6 +85,14 @@ export const TEMAS: TemaItem[] = [
     image: require("@/assets/images/tema-familia.png"),
     themeTagMatch: ["Familia"],
   },
+  {
+    id: "insomnio",
+    label: "Insomnio",
+    icon: "weather-night",
+    color: "#7C6FCD",
+    description: "Sesiones diseñadas para calmar la mente y preparar el cuerpo para un sueño profundo.",
+    themeTagMatch: ["Insomnio", "Sueño"],
+  },
 ];
 
 export function getTemaById(id: string): TemaItem | undefined {
