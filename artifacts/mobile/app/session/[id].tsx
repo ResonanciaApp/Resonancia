@@ -1,7 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
-import { GoldGradient } from "@/components/GoldGradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image } from "expo-image";
@@ -24,7 +23,6 @@ import { usePlayer } from "@/context/PlayerContext";
 import { CATEGORIES } from "@/data/categories";
 import { getSessionById, SESSIONS } from "@/data/sessions";
 import { getGuide } from "@/data/guides";
-import { TEMAS } from "@/data/temas";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
@@ -93,45 +91,6 @@ export default function SessionDetailScreen() {
   // ── Guiador (solo meditaciones guiadas) ─────────────────────────────────────
   const guide = isGuiada ? getGuide(session.guideId) : undefined;
 
-  // ── Badge block helper ──────────────────────────────────────────────────────
-  const renderBadges = () => {
-    let tag: string | undefined;
-    let tagColor = colors.accent;
-    let tagBg = "rgba(212,175,55,0.15)";
-    let tagBorder = "rgba(212,175,55,0.3)";
-
-    if (isGuiada && session.meditationTag) {
-      tag = session.meditationTag;
-    }
-    else if (isAncestral && session.ancestralTag) tag = session.ancestralTag;
-    else if (isPodcast) {
-      tag = "Podcast";
-    } else if (!isGuiada && !isAncestral && !isPodcast && !isMusica) {
-      tag = session.categoryLabel;
-    }
-
-    if (!tag && !session.isNew && !session.sleepTag) return null;
-    return (
-      <View style={styles.badges}>
-        {tag && (
-          <View style={[styles.badge, { backgroundColor: tagBg, borderColor: tagBorder, borderWidth: 1 }]}>
-            <Text style={[styles.badgeText, { color: tagColor }]}>{tag.toUpperCase()}</Text>
-          </View>
-        )}
-        {session.sleepTag && (
-          <View style={[styles.badge, { backgroundColor: "rgba(138,170,212,0.12)", borderColor: "rgba(138,170,212,0.28)", borderWidth: 1 }]}>
-            <Text style={[styles.badgeText, { color: "#8AAAD4" }]}>{session.sleepTag.toUpperCase()}</Text>
-          </View>
-        )}
-        {session.isNew && (
-          <GoldGradient style={styles.badge}>
-            <Text style={[styles.badgeText, { color: colors.primaryForeground }]}>NUEVO</Text>
-          </GoldGradient>
-        )}
-      </View>
-    );
-  };
-
   return (
     <View style={styles.root}>
       <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
@@ -160,9 +119,6 @@ export default function SessionDetailScreen() {
         {/* ── Content ─────────────────────────────────────────────────────── */}
         <View style={[styles.content, { marginTop: -36 }]}>
 
-          {/* Badges */}
-          {renderBadges()}
-
           {/* Title */}
           <Text style={[styles.title, { color: colors.foreground }]}>{session.title}</Text>
 
@@ -178,32 +134,6 @@ export default function SessionDetailScreen() {
           <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]}>
             {session.description}
           </Text>
-
-          {/* ── Theme tags ──────────────────────────────────────────────── */}
-          {Array.isArray(session.themeTag) && session.themeTag.length > 0 && (
-            <View style={styles.tagsRow}>
-              {session.themeTag.map((t) => {
-                const tema = TEMAS.find((tm) => tm.themeTagMatch?.includes(t));
-                const chip = (
-                  <View style={[styles.tagChip, { borderColor: "rgba(212,175,55,0.25)", backgroundColor: "rgba(212,175,55,0.07)" }]}>
-                    <Text style={[styles.tagChipText, { color: colors.accent }]}>{t}</Text>
-                  </View>
-                );
-                if (tema) {
-                  return (
-                    <Pressable
-                      key={t}
-                      onPress={() => router.push(`/tema/${tema.id}` as never)}
-                      style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
-                    >
-                      {chip}
-                    </Pressable>
-                  );
-                }
-                return <View key={t}>{chip}</View>;
-              })}
-            </View>
-          )}
 
           {/* ── Action row ──────────────────────────────────────────────── */}
           <View style={styles.actionRow}>
