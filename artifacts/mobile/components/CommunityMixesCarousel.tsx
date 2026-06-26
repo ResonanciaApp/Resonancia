@@ -399,14 +399,14 @@ function MixContextMenu({
 
 // ── Estilos ────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  section: { paddingHorizontal: 20, paddingTop: 25 },
+  section: { paddingHorizontal: 0, paddingTop: 25 },
   panel: {
     backgroundColor: "transparent",
     borderRadius: 0,
-    paddingHorizontal: 35,
+    paddingHorizontal: 0,
     paddingTop: 4,
     paddingBottom: 25,
-    marginHorizontal: -35,
+    marginHorizontal: 0,
   },
 
   headerRow: {
