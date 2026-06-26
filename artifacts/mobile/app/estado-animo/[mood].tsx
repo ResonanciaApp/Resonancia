@@ -1,59 +1,80 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useMemo } from "react";
+import React, { useRef } from "react";
 import {
+  Animated,
   FlatList,
+  Platform,
   Pressable,
-  SafeAreaView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SessionRow } from "@/components/SessionRow";
 import { getMoodById } from "@/data/moods";
 import { SESSIONS } from "@/data/sessions";
+import { useColors } from "@/hooks/useColors";
+
+const H_PAD = 16;
+const BG_GRADIENT = ["#2E0510", "#160108"] as const;
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList<(typeof SESSIONS)[number]>);
+const STICKY_THRESHOLD = 80;
 
 export default function EstadoAnimoScreen() {
   const { mood: moodId } = useLocalSearchParams<{ mood: string }>();
+  const colors = useColors();
+  const insets = useSafeAreaInsets();
   const mood = getMoodById(moodId ?? "");
 
-  const sessions = useMemo(() => {
-    if (!mood) return [];
+  const scrollY = useRef(new Animated.Value(0)).current;
 
+  const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [STICKY_THRESHOLD - 30, STICKY_THRESHOLD],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
+
+  const sessions = (() => {
+    if (!mood) return [];
     const themeSet = new Set(mood.themeTags);
     const categorySet = new Set(mood.categoryIds);
-
-    const withTag = SESSIONS.filter(
-      (s) => s.themeTag?.some((t) => themeSet.has(t))
-    );
+    const withTag = SESSIONS.filter((s) => s.themeTag?.some((t) => themeSet.has(t)));
     const withTagIds = new Set(withTag.map((s) => s.id));
-
-    const byCategory = SESSIONS.filter(
-      (s) => !withTagIds.has(s.id) && categorySet.has(s.categoryId)
-    );
-
+    const byCategory = SESSIONS.filter((s) => !withTagIds.has(s.id) && categorySet.has(s.categoryId));
     return [...withTag, ...byCategory];
-  }, [mood]);
+  })();
 
   if (!mood) {
     return (
-      <SafeAreaView style={styles.root}>
-        <Text style={styles.emptyText}>Estado de ánimo no encontrado.</Text>
-      </SafeAreaView>
+      <LinearGradient colors={BG_GRADIENT} style={styles.root}>
+        <Text style={[styles.emptyText, { marginTop: 100 }]}>Estado de ánimo no encontrado.</Text>
+      </LinearGradient>
     );
   }
 
-  return (
-    <SafeAreaView style={styles.root}>
-      <View style={styles.header}>
-        <Pressable onPress={() => router.back()} hitSlop={10} style={styles.backBtn}>
-          <Feather name="arrow-left" size={22} color="#EDE1D3" />
+  const ListHeader = (
+    <>
+      {/* Floating back row — always visible */}
+      <View style={[styles.heroHeader, { paddingTop: topPad + 8 }]}>
+        <Pressable
+          onPress={() => router.back()}
+          hitSlop={10}
+          style={({ pressed }) => [
+            styles.backBtn,
+            { backgroundColor: colors.card, borderColor: "rgba(212,175,55,0.20)", opacity: pressed ? 0.7 : 1 },
+          ]}
+        >
+          <Feather name="arrow-left" size={18} color={colors.foreground} />
         </Pressable>
-        <Text style={styles.headerTitle}>Para tu estado de ánimo</Text>
-        <View style={{ width: 32 }} />
       </View>
 
+      {/* Mood chip */}
       <View style={styles.moodChip}>
         <Text style={styles.moodChipEmoji}>{mood.emoji}</Text>
         <Text style={styles.moodChipLabel}>{mood.label}</Text>
@@ -62,53 +83,115 @@ export default function EstadoAnimoScreen() {
         </Pressable>
       </View>
 
-      {sessions.length === 0 ? (
+      {sessions.length === 0 && (
         <View style={styles.emptyWrap}>
           <Text style={styles.emptyText}>
             No hay sesiones para este estado de ánimo aún.
           </Text>
         </View>
-      ) : (
-        <FlatList
-          data={sessions}
-          keyExtractor={(s) => s.id}
-          contentContainerStyle={styles.list}
-          showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
-          renderItem={({ item }) => (
-            <SessionRow session={item} />
-          )}
-        />
       )}
-    </SafeAreaView>
+    </>
+  );
+
+  return (
+    <LinearGradient colors={BG_GRADIENT} style={styles.root}>
+      {/* ── STICKY HEADER ── */}
+      <Animated.View
+        style={[
+          styles.stickyHeader,
+          {
+            paddingTop: topPad,
+            backgroundColor: "#2E0510",
+            borderBottomColor: "rgba(212,175,55,0.15)",
+            opacity: headerOpacity,
+          },
+        ]}
+        pointerEvents="box-none"
+      >
+        <View style={styles.stickyInner} pointerEvents="box-none">
+          <Pressable
+            onPress={() => router.back()}
+            hitSlop={10}
+            style={({ pressed }) => [styles.ghostPill, { opacity: pressed ? 0.7 : 1 }]}
+          >
+            <Feather name="arrow-left" size={16} color="#FFFFFF" />
+          </Pressable>
+          <Text style={[styles.stickyTitle, { color: colors.foreground }]} numberOfLines={1}>
+            {mood.emoji}{"  "}{mood.label}
+          </Text>
+        </View>
+      </Animated.View>
+
+      <AnimatedFlatList
+        data={sessions}
+        keyExtractor={(s) => s.id}
+        contentContainerStyle={{ paddingBottom: bottomPad + 100, paddingHorizontal: H_PAD }}
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+        ListHeaderComponent={ListHeader}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        renderItem={({ item }) => <SessionRow session={item} />}
+      />
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: "#160108",
+  root: { flex: 1 },
+
+  // Sticky header
+  stickyHeader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 50,
+    borderBottomWidth: 1,
   },
-  header: {
+  stickyInner: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingHorizontal: H_PAD,
+    paddingBottom: 12,
+    paddingTop: 10,
+    gap: 12,
+  },
+  ghostPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 50,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.12)",
+    flexShrink: 0,
+  },
+  stickyTitle: {
+    fontSize: 17,
+    fontWeight: "700",
+    flex: 1,
+  },
+
+  // Hero header area
+  heroHeader: {
+    paddingHorizontal: H_PAD,
+    paddingBottom: 8,
   },
   backBtn: {
-    width: 32,
-    height: 32,
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#EDE1D3",
-    flex: 1,
-    textAlign: "center",
-  },
+
+  // Mood chip
   moodChip: {
     flexDirection: "row",
     alignItems: "center",
@@ -122,9 +205,7 @@ const styles = StyleSheet.create({
     gap: 6,
     marginBottom: 20,
   },
-  moodChipEmoji: {
-    fontSize: 18,
-  },
+  moodChipEmoji: { fontSize: 18 },
   moodChipLabel: {
     fontSize: 15,
     fontWeight: "600",
@@ -137,10 +218,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  list: {
-    paddingHorizontal: 16,
-    paddingBottom: 100,
-  },
+
   separator: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(190,150,80,0.10)",
@@ -151,6 +229,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 32,
+    paddingVertical: 60,
   },
   emptyText: {
     fontSize: 15,

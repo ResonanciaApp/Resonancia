@@ -3,8 +3,9 @@ import { Feather } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { Image as ExpoImage } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
+  Animated,
   Platform,
   Pressable,
   ScrollView,
@@ -22,6 +23,7 @@ import { SESSIONS, type Session } from "@/data/sessions";
 import { getTemaById } from "@/data/temas";
 import { useColors } from "@/hooks/useColors";
 const H_PAD = 20;
+const STICKY_THRESHOLD = 160;
 
 const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 
@@ -33,6 +35,14 @@ export default function TemaScreen() {
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [STICKY_THRESHOLD - 40, STICKY_THRESHOLD],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
 
   const tema = getTemaById(id ?? "");
   if (!tema) return null;
@@ -51,7 +61,7 @@ export default function TemaScreen() {
       : SESSIONS.filter((s) => s.isFeatured || s.isNew).slice(0, 10);
 
   return (
-        <LinearGradient
+    <LinearGradient
       style={styles.root}
       colors={BG_GRADIENT}
       locations={[0, 0.5, 1]}
@@ -61,8 +71,35 @@ export default function TemaScreen() {
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
-      {/* Back button */}
-      <View style={[styles.header, { paddingTop: topPad + 8 }]}>
+      {/* ── STICKY HEADER (fades in on scroll) ── */}
+      <Animated.View
+        style={[
+          styles.stickyHeader,
+          {
+            paddingTop: topPad,
+            backgroundColor: "#2E0510",
+            borderBottomColor: "rgba(212,175,55,0.15)",
+            opacity: headerOpacity,
+          },
+        ]}
+        pointerEvents="box-none"
+      >
+        <View style={styles.stickyInner} pointerEvents="box-none">
+          <Pressable
+            onPress={() => router.back()}
+            hitSlop={10}
+            style={({ pressed }) => [styles.ghostPill, { opacity: pressed ? 0.7 : 1 }]}
+          >
+            <Feather name="arrow-left" size={16} color="#FFFFFF" />
+          </Pressable>
+          <Text style={[styles.stickyTitle, { color: colors.foreground }]} numberOfLines={1}>
+            {tema.label}
+          </Text>
+        </View>
+      </Animated.View>
+
+      {/* ── Floating back button (always visible, on top of hero area) ── */}
+      <View style={[styles.floatingBack, { top: topPad + 8 }]} pointerEvents="box-none">
         <Pressable
           onPress={() => router.back()}
           hitSlop={10}
@@ -79,13 +116,18 @@ export default function TemaScreen() {
         </Pressable>
       </View>
 
-      <ScrollView
+      <Animated.ScrollView
         style={styles.scroll}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: bottomPad + 120 }}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
       >
         {/* Hero: icon + title + description */}
-        <View style={styles.hero}>
+        <View style={[styles.hero, { paddingTop: topPad + 56 }]}>
           {tema.image != null ? (
             <ExpoImage
               source={tema.image}
@@ -145,7 +187,7 @@ export default function TemaScreen() {
             </View>
           )}
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
 
       <SessionActionsSheet
         session={actionsSession}
@@ -160,9 +202,43 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
 
-  header: {
+  // Sticky header
+  stickyHeader: {
     position: "absolute",
     top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 50,
+    borderBottomWidth: 1,
+  },
+  stickyInner: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: H_PAD,
+    paddingBottom: 12,
+    paddingTop: 10,
+    gap: 12,
+  },
+  ghostPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 50,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.12)",
+    flexShrink: 0,
+  },
+  stickyTitle: {
+    fontSize: 17,
+    fontWeight: "700",
+    flex: 1,
+  },
+
+  // Floating back (always visible on hero)
+  floatingBack: {
+    position: "absolute",
     left: H_PAD,
     zIndex: 10,
   },
@@ -177,7 +253,6 @@ const styles = StyleSheet.create({
 
   hero: {
     alignItems: "center",
-    paddingTop: 96,
     paddingHorizontal: H_PAD,
     paddingBottom: 32,
   },
