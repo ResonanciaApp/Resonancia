@@ -431,17 +431,17 @@ export default function SonidosAncestalesScreen() {
         <AnimatedTabContent animKey={activeTab ?? "all"}>
           <View style={styles.controlRow}>
             <Pressable onPress={() => setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
-              <Feather name="chevrons-down" size={14} color={MUTED} />
+              <Feather name="chevrons-down" size={10} color={MUTED} />
               <Text style={styles.sortText}>{sortLabel}</Text>
             </Pressable>
             <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
               <Pressable onPress={() => setSearchVisible(true)} hitSlop={10} style={styles.viewToggleBtn}>
-                <Feather name="search" size={19} color={MUTED} />
+                <Feather name="search" size={15} color={MUTED} />
               </Pressable>
               <Pressable onPress={toggleView} hitSlop={10} style={styles.viewToggleBtn}>
                 {viewMode === "list"
-                  ? <MaterialCommunityIcons name="view-grid-outline" size={21} color={MUTED} />
-                  : <MaterialCommunityIcons name="view-list-outline" size={21} color={MUTED} />}
+                  ? <MaterialCommunityIcons name="view-grid-outline" size={17} color={MUTED} />
+                  : <MaterialCommunityIcons name="view-list-outline" size={17} color={MUTED} />}
               </Pressable>
             </View>
           </View>
