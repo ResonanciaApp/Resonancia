@@ -487,7 +487,9 @@ export default function SonidosAncestalesScreen() {
             <Feather name="arrow-left" size={22} color="#fff" />
           </Pressable>
         </GhostPill>
-        <Text style={styles.headerTitle}>Ancestrales</Text>
+        <View style={styles.headerTitleWrap} pointerEvents="none">
+          <Text style={styles.headerTitle}>Ancestrales</Text>
+        </View>
         <GhostPill>
           <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
             <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
@@ -516,7 +518,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#2E0510",
   },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
-  headerTitle: { position: "absolute", left: 0, right: 0, textAlign: "center", fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },
+  headerTitleWrap: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, alignItems: "center", justifyContent: "center" },
+  headerTitle: { fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2, textAlign: "center" },
   headerDivider: { width: StyleSheet.hairlineWidth, height: 18, backgroundColor: "rgba(255,255,255,0.18)" },
 
   /* ── Hero ── */
