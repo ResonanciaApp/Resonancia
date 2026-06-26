@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
   dividerLine: { height: 0 },
   dividerShadow: { height: 12, marginTop: 0 },
 
-  chipsArea: { paddingTop: 1, paddingBottom: 5, overflow: "visible" },
+  chipsArea: { paddingTop: 7, paddingBottom: 5, overflow: "visible" },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chip: { minWidth: 96, paddingHorizontal: 14, paddingVertical: 8, borderRadius: 999, backgroundColor: "rgba(255,255,255,0.08)", overflow: "hidden", alignItems: "center", justifyContent: "center" },
