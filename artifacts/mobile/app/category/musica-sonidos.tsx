@@ -409,8 +409,9 @@ export default function MusicaSonidosScreen() {
 
       <View
         pointerEvents={chipsSticky ? "auto" : "none"}
-        style={[styles.stickyChipsBar, { top: headerH, backgroundColor: "#030806", opacity: chipsSticky ? 1 : 0 }]}
+        style={[styles.stickyChipsBar, { top: headerH, opacity: chipsSticky ? 1 : 0 }]}
       >
+        <LinearGradient colors={["#081409", "#030806"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
         <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
         <LinearGradient colors={["rgba(0,0,0,0.12)", "transparent"]} style={styles.dividerShadow} pointerEvents="none" />
       </View>
