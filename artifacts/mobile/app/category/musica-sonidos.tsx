@@ -122,7 +122,7 @@ function Chip({ label, sel, onPress }: { label: string; sel: boolean; onPress: (
 const CHIP_DUR = 600;
 const CLOSE_SLOT = 38;
 
-function ChipRow({ tabs, activeTab, onSelect, onClear, syncVisible }: { tabs: { id: string; label: string }[]; activeTab: CatTab|null; onSelect:(id:CatTab)=>void; onClear:()=>void; syncVisible?: boolean }) {
+function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: { id: string; label: string }[]; activeTab: CatTab|null; onSelect:(id:CatTab)=>void; onClear:()=>void }) {
   const progress  = useRef(new Animated.Value(activeTab ? 1 : 0)).current;
   const offsetsRef= useRef<Record<string,number>>({});
   const scrollX   = useRef(0);
@@ -156,7 +156,6 @@ function ChipRow({ tabs, activeTab, onSelect, onClear, syncVisible }: { tabs: { 
     syncProgress(activeTab);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[activeTab]);
-  useEffect(()=>{ if (syncVisible===true) syncProgress(activeTab); /* eslint-disable-next-line react-hooks/exhaustive-deps */ },[syncVisible]);
   useEffect(()=>()=>progress.stopAnimation(),[progress]);
 
   return (
@@ -362,11 +361,6 @@ export default function MusicaSonidosScreen() {
   const [searchVisible,     setSearchVisible]     = useState(false);
   const [selectedSession,   setSelectedSession]   = useState<Session|null>(null);
   const [playlistSessionId, setPlaylistSessionId] = useState<string|null>(null);
-  const [chipsSticky, setChipsSticky] = useState(false);
-  const [headerH, setHeaderH] = useState(topPad + 60);
-  const chipsTriggerRef = useRef<number>(9999);
-  const prevStickyRef   = useRef(false);
-
   const toggleView = useCallback(()=>setViewMode((v)=>(v==="list"?"grid":"list")),[]);
 
   const playCounts = useMemo(()=>{ const c:Record<string,number>={}; for (const e of history) c[e.sessionId]=(c[e.sessionId]??0)+1; return c; },[history]);
@@ -410,7 +404,7 @@ export default function MusicaSonidosScreen() {
       <LinearGradient colors={["#081409","#030806"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
 
       {/* ── Sticky header ── */}
-      <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]} onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}>
+      <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>
         <GhostPill>
           <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
             <Feather name="arrow-left" size={22} color="#fff" />
@@ -424,24 +418,10 @@ export default function MusicaSonidosScreen() {
         </GhostPill>
       </View>
 
-      <View
-        pointerEvents={chipsSticky ? "auto" : "none"}
-        style={[styles.stickyChipsBar, { top: headerH, opacity: chipsSticky ? 1 : 0 }]}
-      >
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#081409" }]} />
-        <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} syncVisible={chipsSticky} />
-      </View>
-
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
         showsVerticalScrollIndicator={false}
-        scrollEventThrottle={16}
-        onScroll={(e) => {
-          const y = e.nativeEvent.contentOffset.y;
-          const should = y >= chipsTriggerRef.current;
-          if (should !== prevStickyRef.current) { prevStickyRef.current = should; setChipsSticky(should); }
-        }}
       >
 
         {/* ── Hero banner ── */}
@@ -463,8 +443,8 @@ export default function MusicaSonidosScreen() {
         </View>
 
         {/* ── Tabs ── */}
-        <View style={styles.chipsArea} onLayout={(e) => { chipsTriggerRef.current = e.nativeEvent.layout.y; }}>
-          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} syncVisible={!chipsSticky} />
+        <View style={styles.chipsArea}>
+          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
         </View>
 
         {/* ── Divisor ── */}
@@ -521,7 +501,6 @@ const styles = StyleSheet.create({
   dividerShadow: { height: 12, marginTop: 0 },
 
   chipsArea: { paddingTop: 1, paddingBottom: 5, overflow: "visible" },
-  stickyChipsBar: { position: "absolute", left: 0, right: 0, zIndex: 20, paddingTop: 4, paddingBottom: 9 },
   animChipWrap: { flexDirection: "row", alignItems: "center" },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
   chipCloseBtn: { width: 30, height: 30, borderRadius: 15, backgroundColor: "rgba(74,12,12,0.08)", alignItems: "center", justifyContent: "center" },
