@@ -26,11 +26,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { formatMixImageLabel, getMixImage, MIX_IMAGE_GALLERY } from "@/config/mix-images";
-import { getSoundImage } from "@/config/sound-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { GEOMETRIES, type GeometryId } from "@/data/geometries";
-import { getSoundById } from "@/data/sounds";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { useLoadMix } from "@/hooks/useLoadMix";
 
@@ -413,26 +411,6 @@ export default function MiMezclaScreen() {
           })}
         </View>
 
-        {/* Sonidos */}
-        <Text style={s.label}>Sonidos ({mix.sounds.length})</Text>
-        <View style={s.soundsGrid}>
-          {mix.sounds.map((snd) => {
-            const info = getSoundById(snd.id);
-            const img = getSoundImage(snd.id);
-            return (
-              <View key={snd.id} style={s.soundItem}>
-                <View style={s.soundThumb}>
-                  {img ? (
-                    <Image source={img as number} style={{ width: 52, height: 52 }} contentFit="cover" />
-                  ) : (
-                    <MaterialCommunityIcons name="music-note" size={22} color={GOLD} />
-                  )}
-                </View>
-                <Text style={s.soundName} numberOfLines={2}>{info?.name ?? snd.id}</Text>
-              </View>
-            );
-          })}
-        </View>
       </ScrollView>
 
       {/* ── Botón flotante Reproducir ──────────────────────────────────────── */}
@@ -558,11 +536,13 @@ const s = StyleSheet.create({
   },
   catGrid: {
     flexDirection: "row",
+    flexWrap: "wrap",
     gap: 8,
     marginBottom: 28,
   },
   catCell: {
-    flex: 1,
+    width: "31%",
+    flexGrow: 1,
     borderRadius: 12,
     overflow: "hidden",
     borderWidth: 2,
@@ -596,31 +576,6 @@ const s = StyleSheet.create({
   },
   catCellLabelSelected: {
     color: GOLD,
-  },
-  soundsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
-  },
-  soundItem: {
-    width: 72,
-    alignItems: "center",
-    gap: 6,
-  },
-  soundThumb: {
-    width: 52,
-    height: 52,
-    borderRadius: 10,
-    overflow: "hidden",
-    backgroundColor: "rgba(212,175,55,0.12)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  soundName: {
-    color: MUTED,
-    fontSize: 11,
-    textAlign: "center",
-    lineHeight: 14,
   },
 });
 

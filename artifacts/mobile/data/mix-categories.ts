@@ -1,8 +1,8 @@
 /**
  * CATEGORÍAS DE MEZCLAS — "Mi Música"
  * ─────────────────────────────────────────────────────────────────
- * Las 3 categorías a las que el usuario asigna sus mezclas creadas.
- * Cada categoría tiene su imagen de portada (assets/images/mixer/categories).
+ * Las 6 categorías a las que el usuario asigna sus mezclas creadas.
+ * Cada categoría tiene su imagen de portada.
  * Nota: los IDs internos se mantienen por compatibilidad con el backend;
  * las etiquetas visibles son las que se muestran al usuario.
  * ─────────────────────────────────────────────────────────────────
@@ -14,7 +14,7 @@ import type { ImageSourcePropType } from "react-native";
 type FeatherIconName = ComponentProps<typeof Feather>["name"];
 type MCIIconName = ComponentProps<typeof MaterialCommunityIcons>["name"];
 
-export type MixCategory = "dormir" | "trabajar" | "motivarme" | "concentracion";
+export type MixCategory = "dormir" | "trabajar" | "motivarme" | "concentracion" | "paz_interior" | "magico";
 
 export type MixCategoryMeta = {
   id: MixCategory;
@@ -27,15 +27,6 @@ export type MixCategoryMeta = {
 };
 
 export const MIX_CATEGORIES: MixCategoryMeta[] = [
-  {
-    id: "dormir",
-    label: "Descanso",
-    subtitle: "Sonidos para un descanso reparador.",
-    icon: "moon-crescent",
-    iconFamily: "Custom",
-    color: "#B2DFDB",
-    image: require("@/assets/images/mixer/categories/dormir.jpg"),
-  },
   {
     id: "motivarme",
     label: "Meditación",
@@ -55,6 +46,15 @@ export const MIX_CATEGORIES: MixCategoryMeta[] = [
     image: require("@/assets/images/mixer/categories/concentracion.jpg"),
   },
   {
+    id: "dormir",
+    label: "Descanso",
+    subtitle: "Sonidos para un descanso reparador.",
+    icon: "moon-crescent",
+    iconFamily: "Custom",
+    color: "#B2DFDB",
+    image: require("@/assets/images/mixer/categories/dormir.jpg"),
+  },
+  {
     id: "trabajar",
     label: "Energía",
     subtitle: "Sonidos que despiertan tu vitalidad.",
@@ -62,6 +62,24 @@ export const MIX_CATEGORIES: MixCategoryMeta[] = [
     iconFamily: "Feather",
     color: "#F4A261",
     image: require("@/assets/images/tag-energizar.jpg"),
+  },
+  {
+    id: "paz_interior",
+    label: "Paz Interior",
+    subtitle: "Sonidos que aquietan la mente.",
+    icon: "heart",
+    iconFamily: "Feather",
+    color: "#C3B1E1",
+    image: require("@/assets/images/tag-aceptacion.png"),
+  },
+  {
+    id: "magico",
+    label: "Mágico",
+    subtitle: "Sonidos que elevan el espíritu.",
+    icon: "star",
+    iconFamily: "Feather",
+    color: "#A8DADC",
+    image: require("@/assets/images/tag-astrologia.jpg"),
   },
 ];
 
