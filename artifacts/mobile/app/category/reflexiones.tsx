@@ -464,7 +464,7 @@ const styles = StyleSheet.create({
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(5,8,20,0.85)", borderWidth: 1, borderColor: "rgba(212,175,55,0.60)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
   profileCard: { marginHorizontal: H_PAD, marginTop: 20, paddingBottom: 14, gap: 8, alignItems: "center" },
-  profileTitle: { fontSize: 22, fontWeight: "800", color: TEXT, letterSpacing: 0.3 },
+  profileTitle: { fontSize: 26, fontWeight: "800", color: TEXT, letterSpacing: 0.3 },
   profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.70)", lineHeight: 21, textAlign: "center" },
 
   dividerLine: { height: 0 },
@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chip: { minWidth: 96, paddingHorizontal: 14, paddingVertical: 8, borderRadius: 999, backgroundColor: "rgba(255,255,255,0.08)", overflow: "hidden", alignItems: "center", justifyContent: "center" },
-  chipText: { fontSize: 13, fontWeight: "600", color: TEXT, textAlign: "center" },
+  chipText: { fontSize: 17, fontWeight: "600", color: TEXT, textAlign: "center" },
   chipTextSel: { color: "#1B060F" },
 
   scroll: { flex: 1 },
