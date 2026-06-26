@@ -165,24 +165,24 @@ export default function SessionDetailScreen() {
               onPress={handleFav}
               style={({ pressed }) => [styles.actionCard, { backgroundColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.8 : 1 }]}
             >
-              <Feather name="heart" size={20} color={fav ? colors.primary : colors.mutedForeground} />
-              <Text style={[styles.actionLabel, { color: fav ? colors.primary : colors.mutedForeground }]}>Guardar</Text>
+              <Feather name="heart" size={20} color={fav ? colors.primary : "rgba(255,255,255,0.9)"} />
+              <Text style={[styles.actionLabel, { color: fav ? colors.primary : "rgba(255,255,255,0.9)" }]}>Guardar</Text>
             </Pressable>
 
             <Pressable
               onPress={handleDownload}
               style={({ pressed }) => [styles.actionCard, { backgroundColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.8 : 1 }]}
             >
-              <Feather name="download" size={20} color={colors.mutedForeground} />
-              <Text style={[styles.actionLabel, { color: colors.mutedForeground }]}>Descargar</Text>
+              <Feather name="download" size={20} color="rgba(255,255,255,0.9)" />
+              <Text style={[styles.actionLabel, { color: "rgba(255,255,255,0.9)" }]}>Descargar</Text>
             </Pressable>
 
             <Pressable
               onPress={handleShare}
               style={({ pressed }) => [styles.actionCard, { backgroundColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.8 : 1 }]}
             >
-              <Feather name="share-2" size={20} color={colors.mutedForeground} />
-              <Text style={[styles.actionLabel, { color: colors.mutedForeground }]}>Compartir</Text>
+              <Feather name="share-2" size={20} color="rgba(255,255,255,0.9)" />
+              <Text style={[styles.actionLabel, { color: "rgba(255,255,255,0.9)" }]}>Compartir</Text>
             </Pressable>
           </View>
 
