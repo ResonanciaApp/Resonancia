@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     alignItems: "center",
     gap: 6,
-    marginTop: 25,
+    marginTop: 32,
     marginBottom: 10,
   },
   categoryPillText: {
