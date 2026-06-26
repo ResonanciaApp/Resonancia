@@ -236,7 +236,7 @@ function MixRow({
             style={[styles.mixAuthor, { color: colors.mutedForeground }]}
             numberOfLines={1}
           >
-            {mix.author.displayName}
+            {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
           </Text>
         </View>
 
