@@ -457,7 +457,6 @@ export default function ExploreScreen() {
                           ? hexTint(t.color, 0.22)
                           : "rgba(255,255,255,0.06)",
                         borderRadius: 14,
-                        transform: [{ scale: pressed ? 1.20 : 1 }],
                       },
                     ]}
                   >
