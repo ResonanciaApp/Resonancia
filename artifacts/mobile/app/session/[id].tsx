@@ -149,7 +149,7 @@ export default function SessionDetailScreen() {
               end={{ x: 1, y: 0 }}
               style={styles.categoryPill}
             >
-              <Feather name={categoryIcon as never} size={13} color="#E07A2B" />
+              <Feather name={categoryIcon as never} size={17} color="#E07A2B" />
               <Text style={styles.categoryPillText}>{categoryPill}</Text>
               <Text style={styles.categoryPillSep}>·</Text>
               <Text style={styles.durationText}>{session.durationLabel}</Text>
@@ -342,27 +342,27 @@ const styles = StyleSheet.create({
   categoryPill: {
     flexDirection: "row",
     alignSelf: "center",
-    height: 25,
-    borderRadius: 12.5,
-    paddingHorizontal: 14,
+    height: 29,
+    borderRadius: 14.5,
+    paddingHorizontal: 16,
     alignItems: "center",
-    gap: 5,
+    gap: 6,
     marginTop: 25,
     marginBottom: 10,
   },
   categoryPillText: {
-    fontSize: 11,
+    fontSize: 15,
     fontWeight: "600",
     color: "#4A0C0C",
     letterSpacing: 0.8,
   },
   categoryPillSep: {
-    fontSize: 11,
+    fontSize: 15,
     color: "#4A0C0C",
     opacity: 0.5,
   },
   durationText: {
-    fontSize: 11,
+    fontSize: 15,
     fontWeight: "400",
     color: "#4A0C0C",
   },
