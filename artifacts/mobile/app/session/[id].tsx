@@ -200,7 +200,7 @@ export default function SessionDetailScreen() {
                   </View>
                 </View>
                 {/* Bio */}
-                <Text style={[styles.authorBio, { color: colors.mutedForeground }]} numberOfLines={2}>
+                <Text style={[styles.authorBio, { color: "rgba(255,255,255,0.9)" }]} numberOfLines={2}>
                   {a.bio}
                 </Text>
                 {/* Link */}
@@ -246,7 +246,7 @@ export default function SessionDetailScreen() {
                         return (
                           <View style={styles.relatedAuthorRow}>
                             <Image source={g.photo} style={styles.relatedAuthorAvatar} contentFit="cover" />
-                            <Text style={[styles.relatedCardSub, { color: colors.mutedForeground }]} numberOfLines={1}>
+                            <Text style={[styles.relatedCardSub, { color: "rgba(255,255,255,0.9)" }]} numberOfLines={1}>
                               {g.name}
                             </Text>
                           </View>
