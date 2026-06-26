@@ -223,16 +223,15 @@ export default function SessionDetailScreen() {
               <Text style={[styles.blockTitle, { color: colors.foreground }]}>
                 Más sesiones como estas
               </Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.relatedScroll}
-              >
+              <View style={styles.relatedList}>
                 {related.map((s) => (
                   <Pressable
                     key={s.id}
                     onPress={() => router.push(`/session/${s.id}` as never)}
-                    style={({ pressed }) => [styles.relatedCard, { opacity: pressed ? 0.8 : 1 }]}
+                    style={({ pressed }) => [
+                      styles.relatedCard,
+                      { backgroundColor: "rgba(74,12,12,0.08)", opacity: pressed ? 0.8 : 1 },
+                    ]}
                   >
                     <Image
                       source={s.image as never}
@@ -246,12 +245,13 @@ export default function SessionDetailScreen() {
                         {s.title}
                       </Text>
                       <Text style={[styles.relatedCardSub, { color: colors.mutedForeground }]} numberOfLines={1}>
-                        {s.durationLabel}
+                        {s.subtitle} · {s.durationLabel}
                       </Text>
                     </View>
+                    <Feather name="chevron-right" size={16} color={colors.mutedForeground} style={{ marginRight: 4 }} />
                   </Pressable>
                 ))}
-              </ScrollView>
+              </View>
             </View>
           )}
         </View>
@@ -403,25 +403,27 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
 
-  // Related horizontal cards
+  // Related vertical list
   relatedBlock: { marginBottom: 20 },
-  relatedScroll: { gap: 12, paddingRight: 4 },
+  relatedList: { gap: 10 },
   relatedCard: {
-    width: 148,
+    flexDirection: "row",
+    alignItems: "center",
     borderRadius: 14,
     overflow: "hidden",
-    backgroundColor: "rgba(74,12,12,0.08)",
+    gap: 12,
   },
   relatedCardImg: {
-    width: 148,
-    height: 110,
+    width: 64,
+    height: 64,
   },
   relatedCardBody: {
-    padding: 10,
+    flex: 1,
+    paddingVertical: 12,
     gap: 4,
   },
-  relatedCardTitle: { fontSize: 13, fontWeight: "700", lineHeight: 18 },
-  relatedCardSub: { fontSize: 11 },
+  relatedCardTitle: { fontSize: 14, fontWeight: "700", lineHeight: 19 },
+  relatedCardSub: { fontSize: 12 },
 
   // Sticky play
   stickyPlay: {
