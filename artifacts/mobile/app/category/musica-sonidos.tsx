@@ -507,9 +507,9 @@ export default function MusicaSonidosScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#030806" },
 
-  stickyHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 10 },
+  stickyHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14 },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
-  headerTitle: { fontSize: 17, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },
+  headerTitle: { fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },
 
   heroArea: { height: 220, position: "relative" },
   heroIconFloat: { position: "absolute", bottom: -6, left: 0, right: 0, alignItems: "center", zIndex: 2 },

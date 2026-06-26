@@ -559,10 +559,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: H_PAD,
-    paddingBottom: 10,
+    paddingBottom: 14,
   },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
-  headerTitle: { fontSize: 17, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },
+  headerTitle: { fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },
 
   /* ── Hero ── */
   heroArea: { height: 220, position: "relative" },
