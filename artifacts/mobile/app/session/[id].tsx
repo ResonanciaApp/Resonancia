@@ -241,9 +241,17 @@ export default function SessionDetailScreen() {
                       <Text style={[styles.relatedCardTitle, { color: colors.foreground }]} numberOfLines={2}>
                         {s.title}
                       </Text>
-                      <Text style={[styles.relatedCardSub, { color: colors.mutedForeground }]} numberOfLines={1}>
-                        {getGuide(s.guideIds?.[0] ?? s.guideId ?? undefined).name}
-                      </Text>
+                      {(() => {
+                        const g = getGuide(s.guideIds?.[0] ?? s.guideId ?? undefined);
+                        return (
+                          <View style={styles.relatedAuthorRow}>
+                            <Image source={g.photo} style={styles.relatedAuthorAvatar} contentFit="cover" />
+                            <Text style={[styles.relatedCardSub, { color: colors.mutedForeground }]} numberOfLines={1}>
+                              {g.name}
+                            </Text>
+                          </View>
+                        );
+                      })()}
                     </View>
                   </Pressable>
                 ))}
@@ -418,6 +426,8 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   relatedCardTitle: { fontSize: 14, fontWeight: "700", lineHeight: 19 },
+  relatedAuthorRow: { flexDirection: "row", alignItems: "center", gap: 6 },
+  relatedAuthorAvatar: { width: 18, height: 18, borderRadius: 9 },
   relatedCardSub: { fontSize: 12 },
 
   // Sticky play
