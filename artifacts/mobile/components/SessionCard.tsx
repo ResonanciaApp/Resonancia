@@ -66,9 +66,10 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
           },
         ]}
       >
-        <View style={{ width: 129, height: 94 }}>
+        <View style={{ width: 129, height: 94, borderRadius: 8, overflow: "hidden" }}>
           <Image source={session.image} style={styles.hImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           {locked && <LockStar />}
+          <Text style={styles.hDurLabel}>{session.durationLabel}</Text>
         </View>
         <View style={styles.hContent}>
           <View style={styles.hCategoryRow}>
@@ -79,11 +80,6 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
           <Text style={[styles.hTitle, { color: colors.foreground }]} numberOfLines={2}>
             {session.title}
           </Text>
-          <View style={styles.hMeta}>
-            <Text style={[styles.hDuration, { color: "rgba(255,255,255,0.95)" }]}>
-              {session.durationLabel}
-            </Text>
-          </View>
         </View>
       </Pressable>
     );
@@ -165,6 +161,17 @@ const styles = StyleSheet.create({
     width: 129,
     height: 94,
     borderRadius: 8,
+  },
+  hDurLabel: {
+    position: "absolute",
+    bottom: 6,
+    left: 8,
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#fff",
+    textShadowColor: "rgba(0,0,0,0.85)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   hGradient: {
     position: "absolute",
