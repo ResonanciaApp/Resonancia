@@ -300,8 +300,8 @@ export default function SessionDetailScreen() {
         pointerEvents="box-none"
         style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: "#1B060F" }]}
       >
-        <Pressable onPress={() => router.back()} style={[styles.navBtn, { backgroundColor: "rgba(24,17,12,0.5)" }]}>
-          <Feather name="arrow-left" size={20} color="#FFF" />
+        <Pressable onPress={() => router.back()} style={styles.stickyBackPill}>
+          <Feather name="arrow-left" size={16} color="#FFF" />
         </Pressable>
         <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
         <View style={{ width: 36 }} />
@@ -509,6 +509,17 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     gap: 12,
     zIndex: 10,
+  },
+  stickyBackPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 32,
+    width: 36,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.35)",
+    backgroundColor: "transparent",
   },
   stickyTitle: {
     flex: 1,
