@@ -380,12 +380,12 @@ const styles = StyleSheet.create({
   },
   actionCard: {
     flex: 1,
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 16,
+    aspectRatio: 1,
     borderRadius: 14,
-    gap: 10,
+    gap: 8,
   },
   actionLabel: {
     fontSize: 14,
