@@ -313,7 +313,7 @@ export default function SesionesPage() {
     setDuration(""); setIsPremium(false); setSkipDetail(false); setFrequency(""); setVoiceTag("");
     setAncestralTag(""); setMeditationTag("");
     setSonidosTag(""); setPodcastTag(""); setSleepTag(""); setThemeTag([]);
-    setGuideId("");
+    setGuideIds([""]);
     setBenefits([]); setInstruments([]);
     setAudio1(emptyAudioSlot()); setAudio2(emptyAudioSlot()); setShowAudio2(false);
     setImageFile(null); setUploadedImage(null);
@@ -365,7 +365,7 @@ export default function SesionesPage() {
                 setCategoryId(cat.id);
                 // reset tags al cambiar categoría
                 setAncestralTag(""); setMeditationTag("");
-                setSonidosTag(""); setPodcastTag(""); setGuideId("");
+                setSonidosTag(""); setPodcastTag(""); setGuideIds([""]);
                 // auto-mostrar audio2 con rol correcto según categoría
                 if (cat.id === "sonidos-ancestrales" || cat.id === "meditaciones-guiadas") {
                   setShowAudio2(true);
@@ -427,7 +427,7 @@ export default function SesionesPage() {
             <span className="text-xs text-muted-foreground">{description.length}/2000</span>
           </Field>
 
-          {categoryId === "meditaciones-guiadas" && (
+          {categoryId && (
             <Field label="Autores / Voces guía">
               <div className="flex flex-col gap-2">
                 {guideIds.map((gid, i) => (
