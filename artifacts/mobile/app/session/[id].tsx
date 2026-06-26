@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     lineHeight: 38,
     textAlign: "center",
-    marginTop: 10,
+    marginTop: 8,
     marginBottom: 7,
   },
 
