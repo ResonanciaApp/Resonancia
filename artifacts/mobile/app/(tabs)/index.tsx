@@ -1017,7 +1017,7 @@ const styles = StyleSheet.create({
   coleccionTitle: {
     flex: 1,
     fontSize: 13,
-    fontWeight: "400",
+    fontWeight: "700",
     color: "#FAF0EE",
     lineHeight: 18,
   },
