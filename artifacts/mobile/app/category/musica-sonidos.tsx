@@ -4,7 +4,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import {
-  Animated, Dimensions, Easing, Keyboard, Modal, Platform,
+  ActivityIndicator, Animated, Dimensions, Easing, Keyboard, Modal, Platform,
   Pressable, ScrollView, StyleSheet, Text, TextInput, View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -313,6 +313,12 @@ export default function MusicaSonidosScreen() {
   const sessions   = useMemo(()=>applySort(getSessionsForTab(activeTab),sort,playCounts),[activeTab,sort,playCounts,version]);
   const sortLabel  = sort==="recientes"?"Escuchadas recientemente":sort==="nuevas"?"Nuevas sesiones":"Las más escuchadas";
 
+  const PAGE_SIZE = 20;
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [sessions]);
+  const visibleSessions = sessions.slice(0, visibleCount);
+  const hasMore = visibleCount < sessions.length;
+
   const renderContent = () => {
     if (sessions.length===0) return (
       <View style={styles.emptyState}>
@@ -323,25 +329,31 @@ export default function MusicaSonidosScreen() {
     );
     if (viewMode==="grid") {
       const triples: (typeof sessions)[] = [];
-      for (let i=0;i<sessions.length;i+=3) triples.push(sessions.slice(i,i+3));
+      for (let i=0;i<visibleSessions.length;i+=3) triples.push(visibleSessions.slice(i,i+3));
       return (
-        <View style={styles.gridOuter}>
-          {triples.map((triple,ri)=>(
-            <View key={ri} style={styles.gridRow}>
-              {triple.map((s)=>(
-                <CategoryCard key={s.id} session={s} width={cellW} onLongPress={()=>setSelectedSession(s)} />
-              ))}
-            </View>
-          ))}
-        </View>
+        <>
+          <View style={styles.gridOuter}>
+            {triples.map((triple,ri)=>(
+              <View key={ri} style={styles.gridRow}>
+                {triple.map((s)=>(
+                  <CategoryCard key={s.id} session={s} width={cellW} onLongPress={()=>setSelectedSession(s)} />
+                ))}
+              </View>
+            ))}
+          </View>
+          {hasMore && <View style={styles.loadMoreFooter}><ActivityIndicator size="small" color={MUTED} /></View>}
+        </>
       );
     }
     return (
-      <View style={{paddingHorizontal:H_PAD}}>
-        {sessions.map((s)=>(
-          <CategoryCard key={s.id} session={s} horizontal onLongPress={()=>setSelectedSession(s)} />
-        ))}
-      </View>
+      <>
+        <View style={{paddingHorizontal:H_PAD}}>
+          {visibleSessions.map((s)=>(
+            <CategoryCard key={s.id} session={s} horizontal onLongPress={()=>setSelectedSession(s)} />
+          ))}
+        </View>
+        {hasMore && <View style={styles.loadMoreFooter}><ActivityIndicator size="small" color={MUTED} /></View>}
+      </>
     );
   };
 
@@ -368,6 +380,13 @@ export default function MusicaSonidosScreen() {
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
         showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={(e) => {
+          const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
+          if (hasMore && contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
+            setVisibleCount((c) => Math.min(c + PAGE_SIZE, sessions.length));
+          }
+        }}
       >
 
         {/* ── Hero banner ── */}
@@ -461,6 +480,7 @@ const styles = StyleSheet.create({
   gridOuter: { paddingHorizontal: H_PAD, gap: GRID_GAP },
   gridRow: { flexDirection: "row", gap: GRID_GAP },
   emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },
+  loadMoreFooter: { alignItems: "center", paddingVertical: 20 },
   emptyTitle: { fontSize: 17, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 8 },
   emptySub: { fontSize: 13, color: MUTED, textAlign: "center", lineHeight: 20 },
 
