@@ -41,33 +41,31 @@ function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: obje
   }
 
   return (
-    <View style={{ position: "relative" }}>
-      {/* Halo exterior animado */}
+    <Pressable onPress={handlePress} style={pillStyle}>
+      {/* Flash interior */}
+      <Animated.View
+        pointerEvents="none"
+        style={{
+          ...StyleSheet.absoluteFillObject,
+          borderRadius: 19,
+          backgroundColor: "rgba(255,255,255,0.22)",
+          opacity: glow,
+        }}
+      />
+      {/* Anillo interior animado */}
       <Animated.View
         pointerEvents="none"
         style={{
           position: "absolute",
-          top: -7, left: -7, right: -7, bottom: -7,
-          borderRadius: 26,
-          borderWidth: 1.5,
-          borderColor: "rgba(255,255,255,0.9)",
+          top: 0, left: 0, right: 0, bottom: 0,
+          borderRadius: 19,
+          borderWidth: 2,
+          borderColor: "rgba(255,255,255,0.95)",
           opacity: glow,
         }}
       />
-      <Pressable onPress={handlePress} style={pillStyle}>
-        {/* Flash interior */}
-        <Animated.View
-          pointerEvents="none"
-          style={{
-            ...StyleSheet.absoluteFillObject,
-            borderRadius: 19,
-            backgroundColor: "rgba(255,255,255,0.18)",
-            opacity: glow,
-          }}
-        />
-        <Feather name="arrow-left" size={22} color="#FFF" />
-      </Pressable>
-    </View>
+      <Feather name="arrow-left" size={22} color="#FFF" />
+    </Pressable>
   );
 }
 
