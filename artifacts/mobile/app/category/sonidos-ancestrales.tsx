@@ -144,43 +144,42 @@ function ChipRow({ tabs, activeTab, onSelect, onClear, syncVisible }: { tabs: {i
   const offsetsRef= useRef<Record<string,number>>({});
   const scrollX   = useRef(0);
   const internalRef = useRef(false);
-  const [displayTab, setDisplayTab] = useState<CatTab|null>(activeTab);
-  const [colorTab,   setColorTab]   = useState<CatTab|null>(activeTab);
-  const [targetTx,   setTargetTx]   = useState(0);
-  const filtered = displayTab !== null;
+  const [targetTx, setTargetTx] = useState(0);
+  // Derive selection state directly from prop — no local displayTab/colorTab
+  const filtered = activeTab !== null;
 
   const animate = (to: number, done?: ()=>void) =>
     Animated.timing(progress, { toValue: to, duration: CHIP_DUR, easing: Easing.inOut(Easing.cubic), useNativeDriver: true })
       .start(({ finished }) => { if (finished) done?.(); });
 
-  const syncFromProp = useCallback(() => {
-    if (activeTab !== null) {
-      const tx = CLOSE_SLOT - ((offsetsRef.current[activeTab] ?? 0) - scrollX.current);
-      setTargetTx(tx); setDisplayTab(activeTab); setColorTab(activeTab); progress.setValue(1);
+  const syncProgress = useCallback((tab: CatTab | null) => {
+    if (tab !== null) {
+      const tx = CLOSE_SLOT - ((offsetsRef.current[tab] ?? 0) - scrollX.current);
+      setTargetTx(tx); progress.setValue(1);
     } else {
-      setDisplayTab(null); setColorTab(null); progress.setValue(0);
+      progress.setValue(0);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab]);
+  }, []);
 
   const handleSelect = (id: CatTab) => {
     internalRef.current = true;
     setTargetTx(CLOSE_SLOT - ((offsetsRef.current[id]??0) - scrollX.current));
-    setDisplayTab(id); setColorTab(id); onSelect(id); animate(1);
+    onSelect(id); animate(1);
   };
   const handleClear = () => {
     internalRef.current = true;
-    setColorTab(null); onClear(); animate(0, () => setDisplayTab(null));
+    animate(0); onClear();
   };
-  // Sync when activeTab changes from the other ChipRow instance
+  // Sync progress when activeTab changes from the other ChipRow instance
   useEffect(() => {
     if (internalRef.current) { internalRef.current = false; return; }
-    syncFromProp();
+    syncProgress(activeTab);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
-  // Re-sync every time the sticky bar becomes visible
+  // Re-sync progress every time this bar becomes visible
   useEffect(() => {
-    if (syncVisible === true) syncFromProp();
+    if (syncVisible === true) syncProgress(activeTab);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [syncVisible]);
   useEffect(() => () => progress.stopAnimation(), [progress]);
@@ -196,14 +195,14 @@ function ChipRow({ tabs, activeTab, onSelect, onClear, syncVisible }: { tabs: {i
         scrollEventThrottle={16} onScroll={(e) => { scrollX.current = e.nativeEvent.contentOffset.x; }}
         style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
         {tabs.map((t) => {
-          const isSel = displayTab === t.id;
+          const isSel = activeTab === t.id;
           const chipStyle = isSel
             ? { opacity: 1, zIndex: 2, transform: [{ translateX: progress.interpolate({ inputRange: [0,1], outputRange: [0, targetTx] }) }] }
             : { opacity: progress.interpolate({ inputRange: [0,1], outputRange: [1,0] }) };
           return (
             <Animated.View key={t.id} pointerEvents={filtered && !isSel ? "none" : "auto"}
               onLayout={(e) => { offsetsRef.current[t.id] = e.nativeEvent.layout.x; }} style={chipStyle}>
-              <Chip label={t.label} sel={colorTab === t.id} onPress={() => (isSel ? handleClear() : handleSelect(t.id))} />
+              <Chip label={t.label} sel={isSel} onPress={() => (isSel ? handleClear() : handleSelect(t.id))} />
             </Animated.View>
           );
         })}
