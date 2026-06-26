@@ -10,6 +10,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { createAudioPlayer, type AudioPlayer } from "expo-audio";
 import { GoldGradientFill } from "@/components/GoldGradient";
+import { GhostPill } from "@/components/GhostPill";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { AUDIO_MAP } from "@/config/audio-map";
 import { usePlayer } from "@/context/PlayerContext";
@@ -429,13 +430,17 @@ export default function MusicaSonidosScreen() {
 
       {/* ── Sticky header ── */}
       <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>
-        <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
-          <Feather name="arrow-left" size={22} color="#fff" />
-        </Pressable>
+        <GhostPill>
+          <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
+            <Feather name="arrow-left" size={22} color="#fff" />
+          </Pressable>
+        </GhostPill>
         <Text style={styles.headerTitle}>Música y Sonidos</Text>
-        <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/musica-info" as never)}>
-          <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
-        </Pressable>
+        <GhostPill>
+          <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/musica-info" as never)}>
+            <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
+          </Pressable>
+        </GhostPill>
       </View>
 
       <ScrollView style={styles.scroll} contentContainerStyle={{ paddingBottom: 140 + bottomPad }} showsVerticalScrollIndicator={false}>
