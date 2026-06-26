@@ -178,7 +178,7 @@ const PillTab = memo(function PillTab({
             <MaskedView
               maskElement={
                 <View style={styles.pillTabMaskContent}>
-                  <MaterialCommunityIcons name={tab.icon as any} size={17} color="black" />
+                  <MaterialCommunityIcons name={tab.icon as any} size={19} color="black" />
                   <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "black", fontWeight: "700" }]}>
                     {tab.label}
                   </Text>
@@ -191,7 +191,7 @@ const PillTab = memo(function PillTab({
                 end={{ x: 1, y: 0 }}
               >
                 <View style={styles.pillTabMaskContent}>
-                  <MaterialCommunityIcons name={tab.icon as any} size={17} color="transparent" />
+                  <MaterialCommunityIcons name={tab.icon as any} size={19} color="transparent" />
                   <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "transparent", fontWeight: "700" }]}>
                     {tab.label}
                   </Text>
@@ -202,7 +202,7 @@ const PillTab = memo(function PillTab({
         </View>
       ) : (
         <View style={[styles.pillTab, { borderWidth: 1, borderColor: "rgba(212,175,55,0.08)" }]}>
-          <MaterialCommunityIcons name={tab.icon as any} size={17} color="rgba(255,255,255,0.80)" />
+          <MaterialCommunityIcons name={tab.icon as any} size={19} color="rgba(255,255,255,0.80)" />
           <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "rgba(255,255,255,0.80)", fontWeight: "400" }]}>
             {tab.label}
           </Text>
@@ -1015,7 +1015,7 @@ const styles = StyleSheet.create({
     gap: 4,
     backgroundColor: "transparent",
   },
-  pillTabLabel: { fontSize: 12, letterSpacing: 0.1, fontWeight: "700" },
+  pillTabLabel: { fontSize: 14, letterSpacing: 0.1, fontWeight: "700" },
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },
 
@@ -1089,7 +1089,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14, paddingVertical: 5,
     borderRadius: 999,
   },
-  subTabText: { fontSize: 13, fontWeight: "400", includeFontPadding: false, textAlignVertical: "center" },
+  subTabText: { fontSize: 15, fontWeight: "400", includeFontPadding: false, textAlignVertical: "center" },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 17, justifyContent: "space-evenly" },
   soundCard: { width: CARD_W },
