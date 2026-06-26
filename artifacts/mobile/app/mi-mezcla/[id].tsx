@@ -365,22 +365,23 @@ export default function MiMezclaScreen() {
           </View>
         </Pressable>
 
-        {/* Descripción */}
-        <Text style={s.label}>Descripción</Text>
+        {/* Nombre */}
+        <Text style={s.label}>Nombre</Text>
         <TextInput
-          style={[s.input, s.inputMulti]}
-          value={description}
-          onChangeText={setDescription}
-          onBlur={() => save({ description: description.trim() || undefined })}
-          placeholder="Describe tu mezcla (opcional)"
+          style={s.input}
+          value={name}
+          onChangeText={setName}
+          onBlur={() => { if (name.trim()) save({ name: name.trim() }); }}
+          placeholder="Nombre de tu mezcla"
           placeholderTextColor={MUTED}
-          multiline
-          numberOfLines={3}
           returnKeyType="done"
-          blurOnSubmit
+          onSubmitEditing={() => {
+            if (name.trim()) save({ name: name.trim() });
+            Keyboard.dismiss();
+          }}
         />
 
-        {/* Grid de categorías 2×2 */}
+        {/* Grid de categorías — fila única */}
         <View style={s.catGrid}>
           {MIX_CATEGORIES.map((cat) => {
             const selected = category === cat.id;
@@ -411,22 +412,6 @@ export default function MiMezclaScreen() {
             );
           })}
         </View>
-
-        {/* Nombre */}
-        <Text style={s.label}>Nombre</Text>
-        <TextInput
-          style={s.input}
-          value={name}
-          onChangeText={setName}
-          onBlur={() => { if (name.trim()) save({ name: name.trim() }); }}
-          placeholder="Nombre de tu mezcla"
-          placeholderTextColor={MUTED}
-          returnKeyType="done"
-          onSubmitEditing={() => {
-            if (name.trim()) save({ name: name.trim() });
-            Keyboard.dismiss();
-          }}
-        />
 
         {/* Sonidos */}
         <Text style={s.label}>Sonidos ({mix.sounds.length})</Text>
@@ -573,13 +558,12 @@ const s = StyleSheet.create({
   },
   catGrid: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
+    gap: 8,
     marginBottom: 28,
   },
   catCell: {
-    width: "48%",
-    borderRadius: 14,
+    flex: 1,
+    borderRadius: 12,
     overflow: "hidden",
     borderWidth: 2,
     borderColor: "transparent",
@@ -598,16 +582,17 @@ const s = StyleSheet.create({
   catCellLabelRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 5,
+    justifyContent: "center",
+    gap: 3,
     backgroundColor: "rgba(22,1,8,0.72)",
-    paddingHorizontal: 10,
-    paddingVertical: 8,
+    paddingHorizontal: 4,
+    paddingVertical: 6,
   },
   catCellLabel: {
-    flex: 1,
     color: MUTED,
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: "600",
+    textAlign: "center",
   },
   catCellLabelSelected: {
     color: GOLD,
