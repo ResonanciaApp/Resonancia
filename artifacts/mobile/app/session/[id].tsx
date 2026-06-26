@@ -512,7 +512,7 @@ const styles = StyleSheet.create({
   },
   stickyTitle: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 21,
     fontWeight: "700",
     color: "#FFFFFF",
     textAlign: "center",
