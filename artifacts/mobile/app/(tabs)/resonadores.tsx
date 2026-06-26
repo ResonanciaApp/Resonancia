@@ -287,15 +287,14 @@ type CardItem =
 
 const ResonadorCard = memo(function ResonadorCard({
   item,
-  cardW,
 }: {
   item: CardItem;
-  cardW: number;
+  cardW?: number;
 }) {
   const d = item.data;
   const { expansorId } = useUserProfile();
 
-  const photoSize = cardW - 16;
+  const AVATAR = 54;
 
   function handlePress() {
     if (item.kind === "expansor") router.push(`/expansor-perfil/${d.id}` as never);
@@ -305,32 +304,32 @@ const ResonadorCard = memo(function ResonadorCard({
   return (
     <Pressable
       onPress={handlePress}
-      style={({ pressed }) => [styles.card, { width: cardW, opacity: pressed ? 0.82 : 1 }]}
+      style={({ pressed }) => [styles.card, { opacity: pressed ? 0.82 : 1 }]}
     >
-      <View style={styles.photoOuter}>
-        <View
-          style={[
-            styles.photoWrap,
-            {
-              width: photoSize,
-              height: photoSize,
-              borderRadius: photoSize / 2,
-            },
-            item.kind === "expansor" && { borderWidth: 0 },
-          ]}
-        >
-          <Image
-            source={d.photo}
-            style={StyleSheet.absoluteFill}
-            contentFit="cover"
-            placeholder={BLUR_PLACEHOLDER}
-            transition={IMAGE_TRANSITION}
-          />
-        </View>
+      {/* Avatar izquierdo */}
+      <View
+        style={[
+          styles.photoWrap,
+          {
+            width: AVATAR,
+            height: AVATAR,
+            borderRadius: AVATAR / 2,
+          },
+          item.kind === "expansor" && { borderWidth: 0 },
+        ]}
+      >
+        <Image
+          source={d.photo}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+          placeholder={BLUR_PLACEHOLDER}
+          transition={IMAGE_TRANSITION}
+        />
       </View>
 
+      {/* Contenido derecho */}
       <View style={styles.cardInfo}>
-        <Text style={styles.cardName} numberOfLines={2}>{d.name}</Text>
+        <Text style={styles.cardName} numberOfLines={1}>{d.name}</Text>
         <Text style={styles.cardTag} numberOfLines={1}>
           {item.kind === "resonador"
             ? item.data.subtipo
@@ -456,9 +455,7 @@ export default function ResonadoresScreen() {
     }
   }, [activeTab, activeFilter, selectedCountry, selectedRegion, query]);
 
-  const numCols = 3;
-  const SCREEN_PAD = H_PAD * 2;
-  const cardW = Math.floor((screenWidth - SCREEN_PAD - CARD_GAP * 2) / numCols);
+  const numCols = 1;
 
   return (
     <View style={styles.root}>
@@ -598,7 +595,6 @@ export default function ResonadoresScreen() {
         data={items}
         keyExtractor={(item) => item.data.id}
         numColumns={numCols}
-        columnWrapperStyle={styles.row}
         contentContainerStyle={[styles.grid, { paddingBottom: bottomPad + 90 }]}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
@@ -607,7 +603,7 @@ export default function ResonadoresScreen() {
             <Text style={styles.emptyText}>Sin resultados</Text>
           </View>
         }
-        renderItem={({ item }) => <ResonadorCard item={item} cardW={cardW} />}
+        renderItem={({ item }) => <ResonadorCard item={item} />}
       />
     </View>
   );
@@ -836,17 +832,19 @@ const styles = StyleSheet.create({
   chipTextSel: { color: "#1B060F", fontWeight: "700" },
 
   // Grid
-  grid: { paddingHorizontal: H_PAD, paddingTop: 0 },
+  grid: { paddingTop: 0 },
   row: { gap: CARD_GAP, marginBottom: 16 },
 
   // Card
   card: {
+    flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 8,
+    gap: 14,
+    paddingVertical: 10,
+    paddingHorizontal: H_PAD,
   },
   photoOuter: {
     alignItems: "center",
-    marginBottom: 10,
   },
   photoWrap: {
     overflow: "hidden",
@@ -866,20 +864,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   certStar: { fontSize: 9, color: "#1B060F", fontWeight: "800" },
-  cardInfo: { alignItems: "center", paddingHorizontal: 6 },
+  cardInfo: { flex: 1, justifyContent: "center", gap: 3 },
   cardName: {
-    fontSize: 12,
+    fontSize: 15,
     fontWeight: "700",
     color: "#FAF0EE",
-    marginBottom: 2,
-    textAlign: "center",
   },
   cardTag: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: "400",
     color: "rgba(255,255,255,0.55)",
-    textAlign: "center",
-    marginBottom: 3,
   },
   cardSub: {
     fontSize: 10,
