@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import Svg, { Path } from "react-native-svg";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -30,6 +31,20 @@ const HERO_IMG = require("@/assets/images/ancestrales-hero.jpg");
 type CatTab   = string;
 type SortMode = "recientes" | "nuevas" | "populares";
 type ViewMode = "list" | "grid";
+
+function TibetanBowlIcon({ size = 20, color = "#fff" }: { size?: number; color?: string }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M3 8h18M4.5 8Q4 16 12 17.5Q20 16 19.5 8M9.5 17.5h5"
+        stroke={color}
+        strokeWidth={1.8}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
 
 // Tags agrupados bajo cada tab fija (no generan tab propia si ya están acá)
 const FIXED_TABS: { id: string; label: string }[] = [
@@ -361,7 +376,7 @@ export default function SonidosAncestalesScreen() {
         <Text style={styles.headerTitle}>Ancestrales</Text>
         <GhostPill>
           <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-instrumentos" as never)}>
-            <Feather name="grid" size={19} color={GOLD} />
+            <TibetanBowlIcon size={20} color="#fff" />
           </Pressable>
           <View style={styles.headerDivider} />
           <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
