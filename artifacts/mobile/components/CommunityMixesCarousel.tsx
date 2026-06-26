@@ -23,6 +23,7 @@ import type { SharedMix } from "@workspace/api-client-react";
 
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { type MixCategory, MIX_CATEGORIES } from "@/data/mix-categories";
+import { resolveAvatarUrl } from "@/lib/avatar";
 import { useColors } from "@/hooks/useColors";
 
 
@@ -157,6 +158,7 @@ export function CommunityMixesCarousel() {
               colors={colors}
               onPress={() => handleOpenMix(mix)}
               onDotsPress={() => setMenuMix(mix)}
+              onAuthorPress={() => handleViewCreator(mix)}
             />
           ))}
         </View>
@@ -199,14 +201,18 @@ function MixRow({
   colors,
   onPress,
   onDotsPress,
+  onAuthorPress,
 }: {
   mix: SharedMix;
   colors: Colors;
   onPress: () => void;
   onDotsPress: () => void;
+  onAuthorPress: () => void;
 }) {
   const trending = mix.trending === true;
   const dividerColor = "rgba(61,14,22,0.40)";
+  const avatarUri = resolveAvatarUrl(mix.author.avatarUrl ?? null);
+  const initial = mix.author.displayName?.trim()?.[0]?.toUpperCase() ?? "·";
 
   return (
     <View>
@@ -219,9 +225,23 @@ function MixRow({
 
         {/* Info */}
         <View style={styles.info}>
-          <Text style={[styles.mixCreator, { color: colors.mutedForeground }]} numberOfLines={1}>
-            Creada por {mix.author.displayName}
-          </Text>
+          {/* Autor — tappable */}
+          <Pressable
+            onPress={onAuthorPress}
+            hitSlop={6}
+            style={styles.authorRow}
+          >
+            {avatarUri ? (
+              <ExpoImage source={{ uri: avatarUri }} style={styles.authorAvatar} contentFit="cover" />
+            ) : (
+              <View style={[styles.authorAvatar, styles.authorAvatarFallback]}>
+                <Text style={styles.authorInitial}>{initial}</Text>
+              </View>
+            )}
+            <Text style={[styles.mixCreator, { color: colors.mutedForeground }]} numberOfLines={1}>
+              {mix.author.displayName}
+            </Text>
+          </Pressable>
           <View style={styles.nameRow}>
             <Text
               style={[styles.mixName, { color: colors.foreground }]}
@@ -465,7 +485,11 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   trendText: { fontSize: 8, fontWeight: "700", letterSpacing: 0.5 },
-  mixCreator: { fontSize: 9, marginBottom: 1 },
+  authorRow: { flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 2 },
+  authorAvatar: { width: 16, height: 16, borderRadius: 8, overflow: "hidden", flexShrink: 0 },
+  authorAvatarFallback: { backgroundColor: "rgba(212,175,55,0.20)", alignItems: "center", justifyContent: "center" },
+  authorInitial: { fontSize: 8, fontWeight: "700", color: GOLD },
+  mixCreator: { fontSize: 9, flexShrink: 1 },
   mixAuthor: { fontSize: 10, marginTop: 2 },
   mixCount: { fontSize: 12, fontWeight: "500" },
   likeChip: { flexDirection: "row", alignItems: "center", gap: 3, flexShrink: 0 },
