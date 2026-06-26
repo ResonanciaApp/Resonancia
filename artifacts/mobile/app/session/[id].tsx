@@ -92,6 +92,13 @@ export default function SessionDetailScreen() {
   const isGuiada = session.categoryId === "meditaciones-guiadas";
   const isAncestral = session.categoryId === "sonidos-ancestrales";
   const isReflexion = session.categoryId === "reflexiones";
+  const CATEGORY_BG: Record<string, { gradient: [string, string]; solid: string }> = {
+    "sonidos-ancestrales":  { gradient: ["#2E0510", "#160108"], solid: "#160108" },
+    "meditaciones-guiadas": { gradient: ["#1A0F2E", "#0D0A1A"], solid: "#0D0A1A" },
+    "reflexiones":          { gradient: ["#0A0F20", "#060A14"], solid: "#060A14" },
+    "musica-sonidos":       { gradient: ["#081409", "#030806"], solid: "#030806" },
+  };
+  const catBg = CATEGORY_BG[session.categoryId] ?? CATEGORY_BG["sonidos-ancestrales"];
   const categoryPill = isAncestral ? "Ancestral" : isGuiada ? "Meditación" : isReflexion ? "Reflexión" : null;
   const categoryIcon: string = isAncestral ? "headphones" : isGuiada ? "moon" : "book-open";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
@@ -168,8 +175,8 @@ export default function SessionDetailScreen() {
       }));
 
   return (
-    <View style={styles.root}>
-      <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
+    <View style={[styles.root, { backgroundColor: catBg.solid }]}>
+      <LinearGradient colors={catBg.gradient} style={StyleSheet.absoluteFill} />
       <StatusBar barStyle="light-content" />
 
       <Animated.ScrollView
@@ -335,7 +342,7 @@ export default function SessionDetailScreen() {
       {/* ── Sticky header (aparece al scrollear) ─────────────────────────── */}
       <Animated.View
         pointerEvents="box-none"
-        style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: "#2E0510" }]}
+        style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: catBg.gradient[0] }]}
       >
         <GlowPill onPress={() => router.back()} pillStyle={styles.stickyBackPill} />
         <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
