@@ -410,11 +410,8 @@ export default function ExploreScreen() {
           <View style={styles.recoSection}>
             <Text style={styles.sectionTitle}>Meditaciones recomendadas</Text>
             <View style={styles.recoList}>
-              {dailyRecs.map((s, i) => (
-                <React.Fragment key={s.id}>
-                  {i > 0 && <View style={styles.recoDivider} />}
-                  <SessionCard session={s} horizontal />
-                </React.Fragment>
+              {dailyRecs.map((s) => (
+                <SessionCard key={s.id} session={s} horizontal />
               ))}
             </View>
           </View>
