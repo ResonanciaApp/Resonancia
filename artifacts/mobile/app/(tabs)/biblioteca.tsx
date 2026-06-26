@@ -1459,7 +1459,7 @@ const styles = StyleSheet.create({
   headerTitle: { fontSize: 27, fontWeight: "700", color: TEXT, letterSpacing: 0.5 },
   headerSubtitle: { fontSize: 13, color: MUTED, marginTop: 3, fontWeight: "400" },
   headerIcons: { flexDirection: "row", alignItems: "center", gap: 4 },
-  headerIconBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
+  headerIconBtn: { width: 42, height: 42, alignItems: "center", justifyContent: "center" },
 
   animChipWrap: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },

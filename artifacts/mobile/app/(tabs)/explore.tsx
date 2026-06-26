@@ -507,7 +507,7 @@ const styles = StyleSheet.create({
   },
 
   header:         { paddingHorizontal: H_PAD, marginBottom: 18 },
-  headerPillBtn:  { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
+  headerPillBtn:  { width: 42, height: 42, alignItems: "center", justifyContent: "center" },
   headerRow:      { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   avatarBtn:      { width: 32, height: 32, borderRadius: 16, overflow: "hidden" },
   avatarSmall:    { width: 32, height: 32, borderRadius: 16 },
