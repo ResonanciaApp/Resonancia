@@ -401,8 +401,8 @@ export default function MeditacionesGuiadasScreen() {
 
         {/* ── Description ── */}
         <View style={styles.profileCard}>
-          <Text style={styles.profileDesc} numberOfLines={2}>
-            Meditaciones con voz guiada para aquietar la mente y despertar la presencia interior.
+          <Text style={styles.profileDesc} numberOfLines={1}>
+            Voz guiada para aquietar la mente y despertar la presencia.
           </Text>
         </View>
 

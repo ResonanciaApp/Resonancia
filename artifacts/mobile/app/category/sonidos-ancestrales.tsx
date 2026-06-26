@@ -430,8 +430,8 @@ export default function SonidosAncestalesScreen() {
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
           <Text style={styles.profileTitle}>Ancestrales</Text>
-          <Text style={styles.profileDesc} numberOfLines={2}>
-            Instrumentos milenarios y tradiciones sonoras ancestrales para sanar, meditar y reconectar.
+          <Text style={styles.profileDesc} numberOfLines={1}>
+            Instrumentos milenarios para sanar, meditar y reconectar.
           </Text>
         </View>
 

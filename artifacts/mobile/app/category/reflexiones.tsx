@@ -379,8 +379,8 @@ export default function ReflexionesScreen() {
 
         {/* ── Description ── */}
         <View style={styles.profileCard}>
-          <Text style={styles.profileDesc} numberOfLines={2}>
-            Palabras, relatos y episodios que invitan a la contemplación — sabiduría e historias para el alma.
+          <Text style={styles.profileDesc} numberOfLines={1}>
+            Relatos y episodios que invitan a la contemplación del alma.
           </Text>
         </View>
 

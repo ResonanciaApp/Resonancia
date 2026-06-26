@@ -402,8 +402,8 @@ export default function MusicaSonidosScreen() {
 
         {/* ── Description ── */}
         <View style={styles.profileCard}>
-          <Text style={styles.profileDesc} numberOfLines={2}>
-            Música ambient, tribal y étnica que acompaña el viaje interior — del silencio a la expansión.
+          <Text style={styles.profileDesc} numberOfLines={1}>
+            Música ambient y tribal para el viaje interior.
           </Text>
         </View>
 
