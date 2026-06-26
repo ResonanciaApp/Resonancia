@@ -376,7 +376,7 @@ export default function SonidosAncestalesScreen() {
         <Text style={styles.headerTitle}>Ancestrales</Text>
         <GhostPill>
           <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-instrumentos" as never)}>
-            <TibetanBowlIcon size={20} color="#fff" />
+            <TibetanBowlIcon size={23} color="#fff" />
           </Pressable>
           <View style={styles.headerDivider} />
           <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
