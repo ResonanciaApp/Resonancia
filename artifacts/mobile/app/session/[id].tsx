@@ -2,10 +2,11 @@ import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Image } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import {
+  Animated,
   Dimensions,
   Platform,
   Pressable,
@@ -55,6 +56,15 @@ export default function SessionDetailScreen() {
   const categoryPill = isAncestral ? "Ancestral" : isGuiada ? "Meditación" : isReflexion ? "Reflexión" : null;
   const categoryIcon: string = isAncestral ? "headphones" : isGuiada ? "moon" : "book-open";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
+
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const STICKY_START = (HEADER_H + topPad) * 0.6;
+  const STICKY_END   = (HEADER_H + topPad) * 0.8;
+  const stickyOpacity = scrollY.interpolate({
+    inputRange: [STICKY_START, STICKY_END],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
   const fav = localFav !== null ? localFav : isFavorite(session.id);
   const isCurrentlyPlaying = currentSession?.id === session.id && isPlaying;
 
@@ -123,10 +133,15 @@ export default function SessionDetailScreen() {
       <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
       <StatusBar barStyle="light-content" />
 
-      <ScrollView
+      <Animated.ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 110 + bottomPad }}
         showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
       >
         {/* ── Hero image ──────────────────────────────────────────────────── */}
         <View style={[styles.hero, { height: HEADER_H + topPad }]}>
@@ -278,7 +293,20 @@ export default function SessionDetailScreen() {
             </View>
           )}
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
+
+      {/* ── Sticky header (aparece al scrollear) ─────────────────────────── */}
+      <Animated.View
+        pointerEvents="box-none"
+        style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity }]}
+      >
+        <LinearGradient colors={["#1B060F", "transparent"]} style={StyleSheet.absoluteFill} />
+        <Pressable onPress={() => router.back()} style={[styles.navBtn, { backgroundColor: "rgba(24,17,12,0.5)" }]}>
+          <Feather name="arrow-left" size={20} color="#FFF" />
+        </Pressable>
+        <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
+        <View style={{ width: 36 }} />
+      </Animated.View>
 
       {/* ── Sticky "Escuchar ahora" ──────────────────────────────────────── */}
       <View style={[styles.stickyPlay, { paddingBottom: bottomPad + 10 }]}>
@@ -469,6 +497,27 @@ const styles = StyleSheet.create({
   relatedAuthorRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   relatedAuthorAvatar: { width: 18, height: 18, borderRadius: 9 },
   relatedCardSub: { fontSize: 12 },
+
+  // Sticky header
+  stickyHeader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    gap: 12,
+    zIndex: 10,
+  },
+  stickyTitle: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#FFFFFF",
+    textAlign: "center",
+  },
 
   // Sticky play
   stickyPlay: {
