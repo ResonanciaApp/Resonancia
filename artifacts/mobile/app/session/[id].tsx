@@ -34,7 +34,7 @@ function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: obje
 
   function handlePressIn() {
     Animated.parallel([
-      Animated.timing(scale,  { toValue: 1.65, duration: 160, easing: Easing.out(Easing.back(1.5)), useNativeDriver: true }),
+      Animated.timing(scale,  { toValue: 1.32, duration: 160, easing: Easing.out(Easing.back(1.5)), useNativeDriver: true }),
       Animated.timing(bright, { toValue: 1,    duration: 160, easing: Easing.out(Easing.quad),       useNativeDriver: true }),
     ]).start();
   }
