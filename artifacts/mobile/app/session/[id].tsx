@@ -242,10 +242,9 @@ export default function SessionDetailScreen() {
                         {s.title}
                       </Text>
                       <Text style={[styles.relatedCardSub, { color: colors.mutedForeground }]} numberOfLines={1}>
-                        {s.subtitle} · {s.durationLabel}
+                        {getGuide(s.guideIds?.[0] ?? s.guideId ?? undefined).name}
                       </Text>
                     </View>
-                    <Feather name="chevron-right" size={16} color={colors.mutedForeground} style={{ marginRight: 4 }} />
                   </Pressable>
                 ))}
               </View>
