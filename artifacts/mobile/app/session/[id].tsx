@@ -90,12 +90,14 @@ export default function SessionDetailScreen() {
   };
 
   // ── Autor de la sesión (guiador o artista según categoría) ──────────────────
-  const guide = isGuiada ? getGuide(session.guideId) : undefined;
-  const artist = isMusica ? getArtist(session.artistId) : undefined;
-  const author = guide
-    ? { name: guide.name, photo: guide.photo, country: guide.country, bio: guide.bio, profilePath: `/guiador/${guide.id}` as const }
-    : artist
-    ? { name: artist.name, photo: artist.photo, country: artist.country, bio: artist.bio, profilePath: `/artista/${artist.id}` as const }
+  // isMusica → artista (fallback "resonancia"); isGuiada → guiador (fallback "casa-cuenco")
+  // resto (ancestral, podcast, etc.) → guiador fallback (casa-cuenco)
+  const _artist = isMusica ? getArtist(session.artistId) : undefined;
+  const _guide  = !isMusica ? getGuide(isGuiada ? session.guideId : undefined) : undefined;
+  const author = _artist
+    ? { name: _artist.name, photo: _artist.photo, country: _artist.country, bio: _artist.bio, profilePath: `/artista/${_artist.id}` }
+    : _guide
+    ? { name: _guide.name, photo: _guide.photo, country: _guide.country, bio: _guide.bio, profilePath: `/guiador/${_guide.id}` }
     : undefined;
 
   return (
