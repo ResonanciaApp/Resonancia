@@ -321,6 +321,7 @@ export default function ReflexionesScreen() {
   const [selectedSession,   setSelectedSession]   = useState<Session|null>(null);
   const [playlistSessionId, setPlaylistSessionId] = useState<string|null>(null);
   const [chipsSticky, setChipsSticky] = useState(false);
+  const [headerH, setHeaderH] = useState(topPad + 60);
   const chipsTriggerRef = useRef<number>(9999);
   const prevStickyRef   = useRef(false);
 
@@ -367,7 +368,7 @@ export default function ReflexionesScreen() {
       <LinearGradient colors={["#0A0F20","#060A14"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
 
       {/* ── Sticky header ── */}
-      <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>
+      <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]} onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}>
         <GhostPill>
           <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
             <Feather name="arrow-left" size={22} color="#fff" />
@@ -383,7 +384,7 @@ export default function ReflexionesScreen() {
 
       <View
         pointerEvents={chipsSticky ? "auto" : "none"}
-        style={[styles.stickyChipsBar, { top: topPad + 60, backgroundColor: "#060A14", opacity: chipsSticky ? 1 : 0 }]}
+        style={[styles.stickyChipsBar, { top: headerH, backgroundColor: "#060A14", opacity: chipsSticky ? 1 : 0 }]}
       >
         <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
         <LinearGradient colors={["rgba(0,0,0,0.12)", "transparent"]} style={styles.dividerShadow} pointerEvents="none" />
