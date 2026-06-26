@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
   authorLink: { fontSize: 14, fontWeight: "700" },
 
   blockTitle: {
-    fontSize: 16,
+    fontSize: 21,
     fontWeight: "700",
     letterSpacing: 0.3,
     marginBottom: 14,
