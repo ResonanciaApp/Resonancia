@@ -392,6 +392,11 @@ export default function SonidosAncestalesScreen() {
     <View style={styles.root}>
       <LinearGradient colors={["#2E0510","#160108"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
 
+      {/* Hero image — fija detrás del ScrollView; sangra 150px arriba para cubrir el rebote */}
+      <Animated.View style={[styles.heroBg, { transform: [{ scale: heroScale }] }]}>
+        <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="top" />
+      </Animated.View>
+
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
@@ -411,9 +416,6 @@ export default function SonidosAncestalesScreen() {
 
         {/* ── Hero banner ── */}
         <View style={styles.heroArea}>
-          <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ scale: heroScale }] }]}>
-            <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="top" />
-          </Animated.View>
           <LinearGradient
             colors={["transparent", "rgba(0,0,0,0.28)", "rgba(0,0,0,0.60)"]}
             locations={[0.50, 0.80, 1]}
@@ -517,7 +519,8 @@ const styles = StyleSheet.create({
   headerDivider: { width: StyleSheet.hairlineWidth, height: 18, backgroundColor: "rgba(255,255,255,0.18)" },
 
   /* ── Hero ── */
-  heroArea: { height: 280, position: "relative", overflow: "hidden" },
+  heroBg: { position: "absolute", top: -150, left: 0, right: 0, height: 430, overflow: "hidden" },
+  heroArea: { height: 280, position: "relative" },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
   heroOverlayRight: { position: "absolute", right: H_PAD, zIndex: 10 },
   heroIconFloat: {
