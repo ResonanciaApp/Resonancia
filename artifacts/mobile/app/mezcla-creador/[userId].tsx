@@ -84,20 +84,30 @@ export default function CreatorProfileScreen() {
 
         {/* Perfil */}
         <View style={styles.profile}>
-          {avatar ? (
-            <ExpoImage
-              source={{ uri: avatar }}
-              style={[styles.avatar, { borderColor: colors.border }]}
-              contentFit="cover"
-            />
-          ) : (
-            <View style={[styles.avatar, { backgroundColor: "rgba(74,12,12,0.35)", borderColor: colors.border }]}>
-              <Text style={[styles.avatarTxt, { color: GOLD }]}>{initial}</Text>
-            </View>
-          )}
-          <Text style={[styles.name, { color: colors.foreground }]} numberOfLines={1}>
-            {displayName}
-          </Text>
+          <Pressable
+            onPress={() => router.push(`/usuario/${authorId}` as never)}
+            style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+          >
+            {avatar ? (
+              <ExpoImage
+                source={{ uri: avatar }}
+                style={[styles.avatar, { borderColor: colors.border }]}
+                contentFit="cover"
+              />
+            ) : (
+              <View style={[styles.avatar, { backgroundColor: "rgba(74,12,12,0.35)", borderColor: colors.border }]}>
+                <Text style={[styles.avatarTxt, { color: GOLD }]}>{initial}</Text>
+              </View>
+            )}
+          </Pressable>
+          <Pressable
+            onPress={() => router.push(`/usuario/${authorId}` as never)}
+            style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+          >
+            <Text style={[styles.name, { color: colors.foreground }]} numberOfLines={1}>
+              {displayName}
+            </Text>
+          </Pressable>
           <Text style={[styles.stats, { color: colors.mutedForeground }]}>
             {mixes.length} mezcla{mixes.length !== 1 ? "s" : ""}
             {totalLikes > 0 ? ` · ${totalLikes} me gusta` : ""}
