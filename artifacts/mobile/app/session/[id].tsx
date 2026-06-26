@@ -51,6 +51,9 @@ export default function SessionDetailScreen() {
   // Las sesiones de Música tendrán su propia pantalla de detalle.
   const isGuiada = session.categoryId === "meditaciones-guiadas";
   const isAncestral = session.categoryId === "sonidos-ancestrales";
+  const isReflexion = session.categoryId === "reflexiones";
+  const categoryPill = isAncestral ? "Ancestral" : isGuiada ? "Meditación" : isReflexion ? "Reflexión" : null;
+  const categoryIcon: string = isAncestral ? "headphones" : isGuiada ? "moon" : "book-open";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const fav = localFav !== null ? localFav : isFavorite(session.id);
   const isCurrentlyPlaying = currentSession?.id === session.id && isPlaying;
@@ -138,16 +141,24 @@ export default function SessionDetailScreen() {
         {/* ── Content ─────────────────────────────────────────────────────── */}
         <View style={styles.content}>
 
-          {/* Meta row: duration */}
-          <View style={styles.metaRow}>
-            <View style={styles.metaItem}>
-              <Feather name="clock" size={13} color={colors.mutedForeground} />
-              <Text style={[styles.metaText, { color: colors.mutedForeground }]}>{session.durationLabel}</Text>
-            </View>
-          </View>
+          {/* Category pill */}
+          {categoryPill && (
+            <LinearGradient
+              colors={["#FFFFFF", "#FFF8EE"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.categoryPill}
+            >
+              <Text style={styles.categoryPillText}>{categoryPill}</Text>
+            </LinearGradient>
+          )}
 
-          {/* Title */}
-          <Text style={[styles.title, { color: colors.foreground }]}>{session.title}</Text>
+          {/* Title row */}
+          <View style={styles.titleRow}>
+            <Feather name={categoryIcon as never} size={18} color="#E07A2B" />
+            <Text style={[styles.title, { color: colors.foreground }]}>{session.title}</Text>
+            <Text style={styles.durationText}>{session.durationLabel}</Text>
+          </View>
 
           {/* Description */}
           <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]}>
@@ -328,28 +339,45 @@ const styles = StyleSheet.create({
   },
   badgeText: { fontSize: 9, letterSpacing: 1.5, fontWeight: "700" },
 
-  // Title
+  // Category pill
+  categoryPill: {
+    alignSelf: "center",
+    height: 25,
+    borderRadius: 12.5,
+    paddingHorizontal: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 25,
+    marginBottom: 10,
+  },
+  categoryPillText: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#4A0C0C",
+    letterSpacing: 0.8,
+  },
+
+  // Title row
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingHorizontal: 16,
+    marginBottom: 12,
+    flexWrap: "wrap",
+  },
   title: {
     fontSize: 28,
     fontWeight: "700",
     lineHeight: 34,
-    marginTop: 5,
-    marginBottom: 12,
     textAlign: "center",
   },
-
-  // Meta
-  metaRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 14,
-    marginTop: 25,
-    marginBottom: 13,
-    flexWrap: "wrap",
+  durationText: {
+    fontSize: 13,
+    fontWeight: "400",
+    color: "#4A0C0C",
   },
-  metaItem: { flexDirection: "row", alignItems: "center", gap: 4 },
-  metaText: { fontSize: 13 },
 
   // Description
   description: {
