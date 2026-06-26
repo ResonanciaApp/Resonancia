@@ -330,6 +330,15 @@ export default function SonidosAncestalesScreen() {
   const sessions   = useMemo(()=>applySort(getSessionsForTab(activeTab),sort,playCounts),[activeTab,sort,playCounts,version]);
   const sortLabel  = sort==="recientes"?"Escuchadas recientemente":sort==="nuevas"?"Nuevas sesiones":"Las más escuchadas";
 
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const HERO_H  = 220;
+  const stickyOpacity = scrollY.interpolate({
+    inputRange: [HERO_H * 0.55, HERO_H * 0.90],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
+  const [stickyActive, setStickyActive] = useState(false);
+
   const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   useEffect(() => { setVisibleCount(PAGE_SIZE); }, [sessions]);
@@ -378,30 +387,16 @@ export default function SonidosAncestalesScreen() {
     <View style={styles.root}>
       <LinearGradient colors={["#2E0510","#160108"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
 
-      {/* ── Sticky header ── */}
-      <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>
-        <GhostPill>
-          <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
-            <Feather name="arrow-left" size={22} color="#fff" />
-          </Pressable>
-        </GhostPill>
-        <Text style={styles.headerTitle}>Ancestrales</Text>
-        <GhostPill>
-          <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-instrumentos" as never)}>
-            <TibetanBowlIcon size={23} color="#fff" />
-          </Pressable>
-          <View style={styles.headerDivider} />
-          <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
-            <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
-          </Pressable>
-        </GhostPill>
-      </View>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
         onScroll={(e) => {
+          const y = e.nativeEvent.contentOffset.y;
+          scrollY.setValue(y);
+          const active = y > HERO_H * 0.55;
+          if (active !== stickyActive) setStickyActive(active);
           const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
           if (hasMore && contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
             setVisibleCount((c) => Math.min(c + PAGE_SIZE, sessions.length));
@@ -417,6 +412,26 @@ export default function SonidosAncestalesScreen() {
             locations={[0.50, 0.80, 1]}
             style={StyleSheet.absoluteFill}
           />
+          {/* Flecha atrás flotante */}
+          <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
+            <GhostPill>
+              <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
+                <Feather name="arrow-left" size={22} color="#fff" />
+              </Pressable>
+            </GhostPill>
+          </View>
+          {/* Pildora doble flotante */}
+          <View style={[styles.heroOverlayRight, { top: topPad + 8 }]}>
+            <GhostPill>
+              <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-instrumentos" as never)}>
+                <TibetanBowlIcon size={23} color="#fff" />
+              </Pressable>
+              <View style={styles.headerDivider} />
+              <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
+                <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
+              </Pressable>
+            </GhostPill>
+          </View>
           <View style={styles.heroIconFloat}>
             <View style={styles.heroIconCircle}>
               <Feather name="music" size={32} color={GOLD} />
@@ -424,8 +439,9 @@ export default function SonidosAncestalesScreen() {
           </View>
         </View>
 
-        {/* ── Description ── */}
+        {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
+          <Text style={styles.profileTitle}>Ancestrales</Text>
           <Text style={styles.profileDesc} numberOfLines={2}>
             Instrumentos milenarios y tradiciones sonoras ancestrales para sanar, meditar y reconectar.
           </Text>
@@ -475,6 +491,25 @@ export default function SonidosAncestalesScreen() {
         onPlaylist={() => { if (selectedSession) setPlaylistSessionId(selectedSession.id); setSelectedSession(null); }}
         isFavorite={isFavorite} onToggleFavorite={toggleFavorite} />
       <AddToPlaylistSheet visible={playlistSessionId !== null} sessionId={playlistSessionId ?? ""} onClose={() => setPlaylistSessionId(null)} />
+
+      {/* ── Sticky header (aparece con scroll) ── */}
+      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity }]} pointerEvents={stickyActive ? "auto" : "none"}>
+        <GhostPill>
+          <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
+            <Feather name="arrow-left" size={22} color="#fff" />
+          </Pressable>
+        </GhostPill>
+        <Text style={styles.headerTitle}>Ancestrales</Text>
+        <GhostPill>
+          <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-instrumentos" as never)}>
+            <TibetanBowlIcon size={23} color="#fff" />
+          </Pressable>
+          <View style={styles.headerDivider} />
+          <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
+            <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
+          </Pressable>
+        </GhostPill>
+      </Animated.View>
     </View>
   );
 }
@@ -482,8 +517,13 @@ export default function SonidosAncestalesScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#160108" },
 
-  /* ── Sticky header ── */
+  /* ── Sticky header (aparece con scroll) ── */
   stickyHeader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 20,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -497,6 +537,8 @@ const styles = StyleSheet.create({
 
   /* ── Hero ── */
   heroArea: { height: 220, position: "relative" },
+  heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
+  heroOverlayRight: { position: "absolute", right: H_PAD, zIndex: 10 },
   heroIconFloat: {
     position: "absolute",
     bottom: -6,
