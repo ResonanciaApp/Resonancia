@@ -29,43 +29,38 @@ const { width } = Dimensions.get("window");
 const HEADER_H = 300;
 
 function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: object }) {
-  const glow = useRef(new Animated.Value(0)).current;
+  const scale   = useRef(new Animated.Value(1)).current;
+  const bright  = useRef(new Animated.Value(0)).current;
 
   function handlePress() {
-    glow.setValue(0);
-    Animated.sequence([
-      Animated.timing(glow, { toValue: 1, duration: 250, easing: Easing.out(Easing.quad), useNativeDriver: true }),
-      Animated.timing(glow, { toValue: 0, duration: 700, easing: Easing.in(Easing.quad), useNativeDriver: true }),
+    Animated.parallel([
+      Animated.sequence([
+        Animated.timing(scale,  { toValue: 1.18, duration: 140, easing: Easing.out(Easing.back(2)), useNativeDriver: true }),
+        Animated.spring(scale,  { toValue: 1,    useNativeDriver: true, friction: 5, tension: 120 }),
+      ]),
+      Animated.sequence([
+        Animated.timing(bright, { toValue: 1, duration: 140, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+        Animated.timing(bright, { toValue: 0, duration: 500, easing: Easing.in(Easing.quad),  useNativeDriver: true }),
+      ]),
     ]).start();
     onPress();
   }
 
   return (
-    <Pressable onPress={handlePress} style={pillStyle}>
-      {/* Flash interior */}
-      <Animated.View
-        pointerEvents="none"
-        style={{
-          ...StyleSheet.absoluteFillObject,
-          borderRadius: 19,
-          backgroundColor: "rgba(255,255,255,0.22)",
-          opacity: glow,
-        }}
-      />
-      {/* Anillo interior animado */}
-      <Animated.View
-        pointerEvents="none"
-        style={{
-          position: "absolute",
-          top: 0, left: 0, right: 0, bottom: 0,
-          borderRadius: 19,
-          borderWidth: 2,
-          borderColor: "rgba(255,255,255,0.95)",
-          opacity: glow,
-        }}
-      />
-      <Feather name="arrow-left" size={22} color="#FFF" />
-    </Pressable>
+    <Animated.View style={{ transform: [{ scale }] }}>
+      <Pressable onPress={handlePress} style={pillStyle}>
+        <Animated.View
+          pointerEvents="none"
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            borderRadius: 19,
+            backgroundColor: "rgba(255,255,255,0.28)",
+            opacity: bright,
+          }}
+        />
+        <Feather name="arrow-left" size={22} color="#FFF" />
+      </Pressable>
+    </Animated.View>
   );
 }
 
