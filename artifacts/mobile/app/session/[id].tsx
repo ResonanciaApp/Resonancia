@@ -34,29 +34,40 @@ function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: obje
   function handlePress() {
     glow.setValue(0);
     Animated.sequence([
-      Animated.timing(glow, { toValue: 1, duration: 300, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+      Animated.timing(glow, { toValue: 1, duration: 250, easing: Easing.out(Easing.quad), useNativeDriver: true }),
       Animated.timing(glow, { toValue: 0, duration: 700, easing: Easing.in(Easing.quad), useNativeDriver: true }),
     ]).start();
     onPress();
   }
 
   return (
-    <Pressable onPress={handlePress} style={pillStyle}>
+    <View style={{ position: "relative" }}>
+      {/* Halo exterior animado */}
       <Animated.View
         pointerEvents="none"
         style={{
           position: "absolute",
-          top: -6, left: -6, right: -6, bottom: -6,
-          borderRadius: 25,
+          top: -7, left: -7, right: -7, bottom: -7,
+          borderRadius: 26,
+          borderWidth: 1.5,
+          borderColor: "rgba(255,255,255,0.9)",
           opacity: glow,
-          shadowColor: "#FFFFFF",
-          shadowOffset: { width: 0, height: 0 },
-          shadowOpacity: 1,
-          shadowRadius: 12,
         }}
       />
-      <Feather name="arrow-left" size={22} color="#FFF" />
-    </Pressable>
+      <Pressable onPress={handlePress} style={pillStyle}>
+        {/* Flash interior */}
+        <Animated.View
+          pointerEvents="none"
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            borderRadius: 19,
+            backgroundColor: "rgba(255,255,255,0.18)",
+            opacity: glow,
+          }}
+        />
+        <Feather name="arrow-left" size={22} color="#FFF" />
+      </Pressable>
+    </View>
   );
 }
 
