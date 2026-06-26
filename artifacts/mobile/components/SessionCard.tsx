@@ -66,7 +66,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
           },
         ]}
       >
-        <View style={{ width: 65, height: 64 }}>
+        <View style={{ width: 129, height: 94 }}>
           <Image source={session.image} style={styles.hImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           {locked && <LockStar />}
         </View>
@@ -158,13 +158,13 @@ const styles = StyleSheet.create({
   hRow: {
     flexDirection: "row",
     alignItems: "center",
-    height: 64,
+    height: 94,
     marginBottom: 7,
   },
   hImage: {
-    width: 65,
-    height: 64,
-    borderRadius: 6,
+    width: 129,
+    height: 94,
+    borderRadius: 8,
   },
   hGradient: {
     position: "absolute",
@@ -192,9 +192,9 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   hTitle: {
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: "700",
-    lineHeight: 17,
+    lineHeight: 21,
     marginBottom: 3,
   },
   hMeta: {
