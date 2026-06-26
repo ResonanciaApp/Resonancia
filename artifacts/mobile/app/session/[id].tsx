@@ -23,6 +23,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { CATEGORIES } from "@/data/categories";
 import { getSessionById, SESSIONS } from "@/data/sessions";
 import { getGuide } from "@/data/guides";
+import { getArtist } from "@/data/artists";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
@@ -88,8 +89,14 @@ export default function SessionDetailScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
-  // ── Guiador (solo meditaciones guiadas) ─────────────────────────────────────
+  // ── Autor de la sesión (guiador o artista según categoría) ──────────────────
   const guide = isGuiada ? getGuide(session.guideId) : undefined;
+  const artist = isMusica ? getArtist(session.artistId) : undefined;
+  const author = guide
+    ? { name: guide.name, photo: guide.photo, country: guide.country, bio: guide.bio, profilePath: `/guiador/${guide.id}` as const }
+    : artist
+    ? { name: artist.name, photo: artist.photo, country: artist.country, bio: artist.bio, profilePath: `/artista/${artist.id}` as const }
+    : undefined;
 
   return (
     <View style={styles.root}>
@@ -210,29 +217,32 @@ export default function SessionDetailScreen() {
             </View>
           )}
 
-          {/* ── Sobre la voz guía ────────────────────────────────────────── */}
-          {guide && (
-            <View style={styles.guideBlock}>
-              <Text style={[styles.blockTitle, { color: colors.foreground }]}>Sobre la voz guía</Text>
+          {/* ── Tarjeta del autor ─────────────────────────────────────────── */}
+          {author && (
+            <View style={styles.authorBlock}>
+              <Image
+                source={author.photo as never}
+                style={styles.authorAvatar}
+                contentFit="cover"
+                placeholder={BLUR_PLACEHOLDER}
+                transition={IMAGE_TRANSITION}
+              />
+              <Text style={[styles.authorName, { color: colors.foreground }]}>{author.name}</Text>
+              <View style={styles.authorCountryRow}>
+                <Feather name="map-pin" size={11} color={colors.mutedForeground} />
+                <Text style={[styles.authorCountryText, { color: colors.mutedForeground }]}>{author.country}</Text>
+              </View>
+              <Text style={[styles.authorBio, { color: colors.mutedForeground }]} numberOfLines={2}>
+                {author.bio}
+              </Text>
               <Pressable
-                onPress={() => router.push(`/guiador/${guide.id}` as never)}
-                style={({ pressed }) => [styles.guideCard, { opacity: pressed ? 0.8 : 1 }]}
+                onPress={() => router.push(author.profilePath as never)}
+                style={({ pressed }) => [styles.authorBtn, { opacity: pressed ? 0.75 : 1, borderColor: "rgba(212,175,55,0.25)" }]}
               >
-                <Image
-                  source={guide.photo as never}
-                  style={styles.guideAvatar}
-                  contentFit="cover"
-                  placeholder={BLUR_PLACEHOLDER}
-                  transition={IMAGE_TRANSITION}
-                />
-                <View style={styles.guideMeta}>
-                  <Text style={[styles.guideName, { color: colors.foreground }]}>{guide.name}</Text>
-                  <View style={styles.guideCountryRow}>
-                    <Feather name="map-pin" size={11} color={colors.mutedForeground} />
-                    <Text style={[styles.guideCountry, { color: colors.mutedForeground }]}>{guide.country}</Text>
-                  </View>
-                </View>
-                <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+                <Text style={[styles.authorBtnText, { color: colors.primary }]}>
+                  Más sobre {author.name}
+                </Text>
+                <Feather name="chevron-right" size={15} color={colors.primary} />
               </Pressable>
             </View>
           )}
@@ -385,30 +395,39 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
 
-  // Guide
-  guideBlock: { marginBottom: 28 },
-  guideCard: {
+  // Author card
+  authorBlock: {
+    alignItems: "center",
+    marginBottom: 28,
+    paddingVertical: 24,
+    paddingHorizontal: 20,
+    backgroundColor: "rgba(74,12,12,0.18)",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.12)",
+  },
+  authorAvatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 12,
+    borderWidth: 2,
+    borderColor: "rgba(212,175,55,0.3)",
+  },
+  authorName: { fontSize: 17, fontWeight: "700", marginBottom: 4, textAlign: "center" },
+  authorCountryRow: { flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 10 },
+  authorCountryText: { fontSize: 12 },
+  authorBio: { fontSize: 13, lineHeight: 19, textAlign: "center", marginBottom: 16 },
+  authorBtn: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 14,
-    paddingVertical: 4,
+    gap: 4,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    borderWidth: 1,
   },
-  guideAvatar: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  guideInitials: {
-    fontSize: 18,
-    fontWeight: "700",
-    letterSpacing: 0.5,
-  },
-  guideMeta: { flex: 1 },
-  guideName: { fontSize: 15, fontWeight: "600", marginBottom: 4 },
-  guideCountryRow: { flexDirection: "row", alignItems: "center", gap: 4 },
-  guideCountry: { fontSize: 12 },
+  authorBtnText: { fontSize: 13, fontWeight: "600" },
 
   blockTitle: {
     fontSize: 16,
