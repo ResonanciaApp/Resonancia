@@ -70,6 +70,12 @@ export default function SessionDetailScreen() {
     router.push("/player" as never);
   };
 
+  const handleDownload = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    // TODO: descarga real cuando el backend soporte offline
+    alert("Próximamente podrás descargar esta sesión para escucharla sin conexión.");
+  };
+
   const handleShare = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     await Share.share({
@@ -161,6 +167,14 @@ export default function SessionDetailScreen() {
             >
               <Feather name="heart" size={20} color={fav ? colors.primary : colors.mutedForeground} />
               <Text style={[styles.actionLabel, { color: fav ? colors.primary : colors.mutedForeground }]}>Guardar</Text>
+            </Pressable>
+
+            <Pressable
+              onPress={handleDownload}
+              style={({ pressed }) => [styles.actionCard, { backgroundColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.8 : 1 }]}
+            >
+              <Feather name="download" size={20} color={colors.mutedForeground} />
+              <Text style={[styles.actionLabel, { color: colors.mutedForeground }]}>Descargar</Text>
             </Pressable>
 
             <Pressable
