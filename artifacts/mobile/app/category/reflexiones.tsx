@@ -386,7 +386,7 @@ export default function ReflexionesScreen() {
         pointerEvents={chipsSticky ? "auto" : "none"}
         style={[styles.stickyChipsBar, { top: headerH, opacity: chipsSticky ? 1 : 0 }]}
       >
-        <LinearGradient colors={["#0A0F20", "#060A14"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#0A0F20" }]} />
         <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
         <LinearGradient colors={["rgba(0,0,0,0.12)", "transparent"]} style={styles.dividerShadow} pointerEvents="none" />
       </View>

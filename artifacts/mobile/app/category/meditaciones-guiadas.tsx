@@ -408,7 +408,7 @@ export default function MeditacionesGuiadasScreen() {
         pointerEvents={chipsSticky ? "auto" : "none"}
         style={[styles.stickyChipsBar, { top: headerH, opacity: chipsSticky ? 1 : 0 }]}
       >
-        <LinearGradient colors={["#1A0F2E", "#0D0A1A"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#1A0F2E" }]} />
         <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
         <LinearGradient colors={["rgba(0,0,0,0.12)", "transparent"]} style={styles.dividerShadow} pointerEvents="none" />
       </View>
