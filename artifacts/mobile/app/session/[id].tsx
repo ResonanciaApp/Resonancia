@@ -525,8 +525,12 @@ const styles = StyleSheet.create({
 
   // Sticky play
   stickyPlay: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
     paddingHorizontal: 20,
-    paddingTop: 16,
+    paddingTop: 24,
   },
   playBtn: {
     alignItems: "center",
