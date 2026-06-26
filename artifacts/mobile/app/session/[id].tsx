@@ -146,8 +146,8 @@ export default function SessionDetailScreen() {
         <View style={[styles.hero, { height: HEADER_H + topPad }]}>
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <LinearGradient
-            colors={["rgba(0,0,0,0.25)", "transparent", "#1B060F"]}
-            locations={[0, 0.45, 1]}
+            colors={["rgba(46,5,16,0.15)", "transparent", "#2E0510"]}
+            locations={[0, 0.38, 1]}
             style={StyleSheet.absoluteFill}
           />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
