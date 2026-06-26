@@ -742,7 +742,7 @@ export default function MezcladorScreen() {
                       accessibilityRole="button"
                       accessibilityLabel="Filtros del Mezclador"
                     >
-                      <MaterialCommunityIcons name="filter-variant" size={22} color="#FAF0EE" />
+                      <MaterialCommunityIcons name="filter-variant" size={26} color="#FAF0EE" />
                     </Pressable>
                   </GhostPill>
                 </View>
