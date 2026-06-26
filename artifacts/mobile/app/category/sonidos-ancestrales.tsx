@@ -241,7 +241,7 @@ function CategoryCard({
 }
 
 const ac = StyleSheet.create({
-  hRow:{ flexDirection:"row", alignItems:"center", gap:12, paddingVertical:6 },
+  hRow:{ flexDirection:"row", alignItems:"center", gap:12, paddingVertical:6, marginBottom:5 },
   hImgWrap:{ width:129, height:94, borderRadius:8, overflow:"hidden" },
   hImgOverlay:{ ...StyleSheet.absoluteFillObject, backgroundColor:"rgba(0,0,0,0.18)" },
   hImage:  { width:129, height:94 },
