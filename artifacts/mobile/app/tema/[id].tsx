@@ -103,16 +103,9 @@ export default function TemaScreen() {
         <Pressable
           onPress={() => router.back()}
           hitSlop={10}
-          style={({ pressed }) => [
-            styles.backBtn,
-            {
-              backgroundColor: colors.card,
-              borderColor: "rgba(212,175,55,0.20)",
-              opacity: pressed ? 0.7 : 1,
-            },
-          ]}
+          style={({ pressed }) => [styles.backBtn, { opacity: pressed ? 0.7 : 1 }]}
         >
-          <Feather name="arrow-left" size={18} color={colors.foreground} />
+          <Feather name="arrow-left" size={16} color="#FFFFFF" />
         </Pressable>
       </View>
 
@@ -243,12 +236,14 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   backBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    borderWidth: 1,
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 50,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.12)",
   },
 
   hero: {
