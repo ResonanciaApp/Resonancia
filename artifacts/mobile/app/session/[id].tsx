@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
   content: { paddingHorizontal: 20 },
 
   // Badges
-  badges: { flexDirection: "row", gap: 8, marginBottom: 12 },
+  badges: { flexDirection: "row", gap: 8, marginBottom: 12, justifyContent: "center" },
   badge: {
     paddingHorizontal: 10,
     paddingVertical: 4,
@@ -401,12 +401,14 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     lineHeight: 34,
     marginBottom: 12,
+    textAlign: "center",
   },
 
   // Meta
   metaRow: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     gap: 14,
     marginBottom: 18,
     flexWrap: "wrap",
@@ -419,6 +421,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 25,
     marginBottom: 24,
+    textAlign: "center",
   },
 
   // Theme tag chips
