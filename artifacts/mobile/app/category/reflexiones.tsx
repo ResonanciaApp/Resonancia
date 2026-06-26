@@ -388,7 +388,6 @@ export default function ReflexionesScreen() {
       >
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "#0A0F20" }]} />
         <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
-        <LinearGradient colors={["rgba(0,0,0,0.12)", "transparent"]} style={styles.dividerShadow} pointerEvents="none" />
       </View>
 
       <ScrollView

@@ -410,7 +410,6 @@ export default function MeditacionesGuiadasScreen() {
       >
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "#1A0F2E" }]} />
         <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
-        <LinearGradient colors={["rgba(0,0,0,0.12)", "transparent"]} style={styles.dividerShadow} pointerEvents="none" />
       </View>
 
       <ScrollView

@@ -413,7 +413,6 @@ export default function MusicaSonidosScreen() {
       >
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "#081409" }]} />
         <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
-        <LinearGradient colors={["rgba(0,0,0,0.12)", "transparent"]} style={styles.dividerShadow} pointerEvents="none" />
       </View>
 
       <ScrollView
