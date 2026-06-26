@@ -8,6 +8,7 @@ import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder
 import {
   Animated,
   Dimensions,
+  Easing,
   Platform,
   Pressable,
   ScrollView,
@@ -26,6 +27,39 @@ import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
 const HEADER_H = 300;
+
+function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: object }) {
+  const glow = useRef(new Animated.Value(0)).current;
+
+  function handlePress() {
+    glow.setValue(0);
+    Animated.sequence([
+      Animated.timing(glow, { toValue: 1, duration: 300, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+      Animated.timing(glow, { toValue: 0, duration: 700, easing: Easing.in(Easing.quad), useNativeDriver: true }),
+    ]).start();
+    onPress();
+  }
+
+  return (
+    <Pressable onPress={handlePress} style={pillStyle}>
+      <Animated.View
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          top: -6, left: -6, right: -6, bottom: -6,
+          borderRadius: 25,
+          opacity: glow,
+          shadowColor: "#FFFFFF",
+          shadowOffset: { width: 0, height: 0 },
+          shadowOpacity: 1,
+          shadowRadius: 12,
+        }}
+      />
+      <Feather name="arrow-left" size={22} color="#FFF" />
+    </Pressable>
+  );
+}
+
 export default function SessionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
@@ -147,9 +181,7 @@ export default function SessionDetailScreen() {
         <View style={[styles.hero, { height: HEADER_H + topPad }]}>
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
-            <Pressable onPress={() => router.back()} style={styles.heroBackPill}>
-              <Feather name="arrow-left" size={22} color="#FFF" />
-            </Pressable>
+            <GlowPill onPress={() => router.back()} pillStyle={styles.heroBackPill} />
           </View>
         </View>
 
@@ -300,9 +332,7 @@ export default function SessionDetailScreen() {
         pointerEvents="box-none"
         style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: "#2E0510" }]}
       >
-        <Pressable onPress={() => router.back()} style={styles.stickyBackPill}>
-          <Feather name="arrow-left" size={22} color="#FFF" />
-        </Pressable>
+        <GlowPill onPress={() => router.back()} pillStyle={styles.stickyBackPill} />
         <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
         <View style={{ width: 36 }} />
       </Animated.View>
