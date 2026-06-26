@@ -105,7 +105,7 @@ export default function SessionDetailScreen() {
   const catBg = CATEGORY_BG[session.categoryId] ?? CATEGORY_BG["sonidos-ancestrales"];
   const categoryPill = isAncestral ? "Ancestral" : isGuiada ? "Meditación" : isReflexion ? "Reflexión"
     : isMusica ? (session.soundTag?.replace("Música ", "") ?? "Música") : null;
-  const categoryIcon: string = isAncestral ? "headphones" : isGuiada ? "moon" : isMusica ? "music" : "book-open";
+  const categoryIcon: string = "clock";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
 
   const scrollY = useRef(new Animated.Value(0)).current;
