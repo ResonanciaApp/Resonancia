@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
   },
 
   // Author section
-  authorSection: { marginBottom: 28 },
+  authorSection: { marginTop: 20, marginBottom: 28 },
   authorCard: { paddingVertical: 16 },
   authorCardDivider: {
     borderBottomWidth: StyleSheet.hairlineWidth,
