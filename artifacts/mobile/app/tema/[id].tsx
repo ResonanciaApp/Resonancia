@@ -1,10 +1,12 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
+import { GhostPill } from "@/components/GhostPill";
 import { router, useLocalSearchParams } from "expo-router";
 import { Image as ExpoImage } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState } from "react";
 import {
+  Alert,
   Animated,
   Platform,
   Pressable,
@@ -85,16 +87,23 @@ export default function TemaScreen() {
         pointerEvents="box-none"
       >
         <View style={styles.stickyInner} pointerEvents="box-none">
-          <Pressable
-            onPress={() => router.back()}
-            hitSlop={10}
-            style={({ pressed }) => [styles.ghostPill, { opacity: pressed ? 0.7 : 1 }]}
-          >
-            <Feather name="arrow-left" size={16} color="#FFFFFF" />
-          </Pressable>
+          <GhostPill>
+            <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
+              <Feather name="arrow-left" size={20} color="#FFFFFF" />
+            </Pressable>
+          </GhostPill>
           <Text style={[styles.stickyTitle, { color: colors.foreground }]} numberOfLines={1}>
             {tema.label}
           </Text>
+          <GhostPill>
+            <Pressable
+              hitSlop={10}
+              style={styles.headerBtn}
+              onPress={() => Alert.alert(tema.label, tema.description ?? "")}
+            >
+              <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
+            </Pressable>
+          </GhostPill>
         </View>
       </Animated.View>
 
@@ -207,26 +216,23 @@ const styles = StyleSheet.create({
   stickyInner: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: H_PAD,
     paddingBottom: 12,
     paddingTop: 10,
-    gap: 12,
   },
-  ghostPill: {
-    flexDirection: "row",
+  headerBtn: {
+    width: 38,
+    height: 38,
     alignItems: "center",
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 50,
-    backgroundColor: "rgba(255,255,255,0.08)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.12)",
-    flexShrink: 0,
+    justifyContent: "center",
   },
   stickyTitle: {
-    fontSize: 17,
+    fontSize: 22,
     fontWeight: "700",
     flex: 1,
+    textAlign: "center",
+    paddingHorizontal: 8,
   },
 
   // Floating back (always visible on hero)
