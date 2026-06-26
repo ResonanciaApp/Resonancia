@@ -230,7 +230,9 @@ function CategoryCard({
     if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
     router.push(`/session/${session.id}` as never);
   };
-  const author = session.guideId ? getGuide(session.guideId).name : getArtist(session.artistId).name;
+  const authorObj = session.guideId ? getGuide(session.guideId) : getArtist(session.artistId);
+  const author = authorObj.name;
+  const authorPhoto = authorObj.photo;
 
   if (horizontal) {
     const barW = previewProgress?.interpolate({inputRange:[0,1],outputRange:[0,70],extrapolate:"clamp"});
@@ -245,7 +247,12 @@ function CategoryCard({
         </View>
         <View style={ac.hContent}>
           <Text style={ac.hTitle} numberOfLines={2}>{session.title}</Text>
-          {!!author&&<Text style={ac.hAuthor} numberOfLines={1}>{author}</Text>}
+          {!!author&&(
+            <View style={ac.hAuthorRow}>
+              <Image source={authorPhoto} style={ac.hAuthorAvatar} contentFit="cover" />
+              <Text style={ac.hAuthor} numberOfLines={1}>{author}</Text>
+            </View>
+          )}
         </View>
       </Pressable>
     );
@@ -275,13 +282,15 @@ function CategoryCard({
 
 const ac = StyleSheet.create({
   hRow:{flexDirection:"row",alignItems:"center",gap:12,paddingVertical:6},
-  hImgWrap:{width:112,height:99,borderRadius:8,overflow:"hidden"},
-  hImage:{width:112,height:99},
+  hImgWrap:{width:134,height:119,borderRadius:8,overflow:"hidden"},
+  hImage:{width:134,height:119},
   hContent:{flex:1,justifyContent:"center",gap:2},
   hDuration:{fontSize:12,fontWeight:"500",color:"rgba(255,255,255,0.8)"},
   hDurLabel:{position:"absolute",bottom:6,left:8,fontSize:13,fontWeight:"700",color:"#fff",textShadowColor:"rgba(0,0,0,0.85)",textShadowOffset:{width:0,height:1},textShadowRadius:4},
   hTitle:{fontSize:16,fontWeight:"600",color:TEXT,lineHeight:21},
-  hAuthor:{fontSize:14,color:MUTED,marginTop:1},
+  hAuthor:{fontSize:14,color:MUTED,flex:1},
+  hAuthorRow:{flexDirection:"row",alignItems:"center",gap:6,marginTop:1},
+  hAuthorAvatar:{width:20,height:20,borderRadius:10},
   card:{gap:6},
   imgContainer:{width:"100%",aspectRatio:1,borderRadius:10,overflow:"hidden"},
   cardImage:{width:"100%",height:"100%"},
