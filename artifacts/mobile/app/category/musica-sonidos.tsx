@@ -240,6 +240,7 @@ function CategoryCard({
       <Pressable onPress={handlePress} onLongPress={onLongPress} style={({pressed})=>[ac.hRow,{opacity:pressed?0.8:1}]}>
         <View style={ac.hImgWrap}>
           <Image source={session.image} style={ac.hImage} contentFit="cover" />
+          <View style={ac.hImgOverlay} />
           {locked&&<View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
           <Text style={ac.hDurLabel}>{session.durationLabel}</Text>
           {hasAudio&&<Pressable onPress={onPreviewTap} hitSlop={6} style={ac.hPlayBtn}><Feather name={isPreviewPlaying?"pause":"play"} size={15} color="#fff" /></Pressable>}
@@ -283,6 +284,7 @@ function CategoryCard({
 const ac = StyleSheet.create({
   hRow:{flexDirection:"row",alignItems:"center",gap:12,paddingVertical:6},
   hImgWrap:{width:134,height:119,borderRadius:8,overflow:"hidden"},
+  hImgOverlay:{...StyleSheet.absoluteFillObject,backgroundColor:"rgba(0,0,0,0.18)"},
   hImage:{width:134,height:119},
   hContent:{flex:1,justifyContent:"center",gap:2},
   hDuration:{fontSize:12,fontWeight:"500",color:"rgba(255,255,255,0.8)"},
