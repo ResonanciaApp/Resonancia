@@ -196,7 +196,7 @@ export default function SessionDetailScreen() {
         <View style={[styles.hero, { height: HEADER_H + topPad }]}>
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
-            <GlowPill onPress={() => router.back()} pillStyle={[styles.heroBackPill, { backgroundColor: catBg.pillBg }]} />
+            <GlowPill onPress={() => router.back()} pillStyle={styles.heroBackPill} />
           </View>
         </View>
 
