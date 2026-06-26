@@ -92,6 +92,7 @@ export default function SessionDetailScreen() {
   const isGuiada = session.categoryId === "meditaciones-guiadas";
   const isAncestral = session.categoryId === "sonidos-ancestrales";
   const isReflexion = session.categoryId === "reflexiones";
+  const isMusica = session.categoryId === "musica-sonidos";
   const CATEGORY_BG: Record<string, {
     gradient: [string, string]; solid: string;
     pillBg: string; labelGradient: [string, string]; labelColor: string;
@@ -102,8 +103,9 @@ export default function SessionDetailScreen() {
     "musica-sonidos":       { gradient: ["#081409", "#030806"], solid: "#030806", pillBg: "#0D2010", labelGradient: ["#E8F5EA", "#D5EDD8"], labelColor: "#3A8A40" },
   };
   const catBg = CATEGORY_BG[session.categoryId] ?? CATEGORY_BG["sonidos-ancestrales"];
-  const categoryPill = isAncestral ? "Ancestral" : isGuiada ? "Meditación" : isReflexion ? "Reflexión" : null;
-  const categoryIcon: string = isAncestral ? "headphones" : isGuiada ? "moon" : "book-open";
+  const categoryPill = isAncestral ? "Ancestral" : isGuiada ? "Meditación" : isReflexion ? "Reflexión"
+    : isMusica ? (session.soundTag?.replace("Música ", "") ?? "Música") : null;
+  const categoryIcon: string = isAncestral ? "headphones" : isGuiada ? "moon" : isMusica ? "music" : "book-open";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
 
   const scrollY = useRef(new Animated.Value(0)).current;
