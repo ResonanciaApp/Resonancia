@@ -264,7 +264,7 @@ const ac = StyleSheet.create({
   hImage:{width:112,height:99},
   hContent:{flex:1,justifyContent:"center",gap:2},
   hDuration:{fontSize:12,fontWeight:"500",color:"rgba(255,255,255,0.8)"},
-  hDurLabel:{position:"absolute",bottom:6,left:8,fontSize:13,fontWeight:"700",color:"#fff"},
+  hDurLabel:{position:"absolute",bottom:6,left:8,fontSize:13,fontWeight:"700",color:"#fff",textShadowColor:"rgba(0,0,0,0.85)",textShadowOffset:{width:0,height:1},textShadowRadius:4},
   hTitle:{fontSize:16,fontWeight:"600",color:TEXT,lineHeight:21},
   hAuthor:{fontSize:14,color:MUTED,marginTop:1},
   card:{gap:6},
