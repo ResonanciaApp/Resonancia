@@ -12,6 +12,8 @@ import {
 
 import { type Session } from "@/data/sessions";
 import { CATEGORIES } from "@/data/categories";
+import { getArtist } from "@/data/artists";
+import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -50,6 +52,9 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
     if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
     router.push(`/session/${session.id}` as never);
   };
+  const authorObj = session.guideId ? getGuide(session.guideId) : getArtist(session.artistId);
+  const authorName  = authorObj.name;
+  const authorPhoto = authorObj.photo;
 
   if (horizontal) {
     return (
@@ -80,6 +85,14 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
           <Text style={[styles.hTitle, { color: colors.foreground }]} numberOfLines={2}>
             {session.title}
           </Text>
+          {!!authorName && (
+            <View style={styles.hAuthorRow}>
+              <Image source={authorPhoto} style={styles.hAuthorAvatar} contentFit="cover" />
+              <Text style={[styles.hAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+                {authorName}
+              </Text>
+            </View>
+          )}
         </View>
       </Pressable>
     );
@@ -172,6 +185,21 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.85)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
+  },
+  hAuthorRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 4,
+  },
+  hAuthorAvatar: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+  },
+  hAuthor: {
+    fontSize: 13,
+    flex: 1,
   },
   hGradient: {
     position: "absolute",
