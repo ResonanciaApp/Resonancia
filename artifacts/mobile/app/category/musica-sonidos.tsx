@@ -27,7 +27,7 @@ const TEXT  = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
 const HERO_HEIGHT = 160;
 const GRID_GAP    = 10;
-const cellW = (width - H_PAD * 2 - GRID_GAP) / 2;
+const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
 const HERO_IMG = require("@/assets/images/cat-musica-hero.png");
 
 type CatTab   = string;
@@ -275,8 +275,8 @@ function CategoryCard({
 
 const ac = StyleSheet.create({
   hRow:{flexDirection:"row",alignItems:"center",gap:12,paddingVertical:6},
-  hImgWrap:{width:70,height:62,borderRadius:8,overflow:"hidden"},
-  hImage:{width:70,height:62},
+  hImgWrap:{width:112,height:99,borderRadius:8,overflow:"hidden"},
+  hImage:{width:112,height:99},
   hContent:{flex:1,justifyContent:"center",gap:2},
   hDuration:{fontSize:9,fontWeight:"500",color:"rgba(255,255,255,0.8)"},
   hTitle:{fontSize:13,fontWeight:"600",color:TEXT,lineHeight:17},
@@ -400,7 +400,7 @@ export default function MusicaSonidosScreen() {
     );
     if (viewMode==="grid") {
       const triples: (typeof sessions)[] = [];
-      for (let i=0;i<sessions.length;i+=2) triples.push(sessions.slice(i,i+2));
+      for (let i=0;i<sessions.length;i+=3) triples.push(sessions.slice(i,i+3));
       return (
         <View style={styles.gridOuter}>
           {triples.map((triple,ri)=>(
