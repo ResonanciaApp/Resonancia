@@ -298,9 +298,8 @@ export default function SessionDetailScreen() {
       {/* ── Sticky header (aparece al scrollear) ─────────────────────────── */}
       <Animated.View
         pointerEvents="box-none"
-        style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity }]}
+        style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: "#1B060F" }]}
       >
-        <LinearGradient colors={["#1B060F", "transparent"]} style={StyleSheet.absoluteFill} />
         <Pressable onPress={() => router.back()} style={[styles.navBtn, { backgroundColor: "rgba(24,17,12,0.5)" }]}>
           <Feather name="arrow-left" size={20} color="#FFF" />
         </Pressable>
