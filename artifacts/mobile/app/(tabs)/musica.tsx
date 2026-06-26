@@ -956,7 +956,7 @@ const styles = StyleSheet.create({
 
   header:    { paddingHorizontal: 20, marginBottom: 16 },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  headerActions: { flexDirection: "row", alignItems: "center", gap: 8, marginRight: -12 },
+  headerActions: { flexDirection: "row", alignItems: "center", gap: 8, marginRight: -9 },
 
   emptyState: { alignItems: "center", justifyContent: "center", paddingTop: 70, paddingHorizontal: 40, gap: 8 },
   emptyTitle: { fontSize: 15, fontWeight: "700", color: "rgba(26,30,43,0.7)", textAlign: "center" },
