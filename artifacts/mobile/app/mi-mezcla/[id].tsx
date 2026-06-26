@@ -389,7 +389,7 @@ export default function MiMezclaScreen() {
                 style={({ pressed }) => [s.catCell, selected && s.catCellSelected, { opacity: pressed ? 0.82 : 1 }]}
                 onPress={() => {
                   setCategory(cat.id);
-                  save({ category: cat.id });
+                  save({ category: cat.id, categoryChosen: true });
                 }}
               >
                 <Image

@@ -22,8 +22,7 @@ import { useGetSharedMixes, useReportSharedMix } from "@workspace/api-client-rea
 import type { SharedMix } from "@workspace/api-client-react";
 
 import { type MixPreset, useMixer } from "@/context/MixerContext";
-import { type MixCategory } from "@/data/mix-categories";
-import { resolveAvatarUrl } from "@/lib/avatar";
+import { type MixCategory, MIX_CATEGORIES } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 
 
@@ -31,17 +30,6 @@ const GOLD = "#D4AF37";
 const STACK_THUMB = 62;
 const MAX_VISIBLE = 8;
 
-// Mapa etiqueta-de-categoría → degradado de portada
-const COVER_PALETTE: Record<string, [string, string]> = {
-  noche:      ["#0D0A2E", "#1A0F4A"],
-  oceano:     ["#063B4F", "#0A6080"],
-  lluvia:     ["#1A2535", "#2E3F55"],
-  bosque:     ["#0A2010", "#1A4020"],
-  onda_beta:  ["#2E1A0A", "#5A3010"],
-  fuego:      ["#3A0A00", "#7A2000"],
-  desierto:   ["#3A2A0A", "#6A4A15"],
-  viento:     ["#0A1A2A", "#152A40"],
-};
 const DEFAULT_COVER: [string, string] = ["#1B060F", "#2E0A18"];
 
 // ── Componente principal ───────────────────────────────────────────
@@ -227,7 +215,7 @@ function MixRow({
         style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}
       >
         {/* Portada de la mezcla */}
-        <MixCover image={mix.image} />
+        <MixCover category={mix.category} />
 
         {/* Info */}
         <View style={styles.info}>
@@ -277,18 +265,20 @@ function MixRow({
 }
 
 // ── Portada de la mezcla ───────────────────────────────────────────
-function MixCover({ image }: { image?: string | null }) {
-  const isRealPath = !!image && /^(https?:|data:|\/)/i.test(image);
-  const uri = isRealPath ? resolveAvatarUrl(image ?? null) : null;
-  const gradient = (!uri && image) ? (COVER_PALETTE[image] ?? DEFAULT_COVER) : DEFAULT_COVER;
+function MixCover({ category }: { category?: string | null }) {
+  const catMeta = category ? MIX_CATEGORIES.find((c) => c.id === category) : undefined;
 
   return (
     <View style={styles.avatarWrap}>
-      {uri ? (
-        <ExpoImage source={{ uri }} style={styles.coverImg} contentFit="cover" />
+      {catMeta ? (
+        <ExpoImage
+          source={catMeta.image as number}
+          style={styles.coverImg}
+          contentFit="cover"
+        />
       ) : (
         <LinearGradient
-          colors={gradient}
+          colors={DEFAULT_COVER}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.coverImg}

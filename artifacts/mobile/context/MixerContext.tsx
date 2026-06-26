@@ -108,6 +108,8 @@ export type MixPreset = {
   sharedId?: number;
   /** Marcada como favorita por el usuario. */
   favorited?: boolean;
+  /** El usuario eligió explícitamente una imagen de la grilla de categorías. */
+  categoryChosen?: boolean;
 };
 
 export type SaveMixInput = {
@@ -120,7 +122,7 @@ export type SaveMixInput = {
   category: MixCategory;
 };
 
-export type MixMetaUpdate = Partial<Pick<MixPreset, "name" | "description" | "image" | "coverUri" | "coverGeometryId" | "coverCreationId" | "category">>;
+export type MixMetaUpdate = Partial<Pick<MixPreset, "name" | "description" | "image" | "coverUri" | "coverGeometryId" | "coverCreationId" | "category" | "categoryChosen">>;
 
 type MixerContextType = {
   activeSounds: ActiveSound[];

@@ -153,6 +153,13 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, 
 
   const handleShareToCommunity = () => {
     if (shareMixMutation.isPending) return;
+    if (!mix.categoryChosen) {
+      Alert.alert(
+        "Elige una imagen primero",
+        "Abre \"Ver / editar detalles\" y selecciona una de las imágenes de la grilla para poder compartir tu mezcla.",
+      );
+      return;
+    }
     if (mix.sounds.length < 2) {
       Alert.alert(
         "Agrega más sonidos",
