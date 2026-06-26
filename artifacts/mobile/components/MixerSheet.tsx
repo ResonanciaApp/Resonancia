@@ -1138,7 +1138,7 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 0,
   },
-  headerBtn: { paddingHorizontal: 4, justifyContent: "center" },
+  headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   headerPillBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   caption: { fontSize: 10, letterSpacing: 1.8, textTransform: "uppercase", marginBottom: 4, fontWeight: "400" },
   title: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
