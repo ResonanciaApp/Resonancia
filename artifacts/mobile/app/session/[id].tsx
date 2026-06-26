@@ -354,7 +354,7 @@ export default function SessionDetailScreen() {
 
       {/* ── Sticky "Escuchar ahora" ──────────────────────────────────────── */}
       <View style={[styles.stickyPlay, { paddingBottom: bottomPad + 10 }]}>
-        <LinearGradient colors={["transparent", "#1B060F"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["transparent", catBg.solid]} style={StyleSheet.absoluteFill} />
         <Pressable
           onPress={handlePlay}
           style={({ pressed }) => [
