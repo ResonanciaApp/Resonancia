@@ -148,7 +148,7 @@ export default function SessionDetailScreen() {
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
             <Pressable onPress={() => router.back()} style={styles.stickyBackPill}>
-              <Feather name="arrow-left" size={16} color="#FFF" />
+              <Feather name="arrow-left" size={22} color="#FFF" />
             </Pressable>
           </View>
         </View>
@@ -301,7 +301,7 @@ export default function SessionDetailScreen() {
         style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: "#1B060F" }]}
       >
         <Pressable onPress={() => router.back()} style={styles.stickyBackPill}>
-          <Feather name="arrow-left" size={16} color="#FFF" />
+          <Feather name="arrow-left" size={22} color="#FFF" />
         </Pressable>
         <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
         <View style={{ width: 36 }} />
@@ -514,9 +514,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    height: 32,
-    width: 36,
-    borderRadius: 16,
+    height: 38,
+    width: 42,
+    borderRadius: 19,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.35)",
     backgroundColor: "transparent",
