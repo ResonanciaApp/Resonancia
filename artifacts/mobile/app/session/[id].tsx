@@ -143,9 +143,6 @@ export default function SessionDetailScreen() {
         {/* ── Content ─────────────────────────────────────────────────────── */}
         <View style={[styles.content, { marginTop: -36 }]}>
 
-          {/* Title */}
-          <Text style={[styles.title, { color: colors.foreground }]}>{session.title}</Text>
-
           {/* Meta row: duration */}
           <View style={styles.metaRow}>
             <View style={styles.metaItem}>
@@ -153,6 +150,9 @@ export default function SessionDetailScreen() {
               <Text style={[styles.metaText, { color: colors.mutedForeground }]}>{session.durationLabel}</Text>
             </View>
           </View>
+
+          {/* Title */}
+          <Text style={[styles.title, { color: colors.foreground }]}>{session.title}</Text>
 
           {/* Description */}
           <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]}>
