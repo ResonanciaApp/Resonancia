@@ -386,6 +386,8 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     borderRadius: 14,
     gap: 8,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.09)",
   },
   actionLabel: {
     fontSize: 14,
