@@ -120,7 +120,7 @@ export type SaveMixInput = {
   category: MixCategory;
 };
 
-export type MixMetaUpdate = Partial<Pick<MixPreset, "name" | "description" | "image" | "coverUri" | "coverGeometryId" | "coverCreationId">>;
+export type MixMetaUpdate = Partial<Pick<MixPreset, "name" | "description" | "image" | "coverUri" | "coverGeometryId" | "coverCreationId" | "category">>;
 
 type MixerContextType = {
   activeSounds: ActiveSound[];

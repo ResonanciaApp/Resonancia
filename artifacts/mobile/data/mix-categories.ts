@@ -54,6 +54,15 @@ export const MIX_CATEGORIES: MixCategoryMeta[] = [
     color: "#d49f6b",
     image: require("@/assets/images/mixer/categories/concentracion.jpg"),
   },
+  {
+    id: "trabajar",
+    label: "Energía",
+    subtitle: "Sonidos que despiertan tu vitalidad.",
+    icon: "zap",
+    iconFamily: "Feather",
+    color: "#F4A261",
+    image: require("@/assets/images/tag-energizar.jpg"),
+  },
 ];
 
 export function getCategoryMeta(id: MixCategory): MixCategoryMeta | undefined {

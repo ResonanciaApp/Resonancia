@@ -28,6 +28,7 @@ import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { formatMixImageLabel, getMixImage, MIX_IMAGE_GALLERY } from "@/config/mix-images";
 import { getSoundImage } from "@/config/sound-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
+import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { GEOMETRIES, type GeometryId } from "@/data/geometries";
 import { getSoundById } from "@/data/sounds";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
@@ -270,6 +271,7 @@ export default function MiMezclaScreen() {
 
   const [name, setName] = useState(mix?.name ?? "");
   const [description, setDescription] = useState(mix?.description ?? "");
+  const [category, setCategory] = useState<MixCategory>(mix?.category ?? "dormir");
   const [pickerVisible, setPickerVisible] = useState(false);
 
   const isThisLoaded = loadedPresetId === id;
@@ -350,7 +352,7 @@ export default function MiMezclaScreen() {
       </View>
 
       <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: insets.bottom + 32 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: insets.bottom + 96 }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
@@ -362,6 +364,38 @@ export default function MiMezclaScreen() {
             <Feather name="camera" size={14} color="#1B060F" />
           </View>
         </Pressable>
+
+        {/* Grid de categorías 2×2 */}
+        <View style={s.catGrid}>
+          {MIX_CATEGORIES.map((cat) => {
+            const selected = category === cat.id;
+            return (
+              <Pressable
+                key={cat.id}
+                style={({ pressed }) => [s.catCell, selected && s.catCellSelected, { opacity: pressed ? 0.82 : 1 }]}
+                onPress={() => {
+                  setCategory(cat.id);
+                  save({ category: cat.id });
+                }}
+              >
+                <Image
+                  source={cat.image as number}
+                  style={s.catCellImg}
+                  contentFit="cover"
+                />
+                {selected && (
+                  <View style={s.catCellOverlay} />
+                )}
+                <View style={s.catCellLabelRow}>
+                  <Text style={[s.catCellLabel, selected && s.catCellLabelSelected]} numberOfLines={1}>
+                    {cat.label}
+                  </Text>
+                  {selected && <Feather name="check-circle" size={12} color={GOLD} />}
+                </View>
+              </Pressable>
+            );
+          })}
+        </View>
 
         {/* Nombre */}
         <Text style={s.label}>Nombre</Text>
@@ -394,16 +428,6 @@ export default function MiMezclaScreen() {
           blurOnSubmit
         />
 
-        {/* Reproducir */}
-        <Pressable
-          style={({ pressed }) => [s.playBtn, { opacity: pressed ? 0.85 : 1, overflow: "hidden" }]}
-          onPress={handlePlay}
-        >
-          <GoldGradientFill />
-          <Feather name={isPlayingThis ? "pause" : "play"} size={18} color="#1B060F" />
-          <Text style={s.playBtnText}>{isPlayingThis ? "Pausar" : "Reproducir mezcla"}</Text>
-        </Pressable>
-
         {/* Sonidos */}
         <Text style={s.label}>Sonidos ({mix.sounds.length})</Text>
         <View style={s.soundsGrid}>
@@ -425,6 +449,18 @@ export default function MiMezclaScreen() {
           })}
         </View>
       </ScrollView>
+
+      {/* ── Botón flotante Reproducir ──────────────────────────────────────── */}
+      <View style={[s.floatingBar, { paddingBottom: insets.bottom + 12 }]}>
+        <Pressable
+          style={({ pressed }) => [s.playBtn, { opacity: pressed ? 0.85 : 1, overflow: "hidden" }]}
+          onPress={handlePlay}
+        >
+          <GoldGradientFill />
+          <Feather name={isPlayingThis ? "pause" : "play"} size={18} color="#1B060F" />
+          <Text style={s.playBtnText}>{isPlayingThis ? "Pausar" : "Reproducir mezcla"}</Text>
+        </Pressable>
+      </View>
 
       <CoverPickerSheet
         visible={pickerVisible}
@@ -511,6 +547,17 @@ const s = StyleSheet.create({
     minHeight: 80,
     textAlignVertical: "top",
   },
+  floatingBar: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    backgroundColor: "rgba(22,1,8,0.88)",
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: "rgba(61,14,22,0.5)",
+  },
   playBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -518,12 +565,52 @@ const s = StyleSheet.create({
     gap: 10,
     height: 50,
     borderRadius: 25,
-    marginBottom: 28,
   },
   playBtnText: {
     color: "#1B060F",
     fontSize: 16,
     fontWeight: "700",
+  },
+  catGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+    marginBottom: 28,
+  },
+  catCell: {
+    width: "48%",
+    borderRadius: 14,
+    overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "transparent",
+  },
+  catCellSelected: {
+    borderColor: GOLD,
+  },
+  catCellImg: {
+    width: "100%",
+    aspectRatio: 1,
+  },
+  catCellOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(212,175,55,0.18)",
+  },
+  catCellLabelRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    backgroundColor: "rgba(22,1,8,0.72)",
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  catCellLabel: {
+    flex: 1,
+    color: MUTED,
+    fontSize: 13,
+    fontWeight: "600",
+  },
+  catCellLabelSelected: {
+    color: GOLD,
   },
   soundsGrid: {
     flexDirection: "row",
