@@ -359,6 +359,9 @@ export default function SonidosAncestalesScreen() {
   const [searchVisible,     setSearchVisible]     = useState(false);
   const [selectedSession,   setSelectedSession]   = useState<Session|null>(null);
   const [playlistSessionId, setPlaylistSessionId] = useState<string|null>(null);
+  const [chipsSticky, setChipsSticky] = useState(false);
+  const chipsTriggerRef = useRef<number>(9999);
+  const prevStickyRef   = useRef(false);
 
   const toggleView = useCallback(()=>setViewMode((v)=>(v==="list"?"grid":"list")),[]);
 
@@ -417,7 +420,24 @@ export default function SonidosAncestalesScreen() {
         </GhostPill>
       </View>
 
-      <ScrollView style={styles.scroll} contentContainerStyle={{ paddingBottom: 140 + bottomPad }} showsVerticalScrollIndicator={false}>
+      {chipsSticky && (
+        <View style={[styles.stickyChipsBar, { top: topPad + 60, backgroundColor: "#160108" }]}>
+          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+          <LinearGradient colors={["rgba(0,0,0,0.12)", "transparent"]} style={styles.dividerShadow} pointerEvents="none" />
+        </View>
+      )}
+
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={(e) => {
+          const y = e.nativeEvent.contentOffset.y;
+          const should = y >= chipsTriggerRef.current;
+          if (should !== prevStickyRef.current) { prevStickyRef.current = should; setChipsSticky(should); }
+        }}
+      >
 
         {/* ── Hero banner ── */}
         <View style={styles.heroArea}>
@@ -443,7 +463,7 @@ export default function SonidosAncestalesScreen() {
         </View>
 
         {/* ── Tabs ── */}
-        <View style={styles.chipsArea}>
+        <View style={styles.chipsArea} onLayout={(e) => { chipsTriggerRef.current = e.nativeEvent.layout.y; }}>
           <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
         </View>
 
@@ -573,6 +593,7 @@ const styles = StyleSheet.create({
 
   /* ── Tabs (chips) ── */
   chipsArea: { paddingTop: 1, paddingBottom: 5, overflow: "visible" },
+  stickyChipsBar: { position: "absolute", left: 0, right: 0, zIndex: 20, paddingTop: 4, paddingBottom: 2 },
   animChipWrap: { flexDirection: "row", alignItems: "center" },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
   chipCloseBtn: { width: 30, height: 30, borderRadius: 15, backgroundColor: "rgba(74,12,12,0.08)", alignItems: "center", justifyContent: "center" },
