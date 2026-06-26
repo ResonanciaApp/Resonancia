@@ -139,7 +139,7 @@ function Chip({ label, sel, onPress }: { label: string; sel: boolean; onPress: (
 const CHIP_DUR = 600;
 const CLOSE_SLOT = 38;
 
-function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: {id: string; label: string}[]; activeTab: CatTab|null; onSelect: (id: CatTab)=>void; onClear: ()=>void }) {
+function ChipRow({ tabs, activeTab, onSelect, onClear, syncVisible }: { tabs: {id: string; label: string}[]; activeTab: CatTab|null; onSelect: (id: CatTab)=>void; onClear: ()=>void; syncVisible?: boolean }) {
   const progress  = useRef(new Animated.Value(activeTab ? 1 : 0)).current;
   const offsetsRef= useRef<Record<string,number>>({});
   const scrollX   = useRef(0);
@@ -153,6 +153,16 @@ function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: {id: string; la
     Animated.timing(progress, { toValue: to, duration: CHIP_DUR, easing: Easing.inOut(Easing.cubic), useNativeDriver: true })
       .start(({ finished }) => { if (finished) done?.(); });
 
+  const syncFromProp = useCallback(() => {
+    if (activeTab !== null) {
+      const tx = CLOSE_SLOT - ((offsetsRef.current[activeTab] ?? 0) - scrollX.current);
+      setTargetTx(tx); setDisplayTab(activeTab); setColorTab(activeTab); progress.setValue(1);
+    } else {
+      setDisplayTab(null); setColorTab(null); progress.setValue(0);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
+
   const handleSelect = (id: CatTab) => {
     internalRef.current = true;
     setTargetTx(CLOSE_SLOT - ((offsetsRef.current[id]??0) - scrollX.current));
@@ -162,15 +172,17 @@ function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: {id: string; la
     internalRef.current = true;
     setColorTab(null); onClear(); animate(0, () => setDisplayTab(null));
   };
+  // Sync when activeTab changes from the other ChipRow instance
   useEffect(() => {
     if (internalRef.current) { internalRef.current = false; return; }
-    if (activeTab !== null) {
-      setDisplayTab(activeTab); setColorTab(activeTab); progress.setValue(1);
-    } else {
-      setDisplayTab(null); setColorTab(null); progress.setValue(0);
-    }
+    syncFromProp();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
+  // Re-sync every time the sticky bar becomes visible
+  useEffect(() => {
+    if (syncVisible === true) syncFromProp();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [syncVisible]);
   useEffect(() => () => progress.stopAnimation(), [progress]);
 
   return (
@@ -440,7 +452,7 @@ export default function SonidosAncestalesScreen() {
         style={[styles.stickyChipsBar, { top: headerH, opacity: chipsSticky ? 1 : 0 }]}
       >
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "#2E0510" }]} />
-        <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+        <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} syncVisible={chipsSticky} />
       </View>
 
       <ScrollView
