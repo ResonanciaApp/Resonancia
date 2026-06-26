@@ -50,6 +50,7 @@ function hexTint(hex: string, alpha: number): string {
 
 const SQCARD_W = Math.round((width - H_PAD * 2) / 2.2);
 const TEMA_COL_W = Math.floor((width - H_PAD * 2 - GAP) / 2);
+const TEMA3_W    = Math.floor((width - H_PAD * 2 - GAP * 2) / 3);
 
 const CAT_CARD_GAP = 12;
 const DUR_PILL_W   = Math.round((width - H_PAD * 2 - 6 * 4) / 4.3);
@@ -446,25 +447,18 @@ export default function ExploreScreen() {
                 <Text style={styles.sectionTitle}>Explorar todo</Text>
               </View>
               <View style={[styles.temaGrid, { marginTop: -6 }]}>
-                {TEMAS.map((t, i) => {
-                  const isLeft = i % 2 === 0;
-                  const isFirstRow = i < 2;
-                  const isLastRow = i >= TEMAS.length - 2;
-                  return (
+                {TEMAS.map((t, i) => (
                   <Pressable
                     key={t.id}
                     onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
                     style={({ pressed }) => [
                       styles.temaCell,
                       {
-                        width: TEMA_COL_W,
-                        height: 56,
+                        width: TEMA3_W,
+                        height: TEMA3_W,
                         opacity: pressed ? 0.75 : 1,
                         backgroundColor: "rgba(255,255,255,0.06)",
-                        borderTopLeftRadius: isLeft ? 14 : (isFirstRow ? 14 : 0),
-                        borderTopRightRadius: isLeft ? (isFirstRow ? 14 : 0) : 14,
-                        borderBottomRightRadius: isLeft ? (isLastRow ? 14 : 0) : 14,
-                        borderBottomLeftRadius: isLeft ? 14 : (isLastRow ? 14 : 0),
+                        borderRadius: 14,
                       },
                     ]}
                   >
@@ -475,14 +469,13 @@ export default function ExploreScreen() {
                         contentFit="contain"
                       />
                     ) : (
-                      <MaterialCommunityIcons name={t.icon} size={24} color={t.color} />
+                      <MaterialCommunityIcons name={t.icon} size={28} color={t.color} />
                     )}
                     <Text style={[styles.temaCellLabel, { color: colors.foreground }]} numberOfLines={2}>
                       {t.label}
                     </Text>
                   </Pressable>
-                  );
-                })}
+                ))}
               </View>
             </View>
 
@@ -712,24 +705,23 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   temaCell: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
-    justifyContent: "flex-start",
-    gap: 10,
+    justifyContent: "center",
+    gap: 8,
     borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: 0,
+    paddingHorizontal: 8,
+    paddingVertical: 12,
   },
   temaCellIcon: {
-    width: 24,
-    height: 24,
+    width: 28,
+    height: 28,
   },
   temaCellLabel: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "600",
-    textAlign: "left",
-    lineHeight: 18,
-    flex: 1,
+    textAlign: "center",
+    lineHeight: 17,
   },
 
   // Otras temáticas
