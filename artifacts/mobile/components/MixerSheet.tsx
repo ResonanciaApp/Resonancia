@@ -785,27 +785,31 @@ export function MixerSheet() {
             </View>
 
             <View style={styles.headerRow}>
-              <Pressable
-                onPress={closeSheet}
-                hitSlop={10}
-                style={styles.headerBtn}
-                accessibilityRole="button"
-                accessibilityLabel="Cerrar editor de mezcla"
-              >
-                <Feather name="chevron-down" size={24} color={palette.headerFg} />
-              </Pressable>
+              <GhostPill>
+                <Pressable
+                  onPress={closeSheet}
+                  hitSlop={10}
+                  style={styles.headerBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel="Cerrar editor de mezcla"
+                >
+                  <Feather name="chevron-down" size={24} color={palette.headerFg} />
+                </Pressable>
+              </GhostPill>
               <Text style={[styles.title, { color: palette.headerFg, flex: 1 }]} numberOfLines={1}>
                 {originPreset?.name ?? "Tu mezcla"}
               </Text>
-              <Pressable
-                onPress={() => { stopAll(); closeSheet(); }}
-                hitSlop={10}
-                style={styles.headerBtn}
-                accessibilityRole="button"
-                accessibilityLabel="Cerrar mezcla"
-              >
-                <Feather name="x" size={22} color={palette.headerFg} />
-              </Pressable>
+              <GhostPill>
+                <Pressable
+                  onPress={() => { stopAll(); closeSheet(); }}
+                  hitSlop={10}
+                  style={styles.headerBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel="Cerrar mezcla"
+                >
+                  <Feather name="x" size={22} color={palette.headerFg} />
+                </Pressable>
+              </GhostPill>
             </View>
 
             {/* Línea divisora — solo en tema por defecto */}
