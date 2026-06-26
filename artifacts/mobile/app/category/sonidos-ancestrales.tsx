@@ -51,7 +51,6 @@ const FIXED_TABS: { id: string; label: string }[] = [
   { id: "cuencos",  label: "Cuencos" },
   { id: "gongs",    label: "Gongs" },
   { id: "campanas", label: "Campanas" },
-  { id: "mix",      label: "Mix Sonoterapia" },
 ];
 const MIX_TAGS = new Set(["Full Instrumentos","Vientos","Cantos","Percusión","Selva","Mix de Cuencos"]);
 
