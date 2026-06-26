@@ -431,7 +431,7 @@ export default function MusicaSonidosScreen() {
         {/* ── Divisor ── */}
         <View>
           <View style={styles.dividerLine} />
-          <LinearGradient colors={["rgba(0,0,0,0.28)","transparent"]} style={styles.dividerShadow} pointerEvents="none" />
+          <LinearGradient colors={["rgba(0,0,0,0.12)","transparent"]} style={styles.dividerShadow} pointerEvents="none" />
         </View>
 
         {/* ── Contenido ── */}
@@ -478,8 +478,8 @@ const styles = StyleSheet.create({
   profileCard: { marginHorizontal: H_PAD, marginTop: 20, paddingBottom: 14, gap: 8, alignItems: "center" },
   profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.70)", lineHeight: 21, textAlign: "center" },
 
-  dividerLine: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.08)", marginVertical: 6 },
-  dividerShadow: { height: 12, marginTop: -6 },
+  dividerLine: { height: 0 },
+  dividerShadow: { height: 12, marginTop: 0 },
 
   chipsArea: { paddingTop: 1, paddingBottom: 5, overflow: "visible" },
   animChipWrap: { flexDirection: "row", alignItems: "center" },
