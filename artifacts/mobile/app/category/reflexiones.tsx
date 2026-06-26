@@ -35,7 +35,6 @@ type ViewMode = "list" | "grid";
 
 const FIXED_TABS: { id: string; label: string }[] = [
   { id: "sabiduria", label: "Sabiduría" },
-  { id: "podcast",   label: "Podcast" },
   { id: "asmr",      label: "ASMR" },
   { id: "historias", label: "Historias" },
 ];

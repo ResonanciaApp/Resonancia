@@ -7,7 +7,6 @@ import { Image } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import {
   Dimensions,
-  Linking,
   Platform,
   Pressable,
   ScrollView,
@@ -20,10 +19,8 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { usePlayer } from "@/context/PlayerContext";
-import { CATEGORIES } from "@/data/categories";
 import { getSessionById, SESSIONS } from "@/data/sessions";
 import { getGuide } from "@/data/guides";
-import { getArtist } from "@/data/artists";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
@@ -50,10 +47,10 @@ export default function SessionDetailScreen() {
     );
   }
 
-  const isMusica = session.categoryId === "musica-sonidos";
+  // Esta pantalla cubre: Reflexiones, Ancestrales, Meditaciones.
+  // Las sesiones de Música tendrán su propia pantalla de detalle.
   const isGuiada = session.categoryId === "meditaciones-guiadas";
   const isAncestral = session.categoryId === "sonidos-ancestrales";
-  const isPodcast = session.categoryId === "reflexiones";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const fav = localFav !== null ? localFav : isFavorite(session.id);
   const isCurrentlyPlaying = currentSession?.id === session.id && isPlaying;
@@ -61,12 +58,6 @@ export default function SessionDetailScreen() {
   const related = SESSIONS.filter(
     (s) => s.categoryId === session.categoryId && s.id !== session.id
   ).slice(0, 3);
-
-  // Tinted background derived from the session's category (gradient[1] = darker shade)
-  // Darkened ~60% to keep a subtle tint without being too bright.
-  const category = CATEGORIES.find((c) => c.id === session.categoryId);
-  const categoryBg = colors.background;
-  const actionTint = colors.card;
 
   const handlePlay = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -89,16 +80,10 @@ export default function SessionDetailScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
-  // ── Autor de la sesión (guiador o artista según categoría) ──────────────────
-  // isMusica → artista (fallback "resonancia"); isGuiada → guiador (fallback "casa-cuenco")
-  // resto (ancestral, podcast, etc.) → guiador fallback (casa-cuenco)
-  const _artist = isMusica ? getArtist(session.artistId) : undefined;
-  const _guide  = !isMusica ? getGuide(isGuiada ? session.guideId : undefined) : undefined;
-  const author = _artist
-    ? { name: _artist.name, photo: _artist.photo, country: _artist.country, bio: _artist.bio, profilePath: `/artista/${_artist.id}` }
-    : _guide
-    ? { name: _guide.name, photo: _guide.photo, country: _guide.country, bio: _guide.bio, profilePath: `/guiador/${_guide.id}` }
-    : undefined;
+  // ── Autor de la sesión ───────────────────────────────────────────────────────
+  // Meditaciones → guiador asignado; resto (Ancestrales, Reflexiones) → Casa del Cuenco
+  const _guide = getGuide(isGuiada ? session.guideId : undefined);
+  const author = { name: _guide.name, photo: _guide.photo, country: _guide.country, bio: _guide.bio, profilePath: `/guiador/${_guide.id}` };
 
   return (
     <View style={styles.root}>
@@ -162,62 +147,6 @@ export default function SessionDetailScreen() {
               <Text style={[styles.actionLabel, { color: colors.mutedForeground }]}>Compartir</Text>
             </Pressable>
           </View>
-
-          {/* ── Participantes (solo podcast) ──────────────────────────────── */}
-          {isPodcast && (
-            <View style={styles.participantsBlock}>
-              <Text style={[styles.blockTitle, { color: colors.foreground }]}>Participantes</Text>
-
-              <View style={styles.participantRow}>
-                <View style={[styles.participantIcon, { backgroundColor: actionTint }]}>
-                  <Feather name="mic" size={16} color={colors.primary} />
-                </View>
-                <View style={styles.participantMeta}>
-                  <Text style={[styles.participantName, { color: colors.foreground }]}>
-                    ElSeñordelosCuencos
-                  </Text>
-                  <Text style={[styles.participantRole, { color: colors.mutedForeground }]}>
-                    Anfitrión
-                  </Text>
-                </View>
-              </View>
-
-              {session.guests?.map((g) => {
-                const tappable = !!g.instagram;
-                const content = (
-                  <>
-                    <View style={[styles.participantIcon, { backgroundColor: actionTint }]}>
-                      <Feather name="user" size={16} color={colors.mutedForeground} />
-                    </View>
-                    <View style={styles.participantMeta}>
-                      <Text style={[styles.participantName, { color: colors.foreground }]}>
-                        {g.name}
-                      </Text>
-                      <Text style={[styles.participantRole, { color: colors.mutedForeground }]}>
-                        {g.role}
-                      </Text>
-                    </View>
-                    {tappable && (
-                      <Feather name="instagram" size={18} color={colors.primary} />
-                    )}
-                  </>
-                );
-                return tappable ? (
-                  <Pressable
-                    key={g.name}
-                    onPress={() => Linking.openURL(g.instagram!)}
-                    style={({ pressed }) => [styles.participantRow, { opacity: pressed ? 0.7 : 1 }]}
-                  >
-                    {content}
-                  </Pressable>
-                ) : (
-                  <View key={g.name} style={styles.participantRow}>
-                    {content}
-                  </View>
-                );
-              })}
-            </View>
-          )}
 
           {/* ── Tarjeta del autor ─────────────────────────────────────────── */}
           {author && (
@@ -437,25 +366,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
     marginBottom: 14,
   },
-
-  // Participantes
-  participantsBlock: { marginBottom: 28 },
-  participantRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-    paddingVertical: 8,
-  },
-  participantIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  participantMeta: { flex: 1 },
-  participantName: { fontSize: 15, fontWeight: "600", marginBottom: 2 },
-  participantRole: { fontSize: 12 },
 
   // Related
   relatedBlock: { marginBottom: 10 },
