@@ -291,9 +291,9 @@ export default function SessionDetailScreen() {
                   onPress={() => router.push(a.profilePath as never)}
                   style={({ pressed }) => [{ opacity: pressed ? 0.65 : 1 }]}
                 >
-                  <Text style={[styles.authorLink, { color: colors.primary }]}>
+                  <Text style={[styles.authorLink, { color: "rgba(255,255,255,0.9)" }]}>
                     Más sobre {a.firstName}{"  "}
-                    <Feather name="chevron-right" size={14} color={colors.primary} />
+                    <Feather name="chevron-right" size={14} color="rgba(255,255,255,0.9)" />
                   </Text>
                 </Pressable>
               </View>
