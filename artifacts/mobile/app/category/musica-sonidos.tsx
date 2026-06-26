@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(3,12,4,0.88)", borderWidth: 1, borderColor: "rgba(212,175,55,0.60)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
   profileCard: { marginHorizontal: H_PAD, marginTop: 20, paddingBottom: 14, gap: 8, alignItems: "center" },
-  profileTitle: { fontSize: 25, fontWeight: "800", color: TEXT, letterSpacing: 0.3 },
+  profileTitle: { fontSize: 27, fontWeight: "800", color: TEXT, letterSpacing: 0.3 },
   profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.70)", lineHeight: 21, textAlign: "center" },
 
   dividerLine: { height: 0 },

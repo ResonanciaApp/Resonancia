@@ -544,7 +544,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   profileTitle: {
-    fontSize: 25,
+    fontSize: 27,
     fontWeight: "800",
     color: TEXT,
     letterSpacing: 0.3,
