@@ -77,11 +77,6 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
           <Text style={styles.hDurLabel}>{session.durationLabel}</Text>
         </View>
         <View style={styles.hContent}>
-          <View style={styles.hCategoryRow}>
-            <Text style={[styles.hCategory, { color: "rgba(255,255,255,0.95)" }]}>
-              {session.categoryLabel}
-            </Text>
-          </View>
           <Text style={[styles.hTitle, { color: colors.foreground }]} numberOfLines={2}>
             {session.title}
           </Text>
