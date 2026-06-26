@@ -26,7 +26,7 @@ export function GhostPill({ children, style }: Props) {
 
   function animateIn() {
     Animated.parallel([
-      Animated.timing(scale,  { toValue: 1.41, duration: 160, easing: Easing.out(Easing.back(1.5)), useNativeDriver: true }),
+      Animated.timing(scale,  { toValue: 1.34, duration: 160, easing: Easing.out(Easing.back(1.5)), useNativeDriver: true }),
       Animated.timing(bright, { toValue: 1,    duration: 160, easing: Easing.out(Easing.quad),       useNativeDriver: true }),
     ]).start();
   }
