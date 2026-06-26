@@ -453,9 +453,11 @@ export default function ExploreScreen() {
                       {
                         width: TEMA3_W,
                         height: TEMA3_W,
-                        opacity: pressed ? 0.75 : 1,
-                        backgroundColor: "rgba(255,255,255,0.06)",
+                        backgroundColor: pressed
+                          ? hexTint(t.color, 0.22)
+                          : "rgba(255,255,255,0.06)",
                         borderRadius: 14,
+                        transform: [{ scale: pressed ? 1.20 : 1 }],
                       },
                     ]}
                   >
