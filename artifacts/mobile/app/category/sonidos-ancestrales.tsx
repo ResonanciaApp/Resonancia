@@ -414,7 +414,7 @@ export default function SonidosAncestalesScreen() {
           />
           {/* Flecha atrás flotante */}
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
-            <GhostPill>
+            <GhostPill style={{ backgroundColor: "#2E0510" }}>
               <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
                 <Feather name="arrow-left" size={22} color="#fff" />
               </Pressable>
