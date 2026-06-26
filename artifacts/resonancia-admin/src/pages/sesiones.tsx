@@ -87,7 +87,10 @@ export default function SesionesPage() {
   const [sleepTag, setSleepTag] = useState("");
   const [themeTag, setThemeTag] = useState<string[]>([]);
   const [otherTagInput, setOtherTagInput] = useState("");
-  const [guideId, setGuideId] = useState("");
+  const [guideIds, setGuideIds] = useState<string[]>([""]);
+  const addGuideSlot = () => setGuideIds((p) => p.length < 4 ? [...p, ""] : p);
+  const removeGuideSlot = (i: number) => setGuideIds((p) => p.filter((_, idx) => idx !== i));
+  const setGuideSlot = (i: number, val: string) => setGuideIds((p) => p.map((v, idx) => idx === i ? val : v));
 
   // Arrays
   const [benefitInput, setBenefitInput] = useState("");
@@ -277,7 +280,7 @@ export default function SesionesPage() {
         meditationTag: meditationTag as Parameters<typeof createSubmission>[0]["data"]["meditationTag"] || undefined,
         sonidosTag: sonidosTag as Parameters<typeof createSubmission>[0]["data"]["sonidosTag"] || undefined,
         podcastTag: podcastTag as Parameters<typeof createSubmission>[0]["data"]["podcastTag"] || undefined,
-        guideId: guideId.trim() || null,
+        guideId: guideIds.filter(Boolean)[0]?.trim() || null,
         imageObjectPath: imgUploaded?.objectPath ?? null,
         imageContentType: imgUploaded?.contentType ?? null,
         imageSizeBytes: imgUploaded?.sizeBytes ?? null,
@@ -425,9 +428,41 @@ export default function SesionesPage() {
           </Field>
 
           {categoryId === "meditaciones-guiadas" && (
-            <Field label="ID del guiador *">
-              <Input value={guideId} onChange={(e) => setGuideId(e.target.value)} placeholder="sofia-ramirez" />
-              <span className="text-xs text-muted-foreground">Slug del guiador en data/guides.ts · default: casa-cuenco</span>
+            <Field label="Autores / Voces guía">
+              <div className="flex flex-col gap-2">
+                {guideIds.map((gid, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <Input
+                      value={gid}
+                      onChange={(e) => setGuideSlot(i, e.target.value)}
+                      placeholder={i === 0 ? "sofia-ramirez" : "otro-guiador"}
+                      className="flex-1"
+                    />
+                    {guideIds.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeGuideSlot(i)}
+                        className="text-muted-foreground hover:text-destructive transition-colors px-1"
+                        title="Quitar"
+                      >
+                        <X size={16} />
+                      </button>
+                    )}
+                  </div>
+                ))}
+                {guideIds.length < 4 && (
+                  <button
+                    type="button"
+                    onClick={addGuideSlot}
+                    className="text-xs text-primary hover:underline self-start"
+                  >
+                    + Agregar otro autor
+                  </button>
+                )}
+              </div>
+              <span className="text-xs text-muted-foreground">
+                Slugs de guiadores en data/guides.ts · hasta 4 · default: casa-cuenco
+              </span>
             </Field>
           )}
 

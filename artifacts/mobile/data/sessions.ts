@@ -74,6 +74,8 @@ export type Session = {
   voiceTag?: "Guiada" | "Sin voz" | null;
   /** Guiador de la meditación (ver data/guides.ts). Si se omite → Casa del Cuenco. */
   guideId?: string;
+  /** Múltiples guiadores (hasta 4). Tiene prioridad sobre guideId si se define. */
+  guideIds?: string[];
   /** Invitados del podcast (además del anfitrión fijo). instagram opcional → fila tappable. */
   guests?: { name: string; role: string; instagram?: string }[];
   /** ID del artista (de data/artists.ts). Solo para Música Ambient/Enteógena. Si se omite → Resonancia. */

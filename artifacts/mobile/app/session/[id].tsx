@@ -80,10 +80,29 @@ export default function SessionDetailScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
-  // ── Autor de la sesión ───────────────────────────────────────────────────────
-  // Meditaciones → guiador asignado; resto (Ancestrales, Reflexiones) → Casa del Cuenco
-  const _guide = getGuide(isGuiada ? session.guideId : undefined);
-  const author = { name: _guide.name, photo: _guide.photo, country: _guide.country, bio: _guide.bio, profilePath: `/guiador/${_guide.id}` };
+  // ── Autores de la sesión ─────────────────────────────────────────────────────
+  // guideIds (array) tiene prioridad; sino guideId; sino Casa del Cuenco
+  const COUNTRY_FLAG: Record<string, string> = {
+    "Argentina": "🇦🇷", "Colombia": "🇨🇴", "México": "🇲🇽", "España": "🇪🇸",
+    "Perú": "🇵🇪", "Chile": "🇨🇱", "Venezuela": "🇻🇪", "Uruguay": "🇺🇾",
+    "Bolivia": "🇧🇴", "Ecuador": "🇪🇨", "Latinoamérica": "🌎",
+  };
+  const resolvedIds: string[] = session.guideIds?.length
+    ? session.guideIds
+    : isGuiada && session.guideId
+    ? [session.guideId]
+    : [];
+  const authors = resolvedIds.length
+    ? resolvedIds.map((gid) => getGuide(gid)).map((g) => ({
+        name: g.name, firstName: g.name.split(" ")[0],
+        photo: g.photo, country: g.country, flag: COUNTRY_FLAG[g.country] ?? "🌎",
+        bio: g.bio, profilePath: `/guiador/${g.id}`,
+      }))
+    : [getGuide(undefined)].map((g) => ({
+        name: g.name, firstName: g.name.split(" ")[0],
+        photo: g.photo, country: g.country, flag: COUNTRY_FLAG[g.country] ?? "🌎",
+        bio: g.bio, profilePath: `/guiador/${g.id}`,
+      }));
 
   return (
     <View style={styles.root}>
@@ -148,35 +167,46 @@ export default function SessionDetailScreen() {
             </Pressable>
           </View>
 
-          {/* ── Tarjeta del autor ─────────────────────────────────────────── */}
-          {author && (
-            <View style={styles.authorBlock}>
-              <Image
-                source={author.photo as never}
-                style={styles.authorAvatar}
-                contentFit="cover"
-                placeholder={BLUR_PLACEHOLDER}
-                transition={IMAGE_TRANSITION}
-              />
-              <Text style={[styles.authorName, { color: colors.foreground }]}>{author.name}</Text>
-              <View style={styles.authorCountryRow}>
-                <Feather name="map-pin" size={11} color={colors.mutedForeground} />
-                <Text style={[styles.authorCountryText, { color: colors.mutedForeground }]}>{author.country}</Text>
-              </View>
-              <Text style={[styles.authorBio, { color: colors.mutedForeground }]} numberOfLines={2}>
-                {author.bio}
-              </Text>
-              <Pressable
-                onPress={() => router.push(author.profilePath as never)}
-                style={({ pressed }) => [styles.authorBtn, { opacity: pressed ? 0.75 : 1, borderColor: "rgba(212,175,55,0.25)" }]}
-              >
-                <Text style={[styles.authorBtnText, { color: colors.primary }]}>
-                  Más sobre {author.name}
+          {/* ── Sobre la voz guía ────────────────────────────────────────── */}
+          <View style={styles.authorSection}>
+            <Text style={[styles.blockTitle, { color: colors.foreground }]}>
+              {authors.length > 1 ? "Sobre las voces guía" : "Sobre la voz guía"}
+            </Text>
+            {authors.map((a, idx) => (
+              <View key={a.profilePath} style={[styles.authorCard, idx < authors.length - 1 && styles.authorCardDivider]}>
+                {/* Row: avatar + name/country */}
+                <View style={styles.authorRow}>
+                  <Image
+                    source={a.photo as never}
+                    style={styles.authorAvatar}
+                    contentFit="cover"
+                    placeholder={BLUR_PLACEHOLDER}
+                    transition={IMAGE_TRANSITION}
+                  />
+                  <View style={styles.authorMeta}>
+                    <Text style={[styles.authorName, { color: colors.foreground }]}>{a.name}</Text>
+                    <Text style={[styles.authorCountry, { color: colors.mutedForeground }]}>
+                      {a.flag}{"  "}{a.country}
+                    </Text>
+                  </View>
+                </View>
+                {/* Bio */}
+                <Text style={[styles.authorBio, { color: colors.mutedForeground }]} numberOfLines={2}>
+                  {a.bio}
                 </Text>
-                <Feather name="chevron-right" size={15} color={colors.primary} />
-              </Pressable>
-            </View>
-          )}
+                {/* Link */}
+                <Pressable
+                  onPress={() => router.push(a.profilePath as never)}
+                  style={({ pressed }) => [{ opacity: pressed ? 0.65 : 1 }]}
+                >
+                  <Text style={[styles.authorLink, { color: colors.primary }]}>
+                    Más sobre {a.firstName}{"  "}
+                    <Feather name="chevron-right" size={14} color={colors.primary} />
+                  </Text>
+                </Pressable>
+              </View>
+            ))}
+          </View>
 
           {/* ── Más en … ─────────────────────────────────────────────────── */}
           {!isGuiada && !isAncestral && related.length > 0 && (
@@ -326,39 +356,26 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
 
-  // Author card
-  authorBlock: {
-    alignItems: "center",
-    marginBottom: 28,
-    paddingVertical: 24,
-    paddingHorizontal: 20,
-    backgroundColor: "rgba(74,12,12,0.18)",
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.12)",
+  // Author section
+  authorSection: { marginBottom: 28 },
+  authorCard: { paddingVertical: 16 },
+  authorCardDivider: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "rgba(212,175,55,0.15)",
   },
+  authorRow: { flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 10 },
   authorAvatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginBottom: 12,
+    width: 62,
+    height: 62,
+    borderRadius: 31,
     borderWidth: 2,
-    borderColor: "rgba(212,175,55,0.3)",
+    borderColor: "rgba(212,175,55,0.25)",
   },
-  authorName: { fontSize: 17, fontWeight: "700", marginBottom: 4, textAlign: "center" },
-  authorCountryRow: { flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 10 },
-  authorCountryText: { fontSize: 12 },
-  authorBio: { fontSize: 13, lineHeight: 19, textAlign: "center", marginBottom: 16 },
-  authorBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
-  authorBtnText: { fontSize: 13, fontWeight: "600" },
+  authorMeta: { flex: 1, gap: 4 },
+  authorName: { fontSize: 16, fontWeight: "700" },
+  authorCountry: { fontSize: 13 },
+  authorBio: { fontSize: 13, lineHeight: 19, marginBottom: 10 },
+  authorLink: { fontSize: 14, fontWeight: "700" },
 
   blockTitle: {
     fontSize: 16,
