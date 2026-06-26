@@ -520,7 +520,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#2E0510",
   },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
-  headerTitle: { position: "absolute", left: 0, right: 0, textAlign: "center", fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },
+  headerTitle: { flex: 1, fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2, marginLeft: 10 },
   headerDivider: { width: StyleSheet.hairlineWidth, height: 18, backgroundColor: "rgba(255,255,255,0.18)" },
 
   /* ── Hero ── */
