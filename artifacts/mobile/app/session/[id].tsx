@@ -476,7 +476,7 @@ const styles = StyleSheet.create({
 
   // Related vertical list
   relatedBlock: { marginBottom: 20 },
-  relatedList: { gap: 14, marginTop: 15 },
+  relatedList: { gap: 18, marginTop: 15 },
   relatedCard: {
     flexDirection: "row",
     alignItems: "center",
