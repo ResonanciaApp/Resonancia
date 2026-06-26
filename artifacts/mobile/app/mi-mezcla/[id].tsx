@@ -365,6 +365,21 @@ export default function MiMezclaScreen() {
           </View>
         </Pressable>
 
+        {/* Descripción */}
+        <Text style={s.label}>Descripción</Text>
+        <TextInput
+          style={[s.input, s.inputMulti]}
+          value={description}
+          onChangeText={setDescription}
+          onBlur={() => save({ description: description.trim() || undefined })}
+          placeholder="Describe tu mezcla (opcional)"
+          placeholderTextColor={MUTED}
+          multiline
+          numberOfLines={3}
+          returnKeyType="done"
+          blurOnSubmit
+        />
+
         {/* Grid de categorías 2×2 */}
         <View style={s.catGrid}>
           {MIX_CATEGORIES.map((cat) => {
@@ -411,21 +426,6 @@ export default function MiMezclaScreen() {
             if (name.trim()) save({ name: name.trim() });
             Keyboard.dismiss();
           }}
-        />
-
-        {/* Descripción */}
-        <Text style={s.label}>Descripción</Text>
-        <TextInput
-          style={[s.input, s.inputMulti]}
-          value={description}
-          onChangeText={setDescription}
-          onBlur={() => save({ description: description.trim() || undefined })}
-          placeholder="Describe tu mezcla (opcional)"
-          placeholderTextColor={MUTED}
-          multiline
-          numberOfLines={3}
-          returnKeyType="done"
-          blurOnSubmit
         />
 
         {/* Sonidos */}
