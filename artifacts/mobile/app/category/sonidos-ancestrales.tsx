@@ -377,10 +377,6 @@ export default function SonidosAncestalesScreen() {
           </Pressable>
         </GhostPill>
       </View>
-      <View style={styles.chipsArea}>
-        <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
-      </View>
-
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
@@ -395,6 +391,23 @@ export default function SonidosAncestalesScreen() {
             locations={[0.50, 0.80, 1]}
             style={StyleSheet.absoluteFill}
           />
+          <View style={styles.heroIconFloat}>
+            <View style={styles.heroIconCircle}>
+              <Feather name="music" size={32} color={GOLD} />
+            </View>
+          </View>
+        </View>
+
+        {/* ── Description ── */}
+        <View style={styles.profileCard}>
+          <Text style={styles.profileDesc}>
+            Instrumentos milenarios y tradiciones sonoras ancestrales para sanar, meditar y reconectar con lo sagrado.
+          </Text>
+        </View>
+
+        {/* ── Tabs ── */}
+        <View style={styles.chipsArea}>
+          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
         </View>
 
         {/* ── Divisor ── */}
