@@ -213,8 +213,8 @@ function MixRow({
         onPress={onPress}
         style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}
       >
-        {/* Avatar del creador */}
-        <CreatorAvatar author={mix.author} />
+        {/* Portada de la mezcla */}
+        <MixCover image={mix.image} />
 
         {/* Info */}
         <View style={styles.info}>
@@ -263,21 +263,20 @@ function MixRow({
   );
 }
 
-// ── Avatar del creador ─────────────────────────────────────────────
-function CreatorAvatar({ author }: { author: SharedMix["author"] }) {
-  const initial = author.displayName?.charAt(0)?.toUpperCase() ?? "?";
-  const uri = resolveAvatarUrl(author.avatarUrl);
+// ── Portada de la mezcla ───────────────────────────────────────────
+function MixCover({ image }: { image?: string | null }) {
+  const uri = resolveAvatarUrl(image ?? null);
   return (
     <View style={styles.avatarWrap}>
       {uri ? (
         <ExpoImage
           source={{ uri }}
-          style={styles.avatarImg}
+          style={styles.coverImg}
           contentFit="cover"
         />
       ) : (
-        <View style={[styles.avatarImg, styles.avatarFallback]}>
-          <Text style={styles.avatarInitial}>{initial}</Text>
+        <View style={[styles.coverImg, styles.avatarFallback]}>
+          <Feather name="music" size={22} color={GOLD} />
         </View>
       )}
     </View>
@@ -402,12 +401,18 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3 },
   verTodas: { fontSize: 13, fontWeight: "500" },
 
-  // Avatar del creador
+  // Portada / Avatar
   avatarWrap: { flexShrink: 0 },
   avatarImg: {
     width: STACK_THUMB,
     height: STACK_THUMB,
     borderRadius: STACK_THUMB / 2,
+    overflow: "hidden",
+  },
+  coverImg: {
+    width: STACK_THUMB,
+    height: STACK_THUMB,
+    borderRadius: 10,
     overflow: "hidden",
   },
   avatarFallback: {
