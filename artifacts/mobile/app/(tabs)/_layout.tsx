@@ -32,7 +32,7 @@ const ACTIVE_COLOR   = "#E9C46A";
 const INACTIVE_COLOR = "rgba(244,218,213,0.55)";
 const GRAD_END       = "#E9C46A";
 
-const ICON_SIZE = 23;
+const ICON_SIZE = 21;
 const PILL_BG   = "rgba(255,255,255,0.075)";
 
 
@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
   },
   label: {
-    fontSize: 11,
+    fontSize: 9,
     letterSpacing: 0.3,
     fontWeight: "500",
   },
