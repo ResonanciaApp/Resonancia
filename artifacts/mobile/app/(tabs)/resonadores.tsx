@@ -866,12 +866,12 @@ const styles = StyleSheet.create({
   certStar: { fontSize: 9, color: "#1B060F", fontWeight: "800" },
   cardInfo: { flex: 1, justifyContent: "center", gap: 3 },
   cardName: {
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: "700",
     color: "#FAF0EE",
   },
   cardTag: {
-    fontSize: 12,
+    fontSize: 15,
     fontWeight: "400",
     color: "rgba(255,255,255,0.55)",
   },
