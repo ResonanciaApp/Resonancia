@@ -492,7 +492,7 @@ export default function SonidosAncestalesScreen() {
 
         {/* ── Tabs ── */}
         <View style={styles.chipsArea} onLayout={(e) => { chipsTriggerRef.current = e.nativeEvent.layout.y; }}>
-          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} syncVisible={!chipsSticky} />
         </View>
 
         {/* ── Divisor ── */}
