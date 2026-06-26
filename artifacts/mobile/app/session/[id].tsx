@@ -416,8 +416,8 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   relatedCardImg: {
-    width: 110,
-    height: 77,
+    width: 127,
+    height: 89,
     borderRadius: 10,
   },
   relatedCardBody: {
