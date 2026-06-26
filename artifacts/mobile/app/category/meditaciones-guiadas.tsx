@@ -403,12 +403,13 @@ export default function MeditacionesGuiadasScreen() {
         </GhostPill>
       </View>
 
-      {chipsSticky && (
-        <View style={[styles.stickyChipsBar, { top: topPad + 60, backgroundColor: "#0D0A1A" }]}>
-          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
-          <LinearGradient colors={["rgba(0,0,0,0.12)", "transparent"]} style={styles.dividerShadow} pointerEvents="none" />
-        </View>
-      )}
+      <View
+        pointerEvents={chipsSticky ? "auto" : "none"}
+        style={[styles.stickyChipsBar, { top: topPad + 60, backgroundColor: "#0D0A1A", opacity: chipsSticky ? 1 : 0 }]}
+      >
+        <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+        <LinearGradient colors={["rgba(0,0,0,0.12)", "transparent"]} style={styles.dividerShadow} pointerEvents="none" />
+      </View>
 
       <ScrollView
         style={styles.scroll}

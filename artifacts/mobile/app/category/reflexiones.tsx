@@ -381,12 +381,13 @@ export default function ReflexionesScreen() {
         </GhostPill>
       </View>
 
-      {chipsSticky && (
-        <View style={[styles.stickyChipsBar, { top: topPad + 60, backgroundColor: "#060A14" }]}>
-          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
-          <LinearGradient colors={["rgba(0,0,0,0.12)", "transparent"]} style={styles.dividerShadow} pointerEvents="none" />
-        </View>
-      )}
+      <View
+        pointerEvents={chipsSticky ? "auto" : "none"}
+        style={[styles.stickyChipsBar, { top: topPad + 60, backgroundColor: "#060A14", opacity: chipsSticky ? 1 : 0 }]}
+      >
+        <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+        <LinearGradient colors={["rgba(0,0,0,0.12)", "transparent"]} style={styles.dividerShadow} pointerEvents="none" />
+      </View>
 
       <ScrollView
         style={styles.scroll}
