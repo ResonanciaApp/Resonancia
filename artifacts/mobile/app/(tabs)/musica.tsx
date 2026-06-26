@@ -728,7 +728,7 @@ export default function MezcladorScreen() {
                   <GhostPill style={{ transform: [{ translateX: 5 }, { translateY: 0 }], gap: 6 }}>
                     <Pressable
                       onPress={() => { setSettingsMode("palette"); setSettingsVisible(true); }}
-                      style={[styles.headerPillBtn, { width: 42, height: 42 }]}
+                      style={[styles.headerPillBtn, { width: 45, height: 45 }]}
                       hitSlop={8}
                       accessibilityRole="button"
                       accessibilityLabel="Paleta de color del Mezclador"
@@ -737,7 +737,7 @@ export default function MezcladorScreen() {
                     </Pressable>
                     <Pressable
                       onPress={() => { setSettingsMode("filters"); setSettingsVisible(true); }}
-                      style={[styles.headerPillBtn, { width: 42, height: 42 }]}
+                      style={[styles.headerPillBtn, { width: 45, height: 45 }]}
                       hitSlop={8}
                       accessibilityRole="button"
                       accessibilityLabel="Filtros del Mezclador"

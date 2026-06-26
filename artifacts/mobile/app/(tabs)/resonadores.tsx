@@ -671,8 +671,8 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   searchIconBtn: {
-    width: 42,
-    height: 42,
+    width: 45,
+    height: 45,
     alignItems: "center",
     justifyContent: "center",
   },
