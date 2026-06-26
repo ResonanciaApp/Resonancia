@@ -147,7 +147,7 @@ export default function SessionDetailScreen() {
         <View style={[styles.hero, { height: HEADER_H + topPad }]}>
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
-            <Pressable onPress={() => router.back()} style={styles.stickyBackPill}>
+            <Pressable onPress={() => router.back()} style={styles.heroBackPill}>
               <Feather name="arrow-left" size={22} color="#FFF" />
             </Pressable>
           </View>
@@ -509,6 +509,17 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     gap: 12,
     zIndex: 10,
+  },
+  heroBackPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 38,
+    width: 42,
+    borderRadius: 19,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.35)",
+    backgroundColor: "#4A0C0C",
   },
   stickyBackPill: {
     flexDirection: "row",
