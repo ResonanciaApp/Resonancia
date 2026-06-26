@@ -228,10 +228,7 @@ export default function SessionDetailScreen() {
                   <Pressable
                     key={s.id}
                     onPress={() => router.push(`/session/${s.id}` as never)}
-                    style={({ pressed }) => [
-                      styles.relatedCard,
-                      { backgroundColor: "rgba(74,12,12,0.08)", opacity: pressed ? 0.8 : 1 },
-                    ]}
+                    style={({ pressed }) => [styles.relatedCard, { opacity: pressed ? 0.8 : 1 }]}
                   >
                     <Image
                       source={s.image as never}
@@ -414,8 +411,8 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   relatedCardImg: {
-    width: 64,
-    height: 64,
+    width: 90,
+    height: 90,
   },
   relatedCardBody: {
     flex: 1,
