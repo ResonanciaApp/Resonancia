@@ -147,8 +147,8 @@ export default function SessionDetailScreen() {
         <View style={[styles.hero, { height: HEADER_H + topPad }]}>
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
-            <Pressable onPress={() => router.back()} style={[styles.navBtn, { backgroundColor: "rgba(24,17,12,0.5)" }]}>
-              <Feather name="arrow-left" size={20} color="#FFF" />
+            <Pressable onPress={() => router.back()} style={styles.stickyBackPill}>
+              <Feather name="arrow-left" size={16} color="#FFF" />
             </Pressable>
           </View>
         </View>
