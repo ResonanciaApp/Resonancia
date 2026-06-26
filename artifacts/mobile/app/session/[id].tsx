@@ -1,10 +1,9 @@
 import { Feather } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
-import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
+import { GoldGradient } from "@/components/GoldGradient";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import {
@@ -30,8 +29,6 @@ import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
 const HEADER_H = 300;
-const RATINGS_KEY = "@resonance_ratings";
-
 export default function SessionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
@@ -40,30 +37,6 @@ export default function SessionDetailScreen() {
 
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const topPad = Platform.OS === "web" ? 67 : insets.top;
-
-  const [rating, setRating] = useState(0);
-
-  useEffect(() => {
-    if (!id) return;
-    AsyncStorage.getItem(RATINGS_KEY).then((val) => {
-      if (!val) return;
-      const map: Record<string, number> = JSON.parse(val);
-      if (map[id]) setRating(map[id]);
-    });
-  }, [id]);
-
-  const handleRate = useCallback(
-    async (stars: number) => {
-      if (!id) return;
-      setRating(stars);
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      const val = await AsyncStorage.getItem(RATINGS_KEY);
-      const map: Record<string, number> = val ? JSON.parse(val) : {};
-      map[id] = stars;
-      await AsyncStorage.setItem(RATINGS_KEY, JSON.stringify(map));
-    },
-    [id]
-  );
 
   const session = getSessionById(id ?? "");
 
@@ -193,23 +166,11 @@ export default function SessionDetailScreen() {
           {/* Title */}
           <Text style={[styles.title, { color: colors.foreground }]}>{session.title}</Text>
 
-          {/* Meta row: duration · small stars */}
+          {/* Meta row: duration */}
           <View style={styles.metaRow}>
             <View style={styles.metaItem}>
               <Feather name="clock" size={13} color={colors.mutedForeground} />
               <Text style={[styles.metaText, { color: colors.mutedForeground }]}>{session.durationLabel}</Text>
-            </View>
-            {/* Small inline rating */}
-            <View style={styles.metaItem}>
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Pressable key={star} onPress={() => handleRate(star)} hitSlop={4}>
-                  <Feather
-                    name="star"
-                    size={13}
-                    color={star <= rating ? colors.primary : "rgba(212,175,55,0.28)"}
-                  />
-                </Pressable>
-              ))}
             </View>
           </View>
 
@@ -248,7 +209,7 @@ export default function SessionDetailScreen() {
           <View style={styles.actionRow}>
             <Pressable
               onPress={handleFav}
-              style={({ pressed }) => [styles.actionCard, { backgroundColor: actionTint, opacity: pressed ? 0.8 : 1 }]}
+              style={({ pressed }) => [styles.actionCard, { backgroundColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.8 : 1 }]}
             >
               <Feather name="heart" size={20} color={fav ? colors.primary : colors.mutedForeground} />
               <Text style={[styles.actionLabel, { color: fav ? colors.primary : colors.mutedForeground }]}>Guardar</Text>
@@ -256,7 +217,7 @@ export default function SessionDetailScreen() {
 
             <Pressable
               onPress={handleShare}
-              style={({ pressed }) => [styles.actionCard, { backgroundColor: actionTint, opacity: pressed ? 0.8 : 1 }]}
+              style={({ pressed }) => [styles.actionCard, { backgroundColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.8 : 1 }]}
             >
               <Feather name="share-2" size={20} color={colors.mutedForeground} />
               <Text style={[styles.actionLabel, { color: colors.mutedForeground }]}>Compartir</Text>
@@ -386,7 +347,12 @@ export default function SessionDetailScreen() {
             { overflow: "hidden", opacity: pressed ? 0.88 : 1 },
           ]}
         >
-          <GoldGradientFill />
+          <LinearGradient
+            colors={["#D6AD5F", "#B47344"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={StyleSheet.absoluteFill}
+          />
           <Text style={[styles.playBtnText, { color: colors.primaryForeground }]}>
             {isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora"}
           </Text>
