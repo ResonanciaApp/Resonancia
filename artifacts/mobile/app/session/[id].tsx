@@ -58,8 +58,8 @@ export default function SessionDetailScreen() {
   const [localFav, setLocalFav] = useState<boolean | null>(null);
 
   const scrollY = useRef(new Animated.Value(0)).current;
-  const STICKY_START = (HEADER_H + topPad) * 0.6;
-  const STICKY_END   = (HEADER_H + topPad) * 0.8;
+  const STICKY_START = (HEADER_H + topPad) * 0.3;
+  const STICKY_END   = (HEADER_H + topPad) * 0.95;
   const stickyOpacity = scrollY.interpolate({
     inputRange: [STICKY_START, STICKY_END],
     outputRange: [0, 1],
