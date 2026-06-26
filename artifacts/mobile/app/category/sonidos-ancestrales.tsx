@@ -420,18 +420,6 @@ export default function SonidosAncestalesScreen() {
               </Pressable>
             </GhostPill>
           </View>
-          {/* Pildora doble flotante */}
-          <View style={[styles.heroOverlayRight, { top: topPad + 8 }]}>
-            <GhostPill>
-              <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-instrumentos" as never)}>
-                <TibetanBowlIcon size={23} color="#fff" />
-              </Pressable>
-              <View style={styles.headerDivider} />
-              <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
-                <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
-              </Pressable>
-            </GhostPill>
-          </View>
           <View style={styles.heroIconFloat}>
             <View style={styles.heroIconCircle}>
               <Feather name="music" size={32} color={GOLD} />
@@ -532,11 +520,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#2E0510",
   },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
-  headerTitle: { fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },
+  headerTitle: { position: "absolute", left: 0, right: 0, textAlign: "center", fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },
   headerDivider: { width: StyleSheet.hairlineWidth, height: 18, backgroundColor: "rgba(255,255,255,0.18)" },
 
   /* ── Hero ── */
-  heroArea: { height: 250, position: "relative" },
+  heroArea: { height: 280, position: "relative" },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
   heroOverlayRight: { position: "absolute", right: H_PAD, zIndex: 10 },
   heroIconFloat: {
