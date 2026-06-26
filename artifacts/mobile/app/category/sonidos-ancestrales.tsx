@@ -136,73 +136,15 @@ function Chip({ label, sel, onPress }: { label: string; sel: boolean; onPress: (
   );
 }
 
-const CHIP_DUR = 600;
-const CLOSE_SLOT = 38;
-
 function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: {id: string; label: string}[]; activeTab: CatTab|null; onSelect: (id: CatTab)=>void; onClear: ()=>void }) {
-  const progress  = useRef(new Animated.Value(activeTab ? 1 : 0)).current;
-  const offsetsRef= useRef<Record<string,number>>({});
-  const scrollX   = useRef(0);
-  const internalRef = useRef(false);
-  const [targetTx, setTargetTx] = useState(0);
-  // Derive selection state directly from prop — no local displayTab/colorTab
-  const filtered = activeTab !== null;
-
-  const animate = (to: number, done?: ()=>void) =>
-    Animated.timing(progress, { toValue: to, duration: CHIP_DUR, easing: Easing.inOut(Easing.cubic), useNativeDriver: true })
-      .start(({ finished }) => { if (finished) done?.(); });
-
-  const syncProgress = useCallback((tab: CatTab | null) => {
-    if (tab !== null) {
-      const tx = CLOSE_SLOT - ((offsetsRef.current[tab] ?? 0) - scrollX.current);
-      setTargetTx(tx); progress.setValue(1);
-    } else {
-      progress.setValue(0);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleSelect = (id: CatTab) => {
-    internalRef.current = true;
-    setTargetTx(CLOSE_SLOT - ((offsetsRef.current[id]??0) - scrollX.current));
-    onSelect(id); animate(1);
-  };
-  const handleClear = () => {
-    internalRef.current = true;
-    animate(0); onClear();
-  };
-  // Sync progress when activeTab changes from the other ChipRow instance
-  useEffect(() => {
-    if (internalRef.current) { internalRef.current = false; return; }
-    syncProgress(activeTab);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab]);
-  useEffect(() => () => progress.stopAnimation(), [progress]);
-
   return (
-    <View style={styles.animChipWrap}>
-      <Animated.View pointerEvents={filtered?"auto":"none"} style={[styles.animCloseBtn, { opacity: progress }]}>
-        <Pressable onPress={handleClear} hitSlop={10} style={styles.chipCloseBtn}>
-          <Feather name="x" size={15} color={MUTED} />
-        </Pressable>
-      </Animated.View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} scrollEnabled={!filtered}
-        scrollEventThrottle={16} onScroll={(e) => { scrollX.current = e.nativeEvent.contentOffset.x; }}
-        style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
-        {tabs.map((t) => {
-          const isSel = activeTab === t.id;
-          const chipStyle = isSel
-            ? { opacity: 1, zIndex: 2, transform: [{ translateX: progress.interpolate({ inputRange: [0,1], outputRange: [0, targetTx] }) }] }
-            : { opacity: progress.interpolate({ inputRange: [0,1], outputRange: [1,0] }) };
-          return (
-            <Animated.View key={t.id} pointerEvents={filtered && !isSel ? "none" : "auto"}
-              onLayout={(e) => { offsetsRef.current[t.id] = e.nativeEvent.layout.x; }} style={chipStyle}>
-              <Chip label={t.label} sel={isSel} onPress={() => (isSel ? handleClear() : handleSelect(t.id))} />
-            </Animated.View>
-          );
-        })}
-      </ScrollView>
-    </View>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false}
+      style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
+      {tabs.map((t) => (
+        <Chip key={t.id} label={t.label} sel={activeTab === t.id}
+          onPress={() => activeTab === t.id ? onClear() : onSelect(t.id)} />
+      ))}
+    </ScrollView>
   );
 }
 
@@ -582,9 +524,6 @@ const styles = StyleSheet.create({
 
   /* ── Tabs (chips) ── */
   chipsArea: { paddingTop: 1, paddingBottom: 5, overflow: "visible" },
-  animChipWrap: { flexDirection: "row", alignItems: "center" },
-  animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
-  chipCloseBtn: { width: 30, height: 30, borderRadius: 15, backgroundColor: "rgba(74,12,12,0.08)", alignItems: "center", justifyContent: "center" },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 999, backgroundColor: "rgba(255,255,255,0.08)", overflow: "hidden" },
