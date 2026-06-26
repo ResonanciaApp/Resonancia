@@ -1291,10 +1291,10 @@ export default function BibliotecaScreen() {
           </View>
           <GhostPill>
             <Pressable hitSlop={10} onPress={() => setSearchVisible(true)} style={styles.headerIconBtn}>
-              <Feather name="search" size={23} color={TEXT} />
+              <Feather name="search" size={27} color={TEXT} />
             </Pressable>
             <Pressable hitSlop={10} onPress={() => setCreateVisible(true)} style={styles.headerIconBtn}>
-              <Feather name="plus" size={26} color={TEXT} />
+              <Feather name="plus" size={30} color={TEXT} />
             </Pressable>
           </GhostPill>
         </View>

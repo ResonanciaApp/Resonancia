@@ -486,7 +486,7 @@ export default function ResonadoresScreen() {
             <Pressable onPress={toggleSearch} hitSlop={10} style={styles.searchIconBtn}>
               <Feather
                 name={searchVisible ? "x" : "search"}
-                size={23}
+                size={27}
                 color="#FFFFFF"
               />
             </Pressable>

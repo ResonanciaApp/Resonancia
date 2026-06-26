@@ -718,7 +718,7 @@ export default function MezcladorScreen() {
               <View style={styles.headerRow}>
                 <GhostPill style={{ marginLeft: -11, marginRight: 30 }}>
                   <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerPillBtn}>
-                    <MaterialCommunityIcons name="chevron-left" size={28} color="#FAF0EE" />
+                    <MaterialCommunityIcons name="chevron-left" size={32} color="#FAF0EE" />
                   </Pressable>
                 </GhostPill>
                 <View style={{ flex: 1 }}>
@@ -733,7 +733,7 @@ export default function MezcladorScreen() {
                       accessibilityRole="button"
                       accessibilityLabel="Paleta de color del Mezclador"
                     >
-                      <MaterialCommunityIcons name="brush" size={22} color="#FAF0EE" />
+                      <MaterialCommunityIcons name="brush" size={26} color="#FAF0EE" />
                     </Pressable>
                     <Pressable
                       onPress={() => { setSettingsMode("filters"); setSettingsVisible(true); }}
