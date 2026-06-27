@@ -458,6 +458,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 24,
     textAlign: "center",
+    maxWidth: 280,
+    alignSelf: "center",
   },
 
   // Theme tag chips
