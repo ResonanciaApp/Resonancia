@@ -208,7 +208,7 @@ export default function SessionDetailScreen() {
           {/* Category pill */}
           {categoryPill && (
             <LinearGradient
-              colors={["#FFFFFF", "#FFF8EE"]}
+              colors={["#e8dbb4", "#f3e7c3"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.categoryPill}
