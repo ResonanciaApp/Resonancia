@@ -680,7 +680,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 4,
   },
-  relatedCardTitle: { fontSize: 16, fontFamily: "OptimaBold", lineHeight: 21 },
+  relatedCardTitle: { fontSize: 17, fontFamily: "OptimaBold", lineHeight: 22 },
   relatedAuthorRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   relatedAuthorAvatar: { width: 18, height: 18, borderRadius: 9 },
   relatedCardSub: { fontSize: 12, fontFamily: "Jost" },
