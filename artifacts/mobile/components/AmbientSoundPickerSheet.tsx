@@ -63,8 +63,8 @@ type Props = {
   initialSessionVolume?: number;
   /** Valor inicial del slider de ambiente (refleja el volumen del overlay actual) */
   initialAmbientVolume?: number;
-  /** Llamado al entrar al paso "controles" para empezar la previsualización */
-  onPreviewStart?: (soundId: string) => void;
+  /** Llamado al tocar un sonido para previsualización inmediata (null = detener) */
+  onPreviewStart?: (soundId: string | null) => void;
   /** Llamado en tiempo real al mover el slider de sesión */
   onSessionVolumeChange?: (vol: number) => void;
   /** Llamado en tiempo real al mover el slider de ambiente */
@@ -95,7 +95,6 @@ export function AmbientSoundPickerSheet({
 
   const goToControles = () => {
     setStep("controles");
-    if (localSelected) onPreviewStart?.(localSelected);
     Animated.timing(slideAnim, {
       toValue: 1,
       duration: 380,
@@ -198,7 +197,7 @@ export function AmbientSoundPickerSheet({
             {/* Sin sonido chip */}
             <Pressable
               style={[styles.noSoundChip, localSelected === null && styles.noSoundChipSelected]}
-              onPress={() => setLocalSelected(null)}
+              onPress={() => { setLocalSelected(null); onPreviewStart?.(null); }}
             >
               <Feather name="volume-x" size={14} color={localSelected === null ? "#D4AF37" : "rgba(255,255,255,0.65)"} />
               <Text style={[styles.noSoundText, localSelected === null && { color: "#D4AF37" }]}>
@@ -216,7 +215,7 @@ export function AmbientSoundPickerSheet({
                     sound={sound}
                     selected={localSelected === sound.id}
                     fav={true}
-                    onPress={() => setLocalSelected(sound.id)}
+                    onPress={() => { setLocalSelected(sound.id); onPreviewStart?.(sound.id); }}
                     onLongPress={() => setFavPopupSound(sound)}
                   />
                 ))}
@@ -259,7 +258,7 @@ export function AmbientSoundPickerSheet({
                   sound={sound}
                   selected={localSelected === sound.id}
                   fav={favIds.has(sound.id)}
-                  onPress={() => setLocalSelected(sound.id)}
+                  onPress={() => { setLocalSelected(sound.id); onPreviewStart?.(sound.id); }}
                   onLongPress={() => setFavPopupSound(sound)}
                 />
               ))}
