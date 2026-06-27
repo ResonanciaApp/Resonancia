@@ -629,7 +629,7 @@ const styles = StyleSheet.create({
 
   titleText: {
     fontSize: 21,
-    fontFamily: "OptimaBold",
+    fontFamily: "PlayfairDisplay_700Bold",
     color: "white",
     letterSpacing: 0.2,
     marginBottom: 6,
