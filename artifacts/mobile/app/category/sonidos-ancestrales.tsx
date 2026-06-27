@@ -416,11 +416,6 @@ export default function SonidosAncestalesScreen() {
             locations={[0.50, 0.80, 1]}
             style={StyleSheet.absoluteFill}
           />
-          <LinearGradient
-            colors={["transparent", "#160108"]}
-            locations={[0.65, 1]}
-            style={[StyleSheet.absoluteFill, { top: "50%" }]}
-          />
           {/* Flecha atrás flotante */}
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
             <GhostPill style={{ backgroundColor: "#2E0510" }}>
@@ -435,6 +430,9 @@ export default function SonidosAncestalesScreen() {
             </View>
           </View>
         </View>
+
+        {/* ── Degradado borde hero/fondo ── */}
+        <LinearGradient colors={["transparent","#160108"]} style={{ height: 50, marginTop: -50 }} pointerEvents="none" />
 
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
