@@ -434,9 +434,11 @@ export default function SessionDetailScreen() {
               <Text style={[styles.blockTitle, { color: colors.foreground, marginBottom: 0 }]}>
                 {isAncestral
                   ? "Sobre el Sonoterapeuta"
-                  : authors.length > 1
-                    ? "Sobre las voces guía"
-                    : "Sobre la voz guía"}
+                  : isMusica
+                    ? "Sobre el productor/músico"
+                    : authors.length > 1
+                      ? "Sobre las voces guía"
+                      : "Sobre la voz guía"}
               </Text>
               {authors[0] && (
                 <Pressable
