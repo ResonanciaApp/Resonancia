@@ -635,7 +635,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   authorText: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: "Inter_400Regular",
     color: "white",
   },
