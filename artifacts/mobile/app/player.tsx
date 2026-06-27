@@ -423,35 +423,11 @@ export default function PlayerScreen() {
           <Text style={styles.timeLabelText}>-{formatTime(remaining)}</Text>
         </View>
 
-        {/* Título + Autor */}
+        {/* Título */}
         <Text style={styles.titleText} numberOfLines={2}>{currentSession.title}</Text>
-        <Text style={styles.authorText}>{authorLabel}</Text>
 
         {/* Firma Resonancia */}
         <Text style={styles.signature}>RESONANCIA</Text>
-
-        {/* Chip duración loop */}
-        {isLoopSession && (
-          <View style={[styles.durationChip, { marginTop: 14 }]}>
-            <Feather name="clock" size={11} color="rgba(255,255,255,0.75)" />
-            <Text style={styles.durationChipText}>
-              Apagar en {formatRemaining(Math.max(0, totalSeconds - elapsed))}
-            </Text>
-          </View>
-        )}
-
-        {/* Estrellas */}
-        <View style={styles.ratingRow}>
-          {[1, 2, 3, 4, 5].map((star) => (
-            <Pressable key={star} onPress={() => handleRate(star)} hitSlop={6} style={styles.starBtn}>
-              <Feather
-                name="star"
-                size={18}
-                color={star <= rating ? "rgba(255,255,255,0.90)" : "rgba(255,255,255,0.22)"}
-              />
-            </Pressable>
-          ))}
-        </View>
 
         {/* Slider voz guiada */}
         {hasVoiceTrack && (
@@ -503,38 +479,6 @@ export default function PlayerScreen() {
           </View>
         )}
 
-        {/* Sleep timer */}
-        {!isLoopSession && !isFixedMusic && (
-          <View style={styles.timerSection}>
-            <View style={styles.timerHeader}>
-              <Feather name="moon" size={13} color="rgba(255,255,255,0.5)" />
-              <Text style={styles.timerLabel}>Apagar en</Text>
-              {sleepTimerRemaining !== null && (
-                <Text style={styles.timerCountdown}>
-                  · {formatRemaining(sleepTimerRemaining)}
-                </Text>
-              )}
-            </View>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.timerChips}>
-              {TIMER_OPTIONS.map((opt) => {
-                const selected = opt.minutes === selectedTimerMinutes;
-                const locked = opt.minutes !== null && opt.minutes > FREE_TIMER_MAX_MINUTES && !isPremium;
-                return (
-                  <Pressable
-                    key={String(opt.minutes)}
-                    onPress={() => handleSelectTimer(opt.minutes)}
-                    style={[styles.timerChip, selected && styles.timerChipSelected]}
-                  >
-                    {locked && <Feather name="lock" size={11} color="rgba(255,255,255,0.45)" />}
-                    <Text style={[styles.timerChipText, selected && styles.timerChipTextSelected]}>
-                      {opt.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
-          </View>
-        )}
       </ScrollView>
 
       {/* ── Botones flotantes superiores ─────────────────────────────────── */}
