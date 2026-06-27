@@ -339,11 +339,11 @@ export default function PlayerScreen() {
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.22)" }]} />
           )}
           {isLoading ? (
-            <Feather name="loader" size={34} color="white" />
+            <Feather name="loader" size={46} color="white" />
           ) : (
             <Feather
               name={isPlaying ? "pause" : "play"}
-              size={34}
+              size={46}
               color="white"
               style={isPlaying ? undefined : { paddingLeft: 4 }}
             />
