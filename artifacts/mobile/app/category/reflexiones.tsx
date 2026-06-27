@@ -372,6 +372,8 @@ export default function ReflexionesScreen() {
         <View style={styles.heroArea}>
           <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" />
           <LinearGradient colors={["transparent","rgba(0,0,0,0.28)","rgba(0,0,0,0.60)"]} locations={[0.50,0.80,1]} style={StyleSheet.absoluteFill} />
+          {/* Degradado borde hero/fondo */}
+          <LinearGradient colors={["transparent","#160108"]} pointerEvents="none" style={{ position:"absolute", bottom:-30, left:0, right:0, height:60 }} />
           {/* Flecha atrás flotante */}
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
             <GhostPill style={{ backgroundColor: "#2E0510" }}>
@@ -394,9 +396,6 @@ export default function ReflexionesScreen() {
             </View>
           </View>
         </View>
-
-        {/* ── Degradado borde hero/fondo ── */}
-        <LinearGradient colors={["transparent","#160108"]} style={{ height: 50, marginTop: -50 }} pointerEvents="none" />
 
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
@@ -468,7 +467,7 @@ const styles = StyleSheet.create({
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
   heroOverlayRight: { position: "absolute", right: H_PAD, zIndex: 10 },
 
-  heroArea: { height: 238, position: "relative" },
+  heroArea: { height: 238, position: "relative", overflow: "visible" },
   heroIconFloat: { position: "absolute", bottom: -16, left: 0, right: 0, alignItems: "center", zIndex: 2 },
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(60,5,18,0.85)", borderWidth: 1, borderColor: "rgba(212,175,55,0.60)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
