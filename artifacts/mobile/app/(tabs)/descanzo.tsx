@@ -30,7 +30,7 @@ const STAR_COUNT = 60;
 const STARS = Array.from({ length: STAR_COUNT }, (_, i) => ({
   key: i,
   x: Math.random() * W,
-  y: Math.random() * H * 0.55,
+  y: Math.random() * H,
   size: 0.8 + Math.random() * 1.8,
   minOpacity: 0.15 + Math.random() * 0.25,
   maxOpacity: 0.55 + Math.random() * 0.45,
