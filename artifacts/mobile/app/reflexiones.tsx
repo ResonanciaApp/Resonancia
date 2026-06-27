@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useRef } from "react";
 import {
   Animated,
   FlatList,
@@ -20,8 +20,6 @@ import { QUOTES, getQuoteOfTheDay, type Quote } from "@/data/quotes";
 
 const H_PAD   = 16;
 const GOLD    = "#D4AF37";
-const PAGE_SIZE = 8;
-
 const AUTHOR_COLORS: Record<string, string> = {
   "Jiddu Krishnamurti": "#7B4FA6",
   "Papaji":              "#C4A030",
@@ -62,7 +60,7 @@ export default function ReflexionesScreen() {
   const topPad   = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [visibleCount] = useState(1);
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const FADE_START = 100;
@@ -71,10 +69,6 @@ export default function ReflexionesScreen() {
     outputRange: [0, 1],
     extrapolate: "clamp",
   });
-
-  const loadMore = useCallback(() => {
-    setVisibleCount((c) => Math.min(c + PAGE_SIZE, ALL_QUOTES.length));
-  }, []);
 
   const visible = ALL_QUOTES.slice(0, visibleCount);
 
@@ -170,8 +164,6 @@ export default function ReflexionesScreen() {
         renderItem={renderItem}
         ListHeaderComponent={ListHeader}
         ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
-        onEndReached={loadMore}
-        onEndReachedThreshold={0.5}
         contentContainerStyle={{
           paddingBottom: 100 + bottomPad,
           paddingHorizontal: H_PAD,
