@@ -573,19 +573,23 @@ export default function PlayerScreen() {
           <Text style={styles.timeLabelText}>-{formatTime(remaining)}</Text>
         </View>
 
-        {/* Título */}
-        <Text style={styles.titleText} numberOfLines={2}>{currentSession.title}</Text>
-        <Text style={styles.authorText}>{authorLabel}</Text>
+        {/* Título + autor, con botón Terminar superpuesto en pausa */}
+        <View style={{ position: "relative" }}>
+          <Text style={styles.titleText} numberOfLines={2}>{currentSession.title}</Text>
+          <Text style={styles.authorText}>{authorLabel}</Text>
 
-        {/* Botón Terminar — visible solo en pausa */}
-        {!isPlaying && (
-          <Pressable
-            onPress={() => { stop(); router.back(); }}
-            style={({ pressed }) => [styles.terminarBtn, { opacity: pressed ? 0.85 : 1 }]}
-          >
-            <Text style={styles.terminarText}>Terminar</Text>
-          </Pressable>
-        )}
+          {!isPlaying && (
+            <Pressable
+              onPress={() => { stop(); router.back(); }}
+              style={({ pressed }) => [
+                styles.terminarBtn,
+                { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, opacity: pressed ? 0.92 : 1 },
+              ]}
+            >
+              <Text style={styles.terminarText}>Terminar</Text>
+            </Pressable>
+          )}
+        </View>
 
         {/* Slider voz guiada */}
         {hasVoiceTrack && (
