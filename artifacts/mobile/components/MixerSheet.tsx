@@ -10,6 +10,7 @@
  * ─────────────────────────────────────────────────────────────────
  */
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import Svg, { Path, Rect } from "react-native-svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
@@ -913,11 +914,16 @@ export function MixerSheet() {
                 accessibilityRole="button"
               >
                 <View style={[styles.footerPlayCircle, { backgroundColor: palette.footerCircleBg }]}>
-                  <MaterialCommunityIcons
-                    name={isPlaying ? "pause" : "play"}
-                    size={56}
-                    color={palette.iconColor}
-                  />
+                  <Svg width={40} height={40} viewBox="0 0 48 48">
+                    {isPlaying ? (
+                      <>
+                        <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill={palette.iconColor} />
+                        <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill={palette.iconColor} />
+                      </>
+                    ) : (
+                      <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill={palette.iconColor} />
+                    )}
+                  </Svg>
                 </View>
               </Pressable>
 
