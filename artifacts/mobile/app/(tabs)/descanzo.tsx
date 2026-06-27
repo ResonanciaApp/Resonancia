@@ -205,10 +205,10 @@ export default function DescansoScreen() {
 
         {/* ── Carruseles ── */}
         <View style={styles.carouselsWrap}>
-          {DESCANSO_TAG_CARDS.map((tag) => {
+          {DESCANSO_TAG_CARDS.map((tag, idx) => {
             const sessions = getSessionsByDescansoTag(tag.label);
             return (
-              <View key={tag.id} style={styles.section}>
+              <View key={tag.id} style={[styles.section, idx > 0 && { marginTop: 15 }]}>
                 <View style={styles.catHeader}>
                   <Text style={[styles.catTitle, { color: colors.foreground }]} numberOfLines={1}>
                     {tag.label}
