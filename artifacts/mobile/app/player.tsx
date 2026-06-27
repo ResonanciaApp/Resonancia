@@ -349,7 +349,7 @@ export default function PlayerScreen() {
           ) : (
             <Svg width={46} height={46} viewBox="0 0 46 46">
               <Path
-                d="M 15.1 9.1 Q 10 6 10 12 L 10 34 Q 10 40 15.1 36.9 L 32.9 26.1 Q 38 23 32.9 19.9 Z"
+                d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
                 fill="white"
               />
             </Svg>
