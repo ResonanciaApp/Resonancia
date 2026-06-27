@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   backBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
-  pageTitle: { fontSize: 24, fontWeight: "700", letterSpacing: 0.4 },
+  pageTitle: { fontSize: 24, fontFamily: "OptimaBold", letterSpacing: 0.4 },
   empty: { alignItems: "center", paddingVertical: 80, gap: 10 },
-  emptyTitle: { fontSize: 16, fontWeight: "700" },
-  emptySub: { fontSize: 13, textAlign: "center" },
+  emptyTitle: { fontSize: 16, fontFamily: "OptimaBold" },
+  emptySub: { fontSize: 13, fontFamily: "Jost", textAlign: "center" },
 });

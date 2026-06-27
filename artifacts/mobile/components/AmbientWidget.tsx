@@ -223,6 +223,7 @@ const styles = StyleSheet.create({
   },
   sceneLabel: {
     color: "#587060",
+    fontFamily: "Jost",
     fontSize: 9,
     fontWeight: "500",
     letterSpacing: 0.2,

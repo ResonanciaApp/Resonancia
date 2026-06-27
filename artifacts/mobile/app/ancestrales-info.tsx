@@ -382,18 +382,18 @@ const styles = StyleSheet.create({
     borderRadius: 20, paddingHorizontal: 12, paddingVertical: 4,
     marginBottom: 18,
   },
-  heroCategoryText: { color: GOLD, fontSize: 10, fontWeight: "700", letterSpacing: 1.5 },
+  heroCategoryText: { color: GOLD, fontSize: 10, fontFamily: "OptimaBold", letterSpacing: 1.5 },
   heroTitle: {
-    fontSize: 46, fontWeight: "800",
+    fontSize: 46, fontFamily: "OptimaBold",
     color: TEXT, lineHeight: 52,
     marginBottom: 16,
   },
   heroTagline: {
-    fontSize: 15, color: "rgba(244,218,213,0.75)",
+    fontSize: 15, fontFamily: "Jost", color: "rgba(244,218,213,0.75)",
     lineHeight: 22, marginBottom: 48,
   },
   scrollIndicator: { alignItems: "center", gap: 6 },
-  scrollText: { fontSize: 11, color: GOLD, letterSpacing: 0.8 },
+  scrollText: { fontSize: 11, fontFamily: "Jost", color: GOLD, letterSpacing: 0.8 },
 
   // ── Secciones genéricas ────────────────────────────────────────────────────
   section: { paddingHorizontal: 24, paddingTop: 52, paddingBottom: 20 },
@@ -402,15 +402,15 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   sectionTag: {
-    fontSize: 10, fontWeight: "700", letterSpacing: 2,
+    fontSize: 10, fontFamily: "OptimaBold", letterSpacing: 2,
     color: GOLD, marginBottom: 10,
   },
   sectionTitle: {
-    fontSize: 32, fontWeight: "800",
+    fontSize: 32, fontFamily: "OptimaBold",
     color: TEXT, lineHeight: 38, marginBottom: 18,
   },
   sectionBody: {
-    fontSize: 15, color: MUTED, lineHeight: 24,
+    fontSize: 15, fontFamily: "Jost", color: MUTED, lineHeight: 24,
   },
 
   // ── Intro imagen ───────────────────────────────────────────────────────────
@@ -435,19 +435,19 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     marginBottom: 12,
   },
-  benefitLabel: { fontSize: 16, fontWeight: "700", color: TEXT, marginBottom: 6 },
-  benefitSub:   { fontSize: 13, color: MUTED, lineHeight: 19 },
+  benefitLabel: { fontSize: 16, fontFamily: "OptimaBold", color: TEXT, marginBottom: 6 },
+  benefitSub:   { fontSize: 13, fontFamily: "Jost", color: MUTED, lineHeight: 19 },
 
   // ── Instrumentos ───────────────────────────────────────────────────────────
   instCard: { marginTop: 28 },
   instImgWrap: { borderRadius: 16, overflow: "hidden", height: 200, justifyContent: "flex-end" },
   instImg:  { ...StyleSheet.absoluteFillObject },
   instName: {
-    fontSize: 22, fontWeight: "800",
+    fontSize: 22, fontFamily: "OptimaBold",
     color: TEXT, padding: 16,
   },
   instDesc: {
-    fontSize: 14, color: MUTED, lineHeight: 21,
+    fontSize: 14, fontFamily: "Jost", color: MUTED, lineHeight: 21,
     marginTop: 12,
   },
 
@@ -460,9 +460,9 @@ const styles = StyleSheet.create({
   freqBar:     { width: 5 },
   freqContent: { flex: 1, padding: 18 },
   freqHeader:  { flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 },
-  freqName:    { fontSize: 18, fontWeight: "800", color: TEXT },
-  freqHz:      { fontSize: 11, color: GOLD, fontWeight: "600", letterSpacing: 0.5 },
-  freqDesc:    { fontSize: 13, color: MUTED, lineHeight: 20 },
+  freqName:    { fontSize: 18, fontFamily: "OptimaBold", color: TEXT },
+  freqHz:      { fontSize: 11, fontFamily: "Jost", color: GOLD, fontWeight: "600", letterSpacing: 0.5 },
+  freqDesc:    { fontSize: 13, fontFamily: "Jost", color: MUTED, lineHeight: 20 },
 
   // ── CTA ────────────────────────────────────────────────────────────────────
   ctaSection: {
@@ -475,20 +475,20 @@ const styles = StyleSheet.create({
   },
   ctaContent: { paddingHorizontal: 24, paddingTop: 60, paddingBottom: 20 },
   ctaEyebrow: {
-    fontSize: 10, fontWeight: "700", letterSpacing: 2,
+    fontSize: 10, fontFamily: "OptimaBold", letterSpacing: 2,
     color: GOLD, marginBottom: 10,
   },
   ctaTitle: {
-    fontSize: 36, fontWeight: "800",
+    fontSize: 36, fontFamily: "OptimaBold",
     color: TEXT, lineHeight: 42, marginBottom: 16,
   },
   ctaBody: {
-    fontSize: 14, color: MUTED, lineHeight: 22, marginBottom: 36,
+    fontSize: 14, fontFamily: "Jost", color: MUTED, lineHeight: 22, marginBottom: 36,
   },
   ctaBtn: {
     flexDirection: "row", alignItems: "center", justifyContent: "center",
     gap: 10, height: 52, borderRadius: 26,
     overflow: "hidden",
   },
-  ctaBtnText: { fontSize: 16, fontWeight: "700", color: BG },
+  ctaBtnText: { fontSize: 16, fontFamily: "OptimaBold", color: BG },
 });

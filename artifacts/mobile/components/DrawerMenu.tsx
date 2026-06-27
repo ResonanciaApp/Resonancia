@@ -307,20 +307,21 @@ const styles = StyleSheet.create({
   },
   profileName: {
     color: "#FFFFFF",
+    fontFamily: "OptimaBold",
     fontSize: 15,
-    fontWeight: "700",
     letterSpacing: 0.2,
   },
   profileNameMuted: {
     color: "rgba(250,240,238,0.45)",
+    fontFamily: "Jost",
     fontSize: 14,
     fontWeight: "500",
     letterSpacing: 0.2,
   },
   profileInitial: {
     color: "#D4AF37",
+    fontFamily: "OptimaBold",
     fontSize: 20,
-    fontWeight: "700",
     letterSpacing: 0.5,
   },
   verPerfilBtn: {
@@ -331,8 +332,8 @@ const styles = StyleSheet.create({
   },
   verPerfilText: {
     color: "#D4AF37",
+    fontFamily: "OptimaBold",
     fontSize: 12,
-    fontWeight: "600",
     letterSpacing: 0.3,
   },
   closeBtn: {
@@ -358,12 +359,14 @@ const styles = StyleSheet.create({
   itemIcon: { width: 26, alignItems: "center" },
   itemLabel: {
     color: "#FFFFFF",
+    fontFamily: "Jost",
     fontSize: 15,
     fontWeight: "500",
     letterSpacing: 0.2,
   },
   itemLabelMuted: {
     color: "rgba(255,255,255,0.7)",
+    fontFamily: "Jost",
     fontSize: 14,
     fontWeight: "400",
   },

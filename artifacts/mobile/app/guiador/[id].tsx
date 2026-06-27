@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   nameRow: { flexDirection: "row", alignItems: "center" },
-  name: { fontSize: 24, fontWeight: "700", letterSpacing: 0.3 },
+  name: { fontSize: 24, fontFamily: "OptimaBold", letterSpacing: 0.3 },
   certChip: {
     flexDirection: "row",
     alignItems: "center",
@@ -291,15 +291,15 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     marginTop: 8,
   },
-  certText: { fontSize: 11, fontWeight: "700", letterSpacing: 0.3 },
+  certText: { fontSize: 11, fontFamily: "Jost", fontWeight: "700", letterSpacing: 0.3 },
   metaRow: { flexDirection: "row", alignItems: "center", marginTop: 10, flexWrap: "wrap", justifyContent: "center" },
   metaItem: { flexDirection: "row", alignItems: "center", gap: 4 },
-  metaText: { fontSize: 12 },
+  metaText: { fontSize: 12, fontFamily: "Jost" },
   metaDot: { width: 3, height: 3, borderRadius: 2, backgroundColor: "rgba(244,218,213,0.30)", marginHorizontal: 8 },
-  trackCount: { fontSize: 12, fontWeight: "600", marginTop: 10 },
+  trackCount: { fontSize: 12, fontFamily: "Jost", fontWeight: "600", marginTop: 10 },
 
   section: {},
-  bio: { fontSize: 14, lineHeight: 21, textAlign: "center", marginTop: 16 },
+  bio: { fontSize: 14, fontFamily: "Jost", lineHeight: 21, textAlign: "center", marginTop: 16 },
 
   linksRow: { flexDirection: "row", flexWrap: "wrap", gap: 8, justifyContent: "center", marginTop: 16 },
   linkChip: {
@@ -311,10 +311,10 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderWidth: 1,
   },
-  linkText: { fontSize: 13, fontWeight: "600" },
+  linkText: { fontSize: 13, fontFamily: "Jost", fontWeight: "600" },
 
-  sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, marginBottom: 12 },
-  empty: { fontSize: 14, lineHeight: 21 },
+  sectionTitle: { fontSize: 18, fontFamily: "OptimaBold", letterSpacing: 0.3, marginBottom: 12 },
+  empty: { fontSize: 14, fontFamily: "Jost", lineHeight: 21 },
 
   trackRow: {
     flexDirection: "row",
@@ -326,13 +326,13 @@ const styles = StyleSheet.create({
   trackImgWrap: { width: 52, height: 52, borderRadius: 10, overflow: "hidden", marginRight: 12 },
   trackImg: { width: 52, height: 52 },
   trackMeta: { flex: 1, marginRight: 10 },
-  trackTitle: { fontSize: 14, fontWeight: "700" },
-  trackSub: { fontSize: 12, marginTop: 3 },
+  trackTitle: { fontSize: 14, fontFamily: "Jost", fontWeight: "700" },
+  trackSub: { fontSize: 12, fontFamily: "Jost", marginTop: 3 },
   playBtn: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },
 
   notFound: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, gap: 10 },
-  notFoundTitle: { fontSize: 18, fontWeight: "700" },
-  notFoundSub: { fontSize: 14, textAlign: "center", lineHeight: 21 },
+  notFoundTitle: { fontSize: 18, fontFamily: "OptimaBold" },
+  notFoundSub: { fontSize: 14, fontFamily: "Jost", textAlign: "center", lineHeight: 21 },
 
   bookingBtn: {
     flexDirection: "row",
@@ -351,11 +351,12 @@ const styles = StyleSheet.create({
   },
   bookingBtnTitle: {
     fontSize: 15,
-    fontWeight: "700",
+    fontFamily: "OptimaBold",
     letterSpacing: 0.2,
   },
   bookingBtnSub: {
     fontSize: 12,
+    fontFamily: "Jost",
     marginTop: 2,
   },
 });

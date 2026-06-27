@@ -139,6 +139,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   cardTitle: {
+    fontFamily: "Jost",
     fontSize: 13,
     fontWeight: "600",
     lineHeight: 18,
@@ -155,6 +156,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
   },
   durationBadgeText: {
+    fontFamily: "Jost",
     fontSize: 11,
     fontWeight: "600",
     color: "#FFFFFF",
@@ -174,8 +176,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 6,
     left: 8,
+    fontFamily: "OptimaBold",
     fontSize: 13,
-    fontWeight: "700",
     color: "#fff",
     textShadowColor: "rgba(0,0,0,0.85)",
     textShadowOffset: { width: 0, height: 1 },
@@ -193,6 +195,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   hAuthor: {
+    fontFamily: "Jost",
     fontSize: 13,
     flex: 1,
   },
@@ -217,13 +220,14 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   hCategory: {
+    fontFamily: "Jost",
     fontSize: 8,
     letterSpacing: 0.7,
     textTransform: "uppercase",
   },
   hTitle: {
+    fontFamily: "OptimaBold",
     fontSize: 16,
-    fontWeight: "700",
     lineHeight: 21,
     marginBottom: 3,
   },
@@ -232,6 +236,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   hDuration: {
+    fontFamily: "Jost",
     fontSize: 10,
   },
   freqPill: {
@@ -242,6 +247,7 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
   },
   freqText: {
+    fontFamily: "Jost",
     fontSize: 9,
     letterSpacing: 0.5,
   },

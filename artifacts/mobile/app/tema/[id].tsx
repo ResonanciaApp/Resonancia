@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   },
   stickyTitle: {
     fontSize: 22,
-    fontWeight: "700",
+    fontFamily: "OptimaBold",
     flex: 1,
     textAlign: "center",
     paddingHorizontal: 8,
@@ -253,13 +253,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: "700",
+    fontFamily: "OptimaBold",
     letterSpacing: 0.2,
     textAlign: "center",
     marginBottom: 12,
   },
   description: {
     fontSize: 14,
+    fontFamily: "Jost",
     lineHeight: 22,
     textAlign: "center",
     maxWidth: 300,
@@ -286,6 +287,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 15,
+    fontFamily: "Jost",
     fontWeight: "600",
   },
 });

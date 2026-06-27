@@ -651,14 +651,15 @@ const styles = StyleSheet.create({
   },
   bannerText: {
     fontSize: 17,
-    fontWeight: "600",
     color: "#FFFFFF",
     textAlign: "center",
     letterSpacing: 0.5,
     textShadowColor: "rgba(0,0,0,0.6)",
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 8,
+    fontFamily: "OptimaBold",
   },
+
   titleRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -678,14 +679,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 27,
-    fontWeight: "700",
     color: "#FAF0EE",
     letterSpacing: 0.5,
+    fontFamily: "OptimaBold",
   },
   subtitle: {
     fontSize: 13,
     color: "rgba(244,218,213,0.45)",
     marginBottom: 10,
+    fontFamily: "Jost",
   },
 
   searchWrap: {
@@ -704,7 +706,9 @@ const styles = StyleSheet.create({
     color: "#FAF0EE",
     fontSize: 13,
     paddingVertical: 0,
+    fontFamily: "Jost",
   },
+
 
   tabPill: {
     flexDirection: "row",
@@ -725,24 +729,27 @@ const styles = StyleSheet.create({
   tabBtnActive: {},
   tabBtnText: {
     fontSize: 15,
-    fontWeight: "600",
     color: "rgba(255,255,255,0.70)",
+    fontFamily: "OptimaBold",
   },
   tabBtnTextActive: {
     color: "#1B060F",
-    fontWeight: "700",
+    fontFamily: "OptimaBold",
   },
   tabBtnBajada: {
     fontSize: 9,
-    fontWeight: "400",
     color: "rgba(255,255,255,0.50)",
     textAlign: "center",
     marginTop: 1,
     letterSpacing: 0.2,
+    fontFamily: "Jost",
+    fontWeight: "400",
   },
   tabBtnBajadaActive: {
     color: "rgba(27,6,15,0.65)",
+    fontFamily: "Jost",
   },
+
 
   // ── Chevron filter ──────────────────────────────────────────────────────────
   chevronWrap: {
@@ -764,10 +771,12 @@ const styles = StyleSheet.create({
   },
   chevronTriggerText: {
     fontSize: 13,
-    fontWeight: "500",
     color: "rgba(255,255,255,0.85)",
     letterSpacing: 0.2,
+    fontFamily: "Jost",
+    fontWeight: "500",
   },
+
   chevronDropdown: {
     position: "absolute",
     top: 44,
@@ -796,13 +805,16 @@ const styles = StyleSheet.create({
   },
   chevronOptionText: {
     fontSize: 13,
-    fontWeight: "400",
     color: "rgba(255,255,255,0.80)",
+    fontFamily: "Jost",
+    fontWeight: "400",
   },
   chevronOptionTextSel: {
     color: "#E9C46A",
+    fontFamily: "Jost",
     fontWeight: "600",
   },
+
 
   filtersScroll: { paddingHorizontal: H_PAD, paddingBottom: 6 },
 
@@ -832,8 +844,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.10)",
     overflow: "hidden",
   },
-  chipText: { fontSize: 13, fontWeight: "400", color: "#FFFFFF" },
-  chipTextSel: { color: "#1B060F", fontWeight: "700" },
+  chipText: { fontSize: 13, color: "#FFFFFF", fontFamily: "Jost", fontWeight: "400" },
+  chipTextSel: { color: "#1B060F", fontFamily: "OptimaBold" },
+
 
   // Grid
   grid: { paddingHorizontal: H_PAD, paddingTop: 0 },
@@ -869,29 +882,32 @@ const styles = StyleSheet.create({
   cardInfo: { alignItems: "center", paddingHorizontal: 6 },
   cardName: {
     fontSize: 12,
-    fontWeight: "700",
     color: "#FAF0EE",
     marginBottom: 2,
     textAlign: "center",
+    fontFamily: "OptimaBold",
   },
   cardTag: {
     fontSize: 10,
-    fontWeight: "400",
     color: "rgba(255,255,255,0.55)",
     textAlign: "center",
     marginBottom: 3,
+    fontFamily: "Jost",
+    fontWeight: "400",
   },
   cardSub: {
     fontSize: 10,
     color: "rgba(212,175,55,0.75)",
     marginBottom: 4,
     textAlign: "center",
+    fontFamily: "Jost",
   },
   locationRow: { flexDirection: "row", alignItems: "center", gap: 3 },
-  cardLocation: { fontSize: 10, color: "rgba(244,218,213,0.40)", textAlign: "center" },
+  cardLocation: { fontSize: 10, color: "rgba(244,218,213,0.40)", textAlign: "center", fontFamily: "Jost" },
 
   empty: { alignItems: "center", paddingTop: 60, gap: 12 },
-  emptyText: { fontSize: 14, color: "rgba(244,218,213,0.30)" },
+  emptyText: { fontSize: 14, color: "rgba(244,218,213,0.30)", fontFamily: "Jost" },
+
   loadMoreBtn: {
     alignSelf: "center",
     marginTop: 8,

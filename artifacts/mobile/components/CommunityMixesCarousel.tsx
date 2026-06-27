@@ -428,9 +428,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 3,
   },
-  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3 },
-  verTodas: { fontSize: 13, fontWeight: "500" },
-
+  sectionTitle: {
+    fontFamily: "OptimaBold",
+    fontSize: 20,
+    letterSpacing: 0.3,
+  },
+  verTodas: {
+    fontFamily: "Jost",
+    fontSize: 13,
+    fontWeight: "500",
+  },
   // Portada / Avatar
   avatarWrap: { flexShrink: 0 },
   avatarImg: {
@@ -454,8 +461,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.30)",
   },
-  avatarInitial: { fontSize: 13, fontWeight: "700", color: GOLD },
-
+  avatarInitial: {
+    fontFamily: "OptimaBold",
+    fontSize: 13,
+    color: GOLD,
+  },
   // Empty
   emptyState: {
     alignItems: "center",
@@ -464,9 +474,17 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     marginTop: 12,
   },
-  emptyText: { fontSize: 14, fontWeight: "600" },
-  emptySub: { fontSize: 12, textAlign: "center", paddingHorizontal: 20 },
-
+  emptyText: {
+    fontFamily: "Jost",
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  emptySub: {
+    fontFamily: "Jost",
+    fontSize: 12,
+    textAlign: "center",
+    paddingHorizontal: 20,
+  },
   // Fila
   row: {
     flexDirection: "row",
@@ -476,7 +494,12 @@ const styles = StyleSheet.create({
   },
   info: { flex: 1, minWidth: 0 },
   nameRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 },
-  mixName: { fontSize: 13, fontWeight: "600", flexShrink: 1 },
+  mixName: {
+    fontFamily: "Jost",
+    fontSize: 13,
+    fontWeight: "600",
+    flexShrink: 1,
+  },
   trendBadge: {
     backgroundColor: "rgba(212,175,55,0.12)",
     borderRadius: 4,
@@ -484,16 +507,41 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
     flexShrink: 0,
   },
-  trendText: { fontSize: 8, fontWeight: "700", letterSpacing: 0.5 },
+  trendText: {
+    fontFamily: "OptimaBold",
+    fontSize: 8,
+    letterSpacing: 0.5,
+  },
   authorRow: { flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 2 },
   authorAvatar: { width: 16, height: 16, borderRadius: 8, overflow: "hidden", flexShrink: 0 },
   authorAvatarFallback: { backgroundColor: "rgba(212,175,55,0.20)", alignItems: "center", justifyContent: "center" },
-  authorInitial: { fontSize: 8, fontWeight: "700", color: GOLD },
-  mixCreator: { fontSize: 9, flexShrink: 1 },
-  mixAuthor: { fontSize: 10, marginTop: 2 },
-  mixCount: { fontSize: 12, fontWeight: "500" },
+  authorInitial: {
+    fontFamily: "OptimaBold",
+    fontSize: 8,
+    color: GOLD,
+  },
+  mixCreator: {
+    fontFamily: "Jost",
+    fontSize: 9,
+    flexShrink: 1,
+  },
+  mixAuthor: {
+    fontFamily: "Jost",
+    fontSize: 10,
+    marginTop: 2,
+  },
+  mixCount: {
+    fontFamily: "Jost",
+    fontSize: 12,
+    fontWeight: "500",
+  },
   likeChip: { flexDirection: "row", alignItems: "center", gap: 3, flexShrink: 0 },
-  likeCount: { fontSize: 10, fontWeight: "600", color: GOLD },
+  likeCount: {
+    fontFamily: "Jost",
+    fontSize: 10,
+    fontWeight: "600",
+    color: GOLD,
+  },
   dotsBtn: {
     width: 32,
     height: 32,
@@ -512,7 +560,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 8,
   },
-  verMasText: { fontSize: 13 },
+  verMasText: {
+    fontFamily: "Jost",
+    fontSize: 13,
+  },
 });
 
 const menuStyles = StyleSheet.create({
@@ -536,8 +587,15 @@ const menuStyles = StyleSheet.create({
     gap: 12,
     marginBottom: 14,
   },
-  mixName: { fontSize: 15, fontWeight: "700", marginBottom: 2 },
-  mixMeta: { fontSize: 12 },
+  mixName: {
+    fontFamily: "OptimaBold",
+    fontSize: 15,
+    marginBottom: 2,
+  },
+  mixMeta: {
+    fontFamily: "Jost",
+    fontSize: 12,
+  },
   closeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
   sep: { height: StyleSheet.hairlineWidth },
   action: {
@@ -546,5 +604,9 @@ const menuStyles = StyleSheet.create({
     paddingVertical: 16,
   },
   actionIcon: { width: 32, marginRight: 12 },
-  actionLabel: { flex: 1, fontSize: 16 },
+  actionLabel: {
+    flex: 1,
+    fontFamily: "Jost",
+    fontSize: 16,
+  },
 });

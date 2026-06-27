@@ -204,10 +204,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  headerTitle: { fontSize: 17, fontWeight: "700", color: TEXT },
+  headerTitle: { fontSize: 17, fontFamily: "OptimaBold", color: TEXT },
   intro: {
     fontSize: 14,
     lineHeight: 21,
+    fontFamily: "Jost",
     color: MUTED,
     paddingHorizontal: H_PAD + 4,
     marginTop: 4,
@@ -242,12 +243,13 @@ const styles = StyleSheet.create({
   },
   bannerTitle: {
     fontSize: 30,
-    fontWeight: "800",
+    fontFamily: "OptimaBold",
     color: GOLD,
     letterSpacing: 0.5,
   },
   bannerBajada: {
     fontSize: 13.5,
+    fontFamily: "Jost",
     color: "rgba(250,240,238,0.85)",
     marginTop: 4,
   },
@@ -275,6 +277,7 @@ const styles = StyleSheet.create({
   benefitText: {
     flex: 1,
     fontSize: 14.5,
+    fontFamily: "Jost",
     color: TEXT,
     lineHeight: 20,
   },
@@ -292,7 +295,7 @@ const styles = StyleSheet.create({
   },
   ctaBtnText: {
     fontSize: 15.5,
-    fontWeight: "700",
+    fontFamily: "OptimaBold",
     color: "#1B060F",
   },
 });

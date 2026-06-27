@@ -224,16 +224,17 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
+    fontFamily: "OptimaBold",
     fontSize: 20,
-    fontWeight: "700",
     textAlign: "center",
   },
   sectionTitle: {
+    fontFamily: "OptimaBold",
     fontSize: 15,
-    fontWeight: "700",
     marginBottom: 2,
   },
   sectionHint: {
+    fontFamily: "Jost",
     fontSize: 12,
     marginBottom: 12,
   },
@@ -252,6 +253,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   chipText: {
+    fontFamily: "Jost",
     fontSize: 13,
     fontWeight: "500",
   },
@@ -280,11 +282,12 @@ const styles = StyleSheet.create({
     borderColor: PRIMARY,
   },
   swatchCheck: {
+    fontFamily: "OptimaBold",
     fontSize: 26,
-    fontWeight: "900",
     color: "#1B060F",
   },
   swatchLabelBig: {
+    fontFamily: "Jost",
     fontSize: 14,
     fontWeight: "500",
     marginTop: 10,
@@ -304,8 +307,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(190,150,80,0.18)",
   },
   clearBtnText: {
+    fontFamily: "OptimaBold",
     fontSize: 15,
-    fontWeight: "700",
     color: "#0B0F14",
   },
 });

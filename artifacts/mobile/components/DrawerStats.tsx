@@ -88,12 +88,13 @@ const styles = StyleSheet.create({
   },
   cardValue: {
     color: "#FAF0EE",
+    fontFamily: "OptimaBold",
     fontSize: 20,
-    fontWeight: "700",
     letterSpacing: 0.2,
   },
   cardLabel: {
     color: "rgba(255,255,255,0.9)",
+    fontFamily: "Jost",
     fontSize: 11,
     fontWeight: "400",
     letterSpacing: 0.3,
@@ -108,8 +109,8 @@ const styles = StyleSheet.create({
   linkPressed: { opacity: 0.6 },
   linkText: {
     color: "#D4AF37",
+    fontFamily: "OptimaBold",
     fontSize: 12,
-    fontWeight: "600",
     letterSpacing: 0.2,
   },
 });

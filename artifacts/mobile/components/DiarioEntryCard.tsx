@@ -124,8 +124,24 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
   },
-  badgeText: { fontSize: 10, fontWeight: "700", letterSpacing: 0.5 },
-  date: { fontSize: 10 },
-  text: { fontSize: 13, lineHeight: 20 },
-  hint: { fontSize: 10, marginTop: 2, letterSpacing: 0.3 },
+  badgeText: {
+    fontFamily: "OptimaBold",
+    fontSize: 10,
+    letterSpacing: 0.5,
+  },
+  date: {
+    fontFamily: "Jost",
+    fontSize: 10,
+  },
+  text: {
+    fontFamily: "Jost",
+    fontSize: 13,
+    lineHeight: 20,
+  },
+  hint: {
+    fontFamily: "Jost",
+    fontSize: 10,
+    marginTop: 2,
+    letterSpacing: 0.3,
+  },
 });

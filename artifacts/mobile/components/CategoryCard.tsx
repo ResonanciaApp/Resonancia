@@ -99,17 +99,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
+    fontFamily: "OptimaBold",
     fontSize: 14,
-    fontWeight: "600",
     lineHeight: 18,
     marginBottom: 4,
   },
   subtitle: {
+    fontFamily: "Jost",
     fontSize: 12,
     lineHeight: 16,
     marginBottom: 6,
   },
   count: {
+    fontFamily: "Jost",
     fontSize: 11,
     letterSpacing: 0.5,
   },

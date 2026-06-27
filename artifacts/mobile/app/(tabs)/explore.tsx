@@ -498,8 +498,8 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     borderWidth: 1, borderColor: "rgba(212,175,55,0.25)",
   },
-  pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#FFFFFF" },
-  pageSubtitle: { fontSize: 14, color: "rgba(244,218,213,0.55)", marginTop: 2 },
+  pageTitle:    { fontSize: 27, letterSpacing: 0.5, marginBottom: 4, color: "#FFFFFF", fontFamily: "OptimaBold" },
+  pageSubtitle: { fontSize: 14, color: "rgba(244,218,213,0.55)", marginTop: 2, fontFamily: "Jost" },
 
   searchBarBorder: {
     marginHorizontal: H_PAD,
@@ -520,16 +520,16 @@ const styles = StyleSheet.create({
     borderRadius: 9,
     gap: 10,
   },
-  searchInput: { flex: 1, fontSize: 14, color: "#1B060F" },
+  searchInput: { flex: 1, fontSize: 14, color: "#1B060F", fontFamily: "Jost" },
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 11 },
-  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, color: "#FFFFFF", marginBottom: 16 },
+  sectionTitle: { fontSize: 20, letterSpacing: 0.3, color: "#FFFFFF", marginBottom: 16, fontFamily: "OptimaBold" },
 
-  resultsLabel: { fontSize: 12, marginBottom: 12 },
+  resultsLabel: { fontSize: 12, marginBottom: 12, fontFamily: "Jost" },
   emptyState:   { alignItems: "center", paddingVertical: 48, gap: 10 },
-  emptyTitle:   { fontSize: 16, fontWeight: "600" },
-  emptySub:     { fontSize: 13 },
+  emptyTitle:   { fontSize: 16, fontFamily: "OptimaBold" },
+  emptySub:     { fontSize: 13, fontFamily: "Jost" },
 
   // Recomendado para ti
   recoSection: {
@@ -540,6 +540,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 14,
     marginTop: 2,
+    fontFamily: "Jost",
   },
   recoList: {
     gap: 6,
@@ -576,12 +577,14 @@ const styles = StyleSheet.create({
   },
   durPillText: {
     fontSize: 17,
-    fontWeight: "600",
     color: "rgba(255,255,255,0.90)",
     letterSpacing: 0.2,
+    fontFamily: "Jost",
+    fontWeight: "600",
   },
   durPillTextActive: {
     color: "#1B060F",
+    fontFamily: "OptimaBold",
   },
   durResults: {
     marginTop: 16,
@@ -599,11 +602,13 @@ const styles = StyleSheet.create({
   },
   durSortOption: {
     fontSize: 13,
-    fontWeight: "500",
     color: "rgba(244,218,213,0.50)",
+    fontFamily: "Jost",
+    fontWeight: "500",
   },
   durSortActive: {
     color: "#D4AF37",
+    fontFamily: "Jost",
     fontWeight: "700",
   },
   durSortSep: {
@@ -614,6 +619,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     textAlign: "center",
     paddingVertical: 16,
+    fontFamily: "Jost",
   },
 
   // Carrusel de categorías
@@ -638,15 +644,16 @@ const styles = StyleSheet.create({
   },
   catCardTitle: {
     fontSize: 16,
-    fontWeight: "700",
     color: "#FFFFFF",
     letterSpacing: 0.2,
     textAlign: "center",
+    fontFamily: "OptimaBold",
   },
   catCardSubtitle: {
     fontSize: 14,
     color: "rgba(244,218,213,0.65)",
     lineHeight: 19,
+    fontFamily: "Jost",
     fontWeight: "400",
   },
 
@@ -676,13 +683,14 @@ const styles = StyleSheet.create({
   },
   sqTitle: {
     fontSize: 13,
-    fontWeight: "600",
     lineHeight: 18,
     marginTop: 8,
+    fontFamily: "OptimaBold",
   },
   sqAuthor: {
     fontSize: 11,
     marginTop: 3,
+    fontFamily: "Jost",
   },
 
   // Explorar todo — grid 2 columnas, icono arriba + texto centrado
@@ -707,9 +715,10 @@ const styles = StyleSheet.create({
   },
   temaCellLabel: {
     fontSize: 13,
-    fontWeight: "600",
     textAlign: "center",
     lineHeight: 17,
+    fontFamily: "Jost",
+    fontWeight: "600",
   },
 
   // Otras temáticas

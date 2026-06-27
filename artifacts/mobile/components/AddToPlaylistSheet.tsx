@@ -228,8 +228,8 @@ const styles = StyleSheet.create({
   },
   topTitle: {
     flex: 1,
+    fontFamily: "OptimaBold",
     fontSize: 17,
-    fontWeight: "700",
     textAlign: "center",
   },
   iconBtn: {
@@ -261,12 +261,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   emptyTitle: {
+    fontFamily: "OptimaBold",
     fontSize: 18,
-    fontWeight: "700",
     textAlign: "center",
     marginBottom: 10,
   },
   emptySubtitle: {
+    fontFamily: "Jost",
     fontSize: 14,
     lineHeight: 20,
     textAlign: "center",
@@ -287,10 +288,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   rowLabel: {
+    fontFamily: "Jost",
     fontSize: 16,
     fontWeight: "600",
   },
   rowMeta: {
+    fontFamily: "Jost",
     fontSize: 13,
     marginTop: 2,
   },
@@ -315,11 +318,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   createLabel: {
+    fontFamily: "Jost",
     fontSize: 16,
     fontWeight: "600",
   },
 
   input: {
+    fontFamily: "Jost",
     borderWidth: 1,
     borderRadius: 12,
     paddingHorizontal: 16,
@@ -329,6 +334,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   inputHint: {
+    fontFamily: "Jost",
     fontSize: 13,
     lineHeight: 18,
     marginBottom: 24,
@@ -340,7 +346,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   createBtnLabel: {
+    fontFamily: "OptimaBold",
     fontSize: 16,
-    fontWeight: "700",
   },
 });

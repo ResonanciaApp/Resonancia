@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
   stickyTitle: {
     fontSize: 22,
-    fontWeight: "700",
+    fontFamily: "OptimaBold",
     color: "#FFFFFF",
     flex: 1,
     textAlign: "center",
@@ -224,13 +224,14 @@ const styles = StyleSheet.create({
   // Page header
   pageTitle: {
     fontSize: 30,
-    fontWeight: "700",
+    fontFamily: "OptimaBold",
     color: "#FFFFFF",
     letterSpacing: 0.3,
     marginBottom: 6,
   },
   pageSubtitle: {
     fontSize: 14,
+    fontFamily: "Jost",
     color: "rgba(244,218,213,0.50)",
     lineHeight: 20,
   },
@@ -262,6 +263,7 @@ const styles = StyleSheet.create({
   },
   weekBadgeText: {
     fontSize: 11,
+    fontFamily: "Jost",
     fontWeight: "700",
     color: GOLD,
     letterSpacing: 0.2,
@@ -279,6 +281,7 @@ const styles = StyleSheet.create({
   },
   avatarInitials: {
     fontSize: 20,
+    fontFamily: "Jost",
     fontWeight: "700",
     letterSpacing: 0.5,
   },
@@ -286,6 +289,7 @@ const styles = StyleSheet.create({
   // Quote text
   quoteText: {
     fontSize: 16,
+    fontFamily: "Jost",
     fontWeight: "600",
     lineHeight: 25,
     color: "#FFFFFF",
@@ -296,6 +300,7 @@ const styles = StyleSheet.create({
   // Author
   authorText: {
     fontSize: 13,
+    fontFamily: "Jost",
     fontWeight: "500",
     color: "rgba(255,255,255,0.50)",
     textAlign: "center",

@@ -254,6 +254,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   perkText: {
+    fontFamily: "Jost",
     fontSize: 13.5,
     flex: 1,
     letterSpacing: 0.2,
@@ -276,6 +277,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   eyebrow: {
+    fontFamily: "Jost",
     fontSize: 13,
     letterSpacing: 0.5,
     marginBottom: 6,
@@ -288,14 +290,14 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   title: {
+    fontFamily: "OptimaBold",
     fontSize: 34,
-    fontWeight: "800",
     letterSpacing: 0.5,
     textAlign: "center",
   },
   star: {
+    fontFamily: "OptimaBold",
     fontSize: 20,
-    fontWeight: "700",
   },
   divider: {
     width: 160,
@@ -303,6 +305,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   sub: {
+    fontFamily: "Jost",
     fontSize: 13.5,
     textAlign: "center",
     lineHeight: 21,
@@ -336,8 +339,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 36,
   },
   btnText: {
+    fontFamily: "OptimaBold",
     fontSize: 16,
-    fontWeight: "700",
     letterSpacing: 0.3,
   },
 });

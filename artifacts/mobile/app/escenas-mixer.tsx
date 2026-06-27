@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   headerBtn: { width: 36, alignItems: "center", justifyContent: "center" },
-  headerTitle: { flex: 1, textAlign: "center", fontSize: 17, fontWeight: "700", color: "#1A1A22", letterSpacing: 0.2 },
+  headerTitle: { flex: 1, textAlign: "center", fontSize: 17, fontFamily: "OptimaBold", color: "#1A1A22", letterSpacing: 0.2 },
 
   scrollContent: { paddingHorizontal: H_PAD, paddingTop: 8 },
 
@@ -428,8 +428,8 @@ const styles = StyleSheet.create({
   },
   controlIcon: { marginRight: 12, width: 22 },
   controlText: { flex: 1 },
-  controlLabel: { fontSize: 14, fontWeight: "600", color: "#1A1A22" },
-  controlSub: { fontSize: 12, color: "#888", marginTop: 1 },
+  controlLabel: { fontSize: 14, fontFamily: "Jost", fontWeight: "600", color: "#1A1A22" },
+  controlSub: { fontSize: 12, fontFamily: "Jost", color: "#888", marginTop: 1 },
   sliderWrap: {
     flexDirection: "row",
     alignItems: "center",
@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
-  statusBadgeText: { fontSize: 11, fontWeight: "600", color: "#FFF" },
+  statusBadgeText: { fontSize: 11, fontFamily: "Jost", fontWeight: "600", color: "#FFF" },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.08)", marginHorizontal: -18 },
 
   timerTrigger: {
@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
   },
   timerTriggerLabel: {
     fontSize: 13,
-    fontWeight: "600",
+    fontFamily: "OptimaBold",
     color: "#1A1A22",
     letterSpacing: 0.2,
   },
@@ -474,6 +474,7 @@ const styles = StyleSheet.create({
   },
   timerDropItemText: {
     fontSize: 14,
+    fontFamily: "Jost",
     fontWeight: "500",
     color: "#333",
   },
@@ -490,7 +491,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: "700",
+    fontFamily: "OptimaBold",
     color: "#1A1A22",
     letterSpacing: 0.2,
   },
@@ -507,7 +508,7 @@ const styles = StyleSheet.create({
   },
   restablecerText: {
     fontSize: 11,
-    fontWeight: "600",
+    fontFamily: "OptimaBold",
     color: "#8C1A2B",
     letterSpacing: 0.2,
   },
@@ -518,6 +519,7 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
     gap: CARD_GAP,
   },
+  sliderTarget: { width: CARD_W, alignItems: "center" },
   cardWrap: { width: CARD_W, alignItems: "center" },
   card: {
     width: CARD_W,
@@ -540,13 +542,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   gradientFallback: { borderRadius: 14 },
-  cardLabel: { marginTop: 6, fontSize: 11, color: "#555", fontWeight: "500", textAlign: "center" },
+  cardLabel: { marginTop: 6, fontSize: 11, fontFamily: "Jost", color: "#555", fontWeight: "500", textAlign: "center" },
   cardLabelActive: { color: "#D4AF37", fontWeight: "700" },
 
   hint: {
     marginTop: 20,
     marginBottom: 8,
     fontSize: 11,
+    fontFamily: "Jost",
     color: "#AAA",
     textAlign: "center",
     lineHeight: 16,
@@ -581,6 +584,7 @@ const styles = StyleSheet.create({
   },
   swatchLabel: {
     fontSize: 10,
+    fontFamily: "Jost",
     color: "#888",
     fontWeight: "500",
     textAlign: "center",
@@ -611,6 +615,7 @@ const styles = StyleSheet.create({
   thumbLabel: {
     marginTop: 6,
     fontSize: 11,
+    fontFamily: "Jost",
     color: "#555",
     fontWeight: "500",
     textAlign: "center",
@@ -627,7 +632,7 @@ const styles = StyleSheet.create({
   },
   presetBadgeText: {
     fontSize: 8,
-    fontWeight: "700",
+    fontFamily: "OptimaBold",
     color: "#1A1A22",
     letterSpacing: 0.3,
   },
@@ -641,7 +646,7 @@ const styles = StyleSheet.create({
   },
   verMasText: {
     fontSize: 12,
-    fontWeight: "600",
+    fontFamily: "OptimaBold",
     color: "#8C1A2B",
   },
 
@@ -664,7 +669,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     fontSize: 18,
-    fontWeight: "700",
+    fontFamily: "OptimaBold",
     color: "#FFF",
     letterSpacing: 0.3,
   },
@@ -696,6 +701,6 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: "#D4AF37",
   },
-  applyBtnText: { fontSize: 16, fontWeight: "700", color: "#1A1A22" },
+  applyBtnText: { fontSize: 16, fontFamily: "OptimaBold", color: "#1A1A22" },
   applyBtnTextActive: { color: "#D4AF37" },
 });

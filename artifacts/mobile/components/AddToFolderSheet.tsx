@@ -223,8 +223,8 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
+    fontFamily: "OptimaBold",
     fontSize: 17,
-    fontWeight: "700",
   },
   closeBtn: {
     width: 32,
@@ -239,6 +239,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   emptyText: {
+    fontFamily: "Jost",
     fontSize: 14,
     textAlign: "center",
     paddingVertical: 20,
@@ -260,10 +261,12 @@ const styles = StyleSheet.create({
   },
   rowLabel: {
     flex: 1,
+    fontFamily: "Jost",
     fontSize: 15,
     fontWeight: "500",
   },
   rowCount: {
+    fontFamily: "Jost",
     fontSize: 13,
     marginRight: 4,
   },
@@ -283,10 +286,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   newLabel: {
+    fontFamily: "Jost",
     fontSize: 15,
     fontWeight: "600",
   },
   input: {
+    fontFamily: "Jost",
     borderWidth: 1,
     borderRadius: 12,
     paddingHorizontal: 16,
@@ -302,7 +307,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   createBtnLabel: {
+    fontFamily: "OptimaBold",
     fontSize: 16,
-    fontWeight: "700",
   },
 });

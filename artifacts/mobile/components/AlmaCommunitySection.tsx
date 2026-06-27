@@ -150,9 +150,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 16,
   },
-  caption: { fontSize: 10, fontWeight: "400", letterSpacing: 1.4, textTransform: "uppercase", marginBottom: 6 },
-  title: { fontSize: 18, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
-  subtitle: { fontSize: 12, marginTop: 4, lineHeight: 16, textAlign: "center" },
+  caption: {
+    fontFamily: "Jost",
+    fontSize: 10,
+    fontWeight: "400",
+    letterSpacing: 1.4,
+    textTransform: "uppercase",
+    marginBottom: 6,
+  },
+  title: {
+    fontFamily: "OptimaBold",
+    fontSize: 18,
+    letterSpacing: 0.2,
+    textAlign: "center",
+  },
+  subtitle: {
+    fontFamily: "Jost",
+    fontSize: 12,
+    marginTop: 4,
+    lineHeight: 16,
+    textAlign: "center",
+  },
 
   composeTap: {
     alignSelf: "center",
@@ -163,14 +181,22 @@ const styles = StyleSheet.create({
     paddingVertical: 9,
     marginBottom: 16,
   },
-  composeChipText: { fontSize: 13, fontWeight: "600" },
+  composeChipText: {
+    fontFamily: "Jost",
+    fontSize: 13,
+    fontWeight: "600",
+  },
 
   emptyRow: {
     paddingVertical: 20,
     alignItems: "center",
     marginTop: 2,
   },
-  emptyText: { fontSize: 13, textAlign: "center" },
+  emptyText: {
+    fontFamily: "Jost",
+    fontSize: 13,
+    textAlign: "center",
+  },
 
   messagesList: {},
   msgCard: {
@@ -193,17 +219,35 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   avatarInitial: {
+    fontFamily: "OptimaBold",
     fontSize: 14,
-    fontWeight: "700",
     color: "#D4AF37",
   },
   msgBody: { flex: 1 },
-  msgAuthor: { fontSize: 11, fontWeight: "600", marginBottom: 3, opacity: 0.75 },
-  msgText: { fontSize: 13, lineHeight: 19, opacity: 0.82 },
+  msgAuthor: {
+    fontFamily: "Jost",
+    fontSize: 11,
+    fontWeight: "600",
+    marginBottom: 3,
+    opacity: 0.75,
+  },
+  msgText: {
+    fontFamily: "Jost",
+    fontSize: 13,
+    lineHeight: 19,
+    opacity: 0.82,
+  },
   msgMeta: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 5 },
-  msgTime: { fontSize: 10 },
+  msgTime: {
+    fontFamily: "Jost",
+    fontSize: 10,
+  },
   expiringTag: { flexDirection: "row", alignItems: "center", gap: 3 },
-  expiringText: { fontSize: 9, color: "#C0705A" },
+  expiringText: {
+    fontFamily: "Jost",
+    fontSize: 9,
+    color: "#C0705A",
+  },
 
   cargarMasBtn: {
     alignItems: "center",
@@ -213,5 +257,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.28)",
   },
-  cargarMasText: { fontSize: 14, fontWeight: "600" },
+  cargarMasText: {
+    fontFamily: "Jost",
+    fontSize: 14,
+    fontWeight: "600",
+  },
 });

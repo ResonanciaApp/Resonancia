@@ -157,9 +157,9 @@ const styles = StyleSheet.create({
 
   // ── Info ───────────────────────────────────────────────────────
   info: { flex: 1, minWidth: 0 },
-  title: { fontSize: 14, fontWeight: "700", letterSpacing: 0.2 },
+  title: { fontFamily: "OptimaBold", fontSize: 14, letterSpacing: 0.2 },
   metaRow: { flexDirection: "row", alignItems: "center", marginTop: 2 },
-  sub: { fontSize: 12 },
+  sub: { fontFamily: "Jost", fontSize: 12 },
 
   // ── Editar ─────────────────────────────────────────────────────
   editBtn: {
@@ -171,5 +171,5 @@ const styles = StyleSheet.create({
     borderRadius: 11,
     borderWidth: 1,
   },
-  editText: { fontSize: 12, fontWeight: "600" },
+  editText: { fontFamily: "OptimaBold", fontSize: 12 },
 });

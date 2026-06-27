@@ -104,8 +104,8 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
   },
   toggleLabel: {
+    fontFamily: "OptimaBold",
     fontSize: 14,
-    fontWeight: "600",
     letterSpacing: 0.2,
   },
   content: {
@@ -132,12 +132,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cardTitle: {
+    fontFamily: "OptimaBold",
     fontSize: 14,
-    fontWeight: "700",
     marginBottom: 4,
     lineHeight: 20,
   },
   cardBody: {
+    fontFamily: "Jost",
     fontSize: 13,
     lineHeight: 19,
   },
@@ -148,6 +149,7 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   quoteText: {
+    fontFamily: "Jost",
     fontSize: 14,
     fontStyle: "italic",
     lineHeight: 22,
@@ -158,6 +160,7 @@ const styles = StyleSheet.create({
   },
   whyText: {
     flex: 1,
+    fontFamily: "Jost",
     fontSize: 13,
     lineHeight: 19,
   },

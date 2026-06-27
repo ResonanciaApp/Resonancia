@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
   },
   stickyTitle: {
     fontSize: 22,
-    fontWeight: "700",
+    fontFamily: "OptimaBold",
     flex: 1,
     textAlign: "center",
     paddingHorizontal: 8,
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   moodChipEmoji: { fontSize: 18 },
   moodChipLabel: {
     fontSize: 15,
-    fontWeight: "600",
+    fontFamily: "OptimaBold",
     color: "#BE9650",
   },
   chipClose: {
@@ -230,6 +230,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 15,
+    fontFamily: "Jost",
     color: "rgba(237,225,211,0.45)",
     textAlign: "center",
   },

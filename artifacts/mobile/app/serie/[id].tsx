@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  stickyTitle: { fontSize: 17, fontWeight: "700", flex: 1 },
+  stickyTitle: { fontSize: 17, fontFamily: "OptimaBold", flex: 1 },
 
   hero: { width: "100%", overflow: "hidden" },
   heroBack: {
@@ -208,19 +208,21 @@ const styles = StyleSheet.create({
   },
   kicker: {
     fontSize: 11,
+    fontFamily: "Jost",
     fontWeight: "700",
     letterSpacing: 1.4,
     marginBottom: 10,
   },
   pageTitle: {
     fontSize: 26,
-    fontWeight: "700",
+    fontFamily: "OptimaBold",
     textAlign: "center",
     letterSpacing: 0.2,
     marginBottom: 12,
   },
   pageDesc: {
     fontSize: 14,
+    fontFamily: "Jost",
     textAlign: "center",
     lineHeight: 22,
     maxWidth: 320,
@@ -243,7 +245,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexShrink: 0,
   },
-  dayLabel: { fontSize: 13, fontWeight: "700" },
+  dayLabel: { fontSize: 13, fontFamily: "Jost", fontWeight: "700" },
   thumb: {
     width: 64,
     height: 64,
@@ -260,9 +262,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     paddingVertical: 1,
   },
-  durationText: { color: "#FFFFFF", fontSize: 9, fontWeight: "600" },
+  durationText: { color: "#FFFFFF", fontSize: 9, fontFamily: "Jost", fontWeight: "600" },
   meta: { flex: 1 },
-  dayKicker: { fontSize: 10, fontWeight: "700", letterSpacing: 1, marginBottom: 3 },
-  title: { fontSize: 14, fontWeight: "700", lineHeight: 19, marginBottom: 3 },
-  sub: { fontSize: 11, lineHeight: 15 },
+  dayKicker: { fontSize: 10, fontFamily: "Jost", fontWeight: "700", letterSpacing: 1, marginBottom: 3 },
+  title: { fontSize: 14, fontFamily: "Jost", fontWeight: "700", lineHeight: 19, marginBottom: 3 },
+  sub: { fontSize: 11, fontFamily: "Jost", lineHeight: 15 },
 });

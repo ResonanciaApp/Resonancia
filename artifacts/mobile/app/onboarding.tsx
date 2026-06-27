@@ -527,7 +527,7 @@ const styles = StyleSheet.create({
   welcomeTitle: {
     color: FG,
     fontSize: 26,
-    fontFamily: "PlayfairDisplay_700Bold",
+    fontFamily: "OptimaBold",
     textAlign: "center",
     lineHeight: 34,
   },
@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 24,
     marginTop: 12,
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Jost",
   },
   welcomeBottom: {
     paddingHorizontal: 28,
@@ -548,7 +548,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: "center",
     lineHeight: 18,
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Jost",
     paddingHorizontal: 16,
   },
   accountHint: {
@@ -556,7 +556,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: "center",
     lineHeight: 18,
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Jost",
     paddingHorizontal: 16,
     marginBottom: 4,
   },
@@ -592,7 +592,7 @@ const styles = StyleSheet.create({
   closingTitle: {
     color: FG,
     fontSize: 28,
-    fontFamily: "PlayfairDisplay_700Bold",
+    fontFamily: "OptimaBold",
     textAlign: "center",
   },
   closingSubtitle: {
@@ -600,7 +600,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     textAlign: "center",
     lineHeight: 24,
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Jost",
   },
 
   // Progress
@@ -644,19 +644,19 @@ const styles = StyleSheet.create({
     color: MUTED,
     fontSize: 11,
     letterSpacing: 2,
-    fontFamily: "Inter_500Medium",
+    fontFamily: "Jost",
     marginBottom: 4,
   },
   questionTitle: {
     color: FG,
     fontSize: 24,
-    fontFamily: "PlayfairDisplay_700Bold",
+    fontFamily: "OptimaBold",
     lineHeight: 32,
   },
   questionSubtitle: {
     color: MUTED,
     fontSize: 13,
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Jost",
     marginTop: 4,
   },
 
@@ -682,7 +682,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: FG,
     fontSize: 15,
-    fontFamily: "Inter_500Medium",
+    fontFamily: "Jost",
     lineHeight: 22,
   },
   checkBadge: {
@@ -721,19 +721,19 @@ const styles = StyleSheet.create({
   skipBtnText: {
     color: "rgba(212,175,55,0.5)",
     fontSize: 12,
-    fontFamily: "Inter_600SemiBold",
+    fontFamily: "OptimaBold",
     letterSpacing: 2,
   },
   primaryBtnText: {
     color: "#1A0E08",
     fontSize: 16,
-    fontFamily: "Inter_700Bold",
+    fontFamily: "OptimaBold",
     letterSpacing: 0.3,
   },
   multiHint: {
     color: MUTED,
     fontSize: 11,
     textAlign: "center",
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Jost",
   },
 });

@@ -445,7 +445,7 @@ export default function CommunityMixScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 14 },
-  notFound: { fontSize: 16, fontWeight: "600", textAlign: "center" },
+  notFound: { fontSize: 16, fontFamily: "OptimaBold", textAlign: "center" },
   backPill: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 22, borderWidth: 1 },
 
   topBar: { paddingHorizontal: 12, paddingBottom: 8 },
@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
   },
   soundCard: { width: 72, alignItems: "center", gap: 6 },
   soundImg: { width: 72, height: 72, borderRadius: 12 },
-  soundLabel: { fontSize: 10, textAlign: "center", width: 72 },
+  soundLabel: { fontSize: 10, fontFamily: "Jost", textAlign: "center", width: 72 },
 
   glassPanel: {
     marginHorizontal: 16,
@@ -473,8 +473,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
 
-  category: { fontSize: 11, fontWeight: "700", letterSpacing: 1.8, marginBottom: 6 },
-  title: { fontSize: 26, fontWeight: "800", letterSpacing: 0.3, lineHeight: 32, marginBottom: 18 },
+  category: { fontSize: 11, fontFamily: "Jost", fontWeight: "700", letterSpacing: 1.8, marginBottom: 6 },
+  title: { fontSize: 26, fontFamily: "OptimaBold", letterSpacing: 0.3, lineHeight: 32, marginBottom: 18 },
 
   authorRow: {
     flexDirection: "row",
@@ -489,8 +489,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: "center", justifyContent: "center",
   },
-  avatarTxt: { fontSize: 15, fontWeight: "700" },
-  authorName: { fontSize: 14, fontWeight: "600" },
+  avatarTxt: { fontSize: 15, fontFamily: "Jost", fontWeight: "700" },
+  authorName: { fontSize: 14, fontFamily: "Jost", fontWeight: "600" },
 
   playWrap: { position: "relative", marginBottom: 14 },
   playGlow: {
@@ -511,7 +511,7 @@ const styles = StyleSheet.create({
     height: 56,
     borderRadius: 28,
   },
-  playTxt: { fontSize: 16, fontWeight: "700" },
+  playTxt: { fontSize: 16, fontFamily: "OptimaBold" },
 
   actions: { flexDirection: "row", gap: 12, marginBottom: 28 },
   actionBtn: {
@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 16,
   },
-  actionTxt: { fontSize: 15, fontWeight: "600" },
+  actionTxt: { fontSize: 15, fontFamily: "Jost", fontWeight: "600" },
 
   commentsHeader: {
     flexDirection: "row",
@@ -531,8 +531,8 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 14,
   },
-  sectionTitle: { fontSize: 16, fontWeight: "700", flex: 1 },
-  commentsCount: { fontSize: 14, fontWeight: "600" },
+  sectionTitle: { fontSize: 16, fontFamily: "OptimaBold", flex: 1 },
+  commentsCount: { fontSize: 14, fontFamily: "Jost", fontWeight: "600" },
 
   composer: {
     flexDirection: "row",
@@ -545,6 +545,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 15,
+    fontFamily: "Jost",
     paddingVertical: 6,
     paddingHorizontal: 6,
     maxHeight: 120,
@@ -554,10 +555,10 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
   },
 
-  emptyComments: { fontSize: 13.5, lineHeight: 19 },
+  emptyComments: { fontSize: 13.5, fontFamily: "Jost", lineHeight: 19 },
   commentRow: { flexDirection: "row", gap: 12, marginTop: 20 },
   commentBody: { flex: 1, gap: 4 },
   commentTop: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 },
-  commentAuthor: { flex: 1, fontSize: 14, fontWeight: "600" },
-  commentTxt: { fontSize: 14, lineHeight: 19 },
+  commentAuthor: { flex: 1, fontSize: 14, fontFamily: "Jost", fontWeight: "600" },
+  commentTxt: { fontSize: 14, fontFamily: "Jost", lineHeight: 19 },
 });

@@ -361,6 +361,7 @@ export default function FavoritesScreen() {
                   styles.tabLabel,
                   {
                     color: id === activeTab ? colors.foreground : colors.mutedForeground,
+                    fontFamily: "Jost",
                     fontWeight: id === activeTab ? "600" : "400",
                   },
                 ]}
@@ -419,8 +420,8 @@ const mixStyles = StyleSheet.create({
   },
   thumbImg: { width: THUMB, height: THUMB, borderRadius: 8 },
   info: { flex: 1, minWidth: 0 },
-  name: { fontSize: 15, fontWeight: "700" },
-  meta: { fontSize: 12, marginTop: 3 },
+  name: { fontSize: 15, fontFamily: "Jost", fontWeight: "700" },
+  meta: { fontSize: 12, fontFamily: "Jost", marginTop: 3 },
 });
 
 // ── Estilos pantalla ─────────────────────────────────────────────
@@ -452,6 +453,7 @@ const styles = StyleSheet.create({
   },
   tabLabel: {
     fontSize: 15,
+    fontFamily: "Jost",
     letterSpacing: 0.2,
   },
   tabIndicator: {
@@ -474,12 +476,13 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 14,
+    fontFamily: "Jost",
     padding: 0,
   },
 
   // Textos
-  pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4 },
-  pageSub: { fontSize: 13 },
+  pageTitle: { fontSize: 30, fontFamily: "OptimaBold", letterSpacing: 0.5, marginBottom: 4 },
+  pageSub: { fontSize: 13, fontFamily: "Jost" },
 
   // Empty
   emptySmall: {
@@ -489,11 +492,11 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 16,
   },
-  emptySmallText: { fontSize: 13, flex: 1 },
+  emptySmallText: { fontSize: 13, fontFamily: "Jost", flex: 1 },
   emptyLink: {
     borderRadius: 14,
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
-  emptyLinkText: { fontSize: 12, fontWeight: "600" },
+  emptyLinkText: { fontSize: 12, fontFamily: "Jost", fontWeight: "600" },
 });

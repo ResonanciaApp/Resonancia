@@ -102,8 +102,8 @@ export default function VideoPlayerScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12 },
-  notFoundTitle: { fontSize: 16, fontWeight: "600" },
-  backLink: { fontSize: 14, fontWeight: "600" },
+  notFoundTitle: { fontSize: 16, fontFamily: "OptimaBold" },
+  backLink: { fontSize: 14, fontFamily: "Jost", fontWeight: "600" },
 
   header: { paddingHorizontal: 12, paddingBottom: 8 },
   backBtn: {
@@ -121,8 +121,8 @@ const styles = StyleSheet.create({
   video: { width: "100%", height: "100%" },
 
   meta: { paddingHorizontal: 20, paddingTop: 20 },
-  kicker: { fontSize: 11, letterSpacing: 1.2, fontWeight: "700", marginBottom: 8 },
-  title: { fontSize: 22, fontWeight: "700", lineHeight: 28, marginBottom: 8 },
-  subtitle: { fontSize: 14, lineHeight: 20, marginBottom: 14 },
-  description: { fontSize: 14, lineHeight: 22 },
+  kicker: { fontSize: 11, letterSpacing: 1.2, fontFamily: "Jost", fontWeight: "700", marginBottom: 8 },
+  title: { fontSize: 22, fontFamily: "OptimaBold", lineHeight: 28, marginBottom: 8 },
+  subtitle: { fontSize: 14, fontFamily: "Jost", lineHeight: 20, marginBottom: 14 },
+  description: { fontSize: 14, fontFamily: "Jost", lineHeight: 22 },
 });

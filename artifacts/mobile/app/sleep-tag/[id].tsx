@@ -203,12 +203,13 @@ const styles = StyleSheet.create({
   },
   pageTitle: {
     fontSize: 28,
-    fontWeight: "700",
+    fontFamily: "OptimaBold",
     letterSpacing: 0.2,
     marginBottom: 10,
   },
   pageDesc: {
     fontSize: 14,
+    fontFamily: "Jost",
     lineHeight: 22,
     maxWidth: 340,
   },
@@ -242,10 +243,12 @@ const styles = StyleSheet.create({
   durationText: {
     color: "#FFFFFF",
     fontSize: 10,
+    fontFamily: "Jost",
     fontWeight: "600",
   },
   cardTitle: {
     fontSize: 13,
+    fontFamily: "Jost",
     fontWeight: "700",
     lineHeight: 18,
     marginBottom: 4,
@@ -256,6 +259,7 @@ const styles = StyleSheet.create({
   },
   cardDuration: {
     fontSize: 11,
+    fontFamily: "Jost",
   },
 
   emptySlot: {
@@ -270,10 +274,11 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: 16,
-    fontWeight: "700",
+    fontFamily: "OptimaBold",
   },
   emptySub: {
     fontSize: 13,
+    fontFamily: "Jost",
     textAlign: "center",
     paddingHorizontal: 24,
   },

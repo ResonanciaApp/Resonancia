@@ -1253,7 +1253,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5 },
+  pageTitle: { fontSize: 30, letterSpacing: 0.5, fontFamily: "OptimaBold" },
   settingsBtn: {
     width: 40,
     height: 40,
@@ -1261,6 +1261,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+
 
   // Profile card
   profileCard: {
@@ -1294,10 +1295,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#1B060F",
   },
-  userName: { fontSize: 20, fontWeight: "700", textAlign: "center" },
+  userName: { fontSize: 20, textAlign: "center", fontFamily: "OptimaBold" },
   locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },
-  locationText: { fontSize: 12 },
-  bioText: { fontSize: 13, lineHeight: 19, textAlign: "center", paddingHorizontal: 8, fontStyle: "italic" },
+  locationText: { fontSize: 12, fontFamily: "Jost" },
+  bioText: { fontSize: 13, lineHeight: 19, textAlign: "center", paddingHorizontal: 8, fontStyle: "italic", fontFamily: "Jost" },
   editBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -1307,41 +1308,43 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     marginTop: 6,
   },
-  editBtnText: { fontSize: 13, fontWeight: "600" },
+  editBtnText: { fontSize: 13, fontFamily: "OptimaBold" },
 
   // Seguidores / Siguiendo
   followCountsRow: { flexDirection: "row", alignItems: "center", marginTop: 14, marginBottom: 4 },
   followCountItem: { alignItems: "center", paddingHorizontal: 20 },
-  followCountNum: { fontSize: 18, fontWeight: "700" },
-  followCountLabel: { fontSize: 11, marginTop: 1 },
+  followCountNum: { fontSize: 18, fontFamily: "OptimaBold" },
+  followCountLabel: { fontSize: 11, marginTop: 1, fontFamily: "Jost" },
   followCountDivider: { width: 1, height: 28 },
+
 
   // Plan card
   planCard: { borderRadius: 18, paddingHorizontal: 16, paddingVertical: 14, flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 10 },
   planIconWrap: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },
-  planTitle: { fontSize: 15, fontWeight: "700", marginBottom: 2 },
-  planSub: { fontSize: 12 },
+  planTitle: { fontSize: 15, marginBottom: 2, fontFamily: "OptimaBold" },
+  planSub: { fontSize: 12, fontFamily: "Jost" },
   planMejorar: { flexDirection: "row", alignItems: "center", gap: 2 },
-  planMejorarText: { fontSize: 14, fontWeight: "700" },
+  planMejorarText: { fontSize: 14, fontFamily: "OptimaBold" },
 
   // Tu Progreso — racha card
   rachaCard: { borderRadius: 18, padding: 18, marginBottom: 12 },
   rachaTop: { flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 18 },
   rachaBubble: { width: 48, height: 48, borderRadius: 24, alignItems: "center", justifyContent: "center" },
   rachaFlame: { fontSize: 24 },
-  rachaValue: { fontSize: 17, fontWeight: "700", marginBottom: 3 },
-  rachaSub: { fontSize: 12, lineHeight: 16 },
+  rachaValue: { fontSize: 17, marginBottom: 3, fontFamily: "OptimaBold" },
+  rachaSub: { fontSize: 12, lineHeight: 16, fontFamily: "Jost" },
   rachaWeekRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 2 },
   rachaDayPill: { alignItems: "center", gap: 5 },
-  rachaDayLabel: { fontSize: 11, fontWeight: "600" },
+  rachaDayLabel: { fontSize: 11, fontFamily: "Jost", fontWeight: "600" },
   rachaDayCircle: { width: 34, height: 34, borderRadius: 17, borderWidth: 2, alignItems: "center", justifyContent: "center" },
   rachaMaxRow: { flexDirection: "row", alignItems: "center", gap: 12, marginTop: 16, paddingTop: 14, borderTopWidth: 1 },
   rachaMaxIcon: { width: 38, height: 38, borderRadius: 10, alignItems: "center", justifyContent: "center" },
-  rachaMaxLabel: { fontSize: 13, fontWeight: "600" },
-  rachaMaxSub: { fontSize: 11, marginTop: 1 },
-  rachaMaxValue: { fontSize: 17, fontWeight: "700" },
+  rachaMaxLabel: { fontSize: 13, fontFamily: "Jost", fontWeight: "600" },
+  rachaMaxSub: { fontSize: 11, marginTop: 1, fontFamily: "Jost" },
+  rachaMaxValue: { fontSize: 17, fontFamily: "OptimaBold" },
   rachaVerMas: { flexDirection: "row", alignItems: "center", justifyContent: "flex-end", gap: 4, marginTop: 14 },
-  rachaVerMasText: { fontSize: 13, fontWeight: "600" },
+  rachaVerMasText: { fontSize: 13, fontFamily: "OptimaBold" },
+
 
   // Membresía
   membershipRow: {
@@ -1353,9 +1356,10 @@ const styles = StyleSheet.create({
     gap: 12,
     marginBottom: 32,
   },
-  membershipPlan: { fontSize: 15, fontWeight: "700", marginBottom: 2 },
-  membershipSub: { fontSize: 12 },
-  membershipAction: { fontSize: 13, fontWeight: "600" },
+  membershipPlan: { fontSize: 15, marginBottom: 2, fontFamily: "OptimaBold" },
+  membershipSub: { fontSize: 12, fontFamily: "Jost" },
+  membershipAction: { fontSize: 13, fontFamily: "OptimaBold" },
+
 
 
   // Favoritos
@@ -1369,8 +1373,9 @@ const styles = StyleSheet.create({
   },
   favImg: { width: 52, height: 52, borderRadius: 10 },
   favInfo: { flex: 1 },
-  favTitle: { fontSize: 14, fontWeight: "600", marginBottom: 3 },
-  favSub: { fontSize: 12 },
+  favTitle: { fontSize: 14, marginBottom: 3, fontFamily: "OptimaBold" },
+  favSub: { fontSize: 12, fontFamily: "Jost" },
+
 
   // Menu
   menuCard: {
@@ -1384,9 +1389,10 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     gap: 14,
   },
-  menuLabel: { flex: 1, fontSize: 15, fontWeight: "500" },
+  menuLabel: { flex: 1, fontSize: 15, fontFamily: "Jost", fontWeight: "500" },
 
-  footer: { textAlign: "center", fontSize: 11, letterSpacing: 1, marginBottom: 8 },
+  footer: { textAlign: "center", fontSize: 11, letterSpacing: 1, marginBottom: 8, fontFamily: "Jost" },
+
 
   // Edit modal
   modalRoot: { flex: 1 },
@@ -1398,12 +1404,13 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     borderBottomWidth: 1,
   },
-  modalTitle: { fontSize: 17, fontWeight: "700" },
+  modalTitle: { fontSize: 17, fontFamily: "OptimaBold" },
   modalForm: { padding: 24, gap: 20, paddingBottom: 60 },
+
 
   // Modal fields
   fieldWrap: { gap: 7 },
-  fieldLabel: { fontSize: 11, fontWeight: "700", letterSpacing: 1.2, textTransform: "uppercase" },
+  fieldLabel: { fontSize: 11, letterSpacing: 1.2, textTransform: "uppercase", fontFamily: "OptimaBold" },
   fieldBox: {
     flexDirection: "row",
     alignItems: "center",
@@ -1413,9 +1420,10 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     gap: 10,
   },
-  fieldInput: { flex: 1, fontSize: 15, backgroundColor: "transparent" },
+  fieldInput: { flex: 1, fontSize: 15, backgroundColor: "transparent", fontFamily: "Jost" },
   saveBtn: { borderRadius: 14, paddingVertical: 16, alignItems: "center", marginTop: 8 },
-  saveBtnText: { fontSize: 16, fontWeight: "700" },
+  saveBtnText: { fontSize: 16, fontFamily: "OptimaBold" },
+
 
   communityRow: { flexDirection: "row", gap: 8, marginBottom: 43 },
   communityCard: {
@@ -1428,7 +1436,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 8,
   },
-  communityLabel: { fontSize: 12, fontWeight: "500", textAlign: "center", letterSpacing: 0.2 },
+  communityLabel: { fontSize: 12, textAlign: "center", letterSpacing: 0.2, fontFamily: "Jost", fontWeight: "500" },
+
 
   // Expansor section
   expansorSection: {
@@ -1449,9 +1458,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  expansorBadgeStar: { fontSize: 14, color: "#1B060F", fontWeight: "800" },
-  expansorTitle: { fontSize: 14, fontWeight: "700", color: "#D4AF37" },
-  expansorCertLabel: { fontSize: 11, color: "rgba(212,175,55,0.60)", marginTop: 1 },
+  expansorBadgeStar: { fontSize: 14, color: "#1B060F", fontFamily: "OptimaBold" },
+  expansorTitle: { fontSize: 14, color: "#D4AF37", fontFamily: "OptimaBold" },
+  expansorCertLabel: { fontSize: 11, color: "rgba(212,175,55,0.60)", marginTop: 1, fontFamily: "Jost" },
   expansorViewBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -1461,7 +1470,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "rgba(212,175,55,0.10)",
   },
-  expansorViewText: { fontSize: 12, color: "#D4AF37", fontWeight: "600" },
+  expansorViewText: { fontSize: 12, color: "#D4AF37", fontFamily: "OptimaBold" },
   expansorSpecWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   expansorChip: {
     paddingHorizontal: 12,
@@ -1471,8 +1480,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.20)",
   },
-  expansorChipText: { fontSize: 12, color: "#FAF0EE", fontWeight: "500" },
-  expansorBio: { fontSize: 13, lineHeight: 20, color: "rgba(244,218,213,0.75)" },
+  expansorChipText: { fontSize: 12, color: "#FAF0EE", fontFamily: "Jost", fontWeight: "500" },
+  expansorBio: { fontSize: 13, lineHeight: 20, color: "rgba(244,218,213,0.75)", fontFamily: "Jost" },
   expansorLinksRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   expansorLinkBtn: {
     flexDirection: "row",
@@ -1485,7 +1494,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.20)",
   },
-  expansorLinkText: { fontSize: 12, color: "#D4AF37", fontWeight: "600" },
+  expansorLinkText: { fontSize: 12, color: "#D4AF37", fontFamily: "OptimaBold" },
+
 
   // ── Sección Daniela Vega (expansor) ──
   dvExpansorSection: {
@@ -1506,31 +1516,31 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.05)",
   },
   dvCertBannerBar: { width: 5 },
-  dvCertBannerTitle: { fontSize: 13, fontWeight: "800", letterSpacing: 0.4, color: "#D4AF37" },
-  dvCertBannerSub: { fontSize: 11, color: "rgba(255,255,255,0.90)", marginTop: 2 },
+  dvCertBannerTitle: { fontSize: 13, letterSpacing: 0.4, color: "#D4AF37", fontFamily: "OptimaBold" },
+  dvCertBannerSub: { fontSize: 11, color: "rgba(255,255,255,0.90)", marginTop: 2, fontFamily: "Jost" },
   dvCertBannerIconBorder: {
     width: 35, height: 35, borderRadius: 18,
     borderWidth: 1.5, borderColor: "rgba(212,175,55,0.20)", flexShrink: 0,
   },
   dvCertBannerIcon: { flex: 1, borderRadius: 16, overflow: "hidden", alignItems: "center", justifyContent: "center" },
-  dvCertBannerStar: { fontSize: 17, color: "rgba(212,175,55,0.90)", fontWeight: "800" },
-  dvServiceTitle: { fontSize: 15, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.2 },
-  dvServiceDesc: { fontSize: 13, lineHeight: 20, color: "rgba(244,218,213,0.65)" },
+  dvCertBannerStar: { fontSize: 17, color: "rgba(212,175,55,0.90)", fontFamily: "OptimaBold" },
+  dvServiceTitle: { fontSize: 15, color: "#FAF0EE", letterSpacing: 0.2, fontFamily: "OptimaBold" },
+  dvServiceDesc: { fontSize: 13, lineHeight: 20, color: "rgba(244,218,213,0.65)", fontFamily: "Jost" },
   dvReadMoreBtn: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 6, alignSelf: "flex-start" },
-  dvReadMoreText: { fontSize: 13, fontWeight: "600", color: "#D4AF37" },
+  dvReadMoreText: { fontSize: 13, color: "#D4AF37", fontFamily: "OptimaBold" },
   dvSpecialtyWrap: { flexDirection: "row", gap: 8, alignItems: "center" },
   dvSpecialtyChip: {
     borderRadius: 20, paddingHorizontal: 14, height: 34, overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.07)", alignItems: "center", justifyContent: "center",
   },
-  dvSpecialtyText: { fontSize: 13, color: "#FFFFFF", fontWeight: "400", letterSpacing: 0.1 },
+  dvSpecialtyText: { fontSize: 13, color: "#FFFFFF", letterSpacing: 0.1, fontFamily: "Jost", fontWeight: "400" },
   dvContactRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   dvActionPill: {
     flexDirection: "row", alignItems: "center", gap: 6,
     borderRadius: 20, paddingHorizontal: 14, height: 34, overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.07)",
   },
-  dvActionPillText: { fontSize: 13, fontWeight: "400", color: "#FFFFFF", letterSpacing: 0.1 },
+  dvActionPillText: { fontSize: 13, color: "#FFFFFF", letterSpacing: 0.1, fontFamily: "Jost", fontWeight: "400" },
   dvGallerySection: {
     borderRadius: 18, padding: 16, gap: 12, marginBottom: 16,
   },
@@ -1540,6 +1550,7 @@ const styles = StyleSheet.create({
   dvQuoteText: {
     fontSize: 18, fontStyle: "italic", color: "rgba(244,218,213,0.70)",
     textAlign: "center", lineHeight: 28, letterSpacing: 0.2,
+    fontFamily: "Jost",
   },
   dvLightboxBackdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.92)", alignItems: "center", justifyContent: "center" },
   dvLightboxImage: { width: "100%", height: "80%" },
@@ -1551,7 +1562,8 @@ const styles = StyleSheet.create({
     flexDirection: "row", alignItems: "center", gap: 8,
     paddingVertical: 12, justifyContent: "center",
   },
-  dvEmptyPromptText: { fontSize: 14, color: "#D4AF37", fontWeight: "600" },
+  dvEmptyPromptText: { fontSize: 14, color: "#D4AF37", fontFamily: "OptimaBold" },
+
   expansorEditIconBtn: {
     width: 34, height: 34, borderRadius: 17,
     backgroundColor: "rgba(212,175,55,0.10)",
@@ -1570,7 +1582,8 @@ const styles = StyleSheet.create({
   epModalHeader: {
     flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 4,
   },
-  epModalTitle: { fontSize: 17, fontWeight: "700", color: "#FAF0EE" },
+  epModalTitle: { fontSize: 17, color: "#FAF0EE", fontFamily: "OptimaBold" },
+
   epPhotoGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
