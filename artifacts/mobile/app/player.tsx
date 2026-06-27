@@ -740,8 +740,8 @@ export default function PlayerScreen() {
               {hasRealAudio && (
                 <View style={styles.optSliderItem}>
                   <View style={styles.optRow}>
-                    <Feather name="volume-2" size={18} color="white" style={styles.optIcon} />
-                    <Text style={styles.optRowText}>Volumen</Text>
+                    <Feather name="mic" size={18} color="white" style={styles.optIcon} />
+                    <Text style={styles.optRowText}>Voz guía</Text>
                     <Text style={styles.optRowBadge}>{Math.round(mainVolume * 100)}%</Text>
                   </View>
                   <View
