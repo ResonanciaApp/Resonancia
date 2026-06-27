@@ -840,8 +840,7 @@ const styles = StyleSheet.create({
     color: "rgba(237,225,211,0.35)",
     textAlign: "center",
     flexShrink: 1,
-    fontFamily: "Jost",
-    fontWeight: "600",
+    fontFamily: "OptimaBold",
   },
 
 
