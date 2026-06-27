@@ -748,7 +748,7 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   playBtnText: {
-    fontSize: 16,
+    fontSize: 23,
     fontFamily: "OptimaBold",
     letterSpacing: 0.5,
   },
