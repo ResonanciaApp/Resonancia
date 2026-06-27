@@ -26,17 +26,24 @@ const { width: W, height: H } = Dimensions.get("window");
 const CARD_W = Math.round((W - 30) / 2.2);
 
 /* ─── Estrellas estáticas pre-generadas ─────────────────────────────── */
-const STAR_COUNT = 60;
-const STARS = Array.from({ length: STAR_COUNT }, (_, i) => ({
-  key: i,
-  x: Math.random() * W,
-  y: Math.random() * H,
-  size: 0.8 + Math.random() * 1.8,
-  minOpacity: 0.15 + Math.random() * 0.25,
-  maxOpacity: 0.55 + Math.random() * 0.45,
-  duration: 1200 + Math.random() * 2800,
-  delay: Math.random() * 4000,
-}));
+const STAR_COUNT = 100;
+// Grilla uniforme con jitter: asegura cobertura hasta el borde derecho
+const COLS = 10;
+const ROWS = Math.ceil(STAR_COUNT / COLS);
+const STARS = Array.from({ length: STAR_COUNT }, (_, i) => {
+  const col = i % COLS;
+  const row = Math.floor(i / COLS);
+  return {
+    key: i,
+    x: (col / COLS) * W + (Math.random() - 0.5) * (W / COLS) * 0.9,
+    y: (row / ROWS) * H + (Math.random() - 0.5) * (H / ROWS) * 0.9,
+    size: 0.8 + Math.random() * 1.8,
+    minOpacity: 0.12 + Math.random() * 0.22,
+    maxOpacity: 0.5 + Math.random() * 0.5,
+    duration: 1200 + Math.random() * 2800,
+    delay: Math.random() * 4000,
+  };
+});
 
 function NightSky() {
   const twinkles = useRef(STARS.map((s) => new Animated.Value(s.minOpacity))).current;
