@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
   Platform,
@@ -30,7 +31,12 @@ export default function DescansoScreen() {
   const [filterOpen, setFilterOpen] = useState(false);
 
   return (
-    <View style={styles.root}>
+    <LinearGradient
+      style={styles.root}
+      colors={["#2E0510", "#160108"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
@@ -96,12 +102,12 @@ export default function DescansoScreen() {
           );
         })}
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  root:   { flex: 1, backgroundColor: "#1B060F" },
+  root:   { flex: 1 },
   scroll: { flex: 1 },
 
   header: {
