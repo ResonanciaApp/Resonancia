@@ -54,6 +54,16 @@ export const CATEGORIES: Category[] = [
     primary: true,
   },
   {
+    id: "descanso",
+    title: "Descanso",
+    subtitle: "Sonidos y relatos para acompañar tu noche",
+    icon: "moon",
+    sessionCount: 30,
+    color: "#8AAAD4",
+    gradient: ["#1A3A5C", "#0C1E30"],
+    primary: true,
+  },
+  {
     id: "mananas",
     title: "Mañanas",
     subtitle: "Rituales para comenzar el día con energía",

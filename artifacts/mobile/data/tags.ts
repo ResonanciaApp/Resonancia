@@ -113,3 +113,66 @@ export const SLEEP_TAG_CARDS: SleepTagCard[] = [
     accent: "#C8B4E0",
   },
 ];
+
+// ── Descanso Tags ────────────────────────────────────────────────────────────
+
+export type DescansoTag =
+  | "Relajaciones"
+  | "Sueño profundo"
+  | "Ruidos"
+  | "Meditaciones"
+  | "Historias para dormir"
+  | "Historias infantiles";
+
+export interface DescansoTagCard {
+  id: string;
+  label: DescansoTag;
+  description: string;
+  icon: string;
+  accent: string;
+}
+
+export const DESCANSO_TAG_CARDS: DescansoTagCard[] = [
+  {
+    id: "relajaciones",
+    label: "Relajaciones",
+    description: "Sesiones de relajación muscular progresiva y respiración profunda para soltar la tensión del día.",
+    icon: "wind",
+    accent: "#8AAAD4",
+  },
+  {
+    id: "sueno-profundo",
+    label: "Sueño profundo",
+    description: "Frecuencias y atmósferas diseñadas para inducir un sueño reparador y profundo desde los primeros minutos.",
+    icon: "moon",
+    accent: "#9B8BC8",
+  },
+  {
+    id: "ruidos",
+    label: "Ruidos",
+    description: "Ruido blanco, lluvia, olas y sonidos de naturaleza que enmascaran el entorno y preparan el sistema nervioso.",
+    icon: "volume-2",
+    accent: "#7AB8A8",
+  },
+  {
+    id: "meditaciones",
+    label: "Meditaciones",
+    description: "Meditaciones guiadas específicamente diseñadas para el momento de dormir y el descanso nocturno.",
+    icon: "eye",
+    accent: "#C8A8D4",
+  },
+  {
+    id: "historias-para-dormir",
+    label: "Historias para dormir",
+    description: "Relatos en voz baja con paisajes sonoros que acompañan la mente hacia un estado de calma total.",
+    icon: "book-open",
+    accent: "#D4B896",
+  },
+  {
+    id: "historias-infantiles",
+    label: "Historias infantiles",
+    description: "Cuentos tranquilos y entrañables para acompañar a los más pequeños en su viaje al mundo de los sueños.",
+    icon: "star",
+    accent: "#D4C896",
+  },
+];
