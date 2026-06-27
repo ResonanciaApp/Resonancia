@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { GhostPill } from "@/components/GhostPill";
 import { router } from "expo-router";
 import React, { useMemo } from "react";
 import {
@@ -99,9 +100,11 @@ export default function HistorialScreen() {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Pressable onPress={() => router.back()} style={styles.backBtn}>
-            <Feather name="arrow-left" size={22} color={colors.foreground} />
-          </Pressable>
+          <GhostPill>
+            <Pressable onPress={() => router.back()} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
+              <Feather name="arrow-left" size={16} color="#FFFFFF" />
+            </Pressable>
+          </GhostPill>
           <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 10 }}>
             <Feather name="clock" size={26} color={colors.primary} />
             <View>

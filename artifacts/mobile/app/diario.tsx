@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { GhostPill } from "@/components/GhostPill";
 import { router, useFocusEffect } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradientFill } from "@/components/GoldGradient";
@@ -150,13 +151,15 @@ export default function DiarioScreen() {
 
       {/* Top bar */}
       <View style={[styles.topBar, { paddingTop: topPad + 4 }]}>
-        <Pressable
-          onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
-          hitSlop={10}
-          style={styles.topBtn}
-        >
-          <Feather name="arrow-left" size={22} color={colors.foreground} />
-        </Pressable>
+        <GhostPill>
+          <Pressable
+            onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
+            hitSlop={10}
+            style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}
+          >
+            <Feather name="arrow-left" size={16} color="#FFFFFF" />
+          </Pressable>
+        </GhostPill>
         <Pressable onPress={handleMenu} hitSlop={10} style={styles.topBtn}>
           <Feather name="more-horizontal" size={22} color={colors.foreground} />
         </Pressable>

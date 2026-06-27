@@ -4,6 +4,7 @@
  * Acceso: cajón de navegación / link "Ver todas" desde Inicio.
  */
 import { Feather } from "@expo/vector-icons";
+import { GhostPill } from "@/components/GhostPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useCallback } from "react";
@@ -106,9 +107,11 @@ export default function MisSesionesScreen() {
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad }]}>
-        <Pressable style={styles.backBtn} onPress={() => router.back()} hitSlop={12}>
-          <Feather name="arrow-left" size={22} color={FOREGROUND} />
-        </Pressable>
+        <GhostPill>
+          <Pressable onPress={() => router.back()} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
+            <Feather name="arrow-left" size={16} color="#FFFFFF" />
+          </Pressable>
+        </GhostPill>
         <Text style={styles.headerTitle}>Mis sesiones</Text>
         <View style={{ width: 44 }} />
       </View>

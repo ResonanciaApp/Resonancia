@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { GhostPill } from "@/components/GhostPill";
 import { useAuth as useClerkAuth } from "@clerk/expo";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -81,9 +82,11 @@ export default function AmigosScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.headerRow}>
-          <Pressable onPress={() => router.back()} hitSlop={12}>
-            <Feather name="arrow-left" size={22} color={colors.foreground} />
-          </Pressable>
+          <GhostPill>
+            <Pressable onPress={() => router.back()} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
+              <Feather name="arrow-left" size={16} color="#FFFFFF" />
+            </Pressable>
+          </GhostPill>
         </View>
 
         <Text style={[styles.title, { color: colors.foreground }]}>Amigos</Text>
