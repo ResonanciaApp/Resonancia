@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useEffect, useRef } from "react";
@@ -170,7 +170,7 @@ export default function DescansoScreen() {
       >
         {/* ── Hero ── */}
         <View style={styles.hero}>
-          <Feather name="moon" size={34} color="#D4AF37" style={styles.heroIcon} />
+          <Ionicons name="moon" size={34} color="#C4A8F5" style={styles.heroIcon} />
           <Text style={[styles.heroTitle, { color: colors.foreground }]}>Descanso</Text>
           <Text style={[styles.heroSubtitle, { color: colors.mutedForeground }]}>
             El descanso que mereces,{"\n"}encuéntralo aquí.
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     paddingBottom: 28,
   },
   heroIcon: {
-    marginTop: 7,
+    marginTop: 14,
     marginBottom: 14,
   },
   heroTitle: {
