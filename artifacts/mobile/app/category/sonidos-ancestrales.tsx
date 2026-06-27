@@ -381,7 +381,7 @@ export default function SonidosAncestalesScreen() {
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
+        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: topPad + 60 }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
         onScroll={(e) => {
