@@ -599,7 +599,7 @@ const styles = StyleSheet.create({
   },
 
   // Author section
-  authorSection: { marginTop: 0, marginBottom: 28 },
+  authorSection: { marginTop: 15, marginBottom: 28 },
   authorHeaderRow: {
     flexDirection: "row",
     alignItems: "center",
