@@ -256,9 +256,8 @@ const styles = StyleSheet.create({
     paddingBottom: 28,
   },
   heroIcon: {
-    marginTop: 7,
+    marginTop: 14,
     marginBottom: 14,
-    transform: [{ translateY: 7 }],
   },
   heroTitle: {
     fontSize: 32,
