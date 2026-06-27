@@ -493,7 +493,7 @@ const styles = StyleSheet.create({
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 8 },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-  chip: { minWidth: 96, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 999, backgroundColor: "rgba(180,30,60,0.22)", overflow: "hidden", alignItems: "center", justifyContent: "center" },
+  chip: { minWidth: 96, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 999, backgroundColor: "rgba(180,30,60,0.025)", overflow: "hidden", alignItems: "center", justifyContent: "center" },
   chipText: { fontSize: 14, fontWeight: "600", color: TEXT, textAlign: "center" },
   chipTextSel: { color: "#1B060F" },
 
