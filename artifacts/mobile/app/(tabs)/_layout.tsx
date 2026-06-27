@@ -183,8 +183,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       <Animated.View
         style={[styles.bar, { paddingBottom: pb, transform: [{ translateY }] }]}
       >
-        {/* Fondo base: borgoña (otras tabs) — se desvanece en Equipo para dejar ver el blur */}
-        <Animated.View style={[StyleSheet.absoluteFill, { opacity: Animated.subtract(1, homeOpacity) }]}>
+        {/* Fondo base: borgoña (otras tabs) — se desvanece en Equipo y Descanso */}
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: Animated.subtract(1, Animated.add(homeOpacity, descanzoOpacity)) }]}>
           <LinearGradient
             colors={["#21040C", "#100105"]}
             start={{ x: 0, y: 0 }}
@@ -209,7 +209,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         </Animated.View>
         {/* Glass negro puro: solo en Descanso */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: descanzoOpacity }]} pointerEvents="none">
-          <BlurView intensity={55} tint="dark" style={StyleSheet.absoluteFill} />
+          <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
         </Animated.View>
 
 
