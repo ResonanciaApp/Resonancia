@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
   Platform,
@@ -19,8 +18,6 @@ import { getSessionsByDescansoTag } from "@/data/sessions";
 import { DESCANSO_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
 
-const BG_GRADIENT = ["#2E0510", "#160108"] as const;
-
 const H_PAD = 20;
 const CARD_W = 160;
 
@@ -33,21 +30,12 @@ export default function DescansoScreen() {
   const [filterOpen, setFilterOpen] = useState(false);
 
   return (
-    <LinearGradient
-      style={styles.root}
-      colors={BG_GRADIENT}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
+    <View style={styles.root}>
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
       {/* ── Header fijo ── */}
       <View style={[styles.header, { paddingTop: topPad + 10 }]}>
-        <LinearGradient
-          colors={["#2E0510", "#160108"]}
-          style={StyleSheet.absoluteFill}
-        />
         <View style={styles.headerRow}>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>Descanso</Text>
           <GhostPill>
@@ -108,12 +96,12 @@ export default function DescansoScreen() {
           );
         })}
       </ScrollView>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root:   { flex: 1 },
+  root:   { flex: 1, backgroundColor: "#1B060F" },
   scroll: { flex: 1 },
 
   header: {
