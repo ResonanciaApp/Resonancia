@@ -728,7 +728,7 @@ const styles = StyleSheet.create({
   playBtn: {
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 20,
+    paddingVertical: 15,
     borderRadius: 30,
     shadowColor: "#D4AF37",
     shadowOffset: { width: 0, height: 4 },
