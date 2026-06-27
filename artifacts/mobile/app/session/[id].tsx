@@ -476,7 +476,7 @@ const styles = StyleSheet.create({
   actionRow: {
     flexDirection: "row",
     gap: 10,
-    marginTop: -6,
+    marginTop: 2,
     marginBottom: 28,
   },
   actionCard: {
