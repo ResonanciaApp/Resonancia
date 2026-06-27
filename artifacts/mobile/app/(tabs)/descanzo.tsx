@@ -167,7 +167,7 @@ export default function DescansoScreen() {
         pointerEvents="none"
         style={StyleSheet.absoluteFill}
         colors={["transparent", "transparent", "#080808"]}
-        locations={[0, 0.40, 0.54]}
+        locations={[0, 0.28, 0.42]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
       />
