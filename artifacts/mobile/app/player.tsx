@@ -34,6 +34,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { getNatureSounds } from "@/config/nature-base-map";
 import { getArtist } from "@/data/artists";
+import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { useImageDominantColor } from "@/lib/useImageDominantColor";
@@ -282,9 +283,9 @@ export default function PlayerScreen() {
     seekTo(Math.max(0, progress - 10 / totalSeconds));
   };
 
-  const authorLabel = showArtist
-    ? artist.name
-    : (currentSession.subtitle ?? currentSession.categoryLabel);
+  const authorLabel = currentSession.guideId
+    ? getGuide(currentSession.guideId).name
+    : artist.name;
 
   return (
     <View style={styles.root}>
