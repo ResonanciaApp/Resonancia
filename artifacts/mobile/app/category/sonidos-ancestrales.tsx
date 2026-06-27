@@ -330,6 +330,14 @@ export default function SonidosAncestalesScreen() {
   const sortLabel  = sort==="recientes"?"Escuchadas recientemente":sort==="nuevas"?"Nuevas sesiones":"Las más escuchadas";
 
   const HERO_H  = 220;
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const HERO_AREA_H = 280;
+  const stickyOpacity = scrollY.interpolate({
+    inputRange: [HERO_AREA_H * 0.30, HERO_AREA_H * 0.95],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
+  const [stickyActive, setStickyActive] = useState(false);
 
   const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -381,10 +389,14 @@ export default function SonidosAncestalesScreen() {
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: topPad + 60 }}
+        contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
         onScroll={(e) => {
+          const y = e.nativeEvent.contentOffset.y;
+          scrollY.setValue(y);
+          const active = y > HERO_AREA_H * 0.50;
+          if (active !== stickyActive) setStickyActive(active);
           const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
           if (hasMore && contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
             setVisibleCount((c) => Math.min(c + PAGE_SIZE, sessions.length));
@@ -400,6 +412,24 @@ export default function SonidosAncestalesScreen() {
             locations={[0.50, 0.80, 1]}
             style={StyleSheet.absoluteFill}
           />
+          {/* Flecha atrás flotante */}
+          <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
+            <GhostPill style={{ backgroundColor: "#2E0510" }}>
+              <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
+                <Feather name="arrow-left" size={22} color="#fff" />
+              </Pressable>
+            </GhostPill>
+          </View>
+          <View style={styles.heroIconFloat}>
+            <View style={styles.heroIconCircle}>
+              <Feather name="music" size={32} color={GOLD} />
+            </View>
+          </View>
+        </View>
+
+        {/* ── Título ── */}
+        <View style={styles.profileCard}>
+          <Text style={styles.profileTitle}>Ancestrales</Text>
         </View>
 
         {/* ── Tabs ── */}
@@ -439,23 +469,20 @@ export default function SonidosAncestalesScreen() {
         isFavorite={isFavorite} onToggleFavorite={toggleFavorite} />
       <AddToPlaylistSheet visible={playlistSessionId !== null} sessionId={playlistSessionId ?? ""} onClose={() => setPlaylistSessionId(null)} />
 
-      {/* ── Sticky header (siempre visible) ── */}
-      <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>
+      {/* ── Sticky header (aparece con scroll) ── */}
+      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity }]} pointerEvents={stickyActive ? "auto" : "none"}>
         <GhostPill>
           <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
             <Feather name="arrow-left" size={22} color="#fff" />
           </Pressable>
         </GhostPill>
-        <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
-          <Feather name="music" size={23} color={GOLD} />
-          <Text style={[styles.headerTitle, { lineHeight: 23 }]}>Ancestrales</Text>
-        </View>
+        <Text style={styles.headerTitle}>Ancestrales</Text>
         <GhostPill>
           <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
             <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
           </Pressable>
         </GhostPill>
-      </View>
+      </Animated.View>
     </View>
   );
 }
@@ -478,7 +505,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#2E0510",
   },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
-  headerTitle: { fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },
+  headerTitle: { flex: 1, fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2, textAlign: "center" },
   headerDivider: { width: StyleSheet.hairlineWidth, height: 18, backgroundColor: "rgba(255,255,255,0.18)" },
 
   /* ── Hero ── */
