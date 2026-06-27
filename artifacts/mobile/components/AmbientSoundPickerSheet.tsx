@@ -52,9 +52,12 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
   const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState<TabId>("todos");
   const [favIds, setFavIds] = useState<Set<string>>(new Set());
+  const [localSelected, setLocalSelected] = useState<string | null>(selectedSoundId);
 
+  // Reset local selection whenever the sheet opens
   useEffect(() => {
     if (!visible) return;
+    setLocalSelected(selectedSoundId);
     AsyncStorage.getItem(FAV_KEY).then((val) => {
       if (val) setFavIds(new Set(JSON.parse(val) as string[]));
     });
@@ -78,10 +81,12 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
 
   const favSounds = useMemo(() => SOUNDS.filter((s) => favIds.has(s.id)), [favIds]);
 
-  const handleSelect = (soundId: string | null) => {
-    onSelect(soundId);
+  const handleConfirm = () => {
+    onSelect(localSelected);
     onClose();
   };
+
+  const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
 
   return (
     <Modal
@@ -106,18 +111,15 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
         <ScrollView
           showsVerticalScrollIndicator={false}
           bounces={false}
-          contentContainerStyle={[
-            styles.scroll,
-            { paddingBottom: (Platform.OS === "web" ? 24 : insets.bottom) + 32 },
-          ]}
+          contentContainerStyle={styles.scroll}
         >
           {/* Sin sonido chip */}
           <Pressable
-            style={[styles.noSoundChip, selectedSoundId === null && styles.noSoundChipSelected]}
-            onPress={() => handleSelect(null)}
+            style={[styles.noSoundChip, localSelected === null && styles.noSoundChipSelected]}
+            onPress={() => setLocalSelected(null)}
           >
-            <Feather name="volume-x" size={14} color={selectedSoundId === null ? "#D4AF37" : "rgba(255,255,255,0.65)"} />
-            <Text style={[styles.noSoundText, selectedSoundId === null && { color: "#D4AF37" }]}>
+            <Feather name="volume-x" size={14} color={localSelected === null ? "#D4AF37" : "rgba(255,255,255,0.65)"} />
+            <Text style={[styles.noSoundText, localSelected === null && { color: "#D4AF37" }]}>
               Sin sonido
             </Text>
           </Pressable>
@@ -131,9 +133,9 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
                   <SoundCard
                     key={sound.id}
                     sound={sound}
-                    selected={selectedSoundId === sound.id}
+                    selected={localSelected === sound.id}
                     fav={true}
-                    onPress={() => handleSelect(sound.id)}
+                    onPress={() => setLocalSelected(sound.id)}
                     onToggleFav={() => toggleFav(sound.id)}
                   />
                 ))}
@@ -175,14 +177,32 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
               <SoundCard
                 key={sound.id}
                 sound={sound}
-                selected={selectedSoundId === sound.id}
+                selected={localSelected === sound.id}
                 fav={favIds.has(sound.id)}
-                onPress={() => handleSelect(sound.id)}
+                onPress={() => setLocalSelected(sound.id)}
                 onToggleFav={() => toggleFav(sound.id)}
               />
             ))}
           </View>
         </ScrollView>
+
+        {/* ── Sticky footer ─────────────────────────────────────────────── */}
+        <View style={[styles.footer, { paddingBottom: bottomPad + 12 }]}>
+          <LinearGradient
+            colors={["transparent", "#1B060F"]}
+            style={styles.footerFade}
+            pointerEvents="none"
+          />
+          <Pressable
+            style={[styles.nextBtn, localSelected === null && styles.nextBtnDisabled]}
+            onPress={localSelected !== null ? handleConfirm : undefined}
+            disabled={localSelected === null}
+          >
+            <Text style={[styles.nextBtnText, localSelected === null && styles.nextBtnTextDisabled]}>
+              Siguiente
+            </Text>
+          </Pressable>
+        </View>
       </View>
     </Modal>
   );
@@ -293,6 +313,41 @@ const styles = StyleSheet.create({
   scroll: {
     paddingHorizontal: 16,
     paddingTop: 16,
+    paddingBottom: 100,
+  },
+
+  footer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+  },
+  footerFade: {
+    position: "absolute",
+    top: -32,
+    left: 0,
+    right: 0,
+    height: 32,
+  },
+  nextBtn: {
+    backgroundColor: "#D4AF37",
+    borderRadius: 14,
+    paddingVertical: 16,
+    alignItems: "center",
+  },
+  nextBtnDisabled: {
+    backgroundColor: "rgba(255,255,255,0.10)",
+  },
+  nextBtnText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#1B060F",
+    letterSpacing: 0.3,
+  },
+  nextBtnTextDisabled: {
+    color: "rgba(255,255,255,0.30)",
   },
 
   noSoundChip: {
