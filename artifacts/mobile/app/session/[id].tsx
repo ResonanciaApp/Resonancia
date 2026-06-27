@@ -435,7 +435,7 @@ export default function SessionDetailScreen() {
                 {isAncestral
                   ? "Sobre el Sonoterapeuta"
                   : isMusica
-                    ? "Sobre el productor/músico"
+                    ? "Sobre el músico"
                     : authors.length > 1
                       ? "Sobre las voces guía"
                       : "Sobre la voz guía"}
