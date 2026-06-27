@@ -328,83 +328,6 @@ export default function ExploreScreen() {
           </>
         )}
 
-        {/* ── ¿Cuánto tiempo tienes? ── */}
-        {query.length === 0 && (
-          <View style={styles.durSection}>
-            <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 16 }]}>
-              ¿Cuánto tiempo tienes?
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.durPillRow}
-            >
-              {DURATION_SLOTS.map((slot) => {
-                const sel = selectedDur === slot.label;
-                return (
-                  <Pressable
-                    key={slot.label}
-                    onPress={() => setSelectedDur(sel ? null : slot.label)}
-                    style={({ pressed }) => [
-                      styles.durPill,
-                      sel && styles.durPillActive,
-                      { opacity: pressed ? 0.75 : 1 },
-                    ]}
-                  >
-                    {sel && (
-                      <LinearGradient
-                        colors={["#D6AD5F", "#B47344"]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-                      />
-                    )}
-                    <Text
-                      style={[styles.durPillText, sel && styles.durPillTextActive]}
-                      numberOfLines={1}
-                      adjustsFontSizeToFit
-                      minimumFontScale={0.7}
-                    >
-                      {slot.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
-
-            {selectedDur && (
-              <View style={styles.durResults}>
-                {/* Filtro de orden */}
-                <View style={styles.durSortRow}>
-                  <Pressable onPress={() => setDurSort("recientes")}>
-                    <Text style={[styles.durSortOption, durSort === "recientes" && styles.durSortActive]}>
-                      Recientes
-                    </Text>
-                  </Pressable>
-                  <Text style={styles.durSortSep}>·</Text>
-                  <Pressable onPress={() => setDurSort("populares")}>
-                    <Text style={[styles.durSortOption, durSort === "populares" && styles.durSortActive]}>
-                      Más escuchadas
-                    </Text>
-                  </Pressable>
-                </View>
-                {durationSessions.length === 0 ? (
-                  <Text style={[styles.durEmpty, { color: colors.mutedForeground }]}>
-                    Sin sesiones para este rango
-                  </Text>
-                ) : (
-                  durationSessions.map((s, i) => (
-                    <React.Fragment key={s.id}>
-                      {i > 0 && <View style={styles.recoDivider} />}
-                      <SessionCard session={s} horizontal />
-                    </React.Fragment>
-                  ))
-                )}
-              </View>
-            )}
-          </View>
-        )}
-
         {/* ── Search results ── */}
         {query.length > 0 ? (
           <View style={styles.section}>
@@ -463,6 +386,81 @@ export default function ExploreScreen() {
                   </Pressable>
                 ))}
               </View>
+            </View>
+
+            {/* ── ¿Cuánto tiempo tienes? ── */}
+            <View style={styles.durSection}>
+              <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 16 }]}>
+                ¿Cuánto tiempo tienes?
+              </Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.durPillRow}
+              >
+                {DURATION_SLOTS.map((slot) => {
+                  const sel = selectedDur === slot.label;
+                  return (
+                    <Pressable
+                      key={slot.label}
+                      onPress={() => setSelectedDur(sel ? null : slot.label)}
+                      style={({ pressed }) => [
+                        styles.durPill,
+                        sel && styles.durPillActive,
+                        { opacity: pressed ? 0.75 : 1 },
+                      ]}
+                    >
+                      {sel && (
+                        <LinearGradient
+                          colors={["#D6AD5F", "#B47344"]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 0 }}
+                          style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+                        />
+                      )}
+                      <Text
+                        style={[styles.durPillText, sel && styles.durPillTextActive]}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                        minimumFontScale={0.7}
+                      >
+                        {slot.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
+
+              {selectedDur && (
+                <View style={styles.durResults}>
+                  {/* Filtro de orden */}
+                  <View style={styles.durSortRow}>
+                    <Pressable onPress={() => setDurSort("recientes")}>
+                      <Text style={[styles.durSortOption, durSort === "recientes" && styles.durSortActive]}>
+                        Recientes
+                      </Text>
+                    </Pressable>
+                    <Text style={styles.durSortSep}>·</Text>
+                    <Pressable onPress={() => setDurSort("populares")}>
+                      <Text style={[styles.durSortOption, durSort === "populares" && styles.durSortActive]}>
+                        Más escuchadas
+                      </Text>
+                    </Pressable>
+                  </View>
+                  {durationSessions.length === 0 ? (
+                    <Text style={[styles.durEmpty, { color: colors.mutedForeground }]}>
+                      Sin sesiones para este rango
+                    </Text>
+                  ) : (
+                    durationSessions.map((s, i) => (
+                      <React.Fragment key={s.id}>
+                        {i > 0 && <View style={styles.recoDivider} />}
+                        <SessionCard session={s} horizontal />
+                      </React.Fragment>
+                    ))
+                  )}
+                </View>
+              )}
             </View>
 
             {/* ── Meditaciones recomendadas ── */}
