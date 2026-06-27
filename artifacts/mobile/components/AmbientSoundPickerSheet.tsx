@@ -550,7 +550,7 @@ const GRID_GAP = 10;
 const NUM_COLS = 3;
 const CARD_SIZE = Math.floor(
   (Dimensions.get("window").width - GRID_H_PAD * 2 - GRID_GAP * (NUM_COLS - 1)) / NUM_COLS
-);
+) - 5;
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
