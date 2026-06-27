@@ -126,7 +126,7 @@ export default function SessionDetailScreen() {
   };
   const catBg = CATEGORY_BG[session.categoryId] ?? CATEGORY_BG["sonidos-ancestrales"];
   const categoryPill = isAncestral ? "Ancestral" : isGuiada ? "Meditación" : isReflexion ? "Reflexión"
-    : isMusica ? (session.soundTag?.replace("Música ", "") ?? "Música") : null;
+    : isMusica ? "Música" : null;
   const categoryIcon: string = "clock";
   const subTag = isAncestral
     ? (session.ancestralTag ?? session.categoryLabel)
