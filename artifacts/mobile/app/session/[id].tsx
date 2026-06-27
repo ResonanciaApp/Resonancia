@@ -348,7 +348,7 @@ export default function SessionDetailScreen() {
 
             {/* Cards */}
             {authors.map((a) => (
-              <View key={a.profilePath} style={styles.authorCard}>
+              <LinearGradient key={a.profilePath} colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.authorCard}>
                 <View style={styles.authorRow}>
                   <Image
                     source={a.photo as never}
@@ -367,7 +367,7 @@ export default function SessionDetailScreen() {
                     </Text>
                   </View>
                 </View>
-              </View>
+              </LinearGradient>
             ))}
           </View>
 
@@ -596,7 +596,6 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   authorCard: {
-    backgroundColor: "rgba(255,255,255,0.07)",
     borderRadius: 16,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(212,175,55,0.18)",
