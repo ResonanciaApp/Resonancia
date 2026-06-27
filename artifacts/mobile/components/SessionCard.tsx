@@ -112,11 +112,6 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
         {session.title}
       </Text>
-      {!!authorName && (
-        <Text style={[styles.cardAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
-          {authorName}
-        </Text>
-      )}
     </Pressable>
   );
 }
