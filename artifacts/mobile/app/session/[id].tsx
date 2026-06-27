@@ -731,7 +731,7 @@ const styles = StyleSheet.create({
   },
 
   blockTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "700",
     letterSpacing: 0.2,
     marginBottom: 14,
