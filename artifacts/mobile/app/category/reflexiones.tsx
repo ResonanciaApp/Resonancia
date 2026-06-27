@@ -22,7 +22,7 @@ const H_PAD = 15;
 const GOLD  = "#D4AF37";
 const TEXT  = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
-const HERO_H = 220;
+const HERO_H = 187;
 const GRID_GAP    = 10;
 const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
 const HERO_IMG = require("@/assets/images/cat-reflexiones-hero.png");
@@ -287,7 +287,7 @@ export default function ReflexionesScreen() {
   const toggleView = useCallback(()=>setViewMode((v)=>(v==="list"?"grid":"list")),[]);
 
   const scrollY = useRef(new Animated.Value(0)).current;
-  const HERO_AREA_H = 280;
+  const HERO_AREA_H = 238;
   const stickyOpacity = scrollY.interpolate({
     inputRange: [HERO_AREA_H * 0.30, HERO_AREA_H * 0.95],
     outputRange: [0, 1],
@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
   heroOverlayRight: { position: "absolute", right: H_PAD, zIndex: 10 },
 
-  heroArea: { height: 280, position: "relative" },
+  heroArea: { height: 238, position: "relative" },
   heroIconFloat: { position: "absolute", bottom: -6, left: 0, right: 0, alignItems: "center", zIndex: 2 },
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(60,5,18,0.85)", borderWidth: 1, borderColor: "rgba(212,175,55,0.60)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 

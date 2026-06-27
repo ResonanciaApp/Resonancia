@@ -329,9 +329,9 @@ export default function SonidosAncestalesScreen() {
   const sessions   = useMemo(()=>applySort(getSessionsForTab(activeTab),sort,playCounts),[activeTab,sort,playCounts,version]);
   const sortLabel  = sort==="recientes"?"Escuchadas recientemente":sort==="nuevas"?"Nuevas sesiones":"Las más escuchadas";
 
-  const HERO_H  = 220;
+  const HERO_H  = 187;
   const scrollY = useRef(new Animated.Value(0)).current;
-  const HERO_AREA_H = 280;
+  const HERO_AREA_H = 238;
   const stickyOpacity = scrollY.interpolate({
     inputRange: [HERO_AREA_H * 0.30, HERO_AREA_H * 0.95],
     outputRange: [0, 1],
@@ -512,7 +512,7 @@ const styles = StyleSheet.create({
   headerDivider: { width: StyleSheet.hairlineWidth, height: 18, backgroundColor: "rgba(255,255,255,0.18)" },
 
   /* ── Hero ── */
-  heroArea: { height: 280, position: "relative" },
+  heroArea: { height: 238, position: "relative" },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
   heroOverlayRight: { position: "absolute", right: H_PAD, zIndex: 10 },
   heroIconFloat: {
