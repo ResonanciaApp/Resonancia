@@ -54,6 +54,7 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
   const [activeTab, setActiveTab] = useState<TabId>("todos");
   const [favIds, setFavIds] = useState<Set<string>>(new Set());
   const [localSelected, setLocalSelected] = useState<string | null>(selectedSoundId);
+  const [favPopupSound, setFavPopupSound] = useState<MixSound | null>(null);
 
   // Reset local selection whenever the sheet opens
   useEffect(() => {
@@ -137,7 +138,7 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
                     selected={localSelected === sound.id}
                     fav={true}
                     onPress={() => setLocalSelected(sound.id)}
-                    onToggleFav={() => toggleFav(sound.id)}
+                    onLongPress={() => setFavPopupSound(sound)}
                   />
                 ))}
               </View>
@@ -181,11 +182,53 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
                 selected={localSelected === sound.id}
                 fav={favIds.has(sound.id)}
                 onPress={() => setLocalSelected(sound.id)}
-                onToggleFav={() => toggleFav(sound.id)}
+                onLongPress={() => setFavPopupSound(sound)}
               />
             ))}
           </View>
         </ScrollView>
+
+        {/* ── Fav popup ─────────────────────────────────────────────────── */}
+        {favPopupSound && (
+          <Pressable style={styles.popupBackdrop} onPress={() => setFavPopupSound(null)}>
+            <Pressable style={styles.popup} onPress={() => {}}>
+              {(() => {
+                const img = getSoundImage(favPopupSound.id);
+                const isFav = favIds.has(favPopupSound.id);
+                return (
+                  <>
+                    <View style={styles.popupThumbWrap}>
+                      {img ? (
+                        <ExpoImage
+                          source={img}
+                          style={StyleSheet.absoluteFill}
+                          contentFit="cover"
+                        />
+                      ) : (
+                        <View style={[StyleSheet.absoluteFill, styles.cardFallback]} />
+                      )}
+                    </View>
+                    <View style={styles.popupBody}>
+                      <Text style={styles.popupName} numberOfLines={1}>{favPopupSound.name}</Text>
+                      <Pressable
+                        style={[styles.popupFavBtn, isFav && styles.popupFavBtnActive]}
+                        onPress={() => {
+                          toggleFav(favPopupSound.id);
+                          setFavPopupSound(null);
+                        }}
+                      >
+                        <Feather name="heart" size={14} color={isFav ? "#1B060F" : "#D4AF37"} />
+                        <Text style={[styles.popupFavText, isFav && styles.popupFavTextActive]}>
+                          {isFav ? "Quitar de favoritos" : "Agregar a favoritos"}
+                        </Text>
+                      </Pressable>
+                    </View>
+                  </>
+                );
+              })()}
+            </Pressable>
+          </Pressable>
+        )}
 
         {/* ── Sticky footer ─────────────────────────────────────────────── */}
         <BlurView
@@ -213,19 +256,24 @@ function SoundCard({
   selected,
   fav,
   onPress,
-  onToggleFav,
+  onLongPress,
 }: {
   sound: MixSound;
   selected: boolean;
   fav: boolean;
   onPress: () => void;
-  onToggleFav: () => void;
+  onLongPress: () => void;
 }) {
   const img = getSoundImage(sound.id);
 
   return (
     <View style={styles.cardWrap}>
-      <Pressable onPress={onPress} style={[styles.card, selected && styles.cardSelected]}>
+      <Pressable
+        onPress={onPress}
+        onLongPress={onLongPress}
+        delayLongPress={1000}
+        style={[styles.card, selected && styles.cardSelected]}
+      >
         {/* Thumbnail */}
         {img ? (
           <ExpoImage
@@ -250,18 +298,10 @@ function SoundCard({
           <View style={[StyleSheet.absoluteFill, styles.cardSelectedOverlay]} pointerEvents="none" />
         )}
 
-        {/* Fav button */}
-        <Pressable
-          style={styles.favBtn}
-          onPress={(e) => { e.stopPropagation(); onToggleFav(); }}
-          hitSlop={8}
-        >
-          <Feather
-            name={fav ? "heart" : "heart"}
-            size={13}
-            color={fav ? "#D4AF37" : "rgba(255,255,255,0.55)"}
-          />
-        </Pressable>
+        {/* Fav indicator (small dot, no button) */}
+        {fav && !selected && (
+          <View style={styles.favDot} pointerEvents="none" />
+        )}
 
         {/* Selected check badge */}
         {selected && (
@@ -426,14 +466,14 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.18)",
   },
 
-  favBtn: {
+  favDot: {
     position: "absolute",
     top: 7,
     right: 7,
-    zIndex: 2,
-    backgroundColor: "rgba(0,0,0,0.35)",
-    borderRadius: 10,
-    padding: 4,
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: "#D4AF37",
   },
 
   checkBadge: {
@@ -454,5 +494,59 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 15,
     marginTop: 6,
+  },
+
+  popupBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 100,
+  },
+  popup: {
+    width: 260,
+    backgroundColor: "#2E0510",
+    borderRadius: 18,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255,255,255,0.12)",
+    overflow: "hidden",
+  },
+  popupThumbWrap: {
+    width: "100%",
+    height: 130,
+    position: "relative",
+    backgroundColor: "rgba(255,255,255,0.06)",
+  },
+  popupBody: {
+    padding: 16,
+    gap: 12,
+  },
+  popupName: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "white",
+  },
+  popupFavBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#D4AF37",
+    backgroundColor: "transparent",
+  },
+  popupFavBtnActive: {
+    backgroundColor: "#D4AF37",
+    borderColor: "#D4AF37",
+  },
+  popupFavText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#D4AF37",
+  },
+  popupFavTextActive: {
+    color: "#1B060F",
   },
 });
