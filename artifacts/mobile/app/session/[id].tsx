@@ -69,7 +69,7 @@ const GOLD_MID = "rgba(212,175,55,0.75)";
 const GOLD_OFF = "rgba(212,175,55,0.18)";
 function GoldBorder({ children }: { children: React.ReactNode }) {
   return (
-    <View style={{ flex: 1, borderRadius: 14 }}>
+    <View style={{ flex: 1, borderRadius: 14, overflow: "hidden" }}>
       <LinearGradient colors={[GOLD_OFF, GOLD_MID, GOLD_OFF]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ position:"absolute", top:0,    left:0, right:0,  height:1 }} />
       <LinearGradient colors={[GOLD_OFF, GOLD_MID, GOLD_OFF]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ position:"absolute", bottom:0,  left:0, right:0,  height:1 }} />
       <LinearGradient colors={[GOLD_OFF, GOLD_MID, GOLD_OFF]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={{ position:"absolute", top:0, left:0,  bottom:0, width:1  }} />
