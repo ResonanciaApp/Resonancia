@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
   },
   searchInput: { flex: 1, fontSize: 14, fontFamily: "Jost", padding: 0 },
   noResults: { fontSize: 14, fontFamily: "Jost", textAlign: "center", paddingVertical: 24 },
-  pageTitle: { fontSize: 28, fontFamily: "OptimaBold", letterSpacing: 0.2, marginBottom: 4, textAlign: "center" },
+  pageTitle: { fontSize: 31, fontFamily: "OptimaBold", letterSpacing: 0.2, marginBottom: 4, textAlign: "center" },
   pageSub: { fontSize: 13, fontFamily: "Jost", lineHeight: 19, textAlign: "center" },
 
   catList: {},
