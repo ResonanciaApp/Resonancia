@@ -369,6 +369,22 @@ export default function SessionDetailScreen() {
                 </View>
               </LinearGradient>
             ))}
+
+            {/* Ver todos los contenidos */}
+            {authors[0] && (
+              <Pressable
+                onPress={() => router.push(authors[0].profilePath as never)}
+                style={({ pressed }) => [styles.allContentsBtn, { opacity: pressed ? 0.88 : 1, overflow: "hidden" }]}
+              >
+                <LinearGradient
+                  colors={["#D6AD5F", "#B47344"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={StyleSheet.absoluteFill}
+                />
+                <Text style={styles.allContentsBtnText}>Ver todos los contenidos</Text>
+              </Pressable>
+            )}
           </View>
 
           {/* ── Más sesiones como estas ──────────────────────────────────── */}
@@ -620,6 +636,24 @@ const styles = StyleSheet.create({
   authorCountry: { fontSize: 13 },
   authorBio: { fontSize: 13, lineHeight: 19, maxWidth: 190 },
   authorLink: { fontSize: 13, fontWeight: "600" },
+  allContentsBtn: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 14,
+    borderRadius: 30,
+    marginTop: 8,
+    shadowColor: "#D4AF37",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
+    elevation: 6,
+  },
+  allContentsBtnText: {
+    fontSize: 15,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+    color: "#1B060F",
+  },
 
   blockTitle: {
     fontSize: 21,
