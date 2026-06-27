@@ -162,6 +162,15 @@ export default function DescansoScreen() {
       <StatusBar barStyle="light-content" />
       <SacredBackground />
       <NightSky />
+      {/* Fade: estrellas visibles solo hasta el banner, se disuelven en el fondo */}
+      <LinearGradient
+        pointerEvents="none"
+        style={StyleSheet.absoluteFill}
+        colors={["transparent", "transparent", "#080808"]}
+        locations={[0, 0.40, 0.54]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      />
 
       <ScrollView
         style={styles.scroll}
