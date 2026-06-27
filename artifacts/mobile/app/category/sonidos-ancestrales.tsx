@@ -400,14 +400,6 @@ export default function SonidosAncestalesScreen() {
             locations={[0.50, 0.80, 1]}
             style={StyleSheet.absoluteFill}
           />
-          {/* Flecha atrás flotante */}
-          <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
-            <GhostPill style={{ backgroundColor: "#2E0510" }}>
-              <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
-                <Feather name="arrow-left" size={22} color="#fff" />
-              </Pressable>
-            </GhostPill>
-          </View>
           <View style={styles.heroIconFloat}>
             <View style={styles.heroIconCircle}>
               <Feather name="music" size={32} color={GOLD} />
