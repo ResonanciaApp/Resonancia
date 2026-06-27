@@ -1,5 +1,6 @@
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Image as ExpoImage } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -13,19 +14,21 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { getSoundImage } from "@/config/sound-images";
 import { SOUNDS, type MixSound, type SoundCategoryId } from "@/data/sounds";
+import { BLUR_PLACEHOLDER } from "@/constants/imagePlaceholder";
 
 const FAV_KEY = "@ambient_fav_sounds";
 
 type TabId = "todos" | "naturaleza" | "ancestrales" | "digital" | "voces" | "bpm";
 
 const TABS: { id: TabId; label: string; categories: SoundCategoryId[] | null }[] = [
-  { id: "todos",        label: "Todos",     categories: null },
-  { id: "naturaleza",   label: "Naturales", categories: ["animales","bosque","mar","fuego","desierto"] },
-  { id: "ancestrales",  label: "Sagrados",  categories: ["cuencos_tibetanos","cuencos_cuarzo","gongs","campanas_viento","vientos","cantos","percusion"] },
-  { id: "digital",      label: "Digital",   categories: ["solfeggio","ruidos","frecuencias"] },
-  { id: "voces",        label: "Voces",     categories: ["mantras"] },
-  { id: "bpm",          label: "BPM",       categories: ["bpm"] },
+  { id: "todos",       label: "Todos",     categories: null },
+  { id: "naturaleza",  label: "Naturales", categories: ["animales","bosque","mar","fuego","desierto"] },
+  { id: "ancestrales", label: "Sagrados",  categories: ["cuencos_tibetanos","cuencos_cuarzo","gongs","campanas_viento","vientos","cantos","percusion"] },
+  { id: "digital",     label: "Digital",   categories: ["solfeggio","ruidos","frecuencias"] },
+  { id: "voces",       label: "Voces",     categories: ["mantras"] },
+  { id: "bpm",         label: "BPM",       categories: ["bpm"] },
 ];
 
 const TAB_COLORS: Record<TabId, string> = {
@@ -43,13 +46,6 @@ type Props = {
   onClose: () => void;
   onSelect: (soundId: string | null) => void;
 };
-
-function SoundIcon({ sound, size = 26, color = "rgba(255,255,255,0.90)" }: { sound: MixSound; size?: number; color?: string }) {
-  if (sound.iconSet === "ionicons") {
-    return <Ionicons name={sound.icon as any} size={size} color={color} />;
-  }
-  return <Feather name={sound.icon as any} size={size} color={color} />;
-}
 
 export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onSelect }: Props) {
   const insets = useSafeAreaInsets();
@@ -109,7 +105,10 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
         <ScrollView
           showsVerticalScrollIndicator={false}
           bounces={false}
-          contentContainerStyle={[styles.scroll, { paddingBottom: (Platform.OS === "web" ? 24 : insets.bottom) + 32 }]}
+          contentContainerStyle={[
+            styles.scroll,
+            { paddingBottom: (Platform.OS === "web" ? 24 : insets.bottom) + 32 },
+          ]}
         >
           {/* Sin sonido chip */}
           <Pressable
@@ -132,7 +131,7 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
                     key={sound.id}
                     sound={sound}
                     selected={selectedSoundId === sound.id}
-                    fav={favIds.has(sound.id)}
+                    fav={true}
                     onPress={() => handleSelect(sound.id)}
                     onToggleFav={() => toggleFav(sound.id)}
                   />
@@ -201,38 +200,65 @@ function SoundCard({
   onPress: () => void;
   onToggleFav: () => void;
 }) {
+  const img = getSoundImage(sound.id);
+
   return (
-    <Pressable style={[styles.card, selected && styles.cardSelected]} onPress={onPress}>
-      {/* Fav toggle */}
-      <Pressable
-        style={styles.favBtn}
-        onPress={(e) => { e.stopPropagation(); onToggleFav(); }}
-        hitSlop={6}
-      >
-        <Feather name="heart" size={12} color={fav ? "#D4AF37" : "rgba(255,255,255,0.35)"} />
+    <View style={styles.cardWrap}>
+      <Pressable onPress={onPress} style={[styles.card, selected && styles.cardSelected]}>
+        {/* Thumbnail */}
+        {img ? (
+          <ExpoImage
+            source={img}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+            placeholder={BLUR_PLACEHOLDER}
+          />
+        ) : (
+          <View style={[StyleSheet.absoluteFill, styles.cardFallback]} />
+        )}
+
+        {/* Dark overlay */}
+        <LinearGradient
+          colors={["transparent", "rgba(0,0,0,0.30)"]}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
+
+        {/* Selected tint */}
+        {selected && (
+          <View style={[StyleSheet.absoluteFill, styles.cardSelectedOverlay]} pointerEvents="none" />
+        )}
+
+        {/* Fav button */}
+        <Pressable
+          style={styles.favBtn}
+          onPress={(e) => { e.stopPropagation(); onToggleFav(); }}
+          hitSlop={8}
+        >
+          <Feather
+            name={fav ? "heart" : "heart"}
+            size={13}
+            color={fav ? "#D4AF37" : "rgba(255,255,255,0.55)"}
+          />
+        </Pressable>
+
+        {/* Selected check badge */}
+        {selected && (
+          <View style={styles.checkBadge}>
+            <Feather name="check" size={10} color="#1B060F" />
+          </View>
+        )}
       </Pressable>
 
-      {/* Icon */}
-      <View style={[styles.iconWrap, selected && styles.iconWrapSelected]}>
-        <SoundIcon sound={sound} size={24} color={selected ? "#D4AF37" : "rgba(255,255,255,0.85)"} />
-      </View>
-
-      {/* Name */}
+      {/* Name below the card */}
       <Text style={[styles.cardName, selected && { color: "#D4AF37" }]} numberOfLines={2}>
         {sound.name}
       </Text>
-
-      {/* Selected check */}
-      {selected && (
-        <View style={styles.checkBadge}>
-          <Feather name="check" size={10} color="#1B060F" />
-        </View>
-      )}
-    </Pressable>
+    </View>
   );
 }
 
-const CARD_SIZE = 100;
+const CARD_SIZE = 104;
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
@@ -286,10 +312,10 @@ const styles = StyleSheet.create({
   },
 
   sectionTitle: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "700",
-    color: "rgba(255,255,255,0.45)",
-    letterSpacing: 0.8,
+    color: "rgba(255,255,255,0.40)",
+    letterSpacing: 0.9,
     textTransform: "uppercase",
     marginBottom: 12,
     marginTop: 4,
@@ -319,58 +345,58 @@ const styles = StyleSheet.create({
     gap: 10,
     marginBottom: 24,
   },
-  card: {
+
+  cardWrap: {
     width: CARD_SIZE,
     alignItems: "center",
-    padding: 10,
+  },
+  card: {
+    width: CARD_SIZE,
+    height: CARD_SIZE,
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "transparent",
+    backgroundColor: "rgba(255,255,255,0.08)",
     position: "relative",
   },
   cardSelected: {
     borderColor: "#D4AF37",
-    backgroundColor: "rgba(212,175,55,0.10)",
+  },
+  cardFallback: {
+    backgroundColor: "rgba(255,255,255,0.07)",
+  },
+  cardSelectedOverlay: {
+    backgroundColor: "rgba(212,175,55,0.18)",
   },
 
   favBtn: {
     position: "absolute",
-    top: 8,
-    right: 8,
+    top: 7,
+    right: 7,
     zIndex: 2,
-  },
-
-  iconWrap: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "rgba(255,255,255,0.07)",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 8,
-    marginTop: 8,
-  },
-  iconWrapSelected: {
-    backgroundColor: "rgba(212,175,55,0.15)",
-  },
-
-  cardName: {
-    fontSize: 11,
-    color: "rgba(255,255,255,0.80)",
-    textAlign: "center",
-    lineHeight: 14,
+    backgroundColor: "rgba(0,0,0,0.35)",
+    borderRadius: 10,
+    padding: 4,
   },
 
   checkBadge: {
     position: "absolute",
-    top: -4,
-    left: -4,
+    top: 6,
+    left: 6,
     width: 18,
     height: 18,
     borderRadius: 9,
     backgroundColor: "#D4AF37",
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  cardName: {
+    fontSize: 11,
+    color: "rgba(255,255,255,0.80)",
+    textAlign: "center",
+    lineHeight: 15,
+    marginTop: 6,
   },
 });
