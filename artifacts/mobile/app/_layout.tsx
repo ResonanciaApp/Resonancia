@@ -291,6 +291,7 @@ export default function RootLayout() {
     Inter_700Bold,
     PlayfairDisplay_400Regular,
     PlayfairDisplay_700Bold,
+    OptimaBold: require("../assets/fonts/OptimaBold.ttf"),
   });
 
   useEffect(() => {
