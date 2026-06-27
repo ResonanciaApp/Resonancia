@@ -636,9 +636,9 @@ const styles = StyleSheet.create({
     color: "white",
   },
   signature: {
-    fontSize: 9,
+    fontSize: 13,
     fontWeight: "700",
-    color: "rgba(255,255,255,0.16)",
+    color: "rgba(255,255,255,0.9)",
     letterSpacing: 5,
     marginTop: 10,
     marginBottom: 2,
