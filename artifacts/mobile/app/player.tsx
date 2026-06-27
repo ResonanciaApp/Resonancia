@@ -311,9 +311,9 @@ export default function PlayerScreen() {
           />
         </Animated.View>
 
-        {/* Degradado inferior: imagen → fondo dinámico */}
+        {/* Degradado inferior: imagen → negro */}
         <LinearGradient
-          colors={["transparent", "rgba(0,0,0,0.25)", dominantColor]}
+          colors={["transparent", "rgba(0,0,0,0.35)", "#000000"]}
           locations={[0.35, 0.70, 1]}
           style={StyleSheet.absoluteFill}
           pointerEvents="none"
