@@ -675,6 +675,7 @@ const styles = StyleSheet.create({
     columnGap: GRID_GAP,
     rowGap: GRID_GAP,
     marginBottom: 24,
+    paddingHorizontal: 8,
   },
 
   cardWrap: {
