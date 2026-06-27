@@ -367,24 +367,14 @@ export default function SessionDetailScreen() {
                     </Text>
                   </View>
                 </View>
+                <Pressable
+                  onPress={() => router.push(a.profilePath as never)}
+                  style={({ pressed }) => ({ opacity: pressed ? 0.65 : 1, marginTop: 12 })}
+                >
+                  <Text style={styles.allContentsBtnText}>Ver todos los contenidos</Text>
+                </Pressable>
               </LinearGradient>
             ))}
-
-            {/* Ver todos los contenidos */}
-            {authors[0] && (
-              <Pressable
-                onPress={() => router.push(authors[0].profilePath as never)}
-                style={({ pressed }) => [styles.allContentsBtn, { opacity: pressed ? 0.88 : 1, overflow: "hidden" }]}
-              >
-                <LinearGradient
-                  colors={["#D6AD5F", "#B47344"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={StyleSheet.absoluteFill}
-                />
-                <Text style={styles.allContentsBtnText}>Ver todos los contenidos</Text>
-              </Pressable>
-            )}
           </View>
 
           {/* ── Más sesiones como estas ──────────────────────────────────── */}
@@ -649,10 +639,10 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   allContentsBtnText: {
-    fontSize: 15,
-    fontWeight: "700",
-    letterSpacing: 0.5,
-    color: "#1B060F",
+    fontSize: 13,
+    fontWeight: "600",
+    letterSpacing: 0.3,
+    color: "#D6AD5F",
   },
 
   blockTitle: {
