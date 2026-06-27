@@ -18,8 +18,16 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { getSoundImage } from "@/config/sound-images";
-import { SOUNDS, type MixSound, type SoundCategoryId } from "@/data/sounds";
+import { SOUNDS, hasSoundFile, type MixSound, type SoundCategoryId } from "@/data/sounds";
+import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 import { BLUR_PLACEHOLDER } from "@/constants/imagePlaceholder";
+
+/** Sonidos que realmente tienen audio (bundle o remoto) */
+function isPlayable(id: string): boolean {
+  return hasSoundFile(id) || !!REMOTE_SOUND_MAP[id];
+}
+
+const PLAYABLE_SOUNDS = SOUNDS.filter((s) => isPlayable(s.id));
 
 const FAV_KEY = "@ambient_fav_sounds";
 
@@ -104,11 +112,11 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, session, onC
 
   const filteredSounds = useMemo(() => {
     const tab = TABS.find((t) => t.id === activeTab);
-    if (!tab || !tab.categories) return SOUNDS;
-    return SOUNDS.filter((s) => tab.categories!.includes(s.category));
+    if (!tab || !tab.categories) return PLAYABLE_SOUNDS;
+    return PLAYABLE_SOUNDS.filter((s) => tab.categories!.includes(s.category));
   }, [activeTab]);
 
-  const favSounds = useMemo(() => SOUNDS.filter((s) => favIds.has(s.id)), [favIds]);
+  const favSounds = useMemo(() => PLAYABLE_SOUNDS.filter((s) => favIds.has(s.id)), [favIds]);
 
   const handleGuardar = () => {
     onSelect(localSelected, ambientVolume);

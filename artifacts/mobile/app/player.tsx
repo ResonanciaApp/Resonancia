@@ -160,7 +160,7 @@ export default function PlayerScreen() {
     p.loop = true;
     p.volume = ambientOverlayVolume;
     p.replace(file);
-    if (isPlaying) p.play();
+    p.play();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedAmbientSoundId]);
 
