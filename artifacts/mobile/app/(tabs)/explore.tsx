@@ -177,7 +177,7 @@ export default function ExploreScreen() {
     router.push(`/session/${s.id}` as never);
   }
 
-  function renderCarousel(title: string, sessions: Session[], categoryRoute: string) {
+  function renderCarousel(title: string, sessions: Session[], categoryRoute: string, contentPaddingTop = 0) {
     return (
       <View style={styles.section} key={title}>
         <Pressable
@@ -191,7 +191,7 @@ export default function ExploreScreen() {
           horizontal
           showsHorizontalScrollIndicator={false}
           style={{ marginHorizontal: -H_PAD }}
-          contentContainerStyle={styles.carouselContent}
+          contentContainerStyle={[styles.carouselContent, contentPaddingTop > 0 && { paddingTop: contentPaddingTop }]}
         >
           {sessions.map((s) => (
             <Pressable
@@ -466,7 +466,7 @@ export default function ExploreScreen() {
             </View>
 
             {/* ── Meditaciones recomendadas ── */}
-            {renderCarousel("Meditaciones recomendadas", dailyRecs, "/category/meditaciones-guiadas")}
+            {renderCarousel("Meditaciones recomendadas", dailyRecs, "/category/meditaciones-guiadas", 7)}
 
             {/* ── Mezclas de la comunidad ── */}
             <View style={styles.communityWrap}>
