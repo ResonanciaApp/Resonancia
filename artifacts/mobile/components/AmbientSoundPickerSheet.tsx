@@ -147,11 +147,7 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
 
           {/* Tabs */}
           <Text style={styles.sectionTitle}>Explorar</Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.tabsRow}
-          >
+          <View style={styles.tabsGrid}>
             {TABS.map((tab) => {
               const sel = activeTab === tab.id;
               return (
@@ -171,7 +167,7 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
                 </Pressable>
               );
             })}
-          </ScrollView>
+          </View>
 
           {/* Sounds grid */}
           <View style={styles.grid}>
@@ -404,11 +400,11 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 
-  tabsRow: {
+  tabsGrid: {
     flexDirection: "row",
+    flexWrap: "wrap",
     gap: 8,
-    paddingBottom: 16,
-    paddingRight: 8,
+    marginBottom: 16,
   },
   tab: {
     paddingHorizontal: 16,
