@@ -405,18 +405,6 @@ export default function ExploreScreen() {
           </View>
         )}
 
-        {/* ── Recomendado para ti ── */}
-        {query.length === 0 && (
-          <View style={styles.recoSection}>
-            <Text style={styles.sectionTitle}>Meditaciones recomendadas</Text>
-            <View style={styles.recoList}>
-              {dailyRecs.map((s) => (
-                <SessionCard key={s.id} session={s} horizontal />
-              ))}
-            </View>
-          </View>
-        )}
-
         {/* ── Search results ── */}
         {query.length > 0 ? (
           <View style={styles.section}>
@@ -477,6 +465,15 @@ export default function ExploreScreen() {
               </View>
             </View>
 
+            {/* ── Meditaciones recomendadas ── */}
+            <View style={styles.recoSection}>
+              <Text style={styles.sectionTitle}>Meditaciones recomendadas</Text>
+              <View style={styles.recoList}>
+                {dailyRecs.map((s) => (
+                  <SessionCard key={s.id} session={s} horizontal />
+                ))}
+              </View>
+            </View>
 
             {/* ── Mezclas de la comunidad ── */}
             <View style={styles.communityWrap}>
