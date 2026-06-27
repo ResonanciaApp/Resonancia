@@ -372,6 +372,7 @@ export default function ReflexionesScreen() {
         <View style={styles.heroArea}>
           <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" />
           <LinearGradient colors={["transparent","rgba(0,0,0,0.28)","rgba(0,0,0,0.60)"]} locations={[0.50,0.80,1]} style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={["transparent","#160108"]} locations={[0.65,1]} style={[StyleSheet.absoluteFill,{top:"50%"}]} />
           {/* Flecha atrás flotante */}
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
             <GhostPill style={{ backgroundColor: "#2E0510" }}>
@@ -471,7 +472,7 @@ const styles = StyleSheet.create({
 
   profileCard: { marginHorizontal: H_PAD, marginTop: 30, paddingBottom: 14, gap: 8, alignItems: "center" },
   profileTitle: { fontSize: 27, fontWeight: "800", color: TEXT, letterSpacing: 0.3 },
-  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.70)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 8, marginBottom: 28 },
+  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 8, marginBottom: 28 },
 
   dividerLine: { height: 0 },
   dividerShadow: { height: 12, marginTop: 0 },

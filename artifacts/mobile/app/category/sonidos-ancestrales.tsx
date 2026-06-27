@@ -416,6 +416,11 @@ export default function SonidosAncestalesScreen() {
             locations={[0.50, 0.80, 1]}
             style={StyleSheet.absoluteFill}
           />
+          <LinearGradient
+            colors={["transparent", "#160108"]}
+            locations={[0.65, 1]}
+            style={[StyleSheet.absoluteFill, { top: "50%" }]}
+          />
           {/* Flecha atrás flotante */}
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
             <GhostPill style={{ backgroundColor: "#2E0510" }}>
@@ -553,7 +558,7 @@ const styles = StyleSheet.create({
     color: TEXT,
     letterSpacing: 0.3,
   },
-  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.70)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 8, marginBottom: 28 },
+  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 8, marginBottom: 28 },
 
   /* ── Divisor ── */
   dividerLine: { height: 0 },
