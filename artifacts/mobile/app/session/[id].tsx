@@ -512,7 +512,7 @@ const styles = StyleSheet.create({
   },
   categoryPillText: {
     fontSize: 15,
-    fontWeight: "600",
+    fontFamily: "OptimaRegular",
     color: "#4A0C0C",
     letterSpacing: 0.8,
   },
