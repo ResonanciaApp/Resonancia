@@ -4,6 +4,7 @@ import { Image as ExpoImage } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  Dimensions,
   Modal,
   Platform,
   Pressable,
@@ -258,7 +259,12 @@ function SoundCard({
   );
 }
 
-const CARD_SIZE = 104;
+const GRID_H_PAD = 16;
+const GRID_GAP = 10;
+const NUM_COLS = 3;
+const CARD_SIZE = Math.floor(
+  (Dimensions.get("window").width - GRID_H_PAD * 2 - GRID_GAP * (NUM_COLS - 1)) / NUM_COLS
+);
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
@@ -342,7 +348,8 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 10,
+    columnGap: GRID_GAP,
+    rowGap: GRID_GAP,
     marginBottom: 24,
   },
 
