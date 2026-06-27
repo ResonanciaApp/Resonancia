@@ -651,6 +651,12 @@ export default function PlayerScreen() {
 
           {/* Sheet */}
           <Animated.View style={[styles.optSheet, { paddingBottom: bottomPad + 8 }, sheetAnimStyle]}>
+            <LinearGradient
+              colors={["#2E0510", "#160108"]}
+              locations={[0, 1]}
+              style={[StyleSheet.absoluteFill, { borderTopLeftRadius: 24, borderTopRightRadius: 24 }]}
+              pointerEvents="none"
+            />
             {/* Handle */}
             <View style={styles.optHandle} />
 
@@ -1062,9 +1068,9 @@ const styles = StyleSheet.create({
 
   // Options sheet
   optSheet: {
-    backgroundColor: "#2E0510",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
+    overflow: "hidden",
     paddingTop: 10,
     maxHeight: "85%",
   },
