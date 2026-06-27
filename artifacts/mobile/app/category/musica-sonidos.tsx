@@ -408,7 +408,7 @@ export default function MusicaSonidosScreen() {
 
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
-          <Text style={styles.profileTitle}>Música y Sonidos</Text>
+          <Text style={styles.profileTitle}>Música</Text>
           <Text style={styles.profileDesc} numberOfLines={1}>
             Música ambient y tribal para el viaje interior.
           </Text>
@@ -456,7 +456,7 @@ export default function MusicaSonidosScreen() {
             <Feather name="arrow-left" size={22} color="#fff" />
           </Pressable>
         </GhostPill>
-        <Text style={styles.headerTitle}>Música y Sonidos</Text>
+        <Text style={styles.headerTitle}>Música</Text>
         <GhostPill>
           <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/musica-info" as never)}>
             <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
