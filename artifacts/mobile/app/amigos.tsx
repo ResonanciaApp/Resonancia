@@ -77,18 +77,19 @@ export default function AmigosScreen() {
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="solid" />
 
+      {/* Floating back */}
+      <View style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 10 }} pointerEvents="box-none">
+        <GhostPill>
+          <Pressable onPress={() => router.back()} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
+            <Feather name="arrow-left" size={16} color="#FFFFFF" />
+          </Pressable>
+        </GhostPill>
+      </View>
+
       <ScrollView
-        contentContainerStyle={{ paddingTop: topPad + 8, paddingBottom: bottomPad + 40, paddingHorizontal: 20 }}
+        contentContainerStyle={{ paddingTop: topPad + 60, paddingBottom: bottomPad + 40, paddingHorizontal: 20 }}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.headerRow}>
-          <GhostPill>
-            <Pressable onPress={() => router.back()} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
-              <Feather name="arrow-left" size={16} color="#FFFFFF" />
-            </Pressable>
-          </GhostPill>
-        </View>
-
         <Text style={[styles.title, { color: colors.foreground }]}>Amigos</Text>
         <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
           Conecta con practicantes de tu comunidad

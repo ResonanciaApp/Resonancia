@@ -444,15 +444,17 @@ export default function GruposScreen() {
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="solid" />
 
+      {/* Floating back */}
+      <View style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 20 }} pointerEvents="box-none">
+        <GhostPill>
+          <Pressable onPress={() => router.back()} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
+            <Feather name="arrow-left" size={16} color="#FFFFFF" />
+          </Pressable>
+        </GhostPill>
+      </View>
+
       {/* Fixed header */}
-      <View style={[styles.fixedHeader, { paddingTop: topPad }]}>
-        <View style={[styles.headerRow, { paddingHorizontal: 20 }]}>
-          <GhostPill>
-            <Pressable onPress={() => router.back()} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
-              <Feather name="arrow-left" size={16} color="#FFFFFF" />
-            </Pressable>
-          </GhostPill>
-        </View>
+      <View style={[styles.fixedHeader, { paddingTop: topPad + 52 }]}>
         <View style={{ paddingHorizontal: 20 }}>
           <Text style={[styles.title, { color: colors.foreground }]}>Grupos</Text>
         </View>

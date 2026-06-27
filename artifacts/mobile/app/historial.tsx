@@ -89,22 +89,26 @@ export default function HistorialScreen() {
     >
       <StatusBar barStyle="light-content" />
 
+      {/* Floating back */}
+      <View style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 10 }} pointerEvents="box-none">
+        <GhostPill>
+          <Pressable onPress={() => router.back()} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
+            <Feather name="arrow-left" size={16} color="#FFFFFF" />
+          </Pressable>
+        </GhostPill>
+      </View>
+
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{
           paddingBottom: 120 + bottomPad,
-          paddingTop: topPad + 12,
+          paddingTop: topPad + 64,
           paddingHorizontal: 20,
         }}
         showsVerticalScrollIndicator={false}
       >
         {/* Header */}
         <View style={styles.header}>
-          <GhostPill>
-            <Pressable onPress={() => router.back()} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
-              <Feather name="arrow-left" size={16} color="#FFFFFF" />
-            </Pressable>
-          </GhostPill>
           <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 10 }}>
             <Feather name="clock" size={26} color={colors.primary} />
             <View>

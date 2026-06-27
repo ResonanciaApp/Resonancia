@@ -105,16 +105,17 @@ export default function MisSesionesScreen() {
         style={StyleSheet.absoluteFill}
       />
 
-      {/* Header */}
-      <View style={[styles.header, { paddingTop: topPad }]}>
+      {/* Floating back */}
+      <View style={{ position: "absolute", left: 16, top: topPad + 8, zIndex: 10 }} pointerEvents="box-none">
         <GhostPill>
           <Pressable onPress={() => router.back()} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
             <Feather name="arrow-left" size={16} color="#FFFFFF" />
           </Pressable>
         </GhostPill>
-        <Text style={styles.headerTitle}>Mis sesiones</Text>
-        <View style={{ width: 44 }} />
       </View>
+
+      {/* Page title */}
+      <Text style={{ fontSize: 30, fontWeight: "700", color: FOREGROUND, letterSpacing: 0.3, paddingHorizontal: 20, paddingTop: topPad + 60, marginBottom: 8 }}>Mis sesiones</Text>
 
       {/* Contenido */}
       {!authenticated ? (

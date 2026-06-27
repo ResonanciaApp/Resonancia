@@ -149,8 +149,8 @@ export default function DiarioScreen() {
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
-      {/* Top bar */}
-      <View style={[styles.topBar, { paddingTop: topPad + 4 }]}>
+      {/* Floating back */}
+      <View style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 10 }} pointerEvents="box-none">
         <GhostPill>
           <Pressable
             onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
@@ -160,6 +160,10 @@ export default function DiarioScreen() {
             <Feather name="arrow-left" size={16} color="#FFFFFF" />
           </Pressable>
         </GhostPill>
+      </View>
+
+      {/* Top bar (solo menú) */}
+      <View style={[styles.topBar, { paddingTop: topPad + 4, justifyContent: "flex-end" }]}>
         <Pressable onPress={handleMenu} hitSlop={10} style={styles.topBtn}>
           <Feather name="more-horizontal" size={22} color={colors.foreground} />
         </Pressable>
