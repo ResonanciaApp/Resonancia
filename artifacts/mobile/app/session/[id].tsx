@@ -65,20 +65,6 @@ function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: obje
   );
 }
 
-const GOLD_MID = "rgba(212,175,55,0.75)";
-const GOLD_OFF = "rgba(212,175,55,0.18)";
-function GoldBorder({ children }: { children: React.ReactNode }) {
-  return (
-    <View style={{ flex: 1, borderRadius: 14, overflow: "hidden" }}>
-      <LinearGradient colors={[GOLD_OFF, GOLD_MID, GOLD_OFF]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ position:"absolute", top:0,    left:0, right:0,  height:1 }} />
-      <LinearGradient colors={[GOLD_OFF, GOLD_MID, GOLD_OFF]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ position:"absolute", bottom:0,  left:0, right:0,  height:1 }} />
-      <LinearGradient colors={[GOLD_OFF, GOLD_MID, GOLD_OFF]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={{ position:"absolute", top:0, left:0,  bottom:0, width:1  }} />
-      <LinearGradient colors={[GOLD_OFF, GOLD_MID, GOLD_OFF]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={{ position:"absolute", top:0, right:0, bottom:0, width:1  }} />
-      {children}
-    </View>
-  );
-}
-
 export default function SessionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
@@ -277,32 +263,32 @@ export default function SessionDetailScreen() {
           <View style={styles.actionRow}>
             {/* Guardar */}
             <Pressable onPress={handleFav} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
-              <GoldBorder>
-                <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={[styles.actionCardInner, { margin: 1, borderRadius: 13 }]}>
+              <LinearGradient colors={["rgba(212,175,55,0.45)","rgba(212,175,55,0.10)"]} start={{ x:0,y:0.5 }} end={{ x:1,y:0.5 }} style={styles.actionCardBorder}>
+                <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
                   <Feather name="heart" size={20} color={fav ? colors.primary : "rgba(212,175,55,0.6)"} />
                   <Text style={[styles.actionLabel, { color: fav ? colors.primary : "rgba(212,175,55,0.6)" }]}>Guardar</Text>
                 </LinearGradient>
-              </GoldBorder>
+              </LinearGradient>
             </Pressable>
 
             {/* Descargar */}
             <Pressable onPress={handleDownload} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
-              <GoldBorder>
-                <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={[styles.actionCardInner, { margin: 1, borderRadius: 13 }]}>
+              <LinearGradient colors={["rgba(212,175,55,0.45)","rgba(212,175,55,0.10)"]} start={{ x:0,y:0.5 }} end={{ x:1,y:0.5 }} style={styles.actionCardBorder}>
+                <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
                   <Feather name="download" size={20} color="rgba(212,175,55,0.6)" />
                   <Text style={[styles.actionLabel, { color: "rgba(212,175,55,0.6)" }]}>Descargar</Text>
                 </LinearGradient>
-              </GoldBorder>
+              </LinearGradient>
             </Pressable>
 
             {/* Compartir */}
             <Pressable onPress={handleShare} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
-              <GoldBorder>
-                <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={[styles.actionCardInner, { margin: 1, borderRadius: 13 }]}>
+              <LinearGradient colors={["rgba(212,175,55,0.45)","rgba(212,175,55,0.10)"]} start={{ x:0,y:0.5 }} end={{ x:1,y:0.5 }} style={styles.actionCardBorder}>
+                <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
                   <Feather name="share-2" size={20} color="rgba(212,175,55,0.6)" />
                   <Text style={[styles.actionLabel, { color: "rgba(212,175,55,0.6)" }]}>Compartir</Text>
                 </LinearGradient>
-              </GoldBorder>
+              </LinearGradient>
             </Pressable>
           </View>
 
