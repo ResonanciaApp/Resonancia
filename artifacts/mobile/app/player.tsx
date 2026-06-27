@@ -39,7 +39,7 @@ import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { useImageDominantColor } from "@/lib/useImageDominantColor";
 
 const { width, height: SCREEN_HEIGHT } = Dimensions.get("window");
-const HERO_HEIGHT = SCREEN_HEIGHT * 0.63;
+const HERO_HEIGHT = SCREEN_HEIGHT * 0.63 + 35;
 const RATINGS_KEY = "@resonance_ratings";
 
 function formatTime(seconds: number): string {
