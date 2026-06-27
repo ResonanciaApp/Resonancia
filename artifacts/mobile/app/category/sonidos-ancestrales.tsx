@@ -430,7 +430,7 @@ export default function SonidosAncestalesScreen() {
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
           <Text style={styles.profileTitle}>Ancestrales</Text>
-          <Text style={styles.profileDesc} numberOfLines={1}>
+          <Text style={styles.profileDesc} numberOfLines={2}>
             Cuencos, gongs y sonidos sagrados para sanar y elevar.
           </Text>
         </View>
@@ -549,12 +549,7 @@ const styles = StyleSheet.create({
     color: TEXT,
     letterSpacing: 0.3,
   },
-  profileDesc: {
-    fontSize: 14,
-    color: "rgba(255,255,255,0.70)",
-    lineHeight: 21,
-    textAlign: "center",
-  },
+  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.70)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 8, marginBottom: 28 },
 
   /* ── Divisor ── */
   dividerLine: { height: 0 },

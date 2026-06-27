@@ -408,7 +408,7 @@ export default function MeditacionesGuiadasScreen() {
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
           <Text style={styles.profileTitle}>Meditaciones</Text>
-          <Text style={styles.profileDesc} numberOfLines={1}>
+          <Text style={styles.profileDesc} numberOfLines={2}>
             Voz guiada para aquietar la mente y despertar la presencia.
           </Text>
         </View>
@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
 
   profileCard: { marginHorizontal: H_PAD, marginTop: 30, paddingBottom: 14, gap: 8, alignItems: "center" },
   profileTitle: { fontSize: 27, fontWeight: "800", color: TEXT, letterSpacing: 0.3 },
-  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.70)", lineHeight: 21, textAlign: "center" },
+  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.70)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 8, marginBottom: 28 },
 
   dividerLine: { height: 0 },
   dividerShadow: { height: 12, marginTop: 0 },
