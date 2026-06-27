@@ -574,17 +574,16 @@ export default function PlayerScreen() {
         </View>
 
         {/* Título + autor, con botón Terminar superpuesto en pausa */}
-        <View style={{ position: "relative" }}>
-          <Text style={styles.titleText} numberOfLines={2}>{currentSession.title}</Text>
-          <Text style={styles.authorText}>{authorLabel}</Text>
+        <View style={styles.titleAuthorWrapper}>
+          <Text style={[styles.titleText, !isPlaying && { opacity: 0 }]} numberOfLines={2}>
+            {currentSession.title}
+          </Text>
+          <Text style={[styles.authorText, !isPlaying && { opacity: 0 }]}>{authorLabel}</Text>
 
           {!isPlaying && (
             <Pressable
               onPress={() => { stop(); router.back(); }}
-              style={({ pressed }) => [
-                styles.terminarBtn,
-                { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, opacity: pressed ? 0.92 : 1 },
-              ]}
+              style={styles.terminarBtn}
             >
               <Text style={styles.terminarText}>Terminar</Text>
             </Pressable>
@@ -1167,12 +1166,17 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "600",
   },
+  titleAuthorWrapper: {
+    position: "relative",
+  },
   terminarBtn: {
-    marginTop: 20,
-    marginHorizontal: 0,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     backgroundColor: "#FFFFFF",
-    borderRadius: 30,
-    paddingVertical: 16,
+    borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
   },
