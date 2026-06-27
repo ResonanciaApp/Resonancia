@@ -300,7 +300,7 @@ function SoundCard({
       </Pressable>
 
       {/* Name below the card */}
-      <Text style={[styles.cardName, selected && { color: "#D4AF37" }]} numberOfLines={2}>
+      <Text style={[styles.cardName, selected && { color: "white", fontWeight: "700" }]} numberOfLines={2}>
         {sound.name}
       </Text>
     </View>
