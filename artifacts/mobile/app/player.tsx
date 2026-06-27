@@ -10,6 +10,7 @@ import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder
 import {
   Dimensions,
   LayoutChangeEvent,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -23,6 +24,7 @@ import {
 import Animated, {
   Easing,
   cancelAnimation,
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
@@ -75,6 +77,13 @@ export default function PlayerScreen() {
     setAmbientVolume,
   } = usePlayer();
 
+  // Options sheet
+  const [showOptionsSheet, setShowOptionsSheet] = useState(false);
+  const sheetProgress = useSharedValue(0);
+  const ambSheetTrackRef = useRef<View>(null);
+  const ambSheetTrackWidth = useRef(0);
+  const ambSheetTrackPageX = useRef(0);
+
   // Refs para sliders y barra de progreso
   const voiceTrackWidth = useRef(0);
   const voiceTrackPageX = useRef(0);
@@ -110,6 +119,13 @@ export default function PlayerScreen() {
 
   const kenBurnsStyle = useAnimatedStyle(() => ({
     transform: [{ scale: kenBurns.value }],
+  }));
+
+  const sheetAnimStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: (1 - sheetProgress.value) * 700 }],
+  }));
+  const backdropAnimStyle = useAnimatedStyle(() => ({
+    opacity: sheetProgress.value * 0.72,
   }));
 
   useEffect(() => {
@@ -179,6 +195,39 @@ export default function PlayerScreen() {
   }, [sleepTimerRemaining]);
 
   useEffect(() => {
+    if (showOptionsSheet) {
+      sheetProgress.value = withTiming(1, { duration: 320, easing: Easing.out(Easing.cubic) });
+    }
+  }, [showOptionsSheet]);
+
+  const openSheet = useCallback(() => {
+    sheetProgress.value = 0;
+    setShowOptionsSheet(true);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  }, []);
+
+  const closeSheet = useCallback(() => {
+    sheetProgress.value = withTiming(0, { duration: 240, easing: Easing.in(Easing.cubic) }, (finished) => {
+      if (finished) runOnJS(setShowOptionsSheet)(false);
+    });
+  }, []);
+
+  const handleSheetAmbGrant = useCallback((e: GestureResponderEvent) => {
+    ambSheetTrackRef.current?.measure((_x, _y, _w, _h, px) => {
+      ambSheetTrackPageX.current = px;
+      const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - px) / ambSheetTrackWidth.current));
+      if (hasAmbientTrack) setAmbientVolume(vol);
+      else if (hasVoiceTrack) setVoiceVolume(vol);
+    });
+  }, [hasAmbientTrack, hasVoiceTrack, setAmbientVolume, setVoiceVolume]);
+
+  const handleSheetAmbMove = useCallback((e: GestureResponderEvent) => {
+    const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - ambSheetTrackPageX.current) / ambSheetTrackWidth.current));
+    if (hasAmbientTrack) setAmbientVolume(vol);
+    else if (hasVoiceTrack) setVoiceVolume(vol);
+  }, [hasAmbientTrack, hasVoiceTrack, setAmbientVolume, setVoiceVolume]);
+
+  useEffect(() => {
     if (!isSeekingRef.current) {
       progressShared.value = withTiming(progress, {
         duration: 500,
@@ -231,6 +280,9 @@ export default function PlayerScreen() {
       </View>
     );
   }
+
+  const OPTIONS_CATEGORIES = ["sonidos-ancestrales", "meditaciones-guiadas", "reflexiones"];
+  const isOptionsCategory = OPTIONS_CATEGORIES.includes(currentSession.categoryId);
 
   const isMusicaYSonidos = currentSession.categoryId === "musica-sonidos";
   const isNature = !!getNatureSounds(currentSession.id);
@@ -396,7 +448,7 @@ export default function PlayerScreen() {
                 color="rgba(255,255,255,0.95)"
               />
             </Pressable>
-            <Pressable onPress={handleShare} hitSlop={8}>
+            <Pressable onPress={isOptionsCategory ? openSheet : handleShare} hitSlop={8}>
               <Feather name="more-horizontal" size={24} color="rgba(255,255,255,0.95)" />
             </Pressable>
           </View>
@@ -513,6 +565,157 @@ export default function PlayerScreen() {
         )}
         <Feather name="share" size={18} color="white" />
       </Pressable>
+
+      {/* ── Options Sheet ──────────────────────────────────────────────────── */}
+      <Modal
+        visible={showOptionsSheet}
+        transparent
+        animationType="none"
+        onRequestClose={closeSheet}
+        statusBarTranslucent
+      >
+        <View style={[StyleSheet.absoluteFill, { justifyContent: "flex-end" }]} pointerEvents="box-none">
+          {/* Backdrop */}
+          <Pressable style={StyleSheet.absoluteFill} onPress={closeSheet}>
+            <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: "#000" }, backdropAnimStyle]} />
+          </Pressable>
+
+          {/* Sheet */}
+          <Animated.View style={[styles.optSheet, { paddingBottom: bottomPad + 8 }, sheetAnimStyle]}>
+            {/* Handle */}
+            <View style={styles.optHandle} />
+
+            {/* Header: thumbnail + title + author */}
+            <View style={styles.optHeader}>
+              <ExpoImage
+                source={currentSession.image as any}
+                style={styles.optThumb}
+                contentFit="cover"
+                placeholder={BLUR_PLACEHOLDER}
+              />
+              <View style={{ flex: 1, marginLeft: 14 }}>
+                <Text style={styles.optSessionTitle} numberOfLines={2}>{currentSession.title}</Text>
+                <Text style={styles.optSessionAuthor}>{authorLabel}</Text>
+              </View>
+            </View>
+
+            <View style={styles.optDivider} />
+
+            <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
+              {/* Ambiente + slider */}
+              {(hasVoiceTrack || hasAmbientTrack) && (
+                <View style={styles.optSliderItem}>
+                  <View style={styles.optRow}>
+                    <Feather name="volume-2" size={18} color="white" style={styles.optIcon} />
+                    <Text style={styles.optRowText}>Ambiente</Text>
+                    <Text style={styles.optRowBadge}>
+                      {Math.round((hasAmbientTrack ? ambientVolume : voiceVolume) * 100)}%
+                    </Text>
+                  </View>
+                  <View
+                    ref={ambSheetTrackRef}
+                    style={[styles.sliderHitArea, { marginHorizontal: 20, marginTop: 2 }]}
+                    onLayout={(e: LayoutChangeEvent) => { ambSheetTrackWidth.current = e.nativeEvent.layout.width; }}
+                    onStartShouldSetResponder={() => true}
+                    onMoveShouldSetResponder={() => true}
+                    onResponderGrant={handleSheetAmbGrant}
+                    onResponderMove={handleSheetAmbMove}
+                  >
+                    <View style={styles.sliderTrack}>
+                      <View
+                        pointerEvents="none"
+                        style={[styles.sliderFill, { width: `${(hasAmbientTrack ? ambientVolume : voiceVolume) * 100}%` as any, backgroundColor: "#D4AF37" }]}
+                      />
+                      <View
+                        pointerEvents="none"
+                        style={[styles.sliderThumb, { left: `${(hasAmbientTrack ? ambientVolume : voiceVolume) * 100}%` as any, backgroundColor: "#D4AF37" }]}
+                      />
+                    </View>
+                  </View>
+                </View>
+              )}
+
+              {/* Sonido ambiente */}
+              <Pressable style={styles.optRow}>
+                <Feather name="music" size={18} color="rgba(255,255,255,0.45)" style={styles.optIcon} />
+                <Text style={[styles.optRowText, { color: "rgba(255,255,255,0.45)" }]}>Sonido ambiente</Text>
+                <Text style={styles.optRowMuted}>Próximamente</Text>
+              </Pressable>
+
+              {/* Temporizador */}
+              <Pressable style={styles.optRow} onPress={closeSheet}>
+                <Feather name="clock" size={18} color="white" style={styles.optIcon} />
+                <Text style={styles.optRowText}>Temporizador</Text>
+                {selectedTimerMinutes !== null && (
+                  <Text style={styles.optRowBadge}>{selectedTimerMinutes} min</Text>
+                )}
+                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
+              </Pressable>
+
+              {/* Descargar */}
+              <Pressable style={styles.optRow}>
+                <Feather name="download" size={18} color="white" style={styles.optIcon} />
+                <Text style={styles.optRowText}>Descargar</Text>
+                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
+              </Pressable>
+
+              {/* Agregar a favoritos */}
+              <Pressable
+                style={styles.optRow}
+                onPress={() => {
+                  toggleFavorite(currentSession.id);
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                }}
+              >
+                <Feather name="bookmark" size={18} color={fav ? "#D4AF37" : "white"} style={styles.optIcon} />
+                <Text style={[styles.optRowText, fav && { color: "#D4AF37" }]}>
+                  {fav ? "En favoritos" : "Agregar a favoritos"}
+                </Text>
+                {fav && <Feather name="check" size={15} color="#D4AF37" />}
+              </Pressable>
+
+              {/* Añadir a carpeta */}
+              <Pressable style={styles.optRow}>
+                <Feather name="folder-plus" size={18} color="white" style={styles.optIcon} />
+                <Text style={styles.optRowText}>Añadir a carpeta</Text>
+                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
+              </Pressable>
+
+              {/* Añadir a playlist */}
+              <Pressable style={styles.optRow}>
+                <Feather name="list" size={18} color="white" style={styles.optIcon} />
+                <Text style={styles.optRowText}>Añadir a playlist</Text>
+                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
+              </Pressable>
+
+              {/* Seguir al voz guía */}
+              {currentSession.guideId && (
+                <Pressable
+                  style={styles.optRow}
+                  onPress={() => {
+                    closeSheet();
+                    router.push(`/guiador/${currentSession.guideId}` as any);
+                  }}
+                >
+                  <Feather name="user-plus" size={18} color="white" style={styles.optIcon} />
+                  <Text style={styles.optRowText}>Seguir al voz guía</Text>
+                  <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
+                </Pressable>
+              )}
+
+              {/* Separador */}
+              <View style={[styles.optDivider, { marginTop: 8 }]} />
+
+              {/* Informar un problema */}
+              <Pressable style={styles.optRow}>
+                <Feather name="alert-circle" size={18} color="rgba(255,255,255,0.5)" style={styles.optIcon} />
+                <Text style={[styles.optRowText, { color: "rgba(255,255,255,0.5)" }]}>Informar un problema</Text>
+                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.25)" />
+              </Pressable>
+            </ScrollView>
+          </Animated.View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -745,4 +948,80 @@ const styles = StyleSheet.create({
 
   noSession: { fontSize: 16, marginTop: 16, marginBottom: 24 },
   backBtnSolo: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20, borderWidth: 1 },
+
+  // Options sheet
+  optSheet: {
+    backgroundColor: "#2E0510",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingTop: 10,
+    maxHeight: "85%",
+  },
+  optHandle: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "rgba(255,255,255,0.22)",
+    alignSelf: "center",
+    marginBottom: 18,
+  },
+  optHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingBottom: 16,
+  },
+  optThumb: {
+    width: 56,
+    height: 56,
+    borderRadius: 8,
+    backgroundColor: "rgba(255,255,255,0.08)",
+  },
+  optSessionTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "white",
+    lineHeight: 20,
+    marginBottom: 3,
+  },
+  optSessionAuthor: {
+    fontSize: 13,
+    fontWeight: "300",
+    color: "rgba(255,255,255,0.60)",
+  },
+  optDivider: {
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    marginHorizontal: 20,
+    marginBottom: 4,
+  },
+  optRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+  },
+  optIcon: {
+    marginRight: 16,
+    width: 22,
+    textAlign: "center",
+  },
+  optRowText: {
+    fontSize: 16,
+    color: "white",
+    flex: 1,
+  },
+  optRowBadge: {
+    fontSize: 13,
+    color: "rgba(255,255,255,0.50)",
+    marginRight: 6,
+  },
+  optRowMuted: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.35)",
+    fontStyle: "italic",
+  },
+  optSliderItem: {
+    paddingBottom: 8,
+  },
 });
