@@ -1026,7 +1026,8 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#FAF0EE",
     lineHeight: 18,
-    fontFamily: "OptimaBold",
+    fontFamily: "Jost",
+    fontWeight: "700",
   },
   catGrid: {
     flexDirection: "row",
