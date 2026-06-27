@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   },
 
   section: {
-    marginBottom: 47,
+    marginBottom: 62,
   },
   catHeader: {
     flexDirection: "row",
