@@ -359,7 +359,7 @@ export default function PlayerScreen() {
         style={styles.bottomPanel}
         showsVerticalScrollIndicator={false}
         bounces={false}
-        contentContainerStyle={{ paddingBottom: bottomPad + 24 }}
+        contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end", paddingBottom: bottomPad + 24 }}
       >
         {/* Tiempo grande + acciones */}
         <View style={styles.timeActionsRow}>
