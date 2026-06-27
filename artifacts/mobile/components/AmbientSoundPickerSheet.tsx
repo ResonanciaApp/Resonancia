@@ -99,7 +99,7 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
       statusBarTranslucent
     >
       <View style={styles.root}>
-        <LinearGradient colors={["#2E0510", "#1B060F"]} style={StyleSheet.absoluteFill} />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#191919" }]} />
 
         {/* Top bar */}
         <View style={[styles.topBar, { paddingTop: (Platform.OS === "web" ? 20 : insets.top) + 8 }]}>
@@ -293,21 +293,9 @@ function SoundCard({
           pointerEvents="none"
         />
 
-        {/* Selected tint */}
-        {selected && (
-          <View style={[StyleSheet.absoluteFill, styles.cardSelectedOverlay]} pointerEvents="none" />
-        )}
-
         {/* Fav indicator (small dot, no button) */}
-        {fav && !selected && (
+        {fav && (
           <View style={styles.favDot} pointerEvents="none" />
-        )}
-
-        {/* Selected check badge */}
-        {selected && (
-          <View style={styles.checkBadge}>
-            <Feather name="check" size={10} color="#1B060F" />
-          </View>
         )}
       </Pressable>
 
@@ -457,13 +445,10 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   cardSelected: {
-    borderColor: "#D4AF37",
+    borderColor: "white",
   },
   cardFallback: {
     backgroundColor: "rgba(255,255,255,0.07)",
-  },
-  cardSelectedOverlay: {
-    backgroundColor: "rgba(212,175,55,0.18)",
   },
 
   favDot: {
