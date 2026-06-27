@@ -359,7 +359,7 @@ export default function SessionDetailScreen() {
                   />
                   <View style={styles.authorMeta}>
                     <Text style={[styles.authorName, { color: colors.foreground }]}>{a.name}</Text>
-                    <Text style={[styles.authorCountry, { color: "#D6AD5F" }]}>
+                    <Text style={[styles.authorCountry, { color: "rgba(255,255,255,0.9)" }]}>
                       {a.flag}{"  "}{a.country}
                     </Text>
                     <Text style={[styles.authorBio, { color: "rgba(255,255,255,0.75)" }]} numberOfLines={2}>
