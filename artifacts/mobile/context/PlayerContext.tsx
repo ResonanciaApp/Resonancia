@@ -58,6 +58,8 @@ type PlayerContextType = {
   sessionProgress: Record<string, number>;
   /** Get saved progress for a session id (0 if none) */
   getSessionProgress: (id: string) => number;
+  /** Clear saved progress for a session id (for Reiniciar) */
+  clearSessionProgress: (id: string) => void;
   isFavorite: (id: string) => boolean;
   toggleFavorite: (id: string) => void;
   playSession: (session: Session) => void;
@@ -365,6 +367,16 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSignedIn, localLoaded]);
+
+  /** Clear saved progress for a single session id */
+  const clearSessionProgress = useCallback((id: string) => {
+    const next = { ...sessionProgressRef.current };
+    delete next[id];
+    sessionProgressRef.current = next;
+    setSessionProgress(next);
+    persistProgressMap(next);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /** Persist a specific progress map to AsyncStorage (fire-and-forget) */
   const persistProgressMap = useCallback((map: Record<string, number>) => {
@@ -1379,6 +1391,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         getSessionProgress,
         isFavorite,
         toggleFavorite,
+        clearSessionProgress,
         playSession,
         playSessionWithDuration,
         pauseResume,

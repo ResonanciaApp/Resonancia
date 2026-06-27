@@ -82,7 +82,7 @@ export default function SessionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { playSession, isFavorite, toggleFavorite, currentSession, isPlaying } = usePlayer();
+  const { playSession, isFavorite, toggleFavorite, currentSession, isPlaying, getSessionProgress, clearSessionProgress } = usePlayer();
 
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -165,7 +165,23 @@ export default function SessionDetailScreen() {
     return pool.slice(0, 3);
   }, [session.id]);
 
+  const savedProgress = getSessionProgress(session.id);
+  const hasProgress = savedProgress > 0.02;
+
   const handlePlay = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    playSession(session);
+    router.push("/player" as never);
+  };
+
+  const handlePlayFromStart = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    clearSessionProgress(session.id);
+    playSession(session);
+    router.push("/player" as never);
+  };
+
+  const handleContinue = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     playSession(session);
     router.push("/player" as never);
@@ -278,32 +294,73 @@ export default function SessionDetailScreen() {
             {session.description}
           </Text>
 
-          {/* ── Botón Escuchar ──────────────────────────────────────────── */}
-          <Pressable
-            onPress={handlePlay}
-            style={({ pressed }) => [
-              styles.playBtn,
-              { overflow: "hidden", opacity: pressed ? 0.88 : 1, marginBottom: 16 },
-            ]}
-          >
-            <LinearGradient
-              colors={["#D6AD5F", "#B47344"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={StyleSheet.absoluteFill}
-            />
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-              <Svg width={18} height={18} viewBox="0 0 48 48">
-                <Path
-                  d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
-                  fill={colors.primaryForeground}
+          {/* ── Botón Escuchar / Split Reiniciar+Continuar ───────────── */}
+          {hasProgress ? (
+            <View style={[styles.splitBtnRow, { marginBottom: 16 }]}>
+              {/* Reiniciar */}
+              <Pressable
+                onPress={handlePlayFromStart}
+                style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
+              >
+                <LinearGradient
+                  colors={["#D6AD5F", "#B47344"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={StyleSheet.absoluteFill}
                 />
-              </Svg>
-              <Text style={[styles.playBtnText, { color: colors.primaryForeground }]}>
-                {isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora"}
-              </Text>
+                <Feather name="rotate-ccw" size={16} color={colors.primaryForeground} />
+                <Text style={[styles.playBtnText, { color: colors.primaryForeground }]}>Reiniciar</Text>
+              </Pressable>
+
+              <View style={styles.splitDivider} />
+
+              {/* Continuar */}
+              <Pressable
+                onPress={handleContinue}
+                style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
+              >
+                <LinearGradient
+                  colors={["#D6AD5F", "#B47344"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={StyleSheet.absoluteFill}
+                />
+                <Svg width={16} height={16} viewBox="0 0 48 48">
+                  <Path
+                    d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
+                    fill={colors.primaryForeground}
+                  />
+                </Svg>
+                <Text style={[styles.playBtnText, { color: colors.primaryForeground }]}>Continuar</Text>
+              </Pressable>
             </View>
-          </Pressable>
+          ) : (
+            <Pressable
+              onPress={handlePlay}
+              style={({ pressed }) => [
+                styles.playBtn,
+                { overflow: "hidden", opacity: pressed ? 0.88 : 1, marginBottom: 16 },
+              ]}
+            >
+              <LinearGradient
+                colors={["#D6AD5F", "#B47344"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                <Svg width={18} height={18} viewBox="0 0 48 48">
+                  <Path
+                    d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
+                    fill={colors.primaryForeground}
+                  />
+                </Svg>
+                <Text style={[styles.playBtnText, { color: colors.primaryForeground }]}>
+                  {isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora"}
+                </Text>
+              </View>
+            </Pressable>
+          )}
 
           {/* ── Action row ──────────────────────────────────────────────── */}
           <View style={styles.actionRow}>
@@ -734,5 +791,29 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     letterSpacing: 0.5,
+  },
+  splitBtnRow: {
+    flexDirection: "row",
+    borderRadius: 30,
+    overflow: "hidden",
+    shadowColor: "#D4AF37",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
+    elevation: 6,
+  },
+  splitBtn: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 15,
+    gap: 8,
+    overflow: "hidden",
+  },
+  splitDivider: {
+    width: 1,
+    backgroundColor: "rgba(0,0,0,0.25)",
+    zIndex: 2,
   },
 });
