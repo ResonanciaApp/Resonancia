@@ -229,7 +229,7 @@ export default function SessionDetailScreen() {
 
       <Animated.ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 110 + bottomPad }}
+        contentContainerStyle={{ paddingBottom: bottomPad + 24 }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
         onScroll={Animated.event(
@@ -283,6 +283,33 @@ export default function SessionDetailScreen() {
           <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]}>
             {session.description}
           </Text>
+
+          {/* ── Botón Escuchar ──────────────────────────────────────────── */}
+          <Pressable
+            onPress={handlePlay}
+            style={({ pressed }) => [
+              styles.playBtn,
+              { overflow: "hidden", opacity: pressed ? 0.88 : 1, marginBottom: 16 },
+            ]}
+          >
+            <LinearGradient
+              colors={["#D6AD5F", "#B47344"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={StyleSheet.absoluteFill}
+            />
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              <Svg width={18} height={18} viewBox="0 0 48 48">
+                <Path
+                  d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
+                  fill={colors.primaryForeground}
+                />
+              </Svg>
+              <Text style={[styles.playBtnText, { color: colors.primaryForeground }]}>
+                {isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora"}
+              </Text>
+            </View>
+          </Pressable>
 
           {/* ── Action row ──────────────────────────────────────────────── */}
           <View style={styles.actionRow}>
@@ -432,35 +459,6 @@ export default function SessionDetailScreen() {
         <View style={{ width: 36 }} />
       </Animated.View>
 
-      {/* ── Sticky "Escuchar ahora" ──────────────────────────────────────── */}
-      <View style={[styles.stickyPlay, { paddingBottom: bottomPad + 10 }]}>
-        <LinearGradient colors={["transparent", catBg.solid]} style={StyleSheet.absoluteFill} />
-        <Pressable
-          onPress={handlePlay}
-          style={({ pressed }) => [
-            styles.playBtn,
-            { overflow: "hidden", opacity: pressed ? 0.88 : 1 },
-          ]}
-        >
-          <LinearGradient
-            colors={["#D6AD5F", "#B47344"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={StyleSheet.absoluteFill}
-          />
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-            <Svg width={18} height={18} viewBox="0 0 48 48">
-              <Path
-                d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
-                fill={colors.primaryForeground}
-              />
-            </Svg>
-            <Text style={[styles.playBtnText, { color: colors.primaryForeground }]}>
-              {isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora"}
-            </Text>
-          </View>
-        </Pressable>
-      </View>
     </View>
   );
 }
@@ -727,15 +725,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  // Sticky play
-  stickyPlay: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    paddingHorizontal: 20,
-    paddingTop: 24,
-  },
   playBtn: {
     alignItems: "center",
     justifyContent: "center",
