@@ -318,41 +318,42 @@ export default function PlayerScreen() {
           pointerEvents="none"
         />
 
-        {/* ── Controles sobre la imagen ──────────────────────────────────── */}
-        <View style={[styles.heroControls, { bottom: 36 }]}>
-          <Pressable onPress={skipBackward} style={styles.skipBtn} hitSlop={8}>
-            <Feather name="rotate-ccw" size={26} color="rgba(255,255,255,0.90)" />
-            <Text style={styles.skipText}>10</Text>
-          </Pressable>
+      </View>
 
-          {/* Play/Pause — glass */}
-          <Pressable
-            onPress={handlePlayPause}
-            disabled={isLoading}
-            style={[styles.playBtnGlass, { opacity: isLoading ? 0.65 : 1 }]}
-          >
-            {Platform.OS !== "web" ? (
-              <BlurView intensity={28} tint="light" style={StyleSheet.absoluteFill} />
-            ) : (
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.22)" }]} />
-            )}
-            {isLoading ? (
-              <Feather name="loader" size={34} color="white" />
-            ) : (
-              <Feather
-                name={isPlaying ? "pause" : "play"}
-                size={34}
-                color="white"
-                style={isPlaying ? undefined : { paddingLeft: 4 }}
-              />
-            )}
-          </Pressable>
+      {/* ── Controles de reproducción — centrados en pantalla ───────────── */}
+      <View style={styles.heroControls} pointerEvents="box-none">
+        <Pressable onPress={skipBackward} style={styles.skipBtn} hitSlop={8}>
+          <Feather name="rotate-ccw" size={26} color="rgba(255,255,255,0.90)" />
+          <Text style={styles.skipText}>10</Text>
+        </Pressable>
 
-          <Pressable onPress={skipForward} style={styles.skipBtn} hitSlop={8}>
-            <Feather name="rotate-cw" size={26} color="rgba(255,255,255,0.90)" />
-            <Text style={styles.skipText}>10</Text>
-          </Pressable>
-        </View>
+        {/* Play/Pause — glass */}
+        <Pressable
+          onPress={handlePlayPause}
+          disabled={isLoading}
+          style={[styles.playBtnGlass, { opacity: isLoading ? 0.65 : 1 }]}
+        >
+          {Platform.OS !== "web" ? (
+            <BlurView intensity={28} tint="light" style={StyleSheet.absoluteFill} />
+          ) : (
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.22)" }]} />
+          )}
+          {isLoading ? (
+            <Feather name="loader" size={34} color="white" />
+          ) : (
+            <Feather
+              name={isPlaying ? "pause" : "play"}
+              size={34}
+              color="white"
+              style={isPlaying ? undefined : { paddingLeft: 4 }}
+            />
+          )}
+        </Pressable>
+
+        <Pressable onPress={skipForward} style={styles.skipBtn} hitSlop={8}>
+          <Feather name="rotate-cw" size={26} color="rgba(255,255,255,0.90)" />
+          <Text style={styles.skipText}>10</Text>
+        </Pressable>
       </View>
 
       {/* ── Panel inferior ─────────────────────────────────────────────────── */}
@@ -521,6 +522,8 @@ const styles = StyleSheet.create({
   },
   heroControls: {
     position: "absolute",
+    top: 0,
+    bottom: 0,
     left: 0,
     right: 0,
     flexDirection: "row",
