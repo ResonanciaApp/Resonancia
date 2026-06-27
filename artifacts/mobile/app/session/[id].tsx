@@ -431,7 +431,7 @@ export default function SessionDetailScreen() {
           <View style={styles.authorSection}>
             {/* Header row: título + Ver perfil */}
             <View style={styles.authorHeaderRow}>
-              <Text style={[styles.blockTitle, { color: colors.foreground, marginBottom: 0 }]}>
+              <Text style={[styles.blockTitle, { color: colors.foreground, marginBottom: 0 }]} numberOfLines={1} ellipsizeMode="tail">
                 {isAncestral
                   ? "Sobre el Sonoterapeuta"
                   : isMusica
@@ -486,7 +486,7 @@ export default function SessionDetailScreen() {
           {/* ── Más sesiones como estas ──────────────────────────────────── */}
           {related.length > 0 && (
             <View style={styles.relatedBlock}>
-              <Text style={[styles.blockTitle, { color: colors.foreground }]}>
+              <Text style={[styles.blockTitle, { color: colors.foreground }]} numberOfLines={1} ellipsizeMode="tail">
                 Más sesiones como estas
               </Text>
               <View style={styles.relatedList}>
@@ -731,9 +731,9 @@ const styles = StyleSheet.create({
   },
 
   blockTitle: {
-    fontSize: 21,
+    fontSize: 16,
     fontWeight: "700",
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
     marginBottom: 14,
   },
 
