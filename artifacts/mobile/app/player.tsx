@@ -585,10 +585,10 @@ export default function PlayerScreen() {
 
         {/* Título + autor, con botón Terminar superpuesto en pausa */}
         <View style={styles.titleAuthorWrapper}>
-          <Text style={[styles.titleText, !isPlaying && { opacity: 0 }]} numberOfLines={2}>
+          <Text style={styles.titleText} numberOfLines={2}>
             {currentSession.title}
           </Text>
-          <Text style={[styles.authorText, !isPlaying && { opacity: 0 }]}>{authorLabel}</Text>
+          <Text style={styles.authorText}>{authorLabel}</Text>
 
           <RNAnimated.View
             style={[StyleSheet.absoluteFill, { opacity: terminarOpacity }]}
