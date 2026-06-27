@@ -42,7 +42,7 @@ export default function DescansoScreen() {
       <SacredBackground />
 
       {/* ── Header fijo ── */}
-      <View style={[styles.header, { paddingTop: topPad + 10 }]}>
+      <View style={[styles.header, { paddingTop: topPad + 2 }]}>
         <View style={styles.headerRow}>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>Descanso</Text>
           <GhostPill>
@@ -122,9 +122,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   headerTitle: {
-    fontSize: 30,
+    fontSize: 27,
     fontWeight: "700",
-    letterSpacing: 0.3,
+    letterSpacing: 0.5,
   },
   filterBtn: {
     width: 36,
