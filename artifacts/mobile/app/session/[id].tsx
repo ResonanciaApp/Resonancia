@@ -362,14 +362,14 @@ export default function SessionDetailScreen() {
                     <Text style={[styles.authorCountry, { color: "rgba(255,255,255,0.9)" }]}>
                       {a.flag}{"  "}{a.country}
                     </Text>
-                    <Text style={[styles.authorBio, { color: "rgba(255,255,255,0.75)" }]} numberOfLines={2}>
+                    <Text style={[styles.authorBio, { color: "rgba(255,255,255,0.75)" }]} numberOfLines={3}>
                       {a.bio}
                     </Text>
                   </View>
                 </View>
                 <Pressable
                   onPress={() => router.push(a.profilePath as never)}
-                  style={({ pressed }) => ({ opacity: pressed ? 0.65 : 1, marginTop: 12 })}
+                  style={({ pressed }) => ({ opacity: pressed ? 0.65 : 1, marginTop: 10, marginLeft: 86 })}
                 >
                   <Text style={styles.allContentsBtnText}>Ver todos los contenidos</Text>
                 </Pressable>
