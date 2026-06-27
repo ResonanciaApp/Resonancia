@@ -251,10 +251,10 @@ export default function ExploreScreen() {
             <Text style={[styles.pageTitle, { flex: 1, transform: [{ translateY: 2 }] }]}>Explorar</Text>
             <GhostPill style={{ transform: [{ translateX: 0 }, { translateY: 0 }], gap: 6 }}>
               <Pressable hitSlop={10} onPress={() => router.push("/favorites")} style={styles.headerPillBtn}>
-                <Feather name="heart" size={26} color="#FFFFFF" />
+                <Feather name="heart" size={24} color="#FFFFFF" />
               </Pressable>
               <Pressable hitSlop={10} onPress={() => router.push("/historial")} style={styles.headerPillBtn}>
-                <Feather name="clock" size={26} color="#FFFFFF" />
+                <Feather name="clock" size={24} color="#FFFFFF" />
               </Pressable>
             </GhostPill>
           </View>
