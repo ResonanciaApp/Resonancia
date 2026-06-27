@@ -106,7 +106,13 @@ export default function SessionDetailScreen() {
   const categoryPill = isAncestral ? "Ancestral" : isGuiada ? "Meditación" : isReflexion ? "Reflexión"
     : isMusica ? (session.soundTag?.replace("Música ", "") ?? "Música") : null;
   const categoryIcon: string = "clock";
-  const subTag = session.ancestralTag ?? session.meditationTag ?? session.soundTag ?? session.categoryLabel;
+  const subTag = isAncestral
+    ? (session.ancestralTag ?? session.categoryLabel)
+    : isGuiada
+    ? (session.meditationTag ?? session.categoryLabel)
+    : isMusica
+    ? (session.soundTag ?? session.categoryLabel)
+    : session.categoryLabel;
   const subTagIcon: string = isAncestral ? "disc" : isGuiada ? "wind" : isMusica ? "headphones" : "book-open";
   const savedCount = 40 + ((parseInt(session.id, 10) * 17 + 83) % 260);
   const [localFav, setLocalFav] = useState<boolean | null>(null);
