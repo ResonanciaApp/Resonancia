@@ -133,7 +133,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const accentOpacity = useRef(new Animated.Value(0)).current;
   const homeOpacity   = useRef(new Animated.Value(0)).current;
 
-  const isHome = state.routes[state.index]?.name === "resonadores";
+  const isHome     = state.routes[state.index]?.name === "resonadores";
+  const isDescanzo = state.routes[state.index]?.name === "descanzo";
 
   useEffect(() => {
     Animated.timing(homeOpacity, {
@@ -143,6 +144,16 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       useNativeDriver: true,
     }).start();
   }, [isHome]);
+
+  const descanzoOpacity = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.timing(descanzoOpacity, {
+      toValue: isDescanzo ? 1 : 0,
+      duration: 350,
+      easing: Easing.out(Easing.quad),
+      useNativeDriver: true,
+    }).start();
+  }, [isDescanzo]);
 
   useEffect(() => {
     Animated.timing(accentOpacity, {
@@ -195,6 +206,11 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: homeOpacity }]} pointerEvents="none">
           <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
           <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
+        </Animated.View>
+        {/* Glass negro: solo en Descanso */}
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: descanzoOpacity }]} pointerEvents="none">
+          <BlurView intensity={95} tint="dark" style={StyleSheet.absoluteFill} />
+          <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]} />
         </Animated.View>
 
 
