@@ -1,8 +1,9 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
+  Animated,
   Dimensions,
   Platform,
   Pressable,
@@ -21,24 +22,126 @@ import { DESCANSO_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
-const CARD_W = Math.round((Dimensions.get("window").width - 30) / 2.2);
+const { width: W, height: H } = Dimensions.get("window");
+const CARD_W = Math.round((W - 30) / 2.2);
 
+/* ─── Estrellas estáticas pre-generadas ─────────────────────────────── */
+const STAR_COUNT = 60;
+const STARS = Array.from({ length: STAR_COUNT }, (_, i) => ({
+  key: i,
+  x: Math.random() * W,
+  y: Math.random() * H * 0.55,
+  size: 0.8 + Math.random() * 1.8,
+  minOpacity: 0.15 + Math.random() * 0.25,
+  maxOpacity: 0.55 + Math.random() * 0.45,
+  duration: 1200 + Math.random() * 2800,
+  delay: Math.random() * 4000,
+}));
+
+function NightSky() {
+  const twinkles = useRef(STARS.map((s) => new Animated.Value(s.minOpacity))).current;
+  const shootX   = useRef(new Animated.Value(0)).current;
+  const shootY   = useRef(new Animated.Value(0)).current;
+  const shootOp  = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    /* Twinkle */
+    STARS.forEach((star, i) => {
+      const loop = () => {
+        Animated.sequence([
+          Animated.timing(twinkles[i], {
+            toValue: star.maxOpacity,
+            duration: star.duration,
+            delay: star.delay,
+            useNativeDriver: true,
+          }),
+          Animated.timing(twinkles[i], {
+            toValue: star.minOpacity,
+            duration: star.duration,
+            useNativeDriver: true,
+          }),
+        ]).start(({ finished }) => { if (finished) loop(); });
+      };
+      loop();
+    });
+
+    /* Shooting star */
+    const fire = () => {
+      const sx = Math.random() * W * 0.5;
+      const sy = 30 + Math.random() * H * 0.25;
+      shootX.setValue(sx);
+      shootY.setValue(sy);
+      shootOp.setValue(0);
+      Animated.sequence([
+        Animated.timing(shootOp, { toValue: 0.9, duration: 120, useNativeDriver: true }),
+        Animated.parallel([
+          Animated.timing(shootX,  { toValue: sx + 130, duration: 550, useNativeDriver: true }),
+          Animated.timing(shootY,  { toValue: sy + 90,  duration: 550, useNativeDriver: true }),
+          Animated.timing(shootOp, { toValue: 0,        duration: 550, useNativeDriver: true }),
+        ]),
+      ]).start();
+    };
+
+    fire();
+    const id = setInterval(fire, 3800);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+      {STARS.map((star, i) => (
+        <Animated.View
+          key={star.key}
+          style={{
+            position: "absolute",
+            left: star.x,
+            top: star.y,
+            width: star.size,
+            height: star.size,
+            borderRadius: star.size / 2,
+            backgroundColor: "#ffffff",
+            opacity: twinkles[i],
+          }}
+        />
+      ))}
+      {/* Estrella fugaz */}
+      <Animated.View
+        style={{
+          position: "absolute",
+          width: 70,
+          height: 1.5,
+          borderRadius: 1,
+          backgroundColor: "#ffffff",
+          opacity: shootOp,
+          transform: [
+            { translateX: shootX },
+            { translateY: shootY },
+            { rotate: "32deg" },
+          ],
+        }}
+      />
+    </View>
+  );
+}
+
+/* ─── Pantalla ──────────────────────────────────────────────────────── */
 export default function DescansoScreen() {
-  const colors = useColors();
-  const insets = useSafeAreaInsets();
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const colors    = useColors();
+  const insets    = useSafeAreaInsets();
+  const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const router = useRouter();
+  const router    = useRouter();
 
   return (
     <LinearGradient
       style={styles.root}
-      colors={["#2E0510", "#160108"]}
+      colors={["#252525", "#191919"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
       <StatusBar barStyle="light-content" />
       <SacredBackground />
+      <NightSky />
 
       <ScrollView
         style={styles.scroll}
@@ -133,6 +236,7 @@ const styles = StyleSheet.create({
     paddingBottom: 28,
   },
   heroIcon: {
+    marginTop: 7,
     marginBottom: 14,
   },
   heroTitle: {
@@ -147,7 +251,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
 
-  /* Mezclador banner */
+  /* Banner Mezclador */
   bannerWrap: {
     marginHorizontal: H_PAD,
     marginBottom: 36,
@@ -169,25 +273,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  bannerText: {
-    flex: 1,
-  },
+  bannerText: { flex: 1 },
   bannerTitle: {
     fontSize: 15,
     fontWeight: "700",
     marginBottom: 3,
   },
-  bannerSub: {
-    fontSize: 12,
-  },
+  bannerSub: { fontSize: 12 },
 
   /* Carruseles */
-  carouselsWrap: {
-    paddingTop: 6,
-  },
-  section: {
-    marginBottom: 62,
-  },
+  carouselsWrap: { paddingTop: 6 },
+  section:       { marginBottom: 62 },
   catHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -201,15 +297,8 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
     flex: 1,
   },
-  verTodosBtn: {
-    paddingLeft: 8,
-  },
-
-  carousel: {
-    paddingLeft: H_PAD,
-    paddingRight: 6,
-  },
-
+  verTodosBtn:  { paddingLeft: 8 },
+  carousel:     { paddingLeft: H_PAD, paddingRight: 6 },
   emptySlot: {
     marginHorizontal: H_PAD,
     height: 100,
@@ -220,7 +309,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 8,
   },
-  emptyText: {
-    fontSize: 13,
-  },
+  emptyText: { fontSize: 13 },
 });
