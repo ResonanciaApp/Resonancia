@@ -636,8 +636,8 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   authorText: {
-    fontSize: 16,
-    fontFamily: "Inter_400Regular",
+    fontSize: 15,
+    fontWeight: "300",
     color: "white",
   },
   signature: {
