@@ -63,7 +63,7 @@ export default function DescansoScreen() {
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 8 }}
+        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 38 }}
         showsVerticalScrollIndicator={false}
       >
         {DESCANSO_TAG_CARDS.map((tag) => {
