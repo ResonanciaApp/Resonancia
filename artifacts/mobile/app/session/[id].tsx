@@ -656,7 +656,7 @@ const styles = StyleSheet.create({
 
   blockTitle: {
     fontSize: 21,
-    fontWeight: "700",
+    fontFamily: "OptimaBold",
     letterSpacing: 0.3,
     marginBottom: 14,
   },
