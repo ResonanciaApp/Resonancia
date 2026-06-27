@@ -166,7 +166,7 @@ export default function SessionDetailScreen() {
   }, [session.id]);
 
   const savedProgress = getSessionProgress(session.id);
-  const hasProgress = savedProgress > 0.02;
+  const hasProgress = savedProgress > 0.005;
 
   const handlePlay = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
