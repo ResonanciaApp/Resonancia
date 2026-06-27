@@ -596,7 +596,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   authorCard: {
-    backgroundColor: "rgba(74,12,12,0.28)",
+    backgroundColor: "rgba(255,255,255,0.07)",
     borderRadius: 16,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(212,175,55,0.18)",
