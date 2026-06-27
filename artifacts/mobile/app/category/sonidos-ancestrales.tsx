@@ -517,7 +517,7 @@ const styles = StyleSheet.create({
   heroOverlayRight: { position: "absolute", right: H_PAD, zIndex: 10 },
   heroIconFloat: {
     position: "absolute",
-    bottom: -6,
+    bottom: -16,
     left: 0,
     right: 0,
     alignItems: "center",

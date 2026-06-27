@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
   heroOverlayRight: { position: "absolute", right: H_PAD, zIndex: 10 },
 
   heroArea: { height: 238, position: "relative" },
-  heroIconFloat: { position: "absolute", bottom: -6, left: 0, right: 0, alignItems: "center", zIndex: 2 },
+  heroIconFloat: { position: "absolute", bottom: -16, left: 0, right: 0, alignItems: "center", zIndex: 2 },
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(60,5,18,0.85)", borderWidth: 1, borderColor: "rgba(212,175,55,0.60)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
   profileCard: { marginHorizontal: H_PAD, marginTop: 20, paddingBottom: 14, gap: 8, alignItems: "center" },
