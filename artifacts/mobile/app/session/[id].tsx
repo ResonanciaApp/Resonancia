@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
   },
   durationText: {
     fontSize: 15,
-    fontWeight: "400",
+    fontFamily: "Jost",
     color: "#4A0C0C",
   },
 
@@ -538,8 +538,8 @@ const styles = StyleSheet.create({
   },
   metaText: {
     fontSize: 13,
+    fontFamily: "Jost",
     color: "rgba(255,255,255,0.55)",
-    fontWeight: "500",
   },
   metaDot: {
     width: 3,
@@ -562,6 +562,7 @@ const styles = StyleSheet.create({
   // Description
   description: {
     fontSize: 15,
+    fontFamily: "Jost",
     lineHeight: 25,
     marginTop: 5,
     marginBottom: 24,
@@ -578,7 +579,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
   },
-  tagChipText: { fontSize: 12, fontWeight: "600", letterSpacing: 0.2 },
+  tagChipText: { fontSize: 12, fontFamily: "Jost", fontWeight: "600", letterSpacing: 0.2 },
 
   // Action row
   actionRow: {
@@ -632,9 +633,9 @@ const styles = StyleSheet.create({
   },
   authorMeta: { flex: 1, gap: 5 },
   authorName: { fontSize: 17, fontFamily: "OptimaBold" },
-  authorCountry: { fontSize: 13 },
-  authorBio: { fontSize: 13, lineHeight: 19, maxWidth: 190 },
-  authorLink: { fontSize: 13, fontWeight: "600" },
+  authorCountry: { fontSize: 13, fontFamily: "Jost" },
+  authorBio: { fontSize: 13, fontFamily: "Jost", lineHeight: 19, maxWidth: 190 },
+  authorLink: { fontSize: 13, fontFamily: "Jost", fontWeight: "600" },
   allContentsBtn: {
     alignItems: "center",
     justifyContent: "center",

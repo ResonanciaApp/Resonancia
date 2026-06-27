@@ -295,6 +295,7 @@ export default function RootLayout() {
     OptimaRegular: require("../assets/fonts/OptimaRegular.ttf"),
     OptimaMedium: require("../assets/fonts/OptimaMedium.ttf"),
     OptimaItalic: require("../assets/fonts/OptimaItalic.ttf"),
+    Jost: require("../assets/fonts/Jost.ttf"),
   });
 
   useEffect(() => {
