@@ -962,7 +962,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 28,
     paddingTop: 22,
-    backgroundColor: "rgba(18,8,4,0.75)",
+    backgroundColor: "#000000",
   },
   timeActionsRow: {
     flexDirection: "row",
