@@ -33,7 +33,7 @@ export const ARTISTS: Artist[] = [
   {
     id: "resonancia",
     name: "Resonancia",
-    photo: require("@/assets/images/logo-resonancia-gold.png"),
+    photo: require("@/assets/images/avatar-fundador.png"),
     bio: "El sello de la casa. Composiciones y paisajes sonoros creados por el equipo de Resonancia para acompañar tu meditación, tu descanso y tu día.",
     country: "Chile",
     genre: "Ambient · Frecuencias · Cuencos",

@@ -972,6 +972,12 @@ uri = "file://artifacts/mobile/assets/images/banner-expansor.png"
 type = "image"
 title = "expansor role banner"
 
+[[generated]]
+id = "fm4nkAGulXyCFgRWfBtHB"
+uri = "file://artifacts/mobile/assets/images/avatar-fundador.png"
+type = "image"
+title = "founder avatar portrait"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
@@ -1631,3 +1637,9 @@ id = "fVjfdnLYYZbNtMpdhsQJN"
 uri = "file://screenshots/resonancia-expansion-slide12.jpg"
 type = "image"
 title = "Slide 12 — La expansión está recién comenzando"
+
+[[outputs]]
+id = "D9pXodi22kYHItYTCATuh"
+uri = "file://artifacts/mobile/assets/images/avatar-fundador.png"
+type = "image"
+title = "Avatar fundador"

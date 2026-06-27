@@ -31,7 +31,7 @@ export const GUIDES: Guide[] = [
   {
     id: "casa-cuenco",
     name: "Casa del Cuenco",
-    photo: require("@/assets/images/logo-resonancia-gold.png"),
+    photo: require("@/assets/images/avatar-fundador.png"),
     bio: "La voz de la casa. Meditaciones guiadas creadas por el equipo de Resonancia para acompañarte paso a paso, sin necesidad de experiencia previa.",
     country: "Chile",
     specialty: "Meditación · Mindfulness",
