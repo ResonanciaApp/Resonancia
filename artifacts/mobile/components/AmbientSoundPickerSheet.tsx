@@ -511,7 +511,7 @@ const styles = StyleSheet.create({
   },
   cancelBtn: {
     fontSize: 16,
-    color: "#D4AF37",
+    color: "#FFFFFF",
     width: 70,
   },
   topTitle: {
