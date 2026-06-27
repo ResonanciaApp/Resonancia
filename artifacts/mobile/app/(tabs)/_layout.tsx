@@ -183,8 +183,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       <Animated.View
         style={[styles.bar, { paddingBottom: pb, transform: [{ translateY }] }]}
       >
-        {/* Fondo base: borgoña (otras tabs) — se desvanece en Equipo y Descanso */}
-        <Animated.View style={[StyleSheet.absoluteFill, { opacity: Animated.subtract(1, Animated.add(homeOpacity, descanzoOpacity)) }]}>
+        {/* Fondo base: borgoña (otras tabs) — se desvanece en Equipo para dejar ver el blur */}
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: Animated.subtract(1, homeOpacity) }]}>
           <LinearGradient
             colors={["#21040C", "#100105"]}
             start={{ x: 0, y: 0 }}
@@ -207,11 +207,10 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
           <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
         </Animated.View>
-        {/* Base morada + glass blur: solo en Descanso */}
+        {/* Glass negro: solo en Descanso */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: descanzoOpacity }]} pointerEvents="none">
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#1A0D30" }]} />
-          <BlurView intensity={85} tint="dark" style={StyleSheet.absoluteFill} />
-          <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(60,20,100,0.18)" }]} />
+          <BlurView intensity={95} tint="dark" style={StyleSheet.absoluteFill} />
+          <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.22)" }]} />
         </Animated.View>
 
 
