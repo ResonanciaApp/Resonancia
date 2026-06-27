@@ -5,6 +5,7 @@ import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  Animated,
   Dimensions,
   Modal,
   Platform,
@@ -61,12 +62,31 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, session, onC
   const [step, setStep] = useState<"pick" | "controles">("pick");
   const [sessionVolume, setSessionVolume] = useState(0.8);
   const [ambientVolume, setAmbientVolume] = useState(0.5);
+  const slideAnim = useRef(new Animated.Value(0)).current;
+
+  const goToControles = () => {
+    setStep("controles");
+    Animated.timing(slideAnim, {
+      toValue: 1,
+      duration: 380,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const goToPick = () => {
+    Animated.timing(slideAnim, {
+      toValue: 0,
+      duration: 340,
+      useNativeDriver: true,
+    }).start(() => setStep("pick"));
+  };
 
   // Reset whenever the sheet opens
   useEffect(() => {
     if (!visible) return;
     setLocalSelected(selectedSoundId);
     setStep("pick");
+    slideAnim.setValue(0);
     AsyncStorage.getItem(FAV_KEY).then((val) => {
       if (val) setFavIds(new Set(JSON.parse(val) as string[]));
     });
@@ -113,219 +133,234 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, session, onC
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "#191919" }]} />
 
         {/* ═══════════════════════════════════════════════════════════════
-            PASO 2 — CONTROLES
+            PASO 1 — PICKER  (slideAnim=0 → visible; =1 → desliza abajo)
         ═══════════════════════════════════════════════════════════════ */}
-        {step === "controles" && (
-          <View style={StyleSheet.absoluteFill}>
-            {/* Session image background */}
-            {session?.image && (
-              <ExpoImage
-                source={session.image}
-                style={StyleSheet.absoluteFill}
-                contentFit="cover"
-              />
-            )}
-            <LinearGradient
-              colors={["rgba(0,0,0,0.45)", "rgba(0,0,0,0.75)"]}
-              style={StyleSheet.absoluteFill}
-              pointerEvents="none"
-            />
-
-            {/* Top bar */}
-            <View style={[styles.topBar, { paddingTop: topPad }]}>
-              <Pressable
-                style={styles.descartarBtn}
-                onPress={() => setStep("pick")}
-                hitSlop={8}
-              >
-                <Feather name="x" size={16} color="rgba(255,255,255,0.75)" />
-                <Text style={styles.descartarText}>Descartar</Text>
-              </Pressable>
-              <View style={{ width: 70 }} />
-            </View>
-
-            {/* Bottom controls panel */}
-            <View style={[styles.controlesPanel, { paddingBottom: bottomPad + 16 }]}>
-              <Text style={styles.controlesTitulo}>Controles</Text>
-
-              {/* Sesión track */}
-              <TrackRow
-                image={session?.image ?? null}
-                name={session?.title ?? "Sesión"}
-                volume={sessionVolume}
-                onVolumeChange={setSessionVolume}
-                onRemove={null}
-              />
-
-              {/* Ambiente track */}
-              {ambientSound && (
-                <TrackRow
-                  image={ambientImg ?? null}
-                  name={ambientSound.name}
-                  volume={ambientVolume}
-                  onVolumeChange={setAmbientVolume}
-                  onRemove={() => setLocalSelected(null)}
-                />
-              )}
-
-              {/* Guardar */}
-              <Pressable style={styles.guardarBtn} onPress={handleGuardar}>
-                <Text style={styles.guardarText}>Guardar</Text>
-              </Pressable>
-            </View>
-          </View>
-        )}
-
-        {/* ═══════════════════════════════════════════════════════════════
-            PASO 1 — PICKER (oculto en controles)
-        ═══════════════════════════════════════════════════════════════ */}
-        {step === "pick" && (
-          <>
-        {/* Top bar */}
-        <View style={[styles.topBar, { paddingTop: topPad }]}>
-          <Pressable onPress={onClose} hitSlop={8}>
-            <Text style={styles.cancelBtn}>Cancelar</Text>
-          </Pressable>
-          <Text style={styles.topTitle}>Sonido Ambiente</Text>
-          <View style={{ width: 70 }} />
-        </View>
-
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          bounces={false}
-          contentContainerStyle={styles.scroll}
+        <Animated.View
+          pointerEvents={step === "pick" ? "box-none" : "none"}
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              transform: [{
+                translateY: slideAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, SCREEN_H],
+                }),
+              }],
+            },
+          ]}
         >
-          {/* Sin sonido chip */}
-          <Pressable
-            style={[styles.noSoundChip, localSelected === null && styles.noSoundChipSelected]}
-            onPress={() => setLocalSelected(null)}
-          >
-            <Feather name="volume-x" size={14} color={localSelected === null ? "#D4AF37" : "rgba(255,255,255,0.65)"} />
-            <Text style={[styles.noSoundText, localSelected === null && { color: "#D4AF37" }]}>
-              Sin sonido
-            </Text>
-          </Pressable>
+          {/* Top bar */}
+          <View style={[styles.topBar, { paddingTop: topPad }]}>
+            <Pressable onPress={onClose} hitSlop={8}>
+              <Text style={styles.cancelBtn}>Cancelar</Text>
+            </Pressable>
+            <Text style={styles.topTitle}>Sonido Ambiente</Text>
+            <View style={{ width: 70 }} />
+          </View>
 
-          {/* Favoritos */}
-          <Text style={styles.sectionTitle}>Favoritos</Text>
-          {favSounds.length > 0 ? (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            bounces={false}
+            contentContainerStyle={styles.scroll}
+          >
+            {/* Sin sonido chip */}
+            <Pressable
+              style={[styles.noSoundChip, localSelected === null && styles.noSoundChipSelected]}
+              onPress={() => setLocalSelected(null)}
+            >
+              <Feather name="volume-x" size={14} color={localSelected === null ? "#D4AF37" : "rgba(255,255,255,0.65)"} />
+              <Text style={[styles.noSoundText, localSelected === null && { color: "#D4AF37" }]}>
+                Sin sonido
+              </Text>
+            </Pressable>
+
+            {/* Favoritos */}
+            <Text style={styles.sectionTitle}>Favoritos</Text>
+            {favSounds.length > 0 ? (
+              <View style={styles.grid}>
+                {favSounds.map((sound) => (
+                  <SoundCard
+                    key={sound.id}
+                    sound={sound}
+                    selected={localSelected === sound.id}
+                    fav={true}
+                    onPress={() => setLocalSelected(sound.id)}
+                    onLongPress={() => setFavPopupSound(sound)}
+                  />
+                ))}
+              </View>
+            ) : (
+              <Text style={styles.favPlaceholder}>
+                Presiona un sonido por 1 segundo para agregarlo a favoritos
+              </Text>
+            )}
+
+            {/* Tabs */}
+            <Text style={styles.sectionTitle}>Explorar</Text>
+            <View style={styles.tabsGrid}>
+              {TABS.map((tab) => {
+                const sel = activeTab === tab.id;
+                return (
+                  <Pressable
+                    key={tab.id}
+                    onPress={() => setActiveTab(tab.id)}
+                    style={[
+                      styles.tab,
+                      sel
+                        ? { backgroundColor: TAB_COLORS[tab.id], borderColor: TAB_COLORS[tab.id] }
+                        : { backgroundColor: "rgba(255,255,255,0.07)", borderColor: "rgba(255,255,255,0.12)" },
+                    ]}
+                  >
+                    <Text style={[styles.tabLabel, sel && { color: "white" }]}>
+                      {tab.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+
+            {/* Sounds grid */}
             <View style={styles.grid}>
-              {favSounds.map((sound) => (
+              {filteredSounds.map((sound) => (
                 <SoundCard
                   key={sound.id}
                   sound={sound}
                   selected={localSelected === sound.id}
-                  fav={true}
+                  fav={favIds.has(sound.id)}
                   onPress={() => setLocalSelected(sound.id)}
                   onLongPress={() => setFavPopupSound(sound)}
                 />
               ))}
             </View>
-          ) : (
-            <Text style={styles.favPlaceholder}>
-              Presiona un sonido por 1 segundo para agregarlo a favoritos
-            </Text>
+          </ScrollView>
+
+          {/* ── Fav popup ───────────────────────────────────────────────── */}
+          {favPopupSound && (
+            <Pressable style={styles.popupBackdrop} onPress={() => setFavPopupSound(null)}>
+              <Pressable style={styles.popup} onPress={() => {}}>
+                {(() => {
+                  const img = getSoundImage(favPopupSound.id);
+                  const isFav = favIds.has(favPopupSound.id);
+                  return (
+                    <>
+                      <View style={styles.popupThumbWrap}>
+                        {img ? (
+                          <ExpoImage
+                            source={img}
+                            style={StyleSheet.absoluteFill}
+                            contentFit="cover"
+                          />
+                        ) : (
+                          <View style={[StyleSheet.absoluteFill, styles.cardFallback]} />
+                        )}
+                      </View>
+                      <View style={styles.popupBody}>
+                        <Text style={styles.popupName} numberOfLines={1}>{favPopupSound.name}</Text>
+                        <Pressable
+                          style={[styles.popupFavBtn, isFav && styles.popupFavBtnActive]}
+                          onPress={() => {
+                            toggleFav(favPopupSound.id);
+                            setFavPopupSound(null);
+                          }}
+                        >
+                          <Feather name="heart" size={14} color="white" />
+                          <Text style={[styles.popupFavText, isFav && styles.popupFavTextActive]}>
+                            {isFav ? "Quitar de favoritos" : "Agregar a favoritos"}
+                          </Text>
+                        </Pressable>
+                      </View>
+                    </>
+                  );
+                })()}
+              </Pressable>
+            </Pressable>
           )}
 
-          {/* Tabs */}
-          <Text style={styles.sectionTitle}>Explorar</Text>
-          <View style={styles.tabsGrid}>
-            {TABS.map((tab) => {
-              const sel = activeTab === tab.id;
-              return (
-                <Pressable
-                  key={tab.id}
-                  onPress={() => setActiveTab(tab.id)}
-                  style={[
-                    styles.tab,
-                    sel
-                      ? { backgroundColor: TAB_COLORS[tab.id], borderColor: TAB_COLORS[tab.id] }
-                      : { backgroundColor: "rgba(255,255,255,0.07)", borderColor: "rgba(255,255,255,0.12)" },
-                  ]}
-                >
-                  <Text style={[styles.tabLabel, sel && { color: "white" }]}>
-                    {tab.label}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
-
-          {/* Sounds grid */}
-          <View style={styles.grid}>
-            {filteredSounds.map((sound) => (
-              <SoundCard
-                key={sound.id}
-                sound={sound}
-                selected={localSelected === sound.id}
-                fav={favIds.has(sound.id)}
-                onPress={() => setLocalSelected(sound.id)}
-                onLongPress={() => setFavPopupSound(sound)}
-              />
-            ))}
-          </View>
-        </ScrollView>
-
-        {/* ── Fav popup ─────────────────────────────────────────────────── */}
-        {favPopupSound && (
-          <Pressable style={styles.popupBackdrop} onPress={() => setFavPopupSound(null)}>
-            <Pressable style={styles.popup} onPress={() => {}}>
-              {(() => {
-                const img = getSoundImage(favPopupSound.id);
-                const isFav = favIds.has(favPopupSound.id);
-                return (
-                  <>
-                    <View style={styles.popupThumbWrap}>
-                      {img ? (
-                        <ExpoImage
-                          source={img}
-                          style={StyleSheet.absoluteFill}
-                          contentFit="cover"
-                        />
-                      ) : (
-                        <View style={[StyleSheet.absoluteFill, styles.cardFallback]} />
-                      )}
-                    </View>
-                    <View style={styles.popupBody}>
-                      <Text style={styles.popupName} numberOfLines={1}>{favPopupSound.name}</Text>
-                      <Pressable
-                        style={[styles.popupFavBtn, isFav && styles.popupFavBtnActive]}
-                        onPress={() => {
-                          toggleFav(favPopupSound.id);
-                          setFavPopupSound(null);
-                        }}
-                      >
-                        <Feather name="heart" size={14} color="white" />
-                        <Text style={[styles.popupFavText, isFav && styles.popupFavTextActive]}>
-                          {isFav ? "Quitar de favoritos" : "Agregar a favoritos"}
-                        </Text>
-                      </Pressable>
-                    </View>
-                  </>
-                );
-              })()}
-            </Pressable>
-          </Pressable>
-        )}
-
-        {/* ── Sticky footer ─────────────────────────────────────────────── */}
-        <BlurView
-          intensity={60}
-          tint="dark"
-          style={[styles.footer, { paddingBottom: bottomPad + 12 }]}
-        >
-          <Pressable
-            style={styles.nextBtn}
-            onPress={localSelected !== null ? () => setStep("controles") : undefined}
-            disabled={localSelected === null}
+          {/* ── Sticky footer ───────────────────────────────────────────── */}
+          <BlurView
+            intensity={60}
+            tint="dark"
+            style={[styles.footer, { paddingBottom: bottomPad + 12 }]}
           >
-            <Text style={[styles.nextBtnText, localSelected === null && styles.nextBtnTextDisabled]}>
-              Siguiente
-            </Text>
-          </Pressable>
-        </BlurView>
-          </>
-        )}
+            <Pressable
+              style={styles.nextBtn}
+              onPress={localSelected !== null ? goToControles : undefined}
+              disabled={localSelected === null}
+            >
+              <Text style={[styles.nextBtnText, localSelected === null && styles.nextBtnTextDisabled]}>
+                Siguiente
+              </Text>
+            </Pressable>
+          </BlurView>
+        </Animated.View>
+
+        {/* ═══════════════════════════════════════════════════════════════
+            PASO 2 — CONTROLES  (slideAnim=0 → abajo; =1 → visible)
+        ═══════════════════════════════════════════════════════════════ */}
+        <Animated.View
+          pointerEvents={step === "controles" ? "box-none" : "none"}
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              transform: [{
+                translateY: slideAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [SCREEN_H, 0],
+                }),
+              }],
+            },
+          ]}
+        >
+          {/* Session image background */}
+          {session?.image && (
+            <ExpoImage
+              source={session.image}
+              style={StyleSheet.absoluteFill}
+              contentFit="cover"
+            />
+          )}
+          <LinearGradient
+            colors={["rgba(0,0,0,0.45)", "rgba(0,0,0,0.75)"]}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
+
+          {/* Top bar */}
+          <View style={[styles.topBar, { paddingTop: topPad }]}>
+            <Pressable style={styles.descartarBtn} onPress={goToPick} hitSlop={8}>
+              <Feather name="x" size={16} color="rgba(255,255,255,0.75)" />
+              <Text style={styles.descartarText}>Descartar</Text>
+            </Pressable>
+            <View style={{ width: 70 }} />
+          </View>
+
+          {/* Bottom controls panel */}
+          <View style={[styles.controlesPanel, { paddingBottom: bottomPad + 16 }]}>
+            <Text style={styles.controlesTitulo}>Controles</Text>
+
+            <TrackRow
+              image={session?.image ?? null}
+              name={session?.title ?? "Sesión"}
+              volume={sessionVolume}
+              onVolumeChange={setSessionVolume}
+              onRemove={null}
+            />
+
+            {ambientSound && (
+              <TrackRow
+                image={ambientImg ?? null}
+                name={ambientSound.name}
+                volume={ambientVolume}
+                onVolumeChange={setAmbientVolume}
+                onRemove={() => setLocalSelected(null)}
+              />
+            )}
+
+            <Pressable style={styles.guardarBtn} onPress={handleGuardar}>
+              <Text style={styles.guardarText}>Guardar</Text>
+            </Pressable>
+          </View>
+        </Animated.View>
       </View>
     </Modal>
   );
@@ -454,6 +489,7 @@ function SoundCard({
   );
 }
 
+const SCREEN_H = Dimensions.get("window").height;
 const GRID_H_PAD = 16;
 const GRID_GAP = 10;
 const NUM_COLS = 3;
