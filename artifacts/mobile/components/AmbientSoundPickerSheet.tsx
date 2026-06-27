@@ -213,7 +213,7 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
                           setFavPopupSound(null);
                         }}
                       >
-                        <Feather name="heart" size={14} color={isFav ? "#1B060F" : "#D4AF37"} />
+                        <Feather name="heart" size={14} color="white" />
                         <Text style={[styles.popupFavText, isFav && styles.popupFavTextActive]}>
                           {isFav ? "Quitar de favoritos" : "Agregar a favoritos"}
                         </Text>
@@ -515,19 +515,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#D4AF37",
+    borderColor: "rgba(255,255,255,0.30)",
     backgroundColor: "transparent",
   },
   popupFavBtnActive: {
-    backgroundColor: "#D4AF37",
-    borderColor: "#D4AF37",
+    borderColor: "rgba(255,255,255,0.30)",
+    backgroundColor: "transparent",
   },
   popupFavText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#D4AF37",
+    color: "white",
   },
   popupFavTextActive: {
-    color: "#1B060F",
+    color: "white",
   },
 });
