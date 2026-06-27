@@ -37,7 +37,7 @@ const PILL_BG   = "rgba(255,255,255,0.075)";
 
 
 // Rutas que nunca aparecen en el menú inferior
-const HIDDEN_ROUTES = new Set(["descanzo", "profile"]);
+const HIDDEN_ROUTES = new Set(["profile"]);
 
 const TAB_CONFIG: Record<
   string,
