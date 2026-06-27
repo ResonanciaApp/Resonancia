@@ -630,7 +630,7 @@ const styles = StyleSheet.create({
 
   titleText: {
     fontSize: 20,
-    fontFamily: "PlayfairDisplay_700Bold",
+    fontWeight: "800",
     color: "white",
     letterSpacing: 0.2,
     marginBottom: 6,
