@@ -1000,9 +1000,9 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   optThumb: {
-    width: 56,
-    height: 56,
-    borderRadius: 8,
+    width: 73,
+    height: 73,
+    borderRadius: 10,
     backgroundColor: "rgba(255,255,255,0.08)",
   },
   optSessionTitle: {
