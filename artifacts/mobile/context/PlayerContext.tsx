@@ -74,6 +74,12 @@ type PlayerContextType = {
   updateDefaultSleepTimer: (minutes: number | null) => void;
   /** Wipe the full listening history */
   clearHistory: () => Promise<void>;
+  /** Whether the current session has a real main audio track (not voice-only / simulation) */
+  hasRealAudio: boolean;
+  /** Main audio track volume 0–1 */
+  mainVolume: number;
+  /** Set main audio track volume 0–1 */
+  setMainVolume: (volume: number) => void;
   /** Whether the current session has a voice track */
   hasVoiceTrack: boolean;
   /** Voice track volume 0–1 */
@@ -151,8 +157,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   /** Latest in-memory progress map — for use inside async callbacks */
   const sessionProgressRef = useRef<Record<string, number>>({});
 
+  const [mainVolume, setMainVolumeState] = useState(1.0);
   const [voiceVolume, setVoiceVolumeState] = useState(0.8);
   const [ambientVolume, setAmbientVolumeState] = useState(0.7);
+
+  const mainVolumeRef = useRef(1.0);
+  mainVolumeRef.current = mainVolume;
 
   // ── expo-audio players (main + simultaneous voice/ambient layers) ─────────────
   const mainPlayerRef = useRef<AudioPlayer | null>(null);
@@ -841,7 +851,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           main.loop = false;
           pendingSeekRef.current = resumeFraction > 0 ? resumeFraction : null;
           main.replace(audioFile);
-          main.volume = 1;
+          main.volume = mainVolumeRef.current;
           main.play();
 
           // Voice track plays simultaneously with the main track
@@ -1064,8 +1074,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
               const gainB = Math.abs(Math.sin(Math.PI * (posB / dur)));
               // B queda muteada hasta confirmar su alineación dur/2 adelante.
               const targetB = loopOffsetConfirmedRef.current ? gainB : 0;
-              try { if (Math.abs(a.volume - gainA) > 0.004) a.volume = gainA; } catch (_) {}
-              try { if (Math.abs(b.volume - targetB) > 0.004) b.volume = targetB; } catch (_) {}
+              const mv = mainVolumeRef.current;
+              try { if (Math.abs(a.volume - gainA * mv) > 0.004) a.volume = gainA * mv; } catch (_) {}
+              try { if (Math.abs(b.volume - targetB * mv) > 0.004) b.volume = targetB * mv; } catch (_) {}
 
               const desired = (((posA + dur / 2) % dur) + dur) % dur;
               let err = Math.abs(posB - desired);
@@ -1086,7 +1097,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             // ── Sesión de duración fija sin loop (sin crossfade) ──
             main.loop = false;
             main.replace(audioFile);
-            main.volume = 1;
+            main.volume = mainVolumeRef.current;
             main.play();
 
             if (ambientFile) {
@@ -1299,6 +1310,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     await AsyncStorage.multiRemove([HISTORY_KEY, STATS_KEY]);
   }, []);
 
+  const setMainVolume = useCallback((volume: number) => {
+    const clamped = Math.max(0, Math.min(1, volume));
+    setMainVolumeState(clamped);
+    if (mainPlayerRef.current?.isLoaded) {
+      try { mainPlayerRef.current.volume = clamped; } catch (_) {}
+    }
+  }, []);
+
   const setVoiceVolume = useCallback((volume: number) => {
     const clamped = Math.max(0, Math.min(1, volume));
     setVoiceVolumeState(clamped);
@@ -1369,6 +1388,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         setSleepTimer,
         updateDefaultSleepTimer,
         clearHistory,
+        hasRealAudio: !!(currentSession && (AUDIO_MAP[currentSession.id] || currentSession.audioUri)),
+        mainVolume,
+        setMainVolume,
         hasVoiceTrack: !!(VOICE_MAP[currentSession?.id ?? ""] || currentSession?.voiceUri),
         voiceVolume,
         setVoiceVolume,

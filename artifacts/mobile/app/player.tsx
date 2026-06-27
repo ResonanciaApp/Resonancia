@@ -75,6 +75,9 @@ export default function PlayerScreen() {
     seekTo,
     sleepTimerRemaining,
     setSleepTimer,
+    hasRealAudio,
+    mainVolume,
+    setMainVolume,
     hasVoiceTrack,
     voiceVolume,
     setVoiceVolume,
@@ -95,6 +98,9 @@ export default function PlayerScreen() {
   const ambSheetTrackRef = useRef<View>(null);
   const ambSheetTrackWidth = useRef(0);
   const ambSheetTrackPageX = useRef(0);
+  const mainVolSheetTrackRef = useRef<View>(null);
+  const mainVolSheetTrackWidth = useRef(0);
+  const mainVolSheetTrackPageX = useRef(0);
 
   // Refs para sliders y barra de progreso
   const voiceTrackWidth = useRef(0);
@@ -295,6 +301,19 @@ export default function PlayerScreen() {
     if (hasAmbientTrack) setAmbientVolume(vol);
     else if (hasVoiceTrack) setVoiceVolume(vol);
   }, [hasAmbientTrack, hasVoiceTrack, setAmbientVolume, setVoiceVolume]);
+
+  const handleSheetMainVolGrant = useCallback((e: GestureResponderEvent) => {
+    mainVolSheetTrackRef.current?.measure((_x, _y, _w, _h, px) => {
+      mainVolSheetTrackPageX.current = px;
+      const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - px) / mainVolSheetTrackWidth.current));
+      setMainVolume(vol);
+    });
+  }, [setMainVolume]);
+
+  const handleSheetMainVolMove = useCallback((e: GestureResponderEvent) => {
+    const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - mainVolSheetTrackPageX.current) / mainVolSheetTrackWidth.current));
+    setMainVolume(vol);
+  }, [setMainVolume]);
 
   useEffect(() => {
     if (!isSeekingRef.current) {
@@ -711,6 +730,37 @@ export default function PlayerScreen() {
                       <View
                         pointerEvents="none"
                         style={[styles.sliderThumb, { left: `${(hasAmbientTrack ? ambientVolume : voiceVolume) * 100}%` as any, backgroundColor: "#D4AF37" }]}
+                      />
+                    </View>
+                  </View>
+                </View>
+              )}
+
+              {/* Volumen principal */}
+              {hasRealAudio && (
+                <View style={styles.optSliderItem}>
+                  <View style={styles.optRow}>
+                    <Feather name="volume-2" size={18} color="white" style={styles.optIcon} />
+                    <Text style={styles.optRowText}>Volumen</Text>
+                    <Text style={styles.optRowBadge}>{Math.round(mainVolume * 100)}%</Text>
+                  </View>
+                  <View
+                    ref={mainVolSheetTrackRef}
+                    style={[styles.sliderHitArea, { marginHorizontal: 20, marginTop: 2 }]}
+                    onLayout={(e: LayoutChangeEvent) => { mainVolSheetTrackWidth.current = e.nativeEvent.layout.width; }}
+                    onStartShouldSetResponder={() => true}
+                    onMoveShouldSetResponder={() => true}
+                    onResponderGrant={handleSheetMainVolGrant}
+                    onResponderMove={handleSheetMainVolMove}
+                  >
+                    <View style={styles.sliderTrack}>
+                      <View
+                        pointerEvents="none"
+                        style={[styles.sliderFill, { width: `${mainVolume * 100}%` as any, backgroundColor: "#D4AF37" }]}
+                      />
+                      <View
+                        pointerEvents="none"
+                        style={[styles.sliderThumb, { left: `${mainVolume * 100}%` as any, backgroundColor: "#D4AF37" }]}
                       />
                     </View>
                   </View>
