@@ -39,7 +39,7 @@ import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { useImageDominantColor } from "@/lib/useImageDominantColor";
 
 const { width, height: SCREEN_HEIGHT } = Dimensions.get("window");
-const HERO_HEIGHT = SCREEN_HEIGHT * 0.63;
+const HERO_HEIGHT = SCREEN_HEIGHT * 0.44;
 const RATINGS_KEY = "@resonance_ratings";
 
 function formatTime(seconds: number): string {
@@ -311,47 +311,11 @@ export default function PlayerScreen() {
 
         {/* Degradado inferior: imagen → fondo dinámico */}
         <LinearGradient
-          colors={["transparent", "rgba(0,0,0,0.25)", dominantColor]}
-          locations={[0.35, 0.70, 1]}
+          colors={["transparent", "rgba(0,0,0,0.18)", dominantColor]}
+          locations={[0.4, 0.72, 1]}
           style={StyleSheet.absoluteFill}
           pointerEvents="none"
         />
-
-        {/* ── Controles sobre la imagen ──────────────────────────────────── */}
-        <View style={[styles.heroControls, { bottom: 36 }]}>
-          <Pressable onPress={skipBackward} style={styles.skipBtn} hitSlop={8}>
-            <Feather name="rotate-ccw" size={26} color="rgba(255,255,255,0.90)" />
-            <Text style={styles.skipText}>10</Text>
-          </Pressable>
-
-          {/* Play/Pause — glass */}
-          <Pressable
-            onPress={handlePlayPause}
-            disabled={isLoading}
-            style={[styles.playBtnGlass, { opacity: isLoading ? 0.65 : 1 }]}
-          >
-            {Platform.OS !== "web" ? (
-              <BlurView intensity={28} tint="light" style={StyleSheet.absoluteFill} />
-            ) : (
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.22)" }]} />
-            )}
-            {isLoading ? (
-              <Feather name="loader" size={34} color="white" />
-            ) : (
-              <Feather
-                name={isPlaying ? "pause" : "play"}
-                size={34}
-                color="white"
-                style={isPlaying ? undefined : { paddingLeft: 4 }}
-              />
-            )}
-          </Pressable>
-
-          <Pressable onPress={skipForward} style={styles.skipBtn} hitSlop={8}>
-            <Feather name="rotate-cw" size={26} color="rgba(255,255,255,0.90)" />
-            <Text style={styles.skipText}>10</Text>
-          </Pressable>
-        </View>
       </View>
 
       {/* ── Panel inferior ─────────────────────────────────────────────────── */}
@@ -361,37 +325,26 @@ export default function PlayerScreen() {
         bounces={false}
         contentContainerStyle={{ paddingBottom: bottomPad + 24 }}
       >
-        {/* Tiempo grande + acciones */}
-        <View style={styles.timeActionsRow}>
-          <Text style={styles.timeDisplay}>{formatTime(remaining)}</Text>
-          <View style={styles.actionIcons}>
-            <Pressable
-              onPress={() => setRepeatMode((r) => !r)}
-              hitSlop={8}
-            >
-              <Feather
-                name="repeat"
-                size={20}
-                color={repeatMode ? "white" : "rgba(255,255,255,0.75)"}
-              />
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                toggleFavorite(currentSession.id);
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              }}
-              hitSlop={8}
-            >
-              <Feather
-                name="bookmark"
-                size={20}
-                color={fav ? "white" : "rgba(255,255,255,0.75)"}
-              />
-            </Pressable>
-            <Pressable onPress={handleShare} hitSlop={8}>
-              <Feather name="more-horizontal" size={20} color="rgba(255,255,255,0.75)" />
-            </Pressable>
+        {/* Título + Autor + Bookmark */}
+        <View style={styles.titleRow}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.titleText} numberOfLines={2}>{currentSession.title}</Text>
+            <Text style={styles.authorText}>{authorLabel}</Text>
           </View>
+          <Pressable
+            onPress={() => {
+              toggleFavorite(currentSession.id);
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            }}
+            hitSlop={10}
+            style={styles.bookmarkBtn}
+          >
+            <Feather
+              name="bookmark"
+              size={22}
+              color={fav ? "white" : "rgba(255,255,255,0.45)"}
+            />
+          </Pressable>
         </View>
 
         {/* Barra de progreso */}
@@ -423,16 +376,64 @@ export default function PlayerScreen() {
           <Text style={styles.timeLabelText}>-{formatTime(remaining)}</Text>
         </View>
 
-        {/* Título + Autor */}
-        <Text style={styles.titleText} numberOfLines={2}>{currentSession.title}</Text>
-        <Text style={styles.authorText}>{authorLabel}</Text>
+        {/* ── Controles de transporte — CENTRADOS ─────────────────────────── */}
+        <View style={styles.transportRow}>
+          {/* Repeat */}
+          <Pressable onPress={() => setRepeatMode((r) => !r)} hitSlop={10} style={styles.sideAction}>
+            <Feather
+              name="repeat"
+              size={20}
+              color={repeatMode ? "white" : "rgba(255,255,255,0.40)"}
+            />
+          </Pressable>
+
+          {/* Skip atrás */}
+          <Pressable onPress={skipBackward} style={styles.skipBtn} hitSlop={8}>
+            <Feather name="rotate-ccw" size={28} color="rgba(255,255,255,0.90)" />
+            <Text style={styles.skipText}>10</Text>
+          </Pressable>
+
+          {/* Play/Pause — glass */}
+          <Pressable
+            onPress={handlePlayPause}
+            disabled={isLoading}
+            style={[styles.playBtnGlass, { opacity: isLoading ? 0.65 : 1 }]}
+          >
+            {Platform.OS !== "web" ? (
+              <BlurView intensity={28} tint="light" style={StyleSheet.absoluteFill} />
+            ) : (
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.22)" }]} />
+            )}
+            {isLoading ? (
+              <Feather name="loader" size={36} color="white" />
+            ) : (
+              <Feather
+                name={isPlaying ? "pause" : "play"}
+                size={36}
+                color="white"
+                style={isPlaying ? undefined : { paddingLeft: 4 }}
+              />
+            )}
+          </Pressable>
+
+          {/* Skip adelante */}
+          <Pressable onPress={skipForward} style={styles.skipBtn} hitSlop={8}>
+            <Feather name="rotate-cw" size={28} color="rgba(255,255,255,0.90)" />
+            <Text style={styles.skipText}>10</Text>
+          </Pressable>
+
+          {/* Más opciones */}
+          <Pressable onPress={handleShare} hitSlop={10} style={styles.sideAction}>
+            <Feather name="more-horizontal" size={20} color="rgba(255,255,255,0.40)" />
+          </Pressable>
+        </View>
 
         {/* Firma Resonancia */}
         <Text style={styles.signature}>RESONANCIA</Text>
 
         {/* Chip duración loop */}
         {isLoopSession && (
-          <View style={[styles.durationChip, { marginTop: 14 }]}>
+          <View style={[styles.durationChip, { marginTop: 8 }]}>
             <Feather name="clock" size={11} color="rgba(255,255,255,0.75)" />
             <Text style={styles.durationChipText}>
               Apagar en {formatRemaining(Math.max(0, totalSeconds - elapsed))}
@@ -576,29 +577,55 @@ const styles = StyleSheet.create({
     height: HERO_HEIGHT,
     overflow: "hidden",
   },
-  heroControls: {
-    position: "absolute",
-    left: 0,
-    right: 0,
+
+  // Panel inferior
+  bottomPanel: {
+    flex: 1,
+    paddingHorizontal: 28,
+    paddingTop: 20,
+  },
+
+  // Título + bookmark
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 20,
+  },
+  bookmarkBtn: {
+    paddingLeft: 4,
+    paddingBottom: 2,
+  },
+
+  // Controles de transporte centrados
+  transportRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 44,
+    gap: 28,
+    marginTop: 28,
+    marginBottom: 8,
+  },
+  sideAction: {
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
   },
   skipBtn: {
     alignItems: "center",
     gap: 3,
   },
   skipText: {
-    color: "rgba(255,255,255,0.75)",
+    color: "rgba(255,255,255,0.70)",
     fontSize: 11,
     fontWeight: "600",
     letterSpacing: 0.3,
   },
   playBtnGlass: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
@@ -607,35 +634,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.12)",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.18,
+    shadowOpacity: 0.22,
     shadowRadius: 20,
     elevation: 10,
-  },
-
-  // Panel inferior
-  bottomPanel: {
-    flex: 1,
-    paddingHorizontal: 28,
-    paddingTop: 22,
-  },
-  timeActionsRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 14,
-  },
-  timeDisplay: {
-    fontSize: 46,
-    fontWeight: "600",
-    color: "white",
-    letterSpacing: -1.5,
-    lineHeight: 52,
-  },
-  actionIcons: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 20,
-    paddingBottom: 4,
   },
 
   // Barra de progreso
@@ -668,32 +669,33 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 4,
-    marginBottom: 22,
+    marginBottom: 0,
   },
   timeLabelText: {
     fontSize: 12,
-    color: "rgba(255,255,255,0.55)",
+    color: "rgba(255,255,255,0.50)",
   },
 
   titleText: {
-    fontSize: 21,
+    fontSize: 22,
     fontWeight: "700",
     color: "white",
-    letterSpacing: 0.2,
-    marginBottom: 6,
+    letterSpacing: 0.1,
+    marginBottom: 4,
   },
   authorText: {
     fontSize: 14,
     fontWeight: "500",
-    color: "rgba(255,255,255,0.58)",
+    color: "rgba(255,255,255,0.55)",
   },
   signature: {
     fontSize: 9,
     fontWeight: "700",
-    color: "rgba(255,255,255,0.16)",
+    color: "rgba(255,255,255,0.14)",
     letterSpacing: 5,
-    marginTop: 10,
+    marginTop: 24,
     marginBottom: 2,
+    textAlign: "center",
   },
 
   durationChip: {
