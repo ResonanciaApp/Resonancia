@@ -35,7 +35,7 @@ export const ARTISTS: Artist[] = [
     name: "Resonancia",
     photo: require("@/assets/images/logo-resonancia-gold.png"),
     bio: "El sello de la casa. Composiciones y paisajes sonoros creados por el equipo de Resonancia para acompañar tu meditación, tu descanso y tu día.",
-    country: "Latinoamérica",
+    country: "Chile",
     genre: "Ambient · Frecuencias · Cuencos",
     certified: true,
     featured: false,
