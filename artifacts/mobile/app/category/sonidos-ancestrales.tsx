@@ -400,11 +400,6 @@ export default function SonidosAncestalesScreen() {
             locations={[0.50, 0.80, 1]}
             style={StyleSheet.absoluteFill}
           />
-          <View style={styles.heroIconFloat}>
-            <View style={styles.heroIconCircle}>
-              <Feather name="music" size={32} color={GOLD} />
-            </View>
-          </View>
         </View>
 
         {/* ── Tabs ── */}
@@ -451,7 +446,10 @@ export default function SonidosAncestalesScreen() {
             <Feather name="arrow-left" size={22} color="#fff" />
           </Pressable>
         </GhostPill>
-        <Text style={styles.headerTitle}>Ancestrales</Text>
+        <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
+          <Feather name="music" size={18} color={GOLD} />
+          <Text style={styles.headerTitle}>Ancestrales</Text>
+        </View>
         <GhostPill>
           <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
             <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
@@ -480,7 +478,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#2E0510",
   },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
-  headerTitle: { flex: 1, fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2, textAlign: "center" },
+  headerTitle: { fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },
   headerDivider: { width: StyleSheet.hairlineWidth, height: 18, backgroundColor: "rgba(255,255,255,0.18)" },
 
   /* ── Hero ── */
