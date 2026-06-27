@@ -838,7 +838,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
-    marginTop: 14,
+    marginTop: -6,
     marginBottom: 4,
   },
   playsText: {
