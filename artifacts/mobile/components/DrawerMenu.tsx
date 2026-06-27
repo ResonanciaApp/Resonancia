@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
     color: "rgba(250,240,238,0.45)",
     fontFamily: "Jost",
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "400",
     letterSpacing: 0.2,
   },
   profileInitial: {
@@ -332,7 +332,8 @@ const styles = StyleSheet.create({
   },
   verPerfilText: {
     color: "#D4AF37",
-    fontFamily: "OptimaBold",
+    fontFamily: "Jost",
+    fontWeight: "400",
     fontSize: 12,
     letterSpacing: 0.3,
   },
@@ -361,7 +362,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontFamily: "Jost",
     fontSize: 15,
-    fontWeight: "500",
+    fontWeight: "400",
     letterSpacing: 0.2,
   },
   itemLabelMuted: {
