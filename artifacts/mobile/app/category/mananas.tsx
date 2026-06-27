@@ -482,17 +482,17 @@ const styles = StyleSheet.create({
     paddingVertical: Platform.OS === "ios" ? 12 : 8,
     marginTop: 18,
   },
-  searchInput: { flex: 1, fontSize: 14, fontFamily: "Jost", padding: 0 },
-  noResults: { fontSize: 14, fontFamily: "Jost", textAlign: "center", paddingVertical: 24 },
-  pageTitle: { fontSize: 31, fontFamily: "OptimaBold", letterSpacing: 0.2, marginBottom: 4, textAlign: "center" },
-  pageSub: { fontSize: 13, fontFamily: "Jost", lineHeight: 19, textAlign: "center" },
+  searchInput: { flex: 1, fontSize: 14, padding: 0 },
+  noResults: { fontSize: 14, textAlign: "center", paddingVertical: 24 },
+  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "center" },
+  pageSub: { fontSize: 13, lineHeight: 19, textAlign: "center" },
 
   catList: {},
   catRow: { flexDirection: "row", alignItems: "center", paddingVertical: 12, gap: 14 },
   iconCircle: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
-  catName: { flex: 1, fontSize: 15, fontFamily: "Jost", fontWeight: "600", letterSpacing: 0.1 },
+  catName: { flex: 1, fontSize: 15, fontWeight: "600", letterSpacing: 0.1 },
   catRight: { flexDirection: "row", alignItems: "center", gap: 6 },
-  catCount: { fontSize: 13, fontFamily: "Jost", fontWeight: "500" },
+  catCount: { fontSize: 13, fontWeight: "500" },
 
   detailTopBar: {
     flexDirection: "row", alignItems: "center",
@@ -500,26 +500,26 @@ const styles = StyleSheet.create({
   },
   iconBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   detailTitle: {
-    fontSize: 32, fontFamily: "OptimaBold", letterSpacing: -0.3,
+    fontSize: 32, fontWeight: "800", letterSpacing: -0.3,
     lineHeight: 38, marginBottom: 12,
   },
-  detailDesc: { fontSize: 14, fontFamily: "Jost", lineHeight: 21 },
+  detailDesc: { fontSize: 14, lineHeight: 21 },
 
   tabBar: { flexDirection: "row", borderBottomWidth: 1, position: "relative" },
   tabItem: { paddingVertical: 10, paddingHorizontal: 4, marginRight: 22 },
-  tabLabel: { fontSize: 15, fontFamily: "Jost", fontWeight: "600" },
+  tabLabel: { fontSize: 15, fontWeight: "600" },
   tabIndicator: {
     position: "absolute", bottom: 0, height: 2,
     overflow: "hidden", borderRadius: 1,
   },
 
-  sectionTitle: { fontSize: 16, fontFamily: "OptimaBold", marginBottom: 0 },
+  sectionTitle: { fontSize: 16, fontWeight: "700", marginBottom: 0 },
   recentPlaceholder: {
     flexDirection: "row", alignItems: "center", gap: 14,
     borderRadius: 14, padding: 16, marginBottom: 28,
   },
-  placeholderText: { flex: 1, fontSize: 13, fontFamily: "Jost", lineHeight: 18 },
+  placeholderText: { flex: 1, fontSize: 13, lineHeight: 18 },
 
   emptyWrap: { alignItems: "center", paddingVertical: 60 },
-  emptyText: { fontSize: 16, fontFamily: "Jost", textAlign: "center" },
+  emptyText: { fontSize: 16, textAlign: "center" },
 });

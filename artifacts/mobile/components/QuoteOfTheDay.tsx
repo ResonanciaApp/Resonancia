@@ -116,8 +116,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   cardTitle: {
-    fontFamily: "OptimaBold",
     fontSize: 13,
+    fontWeight: "700",
     color: "rgba(255,255,255,0.55)",
     textAlign: "center",
     marginBottom: 10,
@@ -130,8 +130,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   quoteText: {
-    fontFamily: "OptimaBold",
     fontSize: 17,
+    fontWeight: "700",
     lineHeight: 25,
     color: "#FFFFFF",
     textAlign: "center",
@@ -142,12 +142,11 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   readMoreText: {
-    fontFamily: "OptimaBold",
     fontSize: 13,
+    fontWeight: "600",
     color: "#7B4FA6",
   },
   author: {
-    fontFamily: "Jost",
     fontSize: 13,
     fontWeight: "500",
     color: "rgba(255,255,255,0.55)",
@@ -185,7 +184,6 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   menuItemText: {
-    fontFamily: "Jost",
     fontSize: 16,
     color: "#FAF0EE",
     fontWeight: "500",

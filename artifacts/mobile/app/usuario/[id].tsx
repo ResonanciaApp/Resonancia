@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 4,
   },
-  headerTitle: { fontSize: 17, fontFamily: "OptimaBold" },
+  headerTitle: { fontSize: 17, fontWeight: "700" },
   backBtn: {
     width: 38,
     height: 38,
@@ -528,8 +528,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   centered: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12, paddingHorizontal: 32 },
-  notFoundTitle: { fontSize: 18, fontFamily: "OptimaBold" },
-  notFoundSub: { fontSize: 14, textAlign: "center", lineHeight: 21, fontFamily: "Jost" },
+  notFoundTitle: { fontSize: 18, fontWeight: "700" },
+  notFoundSub: { fontSize: 14, textAlign: "center", lineHeight: 21 },
 
   scroll: { paddingTop: 4, gap: 16 },
 
@@ -543,17 +543,17 @@ const styles = StyleSheet.create({
   avatarWrapper: { position: "relative", marginBottom: 8 },
   avatarImage: { width: 80, height: 80, borderRadius: 40 },
   avatarFallback: { alignItems: "center", justifyContent: "center" },
-  initials: { fontSize: 28, fontFamily: "OptimaBold" },
-  userName: { fontSize: 20, fontFamily: "OptimaBold", textAlign: "center" },
-  handle: { fontSize: 13, fontFamily: "Jost" },
+  initials: { fontSize: 28, fontWeight: "700" },
+  userName: { fontSize: 20, fontWeight: "700", textAlign: "center" },
+  handle: { fontSize: 13 },
   metaRow: { flexDirection: "row", alignItems: "center", gap: 4 },
-  metaText: { fontSize: 12, fontFamily: "Jost" },
+  metaText: { fontSize: 12 },
 
   /* — Seguidores/stats row — */
   followCountsRow: { flexDirection: "row", alignItems: "center", marginTop: 14, marginBottom: 4 },
   followCountItem: { alignItems: "center", paddingHorizontal: 16 },
-  followCountNum: { fontSize: 18, fontFamily: "OptimaBold" },
-  followCountLabel: { fontSize: 11, marginTop: 1, fontFamily: "Jost" },
+  followCountNum: { fontSize: 18, fontWeight: "700" },
+  followCountLabel: { fontSize: 11, marginTop: 1 },
   followCountDivider: { width: 1, height: 28 },
 
   /* — Pills de acción — */
@@ -599,8 +599,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 14,
   },
-  topCatLabel: { fontSize: 13, flex: 1, fontFamily: "Jost" },
-  topCatValue: { fontSize: 14, fontFamily: "OptimaBold" },
+  topCatLabel: { fontSize: 13, flex: 1 },
+  topCatValue: { fontSize: 14, fontWeight: "700" },
 
   /* ── Sección expansor ── */
   expansorSection: {
@@ -611,15 +611,15 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 16,
   },
-  epSectionTitle: { fontSize: 13, fontFamily: "OptimaBold", letterSpacing: 0.3 },
+  epSectionTitle: { fontSize: 13, fontWeight: "700", letterSpacing: 0.3 },
   epChip: {
     paddingHorizontal: 11,
     paddingVertical: 5,
     borderRadius: 20,
     borderWidth: 1,
   },
-  epChipText: { fontSize: 12, fontWeight: "600", fontFamily: "Jost" },
-  epDesc: { fontSize: 14, lineHeight: 21, fontFamily: "Jost" },
+  epChipText: { fontSize: 12, fontWeight: "600" },
+  epDesc: { fontSize: 14, lineHeight: 21 },
   epReadMore: { flexDirection: "row", alignItems: "center", gap: 4 },
   epContactRow: { flexDirection: "row", gap: 8 },
   epContactPill: {
@@ -632,9 +632,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.07)",
   },
-  epContactPillText: { fontSize: 13, color: "#FFFFFF", fontFamily: "Jost" },
+  epContactPillText: { fontSize: 13, color: "#FFFFFF" },
   epQuoteWrap: { paddingTop: 4 },
-  epQuoteText: { fontSize: 13, fontStyle: "italic", lineHeight: 20, textAlign: "center", fontFamily: "Jost" },
+  epQuoteText: { fontSize: 13, fontStyle: "italic", lineHeight: 20, textAlign: "center" },
 
   /* ── Banner certificado ── */
   epCertBanner: {
@@ -653,7 +653,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1.4,
     color: "#D4AF37",
   },
-  epCertBannerSub: { fontSize: 11, marginTop: 2, fontFamily: "Jost" },
+  epCertBannerSub: { fontSize: 11, marginTop: 2 },
   epCertIconBorder: {
     width: 34, height: 34, borderRadius: 17,
     borderWidth: 1, borderColor: "rgba(212,175,55,0.35)",

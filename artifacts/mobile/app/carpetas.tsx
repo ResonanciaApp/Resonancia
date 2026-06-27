@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "rgba(61,14,22,0.40)",
   },
   backBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
-  title: { flex: 1, fontSize: 18, fontFamily: "OptimaBold", textAlign: "center" },
+  title: { flex: 1, fontSize: 18, fontWeight: "700", textAlign: "center" },
   list: { paddingHorizontal: 20, paddingTop: 8 },
   row: {
     flexDirection: "row",
@@ -122,8 +122,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  rowName: { fontSize: 16, fontFamily: "Jost", fontWeight: "600" },
-  rowMeta: { fontSize: 13, fontFamily: "Jost", marginTop: 2 },
+  rowName: { fontSize: 16, fontWeight: "600" },
+  rowMeta: { fontSize: 13, marginTop: 2 },
   emptyWrap: { alignItems: "center", paddingTop: 80, paddingHorizontal: 32 },
   emptyIcon: {
     width: 80, height: 80,
@@ -131,6 +131,6 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     marginBottom: 20,
   },
-  emptyTitle: { fontSize: 18, fontFamily: "OptimaBold", textAlign: "center", marginBottom: 10 },
-  emptySubtitle: { fontSize: 14, fontFamily: "Jost", lineHeight: 20, textAlign: "center" },
+  emptyTitle: { fontSize: 18, fontWeight: "700", textAlign: "center", marginBottom: 10 },
+  emptySubtitle: { fontSize: 14, lineHeight: 20, textAlign: "center" },
 });

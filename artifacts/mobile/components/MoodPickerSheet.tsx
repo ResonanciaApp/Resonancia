@@ -139,13 +139,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   closeX: {
-    fontFamily: "Jost",
     fontSize: 16,
     color: MUTED,
   },
   title: {
-    fontFamily: "OptimaBold",
     fontSize: 20,
+    fontWeight: "700",
     color: FG,
     textAlign: "center",
     marginBottom: 24,
@@ -180,7 +179,6 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   cardLabel: {
-    fontFamily: "Jost",
     fontSize: 12,
     fontWeight: "500",
     color: MUTED,
@@ -188,7 +186,7 @@ const styles = StyleSheet.create({
   },
   cardLabelSelected: {
     color: PRIMARY,
-    fontFamily: "OptimaBold",
+    fontWeight: "700",
   },
   continueBtn: {
     overflow: "hidden",
@@ -200,8 +198,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(190,150,80,0.20)",
   },
   continueBtnText: {
-    fontFamily: "OptimaBold",
     fontSize: 16,
+    fontWeight: "700",
     color: "#0B0F14",
   },
   continueBtnTextDisabled: {

@@ -146,7 +146,7 @@ export default function ReservarSesionScreen() {
           <Text style={styles.confirmTitle}>¡Reserva confirmada!</Text>
           <Text style={styles.confirmSub}>
             Tu sesión con{" "}
-            <Text style={{ color: ACCENT_GOLD, fontFamily: "OptimaBold" }}>
+            <Text style={{ color: ACCENT_GOLD, fontFamily: "Inter_600SemiBold" }}>
               {displayName}
             </Text>{" "}
             quedó agendada.
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: FOREGROUND,
     fontSize: 17,
-    fontFamily: "OptimaBold",
+    fontFamily: "Inter_600SemiBold",
     flex: 1,
     textAlign: "center",
   },
@@ -319,14 +319,14 @@ const styles = StyleSheet.create({
   guideName: {
     color: FOREGROUND,
     fontSize: 22,
-    fontFamily: "OptimaBold",
+    fontFamily: "PlayfairDisplay_700Bold",
     textAlign: "center",
     marginBottom: 4,
   },
   guideSpecialty: {
     color: MUTED,
     fontSize: 13,
-    fontFamily: "Jost",
+    fontFamily: "Inter_400Regular",
     textAlign: "center",
   },
 
@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: MUTED,
     fontSize: 13,
-    fontFamily: "Jost",
+    fontFamily: "Inter_400Regular",
     lineHeight: 19,
   },
 
@@ -355,9 +355,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  primaryBtnText: { color: WARM_BLACK, fontSize: 16, fontFamily: "OptimaBold" },
+  primaryBtnText: { color: WARM_BLACK, fontSize: 16, fontFamily: "Inter_600SemiBold" },
   secondaryBtn: { alignItems: "center", padding: 12 },
-  secondaryBtnText: { color: MUTED, fontSize: 14, fontFamily: "Jost" },
+  secondaryBtnText: { color: MUTED, fontSize: 14, fontFamily: "Inter_400Regular" },
 
   centeredContainer: {
     flex: 1,
@@ -380,13 +380,13 @@ const styles = StyleSheet.create({
   confirmTitle: {
     color: FOREGROUND,
     fontSize: 24,
-    fontFamily: "OptimaBold",
+    fontFamily: "PlayfairDisplay_700Bold",
     textAlign: "center",
   },
   confirmSub: {
     color: MUTED,
     fontSize: 15,
-    fontFamily: "Jost",
+    fontFamily: "Inter_400Regular",
     textAlign: "center",
     lineHeight: 22,
   },
@@ -409,14 +409,14 @@ const styles = StyleSheet.create({
   modalTitle: {
     color: FOREGROUND,
     fontSize: 20,
-    fontFamily: "OptimaBold",
+    fontFamily: "PlayfairDisplay_700Bold",
     textAlign: "center",
     marginBottom: 8,
   },
   modalSub: {
     color: MUTED,
     fontSize: 14,
-    fontFamily: "Jost",
+    fontFamily: "Inter_400Regular",
     textAlign: "center",
     lineHeight: 20,
   },

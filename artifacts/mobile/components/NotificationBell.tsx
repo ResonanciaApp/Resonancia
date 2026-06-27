@@ -271,8 +271,8 @@ const styles = StyleSheet.create({
   },
   num: {
     color: "#FFFFFF",
-    fontFamily: "OptimaBold",
     fontSize: 13,
+    fontWeight: "700",
   },
   fire: {
     width: 14,

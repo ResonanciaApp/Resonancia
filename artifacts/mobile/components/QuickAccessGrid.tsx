@@ -258,7 +258,6 @@ const styles = StyleSheet.create({
     opacity: 0.25,
   },
   label: {
-    fontFamily: "Jost",
     fontSize:      12,
     fontWeight:    "600",
     textAlign:     "center",

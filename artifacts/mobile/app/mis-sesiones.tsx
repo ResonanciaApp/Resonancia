@@ -251,14 +251,14 @@ const pastStyles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: "rgba(74,12,12,0.3)",
   },
-  name: { color: FOREGROUND, fontSize: 13, fontFamily: "OptimaBold" },
-  date: { color: MUTED, fontSize: 11, fontFamily: "Jost", marginTop: 2 },
+  name: { color: FOREGROUND, fontSize: 13, fontFamily: "Inter_600SemiBold" },
+  date: { color: MUTED, fontSize: 11, fontFamily: "Inter_400Regular", marginTop: 2 },
   badge: {
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
   },
-  badgeText: { fontSize: 11, fontFamily: "Jost" },
+  badgeText: { fontSize: 11, fontFamily: "Inter_400Regular" },
 });
 
 // ── Estilos ───────────────────────────────────────────────────────────────────
@@ -280,14 +280,14 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: FOREGROUND,
     fontSize: 17,
-    fontFamily: "OptimaBold",
+    fontFamily: "Inter_600SemiBold",
     flex: 1,
     textAlign: "center",
   },
   sectionLabel: {
     color: FOREGROUND,
     fontSize: 13,
-    fontFamily: "OptimaBold",
+    fontFamily: "Inter_600SemiBold",
     letterSpacing: 0.8,
     textTransform: "uppercase",
     opacity: 0.6,
@@ -310,12 +310,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     color: FOREGROUND,
     fontSize: 18,
-    fontFamily: "OptimaBold",
+    fontFamily: "Inter_600SemiBold",
   },
   emptyText: {
     color: MUTED,
     fontSize: 14,
-    fontFamily: "Jost",
+    fontFamily: "Inter_400Regular",
     textAlign: "center",
     lineHeight: 20,
   },
@@ -331,6 +331,6 @@ const styles = StyleSheet.create({
   authBtnText: {
     color: WARM_BLACK,
     fontSize: 15,
-    fontFamily: "OptimaBold",
+    fontFamily: "Inter_600SemiBold",
   },
 });

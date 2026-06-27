@@ -1,4 +1,14 @@
-import { useFonts } from "@expo-google-fonts/inter";
+import {
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+  useFonts,
+} from "@expo-google-fonts/inter";
+import {
+  PlayfairDisplay_400Regular,
+  PlayfairDisplay_700Bold,
+} from "@expo-google-fonts/playfair-display";
 import { ClerkProvider, ClerkLoaded, useAuth as useClerkAuth } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -275,11 +285,13 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
+    PlayfairDisplay_400Regular,
+    PlayfairDisplay_700Bold,
     OptimaBold: require("../assets/fonts/OptimaBold.ttf"),
-    OptimaRegular: require("../assets/fonts/OptimaRegular.ttf"),
-    OptimaMedium: require("../assets/fonts/OptimaMedium.ttf"),
-    OptimaItalic: require("../assets/fonts/OptimaItalic.ttf"),
-    Jost: require("../assets/fonts/Jost.ttf"),
   });
 
   useEffect(() => {

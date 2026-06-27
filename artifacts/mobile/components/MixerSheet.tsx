@@ -1140,13 +1140,12 @@ const styles = StyleSheet.create({
   },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   headerPillBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
-  caption: { fontSize: 10, fontFamily: "Jost", letterSpacing: 1.8, textTransform: "uppercase", marginBottom: 4, fontWeight: "400" },
-  title: { fontSize: 18, fontFamily: "OptimaBold", letterSpacing: 0.3 },
-  subtitle: { fontSize: 12, fontFamily: "Jost", marginTop: 2 },
-  clearText: { fontSize: 12, fontFamily: "Jost", fontWeight: "400" },
+  caption: { fontSize: 10, letterSpacing: 1.8, textTransform: "uppercase", marginBottom: 4, fontWeight: "400" },
+  title: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
+  subtitle: { fontSize: 12, marginTop: 2 },
+  clearText: { fontSize: 12, fontWeight: "400" },
   clearPill: {
     fontSize: 13,
-    fontFamily: "Jost",
     fontWeight: "400",
     letterSpacing: 0.3,
     color: "#FFFFFF",
@@ -1196,7 +1195,7 @@ const styles = StyleSheet.create({
   thumb: { width: 42, height: 42, borderRadius: 9, overflow: "hidden", borderWidth: 1, borderColor: "rgba(244,218,213,0.50)" },
   thumbRadius: { borderRadius: 8 },
   trackInfo: { flex: 1, justifyContent: "center" },
-  trackName: { fontFamily: "OptimaBold", fontSize: 12, marginBottom: -2, paddingLeft: 8, marginTop: 6 },
+  trackName: { fontSize: 12, fontWeight: "700", marginBottom: -2, paddingLeft: 8, marginTop: 6 },
   _reorderPill_unused: {
     flexDirection: "row",
     alignItems: "center",
@@ -1215,7 +1214,7 @@ const styles = StyleSheet.create({
     height: 40,
     marginTop: 10,
   },
-  addBtnText: { fontFamily: "Jost", fontSize: 10, fontWeight: "400", letterSpacing: 2, textTransform: "uppercase" },
+  addBtnText: { fontSize: 10, fontWeight: "400", letterSpacing: 2, textTransform: "uppercase" },
 
   footerRow: {
     flexDirection: "row",
@@ -1242,7 +1241,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   footerLabel: {
-    fontFamily: "Jost",
     fontSize: 10,
     fontWeight: "400",
     letterSpacing: 1.5,
@@ -1273,7 +1271,6 @@ const styles = StyleSheet.create({
     paddingTop: 2,
   },
   footerUpdateText: {
-    fontFamily: "Jost",
     fontSize: 10,
     fontWeight: "400",
     letterSpacing: 1.5,
@@ -1295,11 +1292,10 @@ const styles = StyleSheet.create({
     padding: 20,
     overflow: "hidden",
   },
-  modalTitle: { fontFamily: "OptimaBold", fontSize: 17, marginBottom: 14 },
+  modalTitle: { fontSize: 17, fontWeight: "700", marginBottom: 14 },
   modalScroll: { maxHeight: 420 },
-  modalLabel: { fontFamily: "OptimaBold", fontSize: 12, marginBottom: 6, marginTop: 12 },
+  modalLabel: { fontSize: 12, fontWeight: "600", marginBottom: 6, marginTop: 12 },
   modalInput: {
-    fontFamily: "Jost",
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 12,
@@ -1320,7 +1316,7 @@ const styles = StyleSheet.create({
   catTabBlockSel: {
     backgroundColor: "rgba(100,142,195,0.14)",
   },
-  catTabLabel: { fontFamily: "Jost", fontSize: 15, textAlign: "center" },
+  catTabLabel: { fontSize: 15, textAlign: "center" },
   imgGallery: { gap: 8, paddingVertical: 2 },
   imgThumbWrap: { borderRadius: 12, overflow: "hidden" },
   imgThumb: { width: 64, height: 64, justifyContent: "center", alignItems: "center" },
@@ -1343,7 +1339,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 12,
   },
-  modalBtnText: { fontFamily: "OptimaBold", fontSize: 14 },
+  modalBtnText: { fontSize: 14, fontWeight: "600" },
 
   // ── Botón Modo Inmersivo ───────────────────────────────────────────────────
   immersivoBtn: {
@@ -1383,8 +1379,8 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   immersivoBtnText: {
-    fontFamily: "OptimaBold",
     fontSize: 13,
+    fontWeight: "600",
     color: "rgba(212,175,55,0.85)",
     letterSpacing: 0.5,
   },
@@ -1421,8 +1417,8 @@ const styles = StyleSheet.create({
   },
   bgPickerTitle: {
     color: "#FAF0EE",
-    fontFamily: "OptimaBold",
     fontSize: 17,
+    fontWeight: "700",
     letterSpacing: 0.3,
   },
   restablecerBtn: {
@@ -1437,8 +1433,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(140,26,43,0.12)",
   },
   restablecerText: {
-    fontFamily: "OptimaBold",
     fontSize: 11,
+    fontWeight: "600",
     color: "#C0304A",
     letterSpacing: 0.2,
   },
@@ -1467,8 +1463,8 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   bgPresetName: {
-    fontFamily: "OptimaBold",
     fontSize: 10,
+    fontWeight: "600",
     color: "rgba(255,255,255,0.80)",
     letterSpacing: 0.2,
     textAlign: "center",
@@ -1496,8 +1492,8 @@ const styles = StyleSheet.create({
   },
   bgPickerDoneText: {
     color: "#D4AF37",
-    fontFamily: "OptimaBold",
     fontSize: 15,
+    fontWeight: "700",
     letterSpacing: 0.3,
   },
   trackRowAbs: {

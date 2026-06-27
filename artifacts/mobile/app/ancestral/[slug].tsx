@@ -118,17 +118,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15, paddingBottom: 10,
   },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
-  headerTitle: { fontSize: 17, fontFamily: "OptimaBold", color: "#fff", letterSpacing: 0.2 },
+  headerTitle: { fontSize: 17, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },
 
   banner: { height: 280, position: "relative" },
   bannerAccent: { position: "absolute", bottom: 0, left: 0, right: 0, height: 2, backgroundColor: "rgba(212,175,55,0.30)" },
 
   titleRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 12, marginTop: 22, marginBottom: 10, paddingHorizontal: 20 },
-  title: { fontSize: 26, fontFamily: "OptimaBold", color: TEXT, letterSpacing: 0.5, textAlign: "center" },
+  title: { fontSize: 26, fontWeight: "800", color: TEXT, letterSpacing: 0.5, textAlign: "center" },
   goldDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: GOLD, opacity: 0.7 },
 
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.20)", marginHorizontal: 30, marginBottom: 22 },
 
   descCard: { marginHorizontal: 20, backgroundColor: "rgba(74,12,12,0.12)", borderRadius: 16, padding: 22, borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(212,175,55,0.15)" },
-  desc: { fontSize: 15, fontFamily: "Jost", color: MUTED, lineHeight: 26, textAlign: "center" },
+  desc: { fontSize: 15, color: MUTED, lineHeight: 26, textAlign: "center" },
 });

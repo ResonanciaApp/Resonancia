@@ -331,13 +331,12 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   sectionTitle: {
-    fontFamily: "OptimaBold",
     fontSize: 20,
+    fontWeight: "700",
     letterSpacing: 0.3,
     color: "#FFFFFF",
   },
   sectionSubtitle: {
-    fontFamily: "Jost",
     fontSize: 13,
     color: "#7A8FA8",
     marginTop: -8,
@@ -351,11 +350,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(190,150,80,0.28)",
   },
-  verTodasText: {
-    fontFamily: "Jost",
-    fontSize: 14,
-    fontWeight: "600",
-  },
+  verTodasText: { fontSize: 14, fontWeight: "600" },
 
   grid: { flexDirection: "row", flexWrap: "wrap" },
 
@@ -389,19 +384,9 @@ const styles = StyleSheet.create({
     paddingTop: 7,
     paddingBottom: 9,
   },
-  cardName: {
-    fontFamily: "OptimaBold",
-    fontSize: 12,
-    marginBottom: 1,
-  },
-  cardAuthor: {
-    fontFamily: "Jost",
-    fontSize: 11,
-  },
+  cardName: { fontSize: 12, fontWeight: "700", marginBottom: 1 },
+  cardAuthor: { fontSize: 11 },
 
   likes: { flexDirection: "row", alignItems: "center", gap: 3, flexShrink: 0 },
-  likeCount: {
-    fontFamily: "Jost",
-    fontSize: 11,
-  },
+  likeCount: { fontSize: 11 },
 });

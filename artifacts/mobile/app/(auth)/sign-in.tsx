@@ -154,14 +154,14 @@ const styles = StyleSheet.create({
   header: { marginBottom: 36, alignItems: "center" },
   brand: {
     color: COLORS.primary,
-    fontFamily: "OptimaBold",
+    fontFamily: "PlayfairDisplay_700Bold",
     fontSize: 14,
     letterSpacing: 6,
     marginBottom: 24,
   },
   title: {
     color: COLORS.fg,
-    fontFamily: "OptimaBold",
+    fontFamily: "PlayfairDisplay_700Bold",
     fontSize: 28,
     marginBottom: 8,
     textAlign: "center",
@@ -169,15 +169,13 @@ const styles = StyleSheet.create({
   subtitle: {
     color: COLORS.muted,
     fontSize: 14,
-    fontFamily: "Jost",
     textAlign: "center",
     lineHeight: 20,
   },
   form: { width: "100%" },
   label: {
     color: COLORS.fg,
-    fontFamily: "Jost",
-    fontWeight: "500",
+    fontFamily: "Inter_500Medium",
     fontSize: 13,
     marginBottom: 8,
     letterSpacing: 0.3,
@@ -190,7 +188,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     color: COLORS.fg,
-    fontFamily: "Jost",
+    fontFamily: "Inter_400Regular",
     fontSize: 15,
   },
   primaryBtn: {
@@ -202,8 +200,7 @@ const styles = StyleSheet.create({
   },
   primaryBtnText: {
     color: COLORS.bg,
-    fontFamily: "Jost",
-    fontWeight: "600",
+    fontFamily: "Inter_600SemiBold",
     fontSize: 16,
     letterSpacing: 0.5,
   },
@@ -214,17 +211,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 24,
   },
-  footerText: { color: COLORS.muted, fontSize: 14, fontFamily: "Jost" },
+  footerText: { color: COLORS.muted, fontSize: 14 },
   footerLink: {
     color: COLORS.accent,
     fontSize: 14,
-    fontFamily: "Jost",
-    fontWeight: "600",
+    fontFamily: "Inter_600SemiBold",
   },
   errorText: {
     color: COLORS.error,
     fontSize: 13,
-    fontFamily: "Jost",
     marginTop: 6,
   },
 });

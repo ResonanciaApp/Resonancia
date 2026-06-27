@@ -422,7 +422,6 @@ const styles = StyleSheet.create({
     backgroundColor: MIX_BG,
   },
   openPillText: {
-    fontFamily: "Jost",
     color: "#FFFFFF",
     fontSize: 13,
     fontWeight: "600",
@@ -508,14 +507,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   mixTitle: {
-    fontFamily: "Jost",
     fontSize: 13,
     fontWeight: "600",
     color: "#FFFFFF",
     marginBottom: 1,
   },
   mixSub: {
-    fontFamily: "Jost",
     fontSize: 11,
     color: "rgba(255,255,255,0.55)",
   },
@@ -535,7 +532,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     color: "#FFFFFF",
-    fontFamily: "Jost",
     fontSize: 14,
     fontWeight: "600",
     letterSpacing: 1.0,
@@ -565,8 +561,8 @@ const styles = StyleSheet.create({
   },
   art:  { width: 44, height: 44, borderRadius: 8 },
   info: { flex: 1 },
-  title: { fontFamily: "Jost", fontSize: 14, fontWeight: "600", marginBottom: 2 },
-  sub:   { fontFamily: "Jost", fontSize: 11 },
+  title: { fontSize: 14, fontWeight: "600", marginBottom: 2 },
+  sub:   { fontSize: 11 },
   btn: {
     width: 38,
     height: 38,

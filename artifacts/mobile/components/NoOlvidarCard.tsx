@@ -230,40 +230,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
   },
-  badgeText: {
-    fontFamily: "OptimaBold",
-    fontSize: 10,
-    letterSpacing: 0.4,
-  },
-  dateText: {
-    fontFamily: "Jost",
-    fontSize: 10,
-    flex: 1,
-  },
+  badgeText: { fontSize: 10, fontWeight: "700", letterSpacing: 0.4 },
+  dateText: { fontSize: 10, flex: 1 },
   deleteBtn: { padding: 4 },
 
-  bodyText: {
-    fontFamily: "Jost",
-    fontSize: 13,
-    lineHeight: 20,
-  },
-  expandHint: {
-    fontFamily: "Jost",
-    fontSize: 10,
-    marginTop: 3,
-    letterSpacing: 0.3,
-  },
+  bodyText: { fontSize: 13, lineHeight: 20 },
+  expandHint: { fontSize: 10, marginTop: 3, letterSpacing: 0.3 },
 
-  vozTitle: {
-    fontFamily: "Jost",
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  vozTitleEmpty: {
-    fontFamily: "Jost",
-    fontSize: 13,
-    fontStyle: "italic",
-  },
+  vozTitle: { fontSize: 14, fontWeight: "600" },
+  vozTitleEmpty: { fontSize: 13, fontStyle: "italic" },
 
   playRow: {
     flexDirection: "row",
@@ -278,12 +253,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  durationText: {
-    fontFamily: "Jost",
-    fontSize: 13,
-    fontWeight: "600",
-    fontVariant: ["tabular-nums"],
-  },
+  durationText: { fontSize: 13, fontWeight: "600", fontVariant: ["tabular-nums"] },
 
   progressTrack: {
     height: 3,

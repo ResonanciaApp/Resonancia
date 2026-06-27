@@ -545,8 +545,8 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: "#FFFFFF",
-    fontFamily: "OptimaBold",
     fontSize: 15,
+    fontWeight: "700",
     lineHeight: 20,
   },
   cycleBadge: {
@@ -560,13 +560,12 @@ const styles = StyleSheet.create({
   },
   cycleBadgeText: {
     color: "#FFFFFF",
-    fontFamily: "OptimaBold",
     fontSize: 9,
+    fontWeight: "700",
     letterSpacing: 0.5,
   },
   headerSubtitle: {
     color: "rgba(244,218,213,0.65)",
-    fontFamily: "Jost",
     fontSize: 11,
     marginTop: 2,
   },
@@ -581,7 +580,6 @@ const styles = StyleSheet.create({
   // Compose
   composeArea: { padding: 14 },
   textInput: {
-    fontFamily: "Jost",
     minHeight: 88,
     borderRadius: 14,
     padding: 12,
@@ -595,10 +593,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 10,
   },
-  charCount: {
-    fontFamily: "Jost",
-    fontSize: 11,
-  },
+  charCount: { fontSize: 11 },
   sendBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -609,10 +604,7 @@ const styles = StyleSheet.create({
     minWidth: 88,
     justifyContent: "center",
   },
-  sendBtnText: {
-    fontFamily: "OptimaBold",
-    fontSize: 13,
-  },
+  sendBtnText: { fontSize: 13, fontWeight: "700" },
 
   // Feed toggle row
   feedToggleRow: {
@@ -623,9 +615,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   feedToggleLabel: {
-    fontFamily: "OptimaBold",
     fontSize: 10,
     letterSpacing: 1.4,
+    fontWeight: "700",
   },
   feedToggleRight: {
     flexDirection: "row",
@@ -658,29 +650,15 @@ const styles = StyleSheet.create({
   messagesList: { maxHeight: LIST_MAX_H, paddingRight: 10 },
 
   emptyState: { alignItems: "center", paddingVertical: 24, gap: 8 },
-  emptyText: {
-    fontFamily: "Jost",
-    fontSize: 13,
-    textAlign: "center",
-    lineHeight: 20,
-  },
-  emptyHint: {
-    fontFamily: "Jost",
-    fontSize: 11,
-    textAlign: "center",
-    opacity: 0.6,
-  },
+  emptyText: { fontSize: 13, textAlign: "center", lineHeight: 20 },
+  emptyHint: { fontSize: 11, textAlign: "center", opacity: 0.6 },
 
   messageCard: {
     borderRadius: 14,
     padding: 14,
     marginBottom: 8,
   },
-  messageText: {
-    fontFamily: "Jost",
-    fontSize: 14,
-    lineHeight: 22,
-  },
+  messageText: { fontSize: 14, lineHeight: 22 },
   messageMeta: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -692,28 +670,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
   },
-  messageTime: {
-    fontFamily: "Jost",
-    fontSize: 10,
-    letterSpacing: 0.3,
-  },
+  messageTime: { fontSize: 10, letterSpacing: 0.3 },
   expiringTag: {
     flexDirection: "row",
     alignItems: "center",
     gap: 3,
   },
-  expiringText: {
-    fontFamily: "Jost",
-    fontSize: 9,
-    color: "#E07060",
-    letterSpacing: 0.2,
-  },
+  expiringText: { fontSize: 9, color: "#E07060", letterSpacing: 0.2 },
   likeBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
-  likeCount: {
-    fontFamily: "Jost",
-    fontSize: 11,
-    fontWeight: "600",
-  },
+  likeCount: { fontSize: 11, fontWeight: "600" },
 
   // Descubre más
   discoverRow: {
@@ -724,27 +689,15 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingVertical: 6,
   },
-  discoverLabel: {
-    fontFamily: "OptimaBold",
-    fontSize: 12,
-    letterSpacing: 0.3,
-  },
+  discoverLabel: { fontSize: 12, fontWeight: "700", letterSpacing: 0.3 },
 
   infoSection: {
     borderTopWidth: 1,
     padding: 16,
     gap: 12,
   },
-  infoIntro: {
-    fontFamily: "Jost",
-    fontSize: 13,
-    lineHeight: 20,
-  },
-  infoSubtitle: {
-    fontFamily: "OptimaBold",
-    fontSize: 14,
-    letterSpacing: 0.2,
-  },
+  infoIntro: { fontSize: 13, lineHeight: 20 },
+  infoSubtitle: { fontSize: 14, fontWeight: "700", letterSpacing: 0.2 },
   infoList: { gap: 8 },
   infoStepCard: {
     flexDirection: "row",

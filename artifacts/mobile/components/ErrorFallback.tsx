@@ -190,13 +190,12 @@ const styles = StyleSheet.create({
     maxWidth: 600,
   },
   title: {
-    fontFamily: "OptimaBold",
     fontSize: 28,
+    fontWeight: "700",
     textAlign: "center",
     lineHeight: 40,
   },
   message: {
-    fontFamily: "Jost",
     fontSize: 16,
     textAlign: "center",
     lineHeight: 24,
@@ -227,7 +226,6 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   buttonText: {
-    fontFamily: "Jost",
     fontWeight: "600",
     textAlign: "center",
     fontSize: 16,
@@ -253,7 +251,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   modalTitle: {
-    fontFamily: "Jost",
     fontSize: 20,
     fontWeight: "600",
   },

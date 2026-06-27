@@ -75,7 +75,7 @@ function GradPillLabel({ icon, label, active }: { icon: React.ComponentProps<typ
       maskElement={
         <View style={{ alignItems: "center", gap: 8, backgroundColor: "transparent" }}>
           <Feather name={icon} size={23} color="#000" />
-          <Text style={{ fontSize: 14, fontFamily: "OptimaBold", letterSpacing: 0.2, color: "#000" }}>{label}</Text>
+          <Text style={{ fontSize: 14, fontWeight: "600", letterSpacing: 0.2, color: "#000" }}>{label}</Text>
         </View>
       }
     >
@@ -512,7 +512,7 @@ const styles = StyleSheet.create({
   },
   categoryPillText: {
     fontSize: 15,
-    fontFamily: "OptimaRegular",
+    fontWeight: "600",
     color: "#4A0C0C",
     letterSpacing: 0.8,
   },
@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
   },
   durationText: {
     fontSize: 15,
-    fontFamily: "OptimaRegular",
+    fontWeight: "400",
     color: "#4A0C0C",
   },
 
@@ -538,8 +538,8 @@ const styles = StyleSheet.create({
   },
   metaText: {
     fontSize: 13,
-    fontFamily: "Jost",
     color: "rgba(255,255,255,0.55)",
+    fontWeight: "500",
   },
   metaDot: {
     width: 3,
@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
   // Title
   title: {
     fontSize: 24,
-    fontFamily: "OptimaBold",
+    fontWeight: "800",
     lineHeight: 30,
     textAlign: "center",
     marginTop: 5,
@@ -562,7 +562,6 @@ const styles = StyleSheet.create({
   // Description
   description: {
     fontSize: 15,
-    fontFamily: "Jost",
     lineHeight: 25,
     marginTop: 5,
     marginBottom: 24,
@@ -579,7 +578,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
   },
-  tagChipText: { fontSize: 12, fontFamily: "Jost", fontWeight: "600", letterSpacing: 0.2 },
+  tagChipText: { fontSize: 12, fontWeight: "600", letterSpacing: 0.2 },
 
   // Action row
   actionRow: {
@@ -632,10 +631,10 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.30)",
   },
   authorMeta: { flex: 1, gap: 5 },
-  authorName: { fontSize: 17, fontFamily: "OptimaBold" },
-  authorCountry: { fontSize: 13, fontFamily: "Jost" },
-  authorBio: { fontSize: 13, fontFamily: "Jost", lineHeight: 19, maxWidth: 190 },
-  authorLink: { fontSize: 13, fontFamily: "Jost", fontWeight: "600" },
+  authorName: { fontSize: 17, fontWeight: "700" },
+  authorCountry: { fontSize: 13 },
+  authorBio: { fontSize: 13, lineHeight: 19, maxWidth: 190 },
+  authorLink: { fontSize: 13, fontWeight: "600" },
   allContentsBtn: {
     alignItems: "center",
     justifyContent: "center",
@@ -657,7 +656,7 @@ const styles = StyleSheet.create({
 
   blockTitle: {
     fontSize: 21,
-    fontFamily: "OptimaBold",
+    fontWeight: "700",
     letterSpacing: 0.3,
     marginBottom: 14,
   },
@@ -680,10 +679,10 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 4,
   },
-  relatedCardTitle: { fontSize: 17, fontFamily: "OptimaBold", lineHeight: 22 },
+  relatedCardTitle: { fontSize: 14, fontWeight: "700", lineHeight: 19 },
   relatedAuthorRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   relatedAuthorAvatar: { width: 18, height: 18, borderRadius: 9 },
-  relatedCardSub: { fontSize: 12, fontFamily: "Jost" },
+  relatedCardSub: { fontSize: 12 },
 
   // Sticky header
   stickyHeader: {
@@ -723,7 +722,7 @@ const styles = StyleSheet.create({
   stickyTitle: {
     flex: 1,
     fontSize: 21,
-    fontFamily: "OptimaBold",
+    fontWeight: "700",
     color: "#FFFFFF",
     textAlign: "center",
   },
@@ -749,8 +748,8 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   playBtnText: {
-    fontSize: 21,
-    fontFamily: "OptimaBold",
+    fontSize: 16,
+    fontWeight: "700",
     letterSpacing: 0.5,
   },
 });

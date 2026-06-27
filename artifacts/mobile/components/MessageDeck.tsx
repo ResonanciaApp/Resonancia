@@ -210,14 +210,13 @@ const styles = StyleSheet.create({
   thinRule: { width: 56, height: 0.8, backgroundColor: "#4A7A55", opacity: 0.7 },
   backTitle: {
     color: "#A8C8B0",
-    fontFamily: "OptimaBold",
     fontSize: 11,
+    fontWeight: "700",
     letterSpacing: 4,
     textAlign: "center",
   },
   frontTopLabel: {
     color: "#5A8A65",
-    fontFamily: "Jost",
     fontSize: 9,
     letterSpacing: 2,
     textAlign: "center",
@@ -232,15 +231,14 @@ const styles = StyleSheet.create({
   },
   frontMessage: {
     color: "#D8EDE0",
-    fontFamily: "Jost",
     fontSize: 17,
     lineHeight: 26,
     textAlign: "center",
     fontStyle: "italic",
+    fontFamily: "serif",
   },
   frontDate: {
     color: "#3A6A45",
-    fontFamily: "Jost",
     fontSize: 8,
     letterSpacing: 1.2,
     textAlign: "center",
@@ -253,7 +251,6 @@ const styles = StyleSheet.create({
   },
   hintText: {
     color: "#4A7055",
-    fontFamily: "Jost",
     fontSize: 11,
     letterSpacing: 0.8,
     textAlign: "center",
@@ -269,7 +266,6 @@ const styles = StyleSheet.create({
   },
   newBtnText: {
     color: "#7AAA85",
-    fontFamily: "OptimaBold",
     fontSize: 11,
     letterSpacing: 1.5,
     textAlign: "center",

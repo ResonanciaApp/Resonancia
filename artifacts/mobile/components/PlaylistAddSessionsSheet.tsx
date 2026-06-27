@@ -551,8 +551,8 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     color: TEXT,
-    fontFamily: "OptimaBold",
     fontSize: 16,
+    fontWeight: "700",
   },
   headerClose: { width: 28, alignItems: "flex-end" },
 
@@ -574,16 +574,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.10)",
   },
   tabChipActive: { overflow: "hidden" },
-  tabText: {
-    color: TEXT,
-    fontFamily: "Jost",
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  tabTextActive: {
-    color: "#1B060F",
-    fontFamily: "OptimaBold",
-  },
+  tabText: { color: TEXT, fontSize: 14, fontWeight: "600" },
+  tabTextActive: { color: "#1B060F", fontWeight: "700" },
 
   // Session rows
   sessionRow: {
@@ -618,19 +610,8 @@ const styles = StyleSheet.create({
   },
 
   sessionInfo: { flex: 1 },
-  sessionTitle: {
-    color: TEXT,
-    fontFamily: "Jost",
-    fontSize: 14,
-    fontWeight: "600",
-    lineHeight: 19,
-  },
-  sessionAuthor: {
-    color: MUTED,
-    fontFamily: "Jost",
-    fontSize: 12,
-    marginTop: 2,
-  },
+  sessionTitle: { color: TEXT, fontSize: 14, fontWeight: "600", lineHeight: 19 },
+  sessionAuthor: { color: MUTED, fontSize: 12, marginTop: 2 },
 
   // Add button
   addBtnOuter: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
@@ -651,10 +632,5 @@ const styles = StyleSheet.create({
 
   // Empty
   emptyWrap: { flex: 1, alignItems: "center", justifyContent: "center", paddingBottom: 60 },
-  emptyText: {
-    fontFamily: "Jost",
-    color: MUTED,
-    fontSize: 14,
-    textAlign: "center",
-  },
+  emptyText: { color: MUTED, fontSize: 14, textAlign: "center" },
 });

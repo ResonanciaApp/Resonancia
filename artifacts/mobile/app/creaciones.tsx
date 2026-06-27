@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     flex: 1,
     fontSize: 22,
-    fontFamily: "OptimaBold",
+    fontWeight: "700",
     textAlign: "center",
   },
 
@@ -270,8 +270,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  emptyTitle: { fontSize: 16, fontFamily: "OptimaBold", textAlign: "center" },
-  emptySub: { fontSize: 13, fontFamily: "Jost", textAlign: "center", lineHeight: 20 },
+  emptyTitle: { fontSize: 16, fontWeight: "700", textAlign: "center" },
+  emptySub: { fontSize: 13, textAlign: "center", lineHeight: 20 },
 
   list: { gap: 10 },
 
@@ -296,10 +296,10 @@ const styles = StyleSheet.create({
   thumbImg: { width: "100%", height: "100%" },
 
   info: { flex: 1, minWidth: 0 },
-  name: { fontSize: 14, fontFamily: "Jost", fontWeight: "700", marginBottom: 2 },
-  desc: { fontSize: 12, fontFamily: "Jost", marginBottom: 4 },
+  name: { fontSize: 14, fontWeight: "700", marginBottom: 2 },
+  desc: { fontSize: 12, marginBottom: 4 },
   metaRow: { flexDirection: "row", alignItems: "center", gap: 5, flexWrap: "wrap" },
-  meta: { fontSize: 11, fontFamily: "Jost" },
+  meta: { fontSize: 11 },
   dot: { width: 3, height: 3, borderRadius: 1.5 },
 
   deleteBtn: { padding: 6, flexShrink: 0 },

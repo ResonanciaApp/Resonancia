@@ -86,12 +86,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#2E0510",
   },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
-  headerTitle: { fontSize: 21, fontFamily: "OptimaBold", color: "#fff", letterSpacing: 0.2 },
+  headerTitle: { fontSize: 21, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },
 
   content: { paddingTop: 24, paddingHorizontal: H_PAD },
   subtitle: {
     fontSize: 14,
-    fontFamily: "Jost",
     color: "rgba(250,240,238,0.55)",
     lineHeight: 20,
     marginBottom: 20,
@@ -108,7 +107,7 @@ const styles = StyleSheet.create({
   },
   cellTitle: {
     fontSize: 14,
-    fontFamily: "OptimaBold",
+    fontWeight: "700",
     color: "#fff",
     textAlign: "center",
     letterSpacing: 0.3,

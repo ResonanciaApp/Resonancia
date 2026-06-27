@@ -62,6 +62,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  name: { fontFamily: "OptimaBold", fontSize: 13, textAlign: "center", width: PHOTO_SIZE + 20 },
-  genre: { fontFamily: "Jost", fontSize: 11, textAlign: "center", marginTop: 2, width: PHOTO_SIZE + 20 },
+  name: { fontSize: 13, fontWeight: "700", textAlign: "center", width: PHOTO_SIZE + 20 },
+  genre: { fontSize: 11, textAlign: "center", marginTop: 2, width: PHOTO_SIZE + 20 },
 });

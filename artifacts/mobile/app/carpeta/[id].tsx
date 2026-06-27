@@ -61,9 +61,9 @@ export default function CarpetaDetailScreen() {
       <LinearGradient colors={BG} style={styles.root}>
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
           <Feather name="folder" size={48} color={MUTED} style={{ marginBottom: 16 }} />
-          <Text style={{ color: MUTED, fontSize: 16, fontFamily: "Jost" }}>Carpeta no encontrada</Text>
+          <Text style={{ color: MUTED, fontSize: 16 }}>Carpeta no encontrada</Text>
           <Pressable onPress={() => router.back()} style={{ marginTop: 24 }}>
-            <Text style={{ color: GOLD, fontSize: 15, fontFamily: "Jost" }}>← Volver</Text>
+            <Text style={{ color: GOLD, fontSize: 15 }}>← Volver</Text>
           </Pressable>
         </View>
       </LinearGradient>
@@ -363,14 +363,14 @@ const styles = StyleSheet.create({
     flex: 1,
     color: TEXT,
     fontSize: 20,
-    fontFamily: "OptimaBold",
+    fontWeight: "800",
     textAlign: "center",
   },
   renameInput: {
     flex: 1,
     color: TEXT,
     fontSize: 20,
-    fontFamily: "OptimaBold",
+    fontWeight: "800",
     textAlign: "center",
     borderBottomWidth: 1.5,
     borderBottomColor: GOLD,
@@ -389,14 +389,13 @@ const styles = StyleSheet.create({
   emptyTitle: {
     color: TEXT,
     fontSize: 20,
-    fontFamily: "OptimaBold",
+    fontWeight: "700",
     textAlign: "center",
     marginBottom: 10,
   },
   emptySub: {
     color: MUTED,
     fontSize: 14,
-    fontFamily: "Jost",
     textAlign: "center",
     lineHeight: 20,
   },
@@ -421,8 +420,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  plName: { color: TEXT, fontSize: 15, fontFamily: "Jost", fontWeight: "600", lineHeight: 20 },
-  plMeta: { color: MUTED, fontSize: 12, fontFamily: "Jost", marginTop: 2 },
+  plName: { color: TEXT, fontSize: 15, fontWeight: "600", lineHeight: 20 },
+  plMeta: { color: MUTED, fontSize: 12, marginTop: 2 },
   removePlBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
 
   // Sheet
@@ -463,8 +462,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  sheetItemTitle: { color: TEXT, fontSize: 16, fontFamily: "OptimaBold" },
-  sheetItemSub: { color: MUTED, fontSize: 13, fontFamily: "Jost", marginTop: 2 },
+  sheetItemTitle: { color: TEXT, fontSize: 16, fontWeight: "700" },
+  sheetItemSub: { color: MUTED, fontSize: 13, marginTop: 2 },
 
   // Naming modal
   nameOverlay: {
@@ -489,7 +488,7 @@ const styles = StyleSheet.create({
   nameCardTitle: {
     color: TEXT,
     fontSize: 17,
-    fontFamily: "OptimaBold",
+    fontWeight: "700",
     textAlign: "center",
     marginBottom: 24,
     lineHeight: 24,
@@ -507,7 +506,6 @@ const styles = StyleSheet.create({
   nameInput: {
     color: TEXT,
     fontSize: 22,
-    fontFamily: "Jost",
     fontWeight: "700",
     textAlign: "center",
     padding: 0,
@@ -521,7 +519,7 @@ const styles = StyleSheet.create({
   nameCreateBtnText: {
     color: "#1B060F",
     fontSize: 15,
-    fontFamily: "OptimaBold",
+    fontWeight: "800",
     letterSpacing: 0.3,
   },
 });

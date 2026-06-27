@@ -598,13 +598,13 @@ const styles = StyleSheet.create({
   titleText: {
     color: FOREGROUND,
     fontSize: 22,
-    fontFamily: "OptimaBold",
+    fontFamily: "PlayfairDisplay_700Bold",
     textAlign: "center",
   },
   subtitleText: {
     color: MUTED,
     fontSize: 14,
-    fontFamily: "Jost",
+    fontFamily: "Inter_400Regular",
     textAlign: "center",
   },
 
@@ -623,7 +623,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: MUTED,
     fontSize: 12,
-    fontFamily: "Jost",
+    fontFamily: "Inter_400Regular",
     lineHeight: 18,
   },
 
@@ -664,7 +664,7 @@ const styles = StyleSheet.create({
   preCallBtnLabel: {
     color: FOREGROUND,
     fontSize: 12,
-    fontFamily: "Jost",
+    fontFamily: "Inter_500Medium",
   },
 
   primaryBtn: {
@@ -680,7 +680,7 @@ const styles = StyleSheet.create({
   primaryBtnText: {
     color: WARM_BLACK,
     fontSize: 16,
-    fontFamily: "OptimaBold",
+    fontFamily: "Inter_600SemiBold",
   },
 
   noRoomCard: {
@@ -698,7 +698,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: MUTED,
     fontSize: 13,
-    fontFamily: "Jost",
+    fontFamily: "Inter_400Regular",
     lineHeight: 18,
   },
 
@@ -711,7 +711,7 @@ const styles = StyleSheet.create({
   rateManualText: {
     color: MUTED,
     fontSize: 13,
-    fontFamily: "Jost",
+    fontFamily: "Inter_400Regular",
   },
 
   // ── Sala de video nativa (SDK_AVAILABLE = true) ───────────────────────────
@@ -789,7 +789,7 @@ const styles = StyleSheet.create({
   noteInput: {
     color: FOREGROUND,
     fontSize: 14,
-    fontFamily: "Jost",
+    fontFamily: "Inter_400Regular",
     lineHeight: 20,
     textAlignVertical: "top",
   },
@@ -799,7 +799,7 @@ const styles = StyleSheet.create({
   skipText: {
     color: MUTED,
     fontSize: 13,
-    fontFamily: "Jost",
+    fontFamily: "Inter_400Regular",
     textAlign: "center",
   },
 });

@@ -636,7 +636,7 @@ const styles = StyleSheet.create({
   },
   authorText: {
     fontSize: 16,
-    fontFamily: "Jost",
+    fontFamily: "Inter_400Regular",
     color: "white",
   },
   signature: {

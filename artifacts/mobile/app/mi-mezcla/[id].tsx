@@ -465,7 +465,7 @@ const s = StyleSheet.create({
     flex: 1,
     color: TEXT,
     fontSize: 18,
-    fontFamily: "OptimaBold",
+    fontWeight: "700",
     textAlign: "center",
   },
   coverWrap: {
@@ -489,7 +489,6 @@ const s = StyleSheet.create({
   label: {
     color: MUTED,
     fontSize: 12,
-    fontFamily: "Jost",
     fontWeight: "600",
     letterSpacing: 0.8,
     textTransform: "uppercase",
@@ -503,7 +502,6 @@ const s = StyleSheet.create({
     borderColor: "rgba(61,14,22,0.6)",
     color: TEXT,
     fontSize: 16,
-    fontFamily: "Jost",
     paddingHorizontal: 14,
     paddingVertical: 12,
     marginBottom: 20,
@@ -534,7 +532,7 @@ const s = StyleSheet.create({
   playBtnText: {
     color: "#1B060F",
     fontSize: 16,
-    fontFamily: "OptimaBold",
+    fontWeight: "700",
   },
   catGrid: {
     flexDirection: "row",
@@ -573,7 +571,6 @@ const s = StyleSheet.create({
   catCellLabel: {
     color: MUTED,
     fontSize: 11,
-    fontFamily: "Jost",
     fontWeight: "600",
     textAlign: "center",
   },

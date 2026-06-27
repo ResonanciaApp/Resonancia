@@ -198,10 +198,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  pageTitle: { fontSize: 26, fontFamily: "OptimaBold", letterSpacing: 0.3 },
-  pageSub: { fontSize: 12, fontFamily: "Jost", marginTop: 2 },
+  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.3 },
+  pageSub: { fontSize: 12, marginTop: 2 },
   clearBtn: { paddingVertical: 6, paddingHorizontal: 4 },
-  clearBtnText: { fontSize: 13, fontFamily: "Jost", fontWeight: "600" },
+  clearBtnText: { fontSize: 13, fontWeight: "600" },
   group: { marginBottom: 24 },
   dayRow: {
     flexDirection: "row",
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 5,
   },
-  dayText: { fontSize: 12, fontFamily: "Jost", fontWeight: "600" },
+  dayText: { fontSize: 12, fontWeight: "600" },
   entryRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -224,7 +224,6 @@ const styles = StyleSheet.create({
   },
   entryTime: {
     fontSize: 11,
-    fontFamily: "Jost",
     width: 42,
     textAlign: "right",
     flexShrink: 0,
@@ -236,8 +235,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 20,
   },
-  emptyTitle: { fontSize: 18, fontFamily: "OptimaBold", marginBottom: 10 },
-  emptySub: { fontSize: 13, fontFamily: "Jost", textAlign: "center", lineHeight: 20 },
+  emptyTitle: { fontSize: 18, fontWeight: "700", marginBottom: 10 },
+  emptySub: { fontSize: 13, textAlign: "center", lineHeight: 20 },
   footerNote: {
     flexDirection: "row",
     alignItems: "center",
@@ -245,5 +244,5 @@ const styles = StyleSheet.create({
     paddingTop: 18,
     marginTop: 4,
   },
-  footerNoteText: { fontSize: 12, fontFamily: "Jost", flex: 1, lineHeight: 17 },
+  footerNoteText: { fontSize: 12, flex: 1, lineHeight: 17 },
 });

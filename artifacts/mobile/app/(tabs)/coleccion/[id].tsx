@@ -242,8 +242,8 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
     fontSize: 30,
+    fontWeight: "800",
     color: FG,
-    fontFamily: "OptimaBold",
     letterSpacing: -0.5,
     textShadowColor: "rgba(0,0,0,0.6)",
     textShadowOffset: { width: 0, height: 2 },
@@ -251,12 +251,12 @@ const styles = StyleSheet.create({
   },
 
   meta: { paddingHorizontal: 20, paddingTop: 18, paddingBottom: 4 },
-  description: { fontSize: 14, color: MUTED, lineHeight: 21, marginBottom: 12, fontFamily: "Jost" },
+  description: { fontSize: 14, color: MUTED, lineHeight: 21, marginBottom: 12 },
   hechaRow: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 6 },
   goldDot: { width: 20, height: 20, borderRadius: 10 },
-  hechaText: { fontSize: 13, color: MUTED, fontFamily: "Jost" },
-  hechaLabel: { color: FG, fontFamily: "Jost", fontWeight: "600" },
-  savedCount: { fontSize: 12, color: MUTED, marginTop: 2, fontFamily: "Jost" },
+  hechaText: { fontSize: 13, color: MUTED },
+  hechaLabel: { color: FG, fontWeight: "600" },
+  savedCount: { fontSize: 12, color: MUTED, marginTop: 2 },
 
   actionRow: {
     flexDirection: "row",
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(74,12,12,0.08)",
   },
   trackInfo: { flex: 1 },
-  trackTitle: { fontSize: 14, color: FG, marginBottom: 3, fontFamily: "OptimaBold" },
-  trackArtist: { fontSize: 12, color: MUTED, fontFamily: "Jost" },
+  trackTitle: { fontSize: 14, fontWeight: "600", color: FG, marginBottom: 3 },
+  trackArtist: { fontSize: 12, color: MUTED },
   trackMore: { paddingHorizontal: 4 },
 });

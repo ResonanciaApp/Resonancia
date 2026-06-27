@@ -1291,10 +1291,10 @@ export default function BibliotecaScreen() {
           </View>
           <GhostPill style={{ gap: 6 }}>
             <Pressable hitSlop={10} onPress={() => setSearchVisible(true)} style={styles.headerIconBtn}>
-              <Feather name="search" size={25} color={TEXT} />
+              <Feather name="search" size={27} color={TEXT} />
             </Pressable>
             <Pressable hitSlop={10} onPress={() => setCreateVisible(true)} style={styles.headerIconBtn}>
-              <Feather name="plus" size={28} color={TEXT} />
+              <Feather name="plus" size={30} color={TEXT} />
             </Pressable>
           </GhostPill>
         </View>
@@ -1456,8 +1456,8 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     borderWidth: 1, borderColor: "rgba(212,175,55,0.25)",
   },
-  headerTitle: { fontSize: 29, color: TEXT, letterSpacing: 0.5, fontFamily: "OptimaBold" },
-  headerSubtitle: { fontSize: 13, color: MUTED, marginTop: 3, fontFamily: "Jost", fontWeight: "400" },
+  headerTitle: { fontSize: 27, fontWeight: "700", color: TEXT, letterSpacing: 0.5 },
+  headerSubtitle: { fontSize: 13, color: MUTED, marginTop: 3, fontWeight: "400" },
   headerIcons: { flexDirection: "row", alignItems: "center", gap: 4 },
   headerIconBtn: { width: 45, height: 45, alignItems: "center", justifyContent: "center" },
 
@@ -1486,8 +1486,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.08)",
     overflow: "hidden",
   },
-  chipText: { fontSize: 13, color: TEXT, fontFamily: "Jost", fontWeight: "600" },
-  chipTextSel: { color: "#1B060F", fontFamily: "OptimaBold" },
+  chipText: { fontSize: 13, fontWeight: "600", color: TEXT },
+  chipTextSel: { color: "#1B060F" },
 
   controlRow: {
     flexDirection: "row",
@@ -1504,7 +1504,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
-  sortText: { fontSize: 13, color: MUTED, fontFamily: "Jost", fontWeight: "500" },
+  sortText: { fontSize: 13, color: MUTED, fontWeight: "500" },
   viewToggleBtn: { padding: 2 },
 
 
@@ -1532,8 +1532,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.12)",
   },
   rowInfo: { flex: 1, gap: 3 },
-  rowTitle: { fontSize: 15, color: TEXT, fontFamily: "OptimaBold" },
-  rowSub:   { fontSize: 12, color: MUTED, fontFamily: "Jost" },
+  rowTitle: { fontSize: 15, fontWeight: "600", color: TEXT },
+  rowSub:   { fontSize: 12, color: MUTED },
   mixMenuBtn: {
     width: 32,
     height: 32,
@@ -1550,7 +1550,7 @@ const styles = StyleSheet.create({
     paddingTop: 4,
   },
   gridThumb: { borderRadius: 6, backgroundColor: "rgba(212,175,55,0.12)" },
-  gridTitle: { fontSize: 12, color: TEXT, marginTop: 6, fontFamily: "Jost", fontWeight: "500" },
+  gridTitle: { fontSize: 12, color: TEXT, marginTop: 6, fontWeight: "500" },
 
   // ── SortSheet ────────────────────────────────────────────────────────────────
   sortSheet: {
@@ -1575,8 +1575,8 @@ const styles = StyleSheet.create({
   sortSheetTitle: {
     color: TEXT,
     fontSize: 15,
+    fontWeight: "700",
     marginBottom: 12,
-    fontFamily: "OptimaBold",
   },
   sortSheetRow: {
     flexDirection: "row",
@@ -1586,8 +1586,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "rgba(61,14,22,0.40)",
   },
-  sortSheetLabel: { color: MUTED, fontSize: 15, flex: 1, fontFamily: "Jost" },
-  sortSheetLabelActive: { color: TEXT, fontFamily: "Jost", fontWeight: "600" },
+  sortSheetLabel: { color: MUTED, fontSize: 15, flex: 1 },
+  sortSheetLabelActive: { color: TEXT, fontWeight: "600" },
 
   // ── Resonadores ─────────────────────────────────────────────────────────────
   resonadorAvatar: {
@@ -1597,41 +1597,40 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   verifiedRow: { flexDirection: "row", alignItems: "center", gap: 4 },
-  verifiedText: { fontSize: 11, color: MUTED, fontFamily: "Jost" },
+  verifiedText: { fontSize: 11, color: MUTED },
   resonadorTag: {},
-  resonadorTagText: { fontSize: 11, color: "rgba(255,255,255,0.85)", fontFamily: "Jost" },
+  resonadorTagText: { fontSize: 11, color: "rgba(255,255,255,0.85)" },
 
   // ── Estado vacío ────────────────────────────────────────────────────────────
   generalSectionLabel: {
     fontSize: 11,
+    fontWeight: "700",
     color: MUTED,
     letterSpacing: 0.8,
     textTransform: "uppercase",
     paddingHorizontal: H_PAD,
     marginTop: 20,
     marginBottom: 4,
-    fontFamily: "OptimaBold",
   },
   recentSectionTitle: {
     fontSize: 13,
-    color: MUTED,
-    fontFamily: "Jost",
     fontWeight: "500",
+    color: MUTED,
   },
   emptyState: {
     alignItems: "center",
     paddingTop: 80,
     paddingHorizontal: H_PAD,
   },
-  emptyTitle: { fontSize: 17, color: TEXT, textAlign: "center", marginBottom: 8, fontFamily: "OptimaBold" },
-  emptySub:   { fontSize: 13, color: MUTED, textAlign: "center", lineHeight: 20, fontFamily: "Jost" },
+  emptyTitle: { fontSize: 17, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 8 },
+  emptySub:   { fontSize: 13, color: MUTED, textAlign: "center", lineHeight: 20 },
   emptyBtn: {
     marginTop: 24,
     overflow: "hidden",
     paddingHorizontal: 24, paddingVertical: 12,
     borderRadius: 999,
   },
-  emptyBtnText: { color: "#000", fontSize: 14, fontFamily: "OptimaBold" },
+  emptyBtnText: { color: "#000", fontWeight: "700", fontSize: 14 },
 
   // Geometrix rows
   geoRow: {
@@ -1653,8 +1652,8 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.15)",
   },
   geoInfo: { flex: 1 },
-  geoName: { color: TEXT, fontSize: 14, fontFamily: "OptimaBold" },
-  geoSub:  { color: MUTED, fontSize: 12, marginTop: 3, fontFamily: "Jost" },
+  geoName: { color: TEXT, fontSize: 14, fontWeight: "600" },
+  geoSub:  { color: MUTED, fontSize: 12, marginTop: 3 },
 
   // ── User playlist cover ──────────────────────────────────────────────────────
   userPlCover: {
@@ -1695,10 +1694,10 @@ const styles = StyleSheet.create({
   nameCardTitle: {
     color: TEXT,
     fontSize: 17,
+    fontWeight: "700",
     textAlign: "center",
     marginBottom: 24,
     lineHeight: 24,
-    fontFamily: "OptimaBold",
   },
   nameInputWrap: {
     width: "100%",
@@ -1713,9 +1712,9 @@ const styles = StyleSheet.create({
   nameInput: {
     color: TEXT,
     fontSize: 22,
+    fontWeight: "700",
     textAlign: "center",
     padding: 0,
-    fontFamily: "OptimaBold",
   },
   nameCreateBtn: {
     overflow: "hidden",
@@ -1726,8 +1725,8 @@ const styles = StyleSheet.create({
   nameCreateBtnText: {
     color: "#1B060F",
     fontSize: 15,
+    fontWeight: "800",
     letterSpacing: 0.3,
-    fontFamily: "OptimaBold",
   },
 
   // ── Búsqueda overlay ──────────────────────────────────────────────────────────
@@ -1749,9 +1748,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderRadius: 10, paddingHorizontal: 12, paddingVertical: 12,
   },
-  searchInput: { flex: 1, fontSize: 14, color: "#111", fontFamily: "Jost" },
+  searchInput: { flex: 1, fontSize: 14, color: "#111" },
   cancelBtn: { paddingVertical: 6 },
-  cancelText: { color: GOLD, fontSize: 14, fontFamily: "OptimaBold" },
+  cancelText: { color: GOLD, fontSize: 14, fontWeight: "600" },
   searchEmpty: {
     flex: 1,
     backgroundColor: "#160108",
@@ -1759,8 +1758,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 32,
   },
-  searchEmptyTitle: { fontSize: 18, color: TEXT, textAlign: "center", marginBottom: 10, fontFamily: "OptimaBold" },
-  searchEmptySub:   { fontSize: 14, color: MUTED, textAlign: "center", lineHeight: 20, fontFamily: "Jost" },
+  searchEmptyTitle: { fontSize: 18, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 10 },
+  searchEmptySub:   { fontSize: 14, color: MUTED, textAlign: "center", lineHeight: 20 },
   searchResultRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -1773,8 +1772,8 @@ const styles = StyleSheet.create({
     width: 44, height: 44, borderRadius: 10,
     backgroundColor: "rgba(212,175,55,0.10)",
   },
-  searchResultTitle: { fontSize: 14, color: TEXT, marginBottom: 2, fontFamily: "OptimaBold" },
-  searchResultSub:   { fontSize: 12, color: MUTED, fontFamily: "Jost" },
+  searchResultTitle: { fontSize: 14, fontWeight: "600", color: TEXT, marginBottom: 2 },
+  searchResultSub:   { fontSize: 12, color: MUTED },
 
   // ── Hoja de crear ────────────────────────────────────────────────────────────
   sheetBackdrop: {
@@ -1791,7 +1790,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(74,12,12,0.35)",
     alignSelf: "center", marginBottom: 20,
   },
-  sheetTitle: { fontSize: 17, color: TEXT, marginBottom: 20, fontFamily: "OptimaBold" },
+  sheetTitle: { fontSize: 17, fontWeight: "700", color: TEXT, marginBottom: 20 },
   sheetRow: {
     flexDirection: "row", alignItems: "center", gap: 16,
     paddingVertical: 14,
@@ -1803,8 +1802,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.12)",
     alignItems: "center", justifyContent: "center",
   },
-  sheetItemTitle: { fontSize: 15, color: TEXT, marginBottom: 2, fontFamily: "OptimaBold" },
-  sheetItemSub:   { fontSize: 12, color: MUTED, fontFamily: "Jost" },
+  sheetItemTitle: { fontSize: 15, fontWeight: "600", color: TEXT, marginBottom: 2 },
+  sheetItemSub:   { fontSize: 12, color: MUTED },
 
   // ── Cargar más ────────────────────────────────────────────────────────────────
   loadMoreBtn: {
@@ -1821,8 +1820,8 @@ const styles = StyleSheet.create({
   loadMoreText: {
     color: GOLD,
     fontSize: 14,
+    fontWeight: "600",
     letterSpacing: 0.2,
-    fontFamily: "OptimaBold",
   },
 
   // ── Agregar Resonador ────────────────────────────────────────────────────────
@@ -1845,8 +1844,8 @@ const styles = StyleSheet.create({
   },
   addResonadorLabel: {
     fontSize: 15,
+    fontWeight: "600",
     color: TEXT,
-    fontFamily: "OptimaBold",
   },
   addResModalBg: {
     flex: 1,
@@ -1870,8 +1869,8 @@ const styles = StyleSheet.create({
   },
   addResModalTitle: {
     fontSize: 18,
+    fontWeight: "700",
     color: TEXT,
-    fontFamily: "OptimaBold",
   },
   addResSearchRow: {
     flexDirection: "row",
@@ -1890,7 +1889,5 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     color: TEXT,
-    fontFamily: "Jost",
   },
 });
-

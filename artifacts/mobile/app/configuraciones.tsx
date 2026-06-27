@@ -732,8 +732,8 @@ function ActionRow({
 const styles = StyleSheet.create({
   root: { flex: 1 },
   headerRow: { flexDirection: "row", alignItems: "center", marginBottom: 16, height: 40 },
-  title: { fontSize: 26, fontFamily: "OptimaBold", marginBottom: 28 },
-  sectionLabel: { fontSize: 11, fontFamily: "OptimaBold", letterSpacing: 1.2, marginBottom: 10, marginTop: 4 },
+  title: { fontSize: 26, fontWeight: "700", marginBottom: 28 },
+  sectionLabel: { fontSize: 11, fontWeight: "700", letterSpacing: 1.2, marginBottom: 10, marginTop: 4 },
   group: {
     borderRadius: 18,
     borderWidth: 1,
@@ -749,9 +749,9 @@ const styles = StyleSheet.create({
   },
   subBlock: { paddingHorizontal: 16, paddingVertical: 14 },
   rowIcon: { width: 32, height: 32, borderRadius: 10, alignItems: "center", justifyContent: "center" },
-  rowLabel: { fontSize: 14, fontFamily: "Jost", fontWeight: "500" },
-  rowSub: { fontSize: 11, fontFamily: "Jost", marginTop: 2, lineHeight: 15 },
-  rowValue: { fontSize: 13, fontFamily: "Jost", marginRight: 4 },
+  rowLabel: { fontSize: 14, fontWeight: "500" },
+  rowSub: { fontSize: 11, marginTop: 2, lineHeight: 15 },
+  rowValue: { fontSize: 13, marginRight: 4 },
   chipsRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   chip: {
     paddingHorizontal: 14,
@@ -759,7 +759,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
   },
-  chipText: { fontSize: 13, fontFamily: "Jost", fontWeight: "600" },
+  chipText: { fontSize: 13, fontWeight: "600" },
   logoutBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -770,5 +770,5 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     marginTop: 4,
   },
-  logoutText: { fontSize: 14, fontFamily: "OptimaBold" },
+  logoutText: { fontSize: 14, fontWeight: "600" },
 });

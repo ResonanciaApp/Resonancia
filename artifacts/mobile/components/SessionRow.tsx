@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   sessionImg: { width: 80, height: 80 },
   sessionContent: { flex: 1 },
   sessionMeta: { flexDirection: "row", alignItems: "center", marginBottom: 4 },
-  sessionMetaText: { fontFamily: "Jost", fontSize: 11, lineHeight: 14 },
-  sessionTitle: { fontFamily: "OptimaBold", fontSize: 15, lineHeight: 20, marginBottom: 4 },
-  sessionAuthor: { fontFamily: "Jost", fontSize: 12 },
+  sessionMetaText: { fontSize: 11, lineHeight: 14 },
+  sessionTitle: { fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 4 },
+  sessionAuthor: { fontSize: 12 },
 });

@@ -149,14 +149,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   heroTitle: {
-    fontSize: 31,
-    fontFamily: "OptimaBold",
+    fontSize: 26,
+    fontWeight: "700",
     marginBottom: 6,
     lineHeight: 32,
   },
   heroSub: {
     fontSize: 14,
-    fontFamily: "Jost",
     lineHeight: 20,
     marginBottom: 14,
   },
@@ -171,7 +170,6 @@ const styles = StyleSheet.create({
   },
   metaBadgeText: {
     fontSize: 12,
-    fontFamily: "Jost",
     fontWeight: "600",
   },
   sessionsSection: {
@@ -179,7 +177,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontFamily: "OptimaBold",
+    fontWeight: "700",
     marginBottom: 16,
   },
   emptyState: {
@@ -189,6 +187,5 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    fontFamily: "Jost",
   },
 });

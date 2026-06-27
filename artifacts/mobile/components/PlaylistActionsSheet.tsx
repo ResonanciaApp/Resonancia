@@ -274,13 +274,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   itemTitle: {
-    fontFamily: "OptimaBold",
     fontSize: 15,
+    fontWeight: "700",
     lineHeight: 20,
     marginBottom: 2,
   },
   itemSub: {
-    fontFamily: "Jost",
     fontSize: 13,
   },
   closeBtn: {
@@ -304,11 +303,9 @@ const styles = StyleSheet.create({
   },
   actionLabel: {
     flex: 1,
-    fontFamily: "Jost",
     fontSize: 16,
   },
   emptyText: {
-    fontFamily: "Jost",
     fontSize: 14,
     textAlign: "center",
     paddingVertical: 24,
@@ -331,7 +328,6 @@ const styles = StyleSheet.create({
   },
   folderLabel: {
     flex: 1,
-    fontFamily: "Jost",
     fontSize: 15,
     fontWeight: "500",
   },

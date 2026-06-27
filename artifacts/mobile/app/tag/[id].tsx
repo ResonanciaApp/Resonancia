@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
   },
   stickyTitle: {
     fontSize: 22,
-    fontFamily: "OptimaBold",
+    fontWeight: "700",
     flex: 1,
     textAlign: "center",
     paddingHorizontal: 8,
@@ -367,14 +367,13 @@ const styles = StyleSheet.create({
   },
   pageTitle: {
     fontSize: 26,
-    fontFamily: "OptimaBold",
+    fontWeight: "700",
     textAlign: "center",
     letterSpacing: 0.2,
     marginBottom: 12,
   },
   pageDesc: {
     fontSize: 14,
-    fontFamily: "Jost",
     textAlign: "center",
     lineHeight: 22,
     maxWidth: 320,
@@ -394,7 +393,6 @@ const styles = StyleSheet.create({
   },
   filterLabel: {
     fontSize: 13,
-    fontFamily: "Jost",
     fontWeight: "600",
   },
 
@@ -404,7 +402,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontFamily: "OptimaBold",
+    fontWeight: "700",
     paddingHorizontal: H_PAD,
     marginBottom: 14,
   },
@@ -426,14 +424,12 @@ const styles = StyleSheet.create({
   },
   hCardTitle: {
     fontSize: 13,
-    fontFamily: "Jost",
     fontWeight: "700",
     lineHeight: 18,
     marginBottom: 3,
   },
   hCardSub: {
     fontSize: 11,
-    fontFamily: "Jost",
     lineHeight: 15,
   },
 
@@ -450,7 +446,6 @@ const styles = StyleSheet.create({
   durationText: {
     color: "#FFFFFF",
     fontSize: 10,
-    fontFamily: "Jost",
     fontWeight: "600",
   },
 
@@ -480,14 +475,12 @@ const styles = StyleSheet.create({
   },
   listTitle: {
     fontSize: 15,
-    fontFamily: "Jost",
     fontWeight: "700",
     lineHeight: 20,
     marginBottom: 5,
   },
   listSub: {
     fontSize: 12,
-    fontFamily: "Jost",
     lineHeight: 16,
   },
 
@@ -500,6 +493,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 8,
   },
-  emptyTitle: { fontSize: 16, fontFamily: "OptimaBold", marginBottom: 6 },
-  emptySub: { fontSize: 13, fontFamily: "Jost" },
+  emptyTitle: { fontSize: 16, fontWeight: "700", marginBottom: 6 },
+  emptySub: { fontSize: 13 },
 });

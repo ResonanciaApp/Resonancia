@@ -728,21 +728,21 @@ export default function MezcladorScreen() {
                   <GhostPill style={{ gap: 6 }}>
                     <Pressable
                       onPress={() => { setSettingsMode("palette"); setSettingsVisible(true); }}
-                      style={[styles.headerPillBtn, { width: 43, height: 43 }]}
+                      style={[styles.headerPillBtn, { width: 45, height: 45 }]}
                       hitSlop={8}
                       accessibilityRole="button"
                       accessibilityLabel="Paleta de color del Mezclador"
                     >
-                      <MaterialCommunityIcons name="brush" size={24} color="#FAF0EE" />
+                      <MaterialCommunityIcons name="brush" size={26} color="#FAF0EE" />
                     </Pressable>
                     <Pressable
                       onPress={() => { setSettingsMode("filters"); setSettingsVisible(true); }}
-                      style={[styles.headerPillBtn, { width: 43, height: 43 }]}
+                      style={[styles.headerPillBtn, { width: 45, height: 45 }]}
                       hitSlop={8}
                       accessibilityRole="button"
                       accessibilityLabel="Filtros del Mezclador"
                     >
-                      <MaterialCommunityIcons name="filter-variant" size={24} color="#FAF0EE" />
+                      <MaterialCommunityIcons name="filter-variant" size={26} color="#FAF0EE" />
                     </Pressable>
                   </GhostPill>
                 </View>
@@ -959,11 +959,10 @@ const styles = StyleSheet.create({
   headerActions: { flexDirection: "row", alignItems: "center", gap: 8, marginRight: -6 },
 
   emptyState: { alignItems: "center", justifyContent: "center", paddingTop: 70, paddingHorizontal: 40, gap: 8 },
-  emptyTitle: { fontSize: 15, color: "rgba(26,30,43,0.7)", textAlign: "center", fontFamily: "OptimaBold" },
-  emptyHint:  { fontSize: 13, color: "rgba(26,30,43,0.45)", textAlign: "center", lineHeight: 19, fontFamily: "Jost" },
-  pageTitle:    { fontSize: 29, letterSpacing: 0.5, color: "#FAF0EE", fontFamily: "OptimaBold" },
-  pageSubtitle: { fontSize: 13, color: "rgba(244,218,213,0.55)", marginTop: 2, fontFamily: "Jost", fontWeight: "400" },
-
+  emptyTitle: { fontSize: 15, fontWeight: "700", color: "rgba(26,30,43,0.7)", textAlign: "center" },
+  emptyHint:  { fontSize: 13, color: "rgba(26,30,43,0.45)", textAlign: "center", lineHeight: 19 },
+  pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#FAF0EE" },
+  pageSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(244,218,213,0.55)", marginTop: 2 },
   heartBtn: {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
     borderRadius: 12, backgroundColor: "rgba(0,0,0,0.05)",
@@ -1016,10 +1015,9 @@ const styles = StyleSheet.create({
     gap: 4,
     backgroundColor: "transparent",
   },
-  pillTabLabel: { fontSize: 14, letterSpacing: 0.1, fontFamily: "Jost", fontWeight: "700" },
+  pillTabLabel: { fontSize: 14, letterSpacing: 0.1, fontWeight: "700" },
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },
-
 
   activeFilterRow: { flexGrow: 0 },
   activeFilterRowContent: {
@@ -1033,9 +1031,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.1)",
     borderWidth: 1, borderColor: "#827b7a",
   },
-  activeChipText: { fontSize: 12, color: "#827b7a", fontFamily: "Jost", fontWeight: "600" },
-  activeChipX:    { fontSize: 11, color: "rgba(130,123,122,0.65)", fontFamily: "Jost", fontWeight: "700" },
-
+  activeChipText: { fontSize: 12, fontWeight: "600", color: "#827b7a" },
+  activeChipX:    { fontSize: 11, fontWeight: "700", color: "rgba(130,123,122,0.65)" },
 
   scrollBg:      { flex: 1 },
   scroll:        { flex: 1, backgroundColor: "transparent" },
@@ -1060,7 +1057,6 @@ const styles = StyleSheet.create({
     color: "rgba(255,255,255,0.88)",
     lineHeight: 18,
     letterSpacing: 0.1,
-    fontFamily: "Jost",
   },
   bannerBtn: {
     flexShrink: 0,
@@ -1073,11 +1069,10 @@ const styles = StyleSheet.create({
   },
   bannerBtnText: {
     fontSize: 10,
+    fontWeight: "600",
     color: "#E9C46A",
     letterSpacing: 0.2,
-    fontFamily: "OptimaBold",
   },
-
 
   subTabZone: { position: "relative", justifyContent: "center", marginTop: -6 },
   subTabLine: {
@@ -1094,10 +1089,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14, paddingVertical: 5,
     borderRadius: 999,
   },
-  subTabText: { fontSize: 15, includeFontPadding: false, textAlignVertical: "center", fontFamily: "Jost", fontWeight: "400" },
+  subTabText: { fontSize: 15, fontWeight: "400", includeFontPadding: false, textAlignVertical: "center" },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 17, justifyContent: "space-evenly" },
-
   soundCard: { width: CARD_W },
   cardImageWrap: {
     width: IMG_SIZE, height: IMG_SIZE, alignSelf: "center", marginTop: 13,
@@ -1111,9 +1105,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.08)",
   },
   cardFooter: { paddingHorizontal: 4, paddingTop: 13, height: 38, overflow: "hidden" },
-  soundName:  { fontSize: 11.5, letterSpacing: 0.1, textAlign: "center", color: DARK, fontFamily: "Jost", fontWeight: "500" },
+  soundName:  { fontSize: 11.5, fontWeight: "500", letterSpacing: 0.1, textAlign: "center", color: DARK },
   lockBadge:      { position: "absolute", top: 4, right: 4 },
-
   activeIconWrap: {
     position: "absolute",
     top: 0, left: 0, right: 0, bottom: 0,

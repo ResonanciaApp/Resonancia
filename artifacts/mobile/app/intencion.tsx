@@ -301,7 +301,6 @@ const styles = StyleSheet.create({
   },
   hoyLabel: {
     fontSize: 13,
-    fontFamily: "Jost",
     fontWeight: "600",
     letterSpacing: 0.5,
     marginBottom: 10,
@@ -316,7 +315,6 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: 18,
-    fontFamily: "Jost",
     fontWeight: "500",
     lineHeight: 26,
     minHeight: 60,
@@ -328,7 +326,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginTop: 10,
   },
-  saveBtnText: { fontSize: 13, fontFamily: "OptimaBold", color: "#070E09" },
+  saveBtnText: { fontSize: 13, fontWeight: "700", color: "#070E09" },
 
   tabRow: {
     flexDirection: "row",
@@ -341,7 +339,7 @@ const styles = StyleSheet.create({
     marginRight: 24,
     position: "relative",
   },
-  tabLabel: { fontSize: 14, fontFamily: "OptimaBold" },
+  tabLabel: { fontSize: 14, fontWeight: "600" },
   tabUnderline: {
     position: "absolute",
     bottom: 0,
@@ -361,7 +359,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
   },
-  ideaText: { flex: 1, fontSize: 14, lineHeight: 20, fontFamily: "Jost" },
+  ideaText: { flex: 1, fontSize: 14, lineHeight: 20 },
   ideaArrow: { marginLeft: 8 },
 
   emptyState: {
@@ -369,8 +367,8 @@ const styles = StyleSheet.create({
     paddingTop: 48,
     gap: 12,
   },
-  emptyTitle: { fontSize: 16, fontFamily: "OptimaBold" },
-  emptyText: { fontSize: 13, lineHeight: 20, textAlign: "center", fontFamily: "Jost" },
+  emptyTitle: { fontSize: 16, fontWeight: "700" },
+  emptyText: { fontSize: 13, lineHeight: 20, textAlign: "center" },
 
   savedList: { gap: 12 },
   savedCard: {
@@ -389,8 +387,8 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     marginBottom: 4,
   },
-  savedText: { fontSize: 14, lineHeight: 20, marginBottom: 4, fontFamily: "Jost" },
-  expiryLabel: { fontSize: 11, fontFamily: "Jost" },
+  savedText: { fontSize: 14, lineHeight: 20, marginBottom: 4 },
+  expiryLabel: { fontSize: 11 },
   savedActions: { flexDirection: "column", gap: 8 },
   actionBtn: {
     width: 34,

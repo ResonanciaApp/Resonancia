@@ -95,8 +95,8 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
   },
   header: { marginBottom: 20 },
-  pageTitle: { fontSize: 28, fontFamily: "OptimaBold", letterSpacing: 0.5, marginBottom: 4 },
-  pageSub: { fontSize: 13, fontFamily: "Jost" },
+  pageTitle: { fontSize: 28, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4 },
+  pageSub: { fontSize: 13 },
   row: {
     flexDirection: "row",
     alignItems: "flex-start",
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 8,
   },
-  rankText: { fontSize: 13, fontFamily: "OptimaBold" },
+  rankText: { fontSize: 13, fontWeight: "700" },
   cardWrap: { flex: 1 },
-  plays: { fontSize: 11, fontFamily: "Jost", marginTop: 4, marginLeft: 4, letterSpacing: 0.3 },
+  plays: { fontSize: 11, marginTop: 4, marginLeft: 4, letterSpacing: 0.3 },
 });

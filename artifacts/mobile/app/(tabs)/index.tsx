@@ -498,7 +498,7 @@ export default function HomeScreen2() {
                 onPress={() => router.push("/mis-sesiones" as never)}
                 hitSlop={8}
               >
-                <Text style={{ color: "#D4AF37", fontSize: 13, fontFamily: "Jost" }}>
+                <Text style={{ color: "#D4AF37", fontSize: 13, fontFamily: "Inter_400Regular" }}>
                   Ver todas
                 </Text>
               </Pressable>
@@ -797,8 +797,7 @@ const styles = StyleSheet.create({
   moodRowLabel: {
     flex: 1,
     fontSize: 15,
-    fontFamily: "Jost",
-    fontWeight: "400",
+    fontWeight: "500",
     color: "#EDE1D3",
   },
 
@@ -815,7 +814,6 @@ const styles = StyleSheet.create({
     color: "rgba(237,225,211,0.45)",
     marginBottom: 8,
     letterSpacing: 0.3,
-    fontFamily: "OptimaBold",
   },
   intencionRow: {
     flexDirection: "row",
@@ -832,18 +830,17 @@ const styles = StyleSheet.create({
   intencionText: {
     fontSize: 22,
     color: "#EDE1D3",
+    fontWeight: "300",
     textAlign: "center",
     flexShrink: 1,
-    fontFamily: "OptimaBold",
   },
   intencionPlaceholder: {
     fontSize: 22,
     color: "rgba(237,225,211,0.35)",
+    fontWeight: "600",
     textAlign: "center",
     flexShrink: 1,
-    fontFamily: "OptimaBold",
   },
-
 
   // Header
   header: {
@@ -929,14 +926,12 @@ const styles = StyleSheet.create({
   },
   headerTabText: {
     fontSize: 13,
+    fontWeight: "400",
     color: "#FFFFFF",
     letterSpacing: 0.1,
-    fontFamily: "Jost",
-    fontWeight: "400",
   },
   headerTabTextActive: {
     color: "#1B060F",
-    fontFamily: "Jost",
     fontWeight: "600",
   },
   intentionCard: {
@@ -946,11 +941,11 @@ const styles = StyleSheet.create({
   },
   intentionLabel: {
     fontSize: 11,
+    fontWeight: "500",
     letterSpacing: 0.5,
     textTransform: "uppercase",
     marginBottom: 6,
     textAlign: "center",
-    fontFamily: "OptimaBold",
   },
   intentionRow: {
     flexDirection: "row",
@@ -960,10 +955,9 @@ const styles = StyleSheet.create({
   },
   intentionPlaceholder: {
     fontSize: 15,
+    fontWeight: "700",
     letterSpacing: 0.1,
     textAlign: "center",
-    fontFamily: "Jost",
-    fontWeight: "700",
   },
 
   // Section — igual para todas las secciones
@@ -980,9 +974,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 11,
   },
-  sectionTitle: { fontSize: 20, letterSpacing: 0.3, marginBottom: 16, color: "#FAF0EE", fontFamily: "OptimaBold" },
-  verTodasLink: { fontSize: 13, fontFamily: "Jost", fontWeight: "400" },
-
+  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 16, color: "#FAF0EE" },
+  verTodasLink: { fontSize: 13, fontWeight: "400" },
   videosEmpty: {
     borderRadius: 16,
     borderWidth: 1,
@@ -1024,10 +1017,9 @@ const styles = StyleSheet.create({
   coleccionTitle: {
     flex: 1,
     fontSize: 13,
+    fontWeight: "700",
     color: "#FAF0EE",
     lineHeight: 18,
-    fontFamily: "Jost",
-    fontWeight: "700",
   },
   catGrid: {
     flexDirection: "row",
@@ -1057,12 +1049,10 @@ const styles = StyleSheet.create({
   },
   catCardLabel: {
     fontSize: 14,
+    fontWeight: "600",
     color: "#FAF0EE",
     lineHeight: 18,
-    fontFamily: "Jost",
-    fontWeight: "600",
   },
-
 
   // Escuchados recientemente — foto + título + creador
   recentCard: {
@@ -1097,16 +1087,15 @@ const styles = StyleSheet.create({
   },
   recentDurText: {
     fontSize: 11,
-    color: "#FFFFFF",
-    fontFamily: "Jost",
     fontWeight: "600",
+    color: "#FFFFFF",
   },
   recentTitle: {
     fontSize: 13,
+    fontWeight: "700",
     color: "#FAF0EE",
     lineHeight: 17,
     marginTop: 8,
-    fontFamily: "OptimaBold",
   },
   recentCreatorRow: {
     flexDirection: "row",
@@ -1125,9 +1114,7 @@ const styles = StyleSheet.create({
     color: "rgba(250,240,238,0.45)",
     flex: 1,
     marginTop: 4,
-    fontFamily: "Jost",
   },
-
 
   // Hero — sesión destacada del día
   heroCard: {
@@ -1161,15 +1148,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 8,
   },
-  heroMetaText: { fontSize: 11, lineHeight: 14, fontFamily: "Jost" },
-  heroTitle: { fontSize: 20, lineHeight: 26, marginBottom: 4, fontFamily: "OptimaBold" },
-  heroAuthor: { fontSize: 12, marginTop: 2, fontFamily: "Jost" },
+  heroMetaText: { fontSize: 11, lineHeight: 14 },
+  heroTitle: { fontSize: 20, fontWeight: "700", lineHeight: 26, marginBottom: 4 },
+  heroAuthor: { fontSize: 12, marginTop: 2 },
   heroBottom: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
   },
-
   heroBtn: {
     width: 46,
     height: 46,
@@ -1203,10 +1189,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  squareTitle: { fontSize: 16, letterSpacing: 0.2, marginTop: 12, textAlign: "center", color: "#FAF0EE", fontFamily: "OptimaBold" },
-  squareSub: { fontSize: 12.5, lineHeight: 17, marginTop: 4, textAlign: "center", fontFamily: "Jost" },
+  squareTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2, marginTop: 12, textAlign: "center", color: "#FAF0EE" },
+  squareSub: { fontSize: 12.5, lineHeight: 17, marginTop: 4, textAlign: "center" },
   diarioList: { gap: 10 },
-
 
   // Legacy
   iconBtn: {
