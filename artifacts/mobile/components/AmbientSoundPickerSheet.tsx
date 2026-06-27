@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image as ExpoImage } from "expo-image";
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -187,12 +188,11 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
         </ScrollView>
 
         {/* ── Sticky footer ─────────────────────────────────────────────── */}
-        <View style={[styles.footer, { paddingBottom: bottomPad + 12 }]}>
-          <LinearGradient
-            colors={["transparent", "#1B060F"]}
-            style={styles.footerFade}
-            pointerEvents="none"
-          />
+        <BlurView
+          intensity={60}
+          tint="dark"
+          style={[styles.footer, { paddingBottom: bottomPad + 12 }]}
+        >
           <Pressable
             style={[styles.nextBtn, localSelected === null && styles.nextBtnDisabled]}
             onPress={localSelected !== null ? handleConfirm : undefined}
@@ -202,7 +202,7 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
               Siguiente
             </Text>
           </Pressable>
-        </View>
+        </BlurView>
       </View>
     </Modal>
   );
@@ -322,14 +322,10 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     paddingHorizontal: 20,
-    paddingTop: 12,
-  },
-  footerFade: {
-    position: "absolute",
-    top: -32,
-    left: 0,
-    right: 0,
-    height: 32,
+    paddingTop: 16,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: "rgba(255,255,255,0.10)",
+    overflow: "hidden",
   },
   nextBtn: {
     backgroundColor: "#D4AF37",
