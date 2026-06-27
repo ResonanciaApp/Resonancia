@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
   // Title
   title: {
     fontSize: 24,
-    fontWeight: "800",
+    fontFamily: "OptimaBold",
     lineHeight: 30,
     textAlign: "center",
     marginTop: 5,
