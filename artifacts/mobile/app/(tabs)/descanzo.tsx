@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState } from "react";
+import { useRouter } from "expo-router";
+import React from "react";
 import {
   Dimensions,
   Platform,
@@ -13,7 +14,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { GhostPill } from "@/components/GhostPill";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { getSessionsByDescansoTag } from "@/data/sessions";
@@ -28,8 +28,7 @@ export default function DescansoScreen() {
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-
-  const [filterOpen, setFilterOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <LinearGradient
@@ -41,67 +40,83 @@ export default function DescansoScreen() {
       <StatusBar barStyle="light-content" />
       <SacredBackground />
 
-      {/* ── Header fijo ── */}
-      <View style={[styles.header, { paddingTop: topPad + 2 }]}>
-        <View style={styles.headerRow}>
-          <Text style={[styles.headerTitle, { color: colors.foreground }]}>Descanso</Text>
-          <GhostPill>
-            <Pressable
-              hitSlop={10}
-              onPress={() => setFilterOpen((v) => !v)}
-              style={styles.filterBtn}
-            >
-              <Feather
-                name="sliders"
-                size={19}
-                color={filterOpen ? "#8AAAD4" : colors.foreground}
-              />
-            </Pressable>
-          </GhostPill>
-        </View>
-      </View>
-
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 28 }}
+        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: topPad + 10 }}
         showsVerticalScrollIndicator={false}
       >
-        {DESCANSO_TAG_CARDS.map((tag) => {
-          const sessions = getSessionsByDescansoTag(tag.label);
-          return (
-            <View key={tag.id} style={styles.section}>
-              {/* Título del carrusel */}
-              <View style={styles.catHeader}>
-                <Text style={[styles.catTitle, { color: colors.foreground }]} numberOfLines={1}>
-                  {tag.label}
-                </Text>
-                <Pressable style={styles.verTodosBtn} hitSlop={10}>
-                  <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
-                </Pressable>
-              </View>
+        {/* ── Hero ── */}
+        <View style={styles.hero}>
+          <Feather name="moon" size={34} color="#D4AF37" style={styles.heroIcon} />
+          <Text style={[styles.heroTitle, { color: colors.foreground }]}>Descanso</Text>
+          <Text style={[styles.heroSubtitle, { color: colors.mutedForeground }]}>
+            El descanso que mereces,{"\n"}encuéntralo aquí.
+          </Text>
+        </View>
 
-              {/* Carrusel */}
-              {sessions.length > 0 ? (
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.carousel}
-                >
-                  {sessions.map((s) => (
-                    <SessionCard key={s.id} session={s} width={CARD_W} />
-                  ))}
-                </ScrollView>
-              ) : (
-                <View style={[styles.emptySlot, { borderColor: colors.border }]}>
-                  <Feather name="moon" size={22} color={colors.mutedForeground} />
-                  <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-                    Próximamente
-                  </Text>
-                </View>
-              )}
+        {/* ── Banner Mezclador ── */}
+        <Pressable
+          style={({ pressed }) => [styles.bannerWrap, pressed && { opacity: 0.82 }]}
+          onPress={() => router.push("/escenas-mixer" as never)}
+        >
+          <LinearGradient
+            style={styles.banner}
+            colors={["#3D0E16", "#5C1520"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >
+            <View style={styles.bannerIconWrap}>
+              <Feather name="moon" size={22} color="#D4AF37" />
             </View>
-          );
-        })}
+            <View style={styles.bannerText}>
+              <Text style={[styles.bannerTitle, { color: colors.foreground }]}>
+                Mezclador para dormir
+              </Text>
+              <Text style={[styles.bannerSub, { color: colors.mutedForeground }]}>
+                Crea tu propia mezcla de sonidos
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
+          </LinearGradient>
+        </Pressable>
+
+        {/* ── Carruseles ── */}
+        <View style={styles.carouselsWrap}>
+          {DESCANSO_TAG_CARDS.map((tag) => {
+            const sessions = getSessionsByDescansoTag(tag.label);
+            return (
+              <View key={tag.id} style={styles.section}>
+                <View style={styles.catHeader}>
+                  <Text style={[styles.catTitle, { color: colors.foreground }]} numberOfLines={1}>
+                    {tag.label}
+                  </Text>
+                  <Pressable style={styles.verTodosBtn} hitSlop={10}>
+                    <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
+                  </Pressable>
+                </View>
+
+                {sessions.length > 0 ? (
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.carousel}
+                  >
+                    {sessions.map((s) => (
+                      <SessionCard key={s.id} session={s} width={CARD_W} />
+                    ))}
+                  </ScrollView>
+                ) : (
+                  <View style={[styles.emptySlot, { borderColor: colors.border }]}>
+                    <Feather name="moon" size={22} color={colors.mutedForeground} />
+                    <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                      Próximamente
+                    </Text>
+                  </View>
+                )}
+              </View>
+            );
+          })}
+        </View>
       </ScrollView>
     </LinearGradient>
   );
@@ -111,29 +126,65 @@ const styles = StyleSheet.create({
   root:   { flex: 1 },
   scroll: { flex: 1 },
 
-  header: {
+  /* Hero */
+  hero: {
+    alignItems: "center",
     paddingHorizontal: H_PAD,
-    paddingBottom: 14,
-    zIndex: 10,
+    paddingBottom: 28,
   },
-  headerRow: {
+  heroIcon: {
+    marginBottom: 14,
+  },
+  heroTitle: {
+    fontSize: 32,
+    fontWeight: "700",
+    letterSpacing: 0.4,
+    marginBottom: 10,
+  },
+  heroSubtitle: {
+    fontSize: 15,
+    textAlign: "center",
+    lineHeight: 22,
+  },
+
+  /* Mezclador banner */
+  bannerWrap: {
+    marginHorizontal: H_PAD,
+    marginBottom: 36,
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  banner: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    paddingVertical: 18,
+    paddingHorizontal: 16,
+    gap: 14,
   },
-  headerTitle: {
-    fontSize: 27,
-    fontWeight: "700",
-    letterSpacing: 0.5,
-    marginTop: 7,
-  },
-  filterBtn: {
-    width: 36,
-    height: 36,
+  bannerIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: "rgba(212,175,55,0.12)",
     alignItems: "center",
     justifyContent: "center",
   },
+  bannerText: {
+    flex: 1,
+  },
+  bannerTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    marginBottom: 3,
+  },
+  bannerSub: {
+    fontSize: 12,
+  },
 
+  /* Carruseles */
+  carouselsWrap: {
+    paddingTop: 6,
+  },
   section: {
     marginBottom: 62,
   },
