@@ -533,9 +533,9 @@ export default function PlayerScreen() {
               hitSlop={8}
             >
               <Feather
-                name="bookmark"
+                name="heart"
                 size={24}
-                color="rgba(255,255,255,0.95)"
+                color={fav ? "#D4AF37" : "rgba(255,255,255,0.95)"}
               />
             </Pressable>
             <Pressable onPress={isOptionsCategory ? openSheet : handleShare} hitSlop={8}>
