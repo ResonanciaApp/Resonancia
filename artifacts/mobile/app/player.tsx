@@ -371,7 +371,7 @@ export default function PlayerScreen() {
     );
   }
 
-  const OPTIONS_CATEGORIES = ["sonidos-ancestrales", "meditaciones-guiadas", "reflexiones"];
+  const OPTIONS_CATEGORIES = ["sonidos-ancestrales", "musica-sonidos", "meditaciones-guiadas", "reflexiones"];
   const isOptionsCategory = OPTIONS_CATEGORIES.includes(currentSession.categoryId);
 
   const isMusicaYSonidos = currentSession.categoryId === "musica-sonidos";
