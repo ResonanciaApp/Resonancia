@@ -632,7 +632,7 @@ const styles = StyleSheet.create({
     marginTop: 0,
     marginBottom: 24,
     textAlign: "center",
-    maxWidth: 280,
+    maxWidth: 320,
     alignSelf: "center",
   },
 
