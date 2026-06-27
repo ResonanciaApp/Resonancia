@@ -447,8 +447,8 @@ export default function SonidosAncestalesScreen() {
           </Pressable>
         </GhostPill>
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
-          <Feather name="music" size={18} color={GOLD} />
-          <Text style={styles.headerTitle}>Ancestrales</Text>
+          <Feather name="music" size={23} color={GOLD} />
+          <Text style={[styles.headerTitle, { lineHeight: 23 }]}>Ancestrales</Text>
         </View>
         <GhostPill>
           <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
