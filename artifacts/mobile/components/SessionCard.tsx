@@ -112,6 +112,11 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
         {session.title}
       </Text>
+      {!!authorName && (
+        <Text style={[styles.cardAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+          {authorName}
+        </Text>
+      )}
     </Pressable>
   );
 }
@@ -143,6 +148,12 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     lineHeight: 18,
     marginTop: 8,
+    paddingHorizontal: 2,
+  },
+  cardAuthor: {
+    fontSize: 12,
+    fontWeight: "400",
+    marginTop: 2,
     paddingHorizontal: 2,
   },
   durationBadge: {

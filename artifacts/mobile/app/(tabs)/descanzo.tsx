@@ -2,7 +2,6 @@ import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
-  Dimensions,
   Platform,
   Pressable,
   ScrollView,
@@ -21,11 +20,9 @@ import { DESCANSO_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
 
 const BG_GRADIENT = ["#2E0510", "#160108"] as const;
-const ACCENT = "#8AAAD4";
 
-const { width: SCREEN_W } = Dimensions.get("window");
 const H_PAD = 20;
-const CARD_W = 148;
+const CARD_W = 160;
 
 export default function DescansoScreen() {
   const colors = useColors();
@@ -62,7 +59,7 @@ export default function DescansoScreen() {
               <Feather
                 name="sliders"
                 size={19}
-                color={filterOpen ? ACCENT : colors.foreground}
+                color={filterOpen ? "#8AAAD4" : colors.foreground}
               />
             </Pressable>
           </GhostPill>
@@ -80,13 +77,11 @@ export default function DescansoScreen() {
             <View key={tag.id} style={styles.section}>
               {/* Título del carrusel */}
               <View style={styles.catHeader}>
-                <View style={styles.catTitleRow}>
-                  <Feather name={tag.icon as never} size={15} color={tag.accent} style={{ marginTop: 1 }} />
-                  <Text style={[styles.catTitle, { color: colors.foreground }]}>{tag.label}</Text>
-                </View>
-                <Pressable style={styles.verTodosBtn}>
-                  <Text style={[styles.verTodosText, { color: colors.accent }]}>Ver todas</Text>
-                  <Feather name="arrow-right" size={13} color={colors.accent} />
+                <Text style={[styles.catTitle, { color: colors.foreground }]} numberOfLines={1}>
+                  {tag.label}
+                </Text>
+                <Pressable style={styles.verTodosBtn} hitSlop={10}>
+                  <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
                 </Pressable>
               </View>
 
@@ -153,26 +148,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     marginBottom: 14,
   },
-  catTitleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 7,
-    flex: 1,
-    marginRight: 8,
-  },
   catTitle: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "700",
     letterSpacing: 0.2,
+    flex: 1,
   },
   verTodosBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 3,
-  },
-  verTodosText: {
-    fontSize: 13,
-    fontWeight: "500",
+    paddingLeft: 8,
   },
 
   carousel: {
