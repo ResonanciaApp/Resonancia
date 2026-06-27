@@ -5,6 +5,7 @@ import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  Alert,
   Animated,
   Dimensions,
   Modal,
@@ -71,6 +72,8 @@ type Props = {
   onSessionVolumeChange?: (vol: number) => void;
   /** Llamado en tiempo real al mover el slider de ambiente */
   onAmbientVolumeChange?: (vol: number) => void;
+  /** Llamado al confirmar la eliminación del sonido ambiente (cierra el sheet y limpia) */
+  onRemoveConfirm?: () => void;
 };
 
 export function AmbientSoundPickerSheet({
@@ -85,6 +88,7 @@ export function AmbientSoundPickerSheet({
   initialStep,
   onSessionVolumeChange,
   onAmbientVolumeChange,
+  onRemoveConfirm,
 }: Props) {
   const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState<TabId>("todos");
@@ -387,7 +391,23 @@ export function AmbientSoundPickerSheet({
                 name={ambientSound.name}
                 volume={ambientVolume}
                 onVolumeChange={(v) => { setAmbientVolume(v); onAmbientVolumeChange?.(v); }}
-                onRemove={() => setLocalSelected(null)}
+                onRemove={() => {
+                  Alert.alert(
+                    "Eliminar sonido ambiental",
+                    "¿Estás seguro/a de que quieres eliminar este sonido ambiental?",
+                    [
+                      { text: "Cancelar", style: "cancel" },
+                      {
+                        text: "Eliminar",
+                        style: "destructive",
+                        onPress: () => {
+                          onPreviewStart?.(null);
+                          onRemoveConfirm?.();
+                        },
+                      },
+                    ]
+                  );
+                }}
               />
             )}
 

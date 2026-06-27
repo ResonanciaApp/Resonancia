@@ -901,6 +901,10 @@ export default function PlayerScreen() {
           setAmbientOverlayVolume(vol);
           setMainVolume(sessVol);
         }}
+        onRemoveConfirm={() => {
+          setSelectedAmbientSoundId(null);
+          setShowAmbientPicker(false);
+        }}
       />
     </View>
   );
