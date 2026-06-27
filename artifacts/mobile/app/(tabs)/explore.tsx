@@ -466,14 +466,7 @@ export default function ExploreScreen() {
             </View>
 
             {/* ── Meditaciones recomendadas ── */}
-            <View style={styles.recoSection}>
-              <Text style={styles.sectionTitle}>Meditaciones recomendadas</Text>
-              <View style={styles.recoList}>
-                {dailyRecs.map((s) => (
-                  <SessionCard key={s.id} session={s} horizontal />
-                ))}
-              </View>
-            </View>
+            {renderCarousel("Meditaciones recomendadas", dailyRecs, "/category/meditaciones-guiadas")}
 
             {/* ── Mezclas de la comunidad ── */}
             <View style={styles.communityWrap}>
