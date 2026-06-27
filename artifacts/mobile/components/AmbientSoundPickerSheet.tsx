@@ -194,7 +194,7 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
           style={[styles.footer, { paddingBottom: bottomPad + 12 }]}
         >
           <Pressable
-            style={[styles.nextBtn, localSelected === null && styles.nextBtnDisabled]}
+            style={styles.nextBtn}
             onPress={localSelected !== null ? handleConfirm : undefined}
             disabled={localSelected === null}
           >
@@ -328,22 +328,20 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   nextBtn: {
-    backgroundColor: "#D4AF37",
+    backgroundColor: "white",
     borderRadius: 14,
     paddingVertical: 16,
     alignItems: "center",
   },
-  nextBtnDisabled: {
-    backgroundColor: "rgba(255,255,255,0.10)",
-  },
   nextBtnText: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#1B060F",
+    color: "rgba(0,0,0,1)",
     letterSpacing: 0.3,
+    opacity: 1,
   },
   nextBtnTextDisabled: {
-    color: "rgba(255,255,255,0.30)",
+    opacity: 0.25,
   },
 
   noSoundChip: {
