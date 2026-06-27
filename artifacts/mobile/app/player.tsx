@@ -8,6 +8,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Image as ExpoImage } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import {
+  Animated as RNAnimated,
   Dimensions,
   LayoutChangeEvent,
   Modal,
@@ -114,6 +115,7 @@ export default function PlayerScreen() {
   const isSeekingRef = useRef(false);
   const progressShared = useSharedValue(0);
   const progressBarWidthShared = useSharedValue(0);
+  const terminarOpacity = useRef(new RNAnimated.Value(0)).current;
 
   const [selectedTimerMinutes, setSelectedTimerMinutes] = useState<number | null>(null);
   const [rating, setRating] = useState(0);
@@ -325,6 +327,14 @@ export default function PlayerScreen() {
       });
     }
   }, [progress, progressShared]);
+
+  useEffect(() => {
+    RNAnimated.timing(terminarOpacity, {
+      toValue: isPlaying ? 0 : 1,
+      duration: 220,
+      useNativeDriver: true,
+    }).start();
+  }, [isPlaying, terminarOpacity]);
 
   const fillAnimStyle = useAnimatedStyle(() => ({
     width: progressShared.value * progressBarWidthShared.value,
@@ -580,14 +590,17 @@ export default function PlayerScreen() {
           </Text>
           <Text style={[styles.authorText, !isPlaying && { opacity: 0 }]}>{authorLabel}</Text>
 
-          {!isPlaying && (
+          <RNAnimated.View
+            style={[StyleSheet.absoluteFill, { opacity: terminarOpacity }]}
+            pointerEvents={isPlaying ? "none" : "auto"}
+          >
             <Pressable
               onPress={() => { stop(); router.back(); }}
-              style={styles.terminarBtn}
+              style={[styles.terminarBtn, StyleSheet.absoluteFill]}
             >
               <Text style={styles.terminarText}>Terminar</Text>
             </Pressable>
-          )}
+          </RNAnimated.View>
         </View>
 
         {/* Slider voz guiada */}
