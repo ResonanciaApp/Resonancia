@@ -362,7 +362,7 @@ export default function SessionDetailScreen() {
                     <Text style={[styles.authorCountry, { color: colors.mutedForeground }]}>
                       {a.flag}{"  "}{a.country}
                     </Text>
-                    <Text style={[styles.authorBio, { color: "rgba(255,255,255,0.75)" }]} numberOfLines={3}>
+                    <Text style={[styles.authorBio, { color: "rgba(255,255,255,0.75)" }]} numberOfLines={2}>
                       {a.bio}
                     </Text>
                   </View>
@@ -603,7 +603,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 10,
   },
-  authorRow: { flexDirection: "row", alignItems: "flex-start", gap: 14 },
+  authorRow: { flexDirection: "row", alignItems: "center", gap: 14 },
   authorAvatar: {
     width: 72,
     height: 72,
