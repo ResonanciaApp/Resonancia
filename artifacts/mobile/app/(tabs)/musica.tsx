@@ -961,7 +961,7 @@ const styles = StyleSheet.create({
   emptyState: { alignItems: "center", justifyContent: "center", paddingTop: 70, paddingHorizontal: 40, gap: 8 },
   emptyTitle: { fontSize: 15, color: "rgba(26,30,43,0.7)", textAlign: "center", fontFamily: "OptimaBold" },
   emptyHint:  { fontSize: 13, color: "rgba(26,30,43,0.45)", textAlign: "center", lineHeight: 19, fontFamily: "Jost" },
-  pageTitle:    { fontSize: 27, letterSpacing: 0.5, color: "#FAF0EE", fontFamily: "OptimaBold" },
+  pageTitle:    { fontSize: 29, letterSpacing: 0.5, color: "#FAF0EE", fontFamily: "OptimaBold" },
   pageSubtitle: { fontSize: 13, color: "rgba(244,218,213,0.55)", marginTop: 2, fontFamily: "Jost", fontWeight: "400" },
 
   heartBtn: {

@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     borderWidth: 1, borderColor: "rgba(212,175,55,0.25)",
   },
-  pageTitle:    { fontSize: 27, letterSpacing: 0.5, marginBottom: 4, color: "#FFFFFF", fontFamily: "OptimaBold" },
+  pageTitle:    { fontSize: 29, letterSpacing: 0.5, marginBottom: 4, color: "#FFFFFF", fontFamily: "OptimaBold" },
   pageSubtitle: { fontSize: 14, color: "rgba(244,218,213,0.55)", marginTop: 2, fontFamily: "Jost" },
 
   searchBarBorder: {

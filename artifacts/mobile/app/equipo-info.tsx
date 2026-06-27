@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  headerTitle: { fontSize: 17, fontFamily: "OptimaBold", color: TEXT },
+  headerTitle: { fontSize: 19, fontFamily: "OptimaBold", color: TEXT },
   intro: {
     fontSize: 14,
     lineHeight: 21,

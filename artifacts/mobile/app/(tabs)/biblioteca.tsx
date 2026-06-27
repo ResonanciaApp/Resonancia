@@ -1456,7 +1456,7 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     borderWidth: 1, borderColor: "rgba(212,175,55,0.25)",
   },
-  headerTitle: { fontSize: 27, color: TEXT, letterSpacing: 0.5, fontFamily: "OptimaBold" },
+  headerTitle: { fontSize: 29, color: TEXT, letterSpacing: 0.5, fontFamily: "OptimaBold" },
   headerSubtitle: { fontSize: 13, color: MUTED, marginTop: 3, fontFamily: "Jost", fontWeight: "400" },
   headerIcons: { flexDirection: "row", alignItems: "center", gap: 4 },
   headerIconBtn: { width: 45, height: 45, alignItems: "center", justifyContent: "center" },
