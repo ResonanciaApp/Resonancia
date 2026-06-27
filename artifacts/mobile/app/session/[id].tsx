@@ -28,7 +28,7 @@ import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
-const HEADER_H = 238;
+const HEADER_H = 298;
 
 function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: object }) {
   const scale  = useRef(new Animated.Value(1)).current;
