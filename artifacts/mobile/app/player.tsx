@@ -36,6 +36,8 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { getNatureSounds } from "@/config/nature-base-map";
 import Svg, { Path, Rect } from "react-native-svg";
+import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
+import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
@@ -79,6 +81,8 @@ export default function PlayerScreen() {
 
   // Options sheet
   const [showOptionsSheet, setShowOptionsSheet] = useState(false);
+  const [showPlaylistSheet, setShowPlaylistSheet] = useState(false);
+  const [showFolderSheet, setShowFolderSheet] = useState(false);
   const sheetProgress = useSharedValue(0);
   const ambSheetTrackRef = useRef<View>(null);
   const ambSheetTrackWidth = useRef(0);
@@ -667,7 +671,7 @@ export default function PlayerScreen() {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 }}
               >
-                <Feather name="bookmark" size={18} color={fav ? "#D4AF37" : "white"} style={styles.optIcon} />
+                <Feather name="heart" size={18} color={fav ? "#D4AF37" : "white"} style={styles.optIcon} />
                 <Text style={[styles.optRowText, fav && { color: "#D4AF37" }]}>
                   {fav ? "En favoritos" : "Agregar a favoritos"}
                 </Text>
@@ -675,14 +679,20 @@ export default function PlayerScreen() {
               </Pressable>
 
               {/* Añadir a carpeta */}
-              <Pressable style={styles.optRow}>
+              <Pressable
+                style={styles.optRow}
+                onPress={() => { closeSheet(); setTimeout(() => setShowFolderSheet(true), 300); }}
+              >
                 <Feather name="folder-plus" size={18} color="white" style={styles.optIcon} />
                 <Text style={styles.optRowText}>Añadir a carpeta</Text>
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
               </Pressable>
 
               {/* Añadir a playlist */}
-              <Pressable style={styles.optRow}>
+              <Pressable
+                style={styles.optRow}
+                onPress={() => { closeSheet(); setTimeout(() => setShowPlaylistSheet(true), 300); }}
+              >
                 <Feather name="list" size={18} color="white" style={styles.optIcon} />
                 <Text style={styles.optRowText}>Añadir a playlist</Text>
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
@@ -716,6 +726,24 @@ export default function PlayerScreen() {
           </Animated.View>
         </View>
       </Modal>
+
+      {/* ── Playlist Sheet ─────────────────────────────────────────────────── */}
+      {currentSession && (
+        <AddToPlaylistSheet
+          visible={showPlaylistSheet}
+          sessionId={currentSession.id}
+          onClose={() => setShowPlaylistSheet(false)}
+        />
+      )}
+
+      {/* ── Folder Sheet ───────────────────────────────────────────────────── */}
+      {currentSession && (
+        <AddToFolderSheet
+          visible={showFolderSheet}
+          sessionId={currentSession.id}
+          onClose={() => setShowFolderSheet(false)}
+        />
+      )}
     </View>
   );
 }
