@@ -67,7 +67,8 @@ function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: obje
 }
 
 const PILL_G: [string, string] = ["#e8dbb4", "#f3e7c3"];
-function GradPillLabel({ icon, label }: { icon: React.ComponentProps<typeof Feather>["name"]; label: string }) {
+const PLAY_G: [string, string] = ["#D6AD5F", "#B47344"];
+function GradPillLabel({ icon, label, active }: { icon: React.ComponentProps<typeof Feather>["name"]; label: string; active?: boolean }) {
   return (
     <MaskedView
       maskElement={
@@ -77,7 +78,7 @@ function GradPillLabel({ icon, label }: { icon: React.ComponentProps<typeof Feat
         </View>
       }
     >
-      <LinearGradient colors={PILL_G} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 100, height: 46 }} />
+      <LinearGradient colors={active ? PLAY_G : PILL_G} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 100, height: 46 }} />
     </MaskedView>
   );
 }
@@ -146,6 +147,8 @@ export default function SessionDetailScreen() {
   const subTagIcon: string = SUBTAG_ICON[subTag ?? ""] ?? (isAncestral ? "disc" : isGuiada ? "eye" : isMusica ? "cloud" : "book-open");
   const savedCount = 40 + ((parseInt(session.id, 10) * 17 + 83) % 260);
   const [localFav, setLocalFav] = useState<boolean | null>(null);
+  const [downloadPressed, setDownloadPressed] = useState(false);
+  const [sharePressed, setSharePressed] = useState(false);
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const STICKY_START = (HEADER_H + topPad) * 0.3;
@@ -286,25 +289,35 @@ export default function SessionDetailScreen() {
             <Pressable onPress={handleFav} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
               <LinearGradient colors={["rgba(212,175,55,0.08)","rgba(212,175,55,0.28)"]} start={{ x:0,y:0.5 }} end={{ x:1,y:0.5 }} style={styles.actionCardBorder}>
                 <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
-                  <GradPillLabel icon="heart" label="Guardar" />
+                  <GradPillLabel icon="heart" label="Guardar" active={fav} />
                 </LinearGradient>
               </LinearGradient>
             </Pressable>
 
             {/* Descargar */}
-            <Pressable onPress={handleDownload} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
+            <Pressable
+              onPress={handleDownload}
+              onPressIn={() => setDownloadPressed(true)}
+              onPressOut={() => setDownloadPressed(false)}
+              style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}
+            >
               <LinearGradient colors={["rgba(212,175,55,0.08)","rgba(212,175,55,0.28)"]} start={{ x:0,y:0.5 }} end={{ x:1,y:0.5 }} style={styles.actionCardBorder}>
                 <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
-                  <GradPillLabel icon="download" label="Descargar" />
+                  <GradPillLabel icon="download" label="Descargar" active={downloadPressed} />
                 </LinearGradient>
               </LinearGradient>
             </Pressable>
 
             {/* Compartir */}
-            <Pressable onPress={handleShare} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
+            <Pressable
+              onPress={handleShare}
+              onPressIn={() => setSharePressed(true)}
+              onPressOut={() => setSharePressed(false)}
+              style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}
+            >
               <LinearGradient colors={["rgba(212,175,55,0.08)","rgba(212,175,55,0.28)"]} start={{ x:0,y:0.5 }} end={{ x:1,y:0.5 }} style={styles.actionCardBorder}>
                 <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
-                  <GradPillLabel icon="share-2" label="Compartir" />
+                  <GradPillLabel icon="share-2" label="Compartir" active={sharePressed} />
                 </LinearGradient>
               </LinearGradient>
             </Pressable>
