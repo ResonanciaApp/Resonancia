@@ -339,7 +339,7 @@ export default function SessionDetailScreen() {
             >
               <View style={styles.actionCardBorder}>
                 <LinearGradient colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
-                  <GradPillLabel icon="share-2" label="Compartir" active={sharePressed} />
+                  <GradPillLabel icon="send" label="Compartir" active={sharePressed} />
                 </LinearGradient>
               </View>
             </Pressable>
