@@ -500,8 +500,8 @@ const styles = StyleSheet.create({
   categoryPill: {
     flexDirection: "row",
     alignSelf: "center",
-    height: 35,
-    borderRadius: 17.5,
+    height: 33,
+    borderRadius: 16.5,
     paddingHorizontal: 16,
     alignItems: "center",
     gap: 6,
