@@ -425,6 +425,7 @@ export default function PlayerScreen() {
 
         {/* Título */}
         <Text style={styles.titleText} numberOfLines={2}>{currentSession.title}</Text>
+        <Text style={styles.authorText}>{authorLabel}</Text>
 
         {/* Firma Resonancia */}
         <Text style={styles.signature}>RESONANCIA</Text>
@@ -627,9 +628,9 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   authorText: {
-    fontSize: 14,
+    fontSize: 19,
     fontWeight: "500",
-    color: "rgba(255,255,255,0.58)",
+    color: "white",
   },
   signature: {
     fontSize: 9,
