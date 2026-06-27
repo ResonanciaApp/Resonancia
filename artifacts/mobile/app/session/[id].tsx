@@ -325,16 +325,30 @@ export default function SessionDetailScreen() {
 
           {/* ── Sobre la voz guía ────────────────────────────────────────── */}
           <View style={styles.authorSection}>
-            <Text style={[styles.blockTitle, { color: colors.foreground }]}>
-              {isAncestral
-                ? "Sobre el Sonoterapeuta"
-                : authors.length > 1
-                  ? "Sobre las voces guía"
-                  : "Sobre la voz guía"}
-            </Text>
-            {authors.map((a, idx) => (
-              <View key={a.profilePath} style={[styles.authorCard, idx < authors.length - 1 && styles.authorCardDivider]}>
-                {/* Row: avatar + name/country */}
+            {/* Header row: título + Ver perfil */}
+            <View style={styles.authorHeaderRow}>
+              <Text style={[styles.blockTitle, { color: colors.foreground, marginBottom: 0 }]}>
+                {isAncestral
+                  ? "Sobre el Sonoterapeuta"
+                  : authors.length > 1
+                    ? "Sobre las voces guía"
+                    : "Sobre la voz guía"}
+              </Text>
+              {authors[0] && (
+                <Pressable
+                  onPress={() => router.push(authors[0].profilePath as never)}
+                  style={({ pressed }) => ({ opacity: pressed ? 0.65 : 1 })}
+                >
+                  <Text style={[styles.authorLink, { color: colors.primary }]}>
+                    Ver perfil{"  "}<Feather name="chevron-right" size={13} color={colors.primary} />
+                  </Text>
+                </Pressable>
+              )}
+            </View>
+
+            {/* Cards */}
+            {authors.map((a) => (
+              <View key={a.profilePath} style={styles.authorCard}>
                 <View style={styles.authorRow}>
                   <Image
                     source={a.photo as never}
@@ -348,22 +362,11 @@ export default function SessionDetailScreen() {
                     <Text style={[styles.authorCountry, { color: colors.mutedForeground }]}>
                       {a.flag}{"  "}{a.country}
                     </Text>
+                    <Text style={[styles.authorBio, { color: "rgba(255,255,255,0.75)" }]} numberOfLines={3}>
+                      {a.bio}
+                    </Text>
                   </View>
                 </View>
-                {/* Bio */}
-                <Text style={[styles.authorBio, { color: "rgba(255,255,255,0.9)" }]} numberOfLines={2}>
-                  {a.bio}
-                </Text>
-                {/* Link */}
-                <Pressable
-                  onPress={() => router.push(a.profilePath as never)}
-                  style={({ pressed }) => [{ opacity: pressed ? 0.65 : 1 }]}
-                >
-                  <Text style={[styles.authorLink, { color: "rgba(255,255,255,0.9)" }]}>
-                    Más sobre {a.firstName}{"  "}
-                    <Feather name="chevron-right" size={14} color="rgba(255,255,255,0.9)" />
-                  </Text>
-                </Pressable>
               </View>
             ))}
           </View>
@@ -586,24 +589,33 @@ const styles = StyleSheet.create({
 
   // Author section
   authorSection: { marginTop: 0, marginBottom: 28 },
-  authorCard: { paddingVertical: 16 },
-  authorCardDivider: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(212,175,55,0.15)",
+  authorHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 14,
   },
-  authorRow: { flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 10 },
+  authorCard: {
+    backgroundColor: "rgba(74,12,12,0.28)",
+    borderRadius: 16,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(212,175,55,0.18)",
+    padding: 16,
+    marginBottom: 10,
+  },
+  authorRow: { flexDirection: "row", alignItems: "flex-start", gap: 14 },
   authorAvatar: {
-    width: 62,
-    height: 62,
-    borderRadius: 31,
+    width: 72,
+    height: 72,
+    borderRadius: 36,
     borderWidth: 2,
-    borderColor: "rgba(212,175,55,0.25)",
+    borderColor: "rgba(212,175,55,0.30)",
   },
-  authorMeta: { flex: 1, gap: 4 },
-  authorName: { fontSize: 16, fontWeight: "700" },
+  authorMeta: { flex: 1, gap: 5 },
+  authorName: { fontSize: 17, fontWeight: "700" },
   authorCountry: { fontSize: 13 },
-  authorBio: { fontSize: 13, lineHeight: 19, marginBottom: 10 },
-  authorLink: { fontSize: 14, fontWeight: "700" },
+  authorBio: { fontSize: 13, lineHeight: 19, maxWidth: 190 },
+  authorLink: { fontSize: 13, fontWeight: "600" },
 
   blockTitle: {
     fontSize: 21,
