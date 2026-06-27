@@ -285,7 +285,9 @@ export default function PlayerScreen() {
 
   const authorLabel = currentSession.guideId
     ? getGuide(currentSession.guideId).name
-    : artist.name;
+    : currentSession.artistId
+      ? getArtist(currentSession.artistId).name
+      : null;
 
   return (
     <View style={styles.root}>
@@ -426,7 +428,7 @@ export default function PlayerScreen() {
 
         {/* Título */}
         <Text style={styles.titleText} numberOfLines={2}>{currentSession.title}</Text>
-        <Text style={styles.authorText}>{authorLabel}</Text>
+        {authorLabel && <Text style={styles.authorText}>{authorLabel}</Text>}
 
         {/* Firma Resonancia */}
         <Text style={styles.signature}>RESONANCIA</Text>
