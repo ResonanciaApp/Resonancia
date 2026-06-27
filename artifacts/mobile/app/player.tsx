@@ -577,6 +577,16 @@ export default function PlayerScreen() {
         <Text style={styles.titleText} numberOfLines={2}>{currentSession.title}</Text>
         <Text style={styles.authorText}>{authorLabel}</Text>
 
+        {/* Botón Terminar — visible solo en pausa */}
+        {!isPlaying && (
+          <Pressable
+            onPress={() => { stop(); router.back(); }}
+            style={({ pressed }) => [styles.terminarBtn, { opacity: pressed ? 0.85 : 1 }]}
+          >
+            <Text style={styles.terminarText}>Terminar</Text>
+          </Pressable>
+        )}
+
         {/* Slider voz guiada */}
         {hasVoiceTrack && (
           <View style={[styles.sliderSection, { marginTop: 28 }]}>
@@ -632,7 +642,11 @@ export default function PlayerScreen() {
       {/* ── Botones flotantes superiores ─────────────────────────────────── */}
       <Pressable
         onPress={() => { stop(); router.back(); }}
-        style={[styles.topBtn, { top: topPad + 6, left: 16 }]}
+        style={[
+          styles.topBtn,
+          { top: topPad + 6, left: 16 },
+          !isPlaying && styles.topBtnExpanded,
+        ]}
         hitSlop={8}
       >
         {Platform.OS !== "web" ? (
@@ -641,6 +655,9 @@ export default function PlayerScreen() {
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.38)" }]} />
         )}
         <Feather name="x" size={20} color="white" />
+        {!isPlaying && (
+          <Text style={styles.topBtnLabel}>Descartar</Text>
+        )}
       </Pressable>
 
       <Pressable
@@ -1134,6 +1151,32 @@ const styles = StyleSheet.create({
     zIndex: 20,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.15)",
+  },
+  topBtnExpanded: {
+    width: "auto" as any,
+    paddingHorizontal: 14,
+    flexDirection: "row",
+    gap: 6,
+  },
+  topBtnLabel: {
+    color: "white",
+    fontSize: 15,
+    fontWeight: "600",
+  },
+  terminarBtn: {
+    marginTop: 20,
+    marginHorizontal: 0,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 30,
+    paddingVertical: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  terminarText: {
+    color: "#000000",
+    fontSize: 16,
+    fontWeight: "600",
+    letterSpacing: 0.3,
   },
 
   noSession: { fontSize: 16, marginTop: 16, marginBottom: 24 },
