@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
 
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#2E0510" },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
-  headerTitle: { flex: 1, fontSize: 23, fontFamily: "OptimaBold", color: "#fff", letterSpacing: 0.2, textAlign: "center" },
+  headerTitle: { flex: 1, fontSize: 25, fontFamily: "OptimaBold", color: "#fff", letterSpacing: 0.2, textAlign: "center" },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
   heroOverlayRight: { position: "absolute", right: H_PAD, zIndex: 10 },
 

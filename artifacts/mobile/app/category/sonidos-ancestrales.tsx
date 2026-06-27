@@ -512,7 +512,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#2E0510",
   },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
-  headerTitle: { flex: 1, fontSize: 23, fontFamily: "OptimaBold", color: "#fff", letterSpacing: 0.2, textAlign: "center" },
+  headerTitle: { flex: 1, fontSize: 25, fontFamily: "OptimaBold", color: "#fff", letterSpacing: 0.2, textAlign: "center" },
   headerDivider: { width: StyleSheet.hairlineWidth, height: 18, backgroundColor: "rgba(255,255,255,0.18)" },
 
   /* ── Hero ── */

@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   heroTitle: {
-    fontSize: 26,
+    fontSize: 28,
     fontFamily: "OptimaBold",
     marginBottom: 6,
     lineHeight: 32,

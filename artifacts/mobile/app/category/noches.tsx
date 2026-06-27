@@ -481,7 +481,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   titleRow: { flexDirection: "row", alignItems: "center", gap: 14 },
-  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "center" },
+  pageTitle: { fontSize: 28, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "center" },
   pageSub: { fontSize: 13, lineHeight: 19, textAlign: "center" },
   searchBar: {
     flexDirection: "row", alignItems: "center", gap: 10,
