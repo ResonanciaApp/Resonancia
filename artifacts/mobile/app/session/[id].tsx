@@ -67,20 +67,14 @@ function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: obje
   );
 }
 
-const PILL_G: [string, string] = ["#e8dbb4", "#f3e7c3"];
-const PLAY_G: [string, string] = ["#D6AD5F", "#B47344"];
+
 function GradPillLabel({ icon, label, active }: { icon: React.ComponentProps<typeof Feather>["name"]; label: string; active?: boolean }) {
+  const iconColor = active ? "#D4AF37" : "rgba(255,255,255,0.9)";
   return (
-    <MaskedView
-      maskElement={
-        <View style={{ alignItems: "center", gap: 8, backgroundColor: "transparent" }}>
-          <Feather name={icon} size={23} color="#000" />
-          <Text style={{ fontSize: 14, fontWeight: "600", letterSpacing: 0.2, color: "#000" }}>{label}</Text>
-        </View>
-      }
-    >
-      <LinearGradient colors={active ? PLAY_G : PILL_G} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 100, height: 46 }} />
-    </MaskedView>
+    <View style={{ alignItems: "center", gap: 8 }}>
+      <Feather name={icon} size={23} color={iconColor} />
+      <Text style={{ fontSize: 14, fontWeight: "600", letterSpacing: 0.2, color: iconColor }}>{label}</Text>
+    </View>
   );
 }
 
