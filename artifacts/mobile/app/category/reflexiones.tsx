@@ -345,7 +345,7 @@ export default function ReflexionesScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#0A0F20","#060A14"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
+      <LinearGradient colors={["#2E0510","#160108"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
 
       <ScrollView
         style={styles.scroll}
@@ -370,7 +370,7 @@ export default function ReflexionesScreen() {
           <LinearGradient colors={["transparent","rgba(0,0,0,0.28)","rgba(0,0,0,0.60)"]} locations={[0.50,0.80,1]} style={StyleSheet.absoluteFill} />
           {/* Flecha atrás flotante */}
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
-            <GhostPill style={{ backgroundColor: "#0A0F20" }}>
+            <GhostPill style={{ backgroundColor: "#2E0510" }}>
               <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
                 <Feather name="arrow-left" size={22} color="#fff" />
               </Pressable>
@@ -378,7 +378,7 @@ export default function ReflexionesScreen() {
           </View>
           {/* Info flotante */}
           <View style={[styles.heroOverlayRight, { top: topPad + 8 }]}>
-            <GhostPill style={{ backgroundColor: "#0A0F20" }}>
+            <GhostPill style={{ backgroundColor: "#2E0510" }}>
               <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/reflexiones-info" as never)}>
                 <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
               </Pressable>
@@ -453,9 +453,9 @@ export default function ReflexionesScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#060A14" },
+  root: { flex: 1, backgroundColor: "#160108" },
 
-  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#0A0F20" },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#2E0510" },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   headerTitle: { flex: 1, fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2, textAlign: "center" },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
@@ -511,13 +511,13 @@ const styles = StyleSheet.create({
   qsRowBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "#3D0E16" },
   qsIcon: { width: 22 },
   qsLabel: { flex: 1, fontSize: 15, color: TEXT },
-  searchModalRoot: { flex: 1, backgroundColor: "#060A14" },
-  searchOverlay: { flexDirection: "row", alignItems: "center", backgroundColor: "#060A14", paddingTop: Platform.OS === "ios" ? 56 : 36, paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
+  searchModalRoot: { flex: 1, backgroundColor: "#160108" },
+  searchOverlay: { flexDirection: "row", alignItems: "center", backgroundColor: "#160108", paddingTop: Platform.OS === "ios" ? 56 : 36, paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
   searchBar: { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "#FFFFFF", borderRadius: 10, paddingHorizontal: 12, paddingVertical: 12 },
   searchInput: { flex: 1, fontSize: 14, color: "#111" },
   cancelBtn: { paddingVertical: 6 },
   cancelText: { color: GOLD, fontSize: 14, fontWeight: "600" },
-  searchEmpty: { flex: 1, backgroundColor: "#060A14", alignItems: "center", justifyContent: "center", paddingHorizontal: 32 },
+  searchEmpty: { flex: 1, backgroundColor: "#160108", alignItems: "center", justifyContent: "center", paddingHorizontal: 32 },
   searchEmptyTitle: { fontSize: 18, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 10 },
   searchEmptySub: { fontSize: 14, color: MUTED, textAlign: "center", lineHeight: 20 },
   backBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },

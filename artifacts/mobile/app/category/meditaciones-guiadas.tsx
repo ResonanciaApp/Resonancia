@@ -367,7 +367,7 @@ export default function MeditacionesGuiadasScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#1A0F2E","#0D0A1A"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
+      <LinearGradient colors={["#2E0510","#160108"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
 
       <ScrollView
         style={styles.scroll}
@@ -392,7 +392,7 @@ export default function MeditacionesGuiadasScreen() {
           <LinearGradient colors={["transparent","rgba(0,0,0,0.28)","rgba(0,0,0,0.60)"]} locations={[0.50,0.80,1]} style={StyleSheet.absoluteFill} />
           {/* Flecha atrás flotante */}
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
-            <GhostPill style={{ backgroundColor: "#1A0F2E" }}>
+            <GhostPill style={{ backgroundColor: "#2E0510" }}>
               <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
                 <Feather name="arrow-left" size={22} color="#fff" />
               </Pressable>
@@ -467,9 +467,9 @@ export default function MeditacionesGuiadasScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#0D0A1A" },
+  root: { flex: 1, backgroundColor: "#160108" },
 
-  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#1A0F2E" },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#2E0510" },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   headerTitle: { flex: 1, fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2, textAlign: "center" },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
@@ -524,8 +524,8 @@ const styles = StyleSheet.create({
   qsRowBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "#3D0E16" },
   qsIcon: { width: 22 },
   qsLabel: { flex: 1, fontSize: 15, color: TEXT },
-  searchModalRoot: { flex: 1, backgroundColor: "#0D0A1A" },
-  searchOverlay: { flexDirection: "row", alignItems: "center", backgroundColor: "#0D0A1A", paddingTop: Platform.OS === "ios" ? 56 : 36, paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
+  searchModalRoot: { flex: 1, backgroundColor: "#160108" },
+  searchOverlay: { flexDirection: "row", alignItems: "center", backgroundColor: "#160108", paddingTop: Platform.OS === "ios" ? 56 : 36, paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
   searchBar: { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "#FFFFFF", borderRadius: 10, paddingHorizontal: 12, paddingVertical: 12 },
   searchInput: { flex: 1, fontSize: 14, color: "#111" },
   cancelBtn: { paddingVertical: 6 },
