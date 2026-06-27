@@ -476,6 +476,7 @@ const styles = StyleSheet.create({
     gap: 10,
     marginTop: 19,
     marginBottom: 28,
+    marginHorizontal: 10,
   },
   actionCard: {
     flex: 1,
