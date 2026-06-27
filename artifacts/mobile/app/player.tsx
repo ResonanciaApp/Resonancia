@@ -677,12 +677,19 @@ export default function PlayerScreen() {
             <View style={styles.optDivider} />
 
             <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
-              {/* Ambiente + slider */}
+              {/* Track principal / voz / ambiente */}
               {(hasVoiceTrack || hasAmbientTrack) && (
                 <View style={styles.optSliderItem}>
                   <View style={styles.optRow}>
-                    <Feather name="volume-2" size={18} color="white" style={styles.optIcon} />
-                    <Text style={styles.optRowText}>Ambiente</Text>
+                    <Feather
+                      name={hasVoiceTrack && !hasAmbientTrack ? "mic" : "volume-2"}
+                      size={18}
+                      color="white"
+                      style={styles.optIcon}
+                    />
+                    <Text style={styles.optRowText}>
+                      {hasVoiceTrack && !hasAmbientTrack ? "Voz guiada" : "Ambiente"}
+                    </Text>
                     <Text style={styles.optRowBadge}>
                       {Math.round((hasAmbientTrack ? ambientVolume : voiceVolume) * 100)}%
                     </Text>

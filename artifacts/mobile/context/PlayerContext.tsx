@@ -882,10 +882,40 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
           setIsLoading(false);
         }
       } else {
+        // ── Sesión sin AUDIO_MAP: cargar solo la voz si existe (ej: Meditaciones) ──
+        const voiceOnlyFile = VOICE_MAP[session.id] ?? (session.voiceUri ? { uri: session.voiceUri } : undefined);
         hasRealAudioRef.current = false;
         switchingRef.current = false;
         lockScreenPendingRef.current = null;
-        startSimulation(session);
+        if (voiceOnlyFile) {
+          try {
+            await setAudioModeAsync({
+              playsInSilentMode: true,
+              shouldPlayInBackground: true,
+              interruptionMode: "doNotMix",
+            });
+            const voice = ensureVoicePlayer();
+            voice.loop = false;
+            voice.replace(voiceOnlyFile);
+            voice.volume = voiceVolumeRef.current;
+            voice.play();
+            voiceActiveRef.current = true;
+            ambientActiveRef.current = false;
+          } catch (err) {
+            console.warn("[RESONANCE] Voice-only load failed:", err);
+            voiceActiveRef.current = false;
+          }
+          startSimulation(session);
+          if (defaultSleepMinutesRef.current !== null) {
+            const capped =
+              !isPremiumRef.current && defaultSleepMinutesRef.current > FREE_TIMER_MAX_MINUTES
+                ? FREE_TIMER_MAX_MINUTES
+                : defaultSleepMinutesRef.current;
+            setSleepTimerRemaining(capped * 60);
+          }
+        } else {
+          startSimulation(session);
+        }
       }
     },
     [addToHistory, flushActiveStat, startStatTracking, markPlayStarted, ensureMainPlayer, ensureVoicePlayer, teardownLayers],
@@ -1164,16 +1194,17 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         setIsPlaying(true);
       }
     } else {
-      setIsPlaying((prev) => {
-        if (prev) {
-          clearSim();
-        } else if (currentSession) {
-          startSimulation(currentSession);
-        }
-        return !prev;
-      });
+      // Simulación (sin main player) — también sincronizar voice-only
+      if (isPlaying) {
+        clearSim();
+        if (voiceActiveRef.current) voicePlayerRef.current?.pause();
+        setIsPlaying(false);
+      } else if (currentSession) {
+        startSimulation(currentSession);
+        if (voiceActiveRef.current) voicePlayerRef.current?.play();
+      }
     }
-  }, [currentSession, saveSessionProgress]);
+  }, [currentSession, isPlaying, saveSessionProgress]);
 
   const stop = useCallback(async () => {
     flushActiveStat();
