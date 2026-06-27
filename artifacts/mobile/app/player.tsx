@@ -542,9 +542,9 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   playBtnGlass: {
-    width: 98,
-    height: 98,
-    borderRadius: 49,
+    width: 108,
+    height: 108,
+    borderRadius: 54,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
