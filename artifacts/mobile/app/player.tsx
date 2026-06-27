@@ -578,7 +578,7 @@ const styles = StyleSheet.create({
   },
   timeDisplay: {
     fontSize: 46,
-    fontWeight: "600",
+    fontFamily: "OptimaBold",
     color: "white",
     letterSpacing: -1.5,
     lineHeight: 52,
@@ -636,7 +636,7 @@ const styles = StyleSheet.create({
   },
   authorText: {
     fontSize: 18,
-    fontWeight: "300",
+    fontFamily: "OptimaBold",
     color: "white",
   },
   signature: {
