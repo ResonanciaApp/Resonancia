@@ -263,7 +263,7 @@ export default function SessionDetailScreen() {
           <View style={styles.actionRow}>
             {/* Guardar */}
             <Pressable onPress={handleFav} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
-              <LinearGradient colors={["rgba(212,175,55,0.45)","rgba(212,175,55,0.10)"]} start={{ x:0,y:0 }} end={{ x:1,y:1 }} style={styles.actionCardBorder}>
+              <LinearGradient colors={["rgba(212,175,55,0.45)","rgba(212,175,55,0.10)"]} start={{ x:0,y:0.5 }} end={{ x:1,y:0.5 }} style={styles.actionCardBorder}>
                 <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
                   <Feather name="heart" size={20} color={fav ? colors.primary : "rgba(212,175,55,0.6)"} />
                   <Text style={[styles.actionLabel, { color: fav ? colors.primary : "rgba(212,175,55,0.6)" }]}>Guardar</Text>
@@ -273,7 +273,7 @@ export default function SessionDetailScreen() {
 
             {/* Descargar */}
             <Pressable onPress={handleDownload} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
-              <LinearGradient colors={["rgba(212,175,55,0.45)","rgba(212,175,55,0.10)"]} start={{ x:0,y:0 }} end={{ x:1,y:1 }} style={styles.actionCardBorder}>
+              <LinearGradient colors={["rgba(212,175,55,0.45)","rgba(212,175,55,0.10)"]} start={{ x:0,y:0.5 }} end={{ x:1,y:0.5 }} style={styles.actionCardBorder}>
                 <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
                   <Feather name="download" size={20} color="rgba(212,175,55,0.6)" />
                   <Text style={[styles.actionLabel, { color: "rgba(212,175,55,0.6)" }]}>Descargar</Text>
@@ -283,7 +283,7 @@ export default function SessionDetailScreen() {
 
             {/* Compartir */}
             <Pressable onPress={handleShare} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
-              <LinearGradient colors={["rgba(212,175,55,0.45)","rgba(212,175,55,0.10)"]} start={{ x:0,y:0 }} end={{ x:1,y:1 }} style={styles.actionCardBorder}>
+              <LinearGradient colors={["rgba(212,175,55,0.45)","rgba(212,175,55,0.10)"]} start={{ x:0,y:0.5 }} end={{ x:1,y:0.5 }} style={styles.actionCardBorder}>
                 <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
                   <Feather name="share-2" size={20} color="rgba(212,175,55,0.6)" />
                   <Text style={[styles.actionLabel, { color: "rgba(212,175,55,0.6)" }]}>Compartir</Text>
