@@ -172,7 +172,7 @@ export default function DescansoScreen() {
         <View style={styles.hero}>
           <Ionicons name="moon" size={34} color="#C4A8F5" style={styles.heroIcon} />
           <Text style={[styles.heroTitle, { color: colors.foreground }]}>Descanso</Text>
-          <Text style={[styles.heroSubtitle, { color: colors.mutedForeground }]}>
+          <Text style={[styles.heroSubtitle, { color: "rgba(255,255,255,0.8)" }]}>
             El descanso que mereces,{"\n"}encuéntralo aquí.
           </Text>
         </View>
@@ -184,12 +184,12 @@ export default function DescansoScreen() {
         >
           <LinearGradient
             style={styles.banner}
-            colors={["#3D0E16", "#5C1520"]}
+            colors={["#2A2070", "#C47A6A"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
           >
             <View style={styles.bannerIconWrap}>
-              <Feather name="moon" size={22} color="#D4AF37" />
+              <Ionicons name="moon" size={22} color="#ffffff" />
             </View>
             <View style={styles.bannerText}>
               <Text style={[styles.bannerTitle, { color: colors.foreground }]}>
