@@ -636,7 +636,7 @@ const styles = StyleSheet.create({
   },
   authorText: {
     fontSize: 18,
-    fontFamily: "OptimaBold",
+    fontWeight: "400",
     color: "white",
   },
   signature: {
