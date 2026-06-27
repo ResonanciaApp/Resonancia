@@ -486,7 +486,7 @@ const styles = StyleSheet.create({
   },
   popup: {
     width: 260,
-    backgroundColor: "#2E0510",
+    backgroundColor: "#191919",
     borderRadius: 18,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(255,255,255,0.12)",
