@@ -30,8 +30,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { GlowRing } from "@/components/GlowRing";
-import { SacredBackground } from "@/components/SacredBackground";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { getNatureSounds } from "@/config/nature-base-map";
@@ -40,11 +38,10 @@ import { CATEGORIES } from "@/data/categories";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 
-const { width } = Dimensions.get("window");
-const ART_SIZE = width * 0.72;
+const { width, height: SCREEN_HEIGHT } = Dimensions.get("window");
+const HERO_HEIGHT = SCREEN_HEIGHT * 0.63;
 const RATINGS_KEY = "@resonance_ratings";
 
-/** Darken a hex color toward black. `amount` is 0..1 (1 = black). */
 function darkenHex(hex: string, amount: number): string {
   const h = hex.replace("#", "");
   if (h.length !== 6) return hex;
@@ -60,45 +57,6 @@ function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
   return `${m}:${s.toString().padStart(2, "0")}`;
-}
-
-function BreathingPulse({ isPlaying }: { isPlaying: boolean }) {
-  const scale = useSharedValue(1);
-
-  useEffect(() => {
-    if (isPlaying) {
-      scale.value = withRepeat(
-        withTiming(1.12, { duration: 4000, easing: Easing.inOut(Easing.ease) }),
-        -1,
-        true
-      );
-    } else {
-      cancelAnimation(scale);
-      scale.value = withTiming(1, { duration: 800 });
-    }
-    return () => cancelAnimation(scale);
-  }, [isPlaying]);
-
-  const animStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
-
-  return (
-    <Animated.View
-      style={[
-        {
-          width: ART_SIZE + 40,
-          height: ART_SIZE + 40,
-          borderRadius: (ART_SIZE + 40) / 2,
-          position: "absolute",
-          backgroundColor: "rgba(74,12,12,0.08)",
-          borderWidth: 1,
-          borderColor: "rgba(61,14,22,0.40)",
-        },
-        animStyle,
-      ]}
-    />
-  );
 }
 
 export default function PlayerScreen() {
@@ -126,7 +84,7 @@ export default function PlayerScreen() {
     setAmbientVolume,
   } = usePlayer();
 
-  // ── All hooks before early return ────────────────────────────────────────
+  // Refs para sliders y barra de progreso
   const voiceTrackWidth = useRef(0);
   const voiceTrackPageX = useRef(0);
   const voiceTrackRef = useRef<View>(null);
@@ -138,8 +96,30 @@ export default function PlayerScreen() {
   const isSeekingRef = useRef(false);
   const progressShared = useSharedValue(0);
   const progressBarWidthShared = useSharedValue(0);
+
   const [selectedTimerMinutes, setSelectedTimerMinutes] = useState<number | null>(null);
   const [rating, setRating] = useState(0);
+  const [repeatMode, setRepeatMode] = useState(false);
+
+  // Ken Burns — zoom suave mientras reproduce
+  const kenBurns = useSharedValue(1);
+  useEffect(() => {
+    if (isPlaying) {
+      kenBurns.value = withRepeat(
+        withTiming(1.07, { duration: 28000, easing: Easing.inOut(Easing.ease) }),
+        -1,
+        true
+      );
+    } else {
+      cancelAnimation(kenBurns);
+      kenBurns.value = withTiming(1, { duration: 2000, easing: Easing.out(Easing.ease) });
+    }
+    return () => cancelAnimation(kenBurns);
+  }, [isPlaying]);
+
+  const kenBurnsStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: kenBurns.value }],
+  }));
 
   useEffect(() => {
     const sid = currentSession?.id;
@@ -162,59 +142,44 @@ export default function PlayerScreen() {
     await AsyncStorage.setItem(RATINGS_KEY, JSON.stringify(map));
   }, [currentSession?.id]);
 
-  const handleVoiceGrant = useCallback(
-    (e: GestureResponderEvent) => {
-      voiceTrackRef.current?.measure((_x, _y, _w, _h, px) => {
-        voiceTrackPageX.current = px;
-        const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - px) / voiceTrackWidth.current));
-        setVoiceVolume(vol);
-      });
-    },
-    [setVoiceVolume]
-  );
-
-  const handleVoiceMove = useCallback(
-    (e: GestureResponderEvent) => {
-      const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - voiceTrackPageX.current) / voiceTrackWidth.current));
+  const handleVoiceGrant = useCallback((e: GestureResponderEvent) => {
+    voiceTrackRef.current?.measure((_x, _y, _w, _h, px) => {
+      voiceTrackPageX.current = px;
+      const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - px) / voiceTrackWidth.current));
       setVoiceVolume(vol);
-    },
-    [setVoiceVolume]
-  );
+    });
+  }, [setVoiceVolume]);
 
-  const handleAmbientGrant = useCallback(
-    (e: GestureResponderEvent) => {
-      ambientTrackRef.current?.measure((_x, _y, _w, _h, px) => {
-        ambientTrackPageX.current = px;
-        const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - px) / ambientTrackWidth.current));
-        setAmbientVolume(vol);
-      });
-    },
-    [setAmbientVolume]
-  );
+  const handleVoiceMove = useCallback((e: GestureResponderEvent) => {
+    const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - voiceTrackPageX.current) / voiceTrackWidth.current));
+    setVoiceVolume(vol);
+  }, [setVoiceVolume]);
 
-  const handleAmbientMove = useCallback(
-    (e: GestureResponderEvent) => {
-      const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - ambientTrackPageX.current) / ambientTrackWidth.current));
+  const handleAmbientGrant = useCallback((e: GestureResponderEvent) => {
+    ambientTrackRef.current?.measure((_x, _y, _w, _h, px) => {
+      ambientTrackPageX.current = px;
+      const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - px) / ambientTrackWidth.current));
       setAmbientVolume(vol);
-    },
-    [setAmbientVolume]
-  );
+    });
+  }, [setAmbientVolume]);
+
+  const handleAmbientMove = useCallback((e: GestureResponderEvent) => {
+    const vol = Math.max(0, Math.min(1, (e.nativeEvent.pageX - ambientTrackPageX.current) / ambientTrackWidth.current));
+    setAmbientVolume(vol);
+  }, [setAmbientVolume]);
 
   const { isPremium } = usePremium();
 
-  const handleSelectTimer = useCallback(
-    (minutes: number | null) => {
-      if (minutes !== null && minutes > FREE_TIMER_MAX_MINUTES && !isPremium) {
-        showPremiumGate(
-          `El temporizador gratuito llega hasta ${FREE_TIMER_MAX_MINUTES} minutos. Hazte Premium para dormir con hasta 8 horas.`,
-        );
-        return;
-      }
-      setSelectedTimerMinutes(minutes);
-      setSleepTimer(minutes);
-    },
-    [setSleepTimer, isPremium]
-  );
+  const handleSelectTimer = useCallback((minutes: number | null) => {
+    if (minutes !== null && minutes > FREE_TIMER_MAX_MINUTES && !isPremium) {
+      showPremiumGate(
+        `El temporizador gratuito llega hasta ${FREE_TIMER_MAX_MINUTES} minutos. Hazte Premium para dormir con hasta 8 horas.`
+      );
+      return;
+    }
+    setSelectedTimerMinutes(minutes);
+    setSleepTimer(minutes);
+  }, [setSleepTimer, isPremium]);
 
   useEffect(() => {
     if (sleepTimerRemaining === null && selectedTimerMinutes !== null) {
@@ -224,8 +189,6 @@ export default function PlayerScreen() {
 
   useEffect(() => {
     if (!isSeekingRef.current) {
-      // Smoothly animate to the new audio position over the polling interval
-      // (~500ms) so the bar moves continuously instead of jumping every tick.
       progressShared.value = withTiming(progress, {
         duration: 500,
         easing: Easing.linear,
@@ -240,50 +203,32 @@ export default function PlayerScreen() {
   const thumbAnimStyle = useAnimatedStyle(() => ({
     left: progressShared.value * progressBarWidthShared.value,
   }));
-  const handleProgressGrant = useCallback(
-    (e: GestureResponderEvent) => {
-      isSeekingRef.current = true;
-      const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidthShared.value));
-      progressShared.value = p;
-    },
-    [progressShared, progressBarWidthShared]
-  );
 
-  const handleProgressMove = useCallback(
-    (e: GestureResponderEvent) => {
-      const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidthShared.value));
-      progressShared.value = p;
-    },
-    [progressShared, progressBarWidthShared]
-  );
+  const handleProgressGrant = useCallback((e: GestureResponderEvent) => {
+    isSeekingRef.current = true;
+    const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidthShared.value));
+    progressShared.value = p;
+  }, [progressShared, progressBarWidthShared]);
 
-  const handleProgressRelease = useCallback(
-    (e: GestureResponderEvent) => {
-      const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidthShared.value));
-      progressShared.value = p;
-      seekTo(p);
-      // Keep ignoring context progress updates for a short window so a stale
-      // poll (reporting the old audio position before setPositionAsync took
-      // effect) can't snap the bar back.
-      setTimeout(() => {
-        isSeekingRef.current = false;
-      }, 700);
-    },
-    [progressShared, progressBarWidthShared, seekTo]
-  );
+  const handleProgressMove = useCallback((e: GestureResponderEvent) => {
+    const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidthShared.value));
+    progressShared.value = p;
+  }, [progressShared, progressBarWidthShared]);
+
+  const handleProgressRelease = useCallback((e: GestureResponderEvent) => {
+    const p = Math.max(0, Math.min(1, (e.nativeEvent.pageX - progressBarPageX.current) / progressBarWidthShared.value));
+    progressShared.value = p;
+    seekTo(p);
+    setTimeout(() => { isSeekingRef.current = false; }, 700);
+  }, [progressShared, progressBarWidthShared, seekTo]);
+
   // ─────────────────────────────────────────────────────────────────────────
-
-  const topPad = Platform.OS === "web" ? 20 : 12;
+  const topPad = Platform.OS === "web" ? 20 : (insets.top || 12);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   if (!currentSession) {
     return (
-      <View
-        style={[
-          styles.root,
-          { backgroundColor: colors.background, justifyContent: "center", alignItems: "center" },
-        ]}
-      >
+      <View style={[styles.root, { backgroundColor: colors.background, justifyContent: "center", alignItems: "center" }]}>
         <Feather name="music" size={40} color={colors.border} />
         <Text style={[styles.noSession, { color: colors.mutedForeground }]}>No hay sesión activa</Text>
         <Pressable onPress={() => router.back()} style={[styles.backBtnSolo, { borderColor: colors.border }]}>
@@ -294,16 +239,10 @@ export default function PlayerScreen() {
   }
 
   const isMusicaYSonidos = currentSession.categoryId === "musica-sonidos";
-  // Los "Sonidos Naturaleza" (mapeados en NATURE_BASE_MAP) son loops con
-  // duración elegida por el usuario. Ahora viven en la categoría "Sonidos".
-  // "Música Ambient" / "Música Enteógena" son pistas con duración fija.
   const isNature = !!getNatureSounds(currentSession.id);
   const isLoopSession = isNature;
-  // Música Ambient / Enteógena llevan crédito de artista (default Resonancia).
-  const showArtist =
-    isMusicaYSonidos &&
+  const showArtist = isMusicaYSonidos &&
     (currentSession.soundTag === "Música Ambient" || currentSession.soundTag === "Música Enteógena");
-  // Música Ambient / Enteógena tienen duración fija → sin sleep timer.
   const isFixedMusic = showArtist;
   const artist = getArtist(currentSession.artistId);
 
@@ -326,16 +265,12 @@ export default function PlayerScreen() {
   const remaining = totalSeconds - elapsed;
   const fav = isFavorite(currentSession.id);
 
-  // Fondo derivado de la categoría (mismo cálculo que session/[id].tsx)
-  // para que el reproductor herede el color de cada categoría.
+  // Color dinámico derivado de la categoría
   const playerCategory = CATEGORIES.find((c) => c.id === currentSession.categoryId);
-  let playerBg: string;
-  if (playerCategory?.id === "sonidos-ancestrales") {
-    playerBg = colors.background;
-  } else {
-    const baseHex = playerCategory?.gradient[1] ?? colors.background;
-    playerBg = darkenHex(baseHex, 0.6);
-  }
+  const baseColor = playerCategory?.gradient[1] ?? "#1B060F";
+  const dominantColor = darkenHex(baseColor, 0.25);
+  const midColor = darkenHex(baseColor, 0.50);
+  const darkColor = darkenHex(baseColor, 0.70);
 
   const handlePlayPause = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -360,296 +295,251 @@ export default function PlayerScreen() {
     seekTo(Math.max(0, progress - 10 / totalSeconds));
   };
 
+  const authorLabel = showArtist
+    ? artist.name
+    : (currentSession.subtitle ?? currentSession.categoryLabel);
+
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={StyleSheet.absoluteFill} />
       <StatusBar hidden />
-      <ExpoImage
-        source={currentSession.image as any}
-        style={[StyleSheet.absoluteFill, { opacity: 0.12 }]}
-        contentFit="cover"
-        blurRadius={20}
-      />
+
+      {/* Fondo dinámico degradado */}
       <LinearGradient
-        colors={[playerBg, "transparent", playerBg]}
-        locations={[0, 0.5, 1]}
+        colors={[dominantColor, midColor, darkColor]}
+        locations={[0, 0.45, 1]}
         style={StyleSheet.absoluteFill}
       />
 
-      <ScrollView showsVerticalScrollIndicator={false} bounces={false} contentContainerStyle={[styles.scrollContent, { paddingTop: topPad + 8 }]}>
-        {/* Art + Glow */}
-        <View style={styles.artSection}>
-          <GlowRing size={ART_SIZE + 80} color="rgba(212,175,55,0.12)" delay={0} duration={4000} />
-          <GlowRing size={ART_SIZE + 120} color="rgba(212,175,55,0.07)" delay={700} duration={4000} />
-          <BreathingPulse isPlaying={isPlaying} />
-          <View style={[styles.artFrame, { borderColor: "rgba(212,175,55,0.25)" }]}>
-            <ExpoImage
-              source={currentSession.image as any}
-              style={styles.artImage}
-              contentFit="cover"
-              placeholder={BLUR_PLACEHOLDER}
-              transition={IMAGE_TRANSITION}
-            />
-            <LinearGradient
-              colors={["transparent", "rgba(27,6,15,0.4)"]}
-              style={[StyleSheet.absoluteFill, { borderRadius: ART_SIZE / 2 }]}
-            />
-          </View>
-        </View>
+      {/* ── Hero image con Ken Burns ──────────────────────────────────────── */}
+      <View style={styles.heroContainer}>
+        <Animated.View style={[{ width, height: HERO_HEIGHT }, kenBurnsStyle]}>
+          <ExpoImage
+            source={currentSession.image as any}
+            style={{ width, height: HERO_HEIGHT }}
+            contentFit="cover"
+            placeholder={BLUR_PLACEHOLDER}
+            transition={IMAGE_TRANSITION}
+          />
+        </Animated.View>
 
-        {/* Info */}
-        <View style={styles.infoSection}>
-          <Text style={[styles.category, { color: colors.accent }]}>
-            {showArtist ? currentSession.soundTag : currentSession.categoryLabel}
-          </Text>
-          <Text style={[styles.sessionTitle, { color: colors.foreground }]}>{currentSession.title}</Text>
-          {!showArtist && (
-            <Text style={[styles.sessionSub, { color: colors.mutedForeground }]}>{currentSession.subtitle}</Text>
-          )}
-          {showArtist && (
-            <Pressable
-              onPress={() => router.push(`/artista/${artist.id}` as never)}
-              style={styles.artistRow}
-              hitSlop={6}
-            >
-              <Feather name="user" size={12} color={colors.foreground} />
-              <Text style={[styles.artistText, { color: colors.foreground }]}>
-                Artista: <Text style={{ color: colors.accent }}>{artist.name}</Text>
-              </Text>
-              {artist.certified && <Feather name="check-circle" size={12} color={colors.accent} />}
-            </Pressable>
-          )}
-          {isLoopSession && (
-            <View style={styles.durationChip}>
-              <Feather name="clock" size={11} color="#E9C46A" />
-              <Text style={styles.durationChipText}>
-                Apagar en {formatRemaining(Math.max(0, totalSeconds - elapsed))}
-              </Text>
-            </View>
-          )}
-          {/* Rating stars */}
-          <View style={styles.ratingRow}>
-            {[1,2,3,4,5].map((star) => (
-              <Pressable key={star} onPress={() => handleRate(star)} hitSlop={6} style={styles.starBtn}>
-                <Feather
-                  name="star"
-                  size={18}
-                  color={star <= rating ? "#D4AF37" : "rgba(212,175,55,0.25)"}
-                />
-              </Pressable>
-            ))}
-          </View>
-        </View>
+        {/* Degradado inferior: imagen → fondo dinámico */}
+        <LinearGradient
+          colors={["transparent", "rgba(0,0,0,0.25)", dominantColor]}
+          locations={[0.35, 0.70, 1]}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
 
-        {/* Progress */}
-        <View style={styles.progressSection}>
-          <View
-            ref={progressBarRef}
-            style={styles.progressTrack}
-            onLayout={(e: LayoutChangeEvent) => {
-              progressBarWidthShared.value = e.nativeEvent.layout.width;
-              progressBarRef.current?.measure((_x, _y, _w, _h, px) => {
-                progressBarPageX.current = px;
-              });
-            }}
-            onStartShouldSetResponder={() => true}
-            onMoveShouldSetResponder={() => true}
-            onResponderGrant={handleProgressGrant}
-            onResponderMove={handleProgressMove}
-            onResponderRelease={handleProgressRelease}
-            onResponderTerminate={handleProgressRelease}
+        {/* ── Controles sobre la imagen ──────────────────────────────────── */}
+        <View style={[styles.heroControls, { bottom: 36 }]}>
+          <Pressable onPress={skipBackward} style={styles.skipBtn} hitSlop={8}>
+            <Feather name="rotate-ccw" size={26} color="rgba(255,255,255,0.90)" />
+            <Text style={styles.skipText}>10</Text>
+          </Pressable>
+
+          {/* Play/Pause — glass */}
+          <Pressable
+            onPress={handlePlayPause}
+            disabled={isLoading}
+            style={[styles.playBtnGlass, { opacity: isLoading ? 0.65 : 1 }]}
           >
-            <View style={[styles.progressBg, { backgroundColor: colors.secondary }]}>
-              <Animated.View
-                style={[styles.progressFill, fillAnimStyle, { backgroundColor: "#D6AD5F" }]}
+            {Platform.OS !== "web" ? (
+              <BlurView intensity={28} tint="light" style={StyleSheet.absoluteFill} />
+            ) : (
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.22)" }]} />
+            )}
+            {isLoading ? (
+              <Feather name="loader" size={34} color="white" />
+            ) : (
+              <Feather
+                name={isPlaying ? "pause" : "play"}
+                size={34}
+                color="white"
+                style={isPlaying ? undefined : { paddingLeft: 4 }}
               />
-              <Animated.View
-                style={[styles.progressThumb, thumbAnimStyle, { backgroundColor: "#D6AD5F" }]}
+            )}
+          </Pressable>
+
+          <Pressable onPress={skipForward} style={styles.skipBtn} hitSlop={8}>
+            <Feather name="rotate-cw" size={26} color="rgba(255,255,255,0.90)" />
+            <Text style={styles.skipText}>10</Text>
+          </Pressable>
+        </View>
+      </View>
+
+      {/* ── Panel inferior ─────────────────────────────────────────────────── */}
+      <ScrollView
+        style={styles.bottomPanel}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        contentContainerStyle={{ paddingBottom: bottomPad + 24 }}
+      >
+        {/* Tiempo grande + acciones */}
+        <View style={styles.timeActionsRow}>
+          <Text style={styles.timeDisplay}>{formatTime(remaining)}</Text>
+          <View style={styles.actionIcons}>
+            <Pressable
+              onPress={() => setRepeatMode((r) => !r)}
+              hitSlop={8}
+            >
+              <Feather
+                name="repeat"
+                size={20}
+                color={repeatMode ? "white" : "rgba(255,255,255,0.75)"}
               />
-            </View>
-          </View>
-          <View style={styles.timeRow}>
-            <Text style={[styles.timeText, { color: colors.mutedForeground }]}>{formatTime(elapsed)}</Text>
-            <Text style={[styles.timeText, { color: colors.mutedForeground }]}>-{formatTime(remaining)}</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                toggleFavorite(currentSession.id);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              }}
+              hitSlop={8}
+            >
+              <Feather
+                name="bookmark"
+                size={20}
+                color={fav ? "white" : "rgba(255,255,255,0.75)"}
+              />
+            </Pressable>
+            <Pressable onPress={handleShare} hitSlop={8}>
+              <Feather name="more-horizontal" size={20} color="rgba(255,255,255,0.75)" />
+            </Pressable>
           </View>
         </View>
 
-        {/* Controls */}
-        <View style={[styles.controlsWrapper, { paddingBottom: 8 }]}>
-          {Platform.OS !== "web" ? (
-            <BlurView intensity={18} tint="dark" style={StyleSheet.absoluteFill} />
-          ) : (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(27,6,15,0.55)" }]} />
-          )}
-          <View style={styles.controls}>
-            <Pressable onPress={skipBackward} style={styles.controlSide}>
-              <Feather name="skip-back" size={24} color={colors.foreground} />
-              <Text style={[styles.skipLabel, { color: colors.mutedForeground }]}>10s</Text>
-            </Pressable>
-
-            <View style={styles.playOuter}>
-              <View style={[styles.playRing, { borderColor: "rgba(214,173,95,0.35)" }]} />
-              <Pressable
-                onPress={handlePlayPause}
-                disabled={isLoading}
-                style={[styles.playButton, { overflow: "hidden", opacity: isLoading ? 0.7 : 1 }]}
-              >
-                <LinearGradient
-                  colors={["#D6AD5F", "#B47344"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={StyleSheet.absoluteFill}
-                />
-                {isLoading ? (
-                  <Feather name="loader" size={32} color={colors.primaryForeground} />
-                ) : (
-                  <Feather
-                    name={isPlaying ? "pause" : "play"}
-                    size={32}
-                    color={colors.primaryForeground}
-                    style={isPlaying ? undefined : { paddingLeft: 4 }}
-                  />
-                )}
-              </Pressable>
-            </View>
-
-            <Pressable onPress={skipForward} style={styles.controlSide}>
-              <Feather name="skip-forward" size={24} color={colors.foreground} />
-              <Text style={[styles.skipLabel, { color: colors.mutedForeground }]}>10s</Text>
-            </Pressable>
+        {/* Barra de progreso */}
+        <View
+          ref={progressBarRef}
+          style={styles.progressTrack}
+          onLayout={(e: LayoutChangeEvent) => {
+            progressBarWidthShared.value = e.nativeEvent.layout.width;
+            progressBarRef.current?.measure((_x, _y, _w, _h, px) => {
+              progressBarPageX.current = px;
+            });
+          }}
+          onStartShouldSetResponder={() => true}
+          onMoveShouldSetResponder={() => true}
+          onResponderGrant={handleProgressGrant}
+          onResponderMove={handleProgressMove}
+          onResponderRelease={handleProgressRelease}
+          onResponderTerminate={handleProgressRelease}
+        >
+          <View style={styles.progressBg}>
+            <Animated.View style={[styles.progressFill, fillAnimStyle]} />
+            <Animated.View style={[styles.progressThumb, thumbAnimStyle]} />
           </View>
         </View>
 
-        {/* Voice slider — for sessions with guided voice track */}
+        {/* Etiquetas de tiempo */}
+        <View style={styles.timeLabels}>
+          <Text style={styles.timeLabelText}>{formatTime(elapsed)}</Text>
+          <Text style={styles.timeLabelText}>-{formatTime(remaining)}</Text>
+        </View>
+
+        {/* Título + Autor */}
+        <Text style={styles.titleText} numberOfLines={2}>{currentSession.title}</Text>
+        <Text style={styles.authorText}>{authorLabel}</Text>
+
+        {/* Firma Resonancia */}
+        <Text style={styles.signature}>RESONANCIA</Text>
+
+        {/* Chip duración loop */}
+        {isLoopSession && (
+          <View style={[styles.durationChip, { marginTop: 14 }]}>
+            <Feather name="clock" size={11} color="rgba(255,255,255,0.75)" />
+            <Text style={styles.durationChipText}>
+              Apagar en {formatRemaining(Math.max(0, totalSeconds - elapsed))}
+            </Text>
+          </View>
+        )}
+
+        {/* Estrellas */}
+        <View style={styles.ratingRow}>
+          {[1, 2, 3, 4, 5].map((star) => (
+            <Pressable key={star} onPress={() => handleRate(star)} hitSlop={6} style={styles.starBtn}>
+              <Feather
+                name="star"
+                size={18}
+                color={star <= rating ? "rgba(255,255,255,0.90)" : "rgba(255,255,255,0.22)"}
+              />
+            </Pressable>
+          ))}
+        </View>
+
+        {/* Slider voz guiada */}
         {hasVoiceTrack && (
-          <View style={[styles.sliderSection, { paddingHorizontal: 32, marginTop: 20, marginBottom: 8 }]}>
+          <View style={[styles.sliderSection, { marginTop: 28 }]}>
             <View style={styles.sliderHeader}>
-              <Feather name="mic" size={13} color={colors.mutedForeground} />
-              <Text style={[styles.sliderLabel, { color: colors.mutedForeground }]}>Voz guiada</Text>
-              <Text style={[styles.sliderPercent, { color: colors.accent }]}>
-                {Math.round(voiceVolume * 100)}%
-              </Text>
+              <Feather name="mic" size={13} color="rgba(255,255,255,0.5)" />
+              <Text style={styles.sliderLabel}>Voz guiada</Text>
+              <Text style={styles.sliderPercent}>{Math.round(voiceVolume * 100)}%</Text>
             </View>
             <View
               ref={voiceTrackRef}
               style={styles.sliderHitArea}
-              onLayout={(e: LayoutChangeEvent) => {
-                voiceTrackWidth.current = e.nativeEvent.layout.width;
-              }}
+              onLayout={(e: LayoutChangeEvent) => { voiceTrackWidth.current = e.nativeEvent.layout.width; }}
               onStartShouldSetResponder={() => true}
               onMoveShouldSetResponder={() => true}
               onResponderGrant={handleVoiceGrant}
               onResponderMove={handleVoiceMove}
             >
-              <View style={[styles.sliderTrack, { backgroundColor: colors.secondary }]}>
-                <View
-                  pointerEvents="none"
-                  style={[styles.sliderFill, { width: `${voiceVolume * 100}%`, backgroundColor: colors.accent }]}
-                />
-                <View
-                  pointerEvents="none"
-                  style={[styles.sliderThumb, { left: `${voiceVolume * 100}%`, backgroundColor: colors.accent }]}
-                />
+              <View style={styles.sliderTrack}>
+                <View pointerEvents="none" style={[styles.sliderFill, { width: `${voiceVolume * 100}%` as any }]} />
+                <View pointerEvents="none" style={[styles.sliderThumb, { left: `${voiceVolume * 100}%` as any }]} />
               </View>
-            </View>
-            <View style={styles.sliderHints}>
-              <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>Sin voz</Text>
-              <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>Máximo</Text>
             </View>
           </View>
         )}
 
-        {/* Ambient slider — for sessions with layered ambient track */}
+        {/* Slider ambiente */}
         {hasAmbientTrack && (
-          <View style={[styles.sliderSection, { paddingHorizontal: 32, marginTop: 20, marginBottom: 8 }]}>
+          <View style={[styles.sliderSection, { marginTop: 22 }]}>
             <View style={styles.sliderHeader}>
-              {!isNature && (
-                <Feather name="wind" size={13} color={colors.mutedForeground} />
-              )}
-              <Text style={[styles.sliderLabel, { color: colors.mutedForeground }]}>
-                {isNature ? "Sonidos Ambiente" : "Pájaros"}
-              </Text>
-              <Text style={[styles.sliderPercent, { color: colors.accent }]}>
-                {Math.round(ambientVolume * 100)}%
-              </Text>
+              <Feather name="wind" size={13} color="rgba(255,255,255,0.5)" />
+              <Text style={styles.sliderLabel}>{isNature ? "Sonidos Ambiente" : "Pájaros"}</Text>
+              <Text style={styles.sliderPercent}>{Math.round(ambientVolume * 100)}%</Text>
             </View>
             <View
               ref={ambientTrackRef}
               style={styles.sliderHitArea}
-              onLayout={(e: LayoutChangeEvent) => {
-                ambientTrackWidth.current = e.nativeEvent.layout.width;
-              }}
+              onLayout={(e: LayoutChangeEvent) => { ambientTrackWidth.current = e.nativeEvent.layout.width; }}
               onStartShouldSetResponder={() => true}
               onMoveShouldSetResponder={() => true}
               onResponderGrant={handleAmbientGrant}
               onResponderMove={handleAmbientMove}
             >
-              <View style={[styles.sliderTrack, { backgroundColor: colors.secondary }]}>
-                <View
-                  pointerEvents="none"
-                  style={[styles.sliderFill, { width: `${ambientVolume * 100}%`, backgroundColor: "#D6AD5F" }]}
-                />
-                <View
-                  pointerEvents="none"
-                  style={[styles.sliderThumb, { left: `${ambientVolume * 100}%`, backgroundColor: "#D6AD5F" }]}
-                />
+              <View style={styles.sliderTrack}>
+                <View pointerEvents="none" style={[styles.sliderFill, { width: `${ambientVolume * 100}%` as any }]} />
+                <View pointerEvents="none" style={[styles.sliderThumb, { left: `${ambientVolume * 100}%` as any }]} />
               </View>
-            </View>
-            <View style={styles.sliderHints}>
-              <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>
-                {isNature ? "Sin ambiente" : "Sin pájaros"}
-              </Text>
-              <Text style={[styles.sliderHintText, { color: colors.mutedForeground }]}>Máximo</Text>
             </View>
           </View>
         )}
 
-        {/* Sleep Timer — abajo. Oculto para loops (usan el picker de duración)
-            y para Música Ambient/Enteógena (duración fija). */}
+        {/* Sleep timer */}
         {!isLoopSession && !isFixedMusic && (
-          <View style={[styles.timerSection, { paddingTop: 24, marginTop: 8 }]}>
+          <View style={styles.timerSection}>
             <View style={styles.timerHeader}>
-              <Feather name="moon" size={13} color={colors.mutedForeground} />
-              <Text style={[styles.timerLabel, { color: colors.mutedForeground }]}>Apagar en</Text>
+              <Feather name="moon" size={13} color="rgba(255,255,255,0.5)" />
+              <Text style={styles.timerLabel}>Apagar en</Text>
               {sleepTimerRemaining !== null && (
-                <Text style={[styles.timerCountdown, { color: colors.accent }]}>
+                <Text style={styles.timerCountdown}>
                   · {formatRemaining(sleepTimerRemaining)}
                 </Text>
               )}
             </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.timerChips}
-            >
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.timerChips}>
               {TIMER_OPTIONS.map((opt) => {
                 const selected = opt.minutes === selectedTimerMinutes;
-                const locked =
-                  opt.minutes !== null && opt.minutes > FREE_TIMER_MAX_MINUTES && !isPremium;
+                const locked = opt.minutes !== null && opt.minutes > FREE_TIMER_MAX_MINUTES && !isPremium;
                 return (
                   <Pressable
                     key={String(opt.minutes)}
                     onPress={() => handleSelectTimer(opt.minutes)}
-                    style={[
-                      styles.timerChip,
-                      {
-                        backgroundColor: selected ? "#D6AD5F" : "rgba(74,12,12,0.08)",
-                        borderColor: selected ? "#B47344" : "rgba(61,14,22,0.40)",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 4,
-                      },
-                    ]}
+                    style={[styles.timerChip, selected && styles.timerChipSelected]}
                   >
-                    {locked && (
-                      <Feather name="lock" size={11} color={colors.mutedForeground} />
-                    )}
-                    <Text
-                      style={[
-                        styles.timerChipText,
-                        { color: selected ? colors.primaryForeground : colors.mutedForeground },
-                      ]}
-                    >
+                    {locked && <Feather name="lock" size={11} color="rgba(255,255,255,0.45)" />}
+                    <Text style={[styles.timerChipText, selected && styles.timerChipTextSelected]}>
                       {opt.label}
                     </Text>
                   </Pressable>
@@ -658,37 +548,33 @@ export default function PlayerScreen() {
             </ScrollView>
           </View>
         )}
-
-        <View style={{ paddingBottom: bottomPad + 20 }} />
       </ScrollView>
 
-      {/* Floating top buttons */}
+      {/* ── Botones flotantes superiores ─────────────────────────────────── */}
       <Pressable
-        onPress={() => {
-          stop();
-          router.back();
-        }}
-        style={[styles.floatingBtn, { top: topPad + 8, left: 16 }]}
-        hitSlop={12}
+        onPress={() => { stop(); router.back(); }}
+        style={[styles.topBtn, { top: topPad + 6, left: 16 }]}
+        hitSlop={8}
       >
-        <Feather name="x" size={26} color={colors.foreground} />
+        {Platform.OS !== "web" ? (
+          <BlurView intensity={22} tint="dark" style={StyleSheet.absoluteFill} />
+        ) : (
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.38)" }]} />
+        )}
+        <Feather name="x" size={20} color="white" />
       </Pressable>
-      <Pressable
-        onPress={() => {
-          toggleFavorite(currentSession.id);
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        }}
-        style={[styles.floatingBtn, { top: topPad + 8, right: 16 }]}
-        hitSlop={12}
-      >
-        <Feather name="heart" size={22} color={fav ? "#FFFFFF" : colors.mutedForeground} />
-      </Pressable>
+
       <Pressable
         onPress={handleShare}
-        style={[styles.floatingBtn, { top: topPad + 8, right: 64 }]}
-        hitSlop={12}
+        style={[styles.topBtn, { top: topPad + 6, right: 16 }]}
+        hitSlop={8}
       >
-        <Feather name="share-2" size={21} color={colors.mutedForeground} />
+        {Platform.OS !== "web" ? (
+          <BlurView intensity={22} tint="dark" style={StyleSheet.absoluteFill} />
+        ) : (
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.38)" }]} />
+        )}
+        <Feather name="share" size={18} color="white" />
       </Pressable>
     </View>
   );
@@ -696,121 +582,76 @@ export default function PlayerScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  navBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingBottom: 10,
-  },
-  iconBtn: {
-    width: 44,
-    height: 44,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  floatingBtn: {
-    position: "absolute",
-    width: 44,
-    height: 44,
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 10,
-  },
-  navCenter: {
-    flex: 1,
-    alignItems: "center",
-  },
-  navLabel: {
-    fontSize: 10,
-    letterSpacing: 2,
-    fontWeight: "700",
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  artSection: {
-    alignItems: "center",
-    justifyContent: "center",
-    height: ART_SIZE + 120,
-    overflow: "visible",
-  },
-  artFrame: {
-    width: ART_SIZE,
-    height: ART_SIZE,
-    borderRadius: ART_SIZE / 2,
-    borderWidth: 1.5,
+
+  // Hero
+  heroContainer: {
+    width,
+    height: HERO_HEIGHT,
     overflow: "hidden",
   },
-  artImage: {
-    width: ART_SIZE,
-    height: ART_SIZE,
-    borderRadius: ART_SIZE / 2,
-  },
-  infoSection: {
-    alignItems: "center",
-    paddingHorizontal: 32,
-    marginBottom: 24,
-  },
-  category: {
-    fontSize: 10,
-    letterSpacing: 2,
-    fontWeight: "700",
-    marginBottom: 6,
-    textTransform: "uppercase",
-  },
-  sessionTitle: {
-    fontSize: 26,
-    fontWeight: "700",
-    textAlign: "center",
-    marginBottom: 4,
-    letterSpacing: 0.3,
-  },
-  sessionSub: {
-    fontSize: 14,
-    textAlign: "center",
-  },
-  artistRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-    marginTop: 8,
-  },
-  artistText: {
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  durationChip: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginTop: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 999,
-    backgroundColor: "rgba(212,175,55,0.12)",
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.25)",
-  },
-  ratingRow: {
+  heroControls: {
+    position: "absolute",
+    left: 0,
+    right: 0,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 12,
-    gap: 4,
+    gap: 44,
   },
-  starBtn: {
-    padding: 4,
+  skipBtn: {
+    alignItems: "center",
+    gap: 3,
   },
-  durationChipText: {
-    color: "#FAF0EE",
-    fontSize: 12,
+  skipText: {
+    color: "rgba(255,255,255,0.75)",
+    fontSize: 11,
     fontWeight: "600",
     letterSpacing: 0.3,
   },
-  progressSection: {
-    paddingHorizontal: 32,
-    marginBottom: 20,
+  playBtnGlass: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1.5,
+    borderColor: "rgba(255,255,255,0.28)",
+    backgroundColor: "rgba(255,255,255,0.12)",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.18,
+    shadowRadius: 20,
+    elevation: 10,
   },
+
+  // Panel inferior
+  bottomPanel: {
+    flex: 1,
+    paddingHorizontal: 28,
+    paddingTop: 22,
+  },
+  timeActionsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 14,
+  },
+  timeDisplay: {
+    fontSize: 46,
+    fontWeight: "600",
+    color: "white",
+    letterSpacing: -1.5,
+    lineHeight: 52,
+  },
+  actionIcons: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 20,
+    paddingBottom: 4,
+  },
+
+  // Barra de progreso
   progressTrack: {
     paddingVertical: 10,
   },
@@ -819,175 +660,149 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     overflow: "visible",
     position: "relative",
+    backgroundColor: "rgba(255,255,255,0.25)",
   },
   progressFill: {
     height: 3,
     borderRadius: 2,
+    backgroundColor: "white",
   },
   progressThumb: {
     position: "absolute",
-    top: -5,
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    marginLeft: -7,
-  },
-  timeRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 6,
-  },
-  timeText: {
-    fontSize: 12,
-  },
-  controlsWrapper: {
-    overflow: "hidden",
-    borderTopWidth: 1,
-    borderTopColor: "rgba(61,14,22,0.40)",
-    paddingTop: 20,
-  },
-  controls: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 32,
-    paddingHorizontal: 32,
-    marginBottom: 16,
-  },
-  controlSide: {
-    alignItems: "center",
-    gap: 4,
-  },
-  skipLabel: {
-    fontSize: 10,
-    letterSpacing: 0.5,
-  },
-  playOuter: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  playRing: {
-    position: "absolute",
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    borderWidth: 1.5,
-  },
-  playButton: {
-    width: 76,
-    height: 76,
-    borderRadius: 38,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#C59052",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
-    shadowRadius: 16,
-    elevation: 10,
+    top: -4,
+    width: 11,
+    height: 11,
+    borderRadius: 6,
+    marginLeft: -5.5,
+    backgroundColor: "white",
   },
 
-  // Generic slider styles (voice / ambient)
-  sliderSection: {},
-  sliderHeader: {
+  timeLabels: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 4,
+    marginBottom: 22,
+  },
+  timeLabelText: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.55)",
+  },
+
+  titleText: {
+    fontSize: 21,
+    fontWeight: "700",
+    color: "white",
+    letterSpacing: 0.2,
+    marginBottom: 6,
+  },
+  authorText: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "rgba(255,255,255,0.58)",
+  },
+  signature: {
+    fontSize: 9,
+    fontWeight: "700",
+    color: "rgba(255,255,255,0.16)",
+    letterSpacing: 5,
+    marginTop: 10,
+    marginBottom: 2,
+  },
+
+  durationChip: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    marginBottom: 10,
+    alignSelf: "flex-start",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+    backgroundColor: "rgba(255,255,255,0.10)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.20)",
   },
+  durationChipText: {
+    color: "rgba(255,255,255,0.80)",
+    fontSize: 12,
+    fontWeight: "600",
+    letterSpacing: 0.3,
+  },
+
+  ratingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 16,
+    gap: 4,
+  },
+  starBtn: { padding: 4 },
+
+  // Sliders
+  sliderSection: {},
+  sliderHeader: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 10 },
   sliderLabel: {
     fontSize: 11,
     letterSpacing: 0.5,
     textTransform: "uppercase",
     flex: 1,
+    color: "rgba(255,255,255,0.50)",
   },
-  sliderPercent: {
-    fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 0.5,
-  },
-  sliderHitArea: {
-    height: 44,
-    justifyContent: "center",
-    overflow: "visible",
-  },
+  sliderPercent: { fontSize: 11, fontWeight: "700", letterSpacing: 0.5, color: "rgba(255,255,255,0.80)" },
+  sliderHitArea: { height: 44, justifyContent: "center", overflow: "visible" },
   sliderTrack: {
-    height: 6,
-    borderRadius: 3,
+    height: 4,
+    borderRadius: 2,
     overflow: "visible",
     position: "relative",
+    backgroundColor: "rgba(255,255,255,0.20)",
   },
-  sliderFill: {
-    height: 6,
-    borderRadius: 3,
-  },
+  sliderFill: { height: 4, borderRadius: 2, backgroundColor: "white" },
   sliderThumb: {
     position: "absolute",
-    top: -6,
+    top: -7,
     width: 18,
     height: 18,
     borderRadius: 9,
     marginLeft: -9,
-  },
-  sliderHints: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 8,
-  },
-  sliderHintText: {
-    fontSize: 10,
-    letterSpacing: 0.3,
+    backgroundColor: "white",
   },
 
   // Sleep timer
-  timerSection: {
-    paddingHorizontal: 32,
-    marginBottom: 12,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(61,14,22,0.30)",
-  },
-  timerHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginBottom: 12,
-  },
-  timerLabel: {
-    fontSize: 11,
-    letterSpacing: 0.5,
-    textTransform: "uppercase",
-  },
-  timerCountdown: {
-    fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 0.5,
-  },
-  timerChips: {
-    flexDirection: "row",
-    gap: 8,
-    paddingVertical: 2,
-  },
+  timerSection: { paddingTop: 28, marginTop: 8 },
+  timerHeader: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 12 },
+  timerLabel: { fontSize: 11, letterSpacing: 0.5, textTransform: "uppercase", color: "rgba(255,255,255,0.50)" },
+  timerCountdown: { fontSize: 11, fontWeight: "700", letterSpacing: 0.5, color: "rgba(255,255,255,0.80)" },
+  timerChips: { flexDirection: "row", gap: 8, paddingVertical: 2 },
   timerChip: {
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.20)",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  timerChipSelected: {
+    backgroundColor: "rgba(255,255,255,0.18)",
+    borderColor: "rgba(255,255,255,0.45)",
+  },
+  timerChipText: { fontSize: 13, fontWeight: "600", color: "rgba(255,255,255,0.55)" },
+  timerChipTextSelected: { color: "white" },
+
+  // Floating top buttons
+  topBtn: {
+    position: "absolute",
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-  },
-  timerChipText: {
-    fontSize: 13,
-    fontWeight: "600",
+    zIndex: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.15)",
   },
 
-  noSession: {
-    fontSize: 16,
-    marginTop: 16,
-    marginBottom: 24,
-  },
-  backBtnSolo: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
+  noSession: { fontSize: 16, marginTop: 16, marginBottom: 24 },
+  backBtnSolo: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20, borderWidth: 1 },
 });

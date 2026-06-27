@@ -1,0 +1,315 @@
+Quiero rediseñar completamente la pantalla del reproductor tomando como inspiración este layout minimalista.
+
+
+
+La pantalla debe sentirse inmersiva, elegante y premium.
+
+
+
+## Hero
+
+
+
+- La imagen del sonido ocupa aproximadamente el 65-70% superior de la pantalla.
+
+- La imagen debe cubrir todo el ancho.
+
+- Aplicar un degradado negro/burdeo muy sutil desde la parte inferior de la imagen para que se funda naturalmente con el fondo.
+
+- No utilizar tarjetas ni contenedores sobre la imagen.
+
+
+
+## Fondo dinámico
+
+
+
+Quiero que el color de fondo de la parte inferior NO sea fijo.
+
+
+
+Debe obtener automáticamente el color predominante de la imagen (color picker) y generar un fondo utilizando ese color.
+
+
+
+Ejemplo:
+
+
+
+Si la imagen es azul → fondo azul grisáceo.
+
+Si la imagen es verde → fondo verde oscuro.
+
+Si la imagen es rojiza → fondo burdeo oscuro.
+
+
+
+El color debe oscurecerse aproximadamente un 20-30% para mantener buen contraste con el texto.
+
+
+
+La transición entre la imagen y el fondo debe ser completamente suave mediante un degradado.
+
+
+
+## Controles superiores
+
+
+
+Mantener solamente:
+
+
+
+- Botón cerrar (X)
+
+- Botón compartir
+
+
+
+Ambos blancos con fondo circular translúcido.
+
+
+
+## Control principal
+
+
+
+Centro de la pantalla:
+
+
+
+Gran botón Play/Pause circular.
+
+
+
+- efecto glass
+
+- fondo blanco con 20% opacidad
+
+- borde blanco 25%
+
+- blur detrás
+
+- sombra muy suave
+
+
+
+Debe sentirse flotando sobre la imagen.
+
+
+
+## Controles secundarios
+
+
+
+Debajo del botón principal:
+
+
+
+Retroceder 10 segundos
+
+Avanzar 10 segundos
+
+
+
+Iconografía minimalista.
+
+
+
+## Información
+
+
+
+Parte inferior.
+
+
+
+Mostrar:
+
+
+
+Tiempo actual
+
+
+
+Barra de progreso
+
+
+
+Tiempo restante
+
+
+
+Título
+
+
+
+Autor
+
+
+
+Todo alineado a la izquierda.
+
+
+
+## Barra de progreso
+
+
+
+Minimalista.
+
+
+
+Track blanco con opacidad.
+
+
+
+Progress blanco sólido.
+
+
+
+Thumb pequeño.
+
+
+
+## Acciones inferiores
+
+
+
+A la derecha del tiempo colocar:
+
+
+
+Repetir
+
+
+
+Guardar
+
+
+
+Más opciones
+
+
+
+Iconos blancos con 75% opacidad.
+
+
+
+## Tipografía
+
+
+
+Título:
+
+Bold
+
+
+
+Autor:
+
+Medium
+
+60% opacidad
+
+
+
+Tiempo:
+
+Semibold
+
+
+
+## Espaciados
+
+
+
+Mucho aire entre los elementos.
+
+
+
+La pantalla debe sentirse relajante.
+
+
+
+## Animaciones
+
+
+
+Cuando cambia la canción:
+
+
+
+Extraer nuevamente el color dominante.
+
+
+
+Animar el cambio del fondo durante 500 ms.
+
+
+
+Aplicar un zoom muy lento (Ken Burns) a la imagen mientras el sonido se reproduce.
+
+
+
+## Calidad visual
+
+
+
+La interfaz debe sentirse al nivel de Calm, Headspace o Apple Music.
+
+
+
+Muchísimo espacio negativo.
+
+
+
+Sin sombras fuertes.
+
+
+
+Sin bordes gruesos.
+
+
+
+Todo muy limpio y elegante.
+
+
+
+Yo le agregaría algo que sería una firma de Resonancia
+
+
+
+En vez de usar un color plano abajo, usaría un degradado generado automáticamente desde la imagen.
+
+
+
+Color dominante: #5E7488
+
+
+
+Fondo:
+
+
+
+#5E7488
+
+↓
+
+
+
+#465869
+
+↓
+
+
+
+#2F3944
+
+
+
+↓
+
+
+
+#171C22
