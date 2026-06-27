@@ -579,7 +579,7 @@ const styles = StyleSheet.create({
   },
   timeDisplay: {
     fontSize: 46,
-    fontWeight: "400",
+    fontFamily: "OptimaRegular",
     color: "white",
     letterSpacing: -1.5,
     lineHeight: 52,
@@ -630,7 +630,7 @@ const styles = StyleSheet.create({
 
   titleText: {
     fontSize: 20,
-    fontFamily: "OptimaRegular",
+    fontFamily: "PlayfairDisplay_700Bold",
     color: "white",
     letterSpacing: 0.2,
     marginBottom: 6,
