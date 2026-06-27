@@ -58,22 +58,44 @@ type Props = {
   selectedSoundId: string | null;
   session?: SessionInfo;
   onClose: () => void;
-  onSelect: (soundId: string | null, ambientVolume: number) => void;
+  onSelect: (soundId: string | null, ambientVolume: number, sessionVolume: number) => void;
+  /** Valor inicial del slider de sesión (refleja el volumen actual del player) */
+  initialSessionVolume?: number;
+  /** Valor inicial del slider de ambiente (refleja el volumen del overlay actual) */
+  initialAmbientVolume?: number;
+  /** Llamado al entrar al paso "controles" para empezar la previsualización */
+  onPreviewStart?: (soundId: string) => void;
+  /** Llamado en tiempo real al mover el slider de sesión */
+  onSessionVolumeChange?: (vol: number) => void;
+  /** Llamado en tiempo real al mover el slider de ambiente */
+  onAmbientVolumeChange?: (vol: number) => void;
 };
 
-export function AmbientSoundPickerSheet({ visible, selectedSoundId, session, onClose, onSelect }: Props) {
+export function AmbientSoundPickerSheet({
+  visible,
+  selectedSoundId,
+  session,
+  onClose,
+  onSelect,
+  initialSessionVolume,
+  initialAmbientVolume,
+  onPreviewStart,
+  onSessionVolumeChange,
+  onAmbientVolumeChange,
+}: Props) {
   const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState<TabId>("todos");
   const [favIds, setFavIds] = useState<Set<string>>(new Set());
   const [localSelected, setLocalSelected] = useState<string | null>(selectedSoundId);
   const [favPopupSound, setFavPopupSound] = useState<MixSound | null>(null);
   const [step, setStep] = useState<"pick" | "controles">("pick");
-  const [sessionVolume, setSessionVolume] = useState(0.8);
-  const [ambientVolume, setAmbientVolume] = useState(0.5);
+  const [sessionVolume, setSessionVolume] = useState(initialSessionVolume ?? 0.8);
+  const [ambientVolume, setAmbientVolume] = useState(initialAmbientVolume ?? 0.5);
   const slideAnim = useRef(new Animated.Value(0)).current;
 
   const goToControles = () => {
     setStep("controles");
+    if (localSelected) onPreviewStart?.(localSelected);
     Animated.timing(slideAnim, {
       toValue: 1,
       duration: 380,
@@ -95,6 +117,8 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, session, onC
     setLocalSelected(selectedSoundId);
     setStep("pick");
     slideAnim.setValue(0);
+    setSessionVolume(initialSessionVolume ?? 0.8);
+    setAmbientVolume(initialAmbientVolume ?? 0.5);
     AsyncStorage.getItem(FAV_KEY).then((val) => {
       if (val) setFavIds(new Set(JSON.parse(val) as string[]));
     });
@@ -119,7 +143,7 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, session, onC
   const favSounds = useMemo(() => PLAYABLE_SOUNDS.filter((s) => favIds.has(s.id)), [favIds]);
 
   const handleGuardar = () => {
-    onSelect(localSelected, ambientVolume);
+    onSelect(localSelected, ambientVolume, sessionVolume);
     onClose();
   };
 
@@ -350,7 +374,7 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, session, onC
               image={session?.image ?? null}
               name={session?.title ?? "Sesión"}
               volume={sessionVolume}
-              onVolumeChange={setSessionVolume}
+              onVolumeChange={(v) => { setSessionVolume(v); onSessionVolumeChange?.(v); }}
               onRemove={null}
             />
 
@@ -359,7 +383,7 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, session, onC
                 image={ambientImg ?? null}
                 name={ambientSound.name}
                 volume={ambientVolume}
-                onVolumeChange={setAmbientVolume}
+                onVolumeChange={(v) => { setAmbientVolume(v); onAmbientVolumeChange?.(v); }}
                 onRemove={() => setLocalSelected(null)}
               />
             )}

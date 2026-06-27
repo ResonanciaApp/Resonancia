@@ -170,13 +170,15 @@ export default function PlayerScreen() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedAmbientSoundId]);
 
-  // Sincroniza play/pause con el player principal
+  // Sincroniza play/pause con el player principal (no depende de selectedAmbientSoundId:
+  // el cambio de sonido ya arranca la reproducción desde el effect de carga)
   useEffect(() => {
     const p = ambientOverlayRef.current;
     if (!p || !selectedAmbientSoundId) return;
     if (isPlaying) p.play();
     else p.pause();
-  }, [isPlaying, selectedAmbientSoundId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlaying]);
 
   // Sincroniza volumen
   useEffect(() => {
@@ -885,9 +887,18 @@ export default function PlayerScreen() {
         selectedSoundId={selectedAmbientSoundId}
         session={currentSession ? { title: currentSession.title, image: currentSession.image } : undefined}
         onClose={() => setShowAmbientPicker(false)}
-        onSelect={(id, vol) => {
+        initialSessionVolume={mainVolume}
+        initialAmbientVolume={ambientOverlayVolume}
+        onPreviewStart={(id) => setSelectedAmbientSoundId(id)}
+        onSessionVolumeChange={(vol) => setMainVolume(vol)}
+        onAmbientVolumeChange={(vol) => {
+          setAmbientOverlayVolume(vol);
+          if (ambientOverlayRef.current) ambientOverlayRef.current.volume = vol;
+        }}
+        onSelect={(id, vol, sessVol) => {
           setSelectedAmbientSoundId(id);
           setAmbientOverlayVolume(vol);
+          setMainVolume(sessVol);
         }}
       />
     </View>
