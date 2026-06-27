@@ -447,7 +447,9 @@ export default function SonidosAncestalesScreen() {
           </Pressable>
         </GhostPill>
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
-          <Feather name="music" size={23} color={GOLD} />
+          <View style={{ backgroundColor: "#2E0510", borderRadius: 8, padding: 4 }}>
+            <Feather name="music" size={23} color={GOLD} />
+          </View>
           <Text style={[styles.headerTitle, { lineHeight: 23 }]}>Ancestrales</Text>
         </View>
         <GhostPill>
