@@ -482,7 +482,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    aspectRatio: 1,
+    paddingVertical: 22,
     borderRadius: 14,
     gap: 8,
     borderWidth: 1,
