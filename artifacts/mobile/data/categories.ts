@@ -28,8 +28,8 @@ export const CATEGORIES: Category[] = [
     subtitle: "Viajes interiores guiados por el sonido",
     icon: "eye",
     sessionCount: 4,
-    color: "#C8B4E0",
-    gradient: ["#4A3260", "#251633"],
+    color: "#f4c993",
+    gradient: ["#7A5520", "#3E2208"],
     primary: true,
   },
   {
@@ -38,8 +38,8 @@ export const CATEGORIES: Category[] = [
     subtitle: "Atmósferas sonoras para meditar",
     icon: "music",
     sessionCount: 9,
-    color: "#A8C4A8",
-    gradient: ["#3A5438", "#1E2E1C"],
+    color: "#f4c993",
+    gradient: ["#7A5520", "#3E2208"],
     primary: true,
   },
   {
@@ -49,8 +49,8 @@ export const CATEGORIES: Category[] = [
     icon: "thought-bubble-outline",
     iconFamily: "MaterialCommunityIcons",
     sessionCount: 10,
-    color: "#C4A4D4",
-    gradient: ["#3A2248", "#1E1024"],
+    color: "#f4c993",
+    gradient: ["#7A5520", "#3E2208"],
     primary: true,
   },
   {
@@ -89,12 +89,12 @@ const hexToRgba = (hex: string, alpha: number) => {
 // Color de la categoría con opacidad baja, para tintar tarjetas de forma sutil.
 // Algunas categorías tienen un color base muy apagado (casi gris), así que para
 // el tinte del buscador usamos un color/opacidad propios para que sí se note.
-const TINT_ALPHA_OVERRIDE: Record<string, number> = {
-  "musica-sonidos": 0.24,
-};
+const TINT_ALPHA_OVERRIDE: Record<string, number> = {};
 const TINT_COLOR_OVERRIDE: Record<string, string> = {
-  "musica-sonidos": "#5B9E7A",
   "sonidos-ancestrales": "#C4956A",
+  "meditaciones-guiadas": "#C4956A",
+  "musica-sonidos": "#C4956A",
+  "reflexiones": "#C4956A",
 };
 
 export const getCategoryTint = (categoryId: string, alpha = 0.2) => {

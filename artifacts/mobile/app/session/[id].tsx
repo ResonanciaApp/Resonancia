@@ -98,9 +98,9 @@ export default function SessionDetailScreen() {
     pillBg: string; labelGradient: [string, string]; labelColor: string;
   }> = {
     "sonidos-ancestrales":  { gradient: ["#2E0510", "#160108"], solid: "#160108", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "meditaciones-guiadas": { gradient: ["#1A0F2E", "#0D0A1A"], solid: "#0D0A1A", pillBg: "#2A1848", labelGradient: ["#EEE8FF", "#E0D5FF"], labelColor: "#3D1A7A" },
-    "reflexiones":          { gradient: ["#0A0F20", "#060A14"], solid: "#060A14", pillBg: "#0D1835", labelGradient: ["#E8EEFF", "#D8E6FF"], labelColor: "#1A3A8A" },
-    "musica-sonidos":       { gradient: ["#081409", "#030806"], solid: "#030806", pillBg: "#0D2010", labelGradient: ["#D5EDD8", "#B8D9BC"], labelColor: "#1A5225" },
+    "meditaciones-guiadas": { gradient: ["#2E0510", "#160108"], solid: "#160108", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "reflexiones":          { gradient: ["#2E0510", "#160108"], solid: "#160108", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "musica-sonidos":       { gradient: ["#2E0510", "#160108"], solid: "#160108", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
   };
   const catBg = CATEGORY_BG[session.categoryId] ?? CATEGORY_BG["sonidos-ancestrales"];
   const categoryPill = isAncestral ? "Ancestral" : isGuiada ? "Meditación" : isReflexion ? "Reflexión"
