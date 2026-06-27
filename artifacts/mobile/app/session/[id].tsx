@@ -31,7 +31,7 @@ import { useColors } from "@/hooks/useColors";
 const { width } = Dimensions.get("window");
 const HEADER_H = 298;
 
-function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: object }) {
+function GlowPill({ onPress, pillStyle, gradientColors }: { onPress: () => void; pillStyle: object; gradientColors?: [string, string] }) {
   const scale  = useRef(new Animated.Value(1)).current;
   const bright = useRef(new Animated.Value(0)).current;
 
@@ -52,7 +52,15 @@ function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: obje
 
   return (
     <Animated.View style={{ transform: [{ scale }] }}>
-      <Pressable onPressIn={handlePressIn} onPressOut={handlePressOut} style={pillStyle}>
+      <Pressable onPressIn={handlePressIn} onPressOut={handlePressOut} style={[pillStyle, { overflow: "hidden" }]}>
+        {gradientColors ? (
+          <LinearGradient
+            colors={gradientColors}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFillObject}
+          />
+        ) : null}
         <Animated.View
           pointerEvents="none"
           style={{
@@ -256,7 +264,7 @@ export default function SessionDetailScreen() {
         <View style={[styles.hero, { height: HEADER_H }]}>
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
-            <GlowPill onPress={() => router.back()} pillStyle={[styles.heroBackPill, { backgroundColor: catBg.pillBg }]} />
+            <GlowPill onPress={() => router.back()} pillStyle={styles.heroBackPill} gradientColors={catBg.gradient as [string, string]} />
           </View>
         </View>
 
@@ -522,7 +530,7 @@ export default function SessionDetailScreen() {
         pointerEvents="box-none"
         style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: catBg.gradient[0] }]}
       >
-        <GlowPill onPress={() => router.back()} pillStyle={styles.stickyBackPill} />
+        <GlowPill onPress={() => router.back()} pillStyle={styles.stickyBackPill} gradientColors={catBg.gradient as [string, string]} />
         <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
         <View style={{ width: 36 }} />
       </Animated.View>
@@ -772,7 +780,6 @@ const styles = StyleSheet.create({
     borderRadius: 19,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.35)",
-    backgroundColor: "#4A0C0C",
   },
   stickyBackPill: {
     flexDirection: "row",
