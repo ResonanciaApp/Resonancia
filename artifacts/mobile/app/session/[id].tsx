@@ -288,9 +288,9 @@ export default function SessionDetailScreen() {
             {/* Guardar */}
             <Pressable onPress={handleFav} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
               <View style={styles.actionCardBorder}>
-                <View style={styles.actionCardInner}>
+                <LinearGradient colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
                   <GradPillLabel icon="heart" label="Guardar" active={fav} />
-                </View>
+                </LinearGradient>
               </View>
             </Pressable>
 
@@ -302,9 +302,9 @@ export default function SessionDetailScreen() {
               style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}
             >
               <View style={styles.actionCardBorder}>
-                <View style={styles.actionCardInner}>
+                <LinearGradient colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
                   <GradPillLabel icon="download" label="Descargar" active={downloadPressed} />
-                </View>
+                </LinearGradient>
               </View>
             </Pressable>
 
@@ -316,9 +316,9 @@ export default function SessionDetailScreen() {
               style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}
             >
               <View style={styles.actionCardBorder}>
-                <View style={styles.actionCardInner}>
+                <LinearGradient colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
                   <GradPillLabel icon="share-2" label="Compartir" active={sharePressed} />
-                </View>
+                </LinearGradient>
               </View>
             </Pressable>
           </View>
@@ -585,7 +585,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    backgroundColor: "#22030E",
   },
   actionLabel: {
     fontSize: 14,
