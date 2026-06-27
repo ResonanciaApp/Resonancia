@@ -292,6 +292,8 @@ export default function RootLayout() {
     PlayfairDisplay_400Regular,
     PlayfairDisplay_700Bold,
     OptimaBold: require("../assets/fonts/OptimaBold.ttf"),
+    OptimaRegular: require("../assets/fonts/OptimaRegular.ttf"),
+    OptimaMedium: require("../assets/fonts/OptimaMedium.ttf"),
   });
 
   useEffect(() => {
