@@ -127,22 +127,24 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
           </Pressable>
 
           {/* Favoritos */}
-          {favSounds.length > 0 && (
-            <>
-              <Text style={styles.sectionTitle}>Favoritos</Text>
-              <View style={styles.grid}>
-                {favSounds.map((sound) => (
-                  <SoundCard
-                    key={sound.id}
-                    sound={sound}
-                    selected={localSelected === sound.id}
-                    fav={true}
-                    onPress={() => setLocalSelected(sound.id)}
-                    onLongPress={() => setFavPopupSound(sound)}
-                  />
-                ))}
-              </View>
-            </>
+          <Text style={styles.sectionTitle}>Favoritos</Text>
+          {favSounds.length > 0 ? (
+            <View style={styles.grid}>
+              {favSounds.map((sound) => (
+                <SoundCard
+                  key={sound.id}
+                  sound={sound}
+                  selected={localSelected === sound.id}
+                  fav={true}
+                  onPress={() => setLocalSelected(sound.id)}
+                  onLongPress={() => setFavPopupSound(sound)}
+                />
+              ))}
+            </View>
+          ) : (
+            <Text style={styles.favPlaceholder}>
+              Presiona un sonido por 1 segundo para agregarlo a favoritos
+            </Text>
           )}
 
           {/* Tabs */}
@@ -398,6 +400,14 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     marginBottom: 12,
     marginTop: 4,
+  },
+
+  favPlaceholder: {
+    fontSize: 13,
+    color: "rgba(255,255,255,0.30)",
+    fontStyle: "italic",
+    marginBottom: 22,
+    lineHeight: 19,
   },
 
   tabsGrid: {
