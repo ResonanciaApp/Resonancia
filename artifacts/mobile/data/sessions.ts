@@ -569,7 +569,7 @@ export const SESSIONS: Session[] = [
     description: "Una relajación muscular progresiva que libera la tensión acumulada desde los pies hasta la cabeza, preparando el cuerpo para el descanso.",
     benefits: ["Liberación de tensión", "Relajación muscular", "Calma nerviosa", "Preparación para el sueño"],
     instruments: ["Voz guía", "Cuencos suaves", "Música de fondo"],
-    image: require("@/assets/images/sessions/session-6.png"),
+    image: require("@/assets/images/sessions/session-6.jpg"),
   },
   {
     id: "42",
@@ -583,7 +583,7 @@ export const SESSIONS: Session[] = [
     description: "Deja que una brisa imaginaria recorra tu cuerpo disolviendo cada punto de tensión. Una práctica de relajación profunda con respiración consciente.",
     benefits: ["Respiración profunda", "Relajación instantánea", "Alivio del estrés", "Paz interior"],
     instruments: ["Voz guía", "Sonidos de brisa", "Cuencos de cristal"],
-    image: require("@/assets/images/sessions/session-7.png"),
+    image: require("@/assets/images/sessions/session-7.jpg"),
   },
   {
     id: "43",
@@ -597,7 +597,7 @@ export const SESSIONS: Session[] = [
     description: "Permítete rendirte por completo al descanso. Una guía de relajación profunda que invita a soltar el control y confiar en el cuerpo.",
     benefits: ["Rendición consciente", "Relajación total", "Reducción de ansiedad", "Sueño reparador"],
     instruments: ["Voz guía", "Drones suaves", "Campana tibetana"],
-    image: require("@/assets/images/sessions/session-8.png"),
+    image: require("@/assets/images/sessions/session-8.jpg"),
   },
   {
     id: "44",
@@ -611,7 +611,7 @@ export const SESSIONS: Session[] = [
     description: "Visualiza tu cuerpo convirtiéndose en agua tranquila. Una relajación profunda que disuelve los límites físicos y lleva la mente a la calma absoluta.",
     benefits: ["Disolución del estrés", "Relajación profunda", "Visualización guiada", "Calma mental"],
     instruments: ["Voz guía", "Sonidos de agua", "Cuencos tibetanos"],
-    image: require("@/assets/images/sessions/session-9.png"),
+    image: require("@/assets/images/sessions/session-9.jpg"),
   },
   {
     id: "45",
@@ -625,7 +625,7 @@ export const SESSIONS: Session[] = [
     description: "Bajo un cielo infinito de estrellas, la mente encuentra su quietud natural. Una relajación guiada con imágenes de la noche serena.",
     benefits: ["Expansión mental", "Relajación profunda", "Perspectiva cósmica", "Paz nocturna"],
     instruments: ["Voz guía", "Texturas espaciales", "Cuencos suaves"],
-    image: require("@/assets/images/sessions/session-10.png"),
+    image: require("@/assets/images/sessions/session-10.jpg"),
   },
 
   // ── Descanso — Sueño profundo ────────────────────────────────────────────
@@ -641,7 +641,7 @@ export const SESSIONS: Session[] = [
     description: "Frecuencias delta de 1-4 Hz diseñadas para llevar el cerebro al estado de sueño más profundo y reparador. Ideal para noches de descanso total.",
     benefits: ["Sueño profundo", "Regeneración celular", "Descanso máximo", "Recuperación física"],
     instruments: ["Frecuencias delta", "Ruido rosa", "Drones suaves"],
-    image: require("@/assets/images/sessions/session-11.png"),
+    image: require("@/assets/images/sessions/session-11.jpg"),
   },
   {
     id: "47",
@@ -655,7 +655,7 @@ export const SESSIONS: Session[] = [
     description: "Una transición suave desde la vigilia hasta el sueño profundo, guiando la mente a través del umbral hipnagógico con sonidos graduales.",
     benefits: ["Inicio del sueño", "Transición suave", "Relajación progresiva", "Descanso reparador"],
     instruments: ["Cuencos tibetanos", "Frecuencias theta", "Voz guía suave"],
-    image: require("@/assets/images/sessions/session-12.png"),
+    image: require("@/assets/images/sessions/session-12.jpg"),
   },
   {
     id: "48",
@@ -669,7 +669,7 @@ export const SESSIONS: Session[] = [
     description: "El sonido continuo del océano profundo acompaña la mente hacia las capas más oscuras y tranquilas del sueño. Una inmersión total en el descanso.",
     benefits: ["Sueño sin interrupciones", "Calma profunda", "Reducción del ruido mental", "Descanso oceánico"],
     instruments: ["Olas del océano", "Frecuencias delta", "Ruido blanco suave"],
-    image: require("@/assets/images/sessions/session-13.png"),
+    image: require("@/assets/images/sessions/session-13.jpg"),
   },
   {
     id: "49",
@@ -683,7 +683,7 @@ export const SESSIONS: Session[] = [
     description: "El resonar de los cuencos de cuarzo en un espacio interior imaginario lleva el sistema nervioso al reposo más completo y profundo.",
     benefits: ["Resonancia profunda", "Sueño reparador", "Desconexión mental", "Calma absoluta"],
     instruments: ["Cuencos de cuarzo", "Reverberación espacial", "Drones graves"],
-    image: require("@/assets/images/sessions/session-14.png"),
+    image: require("@/assets/images/sessions/session-14.jpg"),
   },
   {
     id: "50",
@@ -697,7 +697,7 @@ export const SESSIONS: Session[] = [
     description: "Diseñada específicamente para quienes luchan contra la mente activa al dormir. Frecuencias y guía que disuelven el flujo de pensamientos nocturnos.",
     benefits: ["Silencio mental", "Descanso profundo", "Liberación de preocupaciones", "Inicio rápido del sueño"],
     instruments: ["Frecuencias delta", "Voz guía", "Cuencos tibetanos"],
-    image: require("@/assets/images/sessions/session-15.png"),
+    image: require("@/assets/images/sessions/session-15.jpg"),
   },
 
   // ── Descanso — Ruidos ────────────────────────────────────────────────────
@@ -713,7 +713,7 @@ export const SESSIONS: Session[] = [
     description: "El sonido continuo de la lluvia sobre las hojas del bosque crea un manto sonoro perfecto para enmascarar el entorno y facilitar el sueño.",
     benefits: ["Enmascaramiento de ruido", "Relajación natural", "Ambiente acogedor", "Sueño continuo"],
     instruments: ["Lluvia", "Bosque", "Truenos lejanos"],
-    image: require("@/assets/images/sessions/session-16.png"),
+    image: require("@/assets/images/sessions/session-16.jpg"),
   },
   {
     id: "52",
@@ -727,7 +727,7 @@ export const SESSIONS: Session[] = [
     description: "Ruido blanco puro de alta calidad que bloquea las distracciones sonoras del entorno y crea el ambiente ideal para el sueño o la concentración.",
     benefits: ["Bloqueo de ruido", "Concentración", "Sueño sin interrupciones", "Ambiente neutro"],
     instruments: ["Ruido blanco"],
-    image: require("@/assets/images/sessions/session-17.png"),
+    image: require("@/assets/images/sessions/session-17.jpg"),
   },
   {
     id: "53",
@@ -741,7 +741,7 @@ export const SESSIONS: Session[] = [
     description: "El ritmo hipnótico de las olas del océano Pacífico rompiendo suavemente en la orilla. Un sonido ancestral que sincroniza la respiración con el mar.",
     benefits: ["Ritmo natural", "Relajación instantánea", "Respiración sincronizada", "Sueño profundo"],
     instruments: ["Olas del océano", "Brisa marina"],
-    image: require("@/assets/images/sessions/session-18.png"),
+    image: require("@/assets/images/sessions/session-18.jpg"),
   },
   {
     id: "54",
@@ -755,7 +755,7 @@ export const SESSIONS: Session[] = [
     description: "El fluir constante de un arroyo de montaña entre piedras crea un ruido rosa natural que calma el sistema nervioso y facilita el descanso.",
     benefits: ["Ruido rosa natural", "Calma nerviosa", "Ambiente natural", "Sueño tranquilo"],
     instruments: ["Arroyo", "Pájaros lejanos", "Viento suave"],
-    image: require("@/assets/images/sessions/session-19.png"),
+    image: require("@/assets/images/sessions/session-19.jpg"),
   },
   {
     id: "55",
@@ -769,7 +769,7 @@ export const SESSIONS: Session[] = [
     description: "El zumbido constante y familiar de un ventilador de techo. Un ruido de fondo reconfortante que muchas personas asocian con el sueño tranquilo.",
     benefits: ["Ambiente familiar", "Enmascaramiento suave", "Sueño continuo", "Temperatura sonora"],
     instruments: ["Ventilador", "Ruido de fondo suave"],
-    image: require("@/assets/images/sessions/session-20.png"),
+    image: require("@/assets/images/sessions/session-20.jpg"),
   },
 
   // ── Descanso — Meditaciones ──────────────────────────────────────────────
@@ -785,7 +785,7 @@ export const SESSIONS: Session[] = [
     description: "Un escaneo corporal completo diseñado para el momento de acostarse. Recorre cada parte del cuerpo soltando tensión y preparando el sistema para el sueño.",
     benefits: ["Relajación corporal", "Sueño reparador", "Consciencia somática", "Preparación para dormir"],
     instruments: ["Voz guía", "Música suave", "Cuencos tibetanos"],
-    image: require("@/assets/images/sessions/session-21.png"),
+    image: require("@/assets/images/sessions/session-21.jpg"),
   },
   {
     id: "57",
@@ -799,7 +799,7 @@ export const SESSIONS: Session[] = [
     description: "La técnica de respiración 4-7-8 del Dr. Andrew Weil, guiada con sonidos de cuencos. Activa el sistema nervioso parasimpático en minutos.",
     benefits: ["Activación parasimpática", "Reducción de ansiedad", "Inicio rápido del sueño", "Regulación nerviosa"],
     instruments: ["Voz guía", "Cuencos tibetanos"],
-    image: require("@/assets/images/sessions/session-22.png"),
+    image: require("@/assets/images/sessions/session-22.jpg"),
   },
   {
     id: "58",
@@ -813,7 +813,7 @@ export const SESSIONS: Session[] = [
     description: "Cierra el día con una meditación de gratitud que transforma las preocupaciones en reconocimiento y lleva el corazón a la paz antes de dormir.",
     benefits: ["Gratitud consciente", "Paz nocturna", "Cierre del día", "Bienestar emocional"],
     instruments: ["Voz guía", "Cuencos suaves", "Música de fondo"],
-    image: require("@/assets/images/sessions/session-23.png"),
+    image: require("@/assets/images/sessions/session-23.jpg"),
   },
   {
     id: "59",
@@ -827,7 +827,7 @@ export const SESSIONS: Session[] = [
     description: "Una sesión completa de Yoga Nidra, el sueño yóguico consciente. Guía el cuerpo al borde del sueño mientras la mente permanece en una consciencia suave.",
     benefits: ["Estado hipnagógico", "Descanso profundo", "Consciencia expandida", "Sueño consciente"],
     instruments: ["Voz guía", "Cuencos tibetanos", "Frecuencias theta"],
-    image: require("@/assets/images/sessions/session-24.png"),
+    image: require("@/assets/images/sessions/session-24.jpg"),
   },
   {
     id: "60",
@@ -841,7 +841,7 @@ export const SESSIONS: Session[] = [
     description: "Una meditación para quienes se van a dormir con preocupaciones sobre el futuro. Suelta el mañana, confía en el proceso y descansa en el presente.",
     benefits: ["Liberación del futuro", "Confianza", "Presente nocturno", "Sueño tranquilo"],
     instruments: ["Voz guía", "Cuencos suaves"],
-    image: require("@/assets/images/sessions/session-25.png"),
+    image: require("@/assets/images/sessions/session-25.jpg"),
   },
 
   // ── Descanso — Historias para dormir ────────────────────────────────────
@@ -857,7 +857,7 @@ export const SESSIONS: Session[] = [
     description: "Un relato contemplativo sobre un jardín que solo florece bajo la luna llena. Una historia de belleza silenciosa y calma absoluta para el descanso.",
     benefits: ["Escape mental", "Relajación profunda", "Imágenes tranquilas", "Sueño inducido"],
     instruments: ["Voz narradora", "Música de fondo", "Sonidos de naturaleza"],
-    image: require("@/assets/images/sessions/session-26.png"),
+    image: require("@/assets/images/sessions/session-26.jpg"),
   },
   {
     id: "62",
@@ -871,7 +871,7 @@ export const SESSIONS: Session[] = [
     description: "Una historia de regreso al hogar: una cabaña cálida en medio de un bosque silencioso. Un relato lento y reconfortante perfecto para cerrar los ojos.",
     benefits: ["Sensación de hogar", "Calma profunda", "Escape narrativo", "Sueño tranquilo"],
     instruments: ["Voz narradora", "Chimenea", "Lluvia suave"],
-    image: require("@/assets/images/sessions/session-27.png"),
+    image: require("@/assets/images/sessions/session-27.jpg"),
   },
   {
     id: "63",
@@ -885,7 +885,7 @@ export const SESSIONS: Session[] = [
     description: "A bordo de un tren que cruza paisajes nocturnos, el ritmo constante de las ruedas sobre los rieles hipnotiza y lleva la mente al descanso total.",
     benefits: ["Ritmo hipnótico", "Paisajes imaginados", "Relajación gradual", "Sueño profundo"],
     instruments: ["Voz narradora", "Sonido de tren", "Música suave"],
-    image: require("@/assets/images/sessions/session-28.png"),
+    image: require("@/assets/images/sessions/session-28.jpg"),
   },
   {
     id: "64",
@@ -899,7 +899,7 @@ export const SESSIONS: Session[] = [
     description: "Una historia de contemplación en la orilla del mar antes del amanecer. La soledad tranquila del agua y la brisa conducen a un descanso total.",
     benefits: ["Contemplación serena", "Presencia total", "Relajación natural", "Inicio del sueño"],
     instruments: ["Voz narradora", "Olas del mar", "Pájaros lejanos"],
-    image: require("@/assets/images/sessions/session-29.png"),
+    image: require("@/assets/images/sessions/session-29.jpg"),
   },
   {
     id: "65",
@@ -913,7 +913,7 @@ export const SESSIONS: Session[] = [
     description: "Un viaje narrativo a un templo antiguo donde el silencio es la única práctica. Una historia lenta y profunda que invita al descanso sin esfuerzo.",
     benefits: ["Silencio interior", "Relajación profunda", "Escape espiritual", "Sueño reparador"],
     instruments: ["Voz narradora", "Cuencos tibetanos", "Silencio"],
-    image: require("@/assets/images/sessions/session-30.png"),
+    image: require("@/assets/images/sessions/session-30.jpg"),
   },
 
   // ── Descanso — Historias infantiles ─────────────────────────────────────
@@ -929,7 +929,7 @@ export const SESSIONS: Session[] = [
     description: "Una pequeña nube que viaja por el cielo buscando el lugar perfecto para descansar. Un cuento suave y entrañable para los más pequeños.",
     benefits: ["Imaginación tranquila", "Sueño infantil", "Calma nocturna", "Mundo de sueños"],
     instruments: ["Voz narradora", "Música de cuna", "Sonidos suaves"],
-    image: require("@/assets/images/sessions/session-31.png"),
+    image: require("@/assets/images/sessions/session-31.jpg"),
   },
   {
     id: "67",
@@ -943,7 +943,7 @@ export const SESSIONS: Session[] = [
     description: "Un viejito sabio cuida las estrellas cada noche para que brillen mientras los niños duermen. Un cuento mágico lleno de ternura y calma.",
     benefits: ["Seguridad nocturna", "Imaginación dulce", "Sueño tranquilo", "Mundo mágico"],
     instruments: ["Voz narradora", "Música de caja de música", "Campanas suaves"],
-    image: require("@/assets/images/sessions/session-32.png"),
+    image: require("@/assets/images/sessions/session-32.jpg"),
   },
   {
     id: "68",
@@ -957,7 +957,7 @@ export const SESSIONS: Session[] = [
     description: "Todos los sueños del mundo viajan por un río invisible. Esta noche, es tu turno de subir a la barca y dejarte llevar hacia aventuras increíbles.",
     benefits: ["Imaginación activa", "Transición al sueño", "Mundo onírico", "Calma nocturna"],
     instruments: ["Voz narradora", "Sonidos de río", "Música suave"],
-    image: require("@/assets/images/sessions/session-33.png"),
+    image: require("@/assets/images/sessions/session-33.jpg"),
   },
   {
     id: "69",
@@ -971,7 +971,7 @@ export const SESSIONS: Session[] = [
     description: "Una tortuga sabia enseña a los animales del bosque el arte de ir despacio y descansar bien. Un cuento sobre la calma y el poder del silencio.",
     benefits: ["Ritmo lento", "Calma aprendida", "Sueño precoz", "Valores tranquilos"],
     instruments: ["Voz narradora", "Sonidos del bosque", "Música tranquila"],
-    image: require("@/assets/images/sessions/session-34.png"),
+    image: require("@/assets/images/sessions/session-34.jpg"),
   },
   {
     id: "70",
@@ -985,7 +985,7 @@ export const SESSIONS: Session[] = [
     description: "Bajo la tierra, las semillas descansan en la oscuridad antes de convertirse en flores. Un cuento sobre el poder transformador del descanso nocturno.",
     benefits: ["Metáfora del descanso", "Calma nocturna", "Sueño natural", "Crecimiento interior"],
     instruments: ["Voz narradora", "Sonidos de naturaleza", "Música de cuna"],
-    image: require("@/assets/images/sessions/session-35.png"),
+    image: require("@/assets/images/sessions/session-35.jpg"),
   },
 ];
 
