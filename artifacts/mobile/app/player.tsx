@@ -38,6 +38,7 @@ import { getNatureSounds } from "@/config/nature-base-map";
 import Svg, { Path, Rect } from "react-native-svg";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
+import { AmbientSoundPickerSheet } from "@/components/AmbientSoundPickerSheet";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
@@ -83,6 +84,8 @@ export default function PlayerScreen() {
   const [showOptionsSheet, setShowOptionsSheet] = useState(false);
   const [showPlaylistSheet, setShowPlaylistSheet] = useState(false);
   const [showFolderSheet, setShowFolderSheet] = useState(false);
+  const [showAmbientPicker, setShowAmbientPicker] = useState(false);
+  const [selectedAmbientSoundId, setSelectedAmbientSoundId] = useState<string | null>(null);
   const sheetProgress = useSharedValue(0);
   const ambSheetTrackRef = useRef<View>(null);
   const ambSheetTrackWidth = useRef(0);
@@ -640,10 +643,16 @@ export default function PlayerScreen() {
               )}
 
               {/* Sonido ambiente */}
-              <Pressable style={styles.optRow}>
-                <Feather name="music" size={18} color="rgba(255,255,255,0.45)" style={styles.optIcon} />
-                <Text style={[styles.optRowText, { color: "rgba(255,255,255,0.45)" }]}>Sonido ambiente</Text>
-                <Text style={styles.optRowMuted}>Próximamente</Text>
+              <Pressable
+                style={styles.optRow}
+                onPress={() => { closeSheet(); setTimeout(() => setShowAmbientPicker(true), 300); }}
+              >
+                <Feather name="music" size={18} color="white" style={styles.optIcon} />
+                <Text style={styles.optRowText}>Sonido ambiente</Text>
+                {selectedAmbientSoundId && (
+                  <Feather name="check-circle" size={15} color="#D4AF37" style={{ marginRight: 6 }} />
+                )}
+                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
               </Pressable>
 
               {/* Temporizador */}
@@ -744,6 +753,14 @@ export default function PlayerScreen() {
           onClose={() => setShowFolderSheet(false)}
         />
       )}
+
+      {/* ── Ambient Sound Picker ───────────────────────────────────────────── */}
+      <AmbientSoundPickerSheet
+        visible={showAmbientPicker}
+        selectedSoundId={selectedAmbientSoundId}
+        onClose={() => setShowAmbientPicker(false)}
+        onSelect={(id) => setSelectedAmbientSoundId(id)}
+      />
     </View>
   );
 }
