@@ -683,7 +683,7 @@ const styles = StyleSheet.create({
   relatedCardTitle: { fontSize: 16, fontFamily: "OptimaBold", lineHeight: 21 },
   relatedAuthorRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   relatedAuthorAvatar: { width: 18, height: 18, borderRadius: 9 },
-  relatedCardSub: { fontSize: 12 },
+  relatedCardSub: { fontSize: 12, fontFamily: "Jost" },
 
   // Sticky header
   stickyHeader: {
