@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
   },
   durationText: {
     fontSize: 15,
-    fontFamily: "Jost",
+    fontFamily: "OptimaRegular",
     color: "#4A0C0C",
   },
 
