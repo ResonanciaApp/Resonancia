@@ -106,6 +106,9 @@ export default function SessionDetailScreen() {
   const categoryPill = isAncestral ? "Ancestral" : isGuiada ? "Meditación" : isReflexion ? "Reflexión"
     : isMusica ? (session.soundTag?.replace("Música ", "") ?? "Música") : null;
   const categoryIcon: string = "clock";
+  const subTag = session.ancestralTag ?? session.meditationTag ?? session.soundTag ?? session.categoryLabel;
+  const subTagIcon: string = isAncestral ? "disc" : isGuiada ? "wind" : isMusica ? "headphones" : "book-open";
+  const savedCount = 40 + ((parseInt(session.id, 10) * 17 + 83) % 260);
   const [localFav, setLocalFav] = useState<boolean | null>(null);
 
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -222,6 +225,15 @@ export default function SessionDetailScreen() {
 
           {/* Title */}
           <Text style={[styles.title, { color: colors.foreground }]}>{session.title}</Text>
+
+          {/* Meta row */}
+          <View style={styles.metaRow}>
+            <Feather name="heart" size={13} color="rgba(255,255,255,0.55)" />
+            <Text style={styles.metaText}>{savedCount}</Text>
+            <View style={styles.metaDot} />
+            <Feather name={subTagIcon as never} size={13} color="rgba(255,255,255,0.55)" />
+            <Text style={styles.metaText}>{subTag}</Text>
+          </View>
 
           {/* Description */}
           <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]}>
@@ -439,6 +451,28 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "400",
     color: "#4A0C0C",
+  },
+
+  // Meta row
+  metaRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
+    marginTop: 2,
+    marginBottom: 10,
+  },
+  metaText: {
+    fontSize: 13,
+    color: "rgba(255,255,255,0.55)",
+    fontWeight: "500",
+  },
+  metaDot: {
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: "rgba(255,255,255,0.3)",
+    marginHorizontal: 3,
   },
 
   // Title
