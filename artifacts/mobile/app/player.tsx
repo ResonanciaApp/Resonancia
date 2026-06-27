@@ -33,6 +33,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { getNatureSounds } from "@/config/nature-base-map";
+import Svg, { Rect } from "react-native-svg";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
@@ -340,13 +341,13 @@ export default function PlayerScreen() {
           )}
           {isLoading ? (
             <Feather name="loader" size={46} color="white" />
+          ) : isPlaying ? (
+            <Svg width={46} height={46} viewBox="0 0 46 46">
+              <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+              <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+            </Svg>
           ) : (
-            <Feather
-              name={isPlaying ? "pause" : "play"}
-              size={46}
-              color="white"
-              style={isPlaying ? undefined : { paddingLeft: 4 }}
-            />
+            <Feather name="play" size={46} color="white" style={{ paddingLeft: 4 }} />
           )}
         </Pressable>
 
