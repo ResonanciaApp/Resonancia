@@ -73,7 +73,7 @@ function GradPillLabel({ icon, label, active }: { icon: React.ComponentProps<typ
     <MaskedView
       maskElement={
         <View style={{ alignItems: "center", gap: 8, backgroundColor: "transparent" }}>
-          <Feather name={icon} size={20} color="#000" />
+          <Feather name={icon} size={23} color="#000" />
           <Text style={{ fontSize: 14, fontWeight: "600", letterSpacing: 0.2, color: "#000" }}>{label}</Text>
         </View>
       }
