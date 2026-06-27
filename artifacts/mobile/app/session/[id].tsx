@@ -288,7 +288,7 @@ export default function SessionDetailScreen() {
             {/* Guardar */}
             <Pressable onPress={handleFav} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
               <LinearGradient colors={["rgba(212,175,55,0.08)","rgba(212,175,55,0.28)"]} start={{ x:0,y:0.5 }} end={{ x:1,y:0.5 }} style={styles.actionCardBorder}>
-                <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
+                <LinearGradient colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
                   <GradPillLabel icon="heart" label="Guardar" active={fav} />
                 </LinearGradient>
               </LinearGradient>
@@ -302,7 +302,7 @@ export default function SessionDetailScreen() {
               style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}
             >
               <LinearGradient colors={["rgba(212,175,55,0.08)","rgba(212,175,55,0.28)"]} start={{ x:0,y:0.5 }} end={{ x:1,y:0.5 }} style={styles.actionCardBorder}>
-                <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
+                <LinearGradient colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
                   <GradPillLabel icon="download" label="Descargar" active={downloadPressed} />
                 </LinearGradient>
               </LinearGradient>
@@ -316,7 +316,7 @@ export default function SessionDetailScreen() {
               style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}
             >
               <LinearGradient colors={["rgba(212,175,55,0.08)","rgba(212,175,55,0.28)"]} start={{ x:0,y:0.5 }} end={{ x:1,y:0.5 }} style={styles.actionCardBorder}>
-                <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
+                <LinearGradient colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
                   <GradPillLabel icon="share-2" label="Compartir" active={sharePressed} />
                 </LinearGradient>
               </LinearGradient>
