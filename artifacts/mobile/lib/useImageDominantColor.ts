@@ -1,9 +1,12 @@
+/**
+ * Extrae el color dominante de una imagen de sesión.
+ * Usa expo-file-system (puro JS, sin native rebuild) en lugar de
+ * expo-image-manipulator para evitar "Cannot find native module".
+ */
 import { Asset } from "expo-asset";
-import * as ImageManipulator from "expo-image-manipulator";
+import * as FileSystem from "expo-file-system";
 import { useEffect, useRef, useState } from "react";
 import pako from "pako";
-
-const SAMPLE_SIZE = 8; // 8×8 pixel sample
 
 // ── PNG filter reconstruction ──────────────────────────────────────────────
 function paethPredictor(a: number, b: number, c: number): number {
@@ -18,7 +21,7 @@ function reconstructRow(
   filtered: Uint8Array,
   prev: Uint8Array,
   filter: number,
-  bpp: number // bytes per pixel (3 for RGB)
+  bpp: number
 ): Uint8Array {
   const n = filtered.length;
   const out = new Uint8Array(n);
@@ -33,7 +36,7 @@ function reconstructRow(
       case 2: v = x + b; break;
       case 3: v = x + Math.floor((a + b) / 2); break;
       case 4: v = x + paethPredictor(a, b, c); break;
-      default: v = x; // filter 0 = None
+      default: v = x;
     }
     out[i] = v & 0xff;
   }
@@ -48,18 +51,30 @@ function b64ToBytes(b64: string): Uint8Array {
   return bytes;
 }
 
-// ── Parse PNG and return average [R,G,B] ──────────────────────────────────
+// ── Parse PNG → average RGB, sampling every STEP-th row and column ─────────
+const STEP = 8; // sample 1 of every 8 pixels per axis → ~64× faster
+
 function parsePNGAvgColor(b64: string): [number, number, number] | null {
   try {
     const bytes = b64ToBytes(b64);
-    const view = new DataView(bytes.buffer);
+    const dv = new DataView(bytes.buffer);
+
+    // Read IHDR for width/height/colorType
+    // PNG signature = 8 bytes, then IHDR chunk = 4(len)+4(type)+13(data)+4(crc)
+    const ihdrOffset = 8 + 8; // skip signature + chunk length+type
+    const imgWidth  = dv.getUint32(ihdrOffset);
+    const imgHeight = dv.getUint32(ihdrOffset + 4);
+    const colorType = bytes[ihdrOffset + 9]; // 2=RGB, 6=RGBA
+
+    const channels = colorType === 6 ? 4 : 3; // RGB or RGBA
+    const bpp = channels;
 
     // Collect all IDAT chunks
-    let offset = 8; // skip PNG signature
+    let offset = 8;
     const idatParts: Uint8Array[] = [];
 
     while (offset < bytes.length - 12) {
-      const len = view.getUint32(offset);
+      const len  = dv.getUint32(offset);
       const type = String.fromCharCode(
         bytes[offset + 4], bytes[offset + 5],
         bytes[offset + 6], bytes[offset + 7]
@@ -73,44 +88,51 @@ function parsePNGAvgColor(b64: string): [number, number, number] | null {
     if (!idatParts.length) return null;
 
     // Concatenate and inflate
-    const combined = new Uint8Array(idatParts.reduce((s, p) => s + p.length, 0));
+    const totalLen = idatParts.reduce((s, p) => s + p.length, 0);
+    const combined = new Uint8Array(totalLen);
     let pos = 0;
     for (const p of idatParts) { combined.set(p, pos); pos += p.length; }
 
     const raw = pako.inflate(combined);
 
-    // Reconstruct pixels: each row = 1 filter byte + width*3 bytes
-    const w = SAMPLE_SIZE;
-    const h = SAMPLE_SIZE;
-    const bpp = 3;
-    const rowBytes = w * bpp;
-    const rows: Uint8Array[] = [];
+    // Reconstruct rows, sampling every STEP-th row/column
+    const rowBytes = imgWidth * channels;
+    let rSum = 0, gSum = 0, bSum = 0, count = 0;
+    let prevRow = new Uint8Array(rowBytes);
 
-    for (let row = 0; row < h; row++) {
+    for (let row = 0; row < imgHeight; row++) {
       const start = row * (1 + rowBytes);
       if (start + 1 + rowBytes > raw.length) break;
-      const filter = raw[start];
-      const filtered = raw.slice(start + 1, start + 1 + rowBytes);
-      const prev = rows[row - 1] ?? new Uint8Array(rowBytes);
-      rows.push(reconstructRow(filtered, prev, filter, bpp));
-    }
 
-    // Average all pixels
-    let rSum = 0, gSum = 0, bSum = 0, count = 0;
-    for (const row of rows) {
-      for (let i = 0; i < rowBytes; i += 3) {
-        rSum += row[i]; gSum += row[i + 1]; bSum += row[i + 2];
+      const filter   = raw[start];
+      const filtered = raw.slice(start + 1, start + 1 + rowBytes);
+      const current  = reconstructRow(filtered, prevRow, filter, bpp);
+      prevRow = current;
+
+      // Only sample every STEP-th row
+      if (row % STEP !== 0) continue;
+
+      for (let col = 0; col < imgWidth; col += STEP) {
+        const i = col * channels;
+        rSum += current[i];
+        gSum += current[i + 1];
+        bSum += current[i + 2];
         count++;
       }
     }
+
     if (!count) return null;
-    return [Math.round(rSum / count), Math.round(gSum / count), Math.round(bSum / count)];
+    return [
+      Math.round(rSum / count),
+      Math.round(gSum / count),
+      Math.round(bSum / count),
+    ];
   } catch {
     return null;
   }
 }
 
-// ── Darken RGB by 0-1 amount (0 = original, 1 = black) ────────────────────
+// ── Darken ─────────────────────────────────────────────────────────────────
 function darkenRGB(r: number, g: number, b: number, amount: number): string {
   const k = 1 - amount;
   const toHex = (n: number) => Math.round(n * k).toString(16).padStart(2, "0");
@@ -119,32 +141,35 @@ function darkenRGB(r: number, g: number, b: number, amount: number): string {
 
 // ── Public hook ────────────────────────────────────────────────────────────
 export interface DominantColors {
-  dominant: string;   // slightly darkened
-  mid: string;        // more darkened
-  dark: string;       // darkest (near black)
+  dominant: string;
+  mid: string;
+  dark: string;
 }
 
 const DEFAULT_COLORS: DominantColors = {
   dominant: "#2E0510",
-  mid: "#1E030A",
-  dark: "#100206",
+  mid:      "#1E030A",
+  dark:     "#100206",
 };
 
-const cache = new Map<number | string, DominantColors>();
+const cache = new Map<string, DominantColors>();
 
 export function useImageDominantColor(
   imageSource: number | { uri: string } | null | undefined
 ): DominantColors {
   const [colors, setColors] = useState<DominantColors>(DEFAULT_COLORS);
-  const prevKey = useRef<number | string | null>(null);
+  const prevKey = useRef<string>("");
 
   useEffect(() => {
-    if (!imageSource) return;
-    const key = typeof imageSource === "number" ? imageSource : (imageSource as any).uri ?? 0;
-    if (key === prevKey.current) return;
+    if (imageSource == null) return;
+    const key =
+      typeof imageSource === "number"
+        ? String(imageSource)
+        : (imageSource as { uri: string }).uri ?? "";
+
+    if (!key || key === prevKey.current) return;
     prevKey.current = key;
 
-    // Return cached immediately
     if (cache.has(key)) {
       setColors(cache.get(key)!);
       return;
@@ -152,25 +177,39 @@ export function useImageDominantColor(
 
     (async () => {
       try {
-        let uri: string;
+        let localUri: string;
 
         if (typeof imageSource === "number") {
+          // Bundled asset → resolve to local file
           const asset = Asset.fromModule(imageSource);
           await asset.downloadAsync();
-          uri = asset.localUri!;
+          localUri = asset.localUri!;
         } else {
-          uri = (imageSource as any).uri;
+          const uri = (imageSource as { uri: string }).uri;
+          if (uri.startsWith("http")) {
+            // Remote image → download to temp file
+            const tmpPath =
+              FileSystem.cacheDirectory +
+              "dominant_" +
+              key.replace(/[^a-z0-9]/gi, "_").slice(-40) +
+              ".png";
+            const existing = await FileSystem.getInfoAsync(tmpPath);
+            if (!existing.exists) {
+              await FileSystem.downloadAsync(uri, tmpPath);
+            }
+            localUri = tmpPath;
+          } else {
+            localUri = uri;
+          }
         }
 
-        if (!uri) return;
+        if (!localUri) return;
 
-        const result = await ImageManipulator.manipulateAsync(
-          uri,
-          [{ resize: { width: SAMPLE_SIZE, height: SAMPLE_SIZE } }],
-          { format: ImageManipulator.SaveFormat.PNG, base64: true }
-        );
+        const b64 = await FileSystem.readAsStringAsync(localUri, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
 
-        const rgb = parsePNGAvgColor(result.base64!);
+        const rgb = parsePNGAvgColor(b64);
         if (!rgb) return;
 
         const [r, g, b] = rgb;
@@ -182,7 +221,7 @@ export function useImageDominantColor(
         cache.set(key, computed);
         setColors(computed);
       } catch {
-        // leave defaults
+        // Silently fall back to defaults
       }
     })();
   }, [imageSource]);
