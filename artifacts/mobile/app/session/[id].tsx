@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import MaskedView from "@react-native-masked-view/masked-view";
+import Svg, { Path } from "react-native-svg";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -447,9 +448,17 @@ export default function SessionDetailScreen() {
             end={{ x: 1, y: 0 }}
             style={StyleSheet.absoluteFill}
           />
-          <Text style={[styles.playBtnText, { color: colors.primaryForeground }]}>
-            {isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora"}
-          </Text>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            <Svg width={18} height={18} viewBox="0 0 48 48">
+              <Path
+                d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
+                fill={colors.primaryForeground}
+              />
+            </Svg>
+            <Text style={[styles.playBtnText, { color: colors.primaryForeground }]}>
+              {isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora"}
+            </Text>
+          </View>
         </Pressable>
       </View>
     </View>
@@ -730,7 +739,7 @@ const styles = StyleSheet.create({
   playBtn: {
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 16,
+    paddingVertical: 20,
     borderRadius: 30,
     shadowColor: "#D4AF37",
     shadowOffset: { width: 0, height: 4 },
