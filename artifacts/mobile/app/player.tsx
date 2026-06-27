@@ -630,7 +630,7 @@ const styles = StyleSheet.create({
 
   titleText: {
     fontSize: 20,
-    fontWeight: "800",
+    fontFamily: "OptimaBold",
     color: "white",
     letterSpacing: 0.2,
     marginBottom: 6,
