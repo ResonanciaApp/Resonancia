@@ -246,11 +246,11 @@ export function AmbientSoundPickerSheet({
                     style={[
                       styles.tab,
                       sel
-                        ? { backgroundColor: TAB_COLORS[tab.id], borderColor: TAB_COLORS[tab.id] }
-                        : { backgroundColor: "rgba(255,255,255,0.07)", borderColor: "rgba(255,255,255,0.12)" },
+                        ? { backgroundColor: "transparent", borderColor: "#FFFFFF" }
+                        : { backgroundColor: "transparent", borderColor: "rgba(255,255,255,0.22)" },
                     ]}
                   >
-                    <Text style={[styles.tabLabel, sel && { color: "white" }]}>
+                    <Text style={[styles.tabLabel, sel && { color: "white", fontWeight: "700" }]}>
                       {tab.label}
                     </Text>
                   </Pressable>
@@ -665,8 +665,8 @@ const styles = StyleSheet.create({
   },
   tabLabel: {
     fontSize: 13,
-    color: "rgba(255,255,255,0.65)",
-    fontWeight: "500",
+    color: "rgba(255,255,255,0.55)",
+    fontWeight: "400",
   },
 
   grid: {
