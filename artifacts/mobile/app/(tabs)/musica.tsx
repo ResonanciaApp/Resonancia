@@ -1016,7 +1016,7 @@ const styles = StyleSheet.create({
     gap: 4,
     backgroundColor: "transparent",
   },
-  pillTabLabel: { fontSize: 14, letterSpacing: 0.1, fontFamily: "OptimaBold" },
+  pillTabLabel: { fontSize: 14, letterSpacing: 0.1, fontFamily: "Jost", fontWeight: "700" },
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },
 
