@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image as ExpoImage } from "expo-image";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Dimensions,
   Modal,
@@ -42,24 +42,31 @@ const TAB_COLORS: Record<TabId, string> = {
   bpm:         "#A04040",
 };
 
+type SessionInfo = { title: string; image: any };
+
 type Props = {
   visible: boolean;
   selectedSoundId: string | null;
+  session?: SessionInfo;
   onClose: () => void;
   onSelect: (soundId: string | null) => void;
 };
 
-export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onSelect }: Props) {
+export function AmbientSoundPickerSheet({ visible, selectedSoundId, session, onClose, onSelect }: Props) {
   const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState<TabId>("todos");
   const [favIds, setFavIds] = useState<Set<string>>(new Set());
   const [localSelected, setLocalSelected] = useState<string | null>(selectedSoundId);
   const [favPopupSound, setFavPopupSound] = useState<MixSound | null>(null);
+  const [step, setStep] = useState<"pick" | "controles">("pick");
+  const [sessionVolume, setSessionVolume] = useState(0.8);
+  const [ambientVolume, setAmbientVolume] = useState(0.5);
 
-  // Reset local selection whenever the sheet opens
+  // Reset whenever the sheet opens
   useEffect(() => {
     if (!visible) return;
     setLocalSelected(selectedSoundId);
+    setStep("pick");
     AsyncStorage.getItem(FAV_KEY).then((val) => {
       if (val) setFavIds(new Set(JSON.parse(val) as string[]));
     });
@@ -83,26 +90,99 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
 
   const favSounds = useMemo(() => SOUNDS.filter((s) => favIds.has(s.id)), [favIds]);
 
-  const handleConfirm = () => {
+  const handleGuardar = () => {
     onSelect(localSelected);
     onClose();
   };
 
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
+  const topPad = (Platform.OS === "web" ? 20 : insets.top) + 8;
+
+  const ambientSound = localSelected ? SOUNDS.find((s) => s.id === localSelected) ?? null : null;
+  const ambientImg = localSelected ? getSoundImage(localSelected) : null;
 
   return (
     <Modal
       visible={visible}
       transparent={false}
       animationType="slide"
-      onRequestClose={onClose}
+      onRequestClose={step === "controles" ? () => setStep("pick") : onClose}
       statusBarTranslucent
     >
       <View style={styles.root}>
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "#191919" }]} />
 
+        {/* ═══════════════════════════════════════════════════════════════
+            PASO 2 — CONTROLES
+        ═══════════════════════════════════════════════════════════════ */}
+        {step === "controles" && (
+          <View style={StyleSheet.absoluteFill}>
+            {/* Session image background */}
+            {session?.image && (
+              <ExpoImage
+                source={session.image}
+                style={StyleSheet.absoluteFill}
+                contentFit="cover"
+              />
+            )}
+            <LinearGradient
+              colors={["rgba(0,0,0,0.45)", "rgba(0,0,0,0.75)"]}
+              style={StyleSheet.absoluteFill}
+              pointerEvents="none"
+            />
+
+            {/* Top bar */}
+            <View style={[styles.topBar, { paddingTop: topPad }]}>
+              <Pressable
+                style={styles.descartarBtn}
+                onPress={() => setStep("pick")}
+                hitSlop={8}
+              >
+                <Feather name="x" size={16} color="rgba(255,255,255,0.75)" />
+                <Text style={styles.descartarText}>Descartar</Text>
+              </Pressable>
+              <View style={{ width: 70 }} />
+            </View>
+
+            {/* Bottom controls panel */}
+            <View style={[styles.controlesPanel, { paddingBottom: bottomPad + 16 }]}>
+              <Text style={styles.controlesTitulo}>Controles</Text>
+
+              {/* Sesión track */}
+              <TrackRow
+                image={session?.image ?? null}
+                name={session?.title ?? "Sesión"}
+                volume={sessionVolume}
+                onVolumeChange={setSessionVolume}
+                onRemove={null}
+              />
+
+              {/* Ambiente track */}
+              {ambientSound && (
+                <TrackRow
+                  image={ambientImg ?? null}
+                  name={ambientSound.name}
+                  volume={ambientVolume}
+                  onVolumeChange={setAmbientVolume}
+                  onRemove={() => setLocalSelected(null)}
+                />
+              )}
+
+              {/* Guardar */}
+              <Pressable style={styles.guardarBtn} onPress={handleGuardar}>
+                <Text style={styles.guardarText}>Guardar</Text>
+              </Pressable>
+            </View>
+          </View>
+        )}
+
+        {/* ═══════════════════════════════════════════════════════════════
+            PASO 1 — PICKER (oculto en controles)
+        ═══════════════════════════════════════════════════════════════ */}
+        {step === "pick" && (
+          <>
         {/* Top bar */}
-        <View style={[styles.topBar, { paddingTop: (Platform.OS === "web" ? 20 : insets.top) + 8 }]}>
+        <View style={[styles.topBar, { paddingTop: topPad }]}>
           <Pressable onPress={onClose} hitSlop={8}>
             <Text style={styles.cancelBtn}>Cancelar</Text>
           </Pressable>
@@ -236,7 +316,7 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
         >
           <Pressable
             style={styles.nextBtn}
-            onPress={localSelected !== null ? handleConfirm : undefined}
+            onPress={localSelected !== null ? () => setStep("controles") : undefined}
             disabled={localSelected === null}
           >
             <Text style={[styles.nextBtnText, localSelected === null && styles.nextBtnTextDisabled]}>
@@ -244,11 +324,80 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
             </Text>
           </Pressable>
         </BlurView>
+          </>
+        )}
       </View>
     </Modal>
   );
 }
 
+// ─── TrackRow ──────────────────────────────────────────────────────────────
+function TrackRow({
+  image,
+  name,
+  volume,
+  onVolumeChange,
+  onRemove,
+}: {
+  image: any;
+  name: string;
+  volume: number;
+  onVolumeChange: (v: number) => void;
+  onRemove: (() => void) | null;
+}) {
+  const trackRef = useRef<View>(null);
+  const trackWidth = useRef(0);
+  const trackPageX = useRef(0);
+
+  const computeValue = (pageX: number) =>
+    Math.max(0, Math.min(1, (pageX - trackPageX.current) / (trackWidth.current || 1)));
+
+  return (
+    <View style={styles.trackRow}>
+      {/* Thumbnail */}
+      <View style={styles.trackThumbWrap}>
+        {image ? (
+          <ExpoImage source={image} style={StyleSheet.absoluteFill} contentFit="cover" />
+        ) : (
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.08)" }]} />
+        )}
+        {onRemove && (
+          <Pressable style={styles.trackRemoveBtn} onPress={onRemove} hitSlop={6}>
+            <Feather name="x" size={10} color="white" />
+          </Pressable>
+        )}
+      </View>
+
+      {/* Name + slider */}
+      <View style={styles.trackMain}>
+        <Text style={styles.trackName} numberOfLines={1}>{name}</Text>
+        <View style={styles.trackSliderRow}>
+          <View
+            ref={trackRef}
+            style={styles.trackSliderHit}
+            onLayout={(e) => { trackWidth.current = e.nativeEvent.layout.width; }}
+            onStartShouldSetResponder={() => true}
+            onResponderGrant={(e) => {
+              trackRef.current?.measure((_x, _y, _w, _h, px) => {
+                trackPageX.current = px;
+                onVolumeChange(computeValue(e.nativeEvent.pageX));
+              });
+            }}
+            onResponderMove={(e) => onVolumeChange(computeValue(e.nativeEvent.pageX))}
+          >
+            <View style={styles.trackSliderTrack}>
+              <View style={[styles.trackSliderFill, { width: `${volume * 100}%` as any }]} />
+              <View style={[styles.trackSliderThumb, { left: `${volume * 100}%` as any }]} />
+            </View>
+          </View>
+          <Feather name="volume-2" size={18} color="rgba(255,255,255,0.60)" style={{ marginLeft: 8 }} />
+        </View>
+      </View>
+    </View>
+  );
+}
+
+// ─── SoundCard ─────────────────────────────────────────────────────────────
 function SoundCard({
   sound,
   selected,
@@ -487,6 +636,117 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
 
+  // ── Controles view ──────────────────────────────────────────────────────
+  descartarBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    width: 110,
+  },
+  descartarText: {
+    fontSize: 15,
+    color: "rgba(255,255,255,0.75)",
+  },
+  controlesPanel: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#111111",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    gap: 20,
+  },
+  controlesTitulo: {
+    fontSize: 17,
+    fontWeight: "600",
+    color: "white",
+    textAlign: "center",
+    marginBottom: 4,
+  },
+  trackRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+  },
+  trackThumbWrap: {
+    width: 52,
+    height: 52,
+    borderRadius: 10,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.08)",
+    flexShrink: 0,
+    position: "relative",
+  },
+  trackRemoveBtn: {
+    position: "absolute",
+    top: 3,
+    left: 3,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: "rgba(0,0,0,0.65)",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 2,
+  },
+  trackMain: {
+    flex: 1,
+    gap: 6,
+  },
+  trackName: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "white",
+  },
+  trackSliderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  trackSliderHit: {
+    flex: 1,
+    height: 28,
+    justifyContent: "center",
+  },
+  trackSliderTrack: {
+    height: 3,
+    backgroundColor: "rgba(255,255,255,0.20)",
+    borderRadius: 2,
+    position: "relative",
+  },
+  trackSliderFill: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    height: 3,
+    backgroundColor: "white",
+    borderRadius: 2,
+  },
+  trackSliderThumb: {
+    position: "absolute",
+    top: -7,
+    width: 17,
+    height: 17,
+    borderRadius: 9,
+    backgroundColor: "white",
+    marginLeft: -8,
+  },
+  guardarBtn: {
+    backgroundColor: "rgba(255,255,255,0.12)",
+    borderRadius: 14,
+    paddingVertical: 16,
+    alignItems: "center",
+    marginTop: 4,
+  },
+  guardarText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "white",
+  },
+
+  // ── Fav popup ──────────────────────────────────────────────────────────
   popupBackdrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.55)",

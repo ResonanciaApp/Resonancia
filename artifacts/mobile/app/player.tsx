@@ -758,6 +758,7 @@ export default function PlayerScreen() {
       <AmbientSoundPickerSheet
         visible={showAmbientPicker}
         selectedSoundId={selectedAmbientSoundId}
+        session={currentSession ? { title: currentSession.title, image: currentSession.image } : undefined}
         onClose={() => setShowAmbientPicker(false)}
         onSelect={(id) => setSelectedAmbientSoundId(id)}
       />
