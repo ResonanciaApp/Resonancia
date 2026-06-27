@@ -32,6 +32,9 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { createAudioPlayer, type AudioPlayer } from "expo-audio";
+import { SOUND_MAP } from "@/config/sound-map";
+import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { getNatureSounds } from "@/config/nature-base-map";
@@ -86,6 +89,8 @@ export default function PlayerScreen() {
   const [showFolderSheet, setShowFolderSheet] = useState(false);
   const [showAmbientPicker, setShowAmbientPicker] = useState(false);
   const [selectedAmbientSoundId, setSelectedAmbientSoundId] = useState<string | null>(null);
+  const [ambientOverlayVolume, setAmbientOverlayVolume] = useState(0.5);
+  const ambientOverlayRef = useRef<AudioPlayer | null>(null);
   const sheetProgress = useSharedValue(0);
   const ambSheetTrackRef = useRef<View>(null);
   const ambSheetTrackWidth = useRef(0);
@@ -127,6 +132,63 @@ export default function PlayerScreen() {
   const kenBurnsStyle = useAnimatedStyle(() => ({
     transform: [{ scale: kenBurns.value }],
   }));
+
+  // ── Overlay ambient player ─────────────────────────────────────────────
+  // Carga/reemplaza el sonido cuando cambia la selección
+  useEffect(() => {
+    if (!ambientOverlayRef.current) {
+      ambientOverlayRef.current = createAudioPlayer(null);
+    }
+    const p = ambientOverlayRef.current;
+
+    if (!selectedAmbientSoundId) {
+      p.pause();
+      return;
+    }
+
+    const file: Parameters<typeof p.replace>[0] | null =
+      SOUND_MAP[selectedAmbientSoundId] ??
+      (REMOTE_SOUND_MAP[selectedAmbientSoundId]
+        ? { uri: REMOTE_SOUND_MAP[selectedAmbientSoundId] }
+        : null);
+
+    if (!file) {
+      p.pause();
+      return;
+    }
+
+    p.loop = true;
+    p.volume = ambientOverlayVolume;
+    p.replace(file);
+    if (isPlaying) p.play();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedAmbientSoundId]);
+
+  // Sincroniza play/pause con el player principal
+  useEffect(() => {
+    const p = ambientOverlayRef.current;
+    if (!p || !selectedAmbientSoundId) return;
+    if (isPlaying) p.play();
+    else p.pause();
+  }, [isPlaying, selectedAmbientSoundId]);
+
+  // Sincroniza volumen
+  useEffect(() => {
+    if (ambientOverlayRef.current) {
+      ambientOverlayRef.current.volume = ambientOverlayVolume;
+    }
+  }, [ambientOverlayVolume]);
+
+  // Limpieza al desmontar
+  useEffect(() => {
+    return () => {
+      try {
+        ambientOverlayRef.current?.pause();
+        ambientOverlayRef.current?.remove();
+      } catch (_) {}
+      ambientOverlayRef.current = null;
+    };
+  }, []);
 
   const sheetAnimStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: (1 - sheetProgress.value) * 700 }],
@@ -760,7 +822,10 @@ export default function PlayerScreen() {
         selectedSoundId={selectedAmbientSoundId}
         session={currentSession ? { title: currentSession.title, image: currentSession.image } : undefined}
         onClose={() => setShowAmbientPicker(false)}
-        onSelect={(id) => setSelectedAmbientSoundId(id)}
+        onSelect={(id, vol) => {
+          setSelectedAmbientSoundId(id);
+          setAmbientOverlayVolume(vol);
+        }}
       />
     </View>
   );

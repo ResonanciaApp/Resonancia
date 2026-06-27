@@ -50,7 +50,7 @@ type Props = {
   selectedSoundId: string | null;
   session?: SessionInfo;
   onClose: () => void;
-  onSelect: (soundId: string | null) => void;
+  onSelect: (soundId: string | null, ambientVolume: number) => void;
 };
 
 export function AmbientSoundPickerSheet({ visible, selectedSoundId, session, onClose, onSelect }: Props) {
@@ -111,7 +111,7 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, session, onC
   const favSounds = useMemo(() => SOUNDS.filter((s) => favIds.has(s.id)), [favIds]);
 
   const handleGuardar = () => {
-    onSelect(localSelected);
+    onSelect(localSelected, ambientVolume);
     onClose();
   };
 
