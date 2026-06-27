@@ -591,7 +591,7 @@ export default function PlayerScreen() {
           <Text style={styles.authorText}>{authorLabel}</Text>
 
           <RNAnimated.View
-            style={[StyleSheet.absoluteFill, { opacity: terminarOpacity }]}
+            style={[{ position: "absolute", top: 0, bottom: 0, left: -5, right: -5 }, { opacity: terminarOpacity }]}
             pointerEvents={isPlaying ? "none" : "auto"}
           >
             <Pressable
