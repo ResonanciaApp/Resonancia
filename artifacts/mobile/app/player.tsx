@@ -575,6 +575,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 14,
+    backgroundColor: "rgba(18,8,4,0.72)",
+    borderRadius: 18,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
   },
   timeDisplay: {
     fontSize: 46,
