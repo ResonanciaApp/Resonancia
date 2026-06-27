@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
     fontSize: 27,
     fontWeight: "700",
     letterSpacing: 0.5,
+    marginTop: 7,
   },
   filterBtn: {
     width: 36,
