@@ -327,6 +327,16 @@ router.put(
   },
 );
 
+// GET /catalog/sessions/:id/plays — conteo global de reproducciones de una sesión
+router.get("/catalog/sessions/:id/plays", async (req, res) => {
+  const { id } = req.params;
+  const [row] = await db
+    .select({ plays: sql<number>`cast(count(*) as int)` })
+    .from(playbackHistoryTable)
+    .where(eq(playbackHistoryTable.sessionId, id));
+  res.json({ plays: row?.plays ?? 0 });
+});
+
 // GET /catalog/popular — sesiones más escuchadas (ranking real por reproducciones).
 router.get("/catalog/popular", async (req, res) => {
   const limitRaw = Number(req.query.limit);

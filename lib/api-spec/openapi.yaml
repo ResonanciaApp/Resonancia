@@ -1441,6 +1441,30 @@ paths:
           description: sessionId inválido
         "404":
           description: Sesión no encontrada
+  /catalog/sessions/{id}/plays:
+    get:
+      operationId: getSessionPlayCount
+      tags: [catalog]
+      summary: Conteo global de reproducciones de una sesión
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Conteo de reproducciones
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [plays]
+                properties:
+                  plays:
+                    type: integer
+                    minimum: 0
+
   /catalog/popular:
     get:
       operationId: getPopularSessions

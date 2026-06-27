@@ -75,6 +75,7 @@ import type {
   GetMyPlaysParams,
   GetPendingSubmissionsParams,
   GetPopularSessionsParams,
+  GetSessionPlayCount200,
   GetSharedGlyphsParams,
   GetSharedMixesParams,
   GuideConfig,
@@ -4536,6 +4537,83 @@ export const useSetPinnedFeatured = <TError = ErrorType<void>,
       > => {
       return useMutation(getSetPinnedFeaturedMutationOptions(options));
     }
+
+export const getGetSessionPlayCountUrl = (id: string,) => {
+
+
+
+
+  return `/api/catalog/sessions/${id}/plays`
+}
+
+/**
+ * @summary Conteo global de reproducciones de una sesión
+ */
+export const getSessionPlayCount = async (id: string, options?: RequestInit): Promise<GetSessionPlayCount200> => {
+
+  return customFetch<GetSessionPlayCount200>(getGetSessionPlayCountUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetSessionPlayCountQueryKey = (id: string,) => {
+    return [
+    `/api/catalog/sessions/${id}/plays`
+    ] as const;
+    }
+
+
+export const getGetSessionPlayCountQueryOptions = <TData = Awaited<ReturnType<typeof getSessionPlayCount>>, TError = ErrorType<unknown>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSessionPlayCount>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetSessionPlayCountQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSessionPlayCount>>> = ({ signal }) => getSessionPlayCount(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSessionPlayCount>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetSessionPlayCountQueryResult = NonNullable<Awaited<ReturnType<typeof getSessionPlayCount>>>
+export type GetSessionPlayCountQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Conteo global de reproducciones de una sesión
+ */
+
+export function useGetSessionPlayCount<TData = Awaited<ReturnType<typeof getSessionPlayCount>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSessionPlayCount>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetSessionPlayCountQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
 
 export const getGetPopularSessionsUrl = (params?: GetPopularSessionsParams,) => {
   const normalizedParams = new URLSearchParams();

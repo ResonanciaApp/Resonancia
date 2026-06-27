@@ -23,6 +23,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { usePlayer } from "@/context/PlayerContext";
+import { useGetSessionPlayCount, getGetSessionPlayCountQueryKey } from "@workspace/api-client-react";
 import { getSessionById, SESSIONS } from "@/data/sessions";
 import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
@@ -167,6 +168,10 @@ export default function SessionDetailScreen() {
 
   const savedProgress = getSessionProgress(session.id);
   const hasProgress = savedProgress > 0.005;
+
+  const { data: playsData } = useGetSessionPlayCount(session.id, {
+    query: { queryKey: getGetSessionPlayCountQueryKey(session.id), staleTime: 60_000 },
+  });
 
   const handlePlay = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -401,6 +406,18 @@ export default function SessionDetailScreen() {
               </View>
             </Pressable>
           </View>
+
+          {/* ── Reproducciones ──────────────────────────────────────────── */}
+          {playsData !== undefined && (
+            <View style={styles.playsRow}>
+              <Feather name="headphones" size={13} color="rgba(255,255,255,0.45)" />
+              <Text style={styles.playsText}>
+                {playsData.plays === 0
+                  ? "Sé el primero en escuchar esta sesión"
+                  : `${playsData.plays.toLocaleString("es")} ${playsData.plays === 1 ? "reproducción" : "reproducciones"}`}
+              </Text>
+            </View>
+          )}
 
           {/* ── Sobre la voz guía ────────────────────────────────────────── */}
           <View style={styles.authorSection}>
@@ -815,5 +832,16 @@ const styles = StyleSheet.create({
     width: 1,
     backgroundColor: "rgba(0,0,0,0.25)",
     zIndex: 2,
+  },
+  playsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 14,
+    marginBottom: 4,
+  },
+  playsText: {
+    fontSize: 13,
+    color: "rgba(255,255,255,0.45)",
   },
 });

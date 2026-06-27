@@ -1264,6 +1264,22 @@ export const SetPinnedFeaturedResponse = zod.object({
 
 
 /**
+ * @summary Conteo global de reproducciones de una sesión
+ */
+export const GetSessionPlayCountParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const getSessionPlayCountResponsePlaysMin = 0;
+
+
+
+export const GetSessionPlayCountResponse = zod.object({
+  "plays": zod.number().min(getSessionPlayCountResponsePlaysMin)
+})
+
+
+/**
  * @summary Sesiones más escuchadas (ranking por reproducciones reales)
  */
 export const getPopularSessionsQueryLimitMax = 50;

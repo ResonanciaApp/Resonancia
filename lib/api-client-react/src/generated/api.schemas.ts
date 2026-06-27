@@ -1720,6 +1720,11 @@ export type SetPinnedFeatured200 = {
   ok: boolean;
 };
 
+export type GetSessionPlayCount200 = {
+  /** @minimum 0 */
+  plays: number;
+};
+
 export type GetPopularSessionsParams = {
 /**
  * @minimum 1
