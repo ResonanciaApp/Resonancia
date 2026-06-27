@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 4,
   },
-  headerTitle: { fontSize: 17, fontWeight: "700" },
+  headerTitle: { fontSize: 17, fontFamily: "OptimaBold" },
   backBtn: {
     width: 38,
     height: 38,
@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   centered: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12 },
-  notFoundTitle: { fontSize: 18, fontWeight: "700" },
+  notFoundTitle: { fontSize: 18, fontFamily: "OptimaBold" },
 
   scroll: { paddingTop: 4, gap: 16 },
 
@@ -525,9 +525,9 @@ const styles = StyleSheet.create({
     borderColor: "#1B060F",
   },
   certBadgeStar: { fontSize: 10, color: "#1B060F", fontWeight: "800" },
-  userName: { fontSize: 20, fontWeight: "700", textAlign: "center" },
+  userName: { fontSize: 20, fontFamily: "OptimaBold", textAlign: "center" },
   locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },
-  locationText: { fontSize: 12 },
+  locationText: { fontSize: 12, fontFamily: "Jost" },
   bioText: {
     fontSize: 13,
     lineHeight: 19,
@@ -537,8 +537,8 @@ const styles = StyleSheet.create({
   },
   followCountsRow: { flexDirection: "row", alignItems: "center", marginTop: 14, marginBottom: 4 },
   followCountItem: { alignItems: "center", paddingHorizontal: 20 },
-  followCountNum: { fontSize: 18, fontWeight: "700" },
-  followCountLabel: { fontSize: 11, marginTop: 1 },
+  followCountNum: { fontSize: 18, fontFamily: "OptimaBold" },
+  followCountLabel: { fontSize: 11, marginTop: 1, fontFamily: "Jost" },
   followCountDivider: { width: 1, height: 28 },
 
   /* ── Pills de acción ── */
@@ -595,10 +595,10 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   certBannerTitle: {
-    fontSize: 14, fontWeight: "800", letterSpacing: 0.6, color: "#D4AF37",
+    fontSize: 14, fontFamily: "OptimaBold", letterSpacing: 0.6, color: "#D4AF37",
   },
   certBannerSub: {
-    fontSize: 12, color: "rgba(255,255,255,0.90)", marginTop: 2,
+    fontSize: 12, color: "rgba(255,255,255,0.90)", marginTop: 2, fontFamily: "Jost",
   },
   certBannerIconBorder: {
     width: 42, height: 42, borderRadius: 21,
@@ -610,7 +610,7 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
   },
   certBannerStar: { fontSize: 18, color: "rgba(212,175,55,0.90)", fontWeight: "800" },
-  certBannerVerified: { fontSize: 10, color: "rgba(255,255,255,0.55)", marginTop: 2, letterSpacing: 0.2 },
+  certBannerVerified: { fontSize: 10, color: "rgba(255,255,255,0.55)", marginTop: 2, letterSpacing: 0.2, fontFamily: "Jost" },
   editBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   pillBtn: {
     width: 36,
@@ -629,7 +629,7 @@ const styles = StyleSheet.create({
   },
   serviceTitle: {
     fontSize: 15,
-    fontWeight: "700",
+    fontFamily: "OptimaBold",
     color: "#FAF0EE",
     letterSpacing: 0.2,
   },
@@ -637,6 +637,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 20,
     color: "rgba(244,218,213,0.65)",
+    fontFamily: "Jost",
   },
   readMoreBtn: {
     flexDirection: "row",
@@ -660,7 +661,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  specialtyText: { fontSize: 13, color: "#FFFFFF", fontWeight: "400", letterSpacing: 0.1 },
+  specialtyText: { fontSize: 13, color: "#FFFFFF", fontFamily: "Jost", fontWeight: "400", letterSpacing: 0.1 },
 
   contactRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   contactPill: { flex: 1, justifyContent: "center" },
@@ -689,7 +690,7 @@ const styles = StyleSheet.create({
   },
   galleryTitle: {
     fontSize: 15,
-    fontWeight: "700",
+    fontFamily: "OptimaBold",
     letterSpacing: 0.2,
   },
   galleryGrid: {

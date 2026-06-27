@@ -797,7 +797,8 @@ const styles = StyleSheet.create({
   moodRowLabel: {
     flex: 1,
     fontSize: 15,
-    fontWeight: "500",
+    fontFamily: "Jost",
+    fontWeight: "400",
     color: "#EDE1D3",
   },
 

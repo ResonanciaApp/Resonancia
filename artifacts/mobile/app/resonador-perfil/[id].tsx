@@ -633,7 +633,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 4,
   },
-  headerTitle: { fontSize: 17, fontWeight: "700" },
+  headerTitle: { fontSize: 17, fontFamily: "OptimaBold" },
   headerTitleAbs: {
     position: "absolute",
     left: 0,
@@ -657,7 +657,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   centered: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12 },
-  notFoundTitle: { fontSize: 18, fontWeight: "700" },
+  notFoundTitle: { fontSize: 18, fontFamily: "OptimaBold" },
   scroll: { gap: 16 },
   /* ── Hero banner ── */
   heroArea: {
@@ -725,7 +725,7 @@ const styles = StyleSheet.create({
     borderColor: "#1B060F",
   },
   certBadgeStar: { fontSize: 10, color: "#1B060F", fontWeight: "800" },
-  userName: { fontSize: 20, fontWeight: "700", textAlign: "center" },
+  userName: { fontSize: 20, fontFamily: "OptimaBold", textAlign: "center" },
 
   subtipoPill: {
     borderRadius: 20,
@@ -744,7 +744,7 @@ const styles = StyleSheet.create({
   },
 
   locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },
-  locationText: { fontSize: 12 },
+  locationText: { fontSize: 12, fontFamily: "Jost" },
   bioText: {
     fontSize: 13,
     lineHeight: 19,
@@ -754,8 +754,8 @@ const styles = StyleSheet.create({
   },
   followCountsRow: { flexDirection: "row", alignItems: "center", marginTop: 14, marginBottom: 4 },
   followCountItem: { alignItems: "center", paddingHorizontal: 20 },
-  followCountNum: { fontSize: 18, fontWeight: "700" },
-  followCountLabel: { fontSize: 11, marginTop: 1 },
+  followCountNum: { fontSize: 18, fontFamily: "OptimaBold" },
+  followCountLabel: { fontSize: 11, marginTop: 1, fontFamily: "Jost" },
   followCountDivider: { width: 1, height: 28 },
 
   actionPillsWrap: { alignSelf: "stretch", gap: 8, marginTop: 14 },
@@ -840,7 +840,7 @@ const styles = StyleSheet.create({
   },
 
   sectionBlock: { gap: 10 },
-  sectionTitle: { fontSize: 15, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.2 },
+  sectionTitle: { fontSize: 15, fontFamily: "OptimaBold", color: "#FAF0EE", letterSpacing: 0.2 },
   chipRow: { flexDirection: "row", gap: 8, alignItems: "center" },
   specialtyChip: {
     borderRadius: 20,
@@ -851,8 +851,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  specialtyText: { fontSize: 13, color: "#FFFFFF", fontWeight: "400", letterSpacing: 0.1 },
-  serviceDesc: { fontSize: 13, lineHeight: 20, color: "rgba(244,218,213,0.65)" },
+  specialtyText: { fontSize: 13, color: "#FFFFFF", fontFamily: "Jost", fontWeight: "400", letterSpacing: 0.1 },
+  serviceDesc: { fontSize: 13, lineHeight: 20, color: "rgba(244,218,213,0.65)", fontFamily: "Jost" },
   readMoreBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -870,8 +870,8 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   cardHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  cardTitle: { fontSize: 15, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.2 },
-  cardCount: { fontSize: 11, color: GOLD_MUTED, fontWeight: "500" },
+  cardTitle: { fontSize: 15, fontFamily: "OptimaBold", color: "#FAF0EE", letterSpacing: 0.2 },
+  cardCount: { fontSize: 11, color: GOLD_MUTED, fontFamily: "Jost", fontWeight: "500" },
 
   /* ── Grilla de fotos ── */
   photoGrid: {
@@ -948,7 +948,7 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   projectLabel: { fontSize: 13, fontWeight: "600", color: "#FAF0EE" },
-  projectPlatform: { fontSize: 11, color: "rgba(244,218,213,0.45)", marginTop: 1 },
+  projectPlatform: { fontSize: 11, color: "rgba(244,218,213,0.45)", marginTop: 1, fontFamily: "Jost" },
 
   /* ── Sección 5: Formación ── */
   formacionList: { gap: 0 },
@@ -971,9 +971,9 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     opacity: 0.7,
   },
-  formacionTitulo: { fontSize: 13, fontWeight: "700", color: "#FAF0EE" },
-  formacionInst: { fontSize: 12, color: "rgba(244,218,213,0.65)", marginTop: 1 },
-  formacionYears: { fontSize: 11, color: GOLD_MUTED, marginTop: 2 },
+  formacionTitulo: { fontSize: 13, fontFamily: "OptimaBold", color: "#FAF0EE" },
+  formacionInst: { fontSize: 12, color: "rgba(244,218,213,0.65)", marginTop: 1, fontFamily: "Jost" },
+  formacionYears: { fontSize: 11, color: GOLD_MUTED, marginTop: 2, fontFamily: "Jost" },
 
   /* ── Chip Apóyalo ── */
   apoyaloChip: {
