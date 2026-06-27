@@ -293,7 +293,7 @@ export default function ExploreScreen() {
         {/* ── Carrusel de categorías ── */}
         {query.length === 0 && (
           <>
-          <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 12 }]}>
+          <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 16 }]}>
             Explora por categoría
           </Text>
           <ScrollView
@@ -331,7 +331,7 @@ export default function ExploreScreen() {
         {/* ── ¿Cuánto tiempo tienes? ── */}
         {query.length === 0 && (
           <View style={styles.durSection}>
-            <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 12 }]}>
+            <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 16 }]}>
               ¿Cuánto tiempo tienes?
             </Text>
             <ScrollView
