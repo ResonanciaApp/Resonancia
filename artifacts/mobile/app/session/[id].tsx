@@ -261,28 +261,34 @@ export default function SessionDetailScreen() {
 
           {/* ── Action row ──────────────────────────────────────────────── */}
           <View style={styles.actionRow}>
-            <Pressable
-              onPress={handleFav}
-              style={({ pressed }) => [styles.actionCard, { backgroundColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.8 : 1 }]}
-            >
-              <Feather name="heart" size={20} color={fav ? colors.primary : "rgba(255,255,255,0.9)"} />
-              <Text style={[styles.actionLabel, { color: fav ? colors.primary : "rgba(255,255,255,0.9)" }]}>Guardar</Text>
+            {/* Guardar */}
+            <Pressable onPress={handleFav} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
+              <LinearGradient colors={["rgba(212,175,55,0.45)","rgba(212,175,55,0.10)"]} start={{ x:0,y:0 }} end={{ x:1,y:1 }} style={styles.actionCardBorder}>
+                <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
+                  <Feather name="heart" size={20} color={fav ? colors.primary : "rgba(212,175,55,0.6)"} />
+                  <Text style={[styles.actionLabel, { color: fav ? colors.primary : "rgba(212,175,55,0.6)" }]}>Guardar</Text>
+                </LinearGradient>
+              </LinearGradient>
             </Pressable>
 
-            <Pressable
-              onPress={handleDownload}
-              style={({ pressed }) => [styles.actionCard, { backgroundColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.8 : 1 }]}
-            >
-              <Feather name="download" size={20} color="rgba(255,255,255,0.9)" />
-              <Text style={[styles.actionLabel, { color: "rgba(255,255,255,0.9)" }]}>Descargar</Text>
+            {/* Descargar */}
+            <Pressable onPress={handleDownload} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
+              <LinearGradient colors={["rgba(212,175,55,0.45)","rgba(212,175,55,0.10)"]} start={{ x:0,y:0 }} end={{ x:1,y:1 }} style={styles.actionCardBorder}>
+                <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
+                  <Feather name="download" size={20} color="rgba(212,175,55,0.6)" />
+                  <Text style={[styles.actionLabel, { color: "rgba(212,175,55,0.6)" }]}>Descargar</Text>
+                </LinearGradient>
+              </LinearGradient>
             </Pressable>
 
-            <Pressable
-              onPress={handleShare}
-              style={({ pressed }) => [styles.actionCard, { backgroundColor: "rgba(255,255,255,0.07)", opacity: pressed ? 0.8 : 1 }]}
-            >
-              <Feather name="share-2" size={20} color="rgba(255,255,255,0.9)" />
-              <Text style={[styles.actionLabel, { color: "rgba(255,255,255,0.9)" }]}>Compartir</Text>
+            {/* Compartir */}
+            <Pressable onPress={handleShare} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
+              <LinearGradient colors={["rgba(212,175,55,0.45)","rgba(212,175,55,0.10)"]} start={{ x:0,y:0 }} end={{ x:1,y:1 }} style={styles.actionCardBorder}>
+                <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
+                  <Feather name="share-2" size={20} color="rgba(212,175,55,0.6)" />
+                  <Text style={[styles.actionLabel, { color: "rgba(212,175,55,0.6)" }]}>Compartir</Text>
+                </LinearGradient>
+              </LinearGradient>
             </Pressable>
           </View>
 
@@ -532,16 +538,14 @@ const styles = StyleSheet.create({
     marginTop: 2,
     marginBottom: 28,
   },
-  actionCard: {
-    flex: 1,
-    flexDirection: "column",
+  actionCardWrap: { flex: 1 },
+  actionCardBorder: { flex: 1, borderRadius: 14, padding: 1 },
+  actionCardInner: {
+    borderRadius: 13,
+    paddingVertical: 22,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 22,
-    borderRadius: 14,
     gap: 8,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.09)",
   },
   actionLabel: {
     fontSize: 14,
