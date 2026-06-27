@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
+  Dimensions,
   Platform,
   Pressable,
   ScrollView,
@@ -20,7 +21,7 @@ import { DESCANSO_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
-const CARD_W = 160;
+const CARD_W = Math.round((Dimensions.get("window").width - 30) / 2.2);
 
 export default function DescansoScreen() {
   const colors = useColors();
@@ -154,8 +155,7 @@ const styles = StyleSheet.create({
 
   carousel: {
     paddingLeft: H_PAD,
-    paddingRight: 12,
-    gap: 12,
+    paddingRight: 6,
   },
 
   emptySlot: {
