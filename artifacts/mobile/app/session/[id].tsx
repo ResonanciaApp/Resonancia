@@ -255,10 +255,10 @@ export default function SessionDetailScreen() {
               end={{ x: 1, y: 0 }}
               style={styles.categoryPill}
             >
-              <Feather name={categoryIcon as never} size={17} color={catBg.labelColor} />
-              <Text style={[styles.categoryPillText, { color: catBg.labelColor }]}>{categoryPill}</Text>
-              <Text style={[styles.categoryPillSep, { color: catBg.labelColor }]}>·</Text>
-              <Text style={[styles.durationText, { color: catBg.labelColor }]}>{session.durationLabel.replace(" min", "m")}</Text>
+              <Feather name={categoryIcon as never} size={17} color="#160108" />
+              <Text style={[styles.categoryPillText, { color: "#160108" }]}>{categoryPill}</Text>
+              <Text style={[styles.categoryPillSep, { color: "#160108" }]}>·</Text>
+              <Text style={[styles.durationText, { color: "#160108" }]}>{session.durationLabel.replace(" min", "m")}</Text>
             </LinearGradient>
           )}
 
