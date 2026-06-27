@@ -65,6 +65,8 @@ type Props = {
   initialAmbientVolume?: number;
   /** Llamado al tocar un sonido para previsualización inmediata (null = detener) */
   onPreviewStart?: (soundId: string | null) => void;
+  /** Si hay sonido ya seleccionado, abrir directo en "controles" */
+  initialStep?: "pick" | "controles";
   /** Llamado en tiempo real al mover el slider de sesión */
   onSessionVolumeChange?: (vol: number) => void;
   /** Llamado en tiempo real al mover el slider de ambiente */
@@ -80,6 +82,7 @@ export function AmbientSoundPickerSheet({
   initialSessionVolume,
   initialAmbientVolume,
   onPreviewStart,
+  initialStep,
   onSessionVolumeChange,
   onAmbientVolumeChange,
 }: Props) {
@@ -113,9 +116,10 @@ export function AmbientSoundPickerSheet({
   // Reset whenever the sheet opens
   useEffect(() => {
     if (!visible) return;
+    const startStep = initialStep ?? "pick";
     setLocalSelected(selectedSoundId);
-    setStep("pick");
-    slideAnim.setValue(0);
+    setStep(startStep);
+    slideAnim.setValue(startStep === "controles" ? 1 : 0);
     setSessionVolume(initialSessionVolume ?? 0.8);
     setAmbientVolume(initialAmbientVolume ?? 0.5);
     AsyncStorage.getItem(FAV_KEY).then((val) => {

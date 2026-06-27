@@ -887,6 +887,7 @@ export default function PlayerScreen() {
         selectedSoundId={selectedAmbientSoundId}
         session={currentSession ? { title: currentSession.title, image: currentSession.image } : undefined}
         onClose={() => setShowAmbientPicker(false)}
+        initialStep={selectedAmbientSoundId ? "controles" : "pick"}
         initialSessionVolume={mainVolume}
         initialAmbientVolume={ambientOverlayVolume}
         onPreviewStart={(id) => setSelectedAmbientSoundId(id)}
