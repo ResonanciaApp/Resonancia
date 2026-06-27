@@ -205,7 +205,6 @@ function CategoryCard({
           <Text style={ac.hTitle} numberOfLines={2}>{session.title}</Text>
           {!!author&&(
             <View style={ac.hAuthorRow}>
-              <Image source={authorPhoto} style={ac.hAuthorAvatar} contentFit="cover" />
               <Text style={ac.hAuthor} numberOfLines={1}>{author}</Text>
             </View>
           )}
