@@ -113,7 +113,20 @@ export default function SessionDetailScreen() {
     : isMusica
     ? (session.soundTag ?? session.categoryLabel)
     : session.categoryLabel;
-  const subTagIcon: string = isAncestral ? "disc" : isGuiada ? "wind" : isMusica ? "headphones" : "book-open";
+  const SUBTAG_ICON: Record<string, string> = {
+    // Ancestrales
+    "Cuencos Tibetanos": "disc", "Cuencos de Cuarzo": "disc", "Mix de Cuencos": "disc", "Cuencos y Gongs": "disc",
+    "Gongs": "circle", "Gongs y Campanas": "circle",
+    "Campanas": "bell", "Campanas Tingsha": "bell",
+    // Meditaciones
+    "No Duales": "layers", "Visualizaciones": "eye", "Mantras": "mic",
+    "Escaneo Corporal": "activity", "Manifestación": "star", "3 Minutos de Sabiduría": "clock",
+    // Música
+    "Música Ambient": "cloud", "Música Enteógena": "feather", "Música Tribal": "zap", "Música Étnica": "globe",
+    // Reflexiones
+    "Sabiduría": "book-open", "ASMR": "headphones", "Historias": "book",
+  };
+  const subTagIcon: string = SUBTAG_ICON[subTag ?? ""] ?? (isAncestral ? "disc" : isGuiada ? "eye" : isMusica ? "cloud" : "book-open");
   const savedCount = 40 + ((parseInt(session.id, 10) * 17 + 83) % 260);
   const [localFav, setLocalFav] = useState<boolean | null>(null);
 
