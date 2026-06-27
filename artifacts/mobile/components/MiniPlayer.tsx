@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
+import Svg, { Path, Rect } from "react-native-svg";
 import { Image as ExpoImage } from "expo-image";
 import {
   Animated,
@@ -325,9 +326,16 @@ export function MiniPlayer() {
                 }]} />
               ))}
               <Pressable onPress={(e) => { e.stopPropagation(); togglePlay(); }} style={styles.playPauseBtn}>
-                <View style={mixPlaying ? undefined : styles.playIconNudge}>
-                  <Feather name={mixPlaying ? "pause" : "play"} size={22} color="#FFFFFF" />
-                </View>
+                <Svg width={22} height={22} viewBox="0 0 48 48">
+                  {mixPlaying ? (
+                    <>
+                      <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                      <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                    </>
+                  ) : (
+                    <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
+                  )}
+                </Svg>
               </Pressable>
             </View>
           </View>
@@ -386,7 +394,16 @@ export function MiniPlayer() {
             onPress={(e) => { e.stopPropagation(); pauseResume(); }}
             style={[styles.btn, { backgroundColor: "rgba(255,255,255,0.15)" }]}
           >
-            <Feather name={isPlaying ? "pause" : "play"} size={18} color="#FFFFFF" />
+            <Svg width={18} height={18} viewBox="0 0 48 48">
+              {isPlaying ? (
+                <>
+                  <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                  <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                </>
+              ) : (
+                <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
+              )}
+            </Svg>
           </Pressable>
         </View>
       </View>
