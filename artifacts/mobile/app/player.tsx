@@ -34,24 +34,13 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { getNatureSounds } from "@/config/nature-base-map";
 import { getArtist } from "@/data/artists";
-import { CATEGORIES } from "@/data/categories";
 import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
+import { useImageDominantColor } from "@/lib/useImageDominantColor";
 
 const { width, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const HERO_HEIGHT = SCREEN_HEIGHT * 0.63;
 const RATINGS_KEY = "@resonance_ratings";
-
-function darkenHex(hex: string, amount: number): string {
-  const h = hex.replace("#", "");
-  if (h.length !== 6) return hex;
-  const r = parseInt(h.slice(0, 2), 16);
-  const g = parseInt(h.slice(2, 4), 16);
-  const b = parseInt(h.slice(4, 6), 16);
-  const k = Math.max(0, Math.min(1, 1 - amount));
-  const toHex = (n: number) => Math.round(n * k).toString(16).padStart(2, "0");
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-}
 
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -222,6 +211,9 @@ export default function PlayerScreen() {
     setTimeout(() => { isSeekingRef.current = false; }, 700);
   }, [progressShared, progressBarWidthShared, seekTo]);
 
+  // Color dominante extraído de la imagen de la sesión
+  const imageColors = useImageDominantColor(currentSession?.image as any);
+
   // ─────────────────────────────────────────────────────────────────────────
   const topPad = Platform.OS === "web" ? 20 : (insets.top || 12);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -265,12 +257,7 @@ export default function PlayerScreen() {
   const remaining = totalSeconds - elapsed;
   const fav = isFavorite(currentSession.id);
 
-  // Color dinámico derivado de la categoría
-  const playerCategory = CATEGORIES.find((c) => c.id === currentSession.categoryId);
-  const baseColor = playerCategory?.gradient[1] ?? "#1B060F";
-  const dominantColor = darkenHex(baseColor, 0.25);
-  const midColor = darkenHex(baseColor, 0.50);
-  const darkColor = darkenHex(baseColor, 0.70);
+  const { dominant: dominantColor, mid: midColor, dark: darkColor } = imageColors;
 
   const handlePlayPause = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
