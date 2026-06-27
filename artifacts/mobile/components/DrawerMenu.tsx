@@ -38,6 +38,7 @@ const MAIN_ITEMS: MenuItem[] = [
   { label: "Amigos",        icon: "users",     route: "/amigos" },
   { label: "Grupos",        icon: "globe",     route: "/grupos" },
   { label: "Reflexiones",   icon: "feather",   route: "/reflexiones" },
+  { label: "Equipo",        icon: "users",     route: "/(tabs)/resonadores" },
 ];
 
 const SECONDARY_ITEMS: MenuItem[] = [

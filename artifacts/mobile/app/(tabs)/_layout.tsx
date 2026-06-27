@@ -55,7 +55,6 @@ const TAB_CONFIG: Record<
   explore:    { label: "Explorar",   sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
   musica:     { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",  featherIcon: "sliders" },
   biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
-  resonadores:{ label: "Equipo",     sfIcon: "person.2",            sfIconFill: "person.2.fill",        featherIcon: "users", iconSize: ICON_SIZE + 2, iconOffset: 1 },
   profile:    { label: "Perfil",     sfIcon: "person",              sfIconFill: "person.fill",          featherIcon: "user" },
 };
 
