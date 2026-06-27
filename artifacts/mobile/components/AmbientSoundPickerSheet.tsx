@@ -161,7 +161,7 @@ export function AmbientSoundPickerSheet({ visible, selectedSoundId, onClose, onS
                       : { backgroundColor: "rgba(255,255,255,0.07)", borderColor: "rgba(255,255,255,0.12)" },
                   ]}
                 >
-                  <Text style={[styles.tabLabel, sel && { color: "white", fontWeight: "700" }]}>
+                  <Text style={[styles.tabLabel, sel && { color: "white" }]}>
                     {tab.label}
                   </Text>
                 </Pressable>
