@@ -427,9 +427,12 @@ export default function SonidosAncestalesScreen() {
           </View>
         </View>
 
-        {/* ── Título ── */}
+        {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
           <Text style={styles.profileTitle}>Ancestrales</Text>
+          <Text style={styles.profileDesc} numberOfLines={1}>
+            Cuencos, gongs y sonidos sagrados para sanar y elevar.
+          </Text>
         </View>
 
         {/* ── Tabs ── */}
