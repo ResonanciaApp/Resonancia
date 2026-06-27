@@ -47,10 +47,10 @@ function TibetanBowlIcon({ size = 20, color = "#fff" }: { size?: number; color?:
 }
 
 // Tags agrupados bajo cada tab fija (no generan tab propia si ya están acá)
-const FIXED_TABS: { id: string; label: string }[] = [
-  { id: "cuencos",  label: "Cuencos" },
-  { id: "gongs",    label: "Gongs" },
-  { id: "campanas", label: "Campanas" },
+const FIXED_TABS: { id: string; label: string; icon?: string }[] = [
+  { id: "cuencos",  label: "Cuencos",  icon: "disc" },
+  { id: "gongs",    label: "Gongs",    icon: "circle" },
+  { id: "campanas", label: "Campanas", icon: "bell" },
 ];
 const MIX_TAGS = new Set(["Full Instrumentos","Vientos","Cantos","Percusión","Selva","Mix de Cuencos"]);
 
@@ -129,21 +129,25 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
   return <Animated.View style={{ opacity }}>{children}</Animated.View>;
 }
 
-function Chip({ label, sel, onPress }: { label: string; sel: boolean; onPress: () => void }) {
+function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress: () => void }) {
+  const iconColor = sel ? "#1B060F" : GOLD;
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
       {sel && <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={StyleSheet.absoluteFill} />}
-      <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+        {!!icon && <Feather name={icon as any} size={12} color={iconColor} />}
+        <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
+      </View>
     </Pressable>
   );
 }
 
-function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: {id: string; label: string}[]; activeTab: CatTab|null; onSelect: (id: CatTab)=>void; onClear: ()=>void }) {
+function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: {id: string; label: string; icon?: string}[]; activeTab: CatTab|null; onSelect: (id: CatTab)=>void; onClear: ()=>void }) {
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false}
       style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
       {tabs.map((t) => (
-        <Chip key={t.id} label={t.label} sel={activeTab === t.id}
+        <Chip key={t.id} label={t.label} icon={t.icon} sel={activeTab === t.id}
           onPress={() => activeTab === t.id ? onClear() : onSelect(t.id)} />
       ))}
     </ScrollView>
@@ -560,8 +564,8 @@ const styles = StyleSheet.create({
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 8 },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-  chip: { minWidth: 96, paddingHorizontal: 14, paddingVertical: 8, borderRadius: 999, backgroundColor: "rgba(255,255,255,0.08)", overflow: "hidden", alignItems: "center", justifyContent: "center" },
-  chipText: { fontSize: 16, fontWeight: "600", color: TEXT, textAlign: "center" },
+  chip: { minWidth: 96, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 999, backgroundColor: "rgba(255,255,255,0.08)", overflow: "hidden", alignItems: "center", justifyContent: "center" },
+  chipText: { fontSize: 14, fontWeight: "600", color: TEXT, textAlign: "center" },
   chipTextSel: { color: "#1B060F" },
 
   /* ── Content ── */
