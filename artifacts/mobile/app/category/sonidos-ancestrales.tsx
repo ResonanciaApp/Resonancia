@@ -538,7 +538,7 @@ const styles = StyleSheet.create({
   /* ── Profile card ── */
   profileCard: {
     marginHorizontal: H_PAD,
-    marginTop: 20,
+    marginTop: 30,
     paddingBottom: 14,
     gap: 8,
     alignItems: "center",
