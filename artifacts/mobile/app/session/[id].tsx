@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import MaskedView from "@react-native-masked-view/masked-view";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -62,6 +63,22 @@ function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: obje
         <Feather name="arrow-left" size={22} color="#FFF" />
       </Pressable>
     </Animated.View>
+  );
+}
+
+const PILL_G: [string, string] = ["#e8dbb4", "#f3e7c3"];
+function GradPillLabel({ icon, label }: { icon: React.ComponentProps<typeof Feather>["name"]; label: string }) {
+  return (
+    <MaskedView
+      maskElement={
+        <View style={{ alignItems: "center", gap: 8, backgroundColor: "transparent" }}>
+          <Feather name={icon} size={20} color="#000" />
+          <Text style={{ fontSize: 14, fontWeight: "600", letterSpacing: 0.2, color: "#000" }}>{label}</Text>
+        </View>
+      }
+    >
+      <LinearGradient colors={PILL_G} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 100, height: 46 }} />
+    </MaskedView>
   );
 }
 
@@ -265,8 +282,7 @@ export default function SessionDetailScreen() {
             <Pressable onPress={handleFav} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
               <LinearGradient colors={["rgba(212,175,55,0.45)","rgba(212,175,55,0.10)"]} start={{ x:0,y:0.5 }} end={{ x:1,y:0.5 }} style={styles.actionCardBorder}>
                 <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
-                  <Feather name="heart" size={20} color={fav ? colors.primary : "rgba(212,175,55,0.6)"} />
-                  <Text style={[styles.actionLabel, { color: fav ? colors.primary : "rgba(212,175,55,0.6)" }]}>Guardar</Text>
+                  <GradPillLabel icon="heart" label="Guardar" />
                 </LinearGradient>
               </LinearGradient>
             </Pressable>
@@ -275,8 +291,7 @@ export default function SessionDetailScreen() {
             <Pressable onPress={handleDownload} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
               <LinearGradient colors={["rgba(212,175,55,0.45)","rgba(212,175,55,0.10)"]} start={{ x:0,y:0.5 }} end={{ x:1,y:0.5 }} style={styles.actionCardBorder}>
                 <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
-                  <Feather name="download" size={20} color="rgba(212,175,55,0.6)" />
-                  <Text style={[styles.actionLabel, { color: "rgba(212,175,55,0.6)" }]}>Descargar</Text>
+                  <GradPillLabel icon="download" label="Descargar" />
                 </LinearGradient>
               </LinearGradient>
             </Pressable>
@@ -285,8 +300,7 @@ export default function SessionDetailScreen() {
             <Pressable onPress={handleShare} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
               <LinearGradient colors={["rgba(212,175,55,0.45)","rgba(212,175,55,0.10)"]} start={{ x:0,y:0.5 }} end={{ x:1,y:0.5 }} style={styles.actionCardBorder}>
                 <LinearGradient colors={["#2E0510","#160108"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
-                  <Feather name="share-2" size={20} color="rgba(212,175,55,0.6)" />
-                  <Text style={[styles.actionLabel, { color: "rgba(212,175,55,0.6)" }]}>Compartir</Text>
+                  <GradPillLabel icon="share-2" label="Compartir" />
                 </LinearGradient>
               </LinearGradient>
             </Pressable>
