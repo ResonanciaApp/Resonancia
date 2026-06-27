@@ -379,8 +379,8 @@ export default function PlayerScreen() {
             >
               <Feather
                 name="repeat"
-                size={20}
-                color={repeatMode ? "white" : "rgba(255,255,255,0.75)"}
+                size={24}
+                color={repeatMode ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.95)"}
               />
             </Pressable>
             <Pressable
@@ -392,12 +392,12 @@ export default function PlayerScreen() {
             >
               <Feather
                 name="bookmark"
-                size={20}
-                color={fav ? "white" : "rgba(255,255,255,0.75)"}
+                size={24}
+                color="rgba(255,255,255,0.95)"
               />
             </Pressable>
             <Pressable onPress={handleShare} hitSlop={8}>
-              <Feather name="more-horizontal" size={20} color="rgba(255,255,255,0.75)" />
+              <Feather name="more-horizontal" size={24} color="rgba(255,255,255,0.95)" />
             </Pressable>
           </View>
         </View>
@@ -579,7 +579,7 @@ const styles = StyleSheet.create({
   },
   timeDisplay: {
     fontSize: 46,
-    fontFamily: "OptimaBold",
+    fontWeight: "400",
     color: "white",
     letterSpacing: -1.5,
     lineHeight: 52,
@@ -629,7 +629,7 @@ const styles = StyleSheet.create({
   },
 
   titleText: {
-    fontSize: 21,
+    fontSize: 20,
     fontWeight: "800",
     color: "white",
     letterSpacing: 0.2,
