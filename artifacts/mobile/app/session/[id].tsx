@@ -631,7 +631,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.30)",
   },
   authorMeta: { flex: 1, gap: 5 },
-  authorName: { fontSize: 17, fontWeight: "700" },
+  authorName: { fontSize: 17, fontFamily: "OptimaBold" },
   authorCountry: { fontSize: 13 },
   authorBio: { fontSize: 13, lineHeight: 19, maxWidth: 190 },
   authorLink: { fontSize: 13, fontWeight: "600" },
