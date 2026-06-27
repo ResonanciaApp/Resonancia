@@ -26,7 +26,7 @@ import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
-const HEADER_H = 300;
+const HEADER_H = 238;
 
 function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: object }) {
   const scale  = useRef(new Animated.Value(1)).current;
@@ -195,7 +195,7 @@ export default function SessionDetailScreen() {
         )}
       >
         {/* ── Hero image ──────────────────────────────────────────────────── */}
-        <View style={[styles.hero, { height: HEADER_H + topPad }]}>
+        <View style={[styles.hero, { height: HEADER_H }]}>
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
             <GlowPill onPress={() => router.back()} pillStyle={[styles.heroBackPill, { backgroundColor: catBg.pillBg }]} />
