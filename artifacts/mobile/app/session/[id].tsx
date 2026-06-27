@@ -66,7 +66,7 @@ function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: obje
 }
 
 const GOLD_MID = "rgba(212,175,55,0.75)";
-const GOLD_OFF = "transparent";
+const GOLD_OFF = "rgba(212,175,55,0.18)";
 function GoldBorder({ children }: { children: React.ReactNode }) {
   return (
     <View style={{ flex: 1, borderRadius: 14 }}>
