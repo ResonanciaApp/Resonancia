@@ -561,7 +561,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 15,
     lineHeight: 25,
-    marginTop: 2,
+    marginTop: 0,
     marginBottom: 24,
     textAlign: "center",
     maxWidth: 280,
