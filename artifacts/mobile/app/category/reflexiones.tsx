@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -375,9 +376,7 @@ export default function ReflexionesScreen() {
           {/* Flecha atrás flotante */}
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
             <GhostPill style={{ backgroundColor: "#2E0510" }}>
-              <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
-                <Feather name="arrow-left" size={22} color="#fff" />
-              </Pressable>
+              <BackPill onPress={() => router.back()} />
             </GhostPill>
           </View>
           {/* Info flotante */}
@@ -441,9 +440,7 @@ export default function ReflexionesScreen() {
       {/* ── Sticky header (aparece con scroll) ── */}
       <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity }]} pointerEvents={stickyActive ? "auto" : "none"}>
         <GhostPill>
-          <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
-            <Feather name="arrow-left" size={22} color="#fff" />
-          </Pressable>
+          <BackPill onPress={() => router.back()} />
         </GhostPill>
         <Text style={styles.headerTitle}>Reflexiones</Text>
         <GhostPill>

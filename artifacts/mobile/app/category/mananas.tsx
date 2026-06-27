@@ -1,5 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { GoldGradientFill } from "@/components/GoldGradient";
+import { BackPill } from "@/components/BackPill";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -226,9 +227,7 @@ export default function MananasScreen() {
         {!selectedTag && (
           <>
             <View style={[styles.header, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
-              <Pressable onPress={() => router.back()} style={styles.backBtn}>
-                <Feather name="arrow-left" size={22} color={colors.foreground} />
-              </Pressable>
+              <BackPill onPress={() => router.back()} color={colors.foreground} />
               <View style={[styles.catIconCircle, { backgroundColor: ICON_COLOR + "1A" }]}>
                 <Image
                   source={require("../../assets/images/cat-mananas.png")}

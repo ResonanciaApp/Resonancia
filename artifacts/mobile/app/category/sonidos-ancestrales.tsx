@@ -1,5 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import Svg, { Path } from "react-native-svg";
+import { BackPill } from "@/components/BackPill";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -419,9 +420,7 @@ export default function SonidosAncestalesScreen() {
           {/* Flecha atrás flotante */}
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
             <GhostPill style={{ backgroundColor: "#2E0510" }}>
-              <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
-                <Feather name="arrow-left" size={22} color="#fff" />
-              </Pressable>
+              <BackPill onPress={() => router.back()} />
             </GhostPill>
           </View>
           <View style={styles.heroIconFloat}>
@@ -479,9 +478,7 @@ export default function SonidosAncestalesScreen() {
       {/* ── Sticky header (aparece con scroll) ── */}
       <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity }]} pointerEvents={stickyActive ? "auto" : "none"}>
         <GhostPill>
-          <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerBtn}>
-            <Feather name="arrow-left" size={22} color="#fff" />
-          </Pressable>
+          <BackPill onPress={() => router.back()} />
         </GhostPill>
         <Text style={styles.headerTitle}>Ancestrales</Text>
         <GhostPill>
