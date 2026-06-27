@@ -118,7 +118,7 @@ function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel
     <Pressable onPress={onPress} style={({pressed})=>[styles.chip,{opacity:pressed?0.7:1}]}>
       {sel&&<LinearGradient colors={["#D6AD5F","#B47344"]} start={{x:0,y:0}} end={{x:1,y:0}} style={StyleSheet.absoluteFill} />}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-        {!!icon && <Feather name={icon as any} size={12} color={iconColor} />}
+        {!!icon && <Feather name={icon as any} size={15} color={iconColor} />}
         <Text style={[styles.chipText,sel&&styles.chipTextSel]}>{label}</Text>
       </View>
     </Pressable>
