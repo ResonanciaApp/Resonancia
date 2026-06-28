@@ -106,7 +106,7 @@ function NightSky() {
     return () => clearInterval(id);
   }, []);
 
-  const clipH = H * 0.42;
+  const clipH = H * 0.55;
 
   return (
     <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: clipH, overflow: "hidden" }} pointerEvents="none">
@@ -144,7 +144,7 @@ function NightSky() {
       {/* Fade inferior dentro del clip — sin franja externa */}
       <LinearGradient
         pointerEvents="none"
-        style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 80 }}
+        style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 130 }}
         colors={["transparent", "#1C1C1C"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
