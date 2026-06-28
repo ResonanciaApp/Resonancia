@@ -29,6 +29,8 @@ const TEXT  = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
 const GRID_GAP    = 10;
 const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
+const HERO_H   = 238;
+const HERO_IMG = require("@/assets/images/ancestrales-hero.jpg");
 
 type CatTab   = string;
 type SortMode = "recientes" | "nuevas" | "populares";
@@ -132,10 +134,14 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 }
 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress: () => void }) {
+  const iconColor = sel ? "#1B060F" : GOLD;
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
-      {!!icon && <Feather name={icon as any} size={13} color={sel ? GOLD : MUTED} />}
-      <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
+      {sel && <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />}
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+        {!!icon && <Feather name={icon as any} size={15} color={iconColor} />}
+        <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
+      </View>
     </Pressable>
   );
 }
@@ -363,6 +369,11 @@ export default function SonidosAncestalesScreen() {
   const [playlistSessionId, setPlaylistSessionId] = useState<string|null>(null);
   const toggleView = useCallback(()=>setViewMode((v)=>(v==="list"?"grid":"list")),[]);
 
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const HERO_AREA_H = HERO_H;
+  const stickyOpacity = scrollY.interpolate({ inputRange: [HERO_AREA_H * 0.30, HERO_AREA_H * 0.95], outputRange: [0, 1], extrapolate: "clamp" });
+  const [stickyActive, setStickyActive] = useState(false);
+
   const playCounts = useMemo(()=>{ const c:Record<string,number>={}; for (const e of history) c[e.sessionId]=(c[e.sessionId]??0)+1; return c; },[history]);
   const sessions   = useMemo(()=>applySort(getSessionsForTab(activeTab),sort,playCounts),[activeTab,sort,playCounts,version]);
   const sortLabel  = sort==="recientes"?"Escuchadas recientemente":sort==="nuevas"?"Nuevas sesiones":"Las más escuchadas";
@@ -435,6 +446,10 @@ export default function SonidosAncestalesScreen() {
         scrollEventThrottle={16}
 
         onScroll={(e) => {
+          const y = e.nativeEvent.contentOffset.y;
+          scrollY.setValue(y);
+          const active = y > HERO_AREA_H * 0.50;
+          if (active !== stickyActive) setStickyActive(active);
           const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
           if (hasMore && contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
             setVisibleCount((c) => Math.min(c + PAGE_SIZE, sessions.length));
@@ -442,27 +457,28 @@ export default function SonidosAncestalesScreen() {
         }}
       >
 
-        {/* ── Encabezado ── */}
-        <View style={[styles.profileCard, { marginTop: topPad + 12 }]}>
-          <View style={styles.profileTopRow}>
-            <BackPill onPress={() => router.back()} />
-            <GhostPill>
-              <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
-                <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
-              </Pressable>
+        {/* ── Hero banner ── */}
+        <View style={styles.heroArea}>
+          <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" />
+          <LinearGradient colors={["transparent","rgba(0,0,0,0.28)","rgba(0,0,0,0.60)"]} locations={[0.50,0.80,1]} style={StyleSheet.absoluteFill} />
+          <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
+            <GhostPill style={{ backgroundColor: "#2E0510" }}>
+              <BackPill onPress={() => router.back()} />
             </GhostPill>
           </View>
-          <View style={styles.profileTitleRow}>
+          <View style={styles.heroIconFloat}>
             <View style={styles.heroIconCircle}>
-              <Feather name="music" size={28} color={GOLD} />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.profileTitle}>Ancestrales</Text>
-              <Text style={styles.profileDesc} numberOfLines={1}>
-                Cuencos, gongs, campanas y sonidos ancestrales para sanar el cuerpo, calmar la mente y elevar el espíritu a través de frecuencias sagradas.
-              </Text>
+              <Feather name="music" size={32} color={GOLD} />
             </View>
           </View>
+        </View>
+
+        {/* ── Título + Descripción ── */}
+        <View style={styles.profileCard}>
+          <Text style={styles.profileTitle}>Ancestrales</Text>
+          <Text style={styles.profileDesc} numberOfLines={2}>
+            Cuencos, gongs, campanas y sonidos ancestrales para sanar el cuerpo y elevar el espíritu.
+          </Text>
         </View>
 
         {/* ── Tabs ── */}
@@ -470,12 +486,27 @@ export default function SonidosAncestalesScreen() {
           <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
         </View>
 
+        <View style={styles.divider} />
+
         {/* ── Contenido ── */}
         <AnimatedTabContent animKey={activeTab ?? "all"}>
           {renderContent()}
         </AnimatedTabContent>
 
       </ScrollView>
+
+      {/* ── Sticky header ── */}
+      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity }]} pointerEvents={stickyActive ? "auto" : "none"}>
+        <GhostPill>
+          <BackPill onPress={() => router.back()} />
+        </GhostPill>
+        <Text style={styles.headerTitle}>Ancestrales</Text>
+        <GhostPill>
+          <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
+            <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
+          </Pressable>
+        </GhostPill>
+      </Animated.View>
 
       <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} categoryId="sonidos-ancestrales" placeholderTxt="Buscar en Ancestrales..." />
       <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={() => setSortVisible(false)} />
@@ -490,47 +521,29 @@ export default function SonidosAncestalesScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#160108" },
 
-  profileTopRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%", marginBottom: 14 },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#2E0510" },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
+  headerTitle: { flex: 1, fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2, textAlign: "center" },
+  heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
+
+  /* ── Hero ── */
+  heroArea: { height: HERO_H, position: "relative" },
+  heroIconFloat: { position: "absolute", bottom: -16, left: 0, right: 0, alignItems: "center", zIndex: 2 },
+  heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(60,5,18,0.85)", borderWidth: 1, borderColor: "rgba(212,175,55,0.60)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
   /* ── Profile card ── */
-  heroIconCircle: {
-    width: 56, height: 56, borderRadius: 28,
-    backgroundColor: "rgba(60,5,18,0.85)",
-    borderWidth: 1, borderColor: "rgba(212,175,55,0.60)",
-    alignItems: "center", justifyContent: "center",
-  },
-  profileCard: {
-    marginHorizontal: H_PAD,
-    paddingBottom: 14,
-    gap: 0,
-    alignItems: "flex-start",
-  },
-  profileTitleRow: {
-    flexDirection: "row", alignItems: "center", gap: 12,
-  },
-  profileTitle: {
-    fontSize: 27,
-    fontWeight: "800",
-    color: TEXT,
-    letterSpacing: 0.3,
-    flex: 1,
-  },
-  profileDesc: { fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 18, textAlign: "left", marginTop: -7, paddingRight: 36 },
-
-  /* ── Divisor ── */
-  dividerLine: { height: 0 },
-  dividerShadow: { height: 12, marginTop: 0 },
+  profileCard: { marginHorizontal: H_PAD, marginTop: 30, paddingBottom: 14, gap: 8, alignItems: "center" },
+  profileTitle: { fontSize: 27, fontWeight: "800", color: TEXT, letterSpacing: 0.3 },
+  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 8, marginBottom: 28 },
 
   /* ── Tabs (chips) ── */
-  chipsArea: { paddingTop: 10, paddingBottom: 0, overflow: "visible", marginTop: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(212,175,55,0.15)" },
+  chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -25 },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 8 },
   chipRow: { flexGrow: 0 },
-  chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 8, paddingLeft: H_PAD, paddingRight: H_PAD },
-  chip: { flexDirection: "row", alignItems: "center", gap: 5, paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, borderWidth: 1, borderColor: "rgba(212,175,55,0.25)", backgroundColor: "rgba(74,12,12,0.4)" },
-  chipSel: { borderColor: GOLD, backgroundColor: "rgba(212,175,55,0.12)" },
-  chipText: { fontSize: 14, fontWeight: "500", color: MUTED },
-  chipTextSel: { color: TEXT, fontWeight: "600" },
+  chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
+  chip: { minWidth: 96, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 999, backgroundColor: "rgba(255,255,255,0.08)", overflow: "hidden", alignItems: "center", justifyContent: "center" },
+  chipText: { fontSize: 14, fontWeight: "600", color: TEXT, textAlign: "center" },
+  chipTextSel: { color: "#1B060F" },
 
   /* ── Content ── */
   scroll: { flex: 1 },
