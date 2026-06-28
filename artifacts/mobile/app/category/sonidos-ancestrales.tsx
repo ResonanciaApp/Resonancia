@@ -169,7 +169,6 @@ function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: {id: string; la
             onPress={() => activeTab === t.id ? onClear() : onSelect(t.id)} />
         ))}
       </ScrollView>
-      <View style={styles.chipRowBorder} />
     </View>
   );
 }
