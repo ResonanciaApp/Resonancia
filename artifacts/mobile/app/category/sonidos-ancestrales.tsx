@@ -52,9 +52,9 @@ function TibetanBowlIcon({ size = 20, color = "#fff" }: { size?: number; color?:
 
 // Tags agrupados bajo cada tab fija (no generan tab propia si ya están acá)
 const FIXED_TABS: { id: string; label: string; icon?: string }[] = [
-  { id: "cuencos",  label: "Cuencos" },
-  { id: "gongs",    label: "Gongs" },
-  { id: "campanas", label: "Campanas" },
+  { id: "cuencos",  label: "Cuencos",  icon: "disc" },
+  { id: "gongs",    label: "Gongs",    icon: "target" },
+  { id: "campanas", label: "Campanas", icon: "bell" },
 ];
 const MIX_TAGS = new Set(["Full Instrumentos","Vientos","Cantos","Percusión","Selva","Mix de Cuencos"]);
 
