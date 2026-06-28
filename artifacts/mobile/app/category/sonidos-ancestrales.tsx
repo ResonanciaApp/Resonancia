@@ -451,13 +451,18 @@ export default function SonidosAncestalesScreen() {
         }}
       >
 
-        {/* ── Título + Descripción ── */}
-        <View style={[styles.profileCard, { marginTop: topPad + 64 }]}>
-          <View style={styles.heroIconCircle}>
-            <Feather name="music" size={32} color={GOLD} />
+        {/* ── Encabezado ── */}
+        <View style={[styles.profileCard, { marginTop: topPad + 12 }]}>
+          <GhostPill style={{ alignSelf: "flex-start", marginBottom: 14 }}>
+            <BackPill onPress={() => router.back()} />
+          </GhostPill>
+          <View style={styles.profileTitleRow}>
+            <View style={styles.heroIconCircle}>
+              <Feather name="music" size={28} color={GOLD} />
+            </View>
+            <Text style={styles.profileTitle}>Ancestrales</Text>
           </View>
-          <Text style={styles.profileTitle}>Ancestrales</Text>
-          <Text style={styles.profileDesc} numberOfLines={2}>
+          <Text style={styles.profileDesc} numberOfLines={3}>
             Cuencos, gongs y sonidos sagrados para sanar y elevar.
           </Text>
         </View>
@@ -519,25 +524,28 @@ const styles = StyleSheet.create({
 
   /* ── Profile card ── */
   heroIconCircle: {
-    width: 72, height: 72, borderRadius: 36,
+    width: 56, height: 56, borderRadius: 28,
     backgroundColor: "rgba(60,5,18,0.85)",
     borderWidth: 1, borderColor: "rgba(212,175,55,0.60)",
     alignItems: "center", justifyContent: "center",
-    marginBottom: 4,
   },
   profileCard: {
     marginHorizontal: H_PAD,
     paddingBottom: 14,
-    gap: 8,
-    alignItems: "center",
+    gap: 10,
+    alignItems: "flex-start",
+  },
+  profileTitleRow: {
+    flexDirection: "row", alignItems: "center", gap: 12,
   },
   profileTitle: {
     fontSize: 27,
     fontWeight: "800",
     color: TEXT,
     letterSpacing: 0.3,
+    flex: 1,
   },
-  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 8, marginBottom: 28 },
+  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 20, textAlign: "left", marginBottom: 18 },
 
   /* ── Divisor ── */
   dividerLine: { height: 0 },
