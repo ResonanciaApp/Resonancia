@@ -301,11 +301,6 @@ function SessionQuickSheet({ session, onClose, onPlaylist }: { session: Session|
         </View>
         <View style={styles.qsDivider} />
 
-        <Pressable onPress={() => { onClose(); router.push("/mi-musica" as never); }} style={({pressed})=>[styles.qsRow,{opacity:pressed?0.7:1}]}>
-          <Feather name="music" size={20} color={TEXT} style={styles.qsIcon} />
-          <Text style={styles.qsLabel}>Sonido ambiente</Text>
-          <Feather name="chevron-right" size={16} color={MUTED} />
-        </Pressable>
         <Pressable onPress={() => setShowTimer(true)} style={({pressed})=>[styles.qsRow,{opacity:pressed?0.7:1}]}>
           <Feather name="clock" size={20} color={TEXT} style={styles.qsIcon} />
           <Text style={styles.qsLabel}>Temporizador</Text>
