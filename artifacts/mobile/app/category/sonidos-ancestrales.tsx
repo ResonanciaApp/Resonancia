@@ -449,8 +449,6 @@ export default function SonidosAncestalesScreen() {
             <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
           </View>
 
-          <View style={styles.divider} />
-
           <AnimatedTabContent animKey={activeTab ?? "all"}>
             {renderContent()}
           </AnimatedTabContent>
@@ -547,7 +545,7 @@ const styles = StyleSheet.create({
   dividerShadow: { height: 12, marginTop: 0 },
 
   /* ── Tabs (chips) ── */
-  chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -25 },
+  chipsArea: { paddingTop: 10, paddingBottom: 0, overflow: "visible", marginTop: -25, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(212,175,55,0.15)" },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 8 },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
