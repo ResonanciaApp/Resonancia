@@ -398,9 +398,10 @@ export default function SonidosAncestalesScreen() {
 
   return (
     <View style={styles.root}>
+      <LinearGradient colors={["#2E0510","#160108"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 140 + bottomPad, backgroundColor: "#290A12" }}
+        contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
         onScroll={(e) => {
@@ -436,23 +437,23 @@ export default function SonidosAncestalesScreen() {
           </View>
         </View>
 
-        {/* ── Título + Descripción + Tabs + Contenido ── */}
-        <View style={{ backgroundColor: "#290A12" }}>
-          <View style={styles.profileCard}>
-            <Text style={styles.profileTitle}>Ancestrales</Text>
-            <Text style={styles.profileDesc} numberOfLines={2}>
-              Cuencos, gongs y sonidos sagrados para sanar y elevar.
-            </Text>
-          </View>
-
-          <View style={styles.chipsArea}>
-            <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
-          </View>
-
-          <AnimatedTabContent animKey={activeTab ?? "all"}>
-            {renderContent()}
-          </AnimatedTabContent>
+        {/* ── Título + Descripción ── */}
+        <View style={styles.profileCard}>
+          <Text style={styles.profileTitle}>Ancestrales</Text>
+          <Text style={styles.profileDesc} numberOfLines={2}>
+            Cuencos, gongs y sonidos sagrados para sanar y elevar.
+          </Text>
         </View>
+
+        {/* ── Tabs ── */}
+        <View style={styles.chipsArea}>
+          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+        </View>
+
+        {/* ── Contenido ── */}
+        <AnimatedTabContent animKey={activeTab ?? "all"}>
+          {renderContent()}
+        </AnimatedTabContent>
 
       </ScrollView>
 
@@ -494,7 +495,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: H_PAD,
     paddingBottom: 14,
-    backgroundColor: "#290A12",
+    backgroundColor: "#2E0510",
   },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   headerTitle: { flex: 1, fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2, textAlign: "center" },
