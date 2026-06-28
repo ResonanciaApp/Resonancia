@@ -218,9 +218,9 @@ function CategoryCard({
           <Image source={session.image} style={ac.hImage} contentFit="cover" />
           <View style={ac.hImgOverlay} />
           {locked && <View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
-          <Text style={ac.hDurLabel}>{session.durationLabel}</Text>
         </View>
         <View style={ac.hContent}>
+          <Text style={ac.hDuration}>{session.durationLabel}</Text>
           <Text style={ac.hTitle} numberOfLines={2}>{session.title}</Text>
           {!!author && (
             <View style={ac.hAuthorRow}>
@@ -250,7 +250,7 @@ const ac = StyleSheet.create({
   hImgOverlay:{ ...StyleSheet.absoluteFillObject, backgroundColor:"rgba(0,0,0,0.18)" },
   hImage:  { width:109, height:94 },
   hContent:{ flex:1, justifyContent:"center", gap:2 },
-  hDuration:{ fontSize:12, fontWeight:"500", color:"rgba(255,255,255,0.8)" },
+  hDuration:{ fontSize:12, fontWeight:"400", color:MUTED },
   hDurLabel:{ position:"absolute", bottom:6, left:8, fontSize:13, fontWeight:"700", color:"#fff", textShadowColor:"rgba(0,0,0,0.85)", textShadowOffset:{width:0,height:1}, textShadowRadius:4 },
   hTitle:   { fontSize:16, fontWeight:"600", color:TEXT, lineHeight:21 },
   hAuthor:  { fontSize:12, color:MUTED, flex:1 },
