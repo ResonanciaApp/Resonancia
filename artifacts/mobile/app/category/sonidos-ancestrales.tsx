@@ -458,9 +458,11 @@ export default function SonidosAncestalesScreen() {
         <View style={styles.divider} />
 
         {/* ── Contenido ── */}
-        <AnimatedTabContent animKey={activeTab ?? "all"}>
-          {renderContent()}
-        </AnimatedTabContent>
+        <View style={{ backgroundColor: "#290A12", paddingBottom: 8 }}>
+          <AnimatedTabContent animKey={activeTab ?? "all"}>
+            {renderContent()}
+          </AnimatedTabContent>
+        </View>
 
       </ScrollView>
 
