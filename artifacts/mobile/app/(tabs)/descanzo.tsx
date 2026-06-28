@@ -25,37 +25,29 @@ const { width: W, height: H } = Dimensions.get("window");
 const CARD_W = Math.round((W - 30) / 2.2);
 
 /* ─── Estrellas estáticas pre-generadas ─────────────────────────────── */
-const STAR_COUNT = 100;
+// Estrellas solo en el área superior (hasta ~42% de pantalla)
+// Densidad decae hacia abajo para un fade natural sin borde
+const STAR_ZONE = H * 0.42;
+const STAR_COUNT = 110;
 const COLS = 10;
 const ROWS = Math.ceil(STAR_COUNT / COLS);
-const STARS = [
-  // Grilla con jitter para el área principal
-  ...Array.from({ length: STAR_COUNT }, (_, i) => {
-    const col = i % COLS;
-    const row = Math.floor(i / COLS);
-    return {
-      key: i,
-      x: (col / COLS) * W + (Math.random() - 0.5) * (W / COLS) * 0.9,
-      y: (row / ROWS) * H + (Math.random() - 0.5) * (H / ROWS) * 0.9,
-      size: 0.8 + Math.random() * 1.8,
-      minOpacity: 0.12 + Math.random() * 0.22,
-      maxOpacity: 0.5 + Math.random() * 0.5,
-      duration: 1200 + Math.random() * 2800,
-      delay: Math.random() * 4000,
-    };
-  }),
-  // Franja derecha explícita (últimos 8% del ancho)
-  ...Array.from({ length: 14 }, (_, i) => ({
-    key: STAR_COUNT + i,
-    x: W * 0.92 + Math.random() * W * 0.06,
-    y: Math.random() * H,
-    size: 0.8 + Math.random() * 1.5,
-    minOpacity: 0.15 + Math.random() * 0.2,
-    maxOpacity: 0.5 + Math.random() * 0.4,
-    duration: 1400 + Math.random() * 2400,
-    delay: Math.random() * 3500,
-  })),
-];
+const STARS = Array.from({ length: STAR_COUNT }, (_, i) => {
+  const col = i % COLS;
+  const row = Math.floor(i / COLS);
+  const normalizedRow = row / ROWS; // 0..1
+  // Opacidad máxima decrece linealmente hacia la zona baja
+  const rowFade = 1 - normalizedRow * 0.85;
+  return {
+    key: i,
+    x: (col / COLS) * W + (Math.random() - 0.5) * (W / COLS) * 0.95,
+    y: normalizedRow * STAR_ZONE + (Math.random() - 0.5) * (STAR_ZONE / ROWS) * 0.9,
+    size: 0.8 + Math.random() * 1.6,
+    minOpacity: (0.08 + Math.random() * 0.15) * rowFade,
+    maxOpacity: (0.45 + Math.random() * 0.45) * rowFade,
+    duration: 1200 + Math.random() * 2800,
+    delay: Math.random() * 4000,
+  };
+});
 
 function NightSky() {
   const twinkles = useRef(STARS.map((s) => new Animated.Value(s.minOpacity))).current;
@@ -106,10 +98,8 @@ function NightSky() {
     return () => clearInterval(id);
   }, []);
 
-  const clipH = H * 0.55;
-
   return (
-    <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: clipH, overflow: "hidden" }} pointerEvents="none">
+    <View style={StyleSheet.absoluteFill} pointerEvents="none">
       {STARS.map((star, i) => (
         <Animated.View
           key={star.key}
@@ -140,14 +130,6 @@ function NightSky() {
             { rotate: "32deg" },
           ],
         }}
-      />
-      {/* Fade inferior dentro del clip — sin franja externa */}
-      <LinearGradient
-        pointerEvents="none"
-        style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 130 }}
-        colors={["transparent", "#1C1C1C"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
       />
     </View>
   );
