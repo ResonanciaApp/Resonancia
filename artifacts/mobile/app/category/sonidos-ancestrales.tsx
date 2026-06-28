@@ -156,8 +156,8 @@ function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel
   const iconColor = colorAnim.interpolate({ inputRange: [0,1], outputRange: [MUTED, GOLD] });
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
-      <View style={{ alignItems: "center", gap: 4 }}>
-        {!!icon && <Animated.Text style={{ color: iconColor }}><Feather name={icon as any} size={18} /></Animated.Text>}
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+        {!!icon && <Animated.Text style={{ color: iconColor }}><Feather name={icon as any} size={16} /></Animated.Text>}
         <Animated.Text style={[styles.chipText, { color: colorAnim.interpolate({ inputRange: [0,1], outputRange: [MUTED, TEXT] }) }]}>{label}</Animated.Text>
       </View>
       <Animated.View style={[styles.chipUnderline, { opacity: lineAnim, transform: [{ scaleX: lineAnim }] }]} />
@@ -488,21 +488,21 @@ export default function SonidosAncestalesScreen() {
               <BackPill onPress={() => router.back()} />
             </GhostPill>
           </View>
+          <View style={styles.heroIconFloat}>
+            <View style={styles.heroIconGlow}>
+              <View style={styles.heroIconCircle}>
+                <Feather name="music" size={32} color={GOLD} />
+              </View>
+            </View>
+          </View>
         </View>
 
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
-          <View style={styles.heroIconGlow}>
-            <View style={styles.heroIconCircle}>
-              <Feather name="music" size={32} color={GOLD} />
-            </View>
-          </View>
-          <View style={styles.profileTextCol}>
-            <Text style={styles.profileTitle}>Ancestrales</Text>
-            <Text style={styles.profileDesc} numberOfLines={2}>
-              Sonidos ancestrales para sanar cuerpo y espíritu.
-            </Text>
-          </View>
+          <Text style={styles.profileTitle}>Ancestrales</Text>
+          <Text style={styles.profileDesc} numberOfLines={2}>
+            Sonidos ancestrales para sanar cuerpo y espíritu.
+          </Text>
         </View>
 
         {/* ── Tabs ── */}
@@ -550,14 +550,14 @@ const styles = StyleSheet.create({
 
   /* ── Hero ── */
   heroArea: { height: HERO_H, position: "relative" },
+  heroIconFloat: { position: "absolute", bottom: -17, left: 0, right: 0, alignItems: "center", zIndex: 2 },
   heroIconGlow: { borderRadius: 36 },
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(60,5,18,0.85)", borderWidth: 2, borderColor: "rgba(212,175,55,0.5)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
   /* ── Profile card ── */
-  profileCard: { marginHorizontal: H_PAD, marginTop: 20, paddingBottom: 14, flexDirection: "row", alignItems: "center", gap: 14 },
-  profileTextCol: { flex: 1 },
+  profileCard: { marginHorizontal: H_PAD, marginTop: 28, paddingBottom: 14, gap: 8, alignItems: "center" },
   profileTitle: { fontSize: 27, fontWeight: "800", color: TEXT, letterSpacing: 0.3 },
-  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "left", marginTop: 3, marginBottom: 28 },
+  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 3, marginBottom: 28 },
 
   /* ── Tabs (línea subrayada) ── */
   chipsArea: { paddingTop: 4, paddingBottom: 0, overflow: "visible", marginTop: -25 },
