@@ -489,8 +489,10 @@ export default function SonidosAncestalesScreen() {
             </GhostPill>
           </View>
           <View style={styles.heroIconFloat}>
-            <View style={styles.heroIconCircle}>
-              <Feather name="music" size={32} color={GOLD} />
+            <View style={styles.heroIconGlow}>
+              <View style={styles.heroIconCircle}>
+                <Feather name="music" size={32} color={GOLD} />
+              </View>
             </View>
           </View>
         </View>
@@ -549,7 +551,15 @@ const styles = StyleSheet.create({
   /* ── Hero ── */
   heroArea: { height: HERO_H, position: "relative" },
   heroIconFloat: { position: "absolute", bottom: -2, left: 0, right: 0, alignItems: "center", zIndex: 2 },
-  heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(60,5,18,0.85)", borderWidth: 1, borderColor: "rgba(212,175,55,0.60)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
+  heroIconGlow: {
+    borderRadius: 36,
+    shadowColor: GOLD,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.75,
+    shadowRadius: 10,
+    elevation: 12,
+  },
+  heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(60,5,18,0.85)", borderWidth: 2, borderColor: GOLD, alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
   /* ── Profile card ── */
   profileCard: { marginHorizontal: H_PAD, marginTop: 13, paddingBottom: 14, gap: 8, alignItems: "center" },
