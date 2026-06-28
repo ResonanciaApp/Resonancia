@@ -436,13 +436,13 @@ export default function SonidosAncestalesScreen() {
         {recentSession && (
           <>
             <Text style={styles.sectionLabel}>Escuchado recientemente</Text>
-            <View style={{paddingHorizontal:H_PAD}}>
+            <View style={{paddingHorizontal:H_PAD, marginTop:-15}}>
               <CategoryCard session={recentSession} horizontal onLongPress={()=>setSelectedSession(recentSession)} onOptions={()=>setSelectedSession(recentSession)} />
             </View>
           </>
         )}
         <Text style={[styles.sectionLabel, { paddingTop: 23 }]}>Recomendado</Text>
-        <View style={{paddingHorizontal:H_PAD}}>
+        <View style={{paddingHorizontal:H_PAD, marginTop:-15}}>
           {visibleRec.map((s)=>(
             <CategoryCard key={s.id} session={s} horizontal onLongPress={()=>setSelectedSession(s)} onOptions={()=>setSelectedSession(s)} />
           ))}
