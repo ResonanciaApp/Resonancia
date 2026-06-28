@@ -550,7 +550,7 @@ const styles = StyleSheet.create({
 
   /* ── Hero ── */
   heroArea: { height: HERO_H, position: "relative" },
-  heroIconFloat: { position: "absolute", bottom: -22, left: 0, right: 0, alignItems: "center", zIndex: 2 },
+  heroIconFloat: { position: "absolute", bottom: -17, left: 0, right: 0, alignItems: "center", zIndex: 2 },
   heroIconGlow: {
     borderRadius: 36,
   },
