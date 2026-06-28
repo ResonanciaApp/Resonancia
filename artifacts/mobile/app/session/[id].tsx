@@ -820,6 +820,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderWidth: 1.5,
     borderColor: "#e8d2c0",
+    marginTop: -3,
     marginBottom: 14,
   },
   shareBtnText: {
