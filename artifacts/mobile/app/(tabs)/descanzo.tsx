@@ -106,8 +106,10 @@ function NightSky() {
     return () => clearInterval(id);
   }, []);
 
+  const clipH = H * 0.42;
+
   return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+    <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: clipH, overflow: "hidden" }} pointerEvents="none">
       {STARS.map((star, i) => (
         <Animated.View
           key={star.key}
@@ -139,6 +141,14 @@ function NightSky() {
           ],
         }}
       />
+      {/* Fade inferior dentro del clip — sin franja externa */}
+      <LinearGradient
+        pointerEvents="none"
+        style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 80 }}
+        colors={["transparent", "#1C1C1C"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      />
     </View>
   );
 }
@@ -155,15 +165,6 @@ export default function DescansoScreen() {
     <View style={[styles.root, { backgroundColor: "#1C1C1C" }]}>
       <StatusBar barStyle="light-content" />
       <NightSky />
-      {/* Fade: estrellas visibles solo hasta el banner, se disuelven en el fondo */}
-      <LinearGradient
-        pointerEvents="none"
-        style={StyleSheet.absoluteFill}
-        colors={["transparent", "transparent", "#1C1C1C"]}
-        locations={[0, 0.22, 0.35]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-      />
 
       <ScrollView
         style={styles.scroll}
