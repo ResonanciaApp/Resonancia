@@ -578,7 +578,7 @@ const styles = StyleSheet.create({
   // Category pill
   categoryPill: {
     flexDirection: "row",
-    alignSelf: "center",
+    alignSelf: "flex-start",
     height: 33,
     borderRadius: 16.5,
     paddingHorizontal: 16,
@@ -608,7 +608,7 @@ const styles = StyleSheet.create({
   metaRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     gap: 5,
     marginTop: 2,
     marginBottom: 10,
@@ -631,7 +631,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "800",
     lineHeight: 30,
-    textAlign: "center",
+    textAlign: "left",
     marginTop: 5,
     marginBottom: 7,
   },
@@ -642,9 +642,7 @@ const styles = StyleSheet.create({
     lineHeight: 25,
     marginTop: 0,
     marginBottom: 24,
-    textAlign: "center",
-    maxWidth: 320,
-    alignSelf: "center",
+    textAlign: "left",
   },
 
   // Theme tag chips
