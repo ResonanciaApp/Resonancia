@@ -364,57 +364,13 @@ export default function SessionDetailScreen() {
             </Pressable>
           )}
 
-          {/* ── Action row ──────────────────────────────────────────────── */}
-          <View style={styles.actionRow}>
-            {/* Guardar */}
-            <Pressable onPress={handleFav} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
-              <View style={styles.actionCardBorder}>
-                <LinearGradient colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
-                  <GradPillLabel icon="heart" label="Guardar" active={fav} />
-                </LinearGradient>
-              </View>
-            </Pressable>
-
-            {/* Descargar */}
-            <Pressable
-              onPress={handleDownload}
-              onPressIn={() => setDownloadPressed(true)}
-              onPressOut={() => setDownloadPressed(false)}
-              style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}
-            >
-              <View style={styles.actionCardBorder}>
-                <LinearGradient colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
-                  <GradPillLabel icon="download" label="Descargar" active={downloadPressed} />
-                </LinearGradient>
-              </View>
-            </Pressable>
-
-            {/* Compartir */}
-            <Pressable
-              onPress={handleShare}
-              onPressIn={() => setSharePressed(true)}
-              onPressOut={() => setSharePressed(false)}
-              style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}
-            >
-              <View style={styles.actionCardBorder}>
-                <LinearGradient colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
-                  <GradPillLabel icon="send" label="Compartir" active={sharePressed} />
-                </LinearGradient>
-              </View>
-            </Pressable>
-          </View>
-
-          {/* ── Reproducciones ──────────────────────────────────────────── */}
-          {playsData !== undefined && (
-            <View style={styles.playsRow}>
-              <Feather name="headphones" size={13} color="rgba(255,255,255,0.45)" />
-              <Text style={styles.playsText}>
-                {playsData.plays === 0
-                  ? "Sé el primero en escuchar esta sesión"
-                  : `${playsData.plays.toLocaleString("es")} ${playsData.plays === 1 ? "reproducción" : "reproducciones"}`}
-              </Text>
-            </View>
-          )}
+          {/* ── Botón Compartir ─────────────────────────────────────────── */}
+          <Pressable
+            onPress={handleShare}
+            style={({ pressed }) => [styles.shareBtn, { opacity: pressed ? 0.75 : 1 }]}
+          >
+            <Text style={styles.shareBtnText}>Compartir</Text>
+          </Pressable>
 
 
         </View>
@@ -709,6 +665,21 @@ const styles = StyleSheet.create({
   playBtnText: {
     fontSize: 16,
     fontWeight: "700",
+    letterSpacing: 0.5,
+  },
+  shareBtn: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 14,
+    borderRadius: 30,
+    borderWidth: 1.5,
+    borderColor: "#FFFFFF",
+    marginBottom: 24,
+  },
+  shareBtnText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FFFFFF",
     letterSpacing: 0.5,
   },
   splitBtnRow: {
