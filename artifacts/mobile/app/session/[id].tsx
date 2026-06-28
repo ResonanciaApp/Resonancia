@@ -27,6 +27,7 @@ import { useGetSessionPlayCount, getGetSessionPlayCountQueryKey } from "@workspa
 import { getSessionById, SESSIONS } from "@/data/sessions";
 import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
+import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 
 const { width } = Dimensions.get("window");
 const HEADER_H = 298;
@@ -154,6 +155,7 @@ export default function SessionDetailScreen() {
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [downloadPressed, setDownloadPressed] = useState(false);
   const [sharePressed, setSharePressed] = useState(false);
+  const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const STICKY_START = (HEADER_H + topPad) * 0.3;
@@ -287,8 +289,26 @@ export default function SessionDetailScreen() {
             </LinearGradient>
           )}
 
-          {/* Title */}
-          <Text style={[styles.title, { color: colors.foreground }]}>{session.title}</Text>
+          {/* Saved count */}
+          <View style={styles.savedCountRow}>
+            <MaskedView maskElement={<Feather name="heart" size={12} color="#000" />}>
+              <LinearGradient colors={["#C4A8F5","#A088D8"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 12, height: 12 }} />
+            </MaskedView>
+            <Text style={styles.savedCountText}>{savedCount} guardados</Text>
+          </View>
+
+          {/* Title row */}
+          <View style={styles.titleRow}>
+            <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={3}>{session.title}</Text>
+            <View style={styles.titleActions}>
+              <Pressable onPress={handleFav} hitSlop={8} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+                <Feather name="heart" size={22} color={fav ? "#C4A8F5" : "rgba(255,255,255,0.6)"} />
+              </Pressable>
+              <Pressable onPress={() => setActionsSheetOpen(true)} hitSlop={8} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+                <Feather name="more-vertical" size={22} color="rgba(255,255,255,0.6)" />
+              </Pressable>
+            </View>
+          </View>
 
           {/* Author name */}
           {authors[0] && (
@@ -386,7 +406,7 @@ export default function SessionDetailScreen() {
           )}
 
           {/* Description */}
-          <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]} numberOfLines={2}>
+          <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]} numberOfLines={3}>
             {session.description}
           </Text>
 
@@ -424,6 +444,12 @@ export default function SessionDetailScreen() {
         <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
         <View style={{ width: 36 }} />
       </Animated.View>
+
+      <SessionActionsSheet
+        session={session}
+        visible={actionsSheetOpen}
+        onClose={() => setActionsSheetOpen(false)}
+      />
 
     </View>
   );
@@ -513,6 +539,28 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
   },
 
+  savedCountRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    marginBottom: 6,
+  },
+  savedCountText: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.5)",
+  },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 10,
+    marginBottom: 6,
+  },
+  titleActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    paddingTop: 4,
+  },
   authorNameInline: {
     fontSize: 14,
     fontWeight: "500",
@@ -522,6 +570,7 @@ const styles = StyleSheet.create({
 
   // Title
   title: {
+    flex: 1,
     fontSize: 24,
     fontWeight: "800",
     lineHeight: 30,
