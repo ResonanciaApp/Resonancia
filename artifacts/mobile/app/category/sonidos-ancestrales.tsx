@@ -488,21 +488,21 @@ export default function SonidosAncestalesScreen() {
               <BackPill onPress={() => router.back()} />
             </GhostPill>
           </View>
-          <View style={styles.heroIconFloat}>
-            <View style={styles.heroIconGlow}>
-              <View style={styles.heroIconCircle}>
-                <Feather name="music" size={32} color={GOLD} />
-              </View>
-            </View>
-          </View>
         </View>
 
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
-          <Text style={styles.profileTitle}>Ancestrales</Text>
-          <Text style={styles.profileDesc} numberOfLines={2}>
-            Sonidos ancestrales para sanar cuerpo y espíritu.
-          </Text>
+          <View style={styles.heroIconGlow}>
+            <View style={styles.heroIconCircle}>
+              <Feather name="music" size={32} color={GOLD} />
+            </View>
+          </View>
+          <View style={styles.profileTextCol}>
+            <Text style={styles.profileTitle}>Ancestrales</Text>
+            <Text style={styles.profileDesc} numberOfLines={2}>
+              Sonidos ancestrales para sanar cuerpo y espíritu.
+            </Text>
+          </View>
         </View>
 
         {/* ── Tabs ── */}
@@ -550,16 +550,14 @@ const styles = StyleSheet.create({
 
   /* ── Hero ── */
   heroArea: { height: HERO_H, position: "relative" },
-  heroIconFloat: { position: "absolute", bottom: -17, left: 0, right: 0, alignItems: "center", zIndex: 2 },
-  heroIconGlow: {
-    borderRadius: 36,
-  },
+  heroIconGlow: { borderRadius: 36 },
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(60,5,18,0.85)", borderWidth: 2, borderColor: "rgba(212,175,55,0.5)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
   /* ── Profile card ── */
-  profileCard: { marginHorizontal: H_PAD, marginTop: 28, paddingBottom: 14, gap: 8, alignItems: "center" },
+  profileCard: { marginHorizontal: H_PAD, marginTop: 20, paddingBottom: 14, flexDirection: "row", alignItems: "center", gap: 14 },
+  profileTextCol: { flex: 1 },
   profileTitle: { fontSize: 27, fontWeight: "800", color: TEXT, letterSpacing: 0.3 },
-  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 3, marginBottom: 28 },
+  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "left", marginTop: 3, marginBottom: 28 },
 
   /* ── Tabs (línea subrayada) ── */
   chipsArea: { paddingTop: 4, paddingBottom: 0, overflow: "visible", marginTop: -25 },
