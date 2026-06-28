@@ -543,8 +543,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    marginTop: 20,
-    marginBottom: 10,
+    marginTop: 28,
+    marginBottom: 2,
   },
   savedCountText: {
     fontSize: 12,
