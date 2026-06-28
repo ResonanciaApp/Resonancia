@@ -469,8 +469,11 @@ export default function SonidosAncestalesScreen() {
             </GhostPill>
           </View>
           <View style={styles.heroIconFloat}>
-            <View style={styles.heroIconCircle}>
-              <Feather name="music" size={32} color={GOLD} />
+            <View style={styles.heroIconGlowWrap}>
+              <View style={styles.heroIconCircle}>
+                <View style={styles.heroIconInnerGlow} />
+                <Feather name="music" size={32} color={GOLD} />
+              </View>
             </View>
           </View>
         </View>
@@ -527,9 +530,15 @@ const styles = StyleSheet.create({
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
 
   /* ── Hero ── */
-  heroArea: { height: HERO_H, position: "relative" },
+  heroArea: { height: HERO_H, position: "relative", borderWidth: 4, borderColor: GOLD },
   heroIconFloat: { position: "absolute", bottom: -16, left: 0, right: 0, alignItems: "center", zIndex: 2 },
-  heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(60,5,18,0.85)", borderWidth: 1, borderColor: "rgba(212,175,55,0.60)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
+  heroIconGlowWrap: {
+    shadowColor: GOLD, shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.90, shadowRadius: 18,
+    elevation: 14,
+  },
+  heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(60,5,18,0.85)", borderWidth: 1.5, borderColor: GOLD, alignItems: "center", justifyContent: "center", overflow: "hidden" },
+  heroIconInnerGlow: { position: "absolute", width: 50, height: 50, borderRadius: 25, backgroundColor: "rgba(212,175,55,0.18)" },
 
   /* ── Profile card ── */
   profileCard: { marginHorizontal: H_PAD, marginTop: 30, paddingBottom: 14, gap: 8, alignItems: "center" },
@@ -540,7 +549,7 @@ const styles = StyleSheet.create({
   chipsArea: { paddingTop: 4, paddingBottom: 0, overflow: "visible", marginTop: -25 },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 0 },
   chipRowWrapper: { position: "relative" },
-  chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD },
+  chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)" },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", paddingHorizontal: H_PAD, paddingBottom: 0 },
   chip: { paddingHorizontal: 16, paddingTop: 10, paddingBottom: 12, alignItems: "center", justifyContent: "center", position: "relative" },
