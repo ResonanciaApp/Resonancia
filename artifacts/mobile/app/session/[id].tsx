@@ -143,6 +143,7 @@ export default function SessionDetailScreen() {
   const subTagIcon: string = SUBTAG_ICON[subTag ?? ""] ?? (isAncestral ? "disc" : isGuiada ? "eye" : isMusica ? "cloud" : "book-open");
   const savedCount = 40 + ((parseInt(session.id, 10) * 17 + 83) % 260);
   const [localFav, setLocalFav] = useState<boolean | null>(null);
+  const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const STICKY_START = (HEADER_H + topPad) * 0.3;
@@ -271,8 +272,18 @@ export default function SessionDetailScreen() {
             </LinearGradient>
           )}
 
-          {/* Title */}
-          <Text style={[styles.title, { color: colors.foreground }]}>{session.title}</Text>
+          {/* Title + acciones */}
+          <View style={styles.titleRow}>
+            <Text style={[styles.title, { color: colors.foreground, flex: 1 }]} numberOfLines={3}>{session.title}</Text>
+            <View style={styles.titleActions}>
+              <Pressable onPress={handleFav} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+                <Feather name="heart" size={22} color={fav ? "#D4AF37" : "rgba(255,255,255,0.55)"} />
+              </Pressable>
+              <Pressable onPress={() => setActionsSheetOpen(true)} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+                <Feather name="more-vertical" size={22} color="rgba(255,255,255,0.55)" />
+              </Pressable>
+            </View>
+          </View>
 
           {/* Meta row */}
           <View style={styles.metaRow}>
@@ -583,13 +594,23 @@ const styles = StyleSheet.create({
   },
 
   // Title
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginTop: 5,
+    marginBottom: 7,
+  },
+  titleActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+  },
   title: {
     fontSize: 24,
     fontWeight: "800",
     lineHeight: 30,
     textAlign: "left",
-    marginTop: 5,
-    marginBottom: 7,
   },
 
   // Description
