@@ -559,7 +559,7 @@ const styles = StyleSheet.create({
 
   /* ── Content ── */
   scroll: { flex: 1 },
-  controlRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingTop: 0, paddingBottom: 0 },
+  controlRow: { flexDirection: "row", alignItems: "flex-end", justifyContent: "space-between", paddingHorizontal: H_PAD, height: 30 },
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
   sortText: { fontSize: 13, color: MUTED, fontWeight: "500" },
   viewToggleBtn: { padding: 2 },
