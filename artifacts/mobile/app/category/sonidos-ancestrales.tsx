@@ -453,9 +453,7 @@ export default function SonidosAncestalesScreen() {
 
         {/* ── Encabezado ── */}
         <View style={[styles.profileCard, { marginTop: topPad + 12 }]}>
-          <GhostPill style={{ alignSelf: "flex-start", marginBottom: 14 }}>
-            <BackPill onPress={() => router.back()} />
-          </GhostPill>
+          <BackPill onPress={() => router.back()} style={{ marginBottom: 14 }} />
           <View style={styles.profileTitleRow}>
             <View style={styles.heroIconCircle}>
               <Feather name="music" size={28} color={GOLD} />
