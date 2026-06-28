@@ -460,11 +460,13 @@ export default function SonidosAncestalesScreen() {
             <View style={styles.heroIconCircle}>
               <Feather name="music" size={28} color={GOLD} />
             </View>
-            <Text style={styles.profileTitle}>Ancestrales</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.profileTitle}>Ancestrales</Text>
+              <Text style={styles.profileDesc} numberOfLines={1}>
+                Cuencos, gongs, campanas y sonidos ancestrales para sanar el cuerpo, calmar la mente y elevar el espíritu a través de frecuencias sagradas.
+              </Text>
+            </View>
           </View>
-          <Text style={[styles.profileDesc, { paddingLeft: 56 + 12, marginTop: -11 }]} numberOfLines={1}>
-            Cuencos, gongs, campanas y sonidos ancestrales para sanar el cuerpo, calmar la mente y elevar el espíritu a través de frecuencias sagradas.
-          </Text>
         </View>
 
         {/* ── Tabs ── */}
@@ -545,7 +547,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
     flex: 1,
   },
-  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 20, textAlign: "left", marginBottom: 18 },
+  profileDesc: { fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 18, textAlign: "left", marginTop: 3 },
 
   /* ── Divisor ── */
   dividerLine: { height: 0 },
