@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
     flex: 1,
   },
-  profileDesc: { fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 18, textAlign: "left", marginTop: 3 },
+  profileDesc: { fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 18, textAlign: "left", marginTop: 3, paddingRight: 36 },
 
   /* ── Divisor ── */
   dividerLine: { height: 0 },
