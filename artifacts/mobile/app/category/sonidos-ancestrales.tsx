@@ -193,9 +193,9 @@ function SearchOverlay({ visible, onClose, categoryId, placeholderTxt }: { visib
 }
 
 function CategoryCard({
-  session, width: cardWidth = 200, horizontal = false, onLongPress,
+  session, width: cardWidth = 200, horizontal = false, onLongPress, onOptions,
 }: {
-  session: Session; width?: number; horizontal?: boolean; onLongPress?: ()=>void;
+  session: Session; width?: number; horizontal?: boolean; onLongPress?: ()=>void; onOptions?: ()=>void;
 }) {
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
@@ -226,6 +226,11 @@ function CategoryCard({
             </View>
           )}
         </View>
+        <Pressable onPress={onOptions ?? onLongPress} hitSlop={10} style={ac.hDotsBtn}>
+          <View style={ac.hDot} />
+          <View style={ac.hDot} />
+          <View style={ac.hDot} />
+        </Pressable>
       </Pressable>
     );
   }
@@ -254,6 +259,8 @@ const ac = StyleSheet.create({
   hAuthor:  { fontSize:12, color:MUTED, flex:1 },
   hAuthorRow:{ flexDirection:"row", alignItems:"center", gap:6, marginTop:1 },
   hAuthorAvatar:{ width:20, height:20, borderRadius:10 },
+  hDotsBtn: { paddingLeft:12, paddingRight:4, paddingVertical:8, alignItems:"center", justifyContent:"center", gap:3, flexDirection:"row" },
+  hDot: { width:4, height:4, borderRadius:2, backgroundColor: MUTED },
   card:     { gap:6 },
   imgContainer:{ width:"100%", aspectRatio:1, borderRadius:10, overflow:"hidden" },
   cardImage:   { width:"100%", height:"100%" },
@@ -383,14 +390,14 @@ export default function SonidosAncestalesScreen() {
           <>
             <Text style={styles.sectionLabel}>Escuchado recientemente</Text>
             <View style={{paddingHorizontal:H_PAD}}>
-              <CategoryCard session={recentSession} horizontal onLongPress={()=>setSelectedSession(recentSession)} />
+              <CategoryCard session={recentSession} horizontal onLongPress={()=>setSelectedSession(recentSession)} onOptions={()=>setSelectedSession(recentSession)} />
             </View>
           </>
         )}
         <Text style={[styles.sectionLabel, { paddingTop: 23 }]}>Recomendado</Text>
         <View style={{paddingHorizontal:H_PAD}}>
           {visibleRec.map((s)=>(
-            <CategoryCard key={s.id} session={s} horizontal onLongPress={()=>setSelectedSession(s)} />
+            <CategoryCard key={s.id} session={s} horizontal onLongPress={()=>setSelectedSession(s)} onOptions={()=>setSelectedSession(s)} />
           ))}
         </View>
         {hasMoreRec && <View style={styles.loadMoreFooter}><ActivityIndicator size="small" color={MUTED} /></View>}
