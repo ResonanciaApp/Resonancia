@@ -58,6 +58,15 @@ const FIXED_TABS: { id: string; label: string; icon?: string }[] = [
 ];
 const MIX_TAGS = new Set(["Full Instrumentos","Vientos","Cantos","Percusión","Selva","Mix de Cuencos"]);
 
+const EXTRA_TAB_ICONS: Record<string, string> = {
+  "didgeridoo":   "wind",
+  "Didgeridoo":   "wind",
+  "vientos":      "wind",
+  "cantos":       "mic",
+  "percusión":    "zap",
+  "selva":        "feather",
+};
+
 function tagCoveredByFixed(tag: string): boolean {
   const t = tag.toLowerCase();
   return t.includes("cuenco") || t.includes("gong") || t.includes("campana") || MIX_TAGS.has(tag);
@@ -359,7 +368,7 @@ export default function SonidosAncestalesScreen() {
     const ancestralSessions = SESSIONS.filter((s) => s.categoryId === "sonidos-ancestrales");
     const uniqueTags = [...new Set(ancestralSessions.map((s) => s.ancestralTag).filter(Boolean))] as string[];
     const extraTags = uniqueTags.filter((tag) => !tagCoveredByFixed(tag));
-    return [...FIXED_TABS, ...extraTags.map((tag) => ({ id: tag, label: tag }))];
+    return [...FIXED_TABS, ...extraTags.map((tag) => ({ id: tag, label: tag, icon: EXTRA_TAB_ICONS[tag] }))];
   }, [version]);
 
   const [activeTab,         setActiveTab]         = useState<CatTab|null>(FIXED_TABS[0].id);
