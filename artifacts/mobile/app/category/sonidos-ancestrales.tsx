@@ -442,23 +442,21 @@ export default function SonidosAncestalesScreen() {
           </View>
         </View>
 
-        {/* ── Título + Descripción ── */}
-        <View style={styles.profileCard}>
-          <Text style={styles.profileTitle}>Ancestrales</Text>
-          <Text style={styles.profileDesc} numberOfLines={2}>
-            Cuencos, gongs y sonidos sagrados para sanar y elevar.
-          </Text>
-        </View>
+        {/* ── Título + Descripción + Tabs + Contenido ── */}
+        <View style={{ backgroundColor: "#290A12" }}>
+          <View style={styles.profileCard}>
+            <Text style={styles.profileTitle}>Ancestrales</Text>
+            <Text style={styles.profileDesc} numberOfLines={2}>
+              Cuencos, gongs y sonidos sagrados para sanar y elevar.
+            </Text>
+          </View>
 
-        {/* ── Tabs ── */}
-        <View style={styles.chipsArea}>
-          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
-        </View>
+          <View style={styles.chipsArea}>
+            <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+          </View>
 
-        <View style={styles.divider} />
+          <View style={styles.divider} />
 
-        {/* ── Contenido ── */}
-        <View style={{ backgroundColor: "#290A12", paddingBottom: 8 }}>
           <AnimatedTabContent animKey={activeTab ?? "all"}>
             {renderContent()}
           </AnimatedTabContent>
