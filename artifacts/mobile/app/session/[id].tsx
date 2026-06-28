@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import MaskedView from "@react-native-masked-view/masked-view";
 import Svg, { Path } from "react-native-svg";
 import * as Haptics from "expo-haptics";
@@ -375,6 +375,36 @@ export default function SessionDetailScreen() {
             </View>
           </Pressable>
 
+          {/* ── Reproducciones ──────────────────────────────────────────── */}
+          {playsData !== undefined && (
+            <Text style={styles.playsInline}>
+              {playsData.plays === 0
+                ? "Sé el primero en escuchar esta sesión"
+                : `${playsData.plays.toLocaleString("es")} ${playsData.plays === 1 ? "reproducción" : "reproducciones"}`}
+            </Text>
+          )}
+
+          {/* ── Banner Mezclador ────────────────────────────────────────── */}
+          <Pressable
+            style={({ pressed }) => [styles.mixerBannerWrap, pressed && { opacity: 0.82 }]}
+            onPress={() => router.push("/escenas-mixer" as never)}
+          >
+            <LinearGradient
+              style={styles.mixerBanner}
+              colors={["#2A2070", "#C47A6A"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <View style={styles.mixerBannerIcon}>
+                <Ionicons name="moon" size={22} color="#ffffff" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.mixerBannerTitle}>Mezclador para dormir</Text>
+                <Text style={styles.mixerBannerSub}>Crea tu propia mezcla de sonidos</Text>
+              </View>
+              <Feather name="chevron-right" size={20} color="rgba(255,255,255,0.5)" />
+            </LinearGradient>
+          </Pressable>
 
         </View>
       </Animated.ScrollView>
@@ -677,13 +707,49 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderWidth: 1.5,
     borderColor: "#FFFFFF",
-    marginBottom: 24,
+    marginBottom: 14,
   },
   shareBtnText: {
     fontSize: 16,
     fontWeight: "600",
     color: "#FFFFFF",
     letterSpacing: 0.5,
+  },
+  playsInline: {
+    textAlign: "center",
+    fontSize: 13,
+    color: "rgba(255,255,255,0.55)",
+    marginBottom: 28,
+  },
+  mixerBannerWrap: {
+    borderRadius: 16,
+    overflow: "hidden",
+    marginBottom: 32,
+  },
+  mixerBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 18,
+    paddingHorizontal: 16,
+    gap: 14,
+  },
+  mixerBannerIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: "rgba(212,175,55,0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  mixerBannerTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#FFFFFF",
+    marginBottom: 3,
+  },
+  mixerBannerSub: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.6)",
   },
   splitBtnRow: {
     flexDirection: "row",
