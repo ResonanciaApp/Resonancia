@@ -455,7 +455,7 @@ export default function SonidosAncestalesScreen() {
               </View>
             </Pressable>
           </View>
-          {renderContent()}
+          <View style={{ marginTop: -20 }}>{renderContent()}</View>
         </AnimatedTabContent>
 
       </ScrollView>
