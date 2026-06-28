@@ -60,13 +60,15 @@ const MIX_TAGS = new Set(["Full Instrumentos","Vientos","Cantos","Percusión","S
 
 const EXTRA_TAB_ICONS: Record<string, string> = {
   "didgeridoo":   "wind",
+  "digeridoo":    "wind",
+  "didgerido":    "wind",
+  "digerido":     "wind",
+  "flauta":       "wind",
   "vientos":      "wind",
   "cantos":       "mic",
   "percusión":    "zap",
   "selva":        "feather",
   "tambor":       "zap",
-  "flauta":       "wind",
-  "didgerido":    "wind",
 };
 
 function tagCoveredByFixed(tag: string): boolean {
