@@ -553,11 +553,6 @@ const styles = StyleSheet.create({
   heroIconFloat: { position: "absolute", bottom: -2, left: 0, right: 0, alignItems: "center", zIndex: 2 },
   heroIconGlow: {
     borderRadius: 36,
-    shadowColor: GOLD,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.75,
-    shadowRadius: 10,
-    elevation: 12,
   },
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(60,5,18,0.85)", borderWidth: 2, borderColor: GOLD, alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
