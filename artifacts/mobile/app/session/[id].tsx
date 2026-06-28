@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
 
   // Hero
-  hero: { width: "100%", overflow: "hidden" },
+  hero: { width: "100%", overflow: "hidden", borderBottomWidth: 5, borderBottomColor: "#C4A8F5" },
   navBar: {
     flexDirection: "row",
     justifyContent: "space-between",
