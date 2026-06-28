@@ -566,7 +566,7 @@ const styles = StyleSheet.create({
   viewToggleBtn: { padding: 2 },
   gridOuter: { paddingHorizontal: H_PAD, gap: GRID_GAP },
   gridRow: { flexDirection: "row", gap: GRID_GAP },
-  sectionLabel: { fontSize: 13, fontWeight: "400", color: TEXT, paddingHorizontal: H_PAD, paddingTop: 17, paddingBottom: 4 },
+  sectionLabel: { fontSize: 13, fontWeight: "400", color: TEXT, paddingHorizontal: H_PAD, paddingTop: 20, paddingBottom: 4 },
   emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },
   loadMoreFooter: { alignItems: "center", paddingVertical: 20 },
   emptyTitle: { fontSize: 17, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 8 },
