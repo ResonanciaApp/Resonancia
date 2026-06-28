@@ -77,15 +77,6 @@ function GlowPill({ onPress, pillStyle, gradientColors }: { onPress: () => void;
 }
 
 
-function GradPillLabel({ icon, label, active }: { icon: React.ComponentProps<typeof Feather>["name"]; label: string; active?: boolean }) {
-  const iconColor = active ? "#D4AF37" : "rgba(255,255,255,0.9)";
-  return (
-    <View style={{ alignItems: "center", gap: 8 }}>
-      <Feather name={icon} size={23} color={iconColor} />
-      <Text style={{ fontSize: 14, fontWeight: "600", letterSpacing: 0.2, color: iconColor }}>{label}</Text>
-    </View>
-  );
-}
 
 export default function SessionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -152,7 +143,6 @@ export default function SessionDetailScreen() {
   const subTagIcon: string = SUBTAG_ICON[subTag ?? ""] ?? (isAncestral ? "disc" : isGuiada ? "eye" : isMusica ? "cloud" : "book-open");
   const savedCount = 40 + ((parseInt(session.id, 10) * 17 + 83) % 260);
   const [localFav, setLocalFav] = useState<boolean | null>(null);
-  const [downloadPressed, setDownloadPressed] = useState(false);
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const STICKY_START = (HEADER_H + topPad) * 0.3;
@@ -200,11 +190,6 @@ export default function SessionDetailScreen() {
     router.push("/player" as never);
   };
 
-  const handleDownload = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    // TODO: descarga real cuando el backend soporte offline
-    alert("Próximamente podrás descargar esta sesión para escucharla sin conexión.");
-  };
 
   const handleShare = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -386,31 +371,6 @@ export default function SessionDetailScreen() {
             </View>
           </Pressable>
 
-          {/* ── Action row ──────────────────────────────────────────────── */}
-          <View style={styles.actionRow}>
-            {/* Guardar */}
-            <Pressable onPress={handleFav} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
-              <View style={styles.actionCardBorder}>
-                <LinearGradient colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
-                  <GradPillLabel icon="heart" label="Guardar" active={fav} />
-                </LinearGradient>
-              </View>
-            </Pressable>
-
-            {/* Descargar */}
-            <Pressable
-              onPress={handleDownload}
-              onPressIn={() => setDownloadPressed(true)}
-              onPressOut={() => setDownloadPressed(false)}
-              style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}
-            >
-              <View style={styles.actionCardBorder}>
-                <LinearGradient colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
-                  <GradPillLabel icon="download" label="Descargar" active={downloadPressed} />
-                </LinearGradient>
-              </View>
-            </Pressable>
-          </View>
 
           {/* ── Reproducciones ──────────────────────────────────────────── */}
           {playsData !== undefined && (
@@ -650,33 +610,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   tagChipText: { fontSize: 12, fontWeight: "600", letterSpacing: 0.2 },
-
-  // Action row
-  actionRow: {
-    flexDirection: "row",
-    gap: 10,
-    marginTop: 11,
-    marginBottom: 28,
-  },
-  actionCardWrap: { flex: 1 },
-  actionCardBorder: {
-    flex: 1,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.22)",
-  },
-  actionCardInner: {
-    borderRadius: 13,
-    paddingVertical: 22,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-  },
-  actionLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-    letterSpacing: 0.3,
-  },
 
   // Author section
   authorSection: { marginTop: 15, marginBottom: 28 },
