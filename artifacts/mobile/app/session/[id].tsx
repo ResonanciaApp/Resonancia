@@ -484,47 +484,6 @@ export default function SessionDetailScreen() {
             ))}
           </View>
 
-          {/* ── Más sesiones como estas ──────────────────────────────────── */}
-          {related.length > 0 && (
-            <View style={styles.relatedBlock}>
-              <Text style={[styles.blockTitle, { color: colors.foreground }]} numberOfLines={1} ellipsizeMode="tail">
-                Más sesiones como estas
-              </Text>
-              <View style={styles.relatedList}>
-                {related.map((s) => (
-                  <Pressable
-                    key={s.id}
-                    onPress={() => router.push(`/session/${s.id}` as never)}
-                    style={({ pressed }) => [styles.relatedCard, { opacity: pressed ? 0.8 : 1 }]}
-                  >
-                    <Image
-                      source={s.image as never}
-                      style={styles.relatedCardImg}
-                      contentFit="cover"
-                      placeholder={BLUR_PLACEHOLDER}
-                      transition={IMAGE_TRANSITION}
-                    />
-                    <View style={styles.relatedCardBody}>
-                      <Text style={[styles.relatedCardTitle, { color: colors.foreground }]} numberOfLines={2}>
-                        {s.title}
-                      </Text>
-                      {(() => {
-                        const g = getGuide(s.guideIds?.[0] ?? s.guideId ?? undefined);
-                        return (
-                          <View style={styles.relatedAuthorRow}>
-                            <Image source={g.photo} style={styles.relatedAuthorAvatar} contentFit="cover" />
-                            <Text style={[styles.relatedCardSub, { color: "rgba(255,255,255,0.9)" }]} numberOfLines={1}>
-                              {g.name}
-                            </Text>
-                          </View>
-                        );
-                      })()}
-                    </View>
-                  </Pressable>
-                ))}
-              </View>
-            </View>
-          )}
         </View>
       </Animated.ScrollView>
 
