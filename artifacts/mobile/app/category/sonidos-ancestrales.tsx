@@ -382,10 +382,6 @@ export default function SonidosAncestalesScreen() {
     setVisibleCount(PAGE_SIZE);
   },[allTabSessions]);
 
-  const scrollY = useRef(new Animated.Value(0)).current;
-  const TRIGGER_H = 120;
-  const stickyOpacity = scrollY.interpolate({ inputRange: [TRIGGER_H * 0.4, TRIGGER_H], outputRange: [0, 1], extrapolate: "clamp" });
-  const [stickyActive, setStickyActive] = useState(false);
 
   const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -440,10 +436,6 @@ export default function SonidosAncestalesScreen() {
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
         onScroll={(e) => {
-          const y = e.nativeEvent.contentOffset.y;
-          scrollY.setValue(y);
-          const active = y > TRIGGER_H * 0.7;
-          if (active !== stickyActive) setStickyActive(active);
           const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
           if (hasMore && contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
             setVisibleCount((c) => Math.min(c + PAGE_SIZE, sessions.length));
@@ -485,18 +477,14 @@ export default function SonidosAncestalesScreen() {
         onPlaylist={() => { if (selectedSession) setPlaylistSessionId(selectedSession.id); setSelectedSession(null); }} />
       <AddToPlaylistSheet visible={playlistSessionId !== null} sessionId={playlistSessionId ?? ""} onClose={() => setPlaylistSessionId(null)} />
 
-      {/* ── Sticky header (aparece con scroll) ── */}
-      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity }]} pointerEvents={stickyActive ? "auto" : "none"}>
-        <GhostPill>
-          <BackPill onPress={() => router.back()} />
-        </GhostPill>
-        <Text style={styles.headerTitle}>Ancestrales</Text>
+      {/* ── Info fijo ── */}
+      <View style={[styles.infoOverlay, { top: topPad + 8 }]} pointerEvents="box-none">
         <GhostPill>
           <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
             <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
           </Pressable>
         </GhostPill>
-      </Animated.View>
+      </View>
     </View>
   );
 }
@@ -504,23 +492,9 @@ export default function SonidosAncestalesScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#160108" },
 
-  /* ── Sticky header (aparece con scroll) ── */
-  stickyHeader: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: H_PAD,
-    paddingBottom: 14,
-    backgroundColor: "#2E0510",
-  },
+  /* ── Info overlay ── */
+  infoOverlay: { position: "absolute", right: H_PAD, zIndex: 20 },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
-  headerTitle: { flex: 1, fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2, textAlign: "center" },
-  headerDivider: { width: StyleSheet.hairlineWidth, height: 18, backgroundColor: "rgba(255,255,255,0.18)" },
 
   /* ── Profile card ── */
   heroIconCircle: {
