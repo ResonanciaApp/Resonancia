@@ -245,10 +245,10 @@ function CategoryCard({
 }
 
 const ac = StyleSheet.create({
-  hRow:{ flexDirection:"row", alignItems:"center", gap:12, paddingVertical:6, marginBottom:15 },
-  hImgWrap:{ width:109, height:94, borderRadius:8, overflow:"hidden" },
+  hRow:{ flexDirection:"row", alignItems:"center", gap:12, paddingVertical:6, marginBottom:11 },
+  hImgWrap:{ width:109, height:109, borderRadius:8, overflow:"hidden" },
   hImgOverlay:{ ...StyleSheet.absoluteFillObject, backgroundColor:"rgba(0,0,0,0.18)" },
-  hImage:  { width:109, height:94 },
+  hImage:  { width:109, height:109 },
   hContent:{ flex:1, justifyContent:"center", gap:2 },
   hDuration:{ fontSize:12, fontWeight:"400", color:MUTED },
   hDurLabel:{ position:"absolute", bottom:6, left:8, fontSize:13, fontWeight:"700", color:"#fff", textShadowColor:"rgba(0,0,0,0.85)", textShadowOffset:{width:0,height:1}, textShadowRadius:4 },
@@ -389,7 +389,7 @@ export default function SonidosAncestalesScreen() {
             </View>
           </>
         )}
-        <Text style={[styles.sectionLabel, { paddingTop: 29 }]}>Recomendado</Text>
+        <Text style={[styles.sectionLabel, { paddingTop: 23 }]}>Recomendado</Text>
         <View style={{paddingHorizontal:H_PAD}}>
           {visibleRec.map((s)=>(
             <CategoryCard key={s.id} session={s} horizontal onLongPress={()=>setSelectedSession(s)} />
