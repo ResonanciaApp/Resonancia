@@ -463,7 +463,7 @@ export default function SonidosAncestalesScreen() {
             <Text style={styles.profileTitle}>Ancestrales</Text>
           </View>
           <Text style={styles.profileDesc} numberOfLines={3}>
-            Cuencos, gongs y sonidos sagrados para sanar y elevar.
+            Cuencos, gongs, campanas y sonidos ancestrales para sanar el cuerpo, calmar la mente y elevar el espíritu a través de frecuencias sagradas.
           </Text>
         </View>
 
