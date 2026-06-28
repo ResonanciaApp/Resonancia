@@ -155,7 +155,7 @@ export default function DescansoScreen() {
   return (
     <LinearGradient
       style={styles.root}
-      colors={["#080808", "#020202"]}
+      colors={["#252525", "#191919"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
@@ -166,7 +166,7 @@ export default function DescansoScreen() {
       <LinearGradient
         pointerEvents="none"
         style={StyleSheet.absoluteFill}
-        colors={["transparent", "transparent", "#080808"]}
+        colors={["transparent", "transparent", "#191919"]}
         locations={[0, 0.22, 0.35]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
