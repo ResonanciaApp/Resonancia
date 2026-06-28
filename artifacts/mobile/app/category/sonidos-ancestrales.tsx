@@ -11,7 +11,9 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GhostPill } from "@/components/GhostPill";
+import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
+import { TimerSheet } from "@/components/TimerSheet";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useCatalog } from "@/context/CatalogContext";
@@ -271,15 +273,19 @@ const ac = StyleSheet.create({
   lockDot:{ position:"absolute", top:6, right:6, width:20, height:20, borderRadius:10, backgroundColor:"rgba(0,0,0,0.55)", alignItems:"center", justifyContent:"center" },
 });
 
-function SessionQuickSheet({ session, onClose, onPlaylist, isFavorite, onToggleFavorite }: { session: Session|null; onClose:()=>void; onPlaylist:()=>void; isFavorite:(id:string)=>boolean; onToggleFavorite:(id:string)=>void }) {
+function SessionQuickSheet({ session, onClose, onPlaylist }: { session: Session|null; onClose:()=>void; onPlaylist:()=>void }) {
   const insets = useSafeAreaInsets();
   const slide  = useRef(new Animated.Value(300)).current;
+  const { isFavorite, toggleFavorite, sleepTimerRemaining } = usePlayer();
+  const [showTimer,  setShowTimer]  = useState(false);
+  const [showFolder, setShowFolder] = useState(false);
   useEffect(() => {
-    if (session) Animated.spring(slide,{toValue:0,useNativeDriver:true,bounciness:0}).start();
+    if (session) { setShowTimer(false); setShowFolder(false); Animated.spring(slide,{toValue:0,useNativeDriver:true,bounciness:0}).start(); }
     else slide.setValue(300);
   }, [session, slide]);
   if (!session) return null;
   const fav = isFavorite(session.id);
+  const timerLabel = sleepTimerRemaining === null ? "Apagado" : sleepTimerRemaining >= 3600 ? `${Math.round(sleepTimerRemaining/3600)}h` : `${Math.round(sleepTimerRemaining/60)} min`;
   return (
     <Modal visible={!!session} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
       <Pressable style={styles.qsBackdrop} onPress={onClose} />
@@ -294,16 +300,47 @@ function SessionQuickSheet({ session, onClose, onPlaylist, isFavorite, onToggleF
           <Pressable onPress={onClose} hitSlop={10} style={styles.qsClose}><Feather name="x" size={20} color={MUTED} /></Pressable>
         </View>
         <View style={styles.qsDivider} />
-        <Pressable onPress={onPlaylist} style={({pressed})=>[styles.qsRow,styles.qsRowBorder,{opacity:pressed?0.7:1}]}>
-          <Feather name="list" size={20} color={TEXT} style={styles.qsIcon} />
-          <Text style={styles.qsLabel}>Agregar a una Playlist</Text>
+
+        <Pressable onPress={() => { onClose(); router.push("/mi-musica" as never); }} style={({pressed})=>[styles.qsRow,{opacity:pressed?0.7:1}]}>
+          <Feather name="music" size={20} color={TEXT} style={styles.qsIcon} />
+          <Text style={styles.qsLabel}>Sonido ambiente</Text>
           <Feather name="chevron-right" size={16} color={MUTED} />
         </Pressable>
-        <Pressable onPress={() => { onToggleFavorite(session.id); onClose(); }} style={({pressed})=>[styles.qsRow,{opacity:pressed?0.7:1}]}>
+        <Pressable onPress={() => setShowTimer(true)} style={({pressed})=>[styles.qsRow,{opacity:pressed?0.7:1}]}>
+          <Feather name="clock" size={20} color={TEXT} style={styles.qsIcon} />
+          <Text style={styles.qsLabel}>Temporizador</Text>
+          <Text style={styles.qsRight}>{timerLabel}</Text>
+        </Pressable>
+        <Pressable onPress={() => {}} style={({pressed})=>[styles.qsRow,{opacity:pressed?0.7:1}]}>
+          <Feather name="download" size={20} color={TEXT} style={styles.qsIcon} />
+          <Text style={styles.qsLabel}>Descargar</Text>
+          <Feather name="chevron-right" size={16} color={MUTED} />
+        </Pressable>
+        <Pressable onPress={() => { toggleFavorite(session.id); onClose(); }} style={({pressed})=>[styles.qsRow,{opacity:pressed?0.7:1}]}>
           <Feather name="heart" size={20} color={fav?"#E05C5C":TEXT} style={styles.qsIcon} />
-          <Text style={[styles.qsLabel, fav&&{color:"#E05C5C"}]}>{fav?"Quitar de favoritos":"Agregar a favoritos"}</Text>
+          <Text style={[styles.qsLabel,fav&&{color:"#E05C5C"}]}>{fav?"Quitar de favoritos":"Agregar a favoritos"}</Text>
           <Feather name="chevron-right" size={16} color={MUTED} />
         </Pressable>
+        <Pressable onPress={() => setShowFolder(true)} style={({pressed})=>[styles.qsRow,{opacity:pressed?0.7:1}]}>
+          <Feather name="folder-plus" size={20} color={TEXT} style={styles.qsIcon} />
+          <Text style={styles.qsLabel}>Añadir a carpeta</Text>
+          <Feather name="chevron-right" size={16} color={MUTED} />
+        </Pressable>
+        <Pressable onPress={onPlaylist} style={({pressed})=>[styles.qsRow,{opacity:pressed?0.7:1}]}>
+          <Feather name="list" size={20} color={TEXT} style={styles.qsIcon} />
+          <Text style={styles.qsLabel}>Añadir a playlist</Text>
+          <Feather name="chevron-right" size={16} color={MUTED} />
+        </Pressable>
+
+        <View style={styles.qsSepDivider} />
+        <Pressable onPress={() => {}} style={({pressed})=>[styles.qsRow,{opacity:pressed?0.7:1}]}>
+          <Feather name="alert-circle" size={20} color={MUTED} style={styles.qsIcon} />
+          <Text style={[styles.qsLabel,{color:MUTED}]}>Informar un problema</Text>
+          <Feather name="chevron-right" size={16} color={MUTED} />
+        </Pressable>
+
+        <TimerSheet visible={showTimer} onClose={() => setShowTimer(false)} />
+        <AddToFolderSheet visible={showFolder} sessionId={session.id} onClose={() => setShowFolder(false)} />
       </Animated.View>
     </Modal>
   );
@@ -469,8 +506,7 @@ export default function SonidosAncestalesScreen() {
       <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} categoryId="sonidos-ancestrales" placeholderTxt="Buscar en Ancestrales..." />
       <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={() => setSortVisible(false)} />
       <SessionQuickSheet session={selectedSession} onClose={() => setSelectedSession(null)}
-        onPlaylist={() => { if (selectedSession) setPlaylistSessionId(selectedSession.id); setSelectedSession(null); }}
-        isFavorite={isFavorite} onToggleFavorite={toggleFavorite} />
+        onPlaylist={() => { if (selectedSession) setPlaylistSessionId(selectedSession.id); setSelectedSession(null); }} />
       <AddToPlaylistSheet visible={playlistSessionId !== null} sessionId={playlistSessionId ?? ""} onClose={() => setPlaylistSessionId(null)} />
 
       {/* ── Sticky header (aparece con scroll) ── */}
@@ -589,7 +625,7 @@ const styles = StyleSheet.create({
 
   /* ── Quick sheet ── */
   qsBackdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.55)" },
-  qsSheet: { position: "absolute", bottom: 0, left: 0, right: 0, backgroundColor: "#160108", borderTopLeftRadius: 22, borderTopRightRadius: 22, paddingTop: 10, paddingHorizontal: 20, borderTopWidth: StyleSheet.hairlineWidth, borderColor: "#3D0E16" },
+  qsSheet: { position: "absolute", bottom: 0, left: 0, right: 0, backgroundColor: "#2E0510", borderTopLeftRadius: 22, borderTopRightRadius: 22, paddingTop: 10, paddingHorizontal: 20, borderTopWidth: StyleSheet.hairlineWidth, borderColor: "#3D0E16" },
   qsHandle: { alignSelf: "center", width: 36, height: 4, borderRadius: 2, backgroundColor: "rgba(212,175,55,0.25)", marginBottom: 14 },
   qsHeader: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 14 },
   qsThumb: { width: 54, height: 54, borderRadius: 10 },
@@ -597,10 +633,11 @@ const styles = StyleSheet.create({
   qsSub: { fontSize: 12, color: MUTED },
   qsClose: { padding: 4 },
   qsDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "#3D0E16", marginBottom: 6 },
-  qsRow: { flexDirection: "row", alignItems: "center", paddingVertical: 16, gap: 14 },
-  qsRowBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "#3D0E16" },
+  qsSepDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "#3D0E16", marginVertical: 4 },
+  qsRow: { flexDirection: "row", alignItems: "center", paddingVertical: 14, gap: 14 },
   qsIcon: { width: 22 },
   qsLabel: { flex: 1, fontSize: 15, color: TEXT },
+  qsRight: { fontSize: 13, color: MUTED, marginRight: 4 },
 
   /* ── Search overlay ── */
   searchModalRoot: { flex: 1, backgroundColor: "#2E0510" },
