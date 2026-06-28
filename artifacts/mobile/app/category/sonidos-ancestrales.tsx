@@ -50,9 +50,9 @@ function TibetanBowlIcon({ size = 20, color = "#fff" }: { size?: number; color?:
 
 // Tags agrupados bajo cada tab fija (no generan tab propia si ya están acá)
 const FIXED_TABS: { id: string; label: string; icon?: string }[] = [
-  { id: "cuencos",  label: "Cuencos" },
-  { id: "gongs",    label: "Gongs" },
-  { id: "campanas", label: "Campanas" },
+  { id: "cuencos",  label: "Cuencos",  icon: "disc" },
+  { id: "gongs",    label: "Gongs",    icon: "circle" },
+  { id: "campanas", label: "Campanas", icon: "bell" },
 ];
 const MIX_TAGS = new Set(["Full Instrumentos","Vientos","Cantos","Percusión","Selva","Mix de Cuencos"]);
 
@@ -133,11 +133,9 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress: () => void }) {
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
-      <View style={[styles.chipInner, sel && styles.chipSel]}>
-        {!!icon && <Feather name={icon as any} size={13} color={sel ? GOLD : MUTED} />}
-        <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
-      </View>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
+      {!!icon && <Feather name={icon as any} size={13} color={sel ? GOLD : MUTED} />}
+      <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
     </Pressable>
   );
 }
@@ -528,11 +526,10 @@ const styles = StyleSheet.create({
   chipsArea: { paddingTop: 10, paddingBottom: 0, overflow: "visible", marginTop: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(212,175,55,0.15)" },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 8 },
   chipRow: { flexGrow: 0 },
-  chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingLeft: H_PAD, paddingRight: H_PAD },
-  chip: { paddingLeft: 0, paddingRight: 14, paddingTop: 8, paddingBottom: 0, alignItems: "center", justifyContent: "center" },
-  chipInner: { flexDirection: "row", alignItems: "center", gap: 5, paddingBottom: 3, borderBottomWidth: 2, borderBottomColor: "transparent" },
-  chipSel: { borderBottomColor: GOLD },
-  chipText: { fontSize: 16, fontWeight: "500", color: MUTED, textAlign: "center" },
+  chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 8, paddingLeft: H_PAD, paddingRight: H_PAD },
+  chip: { flexDirection: "row", alignItems: "center", gap: 5, paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, borderWidth: 1, borderColor: "rgba(212,175,55,0.25)", backgroundColor: "rgba(74,12,12,0.4)" },
+  chipSel: { borderColor: GOLD, backgroundColor: "rgba(212,175,55,0.12)" },
+  chipText: { fontSize: 14, fontWeight: "500", color: MUTED },
   chipTextSel: { color: TEXT, fontWeight: "600" },
 
   /* ── Content ── */
