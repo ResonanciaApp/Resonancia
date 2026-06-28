@@ -3,6 +3,7 @@ import Svg, { Path } from "react-native-svg";
 import { BackPill } from "@/components/BackPill";
 import { router } from "expo-router";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import {
   ActivityIndicator, Animated, Dimensions, Easing, Keyboard, Modal, Platform,
