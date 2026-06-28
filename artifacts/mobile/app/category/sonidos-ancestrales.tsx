@@ -449,7 +449,7 @@ export default function SonidosAncestalesScreen() {
         <AnimatedTabContent animKey={activeTab ?? "all"}>
           <View style={[styles.controlRow, { justifyContent: "flex-end" }]}>
             <Pressable onPress={() => setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
-              <Feather name="chevrons-down" size={10} color={MUTED} />
+              <Feather name="sliders" size={13} color={MUTED} />
               <Text style={styles.sortText}>{sortLabel}</Text>
             </Pressable>
           </View>
