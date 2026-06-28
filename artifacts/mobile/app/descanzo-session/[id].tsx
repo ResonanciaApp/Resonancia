@@ -565,7 +565,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
     color: "rgba(255,255,255,0.65)",
-    marginTop: -7,
+    marginTop: -11,
     marginBottom: 18,
   },
 
