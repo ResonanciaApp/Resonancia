@@ -591,8 +591,8 @@ const styles = StyleSheet.create({
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingLeft: H_PAD, paddingRight: H_PAD },
   chip: { paddingLeft: 0, paddingRight: 14, paddingTop: 8, paddingBottom: 0, alignItems: "center", justifyContent: "center" },
-  chipInner: { flexDirection: "row", alignItems: "center", gap: 5, paddingBottom: 3 },
-  chipSel: { borderBottomWidth: 2, borderBottomColor: GOLD },
+  chipInner: { flexDirection: "row", alignItems: "center", gap: 5, paddingBottom: 3, borderBottomWidth: 2, borderBottomColor: "transparent" },
+  chipSel: { borderBottomColor: GOLD },
   chipText: { fontSize: 15, fontWeight: "500", color: MUTED, textAlign: "center" },
   chipTextSel: { color: TEXT, fontWeight: "600" },
 
