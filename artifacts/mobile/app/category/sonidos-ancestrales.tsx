@@ -372,7 +372,7 @@ export default function SonidosAncestalesScreen() {
     );
     // Sesión escuchada más recientemente en este tab
     const tabIds = new Set(allTabSessions.map((s)=>s.id));
-    const recentEntry = [...history].reverse().find((e)=>tabIds.has(e.sessionId));
+    const recentEntry = history.find((e)=>tabIds.has(e.sessionId));
     const recentSession = recentEntry ? allTabSessions.find((s)=>s.id===recentEntry.sessionId) : null;
     const recommended = recentSession
       ? shuffledSessions.filter((s)=>s.id!==recentSession.id)
