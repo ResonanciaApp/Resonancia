@@ -334,6 +334,19 @@ export default function SonidosAncestalesScreen() {
   const sessions   = useMemo(()=>applySort(getSessionsForTab(activeTab),sort,playCounts),[activeTab,sort,playCounts,version]);
   const sortLabel  = sort==="recientes"?"Escuchadas recientemente":sort==="nuevas"?"Nuevas sesiones":"Las más escuchadas";
 
+  // ── Shuffle por entrada/tab ──
+  const allTabSessions = useMemo(()=>getSessionsForTab(activeTab),[activeTab,version]);
+  const [shuffledSessions, setShuffledSessions] = useState<typeof allTabSessions>([]);
+  useEffect(()=>{
+    const arr = [...allTabSessions];
+    for (let i=arr.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]]=[arr[j],arr[i]];
+    }
+    setShuffledSessions(arr);
+    setVisibleCount(PAGE_SIZE);
+  },[allTabSessions]);
+
   const HERO_H  = 187;
   const scrollY = useRef(new Animated.Value(0)).current;
   const HERO_AREA_H = 238;
@@ -351,39 +364,39 @@ export default function SonidosAncestalesScreen() {
   const hasMore = visibleCount < sessions.length;
 
   const renderContent = () => {
-    if (sessions.length===0) return (
+    if (shuffledSessions.length===0) return (
       <View style={styles.emptyState}>
         <Feather name="music" size={48} color={GOLD} style={{marginBottom:16}} />
         <Text style={styles.emptyTitle}>Próximamente en {activeTab ? TABS.find((t)=>t.id===activeTab)?.label : "Ancestrales"}</Text>
         <Text style={styles.emptySub}>Estamos preparando este espacio con las mejores sesiones sonoras.</Text>
       </View>
     );
-    if (viewMode==="grid") {
-      const triples: (typeof sessions)[] = [];
-      for (let i=0;i<visibleSessions.length;i+=3) triples.push(visibleSessions.slice(i,i+3));
-      return (
-        <>
-          <View style={styles.gridOuter}>
-            {triples.map((triple,ri)=>(
-              <View key={ri} style={styles.gridRow}>
-                {triple.map((s)=>(
-                  <CategoryCard key={s.id} session={s} width={cellW} onLongPress={()=>setSelectedSession(s)} />
-                ))}
-              </View>
-            ))}
-          </View>
-          {hasMore && <View style={styles.loadMoreFooter}><ActivityIndicator size="small" color={MUTED} /></View>}
-        </>
-      );
-    }
+    // Sesión escuchada más recientemente en este tab
+    const tabIds = new Set(allTabSessions.map((s)=>s.id));
+    const recentEntry = [...history].reverse().find((e)=>tabIds.has(e.sessionId));
+    const recentSession = recentEntry ? allTabSessions.find((s)=>s.id===recentEntry.sessionId) : null;
+    const recommended = recentSession
+      ? shuffledSessions.filter((s)=>s.id!==recentSession.id)
+      : shuffledSessions;
+    const visibleRec = recommended.slice(0, visibleCount);
+    const hasMoreRec = visibleCount < recommended.length;
     return (
       <>
+        {recentSession && (
+          <>
+            <Text style={styles.sectionLabel}>Escuchado recientemente</Text>
+            <View style={{paddingHorizontal:H_PAD}}>
+              <CategoryCard session={recentSession} horizontal onLongPress={()=>setSelectedSession(recentSession)} />
+            </View>
+          </>
+        )}
+        <Text style={styles.sectionLabel}>Recomendado</Text>
         <View style={{paddingHorizontal:H_PAD}}>
-          {visibleSessions.map((s)=>(
+          {visibleRec.map((s)=>(
             <CategoryCard key={s.id} session={s} horizontal onLongPress={()=>setSelectedSession(s)} />
           ))}
         </View>
-        {hasMore && <View style={styles.loadMoreFooter}><ActivityIndicator size="small" color={MUTED} /></View>}
+        {hasMoreRec && <View style={styles.loadMoreFooter}><ActivityIndicator size="small" color={MUTED} /></View>}
       </>
     );
   };
@@ -445,16 +458,8 @@ export default function SonidosAncestalesScreen() {
 
         <View style={styles.divider} />
 
-        {/* ── Contenido (sort + lista) ── */}
+        {/* ── Contenido ── */}
         <AnimatedTabContent animKey={activeTab ?? "all"}>
-          <View style={[styles.controlRow, { justifyContent: "flex-start" }]}>
-            <Pressable onPress={() => setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
-                <Feather name="arrow-up" size={13} color="rgba(255,255,255,0.9)" />
-                <Feather name="arrow-down" size={13} color="rgba(255,255,255,0.9)" />
-              </View>
-            </Pressable>
-          </View>
           {renderContent()}
         </AnimatedTabContent>
 
@@ -565,6 +570,7 @@ const styles = StyleSheet.create({
   viewToggleBtn: { padding: 2 },
   gridOuter: { paddingHorizontal: H_PAD, gap: GRID_GAP },
   gridRow: { flexDirection: "row", gap: GRID_GAP },
+  sectionLabel: { fontSize: 15, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, paddingTop: 14, paddingBottom: 4 },
   emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },
   loadMoreFooter: { alignItems: "center", paddingVertical: 20 },
   emptyTitle: { fontSize: 17, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 8 },
