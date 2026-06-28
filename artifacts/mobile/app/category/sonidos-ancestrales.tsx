@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
   profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: -2, marginBottom: 28 },
 
   /* ── Tabs (chips) ── */
-  chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -25 },
+  chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -35 },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 8 },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
