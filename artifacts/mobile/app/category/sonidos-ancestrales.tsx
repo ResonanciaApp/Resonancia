@@ -499,7 +499,7 @@ export default function SonidosAncestalesScreen() {
         <View style={styles.profileCard}>
           <Text style={styles.profileTitle}>Ancestrales</Text>
           <Text style={styles.profileDesc} numberOfLines={2}>
-            Cuencos, gongs, campanas y sonidos ancestrales para sanar el cuerpo y elevar el espíritu.
+            Sonidos ancestrales para sanar cuerpo y espíritu.
           </Text>
         </View>
 
