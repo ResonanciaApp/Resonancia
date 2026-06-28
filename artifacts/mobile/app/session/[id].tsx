@@ -290,11 +290,12 @@ export default function SessionDetailScreen() {
           {/* Title */}
           <Text style={[styles.title, { color: colors.foreground }]}>{session.title}</Text>
 
-
-          {/* Description */}
-          <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]} numberOfLines={2}>
-            {session.description}
-          </Text>
+          {/* Author name */}
+          {authors[0] && (
+            <Text style={styles.authorNameInline} numberOfLines={1}>
+              {authors[0].name}
+            </Text>
+          )}
 
           {/* ── Botón Escuchar / Split Reiniciar+Continuar ───────────── */}
           {hasProgress ? (
@@ -383,6 +384,11 @@ export default function SessionDetailScreen() {
                 : `${playsData.plays.toLocaleString("es")} ${playsData.plays === 1 ? "reproducción" : "reproducciones"}`}
             </Text>
           )}
+
+          {/* Description */}
+          <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]} numberOfLines={2}>
+            {session.description}
+          </Text>
 
           {/* ── Banner Mezclador ────────────────────────────────────────── */}
           <Pressable
@@ -505,6 +511,13 @@ const styles = StyleSheet.create({
     borderRadius: 1.5,
     backgroundColor: "rgba(255,255,255,0.3)",
     marginHorizontal: 3,
+  },
+
+  authorNameInline: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "rgba(255,255,255,0.65)",
+    marginBottom: 18,
   },
 
   // Title
