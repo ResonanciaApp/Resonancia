@@ -447,7 +447,7 @@ export default function SonidosAncestalesScreen() {
 
         {/* ── Contenido (sort + lista) ── */}
         <AnimatedTabContent animKey={activeTab ?? "all"}>
-          <View style={[styles.controlRow, { justifyContent: "flex-end" }]}>
+          <View style={[styles.controlRow, { justifyContent: "flex-start" }]}>
             <Pressable onPress={() => setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
                 <Feather name="arrow-up" size={13} color="rgba(255,255,255,0.9)" />
