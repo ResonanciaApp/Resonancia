@@ -551,11 +551,11 @@ const styles = StyleSheet.create({
   chipsArea: { paddingTop: 10, paddingBottom: 0, overflow: "visible", marginTop: -25, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(212,175,55,0.15)" },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 8 },
   chipRow: { flexGrow: 0 },
-  chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-  chip: { paddingHorizontal: 14, paddingTop: 8, paddingBottom: 0, alignItems: "center", justifyContent: "center" },
+  chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingLeft: H_PAD, paddingRight: H_PAD },
+  chip: { paddingLeft: 0, paddingRight: 14, paddingTop: 8, paddingBottom: 0, alignItems: "center", justifyContent: "center" },
   chipInner: { flexDirection: "row", alignItems: "center", gap: 5, paddingBottom: 3 },
   chipSel: { borderBottomWidth: 2, borderBottomColor: GOLD },
-  chipText: { fontSize: 13, fontWeight: "500", color: MUTED, textAlign: "center" },
+  chipText: { fontSize: 15, fontWeight: "500", color: MUTED, textAlign: "center" },
   chipTextSel: { color: TEXT, fontWeight: "600" },
 
   /* ── Content ── */
