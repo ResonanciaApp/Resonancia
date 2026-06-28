@@ -460,7 +460,11 @@ export default function SonidosAncestalesScreen() {
         {/* ── Hero banner ── */}
         <View style={styles.heroArea}>
           <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" />
-          <LinearGradient colors={["transparent","rgba(0,0,0,0.28)","rgba(0,0,0,0.60)"]} locations={[0.50,0.80,1]} style={StyleSheet.absoluteFill} />
+          <LinearGradient
+            colors={["transparent","rgba(46,5,16,0.30)","rgba(46,5,16,0.78)","#2E0510"]}
+            locations={[0.30, 0.58, 0.80, 1.0]}
+            style={StyleSheet.absoluteFill}
+          />
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
             <GhostPill style={{ backgroundColor: "#2E0510" }}>
               <BackPill onPress={() => router.back()} />
