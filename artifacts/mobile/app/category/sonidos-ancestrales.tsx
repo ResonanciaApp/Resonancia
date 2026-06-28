@@ -449,9 +449,9 @@ export default function SonidosAncestalesScreen() {
         <AnimatedTabContent animKey={activeTab ?? "all"}>
           <View style={[styles.controlRow, { justifyContent: "flex-end" }]}>
             <Pressable onPress={() => setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
-              <View style={{ flexDirection: "column", alignItems: "center", gap: 0 }}>
-                <Feather name="arrow-up" size={10} color={MUTED} />
-                <Feather name="arrow-down" size={10} color={MUTED} />
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
+                <Feather name="arrow-up" size={13} color="rgba(255,255,255,0.9)" />
+                <Feather name="arrow-down" size={13} color="rgba(255,255,255,0.9)" />
               </View>
             </Pressable>
           </View>
