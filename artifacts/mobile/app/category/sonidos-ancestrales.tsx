@@ -224,7 +224,6 @@ function CategoryCard({
           <Text style={ac.hTitle} numberOfLines={2}>{session.title}</Text>
           {!!author && (
             <View style={ac.hAuthorRow}>
-              <Image source={authorPhoto} style={ac.hAuthorAvatar} contentFit="cover" />
               <Text style={ac.hAuthor} numberOfLines={1}>{author}</Text>
             </View>
           )}
@@ -254,7 +253,7 @@ const ac = StyleSheet.create({
   hDuration:{ fontSize:12, fontWeight:"500", color:"rgba(255,255,255,0.8)" },
   hDurLabel:{ position:"absolute", bottom:6, left:8, fontSize:13, fontWeight:"700", color:"#fff", textShadowColor:"rgba(0,0,0,0.85)", textShadowOffset:{width:0,height:1}, textShadowRadius:4 },
   hTitle:   { fontSize:16, fontWeight:"600", color:TEXT, lineHeight:21 },
-  hAuthor:  { fontSize:14, color:MUTED, flex:1 },
+  hAuthor:  { fontSize:12, color:MUTED, flex:1 },
   hAuthorRow:{ flexDirection:"row", alignItems:"center", gap:6, marginTop:1 },
   hAuthorAvatar:{ width:20, height:20, borderRadius:10 },
   card:     { gap:6 },
