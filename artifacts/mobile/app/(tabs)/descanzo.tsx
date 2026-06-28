@@ -153,12 +153,7 @@ export default function DescansoScreen() {
   const router    = useRouter();
 
   return (
-    <LinearGradient
-      style={styles.root}
-      colors={["#252525", "#191919"]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
+    <View style={[styles.root, { backgroundColor: "#1C1C1C" }]}>
       <StatusBar barStyle="light-content" />
       <SacredBackground />
       <NightSky />
@@ -166,7 +161,7 @@ export default function DescansoScreen() {
       <LinearGradient
         pointerEvents="none"
         style={StyleSheet.absoluteFill}
-        colors={["transparent", "transparent", "#191919"]}
+        colors={["transparent", "transparent", "#1C1C1C"]}
         locations={[0, 0.22, 0.35]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
@@ -250,7 +245,7 @@ export default function DescansoScreen() {
           })}
         </View>
       </ScrollView>
-    </LinearGradient>
+    </View>
   );
 }
 
