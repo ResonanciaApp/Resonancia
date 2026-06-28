@@ -292,7 +292,7 @@ export default function SessionDetailScreen() {
 
 
           {/* Description */}
-          <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]}>
+          <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]} numberOfLines={2}>
             {session.description}
           </Text>
 
@@ -512,7 +512,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "800",
     lineHeight: 30,
-    textAlign: "center",
+    textAlign: "left",
     marginTop: 22,
     marginBottom: 7,
   },
@@ -523,9 +523,7 @@ const styles = StyleSheet.create({
     lineHeight: 25,
     marginTop: 0,
     marginBottom: 24,
-    textAlign: "center",
-    maxWidth: 320,
-    alignSelf: "center",
+    textAlign: "left",
   },
 
   // Theme tag chips
