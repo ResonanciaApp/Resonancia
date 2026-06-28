@@ -29,13 +29,8 @@ const TEXT  = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
 const GRID_GAP    = 10;
 const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
-const HERO_VISIBLE = 210;
-const HERO_BLEED   = 160;
-const HERO_H       = HERO_VISIBLE + HERO_BLEED;
+const HERO_H   = 238;
 const HERO_IMG = require("@/assets/images/ancestrales-hero.jpg");
-// Locations para el degradado de fusión (sobre HERO_H total)
-const LOC_FADE_START = (HERO_VISIBLE * 0.60) / HERO_H;  // ~0.34
-const LOC_FADE_MID   = HERO_VISIBLE / HERO_H;            // ~0.57
 
 type CatTab   = string;
 type SortMode = "recientes" | "nuevas" | "populares";
@@ -464,20 +459,8 @@ export default function SonidosAncestalesScreen() {
 
         {/* ── Hero banner ── */}
         <View style={styles.heroArea}>
-          {/* Imagen solo en la zona visible */}
-          <Image source={HERO_IMG} style={styles.heroImg} contentFit="cover" contentPosition="center" />
-          {/* Overlay oscuro para legibilidad (solo sobre la imagen) */}
-          <LinearGradient
-            colors={["rgba(0,0,0,0.35)","rgba(0,0,0,0.10)","transparent"]}
-            locations={[0, 0.40, 0.70]}
-            style={styles.heroDarkOverlay}
-          />
-          {/* Degradado largo de fusión: empieza al 60% de la imagen y termina en el color de fondo */}
-          <LinearGradient
-            colors={["transparent","rgba(22,1,8,0.65)","#160108"]}
-            locations={[LOC_FADE_START, LOC_FADE_MID, 1]}
-            style={StyleSheet.absoluteFill}
-          />
+          <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" />
+          <LinearGradient colors={["transparent","rgba(0,0,0,0.28)","rgba(0,0,0,0.60)"]} locations={[0.50,0.80,1]} style={StyleSheet.absoluteFill} />
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
             <GhostPill style={{ backgroundColor: "#2E0510" }}>
               <BackPill onPress={() => router.back()} />
@@ -545,9 +528,7 @@ const styles = StyleSheet.create({
 
   /* ── Hero ── */
   heroArea: { height: HERO_H, position: "relative" },
-  heroImg: { position: "absolute", top: 0, left: 0, right: 0, height: HERO_VISIBLE },
-  heroDarkOverlay: { position: "absolute", top: 0, left: 0, right: 0, height: HERO_VISIBLE },
-  heroIconFloat: { position: "absolute", bottom: HERO_BLEED - 16, left: 0, right: 0, alignItems: "center", zIndex: 2 },
+  heroIconFloat: { position: "absolute", bottom: -16, left: 0, right: 0, alignItems: "center", zIndex: 2 },
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(60,5,18,0.85)", borderWidth: 1, borderColor: "rgba(212,175,55,0.60)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
   /* ── Profile card ── */
