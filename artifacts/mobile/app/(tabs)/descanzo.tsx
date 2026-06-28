@@ -210,7 +210,7 @@ export default function DescansoScreen() {
                     contentContainerStyle={styles.carousel}
                   >
                     {sessions.map((s) => (
-                      <SessionCard key={s.id} session={s} width={CARD_W} />
+                      <SessionCard key={s.id} session={s} width={CARD_W} destRoute="/descanzo-session" />
                     ))}
                   </ScrollView>
                 ) : (

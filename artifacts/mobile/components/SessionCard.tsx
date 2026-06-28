@@ -27,6 +27,7 @@ type Props = {
   cardBg?: string;
   noBorder?: boolean;
   onLongPress?: () => void;
+  destRoute?: string;
 };
 
 function LockStar() {
@@ -40,7 +41,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -50,7 +51,8 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const handlePress = () => {
     if (locked) { router.push("/membresia" as never); return; }
     if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
-    router.push(`/session/${session.id}` as never);
+    const base = destRoute ?? "/session";
+    router.push(`${base}/${session.id}` as never);
   };
   const authorObj = session.guideId ? getGuide(session.guideId) : getArtist(session.artistId);
   const authorName  = authorObj.name;

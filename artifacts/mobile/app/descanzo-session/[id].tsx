@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import MaskedView from "@react-native-masked-view/masked-view";
 import Svg, { Path } from "react-native-svg";
 import * as Haptics from "expo-haptics";
@@ -27,6 +27,7 @@ import { useGetSessionPlayCount, getGetSessionPlayCountQueryKey } from "@workspa
 import { getSessionById, SESSIONS } from "@/data/sessions";
 import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
+import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 
 const { width } = Dimensions.get("window");
 const HEADER_H = 298;
@@ -154,6 +155,7 @@ export default function SessionDetailScreen() {
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [downloadPressed, setDownloadPressed] = useState(false);
   const [sharePressed, setSharePressed] = useState(false);
+  const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const STICKY_START = (HEADER_H + topPad) * 0.3;
@@ -287,26 +289,29 @@ export default function SessionDetailScreen() {
             </LinearGradient>
           )}
 
-          {/* Title */}
-          <Text style={[styles.title, { color: colors.foreground }]}>{session.title}</Text>
-
-          {/* Meta row */}
-          <View style={styles.metaRow}>
-            <MaskedView maskElement={<Feather name="heart" size={13} color="#000" />}>
-              <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 13, height: 13 }} />
+          {/* Meta row: guardados (izq) + acciones (der) */}
+          <View style={styles.savedCountRow}>
+            <MaskedView maskElement={<Feather name="heart" size={12} color="#000" />}>
+              <LinearGradient colors={["#C4A8F5","#A088D8"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 12, height: 12 }} />
             </MaskedView>
-            <Text style={styles.metaText}>{savedCount}</Text>
-            <View style={styles.metaDot} />
-            <MaskedView maskElement={<Feather name={subTagIcon as never} size={13} color="#000" />}>
-              <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 13, height: 13 }} />
-            </MaskedView>
-            <Text style={styles.metaText}>{subTag}</Text>
+            <Text style={[styles.savedCountText, { flex: 1 }]}>{savedCount} guardados</Text>
+            <Pressable onPress={handleFav} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+              <Feather name="heart" size={21} color={fav ? "#C4A8F5" : "rgba(255,255,255,0.55)"} />
+            </Pressable>
+            <Pressable onPress={() => setActionsSheetOpen(true)} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+              <Feather name="more-vertical" size={21} color="rgba(255,255,255,0.55)" />
+            </Pressable>
           </View>
 
-          {/* Description */}
-          <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]}>
-            {session.description}
-          </Text>
+          {/* Title */}
+          <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={3}>{session.title}</Text>
+
+          {/* Author name */}
+          {authors[0] && (
+            <Text style={styles.authorNameInline} numberOfLines={1}>
+              {authors[0].name}
+            </Text>
+          )}
 
           {/* ── Botón Escuchar / Split Reiniciar+Continuar ───────────── */}
           {hasProgress ? (
@@ -317,7 +322,7 @@ export default function SessionDetailScreen() {
                 style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
               >
                 <LinearGradient
-                  colors={["#D6AD5F", "#B47344"]}
+                  colors={["#C4A8F5", "#A088D8"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={StyleSheet.absoluteFill}
@@ -334,7 +339,7 @@ export default function SessionDetailScreen() {
                 style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
               >
                 <LinearGradient
-                  colors={["#D6AD5F", "#B47344"]}
+                  colors={["#C4A8F5", "#A088D8"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={StyleSheet.absoluteFill}
@@ -357,7 +362,7 @@ export default function SessionDetailScreen() {
               ]}
             >
               <LinearGradient
-                colors={["#D6AD5F", "#B47344"]}
+                colors={["#C4A8F5", "#A088D8"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={StyleSheet.absoluteFill}
@@ -376,155 +381,53 @@ export default function SessionDetailScreen() {
             </Pressable>
           )}
 
-          {/* ── Action row ──────────────────────────────────────────────── */}
-          <View style={styles.actionRow}>
-            {/* Guardar */}
-            <Pressable onPress={handleFav} style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}>
-              <View style={styles.actionCardBorder}>
-                <LinearGradient colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
-                  <GradPillLabel icon="heart" label="Guardar" active={fav} />
-                </LinearGradient>
-              </View>
-            </Pressable>
-
-            {/* Descargar */}
-            <Pressable
-              onPress={handleDownload}
-              onPressIn={() => setDownloadPressed(true)}
-              onPressOut={() => setDownloadPressed(false)}
-              style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}
-            >
-              <View style={styles.actionCardBorder}>
-                <LinearGradient colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
-                  <GradPillLabel icon="download" label="Descargar" active={downloadPressed} />
-                </LinearGradient>
-              </View>
-            </Pressable>
-
-            {/* Compartir */}
-            <Pressable
-              onPress={handleShare}
-              onPressIn={() => setSharePressed(true)}
-              onPressOut={() => setSharePressed(false)}
-              style={({ pressed }) => [styles.actionCardWrap, { opacity: pressed ? 0.75 : 1 }]}
-            >
-              <View style={styles.actionCardBorder}>
-                <LinearGradient colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.actionCardInner}>
-                  <GradPillLabel icon="send" label="Compartir" active={sharePressed} />
-                </LinearGradient>
-              </View>
-            </Pressable>
-          </View>
+          {/* ── Botón Compartir ─────────────────────────────────────────── */}
+          <Pressable
+            onPress={handleShare}
+            style={({ pressed }) => [styles.shareBtn, { opacity: pressed ? 0.75 : 1 }]}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              <Text style={styles.shareBtnText}>Compartir</Text>
+              <Feather name="send" size={15} color="#FFFFFF" />
+            </View>
+          </Pressable>
 
           {/* ── Reproducciones ──────────────────────────────────────────── */}
           {playsData !== undefined && (
-            <View style={styles.playsRow}>
-              <Feather name="headphones" size={13} color="rgba(255,255,255,0.45)" />
-              <Text style={styles.playsText}>
-                {playsData.plays === 0
-                  ? "Sé el primero en escuchar esta sesión"
-                  : `${playsData.plays.toLocaleString("es")} ${playsData.plays === 1 ? "reproducción" : "reproducciones"}`}
-              </Text>
-            </View>
+            <Text style={styles.playsInline}>
+              {playsData.plays === 0
+                ? "Sé el primero en escuchar esta sesión"
+                : `${playsData.plays.toLocaleString("es")} ${playsData.plays === 1 ? "reproducción" : "reproducciones"}`}
+            </Text>
           )}
 
-          {/* ── Sobre la voz guía ────────────────────────────────────────── */}
-          <View style={styles.authorSection}>
-            {/* Header row: título + Ver perfil */}
-            <View style={styles.authorHeaderRow}>
-              <Text style={[styles.blockTitle, { color: colors.foreground, marginBottom: 0 }]} numberOfLines={1} ellipsizeMode="tail">
-                {isAncestral
-                  ? "Sobre el Sonoterapeuta"
-                  : isMusica
-                    ? "Sobre el músico"
-                    : authors.length > 1
-                      ? "Sobre las voces guía"
-                      : "Sobre la voz guía"}
-              </Text>
-              {authors[0] && (
-                <Pressable
-                  onPress={() => router.push(authors[0].profilePath as never)}
-                  style={({ pressed }) => ({ opacity: pressed ? 0.65 : 1 })}
-                >
-                  <Text style={[styles.authorLink, { color: "#FFFFFF" }]}>
-                    Ver perfil{"  "}<Feather name="chevron-right" size={13} color="#FFFFFF" />
-                  </Text>
-                </Pressable>
-              )}
-            </View>
+          {/* Description */}
+          <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]} numberOfLines={3}>
+            {session.description}
+          </Text>
 
-            {/* Cards */}
-            {authors.map((a) => (
-              <LinearGradient key={a.profilePath} colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.authorCard}>
-                <View style={styles.authorRow}>
-                  <Image
-                    source={a.photo as never}
-                    style={styles.authorAvatar}
-                    contentFit="cover"
-                    placeholder={BLUR_PLACEHOLDER}
-                    transition={IMAGE_TRANSITION}
-                  />
-                  <View style={styles.authorMeta}>
-                    <Text style={[styles.authorName, { color: colors.foreground }]}>{a.name}</Text>
-                    <Text style={[styles.authorCountry, { color: "rgba(255,255,255,0.9)" }]}>
-                      {a.flag}{"  "}{a.country}
-                    </Text>
-                    <Text style={[styles.authorBio, { color: "rgba(255,255,255,0.75)" }]} numberOfLines={3}>
-                      {a.bio}
-                    </Text>
-                  </View>
-                </View>
-                <Pressable
-                  onPress={() => router.push(a.profilePath as never)}
-                  style={({ pressed }) => ({ opacity: pressed ? 0.65 : 1, marginTop: 10, marginLeft: 86 })}
-                >
-                  <Text style={styles.allContentsBtnText}>Ver todos los contenidos</Text>
-                </Pressable>
-              </LinearGradient>
-            ))}
-          </View>
-
-          {/* ── Más sesiones como estas ──────────────────────────────────── */}
-          {related.length > 0 && (
-            <View style={styles.relatedBlock}>
-              <Text style={[styles.blockTitle, { color: colors.foreground }]} numberOfLines={1} ellipsizeMode="tail">
-                Más sesiones como estas
-              </Text>
-              <View style={styles.relatedList}>
-                {related.map((s) => (
-                  <Pressable
-                    key={s.id}
-                    onPress={() => router.push(`/session/${s.id}` as never)}
-                    style={({ pressed }) => [styles.relatedCard, { opacity: pressed ? 0.8 : 1 }]}
-                  >
-                    <Image
-                      source={s.image as never}
-                      style={styles.relatedCardImg}
-                      contentFit="cover"
-                      placeholder={BLUR_PLACEHOLDER}
-                      transition={IMAGE_TRANSITION}
-                    />
-                    <View style={styles.relatedCardBody}>
-                      <Text style={[styles.relatedCardTitle, { color: colors.foreground }]} numberOfLines={2}>
-                        {s.title}
-                      </Text>
-                      {(() => {
-                        const g = getGuide(s.guideIds?.[0] ?? s.guideId ?? undefined);
-                        return (
-                          <View style={styles.relatedAuthorRow}>
-                            <Image source={g.photo} style={styles.relatedAuthorAvatar} contentFit="cover" />
-                            <Text style={[styles.relatedCardSub, { color: "rgba(255,255,255,0.9)" }]} numberOfLines={1}>
-                              {g.name}
-                            </Text>
-                          </View>
-                        );
-                      })()}
-                    </View>
-                  </Pressable>
-                ))}
+          {/* ── Banner Mezclador ────────────────────────────────────────── */}
+          <Pressable
+            style={({ pressed }) => [styles.mixerBannerWrap, pressed && { opacity: 0.82 }]}
+            onPress={() => router.push("/escenas-mixer" as never)}
+          >
+            <LinearGradient
+              style={styles.mixerBanner}
+              colors={["#2A2070", "#C47A6A"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <View style={styles.mixerBannerIcon}>
+                <Ionicons name="moon" size={22} color="#ffffff" />
               </View>
-            </View>
-          )}
+              <View style={{ flex: 1 }}>
+                <Text style={styles.mixerBannerTitle}>Mezclador para dormir</Text>
+                <Text style={styles.mixerBannerSub}>Crea tu propia mezcla de sonidos</Text>
+              </View>
+              <Feather name="chevron-right" size={20} color="rgba(255,255,255,0.5)" />
+            </LinearGradient>
+          </Pressable>
+
         </View>
       </Animated.ScrollView>
 
@@ -538,6 +441,12 @@ export default function SessionDetailScreen() {
         <View style={{ width: 36 }} />
       </Animated.View>
 
+      <SessionActionsSheet
+        session={session}
+        visible={actionsSheetOpen}
+        onClose={() => setActionsSheetOpen(false)}
+      />
+
     </View>
   );
 }
@@ -547,7 +456,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
 
   // Hero
-  hero: { width: "100%", overflow: "hidden" },
+  hero: { width: "100%", overflow: "hidden", borderBottomWidth: 5, borderBottomColor: "#C4A8F5" },
   navBar: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -626,14 +535,31 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
   },
 
+  savedCountRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 10,
+  },
+  savedCountText: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.5)",
+  },
+  authorNameInline: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "rgba(255,255,255,0.65)",
+    marginBottom: 18,
+  },
+
   // Title
   title: {
     fontSize: 24,
     fontWeight: "800",
     lineHeight: 30,
-    textAlign: "center",
-    marginTop: 5,
-    marginBottom: 7,
+    textAlign: "left",
+    marginTop: 0,
+    marginBottom: 6,
   },
 
   // Description
@@ -642,9 +568,7 @@ const styles = StyleSheet.create({
     lineHeight: 25,
     marginTop: 0,
     marginBottom: 24,
-    textAlign: "center",
-    maxWidth: 320,
-    alignSelf: "center",
+    textAlign: "left",
   },
 
   // Theme tag chips
@@ -818,6 +742,57 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     letterSpacing: 0.5,
+  },
+  shareBtn: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 14,
+    borderRadius: 30,
+    borderWidth: 1.5,
+    borderColor: "#FFFFFF",
+    marginBottom: 14,
+  },
+  shareBtnText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FFFFFF",
+    letterSpacing: 0.5,
+  },
+  playsInline: {
+    textAlign: "center",
+    fontSize: 13,
+    color: "rgba(255,255,255,0.55)",
+    marginBottom: 28,
+  },
+  mixerBannerWrap: {
+    borderRadius: 16,
+    overflow: "hidden",
+    marginBottom: 32,
+  },
+  mixerBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 18,
+    paddingHorizontal: 16,
+    gap: 14,
+  },
+  mixerBannerIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: "rgba(212,175,55,0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  mixerBannerTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#FFFFFF",
+    marginBottom: 3,
+  },
+  mixerBannerSub: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.6)",
   },
   splitBtnRow: {
     flexDirection: "row",
