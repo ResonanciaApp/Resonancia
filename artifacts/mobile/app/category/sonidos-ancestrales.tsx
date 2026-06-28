@@ -356,7 +356,7 @@ export default function SonidosAncestalesScreen() {
     return [...FIXED_TABS, ...extraTags.map((tag) => ({ id: tag, label: tag }))];
   }, [version]);
 
-  const [activeTab,         setActiveTab]         = useState<CatTab|null>(null);
+  const [activeTab,         setActiveTab]         = useState<CatTab|null>(FIXED_TABS[0].id);
   const [sort,              setSort]              = useState<SortMode>("recientes");
   const [sortVisible,       setSortVisible]       = useState(false);
   const [viewMode,          setViewMode]          = useState<ViewMode>("list");
@@ -525,7 +525,7 @@ const styles = StyleSheet.create({
   dividerShadow: { height: 12, marginTop: 0 },
 
   /* ── Tabs (chips) ── */
-  chipsArea: { paddingTop: 10, paddingBottom: 0, overflow: "visible", marginTop: -1, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(212,175,55,0.15)" },
+  chipsArea: { paddingTop: 10, paddingBottom: 0, overflow: "visible", marginTop: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(212,175,55,0.15)" },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 8 },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingLeft: H_PAD, paddingRight: H_PAD },
