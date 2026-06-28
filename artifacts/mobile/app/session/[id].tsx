@@ -428,61 +428,6 @@ export default function SessionDetailScreen() {
             </View>
           )}
 
-          {/* ── Sobre la voz guía ────────────────────────────────────────── */}
-          <View style={styles.authorSection}>
-            {/* Header row: título + Ver perfil */}
-            <View style={styles.authorHeaderRow}>
-              <Text style={[styles.blockTitle, { color: colors.foreground, marginBottom: 0 }]} numberOfLines={1} ellipsizeMode="tail">
-                {isAncestral
-                  ? "Sobre el Sonoterapeuta"
-                  : isMusica
-                    ? "Sobre el músico"
-                    : authors.length > 1
-                      ? "Sobre las voces guía"
-                      : "Sobre la voz guía"}
-              </Text>
-              {authors[0] && (
-                <Pressable
-                  onPress={() => router.push(authors[0].profilePath as never)}
-                  style={({ pressed }) => ({ opacity: pressed ? 0.65 : 1 })}
-                >
-                  <Text style={[styles.authorLink, { color: "#FFFFFF" }]}>
-                    Ver perfil{"  "}<Feather name="chevron-right" size={13} color="#FFFFFF" />
-                  </Text>
-                </Pressable>
-              )}
-            </View>
-
-            {/* Cards */}
-            {authors.map((a) => (
-              <LinearGradient key={a.profilePath} colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.authorCard}>
-                <View style={styles.authorRow}>
-                  <Image
-                    source={a.photo as never}
-                    style={styles.authorAvatar}
-                    contentFit="cover"
-                    placeholder={BLUR_PLACEHOLDER}
-                    transition={IMAGE_TRANSITION}
-                  />
-                  <View style={styles.authorMeta}>
-                    <Text style={[styles.authorName, { color: colors.foreground }]}>{a.name}</Text>
-                    <Text style={[styles.authorCountry, { color: "rgba(255,255,255,0.9)" }]}>
-                      {a.flag}{"  "}{a.country}
-                    </Text>
-                    <Text style={[styles.authorBio, { color: "rgba(255,255,255,0.75)" }]} numberOfLines={3}>
-                      {a.bio}
-                    </Text>
-                  </View>
-                </View>
-                <Pressable
-                  onPress={() => router.push(a.profilePath as never)}
-                  style={({ pressed }) => ({ opacity: pressed ? 0.65 : 1, marginTop: 10, marginLeft: 86 })}
-                >
-                  <Text style={styles.allContentsBtnText}>Ver todos los contenidos</Text>
-                </Pressable>
-              </LinearGradient>
-            ))}
-          </View>
 
         </View>
       </Animated.ScrollView>
