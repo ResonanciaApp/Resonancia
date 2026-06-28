@@ -157,9 +157,9 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: ()=>vo
 }
 
 function CategoryCard({
-  session, width: cardWidth=200, horizontal=false, onLongPress,
+  session, width: cardWidth=200, horizontal=false, onLongPress, onOptions,
 }: {
-  session: Session; width?: number; horizontal?: boolean; onLongPress?: ()=>void;
+  session: Session; width?: number; horizontal?: boolean; onLongPress?: ()=>void; onOptions?: ()=>void;
 }) {
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
@@ -171,7 +171,6 @@ function CategoryCard({
   };
   const authorObj = session.guideId ? getGuide(session.guideId) : getArtist(session.artistId);
   const author = authorObj.name;
-  const authorPhoto = authorObj.photo;
 
   if (horizontal) {
     return (
@@ -180,17 +179,19 @@ function CategoryCard({
           <Image source={session.image} style={ac.hImage} contentFit="cover" />
           <View style={ac.hImgOverlay} />
           {locked&&<View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
-          <Text style={ac.hDurLabel}>{session.durationLabel}</Text>
         </View>
         <View style={ac.hContent}>
+          <Text style={ac.hDuration}>{session.durationLabel}</Text>
           <Text style={ac.hTitle} numberOfLines={2}>{session.title}</Text>
           {!!author&&(
             <View style={ac.hAuthorRow}>
-              <Image source={authorPhoto} style={ac.hAuthorAvatar} contentFit="cover" />
               <Text style={ac.hAuthor} numberOfLines={1}>{author}</Text>
             </View>
           )}
         </View>
+        <Pressable onPress={onOptions??onLongPress} hitSlop={10} style={ac.hDotsBtn}>
+          <View style={ac.hDot} /><View style={ac.hDot} /><View style={ac.hDot} />
+        </Pressable>
       </Pressable>
     );
   }
@@ -208,17 +209,18 @@ function CategoryCard({
 }
 
 const ac = StyleSheet.create({
-  hRow:{flexDirection:"row",alignItems:"center",gap:12,paddingVertical:6,marginBottom:5},
-  hImgWrap:{width:129,height:94,borderRadius:8,overflow:"hidden"},
-  hImgOverlay:{...StyleSheet.absoluteFillObject,backgroundColor:"rgba(0,0,0,0.18)"},
-  hImage:{width:129,height:94},
-  hContent:{flex:1,justifyContent:"center",gap:2},
-  hDuration:{fontSize:12,fontWeight:"500",color:"rgba(255,255,255,0.8)"},
-  hDurLabel:{position:"absolute",bottom:6,left:8,fontSize:13,fontWeight:"700",color:"#fff",textShadowColor:"rgba(0,0,0,0.85)",textShadowOffset:{width:0,height:1},textShadowRadius:4},
-  hTitle:{fontSize:16,fontWeight:"600",color:TEXT,lineHeight:21},
-  hAuthor:{fontSize:14,color:MUTED,flex:1},
-  hAuthorRow:{flexDirection:"row",alignItems:"center",gap:6,marginTop:1},
-  hAuthorAvatar:{width:20,height:20,borderRadius:10},
+  hRow:{ flexDirection:"row", alignItems:"center", gap:12, paddingVertical:6, marginBottom:11 },
+  hImgWrap:{ width:87, height:87, borderRadius:8, overflow:"hidden" },
+  hImgOverlay:{ ...StyleSheet.absoluteFillObject, backgroundColor:"rgba(0,0,0,0.18)" },
+  hImage:{ width:87, height:87 },
+  hContent:{ flex:1, justifyContent:"center", gap:2 },
+  hDuration:{ fontSize:12, fontWeight:"400", color:MUTED },
+  hTitle:{ fontSize:16, fontWeight:"600", color:TEXT, lineHeight:21 },
+  hAuthor:{ fontSize:12, color:MUTED, flex:1 },
+  hAuthorRow:{ flexDirection:"row", alignItems:"center", gap:6, marginTop:1 },
+  hAuthorAvatar:{ width:20, height:20, borderRadius:10 },
+  hDotsBtn:{ paddingLeft:12, paddingRight:4, paddingVertical:8, alignItems:"center", justifyContent:"center", gap:3, flexDirection:"row" },
+  hDot:{ width:4, height:4, borderRadius:2, backgroundColor:MUTED },
   card:{gap:6},
   imgContainer:{width:"100%",aspectRatio:1,borderRadius:10,overflow:"hidden"},
   cardImage:{width:"100%",height:"100%"},
@@ -338,14 +340,14 @@ export default function MusicaSonidosScreen() {
           <>
             <Text style={styles.sectionLabel}>Escuchado recientemente</Text>
             <View style={{paddingHorizontal:H_PAD, marginTop:1}}>
-              <CategoryCard session={recentSession} horizontal onLongPress={()=>setSelectedSession(recentSession)} />
+              <CategoryCard session={recentSession} horizontal onLongPress={()=>setSelectedSession(recentSession)} onOptions={()=>setSelectedSession(recentSession)} />
             </View>
           </>
         )}
         <Text style={[styles.sectionLabel, { paddingTop: 23 }]}>Recomendado</Text>
         <View style={{paddingHorizontal:H_PAD, marginTop:1}}>
           {visibleRec.map((s)=>(
-            <CategoryCard key={s.id} session={s} horizontal onLongPress={()=>setSelectedSession(s)} />
+            <CategoryCard key={s.id} session={s} horizontal onLongPress={()=>setSelectedSession(s)} onOptions={()=>setSelectedSession(s)} />
           ))}
         </View>
         {hasMoreRec && <View style={styles.loadMoreFooter}><ActivityIndicator size="small" color={MUTED} /></View>}
