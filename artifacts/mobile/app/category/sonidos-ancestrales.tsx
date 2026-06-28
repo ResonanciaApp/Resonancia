@@ -445,7 +445,14 @@ export default function SonidosAncestalesScreen() {
 
         {/* ── Encabezado ── */}
         <View style={[styles.profileCard, { marginTop: topPad + 12 }]}>
-          <BackPill onPress={() => router.back()} style={{ marginBottom: 14 }} />
+          <View style={styles.profileTopRow}>
+            <BackPill onPress={() => router.back()} />
+            <GhostPill>
+              <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
+                <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
+              </Pressable>
+            </GhostPill>
+          </View>
           <View style={styles.profileTitleRow}>
             <View style={styles.heroIconCircle}>
               <Feather name="music" size={28} color={GOLD} />
@@ -477,14 +484,6 @@ export default function SonidosAncestalesScreen() {
         onPlaylist={() => { if (selectedSession) setPlaylistSessionId(selectedSession.id); setSelectedSession(null); }} />
       <AddToPlaylistSheet visible={playlistSessionId !== null} sessionId={playlistSessionId ?? ""} onClose={() => setPlaylistSessionId(null)} />
 
-      {/* ── Info fijo ── */}
-      <View style={[styles.infoOverlay, { top: topPad + 8 }]} pointerEvents="box-none">
-        <GhostPill>
-          <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
-            <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
-          </Pressable>
-        </GhostPill>
-      </View>
     </View>
   );
 }
@@ -492,8 +491,7 @@ export default function SonidosAncestalesScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#160108" },
 
-  /* ── Info overlay ── */
-  infoOverlay: { position: "absolute", right: H_PAD, zIndex: 20 },
+  profileTopRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%", marginBottom: 14 },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
 
   /* ── Profile card ── */
