@@ -289,22 +289,26 @@ export default function SessionDetailScreen() {
             </LinearGradient>
           )}
 
-          {/* Meta row: guardados (izq) + acciones (der) */}
+          {/* Guardados */}
           <View style={styles.savedCountRow}>
             <MaskedView maskElement={<Feather name="heart" size={12} color="#000" />}>
               <LinearGradient colors={["#C4A8F5","#A088D8"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 12, height: 12 }} />
             </MaskedView>
-            <Text style={[styles.savedCountText, { flex: 1 }]}>{savedCount} guardados</Text>
-            <Pressable onPress={handleFav} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-              <Feather name="heart" size={21} color={fav ? "#C4A8F5" : "rgba(255,255,255,0.55)"} />
-            </Pressable>
-            <Pressable onPress={() => setActionsSheetOpen(true)} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-              <Feather name="more-vertical" size={21} color="rgba(255,255,255,0.55)" />
-            </Pressable>
+            <Text style={styles.savedCountText}>{savedCount} guardados</Text>
           </View>
 
-          {/* Title */}
-          <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={3}>{session.title}</Text>
+          {/* Title + acciones */}
+          <View style={styles.titleRow}>
+            <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={3}>{session.title}</Text>
+            <View style={styles.titleActions}>
+              <Pressable onPress={handleFav} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+                <Feather name="heart" size={22} color={fav ? "#C4A8F5" : "rgba(255,255,255,0.55)"} />
+              </Pressable>
+              <Pressable onPress={() => setActionsSheetOpen(true)} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+                <Feather name="more-vertical" size={22} color="rgba(255,255,255,0.55)" />
+              </Pressable>
+            </View>
+          </View>
 
           {/* Author name */}
           {authors[0] && (
@@ -545,6 +549,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "rgba(255,255,255,0.5)",
   },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 6,
+  },
+  titleActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+  },
   authorNameInline: {
     fontSize: 14,
     fontWeight: "500",
@@ -554,6 +569,7 @@ const styles = StyleSheet.create({
 
   // Title
   title: {
+    flex: 1,
     fontSize: 24,
     fontWeight: "800",
     lineHeight: 30,
