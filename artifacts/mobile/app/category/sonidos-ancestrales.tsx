@@ -447,6 +447,9 @@ export default function SonidosAncestalesScreen() {
 
         {/* ── Título + Descripción ── */}
         <View style={[styles.profileCard, { marginTop: topPad + 64 }]}>
+          <View style={styles.heroIconCircle}>
+            <Feather name="music" size={32} color={GOLD} />
+          </View>
           <Text style={styles.profileTitle}>Ancestrales</Text>
           <Text style={styles.profileDesc} numberOfLines={2}>
             Cuencos, gongs y sonidos sagrados para sanar y elevar.
@@ -509,6 +512,13 @@ const styles = StyleSheet.create({
   headerDivider: { width: StyleSheet.hairlineWidth, height: 18, backgroundColor: "rgba(255,255,255,0.18)" },
 
   /* ── Profile card ── */
+  heroIconCircle: {
+    width: 72, height: 72, borderRadius: 36,
+    backgroundColor: "rgba(60,5,18,0.85)",
+    borderWidth: 1, borderColor: "rgba(212,175,55,0.60)",
+    alignItems: "center", justifyContent: "center",
+    marginBottom: 4,
+  },
   profileCard: {
     marginHorizontal: H_PAD,
     paddingBottom: 14,
