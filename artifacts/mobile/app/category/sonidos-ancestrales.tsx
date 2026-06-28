@@ -145,13 +145,20 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 }
 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress: () => void }) {
+  const lineAnim  = useRef(new Animated.Value(sel ? 1 : 0)).current;
+  const colorAnim = useRef(new Animated.Value(sel ? 1 : 0)).current;
+  useEffect(() => {
+    Animated.timing(lineAnim,  { toValue: sel ? 1 : 0, duration: 280, easing: Easing.out(Easing.cubic), useNativeDriver: true }).start();
+    Animated.timing(colorAnim, { toValue: sel ? 1 : 0, duration: 200, easing: Easing.out(Easing.cubic), useNativeDriver: false }).start();
+  }, [sel]);
+  const iconColor = colorAnim.interpolate({ inputRange: [0,1], outputRange: [MUTED, GOLD] });
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
       <View style={{ alignItems: "center", gap: 4 }}>
-        {!!icon && <Feather name={icon as any} size={18} color={sel ? GOLD : MUTED} />}
-        <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
+        {!!icon && <Animated.Text style={{ color: iconColor }}><Feather name={icon as any} size={18} /></Animated.Text>}
+        <Animated.Text style={[styles.chipText, { color: colorAnim.interpolate({ inputRange: [0,1], outputRange: [MUTED, TEXT] }) }]}>{label}</Animated.Text>
       </View>
-      {sel && <View style={styles.chipUnderline} />}
+      <Animated.View style={[styles.chipUnderline, { opacity: lineAnim, transform: [{ scaleX: lineAnim }] }]} />
     </Pressable>
   );
 }
