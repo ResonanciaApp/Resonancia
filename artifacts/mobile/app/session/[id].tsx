@@ -290,18 +290,6 @@ export default function SessionDetailScreen() {
           {/* Title */}
           <Text style={[styles.title, { color: colors.foreground }]}>{session.title}</Text>
 
-          {/* Meta row */}
-          <View style={styles.metaRow}>
-            <MaskedView maskElement={<Feather name="heart" size={13} color="#000" />}>
-              <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 13, height: 13 }} />
-            </MaskedView>
-            <Text style={styles.metaText}>{savedCount}</Text>
-            <View style={styles.metaDot} />
-            <MaskedView maskElement={<Feather name={subTagIcon as never} size={13} color="#000" />}>
-              <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 13, height: 13 }} />
-            </MaskedView>
-            <Text style={styles.metaText}>{subTag}</Text>
-          </View>
 
           {/* Description */}
           <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]}>
@@ -317,7 +305,7 @@ export default function SessionDetailScreen() {
                 style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
               >
                 <LinearGradient
-                  colors={["#D6AD5F", "#B47344"]}
+                  colors={["#C4A8F5", "#A088D8"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={StyleSheet.absoluteFill}
@@ -334,7 +322,7 @@ export default function SessionDetailScreen() {
                 style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
               >
                 <LinearGradient
-                  colors={["#D6AD5F", "#B47344"]}
+                  colors={["#C4A8F5", "#A088D8"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={StyleSheet.absoluteFill}
@@ -357,7 +345,7 @@ export default function SessionDetailScreen() {
               ]}
             >
               <LinearGradient
-                colors={["#D6AD5F", "#B47344"]}
+                colors={["#C4A8F5", "#A088D8"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={StyleSheet.absoluteFill}
@@ -536,7 +524,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     lineHeight: 30,
     textAlign: "center",
-    marginTop: 5,
+    marginTop: 22,
     marginBottom: 7,
   },
 
