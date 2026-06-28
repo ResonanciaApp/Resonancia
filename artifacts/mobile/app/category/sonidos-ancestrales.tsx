@@ -134,27 +134,29 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 }
 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress: () => void }) {
-  const iconColor = sel ? "#1B060F" : GOLD;
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
-      {sel && <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-        {!!icon && <Feather name={icon as any} size={15} color={iconColor} />}
+        {!!icon && <Feather name={icon as any} size={14} color={sel ? GOLD : MUTED} />}
         <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
       </View>
+      {sel && <View style={styles.chipUnderline} />}
     </Pressable>
   );
 }
 
 function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: {id: string; label: string; icon?: string}[]; activeTab: CatTab|null; onSelect: (id: CatTab)=>void; onClear: ()=>void }) {
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false}
-      style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
-      {tabs.map((t) => (
-        <Chip key={t.id} label={t.label} icon={t.icon} sel={activeTab === t.id}
-          onPress={() => activeTab === t.id ? onClear() : onSelect(t.id)} />
-      ))}
-    </ScrollView>
+    <View style={styles.chipRowWrapper}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}
+        style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
+        {tabs.map((t) => (
+          <Chip key={t.id} label={t.label} icon={t.icon} sel={activeTab === t.id}
+            onPress={() => activeTab === t.id ? onClear() : onSelect(t.id)} />
+        ))}
+      </ScrollView>
+      <View style={styles.chipRowBorder} />
+    </View>
   );
 }
 
@@ -486,8 +488,6 @@ export default function SonidosAncestalesScreen() {
           <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
         </View>
 
-        <View style={styles.divider} />
-
         {/* ── Contenido ── */}
         <AnimatedTabContent animKey={activeTab ?? "all"}>
           {renderContent()}
@@ -536,14 +536,17 @@ const styles = StyleSheet.create({
   profileTitle: { fontSize: 27, fontWeight: "800", color: TEXT, letterSpacing: 0.3 },
   profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 8, marginBottom: 28 },
 
-  /* ── Tabs (chips) ── */
-  chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -25 },
-  divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 8 },
+  /* ── Tabs (línea subrayada) ── */
+  chipsArea: { paddingTop: 4, paddingBottom: 0, overflow: "visible", marginTop: -25 },
+  divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 0 },
+  chipRowWrapper: { position: "relative" },
+  chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD },
   chipRow: { flexGrow: 0 },
-  chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-  chip: { minWidth: 96, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 999, backgroundColor: "rgba(255,255,255,0.08)", overflow: "hidden", alignItems: "center", justifyContent: "center" },
-  chipText: { fontSize: 14, fontWeight: "600", color: TEXT, textAlign: "center" },
-  chipTextSel: { color: "#1B060F" },
+  chipRowContent: { flexDirection: "row", paddingHorizontal: H_PAD, paddingBottom: 0 },
+  chip: { paddingHorizontal: 16, paddingTop: 10, paddingBottom: 12, alignItems: "center", justifyContent: "center", position: "relative" },
+  chipText: { fontSize: 14, fontWeight: "500", color: MUTED, textAlign: "center" },
+  chipTextSel: { color: TEXT, fontWeight: "700" },
+  chipUnderline: { position: "absolute", bottom: 0, left: 10, right: 10, height: 2, borderRadius: 1, backgroundColor: GOLD },
 
   /* ── Content ── */
   scroll: { flex: 1 },
