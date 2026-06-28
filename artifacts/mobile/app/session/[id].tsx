@@ -369,7 +369,10 @@ export default function SessionDetailScreen() {
             onPress={handleShare}
             style={({ pressed }) => [styles.shareBtn, { opacity: pressed ? 0.75 : 1 }]}
           >
-            <Text style={styles.shareBtnText}>Compartir</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              <Text style={styles.shareBtnText}>Compartir</Text>
+              <Feather name="send" size={15} color="#FFFFFF" />
+            </View>
           </Pressable>
 
 
