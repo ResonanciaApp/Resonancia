@@ -441,8 +441,8 @@ export default function SonidosAncestalesScreen() {
             </View>
           </>
         )}
-        <Text style={[styles.sectionLabel, { paddingTop: 16, marginTop: -7 }]}>Recomendado</Text>
-        <View style={{paddingHorizontal:H_PAD, marginTop:-6}}>
+        <Text style={[styles.sectionLabel, { paddingTop: 23 }]}>Recomendado</Text>
+        <View style={{paddingHorizontal:H_PAD, marginTop:1}}>
           {visibleRec.map((s)=>(
             <CategoryCard key={s.id} session={s} horizontal onLongPress={()=>setSelectedSession(s)} onOptions={()=>setSelectedSession(s)} />
           ))}
