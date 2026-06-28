@@ -52,9 +52,9 @@ function TibetanBowlIcon({ size = 20, color = "#fff" }: { size?: number; color?:
 
 // Tags agrupados bajo cada tab fija (no generan tab propia si ya están acá)
 const FIXED_TABS: { id: string; label: string; icon?: string }[] = [
-  { id: "cuencos",  label: "Cuencos",  icon: "disc" },
-  { id: "gongs",    label: "Gongs",    icon: "circle" },
-  { id: "campanas", label: "Campanas", icon: "bell" },
+  { id: "cuencos",  label: "Cuencos" },
+  { id: "gongs",    label: "Gongs" },
+  { id: "campanas", label: "Campanas" },
 ];
 const MIX_TAGS = new Set(["Full Instrumentos","Vientos","Cantos","Percusión","Selva","Mix de Cuencos"]);
 
@@ -460,11 +460,7 @@ export default function SonidosAncestalesScreen() {
         {/* ── Hero banner ── */}
         <View style={styles.heroArea}>
           <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" />
-          <LinearGradient
-            colors={["transparent","rgba(46,5,16,0.30)","rgba(46,5,16,0.78)","#2E0510"]}
-            locations={[0.30, 0.58, 0.80, 1.0]}
-            style={StyleSheet.absoluteFill}
-          />
+          <LinearGradient colors={["transparent","rgba(0,0,0,0.28)","rgba(0,0,0,0.60)"]} locations={[0.50,0.80,1]} style={StyleSheet.absoluteFill} />
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
             <GhostPill style={{ backgroundColor: "#2E0510" }}>
               <BackPill onPress={() => router.back()} />
@@ -531,17 +527,17 @@ const styles = StyleSheet.create({
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
 
   /* ── Hero ── */
-  heroArea: { height: HERO_H, position: "relative", backgroundColor: "#2E0510" },
+  heroArea: { height: HERO_H, position: "relative" },
   heroIconFloat: { position: "absolute", bottom: -16, left: 0, right: 0, alignItems: "center", zIndex: 2 },
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(60,5,18,0.85)", borderWidth: 1, borderColor: "rgba(212,175,55,0.60)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
   /* ── Profile card ── */
   profileCard: { marginHorizontal: H_PAD, marginTop: 30, paddingBottom: 14, gap: 8, alignItems: "center" },
-  profileTitle: { fontSize: 27, fontWeight: "800", color: TEXT, letterSpacing: 0.3, marginTop: -5 },
-  profileDesc: { fontSize: 14, color: "rgba(245,228,175,0.75)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: -2, marginBottom: 28 },
+  profileTitle: { fontSize: 27, fontWeight: "800", color: TEXT, letterSpacing: 0.3 },
+  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 8, marginBottom: 28 },
 
   /* ── Tabs (chips) ── */
-  chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -35 },
+  chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -25 },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 8 },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
