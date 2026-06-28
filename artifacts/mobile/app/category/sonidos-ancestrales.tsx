@@ -435,6 +435,7 @@ export default function SonidosAncestalesScreen() {
         contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
+        stickyHeaderIndices={[1]}
         onScroll={(e) => {
           const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
           if (hasMore && contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
@@ -524,7 +525,7 @@ const styles = StyleSheet.create({
   dividerShadow: { height: 12, marginTop: 0 },
 
   /* ── Tabs (chips) ── */
-  chipsArea: { paddingTop: 10, paddingBottom: 0, overflow: "visible", marginTop: -1, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(212,175,55,0.15)" },
+  chipsArea: { paddingTop: 10, paddingBottom: 0, overflow: "visible", marginTop: -1, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(212,175,55,0.15)", backgroundColor: "#2E0510" },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 8 },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingLeft: H_PAD, paddingRight: H_PAD },
