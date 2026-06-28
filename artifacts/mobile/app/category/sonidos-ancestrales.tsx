@@ -436,13 +436,13 @@ export default function SonidosAncestalesScreen() {
         {recentSession && (
           <>
             <Text style={styles.sectionLabel}>Escuchado recientemente</Text>
-            <View style={{paddingHorizontal:H_PAD, marginTop:-15}}>
+            <View style={{paddingHorizontal:H_PAD, marginTop:-7}}>
               <CategoryCard session={recentSession} horizontal onLongPress={()=>setSelectedSession(recentSession)} onOptions={()=>setSelectedSession(recentSession)} />
             </View>
           </>
         )}
         <Text style={[styles.sectionLabel, { paddingTop: 23 }]}>Recomendado</Text>
-        <View style={{paddingHorizontal:H_PAD, marginTop:-15}}>
+        <View style={{paddingHorizontal:H_PAD, marginTop:-7}}>
           {visibleRec.map((s)=>(
             <CategoryCard key={s.id} session={s} horizontal onLongPress={()=>setSelectedSession(s)} onOptions={()=>setSelectedSession(s)} />
           ))}
@@ -557,7 +557,7 @@ const styles = StyleSheet.create({
   chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -25 },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 0 },
   chipRowWrapper: { position: "relative" },
-  chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginTop: 8 },
+  chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginTop: 11 },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chip: { minWidth: 96, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 999, backgroundColor: "rgba(255,255,255,0.08)", overflow: "hidden", alignItems: "center", justifyContent: "center" },
