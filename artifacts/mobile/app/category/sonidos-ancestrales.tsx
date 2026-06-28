@@ -147,20 +147,14 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 }
 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress: () => void }) {
-  const lineAnim  = useRef(new Animated.Value(sel ? 1 : 0)).current;
-  const colorAnim = useRef(new Animated.Value(sel ? 1 : 0)).current;
-  useEffect(() => {
-    Animated.timing(lineAnim,  { toValue: sel ? 1 : 0, duration: 280, easing: Easing.out(Easing.cubic), useNativeDriver: true }).start();
-    Animated.timing(colorAnim, { toValue: sel ? 1 : 0, duration: 200, easing: Easing.out(Easing.cubic), useNativeDriver: false }).start();
-  }, [sel]);
-  const iconColor = colorAnim.interpolate({ inputRange: [0,1], outputRange: [MUTED, GOLD] });
+  const iconColor = sel ? "#1B060F" : GOLD;
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-        {!!icon && <Animated.Text style={{ color: iconColor }}><Feather name={icon as any} size={16} /></Animated.Text>}
-        <Animated.Text style={[styles.chipText, { color: colorAnim.interpolate({ inputRange: [0,1], outputRange: [MUTED, TEXT] }) }]}>{label}</Animated.Text>
+      {sel && <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />}
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+        {!!icon && <Feather name={icon as any} size={15} color={iconColor} />}
+        <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
       </View>
-      <Animated.View style={[styles.chipUnderline, { opacity: lineAnim, transform: [{ scaleX: lineAnim }] }]} />
     </Pressable>
   );
 }
@@ -560,16 +554,15 @@ const styles = StyleSheet.create({
   profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 3, marginBottom: 28 },
 
   /* ── Tabs (línea subrayada) ── */
-  chipsArea: { paddingTop: 4, paddingBottom: 0, overflow: "visible", marginTop: -25 },
+  chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -25 },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 0 },
   chipRowWrapper: { position: "relative" },
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)" },
   chipRow: { flexGrow: 0 },
-  chipRowContent: { flexDirection: "row", paddingLeft: 0, paddingRight: H_PAD, paddingBottom: 0, alignItems: "flex-start" },
-  chip: { paddingHorizontal: H_PAD, paddingTop: 10, paddingBottom: 12, alignItems: "center", justifyContent: "center", position: "relative" },
-  chipText: { fontSize: 14, fontWeight: "700", color: MUTED, textAlign: "center" },
-  chipTextSel: { color: TEXT },
-  chipUnderline: { position: "absolute", bottom: 0, left: 10, right: 10, height: 2, borderRadius: 1, backgroundColor: GOLD },
+  chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
+  chip: { minWidth: 96, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 999, backgroundColor: "rgba(255,255,255,0.08)", overflow: "hidden", alignItems: "center", justifyContent: "center" },
+  chipText: { fontSize: 14, fontWeight: "600", color: TEXT, textAlign: "center" },
+  chipTextSel: { color: "#1B060F" },
 
   /* ── Content ── */
   scroll: { flex: 1 },
