@@ -383,6 +383,9 @@ export default function SonidosAncestalesScreen() {
   },[allTabSessions]);
 
   const scrollY = useRef(new Animated.Value(0)).current;
+  const TRIGGER_H = 120;
+  const stickyOpacity = scrollY.interpolate({ inputRange: [TRIGGER_H * 0.4, TRIGGER_H], outputRange: [0, 1], extrapolate: "clamp" });
+  const [stickyActive, setStickyActive] = useState(false);
 
   const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -439,6 +442,8 @@ export default function SonidosAncestalesScreen() {
         onScroll={(e) => {
           const y = e.nativeEvent.contentOffset.y;
           scrollY.setValue(y);
+          const active = y > TRIGGER_H * 0.7;
+          if (active !== stickyActive) setStickyActive(active);
           const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
           if (hasMore && contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
             setVisibleCount((c) => Math.min(c + PAGE_SIZE, sessions.length));
@@ -475,8 +480,8 @@ export default function SonidosAncestalesScreen() {
         onPlaylist={() => { if (selectedSession) setPlaylistSessionId(selectedSession.id); setSelectedSession(null); }} />
       <AddToPlaylistSheet visible={playlistSessionId !== null} sessionId={playlistSessionId ?? ""} onClose={() => setPlaylistSessionId(null)} />
 
-      {/* ── Header fijo ── */}
-      <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>
+      {/* ── Sticky header (aparece con scroll) ── */}
+      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity }]} pointerEvents={stickyActive ? "auto" : "none"}>
         <GhostPill>
           <BackPill onPress={() => router.back()} />
         </GhostPill>
@@ -486,7 +491,7 @@ export default function SonidosAncestalesScreen() {
             <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
           </Pressable>
         </GhostPill>
-      </View>
+      </Animated.View>
     </View>
   );
 }
