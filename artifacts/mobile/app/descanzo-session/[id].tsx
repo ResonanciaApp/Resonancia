@@ -748,7 +748,7 @@ const styles = StyleSheet.create({
   playBtn: {
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 13,
+    marginTop: 16,
     paddingVertical: 15,
     borderRadius: 30,
     shadowColor: "#D4AF37",
@@ -815,7 +815,7 @@ const styles = StyleSheet.create({
   },
   splitBtnRow: {
     flexDirection: "row",
-    marginTop: 13,
+    marginTop: 16,
     borderRadius: 30,
     overflow: "hidden",
     shadowColor: "#D4AF37",
