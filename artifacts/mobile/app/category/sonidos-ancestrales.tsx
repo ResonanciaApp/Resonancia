@@ -554,7 +554,7 @@ const styles = StyleSheet.create({
   heroIconGlow: {
     borderRadius: 36,
   },
-  heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(60,5,18,0.85)", borderWidth: 2, borderColor: GOLD, alignItems: "center", justifyContent: "center", overflow: "hidden" },
+  heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(60,5,18,0.85)", borderWidth: 2, borderColor: "rgba(212,175,55,0.5)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
   /* ── Profile card ── */
   profileCard: { marginHorizontal: H_PAD, marginTop: 28, paddingBottom: 14, gap: 8, alignItems: "center" },
