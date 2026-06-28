@@ -1,11 +1,11 @@
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { BackPill } from "@/components/BackPill";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import {
-  ActivityIndicator, Animated, Dimensions, Easing, Keyboard, Modal, Platform,
+  ActivityIndicator, Animated, Easing, Keyboard, Modal, Platform,
   Pressable, ScrollView, StyleSheet, Text, TextInput, View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -18,19 +18,14 @@ import { getGuide } from "@/data/guides";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { useCatalog } from "@/context/CatalogContext";
 
-const { width } = Dimensions.get("window");
 const H_PAD = 15;
 const GOLD  = "#D4AF37";
 const TEXT  = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
-const HERO_H = 187;
-const GRID_GAP    = 10;
-const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
 const HERO_IMG = require("@/assets/images/cat-musica-hero.png");
 
 type CatTab   = string;
 type SortMode = "recientes" | "nuevas" | "populares";
-type ViewMode = "list" | "grid";
 
 const FIXED_TABS: { id: string; label: string; icon?: string }[] = [
   { id: "ambient", label: "Ambient",   icon: "cloud" },
@@ -60,24 +55,6 @@ function getSessionsForTab(tab: string | null) {
   }
 }
 
-function applySort(arr: ReturnType<typeof getSessionsForTab>, sort: SortMode, playCounts: Record<string,number> = {}) {
-  if (sort === "nuevas")    return [...arr].sort((a,b) => {
-    if (a.isNew && !b.isNew) return -1;
-    if (!a.isNew && b.isNew) return 1;
-    const aNum = parseInt(a.id); const bNum = parseInt(b.id);
-    const aIsNum = !isNaN(aNum);  const bIsNum = !isNaN(bNum);
-    if (!aIsNum && bIsNum)  return -1;
-    if (aIsNum  && !bIsNum) return  1;
-    if (!aIsNum && !bIsNum) {
-      const aT = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-      const bT = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-      return bT - aT;
-    }
-    return bNum - aNum;
-  });
-  if (sort === "populares") return [...arr].sort((a,b) => (playCounts[b.id]??0) - (playCounts[a.id]??0));
-  return arr;
-}
 
 function SortSheet({ visible, current, onSelect, onClose }: { visible: boolean; current: SortMode; onSelect: (s: SortMode)=>void; onClose: ()=>void }) {
   const insets = useSafeAreaInsets();
@@ -126,13 +103,16 @@ function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel
 
 function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: { id: string; label: string; icon?: string }[]; activeTab: CatTab|null; onSelect:(id:CatTab)=>void; onClear:()=>void }) {
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false}
-      style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
-      {tabs.map((t) => (
-        <Chip key={t.id} label={t.label} icon={t.icon} sel={activeTab === t.id}
-          onPress={() => activeTab === t.id ? onClear() : onSelect(t.id)} />
-      ))}
-    </ScrollView>
+    <View style={styles.chipRowWrapper}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}
+        style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
+        {tabs.map((t) => (
+          <Chip key={t.id} label={t.label} icon={t.icon} sel={activeTab === t.id}
+            onPress={() => activeTab === t.id ? onClear() : onSelect(t.id)} />
+        ))}
+      </ScrollView>
+      <View style={styles.chipRowBorder} />
+    </View>
   );
 }
 
@@ -308,11 +288,9 @@ export default function MusicaSonidosScreen() {
   const [activeTab,         setActiveTab]         = useState<CatTab|null>(null);
   const [sort,              setSort]              = useState<SortMode>("recientes");
   const [sortVisible,       setSortVisible]       = useState(false);
-  const [viewMode,          setViewMode]          = useState<ViewMode>("list");
   const [searchVisible,     setSearchVisible]     = useState(false);
   const [selectedSession,   setSelectedSession]   = useState<Session|null>(null);
   const [playlistSessionId, setPlaylistSessionId] = useState<string|null>(null);
-  const toggleView = useCallback(()=>setViewMode((v)=>(v==="list"?"grid":"list")),[]);
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const HERO_AREA_H = 238;
@@ -323,50 +301,54 @@ export default function MusicaSonidosScreen() {
   });
   const [stickyActive, setStickyActive] = useState(false);
 
-  const playCounts = useMemo(()=>{ const c:Record<string,number>={}; for (const e of history) c[e.sessionId]=(c[e.sessionId]??0)+1; return c; },[history]);
-  const sessions   = useMemo(()=>applySort(getSessionsForTab(activeTab),sort,playCounts),[activeTab,sort,playCounts,version]);
-  const sortLabel  = sort==="recientes"?"Escuchadas recientemente":sort==="nuevas"?"Nuevas sesiones":"Las más escuchadas";
-
   const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [sessions]);
-  const visibleSessions = sessions.slice(0, visibleCount);
-  const hasMore = visibleCount < sessions.length;
+
+  const allTabSessions = useMemo(()=>getSessionsForTab(activeTab),[activeTab,version]);
+  const [shuffledSessions, setShuffledSessions] = useState<typeof allTabSessions>([]);
+  useEffect(()=>{
+    const arr = [...allTabSessions];
+    for (let i=arr.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]]=[arr[j],arr[i]];
+    }
+    setShuffledSessions(arr);
+    setVisibleCount(PAGE_SIZE);
+  },[allTabSessions]);
 
   const renderContent = () => {
-    if (sessions.length===0) return (
+    if (shuffledSessions.length===0) return (
       <View style={styles.emptyState}>
         <Feather name="music" size={48} color={GOLD} style={{marginBottom:16}} />
         <Text style={styles.emptyTitle}>Próximamente en {activeTab ? TABS.find((t)=>t.id===activeTab)?.label : "Música"}</Text>
         <Text style={styles.emptySub}>Estamos componiendo los mejores paisajes sonoros.</Text>
       </View>
     );
-    if (viewMode==="grid") {
-      const triples: (typeof sessions)[] = [];
-      for (let i=0;i<visibleSessions.length;i+=3) triples.push(visibleSessions.slice(i,i+3));
-      return (
-        <>
-          <View style={styles.gridOuter}>
-            {triples.map((triple,ri)=>(
-              <View key={ri} style={styles.gridRow}>
-                {triple.map((s)=>(
-                  <CategoryCard key={s.id} session={s} width={cellW} onLongPress={()=>setSelectedSession(s)} />
-                ))}
-              </View>
-            ))}
-          </View>
-          {hasMore && <View style={styles.loadMoreFooter}><ActivityIndicator size="small" color={MUTED} /></View>}
-        </>
-      );
-    }
+    const tabIds = new Set(allTabSessions.map((s)=>s.id));
+    const recentEntry = history.find((e)=>tabIds.has(e.sessionId));
+    const recentSession = recentEntry ? allTabSessions.find((s)=>s.id===recentEntry.sessionId) : null;
+    const recommended = recentSession
+      ? shuffledSessions.filter((s)=>s.id!==recentSession.id)
+      : shuffledSessions;
+    const visibleRec = recommended.slice(0, visibleCount);
+    const hasMoreRec = visibleCount < recommended.length;
     return (
       <>
-        <View style={{paddingHorizontal:H_PAD}}>
-          {visibleSessions.map((s)=>(
+        {recentSession && (
+          <>
+            <Text style={styles.sectionLabel}>Escuchado recientemente</Text>
+            <View style={{paddingHorizontal:H_PAD, marginTop:1}}>
+              <CategoryCard session={recentSession} horizontal onLongPress={()=>setSelectedSession(recentSession)} />
+            </View>
+          </>
+        )}
+        <Text style={[styles.sectionLabel, { paddingTop: 23 }]}>Recomendado</Text>
+        <View style={{paddingHorizontal:H_PAD, marginTop:1}}>
+          {visibleRec.map((s)=>(
             <CategoryCard key={s.id} session={s} horizontal onLongPress={()=>setSelectedSession(s)} />
           ))}
         </View>
-        {hasMore && <View style={styles.loadMoreFooter}><ActivityIndicator size="small" color={MUTED} /></View>}
+        {hasMoreRec && <View style={styles.loadMoreFooter}><ActivityIndicator size="small" color={MUTED} /></View>}
       </>
     );
   };
@@ -386,8 +368,8 @@ export default function MusicaSonidosScreen() {
           const active = y > HERO_AREA_H * 0.50;
           if (active !== stickyActive) setStickyActive(active);
           const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
-          if (hasMore && contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
-            setVisibleCount((c) => Math.min(c + PAGE_SIZE, sessions.length));
+          if (contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
+            setVisibleCount((c) => c + PAGE_SIZE);
           }
         }}
       >
@@ -403,8 +385,10 @@ export default function MusicaSonidosScreen() {
             </GhostPill>
           </View>
           <View style={styles.heroIconFloat}>
-            <View style={styles.heroIconCircle}>
-              <Feather name="headphones" size={32} color={GOLD} />
+            <View style={styles.heroIconGlow}>
+              <View style={styles.heroIconCircle}>
+                <Feather name="headphones" size={32} color={GOLD} />
+              </View>
             </View>
           </View>
         </View>
@@ -423,24 +407,8 @@ export default function MusicaSonidosScreen() {
         </View>
 
 
-        <View style={styles.divider} />
-
         {/* ── Contenido ── */}
         <AnimatedTabContent animKey={activeTab ?? "all"}>
-          <View style={styles.controlRow}>
-            <Pressable onPress={() => setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
-              <Feather name="chevrons-down" size={10} color={MUTED} />
-              <Text style={styles.sortText}>{sortLabel}</Text>
-            </Pressable>
-            <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
-              <Pressable onPress={() => setSearchVisible(true)} hitSlop={10} style={styles.viewToggleBtn}>
-                <Feather name="search" size={15} color={MUTED} />
-              </Pressable>
-              <Pressable onPress={toggleView} hitSlop={10} style={styles.viewToggleBtn}>
-                {viewMode === "list" ? <MaterialCommunityIcons name="view-grid-outline" size={17} color={MUTED} /> : <MaterialCommunityIcons name="view-list-outline" size={17} color={MUTED} />}
-              </Pressable>
-            </View>
-          </View>
           {renderContent()}
         </AnimatedTabContent>
       </ScrollView>
@@ -477,24 +445,28 @@ const styles = StyleSheet.create({
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
 
   heroArea: { height: 238, position: "relative" },
-  heroIconFloat: { position: "absolute", bottom: -16, left: 0, right: 0, alignItems: "center", zIndex: 2 },
-  heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(60,5,18,0.85)", borderWidth: 1, borderColor: "rgba(212,175,55,0.60)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
+  heroIconFloat: { position: "absolute", bottom: -17, left: 0, right: 0, alignItems: "center", zIndex: 2 },
+  heroIconGlow: { borderRadius: 36 },
+  heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(60,5,18,0.85)", borderWidth: 2, borderColor: "rgba(212,175,55,0.5)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
-  profileCard: { marginHorizontal: H_PAD, marginTop: 30, paddingBottom: 14, gap: 8, alignItems: "center" },
+  profileCard: { marginHorizontal: H_PAD, marginTop: 28, paddingBottom: 14, gap: 8, alignItems: "center" },
   profileTitle: { fontSize: 27, fontWeight: "800", color: TEXT, letterSpacing: 0.3 },
-  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 8, marginBottom: 28 },
+  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 3, marginBottom: 28 },
 
   dividerLine: { height: 0 },
   dividerShadow: { height: 12, marginTop: 0 },
 
   chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -25 },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 8 },
+  chipRowWrapper: { position: "relative" },
+  chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginTop: 11 },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chip: { minWidth: 96, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 999, backgroundColor: "rgba(255,255,255,0.08)", overflow: "hidden", alignItems: "center", justifyContent: "center" },
   chipText: { fontSize: 14, fontWeight: "600", color: TEXT, textAlign: "center" },
   chipTextSel: { color: "#1B060F" },
 
+  sectionLabel: { fontSize: 13, fontWeight: "400", color: TEXT, paddingHorizontal: H_PAD, paddingTop: 5, paddingBottom: 4 },
   scroll: { flex: 1 },
   controlRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingTop: 12, paddingBottom: 8 },
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
