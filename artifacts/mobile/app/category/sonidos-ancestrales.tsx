@@ -3,7 +3,6 @@ import Svg, { Path } from "react-native-svg";
 import { BackPill } from "@/components/BackPill";
 import { router } from "expo-router";
 import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import {
   ActivityIndicator, Animated, Dimensions, Easing, Keyboard, Modal, Platform,
@@ -29,7 +28,6 @@ const TEXT  = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
 const GRID_GAP    = 10;
 const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
-const HERO_IMG = require("@/assets/images/ancestrales-hero.jpg");
 
 type CatTab   = string;
 type SortMode = "recientes" | "nuevas" | "populares";
@@ -383,15 +381,7 @@ export default function SonidosAncestalesScreen() {
     setVisibleCount(PAGE_SIZE);
   },[allTabSessions]);
 
-  const HERO_H  = 187;
   const scrollY = useRef(new Animated.Value(0)).current;
-  const HERO_AREA_H = 238;
-  const stickyOpacity = scrollY.interpolate({
-    inputRange: [HERO_AREA_H * 0.30, HERO_AREA_H * 0.95],
-    outputRange: [0, 1],
-    extrapolate: "clamp",
-  });
-  const [stickyActive, setStickyActive] = useState(false);
 
   const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -448,8 +438,6 @@ export default function SonidosAncestalesScreen() {
         onScroll={(e) => {
           const y = e.nativeEvent.contentOffset.y;
           scrollY.setValue(y);
-          const active = y > HERO_AREA_H * 0.50;
-          if (active !== stickyActive) setStickyActive(active);
           const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
           if (hasMore && contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
             setVisibleCount((c) => Math.min(c + PAGE_SIZE, sessions.length));
@@ -457,29 +445,8 @@ export default function SonidosAncestalesScreen() {
         }}
       >
 
-        {/* ── Hero banner ── */}
-        <View style={styles.heroArea}>
-          <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="top" />
-          <LinearGradient
-            colors={["transparent", "rgba(0,0,0,0.28)", "rgba(0,0,0,0.60)"]}
-            locations={[0.50, 0.80, 1]}
-            style={StyleSheet.absoluteFill}
-          />
-          {/* Flecha atrás flotante */}
-          <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
-            <GhostPill style={{ backgroundColor: "#2E0510" }}>
-              <BackPill onPress={() => router.back()} />
-            </GhostPill>
-          </View>
-          <View style={styles.heroIconFloat}>
-            <View style={styles.heroIconCircle}>
-              <Feather name="music" size={32} color={GOLD} />
-            </View>
-          </View>
-        </View>
-
         {/* ── Título + Descripción ── */}
-        <View style={styles.profileCard}>
+        <View style={[styles.profileCard, { marginTop: topPad + 64 }]}>
           <Text style={styles.profileTitle}>Ancestrales</Text>
           <Text style={styles.profileDesc} numberOfLines={2}>
             Cuencos, gongs y sonidos sagrados para sanar y elevar.
@@ -504,8 +471,8 @@ export default function SonidosAncestalesScreen() {
         onPlaylist={() => { if (selectedSession) setPlaylistSessionId(selectedSession.id); setSelectedSession(null); }} />
       <AddToPlaylistSheet visible={playlistSessionId !== null} sessionId={playlistSessionId ?? ""} onClose={() => setPlaylistSessionId(null)} />
 
-      {/* ── Sticky header (aparece con scroll) ── */}
-      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity }]} pointerEvents={stickyActive ? "auto" : "none"}>
+      {/* ── Header fijo ── */}
+      <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>
         <GhostPill>
           <BackPill onPress={() => router.back()} />
         </GhostPill>
@@ -515,7 +482,7 @@ export default function SonidosAncestalesScreen() {
             <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
           </Pressable>
         </GhostPill>
-      </Animated.View>
+      </View>
     </View>
   );
 }
@@ -541,34 +508,9 @@ const styles = StyleSheet.create({
   headerTitle: { flex: 1, fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2, textAlign: "center" },
   headerDivider: { width: StyleSheet.hairlineWidth, height: 18, backgroundColor: "rgba(255,255,255,0.18)" },
 
-  /* ── Hero ── */
-  heroArea: { height: 238, position: "relative" },
-  heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
-  heroOverlayRight: { position: "absolute", right: H_PAD, zIndex: 10 },
-  heroIconFloat: {
-    position: "absolute",
-    bottom: -16,
-    left: 0,
-    right: 0,
-    alignItems: "center",
-    zIndex: 2,
-  },
-  heroIconCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: "rgba(60,5,18,0.85)",
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.60)",
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-  },
-
   /* ── Profile card ── */
   profileCard: {
     marginHorizontal: H_PAD,
-    marginTop: 30,
     paddingBottom: 14,
     gap: 8,
     alignItems: "center",
