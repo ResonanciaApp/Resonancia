@@ -132,9 +132,11 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress: () => void }) {
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
-      {!!icon && <Feather name={icon as any} size={13} color={sel ? GOLD : MUTED} />}
-      <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
+      <View style={[styles.chipInner, sel && styles.chipSel]}>
+        {!!icon && <Feather name={icon as any} size={13} color={sel ? GOLD : MUTED} />}
+        <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
+      </View>
     </Pressable>
   );
 }
@@ -550,8 +552,9 @@ const styles = StyleSheet.create({
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 8 },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-  chip: { paddingHorizontal: 14, paddingVertical: 8, alignItems: "center", justifyContent: "center", borderBottomWidth: 2, borderBottomColor: "transparent", flexDirection: "row", gap: 5 },
-  chipSel: { borderBottomColor: GOLD },
+  chip: { paddingHorizontal: 14, paddingVertical: 8, alignItems: "center", justifyContent: "center" },
+  chipInner: { flexDirection: "row", alignItems: "center", gap: 5, paddingBottom: 3 },
+  chipSel: { borderBottomWidth: 2, borderBottomColor: GOLD },
   chipText: { fontSize: 13, fontWeight: "500", color: MUTED, textAlign: "center" },
   chipTextSel: { color: TEXT, fontWeight: "600" },
 
