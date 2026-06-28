@@ -15,7 +15,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { getSessionsByDescansoTag } from "@/data/sessions";
 import { DESCANSO_TAG_CARDS } from "@/data/tags";
@@ -155,7 +154,6 @@ export default function DescansoScreen() {
   return (
     <View style={[styles.root, { backgroundColor: "#1C1C1C" }]}>
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
       <NightSky />
       {/* Fade: estrellas visibles solo hasta el banner, se disuelven en el fondo */}
       <LinearGradient
