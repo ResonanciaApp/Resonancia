@@ -204,7 +204,7 @@ function SearchOverlay({ visible, onClose, categoryId, placeholderTxt }: { visib
           </Animated.View>
         )}
         {results.length>0 && (
-          <ScrollView style={{ flex:1, backgroundColor:"#160108" }} contentContainerStyle={{ padding: H_PAD, gap: 9 }} keyboardShouldPersistTaps="handled">
+          <ScrollView style={{ flex:1, backgroundColor:"#1C020A" }} contentContainerStyle={{ padding: H_PAD, gap: 9 }} keyboardShouldPersistTaps="handled">
             {results.map((s) => <CategoryCard key={s.id} session={s} horizontal />)}
           </ScrollView>
         )}
@@ -534,9 +534,9 @@ export default function SonidosAncestalesScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#160108" },
+  root: { flex: 1, backgroundColor: "#1C020A" },
 
-  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#160108" },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#1C020A" },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   headerTitle: { flex: 1, fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2, textAlign: "center" },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
@@ -578,7 +578,7 @@ const styles = StyleSheet.create({
   emptySub: { fontSize: 13, color: MUTED, textAlign: "center", lineHeight: 20 },
 
   /* ── Sort sheet ── */
-  sortSheet: { position: "absolute", bottom: 0, left: 0, right: 0, backgroundColor: "#160108", borderTopLeftRadius: 22, borderTopRightRadius: 22, paddingTop: 10, paddingHorizontal: 20 },
+  sortSheet: { position: "absolute", bottom: 0, left: 0, right: 0, backgroundColor: "#1C020A", borderTopLeftRadius: 22, borderTopRightRadius: 22, paddingTop: 10, paddingHorizontal: 20 },
   sortSheetHandle: { alignSelf: "center", width: 36, height: 4, borderRadius: 2, backgroundColor: "rgba(74,12,12,0.35)", marginBottom: 16 },
   sortSheetTitle: { color: TEXT, fontSize: 15, fontWeight: "700", marginBottom: 12 },
   sortSheetRow: { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 14, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(61,14,22,0.40)" },
@@ -608,7 +608,7 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, fontSize: 14, color: "#111" },
   cancelBtn: { paddingVertical: 6 },
   cancelText: { color: GOLD, fontSize: 14, fontWeight: "600" },
-  searchEmpty: { flex: 1, backgroundColor: "#160108", alignItems: "center", justifyContent: "center", paddingHorizontal: 32 },
+  searchEmpty: { flex: 1, backgroundColor: "#1C020A", alignItems: "center", justifyContent: "center", paddingHorizontal: 32 },
   searchEmptyTitle: { fontSize: 18, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 10 },
   searchEmptySub: { fontSize: 14, color: MUTED, textAlign: "center", lineHeight: 20 },
 
