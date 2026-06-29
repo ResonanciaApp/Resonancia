@@ -269,7 +269,7 @@ export default function SessionDetailScreen() {
 
           {/* ── Botón Escuchar / Split Reiniciar+Continuar ───────────── */}
           {hasProgress ? (
-            <View style={[styles.splitBtnRow, { marginTop: 10, marginBottom: 26 }]}>
+            <View style={[styles.splitBtnRow, { marginTop: 18, marginBottom: 26 }]}>
               {/* Reiniciar */}
               <Pressable
                 onPress={handlePlayFromStart}
@@ -312,7 +312,7 @@ export default function SessionDetailScreen() {
               onPress={handlePlay}
               style={({ pressed }) => [
                 styles.playBtn,
-                { overflow: "hidden", opacity: pressed ? 0.88 : 1, marginTop: 10, marginBottom: 26 },
+                { overflow: "hidden", opacity: pressed ? 0.88 : 1, marginTop: 18, marginBottom: 26 },
               ]}
             >
               <LinearGradient
