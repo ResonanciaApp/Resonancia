@@ -1,7 +1,5 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -21,6 +19,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useColors } from "@/hooks/useColors";
 import { DESCANSO_SOUNDS } from "@/data/descanso-sounds";
+import { useDescansoPlayer } from "@/hooks/useDescansoPlayer";
 
 /* ─── Sleep tabs ────────────────────────────────────────────────────── */
 const SLEEP_TABS = [
@@ -40,11 +39,8 @@ const TAB_TEXT_UNSEL  = "rgba(232,212,255,0.45)";
 
 const H_PAD = 20;
 const { width: W, height: H } = Dimensions.get("window");
-const CARD_W = Math.round((W - 30) / 2.2);
 
 /* ─── Estrellas estáticas pre-generadas ─────────────────────────────── */
-// Estrellas solo en el área superior (hasta ~42% de pantalla)
-// Densidad decae hacia abajo para un fade natural sin borde
 const STAR_ZONE = H * 0.42;
 const STAR_COUNT = 110;
 const COLS = 10;
@@ -52,8 +48,7 @@ const ROWS = Math.ceil(STAR_COUNT / COLS);
 const STARS = Array.from({ length: STAR_COUNT }, (_, i) => {
   const col = i % COLS;
   const row = Math.floor(i / COLS);
-  const normalizedRow = row / ROWS; // 0..1
-  // Opacidad máxima decrece linealmente hacia la zona baja
+  const normalizedRow = row / ROWS;
   const rowFade = 1 - normalizedRow * 0.85;
   return {
     key: i,
@@ -74,7 +69,6 @@ function NightSky() {
   const shootOp  = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    /* Twinkle */
     STARS.forEach((star, i) => {
       const loop = () => {
         Animated.sequence([
@@ -94,7 +88,6 @@ function NightSky() {
       loop();
     });
 
-    /* Shooting star */
     const fire = () => {
       const sx = Math.random() * W * 0.5;
       const sy = 30 + Math.random() * H * 0.25;
@@ -133,7 +126,6 @@ function NightSky() {
           }}
         />
       ))}
-      {/* Estrella fugaz */}
       <Animated.View
         style={{
           position: "absolute",
@@ -157,19 +149,23 @@ function NightSky() {
 const TIMER_OPTIONS = [15, 30, 45, 60, 90] as const;
 const SHEET_BG = "#14031E";
 
-/* ─── NightTimerSheet ────────────────────────────────────────────────── */
+/* ─── NightTimerSheet (controlado desde DescansoScreen) ─────────────── */
 interface NightTimerSheetProps {
-  visible: boolean;
-  onClose: () => void;
+  visible:      boolean;
+  onClose:      () => void;
+  timerMin:     number;
+  setTimerMin:  (v: number) => void;
+  fadeVol:      boolean;
+  setFadeVol:   (v: boolean) => void;
 }
 
-function NightTimerSheet({ visible, onClose }: NightTimerSheetProps) {
-  const insets       = useSafeAreaInsets();
-  const slideY       = useRef(new Animated.Value(500)).current;
-  const backdropOp   = useRef(new Animated.Value(0)).current;
-  const [rendered,   setRendered]   = useState(false);
-  const [timerMin,   setTimerMin]   = useState<number>(30);
-  const [fadeVol,    setFadeVol]    = useState(false);
+function NightTimerSheet({
+  visible, onClose, timerMin, setTimerMin, fadeVol, setFadeVol,
+}: NightTimerSheetProps) {
+  const insets     = useSafeAreaInsets();
+  const slideY     = useRef(new Animated.Value(500)).current;
+  const backdropOp = useRef(new Animated.Value(0)).current;
+  const [rendered, setRendered] = useState(false);
 
   useEffect(() => {
     if (visible) {
@@ -192,30 +188,25 @@ function NightTimerSheet({ visible, onClose }: NightTimerSheetProps) {
 
   return (
     <Modal transparent animationType="none" visible statusBarTranslucent onRequestClose={onClose}>
-      {/* Backdrop */}
       <Animated.View
         style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)", opacity: backdropOp }]}
       >
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
       </Animated.View>
 
-      {/* Sheet */}
       <Animated.View
         style={[
           styles.sheet,
           { paddingBottom: 28 + insets.bottom, transform: [{ translateY: slideY }] },
         ]}
       >
-        {/* Handle */}
         <View style={styles.sheetHandle} />
 
-        {/* Título */}
         <View style={styles.sheetHeader}>
           <Ionicons name="moon" size={20} color="#C4A8F5" />
           <Text style={styles.sheetTitle}>Prepara tu noche</Text>
         </View>
 
-        {/* ── Temporizador ── */}
         <Text style={styles.sheetLabel}>Temporizador</Text>
         <View style={styles.timerRow}>
           {TIMER_OPTIONS.map((min) => {
@@ -234,7 +225,6 @@ function NightTimerSheet({ visible, onClose }: NightTimerSheetProps) {
           })}
         </View>
 
-        {/* ── Desvanecer volumen ── */}
         <View style={styles.fadeRow}>
           <View style={{ flex: 1, gap: 3 }}>
             <Text style={styles.fadeTitle}>Desvanecer volumen</Text>
@@ -252,25 +242,48 @@ function NightTimerSheet({ visible, onClose }: NightTimerSheetProps) {
   );
 }
 
+/* ─── Indicador de reproducción ─────────────────────────────────────── */
+function PlayingDot() {
+  const op = useRef(new Animated.Value(1)).current;
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(op, { toValue: 0.25, duration: 700, useNativeDriver: true }),
+        Animated.timing(op, { toValue: 1,    duration: 700, useNativeDriver: true }),
+      ])
+    );
+    loop.start();
+    return () => loop.stop();
+  }, []);
+  return (
+    <Animated.View
+      style={{
+        position: "absolute", top: 6, right: 6,
+        width: 8, height: 8, borderRadius: 4,
+        backgroundColor: "#C4A8F5",
+        opacity: op,
+      }}
+    />
+  );
+}
+
 /* ─── Pantalla ──────────────────────────────────────────────────────── */
 export default function DescansoScreen() {
   const colors    = useColors();
   const insets    = useSafeAreaInsets();
   const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
-  const router    = useRouter();
 
-  const [activeTab, setActiveTab]         = useState<SleepTabId>("todos");
-  const [selectedSound, setSelectedSound] = useState<string | null>(null);
-  const [timerSheet, setTimerSheet]       = useState(false);
+  const [activeTab,   setActiveTab]   = useState<SleepTabId>("todos");
+  const [timerSheet,  setTimerSheet]  = useState(false);
+  const [timerMin,    setTimerMin]    = useState(30);
+  const [fadeVol,     setFadeVol]     = useState(false);
+
+  const player = useDescansoPlayer({ timerMinutes: timerMin, fadeVolume: fadeVol });
 
   const visibleSounds = activeTab === "todos"
     ? DESCANSO_SOUNDS
     : DESCANSO_SOUNDS.filter((s) => s.categoryId === activeTab);
-
-  function handleSoundPress(id: string) {
-    setSelectedSound((prev) => (prev === id ? null : id));
-  }
 
   return (
     <View style={[styles.root, { backgroundColor: "#08010C" }]}>
@@ -329,12 +342,12 @@ export default function DescansoScreen() {
           onPress={() => setTimerSheet(true)}
         >
           <View style={styles.nightBanner}>
-            {/* Texto */}
             <View style={{ flex: 1 }}>
               <Text style={styles.nightBannerTitle}>Prepara tu noche</Text>
-              <Text style={styles.nightBannerSub}>Crea tu atmósfera perfecta</Text>
+              <Text style={styles.nightBannerSub}>
+                {timerMin} min{fadeVol ? " · fade" : ""}{player.selectedId ? " · reproduciendo" : ""}
+              </Text>
             </View>
-            {/* Chevron */}
             <Feather name="chevron-right" size={18} color="rgba(255,255,255,0.6)" />
           </View>
         </Pressable>
@@ -342,18 +355,18 @@ export default function DescansoScreen() {
         {/* ── Grilla de sonidos ── */}
         <View style={styles.soundGrid}>
           {visibleSounds.map((sound) => {
-            const sel = selectedSound === sound.id;
+            const sel       = player.selectedId === sound.id;
+            const playing   = sel && player.isPlaying;
             return (
               <Pressable
                 key={sound.id}
-                onPress={() => handleSoundPress(sound.id)}
+                onPress={() => player.toggle(sound.id, sound.audioUri ?? null)}
                 style={({ pressed }) => [styles.soundCell, pressed && { opacity: 0.88 }]}
               >
                 <View style={[styles.soundImageWrap, sel && styles.soundImageWrapSel]}>
                   <Image source={sound.image} style={styles.soundImage} resizeMode="cover" />
-                  {!sel && (
-                    <View style={styles.soundOverlay} />
-                  )}
+                  {!sel && <View style={styles.soundOverlay} />}
+                  {playing && <PlayingDot />}
                 </View>
                 <Text style={[styles.soundLabel, sel && styles.soundLabelSel]} numberOfLines={1}>
                   {sound.label}
@@ -365,7 +378,14 @@ export default function DescansoScreen() {
 
       </ScrollView>
 
-      <NightTimerSheet visible={timerSheet} onClose={() => setTimerSheet(false)} />
+      <NightTimerSheet
+        visible={timerSheet}
+        onClose={() => setTimerSheet(false)}
+        timerMin={timerMin}
+        setTimerMin={setTimerMin}
+        fadeVol={fadeVol}
+        setFadeVol={setFadeVol}
+      />
     </View>
   );
 }
@@ -518,14 +538,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 4,
   },
-  nightBannerIconWrap: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   nightBannerTitle: {
     fontSize: 14,
     fontWeight: "700",
@@ -595,64 +607,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 22,
   },
-
-  /* Banner Mezclador */
-  bannerWrap: {
-    marginHorizontal: H_PAD,
-    marginBottom: 36,
-    borderRadius: 16,
-    overflow: "hidden",
-  },
-  banner: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 18,
-    paddingHorizontal: 16,
-    gap: 14,
-  },
-  bannerIconWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    backgroundColor: "rgba(212,175,55,0.12)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  bannerText: { flex: 1 },
-  bannerTitle: {
-    fontSize: 15,
-    fontWeight: "700",
-    marginBottom: 3,
-  },
-  bannerSub: { fontSize: 12 },
-
-  /* Carruseles */
-  carouselsWrap: { paddingTop: 6 },
-  section:       { marginBottom: 62 },
-  catHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: H_PAD,
-    marginBottom: 14,
-  },
-  catTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    letterSpacing: 0.2,
-    flex: 1,
-  },
-  verTodosBtn:  { paddingLeft: 8 },
-  carousel:     { paddingLeft: H_PAD, paddingRight: 6 },
-  emptySlot: {
-    marginHorizontal: H_PAD,
-    height: 100,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderStyle: "dashed",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-  },
-  emptyText: { fontSize: 13 },
 });

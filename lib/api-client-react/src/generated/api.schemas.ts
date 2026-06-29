@@ -1669,6 +1669,70 @@ export interface BunnyVideoStatusResponse {
   availableResolutions?: string | null;
 }
 
+export interface DescansoSoundItem {
+  id: string;
+  label: string;
+  categoryId: string;
+  audioObjectPath: string | null;
+  thumbnailObjectPath: string | null;
+  sortOrder: number;
+  isActive: boolean;
+}
+
+export interface AdminDescansoSoundItem {
+  id: string;
+  label: string;
+  categoryId: string;
+  audioObjectPath: string | null;
+  thumbnailObjectPath: string | null;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type CreateDescansoSoundBodyCategoryId = typeof CreateDescansoSoundBodyCategoryId[keyof typeof CreateDescansoSoundBodyCategoryId];
+
+
+export const CreateDescansoSoundBodyCategoryId = {
+  dormirme: 'dormirme',
+  zen: 'zen',
+  relax: 'relax',
+  ruido: 'ruido',
+} as const;
+
+export interface CreateDescansoSoundBody {
+  /** @minLength 1 */
+  id: string;
+  /** @minLength 1 */
+  label: string;
+  categoryId: CreateDescansoSoundBodyCategoryId;
+  audioObjectPath?: string | null;
+  thumbnailObjectPath?: string | null;
+  sortOrder?: number;
+  isActive?: boolean;
+}
+
+export type UpdateDescansoSoundBodyCategoryId = typeof UpdateDescansoSoundBodyCategoryId[keyof typeof UpdateDescansoSoundBodyCategoryId];
+
+
+export const UpdateDescansoSoundBodyCategoryId = {
+  dormirme: 'dormirme',
+  zen: 'zen',
+  relax: 'relax',
+  ruido: 'ruido',
+} as const;
+
+export interface UpdateDescansoSoundBody {
+  /** @minLength 1 */
+  label?: string;
+  categoryId?: UpdateDescansoSoundBodyCategoryId;
+  audioObjectPath?: string | null;
+  thumbnailObjectPath?: string | null;
+  sortOrder?: number;
+  isActive?: boolean;
+}
+
 export type GetMessagesParams = {
 page?: number;
 };
@@ -1805,6 +1869,14 @@ export type GetMixerSounds200 = {
 
 export type CreateBunnyUploadUrlBody = {
   title?: string;
+};
+
+export type ListDescansoSounds200 = {
+  sounds: DescansoSoundItem[];
+};
+
+export type GetAdminDescansoSounds200 = {
+  sounds: AdminDescansoSoundItem[];
 };
 
 export type GetAdminSounds200 = {

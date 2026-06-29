@@ -18,6 +18,7 @@ import geometrixRouter from "./geometrix";
 import applicationsRouter from "./applications";
 import liveRouter from "./live";
 import videosRouter from "./videos";
+import descansoRouter from "./descanso";
 
 const router: IRouter = Router();
 
@@ -40,5 +41,6 @@ router.use(geometrixRouter);
 router.use(applicationsRouter);
 router.use(liveRouter);
 router.use(videosRouter);
+router.use(descansoRouter);
 
 export default router;

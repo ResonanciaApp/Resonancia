@@ -22,6 +22,7 @@ import type {
 import type {
   AdminCategoryInput,
   AdminCategoryUpdate,
+  AdminDescansoSoundItem,
   AdminMixHideInput,
   AdminMixHideResponse,
   AdminMixerSoundItem,
@@ -42,6 +43,7 @@ import type {
   Conversation,
   CreateApplicationInput,
   CreateBunnyUploadUrlBody,
+  CreateDescansoSoundBody,
   CreateMessageBody,
   CreateMixerSoundBody,
   CreateTagOptionBody,
@@ -61,6 +63,7 @@ import type {
   GeometrixSettingUpdate,
   GetAdminApplications200,
   GetAdminApplicationsParams,
+  GetAdminDescansoSounds200,
   GetAdminGeometrix200,
   GetAdminGuideConfigs200,
   GetAdminSounds200,
@@ -82,6 +85,7 @@ import type {
   GuideConfigInput,
   GuideConfigUpdate,
   HealthStatus,
+  ListDescansoSounds200,
   MessagesPage,
   MixComment,
   MixCommentInput,
@@ -120,6 +124,7 @@ import type {
   UnregisterPushTokenBody,
   UpdateAdminGeometrix200,
   UpdateApplicationStatusInput,
+  UpdateDescansoSoundBody,
   UpdateMixerSoundBody,
   UpdateVideoBody,
   UserProfile,
@@ -6993,6 +6998,373 @@ export function useGetBunnyVideoStatus<TData = Awaited<ReturnType<typeof getBunn
 
 
 
+
+export const getListDescansoSoundsUrl = () => {
+
+
+
+
+  return `/api/descanso-sounds`
+}
+
+/**
+ * @summary Listar sonidos de Descanso activos
+ */
+export const listDescansoSounds = async ( options?: RequestInit): Promise<ListDescansoSounds200> => {
+
+  return customFetch<ListDescansoSounds200>(getListDescansoSoundsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListDescansoSoundsQueryKey = () => {
+    return [
+    `/api/descanso-sounds`
+    ] as const;
+    }
+
+
+export const getListDescansoSoundsQueryOptions = <TData = Awaited<ReturnType<typeof listDescansoSounds>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listDescansoSounds>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListDescansoSoundsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listDescansoSounds>>> = ({ signal }) => listDescansoSounds({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listDescansoSounds>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListDescansoSoundsQueryResult = NonNullable<Awaited<ReturnType<typeof listDescansoSounds>>>
+export type ListDescansoSoundsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Listar sonidos de Descanso activos
+ */
+
+export function useListDescansoSounds<TData = Awaited<ReturnType<typeof listDescansoSounds>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listDescansoSounds>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListDescansoSoundsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetAdminDescansoSoundsUrl = () => {
+
+
+
+
+  return `/api/admin/descanso-sounds`
+}
+
+/**
+ * @summary Listar sonidos de Descanso (admin)
+ */
+export const getAdminDescansoSounds = async ( options?: RequestInit): Promise<GetAdminDescansoSounds200> => {
+
+  return customFetch<GetAdminDescansoSounds200>(getGetAdminDescansoSoundsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminDescansoSoundsQueryKey = () => {
+    return [
+    `/api/admin/descanso-sounds`
+    ] as const;
+    }
+
+
+export const getGetAdminDescansoSoundsQueryOptions = <TData = Awaited<ReturnType<typeof getAdminDescansoSounds>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminDescansoSounds>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminDescansoSoundsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminDescansoSounds>>> = ({ signal }) => getAdminDescansoSounds({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminDescansoSounds>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminDescansoSoundsQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminDescansoSounds>>>
+export type GetAdminDescansoSoundsQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Listar sonidos de Descanso (admin)
+ */
+
+export function useGetAdminDescansoSounds<TData = Awaited<ReturnType<typeof getAdminDescansoSounds>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminDescansoSounds>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminDescansoSoundsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateAdminDescansoSoundUrl = () => {
+
+
+
+
+  return `/api/admin/descanso-sounds`
+}
+
+/**
+ * @summary Crear sonido de Descanso (admin)
+ */
+export const createAdminDescansoSound = async (createDescansoSoundBody: CreateDescansoSoundBody, options?: RequestInit): Promise<AdminDescansoSoundItem> => {
+
+  return customFetch<AdminDescansoSoundItem>(getCreateAdminDescansoSoundUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createDescansoSoundBody,)
+  }
+);}
+
+
+
+
+export const getCreateAdminDescansoSoundMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminDescansoSound>>, TError,{data: BodyType<CreateDescansoSoundBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createAdminDescansoSound>>, TError,{data: BodyType<CreateDescansoSoundBody>}, TContext> => {
+
+const mutationKey = ['createAdminDescansoSound'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAdminDescansoSound>>, {data: BodyType<CreateDescansoSoundBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createAdminDescansoSound(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateAdminDescansoSoundMutationResult = NonNullable<Awaited<ReturnType<typeof createAdminDescansoSound>>>
+    export type CreateAdminDescansoSoundMutationBody = BodyType<CreateDescansoSoundBody>
+    export type CreateAdminDescansoSoundMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Crear sonido de Descanso (admin)
+ */
+export const useCreateAdminDescansoSound = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminDescansoSound>>, TError,{data: BodyType<CreateDescansoSoundBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createAdminDescansoSound>>,
+        TError,
+        {data: BodyType<CreateDescansoSoundBody>},
+        TContext
+      > => {
+      return useMutation(getCreateAdminDescansoSoundMutationOptions(options));
+    }
+
+export const getUpdateAdminDescansoSoundUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/descanso-sounds/${id}`
+}
+
+/**
+ * @summary Actualizar sonido de Descanso (admin)
+ */
+export const updateAdminDescansoSound = async (id: string,
+    updateDescansoSoundBody: UpdateDescansoSoundBody, options?: RequestInit): Promise<AdminDescansoSoundItem> => {
+
+  return customFetch<AdminDescansoSoundItem>(getUpdateAdminDescansoSoundUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateDescansoSoundBody,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminDescansoSoundMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminDescansoSound>>, TError,{id: string;data: BodyType<UpdateDescansoSoundBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminDescansoSound>>, TError,{id: string;data: BodyType<UpdateDescansoSoundBody>}, TContext> => {
+
+const mutationKey = ['updateAdminDescansoSound'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminDescansoSound>>, {id: string;data: BodyType<UpdateDescansoSoundBody>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateAdminDescansoSound(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminDescansoSoundMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminDescansoSound>>>
+    export type UpdateAdminDescansoSoundMutationBody = BodyType<UpdateDescansoSoundBody>
+    export type UpdateAdminDescansoSoundMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Actualizar sonido de Descanso (admin)
+ */
+export const useUpdateAdminDescansoSound = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminDescansoSound>>, TError,{id: string;data: BodyType<UpdateDescansoSoundBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminDescansoSound>>,
+        TError,
+        {id: string;data: BodyType<UpdateDescansoSoundBody>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminDescansoSoundMutationOptions(options));
+    }
+
+export const getDeleteAdminDescansoSoundUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/descanso-sounds/${id}`
+}
+
+/**
+ * @summary Eliminar sonido de Descanso (admin)
+ */
+export const deleteAdminDescansoSound = async (id: string, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteAdminDescansoSoundUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteAdminDescansoSoundMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminDescansoSound>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAdminDescansoSound>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteAdminDescansoSound'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAdminDescansoSound>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteAdminDescansoSound(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAdminDescansoSoundMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAdminDescansoSound>>>
+
+    export type DeleteAdminDescansoSoundMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Eliminar sonido de Descanso (admin)
+ */
+export const useDeleteAdminDescansoSound = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminDescansoSound>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAdminDescansoSound>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteAdminDescansoSoundMutationOptions(options));
+    }
 
 export const getGetAdminSoundsUrl = () => {
 

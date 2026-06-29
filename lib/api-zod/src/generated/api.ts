@@ -2547,6 +2547,98 @@ export const GetBunnyVideoStatusResponse = zod.object({
 
 
 /**
+ * @summary Listar sonidos de Descanso activos
+ */
+export const ListDescansoSoundsResponse = zod.object({
+  "sounds": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "categoryId": zod.string(),
+  "audioObjectPath": zod.string().nullable(),
+  "thumbnailObjectPath": zod.string().nullable(),
+  "sortOrder": zod.number(),
+  "isActive": zod.boolean()
+}))
+})
+
+
+/**
+ * @summary Listar sonidos de Descanso (admin)
+ */
+export const GetAdminDescansoSoundsResponse = zod.object({
+  "sounds": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "categoryId": zod.string(),
+  "audioObjectPath": zod.string().nullable(),
+  "thumbnailObjectPath": zod.string().nullable(),
+  "sortOrder": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Crear sonido de Descanso (admin)
+ */
+
+
+
+
+export const CreateAdminDescansoSoundBody = zod.object({
+  "id": zod.string().min(1),
+  "label": zod.string().min(1),
+  "categoryId": zod.enum(['dormirme', 'zen', 'relax', 'ruido']),
+  "audioObjectPath": zod.string().nullish(),
+  "thumbnailObjectPath": zod.string().nullish(),
+  "sortOrder": zod.number().optional(),
+  "isActive": zod.boolean().optional()
+})
+
+
+/**
+ * @summary Actualizar sonido de Descanso (admin)
+ */
+export const UpdateAdminDescansoSoundParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+
+
+
+export const UpdateAdminDescansoSoundBody = zod.object({
+  "label": zod.string().min(1).optional(),
+  "categoryId": zod.enum(['dormirme', 'zen', 'relax', 'ruido']).optional(),
+  "audioObjectPath": zod.string().nullish(),
+  "thumbnailObjectPath": zod.string().nullish(),
+  "sortOrder": zod.number().optional(),
+  "isActive": zod.boolean().optional()
+})
+
+export const UpdateAdminDescansoSoundResponse = zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "categoryId": zod.string(),
+  "audioObjectPath": zod.string().nullable(),
+  "thumbnailObjectPath": zod.string().nullable(),
+  "sortOrder": zod.number(),
+  "isActive": zod.boolean(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Eliminar sonido de Descanso (admin)
+ */
+export const DeleteAdminDescansoSoundParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+
+/**
  * @summary Listar todos los sonidos del mixer (admin)
  */
 export const GetAdminSoundsResponse = zod.object({

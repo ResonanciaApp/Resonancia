@@ -1,10 +1,12 @@
+import type { ImageSourcePropType } from "react-native";
+
 export type DescansoSoundCategory = "dormirme" | "zen" | "relax" | "ruido";
 
 export interface DescansoSound {
   id: string;
   label: string;
   categoryId: DescansoSoundCategory;
-  image: ReturnType<typeof require>;
+  image: ImageSourcePropType;
   audioUri: string | null;
 }
 

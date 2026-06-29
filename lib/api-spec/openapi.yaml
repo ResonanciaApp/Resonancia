@@ -2508,6 +2508,174 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /descanso-sounds:
+    get:
+      operationId: listDescansoSounds
+      tags: [catalog]
+      summary: Listar sonidos de Descanso activos
+      responses:
+        "200":
+          description: Lista de sonidos activos
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [sounds]
+                properties:
+                  sounds:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/DescansoSoundItem"
+  /admin/descanso-sounds:
+    get:
+      operationId: getAdminDescansoSounds
+      tags: [admin]
+      summary: Listar sonidos de Descanso (admin)
+      responses:
+        "200":
+          description: Lista de sonidos
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [sounds]
+                properties:
+                  sounds:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/AdminDescansoSoundItem"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: createAdminDescansoSound
+      tags: [admin]
+      summary: Crear sonido de Descanso (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDescansoSoundBody"
+      responses:
+        "201":
+          description: Sonido creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminDescansoSoundItem"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Ya existe un sonido con ese ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/descanso-sounds/{id}:
+    patch:
+      operationId: updateAdminDescansoSound
+      tags: [admin]
+      summary: Actualizar sonido de Descanso (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDescansoSoundBody"
+      responses:
+        "200":
+          description: Sonido actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminDescansoSoundItem"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: No encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteAdminDescansoSound
+      tags: [admin]
+      summary: Eliminar sonido de Descanso (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Eliminado
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: No encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /admin/sounds:
     get:
       operationId: getAdminSounds
@@ -5142,3 +5310,91 @@ components:
         availableResolutions:
           type: string
           nullable: true
+    DescansoSoundItem:
+      type: object
+      required: [id, label, categoryId, audioObjectPath, thumbnailObjectPath, sortOrder, isActive]
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        categoryId:
+          type: string
+        audioObjectPath:
+          type: string
+          nullable: true
+        thumbnailObjectPath:
+          type: string
+          nullable: true
+        sortOrder:
+          type: integer
+        isActive:
+          type: boolean
+    AdminDescansoSoundItem:
+      type: object
+      required: [id, label, categoryId, audioObjectPath, thumbnailObjectPath, sortOrder, isActive, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        categoryId:
+          type: string
+        audioObjectPath:
+          type: string
+          nullable: true
+        thumbnailObjectPath:
+          type: string
+          nullable: true
+        sortOrder:
+          type: integer
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    CreateDescansoSoundBody:
+      type: object
+      required: [id, label, categoryId]
+      properties:
+        id:
+          type: string
+          minLength: 1
+        label:
+          type: string
+          minLength: 1
+        categoryId:
+          type: string
+          enum: [dormirme, zen, relax, ruido]
+        audioObjectPath:
+          type: string
+          nullable: true
+        thumbnailObjectPath:
+          type: string
+          nullable: true
+        sortOrder:
+          type: integer
+        isActive:
+          type: boolean
+    UpdateDescansoSoundBody:
+      type: object
+      properties:
+        label:
+          type: string
+          minLength: 1
+        categoryId:
+          type: string
+          enum: [dormirme, zen, relax, ruido]
+        audioObjectPath:
+          type: string
+          nullable: true
+        thumbnailObjectPath:
+          type: string
+          nullable: true
+        sortOrder:
+          type: integer
+        isActive:
+          type: boolean

@@ -27,6 +27,7 @@ import {
   UserPlus,
   Radio,
   Film,
+  Moon,
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/queryClient";
@@ -45,6 +46,7 @@ import PlaylistsPage from "@/pages/playlists";
 import PostulacionesPage from "@/pages/postulaciones";
 import GuiadoresVivoPage from "@/pages/guiadores-vivo";
 import VideosPage from "@/pages/videos";
+import DescansoSonidosPage from "@/pages/descanso-sonidos";
 
 const clerkPubKey = publishableKeyFromHost(
   window.location.hostname,
@@ -170,6 +172,7 @@ const NAV = [
   { href: "/geometrix", label: "Geometrix", icon: Hexagon },
   { href: "/guiadores-vivo", label: "Sesiones en vivo", icon: Radio },
   { href: "/videos", label: "Videos", icon: Film },
+  { href: "/descanso-sonidos", label: "Sonidos Descanso", icon: Moon },
 ];
 
 function isActive(location: string, href: string) {
@@ -290,6 +293,7 @@ function AdminGate() {
         <Route path="/geometrix" component={GeometrixPage} />
         <Route path="/guiadores-vivo" component={GuiadoresVivoPage} />
         <Route path="/videos" component={VideosPage} />
+        <Route path="/descanso-sonidos" component={DescansoSonidosPage} />
         <Route component={NotFound} />
       </Switch>
     </DashboardShell>
