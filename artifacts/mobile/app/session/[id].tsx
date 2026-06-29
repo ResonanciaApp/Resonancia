@@ -340,7 +340,7 @@ export default function SessionDetailScreen() {
           {/* ── Reproducciones ──────────────────────────────────────────── */}
           {playsData !== undefined && (
             <View style={styles.playsRow}>
-              <MaskedView maskElement={<Feather name="headphones" size={13} color="#000" />}>
+              <MaskedView style={{ alignSelf: "center" }} maskElement={<Feather name="headphones" size={13} color="#000" />}>
                 <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 13, height: 13 }} />
               </MaskedView>
               <MaskedView
