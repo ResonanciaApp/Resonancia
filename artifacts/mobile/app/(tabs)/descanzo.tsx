@@ -35,7 +35,7 @@ const TAB_UNSEL_COLORS: [string, string] = ["rgba(18,4,24,0.75)", "rgba(8,2,12,0
 const TAB_SEL_COLORS:   [string, string] = ["rgba(35,10,50,0.75)", "rgba(18,4,28,0.75)"];
 const TAB_BORDER_SEL  = "#401950";
 const TAB_TEXT_SEL    = "#E8D4FF";
-const TAB_TEXT_UNSEL  = "rgba(232,212,255,0.45)";
+const TAB_TEXT_UNSEL  = "rgba(232,212,255,1)";
 
 const H_PAD = 20;
 const { width: W, height: H } = Dimensions.get("window");
@@ -325,7 +325,7 @@ export default function DescansoScreen() {
                   end={{ x: 0, y: 1 }}
                   style={[styles.tabGradient, sel && styles.tabGradientSel]}
                 >
-                  <Text style={[styles.tabEmoji, { opacity: sel ? 1 : 0.45 }]}>{tab.emoji}</Text>
+                  <Text style={styles.tabEmoji}>{tab.emoji}</Text>
                   <View>
                     <Text style={[styles.tabLine, { color: sel ? TAB_TEXT_SEL : TAB_TEXT_UNSEL }]}>{tab.line1}</Text>
                     <Text style={[styles.tabLine, { color: sel ? TAB_TEXT_SEL : TAB_TEXT_UNSEL }]}>{tab.line2}</Text>
@@ -572,7 +572,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "transparent",
+    borderColor: "rgba(255,255,255,0.10)",
   },
   tabGradientSel: {
     borderColor: TAB_BORDER_SEL,
