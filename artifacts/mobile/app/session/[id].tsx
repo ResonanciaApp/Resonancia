@@ -821,7 +821,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "800",
-    lineHeight: 30,
+    lineHeight: 34,
+    letterSpacing: 1.2,
     textAlign: "left",
   },
 
