@@ -83,7 +83,7 @@ export default function HistorialScreen() {
   return (
     <LinearGradient
       style={styles.root}
-      colors={["#2E0510", "#160108"]}
+      colors={["#1C020A", "#1C020A"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >

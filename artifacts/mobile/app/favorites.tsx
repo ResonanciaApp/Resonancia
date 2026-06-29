@@ -306,7 +306,7 @@ export default function FavoritesScreen() {
   return (
     <LinearGradient
       style={styles.root}
-      colors={["#2E0510", "#160108"]}
+      colors={["#1C020A", "#1C020A"]}
       locations={[0, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}

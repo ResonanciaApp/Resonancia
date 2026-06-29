@@ -23,7 +23,7 @@ import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 
-const BG = ["#2E0510", "#160108"] as const;
+const BG = ["#1C020A", "#1C020A"] as const;
 const GOLD = "#D4AF37";
 const TEXT = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";

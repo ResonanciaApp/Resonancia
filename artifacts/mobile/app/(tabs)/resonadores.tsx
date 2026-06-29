@@ -29,7 +29,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 
 const H_PAD = 18;
 const CARD_GAP = 10;
-const BG: [string, string] = ["#2E0510", "#160108"];
+const BG: [string, string] = ["#1C020A", "#1C020A"];
 const EQUIPO_BG = require("@/assets/images/equipo-bg.jpg");
 const MUTED = "rgba(250,240,238,0.45)";
 const CHIP_ANIM_DURATION = 600;
