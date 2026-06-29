@@ -162,66 +162,70 @@ export default function DescansoScreen() {
           </Text>
         </View>
 
-        {/* ── Banner Mezclador ── */}
-        <Pressable
-          style={({ pressed }) => [styles.bannerWrap, pressed && { opacity: 0.82 }]}
-          onPress={() => router.push("/escenas-mixer" as never)}
-        >
-          <LinearGradient
-            style={styles.banner}
-            colors={["#2A2070", "#C47A6A"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <View style={styles.bannerIconWrap}>
-              <Ionicons name="moon" size={22} color="#ffffff" />
-            </View>
-            <View style={styles.bannerText}>
-              <Text style={[styles.bannerTitle, { color: colors.foreground }]}>
-                Mezclador para dormir
-              </Text>
-              <Text style={[styles.bannerSub, { color: colors.mutedForeground }]}>
-                Crea tu propia mezcla de sonidos
-              </Text>
-            </View>
-            <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
-          </LinearGradient>
-        </Pressable>
-
         {/* ── Carruseles ── */}
         <View style={styles.carouselsWrap}>
           {DESCANSO_TAG_CARDS.map((tag, idx) => {
             const sessions = getSessionsByDescansoTag(tag.label);
             return (
-              <View key={tag.id} style={[styles.section, idx > 0 && { marginTop: 15 }]}>
-                <View style={styles.catHeader}>
-                  <Text style={[styles.catTitle, { color: colors.foreground }]} numberOfLines={1}>
-                    {tag.label}
-                  </Text>
-                  <Pressable style={styles.verTodosBtn} hitSlop={10}>
-                    <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
-                  </Pressable>
+              <React.Fragment key={tag.id}>
+                <View style={[styles.section, idx > 0 && { marginTop: 15 }]}>
+                  <View style={styles.catHeader}>
+                    <Text style={[styles.catTitle, { color: colors.foreground }]} numberOfLines={1}>
+                      {tag.label}
+                    </Text>
+                    <Pressable style={styles.verTodosBtn} hitSlop={10}>
+                      <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
+                    </Pressable>
+                  </View>
+
+                  {sessions.length > 0 ? (
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={styles.carousel}
+                    >
+                      {sessions.map((s) => (
+                        <SessionCard key={s.id} session={s} width={CARD_W} destRoute="/descanzo-session" />
+                      ))}
+                    </ScrollView>
+                  ) : (
+                    <View style={[styles.emptySlot, { borderColor: colors.border }]}>
+                      <Feather name="moon" size={22} color={colors.mutedForeground} />
+                      <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                        Próximamente
+                      </Text>
+                    </View>
+                  )}
                 </View>
 
-                {sessions.length > 0 ? (
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.carousel}
+                {/* ── Banner Mezclador (después de la 3ª sección) ── */}
+                {idx === 2 && (
+                  <Pressable
+                    style={({ pressed }) => [styles.bannerWrap, { marginTop: 15 }, pressed && { opacity: 0.82 }]}
+                    onPress={() => router.push("/escenas-mixer" as never)}
                   >
-                    {sessions.map((s) => (
-                      <SessionCard key={s.id} session={s} width={CARD_W} destRoute="/descanzo-session" />
-                    ))}
-                  </ScrollView>
-                ) : (
-                  <View style={[styles.emptySlot, { borderColor: colors.border }]}>
-                    <Feather name="moon" size={22} color={colors.mutedForeground} />
-                    <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-                      Próximamente
-                    </Text>
-                  </View>
+                    <LinearGradient
+                      style={styles.banner}
+                      colors={["#2A2070", "#C47A6A"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                    >
+                      <View style={styles.bannerIconWrap}>
+                        <Ionicons name="moon" size={22} color="#ffffff" />
+                      </View>
+                      <View style={styles.bannerText}>
+                        <Text style={[styles.bannerTitle, { color: colors.foreground }]}>
+                          Mezclador para dormir
+                        </Text>
+                        <Text style={[styles.bannerSub, { color: colors.mutedForeground }]}>
+                          Crea tu propia mezcla de sonidos
+                        </Text>
+                      </View>
+                      <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
+                    </LinearGradient>
+                  </Pressable>
                 )}
-              </View>
+              </React.Fragment>
             );
           })}
         </View>
