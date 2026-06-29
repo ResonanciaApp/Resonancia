@@ -733,7 +733,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 15,
     lineHeight: 25,
-    marginTop: 8,
+    marginTop: 12,
     marginBottom: 24,
     textAlign: "left",
   },
