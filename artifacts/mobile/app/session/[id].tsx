@@ -295,8 +295,22 @@ export default function SessionDetailScreen() {
         {/* ── Content ─────────────────────────────────────────────────────── */}
         <View style={styles.content}>
 
-          {/* Duration label */}
-          <Text style={styles.durationLabel}>{session.durationLabel}</Text>
+          {/* Duration label + rating */}
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 29 }}>
+            {ratingStars > 0 && (
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Feather
+                    key={star}
+                    name="star"
+                    size={11}
+                    color={ratingStars >= star ? "#D4AF37" : "rgba(255,255,255,0.25)"}
+                  />
+                ))}
+              </View>
+            )}
+            <Text style={[styles.durationLabel, { marginTop: 0 }]}>{session.durationLabel}</Text>
+          </View>
 
           {/* Title + acciones */}
           <View style={styles.titleRow}>
