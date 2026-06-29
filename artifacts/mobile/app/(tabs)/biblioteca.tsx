@@ -49,7 +49,7 @@ const { width } = Dimensions.get("window");
 const H_PAD = 15;
 const GOLD = "#D4AF37";
 const NAVY = "#160108";
-const DARK_BLUE = "#290A12";
+const DARK_BLUE = "#1C020A";
 const TEXT = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
 
@@ -615,7 +615,7 @@ function GeometrixRow({ creation, onPress }: { creation: GeometrixCreation; onPr
       {/* Miniatura: cuadrado oscuro con las primeras capas superpuestas */}
       <View style={styles.geoThumb}>
         <LinearGradient
-          colors={["#290A12", "#160108"]}
+          colors={["#1C020A", "#160108"]}
           style={StyleSheet.absoluteFill}
         />
         {firstLayers.map((instId, idx) => {
@@ -1733,12 +1733,12 @@ const styles = StyleSheet.create({
   // ── Búsqueda overlay ──────────────────────────────────────────────────────────
   searchModalRoot: {
     flex: 1,
-    backgroundColor: "#290A12",
+    backgroundColor: "#1C020A",
   },
   searchOverlay: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#290A12",
+    backgroundColor: "#1C020A",
     paddingTop: Platform.OS === "ios" ? 56 : 36,
     paddingHorizontal: H_PAD,
     paddingBottom: 14,
@@ -1782,7 +1782,7 @@ const styles = StyleSheet.create({
   },
   sheet: {
     position: "absolute", left: 0, right: 0, bottom: 0,
-    backgroundColor: "#290A12",
+    backgroundColor: "#1C020A",
     borderTopLeftRadius: 24, borderTopRightRadius: 24,
     paddingHorizontal: 20, paddingTop: 12, paddingBottom: 36,
   },
@@ -1854,7 +1854,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   addResModalSheet: {
-    backgroundColor: "#290A12",
+    backgroundColor: "#1C020A",
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     paddingTop: 18,
