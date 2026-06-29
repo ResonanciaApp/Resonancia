@@ -617,7 +617,7 @@ export default function SessionDetailScreen() {
             {ratingStars > 0 && (
               <TextInput
                 style={styles.ratingReviewInput}
-                placeholder="Escribe tu reseña (opcional)..."
+                placeholder="Escribe tu reseña"
                 placeholderTextColor="rgba(255,255,255,0.35)"
                 multiline
                 numberOfLines={3}

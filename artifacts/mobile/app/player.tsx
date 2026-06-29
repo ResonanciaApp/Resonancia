@@ -598,7 +598,7 @@ export default function PlayerScreen() {
               onPress={() => { stop(); router.back(); }}
               style={[styles.terminarBtn, StyleSheet.absoluteFill]}
             >
-              <Text style={styles.terminarText}>Terminar</Text>
+              <Text style={styles.terminarText}>{progress >= 1 ? "Continuar" : "Terminar"}</Text>
             </Pressable>
           </RNAnimated.View>
         </View>
