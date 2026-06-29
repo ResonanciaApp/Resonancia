@@ -737,7 +737,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     gap: 6,
-    marginTop: 3,
+    marginTop: -3,
     marginBottom: 4,
   },
   playsText: {
