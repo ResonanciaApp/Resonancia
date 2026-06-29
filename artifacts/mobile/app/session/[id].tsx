@@ -851,6 +851,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 210,
     borderRadius: 14,
+    marginTop: 7,
     marginBottom: 14,
   },
   authorName: { fontSize: 22, fontWeight: "800", marginTop: 15, marginBottom: 4 },
