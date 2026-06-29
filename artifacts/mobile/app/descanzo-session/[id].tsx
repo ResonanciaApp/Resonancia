@@ -124,7 +124,7 @@ export default function SessionDetailScreen() {
     "meditaciones-guiadas": { gradient: ["#2E0510", "#160108"], solid: "#160108", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
     "reflexiones":          { gradient: ["#2E0510", "#160108"], solid: "#160108", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
     "musica-sonidos":       { gradient: ["#2E0510", "#160108"], solid: "#160108", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "descanso":             { gradient: ["#1B060F", "#1B060F"], solid: "#1B060F", pillBg: "#3D0E16", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "descanso":             { gradient: ["#10060A", "#10060A"], solid: "#10060A", pillBg: "#3D0E16", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
   };
   const catBg = CATEGORY_BG[session.categoryId] ?? CATEGORY_BG["sonidos-ancestrales"];
   const categoryPill = isAncestral ? "Ancestral" : isGuiada ? "Meditación" : isReflexion ? "Reflexión"
