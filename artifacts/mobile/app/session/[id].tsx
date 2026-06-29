@@ -252,11 +252,6 @@ export default function SessionDetailScreen() {
             <Text style={styles.authorNameInline}>{authors[0].name}</Text>
           )}
 
-          {/* Description */}
-          <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]}>
-            {session.description}
-          </Text>
-
           {/* ── Botón Escuchar / Split Reiniciar+Continuar ───────────── */}
           {hasProgress ? (
             <View style={[styles.splitBtnRow, { marginBottom: 16 }]}>
@@ -336,6 +331,10 @@ export default function SessionDetailScreen() {
             </View>
           </Pressable>
 
+          {/* Description */}
+          <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]}>
+            {session.description}
+          </Text>
 
           {/* ── Reproducciones ──────────────────────────────────────────── */}
           {playsData !== undefined && (
@@ -501,8 +500,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
     color: "rgba(255,255,255,0.55)",
-    marginTop: 28,
-    marginBottom: 4,
+    marginTop: 33,
   },
   authorNameInline: {
     fontSize: 14,
