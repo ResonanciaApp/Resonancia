@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   tabCell: {
-    flex: 1,
+    width: Math.floor((W - H_PAD * 2 - 8 * 3) / 4),
     aspectRatio: 1,
     borderRadius: 14,
     overflow: "hidden",
