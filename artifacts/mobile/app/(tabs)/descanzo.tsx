@@ -144,7 +144,7 @@ export default function DescansoScreen() {
   const router    = useRouter();
 
   return (
-    <View style={[styles.root, { backgroundColor: "#14060C" }]}>
+    <View style={[styles.root, { backgroundColor: "#12040A" }]}>
       <StatusBar barStyle="light-content" />
       <NightSky />
 
