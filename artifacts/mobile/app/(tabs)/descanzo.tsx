@@ -160,7 +160,7 @@ export default function DescansoScreen() {
   const [activeTab, setActiveTab] = useState<SleepTabId>("dormirme");
 
   return (
-    <View style={[styles.root, { backgroundColor: "#12040A" }]}>
+    <View style={[styles.root, { backgroundColor: "#110417" }]}>
       <StatusBar barStyle="light-content" />
       <NightSky />
 
