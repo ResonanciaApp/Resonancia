@@ -254,7 +254,7 @@ export default function SessionDetailScreen() {
 
           {/* ── Botón Escuchar / Split Reiniciar+Continuar ───────────── */}
           {hasProgress ? (
-            <View style={[styles.splitBtnRow, { marginBottom: 16 }]}>
+            <View style={[styles.splitBtnRow, { marginBottom: 26 }]}>
               {/* Reiniciar */}
               <Pressable
                 onPress={handlePlayFromStart}
@@ -297,7 +297,7 @@ export default function SessionDetailScreen() {
               onPress={handlePlay}
               style={({ pressed }) => [
                 styles.playBtn,
-                { overflow: "hidden", opacity: pressed ? 0.88 : 1, marginBottom: 16 },
+                { overflow: "hidden", opacity: pressed ? 0.88 : 1, marginBottom: 26 },
               ]}
             >
               <LinearGradient
@@ -500,7 +500,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
     color: "rgba(255,255,255,0.55)",
-    marginTop: 33,
+    marginTop: 29,
   },
   authorNameInline: {
     fontSize: 14,
@@ -727,7 +727,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
-    marginTop: -6,
+    marginTop: 9,
     marginBottom: 4,
   },
   playsText: {
