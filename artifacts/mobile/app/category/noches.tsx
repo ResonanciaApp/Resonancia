@@ -455,7 +455,7 @@ export default function NochesScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#160108" },
+  root: { flex: 1, backgroundColor: "#1C020A" },
   scroll: { flex: 1 },
 
   header: { alignItems: "center", marginBottom: 28, paddingTop: 4 },

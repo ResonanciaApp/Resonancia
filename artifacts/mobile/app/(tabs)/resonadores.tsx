@@ -464,7 +464,7 @@ export default function ResonadoresScreen() {
     <View style={styles.root}>
       <Image
         source={EQUIPO_BG}
-        style={[StyleSheet.absoluteFill, { backgroundColor: "#160108" }]}
+        style={[StyleSheet.absoluteFill, { backgroundColor: "#1C020A" }]}
         contentFit="cover"
         cachePolicy="memory-disk"
         transition={200}

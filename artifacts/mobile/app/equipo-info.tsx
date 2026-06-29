@@ -95,7 +95,7 @@ function RoleCard({ role, delay }: { role: RoleData; delay: number }) {
       <View style={styles.bannerWrap}>
         <Image source={role.banner} style={StyleSheet.absoluteFill} contentFit="cover" />
         <LinearGradient
-          colors={["transparent", "rgba(22,1,8,0.35)", "#160108"]}
+          colors={["transparent", "rgba(22,1,8,0.35)", "#1C020A"]}
           locations={[0, 0.55, 1]}
           style={StyleSheet.absoluteFill}
         />
@@ -181,7 +181,7 @@ export default function EquipoInfoScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#160108" },
+  root: { flex: 1, backgroundColor: "#1C020A" },
   header: {
     paddingHorizontal: H_PAD,
     paddingBottom: 10,

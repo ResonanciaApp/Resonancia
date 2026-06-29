@@ -32,7 +32,7 @@ export default function ExpansorScreen() {
 
   if (!expansor) {
     return (
-      <View style={[styles.root, { backgroundColor: "#160108" }]}>
+      <View style={[styles.root, { backgroundColor: "#1C020A" }]}>
         <StatusBar barStyle="light-content" />
         <LinearGradient colors={["#1C020A", "#1C020A"]} style={StyleSheet.absoluteFill} />
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>

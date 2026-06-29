@@ -48,7 +48,7 @@ import { PlaylistActionsSheet } from "@/components/PlaylistActionsSheet";
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
 const GOLD = "#D4AF37";
-const NAVY = "#160108";
+const NAVY = "#1C020A";
 const DARK_BLUE = "#1C020A";
 const TEXT = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
@@ -615,7 +615,7 @@ function GeometrixRow({ creation, onPress }: { creation: GeometrixCreation; onPr
       {/* Miniatura: cuadrado oscuro con las primeras capas superpuestas */}
       <View style={styles.geoThumb}>
         <LinearGradient
-          colors={["#1C020A", "#160108"]}
+          colors={["#1C020A", "#1C020A"]}
           style={StyleSheet.absoluteFill}
         />
         {firstLayers.map((instId, idx) => {
@@ -1266,7 +1266,7 @@ export default function BibliotecaScreen() {
   return (
     <LinearGradient
       style={styles.root}
-      colors={["#24030D", "#1C020A", "#160108"]}
+      colors={["#24030D", "#1C020A", "#1C020A"]}
       locations={[0, 0.5, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
@@ -1754,7 +1754,7 @@ const styles = StyleSheet.create({
   cancelText: { color: GOLD, fontSize: 14, fontWeight: "600" },
   searchEmpty: {
     flex: 1,
-    backgroundColor: "#160108",
+    backgroundColor: "#1C020A",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 32,

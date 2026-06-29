@@ -214,7 +214,7 @@ export default function InmersivoScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#160108" },
+  root: { flex: 1, backgroundColor: "#1C020A" },
 
   header: {
     flexDirection: "row",

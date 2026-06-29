@@ -83,7 +83,7 @@ export default function AncestralInfoScreen() {
         <View style={styles.banner}>
           <Image source={item.image} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" />
           <LinearGradient
-            colors={["transparent", "rgba(22,1,8,0.50)", "#160108"]}
+            colors={["transparent", "rgba(22,1,8,0.50)", "#1C020A"]}
             locations={[0.40, 0.75, 1]}
             style={StyleSheet.absoluteFill}
           />
@@ -111,7 +111,7 @@ export default function AncestralInfoScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#160108" },
+  root: { flex: 1, backgroundColor: "#1C020A" },
 
   stickyHeader: {
     flexDirection: "row", alignItems: "center", justifyContent: "space-between",

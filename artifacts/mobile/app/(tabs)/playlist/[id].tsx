@@ -597,7 +597,7 @@ function RecommendedRow({ session, onAdd }: { session: Session; onAdd: () => voi
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#160108" },
+  root: { flex: 1, backgroundColor: "#1C020A" },
 
   header: {
     flexDirection: "row",
@@ -843,7 +843,7 @@ const modalStyles = StyleSheet.create({
     borderTopRightRadius: 22,
     paddingHorizontal: 20,
     overflow: "hidden",
-    backgroundColor: "#160108",
+    backgroundColor: "#1C020A",
   },
   handle: {
     alignSelf: "center",
@@ -974,7 +974,7 @@ const cpStyles = StyleSheet.create({
     right: 8,
     bottom: 8,
     borderRadius: 14,
-    backgroundColor: "#160108",
+    backgroundColor: "#1C020A",
     opacity: 0.45,
   },
   swatchSelected: {
