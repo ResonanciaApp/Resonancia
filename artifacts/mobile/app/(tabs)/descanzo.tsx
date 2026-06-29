@@ -205,6 +205,29 @@ export default function DescansoScreen() {
           })}
         </View>
 
+        {/* ── Banner Prepara tu noche ── */}
+        <Pressable
+          style={({ pressed }) => [styles.nightBannerWrap, pressed && { opacity: 0.82 }]}
+          onPress={() => {}}
+        >
+          <BlurView intensity={55} tint="dark" style={styles.nightBanner}>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(27,9,36,0.72)", borderRadius: 14 }]} />
+            {/* Icono luna */}
+            <View style={styles.nightBannerIconWrap}>
+              <BlurView intensity={40} tint="light" style={StyleSheet.absoluteFill} />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.55)", borderRadius: 40 }]} />
+              <Ionicons name="moon" size={22} color="#C4A8F5" />
+            </View>
+            {/* Texto */}
+            <View style={{ flex: 1 }}>
+              <Text style={styles.nightBannerTitle}>Prepara tu noche</Text>
+              <Text style={styles.nightBannerSub}>{"Crea el ambiente perfecto\npara un descanso profundo."}</Text>
+            </View>
+            {/* Chevron */}
+            <Feather name="chevron-right" size={18} color="rgba(255,255,255,0.6)" />
+          </BlurView>
+        </Pressable>
+
       </ScrollView>
     </View>
   );
@@ -213,6 +236,44 @@ export default function DescansoScreen() {
 const styles = StyleSheet.create({
   root:   { flex: 1 },
   scroll: { flex: 1 },
+
+  /* Banner Prepara tu noche */
+  nightBannerWrap: {
+    marginHorizontal: H_PAD,
+    marginTop: 10,
+    marginBottom: 24,
+    borderRadius: 14,
+    overflow: "hidden",
+  },
+  nightBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "rgba(64,25,80,0.6)",
+  },
+  nightBannerIconWrap: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  nightBannerTitle: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "rgba(255,255,255,0.9)",
+    marginBottom: 3,
+  },
+  nightBannerSub: {
+    fontSize: 12,
+    lineHeight: 17,
+    color: "rgba(255,255,255,0.5)",
+  },
 
   /* Sleep tabs */
   tabGrid: {
