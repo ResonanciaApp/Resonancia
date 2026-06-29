@@ -7,11 +7,13 @@ import {
   Animated,
   Dimensions,
   Image,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
+  Switch,
   Text,
   View,
 } from "react-native";
@@ -151,6 +153,105 @@ function NightSky() {
   );
 }
 
+/* ─── Constantes del sheet ───────────────────────────────────────────── */
+const TIMER_OPTIONS = [15, 30, 45, 60, 90] as const;
+const SHEET_BG = "#210432";
+
+/* ─── NightTimerSheet ────────────────────────────────────────────────── */
+interface NightTimerSheetProps {
+  visible: boolean;
+  onClose: () => void;
+}
+
+function NightTimerSheet({ visible, onClose }: NightTimerSheetProps) {
+  const insets       = useSafeAreaInsets();
+  const slideY       = useRef(new Animated.Value(500)).current;
+  const backdropOp   = useRef(new Animated.Value(0)).current;
+  const [rendered,   setRendered]   = useState(false);
+  const [timerMin,   setTimerMin]   = useState<number>(30);
+  const [fadeVol,    setFadeVol]    = useState(false);
+
+  useEffect(() => {
+    if (visible) {
+      setRendered(true);
+      slideY.setValue(500);
+      backdropOp.setValue(0);
+      Animated.parallel([
+        Animated.timing(slideY,     { toValue: 0,   duration: 320, useNativeDriver: true }),
+        Animated.timing(backdropOp, { toValue: 1,   duration: 280, useNativeDriver: true }),
+      ]).start();
+    } else if (rendered) {
+      Animated.parallel([
+        Animated.timing(slideY,     { toValue: 500, duration: 260, useNativeDriver: true }),
+        Animated.timing(backdropOp, { toValue: 0,   duration: 220, useNativeDriver: true }),
+      ]).start(() => setRendered(false));
+    }
+  }, [visible]);
+
+  if (!rendered) return null;
+
+  return (
+    <Modal transparent animationType="none" visible statusBarTranslucent onRequestClose={onClose}>
+      {/* Backdrop */}
+      <Animated.View
+        style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)", opacity: backdropOp }]}
+      >
+        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+      </Animated.View>
+
+      {/* Sheet */}
+      <Animated.View
+        style={[
+          styles.sheet,
+          { paddingBottom: 28 + insets.bottom, transform: [{ translateY: slideY }] },
+        ]}
+      >
+        {/* Handle */}
+        <View style={styles.sheetHandle} />
+
+        {/* Título */}
+        <View style={styles.sheetHeader}>
+          <Ionicons name="moon" size={20} color="#C4A8F5" />
+          <Text style={styles.sheetTitle}>Prepara tu noche</Text>
+        </View>
+
+        {/* ── Temporizador ── */}
+        <Text style={styles.sheetLabel}>Temporizador</Text>
+        <View style={styles.timerRow}>
+          {TIMER_OPTIONS.map((min) => {
+            const sel = timerMin === min;
+            return (
+              <Pressable
+                key={min}
+                onPress={() => setTimerMin(min)}
+                style={[styles.timerChip, sel && styles.timerChipSel]}
+              >
+                <Text style={[styles.timerChipText, sel && styles.timerChipTextSel]}>
+                  {min} min
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
+        {/* ── Desvanecer volumen ── */}
+        <View style={styles.fadeRow}>
+          <View style={{ flex: 1, gap: 3 }}>
+            <Text style={styles.fadeTitle}>Desvanecer volumen</Text>
+            <Text style={styles.fadeSub}>El sonido baja gradualmente hasta silenciarse</Text>
+          </View>
+          <Switch
+            value={fadeVol}
+            onValueChange={setFadeVol}
+            trackColor={{ false: "rgba(255,255,255,0.12)", true: "#7B4FCE" }}
+            thumbColor={fadeVol ? "#C4A8F5" : "rgba(255,255,255,0.6)"}
+          />
+        </View>
+      </Animated.View>
+    </Modal>
+  );
+}
+
 /* ─── Pantalla ──────────────────────────────────────────────────────── */
 export default function DescansoScreen() {
   const colors    = useColors();
@@ -159,8 +260,9 @@ export default function DescansoScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const router    = useRouter();
 
-  const [activeTab, setActiveTab]       = useState<SleepTabId>("todos");
+  const [activeTab, setActiveTab]         = useState<SleepTabId>("todos");
   const [selectedSound, setSelectedSound] = useState<string | null>(null);
+  const [timerSheet, setTimerSheet]       = useState(false);
 
   const visibleSounds = activeTab === "todos"
     ? DESCANSO_SOUNDS
@@ -219,7 +321,7 @@ export default function DescansoScreen() {
         {/* ── Banner Prepara tu noche ── */}
         <Pressable
           style={({ pressed }) => [styles.nightBannerWrap, pressed && { opacity: 0.82 }]}
-          onPress={() => {}}
+          onPress={() => setTimerSheet(true)}
         >
           <View style={styles.nightBanner}>
             {/* Icono luna */}
@@ -263,6 +365,8 @@ export default function DescansoScreen() {
         </View>
 
       </ScrollView>
+
+      <NightTimerSheet visible={timerSheet} onClose={() => setTimerSheet(false)} />
     </View>
   );
 }
@@ -270,6 +374,92 @@ export default function DescansoScreen() {
 const styles = StyleSheet.create({
   root:   { flex: 1 },
   scroll: { flex: 1 },
+
+  /* NightTimerSheet */
+  sheet: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: SHEET_BG,
+    borderTopLeftRadius: 22,
+    borderTopRightRadius: 22,
+    paddingTop: 12,
+    paddingHorizontal: 24,
+  },
+  sheetHandle: {
+    alignSelf: "center",
+    width: 38,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "rgba(255,255,255,0.18)",
+    marginBottom: 20,
+  },
+  sheetHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 28,
+  },
+  sheetTitle: {
+    fontSize: 17,
+    fontWeight: "700",
+    color: "rgba(255,255,255,0.92)",
+  },
+  sheetLabel: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "rgba(255,255,255,0.45)",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    marginBottom: 12,
+  },
+  timerRow: {
+    flexDirection: "row",
+    gap: 8,
+    marginBottom: 28,
+  },
+  timerChip: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 10,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    alignItems: "center",
+  },
+  timerChipSel: {
+    backgroundColor: "rgba(196,168,245,0.15)",
+    borderColor: "rgba(196,168,245,0.5)",
+  },
+  timerChipText: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.45)",
+    fontWeight: "500",
+  },
+  timerChipTextSel: {
+    color: "#C4A8F5",
+    fontWeight: "700",
+  },
+  fadeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+    paddingVertical: 16,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255,255,255,0.06)",
+  },
+  fadeTitle: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "rgba(255,255,255,0.88)",
+    marginBottom: 2,
+  },
+  fadeSub: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.4)",
+    lineHeight: 16,
+  },
 
   /* Sound grid */
   soundGrid: {
