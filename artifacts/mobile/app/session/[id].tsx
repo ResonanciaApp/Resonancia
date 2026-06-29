@@ -1,4 +1,6 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, FontAwesome } from "@expo/vector-icons";
+import { captureRef } from "react-native-view-shot";
+import * as Sharing from "expo-sharing";
 import MaskedView from "@react-native-masked-view/masked-view";
 import Svg, { Path } from "react-native-svg";
 import * as Haptics from "expo-haptics";
@@ -134,6 +136,7 @@ export default function SessionDetailScreen() {
   const [ratingReview, setRatingReview] = useState("");
   const [ratingSubmitted, setRatingSubmitted] = useState(false);
   const finishTriggeredRef = useRef(false);
+  const storyCardRef = useRef<View>(null);
 
   // Carga rating previo al entrar
   useEffect(() => {
@@ -238,6 +241,22 @@ export default function SessionDetailScreen() {
     });
   };
 
+  const handleInstagramShare = async () => {
+    try {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      const uri = await captureRef(storyCardRef, { format: "png", quality: 1 });
+      const available = await Sharing.isAvailableAsync();
+      if (!available) return;
+      await Sharing.shareAsync(uri, {
+        mimeType: "image/png",
+        dialogTitle: "Compartir en Instagram Stories",
+        UTI: "public.png",
+      });
+    } catch {
+      // silently ignore
+    }
+  };
+
   const handleFav = () => {
     const next = !fav;
     setLocalFav(next);
@@ -308,6 +327,9 @@ export default function SessionDetailScreen() {
             <View style={styles.titleActions}>
               <Pressable onPress={() => setActionsSheetOpen(true)} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
                 <Feather name="more-horizontal" size={22} color="#FFFFFF" />
+              </Pressable>
+              <Pressable onPress={handleInstagramShare} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+                <FontAwesome name="instagram" size={22} color="#FFFFFF" />
               </Pressable>
               <Pressable onPress={handleFav} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
                 <Feather name="heart" size={22} color={fav ? "#D4AF37" : "#FFFFFF"} />
@@ -739,6 +761,41 @@ export default function SessionDetailScreen() {
           </View>
         </View>
       </Modal>
+
+      {/* ── Story card off-screen para Instagram Stories ─────────────────── */}
+      <View
+        ref={storyCardRef}
+        style={{ position: "absolute", left: -2000, top: 0, width: 390, height: 693, overflow: "hidden", backgroundColor: "#1B060F" }}
+        pointerEvents="none"
+      >
+        <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" />
+        <LinearGradient
+          colors={["rgba(27,6,15,0.25)", "rgba(27,6,15,0.55)", "rgba(27,6,15,0.95)"]}
+          locations={[0, 0.45, 1]}
+          style={StyleSheet.absoluteFill}
+        />
+        {/* Branding top */}
+        <View style={{ position: "absolute", top: 64, left: 0, right: 0, alignItems: "center" }}>
+          <Text style={{ color: "#D4AF37", fontSize: 11, letterSpacing: 5, fontWeight: "700" }}>RESONANCIA</Text>
+          <Text style={{ color: "rgba(244,218,213,0.55)", fontSize: 10, letterSpacing: 2, marginTop: 3 }}>Casa del Cuenco</Text>
+        </View>
+        {/* Session info center */}
+        <View style={{ position: "absolute", bottom: 190, left: 36, right: 36 }}>
+          <Text style={{ color: "#D4AF37", fontSize: 11, letterSpacing: 2, textAlign: "center", marginBottom: 12, textTransform: "uppercase" }}>
+            {session.categoryLabel}
+          </Text>
+          <Text style={{ color: "#FAF0EE", fontSize: 26, fontWeight: "700", lineHeight: 34, textAlign: "center" }}>
+            {session.title}
+          </Text>
+          <Text style={{ color: "rgba(212,175,55,0.7)", fontSize: 12, textAlign: "center", marginTop: 10, letterSpacing: 1 }}>
+            {session.durationLabel}
+          </Text>
+        </View>
+        {/* CTA bottom */}
+        <View style={{ position: "absolute", bottom: 80, left: 0, right: 0, alignItems: "center" }}>
+          <Text style={{ color: "rgba(244,218,213,0.6)", fontSize: 11, letterSpacing: 1.5 }}>Escucha en RESONANCIA</Text>
+        </View>
+      </View>
 
     </View>
   );
