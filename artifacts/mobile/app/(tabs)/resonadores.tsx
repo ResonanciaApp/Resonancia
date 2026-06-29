@@ -843,6 +843,8 @@ const styles = StyleSheet.create({
   card: {
     alignItems: "center",
     paddingVertical: 8,
+    backgroundColor: "rgba(255,255,255,0.03)",
+    borderRadius: 14,
   },
   photoOuter: {
     alignItems: "center",
