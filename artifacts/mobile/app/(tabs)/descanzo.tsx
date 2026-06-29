@@ -179,11 +179,7 @@ export default function DescansoScreen() {
         </View>
 
         {/* ── Tabs de modo ── */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.tabGrid}
-        >
+        <View style={styles.tabGrid}>
           {SLEEP_TABS.map((tab) => {
             const sel = activeTab === tab.id;
             return (
@@ -199,15 +195,13 @@ export default function DescansoScreen() {
                   style={[styles.tabGradient, sel && styles.tabGradientSel]}
                 >
                   <Text style={[styles.tabEmoji, { opacity: sel ? 1 : 0.45 }]}>{tab.emoji}</Text>
-                  <View>
-                    <Text style={[styles.tabLine, { color: sel ? TAB_TEXT_SEL : TAB_TEXT_UNSEL }]}>{tab.line1}</Text>
-                    <Text style={[styles.tabLine, { color: sel ? TAB_TEXT_SEL : TAB_TEXT_UNSEL }]}>{tab.line2}</Text>
-                  </View>
+                  <Text style={[styles.tabLine, { color: sel ? TAB_TEXT_SEL : TAB_TEXT_UNSEL }]}>{tab.line1}</Text>
+                  <Text style={[styles.tabLine, { color: sel ? TAB_TEXT_SEL : TAB_TEXT_UNSEL }]}>{tab.line2}</Text>
                 </LinearGradient>
               </Pressable>
             );
           })}
-        </ScrollView>
+        </View>
 
         {/* ── Banner Prepara tu noche ── */}
         <Pressable
@@ -283,20 +277,23 @@ const styles = StyleSheet.create({
   tabGrid: {
     flexDirection: "row",
     paddingHorizontal: H_PAD,
-    gap: 10,
+    gap: 8,
     marginBottom: 16,
   },
   tabCell: {
-    width: 148,
+    flex: 1,
+    aspectRatio: 1,
     borderRadius: 14,
     overflow: "hidden",
   },
   tabGradient: {
-    flexDirection: "row",
+    flex: 1,
+    flexDirection: "column",
     alignItems: "center",
-    gap: 10,
-    paddingVertical: 16,
-    paddingHorizontal: 14,
+    justifyContent: "center",
+    gap: 4,
+    paddingVertical: 12,
+    paddingHorizontal: 6,
     borderRadius: 14,
     borderWidth: 1,
     borderColor: "transparent",
