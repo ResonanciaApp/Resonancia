@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     paddingHorizontal: H_PAD,
     gap: 10,
-    marginTop: 18,
+    marginTop: 3,
     marginBottom: 6,
   },
   soundCell: {
