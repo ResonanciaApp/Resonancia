@@ -14,6 +14,8 @@ export type Artist = {
   /** Bio / descripción del artista */
   bio: string;
   country: string;
+  /** Ciudad de origen / residencia, ej: "Ciudad de México" */
+  city?: string;
   /** Género o estilo musical, ej: "Ambient · Frecuencias" */
   genre: string;
   /** Rol principal: "Productor" | "Músico" | "Voz guía" */
@@ -36,6 +38,7 @@ export const ARTISTS: Artist[] = [
     photo: require("@/assets/images/avatar-fundador.png"),
     bio: "El sello de la casa. Composiciones y paisajes sonoros creados por el equipo de Resonancia para acompañar tu meditación, tu descanso y tu día.",
     country: "Chile",
+    city: "Santiago",
     genre: "Ambient · Frecuencias · Cuencos",
     certified: true,
     featured: false,
@@ -46,6 +49,7 @@ export const ARTISTS: Artist[] = [
     photo: require("@/assets/images/artists/lumen-sonora.png"),
     bio: "Productora de música ambient y paisajes sonoros meditativos. Su trabajo entreteje sintetizadores cálidos con instrumentos acústicos para crear atmósferas que invitan a la quietud.",
     country: "México",
+    city: "Ciudad de México",
     genre: "Ambient · Meditativa",
     links: [
       { label: "Instagram", url: "https://instagram.com" },
@@ -60,6 +64,7 @@ export const ARTISTS: Artist[] = [
     photo: require("@/assets/images/artists/raiz-profunda.png"),
     bio: "Dúo de productores dedicados a la música enteógena y ceremonial. Sus composiciones acompañan procesos de introspección profunda con texturas orgánicas y vibraciones ancestrales.",
     country: "Colombia",
+    city: "Medellín",
     genre: "Enteógena · Ceremonial",
     links: [{ label: "YouTube", url: "https://youtube.com" }],
     certified: true,
@@ -71,6 +76,7 @@ export const ARTISTS: Artist[] = [
     photo: require("@/assets/images/artists/luna-cosmica.png"),
     bio: "Artista sonora andina especializada en frecuencias binaurales y cantos curativos. Sus composiciones combinan voces ancestrales con capas electrónicas para inducir estados meditativos profundos.",
     country: "Perú",
+    city: "Cusco",
     genre: "Binaural · Cantos Ancestrales",
     links: [{ label: "Instagram", url: "https://instagram.com" }],
     certified: true,
@@ -82,6 +88,7 @@ export const ARTISTS: Artist[] = [
     photo: require("@/assets/images/artists/arbol-sagrado.png"),
     bio: "Músico y sanador chamánico colombiano. Integra cuencos de cuarzo, tambores rituales y cantos de tradición indígena en ceremonias sonoras que abren caminos hacia el interior.",
     country: "Colombia",
+    city: "Bogotá",
     genre: "Chamánico · Ceremonial",
     links: [{ label: "YouTube", url: "https://youtube.com" }],
     certified: true,
@@ -93,6 +100,7 @@ export const ARTISTS: Artist[] = [
     photo: require("@/assets/images/artists/vuelo-del-condor.png"),
     bio: "Músico peruano con raíces en la tradición andina. Funde quenas, zampoñas y sikus con capas ambientales modernas para crear viajes sonoros entre la tierra y el cielo.",
     country: "Perú",
+    city: "Lima",
     genre: "Andino · Meditativo",
     certified: true,
     featured: true,
@@ -103,6 +111,7 @@ export const ARTISTS: Artist[] = [
     photo: require("@/assets/images/artists/kai-amara.png"),
     bio: "Artista de meditación electrónica y terapia de cristales. Diseña paisajes sonoros con síntesis modular, cuencos de cuarzo y frecuencias reparadoras para la activación energética.",
     country: "México",
+    city: "Guadalajara",
     genre: "Electrónica Meditativa · Cristales",
     links: [{ label: "Instagram", url: "https://instagram.com" }],
     certified: false,
@@ -114,6 +123,7 @@ export const ARTISTS: Artist[] = [
     photo: require("@/assets/images/artists/misterio-verde.png"),
     bio: "Grabadora de sonidos de la naturaleza y compositora ambient. Sus paisajes sonoros traen la selva, el río y el viento directamente a tu meditación, creando espacios de reconexión profunda.",
     country: "México",
+    city: "Oaxaca",
     genre: "Sonidos Naturales · Ambient",
     certified: true,
     featured: true,
@@ -124,6 +134,7 @@ export const ARTISTS: Artist[] = [
     photo: require("@/assets/images/artists/pulso-de-tierra.png"),
     bio: "Percusionista y sanador sonoro boliviano. Sus composiciones de percusión ancestral e instrumentos del altiplano conectan con los ritmos primordiales de la tierra y el fuego.",
     country: "Bolivia",
+    city: "La Paz",
     genre: "Percusión Ancestral · Ritual",
     links: [{ label: "YouTube", url: "https://youtube.com" }],
     certified: true,
@@ -135,6 +146,7 @@ export const ARTISTS: Artist[] = [
     photo: require("@/assets/images/artists/flor-de-quartz.png"),
     bio: "Artista ceremonial chilena que trabaja con cuencos de cuarzo y cristales sonoros. Sus baños de sonido crean portales de transformación personal a través de la vibración pura.",
     country: "Chile",
+    city: "Valparaíso",
     genre: "Cuarzo · Ceremonial",
     links: [{ label: "Instagram", url: "https://instagram.com" }],
     certified: true,

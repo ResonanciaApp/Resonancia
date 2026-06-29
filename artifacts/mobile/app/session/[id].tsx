@@ -247,11 +247,6 @@ export default function SessionDetailScreen() {
 
   // ── Autores de la sesión ─────────────────────────────────────────────────────
   // guideIds (array) tiene prioridad; sino guideId; sino Casa del Cuenco
-  const COUNTRY_FLAG: Record<string, string> = {
-    "Argentina": "🇦🇷", "Colombia": "🇨🇴", "México": "🇲🇽", "España": "🇪🇸",
-    "Perú": "🇵🇪", "Chile": "🇨🇱", "Venezuela": "🇻🇪", "Uruguay": "🇺🇾",
-    "Bolivia": "🇧🇴", "Ecuador": "🇪🇨", "Latinoamérica": "🌎",
-  };
   const resolvedIds: string[] = session.guideIds?.length
     ? session.guideIds
     : isGuiada && session.guideId
@@ -260,12 +255,12 @@ export default function SessionDetailScreen() {
   const authors = resolvedIds.length
     ? resolvedIds.map((gid) => getGuide(gid)).map((g) => ({
         name: g.name, firstName: g.name.split(" ")[0],
-        photo: g.photo, country: g.country, flag: COUNTRY_FLAG[g.country] ?? "🌎",
+        photo: g.photo, country: g.country, city: g.city,
         bio: g.bio, profilePath: `/guiador/${g.id}`,
       }))
     : [getGuide(undefined)].map((g) => ({
         name: g.name, firstName: g.name.split(" ")[0],
-        photo: g.photo, country: g.country, flag: COUNTRY_FLAG[g.country] ?? "🌎",
+        photo: g.photo, country: g.country, city: g.city,
         bio: g.bio, profilePath: `/guiador/${g.id}`,
       }));
 
@@ -478,9 +473,9 @@ export default function SessionDetailScreen() {
                   transition={IMAGE_TRANSITION}
                 />
                 <Text style={[styles.authorName, { color: colors.foreground }]}>{a.name}</Text>
-                {!!a.country && (
+                {!!(a.city || a.country) && (
                   <Text style={styles.authorCountry}>
-                    {a.flag}{"  "}{a.country}
+                    {[a.city, a.country].filter(Boolean).join(", ")}
                   </Text>
                 )}
                 {!!a.bio && (

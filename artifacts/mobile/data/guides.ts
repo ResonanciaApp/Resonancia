@@ -14,6 +14,8 @@ export type Guide = {
   /** Bio / descripción del guiador */
   bio: string;
   country: string;
+  /** Ciudad de origen / residencia, ej: "Buenos Aires" */
+  city?: string;
   /** Especialidad o estilo, ej: "Meditación · Mindfulness" */
   specialty: string;
   /** Redes sociales / links (opcional) */
@@ -34,6 +36,7 @@ export const GUIDES: Guide[] = [
     photo: require("@/assets/images/avatar-fundador.png"),
     bio: "La voz de la casa. Meditaciones guiadas creadas por el equipo de Resonancia para acompañarte paso a paso, sin necesidad de experiencia previa.",
     country: "Chile",
+    city: "Santiago",
     specialty: "Meditación · Mindfulness",
     certified: true,
     featured: false,
@@ -45,6 +48,7 @@ export const GUIDES: Guide[] = [
     photo: require("@/assets/images/meditation-person.png"),
     bio: "Guía de meditación y facilitadora de mindfulness. Su voz cálida acompaña procesos de calma, presencia y reconexión con el cuerpo a través de visualizaciones suaves.",
     country: "Argentina",
+    city: "Buenos Aires",
     specialty: "Visualización · Presencia",
     links: [
       { label: "Instagram", url: "https://instagram.com" },
@@ -59,6 +63,7 @@ export const GUIDES: Guide[] = [
     photo: require("@/assets/images/meditation-person.png"),
     bio: "Instructor de respiración consciente y escaneo corporal. Sus meditaciones guían hacia la quietud profunda combinando atención plena y trabajo con el aliento.",
     country: "México",
+    city: "Ciudad de México",
     specialty: "Respiración · Escaneo Corporal",
     links: [{ label: "YouTube", url: "https://youtube.com" }],
     certified: true,
