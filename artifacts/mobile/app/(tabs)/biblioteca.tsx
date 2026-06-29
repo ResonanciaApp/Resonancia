@@ -1279,9 +1279,9 @@ export default function BibliotecaScreen() {
           paddingTop: topPad + 2,
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.55,
+          shadowOpacity: 0.38,
           shadowRadius: 4,
-          elevation: 10,
+          elevation: 8,
         }]}
       >
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "#1C020A" }]} />
