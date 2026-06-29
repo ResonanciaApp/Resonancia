@@ -566,7 +566,7 @@ const styles = StyleSheet.create({
   tagChipText: { fontSize: 12, fontWeight: "600", letterSpacing: 0.2 },
 
   // Author section
-  authorSection: { marginTop: 16, marginBottom: 28 },
+  authorSection: { marginTop: 23, marginBottom: 28 },
   authorHeaderRow: {
     flexDirection: "row",
     alignItems: "center",
