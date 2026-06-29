@@ -210,8 +210,8 @@ export default function DescansoScreen() {
           style={({ pressed }) => [styles.nightBannerWrap, pressed && { opacity: 0.82 }]}
           onPress={() => {}}
         >
-          <BlurView intensity={90} tint="dark" style={styles.nightBanner}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)", borderRadius: 14 }]} />
+          <BlurView intensity={50} tint="dark" style={styles.nightBanner}>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.12)", borderRadius: 14 }]} />
             {/* Icono luna */}
             <View style={styles.nightBannerIconWrap}>
               <BlurView intensity={40} tint="light" style={StyleSheet.absoluteFill} />
