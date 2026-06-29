@@ -248,18 +248,16 @@ export default function SessionDetailScreen() {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       const uri = await captureRef(storyCardRef, { format: "png", quality: 1 });
 
-      const igUrl = "instagram-stories://share";
-      const igInstalled = await Linking.canOpenURL(igUrl);
+      // Guardar en galería siempre
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status === "granted") {
+        await MediaLibrary.saveToLibraryAsync(uri);
+      }
 
-      if (igInstalled) {
-        // Guardar en cámara + abrir Instagram Stories directamente
-        const { status } = await MediaLibrary.requestPermissionsAsync();
-        if (status === "granted") {
-          await MediaLibrary.saveToLibraryAsync(uri);
-        }
-        await Linking.openURL(igUrl);
-      } else {
-        // Fallback: share sheet del sistema
+      // Intentar abrir Instagram Stories directamente; si falla → share sheet
+      try {
+        await Linking.openURL("instagram-stories://share");
+      } catch {
         const available = await Sharing.isAvailableAsync();
         if (available) {
           await Sharing.shareAsync(uri, {
@@ -270,7 +268,7 @@ export default function SessionDetailScreen() {
         }
       }
     } catch {
-      // silently ignore
+      // captureRef u otro error inesperado
     }
   };
 
@@ -779,10 +777,10 @@ export default function SessionDetailScreen() {
         </View>
       </Modal>
 
-      {/* ── Story card off-screen para Instagram Stories ─────────────────── */}
+      {/* ── Story card invisible (opacity 0) para Instagram Stories ────────── */}
       <View
         ref={storyCardRef}
-        style={{ position: "absolute", left: -2000, top: 0, width: 390, height: 693, overflow: "hidden", backgroundColor: "#1B060F" }}
+        style={{ position: "absolute", left: 0, top: 0, width: 390, height: 693, overflow: "hidden", backgroundColor: "#1B060F", opacity: 0 }}
         pointerEvents="none"
       >
         <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" />
