@@ -32,8 +32,8 @@ const SLEEP_TABS = [
 
 type SleepTabId = typeof SLEEP_TABS[number]["id"] | "todos";
 
-const TAB_UNSEL_COLORS: [string, string] = ["rgba(27,9,36,0.5)", "rgba(15,5,20,0.5)"];
-const TAB_SEL_COLORS:   [string, string] = ["rgba(45,18,64,0.5)", "rgba(26,8,40,0.5)"];
+const TAB_UNSEL_COLORS: [string, string] = ["rgba(18,4,24,0.75)", "rgba(8,2,12,0.75)"];
+const TAB_SEL_COLORS:   [string, string] = ["rgba(35,10,50,0.75)", "rgba(18,4,28,0.75)"];
 const TAB_BORDER_SEL  = "#401950";
 const TAB_TEXT_SEL    = "#E8D4FF";
 const TAB_TEXT_UNSEL  = "rgba(232,212,255,0.45)";
