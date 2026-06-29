@@ -163,27 +163,6 @@ export default function DescansoScreen() {
           </Text>
         </View>
 
-        {/* ── Banner Mezclador ── */}
-        <Pressable
-          style={({ pressed }) => [styles.bannerWrap, { marginTop: 25 }, pressed && { opacity: 0.82 }]}
-          onPress={() => router.push("/escenas-mixer" as never)}
-        >
-          <BlurView intensity={55} tint="dark" style={styles.banner}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(80,40,100,0.18)", borderRadius: 16 }]} />
-            <View style={styles.bannerIconWrap}>
-              <Ionicons name="moon" size={22} color="#C4A8F5" />
-            </View>
-            <View style={styles.bannerText}>
-              <Text style={[styles.bannerTitle, { color: colors.foreground }]}>
-                Mezclador para dormir
-              </Text>
-              <Text style={[styles.bannerSub, { color: colors.mutedForeground }]}>
-                Crea tu propia mezcla de sonidos
-              </Text>
-            </View>
-            <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
-          </BlurView>
-        </Pressable>
       </ScrollView>
     </View>
   );
