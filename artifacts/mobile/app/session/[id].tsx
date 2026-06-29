@@ -727,11 +727,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
-    marginTop: 9,
+    marginTop: 3,
     marginBottom: 4,
   },
   playsText: {
     fontSize: 13,
-    color: "rgba(255,255,255,0.45)",
+    color: "#D4AF37",
   },
 });
