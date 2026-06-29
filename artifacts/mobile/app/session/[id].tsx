@@ -465,32 +465,28 @@ export default function SessionDetailScreen() {
 
             {/* Cards */}
             {authors.map((a) => (
-              <View key={a.profilePath} style={styles.authorCard}>
-                <View style={styles.authorRow}>
-                  <Image
-                    source={a.photo as never}
-                    style={styles.authorAvatar}
-                    contentFit="cover"
-                    placeholder={BLUR_PLACEHOLDER}
-                    transition={IMAGE_TRANSITION}
-                  />
-                  <View style={styles.authorMeta}>
-                    <Text style={[styles.authorName, { color: colors.foreground }]}>{a.name}</Text>
-                    <Text style={[styles.authorCountry, { color: "rgba(255,255,255,0.9)" }]}>
-                      {a.flag}{"  "}{a.country}
-                    </Text>
-                    <Text style={[styles.authorBio, { color: "rgba(255,255,255,0.75)" }]} numberOfLines={3}>
-                      {a.bio}
-                    </Text>
-                  </View>
-                </View>
-                <Pressable
-                  onPress={() => router.push(a.profilePath as never)}
-                  style={({ pressed }) => ({ opacity: pressed ? 0.65 : 1, marginTop: 10, marginLeft: 86 })}
-                >
-                  <Text style={styles.allContentsBtnText}>Ver todos los contenidos</Text>
-                </Pressable>
-              </View>
+              <Pressable
+                key={a.profilePath}
+                onPress={() => router.push(a.profilePath as never)}
+                style={({ pressed }) => [styles.authorCard, { opacity: pressed ? 0.9 : 1 }]}
+              >
+                <Image
+                  source={a.photo as never}
+                  style={styles.authorBigPhoto}
+                  contentFit="cover"
+                  placeholder={BLUR_PLACEHOLDER}
+                  transition={IMAGE_TRANSITION}
+                />
+                <Text style={[styles.authorName, { color: colors.foreground }]}>{a.name}</Text>
+                {!!a.country && (
+                  <Text style={styles.authorCountry}>
+                    {a.flag}{"  "}{a.country}
+                  </Text>
+                )}
+                {!!a.bio && (
+                  <Text style={styles.authorBio} numberOfLines={4}>{a.bio}</Text>
+                )}
+              </Pressable>
             ))}
           </View>
 
@@ -854,22 +850,17 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   authorCard: {
-    paddingVertical: 12,
-    paddingHorizontal: 4,
-    marginBottom: 8,
+    marginBottom: 16,
   },
-  authorRow: { flexDirection: "row", alignItems: "center", gap: 14 },
-  authorAvatar: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    borderWidth: 2,
-    borderColor: "rgba(212,175,55,0.30)",
+  authorBigPhoto: {
+    width: "100%",
+    height: 210,
+    borderRadius: 14,
+    marginBottom: 14,
   },
-  authorMeta: { flex: 1, gap: 5 },
-  authorName: { fontSize: 17, fontWeight: "700" },
-  authorCountry: { fontSize: 13 },
-  authorBio: { fontSize: 13, lineHeight: 19, flex: 1 },
+  authorName: { fontSize: 22, fontWeight: "800", marginBottom: 4 },
+  authorCountry: { fontSize: 14, color: "rgba(255,255,255,0.75)", marginBottom: 8 },
+  authorBio: { fontSize: 14, lineHeight: 21, color: "rgba(255,255,255,0.70)" },
   authorLink: { fontSize: 13, fontWeight: "600" },
   allContentsBtn: {
     alignItems: "center",
