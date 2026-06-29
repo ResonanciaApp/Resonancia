@@ -339,7 +339,7 @@ export default function SessionDetailScreen() {
           {/* ── Reproducciones ──────────────────────────────────────────── */}
           {playsData !== undefined && (
             <View style={styles.playsRow}>
-              <Feather name="headphones" size={13} color="rgba(255,255,255,0.45)" />
+              <Feather name="headphones" size={13} color="#D4AF37" />
               <Text style={styles.playsText}>
                 {playsData.plays === 0
                   ? "Sé el primero en escuchar esta sesión"
