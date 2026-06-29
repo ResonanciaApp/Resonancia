@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
   nightBannerSub: {
     fontSize: 12,
     lineHeight: 17,
-    color: "rgba(255,255,255,0.5)",
+    color: "rgba(255,255,255,0.7)",
   },
 
   /* Sleep tabs */
