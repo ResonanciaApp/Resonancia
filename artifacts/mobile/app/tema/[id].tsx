@@ -28,7 +28,7 @@ const H_PAD = 20;
 const STICKY_START = 180;
 const STICKY_END   = 300;
 
-const BG_GRADIENT = ["#2E0510", "#160108"] as const;
+const BG_GRADIENT = ["#22070C", "#17060A", "#120509"] as const;
 
 export default function TemaScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
