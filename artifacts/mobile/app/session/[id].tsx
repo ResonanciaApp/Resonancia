@@ -583,7 +583,7 @@ const styles = StyleSheet.create({
   authorMeta: { flex: 1, gap: 5 },
   authorName: { fontSize: 17, fontWeight: "700" },
   authorCountry: { fontSize: 13 },
-  authorBio: { fontSize: 13, lineHeight: 19, maxWidth: 190 },
+  authorBio: { fontSize: 13, lineHeight: 19, flex: 1 },
   authorLink: { fontSize: 13, fontWeight: "600" },
   allContentsBtn: {
     alignItems: "center",
