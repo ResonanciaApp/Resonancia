@@ -4,13 +4,15 @@ import Svg, { Path } from "react-native-svg";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Image } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Animated,
   Dimensions,
   Easing,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -82,7 +84,7 @@ export default function SessionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { playSession, isFavorite, toggleFavorite, currentSession, isPlaying, getSessionProgress, clearSessionProgress } = usePlayer();
+  const { playSession, isFavorite, toggleFavorite, currentSession, isPlaying, progress, getSessionProgress, clearSessionProgress } = usePlayer();
 
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -119,6 +121,61 @@ export default function SessionDetailScreen() {
   const catBg = CATEGORY_BG[session.categoryId] ?? CATEGORY_BG["sonidos-ancestrales"];
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
+
+  // ── Rating modal ────────────────────────────────────────────────────────────
+  const RATINGS_KEY = "@resonance_ratings";
+  const [ratingModal, setRatingModal] = useState(false);
+  const [ratingStars, setRatingStars] = useState(0);
+  const [ratingSubmitted, setRatingSubmitted] = useState(false);
+  const finishTriggeredRef = useRef(false);
+
+  // Carga rating previo al entrar
+  useEffect(() => {
+    AsyncStorage.getItem(RATINGS_KEY).then((val) => {
+      if (!val) return;
+      const map: Record<string, number> = JSON.parse(val);
+      if (map[session.id]) {
+        setRatingStars(map[session.id]);
+        setRatingSubmitted(true);
+      }
+    });
+  }, [session.id]);
+
+  // Detecta fin de sesión
+  useEffect(() => {
+    if (
+      progress >= 1 &&
+      !isPlaying &&
+      currentSession?.id === session.id &&
+      !ratingSubmitted &&
+      !finishTriggeredRef.current
+    ) {
+      finishTriggeredRef.current = true;
+      setTimeout(() => setRatingModal(true), 800);
+    }
+    // Resetea el trigger si cambia la sesión o baja el progreso
+    if (progress < 0.99) finishTriggeredRef.current = false;
+  }, [progress, isPlaying, currentSession?.id, session.id, ratingSubmitted]);
+
+  const handleRate = useCallback(async (stars: number) => {
+    setRatingStars(stars);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  }, []);
+
+  const handleSubmitRating = useCallback(async () => {
+    if (ratingStars === 0) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const val = await AsyncStorage.getItem(RATINGS_KEY);
+    const map: Record<string, number> = val ? JSON.parse(val) : {};
+    map[session.id] = ratingStars;
+    await AsyncStorage.setItem(RATINGS_KEY, JSON.stringify(map));
+    setRatingSubmitted(true);
+    setRatingModal(false);
+  }, [ratingStars, session.id]);
+
+  const handleDismissRating = useCallback(() => {
+    setRatingModal(false);
+  }, []);
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const STICKY_START = (HEADER_H + topPad) * 0.3;
@@ -482,6 +539,92 @@ export default function SessionDetailScreen() {
         <View style={{ width: 36 }} />
       </Animated.View>
 
+      {/* ── Modal de valoración ──────────────────────────────────────────── */}
+      <Modal
+        visible={ratingModal}
+        transparent
+        animationType="fade"
+        onRequestClose={handleDismissRating}
+        statusBarTranslucent
+      >
+        <View style={styles.ratingBackdrop}>
+          <View style={styles.ratingSheet}>
+            {/* Imagen de la sesión */}
+            <View style={styles.ratingCoverWrap}>
+              <Image
+                source={session.image as never}
+                style={styles.ratingCover}
+                contentFit="cover"
+                placeholder={BLUR_PLACEHOLDER}
+                transition={IMAGE_TRANSITION}
+              />
+              <LinearGradient
+                colors={["transparent", "rgba(27,6,15,0.85)"]}
+                style={StyleSheet.absoluteFill}
+              />
+            </View>
+
+            {/* Foto del autor */}
+            {authors[0] && (
+              <View style={styles.ratingAuthorAvatar}>
+                <Image
+                  source={authors[0].photo as never}
+                  style={{ width: 56, height: 56, borderRadius: 28 }}
+                  contentFit="cover"
+                  placeholder={BLUR_PLACEHOLDER}
+                  transition={IMAGE_TRANSITION}
+                />
+              </View>
+            )}
+
+            <Text style={styles.ratingTitle}>¿Cómo estuvo?</Text>
+            <Text style={styles.ratingSubtitle}>
+              Recibe mejores recomendaciones y ayuda a apoyar al creador calificando la sesión.
+            </Text>
+
+            {/* Estrellas */}
+            <View style={styles.ratingStarsRow}>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Pressable
+                  key={star}
+                  onPress={() => handleRate(star)}
+                  hitSlop={8}
+                >
+                  <Feather
+                    name="star"
+                    size={36}
+                    color={ratingStars >= star ? "#D4AF37" : "rgba(255,255,255,0.30)"}
+                  />
+                </Pressable>
+              ))}
+            </View>
+
+            {/* Enviar */}
+            <Pressable
+              onPress={handleSubmitRating}
+              style={({ pressed }) => [
+                styles.ratingSubmitBtn,
+                ratingStars === 0 && { opacity: 0.45 },
+                pressed && { opacity: 0.75 },
+              ]}
+            >
+              <LinearGradient
+                colors={["#D6AD5F", "#B47344"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <Text style={styles.ratingSubmitText}>Enviar</Text>
+            </Pressable>
+
+            {/* Tal vez más tarde */}
+            <Pressable onPress={handleDismissRating} hitSlop={10}>
+              <Text style={styles.ratingDismissText}>Tal vez más tarde</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
     </View>
   );
 }
@@ -761,5 +904,80 @@ const styles = StyleSheet.create({
   playsText: {
     fontSize: 13,
     color: "#D4AF37",
+  },
+
+  // Rating modal
+  ratingBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.72)",
+    justifyContent: "flex-end",
+  },
+  ratingSheet: {
+    backgroundColor: "#1B060F",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingBottom: 40,
+    alignItems: "center",
+    overflow: "hidden",
+  },
+  ratingCoverWrap: {
+    width: "100%",
+    height: 180,
+    overflow: "hidden",
+  },
+  ratingCover: {
+    width: "100%",
+    height: "100%",
+  },
+  ratingAuthorAvatar: {
+    marginTop: -28,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    borderWidth: 3,
+    borderColor: "#1B060F",
+    overflow: "hidden",
+    marginBottom: 8,
+  },
+  ratingTitle: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#FFFFFF",
+    marginTop: 4,
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  ratingSubtitle: {
+    fontSize: 14,
+    color: "rgba(255,255,255,0.60)",
+    textAlign: "center",
+    lineHeight: 20,
+    paddingHorizontal: 32,
+    marginBottom: 24,
+  },
+  ratingStarsRow: {
+    flexDirection: "row",
+    gap: 16,
+    marginBottom: 28,
+  },
+  ratingSubmitBtn: {
+    width: "80%",
+    height: 50,
+    borderRadius: 25,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 16,
+  },
+  ratingSubmitText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#1B060F",
+    letterSpacing: 0.5,
+  },
+  ratingDismissText: {
+    fontSize: 14,
+    color: "rgba(255,255,255,0.50)",
+    paddingVertical: 4,
   },
 });
