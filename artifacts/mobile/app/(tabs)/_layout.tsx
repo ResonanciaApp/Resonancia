@@ -184,25 +184,10 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       <Animated.View
         style={[styles.bar, { paddingBottom: pb, transform: [{ translateY }] }]}
       >
-        {/* Fondo base: borgoña (otras tabs) — se desvanece en Inicio y Descanso */}
-        <Animated.View style={[StyleSheet.absoluteFill, { opacity: Animated.subtract(1, Animated.add(homeOpacity, descanzoOpacity)) }]}>
-          <LinearGradient
-            colors={["#21040C", "#100105"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={StyleSheet.absoluteFill}
-          />
-        </Animated.View>
+        {/* Fondo base: sólido (otras tabs) — se desvanece en Inicio y Descanso */}
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: Animated.subtract(1, Animated.add(homeOpacity, descanzoOpacity)), backgroundColor: "#160108" }]} />
         {/* Acento del tab activo (crossfade) */}
-        <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity }]}>
-          <LinearGradient
-            colors={tabBarColors ? [tabBarColors[0], tabBarColors[1]] : ["#21040C", "#100105"]}
-            locations={[0, 1]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={StyleSheet.absoluteFill}
-          />
-        </Animated.View>
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "#160108" }]} />
         {/* Glass negro+dorado: solo en Inicio */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: homeOpacity }]} pointerEvents="none">
           <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
