@@ -210,8 +210,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         </Animated.View>
         {/* Glass negro translúcido: solo en Descanso */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: descanzoOpacity }]} pointerEvents="none">
-          <BlurView intensity={85} tint="dark" style={StyleSheet.absoluteFill} />
-          <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]} />
+          <BlurView intensity={60} tint="dark" style={StyleSheet.absoluteFill} />
+          <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.25)" }]} />
         </Animated.View>
 
 
