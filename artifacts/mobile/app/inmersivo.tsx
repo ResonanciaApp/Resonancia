@@ -140,7 +140,7 @@ export default function InmersivoScreen() {
             cachePolicy="memory-disk"
           />
         ) : (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#2E0510" }]} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#1C020A" }]} />
         )}
       </Animated.View>
       <LinearGradient

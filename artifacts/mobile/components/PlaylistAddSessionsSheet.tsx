@@ -453,7 +453,7 @@ export function PlaylistAddSessionsSheet({
       <Pressable style={styles.backdrop} onPress={onClose} />
 
       <View style={[styles.sheet, { paddingBottom: bottomPad }]}>
-        <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#1C020A", "#1C020A"]} style={StyleSheet.absoluteFill} />
         <View style={styles.handle} />
 
         {/* Header — título centrado */}

@@ -37,7 +37,7 @@ import { getArtist } from "@/data/artists";
 import { type GeometryId } from "@/data/geometries";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 
-const BG_GRADIENT = ["#2E0510", "#160108"] as const;
+const BG_GRADIENT = ["#1C020A", "#1C020A"] as const;
 const GOLD = "#D4AF37";
 const TEXT = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
@@ -812,7 +812,7 @@ function CoverPickerModal({
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={modalStyles.backdrop} onPress={onClose} />
       <View style={[modalStyles.sheet, { paddingBottom: bottomPad }]}>
-        <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#1C020A", "#1C020A"]} style={StyleSheet.absoluteFill} />
         <View style={modalStyles.handle} />
         <Text style={modalStyles.sheetTitle}>Foto de la playlist</Text>
         <Pressable
@@ -1032,7 +1032,7 @@ function PlaylistMenuSheet({
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={menuSt.backdrop} onPress={onClose} />
       <View style={[menuSt.sheet, { paddingBottom: bottomPad + 8 }]}>
-        <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#1C020A", "#1C020A"]} style={StyleSheet.absoluteFill} />
         <View style={menuSt.handle} />
         {([
           { icon: "share", label: "Compartir", action: () => { onClose(); onShare(); } },
@@ -1180,7 +1180,7 @@ function DragReorderModal({ visible, sessions, onClose, onSave }: {
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <View style={dreSt.backdrop}>
         <View style={[dreSt.sheet, { paddingBottom: bottomPad }]}>
-          <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={["#1C020A", "#1C020A"]} style={StyleSheet.absoluteFill} />
           <View style={dreSt.handle} />
           <View style={dreSt.header}>
             <Pressable onPress={onClose} hitSlop={12} style={dreSt.closeBtn}>
@@ -1294,7 +1294,7 @@ function EditInfoModal({ visible, playlist, onClose, onSave, onChangeCover, onDe
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <View style={eiSt.backdrop}>
         <View style={[eiSt.sheet, { paddingBottom: bottomPad }]}>
-          <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={["#1C020A", "#1C020A"]} style={StyleSheet.absoluteFill} />
           <View style={eiSt.handle} />
           <View style={eiSt.header}>
             <Pressable onPress={onClose} hitSlop={12} style={eiSt.closeBtn}>

@@ -1124,7 +1124,7 @@ export default function BibliotecaScreen() {
                     onPress={() => router.navigate({ pathname: "/(tabs)/geometrix", params: { load: c.id } } as never)}
                   >
                     <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
-                      <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} />
+                      <LinearGradient colors={["#1C020A", "#1C020A"]} style={StyleSheet.absoluteFill} />
                       {firstLayers.map((instId, idx) => {
                         const geoId = baseOf(instId);
                         const settings = c.settings[instId];

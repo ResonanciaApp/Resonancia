@@ -67,7 +67,7 @@ export default function AncestralInfoScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#2E0510", "#160108"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
+      <LinearGradient colors={["#1C020A", "#1C020A"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
 
       {/* ── Sticky header ── */}
       <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>

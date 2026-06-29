@@ -23,7 +23,7 @@ import { useColors } from "@/hooks/useColors";
 import { uploadLocalFile } from "@/lib/upload";
 import type { ResonadorSubtipo } from "@/data/resonadores";
 
-const BG_GRADIENT = ["#2E0510", "#160108"] as const;
+const BG_GRADIENT = ["#1C020A", "#1C020A"] as const;
 const GOLD = "#D4AF37";
 const APORTE_OPTIONS: ResonadorSubtipo[] = ["Voz guía", "Sonoterapeuta", "Músico", "Productor"];
 

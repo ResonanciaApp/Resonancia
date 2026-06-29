@@ -61,7 +61,7 @@ function computeSavings(
   return pct > 0 ? pct : null;
 }
 
-const BG_GRADIENT = ["#2E0510", "#160108"] as const;
+const BG_GRADIENT = ["#1C020A", "#1C020A"] as const;
 
 export default function MembresiaScreen() {
   const insets = useSafeAreaInsets();

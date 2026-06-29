@@ -32,7 +32,7 @@ import { GEOMETRIES, type GeometryId } from "@/data/geometries";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { useLoadMix } from "@/hooks/useLoadMix";
 
-const BG_GRADIENT = ["#2E0510", "#160108"] as const;
+const BG_GRADIENT = ["#1C020A", "#1C020A"] as const;
 const GOLD = "#D4AF37";
 const TEXT = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
@@ -143,7 +143,7 @@ function CoverPickerSheet({
     return (
       <Modal visible animationType="slide" transparent onRequestClose={() => { setView("menu"); onClose(); }}>
         <Pressable style={ms.backdrop} onPress={() => { setView("menu"); onClose(); }} />
-        <LinearGradient colors={["#2E0510", "#160108"]} style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
+        <LinearGradient colors={["#1C020A", "#1C020A"]} style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
           <View style={ms.handle} />
           <View style={ms.headerRow}>
             <Pressable onPress={() => setView("menu")} hitSlop={12}>
@@ -227,7 +227,7 @@ function CoverPickerSheet({
   return (
     <Modal visible animationType="slide" transparent onRequestClose={handleClose}>
       <Pressable style={ms.backdrop} onPress={handleClose} />
-      <LinearGradient colors={["#2E0510", "#160108"]} style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
+      <LinearGradient colors={["#1C020A", "#1C020A"]} style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
         <View style={ms.handle} />
         <Text style={ms.sheetTitle}>Portada de la mezcla</Text>
         <Pressable style={({ pressed }) => [ms.row, { opacity: pressed ? 0.7 : 1 }]} onPress={() => setView("presets")}>

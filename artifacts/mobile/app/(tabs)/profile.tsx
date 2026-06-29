@@ -129,7 +129,7 @@ function computeStreak(events: { playedAt: string }[]): number {
   return count;
 }
 
-const BG_GRADIENT = ["#2E0510", "#160108"] as const;
+const BG_GRADIENT = ["#1C020A", "#1C020A"] as const;
 
 
 // ── BgGlyph: renderiza una capa de geometría animada en el fondo del perfil ─
@@ -1024,7 +1024,7 @@ export default function ProfileScreen() {
           behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
           <LinearGradient
-            colors={["#2E0510", "#160108"]}
+            colors={["#1C020A", "#1C020A"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFill}

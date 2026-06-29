@@ -35,7 +35,7 @@ import { useColors } from "@/hooks/useColors";
 import { FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { useNotifications } from "@/context/NotificationsContext";
 
-const BG_GRADIENT = ["#2E0510", "#160108"] as const;
+const BG_GRADIENT = ["#1C020A", "#1C020A"] as const;
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
 
