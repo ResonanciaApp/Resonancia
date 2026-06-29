@@ -127,7 +127,7 @@ const MEZ_PLACEHOLDERS = [
 
 // ── Colores de tab ────────────────────────────────────────────────────────────
 const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
-  popular:        ["#2E0410", "#27030D", "#1A0209"],
+  popular:        ["#160108", "#160108", "#160108"],
   naturaleza:     ["#0A1A0E", "#071309", "#040D06"],
   ancestrales:    ["#221510", "#1E0F0B", "#100904"],
   sintetizadores: ["#061A2E", "#041220", "#030A18"],
@@ -138,7 +138,7 @@ const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
 
 /** Gradiente de fondo de contenido en modo "noche" — último stop neutro oscuro (sin bordeaux) */
 const TAB_NOCHE_BG: Record<MainTabId, [string, string, string]> = {
-  popular:        ["#2E0410", "#27030D", "#1A0209"],
+  popular:        ["#160108", "#160108", "#160108"],
   naturaleza:     ["#0A1A0E", "#071309", "#040D06"],
   ancestrales:    ["#221510", "#1E0F0B", "#100904"],
   sintetizadores: ["#061A2E", "#041220", "#030A18"],
@@ -950,7 +950,7 @@ const styles = StyleSheet.create({
 
   topPanelShadow: {
     zIndex: 10,
-    backgroundColor: "#2E0510",
+    backgroundColor: "#160108",
   },
   topPanel: { backgroundColor: "transparent" },
 
