@@ -2,7 +2,7 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -16,10 +16,23 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SessionCard } from "@/components/SessionCard";
-import { getSessionsByDescansoTag } from "@/data/sessions";
-import { DESCANSO_TAG_CARDS } from "@/data/tags";
 import { useColors } from "@/hooks/useColors";
+
+/* ─── Sleep tabs ────────────────────────────────────────────────────── */
+const SLEEP_TABS = [
+  { id: "dormirme", emoji: "😴", line1: "Dormirme",    line2: "rápido"    },
+  { id: "zen",      emoji: "🙏", line1: "Modo",        line2: "zen"       },
+  { id: "relax",    emoji: "🌿", line1: "Full",        line2: "relax"     },
+  { id: "ruido",    emoji: "⛈️", line1: "Ruido",       line2: "ambiental" },
+] as const;
+
+type SleepTabId = typeof SLEEP_TABS[number]["id"];
+
+const TAB_UNSEL_COLORS: [string, string] = ["#1b0924", "#0f0514"];
+const TAB_SEL_COLORS:   [string, string] = ["#2d1240", "#1a0828"];
+const TAB_BORDER_SEL  = "#401950";
+const TAB_TEXT_SEL    = "#E8D4FF";
+const TAB_TEXT_UNSEL  = "rgba(232,212,255,0.45)";
 
 const H_PAD = 20;
 const { width: W, height: H } = Dimensions.get("window");
@@ -144,6 +157,8 @@ export default function DescansoScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const router    = useRouter();
 
+  const [activeTab, setActiveTab] = useState<SleepTabId>("dormirme");
+
   return (
     <View style={[styles.root, { backgroundColor: "#12040A" }]}>
       <StatusBar barStyle="light-content" />
@@ -163,6 +178,33 @@ export default function DescansoScreen() {
           </Text>
         </View>
 
+        {/* ── Tabs de modo ── */}
+        <View style={styles.tabGrid}>
+          {SLEEP_TABS.map((tab) => {
+            const sel = activeTab === tab.id;
+            return (
+              <Pressable
+                key={tab.id}
+                onPress={() => setActiveTab(tab.id)}
+                style={({ pressed }) => [styles.tabCell, pressed && { opacity: 0.85 }]}
+              >
+                <LinearGradient
+                  colors={sel ? TAB_SEL_COLORS : TAB_UNSEL_COLORS}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={[styles.tabGradient, sel && styles.tabGradientSel]}
+                >
+                  <Text style={[styles.tabEmoji, { opacity: sel ? 1 : 0.45 }]}>{tab.emoji}</Text>
+                  <View>
+                    <Text style={[styles.tabLine, { color: sel ? TAB_TEXT_SEL : TAB_TEXT_UNSEL }]}>{tab.line1}</Text>
+                    <Text style={[styles.tabLine, { color: sel ? TAB_TEXT_SEL : TAB_TEXT_UNSEL }]}>{tab.line2}</Text>
+                  </View>
+                </LinearGradient>
+              </Pressable>
+            );
+          })}
+        </View>
+
       </ScrollView>
     </View>
   );
@@ -171,6 +213,41 @@ export default function DescansoScreen() {
 const styles = StyleSheet.create({
   root:   { flex: 1 },
   scroll: { flex: 1 },
+
+  /* Sleep tabs */
+  tabGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    paddingHorizontal: H_PAD,
+    gap: 10,
+    marginBottom: 32,
+  },
+  tabCell: {
+    width: "47.5%",
+    borderRadius: 14,
+    overflow: "hidden",
+  },
+  tabGradient: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "transparent",
+  },
+  tabGradientSel: {
+    borderColor: TAB_BORDER_SEL,
+  },
+  tabEmoji: {
+    fontSize: 26,
+  },
+  tabLine: {
+    fontSize: 13,
+    fontWeight: "600",
+    lineHeight: 18,
+  },
 
   /* Hero */
   hero: {
