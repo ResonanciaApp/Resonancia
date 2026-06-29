@@ -256,7 +256,15 @@ export default function SessionDetailScreen() {
 
           {/* Author name */}
           {authors[0] && (
-            <Text style={styles.authorNameInline}>{authors[0].name}</Text>
+            <Pressable
+              onPress={() => router.push(authors[0].profilePath as never)}
+              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+            >
+              <Text style={styles.authorNameInline}>
+                {"Por "}
+                <Text style={styles.authorNameLink}>{authors[0].name}</Text>
+              </Text>
+            </Pressable>
           )}
 
           {/* ── Botón Escuchar / Split Reiniciar+Continuar ───────────── */}
@@ -513,17 +521,21 @@ const styles = StyleSheet.create({
 
   // Category pill
   durationLabel: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "500",
-    color: "rgba(255,255,255,0.55)",
+    color: "#FFFFFF",
     marginTop: 29,
   },
   authorNameInline: {
     fontSize: 14,
     fontWeight: "500",
-    color: "rgba(255,255,255,0.60)",
+    color: "#FFFFFF",
     marginTop: -4,
     marginBottom: 16,
+  },
+  authorNameLink: {
+    textDecorationLine: "underline",
+    textDecorationColor: "#FFFFFF",
   },
 
   // Title
