@@ -30,6 +30,8 @@ import { useGetSessionPlayCount, getGetSessionPlayCountQueryKey } from "@workspa
 import { getSessionById, SESSIONS } from "@/data/sessions";
 import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
+import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
+import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 
 const { width } = Dimensions.get("window");
 const HEADER_H = 298;
@@ -122,6 +124,8 @@ export default function SessionDetailScreen() {
   const catBg = CATEGORY_BG[session.categoryId] ?? CATEGORY_BG["sonidos-ancestrales"];
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
+  const [showPlaylistSheet, setShowPlaylistSheet] = useState(false);
+  const [showFolderSheet, setShowFolderSheet] = useState(false);
 
   // ── Rating modal ────────────────────────────────────────────────────────────
   const RATINGS_KEY = "@resonance_ratings";
@@ -550,6 +554,111 @@ export default function SessionDetailScreen() {
         <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
         <View style={{ width: 36 }} />
       </Animated.View>
+
+      {/* ── Options Sheet (···) ─────────────────────────────────────────── */}
+      <Modal
+        visible={actionsSheetOpen}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setActionsSheetOpen(false)}
+        statusBarTranslucent
+      >
+        <View style={[StyleSheet.absoluteFill, { justifyContent: "flex-end" }]} pointerEvents="box-none">
+          <Pressable style={StyleSheet.absoluteFill} onPress={() => setActionsSheetOpen(false)}>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.65)" }]} />
+          </Pressable>
+          <View style={[styles.optSheet, { paddingBottom: bottomPad + 8 }]}>
+            <LinearGradient
+              colors={["#2E0510", "#160108"]}
+              locations={[0, 1]}
+              style={[StyleSheet.absoluteFill, { borderTopLeftRadius: 24, borderTopRightRadius: 24 }]}
+              pointerEvents="none"
+            />
+            <View style={styles.optHandle} />
+            <View style={styles.optHeader}>
+              <Image
+                source={session.image as never}
+                style={styles.optThumb}
+                contentFit="cover"
+                placeholder={BLUR_PLACEHOLDER}
+                transition={IMAGE_TRANSITION}
+              />
+              <View style={{ flex: 1, marginLeft: 14 }}>
+                <Text style={styles.optSessionTitle} numberOfLines={2}>{session.title}</Text>
+                <Text style={styles.optSessionAuthor}>{authors[0]?.name}</Text>
+              </View>
+            </View>
+            <View style={styles.optDivider} />
+            <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
+              {/* Sonido ambiente */}
+              <Pressable style={styles.optRow} onPress={() => setActionsSheetOpen(false)}>
+                <Feather name="music" size={18} color="white" style={styles.optIcon} />
+                <Text style={styles.optRowText}>Sonido ambiente</Text>
+                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
+              </Pressable>
+              {/* Temporizador */}
+              <Pressable style={styles.optRow} onPress={() => setActionsSheetOpen(false)}>
+                <Feather name="clock" size={18} color="white" style={styles.optIcon} />
+                <Text style={styles.optRowText}>Temporizador</Text>
+                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
+              </Pressable>
+              {/* Descargar */}
+              <Pressable style={styles.optRow}>
+                <Feather name="download" size={18} color="white" style={styles.optIcon} />
+                <Text style={styles.optRowText}>Descargar</Text>
+                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
+              </Pressable>
+              {/* Agregar a favoritos */}
+              <Pressable style={styles.optRow} onPress={() => { handleFav(); }}>
+                <Feather name="heart" size={18} color={fav ? "#D4AF37" : "white"} style={styles.optIcon} />
+                <Text style={[styles.optRowText, fav ? { color: "#D4AF37" } : {}]}>
+                  {fav ? "En favoritos" : "Agregar a favoritos"}
+                </Text>
+                {fav && <Feather name="check" size={15} color="#D4AF37" />}
+              </Pressable>
+              {/* Añadir a carpeta */}
+              <Pressable
+                style={styles.optRow}
+                onPress={() => { setActionsSheetOpen(false); setTimeout(() => setShowFolderSheet(true), 300); }}
+              >
+                <Feather name="folder-plus" size={18} color="white" style={styles.optIcon} />
+                <Text style={styles.optRowText}>Añadir a carpeta</Text>
+                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
+              </Pressable>
+              {/* Añadir a playlist */}
+              <Pressable
+                style={styles.optRow}
+                onPress={() => { setActionsSheetOpen(false); setTimeout(() => setShowPlaylistSheet(true), 300); }}
+              >
+                <Feather name="list" size={18} color="white" style={styles.optIcon} />
+                <Text style={styles.optRowText}>Añadir a playlist</Text>
+                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
+              </Pressable>
+              {/* Seguir al guía (si aplica) */}
+              {authors[0]?.profilePath && (
+                <Pressable
+                  style={styles.optRow}
+                  onPress={() => { setActionsSheetOpen(false); router.push(authors[0].profilePath as never); }}
+                >
+                  <Feather name="user-plus" size={18} color="white" style={styles.optIcon} />
+                  <Text style={styles.optRowText}>Ver perfil del guía</Text>
+                  <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
+                </Pressable>
+              )}
+              <View style={[styles.optDivider, { marginTop: 8 }]} />
+              {/* Informar un problema */}
+              <Pressable style={styles.optRow}>
+                <Feather name="alert-circle" size={18} color="rgba(255,255,255,0.5)" style={styles.optIcon} />
+                <Text style={[styles.optRowText, { color: "rgba(255,255,255,0.5)" }]}>Informar un problema</Text>
+                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.25)" />
+              </Pressable>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
+      <AddToPlaylistSheet visible={showPlaylistSheet} sessionId={session.id} onClose={() => setShowPlaylistSheet(false)} />
+      <AddToFolderSheet visible={showFolderSheet} sessionId={session.id} onClose={() => setShowFolderSheet(false)} />
 
       {/* ── Modal de valoración ──────────────────────────────────────────── */}
       <Modal
@@ -1022,5 +1131,68 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "rgba(255,255,255,0.50)",
     paddingVertical: 4,
+  },
+
+  // Options sheet
+  optSheet: {
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    overflow: "hidden",
+    paddingTop: 10,
+    maxHeight: "85%",
+  },
+  optHandle: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "rgba(255,255,255,0.22)",
+    alignSelf: "center",
+    marginBottom: 18,
+  },
+  optHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingBottom: 16,
+  },
+  optThumb: {
+    width: 73,
+    height: 73,
+    borderRadius: 10,
+    backgroundColor: "rgba(255,255,255,0.08)",
+  },
+  optSessionTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "white",
+    lineHeight: 20,
+    marginBottom: 3,
+  },
+  optSessionAuthor: {
+    fontSize: 13,
+    fontWeight: "300",
+    color: "rgba(255,255,255,0.60)",
+  },
+  optDivider: {
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    marginHorizontal: 20,
+    marginBottom: 4,
+  },
+  optRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+  },
+  optIcon: {
+    marginRight: 16,
+    width: 22,
+    textAlign: "center",
+  },
+  optRowText: {
+    fontSize: 16,
+    color: "white",
+    flex: 1,
   },
 });
