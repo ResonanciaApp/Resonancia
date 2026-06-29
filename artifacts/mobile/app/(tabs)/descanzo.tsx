@@ -190,7 +190,7 @@ export default function DescansoScreen() {
           {DESCANSO_TAG_CARDS.map((tag, idx) => {
             const sessions = getSessionsByDescansoTag(tag.label);
             return (
-              <View key={tag.id} style={[styles.section, idx > 0 && { marginTop: 15 }]}>
+              <View key={tag.id} style={[styles.section, idx === 0 ? { marginTop: 25 } : { marginTop: 15 }]}>
                 <View style={styles.catHeader}>
                   <Text style={[styles.catTitle, { color: colors.foreground }]} numberOfLines={1}>
                     {tag.label}
