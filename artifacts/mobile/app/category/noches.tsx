@@ -2,7 +2,6 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import { BackPill } from "@/components/BackPill";
 import { router } from "expo-router";
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image } from "react-native";
@@ -119,7 +118,6 @@ function SubIcon({ sub, size }: { sub: SubDef; size: number }) {
 type ActiveTab = "Audios" | "Videos" | "Maestros";
 const TABS: ActiveTab[] = ["Audios", "Videos", "Maestros"];
 
-const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 
 export default function NochesScreen() {
   const colors = useColors();
@@ -214,13 +212,7 @@ export default function NochesScreen() {
   };
 
   return (
-        <LinearGradient
-      style={styles.root}
-      colors={BG_GRADIENT}
-      locations={[0, 0.5, 1]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
+        <View style={styles.root}>
       <StatusBar barStyle="light-content" />
 
       <ScrollView
@@ -458,12 +450,12 @@ export default function NochesScreen() {
         visible={actionsSession !== null}
         onClose={() => setActionsSession(null)}
       />
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1 },
+  root: { flex: 1, backgroundColor: "#160108" },
   scroll: { flex: 1 },
 
   header: { alignItems: "center", marginBottom: 28, paddingTop: 4 },

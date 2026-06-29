@@ -454,7 +454,6 @@ export default function SonidosAncestalesScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#2E0510","#160108"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
