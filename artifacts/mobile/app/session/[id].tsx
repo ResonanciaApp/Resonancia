@@ -856,7 +856,7 @@ const styles = StyleSheet.create({
   },
   authorName: { fontSize: 22, fontWeight: "800", marginTop: 15, marginBottom: 4 },
   authorCountry: { fontSize: 14, color: "#FFFFFF", marginTop: 6, marginBottom: 8 },
-  authorBio: { fontSize: 14, lineHeight: 21, color: "#FFFFFF" },
+  authorBio: { fontSize: 14, lineHeight: 21, color: "#FFFFFF", marginTop: 6 },
   authorLink: { fontSize: 13, fontWeight: "600" },
   allContentsBtn: {
     alignItems: "center",
