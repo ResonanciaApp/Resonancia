@@ -1182,6 +1182,150 @@ uri = "file://artifacts/mobile/assets/images/sessions/session-55.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "eeWPNRnqy20-lrDndx3VR"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-1.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "5JAGGpfqgHiTgKgl8GlqH"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-2.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "IFHjFeLK_c0qO7kOYnn_d"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-3.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "OPj2XQDZwRQ3_L44hKxog"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-4.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "_cm7e-kqFRlQY6VbYeBFM"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-5.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "HKt-p8uzvkwk2mlwuQEo7"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-6.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "cq-FyIidc1ej-uwMsEjsm"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-7.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "y7HUH4InNyUyBsD8fV04O"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-8.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "55mAuwBM_9rgpjEy6pe7c"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-9.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "aNlwDlIjeEiAWWaLmbkIt"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-10.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "oEo1MpvcEZo8evrAKYrNo"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-11.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "ylixIBqD0c4VqhwUthTT4"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-12.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "VLVGEb2-Uay13rmHPX3Pk"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-13.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "XkhUnzIHtoxrcO1bawwYd"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-14.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "3T4EeFaZZwlupUINueAMS"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-15.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "gqw4nlorNhYYmwGI-9WyC"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-16.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "00e4lZ3YOZXlxpGObAeYJ"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-17.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "ASDvK8Zu16hx1fjAfgXDn"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-18.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "m2XDABCt7BkokYaRp2w99"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-19.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "-9bBrHKPFXU5pZjURnQn9"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-20.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "_BwmWQjRRt6ON7h8t3jZ8"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-21.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "voMTQNYbRRgF81_B4BgFn"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-22.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "5vr2gII2YvVo6hPt3LtYM"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-23.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "MafLUQPl2NUYx_4IfIfBw"
+uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-24.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"

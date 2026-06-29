@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
+  Image,
   Platform,
   Pressable,
   ScrollView,
@@ -17,6 +18,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useColors } from "@/hooks/useColors";
+import { DESCANSO_SOUNDS } from "@/data/descanso-sounds";
 
 /* ─── Sleep tabs ────────────────────────────────────────────────────── */
 const SLEEP_TABS = [
@@ -157,7 +159,14 @@ export default function DescansoScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const router    = useRouter();
 
-  const [activeTab, setActiveTab] = useState<SleepTabId>("dormirme");
+  const [activeTab, setActiveTab]       = useState<SleepTabId>("dormirme");
+  const [selectedSound, setSelectedSound] = useState<string | null>(null);
+
+  const visibleSounds = DESCANSO_SOUNDS.filter((s) => s.categoryId === activeTab);
+
+  function handleSoundPress(id: string) {
+    setSelectedSound((prev) => (prev === id ? null : id));
+  }
 
   return (
     <View style={[styles.root, { backgroundColor: "#08010C" }]}>
@@ -205,6 +214,30 @@ export default function DescansoScreen() {
           })}
         </View>
 
+        {/* ── Grilla de sonidos ── */}
+        <View style={styles.soundGrid}>
+          {visibleSounds.map((sound) => {
+            const sel = selectedSound === sound.id;
+            return (
+              <Pressable
+                key={sound.id}
+                onPress={() => handleSoundPress(sound.id)}
+                style={({ pressed }) => [styles.soundCell, pressed && { opacity: 0.88 }]}
+              >
+                <View style={[styles.soundImageWrap, sel && styles.soundImageWrapSel]}>
+                  <Image source={sound.image} style={styles.soundImage} resizeMode="cover" />
+                  {!sel && (
+                    <View style={styles.soundOverlay} />
+                  )}
+                </View>
+                <Text style={[styles.soundLabel, sel && styles.soundLabelSel]} numberOfLines={1}>
+                  {sound.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
         {/* ── Banner Prepara tu noche ── */}
         <Pressable
           style={({ pressed }) => [styles.nightBannerWrap, pressed && { opacity: 0.82 }]}
@@ -235,6 +268,49 @@ export default function DescansoScreen() {
 const styles = StyleSheet.create({
   root:   { flex: 1 },
   scroll: { flex: 1 },
+
+  /* Sound grid */
+  soundGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    paddingHorizontal: H_PAD,
+    gap: 10,
+    marginTop: 18,
+    marginBottom: 6,
+  },
+  soundCell: {
+    width: (W - H_PAD * 2 - 20) / 3,
+    alignItems: "center",
+  },
+  soundImageWrap: {
+    width: "100%",
+    aspectRatio: 1,
+    borderRadius: 12,
+    overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "transparent",
+  },
+  soundImageWrapSel: {
+    borderColor: "rgba(255,255,255,0.8)",
+  },
+  soundImage: {
+    width: "100%",
+    height: "100%",
+  },
+  soundOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.38)",
+  },
+  soundLabel: {
+    marginTop: 6,
+    fontSize: 11,
+    color: "rgba(255,255,255,0.5)",
+    textAlign: "center",
+  },
+  soundLabelSel: {
+    color: "rgba(255,255,255,0.95)",
+    fontWeight: "600",
+  },
 
   /* Banner Prepara tu noche */
   nightBannerWrap: {
