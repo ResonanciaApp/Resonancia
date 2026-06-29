@@ -32,7 +32,7 @@ import { GEOMETRIES, type GeometryId } from "@/data/geometries";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { useLoadMix } from "@/hooks/useLoadMix";
 
-const BG_GRADIENT = ["#1C020A", "#1C020A"] as const;
+const BG_GRADIENT = ["#21030C", "#21030C"] as const;
 const GOLD = "#D4AF37";
 const TEXT = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
