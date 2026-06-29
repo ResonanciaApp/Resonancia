@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import MaskedView from "@react-native-masked-view/masked-view";
 import Svg, { Path } from "react-native-svg";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
@@ -117,31 +116,6 @@ export default function SessionDetailScreen() {
     "descanso":             { gradient: ["#252525", "#1C1C1C"], solid: "#1C1C1C", pillBg: "#2A2A2A", labelGradient: ["#E8E8E8", "#C8C8C8"], labelColor: "#333333" },
   };
   const catBg = CATEGORY_BG[session.categoryId] ?? CATEGORY_BG["sonidos-ancestrales"];
-  const categoryPill = isAncestral ? "Ancestral" : isGuiada ? "Meditación" : isReflexion ? "Reflexión"
-    : isMusica ? "Música" : null;
-  const categoryIcon: string = "clock";
-  const subTag = isAncestral
-    ? (session.ancestralTag ?? session.categoryLabel)
-    : isGuiada
-    ? (session.meditationTag ?? session.categoryLabel)
-    : isMusica
-    ? (session.soundTag ?? session.categoryLabel)
-    : session.categoryLabel;
-  const SUBTAG_ICON: Record<string, string> = {
-    // Ancestrales
-    "Cuencos Tibetanos": "disc", "Cuencos de Cuarzo": "disc", "Mix de Cuencos": "disc", "Cuencos y Gongs": "disc",
-    "Gongs": "circle", "Gongs y Campanas": "circle",
-    "Campanas": "bell", "Campanas Tingsha": "bell",
-    // Meditaciones
-    "No Duales": "layers", "Visualizaciones": "eye", "Mantras": "mic",
-    "Escaneo Corporal": "activity", "Manifestación": "star", "3 Minutos de Sabiduría": "clock",
-    // Música
-    "Música Ambient": "cloud", "Música Enteógena": "feather", "Música Tribal": "zap", "Música Étnica": "globe",
-    // Reflexiones
-    "Sabiduría": "book-open", "ASMR": "headphones", "Historias": "book",
-  };
-  const subTagIcon: string = SUBTAG_ICON[subTag ?? ""] ?? (isAncestral ? "disc" : isGuiada ? "eye" : isMusica ? "cloud" : "book-open");
-  const savedCount = 40 + ((parseInt(session.id, 10) * 17 + 83) % 260);
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
 
@@ -257,46 +231,26 @@ export default function SessionDetailScreen() {
         {/* ── Content ─────────────────────────────────────────────────────── */}
         <View style={styles.content}>
 
-          {/* Category pill */}
-          {categoryPill && (
-            <LinearGradient
-              colors={["#f8f3eb", "#e8d2c0"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.categoryPill}
-            >
-              <Feather name={categoryIcon as never} size={17} color="#160108" />
-              <Text style={[styles.categoryPillText, { color: "#160108" }]}>{categoryPill}</Text>
-              <Text style={[styles.categoryPillSep, { color: "#160108" }]}>·</Text>
-              <Text style={[styles.durationText, { color: "#160108" }]}>{session.durationLabel.replace(" min", "m")}</Text>
-            </LinearGradient>
-          )}
+          {/* Duration label */}
+          <Text style={styles.durationLabel}>{session.durationLabel}</Text>
 
           {/* Title + acciones */}
           <View style={styles.titleRow}>
             <Text style={[styles.title, { color: colors.foreground, flex: 1 }]} numberOfLines={3}>{session.title}</Text>
             <View style={styles.titleActions}>
-              <Pressable onPress={handleFav} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-                <Feather name="heart" size={22} color={fav ? "#D4AF37" : "rgba(255,255,255,0.55)"} />
-              </Pressable>
               <Pressable onPress={() => setActionsSheetOpen(true)} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-                <Feather name="more-vertical" size={22} color="rgba(255,255,255,0.55)" />
+                <Feather name="more-horizontal" size={22} color="#FFFFFF" />
+              </Pressable>
+              <Pressable onPress={handleFav} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+                <Feather name="heart" size={22} color={fav ? "#D4AF37" : "#FFFFFF"} />
               </Pressable>
             </View>
           </View>
 
-          {/* Meta row */}
-          <View style={styles.metaRow}>
-            <MaskedView maskElement={<Feather name="heart" size={13} color="#000" />}>
-              <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 13, height: 13 }} />
-            </MaskedView>
-            <Text style={styles.metaText}>{savedCount}</Text>
-            <View style={styles.metaDot} />
-            <MaskedView maskElement={<Feather name={subTagIcon as never} size={13} color="#000" />}>
-              <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 13, height: 13 }} />
-            </MaskedView>
-            <Text style={styles.metaText}>{subTag}</Text>
-          </View>
+          {/* Author name */}
+          {authors[0] && (
+            <Text style={styles.authorNameInline}>{authors[0].name}</Text>
+          )}
 
           {/* Description */}
           <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]}>
@@ -422,7 +376,7 @@ export default function SessionDetailScreen() {
 
             {/* Cards */}
             {authors.map((a) => (
-              <LinearGradient key={a.profilePath} colors={["#2E0510","#22030E"]} start={{ x:0,y:0 }} end={{ x:0,y:1 }} style={styles.authorCard}>
+              <View key={a.profilePath} style={styles.authorCard}>
                 <View style={styles.authorRow}>
                   <Image
                     source={a.photo as never}
@@ -447,7 +401,7 @@ export default function SessionDetailScreen() {
                 >
                   <Text style={styles.allContentsBtnText}>Ver todos los contenidos</Text>
                 </Pressable>
-              </LinearGradient>
+              </View>
             ))}
           </View>
 
@@ -543,54 +497,19 @@ const styles = StyleSheet.create({
   badgeText: { fontSize: 9, letterSpacing: 1.5, fontWeight: "700" },
 
   // Category pill
-  categoryPill: {
-    flexDirection: "row",
-    alignSelf: "flex-start",
-    height: 33,
-    borderRadius: 16.5,
-    paddingHorizontal: 16,
-    alignItems: "center",
-    gap: 6,
-    marginTop: 31,
-    marginBottom: 10,
-  },
-  categoryPillText: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#4A0C0C",
-    letterSpacing: 0.8,
-  },
-  categoryPillSep: {
-    fontSize: 20,
-    color: "#4A0C0C",
-    opacity: 0.5,
-  },
-  durationText: {
-    fontSize: 15,
-    fontWeight: "400",
-    color: "#4A0C0C",
-  },
-
-  // Meta row
-  metaRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    gap: 5,
-    marginTop: 2,
-    marginBottom: 10,
-  },
-  metaText: {
-    fontSize: 13,
-    color: "rgba(255,255,255,0.55)",
+  durationLabel: {
+    fontSize: 14,
     fontWeight: "500",
+    color: "rgba(255,255,255,0.55)",
+    marginTop: 28,
+    marginBottom: 4,
   },
-  metaDot: {
-    width: 3,
-    height: 3,
-    borderRadius: 1.5,
-    backgroundColor: "rgba(255,255,255,0.3)",
-    marginHorizontal: 3,
+  authorNameInline: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "rgba(255,255,255,0.60)",
+    marginTop: -4,
+    marginBottom: 16,
   },
 
   // Title
@@ -641,11 +560,9 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   authorCard: {
-    borderRadius: 16,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(212,175,55,0.18)",
-    padding: 16,
-    marginBottom: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 4,
+    marginBottom: 8,
   },
   authorRow: { flexDirection: "row", alignItems: "center", gap: 14 },
   authorAvatar: {
