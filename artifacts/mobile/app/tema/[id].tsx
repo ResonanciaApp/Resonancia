@@ -80,7 +80,7 @@ export default function TemaScreen() {
           styles.stickyHeader,
           {
             paddingTop: topPad,
-            backgroundColor: "#2E0510",
+            backgroundColor: "#160108",
             borderBottomColor: "rgba(212,175,55,0.15)",
             opacity: headerOpacity,
           },
