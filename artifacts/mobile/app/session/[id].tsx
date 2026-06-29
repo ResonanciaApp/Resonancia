@@ -302,7 +302,7 @@ export default function SessionDetailScreen() {
                 <Text style={{ fontSize: 12, fontWeight: "600", color: "#FFFFFF" }}>
                   {ratingStars.toFixed(1)}
                 </Text>
-                <Feather name="star" size={11} color="#FFFFFF" />
+                <Text style={{ fontSize: 12, color: "#FFFFFF", lineHeight: 14 }}>★</Text>
               </View>
             )}
             <Text style={[styles.durationLabel, { marginTop: 0 }]}>{session.durationLabel}</Text>
