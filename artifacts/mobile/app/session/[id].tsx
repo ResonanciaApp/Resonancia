@@ -797,7 +797,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
     color: "#FFFFFF",
-    marginTop: -4,
+    marginTop: 3,
     marginBottom: 16,
   },
   authorNameLink: {
