@@ -1278,12 +1278,7 @@ export default function BibliotecaScreen() {
           elevation: 7,
         }]}
       >
-        <LinearGradient
-          colors={["#2E0410", "#27030D", "#1A0209"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#160108" }]} />
         {/* Fila 1: título + iconos */}
         <View style={styles.headerRow}>
           <View style={{ flex: 1 }}>
