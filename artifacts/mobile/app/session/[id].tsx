@@ -271,7 +271,6 @@ export default function SessionDetailScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: catBg.solid }]}>
-      <LinearGradient colors={catBg.gradient} style={StyleSheet.absoluteFill} />
       <StatusBar barStyle="light-content" />
 
       <Animated.ScrollView
@@ -290,12 +289,6 @@ export default function SessionDetailScreen() {
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
             <GlowPill onPress={() => router.back()} pillStyle={styles.heroBackPill} gradientColors={catBg.gradient as [string, string]} />
           </View>
-          <LinearGradient
-            colors={["#D6AD5F", "#B47344"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 4 }}
-          />
         </View>
 
         {/* ── Content ─────────────────────────────────────────────────────── */}
