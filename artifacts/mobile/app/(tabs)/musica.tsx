@@ -178,8 +178,8 @@ const PillTab = memo(function PillTab({
             <MaskedView
               maskElement={
                 <View style={styles.pillTabMaskContent}>
-                  <MaterialCommunityIcons name={tab.icon as any} size={19} color="black" />
-                  <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "black", fontWeight: "700" }]}>
+                  <MaterialCommunityIcons name={tab.icon as any} size={15} color="black" />
+                  <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "black", fontWeight: "600" }]}>
                     {tab.label}
                   </Text>
                 </View>
@@ -191,8 +191,8 @@ const PillTab = memo(function PillTab({
                 end={{ x: 1, y: 0 }}
               >
                 <View style={styles.pillTabMaskContent}>
-                  <MaterialCommunityIcons name={tab.icon as any} size={19} color="transparent" />
-                  <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "transparent", fontWeight: "700" }]}>
+                  <MaterialCommunityIcons name={tab.icon as any} size={15} color="transparent" />
+                  <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "transparent", fontWeight: "600" }]}>
                     {tab.label}
                   </Text>
                 </View>
@@ -202,8 +202,8 @@ const PillTab = memo(function PillTab({
         </View>
       ) : (
         <View style={[styles.pillTab, { borderWidth: 1, borderColor: "rgba(212,175,55,0.12)" }]}>
-          <MaterialCommunityIcons name={tab.icon as any} size={19} color="rgba(255,255,255,0.80)" />
-          <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "rgba(255,255,255,0.80)", fontWeight: "400" }]}>
+          <MaterialCommunityIcons name={tab.icon as any} size={15} color="rgba(255,255,255,0.80)" />
+          <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "rgba(255,255,255,0.80)", fontWeight: "600" }]}>
             {tab.label}
           </Text>
         </View>
@@ -985,37 +985,36 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    width: 110,
-    height: 44,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
     borderRadius: 999,
     overflow: "hidden",
-    gap: 4,
+    gap: 5,
   },
   pillTabBorder: {
-    width: 110,
-    height: 44,
     borderRadius: 999,
     padding: 1,
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.50)",
   },
   pillTabInner: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    paddingHorizontal: 13,
+    paddingVertical: 9,
     borderRadius: 999,
     overflow: "hidden",
-    gap: 4,
+    gap: 5,
   },
   pillTabMaskContent: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 4,
+    gap: 5,
     backgroundColor: "transparent",
   },
-  pillTabLabel: { fontSize: 14, letterSpacing: 0.1, fontWeight: "700" },
+  pillTabLabel: { fontSize: 14, letterSpacing: 0.1, fontWeight: "600" },
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },
 
