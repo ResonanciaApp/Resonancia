@@ -214,6 +214,28 @@ export default function DescansoScreen() {
           })}
         </View>
 
+        {/* ── Banner Prepara tu noche ── */}
+        <Pressable
+          style={({ pressed }) => [styles.nightBannerWrap, pressed && { opacity: 0.82 }]}
+          onPress={() => {}}
+        >
+          <View style={styles.nightBanner}>
+            {/* Icono luna */}
+            <View style={styles.nightBannerIconWrap}>
+              <BlurView intensity={40} tint="light" style={StyleSheet.absoluteFill} />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)", borderRadius: 40 }]} />
+              <Ionicons name="moon" size={22} color="#C4A8F5" />
+            </View>
+            {/* Texto */}
+            <View style={{ flex: 1 }}>
+              <Text style={styles.nightBannerTitle}>Prepara tu noche</Text>
+              <Text style={styles.nightBannerSub}>Crea tu atmósfera perfecta</Text>
+            </View>
+            {/* Chevron */}
+            <Feather name="chevron-right" size={18} color="rgba(255,255,255,0.6)" />
+          </View>
+        </Pressable>
+
         {/* ── Grilla de sonidos ── */}
         <View style={styles.soundGrid}>
           {visibleSounds.map((sound) => {
@@ -237,28 +259,6 @@ export default function DescansoScreen() {
             );
           })}
         </View>
-
-        {/* ── Banner Prepara tu noche ── */}
-        <Pressable
-          style={({ pressed }) => [styles.nightBannerWrap, pressed && { opacity: 0.82 }]}
-          onPress={() => {}}
-        >
-          <View style={styles.nightBanner}>
-            {/* Icono luna */}
-            <View style={styles.nightBannerIconWrap}>
-              <BlurView intensity={40} tint="light" style={StyleSheet.absoluteFill} />
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)", borderRadius: 40 }]} />
-              <Ionicons name="moon" size={22} color="#C4A8F5" />
-            </View>
-            {/* Texto */}
-            <View style={{ flex: 1 }}>
-              <Text style={styles.nightBannerTitle}>Prepara tu noche</Text>
-              <Text style={styles.nightBannerSub}>Crea tu atmósfera perfecta</Text>
-            </View>
-            {/* Chevron */}
-            <Feather name="chevron-right" size={18} color="rgba(255,255,255,0.6)" />
-          </View>
-        </Pressable>
 
       </ScrollView>
     </View>
