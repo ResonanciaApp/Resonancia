@@ -1,6 +1,7 @@
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import { captureRef } from "react-native-view-shot";
 import * as Sharing from "expo-sharing";
+import * as MediaLibrary from "expo-media-library";
 import MaskedView from "@react-native-masked-view/masked-view";
 import Svg, { Path } from "react-native-svg";
 import * as Haptics from "expo-haptics";
@@ -14,6 +15,7 @@ import {
   Animated,
   Dimensions,
   Easing,
+  Linking,
   Modal,
   Platform,
   Pressable,
@@ -245,13 +247,28 @@ export default function SessionDetailScreen() {
     try {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       const uri = await captureRef(storyCardRef, { format: "png", quality: 1 });
-      const available = await Sharing.isAvailableAsync();
-      if (!available) return;
-      await Sharing.shareAsync(uri, {
-        mimeType: "image/png",
-        dialogTitle: "Compartir en Instagram Stories",
-        UTI: "public.png",
-      });
+
+      const igUrl = "instagram-stories://share";
+      const igInstalled = await Linking.canOpenURL(igUrl);
+
+      if (igInstalled) {
+        // Guardar en cámara + abrir Instagram Stories directamente
+        const { status } = await MediaLibrary.requestPermissionsAsync();
+        if (status === "granted") {
+          await MediaLibrary.saveToLibraryAsync(uri);
+        }
+        await Linking.openURL(igUrl);
+      } else {
+        // Fallback: share sheet del sistema
+        const available = await Sharing.isAvailableAsync();
+        if (available) {
+          await Sharing.shareAsync(uri, {
+            mimeType: "image/png",
+            dialogTitle: "Compartir sesión",
+            UTI: "public.png",
+          });
+        }
+      }
     } catch {
       // silently ignore
     }
@@ -302,6 +319,9 @@ export default function SessionDetailScreen() {
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
             <GlowPill onPress={() => router.back()} pillStyle={styles.heroBackPill} gradientColors={catBg.gradient as [string, string]} />
+            <Pressable onPress={handleInstagramShare} hitSlop={10} style={({ pressed }) => [styles.igBtn, { opacity: pressed ? 0.6 : 1 }]}>
+              <FontAwesome name="instagram" size={20} color="#FFFFFF" />
+            </Pressable>
           </View>
         </View>
 
@@ -327,9 +347,6 @@ export default function SessionDetailScreen() {
             <View style={styles.titleActions}>
               <Pressable onPress={() => setActionsSheetOpen(true)} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
                 <Feather name="more-horizontal" size={22} color="#FFFFFF" />
-              </Pressable>
-              <Pressable onPress={handleInstagramShare} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-                <FontAwesome name="instagram" size={22} color="#FFFFFF" />
               </Pressable>
               <Pressable onPress={handleFav} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
                 <Feather name="heart" size={22} color={fav ? "#D4AF37" : "#FFFFFF"} />
@@ -986,6 +1003,16 @@ const styles = StyleSheet.create({
     borderRadius: 19,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.35)",
+  },
+  igBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.30)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.25)",
   },
   stickyBackPill: {
     flexDirection: "row",
