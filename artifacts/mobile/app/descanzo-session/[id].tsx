@@ -313,7 +313,7 @@ export default function SessionDetailScreen() {
           {/* Author name */}
           {authors[0] && (
             <Text style={styles.authorNameInline} numberOfLines={1}>
-              {authors[0].name}
+              Por {authors[0].name}
             </Text>
           )}
 
@@ -396,6 +396,11 @@ export default function SessionDetailScreen() {
             </View>
           </Pressable>
 
+          {/* Description */}
+          <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]} numberOfLines={3}>
+            {session.description}
+          </Text>
+
           {/* ── Reproducciones ──────────────────────────────────────────── */}
           {playsData !== undefined && (
             <Text style={styles.playsInline}>
@@ -404,11 +409,6 @@ export default function SessionDetailScreen() {
                 : `${playsData.plays.toLocaleString("es")} ${playsData.plays === 1 ? "reproducción" : "reproducciones"}`}
             </Text>
           )}
-
-          {/* Description */}
-          <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]} numberOfLines={3}>
-            {session.description}
-          </Text>
 
           {/* ── Banner Mezclador ────────────────────────────────────────── */}
           <Pressable
@@ -548,7 +548,7 @@ const styles = StyleSheet.create({
   },
   savedCountText: {
     fontSize: 12,
-    color: "rgba(255,255,255,0.5)",
+    color: "#FFFFFF",
   },
   titleRow: {
     flexDirection: "row",
@@ -564,7 +564,7 @@ const styles = StyleSheet.create({
   authorNameInline: {
     fontSize: 14,
     fontWeight: "500",
-    color: "rgba(255,255,255,0.65)",
+    color: "#FFFFFF",
     marginTop: -9,
     marginBottom: 16,
   },
