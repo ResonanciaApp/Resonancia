@@ -215,7 +215,7 @@ export default function DescansoScreen() {
             {/* Icono luna */}
             <View style={styles.nightBannerIconWrap}>
               <BlurView intensity={40} tint="light" style={StyleSheet.absoluteFill} />
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.2)", borderRadius: 40 }]} />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)", borderRadius: 40 }]} />
               <Ionicons name="moon" size={22} color="#C4A8F5" />
             </View>
             {/* Texto */}
