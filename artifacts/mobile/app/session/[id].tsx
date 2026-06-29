@@ -295,7 +295,7 @@ export default function SessionDetailScreen() {
         <View style={styles.content}>
 
           {/* Duration label + rating */}
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 29 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 34 }}>
             {ratingStars > 0 && (
               <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
                 <Text style={{ fontSize: 12, fontWeight: "600", color: "#FFFFFF" }}>
@@ -810,7 +810,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    marginTop: 10,
+    marginTop: 5,
     marginBottom: 7,
   },
   titleActions: {
