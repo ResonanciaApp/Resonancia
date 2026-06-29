@@ -537,7 +537,7 @@ export default function SessionDetailScreen() {
       {/* ── Sticky header (aparece al scrollear) ─────────────────────────── */}
       <Animated.View
         pointerEvents="box-none"
-        style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: catBg.gradient[0] }]}
+        style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: catBg.solid }]}
       >
         <GlowPill onPress={() => router.back()} pillStyle={styles.stickyBackPill} gradientColors={catBg.gradient as [string, string]} />
         <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
