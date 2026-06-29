@@ -210,8 +210,7 @@ export default function DescansoScreen() {
           style={({ pressed }) => [styles.nightBannerWrap, pressed && { opacity: 0.82 }]}
           onPress={() => {}}
         >
-          <BlurView intensity={50} tint="dark" style={styles.nightBanner}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.12)", borderRadius: 14 }]} />
+          <View style={styles.nightBanner}>
             {/* Icono luna */}
             <View style={styles.nightBannerIconWrap}>
               <BlurView intensity={40} tint="light" style={StyleSheet.absoluteFill} />
@@ -225,7 +224,7 @@ export default function DescansoScreen() {
             </View>
             {/* Chevron */}
             <Feather name="chevron-right" size={18} color="rgba(255,255,255,0.6)" />
-          </BlurView>
+          </View>
         </Pressable>
 
       </ScrollView>
@@ -249,11 +248,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 14,
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.04)",
+    paddingVertical: 12,
+    paddingHorizontal: 4,
   },
   nightBannerIconWrap: {
     width: 46,
