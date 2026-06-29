@@ -855,7 +855,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   authorName: { fontSize: 22, fontWeight: "800", marginTop: 15, marginBottom: 4 },
-  authorCountry: { fontSize: 14, color: "#FFFFFF", marginBottom: 8 },
+  authorCountry: { fontSize: 14, color: "#FFFFFF", marginTop: 6, marginBottom: 8 },
   authorBio: { fontSize: 14, lineHeight: 21, color: "#FFFFFF" },
   authorLink: { fontSize: 13, fontWeight: "600" },
   allContentsBtn: {
