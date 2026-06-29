@@ -754,7 +754,7 @@ export default function HomeScreen2() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#160108" },
+  root: { flex: 1, backgroundColor: "#120509" },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
     paddingBottom: 0,
