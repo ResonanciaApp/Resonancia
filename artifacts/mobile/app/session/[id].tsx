@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import MaskedView from "@react-native-masked-view/masked-view";
 import Svg, { Path } from "react-native-svg";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
@@ -339,12 +340,18 @@ export default function SessionDetailScreen() {
           {/* ── Reproducciones ──────────────────────────────────────────── */}
           {playsData !== undefined && (
             <View style={styles.playsRow}>
-              <Feather name="headphones" size={13} color="#D4AF37" />
-              <Text style={styles.playsText}>
-                {playsData.plays === 0
-                  ? "Sé el primero en escuchar esta sesión"
-                  : `${playsData.plays.toLocaleString("es")} ${playsData.plays === 1 ? "reproducción" : "reproducciones"}`}
-              </Text>
+              <MaskedView maskElement={<Feather name="headphones" size={13} color="#000" />}>
+                <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 13, height: 13 }} />
+              </MaskedView>
+              <MaskedView maskElement={
+                <Text style={styles.playsText}>
+                  {playsData.plays === 0
+                    ? "Sé el primero en escuchar esta sesión"
+                    : `${playsData.plays.toLocaleString("es")} ${playsData.plays === 1 ? "reproducción" : "reproducciones"}`}
+                </Text>
+              }>
+                <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ height: 18, width: 260 }} />
+              </MaskedView>
             </View>
           )}
 
