@@ -40,7 +40,7 @@ const DURATION_FILTERS = [
   { label: "30+ min",   min: 31, max: 9999 },
 ];
 
-const BG_GRADIENT = ["#22070C", "#17060A", "#120509"] as const;
+const BG_GRADIENT = ["#160108", "#160108"] as const;
 
 export default function TagScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
