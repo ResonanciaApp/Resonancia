@@ -735,7 +735,7 @@ const styles = StyleSheet.create({
   playsRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     gap: 6,
     marginTop: 3,
     marginBottom: 4,
