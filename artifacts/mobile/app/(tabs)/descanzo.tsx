@@ -195,8 +195,10 @@ export default function DescansoScreen() {
                   style={[styles.tabGradient, sel && styles.tabGradientSel]}
                 >
                   <Text style={[styles.tabEmoji, { opacity: sel ? 1 : 0.45 }]}>{tab.emoji}</Text>
-                  <Text style={[styles.tabLine, { color: sel ? TAB_TEXT_SEL : TAB_TEXT_UNSEL }]}>{tab.line1}</Text>
-                  <Text style={[styles.tabLine, { color: sel ? TAB_TEXT_SEL : TAB_TEXT_UNSEL }]}>{tab.line2}</Text>
+                  <View>
+                    <Text style={[styles.tabLine, { color: sel ? TAB_TEXT_SEL : TAB_TEXT_UNSEL }]}>{tab.line1}</Text>
+                    <Text style={[styles.tabLine, { color: sel ? TAB_TEXT_SEL : TAB_TEXT_UNSEL }]}>{tab.line2}</Text>
+                  </View>
                 </LinearGradient>
               </Pressable>
             );
@@ -276,24 +278,22 @@ const styles = StyleSheet.create({
   /* Sleep tabs */
   tabGrid: {
     flexDirection: "row",
+    flexWrap: "wrap",
     paddingHorizontal: H_PAD,
-    gap: 8,
-    marginBottom: 16,
+    gap: 10,
+    marginBottom: 32,
   },
   tabCell: {
-    width: Math.floor((W - H_PAD * 2 - 8 * 3) / 4),
-    aspectRatio: 1,
+    width: "47.5%",
     borderRadius: 14,
     overflow: "hidden",
   },
   tabGradient: {
-    flex: 1,
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    gap: 4,
-    paddingVertical: 12,
-    paddingHorizontal: 6,
+    gap: 10,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
     borderRadius: 14,
     borderWidth: 1,
     borderColor: "transparent",
