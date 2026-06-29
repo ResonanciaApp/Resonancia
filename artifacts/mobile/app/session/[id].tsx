@@ -378,7 +378,7 @@ export default function SessionDetailScreen() {
               onPress={handlePlay}
               style={({ pressed }) => [
                 styles.playBtn,
-                { overflow: "hidden", opacity: pressed ? 0.88 : 1, marginTop: 18, marginBottom: 26 },
+                { overflow: "hidden", opacity: pressed ? 0.88 : 1, marginTop: 24, marginBottom: 26 },
               ]}
             >
               <LinearGradient
