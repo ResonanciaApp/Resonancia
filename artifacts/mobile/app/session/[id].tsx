@@ -20,6 +20,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -126,6 +127,7 @@ export default function SessionDetailScreen() {
   const RATINGS_KEY = "@resonance_ratings";
   const [ratingModal, setRatingModal] = useState(false);
   const [ratingStars, setRatingStars] = useState(0);
+  const [ratingReview, setRatingReview] = useState("");
   const [ratingSubmitted, setRatingSubmitted] = useState(false);
   const finishTriggeredRef = useRef(false);
 
@@ -600,14 +602,30 @@ export default function SessionDetailScreen() {
                   onPress={() => handleRate(star)}
                   hitSlop={8}
                 >
-                  <Feather
-                    name="star"
-                    size={36}
-                    color={ratingStars >= star ? "#D4AF37" : "rgba(255,255,255,0.30)"}
-                  />
+                  <Text style={{
+                    fontSize: 38,
+                    color: ratingStars >= star ? "#D6AD5F" : "rgba(255,255,255,0.25)",
+                    lineHeight: 44,
+                  }}>
+                    {ratingStars >= star ? "★" : "☆"}
+                  </Text>
                 </Pressable>
               ))}
             </View>
+
+            {/* Campo de reseña (aparece al seleccionar estrellas) */}
+            {ratingStars > 0 && (
+              <TextInput
+                style={styles.ratingReviewInput}
+                placeholder="Escribe tu reseña (opcional)..."
+                placeholderTextColor="rgba(255,255,255,0.35)"
+                multiline
+                numberOfLines={3}
+                value={ratingReview}
+                onChangeText={setRatingReview}
+                maxLength={280}
+              />
+            )}
 
             {/* Enviar */}
             <Pressable
@@ -968,7 +986,22 @@ const styles = StyleSheet.create({
   ratingStarsRow: {
     flexDirection: "row",
     gap: 16,
-    marginBottom: 28,
+    marginBottom: 20,
+  },
+  ratingReviewInput: {
+    width: "80%",
+    minHeight: 80,
+    backgroundColor: "rgba(255,255,255,0.07)",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "rgba(214,173,95,0.30)",
+    color: "#FFFFFF",
+    fontSize: 14,
+    lineHeight: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    marginBottom: 20,
+    textAlignVertical: "top",
   },
   ratingSubmitBtn: {
     width: "80%",
