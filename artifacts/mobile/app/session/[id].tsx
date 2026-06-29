@@ -34,7 +34,7 @@ import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 
 const { width } = Dimensions.get("window");
-const HEADER_H = 298;
+const HEADER_H = 343;
 
 function GlowPill({ onPress, pillStyle, gradientColors }: { onPress: () => void; pillStyle: object; gradientColors?: [string, string] }) {
   const scale  = useRef(new Animated.Value(1)).current;
