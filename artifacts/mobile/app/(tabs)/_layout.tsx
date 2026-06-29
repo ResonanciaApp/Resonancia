@@ -150,7 +150,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   useEffect(() => {
     Animated.timing(descanzoOpacity, {
       toValue: isDescanzo ? 1 : 0,
-      duration: isDescanzo ? 350 : 150,
+      duration: isDescanzo ? 350 : 0,
       easing: Easing.out(Easing.quad),
       useNativeDriver: true,
     }).start();
