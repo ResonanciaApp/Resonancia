@@ -382,7 +382,13 @@ export default function HomeScreen2() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   return (
-    <View style={styles.root}>
+    <LinearGradient
+      style={styles.root}
+      colors={["#22070C", "#17060A", "#120509"]}
+      locations={[0, 0.5, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="solid" />
 
@@ -749,12 +755,12 @@ export default function HomeScreen2() {
         visible={actionsSession !== null}
         onClose={() => setActionsSession(null)}
       />
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#160108" },
+  root: { flex: 1 },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
     paddingBottom: 0,
