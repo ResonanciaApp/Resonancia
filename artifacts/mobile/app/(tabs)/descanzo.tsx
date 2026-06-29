@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "rgba(64,25,80,0.6)",
+    borderColor: "rgba(255,255,255,0.2)",
   },
   nightBannerIconWrap: {
     width: 46,
