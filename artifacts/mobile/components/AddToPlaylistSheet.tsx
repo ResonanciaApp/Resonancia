@@ -70,7 +70,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
         style={styles.root}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#1B060F", "#1B060F"]} style={StyleSheet.absoluteFill} />
         {/* ── Paso: Lista de playlists ── */}
         {step === "list" && (
           <>

@@ -590,12 +590,6 @@ export default function SessionDetailScreen() {
             </View>
             <View style={styles.optDivider} />
             <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
-              {/* Sonido ambiente */}
-              <Pressable style={styles.optRow} onPress={() => setActionsSheetOpen(false)}>
-                <Feather name="music" size={18} color="white" style={styles.optIcon} />
-                <Text style={styles.optRowText}>Sonido ambiente</Text>
-                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
-              </Pressable>
               {/* Temporizador */}
               <Pressable style={styles.optRow} onPress={() => setActionsSheetOpen(false)}>
                 <Feather name="clock" size={18} color="white" style={styles.optIcon} />
