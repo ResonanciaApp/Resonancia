@@ -84,7 +84,6 @@ const VIDEO_REG_W = 200;
 const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 2.2);
 
 const SECTION_GAP = 48;
-const BG_GRADIENT = ["#2E0510", "#160108"] as const;
 
 const ND = Platform.OS !== "web";
 
@@ -383,13 +382,7 @@ export default function HomeScreen2() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   return (
-    <LinearGradient
-      style={styles.root}
-      colors={BG_GRADIENT}
-      locations={[0, 0.5, 1]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
+    <View style={styles.root}>
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="solid" />
 
@@ -756,12 +749,12 @@ export default function HomeScreen2() {
         visible={actionsSession !== null}
         onClose={() => setActionsSession(null)}
       />
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1 },
+  root: { flex: 1, backgroundColor: "#160108" },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
     paddingBottom: 0,
