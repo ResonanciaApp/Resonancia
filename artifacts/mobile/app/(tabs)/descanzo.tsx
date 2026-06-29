@@ -1,4 +1,5 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useEffect, useRef } from "react";
@@ -167,14 +168,10 @@ export default function DescansoScreen() {
           style={({ pressed }) => [styles.bannerWrap, pressed && { opacity: 0.82 }]}
           onPress={() => router.push("/escenas-mixer" as never)}
         >
-          <LinearGradient
-            style={styles.banner}
-            colors={["#2A2070", "#C47A6A"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
+          <BlurView intensity={55} tint="dark" style={styles.banner}>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(80,40,100,0.18)", borderRadius: 16 }]} />
             <View style={styles.bannerIconWrap}>
-              <Ionicons name="moon" size={22} color="#ffffff" />
+              <Ionicons name="moon" size={22} color="#C4A8F5" />
             </View>
             <View style={styles.bannerText}>
               <Text style={[styles.bannerTitle, { color: colors.foreground }]}>
@@ -185,7 +182,7 @@ export default function DescansoScreen() {
               </Text>
             </View>
             <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
-          </LinearGradient>
+          </BlurView>
         </Pressable>
 
         {/* ── Carruseles ── */}
