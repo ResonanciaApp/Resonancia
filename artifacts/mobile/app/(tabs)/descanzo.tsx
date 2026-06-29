@@ -28,7 +28,7 @@ const SLEEP_TABS = [
   { id: "ruido",    emoji: "⛈️", line1: "Ruido",       line2: "ambiental" },
 ] as const;
 
-type SleepTabId = typeof SLEEP_TABS[number]["id"];
+type SleepTabId = typeof SLEEP_TABS[number]["id"] | "todos";
 
 const TAB_UNSEL_COLORS: [string, string] = ["#1b0924", "#0f0514"];
 const TAB_SEL_COLORS:   [string, string] = ["#2d1240", "#1a0828"];
@@ -159,10 +159,12 @@ export default function DescansoScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const router    = useRouter();
 
-  const [activeTab, setActiveTab]       = useState<SleepTabId>("dormirme");
+  const [activeTab, setActiveTab]       = useState<SleepTabId>("todos");
   const [selectedSound, setSelectedSound] = useState<string | null>(null);
 
-  const visibleSounds = DESCANSO_SOUNDS.filter((s) => s.categoryId === activeTab);
+  const visibleSounds = activeTab === "todos"
+    ? DESCANSO_SOUNDS
+    : DESCANSO_SOUNDS.filter((s) => s.categoryId === activeTab);
 
   function handleSoundPress(id: string) {
     setSelectedSound((prev) => (prev === id ? null : id));
