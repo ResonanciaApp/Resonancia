@@ -964,7 +964,7 @@ const styles = StyleSheet.create({
   playBtn: {
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 15,
+    paddingVertical: 10,
     borderRadius: 30,
     shadowColor: "#D4AF37",
     shadowOffset: { width: 0, height: 4 },
@@ -980,7 +980,7 @@ const styles = StyleSheet.create({
   shareBtn: {
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 14,
+    paddingVertical: 9,
     borderRadius: 30,
     borderWidth: 1.5,
     borderColor: "#e8d2c0",
