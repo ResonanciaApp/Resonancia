@@ -787,7 +787,7 @@ const styles = StyleSheet.create({
   },
 
   // Related vertical list
-  relatedBlock: { marginBottom: 20 },
+  relatedBlock: { marginBottom: 20, marginTop: -6 },
   relatedList: { gap: 18, marginTop: 15 },
   relatedCard: {
     flexDirection: "row",
