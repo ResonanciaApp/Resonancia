@@ -221,7 +221,7 @@ export default function DescansoScreen() {
             {/* Texto */}
             <View style={{ flex: 1 }}>
               <Text style={styles.nightBannerTitle}>Prepara tu noche</Text>
-              <Text style={styles.nightBannerSub}>{"Crea el ambiente perfecto\npara un descanso profundo."}</Text>
+              <Text style={styles.nightBannerSub}>Crea tu atmósfera perfecta</Text>
             </View>
             {/* Chevron */}
             <Feather name="chevron-right" size={18} color="rgba(255,255,255,0.6)" />
