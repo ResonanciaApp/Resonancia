@@ -340,20 +340,21 @@ export default function SessionDetailScreen() {
           {/* ── Reproducciones ──────────────────────────────────────────── */}
           {playsData !== undefined && (
             <View style={styles.playsRow}>
-              <MaskedView style={{ alignSelf: "center" }} maskElement={<Feather name="headphones" size={13} color="#000" />}>
-                <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 13, height: 13 }} />
-              </MaskedView>
-              <MaskedView
-                style={{ alignSelf: "center" }}
-                maskElement={
-                  <Text style={[styles.playsText, { textAlign: "center" }]}>
-                    {playsData.plays === 0
-                      ? "Sé el primero en escuchar esta sesión"
-                      : `${playsData.plays.toLocaleString("es")} ${playsData.plays === 1 ? "reproducción" : "reproducciones"}`}
-                  </Text>
-                }>
-                <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ height: 18, width: 320 }} />
-              </MaskedView>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                <MaskedView maskElement={<Feather name="headphones" size={13} color="#000" />}>
+                  <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 13, height: 13 }} />
+                </MaskedView>
+                <MaskedView
+                  maskElement={
+                    <Text style={styles.playsText}>
+                      {playsData.plays === 0
+                        ? "Sé el primero en escuchar esta sesión"
+                        : `${playsData.plays.toLocaleString("es")} ${playsData.plays === 1 ? "reproducción" : "reproducciones"}`}
+                    </Text>
+                  }>
+                  <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ height: 18, width: 280 }} />
+                </MaskedView>
+              </View>
             </View>
           )}
 
