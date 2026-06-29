@@ -133,7 +133,10 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const accentOpacity = useRef(new Animated.Value(0)).current;
   const homeOpacity   = useRef(new Animated.Value(0)).current;
 
-  const isHome = state.routes[state.index]?.name === "resonadores";
+  const isHome     = state.routes[state.index]?.name === "resonadores";
+  const isDescanzo = state.routes[state.index]?.name === "descanzo";
+
+  const descanzoOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.timing(homeOpacity, {
@@ -143,6 +146,15 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       useNativeDriver: true,
     }).start();
   }, [isHome]);
+
+  useEffect(() => {
+    Animated.timing(descanzoOpacity, {
+      toValue: isDescanzo ? 1 : 0,
+      duration: 350,
+      easing: Easing.out(Easing.quad),
+      useNativeDriver: true,
+    }).start();
+  }, [isDescanzo]);
 
   useEffect(() => {
     Animated.timing(accentOpacity, {
@@ -172,8 +184,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       <Animated.View
         style={[styles.bar, { paddingBottom: pb, transform: [{ translateY }] }]}
       >
-        {/* Fondo base: borgoña (otras tabs) — se desvanece solo en Inicio */}
-        <Animated.View style={[StyleSheet.absoluteFill, { opacity: Animated.subtract(1, homeOpacity) }]}>
+        {/* Fondo base: borgoña (otras tabs) — se desvanece en Inicio y Descanso */}
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: Animated.subtract(1, Animated.add(homeOpacity, descanzoOpacity)) }]}>
           <LinearGradient
             colors={["#21040C", "#100105"]}
             start={{ x: 0, y: 0 }}
@@ -195,6 +207,11 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: homeOpacity }]} pointerEvents="none">
           <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
           <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
+        </Animated.View>
+        {/* Glass negro translúcido: solo en Descanso */}
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: descanzoOpacity }]} pointerEvents="none">
+          <BlurView intensity={85} tint="dark" style={StyleSheet.absoluteFill} />
+          <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]} />
         </Animated.View>
 
 
