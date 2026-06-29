@@ -163,68 +163,27 @@ export default function DescansoScreen() {
           </Text>
         </View>
 
-        {/* ── Carruseles + Banner ── */}
-        <View style={styles.carouselsWrap}>
-          {DESCANSO_TAG_CARDS.map((tag, idx) => {
-            const sessions = getSessionsByDescansoTag(tag.label);
-            return (
-              <React.Fragment key={tag.id}>
-                <View style={[styles.section, idx === 0 ? { marginTop: 25 } : { marginTop: 15 }]}>
-                  <View style={styles.catHeader}>
-                    <Text style={[styles.catTitle, { color: colors.foreground }]} numberOfLines={1}>
-                      {tag.label}
-                    </Text>
-                    <Pressable style={styles.verTodosBtn} hitSlop={10}>
-                      <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
-                    </Pressable>
-                  </View>
-
-                  {sessions.length > 0 ? (
-                    <ScrollView
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      contentContainerStyle={styles.carousel}
-                    >
-                      {sessions.map((s) => (
-                        <SessionCard key={s.id} session={s} width={CARD_W} destRoute="/descanzo-session" />
-                      ))}
-                    </ScrollView>
-                  ) : (
-                    <View style={[styles.emptySlot, { borderColor: colors.border }]}>
-                      <Feather name="moon" size={22} color={colors.mutedForeground} />
-                      <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-                        Próximamente
-                      </Text>
-                    </View>
-                  )}
-                </View>
-
-                {idx === 2 && (
-                  <Pressable
-                    style={({ pressed }) => [styles.bannerWrap, { marginTop: 15 }, pressed && { opacity: 0.82 }]}
-                    onPress={() => router.push("/escenas-mixer" as never)}
-                  >
-                    <BlurView intensity={55} tint="dark" style={styles.banner}>
-                      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(80,40,100,0.18)", borderRadius: 16 }]} />
-                      <View style={styles.bannerIconWrap}>
-                        <Ionicons name="moon" size={22} color="#C4A8F5" />
-                      </View>
-                      <View style={styles.bannerText}>
-                        <Text style={[styles.bannerTitle, { color: colors.foreground }]}>
-                          Mezclador para dormir
-                        </Text>
-                        <Text style={[styles.bannerSub, { color: colors.mutedForeground }]}>
-                          Crea tu propia mezcla de sonidos
-                        </Text>
-                      </View>
-                      <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
-                    </BlurView>
-                  </Pressable>
-                )}
-              </React.Fragment>
-            );
-          })}
-        </View>
+        {/* ── Banner Mezclador ── */}
+        <Pressable
+          style={({ pressed }) => [styles.bannerWrap, { marginTop: 25 }, pressed && { opacity: 0.82 }]}
+          onPress={() => router.push("/escenas-mixer" as never)}
+        >
+          <BlurView intensity={55} tint="dark" style={styles.banner}>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(80,40,100,0.18)", borderRadius: 16 }]} />
+            <View style={styles.bannerIconWrap}>
+              <Ionicons name="moon" size={22} color="#C4A8F5" />
+            </View>
+            <View style={styles.bannerText}>
+              <Text style={[styles.bannerTitle, { color: colors.foreground }]}>
+                Mezclador para dormir
+              </Text>
+              <Text style={[styles.bannerSub, { color: colors.mutedForeground }]}>
+                Crea tu propia mezcla de sonidos
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={20} color={colors.mutedForeground} />
+          </BlurView>
+        </Pressable>
       </ScrollView>
     </View>
   );
