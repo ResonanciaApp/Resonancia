@@ -179,7 +179,11 @@ export default function DescansoScreen() {
         </View>
 
         {/* ── Tabs de modo ── */}
-        <View style={styles.tabGrid}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.tabGrid}
+        >
           {SLEEP_TABS.map((tab) => {
             const sel = activeTab === tab.id;
             return (
@@ -203,7 +207,7 @@ export default function DescansoScreen() {
               </Pressable>
             );
           })}
-        </View>
+        </ScrollView>
 
         {/* ── Banner Prepara tu noche ── */}
         <Pressable
@@ -278,13 +282,12 @@ const styles = StyleSheet.create({
   /* Sleep tabs */
   tabGrid: {
     flexDirection: "row",
-    flexWrap: "wrap",
     paddingHorizontal: H_PAD,
     gap: 10,
-    marginBottom: 32,
+    marginBottom: 16,
   },
   tabCell: {
-    width: "47.5%",
+    width: 148,
     borderRadius: 14,
     overflow: "hidden",
   },
