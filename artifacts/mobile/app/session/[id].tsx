@@ -355,10 +355,10 @@ export default function SessionDetailScreen() {
                     <Text style={styles.playsText}>
                       {playsData.plays === 0
                         ? "Sé el primero en escuchar esta sesión"
-                        : `${playsData.plays.toLocaleString("es")} ${playsData.plays === 1 ? "reproducción" : "reproducciones"}`}
+                        : `${playsData.plays.toLocaleString("es")} ${playsData.plays === 1 ? "reproducción" : "reproducciones"}${session.createdAt ? ` desde ${new Date(session.createdAt).toLocaleDateString("es", { month: "long", year: "numeric" })}` : ""}`}
                     </Text>
                   }>
-                  <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ height: 18, width: 280 }} />
+                  <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ height: 18, width: 340 }} />
                 </MaskedView>
               </View>
             </View>
