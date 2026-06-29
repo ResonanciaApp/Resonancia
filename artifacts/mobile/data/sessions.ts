@@ -103,7 +103,6 @@ export const SESSIONS: Session[] = [
     benefits: ["Relajación profunda", "Claridad mental", "Conexión interior", "Paz duradera"],
     instruments: ["Cuencos tibetanos", "Campana", "Voz guía"],
     image: require("@/assets/images/sessions/session-1.jpg"),
-    isFeatured: true,
     meditationTag: "Visualizaciones",
     guideId: "sofia-ramirez",
   },
@@ -121,7 +120,6 @@ export const SESSIONS: Session[] = [
     benefits: ["Inspiración diaria", "Intención clara", "Perspectiva fresca", "Momento de pausa"],
     instruments: ["Cuenco tibetano", "Voz guía"],
     image: require("@/assets/images/sessions/session-5.jpg"),
-    isFeatured: true,
   },
   {
     id: "7",
@@ -276,6 +274,7 @@ export const SESSIONS: Session[] = [
     benefits: ["Meditación profunda", "Sueño lúcido", "Creatividad nocturna", "Descanso total"],
     instruments: ["Frecuencias binaurales theta", "Ambiente nocturno"],
     image: require("@/assets/images/sessions/session-9-musica-dark.jpg"),
+    isFeatured: true,
     isNew: true,
     frequency: "Theta 4–8 Hz",
     soundTag: "Música Ambient",
