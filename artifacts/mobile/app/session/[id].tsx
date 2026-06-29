@@ -350,11 +350,16 @@ export default function SessionDetailScreen() {
                 <MaskedView style={{ marginTop: -3 }} maskElement={<Feather name="headphones" size={13} color="#000" />}>
                   <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 13, height: 13 }} />
                 </MaskedView>
-                <Text style={styles.playsText}>
-                  {playsData.plays === 0
-                    ? "Sé el primero en escuchar esta sesión"
-                    : `${playsData.plays.toLocaleString("es")} ${playsData.plays === 1 ? "reproducción" : "reproducciones"}`}
-                </Text>
+                <MaskedView
+                  maskElement={
+                    <Text style={styles.playsText}>
+                      {playsData.plays === 0
+                        ? "Sé el primero en escuchar esta sesión"
+                        : `${playsData.plays.toLocaleString("es")} ${playsData.plays === 1 ? "reproducción" : "reproducciones"}`}
+                    </Text>
+                  }>
+                  <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ height: 18, width: 280 }} />
+                </MaskedView>
               </View>
             </View>
           )}
@@ -743,6 +748,6 @@ const styles = StyleSheet.create({
   },
   playsText: {
     fontSize: 13,
-    color: "#FFFFFF",
+    color: "#D4AF37",
   },
 });
