@@ -168,9 +168,9 @@ export default function DescansoScreen() {
           style={({ pressed }) => [styles.bannerWrap, pressed && { opacity: 0.82 }]}
           onPress={() => router.push("/escenas-mixer" as never)}
         >
-          <BlurView intensity={90} tint="dark" style={styles.banner}>
+          <BlurView intensity={55} tint="dark" style={styles.banner}>
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(80,40,100,0.18)", borderRadius: 16 }]} />
-            <View style={[styles.bannerIconWrap, { backgroundColor: "rgba(255,255,255,0.3)" }]}>
+            <View style={styles.bannerIconWrap}>
               <Ionicons name="moon" size={22} color="#C4A8F5" />
             </View>
             <View style={styles.bannerText}>
