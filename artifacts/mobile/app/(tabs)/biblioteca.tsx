@@ -1284,7 +1284,7 @@ export default function BibliotecaScreen() {
           elevation: 7,
         }]}
       >
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#160108" }]} />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#1C020A" }]} />
         {/* Fila 1: título + iconos */}
         <View style={styles.headerRow}>
           <View style={{ flex: 1 }}>
