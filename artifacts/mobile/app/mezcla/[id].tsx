@@ -289,7 +289,7 @@ export default function CommunityMixScreen() {
         </ScrollView>
 
         {/* Glass panel */}
-        <View style={[styles.glassPanel, { backgroundColor: "rgba(27,6,15,0.88)", borderColor: "rgba(61,14,22,0.50)" }]}>
+        <View style={[styles.glassPanel, { backgroundColor: "rgba(190,150,80,0.06)", borderColor: "rgba(61,14,22,0.50)" }]}>
 
           {/* Categoría + título */}
           {categoryMeta && (
