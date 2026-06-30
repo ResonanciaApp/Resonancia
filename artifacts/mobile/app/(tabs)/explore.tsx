@@ -564,7 +564,7 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   durPillText: {
-    fontSize: 17,
+    fontSize: 14,
     fontWeight: "600",
     color: "rgba(255,255,255,0.90)",
     letterSpacing: 0.2,
