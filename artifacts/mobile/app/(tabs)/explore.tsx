@@ -394,7 +394,7 @@ export default function ExploreScreen() {
                       ]}
                     >
                       <LinearGradient
-                        colors={sel ? ["#D6A45C", "#BE8744"] : ["#3D1A23", "#251219"]}
+                        colors={sel ? ["#D6A45C", "#BE8744"] : ["rgba(190,150,80,0.06)", "rgba(190,150,80,0.06)"]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 0, y: 1 }}
                         style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
