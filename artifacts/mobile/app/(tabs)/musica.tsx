@@ -1019,7 +1019,8 @@ const styles = StyleSheet.create({
   subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 16 },
   subTabBorderOuter: {
     borderRadius: 999,
-    padding: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 5,
   },
   subTabBorderInner: {
     flexDirection: "row", alignItems: "center", justifyContent: "center",
