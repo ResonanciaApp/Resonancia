@@ -155,14 +155,6 @@ export default function TemaScreen() {
           </Text>
         </View>
 
-        {/* Divider */}
-        <View
-          style={[
-            styles.divider,
-            { backgroundColor: "rgba(212,175,55,0.12)" },
-          ]}
-        />
-
         {/* Session list */}
         <View style={styles.list}>
           {displaySessions.map((s) => (
