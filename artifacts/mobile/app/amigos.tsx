@@ -487,7 +487,7 @@ const styles = StyleSheet.create({
   },
   searchInput: { flex: 1, fontSize: 14 },
   section: { marginBottom: 28, gap: 10 },
-  sectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 1, marginBottom: 4 },
+  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4 },
   empty: { fontSize: 13, paddingVertical: 8 },
   requestCard: {
     flexDirection: "row",

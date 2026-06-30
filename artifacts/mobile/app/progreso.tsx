@@ -884,7 +884,7 @@ const styles = StyleSheet.create({
   },
 
   // Challenges
-  sectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 1, marginTop: 8, marginBottom: 4 },
+  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.5, marginTop: 8, marginBottom: 4 },
   challengeCard: {
     borderRadius: 14,
     padding: 14,

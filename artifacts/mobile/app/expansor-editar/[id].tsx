@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   sectionHeader: { marginBottom: 6 },
-  sectionTitle: { fontSize: 22, fontWeight: "700", color: FG, letterSpacing: 1 },
+  sectionTitle: { fontSize: 20, fontWeight: "700", color: FG, letterSpacing: 0.5 },
   sectionHint: { fontSize: 11, color: MUTED, marginTop: 2 },
   fieldLabel: {
     fontSize: 11,

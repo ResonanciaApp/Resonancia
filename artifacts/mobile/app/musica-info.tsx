@@ -169,7 +169,7 @@ const info = StyleSheet.create({
   heroSub:      { fontSize:15, color:"rgba(255,255,255,0.82)", lineHeight:23, marginBottom:20 },
   heroCta:      { alignItems:"center", marginTop:8 },
   section:      { paddingHorizontal:24, paddingTop:48 },
-  sectionTitle: { fontSize:22, fontWeight:"800", letterSpacing:1, color:TEXT, marginBottom:16, lineHeight:28 },
+  sectionTitle: { fontSize:20, fontWeight:"800", letterSpacing:0.5, color:TEXT, marginBottom:16, lineHeight:28 },
   sectionBody:  { fontSize:15, color:MUTED, lineHeight:24, marginBottom:20 },
   sectionImg:   { width:"100%", height:200, borderRadius:16, marginTop:8 },
   genreRow:     { flexDirection:"row", alignItems:"flex-start", gap:14, marginBottom:20 },

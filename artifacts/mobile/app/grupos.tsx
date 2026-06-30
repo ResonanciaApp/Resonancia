@@ -526,7 +526,7 @@ const styles = StyleSheet.create({
   // Sections
   section: { marginBottom: 24 },
   sectionHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 14 },
-  sectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 1 },
+  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.5 },
   verTodos: { fontSize: 14, fontWeight: "600" },
   addBtn: {
     width: 32, height: 32, borderRadius: 16,
