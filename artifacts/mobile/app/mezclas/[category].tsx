@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   heroSub: { fontSize: 14, lineHeight: 20, textAlign: "center" },
 
   section: { marginBottom: 22 },
-  sectionTitle: { fontSize: 17, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10 },
+  sectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 1, marginBottom: 10 },
   emptyText: { fontSize: 13, lineHeight: 19 },
 
   // ── Mix row ─────────────────────────────────────────────────────

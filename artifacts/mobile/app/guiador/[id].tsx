@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
   },
   linkText: { fontSize: 13, fontWeight: "600" },
 
-  sectionTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, marginBottom: 12 },
+  sectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 1, marginBottom: 12 },
   empty: { fontSize: 14, lineHeight: 21 },
 
   trackRow: {

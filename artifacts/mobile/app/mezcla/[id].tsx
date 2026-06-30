@@ -531,7 +531,7 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 14,
   },
-  sectionTitle: { fontSize: 16, fontWeight: "700", flex: 1 },
+  sectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 1, flex: 1 },
   commentsCount: { fontSize: 14, fontWeight: "600" },
 
   composer: {

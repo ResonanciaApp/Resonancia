@@ -840,7 +840,7 @@ const styles = StyleSheet.create({
   },
 
   sectionBlock: { gap: 10 },
-  sectionTitle: { fontSize: 15, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.2 },
+  sectionTitle: { fontSize: 22, fontWeight: "700", color: "#FAF0EE", letterSpacing: 1 },
   chipRow: { flexDirection: "row", gap: 8, alignItems: "center" },
   specialtyChip: {
     borderRadius: 20,

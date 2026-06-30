@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
   mapaBtn: { flexDirection: "row", alignItems: "center", gap: 5, borderWidth: 1, borderRadius: 10, paddingHorizontal: 10, paddingVertical: 7 },
   mapaBtnText: { fontSize: 12, fontWeight: "600" },
   // Content
-  sectionTitle: { fontSize: 16, fontWeight: "700", marginBottom: 10 },
+  sectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 1, marginBottom: 10 },
   description: { fontSize: 14, lineHeight: 23 },
   tagsRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   tag: { borderRadius: 20, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 5 },

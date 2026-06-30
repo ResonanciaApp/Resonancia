@@ -505,7 +505,7 @@ const styles = StyleSheet.create({
     overflow: "hidden", borderRadius: 1,
   },
 
-  sectionTitle: { fontSize: 16, fontWeight: "700", marginBottom: 0 },
+  sectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 1, marginBottom: 0 },
   recentPlaceholder: {
     flexDirection: "row", alignItems: "center", gap: 14,
     borderRadius: 14, padding: 16, marginBottom: 28,

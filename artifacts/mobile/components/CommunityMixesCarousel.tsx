@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 3,
   },
-  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3 },
+  sectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 1 },
   verTodas: { fontSize: 13, fontWeight: "500" },
 
   // Portada / Avatar

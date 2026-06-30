@@ -515,7 +515,7 @@ const styles = StyleSheet.create({
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 11 },
-  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.3, color: "#FFFFFF", marginBottom: 16 },
+  sectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 1, color: "#FFFFFF", marginBottom: 16 },
 
   resultsLabel: { fontSize: 12, marginBottom: 12 },
   emptyState:   { alignItems: "center", paddingVertical: 48, gap: 10 },

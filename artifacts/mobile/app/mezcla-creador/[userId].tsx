@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   empty: { alignItems: "center", gap: 10, marginTop: 48, paddingHorizontal: 20 },
   emptyText: { fontSize: 14, textAlign: "center", lineHeight: 20 },
   list: { gap: 10 },
-  sectionTitle: { fontSize: 17, fontWeight: "700", letterSpacing: 0.3, marginBottom: 4 },
+  sectionTitle: { fontSize: 22, fontWeight: "700", letterSpacing: 1, marginBottom: 4 },
   mixRow: {
     flexDirection: "row",
     alignItems: "center",
