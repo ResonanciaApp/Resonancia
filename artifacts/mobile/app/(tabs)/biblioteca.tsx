@@ -912,7 +912,7 @@ export default function BibliotecaScreen() {
             onPress={() => setNombreVisible(true)}
           >
             <View style={styles.addResonadorIcon}>
-              <Feather name="music" size={20} color={GOLD} />
+              <Feather name="music" size={20} color={TEXT} />
             </View>
             <Text style={styles.addResonadorLabel}>Crear una Playlist</Text>
           </Pressable>
@@ -921,7 +921,7 @@ export default function BibliotecaScreen() {
             onPress={() => setNombreCarpetaVisible(true)}
           >
             <View style={styles.addResonadorIcon}>
-              <Feather name="folder" size={20} color={GOLD} />
+              <Feather name="folder" size={20} color={TEXT} />
             </View>
             <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
           </Pressable>
