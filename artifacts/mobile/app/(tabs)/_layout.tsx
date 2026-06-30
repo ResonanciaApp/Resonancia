@@ -4,7 +4,7 @@ import { Image as ExpoImage } from "expo-image";
 import { Tabs, usePathname } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import {
   Animated,
   Easing,
@@ -71,18 +71,32 @@ function TabItem({
   const conf = TAB_CONFIG[route.name];
   if (!conf) return null;
 
-  const isIOS     = Platform.OS === "ios";
-  const iconColor = isFocused ? ACTIVE_COLOR : INACTIVE_COLOR;
-  const iconSize  = conf.iconSize ?? ICON_SIZE;
+  const focusAnim  = useRef(new Animated.Value(isFocused ? 1 : 0)).current;
+  const isIOS      = Platform.OS === "ios";
+  const iconSize   = conf.iconSize ?? ICON_SIZE;
   const iconOffset = conf.iconOffset ?? 0;
+  const tOffset    = [{ translateY: iconOffset }];
 
-  const icon = conf.image ? (
-    <Image source={conf.image} style={{ width: iconSize, height: iconSize, transform: [{ translateY: iconOffset }] }} tintColor={iconColor} resizeMode="contain" />
-  ) : isIOS ? (
-    <SymbolView name={(isFocused ? conf.sfIconFill : conf.sfIcon) as never} tintColor={iconColor} size={iconSize} style={{ transform: [{ translateY: iconOffset }] }} />
-  ) : (
-    <Feather name={conf.featherIcon as never} size={iconSize} color={iconColor} style={{ transform: [{ translateY: iconOffset }] }} />
-  );
+  useEffect(() => {
+    Animated.timing(focusAnim, {
+      toValue: isFocused ? 1 : 0,
+      duration: 350,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [isFocused, focusAnim]);
+
+  const makeIcon = useCallback((active: boolean) => {
+    const color = active ? ACTIVE_COLOR : INACTIVE_COLOR;
+    const sfName = active ? conf.sfIconFill : conf.sfIcon;
+    return conf.image ? (
+      <Image source={conf.image} style={{ width: iconSize, height: iconSize, transform: tOffset }} tintColor={color} resizeMode="contain" />
+    ) : isIOS ? (
+      <SymbolView name={sfName as never} tintColor={color} size={iconSize} style={{ transform: tOffset }} />
+    ) : (
+      <Feather name={conf.featherIcon as never} size={iconSize} color={color} style={{ transform: tOffset }} />
+    );
+  }, [conf, iconSize, isIOS, tOffset]);
 
   return (
     <Pressable
@@ -92,27 +106,23 @@ function TabItem({
       accessibilityState={{ selected: isFocused }}
     >
       <View style={styles.pillWrap}>
-        {/* Ícono con glow dorado cuando está activo */}
-        <View style={isFocused ? styles.iconGlow : undefined}>
-          {icon}
+        {/* Íconos apilados: inactivo base, activo con fade-in animado */}
+        <View style={{ width: iconSize, height: iconSize }}>
+          <View style={StyleSheet.absoluteFill}>{makeIcon(false)}</View>
+          <Animated.View style={[StyleSheet.absoluteFill, styles.iconGlow, { opacity: focusAnim }]}>
+            {makeIcon(true)}
+          </Animated.View>
         </View>
 
-        <Text
-          style={[
-            styles.label,
-            {
-              color: isFocused ? GRAD_END : INACTIVE_COLOR,
-              fontWeight: isFocused ? "700" : "400",
-              ...(isFocused && {
-                textShadowColor: "rgba(212,175,55,0.55)",
-                textShadowOffset: { width: 0, height: 0 },
-                textShadowRadius: 5,
-              }),
-            },
-          ]}
-        >
-          {conf.label}
-        </Text>
+        {/* Labels apiladas: inactiva base, activa con fade-in animado */}
+        <View style={styles.labelWrap}>
+          <Text style={[styles.label, { color: INACTIVE_COLOR, fontWeight: "400" }]} numberOfLines={1}>
+            {conf.label}
+          </Text>
+          <Animated.Text style={[styles.label, styles.labelActive, { opacity: focusAnim }]} numberOfLines={1}>
+            {conf.label}
+          </Animated.Text>
+        </View>
       </View>
     </Pressable>
   );
@@ -131,30 +141,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const accentOpacity = useRef(new Animated.Value(0)).current;
-  const homeOpacity   = useRef(new Animated.Value(0)).current;
-
-  const isHome     = state.routes[state.index]?.name === "resonadores";
-  const isDescanzo = state.routes[state.index]?.name === "descanzo";
-
-  const descanzoOpacity = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    Animated.timing(homeOpacity, {
-      toValue: isHome ? 1 : 0,
-      duration: 350,
-      easing: Easing.out(Easing.quad),
-      useNativeDriver: true,
-    }).start();
-  }, [isHome]);
-
-  useEffect(() => {
-    Animated.timing(descanzoOpacity, {
-      toValue: isDescanzo ? 1 : 0,
-      duration: isDescanzo ? 350 : 0,
-      easing: Easing.out(Easing.quad),
-      useNativeDriver: true,
-    }).start();
-  }, [isDescanzo]);
 
   useEffect(() => {
     Animated.timing(accentOpacity, {
@@ -184,20 +170,11 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       <Animated.View
         style={[styles.bar, { paddingBottom: pb, transform: [{ translateY }] }]}
       >
-        {/* Fondo base: sólido (otras tabs) — se desvanece en Inicio y Descanso */}
-        <Animated.View style={[StyleSheet.absoluteFill, { opacity: Animated.subtract(1, Animated.add(homeOpacity, descanzoOpacity)), backgroundColor: "#16040A" }]} />
+        {/* Fondo base: blur + overlay semitransparente siempre activos */}
+        <BlurView intensity={22} tint="dark" style={StyleSheet.absoluteFill} />
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(22,4,10,0.72)" }]} />
         {/* Acento del tab activo (crossfade) */}
-        <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "#16040A" }]} />
-        {/* Glass negro+dorado: solo en Inicio */}
-        <Animated.View style={[StyleSheet.absoluteFill, { opacity: homeOpacity }]} pointerEvents="none">
-          <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
-          <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
-        </Animated.View>
-        {/* Glass negro translúcido: solo en Descanso */}
-        <Animated.View style={[StyleSheet.absoluteFill, { opacity: descanzoOpacity }]} pointerEvents="none">
-          <BlurView intensity={60} tint="dark" style={StyleSheet.absoluteFill} />
-          <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.25)" }]} />
-        </Animated.View>
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "transparent" }]} />
 
 
         <View style={[styles.row, isWeb && styles.rowWeb, { paddingTop: 8 + extra, height: 31 + extra }]}>
@@ -364,6 +341,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255,255,255,0.05)",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -8 },
+    shadowOpacity: 0.18,
+    shadowRadius: 15,
+    elevation: 10,
   },
   row: {
     flexDirection: "row",
@@ -397,6 +381,22 @@ const styles = StyleSheet.create({
     fontSize: 11,
     letterSpacing: 0.3,
     fontWeight: "500",
+  },
+  labelWrap: {
+    position: "relative",
+    alignItems: "center",
+  },
+  labelActive: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    textAlign: "center",
+    color: GRAD_END,
+    fontWeight: "700",
+    textShadowColor: "rgba(212,175,55,0.55)",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 5,
   },
   mezcladorHandle: {
     position: "absolute",
