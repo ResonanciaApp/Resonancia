@@ -1,6 +1,7 @@
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { Animated, Easing, Pressable, StyleSheet } from "react-native";
+import { Animated, Pressable, StyleSheet } from "react-native";
+import { DURATION, easeOutCubic, easeInCubic } from "@/constants/motion";
 import { Image as ExpoImage } from "expo-image";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -106,27 +107,27 @@ export function NotificationBell() {
         Animated.timing(fireOpacity, {
           toValue: 1,
           duration: FADE_IN,
-          easing: Easing.out(Easing.quad),
+          easing: easeOutCubic,
           useNativeDriver: true,
         }),
         Animated.sequence([
           Animated.timing(fireScale, {
-            toValue: 1.2,
-            duration: 240,
-            easing: Easing.out(Easing.quad),
+            toValue: 0.95,
+            duration: DURATION.BUTTON_PRESS,
+            easing: easeOutCubic,
             useNativeDriver: true,
           }),
           Animated.timing(fireScale, {
             toValue: 1,
-            duration: 280,
-            easing: Easing.out(Easing.cubic),
+            duration: DURATION.BUTTON_RELEASE,
+            easing: easeOutCubic,
             useNativeDriver: true,
           }),
         ]),
         Animated.timing(numOpacity, {
           toValue: 1,
           duration: FADE_IN,
-          easing: Easing.out(Easing.quad),
+          easing: easeOutCubic,
           useNativeDriver: true,
         }),
       ]).start();
@@ -138,13 +139,13 @@ export function NotificationBell() {
           Animated.timing(fireOpacity, {
             toValue: REST_OPACITY,
             duration: FADE_OUT,
-            easing: Easing.in(Easing.quad),
+            easing: easeInCubic,
             useNativeDriver: true,
           }),
           Animated.timing(numOpacity, {
             toValue: REST_OPACITY,
             duration: FADE_OUT,
-            easing: Easing.in(Easing.quad),
+            easing: easeInCubic,
             useNativeDriver: true,
           }),
         ]).start();

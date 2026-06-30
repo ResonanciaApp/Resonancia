@@ -38,8 +38,8 @@ interface FadeSlideInProps {
 export function FadeSlideIn({
   children,
   delay = 0,
-  translateYFrom = 12,
-  scaleFrom = 0.97,
+  translateYFrom = 6,
+  scaleFrom = 0.98,
   style,
 }: FadeSlideInProps) {
   const opacity    = useRef(new Animated.Value(0)).current;

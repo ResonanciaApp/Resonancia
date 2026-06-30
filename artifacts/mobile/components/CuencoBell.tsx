@@ -36,7 +36,7 @@ export function CuencoBell() {
       Animated.timing(glowOpacity, { toValue: 1, duration: FADE_IN, easing: easeOutCubic, useNativeDriver: true }),
       Animated.timing(goldOpacity, { toValue: 1, duration: FADE_IN, easing: easeOutCubic, useNativeDriver: true }),
       Animated.sequence([
-        Animated.timing(scaleAnim, { toValue: 1.12, duration: DURATION.PLAYER,         easing: easeOutCubic, useNativeDriver: true }),
+        Animated.timing(scaleAnim, { toValue: 0.95, duration: DURATION.BUTTON_PRESS,   easing: easeOutCubic, useNativeDriver: true }),
         Animated.timing(scaleAnim, { toValue: 1,    duration: DURATION.BUTTON_RELEASE, easing: easeOutCubic, useNativeDriver: true }),
       ]),
     ]).start();

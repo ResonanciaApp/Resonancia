@@ -57,7 +57,7 @@ export function SaveMixCelebration({ visible, category, imageKey, onDone }: Prop
     const anim = Animated.sequence([
       // 1) aparece el overlay + el token crece en el centro
       Animated.parallel([
-        Animated.timing(root, { toValue: 1, duration: 220, useNativeDriver: true }),
+        Animated.timing(root, { toValue: 1, duration: DURATION.PLAYER, easing: easeOutCubic, useNativeDriver: true }),
         Animated.timing(tokenScale, { toValue: 1, duration: DURATION.CARD, easing: easeOutCubic, useNativeDriver: true }),
       ]),
       Animated.delay(240),
@@ -96,7 +96,7 @@ export function SaveMixCelebration({ visible, category, imageKey, onDone }: Prop
       // 3) la categoría "recibe" el token (pulso + brillo)
       Animated.parallel([
         Animated.sequence([
-          Animated.timing(pillScale, { toValue: 1.18, duration: 160, useNativeDriver: true }),
+          Animated.timing(pillScale, { toValue: 0.97, duration: DURATION.BUTTON_PRESS,  easing: easeOutCubic, useNativeDriver: true }),
           Animated.timing(pillScale, { toValue: 1, duration: DURATION.MICRO, easing: easeOutCubic, useNativeDriver: true }),
         ]),
         Animated.sequence([

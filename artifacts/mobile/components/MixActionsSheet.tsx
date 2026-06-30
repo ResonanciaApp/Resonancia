@@ -22,11 +22,11 @@ import {
   Text,
   View,
 } from "react-native";
+import { DURATION, easeOutCubic } from "@/constants/motion";
 import RAnimated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
-  Easing,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -49,7 +49,7 @@ const THUMB = 40;
 const SHIFT_CLOSED = 24;
 const SHIFT_OPEN = 58;
 const MAX_STACK = 4;
-const TIMING_CFG = { duration: 220, easing: Easing.out(Easing.cubic) } as const;
+const TIMING_CFG = { duration: DURATION.SHEET_CLOSE, easing: easeOutCubic } as const;
 
 function MiniStack({ sounds }: { sounds: { id: string }[] }) {
   const visible = sounds.slice(0, MAX_STACK);

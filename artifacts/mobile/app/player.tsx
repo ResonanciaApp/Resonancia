@@ -332,7 +332,8 @@ export default function PlayerScreen() {
   useEffect(() => {
     RNAnimated.timing(terminarOpacity, {
       toValue: isPlaying ? 0 : 1,
-      duration: 220,
+      duration: DURATION.PLAYER,
+      easing: easeOutCubic,
       useNativeDriver: true,
     }).start();
   }, [isPlaying, terminarOpacity]);
