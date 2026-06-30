@@ -434,14 +434,12 @@ export default function HomeScreen2() {
                       { opacity: pressed ? 0.7 : 1 },
                     ]}
                   >
-                    {sel && (
-                      <LinearGradient
-                        colors={["#D6AD5F", "#B47344"]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={StyleSheet.absoluteFill}
-                      />
-                    )}
+                    <LinearGradient
+                      colors={sel ? ["#D6A45C", "#BE8744"] : ["#2A181D", "#241317"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 0, y: 1 }}
+                      style={StyleSheet.absoluteFill}
+                    />
                     <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
                       {tab.label}
                     </Text>
@@ -900,7 +898,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: 34,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.07)",
     alignItems: "center",
     justifyContent: "center",
   },
