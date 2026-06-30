@@ -259,7 +259,7 @@ function MixRow({
       {/* Likes */}
       {mix.likes > 0 && (
         <View style={styles.likeChip}>
-          <Feather name="heart" size={11} color={GOLD} />
+          <Feather name="heart" size={14} color="#BE8744" />
           <Text style={styles.likeCount}>{mix.likes}</Text>
         </View>
       )}
@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
   mixAuthor: { fontSize: 10, marginTop: 2 },
   mixCount: { fontSize: 12, fontWeight: "500" },
   likeChip: { flexDirection: "row", alignItems: "center", gap: 3, flexShrink: 0 },
-  likeCount: { fontSize: 10, fontWeight: "600", color: GOLD },
+  likeCount: { fontSize: 13, fontWeight: "600", color: "#BE8744" },
   dotsBtn: {
     width: 32,
     height: 32,
