@@ -115,14 +115,12 @@ function MixRow({
 function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress: () => void }) {
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
-      {sel && (
-        <LinearGradient
-          colors={["#D6AD5F", "#B47344"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={StyleSheet.absoluteFill}
-        />
-      )}
+      <LinearGradient
+        colors={sel ? ["#D6A45C", "#BE8744"] : ["#3D1A23", "#251219"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
       <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
     </Pressable>
   );
@@ -1484,7 +1482,6 @@ const styles = StyleSheet.create({
   chip: {
     paddingHorizontal: 14, paddingVertical: 8,
     borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.08)",
     overflow: "hidden",
   },
   chipText: { fontSize: 13, fontWeight: "600", color: TEXT },
