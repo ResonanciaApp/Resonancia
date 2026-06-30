@@ -915,7 +915,7 @@ const styles = StyleSheet.create({
   },
 
   pillRow:        { flexGrow: 0, marginTop: 4, marginBottom: -11, backgroundColor: "transparent" },
-  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingTop: 20, paddingBottom: 24 },
+  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingTop: 15, paddingBottom: 24 },
   pillGlow: {
     borderRadius: 999,
     shadowColor: "#FFFFFF",
