@@ -393,25 +393,8 @@ export default function CommunityMixScreen() {
             <Pressable
               onPress={handleSendComment}
               disabled={!draft.trim() || addComment.isPending}
-              style={[
-                styles.sendBtn,
-                {
-                  backgroundColor: draft.trim() ? undefined : colors.card,
-                  overflow: "hidden",
-                  opacity: addComment.isPending ? 0.6 : 1,
-                },
-              ]}
-            >
-              {!!draft.trim() && (
-                <LinearGradient
-                  colors={["#D6AD5F", "#B47344"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={StyleSheet.absoluteFill}
-                />
-              )}
-              <Feather name="send" size={16} color={colors.background} />
-            </Pressable>
+              style={{ opacity: addComment.isPending ? 0.6 : 1 }}
+            />
           </View>
 
           {/* Lista de comentarios */}
