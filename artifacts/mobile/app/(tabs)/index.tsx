@@ -128,12 +128,9 @@ function NavTabChip({ sel, label, onPress }: { sel: boolean; label: string; onPr
           style={StyleSheet.absoluteFill}
         />
       </Animated.View>
-      <Animated.Text style={[
-        styles.headerTabText,
-        { color: selOpacity.interpolate({ inputRange: [0, 1], outputRange: ["rgba(250,240,238,0.6)", "#1B060F"] }) },
-      ]}>
+      <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
         {label}
-      </Animated.Text>
+      </Text>
     </Pressable>
   );
 }
