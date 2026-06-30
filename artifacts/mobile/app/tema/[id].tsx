@@ -28,7 +28,7 @@ const H_PAD = 20;
 const STICKY_START = 180;
 const STICKY_END   = 300;
 
-const BG_GRADIENT = ["#1C020A", "#1C020A"] as const;
+const BG_GRADIENT = ["#16040A", "#16040A"] as const;
 
 export default function TemaScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -80,7 +80,7 @@ export default function TemaScreen() {
           styles.stickyHeader,
           {
             paddingTop: topPad,
-            backgroundColor: "#1C020A",
+            backgroundColor: "#16040A",
             borderBottomColor: "rgba(212,175,55,0.15)",
             opacity: headerOpacity,
           },

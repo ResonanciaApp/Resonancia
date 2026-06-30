@@ -76,7 +76,7 @@ export default function SignUpScreen() {
     (signUp.missingFields?.length ?? 0) === 0;
 
   return (
-    <LinearGradient colors={["#1C020A", "#1C020A"]} style={styles.container}>
+    <LinearGradient colors={["#16040A", "#16040A"]} style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}

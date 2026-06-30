@@ -22,7 +22,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 import { useGrupos } from "@/hooks/useGrupos";
 
-const BG_GRADIENT = ["#1C020A", "#1C020A"] as const;
+const BG_GRADIENT = ["#16040A", "#16040A"] as const;
 
 // ─── Image library ────────────────────────────────────────────────────────────
 const GALLERY = [
@@ -107,7 +107,7 @@ function GroupPreview({
 }
 
 const preview = StyleSheet.create({
-  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#1C020A" },
+  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#16040A" },
   image: { width: 72, height: 72, borderRadius: 18, alignItems: "center", justifyContent: "center", marginBottom: 10 },
   initial: { fontSize: 28, fontWeight: "700", color: "#FFFFFF" },
   name: { color: "#FFFFFF", fontSize: 18, fontWeight: "700", marginBottom: 4 },

@@ -29,7 +29,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 
 const H_PAD = 18;
 const CARD_GAP = 10;
-const BG: [string, string] = ["#1C020A", "#1C020A"];
+const BG: [string, string] = ["#16040A", "#16040A"];
 const EQUIPO_BG = require("@/assets/images/equipo-bg.jpg");
 const MUTED = "rgba(250,240,238,0.45)";
 const CHIP_ANIM_DURATION = 600;
@@ -464,7 +464,7 @@ export default function ResonadoresScreen() {
     <View style={styles.root}>
       <Image
         source={EQUIPO_BG}
-        style={[StyleSheet.absoluteFill, { backgroundColor: "#1C020A" }]}
+        style={[StyleSheet.absoluteFill, { backgroundColor: "#16040A" }]}
         contentFit="cover"
         cachePolicy="memory-disk"
         transition={200}

@@ -706,7 +706,7 @@ export default function PlayerScreen() {
           {/* Sheet */}
           <Animated.View style={[styles.optSheet, { paddingBottom: bottomPad + 8 }, sheetAnimStyle]}>
             <LinearGradient
-              colors={["#1C020A", "#1C020A"]}
+              colors={["#16040A", "#16040A"]}
               locations={[0, 1]}
               style={[StyleSheet.absoluteFill, { borderTopLeftRadius: 24, borderTopRightRadius: 24 }]}
               pointerEvents="none"

@@ -27,7 +27,7 @@ import {
 import { useColors } from "@/hooks/useColors";
 import { SacredBackground } from "@/components/SacredBackground";
 
-const BG_GRADIENT = ["#1C020A", "#1C020A"] as const;
+const BG_GRADIENT = ["#16040A", "#16040A"] as const;
 
 export default function SeguidoresScreen() {
   const colors = useColors();

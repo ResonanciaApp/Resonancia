@@ -258,7 +258,7 @@ const pastStyles = StyleSheet.create({
 
 // ── Estilos ───────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#1C020A" },
+  root: { flex: 1, backgroundColor: "#16040A" },
   header: {
     flexDirection: "row",
     alignItems: "center",

@@ -120,10 +120,10 @@ export default function SessionDetailScreen() {
     gradient: [string, string]; solid: string;
     pillBg: string; labelGradient: [string, string]; labelColor: string;
   }> = {
-    "sonidos-ancestrales":  { gradient: ["#2E0510", "#1C020A"], solid: "#1C020A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "meditaciones-guiadas": { gradient: ["#2E0510", "#1C020A"], solid: "#1C020A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "reflexiones":          { gradient: ["#2E0510", "#1C020A"], solid: "#1C020A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "musica-sonidos":       { gradient: ["#2E0510", "#1C020A"], solid: "#1C020A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "sonidos-ancestrales":  { gradient: ["#2E0510", "#16040A"], solid: "#16040A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "meditaciones-guiadas": { gradient: ["#2E0510", "#16040A"], solid: "#16040A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "reflexiones":          { gradient: ["#2E0510", "#16040A"], solid: "#16040A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "musica-sonidos":       { gradient: ["#2E0510", "#16040A"], solid: "#16040A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
     "descanso":             { gradient: ["#14060C", "#14060C"], solid: "#14060C", pillBg: "#3D0E16", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
   };
   const catBg = CATEGORY_BG[session.categoryId] ?? CATEGORY_BG["sonidos-ancestrales"];
@@ -282,10 +282,10 @@ export default function SessionDetailScreen() {
               end={{ x: 1, y: 0 }}
               style={styles.categoryPill}
             >
-              <Feather name={categoryIcon as never} size={17} color="#1C020A" />
-              <Text style={[styles.categoryPillText, { color: "#1C020A" }]}>{categoryPill}</Text>
-              <Text style={[styles.categoryPillSep, { color: "#1C020A" }]}>·</Text>
-              <Text style={[styles.durationText, { color: "#1C020A" }]}>{session.durationLabel.replace(" min", "m")}</Text>
+              <Feather name={categoryIcon as never} size={17} color="#16040A" />
+              <Text style={[styles.categoryPillText, { color: "#16040A" }]}>{categoryPill}</Text>
+              <Text style={[styles.categoryPillSep, { color: "#16040A" }]}>·</Text>
+              <Text style={[styles.durationText, { color: "#16040A" }]}>{session.durationLabel.replace(" min", "m")}</Text>
             </LinearGradient>
           )}
 

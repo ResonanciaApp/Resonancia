@@ -21,7 +21,7 @@ const GOLD = "#D4AF37";
 const GOLD2 = "#E9C46A";
 const TEXT = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.55)";
-const BG: [string, string] = ["#1C020A", "#1C020A"];
+const BG: [string, string] = ["#16040A", "#16040A"];
 const H_PAD = 18;
 
 const RESONADOR_IMG = require("@/assets/images/banner-resonador.png");
@@ -95,7 +95,7 @@ function RoleCard({ role, delay }: { role: RoleData; delay: number }) {
       <View style={styles.bannerWrap}>
         <Image source={role.banner} style={StyleSheet.absoluteFill} contentFit="cover" />
         <LinearGradient
-          colors={["transparent", "rgba(22,1,8,0.35)", "#1C020A"]}
+          colors={["transparent", "rgba(22,1,8,0.35)", "#16040A"]}
           locations={[0, 0.55, 1]}
           style={StyleSheet.absoluteFill}
         />
@@ -181,7 +181,7 @@ export default function EquipoInfoScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#1C020A" },
+  root: { flex: 1, backgroundColor: "#16040A" },
   header: {
     paddingHorizontal: H_PAD,
     paddingBottom: 10,

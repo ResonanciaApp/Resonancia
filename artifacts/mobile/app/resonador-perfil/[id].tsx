@@ -68,7 +68,7 @@ export default function ResonadorPerfilScreen() {
   const [descExpanded, setDescExpanded] = React.useState(false);
   const [descOverflows, setDescOverflows] = React.useState(false);
   const [overrides, setOverrides] = React.useState<(Partial<Resonador> & { photoUri?: string }) | null>(null);
-  const bgColors: readonly [string, string] = bgGradientColors(profileBgId) ?? ["#1C020A", "#1C020A"];
+  const bgColors: readonly [string, string] = bgGradientColors(profileBgId) ?? ["#16040A", "#16040A"];
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -88,7 +88,7 @@ export default function ResonadorPerfilScreen() {
     return (
       <View style={styles.root}>
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#1C020A", "#1C020A"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#16040A", "#16040A"]} style={StyleSheet.absoluteFill} />
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
           <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />

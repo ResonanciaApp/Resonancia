@@ -119,10 +119,10 @@ export default function SessionDetailScreen() {
     gradient: [string, string]; solid: string;
     pillBg: string; labelGradient: [string, string]; labelColor: string;
   }> = {
-    "sonidos-ancestrales":  { gradient: ["#2E0510", "#1C020A"], solid: "#1C020A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "meditaciones-guiadas": { gradient: ["#2E0510", "#1C020A"], solid: "#1C020A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "reflexiones":          { gradient: ["#2E0510", "#1C020A"], solid: "#1C020A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "musica-sonidos":       { gradient: ["#2E0510", "#1C020A"], solid: "#1C020A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "sonidos-ancestrales":  { gradient: ["#2E0510", "#16040A"], solid: "#16040A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "meditaciones-guiadas": { gradient: ["#2E0510", "#16040A"], solid: "#16040A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "reflexiones":          { gradient: ["#2E0510", "#16040A"], solid: "#16040A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "musica-sonidos":       { gradient: ["#2E0510", "#16040A"], solid: "#16040A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
     "descanso":             { gradient: ["#252525", "#1C1C1C"], solid: "#1C1C1C", pillBg: "#2A2A2A", labelGradient: ["#E8E8E8", "#C8C8C8"], labelColor: "#333333" },
   };
   const catBg = CATEGORY_BG[session.categoryId] ?? CATEGORY_BG["sonidos-ancestrales"];
@@ -597,7 +597,7 @@ export default function SessionDetailScreen() {
           </Pressable>
           <View style={[styles.optSheet, { paddingBottom: bottomPad + 8 }]}>
             <LinearGradient
-              colors={["#2E0510", "#1C020A"]}
+              colors={["#2E0510", "#16040A"]}
               locations={[0, 1]}
               style={[StyleSheet.absoluteFill, { borderTopLeftRadius: 24, borderTopRightRadius: 24 }]}
               pointerEvents="none"
@@ -1062,7 +1062,7 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingVertical: 9,
     borderRadius: 29,
-    backgroundColor: "#1C020A",
+    backgroundColor: "#16040A",
     paddingHorizontal: 24,
   },
   shareBtnText: {

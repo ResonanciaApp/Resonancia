@@ -67,7 +67,7 @@ export default function AncestralInfoScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#1C020A", "#1C020A"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
+      <LinearGradient colors={["#16040A", "#16040A"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
 
       {/* ── Sticky header ── */}
       <View style={[styles.stickyHeader, { paddingTop: topPad + 8 }]}>
@@ -83,7 +83,7 @@ export default function AncestralInfoScreen() {
         <View style={styles.banner}>
           <Image source={item.image} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" />
           <LinearGradient
-            colors={["transparent", "rgba(22,1,8,0.50)", "#1C020A"]}
+            colors={["transparent", "rgba(22,1,8,0.50)", "#16040A"]}
             locations={[0.40, 0.75, 1]}
             style={StyleSheet.absoluteFill}
           />
@@ -111,7 +111,7 @@ export default function AncestralInfoScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#1C020A" },
+  root: { flex: 1, backgroundColor: "#16040A" },
 
   stickyHeader: {
     flexDirection: "row", alignItems: "center", justifyContent: "space-between",

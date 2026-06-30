@@ -143,7 +143,7 @@ function CoverPickerSheet({
     return (
       <Modal visible animationType="slide" transparent onRequestClose={() => { setView("menu"); onClose(); }}>
         <Pressable style={ms.backdrop} onPress={() => { setView("menu"); onClose(); }} />
-        <LinearGradient colors={["#1C020A", "#1C020A"]} style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
+        <LinearGradient colors={["#16040A", "#16040A"]} style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
           <View style={ms.handle} />
           <View style={ms.headerRow}>
             <Pressable onPress={() => setView("menu")} hitSlop={12}>
@@ -227,7 +227,7 @@ function CoverPickerSheet({
   return (
     <Modal visible animationType="slide" transparent onRequestClose={handleClose}>
       <Pressable style={ms.backdrop} onPress={handleClose} />
-      <LinearGradient colors={["#1C020A", "#1C020A"]} style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
+      <LinearGradient colors={["#16040A", "#16040A"]} style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
         <View style={ms.handle} />
         <Text style={ms.sheetTitle}>Portada de la mezcla</Text>
         <Pressable style={({ pressed }) => [ms.row, { opacity: pressed ? 0.7 : 1 }]} onPress={() => setView("presets")}>

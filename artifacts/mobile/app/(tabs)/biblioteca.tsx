@@ -48,8 +48,8 @@ import { PlaylistActionsSheet } from "@/components/PlaylistActionsSheet";
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
 const GOLD = "#D4AF37";
-const NAVY = "#1C020A";
-const DARK_BLUE = "#1C020A";
+const NAVY = "#16040A";
+const DARK_BLUE = "#16040A";
 const TEXT = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
 
@@ -615,7 +615,7 @@ function GeometrixRow({ creation, onPress }: { creation: GeometrixCreation; onPr
       {/* Miniatura: cuadrado oscuro con las primeras capas superpuestas */}
       <View style={styles.geoThumb}>
         <LinearGradient
-          colors={["#1C020A", "#1C020A"]}
+          colors={["#16040A", "#16040A"]}
           style={StyleSheet.absoluteFill}
         />
         {firstLayers.map((instId, idx) => {
@@ -1124,7 +1124,7 @@ export default function BibliotecaScreen() {
                     onPress={() => router.navigate({ pathname: "/(tabs)/geometrix", params: { load: c.id } } as never)}
                   >
                     <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
-                      <LinearGradient colors={["#1C020A", "#1C020A"]} style={StyleSheet.absoluteFill} />
+                      <LinearGradient colors={["#16040A", "#16040A"]} style={StyleSheet.absoluteFill} />
                       {firstLayers.map((instId, idx) => {
                         const geoId = baseOf(instId);
                         const settings = c.settings[instId];
@@ -1266,7 +1266,7 @@ export default function BibliotecaScreen() {
   return (
     <LinearGradient
       style={styles.root}
-      colors={["#24030D", "#1C020A", "#1C020A"]}
+      colors={["#24030D", "#16040A", "#16040A"]}
       locations={[0, 0.5, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
@@ -1284,7 +1284,7 @@ export default function BibliotecaScreen() {
           elevation: 8,
         }]}
       >
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#1C020A" }]} />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#16040A" }]} />
         {/* Fila 1: título + iconos */}
         <View style={styles.headerRow}>
           <View style={{ flex: 1 }}>
@@ -1679,7 +1679,7 @@ const styles = StyleSheet.create({
   },
   nameCard: {
     width: "100%",
-    backgroundColor: "#1C020A",
+    backgroundColor: "#16040A",
     borderRadius: 20,
     paddingHorizontal: 24,
     paddingTop: 20,
@@ -1733,12 +1733,12 @@ const styles = StyleSheet.create({
   // ── Búsqueda overlay ──────────────────────────────────────────────────────────
   searchModalRoot: {
     flex: 1,
-    backgroundColor: "#1C020A",
+    backgroundColor: "#16040A",
   },
   searchOverlay: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#1C020A",
+    backgroundColor: "#16040A",
     paddingTop: Platform.OS === "ios" ? 56 : 36,
     paddingHorizontal: H_PAD,
     paddingBottom: 14,
@@ -1754,7 +1754,7 @@ const styles = StyleSheet.create({
   cancelText: { color: GOLD, fontSize: 14, fontWeight: "600" },
   searchEmpty: {
     flex: 1,
-    backgroundColor: "#1C020A",
+    backgroundColor: "#16040A",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 32,
@@ -1782,7 +1782,7 @@ const styles = StyleSheet.create({
   },
   sheet: {
     position: "absolute", left: 0, right: 0, bottom: 0,
-    backgroundColor: "#1C020A",
+    backgroundColor: "#16040A",
     borderTopLeftRadius: 24, borderTopRightRadius: 24,
     paddingHorizontal: 20, paddingTop: 12, paddingBottom: 36,
   },
@@ -1854,7 +1854,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   addResModalSheet: {
-    backgroundColor: "#1C020A",
+    backgroundColor: "#16040A",
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     paddingTop: 18,
