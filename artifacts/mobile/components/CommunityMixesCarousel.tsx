@@ -210,80 +210,76 @@ function MixRow({
   onAuthorPress: () => void;
 }) {
   const trending = mix.trending === true;
-  const dividerColor = "rgba(61,14,22,0.40)";
   const avatarUri = resolveAvatarUrl(mix.author.avatarUrl ?? null);
   const initial = mix.author.displayName?.trim()?.[0]?.toUpperCase() ?? "·";
 
   return (
-    <View>
-      <Pressable
-        onPress={onPress}
-        style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}
-      >
-        {/* Portada de la mezcla */}
-        <MixCover category={mix.category} />
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}
+    >
+      {/* Portada de la mezcla */}
+      <MixCover category={mix.category} />
 
-        {/* Info */}
-        <View style={styles.info}>
-          {/* Autor — tappable */}
-          <Pressable
-            onPress={onAuthorPress}
-            hitSlop={6}
-            style={styles.authorRow}
-          >
-            {avatarUri ? (
-              <ExpoImage source={{ uri: avatarUri }} style={styles.authorAvatar} contentFit="cover" />
-            ) : (
-              <View style={[styles.authorAvatar, styles.authorAvatarFallback]}>
-                <Text style={styles.authorInitial}>{initial}</Text>
-              </View>
-            )}
-            <Text style={[styles.mixCreator, { color: colors.mutedForeground }]} numberOfLines={1}>
-              {mix.author.displayName}
-            </Text>
-          </Pressable>
-          <View style={styles.nameRow}>
-            <Text
-              style={[styles.mixName, { color: colors.foreground }]}
-              numberOfLines={1}
-            >
-              {mix.name}
-            </Text>
-            {trending && (
-              <View style={styles.trendBadge}>
-                <Text style={[styles.trendText, { color: GOLD }]}>↑</Text>
-              </View>
-            )}
-          </View>
+      {/* Info */}
+      <View style={styles.info}>
+        {/* Bajada — conteo de sonidos arriba */}
+        <Text
+          style={[styles.mixAuthor, { color: colors.mutedForeground }]}
+          numberOfLines={1}
+        >
+          {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
+        </Text>
+        {/* Título */}
+        <View style={styles.nameRow}>
           <Text
-            style={[styles.mixAuthor, { color: colors.mutedForeground }]}
+            style={[styles.mixName, { color: colors.foreground }]}
             numberOfLines={1}
           >
-            {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
+            {mix.name}
           </Text>
+          {trending && (
+            <View style={styles.trendBadge}>
+              <Text style={[styles.trendText, { color: GOLD }]}>↑</Text>
+            </View>
+          )}
         </View>
-
-        {/* Likes */}
-        {mix.likes > 0 && (
-          <View style={styles.likeChip}>
-            <Feather name="heart" size={11} color={GOLD} />
-            <Text style={styles.likeCount}>{mix.likes}</Text>
-          </View>
-        )}
-
-        {/* 3 puntitos */}
+        {/* Autor — debajo del título */}
         <Pressable
-          onPress={onDotsPress}
-          hitSlop={12}
-          style={({ pressed }) => [styles.dotsBtn, { opacity: pressed ? 0.5 : 1 }]}
+          onPress={onAuthorPress}
+          hitSlop={6}
+          style={styles.authorRow}
         >
-          <Feather name="more-vertical" size={18} color={colors.mutedForeground} />
+          {avatarUri ? (
+            <ExpoImage source={{ uri: avatarUri }} style={styles.authorAvatar} contentFit="cover" />
+          ) : (
+            <View style={[styles.authorAvatar, styles.authorAvatarFallback]}>
+              <Text style={styles.authorInitial}>{initial}</Text>
+            </View>
+          )}
+          <Text style={[styles.mixCreator, { color: colors.mutedForeground }]} numberOfLines={1}>
+            {mix.author.displayName}
+          </Text>
         </Pressable>
-      </Pressable>
+      </View>
 
-      {/* Divider */}
-      <View style={[styles.divider, { backgroundColor: dividerColor }]} />
-    </View>
+      {/* Likes */}
+      {mix.likes > 0 && (
+        <View style={styles.likeChip}>
+          <Feather name="heart" size={11} color={GOLD} />
+          <Text style={styles.likeCount}>{mix.likes}</Text>
+        </View>
+      )}
+
+      {/* 3 puntitos */}
+      <Pressable
+        onPress={onDotsPress}
+        hitSlop={12}
+        style={({ pressed }) => [styles.dotsBtn, { opacity: pressed ? 0.5 : 1 }]}
+      >
+        <Feather name="more-vertical" size={18} color={colors.mutedForeground} />
+      </Pressable>
+    </Pressable>
   );
 }
 
@@ -501,8 +497,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexShrink: 0,
   },
-  divider: { height: 1, marginLeft: 34 },
-
   // Ver más
   verMasBtn: {
     borderWidth: 1,
