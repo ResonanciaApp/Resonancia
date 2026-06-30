@@ -549,7 +549,6 @@ export default function HomeScreen2() {
               }}
             >
               <Image source={filteredFeatured.image as number} style={styles.heroImage} resizeMode="cover" />
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.4)" }]} />
               {(() => {
                 const voiceLabel = getVoiceLabel(filteredFeatured);
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
