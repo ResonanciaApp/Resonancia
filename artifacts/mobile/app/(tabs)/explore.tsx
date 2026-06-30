@@ -287,7 +287,7 @@ export default function ExploreScreen() {
         {query.length === 0 && (
           <>
           <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 16 }]}>
-            Explora por categoría
+            Categorías principales
           </Text>
           <ScrollView
             horizontal
@@ -622,7 +622,7 @@ const styles = StyleSheet.create({
     marginTop: 0,
     paddingHorizontal: 13,
     paddingVertical: 10,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(255,255,255,0.03)",
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
     alignItems: "center",
