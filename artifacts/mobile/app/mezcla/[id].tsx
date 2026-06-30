@@ -461,13 +461,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 22,
+    height: 38,
+    width: 42,
+    borderRadius: 19,
     borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.30)",
-    backgroundColor: "transparent",
-    alignSelf: "flex-start",
+    borderColor: "rgba(255,255,255,0.35)",
   },
 
   soundsRow: {
