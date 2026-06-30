@@ -244,7 +244,7 @@ export default function PlaylistDetailScreen() {
         <View style={styles.topPanel}>
           <LinearGradient
             colors={[panelColor, "transparent"]}
-            style={[StyleSheet.absoluteFill, { bottom: -40 }]}
+            style={[StyleSheet.absoluteFill, { bottom: -90 }]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
           />
