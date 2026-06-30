@@ -106,6 +106,38 @@ function BlinkingCursor({ color }: { color: string }) {
 }
 
 
+function NavTabChip({ sel, label, onPress }: { sel: boolean; label: string; onPress: () => void }) {
+  const selOpacity = useRef(new Animated.Value(sel ? 1 : 0)).current;
+  useEffect(() => {
+    Animated.timing(selOpacity, { toValue: sel ? 1 : 0, duration: 180, useNativeDriver: true }).start();
+  }, [sel]);
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [styles.headerTabChip, { opacity: pressed ? 0.7 : 1 }]}
+    >
+      <LinearGradient
+        colors={["rgba(190,150,80,0.15)", "rgba(190,150,80,0.05)"]}
+        start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      <Animated.View style={[StyleSheet.absoluteFill, { opacity: selOpacity }]}>
+        <LinearGradient
+          colors={["#D6A45C", "#BE8744"]}
+          start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+      </Animated.View>
+      <Animated.Text style={[
+        styles.headerTabText,
+        { color: selOpacity.interpolate({ inputRange: [0, 1], outputRange: ["rgba(250,240,238,0.6)", "#1B060F"] }) },
+      ]}>
+        {label}
+      </Animated.Text>
+    </Pressable>
+  );
+}
+
 export default function HomeScreen2() {
   const colors = useColors();
   const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
@@ -206,14 +238,6 @@ export default function HomeScreen2() {
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [activeFilter, setActiveFilter] = useState<string[] | null>(null);
-  const contentOpacity = useRef(new Animated.Value(1)).current;
-
-  const switchTab = (newFilter: string[] | null) => {
-    Animated.timing(contentOpacity, { toValue: 0, duration: 120, useNativeDriver: true }).start(() => {
-      setActiveFilter(newFilter);
-      Animated.timing(contentOpacity, { toValue: 1, duration: 180, useNativeDriver: true }).start();
-    });
-  };
 
   // Sub-filtros de Sesiones
   const [sesionesOpen,    setSesionesOpen]    = useState(false);
@@ -428,29 +452,16 @@ export default function HomeScreen2() {
                 : activeFilter?.join() === tab.cats.join();
               return (
                 <React.Fragment key={tab.id}>
-                  <Pressable
+                  <NavTabChip
+                    sel={sel}
+                    label={tab.label}
                     onPress={() => {
                       setSesionesOpen(false);
                       setSesAncestral(false);
                       setSesMeditacion(false);
-                      switchTab(sel || tab.cats.length === 0 ? null : tab.cats);
+                      setActiveFilter(sel || tab.cats.length === 0 ? null : tab.cats);
                     }}
-                    style={({ pressed }) => [
-                      styles.headerTabChip,
-                      { opacity: pressed ? 0.7 : 1 },
-                    ]}
-                  >
-                    <LinearGradient
-                      colors={sel ? ["#D6A45C", "#BE8744"] : ["rgba(190,150,80,0.15)", "rgba(190,150,80,0.05)"]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 0, y: 1 }}
-                      style={StyleSheet.absoluteFill}
-                    />
-                    <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
-                      {tab.label}
-                    </Text>
-                  </Pressable>
-
+                  />
                 </React.Fragment>
               );
             })}
@@ -459,7 +470,6 @@ export default function HomeScreen2() {
         </View>
       </View>
 
-      <Animated.View style={{ flex: 1, opacity: contentOpacity }}>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 12 }}
@@ -717,7 +727,6 @@ export default function HomeScreen2() {
         </View>
 
       </ScrollView>
-      </Animated.View>
 
       <MoodPickerSheet
         visible={moodSheetVisible}
