@@ -264,14 +264,6 @@ function MixRow({
         </View>
       )}
 
-      {/* 3 puntitos */}
-      <Pressable
-        onPress={onDotsPress}
-        hitSlop={12}
-        style={({ pressed }) => [styles.dotsBtn, { opacity: pressed ? 0.5 : 1 }]}
-      >
-        <Feather name="more-vertical" size={18} color={colors.mutedForeground} />
-      </Pressable>
     </Pressable>
   );
 }
