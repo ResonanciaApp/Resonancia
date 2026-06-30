@@ -9,12 +9,13 @@ interface BackPillProps {
   color?: string;
   size?: number;
   hitSlop?: number;
+  bgColor?: string;
 }
 
-export function BackPill({ onPress, style, color = "#fff", size = 22, hitSlop = 10 }: BackPillProps) {
+export function BackPill({ onPress, style, color = "#fff", size = 22, hitSlop = 10, bgColor }: BackPillProps) {
   return (
     <PressableScale onPress={onPress} containerStyle={style} hitSlop={hitSlop}>
-      <View style={styles.base}>
+      <View style={[styles.base, bgColor ? { backgroundColor: bgColor, borderRadius: 19 } : undefined]}>
         <Feather name="arrow-left" size={size} color={color} />
       </View>
     </PressableScale>

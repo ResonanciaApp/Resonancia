@@ -477,7 +477,7 @@ export default function SonidosAncestalesScreen() {
           <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" />
           <LinearGradient colors={["transparent","rgba(0,0,0,0.28)","rgba(0,0,0,0.60)"]} locations={[0.50,0.80,1]} style={StyleSheet.absoluteFill} />
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
-            <GhostPill style={{ backgroundColor: "#2E0510" }}>
+            <GhostPill style={{ backgroundColor: "#1B060F" }}>
               <BackPill onPress={() => router.back()} />
             </GhostPill>
           </View>
@@ -545,7 +545,7 @@ const styles = StyleSheet.create({
   heroArea: { height: HERO_H, position: "relative" },
   heroIconFloat: { position: "absolute", bottom: -17, left: 0, right: 0, alignItems: "center", zIndex: 2 },
   heroIconGlow: { borderRadius: 36 },
-  heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(60,5,18,0.85)", borderWidth: 2, borderColor: "rgba(212,175,55,0.5)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
+  heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "#1B060F", borderWidth: 2, borderColor: "rgba(212,175,55,0.5)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
   /* ── Profile card ── */
   profileCard: { marginHorizontal: H_PAD, marginTop: 28, paddingBottom: 14, gap: 8, alignItems: "center" },
