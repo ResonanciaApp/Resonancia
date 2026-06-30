@@ -305,13 +305,18 @@ export default function CommunityMixScreen() {
             <Text style={[styles.title, { color: colors.foreground, flex: 1 }]} numberOfLines={2}>
               {mix.name}
             </Text>
-            <Pressable onPress={handleLike} hitSlop={10} style={{ marginBottom: 15 }}>
-              <Feather
-                name="heart"
-                size={22}
-                color={mix.likedByMe ? "#BE8744" : "#FFFFFF"}
-              />
-            </Pressable>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 16, marginBottom: 15 }}>
+              <Pressable onPress={handleShare} hitSlop={10}>
+                <Feather name="share" size={22} color="#FFFFFF" />
+              </Pressable>
+              <Pressable onPress={handleLike} hitSlop={10}>
+                <Feather
+                  name="heart"
+                  size={22}
+                  color={mix.likedByMe ? "#BE8744" : "#FFFFFF"}
+                />
+              </Pressable>
+            </View>
           </View>
 
           {/* Autor */}
