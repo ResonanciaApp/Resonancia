@@ -393,8 +393,10 @@ export default function CommunityMixScreen() {
             <Pressable
               onPress={handleSendComment}
               disabled={!draft.trim() || addComment.isPending}
-              style={{ opacity: addComment.isPending ? 0.6 : 1 }}
-            />
+              style={{ opacity: draft.trim() && !addComment.isPending ? 1 : 0.3, padding: 4 }}
+            >
+              <Feather name="corner-down-left" size={20} color="#BE8744" />
+            </Pressable>
           </View>
 
           {/* Lista de comentarios */}
