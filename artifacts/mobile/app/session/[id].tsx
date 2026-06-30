@@ -1008,9 +1008,6 @@ const styles = StyleSheet.create({
     borderRadius: 19,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.30)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.25)",
   },
   stickyBackPill: {
     flexDirection: "row",
