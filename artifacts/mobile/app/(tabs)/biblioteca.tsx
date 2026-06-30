@@ -1273,7 +1273,7 @@ export default function BibliotecaScreen() {
       {/* ── STICKY HEADER ────────────────────────────────────────────────── */}
       <View
         style={[styles.stickyHeader, {
-          paddingTop: topPad + 22,
+          paddingTop: topPad + 2,
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 4 },
           shadowOpacity: 0.38,
