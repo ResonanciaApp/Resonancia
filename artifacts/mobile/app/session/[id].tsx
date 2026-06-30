@@ -316,7 +316,9 @@ export default function SessionDetailScreen() {
         <View style={[styles.hero, { height: HEADER_H }]}>
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
-            <GlowPill onPress={() => router.back()} pillStyle={styles.heroBackPill} gradientColors={catBg.gradient as [string, string]} />
+            <View style={styles.pillBorder}>
+              <GlowPill onPress={() => router.back()} pillStyle={styles.heroBackPill} gradientColors={catBg.gradient as [string, string]} />
+            </View>
             <Pressable onPress={handleInstagramShare} hitSlop={10} style={({ pressed }) => [styles.igBtn, { opacity: pressed ? 0.6 : 1 }]}>
               <FontAwesome name="instagram" size={20} color="#FFFFFF" />
             </Pressable>
@@ -578,7 +580,9 @@ export default function SessionDetailScreen() {
         pointerEvents="box-none"
         style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: catBg.solid }]}
       >
-        <GlowPill onPress={() => router.back()} pillStyle={styles.stickyBackPill} gradientColors={catBg.gradient as [string, string]} />
+        <View style={styles.pillBorder}>
+          <GlowPill onPress={() => router.back()} pillStyle={styles.stickyBackPill} gradientColors={catBg.gradient as [string, string]} />
+        </View>
         <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
         <View style={{ width: 36 }} />
       </Animated.View>
@@ -999,6 +1003,11 @@ const styles = StyleSheet.create({
     gap: 12,
     zIndex: 10,
   },
+  pillBorder: {
+    borderRadius: 19,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.35)",
+  },
   heroBackPill: {
     flexDirection: "row",
     alignItems: "center",
@@ -1006,8 +1015,6 @@ const styles = StyleSheet.create({
     height: 38,
     width: 42,
     borderRadius: 19,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.35)",
   },
   igBtn: {
     width: 38,
@@ -1023,8 +1030,6 @@ const styles = StyleSheet.create({
     height: 38,
     width: 42,
     borderRadius: 19,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.35)",
     backgroundColor: "transparent",
   },
   stickyTitle: {
