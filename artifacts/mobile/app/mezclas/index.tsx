@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     paddingBottom: 18,
   },
   backBtn: {
-    width: 36, height: 36, borderRadius: 18, borderWidth: 1,
+    width: 36, height: 36, borderRadius: 18,
     alignItems: "center", justifyContent: "center",
   },
   pageTitle: { fontSize: 20, fontWeight: "700", letterSpacing: -0.4, color: "#FFFFFF" },
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
 
   // Scroll
   scroll:        { flex: 1 },
-  scrollContent: { paddingHorizontal: 16 },
+  scrollContent: { paddingHorizontal: 16, paddingTop: 20 },
   emptyText:     { fontSize: 13, lineHeight: 19 },
 
   // Mix row

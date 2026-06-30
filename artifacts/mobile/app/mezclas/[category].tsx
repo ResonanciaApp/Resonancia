@@ -247,7 +247,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -257,7 +256,7 @@ const styles = StyleSheet.create({
   heroLabel: { fontSize: 26, fontWeight: "700", letterSpacing: 0.3 },
   heroSub: { fontSize: 14, lineHeight: 20, textAlign: "center" },
 
-  section: { marginBottom: 22 },
+  section: { marginBottom: 22, marginTop: 20 },
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.5, marginBottom: 10 },
   emptyText: { fontSize: 13, lineHeight: 19 },
 
