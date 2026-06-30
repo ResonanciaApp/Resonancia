@@ -451,9 +451,16 @@ const styles = StyleSheet.create({
 
   topBar: { paddingHorizontal: 12, paddingBottom: 8 },
   backBtn: {
-    width: 40, height: 40, borderRadius: 20,
-    alignItems: "center", justifyContent: "center",
-    backgroundColor: "rgba(74,12,12,0.08)",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.30)",
+    backgroundColor: "transparent",
+    alignSelf: "flex-start",
   },
 
   soundsRow: {
