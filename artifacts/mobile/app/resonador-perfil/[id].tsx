@@ -33,7 +33,7 @@ import { useColors } from "@/hooks/useColors";
 import { useGetMe, getGetMeQueryKey } from "@workspace/api-client-react";
 
 const H_PAD = 20;
-const GOLD = "#D4AF37";
+const GOLD = "#BE8744";
 const GOLD_MUTED = "rgba(212,175,55,0.70)";
 
 const PLATFORM_ICON: Record<ExternalProject["platform"], string> = {
@@ -792,7 +792,7 @@ const styles = StyleSheet.create({
   resonadorBannerOuter: {
     borderRadius: 14,
     padding: 1,
-    shadowColor: "#D4AF37",
+    shadowColor: "#BE8744",
     shadowOffset: { width: 0, height: -1 },
     shadowOpacity: 0.45,
     shadowRadius: 2,

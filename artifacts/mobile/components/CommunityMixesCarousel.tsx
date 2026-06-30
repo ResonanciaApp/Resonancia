@@ -27,7 +27,7 @@ import { resolveAvatarUrl } from "@/lib/avatar";
 import { useColors } from "@/hooks/useColors";
 
 
-const GOLD = "#D4AF37";
+const GOLD = "#BE8744";
 const STACK_THUMB = 62;
 const MAX_VISIBLE = 8;
 

@@ -60,7 +60,7 @@ function AuthorAvatar({ uri, name, size = 38 }: { uri?: string | null; name?: st
   }
   return (
     <View style={[{ width: size, height: size, borderRadius: radius, backgroundColor: "rgba(212,175,55,0.18)", alignItems: "center", justifyContent: "center" }]}>
-      <Text style={{ fontSize: size * 0.4, fontWeight: "700", color: "#D4AF37" }}>{initials}</Text>
+      <Text style={{ fontSize: size * 0.4, fontWeight: "700", color: "#BE8744" }}>{initials}</Text>
     </View>
   );
 }

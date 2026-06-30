@@ -76,7 +76,7 @@ export function AmbientWidget() {
           <Feather
             name={isActive ? "volume-2" : "volume-x"}
             size={14}
-            color={isActive ? "#D4AF37" : "#5A2020"}
+            color={isActive ? "#BE8744" : "#5A2020"}
           />
         </Pressable>
       </View>
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   sceneThumbSelected: {
-    borderColor: "#D4AF37",
+    borderColor: "#BE8744",
   },
   sceneImg: {
     width: SCENE_THUMB,
@@ -229,6 +229,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   sceneLabelSelected: {
-    color: "#D4AF37",
+    color: "#BE8744",
   },
 });

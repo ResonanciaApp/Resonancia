@@ -243,7 +243,7 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
                 value={videoEnabled}
                 onValueChange={setVideoEnabled}
                 disabled
-                trackColor={{ false: "#CCC", true: "#D4AF37" }}
+                trackColor={{ false: "#CCC", true: "#BE8744" }}
                 thumbColor="#FFF"
               />
             </View>
@@ -378,7 +378,7 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
                 ]}
               >
                 {selectedId === previewScene.id && (
-                  <Feather name="check" size={17} color="#D4AF37" style={{ marginRight: 6 }} />
+                  <Feather name="check" size={17} color="#BE8744" style={{ marginRight: 6 }} />
                 )}
                 <Text style={[
                   styles.applyBtnText,
@@ -531,7 +531,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     borderRadius: 16,
     borderWidth: 3,
-    borderColor: "#D4AF37",
+    borderColor: "#BE8744",
   },
   activeOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -541,7 +541,7 @@ const styles = StyleSheet.create({
   },
   gradientFallback: { borderRadius: 14 },
   cardLabel: { marginTop: 6, fontSize: 11, color: "#555", fontWeight: "500", textAlign: "center" },
-  cardLabelActive: { color: "#D4AF37", fontWeight: "700" },
+  cardLabelActive: { color: "#BE8744", fontWeight: "700" },
 
   hint: {
     marginTop: 20,
@@ -572,8 +572,8 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   swatchCircleActive: {
-    borderColor: "#D4AF37",
-    shadowColor: "#D4AF37",
+    borderColor: "#BE8744",
+    shadowColor: "#BE8744",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.55,
     shadowRadius: 6,
@@ -587,7 +587,7 @@ const styles = StyleSheet.create({
     width: SWATCH_SZ,
   },
   swatchLabelActive: {
-    color: "#D4AF37",
+    color: "#BE8744",
     fontWeight: "700",
   },
 
@@ -694,8 +694,8 @@ const styles = StyleSheet.create({
   applyBtnActive: {
     backgroundColor: "rgba(212,175,55,0.15)",
     borderWidth: 1.5,
-    borderColor: "#D4AF37",
+    borderColor: "#BE8744",
   },
   applyBtnText: { fontSize: 16, fontWeight: "700", color: "#1A1A22" },
-  applyBtnTextActive: { color: "#D4AF37" },
+  applyBtnTextActive: { color: "#BE8744" },
 });

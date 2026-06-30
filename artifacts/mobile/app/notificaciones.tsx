@@ -63,11 +63,11 @@ function iconFor(type: Notification["type"]): { name: FeatherName; color: string
   switch (type) {
     case "friend_request":  return { name: "user-plus",      color: "#8AAAD4" };
     case "friend_accepted": return { name: "user-check",     color: "#A8C4A8" };
-    case "new_follower":    return { name: "user",           color: "#D4AF37" };
-    case "dm":              return { name: "message-circle", color: "#D4AF37" };
+    case "new_follower":    return { name: "user",           color: "#BE8744" };
+    case "dm":              return { name: "message-circle", color: "#BE8744" };
     case "group_message":   return { name: "users",          color: "#C8B4E0" };
     case "mix_like":        return { name: "heart",          color: "#D4709A" };
-    case "mix_comment":     return { name: "message-square", color: "#D4AF37" };
+    case "mix_comment":     return { name: "message-square", color: "#BE8744" };
     default:                return { name: "bell",           color: "#FFFFFF" };
   }
 }

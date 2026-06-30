@@ -798,12 +798,12 @@ export default function SessionDetailScreen() {
         />
         {/* Branding top */}
         <View style={{ position: "absolute", top: 64, left: 0, right: 0, alignItems: "center" }}>
-          <Text style={{ color: "#D4AF37", fontSize: 11, letterSpacing: 5, fontWeight: "700" }}>RESONANCIA</Text>
+          <Text style={{ color: "#BE8744", fontSize: 11, letterSpacing: 5, fontWeight: "700" }}>RESONANCIA</Text>
           <Text style={{ color: "rgba(244,218,213,0.55)", fontSize: 10, letterSpacing: 2, marginTop: 3 }}>Casa del Cuenco</Text>
         </View>
         {/* Session info center */}
         <View style={{ position: "absolute", bottom: 190, left: 36, right: 36 }}>
-          <Text style={{ color: "#D4AF37", fontSize: 11, letterSpacing: 2, textAlign: "center", marginBottom: 12, textTransform: "uppercase" }}>
+          <Text style={{ color: "#BE8744", fontSize: 11, letterSpacing: 2, textAlign: "center", marginBottom: 12, textTransform: "uppercase" }}>
             {session.categoryLabel}
           </Text>
           <Text style={{ color: "#FAF0EE", fontSize: 26, fontWeight: "700", lineHeight: 34, textAlign: "center" }}>
@@ -943,7 +943,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 30,
     marginTop: 8,
-    shadowColor: "#D4AF37",
+    shadowColor: "#BE8744",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,
@@ -1040,7 +1040,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 10,
     borderRadius: 30,
-    shadowColor: "#D4AF37",
+    shadowColor: "#BE8744",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,
@@ -1075,7 +1075,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderRadius: 30,
     overflow: "hidden",
-    shadowColor: "#D4AF37",
+    shadowColor: "#BE8744",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,
@@ -1105,7 +1105,7 @@ const styles = StyleSheet.create({
   },
   playsText: {
     fontSize: 13,
-    color: "#D4AF37",
+    color: "#BE8744",
   },
 
   // Rating modal

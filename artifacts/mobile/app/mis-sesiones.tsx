@@ -38,7 +38,7 @@ import {
 // ── Paleta ────────────────────────────────────────────────────────────────────
 const WARM_BLACK = "#1B060F";
 const BURGUNDY_MID = "#4A0C0C";
-const PRIMARY_GOLD = "#D4AF37";
+const PRIMARY_GOLD = "#BE8744";
 const FOREGROUND = "#F4DAD5";
 const MUTED = "rgba(242,231,228,0.55)";
 const BORDER = "#3D0E16";

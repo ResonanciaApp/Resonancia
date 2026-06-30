@@ -413,7 +413,7 @@ export default function UsuarioScreen() {
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6, paddingRight: 4 }}>
                   {(expansorProfile?.specialties ?? []).map((s) => (
                     <View key={s} style={[styles.epChip, { borderColor: "rgba(212,175,55,0.30)", backgroundColor: "rgba(212,175,55,0.07)" }]}>
-                      <Text style={[styles.epChipText, { color: "#D4AF37" }]}>{s}</Text>
+                      <Text style={[styles.epChipText, { color: "#BE8744" }]}>{s}</Text>
                     </View>
                   ))}
                 </ScrollView>
@@ -433,8 +433,8 @@ export default function UsuarioScreen() {
                 </Text>
                 {epDescOverflows && (
                   <Pressable onPress={() => setEpDescExpanded((v) => !v)} style={({ pressed }) => [styles.epReadMore, { opacity: pressed ? 0.7 : 1 }]}>
-                    <Text style={{ fontSize: 13, color: "#D4AF37", fontWeight: "600" }}>{epDescExpanded ? "Leer menos" : "Leer más"}</Text>
-                    <Feather name={epDescExpanded ? "chevron-up" : "chevron-down"} size={13} color="#D4AF37" />
+                    <Text style={{ fontSize: 13, color: "#BE8744", fontWeight: "600" }}>{epDescExpanded ? "Leer menos" : "Leer más"}</Text>
+                    <Feather name={epDescExpanded ? "chevron-up" : "chevron-down"} size={13} color="#BE8744" />
                   </Pressable>
                 )}
               </View>
@@ -651,7 +651,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "800",
     letterSpacing: 1.4,
-    color: "#D4AF37",
+    color: "#BE8744",
   },
   epCertBannerSub: { fontSize: 11, marginTop: 2 },
   epCertIconBorder: {
@@ -664,7 +664,7 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     overflow: "hidden",
   },
-  epCertStar: { fontSize: 13, color: "#D4AF37" },
+  epCertStar: { fontSize: 13, color: "#BE8744" },
   epGalleryWrap: { marginTop: 12 },
   epGalleryGrid: {
     flexDirection: "row",

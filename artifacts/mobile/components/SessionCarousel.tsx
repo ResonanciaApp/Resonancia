@@ -111,7 +111,7 @@ export function CoverCarousel({ title, items, onPress }: CoverCarouselProps) {
                 <Image source={item.image} style={styles.thumb} resizeMode="cover" />
               ) : (
                 <View style={[styles.thumb, styles.thumbFallback]}>
-                  <Feather name="music" size={32} color="#D4AF37" />
+                  <Feather name="music" size={32} color="#BE8744" />
                 </View>
               )}
             </View>

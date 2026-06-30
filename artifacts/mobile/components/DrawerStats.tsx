@@ -22,7 +22,7 @@ const innerCornerStyle: Record<NonNullable<StatCardProps["innerCorner"]>, object
 function StatCard({ icon, value, label, innerCorner }: StatCardProps) {
   return (
     <View style={[styles.card, innerCorner && innerCornerStyle[innerCorner]]}>
-      <Feather name={icon} size={20} color="#D4AF37" />
+      <Feather name={icon} size={20} color="#BE8744" />
       <View style={styles.cardText}>
         <Text style={styles.cardValue}>{value}</Text>
         <Text style={styles.cardLabel}>{label}</Text>
@@ -52,7 +52,7 @@ export function DrawerStats() {
 
       <Pressable onPress={goToProgreso} style={({ pressed }) => [styles.link, pressed && styles.linkPressed]}>
         <Text style={styles.linkText}>Ver estadísticas completas</Text>
-        <Feather name="chevron-right" size={13} color="#D4AF37" />
+        <Feather name="chevron-right" size={13} color="#BE8744" />
       </Pressable>
     </View>
   );
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   },
   linkPressed: { opacity: 0.6 },
   linkText: {
-    color: "#D4AF37",
+    color: "#BE8744",
     fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.2,

@@ -16,7 +16,7 @@ import {
 } from "@/context/FoldersPlaylistsContext";
 import { useColors } from "@/hooks/useColors";
 
-const GOLD = "#D4AF37";
+const GOLD = "#BE8744";
 
 type Props = {
   itemId: string | null;

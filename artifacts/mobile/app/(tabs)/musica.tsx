@@ -63,7 +63,7 @@ const CARD_W   = Math.floor((SCREEN_W - 28 - 40) / 3); // padding 14×2 + gaps 2
 const IMG_SIZE  = Math.floor(CARD_W * 0.75) - 5;
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
-const GOLD  = "#D4AF37";
+const GOLD  = "#BE8744";
 const DARK  = "#1A1E2B";
 const MUTED = "#6B7A96";
 
@@ -158,7 +158,7 @@ const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
 };
 
 // ── PillTab ───────────────────────────────────────────────────────────────────
-const GOLD_BORDER: [string, string] = ["#D4AF37", "#E9C46A"];
+const GOLD_BORDER: [string, string] = ["#BE8744", "#E9C46A"];
 const GOLD_BORDER_PILL = ["rgba(212,175,55,0.20)", "rgba(233,196,106,0.20)", "rgba(212,175,55,0.20)"] as const;
 
 const PillTab = memo(function PillTab({

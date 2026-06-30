@@ -52,7 +52,7 @@ import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
 
 const BG_SHEET  = "#27070E";
-const GOLD      = "#D4AF37";
+const GOLD      = "#BE8744";
 const NAVY_CHECK = "#060A0F";
 const TEXT      = "#FAF0EE";
 const MUTED     = "rgba(250,240,238,0.45)";

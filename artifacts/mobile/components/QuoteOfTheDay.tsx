@@ -3,7 +3,7 @@ import { View, Text, Pressable, StyleSheet, Share, Modal } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { getQuoteOfTheDay } from "@/data/quotes";
 
-const GOLD    = "#D4AF37";
+const GOLD    = "#BE8744";
 const MUTED   = "rgba(250,240,238,0.45)";
 const CARD_BG = "rgba(72,40,120,0.10)";
 

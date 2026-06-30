@@ -6,7 +6,7 @@ import { router } from "expo-router";
 import { useNotifications } from "@/context/NotificationsContext";
 
 const ICON_SIZE = 24;
-const GOLD = "#D4AF37";
+const GOLD = "#BE8744";
 const WHITE = "#FFFFFF";
 const MUTED = "rgba(242,231,228,0.40)";
 

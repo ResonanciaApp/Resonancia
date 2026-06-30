@@ -48,7 +48,7 @@ import { PlaylistActionsSheet } from "@/components/PlaylistActionsSheet";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
-const GOLD = "#D4AF37";
+const GOLD = "#BE8744";
 const NAVY = "#16040A";
 const DARK_BLUE = "#16040A";
 const TEXT = "#FAF0EE";

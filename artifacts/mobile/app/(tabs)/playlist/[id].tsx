@@ -38,7 +38,7 @@ import { type GeometryId } from "@/data/geometries";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 
 const BG_GRADIENT = ["#16040A", "#16040A"] as const;
-const GOLD = "#D4AF37";
+const GOLD = "#BE8744";
 const TEXT = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
 const DEFAULT_PANEL_BG = "rgba(74,12,12,0.28)";
@@ -558,10 +558,10 @@ function PlaylistSessionRow({
       <Pressable onPress={locked ? () => router.push("/membresia" as never) : onPlay}
         style={({ pressed }) => [{ flex: 1, opacity: pressed ? 0.75 : 1 }]}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-          <Text style={[styles.rowName, isActive && { color: "#D4AF37" }]} numberOfLines={2}>
+          <Text style={[styles.rowName, isActive && { color: "#BE8744" }]} numberOfLines={2}>
             {session.title}
           </Text>
-          {isActive && isPlaying && <EqualizerBars color="#D4AF37" size="sm" />}
+          {isActive && isPlaying && <EqualizerBars color="#BE8744" size="sm" />}
         </View>
         <Text style={styles.rowMeta}>{author} · {session.durationLabel}</Text>
       </Pressable>

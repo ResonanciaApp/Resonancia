@@ -9,7 +9,7 @@ import { Modal, Pressable, StyleSheet, Switch, Text, View } from "react-native";
 import { BG_GRADIENTS } from "@/data/geometrix-creations";
 
 const HOME_COLORS: readonly [string, string] = ["#21030C", "#21030C"];
-const GOLD = "#D4AF37";
+const GOLD = "#BE8744";
 
 interface Props {
   visible: boolean;

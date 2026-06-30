@@ -485,7 +485,7 @@ export default function HomeScreen2() {
                 onPress={() => router.push("/mis-sesiones" as never)}
                 hitSlop={8}
               >
-                <Text style={{ color: "#D4AF37", fontSize: 13, fontFamily: "Inter_400Regular" }}>
+                <Text style={{ color: "#BE8744", fontSize: 13, fontFamily: "Inter_400Regular" }}>
                   Ver todas
                 </Text>
               </Pressable>
@@ -525,7 +525,7 @@ export default function HomeScreen2() {
                   <View style={styles.coleccionTitleRow}>
                     <Text style={styles.coleccionTitle} numberOfLines={2}>{pl.title}</Text>
                     {isPlaying && currentSession && pl.sessionIds.includes(currentSession.id) && (
-                      <EqualizerBars color="#D4AF37" size="sm" />
+                      <EqualizerBars color="#BE8744" size="sm" />
                     )}
                   </View>
                 </Pressable>
@@ -617,7 +617,7 @@ export default function HomeScreen2() {
                 <Text style={styles.premSub}>Desbloquea todo el contenido</Text>
               </View>
               <View style={styles.premChevron}>
-                <Feather name="chevron-right" size={14} color="#D4AF37" />
+                <Feather name="chevron-right" size={14} color="#BE8744" />
               </View>
             </Pressable>
           </View>
@@ -849,7 +849,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   avatarInitialText: {
-    color: "#D4AF37",
+    color: "#BE8744",
     fontSize: 14,
     fontWeight: "700",
     letterSpacing: 0.3,

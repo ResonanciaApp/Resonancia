@@ -3,7 +3,7 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import type { ViewProps } from "react-native";
 
-export const GOLD_GRAD = ["#D4AF37", "#E9C46A"] as const;
+export const GOLD_GRAD = ["#BE8744", "#E9C46A"] as const;
 export const GOLD_GRAD_START = { x: 0, y: 0.5 };
 export const GOLD_GRAD_END = { x: 1, y: 0.5 };
 

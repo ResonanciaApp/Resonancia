@@ -207,8 +207,8 @@ export function AmbientSoundPickerSheet({
               style={[styles.noSoundChip, localSelected === null && styles.noSoundChipSelected]}
               onPress={() => { setLocalSelected(null); onPreviewStart?.(null); }}
             >
-              <Feather name="volume-x" size={14} color={localSelected === null ? "#D4AF37" : "rgba(255,255,255,0.65)"} />
-              <Text style={[styles.noSoundText, localSelected === null && { color: "#D4AF37" }]}>
+              <Feather name="volume-x" size={14} color={localSelected === null ? "#BE8744" : "rgba(255,255,255,0.65)"} />
+              <Text style={[styles.noSoundText, localSelected === null && { color: "#BE8744" }]}>
                 Sin sonido
               </Text>
             </Pressable>
@@ -624,7 +624,7 @@ const styles = StyleSheet.create({
     marginBottom: 22,
   },
   noSoundChipSelected: {
-    borderColor: "#D4AF37",
+    borderColor: "#BE8744",
     backgroundColor: "rgba(212,175,55,0.10)",
   },
   noSoundText: {
@@ -706,7 +706,7 @@ const styles = StyleSheet.create({
     width: 7,
     height: 7,
     borderRadius: 4,
-    backgroundColor: "#D4AF37",
+    backgroundColor: "#BE8744",
   },
 
   checkBadge: {
@@ -716,7 +716,7 @@ const styles = StyleSheet.create({
     width: 18,
     height: 18,
     borderRadius: 9,
-    backgroundColor: "#D4AF37",
+    backgroundColor: "#BE8744",
     alignItems: "center",
     justifyContent: "center",
   },

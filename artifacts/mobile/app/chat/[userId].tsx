@@ -846,7 +846,7 @@ function MessageBubble({
           <Feather
             name={message.readAt ? "check-circle" : "check"}
             size={11}
-            color={message.readAt ? "#D4AF37" : colors.mutedForeground}
+            color={message.readAt ? "#BE8744" : colors.mutedForeground}
           />
           <Text style={[styles.readText, { color: colors.mutedForeground }]}>
             {message.readAt ? "Visto" : "Enviado"}

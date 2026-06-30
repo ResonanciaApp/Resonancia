@@ -209,7 +209,7 @@ export default function ExploreScreen() {
                 />
                 {s.isPremium && (
                   <View style={styles.premiumBadge}>
-                    <Feather name="star" size={10} color="#D4AF37" />
+                    <Feather name="star" size={10} color="#BE8744" />
                   </View>
                 )}
               </View>
@@ -593,7 +593,7 @@ const styles = StyleSheet.create({
     color: "rgba(244,218,213,0.50)",
   },
   durSortActive: {
-    color: "#D4AF37",
+    color: "#BE8744",
     fontWeight: "700",
   },
   durSortSep: {

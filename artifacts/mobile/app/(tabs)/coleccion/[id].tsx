@@ -30,7 +30,7 @@ const { width } = Dimensions.get("window");
 const SAVED_KEY = "@resonance_saved_colecciones";
 
 const BG = "#16040A";
-const GOLD = "#D4AF37";
+const GOLD = "#BE8744";
 const FG = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
 

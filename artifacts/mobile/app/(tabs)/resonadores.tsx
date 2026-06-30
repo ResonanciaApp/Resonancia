@@ -639,7 +639,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 1,
-    backgroundColor: "#D4AF37",
+    backgroundColor: "#BE8744",
     opacity: 0.5,
   },
   bannerTextWrap: {
@@ -860,7 +860,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 2,
     right: 2,
-    backgroundColor: "#D4AF37",
+    backgroundColor: "#BE8744",
     borderRadius: 99,
     width: 18,
     height: 18,
@@ -961,7 +961,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 5,
     right: 5,
-    backgroundColor: "#D4AF37",
+    backgroundColor: "#BE8744",
     borderRadius: 99,
     width: 16,
     height: 16,
@@ -1012,7 +1012,7 @@ const styles = StyleSheet.create({
   },
   ctaIconText: {
     fontSize: 16,
-    color: "#D4AF37",
+    color: "#BE8744",
   },
   ctaTextWrap: {
     flex: 1,

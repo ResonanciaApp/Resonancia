@@ -27,7 +27,7 @@ import { resolveAvatarUrl } from "@/lib/avatar";
 
 const BG_GRADIENT = ["#16040A", "#16040A"] as const;
 const COVER_SIZE = 46;
-const GOLD = "#D4AF37";
+const GOLD = "#BE8744";
 
 function CategoryCover({ category }: { category?: string | null }) {
   const catMeta = category ? MIX_CATEGORIES.find((c) => c.id === category) : undefined;

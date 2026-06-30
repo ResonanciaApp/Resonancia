@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   iconGlow: {
-    shadowColor: "#D4AF37",
+    shadowColor: "#BE8744",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.55,
     shadowRadius: 6,

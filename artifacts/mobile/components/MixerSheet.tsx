@@ -1463,7 +1463,7 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   bgPresetCardSel: {
-    borderColor: "#D4AF37",
+    borderColor: "#BE8744",
   },
   bgPresetEmoji: {
     fontSize: 20,
@@ -1498,7 +1498,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   bgPickerDoneText: {
-    color: "#D4AF37",
+    color: "#BE8744",
     fontSize: 15,
     fontWeight: "700",
     letterSpacing: 0.3,

@@ -238,7 +238,7 @@ function LocalGrupoAvatar({ grupo, size = 54 }: { grupo: GrupoLocal; size?: numb
   }
   return (
     <View style={{ width: size, height: size, borderRadius: size * 0.3, alignItems: "center", justifyContent: "center", backgroundColor: "#1C2333" }}>
-      <Text style={{ color: "#D4AF37", fontSize: size * 0.38, fontWeight: "700" }}>{initial}</Text>
+      <Text style={{ color: "#BE8744", fontSize: size * 0.38, fontWeight: "700" }}>{initial}</Text>
     </View>
   );
 }

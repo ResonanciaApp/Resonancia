@@ -23,7 +23,7 @@ import { SESSIONS, type Session } from "@/data/sessions";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
-const GOLD  = "#D4AF37";
+const GOLD  = "#BE8744";
 
 const TEXT  = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";

@@ -24,7 +24,7 @@ import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 
 const BG = ["#16040A", "#16040A"] as const;
-const GOLD = "#D4AF37";
+const GOLD = "#BE8744";
 const TEXT = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
 const SHEET_BG = "#0E1326";
