@@ -902,7 +902,7 @@ const styles = StyleSheet.create({
   },
   headerTabText: {
     fontSize: 13,
-    fontWeight: "700",
+    fontWeight: "600",
     color: "#FFFFFF",
     letterSpacing: 0.1,
   },
