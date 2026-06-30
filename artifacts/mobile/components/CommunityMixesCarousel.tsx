@@ -3,7 +3,7 @@
  * Diseño V2D (minimalista líneas): ranking, nombre, autor, 3-dot menu.
  * Tabs = píldoras (mismo diseño que "Mi Música").
  */
-import { Feather } from "@expo/vector-icons";
+import { AntDesign, Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useCallback, useState } from "react";
@@ -259,7 +259,7 @@ function MixRow({
       {/* Likes */}
       {mix.likes > 0 && (
         <View style={styles.likeChip}>
-          <Feather name="heart" size={14} color="#BE8744" />
+          <AntDesign name="heart" size={14} color="#BE8744" />
           <Text style={styles.likeCount}>{mix.likes}</Text>
         </View>
       )}
