@@ -172,7 +172,7 @@ const PillTab = memo(function PillTab({
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
-      <MaterialCommunityIcons name={tab.icon as any} size={15} color={sel ? "#1B060F" : "#FFFFFF"} />
+      <MaterialCommunityIcons name={tab.icon as any} size={13} color={sel ? "#1B060F" : "#FFFFFF"} />
       <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "#FFFFFF" }]}>
         {tab.label}
       </Text>
@@ -948,9 +948,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 999,
+    paddingHorizontal: 10,
+    height: 34,
+    borderRadius: 20,
     overflow: "hidden",
     gap: 5,
   },
@@ -977,7 +977,7 @@ const styles = StyleSheet.create({
     gap: 5,
     backgroundColor: "transparent",
   },
-  pillTabLabel: { fontSize: 14, letterSpacing: 0.1, fontWeight: "600" },
+  pillTabLabel: { fontSize: 13, letterSpacing: 0.1, fontWeight: "700" },
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },
 
