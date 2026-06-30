@@ -482,6 +482,7 @@ const styles = StyleSheet.create({
 
   searchBarBorder: {
     marginHorizontal: H_PAD,
+    marginTop: 10,
     marginBottom: SECTION_GAP,
     borderRadius: 10,
     borderWidth: 1,
