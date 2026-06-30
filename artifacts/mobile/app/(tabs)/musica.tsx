@@ -744,36 +744,11 @@ export default function MezcladorScreen() {
                       const cat = SOUND_CATEGORIES.find((c) => c.id === catId);
                       if (!cat) return null;
                       const sel  = subTab === catId;
-                      const grad = TAB_HEADER_GRADIENT[mainTab];
                       return (
-                        <Pressable key={catId} onPress={() => setSubTab(sel ? null : catId)}>
-                          {sel ? (
-                            <LinearGradient
-                              colors={["rgba(212,175,55,0.50)", "rgba(233,196,106,0.50)", "rgba(212,175,55,0.50)"]}
-                              start={{ x: 0, y: 0.5 }}
-                              end={{ x: 1, y: 0.5 }}
-                              style={styles.subTabBorderOuter}
-                            >
-                              <LinearGradient
-                                colors={grad}
-                                start={{ x: 0, y: 0 }}
-                                end={{ x: 0, y: 1 }}
-                                style={styles.subTabBorderInner}
-                              >
-                                <Text style={[styles.subTabText, { color: "#E9C46A" }]}>
-                                  {SUB_TAB_LABELS[catId] ?? cat.label}
-                                </Text>
-                              </LinearGradient>
-                            </LinearGradient>
-                          ) : (
-                            <View style={[styles.subTabBorderOuter, { padding: 0, borderWidth: 1, borderColor: "rgba(255,255,255,0.07)" }]}>
-                              <View style={styles.subTabBorderInner}>
-                                <Text style={[styles.subTabText, { color: "rgba(255,255,255,0.80)" }]}>
-                                  {SUB_TAB_LABELS[catId] ?? cat.label}
-                                </Text>
-                              </View>
-                            </View>
-                          )}
+                        <Pressable key={catId} onPress={() => setSubTab(sel ? null : catId)} style={styles.subTabBorderOuter}>
+                          <Text style={[styles.subTabText, sel ? { color: "#FFFFFF", fontWeight: "700" } : { color: "rgba(255,255,255,0.50)" }]}>
+                            {SUB_TAB_LABELS[catId] ?? cat.label}
+                          </Text>
                         </Pressable>
                       );
                     })}
