@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
 
   soundsRow: {
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 28,
     paddingBottom: 20,
     gap: 10,
   },
