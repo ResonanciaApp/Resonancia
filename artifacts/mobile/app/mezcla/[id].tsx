@@ -462,12 +462,10 @@ const styles = StyleSheet.create({
   soundLabel: { fontSize: 10, textAlign: "center", width: 72 },
 
   glassPanel: {
-    marginHorizontal: 16,
     borderRadius: 24,
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 24,
-    borderWidth: 1,
   },
 
   category: { fontSize: 11, fontWeight: "700", letterSpacing: 1.8, marginBottom: 6 },
