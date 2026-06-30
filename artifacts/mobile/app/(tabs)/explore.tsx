@@ -393,12 +393,14 @@ export default function ExploreScreen() {
                         { opacity: pressed ? 0.75 : 1 },
                       ]}
                     >
-                      <LinearGradient
-                        colors={sel ? ["#D6A45C", "#BE8744"] : ["rgba(190,150,80,0.06)", "rgba(190,150,80,0.06)"]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 0, y: 1 }}
-                        style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-                      />
+                      {sel && (
+                        <LinearGradient
+                          colors={["#D6A45C", "#BE8744"]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 0, y: 1 }}
+                          style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+                        />
+                      )}
                       <Text
                         style={[styles.durPillText, sel && styles.durPillTextActive]}
                         numberOfLines={1}
