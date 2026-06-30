@@ -305,11 +305,11 @@ export default function CommunityMixScreen() {
             <Text style={[styles.title, { color: colors.foreground, flex: 1 }]} numberOfLines={2}>
               {mix.name}
             </Text>
-            <Pressable onPress={handleLike} hitSlop={10}>
+            <Pressable onPress={handleLike} hitSlop={10} style={{ marginBottom: 6 }}>
               <Feather
                 name="heart"
                 size={22}
-                color={mix.likedByMe ? colors.primary : colors.mutedForeground}
+                color={mix.likedByMe ? colors.primary : "#BE8744"}
               />
             </Pressable>
           </View>
