@@ -553,6 +553,7 @@ const styles = StyleSheet.create({
   durPill: {
     borderRadius: 20,
     paddingHorizontal: 10,
+    minWidth: 76,
     height: 34,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.11)",
