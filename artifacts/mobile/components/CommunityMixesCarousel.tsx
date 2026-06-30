@@ -250,13 +250,6 @@ function MixRow({
           hitSlop={6}
           style={styles.authorRow}
         >
-          {avatarUri ? (
-            <ExpoImage source={{ uri: avatarUri }} style={styles.authorAvatar} contentFit="cover" />
-          ) : (
-            <View style={[styles.authorAvatar, styles.authorAvatarFallback]}>
-              <Text style={styles.authorInitial}>{initial}</Text>
-            </View>
-          )}
           <Text style={[styles.mixCreator, { color: colors.mutedForeground }]} numberOfLines={1}>
             {mix.author.displayName}
           </Text>
