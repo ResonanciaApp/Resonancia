@@ -220,7 +220,7 @@ export default function PlaylistDetailScreen() {
   return (
     <View style={styles.root}>
       <LinearGradient
-        colors={playlist.coverColor ? [panelColor, "#100105"] as const : BG_GRADIENT}
+        colors={BG_GRADIENT}
         style={StyleSheet.absoluteFill}
       />
       <StatusBar barStyle="light-content" />
@@ -244,7 +244,7 @@ export default function PlaylistDetailScreen() {
         <View style={styles.topPanel}>
           <LinearGradient
             colors={[panelColor, "transparent"]}
-            style={[StyleSheet.absoluteFill, { bottom: -140 }]}
+            style={StyleSheet.absoluteFill}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
           />
