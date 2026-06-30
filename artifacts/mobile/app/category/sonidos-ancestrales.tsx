@@ -30,7 +30,7 @@ const MUTED = "rgba(250,240,238,0.45)";
 const GRID_GAP    = 10;
 const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
 const HERO_H   = 238;
-const HERO_IMG = require("@/assets/images/ancestrales-hero.jpg");
+const HERO_IMG = require("@/assets/images/sessions/session-1.jpg");
 
 type CatTab   = string;
 type SortMode = "recientes" | "nuevas" | "populares";
