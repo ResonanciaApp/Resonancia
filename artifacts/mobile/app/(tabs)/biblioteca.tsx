@@ -1376,6 +1376,10 @@ export default function BibliotecaScreen() {
         transparent
         onRequestClose={() => { setAddResonadorVisible(false); setAddResonadorQ(""); }}
       >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1 }}
+        >
         <View style={styles.addResModalBg}>
           <View style={styles.addResModalSheet}>
             <View style={styles.addResModalHeader}>
@@ -1428,6 +1432,7 @@ export default function BibliotecaScreen() {
             </ScrollView>
           </View>
         </View>
+        </KeyboardAvoidingView>
       </Modal>
     </LinearGradient>
   );
