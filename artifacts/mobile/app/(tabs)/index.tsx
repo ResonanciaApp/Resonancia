@@ -130,10 +130,8 @@ export default function HomeScreen2() {
   useEffect(() => {
     const blink = Animated.loop(
       Animated.sequence([
-        Animated.delay(500),
-        Animated.timing(cursorOpacity, { toValue: 0, duration: 80, useNativeDriver: true }),
-        Animated.delay(500),
-        Animated.timing(cursorOpacity, { toValue: 1, duration: 80, useNativeDriver: true }),
+        Animated.timing(cursorOpacity, { toValue: 0, duration: 500, useNativeDriver: true }),
+        Animated.timing(cursorOpacity, { toValue: 1, duration: 500, useNativeDriver: true }),
       ])
     );
     blink.start();
@@ -822,8 +820,8 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   intencionPlaceholder: {
-    fontSize: 22,
-    color: "rgba(237,225,211,0.35)",
+    fontSize: 21,
+    color: "rgba(255,255,255,0.9)",
     fontWeight: "600",
     textAlign: "center",
     flexShrink: 1,
