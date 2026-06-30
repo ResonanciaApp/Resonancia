@@ -41,7 +41,7 @@ const BG_GRADIENT = ["#16040A", "#16040A"] as const;
 const GOLD = "#BE8744";
 const TEXT = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
-const DEFAULT_PANEL_BG = "rgba(74,12,12,0.28)";
+const DEFAULT_PANEL_BG = "transparent";
 
 const DEFAULT_ACCENT = ""; // sentinel = borgoña degradado por defecto
 const ACCENT_PALETTE: readonly string[] = [
@@ -478,7 +478,7 @@ export default function PlaylistDetailScreen() {
                   <CreationCoverPreview creationId={pendingCover.creationId} size={52} />
                 </View>
               )}
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: buildPanelColor(selectedAccent), opacity: 0.7 }]} />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: buildPanelColor(selectedAccent), opacity: 0.2 }]} />
               <Text style={cpStyles.previewLabel}>Vista previa</Text>
             </View>
 
