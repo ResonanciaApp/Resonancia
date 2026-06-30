@@ -347,7 +347,7 @@ export default function SessionDetailScreen() {
                 <Feather name="more-horizontal" size={22} color="#FFFFFF" />
               </Pressable>
               <Pressable onPress={handleFav} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-                <Feather name="heart" size={22} color={fav ? "#D4AF37" : "#FFFFFF"} />
+                <Feather name="heart" size={22} color={fav ? "#BE8744" : "#FFFFFF"} />
               </Pressable>
             </View>
           </View>
@@ -632,11 +632,11 @@ export default function SessionDetailScreen() {
               </Pressable>
               {/* Agregar a favoritos */}
               <Pressable style={styles.optRow} onPress={() => { handleFav(); }}>
-                <Feather name="heart" size={18} color={fav ? "#D4AF37" : "white"} style={styles.optIcon} />
-                <Text style={[styles.optRowText, fav ? { color: "#D4AF37" } : {}]}>
+                <Feather name="heart" size={18} color={fav ? "#BE8744" : "white"} style={styles.optIcon} />
+                <Text style={[styles.optRowText, fav ? { color: "#BE8744" } : {}]}>
                   {fav ? "En favoritos" : "Agregar a favoritos"}
                 </Text>
-                {fav && <Feather name="check" size={15} color="#D4AF37" />}
+                {fav && <Feather name="check" size={15} color="#BE8744" />}
               </Pressable>
               {/* Añadir a carpeta */}
               <Pressable
