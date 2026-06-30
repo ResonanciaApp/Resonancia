@@ -151,10 +151,10 @@ export default function CommunityMixScreen() {
     );
   }, [mix, isSignedIn, applyOptimistic, toggleLike, queryClient]);
 
-  const onAuthorPress = useCallback(() => {
+  const onAuthorPress = () => {
     if (!mix) return;
     router.push(`/mezcla-creador/${mix.author.userId}` as never);
-  }, [mix]);
+  };
 
   const handleShare = useCallback(async () => {
     if (!mix) return;
@@ -380,7 +380,7 @@ export default function CommunityMixScreen() {
           </View>
 
           {/* Caja para escribir — sin borde */}
-          <View style={[styles.composer, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
+          <View style={[styles.composer, { backgroundColor: "rgba(190,150,80,0.06)" }]}>
             <TextInput
               value={draft}
               onChangeText={setDraft}
@@ -402,7 +402,14 @@ export default function CommunityMixScreen() {
                 },
               ]}
             >
-              {!!draft.trim() && <GoldGradientFill />}
+              {!!draft.trim() && (
+                <LinearGradient
+                  colors={["#D6AD5F", "#B47344"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={StyleSheet.absoluteFill}
+                />
+              )}
               <Feather name="send" size={16} color={colors.background} />
             </Pressable>
           </View>
