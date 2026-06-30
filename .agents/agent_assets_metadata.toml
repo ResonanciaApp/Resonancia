@@ -1326,6 +1326,66 @@ uri = "file://artifacts/mobile/assets/images/descanso-sounds/sound-24.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "fB5Zd45yuQeqaSwXqdSgy"
+uri = "file://artifacts/mobile/assets/images/sessions/session-56.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "HomFlbA_hsZByYUfbtVK5"
+uri = "file://artifacts/mobile/assets/images/sessions/session-57.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "Y3NbU7nfssD4KVhUwEzz8"
+uri = "file://artifacts/mobile/assets/images/sessions/session-58.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "TS2DBO3Fv0AEjEpZz3WtI"
+uri = "file://artifacts/mobile/assets/images/sessions/session-59.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "GUi47qxQK8Q9beqh2mC3C"
+uri = "file://artifacts/mobile/assets/images/sessions/session-60.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "CgqecV--KrOZEhlv4MjlT"
+uri = "file://artifacts/mobile/assets/images/sessions/session-61.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "srku8M8TqTogvuyoyNJ0V"
+uri = "file://artifacts/mobile/assets/images/sessions/session-62.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "N6xujt4DGpvOYPFL3KVKk"
+uri = "file://artifacts/mobile/assets/images/sessions/session-63.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "wdIYCGN-AQ4eL89gx1iBN"
+uri = "file://artifacts/mobile/assets/images/sessions/session-64.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "fd7L1NsHKdQH--jUWTV-j"
+uri = "file://artifacts/mobile/assets/images/sessions/session-65.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
