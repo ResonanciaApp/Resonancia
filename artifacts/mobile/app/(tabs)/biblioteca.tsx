@@ -1422,7 +1422,7 @@ export default function BibliotecaScreen() {
                       <Pressable
                         hitSlop={12}
                         onPress={() => isFollowed ? saveFollowed(followedIds.filter((x) => x !== r.id)) : followResonador(r.id)}
-                        style={[styles.addResonadorIcon, { width: 36, height: 36, borderRadius: 18, backgroundColor: isFollowed ? "rgba(212,175,55,0.18)" : "rgba(255,255,255,0.07)" }]}
+                        style={[styles.addResonadorIcon, { width: 36, height: 36, borderRadius: 18, backgroundColor: isFollowed ? "rgba(212,175,55,0.18)" : "rgba(190,150,80,0.06)" }]}
                       >
                         <Feather name={isFollowed ? "check" : "plus"} size={18} color={isFollowed ? GOLD : TEXT} />
                       </Pressable>
@@ -1879,7 +1879,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(190,150,80,0.06)",
     borderRadius: 12,
     marginHorizontal: H_PAD,
     paddingHorizontal: 12,
