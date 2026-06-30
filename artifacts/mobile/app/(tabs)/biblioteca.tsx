@@ -1298,12 +1298,14 @@ export default function BibliotecaScreen() {
         </View>
 
         {/* Fila 2: chips de tab (animados) */}
-        <AnimatedChipRow
-          tabs={LIB_TABS}
-          activeTab={activeTab}
-          onSelect={(id) => setActiveTab(id)}
-          onClear={() => setActiveTab(null)}
-        />
+        <View style={{ marginTop: 20 }}>
+          <AnimatedChipRow
+            tabs={LIB_TABS}
+            activeTab={activeTab}
+            onSelect={(id) => setActiveTab(id)}
+            onClear={() => setActiveTab(null)}
+          />
+        </View>
 
       </View>
 
