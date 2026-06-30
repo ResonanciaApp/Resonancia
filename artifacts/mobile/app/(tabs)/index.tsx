@@ -867,7 +867,7 @@ const styles = StyleSheet.create({
   },
   headerTabChip: {
     borderRadius: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 17,
     height: 34,
     overflow: "hidden",
     alignItems: "center",
