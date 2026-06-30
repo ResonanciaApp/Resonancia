@@ -69,8 +69,8 @@
   --elevate-1: rgba(255,255,255, .04);
   --elevate-2: rgba(255,255,255, .09);
 
-  /* Borgoña oscuro background (#1B060F) */
-  --background: 334 63% 7%;
+  /* Fondo raíz (#16040A — mismo que Inicio) */
+  --background: 340 69% 5%;
   /* Foreground cálido (#F4DAD5) */
   --foreground: 10 59% 90%;
 
@@ -78,32 +78,34 @@
   --border: 350 63% 15%;
   /* Input (#27070E) */
   --input: 347 70% 9%;
-  /* Ring — dorado (#D4AF37) */
-  --ring: 46 65% 52%;
+  /* Ring — dorado (#BE8744) */
+  --ring: 33 48% 51%;
 
-  /* Cards (#27070E) */
+  /* Cards — tinte dorado translúcido (override en --color-card abajo) */
   --card: 347 70% 9%;
   --card-foreground: 10 59% 90%;
   --card-border: 350 63% 15%;
+  /* Override rgba para bg-card (sidebar + cards) */
+  --color-card: rgba(190, 150, 80, 0.06);
 
-  /* Sidebar (más oscuro que card, #1B060F) */
-  --sidebar: 334 63% 7%;
+  /* Sidebar (#16040A) */
+  --sidebar: 340 69% 5%;
   --sidebar-foreground: 10 59% 90%;
   --sidebar-border: 350 63% 15%;
-  --sidebar-primary: 46 65% 52%;
-  --sidebar-primary-foreground: 334 63% 7%;
+  --sidebar-primary: 33 48% 51%;
+  --sidebar-primary-foreground: 340 69% 5%;
   --sidebar-accent: 350 63% 15%;
   --sidebar-accent-foreground: 10 59% 90%;
-  --sidebar-ring: 46 65% 52%;
+  --sidebar-ring: 33 48% 51%;
 
   /* Popover */
   --popover: 347 70% 9%;
   --popover-foreground: 10 59% 90%;
   --popover-border: 350 63% 15%;
 
-  /* Primary — dorado (#D4AF37) */
-  --primary: 46 65% 52%;
-  --primary-foreground: 334 63% 7%;
+  /* Primary — dorado (#BE8744) */
+  --primary: 33 48% 51%;
+  --primary-foreground: 340 69% 5%;
 
   /* Secondary — borgoña medio (#3D0E16) */
   --secondary: 350 63% 15%;
@@ -122,7 +124,7 @@
   --destructive-foreground: 10 59% 90%;
 
   /* Charts */
-  --chart-1: 46 65% 52%;
+  --chart-1: 33 48% 51%;
   --chart-2: 43 74% 67%;
   --chart-3: 10 30% 60%;
   --chart-4: 350 63% 20%;
