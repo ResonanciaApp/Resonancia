@@ -403,14 +403,12 @@ export default function ExploreScreen() {
                         { opacity: pressed ? 0.75 : 1 },
                       ]}
                     >
-                      {sel && (
-                        <LinearGradient
-                          colors={["#D6AD5F", "#B47344"]}
-                          start={{ x: 0, y: 0 }}
-                          end={{ x: 1, y: 0 }}
-                          style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-                        />
-                      )}
+                      <LinearGradient
+                        colors={sel ? ["#D6A45C", "#BE8744"] : ["#3D1A23", "#251219"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 0, y: 1 }}
+                        style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+                      />
                       <Text
                         style={[styles.durPillText, sel && styles.durPillTextActive]}
                         numberOfLines={1}
@@ -559,7 +557,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.11)",
-    backgroundColor: "rgba(74,12,12,0.08)",
+    overflow: "hidden",
     alignItems: "center",
   },
   durPillActive: {
