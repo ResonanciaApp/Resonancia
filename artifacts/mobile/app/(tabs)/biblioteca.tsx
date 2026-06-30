@@ -11,6 +11,7 @@ import {
   Easing,
   FlatList,
   Keyboard,
+  KeyboardAvoidingView,
   Modal,
   Platform,
   Pressable,
@@ -458,13 +459,12 @@ function NombreCarpetaModal({ visible, onClose }: { visible: boolean; onClose: (
   return (
     <Modal
       visible={visible}
-      animationType="fade"
+      animationType="slide"
       transparent
       onRequestClose={onClose}
       onShow={() => setTimeout(() => inputRef.current?.focus(), 80)}
     >
-      <View style={styles.nameOverlay}>
-        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <View style={styles.nameCard}>
           <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
             <Feather name="x" size={22} color={TEXT} />
@@ -490,7 +490,8 @@ function NombreCarpetaModal({ visible, onClose }: { visible: boolean; onClose: (
             <Text style={styles.nameCreateBtnText}>Crear</Text>
           </Pressable>
         </View>
-      </View>
+        <Pressable style={{ flex: 1 }} onPress={onClose} />
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
@@ -517,13 +518,12 @@ function NombrePlaylistModal({ visible, onClose }: { visible: boolean; onClose: 
   return (
     <Modal
       visible={visible}
-      animationType="fade"
+      animationType="slide"
       transparent
       onRequestClose={onClose}
       onShow={() => setTimeout(() => inputRef.current?.focus(), 80)}
     >
-      <View style={styles.nameOverlay}>
-        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <View style={styles.nameCard}>
           <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
             <Feather name="x" size={22} color={TEXT} />
@@ -549,7 +549,8 @@ function NombrePlaylistModal({ visible, onClose }: { visible: boolean; onClose: 
             <Text style={styles.nameCreateBtnText}>Crear</Text>
           </Pressable>
         </View>
-      </View>
+        <Pressable style={{ flex: 1 }} onPress={onClose} />
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
@@ -1677,52 +1678,49 @@ const styles = StyleSheet.create({
   nameCard: {
     width: "100%",
     backgroundColor: "#16040A",
-    borderRadius: 20,
-    paddingHorizontal: 24,
+    paddingHorizontal: 32,
     paddingTop: 20,
-    paddingBottom: 32,
+    paddingBottom: 52,
     alignItems: "center",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(212,175,55,0.15)",
   },
   nameCloseBtn: {
-    alignSelf: "flex-end",
-    marginBottom: 8,
+    position: "absolute",
+    top: 18,
+    right: 20,
   },
   nameCardTitle: {
     color: TEXT,
-    fontSize: 17,
-    fontWeight: "700",
+    fontSize: 18,
+    fontWeight: "600",
     textAlign: "center",
-    marginBottom: 24,
-    lineHeight: 24,
+    marginTop: 48,
+    marginBottom: 36,
+    lineHeight: 26,
   },
   nameInputWrap: {
-    width: "100%",
-    backgroundColor: "rgba(74,12,12,0.08)",
-    borderRadius: 10,
+    width: "85%",
     borderBottomWidth: 2,
     borderBottomColor: GOLD,
-    paddingHorizontal: 14,
     paddingVertical: 10,
-    marginBottom: 28,
+    marginBottom: 40,
+    backgroundColor: "transparent",
   },
   nameInput: {
     color: TEXT,
-    fontSize: 22,
-    fontWeight: "700",
+    fontSize: 26,
+    fontWeight: "600",
     textAlign: "center",
     padding: 0,
   },
   nameCreateBtn: {
     overflow: "hidden",
     borderRadius: 30,
-    paddingHorizontal: 48,
-    paddingVertical: 14,
+    paddingHorizontal: 52,
+    paddingVertical: 15,
   },
   nameCreateBtnText: {
     color: "#1B060F",
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: "800",
     letterSpacing: 0.3,
   },
