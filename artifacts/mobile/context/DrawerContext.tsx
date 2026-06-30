@@ -1,6 +1,6 @@
-import { Dimensions } from "react-native";
-import { Animated, Easing } from "react-native";
+import { Dimensions, Animated } from "react-native";
 import React, { createContext, useCallback, useContext, useRef, useState } from "react";
+import { DURATION, easeOutCubic } from "@/constants/motion";
 
 export const DRAWER_W = Math.min(Dimensions.get("window").width * 0.78, 300);
 export const DRAWER_PUSH = DRAWER_W + 50;
@@ -42,8 +42,8 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
       drawerAnim.stopAnimation();
       Animated.timing(drawerAnim, {
         toValue: toOpen ? 1 : 0,
-        duration: 420,
-        easing: Easing.out(Easing.cubic),
+        duration: DURATION.DRAWER,
+        easing: easeOutCubic,
         useNativeDriver: true,
       }).start();
     },

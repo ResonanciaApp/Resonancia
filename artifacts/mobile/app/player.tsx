@@ -22,7 +22,7 @@ import {
   View,
   type GestureResponderEvent,
 } from "react-native";
-import { DURATION, easeOutCubic, easeInCubic } from "@/constants/motion";
+import { DURATION, easeOutCubic } from "@/constants/motion";
 import Animated, {
   Easing,
   cancelAnimation,
@@ -287,7 +287,7 @@ export default function PlayerScreen() {
   }, []);
 
   const closeSheet = useCallback(() => {
-    sheetProgress.value = withTiming(0, { duration: DURATION.SHEET_CLOSE, easing: easeInCubic }, (finished) => {
+    sheetProgress.value = withTiming(0, { duration: DURATION.SHEET_CLOSE, easing: easeOutCubic }, (finished) => {
       if (finished) runOnJS(setShowOptionsSheet)(false);
     });
   }, []);

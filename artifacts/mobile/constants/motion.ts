@@ -2,7 +2,7 @@ import { Easing } from "react-native";
 
 /** Curvas easing del lenguaje de movimiento (Apple / Calm / Insight Timer) */
 export const easeOutCubic = Easing.out(Easing.cubic);
-export const easeOutQuart = Easing.out(Easing.ease);
+export const easeOutQuart = Easing.out(Easing.poly(4));
 export const easeInCubic  = Easing.in(Easing.cubic);
 
 /**

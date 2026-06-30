@@ -18,7 +18,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { DURATION, easeOutCubic, easeInCubic } from "@/constants/motion";
+import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useColors } from "@/hooks/useColors";
 import { DESCANSO_SOUNDS } from "@/data/descanso-sounds";
 import { useDescansoPlayer } from "@/hooks/useDescansoPlayer";
@@ -180,8 +180,8 @@ function NightTimerSheet({
       ]).start();
     } else if (rendered) {
       Animated.parallel([
-        Animated.timing(slideY,     { toValue: 500, duration: DURATION.SHEET_CLOSE, easing: easeInCubic, useNativeDriver: true }),
-        Animated.timing(backdropOp, { toValue: 0,   duration: DURATION.SHEET_CLOSE, easing: easeInCubic, useNativeDriver: true }),
+        Animated.timing(slideY,     { toValue: 500, duration: DURATION.SHEET_CLOSE, easing: easeOutCubic, useNativeDriver: true }),
+        Animated.timing(backdropOp, { toValue: 0,   duration: DURATION.SHEET_CLOSE, easing: easeOutCubic, useNativeDriver: true }),
       ]).start(() => setRendered(false));
     }
   }, [visible]);
