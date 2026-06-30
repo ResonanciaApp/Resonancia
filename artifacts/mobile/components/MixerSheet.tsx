@@ -377,7 +377,7 @@ export function MixerSheet() {
   const openBgPicker = () => {
     bgPickerY.setValue(700);
     setBgPickerOpen(true);
-    Animated.spring(bgPickerY, { toValue: 0, tension: 65, friction: 14, useNativeDriver: true }).start();
+    Animated.timing(bgPickerY, { toValue: 0, duration: 350, easing: Easing.out(Easing.cubic), useNativeDriver: true }).start();
   };
 
   const closeBgPicker = () => {
@@ -465,10 +465,10 @@ export function MixerSheet() {
         if (g.dy > 80 || g.vy > 0.5) {
           closeSheet();
         } else {
-          Animated.spring(sheetEnterY, {
+          Animated.timing(sheetEnterY, {
             toValue: 0,
-            tension: 65,
-            friction: 14,
+            duration: 250,
+            easing: Easing.out(Easing.cubic),
             useNativeDriver: true,
           }).start();
         }
@@ -500,10 +500,10 @@ export function MixerSheet() {
       } else {
         sheetEnterY.setValue(Dimensions.get("window").height);
         backdropOpacity.setValue(0);
-        Animated.spring(sheetEnterY, {
+        Animated.timing(sheetEnterY, {
           toValue: 0,
-          tension: 65,
-          friction: 14,
+          duration: 350,
+          easing: Easing.out(Easing.cubic),
           useNativeDriver: true,
         }).start();
         Animated.timing(backdropOpacity, {

@@ -26,15 +26,15 @@ export function GhostPill({ children, style }: Props) {
 
   function animateIn() {
     Animated.parallel([
-      Animated.timing(scale,  { toValue: 1.13, duration: 160, easing: Easing.out(Easing.back(1.5)), useNativeDriver: true }),
-      Animated.timing(bright, { toValue: 1,    duration: 160, easing: Easing.out(Easing.quad),       useNativeDriver: true }),
+      Animated.timing(scale,  { toValue: 1.03, duration: 120, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      Animated.timing(bright, { toValue: 1,    duration: 120, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
     ]).start();
   }
 
   function animateOut() {
     Animated.parallel([
-      Animated.spring(scale,  { toValue: 1, useNativeDriver: true, friction: 5, tension: 120 }),
-      Animated.timing(bright, { toValue: 0, duration: 400, easing: Easing.in(Easing.quad), useNativeDriver: true }),
+      Animated.timing(scale,  { toValue: 1, duration: 180, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      Animated.timing(bright, { toValue: 0, duration: 350, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
     ]).start();
   }
 

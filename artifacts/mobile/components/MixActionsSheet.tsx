@@ -25,7 +25,8 @@ import {
 import RAnimated, {
   useSharedValue,
   useAnimatedStyle,
-  withSpring,
+  withTiming,
+  Easing,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -48,7 +49,7 @@ const THUMB = 40;
 const SHIFT_CLOSED = 24;
 const SHIFT_OPEN = 58;
 const MAX_STACK = 4;
-const SPRING_CFG = { damping: 16, stiffness: 200 } as const;
+const TIMING_CFG = { duration: 220, easing: Easing.out(Easing.cubic) } as const;
 
 function MiniStack({ sounds }: { sounds: { id: string }[] }) {
   const visible = sounds.slice(0, MAX_STACK);
@@ -60,17 +61,17 @@ function MiniStack({ sounds }: { sounds: { id: string }[] }) {
   useEffect(() => () => { if (collapseTimer.current) clearTimeout(collapseTimer.current); }, []);
 
   // Un animated style por slot (máx 4). Hooks no pueden estar en loops.
-  const a0 = useAnimatedStyle(() => ({ left: withSpring(isOpen.value ? 0 * SHIFT_OPEN : 0 * SHIFT_CLOSED, SPRING_CFG) }));
-  const a1 = useAnimatedStyle(() => ({ left: withSpring(isOpen.value ? 1 * SHIFT_OPEN : 1 * SHIFT_CLOSED, SPRING_CFG) }));
-  const a2 = useAnimatedStyle(() => ({ left: withSpring(isOpen.value ? 2 * SHIFT_OPEN : 2 * SHIFT_CLOSED, SPRING_CFG) }));
-  const a3 = useAnimatedStyle(() => ({ left: withSpring(isOpen.value ? 3 * SHIFT_OPEN : 3 * SHIFT_CLOSED, SPRING_CFG) }));
+  const a0 = useAnimatedStyle(() => ({ left: withTiming(isOpen.value ? 0 * SHIFT_OPEN : 0 * SHIFT_CLOSED, TIMING_CFG) }));
+  const a1 = useAnimatedStyle(() => ({ left: withTiming(isOpen.value ? 1 * SHIFT_OPEN : 1 * SHIFT_CLOSED, TIMING_CFG) }));
+  const a2 = useAnimatedStyle(() => ({ left: withTiming(isOpen.value ? 2 * SHIFT_OPEN : 2 * SHIFT_CLOSED, TIMING_CFG) }));
+  const a3 = useAnimatedStyle(() => ({ left: withTiming(isOpen.value ? 3 * SHIFT_OPEN : 3 * SHIFT_CLOSED, TIMING_CFG) }));
   const slotStyles = [a0, a1, a2, a3];
 
   // El contenedor crece junto con el spread para no recortar los thumbs
   const containerStyle = useAnimatedStyle(() => {
     const naturalW = THUMB + Math.max(0, count - 1) * SHIFT_CLOSED;
     const openW    = THUMB + Math.max(0, count - 1) * SHIFT_OPEN;
-    return { width: withSpring(isOpen.value ? openW : naturalW, SPRING_CFG) };
+    return { width: withTiming(isOpen.value ? openW : naturalW, TIMING_CFG) };
   });
 
   const expand = () => {

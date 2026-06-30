@@ -4,6 +4,7 @@ import { GoldGradient } from "@/components/GoldGradient";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
+  Easing,
   Platform,
   Pressable,
   StyleSheet,
@@ -37,11 +38,11 @@ export function AmbientWidget() {
 
   // Animate expand/collapse
   useEffect(() => {
-    Animated.spring(expandAnim, {
+    Animated.timing(expandAnim, {
       toValue: expanded ? 1 : 0,
+      duration: 220,
+      easing: Easing.out(Easing.cubic),
       useNativeDriver: ND,
-      damping: 20,
-      stiffness: 220,
     }).start();
   }, [expanded, expandAnim]);
 

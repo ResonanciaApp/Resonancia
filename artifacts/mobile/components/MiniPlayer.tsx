@@ -199,9 +199,9 @@ export function MiniPlayer() {
       toValue: next ? carouselOpenW : stackWidthStackedCap,
       useNativeDriver: false, duration: 220, easing: Easing.out(Easing.cubic),
     }).start();
-    Animated.spring(openProgress, {
+    Animated.timing(openProgress, {
       toValue: next ? 1 : 0,
-      useNativeDriver: true, damping: 28, stiffness: 200, overshootClamping: true,
+      useNativeDriver: true, duration: 220, easing: Easing.out(Easing.cubic),
     }).start();
   };
 
@@ -221,19 +221,17 @@ export function MiniPlayer() {
           toValue: carouselOpenW,
           useNativeDriver: false, duration: 220, easing: Easing.out(Easing.cubic),
         }).start();
-        Animated.spring(openProgress, {
+        Animated.timing(openProgress, {
           toValue: 1,
-          useNativeDriver: true, damping: 28, stiffness: 200, overshootClamping: true,
+          useNativeDriver: true, duration: 220, easing: Easing.out(Easing.cubic),
         }).start();
       } else {
         stackWidthAnim.setValue(stackWidthStackedCap);
       }
     } else {
-      Animated.spring(stackWidthAnim, {
+      Animated.timing(stackWidthAnim, {
         toValue: carouselOpenW,
-        useNativeDriver: false,
-        damping: 18,
-        stiffness: 200,
+        useNativeDriver: false, duration: 220, easing: Easing.out(Easing.cubic),
       }).start();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

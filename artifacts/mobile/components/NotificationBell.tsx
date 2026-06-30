@@ -116,10 +116,10 @@ export function NotificationBell() {
             easing: Easing.out(Easing.quad),
             useNativeDriver: true,
           }),
-          Animated.spring(fireScale, {
+          Animated.timing(fireScale, {
             toValue: 1,
-            friction: 4,
-            tension: 80,
+            duration: 280,
+            easing: Easing.out(Easing.cubic),
             useNativeDriver: true,
           }),
         ]),

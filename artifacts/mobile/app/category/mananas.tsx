@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image } from "react-native";
 import {
   Animated,
+  Easing,
   LayoutChangeEvent,
   Platform,
   Pressable,
@@ -141,10 +142,10 @@ export default function MananasScreen() {
     const layout = tabLayouts.current[idx];
     if (layout) {
       setIndicatorWidth(layout.width);
-      Animated.spring(indicatorAnim, {
+      Animated.timing(indicatorAnim, {
         toValue: layout.x,
-        tension: 200,
-        friction: 24,
+        duration: 220,
+        easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }).start();
     }

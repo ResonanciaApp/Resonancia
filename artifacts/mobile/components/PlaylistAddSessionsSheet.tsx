@@ -39,7 +39,6 @@ import Animated, {
   useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
   withTiming,
 } from "react-native-reanimated";
 import Svg, { Circle } from "react-native-svg";
@@ -154,7 +153,7 @@ function AddButton({ added, onPress }: { added: boolean; onPress: () => void }) 
       rippleScale.value = withTiming(1.8, { duration: 450 });
       rippleOpacity.value = withTiming(0, { duration: 450 });
       // Relleno + check
-      fillProgress.value  = withSpring(1, { stiffness: 280, damping: 22 });
+      fillProgress.value  = withTiming(1, { duration: 180, easing: Easing.out(Easing.cubic) });
       checkOpacity.value  = withTiming(1, { duration: 200, easing: Easing.out(Easing.quad) });
     } else if (!added && prevAdded.current) {
       fillProgress.value  = withTiming(0, { duration: 180 });

@@ -275,7 +275,7 @@ export default function PlayerScreen() {
 
   useEffect(() => {
     if (showOptionsSheet) {
-      sheetProgress.value = withTiming(1, { duration: 320, easing: Easing.out(Easing.cubic) });
+      sheetProgress.value = withTiming(1, { duration: 350, easing: Easing.out(Easing.cubic) });
     }
   }, [showOptionsSheet]);
 
@@ -286,7 +286,7 @@ export default function PlayerScreen() {
   }, []);
 
   const closeSheet = useCallback(() => {
-    sheetProgress.value = withTiming(0, { duration: 240, easing: Easing.in(Easing.cubic) }, (finished) => {
+    sheetProgress.value = withTiming(0, { duration: 280, easing: Easing.in(Easing.cubic) }, (finished) => {
       if (finished) runOnJS(setShowOptionsSheet)(false);
     });
   }, []);

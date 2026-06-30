@@ -3,6 +3,7 @@ import { router } from "expo-router";
 import React, { useRef, useState, useMemo } from "react";
 import {
   Animated,
+  Easing,
   Image,
   LayoutChangeEvent,
   Platform,
@@ -49,11 +50,11 @@ function SoundStack({ sounds }: { sounds: { id: string }[] }) {
   const toggle = () => {
     const next = !open;
     setOpen(next);
-    Animated.spring(openAnim, {
+    Animated.timing(openAnim, {
       toValue: next ? 1 : 0,
+      duration: 220,
+      easing: Easing.out(Easing.cubic),
       useNativeDriver: false,
-      damping: 16,
-      stiffness: 220,
     }).start();
   };
 
@@ -145,11 +146,11 @@ export default function FavoritesScreen() {
     const layout = tabLayouts.current[idx];
     if (layout) {
       setIndicatorWidth(layout.width);
-      Animated.spring(indicatorAnim, {
+      Animated.timing(indicatorAnim, {
         toValue: layout.x,
+        duration: 220,
+        easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
-        tension: 60,
-        friction: 9,
       }).start();
     }
   };

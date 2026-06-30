@@ -15,19 +15,19 @@ export function BackPill({ onPress, style, color = "#fff", size = 22, hitSlop = 
 
   function handlePressIn() {
     Animated.timing(scale, {
-      toValue: 1.32,
-      duration: 160,
-      easing: Easing.out(Easing.back(1.5)),
+      toValue: 0.97,
+      duration: 120,
+      easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
     }).start();
   }
 
   function handlePressOut() {
-    Animated.spring(scale, {
+    Animated.timing(scale, {
       toValue: 1,
+      duration: 180,
+      easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
-      friction: 5,
-      tension: 120,
     }).start();
     onPress();
   }

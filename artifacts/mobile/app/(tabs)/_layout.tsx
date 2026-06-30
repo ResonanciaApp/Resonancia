@@ -80,7 +80,7 @@ function TabItem({
   useEffect(() => {
     Animated.timing(focusAnim, {
       toValue: isFocused ? 1 : 0,
-      duration: 350,
+      duration: 250,
       easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
     }).start();

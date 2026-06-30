@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
+  Easing,
   Image,
   Modal,
   Platform,
@@ -173,13 +174,13 @@ function NightTimerSheet({
       slideY.setValue(500);
       backdropOp.setValue(0);
       Animated.parallel([
-        Animated.timing(slideY,     { toValue: 0,   duration: 320, useNativeDriver: true }),
-        Animated.timing(backdropOp, { toValue: 1,   duration: 280, useNativeDriver: true }),
+        Animated.timing(slideY,     { toValue: 0, duration: 350, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+        Animated.timing(backdropOp, { toValue: 1, duration: 280, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
       ]).start();
     } else if (rendered) {
       Animated.parallel([
-        Animated.timing(slideY,     { toValue: 500, duration: 260, useNativeDriver: true }),
-        Animated.timing(backdropOp, { toValue: 0,   duration: 220, useNativeDriver: true }),
+        Animated.timing(slideY,     { toValue: 500, duration: 280, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
+        Animated.timing(backdropOp, { toValue: 0,   duration: 250, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
       ]).start(() => setRendered(false));
     }
   }, [visible]);
