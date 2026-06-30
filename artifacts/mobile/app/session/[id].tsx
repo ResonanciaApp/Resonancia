@@ -374,9 +374,9 @@ export default function SessionDetailScreen() {
                 style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
               >
                 <LinearGradient
-                  colors={["#D6AD5F", "#B47344"]}
+                  colors={["#D6A45C", "#BE8744"]}
                   start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
+                  end={{ x: 0, y: 1 }}
                   style={StyleSheet.absoluteFill}
                 />
                 <Feather name="rotate-ccw" size={16} color={colors.primaryForeground} />
@@ -391,9 +391,9 @@ export default function SessionDetailScreen() {
                 style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
               >
                 <LinearGradient
-                  colors={["#D6AD5F", "#B47344"]}
+                  colors={["#D6A45C", "#BE8744"]}
                   start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
+                  end={{ x: 0, y: 1 }}
                   style={StyleSheet.absoluteFill}
                 />
                 <Svg width={16} height={16} viewBox="0 0 48 48">
@@ -414,9 +414,9 @@ export default function SessionDetailScreen() {
               ]}
             >
               <LinearGradient
-                colors={["#D6AD5F", "#B47344"]}
+                colors={["#D6A45C", "#BE8744"]}
                 start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
+                end={{ x: 0, y: 1 }}
                 style={StyleSheet.absoluteFill}
               />
               <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
@@ -439,14 +439,14 @@ export default function SessionDetailScreen() {
             style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, marginTop: -11, marginBottom: 14 })}
           >
             <LinearGradient
-              colors={["#D6AD5F", "#B47344"]}
+              colors={["#D6A45C", "#BE8744"]}
               start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
+              end={{ x: 0, y: 1 }}
               style={styles.shareBtnGradientBorder}
             >
               <View style={styles.shareBtnInner}>
                 <Text style={styles.shareBtnText}>Compartir</Text>
-                <Feather name="send" size={15} color="#D6AD5F" />
+                <Feather name="send" size={15} color="#D6A45C" />
               </View>
             </LinearGradient>
           </Pressable>
