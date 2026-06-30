@@ -787,7 +787,7 @@ export function MixerSheet() {
             </View>
 
             <View style={styles.headerRow}>
-              <GhostPill>
+              <GhostPill style={{ backgroundColor: "rgba(255,255,255,0.05)" }}>
                 <Pressable
                   onPress={closeSheet}
                   hitSlop={10}
@@ -801,7 +801,7 @@ export function MixerSheet() {
               <Text style={[styles.title, { color: palette.headerFg, flex: 1 }]} numberOfLines={1}>
                 {originPreset?.name ?? "Tu mezcla"}
               </Text>
-              <GhostPill>
+              <GhostPill style={{ backgroundColor: "rgba(255,255,255,0.05)" }}>
                 <Pressable
                   onPress={() => { stopAll(); closeSheet(); }}
                   hitSlop={10}
@@ -864,7 +864,7 @@ export function MixerSheet() {
             ]}
           >
             <View style={[styles.pillAboveFooter, { transform: [{ translateY: -20 }] }]}>
-              <GhostPill>
+              <GhostPill style={{ backgroundColor: "rgba(255,255,255,0.05)" }}>
                 <Pressable
                   onPress={() => setEscenasOpen(true)}
                   hitSlop={8}
