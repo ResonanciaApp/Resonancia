@@ -309,7 +309,7 @@ export default function CommunityMixScreen() {
               <Feather
                 name="heart"
                 size={22}
-                color={mix.likedByMe ? colors.primary : "#FFFFFF"}
+                color={mix.likedByMe ? "#BE8744" : "#FFFFFF"}
               />
             </Pressable>
           </View>
