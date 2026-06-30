@@ -147,7 +147,7 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 }
 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress: () => void }) {
-  const iconColor = sel ? "#1B060F" : GOLD;
+  const iconColor = sel ? "#1B060F" : "#FFFFFF";
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
       <LinearGradient colors={sel?["#D6A45C","#BE8744"]:["rgba(190,150,80,0.15)","rgba(190,150,80,0.05)"]} start={{x:0,y:0}} end={{x:0,y:1}} style={StyleSheet.absoluteFill} />
@@ -491,7 +491,7 @@ export default function SonidosAncestalesScreen() {
           <View style={styles.heroIconFloat}>
             <View style={styles.heroIconGlow}>
               <View style={styles.heroIconCircle}>
-                <Feather name="music" size={32} color={GOLD} />
+                <Feather name="music" size={32} color="#BE8744" />
               </View>
             </View>
           </View>
@@ -566,7 +566,7 @@ const styles = StyleSheet.create({
   heroArea: { height: HERO_H, position: "relative" },
   heroIconFloat: { position: "absolute", bottom: -17, left: 0, right: 0, alignItems: "center", zIndex: 2 },
   heroIconGlow: { borderRadius: 36 },
-  heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "#1B060F", borderWidth: 2, borderColor: "rgba(212,175,55,0.5)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
+  heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "#1B060F", borderWidth: 2, borderColor: "rgba(190,135,68,0.5)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
   /* ── Profile card ── */
   profileCard: { marginHorizontal: H_PAD, marginTop: 28, paddingBottom: 14, gap: 8, alignItems: "center" },
