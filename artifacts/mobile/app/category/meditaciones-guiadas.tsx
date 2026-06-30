@@ -90,7 +90,7 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 }
 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress:()=>void }) {
-  const iconColor = sel ? "#1B060F" : "#FFFFFF";
+  const iconColor = sel ? "#1B060F" : "#BE8744";
   return (
     <Pressable onPress={onPress} style={({pressed})=>[styles.chip,{opacity:pressed?0.7:1}]}>
       <LinearGradient colors={sel?["#D6A45C","#BE8744"]:["rgba(190,150,80,0.15)","rgba(190,150,80,0.05)"]} start={{x:0,y:0}} end={{x:0,y:1}} style={StyleSheet.absoluteFill} />
