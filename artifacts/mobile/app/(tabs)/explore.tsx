@@ -262,7 +262,7 @@ export default function ExploreScreen() {
               value={query}
               onChangeText={setQuery}
               placeholder="Buscar sesiones, músicas, sonidos..."
-              placeholderTextColor="rgba(255,255,255,0.45)"
+              placeholderTextColor="#B08880"
               style={styles.searchInput}
             />
             {query.length > 0 && (
