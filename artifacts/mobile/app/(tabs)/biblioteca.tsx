@@ -851,7 +851,7 @@ export default function BibliotecaScreen() {
                       style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                       onPress={() => router.push(`/playlist/${pl.id}` as never)}
                     >
-                      <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(212,175,55,0.08)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
+                      <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(255,255,255,0.03)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
                         {pl.coverType === "geometrix" && pl.coverGeometryId ? (
                           <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
                         ) : pl.coverType === "creation" && pl.coverCreationId ? (
@@ -970,7 +970,7 @@ export default function BibliotecaScreen() {
             {displayPl.map((pl) => (
               <Pressable key={pl.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                 onPress={() => router.push(`/playlist/${pl.id}` as never)}>
-                <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(212,175,55,0.08)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
+                <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(255,255,255,0.03)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
                   {pl.coverType === "geometrix" && pl.coverGeometryId ? (
                     <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
                   ) : pl.coverType === "creation" && pl.coverCreationId ? (
@@ -1659,7 +1659,7 @@ const styles = StyleSheet.create({
     height: 64,
     borderRadius: 6,
     overflow: "hidden",
-    backgroundColor: "rgba(212,175,55,0.08)",
+    backgroundColor: "rgba(255,255,255,0.03)",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: StyleSheet.hairlineWidth,
@@ -1834,7 +1834,7 @@ const styles = StyleSheet.create({
     width: 62,
     height: 62,
     borderRadius: 31,
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(255,255,255,0.03)",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: StyleSheet.hairlineWidth,
