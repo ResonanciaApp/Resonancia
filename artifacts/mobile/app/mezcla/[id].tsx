@@ -297,7 +297,7 @@ export default function CommunityMixScreen() {
 
           {/* Categoría + título */}
           {categoryMeta && (
-            <Text style={[styles.category, { color: colors.accent }]}>
+            <Text style={[styles.category, { color: "#BE8744" }]}>
               {categoryMeta.label.toUpperCase()}
             </Text>
           )}
