@@ -685,7 +685,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingVertical: 9,
     borderRadius: 30,
-    backgroundColor: "rgba(255,255,255,0.10)",
+    backgroundColor: "rgba(190,150,80,0.06)",
   },
   addBtnText: { color: TEXT, fontSize: 14, fontWeight: "600" },
 
