@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   trendText: { fontSize: 8, fontWeight: "700", letterSpacing: 0.5 },
-  authorRow: { flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 2 },
+  authorRow: { flexDirection: "row", alignItems: "center", gap: 5, marginTop: 2 },
   authorAvatar: { width: 16, height: 16, borderRadius: 8, overflow: "hidden", flexShrink: 0 },
   authorAvatarFallback: { backgroundColor: "rgba(212,175,55,0.20)", alignItems: "center", justifyContent: "center" },
   authorInitial: { fontSize: 8, fontWeight: "700", color: GOLD },
