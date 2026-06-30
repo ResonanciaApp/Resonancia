@@ -481,7 +481,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
     color: "#FFFFFF",
-    marginTop: -7,
+    marginTop: -17,
     marginBottom: 16,
   },
   authorNameLink: {
