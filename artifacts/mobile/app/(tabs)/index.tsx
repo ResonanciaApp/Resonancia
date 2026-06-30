@@ -773,8 +773,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginBottom: SECTION_GAP,
     backgroundColor: "rgba(190,150,80,0.06)",
-    borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.18)",
     borderRadius: 14,
     paddingHorizontal: 16,
     paddingVertical: 14,
