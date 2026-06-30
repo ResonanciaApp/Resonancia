@@ -185,9 +185,9 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         style={[styles.bar, { paddingBottom: pb, transform: [{ translateY }] }]}
       >
         {/* Fondo base: sólido (otras tabs) — se desvanece en Inicio y Descanso */}
-        <Animated.View style={[StyleSheet.absoluteFill, { opacity: Animated.subtract(1, Animated.add(homeOpacity, descanzoOpacity)), backgroundColor: "#1C020A" }]} />
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: Animated.subtract(1, Animated.add(homeOpacity, descanzoOpacity)), backgroundColor: "#16040A" }]} />
         {/* Acento del tab activo (crossfade) */}
-        <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "#1C020A" }]} />
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "#16040A" }]} />
         {/* Glass negro+dorado: solo en Inicio */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: homeOpacity }]} pointerEvents="none">
           <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
