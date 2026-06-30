@@ -71,7 +71,7 @@ const CATEGORY_CARDS = [
     title: "Ancestral",
     subtitle: "Cuencos, gongs y sonidos sagrados",
     route: "/category/sonidos-ancestrales",
-    image: require("../../assets/images/ancestrales-hero.jpg"),
+    image: require("../../assets/images/sessions/session-1.jpg"),
     overlay: "rgba(12,4,8,0.45)",
   },
   {
