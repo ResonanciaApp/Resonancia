@@ -34,7 +34,6 @@ import { useUserProfile } from "@/context/UserProfileContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
-const GOLD_BORDER_PILL = ["transparent", "rgba(212,175,55,0.22)", "rgba(233,196,106,0.35)", "rgba(212,175,55,0.22)", "transparent"] as const;
 const GAP = 10;
 const SECTION_GAP = 48;
 
@@ -254,34 +253,25 @@ export default function ExploreScreen() {
         </View>
 
         {/* ── Search bar ── */}
-        <LinearGradient
-          colors={GOLD_BORDER_PILL}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={styles.searchBarBorder}
-        >
-        <View style={styles.searchBar}>
-          <LinearGradient
-            colors={["#FDF6EE", "#FFF9F4"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={StyleSheet.absoluteFill}
-          />
-          <Feather name="search" size={16} color="rgba(0,0,0,0.40)" />
-          <TextInput
-            value={query}
-            onChangeText={setQuery}
-            placeholder="Buscar sesiones, músicas, sonidos..."
-            placeholderTextColor="rgba(0,0,0,0.35)"
-            style={styles.searchInput}
-          />
-          {query.length > 0 && (
-            <Pressable onPress={() => setQuery("")}>
-              <Feather name="x" size={16} color="rgba(0,0,0,0.40)" />
-            </Pressable>
-          )}
+        <View style={styles.searchBarBorder}>
+          <View style={styles.searchBar}>
+            <View style={styles.searchInnerTop} pointerEvents="none" />
+            <View style={styles.searchInnerBottom} pointerEvents="none" />
+            <Feather name="search" size={16} color="rgba(255,255,255,0.45)" />
+            <TextInput
+              value={query}
+              onChangeText={setQuery}
+              placeholder="Buscar sesiones, músicas, sonidos..."
+              placeholderTextColor="rgba(255,255,255,0.45)"
+              style={styles.searchInput}
+            />
+            {query.length > 0 && (
+              <Pressable onPress={() => setQuery("")}>
+                <Feather name="x" size={16} color="rgba(255,255,255,0.45)" />
+              </Pressable>
+            )}
+          </View>
         </View>
-        </LinearGradient>
 
         {/* ── Carrusel de categorías ── */}
         {query.length === 0 && (
@@ -494,12 +484,8 @@ const styles = StyleSheet.create({
     marginHorizontal: H_PAD,
     marginBottom: SECTION_GAP,
     borderRadius: 10,
-    padding: 1,
-    shadowColor: "#D4AF37",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.18,
-    shadowRadius: 6,
-    elevation: 0,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.04)",
   },
   searchBar: {
     flexDirection: "row",
@@ -507,9 +493,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 15,
     borderRadius: 9,
+    backgroundColor: "#221015",
     gap: 10,
+    overflow: "hidden",
   },
-  searchInput: { flex: 1, fontSize: 14, color: "#1B060F" },
+  searchInnerTop: {
+    position: "absolute", top: 0, left: 0, right: 0, height: 1,
+    backgroundColor: "rgba(255,255,255,0.03)",
+    zIndex: 1,
+  },
+  searchInnerBottom: {
+    position: "absolute", bottom: 0, left: 0, right: 0, height: 1,
+    backgroundColor: "rgba(0,0,0,0.10)",
+    zIndex: 1,
+  },
+  searchInput: { flex: 1, fontSize: 14, color: "#FFFFFF" },
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 11 },
