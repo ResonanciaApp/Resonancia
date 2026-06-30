@@ -551,14 +551,14 @@ const styles = StyleSheet.create({
     paddingBottom: 2,
   },
   durPill: {
-    width: DUR_PILL_W,
     borderRadius: 20,
-    paddingHorizontal: 8,
-    paddingVertical: 12,
+    paddingHorizontal: 10,
+    height: 34,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.11)",
     overflow: "hidden",
     alignItems: "center",
+    justifyContent: "center",
   },
   durPillActive: {
     borderColor: "transparent",
