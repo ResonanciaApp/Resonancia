@@ -27,7 +27,7 @@ const BG = ["#16040A", "#16040A"] as const;
 const GOLD = "#BE8744";
 const TEXT = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.45)";
-const SHEET_BG = "#0E1326";
+const SHEET_BG = "#1B060F";
 
 export default function CarpetaDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -277,7 +277,7 @@ function AddSheet({
             onPress={it.onPress}
           >
             <View style={styles.sheetIconWrap}>
-              <Feather name={it.icon} size={22} color={TEXT} />
+              <Feather name={it.icon} size={22} color={GOLD} />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.sheetItemTitle}>{it.title}</Text>
@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "rgba(74,12,12,0.35)",
+    backgroundColor: "rgba(190,150,80,0.06)",
     alignItems: "center",
     justifyContent: "center",
   },
