@@ -13,10 +13,15 @@
       "resizeMode": "contain",
       "backgroundColor": "#1B060F"
     },
+    "androidStatusBar": {
+      "hidden": true
+    },
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.resonancia.app",
       "infoPlist": {
+        "UIStatusBarHidden": true,
+        "UIViewControllerBasedStatusBarAppearance": false,
         "UIBackgroundModes": [
           "audio"
         ],

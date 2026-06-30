@@ -15,6 +15,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { setAuthTokenGetter, setBaseUrl } from "@workspace/api-client-react";
 import { router, Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import { Animated, StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -346,6 +347,7 @@ export default function RootLayout() {
                         <FoldersPlaylistsProvider>
                         <DiarioFavoritesProvider>
                           <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#16040A" }}>
+                            <StatusBar hidden />
                             <KeyboardProvider>
                               <RootLayoutNav />
                             </KeyboardProvider>
