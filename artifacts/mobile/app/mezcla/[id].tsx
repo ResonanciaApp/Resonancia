@@ -353,14 +353,14 @@ export default function CommunityMixScreen() {
             style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, marginBottom: 14 })}
           >
             <LinearGradient
-              colors={["#D6AD5F", "#B47344"]}
+              colors={["#D6A45C", "#BE8744"]}
               start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
+              end={{ x: 0, y: 1 }}
               style={styles.shareBtnGradientBorder}
             >
               <View style={styles.shareBtnInner}>
                 <Text style={styles.shareBtnText}>Compartir</Text>
-                <Feather name="send" size={15} color="#D6AD5F" />
+                <Feather name="send" size={15} color="#D6A45C" />
               </View>
             </LinearGradient>
           </Pressable>
