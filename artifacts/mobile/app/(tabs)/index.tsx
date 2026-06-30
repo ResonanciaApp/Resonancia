@@ -383,6 +383,11 @@ export default function HomeScreen2() {
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
+      <LinearGradient
+        colors={["#1D0910", "#19060D", "#16040A"]}
+        locations={[0, 0.45, 1]}
+        style={StyleSheet.absoluteFill}
+      />
 
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
       <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
@@ -752,7 +757,7 @@ export default function HomeScreen2() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#16040A" },
+  root: { flex: 1, backgroundColor: "#1D0910" },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
     paddingBottom: 0,
