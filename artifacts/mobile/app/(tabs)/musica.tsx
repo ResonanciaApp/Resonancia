@@ -737,16 +737,21 @@ export default function MezcladorScreen() {
             )}
             {subTabCategories && subTabCategories.length > 1 ? (
               <View style={styles.subTabZone}>
-                <View style={styles.subTabLine} pointerEvents="none" />
                 <SubTabSlide key={subTabAnimKey}>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.subTabRow}>
                     {subTabCategories.map((catId) => {
                       const cat = SOUND_CATEGORIES.find((c) => c.id === catId);
                       if (!cat) return null;
-                      const sel  = subTab === catId;
+                      const sel = subTab === catId;
                       return (
                         <Pressable key={catId} onPress={() => setSubTab(sel ? null : catId)} style={styles.subTabBorderOuter}>
-                          <Text style={[styles.subTabText, sel ? { color: "#FFFFFF", fontWeight: "700" } : { color: "rgba(255,255,255,0.50)" }]}>
+                          <LinearGradient
+                            colors={sel ? ["#D6A45C", "#BE8744"] : ["rgba(190,150,80,0.15)", "rgba(190,150,80,0.05)"]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 0, y: 1 }}
+                            style={StyleSheet.absoluteFill}
+                          />
+                          <Text style={[styles.subTabText, { color: sel ? "#1B060F" : "#FFFFFF" }]}>
                             {SUB_TAB_LABELS[catId] ?? cat.label}
                           </Text>
                         </Pressable>
@@ -1017,22 +1022,19 @@ const styles = StyleSheet.create({
   },
 
   subTabZone: { position: "relative", justifyContent: "center", marginTop: -6 },
-  subTabLine: {
-    position: "absolute", left: 16, right: 16, bottom: 4,
-    height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)",
-  },
-  subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 16 },
+  subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 15 },
   subTabBorderOuter: {
-    borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 10,
+    height: 34,
+    borderRadius: 20,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.50)",
   },
-  subTabBorderInner: {
-    flexDirection: "row", alignItems: "center", justifyContent: "center",
-    paddingHorizontal: 14, paddingVertical: 5,
-    borderRadius: 999,
-  },
-  subTabText: { fontSize: 15, fontWeight: "400", includeFontPadding: false, textAlignVertical: "center" },
+  subTabText: { fontSize: 13, letterSpacing: 0.1, fontWeight: "700", includeFontPadding: false },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 17, justifyContent: "space-evenly" },
   soundCard: { width: CARD_W },
