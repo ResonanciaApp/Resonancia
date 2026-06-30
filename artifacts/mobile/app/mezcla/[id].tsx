@@ -7,7 +7,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
 
 import { router, useLocalSearchParams } from "expo-router";
-import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -331,23 +330,45 @@ export default function CommunityMixScreen() {
             </View>
           </View>
 
-          {/* Botón reproducir con glow */}
-          <View style={styles.playWrap}>
-            <GoldGradient style={styles.playGlow} />
-            <Pressable
-              onPress={handlePlayPause}
-              style={({ pressed }) => [
-                styles.playBtn,
-                { overflow: "hidden", opacity: pressed ? 0.88 : 1 },
-              ]}
-            >
-              <GoldGradientFill />
-              <Feather name={isPlayingThis ? "pause" : "play"} size={24} color={colors.background} />
-              <Text style={[styles.playTxt, { color: colors.background }]}>
+          {/* Botón reproducir */}
+          <Pressable
+            onPress={handlePlayPause}
+            style={({ pressed }) => [
+              styles.playBtn,
+              { overflow: "hidden", opacity: pressed ? 0.88 : 1, marginTop: 24, marginBottom: 14 },
+            ]}
+          >
+            <LinearGradient
+              colors={["#D6AD5F", "#B47344"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={StyleSheet.absoluteFill}
+            />
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              <Feather name={isPlayingThis ? "pause" : "play"} size={18} color={colors.primaryForeground} />
+              <Text style={[styles.playTxt, { color: colors.primaryForeground }]}>
                 {isPlayingThis ? "Pausar" : isThisLoaded ? "Reanudar" : "Reproducir mezcla"}
               </Text>
-            </Pressable>
-          </View>
+            </View>
+          </Pressable>
+
+          {/* Botón compartir */}
+          <Pressable
+            onPress={handleShare}
+            style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, marginBottom: 14 })}
+          >
+            <LinearGradient
+              colors={["#D6AD5F", "#B47344"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.shareBtnGradientBorder}
+            >
+              <View style={styles.shareBtnInner}>
+                <Text style={styles.shareBtnText}>Compartir</Text>
+                <Feather name="send" size={15} color="#D6AD5F" />
+              </View>
+            </LinearGradient>
+          </Pressable>
 
 
           {/* Comentarios */}
@@ -477,38 +498,30 @@ const styles = StyleSheet.create({
   avatarTxt: { fontSize: 15, fontWeight: "700" },
   authorName: { fontSize: 14, fontWeight: "600" },
 
-  playWrap: { position: "relative", marginBottom: 14 },
-  playGlow: {
-    position: "absolute",
-    top: 4, left: 16, right: 16, bottom: 4,
-    borderRadius: 29,
-    opacity: 0.35,
-    shadowColor: "#D4AF37",
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 22,
-    shadowOpacity: 1,
-  },
   playBtn: {
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 10,
-    height: 56,
-    borderRadius: 28,
+    paddingVertical: 10,
+    borderRadius: 30,
+    shadowColor: "#D4AF37",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
+    elevation: 6,
   },
-  playTxt: { fontSize: 16, fontWeight: "700" },
-
-  actions: { flexDirection: "row", gap: 12, marginBottom: 28 },
-  actionBtn: {
-    flex: 1,
+  playTxt: { fontSize: 16, fontWeight: "700", letterSpacing: 0.5 },
+  shareBtnGradientBorder: { borderRadius: 30, padding: 1.5 },
+  shareBtnInner: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    height: 50,
-    borderRadius: 16,
+    paddingVertical: 9,
+    borderRadius: 29,
+    backgroundColor: "#16040A",
+    paddingHorizontal: 24,
   },
-  actionTxt: { fontSize: 15, fontWeight: "600" },
+  shareBtnText: { fontSize: 16, fontWeight: "600", color: "#D6AD5F", letterSpacing: 0.5 },
 
   commentsHeader: {
     flexDirection: "row",
