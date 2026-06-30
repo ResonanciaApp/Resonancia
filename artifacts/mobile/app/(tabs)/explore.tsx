@@ -359,7 +359,7 @@ export default function ExploreScreen() {
                         height: TEMA3_W,
                         backgroundColor: pressed
                           ? hexTint(t.color, 0.22)
-                          : "rgba(255,255,255,0.06)",
+                          : "rgba(255,255,255,0.03)",
                         borderRadius: 14,
                       },
                     ]}
