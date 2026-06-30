@@ -19,7 +19,6 @@ import {
 
 import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
-import MaskedView from "@react-native-masked-view/masked-view";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -166,48 +165,17 @@ const PillTab = memo(function PillTab({
   tab, sel, onPress,
 }: { tab: (typeof MAIN_TABS)[0]; sel: boolean; onPress: () => void }) {
   return (
-    <Pressable onPress={onPress}>
-      {sel ? (
-        <View style={styles.pillTabBorder}>
-          <LinearGradient
-            colors={TAB_HEADER_GRADIENT[tab.id]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={styles.pillTabInner}
-          >
-            <MaskedView
-              maskElement={
-                <View style={styles.pillTabMaskContent}>
-                  <MaterialCommunityIcons name={tab.icon as any} size={15} color="black" />
-                  <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "black", fontWeight: "600" }]}>
-                    {tab.label}
-                  </Text>
-                </View>
-              }
-            >
-              <LinearGradient
-                colors={GOLD_BORDER}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-              >
-                <View style={styles.pillTabMaskContent}>
-                  <MaterialCommunityIcons name={tab.icon as any} size={15} color="transparent" />
-                  <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "transparent", fontWeight: "600" }]}>
-                    {tab.label}
-                  </Text>
-                </View>
-              </LinearGradient>
-            </MaskedView>
-          </LinearGradient>
-        </View>
-      ) : (
-        <View style={[styles.pillTab, { borderWidth: 1, borderColor: "rgba(212,175,55,0.12)" }]}>
-          <MaterialCommunityIcons name={tab.icon as any} size={15} color="rgba(255,255,255,0.80)" />
-          <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "rgba(255,255,255,0.80)", fontWeight: "600" }]}>
-            {tab.label}
-          </Text>
-        </View>
-      )}
+    <Pressable onPress={onPress} style={styles.pillTab}>
+      <LinearGradient
+        colors={sel ? ["#D6A45C", "#BE8744"] : ["rgba(190,150,80,0.15)", "rgba(190,150,80,0.05)"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      <MaterialCommunityIcons name={tab.icon as any} size={15} color={sel ? "#1B060F" : "#FFFFFF"} />
+      <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "#FFFFFF" }]}>
+        {tab.label}
+      </Text>
     </Pressable>
   );
 });
@@ -575,14 +543,9 @@ export default function MezcladorScreen() {
 
   const bgPalette = getMixerBgPalette(bgPaletteId);
 
-  // Sincroniza el color del menú inferior con el banner del tab activo
+  // Menú inferior siempre con color neutro (sin cambio por tab)
   useEffect(() => {
-    if (mainTab === "popular") {
-      setTabBarColors(null);
-    } else {
-      const g = TAB_HEADER_GRADIENT[mainTab];
-      setTabBarColors([g[0], g[1]]);
-    }
+    setTabBarColors(null);
   }, [mainTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Al entrar al Mezclador → esconder menú; al salir → restaurarlo y resetear color
@@ -708,7 +671,7 @@ export default function MezcladorScreen() {
         {/* ── Zona superior ── */}
         <View style={styles.topPanelShadow}>
           <LinearGradient
-            colors={bgPaletteId === "noche" ? TAB_NOCHE_BG[mainTab] : TAB_HEADER_GRADIENT[mainTab]}
+            colors={["#16040A", "#16040A", "#16040A"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={[styles.topPanel, { paddingTop: topPad + 2 }]}
