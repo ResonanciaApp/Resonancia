@@ -549,6 +549,7 @@ export default function HomeScreen2() {
               }}
             >
               <Image source={filteredFeatured.image as number} style={styles.heroImage} resizeMode="cover" />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.4)" }]} />
               {(() => {
                 const voiceLabel = getVoiceLabel(filteredFeatured);
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1105,8 +1106,6 @@ const styles = StyleSheet.create({
     height: HERO_HEIGHT,
     borderRadius: 18,
     overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "#3D0E16",
   },
   heroImage: { width: "100%", height: "100%" },
   glowCenter: {
