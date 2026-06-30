@@ -490,7 +490,6 @@ function NombreCarpetaModal({ visible, onClose }: { visible: boolean; onClose: (
             <Text style={styles.nameCreateBtnText}>Crear</Text>
           </Pressable>
         </View>
-        <Pressable style={{ flex: 1 }} onPress={onClose} />
       </KeyboardAvoidingView>
     </Modal>
   );
@@ -549,7 +548,6 @@ function NombrePlaylistModal({ visible, onClose }: { visible: boolean; onClose: 
             <Text style={styles.nameCreateBtnText}>Crear</Text>
           </Pressable>
         </View>
-        <Pressable style={{ flex: 1 }} onPress={onClose} />
       </KeyboardAvoidingView>
     </Modal>
   );
@@ -1676,12 +1674,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   nameCard: {
+    flex: 1,
     width: "100%",
     backgroundColor: "#16040A",
     paddingHorizontal: 32,
     paddingTop: 20,
-    paddingBottom: 52,
+    paddingBottom: 32,
     alignItems: "center",
+    justifyContent: "center",
   },
   nameCloseBtn: {
     position: "absolute",
