@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.55)",
   },
   sheet: {
-    backgroundColor: "#1B060F",
+    backgroundColor: "#16040A",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 20,
