@@ -558,7 +558,7 @@ export default function HomeScreen2() {
                   <View style={styles.heroFrosted}>
                     <View style={styles.heroMetaRow}>
                       <Text style={[styles.heroMetaText, { color: "rgba(255,255,255,0.9)" }]}>
-                        {filteredFeatured.durationLabel}
+                        {filteredFeatured.categoryLabel} · {filteredFeatured.durationLabel}
                       </Text>
                     </View>
                     <View style={styles.heroBottom}>
