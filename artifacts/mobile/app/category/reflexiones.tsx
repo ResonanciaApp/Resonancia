@@ -278,7 +278,10 @@ export default function ReflexionesScreen() {
     outputRange: [0, 1],
     extrapolate: "clamp",
   });
-  const [stickyActive, setStickyActive] = useState(false);
+  const [stickyActive,  setStickyActive]  = useState(false);
+  const [chipsOffsetY,  setChipsOffsetY]  = useState(350);
+  const [headerH,       setHeaderH]       = useState(100);
+  const [chipsSticky,   setChipsSticky]   = useState(false);
 
   const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -345,6 +348,8 @@ export default function ReflexionesScreen() {
           scrollY.setValue(y);
           const active = y > HERO_AREA_H * 0.50;
           if (active !== stickyActive) setStickyActive(active);
+          const sticky = y > chipsOffsetY - headerH;
+          if (sticky !== chipsSticky) setChipsSticky(sticky);
           const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
           if (contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
             setVisibleCount((c) => c + PAGE_SIZE);
@@ -381,7 +386,7 @@ export default function ReflexionesScreen() {
         </View>
 
         {/* ── Tabs ── */}
-        <View style={styles.chipsArea}>
+        <View style={styles.chipsArea} onLayout={(e) => setChipsOffsetY(e.nativeEvent.layout.y)}>
           <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
         </View>
 
@@ -400,7 +405,7 @@ export default function ReflexionesScreen() {
       <AddToPlaylistSheet visible={playlistSessionId !== null} sessionId={playlistSessionId ?? ""} onClose={() => setPlaylistSessionId(null)} />
 
       {/* ── Sticky header (aparece con scroll) ── */}
-      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity }]} pointerEvents={stickyActive ? "auto" : "none"}>
+      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity }]} pointerEvents={stickyActive ? "auto" : "none"} onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}>
         <GhostPill>
           <BackPill onPress={() => router.back()} />
         </GhostPill>
@@ -411,6 +416,13 @@ export default function ReflexionesScreen() {
           </Pressable>
         </GhostPill>
       </Animated.View>
+
+      {/* ── Chips sticky (se pegan debajo del sticky header) ── */}
+      {chipsSticky && (
+        <View style={[styles.stickyChips, { top: headerH }]}>
+          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+        </View>
+      )}
     </View>
   );
 }
@@ -419,6 +431,7 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#16040A" },
 
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#16040A" },
+  stickyChips: { position: "absolute", left: 0, right: 0, zIndex: 19, backgroundColor: "#16040A", paddingTop: 8, paddingBottom: 6 },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   headerTitle: { flex: 1, fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2, textAlign: "center" },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
