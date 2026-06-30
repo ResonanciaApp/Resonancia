@@ -257,7 +257,7 @@ export default function ExploreScreen() {
           <View style={styles.searchBar}>
             <View style={styles.searchInnerTop} pointerEvents="none" />
             <View style={styles.searchInnerBottom} pointerEvents="none" />
-            <Feather name="search" size={16} color="rgba(255,255,255,0.45)" />
+            <Feather name="search" size={16} color="#B08880" />
             <TextInput
               value={query}
               onChangeText={setQuery}
