@@ -364,7 +364,7 @@ export default function ReflexionesScreen() {
           </View>
           {/* Info flotante */}
           <View style={[styles.heroOverlayRight, { top: topPad + 8 }]}>
-            <GhostPill style={{ backgroundColor: "#2E0510" }}>
+            <GhostPill style={{ backgroundColor: "#1B060F" }}>
               <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/reflexiones-info" as never)}>
                 <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
               </Pressable>
