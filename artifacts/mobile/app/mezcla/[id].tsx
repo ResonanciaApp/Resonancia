@@ -151,6 +151,11 @@ export default function CommunityMixScreen() {
     );
   }, [mix, isSignedIn, applyOptimistic, toggleLike, queryClient]);
 
+  const onAuthorPress = useCallback(() => {
+    if (!mix) return;
+    router.push(`/mezcla-creador/${mix.author.userId}` as never);
+  }, [mix]);
+
   const handleShare = useCallback(async () => {
     if (!mix) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -310,25 +315,15 @@ export default function CommunityMixScreen() {
           </View>
 
           {/* Autor */}
-          <View style={[styles.authorRow, { borderBottomColor: "rgba(61,14,22,0.40)" }]}>
-            {authorAvatar ? (
-              <Image
-                source={{ uri: authorAvatar }}
-                style={[styles.avatar, { borderColor: `${colors.primary}44` }]}
-                contentFit="cover"
-              />
-            ) : (
-              <View style={[styles.avatar, { backgroundColor: "rgba(212,175,55,0.12)", borderColor: `${colors.primary}44` }]}>
-                <Text style={[styles.avatarTxt, { color: colors.accent }]}>{authorInitial}</Text>
-              </View>
-            )}
-            <View>
-              <Text style={{ fontSize: 11, color: colors.mutedForeground }}>Creada por</Text>
-              <Text style={[styles.authorName, { color: colors.foreground }]} numberOfLines={1}>
-                {mix.author.displayName}
-              </Text>
-            </View>
-          </View>
+          <Pressable
+            onPress={onAuthorPress}
+            style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+          >
+            <Text style={styles.authorNameInline}>
+              {"Por "}
+              <Text style={styles.authorNameLink}>{mix.author.displayName}</Text>
+            </Text>
+          </Pressable>
 
           {/* Botón reproducir */}
           <Pressable
@@ -482,21 +477,17 @@ const styles = StyleSheet.create({
   category: { fontSize: 11, fontWeight: "700", letterSpacing: 1.8, marginBottom: 6 },
   title: { fontSize: 26, fontWeight: "800", letterSpacing: 0.3, lineHeight: 32, marginBottom: 18 },
 
-  authorRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    paddingBottom: 18,
-    marginBottom: 22,
-    borderBottomWidth: 1,
+  authorNameInline: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#FFFFFF",
+    marginTop: 3,
+    marginBottom: 16,
   },
-  avatar: {
-    width: 34, height: 34, borderRadius: 17,
-    borderWidth: 1,
-    alignItems: "center", justifyContent: "center",
+  authorNameLink: {
+    textDecorationLine: "underline",
+    textDecorationColor: "#FFFFFF",
   },
-  avatarTxt: { fontSize: 15, fontWeight: "700" },
-  authorName: { fontSize: 14, fontWeight: "600" },
 
   playBtn: {
     alignItems: "center",
