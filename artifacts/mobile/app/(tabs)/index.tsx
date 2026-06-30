@@ -557,9 +557,8 @@ export default function HomeScreen2() {
                 return (
                   <View style={styles.heroFrosted}>
                     <View style={styles.heroMetaRow}>
-                      <Feather name="star" size={11} color={colors.primary} />
-                      <Text style={[styles.heroMetaText, { color: colors.primary }]}>
-                        {" "}4.7{voiceLabel ? ` · ${voiceLabel}` : ""} · {filteredFeatured.durationLabel}
+                      <Text style={[styles.heroMetaText, { color: "rgba(255,255,255,0.9)" }]}>
+                        {filteredFeatured.durationLabel}
                       </Text>
                     </View>
                     <View style={styles.heroBottom}>
