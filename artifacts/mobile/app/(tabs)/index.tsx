@@ -29,7 +29,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
-import { SacredBackground } from "@/components/SacredBackground";
 import { MoodPickerSheet } from "@/components/MoodPickerSheet";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { SessionCard } from "@/components/SessionCard";
@@ -384,7 +383,11 @@ export default function HomeScreen2() {
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
-      <SacredBackground variant="solid" />
+      <LinearGradient
+        colors={["#1C080E", "#19050C", "#160309"]}
+        locations={[0, 0.5, 1]}
+        style={StyleSheet.absoluteFill}
+      />
 
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
       <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
@@ -754,7 +757,7 @@ export default function HomeScreen2() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#1C020A" },
+  root: { flex: 1, backgroundColor: "#1C080E" },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
     paddingBottom: 0,
