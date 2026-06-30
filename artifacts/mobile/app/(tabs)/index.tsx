@@ -206,6 +206,14 @@ export default function HomeScreen2() {
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [activeFilter, setActiveFilter] = useState<string[] | null>(null);
+  const contentOpacity = useRef(new Animated.Value(1)).current;
+
+  const switchTab = (newFilter: string[] | null) => {
+    Animated.timing(contentOpacity, { toValue: 0, duration: 120, useNativeDriver: true }).start(() => {
+      setActiveFilter(newFilter);
+      Animated.timing(contentOpacity, { toValue: 1, duration: 180, useNativeDriver: true }).start();
+    });
+  };
 
   // Sub-filtros de Sesiones
   const [sesionesOpen,    setSesionesOpen]    = useState(false);
@@ -425,7 +433,7 @@ export default function HomeScreen2() {
                       setSesionesOpen(false);
                       setSesAncestral(false);
                       setSesMeditacion(false);
-                      setActiveFilter(sel || tab.cats.length === 0 ? null : tab.cats);
+                      switchTab(sel || tab.cats.length === 0 ? null : tab.cats);
                     }}
                     style={({ pressed }) => [
                       styles.headerTabChip,
@@ -451,6 +459,7 @@ export default function HomeScreen2() {
         </View>
       </View>
 
+      <Animated.View style={{ flex: 1, opacity: contentOpacity }}>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 12 }}
@@ -708,6 +717,7 @@ export default function HomeScreen2() {
         </View>
 
       </ScrollView>
+      </Animated.View>
 
       <MoodPickerSheet
         visible={moodSheetVisible}
