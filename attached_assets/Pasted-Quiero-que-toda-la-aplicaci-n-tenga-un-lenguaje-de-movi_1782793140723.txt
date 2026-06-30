@@ -1,0 +1,114 @@
+Quiero que toda la aplicación tenga un lenguaje de movimiento inspirado en Apple, Calm e Insight Timer. El objetivo es transmitir calma, fluidez y elegancia, nunca rapidez ni dinamismo.
+
+Principios generales
+Todas las animaciones deben sentirse lentas, naturales y relajantes.
+Evitar completamente rebotes (spring), overshoot o efectos elásticos.
+Evitar aceleraciones bruscas.
+Priorizar transiciones con easeOutQuart, easeOutCubic o curvas equivalentes.
+Todo debe parecer que "flota" en lugar de "saltar".
+Duraciones
+Cambio entre pantallas
+
+Duración: 450–550 ms
+
+Transición:
+
+Fade + Slide muy sutil (8–12 px)
+Sin rebotes.
+Aparición de tarjetas
+
+Duración: 250–300 ms
+
+Efecto:
+
+Opacidad 0 → 1
+Escala 98% → 100%
+Movimiento vertical de 6 px.
+Botones
+
+Al presionar:
+
+Escala 100% → 97%
+Duración 120 ms
+
+Al soltar:
+
+Regresar a 100%
+Duración 180 ms
+Sin rebote.
+Cambio de pestañas (Tabs)
+
+Duración: 250 ms
+
+El indicador debe deslizarse suavemente.
+
+El contenido debe aparecer con un fade muy ligero.
+
+Menú lateral
+
+Duración: 350 ms
+
+El panel debe deslizarse suavemente.
+
+El fondo debe oscurecerse progresivamente.
+
+No debe aparecer instantáneamente.
+
+Bottom Navigation
+
+Al cambiar de pestaña:
+
+Fade entre contenidos
+Duración 300 ms
+Sin movimientos agresivos.
+Player
+
+Play/Pausa
+
+Duración: 250 ms
+
+La transición debe sentirse muy suave.
+
+El disco o imagen nunca debe rotar bruscamente.
+
+Modales
+
+Duración: 350 ms
+
+Fade + Scale
+
+Escala:
+
+96% → 100%
+
+Fondo:
+
+Oscurecer progresivamente.
+
+Scroll
+
+El scroll debe mantener la física nativa del sistema.
+
+No modificar la velocidad del scroll.
+
+Sí agregar pequeñas animaciones de aparición cuando un elemento entra por primera vez al viewport.
+
+Filosofía
+
+La aplicación nunca debe sentirse rápida.
+
+Debe sentirse contemplativa.
+
+El usuario debe percibir que la interfaz respira con él.
+
+Si existe duda entre una animación rápida y una ligeramente más lenta, elegir siempre la más lenta, mientras mantenga una excelente sensación de respuesta.
+
+Todas las animaciones deben compartir el mismo lenguaje visual y transmitir paz, profundidad y sofisticación.
+
+Solo agregaría una cosa más, muy importante
+
+Le pediría esto al final:
+
+Revisa todas las animaciones existentes de la aplicación y unifícalas bajo este mismo sistema de movimiento. Actualmente algunas tienen velocidades, curvas o comportamientos distintos entre sí. Quiero que toda la app se sienta diseñada por un mismo equipo y con una única filosofía de interacción.
+
+Creo que esa última parte es la que marca la diferencia entre una app con "animaciones" y una app con un lenguaje de movimiento consistente.
