@@ -1510,7 +1510,7 @@ const styles = StyleSheet.create({
 
 
   // ── Scroll content ──────────────────────────────────────────────────────────
-  scroll: { flex: 1, backgroundColor: "#24030D" },
+  scroll: { flex: 1, backgroundColor: "#16040A" },
   divider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(190,150,80,0.18)",
