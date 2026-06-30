@@ -292,7 +292,6 @@ export default function PlaylistDetailScreen() {
               <Text style={styles.playlistDesc} numberOfLines={2}>{playlist.description}</Text>
             )}
             <View style={styles.creatorRow}>
-              <GoldGradient style={styles.creatorDot} />
               <Text style={styles.creatorText}>Casa del Cuenco</Text>
             </View>
           </View>
