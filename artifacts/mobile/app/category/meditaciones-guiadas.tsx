@@ -93,7 +93,7 @@ function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel
   const iconColor = sel ? "#1B060F" : GOLD;
   return (
     <Pressable onPress={onPress} style={({pressed})=>[styles.chip,{opacity:pressed?0.7:1}]}>
-      {sel&&<LinearGradient colors={["#D6AD5F","#B47344"]} start={{x:0,y:0}} end={{x:1,y:0}} style={StyleSheet.absoluteFill} />}
+      <LinearGradient colors={sel?["#D6A45C","#BE8744"]:["#3D1A23","#251219"]} start={{x:0,y:0}} end={{x:0,y:1}} style={StyleSheet.absoluteFill} />
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
         {!!icon && <Feather name={icon as any} size={15} color={iconColor} />}
         <Text style={[styles.chipText,sel&&styles.chipTextSel]}>{label}</Text>
@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginTop: 11 },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-  chip: { minWidth: 96, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 999, backgroundColor: "rgba(255,255,255,0.08)", overflow: "hidden", alignItems: "center", justifyContent: "center" },
+  chip: { minWidth: 96, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center" },
   chipText: { fontSize: 14, fontWeight: "600", color: TEXT, textAlign: "center" },
   chipTextSel: { color: "#1B060F" },
 
