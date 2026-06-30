@@ -481,7 +481,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
     color: "#FFFFFF",
-    marginTop: 3,
+    marginTop: -7,
     marginBottom: 16,
   },
   authorNameLink: {
@@ -521,7 +521,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.5, flex: 1 },
-  commentsCount: { fontSize: 14, fontWeight: "600" },
+  commentsCount: { fontSize: 10, fontWeight: "600" },
 
   composer: {
     flexDirection: "row",
@@ -547,6 +547,6 @@ const styles = StyleSheet.create({
   commentRow: { flexDirection: "row", gap: 12, marginTop: 20 },
   commentBody: { flex: 1, gap: 4 },
   commentTop: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 },
-  commentAuthor: { flex: 1, fontSize: 14, fontWeight: "600" },
-  commentTxt: { fontSize: 14, lineHeight: 19 },
+  commentAuthor: { flex: 1, fontSize: 10, fontWeight: "600" },
+  commentTxt: { fontSize: 10, lineHeight: 15 },
 });
