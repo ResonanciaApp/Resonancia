@@ -464,12 +464,11 @@ const styles = StyleSheet.create({
     height: 38,
     width: 42,
     borderRadius: 19,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.35)",
   },
 
   soundsRow: {
     paddingHorizontal: 20,
+    paddingTop: 20,
     paddingBottom: 20,
     gap: 10,
   },
