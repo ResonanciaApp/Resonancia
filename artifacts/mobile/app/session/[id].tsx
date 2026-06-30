@@ -1005,8 +1005,6 @@ const styles = StyleSheet.create({
   },
   pillBorder: {
     borderRadius: 19,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.35)",
   },
   heroBackPill: {
     flexDirection: "row",
