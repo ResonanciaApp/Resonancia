@@ -570,30 +570,7 @@ export default function HomeScreen2() {
                           {heroAuthor}
                         </Text>
                       </View>
-                      <Pressable
-                        onPress={(e) => {
-                          e.stopPropagation();
-                          if (currentSession?.id === filteredFeatured.id) {
-                            pauseResume();
-                          } else {
-                            playSession(filteredFeatured);
-                          }
-                        }}
-                        style={({ pressed }) => [styles.heroBtn, { opacity: pressed ? 0.75 : 1 }]}
-                      >
-                        <LinearGradient
-                          colors={["#D6AD5F", "#B47344"]}
-                          start={{ x: 0, y: 0 }}
-                          end={{ x: 1, y: 0 }}
-                          style={StyleSheet.absoluteFill}
-                        />
-                        <Ionicons
-                          name={isFeaturedPlaying ? "pause" : "play"}
-                          size={20}
-                          color="#FFFFFF"
-                          style={{ marginLeft: isFeaturedPlaying ? 0 : 2 }}
-                        />
-                      </Pressable>
+                      <Feather name="chevron-right" size={24} color="rgba(255,255,255,0.9)" />
                     </View>
                   </View>
                 );
