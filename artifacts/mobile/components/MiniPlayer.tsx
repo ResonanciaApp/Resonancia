@@ -17,6 +17,7 @@ import {
 
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
+import { DURATION, easeOutCubic } from "@/constants/motion";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePlayer } from "@/context/PlayerContext";
@@ -197,11 +198,11 @@ export function MiniPlayer() {
     // stackWidthAnim usa JS driver (layout property); openProgress usa native driver (transform)
     Animated.timing(stackWidthAnim, {
       toValue: next ? carouselOpenW : stackWidthStackedCap,
-      useNativeDriver: false, duration: 220, easing: Easing.out(Easing.cubic),
+      useNativeDriver: false, duration: DURATION.PLAYER, easing: easeOutCubic,
     }).start();
     Animated.timing(openProgress, {
       toValue: next ? 1 : 0,
-      useNativeDriver: true, duration: 220, easing: Easing.out(Easing.cubic),
+      useNativeDriver: true, duration: DURATION.PLAYER, easing: easeOutCubic,
     }).start();
   };
 
@@ -219,11 +220,11 @@ export function MiniPlayer() {
         setStackOpen(true);
         Animated.timing(stackWidthAnim, {
           toValue: carouselOpenW,
-          useNativeDriver: false, duration: 220, easing: Easing.out(Easing.cubic),
+          useNativeDriver: false, duration: DURATION.PLAYER, easing: easeOutCubic,
         }).start();
         Animated.timing(openProgress, {
           toValue: 1,
-          useNativeDriver: true, duration: 220, easing: Easing.out(Easing.cubic),
+          useNativeDriver: true, duration: DURATION.PLAYER, easing: easeOutCubic,
         }).start();
       } else {
         stackWidthAnim.setValue(stackWidthStackedCap);
@@ -231,7 +232,7 @@ export function MiniPlayer() {
     } else {
       Animated.timing(stackWidthAnim, {
         toValue: carouselOpenW,
-        useNativeDriver: false, duration: 220, easing: Easing.out(Easing.cubic),
+        useNativeDriver: false, duration: DURATION.PLAYER, easing: easeOutCubic,
       }).start();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

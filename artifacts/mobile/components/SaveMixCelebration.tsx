@@ -10,7 +10,8 @@
  */
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef } from "react";
-import { Animated, Dimensions, Easing, Modal, StyleSheet, Text, View } from "react-native";
+import { Animated, Dimensions, Modal, StyleSheet, Text, View } from "react-native";
+import { DURATION, easeOutCubic, easeInCubic } from "@/constants/motion";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { getMixImage } from "@/config/mix-images";
@@ -57,7 +58,7 @@ export function SaveMixCelebration({ visible, category, imageKey, onDone }: Prop
       // 1) aparece el overlay + el token crece en el centro
       Animated.parallel([
         Animated.timing(root, { toValue: 1, duration: 220, useNativeDriver: true }),
-        Animated.timing(tokenScale, { toValue: 1, duration: 280, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+        Animated.timing(tokenScale, { toValue: 1, duration: DURATION.CARD, easing: easeOutCubic, useNativeDriver: true }),
       ]),
       Animated.delay(240),
       // 2) el token vuela hacia la categoría (arriba), encogiéndose
@@ -65,13 +66,13 @@ export function SaveMixCelebration({ visible, category, imageKey, onDone }: Prop
         Animated.timing(tokenY, {
           toValue: -flyDistance,
           duration: 640,
-          easing: Easing.in(Easing.cubic),
+          easing: easeInCubic,
           useNativeDriver: true,
         }),
         Animated.timing(tokenScale, {
           toValue: 0.3,
           duration: 640,
-          easing: Easing.in(Easing.cubic),
+          easing: easeInCubic,
           useNativeDriver: true,
         }),
         Animated.sequence([
@@ -86,7 +87,7 @@ export function SaveMixCelebration({ visible, category, imageKey, onDone }: Prop
             Animated.timing(msgY, {
               toValue: 0,
               duration: 320,
-              easing: Easing.out(Easing.cubic),
+              easing: easeOutCubic,
               useNativeDriver: true,
             }),
           ]),
@@ -96,7 +97,7 @@ export function SaveMixCelebration({ visible, category, imageKey, onDone }: Prop
       Animated.parallel([
         Animated.sequence([
           Animated.timing(pillScale, { toValue: 1.18, duration: 160, useNativeDriver: true }),
-          Animated.timing(pillScale, { toValue: 1, duration: 180, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+          Animated.timing(pillScale, { toValue: 1, duration: DURATION.MICRO, easing: easeOutCubic, useNativeDriver: true }),
         ]),
         Animated.sequence([
           Animated.timing(pillGlow, { toValue: 1, duration: 150, useNativeDriver: true }),

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
+import { DURATION, easeOutCubic, easeInCubic } from "@/constants/motion";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useNotifications } from "@/context/NotificationsContext";
@@ -32,18 +33,18 @@ export function CuencoBell() {
 
     const FADE_IN = 480;
     Animated.parallel([
-      Animated.timing(glowOpacity, { toValue: 1, duration: FADE_IN, easing: Easing.out(Easing.quad), useNativeDriver: true }),
-      Animated.timing(goldOpacity, { toValue: 1, duration: FADE_IN, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+      Animated.timing(glowOpacity, { toValue: 1, duration: FADE_IN, easing: easeOutCubic, useNativeDriver: true }),
+      Animated.timing(goldOpacity, { toValue: 1, duration: FADE_IN, easing: easeOutCubic, useNativeDriver: true }),
       Animated.sequence([
-        Animated.timing(scaleAnim, { toValue: 1.12, duration: 200, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-        Animated.timing(scaleAnim, { toValue: 1,    duration: 280, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+        Animated.timing(scaleAnim, { toValue: 1.12, duration: DURATION.PLAYER,         easing: easeOutCubic, useNativeDriver: true }),
+        Animated.timing(scaleAnim, { toValue: 1,    duration: DURATION.BUTTON_RELEASE, easing: easeOutCubic, useNativeDriver: true }),
       ]),
     ]).start();
 
     const t = setTimeout(() => {
       Animated.parallel([
-        Animated.timing(glowOpacity, { toValue: 0, duration: 900, easing: Easing.in(Easing.quad), useNativeDriver: true }),
-        Animated.timing(goldOpacity, { toValue: 0, duration: 900, easing: Easing.in(Easing.quad), useNativeDriver: true }),
+        Animated.timing(glowOpacity, { toValue: 0, duration: 900, easing: easeInCubic, useNativeDriver: true }),
+        Animated.timing(goldOpacity, { toValue: 0, duration: 900, easing: easeInCubic, useNativeDriver: true }),
       ]).start(() => clearAnimation());
     }, FADE_IN + 1800);
 

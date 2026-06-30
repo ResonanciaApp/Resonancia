@@ -3,7 +3,8 @@
  * Al tocar (cualquier elemento adentro o el propio pill) anima: scale up + flash blanco.
  */
 import React, { useId, useRef, useState } from "react";
-import { Animated, Easing, StyleSheet, View, ViewStyle } from "react-native";
+import { Animated, StyleSheet, View, ViewStyle } from "react-native";
+import { DURATION, easeOutCubic } from "@/constants/motion";
 import Svg, {
   Defs,
   LinearGradient as SvgLinearGradient,
@@ -26,15 +27,15 @@ export function GhostPill({ children, style }: Props) {
 
   function animateIn() {
     Animated.parallel([
-      Animated.timing(scale,  { toValue: 1.03, duration: 120, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-      Animated.timing(bright, { toValue: 1,    duration: 120, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      Animated.timing(scale,  { toValue: 0.97, duration: DURATION.BUTTON_PRESS,   easing: easeOutCubic, useNativeDriver: true }),
+      Animated.timing(bright, { toValue: 1,    duration: DURATION.BUTTON_PRESS,   easing: easeOutCubic, useNativeDriver: true }),
     ]).start();
   }
 
   function animateOut() {
     Animated.parallel([
-      Animated.timing(scale,  { toValue: 1, duration: 180, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-      Animated.timing(bright, { toValue: 0, duration: 350, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      Animated.timing(scale,  { toValue: 1, duration: DURATION.BUTTON_RELEASE, easing: easeOutCubic, useNativeDriver: true }),
+      Animated.timing(bright, { toValue: 0, duration: DURATION.FADE,           easing: easeOutCubic, useNativeDriver: true }),
     ]).start();
   }
 

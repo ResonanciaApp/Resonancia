@@ -19,6 +19,7 @@ import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { GhostPill } from "@/components/GhostPill";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { DURATION, easeOutCubic } from "@/constants/motion";
 import {
   Alert,
   Animated,
@@ -377,7 +378,7 @@ export function MixerSheet() {
   const openBgPicker = () => {
     bgPickerY.setValue(700);
     setBgPickerOpen(true);
-    Animated.timing(bgPickerY, { toValue: 0, duration: 350, easing: Easing.out(Easing.cubic), useNativeDriver: true }).start();
+    Animated.timing(bgPickerY, { toValue: 0, duration: DURATION.SHEET_OPEN, easing: easeOutCubic, useNativeDriver: true }).start();
   };
 
   const closeBgPicker = () => {
@@ -467,8 +468,8 @@ export function MixerSheet() {
         } else {
           Animated.timing(sheetEnterY, {
             toValue: 0,
-            duration: 250,
-            easing: Easing.out(Easing.cubic),
+            duration: DURATION.PLAYER,
+            easing: easeOutCubic,
             useNativeDriver: true,
           }).start();
         }
@@ -502,8 +503,8 @@ export function MixerSheet() {
         backdropOpacity.setValue(0);
         Animated.timing(sheetEnterY, {
           toValue: 0,
-          duration: 350,
-          easing: Easing.out(Easing.cubic),
+          duration: DURATION.SHEET_OPEN,
+          easing: easeOutCubic,
           useNativeDriver: true,
         }).start();
         Animated.timing(backdropOpacity, {

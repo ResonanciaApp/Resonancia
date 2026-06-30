@@ -5,9 +5,9 @@ import { Tabs, usePathname } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useCallback } from "react";
+import { DURATION, easeOutCubic } from "@/constants/motion";
 import {
   Animated,
-  Easing,
   Image,
   Platform,
   Pressable,
@@ -80,8 +80,8 @@ function TabItem({
   useEffect(() => {
     Animated.timing(focusAnim, {
       toValue: isFocused ? 1 : 0,
-      duration: 250,
-      easing: Easing.out(Easing.cubic),
+      duration: DURATION.TAB,
+      easing: easeOutCubic,
       useNativeDriver: true,
     }).start();
   }, [isFocused, focusAnim]);
@@ -153,14 +153,14 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   useEffect(() => {
     Animated.timing(translateY, {
       toValue: hidden ? barHeight + 40 : 0,
-      duration: 280,
-      easing: Easing.out(Easing.cubic),
+      duration: DURATION.SHEET_CLOSE,
+      easing: easeOutCubic,
       useNativeDriver: true,
     }).start();
     Animated.timing(handleOpacity, {
       toValue: hidden ? 1 : 0,
-      duration: 280,
-      easing: Easing.out(Easing.cubic),
+      duration: DURATION.SHEET_CLOSE,
+      easing: easeOutCubic,
       useNativeDriver: true,
     }).start();
   }, [hidden, barHeight, translateY, handleOpacity]);

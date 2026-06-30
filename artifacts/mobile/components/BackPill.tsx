@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import React, { useRef } from "react";
-import { Animated, Easing, Pressable, StyleSheet } from "react-native";
+import { Animated, Pressable, StyleSheet } from "react-native";
+import { DURATION, motionTiming } from "@/constants/motion";
 
 interface BackPillProps {
   onPress: () => void;
@@ -15,18 +16,16 @@ export function BackPill({ onPress, style, color = "#fff", size = 22, hitSlop = 
 
   function handlePressIn() {
     Animated.timing(scale, {
+      ...motionTiming(DURATION.BUTTON_PRESS),
       toValue: 0.97,
-      duration: 120,
-      easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
     }).start();
   }
 
   function handlePressOut() {
     Animated.timing(scale, {
+      ...motionTiming(DURATION.BUTTON_RELEASE),
       toValue: 1,
-      duration: 180,
-      easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
     }).start();
     onPress();
