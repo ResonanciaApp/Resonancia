@@ -116,7 +116,7 @@ function TabItem({
 
         {/* Labels apiladas: inactiva base, activa con fade-in animado */}
         <View style={styles.labelWrap}>
-          <Text style={[styles.label, { color: INACTIVE_COLOR, fontWeight: "400" }]} numberOfLines={1}>
+          <Text style={[styles.label, { color: INACTIVE_COLOR }]} numberOfLines={1}>
             {conf.label}
           </Text>
           <Animated.Text style={[styles.label, styles.labelActive, { opacity: focusAnim }]} numberOfLines={1}>
@@ -369,6 +369,7 @@ const styles = StyleSheet.create({
   pillWrap: {
     alignItems: "center",
     justifyContent: "center",
+    alignSelf: "stretch",
     gap: 2,
   },
   iconGlow: {
@@ -383,17 +384,14 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   labelWrap: {
-    position: "relative",
+    width: "100%",
     alignItems: "center",
   },
   labelActive: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
+    ...StyleSheet.absoluteFillObject,
     textAlign: "center",
     color: GRAD_END,
-    fontWeight: "700",
+    fontWeight: "600",
     textShadowColor: "rgba(212,175,55,0.55)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 5,
