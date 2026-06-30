@@ -187,6 +187,7 @@ const styles = StyleSheet.create({
   heroHeader: {
     paddingHorizontal: H_PAD,
     paddingBottom: 8,
+    alignItems: "flex-start",
   },
   // Mood chip
   moodChip: {
