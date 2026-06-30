@@ -462,7 +462,6 @@ function NombreCarpetaModal({ visible, onClose }: { visible: boolean; onClose: (
       animationType="slide"
       transparent
       onRequestClose={onClose}
-      onShow={() => setTimeout(() => inputRef.current?.focus(), 80)}
     >
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <View style={styles.nameCard}>
@@ -476,6 +475,7 @@ function NombreCarpetaModal({ visible, onClose }: { visible: boolean; onClose: (
               style={styles.nameInput}
               value={name}
               onChangeText={setName}
+              autoFocus
               selectTextOnFocus
               returnKeyType="done"
               onSubmitEditing={handleCreate}
@@ -520,7 +520,6 @@ function NombrePlaylistModal({ visible, onClose }: { visible: boolean; onClose: 
       animationType="slide"
       transparent
       onRequestClose={onClose}
-      onShow={() => setTimeout(() => inputRef.current?.focus(), 80)}
     >
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <View style={styles.nameCard}>
@@ -534,6 +533,7 @@ function NombrePlaylistModal({ visible, onClose }: { visible: boolean; onClose: 
               style={styles.nameInput}
               value={name}
               onChangeText={setName}
+              autoFocus
               selectTextOnFocus
               returnKeyType="done"
               onSubmitEditing={handleCreate}
