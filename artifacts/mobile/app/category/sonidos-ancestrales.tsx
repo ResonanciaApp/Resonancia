@@ -385,7 +385,8 @@ export default function SonidosAncestalesScreen() {
   const [playlistSessionId, setPlaylistSessionId] = useState<string|null>(null);
   const toggleView = useCallback(()=>setViewMode((v)=>(v==="list"?"grid":"list")),[]);
 
-  const scrollY = useRef(new Animated.Value(0)).current;
+  const scrollY   = useRef(new Animated.Value(0)).current;
+  const scrollRef  = useRef<ScrollView>(null);
   const HERO_AREA_H = HERO_H;
   const stickyOpacity = scrollY.interpolate({ inputRange: [HERO_AREA_H * 0.30, HERO_AREA_H * 0.95], outputRange: [0, 1], extrapolate: "clamp" });
   const [stickyActive,  setStickyActive]  = useState(false);
@@ -458,6 +459,7 @@ export default function SonidosAncestalesScreen() {
   return (
     <View style={styles.root}>
       <ScrollView
+        ref={scrollRef}
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
         showsVerticalScrollIndicator={false}
@@ -505,7 +507,10 @@ export default function SonidosAncestalesScreen() {
 
         {/* ── Tabs ── */}
         <View style={styles.chipsArea} onLayout={(e) => setChipsOffsetY(e.nativeEvent.layout.y)}>
-          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+          <ChipRow tabs={TABS} activeTab={activeTab}
+            onSelect={(id) => { setActiveTab(id); if (chipsSticky) setTimeout(() => scrollRef.current?.scrollTo({ y: chipsOffsetY - headerH + 2, animated: false }), 50); }}
+            onClear={() => { setActiveTab(null); if (chipsSticky) setTimeout(() => scrollRef.current?.scrollTo({ y: chipsOffsetY - headerH + 2, animated: false }), 50); }}
+          />
         </View>
 
         {/* ── Contenido ── */}
@@ -531,7 +536,10 @@ export default function SonidosAncestalesScreen() {
       {/* ── Chips sticky (se pegan debajo del sticky header) ── */}
       {chipsSticky && (
         <View style={[styles.stickyChips, { top: headerH }]}>
-          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+          <ChipRow tabs={TABS} activeTab={activeTab}
+            onSelect={(id) => { setActiveTab(id); setTimeout(() => scrollRef.current?.scrollTo({ y: chipsOffsetY - headerH + 2, animated: false }), 50); }}
+            onClear={() => { setActiveTab(null); setTimeout(() => scrollRef.current?.scrollTo({ y: chipsOffsetY - headerH + 2, animated: false }), 50); }}
+          />
         </View>
       )}
 

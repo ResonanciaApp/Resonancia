@@ -271,7 +271,8 @@ export default function ReflexionesScreen() {
   const [selectedSession,   setSelectedSession]   = useState<Session|null>(null);
   const [playlistSessionId, setPlaylistSessionId] = useState<string|null>(null);
 
-  const scrollY = useRef(new Animated.Value(0)).current;
+  const scrollY   = useRef(new Animated.Value(0)).current;
+  const scrollRef  = useRef<ScrollView>(null);
   const HERO_AREA_H = 238;
   const stickyOpacity = scrollY.interpolate({
     inputRange: [HERO_AREA_H * 0.30, HERO_AREA_H * 0.95],
@@ -339,6 +340,7 @@ export default function ReflexionesScreen() {
     <View style={styles.root}>
 
       <ScrollView
+        ref={scrollRef}
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
         showsVerticalScrollIndicator={false}
@@ -387,7 +389,10 @@ export default function ReflexionesScreen() {
 
         {/* ── Tabs ── */}
         <View style={styles.chipsArea} onLayout={(e) => setChipsOffsetY(e.nativeEvent.layout.y)}>
-          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+          <ChipRow tabs={TABS} activeTab={activeTab}
+            onSelect={(id) => { setActiveTab(id); if (chipsSticky) setTimeout(() => scrollRef.current?.scrollTo({ y: chipsOffsetY - headerH + 2, animated: false }), 50); }}
+            onClear={() => { setActiveTab(null); if (chipsSticky) setTimeout(() => scrollRef.current?.scrollTo({ y: chipsOffsetY - headerH + 2, animated: false }), 50); }}
+          />
         </View>
 
 
@@ -420,7 +425,10 @@ export default function ReflexionesScreen() {
       {/* ── Chips sticky (se pegan debajo del sticky header) ── */}
       {chipsSticky && (
         <View style={[styles.stickyChips, { top: headerH }]}>
-          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={(id) => setActiveTab(id)} onClear={() => setActiveTab(null)} />
+          <ChipRow tabs={TABS} activeTab={activeTab}
+            onSelect={(id) => { setActiveTab(id); setTimeout(() => scrollRef.current?.scrollTo({ y: chipsOffsetY - headerH + 2, animated: false }), 50); }}
+            onClear={() => { setActiveTab(null); setTimeout(() => scrollRef.current?.scrollTo({ y: chipsOffsetY - headerH + 2, animated: false }), 50); }}
+          />
         </View>
       )}
     </View>
