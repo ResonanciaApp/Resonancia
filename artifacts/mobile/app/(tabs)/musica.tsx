@@ -1031,8 +1031,6 @@ const styles = StyleSheet.create({
     height: 34,
     borderRadius: 20,
     overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.50)",
   },
   subTabText: { fontSize: 13, letterSpacing: 0.1, fontWeight: "700", includeFontPadding: false },
 
