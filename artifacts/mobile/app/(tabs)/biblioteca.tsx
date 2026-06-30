@@ -1861,7 +1861,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 22,
     paddingTop: 18,
     paddingBottom: 48,
-    maxHeight: "92%",
+    height: "92%",
   },
   addResModalHeader: {
     flexDirection: "row",
