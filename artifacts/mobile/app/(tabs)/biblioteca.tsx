@@ -1802,7 +1802,7 @@ const styles = StyleSheet.create({
   },
   sheetIcon: {
     width: 44, height: 44, borderRadius: 12,
-    backgroundColor: "rgba(212,175,55,0.12)",
+    backgroundColor: "rgba(190,150,80,0.06)",
     alignItems: "center", justifyContent: "center",
   },
   sheetItemTitle: { fontSize: 15, fontWeight: "600", color: TEXT, marginBottom: 2 },
