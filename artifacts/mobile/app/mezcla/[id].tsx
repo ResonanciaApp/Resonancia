@@ -297,9 +297,18 @@ export default function CommunityMixScreen() {
               {categoryMeta.label.toUpperCase()}
             </Text>
           )}
-          <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={2}>
-            {mix.name}
-          </Text>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+            <Text style={[styles.title, { color: colors.foreground, flex: 1 }]} numberOfLines={2}>
+              {mix.name}
+            </Text>
+            <Pressable onPress={handleLike} hitSlop={10}>
+              <Feather
+                name="heart"
+                size={22}
+                color={mix.likedByMe ? colors.primary : colors.mutedForeground}
+              />
+            </Pressable>
+          </View>
 
           {/* Autor */}
           <View style={[styles.authorRow, { borderBottomColor: "rgba(61,14,22,0.40)" }]}>
@@ -340,30 +349,6 @@ export default function CommunityMixScreen() {
             </Pressable>
           </View>
 
-          {/* Me gusta + Compartir — sin borde */}
-          <View style={styles.actions}>
-            <Pressable
-              onPress={handleLike}
-              style={[styles.actionBtn, { backgroundColor: "rgba(74,12,12,0.08)" }]}
-            >
-              <Feather
-                name="heart"
-                size={20}
-                color={mix.likedByMe ? colors.primary : colors.mutedForeground}
-              />
-              <Text style={[styles.actionTxt, { color: mix.likedByMe ? colors.primary : colors.foreground }]}>
-                {mix.likes > 0 ? mix.likes : "Me gusta"}
-              </Text>
-            </Pressable>
-
-            <Pressable
-              onPress={handleShare}
-              style={[styles.actionBtn, { backgroundColor: "rgba(74,12,12,0.08)" }]}
-            >
-              <Feather name="share-2" size={20} color={colors.mutedForeground} />
-              <Text style={[styles.actionTxt, { color: colors.foreground }]}>Compartir</Text>
-            </Pressable>
-          </View>
 
           {/* Comentarios */}
           <View style={styles.commentsHeader}>
