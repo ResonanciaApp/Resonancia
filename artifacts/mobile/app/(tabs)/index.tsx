@@ -117,7 +117,7 @@ function NavTabChip({ sel, label, onPress }: { sel: boolean; label: string; onPr
       style={({ pressed }) => [styles.headerTabChip, { opacity: pressed ? 0.7 : 1 }]}
     >
       <LinearGradient
-        colors={["rgba(190,150,80,0.15)", "rgba(190,150,80,0.05)"]}
+        colors={["rgba(52,28,32,0.70)", "rgba(52,28,32,0.38)"]}
         start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
