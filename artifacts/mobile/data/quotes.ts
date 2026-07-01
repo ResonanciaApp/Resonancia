@@ -189,7 +189,15 @@ export function getQuoteOfTheDay(): Quote {
   const now = new Date();
   const start = new Date(now.getFullYear(), 0, 0);
   const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
-  return pool[dayOfYear % pool.length];
+  const seed = now.getFullYear() * 1000 + dayOfYear;
+  let hash = seed;
+  const shuffled = [...pool];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    hash = (hash ^ (hash << 13)) ^ (hash >> 7) ^ (hash << 17);
+    const j = Math.abs(hash) % (i + 1);
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled[0];
 }
 
 export function getShareCountForDay(): number {
