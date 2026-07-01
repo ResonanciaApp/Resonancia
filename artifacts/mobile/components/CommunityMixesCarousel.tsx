@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 3,
+    marginBottom: 24,
   },
   sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.5 },
   verTodas: { fontSize: 13, fontWeight: "500" },

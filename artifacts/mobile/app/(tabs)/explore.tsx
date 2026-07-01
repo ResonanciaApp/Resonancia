@@ -703,7 +703,7 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, fontSize: 14, color: "#FFFFFF" },
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
-  sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 11 },
+  sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 24 },
   sectionTitle: { fontSize: 20, fontWeight: "600", letterSpacing: 0.5, color: "#e8e8e8", marginBottom: 24 },
 
   resultsLabel: { fontSize: 12, marginBottom: 12 },
