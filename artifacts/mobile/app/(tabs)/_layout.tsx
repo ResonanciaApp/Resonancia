@@ -144,20 +144,24 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const accentOpacity = useRef(new Animated.Value(0)).current;
 
   // ── Sliding ghost pill ──────────────────────────────────────────
-  const [tabWidth, setTabWidth] = useState(0);
-  const pillX         = useRef(new Animated.Value(0)).current;
-  const initialPillSet = useRef(false);
+  // Solo contar rutas que tienen entrada en TAB_CONFIG y no están ocultas
+  const ROW_H_PAD = 8; // paddingHorizontal del row
 
-  const visibleRoutes = state.routes.filter((r: { name: string }) => !HIDDEN_ROUTES.has(r.name));
-  const visibleCount  = visibleRoutes.length;
+  const isRenderedTab = (name: string) => name in TAB_CONFIG && !HIDDEN_ROUTES.has(name);
+
+  const visibleCount = state.routes.filter((r: { name: string }) => isRenderedTab(r.name)).length;
 
   const visibleIndex = (() => {
     let idx = 0;
     for (let i = 0; i < state.index; i++) {
-      if (!HIDDEN_ROUTES.has(state.routes[i].name)) idx++;
+      if (isRenderedTab(state.routes[i].name)) idx++;
     }
     return idx;
   })();
+
+  const [tabWidth, setTabWidth] = useState(0);
+  const pillX          = useRef(new Animated.Value(0)).current;
+  const initialPillSet = useRef(false);
 
   const setPillPosition = useCallback(
     (tw: number, vi: number, animate: boolean) => {
@@ -185,8 +189,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
   const onRowLayout = useCallback(
     (e: LayoutChangeEvent) => {
-      const w  = e.nativeEvent.layout.width;
-      const tw = w / visibleCount;
+      // Descontar paddingHorizontal×2 para obtener el ancho real de cada tab
+      const tw = (e.nativeEvent.layout.width - ROW_H_PAD * 2) / visibleCount;
       setTabWidth(tw);
       setPillPosition(tw, visibleIndex, false);
     },
@@ -239,7 +243,11 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
               pointerEvents="none"
               style={[
                 styles.slidingPill,
-                { width: tabWidth - 10, transform: [{ translateX: pillX }] },
+                {
+                  width: tabWidth - 8,
+                  top: Math.max(0, extra - 4),
+                  transform: [{ translateX: pillX }],
+                },
               ]}
             />
           )}
@@ -464,9 +472,8 @@ const styles = StyleSheet.create({
   },
   slidingPill: {
     position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: 5,
+    height: 44,
+    left: 12,
     borderRadius: 999,
     backgroundColor: GHOST_PILL_BG,
   },
