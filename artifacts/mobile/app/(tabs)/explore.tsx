@@ -639,7 +639,7 @@ export default function ExploreScreen() {
 }
 
 const styles = StyleSheet.create({
-  root:   { flex: 1, backgroundColor: "#16040A" },
+  root:   { flex: 1, backgroundColor: "#230610" },
   rootGradient: { ...StyleSheet.absoluteFillObject },
   scroll: { flex: 1 },
   communityWrap: {

@@ -37,7 +37,7 @@ import { getArtist } from "@/data/artists";
 import { type GeometryId } from "@/data/geometries";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 
-const BG_GRADIENT = ["#16040A", "#16040A"] as const;
+const BG_GRADIENT = ["#230610", "#16040A"] as const;
 const GOLD = "#BE8744";
 const TEXT = "#FAF0EE";
 const MUTED = "#c2c2c2";
@@ -811,7 +811,7 @@ function CoverPickerModal({
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={modalStyles.backdrop} onPress={onClose} />
       <View style={[modalStyles.sheet, { paddingBottom: bottomPad }]}>
-        <LinearGradient colors={["#16040A", "#16040A"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#230610", "#16040A"]} style={StyleSheet.absoluteFill} />
         <View style={modalStyles.handle} />
         <Text style={modalStyles.sheetTitle}>Foto de la playlist</Text>
         <Pressable
@@ -842,7 +842,7 @@ const modalStyles = StyleSheet.create({
     borderTopRightRadius: 22,
     paddingHorizontal: 20,
     overflow: "hidden",
-    backgroundColor: "#16040A",
+    backgroundColor: "#230610",
   },
   handle: {
     alignSelf: "center",
@@ -973,7 +973,7 @@ const cpStyles = StyleSheet.create({
     right: 8,
     bottom: 8,
     borderRadius: 14,
-    backgroundColor: "#16040A",
+    backgroundColor: "#230610",
     opacity: 0.45,
   },
   swatchSelected: {
@@ -1031,7 +1031,7 @@ function PlaylistMenuSheet({
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={menuSt.backdrop} onPress={onClose} />
       <View style={[menuSt.sheet, { paddingBottom: bottomPad + 8 }]}>
-        <LinearGradient colors={["#16040A", "#16040A"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#230610", "#16040A"]} style={StyleSheet.absoluteFill} />
         <View style={menuSt.handle} />
         {([
           { icon: "share", label: "Compartir", action: () => { onClose(); onShare(); } },
@@ -1179,7 +1179,7 @@ function DragReorderModal({ visible, sessions, onClose, onSave }: {
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <View style={dreSt.backdrop}>
         <View style={[dreSt.sheet, { paddingBottom: bottomPad }]}>
-          <LinearGradient colors={["#16040A", "#16040A"]} style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={["#230610", "#16040A"]} style={StyleSheet.absoluteFill} />
           <View style={dreSt.handle} />
           <View style={dreSt.header}>
             <Pressable onPress={onClose} hitSlop={12} style={dreSt.closeBtn}>
@@ -1293,7 +1293,7 @@ function EditInfoModal({ visible, playlist, onClose, onSave, onChangeCover, onDe
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <View style={eiSt.backdrop}>
         <View style={[eiSt.sheet, { paddingBottom: bottomPad }]}>
-          <LinearGradient colors={["#16040A", "#16040A"]} style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={["#230610", "#16040A"]} style={StyleSheet.absoluteFill} />
           <View style={eiSt.handle} />
           <View style={eiSt.header}>
             <Pressable onPress={onClose} hitSlop={12} style={eiSt.closeBtn}>

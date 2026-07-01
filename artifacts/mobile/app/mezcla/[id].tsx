@@ -215,7 +215,7 @@ export default function CommunityMixScreen() {
 
   if (isLoading) {
     return (
-      <LinearGradient colors={["#16040A", "#16040A"]} style={styles.center}>
+      <LinearGradient colors={["#230610", "#16040A"]} style={styles.center}>
         <ActivityIndicator color={colors.primary} />
       </LinearGradient>
     );
@@ -241,7 +241,7 @@ export default function CommunityMixScreen() {
 
   return (
     <LinearGradient
-      colors={["#16040A", "#16040A"]}
+      colors={["#230610", "#16040A"]}
       style={styles.root}
     >
     <KeyboardAvoidingView
@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingVertical: 9,
     borderRadius: 29,
-    backgroundColor: "#16040A",
+    backgroundColor: "#230610",
     paddingHorizontal: 24,
   },
   shareBtnText: { fontSize: 16, fontWeight: "600", color: "#D6AD5F", letterSpacing: 0.5 },

@@ -29,7 +29,7 @@ import type { Session } from "@/data/sessions";
 const { width } = Dimensions.get("window");
 const SAVED_KEY = "@resonance_saved_colecciones";
 
-const BG = "#16040A";
+const BG = "#230610";
 const GOLD = "#BE8744";
 const FG = "#FAF0EE";
 const MUTED = "#c2c2c2";

@@ -126,7 +126,7 @@ const MEZ_PLACEHOLDERS = [
 
 // ── Colores de tab ────────────────────────────────────────────────────────────
 const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
-  popular:        ["#16040A", "#16040A", "#16040A"],
+  popular:        ["#230610", "#16040A", "#16040A"],
   naturaleza:     ["#0A1A0E", "#0A1A0E", "#0A1A0E"],
   ancestrales:    ["#221510", "#221510", "#221510"],
   sintetizadores: ["#061A2E", "#061A2E", "#061A2E"],
@@ -137,7 +137,7 @@ const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
 
 /** Gradiente de fondo de contenido en modo "noche" — último stop neutro oscuro (sin bordeaux) */
 const TAB_NOCHE_BG: Record<MainTabId, [string, string, string]> = {
-  popular:        ["#16040A", "#16040A", "#16040A"],
+  popular:        ["#230610", "#16040A", "#16040A"],
   naturaleza:     ["#0A1A0E", "#0A1A0E", "#0A1A0E"],
   ancestrales:    ["#221510", "#221510", "#221510"],
   sintetizadores: ["#061A2E", "#061A2E", "#061A2E"],
@@ -146,7 +146,7 @@ const TAB_NOCHE_BG: Record<MainTabId, [string, string, string]> = {
 };
 
 /** Fondo fijo de la grilla en modo Noche Borgoña — igual para todos los tabs */
-const TAB_NOCHE_GRID_BG = "#16040A";
+const TAB_NOCHE_GRID_BG = "#230610";
 
 const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
   popular:        ["#5E1E2D", "#5E1E2D"],
@@ -893,7 +893,7 @@ const styles = StyleSheet.create({
 
   topPanelShadow: {
     zIndex: 10,
-    backgroundColor: "#16040A",
+    backgroundColor: "#230610",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.38,

@@ -169,7 +169,7 @@ function buildChallenges(
   ];
 }
 
-const BG_GRADIENT = ["#16040A", "#16040A"] as const;
+const BG_GRADIENT = ["#230610", "#16040A"] as const;
 
 export default function ProgresoScreen() {
   const colors = useColors();
