@@ -495,7 +495,7 @@ export default function HomeScreen2() {
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP }}>
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
               <Text style={styles.sectionTitle}>Tu próxima sesión</Text>
               <Pressable
                 onPress={() => router.push("/mis-sesiones" as never)}
@@ -947,9 +947,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 11,
+    marginBottom: 0,
   },
-  sectionTitle: { fontSize: 20, fontWeight: "600", letterSpacing: 0.3, marginBottom: 16, color: "#e8e8e8" },
+  sectionTitle: { fontSize: 20, fontWeight: "600", letterSpacing: 0.3, marginBottom: 24, color: "#e8e8e8" },
   verTodasLink: { fontSize: 13, fontWeight: "400" },
   videosEmpty: {
     borderRadius: 16,

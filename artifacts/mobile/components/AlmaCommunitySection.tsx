@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   },
   headerRow: {
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: 24,
   },
   caption: { fontSize: 10, fontWeight: "400", letterSpacing: 1.4, textTransform: "uppercase", marginBottom: 6 },
   title: { fontSize: 18, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },

@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     width: 160,
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(255,255,255,0.2)",
-    marginBottom: 15,
+    marginBottom: 14,
   },
   quoteText: {
     fontSize: 17,
