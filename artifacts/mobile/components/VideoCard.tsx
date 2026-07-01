@@ -111,7 +111,7 @@ export function VideoCard({ video, width = 240, horizontal = false, cardBg }: Pr
 }
 
 const styles = StyleSheet.create({
-  card: { marginRight: 14 },
+  card: { marginRight: 0 },
   imageContainer: {
     width: "100%",
     aspectRatio: 16 / 9,
