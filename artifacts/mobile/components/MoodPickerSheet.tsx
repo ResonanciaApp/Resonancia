@@ -169,15 +169,12 @@ const styles = StyleSheet.create({
     height: 96,
     borderRadius: 14,
     backgroundColor: CARD_BG,
-    borderWidth: 1.5,
-    borderColor: CARD_BORDER,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "column",
   },
   cardSelected: {
     backgroundColor: CARD_SELECTED_BG,
-    borderColor: CARD_SELECTED_BORDER,
   },
   emoji: {
     fontSize: 28,
