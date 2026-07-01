@@ -43,7 +43,7 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useMixer } from "@/context/MixerContext";
-import { getVoiceLabel } from "@/config/audio-map";
+// voiceLabel no usado en hero
 import { getSoundImage } from "@/config/sound-images";
 import { usePlayer } from "@/context/PlayerContext";
 import { useIntencion } from "@/context/IntencionContext";
@@ -539,36 +539,29 @@ export default function HomeScreen2() {
               Destacada de hoy
             </Text>
             <Pressable
-              style={styles.heroCard}
               onPress={() => {
                 if (filteredFeatured.skipDetail) { playSession(filteredFeatured); router.push("/player" as never); }
                 else router.push(`/session/${filteredFeatured.id}` as never);
               }}
             >
-              <Image source={filteredFeatured.image as number} style={styles.heroImage} resizeMode="cover" />
+              <View style={styles.heroImageContainer}>
+                <Image source={filteredFeatured.image as number} style={styles.heroImage} resizeMode="cover" />
+              </View>
               {(() => {
-                const voiceLabel = getVoiceLabel(filteredFeatured);
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const guideId = (filteredFeatured as any).guideId as string | undefined;
                 const heroAuthor = guideId ? (getGuide(guideId)?.name ?? "Casa del Cuenco") : "Casa del Cuenco";
                 return (
-                  <View style={styles.heroFrosted}>
-                    <View style={styles.heroMetaRow}>
-                      <Text style={[styles.heroMetaText, { color: "rgba(255,255,255,0.9)" }]}>
-                        {filteredFeatured.categoryLabel} · {filteredFeatured.durationLabel}
-                      </Text>
-                    </View>
-                    <View style={styles.heroBottom}>
-                      <View style={{ flex: 1, minWidth: 0 }}>
-                        <Text style={[styles.heroTitle, { color: "#e8e8e8" }]} numberOfLines={2}>
-                          {filteredFeatured.title}
-                        </Text>
-                        <Text style={[styles.heroAuthor, { color: "rgba(255,255,255,0.60)" }]} numberOfLines={1}>
-                          {heroAuthor}
-                        </Text>
-                      </View>
-                      <Feather name="chevron-right" size={24} color="rgba(255,255,255,0.9)" />
-                    </View>
+                  <View style={{ marginTop: 12 }}>
+                    <Text style={styles.heroMetaText}>
+                      {filteredFeatured.categoryLabel} · {filteredFeatured.durationLabel}
+                    </Text>
+                    <Text style={styles.heroTitle} numberOfLines={2}>
+                      {filteredFeatured.title}
+                    </Text>
+                    <Text style={styles.heroAuthor} numberOfLines={1}>
+                      {heroAuthor}
+                    </Text>
                   </View>
                 );
               })()}
@@ -1067,43 +1060,16 @@ const styles = StyleSheet.create({
   },
 
   // Hero — sesión destacada del día
-  heroCard: {
+  heroImageContainer: {
+    width: "100%",
     height: HERO_HEIGHT,
     borderRadius: 15,
     overflow: "hidden",
   },
   heroImage: { width: "100%", height: "100%" },
-  glowCenter: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingBottom: 100,
-  },
-  heroFrosted: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 18,
-    paddingTop: 16,
-    paddingBottom: 18,
-    backgroundColor: "rgba(27,6,15,0.80)",
-    borderTopWidth: 1,
-    borderTopColor: "rgba(61,14,22,0.60)",
-  },
-  heroMetaRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  heroMetaText: { fontSize: 11, lineHeight: 14 },
-  heroTitle: { fontSize: 20, fontWeight: "600", lineHeight: 26, marginBottom: 4 },
-  heroAuthor: { fontSize: 12, marginTop: 2 },
-  heroBottom: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
+  heroMetaText: { fontSize: 11, lineHeight: 14, color: "#c2c2c2", marginBottom: 6 },
+  heroTitle: { fontSize: 18, fontWeight: "600", lineHeight: 24, color: "#e8e8e8", marginBottom: 4 },
+  heroAuthor: { fontSize: 12, color: "#c2c2c2", marginTop: 2 },
   heroBtn: {
     width: 46,
     height: 46,
