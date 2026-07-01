@@ -34,8 +34,8 @@ import { useUserProfile } from "@/context/UserProfileContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
-const GAP = 10;
-const SECTION_GAP = 48;
+const GAP = 16;
+const SECTION_GAP = 60;
 
 /** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
 function hexTint(hex: string, alpha: number): string {
@@ -47,11 +47,11 @@ function hexTint(hex: string, alpha: number): string {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-const SQCARD_W = Math.round((width - H_PAD * 2) / 2.2);
+const SQCARD_W = Math.round((width - H_PAD * 2) / 1.85);
 const TEMA_COL_W = Math.floor((width - H_PAD * 2 - GAP) / 2);
 const TEMA3_W    = Math.floor((width - H_PAD * 2 - GAP * 2) / 3);
 
-const CAT_CARD_GAP = 12;
+const CAT_CARD_GAP = 16;
 const DUR_PILL_W   = Math.round((width - H_PAD * 2 - 6 * 4) / 4.3);
 const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.625);
 const CAT_CARD_IMG_H = Math.round(CAT_CARD_W * 1.15);
@@ -183,7 +183,7 @@ export default function ExploreScreen() {
           onPress={() => router.push(categoryRoute as never)}
           style={({ pressed }) => [styles.sectionRow, { opacity: pressed ? 0.7 : 1 }]}
         >
-          <Text style={[styles.sectionTitle, { marginBottom: 0, transform: [{ translateY: 4 }] }]}>{title}</Text>
+          <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>{title}</Text>
           <Feather name="chevron-right" size={18} color="#c2c2c2" />
         </Pressable>
         <ScrollView
@@ -213,10 +213,10 @@ export default function ExploreScreen() {
                   </View>
                 )}
               </View>
-              <Text style={[styles.sqTitle, { color: colors.foreground }]} numberOfLines={2}>
+              <Text style={[styles.sqTitle, { color: "#e8e8e8" }]} numberOfLines={2}>
                 {s.title}
               </Text>
-              <Text style={[styles.sqAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+              <Text style={[styles.sqAuthor, { color: "#c2c2c2" }]} numberOfLines={1}>
                 {getSessionAuthor(s)}
               </Text>
             </Pressable>
@@ -276,7 +276,7 @@ export default function ExploreScreen() {
         {/* ── Carrusel de categorías ── */}
         {query.length === 0 && (
           <>
-          <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 16 }]}>
+          <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
             Categorías principales
           </Text>
           <ScrollView
@@ -314,7 +314,7 @@ export default function ExploreScreen() {
         {/* ── Search results ── */}
         {query.length > 0 ? (
           <View style={styles.section}>
-            <Text style={[styles.resultsLabel, { color: colors.mutedForeground }]}>
+            <Text style={[styles.resultsLabel, { color: "#c2c2c2" }]}>
               {filteredSessions.length} sesión{filteredSessions.length !== 1 ? "es" : ""} encontrada{filteredSessions.length !== 1 ? "s" : ""}
             </Text>
             {filteredSessions.map((s) => (
@@ -323,8 +323,8 @@ export default function ExploreScreen() {
             {filteredSessions.length === 0 && (
               <View style={styles.emptyState}>
                 <Feather name="search" size={36} color={colors.border} />
-                <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Sin resultados</Text>
-                <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
+                <Text style={[styles.emptyTitle, { color: "#e8e8e8" }]}>Sin resultados</Text>
+                <Text style={[styles.emptySub, { color: "#c2c2c2" }]}>
                   Prueba con otro término
                 </Text>
               </View>
@@ -337,7 +337,7 @@ export default function ExploreScreen() {
               <View style={styles.sectionRow}>
                 <Text style={styles.sectionTitle}>Explorar todo</Text>
               </View>
-              <View style={[styles.temaGrid, { marginTop: -6 }]}>
+              <View style={[styles.temaGrid, { marginTop: 0 }]}>
                 {TEMAS.map((t, i) => (
                   <Pressable
                     key={t.id}
@@ -350,7 +350,7 @@ export default function ExploreScreen() {
                         backgroundColor: pressed
                           ? hexTint(t.color, 0.22)
                           : "rgba(190,150,80,0.06)",
-                        borderRadius: 14,
+                        borderRadius: 15,
                       },
                     ]}
                   >
@@ -363,7 +363,7 @@ export default function ExploreScreen() {
                     ) : (
                       <MaterialCommunityIcons name={t.icon} size={28} color={t.color} />
                     )}
-                    <Text style={[styles.temaCellLabel, { color: colors.foreground }]} numberOfLines={2}>
+                    <Text style={[styles.temaCellLabel, { color: "#e8e8e8" }]} numberOfLines={2}>
                       {t.label}
                     </Text>
                   </Pressable>
@@ -373,7 +373,7 @@ export default function ExploreScreen() {
 
             {/* ── ¿Cuánto tiempo tienes? ── */}
             <View style={styles.durSection}>
-              <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 16 }]}>
+              <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
                 ¿Cuánto tiempo tienes?
               </Text>
               <ScrollView
@@ -431,7 +431,7 @@ export default function ExploreScreen() {
                     </Pressable>
                   </View>
                   {durationSessions.length === 0 ? (
-                    <Text style={[styles.durEmpty, { color: colors.mutedForeground }]}>
+                    <Text style={[styles.durEmpty, { color: "#c2c2c2" }]}>
                       Sin sesiones para este rango
                     </Text>
                   ) : (
@@ -513,8 +513,8 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, fontSize: 14, color: "#FFFFFF" },
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
-  sectionRow:   { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 11 },
-  sectionTitle: { fontSize: 20, fontWeight: "600", letterSpacing: 0.5, color: "#e8e8e8", marginBottom: 16 },
+  sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 11 },
+  sectionTitle: { fontSize: 20, fontWeight: "600", letterSpacing: 0.5, color: "#e8e8e8", marginBottom: 24 },
 
   resultsLabel: { fontSize: 12, marginBottom: 12 },
   emptyState:   { alignItems: "center", paddingVertical: 48, gap: 10 },
@@ -567,7 +567,7 @@ const styles = StyleSheet.create({
   durPillText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "rgba(255,255,255,0.90)",
+    color: "#e8e8e8",
     letterSpacing: 0.2,
   },
   durPillTextActive: {
@@ -578,7 +578,7 @@ const styles = StyleSheet.create({
     marginHorizontal: H_PAD,
     gap: 6,
     backgroundColor: "rgba(255,255,255,0.04)",
-    borderRadius: 16,
+    borderRadius: 15,
     padding: 12,
   },
   durSortRow: {
@@ -590,7 +590,7 @@ const styles = StyleSheet.create({
   durSortOption: {
     fontSize: 13,
     fontWeight: "500",
-    color: "rgba(244,218,213,0.50)",
+    color: "#c2c2c2",
   },
   durSortActive: {
     color: "#BE8744",
@@ -598,7 +598,7 @@ const styles = StyleSheet.create({
   },
   durSortSep: {
     fontSize: 13,
-    color: "rgba(244,218,213,0.25)",
+    color: "#c2c2c2",
   },
   durEmpty: {
     fontSize: 13,
@@ -613,8 +613,8 @@ const styles = StyleSheet.create({
   catCardImage: {
     width: CAT_CARD_W,
     height: CAT_CARD_IMG_H,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
     overflow: "hidden",
   },
   catCardText: {
@@ -622,8 +622,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 13,
     paddingVertical: 10,
     backgroundColor: "rgba(190,150,80,0.06)",
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
     alignItems: "center",
   },
   catCardTitle: {
@@ -635,7 +635,7 @@ const styles = StyleSheet.create({
   },
   catCardSubtitle: {
     fontSize: 14,
-    color: "rgba(244,218,213,0.65)",
+    color: "#c2c2c2",
     lineHeight: 19,
     fontWeight: "400",
   },
@@ -652,7 +652,7 @@ const styles = StyleSheet.create({
   sqImageWrap: {
     width: SQCARD_W,
     height: SQCARD_W,
-    borderRadius: 12,
+    borderRadius: 15,
     overflow: "hidden",
     backgroundColor: "rgba(74,12,12,0.08)",
   },
@@ -668,7 +668,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
     lineHeight: 18,
-    marginTop: 8,
+    marginTop: 10,
   },
   sqAuthor: {
     fontSize: 11,
@@ -687,7 +687,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    borderRadius: 14,
+    borderRadius: 15,
     paddingHorizontal: 8,
     paddingVertical: 12,
   },
@@ -709,7 +709,7 @@ const styles = StyleSheet.create({
   tagCardImage: {
     width: CAT_CARD_W,
     height: Math.round(CAT_CARD_W * 1.25),
-    borderRadius: 14,
+    borderRadius: 15,
     overflow: "hidden",
     backgroundColor: "rgba(74,12,12,0.08)",
   },
