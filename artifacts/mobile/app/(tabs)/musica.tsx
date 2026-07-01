@@ -670,12 +670,7 @@ export default function MezcladorScreen() {
 
         {/* ── Zona superior ── */}
         <View style={styles.topPanelShadow}>
-          <LinearGradient
-            colors={["#230610", "#16040A"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={[styles.topPanel, { paddingTop: topPad + 2 }]}
-          >
+          <View style={[styles.topPanel, { paddingTop: topPad + 2, backgroundColor: "#230610" }]}>
             {/* ── Header ── */}
             <View style={styles.header}>
               <View style={styles.headerRow}>
@@ -764,7 +759,7 @@ export default function MezcladorScreen() {
               <View style={styles.separator} />
             )}
 
-          </LinearGradient>
+          </View>
         </View>
 
         {/* ── Scroll principal ── */}
