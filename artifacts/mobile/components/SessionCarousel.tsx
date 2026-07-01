@@ -16,7 +16,7 @@ import type { Session } from "@/data/sessions";
 
 const CARD_W = 150;
 const GRID_PAD = 15;
-const SECTION_GAP = 70;
+const SECTION_GAP = 60;
 
 // ── Carrusel de sesiones (con píldora de duración) ────────────────────────────
 type SessionCarouselProps = {
@@ -41,7 +41,7 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
         horizontal
         showsHorizontalScrollIndicator={false}
         style={{ marginHorizontal: -GRID_PAD }}
-        contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 17 }}
+        contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 16 }}
       >
         {sessions.map((s) => {
           const locked = !!s.isPremium && !isPremium;
@@ -98,7 +98,7 @@ export function CoverCarousel({ title, items, onPress }: CoverCarouselProps) {
         horizontal
         showsHorizontalScrollIndicator={false}
         style={{ marginHorizontal: -GRID_PAD }}
-        contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 17 }}
+        contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 16 }}
       >
         {items.map((item) => (
           <Pressable

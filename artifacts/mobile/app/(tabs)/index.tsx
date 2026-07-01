@@ -82,7 +82,7 @@ const VIDEO_REG_W = 200;
 // 1 card completa + 25% del siguiente visible: W = (screenWidth - leftPad - gap) / 1.25
 const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 2.2);
 
-const SECTION_GAP = 70;
+const SECTION_GAP = 60;
 
 const ND = Platform.OS !== "web";
 
