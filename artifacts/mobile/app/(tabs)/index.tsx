@@ -112,26 +112,28 @@ function NavTabChip({ sel, label, onPress }: { sel: boolean; label: string; onPr
     Animated.timing(selOpacity, { toValue: sel ? 1 : 0, duration: 180, useNativeDriver: true }).start();
   }, [sel]);
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [styles.headerTabChip, { opacity: pressed ? 0.7 : 1 }]}
-    >
-      <LinearGradient
-        colors={["rgba(52,28,32,0.70)", "rgba(52,28,32,0.38)"]}
-        start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
-      <Animated.View style={[StyleSheet.absoluteFill, { opacity: selOpacity }]}>
+    <View style={styles.headerTabChipBorder}>
+      <Pressable
+        onPress={onPress}
+        style={({ pressed }) => [styles.headerTabChip, { opacity: pressed ? 0.7 : 1 }]}
+      >
         <LinearGradient
-          colors={["#D6A45C", "#BE8744"]}
+          colors={["rgba(49,25,29,0.80)", "rgba(49,25,29,0.48)"]}
           start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
-      </Animated.View>
-      <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
-        {label}
-      </Text>
-    </Pressable>
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: selOpacity }]}>
+          <LinearGradient
+            colors={["#D6A45C", "#BE8744"]}
+            start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+        </Animated.View>
+        <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
+          {label}
+        </Text>
+      </Pressable>
+    </View>
   );
 }
 
@@ -880,6 +882,14 @@ const styles = StyleSheet.create({
     gap: 6,
     alignItems: "center",
     paddingHorizontal: GRID_PAD,
+  },
+  headerTabChipBorder: {
+    borderRadius: 21,
+    borderWidth: 1,
+    borderTopColor: "rgba(255,255,255,0.11)",
+    borderLeftColor: "rgba(255,255,255,0.055)",
+    borderRightColor: "rgba(255,255,255,0.055)",
+    borderBottomColor: "rgba(255,255,255,0.012)",
   },
   headerTabChip: {
     borderRadius: 20,
