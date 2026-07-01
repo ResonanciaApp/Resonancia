@@ -29,10 +29,10 @@ import {
 import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
 
-const ACTIVE_COLOR   = "rgba(255,255,255,0.9)";
-const INACTIVE_COLOR = "rgba(255,255,255,0.8)";
-const GRAD_END       = "rgba(255,255,255,0.9)";
-const GHOST_PILL_BG  = "rgba(255,255,255,0.12)";
+const ACTIVE_COLOR   = "rgba(0,0,0,0.9)";
+const INACTIVE_COLOR = "rgba(0,0,0,0.8)";
+const GRAD_END       = "rgba(0,0,0,0.9)";
+const GHOST_PILL_BG  = "rgba(0,0,0,0.08)";
 
 const ICON_SIZE      = 24;
 const PILL_H         = 72;   // altura fija de la píldora flotante
