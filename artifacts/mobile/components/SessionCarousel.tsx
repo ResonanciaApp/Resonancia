@@ -63,11 +63,15 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
                     resizeMode="contain"
                   />
                 )}
-                <View style={styles.durBadge}>
-                  <Text style={styles.durText}>{s.durationLabel}</Text>
-                </View>
               </View>
               <Text style={[styles.cardTitle, titleOffset ? { marginTop: titleOffset } : null]} numberOfLines={2}>{s.title}</Text>
+              {(() => {
+                const authorObj = s.guideId ? getGuide(s.guideId) : getArtist(s.artistId);
+                const authorName = authorObj?.name;
+                return authorName ? (
+                  <Text style={styles.cardAuthor} numberOfLines={1}>{authorName}</Text>
+                ) : null;
+              })()}
             </Pressable>
           );
         })}
@@ -178,5 +182,5 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     lineHeight: 17,
   },
-  cardCreator: { fontSize: 11, color: "#c2c2c2", marginTop: 4 },
+  cardAuthor: { fontSize: 11, color: "#c2c2c2", marginTop: 2 },
 });
