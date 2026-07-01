@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     paddingTop: 18,
     paddingBottom: 12,
     backgroundColor: CARD_BG,
-    borderRadius: 16,
+    borderRadius: 15,
   },
   cardTitle: {
     fontSize: 13,

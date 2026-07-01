@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
 
   composeTap: {
     alignSelf: "center",
-    borderRadius: 20,
+    borderRadius: 15,
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.35)",
     paddingHorizontal: 28,
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   avatar: {
     width: 34,
     height: 34,
-    borderRadius: 17,
+    borderRadius: 15,
     marginTop: 2,
     flexShrink: 0,
   },
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 14,
     paddingVertical: 11,
-    borderRadius: 12,
+    borderRadius: 15,
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.28)",
   },

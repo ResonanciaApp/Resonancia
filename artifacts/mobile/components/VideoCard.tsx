@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: "100%",
     aspectRatio: 16 / 9,
-    borderRadius: 14,
+    borderRadius: 15,
     overflow: "hidden",
   },
   cardImage: { width: "100%", height: "100%" },

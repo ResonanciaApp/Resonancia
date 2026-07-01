@@ -1069,7 +1069,7 @@ const styles = StyleSheet.create({
   // Hero — sesión destacada del día
   heroCard: {
     height: HERO_HEIGHT,
-    borderRadius: 18,
+    borderRadius: 15,
     overflow: "hidden",
   },
   heroImage: { width: "100%", height: "100%" },

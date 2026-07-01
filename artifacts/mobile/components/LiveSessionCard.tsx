@@ -118,7 +118,7 @@ export function LiveSessionCard({ session, onEnter }: Props) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: CARD_BG,
-    borderRadius: 16,
+    borderRadius: 15,
     borderWidth: 1,
     borderColor: BORDER,
     overflow: "hidden",

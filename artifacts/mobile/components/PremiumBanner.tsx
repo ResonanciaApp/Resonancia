@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   outer: {
     marginHorizontal: 16,
     marginBottom: 8,
-    borderRadius: 22,
+    borderRadius: 15,
     borderWidth: 0.6,
     borderColor: "rgba(169,122,52,0.28)",
     overflow: "hidden",
@@ -202,12 +202,12 @@ const styles = StyleSheet.create({
   outerActiveWrap: {
     marginHorizontal: 16,
     marginBottom: 8,
-    borderRadius: 22,
+    borderRadius: 15,
     overflow: "hidden",
     opacity: 0.82,
   },
   goldBorder: {
-    borderRadius: 22,
+    borderRadius: 15,
     padding: 0.8,
     shadowColor: "#06150F",
     shadowOffset: { width: 0, height: 6 },
