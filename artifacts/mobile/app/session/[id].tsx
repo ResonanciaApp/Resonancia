@@ -119,10 +119,10 @@ export default function SessionDetailScreen() {
     gradient: [string, string]; solid: string;
     pillBg: string; labelGradient: [string, string]; labelColor: string;
   }> = {
-    "sonidos-ancestrales":  { gradient: ["#2E0510", "#16040A"], solid: "#16040A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "meditaciones-guiadas": { gradient: ["#2E0510", "#16040A"], solid: "#16040A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "reflexiones":          { gradient: ["#2E0510", "#16040A"], solid: "#16040A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "musica-sonidos":       { gradient: ["#2E0510", "#16040A"], solid: "#16040A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "sonidos-ancestrales":  { gradient: ["#230610", "#16040A"], solid: "#230610", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "meditaciones-guiadas": { gradient: ["#230610", "#16040A"], solid: "#230610", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "reflexiones":          { gradient: ["#230610", "#16040A"], solid: "#230610", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "musica-sonidos":       { gradient: ["#230610", "#16040A"], solid: "#230610", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
     "descanso":             { gradient: ["#252525", "#1C1C1C"], solid: "#1C1C1C", pillBg: "#2A2A2A", labelGradient: ["#E8E8E8", "#C8C8C8"], labelColor: "#333333" },
   };
   const catBg = CATEGORY_BG[session.categoryId] ?? CATEGORY_BG["sonidos-ancestrales"];
