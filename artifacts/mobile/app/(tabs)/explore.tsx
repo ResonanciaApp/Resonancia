@@ -35,6 +35,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
 const GAP = 16;
+const TEMA_GAP = 10;
 const SECTION_GAP = 60;
 
 /** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
@@ -49,7 +50,7 @@ function hexTint(hex: string, alpha: number): string {
 
 const SQCARD_W = Math.round((width - H_PAD * 2) / 1.85);
 const TEMA_COL_W = Math.floor((width - H_PAD * 2 - GAP) / 2);
-const TEMA3_W    = Math.floor((width - H_PAD * 2 - GAP * 2) / 3);
+const TEMA3_W    = Math.floor((width - H_PAD * 2 - TEMA_GAP * 2) / 3);
 
 const CAT_CARD_GAP = 16;
 const DUR_PILL_W   = Math.round((width - H_PAD * 2 - 6 * 4) / 4.3);
@@ -542,6 +543,7 @@ const styles = StyleSheet.create({
 
   // ¿Cuánto tiempo tienes?
   durSection: {
+    paddingHorizontal: H_PAD,
     marginBottom: SECTION_GAP,
   },
   durPillRow: {
@@ -679,7 +681,7 @@ const styles = StyleSheet.create({
   temaGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: GAP,
+    gap: TEMA_GAP,
     marginTop: 2,
   },
   temaCell: {
