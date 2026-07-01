@@ -232,7 +232,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         style={[styles.bar, { bottom: barBottom, transform: [{ translateY }] }]}
       >
         {/* Fondo glass: blur suave + overlay muy tenue */}
-        <BlurView intensity={55} tint="dark" style={StyleSheet.absoluteFill} />
+        <BlurView intensity={30} tint="dark" style={StyleSheet.absoluteFill} />
         <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.01)" }]} />
         {/* Acento del tab activo (crossfade) */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "transparent" }]} />
