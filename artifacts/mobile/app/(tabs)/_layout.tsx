@@ -248,7 +248,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
               style={[
                 styles.slidingPill,
                 {
-                  width: tabWidth - 3,
+                  width: tabWidth + 3,
                   transform: [{ translateX: pillX }],
                 },
               ]}
