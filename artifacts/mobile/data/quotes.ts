@@ -177,18 +177,19 @@ export const QUOTES: Quote[] = [
   { author: "Nisargadatta Maharaj", text: "La conciencia de 'yo soy' es el comienzo de todo." },
 ];
 
-// TEST — cita larga de Krishnamurti para probar "Leer más"
-const TEST_QUOTE: Quote = {
-  author: "Jiddu Krishnamurti",
-  text: "La mente condicionada no puede conocer la libertad. Estamos tan profundamente atrapados en nuestras creencias, en nuestros miedos y en nuestras tradiciones, que nunca nos detenemos a observar lo que realmente somos. Observar sin juzgar, sin comparar, sin interpretar: eso es lo que transforma. No la meditación como técnica, no el ritual como hábito, sino el acto puro de mirar lo que es. Cuando la mente se queda completamente quieta —no por esfuerzo, no por disciplina, sino porque ha comprendido el movimiento del pensamiento— surge algo que ninguna palabra puede contener. Eso que surge no es tuyo ni mío, no pertenece a ninguna tradición ni a ningún maestro. Es simplemente lo que es, y en esa sencillez reside toda la belleza del mundo.",
-};
+const FEATURED_AUTHORS = new Set([
+  "Jiddu Krishnamurti",
+  "Mooji",
+  "Papaji",
+  "Ramana Maharshi",
+]);
 
 export function getQuoteOfTheDay(): Quote {
-  return TEST_QUOTE; // TODO: quitar cuando terminen las pruebas
-  // const now = new Date();
-  // const start = new Date(now.getFullYear(), 0, 0);
-  // const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
-  // return QUOTES[dayOfYear % QUOTES.length];
+  const pool = QUOTES.filter((q) => FEATURED_AUTHORS.has(q.author));
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
+  return pool[dayOfYear % pool.length];
 }
 
 export function getShareCountForDay(): number {
