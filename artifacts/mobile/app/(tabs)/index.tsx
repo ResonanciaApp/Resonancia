@@ -686,7 +686,7 @@ export default function HomeScreen2() {
               horizontal
               showsHorizontalScrollIndicator={false}
               style={{ marginHorizontal: -GRID_PAD }}
-              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 12 }}
+              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 16 }}
             >
               {videos.map((v) => (
                 <VideoCard
