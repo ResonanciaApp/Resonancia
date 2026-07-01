@@ -53,7 +53,7 @@ export function MoodPickerSheet({ visible, onClose }: Props) {
           <Text style={styles.closeX}>✕</Text>
         </Pressable>
 
-        <Text style={styles.title}>¿Cómo te sientes?</Text>
+        <Text style={styles.title}>¿Cómo te sientes hoy?</Text>
 
         <View style={styles.grid}>
           {MOODS.map((mood) => {
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     color: MUTED,
   },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "700",
     color: FG,
     textAlign: "center",

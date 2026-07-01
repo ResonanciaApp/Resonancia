@@ -578,7 +578,7 @@ export default function HomeScreen2() {
           style={({ pressed }) => [styles.moodRow, { opacity: pressed ? 0.78 : 1 }]}
         >
           <Text style={styles.moodEmoji}>🙂</Text>
-          <Text style={styles.moodRowLabel}>¿Cómo te sientes?</Text>
+          <Text style={styles.moodRowLabel}>¿Cómo te sientes hoy?</Text>
           <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" />
         </Pressable>
 
@@ -743,7 +743,7 @@ const styles = StyleSheet.create({
   },
   moodRowLabel: {
     flex: 1,
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: "600",
     color: "#e8e8e8",
   },
