@@ -147,6 +147,8 @@ function NavTabChip({ sel, label, onPress }: { sel: boolean; label: string; onPr
 }
 
 function RitualCard({ session, onPress }: { session: Session; onPress: () => void }) {
+  const cardW  = width - GRID_PAD * 2;
+  const imgH   = Math.round(cardW * (9 / 16));
   const idNum  = parseInt(session.id, 10);
   const rating = (4.5 + (isNaN(idNum) ? 0 : (idNum % 5) * 0.08)).toFixed(1);
   const author = session.guideIds
@@ -159,10 +161,10 @@ function RitualCard({ session, onPress }: { session: Session; onPress: () => voi
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.ritualCard, { opacity: pressed ? 0.85 : 1 }]}
+      style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
     >
-      <View style={styles.ritualImgWrap}>
-        <Image source={session.image as never} style={styles.ritualImg} resizeMode="cover" />
+      <View style={[styles.ritualImgWrap, { width: cardW, height: imgH }]}>
+        <Image source={session.image as never} style={{ width: cardW, height: imgH }} resizeMode="cover" />
       </View>
       <View style={styles.ritualMeta}>
         <Text style={styles.ritualStar}>★ {rating}</Text>
@@ -787,15 +789,11 @@ export default function HomeScreen2() {
                   </View>
                 </Pressable>
               </View>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 14 }}
-              >
+              <View style={{ paddingHorizontal: GRID_PAD, gap: 24 }}>
                 {ritualesSessions.map(s => (
                   <RitualCard key={s.id} session={s} onPress={() => playSession(s)} />
                 ))}
-              </ScrollView>
+              </View>
             </View>
           );
         })()}
