@@ -305,20 +305,6 @@ export default function HomeScreen2() {
     return result;
   }, [history]);
 
-  // Más de lo que te gusta — categoría más frecuente en historial, sesiones no escuchadas
-  const moreLikeSessions = React.useMemo<Session[]>(() => {
-    if (history.length < 3) return [];
-    const catCount: Record<string, number> = {};
-    for (const h of history) {
-      const s = getSessionById(h.sessionId);
-      if (s) catCount[s.categoryId] = (catCount[s.categoryId] ?? 0) + 1;
-    }
-    const topCat = Object.entries(catCount).sort((a, b) => b[1] - a[1])[0]?.[0];
-    if (!topCat) return [];
-    const historyIds = new Set(history.map((h) => h.sessionId));
-    return SESSIONS.filter((s) => s.categoryId === topCat && !historyIds.has(s.id)).slice(0, 10);
-  }, [history, catalogVersion]);
-
   // Tus playlist — playlists del usuario, foto de la primera sesión
   const playlistItems = React.useMemo(() =>
     playlists.slice(0, 10).map((pl) => ({
@@ -365,11 +351,6 @@ export default function HomeScreen2() {
     if (!activeFilter) return listenedRecently;
     return listenedRecently.filter((s) => activeFilter.includes(s.categoryId));
   }, [listenedRecently, activeFilter]);
-
-  const filteredMoreLike = React.useMemo(() => {
-    if (!activeFilter) return moreLikeSessions;
-    return moreLikeSessions.filter((s) => activeFilter.includes(s.categoryId));
-  }, [moreLikeSessions, activeFilter]);
 
   const filteredPopular = React.useMemo(() => {
     const base = usingPopularFallback ? popularFallback : popularSessions.slice(0, 10);
@@ -702,13 +683,6 @@ export default function HomeScreen2() {
         <View style={{ marginBottom: SECTION_GAP }}>
           <QuoteOfTheDay />
         </View>
-
-        <SessionCarousel
-          title="Más de lo que te gusta"
-          sessions={filteredMoreLike}
-          isPremium={isPremium}
-          onPress={(s) => { playSession(s); router.push("/player" as never); }}
-        />
 
         {/* ── 8. MURO DE AGRADECIMIENTOS ── */}
         <View style={styles.sectionDivider} />
