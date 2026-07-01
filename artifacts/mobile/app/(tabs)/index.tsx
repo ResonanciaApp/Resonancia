@@ -1422,7 +1422,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.5)",
   },
   ritualSheet: {
-    backgroundColor: "#160410",
+    backgroundColor: "#230610",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingTop: 14,
