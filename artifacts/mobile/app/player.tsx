@@ -494,7 +494,7 @@ export default function PlayerScreen() {
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.22)" }]} />
           )}
           {isLoading ? (
-            <Feather name="loader" size={46} color="white" />
+            <Feather name="loader" size={46} color="#e8e8e8" />
           ) : isPlaying ? (
             <Svg width={46} height={46} viewBox="0 0 46 46">
               <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
@@ -672,7 +672,7 @@ export default function PlayerScreen() {
         ) : (
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.38)" }]} />
         )}
-        <Feather name="x" size={20} color="white" />
+        <Feather name="x" size={20} color="#e8e8e8" />
         {!isPlaying && (
           <Text style={styles.topBtnLabel}>Descartar</Text>
         )}
@@ -688,7 +688,7 @@ export default function PlayerScreen() {
         ) : (
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.38)" }]} />
         )}
-        <Feather name="share" size={18} color="white" />
+        <Feather name="share" size={18} color="#e8e8e8" />
       </Pressable>
 
       {/* ── Options Sheet ──────────────────────────────────────────────────── */}
@@ -740,7 +740,7 @@ export default function PlayerScreen() {
                     <Feather
                       name={hasVoiceTrack && !hasAmbientTrack ? "mic" : "volume-2"}
                       size={18}
-                      color="white"
+                      color="#e8e8e8"
                       style={styles.optIcon}
                     />
                     <Text style={styles.optRowText}>
@@ -777,7 +777,7 @@ export default function PlayerScreen() {
               {hasRealAudio && (
                 <View style={styles.optSliderItem}>
                   <View style={styles.optRow}>
-                    <Feather name="mic" size={18} color="white" style={styles.optIcon} />
+                    <Feather name="mic" size={18} color="#e8e8e8" style={styles.optIcon} />
                     <Text style={styles.optRowText}>Voz guía</Text>
                     <Text style={styles.optRowBadge}>{Math.round(mainVolume * 100)}%</Text>
                   </View>
@@ -809,7 +809,7 @@ export default function PlayerScreen() {
                 style={styles.optRow}
                 onPress={() => { closeSheet(); setTimeout(() => setShowAmbientPicker(true), 300); }}
               >
-                <Feather name="music" size={18} color="white" style={styles.optIcon} />
+                <Feather name="music" size={18} color="#e8e8e8" style={styles.optIcon} />
                 <Text style={styles.optRowText}>Sonido ambiente</Text>
                 {selectedAmbientSoundId && (
                   <Feather name="check-circle" size={15} color="#BE8744" style={{ marginRight: 6 }} />
@@ -819,7 +819,7 @@ export default function PlayerScreen() {
 
               {/* Temporizador */}
               <Pressable style={styles.optRow} onPress={closeSheet}>
-                <Feather name="clock" size={18} color="white" style={styles.optIcon} />
+                <Feather name="clock" size={18} color="#e8e8e8" style={styles.optIcon} />
                 <Text style={styles.optRowText}>Temporizador</Text>
                 {selectedTimerMinutes !== null && (
                   <Text style={styles.optRowBadge}>{selectedTimerMinutes} min</Text>
@@ -829,7 +829,7 @@ export default function PlayerScreen() {
 
               {/* Descargar */}
               <Pressable style={styles.optRow}>
-                <Feather name="download" size={18} color="white" style={styles.optIcon} />
+                <Feather name="download" size={18} color="#e8e8e8" style={styles.optIcon} />
                 <Text style={styles.optRowText}>Descargar</Text>
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
               </Pressable>
@@ -842,7 +842,7 @@ export default function PlayerScreen() {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 }}
               >
-                <Feather name="heart" size={18} color={fav ? "#BE8744" : "white"} style={styles.optIcon} />
+                <Feather name="heart" size={18} color={fav ? "#BE8744" : "#e8e8e8"} style={styles.optIcon} />
                 <Text style={[styles.optRowText, fav && { color: "#BE8744" }]}>
                   {fav ? "En favoritos" : "Agregar a favoritos"}
                 </Text>
@@ -854,7 +854,7 @@ export default function PlayerScreen() {
                 style={styles.optRow}
                 onPress={() => { closeSheet(); setTimeout(() => setShowFolderSheet(true), 300); }}
               >
-                <Feather name="folder-plus" size={18} color="white" style={styles.optIcon} />
+                <Feather name="folder-plus" size={18} color="#e8e8e8" style={styles.optIcon} />
                 <Text style={styles.optRowText}>Añadir a carpeta</Text>
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
               </Pressable>
@@ -864,7 +864,7 @@ export default function PlayerScreen() {
                 style={styles.optRow}
                 onPress={() => { closeSheet(); setTimeout(() => setShowPlaylistSheet(true), 300); }}
               >
-                <Feather name="list" size={18} color="white" style={styles.optIcon} />
+                <Feather name="list" size={18} color="#e8e8e8" style={styles.optIcon} />
                 <Text style={styles.optRowText}>Añadir a playlist</Text>
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
               </Pressable>
@@ -878,7 +878,7 @@ export default function PlayerScreen() {
                     router.push(`/guiador/${currentSession.guideId}` as any);
                   }}
                 >
-                  <Feather name="user-plus" size={18} color="white" style={styles.optIcon} />
+                  <Feather name="user-plus" size={18} color="#e8e8e8" style={styles.optIcon} />
                   <Text style={styles.optRowText}>Seguir al voz guía</Text>
                   <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
                 </Pressable>
@@ -1008,7 +1008,7 @@ const styles = StyleSheet.create({
   timeDisplay: {
     fontSize: 46,
     fontFamily: "OptimaRegular",
-    color: "white",
+    color: "#e8e8e8",
     letterSpacing: -1.5,
     lineHeight: 52,
   },
@@ -1059,14 +1059,14 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 20,
     fontWeight: "800",
-    color: "white",
+    color: "#e8e8e8",
     letterSpacing: 0.2,
     marginBottom: 6,
   },
   authorText: {
     fontSize: 15,
     fontWeight: "300",
-    color: "white",
+    color: "#e8e8e8",
   },
   signature: {
     fontSize: 13,
@@ -1155,7 +1155,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.45)",
   },
   timerChipText: { fontSize: 13, fontWeight: "600", color: "rgba(255,255,255,0.55)" },
-  timerChipTextSelected: { color: "white" },
+  timerChipTextSelected: { color: "#e8e8e8" },
 
   // Floating top buttons
   topBtn: {
@@ -1177,7 +1177,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   topBtnLabel: {
-    color: "white",
+    color: "#e8e8e8",
     fontSize: 15,
     fontWeight: "600",
   },
@@ -1236,7 +1236,7 @@ const styles = StyleSheet.create({
   optSessionTitle: {
     fontSize: 15,
     fontWeight: "700",
-    color: "white",
+    color: "#e8e8e8",
     lineHeight: 20,
     marginBottom: 3,
   },
@@ -1264,7 +1264,7 @@ const styles = StyleSheet.create({
   },
   optRowText: {
     fontSize: 16,
-    color: "white",
+    color: "#e8e8e8",
     flex: 1,
   },
   optRowBadge: {

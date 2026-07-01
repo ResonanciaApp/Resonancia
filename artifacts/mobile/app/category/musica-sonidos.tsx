@@ -463,7 +463,7 @@ const styles = StyleSheet.create({
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#16040A" },
   stickyChips: { position: "absolute", left: 0, right: 0, zIndex: 19, backgroundColor: "#16040A", paddingTop: 8, paddingBottom: 6 },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
-  headerTitle: { flex: 1, fontSize: 23, fontWeight: "700", color: "#fff", letterSpacing: 0.2, textAlign: "center" },
+  headerTitle: { flex: 1, fontSize: 23, fontWeight: "700", color: "#e8e8e8", letterSpacing: 0.2, textAlign: "center" },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
 
   heroArea: { height: 238, position: "relative" },

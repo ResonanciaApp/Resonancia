@@ -320,7 +320,7 @@ export default function SessionDetailScreen() {
               <GlowPill onPress={() => router.back()} pillStyle={styles.heroBackPill} gradientColors={catBg.gradient as [string, string]} />
             </View>
             <Pressable onPress={handleInstagramShare} hitSlop={10} style={({ pressed }) => [styles.igBtn, { opacity: pressed ? 0.6 : 1 }]}>
-              <FontAwesome name="instagram" size={20} color="#FFFFFF" />
+              <FontAwesome name="instagram" size={20} color="#e8e8e8" />
             </Pressable>
           </View>
         </View>
@@ -332,10 +332,10 @@ export default function SessionDetailScreen() {
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 34 }}>
             {ratingStars > 0 && (
               <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-                <Text style={{ fontSize: 12, fontWeight: "600", color: "#FFFFFF" }}>
+                <Text style={{ fontSize: 12, fontWeight: "600", color: "#e8e8e8" }}>
                   {ratingStars.toFixed(1)}
                 </Text>
-                <Text style={{ fontSize: 9, color: "#FFFFFF", lineHeight: 14 }}>★</Text>
+                <Text style={{ fontSize: 9, color: "#e8e8e8", lineHeight: 14 }}>★</Text>
               </View>
             )}
             <Text style={[styles.durationLabel, { marginTop: 0 }]}>{session.durationLabel}</Text>
@@ -346,10 +346,10 @@ export default function SessionDetailScreen() {
             <Text style={[styles.title, { color: colors.foreground, flex: 1 }]} numberOfLines={3}>{session.title}</Text>
             <View style={styles.titleActions}>
               <Pressable onPress={() => setActionsSheetOpen(true)} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-                <Feather name="more-horizontal" size={22} color="#FFFFFF" />
+                <Feather name="more-horizontal" size={22} color="#e8e8e8" />
               </Pressable>
               <Pressable onPress={handleFav} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-                <Feather name="heart" size={22} color={fav ? "#BE8744" : "#FFFFFF"} />
+                <Feather name="heart" size={22} color={fav ? "#BE8744" : "#e8e8e8"} />
               </Pressable>
             </View>
           </View>
@@ -497,8 +497,8 @@ export default function SessionDetailScreen() {
                   onPress={() => router.push(authors[0].profilePath as never)}
                   style={({ pressed }) => ({ opacity: pressed ? 0.65 : 1 })}
                 >
-                  <Text style={[styles.authorLink, { color: "#FFFFFF" }]}>
-                    Ver perfil{"  "}<Feather name="chevron-right" size={13} color="#FFFFFF" />
+                  <Text style={[styles.authorLink, { color: "#e8e8e8" }]}>
+                    Ver perfil{"  "}<Feather name="chevron-right" size={13} color="#e8e8e8" />
                   </Text>
                 </Pressable>
               )}
@@ -624,19 +624,19 @@ export default function SessionDetailScreen() {
             <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
               {/* Temporizador */}
               <Pressable style={styles.optRow} onPress={() => setActionsSheetOpen(false)}>
-                <Feather name="clock" size={18} color="white" style={styles.optIcon} />
+                <Feather name="clock" size={18} color="#e8e8e8" style={styles.optIcon} />
                 <Text style={styles.optRowText}>Temporizador</Text>
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
               </Pressable>
               {/* Descargar */}
               <Pressable style={styles.optRow}>
-                <Feather name="download" size={18} color="white" style={styles.optIcon} />
+                <Feather name="download" size={18} color="#e8e8e8" style={styles.optIcon} />
                 <Text style={styles.optRowText}>Descargar</Text>
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
               </Pressable>
               {/* Agregar a favoritos */}
               <Pressable style={styles.optRow} onPress={() => { handleFav(); }}>
-                <Feather name="heart" size={18} color={fav ? "#BE8744" : "white"} style={styles.optIcon} />
+                <Feather name="heart" size={18} color={fav ? "#BE8744" : "#e8e8e8"} style={styles.optIcon} />
                 <Text style={[styles.optRowText, fav ? { color: "#BE8744" } : {}]}>
                   {fav ? "En favoritos" : "Agregar a favoritos"}
                 </Text>
@@ -647,7 +647,7 @@ export default function SessionDetailScreen() {
                 style={styles.optRow}
                 onPress={() => { setActionsSheetOpen(false); setTimeout(() => setShowFolderSheet(true), 300); }}
               >
-                <Feather name="folder-plus" size={18} color="white" style={styles.optIcon} />
+                <Feather name="folder-plus" size={18} color="#e8e8e8" style={styles.optIcon} />
                 <Text style={styles.optRowText}>Añadir a carpeta</Text>
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
               </Pressable>
@@ -656,7 +656,7 @@ export default function SessionDetailScreen() {
                 style={styles.optRow}
                 onPress={() => { setActionsSheetOpen(false); setTimeout(() => setShowPlaylistSheet(true), 300); }}
               >
-                <Feather name="list" size={18} color="white" style={styles.optIcon} />
+                <Feather name="list" size={18} color="#e8e8e8" style={styles.optIcon} />
                 <Text style={styles.optRowText}>Añadir a playlist</Text>
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
               </Pressable>
@@ -666,7 +666,7 @@ export default function SessionDetailScreen() {
                   style={styles.optRow}
                   onPress={() => { setActionsSheetOpen(false); router.push(authors[0].profilePath as never); }}
                 >
-                  <Feather name="user-plus" size={18} color="white" style={styles.optIcon} />
+                  <Feather name="user-plus" size={18} color="#e8e8e8" style={styles.optIcon} />
                   <Text style={styles.optRowText}>Ver perfil del guía</Text>
                   <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
                 </Pressable>
@@ -864,19 +864,19 @@ const styles = StyleSheet.create({
   durationLabel: {
     fontSize: 12,
     fontWeight: "500",
-    color: "#FFFFFF",
+    color: "#e8e8e8",
     marginTop: 29,
   },
   authorNameInline: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#FFFFFF",
+    color: "#e8e8e8",
     marginTop: 3,
     marginBottom: 16,
   },
   authorNameLink: {
     textDecorationLine: "underline",
-    textDecorationColor: "#FFFFFF",
+    textDecorationColor: "#e8e8e8",
   },
 
   // Title
@@ -938,8 +938,8 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   authorName: { fontSize: 22, fontWeight: "800", marginTop: 15, marginBottom: 4 },
-  authorCountry: { fontSize: 14, color: "#FFFFFF", marginTop: 6, marginBottom: 8 },
-  authorBio: { fontSize: 14, lineHeight: 21, color: "#FFFFFF", marginTop: 6 },
+  authorCountry: { fontSize: 14, color: "#e8e8e8", marginTop: 6, marginBottom: 8 },
+  authorBio: { fontSize: 14, lineHeight: 21, color: "#e8e8e8", marginTop: 6 },
   authorLink: { fontSize: 13, fontWeight: "600" },
   allContentsBtn: {
     alignItems: "center",
@@ -1034,7 +1034,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 21,
     fontWeight: "700",
-    color: "#FFFFFF",
+    color: "#e8e8e8",
     textAlign: "center",
   },
 
@@ -1147,7 +1147,7 @@ const styles = StyleSheet.create({
   ratingTitle: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#FFFFFF",
+    color: "#e8e8e8",
     marginTop: 4,
     marginBottom: 10,
     textAlign: "center",
@@ -1172,7 +1172,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "rgba(214,173,95,0.30)",
-    color: "#FFFFFF",
+    color: "#e8e8e8",
     fontSize: 14,
     lineHeight: 20,
     paddingHorizontal: 14,
@@ -1232,7 +1232,7 @@ const styles = StyleSheet.create({
   optSessionTitle: {
     fontSize: 15,
     fontWeight: "700",
-    color: "white",
+    color: "#e8e8e8",
     lineHeight: 20,
     marginBottom: 3,
   },
@@ -1260,7 +1260,7 @@ const styles = StyleSheet.create({
   },
   optRowText: {
     fontSize: 16,
-    color: "white",
+    color: "#e8e8e8",
     flex: 1,
   },
 });
