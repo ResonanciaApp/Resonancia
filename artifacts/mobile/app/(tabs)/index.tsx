@@ -863,6 +863,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: 14,
+    shadowOpacity: 0,
+    elevation: 0,
   },
 
   // Intención
