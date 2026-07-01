@@ -11,12 +11,19 @@ export default function QuoteOfTheDay() {
   const quote = getQuoteOfTheDay();
   const [menuVisible, setMenuVisible] = useState(false);
 
+  const shareMessage = `"${quote.text}"\n\n— ${quote.author}\n\nVía RESONANCIA`;
+
   async function handleSendFriend() {
     setMenuVisible(false);
     try {
-      await Share.share({
-        message: `"${quote.text}"\n\n— ${quote.author}\n\nVía RESONANCIA`,
-      });
+      await Share.share({ message: shareMessage });
+    } catch { /* ignore */ }
+  }
+
+  async function handleShare() {
+    setMenuVisible(false);
+    try {
+      await Share.share({ message: shareMessage });
     } catch { /* ignore */ }
   }
 
@@ -53,6 +60,14 @@ export default function QuoteOfTheDay() {
             >
               <Feather name="send" size={16} color={GOLD} />
               <Text style={styles.menuItemText}>Enviar a un amigo</Text>
+            </Pressable>
+            <View style={styles.menuDivider} />
+            <Pressable
+              style={({ pressed }) => [styles.menuItem, { opacity: pressed ? 0.7 : 1 }]}
+              onPress={handleShare}
+            >
+              <Feather name="share-2" size={16} color={GOLD} />
+              <Text style={styles.menuItemText}>Compartir</Text>
             </Pressable>
           </View>
         </Pressable>
@@ -111,5 +126,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#FAF0EE",
     fontWeight: "500",
+  },
+  menuDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(190,150,80,0.2)",
   },
 });
