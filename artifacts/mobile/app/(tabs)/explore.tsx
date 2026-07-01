@@ -543,6 +543,7 @@ const styles = StyleSheet.create({
 
   // ¿Cuánto tiempo tienes?
   durSection: {
+    paddingHorizontal: H_PAD,
     marginBottom: SECTION_GAP,
   },
   durPillRow: {
