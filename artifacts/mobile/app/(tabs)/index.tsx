@@ -637,7 +637,6 @@ export default function HomeScreen2() {
           isPremium={isPremium}
           onPress={(s) => { playSession(s); router.push("/player" as never); }}
           style={{ marginBottom: SECTION_GAP }}
-          titleOffset={10}
           cardWidth={RECENT_CARD_W}
         />
 
@@ -919,7 +918,7 @@ const styles = StyleSheet.create({
   },
   sectionRow: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "baseline",
     justifyContent: "space-between",
     marginBottom: 0,
   },
