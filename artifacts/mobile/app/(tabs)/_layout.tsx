@@ -28,9 +28,9 @@ import {
 import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
 
-const ACTIVE_COLOR   = "#BE8744";
+const ACTIVE_COLOR   = "#E9C46A";
 const INACTIVE_COLOR = "rgba(255,255,255,0.80)";
-const GRAD_END       = "#BE8744";
+const GRAD_END       = "#E9C46A";
 
 const ICON_SIZE = 24;
 const PILL_BG   = "rgba(255,255,255,0.075)";
