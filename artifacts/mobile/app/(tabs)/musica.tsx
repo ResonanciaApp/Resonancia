@@ -679,7 +679,7 @@ export default function MezcladorScreen() {
             {/* ── Header ── */}
             <View style={styles.header}>
               <View style={styles.headerRow}>
-                <GhostPill style={{ marginLeft: -11, marginRight: 30 }}>
+                <GhostPill style={{ marginLeft: -11, marginRight: 30, backgroundColor: "rgba(255,255,255,0.06)" }}>
                   <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerPillBtn}>
                     <MaterialCommunityIcons name="chevron-left" size={32} color="#e8e8e8" />
                   </Pressable>
