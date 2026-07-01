@@ -888,7 +888,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(74,12,12,0.15)",
   },
   sesSubSpacer: {
     height: 34,
