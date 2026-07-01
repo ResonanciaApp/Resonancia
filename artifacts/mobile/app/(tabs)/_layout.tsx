@@ -29,15 +29,15 @@ import {
 import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
 
-const ACTIVE_COLOR   = "#E9C46A";
-const INACTIVE_COLOR = "rgba(244,218,213,0.55)";
-const GRAD_END       = "#E9C46A";
-const GHOST_PILL_BG  = "rgba(255,255,255,0.06)";
+const ACTIVE_COLOR   = "#FFFFFF";
+const INACTIVE_COLOR = "rgba(244,218,213,0.45)";
+const GRAD_END       = "#FFFFFF";
+const GHOST_PILL_BG  = "rgba(255,255,255,0.08)";
 
-const ICON_SIZE  = 24;
-const PILL_H     = 62;   // altura fija de la píldora flotante
-const PILL_MARGIN_H  = 20;  // margen horizontal de la píldora
-const PILL_MARGIN_B  = 10;  // margen entre la píldora y el safe area
+const ICON_SIZE      = 24;
+const PILL_H         = 82;   // altura fija de la píldora flotante
+const PILL_MARGIN_H  = 20;   // margen horizontal de la píldora
+const PILL_MARGIN_B  = 15;   // margen entre la píldora y el safe area / borde
 
 
 // Rutas que nunca aparecen en el menú inferior
@@ -139,8 +139,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const isWeb  = Platform.OS === "web";
   const pb     = isWeb ? 8 : insets.bottom;
 
-  // Distancia desde el borde inferior de pantalla hasta la base de la píldora
-  const barBottom = pb + PILL_MARGIN_B;
+  // 15 px desde el borde físico inferior (respetando safe area si es mayor)
+  const barBottom = Math.max(PILL_MARGIN_B, pb + 5);
   // Altura total que ocupa la píldora (para la animación de hide)
   const barHeight = PILL_H + barBottom + 40;
 
@@ -151,7 +151,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
   // ── Sliding ghost pill ──────────────────────────────────────────
   // Solo contar rutas que tienen entrada en TAB_CONFIG y no están ocultas
-  const ROW_H_PAD = 8; // paddingHorizontal del row
+  const ROW_H_PAD = 6; // paddingHorizontal del row (debe coincidir con styles.row)
 
   const isRenderedTab = (name: string) => name in TAB_CONFIG && !HIDDEN_ROUTES.has(name);
 
@@ -326,7 +326,7 @@ function TabLayoutInner() {
   const insets             = useSafeAreaInsets();
   const isWeb              = Platform.OS === "web";
   const bottomPb           = isWeb ? 8 : insets.bottom;
-  const tabBarHeight       = PILL_H + bottomPb + PILL_MARGIN_B;
+  const tabBarHeight       = PILL_H + Math.max(PILL_MARGIN_B, bottomPb + 5);
   const { hidden }         = useTabBarVisibility();
 
   const pathname       = usePathname();
@@ -452,10 +452,10 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   iconGlow: {
-    shadowColor: "#BE8744",
+    shadowColor: "#FFFFFF",
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.55,
-    shadowRadius: 6,
+    shadowOpacity: 0.30,
+    shadowRadius: 4,
   },
   label: {
     fontSize: 10.5,
@@ -471,15 +471,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: GRAD_END,
     fontWeight: "600",
-    textShadowColor: "rgba(212,175,55,0.55)",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 5,
   },
   slidingPill: {
     position: "absolute",
-    top: 6,
-    bottom: 6,
-    left: 8,
+    top: 7,
+    bottom: 7,
+    // left = ROW_H_PAD(6) + medio margen interno(5) para centrar dentro de cada tab
+    left: 11,
     borderRadius: 999,
     backgroundColor: GHOST_PILL_BG,
   },
