@@ -16,7 +16,7 @@ import type { Session } from "@/data/sessions";
 
 const CARD_W = 150;
 const GRID_PAD = 15;
-const SECTION_GAP = 50;
+const SECTION_GAP = 70;
 
 // ── Carrusel de sesiones (con píldora de duración) ────────────────────────────
 type SessionCarouselProps = {
