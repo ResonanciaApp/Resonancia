@@ -1286,7 +1286,7 @@ export default function BibliotecaScreen() {
           <View style={{ flex: 1 }}>
             <Text style={styles.headerTitle}>Tu Biblioteca</Text>
           </View>
-          <GhostPill style={{ gap: 6 }}>
+          <GhostPill style={{ gap: 6, backgroundColor: "rgba(255,255,255,0.06)" }}>
             <Pressable hitSlop={10} onPress={() => setSearchVisible(true)} style={styles.headerIconBtn}>
               <Feather name="search" size={27} color={TEXT} />
             </Pressable>

@@ -688,7 +688,7 @@ export default function MezcladorScreen() {
                   <Text style={[styles.pageTitle, { transform: [{ translateX: -19 }, { translateY: -1 }] }]}>Mezclador</Text>
                 </View>
                 <View style={styles.headerActions}>
-                  <GhostPill style={{ gap: 6 }}>
+                  <GhostPill style={{ gap: 6, backgroundColor: "rgba(255,255,255,0.06)" }}>
                     <Pressable
                       onPress={() => { setSettingsMode("palette"); setSettingsVisible(true); }}
                       style={[styles.headerPillBtn, { width: 45, height: 45 }]}
