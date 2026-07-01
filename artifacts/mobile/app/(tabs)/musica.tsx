@@ -172,8 +172,8 @@ const PillTab = memo(function PillTab({
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
-      <MaterialCommunityIcons name={tab.icon as any} size={13} color={sel ? "#1B060F" : "#FFFFFF"} />
-      <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "#FFFFFF" }]}>
+      <MaterialCommunityIcons name={tab.icon as any} size={13} color={sel ? "#1B060F" : "#e8e8e8"} />
+      <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "#e8e8e8" }]}>
         {tab.label}
       </Text>
     </Pressable>
@@ -681,7 +681,7 @@ export default function MezcladorScreen() {
               <View style={styles.headerRow}>
                 <GhostPill style={{ marginLeft: -11, marginRight: 30 }}>
                   <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerPillBtn}>
-                    <MaterialCommunityIcons name="chevron-left" size={32} color="#FAF0EE" />
+                    <MaterialCommunityIcons name="chevron-left" size={32} color="#e8e8e8" />
                   </Pressable>
                 </GhostPill>
                 <View style={{ flex: 1 }}>
@@ -696,7 +696,7 @@ export default function MezcladorScreen() {
                       accessibilityRole="button"
                       accessibilityLabel="Paleta de color del Mezclador"
                     >
-                      <MaterialCommunityIcons name="brush" size={26} color="#FAF0EE" />
+                      <MaterialCommunityIcons name="brush" size={26} color="#e8e8e8" />
                     </Pressable>
                     <Pressable
                       onPress={() => { setSettingsMode("filters"); setSettingsVisible(true); }}
@@ -705,7 +705,7 @@ export default function MezcladorScreen() {
                       accessibilityRole="button"
                       accessibilityLabel="Filtros del Mezclador"
                     >
-                      <MaterialCommunityIcons name="filter-variant" size={26} color="#FAF0EE" />
+                      <MaterialCommunityIcons name="filter-variant" size={26} color="#e8e8e8" />
                     </Pressable>
                   </GhostPill>
                 </View>
@@ -751,7 +751,7 @@ export default function MezcladorScreen() {
                             end={{ x: 0, y: 1 }}
                             style={StyleSheet.absoluteFill}
                           />
-                          <Text style={[styles.subTabText, { color: sel ? "#1B060F" : "#FFFFFF" }]}>
+                          <Text style={[styles.subTabText, { color: sel ? "#1B060F" : "#e8e8e8" }]}>
                             {SUB_TAB_LABELS[catId] ?? cat.label}
                           </Text>
                         </Pressable>
@@ -909,7 +909,7 @@ const styles = StyleSheet.create({
   emptyState: { alignItems: "center", justifyContent: "center", paddingTop: 70, paddingHorizontal: 40, gap: 8 },
   emptyTitle: { fontSize: 15, fontWeight: "700", color: "rgba(26,30,43,0.7)", textAlign: "center" },
   emptyHint:  { fontSize: 13, color: "rgba(26,30,43,0.45)", textAlign: "center", lineHeight: 19 },
-  pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#FAF0EE" },
+  pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#e8e8e8" },
   pageSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(244,218,213,0.55)", marginTop: 2 },
   heartBtn: {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",

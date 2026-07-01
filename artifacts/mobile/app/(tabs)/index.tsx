@@ -775,7 +775,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     fontWeight: "500",
-    color: "#EDE1D3",
+    color: "#e8e8e8",
   },
 
   // Intención
@@ -806,7 +806,7 @@ const styles = StyleSheet.create({
   },
   intencionText: {
     fontSize: 22,
-    color: "#EDE1D3",
+    color: "#e8e8e8",
     fontWeight: "300",
     textAlign: "center",
     flexShrink: 1,
@@ -903,7 +903,7 @@ const styles = StyleSheet.create({
   headerTabText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#FFFFFF",
+    color: "#e8e8e8",
     letterSpacing: 0.1,
   },
   headerTabTextActive: {
@@ -1026,7 +1026,7 @@ const styles = StyleSheet.create({
   catCardLabel: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#FAF0EE",
+    color: "#e8e8e8",
     lineHeight: 18,
   },
 
@@ -1064,7 +1064,7 @@ const styles = StyleSheet.create({
   recentDurText: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#FFFFFF",
+    color: "#e8e8e8",
   },
   recentTitle: {
     fontSize: 13,
@@ -1206,7 +1206,7 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     flexShrink: 0,
   },
-  premTitle: { fontSize: 15, fontWeight: "700", color: "#EDE7DA", lineHeight: 20, marginBottom: 2 },
+  premTitle: { fontSize: 15, fontWeight: "700", color: "#e8e8e8", lineHeight: 20, marginBottom: 2 },
   premSub:   { fontSize: 12, color: "rgba(255,255,255,0.52)" },
   premChevron: {
     width: 26, height: 26, borderRadius: 13,

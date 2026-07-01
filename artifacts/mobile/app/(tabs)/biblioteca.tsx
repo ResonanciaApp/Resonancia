@@ -51,7 +51,7 @@ const H_PAD = 15;
 const GOLD = "#BE8744";
 const NAVY = "#16040A";
 const DARK_BLUE = "#16040A";
-const TEXT = "#FAF0EE";
+const TEXT = "#e8e8e8";
 const MUTED = "rgba(250,240,238,0.45)";
 
 type LibTab = "playlists" | "mezclas" | "geometrix" | "favoritos" | "resonadores";
