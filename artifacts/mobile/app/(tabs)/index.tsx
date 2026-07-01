@@ -640,7 +640,7 @@ export default function HomeScreen2() {
 
         {/* ── RECOMENDADO PARA TI ── */}
         <View style={{ paddingHorizontal: 16 }}>
-          <Text style={[styles.sectionTitle, { marginTop: 4 }]}>
+          <Text style={[styles.sectionTitle, { marginTop: 24 }]}>
             {selectedMood ? "Para tu estado de ánimo" : "Recomendado para ti"}
           </Text>
         </View>
