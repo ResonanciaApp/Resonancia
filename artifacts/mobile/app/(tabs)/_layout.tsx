@@ -34,7 +34,10 @@ const INACTIVE_COLOR = "rgba(244,218,213,0.55)";
 const GRAD_END       = "#E9C46A";
 const GHOST_PILL_BG  = "rgba(255,255,255,0.06)";
 
-const ICON_SIZE = 24;
+const ICON_SIZE  = 24;
+const PILL_H     = 62;   // altura fija de la píldora flotante
+const PILL_MARGIN_H  = 20;  // margen horizontal de la píldora
+const PILL_MARGIN_B  = 10;  // margen entre la píldora y el safe area
 
 
 // Rutas que nunca aparecen en el menú inferior
@@ -135,9 +138,12 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const insets = useSafeAreaInsets();
   const isWeb  = Platform.OS === "web";
   const pb     = isWeb ? 8 : insets.bottom;
-  const extra  = Math.round(pb / 2);
 
-  const barHeight = 31 + extra + pb;
+  // Distancia desde el borde inferior de pantalla hasta la base de la píldora
+  const barBottom = pb + PILL_MARGIN_B;
+  // Altura total que ocupa la píldora (para la animación de hide)
+  const barHeight = PILL_H + barBottom + 40;
+
   const { hidden, showMenu, tabBarColors } = useTabBarVisibility();
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
@@ -224,17 +230,16 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   return (
     <>
       <Animated.View
-        style={[styles.bar, { paddingBottom: pb, transform: [{ translateY }] }]}
+        style={[styles.bar, { bottom: barBottom, transform: [{ translateY }] }]}
       >
-        {/* Fondo base: blur + overlay semitransparente siempre activos */}
-        <BlurView intensity={22} tint="dark" style={StyleSheet.absoluteFill} />
-        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(22,4,10,0.72)" }]} />
+        {/* Fondo base: blur + overlay semitransparente */}
+        <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(18,3,8,0.78)" }]} />
         {/* Acento del tab activo (crossfade) */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "transparent" }]} />
 
-
         <View
-          style={[styles.row, isWeb && styles.rowWeb, { paddingTop: 8 + extra, height: 31 + extra }]}
+          style={[styles.row, isWeb && styles.rowWeb]}
           onLayout={onRowLayout}
         >
           {/* ── Ghost pill deslizante ── */}
@@ -244,8 +249,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
               style={[
                 styles.slidingPill,
                 {
-                  width: tabWidth - 8,
-                  top: Math.max(0, extra - 4),
+                  width: tabWidth - 10,
                   transform: [{ translateX: pillX }],
                 },
               ]}
@@ -322,7 +326,7 @@ function TabLayoutInner() {
   const insets             = useSafeAreaInsets();
   const isWeb              = Platform.OS === "web";
   const bottomPb           = isWeb ? 8 : insets.bottom;
-  const tabBarHeight       = 31 + Math.round(bottomPb / 2) + bottomPb;
+  const tabBarHeight       = PILL_H + bottomPb + PILL_MARGIN_B;
   const { hidden }         = useTabBarVisibility();
 
   const pathname       = usePathname();
