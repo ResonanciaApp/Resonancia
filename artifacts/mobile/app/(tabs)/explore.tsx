@@ -551,7 +551,7 @@ export default function ExploreScreen() {
             </View>
 
             {/* ── Meditaciones recomendadas ── */}
-            {renderCarousel("Meditaciones recomendadas", dailyRecs, "/category/meditaciones-guiadas", 12)}
+            {renderCarousel("Meditaciones recomendadas", dailyRecs, "/category/meditaciones-guiadas")}
 
             {/* ── Mezclas de la comunidad ── */}
             <View style={[styles.communityWrap, { marginTop: -7 }]}>

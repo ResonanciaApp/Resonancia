@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     borderRadius: 0,
     paddingHorizontal: 0,
-    paddingTop: 4,
+    paddingTop: 0,
     paddingBottom: 25,
     marginHorizontal: 0,
   },
