@@ -373,8 +373,8 @@ export default function ExploreScreen() {
             </View>
 
             {/* ── ¿Cuánto tiempo tienes? ── */}
-            <View style={styles.durSection}>
-              <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
+            <View style={[styles.durSection, { marginTop: 10 }]}>
+              <Text style={styles.sectionTitle}>
                 ¿Cuánto tiempo tienes?
               </Text>
               <ScrollView
@@ -543,13 +543,12 @@ const styles = StyleSheet.create({
 
   // ¿Cuánto tiempo tienes?
   durSection: {
-    paddingHorizontal: H_PAD,
     marginBottom: SECTION_GAP,
   },
   durPillRow: {
     flexDirection: "row",
-    paddingHorizontal: H_PAD,
-    paddingRight: H_PAD + DUR_PILL_W * 0.3,
+    paddingHorizontal: 0,
+    paddingRight: DUR_PILL_W * 0.3,
     gap: 6,
     paddingBottom: 2,
   },
