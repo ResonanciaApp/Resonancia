@@ -698,8 +698,8 @@ export default function HomeScreen2() {
               metaText={s.categoryLabel}
               onPress={() => {
                 if (s.isPremium && !isPremium) { router.push("/membresia" as never); return; }
-                playSession(s);
-                router.push("/player" as never);
+                if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
+                router.push(`/session/${s.id}` as never);
               }}
             />
           ))}
@@ -744,7 +744,7 @@ export default function HomeScreen2() {
           title="Recientes"
           sessions={filteredRecent}
           isPremium={isPremium}
-          onPress={(s) => { playSession(s); router.push("/player" as never); }}
+          onPress={(s) => { if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } router.push(`/session/${s.id}` as never); }}
           style={{ marginBottom: SECTION_GAP }}
           titleOffset={10}
           cardWidth={RECENT_CARD_W}
@@ -755,7 +755,7 @@ export default function HomeScreen2() {
           title={usingPopularFallback ? "Sesiones destacadas" : "Las más escuchadas"}
           sessions={filteredPopular}
           isPremium={isPremium}
-          onPress={(s) => { playSession(s); router.push("/player" as never); }}
+          onPress={(s) => { if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } router.push(`/session/${s.id}` as never); }}
           style={{ marginBottom: SECTION_GAP }}
           titleOffset={10}
           cardWidth={RECENT_CARD_W}
