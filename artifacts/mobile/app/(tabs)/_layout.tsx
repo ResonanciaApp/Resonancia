@@ -297,7 +297,7 @@ function TabLayoutInner() {
             hitSlop={12}
             style={({ pressed }) => [styles.playlistCloseBtn, { opacity: pressed ? 0.6 : 1 }]}
           >
-            <Feather name="x" size={18} color="rgba(194,194,194,0.45)" />
+            <Feather name="x" size={18} color="#c2c2c2" />
           </Pressable>
           <ExpoImage
             source={currentSession.image as never}
@@ -441,7 +441,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   playlistArtist: {
-    color: "rgba(194,194,194,0.45)",
+    color: "#c2c2c2",
     fontSize: 12,
   },
   playlistCloseBtn: {

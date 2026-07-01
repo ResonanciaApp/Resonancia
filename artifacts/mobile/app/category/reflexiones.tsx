@@ -21,7 +21,7 @@ import { useCatalog } from "@/context/CatalogContext";
 const H_PAD = 15;
 const GOLD  = "#BE8744";
 const TEXT  = "#e8e8e8";
-const MUTED = "rgba(194,194,194,0.45)";
+const MUTED = "#c2c2c2";
 const HERO_IMG = require("@/assets/images/cat-reflexiones-hero.png");
 
 type CatTab   = string;

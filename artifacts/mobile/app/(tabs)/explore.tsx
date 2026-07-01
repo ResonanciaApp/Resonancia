@@ -184,7 +184,7 @@ export default function ExploreScreen() {
           style={({ pressed }) => [styles.sectionRow, { opacity: pressed ? 0.7 : 1 }]}
         >
           <Text style={[styles.sectionTitle, { marginBottom: 0, transform: [{ translateY: 4 }] }]}>{title}</Text>
-          <Feather name="chevron-right" size={18} color="rgba(194,194,194,0.45)" />
+          <Feather name="chevron-right" size={18} color="#c2c2c2" />
         </Pressable>
         <ScrollView
           horizontal

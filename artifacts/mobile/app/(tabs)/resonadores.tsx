@@ -31,7 +31,7 @@ const H_PAD = 18;
 const CARD_GAP = 10;
 const BG: [string, string] = ["#16040A", "#16040A"];
 const EQUIPO_BG = require("@/assets/images/equipo-bg.jpg");
-const MUTED = "rgba(194,194,194,0.45)";
+const MUTED = "#c2c2c2";
 const CHIP_ANIM_DURATION = 600;
 const CLOSE_SLOT = 38;
 

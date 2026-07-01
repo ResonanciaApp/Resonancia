@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
   },
   headerCenter: { flex: 1, alignItems: "center" },
   headerKicker: {
-    color: "rgba(194,194,194,0.45)",
+    color: "#c2c2c2",
     fontSize: 10,
     fontWeight: "700",
     letterSpacing: 1.5,
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   remainingLabel: {
-    color: "rgba(194,194,194,0.45)",
+    color: "#c2c2c2",
     fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.5,
