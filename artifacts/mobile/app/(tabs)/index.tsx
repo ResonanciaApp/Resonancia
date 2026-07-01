@@ -579,7 +579,7 @@ export default function HomeScreen2() {
                     </View>
                     <View style={styles.heroBottom}>
                       <View style={{ flex: 1, minWidth: 0 }}>
-                        <Text style={[styles.heroTitle, { color: "#e4e6f5" }]} numberOfLines={2}>
+                        <Text style={[styles.heroTitle, { color: "#e8e8e8" }]} numberOfLines={2}>
                           {filteredFeatured.title}
                         </Text>
                         <Text style={[styles.heroAuthor, { color: "rgba(255,255,255,0.60)" }]} numberOfLines={1}>
@@ -950,7 +950,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 11,
   },
-  sectionTitle: { fontSize: 20, fontWeight: "600", letterSpacing: 0.3, marginBottom: 16, color: "#ECE6E5" },
+  sectionTitle: { fontSize: 20, fontWeight: "600", letterSpacing: 0.3, marginBottom: 16, color: "#e8e8e8" },
   verTodasLink: { fontSize: 13, fontWeight: "400" },
   videosEmpty: {
     borderRadius: 16,
@@ -994,7 +994,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 13,
     fontWeight: "700",
-    color: "#FAF0EE",
+    color: "#e8e8e8",
     lineHeight: 18,
   },
   catGrid: {
@@ -1069,7 +1069,7 @@ const styles = StyleSheet.create({
   recentTitle: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#FAF0EE",
+    color: "#e8e8e8",
     lineHeight: 17,
     marginTop: 8,
   },
@@ -1123,7 +1123,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   heroMetaText: { fontSize: 11, lineHeight: 14 },
-  heroTitle: { fontSize: 20, fontWeight: "700", lineHeight: 26, marginBottom: 4 },
+  heroTitle: { fontSize: 20, fontWeight: "600", lineHeight: 26, marginBottom: 4 },
   heroAuthor: { fontSize: 12, marginTop: 2 },
   heroBottom: {
     flexDirection: "row",
@@ -1163,7 +1163,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  squareTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2, marginTop: 12, textAlign: "center", color: "#FAF0EE" },
+  squareTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2, marginTop: 12, textAlign: "center", color: "#e8e8e8" },
   squareSub: { fontSize: 12.5, lineHeight: 17, marginTop: 4, textAlign: "center" },
   diarioList: { gap: 10 },
 

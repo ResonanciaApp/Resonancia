@@ -479,7 +479,7 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     borderWidth: 1, borderColor: "rgba(212,175,55,0.25)",
   },
-  pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#FFFFFF" },
+  pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#e8e8e8" },
   pageSubtitle: { fontSize: 14, color: "rgba(244,218,213,0.55)", marginTop: 2 },
 
   searchBarBorder: {
@@ -514,7 +514,7 @@ const styles = StyleSheet.create({
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 11 },
-  sectionTitle: { fontSize: 20, fontWeight: "600", letterSpacing: 0.5, color: "#ECE6E5", marginBottom: 16 },
+  sectionTitle: { fontSize: 20, fontWeight: "600", letterSpacing: 0.5, color: "#e8e8e8", marginBottom: 16 },
 
   resultsLabel: { fontSize: 12, marginBottom: 12 },
   emptyState:   { alignItems: "center", paddingVertical: 48, gap: 10 },
@@ -629,7 +629,7 @@ const styles = StyleSheet.create({
   catCardTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#FFFFFF",
+    color: "#e8e8e8",
     letterSpacing: 0.2,
     textAlign: "center",
   },
@@ -725,7 +725,7 @@ const styles = StyleSheet.create({
   tagCardLabel: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#FFFFFF",
+    color: "#e8e8e8",
     lineHeight: 17,
   },
 
