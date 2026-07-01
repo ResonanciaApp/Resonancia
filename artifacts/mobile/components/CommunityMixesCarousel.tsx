@@ -150,7 +150,7 @@ export function CommunityMixesCarousel() {
 
       {/* ── Lista V2D ── */}
       {visible.length > 0 && (
-        <View style={{ marginTop: 0 }}>
+        <View style={{ marginTop: 10 }}>
           {visible.map((mix, i) => (
             <MixRow
               key={mix.id}
@@ -223,13 +223,6 @@ function MixRow({
 
       {/* Info */}
       <View style={styles.info}>
-        {/* Bajada — conteo de sonidos arriba */}
-        <Text
-          style={[styles.mixAuthor, { color: colors.mutedForeground }]}
-          numberOfLines={1}
-        >
-          {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
-        </Text>
         {/* Título */}
         <View style={styles.nameRow}>
           <Text
@@ -453,7 +446,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 14,
-    paddingVertical: 4,
+    paddingVertical: 10,
   },
   info: { flex: 1, minWidth: 0 },
   nameRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 },
@@ -470,7 +463,7 @@ const styles = StyleSheet.create({
   authorAvatar: { width: 16, height: 16, borderRadius: 8, overflow: "hidden", flexShrink: 0 },
   authorAvatarFallback: { backgroundColor: "rgba(212,175,55,0.20)", alignItems: "center", justifyContent: "center" },
   authorInitial: { fontSize: 8, fontWeight: "700", color: GOLD },
-  mixCreator: { fontSize: 9, flexShrink: 1 },
+  mixCreator: { fontSize: 11, flexShrink: 1 },
   mixAuthor: { fontSize: 10, marginTop: 2 },
   mixCount: { fontSize: 12, fontWeight: "500" },
   likeChip: { flexDirection: "row", alignItems: "center", gap: 3, flexShrink: 0 },
