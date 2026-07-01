@@ -792,7 +792,14 @@ export default function HomeScreen2() {
               <View style={{ paddingHorizontal: GRID_PAD }}>
                 {ritualesSessions.map((s, i) => (
                   <View key={s.id} style={i < ritualesSessions.length - 1 ? { marginBottom: 60 } : undefined}>
-                    <RitualCard session={s} onPress={() => playSession(s)} />
+                    <RitualCard
+                      session={s}
+                      onPress={() => {
+                        if (s.isPremium && !isPremium) { router.push("/membresia" as never); return; }
+                        if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
+                        router.push(`/session/${s.id}` as never);
+                      }}
+                    />
                   </View>
                 ))}
               </View>
