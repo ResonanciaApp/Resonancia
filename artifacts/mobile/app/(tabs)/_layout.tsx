@@ -450,6 +450,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 3,
+    width: "100%",
   },
   iconGlow: {
     shadowColor: "#FFFFFF",
@@ -474,8 +475,9 @@ const styles = StyleSheet.create({
   },
   slidingPill: {
     position: "absolute",
-    top: 7,
-    bottom: 7,
+    // Píldora horizontal de 40px centrada verticalmente en los 82px del bar
+    top: (PILL_H - 40) / 2,
+    height: 40,
     // left = ROW_H_PAD(6) + medio margen interno(5) para centrar dentro de cada tab
     left: 11,
     borderRadius: 999,
