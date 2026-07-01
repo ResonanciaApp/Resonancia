@@ -18,11 +18,12 @@ type Props = {
   rating?: number;
   style?: object;
   imageSize?: number;
+  metaText?: string;
   onActionsPress?: () => void;
   onPress?: () => void;
 };
 
-export function SessionRow({ session, rating, style, imageSize = 80, onActionsPress, onPress }: Props) {
+export function SessionRow({ session, rating, style, imageSize = 80, metaText, onActionsPress, onPress }: Props) {
   const colors = useColors();
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
@@ -59,10 +60,16 @@ export function SessionRow({ session, rating, style, imageSize = 80, onActionsPr
 
         <View style={styles.sessionContent}>
           <View style={styles.sessionMeta}>
-            <Feather name="star" size={11} color={colors.mutedForeground} />
-            <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>
-              {" "}{displayRating.toFixed(1)}{voiceLabel ? ` · ${voiceLabel}` : ""} · {session.durationLabel}
-            </Text>
+            {metaText ? (
+              <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>{metaText}</Text>
+            ) : (
+              <>
+                <Feather name="star" size={11} color={colors.mutedForeground} />
+                <Text style={[styles.sessionMetaText, { color: colors.mutedForeground }]}>
+                  {" "}{displayRating.toFixed(1)}{voiceLabel ? ` · ${voiceLabel}` : ""} · {session.durationLabel}
+                </Text>
+              </>
+            )}
           </View>
           <Text style={[styles.sessionTitle, { color: colors.foreground }]} numberOfLines={2}>
             {session.title}
