@@ -115,7 +115,7 @@ function NavTabChip({ sel, label, onPress }: { sel: boolean; label: string; onPr
       style={({ pressed }) => [styles.headerTabChip, { opacity: pressed ? 0.7 : 1 }]}
     >
       <LinearGradient
-        colors={["rgba(190,150,80,0.06)", "rgba(190,150,80,0.06)"]}
+        colors={["rgba(255,255,255,0.025)", "rgba(255,255,255,0.025)"]}
         start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
@@ -770,7 +770,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 16,
     marginBottom: 8,
-    backgroundColor: "rgba(190,150,80,0.06)",
+    backgroundColor: "rgba(255,255,255,0.025)",
     borderRadius: 14,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -817,7 +817,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   recoCard: {
-    backgroundColor: "rgba(190,150,80,0.06)",
+    backgroundColor: "rgba(255,255,255,0.025)",
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: 14,
@@ -1010,7 +1010,7 @@ const styles = StyleSheet.create({
     width: "48.5%",
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(190,150,80,0.06)",
+    backgroundColor: "rgba(255,255,255,0.025)",
     borderRadius: 8,
     overflow: "hidden",
     height: 62,

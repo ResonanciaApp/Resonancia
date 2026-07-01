@@ -354,7 +354,7 @@ export default function ExploreScreen() {
                         height: TEMA3_W,
                         backgroundColor: pressed
                           ? hexTint(t.color, 0.22)
-                          : "rgba(190,150,80,0.06)",
+                          : "rgba(255,255,255,0.025)",
                         borderRadius: 11,
                       },
                     ]}
@@ -544,7 +544,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 15,
     borderRadius: 9,
-    backgroundColor: "rgba(190,150,80,0.06)",
+    backgroundColor: "rgba(255,255,255,0.025)",
     gap: 10,
     overflow: "hidden",
   },
@@ -605,7 +605,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     minWidth: 76,
     height: 34,
-    backgroundColor: "rgba(190,150,80,0.06)",
+    backgroundColor: "rgba(255,255,255,0.025)",
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
@@ -670,7 +670,7 @@ const styles = StyleSheet.create({
     marginTop: 0,
     paddingHorizontal: 13,
     paddingVertical: 10,
-    backgroundColor: "rgba(190,150,80,0.06)",
+    backgroundColor: "rgba(255,255,255,0.025)",
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
     alignItems: "center",

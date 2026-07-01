@@ -117,7 +117,7 @@ function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
       <LinearGradient
-        colors={sel ? ["#D6A45C", "#BE8744"] : ["rgba(190,150,80,0.06)", "rgba(190,150,80,0.06)"]}
+        colors={sel ? ["#D6A45C", "#BE8744"] : ["rgba(255,255,255,0.025)", "rgba(255,255,255,0.025)"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFill}
@@ -850,7 +850,7 @@ export default function BibliotecaScreen() {
                       style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                       onPress={() => router.push(`/playlist/${pl.id}` as never)}
                     >
-                      <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(190,150,80,0.06)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
+                      <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(255,255,255,0.025)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
                         {pl.coverType === "geometrix" && pl.coverGeometryId ? (
                           <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
                         ) : pl.coverType === "creation" && pl.coverCreationId ? (
@@ -969,7 +969,7 @@ export default function BibliotecaScreen() {
             {displayPl.map((pl) => (
               <Pressable key={pl.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                 onPress={() => router.push(`/playlist/${pl.id}` as never)}>
-                <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(190,150,80,0.06)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
+                <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(255,255,255,0.025)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
                   {pl.coverType === "geometrix" && pl.coverGeometryId ? (
                     <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
                   ) : pl.coverType === "creation" && pl.coverCreationId ? (
@@ -1422,7 +1422,7 @@ export default function BibliotecaScreen() {
                       <Pressable
                         hitSlop={12}
                         onPress={() => isFollowed ? saveFollowed(followedIds.filter((x) => x !== r.id)) : followResonador(r.id)}
-                        style={[styles.addResonadorIcon, { width: 36, height: 36, borderRadius: 18, backgroundColor: isFollowed ? "rgba(212,175,55,0.18)" : "rgba(190,150,80,0.06)" }]}
+                        style={[styles.addResonadorIcon, { width: 36, height: 36, borderRadius: 18, backgroundColor: isFollowed ? "rgba(212,175,55,0.18)" : "rgba(255,255,255,0.025)" }]}
                       >
                         <Feather name={isFollowed ? "check" : "plus"} size={18} color={isFollowed ? GOLD : TEXT} />
                       </Pressable>
@@ -1665,7 +1665,7 @@ const styles = StyleSheet.create({
     height: 64,
     borderRadius: 6,
     overflow: "hidden",
-    backgroundColor: "rgba(190,150,80,0.06)",
+    backgroundColor: "rgba(255,255,255,0.025)",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: StyleSheet.hairlineWidth,
@@ -1802,7 +1802,7 @@ const styles = StyleSheet.create({
   },
   sheetIcon: {
     width: 44, height: 44, borderRadius: 12,
-    backgroundColor: "rgba(190,150,80,0.06)",
+    backgroundColor: "rgba(255,255,255,0.025)",
     alignItems: "center", justifyContent: "center",
   },
   sheetItemTitle: { fontSize: 15, fontWeight: "600", color: TEXT, marginBottom: 2 },
@@ -1839,7 +1839,7 @@ const styles = StyleSheet.create({
     width: 62,
     height: 62,
     borderRadius: 31,
-    backgroundColor: "rgba(190,150,80,0.06)",
+    backgroundColor: "rgba(255,255,255,0.025)",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: StyleSheet.hairlineWidth,
@@ -1879,7 +1879,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    backgroundColor: "rgba(190,150,80,0.06)",
+    backgroundColor: "rgba(255,255,255,0.025)",
     borderRadius: 12,
     marginHorizontal: H_PAD,
     paddingHorizontal: 12,
