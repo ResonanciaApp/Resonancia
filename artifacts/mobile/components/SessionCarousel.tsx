@@ -182,5 +182,5 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     lineHeight: 17,
   },
-  cardAuthor: { fontSize: 11, color: "#c2c2c2", marginTop: 2 },
+  cardAuthor: { fontSize: 11, color: "#c2c2c2", marginTop: 5 },
 });
