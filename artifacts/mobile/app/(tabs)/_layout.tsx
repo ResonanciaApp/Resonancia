@@ -35,9 +35,8 @@ const GRAD_END       = "#FFFFFF";
 const GHOST_PILL_BG  = "rgba(255,255,255,0.08)";
 
 const ICON_SIZE      = 24;
-const PILL_H         = 82;   // altura fija de la píldora flotante
+const PILL_H         = 72;   // altura fija de la píldora flotante
 const PILL_MARGIN_H  = 20;   // margen horizontal de la píldora
-const PILL_MARGIN_B  = 15;   // margen entre la píldora y el safe area / borde
 
 
 // Rutas que nunca aparecen en el menú inferior
@@ -139,8 +138,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const isWeb  = Platform.OS === "web";
   const pb     = isWeb ? 8 : insets.bottom;
 
-  // 15 px desde el borde físico inferior (respetando safe area si es mayor)
-  const barBottom = Math.max(PILL_MARGIN_B, pb + 5);
+  // Pegado al safe area, sin margen extra
+  const barBottom = Math.max(0, pb - 10);
   // Altura total que ocupa la píldora (para la animación de hide)
   const barHeight = PILL_H + barBottom + 40;
 
@@ -234,7 +233,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       >
         {/* Fondo base: blur + overlay semitransparente */}
         <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
-        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(18,3,8,0.78)" }]} />
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(35,6,16,0.92)" }]} />
         {/* Acento del tab activo (crossfade) */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "transparent" }]} />
 
@@ -326,7 +325,7 @@ function TabLayoutInner() {
   const insets             = useSafeAreaInsets();
   const isWeb              = Platform.OS === "web";
   const bottomPb           = isWeb ? 8 : insets.bottom;
-  const tabBarHeight       = PILL_H + Math.max(PILL_MARGIN_B, bottomPb + 5);
+  const tabBarHeight       = PILL_H + Math.max(0, bottomPb - 10);
   const { hidden }         = useTabBarVisibility();
 
   const pathname       = usePathname();
