@@ -373,7 +373,7 @@ export default function ExploreScreen() {
             </View>
 
             {/* ── ¿Cuánto tiempo tienes? ── */}
-            <View style={[styles.durSection, { marginTop: 10 }]}>
+            <View style={[styles.durSection, { marginTop: 7 }]}>
               <Text style={styles.sectionTitle}>
                 ¿Cuánto tiempo tienes?
               </Text>
