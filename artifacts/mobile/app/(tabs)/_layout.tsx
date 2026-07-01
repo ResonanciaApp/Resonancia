@@ -477,8 +477,8 @@ const styles = StyleSheet.create({
     // Píldora horizontal de 56px centrada verticalmente en el bar
     top: (PILL_H - 56) / 2,
     height: 56,
-    // left = ROW_H_PAD(6) + medio margen interno(1.5≈2) para centrar dentro de cada tab
-    left: 8,
+    // left = ROW_H_PAD(6) + (tabWidth - pillWidth)/2 = 6 + (-3/2) ≈ 5
+    left: 5,
     borderRadius: 999,
     backgroundColor: GHOST_PILL_BG,
   },
