@@ -791,7 +791,7 @@ export default function HomeScreen2() {
               </View>
               <View style={{ paddingHorizontal: GRID_PAD }}>
                 {ritualesSessions.map((s, i) => (
-                  <View key={s.id} style={i < ritualesSessions.length - 1 ? { marginBottom: 24 } : undefined}>
+                  <View key={s.id} style={i < ritualesSessions.length - 1 ? { marginBottom: 60 } : undefined}>
                     <RitualCard session={s} onPress={() => playSession(s)} />
                   </View>
                 ))}
