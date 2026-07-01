@@ -432,7 +432,7 @@ export default function HomeScreen2() {
               </View>
             ) : (
               <View style={styles.avatarFallback}>
-                <Feather name="user" size={15} color="rgba(232,232,232,0.45)" />
+                <Feather name="user" size={15} color="rgba(194,194,194,0.45)" />
               </View>
             )}
           </Pressable>
@@ -1087,7 +1087,7 @@ const styles = StyleSheet.create({
   },
   recentCreatorName: {
     fontSize: 11,
-    color: "rgba(232,232,232,0.45)",
+    color: "rgba(194,194,194,0.45)",
     flex: 1,
     marginTop: 4,
   },

@@ -775,7 +775,7 @@ const styles = StyleSheet.create({
   actionPillSent: { backgroundColor: "rgba(255,255,255,0.04)" },
   actionPillText: { fontSize: 13, fontWeight: "400", color: "#FFFFFF", letterSpacing: 0.1 },
   actionPillTextActive: { color: "#1B060F", fontWeight: "600" },
-  actionPillTextSent: { color: "rgba(232,232,232,0.45)" },
+  actionPillTextSent: { color: "rgba(194,194,194,0.45)" },
   contactRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   contactGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   contactPill: { flexBasis: "47%", flexGrow: 1, justifyContent: "center" },

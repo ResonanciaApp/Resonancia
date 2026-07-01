@@ -52,7 +52,7 @@ const GOLD = "#BE8744";
 const NAVY = "#16040A";
 const DARK_BLUE = "#16040A";
 const TEXT = "#e8e8e8";
-const MUTED = "rgba(232,232,232,0.45)";
+const MUTED = "rgba(194,194,194,0.45)";
 
 type LibTab = "playlists" | "mezclas" | "geometrix" | "favoritos" | "resonadores";
 type SortMode = "recientes" | "agregado" | "alfabetico";

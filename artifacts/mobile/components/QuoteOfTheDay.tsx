@@ -4,7 +4,7 @@ import { Feather } from "@expo/vector-icons";
 import { getQuoteOfTheDay } from "@/data/quotes";
 
 const GOLD    = "#BE8744";
-const MUTED   = "rgba(232,232,232,0.45)";
+const MUTED   = "rgba(194,194,194,0.45)";
 const CARD_BG = "rgba(72,40,120,0.10)";
 
 export default function QuoteOfTheDay() {
