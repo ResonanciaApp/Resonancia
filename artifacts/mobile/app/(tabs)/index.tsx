@@ -650,6 +650,7 @@ export default function HomeScreen2() {
               key={s.id}
               session={s}
               style={styles.recoCard}
+              imageSize={84}
               onPress={() => {
                 if (s.isPremium && !isPremium) { router.push("/membresia" as never); return; }
                 playSession(s);

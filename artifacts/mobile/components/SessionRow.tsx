@@ -17,11 +17,12 @@ type Props = {
   session: Session;
   rating?: number;
   style?: object;
+  imageSize?: number;
   onActionsPress?: () => void;
   onPress?: () => void;
 };
 
-export function SessionRow({ session, rating, style, onActionsPress, onPress }: Props) {
+export function SessionRow({ session, rating, style, imageSize = 80, onActionsPress, onPress }: Props) {
   const colors = useColors();
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
@@ -45,11 +46,11 @@ export function SessionRow({ session, rating, style, onActionsPress, onPress }: 
         onPress={onPress ?? defaultPress}
         style={({ pressed }) => [styles.sessionRowInner, { opacity: pressed ? 0.78 : 1 }]}
       >
-        <View style={styles.sessionImgWrap}>
+        <View style={[styles.sessionImgWrap, { width: imageSize, height: imageSize }]}>
           <Image
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             source={session.image as any}
-            style={styles.sessionImg}
+            style={{ width: imageSize, height: imageSize }}
             placeholder={BLUR_PLACEHOLDER}
             transition={IMAGE_TRANSITION}
           />
