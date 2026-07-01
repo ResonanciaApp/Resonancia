@@ -1445,7 +1445,7 @@ const styles = StyleSheet.create({
   stickyHeader: {
     zIndex: 10,
   },
-  stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(244,218,213,0.15)", marginTop: 10, marginHorizontal: -15 },
+  stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.025)", marginTop: 10, marginHorizontal: -15 },
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -1457,7 +1457,7 @@ const styles = StyleSheet.create({
   avatarImg: { width: 32, height: 32, borderRadius: 16 },
   avatarFallback: {
     width: 32, height: 32, borderRadius: 16,
-    backgroundColor: "rgba(212,175,55,0.12)",
+    backgroundColor: "rgba(255,255,255,0.025)",
     alignItems: "center", justifyContent: "center",
     borderWidth: 1, borderColor: "rgba(212,175,55,0.25)",
   },
@@ -1533,7 +1533,7 @@ const styles = StyleSheet.create({
   rowThumb: {
     width: 56, height: 56,
     borderRadius: 6,
-    backgroundColor: "rgba(212,175,55,0.12)",
+    backgroundColor: "rgba(255,255,255,0.025)",
   },
   rowInfo: { flex: 1, gap: 3 },
   rowTitle: { fontSize: 15, fontWeight: "600", color: TEXT },
@@ -1553,7 +1553,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     paddingTop: 4,
   },
-  gridThumb: { borderRadius: 6, backgroundColor: "rgba(212,175,55,0.12)" },
+  gridThumb: { borderRadius: 6, backgroundColor: "rgba(255,255,255,0.025)" },
   gridTitle: { fontSize: 12, color: TEXT, marginTop: 6, fontWeight: "500" },
 
   // ── SortSheet ────────────────────────────────────────────────────────────────
@@ -1597,7 +1597,7 @@ const styles = StyleSheet.create({
   resonadorAvatar: {
     width: 65, height: 65,
     borderRadius: 33,
-    backgroundColor: "rgba(212,175,55,0.12)",
+    backgroundColor: "rgba(255,255,255,0.025)",
     overflow: "hidden",
   },
   verifiedRow: { flexDirection: "row", alignItems: "center", gap: 4 },
@@ -1653,7 +1653,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.15)",
+    borderColor: "rgba(255,255,255,0.025)",
   },
   geoInfo: { flex: 1 },
   geoName: { color: TEXT, fontSize: 14, fontWeight: "600" },
@@ -1669,7 +1669,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(212,175,55,0.15)",
+    borderColor: "rgba(255,255,255,0.025)",
   },
 
   // ── Modal de nombre ──────────────────────────────────────────────────────────
@@ -1773,7 +1773,7 @@ const styles = StyleSheet.create({
   },
   searchResultThumb: {
     width: 44, height: 44, borderRadius: 10,
-    backgroundColor: "rgba(212,175,55,0.10)",
+    backgroundColor: "rgba(255,255,255,0.025)",
   },
   searchResultTitle: { fontSize: 14, fontWeight: "600", color: TEXT, marginBottom: 2 },
   searchResultSub:   { fontSize: 12, color: MUTED },
@@ -1818,7 +1818,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.45)",
-    backgroundColor: "rgba(212,175,55,0.07)",
+    backgroundColor: "rgba(255,255,255,0.025)",
   },
   loadMoreText: {
     color: GOLD,

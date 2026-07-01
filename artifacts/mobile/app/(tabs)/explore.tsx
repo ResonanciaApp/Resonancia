@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
   avatarSmall:    { width: 32, height: 32, borderRadius: 16 },
   avatarFallback: {
     width: 32, height: 32, borderRadius: 16,
-    backgroundColor: "rgba(212,175,55,0.12)",
+    backgroundColor: "rgba(255,255,255,0.025)",
     alignItems: "center", justifyContent: "center",
     borderWidth: 1, borderColor: "rgba(212,175,55,0.25)",
   },

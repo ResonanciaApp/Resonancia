@@ -897,7 +897,7 @@ const styles = StyleSheet.create({
     width: 33,
     height: 33,
     borderRadius: 16.5,
-    backgroundColor: "rgba(212,175,55,0.12)",
+    backgroundColor: "rgba(255,255,255,0.025)",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
@@ -989,7 +989,7 @@ const styles = StyleSheet.create({
     marginHorizontal: GRID_PAD * 2,
     marginBottom: SECTION_GAP,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(244,218,213,0.15)",
+    backgroundColor: "rgba(255,255,255,0.025)",
   },
   sectionRow: {
     flexDirection: "row",
@@ -1211,7 +1211,7 @@ const styles = StyleSheet.create({
   },
   premCrownCircle: {
     width: 40, height: 40, borderRadius: 20,
-    backgroundColor: "rgba(212,175,55,0.14)",
+    backgroundColor: "rgba(255,255,255,0.025)",
     borderWidth: 1.5,
     borderColor: "rgba(212,175,55,0.45)",
     alignItems: "center", justifyContent: "center",
@@ -1221,7 +1221,7 @@ const styles = StyleSheet.create({
   premSub:   { fontSize: 12, color: "rgba(255,255,255,0.52)" },
   premChevron: {
     width: 26, height: 26, borderRadius: 13,
-    backgroundColor: "rgba(212,175,55,0.15)",
+    backgroundColor: "rgba(255,255,255,0.025)",
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.35)",
     alignItems: "center", justifyContent: "center",
