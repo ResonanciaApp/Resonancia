@@ -234,6 +234,31 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         {/* Fondo glass: blur suave + overlay muy tenue */}
         <BlurView intensity={30} tint="dark" style={StyleSheet.absoluteFill} />
         <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.01)" }]} />
+        {/* Bordes en degradado (fade desde el centro hacia los extremos) */}
+        <LinearGradient
+          colors={["rgba(74,12,12,0)", "rgba(74,12,12,0.35)", "rgba(74,12,12,0)"]}
+          start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+          style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1.5 }}
+          pointerEvents="none"
+        />
+        <LinearGradient
+          colors={["rgba(74,12,12,0)", "rgba(74,12,12,0.25)", "rgba(74,12,12,0)"]}
+          start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+          style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 1 }}
+          pointerEvents="none"
+        />
+        <LinearGradient
+          colors={["rgba(74,12,12,0)", "rgba(74,12,12,0.12)", "rgba(74,12,12,0)"]}
+          start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+          style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 1 }}
+          pointerEvents="none"
+        />
+        <LinearGradient
+          colors={["rgba(74,12,12,0)", "rgba(74,12,12,0.12)", "rgba(74,12,12,0)"]}
+          start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+          style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 1 }}
+          pointerEvents="none"
+        />
         {/* Acento del tab activo (crossfade) */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "transparent" }]} />
 
@@ -420,11 +445,6 @@ const styles = StyleSheet.create({
     height: PILL_H,
     borderRadius: 999,
     overflow: "hidden",
-    borderTopWidth: 1.5,
-    borderLeftWidth: 1,
-    borderRightWidth: 0.5,
-    borderBottomWidth: 0,
-    borderColor: "rgba(74,12,12,0.3)",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.22,
