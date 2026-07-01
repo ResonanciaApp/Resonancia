@@ -23,9 +23,14 @@ import { useColors } from "@/hooks/useColors";
 function formatSectionTitle(isoDate: string): string {
   const d = new Date(isoDate);
   const now = new Date();
-  const diffDays = Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
-  if (diffDays === 0) return "Hoy";
-  if (diffDays === 1) return "Ayer";
+  const sameDay = (a: Date, b: Date) =>
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate();
+  if (sameDay(d, now)) return "Hoy";
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  if (sameDay(d, yesterday)) return "Ayer";
   return d.toLocaleDateString("es", { weekday: "long", day: "numeric", month: "long" });
 }
 
