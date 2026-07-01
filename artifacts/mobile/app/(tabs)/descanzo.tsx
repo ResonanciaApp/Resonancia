@@ -1,5 +1,4 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -25,19 +24,49 @@ import { useDescansoPlayer } from "@/hooks/useDescansoPlayer";
 
 /* ─── Sleep tabs ────────────────────────────────────────────────────── */
 const SLEEP_TABS = [
-  { id: "dormirme", emoji: "😴", line1: "Dormirme",    line2: "rápido"    },
-  { id: "zen",      emoji: "🙏", line1: "Modo",        line2: "zen"       },
-  { id: "relax",    emoji: "🌿", line1: "Full",        line2: "relax"     },
-  { id: "ruido",    emoji: "⛈️", line1: "Ruido",       line2: "ambiental" },
+  { id: "dormirme", emoji: "😴", label: "Dormirme rápido" },
+  { id: "zen",      emoji: "🙏", label: "Modo zen"        },
+  { id: "relax",    emoji: "🌿", label: "Full relax"      },
+  { id: "ruido",    emoji: "⛈️", label: "Ruido ambiental" },
 ] as const;
 
 type SleepTabId = typeof SLEEP_TABS[number]["id"] | "todos";
 
-const TAB_UNSEL_COLORS: [string, string] = ["rgba(18,4,24,0.75)", "rgba(8,2,12,0.75)"];
-const TAB_SEL_COLORS:   [string, string] = ["rgba(35,10,50,0.75)", "rgba(18,4,28,0.75)"];
-const TAB_BORDER_SEL  = "#401950";
-const TAB_TEXT_SEL    = "#FFFFFF";
-const TAB_TEXT_UNSEL  = "rgba(255,255,255,0.8)";
+function SleepPill({
+  sel, emoji, label, onPress,
+}: { sel: boolean; emoji: string; label: string; onPress: () => void }) {
+  const selAnim = useRef(new Animated.Value(sel ? 1 : 0)).current;
+  useEffect(() => {
+    Animated.timing(selAnim, { toValue: sel ? 1 : 0, duration: 180, useNativeDriver: false }).start();
+  }, [sel]);
+
+  const bgColor = selAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(255,255,255,0.07)", "rgba(123,79,206,0.38)"],
+  });
+  const borderColor = selAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(255,255,255,0.10)", "rgba(196,168,245,0.55)"],
+  });
+  const textColor = selAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(255,255,255,0.60)", "#C4A8F5"],
+  });
+
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
+    >
+      <Animated.View style={[styles.sleepPill, { backgroundColor: bgColor, borderColor }]}>
+        <Text style={styles.sleepPillEmoji}>{emoji}</Text>
+        <Animated.Text style={[styles.sleepPillText, { color: textColor }]} numberOfLines={1}>
+          {label}
+        </Animated.Text>
+      </Animated.View>
+    </Pressable>
+  );
+}
 
 const H_PAD = 20;
 const { width: W, height: H } = Dimensions.get("window");
@@ -313,29 +342,21 @@ export default function DescansoScreen() {
           style={styles.tabGrid}
           contentContainerStyle={styles.tabGridContent}
         >
-          {SLEEP_TABS.map((tab) => {
-            const sel = activeTab === tab.id;
-            return (
-              <Pressable
-                key={tab.id}
-                onPress={() => setActiveTab(tab.id)}
-                style={({ pressed }) => [styles.tabCell, pressed && { opacity: 0.85 }]}
-              >
-                <LinearGradient
-                  colors={sel ? TAB_SEL_COLORS : TAB_UNSEL_COLORS}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 0, y: 1 }}
-                  style={[styles.tabGradient, sel && styles.tabGradientSel]}
-                >
-                  <Text style={styles.tabEmoji}>{tab.emoji}</Text>
-                  <View>
-                    <Text style={[styles.tabLine, { color: sel ? TAB_TEXT_SEL : TAB_TEXT_UNSEL }]}>{tab.line1}</Text>
-                    <Text style={[styles.tabLine, { color: sel ? TAB_TEXT_SEL : TAB_TEXT_UNSEL }]}>{tab.line2}</Text>
-                  </View>
-                </LinearGradient>
-              </Pressable>
-            );
-          })}
+          <SleepPill
+            sel={activeTab === "todos"}
+            emoji="✨"
+            label="Todos"
+            onPress={() => setActiveTab("todos")}
+          />
+          {SLEEP_TABS.map((tab) => (
+            <SleepPill
+              key={tab.id}
+              sel={activeTab === tab.id}
+              emoji={tab.emoji}
+              label={tab.label}
+              onPress={() => setActiveTab(tab.id)}
+            />
+          ))}
         </ScrollView>
 
         {/* ── Banner Prepara tu noche ── */}
@@ -552,40 +573,33 @@ const styles = StyleSheet.create({
     color: "rgba(255,255,255,0.5)",
   },
 
-  /* Sleep tabs */
+  /* Sleep pills */
   tabGrid: {
-    marginBottom: 32,
+    marginBottom: 28,
   },
   tabGridContent: {
     paddingHorizontal: H_PAD,
-    gap: 10,
-    flexDirection: "row",
-  },
-  tabCell: {
-    width: Math.round((W - 2 * H_PAD - 10) / 2) - 15,
-    borderRadius: 14,
-    overflow: "hidden",
-  },
-  tabGradient: {
+    gap: 8,
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
-    paddingVertical: 16,
+  },
+  sleepPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 36,
     paddingHorizontal: 14,
-    borderRadius: 14,
+    borderRadius: 999,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
+    gap: 5,
+    overflow: "hidden",
   },
-  tabGradientSel: {
-    borderColor: TAB_BORDER_SEL,
+  sleepPillEmoji: {
+    fontSize: 14,
   },
-  tabEmoji: {
-    fontSize: 26,
-  },
-  tabLine: {
+  sleepPillText: {
     fontSize: 13,
     fontWeight: "600",
-    lineHeight: 18,
+    letterSpacing: 0.1,
   },
 
   /* Hero */
