@@ -314,10 +314,10 @@ export default function ExploreScreen() {
             <Text style={[styles.pageTitle, { flex: 1, transform: [{ translateY: 2 }] }]}>Explorar</Text>
             <GhostPill style={{ transform: [{ translateX: 0 }, { translateY: 0 }], gap: 6, backgroundColor: "rgba(255,255,255,0.06)" }}>
               <Pressable hitSlop={10} onPress={() => router.push("/favorites")} style={styles.headerPillBtn}>
-                <Feather name="heart" size={26} color="#FFFFFF" />
+                <Feather name="heart" size={24} color="#FFFFFF" />
               </Pressable>
               <Pressable hitSlop={10} onPress={() => router.push("/historial")} style={styles.headerPillBtn}>
-                <Feather name="clock" size={26} color="#FFFFFF" />
+                <Feather name="clock" size={24} color="#FFFFFF" />
               </Pressable>
             </GhostPill>
           </View>
@@ -659,7 +659,7 @@ const styles = StyleSheet.create({
   videosEmptySub: { fontSize: 13, textAlign: "center", lineHeight: 19 },
 
   header:         { paddingHorizontal: H_PAD, marginBottom: 18 },
-  headerPillBtn:  { width: 45, height: 45, alignItems: "center", justifyContent: "center" },
+  headerPillBtn:  { width: 43, height: 43, alignItems: "center", justifyContent: "center" },
   headerRow:      { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   avatarBtn:      { width: 32, height: 32, borderRadius: 16, overflow: "hidden" },
   avatarSmall:    { width: 32, height: 32, borderRadius: 16 },

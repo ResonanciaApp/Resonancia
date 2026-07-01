@@ -486,7 +486,7 @@ export default function ResonadoresScreen() {
             <Pressable onPress={toggleSearch} hitSlop={10} style={styles.searchIconBtn}>
               <Feather
                 name={searchVisible ? "x" : "search"}
-                size={27}
+                size={25}
                 color="#FFFFFF"
               />
             </Pressable>
@@ -495,7 +495,7 @@ export default function ResonadoresScreen() {
               style={styles.searchIconBtn}
               onPress={() => router.push("/equipo-info" as never)}
             >
-              <Feather name="info" size={22} color="#FFFFFF" />
+              <Feather name="info" size={20} color="#FFFFFF" />
             </Pressable>
           </GhostPill>
         </View>
@@ -671,8 +671,8 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   searchIconBtn: {
-    width: 45,
-    height: 45,
+    width: 43,
+    height: 43,
     alignItems: "center",
     justifyContent: "center",
   },

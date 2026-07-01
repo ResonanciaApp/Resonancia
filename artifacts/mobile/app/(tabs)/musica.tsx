@@ -686,21 +686,21 @@ export default function MezcladorScreen() {
                   <GhostPill style={{ gap: 6, backgroundColor: "rgba(255,255,255,0.06)" }}>
                     <Pressable
                       onPress={() => { setSettingsMode("palette"); setSettingsVisible(true); }}
-                      style={[styles.headerPillBtn, { width: 45, height: 45 }]}
+                      style={[styles.headerPillBtn, { width: 43, height: 43 }]}
                       hitSlop={8}
                       accessibilityRole="button"
                       accessibilityLabel="Paleta de color del Mezclador"
                     >
-                      <MaterialCommunityIcons name="brush" size={26} color="#e8e8e8" />
+                      <MaterialCommunityIcons name="brush" size={24} color="#e8e8e8" />
                     </Pressable>
                     <Pressable
                       onPress={() => { setSettingsMode("filters"); setSettingsVisible(true); }}
-                      style={[styles.headerPillBtn, { width: 45, height: 45 }]}
+                      style={[styles.headerPillBtn, { width: 43, height: 43 }]}
                       hitSlop={8}
                       accessibilityRole="button"
                       accessibilityLabel="Filtros del Mezclador"
                     >
-                      <MaterialCommunityIcons name="filter-variant" size={26} color="#e8e8e8" />
+                      <MaterialCommunityIcons name="filter-variant" size={24} color="#e8e8e8" />
                     </Pressable>
                   </GhostPill>
                 </View>
