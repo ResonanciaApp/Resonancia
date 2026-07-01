@@ -854,7 +854,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginBottom: SECTION_GAP,
     flexDirection: "column",
-    gap: 20,
+    gap: 16,
   },
   recoCard: {
     backgroundColor: "rgba(190,150,80,0.06)",
