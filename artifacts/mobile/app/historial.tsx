@@ -152,11 +152,11 @@ export default function HistorialScreen() {
                 <View style={[styles.dayLine, { backgroundColor: "rgba(212,175,55,0.18)" }]} />
               </View>
 
-              {entries.map((entry) => {
+              {entries.map((entry, ei) => {
                 const session = SESSIONS.find((s) => s.id === entry.sessionId);
                 if (!session) return null;
                 return (
-                  <View key={`${entry.sessionId}-${entry.playedAt}`} style={styles.entryRow}>
+                  <View key={`${entry.sessionId}-${entry.playedAt}-${ei}`} style={styles.entryRow}>
                     <Text style={[styles.entryTime, { color: colors.mutedForeground }]}>
                       {formatTime(entry.playedAt)}
                     </Text>
