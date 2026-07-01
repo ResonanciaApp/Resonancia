@@ -649,6 +649,7 @@ export default function HomeScreen2() {
             <SessionRow
               key={s.id}
               session={s}
+              style={styles.recoCard}
               onPress={() => {
                 if (s.isPremium && !isPremium) { router.push("/membresia" as never); return; }
                 playSession(s);
@@ -852,9 +853,13 @@ const styles = StyleSheet.create({
   recoSection: {
     marginHorizontal: 16,
     marginBottom: SECTION_GAP,
-    backgroundColor: "rgba(190,150,80,0.04)",
+    gap: 10,
+  },
+  recoCard: {
+    backgroundColor: "rgba(190,150,80,0.06)",
     borderRadius: 14,
     paddingHorizontal: 14,
+    paddingVertical: 4,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(190,150,80,0.12)",
   },
