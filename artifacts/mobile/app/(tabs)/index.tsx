@@ -50,6 +50,7 @@ import { useIntencion } from "@/context/IntencionContext";
 import { CATEGORIES } from "@/data/categories";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/data/sessions";
+import { getMoodById, type Mood, type MoodId } from "@/data/moods";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { usePremium } from "@/context/PremiumContext";
@@ -150,6 +151,11 @@ export default function HomeScreen2() {
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
+  const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
+
+  function handleMoodSelect(moodId: MoodId) {
+    setSelectedMood(getMoodById(moodId) ?? null);
+  }
 
   function handleIntentionPress() {
     router.push("/intencion-onboarding" as never);
@@ -274,6 +280,29 @@ export default function HomeScreen2() {
     else if (!anc && med) setActiveFilter(["meditaciones-guiadas"]);
     else              setActiveFilter(NAV_TABS[1].cats);
   };
+
+  // Sesiones para "Recomendado para ti" / "Para tu estado de ánimo"
+  const RECO_CATS = ["meditaciones-guiadas", "reflexiones", "sonidos-ancestrales", "musica-sonidos"];
+  const moodRecommended = React.useMemo<Session[]>(() => {
+    if (selectedMood) {
+      const cats = new Set(selectedMood.categoryIds);
+      const themes = new Set<string>(selectedMood.themeTags);
+      const pool = SESSIONS.filter((s) => cats.has(s.categoryId));
+      const boosted = pool.filter((s) => s.themeTag?.some((t) => themes.has(t)));
+      const rest = pool.filter((s) => !s.themeTag?.some((t) => themes.has(t)));
+      return [...boosted, ...rest].slice(0, 5);
+    }
+    const pool = SESSIONS.filter((s) => RECO_CATS.includes(s.categoryId));
+    const seed = new Date().toDateString();
+    let hash = 0;
+    for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) & 0x7fffffff;
+    const shuffled = [...pool];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.abs(hash ^ (i * 2654435761)) % (i + 1);
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, 5);
+  }, [selectedMood, catalogVersion]);
 
   // Sesiones recomendadas — no escuchadas aún, barajadas con semilla diaria
   const recommendedSessions = React.useMemo<Session[]>(() => {
@@ -573,14 +602,61 @@ export default function HomeScreen2() {
         <View style={{ paddingHorizontal: 16 }}>
           <Text style={styles.sectionTitle}>Personaliza tus recomendaciones</Text>
         </View>
-        <Pressable
-          onPress={() => setMoodSheetVisible(true)}
-          style={({ pressed }) => [styles.moodRow, { opacity: pressed ? 0.78 : 1 }]}
-        >
-          <Text style={styles.moodEmoji}>🙂</Text>
-          <Text style={styles.moodRowLabel}>¿Cómo te sientes hoy?</Text>
-          <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" />
-        </Pressable>
+
+        {selectedMood ? (
+          <Pressable
+            onPress={() => setMoodSheetVisible(true)}
+            style={({ pressed }) => [styles.moodRow, styles.moodRowActive, { opacity: pressed ? 0.78 : 1 }]}
+          >
+            <Text style={styles.moodSientesLabel}>Sientes:</Text>
+            <View style={{ flex: 1 }} />
+            <LinearGradient
+              colors={["rgba(190,100,80,0.55)", "rgba(120,60,160,0.55)"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.moodPill}
+            >
+              <Text style={styles.moodPillEmoji}>{selectedMood.emoji}</Text>
+              <Text style={styles.moodPillLabel}>{selectedMood.label}</Text>
+              <Pressable
+                onPress={(e) => { e.stopPropagation?.(); setSelectedMood(null); }}
+                hitSlop={10}
+                style={{ marginLeft: 2 }}
+              >
+                <Feather name="x-circle" size={14} color="rgba(255,255,255,0.75)" />
+              </Pressable>
+            </LinearGradient>
+          </Pressable>
+        ) : (
+          <Pressable
+            onPress={() => setMoodSheetVisible(true)}
+            style={({ pressed }) => [styles.moodRow, { opacity: pressed ? 0.78 : 1 }]}
+          >
+            <Text style={styles.moodEmoji}>🙂</Text>
+            <Text style={styles.moodRowLabel}>¿Cómo te sientes hoy?</Text>
+            <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" />
+          </Pressable>
+        )}
+
+        {/* ── RECOMENDADO PARA TI ── */}
+        <View style={{ paddingHorizontal: 16 }}>
+          <Text style={[styles.sectionTitle, { marginTop: 4 }]}>
+            {selectedMood ? "Para tu estado de ánimo" : "Recomendado para ti"}
+          </Text>
+        </View>
+        <View style={styles.recoSection}>
+          {moodRecommended.map((s) => (
+            <SessionRow
+              key={s.id}
+              session={s}
+              onPress={() => {
+                if (s.isPremium && !isPremium) { router.push("/membresia" as never); return; }
+                playSession(s);
+                router.push("/player" as never);
+              }}
+            />
+          ))}
+        </View>
 
         {/* ── BANNER PREMIUM ── */}
         {!isPremium && (
@@ -698,6 +774,7 @@ export default function HomeScreen2() {
       <MoodPickerSheet
         visible={moodSheetVisible}
         onClose={() => setMoodSheetVisible(false)}
+        onSelect={handleMoodSelect}
       />
 
       <SessionActionsSheet
@@ -731,12 +808,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginHorizontal: 16,
-    marginBottom: SECTION_GAP,
+    marginBottom: 8,
     backgroundColor: "rgba(190,150,80,0.06)",
     borderRadius: 14,
     paddingHorizontal: 16,
     paddingVertical: 14,
     gap: 10,
+  },
+  moodRowActive: {
+    paddingVertical: 11,
   },
   moodEmoji: {
     fontSize: 22,
@@ -746,6 +826,37 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "600",
     color: "#e8e8e8",
+  },
+  moodSientesLabel: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#e8e8e8",
+  },
+  moodPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    overflow: "hidden",
+  },
+  moodPillEmoji: {
+    fontSize: 16,
+  },
+  moodPillLabel: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#fff",
+  },
+  recoSection: {
+    marginHorizontal: 16,
+    marginBottom: SECTION_GAP,
+    backgroundColor: "rgba(190,150,80,0.04)",
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(190,150,80,0.12)",
   },
 
   // Intención

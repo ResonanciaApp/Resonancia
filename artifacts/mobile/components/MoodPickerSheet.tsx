@@ -15,17 +15,24 @@ import { MOODS, type MoodId } from "@/data/moods";
 type Props = {
   visible: boolean;
   onClose: () => void;
+  onSelect?: (moodId: MoodId) => void;
 };
 
-export function MoodPickerSheet({ visible, onClose }: Props) {
+export function MoodPickerSheet({ visible, onClose, onSelect }: Props) {
   const insets = useSafeAreaInsets();
   const [selected, setSelected] = useState<MoodId | null>(null);
 
   function handleContinue() {
     if (!selected) return;
-    onClose();
-    setSelected(null);
-    router.push(`/estado-animo/${selected}` as never);
+    if (onSelect) {
+      onSelect(selected);
+      setSelected(null);
+      onClose();
+    } else {
+      onClose();
+      setSelected(null);
+      router.push(`/estado-animo/${selected}` as never);
+    }
   }
 
   function handleClose() {
