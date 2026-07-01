@@ -288,7 +288,7 @@ export default function DescansoScreen() {
     : DESCANSO_SOUNDS.filter((s) => s.categoryId === activeTab);
 
   return (
-    <View style={[styles.root, { backgroundColor: "#230610" }]}>
+    <View style={[styles.root, { backgroundColor: "#110207" }]}>
       <StatusBar barStyle="light-content" />
       <NightSky />
 
