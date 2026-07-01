@@ -33,7 +33,6 @@ import { MoodPickerSheet } from "@/components/MoodPickerSheet";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { SessionCard } from "@/components/SessionCard";
 import { SessionRow } from "@/components/SessionRow";
-import { VideoCard } from "@/components/VideoCard";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { useUser } from "@clerk/expo";
@@ -54,7 +53,6 @@ import { getMoodById, type Mood, type MoodId } from "@/data/moods";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { usePremium } from "@/context/PremiumContext";
-import { useVideos } from "@/hooks/useVideos";
 import { PLAYLISTS } from "@/data/playlists";
 import { useColors } from "@/hooks/useColors";
 import { useUserProfile } from "@/context/UserProfileContext";
@@ -78,7 +76,6 @@ const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;
 const HERO_HEIGHT = 320;
 
-const VIDEO_HERO_W = Math.round((width - GRID_PAD * 2 - 56) * 1.0);
 const VIDEO_REG_W = 200;
 // 1 card completa + 25% del siguiente visible: W = (screenWidth - leftPad - gap) / 1.25
 const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 1.85);
@@ -144,7 +141,6 @@ export default function HomeScreen2() {
   const { playSession, currentSession, isPlaying, pauseResume, history } = usePlayer();
   const { isPremium } = usePremium();
   const { upcoming: upcomingLiveSessions } = useLiveSessions();
-  const { videos } = useVideos();
   const nextLiveSession = upcomingLiveSessions[0] ?? null;
   const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
@@ -717,44 +713,6 @@ export default function HomeScreen2() {
           cardWidth={RECENT_CARD_W}
         />
 
-        {/* ── VIDEOS DESTACADOS ── */}
-        <View style={styles.section}>
-          <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle]}>
-              Videos destacados
-            </Text>
-            {videos.length > 0 && (
-              <Pressable onPress={() => router.push("/videos" as never)} hitSlop={8}>
-                <Text style={[styles.verTodasLink, { color: colors.accent }]}>Ver todos</Text>
-              </Pressable>
-            )}
-          </View>
-
-          {videos.length === 0 ? (
-            <View style={[styles.videosEmpty, { borderColor: "rgba(61,14,22,0.40)", backgroundColor: "rgba(74,12,12,0.08)" }]}>
-              <Feather name="film" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
-              <Text style={[styles.historyEmptyTitle, { color: colors.foreground }]}>Próximamente</Text>
-              <Text style={[styles.historyEmptySub, { color: colors.mutedForeground }]}>
-                Pronto vas a encontrar videos aquí.
-              </Text>
-            </View>
-          ) : (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{ marginHorizontal: -GRID_PAD }}
-              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 16 }}
-            >
-              {videos.map((v) => (
-                <VideoCard
-                  key={v.id}
-                  video={v}
-                  width={VIDEO_HERO_W}
-                />
-              ))}
-            </ScrollView>
-          )}
-        </View>
         {/* ── 5. REFLEXIÓN DE LA SEMANA ── */}
         <View style={{ marginBottom: SECTION_GAP }}>
           <QuoteOfTheDay />
@@ -1041,15 +999,6 @@ const styles = StyleSheet.create({
   },
   sectionTitle: { fontSize: 20, fontWeight: "600", letterSpacing: 0.3, marginBottom: 24, color: "#e8e8e8" },
   verTodasLink: { fontSize: 13, fontWeight: "400" },
-  videosEmpty: {
-    borderRadius: 16,
-    borderWidth: 1,
-    paddingVertical: 36,
-    paddingHorizontal: 24,
-    alignItems: "center",
-  },
-  historyEmptyTitle: { fontSize: 16, fontWeight: "700", marginBottom: 8 },
-  historyEmptySub: { fontSize: 13, textAlign: "center", lineHeight: 19 },
 
   // Categories — 2×2 grid cards
   coleccionGrid: {
