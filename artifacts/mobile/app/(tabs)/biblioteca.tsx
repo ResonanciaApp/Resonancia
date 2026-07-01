@@ -1263,8 +1263,7 @@ export default function BibliotecaScreen() {
   return (
     <LinearGradient
       style={styles.root}
-      colors={["#24030D", "#16040A", "#16040A"]}
-      locations={[0, 0.5, 1]}
+      colors={["#230610", "#16040A"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
@@ -1513,7 +1512,7 @@ const styles = StyleSheet.create({
 
 
   // ── Scroll content ──────────────────────────────────────────────────────────
-  scroll: { flex: 1, backgroundColor: "#16040A" },
+  scroll: { flex: 1, backgroundColor: "transparent" },
   divider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "rgba(190,150,80,0.18)",
