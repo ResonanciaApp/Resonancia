@@ -464,6 +464,7 @@ export default function HomeScreen2() {
 
   return (
     <View style={styles.root}>
+      <View style={[styles.rootBg, { filter: [{ saturate: 0.85 }] } as any]} pointerEvents="none" />
       <StatusBar barStyle="light-content" />
 
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
@@ -870,7 +871,8 @@ export default function HomeScreen2() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#16040A" },
+  root: { flex: 1, backgroundColor: "transparent" },
+  rootBg: { ...StyleSheet.absoluteFillObject, backgroundColor: "#16040A" },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
     paddingBottom: 0,
