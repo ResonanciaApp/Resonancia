@@ -474,9 +474,9 @@ const styles = StyleSheet.create({
   },
   slidingPill: {
     position: "absolute",
-    // Píldora horizontal de 56px centrada verticalmente en el bar
-    top: (PILL_H - 56) / 2,
-    height: 56,
+    // Píldora horizontal de 61px centrada verticalmente en el bar
+    top: (PILL_H - 61) / 2,
+    height: 61,
     // left = ROW_H_PAD(6) + (tabWidth - pillWidth)/2 = 6 + (-3/2) ≈ 5
     left: 5,
     borderRadius: 999,
