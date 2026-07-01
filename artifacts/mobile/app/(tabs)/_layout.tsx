@@ -248,7 +248,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
               style={[
                 styles.slidingPill,
                 {
-                  width: tabWidth - 10,
+                  width: tabWidth - 3,
                   transform: [{ translateX: pillX }],
                 },
               ]}
@@ -474,11 +474,11 @@ const styles = StyleSheet.create({
   },
   slidingPill: {
     position: "absolute",
-    // Píldora horizontal de 50px centrada verticalmente en el bar
-    top: (PILL_H - 50) / 2,
-    height: 50,
-    // left = ROW_H_PAD(6) + medio margen interno(5) para centrar dentro de cada tab
-    left: 11,
+    // Píldora horizontal de 56px centrada verticalmente en el bar
+    top: (PILL_H - 56) / 2,
+    height: 56,
+    // left = ROW_H_PAD(6) + medio margen interno(1.5≈2) para centrar dentro de cada tab
+    left: 8,
     borderRadius: 999,
     backgroundColor: GHOST_PILL_BG,
   },
