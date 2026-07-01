@@ -77,7 +77,7 @@ const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;
 const HERO_HEIGHT = 320;
 
-const VIDEO_HERO_W = width - GRID_PAD * 2 - 56;
+const VIDEO_HERO_W = Math.round((width - GRID_PAD * 2 - 56) * 0.85);
 const VIDEO_REG_W = 200;
 // 1 card completa + 25% del siguiente visible: W = (screenWidth - leftPad - gap) / 1.25
 const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 2.2);
