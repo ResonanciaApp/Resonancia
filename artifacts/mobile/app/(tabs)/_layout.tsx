@@ -4,11 +4,12 @@ import { Image as ExpoImage } from "expo-image";
 import { Tabs, usePathname } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback, useState } from "react";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import {
   Animated,
   Image,
+  LayoutChangeEvent,
   Platform,
   Pressable,
   StyleSheet,
@@ -31,9 +32,9 @@ import { getArtist } from "@/data/artists";
 const ACTIVE_COLOR   = "#E9C46A";
 const INACTIVE_COLOR = "rgba(244,218,213,0.55)";
 const GRAD_END       = "#E9C46A";
+const GHOST_PILL_BG  = "rgba(255,255,255,0.06)";
 
 const ICON_SIZE = 24;
-const PILL_BG   = "rgba(255,255,255,0.035)";
 
 
 // Rutas que nunca aparecen en el menú inferior
@@ -142,6 +143,57 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const accentOpacity = useRef(new Animated.Value(0)).current;
 
+  // ── Sliding ghost pill ──────────────────────────────────────────
+  const [tabWidth, setTabWidth] = useState(0);
+  const pillX         = useRef(new Animated.Value(0)).current;
+  const initialPillSet = useRef(false);
+
+  const visibleRoutes = state.routes.filter((r: { name: string }) => !HIDDEN_ROUTES.has(r.name));
+  const visibleCount  = visibleRoutes.length;
+
+  const visibleIndex = (() => {
+    let idx = 0;
+    for (let i = 0; i < state.index; i++) {
+      if (!HIDDEN_ROUTES.has(state.routes[i].name)) idx++;
+    }
+    return idx;
+  })();
+
+  const setPillPosition = useCallback(
+    (tw: number, vi: number, animate: boolean) => {
+      if (tw === 0) return;
+      const target = vi * tw;
+      if (!animate || !initialPillSet.current) {
+        pillX.setValue(target);
+        initialPillSet.current = true;
+      } else {
+        Animated.spring(pillX, {
+          toValue: target,
+          useNativeDriver: true,
+          damping: 22,
+          stiffness: 220,
+          mass: 0.9,
+        }).start();
+      }
+    },
+    [pillX],
+  );
+
+  useEffect(() => {
+    setPillPosition(tabWidth, visibleIndex, true);
+  }, [visibleIndex, tabWidth, setPillPosition]);
+
+  const onRowLayout = useCallback(
+    (e: LayoutChangeEvent) => {
+      const w  = e.nativeEvent.layout.width;
+      const tw = w / visibleCount;
+      setTabWidth(tw);
+      setPillPosition(tw, visibleIndex, false);
+    },
+    [visibleCount, visibleIndex, setPillPosition],
+  );
+  // ────────────────────────────────────────────────────────────────
+
   useEffect(() => {
     Animated.timing(accentOpacity, {
       toValue: tabBarColors ? 1 : 0,
@@ -177,7 +229,21 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "transparent" }]} />
 
 
-        <View style={[styles.row, isWeb && styles.rowWeb, { paddingTop: 8 + extra, height: 31 + extra }]}>
+        <View
+          style={[styles.row, isWeb && styles.rowWeb, { paddingTop: 8 + extra, height: 31 + extra }]}
+          onLayout={onRowLayout}
+        >
+          {/* ── Ghost pill deslizante ── */}
+          {tabWidth > 0 && (
+            <Animated.View
+              pointerEvents="none"
+              style={[
+                styles.slidingPill,
+                { width: tabWidth - 10, transform: [{ translateX: pillX }] },
+              ]}
+            />
+          )}
+
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
             if (HIDDEN_ROUTES.has(route.name)) return null;
 
@@ -395,6 +461,14 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(212,175,55,0.55)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 5,
+  },
+  slidingPill: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 5,
+    borderRadius: 999,
+    backgroundColor: GHOST_PILL_BG,
   },
   mezcladorHandle: {
     position: "absolute",
