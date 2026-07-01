@@ -740,7 +740,7 @@ export default function HomeScreen2() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#1A0813" },
+  root: { flex: 1, backgroundColor: "#15060D" },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
     paddingBottom: 0,
@@ -1009,7 +1009,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
-    backgroundColor: "#1A0813",
+    backgroundColor: "#15060D",
     borderRadius: 14,
     paddingHorizontal: 16,
     paddingVertical: 14,
