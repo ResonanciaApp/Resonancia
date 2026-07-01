@@ -112,36 +112,26 @@ function NavTabChip({ sel, label, onPress }: { sel: boolean; label: string; onPr
     Animated.timing(selOpacity, { toValue: sel ? 1 : 0, duration: 180, useNativeDriver: true }).start();
   }, [sel]);
   return (
-    <View style={styles.headerTabChipBorder}>
-      <Pressable
-        onPress={onPress}
-        style={({ pressed }) => [styles.headerTabChip, { opacity: pressed ? 0.7 : 1 }]}
-      >
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [styles.headerTabChip, { opacity: pressed ? 0.7 : 1 }]}
+    >
+      <LinearGradient
+        colors={["rgba(49,25,29,0.80)", "rgba(49,25,29,0.48)"]}
+        start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      <Animated.View style={[StyleSheet.absoluteFill, { opacity: selOpacity }]}>
         <LinearGradient
-          colors={["rgba(49,25,29,0.80)", "rgba(49,25,29,0.48)"]}
+          colors={["#D6A45C", "#BE8744"]}
           start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
-        <Animated.View style={[StyleSheet.absoluteFill, { opacity: selOpacity }]}>
-          <LinearGradient
-            colors={["#D6A45C", "#BE8744"]}
-            start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-            style={StyleSheet.absoluteFill}
-          />
-        </Animated.View>
-        {/* Fade horizontal en los extremos */}
-        <LinearGradient
-          colors={["rgba(22,4,10,0.60)", "transparent", "transparent", "rgba(22,4,10,0.60)"]}
-          locations={[0, 0.18, 0.82, 1]}
-          start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }}
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
-        />
-        <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
-          {label}
-        </Text>
-      </Pressable>
-    </View>
+      </Animated.View>
+      <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
+        {label}
+      </Text>
+    </Pressable>
   );
 }
 
@@ -891,17 +881,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: GRID_PAD,
   },
-  headerTabChipBorder: {
-    borderRadius: 21,
-    borderWidth: 1,
-    borderTopColor: "rgba(255,255,255,0.11)",
-    borderLeftColor: "rgba(255,255,255,0.055)",
-    borderRightColor: "rgba(255,255,255,0.055)",
-    borderBottomColor: "rgba(255,255,255,0.012)",
-  },
   headerTabChip: {
     borderRadius: 20,
-    paddingHorizontal: 22,
+    paddingHorizontal: 17,
     height: 34,
     overflow: "hidden",
     alignItems: "center",
