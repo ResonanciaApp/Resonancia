@@ -1443,6 +1443,7 @@ const styles = StyleSheet.create({
   // ── Sticky header ───────────────────────────────────────────────────────────
   stickyHeader: {
     zIndex: 10,
+    backgroundColor: "#230610",
   },
   stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.025)", marginTop: 10, marginHorizontal: -15 },
   headerRow: {

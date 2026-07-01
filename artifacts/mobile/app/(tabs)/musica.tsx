@@ -671,7 +671,7 @@ export default function MezcladorScreen() {
         {/* ── Zona superior ── */}
         <View style={styles.topPanelShadow}>
           <LinearGradient
-            colors={["#16040A", "#16040A", "#16040A"]}
+            colors={["#230610", "#16040A"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={[styles.topPanel, { paddingTop: topPad + 2 }]}
