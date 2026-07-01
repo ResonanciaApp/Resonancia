@@ -146,7 +146,7 @@ function NavTabChip({ sel, label, onPress }: { sel: boolean; label: string; onPr
   );
 }
 
-function RitualCard({ session, onPress, isLast }: { session: Session; onPress: () => void; isLast?: boolean }) {
+function RitualCard({ session, onPress }: { session: Session; onPress: () => void }) {
   const cardW  = width - GRID_PAD * 2;
   const imgH   = Math.round(cardW * (9 / 16));
   const idNum  = parseInt(session.id, 10);
@@ -161,7 +161,7 @@ function RitualCard({ session, onPress, isLast }: { session: Session; onPress: (
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1, marginBottom: isLast ? 0 : 24 })}
+      style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
     >
       <View style={{ width: cardW, height: imgH, borderRadius: 13, overflow: "hidden", marginBottom: 10, backgroundColor: "rgba(255,255,255,0.025)" }}>
         <Image source={session.image as never} style={{ width: cardW, height: imgH }} resizeMode="cover" />
@@ -791,12 +791,9 @@ export default function HomeScreen2() {
               </View>
               <View style={{ paddingHorizontal: GRID_PAD }}>
                 {ritualesSessions.map((s, i) => (
-                  <RitualCard
-                    key={s.id}
-                    session={s}
-                    onPress={() => playSession(s)}
-                    isLast={i === ritualesSessions.length - 1}
-                  />
+                  <View key={s.id} style={i < ritualesSessions.length - 1 ? { marginBottom: 24 } : undefined}>
+                    <RitualCard session={s} onPress={() => playSession(s)} />
+                  </View>
                 ))}
               </View>
             </View>
