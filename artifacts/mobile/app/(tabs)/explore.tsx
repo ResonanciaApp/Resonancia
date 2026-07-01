@@ -355,7 +355,7 @@ export default function ExploreScreen() {
                         backgroundColor: pressed
                           ? hexTint(t.color, 0.22)
                           : "rgba(190,150,80,0.06)",
-                        borderRadius: 15,
+                        borderRadius: 11,
                       },
                     ]}
                   >
