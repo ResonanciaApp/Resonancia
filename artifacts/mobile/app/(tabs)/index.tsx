@@ -129,6 +129,14 @@ function NavTabChip({ sel, label, onPress }: { sel: boolean; label: string; onPr
             style={StyleSheet.absoluteFill}
           />
         </Animated.View>
+        {/* Fade horizontal en los extremos */}
+        <LinearGradient
+          colors={["rgba(22,4,10,0.60)", "transparent", "transparent", "rgba(22,4,10,0.60)"]}
+          locations={[0, 0.18, 0.82, 1]}
+          start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
         <Text style={[styles.headerTabText, sel && styles.headerTabTextActive]}>
           {label}
         </Text>
@@ -893,7 +901,7 @@ const styles = StyleSheet.create({
   },
   headerTabChip: {
     borderRadius: 20,
-    paddingHorizontal: 17,
+    paddingHorizontal: 22,
     height: 34,
     overflow: "hidden",
     alignItems: "center",
