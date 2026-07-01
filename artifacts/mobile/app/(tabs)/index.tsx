@@ -570,7 +570,7 @@ export default function HomeScreen2() {
         )}
 
         {/* ── ESTADO DE ÁNIMO ── */}
-        <View style={{ paddingHorizontal: 16, marginBottom: 8 }}>
+        <View style={{ paddingHorizontal: 16 }}>
           <Text style={styles.sectionTitle}>Personaliza tus recomendaciones</Text>
         </View>
         <Pressable
