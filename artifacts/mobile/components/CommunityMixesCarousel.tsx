@@ -28,7 +28,7 @@ import { useColors } from "@/hooks/useColors";
 
 
 const GOLD = "#BE8744";
-const STACK_THUMB = 62;
+const STACK_THUMB = 93;
 const MAX_VISIBLE = 8;
 
 const DEFAULT_COVER: [string, string] = ["#1B060F", "#2E0A18"];
@@ -150,7 +150,7 @@ export function CommunityMixesCarousel() {
 
       {/* ── Lista V2D ── */}
       {visible.length > 0 && (
-        <View style={{ marginTop: 4 }}>
+        <View style={{ marginTop: 0 }}>
           {visible.map((mix, i) => (
             <MixRow
               key={mix.id}
@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 14,
-    paddingVertical: 11,
+    paddingVertical: 4,
   },
   info: { flex: 1, minWidth: 0 },
   nameRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 },
