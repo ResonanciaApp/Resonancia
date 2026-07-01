@@ -859,9 +859,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(190,150,80,0.06)",
     borderRadius: 14,
     paddingHorizontal: 14,
-    paddingVertical: 4,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(190,150,80,0.12)",
+    paddingVertical: 14,
   },
 
   // Intención
