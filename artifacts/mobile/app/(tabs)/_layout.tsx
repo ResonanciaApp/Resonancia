@@ -29,10 +29,10 @@ import {
 import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
 
-const ACTIVE_COLOR   = "rgba(0,0,0,0.9)";
-const INACTIVE_COLOR = "rgba(0,0,0,0.8)";
-const GRAD_END       = "rgba(0,0,0,0.9)";
-const GHOST_PILL_BG  = "rgba(0,0,0,0.08)";
+const ACTIVE_COLOR   = "rgba(255,255,255,0.9)";
+const INACTIVE_COLOR = "rgba(255,255,255,0.8)";
+const GRAD_END       = "rgba(255,255,255,0.9)";
+const GHOST_PILL_BG  = "rgba(255,255,255,0.12)";
 
 const ICON_SIZE      = 24;
 const PILL_H         = 72;   // altura fija de la píldora flotante
@@ -233,7 +233,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       >
         {/* Fondo glass: blur suave + overlay muy tenue */}
         <BlurView intensity={40} tint="default" style={StyleSheet.absoluteFill} />
-        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.08)" }]} />
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.08)" }]} />
         {/* Acento del tab activo (crossfade) */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "transparent" }]} />
 
