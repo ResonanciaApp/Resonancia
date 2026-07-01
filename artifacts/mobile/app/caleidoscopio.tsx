@@ -495,7 +495,7 @@ export default function Caleidoscopio() {
                     style={[styles.patternBtn, on && styles.patternBtnOn]}
                     activeOpacity={0.75}
                   >
-                    <Feather name={p.icon} size={16} color={on ? "#BE8744" : "rgba(250,240,238,0.45)"} />
+                    <Feather name={p.icon} size={16} color={on ? "#BE8744" : "rgba(232,232,232,0.45)"} />
                     <Text style={[styles.patternBtnText, on && styles.patternBtnTextOn]}>{p.name}</Text>
                   </TouchableOpacity>
                 );
@@ -581,20 +581,20 @@ const styles = StyleSheet.create({
   iconBtn:          { width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(74,12,12,0.08)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(61,14,22,0.40)" },
   topCenter:        { alignItems: "center", flex: 1, paddingHorizontal: 8 },
   topTitle:         { color: "#FAF0EE", fontSize: 15, fontWeight: "600", letterSpacing: 0.3 },
-  topSub:           { color: "rgba(250,240,238,0.45)", fontSize: 11, marginTop: 1 },
+  topSub:           { color: "rgba(232,232,232,0.45)", fontSize: 11, marginTop: 1 },
   bottomPanel:      { position: "absolute", bottom: 0, left: 0, right: 0, backgroundColor: "rgba(27,6,15,0.9)", borderTopWidth: 1, borderTopColor: "rgba(212,175,55,0.12)", paddingHorizontal: 20, paddingTop: 14, zIndex: 20 },
-  sectionLabel:     { color: "rgba(250,240,238,0.45)", fontSize: 10, fontWeight: "600", letterSpacing: 1, textTransform: "uppercase", marginBottom: 7 },
+  sectionLabel:     { color: "rgba(232,232,232,0.45)", fontSize: 10, fontWeight: "600", letterSpacing: 1, textTransform: "uppercase", marginBottom: 7 },
   patternScroll:    { marginBottom: 12 },
   patternBtn:       { flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 20, backgroundColor: "rgba(74,12,12,0.08)", borderWidth: 1, borderColor: "rgba(61,14,22,0.40)", marginRight: 7 },
   patternBtnOn:     { backgroundColor: "rgba(212,175,55,0.15)", borderColor: "rgba(212,175,55,0.50)" },
-  patternBtnText:   { color: "rgba(250,240,238,0.45)", fontSize: 12 },
+  patternBtnText:   { color: "rgba(232,232,232,0.45)", fontSize: 12 },
   patternBtnTextOn: { color: "#BE8744", fontWeight: "600" },
   twoCol:           { flexDirection: "row", gap: 16, marginBottom: 10 },
   colBlock:         { flex: 1 },
   row:              { flexDirection: "row", gap: 6 },
   segBtn:           { flex: 1, height: 34, borderRadius: 9, backgroundColor: "rgba(74,12,12,0.08)", borderWidth: 1, borderColor: "rgba(61,14,22,0.40)", alignItems: "center", justifyContent: "center" },
   segBtnOn:         { backgroundColor: "rgba(212,175,55,0.18)", borderColor: "rgba(212,175,55,0.55)" },
-  segBtnText:       { color: "rgba(250,240,238,0.45)", fontSize: 13 },
+  segBtnText:       { color: "rgba(232,232,232,0.45)", fontSize: 13 },
   segBtnTextOn:     { color: "#BE8744", fontWeight: "700" },
   colorBtn:         { flex: 1, height: 28, borderRadius: 7, opacity: 0.55, borderWidth: 2, borderColor: "transparent" },
   colorBtnOn:       { opacity: 1, borderColor: "rgba(255,255,255,0.8)" },

@@ -28,7 +28,7 @@ import { useLoadMix } from "@/hooks/useLoadMix";
 
 const BG_GRADIENT = ["#16040A", "#16040A"] as const;
 const FG      = "#FAF0EE";
-const MUTED   = "rgba(250,240,238,0.45)";
+const MUTED   = "rgba(232,232,232,0.45)";
 const GOLD    = "#BE8744";
 const BORDER  = "#1E2733";
 const THUMB   = 44;

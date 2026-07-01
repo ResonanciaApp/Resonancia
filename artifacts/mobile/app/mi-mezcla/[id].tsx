@@ -35,7 +35,7 @@ import { useLoadMix } from "@/hooks/useLoadMix";
 const BG_GRADIENT = ["#21030C", "#21030C"] as const;
 const GOLD = "#BE8744";
 const TEXT = "#FAF0EE";
-const MUTED = "rgba(250,240,238,0.45)";
+const MUTED = "rgba(232,232,232,0.45)";
 
 // ── Portada de mezcla (exportada para usar en biblioteca) ─────────────────────
 export function MixCover({

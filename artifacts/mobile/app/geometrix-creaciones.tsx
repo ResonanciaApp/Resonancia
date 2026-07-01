@@ -1088,7 +1088,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(239,68,68,0.4)",
   },
   sheetRowText: { fontSize: 15, fontWeight: "600", color: "#FAF0EE" },
-  sheetRowSub: { fontSize: 12, color: "rgba(250,240,238,0.45)", marginTop: 1 },
+  sheetRowSub: { fontSize: 12, color: "rgba(232,232,232,0.45)", marginTop: 1 },
   exportHidden: {
     position: "absolute",
     left: 0,
@@ -1131,7 +1131,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  sheetCancelText: { fontSize: 14, fontWeight: "600", color: "rgba(250,240,238,0.45)" },
+  sheetCancelText: { fontSize: 14, fontWeight: "600", color: "rgba(232,232,232,0.45)" },
 
   confirmCard: {
     width: "100%",
@@ -1161,7 +1161,7 @@ const styles = StyleSheet.create({
   confirmTitle: { fontSize: 19, fontWeight: "700", color: "#FAF0EE" },
   confirmSubtitle: {
     fontSize: 13.5,
-    color: "rgba(250,240,238,0.45)",
+    color: "rgba(232,232,232,0.45)",
     textAlign: "center",
     lineHeight: 20,
   },
@@ -1181,7 +1181,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  confirmBtnGhostText: { fontSize: 14, fontWeight: "600", color: "rgba(250,240,238,0.45)" },
+  confirmBtnGhostText: { fontSize: 14, fontWeight: "600", color: "rgba(232,232,232,0.45)" },
   confirmBtnDanger: {
     flex: 1,
     paddingVertical: 12,

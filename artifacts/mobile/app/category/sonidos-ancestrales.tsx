@@ -26,7 +26,7 @@ const H_PAD = 15;
 const GOLD  = "#BE8744";
 
 const TEXT  = "#e8e8e8";
-const MUTED = "rgba(250,240,238,0.45)";
+const MUTED = "rgba(232,232,232,0.45)";
 const GRID_GAP    = 10;
 const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
 const HERO_H   = 238;

@@ -589,7 +589,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.1,
   },
   actionPillTextActive: { color: "#1B060F", fontWeight: "600" },
-  actionPillTextSent: { color: "rgba(250,240,238,0.45)" },
+  actionPillTextSent: { color: "rgba(232,232,232,0.45)" },
 
   /* ── Categoría más escuchada ── */
   topCatCard: {

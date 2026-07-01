@@ -535,7 +535,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   confirmTitle: { fontSize: 19, fontWeight: "700", color: "#FAF0EE" },
-  confirmSubtitle: { fontSize: 13.5, color: "rgba(250,240,238,0.45)", textAlign: "center", lineHeight: 20 },
+  confirmSubtitle: { fontSize: 13.5, color: "rgba(232,232,232,0.45)", textAlign: "center", lineHeight: 20 },
   confirmName: { color: "#FAF0EE", fontWeight: "600" },
   confirmActions: { flexDirection: "row", gap: 10, marginTop: 14, alignSelf: "stretch" },
   btnGhost: {
@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
     borderColor: "#161f33",
     alignItems: "center",
   },
-  btnGhostText: { fontSize: 14, fontWeight: "600", color: "rgba(250,240,238,0.45)" },
+  btnGhostText: { fontSize: 14, fontWeight: "600", color: "rgba(232,232,232,0.45)" },
   btnDanger: { flex: 1, paddingVertical: 12, borderRadius: 12, backgroundColor: "#ef4444", alignItems: "center" },
   btnDangerText: { fontSize: 14, fontWeight: "700", color: "#ffffff" },
 });

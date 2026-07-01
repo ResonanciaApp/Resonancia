@@ -115,7 +115,7 @@ const WARM = {
   saveBg: "transparent",
   saveBorder: "transparent",
   saveText: "rgba(212,175,55,0.80)",
-  caption: "rgba(250,240,238,0.45)",
+  caption: "rgba(232,232,232,0.45)",
 } as const;
 
 /** Miniatura cuadrada de la pista: imagen del sonido (fallback degradé negro). */

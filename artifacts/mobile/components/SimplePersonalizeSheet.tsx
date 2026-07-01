@@ -113,7 +113,7 @@ export function SimplePersonalizeSheet({
             value={geoActive}
             onValueChange={onToggleGeo}
             trackColor={{ false: "#3D0E16", true: "#4A0C0C" }}
-            thumbColor={geoActive ? GOLD : "rgba(250,240,238,0.45)"}
+            thumbColor={geoActive ? GOLD : "rgba(232,232,232,0.45)"}
           />
         </View>
       </View>
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   },
   geoSub: {
     fontSize: 11,
-    color: "rgba(250,240,238,0.45)",
+    color: "rgba(232,232,232,0.45)",
     marginTop: 2,
   },
 });
