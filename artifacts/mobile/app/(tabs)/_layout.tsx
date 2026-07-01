@@ -29,10 +29,10 @@ import {
 import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
 
-const ACTIVE_COLOR   = "#FFFFFF";
-const INACTIVE_COLOR = "rgba(244,218,213,0.45)";
-const GRAD_END       = "#FFFFFF";
-const GHOST_PILL_BG  = "rgba(255,255,255,0.08)";
+const ACTIVE_COLOR   = "#1B060F";
+const INACTIVE_COLOR = "rgba(27,6,15,0.42)";
+const GRAD_END       = "#1B060F";
+const GHOST_PILL_BG  = "rgba(27,6,15,0.08)";
 
 const ICON_SIZE      = 24;
 const PILL_H         = 72;   // altura fija de la píldora flotante
@@ -231,9 +231,9 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       <Animated.View
         style={[styles.bar, { bottom: barBottom, transform: [{ translateY }] }]}
       >
-        {/* Fondo base: blur + overlay semitransparente */}
-        <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
-        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(35,6,16,0.92)" }]} />
+        {/* Fondo glass: blur intenso + overlay blanco translúcido */}
+        <BlurView intensity={90} tint="light" style={StyleSheet.absoluteFill} />
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.42)" }]} />
         {/* Acento del tab activo (crossfade) */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "transparent" }]} />
 
@@ -421,11 +421,11 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "rgba(74,12,12,0.04)",
+    borderColor: "rgba(74,12,12,0.5)",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.22,
+    shadowRadius: 24,
     elevation: 18,
   },
   row: {
