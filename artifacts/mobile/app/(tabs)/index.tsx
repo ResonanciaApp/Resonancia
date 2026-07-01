@@ -167,8 +167,6 @@ function RitualCard({ session, onPress }: { session: Session; onPress: () => voi
         <Image source={session.image as never} style={{ width: cardW, height: imgH }} resizeMode="cover" />
       </View>
       <View style={styles.ritualMeta}>
-        <Text style={styles.ritualStar}>★ {rating}</Text>
-        <Text style={styles.ritualDot}>·</Text>
         <Text style={styles.ritualMetaText}>{session.categoryLabel}</Text>
         <Text style={styles.ritualDot}>·</Text>
         <Text style={styles.ritualMetaText}>{session.durationLabel}</Text>

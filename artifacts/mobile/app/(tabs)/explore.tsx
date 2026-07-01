@@ -140,8 +140,6 @@ function ExpRitualCard({ session, onPress }: { session: Session; onPress: () => 
         <Image source={session.image as never} style={{ width: RITUAL_CARD_W, height: RITUAL_IMG_H }} contentFit="cover" />
       </View>
       <View style={exStyles.ritualMeta}>
-        <Text style={exStyles.ritualStar}>★ {rating}</Text>
-        <Text style={exStyles.ritualDot}>·</Text>
         <Text style={exStyles.ritualMetaText}>{session.categoryLabel}</Text>
         <Text style={exStyles.ritualDot}>·</Text>
         <Text style={exStyles.ritualMetaText}>{session.durationLabel}</Text>
