@@ -82,7 +82,7 @@ const VIDEO_REG_W = 200;
 // 1 card completa + 25% del siguiente visible: W = (screenWidth - leftPad - gap) / 1.25
 const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 2.2);
 
-const SECTION_GAP = 48;
+const SECTION_GAP = 30;
 
 const ND = Platform.OS !== "web";
 
@@ -646,7 +646,6 @@ export default function HomeScreen2() {
           isPremium={isPremium}
           onPress={(s) => { playSession(s); router.push("/player" as never); }}
           style={{ marginBottom: SECTION_GAP }}
-          titleOffset={10}
           cardWidth={RECENT_CARD_W}
         />
 
