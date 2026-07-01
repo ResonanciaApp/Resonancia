@@ -560,7 +560,7 @@ export default function ExploreScreen() {
 
             {/* ── Para tus rituales sagrados ── */}
             <View style={{ marginBottom: SECTION_GAP }}>
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: RITUAL_GRID_PAD, marginBottom: 16 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: RITUAL_GRID_PAD, marginBottom: 24 }}>
                 <Text style={{ fontSize: 20, fontWeight: "700", color: "#F4DAD5", letterSpacing: 0.3 }}>
                   Para tus rituales sagrados
                 </Text>

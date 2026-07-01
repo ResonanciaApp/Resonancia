@@ -150,7 +150,7 @@ export function CommunityMixesCarousel() {
 
       {/* ── Lista V2D ── */}
       {visible.length > 0 && (
-        <View style={{ marginTop: 10 }}>
+        <View style={{ marginTop: 0 }}>
           {visible.map((mix, i) => (
             <MixRow
               key={mix.id}
