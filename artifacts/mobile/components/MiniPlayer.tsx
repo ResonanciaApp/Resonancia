@@ -261,7 +261,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
             style={StyleSheet.absoluteFill}
             pointerEvents="none"
           />
-          <View style={[styles.mixRow, { justifyContent: "center", paddingRight: 12, minHeight: STACK_SIZE }]}>
+          <View style={[styles.mixRow, { justifyContent: "center", paddingRight: 12, height: STACK_SIZE + 30 }]}>
             <Text style={{ color: "rgba(255,255,255,0.35)", fontSize: 14, fontWeight: "500", textAlign: "center" }}>
               Selecciona un sonido para comenzar
             </Text>
