@@ -352,6 +352,9 @@ export default function ExploreScreen() {
         {/* ── Carrusel de categorías ── */}
         {query.length === 0 && (
           <>
+          <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
+            Categorías principales
+          </Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
