@@ -276,18 +276,28 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
                 <Text style={srStyles.emptySub}>Intenta con otro término</Text>
               </View>
             }
-            renderItem={({ item }) => (
-              <Pressable
-                onPress={() => { onClose(); router.push(`/session/${item.id}` as never); }}
-                style={({ pressed }) => [srStyles.resultRow, { opacity: pressed ? 0.7 : 1 }]}
-              >
-                <Image source={item.image as number} style={srStyles.thumb} contentFit="cover" />
-                <View style={{ flex: 1 }}>
-                  <Text style={srStyles.resultTitle} numberOfLines={1}>{item.title}</Text>
-                  <Text style={srStyles.resultSub}   numberOfLines={1}>{item.categoryLabel}</Text>
-                </View>
-              </Pressable>
-            )}
+            renderItem={({ item }) => {
+              const authorName = item.guideId
+                ? getGuide(item.guideId).name
+                : item.artistId
+                ? getArtist(item.artistId).name
+                : null;
+              return (
+                <Pressable
+                  onPress={() => { onClose(); router.push(`/session/${item.id}` as never); }}
+                  style={({ pressed }) => [srStyles.resultRow, { opacity: pressed ? 0.7 : 1 }]}
+                >
+                  <Image source={item.image as number} style={srStyles.thumb} contentFit="cover" />
+                  <View style={{ flex: 1 }}>
+                    <Text style={srStyles.resultCat} numberOfLines={1}>{item.categoryLabel}</Text>
+                    <Text style={srStyles.resultTitle} numberOfLines={1}>{item.title}</Text>
+                    {authorName && (
+                      <Text style={srStyles.resultAuthor} numberOfLines={1}>{authorName}</Text>
+                    )}
+                  </View>
+                </Pressable>
+              );
+            }}
           />
         )}
       </View>
@@ -305,10 +315,11 @@ const srStyles = StyleSheet.create({
   empty:       { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, paddingTop: 60 },
   emptyTitle:  { fontSize: 18, fontWeight: "700", color: "#F4DAD5", textAlign: "center", marginBottom: 10 },
   emptySub:    { fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
-  resultRow:   { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(255,255,255,0.07)" },
-  thumb:       { width: 44, height: 44, borderRadius: 10, backgroundColor: "rgba(255,255,255,0.025)" },
-  resultTitle: { fontSize: 14, fontWeight: "600", color: "#F4DAD5", marginBottom: 2 },
-  resultSub:   { fontSize: 12, color: "rgba(242,231,228,0.45)" },
+  resultRow:   { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 14, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(255,255,255,0.07)" },
+  thumb:       { width: 75, height: 75, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.025)" },
+  resultCat:   { fontSize: 11, fontWeight: "600", color: "#BE8744", letterSpacing: 0.4, textTransform: "uppercase", marginBottom: 3 },
+  resultTitle: { fontSize: 15, fontWeight: "700", color: "#F4DAD5", marginBottom: 3 },
+  resultAuthor:{ fontSize: 12, color: "rgba(242,231,228,0.45)" },
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
