@@ -277,7 +277,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         {/* 5. Brillo inferior — centro a 40% del ancho, fade pronunciado */}
         <LinearGradient
           colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.14)", "rgba(255,255,255,0)"]}
-          locations={[0.1, 0.5, 0.9]}
+          locations={[0, 0.5, 1]}
           start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
           style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
           pointerEvents="none"
