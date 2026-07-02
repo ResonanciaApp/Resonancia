@@ -175,16 +175,18 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const initialPillSet = useRef(false);
 
   // colorActiveKey: la ruta cuyo ícono/label debe verse dorado.
-  // Se actualiza SOLO cuando la pill termina de llegar (spring .start callback).
+  // Se actualiza cuando el spring ya recorrió ~95% del camino (250 ms).
   const [colorActiveKey, setColorActiveKey] = useState<string>(
     state.routes[state.index]?.key ?? ""
   );
   const pendingColorKey = useRef(state.routes[state.index]?.key ?? "");
+  const colorTimer      = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const setPillPosition = useCallback(
     (tw: number, vi: number, animate: boolean) => {
       if (tw === 0) return;
       const target = vi * tw;
+      if (colorTimer.current) clearTimeout(colorTimer.current);
       if (!animate || !initialPillSet.current) {
         pillX.setValue(target);
         initialPillSet.current = true;
@@ -196,9 +198,11 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           damping: 22,
           stiffness: 220,
           mass: 0.9,
-        }).start(({ finished }) => {
-          if (finished) setColorActiveKey(pendingColorKey.current);
-        });
+        }).start();
+        // A 250 ms el spring ya cubrió ~95% de la distancia — color sincronizado
+        colorTimer.current = setTimeout(() => {
+          setColorActiveKey(pendingColorKey.current);
+        }, 250);
       }
     },
     [pillX],
