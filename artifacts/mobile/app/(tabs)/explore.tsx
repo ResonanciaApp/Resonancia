@@ -315,7 +315,7 @@ const srStyles = StyleSheet.create({
   empty:       { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, paddingTop: 60 },
   emptyTitle:  { fontSize: 18, fontWeight: "700", color: "#F4DAD5", textAlign: "center", marginBottom: 10 },
   emptySub:    { fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
-  resultRow:   { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 14, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(255,255,255,0.07)" },
+  resultRow:   { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 14 },
   thumb:       { width: 75, height: 75, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.025)" },
   resultCat:   { fontSize: 12, color: "rgba(242,231,228,0.45)", marginBottom: 3 },
   resultTitle: { fontSize: 15, fontWeight: "700", color: "#F4DAD5", marginBottom: 3 },
