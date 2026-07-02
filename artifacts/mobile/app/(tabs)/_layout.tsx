@@ -387,8 +387,6 @@ function TabLayoutInner() {
     ? (playlists.find((p) => p.sessionIds.includes(currentSession.id)) ?? null)
     : null;
 
-  // El MiniPlayer global del Mezclador no aparece cuando hay playlist activa
-  const showMiniPlayer = isMixerOpen && !activePlaylist;
 
   return (
     <View style={{ flex: 1 }}>
@@ -415,13 +413,12 @@ function TabLayoutInner() {
         style={[styles.mixerPanel, { transform: [{ translateX: panelTranslateX }] }]}
       >
         <MezcladorScreen />
+        {!activePlaylist && (
+          <View style={styles.miniPlayerFloat} pointerEvents="box-none">
+            <MiniPlayer idle={!currentSession && !mixActive} />
+          </View>
+        )}
       </Animated.View>
-
-      {showMiniPlayer && (
-        <View style={[styles.miniPlayerFloat, { bottom: 0, zIndex: 501, elevation: 9 }]}>
-          <MiniPlayer idle={!currentSession && !mixActive} />
-        </View>
-      )}
       <Animated.View
         pointerEvents={isMixerOpen ? "auto" : "none"}
         style={[styles.mixerBackdrop, { opacity: backdropOpacity }]}
