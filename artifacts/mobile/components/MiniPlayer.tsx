@@ -165,21 +165,29 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
   }, [mixActive]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Fade del texto idle "Selecciona un sonido para comenzar" ───
-  const idleTextOpacity = useRef(new Animated.Value(0)).current;
+  // Solo se muestra la primera vez que entra el panel; no vuelve si borran todos los sonidos.
+  const idleTextOpacity  = useRef(new Animated.Value(0)).current;
+  const idleHintShownRef = useRef(false);
   useEffect(() => {
-    if (isMixerOpen && idle) {
+    if (!isMixerOpen) {
+      idleHintShownRef.current = false;   // reset al cerrar → la próxima apertura lo muestra de nuevo
+      idleTextOpacity.setValue(0);
+      return;
+    }
+    if (idle && !idleHintShownRef.current) {
+      idleHintShownRef.current = true;
       idleTextOpacity.setValue(0);
       const seq = Animated.sequence([
-        Animated.delay(320 + 400),                                               // panel listo + 0,4 s
+        Animated.delay(320 + 400),
         Animated.timing(idleTextOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
-        Animated.delay(2000),                                                    // visible 2 s
+        Animated.delay(2000),
         Animated.timing(idleTextOpacity, { toValue: 0, duration: 400, useNativeDriver: true }),
       ]);
       seq.start();
       return () => seq.stop();
-    } else {
-      idleTextOpacity.setValue(0);
     }
+    // Si ya se mostró o no es idle: asegura opacidad 0 (sin animación)
+    idleTextOpacity.setValue(0);
   }, [isMixerOpen, idle]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── De-stack / carrusel ────────────────────────────────────────
