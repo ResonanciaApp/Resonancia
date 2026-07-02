@@ -233,32 +233,31 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       <Animated.View
         style={[styles.bar, { bottom: barBottom, transform: [{ translateY }] }]}
       >
-        {/* Fondo glass: blur suave + overlay muy tenue */}
-        <BlurView intensity={35} tint="dark" style={StyleSheet.absoluteFill} />
-        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]} />
-        {/* Bordes en degradado (fade desde el centro hacia los extremos) */}
+        {/* ── iOS Glass Material ────────────────────────────────────────────── */}
+        {/* 1. Blur base — intensity alta, tint light para que el contenido detrás brille */}
+        <BlurView intensity={38} tint="light" style={StyleSheet.absoluteFill} />
+        {/* 2. Tinte borgoña oscuro encima del blur para mantener la paleta */}
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(22,4,11,0.62)" }]} />
+        {/* 3. Ruido granular sutil — textura orgánica del vidrio */}
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { opacity: 0.025 }]}>
+          <Image
+            source={require("@/assets/images/noise.png")}
+            style={[StyleSheet.absoluteFill, { borderRadius: 999 }]}
+            resizeMode="repeat"
+          />
+        </View>
+        {/* 4. Specular highlight — línea de luz en el borde superior (glass edge) */}
         <LinearGradient
-          colors={["rgba(74,12,12,0)", "rgba(74,12,12,0.35)", "rgba(74,12,12,0)"]}
+          colors={["rgba(255,255,255,0.18)", "rgba(255,255,255,0.06)", "rgba(255,255,255,0)"]}
           start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
           style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1.5 }}
           pointerEvents="none"
         />
+        {/* 5. Borde inferior suave */}
         <LinearGradient
-          colors={["rgba(74,12,12,0)", "rgba(74,12,12,0.25)", "rgba(74,12,12,0)"]}
+          colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.05)", "rgba(255,255,255,0)"]}
           start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
           style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 1 }}
-          pointerEvents="none"
-        />
-        <LinearGradient
-          colors={["rgba(74,12,12,0)", "rgba(74,12,12,0.12)", "rgba(74,12,12,0)"]}
-          start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-          style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 1 }}
-          pointerEvents="none"
-        />
-        <LinearGradient
-          colors={["rgba(74,12,12,0)", "rgba(74,12,12,0.12)", "rgba(74,12,12,0)"]}
-          start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-          style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 1 }}
           pointerEvents="none"
         />
         {/* Acento del tab activo (crossfade) */}
@@ -448,10 +447,10 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     overflow: "hidden",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
-    elevation: 10,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.22,
+    shadowRadius: 24,
+    elevation: 20,
   },
   row: {
     flex: 1,
