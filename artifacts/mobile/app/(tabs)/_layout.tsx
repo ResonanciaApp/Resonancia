@@ -35,7 +35,7 @@ const GRAD_END       = "#E9C46A";
 const GHOST_PILL_BG  = "rgba(255,255,255,0.12)";
 
 const ICON_SIZE      = 24;
-const PILL_H         = 72;   // altura fija de la píldora flotante
+const PILL_H         = 68;   // altura fija de la píldora flotante
 const PILL_MARGIN_H  = 20;   // margen horizontal de la píldora
 
 
@@ -138,8 +138,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const isWeb  = Platform.OS === "web";
   const pb     = isWeb ? 8 : insets.bottom;
 
-  // Pegado al safe area, sin margen extra
-  const barBottom = Math.max(0, pb - 10);
+  // 18 px de separación con el borde inferior de la pantalla
+  const barBottom = Math.max(18, pb);
   // Altura total que ocupa la píldora (para la animación de hide)
   const barHeight = PILL_H + barBottom + 40;
 
@@ -232,8 +232,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         style={[styles.bar, { bottom: barBottom, transform: [{ translateY }] }]}
       >
         {/* Fondo glass: blur suave + overlay muy tenue */}
-        <BlurView intensity={30} tint="dark" style={StyleSheet.absoluteFill} />
-        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.01)" }]} />
+        <BlurView intensity={35} tint="dark" style={StyleSheet.absoluteFill} />
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]} />
         {/* Bordes en degradado (fade desde el centro hacia los extremos) */}
         <LinearGradient
           colors={["rgba(74,12,12,0)", "rgba(74,12,12,0.35)", "rgba(74,12,12,0)"]}
@@ -350,7 +350,7 @@ function TabLayoutInner() {
   const insets             = useSafeAreaInsets();
   const isWeb              = Platform.OS === "web";
   const bottomPb           = isWeb ? 8 : insets.bottom;
-  const tabBarHeight       = PILL_H + Math.max(0, bottomPb - 10);
+  const tabBarHeight       = PILL_H + Math.max(18, bottomPb);
   const { hidden }         = useTabBarVisibility();
 
   const pathname       = usePathname();
@@ -446,10 +446,10 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     overflow: "hidden",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.22,
-    shadowRadius: 24,
-    elevation: 18,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation: 10,
   },
   row: {
     flex: 1,
@@ -497,9 +497,9 @@ const styles = StyleSheet.create({
   },
   slidingPill: {
     position: "absolute",
-    // Píldora horizontal de 61px centrada verticalmente en el bar
-    top: (PILL_H - 61) / 2 - 1,
-    height: 61,
+    // Píldora horizontal de 57px centrada verticalmente en el bar
+    top: (PILL_H - 57) / 2 - 1,
+    height: 57,
     // left = ROW_H_PAD(6) + (tabWidth - pillWidth)/2 = 6 + (-3/2) ≈ 5
     left: 5,
     borderRadius: 999,
