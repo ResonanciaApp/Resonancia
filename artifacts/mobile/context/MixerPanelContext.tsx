@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useRef, useState } from 
 import { Animated, Dimensions } from "react-native";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 
-export const MIXER_PANEL_W = Dimensions.get("window").width * 0.88;
+export const MIXER_PANEL_W = Dimensions.get("window").width;
 
 type MixerPanelCtx = {
   isMixerOpen: boolean;

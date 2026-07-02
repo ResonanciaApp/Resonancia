@@ -576,7 +576,7 @@ const styles = StyleSheet.create({
   },
   mixerBackdrop: {
     position: "absolute",
-    left: MIXER_PANEL_W,
+    left: 0,
     right: 0,
     top: 0,
     bottom: 0,
