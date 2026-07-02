@@ -281,7 +281,7 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
                 ? getGuide(item.guideId).name
                 : item.artistId
                 ? getArtist(item.artistId).name
-                : null;
+                : item.subtitle ?? null;
               return (
                 <Pressable
                   onPress={() => { onClose(); router.push(`/session/${item.id}` as never); }}
