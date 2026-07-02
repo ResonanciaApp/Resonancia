@@ -86,7 +86,7 @@ export default function CarpetasScreen() {
                     : `${folder.sessionIds.length} sesión${folder.sessionIds.length !== 1 ? "es" : ""}`}
                 </Text>
               </View>
-              <Feather name="chevron-right" size={18} color="rgba(244,218,213,0.25)" />
+              <Feather name="chevron-right" size={18} color="rgba(255,255,255,0.25)" />
             </Pressable>
           ))
         )}

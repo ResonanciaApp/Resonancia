@@ -905,7 +905,7 @@ const styles = StyleSheet.create({
   emptyTitle: { fontSize: 15, fontWeight: "700", color: "rgba(26,30,43,0.7)", textAlign: "center" },
   emptyHint:  { fontSize: 13, color: "rgba(26,30,43,0.45)", textAlign: "center", lineHeight: 19 },
   pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, color: "#e8e8e8" },
-  pageSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(244,218,213,0.55)", marginTop: 2 },
+  pageSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(255,255,255,0.55)", marginTop: 2 },
   heartBtn: {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
     borderRadius: 12, backgroundColor: "rgba(0,0,0,0.05)",

@@ -138,10 +138,10 @@ export default function ActividadDetailScreen() {
         <Text style={styles.heroTitle}>{act.title}</Text>
 
         <View style={styles.heroMeta}>
-          <Feather name="map-pin" size={13} color="rgba(244,218,213,0.55)" />
+          <Feather name="map-pin" size={13} color="rgba(255,255,255,0.55)" />
           <Text style={styles.heroMetaText}>{act.city}</Text>
           <Text style={styles.heroMetaSep}>·</Text>
-          <Feather name="calendar" size={13} color="rgba(244,218,213,0.55)" />
+          <Feather name="calendar" size={13} color="rgba(255,255,255,0.55)" />
           <Text style={styles.heroMetaText}>{act.date}</Text>
         </View>
       </LinearGradient>
@@ -391,8 +391,8 @@ const styles = StyleSheet.create({
   typeBadgeText: { color: "#FFFFFF", fontSize: 11, fontWeight: "700", letterSpacing: 0.5 },
   heroTitle: { color: "#FFFFFF", fontSize: 24, fontWeight: "700", lineHeight: 30, marginBottom: 12 },
   heroMeta: { flexDirection: "row", alignItems: "center", gap: 6 },
-  heroMetaText: { color: "rgba(244,218,213,0.55)", fontSize: 12 },
-  heroMetaSep: { color: "rgba(244,218,213,0.55)", fontSize: 12 },
+  heroMetaText: { color: "rgba(255,255,255,0.55)", fontSize: 12 },
+  heroMetaSep: { color: "rgba(255,255,255,0.55)", fontSize: 12 },
   // Chips
   chipsRow: { flexDirection: "row", gap: 10 },
   chip: { flex: 1, flexDirection: "row", alignItems: "center", gap: 10, borderRadius: 14, borderWidth: 1, padding: 14 },

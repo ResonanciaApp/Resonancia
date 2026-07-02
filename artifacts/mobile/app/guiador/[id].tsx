@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
   metaRow: { flexDirection: "row", alignItems: "center", marginTop: 10, flexWrap: "wrap", justifyContent: "center" },
   metaItem: { flexDirection: "row", alignItems: "center", gap: 4 },
   metaText: { fontSize: 12 },
-  metaDot: { width: 3, height: 3, borderRadius: 2, backgroundColor: "rgba(244,218,213,0.30)", marginHorizontal: 8 },
+  metaDot: { width: 3, height: 3, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.30)", marginHorizontal: 8 },
   trackCount: { fontSize: 12, fontWeight: "600", marginTop: 10 },
 
   section: {},

@@ -1472,7 +1472,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.20)",
   },
   expansorChipText: { fontSize: 12, color: "#FAF0EE", fontWeight: "500" },
-  expansorBio: { fontSize: 13, lineHeight: 20, color: "rgba(244,218,213,0.75)" },
+  expansorBio: { fontSize: 13, lineHeight: 20, color: "rgba(255,255,255,0.75)" },
   expansorLinksRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   expansorLinkBtn: {
     flexDirection: "row",
@@ -1515,7 +1515,7 @@ const styles = StyleSheet.create({
   dvCertBannerIcon: { flex: 1, borderRadius: 16, overflow: "hidden", alignItems: "center", justifyContent: "center" },
   dvCertBannerStar: { fontSize: 17, color: "rgba(212,175,55,0.90)", fontWeight: "800" },
   dvServiceTitle: { fontSize: 15, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.2 },
-  dvServiceDesc: { fontSize: 13, lineHeight: 20, color: "rgba(244,218,213,0.65)" },
+  dvServiceDesc: { fontSize: 13, lineHeight: 20, color: "rgba(255,255,255,0.65)" },
   dvReadMoreBtn: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 6, alignSelf: "flex-start" },
   dvReadMoreText: { fontSize: 13, fontWeight: "600", color: "#BE8744" },
   dvSpecialtyWrap: { flexDirection: "row", gap: 8, alignItems: "center" },
@@ -1538,7 +1538,7 @@ const styles = StyleSheet.create({
   dvGalleryCell: { borderRadius: 10, backgroundColor: "rgba(255,255,255,0.05)" },
   dvQuoteWrap: { alignItems: "center", paddingVertical: 8, paddingHorizontal: 8, marginBottom: 16 },
   dvQuoteText: {
-    fontSize: 18, fontStyle: "italic", color: "rgba(244,218,213,0.70)",
+    fontSize: 18, fontStyle: "italic", color: "rgba(255,255,255,0.70)",
     textAlign: "center", lineHeight: 28, letterSpacing: 0.2,
   },
   dvLightboxBackdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.92)", alignItems: "center", justifyContent: "center" },

@@ -148,7 +148,7 @@ export default function CreatorProfileScreen() {
                     {mix.likes > 0 ? ` · ${mix.likes} me gusta` : ""}
                   </Text>
                 </View>
-                <Feather name="chevron-right" size={18} color="rgba(244,218,213,0.25)" />
+                <Feather name="chevron-right" size={18} color="rgba(255,255,255,0.25)" />
               </Pressable>
             ))}
           </View>

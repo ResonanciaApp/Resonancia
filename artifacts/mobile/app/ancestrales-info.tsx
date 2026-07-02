@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   heroTagline: {
-    fontSize: 15, color: "rgba(244,218,213,0.75)",
+    fontSize: 15, color: "rgba(255,255,255,0.75)",
     lineHeight: 22, marginBottom: 48,
   },
   scrollIndicator: { alignItems: "center", gap: 6 },

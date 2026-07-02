@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: "rgba(244,218,213,0.08)",
+    backgroundColor: "rgba(255,255,255,0.08)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   },
   certLabel: { fontSize: 12, color: "#BE8744", fontWeight: "600" },
   locationRow: { flexDirection: "row", alignItems: "center", gap: 5, marginTop: 2 },
-  location: { fontSize: 13, color: "rgba(244,218,213,0.55)" },
+  location: { fontSize: 13, color: "rgba(255,255,255,0.55)" },
 
   section: { marginBottom: 24 },
   sectionTitle: {
@@ -281,5 +281,5 @@ const styles = StyleSheet.create({
   },
   certCardStar: { fontSize: 20, color: "#BE8744", marginTop: 2 },
   certCardTitle: { fontSize: 13, fontWeight: "700", color: "#BE8744", marginBottom: 4 },
-  certCardSub: { fontSize: 12, color: "rgba(244,218,213,0.55)", lineHeight: 18 },
+  certCardSub: { fontSize: 12, color: "rgba(255,255,255,0.55)", lineHeight: 18 },
 });

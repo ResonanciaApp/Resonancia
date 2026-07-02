@@ -493,7 +493,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: "rgba(244,218,213,0.08)",
+    backgroundColor: "rgba(255,255,255,0.08)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -636,7 +636,7 @@ const styles = StyleSheet.create({
   serviceDesc: {
     fontSize: 13,
     lineHeight: 20,
-    color: "rgba(244,218,213,0.65)",
+    color: "rgba(255,255,255,0.65)",
   },
   readMoreBtn: {
     flexDirection: "row",
@@ -674,7 +674,7 @@ const styles = StyleSheet.create({
   quoteText: {
     fontSize: 18,
     fontStyle: "italic",
-    color: "rgba(244,218,213,0.70)",
+    color: "rgba(255,255,255,0.70)",
     textAlign: "center",
     lineHeight: 28,
     letterSpacing: 0.2,

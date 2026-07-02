@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
   modalTitle: { fontSize: 18, fontWeight: "700", marginBottom: 8, textAlign: "center" },
   modalBody: { fontSize: 14, textAlign: "center", marginBottom: 20, lineHeight: 20 },
   modalBtnRow: { flexDirection: "row", gap: 12 },
-  modalBtnGhost: { flex: 1, borderRadius: 50, paddingVertical: 13, alignItems: "center", borderWidth: 1, borderColor: "rgba(244,218,213,0.15)" },
+  modalBtnGhost: { flex: 1, borderRadius: 50, paddingVertical: 13, alignItems: "center", borderWidth: 1, borderColor: "rgba(255,255,255,0.15)" },
   modalBtnGhostText: { fontSize: 14, fontWeight: "600" },
   modalBtnPrimary: { flex: 1, borderRadius: 50, overflow: "hidden" },
   modalBtnPrimaryGrad: { paddingVertical: 14, alignItems: "center" },

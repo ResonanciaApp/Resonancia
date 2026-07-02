@@ -8,7 +8,7 @@ import { useNotifications } from "@/context/NotificationsContext";
 const ICON_SIZE = 24;
 const GOLD = "#BE8744";
 const WHITE = "#FFFFFF";
-const MUTED = "rgba(242,231,228,0.40)";
+const MUTED = "rgba(255,255,255,0.40)";
 
 export function CuencoBell() {
   const { unreadCount, shouldAnimate, clearAnimation } = useNotifications();

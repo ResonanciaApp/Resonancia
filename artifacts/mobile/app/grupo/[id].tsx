@@ -451,7 +451,7 @@ export default function GrupoDetailScreen() {
               <Text style={styles.groupName}>{grupo.name}</Text>
               <Text style={styles.groupSub} numberOfLines={1}>{grupo.description}</Text>
               <View style={styles.groupMeta}>
-                <Feather name="users" size={11} color="rgba(244,218,213,0.55)" />
+                <Feather name="users" size={11} color="rgba(255,255,255,0.55)" />
                 <Text style={styles.groupMetaText}>
                   {grupo.members} {grupo.members === 1 ? "miembro" : "miembros"}
                 </Text>
@@ -466,7 +466,7 @@ export default function GrupoDetailScreen() {
           <View style={styles.tabs}>
             {(["discusion", "miembros", "info"] as TabType[]).map((t) => (
               <Pressable key={t} onPress={() => setTab(t)} style={[styles.tabItem, tab === t && styles.tabItemActive]}>
-                <Text style={[styles.tabText, { color: tab === t ? "#FFFFFF" : "rgba(244,218,213,0.35)" }]}>
+                <Text style={[styles.tabText, { color: tab === t ? "#FFFFFF" : "rgba(255,255,255,0.35)" }]}>
                   {t === "discusion" ? "Discusión" : t === "miembros" ? "Miembros" : "Info"}
                 </Text>
               </Pressable>
@@ -763,10 +763,10 @@ const styles = StyleSheet.create({
   groupIcon: { width: 52, height: 52, borderRadius: 18, alignItems: "center", justifyContent: "center" },
   groupIconImg: { width: 52, height: 52, borderRadius: 14 },
   groupName: { color: "#FFFFFF", fontSize: 18, fontWeight: "700", marginBottom: 3 },
-  groupSub: { color: "rgba(244,218,213,0.55)", fontSize: 12, marginBottom: 6 },
+  groupSub: { color: "rgba(255,255,255,0.55)", fontSize: 12, marginBottom: 6 },
   groupMeta: { flexDirection: "row", alignItems: "center", gap: 5 },
-  groupMetaText: { color: "rgba(244,218,213,0.55)", fontSize: 11 },
-  groupMetaDot: { color: "rgba(244,218,213,0.55)", fontSize: 11 },
+  groupMetaText: { color: "rgba(255,255,255,0.55)", fontSize: 11 },
+  groupMetaDot: { color: "rgba(255,255,255,0.55)", fontSize: 11 },
   activeDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: "#7ED65A" },
   tabs: { flexDirection: "row" },
   tabItem: { flex: 1, alignItems: "center", paddingVertical: 12 },

@@ -507,14 +507,14 @@ export default function ResonadoresScreen() {
               value={query}
               onChangeText={setQuery}
               placeholder={activeTab === "resonadores" ? "Buscar resonador..." : "Buscar por nombre, ciudad o país..."}
-              placeholderTextColor="rgba(244,218,213,0.30)"
+              placeholderTextColor="rgba(255,255,255,0.30)"
               style={styles.searchInput}
               returnKeyType="search"
               autoFocus
             />
             {query.length > 0 && (
               <Pressable onPress={() => setQuery("")} hitSlop={8}>
-                <Feather name="x" size={14} color="rgba(244,218,213,0.45)" />
+                <Feather name="x" size={14} color="rgba(255,255,255,0.45)" />
               </Pressable>
             )}
           </View>
@@ -603,7 +603,7 @@ export default function ResonadoresScreen() {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <Feather name="users" size={36} color="rgba(244,218,213,0.20)" />
+            <Feather name="users" size={36} color="rgba(255,255,255,0.20)" />
             <Text style={styles.emptyText}>Sin resultados</Text>
           </View>
         }
@@ -684,7 +684,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 13,
-    color: "rgba(244,218,213,0.45)",
+    color: "rgba(255,255,255,0.45)",
     marginBottom: 10,
   },
 
@@ -890,10 +890,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   locationRow: { flexDirection: "row", alignItems: "center", gap: 3 },
-  cardLocation: { fontSize: 10, color: "rgba(244,218,213,0.40)", textAlign: "center" },
+  cardLocation: { fontSize: 10, color: "rgba(255,255,255,0.40)", textAlign: "center" },
 
   empty: { alignItems: "center", paddingTop: 60, gap: 12 },
-  emptyText: { fontSize: 14, color: "rgba(244,218,213,0.30)" },
+  emptyText: { fontSize: 14, color: "rgba(255,255,255,0.30)" },
   loadMoreBtn: {
     alignSelf: "center",
     marginTop: 8,
@@ -930,7 +930,7 @@ const styles = StyleSheet.create({
   },
   recentSub: {
     fontSize: 11,
-    color: "rgba(244,218,213,0.45)",
+    color: "rgba(255,255,255,0.45)",
     marginTop: 3,
   },
 
@@ -1025,7 +1025,7 @@ const styles = StyleSheet.create({
   },
   ctaHint: {
     fontSize: 11,
-    color: "rgba(244,218,213,0.50)",
+    color: "rgba(255,255,255,0.50)",
     marginTop: 2,
   },
 });

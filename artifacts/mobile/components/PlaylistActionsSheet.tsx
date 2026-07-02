@@ -55,7 +55,7 @@ function ActionRow({
     >
       <Feather name={icon} size={20} color={iconColor ?? colors.foreground} style={styles.actionIcon} />
       <Text style={[styles.actionLabel, { color: iconColor ?? colors.foreground }]}>{label}</Text>
-      <Feather name="chevron-right" size={16} color="rgba(244,218,213,0.25)" />
+      <Feather name="chevron-right" size={16} color="rgba(255,255,255,0.25)" />
     </Pressable>
   );
 }

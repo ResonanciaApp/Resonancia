@@ -646,7 +646,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: "rgba(244,218,213,0.08)",
+    backgroundColor: "rgba(255,255,255,0.08)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -852,7 +852,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   specialtyText: { fontSize: 13, color: "#FFFFFF", fontWeight: "400", letterSpacing: 0.1 },
-  serviceDesc: { fontSize: 13, lineHeight: 20, color: "rgba(244,218,213,0.65)" },
+  serviceDesc: { fontSize: 13, lineHeight: 20, color: "rgba(255,255,255,0.65)" },
   readMoreBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -948,7 +948,7 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   projectLabel: { fontSize: 13, fontWeight: "600", color: "#FAF0EE" },
-  projectPlatform: { fontSize: 11, color: "rgba(244,218,213,0.45)", marginTop: 1 },
+  projectPlatform: { fontSize: 11, color: "rgba(255,255,255,0.45)", marginTop: 1 },
 
   /* ── Sección 5: Formación ── */
   formacionList: { gap: 0 },
@@ -972,7 +972,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   formacionTitulo: { fontSize: 13, fontWeight: "700", color: "#FAF0EE" },
-  formacionInst: { fontSize: 12, color: "rgba(244,218,213,0.65)", marginTop: 1 },
+  formacionInst: { fontSize: 12, color: "rgba(255,255,255,0.65)", marginTop: 1 },
   formacionYears: { fontSize: 11, color: GOLD_MUTED, marginTop: 2 },
 
   /* ── Chip Apóyalo ── */
@@ -995,7 +995,7 @@ const styles = StyleSheet.create({
   quoteText: {
     fontSize: 18,
     fontStyle: "italic",
-    color: "rgba(244,218,213,0.70)",
+    color: "rgba(255,255,255,0.70)",
     textAlign: "center",
     lineHeight: 28,
     letterSpacing: 0.2,

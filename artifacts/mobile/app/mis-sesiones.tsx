@@ -39,8 +39,8 @@ import {
 const WARM_BLACK = "#1B060F";
 const BURGUNDY_MID = "#4A0C0C";
 const PRIMARY_GOLD = "#BE8744";
-const FOREGROUND = "#F4DAD5";
-const MUTED = "rgba(242,231,228,0.55)";
+const FOREGROUND = "#FFFFFF";
+const MUTED = "rgba(255,255,255,0.55)";
 const BORDER = "#3D0E16";
 
 export default function MisSesionesScreen() {
@@ -216,7 +216,7 @@ function PastSessionRow({ session }: { session: LiveSessionItem }) {
       <View
         style={[
           pastStyles.badge,
-          { backgroundColor: isCompleted ? "rgba(92,184,92,0.12)" : "rgba(242,231,228,0.06)" },
+          { backgroundColor: isCompleted ? "rgba(92,184,92,0.12)" : "rgba(255,255,255,0.06)" },
         ]}
       >
         <Text

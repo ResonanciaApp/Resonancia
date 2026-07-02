@@ -804,7 +804,7 @@ export default function SessionDetailScreen() {
         {/* Branding top */}
         <View style={{ position: "absolute", top: 64, left: 0, right: 0, alignItems: "center" }}>
           <Text style={{ color: "#BE8744", fontSize: 11, letterSpacing: 5, fontWeight: "700" }}>RESONANCIA</Text>
-          <Text style={{ color: "rgba(244,218,213,0.55)", fontSize: 10, letterSpacing: 2, marginTop: 3 }}>Casa del Cuenco</Text>
+          <Text style={{ color: "rgba(255,255,255,0.55)", fontSize: 10, letterSpacing: 2, marginTop: 3 }}>Casa del Cuenco</Text>
         </View>
         {/* Session info center */}
         <View style={{ position: "absolute", bottom: 190, left: 36, right: 36 }}>
@@ -820,7 +820,7 @@ export default function SessionDetailScreen() {
         </View>
         {/* CTA bottom */}
         <View style={{ position: "absolute", bottom: 80, left: 0, right: 0, alignItems: "center" }}>
-          <Text style={{ color: "rgba(244,218,213,0.6)", fontSize: 11, letterSpacing: 1.5 }}>Escucha en RESONANCIA</Text>
+          <Text style={{ color: "rgba(255,255,255,0.6)", fontSize: 11, letterSpacing: 1.5 }}>Escucha en RESONANCIA</Text>
         </View>
       </View>
 

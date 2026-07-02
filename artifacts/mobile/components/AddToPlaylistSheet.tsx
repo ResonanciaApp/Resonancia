@@ -132,7 +132,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
                       {inIt ? (
                         <Feather name="check-circle" size={22} color={colors.primary} />
                       ) : (
-                        <Feather name="circle" size={22} color="rgba(244,218,213,0.25)" />
+                        <Feather name="circle" size={22} color="rgba(255,255,255,0.25)" />
                       )}
                     </Pressable>
                   );

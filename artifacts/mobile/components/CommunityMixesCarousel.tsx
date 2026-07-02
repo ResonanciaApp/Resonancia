@@ -348,7 +348,7 @@ function MixContextMenu({
           <Text style={[menuStyles.actionLabel, { color: colors.foreground }]}>
             Agregar a favoritos
           </Text>
-          <Feather name="chevron-right" size={16} color="rgba(244,218,213,0.20)" />
+          <Feather name="chevron-right" size={16} color="rgba(255,255,255,0.20)" />
         </Pressable>
 
         <View style={[menuStyles.sep, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
@@ -362,7 +362,7 @@ function MixContextMenu({
           <Text style={[menuStyles.actionLabel, { color: colors.foreground }]}>
             Ver mezclas del creador
           </Text>
-          <Feather name="chevron-right" size={16} color="rgba(244,218,213,0.20)" />
+          <Feather name="chevron-right" size={16} color="rgba(255,255,255,0.20)" />
         </Pressable>
 
         <View style={[menuStyles.sep, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
@@ -376,7 +376,7 @@ function MixContextMenu({
           <Text style={[menuStyles.actionLabel, { color: "#D08B7A" }]}>
             Reportar mezcla
           </Text>
-          <Feather name="chevron-right" size={16} color="rgba(244,218,213,0.20)" />
+          <Feather name="chevron-right" size={16} color="rgba(255,255,255,0.20)" />
         </Pressable>
       </View>
       </View>

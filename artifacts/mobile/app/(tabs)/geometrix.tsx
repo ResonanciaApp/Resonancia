@@ -6169,7 +6169,7 @@ export default function GeometrixScreen() {
             hitSlop={12}
             style={({ pressed }) => [styles.landingBackBtn, { opacity: pressed ? 0.6 : 1 }]}
           >
-            <Feather name="arrow-left" size={22} color="rgba(244,218,213,0.75)" />
+            <Feather name="arrow-left" size={22} color="rgba(255,255,255,0.75)" />
           </Pressable>
 
           {/* Logo + título */}

@@ -482,7 +482,7 @@ export default function Onboarding() {
           <Text
             style={[
               styles.primaryBtnText,
-              !canContinue && { color: "rgba(244,218,213,0.40)" },
+              !canContinue && { color: "rgba(255,255,255,0.40)" },
             ]}
           >
             {step === QUESTIONS.length - 1 ? "Ver mi espacio   →" : "Continuar   →"}

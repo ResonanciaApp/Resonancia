@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   },
   pageSubtitle: {
     fontSize: 14,
-    color: "rgba(244,218,213,0.50)",
+    color: "rgba(255,255,255,0.50)",
     lineHeight: 20,
   },
 

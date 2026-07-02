@@ -153,12 +153,12 @@ function ExpRitualCard({ session, onPress }: { session: Session; onPress: () => 
 const exStyles = StyleSheet.create({
   ritualMeta:     { flexDirection: "row", alignItems: "center", marginBottom: 5, flexWrap: "wrap" },
   ritualStar:     { fontSize: 12, color: "#D4AF37", marginRight: 5 },
-  ritualDot:      { fontSize: 12, color: "rgba(244,218,213,0.35)", marginRight: 5 },
-  ritualMetaText: { fontSize: 12, color: "rgba(244,218,213,0.55)" },
-  ritualTitle:    { fontSize: 16, fontWeight: "700", color: "#F4DAD5", marginBottom: 4, lineHeight: 21 },
-  ritualAuthor:   { fontSize: 13, color: "rgba(244,218,213,0.55)" },
+  ritualDot:      { fontSize: 12, color: "rgba(255,255,255,0.35)", marginRight: 5 },
+  ritualMetaText: { fontSize: 12, color: "rgba(255,255,255,0.55)" },
+  ritualTitle:    { fontSize: 16, fontWeight: "700", color: "#FFFFFF", marginBottom: 4, lineHeight: 21 },
+  ritualAuthor:   { fontSize: 13, color: "rgba(255,255,255,0.55)" },
   durOptRow:      { flexDirection: "row", alignItems: "center", paddingVertical: 14, paddingHorizontal: 20, borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.06)" },
-  durOptLabel:    { fontSize: 16, color: "#F4DAD5", flex: 1 },
+  durOptLabel:    { fontSize: 16, color: "#FFFFFF", flex: 1 },
   durOptCheck:    { fontSize: 16, color: "#D4AF37" },
 });
 
@@ -560,7 +560,7 @@ export default function ExploreScreen() {
             {/* ── Para tus rituales sagrados ── */}
             <View style={{ marginBottom: SECTION_GAP }}>
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: RITUAL_GRID_PAD, marginBottom: 24 }}>
-                <Text style={{ fontSize: 20, fontWeight: "700", color: "#F4DAD5", letterSpacing: 0.3 }}>
+                <Text style={{ fontSize: 20, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3 }}>
                   Para tus rituales sagrados
                 </Text>
                 <Pressable
@@ -605,7 +605,7 @@ export default function ExploreScreen() {
           <View style={{ alignItems: "center", paddingVertical: 12 }}>
             <View style={{ width: 36, height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.15)" }} />
           </View>
-          <Text style={{ fontSize: 15, fontWeight: "700", color: "#F4DAD5", textAlign: "center", marginBottom: 8 }}>
+          <Text style={{ fontSize: 15, fontWeight: "700", color: "#FFFFFF", textAlign: "center", marginBottom: 8 }}>
             Duración
           </Text>
           {DURACION_OPTS_EX.map(opt => (
@@ -670,7 +670,7 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: "rgba(212,175,55,0.25)",
   },
   pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#e8e8e8" },
-  pageSubtitle: { fontSize: 14, color: "rgba(244,218,213,0.55)", marginTop: 2 },
+  pageSubtitle: { fontSize: 14, color: "rgba(255,255,255,0.55)", marginTop: 2 },
 
   searchBarBorder: {
     marginHorizontal: H_PAD,
