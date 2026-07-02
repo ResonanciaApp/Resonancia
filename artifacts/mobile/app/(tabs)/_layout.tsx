@@ -1,5 +1,6 @@
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
+import Svg, { Defs, LinearGradient as SvgLinearGradient, Rect, Stop } from "react-native-svg";
 import { Image as ExpoImage } from "expo-image";
 import { Tabs, usePathname } from "expo-router";
 import { SymbolView } from "expo-symbols";
@@ -8,6 +9,7 @@ import React, { useEffect, useRef, useCallback, useState } from "react";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import {
   Animated,
+  Dimensions,
   Image,
   LayoutChangeEvent,
   Platform,
@@ -245,21 +247,33 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           style={StyleSheet.absoluteFill}
           pointerEvents="none"
         />
-        {/* 4. Borde superior con fade largo — altura 1px real, fade desde el borde interno de la curva */}
-        <LinearGradient
-          colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.35)", "rgba(255,255,255,0.35)", "rgba(255,255,255,0)"]}
-          locations={[0, 0.1, 0.9, 1]}
-          start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-          style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1 }}
-          pointerEvents="none"
-        />
-        {/* 5. Borde inferior — muy sutil */}
-        <LinearGradient
-          colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.08)", "rgba(255,255,255,0)"]}
-          start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-          style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
-          pointerEvents="none"
-        />
+        {/* 4. Borde GhostPill — doble gradiente SVG idéntico al de Tu Biblioteca */}
+        {(() => {
+          const sw = 1.5;
+          const bw = Dimensions.get("window").width - PILL_MARGIN_H * 2;
+          const bh = PILL_H;
+          const r  = bh / 2;
+          return (
+            <Svg width={bw} height={bh} style={StyleSheet.absoluteFill} pointerEvents="none">
+              <Defs>
+                <SvgLinearGradient id="tabBorderA" x1="0" y1="0" x2="0.65" y2="1">
+                  <Stop offset="0"   stopColor="#FFFFFF" stopOpacity={0.22} />
+                  <Stop offset="0.4" stopColor="#FFFFFF" stopOpacity={0.05} />
+                  <Stop offset="1"   stopColor="#FFFFFF" stopOpacity={0.01} />
+                </SvgLinearGradient>
+                <SvgLinearGradient id="tabBorderB" x1="1" y1="1" x2="0.3" y2="0">
+                  <Stop offset="0"    stopColor="#FFFFFF" stopOpacity={0.08} />
+                  <Stop offset="0.45" stopColor="#FFFFFF" stopOpacity={0.02} />
+                  <Stop offset="1"    stopColor="#FFFFFF" stopOpacity={0}    />
+                </SvgLinearGradient>
+              </Defs>
+              <Rect x={sw/2} y={sw/2} width={bw - sw} height={bh - sw} rx={r} ry={r}
+                fill="none" stroke="url(#tabBorderA)" strokeWidth={sw} />
+              <Rect x={sw/2} y={sw/2} width={bw - sw} height={bh - sw} rx={r} ry={r}
+                fill="none" stroke="url(#tabBorderB)" strokeWidth={sw} />
+            </Svg>
+          );
+        })()}
         {/* Acento del tab activo (crossfade) */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "transparent" }]} />
 
