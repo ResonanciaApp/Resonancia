@@ -256,14 +256,14 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           return (
             <Svg width={bw} height={bh} style={StyleSheet.absoluteFill} pointerEvents="none">
               <Defs>
-                <SvgLinearGradient id="tabBorderA" x1="0" y1="0" x2="0.65" y2="1">
+                <SvgLinearGradient id="tabBorderA" x1="0.5" y1="0" x2="0.5" y2="1">
                   <Stop offset="0"   stopColor="#FFFFFF" stopOpacity={0.22} />
-                  <Stop offset="0.4" stopColor="#FFFFFF" stopOpacity={0.05} />
-                  <Stop offset="1"   stopColor="#FFFFFF" stopOpacity={0.01} />
+                  <Stop offset="0.5" stopColor="#FFFFFF" stopOpacity={0.04} />
+                  <Stop offset="1"   stopColor="#FFFFFF" stopOpacity={0}    />
                 </SvgLinearGradient>
                 <SvgLinearGradient id="tabBorderB" x1="1" y1="1" x2="0.3" y2="0">
-                  <Stop offset="0"    stopColor="#FFFFFF" stopOpacity={0.08} />
-                  <Stop offset="0.45" stopColor="#FFFFFF" stopOpacity={0.02} />
+                  <Stop offset="0"    stopColor="#FFFFFF" stopOpacity={0.04} />
+                  <Stop offset="0.45" stopColor="#FFFFFF" stopOpacity={0.01} />
                   <Stop offset="1"    stopColor="#FFFFFF" stopOpacity={0}    />
                 </SvgLinearGradient>
               </Defs>
