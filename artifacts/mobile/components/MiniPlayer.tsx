@@ -281,7 +281,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
             style={StyleSheet.absoluteFill}
             pointerEvents="none"
           />
-          <View style={{ height: STACK_SIZE + 30 + insets.bottom, alignItems: "center", justifyContent: "center" }}>
+          <View style={{ height: STACK_SIZE + 30, alignItems: "center", justifyContent: "center" }}>
             <Animated.Text style={{ color: "#FFFFFF", fontSize: 15, fontWeight: "500", textAlign: "center", opacity: idleTextOpacity }}>
               Selecciona un sonido para comenzar
             </Animated.Text>
