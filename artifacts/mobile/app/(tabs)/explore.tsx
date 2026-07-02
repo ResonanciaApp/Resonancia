@@ -352,13 +352,13 @@ export default function ExploreScreen() {
         {/* ── Carrusel de categorías ── */}
         {query.length === 0 && (
           <>
-          <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
+          <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginTop: 20 }]}>
             Categorías principales
           </Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={{ marginHorizontal: H_PAD, marginBottom: SECTION_GAP, marginTop: 20 }}
+            style={{ marginHorizontal: H_PAD, marginBottom: SECTION_GAP }}
             contentContainerStyle={{ gap: CAT_CARD_GAP, paddingBottom: 2 }}
             decelerationRate="fast"
             snapToInterval={CAT_CARD_W + CAT_CARD_GAP}
