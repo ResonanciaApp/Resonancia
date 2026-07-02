@@ -566,10 +566,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: MIXER_PANEL_W,
     zIndex: 500,
-    elevation: 8,
+    elevation: 0,
     backgroundColor: "#1B060F",
     overflow: "hidden",
-    shadowColor: "transparent",
   },
   mixerBackdrop: {
     position: "absolute",
@@ -579,7 +578,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: "#000",
     zIndex: 499,
-    elevation: 7,
+    elevation: 0,
   },
   playlistBar: {
     position: "absolute",
