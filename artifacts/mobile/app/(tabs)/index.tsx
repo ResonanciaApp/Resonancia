@@ -128,7 +128,7 @@ function NavTabChip({ sel, label, onPress }: { sel: boolean; label: string; onPr
       style={({ pressed }) => [styles.headerTabChip, { opacity: pressed ? 0.7 : 1 }]}
     >
       <LinearGradient
-        colors={["rgba(255,255,255,0.06)", "rgba(255,255,255,0.06)"]}
+        colors={["rgba(255,255,255,0.04)", "rgba(255,255,255,0.04)"]}
         start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
@@ -719,7 +719,7 @@ export default function HomeScreen2() {
                 style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
               />
               <LinearGradient
-                colors={["rgba(255,255,255,0.06)", "transparent"]}
+                colors={["rgba(255,255,255,0.04)", "transparent"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 0.6, y: 1 }}
                 style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
@@ -899,7 +899,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 16,
     marginBottom: 8,
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(255,255,255,0.04)",
     borderRadius: 14,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -946,7 +946,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   recoCard: {
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(255,255,255,0.04)",
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: 14,
@@ -1139,7 +1139,7 @@ const styles = StyleSheet.create({
     width: "48.5%",
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(255,255,255,0.04)",
     borderRadius: 8,
     overflow: "hidden",
     height: 62,
