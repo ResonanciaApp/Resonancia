@@ -67,38 +67,19 @@ const TAB_CONFIG: Record<
 function TabItem({
   route,
   isFocused,
-  isColorActive,
   onPress,
 }: {
   route: { key: string; name: string };
   isFocused: boolean;
-  isColorActive: boolean;
   onPress: () => void;
 }) {
   const conf = TAB_CONFIG[route.name];
   if (!conf) return null;
 
-  const fadeAnim        = useRef(new Animated.Value(1)).current;
-  const prevColorActive = useRef(isColorActive);
-  const [shown, setShown] = React.useState(isColorActive);
   const isIOS      = Platform.OS === "ios";
   const iconSize   = conf.iconSize ?? ICON_SIZE;
   const iconOffset = conf.iconOffset ?? 0;
   const tOffset    = [{ translateY: iconOffset }];
-
-  useEffect(() => {
-    if (prevColorActive.current === isColorActive) return;
-    prevColorActive.current = isColorActive;
-    // Color cambia cuando la pill llega — fade suave
-    fadeAnim.setValue(0);
-    setShown(isColorActive);
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: DURATION.TAB,
-      easing: easeOutCubic,
-      useNativeDriver: true,
-    }).start();
-  }, [isColorActive, fadeAnim]);
 
   const makeIcon = useCallback((active: boolean) => {
     const color  = active ? ACTIVE_COLOR : INACTIVE_COLOR;
@@ -119,20 +100,16 @@ function TabItem({
       accessibilityRole="button"
       accessibilityState={{ selected: isFocused }}
     >
-      <Animated.View style={[styles.pillWrap, { opacity: fadeAnim }]}>
-        {/* Ícono único — switch + fade in, sin capas simultáneas */}
+      <View style={styles.pillWrap}>
         <View style={{ width: iconSize, height: iconSize }}>
-          {makeIcon(shown)}
+          {makeIcon(false)}
         </View>
         <View style={styles.labelWrap}>
-          <Text
-            style={[styles.label, shown ? styles.labelActive : { color: INACTIVE_COLOR }]}
-            numberOfLines={1}
-          >
+          <Text style={[styles.label, { color: INACTIVE_COLOR }]} numberOfLines={1}>
             {conf.label}
           </Text>
         </View>
-      </Animated.View>
+      </View>
     </Pressable>
   );
 }
@@ -174,23 +151,13 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const pillX          = useRef(new Animated.Value(0)).current;
   const initialPillSet = useRef(false);
 
-  // colorActiveKey: la ruta cuyo ícono/label debe verse dorado.
-  // Se actualiza cuando el spring ya recorrió ~95% del camino (250 ms).
-  const [colorActiveKey, setColorActiveKey] = useState<string>(
-    state.routes[state.index]?.key ?? ""
-  );
-  const pendingColorKey = useRef(state.routes[state.index]?.key ?? "");
-  const colorTimer      = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   const setPillPosition = useCallback(
     (tw: number, vi: number, animate: boolean) => {
       if (tw === 0) return;
       const target = vi * tw;
-      if (colorTimer.current) clearTimeout(colorTimer.current);
       if (!animate || !initialPillSet.current) {
         pillX.setValue(target);
         initialPillSet.current = true;
-        setColorActiveKey(pendingColorKey.current);
       } else {
         Animated.spring(pillX, {
           toValue: target,
@@ -199,19 +166,14 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           stiffness: 220,
           mass: 0.9,
         }).start();
-        // A 250 ms el spring ya cubrió ~95% de la distancia — color sincronizado
-        colorTimer.current = setTimeout(() => {
-          setColorActiveKey(pendingColorKey.current);
-        }, 250);
       }
     },
     [pillX],
   );
 
   useEffect(() => {
-    pendingColorKey.current = state.routes[state.index]?.key ?? "";
     setPillPosition(tabWidth, visibleIndex, true);
-  }, [visibleIndex, tabWidth, setPillPosition, state.routes, state.index]);
+  }, [visibleIndex, tabWidth, setPillPosition]);
 
   const onRowLayout = useCallback(
     (e: LayoutChangeEvent) => {
@@ -347,7 +309,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                 key={route.key}
                 route={route}
                 isFocused={isFocused}
-                isColorActive={route.key === colorActiveKey}
                 onPress={onPress}
               />
             );
