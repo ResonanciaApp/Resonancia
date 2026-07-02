@@ -447,7 +447,7 @@ export default function ExploreScreen() {
               onPress={() => setSearchVisible(true)}
               style={styles.searchIconBtn}
             >
-              <Feather name="search" size={22} color="#FFFFFF" />
+              <Feather name="search" size={25} color="#FFFFFF" />
             </Pressable>
           </View>
         </View>
