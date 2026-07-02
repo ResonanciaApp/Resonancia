@@ -1468,7 +1468,7 @@ const styles = StyleSheet.create({
 
   animChipWrap: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
-  chipRow: { flexGrow: 0 },
+  chipRow: { flexGrow: 0, marginTop: -20 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingTop: 5, paddingBottom: 2, paddingHorizontal: H_PAD },
   chipRowFiltered: {
     flexDirection: "row",
