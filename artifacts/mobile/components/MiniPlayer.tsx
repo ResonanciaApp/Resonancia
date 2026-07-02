@@ -514,6 +514,8 @@ const styles = StyleSheet.create({
     width: "100%",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: "rgba(255,255,255,0.20)",
   },
 
   // ── Fila de mezcla ────────────────────────────────────────────
