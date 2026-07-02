@@ -26,6 +26,7 @@ import { getSoundImage } from "@/config/sound-images";
 import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 import { useColors } from "@/hooks/useColors";
 import { GhostPill } from "@/components/GhostPill";
+import { useMixerPanel } from "@/context/MixerPanelContext";
 
 const MAX_PLAYER_WIDTH    = 438;
 const STACK_SIZE          = 43;
@@ -98,6 +99,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
   } = useMixer();
 
   const colors = useColors();
+  const { isMixerOpen } = useMixerPanel();
 
   // ── Swipe-up en handle → abre la sheet ─────────────────────────
   const openSheetRef = useRef(openSheet);
@@ -161,6 +163,24 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
     }
     prevMixActive.current = mixActive;
   }, [mixActive]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Fade del texto idle "Selecciona un sonido para comenzar" ───
+  const idleTextOpacity = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (isMixerOpen && idle) {
+      idleTextOpacity.setValue(0);
+      const seq = Animated.sequence([
+        Animated.delay(320 + 1000),                                              // panel listo + 1 s
+        Animated.timing(idleTextOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
+        Animated.delay(2000),                                                    // visible 2 s
+        Animated.timing(idleTextOpacity, { toValue: 0, duration: 400, useNativeDriver: true }),
+      ]);
+      seq.start();
+      return () => seq.stop();
+    } else {
+      idleTextOpacity.setValue(0);
+    }
+  }, [isMixerOpen, idle]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── De-stack / carrusel ────────────────────────────────────────
   // El área del stack anima su ANCHO: cerrado = stackWidthStackedCap,
@@ -262,9 +282,9 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
             pointerEvents="none"
           />
           <View style={[styles.mixRow, { justifyContent: "center", paddingRight: 12, height: STACK_SIZE + 30 }]}>
-            <Text style={{ color: "rgba(255,255,255,0.35)", fontSize: 14, fontWeight: "500", textAlign: "center" }}>
+            <Animated.Text style={{ color: "rgba(255,255,255,0.35)", fontSize: 14, fontWeight: "500", textAlign: "center", opacity: idleTextOpacity }}>
               Selecciona un sonido para comenzar
-            </Text>
+            </Animated.Text>
           </View>
         </View>
       </View>
