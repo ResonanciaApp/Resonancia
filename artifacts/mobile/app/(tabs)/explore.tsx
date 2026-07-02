@@ -1,8 +1,11 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import {
+  Animated,
   Dimensions,
+  FlatList,
+  Keyboard,
   Modal,
   Platform,
   Pressable,
@@ -187,14 +190,130 @@ function getSessionAuthor(s: Session): string {
   return getArtist(s.artistId).name;
 }
 
+// ── Overlay de búsqueda ────────────────────────────────────────────────────
+function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const [q, setQ] = useState("");
+  const inputRef  = useRef<TextInput>(null);
+  const [kbHeight, setKbHeight] = useState(0);
+  const [kbReady,  setKbReady]  = useState(false);
+  const fadeAnim  = useRef(new Animated.Value(0)).current;
+  const insets    = useSafeAreaInsets();
+
+  useEffect(() => {
+    if (!visible) { setQ(""); setKbReady(false); setKbHeight(0); fadeAnim.setValue(0); return; }
+    const show = Keyboard.addListener("keyboardDidShow", (e) => {
+      setKbHeight(e.endCoordinates.height);
+      setKbReady(true);
+      Animated.timing(fadeAnim, { toValue: 1, duration: 180, useNativeDriver: true }).start();
+    });
+    const hide = Keyboard.addListener("keyboardDidHide", () => { setKbReady(false); fadeAnim.setValue(0); });
+    return () => { show.remove(); hide.remove(); };
+  }, [visible, fadeAnim]);
+
+  const results = useMemo(() => {
+    const term = q.trim().toLowerCase();
+    if (!term) return SESSIONS.slice(0, 0);
+    return SESSIONS.filter((s) =>
+      s.title.toLowerCase().includes(term) ||
+      s.categoryLabel.toLowerCase().includes(term) ||
+      (s.subtitle ?? "").toLowerCase().includes(term)
+    ).slice(0, 30);
+  }, [q]);
+
+  return (
+    <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose} onShow={() => inputRef.current?.focus()}>
+      <View style={[srStyles.root, { paddingBottom: kbHeight }]}>
+        {/* Barra */}
+        <View style={[srStyles.overlay, { paddingTop: insets.top + 14 }]}>
+          <View style={srStyles.bar}>
+            <Feather name="search" size={16} color="rgba(242,231,228,0.45)" />
+            <TextInput
+              ref={inputRef}
+              style={srStyles.input}
+              placeholder="Buscar sesiones, músicas, sonidos..."
+              placeholderTextColor="rgba(242,231,228,0.45)"
+              value={q}
+              onChangeText={setQ}
+              returnKeyType="search"
+              autoCorrect={false}
+            />
+            {q.length > 0 && (
+              <Pressable onPress={() => setQ("")} hitSlop={10}>
+                <Feather name="x" size={15} color="rgba(242,231,228,0.45)" />
+              </Pressable>
+            )}
+          </View>
+          <Pressable onPress={onClose} style={srStyles.cancel}>
+            <Text style={srStyles.cancelText}>Cancelar</Text>
+          </Pressable>
+        </View>
+
+        {/* Placeholder vacío */}
+        {q.length === 0 && kbReady && (
+          <Animated.View style={[srStyles.empty, { opacity: fadeAnim }]}>
+            <Feather name="headphones" size={48} color="#D4AF37" style={{ marginBottom: 16 }} />
+            <Text style={srStyles.emptyTitle}>Encuentra tus sesiones favoritas</Text>
+            <Text style={srStyles.emptySub}>Busca meditaciones, sonidos, historias…</Text>
+          </Animated.View>
+        )}
+
+        {/* Resultados */}
+        {q.length > 0 && (
+          <FlatList
+            data={results}
+            keyExtractor={(s) => s.id}
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 24 }}
+            ListEmptyComponent={
+              <View style={srStyles.empty}>
+                <Feather name="search" size={36} color="rgba(242,231,228,0.45)" style={{ marginBottom: 12 }} />
+                <Text style={srStyles.emptyTitle}>Sin resultados</Text>
+                <Text style={srStyles.emptySub}>Intenta con otro término</Text>
+              </View>
+            }
+            renderItem={({ item }) => (
+              <Pressable
+                onPress={() => { onClose(); router.push(`/session/${item.id}` as never); }}
+                style={({ pressed }) => [srStyles.resultRow, { opacity: pressed ? 0.7 : 1 }]}
+              >
+                <Image source={item.image as number} style={srStyles.thumb} contentFit="cover" />
+                <View style={{ flex: 1 }}>
+                  <Text style={srStyles.resultTitle} numberOfLines={1}>{item.title}</Text>
+                  <Text style={srStyles.resultSub}   numberOfLines={1}>{item.categoryLabel}</Text>
+                </View>
+              </Pressable>
+            )}
+          />
+        )}
+      </View>
+    </Modal>
+  );
+}
+
+const srStyles = StyleSheet.create({
+  root:        { flex: 1, backgroundColor: "#230610" },
+  overlay:     { flexDirection: "row", alignItems: "center", backgroundColor: "#230610", paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
+  bar:         { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.09)", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 11 },
+  input:       { flex: 1, fontSize: 14, color: "#F4DAD5" },
+  cancel:      { paddingVertical: 6 },
+  cancelText:  { color: "#D4AF37", fontSize: 14, fontWeight: "600" },
+  empty:       { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, paddingTop: 60 },
+  emptyTitle:  { fontSize: 18, fontWeight: "700", color: "#F4DAD5", textAlign: "center", marginBottom: 10 },
+  emptySub:    { fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
+  resultRow:   { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(255,255,255,0.07)" },
+  thumb:       { width: 44, height: 44, borderRadius: 10, backgroundColor: "rgba(255,255,255,0.025)" },
+  resultTitle: { fontSize: 14, fontWeight: "600", color: "#F4DAD5", marginBottom: 2 },
+  resultSub:   { fontSize: 12, color: "rgba(242,231,228,0.45)" },
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function ExploreScreen() {
   const colors   = useColors();
   const insets   = useSafeAreaInsets();
   const { photoUri } = useUserProfile();
   const { open: openDrawer } = useDrawer();
-  const [query, setQuery] = useState("");
-  const [searchOpen, setSearchOpen] = useState(false);
-  const searchInputRef = useRef<import("react-native").TextInput>(null);
+  const [searchVisible, setSearchVisible] = useState(false);
   const [selectedDur, setSelectedDur] = useState<DurSlot | null>(null);
   const [durSort, setDurSort] = useState<"recientes" | "populares">("recientes");
   const [ritualesFilter, setRitualesFilter] = useState<DurOptEx>("Todos");
@@ -230,15 +349,6 @@ export default function ExploreScreen() {
   const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const filteredSessions = SESSIONS.filter((s) => {
-    if (!query) return false;
-    const q = query.toLowerCase();
-    return (
-      s.title.toLowerCase().includes(q) ||
-      s.categoryLabel.toLowerCase().includes(q) ||
-      s.subtitle.toLowerCase().includes(q)
-    );
-  });
 
   function handleSessionPress(s: Session) {
     const locked = s.isPremium && !isPremium;
@@ -318,10 +428,7 @@ export default function ExploreScreen() {
             </View>
             <Pressable
               hitSlop={12}
-              onPress={() => {
-                setSearchOpen(true);
-                setTimeout(() => searchInputRef.current?.focus(), 80);
-              }}
+              onPress={() => setSearchVisible(true)}
               style={styles.searchIconBtn}
             >
               <Feather name="search" size={22} color="#FFFFFF" />
@@ -329,88 +436,40 @@ export default function ExploreScreen() {
           </View>
         </View>
 
-        {/* ── Search bar (visible solo al abrir) ── */}
-        {searchOpen && (
-          <View style={styles.searchBarBorder}>
-            <View style={styles.searchBar}>
-              <View style={styles.searchInnerTop} pointerEvents="none" />
-              <View style={styles.searchInnerBottom} pointerEvents="none" />
-              <Feather name="search" size={16} color="#B08880" />
-              <TextInput
-                ref={searchInputRef}
-                value={query}
-                onChangeText={setQuery}
-                placeholder="Buscar sesiones, músicas, sonidos..."
-                placeholderTextColor="#B08880"
-                style={styles.searchInput}
-                autoFocus
-              />
-              <Pressable onPress={() => { setQuery(""); setSearchOpen(false); }}>
-                <Feather name="x" size={16} color="rgba(255,255,255,0.45)" />
-              </Pressable>
-            </View>
-          </View>
-        )}
-
         {/* ── Carrusel de categorías ── */}
-        {query.length === 0 && (
-          <>
-          <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginTop: 20 }]}>
-            Categorías principales
-          </Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{ marginHorizontal: H_PAD, marginBottom: SECTION_GAP }}
-            contentContainerStyle={{ gap: CAT_CARD_GAP, paddingBottom: 2 }}
-            decelerationRate="fast"
-            snapToInterval={CAT_CARD_W + CAT_CARD_GAP}
-            snapToAlignment="start"
-          >
-            {CATEGORY_CARDS.map((cat) => (
-              <Pressable
-                key={cat.id}
-                onPress={() => router.push(cat.route as never)}
-                style={({ pressed }) => [styles.catCard, { opacity: pressed ? 0.85 : 1 }]}
-              >
-                <View style={styles.catCardImage}>
-                  <Image
-                    source={cat.image}
-                    style={StyleSheet.absoluteFill}
-                    contentFit="cover"
-                    cachePolicy="memory-disk"
-                  />
-                </View>
-                <View style={styles.catCardText}>
-                  <Text style={styles.catCardTitle}>{cat.title}</Text>
-                </View>
-              </Pressable>
-            ))}
-          </ScrollView>
-          </>
-        )}
-
-        {/* ── Search results ── */}
-        {query.length > 0 ? (
-          <View style={styles.section}>
-            <Text style={[styles.resultsLabel, { color: "#c2c2c2" }]}>
-              {filteredSessions.length} sesión{filteredSessions.length !== 1 ? "es" : ""} encontrada{filteredSessions.length !== 1 ? "s" : ""}
-            </Text>
-            {filteredSessions.map((s) => (
-              <SessionCard key={s.id} session={s} horizontal />
-            ))}
-            {filteredSessions.length === 0 && (
-              <View style={styles.emptyState}>
-                <Feather name="search" size={36} color={colors.border} />
-                <Text style={[styles.emptyTitle, { color: "#e8e8e8" }]}>Sin resultados</Text>
-                <Text style={[styles.emptySub, { color: "#c2c2c2" }]}>
-                  Prueba con otro término
-                </Text>
+        <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginTop: 20 }]}>
+          Categorías principales
+        </Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ marginHorizontal: H_PAD, marginBottom: SECTION_GAP }}
+          contentContainerStyle={{ gap: CAT_CARD_GAP, paddingBottom: 2 }}
+          decelerationRate="fast"
+          snapToInterval={CAT_CARD_W + CAT_CARD_GAP}
+          snapToAlignment="start"
+        >
+          {CATEGORY_CARDS.map((cat) => (
+            <Pressable
+              key={cat.id}
+              onPress={() => router.push(cat.route as never)}
+              style={({ pressed }) => [styles.catCard, { opacity: pressed ? 0.85 : 1 }]}
+            >
+              <View style={styles.catCardImage}>
+                <Image
+                  source={cat.image}
+                  style={StyleSheet.absoluteFill}
+                  contentFit="cover"
+                  cachePolicy="memory-disk"
+                />
               </View>
-            )}
-          </View>
-        ) : (
-          <>
+              <View style={styles.catCardText}>
+                <Text style={styles.catCardTitle}>{cat.title}</Text>
+              </View>
+            </Pressable>
+          ))}
+        </ScrollView>
+
             {/* ── Explorar todo (TEMAS 6×2) ── */}
             <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
               <View style={styles.sectionRow}>
@@ -594,8 +653,7 @@ export default function ExploreScreen() {
                 ))}
               </View>
             </View>
-          </>
-        )}
+
       </ScrollView>
 
       {/* Modal picker duración */}
@@ -642,6 +700,8 @@ export default function ExploreScreen() {
           </View>
         </View>
       </Modal>
+
+      <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} />
     </View>
   );
 }
@@ -673,44 +733,9 @@ const styles = StyleSheet.create({
   pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#e8e8e8" },
   pageSubtitle: { fontSize: 14, color: "rgba(255,255,255,0.55)", marginTop: 2 },
 
-  searchBarBorder: {
-    marginHorizontal: H_PAD,
-    marginTop: 10,
-    marginBottom: SECTION_GAP,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.04)",
-  },
-  searchBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 14,
-    paddingVertical: 15,
-    borderRadius: 9,
-    backgroundColor: "rgba(255,255,255,0.025)",
-    gap: 10,
-    overflow: "hidden",
-  },
-  searchInnerTop: {
-    position: "absolute", top: 0, left: 0, right: 0, height: 1,
-    backgroundColor: "rgba(255,255,255,0.03)",
-    zIndex: 1,
-  },
-  searchInnerBottom: {
-    position: "absolute", bottom: 0, left: 0, right: 0, height: 1,
-    backgroundColor: "rgba(0,0,0,0.10)",
-    zIndex: 1,
-  },
-  searchInput: { flex: 1, fontSize: 14, color: "#FFFFFF" },
-
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 24 },
   sectionTitle: { fontSize: 20, fontWeight: "600", letterSpacing: 0.5, color: "#e8e8e8", marginBottom: 24 },
-
-  resultsLabel: { fontSize: 12, marginBottom: 12 },
-  emptyState:   { alignItems: "center", paddingVertical: 48, gap: 10 },
-  emptyTitle:   { fontSize: 16, fontWeight: "600" },
-  emptySub:     { fontSize: 13 },
 
   // Recomendado para ti
   recoSection: {
