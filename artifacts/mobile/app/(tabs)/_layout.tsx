@@ -234,21 +234,22 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         style={[styles.bar, { bottom: barBottom, transform: [{ translateY }] }]}
       >
         {/* ── iOS Glass Material ────────────────────────────────────────────── */}
-        {/* 1. Blur base — intensity alta, tint light para que el contenido detrás brille */}
-        <BlurView intensity={38} tint="light" style={StyleSheet.absoluteFill} />
-        {/* 2. Tinte borgoña oscuro encima del blur para mantener la paleta */}
-        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(22,4,11,0.62)" }]} />
-        {/* 3. Ruido granular sutil — textura orgánica del vidrio */}
+        {/* 1. Blur base — tint dark para fondo uniforme (evita hotspots por contenido claro detrás) */}
+        <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+        {/* 2. Tinte borgoña translúcido — aporta color sin tapar el blur */}
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(22,4,11,0.50)" }]} />
+        {/* 3. Ruido granular sutil — textura orgánica del vidrio (cover evita seams de tiling) */}
         <View pointerEvents="none" style={[StyleSheet.absoluteFill, { opacity: 0.025 }]}>
           <Image
             source={require("@/assets/images/noise.png")}
             style={[StyleSheet.absoluteFill, { borderRadius: 999 }]}
-            resizeMode="repeat"
+            resizeMode="cover"
           />
         </View>
-        {/* 4. Specular highlight — línea de luz en el borde superior (glass edge) */}
+        {/* 4. Specular highlight simétrico — fade desde ambos extremos, pico en el centro */}
         <LinearGradient
-          colors={["rgba(255,255,255,0.18)", "rgba(255,255,255,0.06)", "rgba(255,255,255,0)"]}
+          colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.16)", "rgba(255,255,255,0.16)", "rgba(255,255,255,0)"]}
+          locations={[0, 0.2, 0.8, 1]}
           start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
           style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1.5 }}
           pointerEvents="none"
