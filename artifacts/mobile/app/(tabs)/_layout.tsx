@@ -367,13 +367,21 @@ function TabLayoutInner() {
   const mixActive      = !currentSession && activeSounds.length > 0;
   const miniPlayerBottom = hidden ? bottomPb + 10 : tabBarHeight - 10;
 
+  // Mini player aparece 400ms después de entrar a Mezclador (transición suave)
+  const [miniPlayerReady, setMiniPlayerReady] = useState(false);
+  useEffect(() => {
+    if (!onMezclador) { setMiniPlayerReady(false); return; }
+    const t = setTimeout(() => setMiniPlayerReady(true), 400);
+    return () => clearTimeout(t);
+  }, [onMezclador]);
+
   // ¿La sesión actual pertenece a alguna playlist? → PlaylistMiniPlayer persistente
   const activePlaylist = currentSession
     ? (playlists.find((p) => p.sessionIds.includes(currentSession.id)) ?? null)
     : null;
 
   // El MiniPlayer global del Mezclador no aparece cuando hay playlist activa
-  const showMiniPlayer = onMezclador && !activePlaylist;
+  const showMiniPlayer = onMezclador && miniPlayerReady && !activePlaylist;
 
   return (
     <View style={{ flex: 1 }}>
