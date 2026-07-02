@@ -95,7 +95,7 @@ function TabItem({
     return conf.image ? (
       <Image source={conf.image} style={{ width: iconSize, height: iconSize, transform: tOffset }} tintColor={color} resizeMode="contain" />
     ) : isIOS ? (
-      <SymbolView name={sfName as never} tintColor={color} size={iconSize} style={{ transform: tOffset }} />
+      <SymbolView name={sfName as never} tintColor={color} size={iconSize} style={{ transform: tOffset }} renderingMode="monochrome" />
     ) : (
       <Feather name={conf.featherIcon as never} size={iconSize} color={color} style={{ transform: tOffset }} />
     );
