@@ -170,7 +170,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
     if (isMixerOpen && idle) {
       idleTextOpacity.setValue(0);
       const seq = Animated.sequence([
-        Animated.delay(320 + 1000),                                              // panel listo + 1 s
+        Animated.delay(320 + 400),                                               // panel listo + 0,4 s
         Animated.timing(idleTextOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
         Animated.delay(2000),                                                    // visible 2 s
         Animated.timing(idleTextOpacity, { toValue: 0, duration: 400, useNativeDriver: true }),
