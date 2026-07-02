@@ -1285,6 +1285,7 @@ export default function BibliotecaScreen() {
         <View style={styles.headerRow}>
           <View style={{ flex: 1 }}>
             <Text style={styles.headerTitle}>Tu Biblioteca</Text>
+            <Text style={styles.headerSubtitle}>Organiza tu contenido</Text>
           </View>
           <GhostPill style={{ gap: 6, backgroundColor: "rgba(255,255,255,0.06)" }}>
             <Pressable hitSlop={10} onPress={() => setSearchVisible(true)} style={styles.headerIconBtn}>
@@ -1462,7 +1463,7 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: "rgba(212,175,55,0.25)",
   },
   headerTitle: { fontSize: 27, fontWeight: "700", color: TEXT, letterSpacing: 0.5 },
-  headerSubtitle: { fontSize: 13, color: MUTED, marginTop: 3, fontWeight: "400" },
+  headerSubtitle: { fontSize: 14, color: "rgba(255,255,255,0.55)", marginTop: 2 },
   headerIcons: { flexDirection: "row", alignItems: "center", gap: 4 },
   headerIconBtn: { width: 43, height: 43, alignItems: "center", justifyContent: "center" },
 
