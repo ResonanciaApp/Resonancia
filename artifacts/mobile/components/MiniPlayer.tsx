@@ -178,7 +178,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
       idleHintShownRef.current = true;
       idleTextOpacity.setValue(0);
       const seq = Animated.sequence([
-        Animated.delay(320 + 400),
+        Animated.delay(320),
         Animated.timing(idleTextOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
         Animated.delay(2000),
         Animated.timing(idleTextOpacity, { toValue: 0, duration: 400, useNativeDriver: true }),
