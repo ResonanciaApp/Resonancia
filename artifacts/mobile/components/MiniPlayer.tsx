@@ -365,16 +365,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
 
         </View>
 
-        {/* Título cinemático — centrado, fondo de pantalla */}
-        <Animated.Text
-          numberOfLines={1}
-          pointerEvents="none"
-          style={[styles.cinematicText, { opacity: cinematicOpacity }]}
-        >
-          Esta es tu mezcla
-        </Animated.Text>
-
-        {/* Contador de sonidos — aparece al terminar el cinematic */}
+        {/* Contador de sonidos */}
         <Animated.Text
           numberOfLines={1}
           pointerEvents="none"
