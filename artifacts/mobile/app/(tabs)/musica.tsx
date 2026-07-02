@@ -1,5 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { router, useFocusEffect } from "expo-router";
+import { router } from "expo-router";
+import { useMixerPanel } from "@/context/MixerPanelContext";
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState, memo } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -451,6 +452,7 @@ export default function MezcladorScreen() {
   const { isPremium }    = usePremium();
   const { sounds: allSounds, refresh: refreshSounds } = useSounds();
   const { open: openDrawer } = useDrawer();
+  const { isMixerOpen, closeMixer } = useMixerPanel();
   const { isActive, toggleSound, activeBpm, bgPaletteId, setBgPaletteId } = useMixer();
   const { lastSavedAt } = useSaveEvent();
 
@@ -548,18 +550,21 @@ export default function MezcladorScreen() {
     setTabBarColors(null);
   }, [mainTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Al entrar al Mezclador → esconder menú; al salir → restaurarlo y resetear color
-  useFocusEffect(
-    React.useCallback(() => {
-      requestHide();
-      setMainTab("popular");
-      refreshSounds();
-      return () => {
-        showMenu();
-        setTabBarColors(null);
-      };
-    }, [requestHide, showMenu, setTabBarColors, refreshSounds]),
-  );
+  // Al abrir el panel del Mezclador → esconder menú; al cerrar → restaurarlo
+  useEffect(() => {
+    if (!isMixerOpen) {
+      showMenu();
+      setTabBarColors(null);
+      return;
+    }
+    requestHide();
+    setMainTab("popular");
+    refreshSounds();
+    return () => {
+      showMenu();
+      setTabBarColors(null);
+    };
+  }, [isMixerOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [bannerIdx,     setBannerIdx]     = useState(0);
   const bannerOpacity = useRef(new Animated.Value(1)).current;
@@ -675,7 +680,7 @@ export default function MezcladorScreen() {
             <View style={styles.header}>
               <View style={styles.headerRow}>
                 <GhostPill style={{ marginLeft: -11, marginRight: 30, backgroundColor: "rgba(255,255,255,0.06)" }}>
-                  <Pressable onPress={() => router.back()} hitSlop={10} style={styles.headerPillBtn}>
+                  <Pressable onPress={closeMixer} hitSlop={10} style={styles.headerPillBtn}>
                     <MaterialCommunityIcons name="chevron-left" size={32} color="#e8e8e8" />
                   </Pressable>
                 </GhostPill>

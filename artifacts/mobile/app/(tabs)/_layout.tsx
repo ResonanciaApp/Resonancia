@@ -6,6 +6,8 @@ import { Tabs, usePathname } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useCallback, useState } from "react";
+import { useMixerPanel, MIXER_PANEL_W } from "@/context/MixerPanelContext";
+import MezcladorScreen from "./musica";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import {
   Animated,
@@ -120,6 +122,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const insets = useSafeAreaInsets();
   const isWeb  = Platform.OS === "web";
   const pb     = isWeb ? 8 : insets.bottom;
+  const { openMixer } = useMixerPanel();
 
   // 8 px de separación con el borde inferior de la pantalla
   const barBottom = Math.max(3, pb - 10 - 5);
@@ -294,6 +297,10 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
             const isFocused = state.index === index;
             const onPress   = () => {
+              if (route.name === "musica") {
+                openMixer();
+                return;
+              }
               const event = navigation.emit({
                 type: "tabPress",
                 target: route.key,
@@ -361,6 +368,16 @@ function TabLayoutInner() {
   const bottomPb           = isWeb ? 8 : insets.bottom;
   const tabBarHeight       = PILL_H + Math.max(8, bottomPb - 10);
   const { hidden }         = useTabBarVisibility();
+  const { isMixerOpen, closeMixer, panelAnim } = useMixerPanel();
+
+  const panelTranslateX = panelAnim.interpolate({
+    inputRange:  [0, 1],
+    outputRange: [-MIXER_PANEL_W, 0],
+  });
+  const backdropOpacity = panelAnim.interpolate({
+    inputRange:  [0, 1],
+    outputRange: [0, 0.55],
+  });
 
   const pathname       = usePathname();
   const onMezclador    = pathname === "/musica";
@@ -399,6 +416,20 @@ function TabLayoutInner() {
           <MiniPlayer idle={!currentSession && !mixActive} />
         </View>
       )}
+
+      {/* ── Mixer Drawer Panel — siempre montado, desliza desde la izquierda ── */}
+      <Animated.View
+        pointerEvents={isMixerOpen ? "box-none" : "none"}
+        style={[styles.mixerPanel, { transform: [{ translateX: panelTranslateX }] }]}
+      >
+        <MezcladorScreen />
+      </Animated.View>
+      <Animated.View
+        pointerEvents={isMixerOpen ? "auto" : "none"}
+        style={[styles.mixerBackdrop, { opacity: backdropOpacity }]}
+      >
+        <Pressable style={{ flex: 1 }} onPress={closeMixer} />
+      </Animated.View>
 
       {/* ── PlaylistMiniPlayer persistente (visible en todos los tabs) ─────── */}
       {activePlaylist && currentSession && (
@@ -531,6 +562,27 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 10,
     right: 10,
+  },
+  mixerPanel: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: MIXER_PANEL_W,
+    zIndex: 500,
+    elevation: 500,
+    backgroundColor: "#1B060F",
+    overflow: "hidden",
+  },
+  mixerBackdrop: {
+    position: "absolute",
+    left: MIXER_PANEL_W,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: "#000",
+    zIndex: 499,
+    elevation: 499,
   },
   playlistBar: {
     position: "absolute",

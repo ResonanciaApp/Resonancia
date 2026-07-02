@@ -34,6 +34,7 @@ import { preloadGeometrixIntro } from "@/lib/geometrixIntro";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
 import { FoldersPlaylistsProvider } from "@/context/FoldersPlaylistsContext";
 import { DrawerProvider, useDrawer } from "@/context/DrawerContext";
+import { MixerPanelProvider } from "@/context/MixerPanelContext";
 import { IntencionProvider } from "@/context/IntencionContext";
 import { MixerProvider } from "@/context/MixerContext";
 import { SoundsProvider } from "@/context/SoundsContext";
@@ -275,16 +276,18 @@ function NavStack() {
 
 function RootLayoutNav() {
   return (
-    <DrawerProvider>
-      <ApiAuthBridge />
-      <AuthGate />
-      <PushBridge />
-      <PushWrapper>
-        <NavStack />
-      </PushWrapper>
-      <DrawerMenu />
-      <MixerSheet />
-    </DrawerProvider>
+    <MixerPanelProvider>
+      <DrawerProvider>
+        <ApiAuthBridge />
+        <AuthGate />
+        <PushBridge />
+        <PushWrapper>
+          <NavStack />
+        </PushWrapper>
+        <DrawerMenu />
+        <MixerSheet />
+      </DrawerProvider>
+    </MixerPanelProvider>
   );
 }
 
