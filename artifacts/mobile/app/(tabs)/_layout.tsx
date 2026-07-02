@@ -238,15 +238,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
         {/* 2. Tinte borgoña translúcido — aporta color sin tapar el blur */}
         <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(22,4,11,0.50)" }]} />
-        {/* 3. Ruido granular sutil — textura orgánica del vidrio (cover evita seams de tiling) */}
-        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { opacity: 0.025 }]}>
-          <Image
-            source={require("@/assets/images/noise.png")}
-            style={[StyleSheet.absoluteFill, { borderRadius: 999 }]}
-            resizeMode="cover"
-          />
-        </View>
-        {/* 4. Specular highlight simétrico — fade desde ambos extremos, pico en el centro */}
+        {/* 3. Specular highlight simétrico — fade desde ambos extremos, pico en el centro */}
         <LinearGradient
           colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.16)", "rgba(255,255,255,0.16)", "rgba(255,255,255,0)"]}
           locations={[0, 0.2, 0.8, 1]}
