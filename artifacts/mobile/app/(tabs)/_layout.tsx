@@ -67,36 +67,38 @@ const TAB_CONFIG: Record<
 function TabItem({
   route,
   isFocused,
+  isColorActive,
   onPress,
 }: {
   route: { key: string; name: string };
   isFocused: boolean;
+  isColorActive: boolean;
   onPress: () => void;
 }) {
   const conf = TAB_CONFIG[route.name];
   if (!conf) return null;
 
-  const fadeAnim   = useRef(new Animated.Value(1)).current;
-  const prevFocused = useRef(isFocused);
-  const [shown, setShown] = React.useState(isFocused);
+  const fadeAnim        = useRef(new Animated.Value(1)).current;
+  const prevColorActive = useRef(isColorActive);
+  const [shown, setShown] = React.useState(isColorActive);
   const isIOS      = Platform.OS === "ios";
   const iconSize   = conf.iconSize ?? ICON_SIZE;
   const iconOffset = conf.iconOffset ?? 0;
   const tOffset    = [{ translateY: iconOffset }];
 
   useEffect(() => {
-    if (prevFocused.current === isFocused) return;
-    prevFocused.current = isFocused;
-    // Switch instantáneo a invisible → actualizar contenido → fade in
+    if (prevColorActive.current === isColorActive) return;
+    prevColorActive.current = isColorActive;
+    // Color cambia cuando la pill llega — fade suave
     fadeAnim.setValue(0);
-    setShown(isFocused);
+    setShown(isColorActive);
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: DURATION.TAB,
       easing: easeOutCubic,
       useNativeDriver: true,
     }).start();
-  }, [isFocused, fadeAnim]);
+  }, [isColorActive, fadeAnim]);
 
   const makeIcon = useCallback((active: boolean) => {
     const color  = active ? ACTIVE_COLOR : INACTIVE_COLOR;
@@ -172,6 +174,13 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const pillX          = useRef(new Animated.Value(0)).current;
   const initialPillSet = useRef(false);
 
+  // colorActiveKey: la ruta cuyo ícono/label debe verse dorado.
+  // Se actualiza SOLO cuando la pill termina de llegar (spring .start callback).
+  const [colorActiveKey, setColorActiveKey] = useState<string>(
+    state.routes[state.index]?.key ?? ""
+  );
+  const pendingColorKey = useRef(state.routes[state.index]?.key ?? "");
+
   const setPillPosition = useCallback(
     (tw: number, vi: number, animate: boolean) => {
       if (tw === 0) return;
@@ -179,6 +188,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
       if (!animate || !initialPillSet.current) {
         pillX.setValue(target);
         initialPillSet.current = true;
+        setColorActiveKey(pendingColorKey.current);
       } else {
         Animated.spring(pillX, {
           toValue: target,
@@ -186,15 +196,18 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           damping: 22,
           stiffness: 220,
           mass: 0.9,
-        }).start();
+        }).start(({ finished }) => {
+          if (finished) setColorActiveKey(pendingColorKey.current);
+        });
       }
     },
     [pillX],
   );
 
   useEffect(() => {
+    pendingColorKey.current = state.routes[state.index]?.key ?? "";
     setPillPosition(tabWidth, visibleIndex, true);
-  }, [visibleIndex, tabWidth, setPillPosition]);
+  }, [visibleIndex, tabWidth, setPillPosition, state.routes, state.index]);
 
   const onRowLayout = useCallback(
     (e: LayoutChangeEvent) => {
@@ -330,6 +343,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                 key={route.key}
                 route={route}
                 isFocused={isFocused}
+                isColorActive={route.key === colorActiveKey}
                 onPress={onPress}
               />
             );
