@@ -1,6 +1,6 @@
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import Svg, { Defs, LinearGradient as SvgLinearGradient, RadialGradient, Rect, Stop } from "react-native-svg";
+import Svg, { Defs, LinearGradient as SvgLinearGradient, Rect, Stop } from "react-native-svg";
 import { Image as ExpoImage } from "expo-image";
 import { Tabs, usePathname } from "expo-router";
 import { SymbolView } from "expo-symbols";
@@ -266,24 +266,22 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                   <Stop offset="0.45" stopColor="#FFFFFF" stopOpacity={0.01} />
                   <Stop offset="1"    stopColor="#FFFFFF" stopOpacity={0}    />
                 </SvgLinearGradient>
-                <RadialGradient id="tabBorderC"
-                  cx={bw / 2} cy={bh} r={bw * 0.2}
-                  fx={bw / 2} fy={bh}
-                  gradientUnits="userSpaceOnUse">
-                  <Stop offset="0"   stopColor="#FFFFFF" stopOpacity={0.18} />
-                  <Stop offset="0.3" stopColor="#FFFFFF" stopOpacity={0.05} />
-                  <Stop offset="1"   stopColor="#FFFFFF" stopOpacity={0}    />
-                </RadialGradient>
               </Defs>
               <Rect x={sw/2} y={sw/2} width={bw - sw} height={bh - sw} rx={r} ry={r}
                 fill="none" stroke="url(#tabBorderA)" strokeWidth={sw} />
               <Rect x={sw/2} y={sw/2} width={bw - sw} height={bh - sw} rx={r} ry={r}
                 fill="none" stroke="url(#tabBorderB)" strokeWidth={sw} />
-              <Rect x={sw/2} y={sw/2} width={bw - sw} height={bh - sw} rx={r} ry={r}
-                fill="none" stroke="url(#tabBorderC)" strokeWidth={sw} />
             </Svg>
           );
         })()}
+        {/* 5. Brillo inferior — centro a 40% del ancho, fade pronunciado */}
+        <LinearGradient
+          colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.14)", "rgba(255,255,255,0)"]}
+          locations={[0.2, 0.5, 0.8]}
+          start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+          style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
+          pointerEvents="none"
+        />
         {/* Acento del tab activo (crossfade) */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "transparent" }]} />
 
