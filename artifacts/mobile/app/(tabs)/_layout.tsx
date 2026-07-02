@@ -74,20 +74,33 @@ function TabItem({
   const conf = TAB_CONFIG[route.name];
   if (!conf) return null;
 
-  const focusAnim  = useRef(new Animated.Value(isFocused ? 1 : 0)).current;
+  const dissolve   = useRef(new Animated.Value(1)).current;
+  const activeRef  = useRef(isFocused);
+  const [displayed, setDisplayed] = React.useState(isFocused);
   const isIOS      = Platform.OS === "ios";
   const iconSize   = conf.iconSize ?? ICON_SIZE;
   const iconOffset = conf.iconOffset ?? 0;
   const tOffset    = [{ translateY: iconOffset }];
 
   useEffect(() => {
-    Animated.timing(focusAnim, {
-      toValue: isFocused ? 1 : 0,
-      duration: DURATION.TAB,
+    if (activeRef.current === isFocused) return;
+    activeRef.current = isFocused;
+    // dissolve: fade out → swap content → fade in
+    Animated.timing(dissolve, {
+      toValue: 0,
+      duration: 90,
       easing: easeOutCubic,
       useNativeDriver: true,
-    }).start();
-  }, [isFocused, focusAnim]);
+    }).start(() => {
+      setDisplayed(isFocused);
+      Animated.timing(dissolve, {
+        toValue: 1,
+        duration: 180,
+        easing: easeOutCubic,
+        useNativeDriver: true,
+      }).start();
+    });
+  }, [isFocused, dissolve]);
 
   const makeIcon = useCallback((active: boolean) => {
     const color = active ? ACTIVE_COLOR : INACTIVE_COLOR;
@@ -108,22 +121,22 @@ function TabItem({
       accessibilityRole="button"
       accessibilityState={{ selected: isFocused }}
     >
-      <View style={styles.pillWrap}>
-        {/* Ícono único — color cambia directo sin superposición */}
+      <Animated.View style={[styles.pillWrap, { opacity: dissolve }]}>
+        {/* Ícono único con dissolve — sin capas simultáneas */}
         <View style={{ width: iconSize, height: iconSize }}>
-          {makeIcon(isFocused)}
+          {makeIcon(displayed)}
         </View>
 
-        {/* Label única — color cambia directo */}
+        {/* Label única con dissolve */}
         <View style={styles.labelWrap}>
           <Text
-            style={[styles.label, isFocused ? styles.labelActive : { color: INACTIVE_COLOR }]}
+            style={[styles.label, displayed ? styles.labelActive : { color: INACTIVE_COLOR }]}
             numberOfLines={1}
           >
             {conf.label}
           </Text>
         </View>
-      </View>
+      </Animated.View>
     </Pressable>
   );
 }
