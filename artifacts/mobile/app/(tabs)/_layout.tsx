@@ -249,7 +249,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         />
         {/* 4. Borde GhostPill — doble gradiente SVG idéntico al de Tu Biblioteca */}
         {(() => {
-          const sw = 1.5;
+          const sw = 0.5;
           const bw = Dimensions.get("window").width - PILL_MARGIN_H * 2;
           const bh = PILL_H;
           const r  = bh / 2;
