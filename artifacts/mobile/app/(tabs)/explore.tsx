@@ -256,7 +256,7 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
         {/* Placeholder vacío */}
         {q.length === 0 && kbReady && (
           <Animated.View style={[srStyles.empty, { opacity: fadeAnim }]}>
-            <Feather name="headphones" size={48} color="#D4AF37" style={{ marginBottom: 16 }} />
+            <Feather name="headphones" size={48} color="#BE8744" style={{ marginBottom: 16 }} />
             <Text style={srStyles.emptyTitle}>Encuentra tus sesiones favoritas</Text>
             <Text style={srStyles.emptySub}>Busca meditaciones, sonidos, historias…</Text>
           </Animated.View>
@@ -301,7 +301,7 @@ const srStyles = StyleSheet.create({
   bar:         { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.09)", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 11 },
   input:       { flex: 1, fontSize: 14, color: "#F4DAD5" },
   cancel:      { paddingVertical: 6 },
-  cancelText:  { color: "#D4AF37", fontSize: 14, fontWeight: "600" },
+  cancelText:  { color: "#BE8744", fontSize: 14, fontWeight: "600" },
   empty:       { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, paddingTop: 60 },
   emptyTitle:  { fontSize: 18, fontWeight: "700", color: "#F4DAD5", textAlign: "center", marginBottom: 10 },
   emptySub:    { fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
