@@ -282,6 +282,13 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
           pointerEvents="none"
         />
+        {/* 6. Acento curva inferior-izquierda — bajo Inicio, toma la curva, casi imperceptible */}
+        <LinearGradient
+          colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+          start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+          style={{ position: "absolute", bottom: 0, left: 0, width: "14%", height: StyleSheet.hairlineWidth }}
+          pointerEvents="none"
+        />
         {/* Acento del tab activo (crossfade) */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "transparent" }]} />
 
