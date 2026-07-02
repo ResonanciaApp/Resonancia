@@ -373,7 +373,7 @@ function TabLayoutInner() {
     : null;
 
   // El MiniPlayer global del Mezclador no aparece cuando hay playlist activa
-  const showMiniPlayer = onMezclador && !activePlaylist && (currentSession || mixActive);
+  const showMiniPlayer = onMezclador && !activePlaylist;
 
   return (
     <View style={{ flex: 1 }}>
@@ -396,7 +396,7 @@ function TabLayoutInner() {
 
       {showMiniPlayer && (
         <View style={[styles.miniPlayerFloat, { bottom: 0 }]}>
-          <MiniPlayer />
+          <MiniPlayer idle={!currentSession && !mixActive} />
         </View>
       )}
 

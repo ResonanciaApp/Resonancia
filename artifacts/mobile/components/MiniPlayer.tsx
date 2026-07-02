@@ -84,7 +84,7 @@ function StackThumbItem({ image, style, onPress, onLongPress, primaryColor }: St
   );
 }
 
-export function MiniPlayer() {
+export function MiniPlayer({ idle = false }: { idle?: boolean }) {
   const insets = useSafeAreaInsets();
   const { currentSession, isPlaying, progress, pauseResume } = usePlayer();
   const {
@@ -246,7 +246,31 @@ export function MiniPlayer() {
     }
   }, [mixActive]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (!currentSession && !mixActive) return null;
+  if (!currentSession && !mixActive) {
+    if (!idle) return null;
+    // ── Estado inactivo del Mezclador ─────────────────────────────
+    return (
+      <View style={styles.mixOuter}>
+        <View style={[styles.wrapper, { paddingTop: 10, paddingBottom: insets.bottom }]}>
+          <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
+          <LinearGradient
+            colors={["rgba(255,255,255,0.13)", "rgba(255,255,255,0.03)", "transparent"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
+          <View style={[styles.mixRow, { justifyContent: "center" }]}>
+            <Feather name="music" size={16} color="rgba(255,255,255,0.35)" style={{ marginRight: 8 }} />
+            <Text style={{ color: "rgba(255,255,255,0.35)", fontSize: 14, fontWeight: "500" }}>
+              Selecciona un sonido para comenzar
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
 
   // ── Modo mezcla ───────────────────────────────────────────────
   if (mixActive) {
