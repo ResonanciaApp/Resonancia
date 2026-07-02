@@ -31,6 +31,8 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
 import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
+import { useUser } from "@clerk/expo";
+import { useAuth } from "@/context/AuthContext";
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
 
@@ -190,8 +192,15 @@ function getSessionAuthor(s: Session): string {
 export default function ExploreScreen() {
   const colors   = useColors();
   const insets   = useSafeAreaInsets();
-  const { photoUri } = useUserProfile();
+  const { photoUri, username } = useUserProfile();
   const { open: openDrawer } = useDrawer();
+  const { user: clerkUser } = useUser();
+  const { isRegistered, isSignedIn } = useAuth();
+  const headerLoggedIn = isRegistered || isSignedIn;
+  const headerPhoto = photoUri || clerkUser?.imageUrl || null;
+  const headerInitial = (clerkUser?.firstName || clerkUser?.username || username || "").charAt(0).toUpperCase() || null;
+  const [headerPhotoError, setHeaderPhotoError] = useState(false);
+  React.useEffect(() => { setHeaderPhotoError(false); }, [headerPhoto]);
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const searchInputRef = useRef<import("react-native").TextInput>(null);
@@ -312,7 +321,28 @@ export default function ExploreScreen() {
         {/* ── Header ── */}
         <View style={styles.header}>
           <View style={styles.headerRow}>
-            <Text style={[styles.pageTitle, { flex: 1, transform: [{ translateY: 2 }] }]}>Explorar</Text>
+            <Pressable
+              onPress={() => openDrawer()}
+              hitSlop={8}
+              style={[styles.avatarBtn, headerLoggedIn && styles.avatarBtnLoggedIn]}
+            >
+              {headerPhoto && !headerPhotoError ? (
+                <Image
+                  source={{ uri: headerPhoto }}
+                  style={styles.avatarSmall}
+                  contentFit="cover"
+                  onError={() => setHeaderPhotoError(true)}
+                />
+              ) : headerLoggedIn && headerInitial ? (
+                <View style={styles.avatarInitial}>
+                  <Text style={styles.avatarInitialText}>{headerInitial}</Text>
+                </View>
+              ) : (
+                <View style={styles.avatarFallback}>
+                  <Feather name="user" size={15} color="#c2c2c2" />
+                </View>
+              )}
+            </Pressable>
             <Pressable
               hitSlop={12}
               onPress={() => {
@@ -666,15 +696,13 @@ const styles = StyleSheet.create({
   header:         { paddingHorizontal: H_PAD, marginBottom: 18 },
   headerPillBtn:  { width: 43, height: 43, alignItems: "center", justifyContent: "center" },
   searchIconBtn:  { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
+  avatarBtn:        { width: 33, height: 33, borderRadius: 16.5, overflow: "hidden" },
+  avatarBtnLoggedIn:{ borderWidth: 1, borderColor: "rgba(212,175,55,0.7)" },
+  avatarSmall:      { width: 33, height: 33, borderRadius: 16.5 },
+  avatarFallback:   { width: 33, height: 33, borderRadius: 16.5, backgroundColor: "rgba(255,255,255,0.025)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(212,175,55,0.25)" },
+  avatarInitial:    { width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(212,175,55,0.18)", alignItems: "center", justifyContent: "center" },
+  avatarInitialText:{ color: "#BE8744", fontSize: 14, fontWeight: "700", letterSpacing: 0.3 },
   headerRow:      { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  avatarBtn:      { width: 32, height: 32, borderRadius: 16, overflow: "hidden" },
-  avatarSmall:    { width: 32, height: 32, borderRadius: 16 },
-  avatarFallback: {
-    width: 32, height: 32, borderRadius: 16,
-    backgroundColor: "rgba(255,255,255,0.025)",
-    alignItems: "center", justifyContent: "center",
-    borderWidth: 1, borderColor: "rgba(212,175,55,0.25)",
-  },
   pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#e8e8e8" },
   pageSubtitle: { fontSize: 14, color: "rgba(255,255,255,0.55)", marginTop: 2 },
 
