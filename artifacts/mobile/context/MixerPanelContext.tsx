@@ -36,8 +36,8 @@ export function MixerPanelProvider({ children }: { children: React.ReactNode }) 
   }, [animate]);
 
   const closeMixer = useCallback(() => {
+    setIsMixerOpen(false);
     animate(false);
-    setTimeout(() => setIsMixerOpen(false), 330);
   }, [animate]);
 
   const value = React.useMemo(
