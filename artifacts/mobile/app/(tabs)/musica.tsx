@@ -548,14 +548,13 @@ export default function MezcladorScreen() {
     setTabBarColors(null);
   }, [mainTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Al entrar al Mezclador → esconder menú con delay; al salir → restaurarlo y resetear color
+  // Al entrar al Mezclador → esconder menú; al salir → restaurarlo y resetear color
   useFocusEffect(
     React.useCallback(() => {
+      requestHide();
       setMainTab("popular");
       refreshSounds();
-      const hideTimer = setTimeout(() => requestHide(), 700);
       return () => {
-        clearTimeout(hideTimer);
         showMenu();
         setTabBarColors(null);
       };
