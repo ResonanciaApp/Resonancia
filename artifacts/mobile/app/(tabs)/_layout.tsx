@@ -372,7 +372,7 @@ function TabLayoutInner() {
 
   const panelTranslateX = panelAnim.interpolate({
     inputRange:  [0, 1],
-    outputRange: [-MIXER_PANEL_W, 0],
+    outputRange: [MIXER_PANEL_W, 0],
   });
   const backdropOpacity = panelAnim.interpolate({
     inputRange:  [0, 1],
