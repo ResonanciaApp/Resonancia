@@ -522,6 +522,7 @@ const styles = StyleSheet.create({
   },
   labelWrap: {
     width: "100%",
+    paddingHorizontal: 6,
     alignItems: "center",
   },
   labelActive: {
