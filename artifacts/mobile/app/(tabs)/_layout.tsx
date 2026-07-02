@@ -371,7 +371,7 @@ function TabLayoutInner() {
   const [miniPlayerReady, setMiniPlayerReady] = useState(false);
   useEffect(() => {
     if (!onMezclador) { setMiniPlayerReady(false); return; }
-    const t = setTimeout(() => setMiniPlayerReady(true), 400);
+    const t = setTimeout(() => setMiniPlayerReady(true), 800);
     return () => clearTimeout(t);
   }, [onMezclador]);
 
