@@ -317,7 +317,7 @@ const srStyles = StyleSheet.create({
   emptySub:    { fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
   resultRow:   { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 14, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(255,255,255,0.07)" },
   thumb:       { width: 75, height: 75, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.025)" },
-  resultCat:   { fontSize: 11, fontWeight: "600", color: "#BE8744", letterSpacing: 0.4, textTransform: "uppercase", marginBottom: 3 },
+  resultCat:   { fontSize: 12, color: "rgba(242,231,228,0.45)", marginBottom: 3 },
   resultTitle: { fontSize: 15, fontWeight: "700", color: "#F4DAD5", marginBottom: 3 },
   resultAuthor:{ fontSize: 12, color: "rgba(242,231,228,0.45)" },
 });
