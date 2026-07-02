@@ -74,23 +74,27 @@ function TabItem({
   const conf = TAB_CONFIG[route.name];
   if (!conf) return null;
 
-  const focusAnim  = useRef(new Animated.Value(isFocused ? 1 : 0)).current;
+  const fadeAnim   = useRef(new Animated.Value(1)).current;
+  const prevFocused = useRef(isFocused);
+  const [shown, setShown] = React.useState(isFocused);
   const isIOS      = Platform.OS === "ios";
   const iconSize   = conf.iconSize ?? ICON_SIZE;
   const iconOffset = conf.iconOffset ?? 0;
   const tOffset    = [{ translateY: iconOffset }];
 
   useEffect(() => {
-    Animated.timing(focusAnim, {
-      toValue: isFocused ? 1 : 0,
+    if (prevFocused.current === isFocused) return;
+    prevFocused.current = isFocused;
+    // Switch instantáneo a invisible → actualizar contenido → fade in
+    fadeAnim.setValue(0);
+    setShown(isFocused);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
       duration: DURATION.TAB,
       easing: easeOutCubic,
       useNativeDriver: true,
     }).start();
-  }, [isFocused, focusAnim]);
-
-  // inactiveOpacity = 1 - focusAnim (el blanco se va al seleccionar)
-  const inactiveOpacity = focusAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] });
+  }, [isFocused, fadeAnim]);
 
   const makeIcon = useCallback((active: boolean) => {
     const color  = active ? ACTIVE_COLOR : INACTIVE_COLOR;
@@ -111,26 +115,20 @@ function TabItem({
       accessibilityRole="button"
       accessibilityState={{ selected: isFocused }}
     >
-      <View style={styles.pillWrap}>
-        {/* Ícono: dorado siempre en el fondo, blanco encima fadeando a 0 */}
+      <Animated.View style={[styles.pillWrap, { opacity: fadeAnim }]}>
+        {/* Ícono único — switch + fade in, sin capas simultáneas */}
         <View style={{ width: iconSize, height: iconSize }}>
-          <View style={StyleSheet.absoluteFill}>{makeIcon(true)}</View>
-          <Animated.View style={[StyleSheet.absoluteFill, { opacity: inactiveOpacity }]}>
-            {makeIcon(false)}
-          </Animated.View>
+          {makeIcon(shown)}
         </View>
-
-        {/* Label: dorada siempre en el fondo, blanca encima fadeando a 0 */}
         <View style={styles.labelWrap}>
-          <Text style={[styles.label, styles.labelActive]} numberOfLines={1}>{conf.label}</Text>
-          <Animated.Text
-            style={[styles.label, { color: INACTIVE_COLOR }, StyleSheet.absoluteFillObject, { textAlign: "center", opacity: inactiveOpacity }]}
+          <Text
+            style={[styles.label, shown ? styles.labelActive : { color: INACTIVE_COLOR }]}
             numberOfLines={1}
           >
             {conf.label}
-          </Animated.Text>
+          </Text>
         </View>
-      </View>
+      </Animated.View>
     </Pressable>
   );
 }
