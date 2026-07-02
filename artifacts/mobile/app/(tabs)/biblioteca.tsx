@@ -1486,7 +1486,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   chip: {
-    paddingHorizontal: 14, paddingVertical: 8,
+    paddingHorizontal: 14, paddingVertical: 10,
     borderRadius: 999,
     overflow: "hidden",
   },
