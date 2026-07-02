@@ -146,17 +146,23 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
   const mixActive = !currentSession && activeSounds.length > 0;
 
   // ── showMixPlayer: se mantiene true durante el fade-out al borrar el último sonido ──
-  const [showMixPlayer, setShowMixPlayer] = useState(false);
-  const mixPlayerOpacity = useRef(new Animated.Value(0)).current;
+  const [showMixPlayer, setShowMixPlayer] = useState(mixActive);
+  const mixPlayerOpacity = useRef(new Animated.Value(mixActive ? 1 : 0)).current;
+  // Ref que refleja el valor actual de mixActive para que el callback de fade-out
+  // no cierre sobre un valor obsoleto cuando el usuario re-agrega un sonido rápido.
+  const mixActiveRef = useRef(mixActive);
 
   // ── Título cinemático "Esta es tu mezcla" + contador de sonidos ──
   const cinematicOpacity = useRef(new Animated.Value(0)).current;
   const counterOpacity   = useRef(new Animated.Value(0)).current;
-  const prevMixActive    = useRef(false);
+  const prevMixActive    = useRef(mixActive);
 
   useEffect(() => {
+    mixActiveRef.current = mixActive;
+
     if (mixActive && !prevMixActive.current) {
       // mixActive acaba de activarse → mostrar el player inmediatamente
+      mixPlayerOpacity.stopAnimation();
       setShowMixPlayer(true);
       mixPlayerOpacity.setValue(1);
       cinematicOpacity.setValue(0);
@@ -173,7 +179,14 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
         toValue: 0,
         duration: 300,
         useNativeDriver: true,
-      }).start(() => setShowMixPlayer(false));
+      }).start(({ finished }) => {
+        // Solo ocultar si la animación completó Y mixActive sigue en false.
+        // Si el usuario re-agrega un sonido durante el fade-out, mixActiveRef
+        // ya será true y el player no se desmonta.
+        if (finished && !mixActiveRef.current) {
+          setShowMixPlayer(false);
+        }
+      });
     }
     prevMixActive.current = mixActive;
   }, [mixActive]); // eslint-disable-line react-hooks/exhaustive-deps
