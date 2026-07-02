@@ -122,7 +122,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const pb     = isWeb ? 8 : insets.bottom;
 
   // 8 px de separación con el borde inferior de la pantalla
-  const barBottom = Math.max(8, pb - 10);
+  const barBottom = Math.max(8, pb - 10) + 5;
   // Altura total que ocupa la píldora (para la animación de hide)
   const barHeight = PILL_H + barBottom + 40;
 
