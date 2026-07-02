@@ -1,6 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import {
   Dimensions,
   Modal,
@@ -18,7 +18,6 @@ import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { LinearGradient } from "expo-linear-gradient";
-import { GhostPill } from "@/components/GhostPill";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
 import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
@@ -194,6 +193,8 @@ export default function ExploreScreen() {
   const { photoUri } = useUserProfile();
   const { open: openDrawer } = useDrawer();
   const [query, setQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchInputRef = useRef<import("react-native").TextInput>(null);
   const [selectedDur, setSelectedDur] = useState<DurSlot | null>(null);
   const [durSort, setDurSort] = useState<"recientes" | "populares">("recientes");
   const [ritualesFilter, setRitualesFilter] = useState<DurOptEx>("Todos");
@@ -312,44 +313,45 @@ export default function ExploreScreen() {
         <View style={styles.header}>
           <View style={styles.headerRow}>
             <Text style={[styles.pageTitle, { flex: 1, transform: [{ translateY: 2 }] }]}>Explorar</Text>
-            <GhostPill style={{ transform: [{ translateX: 0 }, { translateY: 0 }], gap: 6, backgroundColor: "rgba(255,255,255,0.06)" }}>
-              <Pressable hitSlop={10} onPress={() => router.push("/favorites")} style={styles.headerPillBtn}>
-                <Feather name="heart" size={24} color="#FFFFFF" />
-              </Pressable>
-              <Pressable hitSlop={10} onPress={() => router.push("/historial")} style={styles.headerPillBtn}>
-                <Feather name="clock" size={24} color="#FFFFFF" />
-              </Pressable>
-            </GhostPill>
+            <Pressable
+              hitSlop={12}
+              onPress={() => {
+                setSearchOpen(true);
+                setTimeout(() => searchInputRef.current?.focus(), 80);
+              }}
+              style={styles.searchIconBtn}
+            >
+              <Feather name="search" size={22} color="#FFFFFF" />
+            </Pressable>
           </View>
         </View>
 
-        {/* ── Search bar ── */}
-        <View style={styles.searchBarBorder}>
-          <View style={styles.searchBar}>
-            <View style={styles.searchInnerTop} pointerEvents="none" />
-            <View style={styles.searchInnerBottom} pointerEvents="none" />
-            <Feather name="search" size={16} color="#B08880" />
-            <TextInput
-              value={query}
-              onChangeText={setQuery}
-              placeholder="Buscar sesiones, músicas, sonidos..."
-              placeholderTextColor="#B08880"
-              style={styles.searchInput}
-            />
-            {query.length > 0 && (
-              <Pressable onPress={() => setQuery("")}>
+        {/* ── Search bar (visible solo al abrir) ── */}
+        {searchOpen && (
+          <View style={styles.searchBarBorder}>
+            <View style={styles.searchBar}>
+              <View style={styles.searchInnerTop} pointerEvents="none" />
+              <View style={styles.searchInnerBottom} pointerEvents="none" />
+              <Feather name="search" size={16} color="#B08880" />
+              <TextInput
+                ref={searchInputRef}
+                value={query}
+                onChangeText={setQuery}
+                placeholder="Buscar sesiones, músicas, sonidos..."
+                placeholderTextColor="#B08880"
+                style={styles.searchInput}
+                autoFocus
+              />
+              <Pressable onPress={() => { setQuery(""); setSearchOpen(false); }}>
                 <Feather name="x" size={16} color="rgba(255,255,255,0.45)" />
               </Pressable>
-            )}
+            </View>
           </View>
-        </View>
+        )}
 
         {/* ── Carrusel de categorías ── */}
         {query.length === 0 && (
           <>
-          <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD }]}>
-            Categorías principales
-          </Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -660,6 +662,7 @@ const styles = StyleSheet.create({
 
   header:         { paddingHorizontal: H_PAD, marginBottom: 18 },
   headerPillBtn:  { width: 43, height: 43, alignItems: "center", justifyContent: "center" },
+  searchIconBtn:  { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   headerRow:      { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   avatarBtn:      { width: 32, height: 32, borderRadius: 16, overflow: "hidden" },
   avatarSmall:    { width: 32, height: 32, borderRadius: 16 },
