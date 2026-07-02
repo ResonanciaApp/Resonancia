@@ -312,7 +312,10 @@ export default function ExploreScreen() {
         {/* ── Header ── */}
         <View style={styles.header}>
           <View style={styles.headerRow}>
-            <Text style={[styles.pageTitle, { flex: 1, transform: [{ translateY: 2 }] }]}>Explorar</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.pageTitle, { transform: [{ translateY: 2 }] }]}>Explorar</Text>
+              <Text style={styles.pageSubtitle}>Encuentra lo que necesitas</Text>
+            </View>
             <Pressable
               hitSlop={12}
               onPress={() => {
