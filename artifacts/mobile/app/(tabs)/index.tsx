@@ -899,7 +899,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 16,
     marginBottom: 8,
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(255,255,255,0.06)",
     borderRadius: 14,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -946,7 +946,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   recoCard: {
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(255,255,255,0.06)",
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: 14,
