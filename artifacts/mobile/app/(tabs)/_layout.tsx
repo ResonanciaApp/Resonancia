@@ -74,36 +74,26 @@ function TabItem({
   const conf = TAB_CONFIG[route.name];
   if (!conf) return null;
 
-  const dissolve   = useRef(new Animated.Value(1)).current;
-  const activeRef  = useRef(isFocused);
-  const [displayed, setDisplayed] = React.useState(isFocused);
+  const focusAnim  = useRef(new Animated.Value(isFocused ? 1 : 0)).current;
   const isIOS      = Platform.OS === "ios";
   const iconSize   = conf.iconSize ?? ICON_SIZE;
   const iconOffset = conf.iconOffset ?? 0;
   const tOffset    = [{ translateY: iconOffset }];
 
   useEffect(() => {
-    if (activeRef.current === isFocused) return;
-    activeRef.current = isFocused;
-    // dissolve: fade out → swap content → fade in
-    Animated.timing(dissolve, {
-      toValue: 0,
-      duration: 90,
+    Animated.timing(focusAnim, {
+      toValue: isFocused ? 1 : 0,
+      duration: DURATION.TAB,
       easing: easeOutCubic,
       useNativeDriver: true,
-    }).start(() => {
-      setDisplayed(isFocused);
-      Animated.timing(dissolve, {
-        toValue: 1,
-        duration: 180,
-        easing: easeOutCubic,
-        useNativeDriver: true,
-      }).start();
-    });
-  }, [isFocused, dissolve]);
+    }).start();
+  }, [isFocused, focusAnim]);
+
+  // inactiveOpacity = 1 - focusAnim (el blanco se va al seleccionar)
+  const inactiveOpacity = focusAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] });
 
   const makeIcon = useCallback((active: boolean) => {
-    const color = active ? ACTIVE_COLOR : INACTIVE_COLOR;
+    const color  = active ? ACTIVE_COLOR : INACTIVE_COLOR;
     const sfName = active ? conf.sfIconFill : conf.sfIcon;
     return conf.image ? (
       <Image source={conf.image} style={{ width: iconSize, height: iconSize, transform: tOffset }} tintColor={color} resizeMode="contain" />
@@ -121,22 +111,26 @@ function TabItem({
       accessibilityRole="button"
       accessibilityState={{ selected: isFocused }}
     >
-      <Animated.View style={[styles.pillWrap, { opacity: dissolve }]}>
-        {/* Ícono único con dissolve — sin capas simultáneas */}
+      <View style={styles.pillWrap}>
+        {/* Ícono: dorado siempre en el fondo, blanco encima fadeando a 0 */}
         <View style={{ width: iconSize, height: iconSize }}>
-          {makeIcon(displayed)}
+          <View style={StyleSheet.absoluteFill}>{makeIcon(true)}</View>
+          <Animated.View style={[StyleSheet.absoluteFill, { opacity: inactiveOpacity }]}>
+            {makeIcon(false)}
+          </Animated.View>
         </View>
 
-        {/* Label única con dissolve */}
+        {/* Label: dorada siempre en el fondo, blanca encima fadeando a 0 */}
         <View style={styles.labelWrap}>
-          <Text
-            style={[styles.label, displayed ? styles.labelActive : { color: INACTIVE_COLOR }]}
+          <Text style={[styles.label, styles.labelActive]} numberOfLines={1}>{conf.label}</Text>
+          <Animated.Text
+            style={[styles.label, { color: INACTIVE_COLOR }, StyleSheet.absoluteFillObject, { textAlign: "center", opacity: inactiveOpacity }]}
             numberOfLines={1}
           >
             {conf.label}
-          </Text>
+          </Animated.Text>
         </View>
-      </Animated.View>
+      </View>
     </Pressable>
   );
 }
