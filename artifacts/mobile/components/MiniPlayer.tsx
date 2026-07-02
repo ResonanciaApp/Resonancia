@@ -338,7 +338,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
             </Pressable>
 
             {/* Stack / carrusel — ancho animado + maxWidth para que nunca empuje el play */}
-            <Animated.View style={[styles.stackArea, { width: stackWidthAnim, marginTop: -2 }]}>
+            <Animated.View style={[styles.stackArea, { width: stackWidthAnim, transform: [{ translateY: -2 }] }]}>
               <ScrollView
                 ref={scrollRef}
                 horizontal
