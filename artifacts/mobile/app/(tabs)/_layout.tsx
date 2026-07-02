@@ -409,12 +409,6 @@ function TabLayoutInner() {
         <Tabs.Screen name="profile"        options={{ title: "Perfil" }} />
       </Tabs>
 
-      {showMiniPlayer && (
-        <View style={[styles.miniPlayerFloat, { bottom: 0 }]}>
-          <MiniPlayer idle={!currentSession && !mixActive} />
-        </View>
-      )}
-
       {/* ── Mixer Drawer Panel — siempre montado, desliza desde la izquierda ── */}
       <Animated.View
         pointerEvents={isMixerOpen ? "box-none" : "none"}
@@ -422,6 +416,12 @@ function TabLayoutInner() {
       >
         <MezcladorScreen />
       </Animated.View>
+
+      {showMiniPlayer && (
+        <View style={[styles.miniPlayerFloat, { bottom: 0, zIndex: 501, elevation: 9 }]}>
+          <MiniPlayer idle={!currentSession && !mixActive} />
+        </View>
+      )}
       <Animated.View
         pointerEvents={isMixerOpen ? "auto" : "none"}
         style={[styles.mixerBackdrop, { opacity: backdropOpacity }]}
