@@ -487,8 +487,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   labelActive: {
-    ...StyleSheet.absoluteFillObject,
-    textAlign: "center",
     color: GRAD_END,
     fontWeight: "600",
   },
