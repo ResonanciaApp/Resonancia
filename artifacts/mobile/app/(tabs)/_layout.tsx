@@ -2,7 +2,7 @@ import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import Svg, { Defs, LinearGradient as SvgLinearGradient, Rect, Stop } from "react-native-svg";
 import { Image as ExpoImage } from "expo-image";
-import { Tabs, usePathname } from "expo-router";
+import { Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useCallback, useState } from "react";
@@ -379,8 +379,6 @@ function TabLayoutInner() {
     outputRange: [0, 0.55],
   });
 
-  const pathname       = usePathname();
-  const onMezclador    = pathname === "/musica";
   const mixActive      = !currentSession && activeSounds.length > 0;
   const miniPlayerBottom = hidden ? bottomPb + 10 : tabBarHeight - 10;
 
@@ -390,7 +388,7 @@ function TabLayoutInner() {
     : null;
 
   // El MiniPlayer global del Mezclador no aparece cuando hay playlist activa
-  const showMiniPlayer = onMezclador && !activePlaylist;
+  const showMiniPlayer = isMixerOpen && !activePlaylist;
 
   return (
     <View style={{ flex: 1 }}>
@@ -570,9 +568,10 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: MIXER_PANEL_W,
     zIndex: 500,
-    elevation: 500,
+    elevation: 8,
     backgroundColor: "#1B060F",
     overflow: "hidden",
+    shadowColor: "transparent",
   },
   mixerBackdrop: {
     position: "absolute",
@@ -582,7 +581,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: "#000",
     zIndex: 499,
-    elevation: 499,
+    elevation: 7,
   },
   playlistBar: {
     position: "absolute",
