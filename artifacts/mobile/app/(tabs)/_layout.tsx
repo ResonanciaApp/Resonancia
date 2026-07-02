@@ -34,7 +34,7 @@ import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
 
 const ACTIVE_COLOR   = "#D4AF37";
-const INACTIVE_COLOR = "#ededed";
+const INACTIVE_COLOR = "#d9d9d9";
 const GRAD_END       = "#E9C46A";
 const GHOST_PILL_BG  = "rgba(255,255,255,0.12)";
 
