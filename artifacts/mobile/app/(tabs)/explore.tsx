@@ -201,13 +201,18 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
 
   useEffect(() => {
     if (!visible) { setQ(""); setKbReady(false); setKbHeight(0); fadeAnim.setValue(0); return; }
-    const show = Keyboard.addListener("keyboardDidShow", (e) => {
+    const show = Keyboard.addListener("keyboardWillShow", (e) => {
       setKbHeight(e.endCoordinates.height);
       setKbReady(true);
-      Animated.timing(fadeAnim, { toValue: 1, duration: 180, useNativeDriver: true }).start();
+      Animated.timing(fadeAnim, { toValue: 1, duration: e.duration ?? 250, useNativeDriver: true }).start();
     });
-    const hide = Keyboard.addListener("keyboardDidHide", () => { setKbReady(false); fadeAnim.setValue(0); });
-    return () => { show.remove(); hide.remove(); };
+    const showFallback = Keyboard.addListener("keyboardDidShow", (e) => {
+      setKbHeight(e.endCoordinates.height);
+      setKbReady(true);
+      fadeAnim.setValue(1);
+    });
+    const hide = Keyboard.addListener("keyboardWillHide", () => { setKbReady(false); fadeAnim.setValue(0); });
+    return () => { show.remove(); showFallback.remove(); hide.remove(); };
   }, [visible, fadeAnim]);
 
   const results = useMemo(() => {
