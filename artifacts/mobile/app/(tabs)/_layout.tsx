@@ -109,22 +109,19 @@ function TabItem({
       accessibilityState={{ selected: isFocused }}
     >
       <View style={styles.pillWrap}>
-        {/* Íconos apilados: inactivo base, activo con fade-in animado */}
+        {/* Ícono único — color cambia directo sin superposición */}
         <View style={{ width: iconSize, height: iconSize }}>
-          <View style={StyleSheet.absoluteFill}>{makeIcon(false)}</View>
-          <Animated.View style={[StyleSheet.absoluteFill, styles.iconGlow, { opacity: focusAnim }]}>
-            {makeIcon(true)}
-          </Animated.View>
+          {makeIcon(isFocused)}
         </View>
 
-        {/* Labels apiladas: inactiva base, activa con fade-in animado */}
+        {/* Label única — color cambia directo */}
         <View style={styles.labelWrap}>
-          <Text style={[styles.label, { color: INACTIVE_COLOR }]} numberOfLines={1}>
+          <Text
+            style={[styles.label, isFocused ? styles.labelActive : { color: INACTIVE_COLOR }]}
+            numberOfLines={1}
+          >
             {conf.label}
           </Text>
-          <Animated.Text style={[styles.label, styles.labelActive, { opacity: focusAnim }]} numberOfLines={1}>
-            {conf.label}
-          </Animated.Text>
         </View>
       </View>
     </Pressable>
