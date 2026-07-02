@@ -145,26 +145,13 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
 
   const mixActive = !currentSession && activeSounds.length > 0;
 
-  // ── showMixPlayer: se mantiene true durante el fade-out al borrar el último sonido ──
-  const [showMixPlayer, setShowMixPlayer] = useState(mixActive);
-  const mixPlayerOpacity = useRef(new Animated.Value(mixActive ? 1 : 0)).current;
-  // Ref que refleja el valor actual de mixActive para que el callback de fade-out
-  // no cierre sobre un valor obsoleto cuando el usuario re-agrega un sonido rápido.
-  const mixActiveRef = useRef(mixActive);
-
   // ── Título cinemático "Esta es tu mezcla" + contador de sonidos ──
   const cinematicOpacity = useRef(new Animated.Value(0)).current;
   const counterOpacity   = useRef(new Animated.Value(0)).current;
-  const prevMixActive    = useRef(mixActive);
+  const prevMixActive    = useRef(false);
 
   useEffect(() => {
-    mixActiveRef.current = mixActive;
-
     if (mixActive && !prevMixActive.current) {
-      // mixActive acaba de activarse → mostrar el player inmediatamente
-      mixPlayerOpacity.stopAnimation();
-      setShowMixPlayer(true);
-      mixPlayerOpacity.setValue(1);
       cinematicOpacity.setValue(0);
       counterOpacity.setValue(0);
       Animated.sequence([
@@ -173,20 +160,6 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
         Animated.timing(cinematicOpacity, { toValue: 0, duration: 800, useNativeDriver: true }),
         Animated.timing(counterOpacity,   { toValue: 1, duration: 600, useNativeDriver: true }),
       ]).start();
-    } else if (!mixActive && prevMixActive.current) {
-      // mixActive acaba de desactivarse → fade out y luego ocultar
-      Animated.timing(mixPlayerOpacity, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start(({ finished }) => {
-        // Solo ocultar si la animación completó Y mixActive sigue en false.
-        // Si el usuario re-agrega un sonido durante el fade-out, mixActiveRef
-        // ya será true y el player no se desmonta.
-        if (finished && !mixActiveRef.current) {
-          setShowMixPlayer(false);
-        }
-      });
     }
     prevMixActive.current = mixActive;
   }, [mixActive]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -301,7 +274,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
     }
   }, [mixActive]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (!currentSession && !showMixPlayer) {
+  if (!currentSession && !mixActive) {
     if (!idle) return null;
     // ── Estado inactivo del Mezclador ─────────────────────────────
     return (
@@ -327,7 +300,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
   }
 
   // ── Modo mezcla ───────────────────────────────────────────────
-  if (showMixPlayer) {
+  if (mixActive) {
     const presetName = loadedPresetId
       ? presets.find((p) => p.id === loadedPresetId)?.name
       : null;
@@ -339,7 +312,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
         : openSheet();
 
     return (
-      <Animated.View style={[styles.mixOuter, { opacity: mixPlayerOpacity }]}>
+      <View style={styles.mixOuter}>
         {/* ── Card del miniplayer ── */}
         <View style={[styles.wrapper, { paddingTop: 10, paddingBottom: insets.bottom }]}>
           {/* Fondo glassmorphism */}
@@ -428,7 +401,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
           {n === 1 ? "1 sonido" : `${n} sonidos`}
         </Animated.Text>
 
-      </Animated.View>
+      </View>
     );
   }
 
