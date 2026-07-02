@@ -289,6 +289,15 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
             style={StyleSheet.absoluteFill}
             pointerEvents="none"
           />
+          {/* Borde superior con fade en extremos */}
+          <LinearGradient
+            colors={["transparent", "rgba(255,255,255,0.22)", "rgba(255,255,255,0.22)", "transparent"]}
+            locations={[0, 0.14, 0.86, 1]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{ position: "absolute", top: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
+            pointerEvents="none"
+          />
           <View style={{ height: STACK_SIZE + 30, alignItems: "center", justifyContent: "center" }}>
             <Animated.Text style={{ color: "#FFFFFF", fontSize: 15, fontWeight: "500", textAlign: "center", opacity: idleTextOpacity, marginTop: 14 }}>
               Selecciona un sonido para comenzar
@@ -324,6 +333,15 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
+          {/* Borde superior con fade en extremos */}
+          <LinearGradient
+            colors={["transparent", "rgba(255,255,255,0.22)", "rgba(255,255,255,0.22)", "transparent"]}
+            locations={[0, 0.14, 0.86, 1]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{ position: "absolute", top: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
             pointerEvents="none"
           />
 
@@ -514,8 +532,6 @@ const styles = StyleSheet.create({
     width: "100%",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "rgba(255,255,255,0.20)",
   },
 
   // ── Fila de mezcla ────────────────────────────────────────────
