@@ -281,8 +281,8 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
             style={StyleSheet.absoluteFill}
             pointerEvents="none"
           />
-          <View style={[styles.mixRow, { justifyContent: "center", paddingRight: 12, height: STACK_SIZE + 30 }]}>
-            <Animated.Text style={{ color: "#FFFFFF", fontSize: 15, fontWeight: "500", textAlign: "center", alignSelf: "center", width: "100%", opacity: idleTextOpacity }}>
+          <View style={{ height: STACK_SIZE + 30, alignItems: "center", justifyContent: "center" }}>
+            <Animated.Text style={{ color: "#FFFFFF", fontSize: 15, fontWeight: "500", textAlign: "center", opacity: idleTextOpacity }}>
               Selecciona un sonido para comenzar
             </Animated.Text>
           </View>
