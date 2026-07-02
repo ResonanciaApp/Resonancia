@@ -245,10 +245,10 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           style={StyleSheet.absoluteFill}
           pointerEvents="none"
         />
-        {/* 4. Borde superior — hairlineWidth = 1px físico exacto, sin artifacts */}
+        {/* 4. Borde superior — llega hasta la curva, fade largo en los extremos */}
         <LinearGradient
           colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.30)", "rgba(255,255,255,0.30)", "rgba(255,255,255,0)"]}
-          locations={[0, 0.15, 0.85, 1]}
+          locations={[0, 0.06, 0.94, 1]}
           start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
           style={{ position: "absolute", top: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
           pointerEvents="none"
