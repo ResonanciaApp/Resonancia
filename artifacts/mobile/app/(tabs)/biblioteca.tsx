@@ -735,8 +735,9 @@ function NombreCarpetaFavModal({ visible, onClose }: { visible: boolean; onClose
 
   const handleCreate = () => {
     const trimmed = name.trim() || suggestedName;
-    createFavFolder(trimmed);
+    const folder = createFavFolder(trimmed);
     onClose();
+    router.push(`/carpeta-favorito/${folder.id}` as never);
   };
 
   return (
@@ -782,7 +783,7 @@ function NombreCarpetaFavModal({ visible, onClose }: { visible: boolean; onClose
 function FavFolderRow({ folder, onPress, onLongPress }: { folder: FavFolder; onPress: () => void; onLongPress?: () => void }) {
   const count = folder.sessionIds.length;
   return (
-    <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
+    <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { marginBottom: 7, opacity: pressed ? 0.8 : 1 }]}>
       <View style={styles.userPlCover}>
         <Feather name="folder" size={22} color={folder.pinned ? GOLD : MUTED} />
       </View>
@@ -1504,7 +1505,8 @@ export default function BibliotecaScreen() {
     }
 
     if (activeTab === "favoritos") {
-      const favSessions = SESSIONS.filter((s) => favorites.includes(s.id));
+      const sessionsInAnyFavFolder = new Set(favFolders.flatMap((f) => f.sessionIds));
+      const favSessions = SESSIONS.filter((s) => favorites.includes(s.id) && !sessionsInAnyFavFolder.has(s.id));
       const GRID_GAP = 10;
       const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
 
@@ -1560,25 +1562,26 @@ export default function BibliotecaScreen() {
       }
       return (
         <View style={{ gap: 15 }}>
-          <View style={{ paddingHorizontal: H_PAD, gap: 9 }}>
+          <View style={{ gap: 9 }}>
+            {pinnedFirstFav.map((s) => (
+              <View key={s.id} style={{ paddingHorizontal: H_PAD }}>
+                <SessionCard
+                  session={s}
+                  horizontal
+                  thumbWidth={65}
+                  thumbHeight={64}
+                  thumbRadius={6}
+                  showDuration={false}
+                  onLongPress={() => { setFavActionsItemId(s.id); setFavActionsItemKind("session"); }}
+                />
+              </View>
+            ))}
             {sortedFavFolders.map((folder) => (
               <FavFolderRow
                 key={folder.id}
                 folder={folder}
                 onPress={() => router.push(`/carpeta-favorito/${folder.id}` as never)}
                 onLongPress={() => { setFavActionsItemId(folder.id); setFavActionsItemKind("folder"); }}
-              />
-            ))}
-            {pinnedFirstFav.map((s) => (
-              <SessionCard
-                key={s.id}
-                session={s}
-                horizontal
-                thumbWidth={65}
-                thumbHeight={64}
-                thumbRadius={6}
-                showDuration={false}
-                onLongPress={() => { setFavActionsItemId(s.id); setFavActionsItemKind("session"); }}
               />
             ))}
           </View>

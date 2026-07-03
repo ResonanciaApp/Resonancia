@@ -1,3 +1,4 @@
+- [Favoritos folders hide from flat list](favoritos-folder-hides-flat-list.md) — excepción deliberada: sesión en una carpeta de Favoritos desaparece de la lista plana (a diferencia de Playlist/Mezclas donde no se oculta)
 - [expo-image-manipulator requires native rebuild](expo-image-manipulator-native.md) — ExpoImageManipulator es módulo nativo; crash en dev client existente; usar expo-file-system + pako para parsear PNG sin rebuild
 - [Storage URL absolute (RN)](storage-url-absolute.md) — URLs relativas /api/storage/… no funcionan en RN; siempre prepend EXPO_PUBLIC_API_URL; patrón en avatar.ts/remoteSoundMap.ts
 - [Chip fontWeight shift](chip-fontweight-shift.md) — cambiar fontWeight al seleccionar un chip empuja los adyacentes; solo cambiar color; paddingHorizontal va en contentContainerStyle no en el View padre

@@ -171,7 +171,7 @@ export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Pro
       statusBarTranslucent
     >
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <Pressable style={StyleSheet.absoluteFill} onPress={handleClose} />
@@ -347,6 +347,11 @@ export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Pro
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.55)",
+  },
   sheet: {
     backgroundColor: "#230610",
     borderTopLeftRadius: 24,
