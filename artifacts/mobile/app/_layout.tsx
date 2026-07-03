@@ -154,7 +154,7 @@ function NavStack() {
         />
         <Stack.Screen
           name="player"
-          options={{ headerShown: false, presentation: "fullScreenModal", animation: "fade", transitionDuration: 500 } as any}
+          options={{ headerShown: false, presentation: "fullScreenModal", animation: "fade" }}
         />
         <Stack.Screen
           name="inmersivo"
