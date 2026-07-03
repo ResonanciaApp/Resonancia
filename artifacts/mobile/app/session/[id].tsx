@@ -602,7 +602,7 @@ export default function SessionDetailScreen() {
           </Pressable>
           <View style={[styles.optSheet, { paddingBottom: bottomPad + 8 }]}>
             <LinearGradient
-              colors={["#2E0510", "#16040A"]}
+              colors={["#230C14", "#230C14"]}
               locations={[0, 1]}
               style={[StyleSheet.absoluteFill, { borderTopLeftRadius: 24, borderTopRightRadius: 24 }]}
               pointerEvents="none"
