@@ -1175,7 +1175,7 @@ export default function BibliotecaScreen() {
             onPress={() => setNombreCarpetaVisible(true)}
           >
             <View style={styles.addResonadorIcon}>
-              <Feather name="folder" size={24} color="#BE8744" />
+              <Feather name="folder" size={25} color="#BE8744" />
             </View>
             <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
           </Pressable>
@@ -1292,7 +1292,7 @@ export default function BibliotecaScreen() {
             onPress={() => setNombreCarpetaMezclaVisible(true)}
           >
             <View style={styles.addResonadorIcon}>
-              <Feather name="folder" size={24} color="#BE8744" />
+              <Feather name="folder" size={25} color="#BE8744" />
             </View>
             <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
           </Pressable>
@@ -1487,7 +1487,7 @@ export default function BibliotecaScreen() {
           onPress={() => setNombreCarpetaFavVisible(true)}
         >
           <View style={styles.addResonadorIcon}>
-            <Feather name="folder" size={24} color="#BE8744" />
+            <Feather name="folder" size={25} color="#BE8744" />
           </View>
           <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
         </Pressable>
