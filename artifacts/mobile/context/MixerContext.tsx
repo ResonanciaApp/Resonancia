@@ -203,6 +203,7 @@ type MixerContextType = {
   togglePinMixFolder: (id: string) => void;
   addMixToFolder: (folderId: string, mixId: string) => void;
   removeMixFromFolder: (folderId: string, mixId: string) => void;
+  isMixInFolder: (folderId: string, mixId: string) => boolean;
 };
 
 const MixerContext = createContext<MixerContextType | null>(null);
@@ -699,6 +700,12 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
       );
     },
     [persistMixFolders],
+  );
+
+  const isMixInFolder = useCallback(
+    (folderId: string, mixId: string) =>
+      mixFoldersRef.current.find((f) => f.id === folderId)?.presetIds.includes(mixId) ?? false,
+    [],
   );
 
   const ensureAudioMode = useCallback(async () => {
@@ -2040,6 +2047,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         togglePinMixFolder,
         addMixToFolder,
         removeMixFromFolder,
+        isMixInFolder,
       }}
     >
       {children}

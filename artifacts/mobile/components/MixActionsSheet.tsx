@@ -3,12 +3,10 @@
  *
  * Acciones:
  *  1. Compartir
- *  2. Temporizador  → abre TimerSheet (dentro del mismo Modal, igual que SessionActionsSheet)
- *  3. Marcar como favorita / Quitar de favoritas
- *  4. Añadir a una carpeta   → "Próximamente"
- *  5. Añadir al Playlist     → "Próximamente"
- *  6. Duplicar
- *  7. Eliminar
+ *  2. Marcar como favorita / Quitar de favoritas
+ *  3. Mover a una carpeta   → paso interno (igual que PlaylistActionsSheet)
+ *  4. Duplicar
+ *  5. Eliminar
  */
 import { Feather } from "@expo/vector-icons";
 import React, { useEffect, useRef, useState } from "react";
@@ -18,6 +16,7 @@ import {
   Image,
   Modal,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -113,7 +112,7 @@ function MiniStack({ sounds }: { sounds: { id: string }[] }) {
 export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, onEdit }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { togglePresetFavorite } = useMixer();
+  const { togglePresetFavorite, mixFolders, addMixToFolder, isMixInFolder } = useMixer();
   const queryClient = useQueryClient();
   const shareMixMutation = useShareMix();
 
@@ -122,10 +121,12 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, 
   const toastAnim = useRef(new Animated.Value(0)).current;
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [step, setStep] = useState<"main" | "folders">("main");
 
   useEffect(() => {
     if (visible) {
       setToastVisible(false);
+      setStep("main");
     }
     return () => {
       if (toastTimer.current) clearTimeout(toastTimer.current);
@@ -240,59 +241,118 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, 
       <View style={[styles.sheet, { paddingBottom: insets.bottom + 8 }]}>
         <View style={styles.handle} />
 
-        {/* Cabecera */}
-        <View style={styles.header}>
-          <MiniStack sounds={mix.sounds} />
-          <View style={{ flex: 1 }}>
-            <Text style={[styles.mixName, { color: colors.foreground }]} numberOfLines={2}>
-              {mix.name}
-            </Text>
-            <Text style={[styles.mixMeta, { color: colors.mutedForeground }]}>
-              {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
-            </Text>
-          </View>
-          <Pressable onPress={onClose} style={styles.closeBtn}>
-            <Feather name="x" size={20} color={colors.mutedForeground} />
-          </Pressable>
-        </View>
+        {step === "main" ? (
+          <>
+            {/* Cabecera */}
+            <View style={styles.header}>
+              <MiniStack sounds={mix.sounds} />
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.mixName, { color: colors.foreground }]} numberOfLines={2}>
+                  {mix.name}
+                </Text>
+                <Text style={[styles.mixMeta, { color: colors.mutedForeground }]}>
+                  {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
+                </Text>
+              </View>
+              <Pressable onPress={onClose} style={styles.closeBtn}>
+                <Feather name="x" size={20} color={colors.mutedForeground} />
+              </Pressable>
+            </View>
 
-        <View style={[styles.divider, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
+            <View style={[styles.divider, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
 
-        {onEdit && (
-          <ActionRow
-            icon="edit-2"
-            label="Ver / editar detalles"
-            onPress={() => { onClose(); onEdit(mix); }}
-            colors={colors}
-          />
+            {onEdit && (
+              <ActionRow
+                icon="edit-2"
+                label="Ver / editar detalles"
+                onPress={() => { onClose(); onEdit(mix); }}
+                colors={colors}
+              />
+            )}
+            <ActionRow
+              icon="users"
+              label={shareMixMutation.isPending ? "Compartiendo..." : "Compartir con la comunidad"}
+              onPress={handleShareToCommunity}
+              colors={colors}
+            />
+            <ActionRow
+              icon="heart"
+              label={favorited ? "Quitar de favoritas" : "Marcar como favorita"}
+              iconColor={favorited ? "#E05C5C" : undefined}
+              onPress={handleFavorite}
+              colors={colors}
+            />
+            <ActionRow
+              icon="folder"
+              label="Mover a una carpeta"
+              onPress={() => setStep("folders")}
+              colors={colors}
+            />
+            <ActionRow
+              icon="copy"
+              label="Duplicar"
+              onPress={() => { onClose(); onDuplicate(mix); }}
+              colors={colors}
+            />
+            <ActionRow
+              icon="trash-2"
+              label="Eliminar"
+              iconColor="#E05C5C"
+              onPress={handleDelete}
+              colors={colors}
+              last
+            />
+          </>
+        ) : (
+          <>
+            <View style={styles.header}>
+              <Pressable onPress={() => setStep("main")} style={styles.closeBtn}>
+                <Feather name="arrow-left" size={20} color={colors.foreground} />
+              </Pressable>
+              <Text style={[styles.mixName, { color: colors.foreground, flex: 1, marginBottom: 0 }]}>
+                Mover a carpeta
+              </Text>
+              <Pressable onPress={onClose} style={styles.closeBtn}>
+                <Feather name="x" size={20} color={colors.mutedForeground} />
+              </Pressable>
+            </View>
+
+            <View style={[styles.divider, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
+
+            <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{ maxHeight: 320 }}>
+              {mixFolders.length === 0 ? (
+                <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                  Todavía no tenés ninguna carpeta
+                </Text>
+              ) : (
+                mixFolders.map((f) => {
+                  const inIt = isMixInFolder(f.id, mix.id);
+                  return (
+                    <Pressable
+                      key={f.id}
+                      onPress={() => {
+                        addMixToFolder(f.id, mix.id);
+                        onClose();
+                      }}
+                      style={({ pressed }) => [styles.folderRow, { opacity: pressed ? 0.7 : 1 }]}
+                    >
+                      <View style={styles.folderIconBox}>
+                        <Feather name="folder" size={18} color={colors.primary} />
+                      </View>
+                      <Text
+                        style={[styles.folderLabel, { color: colors.foreground }]}
+                        numberOfLines={1}
+                      >
+                        {f.name}
+                      </Text>
+                      {inIt && <Feather name="check" size={16} color={colors.primary} />}
+                    </Pressable>
+                  );
+                })
+              )}
+            </ScrollView>
+          </>
         )}
-        <ActionRow
-          icon="users"
-          label={shareMixMutation.isPending ? "Compartiendo..." : "Compartir con la comunidad"}
-          onPress={handleShareToCommunity}
-          colors={colors}
-        />
-        <ActionRow
-          icon="heart"
-          label={favorited ? "Quitar de favoritas" : "Marcar como favorita"}
-          iconColor={favorited ? "#E05C5C" : undefined}
-          onPress={handleFavorite}
-          colors={colors}
-        />
-        <ActionRow
-          icon="copy"
-          label="Duplicar"
-          onPress={() => { onClose(); onDuplicate(mix); }}
-          colors={colors}
-        />
-        <ActionRow
-          icon="trash-2"
-          label="Eliminar"
-          iconColor="#E05C5C"
-          onPress={handleDelete}
-          colors={colors}
-          last
-        />
 
         {toastVisible && (
           <Animated.View
@@ -381,6 +441,19 @@ const styles = StyleSheet.create({
   actionIcon: { width: 30, marginRight: 14 },
   actionLabel: { flex: 1, fontSize: 16 },
   actionRight: { fontSize: 14, marginRight: 6 },
+  emptyText: { fontSize: 14, textAlign: "center", paddingVertical: 24 },
+  folderRow: {
+    flexDirection: "row", alignItems: "center",
+    paddingVertical: 13, gap: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "rgba(61,14,22,0.40)",
+  },
+  folderIconBox: {
+    width: 36, height: 36, borderRadius: 10,
+    backgroundColor: "rgba(190,150,80,0.06)",
+    alignItems: "center", justifyContent: "center",
+  },
+  folderLabel: { flex: 1, fontSize: 15, fontWeight: "500" },
   toast: {
     flexDirection: "row", alignItems: "center",
     position: "absolute", bottom: 80, left: 20, right: 20,

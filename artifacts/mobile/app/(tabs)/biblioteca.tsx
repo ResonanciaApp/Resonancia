@@ -295,7 +295,7 @@ function MixFolderRow({ folder, onPress, onLongPress }: { folder: MixFolder; onP
           {folder.pinned && <Feather name="bookmark" size={12} color={GOLD} />}
         </View>
         <Text style={styles.rowSub} numberOfLines={1}>
-          Carpeta · {count === 0 ? "Vacía" : `${count} mezcla${count !== 1 ? "s" : ""}`}
+          {count} mezcla{count !== 1 ? "s" : ""}
         </Text>
       </View>
     </Pressable>
@@ -1388,7 +1388,7 @@ export default function BibliotecaScreen() {
       }
       return (
         <View style={{ gap: 15 }}>
-          <View style={{ gap: 5 }}>
+          <View style={{ gap: 9 }}>
             {sortedMixFolders.map((folder) => (
               <MixFolderRow
                 key={folder.id}
