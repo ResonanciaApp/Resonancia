@@ -147,9 +147,9 @@ export interface DominantColors {
 }
 
 const DEFAULT_COLORS: DominantColors = {
-  dominant: "#2E0510",
-  mid:      "#1E030A",
-  dark:     "#100206",
+  dominant: "#1B060F",
+  mid:      "#120409",
+  dark:     "#08010E",
 };
 
 const cache = new Map<string, DominantColors>();
