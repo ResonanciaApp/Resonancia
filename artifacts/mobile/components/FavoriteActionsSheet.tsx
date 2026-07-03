@@ -263,7 +263,6 @@ export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Pro
               <ActionRow
                 icon="trash-2"
                 label={itemKind === "session" ? "Eliminar de favoritos" : "Eliminar carpeta"}
-                iconColor="#E05C5C"
                 onPress={handleDelete}
                 colors={colors}
                 last

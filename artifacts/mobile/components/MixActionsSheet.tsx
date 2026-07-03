@@ -410,7 +410,6 @@ export function MixActionsSheet({
                 <ActionRow
                   icon="trash-2"
                   label="Eliminar carpeta"
-                  iconColor="#E05C5C"
                   onPress={handleDeleteFolder}
                   colors={colors}
                   last
