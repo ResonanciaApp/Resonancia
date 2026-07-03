@@ -606,7 +606,7 @@ const styles = StyleSheet.create({
 
   /* Sleep pills */
   tabGrid: {
-    marginBottom: 28,
+    marginBottom: 43,
   },
   tabGridContent: {
     paddingHorizontal: H_PAD,
