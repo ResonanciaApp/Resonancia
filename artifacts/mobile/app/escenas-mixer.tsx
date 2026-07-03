@@ -49,8 +49,8 @@ const THUMB_GAP  = 10;
 const SWATCH_SZ  = 60;
 
 const COLOR_SWATCHES: { id: string; label: string; colors: [string, string] }[] = [
-  { id: "oscuro",   label: "Noche",    colors: ["#252525", "#191919"] },
   { id: "borgona",  label: "Borgoña",  colors: ["#6B1828", "#3D0A15"] },
+  { id: "oscuro",   label: "Noche",    colors: ["#252525", "#191919"] },
   { id: "cosmos",   label: "Cosmos",   colors: ["#1A2550", "#0D1230"] },
   { id: "nebulosa", label: "Nebulosa", colors: ["#221A5C", "#110D30"] },
   { id: "luna",     label: "Luna",     colors: ["#1A1A40", "#0D0D22"] },
@@ -83,7 +83,7 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
   } = useMixer();
 
   const [selectedId, setSelectedId] = useState<string>(
-    contextBgPresetId ?? DEFAULT_BG_PRESET_ID,
+    contextBgPresetId ?? "borgona",
   );
   const activeBgPreset = GRADIENT_PRESETS.find((p) => p.id === selectedId);
   const [videoEnabled, setVideoEnabled] = useState(false);
