@@ -18,7 +18,7 @@ export interface MixerBgPalette {
 
 export const MIXER_BG_PALETTES: MixerBgPalette[] = [
   { id: "arena", label: "Día",           colors: ["#FFFFFF", "#FDFAF4", "#FAF5EA"] },
-  { id: "noche", label: "Noche",         colors: ["#100F0F", "#100F0F", "#100F0F"] },
+  { id: "noche", label: "Noche",         colors: ["#16040A", "#16040A", "#16040A"] },
 ];
 
 export const DEFAULT_MIXER_BG_PALETTE: MixerBgPaletteId = "noche";
