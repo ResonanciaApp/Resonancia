@@ -788,7 +788,7 @@ export function MixerSheet() {
               <Pressable
                 onPress={closeSheet}
                 hitSlop={10}
-                style={styles.headerBtn}
+                style={[styles.headerBtn, { marginLeft: -7 }]}
                 accessibilityRole="button"
                 accessibilityLabel="Cerrar editor de mezcla"
               >
@@ -800,7 +800,7 @@ export function MixerSheet() {
               <Pressable
                 onPress={() => { stopAll(); closeSheet(); }}
                 hitSlop={10}
-                style={styles.headerBtn}
+                style={[styles.headerBtn, { marginRight: -8 }]}
                 accessibilityRole="button"
                 accessibilityLabel="Cerrar mezcla"
               >
