@@ -24,17 +24,17 @@ import { useDescansoPlayer } from "@/hooks/useDescansoPlayer";
 
 /* ─── Sleep tabs ────────────────────────────────────────────────────── */
 const SLEEP_TABS = [
-  { id: "dormirme", emoji: "😴", label: "Dormirme rápido" },
-  { id: "zen",      emoji: "🙏", label: "Modo zen"        },
-  { id: "relax",    emoji: "🌿", label: "Full relax"      },
-  { id: "ruido",    emoji: "⛈️", label: "Ruido ambiental" },
+  { id: "dormirme", label: "Dormirme rápido" },
+  { id: "zen",      label: "Modo zen"        },
+  { id: "relax",    label: "Full relax"      },
+  { id: "ruido",    label: "Ruido ambiental" },
 ] as const;
 
 type SleepTabId = typeof SLEEP_TABS[number]["id"] | "todos";
 
 function SleepPill({
-  sel, emoji, label, onPress,
-}: { sel: boolean; emoji: string; label: string; onPress: () => void }) {
+  sel, label, onPress,
+}: { sel: boolean; label: string; onPress: () => void }) {
   const selAnim = useRef(new Animated.Value(sel ? 1 : 0)).current;
   useEffect(() => {
     Animated.timing(selAnim, { toValue: sel ? 1 : 0, duration: 180, useNativeDriver: false }).start();
@@ -42,15 +42,15 @@ function SleepPill({
 
   const bgColor = selAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(255,255,255,0.07)", "rgba(123,79,206,0.38)"],
+    outputRange: ["rgba(255,255,255,0.055)", "rgba(255,255,255,0.8)"],
   });
   const borderColor = selAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(255,255,255,0.10)", "rgba(196,168,245,0.55)"],
+    outputRange: ["rgba(255,255,255,0)", "rgba(255,255,255,0.055)"],
   });
   const textColor = selAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(255,255,255,0.60)", "#C4A8F5"],
+    outputRange: ["rgba(255,255,255,0.60)", "#14031E"],
   });
 
   return (
@@ -58,8 +58,7 @@ function SleepPill({
       onPress={onPress}
       style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
     >
-      <Animated.View style={[styles.sleepPill, { backgroundColor: bgColor, borderColor }]}>
-        <Text style={styles.sleepPillEmoji}>{emoji}</Text>
+      <Animated.View style={[styles.sleepPill, { backgroundColor: bgColor, borderColor, borderWidth: sel ? 1 : 0 }]}>
         <Animated.Text style={[styles.sleepPillText, { color: textColor }]} numberOfLines={1}>
           {label}
         </Animated.Text>
@@ -344,7 +343,6 @@ export default function DescansoScreen() {
         >
           <SleepPill
             sel={activeTab === "todos"}
-            emoji="✨"
             label="Todos"
             onPress={() => setActiveTab("todos")}
           />
@@ -352,7 +350,6 @@ export default function DescansoScreen() {
             <SleepPill
               key={tab.id}
               sel={activeTab === tab.id}
-              emoji={tab.emoji}
               label={tab.label}
               onPress={() => setActiveTab(tab.id)}
             />
@@ -592,9 +589,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     gap: 5,
     overflow: "hidden",
-  },
-  sleepPillEmoji: {
-    fontSize: 14,
   },
   sleepPillText: {
     fontSize: 13,
