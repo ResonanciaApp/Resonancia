@@ -127,6 +127,14 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
         {session.title}
       </Text>
+      {!!authorName && (
+        <View style={styles.cardAuthorRow}>
+          <Image source={authorPhoto} style={styles.cardAuthorAvatar} contentFit="cover" />
+          <Text style={[styles.cardAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+            {authorName}
+          </Text>
+        </View>
+      )}
     </Pressable>
   );
 }
@@ -160,11 +168,22 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingHorizontal: 2,
   },
+  cardAuthorRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    marginTop: 3,
+    paddingHorizontal: 2,
+  },
+  cardAuthorAvatar: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+  },
   cardAuthor: {
     fontSize: 12,
     fontWeight: "400",
-    marginTop: 2,
-    paddingHorizontal: 2,
+    flexShrink: 1,
   },
   durationBadge: {
     position: "absolute",

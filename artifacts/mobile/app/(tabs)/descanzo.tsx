@@ -529,7 +529,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-between",
     paddingHorizontal: H_PAD,
-    rowGap: 20,
+    rowGap: 35,
     marginTop: 3,
     marginBottom: 6,
   },
