@@ -266,7 +266,7 @@ function FolderRow({ folder, onPress, onLongPress }: { folder: UserFolder; onPre
   return (
     <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
       <View style={styles.userPlCover}>
-        <Feather name="folder" size={22} color={folder.pinned ? GOLD : MUTED} />
+        <Feather name="folder" size={26} color={folder.pinned ? GOLD : MUTED} />
       </View>
       <View style={styles.rowInfo}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
@@ -287,7 +287,7 @@ function MixFolderRow({ folder, onPress, onLongPress }: { folder: MixFolder; onP
   return (
     <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
       <View style={styles.userPlCover}>
-        <Feather name="folder" size={22} color={folder.pinned ? GOLD : MUTED} />
+        <Feather name="folder" size={26} color={folder.pinned ? GOLD : MUTED} />
       </View>
       <View style={styles.rowInfo}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
@@ -316,7 +316,7 @@ function UserPlaylistRow({ pl, onPress, onLongPress }: { pl: UserPlaylist; onPre
         ) : pl.coverUri ? (
           <Image source={{ uri: pl.coverUri }} style={styles.userPlCover} contentFit="cover" />
         ) : (
-          <Feather name="music" size={20} color={MUTED} />
+          <Feather name="music" size={24} color={MUTED} />
         )}
       </View>
       <View style={styles.rowInfo}>
@@ -452,7 +452,7 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
         {/* Placeholder vacío */}
         {q.length === 0 && kbReady && (
           <Animated.View style={[blStyles.empty, { opacity: fadeAnim }]}>
-            <Feather name="headphones" size={48} color="#BE8744" style={{ marginBottom: 16 }} />
+            <Feather name="headphones" size={52} color="#BE8744" style={{ marginBottom: 16 }} />
             <Text style={blStyles.emptyTitle}>Encuentra en tu biblioteca</Text>
             <Text style={blStyles.emptySub}>Busca favoritos, playlists y mezclas…</Text>
           </Animated.View>
@@ -467,7 +467,7 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
             contentContainerStyle={{ paddingHorizontal: H_PAD, paddingTop: 8, paddingBottom: 24 }}
             ListEmptyComponent={
               <View style={blStyles.empty}>
-                <Feather name="search" size={36} color={MUTED} style={{ marginBottom: 12 }} />
+                <Feather name="search" size={40} color={MUTED} style={{ marginBottom: 12 }} />
                 <Text style={blStyles.emptyTitle}>Sin resultados</Text>
                 <Text style={blStyles.emptySub}>Intenta con otro término</Text>
               </View>
@@ -785,7 +785,7 @@ function FavFolderRow({ folder, onPress, onLongPress }: { folder: FavFolder; onP
   return (
     <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { marginBottom: 7, opacity: pressed ? 0.8 : 1 }]}>
       <View style={styles.userPlCover}>
-        <Feather name="folder" size={22} color={folder.pinned ? GOLD : MUTED} />
+        <Feather name="folder" size={26} color={folder.pinned ? GOLD : MUTED} />
       </View>
       <View style={styles.rowInfo}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
@@ -931,11 +931,11 @@ function SortSheet({
               style={({ pressed }) => [styles.sortSheetRow, { opacity: pressed ? 0.7 : 1 }]}
               onPress={() => { onSelect(opt.id); onClose(); }}
             >
-              <Feather name={opt.icon as never} size={17} color={active ? GOLD : MUTED} />
+              <Feather name={opt.icon as never} size={21} color={active ? GOLD : MUTED} />
               <Text style={[styles.sortSheetLabel, active && styles.sortSheetLabelActive]}>
                 {opt.label}
               </Text>
-              {active && <Feather name="check" size={17} color={GOLD} style={{ marginLeft: "auto" }} />}
+              {active && <Feather name="check" size={21} color={GOLD} style={{ marginLeft: "auto" }} />}
             </Pressable>
           );
         })}
@@ -1207,7 +1207,7 @@ export default function BibliotecaScreen() {
       if (displayPl.length === 0 && userFolders.length === 0) {
         return (
           <View style={styles.emptyState}>
-            <Feather name="music" size={48} color={GOLD} style={{ marginBottom: 16 }} />
+            <Feather name="music" size={52} color={GOLD} style={{ marginBottom: 16 }} />
             <Text style={styles.emptyTitle}>Tus playlists aparecerán aquí</Text>
             <Text style={styles.emptySub}>Crea una playlist para organizar tus sesiones favoritas.</Text>
           </View>
@@ -1232,7 +1232,7 @@ export default function BibliotecaScreen() {
                   ) : pl.coverUri ? (
                     <Image source={{ uri: pl.coverUri }} style={{ width: cellW, height: cellW, borderRadius: 8 }} contentFit="cover" />
                   ) : (
-                    <Feather name="music" size={24} color={MUTED} />
+                    <Feather name="music" size={28} color={MUTED} />
                   )}
                 </View>
                 <Text style={styles.gridTitle} numberOfLines={2}>{pl.name}</Text>
@@ -1303,7 +1303,7 @@ export default function BibliotecaScreen() {
         return (
           <View style={{ gap: 15 }}>
             <View style={styles.emptyState}>
-              <MaterialCommunityIcons name="tune-variant" size={48} color={GOLD} style={{ marginBottom: 16 }} />
+              <MaterialCommunityIcons name="tune-variant" size={52} color={GOLD} style={{ marginBottom: 16 }} />
               <Text style={styles.emptyTitle}>Tus mezclas aparecerán aquí</Text>
               <Text style={styles.emptySub}>Guarda una mezcla desde el Mezclador para verla en tu biblioteca.</Text>
             </View>
@@ -1497,7 +1497,7 @@ export default function BibliotecaScreen() {
         return (
           <View style={{ gap: 15 }}>
             <View style={styles.emptyState}>
-              <Feather name="heart" size={48} color={GOLD} style={{ marginBottom: 16 }} />
+              <Feather name="heart" size={52} color={GOLD} style={{ marginBottom: 16 }} />
               <Text style={styles.emptyTitle}>Tus favoritos aparecerán aquí</Text>
               <Text style={styles.emptySub}>Toca el corazón en cualquier sesión para guardarla aquí.</Text>
             </View>
@@ -1677,7 +1677,7 @@ export default function BibliotecaScreen() {
           {/* Ordenar + toggle vista */}
           <View style={styles.controlRow}>
             <Pressable onPress={() => setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
-              <Feather name="chevrons-down" size={14} color={MUTED} />
+              <Feather name="chevrons-down" size={18} color={MUTED} />
               <Text style={styles.sortText}>
                 {sort === "recientes" ? "Recientes" : sort === "agregado" ? "Agregado recientemente" : "Alfabéticamente"}
               </Text>
