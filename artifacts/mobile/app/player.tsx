@@ -372,7 +372,7 @@ export default function PlayerScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   if (!currentSession) {
-    return <View style={[styles.root, { backgroundColor: "#230610" }]} />;
+    return <View style={[styles.root, { backgroundColor: "transparent" }]} />;
   }
 
   const OPTIONS_CATEGORIES = ["sonidos-ancestrales", "musica-sonidos", "meditaciones-guiadas", "reflexiones"];
