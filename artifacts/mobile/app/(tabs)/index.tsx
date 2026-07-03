@@ -960,7 +960,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: GRID_PAD,
     paddingVertical: 20,
     marginTop: 7,
-    marginBottom: SECTION_GAP + 15,
+    marginBottom: SECTION_GAP,
+    transform: [{ translateY: 15 }],
   },
   intencionSuper: {
     fontSize: 13,
