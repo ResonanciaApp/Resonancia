@@ -2117,7 +2117,7 @@ const styles = StyleSheet.create({
   },
   sheetHandle: {
     width: 40, height: 4, borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.6)",
+    backgroundColor: "rgba(255,255,255,0.055)",
     alignSelf: "center", marginBottom: 20,
   },
   sheetTitle: { fontSize: 17, fontWeight: "700", color: TEXT, marginBottom: 20 },
@@ -2129,7 +2129,7 @@ const styles = StyleSheet.create({
   },
   sheetIcon: {
     width: 44, height: 44, borderRadius: 12,
-    backgroundColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(255,255,255,0.055)",
     alignItems: "center", justifyContent: "center",
   },
   sheetItemTitle: { fontSize: 15, fontWeight: "600", color: TEXT, marginBottom: 2 },
