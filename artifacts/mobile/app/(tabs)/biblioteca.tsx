@@ -1454,6 +1454,7 @@ export default function BibliotecaScreen() {
               thumbWidth={65}
               thumbHeight={64}
               thumbRadius={6}
+              showDuration={false}
             />
           ))}
         </View>

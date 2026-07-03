@@ -31,6 +31,7 @@ type Props = {
   thumbWidth?: number;
   thumbHeight?: number;
   thumbRadius?: number;
+  showDuration?: boolean;
 };
 
 function LockStar() {
@@ -44,7 +45,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8 }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -80,7 +81,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         <View style={{ width: thumbWidth, height: thumbHeight, borderRadius: thumbRadius, overflow: "hidden" }}>
           <Image source={session.image} style={{ width: "100%", height: "100%" }} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           {locked && <LockStar />}
-          <Text style={styles.hDurLabel}>{session.durationLabel}</Text>
+          {showDuration && <Text style={styles.hDurLabel}>{session.durationLabel}</Text>}
         </View>
         <View style={styles.hContent}>
           <Text style={[styles.hTitle, { color: colors.foreground }]} numberOfLines={2}>
