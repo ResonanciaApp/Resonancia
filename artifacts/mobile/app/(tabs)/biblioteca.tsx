@@ -1840,7 +1840,7 @@ const styles = StyleSheet.create({
   headerIconBtn: { width: 43, height: 43, alignItems: "center", justifyContent: "center" },
 
   animChipWrap: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
-  animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
+  animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, marginTop: -21, justifyContent: "center", zIndex: 3 },
   chipRow: { flexGrow: 0, marginTop: -21 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingTop: 5, paddingBottom: 2, paddingHorizontal: H_PAD },
   chipRowFiltered: {
