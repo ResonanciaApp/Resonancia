@@ -1695,10 +1695,8 @@ export type CreateDescansoSoundBodyCategoryId = typeof CreateDescansoSoundBodyCa
 
 
 export const CreateDescansoSoundBodyCategoryId = {
-  dormirme: 'dormirme',
-  zen: 'zen',
-  relax: 'relax',
-  ruido: 'ruido',
+  binaural: 'binaural',
+  ambiental: 'ambiental',
 } as const;
 
 export interface CreateDescansoSoundBody {
@@ -1717,10 +1715,8 @@ export type UpdateDescansoSoundBodyCategoryId = typeof UpdateDescansoSoundBodyCa
 
 
 export const UpdateDescansoSoundBodyCategoryId = {
-  dormirme: 'dormirme',
-  zen: 'zen',
-  relax: 'relax',
-  ruido: 'ruido',
+  binaural: 'binaural',
+  ambiental: 'ambiental',
 } as const;
 
 export interface UpdateDescansoSoundBody {

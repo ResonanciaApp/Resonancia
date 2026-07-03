@@ -24,10 +24,8 @@ import {
 } from "@/components/ui/select";
 
 const CATEGORIES = [
-  { id: "dormirme", label: "Dormirme rápido" },
-  { id: "zen",      label: "Modo zen"        },
-  { id: "relax",    label: "Full relax"      },
-  { id: "ruido",    label: "Ruido ambiental" },
+  { id: "binaural",  label: "Sonidos Binaurales" },
+  { id: "ambiental", label: "Ambientales"        },
 ] as const;
 
 type DescansoCategory = typeof CATEGORIES[number]["id"];
@@ -43,7 +41,7 @@ interface SoundForm {
 }
 
 const EMPTY_FORM: SoundForm = {
-  id: "", label: "", categoryId: "dormirme", sortOrder: "0",
+  id: "", label: "", categoryId: "binaural", sortOrder: "0",
   isActive: true, audioObjectPath: "", thumbnailObjectPath: "",
 };
 

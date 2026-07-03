@@ -5368,7 +5368,7 @@ components:
           minLength: 1
         categoryId:
           type: string
-          enum: [dormirme, zen, relax, ruido]
+          enum: [binaural, ambiental]
         audioObjectPath:
           type: string
           nullable: true
@@ -5387,7 +5387,7 @@ components:
           minLength: 1
         categoryId:
           type: string
-          enum: [dormirme, zen, relax, ruido]
+          enum: [binaural, ambiental]
         audioObjectPath:
           type: string
           nullable: true

@@ -20,17 +20,20 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useColors } from "@/hooks/useColors";
 import { DESCANSO_SOUNDS } from "@/data/descanso-sounds";
+import { getSessionsByDescansoTag } from "@/data/sessions";
 import { useDescansoPlayer } from "@/hooks/useDescansoPlayer";
+import { SessionCard } from "@/components/SessionCard";
 
-/* ─── Sleep tabs ────────────────────────────────────────────────────── */
+/* ─── Descanso tabs ─────────────────────────────────────────────────── */
 const SLEEP_TABS = [
-  { id: "dormirme", label: "Dormirme rápido" },
-  { id: "zen",      label: "Modo zen"        },
-  { id: "relax",    label: "Full relax"      },
-  { id: "ruido",    label: "Ruido ambiental" },
+  { id: "historias", label: "Historias" },
+  { id: "asmr",      label: "ASMR" },
+  { id: "binaural",  label: "Sonidos Binaurales" },
+  { id: "ambiental", label: "Ambientales" },
 ] as const;
 
-type SleepTabId = typeof SLEEP_TABS[number]["id"] | "todos";
+type SleepTabId = typeof SLEEP_TABS[number]["id"];
+const SOUND_TAB_IDS: SleepTabId[] = ["binaural", "ambiental"];
 
 function SleepPill({
   sel, label, onPress,
@@ -304,16 +307,25 @@ export default function DescansoScreen() {
   const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const [activeTab,   setActiveTab]   = useState<SleepTabId>("todos");
+  const [activeTab,   setActiveTab]   = useState<SleepTabId>("historias");
   const [timerSheet,  setTimerSheet]  = useState(false);
   const [timerMin,    setTimerMin]    = useState(30);
   const [fadeVol,     setFadeVol]     = useState(false);
 
   const player = useDescansoPlayer({ timerMinutes: timerMin, fadeVolume: fadeVol });
 
-  const visibleSounds = activeTab === "todos"
-    ? DESCANSO_SOUNDS
-    : DESCANSO_SOUNDS.filter((s) => s.categoryId === activeTab);
+  const isSoundTab = SOUND_TAB_IDS.includes(activeTab);
+  const visibleSounds = isSoundTab
+    ? DESCANSO_SOUNDS.filter((s) => s.categoryId === activeTab)
+    : [];
+
+  const visibleSessions = activeTab === "historias"
+    ? [...getSessionsByDescansoTag("Historias para dormir"), ...getSessionsByDescansoTag("Historias infantiles")]
+    : activeTab === "asmr"
+      ? getSessionsByDescansoTag("ASMR")
+      : [];
+
+  const cardW = (W - H_PAD * 2 - 14) / 2;
 
   return (
     <View style={[styles.root, { backgroundColor: "#08010E" }]}>
@@ -341,11 +353,6 @@ export default function DescansoScreen() {
           style={styles.tabGrid}
           contentContainerStyle={styles.tabGridContent}
         >
-          <SleepPill
-            sel={activeTab === "todos"}
-            label="Todos"
-            onPress={() => setActiveTab("todos")}
-          />
           {SLEEP_TABS.map((tab) => (
             <SleepPill
               key={tab.id}
@@ -356,45 +363,56 @@ export default function DescansoScreen() {
           ))}
         </ScrollView>
 
-        {/* ── Banner Prepara tu noche ── */}
-        <Pressable
-          style={({ pressed }) => [styles.nightBannerWrap, pressed && { opacity: 0.82 }]}
-          onPress={() => setTimerSheet(true)}
-        >
-          <View style={styles.nightBanner}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.nightBannerTitle}>Prepara tu noche</Text>
-              <Text style={styles.nightBannerSub}>
-                {timerMin} min{fadeVol ? " · fade" : ""}{player.selectedId ? " · reproduciendo" : ""}
-              </Text>
-            </View>
-            <Feather name="chevron-right" size={18} color="rgba(255,255,255,0.6)" />
-          </View>
-        </Pressable>
-
-        {/* ── Grilla de sonidos ── */}
-        <View style={styles.soundGrid}>
-          {visibleSounds.map((sound) => {
-            const sel       = player.selectedId === sound.id;
-            const playing   = sel && player.isPlaying;
-            return (
-              <Pressable
-                key={sound.id}
-                onPress={() => player.toggle(sound.id, sound.audioUri ?? null)}
-                style={({ pressed }) => [styles.soundCell, pressed && { opacity: 0.88 }]}
-              >
-                <View style={[styles.soundImageWrap, sel && styles.soundImageWrapSel]}>
-                  <Image source={sound.image} style={styles.soundImage} resizeMode="cover" />
-                  {!sel && <View style={styles.soundOverlay} />}
-                  {playing && <PlayingDot />}
+        {isSoundTab ? (
+          <>
+            {/* ── Banner Prepara tu noche ── */}
+            <Pressable
+              style={({ pressed }) => [styles.nightBannerWrap, pressed && { opacity: 0.82 }]}
+              onPress={() => setTimerSheet(true)}
+            >
+              <View style={styles.nightBanner}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.nightBannerTitle}>Prepara tu noche</Text>
+                  <Text style={styles.nightBannerSub}>
+                    {timerMin} min{fadeVol ? " · fade" : ""}{player.selectedId ? " · reproduciendo" : ""}
+                  </Text>
                 </View>
-                <Text style={[styles.soundLabel, sel && styles.soundLabelSel]} numberOfLines={1}>
-                  {sound.label}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
+                <Feather name="chevron-right" size={18} color="rgba(255,255,255,0.6)" />
+              </View>
+            </Pressable>
+
+            {/* ── Grilla de sonidos ── */}
+            <View style={styles.soundGrid}>
+              {visibleSounds.map((sound) => {
+                const sel       = player.selectedId === sound.id;
+                const playing   = sel && player.isPlaying;
+                return (
+                  <Pressable
+                    key={sound.id}
+                    onPress={() => player.toggle(sound.id, sound.audioUri ?? null)}
+                    style={({ pressed }) => [styles.soundCell, pressed && { opacity: 0.88 }]}
+                  >
+                    <View style={[styles.soundImageWrap, sel && styles.soundImageWrapSel]}>
+                      <Image source={sound.image} style={styles.soundImage} resizeMode="cover" />
+                      {!sel && <View style={styles.soundOverlay} />}
+                      {playing && <PlayingDot />}
+                    </View>
+                    <Text style={[styles.soundLabel, sel && styles.soundLabelSel]} numberOfLines={1}>
+                      {sound.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </>
+        ) : (
+          /* ── Grilla de sesiones (Historias / ASMR) ── */
+          <View style={styles.sessionGrid}>
+            {visibleSessions.map((session) => (
+              <SessionCard key={session.id} session={session} width={cardW} />
+            ))}
+          </View>
+        )}
 
       </ScrollView>
 
@@ -498,6 +516,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "rgba(255,255,255,0.4)",
     lineHeight: 16,
+  },
+
+  /* Session grid (Historias / ASMR) */
+  sessionGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    paddingHorizontal: H_PAD,
+    rowGap: 20,
+    marginTop: 3,
+    marginBottom: 6,
   },
 
   /* Sound grid */

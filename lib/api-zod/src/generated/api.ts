@@ -2590,7 +2590,7 @@ export const GetAdminDescansoSoundsResponse = zod.object({
 export const CreateAdminDescansoSoundBody = zod.object({
   "id": zod.string().min(1),
   "label": zod.string().min(1),
-  "categoryId": zod.enum(['dormirme', 'zen', 'relax', 'ruido']),
+  "categoryId": zod.enum(['binaural', 'ambiental']),
   "audioObjectPath": zod.string().nullish(),
   "thumbnailObjectPath": zod.string().nullish(),
   "sortOrder": zod.number().optional(),
@@ -2610,7 +2610,7 @@ export const UpdateAdminDescansoSoundParams = zod.object({
 
 export const UpdateAdminDescansoSoundBody = zod.object({
   "label": zod.string().min(1).optional(),
-  "categoryId": zod.enum(['dormirme', 'zen', 'relax', 'ruido']).optional(),
+  "categoryId": zod.enum(['binaural', 'ambiental']).optional(),
   "audioObjectPath": zod.string().nullish(),
   "thumbnailObjectPath": zod.string().nullish(),
   "sortOrder": zod.number().optional(),

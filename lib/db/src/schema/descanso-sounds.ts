@@ -9,10 +9,8 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
 export const DESCANSO_SOUND_CATEGORIES = [
-  "dormirme",
-  "zen",
-  "relax",
-  "ruido",
+  "binaural",
+  "ambiental",
 ] as const;
 
 export type DescansoSoundCategoryId = (typeof DESCANSO_SOUND_CATEGORIES)[number];

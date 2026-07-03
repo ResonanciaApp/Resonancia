@@ -122,7 +122,8 @@ export type DescansoTag =
   | "Ruidos"
   | "Meditaciones"
   | "Historias para dormir"
-  | "Historias infantiles";
+  | "Historias infantiles"
+  | "ASMR";
 
 export interface DescansoTagCard {
   id: string;
@@ -174,5 +175,12 @@ export const DESCANSO_TAG_CARDS: DescansoTagCard[] = [
     description: "Cuentos tranquilos y entrañables para acompañar a los más pequeños en su viaje al mundo de los sueños.",
     icon: "star",
     accent: "#D4C896",
+  },
+  {
+    id: "asmr",
+    label: "ASMR",
+    description: "Sonidos íntimos y susurrados que activan la respuesta sensorial del cuerpo, disolviendo la tensión hasta el sueño.",
+    icon: "headphones",
+    accent: "#C8B4E0",
   },
 ];
