@@ -325,7 +325,7 @@ export default function DescansoScreen() {
       ? getSessionsByDescansoTag("ASMR")
       : [];
 
-  const cardW = (W - H_PAD * 2 - 14 * 2) / 2;
+  const cardW = (W - H_PAD * 2 - 14) / 2;
 
   return (
     <View style={[styles.root, { backgroundColor: "#08010E" }]}>
@@ -409,7 +409,12 @@ export default function DescansoScreen() {
           /* ── Grilla de sesiones (Historias / ASMR) ── */
           <View style={styles.sessionGrid}>
             {visibleSessions.map((session) => (
-              <SessionCard key={session.id} session={session} width={cardW} />
+              <SessionCard
+                key={session.id}
+                session={session}
+                width={cardW}
+                style={{ marginRight: 0 }}
+              />
             ))}
           </View>
         )}
@@ -522,6 +527,7 @@ const styles = StyleSheet.create({
   sessionGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
+    justifyContent: "space-between",
     paddingHorizontal: H_PAD,
     rowGap: 20,
     marginTop: 3,

@@ -5,9 +5,11 @@ import { Image } from "expo-image";
 import React from "react";
 import {
   Pressable,
+  StyleProp,
   StyleSheet,
   Text,
   View,
+  ViewStyle,
 } from "react-native";
 
 import { type Session } from "@/data/sessions";
@@ -33,6 +35,7 @@ type Props = {
   thumbRadius?: number;
   showDuration?: boolean;
   pinned?: boolean;
+  style?: StyleProp<ViewStyle>;
 };
 
 function LockStar() {
@@ -46,7 +49,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, pinned = false }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, pinned = false, style }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -111,6 +114,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
       style={({ pressed }) => [
         styles.card,
         { width, opacity: pressed ? 0.85 : 1 },
+        style,
       ]}
     >
       <View style={[styles.imageContainer, { borderRadius: colors.radius - 4 }]}>
