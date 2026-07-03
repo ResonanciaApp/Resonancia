@@ -372,15 +372,7 @@ export default function PlayerScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   if (!currentSession) {
-    return (
-      <View style={[styles.root, { backgroundColor: "#08010E", justifyContent: "center", alignItems: "center" }]}>
-        <Feather name="music" size={40} color={colors.border} />
-        <Text style={[styles.noSession, { color: colors.mutedForeground }]}>No hay sesión activa</Text>
-        <Pressable onPress={() => router.back()} style={[styles.backBtnSolo, { borderColor: colors.border }]}>
-          <Text style={{ color: colors.mutedForeground }}>Volver</Text>
-        </Pressable>
-      </View>
-    );
+    return <View style={[styles.root, { backgroundColor: "#230610" }]} />;
   }
 
   const OPTIONS_CATEGORIES = ["sonidos-ancestrales", "musica-sonidos", "meditaciones-guiadas", "reflexiones"];
