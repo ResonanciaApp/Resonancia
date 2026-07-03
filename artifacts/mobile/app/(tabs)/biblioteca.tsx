@@ -33,6 +33,7 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useMixer, type MixPreset, type MixFolder } from "@/context/MixerContext";
+import { useMixerPanel } from "@/context/MixerPanelContext";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { useLoadMix } from "@/hooks/useLoadMix";
 import { MixActionsSheet } from "@/components/MixActionsSheet";
@@ -1021,6 +1022,7 @@ export default function BibliotecaScreen() {
     presets, loadedPresetId, isPlaying: mixerPlaying, deletePreset, duplicatePreset, openSheet,
     mixFolders,
   } = useMixer();
+  const { openMixer } = useMixerPanel();
   const loadMix = useLoadMix();
   const [mixMenuPreset, setMixMenuPreset] = useState<MixPreset | null>(null);
   const [mixMenuFolder, setMixMenuFolder] = useState<MixFolder | null>(null);
@@ -1280,7 +1282,7 @@ export default function BibliotecaScreen() {
         <>
           <Pressable
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
-            onPress={() => router.navigate("/(tabs)/musica" as never)}
+            onPress={() => { openMixer(); router.navigate("/(tabs)/musica" as never); }}
           >
             <View style={styles.addResonadorIcon}>
               <MaterialCommunityIcons name="tune-variant" size={24} color="#BE8744" />
@@ -1703,7 +1705,7 @@ export default function BibliotecaScreen() {
         onClose={() => setCreateVisible(false)}
         onCreatePlaylist={() => setNombreVisible(true)}
         onCreateCarpeta={() => setNombreCarpetaVisible(true)}
-        onGoMezclas={() => router.navigate("/(tabs)/musica" as never)}
+        onGoMezclas={() => { openMixer(); router.navigate("/(tabs)/musica" as never); }}
       />
       <NombrePlaylistModal visible={nombreVisible} onClose={() => setNombreVisible(false)} />
       <NombreCarpetaModal visible={nombreCarpetaVisible} onClose={() => setNombreCarpetaVisible(false)} />

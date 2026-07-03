@@ -18,6 +18,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { type MixFolder, useMixer } from "@/context/MixerContext";
+import { useMixerPanel } from "@/context/MixerPanelContext";
 import { useLoadMix } from "@/hooks/useLoadMix";
 import { MixActionsSheet } from "@/components/MixActionsSheet";
 import { MixCover } from "@/app/mi-mezcla/[id]";
@@ -50,6 +51,7 @@ export default function CarpetaMezclaDetailScreen() {
     deletePreset,
     duplicatePreset,
   } = useMixer();
+  const { openMixer } = useMixerPanel();
   const loadMix = useLoadMix();
 
   const [addSheetVisible, setAddSheetVisible] = useState(false);
@@ -200,7 +202,7 @@ export default function CarpetaMezclaDetailScreen() {
         onClose={() => setAddSheetVisible(false)}
         availableMixes={availableMixes}
         onAddMix={(mixId) => { addMixToFolder(folder.id, mixId); setAddSheetVisible(false); }}
-        onNuevaMezcla={() => { setAddSheetVisible(false); router.navigate("/(tabs)/musica" as never); }}
+        onNuevaMezcla={() => { setAddSheetVisible(false); openMixer(); router.navigate("/(tabs)/musica" as never); }}
         onNuevaCarpeta={() => { setAddSheetVisible(false); setTimeout(() => setNombreCarpetaVisible(true), 250); }}
       />
 
