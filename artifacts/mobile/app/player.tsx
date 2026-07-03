@@ -104,6 +104,22 @@ export default function PlayerScreen() {
   const mainVolSheetTrackWidth = useRef(0);
   const mainVolSheetTrackPageX = useRef(0);
 
+  // Fade propio del reproductor al abrir/cerrar (sin depender de la transición del stack)
+  const screenOpacity = useRef(new RNAnimated.Value(0)).current;
+  const isClosingRef = useRef(false);
+  useEffect(() => {
+    RNAnimated.timing(screenOpacity, { toValue: 1, duration: 220, useNativeDriver: true }).start();
+  }, [screenOpacity]);
+  const closePlayer = useCallback(() => {
+    if (isClosingRef.current) return;
+    isClosingRef.current = true;
+    RNAnimated.timing(screenOpacity, { toValue: 0, duration: 200, useNativeDriver: true }).start(({ finished }) => {
+      stop();
+      router.back();
+      if (!finished) isClosingRef.current = false;
+    });
+  }, [screenOpacity, stop]);
+
   // Refs para sliders y barra de progreso
   const voiceTrackWidth = useRef(0);
   const voiceTrackPageX = useRef(0);
@@ -437,6 +453,7 @@ export default function PlayerScreen() {
   return (
     <View style={styles.root}>
       <StatusBar hidden />
+      <RNAnimated.View style={{ flex: 1, opacity: screenOpacity }}>
 
       {/* Fondo dinámico degradado */}
       <LinearGradient
@@ -589,7 +606,7 @@ export default function PlayerScreen() {
             pointerEvents={isPlaying ? "none" : "auto"}
           >
             <Pressable
-              onPress={() => { stop(); router.back(); }}
+              onPress={closePlayer}
               style={[styles.terminarBtn, StyleSheet.absoluteFill]}
             >
               <Text style={styles.terminarText}>{progress >= 1 ? "Continuar" : "Terminar"}</Text>
@@ -651,7 +668,7 @@ export default function PlayerScreen() {
 
       {/* ── Botones flotantes superiores ─────────────────────────────────── */}
       <Pressable
-        onPress={() => { stop(); router.back(); }}
+        onPress={closePlayer}
         style={[
           styles.topBtn,
           { top: topPad + 6, left: 16 },
@@ -933,6 +950,7 @@ export default function PlayerScreen() {
           setShowAmbientPicker(false);
         }}
       />
+      </RNAnimated.View>
     </View>
   );
 }
