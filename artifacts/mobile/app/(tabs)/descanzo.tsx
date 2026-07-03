@@ -325,7 +325,7 @@ export default function DescansoScreen() {
       ? getSessionsByDescansoTag("ASMR")
       : [];
 
-  const cardW = (W - H_PAD * 2 - 14) / 2;
+  const cardW = (W - H_PAD * 2 - 14 * 2) / 2;
 
   return (
     <View style={[styles.root, { backgroundColor: "#08010E" }]}>
