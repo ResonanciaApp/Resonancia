@@ -373,7 +373,7 @@ export default function PlayerScreen() {
 
   if (!currentSession) {
     return (
-      <View style={[styles.root, { backgroundColor: colors.background, justifyContent: "center", alignItems: "center" }]}>
+      <View style={[styles.root, { backgroundColor: "#08010E", justifyContent: "center", alignItems: "center" }]}>
         <Feather name="music" size={40} color={colors.border} />
         <Text style={[styles.noSession, { color: colors.mutedForeground }]}>No hay sesión activa</Text>
         <Pressable onPress={() => router.back()} style={[styles.backBtnSolo, { borderColor: colors.border }]}>
