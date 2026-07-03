@@ -961,7 +961,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     marginTop: 7,
     marginBottom: SECTION_GAP,
-    transform: [{ translateY: 15 }],
+    transform: [{ translateY: 8 }],
   },
   intencionSuper: {
     fontSize: 13,
