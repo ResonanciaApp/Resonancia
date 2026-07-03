@@ -1066,7 +1066,7 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingVertical: 9,
     borderRadius: 29,
-    backgroundColor: "#16040A",
+    backgroundColor: "transparent",
     paddingHorizontal: 24,
   },
   shareBtnText: {
