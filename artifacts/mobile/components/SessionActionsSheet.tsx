@@ -119,11 +119,14 @@ export function SessionActionsSheet({ session, visible, onClose }: Props) {
         onRequestClose={onClose}
         statusBarTranslucent
       >
-        {/* Backdrop */}
-        <Pressable style={styles.backdrop} onPress={onClose} />
+        <View style={styles.modalRoot}>
+          {/* Backdrop */}
+          <Pressable style={StyleSheet.absoluteFill} onPress={onClose}>
+            <View style={styles.backdrop} />
+          </Pressable>
 
-        {/* Sheet */}
-        <View style={[styles.sheet, { paddingBottom: insets.bottom + 8 }]}>
+          {/* Sheet */}
+          <View style={[styles.sheet, { paddingBottom: insets.bottom + 8 }]}>
           {/* Handle */}
           <View style={styles.handle} />
 
@@ -205,22 +208,23 @@ export function SessionActionsSheet({ session, visible, onClose }: Props) {
               </Text>
             </Animated.View>
           )}
-        </View>
+          </View>
 
-        {/* Sub-sheet: Timer */}
-        <TimerSheet
-          visible={showTimer}
-          onClose={() => setShowTimer(false)}
-        />
-
-        {/* Sub-sheet: Add to Folder */}
-        {session && (
-          <AddToFolderSheet
-            visible={showFolder}
-            sessionId={session.id}
-            onClose={() => setShowFolder(false)}
+          {/* Sub-sheet: Timer */}
+          <TimerSheet
+            visible={showTimer}
+            onClose={() => setShowTimer(false)}
           />
-        )}
+
+          {/* Sub-sheet: Add to Folder */}
+          {session && (
+            <AddToFolderSheet
+              visible={showFolder}
+              sessionId={session.id}
+              onClose={() => setShowFolder(false)}
+            />
+          )}
+        </View>
       </Modal>
 
     </>
@@ -279,6 +283,10 @@ function ActionRow({
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
+  modalRoot: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
   backdrop: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.55)",
