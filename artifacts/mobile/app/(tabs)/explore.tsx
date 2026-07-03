@@ -306,8 +306,8 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
 }
 
 const srStyles = StyleSheet.create({
-  root:        { flex: 1, backgroundColor: "#230610" },
-  overlay:     { flexDirection: "row", alignItems: "center", backgroundColor: "#230610", paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
+  root:        { flex: 1, backgroundColor: "#230C14" },
+  overlay:     { flexDirection: "row", alignItems: "center", backgroundColor: "#230C14", paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
   bar:         { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.09)", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 11 },
   input:       { flex: 1, fontSize: 14, color: "#F4DAD5" },
   cancel:      { paddingVertical: 6 },
