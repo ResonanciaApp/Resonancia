@@ -2056,7 +2056,7 @@ const styles = StyleSheet.create({
   nameCard: {
     flex: 1,
     width: "100%",
-    backgroundColor: "#230610",
+    backgroundColor: "#230C14",
     paddingHorizontal: 32,
     paddingTop: 20,
     paddingBottom: 32,
@@ -2111,7 +2111,7 @@ const styles = StyleSheet.create({
   },
   sheet: {
     position: "absolute", left: 0, right: 0, bottom: 0,
-    backgroundColor: "#230610",
+    backgroundColor: "#230C14",
     borderTopLeftRadius: 24, borderTopRightRadius: 24,
     paddingHorizontal: 20, paddingTop: 12, paddingBottom: 36,
   },
@@ -2183,7 +2183,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   addResModalSheet: {
-    backgroundColor: "#230610",
+    backgroundColor: "#230C14",
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     paddingTop: 18,
