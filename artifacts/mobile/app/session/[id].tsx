@@ -601,12 +601,6 @@ export default function SessionDetailScreen() {
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.65)" }]} />
           </Pressable>
           <View style={[styles.optSheet, { paddingBottom: bottomPad + 8 }]}>
-            <LinearGradient
-              colors={["#230C14", "#230C14"]}
-              locations={[0, 1]}
-              style={[StyleSheet.absoluteFill, { borderTopLeftRadius: 24, borderTopRightRadius: 24 }]}
-              pointerEvents="none"
-            />
             <View style={styles.optHandle} />
             <View style={styles.optHeader}>
               <Image
