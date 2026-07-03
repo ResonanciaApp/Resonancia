@@ -785,37 +785,31 @@ export function MixerSheet() {
             {...panResponder.panHandlers}
           >
             <View style={[styles.headerRow, { marginTop: -15 }]}>
-              <GhostPill style={{ backgroundColor: "rgba(255,255,255,0.05)" }}>
-                <Pressable
-                  onPress={closeSheet}
-                  hitSlop={10}
-                  style={styles.headerBtn}
-                  accessibilityRole="button"
-                  accessibilityLabel="Cerrar editor de mezcla"
-                >
-                  <Feather name="chevron-down" size={24} color={palette.headerFg} />
-                </Pressable>
-              </GhostPill>
+              <Pressable
+                onPress={closeSheet}
+                hitSlop={10}
+                style={styles.headerBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Cerrar editor de mezcla"
+              >
+                <Feather name="chevron-down" size={24} color={palette.headerFg} />
+              </Pressable>
               <Text style={[styles.title, { color: palette.headerFg, flex: 1 }]} numberOfLines={1}>
                 {originPreset?.name ?? "Tu mezcla"}
               </Text>
-              <GhostPill style={{ backgroundColor: "rgba(255,255,255,0.05)" }}>
-                <Pressable
-                  onPress={() => { stopAll(); closeSheet(); }}
-                  hitSlop={10}
-                  style={styles.headerBtn}
-                  accessibilityRole="button"
-                  accessibilityLabel="Cerrar mezcla"
-                >
-                  <Feather name="x" size={22} color={palette.headerFg} />
-                </Pressable>
-              </GhostPill>
+              <Pressable
+                onPress={() => { stopAll(); closeSheet(); }}
+                hitSlop={10}
+                style={styles.headerBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Cerrar mezcla"
+              >
+                <Feather name="x" size={22} color={palette.headerFg} />
+              </Pressable>
             </View>
 
-            {/* Línea divisora — solo en tema por defecto */}
-            {!hasCustomBg && !activeBgPreset.image && (
-              <View style={[styles.headerDivider, { backgroundColor: palette.separator }]} />
-            )}
+            {/* Línea divisora sutil */}
+            <View style={[styles.headerDivider, { backgroundColor: palette.separator }]} />
           </View>
 
           <GHScrollView
