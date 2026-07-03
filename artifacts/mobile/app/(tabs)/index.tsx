@@ -363,10 +363,11 @@ export default function HomeScreen2() {
   }, [history, catalogVersion]);
 
   // Escuchadas recientemente — historial deduplicado, más recientes primero
+  // (history ya viene ordenado con el más reciente al inicio, ver addToHistory)
   const listenedRecently = React.useMemo<Session[]>(() => {
     const seen = new Set<string>();
     const result: Session[] = [];
-    for (let i = history.length - 1; i >= 0; i--) {
+    for (let i = 0; i < history.length; i++) {
       const h = history[i];
       if (seen.has(h.sessionId)) continue;
       seen.add(h.sessionId);
