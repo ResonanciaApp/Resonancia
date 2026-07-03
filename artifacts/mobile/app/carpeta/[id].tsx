@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
   },
   nameCard: {
     width: "100%",
-    backgroundColor: "#14192B",
+    backgroundColor: "#230C14",
     borderRadius: 20,
     paddingHorizontal: 24,
     paddingTop: 20,
