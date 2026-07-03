@@ -25,6 +25,8 @@ export type FavFolder = {
   sessionIds: string[];
   createdAt: string;
   pinned?: boolean;
+  /** IDs de subcarpetas anidadas dentro de esta carpeta. */
+  subFolderIds?: string[];
 };
 
 export type Playlist = {
@@ -58,6 +60,7 @@ interface FoldersPlaylistsCtx {
   isPlaylistInFolder: (folderId: string, playlistId: string) => boolean;
   addFolderToFolder: (parentId: string, childId: string) => void;
   removeFolderFromFolder: (parentId: string, childId: string) => void;
+  isFolderInFolder: (parentId: string, childId: string) => boolean;
   // Playlists
   createPlaylist: (name: string, initialSessionId?: string) => Playlist;
   renamePlaylist: (playlistId: string, name: string) => void;
@@ -82,6 +85,9 @@ interface FoldersPlaylistsCtx {
   addToFavFolder: (folderId: string, sessionId: string) => void;
   removeFromFavFolder: (folderId: string, sessionId: string) => void;
   isInFavFolder: (folderId: string, sessionId: string) => boolean;
+  addFavFolderToFolder: (parentId: string, childId: string) => void;
+  removeFavFolderFromFolder: (parentId: string, childId: string) => void;
+  isFavFolderInFolder: (parentId: string, childId: string) => boolean;
   // Pinned favorite sessions
   pinnedFavoriteIds: string[];
   isFavoritePinned: (sessionId: string) => boolean;
@@ -198,6 +204,12 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
       prev.map((f) => f.id === folderId ? { ...f, name: name.trim() } : f)
     );
   }, [updateFolders]);
+
+  const isFolderInFolder = useCallback(
+    (parentId: string, childId: string) =>
+      (folders.find((f) => f.id === parentId)?.subFolderIds ?? []).includes(childId),
+    [folders]
+  );
 
   const addPlaylistToFolder = useCallback((folderId: string, playlistId: string) => {
     updateFolders((prev) =>
@@ -360,6 +372,7 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
       name: name.trim(),
       sessionIds: initialSessionId ? [initialSessionId] : [],
       createdAt: new Date().toISOString(),
+      subFolderIds: [],
     };
     updateFavFolders((prev) => [...prev, folder]);
     return folder;
@@ -407,6 +420,32 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     [favFolders]
   );
 
+  const addFavFolderToFolder = useCallback((parentId: string, childId: string) => {
+    updateFavFolders((prev) =>
+      prev.map((f) =>
+        f.id === parentId && !(f.subFolderIds ?? []).includes(childId)
+          ? { ...f, subFolderIds: [...(f.subFolderIds ?? []), childId] }
+          : f
+      )
+    );
+  }, [updateFavFolders]);
+
+  const removeFavFolderFromFolder = useCallback((parentId: string, childId: string) => {
+    updateFavFolders((prev) =>
+      prev.map((f) =>
+        f.id === parentId
+          ? { ...f, subFolderIds: (f.subFolderIds ?? []).filter((id) => id !== childId) }
+          : f
+      )
+    );
+  }, [updateFavFolders]);
+
+  const isFavFolderInFolder = useCallback(
+    (parentId: string, childId: string) =>
+      (favFolders.find((f) => f.id === parentId)?.subFolderIds ?? []).includes(childId),
+    [favFolders]
+  );
+
   // ── Pinned favorite sessions ──────────────────────────────────────────────
 
   const isFavoritePinned = useCallback(
@@ -433,6 +472,7 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
         isPlaylistInFolder,
         addFolderToFolder,
         removeFolderFromFolder,
+        isFolderInFolder,
         removeFromFolder,
         deleteFolder,
         isInFolder,
@@ -458,6 +498,9 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
         addToFavFolder,
         removeFromFavFolder,
         isInFavFolder,
+        addFavFolderToFolder,
+        removeFavFolderFromFolder,
+        isFavFolderInFolder,
         pinnedFavoriteIds,
         isFavoritePinned,
         togglePinFavorite,

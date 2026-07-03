@@ -120,6 +120,8 @@ export type MixFolder = {
   presetIds: string[];
   createdAt: string;
   pinned?: boolean;
+  /** IDs de subcarpetas anidadas dentro de esta carpeta. */
+  subFolderIds?: string[];
 };
 
 export type SaveMixInput = {
@@ -204,6 +206,10 @@ type MixerContextType = {
   addMixToFolder: (folderId: string, mixId: string) => void;
   removeMixFromFolder: (folderId: string, mixId: string) => void;
   isMixInFolder: (folderId: string, mixId: string) => boolean;
+  /** Anida una carpeta de mezclas dentro de otra. */
+  addMixFolderToFolder: (parentId: string, childId: string) => void;
+  removeMixFolderFromFolder: (parentId: string, childId: string) => void;
+  isMixFolderInFolder: (parentId: string, childId: string) => boolean;
 };
 
 const MixerContext = createContext<MixerContextType | null>(null);
@@ -644,6 +650,7 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         name: name.trim() || "Mi carpeta",
         presetIds: [],
         createdAt: new Date().toISOString(),
+        subFolderIds: [],
       };
       persistMixFolders([folder, ...mixFoldersRef.current]);
       return folder;
@@ -705,6 +712,38 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const isMixInFolder = useCallback(
     (folderId: string, mixId: string) =>
       mixFoldersRef.current.find((f) => f.id === folderId)?.presetIds.includes(mixId) ?? false,
+    [],
+  );
+
+  const addMixFolderToFolder = useCallback(
+    (parentId: string, childId: string) => {
+      persistMixFolders(
+        mixFoldersRef.current.map((f) =>
+          f.id === parentId && !(f.subFolderIds ?? []).includes(childId)
+            ? { ...f, subFolderIds: [...(f.subFolderIds ?? []), childId] }
+            : f,
+        ),
+      );
+    },
+    [persistMixFolders],
+  );
+
+  const removeMixFolderFromFolder = useCallback(
+    (parentId: string, childId: string) => {
+      persistMixFolders(
+        mixFoldersRef.current.map((f) =>
+          f.id === parentId
+            ? { ...f, subFolderIds: (f.subFolderIds ?? []).filter((id) => id !== childId) }
+            : f,
+        ),
+      );
+    },
+    [persistMixFolders],
+  );
+
+  const isMixFolderInFolder = useCallback(
+    (parentId: string, childId: string) =>
+      (mixFoldersRef.current.find((f) => f.id === parentId)?.subFolderIds ?? []).includes(childId),
     [],
   );
 
@@ -2048,6 +2087,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         addMixToFolder,
         removeMixFromFolder,
         isMixInFolder,
+        addMixFolderToFolder,
+        removeMixFolderFromFolder,
+        isMixFolderInFolder,
       }}
     >
       {children}

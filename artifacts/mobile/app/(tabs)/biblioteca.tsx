@@ -1019,10 +1019,11 @@ export default function BibliotecaScreen() {
 
   const {
     presets, loadedPresetId, isPlaying: mixerPlaying, deletePreset, duplicatePreset, openSheet,
-    mixFolders, togglePinMixFolder, deleteMixFolder, renameMixFolder,
+    mixFolders,
   } = useMixer();
   const loadMix = useLoadMix();
   const [mixMenuPreset, setMixMenuPreset] = useState<MixPreset | null>(null);
+  const [mixMenuFolder, setMixMenuFolder] = useState<MixFolder | null>(null);
 
   const { history, favorites } = usePlayer();
   const { isPremium } = usePremium();
@@ -1273,39 +1274,7 @@ export default function BibliotecaScreen() {
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       });
 
-      const openMixFolderMenu = (folder: MixFolder) => {
-        Alert.alert(
-          folder.name,
-          undefined,
-          [
-            {
-              text: folder.pinned ? "Desfijar" : "Fijar carpeta",
-              onPress: () => togglePinMixFolder(folder.id),
-            },
-            {
-              text: "Cambiar nombre",
-              onPress: () => {
-                Alert.prompt
-                  ? Alert.prompt("Cambiar nombre", undefined, (text) => {
-                      if (text && text.trim()) renameMixFolder(folder.id, text.trim());
-                    }, "plain-text", folder.name)
-                  : renameMixFolder(folder.id, folder.name);
-              },
-            },
-            {
-              text: "Eliminar carpeta",
-              style: "destructive",
-              onPress: () => {
-                Alert.alert("Eliminar carpeta", `¿Eliminar "${folder.name}"? Las mezclas no se borrarán.`, [
-                  { text: "Cancelar", style: "cancel" },
-                  { text: "Eliminar", style: "destructive", onPress: () => deleteMixFolder(folder.id) },
-                ]);
-              },
-            },
-            { text: "Cancelar", style: "cancel" },
-          ],
-        );
-      };
+      const openMixFolderMenu = (folder: MixFolder) => setMixMenuFolder(folder);
 
       const createButtons = (
         <>
@@ -1756,6 +1725,14 @@ export default function BibliotecaScreen() {
         onEdit={(mix) => router.push(`/mi-mezcla/${mix.id}` as never)}
         onDuplicate={(mix) => { setMixMenuPreset(null); duplicatePreset(mix.id); }}
         onDelete={(mix) => deletePreset(mix.id)}
+      />
+      <MixActionsSheet
+        mix={null}
+        folder={mixMenuFolder}
+        visible={mixMenuFolder !== null}
+        onClose={() => setMixMenuFolder(null)}
+        onDuplicate={() => {}}
+        onDelete={() => {}}
       />
       <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={() => setSortVisible(false)} />
 

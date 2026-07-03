@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import React, { useState } from "react";
 import {
-  Alert,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -16,8 +16,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
-import { usePlayer } from "@/context/PlayerContext";
+import { type FavFolder, useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { SESSIONS } from "@/data/sessions";
 import { SessionCard } from "@/components/SessionCard";
 import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
@@ -26,6 +25,7 @@ const BG = ["#230610", "#16040A"] as const;
 const GOLD = "#BE8744";
 const TEXT = "#FAF0EE";
 const MUTED = "#c2c2c2";
+const SHEET_BG = "#1B060F";
 
 export default function CarpetaFavoritoDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -33,12 +33,17 @@ export default function CarpetaFavoritoDetailScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const { favFolders, deleteFavFolder, renameFavFolder, removeFromFavFolder } = useFoldersPlaylists();
-  const { favorites } = usePlayer();
+  const {
+    favFolders,
+    removeFromFavFolder,
+    createFavFolder,
+    addFavFolderToFolder,
+    removeFavFolderFromFolder,
+  } = useFoldersPlaylists();
 
-  const [renaming, setRenaming] = useState(false);
-  const [nameInput, setNameInput] = useState("");
   const [actionsItemId, setActionsItemId] = useState<string | null>(null);
+  const [actionsItemKind, setActionsItemKind] = useState<"session" | "folder" | null>(null);
+  const [nombreCarpetaVisible, setNombreCarpetaVisible] = useState(false);
 
   const folder = favFolders.find((f) => f.id === id);
 
@@ -60,21 +65,16 @@ export default function CarpetaFavoritoDetailScreen() {
     .map((sid) => SESSIONS.find((s) => s.id === sid))
     .filter(Boolean) as typeof SESSIONS;
 
-  const handleDelete = () => {
-    Alert.alert(
-      "Eliminar carpeta",
-      `¿Eliminar "${folder.name}"? Los favoritos no se borrarán.`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        { text: "Eliminar", style: "destructive", onPress: () => { deleteFavFolder(folder.id); router.back(); } },
-      ]
-    );
-  };
+  const subFolderIds = folder.subFolderIds ?? [];
+  const subFolders = subFolderIds
+    .map((fid) => favFolders.find((f) => f.id === fid))
+    .filter(Boolean) as FavFolder[];
 
-  const handleRename = () => {
-    if (!nameInput.trim()) { setRenaming(false); return; }
-    renameFavFolder(folder.id, nameInput.trim());
-    setRenaming(false);
+  const handleCreateSubFolder = (name: string) => {
+    const sub = createFavFolder(name);
+    addFavFolderToFolder(folder.id, sub.id);
+    setNombreCarpetaVisible(false);
+    router.push(`/carpeta-favorito/${sub.id}` as never);
   };
 
   return (
@@ -86,32 +86,16 @@ export default function CarpetaFavoritoDetailScreen() {
         <Pressable onPress={() => router.back()} style={styles.iconBtn}>
           <Feather name="chevron-left" size={26} color={TEXT} />
         </Pressable>
-        {renaming ? (
-          <TextInput
-            style={styles.renameInput}
-            value={nameInput}
-            onChangeText={setNameInput}
-            autoFocus
-            returnKeyType="done"
-            onSubmitEditing={handleRename}
-            onBlur={handleRename}
-            selectTextOnFocus
-          />
-        ) : (
-          <Text style={styles.headerName} numberOfLines={1}>{folder.name}</Text>
-        )}
+        <Text style={styles.headerName} numberOfLines={1}>{folder.name}</Text>
         <Pressable
           style={styles.iconBtn}
           hitSlop={10}
-          onPress={() => {
-            Alert.alert(folder.name, "Opciones", [
-              { text: "Cambiar nombre", onPress: () => { setNameInput(folder.name); setRenaming(true); } },
-              { text: "Eliminar carpeta", style: "destructive", onPress: handleDelete },
-              { text: "Cancelar", style: "cancel" },
-            ]);
-          }}
+          onPress={() => { setActionsItemId(folder.id); setActionsItemKind("folder"); }}
         >
           <Feather name="more-horizontal" size={22} color={TEXT} />
+        </Pressable>
+        <Pressable style={styles.iconBtn} hitSlop={10} onPress={() => setNombreCarpetaVisible(true)}>
+          <Feather name="plus" size={22} color={TEXT} />
         </Pressable>
       </View>
 
@@ -121,13 +105,40 @@ export default function CarpetaFavoritoDetailScreen() {
         contentContainerStyle={{ paddingBottom: bottomPad + 40, paddingTop: 12 }}
         showsVerticalScrollIndicator={false}
       >
-        {folderSessions.length === 0 ? (
+        {subFolders.length === 0 && folderSessions.length === 0 ? (
           <View style={styles.emptyWrap}>
             <Text style={styles.emptyTitle}>Esta carpeta está vacía</Text>
-            <Text style={styles.emptySub}>Mueve favoritos aquí desde Tu biblioteca.</Text>
+            <Text style={styles.emptySub}>Mueve favoritos o crea carpetas aquí desde Tu biblioteca.</Text>
           </View>
         ) : (
           <View style={{ paddingHorizontal: 15, gap: 9 }}>
+            {subFolders.map((sub) => (
+              <Pressable
+                key={sub.id}
+                style={({ pressed }) => [styles.folderRow, { opacity: pressed ? 0.8 : 1 }]}
+                onPress={() => router.push(`/carpeta-favorito/${sub.id}` as never)}
+                onLongPress={() => { setActionsItemId(sub.id); setActionsItemKind("folder"); }}
+                delayLongPress={600}
+              >
+                <View style={styles.folderCover}>
+                  <Feather name="folder" size={18} color={GOLD} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.plName} numberOfLines={1}>{sub.name}</Text>
+                  <Text style={styles.plMeta}>
+                    Carpeta · {(sub.subFolderIds ?? []).length + sub.sessionIds.length} elemento{(sub.subFolderIds ?? []).length + sub.sessionIds.length !== 1 ? "s" : ""}
+                  </Text>
+                </View>
+                <Pressable
+                  onPress={() => removeFavFolderFromFolder(folder.id, sub.id)}
+                  hitSlop={10}
+                  style={styles.removeBtn}
+                >
+                  <Feather name="x" size={16} color={MUTED} />
+                </Pressable>
+              </Pressable>
+            ))}
+
             {folderSessions.map((s) => (
               <View key={s.id} style={{ flexDirection: "row", alignItems: "center" }}>
                 <View style={{ flex: 1 }}>
@@ -138,7 +149,7 @@ export default function CarpetaFavoritoDetailScreen() {
                     thumbHeight={64}
                     thumbRadius={6}
                     showDuration={false}
-                    onLongPress={() => setActionsItemId(s.id)}
+                    onLongPress={() => { setActionsItemId(s.id); setActionsItemKind("session"); }}
                   />
                 </View>
                 <Pressable
@@ -154,13 +165,79 @@ export default function CarpetaFavoritoDetailScreen() {
         )}
       </ScrollView>
 
+      <NamingModal
+        visible={nombreCarpetaVisible}
+        title="Ponle un nombre a la carpeta"
+        defaultName={`Mi carpeta n.° ${favFolders.length + 1}`}
+        onClose={() => setNombreCarpetaVisible(false)}
+        onCreate={handleCreateSubFolder}
+      />
+
       <FavoriteActionsSheet
         itemId={actionsItemId}
-        itemKind={actionsItemId ? "session" : null}
+        itemKind={actionsItemKind}
         visible={actionsItemId !== null}
-        onClose={() => setActionsItemId(null)}
+        onClose={() => { setActionsItemId(null); setActionsItemKind(null); }}
       />
     </LinearGradient>
+  );
+}
+
+// ─── Naming modal ─────────────────────────────────────────────────────────────
+function NamingModal({
+  visible, title, defaultName, onClose, onCreate,
+}: {
+  visible: boolean; title: string; defaultName: string;
+  onClose: () => void; onCreate: (name: string) => void;
+}) {
+  const [name, setName] = useState("");
+  const inputRef = React.useRef<TextInput>(null);
+
+  React.useEffect(() => {
+    if (visible) setName(defaultName);
+  }, [visible]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleCreate = () => {
+    onCreate(name.trim() || defaultName);
+  };
+
+  return (
+    <Modal
+      visible={visible}
+      animationType="fade"
+      transparent
+      onRequestClose={onClose}
+      onShow={() => setTimeout(() => inputRef.current?.focus(), 80)}
+    >
+      <View style={styles.nameOverlay}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+        <View style={styles.nameCard}>
+          <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
+            <Feather name="x" size={22} color={TEXT} />
+          </Pressable>
+          <Text style={styles.nameCardTitle}>{title}</Text>
+          <View style={styles.nameInputWrap}>
+            <TextInput
+              ref={inputRef}
+              style={styles.nameInput}
+              value={name}
+              onChangeText={setName}
+              selectTextOnFocus
+              returnKeyType="done"
+              onSubmitEditing={handleCreate}
+              placeholderTextColor={MUTED}
+            />
+          </View>
+          <Pressable
+            style={({ pressed }) => [styles.nameCreateBtn, { opacity: pressed ? 0.85 : 1 }]}
+            onPress={handleCreate}
+          >
+            <GoldGradientFill />
+            <Text style={styles.nameCreateBtnText}>Crear</Text>
+          </Pressable>
+        </View>
+      </View>
+    </Modal>
   );
 }
 
@@ -181,17 +258,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "800",
     textAlign: "center",
-  },
-  renameInput: {
-    flex: 1,
-    color: TEXT,
-    fontSize: 20,
-    fontWeight: "800",
-    textAlign: "center",
-    borderBottomWidth: 1.5,
-    borderBottomColor: GOLD,
-    paddingVertical: 2,
-    padding: 0,
   },
 
   emptyWrap: {
@@ -215,5 +281,83 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
 
+  folderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 6,
+    paddingHorizontal: 6,
+    gap: 12,
+  },
+  folderCover: {
+    width: 52,
+    height: 52,
+    borderRadius: 8,
+    backgroundColor: "rgba(212,175,55,0.08)",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(212,175,55,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  plName: { color: TEXT, fontSize: 15, fontWeight: "600", lineHeight: 20 },
+  plMeta: { color: MUTED, fontSize: 12, marginTop: 2 },
+
   removeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
+
+  // Naming modal
+  nameOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.82)",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 24,
+  },
+  nameCard: {
+    width: "100%",
+    backgroundColor: "#14192B",
+    borderRadius: 20,
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 32,
+    alignItems: "center",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(212,175,55,0.15)",
+  },
+  nameCloseBtn: { alignSelf: "flex-end", marginBottom: 8 },
+  nameCardTitle: {
+    color: TEXT,
+    fontSize: 17,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 24,
+    lineHeight: 24,
+  },
+  nameInputWrap: {
+    width: "100%",
+    backgroundColor: "rgba(74,12,12,0.08)",
+    borderRadius: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: GOLD,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    marginBottom: 28,
+  },
+  nameInput: {
+    color: TEXT,
+    fontSize: 22,
+    fontWeight: "700",
+    textAlign: "center",
+    padding: 0,
+  },
+  nameCreateBtn: {
+    overflow: "hidden",
+    borderRadius: 30,
+    paddingHorizontal: 48,
+    paddingVertical: 14,
+  },
+  nameCreateBtnText: {
+    color: "#1B060F",
+    fontSize: 15,
+    fontWeight: "800",
+    letterSpacing: 0.3,
+  },
 });

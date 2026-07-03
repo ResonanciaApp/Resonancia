@@ -29,7 +29,7 @@ type Props = {
   onClose: () => void;
 };
 
-type Step = "main" | "folders" | "create";
+type Step = "main" | "folders" | "create" | "rename";
 
 type Colors = ReturnType<typeof import("@/hooks/useColors").useColors>;
 
@@ -71,22 +71,27 @@ export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Pro
   const {
     favFolders,
     createFavFolder,
+    renameFavFolder,
     deleteFavFolder,
     togglePinFavFolder,
     addToFavFolder,
     removeFromFavFolder,
     isInFavFolder,
+    addFavFolderToFolder,
+    isFavFolderInFolder,
     isFavoritePinned,
     togglePinFavorite,
   } = useFoldersPlaylists();
 
   const [step, setStep] = useState<Step>("main");
   const [newName, setNewName] = useState("");
+  const [renameInput, setRenameInput] = useState("");
 
   useEffect(() => {
     if (visible) {
       setStep("main");
       setNewName("");
+      setRenameInput("");
     }
   }, [visible]);
 
@@ -155,6 +160,37 @@ export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Pro
     }
   };
 
+  const getDescendantFavFolderIds = (folderId: string): Set<string> => {
+    const result = new Set<string>();
+    const visit = (id: string) => {
+      const f = favFolders.find((x) => x.id === id);
+      for (const subId of f?.subFolderIds ?? []) {
+        if (!result.has(subId)) {
+          result.add(subId);
+          visit(subId);
+        }
+      }
+    };
+    visit(folderId);
+    return result;
+  };
+
+  const eligibleFavFolders =
+    itemKind === "folder"
+      ? favFolders.filter((f) => f.id !== itemId && !getDescendantFavFolderIds(itemId).has(f.id))
+      : favFolders;
+
+  const handleStartRename = () => {
+    setRenameInput(title);
+    setStep("rename");
+  };
+
+  const handleConfirmRename = () => {
+    const trimmed = renameInput.trim();
+    if (trimmed) renameFavFolder(itemId, trimmed);
+    handleClose();
+  };
+
   const handleCreate = () => {
     const name = newName.trim();
     if (!name) return;
@@ -210,11 +246,17 @@ export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Pro
                 onPress={handlePin}
                 colors={colors}
               />
-              {itemKind === "session" && (
+              <ActionRow
+                icon="folder"
+                label="Mover a una carpeta"
+                onPress={() => setStep("folders")}
+                colors={colors}
+              />
+              {itemKind === "folder" && (
                 <ActionRow
-                  icon="folder"
-                  label="Mover a una carpeta"
-                  onPress={() => setStep("folders")}
+                  icon="edit-2"
+                  label="Renombrar la carpeta"
+                  onPress={handleStartRename}
                   colors={colors}
                 />
               )}
@@ -246,17 +288,25 @@ export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Pro
               <View style={[styles.divider, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
 
               <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{ maxHeight: 300 }}>
-                {favFolders.length === 0 ? (
+                {eligibleFavFolders.length === 0 ? (
                   <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
                     Todavía no tenés ninguna carpeta
                   </Text>
                 ) : (
-                  favFolders.map((f) => {
-                    const inIt = isInFavFolder(f.id, itemId);
+                  eligibleFavFolders.map((f) => {
+                    const inIt =
+                      itemKind === "folder" ? isFavFolderInFolder(f.id, itemId) : isInFavFolder(f.id, itemId);
                     return (
                       <Pressable
                         key={f.id}
-                        onPress={() => handleToggleFolder(f.id)}
+                        onPress={() => {
+                          if (itemKind === "folder") {
+                            addFavFolderToFolder(f.id, itemId);
+                            handleClose();
+                          } else {
+                            handleToggleFolder(f.id);
+                          }
+                        }}
                         style={({ pressed }) => [styles.folderRow, { opacity: pressed ? 0.7 : 1 }]}
                       >
                         <View style={styles.folderIconBox}>
@@ -287,6 +337,55 @@ export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Pro
                 </GoldGradient>
                 <Text style={[styles.newLabel, { color: colors.foreground }]}>
                   Nueva Carpeta
+                </Text>
+              </Pressable>
+            </>
+          )}
+
+          {step === "rename" && (
+            <>
+              <View style={styles.header}>
+                <Pressable onPress={() => setStep("main")} style={styles.closeBtn}>
+                  <Feather name="arrow-left" size={20} color={colors.foreground} />
+                </Pressable>
+                <Text style={[styles.itemTitle, { color: colors.foreground, flex: 1 }]}>
+                  Renombrar la carpeta
+                </Text>
+                <Pressable onPress={handleClose} style={styles.closeBtn}>
+                  <Feather name="x" size={20} color={colors.mutedForeground} />
+                </Pressable>
+              </View>
+
+              <TextInput
+                value={renameInput}
+                onChangeText={setRenameInput}
+                placeholder="Nombre de la carpeta"
+                placeholderTextColor={colors.mutedForeground}
+                style={[styles.input, {
+                  color: colors.foreground,
+                  borderColor: "rgba(61,14,22,0.40)",
+                  backgroundColor: "rgba(74,12,12,0.08)",
+                }]}
+                autoFocus
+                returnKeyType="done"
+                onSubmitEditing={handleConfirmRename}
+                maxLength={40}
+              />
+
+              <Pressable
+                onPress={handleConfirmRename}
+                disabled={!renameInput.trim()}
+                style={({ pressed }) => [
+                  styles.createBtn,
+                  {
+                    backgroundColor: renameInput.trim() ? undefined : "rgba(212,175,55,0.30)",
+                    opacity: pressed ? 0.8 : 1,
+                  },
+                ]}
+              >
+                {renameInput.trim() ? <GoldGradientFill /> : null}
+                <Text style={[styles.createBtnLabel, { color: "#1B060F" }]}>
+                  Guardar
                 </Text>
               </Pressable>
             </>

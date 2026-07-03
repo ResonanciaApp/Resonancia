@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -25,7 +26,7 @@ type Props = {
   onClose: () => void;
 };
 
-type Step = "main" | "folders";
+type Step = "main" | "folders" | "rename";
 
 type Colors = ReturnType<typeof import("@/hooks/useColors").useColors>;
 
@@ -72,9 +73,13 @@ export function PlaylistActionsSheet({ itemId, itemKind, visible, onClose }: Pro
     togglePinFolder,
     addPlaylistToFolder,
     isPlaylistInFolder,
+    addFolderToFolder,
+    isFolderInFolder,
+    renameFolder,
   } = useFoldersPlaylists();
 
   const [step, setStep] = useState<Step>("main");
+  const [renameInput, setRenameInput] = useState("");
 
   useEffect(() => {
     if (visible) setStep("main");
@@ -119,6 +124,37 @@ export function PlaylistActionsSheet({ itemId, itemKind, visible, onClose }: Pro
     ]);
   };
 
+  const getDescendantFolderIds = (folderId: string): Set<string> => {
+    const result = new Set<string>();
+    const visit = (id: string) => {
+      const f = folders.find((x) => x.id === id);
+      for (const subId of f?.subFolderIds ?? []) {
+        if (!result.has(subId)) {
+          result.add(subId);
+          visit(subId);
+        }
+      }
+    };
+    visit(folderId);
+    return result;
+  };
+
+  const eligibleFolders =
+    itemKind === "folder"
+      ? folders.filter((f) => f.id !== itemId && !getDescendantFolderIds(itemId).has(f.id))
+      : folders;
+
+  const handleStartRename = () => {
+    setRenameInput(title);
+    setStep("rename");
+  };
+
+  const handleConfirmRename = () => {
+    const trimmed = renameInput.trim();
+    if (trimmed) renameFolder(itemId, trimmed);
+    onClose();
+  };
+
   return (
     <Modal
       visible={visible}
@@ -159,16 +195,22 @@ export function PlaylistActionsSheet({ itemId, itemKind, visible, onClose }: Pro
 
             <ActionRow
               icon="bookmark"
-              label={isPinned ? "Desfijar" : "Fijar playlist"}
+              label={isPinned ? "Desfijar" : itemKind === "playlist" ? "Fijar playlist" : "Fijar carpeta"}
               iconColor={isPinned ? GOLD : undefined}
               onPress={handlePin}
               colors={colors}
             />
-            {itemKind === "playlist" && (
+            <ActionRow
+              icon="folder"
+              label="Mover a una carpeta"
+              onPress={() => setStep("folders")}
+              colors={colors}
+            />
+            {itemKind === "folder" && (
               <ActionRow
-                icon="folder"
-                label="Mover a una carpeta"
-                onPress={() => setStep("folders")}
+                icon="edit-2"
+                label="Renombrar la carpeta"
+                onPress={handleStartRename}
                 colors={colors}
               />
             )}
@@ -181,7 +223,7 @@ export function PlaylistActionsSheet({ itemId, itemKind, visible, onClose }: Pro
               last
             />
           </>
-        ) : (
+        ) : step === "folders" ? (
           <>
             <View style={styles.header}>
               <Pressable onPress={() => setStep("main")} style={styles.closeBtn}>
@@ -198,18 +240,22 @@ export function PlaylistActionsSheet({ itemId, itemKind, visible, onClose }: Pro
             <View style={[styles.divider, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
 
             <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{ maxHeight: 320 }}>
-              {folders.length === 0 ? (
+              {eligibleFolders.length === 0 ? (
                 <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
                   Todavía no tenés ninguna carpeta
                 </Text>
               ) : (
-                folders.map((f) => {
-                  const inIt = isPlaylistInFolder(f.id, itemId);
+                eligibleFolders.map((f) => {
+                  const inIt =
+                    itemKind === "playlist"
+                      ? isPlaylistInFolder(f.id, itemId)
+                      : isFolderInFolder(f.id, itemId);
                   return (
                     <Pressable
                       key={f.id}
                       onPress={() => {
-                        addPlaylistToFolder(f.id, itemId);
+                        if (itemKind === "playlist") addPlaylistToFolder(f.id, itemId);
+                        else addFolderToFolder(f.id, itemId);
                         onClose();
                       }}
                       style={({ pressed }) => [styles.folderRow, { opacity: pressed ? 0.7 : 1 }]}
@@ -229,6 +275,49 @@ export function PlaylistActionsSheet({ itemId, itemKind, visible, onClose }: Pro
                 })
               )}
             </ScrollView>
+          </>
+        ) : (
+          <>
+            <View style={styles.header}>
+              <Pressable onPress={() => setStep("main")} style={styles.closeBtn}>
+                <Feather name="arrow-left" size={20} color={colors.foreground} />
+              </Pressable>
+              <Text style={[styles.itemTitle, { color: colors.foreground, flex: 1 }]}>
+                Renombrar la carpeta
+              </Text>
+              <Pressable onPress={onClose} style={styles.closeBtn}>
+                <Feather name="x" size={20} color={colors.mutedForeground} />
+              </Pressable>
+            </View>
+
+            <View style={[styles.divider, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
+
+            <TextInput
+              value={renameInput}
+              onChangeText={setRenameInput}
+              placeholder="Nombre de la carpeta"
+              placeholderTextColor={colors.mutedForeground}
+              style={[styles.renameInput, {
+                color: colors.foreground,
+                borderColor: "rgba(61,14,22,0.40)",
+                backgroundColor: "rgba(74,12,12,0.08)",
+              }]}
+              autoFocus
+              returnKeyType="done"
+              onSubmitEditing={handleConfirmRename}
+              maxLength={40}
+            />
+
+            <Pressable
+              onPress={handleConfirmRename}
+              disabled={!renameInput.trim()}
+              style={({ pressed }) => [
+                styles.saveBtn,
+                { backgroundColor: renameInput.trim() ? GOLD : "rgba(190,150,80,0.30)", opacity: pressed ? 0.8 : 1 },
+              ]}
+            >
+              <Text style={styles.saveBtnLabel}>Guardar</Text>
+            </Pressable>
           </>
         )}
         </View>
@@ -330,5 +419,24 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     fontWeight: "500",
+  },
+  renameInput: {
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 16,
+    marginBottom: 16,
+  },
+  saveBtn: {
+    borderRadius: 14,
+    paddingVertical: 16,
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  saveBtnLabel: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#1B060F",
   },
 });

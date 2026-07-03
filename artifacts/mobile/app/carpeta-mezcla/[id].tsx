@@ -17,7 +17,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useMixer } from "@/context/MixerContext";
+import { type MixFolder, useMixer } from "@/context/MixerContext";
 import { useLoadMix } from "@/hooks/useLoadMix";
 import { MixActionsSheet } from "@/components/MixActionsSheet";
 import { MixCover } from "@/app/mi-mezcla/[id]";
@@ -39,9 +39,10 @@ export default function CarpetaMezclaDetailScreen() {
     mixFolders,
     presets: allMixes,
     deleteMixFolder,
-    renameMixFolder,
     addMixToFolder,
     removeMixFromFolder,
+    addMixFolderToFolder,
+    removeMixFolderFromFolder,
     createMixFolder,
     loadedPresetId,
     isPlaying: mixerPlaying,
@@ -52,10 +53,9 @@ export default function CarpetaMezclaDetailScreen() {
   const loadMix = useLoadMix();
 
   const [addSheetVisible, setAddSheetVisible] = useState(false);
-  const [renaming, setRenaming] = useState(false);
-  const [nameInput, setNameInput] = useState("");
   const [nombreCarpetaVisible, setNombreCarpetaVisible] = useState(false);
   const [mixMenuPreset, setMixMenuPreset] = useState<(typeof allMixes)[number] | null>(null);
+  const [folderMenuTarget, setFolderMenuTarget] = useState<MixFolder | null>(null);
 
   const folder = mixFolders.find((f) => f.id === id);
 
@@ -78,27 +78,16 @@ export default function CarpetaMezclaDetailScreen() {
     .map((mid) => allMixes.find((m) => m.id === mid))
     .filter(Boolean) as typeof allMixes;
 
+  const subFolderIds = folder.subFolderIds ?? [];
+  const subFolders = subFolderIds
+    .map((fid) => mixFolders.find((f) => f.id === fid))
+    .filter(Boolean) as typeof mixFolders;
+
   const availableMixes = allMixes.filter((m) => !folderMixIds.includes(m.id));
-
-  const handleDelete = () => {
-    Alert.alert(
-      "Eliminar carpeta",
-      `¿Eliminar "${folder.name}"? Las mezclas no se borran.`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        { text: "Eliminar", style: "destructive", onPress: () => { deleteMixFolder(folder.id); router.back(); } },
-      ]
-    );
-  };
-
-  const handleRename = () => {
-    if (!nameInput.trim()) { setRenaming(false); return; }
-    renameMixFolder(folder.id, nameInput.trim());
-    setRenaming(false);
-  };
 
   const handleCreateSubFolder = (name: string) => {
     const sub = createMixFolder(name);
+    addMixFolderToFolder(folder.id, sub.id);
     setNombreCarpetaVisible(false);
     router.push(`/carpeta-mezcla/${sub.id}` as never);
   };
@@ -112,30 +101,11 @@ export default function CarpetaMezclaDetailScreen() {
         <Pressable onPress={() => router.back()} style={styles.iconBtn}>
           <Feather name="chevron-left" size={26} color={TEXT} />
         </Pressable>
-        {renaming ? (
-          <TextInput
-            style={styles.renameInput}
-            value={nameInput}
-            onChangeText={setNameInput}
-            autoFocus
-            returnKeyType="done"
-            onSubmitEditing={handleRename}
-            onBlur={handleRename}
-            selectTextOnFocus
-          />
-        ) : (
-          <Text style={styles.headerName} numberOfLines={1}>{folder.name}</Text>
-        )}
+        <Text style={styles.headerName} numberOfLines={1}>{folder.name}</Text>
         <Pressable
           style={styles.iconBtn}
           hitSlop={10}
-          onPress={() => {
-            Alert.alert(folder.name, "Opciones", [
-              { text: "Cambiar nombre", onPress: () => { setNameInput(folder.name); setRenaming(true); } },
-              { text: "Eliminar carpeta", style: "destructive", onPress: handleDelete },
-              { text: "Cancelar", style: "cancel" },
-            ]);
-          }}
+          onPress={() => setFolderMenuTarget(folder)}
         >
           <Feather name="more-horizontal" size={22} color={TEXT} />
         </Pressable>
@@ -150,13 +120,42 @@ export default function CarpetaMezclaDetailScreen() {
         contentContainerStyle={{ paddingBottom: bottomPad + 40 }}
         showsVerticalScrollIndicator={false}
       >
-        {folderMixes.length === 0 ? (
+        {subFolders.length === 0 && folderMixes.length === 0 ? (
           <View style={styles.emptyWrap}>
             <Text style={styles.emptyTitle}>Esta carpeta está vacía</Text>
-            <Text style={styles.emptySub}>Agrega mezclas desde Tu biblioteca.</Text>
+            <Text style={styles.emptySub}>Agrega mezclas o carpetas desde Tu biblioteca.</Text>
           </View>
         ) : (
           <View style={{ paddingTop: 12 }}>
+            {/* Subcarpetas */}
+            {subFolders.map((sub) => (
+              <Pressable
+                key={sub.id}
+                style={({ pressed }) => [styles.playlistRow, { opacity: pressed ? 0.8 : 1 }]}
+                onPress={() => router.push(`/carpeta-mezcla/${sub.id}` as never)}
+                onLongPress={() => setFolderMenuTarget(sub)}
+                delayLongPress={600}
+              >
+                <View style={styles.plCover}>
+                  <Feather name="folder" size={18} color={GOLD} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.plName} numberOfLines={1}>{sub.name}</Text>
+                  <Text style={styles.plMeta}>
+                    Carpeta · {(sub.subFolderIds ?? []).length + (sub.presetIds ?? []).length} elemento{(sub.subFolderIds ?? []).length + (sub.presetIds ?? []).length !== 1 ? "s" : ""}
+                  </Text>
+                </View>
+                <Pressable
+                  onPress={() => removeMixFolderFromFolder(folder.id, sub.id)}
+                  hitSlop={10}
+                  style={styles.removePlBtn}
+                >
+                  <Feather name="x" size={16} color={MUTED} />
+                </Pressable>
+              </Pressable>
+            ))}
+
+            {/* Mezclas */}
             {folderMixes.map((mix) => {
               const isPlayingThis = loadedPresetId === mix.id && mixerPlaying;
               return (
@@ -202,6 +201,7 @@ export default function CarpetaMezclaDetailScreen() {
         availableMixes={availableMixes}
         onAddMix={(mixId) => { addMixToFolder(folder.id, mixId); setAddSheetVisible(false); }}
         onNuevaMezcla={() => { setAddSheetVisible(false); router.navigate("/(tabs)/musica" as never); }}
+        onNuevaCarpeta={() => { setAddSheetVisible(false); setTimeout(() => setNombreCarpetaVisible(true), 250); }}
       />
 
       {/* Naming modal */}
@@ -221,19 +221,33 @@ export default function CarpetaMezclaDetailScreen() {
         onDuplicate={(mix) => { setMixMenuPreset(null); duplicatePreset(mix.id); }}
         onDelete={(mix) => deletePreset(mix.id)}
       />
+
+      <MixActionsSheet
+        mix={null}
+        folder={folderMenuTarget}
+        visible={folderMenuTarget !== null}
+        onClose={() => setFolderMenuTarget(null)}
+        onDuplicate={() => {}}
+        onDelete={() => {}}
+        onDeleteFolder={(f) => {
+          deleteMixFolder(f.id);
+          if (f.id === folder.id) router.back();
+        }}
+      />
     </LinearGradient>
   );
 }
 
 // ─── Add sheet ────────────────────────────────────────────────────────────────
 function AddSheet({
-  visible, onClose, availableMixes, onAddMix, onNuevaMezcla,
+  visible, onClose, availableMixes, onAddMix, onNuevaMezcla, onNuevaCarpeta,
 }: {
   visible: boolean;
   onClose: () => void;
   availableMixes: ReturnType<typeof useMixer>["presets"];
   onAddMix: (mixId: string) => void;
   onNuevaMezcla: () => void;
+  onNuevaCarpeta: () => void;
 }) {
   const insets = useSafeAreaInsets();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
@@ -253,6 +267,18 @@ function AddSheet({
             <View style={{ flex: 1 }}>
               <Text style={styles.sheetItemTitle}>Crea una mezcla</Text>
               <Text style={styles.sheetItemSub}>Ve al Mezclador para armar una nueva</Text>
+            </View>
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.sheetRow, { opacity: pressed ? 0.75 : 1 }]}
+            onPress={onNuevaCarpeta}
+          >
+            <View style={styles.sheetIconWrap}>
+              <Feather name="folder" size={22} color={GOLD} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.sheetItemTitle}>Nueva carpeta</Text>
+              <Text style={styles.sheetItemSub}>Crea una subcarpeta dentro de esta</Text>
             </View>
           </Pressable>
           {availableMixes.length === 0 ? (
@@ -358,17 +384,6 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     textAlign: "center",
   },
-  renameInput: {
-    flex: 1,
-    color: TEXT,
-    fontSize: 20,
-    fontWeight: "800",
-    textAlign: "center",
-    borderBottomWidth: 1.5,
-    borderBottomColor: GOLD,
-    paddingVertical: 2,
-    padding: 0,
-  },
 
   // Empty state
   emptyWrap: {
@@ -401,6 +416,16 @@ const styles = StyleSheet.create({
     gap: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "rgba(61,14,22,0.40)",
+  },
+  plCover: {
+    width: 52,
+    height: 52,
+    borderRadius: 8,
+    backgroundColor: "rgba(212,175,55,0.08)",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(212,175,55,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   plName: { color: TEXT, fontSize: 15, fontWeight: "600", lineHeight: 20 },
   plMeta: { color: MUTED, fontSize: 12, marginTop: 2 },

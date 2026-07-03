@@ -19,6 +19,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { DURATION, easeOutCubicRA } from "@/constants/motion";
@@ -32,15 +33,17 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
 import { useShareMix, getGetSharedMixesQueryKey } from "@workspace/api-client-react";
 import { getSoundImage } from "@/config/sound-images";
-import { type MixPreset, useMixer } from "@/context/MixerContext";
+import { type MixFolder, type MixPreset, useMixer } from "@/context/MixerContext";
 import { useColors } from "@/hooks/useColors";
 
 type Props = {
   mix: MixPreset | null;
+  folder?: MixFolder | null;
   visible: boolean;
   onClose: () => void;
   onDuplicate: (mix: MixPreset) => void;
   onDelete: (mix: MixPreset) => void;
+  onDeleteFolder?: (folder: MixFolder) => void;
   onEdit?: (mix: MixPreset) => void;
 };
 
@@ -109,10 +112,22 @@ function MiniStack({ sounds }: { sounds: { id: string }[] }) {
   );
 }
 
-export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, onEdit }: Props) {
+export function MixActionsSheet({
+  mix, folder = null, visible, onClose, onDuplicate, onDelete, onDeleteFolder, onEdit,
+}: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { togglePresetFavorite, mixFolders, addMixToFolder, isMixInFolder } = useMixer();
+  const {
+    togglePresetFavorite,
+    mixFolders,
+    addMixToFolder,
+    isMixInFolder,
+    addMixFolderToFolder,
+    isMixFolderInFolder,
+    togglePinMixFolder,
+    renameMixFolder,
+    deleteMixFolder,
+  } = useMixer();
   const queryClient = useQueryClient();
   const shareMixMutation = useShareMix();
 
@@ -121,22 +136,77 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, 
   const toastAnim = useRef(new Animated.Value(0)).current;
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [step, setStep] = useState<"main" | "folders">("main");
+  const [step, setStep] = useState<"main" | "folders" | "rename">("main");
+  const [renameInput, setRenameInput] = useState("");
 
   useEffect(() => {
     if (visible) {
       setToastVisible(false);
       setStep("main");
+      setRenameInput(folder?.name ?? "");
     }
     return () => {
       if (toastTimer.current) clearTimeout(toastTimer.current);
       if (closeTimer.current) clearTimeout(closeTimer.current);
     };
-  }, [visible]);
+  }, [visible, folder?.name]);
 
-  if (!mix) return null;
+  if (!mix && !folder) return null;
 
-  const favorited = mix.favorited ?? false;
+  const itemKind: "mix" | "folder" = folder ? "folder" : "mix";
+  const favorited = mix?.favorited ?? false;
+
+  const getDescendantMixFolderIds = (folderId: string): Set<string> => {
+    const result = new Set<string>();
+    const visit = (id: string) => {
+      const f = mixFolders.find((x) => x.id === id);
+      for (const subId of f?.subFolderIds ?? []) {
+        if (!result.has(subId)) {
+          result.add(subId);
+          visit(subId);
+        }
+      }
+    };
+    visit(folderId);
+    return result;
+  };
+
+  const eligibleMixFolders =
+    itemKind === "folder" && folder
+      ? mixFolders.filter((f) => f.id !== folder.id && !getDescendantMixFolderIds(folder.id).has(f.id))
+      : mixFolders;
+
+  const handlePinFolder = () => {
+    if (folder) togglePinMixFolder(folder.id);
+  };
+
+  const handleStartRenameFolder = () => {
+    if (!folder) return;
+    setRenameInput(folder.name);
+    setStep("rename");
+  };
+
+  const handleConfirmRenameFolder = () => {
+    const trimmed = renameInput.trim();
+    if (folder && trimmed) renameMixFolder(folder.id, trimmed);
+    onClose();
+  };
+
+  const handleDeleteFolder = () => {
+    if (!folder) return;
+    Alert.alert("Eliminar carpeta", `¿Eliminar "${folder.name}"? Las mezclas no se borrarán.`, [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Eliminar",
+        style: "destructive",
+        onPress: () => {
+          onClose();
+          if (onDeleteFolder) onDeleteFolder(folder);
+          else deleteMixFolder(folder.id);
+        },
+      },
+    ]);
+  };
 
   const showToast = (msg: string, autoClose = false) => {
     setToastMsg(msg);
@@ -154,6 +224,7 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, 
   };
 
   const handleShareToCommunity = () => {
+    if (!mix) return;
     if (shareMixMutation.isPending) return;
     if (!mix.categoryChosen) {
       Alert.alert(
@@ -209,12 +280,14 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, 
   };
 
   const handleFavorite = () => {
+    if (!mix) return;
     const willAdd = !favorited;
     togglePresetFavorite(mix.id);
     showToast(willAdd ? "Guardada en Favoritas" : "Eliminada de Favoritas", true);
   };
 
   const handleDelete = () => {
+    if (!mix) return;
     Alert.alert("Eliminar mezcla", `¿Eliminar "${mix.name}"?`, [
       { text: "Cancelar", style: "cancel" },
       {
@@ -245,13 +318,21 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, 
           <>
             {/* Cabecera */}
             <View style={styles.header}>
-              <MiniStack sounds={mix.sounds} />
+              {itemKind === "mix" && mix ? (
+                <MiniStack sounds={mix.sounds} />
+              ) : (
+                <View style={styles.folderHeaderIcon}>
+                  <Feather name="folder" size={22} color={colors.primary} />
+                </View>
+              )}
               <View style={{ flex: 1 }}>
                 <Text style={[styles.mixName, { color: colors.foreground }]} numberOfLines={2}>
-                  {mix.name}
+                  {itemKind === "mix" ? mix?.name : folder?.name}
                 </Text>
                 <Text style={[styles.mixMeta, { color: colors.mutedForeground }]}>
-                  {mix.sounds.length} sonido{mix.sounds.length !== 1 ? "s" : ""}
+                  {itemKind === "mix"
+                    ? `${mix?.sounds.length ?? 0} sonido${mix?.sounds.length !== 1 ? "s" : ""}`
+                    : `${folder?.presetIds.length ?? 0} mezcla${folder?.presetIds.length !== 1 ? "s" : ""}`}
                 </Text>
               </View>
               <Pressable onPress={onClose} style={styles.closeBtn}>
@@ -261,49 +342,83 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, 
 
             <View style={[styles.divider, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
 
-            {onEdit && (
-              <ActionRow
-                icon="edit-2"
-                label="Ver / editar detalles"
-                onPress={() => { onClose(); onEdit(mix); }}
-                colors={colors}
-              />
-            )}
-            <ActionRow
-              icon="users"
-              label={shareMixMutation.isPending ? "Compartiendo..." : "Compartir con la comunidad"}
-              onPress={handleShareToCommunity}
-              colors={colors}
-            />
-            <ActionRow
-              icon="heart"
-              label={favorited ? "Quitar de favoritas" : "Marcar como favorita"}
-              iconColor={favorited ? "#E05C5C" : undefined}
-              onPress={handleFavorite}
-              colors={colors}
-            />
-            <ActionRow
-              icon="folder"
-              label="Mover a una carpeta"
-              onPress={() => setStep("folders")}
-              colors={colors}
-            />
-            <ActionRow
-              icon="copy"
-              label="Duplicar"
-              onPress={() => { onClose(); onDuplicate(mix); }}
-              colors={colors}
-            />
-            <ActionRow
-              icon="trash-2"
-              label="Eliminar"
-              iconColor="#E05C5C"
-              onPress={handleDelete}
-              colors={colors}
-              last
-            />
+            {itemKind === "mix" && mix ? (
+              <>
+                {onEdit && (
+                  <ActionRow
+                    icon="edit-2"
+                    label="Ver / editar detalles"
+                    onPress={() => { onClose(); onEdit(mix); }}
+                    colors={colors}
+                  />
+                )}
+                <ActionRow
+                  icon="users"
+                  label={shareMixMutation.isPending ? "Compartiendo..." : "Compartir con la comunidad"}
+                  onPress={handleShareToCommunity}
+                  colors={colors}
+                />
+                <ActionRow
+                  icon="heart"
+                  label={favorited ? "Quitar de favoritas" : "Marcar como favorita"}
+                  iconColor={favorited ? "#E05C5C" : undefined}
+                  onPress={handleFavorite}
+                  colors={colors}
+                />
+                <ActionRow
+                  icon="folder"
+                  label="Mover a una carpeta"
+                  onPress={() => setStep("folders")}
+                  colors={colors}
+                />
+                <ActionRow
+                  icon="copy"
+                  label="Duplicar"
+                  onPress={() => { onClose(); onDuplicate(mix); }}
+                  colors={colors}
+                />
+                <ActionRow
+                  icon="trash-2"
+                  label="Eliminar"
+                  iconColor="#E05C5C"
+                  onPress={handleDelete}
+                  colors={colors}
+                  last
+                />
+              </>
+            ) : folder ? (
+              <>
+                <ActionRow
+                  icon="bookmark"
+                  label={folder.pinned ? "Desfijar" : "Fijar carpeta"}
+                  iconColor={folder.pinned ? colors.primary : undefined}
+                  onPress={handlePinFolder}
+                  colors={colors}
+                />
+                <ActionRow
+                  icon="folder"
+                  label="Mover a una carpeta"
+                  onPress={() => setStep("folders")}
+                  colors={colors}
+                />
+                <ActionRow
+                  icon="edit-2"
+                  label="Renombrar la carpeta"
+                  onPress={handleStartRenameFolder}
+                  colors={colors}
+                />
+                <ActionRow
+                  icon="trash-2"
+                  label="Eliminar carpeta"
+                  iconColor="#E05C5C"
+                  onPress={handleDeleteFolder}
+                  colors={colors}
+                  last
+                />
+              </>
+            ) : null}
           </>
-        ) : (
+        ) : step === "folders" ? (
           <>
             <View style={styles.header}>
               <Pressable onPress={() => setStep("main")} style={styles.closeBtn}>
@@ -320,18 +435,24 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, 
             <View style={[styles.divider, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
 
             <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{ maxHeight: 320 }}>
-              {mixFolders.length === 0 ? (
+              {eligibleMixFolders.length === 0 ? (
                 <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
                   Todavía no tenés ninguna carpeta
                 </Text>
               ) : (
-                mixFolders.map((f) => {
-                  const inIt = isMixInFolder(f.id, mix.id);
+                eligibleMixFolders.map((f) => {
+                  const inIt =
+                    itemKind === "mix" && mix
+                      ? isMixInFolder(f.id, mix.id)
+                      : folder
+                        ? isMixFolderInFolder(f.id, folder.id)
+                        : false;
                   return (
                     <Pressable
                       key={f.id}
                       onPress={() => {
-                        addMixToFolder(f.id, mix.id);
+                        if (itemKind === "mix" && mix) addMixToFolder(f.id, mix.id);
+                        else if (folder) addMixFolderToFolder(f.id, folder.id);
                         onClose();
                       }}
                       style={({ pressed }) => [styles.folderRow, { opacity: pressed ? 0.7 : 1 }]}
@@ -351,6 +472,49 @@ export function MixActionsSheet({ mix, visible, onClose, onDuplicate, onDelete, 
                 })
               )}
             </ScrollView>
+          </>
+        ) : (
+          <>
+            <View style={styles.header}>
+              <Pressable onPress={() => setStep("main")} style={styles.closeBtn}>
+                <Feather name="arrow-left" size={20} color={colors.foreground} />
+              </Pressable>
+              <Text style={[styles.mixName, { color: colors.foreground, flex: 1, marginBottom: 0 }]}>
+                Renombrar la carpeta
+              </Text>
+              <Pressable onPress={onClose} style={styles.closeBtn}>
+                <Feather name="x" size={20} color={colors.mutedForeground} />
+              </Pressable>
+            </View>
+
+            <View style={[styles.divider, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
+
+            <TextInput
+              value={renameInput}
+              onChangeText={setRenameInput}
+              placeholder="Nombre de la carpeta"
+              placeholderTextColor={colors.mutedForeground}
+              style={[styles.renameInput, {
+                color: colors.foreground,
+                borderColor: "rgba(61,14,22,0.40)",
+                backgroundColor: "rgba(74,12,12,0.08)",
+              }]}
+              autoFocus
+              returnKeyType="done"
+              onSubmitEditing={handleConfirmRenameFolder}
+              maxLength={40}
+            />
+
+            <Pressable
+              onPress={handleConfirmRenameFolder}
+              disabled={!renameInput.trim()}
+              style={({ pressed }) => [
+                styles.saveBtn,
+                { backgroundColor: renameInput.trim() ? colors.primary : "rgba(190,150,80,0.30)", opacity: pressed ? 0.8 : 1 },
+              ]}
+            >
+              <Text style={styles.saveBtnLabel}>Guardar</Text>
+            </Pressable>
           </>
         )}
 
@@ -454,6 +618,30 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
   },
   folderLabel: { flex: 1, fontSize: 15, fontWeight: "500" },
+  folderHeaderIcon: {
+    width: THUMB, height: THUMB, borderRadius: 10,
+    backgroundColor: "rgba(190,150,80,0.08)",
+    alignItems: "center", justifyContent: "center",
+  },
+  renameInput: {
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 16,
+    marginBottom: 16,
+  },
+  saveBtn: {
+    borderRadius: 14,
+    paddingVertical: 16,
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  saveBtnLabel: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#1B060F",
+  },
   toast: {
     flexDirection: "row", alignItems: "center",
     position: "absolute", bottom: 80, left: 20, right: 20,
