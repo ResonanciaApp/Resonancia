@@ -1,3 +1,4 @@
+- [Expo Router tab-group back nav](expo-router-tab-group-back-nav.md) — detail screens under app/(tabs)/ break back nav (resolves to Inicio); put them at app root like mezcla/[id], artista/[id]
 - [Favoritos folders hide from flat list](favoritos-folder-hides-flat-list.md) — excepción deliberada: sesión en una carpeta de Favoritos desaparece de la lista plana (a diferencia de Playlist/Mezclas donde no se oculta)
 - [Nested folders pattern](nested-folders-pattern.md) — subFolderIds + helpers + unified action sheet shared across Playlist/Mezclas/Favoritos; cycle-prevention via descendant-exclusion in move picker
 - [expo-image-manipulator requires native rebuild](expo-image-manipulator-native.md) — ExpoImageManipulator es módulo nativo; crash en dev client existente; usar expo-file-system + pako para parsear PNG sin rebuild
