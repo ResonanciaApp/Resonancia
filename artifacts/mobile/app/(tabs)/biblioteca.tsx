@@ -1052,7 +1052,7 @@ export default function BibliotecaScreen() {
     AsyncStorage.setItem(FOLLOWED_KEY, JSON.stringify(ids));
   };
   const followResonador = (id: string) => {
-    if (!followedIds.includes(id)) saveFollowed([...followedIds, id]);
+    if (!followedIds.includes(id)) saveFollowed([id, ...followedIds]);
   };
   const unfollowResonador = (id: string, name?: string) => {
     Alert.alert(
@@ -1066,7 +1066,7 @@ export default function BibliotecaScreen() {
   };
 
   const resonadores = useMemo(
-    () => allResonadores.filter((r) => followedIds.includes(r.id)),
+    () => followedIds.map((id) => allResonadores.find((r) => r.id === id)).filter((r): r is typeof allResonadores[number] => !!r),
     [allResonadores, followedIds]
   );
 
@@ -1477,7 +1477,10 @@ export default function BibliotecaScreen() {
 
     if (activeTab === "favoritos") {
       const sessionsInAnyFavFolder = new Set(favFolders.flatMap((f) => f.sessionIds));
-      const favSessions = SESSIONS.filter((s) => favorites.includes(s.id) && !sessionsInAnyFavFolder.has(s.id));
+      const favSessions = favorites
+        .filter((id) => !sessionsInAnyFavFolder.has(id))
+        .map((id) => SESSIONS.find((s) => s.id === id))
+        .filter((s): s is typeof SESSIONS[number] => !!s);
       const GRID_GAP = 10;
       const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
 

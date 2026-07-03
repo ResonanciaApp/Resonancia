@@ -1362,7 +1362,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         return;
       }
       const updated = isAdding
-        ? [...favorites, id]
+        ? [id, ...favorites]
         : favorites.filter((f) => f !== id);
       setFavorites(updated);
       await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(updated));
