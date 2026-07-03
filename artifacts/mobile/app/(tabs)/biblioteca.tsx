@@ -275,7 +275,7 @@ function FolderRow({ folder, onPress, onLongPress }: { folder: UserFolder; onPre
           {folder.pinned && <Feather name="bookmark" size={12} color={GOLD} />}
         </View>
         <Text style={styles.rowSub} numberOfLines={1}>
-          Carpeta · {count === 0 ? "Vacía" : `${count} playlist${count !== 1 ? "s" : ""}`}
+          {count} playlist{count !== 1 ? "s" : ""}
         </Text>
       </View>
     </Pressable>
@@ -794,7 +794,7 @@ function FavFolderRow({ folder, onPress, onLongPress }: { folder: FavFolder; onP
           {folder.pinned && <Feather name="bookmark" size={12} color={GOLD} />}
         </View>
         <Text style={styles.rowSub} numberOfLines={1}>
-          Carpeta · {count === 0 ? "Vacía" : `${count} favorito${count !== 1 ? "s" : ""}`}
+          {count} favorito{count !== 1 ? "s" : ""}
         </Text>
       </View>
     </Pressable>
