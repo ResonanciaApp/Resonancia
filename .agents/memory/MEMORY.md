@@ -86,3 +86,4 @@
 - [Metro require inside try-catch](metro-require-try-catch.md) — Metro resuelve TODOS los require() incluso en try-catch; SDK nativo opcional = import comentado + flag booleano, nunca require() dinámico
 - [pnpm add timeout deja node_modules corrupto](pnpm-add-timeout-corruption.md) — pnpm add interrumpido puede borrar binarios (expo) y desincronizar lockfile; fix = pnpm install --no-frozen-lockfile + mkdir tmp dir de Metro
 - [Bunny Stream videos](bunny-videos.md) — catalog_videos DB + /videos + /admin/videos routes; mobile useVideos hook con fallback a STATIC_VIDEOS; EXPO_PUBLIC_BUNNY_CDN_HOSTNAME requerido para HLS; VITE_BUNNY_CDN_HOSTNAME para admin
+- [Mix folders pattern](mix-folders-pattern.md) — MixFolder mirrors playlist folders; "crear mezcla/carpeta" buttons live inside the mezclas tab itself (not a separate general view like Playlists)

@@ -32,7 +32,8 @@ import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
-import { useMixer, type MixPreset } from "@/context/MixerContext";
+import { useMixer, type MixPreset, type MixFolder } from "@/context/MixerContext";
+import { EqualizerBars } from "@/components/EqualizerBars";
 import { useLoadMix } from "@/hooks/useLoadMix";
 import { MixActionsSheet } from "@/components/MixActionsSheet";
 import { MixCover } from "@/app/mi-mezcla/[id]";
@@ -66,7 +67,7 @@ const LIB_TABS: { id: LibTab; label: string }[] = [
 ];
 
 // ── Fila de mezcla guardada ───────────────────────────────────────────────────
-const MIX_THUMB = 56;
+const MIX_THUMB = 65;
 function MixRow({
   mix,
   isPlayingThis,
@@ -85,7 +86,7 @@ function MixRow({
   return (
     <View style={styles.row}>
       <Pressable onPress={onPressThumb} style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}>
-        <MixCover mix={mix} size={MIX_THUMB} radius={10} />
+        <MixCover mix={mix} size={MIX_THUMB} radius={6} />
       </Pressable>
       <Pressable
         onPress={onPress}
@@ -95,8 +96,8 @@ function MixRow({
       >
         <Text style={styles.rowTitle} numberOfLines={1}>{mix.name}</Text>
         {isPlayingThis ? (
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-            <Feather name="bar-chart-2" size={12} color={GOLD} />
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+            <EqualizerBars color={GOLD} size="sm" />
             <Text style={[styles.rowSub, { color: GOLD }]}>Reproduciendo</Text>
           </View>
         ) : (
@@ -273,6 +274,27 @@ function FolderRow({ folder, onPress, onLongPress }: { folder: UserFolder; onPre
         </View>
         <Text style={styles.rowSub} numberOfLines={1}>
           Carpeta · {count === 0 ? "Vacía" : `${count} playlist${count !== 1 ? "s" : ""}`}
+        </Text>
+      </View>
+    </Pressable>
+  );
+}
+
+// ── Fila de carpeta de mezclas ────────────────────────────────────────────────
+function MixFolderRow({ folder, onPress, onLongPress }: { folder: MixFolder; onPress: () => void; onLongPress?: () => void }) {
+  const count = folder.presetIds.length;
+  return (
+    <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
+      <View style={styles.userPlCover}>
+        <Feather name="folder" size={22} color={folder.pinned ? GOLD : MUTED} />
+      </View>
+      <View style={styles.rowInfo}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+          <Text style={styles.rowTitle} numberOfLines={1}>{folder.name}</Text>
+          {folder.pinned && <Feather name="bookmark" size={12} color={GOLD} />}
+        </View>
+        <Text style={styles.rowSub} numberOfLines={1}>
+          Carpeta · {count === 0 ? "Vacía" : `${count} mezcla${count !== 1 ? "s" : ""}`}
         </Text>
       </View>
     </Pressable>
@@ -641,6 +663,64 @@ function NombrePlaylistModal({ visible, onClose }: { visible: boolean; onClose: 
   );
 }
 
+// ── Modal de nombre de carpeta de mezclas ─────────────────────────────────────
+function NombreCarpetaMezclaModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { mixFolders, createMixFolder } = useMixer();
+  const [name, setName] = useState("");
+  const inputRef = useRef<TextInput>(null);
+
+  const suggestedName = `Mi carpeta n.° ${mixFolders.length + 1}`;
+
+  useEffect(() => {
+    if (visible) setName(suggestedName);
+  }, [visible]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleCreate = () => {
+    const trimmed = name.trim() || suggestedName;
+    const folder = createMixFolder(trimmed);
+    onClose();
+    router.push(`/carpeta-mezcla/${folder.id}` as never);
+  };
+
+  return (
+    <Modal
+      visible={visible}
+      animationType="slide"
+      transparent
+      onRequestClose={onClose}
+    >
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+        <View style={styles.nameCard}>
+          <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
+            <Feather name="x" size={22} color={TEXT} />
+          </Pressable>
+          <Text style={styles.nameCardTitle}>Ponle un nombre a la carpeta</Text>
+          <View style={styles.nameInputWrap}>
+            <TextInput
+              ref={inputRef}
+              style={styles.nameInput}
+              value={name}
+              onChangeText={setName}
+              autoFocus
+              selectTextOnFocus
+              returnKeyType="done"
+              onSubmitEditing={handleCreate}
+              placeholderTextColor={MUTED}
+            />
+          </View>
+          <Pressable
+            style={({ pressed }) => [styles.nameCreateBtn, { opacity: pressed ? 0.85 : 1 }]}
+            onPress={handleCreate}
+          >
+            <GoldGradientFill />
+            <Text style={styles.nameCreateBtnText}>Crear</Text>
+          </Pressable>
+        </View>
+      </KeyboardAvoidingView>
+    </Modal>
+  );
+}
+
 // ── Hoja de crear ────────────────────────────────────────────────────────────
 function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGoMezclas }: {
   visible: boolean;
@@ -842,6 +922,7 @@ export default function BibliotecaScreen() {
   const [createVisible, setCreateVisible] = useState(false);
   const [nombreVisible, setNombreVisible] = useState(false);
   const [nombreCarpetaVisible, setNombreCarpetaVisible] = useState(false);
+  const [nombreCarpetaMezclaVisible, setNombreCarpetaMezclaVisible] = useState(false);
   const [actionsItemId, setActionsItemId] = useState<string | null>(null);
   const [actionsItemKind, setActionsItemKind] = useState<"playlist" | "folder" | null>(null);
   const { playlists: userPlaylists, folders: userFolders } = useFoldersPlaylists();
@@ -854,7 +935,10 @@ export default function BibliotecaScreen() {
 
   const toggleView = () => setViewMode((v) => (v === "list" ? "grid" : "list"));
 
-  const { presets, loadedPresetId, isPlaying: mixerPlaying, deletePreset, duplicatePreset, openSheet } = useMixer();
+  const {
+    presets, loadedPresetId, isPlaying: mixerPlaying, deletePreset, duplicatePreset, openSheet,
+    mixFolders, togglePinMixFolder, deleteMixFolder, renameMixFolder,
+  } = useMixer();
   const loadMix = useLoadMix();
   const [mixMenuPreset, setMixMenuPreset] = useState<MixPreset | null>(null);
 
@@ -1102,12 +1186,77 @@ export default function BibliotecaScreen() {
     }
 
     if (activeTab === "mezclas") {
-      if (presets.length === 0) {
+      const sortedMixFolders = [...mixFolders].sort((a, b) => {
+        if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
+
+      const openMixFolderMenu = (folder: MixFolder) => {
+        Alert.alert(
+          folder.name,
+          undefined,
+          [
+            {
+              text: folder.pinned ? "Desfijar" : "Fijar carpeta",
+              onPress: () => togglePinMixFolder(folder.id),
+            },
+            {
+              text: "Cambiar nombre",
+              onPress: () => {
+                Alert.prompt
+                  ? Alert.prompt("Cambiar nombre", undefined, (text) => {
+                      if (text && text.trim()) renameMixFolder(folder.id, text.trim());
+                    }, "plain-text", folder.name)
+                  : renameMixFolder(folder.id, folder.name);
+              },
+            },
+            {
+              text: "Eliminar carpeta",
+              style: "destructive",
+              onPress: () => {
+                Alert.alert("Eliminar carpeta", `¿Eliminar "${folder.name}"? Las mezclas no se borrarán.`, [
+                  { text: "Cancelar", style: "cancel" },
+                  { text: "Eliminar", style: "destructive", onPress: () => deleteMixFolder(folder.id) },
+                ]);
+              },
+            },
+            { text: "Cancelar", style: "cancel" },
+          ],
+        );
+      };
+
+      const createButtons = (
+        <>
+          <Pressable
+            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
+            onPress={() => router.navigate("/(tabs)/musica" as never)}
+          >
+            <View style={styles.addResonadorIcon}>
+              <MaterialCommunityIcons name="tune-variant" size={20} color="#BE8744" />
+            </View>
+            <Text style={styles.addResonadorLabel}>Crear una mezcla</Text>
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
+            onPress={() => setNombreCarpetaMezclaVisible(true)}
+          >
+            <View style={styles.addResonadorIcon}>
+              <Feather name="folder" size={20} color="#BE8744" />
+            </View>
+            <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
+          </Pressable>
+        </>
+      );
+
+      if (presets.length === 0 && sortedMixFolders.length === 0) {
         return (
-          <View style={styles.emptyState}>
-            <MaterialCommunityIcons name="tune-variant" size={48} color={GOLD} style={{ marginBottom: 16 }} />
-            <Text style={styles.emptyTitle}>Tus mezclas aparecerán aquí</Text>
-            <Text style={styles.emptySub}>Guarda una mezcla desde el Mezclador para verla en tu biblioteca.</Text>
+          <View style={{ gap: 15 }}>
+            <View style={styles.emptyState}>
+              <MaterialCommunityIcons name="tune-variant" size={48} color={GOLD} style={{ marginBottom: 16 }} />
+              <Text style={styles.emptyTitle}>Tus mezclas aparecerán aquí</Text>
+              <Text style={styles.emptySub}>Guarda una mezcla desde el Mezclador para verla en tu biblioteca.</Text>
+            </View>
+            {createButtons}
           </View>
         );
       }
@@ -1117,7 +1266,7 @@ export default function BibliotecaScreen() {
       const hasMixesMore = presets.length > mixesLimit;
       if (viewMode === "grid") {
         return (
-          <>
+          <View style={{ gap: 15 }}>
             <View style={styles.gridWrap}>
               {visibleMixes.map((mix) => {
                 const isPlaying = loadedPresetId === mix.id && mixerPlaying;
@@ -1131,7 +1280,7 @@ export default function BibliotecaScreen() {
                         <MixCover mix={mix} size={cellW} radius={8} />
                         {isPlaying && (
                           <View style={{ position: "absolute", bottom: 6, right: 6 }}>
-                            <Feather name="bar-chart-2" size={14} color={GOLD} />
+                            <EqualizerBars color={GOLD} size="sm" />
                           </View>
                         )}
                       </View>
@@ -1151,12 +1300,21 @@ export default function BibliotecaScreen() {
                 <Text style={styles.loadMoreText}>Cargar más</Text>
               </Pressable>
             )}
-          </>
+            {createButtons}
+          </View>
         );
       }
       return (
-        <>
+        <View style={{ gap: 15 }}>
           <View style={{ gap: 5 }}>
+            {sortedMixFolders.map((folder) => (
+              <MixFolderRow
+                key={folder.id}
+                folder={folder}
+                onPress={() => router.push(`/carpeta-mezcla/${folder.id}` as never)}
+                onLongPress={() => openMixFolderMenu(folder)}
+              />
+            ))}
             {visibleMixes.map((mix) => (
               <MixRow
                 key={mix.id}
@@ -1174,7 +1332,8 @@ export default function BibliotecaScreen() {
               <Text style={styles.loadMoreText}>Cargar más</Text>
             </Pressable>
           )}
-        </>
+          {createButtons}
+        </View>
       );
     }
 
@@ -1440,6 +1599,7 @@ export default function BibliotecaScreen() {
       />
       <NombrePlaylistModal visible={nombreVisible} onClose={() => setNombreVisible(false)} />
       <NombreCarpetaModal visible={nombreCarpetaVisible} onClose={() => setNombreCarpetaVisible(false)} />
+      <NombreCarpetaMezclaModal visible={nombreCarpetaMezclaVisible} onClose={() => setNombreCarpetaMezclaVisible(false)} />
       <PlaylistActionsSheet
         itemId={actionsItemId}
         itemKind={actionsItemKind}

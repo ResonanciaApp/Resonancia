@@ -80,6 +80,7 @@ export const MAX_ACTIVE_SOUNDS = 10;
  */
 const IDLE_CACHE_MAX = 12;
 const PRESETS_KEY = "@resonance_mixer_presets";
+const MIX_FOLDERS_KEY = "@resonance_mixer_folders";
 const DEFAULT_VOLUME = 0.7;
 
 /** Las dos capas del mismo sonido que se crossfadean entre sí (ver MixerContext). */
@@ -110,6 +111,15 @@ export type MixPreset = {
   favorited?: boolean;
   /** El usuario eligió explícitamente una imagen de la grilla de categorías. */
   categoryChosen?: boolean;
+};
+
+/** Carpeta para organizar mezclas guardadas (mismo patrón que Folder de playlists). */
+export type MixFolder = {
+  id: string;
+  name: string;
+  presetIds: string[];
+  createdAt: string;
+  pinned?: boolean;
 };
 
 export type SaveMixInput = {
@@ -185,6 +195,14 @@ type MixerContextType = {
   /** Paleta de fondo del Mezclador (noche / arena). Sincronizada desde musica.tsx. */
   bgPaletteId: MixerBgPaletteId;
   setBgPaletteId: (id: MixerBgPaletteId) => void;
+  /** Carpetas para organizar mezclas guardadas. */
+  mixFolders: MixFolder[];
+  createMixFolder: (name: string) => MixFolder;
+  renameMixFolder: (id: string, name: string) => void;
+  deleteMixFolder: (id: string) => void;
+  togglePinMixFolder: (id: string) => void;
+  addMixToFolder: (folderId: string, mixId: string) => void;
+  removeMixFromFolder: (folderId: string, mixId: string) => void;
 };
 
 const MixerContext = createContext<MixerContextType | null>(null);
@@ -193,6 +211,9 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const [activeSounds, setActiveSounds] = useState<ActiveSound[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [presets, setPresets] = useState<MixPreset[]>([]);
+  const [mixFolders, setMixFolders] = useState<MixFolder[]>([]);
+  const mixFoldersRef = useRef<MixFolder[]>([]);
+  mixFoldersRef.current = mixFolders;
   const [sleepTimerRemaining, setSleepTimerRemaining] = useState<number | null>(null);
   const [loadedPresetId, setLoadedPresetId] = useState<string | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -596,6 +617,89 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     setPresets(next);
     AsyncStorage.setItem(PRESETS_KEY, JSON.stringify(next)).catch(() => {});
   }, []);
+
+  // ── Cargar carpetas de mezclas guardadas ───────────────────────────
+  useEffect(() => {
+    AsyncStorage.getItem(MIX_FOLDERS_KEY).then((val) => {
+      if (!val) return;
+      try {
+        const parsed = JSON.parse(val) as MixFolder[];
+        setMixFolders(parsed);
+      } catch {
+        // ignore corrupt data
+      }
+    });
+  }, []);
+
+  const persistMixFolders = useCallback((next: MixFolder[]) => {
+    setMixFolders(next);
+    AsyncStorage.setItem(MIX_FOLDERS_KEY, JSON.stringify(next)).catch(() => {});
+  }, []);
+
+  const createMixFolder = useCallback(
+    (name: string) => {
+      const folder: MixFolder = {
+        id: Date.now().toString(),
+        name: name.trim() || "Mi carpeta",
+        presetIds: [],
+        createdAt: new Date().toISOString(),
+      };
+      persistMixFolders([folder, ...mixFoldersRef.current]);
+      return folder;
+    },
+    [persistMixFolders],
+  );
+
+  const renameMixFolder = useCallback(
+    (id: string, name: string) => {
+      const trimmed = name.trim();
+      if (!trimmed) return;
+      persistMixFolders(
+        mixFoldersRef.current.map((f) => (f.id === id ? { ...f, name: trimmed } : f)),
+      );
+    },
+    [persistMixFolders],
+  );
+
+  const deleteMixFolder = useCallback(
+    (id: string) => {
+      persistMixFolders(mixFoldersRef.current.filter((f) => f.id !== id));
+    },
+    [persistMixFolders],
+  );
+
+  const togglePinMixFolder = useCallback(
+    (id: string) => {
+      persistMixFolders(
+        mixFoldersRef.current.map((f) => (f.id === id ? { ...f, pinned: !f.pinned } : f)),
+      );
+    },
+    [persistMixFolders],
+  );
+
+  const addMixToFolder = useCallback(
+    (folderId: string, mixId: string) => {
+      persistMixFolders(
+        mixFoldersRef.current.map((f) =>
+          f.id === folderId && !f.presetIds.includes(mixId)
+            ? { ...f, presetIds: [...f.presetIds, mixId] }
+            : f,
+        ),
+      );
+    },
+    [persistMixFolders],
+  );
+
+  const removeMixFromFolder = useCallback(
+    (folderId: string, mixId: string) => {
+      persistMixFolders(
+        mixFoldersRef.current.map((f) =>
+          f.id === folderId ? { ...f, presetIds: f.presetIds.filter((id) => id !== mixId) } : f,
+        ),
+      );
+    },
+    [persistMixFolders],
+  );
 
   const ensureAudioMode = useCallback(async () => {
     try {
@@ -1929,6 +2033,13 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         inmersivoGeoBgCreation,
         bgPaletteId,
         setBgPaletteId,
+        mixFolders,
+        createMixFolder,
+        renameMixFolder,
+        deleteMixFolder,
+        togglePinMixFolder,
+        addMixToFolder,
+        removeMixFromFolder,
       }}
     >
       {children}

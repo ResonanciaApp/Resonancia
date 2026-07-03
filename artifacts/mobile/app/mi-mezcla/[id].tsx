@@ -53,7 +53,7 @@ export function MixCover({
     height: size,
     borderRadius: radius,
     overflow: "hidden" as const,
-    backgroundColor: "rgba(212,175,55,0.12)",
+    backgroundColor: "rgba(255,255,255,0.055)",
     alignItems: "center" as const,
     justifyContent: "center" as const,
   };
