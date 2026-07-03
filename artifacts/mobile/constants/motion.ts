@@ -1,9 +1,20 @@
 import { Easing } from "react-native";
+import { Easing as ReanimatedEasing } from "react-native-reanimated";
 
 /** Curvas easing del lenguaje de movimiento (Apple / Calm / Insight Timer) */
 export const easeOutCubic = Easing.out(Easing.cubic);
 export const easeOutQuart = Easing.out(Easing.poly(4));
 export const easeInCubic  = Easing.in(Easing.cubic);
+
+/**
+ * Mismas curvas, pero construidas con el `Easing` de `react-native-reanimated`.
+ * OBLIGATORIO usar estas (nunca las de arriba) dentro de `withTiming`/
+ * `useAnimatedStyle` — el `Easing` de `react-native` no es un worklet y
+ * revienta con "[Reanimated] The easing function is not a worklet." en release.
+ */
+export const easeOutCubicRA = ReanimatedEasing.out(ReanimatedEasing.cubic);
+export const easeOutQuartRA = ReanimatedEasing.out(ReanimatedEasing.poly(4));
+export const easeInCubicRA  = ReanimatedEasing.in(ReanimatedEasing.cubic);
 
 /**
  * Duraciones estándar en ms.
