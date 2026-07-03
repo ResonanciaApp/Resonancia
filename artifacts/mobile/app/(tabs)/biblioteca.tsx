@@ -1344,8 +1344,10 @@ export default function BibliotecaScreen() {
       }
       const GRID_GAP = 10;
       const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
-      const visibleMixes = presets.slice(0, mixesLimit);
-      const hasMixesMore = presets.length > mixesLimit;
+      const mixIdsInFolders = new Set(mixFolders.flatMap((f) => f.presetIds));
+      const unfiledPresets = presets.filter((p) => !mixIdsInFolders.has(p.id));
+      const visibleMixes = unfiledPresets.slice(0, mixesLimit);
+      const hasMixesMore = unfiledPresets.length > mixesLimit;
       if (viewMode === "grid") {
         return (
           <View style={{ gap: 15 }}>
@@ -1388,7 +1390,7 @@ export default function BibliotecaScreen() {
       }
       return (
         <View style={{ gap: 15 }}>
-          <View style={{ gap: 9 }}>
+          <View style={{ gap: 14 }}>
             {sortedMixFolders.map((folder) => (
               <MixFolderRow
                 key={folder.id}
