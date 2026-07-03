@@ -1451,6 +1451,9 @@ export default function BibliotecaScreen() {
               key={s.id}
               session={s}
               horizontal
+              thumbWidth={65}
+              thumbHeight={64}
+              thumbRadius={6}
             />
           ))}
         </View>

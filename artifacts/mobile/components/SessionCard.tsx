@@ -28,6 +28,9 @@ type Props = {
   noBorder?: boolean;
   onLongPress?: () => void;
   destRoute?: string;
+  thumbWidth?: number;
+  thumbHeight?: number;
+  thumbRadius?: number;
 };
 
 function LockStar() {
@@ -41,7 +44,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8 }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -66,6 +69,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         style={({ pressed }) => [
           styles.hRow,
           {
+            height: Math.max(thumbHeight, 62),
             backgroundColor: cardBg ?? "transparent",
             borderWidth: 0,
             borderColor: "transparent",
@@ -73,8 +77,8 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
           },
         ]}
       >
-        <View style={{ width: 129, height: 94, borderRadius: 8, overflow: "hidden" }}>
-          <Image source={session.image} style={styles.hImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
+        <View style={{ width: thumbWidth, height: thumbHeight, borderRadius: thumbRadius, overflow: "hidden" }}>
+          <Image source={session.image} style={{ width: "100%", height: "100%" }} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           {locked && <LockStar />}
           <Text style={styles.hDurLabel}>{session.durationLabel}</Text>
         </View>
