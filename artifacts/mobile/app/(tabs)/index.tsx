@@ -642,6 +642,17 @@ export default function HomeScreen2() {
           </View>
         )}
 
+        {/* ── ESCUCHADAS RECIENTEMENTE ── */}
+        <SessionCarousel
+          title="Escuchadas recientemente"
+          sessions={filteredListened}
+          isPremium={isPremium}
+          onPress={(s) => { if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } router.push(`/session/${s.id}` as never); }}
+          style={{ marginBottom: SECTION_GAP }}
+          titleOffset={10}
+          cardWidth={RECENT_CARD_W}
+        />
+
         {/* ── ESTADO DE ÁNIMO ── */}
         <View style={{ paddingHorizontal: 16 }}>
           <Text style={styles.sectionTitle}>Personaliza tus recomendaciones</Text>
