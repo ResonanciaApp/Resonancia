@@ -32,6 +32,7 @@ type Props = {
   thumbHeight?: number;
   thumbRadius?: number;
   showDuration?: boolean;
+  pinned?: boolean;
 };
 
 function LockStar() {
@@ -45,7 +46,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, pinned = false }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -84,9 +85,12 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
           {showDuration && <Text style={styles.hDurLabel}>{session.durationLabel}</Text>}
         </View>
         <View style={styles.hContent}>
-          <Text style={[styles.hTitle, { color: colors.foreground }]} numberOfLines={2}>
-            {session.title}
-          </Text>
+          <View style={styles.hTitleRow}>
+            <Text style={[styles.hTitle, { color: colors.foreground, flexShrink: 1 }]} numberOfLines={2}>
+              {session.title}
+            </Text>
+            {pinned && <Feather name="bookmark" size={12} color="#BE8744" />}
+          </View>
           {!!authorName && (
             <View style={styles.hAuthorRow}>
               <Image source={authorPhoto} style={styles.hAuthorAvatar} contentFit="cover" />
@@ -234,6 +238,11 @@ const styles = StyleSheet.create({
     fontSize: 8,
     letterSpacing: 0.7,
     textTransform: "uppercase",
+  },
+  hTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
   },
   hTitle: {
     fontSize: 16,

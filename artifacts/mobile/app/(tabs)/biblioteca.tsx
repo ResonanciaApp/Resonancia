@@ -1572,6 +1572,7 @@ export default function BibliotecaScreen() {
                   thumbHeight={64}
                   thumbRadius={6}
                   showDuration={false}
+                  pinned={pinnedFavoriteIds.includes(s.id)}
                   onLongPress={() => { setFavActionsItemId(s.id); setFavActionsItemKind("session"); }}
                 />
               </View>
