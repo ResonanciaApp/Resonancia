@@ -19,6 +19,14 @@ export type Folder = {
   pinned?: boolean;
 };
 
+export type FavFolder = {
+  id: string;
+  name: string;
+  sessionIds: string[];
+  createdAt: string;
+  pinned?: boolean;
+};
+
 export type Playlist = {
   id: string;
   name: string;
@@ -65,12 +73,27 @@ interface FoldersPlaylistsCtx {
   isInPlaylist: (playlistId: string, sessionId: string) => boolean;
   togglePinPlaylist: (playlistId: string) => void;
   togglePinFolder: (folderId: string) => void;
+  // Fav folders
+  favFolders: FavFolder[];
+  createFavFolder: (name: string, initialSessionId?: string) => FavFolder;
+  renameFavFolder: (folderId: string, name: string) => void;
+  deleteFavFolder: (folderId: string) => void;
+  togglePinFavFolder: (folderId: string) => void;
+  addToFavFolder: (folderId: string, sessionId: string) => void;
+  removeFromFavFolder: (folderId: string, sessionId: string) => void;
+  isInFavFolder: (folderId: string, sessionId: string) => boolean;
+  // Pinned favorite sessions
+  pinnedFavoriteIds: string[];
+  isFavoritePinned: (sessionId: string) => boolean;
+  togglePinFavorite: (sessionId: string) => void;
 }
 
 // ─── Storage keys ─────────────────────────────────────────────────────────────
 
 const FOLDERS_KEY = "@resonance_folders";
 const PLAYLISTS_KEY = "@resonance_playlists";
+const FAV_FOLDERS_KEY = "@resonance_fav_folders";
+const PINNED_FAVORITES_KEY = "@resonance_pinned_favorites";
 
 // ─── Context ──────────────────────────────────────────────────────────────────
 
@@ -87,13 +110,19 @@ export function useFoldersPlaylists(): FoldersPlaylistsCtx {
 export function FoldersPlaylistsProvider({ children }: { children: React.ReactNode }) {
   const [folders, setFolders] = useState<Folder[]>([]);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [favFolders, setFavFolders] = useState<FavFolder[]>([]);
+  const [pinnedFavoriteIds, setPinnedFavoriteIds] = useState<string[]>([]);
 
   // Load from storage
   useEffect(() => {
-    AsyncStorage.multiGet([FOLDERS_KEY, PLAYLISTS_KEY]).then(([fEntry, pEntry]) => {
-      if (fEntry[1]) setFolders(JSON.parse(fEntry[1]));
-      if (pEntry[1]) setPlaylists(JSON.parse(pEntry[1]));
-    });
+    AsyncStorage.multiGet([FOLDERS_KEY, PLAYLISTS_KEY, FAV_FOLDERS_KEY, PINNED_FAVORITES_KEY]).then(
+      ([fEntry, pEntry, ffEntry, pfEntry]) => {
+        if (fEntry[1]) setFolders(JSON.parse(fEntry[1]));
+        if (pEntry[1]) setPlaylists(JSON.parse(pEntry[1]));
+        if (ffEntry[1]) setFavFolders(JSON.parse(ffEntry[1]));
+        if (pfEntry[1]) setPinnedFavoriteIds(JSON.parse(pfEntry[1]));
+      }
+    );
   }, []);
 
   // Functional updaters — always read latest state (no stale closure)
@@ -109,6 +138,22 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     setPlaylists((prev) => {
       const next = updater(prev);
       AsyncStorage.setItem(PLAYLISTS_KEY, JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
+  const updateFavFolders = useCallback((updater: (prev: FavFolder[]) => FavFolder[]) => {
+    setFavFolders((prev) => {
+      const next = updater(prev);
+      AsyncStorage.setItem(FAV_FOLDERS_KEY, JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
+  const updatePinnedFavorites = useCallback((updater: (prev: string[]) => string[]) => {
+    setPinnedFavoriteIds((prev) => {
+      const next = updater(prev);
+      AsyncStorage.setItem(PINNED_FAVORITES_KEY, JSON.stringify(next));
       return next;
     });
   }, []);
@@ -307,6 +352,74 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     );
   }, [updateFolders]);
 
+  // ── Fav folders ───────────────────────────────────────────────────────────
+
+  const createFavFolder = useCallback((name: string, initialSessionId?: string): FavFolder => {
+    const folder: FavFolder = {
+      id: `favfolder_${Date.now()}`,
+      name: name.trim(),
+      sessionIds: initialSessionId ? [initialSessionId] : [],
+      createdAt: new Date().toISOString(),
+    };
+    updateFavFolders((prev) => [...prev, folder]);
+    return folder;
+  }, [updateFavFolders]);
+
+  const renameFavFolder = useCallback((folderId: string, name: string) => {
+    updateFavFolders((prev) =>
+      prev.map((f) => f.id === folderId ? { ...f, name: name.trim() } : f)
+    );
+  }, [updateFavFolders]);
+
+  const deleteFavFolder = useCallback((folderId: string) => {
+    updateFavFolders((prev) => prev.filter((f) => f.id !== folderId));
+  }, [updateFavFolders]);
+
+  const togglePinFavFolder = useCallback((folderId: string) => {
+    updateFavFolders((prev) =>
+      prev.map((f) => f.id === folderId ? { ...f, pinned: !(f.pinned ?? false) } : f)
+    );
+  }, [updateFavFolders]);
+
+  const addToFavFolder = useCallback((folderId: string, sessionId: string) => {
+    updateFavFolders((prev) =>
+      prev.map((f) =>
+        f.id === folderId && !f.sessionIds.includes(sessionId)
+          ? { ...f, sessionIds: [...f.sessionIds, sessionId] }
+          : f
+      )
+    );
+  }, [updateFavFolders]);
+
+  const removeFromFavFolder = useCallback((folderId: string, sessionId: string) => {
+    updateFavFolders((prev) =>
+      prev.map((f) =>
+        f.id === folderId
+          ? { ...f, sessionIds: f.sessionIds.filter((id) => id !== sessionId) }
+          : f
+      )
+    );
+  }, [updateFavFolders]);
+
+  const isInFavFolder = useCallback(
+    (folderId: string, sessionId: string) =>
+      favFolders.find((f) => f.id === folderId)?.sessionIds.includes(sessionId) ?? false,
+    [favFolders]
+  );
+
+  // ── Pinned favorite sessions ──────────────────────────────────────────────
+
+  const isFavoritePinned = useCallback(
+    (sessionId: string) => pinnedFavoriteIds.includes(sessionId),
+    [pinnedFavoriteIds]
+  );
+
+  const togglePinFavorite = useCallback((sessionId: string) => {
+    updatePinnedFavorites((prev) =>
+      prev.includes(sessionId) ? prev.filter((id) => id !== sessionId) : [...prev, sessionId]
+    );
+  }, [updatePinnedFavorites]);
+
   return (
     <Ctx.Provider
       value={{
@@ -337,6 +450,17 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
         isInPlaylist,
         togglePinPlaylist,
         togglePinFolder,
+        favFolders,
+        createFavFolder,
+        renameFavFolder,
+        deleteFavFolder,
+        togglePinFavFolder,
+        addToFavFolder,
+        removeFromFavFolder,
+        isInFavFolder,
+        pinnedFavoriteIds,
+        isFavoritePinned,
+        togglePinFavorite,
       }}
     >
       {children}

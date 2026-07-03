@@ -41,11 +41,12 @@ import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { ARTISTS, getArtist, type Artist } from "@/data/artists";
 import { GUIDES, getGuide, type Guide } from "@/data/guides";
 import { SESSIONS, getSessionById } from "@/data/sessions";
-import { useFoldersPlaylists, type Playlist as UserPlaylist, type Folder as UserFolder } from "@/context/FoldersPlaylistsContext";
+import { useFoldersPlaylists, type Playlist as UserPlaylist, type Folder as UserFolder, type FavFolder } from "@/context/FoldersPlaylistsContext";
 import { baseOf, type GeometryId } from "@/data/geometries";
 import { gradientColors, type GeometrixCreation } from "@/data/geometrix-creations";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { PlaylistActionsSheet } from "@/components/PlaylistActionsSheet";
+import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -721,6 +722,83 @@ function NombreCarpetaMezclaModal({ visible, onClose }: { visible: boolean; onCl
   );
 }
 
+function NombreCarpetaFavModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { favFolders, createFavFolder } = useFoldersPlaylists();
+  const [name, setName] = useState("");
+  const inputRef = useRef<TextInput>(null);
+
+  const suggestedName = `Mi carpeta n.° ${favFolders.length + 1}`;
+
+  useEffect(() => {
+    if (visible) setName(suggestedName);
+  }, [visible]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleCreate = () => {
+    const trimmed = name.trim() || suggestedName;
+    createFavFolder(trimmed);
+    onClose();
+  };
+
+  return (
+    <Modal
+      visible={visible}
+      animationType="slide"
+      transparent
+      onRequestClose={onClose}
+    >
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+        <View style={styles.nameCard}>
+          <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
+            <Feather name="x" size={22} color={TEXT} />
+          </Pressable>
+          <Text style={styles.nameCardTitle}>Ponle un nombre a la carpeta</Text>
+          <View style={styles.nameInputWrap}>
+            <TextInput
+              ref={inputRef}
+              style={styles.nameInput}
+              value={name}
+              onChangeText={setName}
+              autoFocus
+              selectTextOnFocus
+              returnKeyType="done"
+              onSubmitEditing={handleCreate}
+              placeholderTextColor={MUTED}
+            />
+          </View>
+          <Pressable
+            style={({ pressed }) => [styles.nameCreateBtn, { opacity: pressed ? 0.85 : 1 }]}
+            onPress={handleCreate}
+          >
+            <GoldGradientFill />
+            <Text style={styles.nameCreateBtnText}>Crear</Text>
+          </Pressable>
+        </View>
+      </KeyboardAvoidingView>
+    </Modal>
+  );
+}
+
+// ── Fila de carpeta de favoritos ──────────────────────────────────────────────
+function FavFolderRow({ folder, onPress, onLongPress }: { folder: FavFolder; onPress: () => void; onLongPress?: () => void }) {
+  const count = folder.sessionIds.length;
+  return (
+    <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
+      <View style={styles.userPlCover}>
+        <Feather name="folder" size={22} color={folder.pinned ? GOLD : MUTED} />
+      </View>
+      <View style={styles.rowInfo}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+          <Text style={styles.rowTitle} numberOfLines={1}>{folder.name}</Text>
+          {folder.pinned && <Feather name="bookmark" size={12} color={GOLD} />}
+        </View>
+        <Text style={styles.rowSub} numberOfLines={1}>
+          Carpeta · {count === 0 ? "Vacía" : `${count} favorito${count !== 1 ? "s" : ""}`}
+        </Text>
+      </View>
+    </Pressable>
+  );
+}
+
 // ── Hoja de crear ────────────────────────────────────────────────────────────
 function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGoMezclas }: {
   visible: boolean;
@@ -925,7 +1003,10 @@ export default function BibliotecaScreen() {
   const [nombreCarpetaMezclaVisible, setNombreCarpetaMezclaVisible] = useState(false);
   const [actionsItemId, setActionsItemId] = useState<string | null>(null);
   const [actionsItemKind, setActionsItemKind] = useState<"playlist" | "folder" | null>(null);
-  const { playlists: userPlaylists, folders: userFolders } = useFoldersPlaylists();
+  const [nombreCarpetaFavVisible, setNombreCarpetaFavVisible] = useState(false);
+  const [favActionsItemId, setFavActionsItemId] = useState<string | null>(null);
+  const [favActionsItemKind, setFavActionsItemKind] = useState<"session" | "folder" | null>(null);
+  const { playlists: userPlaylists, folders: userFolders, favFolders, pinnedFavoriteIds } = useFoldersPlaylists();
 
   const { creations: geometrixCreations, reload: reloadCreations } = useGeometrixCreations();
   useFocusEffect(useCallback(() => { reloadCreations(); }, [reloadCreations]));
@@ -1426,37 +1507,82 @@ export default function BibliotecaScreen() {
       const favSessions = SESSIONS.filter((s) => favorites.includes(s.id));
       const GRID_GAP = 10;
       const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
-      if (favSessions.length === 0) {
+
+      const createFolderBtn = (
+        <Pressable
+          style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1, paddingHorizontal: H_PAD }]}
+          onPress={() => setNombreCarpetaFavVisible(true)}
+        >
+          <View style={styles.addResonadorIcon}>
+            <Feather name="folder" size={20} color="#BE8744" />
+          </View>
+          <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
+        </Pressable>
+      );
+
+      if (favSessions.length === 0 && favFolders.length === 0) {
         return (
-          <View style={styles.emptyState}>
-            <Feather name="heart" size={48} color={GOLD} style={{ marginBottom: 16 }} />
-            <Text style={styles.emptyTitle}>Tus favoritos aparecerán aquí</Text>
-            <Text style={styles.emptySub}>Toca el corazón en cualquier sesión para guardarla aquí.</Text>
+          <View style={{ gap: 15 }}>
+            <View style={styles.emptyState}>
+              <Feather name="heart" size={48} color={GOLD} style={{ marginBottom: 16 }} />
+              <Text style={styles.emptyTitle}>Tus favoritos aparecerán aquí</Text>
+              <Text style={styles.emptySub}>Toca el corazón en cualquier sesión para guardarla aquí.</Text>
+            </View>
+            {createFolderBtn}
           </View>
         );
       }
+
+      const sortedFavFolders = [...favFolders].sort((a, b) => {
+        if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
+      const pinnedFirstFav = [...favSessions].sort(
+        (a, b) => (pinnedFavoriteIds.includes(b.id) ? 1 : 0) - (pinnedFavoriteIds.includes(a.id) ? 1 : 0)
+      );
+
       if (viewMode === "grid") {
         return (
-          <View style={styles.gridWrap}>
-            {favSessions.map((s) => (
-              <SessionCard key={s.id} session={s} width={cellW} />
-            ))}
+          <View style={{ gap: 15 }}>
+            <View style={styles.gridWrap}>
+              {pinnedFirstFav.map((s) => (
+                <SessionCard
+                  key={s.id}
+                  session={s}
+                  width={cellW}
+                  onLongPress={() => { setFavActionsItemId(s.id); setFavActionsItemKind("session"); }}
+                />
+              ))}
+            </View>
+            {createFolderBtn}
           </View>
         );
       }
       return (
-        <View style={{ paddingHorizontal: H_PAD, gap: 9 }}>
-          {favSessions.map((s) => (
-            <SessionCard
-              key={s.id}
-              session={s}
-              horizontal
-              thumbWidth={65}
-              thumbHeight={64}
-              thumbRadius={6}
-              showDuration={false}
-            />
-          ))}
+        <View style={{ gap: 15 }}>
+          <View style={{ paddingHorizontal: H_PAD, gap: 9 }}>
+            {sortedFavFolders.map((folder) => (
+              <FavFolderRow
+                key={folder.id}
+                folder={folder}
+                onPress={() => router.push(`/carpeta-favorito/${folder.id}` as never)}
+                onLongPress={() => { setFavActionsItemId(folder.id); setFavActionsItemKind("folder"); }}
+              />
+            ))}
+            {pinnedFirstFav.map((s) => (
+              <SessionCard
+                key={s.id}
+                session={s}
+                horizontal
+                thumbWidth={65}
+                thumbHeight={64}
+                thumbRadius={6}
+                showDuration={false}
+                onLongPress={() => { setFavActionsItemId(s.id); setFavActionsItemKind("session"); }}
+              />
+            ))}
+          </View>
+          {createFolderBtn}
         </View>
       );
     }
@@ -1604,11 +1730,18 @@ export default function BibliotecaScreen() {
       <NombrePlaylistModal visible={nombreVisible} onClose={() => setNombreVisible(false)} />
       <NombreCarpetaModal visible={nombreCarpetaVisible} onClose={() => setNombreCarpetaVisible(false)} />
       <NombreCarpetaMezclaModal visible={nombreCarpetaMezclaVisible} onClose={() => setNombreCarpetaMezclaVisible(false)} />
+      <NombreCarpetaFavModal visible={nombreCarpetaFavVisible} onClose={() => setNombreCarpetaFavVisible(false)} />
       <PlaylistActionsSheet
         itemId={actionsItemId}
         itemKind={actionsItemKind}
         visible={actionsItemId !== null}
         onClose={() => { setActionsItemId(null); setActionsItemKind(null); }}
+      />
+      <FavoriteActionsSheet
+        itemId={favActionsItemId}
+        itemKind={favActionsItemKind}
+        visible={favActionsItemId !== null}
+        onClose={() => { setFavActionsItemId(null); setFavActionsItemKind(null); }}
       />
       <MixActionsSheet
         mix={mixMenuPreset}
