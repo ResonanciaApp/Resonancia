@@ -938,7 +938,7 @@ export default function BibliotecaScreen() {
                       style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                       onPress={() => router.push(`/playlist/${pl.id}` as never)}
                     >
-                      <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(255,255,255,0.025)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
+                      <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(255,255,255,0.055)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
                         {pl.coverType === "geometrix" && pl.coverGeometryId ? (
                           <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
                         ) : pl.coverType === "creation" && pl.coverCreationId ? (
@@ -1057,7 +1057,7 @@ export default function BibliotecaScreen() {
             {displayPl.map((pl) => (
               <Pressable key={pl.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                 onPress={() => router.push(`/playlist/${pl.id}` as never)}>
-                <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(255,255,255,0.025)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
+                <View style={[styles.gridThumb, { width: cellW, height: cellW, backgroundColor: "rgba(255,255,255,0.055)", alignItems: "center", justifyContent: "center", overflow: "hidden" }]}>
                   {pl.coverType === "geometrix" && pl.coverGeometryId ? (
                     <SacredGlyph id={pl.coverGeometryId as GeometryId} color={GOLD} size={Math.round(cellW * 1.28)} strokeWidth={1.2} opacity={1} />
                   ) : pl.coverType === "creation" && pl.coverCreationId ? (
@@ -1641,7 +1641,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     paddingTop: 4,
   },
-  gridThumb: { borderRadius: 6, backgroundColor: "rgba(255,255,255,0.025)" },
+  gridThumb: { borderRadius: 6, backgroundColor: "rgba(255,255,255,0.055)" },
   gridTitle: { fontSize: 12, color: TEXT, marginTop: 6, fontWeight: "500" },
 
   // ── SortSheet ────────────────────────────────────────────────────────────────
@@ -1753,7 +1753,7 @@ const styles = StyleSheet.create({
     height: 64,
     borderRadius: 6,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.025)",
+    backgroundColor: "rgba(255,255,255,0.055)",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: StyleSheet.hairlineWidth,
@@ -1881,7 +1881,7 @@ const styles = StyleSheet.create({
     width: 62,
     height: 62,
     borderRadius: 31,
-    backgroundColor: "rgba(255,255,255,0.025)",
+    backgroundColor: "rgba(255,255,255,0.055)",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: StyleSheet.hairlineWidth,
