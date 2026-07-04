@@ -13,7 +13,7 @@ export type Category = {
 export const CATEGORIES: Category[] = [
   {
     id: "sonidos-ancestrales",
-    title: "Ancestrales",
+    title: "Sesiones",
     subtitle: "Cuencos, gongs y frecuencias sagradas",
     icon: "bowl-mix",
     iconFamily: "MaterialCommunityIcons",
@@ -37,25 +37,14 @@ export const CATEGORIES: Category[] = [
     title: "Música",
     subtitle: "Atmósferas sonoras para meditar",
     icon: "music",
-    sessionCount: 9,
-    color: "#f4c993",
-    gradient: ["#7A5520", "#3E2208"],
-    primary: true,
-  },
-  {
-    id: "reflexiones",
-    title: "Reflexiones",
-    subtitle: "Contemplaciones y sabiduría para el alma",
-    icon: "thought-bubble-outline",
-    iconFamily: "MaterialCommunityIcons",
-    sessionCount: 10,
+    sessionCount: 19,
     color: "#f4c993",
     gradient: ["#7A5520", "#3E2208"],
     primary: true,
   },
   {
     id: "descanso",
-    title: "Descanso",
+    title: "Dormir",
     subtitle: "Sonidos y relatos para acompañar tu noche",
     icon: "moon",
     sessionCount: 30,
@@ -104,7 +93,6 @@ const TINT_COLOR_OVERRIDE: Record<string, string> = {
   "sonidos-ancestrales": "#C4956A",
   "meditaciones-guiadas": "#C4956A",
   "musica-sonidos": "#C4956A",
-  "reflexiones": "#C4956A",
 };
 
 export const getCategoryTint = (categoryId: string, alpha = 0.2) => {

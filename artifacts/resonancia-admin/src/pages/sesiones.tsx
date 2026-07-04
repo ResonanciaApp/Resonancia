@@ -26,7 +26,6 @@ import {
 const CATS = [
   { id: "sonidos-ancestrales", label: "Ancestrales",  categoryLabel: "Ancestrales", color: "#D4AF37" },
   { id: "meditaciones-guiadas", label: "Meditaciones", categoryLabel: "Meditaciones", color: "#E9C46A" },
-  { id: "reflexiones",           label: "Reflexiones",  categoryLabel: "Reflexiones",  color: "#C4A0D4" },
 ] as const;
 
 type CatId = typeof CATS[number]["id"];
@@ -370,9 +369,6 @@ export default function SesionesPage() {
                 if (cat.id === "sonidos-ancestrales" || cat.id === "meditaciones-guiadas") {
                   setShowAudio2(true);
                   setAudio2((a) => ({ ...a, role: "voice" }));
-                } else if (cat.id === "reflexiones") {
-                  setShowAudio2(true);
-                  setAudio2((a) => ({ ...a, role: "ambient" }));
                 } else {
                   setShowAudio2(false);
                   setAudio2(emptyAudioSlot());
@@ -557,35 +553,6 @@ export default function SesionesPage() {
               />
             )}
 
-            {categoryId === "reflexiones" && (
-              <>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => { setPodcastMode("sonidos"); setPodcastTag(""); }}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${podcastMode === "sonidos" ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-foreground"}`}
-                  >
-                    Sonidos
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setPodcastMode("podcast"); setSonidosTag(""); }}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${podcastMode === "podcast" ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-foreground"}`}
-                  >
-                    Charla / Reflexión
-                  </button>
-                </div>
-                {podcastMode === "sonidos" ? (
-                  <Field label="Subcategoría *">
-                    <SelectField value={sonidosTag} onChange={setSonidosTag} placeholder="Elegí la subcategoría" options={SONIDOS_TAGS} />
-                  </Field>
-                ) : (
-                  <Field label="Subcategoría *">
-                    <SelectField value={podcastTag} onChange={setPodcastTag} placeholder="Elegí la subcategoría" options={PODCAST_TAGS} />
-                  </Field>
-                )}
-              </>
-            )}
           </div>
         </Section>
       )}
@@ -627,9 +594,8 @@ export default function SesionesPage() {
       >
         {(() => {
           const isAncestralOrMed = categoryId === "sonidos-ancestrales" || categoryId === "meditaciones-guiadas";
-          const isPodcast = categoryId === "reflexiones";
-          const audio1Label = isPodcast ? "Sonido base *" : "Audio base *";
-          const audio2Label = isPodcast ? "Sonido ambiente (opcional)" : "Voz guía (opcional)";
+          const audio1Label = "Audio base *";
+          const audio2Label = "Voz guía (opcional)";
           return (
             <div className="space-y-6">
               <AudioUploadSlot

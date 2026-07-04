@@ -110,11 +110,10 @@ export default function SessionDetailScreen() {
     );
   }
 
-  // Esta pantalla cubre: Reflexiones, Ancestrales, Meditaciones.
+  // Esta pantalla cubre: Ancestrales (Sesiones), Meditaciones.
   // Las sesiones de Música tendrán su propia pantalla de detalle.
   const isGuiada = session.categoryId === "meditaciones-guiadas";
   const isAncestral = session.categoryId === "sonidos-ancestrales";
-  const isReflexion = session.categoryId === "reflexiones";
   const isMusica = session.categoryId === "musica-sonidos";
   const CATEGORY_BG: Record<string, {
     gradient: [string, string]; solid: string;
@@ -122,12 +121,11 @@ export default function SessionDetailScreen() {
   }> = {
     "sonidos-ancestrales":  { gradient: ["#2E0510", "#16040A"], solid: "#16040A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
     "meditaciones-guiadas": { gradient: ["#2E0510", "#16040A"], solid: "#16040A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "reflexiones":          { gradient: ["#2E0510", "#16040A"], solid: "#16040A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
     "musica-sonidos":       { gradient: ["#2E0510", "#16040A"], solid: "#16040A", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
     "descanso":             { gradient: ["#14060C", "#14060C"], solid: "#14060C", pillBg: "#3D0E16", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
   };
   const catBg = CATEGORY_BG[session.categoryId] ?? CATEGORY_BG["sonidos-ancestrales"];
-  const categoryPill = isAncestral ? "Ancestral" : isGuiada ? "Meditación" : isReflexion ? "Reflexión"
+  const categoryPill = isAncestral ? "Ancestral" : isGuiada ? "Meditación"
     : isMusica ? "Música" : null;
   const categoryIcon: string = "clock";
   const subTag = isAncestral
@@ -147,7 +145,6 @@ export default function SessionDetailScreen() {
     "Escaneo Corporal": "activity", "Manifestación": "star", "3 Minutos de Sabiduría": "clock",
     // Música
     "Música Ambient": "cloud", "Música Enteógena": "feather", "Música Tribal": "zap", "Música Étnica": "globe",
-    // Reflexiones
     "Sabiduría": "book-open", "ASMR": "headphones", "Historias": "book",
   };
   const subTagIcon: string = SUBTAG_ICON[subTag ?? ""] ?? (isAncestral ? "disc" : isGuiada ? "eye" : isMusica ? "cloud" : "book-open");

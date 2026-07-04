@@ -90,7 +90,6 @@ const SESSION_CATEGORY_TABS = [
   { id: "todas", label: "Todas" },
   { id: "meditaciones-guiadas", label: "Meditaciones" },
   { id: "sonidos-ancestrales", label: "Ancestrales" },
-  { id: "reflexiones", label: "Reflexiones" },
 ] as const;
 
 function SessionPicker({

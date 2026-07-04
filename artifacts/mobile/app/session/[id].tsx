@@ -109,11 +109,10 @@ export default function SessionDetailScreen() {
     );
   }
 
-  // Esta pantalla cubre: Reflexiones, Ancestrales, Meditaciones.
+  // Esta pantalla cubre: Ancestrales (Sesiones), Meditaciones.
   // Las sesiones de Música tendrán su propia pantalla de detalle.
   const isGuiada = session.categoryId === "meditaciones-guiadas";
   const isAncestral = session.categoryId === "sonidos-ancestrales";
-  const isReflexion = session.categoryId === "reflexiones";
   const isMusica = session.categoryId === "musica-sonidos";
   const CATEGORY_BG: Record<string, {
     gradient: [string, string]; solid: string;
@@ -121,7 +120,6 @@ export default function SessionDetailScreen() {
   }> = {
     "sonidos-ancestrales":  { gradient: ["#230610", "#16040A"], solid: "#230610", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
     "meditaciones-guiadas": { gradient: ["#230610", "#16040A"], solid: "#230610", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "reflexiones":          { gradient: ["#230610", "#16040A"], solid: "#230610", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
     "musica-sonidos":       { gradient: ["#230610", "#16040A"], solid: "#230610", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
     "descanso":             { gradient: ["#230610", "#16040A"], solid: "#230610", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
   };

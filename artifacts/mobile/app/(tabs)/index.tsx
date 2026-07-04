@@ -70,7 +70,7 @@ const { width } = Dimensions.get("window");
 
 const NAV_TABS = [
   { id: "todas",    label: "Todas",    cats: [] as string[] },
-  { id: "sesiones", label: "Sesiones", cats: ["sonidos-ancestrales", "meditaciones-guiadas", "reflexiones"] },
+  { id: "sesiones", label: "Sesiones", cats: ["sonidos-ancestrales", "meditaciones-guiadas"] },
   { id: "musica",   label: "Música",   cats: ["musica-sonidos"] },
 ];
 const GRID_GAP = 12;
@@ -108,7 +108,7 @@ const HOME_CAT_CARD_IMG_H = Math.round(_HOME_CAT_CARD_W_ORIG * 1.15);
 const HOME_CATEGORY_CARDS = [
   {
     id: "sonidos-ancestrales",
-    title: "Ancestral",
+    title: "Sesiones",
     route: "/category/sonidos-ancestrales",
     image: require("../../assets/images/sessions/session-1.jpg"),
   },
@@ -340,7 +340,7 @@ export default function HomeScreen2() {
   }, [selectedDur, durSort]);
 
   // Sesiones para "Recomendado para ti" / "Para tu estado de ánimo"
-  const RECO_CATS = ["meditaciones-guiadas", "reflexiones", "sonidos-ancestrales", "musica-sonidos"];
+  const RECO_CATS = ["meditaciones-guiadas", "sonidos-ancestrales", "musica-sonidos"];
   const moodRecommended = React.useMemo<Session[]>(() => {
     if (selectedMood) {
       const cats = new Set(selectedMood.categoryIds);

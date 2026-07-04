@@ -340,7 +340,7 @@ export default function DescansoScreen() {
         {/* ── Hero ── */}
         <View style={styles.hero}>
           <Ionicons name="moon" size={34} color="#C4A8F5" style={styles.heroIcon} />
-          <Text style={[styles.heroTitle, { color: colors.foreground }]}>Descanso</Text>
+          <Text style={[styles.heroTitle, { color: colors.foreground }]}>Dormir</Text>
           <Text style={[styles.heroSubtitle, { color: "rgba(255,255,255,0.8)" }]}>
             Sonidos especialmente diseñados{"\n"}para un descanso profundo
           </Text>

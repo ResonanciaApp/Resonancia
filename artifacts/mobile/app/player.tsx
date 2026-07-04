@@ -375,7 +375,7 @@ export default function PlayerScreen() {
     return <View style={[styles.root, { backgroundColor: "transparent" }]} />;
   }
 
-  const OPTIONS_CATEGORIES = ["sonidos-ancestrales", "musica-sonidos", "meditaciones-guiadas", "reflexiones"];
+  const OPTIONS_CATEGORIES = ["sonidos-ancestrales", "musica-sonidos", "meditaciones-guiadas"];
   const isOptionsCategory = OPTIONS_CATEGORIES.includes(currentSession.categoryId);
 
   const isMusicaYSonidos = currentSession.categoryId === "musica-sonidos";

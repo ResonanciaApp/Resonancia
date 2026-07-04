@@ -62,7 +62,7 @@ const TAB_CONFIG: Record<
   explore:    { label: "Explorar",   sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
   musica:     { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",  featherIcon: "sliders" },
   biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
-  descanzo:   { label: "Descanso",   sfIcon: "moon.stars",          sfIconFill: "moon.stars.fill",      featherIcon: "moon" },
+  descanzo:   { label: "Dormir",     sfIcon: "moon.stars",          sfIconFill: "moon.stars.fill",      featherIcon: "moon" },
   profile:    { label: "Perfil",     sfIcon: "person",              sfIconFill: "person.fill",          featherIcon: "user" },
 };
 
@@ -403,7 +403,7 @@ function TabLayoutInner() {
         <Tabs.Screen name="geometrix"      options={{ title: "Geometrix", href: null }} />
         <Tabs.Screen name="musica2"        options={{ title: "Música 2", href: null }} />
         <Tabs.Screen name="musica3"        options={{ title: "Mi Música", href: null }} />
-        <Tabs.Screen name="descanzo"       options={{ title: "Descanso" }} />
+        <Tabs.Screen name="descanzo"       options={{ title: "Dormir" }} />
         <Tabs.Screen name="profile"        options={{ title: "Perfil" }} />
       </Tabs>
 
