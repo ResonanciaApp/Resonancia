@@ -506,7 +506,7 @@ const styles = StyleSheet.create({
   pillWrap: {
     alignItems: "center",
     justifyContent: "center",
-    gap: 3,
+    gap: 0,
     width: "100%",
   },
   iconGlow: {
