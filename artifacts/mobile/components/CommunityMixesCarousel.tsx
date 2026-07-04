@@ -194,9 +194,9 @@ export function CommunityMixesCarousel() {
 }
 
 // ── Fila de mezcla (V2D) ───────────────────────────────────────────
-type Colors = ReturnType<typeof import("@/hooks/useColors").useColors>;
+export type Colors = ReturnType<typeof import("@/hooks/useColors").useColors>;
 
-function MixRow({
+export function MixRow({
   mix,
   colors,
   onPress,
@@ -288,7 +288,7 @@ function MixCover({ category }: { category?: string | null }) {
 }
 
 // ── Menú contextual (3 puntitos) ───────────────────────────────────
-function MixContextMenu({
+export function MixContextMenu({
   mix,
   onClose,
   onAddFavorite,

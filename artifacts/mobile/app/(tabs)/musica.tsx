@@ -479,9 +479,8 @@ export default function MezcladorScreen() {
   const [contentDir,     setContentDir]     = useState<"right" | "left">("right");
   const [subTabAnimKey,  setSubTabAnimKey]  = useState(0);
 
-  // ── Ajustes del Mezclador (pincel = paleta · filtro = etiquetas) ──
+  // ── Ajustes del Mezclador (filtros: tema + etiquetas) ──
   const [settingsVisible, setSettingsVisible] = useState(false);
-  const [settingsMode,    setSettingsMode]    = useState<"palette" | "filters">("filters");
   const [moodFilter,      setMoodFilter]      = useState<MoodId | null>(null);
   const [tagFilters,      setTagFilters]      = useState<SoundTagId[]>([]);
   const settingsLoaded = useRef(false);
@@ -533,14 +532,11 @@ export default function MezcladorScreen() {
     ).catch(() => {});
   };
 
-  // Limpieza según el modo abierto: pincel resetea solo el color, filtro solo las etiquetas
+  // Limpia tema + etiquetas de una vez
   const clearForMode = () => {
-    if (settingsMode === "palette") {
-      setBgPaletteId(DEFAULT_MIXER_BG_PALETTE);
-      emitBgPresetChange("oscuro");
-    } else {
-      setTagFilters([]);
-    }
+    setBgPaletteId(DEFAULT_MIXER_BG_PALETTE);
+    emitBgPresetChange("oscuro");
+    setTagFilters([]);
   };
 
   const bgPalette = getMixerBgPalette(bgPaletteId);
@@ -690,16 +686,16 @@ export default function MezcladorScreen() {
                 <View style={styles.headerActions}>
                   <GhostPill style={{ gap: 6, backgroundColor: "rgba(255,255,255,0.06)" }}>
                     <Pressable
-                      onPress={() => { setSettingsMode("palette"); setSettingsVisible(true); }}
+                      onPress={() => router.push("/mezclas-comunidad" as never)}
                       style={[styles.headerPillBtn, { width: 43, height: 43 }]}
                       hitSlop={8}
                       accessibilityRole="button"
-                      accessibilityLabel="Paleta de color del Mezclador"
+                      accessibilityLabel="Mezclas de la comunidad"
                     >
-                      <MaterialCommunityIcons name="brush" size={24} color="#e8e8e8" />
+                      <MaterialCommunityIcons name="account-group" size={24} color="#e8e8e8" />
                     </Pressable>
                     <Pressable
-                      onPress={() => { setSettingsMode("filters"); setSettingsVisible(true); }}
+                      onPress={() => setSettingsVisible(true)}
                       style={[styles.headerPillBtn, { width: 43, height: 43 }]}
                       hitSlop={8}
                       accessibilityRole="button"
@@ -869,9 +865,6 @@ export default function MezcladorScreen() {
       <MixerSettingsSheet
         visible={settingsVisible}
         onClose={() => setSettingsVisible(false)}
-        mode={settingsMode}
-        moodFilter={null}
-        onMoodChange={() => {}}
         tagFilters={tagFilters}
         onToggleTag={toggleTagFilter}
         bgPaletteId={bgPaletteId}
