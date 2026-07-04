@@ -659,7 +659,7 @@ export default function HomeScreen2() {
         {/* ── Explorar todo (TEMAS 6×2) ── */}
         <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
           <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Explorar todo</Text>
+            <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Explorar todo</Text>
           </View>
           <View style={[styles.temaGrid, { marginTop: 0 }]}>
             {TEMAS.map((t) => (
