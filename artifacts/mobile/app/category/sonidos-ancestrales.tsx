@@ -422,7 +422,7 @@ export default function SonidosAncestalesScreen() {
     if (shuffledSessions.length===0) return (
       <View style={styles.emptyState}>
         <Feather name="music" size={48} color={GOLD} style={{marginBottom:16}} />
-        <Text style={styles.emptyTitle}>Próximamente en {activeTab ? TABS.find((t)=>t.id===activeTab)?.label : "Ancestrales"}</Text>
+        <Text style={styles.emptyTitle}>Próximamente en {activeTab ? TABS.find((t)=>t.id===activeTab)?.label : "Sesiones"}</Text>
         <Text style={styles.emptySub}>Estamos preparando este espacio con las mejores sesiones sonoras.</Text>
       </View>
     );
@@ -500,7 +500,7 @@ export default function SonidosAncestalesScreen() {
 
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
-          <Text style={styles.profileTitle}>Ancestrales</Text>
+          <Text style={styles.profileTitle}>Sesiones</Text>
           <Text style={styles.profileDesc} numberOfLines={2}>
             Sonidos ancestrales para sanar cuerpo y espíritu.
           </Text>
@@ -526,7 +526,7 @@ export default function SonidosAncestalesScreen() {
         <GhostPill>
           <BackPill onPress={() => router.back()} />
         </GhostPill>
-        <Text style={styles.headerTitle}>Ancestrales</Text>
+        <Text style={styles.headerTitle}>Sesiones</Text>
         <GhostPill>
           <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
             <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
@@ -544,7 +544,7 @@ export default function SonidosAncestalesScreen() {
         </View>
       )}
 
-      <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} categoryId="sonidos-ancestrales" placeholderTxt="Buscar en Ancestrales..." />
+      <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} categoryId="sonidos-ancestrales" placeholderTxt="Buscar en Sesiones..." />
       <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={() => setSortVisible(false)} />
       <SessionQuickSheet session={selectedSession} onClose={() => setSelectedSession(null)}
         onPlaylist={() => { if (selectedSession) setPlaylistSessionId(selectedSession.id); setSelectedSession(null); }} />

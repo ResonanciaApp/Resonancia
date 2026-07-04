@@ -125,7 +125,7 @@ export default function SessionDetailScreen() {
     "descanso":             { gradient: ["#14060C", "#14060C"], solid: "#14060C", pillBg: "#3D0E16", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
   };
   const catBg = CATEGORY_BG[session.categoryId] ?? CATEGORY_BG["sonidos-ancestrales"];
-  const categoryPill = isAncestral ? "Ancestral" : isGuiada ? "Meditación"
+  const categoryPill = isAncestral ? "Sesión" : isGuiada ? "Meditación"
     : isMusica ? "Música" : null;
   const categoryIcon: string = "clock";
   const subTag = isAncestral
