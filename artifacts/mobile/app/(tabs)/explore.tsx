@@ -56,42 +56,6 @@ const TEMA3_W    = Math.floor((width - H_PAD * 2 - TEMA_GAP * 2) / 3);
 
 const CAT_CARD_GAP = 16;
 const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.625);
-const CAT_CARD_IMG_H = Math.round(CAT_CARD_W * 1.15);
-
-const CATEGORY_CARDS = [
-  {
-    id: "sonidos-ancestrales",
-    title: "Ancestral",
-    subtitle: "Cuencos, gongs y sonidos sagrados",
-    route: "/category/sonidos-ancestrales",
-    image: require("../../assets/images/sessions/session-1.jpg"),
-    overlay: "rgba(12,4,8,0.45)",
-  },
-  {
-    id: "meditaciones-guiadas",
-    title: "Meditaciones",
-    subtitle: "Guías de voz para calmar la mente",
-    route: "/category/meditaciones-guiadas",
-    image: require("../../assets/images/cat-meditacion-hero.png"),
-    overlay: "rgba(4,8,16,0.42)",
-  },
-  {
-    id: "musica-sonidos",
-    title: "Música",
-    subtitle: "Ambient, naturaleza y paisajes sonoros",
-    route: "/category/musica-sonidos",
-    image: require("../../assets/images/cat-musica-hero.png"),
-    overlay: "rgba(4,14,8,0.42)",
-  },
-  {
-    id: "reflexiones",
-    title: "Reflexiones",
-    subtitle: "Contemplación y sabiduría interior",
-    route: "/category/reflexiones",
-    image: require("../../assets/images/cat-reflexiones-hero.png"),
-    overlay: "rgba(30,16,36,0.52)",
-  },
-] as const;
 
 type Session = (typeof SESSIONS)[number];
 
@@ -424,40 +388,6 @@ export default function ExploreScreen() {
           </View>
         </View>
 
-        {/* ── Carrusel de categorías ── */}
-        <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginTop: 20 }]}>
-          Categorías principales
-        </Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{ marginHorizontal: H_PAD, marginBottom: SECTION_GAP }}
-          contentContainerStyle={{ gap: CAT_CARD_GAP, paddingBottom: 2 }}
-          decelerationRate="fast"
-          snapToInterval={CAT_CARD_W + CAT_CARD_GAP}
-          snapToAlignment="start"
-        >
-          {CATEGORY_CARDS.map((cat) => (
-            <Pressable
-              key={cat.id}
-              onPress={() => router.push(cat.route as never)}
-              style={({ pressed }) => [styles.catCard, { opacity: pressed ? 0.85 : 1 }]}
-            >
-              <View style={styles.catCardImage}>
-                <Image
-                  source={cat.image}
-                  style={StyleSheet.absoluteFill}
-                  contentFit="cover"
-                  cachePolicy="memory-disk"
-                />
-              </View>
-              <View style={styles.catCardText}>
-                <Text style={styles.catCardTitle}>{cat.title}</Text>
-              </View>
-            </Pressable>
-          ))}
-        </ScrollView>
-
             {/* ── Explorar todo (TEMAS 6×2) ── */}
             <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
               <View style={styles.sectionRow}>
@@ -624,40 +554,6 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "rgba(255,255,255,0.07)",
     marginHorizontal: 4,
-  },
-
-  // Carrusel de categorías
-  catCard: {
-    width: CAT_CARD_W,
-  },
-  catCardImage: {
-    width: CAT_CARD_W,
-    height: CAT_CARD_IMG_H,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    overflow: "hidden",
-  },
-  catCardText: {
-    marginTop: 0,
-    paddingHorizontal: 13,
-    paddingVertical: 10,
-    backgroundColor: "rgba(255,255,255,0.055)",
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-    alignItems: "center",
-  },
-  catCardTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#e8e8e8",
-    letterSpacing: 0.2,
-    textAlign: "center",
-  },
-  catCardSubtitle: {
-    fontSize: 14,
-    color: "#c2c2c2",
-    lineHeight: 19,
-    fontWeight: "400",
   },
 
   // Carrusel cuadrado

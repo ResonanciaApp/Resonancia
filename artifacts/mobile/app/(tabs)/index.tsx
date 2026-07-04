@@ -99,6 +99,27 @@ type DurSlot = (typeof DURATION_SLOTS)[number]["label"];
 const TEMA3_W = Math.floor((width - GRID_PAD * 2 - TEMA_GAP * 2) / 3);
 const VIDEO_HERO_W = Math.round((width - GRID_PAD * 2 - 56) * 1.0);
 
+// Categorías principales — grid 1 fila x 2 columnas (mismo alto que el carrusel original)
+const HOME_CAT_GAP = 16;
+const HOME_CAT_CARD_W = Math.floor((width - GRID_PAD * 2 - HOME_CAT_GAP) / 2);
+const _HOME_CAT_CARD_W_ORIG = Math.round(((width - GRID_PAD * 2 - HOME_CAT_GAP) / 2.2 - 30) * 1.625);
+const HOME_CAT_CARD_IMG_H = Math.round(_HOME_CAT_CARD_W_ORIG * 1.15);
+
+const HOME_CATEGORY_CARDS = [
+  {
+    id: "sonidos-ancestrales",
+    title: "Ancestral",
+    route: "/category/sonidos-ancestrales",
+    image: require("../../assets/images/sessions/session-1.jpg"),
+  },
+  {
+    id: "musica-sonidos",
+    title: "Música",
+    route: "/category/musica-sonidos",
+    image: require("../../assets/images/cat-musica-hero.png"),
+  },
+] as const;
+
 /** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
 function hexTint(hex: string, alpha: number): string {
   const h = hex.replace("#", "");
@@ -756,6 +777,54 @@ export default function HomeScreen2() {
               )}
             </View>
           )}
+        </View>
+
+        {/* ── Categorías principales ── */}
+        <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
+          <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>
+            Categorías principales
+          </Text>
+          <View style={{ flexDirection: "row", gap: HOME_CAT_GAP }}>
+            {HOME_CATEGORY_CARDS.map((cat) => (
+              <Pressable
+                key={cat.id}
+                onPress={() => router.push(cat.route as never)}
+                style={({ pressed }) => [{ width: HOME_CAT_CARD_W, opacity: pressed ? 0.85 : 1 }]}
+              >
+                <View
+                  style={{
+                    width: HOME_CAT_CARD_W,
+                    height: HOME_CAT_CARD_IMG_H,
+                    borderTopLeftRadius: 15,
+                    borderTopRightRadius: 15,
+                    overflow: "hidden",
+                  }}
+                >
+                  <ExpoImage
+                    source={cat.image}
+                    style={StyleSheet.absoluteFill}
+                    contentFit="cover"
+                    cachePolicy="memory-disk"
+                  />
+                </View>
+                <View
+                  style={{
+                    marginTop: 0,
+                    paddingHorizontal: 13,
+                    paddingVertical: 10,
+                    backgroundColor: "rgba(255,255,255,0.055)",
+                    borderBottomLeftRadius: 15,
+                    borderBottomRightRadius: 15,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: 16, fontWeight: "700", color: "#e8e8e8", letterSpacing: 0.2, textAlign: "center" }}>
+                    {cat.title}
+                  </Text>
+                </View>
+              </Pressable>
+            ))}
+          </View>
         </View>
 
         {/* ── Explorar todo (TEMAS 6×2) ── */}
