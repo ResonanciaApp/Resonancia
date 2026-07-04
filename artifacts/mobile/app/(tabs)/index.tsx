@@ -63,6 +63,8 @@ import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 import { CuencoBell } from "@/components/CuencoBell";
 import { LiveSessionCard } from "@/components/LiveSessionCard";
 import { useLiveSessions } from "@/hooks/useLiveSessions";
+import { VideoCard } from "@/components/VideoCard";
+import { useVideos } from "@/hooks/useVideos";
 
 const { width } = Dimensions.get("window");
 
@@ -95,6 +97,7 @@ const DURATION_SLOTS = [
 ] as const;
 type DurSlot = (typeof DURATION_SLOTS)[number]["label"];
 const TEMA3_W = Math.floor((width - GRID_PAD * 2 - TEMA_GAP * 2) / 3);
+const VIDEO_HERO_W = Math.round((width - GRID_PAD * 2 - 56) * 1.0);
 
 /** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
 function hexTint(hex: string, alpha: number): string {
@@ -209,6 +212,7 @@ export default function HomeScreen2() {
   const { isPremium } = usePremium();
   const { upcoming: upcomingLiveSessions } = useLiveSessions();
   const nextLiveSession = upcomingLiveSessions[0] ?? null;
+  const { videos } = useVideos();
   const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
@@ -791,6 +795,38 @@ export default function HomeScreen2() {
               </Pressable>
             ))}
           </View>
+        </View>
+
+        {/* ── Videos destacados ── */}
+        <View style={[styles.section, { marginTop: 0, marginBottom: SECTION_GAP }]}>
+          <View style={styles.sectionRow}>
+            <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Videos destacados</Text>
+            {videos.length > 0 && (
+              <Pressable onPress={() => router.push("/videos" as never)} hitSlop={8}>
+                <Text style={{ fontSize: 13, color: colors.accent }}>Ver todos</Text>
+              </Pressable>
+            )}
+          </View>
+          {videos.length === 0 ? (
+            <View style={styles.videosEmpty}>
+              <Feather name="film" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
+              <Text style={[styles.videosEmptyTitle, { color: colors.foreground }]}>Próximamente</Text>
+              <Text style={[styles.videosEmptySub, { color: colors.mutedForeground }]}>
+                Pronto vas a encontrar videos aquí.
+              </Text>
+            </View>
+          ) : (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ marginHorizontal: -GRID_PAD }}
+              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 16 }}
+            >
+              {videos.map((v) => (
+                <VideoCard key={v.id} video={v} width={VIDEO_HERO_W} />
+              ))}
+            </ScrollView>
+          )}
         </View>
 
         {/* ── ESCUCHADAS RECIENTEMENTE ── */}
@@ -1390,6 +1426,17 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.07)",
     marginHorizontal: 4,
   },
+  videosEmpty: {
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(61,14,22,0.40)",
+    backgroundColor: "rgba(74,12,12,0.08)",
+    paddingVertical: 36,
+    paddingHorizontal: 24,
+    alignItems: "center",
+  },
+  videosEmptyTitle: { fontSize: 16, fontWeight: "700", marginBottom: 8 },
+  videosEmptySub: { fontSize: 13, textAlign: "center", lineHeight: 19 },
 
   // Categories — 2×2 grid cards
   coleccionGrid: {

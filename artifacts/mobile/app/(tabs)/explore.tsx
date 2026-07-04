@@ -33,13 +33,10 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
 import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
-import { VideoCard } from "@/components/VideoCard";
-import { useVideos } from "@/hooks/useVideos";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
 const GAP = 16;
-const VIDEO_HERO_W = Math.round((width - H_PAD * 2 - 56) * 1.0);
 const TEMA_GAP = 10;
 const SECTION_GAP = 60;
 
@@ -322,7 +319,6 @@ export default function ExploreScreen() {
   const [ritualesFilter, setRitualesFilter] = useState<DurOptEx>("Todos");
   const [ritualesSheet, setRitualesSheet] = useState(false);
   const [tempRitualesFilter, setTempRitualesFilter] = useState<DurOptEx>("Todos");
-  const { videos } = useVideos();
 
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
@@ -501,38 +497,6 @@ export default function ExploreScreen() {
               </View>
             </View>
 
-            {/* ── Videos destacados ── */}
-            <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
-              <View style={styles.sectionRow}>
-                <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Videos destacados</Text>
-                {videos.length > 0 && (
-                  <Pressable onPress={() => router.push("/videos" as never)} hitSlop={8}>
-                    <Text style={{ fontSize: 13, color: colors.accent }}>Ver todos</Text>
-                  </Pressable>
-                )}
-              </View>
-              {videos.length === 0 ? (
-                <View style={styles.videosEmpty}>
-                  <Feather name="film" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
-                  <Text style={[styles.videosEmptyTitle, { color: colors.foreground }]}>Próximamente</Text>
-                  <Text style={[styles.videosEmptySub, { color: colors.mutedForeground }]}>
-                    Pronto vas a encontrar videos aquí.
-                  </Text>
-                </View>
-              ) : (
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  style={{ marginHorizontal: -H_PAD }}
-                  contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 16 }}
-                >
-                  {videos.map((v) => (
-                    <VideoCard key={v.id} video={v} width={VIDEO_HERO_W} />
-                  ))}
-                </ScrollView>
-              )}
-            </View>
-
             {/* ── Meditaciones recomendadas ── */}
             {renderCarousel("Meditaciones recomendadas", dailyRecs, "/category/meditaciones-guiadas")}
 
@@ -631,17 +595,6 @@ const styles = StyleSheet.create({
     marginBottom: SECTION_GAP,
     marginHorizontal: H_PAD,
   },
-  videosEmpty: {
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "rgba(61,14,22,0.40)",
-    backgroundColor: "rgba(74,12,12,0.08)",
-    paddingVertical: 36,
-    paddingHorizontal: 24,
-    alignItems: "center",
-  },
-  videosEmptyTitle: { fontSize: 16, fontWeight: "700", marginBottom: 8 },
-  videosEmptySub: { fontSize: 13, textAlign: "center", lineHeight: 19 },
 
   header:         { paddingHorizontal: H_PAD, marginBottom: 18 },
   headerPillBtn:  { width: 43, height: 43, alignItems: "center", justifyContent: "center" },
