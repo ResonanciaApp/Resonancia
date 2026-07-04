@@ -53,13 +53,15 @@ const TAB_CONFIG: Record<
     sfIcon: string;
     sfIconFill: string;
     featherIcon: string;
+    mciIcon?: string;
+    mciIconFill?: string;
     image?: number;
     iconSize?: number;
     iconOffset?: number;
   }
 > = {
   index:      { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
-  explore:    { label: "Explorar",   sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
+  explore:    { label: "Meditación", sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search", mciIcon: "spa-outline", mciIconFill: "spa" },
   musica:     { label: "Mezclador",  sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",  featherIcon: "sliders" },
   biblioteca: { label: "Mi espacio", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
   descanzo:   { label: "Dormir",     sfIcon: "moon.stars",          sfIconFill: "moon.stars.fill",      featherIcon: "moon" },
@@ -86,8 +88,11 @@ function TabItem({
   const makeIcon = useCallback((active: boolean) => {
     const color  = active ? ACTIVE_COLOR : INACTIVE_COLOR;
     const sfName = active ? conf.sfIconFill : conf.sfIcon;
+    const mciName = active ? conf.mciIconFill : conf.mciIcon;
     return conf.image ? (
       <Image source={conf.image} style={{ width: iconSize, height: iconSize, transform: tOffset }} tintColor={color} resizeMode="contain" />
+    ) : mciName ? (
+      <MaterialCommunityIcons name={mciName as never} size={iconSize} color={color} style={{ transform: tOffset }} />
     ) : isIOS ? (
       <SymbolView name={sfName as never} tintColor={color} size={iconSize} style={{ transform: tOffset }} renderingMode="monochrome" />
     ) : (
@@ -411,7 +416,7 @@ function TabLayoutInner() {
         <Tabs.Screen name="index"          options={{ title: "Inicio" }} />
         <Tabs.Screen name="musica"         options={{ title: "Mezclador" }} />
         <Tabs.Screen name="coleccion/[id]" options={{ href: null }} />
-        <Tabs.Screen name="explore"        options={{ title: "Explorar" }} />
+        <Tabs.Screen name="explore"        options={{ title: "Meditación" }} />
         <Tabs.Screen name="biblioteca"     options={{ title: "Mi espacio" }} />
         <Tabs.Screen name="resonadores"    options={{ title: "Equipo" }} />
         <Tabs.Screen name="geometrix"      options={{ title: "Geometrix", href: null }} />
