@@ -239,7 +239,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           const y0 = sw / 2;
           const x1 = bw - sw / 2;
           const y1 = bh - sw / 2;
-          const bulge = 1.5;
+          const bulge = 4;
           const d =
             `M ${x0 + r} ${y0} ` +
             `Q ${(x0 + r + x1 - r) / 2} ${y0 - bulge} ${x1 - r} ${y0} ` +
