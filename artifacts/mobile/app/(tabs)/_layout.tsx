@@ -516,7 +516,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   label: {
-    fontSize: 10.5,
+    fontSize: 9.5,
     letterSpacing: 0.3,
     fontWeight: "500",
   },
