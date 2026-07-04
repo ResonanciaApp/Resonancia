@@ -130,18 +130,6 @@ function hexTint(hex: string, alpha: number): string {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-const RITUAL_CARD_W = Math.round(width * 0.74);
-const RITUAL_IMG_H  = Math.round(RITUAL_CARD_W * (9 / 16));
-
-const DURACION_OPTS: { label: string; value: number | null }[] = [
-  { label: "Todos",   value: null },
-  { label: "5 min",  value: 5    },
-  { label: "10 min", value: 10   },
-  { label: "15 min", value: 15   },
-  { label: "20 min", value: 20   },
-  { label: "30 min", value: 30   },
-];
-
 const ND = Platform.OS !== "web";
 
 function BlinkingCursor({ color }: { color: string }) {
@@ -193,37 +181,6 @@ function NavTabChip({ sel, label, onPress }: { sel: boolean; label: string; onPr
   );
 }
 
-function RitualCard({ session, onPress }: { session: Session; onPress: () => void }) {
-  const cardW  = width - GRID_PAD * 2;
-  const imgH   = Math.round(cardW * (9 / 16));
-  const idNum  = parseInt(session.id, 10);
-  const rating = (4.5 + (isNaN(idNum) ? 0 : (idNum % 5) * 0.08)).toFixed(1);
-  const author = session.guideIds
-    ? (getGuide(session.guideIds[0])?.name ?? "Casa del Cuenco")
-    : session.guideId
-      ? (getGuide(session.guideId)?.name ?? "Casa del Cuenco")
-      : session.artistId
-        ? (getArtist(session.artistId)?.name ?? "Resonancia")
-        : "Casa del Cuenco";
-  return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
-    >
-      <View style={{ width: cardW, height: imgH, borderRadius: 13, overflow: "hidden", marginBottom: 10, backgroundColor: "rgba(255,255,255,0.025)" }}>
-        <Image source={session.image as never} style={{ width: cardW, height: imgH }} resizeMode="cover" />
-      </View>
-      <View style={styles.ritualMeta}>
-        <Text style={styles.ritualMetaText}>{session.categoryLabel}</Text>
-        <Text style={styles.ritualDot}>·</Text>
-        <Text style={styles.ritualMetaText}>{session.durationLabel}</Text>
-      </View>
-      <Text style={styles.ritualTitle} numberOfLines={2}>{session.title}</Text>
-      <Text style={styles.ritualAuthor} numberOfLines={1}>{author}</Text>
-    </Pressable>
-  );
-}
-
 export default function HomeScreen2() {
   const colors = useColors();
   const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
@@ -240,9 +197,6 @@ export default function HomeScreen2() {
 
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
-  const [ritualesFilter,       setRitualesFilter]       = useState<number | null>(null);
-  const [ritualesSheetVisible, setRitualesSheetVisible] = useState(false);
-  const [tempRitualesFilter,   setTempRitualesFilter]   = useState<number | null>(null);
 
   function handleMoodSelect(moodId: MoodId) {
     setSelectedMood(getMoodById(moodId) ?? null);
@@ -1033,46 +987,6 @@ export default function HomeScreen2() {
           <QuoteOfTheDay />
         </View>
 
-        {/* ── 6. RITUALES SAGRADOS ── */}
-        {(() => {
-          const pool = ritualesFilter
-            ? SESSIONS.filter(s => s.duration <= ritualesFilter)
-            : SESSIONS;
-          const ritualesSessions = pool.slice(0, 10);
-          return (
-            <View style={{ marginBottom: SECTION_GAP }}>
-              <View style={[styles.sectionRow, { paddingHorizontal: GRID_PAD, marginBottom: 16 }]}>
-                <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Para tus rituales sagrados</Text>
-                <Pressable
-                  onPress={() => { setTempRitualesFilter(ritualesFilter); setRitualesSheetVisible(true); }}
-                  style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
-                >
-                  <View style={styles.ritualFilterPill}>
-                    <Text style={styles.ritualFilterPillText}>
-                      {ritualesFilter ? `${ritualesFilter} min` : "Todos"}
-                    </Text>
-                    <Feather name="chevron-down" size={12} color="#BE8744" />
-                  </View>
-                </Pressable>
-              </View>
-              <View style={{ paddingHorizontal: GRID_PAD }}>
-                {ritualesSessions.map((s, i) => (
-                  <View key={s.id} style={i < ritualesSessions.length - 1 ? { marginBottom: 60 } : undefined}>
-                    <RitualCard
-                      session={s}
-                      onPress={() => {
-                        if (s.isPremium && !isPremium) { router.push("/membresia" as never); return; }
-                        if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
-                        router.push(`/session/${s.id}` as never);
-                      }}
-                    />
-                  </View>
-                ))}
-              </View>
-            </View>
-          );
-        })()}
-
         {/* ── 8. MURO DE AGRADECIMIENTOS ── */}
         <View style={styles.sectionDivider} />
         <View style={{ marginBottom: SECTION_GAP }}>
@@ -1099,45 +1013,6 @@ export default function HomeScreen2() {
         onClose={() => setActionsSession(null)}
       />
 
-      {/* ── Filtro de duración — Rituales Sagrados ── */}
-      <Modal
-        transparent
-        visible={ritualesSheetVisible}
-        animationType="slide"
-        onRequestClose={() => setRitualesSheetVisible(false)}
-      >
-        <Pressable style={styles.ritualBackdrop} onPress={() => setRitualesSheetVisible(false)} />
-        <View style={styles.ritualSheet}>
-          <View style={styles.ritualSheetHandle} />
-          {DURACION_OPTS.map(opt => {
-            const sel = tempRitualesFilter === opt.value;
-            return (
-              <Pressable
-                key={String(opt.value)}
-                onPress={() => setTempRitualesFilter(opt.value)}
-                style={({ pressed }) => [styles.ritualSheetItem, { opacity: pressed ? 0.7 : 1 }]}
-              >
-                <View style={sel ? styles.ritualSheetItemSelWrap : undefined}>
-                  <Text style={[styles.ritualSheetItemText, sel && styles.ritualSheetItemSel]}>
-                    {opt.label}
-                  </Text>
-                </View>
-              </Pressable>
-            );
-          })}
-          <Pressable
-            onPress={() => { setRitualesFilter(tempRitualesFilter); setRitualesSheetVisible(false); }}
-            style={({ pressed }) => [styles.ritualApplyBtn, { opacity: pressed ? 0.85 : 1 }]}
-          >
-            <LinearGradient
-              colors={["#D6A45C", "#BE8744"]}
-              start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-              style={StyleSheet.absoluteFill}
-            />
-            <Text style={styles.ritualApplyText}>Aplicar</Text>
-          </Pressable>
-        </View>
-      </Modal>
     </View>
   );
 }
@@ -1733,119 +1608,5 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.35)",
     alignItems: "center", justifyContent: "center",
     flexShrink: 0,
-  },
-
-  // ── Rituales Sagrados ─────────────────────────────────────────────────────
-  ritualCard: {
-    width: RITUAL_CARD_W,
-  },
-  ritualImgWrap: {
-    width: RITUAL_CARD_W,
-    height: RITUAL_IMG_H,
-    borderRadius: 13,
-    overflow: "hidden",
-    marginBottom: 10,
-    backgroundColor: "rgba(255,255,255,0.025)",
-  },
-  ritualImg: {
-    width: RITUAL_CARD_W,
-    height: RITUAL_IMG_H,
-  },
-  ritualMeta: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-    marginBottom: 5,
-  },
-  ritualStar: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#E9C46A",
-  },
-  ritualDot: {
-    fontSize: 12,
-    color: "rgba(255,255,255,0.30)",
-  },
-  ritualMetaText: {
-    fontSize: 12,
-    color: "rgba(255,255,255,0.50)",
-  },
-  ritualTitle: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: "#FFFFFF",
-    lineHeight: 21,
-    marginBottom: 4,
-  },
-  ritualAuthor: {
-    fontSize: 12,
-    color: "rgba(255,255,255,0.45)",
-  },
-  ritualFilterPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-    backgroundColor: "rgba(255,255,255,0.035)",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-  },
-  ritualFilterPillText: {
-    fontSize: 13,
-    fontWeight: "500",
-    color: "#BE8744",
-  },
-  ritualBackdrop: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
-  ritualSheet: {
-    backgroundColor: "#230610",
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingTop: 14,
-    paddingHorizontal: 24,
-    paddingBottom: 40,
-  },
-  ritualSheetHandle: {
-    alignSelf: "center",
-    width: 36,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.15)",
-    marginBottom: 18,
-  },
-  ritualSheetItem: {
-    paddingVertical: 10,
-    alignItems: "center",
-  },
-  ritualSheetItemSelWrap: {
-    backgroundColor: "rgba(255,255,255,0.08)",
-    borderRadius: 14,
-    paddingHorizontal: 32,
-    paddingVertical: 10,
-  },
-  ritualSheetItemText: {
-    fontSize: 18,
-    color: "rgba(255,255,255,0.45)",
-    fontWeight: "400",
-  },
-  ritualSheetItemSel: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#FFFFFF",
-  },
-  ritualApplyBtn: {
-    marginTop: 20,
-    borderRadius: 30,
-    paddingVertical: 16,
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-  },
-  ritualApplyText: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#FFFFFF",
   },
 });
