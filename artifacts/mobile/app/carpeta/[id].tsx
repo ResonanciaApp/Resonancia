@@ -212,7 +212,7 @@ export default function CarpetaDetailScreen() {
                 <View style={{ flex: 1 }}>
                   <Text style={styles.plName} numberOfLines={1}>{pl.name}</Text>
                   <Text style={styles.plMeta}>
-                    Playlist · {pl.sessionIds.length} sesión{pl.sessionIds.length !== 1 ? "es" : ""}
+                    Ritual · {pl.sessionIds.length} sesión{pl.sessionIds.length !== 1 ? "es" : ""}
                   </Text>
                 </View>
                 <Pressable
@@ -239,8 +239,8 @@ export default function CarpetaDetailScreen() {
       {/* Naming modals */}
       <NamingModal
         visible={nombrePlaylistVisible}
-        title="Ponle un nombre a tu playlist"
-        defaultName={`Mi Playlist n.° ${allPlaylists.length + 1}`}
+        title="Ponle un nombre a tu ritual"
+        defaultName={`Mi Ritual n.° ${allPlaylists.length + 1}`}
         onClose={() => setNombrePlaylistVisible(false)}
         onCreate={handleCreatePlaylist}
       />
@@ -262,8 +262,8 @@ function AddSheet({
   const insets = useSafeAreaInsets();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
   const ITEMS = [
-    { icon: "music" as const,  title: "Playlist",  sub: "Crea una playlist con canciones o episodios", onPress: onPlaylist },
-    { icon: "folder" as const, title: "Carpeta",   sub: "Organiza tus playlists", onPress: onCarpeta },
+    { icon: "music" as const,  title: "Ritual",  sub: "Crea un ritual con canciones o episodios", onPress: onPlaylist },
+    { icon: "folder" as const, title: "Carpeta",   sub: "Organiza tus rituales", onPress: onCarpeta },
   ];
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose} statusBarTranslucent>

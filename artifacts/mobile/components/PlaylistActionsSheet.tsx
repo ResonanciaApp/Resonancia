@@ -99,8 +99,8 @@ export function PlaylistActionsSheet({ itemId, itemKind, visible, onClose }: Pro
   const folderCount = folder?.playlistIds?.length ?? 0;
   const subtitle =
     itemKind === "playlist"
-      ? "Playlist · Casa del Cuenco"
-      : `Carpeta · ${folderCount === 0 ? "Vacía" : `${folderCount} playlist${folderCount !== 1 ? "s" : ""}`}`;
+      ? "Ritual · Casa del Cuenco"
+      : `Carpeta · ${folderCount === 0 ? "Vacía" : `${folderCount} ritual${folderCount !== 1 ? "es" : ""}`}`;
 
   const handlePin = () => {
     if (itemKind === "playlist") togglePinPlaylist(itemId);

@@ -254,7 +254,7 @@ function SessionQuickSheet({ session, onClose, onPlaylist, isFavorite, onToggleF
         <View style={styles.qsDivider} />
         <Pressable onPress={onPlaylist} style={({pressed})=>[styles.qsRow,styles.qsRowBorder,{opacity:pressed?0.7:1}]}>
           <Feather name="list" size={20} color={TEXT} style={styles.qsIcon} />
-          <Text style={styles.qsLabel}>Agregar a una Playlist</Text>
+          <Text style={styles.qsLabel}>Agregar a un Ritual</Text>
           <Feather name="chevron-right" size={16} color={MUTED} />
         </Pressable>
         <Pressable onPress={()=>{ onToggleFavorite(session.id); onClose(); }} style={({pressed})=>[styles.qsRow,{opacity:pressed?0.7:1}]}>

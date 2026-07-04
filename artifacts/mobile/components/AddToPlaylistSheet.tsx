@@ -80,7 +80,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
                 <Feather name="x" size={22} color={colors.foreground} />
               </Pressable>
               <Text style={[styles.topTitle, { color: colors.foreground }]}>
-                Seleccionar una Playlist
+                Seleccionar un Ritual
               </Text>
               <View style={styles.iconBtn} />
             </View>
@@ -98,10 +98,10 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
                     <Feather name="list" size={36} color={colors.primary} />
                   </View>
                   <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
-                    Todavía no tenés ninguna playlist
+                    Todavía no tenés ningún ritual
                   </Text>
                   <Text style={[styles.emptySubtitle, { color: colors.mutedForeground }]}>
-                    Crea tu primera playlist para organizar y reproducir sesiones en secuencia.
+                    Crea tu primer ritual para organizar y reproducir sesiones en secuencia.
                   </Text>
                 </View>
               ) : (
@@ -150,7 +150,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
                   <Feather name="plus" size={18} color="#1B060F" />
                 </View>
                 <Text style={[styles.createLabel, { color: colors.foreground }]}>
-                  Crear una Playlist
+                  Crear un Ritual
                 </Text>
               </Pressable>
             </View>
@@ -165,7 +165,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
                 <Feather name="arrow-left" size={22} color={colors.foreground} />
               </Pressable>
               <Text style={[styles.topTitle, { color: colors.foreground }]}>
-                Nombre de la Playlist
+                Nombre del Ritual
               </Text>
               <Pressable onPress={handleClose} style={styles.iconBtn}>
                 <Feather name="x" size={22} color={colors.mutedForeground} />
@@ -189,7 +189,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
             />
 
             <Text style={[styles.inputHint, { color: colors.mutedForeground }]}>
-              Las playlists se reproducen en secuencia automáticamente, una sesión tras otra.
+              Los rituales se reproducen en secuencia automáticamente, una sesión tras otra.
             </Text>
 
             <Pressable
@@ -205,7 +205,7 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
             >
               {newName.trim() ? <GoldGradientFill /> : null}
               <Text style={[styles.createBtnLabel, { color: "#1B060F" }]}>
-                Crear Playlist
+                Crear Ritual
               </Text>
             </Pressable>
           </View>

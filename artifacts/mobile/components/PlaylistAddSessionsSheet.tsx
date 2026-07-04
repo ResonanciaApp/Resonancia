@@ -457,7 +457,7 @@ export function PlaylistAddSessionsSheet({
         {/* Header — título centrado */}
         <View style={styles.headerRow}>
           <View style={styles.headerSpacer} />
-          <Text style={styles.headerTitle}>Agregar a una Playlist</Text>
+          <Text style={styles.headerTitle}>Agregar a un Ritual</Text>
           <Pressable onPress={onClose} hitSlop={12} style={styles.headerClose}>
             <Feather name="x" size={20} color={MUTED} />
           </Pressable>

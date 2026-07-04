@@ -62,7 +62,7 @@ type SortMode = "recientes" | "agregado" | "alfabetico";
 type ViewMode = "list" | "grid";
 
 const LIB_TABS: { id: LibTab; label: string }[] = [
-  { id: "playlists",   label: "Playlist" },
+  { id: "playlists",   label: "Rituales" },
   { id: "mezclas",     label: "Mezclas" },
   { id: "favoritos",   label: "Favoritos" },
   { id: "resonadores", label: "Resonadores" },
@@ -325,7 +325,7 @@ function UserPlaylistRow({ pl, onPress, onLongPress }: { pl: UserPlaylist; onPre
           <Text style={styles.rowTitle} numberOfLines={1}>{pl.name}</Text>
           {pl.pinned && <Feather name="bookmark" size={12} color={GOLD} />}
         </View>
-        <Text style={styles.rowSub} numberOfLines={1}>Playlist · Casa del Cuenco</Text>
+        <Text style={styles.rowSub} numberOfLines={1}>Ritual · Casa del Cuenco</Text>
       </View>
     </Pressable>
   );
@@ -496,7 +496,7 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
                     <Feather name="list" size={28} color={GOLD} />
                   </View>
                 );
-                cat   = "Playlist";
+                cat   = "Ritual";
                 title = p.name;
                 sub   = `${p.sessionIds.length} sesión${p.sessionIds.length !== 1 ? "es" : ""}`;
               } else {
@@ -613,7 +613,7 @@ function NombrePlaylistModal({ visible, onClose }: { visible: boolean; onClose: 
   const [name, setName] = useState("");
   const inputRef = useRef<TextInput>(null);
 
-  const suggestedName = `Mi Playlist n.° ${playlists.length + 1}`;
+  const suggestedName = `Mi Ritual n.° ${playlists.length + 1}`;
 
   useEffect(() => {
     if (visible) setName(suggestedName);
@@ -810,10 +810,10 @@ function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGo
   onGoMezclas: () => void;
 }) {
   const ITEMS = [
-    { icon: "list" as const,     title: "Crear una Playlist",     sub: "Crea una playlist con sesiones",        onPress: () => { onClose(); onCreatePlaylist(); } },
+    { icon: "list" as const,     title: "Crear un Ritual",        sub: "Crea un ritual con sesiones",           onPress: () => { onClose(); onCreatePlaylist(); } },
     { icon: "sliders" as const,  title: "Crea tus mezclas",       sub: "Crea una mezcla de sonidos relajantes", onPress: () => { onClose(); onGoMezclas(); } },
     { icon: "hexagon" as const,  title: "Crea tus Geometrix",     sub: "Crea y anima tus geometrías sagradas",  onPress: () => { onClose(); router.push("/geometrix" as never); } },
-    { icon: "folder" as const,   title: "Carpetas",               sub: "Organiza tus Playlist",                 onPress: () => { onClose(); onCreateCarpeta(); } },
+    { icon: "folder" as const,   title: "Carpetas",               sub: "Organiza tus Rituales",                 onPress: () => { onClose(); onCreateCarpeta(); } },
   ];
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
@@ -1170,7 +1170,7 @@ export default function BibliotecaScreen() {
             <View style={styles.addResonadorIcon}>
               <Feather name="music" size={24} color="#BE8744" />
             </View>
-            <Text style={styles.addResonadorLabel}>Crear una Playlist</Text>
+            <Text style={styles.addResonadorLabel}>Crear un Ritual</Text>
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
@@ -1641,7 +1641,7 @@ export default function BibliotecaScreen() {
         {/* Fila 1: título + iconos */}
         <View style={styles.headerRow}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.headerTitle}>Tu Biblioteca</Text>
+            <Text style={styles.headerTitle}>Mi espacio</Text>
           </View>
           <GhostPill style={{ gap: 6, backgroundColor: "rgba(255,255,255,0.06)" }}>
             <Pressable hitSlop={10} onPress={() => setSearchVisible(true)} style={styles.headerIconBtn}>
