@@ -33,8 +33,8 @@ import {
 import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
 
-const ACTIVE_COLOR   = "#D4AF37";
-const INACTIVE_COLOR = "#d9d9d9";
+const ACTIVE_COLOR   = "#FFFFFF";
+const INACTIVE_COLOR = "rgba(255,255,255,0.88)";
 const GRAD_END       = "#E9C46A";
 const GHOST_PILL_BG  = "rgba(255,255,255,0.12)";
 
@@ -104,10 +104,10 @@ function TabItem({
     >
       <View style={styles.pillWrap}>
         <View style={{ width: iconSize, height: iconSize }}>
-          {makeIcon(false)}
+          {makeIcon(isFocused)}
         </View>
         <View style={styles.labelWrap}>
-          <Text style={[styles.label, { color: INACTIVE_COLOR }]} numberOfLines={1}>
+          <Text style={[styles.label, { color: isFocused ? ACTIVE_COLOR : INACTIVE_COLOR }]} numberOfLines={1}>
             {conf.label}
           </Text>
         </View>
