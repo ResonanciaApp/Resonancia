@@ -37,6 +37,9 @@ const MAIN_ITEMS: MenuItem[] = [
   { label: "Diario",        icon: "book-open", route: "/diario" },
   { label: "Amigos",        icon: "users",     route: "/amigos" },
   { label: "Grupos",        icon: "globe",     route: "/grupos" },
+  // "Reflexiones" = frases/sabiduría de maestros (feature independiente del Diario,
+  // NO es la categoría de sesiones "Reflexiones" eliminada en la reestructuración
+  // de categorías — ver app/reflexiones.tsx / data/quotes.ts).
   { label: "Reflexiones",   icon: "feather",   route: "/reflexiones" },
   { label: "Equipo",        icon: "users",     route: "/(tabs)/resonadores" },
 ];
