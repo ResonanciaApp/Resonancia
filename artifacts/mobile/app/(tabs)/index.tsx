@@ -84,6 +84,16 @@ const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 1.85);
 
 const SECTION_GAP = 60;
 const TEMA_GAP = 10;
+const DUR_PILL_W = Math.round((width - GRID_PAD * 2 - 6 * 4) / 4.3);
+
+const DURATION_SLOTS = [
+  { label: "5 min",   min: 0,  max: 5  },
+  { label: "10 min",  min: 6,  max: 10 },
+  { label: "20 min",  min: 11, max: 25 },
+  { label: "30 min",  min: 26, max: 35 },
+  { label: "60 min",  min: 36, max: Infinity },
+] as const;
+type DurSlot = (typeof DURATION_SLOTS)[number]["label"];
 const TEMA3_W = Math.floor((width - GRID_PAD * 2 - TEMA_GAP * 2) / 3);
 
 /** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
@@ -336,6 +346,19 @@ export default function HomeScreen2() {
     else if (!anc && med) setActiveFilter(["meditaciones-guiadas"]);
     else              setActiveFilter(NAV_TABS[1].cats);
   };
+
+  // ¿Cuánto tiempo tienes hoy?
+  const [selectedDur, setSelectedDur] = useState<DurSlot | null>(null);
+  const [durSort, setDurSort] = useState<"recientes" | "populares">("recientes");
+  const durationSessions = React.useMemo(() => {
+    if (!selectedDur) return [];
+    const slot = DURATION_SLOTS.find((s) => s.label === selectedDur)!;
+    const list = SESSIONS.filter((s) => s.duration >= slot.min && s.duration <= slot.max);
+    if (durSort === "recientes") {
+      return [...list].sort((a, b) => parseInt(b.id) - parseInt(a.id));
+    }
+    return list;
+  }, [selectedDur, durSort]);
 
   // Sesiones para "Recomendado para ti" / "Para tu estado de ánimo"
   const RECO_CATS = ["meditaciones-guiadas", "reflexiones", "sonidos-ancestrales", "musica-sonidos"];
@@ -655,6 +678,81 @@ export default function HomeScreen2() {
             </Pressable>
           </View>
         )}
+
+        {/* ── ¿Cuánto tiempo tienes hoy? ── */}
+        <View style={[styles.durSection, { marginTop: 0, marginBottom: SECTION_GAP }]}>
+          <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>
+            ¿Cuánto tiempo tienes hoy?
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.durPillRow}
+          >
+            {DURATION_SLOTS.map((slot) => {
+              const sel = selectedDur === slot.label;
+              return (
+                <Pressable
+                  key={slot.label}
+                  onPress={() => setSelectedDur(sel ? null : slot.label)}
+                  style={({ pressed }) => [
+                    styles.durPill,
+                    sel && styles.durPillActive,
+                    { opacity: pressed ? 0.75 : 1 },
+                  ]}
+                >
+                  {sel && (
+                    <LinearGradient
+                      colors={["#D6A45C", "#BE8744"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 0, y: 1 }}
+                      style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+                    />
+                  )}
+                  <Text
+                    style={[styles.durPillText, sel && styles.durPillTextActive]}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.7}
+                  >
+                    {slot.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+
+          {selectedDur && (
+            <View style={styles.durResults}>
+              {/* Filtro de orden */}
+              <View style={styles.durSortRow}>
+                <Pressable onPress={() => setDurSort("recientes")}>
+                  <Text style={[styles.durSortOption, durSort === "recientes" && styles.durSortActive]}>
+                    Recientes
+                  </Text>
+                </Pressable>
+                <Text style={styles.durSortSep}>·</Text>
+                <Pressable onPress={() => setDurSort("populares")}>
+                  <Text style={[styles.durSortOption, durSort === "populares" && styles.durSortActive]}>
+                    Más escuchadas
+                  </Text>
+                </Pressable>
+              </View>
+              {durationSessions.length === 0 ? (
+                <Text style={[styles.durEmpty, { color: "#c2c2c2" }]}>
+                  Sin sesiones para este rango
+                </Text>
+              ) : (
+                durationSessions.map((s, i) => (
+                  <React.Fragment key={s.id}>
+                    {i > 0 && <View style={styles.recoDivider} />}
+                    <SessionCard session={s} horizontal />
+                  </React.Fragment>
+                ))
+              )}
+            </View>
+          )}
+        </View>
 
         {/* ── Explorar todo (TEMAS 6×2) ── */}
         <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
@@ -1219,6 +1317,78 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
     lineHeight: 17,
+  },
+
+  // ¿Cuánto tiempo tienes hoy?
+  durSection: {
+    paddingHorizontal: GRID_PAD,
+    marginBottom: SECTION_GAP,
+  },
+  durPillRow: {
+    flexDirection: "row",
+    paddingHorizontal: 0,
+    paddingRight: DUR_PILL_W * 0.3,
+    gap: 6,
+    paddingBottom: 2,
+  },
+  durPill: {
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    minWidth: 76,
+    height: 38,
+    backgroundColor: "rgba(255,255,255,0.055)",
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  durPillActive: {
+    borderColor: "transparent",
+  },
+  durPillText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#e8e8e8",
+    letterSpacing: 0.2,
+  },
+  durPillTextActive: {
+    color: "#1B060F",
+  },
+  durResults: {
+    marginTop: 16,
+    marginHorizontal: GRID_PAD,
+    gap: 6,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderRadius: 15,
+    padding: 12,
+  },
+  durSortRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 10,
+  },
+  durSortOption: {
+    fontSize: 13,
+    fontWeight: "500",
+    color: "#c2c2c2",
+  },
+  durSortActive: {
+    color: "#BE8744",
+    fontWeight: "700",
+  },
+  durSortSep: {
+    fontSize: 13,
+    color: "#c2c2c2",
+  },
+  durEmpty: {
+    fontSize: 13,
+    textAlign: "center",
+    paddingVertical: 16,
+  },
+  recoDivider: {
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.07)",
+    marginHorizontal: 4,
   },
 
   // Categories — 2×2 grid cards
