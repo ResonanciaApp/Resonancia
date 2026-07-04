@@ -1,6 +1,6 @@
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import Svg, { Defs, LinearGradient as SvgLinearGradient, Rect, Stop } from "react-native-svg";
+import Svg, { Defs, LinearGradient as SvgLinearGradient, Path, Stop } from "react-native-svg";
 import { Image as ExpoImage } from "expo-image";
 import { Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
@@ -235,6 +235,22 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           const bw = Dimensions.get("window").width - PILL_MARGIN_H * 2;
           const bh = PILL_H;
           const r  = bh / 2 - 4.5;
+          const x0 = sw / 2;
+          const y0 = sw / 2;
+          const x1 = bw - sw / 2;
+          const y1 = bh - sw / 2;
+          const bulge = 1.5;
+          const d =
+            `M ${x0 + r} ${y0} ` +
+            `Q ${(x0 + r + x1 - r) / 2} ${y0 - bulge} ${x1 - r} ${y0} ` +
+            `A ${r} ${r} 0 0 1 ${x1} ${y0 + r} ` +
+            `L ${x1} ${y1 - r} ` +
+            `A ${r} ${r} 0 0 1 ${x1 - r} ${y1} ` +
+            `Q ${(x1 - r + x0 + r) / 2} ${y1 + bulge} ${x0 + r} ${y1} ` +
+            `A ${r} ${r} 0 0 1 ${x0} ${y1 - r} ` +
+            `L ${x0} ${y0 + r} ` +
+            `A ${r} ${r} 0 0 1 ${x0 + r} ${y0} ` +
+            `Z`;
           return (
             <Svg width={bw} height={bh} style={StyleSheet.absoluteFill} pointerEvents="none">
               <Defs>
@@ -249,10 +265,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                   <Stop offset="1"    stopColor="#FFFFFF" stopOpacity={0}    />
                 </SvgLinearGradient>
               </Defs>
-              <Rect x={sw/2} y={sw/2} width={bw - sw} height={bh - sw} rx={r} ry={r}
-                fill="none" stroke="url(#tabBorderA)" strokeWidth={sw} />
-              <Rect x={sw/2} y={sw/2} width={bw - sw} height={bh - sw} rx={r} ry={r}
-                fill="none" stroke="url(#tabBorderB)" strokeWidth={sw} />
+              <Path d={d} fill="none" stroke="url(#tabBorderA)" strokeWidth={sw} />
+              <Path d={d} fill="none" stroke="url(#tabBorderB)" strokeWidth={sw} />
             </Svg>
           );
         })()}
