@@ -11,7 +11,14 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { usersTable } from "./users";
 
-export const SHARED_MIX_CATEGORIES = ["dormir", "trabajar", "motivarme", "concentracion"] as const;
+export const SHARED_MIX_CATEGORIES = [
+  "dormir",
+  "trabajar",
+  "motivarme",
+  "concentracion",
+  "paz_interior",
+  "magico",
+] as const;
 export type SharedMixCategory = (typeof SHARED_MIX_CATEGORIES)[number];
 
 export type SharedMixSound = { id: string; volume: number };

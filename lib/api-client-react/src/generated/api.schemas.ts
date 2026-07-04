@@ -147,6 +147,8 @@ export const SharedMixCategory = {
   trabajar: 'trabajar',
   motivarme: 'motivarme',
   concentracion: 'concentracion',
+  paz_interior: 'paz_interior',
+  magico: 'magico',
 } as const;
 
 export type UserProfileRole = typeof UserProfileRole[keyof typeof UserProfileRole];
@@ -204,6 +206,8 @@ export const SharedMixInputCategory = {
   trabajar: 'trabajar',
   motivarme: 'motivarme',
   concentracion: 'concentracion',
+  paz_interior: 'paz_interior',
+  magico: 'magico',
 } as const;
 
 export interface SharedMixInput {
@@ -302,6 +306,8 @@ export const AdminMixCategory = {
   trabajar: 'trabajar',
   motivarme: 'motivarme',
   concentracion: 'concentracion',
+  paz_interior: 'paz_interior',
+  magico: 'magico',
 } as const;
 
 export interface AdminMix {
@@ -1750,6 +1756,8 @@ export const GetSharedMixesCategory = {
   trabajar: 'trabajar',
   motivarme: 'motivarme',
   concentracion: 'concentracion',
+  paz_interior: 'paz_interior',
+  magico: 'magico',
 } as const;
 
 export type GetSharedGlyphsParams = {

@@ -31,7 +31,14 @@ const MAX_MIXES_PER_USER = 20;
 // Reportes (de distintos usuarios) que ocultan automáticamente una mezcla.
 const REPORT_HIDE_THRESHOLD = 3;
 
-const CATEGORIES = ["dormir", "trabajar", "motivarme", "concentracion"] as const;
+const CATEGORIES = [
+  "dormir",
+  "trabajar",
+  "motivarme",
+  "concentracion",
+  "paz_interior",
+  "magico",
+] as const;
 type Category = (typeof CATEGORIES)[number];
 
 function toProfile(u: User) {

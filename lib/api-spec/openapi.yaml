@@ -118,7 +118,7 @@ paths:
           in: query
           schema:
             type: string
-            enum: [dormir, trabajar, motivarme, concentracion]
+            enum: [dormir, trabajar, motivarme, concentracion, paz_interior, magico]
         - name: author
           in: query
           description: Filtra las mezclas por id de autor (perfil del creador)
@@ -3340,7 +3340,7 @@ components:
           type: ["string", "null"]
         category:
           type: string
-          enum: [dormir, trabajar, motivarme, concentracion]
+          enum: [dormir, trabajar, motivarme, concentracion, paz_interior, magico]
         sounds:
           type: array
           items:
@@ -3389,7 +3389,7 @@ components:
           maxLength: 60
         category:
           type: string
-          enum: [dormir, trabajar, motivarme, concentracion]
+          enum: [dormir, trabajar, motivarme, concentracion, paz_interior, magico]
         sounds:
           type: array
           minItems: 2
@@ -3504,7 +3504,7 @@ components:
           type: ["string", "null"]
         category:
           type: string
-          enum: [dormir, trabajar, motivarme, concentracion]
+          enum: [dormir, trabajar, motivarme, concentracion, paz_interior, magico]
         sounds:
           type: array
           items:
