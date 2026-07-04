@@ -536,7 +536,7 @@ const styles = StyleSheet.create({
     height: 57,
     // left = ROW_H_PAD(6) + (tabWidth - pillWidth)/2 = 6 + (-3/2) ≈ 5
     left: 5,
-    borderRadius: 999,
+    borderRadius: 800,
     backgroundColor: GHOST_PILL_BG,
   },
   mezcladorHandle: {
