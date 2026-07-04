@@ -1,4 +1,4 @@
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts/cinzel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
@@ -48,6 +48,7 @@ import { getSoundImage } from "@/config/sound-images";
 import { usePlayer } from "@/context/PlayerContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { CATEGORIES } from "@/data/categories";
+import { TEMAS } from "@/data/temas";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/data/sessions";
 import { getMoodById, type Mood, type MoodId } from "@/data/moods";
@@ -82,6 +83,18 @@ const VIDEO_REG_W = 200;
 const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 1.85);
 
 const SECTION_GAP = 60;
+const TEMA_GAP = 10;
+const TEMA3_W = Math.floor((width - GRID_PAD * 2 - TEMA_GAP * 2) / 3);
+
+/** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
+function hexTint(hex: string, alpha: number): string {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  if (isNaN(r) || isNaN(g) || isNaN(b)) return `rgba(74,12,12,0.08)`;
+  return `rgba(${r},${g},${b},${alpha})`;
+}
 
 const RITUAL_CARD_W = Math.round(width * 0.74);
 const RITUAL_IMG_H  = Math.round(RITUAL_CARD_W * (9 / 16));
@@ -643,6 +656,45 @@ export default function HomeScreen2() {
           </View>
         )}
 
+        {/* ── Explorar todo (TEMAS 6×2) ── */}
+        <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
+          <View style={styles.sectionRow}>
+            <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Explorar todo</Text>
+          </View>
+          <View style={[styles.temaGrid, { marginTop: 0 }]}>
+            {TEMAS.map((t) => (
+              <Pressable
+                key={t.id}
+                onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
+                style={({ pressed }) => [
+                  styles.temaCell,
+                  {
+                    width: TEMA3_W,
+                    height: TEMA3_W,
+                    backgroundColor: pressed
+                      ? hexTint(t.color, 0.22)
+                      : "rgba(255,255,255,0.055)",
+                    borderRadius: 11,
+                  },
+                ]}
+              >
+                {t.image != null ? (
+                  <ExpoImage
+                    source={t.image}
+                    style={styles.temaCellIcon}
+                    contentFit="contain"
+                  />
+                ) : (
+                  <MaterialCommunityIcons name={t.icon} size={28} color={t.color} />
+                )}
+                <Text style={[styles.temaCellLabel, { color: "#e8e8e8" }]} numberOfLines={2}>
+                  {t.label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+
         {/* ── ESCUCHADAS RECIENTEMENTE ── */}
         <SessionCarousel
           title="Escuchadas recientemente"
@@ -1141,6 +1193,33 @@ const styles = StyleSheet.create({
   },
   sectionTitle: { fontSize: 20, fontWeight: "600", letterSpacing: 0.3, marginBottom: 24, color: "#e8e8e8" },
   verTodasLink: { fontSize: 13, fontWeight: "400" },
+
+  // Explorar todo — grid 2 columnas, icono arriba + texto centrado
+  temaGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: TEMA_GAP,
+    marginTop: 2,
+  },
+  temaCell: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    borderRadius: 15,
+    paddingHorizontal: 8,
+    paddingVertical: 12,
+  },
+  temaCellIcon: {
+    width: 28,
+    height: 28,
+  },
+  temaCellLabel: {
+    fontSize: 13,
+    fontWeight: "600",
+    textAlign: "center",
+    lineHeight: 17,
+  },
 
   // Categories — 2×2 grid cards
   coleccionGrid: {
