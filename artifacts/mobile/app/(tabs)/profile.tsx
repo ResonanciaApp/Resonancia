@@ -1310,7 +1310,7 @@ const styles = StyleSheet.create({
   // ── Sticky header (Panel/Biblioteca/Historial/Registros) ──────────────────
   stickyHeader: {
     zIndex: 10,
-    backgroundColor: "#340D1A",
+    backgroundColor: "transparent",
   },
   stickyHeaderRow: {
     flexDirection: "row",
