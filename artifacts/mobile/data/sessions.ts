@@ -327,7 +327,7 @@ export const SESSIONS: Session[] = [
       "Una meditación guiada con la voz de Casa del Cuenco acompañada de un fondo de cuencos tibetanos. Permítete soltar, respirar y volver a ti.",
     benefits: ["Calma profunda", "Presencia plena", "Conexión interior", "Relajación"],
     instruments: ["Cuencos tibetanos", "Voz guiada"],
-    image: require("@/assets/images/sessions/session-28.jpg"),
+    image: require("@/assets/images/sessions/session-66.jpg"),
     isNew: true,
     meditationTag: "Visualizaciones",
   },

@@ -2063,3 +2063,21 @@ id = "D9pXodi22kYHItYTCATuh"
 uri = "file://artifacts/mobile/assets/images/avatar-fundador.png"
 type = "image"
 title = "Avatar fundador"
+
+[[outputs]]
+id = "TS7MXvw_I-0wiPy5yGxZ-"
+uri = "file://attached_assets/stock_images/everest_peak_1.jpg"
+type = "image"
+title = "Mount Everest snow-capped peak landscape"
+
+[[outputs]]
+id = "Utccr5Ium8rgEfX5RlxC4"
+uri = "file://attached_assets/stock_images/everest_peak_2.jpg"
+type = "image"
+title = "Mount Everest snow-capped peak landscape"
+
+[[outputs]]
+id = "p_2OtEiLi3EE6urvLiBZU"
+uri = "file://attached_assets/stock_images/everest_peak_3.jpg"
+type = "image"
+title = "Mount Everest snow-capped peak landscape"
