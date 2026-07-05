@@ -430,7 +430,7 @@ function TabLayoutInner() {
         tabBar={(props) => <CustomTabBar {...props} />}
       >
         <Tabs.Screen name="index"          options={{ title: "Inicio" }} />
-        <Tabs.Screen name="inicio2"        options={{ title: "Inicio 2" }} />
+        <Tabs.Screen name="inicio2"        options={{ title: "Inicio 2", href: null }} />
         <Tabs.Screen name="musica"         options={{ title: "Creación" }} />
         <Tabs.Screen name="coleccion/[id]" options={{ href: null }} />
         <Tabs.Screen name="explore"        options={{ title: "Medita" }} />
