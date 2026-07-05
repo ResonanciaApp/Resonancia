@@ -317,7 +317,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           const sw = 0.5;
           const bw = Dimensions.get("window").width - PILL_MARGIN_H * 2;
           const bh = PILL_H;
-          const r  = bh / 2 - 4.5;
+          const r  = bh / 2 - sw / 2;
           const bulge = 4;
           const canvasH = bh + bulge * 2;
           const x0 = sw / 2;
