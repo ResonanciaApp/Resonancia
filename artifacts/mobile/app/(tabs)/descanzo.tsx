@@ -692,6 +692,8 @@ const styles = StyleSheet.create({
     paddingLeft: 32,
     paddingRight: 26,
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.03)",
     overflow: "hidden",
   },
   dormirMiniPlayerTime: {
