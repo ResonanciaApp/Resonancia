@@ -16,6 +16,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useColors } from "@/hooks/useColors";
@@ -328,7 +329,11 @@ export default function DescansoScreen() {
   const cardW = (W - H_PAD * 2 - 14) / 2;
 
   return (
-    <View style={[styles.root, { backgroundColor: "#08010E" }]}>
+    <LinearGradient
+      colors={["#09060F", "#120A18", "#1A0913", "#25090D"]}
+      locations={[0, 0.33, 0.66, 1]}
+      style={styles.root}
+    >
       <StatusBar barStyle="light-content" />
       <NightSky />
 
@@ -429,7 +434,7 @@ export default function DescansoScreen() {
         fadeVol={fadeVol}
         setFadeVol={setFadeVol}
       />
-    </View>
+    </LinearGradient>
   );
 }
 
