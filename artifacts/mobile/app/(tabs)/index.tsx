@@ -375,7 +375,7 @@ export default function HomeScreen2() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#270A14", "#190913"]} style={styles.rootGradient} />
+      <LinearGradient colors={["#2D0C17", "#190913"]} style={styles.rootGradient} />
       <StatusBar barStyle="light-content" />
 
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
