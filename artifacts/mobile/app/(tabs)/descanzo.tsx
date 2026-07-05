@@ -523,7 +523,7 @@ export default function DescansoScreen() {
                 width={cardW}
                 style={{ marginRight: 0 }}
                 showDuration={false}
-                showAuthor={false}
+                showAuthorAvatar={false}
                 overridePress={() => {
                   if (currentSession?.id === session.id) {
                     stop();

@@ -34,7 +34,7 @@ type Props = {
   thumbHeight?: number;
   thumbRadius?: number;
   showDuration?: boolean;
-  showAuthor?: boolean;
+  showAuthorAvatar?: boolean;
   pinned?: boolean;
   style?: StyleProp<ViewStyle>;
   /** Overrides the default tap behavior (navigate to /session/[id]) — e.g. play immediately in place */
@@ -54,7 +54,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthor = true, pinned = false, style, overridePress, playing = false }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, pinned = false, style, overridePress, playing = false }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -135,9 +135,11 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
         {session.title}
       </Text>
-      {showAuthor && !!authorName && (
+      {!!authorName && (
         <View style={styles.cardAuthorRow}>
-          <Image source={authorPhoto} style={styles.cardAuthorAvatar} contentFit="cover" />
+          {showAuthorAvatar && (
+            <Image source={authorPhoto} style={styles.cardAuthorAvatar} contentFit="cover" />
+          )}
           <Text style={[styles.cardAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
             {authorName}
           </Text>
