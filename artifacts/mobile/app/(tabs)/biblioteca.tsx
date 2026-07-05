@@ -1636,13 +1636,12 @@ export default function BibliotecaScreen() {
           elevation: 8,
         }]}
       >
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#230610" }]} />
-        <Image
-          source={require("@/assets/images/mi-espacio-header-bg.jpg")}
+        <LinearGradient
+          colors={["#230610", "#16040A"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
-          contentFit="cover"
         />
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.70)" }]} />
         {/* Fila 1: título + iconos */}
         <View style={styles.headerRow}>
           <View style={{ flex: 1 }}>
