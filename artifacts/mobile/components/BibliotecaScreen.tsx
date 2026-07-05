@@ -45,7 +45,6 @@ import { useFoldersPlaylists, type Playlist as UserPlaylist, type Folder as User
 import { baseOf, type GeometryId } from "@/data/geometries";
 import { gradientColors, type GeometrixCreation } from "@/data/geometrix-creations";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
-import { WeeklyStreakStrip } from "@/components/WeeklyStreakStrip";
 import { PlaylistActionsSheet } from "@/components/PlaylistActionsSheet";
 import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
 
@@ -1116,9 +1115,6 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
 
       return (
         <View style={{ gap: 15 }}>
-          {/* ── Racha semanal ── */}
-          <WeeklyStreakStrip />
-
           {/* ── Carpetas y playlists del usuario (siempre al tope en vista general) ── */}
           {hasUserContent && (
             <>
