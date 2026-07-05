@@ -104,7 +104,7 @@ export function MoodPickerSheet({ visible, onClose, onSelect }: Props) {
   );
 }
 
-const SHEET_BG = "#190913";
+const SHEET_BG = "#340D1A";
 const PRIMARY = "#BE9650";
 const FG = "#EDE1D3";
 const MUTED = "rgba(237,225,211,0.40)";

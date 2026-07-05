@@ -8,7 +8,7 @@ import React from "react";
 import { Modal, Pressable, StyleSheet, Switch, Text, View } from "react-native";
 import { BG_GRADIENTS } from "@/data/geometrix-creations";
 
-const HOME_COLORS: readonly [string, string] = ["#190913", "#190913"];
+const HOME_COLORS: readonly [string, string] = ["#340D1A", "#340D1A"];
 const GOLD = "#BE8744";
 
 interface Props {
@@ -40,7 +40,7 @@ export function SimplePersonalizeSheet({
 
       <View style={styles.sheet}>
         <LinearGradient
-          colors={["#190913", "#190913"]}
+          colors={["#340D1A", "#340D1A"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
