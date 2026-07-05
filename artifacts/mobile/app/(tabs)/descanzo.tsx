@@ -46,7 +46,7 @@ function SleepPill({
 
   const bgColor = selAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(255,255,255,0.055)", "rgba(255,255,255,0.8)"],
+    outputRange: ["rgba(255,255,255,0.055)", "#dfd5ff"],
   });
   const borderColor = selAnim.interpolate({
     inputRange: [0, 1],
