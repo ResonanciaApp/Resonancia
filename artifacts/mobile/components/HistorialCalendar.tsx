@@ -86,6 +86,65 @@ function FavoriteHeartButton({
   );
 }
 
+function DayCell({
+  d,
+  isToday,
+  isSelected,
+  color,
+  onPress,
+}: {
+  d: Date;
+  isToday: boolean;
+  isSelected: boolean;
+  color: string;
+  onPress: () => void;
+}) {
+  const scale = useRef(new Animated.Value(1)).current;
+  const showSelectedOutline = isSelected && !isToday;
+
+  const bounce = () => {
+    scale.setValue(1);
+    Animated.sequence([
+      Animated.timing(scale, {
+        toValue: 1.15,
+        duration: 120,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scale, {
+        toValue: 1,
+        friction: 3,
+        tension: 140,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const handlePress = () => {
+    onPress();
+    if (isToday || showSelectedOutline) bounce();
+  };
+
+  return (
+    <Pressable onPress={handlePress} style={styles.dayCell}>
+      <Animated.View
+        style={[
+          styles.dayCircle,
+          isToday && { backgroundColor: color },
+          showSelectedOutline && {
+            borderWidth: 1.5,
+            borderColor: color,
+          },
+          { transform: [{ scale }] },
+        ]}
+      >
+        <Text style={[styles.dayNum, { color: isToday ? "#1B060F" : color }]}>
+          {d.getDate()}
+        </Text>
+      </Animated.View>
+    </Pressable>
+  );
+}
+
 export function HistorialCalendar() {
   const colors = useColors();
   const { history, isFavorite, toggleFavorite } = usePlayer();
@@ -154,35 +213,15 @@ export function HistorialCalendar() {
           <View key={`week-${wi}`} style={styles.daysGrid}>
             {week.map((d, i) => {
               if (!d) return <View key={`empty-${wi}-${i}`} style={styles.dayCell} />;
-              const isToday = isSameDay(d, today);
-              const isSelected = isSameDay(d, selectedDate);
-              const showSelectedOutline = isSelected && !isToday;
               return (
-                <Pressable
+                <DayCell
                   key={dayKey(d)}
+                  d={d}
+                  isToday={isSameDay(d, today)}
+                  isSelected={isSameDay(d, selectedDate)}
+                  color={colors.foreground}
                   onPress={() => setSelectedDate(d)}
-                  style={styles.dayCell}
-                >
-                  <View
-                    style={[
-                      styles.dayCircle,
-                      isToday && { backgroundColor: colors.foreground },
-                      showSelectedOutline && {
-                        borderWidth: 1.5,
-                        borderColor: colors.foreground,
-                      },
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.dayNum,
-                        { color: isToday ? "#1B060F" : colors.foreground },
-                      ]}
-                    >
-                      {d.getDate()}
-                    </Text>
-                  </View>
-                </Pressable>
+                />
               );
             })}
           </View>
