@@ -409,7 +409,7 @@ export default function ExploreScreen() {
         </View>
 
             {/* ── Hero: Vuelve a ti ── */}
-            <View style={[styles.section, { marginTop: SECTION_GAP - 50, marginBottom: SECTION_GAP }]}>
+            <View style={[styles.section, { marginTop: SECTION_GAP - 50, marginBottom: 0 }]}>
               <View style={styles.introHeroContainer}>
                 <Image
                   source={require("@/assets/images/hero-vuelve-a-ti.jpg")}
