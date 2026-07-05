@@ -378,6 +378,12 @@ export default function DescansoScreen() {
   const [tabsOffsetY, setTabsOffsetY] = useState(HERO_H);
   const [headerH,     setHeaderH]     = useState(60);
   const [chipsSticky, setChipsSticky] = useState(false);
+  const tabsStickPoint = tabsOffsetY - headerH;
+  const tabsStickyAnim = scrollY.interpolate({
+    inputRange: [tabsStickPoint - 24, tabsStickPoint],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
 
   const player = useDescansoPlayer({ timerMinutes: timerMin, fadeVolume: fadeVol });
   const {
@@ -542,25 +548,33 @@ export default function DescansoScreen() {
       </View>
 
       {/* ── Tabs sticky (se pegan debajo del título) ── */}
-      {chipsSticky && (
-        <View style={[styles.stickyTabs, { top: headerH }]}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={[styles.tabGrid, { marginBottom: 18 }]}
-            contentContainerStyle={styles.tabGridContent}
-          >
-            {SLEEP_TABS.map((tab) => (
-              <SleepPill
-                key={tab.id}
-                sel={activeTab === tab.id}
-                label={tab.label}
-                onPress={() => setActiveTab(tab.id)}
-              />
-            ))}
-          </ScrollView>
-        </View>
-      )}
+      <Animated.View
+        style={[
+          styles.stickyTabs,
+          {
+            top: headerH,
+            opacity: tabsStickyAnim,
+            transform: [{ translateY: tabsStickyAnim.interpolate({ inputRange: [0, 1], outputRange: [-10, 0] }) }],
+          },
+        ]}
+        pointerEvents={chipsSticky ? "auto" : "none"}
+      >
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={[styles.tabGrid, { marginBottom: 18 }]}
+          contentContainerStyle={styles.tabGridContent}
+        >
+          {SLEEP_TABS.map((tab) => (
+            <SleepPill
+              key={tab.id}
+              sel={activeTab === tab.id}
+              label={tab.label}
+              onPress={() => setActiveTab(tab.id)}
+            />
+          ))}
+        </ScrollView>
+      </Animated.View>
 
       <NightTimerSheet
         visible={timerSheet}
