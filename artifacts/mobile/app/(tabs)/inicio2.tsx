@@ -82,7 +82,7 @@ const VIDEO_REG_W = 200;
 const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 1.85);
 
 const HEADER_HERO_HEIGHT = 335;
-const HERO_FADE_HEIGHT = 40;
+const HERO_FADE_HEIGHT = 80;
 
 const SECTION_GAP = 60;
 const TEMA_GAP = 10;
