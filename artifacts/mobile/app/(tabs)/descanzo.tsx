@@ -403,12 +403,8 @@ export default function DescansoScreen() {
       <StatusBar barStyle="light-content" />
       <NightSky />
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: topPad + 10 }}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* ── Hero ── */}
+      {/* ── Header fijo (título + tabs + Prepara tu noche) ── */}
+      <View style={{ paddingTop: topPad + 10 }}>
         <View style={styles.hero}>
           <Ionicons name="moon" size={34} color="#C4A8F5" style={styles.heroIcon} />
           <Text style={[styles.heroTitle, { color: colors.foreground }]}>Dormir</Text>
@@ -466,7 +462,13 @@ export default function DescansoScreen() {
             ) : null}
           </View>
         </Pressable>
+      </View>
 
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
+        showsVerticalScrollIndicator={false}
+      >
         {isSoundTab ? (
           <>
             {/* ── Grilla de sonidos ── */}
