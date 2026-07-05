@@ -36,6 +36,10 @@ type Props = {
   showDuration?: boolean;
   pinned?: boolean;
   style?: StyleProp<ViewStyle>;
+  /** Overrides the default tap behavior (navigate to /session/[id]) — e.g. play immediately in place */
+  overridePress?: () => void;
+  /** Shows a white border around the thumbnail to mark this as the currently loaded session */
+  playing?: boolean;
 };
 
 function LockStar() {
@@ -49,7 +53,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, pinned = false, style }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, pinned = false, style, overridePress, playing = false }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -58,6 +62,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const locked = !!session.isPremium && !isPremium;
   const handlePress = () => {
     if (locked) { router.push("/membresia" as never); return; }
+    if (overridePress) { overridePress(); return; }
     if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
     const base = destRoute ?? "/session";
     router.push(`${base}/${session.id}` as never);
@@ -117,7 +122,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         style,
       ]}
     >
-      <View style={[styles.imageContainer, { borderRadius: colors.radius - 4 }]}>
+      <View style={[styles.imageContainer, { borderRadius: colors.radius - 4 }, playing && styles.imageContainerPlaying]}>
         <Image source={session.image} style={styles.cardImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
         {locked && <LockStar />}
         <View style={styles.durationBadge}>
@@ -147,6 +152,11 @@ const styles = StyleSheet.create({
     width: "100%",
     aspectRatio: 1,
     overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "transparent",
+  },
+  imageContainerPlaying: {
+    borderColor: "#FFFFFF",
   },
   cardImage: {
     width: "100%",

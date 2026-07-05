@@ -17,6 +17,8 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
+import Svg, { Path, Rect } from "react-native-svg";
 
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useColors } from "@/hooks/useColors";
@@ -24,6 +26,7 @@ import { DESCANSO_SOUNDS } from "@/data/descanso-sounds";
 import { getSessionsByDescansoTag } from "@/data/sessions";
 import { useDescansoPlayer } from "@/hooks/useDescansoPlayer";
 import { SessionCard } from "@/components/SessionCard";
+import { usePlayer } from "@/context/PlayerContext";
 
 /* ─── Descanso tabs ─────────────────────────────────────────────────── */
 const SLEEP_TABS = [
@@ -301,6 +304,68 @@ function PlayingDot() {
   );
 }
 
+function formatMiniTime(seconds: number) {
+  const s = Math.max(0, Math.floor(seconds || 0));
+  const m = Math.floor(s / 60);
+  const r = s % 60;
+  return `${m}:${r < 10 ? "0" : ""}${r}`;
+}
+
+function DormirMiniPlayer({
+  elapsed,
+  duration,
+  isPlaying,
+  onToggle,
+}: {
+  elapsed: number;
+  duration: number;
+  isPlaying: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <View style={styles.dormirMiniPlayer}>
+      <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
+      <LinearGradient
+        colors={["rgba(255,255,255,0.13)", "rgba(255,255,255,0.03)", "transparent"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
+      <LinearGradient
+        colors={["transparent", "rgba(255,255,255,0.22)", "rgba(255,255,255,0.22)", "transparent"]}
+        locations={[0, 0.14, 0.86, 1]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={{ position: "absolute", top: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
+        pointerEvents="none"
+      />
+
+      <Text style={styles.dormirMiniPlayerTime} numberOfLines={1}>
+        {formatMiniTime(elapsed)} / {formatMiniTime(duration)}
+      </Text>
+
+      <Pressable
+        onPress={(e) => { e.stopPropagation(); onToggle(); }}
+        style={styles.dormirMiniPlayerBtn}
+        hitSlop={8}
+      >
+        <Svg width={14} height={14} viewBox="0 0 48 48">
+          {isPlaying ? (
+            <>
+              <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+              <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+            </>
+          ) : (
+            <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
+          )}
+        </Svg>
+      </Pressable>
+    </View>
+  );
+}
+
 /* ─── Pantalla ──────────────────────────────────────────────────────── */
 export default function DescansoScreen() {
   const colors    = useColors();
@@ -314,6 +379,14 @@ export default function DescansoScreen() {
   const [fadeVol,     setFadeVol]     = useState(false);
 
   const player = useDescansoPlayer({ timerMinutes: timerMin, fadeVolume: fadeVol });
+  const {
+    currentSession,
+    isPlaying: sessionIsPlaying,
+    elapsed: sessionElapsed,
+    actualDurationSeconds: sessionDuration,
+    playSession,
+    pauseResume,
+  } = usePlayer();
 
   const isSoundTab = SOUND_TAB_IDS.includes(activeTab);
   const visibleSounds = isSoundTab
@@ -383,6 +456,14 @@ export default function DescansoScreen() {
                 {timerMin} min{fadeVol ? " · fade" : ""}{isSoundTab && player.selectedId ? " · reproduciendo" : ""}
               </Text>
             </View>
+            {currentSession && (
+              <DormirMiniPlayer
+                elapsed={sessionElapsed}
+                duration={sessionDuration}
+                isPlaying={sessionIsPlaying}
+                onToggle={pauseResume}
+              />
+            )}
           </View>
         </Pressable>
 
@@ -421,6 +502,8 @@ export default function DescansoScreen() {
                 session={session}
                 width={cardW}
                 style={{ marginRight: 0 }}
+                overridePress={() => playSession(session)}
+                playing={currentSession?.id === session.id}
               />
             ))}
           </View>
@@ -609,6 +692,29 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 17,
     color: "rgba(255,255,255,0.5)",
+  },
+  dormirMiniPlayer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    height: 34,
+    paddingLeft: 12,
+    paddingRight: 6,
+    borderRadius: 15,
+    overflow: "hidden",
+  },
+  dormirMiniPlayerTime: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "rgba(255,255,255,0.85)",
+  },
+  dormirMiniPlayerBtn: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
 
   /* Sleep pills */
