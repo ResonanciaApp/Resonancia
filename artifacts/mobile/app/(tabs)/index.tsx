@@ -683,7 +683,7 @@ export default function HomeScreen2() {
         </View>
 
         {/* ── EXPLORA POR CONTENIDO ── */}
-        <View style={[styles.section, { marginTop: SECTION_GAP, marginBottom: SECTION_GAP }]}>
+        <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
           <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Explora por contenido</Text>
           <View style={{ flexDirection: "row", gap: 10 }}>
             {[
