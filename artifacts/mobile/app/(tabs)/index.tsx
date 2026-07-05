@@ -534,7 +534,6 @@ export default function HomeScreen2() {
         {/* ── 1. COLECCIONES (Rituales) ── */}
         {filteredPlaylists.length > 0 && (
         <View style={[styles.header, { marginTop: -3 }]}>
-          <Text style={styles.sectionTitle}>Rituales</Text>
 
           <View style={styles.coleccionGrid}>
               {filteredPlaylists.map((pl) => (
