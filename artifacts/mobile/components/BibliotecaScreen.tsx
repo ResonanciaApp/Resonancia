@@ -118,14 +118,12 @@ function MixRow({
 function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress: () => void }) {
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
-      {sel && (
-        <LinearGradient
-          colors={["#D6A45C", "#BE8744"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
-      )}
+      <LinearGradient
+        colors={sel ? ["#D6A45C", "#BE8744"] : ["rgba(255,255,255,0.055)", "rgba(255,255,255,0.055)"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
       <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
     </Pressable>
   );
@@ -1633,8 +1631,6 @@ export function BibliotecaScreen() {
           paddingTop: topPad + 2,
         }]}
       >
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#0B0811" }]} />
-
         {/* Fila 2: chips de tab (animados) */}
         <View style={{ marginTop: -16 }}>
           <AnimatedChipRow
@@ -1798,7 +1794,6 @@ const styles = StyleSheet.create({
   // ── Sticky header ───────────────────────────────────────────────────────────
   stickyHeader: {
     zIndex: 10,
-    backgroundColor: "#210911",
   },
   stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.025)", marginTop: 10, marginHorizontal: -15 },
   headerRow: {
