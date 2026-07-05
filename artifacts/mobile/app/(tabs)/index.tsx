@@ -56,7 +56,6 @@ import { PLAYLISTS } from "@/data/playlists";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
-import { CuencoBell } from "@/components/CuencoBell";
 import { LiveSessionCard } from "@/components/LiveSessionCard";
 import { useLiveSessions } from "@/hooks/useLiveSessions";
 import { VideoCard } from "@/components/VideoCard";
@@ -474,7 +473,6 @@ export default function HomeScreen2() {
               );
             })}
           </ScrollView>
-          <CuencoBell />
         </View>
       </View>
 
