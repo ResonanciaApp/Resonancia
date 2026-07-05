@@ -46,7 +46,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { CATEGORIES } from "@/data/categories";
 import { TEMAS } from "@/data/temas";
-import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
+import { useGetPinnedFeatured } from "@workspace/api-client-react";
 import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/data/sessions";
 import { getMoodById, type Mood, type MoodId } from "@/data/moods";
 import { getArtist } from "@/data/artists";
@@ -214,40 +214,6 @@ export default function HomeScreen2() {
   }, [pinnedFeaturedData]);
 
   const { version: catalogVersion } = useCatalog();
-  // Recientes — últimas sesiones agregadas al catálogo
-  const recentSessions = React.useMemo<Session[]>(() => {
-    return [...SESSIONS].sort((a, b) => {
-      const aNum = parseInt(a.id); const bNum = parseInt(b.id);
-      const aIsNum = !isNaN(aNum);  const bIsNum = !isNaN(bNum);
-      if (!aIsNum && bIsNum)  return -1; // usr_* (admin) primero
-      if (aIsNum  && !bIsNum) return  1;
-      if (!aIsNum && !bIsNum) {
-        const aT = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-        const bT = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-        return bT - aT;
-      }
-      return bNum - aNum;
-    }).slice(0, 10);
-  }, [catalogVersion]);
-
-  const { data: popular } = useGetPopularSessions(
-    { limit: 10 },
-    { query: { queryKey: getGetPopularSessionsQueryKey({ limit: 10 }), staleTime: 5 * 60_000 } },
-  );
-  const popularSessions = React.useMemo(
-    () =>
-      (popular?.sessions ?? [])
-        .map((s) => getSessionById(s.id))
-        .filter((s): s is NonNullable<ReturnType<typeof getSessionById>> => s != null),
-    [popular],
-  );
-
-  // Fallback cuando aún no hay plays sincronizados: sesiones destacadas
-  const popularFallback = React.useMemo<Session[]>(
-    () => SESSIONS.filter((s) => s.isFeatured).slice(0, 10),
-    [catalogVersion],
-  );
-  const usingPopularFallback = popularSessions.length === 0;
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [activeFilter, setActiveFilter] = useState<string[] | null>(null);
@@ -387,17 +353,6 @@ export default function HomeScreen2() {
     return listenedRecently.filter((s) => activeFilter.includes(s.categoryId));
   }, [listenedRecently, activeFilter]);
 
-  const filteredRecent = React.useMemo(() => {
-    if (!activeFilter) return recentSessions;
-    return recentSessions.filter((s) => activeFilter.includes(s.categoryId));
-  }, [recentSessions, activeFilter]);
-
-
-  const filteredPopular = React.useMemo(() => {
-    const base = usingPopularFallback ? popularFallback : popularSessions.slice(0, 10);
-    if (!activeFilter) return base;
-    return base.filter((s) => activeFilter.includes(s.categoryId));
-  }, [popularSessions, popularFallback, usingPopularFallback, activeFilter]);
 
   const filteredFeatured = React.useMemo(() => {
     if (!activeFilter) return featuredSession;
@@ -755,28 +710,6 @@ export default function HomeScreen2() {
             </Pressable>
           </View>
         )}
-
-        {/* ── RECIENTES ── */}
-        <SessionCarousel
-          title="Recientes"
-          sessions={filteredRecent}
-          isPremium={isPremium}
-          onPress={(s) => { if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } router.push(`/session/${s.id}` as never); }}
-          style={{ marginBottom: SECTION_GAP }}
-          titleOffset={10}
-          cardWidth={RECENT_CARD_W}
-        />
-
-        {/* ── LAS MÁS ESCUCHADAS ── */}
-        <SessionCarousel
-          title={usingPopularFallback ? "Sesiones destacadas" : "Las más escuchadas"}
-          sessions={filteredPopular}
-          isPremium={isPremium}
-          onPress={(s) => { if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } router.push(`/session/${s.id}` as never); }}
-          style={{ marginBottom: SECTION_GAP }}
-          titleOffset={10}
-          cardWidth={RECENT_CARD_W}
-        />
 
         {/* ── 5. REFLEXIÓN DE LA SEMANA ── */}
         <View style={{ marginBottom: SECTION_GAP }}>
