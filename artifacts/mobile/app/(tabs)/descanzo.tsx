@@ -545,7 +545,7 @@ export default function DescansoScreen() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={styles.tabGrid}
+            style={[styles.tabGrid, { marginBottom: 18 }]}
             contentContainerStyle={styles.tabGridContent}
           >
             {SLEEP_TABS.map((tab) => (
