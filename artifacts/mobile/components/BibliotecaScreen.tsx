@@ -1632,7 +1632,7 @@ export function BibliotecaScreen() {
         }]}
       >
         {/* Fila 2: chips de tab (animados) */}
-        <View style={{ marginTop: -16 }}>
+        <View style={{ marginTop: -31 }}>
           <AnimatedChipRow
             tabs={LIB_TABS}
             activeTab={activeTab}
