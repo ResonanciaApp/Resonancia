@@ -671,7 +671,7 @@ export default function MezcladorScreen() {
 
         {/* ── Zona superior ── */}
         <View style={styles.topPanelShadow}>
-          <View style={[styles.topPanel, { paddingTop: topPad + 2, backgroundColor: "#190913" }]}>
+          <View style={[styles.topPanel, { paddingTop: topPad + 2, backgroundColor: "#210911" }]}>
             {/* ── Header ── */}
             <View style={styles.header}>
               <View style={styles.headerRow}>
