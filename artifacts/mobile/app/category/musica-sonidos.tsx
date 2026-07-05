@@ -5,7 +5,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState, useEffect, useMemo } from "react";
 import {
-  ActivityIndicator, Animated, Easing, Keyboard, Modal, Platform,
+  ActivityIndicator, Animated, Dimensions, Easing, Keyboard, Modal, Platform,
   Pressable, ScrollView, StyleSheet, Text, TextInput, View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -18,6 +18,7 @@ import { getGuide } from "@/data/guides";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { useCatalog } from "@/context/CatalogContext";
 
+const { height: SCREEN_H } = Dimensions.get("window");
 const H_PAD = 15;
 const GOLD  = "#BE8744";
 const TEXT  = "#e8e8e8";
@@ -361,7 +362,7 @@ export default function MusicaSonidosScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={["#340D1A", "#190913"]} locations={[HERO_AREA_H / SCREEN_H, 1]} style={StyleSheet.absoluteFill} />
 
       <ScrollView
         ref={scrollRef}

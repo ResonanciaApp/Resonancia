@@ -21,7 +21,7 @@ import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { SESSIONS, type Session } from "@/data/sessions";
 
-const { width } = Dimensions.get("window");
+const { width, height: SCREEN_H } = Dimensions.get("window");
 const H_PAD = 15;
 const GOLD  = "#BE8744";
 
@@ -458,7 +458,7 @@ export default function SonidosAncestalesScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={["#340D1A", "#190913"]} locations={[HERO_H / SCREEN_H, 1]} style={StyleSheet.absoluteFill} />
       <ScrollView
         ref={scrollRef}
         style={styles.scroll}

@@ -27,7 +27,7 @@ import { TAG_CARDS } from "@/data/tags";
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
-const { width } = Dimensions.get("window");
+const { width, height: SCREEN_H } = Dimensions.get("window");
 const H_PAD = 20;
 const HERO_H = Math.round(width * 0.72);
 const CARD_W = 150;
@@ -97,6 +97,7 @@ export default function TagScreen() {
         <LinearGradient
       style={styles.root}
       colors={BG_GRADIENT}
+      locations={[HERO_H / SCREEN_H, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
