@@ -118,12 +118,14 @@ function MixRow({
 function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress: () => void }) {
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
-      <LinearGradient
-        colors={sel ? ["#D6A45C", "#BE8744"] : ["rgba(255,255,255,0.055)", "rgba(255,255,255,0.055)"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
+      {sel && (
+        <LinearGradient
+          colors={["#D6A45C", "#BE8744"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+      )}
       <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
     </Pressable>
   );
@@ -1629,11 +1631,6 @@ export function BibliotecaScreen() {
       <View
         style={[styles.stickyHeader, {
           paddingTop: topPad + 2,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.38,
-          shadowRadius: 4,
-          elevation: 8,
         }]}
       >
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "#0B0811" }]} />
