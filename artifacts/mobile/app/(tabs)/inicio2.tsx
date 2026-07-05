@@ -21,6 +21,7 @@ import {
 import RAnimated, {
   Easing,
   runOnJS,
+  useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -83,6 +84,8 @@ const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 1.85);
 
 const HEADER_HERO_HEIGHT = 335;
 const HERO_FADE_HEIGHT = 110;
+const HERO_PARALLAX_SPEED = 0.7;
+const HERO_PARALLAX_BUFFER = Math.ceil(HEADER_HERO_HEIGHT * HERO_PARALLAX_SPEED) + 10;
 
 const SECTION_GAP = 60;
 const TEMA_GAP = 10;
@@ -502,56 +505,52 @@ export default function HomeScreen2() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
+  const scrollY = useSharedValue(0);
+  const scrollHandler = useAnimatedScrollHandler((event) => {
+    scrollY.value = event.contentOffset.y;
+  });
+  const heroParallaxStyle = useAnimatedStyle(() => {
+    const capped = Math.max(0, Math.min(scrollY.value, HEADER_HERO_HEIGHT));
+    return { transform: [{ translateY: -capped * HERO_PARALLAX_SPEED }] };
+  });
+
   return (
     <View style={styles.root}>
       <LinearGradient colors={["#340D1A", "#190913"]} style={styles.rootGradient} />
       <StatusBar barStyle="light-content" />
 
-      {/* ── HERO BANNER: Everest + templo tibetano — encabezado de Inicio ── */}
+      {/* ── HERO BANNER: Everest + templo tibetano — encabezado de Inicio (estilo Calm, con parallax) ── */}
       <View style={styles.heroBannerWrap}>
-        <Image
+        <RAnimated.Image
           source={require("@/assets/images/hero-everest-temple.png")}
-          style={styles.heroBannerImage}
+          style={[styles.heroBannerImage, heroParallaxStyle]}
           resizeMode="cover"
         />
+        {/* Overlay permanente: máscara degradada que funde la foto con el fondo, nunca desaparece */}
         <LinearGradient
           colors={[
             "transparent",
-            "rgba(52,13,26,0.18)",
-            "rgba(52,13,26,0.32)",
+            "transparent",
+            "rgba(33,9,17,0.20)",
+            "rgba(33,9,17,0.55)",
+            "rgba(25,9,19,0.82)",
+            "#0B0811",
           ]}
-          locations={[0, 0.6, 1]}
+          locations={[0, 0.35, 0.5, 0.65, 0.8, 1]}
           style={styles.heroBannerFullTint}
           pointerEvents="none"
         />
       </View>
 
-      <ScrollView
+      <RAnimated.ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 12 }}
         showsVerticalScrollIndicator={false}
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
       >
-        {/* ── SPACER: deja ver el hero detrás; el fondo degradado avanza sobre él al hacer scroll ── */}
+        {/* ── SPACER: deja ver el hero detrás; el contenido comienza justo donde termina la foto ── */}
         <View style={styles.heroScrollSpacer} pointerEvents="none" />
-        {/* ── FADE que viaja con el scroll: come el borde inferior del hero de forma progresiva ── */}
-        <LinearGradient
-          colors={[
-            "transparent",
-            "rgba(52,13,26,0.009)",
-            "rgba(52,13,26,0.058)",
-            "rgba(52,13,26,0.163)",
-            "rgba(52,13,26,0.317)",
-            "rgba(52,13,26,0.5)",
-            "rgba(52,13,26,0.683)",
-            "rgba(52,13,26,0.837)",
-            "rgba(52,13,26,0.942)",
-            "rgba(52,13,26,0.991)",
-            "#340D1A",
-          ]}
-          locations={[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]}
-          style={styles.heroScrollRevealFade}
-          pointerEvents="none"
-        />
 
         {/* ── NAV-TABS: avatar + nav-tabs — ahora se desplaza con el contenido ── */}
         <View style={[styles.stickyHeader, { paddingTop: 18 }]}>
@@ -950,7 +949,7 @@ export default function HomeScreen2() {
           <PremiumBanner />
         </View>
 
-      </ScrollView>
+      </RAnimated.ScrollView>
 
       <MoodPickerSheet
         visible={moodSheetVisible}
@@ -984,15 +983,7 @@ const styles = StyleSheet.create({
   },
   heroBannerImage: {
     width: "100%",
-    height: "100%",
-    opacity: 0.94,
-  },
-  heroBannerFade: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: HERO_FADE_HEIGHT,
+    height: HEADER_HERO_HEIGHT + HERO_PARALLAX_BUFFER,
   },
   heroBannerFullTint: {
     position: "absolute",
@@ -1005,13 +996,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: HEADER_HERO_HEIGHT,
     backgroundColor: "transparent",
-  },
-  heroScrollRevealFade: {
-    position: "absolute",
-    top: HEADER_HERO_HEIGHT - HERO_FADE_HEIGHT,
-    left: 0,
-    right: 0,
-    height: HERO_FADE_HEIGHT,
   },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
