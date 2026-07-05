@@ -375,12 +375,14 @@ export default function DescansoScreen() {
         >
           <View style={styles.nightBanner}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.nightBannerTitle}>Prepara tu noche</Text>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                <Text style={styles.nightBannerTitle}>Prepara tu noche</Text>
+                <Feather name="chevron-down" size={18} color="rgba(255,255,255,0.6)" />
+              </View>
               <Text style={styles.nightBannerSub}>
                 {timerMin} min{fadeVol ? " · fade" : ""}{isSoundTab && player.selectedId ? " · reproduciendo" : ""}
               </Text>
             </View>
-            <Feather name="chevron-right" size={18} color="rgba(255,255,255,0.6)" />
           </View>
         </Pressable>
 
