@@ -553,6 +553,17 @@ export default function HomeScreen2() {
           pointerEvents="none"
         />
         <LinearGradient
+          colors={[
+            "rgba(190,150,80,0.10)",
+            "rgba(190,150,80,0.045)",
+            "rgba(190,150,80,0.015)",
+            "transparent",
+          ]}
+          locations={[0, 0.35, 0.7, 1]}
+          style={styles.scrollGlowFill}
+          pointerEvents="none"
+        />
+        <LinearGradient
           colors={["#340D1A", "#190913"]}
           style={styles.scrollBgFill}
           pointerEvents="none"
@@ -1025,6 +1036,13 @@ const styles = StyleSheet.create({
     right: 0,
     height: 6000,
   },
+  scrollGlowFill: {
+    position: "absolute",
+    top: HEADER_HERO_HEIGHT,
+    left: 0,
+    right: 0,
+    height: 260,
+  },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
     paddingBottom: 0,
@@ -1105,9 +1123,9 @@ const styles = StyleSheet.create({
   intencionWrap: {
     alignItems: "center",
     paddingHorizontal: GRID_PAD,
-    paddingVertical: 20,
-    marginTop: 7,
-    marginBottom: SECTION_GAP,
+    paddingVertical: 10,
+    marginTop: 0,
+    marginBottom: 28,
     transform: [{ translateY: 8 }],
   },
   intencionSuper: {
@@ -1152,7 +1170,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
-    marginBottom: 14,
+    marginBottom: 8,
     gap: 15,
   },
   avatarBtn: {
