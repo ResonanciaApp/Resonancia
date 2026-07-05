@@ -62,6 +62,7 @@ import { LiveSessionCard } from "@/components/LiveSessionCard";
 import { useLiveSessions } from "@/hooks/useLiveSessions";
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
+import { WeeklyStreakStrip } from "@/components/WeeklyStreakStrip";
 
 const { width } = Dimensions.get("window");
 
@@ -587,6 +588,11 @@ export default function HomeScreen2() {
             />
           </View>
         )}
+
+        {/* ── Racha semanal ── */}
+        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP }}>
+          <WeeklyStreakStrip />
+        </View>
 
         {/* ── 1. COLECCIONES (Rituales) ── */}
         {filteredPlaylists.length > 0 && (
