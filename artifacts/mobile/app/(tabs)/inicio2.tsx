@@ -559,7 +559,7 @@ export default function HomeScreen2() {
         />
 
         {/* ── NAV-TABS: avatar + nav-tabs — ahora se desplaza con el contenido ── */}
-        <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
+        <View style={[styles.stickyHeader, { paddingTop: 18 }]}>
           <View style={styles.headerTopRow}>
             <AnimatedNavTabRow
               tabs={NAV_TABS}
