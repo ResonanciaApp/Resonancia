@@ -81,7 +81,8 @@ const VIDEO_REG_W = 200;
 // 1 card completa + 25% del siguiente visible: W = (screenWidth - leftPad - gap) / 1.25
 const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 1.85);
 
-const HEADER_HERO_HEIGHT = 480;
+const HEADER_HERO_HEIGHT = 335;
+const HERO_FADE_HEIGHT = 110;
 
 const SECTION_GAP = 60;
 const TEMA_GAP = 10;
@@ -506,35 +507,69 @@ export default function HomeScreen2() {
       <LinearGradient colors={["#340D1A", "#190913"]} style={styles.rootGradient} />
       <StatusBar barStyle="light-content" />
 
+      {/* ── HERO BANNER: Everest + templo tibetano — encabezado de Inicio ── */}
+      <View style={styles.heroBannerWrap}>
+        <Image
+          source={require("@/assets/images/hero-everest-temple.png")}
+          style={styles.heroBannerImage}
+          resizeMode="cover"
+        />
+        <LinearGradient
+          colors={[
+            "transparent",
+            "rgba(52,13,26,0.18)",
+            "rgba(52,13,26,0.32)",
+          ]}
+          locations={[0, 0.6, 1]}
+          style={styles.heroBannerFullTint}
+          pointerEvents="none"
+        />
+      </View>
+
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 0 }}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 12 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── HERO BANNER: Everest + templo tibetano — vive en el flujo normal, se funde con el fondo ── */}
-        <View style={styles.heroBannerWrap}>
-          <Image
-            source={require("@/assets/images/hero-everest-temple.png")}
-            style={styles.heroBannerImage}
-            resizeMode="cover"
-          />
-          {/* Overlay: máscara degradada larga que esconde la foto dentro del fondo */}
-          <LinearGradient
-            colors={[
-              "transparent",
-              "rgba(33,9,17,0.25)",
-              "rgba(33,9,17,0.65)",
-              "rgba(25,9,19,0.90)",
-              "#190913",
-              "#0B0811",
-            ]}
-            locations={[0, 0.35, 0.5, 0.65, 0.78, 1]}
-            style={styles.heroBannerFullTint}
-            pointerEvents="none"
-          />
-        </View>
+        {/* ── SPACER: deja ver el hero detrás; el fondo degradado avanza sobre él al hacer scroll ── */}
+        <View style={styles.heroScrollSpacer} pointerEvents="none" />
+        {/* ── FADE que viaja con el scroll: come el borde inferior del hero de forma progresiva ── */}
+        <LinearGradient
+          colors={[
+            "transparent",
+            "rgba(52,13,26,0.009)",
+            "rgba(52,13,26,0.058)",
+            "rgba(52,13,26,0.163)",
+            "rgba(52,13,26,0.317)",
+            "rgba(52,13,26,0.5)",
+            "rgba(52,13,26,0.683)",
+            "rgba(52,13,26,0.837)",
+            "rgba(52,13,26,0.942)",
+            "rgba(52,13,26,0.991)",
+            "#340D1A",
+          ]}
+          locations={[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]}
+          style={styles.heroScrollRevealFade}
+          pointerEvents="none"
+        />
+        <LinearGradient
+          colors={[
+            "rgba(190,150,80,0.10)",
+            "rgba(190,150,80,0.045)",
+            "rgba(190,150,80,0.015)",
+            "transparent",
+          ]}
+          locations={[0, 0.35, 0.7, 1]}
+          style={styles.scrollGlowFill}
+          pointerEvents="none"
+        />
+        <LinearGradient
+          colors={["#340D1A", "#190913"]}
+          style={styles.scrollBgFill}
+          pointerEvents="none"
+        />
 
-        {/* ── NAV-TABS: avatar + nav-tabs — comienza recién después del hero fundido con el fondo ── */}
+        {/* ── NAV-TABS: avatar + nav-tabs — ahora se desplaza con el contenido ── */}
         <View style={[styles.stickyHeader, { paddingTop: 18 }]}>
           <View style={styles.headerTopRow}>
             <AnimatedNavTabRow
@@ -955,15 +990,58 @@ const styles = StyleSheet.create({
   heroBannerWrap: {
     width: "100%",
     height: HEADER_HERO_HEIGHT,
-    position: "relative",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
     overflow: "hidden",
     backgroundColor: "#340D1A",
+    zIndex: 0,
   },
   heroBannerImage: {
-    ...StyleSheet.absoluteFillObject,
+    width: "100%",
+    height: "100%",
+    opacity: 0.94,
+  },
+  heroBannerFade: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: HERO_FADE_HEIGHT,
   },
   heroBannerFullTint: {
-    ...StyleSheet.absoluteFillObject,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: HEADER_HERO_HEIGHT,
+  },
+  heroScrollSpacer: {
+    width: "100%",
+    height: HEADER_HERO_HEIGHT,
+    backgroundColor: "transparent",
+  },
+  heroScrollRevealFade: {
+    position: "absolute",
+    top: HEADER_HERO_HEIGHT - HERO_FADE_HEIGHT,
+    left: 0,
+    right: 0,
+    height: HERO_FADE_HEIGHT,
+  },
+  scrollBgFill: {
+    position: "absolute",
+    top: HEADER_HERO_HEIGHT,
+    left: 0,
+    right: 0,
+    height: 6000,
+  },
+  scrollGlowFill: {
+    position: "absolute",
+    top: HEADER_HERO_HEIGHT,
+    left: 0,
+    right: 0,
+    height: 260,
   },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
