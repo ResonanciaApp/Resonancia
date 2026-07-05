@@ -189,6 +189,10 @@ function AnimatedNavTabRow({
     setDisplayTab(id);
     setColorTab(id);
     onSelect(id);
+    // Fuerza una transición 0→1 completa incluso si ya había un tab
+    // seleccionado (progress ya estaba en 1): sin esto, saltar directo de
+    // un tab a otro no mostraba animación.
+    progress.setValue(0);
     animate(1);
   };
 
@@ -246,7 +250,6 @@ function AnimatedNavTabRow({
           return (
             <Animated.View
               key={t.id}
-              pointerEvents={filtered && !isSelected ? "none" : "auto"}
               onLayout={(e) => {
                 offsetsRef.current[t.id] = e.nativeEvent.layout.x;
               }}
