@@ -514,11 +514,6 @@ export default function HomeScreen2() {
           style={styles.heroBannerImage}
           resizeMode="cover"
         />
-        <LinearGradient
-          colors={["transparent", "#340D1A"]}
-          style={styles.heroBannerFade}
-          pointerEvents="none"
-        />
       </View>
 
       <ScrollView
