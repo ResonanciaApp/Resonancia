@@ -14,7 +14,6 @@ import {
   Animated,
   Easing,
   KeyboardAvoidingView,
-  LayoutChangeEvent,
   Linking,
   Modal,
   Platform,
@@ -138,41 +137,6 @@ const REGISTROS_ITEMS: { label: string; route: string; icon: keyof typeof Feathe
   { label: "Grupos",       route: "/grupos",       icon: "users" },
   { label: "Mis Sesiones", route: "/mis-sesiones", icon: "calendar" },
 ];
-
-// ── Tab de línea subrayada (Perfil): crossfade suave de color al seleccionar ──
-function PerfilTabLabel({
-  label,
-  sel,
-  onPress,
-  onLayout,
-}: {
-  label: string;
-  sel: boolean;
-  onPress: () => void;
-  onLayout: (e: LayoutChangeEvent) => void;
-}) {
-  const selOpacity = useRef(new Animated.Value(sel ? 1 : 0)).current;
-  useEffect(() => {
-    Animated.timing(selOpacity, {
-      toValue: sel ? 1 : 0,
-      duration: 420,
-      easing: Easing.inOut(Easing.cubic),
-      useNativeDriver: true,
-    }).start();
-  }, [sel]);
-  return (
-    <Pressable onPress={onPress} onLayout={onLayout} hitSlop={8} style={styles.underlineTabBtn}>
-      <View>
-        <Text style={styles.underlineTabText}>{label}</Text>
-        <Animated.Text
-          style={[styles.underlineTabText, styles.underlineTabTextSel, { opacity: selOpacity }]}
-        >
-          {label}
-        </Animated.Text>
-      </View>
-    </Pressable>
-  );
-}
 
 
 // ── BgGlyph: renderiza una capa de geometría animada en el fondo del perfil ─
@@ -314,32 +278,6 @@ export default function ProfileScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const [perfilTab, setPerfilTab] = useState<PerfilTab>("panel");
-
-  // ── Indicador subrayado animado (tabs de Perfil) ──────────────────────────
-  const perfilOffsets = useRef<Record<string, { x: number; width: number }>>({}).current;
-  const perfilIndicatorInit = useRef(false);
-  const perfilIndicatorX = useRef(new Animated.Value(0)).current;
-  const perfilIndicatorW = useRef(new Animated.Value(0)).current;
-
-  const selectPerfilTab = (id: PerfilTab) => {
-    setPerfilTab(id);
-    const m = perfilOffsets[id];
-    if (!m) return;
-    Animated.parallel([
-      Animated.timing(perfilIndicatorX, {
-        toValue: m.x,
-        duration: 500,
-        easing: Easing.inOut(Easing.cubic),
-        useNativeDriver: false,
-      }),
-      Animated.timing(perfilIndicatorW, {
-        toValue: m.width,
-        duration: 500,
-        easing: Easing.inOut(Easing.cubic),
-        useNativeDriver: false,
-      }),
-    ]).start();
-  };
 
   const { width } = useWindowDimensions();
 
@@ -824,31 +762,19 @@ export default function ProfileScreen() {
           <View style={styles.gearBtn} />
         </View>
 
-        <View style={styles.underlineTabRow}>
-          {PERFIL_TABS.map((t) => (
-            <PerfilTabLabel
-              key={t.id}
-              label={t.label}
-              sel={perfilTab === t.id}
-              onPress={() => selectPerfilTab(t.id)}
-              onLayout={(e) => {
-                const { x, width } = e.nativeEvent.layout;
-                perfilOffsets.current[t.id] = { x, width };
-                if (t.id === perfilTab && !perfilIndicatorInit.current) {
-                  perfilIndicatorX.setValue(x);
-                  perfilIndicatorW.setValue(width);
-                  perfilIndicatorInit.current = true;
-                }
-              }}
-            />
-          ))}
-          <Animated.View
-            pointerEvents="none"
-            style={[
-              styles.underlineBar,
-              { left: perfilIndicatorX, width: perfilIndicatorW },
-            ]}
-          />
+        <View style={styles.pillRow}>
+          {PERFIL_TABS.map((t) => {
+            const sel = perfilTab === t.id;
+            return (
+              <Pressable
+                key={t.id}
+                onPress={() => setPerfilTab(t.id)}
+                style={({ pressed }) => [styles.pill, sel && styles.pillSel, { opacity: pressed ? 0.8 : 1 }]}
+              >
+                <Text style={[styles.pillText, sel && styles.pillTextSel]}>{t.label}</Text>
+              </Pressable>
+            );
+          })}
         </View>
       </View>
 
@@ -1402,31 +1328,27 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.06)",
   },
   stickyTitle: { fontSize: 18, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3 },
-  underlineTabRow: {
+  pillRow: {
     flexDirection: "row",
-    gap: 22,
+    gap: 8,
     paddingHorizontal: 15,
     paddingBottom: 14,
     marginTop: 10,
-    position: "relative",
   },
-  underlineTabBtn: {
-    paddingBottom: 8,
+  pill: {
+    paddingHorizontal: 15,
+    paddingVertical: 9,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(244,218,213,0.2)",
+    backgroundColor: "rgba(255,255,255,0.05)",
   },
-  underlineTabText: { fontSize: 12, fontWeight: "600", color: "rgba(244,218,213,0.45)" },
-  underlineTabTextSel: {
-    position: "absolute",
-    left: 0,
-    top: 0,
-    color: "#E9C46A",
+  pillSel: {
+    backgroundColor: "#F4F4F4",
+    borderColor: "#F4F4F4",
   },
-  underlineBar: {
-    position: "absolute",
-    bottom: 0,
-    height: 2,
-    borderRadius: 1,
-    backgroundColor: "#E9C46A",
-  },
+  pillText: { fontSize: 11, fontWeight: "600", color: "#F4F4F4" },
+  pillTextSel: { color: "#1B060F" },
 
   comingSoonWrap: {
     flex: 1,
