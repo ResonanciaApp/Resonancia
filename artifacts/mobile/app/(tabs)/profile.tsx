@@ -135,7 +135,7 @@ const BG_GRADIENT = ["#230610", "#16040A"] as const;
 type PerfilTab = "panel" | "biblioteca" | "historial" | "registros";
 
 const PERFIL_TABS: { id: PerfilTab; label: string }[] = [
-  { id: "panel",       label: "Panel" },
+  { id: "panel",       label: "Muro" },
   { id: "biblioteca",  label: "Biblioteca" },
   { id: "historial",   label: "Historial" },
   { id: "registros",   label: "Registros" },
