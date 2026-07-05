@@ -769,15 +769,14 @@ const styles = StyleSheet.create({
   // Hero: Vuelve a ti
   introHeroContainer: {
     width: "100%",
-    height: HERO_HEIGHT,
+    aspectRatio: 1536 / 1024,
     borderRadius: 15,
     overflow: "hidden",
-    justifyContent: "flex-end",
+    justifyContent: "center",
   },
   introHeroImage: { ...StyleSheet.absoluteFillObject },
   introHeroTextWrap: {
     paddingHorizontal: 20,
-    paddingBottom: 24,
   },
   introHeroTitle: {
     fontSize: 26,
