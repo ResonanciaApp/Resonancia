@@ -1305,7 +1305,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5 },
+  pageTitle: { fontSize: 28, fontWeight: "700", letterSpacing: 0.5 },
 
   // ── Sticky header (Panel/Biblioteca/Historial/Registros) ──────────────────
   stickyHeader: {
@@ -1332,7 +1332,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.06)",
   },
-  stickyTitle: { fontSize: 20, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3 },
+  stickyTitle: { fontSize: 18, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3 },
   pillRow: {
     flexDirection: "row",
     gap: 8,
@@ -1352,7 +1352,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F4F4F4",
     borderColor: "#F4F4F4",
   },
-  pillText: { fontSize: 13, fontWeight: "600", color: "#F4F4F4" },
+  pillText: { fontSize: 11, fontWeight: "600", color: "#F4F4F4" },
   pillTextSel: { color: "#1B060F" },
 
   comingSoonWrap: {
