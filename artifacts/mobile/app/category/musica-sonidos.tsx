@@ -364,7 +364,14 @@ export default function MusicaSonidosScreen() {
     <View style={styles.root} onLayout={(e) => setRootH(e.nativeEvent.layout.height)}>
       <LinearGradient
         colors={["#340D1A", "#190913"]}
-        locations={rootH > 0 ? [Math.min(HERO_AREA_H / rootH, 0.9), 1] : undefined}
+        locations={
+          rootH > 0
+            ? (() => {
+                const heroFrac = Math.min(HERO_AREA_H / rootH, 0.9);
+                return [heroFrac + 0.2 * (1 - heroFrac), 1] as const;
+              })()
+            : undefined
+        }
         style={StyleSheet.absoluteFill}
       />
 
