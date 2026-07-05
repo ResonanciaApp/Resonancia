@@ -396,7 +396,7 @@ export default function DescansoScreen() {
 
   return (
     <LinearGradient
-      colors={["#09060F", "#120A18", "#180A18", "#1F0B18"]}
+      colors={["#09060F", "#120A18", "#170B1C", "#1C0C22"]}
       locations={[0, 0.33, 0.66, 1]}
       style={styles.root}
     >
