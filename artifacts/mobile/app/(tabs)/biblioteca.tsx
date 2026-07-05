@@ -1636,10 +1636,11 @@ export default function BibliotecaScreen() {
           elevation: 8,
         }]}
       >
-        <Image
-          source={require("@/assets/images/universo-header-bg.jpg")}
+        <LinearGradient
+          colors={["#230610", "#16040A"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
-          contentFit="cover"
         />
         {/* Fila 1: título + iconos */}
         <View style={styles.headerRow}>

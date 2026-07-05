@@ -72,12 +72,10 @@ const TAB_CONFIG: Record<
 function TabItem({
   route,
   isFocused,
-  iconGold,
   onPress,
 }: {
   route: { key: string; name: string };
   isFocused: boolean;
-  iconGold: boolean;
   onPress: () => void;
 }) {
   const conf = TAB_CONFIG[route.name];
@@ -90,7 +88,7 @@ function TabItem({
   const tOffset    = [{ translateY: iconOffset }];
 
   const makeIcon = useCallback((active: boolean) => {
-    const color  = active ? (iconGold ? GRAD_END : ACTIVE_COLOR) : INACTIVE_COLOR;
+    const color  = active ? ACTIVE_COLOR : INACTIVE_COLOR;
     const sfName = active ? conf.sfIconFill : conf.sfIcon;
     const mciName = active ? conf.mciIconFill : conf.mciIcon;
     return conf.image ? (
@@ -162,27 +160,14 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const [tabWidth, setTabWidth] = useState(0);
   const pillX          = useRef(new Animated.Value(0)).current;
   const initialPillSet = useRef(false);
-  const [goldRoute, setGoldRoute] = useState<string | null>(
-    state.routes[state.index]?.name ?? null,
-  );
-  const goldTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Duración aproximada en la que el spring del pill llega a destino
-  // (no usar el callback `finished` de Animated: en web no es fiable y puede tardar segundos)
-  const PILL_SETTLE_MS = 260;
 
   const setPillPosition = useCallback(
-    (tw: number, vi: number, animate: boolean, targetRouteName: string | null) => {
+    (tw: number, vi: number, animate: boolean) => {
       if (tw === 0) return;
       const target = vi * tw;
-      if (goldTimeoutRef.current) {
-        clearTimeout(goldTimeoutRef.current);
-        goldTimeoutRef.current = null;
-      }
       if (!animate || !initialPillSet.current) {
         pillX.setValue(target);
         initialPillSet.current = true;
-        setGoldRoute(targetRouteName);
       } else {
         Animated.spring(pillX, {
           toValue: target,
@@ -191,35 +176,23 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           stiffness: 220,
           mass: 0.9,
         }).start();
-        goldTimeoutRef.current = setTimeout(() => {
-          setGoldRoute(targetRouteName);
-          goldTimeoutRef.current = null;
-        }, PILL_SETTLE_MS);
       }
     },
     [pillX],
   );
 
   useEffect(() => {
-    return () => {
-      if (goldTimeoutRef.current) clearTimeout(goldTimeoutRef.current);
-    };
-  }, []);
-
-  useEffect(() => {
-    const activeName = state.routes[state.index]?.name ?? null;
-    setGoldRoute((prev) => (prev === activeName ? prev : null));
-    setPillPosition(tabWidth, visibleIndex, true, activeName);
-  }, [visibleIndex, tabWidth, setPillPosition, state.index, state.routes]);
+    setPillPosition(tabWidth, visibleIndex, true);
+  }, [visibleIndex, tabWidth, setPillPosition]);
 
   const onRowLayout = useCallback(
     (e: LayoutChangeEvent) => {
       // Descontar paddingHorizontal×2 para obtener el ancho real de cada tab
       const tw = (e.nativeEvent.layout.width - ROW_H_PAD * 2) / visibleCount;
       setTabWidth(tw);
-      setPillPosition(tw, visibleIndex, false, state.routes[state.index]?.name ?? null);
+      setPillPosition(tw, visibleIndex, false);
     },
-    [visibleCount, visibleIndex, setPillPosition, state.index, state.routes],
+    [visibleCount, visibleIndex, setPillPosition],
   );
   // ────────────────────────────────────────────────────────────────
 
@@ -323,7 +296,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                 key={route.key}
                 route={route}
                 isFocused={isFocused}
-                iconGold={goldRoute === route.name}
                 onPress={onPress}
               />
             );
