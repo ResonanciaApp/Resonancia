@@ -544,6 +544,17 @@ export default function HomeScreen2() {
               setActiveFilter(null);
             }}
           />
+          <Pressable
+            onPress={() => router.push("/profile" as never)}
+            hitSlop={8}
+            style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
+          >
+            <Image
+              source={require("@/assets/images/tab-icon-universo.png")}
+              style={styles.universeBtnBg}
+              resizeMode="cover"
+            />
+          </Pressable>
         </View>
       </View>
 
@@ -1088,6 +1099,18 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     marginBottom: 14,
     gap: 15,
+  },
+  universeBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.15)",
+  },
+  universeBtnBg: {
+    width: "100%",
+    height: "100%",
   },
   avatarBtn: {
     width: 33,
