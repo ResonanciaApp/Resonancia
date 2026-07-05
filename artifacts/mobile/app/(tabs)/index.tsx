@@ -66,7 +66,9 @@ import { WeeklyStreakStrip } from "@/components/WeeklyStreakStrip";
 
 const { width } = Dimensions.get("window");
 
+const TODOS_TAB_ID = "todos";
 const NAV_TABS = [
+  { id: TODOS_TAB_ID,   label: "Todos",         cats: [] as string[] },
   { id: "meditaciones",  label: "Meditaciones",  cats: ["meditaciones-guiadas"] },
   { id: "sesiones",      label: "Sesiones",      cats: ["sonidos-ancestrales"] },
   { id: "musica",        label: "Música",        cats: ["musica-sonidos"] },
@@ -163,14 +165,14 @@ function AnimatedNavTabRow({
   onSelect: (id: string) => void;
   onClear: () => void;
 }) {
-  const progress = useRef(new Animated.Value(activeTab ? 1 : 0)).current;
+  const progress = useRef(new Animated.Value(activeTab && activeTab !== TODOS_TAB_ID ? 1 : 0)).current;
   const offsetsRef = useRef<Record<string, number>>({});
   const scrollXRef = useRef(0);
   const [displayTab, setDisplayTab] = useState<string | null>(activeTab);
   const [colorTab, setColorTab] = useState<string | null>(activeTab);
   const [targetTranslate, setTargetTranslate] = useState(0);
 
-  const filtered = displayTab !== null;
+  const filtered = displayTab !== null && displayTab !== TODOS_TAB_ID;
 
   const animate = (toValue: number, onDone?: () => void) => {
     Animated.timing(progress, {
@@ -184,6 +186,13 @@ function AnimatedNavTabRow({
   };
 
   const handleSelect = (id: string) => {
+    if (id === TODOS_TAB_ID) {
+      setColorTab(TODOS_TAB_ID);
+      setDisplayTab(TODOS_TAB_ID);
+      animate(0);
+      requestAnimationFrame(() => onSelect(TODOS_TAB_ID));
+      return;
+    }
     const off = offsetsRef.current[id] ?? 0;
     const visualLeft = off - scrollXRef.current;
     setTargetTranslate(NAV_CLOSE_SLOT - visualLeft);
@@ -202,8 +211,8 @@ function AnimatedNavTabRow({
   };
 
   const handleClear = () => {
-    setColorTab(null);
-    animate(0, () => setDisplayTab(null));
+    setColorTab(TODOS_TAB_ID);
+    animate(0, () => setDisplayTab(TODOS_TAB_ID));
     requestAnimationFrame(() => onClear());
   };
 
@@ -263,7 +272,13 @@ function AnimatedNavTabRow({
               <NavTabChip
                 sel={colorTab === t.id}
                 label={t.label}
-                onPress={() => (isSelected ? handleClear() : handleSelect(t.id))}
+                onPress={() => {
+                  if (isSelected) {
+                    if (t.id !== TODOS_TAB_ID) handleClear();
+                    return;
+                  }
+                  handleSelect(t.id);
+                }}
               />
             </Animated.View>
           );
@@ -513,7 +528,7 @@ export default function HomeScreen2() {
             activeTab={
               activeFilter
                 ? NAV_TABS.find((t) => t.cats.join() === activeFilter.join())?.id ?? null
-                : null
+                : TODOS_TAB_ID
             }
             onSelect={(id) => {
               const tab = NAV_TABS.find((t) => t.id === id);
@@ -521,7 +536,7 @@ export default function HomeScreen2() {
               setSesionesOpen(false);
               setSesAncestral(false);
               setSesMeditacion(false);
-              setActiveFilter(tab.cats);
+              setActiveFilter(id === TODOS_TAB_ID ? null : tab.cats);
             }}
             onClear={() => {
               setSesionesOpen(false);
