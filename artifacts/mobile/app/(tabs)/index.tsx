@@ -703,13 +703,11 @@ export default function HomeScreen2() {
                   styles.temaCell,
                   {
                     width: TEMA3_W,
-                    height: TEMA3_W + 30,
+                    height: TEMA3_W,
                     backgroundColor: pressed
                       ? hexTint(t.color, 0.22)
                       : "rgba(255,255,255,0.05)",
                     borderRadius: 11,
-                    borderWidth: 1,
-                    borderColor: "rgba(255,255,255,0.25)",
                   },
                 ]}
               >
@@ -877,10 +875,12 @@ export default function HomeScreen2() {
                 onPress={() => router.push(`/category/${c.id}` as never)}
                 style={({ pressed }) => [{
                   flex: 1,
-                  paddingVertical: 18,
+                  paddingVertical: 18 + 30,
                   borderRadius: 14,
                   alignItems: "center",
                   backgroundColor: "rgba(255,255,255,0.05)",
+                  borderWidth: 1,
+                  borderColor: "rgba(255,255,255,0.25)",
                   opacity: pressed ? 0.75 : 1,
                 }]}
               >
