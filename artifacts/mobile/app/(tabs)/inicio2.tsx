@@ -517,8 +517,8 @@ export default function HomeScreen2() {
         <LinearGradient
           colors={[
             "transparent",
-            "rgba(52,13,26,0.252)",
-            "rgba(52,13,26,0.448)",
+            "rgba(52,13,26,0.18)",
+            "rgba(52,13,26,0.32)",
           ]}
           locations={[0, 0.6, 1]}
           style={styles.heroBannerFullTint}
@@ -546,13 +546,17 @@ export default function HomeScreen2() {
             "rgba(52,13,26,0.837)",
             "rgba(52,13,26,0.942)",
             "rgba(52,13,26,0.991)",
-            "#190913",
+            "#340D1A",
           ]}
           locations={[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]}
           style={styles.heroScrollRevealFade}
           pointerEvents="none"
         />
-        <View style={[styles.scrollBgFill, { backgroundColor: "#190913" }]} pointerEvents="none" />
+        <LinearGradient
+          colors={["#340D1A", "#190913"]}
+          style={styles.scrollBgFill}
+          pointerEvents="none"
+        />
 
         {/* ── NAV-TABS: avatar + nav-tabs — ahora se desplaza con el contenido ── */}
         <View style={[styles.stickyHeader, { paddingTop: 18 }]}>
