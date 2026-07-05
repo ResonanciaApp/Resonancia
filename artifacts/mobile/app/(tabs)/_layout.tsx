@@ -225,8 +225,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         {/* ── iOS Glass Material ────────────────────────────────────────────── */}
         {/* 1. Blur base */}
         <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-        {/* 2. Tinte dorado sutil */}
-        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(190,150,80,0.05)" }]} />
+        {/* 2. Tinte borgoña */}
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(22,4,11,0.50)" }]} />
         {/* 3. Inner glow vertical — más luminoso arriba, se desvanece abajo → da volumen al vidrio */}
         <LinearGradient
           colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
@@ -234,6 +234,47 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           style={StyleSheet.absoluteFill}
           pointerEvents="none"
         />
+        {/* 4. Borde GhostPill — doble gradiente SVG idéntico al de Tu Biblioteca */}
+        {(() => {
+          const sw = 0.5;
+          const bw = Dimensions.get("window").width - PILL_MARGIN_H * 2;
+          const bh = PILL_H;
+          const r  = bh / 2 - 4.5;
+          const x0 = sw / 2;
+          const y0 = sw / 2;
+          const x1 = bw - sw / 2;
+          const y1 = bh - sw / 2;
+          const bulge = 4;
+          const d =
+            `M ${x0 + r} ${y0} ` +
+            `Q ${(x0 + r + x1 - r) / 2} ${y0 - bulge} ${x1 - r} ${y0} ` +
+            `A ${r} ${r} 0 0 1 ${x1} ${y0 + r} ` +
+            `L ${x1} ${y1 - r} ` +
+            `A ${r} ${r} 0 0 1 ${x1 - r} ${y1} ` +
+            `Q ${(x1 - r + x0 + r) / 2} ${y1 + bulge} ${x0 + r} ${y1} ` +
+            `A ${r} ${r} 0 0 1 ${x0} ${y1 - r} ` +
+            `L ${x0} ${y0 + r} ` +
+            `A ${r} ${r} 0 0 1 ${x0 + r} ${y0} ` +
+            `Z`;
+          return (
+            <Svg width={bw} height={bh} style={StyleSheet.absoluteFill} pointerEvents="none">
+              <Defs>
+                <SvgLinearGradient id="tabBorderA" x1="0.5" y1="0" x2="0.5" y2="1">
+                  <Stop offset="0"   stopColor="#FFFFFF" stopOpacity={0.22} />
+                  <Stop offset="0.5" stopColor="#FFFFFF" stopOpacity={0.04} />
+                  <Stop offset="1"   stopColor="#FFFFFF" stopOpacity={0}    />
+                </SvgLinearGradient>
+                <SvgLinearGradient id="tabBorderB" x1="1" y1="1" x2="0.3" y2="0">
+                  <Stop offset="0"    stopColor="#FFFFFF" stopOpacity={0.04} />
+                  <Stop offset="0.45" stopColor="#FFFFFF" stopOpacity={0.01} />
+                  <Stop offset="1"    stopColor="#FFFFFF" stopOpacity={0}    />
+                </SvgLinearGradient>
+              </Defs>
+              <Path d={d} fill="none" stroke="url(#tabBorderA)" strokeWidth={sw} />
+              <Path d={d} fill="none" stroke="url(#tabBorderB)" strokeWidth={sw} />
+            </Svg>
+          );
+        })()}
         {/* 5. Brillo inferior — centro a 40% del ancho, fade pronunciado */}
         <LinearGradient
           colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.04)", "rgba(255,255,255,0.14)", "rgba(255,255,255,0)"]}
@@ -299,61 +340,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
             );
           })}
         </View>
-      </Animated.View>
-
-      {/* 4. Borde GhostPill — capa aparte (sin overflow:hidden) para que el bulge de la curva no se recorte */}
-      <Animated.View
-        pointerEvents="none"
-        style={{
-          position: "absolute",
-          left: PILL_MARGIN_H,
-          right: PILL_MARGIN_H,
-          bottom: barBottom,
-          height: PILL_H,
-          transform: [{ translateY }],
-        }}
-      >
-        {(() => {
-          const sw = 0.5;
-          const bw = Dimensions.get("window").width - PILL_MARGIN_H * 2;
-          const bh = PILL_H;
-          const r  = bh / 2 - 4.5;
-          const bulge = 4;
-          const canvasH = bh + bulge * 2;
-          const x0 = sw / 2;
-          const y0 = sw / 2 + bulge;
-          const x1 = bw - sw / 2;
-          const y1 = canvasH - sw / 2 - bulge;
-          const d =
-            `M ${x0 + r} ${y0} ` +
-            `Q ${(x0 + r + x1 - r) / 2} ${y0 - bulge} ${x1 - r} ${y0} ` +
-            `A ${r} ${r} 0 0 1 ${x1} ${y0 + r} ` +
-            `L ${x1} ${y1 - r} ` +
-            `A ${r} ${r} 0 0 1 ${x1 - r} ${y1} ` +
-            `Q ${(x1 - r + x0 + r) / 2} ${y1 + bulge} ${x0 + r} ${y1} ` +
-            `A ${r} ${r} 0 0 1 ${x0} ${y1 - r} ` +
-            `L ${x0} ${y0 + r} ` +
-            `A ${r} ${r} 0 0 1 ${x0 + r} ${y0} ` +
-            `Z`;
-          return (
-            <Svg width={bw} height={canvasH} style={{ position: "absolute", top: -bulge, left: 0 }} pointerEvents="none">
-              <Defs>
-                <SvgLinearGradient id="tabBorderA" x1="0.5" y1="0" x2="0.5" y2="1">
-                  <Stop offset="0"   stopColor="#FFFFFF" stopOpacity={0.22} />
-                  <Stop offset="0.5" stopColor="#FFFFFF" stopOpacity={0.04} />
-                  <Stop offset="1"   stopColor="#FFFFFF" stopOpacity={0}    />
-                </SvgLinearGradient>
-                <SvgLinearGradient id="tabBorderB" x1="1" y1="1" x2="0.3" y2="0">
-                  <Stop offset="0"    stopColor="#FFFFFF" stopOpacity={0.04} />
-                  <Stop offset="0.45" stopColor="#FFFFFF" stopOpacity={0.01} />
-                  <Stop offset="1"    stopColor="#FFFFFF" stopOpacity={0}    />
-                </SvgLinearGradient>
-              </Defs>
-              <Path d={d} fill="none" stroke="url(#tabBorderA)" strokeWidth={sw} />
-              <Path d={d} fill="none" stroke="url(#tabBorderB)" strokeWidth={sw} />
-            </Svg>
-          );
-        })()}
       </Animated.View>
 
       {/* Pestañita para recuperar el menú cuando está oculto (todos los tabs menos Mezclador) */}
