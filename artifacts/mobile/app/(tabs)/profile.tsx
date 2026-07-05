@@ -1020,7 +1020,7 @@ export default function ProfileScreen() {
       </ScrollView>
       )}
 
-      {perfilTab === "biblioteca" && <BibliotecaScreen />}
+      {perfilTab === "biblioteca" && <BibliotecaScreen embedded />}
 
       {perfilTab === "historial" && (
         <View style={styles.comingSoonWrap}>

@@ -980,7 +980,7 @@ function AnimatedTabContent({
 }
 
 // ── Pantalla principal ────────────────────────────────────────────────────────
-export function BibliotecaScreen() {
+export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = {}) {
   const insets = useSafeAreaInsets();
   const { photoUri } = useUserProfile();
   const { open: openDrawer } = useDrawer();
@@ -1616,14 +1616,19 @@ export function BibliotecaScreen() {
     return null;
   };
 
+  const Wrapper = embedded ? View : LinearGradient;
+  const wrapperProps = embedded
+    ? { style: styles.root }
+    : {
+        style: styles.root,
+        colors: ["#340D1A", "#190913"] as const,
+        start: { x: 0, y: 0 },
+        end: { x: 0, y: 1 },
+      };
+
   return (
-    <LinearGradient
-      style={styles.root}
-      colors={["#340D1A", "#190913"]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
-      <SacredBackground variant="solid" />
+    <Wrapper {...(wrapperProps as any)}>
+      {!embedded && <SacredBackground variant="solid" />}
 
       {/* ── STICKY HEADER ────────────────────────────────────────────────── */}
       <View
@@ -1784,7 +1789,7 @@ export function BibliotecaScreen() {
         </View>
         </KeyboardAvoidingView>
       </Modal>
-    </LinearGradient>
+    </Wrapper>
   );
 }
 
