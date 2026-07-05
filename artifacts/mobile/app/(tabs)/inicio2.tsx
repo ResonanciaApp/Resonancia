@@ -528,8 +528,14 @@ export default function HomeScreen2() {
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 12 }}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingBottom: 160 + bottomPad, paddingTop: 12 },
+        ]}
         showsVerticalScrollIndicator={false}
+        bounces={false}
+        alwaysBounceVertical={false}
+        overScrollMode="never"
       >
         {/* ── SPACER: deja ver el hero detrás; el fondo degradado avanza sobre él al hacer scroll ── */}
         <View style={styles.heroScrollSpacer} pointerEvents="none" />
@@ -985,7 +991,7 @@ export default function HomeScreen2() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#210911" },
+  root: { flex: 1, backgroundColor: "#190913" },
   rootGradient: { ...StyleSheet.absoluteFillObject },
   heroBannerWrap: {
     width: "100%",
@@ -1049,7 +1055,8 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     zIndex: 10,
   },
-  scroll: { flex: 1 },
+  scroll: { flex: 1, backgroundColor: "transparent" },
+  scrollContent: { backgroundColor: "transparent" },
 
   divider: {
     height: StyleSheet.hairlineWidth,
