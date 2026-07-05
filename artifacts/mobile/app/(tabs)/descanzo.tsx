@@ -531,13 +531,15 @@ export default function DescansoScreen() {
       </ScrollView>
 
       {/* ── Sticky header (título) ── */}
-      <Animated.View
-        style={[styles.stickyHeader, { paddingTop: topPad + 10, opacity: stickyOpacity }]}
+      <View
+        style={[styles.stickyHeader, { paddingTop: topPad + 10 }]}
         pointerEvents={stickyActive ? "auto" : "none"}
         onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}
       >
-        <Text style={[styles.stickyHeaderTitle, { color: colors.foreground }]}>Dormir</Text>
-      </Animated.View>
+        <Animated.Text style={[styles.stickyHeaderTitle, { color: colors.foreground, opacity: stickyOpacity }]}>
+          Dormir
+        </Animated.Text>
+      </View>
 
       {/* ── Tabs sticky (se pegan debajo del título) ── */}
       {chipsSticky && (
