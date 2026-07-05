@@ -63,7 +63,7 @@ const TAB_CONFIG: Record<
 > = {
   index:      { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home", image: require("@/assets/images/tab-icon-inicio.png"), iconSize: ICON_SIZE - 3, labelOffset: 1.5 },
   explore:    { label: "Meditación", sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search", image: require("@/assets/images/tab-icon-medita.png"), iconSize: ICON_SIZE + 4, labelOffset: -2 },
-  musica:     { label: "Crear",      sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",  featherIcon: "sliders" },
+  musica:     { label: "Creación",   sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",  featherIcon: "sliders" },
   biblioteca: { label: "Universo",   sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark", image: require("@/assets/images/tab-icon-universo.png") },
   descanzo:   { label: "Dormir",     sfIcon: "moon.stars",          sfIconFill: "moon.stars.fill",      featherIcon: "moon" },
   profile:    { label: "Perfil",     sfIcon: "person",              sfIconFill: "person.fill",          featherIcon: "user" },
@@ -429,7 +429,7 @@ function TabLayoutInner() {
         tabBar={(props) => <CustomTabBar {...props} />}
       >
         <Tabs.Screen name="index"          options={{ title: "Inicio" }} />
-        <Tabs.Screen name="musica"         options={{ title: "Crear" }} />
+        <Tabs.Screen name="musica"         options={{ title: "Creación" }} />
         <Tabs.Screen name="coleccion/[id]" options={{ href: null }} />
         <Tabs.Screen name="explore"        options={{ title: "Medita" }} />
         <Tabs.Screen name="biblioteca"     options={{ title: "Universo" }} />

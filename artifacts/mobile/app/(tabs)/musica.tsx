@@ -681,7 +681,7 @@ export default function MezcladorScreen() {
                   </Pressable>
                 </GhostPill>
                 <View style={{ flex: 1 }}>
-                  <Text style={[styles.pageTitle, { transform: [{ translateX: -19 }, { translateY: -1 }] }]}>Crear</Text>
+                  <Text style={[styles.pageTitle, { transform: [{ translateX: -19 }, { translateY: -1 }] }]}>Creación</Text>
                   <Text style={[styles.pageSubtitle, { transform: [{ translateX: -19 }] }]}>Diseña tus paisajes sonoros</Text>
                 </View>
                 <View style={styles.headerActions}>
