@@ -526,6 +526,14 @@ export default function HomeScreen2() {
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 12 }}
         showsVerticalScrollIndicator={false}
       >
+        {/* ── SPACER: deja ver el hero detrás; el fondo degradado avanza sobre él al hacer scroll ── */}
+        <View style={styles.heroScrollSpacer} pointerEvents="none" />
+        <LinearGradient
+          colors={["#340D1A", "#190913"]}
+          style={styles.scrollBgFill}
+          pointerEvents="none"
+        />
+
         {/* ── NAV-TABS: avatar + nav-tabs — ahora se desplaza con el contenido ── */}
         <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
           <View style={styles.headerTopRow}>
@@ -947,9 +955,13 @@ const styles = StyleSheet.create({
   heroBannerWrap: {
     width: "100%",
     height: HEADER_HERO_HEIGHT,
-    position: "relative",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
     overflow: "hidden",
     backgroundColor: "#340D1A",
+    zIndex: 0,
   },
   heroBannerImage: {
     width: "100%",
@@ -962,6 +974,18 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: HERO_FADE_HEIGHT,
+  },
+  heroScrollSpacer: {
+    width: "100%",
+    height: HEADER_HERO_HEIGHT,
+    backgroundColor: "transparent",
+  },
+  scrollBgFill: {
+    position: "absolute",
+    top: HEADER_HERO_HEIGHT,
+    left: 0,
+    right: 0,
+    height: 6000,
   },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
