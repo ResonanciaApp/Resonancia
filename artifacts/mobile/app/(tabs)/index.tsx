@@ -125,7 +125,7 @@ function NavTabChip({ sel, label, onPress }: { sel: boolean; label: string; onPr
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.headerTabChip, { opacity: pressed ? 0.7 : 1 }]}
+      style={({ pressed }) => [styles.headerTabChip, !sel && styles.headerTabChipUnsel, { opacity: pressed ? 0.7 : 1 }]}
     >
       <LinearGradient
         colors={["rgba(255,255,255,0.06)", "rgba(255,255,255,0.06)"]}
@@ -966,6 +966,10 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
+  },
+  headerTabChipUnsel: {
+    borderWidth: 1,
+    borderColor: "rgba(244,218,213,0.2)",
   },
   sesSubSpacer: {
     height: 34,
