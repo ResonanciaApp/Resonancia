@@ -449,14 +449,21 @@ export default function DescansoScreen() {
                 {timerMin} min{fadeVol ? " · fade" : ""}{isSoundTab && player.selectedId ? " · reproduciendo" : ""}
               </Text>
             </View>
-            {currentSession && (
+            {currentSession ? (
               <DormirMiniPlayer
                 elapsed={sessionElapsed}
                 duration={sessionDuration}
                 isPlaying={sessionIsPlaying}
                 onToggle={pauseResume}
               />
-            )}
+            ) : (isSoundTab && player.selectedId) ? (
+              <DormirMiniPlayer
+                elapsed={player.elapsedSeconds}
+                duration={player.durationSeconds}
+                isPlaying={player.isPlaying}
+                onToggle={player.togglePause}
+              />
+            ) : null}
           </View>
         </Pressable>
 

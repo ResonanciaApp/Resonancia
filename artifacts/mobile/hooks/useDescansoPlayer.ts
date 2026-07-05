@@ -9,20 +9,27 @@ interface UseDescansoPlayerOptions {
 interface UseDescansoPlayerReturn {
   selectedId: string | null;
   isPlaying: boolean;
+  elapsedSeconds: number;
+  durationSeconds: number;
   toggle: (id: string, audioUri: string | null) => void;
+  togglePause: () => void;
   stop: () => void;
 }
 
 const FADE_TICK_MS = 2000;
+const ELAPSED_TICK_MS = 1000;
 
 export function useDescansoPlayer({
   timerMinutes,
   fadeVolume,
 }: UseDescansoPlayerOptions): UseDescansoPlayerReturn {
-  const playerRef     = useRef<AudioPlayer | null>(null);
-  const fadeTimerRef  = useRef<ReturnType<typeof setInterval> | null>(null);
+  const playerRef      = useRef<AudioPlayer | null>(null);
+  const fadeTimerRef   = useRef<ReturnType<typeof setInterval> | null>(null);
+  const elapsedTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [selectedId,  setSelectedId]  = useState<string | null>(null);
   const [isPlaying,   setIsPlaying]   = useState(false);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const durationSeconds = timerMinutes > 0 ? timerMinutes * 60 : 0;
 
   const clearFade = useCallback(() => {
     if (fadeTimerRef.current) {
@@ -31,8 +38,16 @@ export function useDescansoPlayer({
     }
   }, []);
 
+  const clearElapsed = useCallback(() => {
+    if (elapsedTimerRef.current) {
+      clearInterval(elapsedTimerRef.current);
+      elapsedTimerRef.current = null;
+    }
+  }, []);
+
   const stopCurrent = useCallback(() => {
     clearFade();
+    clearElapsed();
     if (playerRef.current) {
       try { playerRef.current.pause(); } catch {}
       try { playerRef.current.remove(); } catch {}
@@ -40,7 +55,20 @@ export function useDescansoPlayer({
     }
     setSelectedId(null);
     setIsPlaying(false);
-  }, [clearFade]);
+    setElapsedSeconds(0);
+  }, [clearFade, clearElapsed]);
+
+  const togglePause = useCallback(() => {
+    const player = playerRef.current;
+    if (!player) return;
+    setIsPlaying((prev) => {
+      const next = !prev;
+      try {
+        if (next) player.play(); else player.pause();
+      } catch {}
+      return next;
+    });
+  }, []);
 
   const startFade = useCallback((totalMs: number) => {
     clearFade();
@@ -77,6 +105,12 @@ export function useDescansoPlayer({
     playerRef.current = player;
     setSelectedId(id);
     setIsPlaying(true);
+    setElapsedSeconds(0);
+
+    clearElapsed();
+    elapsedTimerRef.current = setInterval(() => {
+      setElapsedSeconds((prev) => prev + 1);
+    }, ELAPSED_TICK_MS);
 
     if (timerMinutes > 0) {
       const totalMs = timerMinutes * 60 * 1000;
@@ -85,9 +119,9 @@ export function useDescansoPlayer({
       }, totalMs);
       startFade(totalMs);
     }
-  }, [selectedId, timerMinutes, fadeVolume, stopCurrent, startFade]);
+  }, [selectedId, timerMinutes, fadeVolume, stopCurrent, startFade, clearElapsed]);
 
   useEffect(() => () => { stopCurrent(); }, [stopCurrent]);
 
-  return { selectedId, isPlaying, toggle, stop: stopCurrent };
+  return { selectedId, isPlaying, elapsedSeconds, durationSeconds, toggle, togglePause, stop: stopCurrent };
 }
