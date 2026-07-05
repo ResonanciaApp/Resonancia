@@ -25,7 +25,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { SacredBackground } from "@/components/SacredBackground";
-import { GhostPill } from "@/components/GhostPill";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { SessionCard } from "@/components/SessionCard";
 import { useDrawer } from "@/context/DrawerContext";
@@ -64,6 +63,7 @@ type ViewMode = "list" | "grid";
 const LIB_TABS: { id: LibTab; label: string }[] = [
   { id: "playlists",   label: "Rituales" },
   { id: "mezclas",     label: "Mezclas" },
+  { id: "geometrix",   label: "Geometrix" },
   { id: "favoritos",   label: "Favoritos" },
   { id: "resonadores", label: "Resonadores" },
 ];
@@ -1641,16 +1641,16 @@ export default function BibliotecaScreen() {
         {/* Fila 1: título + iconos */}
         <View style={styles.headerRow}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.headerTitle}>Mi espacio</Text>
+            <Text style={styles.headerTitle}>Mi Espacio</Text>
           </View>
-          <GhostPill style={{ gap: 6, backgroundColor: "rgba(255,255,255,0.06)" }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
             <Pressable hitSlop={10} onPress={() => setSearchVisible(true)} style={styles.headerIconBtn}>
               <Feather name="search" size={25} color={TEXT} />
             </Pressable>
             <Pressable hitSlop={10} onPress={() => setCreateVisible(true)} style={styles.headerIconBtn}>
               <Feather name="plus" size={28} color={TEXT} />
             </Pressable>
-          </GhostPill>
+          </View>
         </View>
 
         {/* Fila 2: chips de tab (animados) */}
