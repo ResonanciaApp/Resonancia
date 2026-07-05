@@ -10,7 +10,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -81,10 +81,13 @@ function getPhaseStartScale(pattern: PatternConfig, idx: number): number {
 export default function RespiracionScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { pattern } = useLocalSearchParams<{ pattern?: string }>();
 
-  const [patternData, setPatternData] = useState<PatternConfig>(PATTERNS[0]);
+  const initialPattern = PATTERNS.find((p) => p.id === pattern) ?? PATTERNS[0];
+
+  const [patternData, setPatternData] = useState<PatternConfig>(initialPattern);
   const [phaseIdx, setPhaseIdx] = useState(0);
-  const [countdown, setCountdown] = useState(PATTERNS[0].phases[0].duration);
+  const [countdown, setCountdown] = useState(initialPattern.phases[0].duration);
   const [cycles, setCycles] = useState(0);
   const [running, setRunning] = useState(false);
   const [started, setStarted] = useState(false);

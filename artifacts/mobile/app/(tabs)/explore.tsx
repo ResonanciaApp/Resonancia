@@ -60,6 +60,12 @@ const CAT_CARD_GAP = 16;
 const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.625);
 const HERO_HEIGHT = 320;
 
+const BREATHING_EXERCISES = [
+  { id: "478", name: "4-7-8", subtitle: "Calma y sueño" },
+  { id: "box", name: "Cuadrada", subtitle: "Foco y equilibrio" },
+  { id: "coherence", name: "Coherencia", subtitle: "Equilibrio cardíaco" },
+] as const;
+
 type Session = (typeof SESSIONS)[number];
 
 const DURATION_SLOTS = [
@@ -403,6 +409,31 @@ export default function ExploreScreen() {
           </View>
         </View>
 
+            {/* ── Ejercicios de respiración ── */}
+            <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
+              <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Ejercicios de respiración</Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={{ marginHorizontal: -H_PAD }}
+                contentContainerStyle={styles.breathingRow}
+              >
+                {BREATHING_EXERCISES.map((ex) => (
+                  <Pressable
+                    key={ex.id}
+                    onPress={() => router.push(`/respiracion?pattern=${ex.id}` as never)}
+                    style={({ pressed }) => [styles.breathingCard, { opacity: pressed ? 0.82 : 1 }]}
+                  >
+                    <View style={styles.breathingIconWrap}>
+                      <Feather name="wind" size={22} color="#BE8744" />
+                    </View>
+                    <Text style={styles.breathingName}>{ex.name}</Text>
+                    <Text style={styles.breathingDesc} numberOfLines={1}>{ex.subtitle}</Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            </View>
+
             {/* ── Destacada de hoy ── */}
             {featuredHoy && (
               <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
@@ -711,6 +742,41 @@ const styles = StyleSheet.create({
   sqAuthor: {
     fontSize: 11,
     marginTop: 3,
+  },
+
+  // Ejercicios de respiración
+  breathingRow: {
+    paddingHorizontal: H_PAD,
+    gap: 12,
+    paddingBottom: 4,
+  },
+  breathingCard: {
+    width: 132,
+    alignItems: "center",
+    borderRadius: 16,
+    paddingVertical: 18,
+    paddingHorizontal: 10,
+    backgroundColor: "rgba(190,150,80,0.05)",
+  },
+  breathingIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(190,150,80,0.12)",
+    marginBottom: 10,
+  },
+  breathingName: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#e8e8e8",
+    marginBottom: 3,
+  },
+  breathingDesc: {
+    fontSize: 12,
+    color: "#c2c2c2",
+    textAlign: "center",
   },
 
   // Explorar todo — grid 2 columnas, icono arriba + texto centrado
