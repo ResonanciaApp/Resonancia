@@ -292,15 +292,6 @@ export default function HomeScreen2() {
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
 
-  const scrollY = useRef(new Animated.Value(0)).current;
-  const [stickyThreshold, setStickyThreshold] = useState(100000);
-  const stickyMeasuredRef = useRef(false);
-  const backgroundTranslateY = scrollY.interpolate({
-    inputRange: [0, stickyThreshold],
-    outputRange: [0, -stickyThreshold],
-    extrapolate: "clamp",
-  });
-
   function handleMoodSelect(moodId: MoodId) {
     setSelectedMood(getMoodById(moodId) ?? null);
   }
@@ -535,15 +526,20 @@ export default function HomeScreen2() {
         />
       </View>
 
-      {/* ── FONDO que viaja con el scroll hasta el final de "Destacada de hoy", luego queda sticky ── */}
-      <Animated.View
-        style={[
-          styles.stickyBackgroundLayer,
-          { transform: [{ translateY: backgroundTranslateY }] },
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingBottom: 160 + bottomPad, paddingTop: 12 },
         ]}
-        pointerEvents="none"
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        alwaysBounceVertical={false}
+        overScrollMode="never"
       >
-        {/* ── FADE que come el borde inferior del hero de forma progresiva ── */}
+        {/* ── SPACER: deja ver el hero detrás; el fondo degradado avanza sobre él al hacer scroll ── */}
+        <View style={styles.heroScrollSpacer} pointerEvents="none" />
+        {/* ── FADE que viaja con el scroll: come el borde inferior del hero de forma progresiva ── */}
         <LinearGradient
           colors={["transparent", "#2E0B17"]}
           style={styles.heroScrollRevealFade}
@@ -565,26 +561,6 @@ export default function HomeScreen2() {
           style={styles.scrollBgFill}
           pointerEvents="none"
         />
-      </Animated.View>
-
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={[
-          styles.scrollContent,
-          { paddingBottom: 160 + bottomPad, paddingTop: 12 },
-        ]}
-        showsVerticalScrollIndicator={false}
-        bounces={false}
-        alwaysBounceVertical={false}
-        overScrollMode="never"
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true }
-        )}
-        scrollEventThrottle={16}
-      >
-        {/* ── SPACER: deja ver el hero detrás; el fondo degradado avanza sobre él al hacer scroll ── */}
-        <View style={styles.heroScrollSpacer} pointerEvents="none" />
 
         {/* ── NAV-TABS: avatar + nav-tabs — ahora se desplaza con el contenido ── */}
         <View style={[styles.stickyHeader, { paddingTop: 18 }]}>
@@ -696,15 +672,7 @@ export default function HomeScreen2() {
 
         {/* ── SESIÓN DESTACADA ── */}
         {filteredFeatured && (
-          <View
-            style={[styles.section, { marginBottom: SECTION_GAP }]}
-            onLayout={(e) => {
-              if (stickyMeasuredRef.current) return;
-              stickyMeasuredRef.current = true;
-              const { y, height } = e.nativeEvent.layout;
-              setStickyThreshold(y + height);
-            }}
-          >
+          <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
             <Text style={styles.sectionTitle}>
               Destacada de hoy
             </Text>
@@ -1012,7 +980,6 @@ export default function HomeScreen2() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#160811" },
   rootGradient: { ...StyleSheet.absoluteFillObject },
-  stickyBackgroundLayer: { ...StyleSheet.absoluteFillObject },
   heroBannerWrap: {
     width: "100%",
     height: HEADER_HERO_HEIGHT,
