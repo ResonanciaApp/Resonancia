@@ -300,19 +300,6 @@ export default function HomeScreen2() {
     router.push("/intencion-onboarding" as never);
   }
 
-  // ── Overlay de fondo del hero: solo avanza (nunca retrocede) al hacer scroll ──
-  // Al arrastrar el dedo hacia arriba (scroll avanza) el fondo/gradiente sigue al contenido normalmente.
-  // Al arrastrar el dedo hacia abajo (scroll retrocede) el fondo/imagen quedan quietos, solo se mueve el contenido.
-  const heroOverlayY = useRef(new Animated.Value(0)).current;
-  const heroOverlayMaxRef = useRef(0);
-  function handleMainScroll(e: { nativeEvent: { contentOffset: { y: number } } }) {
-    const y = e.nativeEvent.contentOffset.y;
-    if (y >= heroOverlayMaxRef.current) {
-      heroOverlayMaxRef.current = y;
-      heroOverlayY.setValue(y);
-    }
-  }
-
   const cursorOpacity = useRef(new Animated.Value(1)).current;
   useEffect(() => {
     const blink = Animated.loop(
@@ -539,16 +526,14 @@ export default function HomeScreen2() {
         />
       </View>
 
-      {/* ── OVERLAY de fondo del hero: se traslada con un "trinquete" que solo avanza ──
-          Al scrollear hacia abajo (dedo hacia arriba) sigue al contenido normalmente.
-          Al scrollear hacia arriba (dedo hacia abajo) se congela: fondo/imagen quedan quietos. */}
-      <Animated.View
-        style={[
-          styles.heroOverlayLayer,
-          { transform: [{ translateY: Animated.multiply(heroOverlayY, -1) }] },
-        ]}
-        pointerEvents="none"
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 12 }}
+        showsVerticalScrollIndicator={false}
       >
+        {/* ── SPACER: deja ver el hero detrás; el fondo degradado avanza sobre él al hacer scroll ── */}
+        <View style={styles.heroScrollSpacer} pointerEvents="none" />
+        {/* ── FADE que viaja con el scroll: come el borde inferior del hero de forma progresiva ── */}
         <LinearGradient
           colors={[
             "transparent",
@@ -572,17 +557,6 @@ export default function HomeScreen2() {
           style={styles.scrollBgFill}
           pointerEvents="none"
         />
-      </Animated.View>
-
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 12 }}
-        showsVerticalScrollIndicator={false}
-        onScroll={handleMainScroll}
-        scrollEventThrottle={16}
-      >
-        {/* ── SPACER: deja ver el hero/overlay detrás; el contenido avanza sobre él al hacer scroll ── */}
-        <View style={styles.heroScrollSpacer} pointerEvents="none" />
 
         {/* ── NAV-TABS: avatar + nav-tabs — ahora se desplaza con el contenido ── */}
         <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
@@ -1036,14 +1010,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: HEADER_HERO_HEIGHT,
     backgroundColor: "transparent",
-  },
-  heroOverlayLayer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 1,
   },
   heroScrollRevealFade: {
     position: "absolute",
