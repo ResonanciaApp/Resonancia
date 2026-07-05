@@ -1,0 +1,256 @@
+import { Feather } from "@expo/vector-icons";
+import { Image } from "expo-image";
+import React, { useMemo, useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+
+import { usePlayer } from "@/context/PlayerContext";
+import { getSessionById } from "@/data/sessions";
+import { useColors } from "@/hooks/useColors";
+
+const WEEK_LABELS = ["LUN.", "MAR.", "MIÉ.", "JUE.", "VIE.", "SÁB.", "DOM."];
+
+function dayKey(d: Date): string {
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+
+function isSameDay(a: Date, b: Date): boolean {
+  return dayKey(a) === dayKey(b);
+}
+
+function startOfMonth(d: Date): Date {
+  return new Date(d.getFullYear(), d.getMonth(), 1);
+}
+
+/** Genera la grilla de días del mes (lunes-domingo), con huecos null al inicio. */
+function buildMonthGrid(monthDate: Date): (Date | null)[] {
+  const first = startOfMonth(monthDate);
+  const dow = (first.getDay() + 6) % 7; // Lunes = 0
+  const daysInMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0).getDate();
+  const cells: (Date | null)[] = [];
+  for (let i = 0; i < dow; i++) cells.push(null);
+  for (let d = 1; d <= daysInMonth; d++) {
+    cells.push(new Date(monthDate.getFullYear(), monthDate.getMonth(), d));
+  }
+  return cells;
+}
+
+function formatRelative(isoDate: string): string {
+  const played = new Date(isoDate).getTime();
+  const diffMs = Date.now() - played;
+  const diffMin = Math.floor(diffMs / 60000);
+  if (diffMin < 1) return "Justo ahora";
+  if (diffMin < 60) return `Hace ${diffMin} min`;
+  const diffH = Math.floor(diffMin / 60);
+  if (diffH < 24) return `Hace ${diffH} hora${diffH === 1 ? "" : "s"}`;
+  const diffD = Math.floor(diffH / 24);
+  return `Hace ${diffD} día${diffD === 1 ? "" : "s"}`;
+}
+
+export function HistorialCalendar() {
+  const colors = useColors();
+  const { history, isFavorite, toggleFavorite } = usePlayer();
+
+  const today = useMemo(() => new Date(), []);
+  const [viewMonth, setViewMonth] = useState<Date>(startOfMonth(today));
+  const [selectedDate, setSelectedDate] = useState<Date>(today);
+
+  const grid = useMemo(() => buildMonthGrid(viewMonth), [viewMonth]);
+
+  const monthLabel = viewMonth
+    .toLocaleDateString("es", { month: "long" })
+    .replace(/^./, (c) => c.toUpperCase());
+
+  const dayEntries = useMemo(() => {
+    return history
+      .filter((e) => isSameDay(new Date(e.playedAt), selectedDate))
+      .sort((a, b) => new Date(b.playedAt).getTime() - new Date(a.playedAt).getTime());
+  }, [history, selectedDate]);
+
+  const goPrevMonth = () => {
+    setViewMonth((m) => new Date(m.getFullYear(), m.getMonth() - 1, 1));
+  };
+  const goNextMonth = () => {
+    setViewMonth((m) => new Date(m.getFullYear(), m.getMonth() + 1, 1));
+  };
+
+  return (
+    <View>
+      {/* ── Mi calendario ── */}
+      <View style={styles.sectionHeader}>
+        <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi calendario</Text>
+      </View>
+
+      <View style={[styles.calendarCard, { backgroundColor: colors.card }]}>
+        <View style={styles.calendarNav}>
+          <Pressable onPress={goPrevMonth} hitSlop={10} style={styles.navBtn}>
+            <Feather name="chevron-left" size={18} color={colors.foreground} />
+          </Pressable>
+          <Text style={[styles.monthLabel, { color: colors.foreground }]}>{monthLabel}</Text>
+          <Pressable onPress={goNextMonth} hitSlop={10} style={styles.navBtn}>
+            <Feather name="chevron-right" size={18} color={colors.foreground} />
+          </Pressable>
+        </View>
+
+        <View style={styles.weekRow}>
+          {WEEK_LABELS.map((label) => (
+            <Text key={label} style={[styles.weekLabel, { color: colors.mutedForeground }]}>
+              {label}
+            </Text>
+          ))}
+        </View>
+
+        <View style={styles.daysGrid}>
+          {grid.map((d, i) => {
+            if (!d) return <View key={`empty-${i}`} style={styles.dayCell} />;
+            const selected = isSameDay(d, selectedDate);
+            return (
+              <Pressable
+                key={dayKey(d)}
+                onPress={() => setSelectedDate(d)}
+                style={styles.dayCell}
+              >
+                <View
+                  style={[
+                    styles.dayCircle,
+                    selected && { backgroundColor: colors.foreground },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.dayNum,
+                      { color: selected ? "#1B060F" : colors.foreground },
+                    ]}
+                  >
+                    {d.getDate()}
+                  </Text>
+                </View>
+              </Pressable>
+            );
+          })}
+        </View>
+      </View>
+
+      {/* ── Mi historial ── */}
+      <View style={[styles.sectionHeader, { marginTop: 28 }]}>
+        <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi historial</Text>
+      </View>
+
+      {dayEntries.length === 0 ? (
+        <View style={[styles.emptyWrap, { backgroundColor: colors.card }]}>
+          <Feather name="clock" size={26} color={colors.primary} style={{ marginBottom: 10 }} />
+          <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+            No hay sesiones registradas este día.
+          </Text>
+        </View>
+      ) : (
+        dayEntries.map((entry, i) => {
+          const session = getSessionById(entry.sessionId);
+          if (!session) return null;
+          const fav = isFavorite(session.id);
+          return (
+            <View
+              key={`${entry.sessionId}-${entry.playedAt}-${i}`}
+              style={[styles.entryRow, { borderBottomColor: colors.border }]}
+            >
+              <Image source={session.image} style={styles.entryThumb} contentFit="cover" />
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.entryTime, { color: colors.mutedForeground }]}>
+                  {formatRelative(entry.playedAt)}
+                </Text>
+                <Text style={[styles.entryTitle, { color: colors.foreground }]} numberOfLines={1}>
+                  {session.title}
+                </Text>
+              </View>
+              <Pressable
+                onPress={() => toggleFavorite(session.id)}
+                hitSlop={12}
+                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+              >
+                <Feather
+                  name="heart"
+                  size={20}
+                  color={fav ? colors.primary : colors.mutedForeground}
+                  style={fav ? undefined : { opacity: 0.7 }}
+                />
+              </Pressable>
+            </View>
+          );
+        })
+      )}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  sectionHeader: { marginBottom: 14 },
+  sectionTitle: { fontSize: 18, fontWeight: "700" },
+  calendarCard: {
+    borderRadius: 18,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
+  },
+  calendarNav: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 16,
+    marginBottom: 14,
+  },
+  navBtn: {
+    width: 30,
+    height: 30,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  monthLabel: { fontSize: 15, fontWeight: "700", minWidth: 100, textAlign: "center" },
+  weekRow: {
+    flexDirection: "row",
+    marginBottom: 6,
+  },
+  weekLabel: {
+    flex: 1,
+    fontSize: 10,
+    fontWeight: "600",
+    textAlign: "center",
+    letterSpacing: 0.3,
+  },
+  daysGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  dayCell: {
+    width: `${100 / 7}%`,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 5,
+  },
+  dayCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  dayNum: { fontSize: 13, fontWeight: "500" },
+  emptyWrap: {
+    borderRadius: 16,
+    paddingVertical: 32,
+    paddingHorizontal: 20,
+    alignItems: "center",
+  },
+  emptyText: { fontSize: 13, textAlign: "center" },
+  entryRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  entryThumb: {
+    width: 48,
+    height: 48,
+    borderRadius: 10,
+  },
+  entryTime: { fontSize: 11, marginBottom: 3 },
+  entryTitle: { fontSize: 14, fontWeight: "700" },
+});

@@ -54,6 +54,7 @@ import { resolveAvatarUrl } from "@/lib/avatar";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen } from "@/components/BibliotecaScreen";
+import { HistorialCalendar } from "@/components/HistorialCalendar";
 import {
   gradientColors,
   type GeoSettings,
@@ -1023,10 +1024,13 @@ export default function ProfileScreen() {
       {perfilTab === "biblioteca" && <BibliotecaScreen embedded />}
 
       {perfilTab === "historial" && (
-        <View style={styles.comingSoonWrap}>
-          <Feather name="clock" size={28} color="rgba(244,218,213,0.35)" />
-          <Text style={styles.comingSoonText}>Próximamente</Text>
-        </View>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 20 }}
+          showsVerticalScrollIndicator={false}
+        >
+          <HistorialCalendar />
+        </ScrollView>
       )}
 
       {perfilTab === "registros" && (
