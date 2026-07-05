@@ -51,7 +51,6 @@ import { getSessionById } from "@/data/sessions";
 import { getExpansorById } from "@/data/expansores";
 import { uploadLocalFile } from "@/lib/upload";
 import { resolveAvatarUrl } from "@/lib/avatar";
-import { usePremium } from "@/context/PremiumContext";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen } from "@/components/BibliotecaScreen";
@@ -68,7 +67,6 @@ import {
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 import { GeometrixOverlay } from "@/components/GeometrixToggle";
-import { WatercolorBtn } from "@/components/WatercolorBtn";
 
 type FeatherIconName = React.ComponentProps<typeof Feather>["name"];
 
@@ -261,7 +259,6 @@ export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { favorites, elapsed, history, statEvents, currentSession, isPlaying } = usePlayer();
   const { presets } = useMixer();
-  const { isPremium } = usePremium();
   const {
     username,
     lastName,
@@ -818,10 +815,6 @@ export default function ProfileScreen() {
                 <Feather name="edit" size={17} color="#BE8744" />
               </Pressable>
             )}
-            <WatercolorBtn
-              isPremium={isPremium}
-              onPress={() => setPersonalizeVisible(true)}
-            />
           </View>
         </View>
 
