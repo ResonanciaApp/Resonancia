@@ -69,7 +69,7 @@ const { width } = Dimensions.get("window");
 const TODOS_TAB_ID = "todos";
 const NAV_TABS = [
   { id: TODOS_TAB_ID,   label: "Todos",         cats: [] as string[] },
-  { id: "meditaciones",  label: "Meditaciones",  cats: ["meditaciones-guiadas"] },
+  { id: "meditaciones",  label: "Meditación",    cats: ["meditaciones-guiadas"] },
   { id: "sesiones",      label: "Sesiones",      cats: ["sonidos-ancestrales"] },
   { id: "musica",        label: "Música",        cats: ["musica-sonidos"] },
 ];
