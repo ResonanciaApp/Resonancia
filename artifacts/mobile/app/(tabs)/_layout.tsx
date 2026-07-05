@@ -227,8 +227,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         {/* ── iOS Glass Material ────────────────────────────────────────────── */}
         {/* 1. Blur base */}
         <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-        {/* 2. Tinte borgoña */}
-        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(22,4,11,0.50)" }]} />
         {/* 2b. Tinte dorado sutil */}
         <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(212,175,55,0.05)" }]} />
         {/* 3. Inner glow vertical — más luminoso arriba, se desvanece abajo → da volumen al vidrio */}
