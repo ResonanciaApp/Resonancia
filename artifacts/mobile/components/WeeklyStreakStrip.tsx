@@ -117,8 +117,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   circleActiveBorder: {
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.5)",
   },
   circleActiveInner: {
     width: 28,
