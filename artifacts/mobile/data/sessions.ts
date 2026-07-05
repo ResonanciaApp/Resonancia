@@ -887,7 +887,7 @@ export const SESSIONS: Session[] = [
     description: "A bordo de un tren que cruza paisajes nocturnos, el ritmo constante de las ruedas sobre los rieles hipnotiza y lleva la mente al descanso total.",
     benefits: ["Ritmo hipnótico", "Paisajes imaginados", "Relajación gradual", "Sueño profundo"],
     instruments: ["Voz narradora", "Sonido de tren", "Música suave"],
-    image: require("@/assets/images/sessions/session-28.jpg"),
+    image: require("@/assets/images/sessions/session-56.jpg"),
   },
   {
     id: "64",

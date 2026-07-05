@@ -1392,6 +1392,12 @@ uri = "file://artifacts/mobile/assets/images/mi-espacio-header-bg.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "vUakzaaf3Yoa_Nm5JM-3f"
+uri = "file://attached_assets/generated_images/tren_nocturno_session.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
