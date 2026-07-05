@@ -603,9 +603,18 @@ export default function HomeScreen2() {
         )}
 
         {/* ── Racha semanal ── */}
-        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP, marginTop: -27 }}>
+        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: -27 }}>
           <WeeklyStreakStrip />
         </View>
+
+        <View
+          style={{
+            marginHorizontal: GRID_PAD,
+            marginBottom: SECTION_GAP / 2,
+            height: StyleSheet.hairlineWidth,
+            backgroundColor: "rgba(255,255,255,0.04)",
+          }}
+        />
 
         {/* ── SESIÓN DESTACADA ── */}
         {filteredFeatured && (
