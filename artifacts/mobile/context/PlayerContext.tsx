@@ -20,6 +20,7 @@ import { type Session } from "@/data/sessions";
 import {
   registerSessionStopper,
   stopMixPlayback,
+  stopSoundPlayback,
 } from "@/context/audioBridge";
 import { useAuth } from "@/context/AuthContext";
 import { usePremium } from "@/context/PremiumContext";
@@ -817,8 +818,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   const playSession = useCallback(
     async (session: Session) => {
-      // Sesión y mezcla son mutuamente excluyentes (comparten Now Playing).
+      // Sesión, mezcla y sonido de Descanso son mutuamente excluyentes (comparten Now Playing).
       stopMixPlayback();
+      stopSoundPlayback();
       flushActiveStat();
       clearSim();
       teardownLayers();
@@ -946,8 +948,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   /** Play a looping ambient/nature session for a chosen number of minutes */
   const playSessionWithDuration = useCallback(
     async (session: Session, minutes: number) => {
-      // Sesión y mezcla son mutuamente excluyentes (comparten Now Playing).
+      // Sesión, mezcla y sonido de Descanso son mutuamente excluyentes (comparten Now Playing).
       stopMixPlayback();
+      stopSoundPlayback();
       flushActiveStat();
       clearSim();
       teardownLayers();

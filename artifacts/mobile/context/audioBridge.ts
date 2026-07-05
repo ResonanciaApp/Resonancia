@@ -13,6 +13,7 @@ type Stopper = () => void;
 
 let sessionStopper: Stopper | null = null;
 let mixStopper: Stopper | null = null;
+let soundStopper: Stopper | null = null;
 
 export function registerSessionStopper(fn: Stopper | null) {
   sessionStopper = fn;
@@ -22,7 +23,12 @@ export function registerMixStopper(fn: Stopper | null) {
   mixStopper = fn;
 }
 
-/** Detiene la sesión que estuviera sonando (llamar al iniciar una mezcla). */
+/** Reproductor de sonidos de Descanso (Sonidos Binaurales/Ambientales) — también mutuamente excluyente con sesión/mezcla. */
+export function registerSoundStopper(fn: Stopper | null) {
+  soundStopper = fn;
+}
+
+/** Detiene la sesión que estuviera sonando (llamar al iniciar una mezcla o un sonido de Descanso). */
 export function stopSessionPlayback() {
   try {
     sessionStopper?.();
@@ -35,6 +41,15 @@ export function stopSessionPlayback() {
 export function stopMixPlayback() {
   try {
     mixStopper?.();
+  } catch {
+    // ignore
+  }
+}
+
+/** Detiene el sonido de Descanso que estuviera sonando (llamar al iniciar una sesión o mezcla). */
+export function stopSoundPlayback() {
+  try {
+    soundStopper?.();
   } catch {
     // ignore
   }
