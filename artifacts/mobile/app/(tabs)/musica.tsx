@@ -106,7 +106,7 @@ const MAIN_TABS: {
   color: string;
   categories: SoundCategoryId[] | null;
 }[] = [
-  { id: "popular",        label: "Todos",      icon: "music-note-eighth", color: "#8C1A2B", categories: null },
+  { id: "popular",        label: "Populares",  icon: "music-note-eighth", color: "#8C1A2B", categories: null },
   { id: "naturaleza",     label: "Naturales",  icon: "leaf",              color: "#3A9060", categories: ["animales", "bosque", "mar", "fuego", "desierto"] },
   { id: "ancestrales",    label: "Sagrados",   icon: "bell",              color: "#B09040", categories: ["cuencos_tibetanos", "cuencos_cuarzo", "gongs", "campanas_viento", "vientos", "cantos", "percusion"] },
   { id: "sintetizadores", label: "Digital",    icon: "sine-wave",         color: "#3A80B0", categories: ["solfeggio"] },
