@@ -516,7 +516,8 @@ export default function HomeScreen2() {
           resizeMode="cover"
         />
         <LinearGradient
-          colors={["rgba(27,6,15,0.85)", "rgba(27,6,15,0.35)", "transparent"]}
+          colors={["rgba(27,6,15,0.95)", "rgba(27,6,15,0.6)", "transparent"]}
+          locations={[0, 0.55, 1]}
           style={styles.heroBannerTopFade}
           pointerEvents="none"
         />
@@ -981,7 +982,7 @@ const styles = StyleSheet.create({
     top: -20,
     left: 0,
     right: 0,
-    height: HERO_TOP_FADE_HEIGHT,
+    height: HERO_TOP_FADE_HEIGHT + 20,
   },
   heroScrollSpacer: {
     width: "100%",
