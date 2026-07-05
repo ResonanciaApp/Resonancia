@@ -455,7 +455,7 @@ export default function HomeScreen2() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#220911", "#1B0A16", "#140A19", "#0B0811"]} style={styles.rootGradient} />
+      <LinearGradient colors={["#230A12", "#1B0B16", "#130A17", "#0B0811"]} style={styles.rootGradient} />
       <StatusBar barStyle="light-content" />
 
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
@@ -920,7 +920,7 @@ export default function HomeScreen2() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#220911" },
+  root: { flex: 1, backgroundColor: "#230A12" },
   rootGradient: { ...StyleSheet.absoluteFillObject },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
