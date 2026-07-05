@@ -689,6 +689,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     height: 54,
+    transform: [{ translateY: -5 }],
     paddingLeft: 32,
     paddingRight: 26,
     borderRadius: 8,
