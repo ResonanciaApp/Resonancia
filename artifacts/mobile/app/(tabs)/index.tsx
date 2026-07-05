@@ -446,7 +446,6 @@ export default function HomeScreen2() {
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
       <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
         <View style={styles.headerTopRow}>
-          <View style={styles.avatarBtn} />
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -1012,7 +1011,7 @@ const styles = StyleSheet.create({
   headerTopRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     marginBottom: 14,
     gap: 15,
   },
