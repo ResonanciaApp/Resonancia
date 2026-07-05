@@ -61,7 +61,7 @@ const TAB_CONFIG: Record<
     labelOffset?: number;
   }
 > = {
-  index:      { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
+  index:      { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home", image: require("@/assets/images/tab-icon-inicio.png") },
   explore:    { label: "Meditación", sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search", image: require("@/assets/images/tab-icon-medita.png"), iconSize: ICON_SIZE + 4, labelOffset: -2 },
   musica:     { label: "Crear",      sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",  featherIcon: "sliders" },
   biblioteca: { label: "Universo",   sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark", image: require("@/assets/images/tab-icon-universo.png") },
