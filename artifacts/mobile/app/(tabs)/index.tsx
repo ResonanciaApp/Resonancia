@@ -682,6 +682,35 @@ export default function HomeScreen2() {
           ))}
         </View>
 
+        {/* ── EXPLORA POR CONTENIDO ── */}
+        <View style={[styles.section, { marginTop: SECTION_GAP, marginBottom: SECTION_GAP }]}>
+          <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Explora por contenido</Text>
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            {[
+              { id: "meditaciones-guiadas", label: "Meditaciones" },
+              { id: "sonidos-ancestrales", label: "Sesiones" },
+              { id: "musica-sonidos", label: "Música" },
+            ].map((c) => (
+              <Pressable
+                key={c.id}
+                onPress={() => router.push(`/category/${c.id}` as never)}
+                style={({ pressed }) => [{
+                  flex: 1,
+                  paddingVertical: 18,
+                  borderRadius: 14,
+                  alignItems: "center",
+                  backgroundColor: "rgba(190,150,80,0.05)",
+                  opacity: pressed ? 0.75 : 1,
+                }]}
+              >
+                <Text style={{ fontSize: 14, fontWeight: "700", color: "#F4DAD5", textAlign: "center" }}>
+                  {c.label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+
         {/* ── BANNER PREMIUM ── */}
         {!isPremium && (
           <View style={styles.premBannerOuter}>
