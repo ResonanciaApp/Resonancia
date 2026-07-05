@@ -137,6 +137,9 @@ const REGISTROS_ITEMS: { label: string; route: string; icon: keyof typeof Feathe
   { label: "Diario",       route: "/diario",       icon: "book-open" },
   { label: "Grupos",       route: "/grupos",       icon: "users" },
   { label: "Mis Sesiones", route: "/mis-sesiones", icon: "calendar" },
+  { label: "Amigos",       route: "/amigos",       icon: "user-plus" },
+  { label: "Resonadores",  route: "/resonadores",  icon: "radio" },
+  { label: "Geometrix",    route: "/geometrix-comunidad", icon: "hexagon" },
 ];
 
 
