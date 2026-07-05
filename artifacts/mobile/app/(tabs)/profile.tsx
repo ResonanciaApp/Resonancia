@@ -55,6 +55,7 @@ import { resolveAvatarUrl } from "@/lib/avatar";
 import { usePremium } from "@/context/PremiumContext";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
+import { BibliotecaScreen } from "@/components/BibliotecaScreen";
 import {
   BG_GRADIENTS,
   bgGradientColors,
@@ -130,6 +131,15 @@ function computeStreak(events: { playedAt: string }[]): number {
 }
 
 const BG_GRADIENT = ["#230610", "#16040A"] as const;
+
+type PerfilTab = "panel" | "biblioteca" | "historial" | "registros";
+
+const PERFIL_TABS: { id: PerfilTab; label: string }[] = [
+  { id: "panel",       label: "Panel" },
+  { id: "biblioteca",  label: "Biblioteca" },
+  { id: "historial",   label: "Historial" },
+  { id: "registros",   label: "Registros" },
+];
 
 
 // ── BgGlyph: renderiza una capa de geometría animada en el fondo del perfil ─
@@ -270,6 +280,8 @@ export default function ProfileScreen() {
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+
+  const [perfilTab, setPerfilTab] = useState<PerfilTab>("panel");
 
   const { width } = useWindowDimensions();
 
@@ -752,15 +764,45 @@ export default function ProfileScreen() {
       <SacredBackground variant="solid" />
       <GeometrixOverlay active={profileGeoActive} />
 
+      {/* ── Sticky header (estilo Calm) ── */}
+      <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
+        <View style={styles.stickyHeaderRow}>
+          <Pressable
+            onPress={() => router.push("/configuraciones")}
+            style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.7 : 1 }]}
+            hitSlop={10}
+          >
+            <Feather name="settings" size={20} color="#F4DAD5" />
+          </Pressable>
+          <Text style={styles.stickyTitle}>Perfil</Text>
+          <View style={styles.gearBtn} />
+        </View>
+
+        <View style={styles.pillRow}>
+          {PERFIL_TABS.map((t) => {
+            const sel = perfilTab === t.id;
+            return (
+              <Pressable
+                key={t.id}
+                onPress={() => setPerfilTab(t.id)}
+                style={({ pressed }) => [styles.pill, sel && styles.pillSel, { opacity: pressed ? 0.8 : 1 }]}
+              >
+                <Text style={[styles.pillText, sel && styles.pillTextSel]}>{t.label}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </View>
+
+      {perfilTab === "panel" && (
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: topPad + 12, paddingHorizontal: 20 }}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 20 }}
         showsVerticalScrollIndicator={false}
         scrollEnabled={scrollEnabled}
       >
-        {/* ── Header ── */}
-        <View style={styles.header}>
-          <Text style={[styles.pageTitle, { color: "#FFFFFF" }]}>Perfil</Text>
+        {/* ── Acciones ── */}
+        <View style={[styles.header, { justifyContent: "flex-end" }]}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
             {isExpansor && (
               <Pressable
@@ -1001,6 +1043,16 @@ export default function ProfileScreen() {
 
         </Animated.View>
       </ScrollView>
+      )}
+
+      {perfilTab === "biblioteca" && <BibliotecaScreen />}
+
+      {(perfilTab === "historial" || perfilTab === "registros") && (
+        <View style={styles.comingSoonWrap}>
+          <Feather name="clock" size={28} color="rgba(244,218,213,0.35)" />
+          <Text style={styles.comingSoonText}>Próximamente</Text>
+        </View>
+      )}
 
       {/* ── Personalize Sheet ── */}
       <SimplePersonalizeSheet
@@ -1254,6 +1306,62 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5 },
+
+  // ── Sticky header (Panel/Biblioteca/Historial/Registros) ──────────────────
+  stickyHeader: {
+    zIndex: 10,
+    backgroundColor: "#16040A",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.38,
+    shadowRadius: 4,
+    elevation: 8,
+  },
+  stickyHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 15,
+    paddingBottom: 10,
+  },
+  gearBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.06)",
+  },
+  stickyTitle: { fontSize: 20, fontWeight: "700", color: "#F4DAD5", letterSpacing: 0.3 },
+  pillRow: {
+    flexDirection: "row",
+    gap: 8,
+    paddingHorizontal: 15,
+    paddingBottom: 14,
+  },
+  pill: {
+    paddingHorizontal: 15,
+    paddingVertical: 9,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(244,218,213,0.2)",
+    backgroundColor: "rgba(255,255,255,0.05)",
+  },
+  pillSel: {
+    backgroundColor: "#F4DAD5",
+    borderColor: "#F4DAD5",
+  },
+  pillText: { fontSize: 13, fontWeight: "600", color: "rgba(244,218,213,0.85)" },
+  pillTextSel: { color: "#1B060F" },
+
+  comingSoonWrap: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+  },
+  comingSoonText: { fontSize: 15, color: "rgba(244,218,213,0.45)", fontWeight: "600" },
+
   settingsBtn: {
     width: 40,
     height: 40,
