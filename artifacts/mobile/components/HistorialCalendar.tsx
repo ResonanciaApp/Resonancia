@@ -1,7 +1,7 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import React, { useMemo, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import React, { useMemo, useRef, useState } from "react";
+import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { usePlayer } from "@/context/PlayerContext";
 import { getSessionById } from "@/data/sessions";
@@ -44,6 +44,46 @@ function formatRelative(isoDate: string): string {
   if (diffH < 24) return `Hace ${diffH} hora${diffH === 1 ? "" : "s"}`;
   const diffD = Math.floor(diffH / 24);
   return `Hace ${diffD} día${diffD === 1 ? "" : "s"}`;
+}
+
+function FavoriteHeartButton({
+  favorited,
+  onToggle,
+}: {
+  favorited: boolean;
+  onToggle: () => void;
+}) {
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const handlePress = () => {
+    onToggle();
+    scale.setValue(1);
+    Animated.sequence([
+      Animated.timing(scale, {
+        toValue: 1.1,
+        duration: 120,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scale, {
+        toValue: 1,
+        friction: 3,
+        tension: 140,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  return (
+    <Pressable onPress={handlePress} hitSlop={12}>
+      <Animated.View style={{ transform: [{ scale }] }}>
+        {favorited ? (
+          <Ionicons name="heart" size={20} color="rgba(255,255,255,0.95)" />
+        ) : (
+          <Ionicons name="heart-outline" size={20} color="rgba(255,255,255,0.9)" />
+        )}
+      </Animated.View>
+    </Pressable>
+  );
 }
 
 export function HistorialCalendar() {
@@ -181,18 +221,7 @@ export function HistorialCalendar() {
                   {session.title}
                 </Text>
               </View>
-              <Pressable
-                onPress={() => toggleFavorite(session.id)}
-                hitSlop={12}
-                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-              >
-                <Feather
-                  name="heart"
-                  size={20}
-                  color={fav ? colors.primary : colors.mutedForeground}
-                  style={fav ? undefined : { opacity: 0.7 }}
-                />
-              </Pressable>
+              <FavoriteHeartButton favorited={fav} onToggle={() => toggleFavorite(session.id)} />
             </View>
           );
         })
