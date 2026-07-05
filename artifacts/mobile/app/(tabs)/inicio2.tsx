@@ -1027,7 +1027,7 @@ const styles = StyleSheet.create({
     top: HEADER_HERO_HEIGHT,
     left: 0,
     right: 0,
-    height: 6000,
+    height: 800,
   },
   scrollGlowFill: {
     position: "absolute",
