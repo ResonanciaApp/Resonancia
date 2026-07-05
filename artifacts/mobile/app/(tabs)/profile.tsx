@@ -637,8 +637,8 @@ export default function ProfileScreen() {
   // Fondo fijo (mismo degradado que Inicio). La personalización de fondo se
   // retiró de la UI (WatercolorBtn); ya no debe tomar el color de una paleta
   // guardada previamente en AsyncStorage (@profile_bg_gradient/@profile_bg_creation).
-  const activeBgColors = useMemo((): readonly [string, string] => {
-    return [BG_GRADIENT[0], BG_GRADIENT[1]];
+  const activeBgColors = useMemo((): readonly string[] => {
+    return BG_GRADIENT;
   }, []);
 
   // Creación activa (para renderizar glyphs en el fondo)
@@ -650,11 +650,11 @@ export default function ProfileScreen() {
   const glyphSize = width * 0.96;
 
   // ── Crossfade de fondo ────────────────────────────────────────────────────
-  const defaultBg = [BG_GRADIENT[0], BG_GRADIENT[1]] as const;
-  const [bgFrom, setBgFrom] = useState<readonly [string, string]>(defaultBg);
-  const [bgTo, setBgTo] = useState<readonly [string, string]>(defaultBg);
+  const defaultBg = BG_GRADIENT;
+  const [bgFrom, setBgFrom] = useState<readonly string[]>(defaultBg);
+  const [bgTo, setBgTo] = useState<readonly string[]>(defaultBg);
   const crossFadeAnim = useRef(new Animated.Value(1)).current;
-  const prevBgRef = useRef<readonly [string, string]>(defaultBg);
+  const prevBgRef = useRef<readonly string[]>(defaultBg);
   const bgMountedRef = useRef(false);
   // Fade-in del glifo al montar (carga async desde AsyncStorage → aparición suave).
   const glyphMountAnim = useRef(new Animated.Value(0)).current;
@@ -712,14 +712,14 @@ export default function ProfileScreen() {
         style={[StyleSheet.absoluteFill, { opacity: crossFadeAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}
         pointerEvents="none"
       >
-        <LinearGradient colors={[...bgFrom]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} />
+        <LinearGradient colors={[bgFrom[0], bgFrom[1], ...bgFrom.slice(2)]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} />
       </Animated.View>
       {/* Fondo nuevo — aparece */}
       <Animated.View
         style={[StyleSheet.absoluteFill, { opacity: crossFadeAnim }]}
         pointerEvents="none"
       >
-        <LinearGradient colors={[...bgTo]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} />
+        <LinearGradient colors={[bgTo[0], bgTo[1], ...bgTo.slice(2)]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} />
       </Animated.View>
       {/* Geometrías de la creación seleccionada — fade-in al montar + crossfade de colores */}
       {activeBgCreation && (
