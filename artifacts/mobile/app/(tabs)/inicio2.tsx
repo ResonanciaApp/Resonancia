@@ -558,7 +558,7 @@ export default function HomeScreen2() {
         />
         <LinearGradient
           colors={["#2E0B17", "#160811", "#160811"]}
-          locations={[0, 0.2, 1]}
+          locations={[0, 0.28, 1]}
           style={styles.scrollBgFill}
           pointerEvents="none"
         />
