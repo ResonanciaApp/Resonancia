@@ -82,7 +82,7 @@ const VIDEO_REG_W = 200;
 const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 1.85);
 
 const HEADER_HERO_HEIGHT = 335;
-const HERO_FADE_HEIGHT = 80;
+const HERO_FADE_HEIGHT = 110;
 
 const SECTION_GAP = 60;
 const TEMA_GAP = 10;
@@ -537,13 +537,18 @@ export default function HomeScreen2() {
         <LinearGradient
           colors={[
             "transparent",
-            "rgba(52,13,26,0.15)",
-            "rgba(52,13,26,0.55)",
-            "rgba(52,13,26,0.9)",
-            "#340D1A",
+            "rgba(52,13,26,0.009)",
+            "rgba(52,13,26,0.058)",
+            "rgba(52,13,26,0.163)",
+            "rgba(52,13,26,0.317)",
+            "rgba(52,13,26,0.5)",
+            "rgba(52,13,26,0.683)",
+            "rgba(52,13,26,0.837)",
+            "rgba(52,13,26,0.942)",
+            "rgba(52,13,26,0.991)",
             "#340D1A",
           ]}
-          locations={[0, 0.35, 0.62, 0.82, 0.94, 1]}
+          locations={[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]}
           style={styles.heroScrollRevealFade}
           pointerEvents="none"
         />
