@@ -557,8 +557,7 @@ export default function HomeScreen2() {
           pointerEvents="none"
         />
         <LinearGradient
-          colors={["#2E0B17", "#160811", "#160811"]}
-          locations={[0, 0.2, 1]}
+          colors={["#2E0B17", "#160811"]}
           style={styles.scrollBgFill}
           pointerEvents="none"
         />
@@ -1028,7 +1027,7 @@ const styles = StyleSheet.create({
     top: HEADER_HERO_HEIGHT,
     left: 0,
     right: 0,
-    height: 6000,
+    height: 800,
   },
   scrollGlowFill: {
     position: "absolute",
