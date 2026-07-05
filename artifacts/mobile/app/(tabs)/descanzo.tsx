@@ -466,7 +466,7 @@ export default function DescansoScreen() {
                 <Feather name="chevron-down" size={18} color="rgba(255,255,255,0.6)" />
               </View>
               <Text style={styles.nightBannerSub}>
-                {timerMin} min{fadeVol ? " · fade" : ""}{isSoundTab && player.selectedId ? " · reproduciendo" : ""}
+                {timerMin} min{fadeVol ? " · fade" : ""}{player.selectedId ? " · reproduciendo" : ""}
               </Text>
             </View>
             {currentSession ? (
@@ -476,7 +476,7 @@ export default function DescansoScreen() {
                 isPlaying={sessionIsPlaying}
                 onToggle={pauseResume}
               />
-            ) : (isSoundTab && player.selectedId) ? (
+            ) : player.selectedId ? (
               <DormirMiniPlayer
                 elapsed={player.elapsedSeconds}
                 duration={player.durationSeconds}
