@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { Stack } from "expo-router";
 import React, { useMemo, useRef, useState } from "react";
 import {
@@ -16,10 +17,12 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
 import { useColors } from "@/hooks/useColors";
+
+const CARD_BG = "rgba(255,255,255,0.045)";
+const CARD_BORDER = "rgba(255,255,255,0.3)";
 
 const FILTER_CHIPS = ["Todos", "Movimiento", "Respiración", "Naturaleza", "Música"] as const;
 
@@ -82,16 +85,16 @@ export default function VideoTabScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={styles.root}>
       <Stack.Screen options={{ headerShown: false }} />
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
+      <LinearGradient colors={["#340D1A", "#190913"]} style={styles.rootGradient} />
 
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <Text style={[styles.pageTitle, { color: colors.foreground }]}>Video</Text>
 
         <View style={styles.searchRow}>
-          <View style={[styles.searchBox, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={[styles.searchBox, { backgroundColor: CARD_BG, borderColor: CARD_BORDER }]}>
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
               value={query}
@@ -109,7 +112,7 @@ export default function VideoTabScreen() {
           </View>
 
           <Pressable
-            style={[styles.settingsBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+            style={[styles.settingsBtn, { backgroundColor: CARD_BG, borderColor: CARD_BORDER }]}
             hitSlop={8}
             accessibilityLabel="Ajustes"
           >
@@ -131,8 +134,8 @@ export default function VideoTabScreen() {
                 style={[
                   styles.chip,
                   {
-                    backgroundColor: sel ? colors.primary : colors.card,
-                    borderColor: sel ? colors.primary : colors.border,
+                    backgroundColor: sel ? colors.primary : CARD_BG,
+                    borderColor: sel ? colors.primary : CARD_BORDER,
                   },
                 ]}
               >
@@ -161,7 +164,7 @@ export default function VideoTabScreen() {
       </View>
 
       <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 100 + bottomPad, paddingTop: 4, gap: 20 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 100 + bottomPad, paddingTop: 4, gap: 12 }}
         showsVerticalScrollIndicator={false}
       >
         {isLoading ? (
@@ -170,7 +173,7 @@ export default function VideoTabScreen() {
           </View>
         ) : filtered.length === 0 ? (
           <View style={styles.empty}>
-            <Feather name="film" size={36} color={colors.border} />
+            <Feather name="film" size={36} color={CARD_BORDER} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
               {query ? "Sin resultados" : "Próximamente"}
             </Text>
@@ -181,7 +184,9 @@ export default function VideoTabScreen() {
             </Text>
           </View>
         ) : (
-          filtered.map((v) => <VideoCard key={v.id} video={v} width={Dimensions.get("window").width - 40} />)
+          filtered.map((v) => (
+            <VideoCard key={v.id} video={v} horizontal cardBg={CARD_BG} borderColor={CARD_BORDER} />
+          ))
         )}
       </ScrollView>
 
@@ -224,7 +229,8 @@ export default function VideoTabScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1 },
+  root: { flex: 1, backgroundColor: "#210911" },
+  rootGradient: { ...StyleSheet.absoluteFillObject },
   header: { paddingHorizontal: 20, paddingBottom: 14, gap: 14 },
   pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.4 },
 

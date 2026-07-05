@@ -14,6 +14,7 @@ type Props = {
   width?: number;
   horizontal?: boolean;
   cardBg?: string;
+  borderColor?: string;
 };
 
 function LockStar() {
@@ -36,7 +37,7 @@ function PlayOverlay() {
   );
 }
 
-export function VideoCard({ video, width = 240, horizontal = false, cardBg }: Props) {
+export function VideoCard({ video, width = 240, horizontal = false, cardBg, borderColor }: Props) {
   const colors = useColors();
   const { isPremium } = usePremium();
   const locked = !!video.isPremium && !isPremium;
@@ -52,7 +53,12 @@ export function VideoCard({ video, width = 240, horizontal = false, cardBg }: Pr
         onPress={handlePress}
         style={({ pressed }) => [
           styles.hRow,
-          { backgroundColor: cardBg ?? "rgba(74,12,12,0.08)", opacity: pressed ? 0.8 : 1 },
+          {
+            backgroundColor: cardBg ?? "rgba(74,12,12,0.08)",
+            borderColor: borderColor ?? "transparent",
+            borderWidth: borderColor ? StyleSheet.hairlineWidth : 0,
+            opacity: pressed ? 0.8 : 1,
+          },
         ]}
       >
         <View style={styles.hImageWrap}>
@@ -76,6 +82,7 @@ export function VideoCard({ video, width = 240, horizontal = false, cardBg }: Pr
             </Text>
           </View>
         </View>
+        <Feather name="chevron-right" size={18} color={colors.mutedForeground} style={{ marginRight: 14 }} />
       </Pressable>
     );
   }
