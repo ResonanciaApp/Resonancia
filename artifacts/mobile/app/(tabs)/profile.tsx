@@ -1060,18 +1060,17 @@ export default function ProfileScreen() {
           contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 20 }}
           showsVerticalScrollIndicator={false}
         >
-          <View style={[styles.registrosCard, { backgroundColor: colors.card }]}>
-            {REGISTROS_ITEMS.map((item, idx) => (
+          <View style={styles.registrosCard}>
+            {REGISTROS_ITEMS.map((item) => (
               <Pressable
                 key={item.route}
                 onPress={() => router.push(item.route as never)}
                 style={({ pressed }) => [
                   styles.registrosRow,
-                  idx < REGISTROS_ITEMS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
                   { opacity: pressed ? 0.7 : 1 },
                 ]}
               >
-                <Feather name={item.icon} size={18} color={colors.foreground} />
+                <Feather name={item.icon} size={22} color={colors.foreground} />
                 <Text style={[styles.registrosLabel, { color: colors.foreground }]}>{item.label}</Text>
                 <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
               </Pressable>
@@ -1364,6 +1363,7 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingHorizontal: 15,
     paddingBottom: 14,
+    marginTop: 10,
   },
   pill: {
     paddingHorizontal: 15,
@@ -1397,7 +1397,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     gap: 14,
   },
-  registrosLabel: { flex: 1, fontSize: 15, fontWeight: "500" },
+  registrosLabel: { flex: 1, fontSize: 19, fontWeight: "500" },
 
   settingsBtn: {
     width: 40,
