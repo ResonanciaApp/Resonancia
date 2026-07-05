@@ -337,6 +337,8 @@ function DormirMiniPlayer({
         {formatMiniTime(elapsed)} / {formatMiniTime(duration)}
       </Text>
 
+      <View style={{ width: 15 }} />
+
       <Pressable
         onPress={(e) => { e.stopPropagation(); onToggle(); }}
         style={styles.dormirMiniPlayerBtn}
@@ -687,8 +689,8 @@ const styles = StyleSheet.create({
   dormirMiniPlayer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
     height: 54,
+    width: 168,
     transform: [{ translateY: -5 }],
     paddingLeft: 32,
     paddingRight: 26,
