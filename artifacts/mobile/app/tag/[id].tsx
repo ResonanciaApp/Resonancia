@@ -54,7 +54,6 @@ export default function TagScreen() {
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const [durationFilter, setDurationFilter] = useState<string | null>(null);
-  const [rootH, setRootH] = useState(0);
 
   const tag = TAG_CARDS.find((t) => t.id === id);
 
@@ -97,16 +96,8 @@ export default function TagScreen() {
   return (
         <LinearGradient
       style={styles.root}
-      onLayout={(e) => setRootH(e.nativeEvent.layout.height)}
       colors={BG_GRADIENT}
-      locations={
-        rootH > 0
-          ? (() => {
-              const heroFrac = Math.min(HERO_H / rootH, 0.9);
-              return [heroFrac + 0.2 * (1 - heroFrac), 1] as const;
-            })()
-          : undefined
-      }
+      locations={[0, 0.5, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >

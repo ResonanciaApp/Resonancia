@@ -388,7 +388,6 @@ export default function SonidosAncestalesScreen() {
   const scrollY   = useRef(new Animated.Value(0)).current;
   const scrollRef  = useRef<ScrollView>(null);
   const HERO_AREA_H = HERO_H;
-  const [rootH, setRootH] = useState(0);
   const stickyOpacity = scrollY.interpolate({ inputRange: [HERO_AREA_H * 0.30, HERO_AREA_H * 0.95], outputRange: [0, 1], extrapolate: "clamp" });
   const [stickyActive,  setStickyActive]  = useState(false);
   const [chipsOffsetY,  setChipsOffsetY]  = useState(350);
@@ -458,19 +457,8 @@ export default function SonidosAncestalesScreen() {
   };
 
   return (
-    <View style={styles.root} onLayout={(e) => setRootH(e.nativeEvent.layout.height)}>
-      <LinearGradient
-        colors={["#340D1A", "#190913"]}
-        locations={
-          rootH > 0
-            ? (() => {
-                const heroFrac = Math.min(HERO_AREA_H / rootH, 0.9);
-                return [heroFrac + 0.2 * (1 - heroFrac), 1] as const;
-              })()
-            : undefined
-        }
-        style={StyleSheet.absoluteFill}
-      />
+    <View style={styles.root}>
+      <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} />
       <ScrollView
         ref={scrollRef}
         style={styles.scroll}
