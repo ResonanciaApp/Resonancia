@@ -430,9 +430,6 @@ export default function DescansoScreen() {
         <View style={styles.hero}>
           <Ionicons name="moon" size={34} color="#C4A8F5" style={styles.heroIcon} />
           <Text style={[styles.heroTitle, { color: colors.foreground }]}>Dormir</Text>
-          <Text style={[styles.heroSubtitle, { color: "rgba(255,255,255,0.8)" }]}>
-            Sonidos especialmente diseñados{"\n"}para un descanso profundo
-          </Text>
         </View>
 
         {/* ── Tabs de modo ── */}
@@ -844,14 +841,9 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   heroTitle: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "700",
     letterSpacing: 0.4,
     marginBottom: 10,
-  },
-  heroSubtitle: {
-    fontSize: 15,
-    textAlign: "center",
-    lineHeight: 22,
   },
 });
