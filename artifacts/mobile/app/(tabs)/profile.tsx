@@ -55,13 +55,7 @@ import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen } from "@/components/BibliotecaScreen";
 import {
-  BG_GRADIENTS,
-  bgGradientColors,
-  brightnessFactor,
   gradientColors,
-  HOME_GRADIENT,
-  scaleColors,
-  scaleHex,
   type GeoSettings,
 } from "@/data/geometrix-creations";
 import { SacredGlyph } from "@/components/SacredGlyph";
@@ -127,7 +121,7 @@ function computeStreak(events: { playedAt: string }[]): number {
   return count;
 }
 
-const BG_GRADIENT = ["#230610", "#16040A"] as const;
+const BG_GRADIENT = ["#210911", "#190913", "#0B0811"] as const;
 
 type PerfilTab = "panel" | "biblioteca" | "historial" | "registros";
 
@@ -640,24 +634,12 @@ export default function ProfileScreen() {
   }, [statEvents]);
 
   // ── Fondo activo (degradado de perfil) ────────────────────────────────────
+  // Fondo fijo (mismo degradado que Inicio). La personalización de fondo se
+  // retiró de la UI (WatercolorBtn); ya no debe tomar el color de una paleta
+  // guardada previamente en AsyncStorage (@profile_bg_gradient/@profile_bg_creation).
   const activeBgColors = useMemo((): readonly [string, string] => {
-    if (profileBgCreationId) {
-      const creation = geoCreations.find((c) => c.id === profileBgCreationId);
-      if (creation) {
-        const bgFactor = brightnessFactor(creation.master.bgBrightness);
-        const bgGrad = bgGradientColors(creation.master.bgGradientId);
-        const bgColors = creation.master.bgColor
-          ? ([scaleHex(creation.master.bgColor, bgFactor), scaleHex(creation.master.bgColor, bgFactor)] as const)
-          : (scaleColors(bgGrad ?? HOME_GRADIENT, bgFactor) as readonly [string, string]);
-        return bgColors;
-      }
-    }
-    if (profileBgGradientId) {
-      const bg = bgGradientColors(profileBgGradientId);
-      if (bg) return bg;
-    }
     return [BG_GRADIENT[0], BG_GRADIENT[1]];
-  }, [profileBgCreationId, profileBgGradientId, geoCreations]);
+  }, []);
 
   // Creación activa (para renderizar glyphs en el fondo)
   const activeBgCreation = useMemo(
@@ -1094,7 +1076,7 @@ export default function ProfileScreen() {
           behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
           <LinearGradient
-            colors={["#230610", "#16040A"]}
+            colors={["#210911", "#190913", "#0B0811"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFill}
