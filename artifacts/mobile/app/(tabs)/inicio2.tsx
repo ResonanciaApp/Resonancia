@@ -83,6 +83,7 @@ const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 1.85);
 
 const HEADER_HERO_HEIGHT = 335;
 const HERO_FADE_HEIGHT = 40;
+const HERO_TOP_FADE_HEIGHT = Math.round(HEADER_HERO_HEIGHT * 0.2);
 
 const SECTION_GAP = 60;
 const TEMA_GAP = 10;
@@ -513,6 +514,11 @@ export default function HomeScreen2() {
           source={require("@/assets/images/hero-everest-temple.png")}
           style={styles.heroBannerImage}
           resizeMode="cover"
+        />
+        <LinearGradient
+          colors={["rgba(27,6,15,0.85)", "rgba(27,6,15,0.35)", "transparent"]}
+          style={styles.heroBannerTopFade}
+          pointerEvents="none"
         />
       </View>
 
@@ -969,6 +975,13 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: HERO_FADE_HEIGHT,
+  },
+  heroBannerTopFade: {
+    position: "absolute",
+    top: -20,
+    left: 0,
+    right: 0,
+    height: HERO_TOP_FADE_HEIGHT,
   },
   heroScrollSpacer: {
     width: "100%",
