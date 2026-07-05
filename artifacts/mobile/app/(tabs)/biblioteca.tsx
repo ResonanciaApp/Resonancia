@@ -1643,7 +1643,7 @@ export default function BibliotecaScreen() {
           style={StyleSheet.absoluteFill}
           contentFit="cover"
         />
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]} />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.70)" }]} />
         {/* Fila 1: título + iconos */}
         <View style={styles.headerRow}>
           <View style={{ flex: 1 }}>
