@@ -130,7 +130,7 @@ const PERFIL_TABS: { id: PerfilTab; label: string }[] = [
   { id: "panel",       label: "Muro" },
   { id: "biblioteca",  label: "Biblioteca" },
   { id: "historial",   label: "Historial" },
-  { id: "registros",   label: "Registros" },
+  { id: "registros",   label: "Mi Espacio" },
 ];
 
 const REGISTROS_ITEMS: { label: string; route: string; icon: keyof typeof Feather.glyphMap }[] = [
