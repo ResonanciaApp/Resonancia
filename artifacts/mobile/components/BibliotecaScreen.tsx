@@ -532,8 +532,8 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
 }
 
 const blStyles = StyleSheet.create({
-  root:         { flex: 1, backgroundColor: "#230C14" },
-  overlay:      { flexDirection: "row", alignItems: "center", backgroundColor: "#230C14", paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
+  root:         { flex: 1, backgroundColor: "#190913" },
+  overlay:      { flexDirection: "row", alignItems: "center", backgroundColor: "#190913", paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
   bar:          { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.09)", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 11 },
   input:        { flex: 1, fontSize: 14, color: "#F4DAD5" },
   cancel:       { paddingVertical: 6 },
@@ -2033,7 +2033,7 @@ const styles = StyleSheet.create({
   nameCard: {
     flex: 1,
     width: "100%",
-    backgroundColor: "#230C14",
+    backgroundColor: "#190913",
     paddingHorizontal: 32,
     paddingTop: 20,
     paddingBottom: 32,
@@ -2088,7 +2088,7 @@ const styles = StyleSheet.create({
   },
   sheet: {
     position: "absolute", left: 0, right: 0, bottom: 0,
-    backgroundColor: "#230C14",
+    backgroundColor: "#190913",
     borderTopLeftRadius: 24, borderTopRightRadius: 24,
     paddingHorizontal: 20, paddingTop: 12, paddingBottom: 36,
   },
@@ -2160,7 +2160,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   addResModalSheet: {
-    backgroundColor: "#230C14",
+    backgroundColor: "#190913",
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     paddingTop: 18,

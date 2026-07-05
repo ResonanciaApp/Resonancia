@@ -842,7 +842,7 @@ const modalStyles = StyleSheet.create({
     borderTopRightRadius: 22,
     paddingHorizontal: 20,
     overflow: "hidden",
-    backgroundColor: "#230C14",
+    backgroundColor: "#190913",
   },
   handle: {
     alignSelf: "center",

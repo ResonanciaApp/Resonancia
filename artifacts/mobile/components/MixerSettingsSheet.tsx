@@ -65,7 +65,7 @@ export function MixerSettingsSheet({
         <View
           style={[
             styles.sheet,
-            { paddingTop: insets.top + 14, paddingBottom: insets.bottom + 16, backgroundColor: "#230C14" },
+            { paddingTop: insets.top + 14, paddingBottom: insets.bottom + 16, backgroundColor: "#190913" },
           ]}
         >
           {/* ── Header: X + título en la misma fila ── */}
@@ -169,7 +169,7 @@ export function MixerSettingsSheet({
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#230C14",
+    backgroundColor: "#190913",
   },
   sheet: {
     flex: 1,

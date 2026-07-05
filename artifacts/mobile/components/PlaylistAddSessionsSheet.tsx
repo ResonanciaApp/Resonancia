@@ -51,7 +51,7 @@ import { SESSIONS, type Session } from "@/data/sessions";
 import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
 
-const BG_SHEET  = "#230C14";
+const BG_SHEET  = "#190913";
 const GOLD      = "#BE8744";
 const NAVY_CHECK = "#060A0F";
 const TEXT      = "#FAF0EE";
@@ -451,7 +451,7 @@ export function PlaylistAddSessionsSheet({
       <Pressable style={styles.backdrop} onPress={onClose} />
 
       <View style={[styles.sheet, { paddingBottom: bottomPad }]}>
-        <LinearGradient colors={["#230C14", "#230C14"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#190913", "#190913"]} style={StyleSheet.absoluteFill} />
         <View style={styles.handle} />
 
         {/* Header — título centrado */}

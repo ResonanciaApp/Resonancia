@@ -1201,7 +1201,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     paddingTop: 10,
     maxHeight: "85%",
-    backgroundColor: "#230C14",
+    backgroundColor: "#190913",
   },
   optHandle: {
     width: 36,
