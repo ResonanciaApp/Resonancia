@@ -932,6 +932,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
     gap: 5,
+    borderWidth: 1,
+    borderColor: "rgba(244,218,213,0.2)",
   },
   pillTabBorder: {
     borderRadius: 999,
@@ -1025,6 +1027,8 @@ const styles = StyleSheet.create({
     height: 34,
     borderRadius: 20,
     overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(244,218,213,0.2)",
   },
   subTabText: { fontSize: 11, letterSpacing: 0.1, fontWeight: "700", includeFontPadding: false },
 
