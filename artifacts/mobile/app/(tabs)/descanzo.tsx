@@ -535,7 +535,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: H_PAD,
     rowGap: 35,
-    marginTop: 3,
+    marginTop: -4,
     marginBottom: 6,
   },
 
@@ -545,7 +545,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     paddingHorizontal: H_PAD,
     gap: 10,
-    marginTop: 3,
+    marginTop: -4,
     marginBottom: 6,
   },
   soundCell: {
@@ -585,7 +585,7 @@ const styles = StyleSheet.create({
   /* Banner Prepara tu noche */
   nightBannerWrap: {
     marginHorizontal: H_PAD,
-    marginTop: -10,
+    marginTop: -17,
     marginBottom: 24,
     borderRadius: 14,
     overflow: "hidden",
