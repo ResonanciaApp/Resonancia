@@ -154,7 +154,9 @@ export function HistorialCalendar() {
           <View key={`week-${wi}`} style={styles.daysGrid}>
             {week.map((d, i) => {
               if (!d) return <View key={`empty-${wi}-${i}`} style={styles.dayCell} />;
-              const selected = isSameDay(d, selectedDate);
+              const isToday = isSameDay(d, today);
+              const isSelected = isSameDay(d, selectedDate);
+              const showSelectedOutline = isSelected && !isToday;
               return (
                 <Pressable
                   key={dayKey(d)}
@@ -164,13 +166,17 @@ export function HistorialCalendar() {
                   <View
                     style={[
                       styles.dayCircle,
-                      selected && { backgroundColor: colors.foreground },
+                      isToday && { backgroundColor: colors.foreground },
+                      showSelectedOutline && {
+                        borderWidth: 1.5,
+                        borderColor: colors.foreground,
+                      },
                     ]}
                   >
                     <Text
                       style={[
                         styles.dayNum,
-                        { color: selected ? "#1B060F" : colors.foreground },
+                        { color: isToday ? "#1B060F" : colors.foreground },
                       ]}
                     >
                       {d.getDate()}
