@@ -6,7 +6,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { usePlayer } from "@/context/PlayerContext";
 
 const GOLD = "#BE8744";
-const ACTIVE_BG = "#C59357";
+const ACTIVE_BG = "rgba(255,255,255,0.2)";
 const ACTIVE_BORDER_FROM = "#854744";
 const ACTIVE_BORDER_TO = "#5A2C65";
 const TEXT = "#e8e8e8";
