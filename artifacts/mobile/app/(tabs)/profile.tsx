@@ -1349,8 +1349,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.05)",
   },
   pillSel: {
-    backgroundColor: "#F4DAD5",
-    borderColor: "#F4DAD5",
+    backgroundColor: "#F4F4F4",
+    borderColor: "#F4F4F4",
   },
   pillText: { fontSize: 13, fontWeight: "600", color: "rgba(244,218,213,0.85)" },
   pillTextSel: { color: "#1B060F" },
