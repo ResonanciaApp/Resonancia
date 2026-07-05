@@ -703,11 +703,13 @@ export default function HomeScreen2() {
                   styles.temaCell,
                   {
                     width: TEMA3_W,
-                    height: TEMA3_W,
+                    height: TEMA3_W + 30,
                     backgroundColor: pressed
                       ? hexTint(t.color, 0.22)
                       : "rgba(255,255,255,0.05)",
                     borderRadius: 11,
+                    borderWidth: 1,
+                    borderColor: "rgba(255,255,255,0.25)",
                   },
                 ]}
               >
