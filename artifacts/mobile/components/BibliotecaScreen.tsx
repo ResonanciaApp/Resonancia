@@ -1637,24 +1637,9 @@ export function BibliotecaScreen() {
         }]}
       >
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "#16040A" }]} />
-        {/* Fila 1: título + iconos */}
-        <View style={styles.headerRow}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.headerTitle}>Biblioteca</Text>
-            <Text style={styles.headerSubtitle}>Donde viven tus creaciones</Text>
-          </View>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-            <Pressable hitSlop={10} onPress={() => setSearchVisible(true)} style={styles.headerIconBtn}>
-              <Feather name="search" size={25} color={TEXT} />
-            </Pressable>
-            <Pressable hitSlop={10} onPress={() => setCreateVisible(true)} style={styles.headerIconBtn}>
-              <Feather name="plus" size={28} color={TEXT} />
-            </Pressable>
-          </View>
-        </View>
 
         {/* Fila 2: chips de tab (animados) */}
-        <View style={{ marginTop: 35 }}>
+        <View style={{ marginTop: 4 }}>
           <AnimatedChipRow
             tabs={LIB_TABS}
             activeTab={activeTab}
