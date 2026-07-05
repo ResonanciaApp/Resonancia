@@ -589,7 +589,7 @@ export default function HomeScreen2() {
           {videos.length === 0 ? (
             <View style={styles.videosEmpty}>
               <Feather name="film" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
-              <Text style={[styles.videosEmptyTitle, { color: colors.foreground }]}>Próximamente</Text>
+              <Text style={[styles.videosEmptyTitle, { color: "#e8e8e8" }]}>Próximamente</Text>
               <Text style={[styles.videosEmptySub, { color: colors.mutedForeground }]}>
                 Pronto vas a encontrar videos aquí.
               </Text>
@@ -703,7 +703,7 @@ export default function HomeScreen2() {
                   opacity: pressed ? 0.75 : 1,
                 }]}
               >
-                <Text style={{ fontSize: 14, fontWeight: "700", color: "#F4DAD5", textAlign: "center" }}>
+                <Text style={{ fontSize: 14, fontWeight: "700", color: "#e8e8e8", textAlign: "center" }}>
                   {c.label}
                 </Text>
               </Pressable>
