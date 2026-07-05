@@ -27,7 +27,7 @@ import { TAG_CARDS } from "@/data/tags";
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
-const { width, height: SCREEN_H } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 const H_PAD = 20;
 const HERO_H = Math.round(width * 0.72);
 const CARD_W = 150;
@@ -54,6 +54,7 @@ export default function TagScreen() {
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const [durationFilter, setDurationFilter] = useState<string | null>(null);
+  const [rootH, setRootH] = useState(0);
 
   const tag = TAG_CARDS.find((t) => t.id === id);
 
@@ -96,8 +97,9 @@ export default function TagScreen() {
   return (
         <LinearGradient
       style={styles.root}
+      onLayout={(e) => setRootH(e.nativeEvent.layout.height)}
       colors={BG_GRADIENT}
-      locations={[HERO_H / SCREEN_H, 1]}
+      locations={rootH > 0 ? [Math.min(HERO_H / rootH, 0.9), 1] : undefined}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >

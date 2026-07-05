@@ -21,7 +21,7 @@ import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { SESSIONS, type Session } from "@/data/sessions";
 
-const { width, height: SCREEN_H } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 const H_PAD = 15;
 const GOLD  = "#BE8744";
 
@@ -388,6 +388,7 @@ export default function SonidosAncestalesScreen() {
   const scrollY   = useRef(new Animated.Value(0)).current;
   const scrollRef  = useRef<ScrollView>(null);
   const HERO_AREA_H = HERO_H;
+  const [rootH, setRootH] = useState(0);
   const stickyOpacity = scrollY.interpolate({ inputRange: [HERO_AREA_H * 0.30, HERO_AREA_H * 0.95], outputRange: [0, 1], extrapolate: "clamp" });
   const [stickyActive,  setStickyActive]  = useState(false);
   const [chipsOffsetY,  setChipsOffsetY]  = useState(350);
@@ -457,8 +458,12 @@ export default function SonidosAncestalesScreen() {
   };
 
   return (
-    <View style={styles.root}>
-      <LinearGradient colors={["#340D1A", "#190913"]} locations={[HERO_H / SCREEN_H, 1]} style={StyleSheet.absoluteFill} />
+    <View style={styles.root} onLayout={(e) => setRootH(e.nativeEvent.layout.height)}>
+      <LinearGradient
+        colors={["#340D1A", "#190913"]}
+        locations={rootH > 0 ? [Math.min(HERO_AREA_H / rootH, 0.9), 1] : undefined}
+        style={StyleSheet.absoluteFill}
+      />
       <ScrollView
         ref={scrollRef}
         style={styles.scroll}
