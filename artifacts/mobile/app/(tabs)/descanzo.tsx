@@ -466,7 +466,7 @@ export default function DescansoScreen() {
                 <Feather name="chevron-down" size={18} color="rgba(255,255,255,0.6)" />
               </View>
               <Text style={styles.nightBannerSub}>
-                {timerMin ? `${timerMin} min` : "Sin límite"}{fadeVol ? " · fade" : ""}{player.selectedId ? " · reproduciendo" : ""}
+                {timerMin ? `${timerMin} min` : "Sin límite"}{fadeVol ? " · fade" : ""}
               </Text>
             </View>
             {currentSession ? (
