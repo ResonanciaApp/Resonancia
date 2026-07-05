@@ -611,8 +611,9 @@ export default function HomeScreen2() {
           style={{
             marginHorizontal: GRID_PAD,
             marginBottom: SECTION_GAP / 2,
+            marginTop: -15,
             height: StyleSheet.hairlineWidth,
-            backgroundColor: "rgba(255,255,255,0.04)",
+            backgroundColor: "rgba(255,255,255,0.07)",
           }}
         />
 

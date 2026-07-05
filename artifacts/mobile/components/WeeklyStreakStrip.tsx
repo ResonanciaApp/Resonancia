@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
   circleToday: {
     borderWidth: 1.5,
     borderColor: GOLD,
+    backgroundColor: "rgba(255,255,255,0.064)",
   },
   dayLabel: {
     color: MUTED,
