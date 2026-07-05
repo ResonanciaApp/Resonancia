@@ -1332,7 +1332,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.06)",
   },
-  stickyTitle: { fontSize: 20, fontWeight: "700", color: "#F4DAD5", letterSpacing: 0.3 },
+  stickyTitle: { fontSize: 20, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3 },
   pillRow: {
     flexDirection: "row",
     gap: 8,
@@ -1352,7 +1352,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F4F4F4",
     borderColor: "#F4F4F4",
   },
-  pillText: { fontSize: 13, fontWeight: "600", color: "rgba(244,218,213,0.85)" },
+  pillText: { fontSize: 13, fontWeight: "600", color: "#F4F4F4" },
   pillTextSel: { color: "#1B060F" },
 
   comingSoonWrap: {
