@@ -387,6 +387,7 @@ export default function DescansoScreen() {
     actualDurationSeconds: sessionDuration,
     playSession,
     pauseResume,
+    stop,
   } = usePlayer();
 
   const isSoundTab = SOUND_TAB_IDS.includes(activeTab);
@@ -521,7 +522,13 @@ export default function DescansoScreen() {
                 session={session}
                 width={cardW}
                 style={{ marginRight: 0 }}
-                overridePress={() => playSession(session)}
+                overridePress={() => {
+                  if (currentSession?.id === session.id) {
+                    stop();
+                  } else {
+                    playSession(session);
+                  }
+                }}
                 playing={currentSession?.id === session.id}
               />
             ))}
