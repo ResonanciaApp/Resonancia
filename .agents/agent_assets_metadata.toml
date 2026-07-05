@@ -1404,6 +1404,12 @@ uri = "file://artifacts/mobile/assets/images/hero-everest-temple.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "u8jK_u-ogCbXj-DiePwSe"
+uri = "file://artifacts/mobile/assets/images/tab-icon-universo-real.png"
+type = "image"
+title = "universe galaxy icon"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"

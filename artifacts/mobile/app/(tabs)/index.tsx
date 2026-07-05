@@ -550,7 +550,7 @@ export default function HomeScreen2() {
             style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
           >
             <Image
-              source={require("@/assets/images/tab-icon-universo.png")}
+              source={require("@/assets/images/tab-icon-universo-real.png")}
               style={styles.universeBtnBg}
               resizeMode="cover"
             />
