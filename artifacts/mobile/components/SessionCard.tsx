@@ -34,6 +34,7 @@ type Props = {
   thumbHeight?: number;
   thumbRadius?: number;
   showDuration?: boolean;
+  showAuthor?: boolean;
   pinned?: boolean;
   style?: StyleProp<ViewStyle>;
   /** Overrides the default tap behavior (navigate to /session/[id]) — e.g. play immediately in place */
@@ -53,7 +54,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, pinned = false, style, overridePress, playing = false }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthor = true, pinned = false, style, overridePress, playing = false }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -125,14 +126,16 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
       <View style={[styles.imageContainer, { borderRadius: colors.radius - 4 }, playing && styles.imageContainerPlaying]}>
         <Image source={session.image} style={styles.cardImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
         {locked && <LockStar />}
-        <View style={styles.durationBadge}>
-          <Text style={styles.durationBadgeText}>{session.durationLabel}</Text>
-        </View>
+        {showDuration && (
+          <View style={styles.durationBadge}>
+            <Text style={styles.durationBadgeText}>{session.durationLabel}</Text>
+          </View>
+        )}
       </View>
       <Text style={[styles.cardTitle, { color: colors.foreground }]} numberOfLines={2}>
         {session.title}
       </Text>
-      {!!authorName && (
+      {showAuthor && !!authorName && (
         <View style={styles.cardAuthorRow}>
           <Image source={authorPhoto} style={styles.cardAuthorAvatar} contentFit="cover" />
           <Text style={[styles.cardAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
