@@ -58,10 +58,11 @@ const TAB_CONFIG: Record<
     image?: number;
     iconSize?: number;
     iconOffset?: number;
+    labelOffset?: number;
   }
 > = {
   index:      { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
-  explore:    { label: "Medita",     sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search", image: require("@/assets/images/tab-icon-medita.png"), iconSize: ICON_SIZE + 4 },
+  explore:    { label: "Medita",     sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search", image: require("@/assets/images/tab-icon-medita.png"), iconSize: ICON_SIZE + 4, labelOffset: -4 },
   musica:     { label: "Crear",      sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",  featherIcon: "sliders" },
   biblioteca: { label: "Universo",   sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark", image: require("@/assets/images/tab-icon-universo.png") },
   descanzo:   { label: "Dormir",     sfIcon: "moon.stars",          sfIconFill: "moon.stars.fill",      featherIcon: "moon" },
@@ -83,6 +84,7 @@ function TabItem({
   const isIOS      = Platform.OS === "ios";
   const iconSize   = conf.iconSize ?? ICON_SIZE;
   const iconOffset = conf.iconOffset ?? 0;
+  const labelOffset = conf.labelOffset ?? 0;
   const tOffset    = [{ translateY: iconOffset }];
 
   const makeIcon = useCallback((active: boolean) => {
@@ -111,7 +113,7 @@ function TabItem({
         <View style={{ width: iconSize, height: iconSize }}>
           {makeIcon(isFocused)}
         </View>
-        <View style={styles.labelWrap}>
+        <View style={[styles.labelWrap, { transform: [{ translateY: labelOffset }] }]}>
           <Text style={[styles.label, { color: isFocused ? ACTIVE_COLOR : INACTIVE_COLOR }]} numberOfLines={1}>
             {conf.label}
           </Text>
