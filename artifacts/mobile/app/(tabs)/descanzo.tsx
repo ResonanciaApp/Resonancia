@@ -185,7 +185,7 @@ function NightSky() {
 
 /* ─── Constantes del sheet ───────────────────────────────────────────── */
 const TIMER_OPTIONS = [15, 30, 45, 60, 90] as const;
-const SHEET_BG = "#14031E";
+const SHEET_BG = "#120A18";
 
 /* ─── NightTimerSheet (controlado desde DescansoScreen) ─────────────── */
 interface NightTimerSheetProps {
