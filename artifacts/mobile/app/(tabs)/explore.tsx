@@ -382,7 +382,7 @@ export default function ExploreScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#230610", "#16040A"]} style={styles.rootGradient} />
+      <LinearGradient colors={["#210911", "#190913", "#0B0811"]} style={styles.rootGradient} />
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="solid" />
 
@@ -617,7 +617,7 @@ export default function ExploreScreen() {
 }
 
 const styles = StyleSheet.create({
-  root:   { flex: 1, backgroundColor: "#230610" },
+  root:   { flex: 1, backgroundColor: "#210911" },
   rootGradient: { ...StyleSheet.absoluteFillObject },
   scroll: { flex: 1 },
 

@@ -29,7 +29,7 @@ export default function AncestralInstrumentos() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#230610", "#16040A"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
+      <LinearGradient colors={["#210911", "#190913", "#0B0811"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
 
       {/* ── Header ── */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
@@ -75,7 +75,7 @@ export default function AncestralInstrumentos() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#230610" },
+  root: { flex: 1, backgroundColor: "#210911" },
 
   header: {
     flexDirection: "row",
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: H_PAD,
     paddingBottom: 14,
-    backgroundColor: "#230610",
+    backgroundColor: "#210911",
   },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   headerTitle: { fontSize: 21, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },

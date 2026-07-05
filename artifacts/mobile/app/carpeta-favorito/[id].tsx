@@ -21,7 +21,7 @@ import { SESSIONS } from "@/data/sessions";
 import { SessionCard } from "@/components/SessionCard";
 import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
 
-const BG = ["#230610", "#16040A"] as const;
+const BG = ["#210911", "#190913", "#0B0811"] as const;
 const GOLD = "#BE8744";
 const TEXT = "#FAF0EE";
 const MUTED = "#c2c2c2";

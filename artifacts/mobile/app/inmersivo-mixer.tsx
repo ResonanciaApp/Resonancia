@@ -363,7 +363,7 @@ export default function InmersivoMixerScreen() {
 
 // ── Estilos ──────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#230610" },
+  root: { flex: 1, backgroundColor: "#210911" },
 
   controlsLayer: {
     ...StyleSheet.absoluteFillObject,

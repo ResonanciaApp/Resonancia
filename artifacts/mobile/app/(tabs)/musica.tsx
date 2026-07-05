@@ -127,7 +127,7 @@ const MEZ_PLACEHOLDERS = [
 
 // ── Colores de tab ────────────────────────────────────────────────────────────
 const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
-  popular:        ["#230610", "#16040A", "#16040A"],
+  popular:        ["#210911", "#190913", "#0B0811"],
   naturaleza:     ["#0A1A0E", "#0A1A0E", "#0A1A0E"],
   ancestrales:    ["#221510", "#221510", "#221510"],
   sintetizadores: ["#061A2E", "#061A2E", "#061A2E"],
@@ -138,7 +138,7 @@ const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
 
 /** Gradiente de fondo de contenido en modo "noche" — último stop neutro oscuro (sin bordeaux) */
 const TAB_NOCHE_BG: Record<MainTabId, [string, string, string]> = {
-  popular:        ["#230610", "#16040A", "#16040A"],
+  popular:        ["#210911", "#190913", "#0B0811"],
   naturaleza:     ["#0A1A0E", "#0A1A0E", "#0A1A0E"],
   ancestrales:    ["#221510", "#221510", "#221510"],
   sintetizadores: ["#061A2E", "#061A2E", "#061A2E"],
@@ -671,7 +671,7 @@ export default function MezcladorScreen() {
 
         {/* ── Zona superior ── */}
         <View style={styles.topPanelShadow}>
-          <View style={[styles.topPanel, { paddingTop: topPad + 2, backgroundColor: "#230610" }]}>
+          <View style={[styles.topPanel, { paddingTop: topPad + 2, backgroundColor: "#210911" }]}>
             {/* ── Header ── */}
             <View style={styles.header}>
               <View style={styles.headerRow}>
@@ -887,7 +887,7 @@ const styles = StyleSheet.create({
 
   topPanelShadow: {
     zIndex: 10,
-    backgroundColor: "#230610",
+    backgroundColor: "#210911",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.38,

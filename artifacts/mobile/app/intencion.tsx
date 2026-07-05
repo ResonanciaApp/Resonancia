@@ -78,7 +78,7 @@ export default function IntencionScreen() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <LinearGradient
         style={styles.root}
-        colors={["#230610", "#16040A"]}
+        colors={["#210911", "#190913", "#0B0811"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
       >

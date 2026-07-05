@@ -99,7 +99,7 @@ export default function MisSesionesScreen() {
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#230610", "#16040A"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={["#210911", "#190913", "#0B0811"]} style={StyleSheet.absoluteFill} />
 
       {/* Floating back */}
       <View style={{ position: "absolute", left: 16, top: topPad + 8, zIndex: 10 }} pointerEvents="box-none">
@@ -259,7 +259,7 @@ const pastStyles = StyleSheet.create({
 
 // ── Estilos ───────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#230610" },
+  root: { flex: 1, backgroundColor: "#210911" },
   header: {
     flexDirection: "row",
     alignItems: "center",

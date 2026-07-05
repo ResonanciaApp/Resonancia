@@ -51,8 +51,8 @@ import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
 const GOLD = "#BE8744";
-const NAVY = "#230610";
-const DARK_BLUE = "#230610";
+const NAVY = "#210911";
+const DARK_BLUE = "#210911";
 const TEXT = "#e8e8e8";
 const MUTED = "#c2c2c2";
 
@@ -859,7 +859,7 @@ function GeometrixRow({ creation, onPress }: { creation: GeometrixCreation; onPr
       {/* Miniatura: cuadrado oscuro con las primeras capas superpuestas */}
       <View style={styles.geoThumb}>
         <LinearGradient
-          colors={["#230610", "#16040A"]}
+          colors={["#210911", "#190913", "#0B0811"]}
           style={StyleSheet.absoluteFill}
         />
         {firstLayers.map((instId, idx) => {
@@ -1422,7 +1422,7 @@ export function BibliotecaScreen() {
                     onPress={() => router.navigate({ pathname: "/(tabs)/geometrix", params: { load: c.id } } as never)}
                   >
                     <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
-                      <LinearGradient colors={["#230610", "#16040A"]} style={StyleSheet.absoluteFill} />
+                      <LinearGradient colors={["#210911", "#190913", "#0B0811"]} style={StyleSheet.absoluteFill} />
                       {firstLayers.map((instId, idx) => {
                         const geoId = baseOf(instId);
                         const settings = c.settings[instId];
@@ -1619,7 +1619,7 @@ export function BibliotecaScreen() {
   return (
     <LinearGradient
       style={styles.root}
-      colors={["#230610", "#16040A"]}
+      colors={["#210911", "#190913", "#0B0811"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
@@ -1636,7 +1636,7 @@ export function BibliotecaScreen() {
           elevation: 8,
         }]}
       >
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#16040A" }]} />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#0B0811" }]} />
 
         {/* Fila 2: chips de tab (animados) */}
         <View style={{ marginTop: -16 }}>
@@ -1801,7 +1801,7 @@ const styles = StyleSheet.create({
   // ── Sticky header ───────────────────────────────────────────────────────────
   stickyHeader: {
     zIndex: 10,
-    backgroundColor: "#230610",
+    backgroundColor: "#210911",
   },
   stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.025)", marginTop: 10, marginHorizontal: -15 },
   headerRow: {

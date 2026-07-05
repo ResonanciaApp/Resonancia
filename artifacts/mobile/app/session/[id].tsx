@@ -40,7 +40,7 @@ import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 const { width } = Dimensions.get("window");
 const HEADER_H = 343;
 
-function GlowPill({ onPress, pillStyle, gradientColors }: { onPress: () => void; pillStyle: object; gradientColors?: [string, string] }) {
+function GlowPill({ onPress, pillStyle, gradientColors }: { onPress: () => void; pillStyle: object; gradientColors?: [string, string, ...string[]] }) {
   const scale  = useRef(new Animated.Value(1)).current;
   const bright = useRef(new Animated.Value(0)).current;
 
@@ -115,13 +115,13 @@ export default function SessionDetailScreen() {
   const isAncestral = session.categoryId === "sonidos-ancestrales";
   const isMusica = session.categoryId === "musica-sonidos";
   const CATEGORY_BG: Record<string, {
-    gradient: [string, string]; solid: string;
+    gradient: [string, string, string]; solid: string;
     pillBg: string; labelGradient: [string, string]; labelColor: string;
   }> = {
-    "sonidos-ancestrales":  { gradient: ["#230610", "#16040A"], solid: "#230610", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "meditaciones-guiadas": { gradient: ["#230610", "#16040A"], solid: "#230610", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "musica-sonidos":       { gradient: ["#230610", "#16040A"], solid: "#230610", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "descanso":             { gradient: ["#230610", "#16040A"], solid: "#230610", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "sonidos-ancestrales":  { gradient: ["#210911", "#190913", "#0B0811"], solid: "#210911", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "meditaciones-guiadas": { gradient: ["#210911", "#190913", "#0B0811"], solid: "#210911", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "musica-sonidos":       { gradient: ["#210911", "#190913", "#0B0811"], solid: "#210911", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "descanso":             { gradient: ["#210911", "#190913", "#0B0811"], solid: "#210911", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
   };
   const catBg = CATEGORY_BG[session.categoryId] ?? CATEGORY_BG["sonidos-ancestrales"];
   const [localFav, setLocalFav] = useState<boolean | null>(null);
@@ -316,7 +316,7 @@ export default function SessionDetailScreen() {
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
             <View style={styles.pillBorder}>
-              <GlowPill onPress={() => router.back()} pillStyle={styles.heroBackPill} gradientColors={catBg.gradient as [string, string]} />
+              <GlowPill onPress={() => router.back()} pillStyle={styles.heroBackPill} gradientColors={catBg.gradient} />
             </View>
             <Pressable onPress={handleInstagramShare} hitSlop={10} style={({ pressed }) => [styles.igBtn, { opacity: pressed ? 0.6 : 1 }]}>
               <FontAwesome name="instagram" size={20} color="#e8e8e8" />
@@ -580,7 +580,7 @@ export default function SessionDetailScreen() {
         style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: catBg.solid }]}
       >
         <View style={styles.pillBorder}>
-          <GlowPill onPress={() => router.back()} pillStyle={styles.stickyBackPill} gradientColors={catBg.gradient as [string, string]} />
+          <GlowPill onPress={() => router.back()} pillStyle={styles.stickyBackPill} gradientColors={catBg.gradient} />
         </View>
         <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
         <View style={{ width: 36 }} />
@@ -1058,7 +1058,7 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingVertical: 9,
     borderRadius: 29,
-    backgroundColor: "#230610",
+    backgroundColor: "#210911",
     paddingHorizontal: 24,
   },
   shareBtnText: {

@@ -21,7 +21,7 @@ import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 16;
-const BG_GRADIENT = ["#230610", "#16040A"] as const;
+const BG_GRADIENT = ["#210911", "#190913", "#0B0811"] as const;
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList<(typeof SESSIONS)[number]>);
 const STICKY_START = 80;
 const STICKY_END   = 170;
@@ -103,7 +103,7 @@ export default function EstadoAnimoScreen() {
           styles.stickyHeader,
           {
             paddingTop: topPad,
-            backgroundColor: "#230610",
+            backgroundColor: "#210911",
             borderBottomColor: "rgba(212,175,55,0.15)",
             opacity: headerOpacity,
           },

@@ -59,7 +59,7 @@ export default function SignInScreen() {
   };
 
   return (
-    <LinearGradient colors={["#230610", "#16040A"]} style={styles.container}>
+    <LinearGradient colors={["#210911", "#190913", "#0B0811"]} style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}

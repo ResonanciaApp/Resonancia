@@ -143,7 +143,7 @@ function NavStack() {
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: "#230610" },
+          contentStyle: { backgroundColor: "#210911" },
         }}
       >
         <Stack.Screen name="(auth)" options={{ headerShown: false, animation: "fade" }} />
@@ -357,7 +357,7 @@ export default function RootLayout() {
                       <IntencionProvider>
                         <FoldersPlaylistsProvider>
                         <DiarioFavoritesProvider>
-                          <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#230610" }}>
+                          <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#210911" }}>
                             <StatusBar hidden />
                             <KeyboardProvider>
                               <RootLayoutNav />

@@ -25,7 +25,7 @@ import {
 import { useColors } from "@/hooks/useColors";
 import { SacredBackground } from "@/components/SacredBackground";
 
-const BG_GRADIENT = ["#230610", "#16040A"] as const;
+const BG_GRADIENT = ["#210911", "#190913", "#0B0811"] as const;
 
 export default function SiguiendoScreen() {
   const colors = useColors();
