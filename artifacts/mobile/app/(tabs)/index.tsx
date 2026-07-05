@@ -594,35 +594,6 @@ export default function HomeScreen2() {
           <WeeklyStreakStrip />
         </View>
 
-        {/* ── 1. COLECCIONES (Rituales) ── */}
-        {filteredPlaylists.length > 0 && (
-        <View style={[styles.header, { marginTop: -3 }]}>
-
-          <View style={styles.coleccionGrid}>
-              {filteredPlaylists.map((pl) => (
-                <Pressable
-                  key={pl.id}
-                  onPress={() => router.push(`/coleccion/${pl.id}` as never)}
-                  style={({ pressed }) => [styles.coleccionCard, { opacity: pressed ? 0.75 : 1 }]}
-                >
-                  <Image
-                    source={pl.coverUrl ? { uri: pl.coverUrl } : pl.cover as number}
-                    style={styles.coleccionThumb}
-                    resizeMode="cover"
-                  />
-                  <View style={styles.coleccionTitleRow}>
-                    <Text style={styles.coleccionTitle} numberOfLines={2}>{pl.title}</Text>
-                    {isPlaying && currentSession && pl.sessionIds.includes(currentSession.id) && (
-                      <EqualizerBars color="#BE8744" size="sm" />
-                    )}
-                  </View>
-                </Pressable>
-              ))}
-          </View>
-
-        </View>
-        )}
-
         {/* ── SESIÓN DESTACADA ── */}
         {filteredFeatured && (
           <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
@@ -658,6 +629,36 @@ export default function HomeScreen2() {
               })()}
             </Pressable>
           </View>
+        )}
+
+        {/* ── 1. COLECCIONES (Rituales) ── */}
+        {filteredPlaylists.length > 0 && (
+        <View style={[styles.header, { marginBottom: SECTION_GAP }]}>
+          <Text style={styles.sectionTitle}>Rituales recomendados</Text>
+
+          <View style={styles.coleccionGrid}>
+              {filteredPlaylists.map((pl) => (
+                <Pressable
+                  key={pl.id}
+                  onPress={() => router.push(`/coleccion/${pl.id}` as never)}
+                  style={({ pressed }) => [styles.coleccionCard, { opacity: pressed ? 0.75 : 1 }]}
+                >
+                  <Image
+                    source={pl.coverUrl ? { uri: pl.coverUrl } : pl.cover as number}
+                    style={styles.coleccionThumb}
+                    resizeMode="cover"
+                  />
+                  <View style={styles.coleccionTitleRow}>
+                    <Text style={styles.coleccionTitle} numberOfLines={2}>{pl.title}</Text>
+                    {isPlaying && currentSession && pl.sessionIds.includes(currentSession.id) && (
+                      <EqualizerBars color="#BE8744" size="sm" />
+                    )}
+                  </View>
+                </Pressable>
+              ))}
+          </View>
+
+        </View>
         )}
 
         {/* ── 5. REFLEXIÓN DE LA SEMANA ── */}
