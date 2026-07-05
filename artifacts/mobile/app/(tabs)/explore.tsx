@@ -409,6 +409,28 @@ export default function ExploreScreen() {
           </View>
         </View>
 
+            {/* ── Hero: Vuelve a ti ── */}
+            <View style={[styles.section, { marginTop: SECTION_GAP, marginBottom: SECTION_GAP }]}>
+              <View style={styles.introHeroContainer}>
+                <Image
+                  source={require("@/assets/images/hero-vuelve-a-ti.jpg")}
+                  style={styles.introHeroImage}
+                  contentFit="cover"
+                  placeholder={BLUR_PLACEHOLDER}
+                  transition={IMAGE_TRANSITION}
+                  cachePolicy="memory-disk"
+                />
+                <LinearGradient
+                  colors={["rgba(6,10,15,0.05)", "rgba(6,10,15,0.65)"]}
+                  style={StyleSheet.absoluteFill}
+                />
+                <View style={styles.introHeroTextWrap}>
+                  <Text style={styles.introHeroTitle}>Vuelve a ti</Text>
+                  <Text style={styles.introHeroSubtitle}>Meditar es reconocer lo que eres</Text>
+                </View>
+              </View>
+            </View>
+
             {/* ── Ejercicios de respiración ── */}
             <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
               <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Ejercicios de respiración</Text>
@@ -742,6 +764,31 @@ const styles = StyleSheet.create({
   sqAuthor: {
     fontSize: 11,
     marginTop: 3,
+  },
+
+  // Hero: Vuelve a ti
+  introHeroContainer: {
+    width: "100%",
+    height: HERO_HEIGHT,
+    borderRadius: 15,
+    overflow: "hidden",
+    justifyContent: "flex-end",
+  },
+  introHeroImage: { ...StyleSheet.absoluteFillObject },
+  introHeroTextWrap: {
+    paddingHorizontal: 20,
+    paddingBottom: 24,
+  },
+  introHeroTitle: {
+    fontSize: 26,
+    fontWeight: "700",
+    color: "#F4DAD5",
+    letterSpacing: 0.3,
+    marginBottom: 6,
+  },
+  introHeroSubtitle: {
+    fontSize: 14,
+    color: "rgba(244,218,213,0.75)",
   },
 
   // Ejercicios de respiración
