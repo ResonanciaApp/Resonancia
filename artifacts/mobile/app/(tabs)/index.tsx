@@ -188,18 +188,22 @@ function AnimatedNavTabRow({
     setTargetTranslate(NAV_CLOSE_SLOT - visualLeft);
     setDisplayTab(id);
     setColorTab(id);
-    onSelect(id);
     // Fuerza una transición 0→1 completa incluso si ya había un tab
     // seleccionado (progress ya estaba en 1): sin esto, saltar directo de
     // un tab a otro no mostraba animación.
     progress.setValue(0);
     animate(1);
+    // onSelect dispara el filtrado de todo el feed (trabajo pesado en el
+    // padre). Se difiere un frame para que la animación arranque primero;
+    // si no, el re-render pesado del mismo tick "traga" los primeros
+    // frames y el chip parece saltar sin animar.
+    requestAnimationFrame(() => onSelect(id));
   };
 
   const handleClear = () => {
     setColorTab(null);
-    onClear();
     animate(0, () => setDisplayTab(null));
+    requestAnimationFrame(() => onClear());
   };
 
   useEffect(() => () => progress.stopAnimation(), [progress]);
