@@ -165,11 +165,20 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const [goldRoute, setGoldRoute] = useState<string | null>(
     state.routes[state.index]?.name ?? null,
   );
+  const goldTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Duración aproximada en la que el spring del pill llega a destino
+  // (no usar el callback `finished` de Animated: en web no es fiable y puede tardar segundos)
+  const PILL_SETTLE_MS = 260;
 
   const setPillPosition = useCallback(
     (tw: number, vi: number, animate: boolean, targetRouteName: string | null) => {
       if (tw === 0) return;
       const target = vi * tw;
+      if (goldTimeoutRef.current) {
+        clearTimeout(goldTimeoutRef.current);
+        goldTimeoutRef.current = null;
+      }
       if (!animate || !initialPillSet.current) {
         pillX.setValue(target);
         initialPillSet.current = true;
@@ -181,13 +190,21 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           damping: 22,
           stiffness: 220,
           mass: 0.9,
-        }).start(({ finished }) => {
-          if (finished) setGoldRoute(targetRouteName);
-        });
+        }).start();
+        goldTimeoutRef.current = setTimeout(() => {
+          setGoldRoute(targetRouteName);
+          goldTimeoutRef.current = null;
+        }, PILL_SETTLE_MS);
       }
     },
     [pillX],
   );
+
+  useEffect(() => {
+    return () => {
+      if (goldTimeoutRef.current) clearTimeout(goldTimeoutRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     const activeName = state.routes[state.index]?.name ?? null;
