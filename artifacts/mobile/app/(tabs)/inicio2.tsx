@@ -517,11 +517,10 @@ export default function HomeScreen2() {
         <LinearGradient
           colors={[
             "transparent",
-            "rgba(52,13,26,0.35)",
-            "rgba(52,13,26,0.75)",
-            "#340D1A",
+            "rgba(52,13,26,0.18)",
+            "rgba(52,13,26,0.32)",
           ]}
-          locations={[0, 0.55, 0.82, 1]}
+          locations={[0, 0.6, 1]}
           style={styles.heroBannerFullTint}
           pointerEvents="none"
         />
@@ -534,6 +533,12 @@ export default function HomeScreen2() {
       >
         {/* ── SPACER: deja ver el hero detrás; el fondo degradado avanza sobre él al hacer scroll ── */}
         <View style={styles.heroScrollSpacer} pointerEvents="none" />
+        {/* ── FADE que viaja con el scroll: come el borde inferior del hero de forma progresiva ── */}
+        <LinearGradient
+          colors={["transparent", "#340D1A"]}
+          style={styles.heroScrollRevealFade}
+          pointerEvents="none"
+        />
         <LinearGradient
           colors={["#340D1A", "#190913"]}
           style={styles.scrollBgFill}
@@ -992,6 +997,13 @@ const styles = StyleSheet.create({
     width: "100%",
     height: HEADER_HERO_HEIGHT,
     backgroundColor: "transparent",
+  },
+  heroScrollRevealFade: {
+    position: "absolute",
+    top: HEADER_HERO_HEIGHT - HERO_FADE_HEIGHT,
+    left: 0,
+    right: 0,
+    height: HERO_FADE_HEIGHT,
   },
   scrollBgFill: {
     position: "absolute",
