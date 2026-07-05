@@ -954,14 +954,14 @@ const styles = StyleSheet.create({
   },
   headerTabsContent: {
     flexDirection: "row",
-    gap: 6,
+    gap: 4,
     alignItems: "center",
     paddingLeft: GRID_PAD,
     paddingRight: GRID_PAD + 15,
   },
   headerTabChip: {
     borderRadius: 20,
-    paddingHorizontal: 17,
+    paddingHorizontal: 12,
     height: 34,
     overflow: "hidden",
     alignItems: "center",
@@ -983,7 +983,7 @@ const styles = StyleSheet.create({
     paddingLeft: 6,
   },
   headerTabText: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "600",
     color: "#e8e8e8",
     letterSpacing: 0.1,
