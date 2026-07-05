@@ -546,28 +546,13 @@ export default function HomeScreen2() {
             "rgba(52,13,26,0.837)",
             "rgba(52,13,26,0.942)",
             "rgba(52,13,26,0.991)",
-            "#340D1A",
+            "#190913",
           ]}
           locations={[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]}
           style={styles.heroScrollRevealFade}
           pointerEvents="none"
         />
-        <LinearGradient
-          colors={[
-            "rgba(190,150,80,0.05)",
-            "rgba(190,150,80,0.022)",
-            "rgba(190,150,80,0.008)",
-            "transparent",
-          ]}
-          locations={[0, 0.35, 0.7, 1]}
-          style={styles.scrollGlowFill}
-          pointerEvents="none"
-        />
-        <LinearGradient
-          colors={["#340D1A", "#190913"]}
-          style={styles.scrollBgFill}
-          pointerEvents="none"
-        />
+        <View style={[styles.scrollBgFill, { backgroundColor: "#190913" }]} pointerEvents="none" />
 
         {/* ── NAV-TABS: avatar + nav-tabs — ahora se desplaza con el contenido ── */}
         <View style={[styles.stickyHeader, { paddingTop: 18 }]}>
@@ -1035,13 +1020,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 6000,
-  },
-  scrollGlowFill: {
-    position: "absolute",
-    top: HEADER_HERO_HEIGHT,
-    left: 0,
-    right: 0,
-    height: 260,
   },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
