@@ -798,7 +798,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   sleepPillText: {
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: "600",
     letterSpacing: 0.1,
   },
@@ -816,7 +816,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#0D0512",
   },
   stickyHeaderTitle: {
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: "700",
     letterSpacing: 0.2,
   },
@@ -841,7 +841,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   heroTitle: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: "700",
     letterSpacing: 0.4,
     marginBottom: 10,
