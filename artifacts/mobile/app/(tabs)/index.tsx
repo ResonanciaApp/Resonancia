@@ -7,6 +7,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
+  Easing as RNEasing,
   Image,
   Modal,
   Platform,
@@ -143,6 +144,124 @@ function NavTabChip({ sel, label, onPress }: { sel: boolean; label: string; onPr
         {label}
       </Text>
     </Pressable>
+  );
+}
+
+// ── Fila de tabs animada (fade + desplazamiento, como en Biblioteca) ─────────
+const NAV_CHIP_ANIM_DURATION = 600;
+const NAV_CLOSE_SLOT = 38; // ancho de la X (30) + gap (8)
+
+function AnimatedNavTabRow({
+  tabs,
+  activeTab,
+  onSelect,
+  onClear,
+}: {
+  tabs: { id: string; label: string }[];
+  activeTab: string | null;
+  onSelect: (id: string) => void;
+  onClear: () => void;
+}) {
+  const progress = useRef(new Animated.Value(activeTab ? 1 : 0)).current;
+  const offsetsRef = useRef<Record<string, number>>({});
+  const scrollXRef = useRef(0);
+  const [displayTab, setDisplayTab] = useState<string | null>(activeTab);
+  const [colorTab, setColorTab] = useState<string | null>(activeTab);
+  const [targetTranslate, setTargetTranslate] = useState(0);
+
+  const filtered = displayTab !== null;
+
+  const animate = (toValue: number, onDone?: () => void) => {
+    Animated.timing(progress, {
+      toValue,
+      duration: NAV_CHIP_ANIM_DURATION,
+      easing: RNEasing.inOut(RNEasing.cubic),
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      if (finished) onDone?.();
+    });
+  };
+
+  const handleSelect = (id: string) => {
+    const off = offsetsRef.current[id] ?? 0;
+    const visualLeft = off - scrollXRef.current;
+    setTargetTranslate(NAV_CLOSE_SLOT - visualLeft);
+    setDisplayTab(id);
+    setColorTab(id);
+    onSelect(id);
+    animate(1);
+  };
+
+  const handleClear = () => {
+    setColorTab(null);
+    onClear();
+    animate(0, () => setDisplayTab(null));
+  };
+
+  useEffect(() => () => progress.stopAnimation(), [progress]);
+
+  return (
+    <View style={styles.navAnimWrap}>
+      <Animated.View
+        pointerEvents={filtered ? "auto" : "none"}
+        style={[styles.navAnimCloseBtn, { opacity: progress }]}
+      >
+        <Pressable onPress={handleClear} hitSlop={10} style={styles.navCloseBtn}>
+          <Feather name="x" size={15} color="rgba(244,218,213,0.45)" />
+        </Pressable>
+      </Animated.View>
+
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        scrollEnabled={!filtered}
+        scrollEventThrottle={16}
+        onScroll={(e) => {
+          scrollXRef.current = e.nativeEvent.contentOffset.x;
+        }}
+        style={styles.headerTabs}
+        contentContainerStyle={styles.headerTabsContent}
+      >
+        {tabs.map((t) => {
+          const isSelected = displayTab === t.id;
+          const chipStyle = isSelected
+            ? {
+                opacity: 1,
+                transform: [
+                  {
+                    translateX: progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0, targetTranslate],
+                    }),
+                  },
+                ],
+              }
+            : {
+                opacity: progress.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [1, 0],
+                }),
+              };
+
+          return (
+            <Animated.View
+              key={t.id}
+              pointerEvents={filtered && !isSelected ? "none" : "auto"}
+              onLayout={(e) => {
+                offsetsRef.current[t.id] = e.nativeEvent.layout.x;
+              }}
+              style={chipStyle}
+            >
+              <NavTabChip
+                sel={colorTab === t.id}
+                label={t.label}
+                onPress={() => (isSelected ? handleClear() : handleSelect(t.id))}
+              />
+            </Animated.View>
+          );
+        })}
+      </ScrollView>
+    </View>
   );
 }
 
@@ -381,33 +500,28 @@ export default function HomeScreen2() {
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
       <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
         <View style={styles.headerTopRow}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.headerTabs}
-            contentContainerStyle={styles.headerTabsContent}
-          >
-
-            {NAV_TABS.map((tab) => {
-              const sel = tab.cats.length === 0
-                ? activeFilter === null
-                : activeFilter?.join() === tab.cats.join();
-              return (
-                <React.Fragment key={tab.id}>
-                  <NavTabChip
-                    sel={sel}
-                    label={tab.label}
-                    onPress={() => {
-                      setSesionesOpen(false);
-                      setSesAncestral(false);
-                      setSesMeditacion(false);
-                      setActiveFilter(sel || tab.cats.length === 0 ? null : tab.cats);
-                    }}
-                  />
-                </React.Fragment>
-              );
-            })}
-          </ScrollView>
+          <AnimatedNavTabRow
+            tabs={NAV_TABS}
+            activeTab={
+              activeFilter
+                ? NAV_TABS.find((t) => t.cats.join() === activeFilter.join())?.id ?? null
+                : null
+            }
+            onSelect={(id) => {
+              const tab = NAV_TABS.find((t) => t.id === id);
+              if (!tab) return;
+              setSesionesOpen(false);
+              setSesAncestral(false);
+              setSesMeditacion(false);
+              setActiveFilter(tab.cats);
+            }}
+            onClear={() => {
+              setSesionesOpen(false);
+              setSesAncestral(false);
+              setSesMeditacion(false);
+              setActiveFilter(null);
+            }}
+          />
           <NotificationBell />
         </View>
       </View>
@@ -986,6 +1100,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingLeft: GRID_PAD,
     paddingRight: GRID_PAD + 15,
+  },
+  navAnimWrap: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    position: "relative",
+  },
+  navAnimCloseBtn: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    bottom: 0,
+    justifyContent: "center",
+    zIndex: 3,
+  },
+  navCloseBtn: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "rgba(74,12,12,0.08)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   headerTabChip: {
     borderRadius: 20,
