@@ -1639,7 +1639,7 @@ export default function BibliotecaScreen() {
       >
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "#230610" }]} />
         <Image
-          source={require("@/assets/images/mi-espacio-header-bg.png")}
+          source={require("@/assets/images/mi-espacio-header-bg.jpg")}
           style={StyleSheet.absoluteFill}
           contentFit="cover"
         />
