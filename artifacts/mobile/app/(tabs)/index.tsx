@@ -956,7 +956,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 6,
     alignItems: "center",
-    paddingHorizontal: GRID_PAD,
+    paddingLeft: GRID_PAD,
+    paddingRight: GRID_PAD + 15,
   },
   headerTabChip: {
     borderRadius: 20,
