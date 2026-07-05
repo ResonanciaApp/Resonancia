@@ -337,7 +337,7 @@ function DormirMiniPlayer({
         {formatMiniTime(elapsed)} / {formatMiniTime(duration)}
       </Text>
 
-      <View style={{ width: 15 }} />
+      <View style={{ width: 15, flexShrink: 0 }} />
 
       <Pressable
         onPress={(e) => { e.stopPropagation(); onToggle(); }}
@@ -689,19 +689,20 @@ const styles = StyleSheet.create({
   dormirMiniPlayer: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     height: 54,
     width: 168,
     transform: [{ translateY: -5 }],
-    paddingLeft: 32,
-    paddingRight: 26,
     borderRadius: 25,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.03)",
     overflow: "hidden",
   },
   dormirMiniPlayerTime: {
+    width: 82,
     fontSize: 17,
     fontWeight: "600",
+    textAlign: "center",
     color: "rgba(255,255,255,0.85)",
   },
   dormirMiniPlayerBtn: {
