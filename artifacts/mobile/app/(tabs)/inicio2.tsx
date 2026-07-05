@@ -517,8 +517,8 @@ export default function HomeScreen2() {
         <LinearGradient
           colors={[
             "transparent",
-            "rgba(52,13,26,0.18)",
-            "rgba(52,13,26,0.32)",
+            "rgba(52,13,26,0.252)",
+            "rgba(52,13,26,0.448)",
           ]}
           locations={[0, 0.6, 1]}
           style={styles.heroBannerFullTint}
