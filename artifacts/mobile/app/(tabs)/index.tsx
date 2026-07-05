@@ -554,7 +554,7 @@ export default function HomeScreen2() {
                     height: TEMA3_W,
                     backgroundColor: pressed
                       ? hexTint(t.color, 0.22)
-                      : "rgba(255,255,255,0.055)",
+                      : "rgba(255,255,255,0.05)",
                     borderRadius: 11,
                   },
                 ]}
@@ -699,7 +699,7 @@ export default function HomeScreen2() {
                   paddingVertical: 18,
                   borderRadius: 14,
                   alignItems: "center",
-                  backgroundColor: "rgba(190,150,80,0.05)",
+                  backgroundColor: "rgba(255,255,255,0.05)",
                   opacity: pressed ? 0.75 : 1,
                 }]}
               >
@@ -799,7 +799,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 16,
     marginBottom: 8,
-    backgroundColor: "rgba(255,255,255,0.045)",
+    backgroundColor: "rgba(255,255,255,0.05)",
     borderRadius: 14,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -846,7 +846,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   recoCard: {
-    backgroundColor: "rgba(255,255,255,0.045)",
+    backgroundColor: "rgba(255,255,255,0.05)",
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: 14,
@@ -1084,7 +1084,7 @@ const styles = StyleSheet.create({
     width: "48.5%",
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(255,255,255,0.05)",
     borderRadius: 8,
     overflow: "hidden",
     height: 62,
