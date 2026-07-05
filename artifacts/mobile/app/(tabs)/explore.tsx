@@ -23,6 +23,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
 import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
+import { SessionCard } from "@/components/SessionCard";
 import { SESSIONS } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
@@ -72,6 +73,16 @@ const DURACION_OPTS_EX = [
   { label: "30 min", min: 26, max: 60       },
 ] as const;
 type DurOptEx = (typeof DURACION_OPTS_EX)[number]["label"];
+
+const DURATION_SLOTS = [
+  { label: "5 min",   min: 0,  max: 5  },
+  { label: "10 min",  min: 6,  max: 10 },
+  { label: "20 min",  min: 11, max: 25 },
+  { label: "30 min",  min: 26, max: 35 },
+  { label: "60 min",  min: 36, max: Infinity },
+] as const;
+type DurSlot = (typeof DURATION_SLOTS)[number]["label"];
+const DUR_PILL_W = Math.round((width - H_PAD * 2 - 6 * 4) / 4.3);
 
 function ExpRitualCard({ session, onPress }: { session: Session; onPress: () => void }) {
   const idNum  = parseInt(session.id, 10);
@@ -298,6 +309,19 @@ export default function ExploreScreen() {
     return base.slice(0, 10);
   }, [ritualesFilter]);
 
+  // ¿Cuánto tiempo tienes hoy?
+  const [selectedDur, setSelectedDur] = useState<DurSlot | null>(null);
+  const [durSort, setDurSort] = useState<"recientes" | "populares">("recientes");
+  const durationSessions = React.useMemo(() => {
+    if (!selectedDur) return [];
+    const slot = DURATION_SLOTS.find((s) => s.label === selectedDur)!;
+    const list = SESSIONS.filter((s) => s.duration >= slot.min && s.duration <= slot.max);
+    if (durSort === "recientes") {
+      return [...list].sort((a, b) => parseInt(b.id) - parseInt(a.id));
+    }
+    return list;
+  }, [selectedDur, durSort]);
+
   const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -427,6 +451,81 @@ export default function ExploreScreen() {
               </View>
             </View>
 
+            {/* ── ¿Cuánto tiempo tienes hoy? ── */}
+            <View style={[styles.durSection, { marginTop: 0, marginBottom: SECTION_GAP }]}>
+              <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>
+                ¿Cuánto tiempo tienes hoy?
+              </Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.durPillRow}
+              >
+                {DURATION_SLOTS.map((slot) => {
+                  const sel = selectedDur === slot.label;
+                  return (
+                    <Pressable
+                      key={slot.label}
+                      onPress={() => setSelectedDur(sel ? null : slot.label)}
+                      style={({ pressed }) => [
+                        styles.durPill,
+                        sel && styles.durPillActive,
+                        { opacity: pressed ? 0.75 : 1 },
+                      ]}
+                    >
+                      {sel && (
+                        <LinearGradient
+                          colors={["#D6A45C", "#BE8744"]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 0, y: 1 }}
+                          style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+                        />
+                      )}
+                      <Text
+                        style={[styles.durPillText, sel && styles.durPillTextActive]}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                        minimumFontScale={0.7}
+                      >
+                        {slot.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
+
+              {selectedDur && (
+                <View style={styles.durResults}>
+                  {/* Filtro de orden */}
+                  <View style={styles.durSortRow}>
+                    <Pressable onPress={() => setDurSort("recientes")}>
+                      <Text style={[styles.durSortOption, durSort === "recientes" && styles.durSortActive]}>
+                        Recientes
+                      </Text>
+                    </Pressable>
+                    <Text style={styles.durSortSep}>·</Text>
+                    <Pressable onPress={() => setDurSort("populares")}>
+                      <Text style={[styles.durSortOption, durSort === "populares" && styles.durSortActive]}>
+                        Más escuchadas
+                      </Text>
+                    </Pressable>
+                  </View>
+                  {durationSessions.length === 0 ? (
+                    <Text style={[styles.durEmpty, { color: "#c2c2c2" }]}>
+                      Sin sesiones para este rango
+                    </Text>
+                  ) : (
+                    durationSessions.map((s, i) => (
+                      <React.Fragment key={s.id}>
+                        {i > 0 && <View style={styles.recoDivider} />}
+                        <SessionCard session={s} horizontal />
+                      </React.Fragment>
+                    ))
+                  )}
+                </View>
+              )}
+            </View>
+
             {/* ── Meditaciones recomendadas ── */}
             {renderCarousel("Meditaciones recomendadas", dailyRecs, "/category/meditaciones-guiadas")}
 
@@ -554,6 +653,73 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "rgba(255,255,255,0.07)",
     marginHorizontal: 4,
+  },
+
+  // ¿Cuánto tiempo tienes hoy?
+  durSection: {
+    paddingHorizontal: H_PAD,
+    marginBottom: SECTION_GAP,
+  },
+  durPillRow: {
+    flexDirection: "row",
+    paddingHorizontal: 0,
+    paddingRight: DUR_PILL_W * 0.3,
+    gap: 6,
+    paddingBottom: 2,
+  },
+  durPill: {
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    minWidth: 76,
+    height: 38,
+    backgroundColor: "rgba(255,255,255,0.055)",
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  durPillActive: {
+    borderColor: "transparent",
+  },
+  durPillText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#e8e8e8",
+    letterSpacing: 0.2,
+  },
+  durPillTextActive: {
+    color: "#1B060F",
+  },
+  durResults: {
+    marginTop: 16,
+    marginHorizontal: H_PAD,
+    gap: 6,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderRadius: 15,
+    padding: 12,
+  },
+  durSortRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 10,
+  },
+  durSortOption: {
+    fontSize: 13,
+    fontWeight: "500",
+    color: "#c2c2c2",
+  },
+  durSortActive: {
+    color: "#BE8744",
+    fontWeight: "700",
+  },
+  durSortSep: {
+    fontSize: 13,
+    color: "#c2c2c2",
+  },
+  durEmpty: {
+    fontSize: 13,
+    textAlign: "center",
+    paddingVertical: 16,
   },
 
   // Carrusel cuadrado
