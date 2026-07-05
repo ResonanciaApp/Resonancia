@@ -360,7 +360,6 @@ export default function MeditacionesGuiadasScreen() {
   return (
     <View style={styles.root}>
       <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} />
-      <LinearGradient colors={["#340D1A", "#190913"]} style={{ position: "absolute", top: 0, left: 0, right: 0, height: HERO_AREA_H }} />
 
       <ScrollView
         ref={scrollRef}
