@@ -65,7 +65,6 @@ const LIB_TABS: { id: LibTab; label: string }[] = [
   { id: "mezclas",     label: "Mezclas" },
   { id: "geometrix",   label: "Geometrix" },
   { id: "favoritos",   label: "Favoritos" },
-  { id: "resonadores", label: "Resonadores" },
 ];
 
 // ── Fila de mezcla guardada ───────────────────────────────────────────────────
