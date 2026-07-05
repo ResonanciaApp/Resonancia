@@ -42,7 +42,6 @@ import {
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { QuickAccessGrid } from "@/components/QuickAccessGrid";
-import { DrawerStats } from "@/components/DrawerStats";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -894,11 +893,6 @@ export default function ProfileScreen() {
             <Feather name="edit-2" size={13} color={colors.primary} />
             <Text style={[styles.editBtnText, { color: colors.primary }]}>Editar Detalles</Text>
           </Pressable>
-        </View>
-
-        {/* ── Stats (sesiones, tiempo, días, racha) ── */}
-        <View style={{ marginTop: -46 }}>
-          <DrawerStats />
         </View>
 
         {/* ── Sección Expansor (solo si role === "expansor") ── */}
