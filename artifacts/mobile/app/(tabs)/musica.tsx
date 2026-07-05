@@ -147,7 +147,7 @@ const TAB_NOCHE_BG: Record<MainTabId, [string, string, string]> = {
 };
 
 /** Fondo fijo de la grilla en modo Noche Borgoña — igual para todos los tabs */
-const TAB_NOCHE_GRID_BG = "#16040A";
+const TAB_NOCHE_GRID_BG = "#0B0811";
 
 const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
   popular:        ["#5E1E2D", "#5E1E2D"],
@@ -671,7 +671,7 @@ export default function MezcladorScreen() {
 
         {/* ── Zona superior ── */}
         <View style={styles.topPanelShadow}>
-          <View style={[styles.topPanel, { paddingTop: topPad + 2, backgroundColor: "#210911" }]}>
+          <LinearGradient colors={["#210911", "#190913"]} style={[styles.topPanel, { paddingTop: topPad + 2 }]}>
             {/* ── Header ── */}
             <View style={styles.header}>
               <View style={styles.headerRow}>
@@ -761,7 +761,7 @@ export default function MezcladorScreen() {
               <View style={styles.separator} />
             )}
 
-          </View>
+          </LinearGradient>
         </View>
 
         {/* ── Scroll principal ── */}
