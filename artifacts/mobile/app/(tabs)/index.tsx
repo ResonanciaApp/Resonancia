@@ -64,7 +64,6 @@ import { useVideos } from "@/hooks/useVideos";
 const { width } = Dimensions.get("window");
 
 const NAV_TABS = [
-  { id: "todas",         label: "Todas",         cats: [] as string[] },
   { id: "meditaciones",  label: "Meditaciones",  cats: ["meditaciones-guiadas"] },
   { id: "sesiones",      label: "Sesiones",      cats: ["sonidos-ancestrales"] },
   { id: "musica",        label: "Música",        cats: ["musica-sonidos"] },
