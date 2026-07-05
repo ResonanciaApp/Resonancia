@@ -1841,11 +1841,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   chip: {
-    paddingHorizontal: 14, paddingVertical: 10,
+    paddingHorizontal: 15, paddingVertical: 9,
     borderRadius: 999,
     overflow: "hidden",
   },
-  chipText: { fontSize: 13, fontWeight: "600", color: TEXT },
+  chipText: { fontSize: 11, fontWeight: "600", color: TEXT },
   chipTextSel: { color: "#1B060F" },
 
   controlRow: {
