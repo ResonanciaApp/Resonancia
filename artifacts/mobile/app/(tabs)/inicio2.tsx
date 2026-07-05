@@ -521,40 +521,40 @@ export default function HomeScreen2() {
         />
       </View>
 
-      {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
-      <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
-        <View style={styles.headerTopRow}>
-          <AnimatedNavTabRow
-            tabs={NAV_TABS}
-            activeTab={
-              activeFilter
-                ? NAV_TABS.find((t) => t.cats.join() === activeFilter.join())?.id ?? null
-                : null
-            }
-            onSelect={(id) => {
-              const tab = NAV_TABS.find((t) => t.id === id);
-              if (!tab) return;
-              setSesionesOpen(false);
-              setSesAncestral(false);
-              setSesMeditacion(false);
-              setActiveFilter(tab.cats);
-            }}
-            onClear={() => {
-              setSesionesOpen(false);
-              setSesAncestral(false);
-              setSesMeditacion(false);
-              setActiveFilter(null);
-            }}
-          />
-          <NotificationBell />
-        </View>
-      </View>
-
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 12 }}
         showsVerticalScrollIndicator={false}
       >
+        {/* ── NAV-TABS: avatar + nav-tabs — ahora se desplaza con el contenido ── */}
+        <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
+          <View style={styles.headerTopRow}>
+            <AnimatedNavTabRow
+              tabs={NAV_TABS}
+              activeTab={
+                activeFilter
+                  ? NAV_TABS.find((t) => t.cats.join() === activeFilter.join())?.id ?? null
+                  : null
+              }
+              onSelect={(id) => {
+                const tab = NAV_TABS.find((t) => t.id === id);
+                if (!tab) return;
+                setSesionesOpen(false);
+                setSesAncestral(false);
+                setSesMeditacion(false);
+                setActiveFilter(tab.cats);
+              }}
+              onClear={() => {
+                setSesionesOpen(false);
+                setSesAncestral(false);
+                setSesMeditacion(false);
+                setActiveFilter(null);
+              }}
+            />
+            <NotificationBell />
+          </View>
+        </View>
+
         {/* ── INTENCIÓN ── */}
         <Pressable
           onPress={handleIntentionPress}
