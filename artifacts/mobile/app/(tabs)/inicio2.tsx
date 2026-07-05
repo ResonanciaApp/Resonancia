@@ -81,6 +81,9 @@ const VIDEO_REG_W = 200;
 // 1 card completa + 25% del siguiente visible: W = (screenWidth - leftPad - gap) / 1.25
 const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 1.85);
 
+const HEADER_HERO_HEIGHT = 220;
+const HERO_FADE_HEIGHT = 40;
+
 const SECTION_GAP = 60;
 const TEMA_GAP = 10;
 const TEMA3_W = Math.floor((width - GRID_PAD * 2 - TEMA_GAP * 2) / 3);
@@ -503,6 +506,20 @@ export default function HomeScreen2() {
     <View style={styles.root}>
       <LinearGradient colors={["#340D1A", "#190913"]} style={styles.rootGradient} />
       <StatusBar barStyle="light-content" />
+
+      {/* ── HERO BANNER: Everest + templo tibetano — encabezado de Inicio ── */}
+      <View style={styles.heroBannerWrap}>
+        <Image
+          source={require("@/assets/images/hero-everest-temple.png")}
+          style={styles.heroBannerImage}
+          resizeMode="cover"
+        />
+        <LinearGradient
+          colors={["transparent", "#340D1A"]}
+          style={styles.heroBannerFade}
+          pointerEvents="none"
+        />
+      </View>
 
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
       <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
@@ -927,6 +944,25 @@ export default function HomeScreen2() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#210911" },
   rootGradient: { ...StyleSheet.absoluteFillObject },
+  heroBannerWrap: {
+    width: "100%",
+    height: HEADER_HERO_HEIGHT,
+    position: "relative",
+    overflow: "hidden",
+    backgroundColor: "#340D1A",
+  },
+  heroBannerImage: {
+    width: "100%",
+    height: "100%",
+    opacity: 0.94,
+  },
+  heroBannerFade: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: HERO_FADE_HEIGHT,
+  },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
     paddingBottom: 0,

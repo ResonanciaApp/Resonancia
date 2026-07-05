@@ -1398,6 +1398,12 @@ uri = "file://attached_assets/generated_images/tren_nocturno_session.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "3Sog8DHivDn_Il1o144lw"
+uri = "file://artifacts/mobile/assets/images/hero-everest-temple.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
