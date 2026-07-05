@@ -555,7 +555,7 @@ export default function SonidosAncestalesScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#1B060F" },
+  root: { flex: 1, backgroundColor: "#16040A" },
 
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#1B060F" },
   stickyChips: { position: "absolute", left: 0, right: 0, zIndex: 19, backgroundColor: "#1B060F", paddingTop: 8, paddingBottom: 6 },
