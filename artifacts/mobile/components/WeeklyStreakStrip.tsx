@@ -6,7 +6,6 @@ import { StyleSheet, Text, View } from "react-native";
 import { usePlayer } from "@/context/PlayerContext";
 
 const GOLD = "#BE8744";
-const ACTIVE_BG = "rgba(255,255,255,0.2)";
 const ACTIVE_BORDER_FROM = "#854744";
 const ACTIVE_BORDER_TO = "#5A2C65";
 const TEXT = "#e8e8e8";
@@ -72,16 +71,16 @@ export function WeeklyStreakStrip() {
           return (
             <View key={i} style={styles.dayCol}>
               {met ? (
-                <LinearGradient
-                  colors={[ACTIVE_BORDER_FROM, ACTIVE_BORDER_TO]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.circle}
-                >
-                  <View style={[styles.circle, styles.circleActiveInner]}>
+                <View style={[styles.circle, styles.circleActiveBorder]}>
+                  <LinearGradient
+                    colors={[ACTIVE_BORDER_FROM, ACTIVE_BORDER_TO]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={[styles.circle, styles.circleActiveInner]}
+                  >
                     <Feather name="check" size={16} color="rgba(255,255,255,0.9)" />
-                  </View>
-                </LinearGradient>
+                  </LinearGradient>
+                </View>
               ) : (
                 <View style={[styles.circle, styles.circleInactive, isToday && styles.circleToday]} />
               )}
@@ -117,11 +116,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  circleActiveBorder: {
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
+  },
   circleActiveInner: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: ACTIVE_BG,
   },
   circleInactive: {
     backgroundColor: "rgba(255,255,255,0.08)",
