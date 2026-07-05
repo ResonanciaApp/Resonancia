@@ -430,8 +430,83 @@ export default function ExploreScreen() {
               </View>
             </View>
 
+            {/* ── ¿Cuánto tiempo tienes hoy? ── */}
+            <View style={[styles.durSection, { marginTop: 60, marginBottom: SECTION_GAP }]}>
+              <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>
+                ¿Cuánto tiempo tienes hoy?
+              </Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.durPillRow}
+              >
+                {DURATION_SLOTS.map((slot) => {
+                  const sel = selectedDur === slot.label;
+                  return (
+                    <Pressable
+                      key={slot.label}
+                      onPress={() => setSelectedDur(sel ? null : slot.label)}
+                      style={({ pressed }) => [
+                        styles.durPill,
+                        sel && styles.durPillActive,
+                        { opacity: pressed ? 0.75 : 1 },
+                      ]}
+                    >
+                      {sel && (
+                        <LinearGradient
+                          colors={["#D6A45C", "#BE8744"]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 0, y: 1 }}
+                          style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+                        />
+                      )}
+                      <Text
+                        style={[styles.durPillText, sel && styles.durPillTextActive]}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                        minimumFontScale={0.7}
+                      >
+                        {slot.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
+
+              {selectedDur && (
+                <View style={styles.durResults}>
+                  {/* Filtro de orden */}
+                  <View style={styles.durSortRow}>
+                    <Pressable onPress={() => setDurSort("recientes")}>
+                      <Text style={[styles.durSortOption, durSort === "recientes" && styles.durSortActive]}>
+                        Recientes
+                      </Text>
+                    </Pressable>
+                    <Text style={styles.durSortSep}>·</Text>
+                    <Pressable onPress={() => setDurSort("populares")}>
+                      <Text style={[styles.durSortOption, durSort === "populares" && styles.durSortActive]}>
+                        Más escuchadas
+                      </Text>
+                    </Pressable>
+                  </View>
+                  {durationSessions.length === 0 ? (
+                    <Text style={[styles.durEmpty, { color: "#c2c2c2" }]}>
+                      Sin sesiones para este rango
+                    </Text>
+                  ) : (
+                    durationSessions.map((s, i) => (
+                      <React.Fragment key={s.id}>
+                        {i > 0 && <View style={styles.recoDivider} />}
+                        <SessionCard session={s} horizontal />
+                      </React.Fragment>
+                    ))
+                  )}
+                </View>
+              )}
+            </View>
+
             {/* ── Explorar todo (TEMAS 6×2) ── */}
-            <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 60 }]}>
+            <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
               <View style={styles.sectionRow}>
                 <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Explorar todo</Text>
               </View>
@@ -518,81 +593,6 @@ export default function ExploreScreen() {
                 </Pressable>
               </View>
             )}
-
-            {/* ── ¿Cuánto tiempo tienes hoy? ── */}
-            <View style={[styles.durSection, { marginTop: 0, marginBottom: SECTION_GAP }]}>
-              <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>
-                ¿Cuánto tiempo tienes hoy?
-              </Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.durPillRow}
-              >
-                {DURATION_SLOTS.map((slot) => {
-                  const sel = selectedDur === slot.label;
-                  return (
-                    <Pressable
-                      key={slot.label}
-                      onPress={() => setSelectedDur(sel ? null : slot.label)}
-                      style={({ pressed }) => [
-                        styles.durPill,
-                        sel && styles.durPillActive,
-                        { opacity: pressed ? 0.75 : 1 },
-                      ]}
-                    >
-                      {sel && (
-                        <LinearGradient
-                          colors={["#D6A45C", "#BE8744"]}
-                          start={{ x: 0, y: 0 }}
-                          end={{ x: 0, y: 1 }}
-                          style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-                        />
-                      )}
-                      <Text
-                        style={[styles.durPillText, sel && styles.durPillTextActive]}
-                        numberOfLines={1}
-                        adjustsFontSizeToFit
-                        minimumFontScale={0.7}
-                      >
-                        {slot.label}
-                      </Text>
-                    </Pressable>
-                  );
-                })}
-              </ScrollView>
-
-              {selectedDur && (
-                <View style={styles.durResults}>
-                  {/* Filtro de orden */}
-                  <View style={styles.durSortRow}>
-                    <Pressable onPress={() => setDurSort("recientes")}>
-                      <Text style={[styles.durSortOption, durSort === "recientes" && styles.durSortActive]}>
-                        Recientes
-                      </Text>
-                    </Pressable>
-                    <Text style={styles.durSortSep}>·</Text>
-                    <Pressable onPress={() => setDurSort("populares")}>
-                      <Text style={[styles.durSortOption, durSort === "populares" && styles.durSortActive]}>
-                        Más escuchadas
-                      </Text>
-                    </Pressable>
-                  </View>
-                  {durationSessions.length === 0 ? (
-                    <Text style={[styles.durEmpty, { color: "#c2c2c2" }]}>
-                      Sin sesiones para este rango
-                    </Text>
-                  ) : (
-                    durationSessions.map((s, i) => (
-                      <React.Fragment key={s.id}>
-                        {i > 0 && <View style={styles.recoDivider} />}
-                        <SessionCard session={s} horizontal />
-                      </React.Fragment>
-                    ))
-                  )}
-                </View>
-              )}
-            </View>
 
             {/* ── Meditaciones recomendadas ── */}
             {renderCarousel("Meditaciones recomendadas", dailyRecs, "/category/meditaciones-guiadas")}
