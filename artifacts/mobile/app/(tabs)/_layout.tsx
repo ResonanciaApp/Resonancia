@@ -318,25 +318,24 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           const bw = Dimensions.get("window").width - PILL_MARGIN_H * 2;
           const bh = PILL_H;
           const r  = bh / 2 - sw / 2;
-          const bulge = 4;
-          const canvasH = bh + bulge * 2;
+          const canvasH = bh;
           const x0 = sw / 2;
-          const y0 = sw / 2 + bulge;
+          const y0 = sw / 2;
           const x1 = bw - sw / 2;
-          const y1 = canvasH - sw / 2 - bulge;
+          const y1 = canvasH - sw / 2;
           const d =
             `M ${x0 + r} ${y0} ` +
-            `Q ${(x0 + r + x1 - r) / 2} ${y0 - bulge} ${x1 - r} ${y0} ` +
+            `L ${x1 - r} ${y0} ` +
             `A ${r} ${r} 0 0 1 ${x1} ${y0 + r} ` +
             `L ${x1} ${y1 - r} ` +
             `A ${r} ${r} 0 0 1 ${x1 - r} ${y1} ` +
-            `Q ${(x1 - r + x0 + r) / 2} ${y1 + bulge} ${x0 + r} ${y1} ` +
+            `L ${x0 + r} ${y1} ` +
             `A ${r} ${r} 0 0 1 ${x0} ${y1 - r} ` +
             `L ${x0} ${y0 + r} ` +
             `A ${r} ${r} 0 0 1 ${x0 + r} ${y0} ` +
             `Z`;
           return (
-            <Svg width={bw} height={canvasH} style={{ position: "absolute", top: -bulge, left: 0 }} pointerEvents="none">
+            <Svg width={bw} height={canvasH} style={{ position: "absolute", top: 0, left: 0 }} pointerEvents="none">
               <Defs>
                 <SvgLinearGradient id="tabBorderA" x1="0.5" y1="0" x2="0.5" y2="1">
                   <Stop offset="0"   stopColor="#FFFFFF" stopOpacity={0.22} />
