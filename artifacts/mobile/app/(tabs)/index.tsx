@@ -329,6 +329,22 @@ export default function HomeScreen2() {
     return shuffled.slice(0, 10);
   }, [history, catalogVersion]);
 
+  // Escuchadas recientemente — historial deduplicado, más recientes primero
+  // (history ya viene ordenado con el más reciente al inicio, ver addToHistory)
+  const listenedRecently = React.useMemo<Session[]>(() => {
+    const seen = new Set<string>();
+    const result: Session[] = [];
+    for (let i = 0; i < history.length; i++) {
+      const h = history[i];
+      if (seen.has(h.sessionId)) continue;
+      seen.add(h.sessionId);
+      const s = getSessionById(h.sessionId);
+      if (s) result.push(s);
+      if (result.length === 10) break;
+    }
+    return result;
+  }, [history]);
+
   // Tus playlist — playlists del usuario, foto de la primera sesión
   const playlistItems = React.useMemo(() =>
     playlists.slice(0, 10).map((pl) => ({
@@ -365,6 +381,11 @@ export default function HomeScreen2() {
     if (!activeFilter) return recommendedSessions;
     return recommendedSessions.filter((s) => activeFilter.includes(s.categoryId));
   }, [recommendedSessions, activeFilter]);
+
+  const filteredListened = React.useMemo(() => {
+    if (!activeFilter) return listenedRecently;
+    return listenedRecently.filter((s) => activeFilter.includes(s.categoryId));
+  }, [listenedRecently, activeFilter]);
 
   const filteredRecent = React.useMemo(() => {
     if (!activeFilter) return recentSessions;
@@ -626,6 +647,17 @@ export default function HomeScreen2() {
             </ScrollView>
           )}
         </View>
+
+        {/* ── ESCUCHADAS RECIENTEMENTE ── */}
+        <SessionCarousel
+          title="Escuchadas recientemente"
+          sessions={filteredListened}
+          isPremium={isPremium}
+          onPress={(s) => { if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } router.push(`/session/${s.id}` as never); }}
+          style={{ marginBottom: SECTION_GAP }}
+          titleOffset={10}
+          cardWidth={RECENT_CARD_W}
+        />
 
         {/* ── ESTADO DE ÁNIMO ── */}
         <View style={{ paddingHorizontal: 16 }}>
