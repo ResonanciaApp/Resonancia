@@ -554,9 +554,9 @@ export default function HomeScreen2() {
         />
         <LinearGradient
           colors={[
-            "rgba(190,150,80,0.10)",
-            "rgba(190,150,80,0.045)",
-            "rgba(190,150,80,0.015)",
+            "rgba(190,150,80,0.05)",
+            "rgba(190,150,80,0.022)",
+            "rgba(190,150,80,0.008)",
             "transparent",
           ]}
           locations={[0, 0.35, 0.7, 1]}
