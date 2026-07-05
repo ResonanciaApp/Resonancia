@@ -1304,7 +1304,7 @@ const styles = StyleSheet.create({
   // ── Sticky header (Panel/Biblioteca/Historial/Registros) ──────────────────
   stickyHeader: {
     zIndex: 10,
-    backgroundColor: "#16040A",
+    backgroundColor: "#210911",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.38,
