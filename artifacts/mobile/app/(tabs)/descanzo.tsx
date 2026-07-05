@@ -325,6 +325,7 @@ function DormirMiniPlayer({
   return (
     <View style={styles.dormirMiniPlayer}>
       {/* ── Fondo idéntico a la tab bar horizontal (iOS Glass Material) ── */}
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.5)" }]} />
       <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
       <LinearGradient
         colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
