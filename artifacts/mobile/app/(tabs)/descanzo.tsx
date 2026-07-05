@@ -375,6 +375,9 @@ export default function DescansoScreen() {
   const scrollY      = useRef(new Animated.Value(0)).current;
   const [stickyActive, setStickyActive] = useState(false);
   const stickyOpacity = scrollY.interpolate({ inputRange: [HERO_H * 0.30, HERO_H * 0.95], outputRange: [0, 1], extrapolate: "clamp" });
+  const [tabsOffsetY, setTabsOffsetY] = useState(HERO_H);
+  const [headerH,     setHeaderH]     = useState(60);
+  const [chipsSticky, setChipsSticky] = useState(false);
 
   const player = useDescansoPlayer({ timerMinutes: timerMin, fadeVolume: fadeVol });
   const {
@@ -418,6 +421,8 @@ export default function DescansoScreen() {
           scrollY.setValue(y);
           const active = y > HERO_H * 0.5;
           if (active !== stickyActive) setStickyActive(active);
+          const sticky = y > tabsOffsetY - headerH;
+          if (sticky !== chipsSticky) setChipsSticky(sticky);
         }}
       >
         {/* ── Hero ── */}
@@ -430,21 +435,23 @@ export default function DescansoScreen() {
         </View>
 
         {/* ── Tabs de modo ── */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.tabGrid}
-          contentContainerStyle={styles.tabGridContent}
-        >
-          {SLEEP_TABS.map((tab) => (
-            <SleepPill
-              key={tab.id}
-              sel={activeTab === tab.id}
-              label={tab.label}
-              onPress={() => setActiveTab(tab.id)}
-            />
-          ))}
-        </ScrollView>
+        <View onLayout={(e) => setTabsOffsetY(e.nativeEvent.layout.y)}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.tabGrid}
+            contentContainerStyle={styles.tabGridContent}
+          >
+            {SLEEP_TABS.map((tab) => (
+              <SleepPill
+                key={tab.id}
+                sel={activeTab === tab.id}
+                label={tab.label}
+                onPress={() => setActiveTab(tab.id)}
+              />
+            ))}
+          </ScrollView>
+        </View>
 
         {/* ── Banner Prepara tu noche ── */}
         <Pressable
@@ -523,13 +530,35 @@ export default function DescansoScreen() {
 
       </ScrollView>
 
-      {/* ── Sticky header (solo título) ── */}
+      {/* ── Sticky header (título) ── */}
       <Animated.View
         style={[styles.stickyHeader, { paddingTop: topPad + 10, opacity: stickyOpacity }]}
         pointerEvents={stickyActive ? "auto" : "none"}
+        onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}
       >
         <Text style={[styles.stickyHeaderTitle, { color: colors.foreground }]}>Dormir</Text>
       </Animated.View>
+
+      {/* ── Tabs sticky (se pegan debajo del título) ── */}
+      {chipsSticky && (
+        <View style={[styles.stickyTabs, { top: headerH }]}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.tabGrid}
+            contentContainerStyle={styles.tabGridContent}
+          >
+            {SLEEP_TABS.map((tab) => (
+              <SleepPill
+                key={tab.id}
+                sel={activeTab === tab.id}
+                label={tab.label}
+                onPress={() => setActiveTab(tab.id)}
+              />
+            ))}
+          </ScrollView>
+        </View>
+      )}
 
       <NightTimerSheet
         visible={timerSheet}
@@ -783,6 +812,15 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "700",
     letterSpacing: 0.2,
+  },
+  stickyTabs: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    zIndex: 19,
+    backgroundColor: "#0D0512",
+    paddingTop: 8,
+    paddingBottom: 6,
   },
 
   /* Hero */
