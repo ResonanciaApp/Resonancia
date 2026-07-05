@@ -75,6 +75,7 @@ function SleepPill({
 }
 
 const H_PAD = 20;
+const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
 
 /* ─── Estrellas estáticas pre-generadas ─────────────────────────────── */
@@ -371,6 +372,10 @@ export default function DescansoScreen() {
   const [timerMin,    setTimerMin]    = useState(30);
   const [fadeVol,     setFadeVol]     = useState(false);
 
+  const scrollY      = useRef(new Animated.Value(0)).current;
+  const [stickyActive, setStickyActive] = useState(false);
+  const stickyOpacity = scrollY.interpolate({ inputRange: [HERO_H * 0.30, HERO_H * 0.95], outputRange: [0, 1], extrapolate: "clamp" });
+
   const player = useDescansoPlayer({ timerMinutes: timerMin, fadeVolume: fadeVol });
   const {
     currentSession,
@@ -403,8 +408,19 @@ export default function DescansoScreen() {
       <StatusBar barStyle="light-content" />
       <NightSky />
 
-      {/* ── Header fijo (título + tabs + Prepara tu noche) ── */}
-      <View style={{ paddingTop: topPad + 10 }}>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: topPad + 10 }}
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={(e) => {
+          const y = e.nativeEvent.contentOffset.y;
+          scrollY.setValue(y);
+          const active = y > HERO_H * 0.5;
+          if (active !== stickyActive) setStickyActive(active);
+        }}
+      >
+        {/* ── Hero ── */}
         <View style={styles.hero}>
           <Ionicons name="moon" size={34} color="#C4A8F5" style={styles.heroIcon} />
           <Text style={[styles.heroTitle, { color: colors.foreground }]}>Dormir</Text>
@@ -462,13 +478,7 @@ export default function DescansoScreen() {
             ) : null}
           </View>
         </Pressable>
-      </View>
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
-        showsVerticalScrollIndicator={false}
-      >
         {isSoundTab ? (
           <>
             {/* ── Grilla de sonidos ── */}
@@ -512,6 +522,14 @@ export default function DescansoScreen() {
         )}
 
       </ScrollView>
+
+      {/* ── Sticky header (solo título) ── */}
+      <Animated.View
+        style={[styles.stickyHeader, { paddingTop: topPad + 10, opacity: stickyOpacity }]}
+        pointerEvents={stickyActive ? "auto" : "none"}
+      >
+        <Text style={[styles.stickyHeaderTitle, { color: colors.foreground }]}>Dormir</Text>
+      </Animated.View>
 
       <NightTimerSheet
         visible={timerSheet}
@@ -747,6 +765,24 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
     letterSpacing: 0.1,
+  },
+
+  /* Sticky header */
+  stickyHeader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingBottom: 14,
+    backgroundColor: "#0D0512",
+  },
+  stickyHeaderTitle: {
+    fontSize: 17,
+    fontWeight: "700",
+    letterSpacing: 0.2,
   },
 
   /* Hero */
