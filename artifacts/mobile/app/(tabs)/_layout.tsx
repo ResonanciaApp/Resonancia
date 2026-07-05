@@ -558,6 +558,7 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 6,
     alignItems: "center",
+    marginTop: 2,
   },
   labelActive: {
     color: GRAD_END,
