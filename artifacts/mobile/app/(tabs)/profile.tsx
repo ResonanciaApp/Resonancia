@@ -1311,11 +1311,6 @@ const styles = StyleSheet.create({
   stickyHeader: {
     zIndex: 10,
     backgroundColor: "#340D1A",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.38,
-    shadowRadius: 4,
-    elevation: 8,
   },
   stickyHeaderRow: {
     flexDirection: "row",
