@@ -1647,7 +1647,7 @@ export default function BibliotecaScreen() {
         {/* Fila 1: título + iconos */}
         <View style={styles.headerRow}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.headerTitle}>Mi Espacio</Text>
+            <Text style={styles.headerTitle}>Universo</Text>
             <Text style={styles.headerSubtitle}>Tu refugio de sonidos</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>

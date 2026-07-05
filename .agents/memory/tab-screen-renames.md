@@ -1,0 +1,16 @@
+---
+name: Tab screen renames (Crea/Medita/Universo)
+description: Nombres actuales de las 3 pantallas principales renombradas — evitar confundir con nombres viejos en código/comentarios
+---
+
+Las pantallas principales del tab bar fueron renombradas (05 jul 2026):
+
+| Route | Nombre viejo | Nombre nuevo |
+|---|---|---|
+| `musica` (Mezclador) | Mezclador | **Crea** |
+| `explore` | Meditación | **Medita** |
+| `biblioteca` | Mi Espacio | **Universo** |
+
+**Why:** decisión de producto del usuario para simplificar/renombrar el branding de las secciones principales.
+
+**How to apply:** los labels viven en `app/(tabs)/_layout.tsx` (objeto `TAB_META` + `Tabs.Screen options={{ title }}`) y el título grande dentro de cada pantalla (`musica.tsx`, `explore.tsx`, `biblioteca.tsx` usan `styles.pageTitle`/`styles.headerTitle`). Los nombres de archivo/ruta (`musica`, `explore`, `biblioteca`) y nombres internos de componentes (`MezcladorScreen`, etc.) NO se renombraron — solo los textos visibles al usuario. No confundir menciones de "Meditación"/"Mezclador" en datos de contenido (subtítulos de sesiones, tags, categorías) con los nombres de pantalla — esas son coincidencias de dominio, no bugs.

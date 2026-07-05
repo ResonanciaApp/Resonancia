@@ -1,3 +1,4 @@
+- [Tab screen renames](tab-screen-renames.md) — Mezclador→Crea, Meditación→Medita, Mi Espacio→Universo; solo labels visibles, rutas/nombres de archivo no cambiaron
 - [Expo Router tab-group back nav](expo-router-tab-group-back-nav.md) — detail screens under app/(tabs)/ break back nav (resolves to Inicio); put them at app root like mezcla/[id], artista/[id]
 - [Favoritos folders hide from flat list](favoritos-folder-hides-flat-list.md) — excepción deliberada: sesión en una carpeta de Favoritos desaparece de la lista plana (a diferencia de Playlist/Mezclas donde no se oculta)
 - [Nested folders pattern](nested-folders-pattern.md) — subFolderIds + helpers + unified action sheet shared across Playlist/Mezclas/Favoritos; cycle-prevention via descendant-exclusion in move picker
