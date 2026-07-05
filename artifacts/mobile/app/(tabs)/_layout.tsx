@@ -62,7 +62,7 @@ const TAB_CONFIG: Record<
 > = {
   index:      { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
   explore:    { label: "Medita",     sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search", mciIcon: "spa-outline", mciIconFill: "spa" },
-  musica:     { label: "Crea",       sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",  featherIcon: "sliders" },
+  musica:     { label: "Crear",      sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",  featherIcon: "sliders" },
   biblioteca: { label: "Universo",   sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
   descanzo:   { label: "Dormir",     sfIcon: "moon.stars",          sfIconFill: "moon.stars.fill",      featherIcon: "moon" },
   profile:    { label: "Perfil",     sfIcon: "person",              sfIconFill: "person.fill",          featherIcon: "user" },
@@ -427,7 +427,7 @@ function TabLayoutInner() {
         tabBar={(props) => <CustomTabBar {...props} />}
       >
         <Tabs.Screen name="index"          options={{ title: "Inicio" }} />
-        <Tabs.Screen name="musica"         options={{ title: "Crea" }} />
+        <Tabs.Screen name="musica"         options={{ title: "Crear" }} />
         <Tabs.Screen name="coleccion/[id]" options={{ href: null }} />
         <Tabs.Screen name="explore"        options={{ title: "Medita" }} />
         <Tabs.Screen name="biblioteca"     options={{ title: "Universo" }} />

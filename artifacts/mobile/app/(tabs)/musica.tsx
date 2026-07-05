@@ -681,7 +681,7 @@ export default function MezcladorScreen() {
                   </Pressable>
                 </GhostPill>
                 <View style={{ flex: 1 }}>
-                  <Text style={[styles.pageTitle, { transform: [{ translateX: -19 }, { translateY: -1 }] }]}>Crea</Text>
+                  <Text style={[styles.pageTitle, { transform: [{ translateX: -19 }, { translateY: -1 }] }]}>Crear</Text>
                 </View>
                 <View style={styles.headerActions}>
                   <GhostPill style={{ gap: 6, backgroundColor: "rgba(255,255,255,0.06)" }}>

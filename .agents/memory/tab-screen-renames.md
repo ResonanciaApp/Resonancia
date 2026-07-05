@@ -7,7 +7,7 @@ Las pantallas principales del tab bar fueron renombradas (05 jul 2026):
 
 | Route | Nombre viejo | Nombre nuevo |
 |---|---|---|
-| `musica` (Mezclador) | Mezclador | **Crea** |
+| `musica` (Mezclador) | Mezclador | **Crear** (pasó brevemente por "Crea" antes de fijarse en "Crear") |
 | `explore` | Meditación | **Medita** |
 | `biblioteca` | Mi Espacio | **Universo** |
 
