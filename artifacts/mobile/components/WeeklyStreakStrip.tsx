@@ -57,12 +57,7 @@ export function WeeklyStreakStrip() {
     return { activeFlags: flags, activeCount: count, todayIndex: todayIdx };
   }, [statEvents]);
 
-  const message = useMemo(() => {
-    if (activeCount === 0) return "Aún no usaste RESONANCIA esta semana. ¡Empezá hoy!";
-    if (activeCount === 1) return "¡Empezaste muy bien! Usaste RESONANCIA 1 día esta semana.\n¡Continúa así!";
-    if (activeCount >= 6) return `¡Racha increíble! Usaste RESONANCIA ${activeCount} días esta semana.\n¡Seguí así!`;
-    return `¡Vas muy bien! Usaste RESONANCIA ${activeCount} días esta semana.\n¡Continúa así!`;
-  }, [activeCount]);
+  const message = `Muy bien! Usaste Resonancia ${activeCount} días esta semana.\n¡Continúa así!`;
 
   return (
     <View style={styles.card}>
@@ -93,11 +88,10 @@ export function WeeklyStreakStrip() {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "rgba(190,150,80,0.05)",
     borderRadius: 16,
     paddingVertical: 18,
     paddingHorizontal: 14,
-    gap: 14,
+    gap: 13,
   },
   row: {
     flexDirection: "row",
