@@ -22,7 +22,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
-import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 import { SessionCard } from "@/components/SessionCard";
 import { SESSIONS } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
@@ -60,20 +59,6 @@ const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 
 
 type Session = (typeof SESSIONS)[number];
 
-const RITUAL_GRID_PAD = H_PAD;
-const RITUAL_CARD_W   = width - RITUAL_GRID_PAD * 2;
-const RITUAL_IMG_H    = Math.round(RITUAL_CARD_W * (9 / 16));
-
-const DURACION_OPTS_EX = [
-  { label: "Todos",  min: 0,  max: Infinity },
-  { label: "5 min",  min: 0,  max: 5        },
-  { label: "10 min", min: 6,  max: 10       },
-  { label: "15 min", min: 11, max: 15       },
-  { label: "20 min", min: 16, max: 25       },
-  { label: "30 min", min: 26, max: 60       },
-] as const;
-type DurOptEx = (typeof DURACION_OPTS_EX)[number]["label"];
-
 const DURATION_SLOTS = [
   { label: "5 min",   min: 0,  max: 5  },
   { label: "10 min",  min: 6,  max: 10 },
@@ -83,47 +68,6 @@ const DURATION_SLOTS = [
 ] as const;
 type DurSlot = (typeof DURATION_SLOTS)[number]["label"];
 const DUR_PILL_W = Math.round((width - H_PAD * 2 - 6 * 4) / 4.3);
-
-function ExpRitualCard({ session, onPress }: { session: Session; onPress: () => void }) {
-  const idNum  = parseInt(session.id, 10);
-  const rating = (4.5 + (isNaN(idNum) ? 0 : (idNum % 5) * 0.08)).toFixed(1);
-  const author = session.guideIds
-    ? (getGuide(session.guideIds[0])?.name ?? "Casa del Cuenco")
-    : session.guideId
-      ? (getGuide(session.guideId)?.name ?? "Casa del Cuenco")
-      : session.artistId
-        ? (getArtist(session.artistId)?.name ?? "Resonancia")
-        : "Casa del Cuenco";
-  return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
-    >
-      <View style={{ width: RITUAL_CARD_W, height: RITUAL_IMG_H, borderRadius: 13, overflow: "hidden", marginBottom: 10, backgroundColor: "rgba(255,255,255,0.025)" }}>
-        <Image source={session.image as never} style={{ width: RITUAL_CARD_W, height: RITUAL_IMG_H }} contentFit="cover" />
-      </View>
-      <View style={exStyles.ritualMeta}>
-        <Text style={exStyles.ritualMetaText}>{session.categoryLabel}</Text>
-        <Text style={exStyles.ritualDot}>·</Text>
-        <Text style={exStyles.ritualMetaText}>{session.durationLabel}</Text>
-      </View>
-      <Text style={exStyles.ritualTitle} numberOfLines={2}>{session.title}</Text>
-      <Text style={exStyles.ritualAuthor} numberOfLines={1}>{author}</Text>
-    </Pressable>
-  );
-}
-
-const exStyles = StyleSheet.create({
-  ritualMeta:     { flexDirection: "row", alignItems: "center", marginBottom: 5, flexWrap: "wrap" },
-  ritualStar:     { fontSize: 12, color: "#D4AF37", marginRight: 5 },
-  ritualDot:      { fontSize: 12, color: "rgba(255,255,255,0.35)", marginRight: 5 },
-  ritualMetaText: { fontSize: 12, color: "rgba(255,255,255,0.55)" },
-  ritualTitle:    { fontSize: 16, fontWeight: "700", color: "#FFFFFF", marginBottom: 4, lineHeight: 21 },
-  ritualAuthor:   { fontSize: 13, color: "rgba(255,255,255,0.55)" },
-  durOptRow:      { flexDirection: "row", alignItems: "center", paddingVertical: 14, paddingHorizontal: 20, borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.06)" },
-  durOptLabel:    { fontSize: 16, color: "#FFFFFF", flex: 1 },
-  durOptCheck:    { fontSize: 16, color: "#D4AF37" },
-});
 
 /** Seed numérico basado en la fecha (YYYYMMDD) → mismo resultado todo el día */
 function dateSeed(): number {
@@ -291,9 +235,6 @@ export default function ExploreScreen() {
   const { photoUri } = useUserProfile();
   const { open: openDrawer } = useDrawer();
   const [searchVisible, setSearchVisible] = useState(false);
-  const [ritualesFilter, setRitualesFilter] = useState<DurOptEx>("Todos");
-  const [ritualesSheet, setRitualesSheet] = useState(false);
-  const [tempRitualesFilter, setTempRitualesFilter] = useState<DurOptEx>("Todos");
 
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
@@ -302,12 +243,6 @@ export default function ExploreScreen() {
   const musicaSessions       = SESSIONS.filter(s => s.categoryId === "musica-sonidos").slice(0, 10);
   const meditacionesSessions = SESSIONS.filter(s => s.categoryId === "meditaciones-guiadas").slice(0, 10);
   const dailyRecs = React.useMemo(() => getDailyRecommendations(5), []);
-
-  const ritualesSessions = useMemo(() => {
-    const opt = DURACION_OPTS_EX.find(o => o.label === ritualesFilter)!;
-    const base = SESSIONS.filter(s => s.duration >= opt.min && s.duration <= opt.max);
-    return base.slice(0, 10);
-  }, [ritualesFilter]);
 
   // ¿Cuánto tiempo tienes hoy?
   const [selectedDur, setSelectedDur] = useState<DurSlot | null>(null);
@@ -529,87 +464,7 @@ export default function ExploreScreen() {
             {/* ── Meditaciones recomendadas ── */}
             {renderCarousel("Meditaciones recomendadas", dailyRecs, "/category/meditaciones-guiadas")}
 
-            {/* ── Mezclas de la comunidad ── */}
-            <View style={[styles.communityWrap, { marginTop: -7 }]}>
-              <CommunityMixesCarousel />
-            </View>
-
-            {/* ── Para tus rituales sagrados ── */}
-            <View style={{ marginBottom: SECTION_GAP }}>
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: RITUAL_GRID_PAD, marginBottom: 24 }}>
-                <Text style={{ fontSize: 20, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3 }}>
-                  Para tus rituales sagrados
-                </Text>
-                <Pressable
-                  onPress={() => { setTempRitualesFilter(ritualesFilter); setRitualesSheet(true); }}
-                  style={({ pressed }) => ({
-                    opacity: pressed ? 0.7 : 1,
-                    flexDirection: "row", alignItems: "center", gap: 5,
-                    backgroundColor: "rgba(255,255,255,0.035)",
-                    borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6,
-                  })}
-                >
-                  <Text style={{ fontSize: 13, color: "#BE9650", fontWeight: "600" }}>
-                    {ritualesFilter}
-                  </Text>
-                  <Feather name="chevron-down" size={12} color="#BE8744" />
-                </Pressable>
-              </View>
-              <View style={{ paddingHorizontal: RITUAL_GRID_PAD }}>
-                {ritualesSessions.map((s, i) => (
-                  <View key={s.id} style={i < ritualesSessions.length - 1 ? { marginBottom: 60 } : undefined}>
-                    <ExpRitualCard session={s} onPress={() => handleSessionPress(s)} />
-                  </View>
-                ))}
-              </View>
-            </View>
-
       </ScrollView>
-
-      {/* Modal picker duración */}
-      <Modal
-        visible={ritualesSheet}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setRitualesSheet(false)}
-      >
-        <Pressable
-          style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.55)" }}
-          onPress={() => setRitualesSheet(false)}
-        />
-        <View style={{ backgroundColor: "#1B060F", borderTopLeftRadius: 20, borderTopRightRadius: 20, borderTopWidth: 1, borderColor: "rgba(212,175,55,0.15)", paddingBottom: 32 }}>
-          <View style={{ alignItems: "center", paddingVertical: 12 }}>
-            <View style={{ width: 36, height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.15)" }} />
-          </View>
-          <Text style={{ fontSize: 15, fontWeight: "700", color: "#FFFFFF", textAlign: "center", marginBottom: 8 }}>
-            Duración
-          </Text>
-          {DURACION_OPTS_EX.map(opt => (
-            <Pressable
-              key={opt.label}
-              onPress={() => setTempRitualesFilter(opt.label)}
-              style={({ pressed }) => [exStyles.durOptRow, { opacity: pressed ? 0.7 : 1 }]}
-            >
-              <Text style={exStyles.durOptLabel}>{opt.label}</Text>
-              {tempRitualesFilter === opt.label && <Text style={exStyles.durOptCheck}>✓</Text>}
-            </Pressable>
-          ))}
-          <View style={{ paddingHorizontal: 20, marginTop: 16 }}>
-            <Pressable
-              onPress={() => { setRitualesFilter(tempRitualesFilter); setRitualesSheet(false); }}
-              style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
-            >
-              <LinearGradient
-                colors={["#D4AF37", "#BE9650"]}
-                start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-                style={{ borderRadius: 14, paddingVertical: 14, alignItems: "center" }}
-              >
-                <Text style={{ fontSize: 15, fontWeight: "700", color: "#1B060F" }}>Aplicar</Text>
-              </LinearGradient>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
 
       <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} />
     </View>
@@ -620,10 +475,6 @@ const styles = StyleSheet.create({
   root:   { flex: 1, backgroundColor: "#230610" },
   rootGradient: { ...StyleSheet.absoluteFillObject },
   scroll: { flex: 1 },
-  communityWrap: {
-    marginBottom: SECTION_GAP,
-    marginHorizontal: H_PAD,
-  },
 
   header:         { paddingHorizontal: H_PAD, marginBottom: 18 },
   headerPillBtn:  { width: 43, height: 43, alignItems: "center", justifyContent: "center" },
