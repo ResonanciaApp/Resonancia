@@ -127,7 +127,7 @@ function computeStreak(events: { playedAt: string }[]): number {
   return count;
 }
 
-const BG_GRADIENT = ["#210911", "#190913", "#0B0811"] as const;
+const BG_GRADIENT = ["#230610", "#16040A"] as const;
 
 type PerfilTab = "panel" | "biblioteca" | "historial" | "registros";
 
@@ -1094,7 +1094,7 @@ export default function ProfileScreen() {
           behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
           <LinearGradient
-            colors={["#210911", "#190913", "#0B0811"]}
+            colors={["#230610", "#16040A"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFill}
