@@ -55,6 +55,17 @@ export function HistorialCalendar() {
   const [selectedDate, setSelectedDate] = useState<Date>(today);
 
   const grid = useMemo(() => buildMonthGrid(viewMonth), [viewMonth]);
+  const weeks = useMemo(() => {
+    const rows: (Date | null)[][] = [];
+    for (let i = 0; i < grid.length; i += 7) {
+      rows.push(grid.slice(i, i + 7));
+    }
+    const last = rows[rows.length - 1];
+    while (last && last.length < 7) last.push(null);
+    return rows;
+  }, [grid]);
+
+  const isNewUser = history.length === 0;
 
   const monthLabel = viewMonth
     .toLocaleDateString("es", { month: "long" })
@@ -80,7 +91,7 @@ export function HistorialCalendar() {
         <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi calendario</Text>
       </View>
 
-      <View style={[styles.calendarCard, { backgroundColor: colors.card }]}>
+      <View style={[styles.calendarCard, { backgroundColor: "rgba(255,255,255,0.05)" }]}>
         <View style={styles.calendarNav}>
           <Pressable onPress={goPrevMonth} hitSlop={10} style={styles.navBtn}>
             <Feather name="chevron-left" size={18} color={colors.foreground} />
@@ -99,35 +110,37 @@ export function HistorialCalendar() {
           ))}
         </View>
 
-        <View style={styles.daysGrid}>
-          {grid.map((d, i) => {
-            if (!d) return <View key={`empty-${i}`} style={styles.dayCell} />;
-            const selected = isSameDay(d, selectedDate);
-            return (
-              <Pressable
-                key={dayKey(d)}
-                onPress={() => setSelectedDate(d)}
-                style={styles.dayCell}
-              >
-                <View
-                  style={[
-                    styles.dayCircle,
-                    selected && { backgroundColor: colors.foreground },
-                  ]}
+        {weeks.map((week, wi) => (
+          <View key={`week-${wi}`} style={styles.daysGrid}>
+            {week.map((d, i) => {
+              if (!d) return <View key={`empty-${wi}-${i}`} style={styles.dayCell} />;
+              const selected = isSameDay(d, selectedDate);
+              return (
+                <Pressable
+                  key={dayKey(d)}
+                  onPress={() => setSelectedDate(d)}
+                  style={styles.dayCell}
                 >
-                  <Text
+                  <View
                     style={[
-                      styles.dayNum,
-                      { color: selected ? "#1B060F" : colors.foreground },
+                      styles.dayCircle,
+                      selected && { backgroundColor: colors.foreground },
                     ]}
                   >
-                    {d.getDate()}
-                  </Text>
-                </View>
-              </Pressable>
-            );
-          })}
-        </View>
+                    <Text
+                      style={[
+                        styles.dayNum,
+                        { color: selected ? "#1B060F" : colors.foreground },
+                      ]}
+                    >
+                      {d.getDate()}
+                    </Text>
+                  </View>
+                </Pressable>
+              );
+            })}
+          </View>
+        ))}
       </View>
 
       {/* ── Mi historial ── */}
@@ -135,7 +148,14 @@ export function HistorialCalendar() {
         <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi historial</Text>
       </View>
 
-      {dayEntries.length === 0 ? (
+      {isNewUser ? (
+        <View style={[styles.emptyWrap, { backgroundColor: colors.card }]}>
+          <Feather name="clock" size={26} color={colors.primary} style={{ marginBottom: 10 }} />
+          <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+            Aquí aparecerán tu historial de Resonancia
+          </Text>
+        </View>
+      ) : dayEntries.length === 0 ? (
         <View style={[styles.emptyWrap, { backgroundColor: colors.card }]}>
           <Feather name="clock" size={26} color={colors.primary} style={{ marginBottom: 10 }} />
           <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
