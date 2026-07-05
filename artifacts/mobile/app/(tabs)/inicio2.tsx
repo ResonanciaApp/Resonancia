@@ -82,7 +82,6 @@ const VIDEO_REG_W = 200;
 const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 1.85);
 
 const HEADER_HERO_HEIGHT = 335;
-const HERO_FADE_HEIGHT = 110;
 
 const SECTION_GAP = 60;
 const TEMA_GAP = 10;
@@ -531,32 +530,8 @@ export default function HomeScreen2() {
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 12 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── SPACER: deja ver el hero detrás; el fondo degradado avanza sobre él al hacer scroll ── */}
+        {/* ── SPACER: deja ver el hero fijo detrás; el fondo NO se mueve, solo el contenido ── */}
         <View style={styles.heroScrollSpacer} pointerEvents="none" />
-        {/* ── FADE que viaja con el scroll: come el borde inferior del hero de forma progresiva ── */}
-        <LinearGradient
-          colors={[
-            "transparent",
-            "rgba(52,13,26,0.009)",
-            "rgba(52,13,26,0.058)",
-            "rgba(52,13,26,0.163)",
-            "rgba(52,13,26,0.317)",
-            "rgba(52,13,26,0.5)",
-            "rgba(52,13,26,0.683)",
-            "rgba(52,13,26,0.837)",
-            "rgba(52,13,26,0.942)",
-            "rgba(52,13,26,0.991)",
-            "#340D1A",
-          ]}
-          locations={[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]}
-          style={styles.heroScrollRevealFade}
-          pointerEvents="none"
-        />
-        <LinearGradient
-          colors={["#340D1A", "#190913"]}
-          style={styles.scrollBgFill}
-          pointerEvents="none"
-        />
 
         {/* ── NAV-TABS: avatar + nav-tabs — ahora se desplaza con el contenido ── */}
         <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
@@ -992,13 +967,6 @@ const styles = StyleSheet.create({
     height: "100%",
     opacity: 0.94,
   },
-  heroBannerFade: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: HERO_FADE_HEIGHT,
-  },
   heroBannerFullTint: {
     position: "absolute",
     top: 0,
@@ -1010,20 +978,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: HEADER_HERO_HEIGHT,
     backgroundColor: "transparent",
-  },
-  heroScrollRevealFade: {
-    position: "absolute",
-    top: HEADER_HERO_HEIGHT - HERO_FADE_HEIGHT,
-    left: 0,
-    right: 0,
-    height: HERO_FADE_HEIGHT,
-  },
-  scrollBgFill: {
-    position: "absolute",
-    top: HEADER_HERO_HEIGHT,
-    left: 0,
-    right: 0,
-    height: 6000,
   },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
