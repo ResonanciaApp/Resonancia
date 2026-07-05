@@ -191,8 +191,8 @@ const SHEET_BG = "#120A18";
 interface NightTimerSheetProps {
   visible:      boolean;
   onClose:      () => void;
-  timerMin:     number;
-  setTimerMin:  (v: number) => void;
+  timerMin:     number | null;
+  setTimerMin:  (v: number | null) => void;
   fadeVol:      boolean;
   setFadeVol:   (v: boolean) => void;
 }
@@ -252,7 +252,7 @@ function NightTimerSheet({
             return (
               <Pressable
                 key={min}
-                onPress={() => setTimerMin(min)}
+                onPress={() => setTimerMin(sel ? null : min)}
                 style={[styles.timerChip, sel && styles.timerChipSel]}
               >
                 <Text style={[styles.timerChipText, sel && styles.timerChipTextSel]}>
@@ -369,7 +369,7 @@ export default function DescansoScreen() {
 
   const [activeTab,   setActiveTab]   = useState<SleepTabId>("historias");
   const [timerSheet,  setTimerSheet]  = useState(false);
-  const [timerMin,    setTimerMin]    = useState(30);
+  const [timerMin,    setTimerMin]    = useState<number | null>(30);
   const [fadeVol,     setFadeVol]     = useState(false);
 
   const scrollY      = useRef(new Animated.Value(0)).current;
@@ -379,7 +379,7 @@ export default function DescansoScreen() {
   const [headerH,     setHeaderH]     = useState(60);
   const [chipsSticky, setChipsSticky] = useState(false);
 
-  const player = useDescansoPlayer({ timerMinutes: timerMin, fadeVolume: fadeVol });
+  const player = useDescansoPlayer({ timerMinutes: timerMin ?? 0, fadeVolume: fadeVol });
   const {
     currentSession,
     isPlaying: sessionIsPlaying,
@@ -466,7 +466,7 @@ export default function DescansoScreen() {
                 <Feather name="chevron-down" size={18} color="rgba(255,255,255,0.6)" />
               </View>
               <Text style={styles.nightBannerSub}>
-                {timerMin} min{fadeVol ? " · fade" : ""}{player.selectedId ? " · reproduciendo" : ""}
+                {timerMin ? `${timerMin} min` : "Sin límite"}{fadeVol ? " · fade" : ""}{player.selectedId ? " · reproduciendo" : ""}
               </Text>
             </View>
             {currentSession ? (
