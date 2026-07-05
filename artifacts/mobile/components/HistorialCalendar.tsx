@@ -236,10 +236,10 @@ const styles = StyleSheet.create({
   },
   daysGrid: {
     flexDirection: "row",
-    flexWrap: "wrap",
+    flexWrap: "nowrap",
   },
   dayCell: {
-    width: `${100 / 7}%`,
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 5,
