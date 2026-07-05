@@ -71,16 +71,14 @@ export function WeeklyStreakStrip() {
           return (
             <View key={i} style={styles.dayCol}>
               {met ? (
-                <View style={[styles.circle, styles.circleActiveBorder]}>
-                  <LinearGradient
-                    colors={[ACTIVE_BORDER_FROM, ACTIVE_BORDER_TO]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={[styles.circle, styles.circleActiveInner]}
-                  >
-                    <Feather name="check" size={16} color="rgba(255,255,255,0.9)" />
-                  </LinearGradient>
-                </View>
+                <LinearGradient
+                  colors={[ACTIVE_BORDER_FROM, ACTIVE_BORDER_TO]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={[styles.circle, styles.circleActiveBorder]}
+                >
+                  <Feather name="check" size={16} color="rgba(255,255,255,0.9)" />
+                </LinearGradient>
               ) : (
                 <View style={[styles.circle, styles.circleInactive, isToday && styles.circleToday]} />
               )}
@@ -118,12 +116,7 @@ const styles = StyleSheet.create({
   },
   circleActiveBorder: {
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.5)",
-  },
-  circleActiveInner: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    borderColor: "rgba(255,255,255,0.3)",
   },
   circleInactive: {
     backgroundColor: "rgba(255,255,255,0.08)",
