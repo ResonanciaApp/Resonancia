@@ -430,6 +430,45 @@ export default function ExploreScreen() {
               </View>
             </View>
 
+            {/* ── Explorar todo (TEMAS 6×2) ── */}
+            <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 60 }]}>
+              <View style={styles.sectionRow}>
+                <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Explorar todo</Text>
+              </View>
+              <View style={[styles.temaGrid, { marginTop: 0 }]}>
+                {TEMAS.map((t, i) => (
+                  <Pressable
+                    key={t.id}
+                    onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
+                    style={({ pressed }) => [
+                      styles.temaCell,
+                      {
+                        width: TEMA3_W,
+                        height: TEMA3_W,
+                        backgroundColor: pressed
+                          ? hexTint(t.color, 0.22)
+                          : "rgba(255,255,255,0.055)",
+                        borderRadius: 11,
+                      },
+                    ]}
+                  >
+                    {t.image != null ? (
+                      <Image
+                        source={t.image}
+                        style={styles.temaCellIcon}
+                        contentFit="contain"
+                      />
+                    ) : (
+                      <MaterialCommunityIcons name={t.icon} size={28} color={t.color} />
+                    )}
+                    <Text style={[styles.temaCellLabel, { color: "#e8e8e8" }]} numberOfLines={2}>
+                      {t.label}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+
             {/* ── Ejercicios de respiración ── */}
             <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
               <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Ejercicios de respiración</Text>
@@ -479,45 +518,6 @@ export default function ExploreScreen() {
                 </Pressable>
               </View>
             )}
-
-            {/* ── Explorar todo (TEMAS 6×2) ── */}
-            <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
-              <View style={styles.sectionRow}>
-                <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Explorar todo</Text>
-              </View>
-              <View style={[styles.temaGrid, { marginTop: 0 }]}>
-                {TEMAS.map((t, i) => (
-                  <Pressable
-                    key={t.id}
-                    onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
-                    style={({ pressed }) => [
-                      styles.temaCell,
-                      {
-                        width: TEMA3_W,
-                        height: TEMA3_W,
-                        backgroundColor: pressed
-                          ? hexTint(t.color, 0.22)
-                          : "rgba(255,255,255,0.055)",
-                        borderRadius: 11,
-                      },
-                    ]}
-                  >
-                    {t.image != null ? (
-                      <Image
-                        source={t.image}
-                        style={styles.temaCellIcon}
-                        contentFit="contain"
-                      />
-                    ) : (
-                      <MaterialCommunityIcons name={t.icon} size={28} color={t.color} />
-                    )}
-                    <Text style={[styles.temaCellLabel, { color: "#e8e8e8" }]} numberOfLines={2}>
-                      {t.label}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-            </View>
 
             {/* ── ¿Cuánto tiempo tienes hoy? ── */}
             <View style={[styles.durSection, { marginTop: 0, marginBottom: SECTION_GAP }]}>
