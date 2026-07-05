@@ -52,6 +52,8 @@ export type VideoItem = {
   isNew?: boolean;
   /** Nombre del usuario o cuenta que subió el video. */
   author?: string;
+  /** Puntuación promedio (0-5). Si no está presente, la UI muestra un valor placeholder. */
+  rating?: number;
 };
 
 export const VIDEOS: VideoItem[] = [

@@ -26,11 +26,13 @@ const CARD_BORDER = "rgba(255,255,255,0.3)";
 
 const FILTER_CHIPS = ["Todos", "Movimiento", "Respiración", "Naturaleza", "Música"] as const;
 
-type SortOption = "recientes" | "az" | "duracion";
+type SortOption = "popular" | "puntuacion" | "novedades" | "corto" | "largo";
 const SORT_LABELS: Record<SortOption, string> = {
-  recientes: "Más recientes",
-  az: "Título (A-Z)",
-  duracion: "Duración",
+  popular: "Popular",
+  puntuacion: "Máxima puntuación",
+  novedades: "Novedades",
+  corto: "Más corto",
+  largo: "El más largo",
 };
 
 function parseDurationToSeconds(label: string): number {
@@ -46,7 +48,7 @@ export default function VideoTabScreen() {
   const [query, setQuery] = useState("");
   const [activeChip, setActiveChip] = useState<(typeof FILTER_CHIPS)[number]>("Todos");
   const [sortOpen, setSortOpen] = useState(false);
-  const [sortBy, setSortBy] = useState<SortOption>("recientes");
+  const [sortBy, setSortBy] = useState<SortOption>("popular");
   const sortBtnRef = useRef<View>(null);
   const [sortMenuPos, setSortMenuPos] = useState({ top: 0, right: 0 });
 
@@ -63,11 +65,17 @@ export default function VideoTabScreen() {
         )
       : videos;
 
-    if (sortBy === "az") {
-      list = [...list].sort((a, b) => a.title.localeCompare(b.title));
-    } else if (sortBy === "duracion") {
+    if (sortBy === "puntuacion") {
+      list = [...list].sort((a, b) => (b.rating ?? 4.8) - (a.rating ?? 4.8));
+    } else if (sortBy === "novedades") {
+      list = [...list].sort((a, b) => parseInt(b.id, 10) - parseInt(a.id, 10));
+    } else if (sortBy === "corto") {
       list = [...list].sort(
         (a, b) => parseDurationToSeconds(a.durationLabel) - parseDurationToSeconds(b.durationLabel),
+      );
+    } else if (sortBy === "largo") {
+      list = [...list].sort(
+        (a, b) => parseDurationToSeconds(b.durationLabel) - parseDurationToSeconds(a.durationLabel),
       );
     }
 
@@ -164,7 +172,7 @@ export default function VideoTabScreen() {
       </View>
 
       <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 100 + bottomPad, paddingTop: 4, gap: 12 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 100 + bottomPad, paddingTop: 4 }}
         showsVerticalScrollIndicator={false}
       >
         {isLoading ? (
@@ -184,9 +192,7 @@ export default function VideoTabScreen() {
             </Text>
           </View>
         ) : (
-          filtered.map((v) => (
-            <VideoCard key={v.id} video={v} horizontal cardBg={CARD_BG} borderColor={CARD_BORDER} />
-          ))
+          filtered.map((v) => <VideoCard key={v.id} video={v} feed />)
         )}
       </ScrollView>
 

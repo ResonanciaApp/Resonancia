@@ -13,8 +13,10 @@ type Props = {
   video: VideoItem;
   width?: number;
   horizontal?: boolean;
+  feed?: boolean;
   cardBg?: string;
   borderColor?: string;
+  onOptionsPress?: () => void;
 };
 
 function LockStar() {
@@ -37,7 +39,15 @@ function PlayOverlay() {
   );
 }
 
-export function VideoCard({ video, width = 240, horizontal = false, cardBg, borderColor }: Props) {
+export function VideoCard({
+  video,
+  width = 240,
+  horizontal = false,
+  feed = false,
+  cardBg,
+  borderColor,
+  onOptionsPress,
+}: Props) {
   const colors = useColors();
   const { isPremium } = usePremium();
   const locked = !!video.isPremium && !isPremium;
@@ -46,6 +56,56 @@ export function VideoCard({ video, width = 240, horizontal = false, cardBg, bord
     if (locked) router.push("/membresia" as never);
     else router.push(`/video/${video.id}` as never);
   };
+
+  if (feed) {
+    const rating = video.rating ?? 4.8;
+    return (
+      <View style={styles.feedItem}>
+        <Pressable onPress={handlePress} style={({ pressed }) => [{ opacity: pressed ? 0.9 : 1 }]}>
+          <View style={styles.feedImageWrap}>
+            <Image
+              source={video.thumbnail}
+              style={styles.feedImage}
+              contentFit="cover"
+              placeholder={BLUR_PLACEHOLDER}
+              transition={IMAGE_TRANSITION}
+            />
+            {locked && <LockStar />}
+            <View style={styles.feedCamBadge}>
+              <Feather name="video" size={13} color="#FFFFFF" />
+            </View>
+          </View>
+        </Pressable>
+
+        <View style={styles.feedCaptionRow}>
+          <Text
+            style={[styles.feedCaption, { color: colors.mutedForeground }]}
+            numberOfLines={1}
+          >
+            {rating.toFixed(1)}★ {video.subtitle} · {video.durationLabel}
+          </Text>
+          <Pressable
+            hitSlop={10}
+            onPress={onOptionsPress ?? (() => {})}
+            accessibilityLabel="Más opciones"
+          >
+            <Feather name="more-horizontal" size={20} color={colors.mutedForeground} />
+          </Pressable>
+        </View>
+
+        <Pressable onPress={handlePress}>
+          <Text style={[styles.feedTitle, { color: colors.foreground }]} numberOfLines={2}>
+            {video.title}
+          </Text>
+          {video.author && (
+            <Text style={[styles.feedAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
+              {video.author}
+            </Text>
+          )}
+        </Pressable>
+      </View>
+    );
+  }
 
   if (horizontal) {
     return (
@@ -164,6 +224,32 @@ const styles = StyleSheet.create({
   hTitle: { fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 5 },
   hMeta: { flexDirection: "row", alignItems: "center" },
   hDuration: { fontSize: 11 },
+
+  feedItem: { width: "100%", marginBottom: 28 },
+  feedImageWrap: {
+    width: "100%",
+    aspectRatio: 16 / 9,
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  feedImage: { width: "100%", height: "100%" },
+  feedCamBadge: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    borderRadius: 6,
+    padding: 5,
+  },
+  feedCaptionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 12,
+  },
+  feedCaption: { fontSize: 13, flex: 1, marginRight: 12 },
+  feedTitle: { fontSize: 18, fontWeight: "700", lineHeight: 24, marginTop: 6 },
+  feedAuthor: { fontSize: 13, marginTop: 4 },
 
   playOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
   playCircle: {
