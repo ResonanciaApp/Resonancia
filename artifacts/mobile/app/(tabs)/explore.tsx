@@ -334,7 +334,7 @@ export default function ExploreScreen() {
         <View style={styles.header}>
           <View style={styles.headerRow}>
             <View style={{ flex: 1 }}>
-              <Text style={[styles.pageTitle, { transform: [{ translateY: 2 }] }]}>Medita</Text>
+              <Text style={[styles.pageTitle, { transform: [{ translateY: 2 }] }]}>Meditación</Text>
               <Text style={styles.pageSubtitle}>Encuentra lo que necesitas</Text>
             </View>
             <Pressable
