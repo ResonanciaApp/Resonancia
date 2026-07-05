@@ -36,7 +36,6 @@ import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { SessionCard } from "@/components/SessionCard";
 import { SessionRow } from "@/components/SessionRow";
 import { EqualizerBars } from "@/components/EqualizerBars";
-import { NotificationBell } from "@/components/NotificationBell";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { Image as ExpoImage } from "expo-image";
 import { useCatalog } from "@/context/CatalogContext";
@@ -545,7 +544,6 @@ export default function HomeScreen2() {
               setActiveFilter(null);
             }}
           />
-          <NotificationBell />
         </View>
       </View>
 
