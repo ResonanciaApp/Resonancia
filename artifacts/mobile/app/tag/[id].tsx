@@ -97,7 +97,6 @@ export default function TagScreen() {
         <LinearGradient
       style={styles.root}
       colors={BG_GRADIENT}
-      locations={[0, 0.5, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
