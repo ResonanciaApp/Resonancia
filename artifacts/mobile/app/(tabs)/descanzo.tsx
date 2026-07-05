@@ -368,24 +368,24 @@ export default function DescansoScreen() {
           ))}
         </ScrollView>
 
+        {/* ── Banner Prepara tu noche ── */}
+        <Pressable
+          style={({ pressed }) => [styles.nightBannerWrap, pressed && { opacity: 0.82 }]}
+          onPress={() => setTimerSheet(true)}
+        >
+          <View style={styles.nightBanner}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.nightBannerTitle}>Prepara tu noche</Text>
+              <Text style={styles.nightBannerSub}>
+                {timerMin} min{fadeVol ? " · fade" : ""}{isSoundTab && player.selectedId ? " · reproduciendo" : ""}
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={18} color="rgba(255,255,255,0.6)" />
+          </View>
+        </Pressable>
+
         {isSoundTab ? (
           <>
-            {/* ── Banner Prepara tu noche ── */}
-            <Pressable
-              style={({ pressed }) => [styles.nightBannerWrap, pressed && { opacity: 0.82 }]}
-              onPress={() => setTimerSheet(true)}
-            >
-              <View style={styles.nightBanner}>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.nightBannerTitle}>Prepara tu noche</Text>
-                  <Text style={styles.nightBannerSub}>
-                    {timerMin} min{fadeVol ? " · fade" : ""}{player.selectedId ? " · reproduciendo" : ""}
-                  </Text>
-                </View>
-                <Feather name="chevron-right" size={18} color="rgba(255,255,255,0.6)" />
-              </View>
-            </Pressable>
-
             {/* ── Grilla de sonidos ── */}
             <View style={styles.soundGrid}>
               {visibleSounds.map((sound) => {
