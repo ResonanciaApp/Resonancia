@@ -521,6 +521,17 @@ export default function HomeScreen2() {
           style={styles.heroBannerTopFade}
           pointerEvents="none"
         />
+        <LinearGradient
+          colors={[
+            "transparent",
+            "rgba(52,13,26,0.35)",
+            "rgba(52,13,26,0.75)",
+            "#340D1A",
+          ]}
+          locations={[0, 0.55, 0.82, 1]}
+          style={styles.heroBannerFullTint}
+          pointerEvents="none"
+        />
       </View>
 
       <ScrollView
@@ -983,6 +994,13 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: HERO_TOP_FADE_HEIGHT + 20,
+  },
+  heroBannerFullTint: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: HEADER_HERO_HEIGHT,
   },
   heroScrollSpacer: {
     width: "100%",
