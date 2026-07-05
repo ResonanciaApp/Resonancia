@@ -1,10 +1,14 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { usePlayer } from "@/context/PlayerContext";
 
 const GOLD = "#BE8744";
+const ACTIVE_BG = "#C59357";
+const ACTIVE_BORDER_FROM = "#854744";
+const ACTIVE_BORDER_TO = "#5A2C65";
 const TEXT = "#e8e8e8";
 const MUTED = "#c2c2c2";
 
@@ -67,15 +71,20 @@ export function WeeklyStreakStrip() {
           const isToday = i === todayIndex;
           return (
             <View key={i} style={styles.dayCol}>
-              <View
-                style={[
-                  styles.circle,
-                  met ? styles.circleActive : styles.circleInactive,
-                  isToday && !met && styles.circleToday,
-                ]}
-              >
-                {met && <Feather name="check" size={16} color="rgba(255,255,255,0.9)" />}
-              </View>
+              {met ? (
+                <LinearGradient
+                  colors={[ACTIVE_BORDER_FROM, ACTIVE_BORDER_TO]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.circle}
+                >
+                  <View style={[styles.circle, styles.circleActiveInner]}>
+                    <Feather name="check" size={16} color="rgba(255,255,255,0.9)" />
+                  </View>
+                </LinearGradient>
+              ) : (
+                <View style={[styles.circle, styles.circleInactive, isToday && styles.circleToday]} />
+              )}
               <Text style={[styles.dayLabel, isToday && styles.dayLabelToday]}>{label}</Text>
             </View>
           );
@@ -108,10 +117,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  circleActive: {
-    backgroundColor: "#854744",
-    borderWidth: 2,
-    borderColor: "#5A2C65",
+  circleActiveInner: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: ACTIVE_BG,
   },
   circleInactive: {
     backgroundColor: "rgba(255,255,255,0.08)",
