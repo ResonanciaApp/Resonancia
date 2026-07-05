@@ -23,7 +23,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
-import { SESSIONS } from "@/data/sessions";
+import { SESSIONS, getSessionById } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { TEMAS } from "@/data/temas";
@@ -34,7 +34,7 @@ import { useColors } from "@/hooks/useColors";
 import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useCatalog } from "@/context/CatalogContext";
-import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
+import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -58,6 +58,7 @@ const TEMA3_W    = Math.floor((width - H_PAD * 2 - TEMA_GAP * 2) / 3);
 
 const CAT_CARD_GAP = 16;
 const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.625);
+const HERO_HEIGHT = 320;
 
 type Session = (typeof SESSIONS)[number];
 
@@ -271,6 +272,21 @@ export default function ExploreScreen() {
     return list;
   }, [history, catalogVersion]);
 
+  // ── Destacada de hoy (solo meditaciones) ──
+  const { data: pinnedFeaturedData } = useGetPinnedFeatured();
+  const featuredHoy = React.useMemo(() => {
+    const pinned = pinnedFeaturedData?.session;
+    if (pinned && pinned.categoryId === "meditaciones-guiadas") {
+      return getSessionById(pinned.id) ?? undefined;
+    }
+    const pool = SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas" && s.isFeatured);
+    if (!pool.length) return undefined;
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
+    return pool[dayOfYear % pool.length];
+  }, [pinnedFeaturedData, catalogVersion]);
+
   // ── Las más escuchadas (ranking real de GET /catalog/popular) ──
   const { data: popularData } = useGetPopularSessions(
     { limit: 30 },
@@ -386,6 +402,31 @@ export default function ExploreScreen() {
             </Pressable>
           </View>
         </View>
+
+            {/* ── Destacada de hoy ── */}
+            {featuredHoy && (
+              <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
+                <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Destacada de hoy</Text>
+                <Pressable
+                  onPress={() => handleSessionPress(featuredHoy)}
+                >
+                  <View style={styles.heroImageContainer}>
+                    <Image source={featuredHoy.image as number} style={styles.heroImage} contentFit="cover" />
+                  </View>
+                  <View style={{ marginTop: 12 }}>
+                    <Text style={styles.heroMetaText}>
+                      {featuredHoy.categoryLabel} · {featuredHoy.durationLabel}
+                    </Text>
+                    <Text style={styles.heroTitle} numberOfLines={2}>
+                      {featuredHoy.title}
+                    </Text>
+                    <Text style={styles.heroAuthor} numberOfLines={1}>
+                      {getSessionAuthor(featuredHoy)}
+                    </Text>
+                  </View>
+                </Pressable>
+              </View>
+            )}
 
             {/* ── Explorar todo (TEMAS 6×2) ── */}
             <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
@@ -655,6 +696,18 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     marginTop: 10,
   },
+  // Hero — sesión destacada del día
+  heroImageContainer: {
+    width: "100%",
+    height: HERO_HEIGHT,
+    borderRadius: 15,
+    overflow: "hidden",
+  },
+  heroImage: { width: "100%", height: "100%" },
+  heroMetaText: { fontSize: 11, lineHeight: 14, color: "#c2c2c2", marginBottom: 6 },
+  heroTitle: { fontSize: 18, fontWeight: "600", lineHeight: 24, color: "#e8e8e8", marginBottom: 4 },
+  heroAuthor: { fontSize: 12, color: "#c2c2c2", marginTop: 2 },
+
   sqAuthor: {
     fontSize: 11,
     marginTop: 3,
