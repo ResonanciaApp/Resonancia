@@ -700,7 +700,7 @@ const styles = StyleSheet.create({
   },
   dormirMiniPlayerTime: {
     width: 82,
-    fontSize: 10,
+    fontSize: 13,
     fontWeight: "600",
     textAlign: "center",
     color: "rgba(255,255,255,0.85)",
