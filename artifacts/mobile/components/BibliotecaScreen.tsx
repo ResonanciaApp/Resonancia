@@ -1639,7 +1639,7 @@ export function BibliotecaScreen() {
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "#16040A" }]} />
 
         {/* Fila 2: chips de tab (animados) */}
-        <View style={{ marginTop: 4 }}>
+        <View style={{ marginTop: -16 }}>
           <AnimatedChipRow
             tabs={LIB_TABS}
             activeTab={activeTab}
