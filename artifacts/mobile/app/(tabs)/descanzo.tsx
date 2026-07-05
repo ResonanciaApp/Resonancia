@@ -730,6 +730,7 @@ const styles = StyleSheet.create({
     gap: 14,
     paddingVertical: 12,
     paddingHorizontal: 4,
+    minHeight: 78,
   },
   nightBannerTitle: {
     fontSize: 14,
