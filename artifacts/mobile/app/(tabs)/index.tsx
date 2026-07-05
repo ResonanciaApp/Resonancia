@@ -576,6 +576,33 @@ export default function HomeScreen2() {
           </View>
         </View>
 
+        {/* ── Banner Resonadores ── */}
+        <View style={[styles.section, { marginTop: 0, marginBottom: SECTION_GAP }]}>
+          <Pressable
+            onPress={() => router.push("/(tabs)/resonadores" as never)}
+            style={({ pressed }) => [styles.resonadoresBanner, { opacity: pressed ? 0.85 : 1 }]}
+          >
+            <ExpoImage
+              source={require("@/assets/images/equipo-bg.jpg")}
+              style={StyleSheet.absoluteFill}
+              contentFit="cover"
+            />
+            <LinearGradient
+              colors={["rgba(11,8,17,0.30)", "rgba(11,8,17,0.75)"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={StyleSheet.absoluteFill}
+            />
+            <View style={styles.resonadoresBannerContent}>
+              <Text style={styles.resonadoresBannerTitle}>Resonadores</Text>
+              <Text style={styles.resonadoresBannerSub} numberOfLines={2}>
+                Conoce a nuestro equipo certificado
+              </Text>
+            </View>
+            <Feather name="chevron-right" size={20} color="#e8e8e8" style={styles.resonadoresBannerChevron} />
+          </Pressable>
+        </View>
+
         {/* ── Videos destacados ── */}
         <View style={[styles.section, { marginTop: 0, marginBottom: SECTION_GAP }]}>
           <View style={styles.sectionRow}>
@@ -1033,6 +1060,30 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   sectionTitle: { fontSize: 20, fontWeight: "600", letterSpacing: 0.3, marginBottom: 24, color: "#e8e8e8" },
+  resonadoresBanner: {
+    height: 90,
+    borderRadius: 14,
+    overflow: "hidden",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 18,
+  },
+  resonadoresBannerContent: {
+    flex: 1,
+    gap: 3,
+  },
+  resonadoresBannerTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#e8e8e8",
+  },
+  resonadoresBannerSub: {
+    fontSize: 13,
+    color: "rgba(232,232,232,0.75)",
+  },
+  resonadoresBannerChevron: {
+    marginLeft: 8,
+  },
   verTodasLink: { fontSize: 13, fontWeight: "400" },
 
   // Explorar todo — grid 2 columnas, icono arriba + texto centrado
