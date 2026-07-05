@@ -359,6 +359,7 @@ export default function MeditacionesGuiadasScreen() {
 
   return (
     <View style={styles.root}>
+      <LinearGradient colors={["#210911", "#190913", "#0B0811"]} style={StyleSheet.absoluteFill} />
       <LinearGradient colors={["#210911", "#190913", "#0B0811"]} style={{ position: "absolute", top: 0, left: 0, right: 0, height: HERO_AREA_H }} />
 
       <ScrollView
@@ -457,7 +458,7 @@ export default function MeditacionesGuiadasScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#0B0811" },
+  root: { flex: 1, backgroundColor: "#210911" },
 
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#1B060F" },
   stickyChips: { position: "absolute", left: 0, right: 0, zIndex: 19, backgroundColor: "#1B060F", paddingTop: 8, paddingBottom: 6 },
