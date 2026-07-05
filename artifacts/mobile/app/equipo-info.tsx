@@ -21,7 +21,7 @@ const GOLD = "#BE8744";
 const GOLD2 = "#E9C46A";
 const TEXT = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.55)";
-const BG: [string, string, string] = ["#210911", "#190913", "#0B0811"];
+const BG: [string, string] = ["#340D1A", "#190913"];
 const H_PAD = 18;
 
 const RESONADOR_IMG = require("@/assets/images/banner-resonador.png");

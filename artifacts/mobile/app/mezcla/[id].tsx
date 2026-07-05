@@ -215,7 +215,7 @@ export default function CommunityMixScreen() {
 
   if (isLoading) {
     return (
-      <LinearGradient colors={["#210911", "#190913", "#0B0811"]} style={styles.center}>
+      <LinearGradient colors={["#340D1A", "#190913"]} style={styles.center}>
         <ActivityIndicator color={colors.primary} />
       </LinearGradient>
     );
@@ -241,7 +241,7 @@ export default function CommunityMixScreen() {
 
   return (
     <LinearGradient
-      colors={["#210911", "#190913", "#0B0811"]}
+      colors={["#340D1A", "#190913"]}
       style={styles.root}
     >
     <KeyboardAvoidingView

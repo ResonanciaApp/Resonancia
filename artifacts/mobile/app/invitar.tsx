@@ -16,7 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
 
-const BG_GRADIENT = ["#210911", "#190913", "#0B0811"] as const;
+const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 
 const SHARE_OPTIONS = [
   { icon: "message-circle" as const, label: "WhatsApp", color: "#25D366" },

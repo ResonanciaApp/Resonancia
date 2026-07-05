@@ -43,7 +43,7 @@ import { resolveAvatarUrl } from "@/lib/avatar";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
-const BG_GRADIENT = ["#210911", "#190913", "#0B0811"] as const;
+const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 
 function initialsFor(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);

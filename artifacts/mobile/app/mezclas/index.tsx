@@ -26,7 +26,7 @@ import { type MixCategory, MIX_CATEGORIES } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 import { useLoadMix } from "@/hooks/useLoadMix";
 
-const BG_GRADIENT = ["#210911", "#190913", "#0B0811"] as const;
+const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 const FG      = "#FAF0EE";
 const MUTED   = "#c2c2c2";
 const GOLD    = "#BE8744";

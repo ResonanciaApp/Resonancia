@@ -134,7 +134,7 @@ export function DrawerMenu() {
       >
         <LinearGradient
           style={[styles.drawerInner, { paddingBottom: bottomPad + 24 }]}
-          colors={["#210911", "#190913", "#0B0811"]}
+          colors={["#340D1A", "#190913"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
         >

@@ -115,13 +115,13 @@ export default function SessionDetailScreen() {
   const isAncestral = session.categoryId === "sonidos-ancestrales";
   const isMusica = session.categoryId === "musica-sonidos";
   const CATEGORY_BG: Record<string, {
-    gradient: [string, string, string]; solid: string;
+    gradient: [string, string]; solid: string;
     pillBg: string; labelGradient: [string, string]; labelColor: string;
   }> = {
-    "sonidos-ancestrales":  { gradient: ["#210911", "#190913", "#0B0811"], solid: "#210911", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "meditaciones-guiadas": { gradient: ["#210911", "#190913", "#0B0811"], solid: "#210911", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "musica-sonidos":       { gradient: ["#210911", "#190913", "#0B0811"], solid: "#210911", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "descanso":             { gradient: ["#210911", "#190913", "#0B0811"], solid: "#210911", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "sonidos-ancestrales":  { gradient: ["#340D1A", "#190913"], solid: "#210911", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "meditaciones-guiadas": { gradient: ["#340D1A", "#190913"], solid: "#210911", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "musica-sonidos":       { gradient: ["#340D1A", "#190913"], solid: "#210911", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
+    "descanso":             { gradient: ["#340D1A", "#190913"], solid: "#210911", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
   };
   const catBg = CATEGORY_BG[session.categoryId] ?? CATEGORY_BG["sonidos-ancestrales"];
   const [localFav, setLocalFav] = useState<boolean | null>(null);

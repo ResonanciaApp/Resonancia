@@ -25,7 +25,7 @@ import { MIX_CATEGORIES } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 import { resolveAvatarUrl } from "@/lib/avatar";
 
-const BG_GRADIENT = ["#210911", "#190913", "#0B0811"] as const;
+const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 const COVER_SIZE = 46;
 const GOLD = "#BE8744";
 

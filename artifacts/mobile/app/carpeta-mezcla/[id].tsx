@@ -24,7 +24,7 @@ import { MixActionsSheet } from "@/components/MixActionsSheet";
 import { MixCover } from "@/app/mi-mezcla/[id]";
 import { EqualizerBars } from "@/components/EqualizerBars";
 
-const BG = ["#210911", "#190913", "#0B0811"] as const;
+const BG = ["#340D1A", "#190913"] as const;
 const GOLD = "#BE8744";
 const TEXT = "#FAF0EE";
 const MUTED = "#c2c2c2";

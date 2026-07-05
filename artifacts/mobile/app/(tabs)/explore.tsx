@@ -382,7 +382,7 @@ export default function ExploreScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#210911", "#190913", "#0B0811"]} style={styles.rootGradient} />
+      <LinearGradient colors={["#340D1A", "#190913"]} style={styles.rootGradient} />
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="solid" />
 

@@ -458,7 +458,7 @@ export default function SonidosAncestalesScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#210911", "#190913", "#0B0811"]} style={{ position: "absolute", top: 0, left: 0, right: 0, height: HERO_AREA_H }} />
+      <LinearGradient colors={["#340D1A", "#190913"]} style={{ position: "absolute", top: 0, left: 0, right: 0, height: HERO_AREA_H }} />
       <ScrollView
         ref={scrollRef}
         style={styles.scroll}

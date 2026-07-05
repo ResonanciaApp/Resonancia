@@ -34,7 +34,7 @@ export default function ExpansorScreen() {
     return (
       <View style={[styles.root, { backgroundColor: "#210911" }]}>
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#210911", "#190913", "#0B0811"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} />
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
           <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
@@ -54,7 +54,7 @@ export default function ExpansorScreen() {
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#210911", "#190913", "#0B0811"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} />
 
       {/* Header */}
       <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>

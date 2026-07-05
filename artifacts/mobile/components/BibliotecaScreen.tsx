@@ -859,7 +859,7 @@ function GeometrixRow({ creation, onPress }: { creation: GeometrixCreation; onPr
       {/* Miniatura: cuadrado oscuro con las primeras capas superpuestas */}
       <View style={styles.geoThumb}>
         <LinearGradient
-          colors={["#210911", "#190913", "#0B0811"]}
+          colors={["#340D1A", "#190913"]}
           style={StyleSheet.absoluteFill}
         />
         {firstLayers.map((instId, idx) => {
@@ -1422,7 +1422,7 @@ export function BibliotecaScreen() {
                     onPress={() => router.navigate({ pathname: "/(tabs)/geometrix", params: { load: c.id } } as never)}
                   >
                     <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
-                      <LinearGradient colors={["#210911", "#190913", "#0B0811"]} style={StyleSheet.absoluteFill} />
+                      <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} />
                       {firstLayers.map((instId, idx) => {
                         const geoId = baseOf(instId);
                         const settings = c.settings[instId];
@@ -1619,7 +1619,7 @@ export function BibliotecaScreen() {
   return (
     <LinearGradient
       style={styles.root}
-      colors={["#210911", "#190913", "#0B0811"]}
+      colors={["#340D1A", "#190913"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >

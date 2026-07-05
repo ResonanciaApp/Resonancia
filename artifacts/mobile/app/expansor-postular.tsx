@@ -22,7 +22,7 @@ import { useCreateApplication } from "@workspace/api-client-react";
 import { useColors } from "@/hooks/useColors";
 import { EXPANSOR_SUBTIPO_OPTIONS, type ExpansorSubtipo } from "@/data/expansores";
 
-const BG_GRADIENT = ["#210911", "#190913", "#0B0811"] as const;
+const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 const GOLD = "#BE8744";
 
 export default function ExpansorPostularScreen() {

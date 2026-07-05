@@ -16,7 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useColors } from "@/hooks/useColors";
 
-const BG_GRADIENT = ["#210911", "#190913", "#0B0811"] as const;
+const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 
 export default function CarpetasScreen() {
   const colors = useColors();

@@ -126,8 +126,8 @@ const MEZ_PLACEHOLDERS = [
 ];
 
 // ── Colores de tab ────────────────────────────────────────────────────────────
-const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
-  popular:        ["#210911", "#190913", "#0B0811"],
+const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, ...string[]]> = {
+  popular:        ["#340D1A", "#190913"],
   naturaleza:     ["#0A1A0E", "#0A1A0E", "#0A1A0E"],
   ancestrales:    ["#221510", "#221510", "#221510"],
   sintetizadores: ["#061A2E", "#061A2E", "#061A2E"],
@@ -137,8 +137,8 @@ const TAB_HEADER_GRADIENT: Record<MainTabId, [string, string, string]> = {
 
 
 /** Gradiente de fondo de contenido en modo "noche" — último stop neutro oscuro (sin bordeaux) */
-const TAB_NOCHE_BG: Record<MainTabId, [string, string, string]> = {
-  popular:        ["#210911", "#190913", "#0B0811"],
+const TAB_NOCHE_BG: Record<MainTabId, [string, string, ...string[]]> = {
+  popular:        ["#340D1A", "#190913"],
   naturaleza:     ["#0A1A0E", "#0A1A0E", "#0A1A0E"],
   ancestrales:    ["#221510", "#221510", "#221510"],
   sintetizadores: ["#061A2E", "#061A2E", "#061A2E"],

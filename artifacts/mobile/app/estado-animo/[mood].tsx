@@ -21,7 +21,7 @@ import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 16;
-const BG_GRADIENT = ["#210911", "#190913", "#0B0811"] as const;
+const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList<(typeof SESSIONS)[number]>);
 const STICKY_START = 80;
 const STICKY_END   = 170;

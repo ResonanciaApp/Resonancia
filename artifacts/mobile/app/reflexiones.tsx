@@ -124,7 +124,7 @@ export default function ReflexionesScreen() {
   return (
     <View style={styles.root}>
       <LinearGradient
-        colors={["#210911", "#190913", "#0B0811"]}
+        colors={["#340D1A", "#190913"]}
         locations={[0, 1]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}

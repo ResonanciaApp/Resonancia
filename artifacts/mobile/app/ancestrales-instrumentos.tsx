@@ -29,7 +29,7 @@ export default function AncestralInstrumentos() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#210911", "#190913", "#0B0811"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
+      <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} pointerEvents="none" />
 
       {/* ── Header ── */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>

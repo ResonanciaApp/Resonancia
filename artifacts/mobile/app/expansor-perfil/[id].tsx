@@ -59,7 +59,7 @@ export default function ExpansorPerfilScreen() {
   const [descExpanded, setDescExpanded] = React.useState(false);
   const [descOverflows, setDescOverflows] = React.useState(false);
   const [overrides, setOverrides] = React.useState<Partial<Expansor> | null>(null);
-  const bgColors: readonly string[] = bgGradientColors(profileBgId) ?? ["#210911", "#190913", "#0B0811"];
+  const bgColors: readonly string[] = bgGradientColors(profileBgId) ?? ["#340D1A", "#190913"];
 
   const _expansor = getExpansorById(id);
 
@@ -88,7 +88,7 @@ export default function ExpansorPerfilScreen() {
     return (
       <View style={styles.root}>
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#210911", "#190913", "#0B0811"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} />
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
           <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
