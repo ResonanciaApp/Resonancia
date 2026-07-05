@@ -397,7 +397,6 @@ export default function ExploreScreen() {
           <View style={styles.headerRow}>
             <View style={{ flex: 1 }}>
               <Text style={[styles.pageTitle, { transform: [{ translateY: 2 }] }]}>Meditación</Text>
-              <Text style={styles.pageSubtitle}>Encuentra lo que necesitas</Text>
             </View>
             <Pressable
               hitSlop={12}
@@ -410,7 +409,7 @@ export default function ExploreScreen() {
         </View>
 
             {/* ── Hero: Vuelve a ti ── */}
-            <View style={[styles.section, { marginTop: SECTION_GAP, marginBottom: SECTION_GAP }]}>
+            <View style={[styles.section, { marginTop: SECTION_GAP - 50, marginBottom: SECTION_GAP }]}>
               <View style={styles.introHeroContainer}>
                 <Image
                   source={require("@/assets/images/hero-vuelve-a-ti.jpg")}
