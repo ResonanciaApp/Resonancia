@@ -64,9 +64,10 @@ import { useVideos } from "@/hooks/useVideos";
 const { width } = Dimensions.get("window");
 
 const NAV_TABS = [
-  { id: "todas",    label: "Todas",    cats: [] as string[] },
-  { id: "sesiones", label: "Sesiones", cats: ["sonidos-ancestrales", "meditaciones-guiadas"] },
-  { id: "musica",   label: "Música",   cats: ["musica-sonidos"] },
+  { id: "todas",         label: "Todas",         cats: [] as string[] },
+  { id: "meditaciones",  label: "Meditaciones",  cats: ["meditaciones-guiadas"] },
+  { id: "sesiones",      label: "Sesiones",      cats: ["sonidos-ancestrales"] },
+  { id: "musica",        label: "Música",        cats: ["musica-sonidos"] },
 ];
 const GRID_GAP = 12;
 const GRID_PAD = 15;
@@ -531,9 +532,10 @@ export default function HomeScreen2() {
           </View>
         )}
 
-        {/* ── 1. COLECCIONES ── */}
+        {/* ── 1. COLECCIONES (Rituales) ── */}
         {filteredPlaylists.length > 0 && (
         <View style={[styles.header, { marginTop: -3 }]}>
+          <Text style={styles.sectionTitle}>Rituales</Text>
 
           <View style={styles.coleccionGrid}>
               {filteredPlaylists.map((pl) => (
