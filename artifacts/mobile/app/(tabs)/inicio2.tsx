@@ -541,20 +541,7 @@ export default function HomeScreen2() {
         <View style={styles.heroScrollSpacer} pointerEvents="none" />
         {/* ── FADE que viaja con el scroll: come el borde inferior del hero de forma progresiva ── */}
         <LinearGradient
-          colors={[
-            "transparent",
-            "rgba(46,11,23,0.009)",
-            "rgba(46,11,23,0.058)",
-            "rgba(46,11,23,0.163)",
-            "rgba(46,11,23,0.317)",
-            "rgba(46,11,23,0.5)",
-            "rgba(46,11,23,0.683)",
-            "rgba(46,11,23,0.837)",
-            "rgba(46,11,23,0.942)",
-            "rgba(46,11,23,0.991)",
-            "#2E0B17",
-          ]}
-          locations={[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]}
+          colors={["transparent", "#2E0B17"]}
           style={styles.heroScrollRevealFade}
           pointerEvents="none"
         />
