@@ -504,7 +504,7 @@ export default function HomeScreen2() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#310C19", "#180912"]} style={styles.rootGradient} />
+      <LinearGradient colors={["#2E0B17", "#160811"]} style={styles.rootGradient} />
       <StatusBar barStyle="light-content" />
 
       {/* ── HERO BANNER: Everest + templo tibetano — encabezado de Inicio ── */}
@@ -517,8 +517,8 @@ export default function HomeScreen2() {
         <LinearGradient
           colors={[
             "transparent",
-            "rgba(49,12,25,0.18)",
-            "rgba(49,12,25,0.32)",
+            "rgba(46,11,23,0.18)",
+            "rgba(46,11,23,0.32)",
           ]}
           locations={[0, 0.6, 1]}
           style={styles.heroBannerFullTint}
@@ -543,16 +543,16 @@ export default function HomeScreen2() {
         <LinearGradient
           colors={[
             "transparent",
-            "rgba(49,12,25,0.009)",
-            "rgba(49,12,25,0.058)",
-            "rgba(49,12,25,0.163)",
-            "rgba(49,12,25,0.317)",
-            "rgba(49,12,25,0.5)",
-            "rgba(49,12,25,0.683)",
-            "rgba(49,12,25,0.837)",
-            "rgba(49,12,25,0.942)",
-            "rgba(49,12,25,0.991)",
-            "#310C19",
+            "rgba(46,11,23,0.009)",
+            "rgba(46,11,23,0.058)",
+            "rgba(46,11,23,0.163)",
+            "rgba(46,11,23,0.317)",
+            "rgba(46,11,23,0.5)",
+            "rgba(46,11,23,0.683)",
+            "rgba(46,11,23,0.837)",
+            "rgba(46,11,23,0.942)",
+            "rgba(46,11,23,0.991)",
+            "#2E0B17",
           ]}
           locations={[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]}
           style={styles.heroScrollRevealFade}
@@ -570,7 +570,7 @@ export default function HomeScreen2() {
           pointerEvents="none"
         />
         <LinearGradient
-          colors={["#310C19", "#180912"]}
+          colors={["#2E0B17", "#160811"]}
           style={styles.scrollBgFill}
           pointerEvents="none"
         />
@@ -991,7 +991,7 @@ export default function HomeScreen2() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#180912" },
+  root: { flex: 1, backgroundColor: "#160811" },
   rootGradient: { ...StyleSheet.absoluteFillObject },
   heroBannerWrap: {
     width: "100%",
@@ -1001,7 +1001,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     overflow: "hidden",
-    backgroundColor: "#310C19",
+    backgroundColor: "#2E0B17",
     zIndex: 0,
   },
   heroBannerImage: {
