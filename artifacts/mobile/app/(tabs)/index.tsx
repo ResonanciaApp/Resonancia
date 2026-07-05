@@ -36,10 +36,7 @@ import { SessionCard } from "@/components/SessionCard";
 import { SessionRow } from "@/components/SessionRow";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
-import { useUser } from "@clerk/expo";
 import { Image as ExpoImage } from "expo-image";
-import { useAuth } from "@/context/AuthContext";
-import { useDrawer } from "@/context/DrawerContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useMixer } from "@/context/MixerContext";
@@ -57,7 +54,6 @@ import { getGuide } from "@/data/guides";
 import { usePremium } from "@/context/PremiumContext";
 import { PLAYLISTS } from "@/data/playlists";
 import { useColors } from "@/hooks/useColors";
-import { useUserProfile } from "@/context/UserProfileContext";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 import { CuencoBell } from "@/components/CuencoBell";
@@ -438,17 +434,6 @@ export default function HomeScreen2() {
     currentSession.id === filteredFeatured.id && isPlaying;
 
 
-  const { open: openDrawer } = useDrawer();
-  const { photoUri, username } = useUserProfile();
-  const { user: clerkUser } = useUser();
-  const { isRegistered, isSignedIn } = useAuth();
-  const headerLoggedIn = isRegistered || isSignedIn;
-  const headerPhoto = photoUri || clerkUser?.imageUrl || null;
-  const headerInitial = (
-    clerkUser?.firstName || clerkUser?.username || username || ""
-  ).charAt(0).toUpperCase() || null;
-  const [headerPhotoError, setHeaderPhotoError] = useState(false);
-  useEffect(() => { setHeaderPhotoError(false); }, [headerPhoto]);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -461,28 +446,7 @@ export default function HomeScreen2() {
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
       <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
         <View style={styles.headerTopRow}>
-          <Pressable
-            onPress={() => openDrawer()}
-            hitSlop={8}
-            style={[styles.avatarBtn, headerLoggedIn && styles.avatarBtnLoggedIn]}
-          >
-            {headerPhoto && !headerPhotoError ? (
-              <ExpoImage
-                source={{ uri: headerPhoto }}
-                style={styles.avatarSmall}
-                contentFit="cover"
-                onError={() => setHeaderPhotoError(true)}
-              />
-            ) : headerLoggedIn && headerInitial ? (
-              <View style={styles.avatarInitial}>
-                <Text style={styles.avatarInitialText}>{headerInitial}</Text>
-              </View>
-            ) : (
-              <View style={styles.avatarFallback}>
-                <Feather name="user" size={15} color="#c2c2c2" />
-              </View>
-            )}
-          </Pressable>
+          <View style={styles.avatarBtn} />
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
