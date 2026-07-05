@@ -532,6 +532,11 @@ export default function HomeScreen2() {
           </View>
         )}
 
+        {/* ── 5. REFLEXIÓN DE LA SEMANA ── */}
+        <View style={{ marginBottom: SECTION_GAP }}>
+          <QuoteOfTheDay />
+        </View>
+
         {/* ── Explorar todo (TEMAS 6×2) ── */}
         <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
           <View style={styles.sectionRow}>
@@ -710,11 +715,6 @@ export default function HomeScreen2() {
             </Pressable>
           </View>
         )}
-
-        {/* ── 5. REFLEXIÓN DE LA SEMANA ── */}
-        <View style={{ marginBottom: SECTION_GAP }}>
-          <QuoteOfTheDay />
-        </View>
 
         {/* ── 8. MURO DE AGRADECIMIENTOS ── */}
         <View style={styles.sectionDivider} />
