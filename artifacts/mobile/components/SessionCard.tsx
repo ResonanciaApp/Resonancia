@@ -2,8 +2,9 @@ import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Image } from "expo-image";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
+  Animated,
   Pressable,
   StyleProp,
   StyleSheet,
@@ -42,6 +43,30 @@ type Props = {
   /** Shows a white border around the thumbnail to mark this as the currently loaded session */
   playing?: boolean;
 };
+
+function PlayingDot() {
+  const op = useRef(new Animated.Value(1)).current;
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(op, { toValue: 0.25, duration: 700, useNativeDriver: true }),
+        Animated.timing(op, { toValue: 1,    duration: 700, useNativeDriver: true }),
+      ])
+    );
+    loop.start();
+    return () => loop.stop();
+  }, []);
+  return (
+    <Animated.View
+      style={{
+        position: "absolute", top: 6, right: 6,
+        width: 8, height: 8, borderRadius: 4,
+        backgroundColor: "#C4A8F5",
+        opacity: op,
+      }}
+    />
+  );
+}
 
 function LockStar() {
   return (
@@ -125,6 +150,8 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
     >
       <View style={[styles.imageContainer, { borderRadius: colors.radius - 4 }, playing && styles.imageContainerPlaying]}>
         <Image source={session.image} style={styles.cardImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
+        {!playing && <View style={styles.cardOverlay} />}
+        {playing && <PlayingDot />}
         {locked && <LockStar />}
         {showDuration && (
           <View style={styles.durationBadge}>
@@ -166,6 +193,10 @@ const styles = StyleSheet.create({
   cardImage: {
     width: "100%",
     height: "100%",
+  },
+  cardOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.38)",
   },
   favBtn: {
     position: "absolute",
