@@ -114,17 +114,37 @@ function MixRow({
   );
 }
 
-// ── Chip de tab ───────────────────────────────────────────────────────────────
+// ── Chip de tab (texto + línea subrayada, sin fondo de píldora) ──────────────
+// La línea crece desde el centro con una curva suave ("zen"): lenta,
+// sin rebote, como una respiración.
 function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress: () => void }) {
+  const selAnim = useRef(new Animated.Value(sel ? 1 : 0)).current;
+
+  useEffect(() => {
+    Animated.timing(selAnim, {
+      toValue: sel ? 1 : 0,
+      duration: 550,
+      easing: Easing.inOut(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [sel]);
+
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
-      <LinearGradient
-        colors={sel ? ["#D6A45C", "#BE8744"] : ["rgba(255,255,255,0.055)", "rgba(255,255,255,0.055)"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
-      <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.6 : 1 }]}>
+      <View>
+        <Text style={styles.chipText}>{label}</Text>
+        <Animated.Text
+          style={[styles.chipText, styles.chipTextSel, StyleSheet.absoluteFill, { opacity: selAnim }]}
+        >
+          {label}
+        </Animated.Text>
+        <Animated.View
+          style={[
+            styles.chipUnderline,
+            { opacity: selAnim, transform: [{ scaleX: selAnim }] },
+          ]}
+        />
+      </View>
     </Pressable>
   );
 }
@@ -1824,7 +1844,7 @@ const styles = StyleSheet.create({
   animChipWrap: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, marginTop: -21, justifyContent: "center", zIndex: 3 },
   chipRow: { flexGrow: 0, marginTop: -21 },
-  chipRowContent: { flexDirection: "row", gap: 8, paddingTop: 5, paddingBottom: 2, paddingHorizontal: H_PAD },
+  chipRowContent: { flexDirection: "row", gap: 22, paddingTop: 5, paddingBottom: 2, paddingHorizontal: H_PAD },
   chipRowFiltered: {
     flexDirection: "row",
     alignItems: "center",
@@ -1841,12 +1861,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   chip: {
-    paddingHorizontal: 15, paddingVertical: 9,
-    borderRadius: 999,
-    overflow: "hidden",
+    paddingVertical: 6,
   },
-  chipText: { fontSize: 11, fontWeight: "600", color: TEXT },
-  chipTextSel: { color: "#1B060F" },
+  chipText: { fontSize: 12, fontWeight: "600", color: MUTED },
+  chipTextSel: { color: GOLD },
+  chipUnderline: {
+    height: 2,
+    borderRadius: 1,
+    backgroundColor: GOLD,
+    marginTop: 6,
+    alignSelf: "stretch",
+  },
 
   controlRow: {
     flexDirection: "row",
