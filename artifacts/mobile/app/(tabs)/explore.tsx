@@ -33,6 +33,8 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
 import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
+import { useCatalog } from "@/context/CatalogContext";
+import { useGetPopularSessions, getGetPopularSessionsQueryKey } from "@workspace/api-client-react";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -237,12 +239,50 @@ export default function ExploreScreen() {
   const [searchVisible, setSearchVisible] = useState(false);
 
   const { isPremium } = usePremium();
-  const { playSession } = usePlayer();
+  const { playSession, history } = usePlayer();
+  const { version: catalogVersion } = useCatalog();
 
   const ancestralesSessions  = SESSIONS.filter(s => s.categoryId === "sonidos-ancestrales").slice(0, 10);
   const musicaSessions       = SESSIONS.filter(s => s.categoryId === "musica-sonidos").slice(0, 10);
   const meditacionesSessions = SESSIONS.filter(s => s.categoryId === "meditaciones-guiadas").slice(0, 10);
   const dailyRecs = React.useMemo(() => getDailyRecommendations(5), []);
+
+  // ── Recientes (últimas meditaciones agregadas) ──
+  const recientesMeditaciones = React.useMemo(() => {
+    return SESSIONS
+      .filter((s) => s.categoryId === "meditaciones-guiadas")
+      .sort((a, b) => parseInt(b.id) - parseInt(a.id))
+      .slice(0, 10);
+  }, [catalogVersion]);
+
+  // ── Escuchadas recientemente (historial local, más reciente primero) ──
+  const escuchadasRecientemente = React.useMemo(() => {
+    const meditIds = new Set(SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas").map((s) => s.id));
+    const seen = new Set<string>();
+    const list: Session[] = [];
+    for (const entry of history) {
+      if (!meditIds.has(entry.sessionId) || seen.has(entry.sessionId)) continue;
+      const s = SESSIONS.find((se) => se.id === entry.sessionId);
+      if (!s) continue;
+      seen.add(entry.sessionId);
+      list.push(s);
+      if (list.length >= 10) break;
+    }
+    return list;
+  }, [history, catalogVersion]);
+
+  // ── Las más escuchadas (ranking real de GET /catalog/popular) ──
+  const { data: popularData } = useGetPopularSessions(
+    { limit: 30 },
+    { query: { queryKey: getGetPopularSessionsQueryKey({ limit: 30 }), staleTime: 5 * 60_000 } },
+  );
+  const masEscuchadasMeditaciones = React.useMemo(() => {
+    const ids = (popularData?.sessions ?? []).map((s) => s.id);
+    return ids
+      .map((id) => SESSIONS.find((s) => s.id === id))
+      .filter((s): s is Session => !!s && s.categoryId === "meditaciones-guiadas")
+      .slice(0, 10);
+  }, [popularData, catalogVersion]);
 
   // ¿Cuánto tiempo tienes hoy?
   const [selectedDur, setSelectedDur] = useState<DurSlot | null>(null);
@@ -463,6 +503,18 @@ export default function ExploreScreen() {
 
             {/* ── Meditaciones recomendadas ── */}
             {renderCarousel("Meditaciones recomendadas", dailyRecs, "/category/meditaciones-guiadas")}
+
+            {/* ── Recientes ── */}
+            {recientesMeditaciones.length > 0 &&
+              renderCarousel("Recientes", recientesMeditaciones, "/category/meditaciones-guiadas")}
+
+            {/* ── Escuchadas recientemente ── */}
+            {escuchadasRecientemente.length > 0 &&
+              renderCarousel("Escuchadas recientemente", escuchadasRecientemente, "/category/meditaciones-guiadas")}
+
+            {/* ── Las más escuchadas ── */}
+            {masEscuchadasMeditaciones.length > 0 &&
+              renderCarousel("Las más escuchadas", masEscuchadasMeditaciones, "/category/meditaciones-guiadas")}
 
       </ScrollView>
 
