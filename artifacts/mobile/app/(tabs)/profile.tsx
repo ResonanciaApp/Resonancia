@@ -140,6 +140,12 @@ const PERFIL_TABS: { id: PerfilTab; label: string }[] = [
   { id: "registros",   label: "Registros" },
 ];
 
+const REGISTROS_ITEMS: { label: string; route: string; icon: keyof typeof Feather.glyphMap }[] = [
+  { label: "Diario",       route: "/diario",       icon: "book-open" },
+  { label: "Grupos",       route: "/grupos",       icon: "users" },
+  { label: "Mis Sesiones", route: "/mis-sesiones", icon: "calendar" },
+];
+
 
 // ── BgGlyph: renderiza una capa de geometría animada en el fondo del perfil ─
 function BgGlyph({
@@ -1041,11 +1047,37 @@ export default function ProfileScreen() {
 
       {perfilTab === "biblioteca" && <BibliotecaScreen />}
 
-      {(perfilTab === "historial" || perfilTab === "registros") && (
+      {perfilTab === "historial" && (
         <View style={styles.comingSoonWrap}>
           <Feather name="clock" size={28} color="rgba(244,218,213,0.35)" />
           <Text style={styles.comingSoonText}>Próximamente</Text>
         </View>
+      )}
+
+      {perfilTab === "registros" && (
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 20 }}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={[styles.registrosCard, { backgroundColor: colors.card }]}>
+            {REGISTROS_ITEMS.map((item, idx) => (
+              <Pressable
+                key={item.route}
+                onPress={() => router.push(item.route as never)}
+                style={({ pressed }) => [
+                  styles.registrosRow,
+                  idx < REGISTROS_ITEMS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+                  { opacity: pressed ? 0.7 : 1 },
+                ]}
+              >
+                <Feather name={item.icon} size={18} color={colors.foreground} />
+                <Text style={[styles.registrosLabel, { color: colors.foreground }]}>{item.label}</Text>
+                <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+              </Pressable>
+            ))}
+          </View>
+        </ScrollView>
       )}
 
       {/* ── Personalize Sheet ── */}
@@ -1355,6 +1387,17 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   comingSoonText: { fontSize: 15, color: "rgba(244,218,213,0.45)", fontWeight: "600" },
+
+  // Registros
+  registrosCard: { borderRadius: 16, overflow: "hidden" },
+  registrosRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    gap: 14,
+  },
+  registrosLabel: { flex: 1, fontSize: 15, fontWeight: "500" },
 
   settingsBtn: {
     width: 40,
