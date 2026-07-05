@@ -663,7 +663,7 @@ const styles = StyleSheet.create({
   /* Banner Prepara tu noche */
   nightBannerWrap: {
     marginHorizontal: H_PAD,
-    marginTop: -17,
+    marginTop: -32,
     marginBottom: 24,
     borderRadius: 14,
     overflow: "hidden",
