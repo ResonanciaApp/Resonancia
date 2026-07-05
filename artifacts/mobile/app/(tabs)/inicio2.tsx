@@ -552,11 +552,6 @@ export default function HomeScreen2() {
           style={styles.heroScrollRevealFade}
           pointerEvents="none"
         />
-        <LinearGradient
-          colors={["#340D1A", "#190913"]}
-          style={styles.scrollBgFill}
-          pointerEvents="none"
-        />
 
         {/* ── NAV-TABS: avatar + nav-tabs — ahora se desplaza con el contenido ── */}
         <View style={[styles.stickyHeader, { paddingTop: 18 }]}>
@@ -1017,13 +1012,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: HERO_FADE_HEIGHT,
-  },
-  scrollBgFill: {
-    position: "absolute",
-    top: HEADER_HERO_HEIGHT,
-    left: 0,
-    right: 0,
-    height: 6000,
   },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
