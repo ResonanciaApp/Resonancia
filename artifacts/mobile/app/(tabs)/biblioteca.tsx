@@ -1648,6 +1648,7 @@ export default function BibliotecaScreen() {
         <View style={styles.headerRow}>
           <View style={{ flex: 1 }}>
             <Text style={styles.headerTitle}>Mi Espacio</Text>
+            <Text style={styles.headerSubtitle}>Tu refugio de sonidos</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
             <Pressable hitSlop={10} onPress={() => setSearchVisible(true)} style={styles.headerIconBtn}>
