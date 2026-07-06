@@ -135,6 +135,7 @@ export default function VideoTabScreen() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
+          style={styles.chipsScroll}
           contentContainerStyle={styles.chipsRow}
         >
           {FILTER_CHIPS.map((chip) => {
@@ -265,7 +266,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  chipsRow: { gap: 8, paddingRight: 20 },
+  chipsScroll: { marginHorizontal: -20 },
+  chipsRow: { gap: 8, paddingHorizontal: 20 },
   chip: {
     borderRadius: 999,
     borderWidth: StyleSheet.hairlineWidth,
