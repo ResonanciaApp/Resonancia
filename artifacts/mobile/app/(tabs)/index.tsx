@@ -745,22 +745,19 @@ export default function HomeScreen2() {
             onPress={() => router.push("/(tabs)/resonadores" as never)}
             style={({ pressed }) => [styles.resonadoresBanner, { opacity: pressed ? 0.85 : 1 }]}
           >
-            <ExpoImage
-              source={require("@/assets/images/equipo-bg.jpg")}
-              style={StyleSheet.absoluteFill}
-              contentFit="cover"
-            />
-            <LinearGradient
-              colors={["rgba(11,8,17,0.30)", "rgba(11,8,17,0.75)"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={StyleSheet.absoluteFill}
-            />
-            <View style={styles.resonadoresBannerContent}>
-              <Text style={styles.resonadoresBannerTitle}>Resonadores</Text>
-              <Text style={styles.resonadoresBannerSub} numberOfLines={2}>
-                Conoce a nuestro equipo certificado
-              </Text>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.2)" }]} />
+            <View style={styles.resonadoresBannerInner}>
+              <ExpoImage
+                source={require("@/assets/images/logo-resonancia-gold.png")}
+                style={styles.resonadoresBannerLogo}
+                contentFit="contain"
+              />
+              <View style={styles.resonadoresBannerContent}>
+                <Text style={styles.resonadoresBannerTitle}>Resonadores</Text>
+                <Text style={styles.resonadoresBannerSub} numberOfLines={2}>
+                  Conoce a nuestro equipo certificado
+                </Text>
+              </View>
             </View>
             <Feather name="chevron-right" size={20} color="#e8e8e8" style={styles.resonadoresBannerChevron} />
           </Pressable>
@@ -1267,8 +1264,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 18,
   },
-  resonadoresBannerContent: {
+  resonadoresBannerInner: {
     flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 12,
+  },
+  resonadoresBannerLogo: {
+    width: 36,
+    height: 36,
+  },
+  resonadoresBannerContent: {
     gap: 3,
   },
   resonadoresBannerTitle: {
