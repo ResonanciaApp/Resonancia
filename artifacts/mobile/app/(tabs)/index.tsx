@@ -555,6 +555,7 @@ export default function HomeScreen2() {
   const scrollLayoutHeightRef = useRef(0);
   const scrollYRef = useRef(0);
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
+  const giftBtnAnim = useRef(new Animated.Value(1)).current;
 
   // ── Loto + tabs: al activarse el sticky header, el loto se desvanece y
   //    los tabs se desplazan sutilmente hacia la izquierda hasta el margen ──
@@ -574,7 +575,12 @@ export default function HomeScreen2() {
       duration: 300,
       useNativeDriver: true,
     }).start();
-  }, [searchBtnAnim]);
+    Animated.timing(giftBtnAnim, {
+      toValue: shouldShow ? 0 : 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [searchBtnAnim, giftBtnAnim]);
 
   const updateStickyActive = useCallback(() => {
     const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
@@ -777,6 +783,22 @@ export default function HomeScreen2() {
                 )}
               </View>
             </RAnimated.View>
+          </Animated.View>
+          <Animated.View
+            pointerEvents={stickyActive || searchOpen ? "none" : "auto"}
+            style={[styles.giftBtnWrap, { opacity: giftBtnAnim }]}
+          >
+            <Pressable
+              onPress={() => router.push("/invitar" as never)}
+              hitSlop={8}
+              style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.7 : 1 }]}
+            >
+              <Image
+                source={require("@/assets/images/icons/regalo.png")}
+                style={styles.giftBtnIcon}
+                resizeMode="contain"
+              />
+            </Pressable>
           </Animated.View>
           <Animated.View
             pointerEvents={stickyActive || searchOpen ? "auto" : "none"}
@@ -1399,6 +1421,20 @@ const styles = StyleSheet.create({
     height: 42,
     alignItems: "center",
     justifyContent: "center",
+  },
+  giftBtnWrap: {
+    position: "absolute",
+    right: 0,
+  },
+  giftBtn: {
+    width: 42,
+    height: 42,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  giftBtnIcon: {
+    width: 30,
+    height: 30,
   },
   universeBtnIcon: {
     width: 28,
