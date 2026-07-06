@@ -768,7 +768,7 @@ export default function ProfileScreen() {
           },
         ]}
       >
-        <Animated.View style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
+        <Animated.View collapsable={false} style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
         <View style={styles.stickyHeaderRow}>
           <Pressable
             onPress={() => router.push("/configuraciones")}
