@@ -847,7 +847,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#0D0512",
   },
   stickyHeaderTitle: {
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: "700",
     letterSpacing: 0.2,
   },
