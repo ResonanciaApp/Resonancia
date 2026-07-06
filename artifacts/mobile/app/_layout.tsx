@@ -27,6 +27,7 @@ import { MixerSheet } from "@/components/MixerSheet";
 import { EscenasSheet } from "@/components/EscenasSheet";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
+import { SceneThemeProvider, useSceneTheme } from "@/context/SceneThemeContext";
 import { BrightnessProvider, useBrightness } from "@/context/BrightnessContext";
 import { CatalogProvider } from "@/context/CatalogContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
@@ -93,6 +94,16 @@ function PushBridge() {
   return null;
 }
 
+/** GestureHandlerRootView con el color de fondo del tema activo (Task #82). */
+function ThemedGestureRoot({ children }: { children: React.ReactNode }) {
+  const { theme } = useSceneTheme();
+  return (
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: theme.solid }}>
+      {children}
+    </GestureHandlerRootView>
+  );
+}
+
 
 /** Capa translúcida que aplica el brillo general de la app. */
 function BrightnessOverlay() {
@@ -139,12 +150,13 @@ function NavStack() {
   // propio (instantáneo), así el único movimiento es el cierre del drawer y no se
   // alcanza a ver Inicio antes de la página. Desde otros lados, slide normal.
   const { instantNav } = useDrawer();
+  const { theme } = useSceneTheme();
   const drawerScreenAnim = instantNav ? "none" : "slide_from_right";
   return (
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: "#210911" },
+          contentStyle: { backgroundColor: theme.solid },
         }}
       >
         <Stack.Screen name="(auth)" options={{ headerShown: false, animation: "fade" }} />
@@ -359,13 +371,15 @@ export default function RootLayout() {
                       <IntencionProvider>
                         <FoldersPlaylistsProvider>
                         <DiarioFavoritesProvider>
-                          <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#210911" }}>
-                            <StatusBar hidden />
-                            <KeyboardProvider>
-                              <RootLayoutNav />
-                            </KeyboardProvider>
-                            <BrightnessOverlay />
-                          </GestureHandlerRootView>
+                          <SceneThemeProvider>
+                            <ThemedGestureRoot>
+                              <StatusBar hidden />
+                              <KeyboardProvider>
+                                <RootLayoutNav />
+                              </KeyboardProvider>
+                              <BrightnessOverlay />
+                            </ThemedGestureRoot>
+                          </SceneThemeProvider>
                         </DiarioFavoritesProvider>
                         </FoldersPlaylistsProvider>
                       </IntencionProvider>

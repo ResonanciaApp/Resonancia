@@ -39,6 +39,7 @@ import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer } from "@/context/AmbientPlayerContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useMixer } from "@/context/MixerContext";
@@ -284,6 +285,7 @@ export default function HomeScreen2() {
   const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
+  const { theme: activeTheme } = useSceneTheme();
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
@@ -532,7 +534,7 @@ export default function HomeScreen2() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#340D1A", "#190913"]} style={styles.rootGradient} />
+      <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
       <StatusBar barStyle="light-content" />
 
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}

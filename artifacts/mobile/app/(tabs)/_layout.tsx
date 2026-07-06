@@ -32,6 +32,7 @@ import {
 } from "@/context/TabBarVisibilityContext";
 import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const ACTIVE_COLOR   = "#FFFFFF";
 const INACTIVE_COLOR = "rgba(255,255,255,0.88)";
@@ -404,6 +405,7 @@ function TabLayoutInner() {
   const tabBarHeight       = PILL_H + Math.max(8, bottomPb - 10);
   const { hidden }         = useTabBarVisibility();
   const { isMixerOpen, closeMixer, panelAnim } = useMixerPanel();
+  const { theme } = useSceneTheme();
 
   const panelTranslateX = panelAnim.interpolate({
     inputRange:  [0, 1],
@@ -424,9 +426,9 @@ function TabLayoutInner() {
 
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#1B060F" }}>
+    <View style={{ flex: 1, backgroundColor: theme.solid }}>
       <Tabs
-        screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: "#210911" } }}
+        screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: theme.solid } }}
         tabBar={(props) => <CustomTabBar {...props} />}
       >
         <Tabs.Screen name="index"          options={{ title: "Inicio" }} />

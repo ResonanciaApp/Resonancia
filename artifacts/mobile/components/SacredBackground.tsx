@@ -2,12 +2,17 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, View } from "react-native";
 
+import { useSceneTheme } from "@/context/SceneThemeContext";
+
 type SacredBackgroundProps = {
   /**
    * Modo de fondo:
    * - "solid" (default): plano, sin textura ni degradados (look Calm/Pura Mente).
-   *   Si no se pasa `solidColor`, no pinta nada y deja ver el `backgroundColor`
-   *   propio de la pantalla (cada categoría conserva su color de identidad).
+   *   Si no se pasa `solidColor`, pinta el color sólido del tema de Escena
+   *   activo (Task #82) — así las pantallas que ya usan este componente sin
+   *   color propio reaccionan automáticamente al cambiar de Escena. Las
+   *   pantallas que SÍ pasan `solidColor` (identidad de categoría) conservan
+   *   su color explícito por ahora — la migración de esas es progresiva.
    * - "texture": textura + glow dorado + viñeta (look original, legacy).
    */
   variant?: "texture" | "solid";
@@ -16,11 +21,12 @@ type SacredBackgroundProps = {
 };
 
 export function SacredBackground({ variant = "solid", solidColor }: SacredBackgroundProps) {
+  const { theme } = useSceneTheme();
+
   if (variant === "solid") {
-    if (!solidColor) return null;
     return (
       <View
-        style={[StyleSheet.absoluteFill, { backgroundColor: solidColor }]}
+        style={[StyleSheet.absoluteFill, { backgroundColor: solidColor ?? theme.solid }]}
         pointerEvents="none"
       />
     );

@@ -22,6 +22,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SessionCard } from "@/components/SessionCard";
 import { SESSIONS, getSessionById } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
@@ -248,6 +249,7 @@ export default function ExploreScreen() {
   const { isPremium } = usePremium();
   const { playSession, history } = usePlayer();
   const { version: catalogVersion } = useCatalog();
+  const { theme: activeTheme } = useSceneTheme();
 
   const ancestralesSessions  = SESSIONS.filter(s => s.categoryId === "sonidos-ancestrales").slice(0, 10);
   const musicaSessions       = SESSIONS.filter(s => s.categoryId === "musica-sonidos").slice(0, 10);
@@ -382,7 +384,7 @@ export default function ExploreScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={["#340D1A", "#190913"]} style={styles.rootGradient} />
+      <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="solid" />
 

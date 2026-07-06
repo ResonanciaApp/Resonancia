@@ -30,10 +30,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { VolumeSlider } from "@/components/VolumeSlider";
 import { AMBIENT_SCENES, useAmbientPlayer, type SceneId } from "@/context/AmbientPlayerContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 
 const WARM = {
-  bg: "#4A0C0C",
   handle: "rgba(255,255,255,0.25)",
   card: "rgba(74,12,12,0.08)",
   cardActive: "rgba(212,175,55,0.14)",
@@ -43,6 +43,7 @@ const WARM = {
 
 export function EscenasSheet() {
   const insets = useSafeAreaInsets();
+  const { theme, setActiveScene } = useSceneTheme();
   const {
     currentScene,
     isPlaying,
@@ -107,6 +108,7 @@ export function EscenasSheet() {
   const soundOn = isPlaying && !isMuted;
 
   const handleSelectScene = (id: SceneId) => {
+    setActiveScene(id);
     if (id === currentScene.id) return;
     setScene(id);
     if (!isPlaying) {
@@ -128,7 +130,7 @@ export function EscenasSheet() {
       <Animated.View
         style={[
           styles.sheet,
-          { backgroundColor: WARM.bg, paddingBottom: Math.max(insets.bottom, 20) },
+          { backgroundColor: theme.solid, paddingBottom: Math.max(insets.bottom, 20) },
           { transform: [{ translateY: sheetEnterY }] },
         ]}
       >
