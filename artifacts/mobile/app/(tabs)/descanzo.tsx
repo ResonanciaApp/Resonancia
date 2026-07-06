@@ -53,7 +53,7 @@ function SleepPill({
   });
   const borderColor = selAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(244,218,213,0.2)", "#F4F4F4"],
+    outputRange: ["rgba(244,218,213,0.1)", "#F4F4F4"],
   });
   const textColor = selAnim.interpolate({
     inputRange: [0, 1],
@@ -65,7 +65,7 @@ function SleepPill({
       onPress={onPress}
       style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
     >
-      <Animated.View style={[styles.sleepPill, { backgroundColor: bgColor, borderColor, borderWidth: 1 }]}>
+      <Animated.View style={[styles.sleepPill, { backgroundColor: bgColor, borderColor, borderWidth: 2 }]}>
         <Animated.Text style={[styles.sleepPillText, { color: textColor }]} numberOfLines={1}>
           {label}
         </Animated.Text>

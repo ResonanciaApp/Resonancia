@@ -23,6 +23,7 @@ import { useColors } from "@/hooks/useColors";
 
 const CARD_BG = "rgba(255,255,255,0.045)";
 const CARD_BORDER = "rgba(255,255,255,0.3)";
+const CHIP_BORDER = "rgba(255,255,255,0.1)";
 
 const FILTER_CHIPS = ["Todos", "Movimiento", "Respiración", "Naturaleza", "Música"] as const;
 
@@ -147,8 +148,9 @@ export default function VideoTabScreen() {
                 style={[
                   styles.chip,
                   {
-                    backgroundColor: sel ? colors.primary : CARD_BG,
-                    borderColor: sel ? colors.primary : CARD_BORDER,
+                    backgroundColor: sel ? colors.primary : "rgba(0,0,0,0.14)",
+                    borderColor: sel ? colors.primary : CHIP_BORDER,
+                    borderWidth: sel ? StyleSheet.hairlineWidth : 2,
                   },
                 ]}
               >
