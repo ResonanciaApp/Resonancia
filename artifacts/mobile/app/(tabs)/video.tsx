@@ -200,16 +200,6 @@ export default function VideoTabScreen() {
             collapsable={false}
           />
         </View>
-
-        <View style={[styles.resultsRow, { marginTop: 15 }]}>
-          <Text style={[styles.resultsCount, { color: colors.mutedForeground }]}>
-            {filtered.length} {filtered.length === 1 ? "resultado" : "resultados"}
-          </Text>
-          <Pressable ref={sortBtnRef} onPress={openSortMenu} style={styles.sortBtn} hitSlop={8}>
-            <Text style={[styles.sortText, { color: colors.foreground }]}>{SORT_LABELS[sortBy]}</Text>
-            <Feather name="chevron-down" size={14} color={colors.mutedForeground} />
-          </Pressable>
-        </View>
       </View>
 
       <ScrollView
@@ -237,6 +227,16 @@ export default function VideoTabScreen() {
         }}
         scrollEventThrottle={16}
       >
+        <View style={[styles.resultsRow, { marginBottom: 15 }]}>
+          <Text style={[styles.resultsCount, { color: colors.mutedForeground }]}>
+            {filtered.length} {filtered.length === 1 ? "resultado" : "resultados"}
+          </Text>
+          <Pressable ref={sortBtnRef} onPress={openSortMenu} style={styles.sortBtn} hitSlop={8}>
+            <Text style={[styles.sortText, { color: colors.foreground }]}>{SORT_LABELS[sortBy]}</Text>
+            <Feather name="chevron-down" size={14} color={colors.mutedForeground} />
+          </Pressable>
+        </View>
+
         {isLoading ? (
           <View style={styles.empty}>
             <ActivityIndicator color={colors.primary} />
