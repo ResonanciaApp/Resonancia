@@ -34,10 +34,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 
 const WARM = {
-  card: "rgba(74,12,12,0.08)",
-  cardActive: "rgba(212,175,55,0.14)",
   border: "rgba(61,14,22,0.40)",
-  borderActive: "rgba(212,175,55,0.55)",
   divider: "rgba(255,255,255,0.055)",
 } as const;
 
@@ -53,8 +50,8 @@ const TIMER_OPTIONS: Array<{ label: string; value: number | null }> = [
 const SCREEN_W = Dimensions.get("window").width;
 const SHEET_H_PAD = 24;
 const CARD_GAP = 14;
-const CARD_W = Math.floor((SCREEN_W - SHEET_H_PAD * 2) / 2.5) + 20;
-const CARD_H = Math.floor(CARD_W * 1.55) + 40;
+const CARD_W = Math.floor((SCREEN_W - SHEET_H_PAD * 2) / 2.5) + 20 - 25;
+const CARD_H = Math.floor(CARD_W * 1.55) + 40 + 30;
 
 export function EscenasSheet() {
   const insets = useSafeAreaInsets();
@@ -132,7 +129,7 @@ export function EscenasSheet() {
         ]}
       >
         <Pressable style={styles.closeBtn} onPress={closeSheet} hitSlop={10}>
-          <Feather name="x" size={24} color="#FFFFFF" />
+          <Feather name="x" size={27} color="#FFFFFF" />
         </Pressable>
         <Text style={styles.title}>Escenas</Text>
 
@@ -145,7 +142,7 @@ export function EscenasSheet() {
               onChange={setVolume}
               color="#FFFFFF"
               trackColor="rgba(255,255,255,0.6)"
-              thickness={4}
+              thickness={7}
               showThumb={false}
               fillOpacity={1}
             />
@@ -209,15 +206,10 @@ export function EscenasSheet() {
                 <View
                   style={[
                     styles.card,
-                    { borderColor: active ? WARM.borderActive : WARM.border },
+                    { borderColor: active ? "rgba(255,255,255,0.9)" : WARM.border },
                   ]}
                 >
                   <Image source={scene.image} style={StyleSheet.absoluteFill} contentFit="cover" />
-                  {active ? (
-                    <View style={styles.activeOverlay} pointerEvents="none">
-                      <Feather name="check-circle" size={26} color="#D4AF37" />
-                    </View>
-                  ) : null}
                   {active && soundOn ? (
                     <View style={styles.playingBadge}>
                       <Feather name="volume-2" size={12} color="#D4AF37" />
@@ -246,17 +238,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: SHEET_H_PAD,
   },
   closeBtn: {
-    alignSelf: "center",
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    alignSelf: "flex-start",
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     backgroundColor: "rgba(0,0,0,0.20)",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 20,
   },
   title: {
-    fontSize: 18,
+    fontSize: 25,
     fontWeight: "600",
     color: "#F4DAD5",
     textAlign: "center",
@@ -354,19 +346,13 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "#111",
   },
-  activeOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.28)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   cardLabel: {
     marginTop: 8,
     fontSize: 12,
     color: "rgba(255,255,255,0.75)",
   },
   cardLabelActive: {
-    color: "#D4AF37",
+    color: "rgba(255,255,255,0.95)",
     fontWeight: "600",
   },
   playingBadge: {
