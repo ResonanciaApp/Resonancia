@@ -14,6 +14,7 @@
  */
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useLayoutEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -124,10 +125,14 @@ export function EscenasSheet() {
       <Animated.View
         style={[
           styles.sheet,
-          { backgroundColor: theme.solid, paddingTop: Math.max(insets.top, 20), paddingBottom: Math.max(insets.bottom, 20) },
           { transform: [{ translateY: sheetEnterY }] },
         ]}
       >
+        <LinearGradient
+          colors={theme.gradient}
+          style={StyleSheet.absoluteFill}
+        />
+        <View style={{ paddingTop: Math.max(insets.top, 20), paddingBottom: Math.max(insets.bottom, 20), flex: 1 }}>
         <Pressable style={styles.closeBtn} onPress={closeSheet} hitSlop={10}>
           <Feather name="x" size={30} color="#FFFFFF" />
         </Pressable>
@@ -223,6 +228,7 @@ export function EscenasSheet() {
             );
           })}
         </ScrollView>
+        </View>
       </Animated.View>
     </Modal>
   );
