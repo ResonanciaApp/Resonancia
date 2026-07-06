@@ -1,13 +1,11 @@
 import { Feather } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { usePlayer } from "@/context/PlayerContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const GOLD = "#BE8744";
-const ACTIVE_BORDER_FROM = "#854744";
-const ACTIVE_BORDER_TO = "#5A2C65";
 const TEXT = "#e8e8e8";
 const MUTED = "#c2c2c2";
 
@@ -41,6 +39,7 @@ function minutesByDay(events: { playedAt: string; minutes: number }[]): Map<stri
 
 export function WeeklyStreakStrip() {
   const { statEvents } = usePlayer();
+  const { theme } = useSceneTheme();
 
   const { activeFlags, activeCount, todayIndex } = useMemo(() => {
     const byDay = minutesByDay(statEvents);
@@ -71,14 +70,9 @@ export function WeeklyStreakStrip() {
           return (
             <View key={i} style={styles.dayCol}>
               {met ? (
-                <LinearGradient
-                  colors={[ACTIVE_BORDER_FROM, ACTIVE_BORDER_TO]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={[styles.circle, styles.circleActiveBorder]}
-                >
+                <View style={[styles.circle, styles.circleActive, { borderColor: theme.gradient[0] }]}>
                   <Feather name="check" size={16} color="rgba(255,255,255,0.9)" />
-                </LinearGradient>
+                </View>
               ) : (
                 <View style={[styles.circle, styles.circleInactive, isToday && styles.circleToday]} />
               )}
@@ -114,9 +108,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  circleActiveBorder: {
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.3)",
+  circleActive: {
+    backgroundColor: "rgba(255,255,255,0.20)",
+    borderWidth: 3,
   },
   circleInactive: {
     backgroundColor: "rgba(255,255,255,0.08)",
