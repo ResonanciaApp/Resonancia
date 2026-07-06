@@ -53,6 +53,7 @@ import { getSoundImage } from "@/config/sound-images";
 import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
 import { InmersivoContent } from "@/components/InmersivoMixerModal";
 import { usePremium } from "@/context/PremiumContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { type MixSound, getSoundById } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
@@ -332,18 +333,25 @@ export function MixerSheet() {
   const insets = useSafeAreaInsets();
 
   // ── Fondo personalizable ──────────────────────────────────────────────────
-  const [bgPresetId,    setBgPresetId]    = useState<string>("borgona");
+  // Por defecto (sin escena elegida) el fondo se enlaza al tema activo de la
+  // app (mismo degradado que Inicio, elegido con el loto). Ver `theme` abajo.
+  const { theme } = useSceneTheme();
+  const [bgPresetId,    setBgPresetId]    = useState<string>(DEFAULT_BG_PRESET_ID);
   const [overlayOpacity, setOverlayOpacity] = useState<number>(DEFAULT_OVERLAY);
   const [bgPickerOpen, setBgPickerOpen] = useState(false);
   const bgPickerY = useRef(new Animated.Value(700)).current;
   const bgBreath  = useRef(new Animated.Value(1)).current;
 
-  const activeBgPreset =
+  const isDefaultBg = bgPresetId === DEFAULT_BG_PRESET_ID;
+  const rawBgPreset =
     GRADIENT_PRESETS.find((p) => p.id === bgPresetId) ??
     GRADIENT_PRESETS.find((p) => p.id === DEFAULT_BG_PRESET_ID)!;
+  const activeBgPreset = isDefaultBg
+    ? { ...rawBgPreset, colors: [theme.gradient[0], theme.gradient[1], theme.gradient[1]] as const, image: undefined, isLight: false }
+    : rawBgPreset;
   const sheetGradient = activeBgPreset.colors;
   const isLight = activeBgPreset.isLight ?? false;
-  /** true cuando hay cualquier escena o color seleccionado (no el fondo por defecto) */
+  /** true cuando hay cualquier escena o color seleccionado (no el fondo por defecto, enlazado al tema) */
   const hasCustomBg = bgPresetId !== DEFAULT_BG_PRESET_ID;
 
   // Cargar preset y overlay guardados

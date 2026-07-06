@@ -26,6 +26,7 @@ import { useMixer } from "@/context/MixerContext";
 import { setReopenMixer } from "@/utils/immersivo-flags";
 import { getSoundById } from "@/data/sounds";
 import { GRADIENT_PRESETS, DEFAULT_BG_PRESET_ID } from "@/config/immersive-presets";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { MESSAGE_PACKS, DEFAULT_MESSAGE_PACK_ID } from "@/data/immersive-messages";
 
 // ── Constantes ──────────────────────────────────────────────────────────────
@@ -62,9 +63,14 @@ export default function InmersivoMixerScreen() {
   const params = useLocalSearchParams<{ bgPresetId?: string; packId?: string }>();
 
   // ── Fondo ──────────────────────────────────────────────────────────────────
-  const bgPreset =
+  const { theme } = useSceneTheme();
+  const isDefaultBg = !params.bgPresetId || params.bgPresetId === DEFAULT_BG_PRESET_ID;
+  const rawBgPreset =
     GRADIENT_PRESETS.find((p) => p.id === params.bgPresetId) ??
     GRADIENT_PRESETS.find((p) => p.id === DEFAULT_BG_PRESET_ID)!;
+  const bgPreset = isDefaultBg
+    ? { ...rawBgPreset, colors: [theme.gradient[0], theme.gradient[1], theme.gradient[1]] as const, image: undefined, isLight: false }
+    : rawBgPreset;
 
   const breathScale = useRef(new Animated.Value(1)).current;
   useEffect(() => {

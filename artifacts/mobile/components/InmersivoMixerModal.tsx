@@ -24,6 +24,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMixer } from "@/context/MixerContext";
 import { getSoundById } from "@/data/sounds";
 import { GRADIENT_PRESETS, DEFAULT_BG_PRESET_ID } from "@/config/immersive-presets";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { CreationCoverPreviewDirect } from "@/components/CreationCoverPreview";
 import { Dimensions } from "react-native";
 
@@ -62,9 +63,14 @@ export function InmersivoContent() {
     inmersivoGeoBgCreation,
   } = useMixer();
 
-  const bgPreset =
+  const { theme } = useSceneTheme();
+  const isDefaultBg = !inmersivoPresetId || inmersivoPresetId === DEFAULT_BG_PRESET_ID;
+  const rawBgPreset =
     GRADIENT_PRESETS.find((p) => p.id === inmersivoPresetId) ??
     GRADIENT_PRESETS.find((p) => p.id === DEFAULT_BG_PRESET_ID)!;
+  const bgPreset = isDefaultBg
+    ? { ...rawBgPreset, colors: [theme.gradient[0], theme.gradient[1], theme.gradient[1]] as const, image: undefined, isLight: false }
+    : rawBgPreset;
 
   const breathScale = useRef(new Animated.Value(1)).current;
   useEffect(() => {

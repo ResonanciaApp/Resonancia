@@ -46,26 +46,11 @@ const CARD_H = Math.floor((CARD_W * 4 / 3 + 150) * 0.6);
 
 const THUMB      = 110;
 const THUMB_GAP  = 10;
-const SWATCH_SZ  = 60;
-
-const COLOR_SWATCHES: { id: string; label: string; colors: [string, string] }[] = [
-  { id: "borgona",  label: "Borgoña",  colors: ["#6B1828", "#3D0A15"] },
-  { id: "oscuro",   label: "Noche",    colors: ["#252525", "#191919"] },
-  { id: "cosmos",   label: "Cosmos",   colors: ["#1A2550", "#0D1230"] },
-  { id: "nebulosa", label: "Nebulosa", colors: ["#221A5C", "#110D30"] },
-  { id: "luna",     label: "Luna",     colors: ["#1A1A40", "#0D0D22"] },
-  { id: "oceano",   label: "Océano",   colors: ["#0A2848", "#051422"] },
-  { id: "amanecer", label: "Amanecer", colors: ["#6B3800", "#382000"] },
-  { id: "selva",    label: "Selva",    colors: ["#0D3010", "#061808"] },
-  { id: "fuego",    label: "Fuego",    colors: ["#541200", "#2B0800"] },
-];
 
 const IMAGE_SCENES = GRADIENT_PRESETS.filter((p) => p.image);
-/** Todas las escenas: primero los degradados (sin imagen), luego las de imagen */
-const ALL_SCENES = [
-  ...GRADIENT_PRESETS.filter((p) => !p.image && p.isLight && p.id !== DEFAULT_BG_PRESET_ID),
-  ...IMAGE_SCENES,
-];
+/** Solo escenas de paisajes (con imagen). El color de fondo ya no se elige
+ *  manualmente: por defecto se enlaza al tema activo de la app (ver Inicio). */
+const ALL_SCENES = IMAGE_SCENES;
 
 /** Pantalla de ruta (fallback si se accede directamente via URL). */
 export default function EscenasMixerScreen() {
@@ -304,41 +289,9 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
             })}
           </ScrollView>
 
-          {/* ── Color de fondo ── */}
-          <View style={[styles.scenesTitleRow, { marginTop: 28 }]}>
-            <Text style={styles.sectionTitle}>Color de fondo</Text>
-          </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.swatchRow}
-          >
-            {COLOR_SWATCHES.map((sw) => {
-              const active = selectedId === sw.id;
-              return (
-                <Pressable
-                  key={sw.id}
-                  onPress={() => applyScene(sw.id)}
-                  style={styles.swatchItem}
-                >
-                  <LinearGradient
-                    colors={sw.colors}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={[styles.swatchCircle, active && styles.swatchCircleActive]}
-                  >
-                    {active && <Feather name="check" size={18} color="#FFF" />}
-                  </LinearGradient>
-                  <Text style={[styles.swatchLabel, active && styles.swatchLabelActive]} numberOfLines={1}>
-                    {sw.label}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-
           <Text style={styles.hint}>
-            Toca una escena para previsualizarla antes de elegirla.
+            Toca una escena para previsualizarla antes de elegirla. Sin una
+            escena elegida, el fondo usa el tema activo de la app.
           </Text>
         </ScrollView>
       </View>
@@ -550,45 +503,6 @@ const styles = StyleSheet.create({
     color: "#AAA",
     textAlign: "center",
     lineHeight: 16,
-  },
-
-  swatchRow: {
-    flexDirection: "row",
-    paddingHorizontal: H_PAD,
-    paddingBottom: 4,
-    gap: 12,
-  },
-  swatchItem: {
-    alignItems: "center",
-    gap: 6,
-  },
-  swatchCircle: {
-    width: SWATCH_SZ,
-    height: SWATCH_SZ,
-    borderRadius: SWATCH_SZ / 2,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 2,
-    borderColor: "transparent",
-  },
-  swatchCircleActive: {
-    borderColor: "#BE8744",
-    shadowColor: "#BE8744",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.55,
-    shadowRadius: 6,
-    elevation: 4,
-  },
-  swatchLabel: {
-    fontSize: 10,
-    color: "#888",
-    fontWeight: "500",
-    textAlign: "center",
-    width: SWATCH_SZ,
-  },
-  swatchLabelActive: {
-    color: "#BE8744",
-    fontWeight: "700",
   },
 
   thumbRow: {
