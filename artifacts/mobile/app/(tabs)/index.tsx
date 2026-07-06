@@ -956,30 +956,6 @@ export default function HomeScreen2() {
           </View>
         </View>
 
-        {/* ── Banner Resonadores ── */}
-        <View style={[styles.section, { marginTop: 0, marginBottom: SECTION_GAP }]}>
-          <Pressable
-            onPress={() => router.push("/(tabs)/resonadores" as never)}
-            style={({ pressed }) => [styles.resonadoresBanner, { opacity: pressed ? 0.85 : 1 }]}
-          >
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.14)" }]} />
-            <View style={styles.resonadoresBannerInner}>
-              <ExpoImage
-                source={require("@/assets/images/logo-resonancia-gold.png")}
-                style={styles.resonadoresBannerLogo}
-                contentFit="contain"
-              />
-              <View style={styles.resonadoresBannerContent}>
-                <Text style={styles.resonadoresBannerTitle}>Resonadores</Text>
-                <Text style={styles.resonadoresBannerSub} numberOfLines={2}>
-                  Conoce a nuestro equipo certificado
-                </Text>
-              </View>
-            </View>
-            <Feather name="chevron-right" size={20} color="#e8e8e8" style={styles.resonadoresBannerChevron} />
-          </Pressable>
-        </View>
-
         {/* ── Videos destacados ── */}
         <View style={[styles.section, { marginTop: 0, marginBottom: SECTION_GAP }]}>
           <View style={styles.sectionRow}>
@@ -1010,6 +986,30 @@ export default function HomeScreen2() {
               ))}
             </ScrollView>
           )}
+        </View>
+
+        {/* ── Banner Resonadores ── */}
+        <View style={[styles.section, { marginTop: 0, marginBottom: SECTION_GAP }]}>
+          <Pressable
+            onPress={() => router.push("/(tabs)/resonadores" as never)}
+            style={({ pressed }) => [styles.resonadoresBanner, { opacity: pressed ? 0.85 : 1 }]}
+          >
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.14)" }]} />
+            <View style={styles.resonadoresBannerInner}>
+              <ExpoImage
+                source={require("@/assets/images/logo-resonancia-gold.png")}
+                style={styles.resonadoresBannerLogo}
+                contentFit="contain"
+              />
+              <View style={styles.resonadoresBannerContent}>
+                <Text style={styles.resonadoresBannerTitle}>Resonadores</Text>
+                <Text style={styles.resonadoresBannerSub} numberOfLines={2}>
+                  Conoce a nuestro equipo certificado
+                </Text>
+              </View>
+            </View>
+            <Feather name="chevron-right" size={20} color="#e8e8e8" style={styles.resonadoresBannerChevron} />
+          </Pressable>
         </View>
 
         {/* ── ESCUCHADAS RECIENTEMENTE ── */}
