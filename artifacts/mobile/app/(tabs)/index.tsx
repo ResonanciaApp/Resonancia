@@ -37,7 +37,6 @@ import { SessionCard } from "@/components/SessionCard";
 import { SessionRow } from "@/components/SessionRow";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
-import { BlurView } from "expo-blur";
 import { Image as ExpoImage } from "expo-image";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
@@ -131,8 +130,7 @@ function NavTabChip({ sel, label, onPress }: { sel: boolean; label: string; onPr
       onPress={onPress}
       style={({ pressed }) => [styles.headerTabChip, !sel && styles.headerTabChipUnsel, { opacity: pressed ? 0.7 : 1 }]}
     >
-      <BlurView intensity={24} tint="dark" style={StyleSheet.absoluteFill} />
-      <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(18,10,24,0.33)" }]} />
+      <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.2)" }]} />
       <Animated.View style={[StyleSheet.absoluteFill, { opacity: selOpacity }]}>
         <LinearGradient
           colors={["#D6A45C", "#BE8744"]}
@@ -675,8 +673,7 @@ export default function HomeScreen2() {
                   onPress={() => router.push(`/coleccion/${pl.id}` as never)}
                   style={({ pressed }) => [styles.coleccionCard, { opacity: pressed ? 0.75 : 1 }]}
                 >
-                  <BlurView intensity={24} tint="dark" style={StyleSheet.absoluteFill} />
-                  <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(18,10,24,0.33)" }]} />
+                  <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.2)" }]} />
                   <Image
                     source={pl.coverUrl ? { uri: pl.coverUrl } : pl.cover as number}
                     style={styles.coleccionThumb}
@@ -715,34 +712,25 @@ export default function HomeScreen2() {
                   {
                     width: TEMA3_W,
                     height: TEMA3_W,
+                    backgroundColor: pressed
+                      ? hexTint(t.color, 0.22)
+                      : "rgba(0,0,0,0.2)",
                     borderRadius: 11,
                   },
                 ]}
               >
-                {({ pressed }) => (
-                  <>
-                    <BlurView intensity={24} tint="dark" style={StyleSheet.absoluteFill} />
-                    <View
-                      pointerEvents="none"
-                      style={[
-                        StyleSheet.absoluteFill,
-                        { backgroundColor: pressed ? hexTint(t.color, 0.22) : "rgba(18,10,24,0.33)" },
-                      ]}
-                    />
-                    {t.image != null ? (
-                      <ExpoImage
-                        source={t.image}
-                        style={styles.temaCellIcon}
-                        contentFit="contain"
-                      />
-                    ) : (
-                      <MaterialCommunityIcons name={t.icon} size={28} color={t.color} />
-                    )}
-                    <Text style={[styles.temaCellLabel, { color: "#e8e8e8" }]} numberOfLines={2}>
-                      {t.label}
-                    </Text>
-                  </>
+                {t.image != null ? (
+                  <ExpoImage
+                    source={t.image}
+                    style={styles.temaCellIcon}
+                    contentFit="contain"
+                  />
+                ) : (
+                  <MaterialCommunityIcons name={t.icon} size={28} color={t.color} />
                 )}
+                <Text style={[styles.temaCellLabel, { color: "#e8e8e8" }]} numberOfLines={2}>
+                  {t.label}
+                </Text>
               </Pressable>
             ))}
           </View>
@@ -825,8 +813,7 @@ export default function HomeScreen2() {
             onPress={() => setMoodSheetVisible(true)}
             style={({ pressed }) => [styles.moodRow, styles.moodRowActive, { opacity: pressed ? 0.78 : 1 }]}
           >
-            <BlurView intensity={24} tint="dark" style={StyleSheet.absoluteFill} />
-            <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(18,10,24,0.33)" }]} />
+            <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.2)" }]} />
             <Text style={styles.moodSientesLabel}>Sientes:</Text>
             <View style={{ flex: 1 }} />
             <LinearGradient
@@ -851,8 +838,7 @@ export default function HomeScreen2() {
             onPress={() => setMoodSheetVisible(true)}
             style={({ pressed }) => [styles.moodRow, { opacity: pressed ? 0.78 : 1 }]}
           >
-            <BlurView intensity={24} tint="dark" style={StyleSheet.absoluteFill} />
-            <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(18,10,24,0.33)" }]} />
+            <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.2)" }]} />
             <Text style={styles.moodEmoji}>🙂</Text>
             <Text style={styles.moodRowLabel}>¿Cómo te sientes hoy?</Text>
             <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" />
@@ -871,7 +857,6 @@ export default function HomeScreen2() {
               key={s.id}
               session={s}
               style={styles.recoCard}
-              blurBg
               imageSize={84}
               metaText={s.categoryLabel}
               onPress={() => {
@@ -900,14 +885,12 @@ export default function HomeScreen2() {
                   paddingVertical: 18 + 30,
                   borderRadius: 14,
                   alignItems: "center",
+                  backgroundColor: "rgba(0,0,0,0.2)",
                   borderWidth: 1,
                   borderColor: "rgba(255,255,255,0.25)",
-                  overflow: "hidden",
                   opacity: pressed ? 0.75 : 1,
                 }]}
               >
-                <BlurView intensity={24} tint="dark" style={StyleSheet.absoluteFill} />
-                <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(18,10,24,0.33)" }]} />
                 <Text style={{ fontSize: 14, fontWeight: "700", color: "#e8e8e8", textAlign: "center" }}>
                   {c.label}
                 </Text>
@@ -1008,7 +991,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     gap: 10,
-    overflow: "hidden",
   },
   moodRowActive: {
     paddingVertical: 11,
@@ -1051,6 +1033,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   recoCard: {
+    backgroundColor: "rgba(0,0,0,0.2)",
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: 14,
@@ -1322,7 +1305,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingHorizontal: 8,
     paddingVertical: 12,
-    overflow: "hidden",
   },
   temaCellIcon: {
     width: 28,

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { View, Text, Pressable, StyleSheet, Share, Modal } from "react-native";
-import { BlurView } from "expo-blur";
 import { Feather } from "@expo/vector-icons";
 import { getQuoteOfTheDay } from "@/data/quotes";
 
@@ -30,8 +29,6 @@ export default function QuoteOfTheDay() {
 
   return (
     <View style={styles.card}>
-      <BlurView intensity={24} tint="dark" style={StyleSheet.absoluteFill} />
-      <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(18,10,24,0.33)" }]} />
       {/* Autor arriba-izquierda + ··· arriba-derecha */}
       <View style={styles.header}>
         <Text style={styles.author}>{quote.author}</Text>
@@ -85,8 +82,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 18,
     paddingBottom: 22,
+    backgroundColor: "rgba(0,0,0,0.2)",
     borderRadius: 15,
-    overflow: "hidden",
   },
   header: {
     flexDirection: "row",

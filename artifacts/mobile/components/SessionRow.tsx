@@ -2,7 +2,6 @@ import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
@@ -22,10 +21,9 @@ type Props = {
   metaText?: string;
   onActionsPress?: () => void;
   onPress?: () => void;
-  blurBg?: boolean;
 };
 
-export function SessionRow({ session, rating, style, imageSize = 80, metaText, onActionsPress, onPress, blurBg }: Props) {
+export function SessionRow({ session, rating, style, imageSize = 80, metaText, onActionsPress, onPress }: Props) {
   const colors = useColors();
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
@@ -44,13 +42,7 @@ export function SessionRow({ session, rating, style, imageSize = 80, metaText, o
   };
 
   return (
-    <View style={[styles.sessionRow, blurBg && styles.sessionRowBlurClip, style]}>
-      {blurBg && (
-        <>
-          <BlurView intensity={24} tint="dark" style={StyleSheet.absoluteFill} />
-          <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(18,10,24,0.33)" }]} />
-        </>
-      )}
+    <View style={[styles.sessionRow, style]}>
       <Pressable
         onPress={onPress ?? defaultPress}
         style={({ pressed }) => [styles.sessionRowInner, { opacity: pressed ? 0.78 : 1 }]}
@@ -106,9 +98,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 10,
-  },
-  sessionRowBlurClip: {
-    overflow: "hidden",
   },
   sessionRowInner: {
     flex: 1,
