@@ -40,7 +40,7 @@ import { SessionRow } from "@/components/SessionRow";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { Image as ExpoImage } from "expo-image";
-import { useAmbientPlayer } from "@/context/AmbientPlayerContext";
+import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
@@ -304,7 +304,8 @@ export default function HomeScreen2() {
   const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
-  const { theme: activeTheme } = useSceneTheme();
+  const { theme: activeTheme, activeSceneId } = useSceneTheme();
+  const activeSceneAccent = AMBIENT_SCENES.find((s) => s.id === activeSceneId)?.colors[1] ?? activeTheme.gradient[0];
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
@@ -679,7 +680,7 @@ export default function HomeScreen2() {
             hitSlop={8}
             style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
           >
-            <View style={[styles.universeBtnBg, { backgroundColor: hexToRgba(activeTheme.gradient[0], 0.2) }]}>
+            <View style={[styles.universeBtnBg, { backgroundColor: hexToRgba(activeSceneAccent, 0.35) }]}>
               {!searchOpen && (
                 <>
                   <Animated.View
