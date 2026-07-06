@@ -8,6 +8,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { AppState, type AppStateStatus } from "react-native";
 
 export type SceneId =
   | "universo"
@@ -152,6 +153,9 @@ type AmbientCtx = {
   isSheetOpen: boolean;
   openSheet: () => void;
   closeSheet: () => void;
+  /** Temporizador para detener el sonido de escena automáticamente. Segundos restantes o null (sin límite). */
+  sleepTimerRemaining: number | null;
+  setSleepTimer: (minutes: number | null) => void;
 };
 
 const AmbientContext = createContext<AmbientCtx | null>(null);
@@ -178,6 +182,9 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
   const [isMuted, setIsMuted] = useState(false);
   const [volumes, setVolumes] = useState<Record<SceneId, number>>(DEFAULT_VOLUMES);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [sleepTimerRemaining, setSleepTimerRemaining] = useState<number | null>(null);
+  const sleepIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const sleepEndTimeRef = useRef<number | null>(null);
   const soundRef = useRef<Audio.Sound | null>(null);
   const loadedSceneRef = useRef<SceneId | null>(null);
   // Refs so callbacks can read latest state without re-creating
@@ -332,6 +339,9 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
     await unload();
   }, [unload]);
 
+  const stopAmbientRef = useRef(stopAmbient);
+  stopAmbientRef.current = stopAmbient;
+
   // Called from HomeScreen after onboarding — sound is already pre-loaded, plays instantly
   const startAmbient = useCallback(async () => {
     console.warn(`[Ambient] startAmbient called isPlaying=${isPlayingRef.current} scene=${currentSceneIdRef.current}`);
@@ -343,6 +353,68 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
 
   const openSheet = useCallback(() => setIsSheetOpen(true), []);
   const closeSheet = useCallback(() => setIsSheetOpen(false), []);
+
+  const clearSleepTimer = useCallback(() => {
+    if (sleepIntervalRef.current) {
+      clearInterval(sleepIntervalRef.current);
+      sleepIntervalRef.current = null;
+    }
+    sleepEndTimeRef.current = null;
+    setSleepTimerRemaining(null);
+  }, []);
+
+  /** "Reproducir sonidos fuera de la aplicación": temporizador que detiene el
+   *  sonido de escena automáticamente tras N minutos (independiente del audio
+   *  principal — sigue sonando en background hasta que el timer expira). */
+  const setSleepTimer = useCallback((minutes: number | null) => {
+    if (sleepIntervalRef.current) {
+      clearInterval(sleepIntervalRef.current);
+      sleepIntervalRef.current = null;
+    }
+    if (minutes == null) {
+      sleepEndTimeRef.current = null;
+      setSleepTimerRemaining(null);
+      return;
+    }
+    const endTime = Date.now() + minutes * 60 * 1000;
+    sleepEndTimeRef.current = endTime;
+    setSleepTimerRemaining(minutes * 60);
+
+    sleepIntervalRef.current = setInterval(() => {
+      const endTs = sleepEndTimeRef.current;
+      if (endTs == null) return;
+      const remaining = Math.ceil((endTs - Date.now()) / 1000);
+      if (remaining <= 0) {
+        if (sleepIntervalRef.current) {
+          clearInterval(sleepIntervalRef.current);
+          sleepIntervalRef.current = null;
+        }
+        sleepEndTimeRef.current = null;
+        setSleepTimerRemaining(null);
+        stopAmbientRef.current();
+      } else {
+        setSleepTimerRemaining(remaining);
+      }
+    }, 1000);
+  }, []);
+
+  // setInterval se throttlea en background; al reanudar recalculamos con Date.now()
+  useEffect(() => {
+    const handleAppState = (nextState: AppStateStatus) => {
+      if (nextState !== "active") return;
+      const endTs = sleepEndTimeRef.current;
+      if (endTs == null) return;
+      const remaining = Math.ceil((endTs - Date.now()) / 1000);
+      if (remaining <= 0) {
+        clearSleepTimer();
+        stopAmbientRef.current();
+      } else {
+        setSleepTimerRemaining(remaining);
+      }
+    };
+    const sub = AppState.addEventListener("change", handleAppState);
+    return () => sub.remove();
+  }, [clearSleepTimer]);
 
   return (
     <AmbientContext.Provider
@@ -359,6 +431,8 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
         isSheetOpen,
         openSheet,
         closeSheet,
+        sleepTimerRemaining,
+        setSleepTimer,
       }}
     >
       {children}

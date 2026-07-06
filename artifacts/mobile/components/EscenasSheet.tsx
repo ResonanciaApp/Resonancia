@@ -8,12 +8,14 @@
  * Cada escena tiene su propio audio en loop (AmbientPlayerContext) + su propio
  * volumen. Cambiar de escena detiene la anterior y arranca la nueva. Cerrar el
  * panel NO detiene el audio — sigue sonando en segundo plano. Incluye un
- * interruptor para apagar el sonido sin cerrar el panel.
+ * interruptor para apagar el sonido sin cerrar el panel, y un temporizador
+ * ("Reproducir sonidos fuera de la aplicación") que detiene el sonido
+ * automáticamente tras N minutos.
  * ─────────────────────────────────────────────────────────────────
  */
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -21,6 +23,7 @@ import {
   Modal,
   PanResponder,
   Pressable,
+  ScrollView,
   StyleSheet,
   Switch,
   Text,
@@ -39,7 +42,23 @@ const WARM = {
   cardActive: "rgba(212,175,55,0.14)",
   border: "rgba(61,14,22,0.40)",
   borderActive: "rgba(212,175,55,0.55)",
+  divider: "rgba(255,255,255,0.055)",
 } as const;
+
+const TIMER_OPTIONS: Array<{ label: string; value: number | null }> = [
+  { label: "Sin límite", value: null },
+  { label: "15 minutos", value: 15 },
+  { label: "30 minutos", value: 30 },
+  { label: "45 minutos", value: 45 },
+  { label: "60 minutos", value: 60 },
+  { label: "90 minutos", value: 90 },
+];
+
+const SCREEN_W = Dimensions.get("window").width;
+const SHEET_H_PAD = 24;
+const CARD_GAP = 14;
+const CARD_W = Math.floor((SCREEN_W - SHEET_H_PAD * 2) / 2.5);
+const CARD_H = Math.floor(CARD_W * 1.55);
 
 export function EscenasSheet() {
   const insets = useSafeAreaInsets();
@@ -55,7 +74,14 @@ export function EscenasSheet() {
     startAmbient,
     isSheetOpen,
     closeSheet,
+    sleepTimerRemaining,
+    setSleepTimer,
   } = useAmbientPlayer();
+
+  const [timerOpen, setTimerOpen] = useState(false);
+  const timerMinutes = sleepTimerRemaining == null
+    ? null
+    : (TIMER_OPTIONS.find((o) => o.value != null && Math.abs(o.value * 60 - sleepTimerRemaining) <= 90)?.value ?? null);
 
   const sheetEnterY = useRef(new Animated.Value(Dimensions.get("window").height)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
@@ -101,6 +127,7 @@ export function EscenasSheet() {
     } else {
       sheetEnterY.setValue(Dimensions.get("window").height);
       backdropOpacity.setValue(0);
+      setTimerOpen(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSheetOpen]);
@@ -140,32 +167,7 @@ export function EscenasSheet() {
           <Text style={styles.subtitle}>Sonido ambiente de fondo</Text>
         </View>
 
-        <View style={styles.grid}>
-          {AMBIENT_SCENES.map((scene) => {
-            const active = scene.id === currentScene.id;
-            return (
-              <Pressable
-                key={scene.id}
-                style={[
-                  styles.card,
-                  { backgroundColor: active ? WARM.cardActive : WARM.card, borderColor: active ? WARM.borderActive : WARM.border },
-                ]}
-                onPress={() => handleSelectScene(scene.id)}
-              >
-                <Image source={scene.image} style={styles.cardImage} contentFit="cover" />
-                <Text style={[styles.cardLabel, active && styles.cardLabelActive]} numberOfLines={1}>
-                  {scene.label}
-                </Text>
-                {active && soundOn ? (
-                  <View style={styles.playingBadge}>
-                    <Feather name="volume-2" size={12} color="#D4AF37" />
-                  </View>
-                ) : null}
-              </Pressable>
-            );
-          })}
-        </View>
-
+        {/* Volumen de la escena — arriba de las cards */}
         <View style={styles.volumeRow}>
           <Feather name="volume-1" size={16} color="rgba(255,255,255,0.55)" />
           <View style={styles.sliderWrap}>
@@ -179,6 +181,36 @@ export function EscenasSheet() {
           <Feather name="volume-2" size={16} color="rgba(255,255,255,0.55)" />
         </View>
 
+        {/* Reproducir sonidos fuera de la aplicación — timer dropdown */}
+        <Pressable style={styles.controlRow} onPress={() => setTimerOpen((v) => !v)}>
+          <Feather name="clock" size={18} color="rgba(255,255,255,0.65)" style={styles.controlIcon} />
+          <Text style={styles.controlLabel}>Reproducir sonidos fuera de la aplicación</Text>
+          <View style={styles.timerTrigger}>
+            <Text style={styles.timerTriggerLabel}>
+              {(TIMER_OPTIONS.find((o) => o.value === timerMinutes)?.label ?? "Sin límite").toUpperCase()}
+            </Text>
+            <Feather name={timerOpen ? "chevron-up" : "chevron-down"} size={16} color="rgba(255,255,255,0.65)" />
+          </View>
+        </Pressable>
+        {timerOpen && (
+          <View style={styles.timerDropdown}>
+            {TIMER_OPTIONS.map((opt) => {
+              const active = timerMinutes === opt.value;
+              return (
+                <Pressable
+                  key={String(opt.value)}
+                  onPress={() => { setSleepTimer(opt.value); setTimerOpen(false); }}
+                  style={[styles.timerDropItem, active && styles.timerDropItemActive]}
+                >
+                  <Text style={[styles.timerDropItemText, active && styles.timerDropItemTextActive]}>
+                    {opt.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        )}
+
         <View style={styles.toggleRow}>
           <View style={styles.toggleTextWrap}>
             <Text style={styles.toggleLabel}>Sonido de escena</Text>
@@ -191,12 +223,59 @@ export function EscenasSheet() {
             thumbColor={soundOn ? "#D4AF37" : "#F4DAD5"}
           />
         </View>
+
+        <View style={styles.divider} />
+
+        <View style={styles.sceneTitleRow}>
+          <MaterialCommunityIcons name="spa" size={18} color="#F4F4F4" />
+          <Text style={styles.sceneTitle}>Escenas</Text>
+        </View>
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.carousel}
+          decelerationRate="fast"
+          snapToInterval={CARD_W + CARD_GAP}
+          snapToAlignment="start"
+        >
+          {AMBIENT_SCENES.map((scene) => {
+            const active = scene.id === currentScene.id;
+            return (
+              <Pressable
+                key={scene.id}
+                style={styles.cardWrap}
+                onPress={() => handleSelectScene(scene.id)}
+              >
+                <View
+                  style={[
+                    styles.card,
+                    { borderColor: active ? WARM.borderActive : WARM.border },
+                  ]}
+                >
+                  <Image source={scene.image} style={StyleSheet.absoluteFill} contentFit="cover" />
+                  {active ? (
+                    <View style={styles.activeOverlay} pointerEvents="none">
+                      <Feather name="check-circle" size={26} color="#D4AF37" />
+                    </View>
+                  ) : null}
+                  {active && soundOn ? (
+                    <View style={styles.playingBadge}>
+                      <Feather name="volume-2" size={12} color="#D4AF37" />
+                    </View>
+                  ) : null}
+                </View>
+                <Text style={[styles.cardLabel, active && styles.cardLabelActive]} numberOfLines={1}>
+                  {scene.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
       </Animated.View>
     </Modal>
   );
 }
-
-const CARD_SIZE = (Dimensions.get("window").width - 24 * 2 - 12 * 2) / 3;
 
 const styles = StyleSheet.create({
   backdrop: {
@@ -213,7 +292,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    paddingHorizontal: 24,
+    paddingHorizontal: SHEET_H_PAD,
     paddingTop: 10,
   },
   handle: {
@@ -234,57 +313,69 @@ const styles = StyleSheet.create({
     color: "rgba(242,231,228,0.45)",
     marginBottom: 20,
   },
-  grid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
-    marginBottom: 24,
-  },
-  card: {
-    width: CARD_SIZE,
-    borderRadius: 14,
-    borderWidth: 1,
-    overflow: "hidden",
-    alignItems: "center",
-    paddingBottom: 8,
-  },
-  cardImage: {
-    width: "100%",
-    height: CARD_SIZE * 0.8,
-  },
-  cardLabel: {
-    marginTop: 6,
-    fontSize: 12,
-    color: "rgba(255,255,255,0.75)",
-  },
-  cardLabelActive: {
-    color: "#D4AF37",
-    fontWeight: "600",
-  },
-  playingBadge: {
-    position: "absolute",
-    top: 6,
-    right: 6,
-    backgroundColor: "rgba(0,0,0,0.45)",
-    borderRadius: 10,
-    padding: 3,
-  },
   volumeRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    marginBottom: 12,
+    marginBottom: 18,
   },
   sliderWrap: {
     flex: 1,
+  },
+  controlRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    gap: 10,
+  },
+  controlIcon: {
+    width: 20,
+  },
+  controlLabel: {
+    flex: 1,
+    fontSize: 13.5,
+    fontWeight: "500",
+    color: "#F4DAD5",
+  },
+  timerTrigger: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  timerTriggerLabel: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "rgba(255,255,255,0.65)",
+    letterSpacing: 0.3,
+  },
+  timerDropdown: {
+    backgroundColor: "rgba(255,255,255,0.055)",
+    borderRadius: 14,
+    overflow: "hidden",
+    marginBottom: 4,
+  },
+  timerDropItem: {
+    paddingVertical: 13,
+    paddingHorizontal: 18,
+    alignItems: "center",
+  },
+  timerDropItemActive: {
+    backgroundColor: "rgba(212,175,55,0.18)",
+  },
+  timerDropItemText: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "rgba(242,231,228,0.75)",
+  },
+  timerDropItemTextActive: {
+    color: "#D4AF37",
+    fontWeight: "700",
   },
   toggleRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingTop: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "rgba(61,14,22,0.40)",
+    paddingVertical: 12,
   },
   toggleTextWrap: {
     flexShrink: 1,
@@ -298,5 +389,62 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "rgba(242,231,228,0.45)",
     marginTop: 2,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: WARM.divider,
+    marginVertical: 14,
+  },
+  sceneTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 20,
+  },
+  sceneTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#F4F4F4",
+    letterSpacing: 0.2,
+  },
+  carousel: {
+    flexDirection: "row",
+    gap: CARD_GAP,
+    paddingBottom: 4,
+  },
+  cardWrap: {
+    width: CARD_W,
+    alignItems: "center",
+  },
+  card: {
+    width: CARD_W,
+    height: CARD_H,
+    borderRadius: 25,
+    borderWidth: 1,
+    overflow: "hidden",
+    backgroundColor: "#111",
+  },
+  activeOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.28)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cardLabel: {
+    marginTop: 8,
+    fontSize: 12,
+    color: "rgba(255,255,255,0.75)",
+  },
+  cardLabelActive: {
+    color: "#D4AF37",
+    fontWeight: "600",
+  },
+  playingBadge: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    backgroundColor: "rgba(0,0,0,0.45)",
+    borderRadius: 10,
+    padding: 3,
   },
 });
