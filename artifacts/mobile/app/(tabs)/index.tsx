@@ -556,6 +556,12 @@ export default function HomeScreen2() {
   const scrollYRef = useRef(0);
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
 
+  // ── Loto + tabs: al activarse el sticky header, el loto se desvanece y
+  //    los tabs se desplazan sutilmente hacia la izquierda hasta el margen ──
+  const LOTUS_SHIFT_DISTANCE = 42 + 15; // ancho del universeBtn + gap del headerTopRow
+  const lotusFadeAnim = useRef(new Animated.Value(1)).current;
+  const tabsShiftAnim = useRef(new Animated.Value(0)).current;
+
   // ── Borde del sticky header: se activa recién a partir de 1% de scroll ──
   const HEADER_BORDER_THRESHOLD = 0.01;
   const headerBorderActiveRef = useRef(false);
@@ -578,6 +584,16 @@ export default function HomeScreen2() {
       stickyActiveRef.current = shouldBeActive;
       setStickyActive(shouldBeActive);
       updateSearchBtnVisibility();
+      Animated.timing(lotusFadeAnim, {
+        toValue: shouldBeActive ? 0 : 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+      Animated.timing(tabsShiftAnim, {
+        toValue: shouldBeActive ? 1 : 0,
+        duration: 250,
+        useNativeDriver: true,
+      }).start();
     }
     const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
     if (shouldShowBorder !== headerBorderActiveRef.current) {
@@ -682,16 +698,35 @@ export default function HomeScreen2() {
       >
         <Animated.View style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
         <View style={styles.headerTopRow}>
-          <Pressable
-            onPress={openEscenasSheet}
-            hitSlop={8}
-            style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
+          <Animated.View
+            pointerEvents={stickyActive ? "none" : "auto"}
+            style={{ opacity: lotusFadeAnim }}
           >
-            <View style={[styles.universeBtnBg, { backgroundColor: hexToRgba(activeSceneAccent, 0.35) }]}>
-              <MaterialCommunityIcons name="spa" size={23} color="#FFFFFF" style={{ opacity: 0.9 }} />
-            </View>
-          </Pressable>
-          <View style={styles.headerRowHost}>
+            <Pressable
+              onPress={openEscenasSheet}
+              hitSlop={8}
+              style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
+            >
+              <View style={[styles.universeBtnBg, { backgroundColor: hexToRgba(activeSceneAccent, 0.35) }]}>
+                <MaterialCommunityIcons name="spa" size={23} color="#FFFFFF" style={{ opacity: 0.9 }} />
+              </View>
+            </Pressable>
+          </Animated.View>
+          <Animated.View
+            style={[
+              styles.headerRowHost,
+              {
+                transform: [
+                  {
+                    translateX: tabsShiftAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0, -LOTUS_SHIFT_DISTANCE],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          >
             <RAnimated.View
               pointerEvents={searchOpen ? "none" : "auto"}
               style={[styles.headerRowLayer, navRowLayerStyle]}
@@ -742,7 +777,7 @@ export default function HomeScreen2() {
                 )}
               </View>
             </RAnimated.View>
-          </View>
+          </Animated.View>
           <Animated.View
             pointerEvents={stickyActive || searchOpen ? "auto" : "none"}
             style={{ opacity: searchBtnAnim }}
