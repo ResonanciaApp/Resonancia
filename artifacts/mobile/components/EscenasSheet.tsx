@@ -245,9 +245,9 @@ const styles = StyleSheet.create({
   },
   closeBtn: {
     alignSelf: "flex-start",
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 43,
+    height: 43,
+    borderRadius: 21.5,
     backgroundColor: "rgba(0,0,0,0.20)",
     alignItems: "center",
     justifyContent: "center",
