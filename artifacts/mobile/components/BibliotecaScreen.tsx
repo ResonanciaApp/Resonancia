@@ -1678,7 +1678,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
         }]}
       >
         {/* Fila 2: chips de tab (animados) */}
-        <View style={{ marginTop: -21 }}>
+        <View style={{ marginTop: -36 }}>
           <AnimatedChipRow
             tabs={LIB_TABS}
             activeTab={activeTab}
@@ -1876,7 +1876,7 @@ const styles = StyleSheet.create({
   animChipWrap: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, marginTop: -21, justifyContent: "center", zIndex: 3 },
   chipRow: { flexGrow: 0, marginTop: -21 },
-  chipRowContent: { flexDirection: "row", gap: 22, paddingTop: 5, paddingBottom: 2, paddingHorizontal: H_PAD },
+  chipRowContent: { flexDirection: "row", gap: 22, paddingTop: 5, paddingBottom: 2, paddingLeft: H_PAD * 2, paddingRight: H_PAD },
   chipRowFiltered: {
     flexDirection: "row",
     alignItems: "center",
