@@ -3,7 +3,7 @@ import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -497,6 +497,37 @@ export default function HomeScreen2() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
+  // ── Transformación loto → lupa al hacer scroll (15% del recorrido) ──────
+  const SEARCH_ICON_THRESHOLD = 0.15;
+  const searchIconAnim = useRef(new Animated.Value(0)).current;
+  const isSearchModeRef = useRef(false);
+  const scrollContentHeightRef = useRef(0);
+  const scrollLayoutHeightRef = useRef(0);
+  const scrollYRef = useRef(0);
+
+  const updateSearchIconMode = useCallback(() => {
+    const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
+    if (scrollable <= 0) return;
+    const progress = scrollYRef.current / scrollable;
+    const shouldShowSearch = progress >= SEARCH_ICON_THRESHOLD;
+    if (shouldShowSearch !== isSearchModeRef.current) {
+      isSearchModeRef.current = shouldShowSearch;
+      Animated.timing(searchIconAnim, {
+        toValue: shouldShowSearch ? 1 : 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [searchIconAnim]);
+
+  const handleHeaderIconScroll = useCallback(
+    (e: { nativeEvent: { contentOffset: { y: number } } }) => {
+      scrollYRef.current = e.nativeEvent.contentOffset.y;
+      updateSearchIconMode();
+    },
+    [updateSearchIconMode],
+  );
+
   return (
     <View style={styles.root}>
       <LinearGradient colors={["#340D1A", "#190913"]} style={styles.rootGradient} />
@@ -533,7 +564,21 @@ export default function HomeScreen2() {
             style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
           >
             <View style={styles.universeBtnBg}>
-              <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" style={{ opacity: 0.9 }} />
+              <Animated.View
+                style={{
+                  opacity: searchIconAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+                  position: "absolute",
+                }}
+              >
+                <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" style={{ opacity: 0.9 }} />
+              </Animated.View>
+              <Animated.View
+                style={{
+                  opacity: searchIconAnim,
+                }}
+              >
+                <Ionicons name="search" size={19} color="#FFFFFF" style={{ opacity: 0.9 }} />
+              </Animated.View>
             </View>
           </Pressable>
         </View>
@@ -543,6 +588,16 @@ export default function HomeScreen2() {
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 12 }}
         showsVerticalScrollIndicator={false}
+        onScroll={handleHeaderIconScroll}
+        scrollEventThrottle={16}
+        onLayout={(e) => {
+          scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
+          updateSearchIconMode();
+        }}
+        onContentSizeChange={(_w, h) => {
+          scrollContentHeightRef.current = h;
+          updateSearchIconMode();
+        }}
       >
         {/* ── INTENCIÓN ── */}
         <Pressable
