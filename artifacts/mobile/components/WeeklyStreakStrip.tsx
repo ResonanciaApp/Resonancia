@@ -80,7 +80,7 @@ export function WeeklyStreakStrip() {
                   <Feather name="check" size={16} color="rgba(255,255,255,0.9)" />
                 </LinearGradient>
               ) : (
-                <View style={[styles.circle, styles.circleInactive]} />
+                <View style={[styles.circle, styles.circleInactive, isToday && styles.circleToday]} />
               )}
               <Text style={[styles.dayLabel, isToday && styles.dayLabelToday]}>{label}</Text>
             </View>
