@@ -532,7 +532,13 @@ export default function HomeScreen2() {
             hitSlop={8}
             style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
           >
-            <View style={styles.universeBtnBg} />
+            <View style={styles.universeBtnBg}>
+              <Image
+                source={require("@/assets/images/icon-loto-universo.png")}
+                style={styles.universeBtnIcon}
+                resizeMode="contain"
+              />
+            </View>
           </Pressable>
         </View>
       </View>
@@ -1083,13 +1089,17 @@ const styles = StyleSheet.create({
     height: 34,
     borderRadius: 17,
     overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.15)",
   },
   universeBtnBg: {
     width: "100%",
     height: "100%",
     backgroundColor: "rgba(14,10,24,0.15)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  universeBtnIcon: {
+    width: 29,
+    height: 29,
   },
   avatarBtn: {
     width: 33,
