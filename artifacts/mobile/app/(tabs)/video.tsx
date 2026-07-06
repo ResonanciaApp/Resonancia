@@ -148,7 +148,6 @@ export default function VideoTabScreen() {
         </View>
 
         <View style={styles.chipsRowOuter}>
-          <Animated.View style={[styles.headerBorder, { opacity: headerBorderAnim }]} collapsable={false} />
           <Pressable
             style={[
               styles.settingsBtn,
@@ -194,6 +193,11 @@ export default function VideoTabScreen() {
             })}
           </ScrollView>
         </View>
+
+        <Animated.View
+          style={[styles.headerBorder, { opacity: headerBorderAnim }]}
+          collapsable={false}
+        />
 
         <View style={[styles.resultsRow, { marginTop: 15 }]}>
           <Text style={[styles.resultsCount, { color: colors.mutedForeground }]}>
@@ -299,10 +303,7 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   headerBorder: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
+    marginHorizontal: -20,
     height: 1,
     backgroundColor: "rgba(255,255,255,0.035)",
   },
@@ -320,7 +321,7 @@ const styles = StyleSheet.create({
     height: 45,
   },
   searchInput: { flex: 1, fontSize: 14, padding: 0 },
-  chipsRowOuter: { flexDirection: "row", alignItems: "center", gap: 10, paddingBottom: 8 },
+  chipsRowOuter: { flexDirection: "row", alignItems: "center", gap: 10 },
   settingsBtn: {
     width: 40,
     height: 40,

@@ -95,3 +95,4 @@
 - [Descanso 4-tab restructure](descanso-4tabs-restructure.md) — Historias/ASMR=session grids, Binaural/Ambiental=sound grids; enum duplicated in 4 places; session image pool has gaps (no session-3.jpg)
 - [Inicio inline search](inicio-inline-search.md) — buscador de Inicio expande sin Modal (dos capas absolutas + un shared value); lupa/loto/X son un solo botón tri-estado; no confundir con SearchOverlay de Biblioteca (ese sí es Modal)
 - [Scene visual theme](scene-visual-theme.md) — SceneThemeContext persists independently from audio scene; screens with their own decorative identity (Mezclador, Resonadores) are deliberately excluded
+- [Header divider full-bleed](header-border-full-bleed.md) — divider inside a padded header must be normal-flow + negative marginHorizontal, not absolute inside a padded child, to reach screen edge
