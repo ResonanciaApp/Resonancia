@@ -790,7 +790,11 @@ export default function ProfileScreen() {
             <Feather name="settings" size={20} color="#F4DAD5" />
           </Pressable>
           <Text style={styles.stickyTitle}>Perfil</Text>
-          <View style={styles.gearBtn} />
+          <Image
+            source={require("@/assets/images/regalo-perfil.png")}
+            style={styles.giftIcon}
+            contentFit="contain"
+          />
         </View>
 
         <View style={styles.pillRow}>
@@ -1374,6 +1378,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.06)",
+  },
+  giftIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
   },
   stickyTitle: { fontSize: 18, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3 },
   pillRow: {
