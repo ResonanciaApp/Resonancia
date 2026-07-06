@@ -9,7 +9,17 @@ import React, {
   useState,
 } from "react";
 
-export type SceneId = "universo" | "naturaleza" | "bosque" | "lluvia" | "viento" | "fuegoSolar" | "musgo";
+export type SceneId =
+  | "universo"
+  | "naturaleza"
+  | "bosque"
+  | "lluvia"
+  | "viento"
+  | "fuegoSolar"
+  | "musgo"
+  | "orquidea"
+  | "nebulosa"
+  | "zafiro";
 
 export type AmbientScene = {
   id: SceneId;
@@ -69,6 +79,27 @@ export const AMBIENT_SCENES: AmbientScene[] = [
     icon: "feather",
     image: require("@/assets/images/ambient/musgo.png"),
   },
+  {
+    id: "orquidea",
+    label: "Orquídea",
+    colors: ["#833E6A", "#4F366F"] as const,
+    icon: "star",
+    image: require("@/assets/images/ambient/orquidea.png"),
+  },
+  {
+    id: "nebulosa",
+    label: "Nebulosa",
+    colors: ["#351E62", "#113071"] as const,
+    icon: "star",
+    image: require("@/assets/images/ambient/nebulosa.png"),
+  },
+  {
+    id: "zafiro",
+    label: "Zafiro",
+    colors: ["#156394", "#2E2F7F"] as const,
+    icon: "star",
+    image: require("@/assets/images/ambient/zafiro.png"),
+  },
 ];
 
 const DEFAULT_VOLUME = 0.49; // 0.65 − 25%
@@ -92,6 +123,9 @@ const SCENE_AUDIO: Record<SceneId, unknown> = {
   viento:     require("@/assets/audio/pajaros_ambiente.mp3"),   // → replace with viento.mp3
   fuegoSolar: require("@/assets/audio/fuego_solar_ambiente.mp3"),
   musgo:      require("@/assets/audio/musgo_ambiente.mp3"),
+  orquidea:   require("@/assets/audio/orquidea_ambiente.mp3"),
+  nebulosa:   require("@/assets/audio/nebulosa_ambiente.mp3"),
+  zafiro:     require("@/assets/audio/zafiro_ambiente.mp3"),
 };
 
 type AmbientCtx = {
@@ -123,6 +157,9 @@ const DEFAULT_VOLUMES: Record<SceneId, number> = {
   viento: DEFAULT_VOLUME,
   fuegoSolar: DEFAULT_VOLUME,
   musgo: DEFAULT_VOLUME,
+  orquidea: DEFAULT_VOLUME,
+  nebulosa: DEFAULT_VOLUME,
+  zafiro: DEFAULT_VOLUME,
 };
 
 export function AmbientPlayerProvider({ children }: { children: React.ReactNode }) {

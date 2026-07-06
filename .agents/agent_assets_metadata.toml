@@ -1422,6 +1422,24 @@ uri = "file://artifacts/mobile/assets/images/ambient/musgo.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "jvmT7c6WUljq_DjN4nA_c"
+uri = "file://artifacts/mobile/assets/images/ambient/orquidea.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "YuidIz4zVy8V9wnpswxQq"
+uri = "file://artifacts/mobile/assets/images/ambient/nebulosa.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "6vq4jqpuIbvKC5QDhhonB"
+uri = "file://artifacts/mobile/assets/images/ambient/zafiro.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
@@ -2117,3 +2135,21 @@ id = "29M4u0bYqrpdspjGtZFqP"
 uri = "file://artifacts/mobile/assets/audio/musgo_ambiente.mp3"
 type = "audio"
 title = "musgo ambiente"
+
+[[outputs]]
+id = "Z8boj8gGMSOFuaHJlNkPU"
+uri = "file://artifacts/mobile/assets/audio/zafiro_ambiente.mp3"
+type = "audio"
+title = "zafiro ambiente"
+
+[[outputs]]
+id = "k9W7kmpPr8FSbPpzXl-Yi"
+uri = "file://artifacts/mobile/assets/audio/orquidea_ambiente.mp3"
+type = "audio"
+title = "orquidea ambiente"
+
+[[outputs]]
+id = "Gay-JABDX6abXp0MoIDfc"
+uri = "file://artifacts/mobile/assets/audio/nebulosa_ambiente.mp3"
+type = "audio"
+title = "nebulosa ambiente"

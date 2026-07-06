@@ -65,6 +65,24 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
     gradient: ["#28483E", "#101A16"],
     solid: "#101A16",
   },
+  orquidea: {
+    id: "orquidea",
+    label: "Orquídea",
+    gradient: ["#833E6A", "#4F366F"],
+    solid: "#4F366F",
+  },
+  nebulosa: {
+    id: "nebulosa",
+    label: "Nebulosa",
+    gradient: ["#351E62", "#113071"],
+    solid: "#113071",
+  },
+  zafiro: {
+    id: "zafiro",
+    label: "Zafiro",
+    gradient: ["#156394", "#2E2F7F"],
+    solid: "#2E2F7F",
+  },
 };
 
 export const DEFAULT_THEME_ID: SceneId = "universo";
