@@ -147,57 +147,59 @@ export default function VideoTabScreen() {
           </View>
         </View>
 
-        <View style={styles.chipsRowOuter}>
-          <Pressable
-            style={[
-              styles.settingsBtn,
-              { backgroundColor: "rgba(0,0,0,0.15)", borderColor: "rgba(255,255,255,0.1)" },
-            ]}
-            hitSlop={8}
-            accessibilityLabel="Ajustes"
-          >
-            <Feather name="sliders" size={17} color={colors.foreground} />
-          </Pressable>
+        <View style={styles.chipsSection}>
+          <View style={styles.chipsRowOuter}>
+            <Pressable
+              style={[
+                styles.settingsBtn,
+                { backgroundColor: "rgba(0,0,0,0.15)", borderColor: "rgba(255,255,255,0.1)" },
+              ]}
+              hitSlop={8}
+              accessibilityLabel="Ajustes"
+            >
+              <Feather name="sliders" size={17} color={colors.foreground} />
+            </Pressable>
 
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.chipsScroll}
-            contentContainerStyle={styles.chipsRow}
-          >
-            {FILTER_CHIPS.map((chip) => {
-              const sel = chip === activeChip;
-              return (
-                <Pressable
-                  key={chip}
-                  onPress={() => setActiveChip(chip)}
-                  style={[
-                    styles.chip,
-                    {
-                      backgroundColor: sel ? colors.primary : "rgba(0,0,0,0.14)",
-                      borderColor: sel ? colors.primary : CHIP_BORDER,
-                      borderWidth: sel ? StyleSheet.hairlineWidth : 2,
-                    },
-                  ]}
-                >
-                  <Text
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.chipsScroll}
+              contentContainerStyle={styles.chipsRow}
+            >
+              {FILTER_CHIPS.map((chip) => {
+                const sel = chip === activeChip;
+                return (
+                  <Pressable
+                    key={chip}
+                    onPress={() => setActiveChip(chip)}
                     style={[
-                      styles.chipText,
-                      { color: sel ? colors.primaryForeground : colors.mutedForeground },
+                      styles.chip,
+                      {
+                        backgroundColor: sel ? colors.primary : "rgba(0,0,0,0.14)",
+                        borderColor: sel ? colors.primary : CHIP_BORDER,
+                        borderWidth: sel ? StyleSheet.hairlineWidth : 2,
+                      },
                     ]}
                   >
-                    {chip}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-        </View>
+                    <Text
+                      style={[
+                        styles.chipText,
+                        { color: sel ? colors.primaryForeground : colors.mutedForeground },
+                      ]}
+                    >
+                      {chip}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </View>
 
-        <Animated.View
-          style={[styles.headerBorder, { opacity: headerBorderAnim }]}
-          collapsable={false}
-        />
+          <Animated.View
+            style={[styles.headerBorder, { opacity: headerBorderAnim }]}
+            collapsable={false}
+          />
+        </View>
 
         <View style={[styles.resultsRow, { marginTop: 15 }]}>
           <Text style={[styles.resultsCount, { color: colors.mutedForeground }]}>
@@ -302,7 +304,9 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
     gap: 14,
   },
+  chipsSection: {},
   headerBorder: {
+    marginTop: 14,
     marginHorizontal: -20,
     height: 1,
     backgroundColor: "rgba(255,255,255,0.035)",
