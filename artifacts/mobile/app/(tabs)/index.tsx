@@ -680,14 +680,14 @@ export default function HomeScreen2() {
                       position: "absolute",
                     }}
                   >
-                    <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" style={{ opacity: 0.9 }} />
+                    <MaterialCommunityIcons name="spa" size={23} color="#FFFFFF" style={{ opacity: 0.9 }} />
                   </Animated.View>
                   <Animated.View
                     style={{
                       opacity: searchIconAnim,
                     }}
                   >
-                    <Ionicons name="search" size={19} color="#FFFFFF" style={{ opacity: 0.9 }} />
+                    <Ionicons name="search" size={22} color="#FFFFFF" style={{ opacity: 0.9 }} />
                   </Animated.View>
                 </>
               )}
@@ -1279,9 +1279,9 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   universeBtn: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    width: 37,
+    height: 37,
+    borderRadius: 18.5,
     overflow: "hidden",
   },
   universeBtnBg: {
