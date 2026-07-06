@@ -66,8 +66,9 @@ import { WeeklyStreakStrip } from "@/components/WeeklyStreakStrip";
 const { width } = Dimensions.get("window");
 
 const TODOS_TAB_ID = "todos";
+const TODOS_ICON = require("@/assets/images/icons/todos-ring.png");
 const NAV_TABS = [
-  { id: TODOS_TAB_ID,   label: "Todos",         cats: [] as string[] },
+  { id: TODOS_TAB_ID,   label: "Todos",         cats: [] as string[], icon: TODOS_ICON },
   { id: "meditaciones",  label: "Meditación",    cats: ["meditaciones-guiadas"] },
   { id: "sesiones",      label: "Sesiones",      cats: ["sonidos-ancestrales"] },
   { id: "musica",        label: "Música",        cats: ["musica-sonidos"] },
@@ -120,11 +121,26 @@ function BlinkingCursor({ color }: { color: string }) {
 }
 
 
-function NavTabChip({ sel, label, onPress }: { sel: boolean; label: string; onPress: () => void }) {
+function NavTabChip({ sel, label, icon, onPress }: { sel: boolean; label: string; icon?: number; onPress: () => void }) {
   const selOpacity = useRef(new Animated.Value(sel ? 1 : 0)).current;
   useEffect(() => {
     Animated.timing(selOpacity, { toValue: sel ? 1 : 0, duration: 180, useNativeDriver: true }).start();
   }, [sel]);
+
+  if (icon) {
+    return (
+      <Pressable
+        onPress={onPress}
+        style={({ pressed }) => [styles.headerTabIconChip, { opacity: pressed ? 0.7 : 1 }]}
+      >
+        {sel && (
+          <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.02)", borderRadius: 999 }]} />
+        )}
+        <Image source={icon} style={styles.headerTabIconImg} resizeMode="contain" />
+      </Pressable>
+    );
+  }
+
   return (
     <Pressable
       onPress={onPress}
@@ -155,7 +171,7 @@ function AnimatedNavTabRow({
   onSelect,
   onClear,
 }: {
-  tabs: { id: string; label: string }[];
+  tabs: { id: string; label: string; icon?: number }[];
   activeTab: string | null;
   onSelect: (id: string) => void;
   onClear: () => void;
@@ -267,6 +283,7 @@ function AnimatedNavTabRow({
               <NavTabChip
                 sel={colorTab === t.id}
                 label={t.label}
+                icon={t.icon}
                 onPress={() => {
                   if (isSelected) {
                     if (t.id !== TODOS_TAB_ID) handleClear();
@@ -1191,6 +1208,17 @@ const styles = StyleSheet.create({
   headerTabChipUnsel: {
     borderWidth: 1,
     borderColor: "rgba(244,218,213,0.2)",
+  },
+  headerTabIconChip: {
+    width: 34,
+    height: 34,
+    borderRadius: 999,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  headerTabIconImg: {
+    width: 22,
+    height: 22,
   },
   sesSubSpacer: {
     height: 34,
