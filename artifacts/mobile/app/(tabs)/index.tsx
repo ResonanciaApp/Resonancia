@@ -533,11 +533,7 @@ export default function HomeScreen2() {
             style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
           >
             <View style={styles.universeBtnBg}>
-              <Image
-                source={require("@/assets/images/icon-loto-universo.png")}
-                style={[styles.universeBtnIcon, { opacity: 0.9 }]}
-                resizeMode="contain"
-              />
+              <MaterialCommunityIcons name="spa" size={20} color="#D4AF37" style={{ opacity: 0.9 }} />
             </View>
           </Pressable>
         </View>
