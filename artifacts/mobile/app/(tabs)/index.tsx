@@ -708,7 +708,7 @@ export default function HomeScreen2() {
               style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
             >
               <View style={[styles.universeBtnBg, { backgroundColor: hexToRgba(activeSceneAccent, 0.35) }]}>
-                <MaterialCommunityIcons name="spa" size={23} color="#FFFFFF" style={{ opacity: 0.9 }} />
+                <MaterialCommunityIcons name="spa" size={22} color="#FFFFFF" style={{ opacity: 0.9 }} />
               </View>
             </Pressable>
           </Animated.View>
@@ -1382,9 +1382,9 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   universeBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: 39,
+    height: 39,
+    borderRadius: 19.5,
     overflow: "hidden",
   },
   universeBtnBg: {
