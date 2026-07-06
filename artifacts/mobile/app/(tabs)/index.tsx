@@ -1695,7 +1695,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 10,
     gap: 6,
-    backgroundColor: "rgba(27,6,15,0.30)",
+    backgroundColor: "rgba(0,0,0,0.14)",
   },
   coleccionTitle: {
     flex: 1,
