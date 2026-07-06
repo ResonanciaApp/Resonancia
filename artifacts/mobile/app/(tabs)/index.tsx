@@ -872,9 +872,9 @@ export default function HomeScreen2() {
                   paddingVertical: 18 + 30,
                   borderRadius: 14,
                   alignItems: "center",
-                  backgroundColor: "rgba(0,0,0,0.14)",
-                  borderWidth: 1,
-                  borderColor: "rgba(255,255,255,0.25)",
+                  backgroundColor: "rgba(0,0,0,0.08)",
+                  borderWidth: 2,
+                  borderColor: "rgba(255,255,255,0.1)",
                   opacity: pressed ? 0.75 : 1,
                 }]}
               >
