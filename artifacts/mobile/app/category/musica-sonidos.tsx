@@ -91,8 +91,8 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress: ()=>void }) {
   const iconColor = sel ? "#1B060F" : "#BE8744";
   return (
-    <Pressable onPress={onPress} style={({pressed})=>[styles.chip,{opacity:pressed?0.7:1}]}>
-      <LinearGradient colors={sel?["#D6A45C","#BE8744"]:["rgba(255,255,255,0.055)","rgba(255,255,255,0.055)"]} start={{x:0,y:0}} end={{x:0,y:1}} style={StyleSheet.absoluteFill} />
+    <Pressable onPress={onPress} style={({pressed})=>[styles.chip, !sel && styles.chipUnsel, {opacity:pressed?0.7:1}]}>
+      <LinearGradient colors={sel?["#D6A45C","#BE8744"]:["rgba(0,0,0,0.14)","rgba(0,0,0,0.14)"]} start={{x:0,y:0}} end={{x:0,y:1}} style={StyleSheet.absoluteFill} />
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
         {!!icon && <Feather name={icon as any} size={15} color={iconColor} />}
         <Text style={[styles.chipText, sel&&styles.chipTextSel]}>{label}</Text>
@@ -486,6 +486,7 @@ const styles = StyleSheet.create({
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chip: { minWidth: 96, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center" },
+  chipUnsel: { borderWidth: 2, borderColor: "rgba(255,255,255,0.1)" },
   chipText: { fontSize: 11, fontWeight: "600", color: TEXT, textAlign: "center" },
   chipTextSel: { color: "#1B060F" },
 
