@@ -340,7 +340,6 @@ export function MixerSheet() {
   const [overlayOpacity, setOverlayOpacity] = useState<number>(DEFAULT_OVERLAY);
   const [bgPickerOpen, setBgPickerOpen] = useState(false);
   const bgPickerY = useRef(new Animated.Value(700)).current;
-  const bgBreath  = useRef(new Animated.Value(1)).current;
 
   const isDefaultBg = bgPresetId === DEFAULT_BG_PRESET_ID;
   const rawBgPreset =
@@ -374,17 +373,11 @@ export function MixerSheet() {
     return () => { unsubBg(); unsubOv(); };
   }, []);
 
-  // Animación de "respiración" del fondo
-  useEffect(() => {
-    const anim = Animated.loop(
-      Animated.sequence([
-        Animated.timing(bgBreath, { toValue: 0.78, duration: 5000, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
-        Animated.timing(bgBreath, { toValue: 1,    duration: 5000, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
-      ]),
-    );
-    anim.start();
-    return () => anim.stop();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // Nota: el fondo antes tenía una animación de "respiración" (opacity 1↔0.78
+  // en loop) que producía una ondulación/vibración sutil y constante — se
+  // notaba más con la mezcla sonando (foco visual en la hoja) y se
+  // confundía con algo "sincronizado con el sonido". Se retira: bgBreath
+  // queda fijo en 1 (fondo estático, sin parpadeo).
 
   const openBgPicker = () => {
     bgPickerY.setValue(700);
@@ -414,7 +407,7 @@ export function MixerSheet() {
     inputBg:        hasCustomBg ? "rgba(255,255,255,0.03)" : isLight ? "rgba(24,2,2,0.05)" : activeBgPreset.image ? "rgba(255,255,255,0.03)" : "rgba(74,12,12,0.08)",
     footerCircleBg: hasCustomBg ? "rgba(255,255,255,0.05)" : isLight ? "rgba(24,2,2,0.05)" : activeBgPreset.image ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.05)",
     footerLabel:    hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "rgba(24,2,2,0.65)" : activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.45)",
-    headerFg:       hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#180202" : "rgba(255,255,255,0.09)",
+    headerFg:       "#F4F4F4",
   };
   const { isPremium } = usePremium();
   const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -743,7 +736,7 @@ export function MixerSheet() {
           ]}
           onPress={(e) => e.stopPropagation()}
         >
-          <Animated.View style={[StyleSheet.absoluteFill, styles.bgLayerClip, { opacity: bgBreath }]} pointerEvents="none">
+          <View style={[StyleSheet.absoluteFill, styles.bgLayerClip]} pointerEvents="none">
             {activeBgPreset.image ? (
               <>
                 {/* La imagen sobresale 300px en cada dirección para que `cover` recorte
@@ -777,7 +770,7 @@ export function MixerSheet() {
                 style={styles.sheetGradient}
               />
             )}
-          </Animated.View>
+          </View>
 
           {/* Overlay de contraste para escenas con imagen: se suma al overlay
               animado para garantizar legibilidad del contenido sobre paisajes */}
