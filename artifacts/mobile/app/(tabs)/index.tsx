@@ -1,6 +1,7 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts/cinzel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
@@ -533,11 +534,21 @@ export default function HomeScreen2() {
             style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
           >
             <View style={styles.universeBtnBg}>
-              <Image
-                source={require("@/assets/images/icon-loto-universo.png")}
-                style={styles.universeBtnIcon}
-                resizeMode="contain"
-              />
+              <MaskedView
+                style={{ ...styles.universeBtnIcon, opacity: 0.9 }}
+                maskElement={
+                  <Image
+                    source={require("@/assets/images/icon-loto-universo.png")}
+                    style={styles.universeBtnIcon}
+                    resizeMode="contain"
+                  />
+                }
+              >
+                <LinearGradient
+                  colors={["#340D1A", "#190913"]}
+                  style={styles.universeBtnIcon}
+                />
+              </MaskedView>
             </View>
           </Pressable>
         </View>
