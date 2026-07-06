@@ -1569,9 +1569,9 @@ const styles = StyleSheet.create({
   },
   headerTabsContent: {
     flexDirection: "row",
-    gap: 8,
+    gap: 5,
     alignItems: "center",
-    paddingLeft: GRID_PAD,
+    paddingLeft: GRID_PAD - 10,
     paddingRight: GRID_PAD + 15,
   },
   navAnimWrap: {
