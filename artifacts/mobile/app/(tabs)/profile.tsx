@@ -787,7 +787,7 @@ export default function ProfileScreen() {
             style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.7 : 1 }]}
             hitSlop={10}
           >
-            <Feather name="settings" size={20} color="#e8e8e8" />
+            <Feather name="settings" size={25} color="#e8e8e8" />
           </Pressable>
           <Text style={styles.stickyTitle}>Perfil</Text>
           <Image
@@ -1372,9 +1372,9 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   gearBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 41,
+    height: 41,
+    borderRadius: 20.5,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.06)",
