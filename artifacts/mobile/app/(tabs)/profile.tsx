@@ -1346,8 +1346,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 9,
     borderRadius: 999,
-    borderWidth: 1,
-    borderColor: "rgba(244,218,213,0.2)",
+    borderWidth: 2,
+    borderColor: "rgba(244,218,213,0.1)",
     backgroundColor: "rgba(0,0,0,0.15)",
   },
   pillSel: {
