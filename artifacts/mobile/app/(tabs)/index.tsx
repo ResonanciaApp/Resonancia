@@ -535,10 +535,10 @@ export default function HomeScreen2() {
   const scrollYRef = useRef(0);
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
 
-  // ── Borde del sticky header: se activa recién a partir de 3% de scroll ──
-  const HEADER_BORDER_THRESHOLD = 0.03;
-  const [headerBorderActive, setHeaderBorderActive] = useState(false);
+  // ── Borde del sticky header: se activa recién a partir de 1% de scroll ──
+  const HEADER_BORDER_THRESHOLD = 0.01;
   const headerBorderActiveRef = useRef(false);
+  const headerBorderAnim = useRef(new Animated.Value(0)).current;
 
   const updateSearchBtnVisibility = useCallback(() => {
     const shouldShow = stickyActiveRef.current || searchOpenRef.current;
@@ -561,9 +561,13 @@ export default function HomeScreen2() {
     const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
     if (shouldShowBorder !== headerBorderActiveRef.current) {
       headerBorderActiveRef.current = shouldShowBorder;
-      setHeaderBorderActive(shouldShowBorder);
+      Animated.timing(headerBorderAnim, {
+        toValue: shouldShowBorder ? 1 : 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
     }
-  }, [updateSearchBtnVisibility]);
+  }, [updateSearchBtnVisibility, headerBorderAnim]);
 
   const handleMainScroll = useCallback(
     (e: { nativeEvent: { contentOffset: { y: number } } }) => {
@@ -649,10 +653,10 @@ export default function HomeScreen2() {
           styles.stickyHeader,
           {
             paddingTop: topPad + 2,
-            borderBottomColor: headerBorderActive ? "rgba(255,255,255,0.05)" : "transparent",
           },
         ]}
       >
+        <Animated.View style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
         <View style={styles.headerTopRow}>
           <Pressable
             onPress={openEscenasSheet}
@@ -1187,7 +1191,14 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     backgroundColor: "transparent",
     zIndex: 10,
-    borderBottomWidth: 1,
+  },
+  stickyHeaderBorder: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.035)",
   },
   scroll: { flex: 1 },
 

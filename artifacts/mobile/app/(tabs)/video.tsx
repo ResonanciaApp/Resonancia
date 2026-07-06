@@ -4,6 +4,7 @@ import { Stack } from "expo-router";
 import React, { useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Animated,
   Dimensions,
   Modal,
   Platform,
@@ -58,9 +59,10 @@ export default function VideoTabScreen() {
   const topPad = Platform.OS === "web" ? 16 : insets.top;
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
 
-  // ── Borde del header: se activa recién a partir de 3% de scroll ──
-  const HEADER_BORDER_THRESHOLD = 0.03;
-  const [headerBorderActive, setHeaderBorderActive] = useState(false);
+  // ── Borde del header: se activa recién a partir de 1% de scroll ──
+  const HEADER_BORDER_THRESHOLD = 0.01;
+  const headerBorderActiveRef = useRef(false);
+  const headerBorderAnim = useRef(new Animated.Value(0)).current;
   const scrollContentHeightRef = useRef(0);
   const scrollLayoutHeightRef = useRef(0);
 
@@ -116,10 +118,10 @@ export default function VideoTabScreen() {
           styles.header,
           {
             paddingTop: topPad + 8,
-            borderBottomColor: headerBorderActive ? "rgba(255,255,255,0.05)" : "transparent",
           },
         ]}
       >
+        <Animated.View style={[styles.headerBorder, { opacity: headerBorderAnim }]} />
         <Text style={[styles.pageTitle, { color: colors.foreground }]}>Videos</Text>
 
         <View style={styles.searchRow}>
@@ -218,7 +220,14 @@ export default function VideoTabScreen() {
           const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
           const progress = scrollable > 0 ? y / scrollable : 0;
           const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
-          if (shouldShowBorder !== headerBorderActive) setHeaderBorderActive(shouldShowBorder);
+          if (shouldShowBorder !== headerBorderActiveRef.current) {
+            headerBorderActiveRef.current = shouldShowBorder;
+            Animated.timing(headerBorderAnim, {
+              toValue: shouldShowBorder ? 1 : 0,
+              duration: 300,
+              useNativeDriver: true,
+            }).start();
+          }
         }}
         scrollEventThrottle={16}
       >
@@ -288,7 +297,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 14,
     gap: 14,
-    borderBottomWidth: 1,
+  },
+  headerBorder: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.035)",
   },
   pageTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
 

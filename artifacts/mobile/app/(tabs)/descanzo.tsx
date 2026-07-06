@@ -379,9 +379,10 @@ export default function DescansoScreen() {
   const [headerH,     setHeaderH]     = useState(60);
   const [chipsSticky, setChipsSticky] = useState(false);
 
-  // ── Borde del sticky header: se activa recién a partir de 3% de scroll ──
-  const HEADER_BORDER_THRESHOLD = 0.03;
-  const [headerBorderActive, setHeaderBorderActive] = useState(false);
+  // ── Borde del sticky header (tabs): se activa recién a partir de 1% de scroll ──
+  const HEADER_BORDER_THRESHOLD = 0.01;
+  const headerBorderActiveRef = useRef(false);
+  const headerBorderAnim = useRef(new Animated.Value(0)).current;
   const scrollContentHeightRef = useRef(0);
   const scrollLayoutHeightRef = useRef(0);
 
@@ -439,7 +440,14 @@ export default function DescansoScreen() {
           const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
           const progress = scrollable > 0 ? y / scrollable : 0;
           const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
-          if (shouldShowBorder !== headerBorderActive) setHeaderBorderActive(shouldShowBorder);
+          if (shouldShowBorder !== headerBorderActiveRef.current) {
+            headerBorderActiveRef.current = shouldShowBorder;
+            Animated.timing(headerBorderAnim, {
+              toValue: shouldShowBorder ? 1 : 0,
+              duration: 300,
+              useNativeDriver: true,
+            }).start();
+          }
         }}
       >
         {/* ── Hero ── */}
@@ -559,7 +567,6 @@ export default function DescansoScreen() {
           {
             paddingTop: topPad + 10,
             opacity: stickyOpacity,
-            borderBottomColor: headerBorderActive ? "rgba(255,255,255,0.05)" : "transparent",
           },
         ]}
         pointerEvents={stickyActive ? "auto" : "none"}
@@ -586,6 +593,7 @@ export default function DescansoScreen() {
               />
             ))}
           </ScrollView>
+          <Animated.View style={[styles.stickyTabsBorder, { opacity: headerBorderAnim }]} />
         </View>
       )}
 
@@ -837,7 +845,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingBottom: 14,
     backgroundColor: "#0D0512",
-    borderBottomWidth: 1,
   },
   stickyHeaderTitle: {
     fontSize: 15,
@@ -852,6 +859,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#0D0512",
     paddingTop: 8,
     paddingBottom: 6,
+  },
+  stickyTabsBorder: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.035)",
   },
 
   /* Hero */

@@ -283,9 +283,10 @@ export default function ProfileScreen() {
 
   const [perfilTab, setPerfilTab] = useState<PerfilTab>("panel");
 
-  // ── Borde del sticky header: se activa recién a partir de 3% de scroll ──
-  const HEADER_BORDER_THRESHOLD = 0.03;
-  const [headerBorderActive, setHeaderBorderActive] = useState(false);
+  // ── Borde del sticky header: se activa recién a partir de 1% de scroll ──
+  const HEADER_BORDER_THRESHOLD = 0.01;
+  const headerBorderActiveRef = useRef(false);
+  const headerBorderAnim = useRef(new Animated.Value(0)).current;
   const scrollContentHeightRef = useRef(0);
   const scrollLayoutHeightRef = useRef(0);
 
@@ -764,10 +765,10 @@ export default function ProfileScreen() {
           styles.stickyHeader,
           {
             paddingTop: topPad + 2,
-            borderBottomColor: headerBorderActive ? "rgba(255,255,255,0.05)" : "transparent",
           },
         ]}
       >
+        <Animated.View style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
         <View style={styles.stickyHeaderRow}>
           <Pressable
             onPress={() => router.push("/configuraciones")}
@@ -813,7 +814,14 @@ export default function ProfileScreen() {
           const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
           const progress = scrollable > 0 ? y / scrollable : 0;
           const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
-          if (shouldShowBorder !== headerBorderActive) setHeaderBorderActive(shouldShowBorder);
+          if (shouldShowBorder !== headerBorderActiveRef.current) {
+            headerBorderActiveRef.current = shouldShowBorder;
+            Animated.timing(headerBorderAnim, {
+              toValue: shouldShowBorder ? 1 : 0,
+              duration: 300,
+              useNativeDriver: true,
+            }).start();
+          }
         }}
         scrollEventThrottle={16}
       >
@@ -1346,7 +1354,14 @@ const styles = StyleSheet.create({
   stickyHeader: {
     zIndex: 10,
     backgroundColor: "transparent",
-    borderBottomWidth: 1,
+  },
+  stickyHeaderBorder: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.035)",
   },
   stickyHeaderRow: {
     flexDirection: "row",
