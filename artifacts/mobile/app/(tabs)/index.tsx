@@ -1109,8 +1109,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   universeBtnIcon: {
-    width: 29,
-    height: 29,
+    width: 28,
+    height: 28,
   },
   avatarBtn: {
     width: 33,
