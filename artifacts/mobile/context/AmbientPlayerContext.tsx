@@ -9,7 +9,7 @@ import React, {
   useState,
 } from "react";
 
-export type SceneId = "universo" | "naturaleza" | "bosque" | "lluvia" | "viento";
+export type SceneId = "universo" | "naturaleza" | "bosque" | "lluvia" | "viento" | "fuegoSolar";
 
 export type AmbientScene = {
   id: SceneId;
@@ -55,6 +55,13 @@ export const AMBIENT_SCENES: AmbientScene[] = [
     icon: "wind",
     image: require("@/assets/images/ambient/viento.jpg"),
   },
+  {
+    id: "fuegoSolar",
+    label: "Fuego solar",
+    colors: ["#603127", "#26120F"] as const,
+    icon: "sun",
+    image: require("@/assets/images/ambient/fuego-solar.png"),
+  },
 ];
 
 const DEFAULT_VOLUME = 0.49; // 0.65 − 25%
@@ -76,6 +83,7 @@ const SCENE_AUDIO: Record<SceneId, unknown> = {
   bosque:     require("@/assets/audio/riachuelo_pajaros.mp3"),
   lluvia:     require("@/assets/audio/riachuelo_stream.mp3"),   // → replace with lluvia.mp3
   viento:     require("@/assets/audio/pajaros_ambiente.mp3"),   // → replace with viento.mp3
+  fuegoSolar: require("@/assets/audio/fuego_solar_ambiente.mp3"),
 };
 
 type AmbientCtx = {
@@ -105,6 +113,7 @@ const DEFAULT_VOLUMES: Record<SceneId, number> = {
   bosque: DEFAULT_VOLUME,
   lluvia: DEFAULT_VOLUME,
   viento: DEFAULT_VOLUME,
+  fuegoSolar: DEFAULT_VOLUME,
 };
 
 export function AmbientPlayerProvider({ children }: { children: React.ReactNode }) {
