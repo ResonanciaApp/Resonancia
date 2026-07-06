@@ -65,7 +65,7 @@ function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: obje
       <Pressable
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        style={[pillStyle, { overflow: "hidden", backgroundColor: "rgba(0,0,0,0.015)" }]}
+        style={[pillStyle, { overflow: "hidden", backgroundColor: "rgba(0,0,0,0.14)" }]}
       >
         <Animated.View
           pointerEvents="none"
