@@ -157,7 +157,6 @@ function NavTabChip({ sel, label, icon, iconSel, onPress }: { sel: boolean; labe
       onPress={onPress}
       style={({ pressed }) => [styles.headerTabChip, !sel && styles.headerTabChipUnsel, { opacity: pressed ? 0.7 : 1 }]}
     >
-      <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.14)" }]} />
       <Animated.View style={[StyleSheet.absoluteFill, { opacity: selOpacity }]}>
         <LinearGradient
           colors={["#D6A45C", "#BE8744"]}
