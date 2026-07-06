@@ -138,7 +138,7 @@ function NavTabChip({ sel, label, icon, iconSel, onPress }: { sel: boolean; labe
         onPress={onPress}
         style={({ pressed }) => [styles.headerTabIconChip, { opacity: pressed ? 0.7 : 1 }]}
       >
-        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.15)", borderRadius: 999 }]} />
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.15)", borderRadius: 999, borderWidth: 2, borderColor: "rgba(255,255,255,0.1)" }]} />
         <View style={styles.headerTabIconImg}>
           <Image source={icon} style={[styles.headerTabIconImg, { position: "absolute" }]} resizeMode="contain" />
           {iconSel && (
