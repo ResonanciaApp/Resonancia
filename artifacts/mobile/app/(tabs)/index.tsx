@@ -69,6 +69,14 @@ import { WeeklyStreakStrip } from "@/components/WeeklyStreakStrip";
 
 const { width } = Dimensions.get("window");
 
+const hexToRgba = (hex: string, alpha: number) => {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
 const TODOS_TAB_ID = "todos";
 const TODOS_ICON_SEL = require("@/assets/images/icons/todos-selected.png");
 const TODOS_ICON_UNSEL = require("@/assets/images/icons/todos-deselected.png");
@@ -671,7 +679,7 @@ export default function HomeScreen2() {
             hitSlop={8}
             style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
           >
-            <View style={styles.universeBtnBg}>
+            <View style={[styles.universeBtnBg, { backgroundColor: hexToRgba(activeTheme.gradient[0], 0.2) }]}>
               {!searchOpen && (
                 <>
                   <Animated.View
@@ -1279,9 +1287,9 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   universeBtn: {
-    width: 37,
-    height: 37,
-    borderRadius: 18.5,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     overflow: "hidden",
   },
   universeBtnBg: {
