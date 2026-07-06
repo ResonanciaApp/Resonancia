@@ -129,7 +129,7 @@ export function EscenasSheet() {
         ]}
       >
         <Pressable style={styles.closeBtn} onPress={closeSheet} hitSlop={10}>
-          <Feather name="x" size={27} color="#FFFFFF" />
+          <Feather name="x" size={30} color="#FFFFFF" />
         </Pressable>
         <Text style={styles.title}>Escenas</Text>
 
@@ -239,9 +239,9 @@ const styles = StyleSheet.create({
   },
   closeBtn: {
     alignSelf: "flex-start",
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     backgroundColor: "rgba(0,0,0,0.20)",
     alignItems: "center",
     justifyContent: "center",
