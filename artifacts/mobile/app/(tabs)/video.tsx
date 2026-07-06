@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#210911" },
   rootGradient: { ...StyleSheet.absoluteFillObject },
   header: { paddingHorizontal: 20, paddingBottom: 14, gap: 14 },
-  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.4 },
+  pageTitle: { fontSize: 20, fontWeight: "600", letterSpacing: 0.3 },
 
   searchRow: { flexDirection: "row", alignItems: "center", gap: 10 },
   searchBox: {
@@ -269,12 +269,14 @@ const styles = StyleSheet.create({
   chipsScroll: { marginHorizontal: -20 },
   chipsRow: { gap: 8, paddingHorizontal: 20 },
   chip: {
-    borderRadius: 999,
+    borderRadius: 20,
     borderWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingHorizontal: 12,
+    height: 34,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  chipText: { fontSize: 13, fontWeight: "600" },
+  chipText: { fontSize: 12, fontWeight: "600" },
 
   resultsRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   resultsCount: { fontSize: 13 },
