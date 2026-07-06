@@ -121,7 +121,6 @@ export default function VideoTabScreen() {
           },
         ]}
       >
-        <Animated.View style={[styles.headerBorder, { opacity: headerBorderAnim }]} />
         <Text style={[styles.pageTitle, { color: colors.foreground }]}>Videos</Text>
 
         <View style={styles.searchRow}>
@@ -149,6 +148,7 @@ export default function VideoTabScreen() {
         </View>
 
         <View style={styles.chipsRowOuter}>
+          <Animated.View style={[styles.headerBorder, { opacity: headerBorderAnim }]} collapsable={false} />
           <Pressable
             style={[
               styles.settingsBtn,
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     height: 45,
   },
   searchInput: { flex: 1, fontSize: 14, padding: 0 },
-  chipsRowOuter: { flexDirection: "row", alignItems: "center", gap: 10 },
+  chipsRowOuter: { flexDirection: "row", alignItems: "center", gap: 10, paddingBottom: 8 },
   settingsBtn: {
     width: 40,
     height: 40,
