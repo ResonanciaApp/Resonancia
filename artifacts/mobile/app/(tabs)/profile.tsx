@@ -1318,6 +1318,8 @@ const styles = StyleSheet.create({
   stickyHeader: {
     zIndex: 10,
     backgroundColor: "transparent",
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.08)",
   },
   stickyHeaderRow: {
     flexDirection: "row",

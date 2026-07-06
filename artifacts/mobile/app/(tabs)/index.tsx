@@ -1169,6 +1169,8 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     backgroundColor: "transparent",
     zIndex: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.08)",
   },
   scroll: { flex: 1 },
 

@@ -256,7 +256,13 @@ export default function VideoTabScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#210911" },
   rootGradient: { ...StyleSheet.absoluteFillObject },
-  header: { paddingHorizontal: 20, paddingBottom: 14, gap: 14 },
+  header: {
+    paddingHorizontal: 20,
+    paddingBottom: 14,
+    gap: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.08)",
+  },
   pageTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
 
   searchRow: { flexDirection: "row", alignItems: "center", gap: 10 },
