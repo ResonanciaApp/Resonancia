@@ -969,8 +969,10 @@ const styles = StyleSheet.create({
   rootGradient: { ...StyleSheet.absoluteFillObject },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
-    paddingBottom: 0,
-    backgroundColor: "transparent",
+    paddingBottom: 12,
+    backgroundColor: "#210911",
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
     zIndex: 10,
   },
   scroll: { flex: 1 },
