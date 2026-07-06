@@ -305,7 +305,12 @@ export default function HomeScreen2() {
   const { presets, loadPreset, openSheet } = useMixer();
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  const activeSceneAccent = AMBIENT_SCENES.find((s) => s.id === activeSceneId)?.colors[1] ?? activeTheme.gradient[0];
+  // "Universo" usa un acento borgoña propio de marca en vez del morado del picker de Escenas
+  // (ese morado, pensado para la card cósmica, se veía rosado sobre el fondo oscuro del botón).
+  const activeSceneAccent =
+    activeSceneId === "universo"
+      ? "#9C2C4B"
+      : AMBIENT_SCENES.find((s) => s.id === activeSceneId)?.colors[1] ?? activeTheme.gradient[0];
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
