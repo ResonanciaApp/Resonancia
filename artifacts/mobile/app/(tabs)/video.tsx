@@ -103,7 +103,7 @@ export default function VideoTabScreen() {
       <LinearGradient colors={["#340D1A", "#190913"]} style={styles.rootGradient} />
 
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        <Text style={[styles.pageTitle, { color: colors.foreground }]}>Video</Text>
+        <Text style={[styles.pageTitle, { color: colors.foreground }]}>Videos</Text>
 
         <View style={styles.searchRow}>
           <View style={[styles.searchBox, { backgroundColor: CARD_BG, borderColor: CARD_BORDER }]}>
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#210911" },
   rootGradient: { ...StyleSheet.absoluteFillObject },
   header: { paddingHorizontal: 20, paddingBottom: 14, gap: 14 },
-  pageTitle: { fontSize: 20, fontWeight: "600", letterSpacing: 0.3 },
+  pageTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
 
   searchRow: { flexDirection: "row", alignItems: "center", gap: 10 },
   searchBox: {
