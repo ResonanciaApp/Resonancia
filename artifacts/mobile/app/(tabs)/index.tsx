@@ -529,10 +529,20 @@ export default function HomeScreen2() {
   const STICKY_ACTIVE_THRESHOLD = 0.06;
   const [stickyActive, setStickyActive] = useState(false);
   const stickyActiveRef = useRef(false);
+  const searchOpenRef = useRef(false);
   const scrollContentHeightRef = useRef(0);
   const scrollLayoutHeightRef = useRef(0);
   const scrollYRef = useRef(0);
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
+
+  const updateSearchBtnVisibility = useCallback(() => {
+    const shouldShow = stickyActiveRef.current || searchOpenRef.current;
+    Animated.timing(searchBtnAnim, {
+      toValue: shouldShow ? 1 : 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [searchBtnAnim]);
 
   const updateStickyActive = useCallback(() => {
     const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
@@ -541,13 +551,9 @@ export default function HomeScreen2() {
     if (shouldBeActive !== stickyActiveRef.current) {
       stickyActiveRef.current = shouldBeActive;
       setStickyActive(shouldBeActive);
-      Animated.timing(searchBtnAnim, {
-        toValue: shouldBeActive ? 1 : 0,
-        duration: 220,
-        useNativeDriver: true,
-      }).start();
+      updateSearchBtnVisibility();
     }
-  }, [searchBtnAnim]);
+  }, [updateSearchBtnVisibility]);
 
   const handleMainScroll = useCallback(
     (e: { nativeEvent: { contentOffset: { y: number } } }) => {
@@ -565,17 +571,21 @@ export default function HomeScreen2() {
 
   const openSearch = useCallback(() => {
     setSearchOpen(true);
+    searchOpenRef.current = true;
+    updateSearchBtnVisibility();
     searchOpenSV.value = withTiming(1, { duration: 260, easing: Easing.out(Easing.cubic) });
     requestAnimationFrame(() => searchInputRef.current?.focus());
-  }, [searchOpenSV]);
+  }, [searchOpenSV, updateSearchBtnVisibility]);
 
   const closeSearch = useCallback(() => {
     Keyboard.dismiss();
+    searchOpenRef.current = false;
+    updateSearchBtnVisibility();
     searchOpenSV.value = withTiming(0, { duration: 200, easing: Easing.in(Easing.cubic) }, (finished) => {
       if (finished) runOnJS(setSearchOpen)(false);
     });
     setSearchQuery("");
-  }, [searchOpenSV]);
+  }, [searchOpenSV, updateSearchBtnVisibility]);
 
   const handleSearchBtnPress = useCallback(() => {
     if (searchOpen) {
@@ -687,20 +697,18 @@ export default function HomeScreen2() {
               </View>
             </RAnimated.View>
           </View>
-          {(stickyActive || searchOpen) && (
-            <Animated.View
-              pointerEvents={stickyActive || searchOpen ? "auto" : "none"}
-              style={{ opacity: searchOpen ? 1 : searchBtnAnim }}
+          <Animated.View
+            pointerEvents={stickyActive || searchOpen ? "auto" : "none"}
+            style={{ opacity: searchBtnAnim }}
+          >
+            <Pressable
+              onPress={handleSearchBtnPress}
+              hitSlop={8}
+              style={({ pressed }) => [styles.searchBtn, { opacity: pressed ? 0.6 : 1 }]}
             >
-              <Pressable
-                onPress={handleSearchBtnPress}
-                hitSlop={8}
-                style={({ pressed }) => [styles.searchBtn, { opacity: pressed ? 0.6 : 1 }]}
-              >
-                <Ionicons name={searchOpen ? "close" : "search"} size={searchOpen ? 20 : 22} color="#FFFFFF" style={{ opacity: 0.9 }} />
-              </Pressable>
-            </Animated.View>
-          )}
+              <Ionicons name={searchOpen ? "close" : "search"} size={searchOpen ? 20 : 22} color="#FFFFFF" style={{ opacity: 0.9 }} />
+            </Pressable>
+          </Animated.View>
         </View>
 
         {searchOpen && searchTerm.length > 0 && (
