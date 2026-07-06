@@ -525,6 +525,38 @@ export default function HomeScreen2() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
+  // ── La lupa solo aparece cuando el sticky header se "activa" (15% scroll) ──
+  const STICKY_ACTIVE_THRESHOLD = 0.15;
+  const [stickyActive, setStickyActive] = useState(false);
+  const stickyActiveRef = useRef(false);
+  const scrollContentHeightRef = useRef(0);
+  const scrollLayoutHeightRef = useRef(0);
+  const scrollYRef = useRef(0);
+  const searchBtnAnim = useRef(new Animated.Value(0)).current;
+
+  const updateStickyActive = useCallback(() => {
+    const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
+    const progress = scrollable > 0 ? scrollYRef.current / scrollable : 0;
+    const shouldBeActive = progress >= STICKY_ACTIVE_THRESHOLD;
+    if (shouldBeActive !== stickyActiveRef.current) {
+      stickyActiveRef.current = shouldBeActive;
+      setStickyActive(shouldBeActive);
+      Animated.timing(searchBtnAnim, {
+        toValue: shouldBeActive ? 1 : 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [searchBtnAnim]);
+
+  const handleMainScroll = useCallback(
+    (e: { nativeEvent: { contentOffset: { y: number } } }) => {
+      scrollYRef.current = e.nativeEvent.contentOffset.y;
+      updateStickyActive();
+    },
+    [updateStickyActive],
+  );
+
   // ── Buscador desplegable (se abre desde el ícono de lupa) ────────────────
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -655,15 +687,20 @@ export default function HomeScreen2() {
               </View>
             </RAnimated.View>
           </View>
-          <Pressable
-            onPress={handleSearchBtnPress}
-            hitSlop={8}
-            style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
-          >
-            <View style={[styles.universeBtnBg, { backgroundColor: hexToRgba(activeSceneAccent, 0.35) }]}>
-              <Ionicons name={searchOpen ? "close" : "search"} size={searchOpen ? 20 : 22} color="#FFFFFF" style={{ opacity: 0.9 }} />
-            </View>
-          </Pressable>
+          {(stickyActive || searchOpen) && (
+            <Animated.View
+              pointerEvents={stickyActive || searchOpen ? "auto" : "none"}
+              style={{ opacity: searchOpen ? 1 : searchBtnAnim }}
+            >
+              <Pressable
+                onPress={handleSearchBtnPress}
+                hitSlop={8}
+                style={({ pressed }) => [styles.searchBtn, { opacity: pressed ? 0.6 : 1 }]}
+              >
+                <Ionicons name={searchOpen ? "close" : "search"} size={searchOpen ? 20 : 22} color="#FFFFFF" style={{ opacity: 0.9 }} />
+              </Pressable>
+            </Animated.View>
+          )}
         </View>
 
         {searchOpen && searchTerm.length > 0 && (
@@ -701,6 +738,16 @@ export default function HomeScreen2() {
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 12 }}
         showsVerticalScrollIndicator={false}
+        onScroll={handleMainScroll}
+        scrollEventThrottle={16}
+        onLayout={(e) => {
+          scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
+          updateStickyActive();
+        }}
+        onContentSizeChange={(_w, h) => {
+          scrollContentHeightRef.current = h;
+          updateStickyActive();
+        }}
       >
         {/* ── INTENCIÓN ── */}
         <Pressable
@@ -1248,6 +1295,12 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     backgroundColor: "rgba(14,10,24,0.15)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  searchBtn: {
+    width: 42,
+    height: 42,
     alignItems: "center",
     justifyContent: "center",
   },
