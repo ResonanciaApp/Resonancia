@@ -1416,6 +1416,12 @@ uri = "file://artifacts/mobile/assets/images/ambient/fuego-solar.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "QkdWJyxOzk4V9rb-zv51j"
+uri = "file://artifacts/mobile/assets/images/ambient/musgo.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
@@ -2105,3 +2111,9 @@ id = "Z0Ov3Qh4xuELdPrGGe-zu"
 uri = "file://artifacts/mobile/assets/audio/fuego_solar_ambiente.mp3"
 type = "audio"
 title = "fuego solar ambiente"
+
+[[outputs]]
+id = "29M4u0bYqrpdspjGtZFqP"
+uri = "file://artifacts/mobile/assets/audio/musgo_ambiente.mp3"
+type = "audio"
+title = "musgo ambiente"

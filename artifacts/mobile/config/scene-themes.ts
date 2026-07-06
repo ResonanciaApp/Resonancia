@@ -59,6 +59,12 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
     gradient: ["#603127", "#26120F"],
     solid: "#26120F",
   },
+  musgo: {
+    id: "musgo",
+    label: "Musgo",
+    gradient: ["#28483E", "#101A16"],
+    solid: "#101A16",
+  },
 };
 
 export const DEFAULT_THEME_ID: SceneId = "universo";
