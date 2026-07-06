@@ -1160,8 +1160,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   headerTabChipUnsel: {
-    borderWidth: 1,
-    borderColor: "rgba(244,218,213,0.2)",
+    borderWidth: 2,
+    borderColor: "rgba(244,218,213,0.1)",
   },
   headerTabIconChip: {
     width: 40,
