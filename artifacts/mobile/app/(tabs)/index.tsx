@@ -77,11 +77,10 @@ const hexToRgba = (hex: string, alpha: number) => {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
+// Sentinel interno para "sin filtro" (ya no hay chip visible de "Todos": es el
+// estado por defecto al entrar a la app).
 const TODOS_TAB_ID = "todos";
-const TODOS_ICON_SEL = require("@/assets/images/icons/todos-selected.png");
-const TODOS_ICON_UNSEL = require("@/assets/images/icons/todos-deselected.png");
 const NAV_TABS = [
-  { id: TODOS_TAB_ID,   label: "Todos",         cats: [] as string[], icon: TODOS_ICON_UNSEL, iconSel: TODOS_ICON_SEL },
   { id: "meditaciones",  label: "Meditación",    cats: ["meditaciones-guiadas"] },
   { id: "sesiones",      label: "Sesiones",      cats: ["sonidos-ancestrales"] },
   { id: "musica",        label: "Música",        cats: ["musica-sonidos"] },
@@ -526,37 +525,6 @@ export default function HomeScreen2() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  // ── Transformación loto → lupa al hacer scroll (15% del recorrido) ──────
-  const SEARCH_ICON_THRESHOLD = 0.15;
-  const searchIconAnim = useRef(new Animated.Value(0)).current;
-  const isSearchModeRef = useRef(false);
-  const scrollContentHeightRef = useRef(0);
-  const scrollLayoutHeightRef = useRef(0);
-  const scrollYRef = useRef(0);
-
-  const updateSearchIconMode = useCallback(() => {
-    const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
-    if (scrollable <= 0) return;
-    const progress = scrollYRef.current / scrollable;
-    const shouldShowSearch = progress >= SEARCH_ICON_THRESHOLD;
-    if (shouldShowSearch !== isSearchModeRef.current) {
-      isSearchModeRef.current = shouldShowSearch;
-      Animated.timing(searchIconAnim, {
-        toValue: shouldShowSearch ? 1 : 0,
-        duration: 220,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [searchIconAnim]);
-
-  const handleHeaderIconScroll = useCallback(
-    (e: { nativeEvent: { contentOffset: { y: number } } }) => {
-      scrollYRef.current = e.nativeEvent.contentOffset.y;
-      updateSearchIconMode();
-    },
-    [updateSearchIconMode],
-  );
-
   // ── Buscador desplegable (se abre desde el ícono de lupa) ────────────────
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -577,15 +545,13 @@ export default function HomeScreen2() {
     setSearchQuery("");
   }, [searchOpenSV]);
 
-  const handleUniverseBtnPress = useCallback(() => {
+  const handleSearchBtnPress = useCallback(() => {
     if (searchOpen) {
       closeSearch();
-    } else if (isSearchModeRef.current) {
-      openSearch();
     } else {
-      openEscenasSheet();
+      openSearch();
     }
-  }, [searchOpen, closeSearch, openSearch, openEscenasSheet]);
+  }, [searchOpen, closeSearch, openSearch]);
 
   const navRowLayerStyle = useAnimatedStyle(() => ({
     opacity: 1 - searchOpenSV.value,
@@ -628,6 +594,15 @@ export default function HomeScreen2() {
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
       <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
         <View style={styles.headerTopRow}>
+          <Pressable
+            onPress={openEscenasSheet}
+            hitSlop={8}
+            style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
+          >
+            <View style={[styles.universeBtnBg, { backgroundColor: hexToRgba(activeSceneAccent, 0.35) }]}>
+              <MaterialCommunityIcons name="spa" size={23} color="#FFFFFF" style={{ opacity: 0.9 }} />
+            </View>
+          </Pressable>
           <View style={styles.headerRowHost}>
             <RAnimated.View
               pointerEvents={searchOpen ? "none" : "auto"}
@@ -681,31 +656,12 @@ export default function HomeScreen2() {
             </RAnimated.View>
           </View>
           <Pressable
-            onPress={handleUniverseBtnPress}
+            onPress={handleSearchBtnPress}
             hitSlop={8}
             style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
           >
             <View style={[styles.universeBtnBg, { backgroundColor: hexToRgba(activeSceneAccent, 0.35) }]}>
-              {!searchOpen && (
-                <>
-                  <Animated.View
-                    style={{
-                      opacity: searchIconAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
-                      position: "absolute",
-                    }}
-                  >
-                    <MaterialCommunityIcons name="spa" size={23} color="#FFFFFF" style={{ opacity: 0.9 }} />
-                  </Animated.View>
-                  <Animated.View
-                    style={{
-                      opacity: searchIconAnim,
-                    }}
-                  >
-                    <Ionicons name="search" size={22} color="#FFFFFF" style={{ opacity: 0.9 }} />
-                  </Animated.View>
-                </>
-              )}
-              {searchOpen && <Ionicons name="close" size={20} color="#FFFFFF" style={{ opacity: 0.9 }} />}
+              <Ionicons name={searchOpen ? "close" : "search"} size={searchOpen ? 20 : 22} color="#FFFFFF" style={{ opacity: 0.9 }} />
             </View>
           </Pressable>
         </View>
@@ -745,16 +701,6 @@ export default function HomeScreen2() {
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 12 }}
         showsVerticalScrollIndicator={false}
-        onScroll={handleHeaderIconScroll}
-        scrollEventThrottle={16}
-        onLayout={(e) => {
-          scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
-          updateSearchIconMode();
-        }}
-        onContentSizeChange={(_w, h) => {
-          scrollContentHeightRef.current = h;
-          updateSearchIconMode();
-        }}
       >
         {/* ── INTENCIÓN ── */}
         <Pressable
