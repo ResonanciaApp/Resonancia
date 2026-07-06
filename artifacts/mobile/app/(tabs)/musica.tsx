@@ -166,9 +166,15 @@ const PillTab = memo(function PillTab({
   tab, sel, onPress,
 }: { tab: (typeof MAIN_TABS)[0]; sel: boolean; onPress: () => void }) {
   return (
-    <Pressable onPress={onPress} style={styles.pillTab}>
+    <Pressable
+      onPress={onPress}
+      style={[
+        styles.pillTab,
+        !sel && { backgroundColor: "rgba(0,0,0,0.14)", borderWidth: 2, borderColor: "rgba(255,255,255,0.1)" },
+      ]}
+    >
       <LinearGradient
-        colors={sel ? ["#D6A45C", "#BE8744"] : ["rgba(255,255,255,0.06)", "rgba(255,255,255,0.06)"]}
+        colors={sel ? ["#D6A45C", "#BE8744"] : ["transparent", "transparent"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFill}
@@ -741,9 +747,16 @@ export default function MezcladorScreen() {
                       if (!cat) return null;
                       const sel = subTab === catId;
                       return (
-                        <Pressable key={catId} onPress={() => setSubTab(sel ? null : catId)} style={styles.subTabBorderOuter}>
+                        <Pressable
+                          key={catId}
+                          onPress={() => setSubTab(sel ? null : catId)}
+                          style={[
+                            styles.subTabBorderOuter,
+                            !sel && { backgroundColor: "rgba(0,0,0,0.14)", borderWidth: 2, borderColor: "rgba(255,255,255,0.1)" },
+                          ]}
+                        >
                           <LinearGradient
-                            colors={sel ? ["#D6A45C", "#BE8744"] : ["rgba(255,255,255,0.06)", "rgba(255,255,255,0.06)"]}
+                            colors={sel ? ["#D6A45C", "#BE8744"] : ["transparent", "transparent"]}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 0, y: 1 }}
                             style={StyleSheet.absoluteFill}
