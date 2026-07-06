@@ -69,7 +69,7 @@ export function WeeklyStreakStrip() {
             <View key={i} style={styles.dayCol}>
               {met ? (
                 <View style={[styles.circle, styles.circleActive]}>
-                  <Feather name="check" size={16} color="rgba(255,255,255,0.9)" />
+                  <Feather name="check" size={21} color="rgba(255,255,255,0.9)" />
                 </View>
               ) : (
                 <View style={[styles.circle, styles.circleInactive, isToday && styles.circleToday]} />
@@ -100,9 +100,9 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   circle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
   },
