@@ -38,6 +38,7 @@ export function apiVideoToItem(v: ApiVideo): VideoItem {
     isPremium: v.isPremium,
     isNew: v.isNew,
     author: v.author,
+    theme: v.theme as VideoItem["theme"],
   };
 }
 

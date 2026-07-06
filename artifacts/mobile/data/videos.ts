@@ -1,5 +1,9 @@
 import type { ImageSourcePropType } from "react-native";
 
+/** Temas reales de video (deben coincidir con CATALOG_VIDEO_THEMES en @workspace/db). */
+export const VIDEO_THEMES = ["Movimiento", "Respiración", "Naturaleza", "Música"] as const;
+export type VideoTheme = (typeof VIDEO_THEMES)[number];
+
 /**
  * Sección de videos pregrabados.
  *
@@ -54,6 +58,8 @@ export type VideoItem = {
   author?: string;
   /** Puntuación promedio (0-5). Si no está presente, la UI muestra un valor placeholder. */
   rating?: number;
+  /** Tema real del video (uno de VIDEO_THEMES). Null/undefined = sin tema asignado, no aparece en ningún chip. */
+  theme?: VideoTheme | null;
 };
 
 export const VIDEOS: VideoItem[] = [
@@ -67,6 +73,7 @@ export const VIDEOS: VideoItem[] = [
     thumbnail: require("@/assets/images/videos/video-1.jpg"),
     objectPath: "/objects/uploads/032d9237-beea-4d88-8c58-c84ea7b500a6",
     author: "Casa del Cuenco",
+    theme: "Movimiento",
   },
   {
     id: "2",
@@ -78,6 +85,7 @@ export const VIDEOS: VideoItem[] = [
     thumbnail: require("@/assets/images/videos/video-2.jpg"),
     objectPath: "/objects/uploads/61890768-8f25-42f2-88a0-b389056b471a",
     author: "Casa del Cuenco",
+    theme: "Respiración",
   },
   {
     id: "3",
@@ -89,6 +97,7 @@ export const VIDEOS: VideoItem[] = [
     thumbnail: require("@/assets/images/videos/video-3.jpg"),
     objectPath: "/objects/uploads/49bb34bb-fbce-4d71-a914-b5ee6d04d8d8",
     author: "Casa del Cuenco",
+    theme: "Naturaleza",
   },
 ];
 

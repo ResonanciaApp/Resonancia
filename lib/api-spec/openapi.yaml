@@ -5170,7 +5170,7 @@ components:
           type: boolean
     CatalogVideo:
       type: object
-      required: [id, title, subtitle, description, durationLabel, bunnyVideoId, thumbnailObjectPath, author, isPremium, isNew, status, sortOrder, createdAt, updatedAt]
+      required: [id, title, subtitle, description, durationLabel, bunnyVideoId, thumbnailObjectPath, author, theme, isPremium, isNew, status, sortOrder, createdAt, updatedAt]
       properties:
         id:
           type: integer
@@ -5189,6 +5189,10 @@ components:
           nullable: true
         author:
           type: string
+        theme:
+          type: string
+          nullable: true
+          enum: [Movimiento, Respiración, Naturaleza, Música, null]
         isPremium:
           type: boolean
         isNew:
@@ -5231,6 +5235,10 @@ components:
           nullable: true
         author:
           type: string
+        theme:
+          type: string
+          nullable: true
+          enum: [Movimiento, Respiración, Naturaleza, Música, null]
         isPremium:
           type: boolean
           default: false
@@ -5262,6 +5270,10 @@ components:
           nullable: true
         author:
           type: string
+        theme:
+          type: string
+          nullable: true
+          enum: [Movimiento, Respiración, Naturaleza, Música, null]
         isPremium:
           type: boolean
         isNew:

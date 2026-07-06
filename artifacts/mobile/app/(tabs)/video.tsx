@@ -65,6 +65,10 @@ export default function VideoTabScreen() {
         )
       : videos;
 
+    if (activeChip !== "Todos") {
+      list = list.filter((v) => v.theme === activeChip);
+    }
+
     if (sortBy === "puntuacion") {
       list = [...list].sort((a, b) => (b.rating ?? 4.8) - (a.rating ?? 4.8));
     } else if (sortBy === "novedades") {
@@ -80,7 +84,7 @@ export default function VideoTabScreen() {
     }
 
     return list;
-  }, [videos, query, sortBy]);
+  }, [videos, query, sortBy, activeChip]);
 
   const openSortMenu = () => {
     sortBtnRef.current?.measureInWindow((x, y, w, h) => {

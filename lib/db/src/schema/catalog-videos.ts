@@ -12,6 +12,10 @@ import { z } from "zod/v4";
 export const CATALOG_VIDEO_STATUS = ["published", "draft"] as const;
 export type CatalogVideoStatus = (typeof CATALOG_VIDEO_STATUS)[number];
 
+/** Temas reales de video (usados por los chips de filtro en mobile y el selector del admin). */
+export const CATALOG_VIDEO_THEMES = ["Movimiento", "Respiración", "Naturaleza", "Música"] as const;
+export type CatalogVideoTheme = (typeof CATALOG_VIDEO_THEMES)[number];
+
 /**
  * Videos del catálogo servidos desde Bunny.net Stream (HLS).
  *
@@ -33,6 +37,8 @@ export const catalogVideosTable = pgTable("catalog_videos", {
   /** Ruta del thumbnail en Object Storage ("/objects/...") o URL absoluta. Null = usar thumbnail de Bunny. */
   thumbnailObjectPath: text("thumbnail_object_path"),
   author: text("author").notNull().default("Casa del Cuenco"),
+  /** Tema real del video (uno de CATALOG_VIDEO_THEMES). Null = sin tema asignado (no aparece en ningún filtro de chip). */
+  theme: text("theme"),
   isPremium: boolean("is_premium").notNull().default(false),
   isNew: boolean("is_new").notNull().default(false),
   status: text("status", { enum: CATALOG_VIDEO_STATUS }).notNull().default("published"),

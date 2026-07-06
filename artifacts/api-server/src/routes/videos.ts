@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { and, asc, desc, eq } from "drizzle-orm";
-import { db, catalogVideosTable, type CatalogVideo } from "@workspace/db";
+import { db, catalogVideosTable, CATALOG_VIDEO_THEMES, type CatalogVideo } from "@workspace/db";
 import { requireAuth } from "../middlewares/requireAuth";
 import { requireRole } from "../middlewares/requireRole";
 
@@ -20,6 +20,7 @@ function serializeVideo(v: CatalogVideo) {
     bunnyVideoId: v.bunnyVideoId,
     thumbnailObjectPath: v.thumbnailObjectPath ?? null,
     author: v.author,
+    theme: v.theme ?? null,
     isPremium: v.isPremium,
     isNew: v.isNew,
     status: v.status,
@@ -110,6 +111,7 @@ router.post("/admin/videos", requireAuth, requireRole("admin"), async (req, res)
     bunnyVideoId,
     thumbnailObjectPath,
     author,
+    theme,
     isPremium,
     isNew,
     status,
@@ -122,6 +124,7 @@ router.post("/admin/videos", requireAuth, requireRole("admin"), async (req, res)
     bunnyVideoId: string;
     thumbnailObjectPath?: string;
     author?: string;
+    theme?: string | null;
     isPremium?: boolean;
     isNew?: boolean;
     status?: "published" | "draft";
@@ -136,6 +139,10 @@ router.post("/admin/videos", requireAuth, requireRole("admin"), async (req, res)
     res.status(400).json({ error: "El bunnyVideoId es requerido" });
     return;
   }
+  if (theme && !(CATALOG_VIDEO_THEMES as readonly string[]).includes(theme)) {
+    res.status(400).json({ error: "Tema inválido" });
+    return;
+  }
 
   try {
     const [created] = await db
@@ -148,6 +155,7 @@ router.post("/admin/videos", requireAuth, requireRole("admin"), async (req, res)
         bunnyVideoId: bunnyVideoId.trim(),
         thumbnailObjectPath: thumbnailObjectPath ?? null,
         author: author?.trim() ?? "Casa del Cuenco",
+        theme: theme?.trim() || null,
         isPremium: isPremium ?? false,
         isNew: isNew ?? false,
         status: status ?? "published",
@@ -188,11 +196,16 @@ router.patch("/admin/videos/:id", requireAuth, requireRole("admin"), async (req,
       bunnyVideoId?: string;
       thumbnailObjectPath?: string | null;
       author?: string;
+      theme?: string | null;
       isPremium?: boolean;
       isNew?: boolean;
       status?: "published" | "draft";
       sortOrder?: number;
     };
+    if (body.theme && !(CATALOG_VIDEO_THEMES as readonly string[]).includes(body.theme)) {
+      res.status(400).json({ error: "Tema inválido" });
+      return;
+    }
     const updates: Partial<typeof catalogVideosTable.$inferInsert> = {};
     if (body.title !== undefined) updates.title = body.title;
     if (body.subtitle !== undefined) updates.subtitle = body.subtitle;
@@ -201,6 +214,7 @@ router.patch("/admin/videos/:id", requireAuth, requireRole("admin"), async (req,
     if (body.bunnyVideoId !== undefined) updates.bunnyVideoId = body.bunnyVideoId;
     if ("thumbnailObjectPath" in body) updates.thumbnailObjectPath = body.thumbnailObjectPath ?? null;
     if (body.author !== undefined) updates.author = body.author;
+    if ("theme" in body) updates.theme = body.theme?.trim() || null;
     if (body.isPremium !== undefined) updates.isPremium = body.isPremium;
     if (body.isNew !== undefined) updates.isNew = body.isNew;
     if (body.status !== undefined) updates.status = body.status;

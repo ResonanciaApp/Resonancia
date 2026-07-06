@@ -1582,6 +1582,16 @@ export interface GuideConfigUpdate {
   isLiveEnabled?: boolean;
 }
 
+export type CatalogVideoTheme = typeof CatalogVideoTheme[keyof typeof CatalogVideoTheme] | null;
+
+
+export const CatalogVideoTheme = {
+  Movimiento: 'Movimiento',
+  Respiración: 'Respiración',
+  Naturaleza: 'Naturaleza',
+  Música: 'Música',
+} as const;
+
 export type CatalogVideoStatus = typeof CatalogVideoStatus[keyof typeof CatalogVideoStatus];
 
 
@@ -1599,6 +1609,7 @@ export interface CatalogVideo {
   bunnyVideoId: string;
   thumbnailObjectPath: string | null;
   author: string;
+  theme: CatalogVideoTheme;
   isPremium: boolean;
   isNew: boolean;
   status: CatalogVideoStatus;
@@ -1610,6 +1621,16 @@ export interface CatalogVideo {
 export interface VideosListResponse {
   videos: CatalogVideo[];
 }
+
+export type CreateVideoBodyTheme = typeof CreateVideoBodyTheme[keyof typeof CreateVideoBodyTheme] | null;
+
+
+export const CreateVideoBodyTheme = {
+  Movimiento: 'Movimiento',
+  Respiración: 'Respiración',
+  Naturaleza: 'Naturaleza',
+  Música: 'Música',
+} as const;
 
 export type CreateVideoBodyStatus = typeof CreateVideoBodyStatus[keyof typeof CreateVideoBodyStatus];
 
@@ -1627,11 +1648,22 @@ export interface CreateVideoBody {
   bunnyVideoId: string;
   thumbnailObjectPath?: string | null;
   author?: string;
+  theme?: CreateVideoBodyTheme;
   isPremium?: boolean;
   isNew?: boolean;
   status?: CreateVideoBodyStatus;
   sortOrder?: number;
 }
+
+export type UpdateVideoBodyTheme = typeof UpdateVideoBodyTheme[keyof typeof UpdateVideoBodyTheme] | null;
+
+
+export const UpdateVideoBodyTheme = {
+  Movimiento: 'Movimiento',
+  Respiración: 'Respiración',
+  Naturaleza: 'Naturaleza',
+  Música: 'Música',
+} as const;
 
 export type UpdateVideoBodyStatus = typeof UpdateVideoBodyStatus[keyof typeof UpdateVideoBodyStatus];
 
@@ -1649,6 +1681,7 @@ export interface UpdateVideoBody {
   bunnyVideoId?: string;
   thumbnailObjectPath?: string | null;
   author?: string;
+  theme?: UpdateVideoBodyTheme;
   isPremium?: boolean;
   isNew?: boolean;
   status?: UpdateVideoBodyStatus;

@@ -24,6 +24,13 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -59,6 +66,8 @@ function bunnyStatusVariant(status: number): "default" | "secondary" | "destruct
 
 // ── Tipos de formulario ────────────────────────────────────────────────────
 
+const VIDEO_THEMES = ["Movimiento", "Respiración", "Naturaleza", "Música"] as const;
+
 type VideoForm = {
   title: string;
   subtitle: string;
@@ -67,6 +76,7 @@ type VideoForm = {
   bunnyVideoId: string;
   thumbnailObjectPath: string;
   author: string;
+  theme: string;
   isPremium: boolean;
   isNew: boolean;
   status: "published" | "draft";
@@ -81,6 +91,7 @@ const EMPTY_FORM: VideoForm = {
   bunnyVideoId: "",
   thumbnailObjectPath: "",
   author: "Casa del Cuenco",
+  theme: "",
   isPremium: false,
   isNew: false,
   status: "published",
@@ -96,6 +107,7 @@ function videoToForm(v: CatalogVideo): VideoForm {
     bunnyVideoId: v.bunnyVideoId,
     thumbnailObjectPath: v.thumbnailObjectPath ?? "",
     author: v.author,
+    theme: v.theme ?? "",
     isPremium: v.isPremium,
     isNew: v.isNew,
     status: v.status as "published" | "draft",
@@ -184,6 +196,9 @@ function VideoRow({
             <Badge variant="outline" className="text-xs py-0 px-2 text-muted-foreground">
               Borrador
             </Badge>
+          )}
+          {video.theme && (
+            <Badge variant="secondary" className="text-xs py-0 px-2">{video.theme}</Badge>
           )}
         </div>
         {video.subtitle && (
@@ -337,6 +352,8 @@ function VideoFormModal({
         thumbPath = await uploadThumbnail(thumbFile);
       }
 
+      const theme = VIDEO_THEMES.find((t) => t === form.theme);
+
       const payload = {
         title: form.title.trim(),
         subtitle: form.subtitle.trim(),
@@ -345,6 +362,7 @@ function VideoFormModal({
         bunnyVideoId: bunnyId.trim(),
         thumbnailObjectPath: thumbPath || null,
         author: form.author.trim() || "Casa del Cuenco",
+        theme: theme ?? null,
         isPremium: form.isPremium,
         isNew: form.isNew,
         status: form.status,
@@ -562,6 +580,24 @@ function VideoFormModal({
                 placeholder="Casa del Cuenco"
               />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Tema (para filtro)</Label>
+            <Select
+              value={form.theme || "none"}
+              onValueChange={(v) => setField("theme", v === "none" ? "" : v)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Sin tema" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Sin tema</SelectItem>
+                {VIDEO_THEMES.map((t) => (
+                  <SelectItem key={t} value={t}>{t}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
