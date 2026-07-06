@@ -532,11 +532,7 @@ export default function HomeScreen2() {
             hitSlop={8}
             style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
           >
-            <Image
-              source={require("@/assets/images/tab-icon-universo-real.png")}
-              style={styles.universeBtnBg}
-              resizeMode="cover"
-            />
+            <View style={styles.universeBtnBg} />
           </Pressable>
         </View>
       </View>
@@ -1093,6 +1089,7 @@ const styles = StyleSheet.create({
   universeBtnBg: {
     width: "100%",
     height: "100%",
+    backgroundColor: "rgba(14,10,24,0.15)",
   },
   avatarBtn: {
     width: 33,
