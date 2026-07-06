@@ -304,6 +304,27 @@ export default function HomeScreen2() {
   const { presets, loadPreset, openSheet } = useMixer();
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
+  // Fade de 300ms entre degradados de fondo al cambiar de Escena (loto en Inicio):
+  // se mantiene el degradado anterior debajo y el nuevo se desvanece encima, en vez
+  // de saltar de golpe de un color a otro.
+  const [prevGradient, setPrevGradient] = useState(activeTheme.gradient);
+  const gradientFade = useRef(new Animated.Value(1)).current;
+  const isFirstSceneRender = useRef(true);
+  useEffect(() => {
+    if (isFirstSceneRender.current) {
+      isFirstSceneRender.current = false;
+      return;
+    }
+    gradientFade.setValue(0);
+    Animated.timing(gradientFade, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      setPrevGradient(activeTheme.gradient);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSceneId]);
   // "Universo" usa un acento borgoña propio de marca en vez del morado del picker de Escenas
   // (ese morado, pensado para la card cósmica, se veía rosado sobre el fondo oscuro del botón).
   const activeSceneAccent =
@@ -644,7 +665,10 @@ export default function HomeScreen2() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
+      <LinearGradient colors={prevGradient} style={styles.rootGradient} />
+      <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
+        <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
+      </Animated.View>
       <StatusBar barStyle="light-content" />
 
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
