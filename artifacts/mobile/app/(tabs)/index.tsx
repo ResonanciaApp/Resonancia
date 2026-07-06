@@ -1571,7 +1571,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 5,
     alignItems: "center",
-    paddingLeft: GRID_PAD - 10,
+    paddingLeft: GRID_PAD - 3,
     paddingRight: GRID_PAD + 15,
   },
   navAnimWrap: {
