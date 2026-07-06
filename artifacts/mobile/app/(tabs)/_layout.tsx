@@ -38,7 +38,7 @@ const INACTIVE_COLOR = "rgba(255,255,255,0.88)";
 const GRAD_END       = "#E9C46A";
 const GHOST_PILL_BG  = "rgba(255,255,255,0.12)";
 
-const ICON_SIZE      = 27;
+const ICON_SIZE      = 23;
 const PILL_H         = 68;   // altura fija de la píldora flotante
 const PILL_MARGIN_H  = 15;   // margen horizontal de la píldora
 
