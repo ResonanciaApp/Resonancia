@@ -439,17 +439,10 @@ export default function SessionDetailScreen() {
             onPress={handleShare}
             style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, marginTop: -11, marginBottom: 14 })}
           >
-            <LinearGradient
-              colors={["#D6A45C", "#BE8744"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={styles.shareBtnGradientBorder}
-            >
-              <View style={styles.shareBtnInner}>
-                <Text style={styles.shareBtnText}>Compartir</Text>
-                <Feather name="send" size={15} color="#D6A45C" />
-              </View>
-            </LinearGradient>
+            <View style={styles.shareBtnInner}>
+              <Text style={styles.shareBtnText}>Compartir</Text>
+              <Feather name="send" size={15} color="#D6A45C" />
+            </View>
           </Pressable>
 
           {/* Description */}
@@ -1047,18 +1040,16 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 0.5,
   },
-  shareBtnGradientBorder: {
-    borderRadius: 30,
-    padding: 1.5,
-  },
   shareBtnInner: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    paddingVertical: 9,
-    borderRadius: 29,
-    backgroundColor: "rgba(255,255,255,0.01)",
+    paddingVertical: 10.5,
+    borderRadius: 30,
+    backgroundColor: "transparent",
+    borderWidth: 1.5,
+    borderColor: "#D6A45C",
     paddingHorizontal: 24,
   },
   shareBtnText: {
