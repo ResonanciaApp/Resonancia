@@ -355,10 +355,13 @@ export function MixerSheet() {
   const hasCustomBg = bgPresetId !== DEFAULT_BG_PRESET_ID;
 
   // Cargar preset y overlay guardados
+  // Nota: "borgona" era el fondo por defecto ANTES de enlazar el fondo al tema
+  // activo de Inicio; usuarios con ese valor viejo persistido en AsyncStorage
+  // deben re-enlazarse al tema (no quedar pegados al borgoña fijo de antes).
   useEffect(() => {
     AsyncStorage.multiGet([MIXER_BG_KEY, MIXER_OVERLAY_KEY])
       .then(([bg, ov]) => {
-        if (bg[1] && bg[1] !== "blanco") setBgPresetId(bg[1]);
+        if (bg[1] && bg[1] !== "blanco" && bg[1] !== "borgona") setBgPresetId(bg[1]);
         if (ov[1]) setOverlayOpacity(parseFloat(ov[1]));
       })
       .catch(() => {});

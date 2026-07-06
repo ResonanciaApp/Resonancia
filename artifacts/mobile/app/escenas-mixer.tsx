@@ -68,7 +68,7 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
   } = useMixer();
 
   const [selectedId, setSelectedId] = useState<string>(
-    contextBgPresetId ?? "borgona",
+    contextBgPresetId ?? DEFAULT_BG_PRESET_ID,
   );
   const activeBgPreset = GRADIENT_PRESETS.find((p) => p.id === selectedId);
   const [videoEnabled, setVideoEnabled] = useState(false);
