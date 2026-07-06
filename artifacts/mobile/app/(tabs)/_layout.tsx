@@ -39,7 +39,7 @@ const INACTIVE_COLOR = "rgba(255,255,255,0.88)";
 const GRAD_END       = "#E9C46A";
 const GHOST_PILL_BG  = "rgba(255,255,255,0.12)";
 
-const ICON_SIZE      = 23;
+const ICON_SIZE      = 27;
 const PILL_H         = 68;   // altura fija de la píldora flotante
 const PILL_MARGIN_H  = 15;   // margen horizontal de la píldora
 
@@ -229,8 +229,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         {/* ── iOS Glass Material ────────────────────────────────────────────── */}
         {/* 1. Blur base */}
         <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-        {/* 2b. Fondo del tab bar */}
-        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(52,13,26,0.22)" }]} />
         {/* 3. Inner glow vertical — más luminoso arriba, se desvanece abajo → da volumen al vidrio */}
         <LinearGradient
           colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
