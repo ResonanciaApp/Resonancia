@@ -787,7 +787,7 @@ export default function ProfileScreen() {
             style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.7 : 1 }]}
             hitSlop={10}
           >
-            <Feather name="settings" size={20} color="#F4DAD5" />
+            <Feather name="settings" size={20} color="#e8e8e8" />
           </Pressable>
           <Text style={styles.stickyTitle}>Perfil</Text>
           <Image

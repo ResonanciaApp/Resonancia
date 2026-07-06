@@ -224,16 +224,16 @@ const srStyles = StyleSheet.create({
   root:        { flex: 1, backgroundColor: "#190913" },
   overlay:     { flexDirection: "row", alignItems: "center", backgroundColor: "#190913", paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
   bar:         { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.09)", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 11 },
-  input:       { flex: 1, fontSize: 14, color: "#F4DAD5" },
+  input:       { flex: 1, fontSize: 14, color: "#e8e8e8" },
   cancel:      { paddingVertical: 6 },
   cancelText:  { color: "#BE8744", fontSize: 14, fontWeight: "600" },
   empty:       { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, paddingTop: 60 },
-  emptyTitle:  { fontSize: 18, fontWeight: "700", color: "#F4DAD5", textAlign: "center", marginBottom: 10 },
+  emptyTitle:  { fontSize: 18, fontWeight: "700", color: "#e8e8e8", textAlign: "center", marginBottom: 10 },
   emptySub:    { fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
   resultRow:   { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 5 },
   thumb:       { width: 75, height: 75, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.025)" },
   resultCat:   { fontSize: 12, color: "rgba(242,231,228,0.45)", marginBottom: 3 },
-  resultTitle: { fontSize: 15, fontWeight: "700", color: "#F4DAD5", marginBottom: 3 },
+  resultTitle: { fontSize: 15, fontWeight: "700", color: "#e8e8e8", marginBottom: 3 },
   resultAuthor:{ fontSize: 12, color: "rgba(242,231,228,0.45)" },
 });
 
@@ -782,7 +782,7 @@ const styles = StyleSheet.create({
   introHeroTitle: {
     fontSize: 26,
     fontWeight: "700",
-    color: "#F4DAD5",
+    color: "#e8e8e8",
     letterSpacing: 0.3,
     marginBottom: 6,
   },

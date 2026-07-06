@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 25,
     fontWeight: "600",
-    color: "#F4DAD5",
+    color: "#e8e8e8",
     textAlign: "center",
     marginBottom: 24,
   },
@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 13.5,
     fontWeight: "500",
-    color: "#F4DAD5",
+    color: "#e8e8e8",
   },
   timerTrigger: {
     flexDirection: "row",

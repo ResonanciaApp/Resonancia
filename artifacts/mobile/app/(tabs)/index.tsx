@@ -1452,7 +1452,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 14,
-    color: "#F4DAD5",
+    color: "#e8e8e8",
     padding: 0,
   },
   searchResultsWrap: {
@@ -1489,7 +1489,7 @@ const styles = StyleSheet.create({
   searchResultTitle: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#F4DAD5",
+    color: "#e8e8e8",
   },
   searchEmptyWrap: {
     paddingVertical: 18,
