@@ -50,8 +50,8 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   viento: {
     id: "viento",
     label: "Viento",
-    gradient: ["#28414D", "#131F26"],
-    solid: "#172127",
+    gradient: ["#1B466C", "#091827"],
+    solid: "#091827",
   },
 };
 
