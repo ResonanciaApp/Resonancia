@@ -18,22 +18,21 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { SessionRow } from "@/components/SessionRow";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { getTemaById } from "@/data/temas";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 const H_PAD = 20;
 const STICKY_START = 180;
 const STICKY_END   = 300;
-
-const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 
 export default function TemaScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { theme: activeTheme } = useSceneTheme();
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -66,10 +65,9 @@ export default function TemaScreen() {
   return (
     <LinearGradient
       style={styles.root}
-      colors={BG_GRADIENT}
+      colors={activeTheme.gradient}
     >
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
 
       {/* ── STICKY HEADER (fades in on scroll) ── */}
       <Animated.View

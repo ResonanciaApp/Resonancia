@@ -14,8 +14,10 @@ type SacredBackgroundProps = {
    *   pantallas que SÍ pasan `solidColor` (identidad de categoría) conservan
    *   su color explícito por ahora — la migración de esas es progresiva.
    * - "texture": textura + glow dorado + viñeta (look original, legacy).
+   * - "gradient": degradado del tema de Escena activo (`theme.gradient`),
+   *   el mismo look que usa Inicio (`LinearGradient` de arriba a abajo).
    */
-  variant?: "texture" | "solid";
+  variant?: "texture" | "solid" | "gradient";
   /** Color del fondo sólido (solo aplica con variant="solid"). */
   solidColor?: string;
 };
@@ -27,6 +29,16 @@ export function SacredBackground({ variant = "solid", solidColor }: SacredBackgr
     return (
       <View
         style={[StyleSheet.absoluteFill, { backgroundColor: solidColor ?? theme.solid }]}
+        pointerEvents="none"
+      />
+    );
+  }
+
+  if (variant === "gradient") {
+    return (
+      <LinearGradient
+        colors={theme.gradient}
+        style={StyleSheet.absoluteFill}
         pointerEvents="none"
       />
     );

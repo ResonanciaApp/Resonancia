@@ -756,7 +756,7 @@ export default function ProfileScreen() {
         </Animated.View>
       )}
       <StatusBar barStyle="light-content" />
-      <SacredBackground variant="solid" />
+      <SacredBackground variant="gradient" />
       <GeometrixOverlay active={profileGeoActive} />
 
       {/* ── Sticky header (estilo Calm) ── */}

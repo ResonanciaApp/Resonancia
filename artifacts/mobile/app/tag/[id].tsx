@@ -20,9 +20,9 @@ import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PremiumBadge } from "@/components/PremiumBadge";
-import { SacredBackground } from "@/components/SacredBackground";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { usePremium } from "@/context/PremiumContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { TAG_CARDS } from "@/data/tags";
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -40,13 +40,12 @@ const DURATION_FILTERS = [
   { label: "30+ min",   min: 31, max: 9999 },
 ];
 
-const BG_GRADIENT = ["#340D1A", "#190913"] as const;
-
 export default function TagScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
   const { isPremium } = usePremium();
   const insets = useSafeAreaInsets();
+  const { theme: activeTheme } = useSceneTheme();
 
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -96,13 +95,11 @@ export default function TagScreen() {
   return (
         <LinearGradient
       style={styles.root}
-      colors={BG_GRADIENT}
-      locations={[0, 0.5, 1]}
+      colors={activeTheme.gradient}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
 
       {/* ── STICKY HEADER (fades in on scroll) ── */}
       <Animated.View
