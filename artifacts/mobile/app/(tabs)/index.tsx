@@ -70,9 +70,10 @@ import { WeeklyStreakStrip } from "@/components/WeeklyStreakStrip";
 const { width } = Dimensions.get("window");
 
 const TODOS_TAB_ID = "todos";
-const TODOS_ICON = require("@/assets/images/icons/todos-ring.png");
+const TODOS_ICON_SEL = require("@/assets/images/icons/todos-selected.png");
+const TODOS_ICON_UNSEL = require("@/assets/images/icons/todos-deselected.png");
 const NAV_TABS = [
-  { id: TODOS_TAB_ID,   label: "Todos",         cats: [] as string[], icon: TODOS_ICON },
+  { id: TODOS_TAB_ID,   label: "Todos",         cats: [] as string[], icon: TODOS_ICON_UNSEL, iconSel: TODOS_ICON_SEL },
   { id: "meditaciones",  label: "Meditación",    cats: ["meditaciones-guiadas"] },
   { id: "sesiones",      label: "Sesiones",      cats: ["sonidos-ancestrales"] },
   { id: "musica",        label: "Música",        cats: ["musica-sonidos"] },
@@ -125,7 +126,7 @@ function BlinkingCursor({ color }: { color: string }) {
 }
 
 
-function NavTabChip({ sel, label, icon, onPress }: { sel: boolean; label: string; icon?: number; onPress: () => void }) {
+function NavTabChip({ sel, label, icon, iconSel, onPress }: { sel: boolean; label: string; icon?: number; iconSel?: number; onPress: () => void }) {
   const selOpacity = useRef(new Animated.Value(sel ? 1 : 0)).current;
   useEffect(() => {
     Animated.timing(selOpacity, { toValue: sel ? 1 : 0, duration: 180, useNativeDriver: true }).start();
@@ -137,10 +138,8 @@ function NavTabChip({ sel, label, icon, onPress }: { sel: boolean; label: string
         onPress={onPress}
         style={({ pressed }) => [styles.headerTabIconChip, { opacity: pressed ? 0.7 : 1 }]}
       >
-        <Image source={icon} style={styles.headerTabIconImg} resizeMode="contain" />
-        {!sel && (
-          <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.14)", borderRadius: 999 }]} />
-        )}
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.15)", borderRadius: 999 }]} />
+        <Image source={sel && iconSel ? iconSel : icon} style={styles.headerTabIconImg} resizeMode="contain" />
       </Pressable>
     );
   }
@@ -175,7 +174,7 @@ function AnimatedNavTabRow({
   onSelect,
   onClear,
 }: {
-  tabs: { id: string; label: string; icon?: number }[];
+  tabs: { id: string; label: string; icon?: number; iconSel?: number }[];
   activeTab: string | null;
   onSelect: (id: string) => void;
   onClear: () => void;
@@ -258,6 +257,7 @@ function AnimatedNavTabRow({
                 sel={colorTab === t.id}
                 label={t.label}
                 icon={t.icon}
+                iconSel={t.iconSel}
                 onPress={() => {
                   if (displayTab === t.id) {
                     if (t.id !== TODOS_TAB_ID) handleClear();
