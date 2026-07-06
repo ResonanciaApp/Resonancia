@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
   },
   chipsSection: {},
   headerBorder: {
-    marginTop: 14,
+    marginTop: 19,
     marginHorizontal: -20,
     height: 1,
     backgroundColor: "rgba(255,255,255,0.035)",
