@@ -24,6 +24,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { DrawerMenu } from "@/components/DrawerMenu";
 import { MixerSheet } from "@/components/MixerSheet";
+import { EscenasSheet } from "@/components/EscenasSheet";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
 import { BrightnessProvider, useBrightness } from "@/context/BrightnessContext";
@@ -294,6 +295,7 @@ function RootLayoutNav() {
         </PushWrapper>
         <DrawerMenu />
         <MixerSheet />
+        <EscenasSheet />
       </DrawerProvider>
     </MixerPanelProvider>
   );

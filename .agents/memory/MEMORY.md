@@ -91,4 +91,5 @@
 - [pnpm add timeout deja node_modules corrupto](pnpm-add-timeout-corruption.md) — pnpm add interrumpido puede borrar binarios (expo) y desincronizar lockfile; fix = pnpm install --no-frozen-lockfile + mkdir tmp dir de Metro
 - [Bunny Stream videos](bunny-videos.md) — catalog_videos DB + /videos + /admin/videos routes; mobile useVideos hook con fallback a STATIC_VIDEOS; EXPO_PUBLIC_BUNNY_CDN_HOSTNAME requerido para HLS; VITE_BUNNY_CDN_HOSTNAME para admin
 - [Mix folders pattern](mix-folders-pattern.md) — MixFolder mirrors playlist folders; "crear mezcla/carpeta" buttons live inside the mezclas tab itself (not a separate general view like Playlists)
+- [Lotus icon → Escenas panel](lotus-icon-escenas.md) — lotus icon on Inicio no longer opens /profile, opens EscenasSheet (ambient sound); Profile now only via DrawerMenu
 - [Descanso 4-tab restructure](descanso-4tabs-restructure.md) — Historias/ASMR=session grids, Binaural/Ambiental=sound grids; enum duplicated in 4 places; session image pool has gaps (no session-3.jpg)

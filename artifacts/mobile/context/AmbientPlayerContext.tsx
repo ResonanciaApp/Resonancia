@@ -57,15 +57,15 @@ export const AMBIENT_SCENES: AmbientScene[] = [
   },
 ];
 
-const TARGET_VOLUME = 0.49; // 0.65 − 25%
+const DEFAULT_VOLUME = 0.49; // 0.65 − 25%
 const FADE_STEPS = 25;
 const FADE_MS = 1000;
 
-async function fadeIn(sound: Audio.Sound) {
+async function fadeIn(sound: Audio.Sound, targetVolume: number) {
   const stepMs = FADE_MS / FADE_STEPS;
   for (let i = 1; i <= FADE_STEPS; i++) {
     await new Promise<void>((r) => setTimeout(r, stepMs));
-    try { await sound.setVolumeAsync((i / FADE_STEPS) * TARGET_VOLUME); } catch { break; }
+    try { await sound.setVolumeAsync((i / FADE_STEPS) * targetVolume); } catch { break; }
   }
 }
 
@@ -82,34 +82,54 @@ type AmbientCtx = {
   currentScene: AmbientScene;
   isPlaying: boolean;
   isMuted: boolean;
+  /** Volumen (0–1) de la escena activa. Independiente del Mezclador y de las sesiones. */
+  volume: number;
+  setVolume: (v: number) => void;
   setScene: (id: SceneId) => Promise<void>;
   togglePlayback: () => Promise<void>;
   stopAmbient: () => Promise<void>;
   startAmbient: () => Promise<void>;
+  /** Panel "Escenas" (bottom sheet), montado globalmente en app/_layout.tsx. */
+  isSheetOpen: boolean;
+  openSheet: () => void;
+  closeSheet: () => void;
 };
 
 const AmbientContext = createContext<AmbientCtx | null>(null);
 
 const STORAGE_KEY = "@ambient_scene";
 
+const DEFAULT_VOLUMES: Record<SceneId, number> = {
+  universo: DEFAULT_VOLUME,
+  naturaleza: DEFAULT_VOLUME,
+  bosque: DEFAULT_VOLUME,
+  lluvia: DEFAULT_VOLUME,
+  viento: DEFAULT_VOLUME,
+};
+
 export function AmbientPlayerProvider({ children }: { children: React.ReactNode }) {
   const [currentSceneId, setCurrentSceneId] = useState<SceneId>("universo");
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [volumes, setVolumes] = useState<Record<SceneId, number>>(DEFAULT_VOLUMES);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const soundRef = useRef<Audio.Sound | null>(null);
   const loadedSceneRef = useRef<SceneId | null>(null);
   // Refs so callbacks can read latest state without re-creating
   const isPlayingRef = useRef(false);
   const isMutedRef = useRef(false);
   const currentSceneIdRef = useRef<SceneId>("universo");
+  const volumesRef = useRef<Record<SceneId, number>>(DEFAULT_VOLUMES);
   // expo-av session is configured lazily on first ambient use, never at launch.
   const sessionConfiguredRef = useRef(false);
 
   isPlayingRef.current = isPlaying;
   isMutedRef.current = isMuted;
   currentSceneIdRef.current = currentSceneId;
+  volumesRef.current = volumes;
 
   const currentScene = AMBIENT_SCENES.find((s) => s.id === currentSceneId)!;
+  const volume = volumes[currentSceneId];
 
   // Configure the expo-av audio session lazily — ONLY on first ambient use, never
   // at launch. Calling expo-av's Audio.setAudioModeAsync at startup races with the
@@ -162,12 +182,13 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
   const loadAndPlay = useCallback(async (sceneId: SceneId) => {
     console.warn(`[Ambient] loadAndPlay scene=${sceneId} loaded=${loadedSceneRef.current}`);
     await ensureAmbientSession();
+    const targetVolume = volumesRef.current[sceneId] ?? DEFAULT_VOLUME;
     if (loadedSceneRef.current !== sceneId) {
       await unload();
       try {
         const { sound } = await Audio.Sound.createAsync(
           SCENE_AUDIO[sceneId] as Parameters<typeof Audio.Sound.createAsync>[0],
-          { shouldPlay: true, isLooping: true, volume: TARGET_VOLUME }
+          { shouldPlay: true, isLooping: true, volume: targetVolume }
         );
         soundRef.current = sound;
         loadedSceneRef.current = sceneId;
@@ -176,15 +197,25 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
         console.warn("[Ambient] load failed:", e);
       }
     } else {
-      // Already pre-loaded — play at full volume
+      // Already pre-loaded — play at its configured volume
       const sound = soundRef.current;
       if (sound) {
-        try { await sound.setVolumeAsync(TARGET_VOLUME); } catch {}
+        try { await sound.setVolumeAsync(targetVolume); } catch {}
         try { await sound.playAsync(); } catch {}
         console.warn(`[Ambient] playing preloaded sound for ${sceneId}`);
       }
     }
   }, [unload, ensureAmbientSession]);
+
+  /** Ajusta el volumen (0–1) de la escena activa. Se aplica en vivo si está sonando. */
+  const setVolume = useCallback((v: number) => {
+    const clamped = Math.max(0, Math.min(1, v));
+    const sceneId = currentSceneIdRef.current;
+    setVolumes((prev) => ({ ...prev, [sceneId]: clamped }));
+    if (loadedSceneRef.current === sceneId && soundRef.current && isPlayingRef.current && !isMutedRef.current) {
+      soundRef.current.setVolumeAsync(clamped).catch(() => {});
+    }
+  }, []);
 
   // On mount: set the initial scene state ONLY. We deliberately do NOT touch the
   // native audio session or load any expo-av sound at launch — doing so races with
@@ -245,9 +276,25 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
     await loadAndPlay(currentSceneIdRef.current);
   }, [loadAndPlay]);
 
+  const openSheet = useCallback(() => setIsSheetOpen(true), []);
+  const closeSheet = useCallback(() => setIsSheetOpen(false), []);
+
   return (
     <AmbientContext.Provider
-      value={{ currentScene, isPlaying, isMuted, setScene, togglePlayback, stopAmbient, startAmbient }}
+      value={{
+        currentScene,
+        isPlaying,
+        isMuted,
+        volume,
+        setVolume,
+        setScene,
+        togglePlayback,
+        stopAmbient,
+        startAmbient,
+        isSheetOpen,
+        openSheet,
+        closeSheet,
+      }}
     >
       {children}
     </AmbientContext.Provider>
