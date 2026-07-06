@@ -17,6 +17,7 @@ import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { useCatalog } from "@/context/CatalogContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const H_PAD = 15;
 const GOLD  = "#BE8744";
@@ -273,6 +274,7 @@ export default function MeditacionesGuiadasScreen() {
   const bottomPad = Platform.OS==="web" ? 34 : insets.bottom;
   const { isFavorite, toggleFavorite, history } = usePlayer();
   const { version } = useCatalog();
+  const { theme } = useSceneTheme();
 
   const TABS = useMemo(() => {
     const extra = Array.from(
@@ -431,7 +433,7 @@ export default function MeditacionesGuiadasScreen() {
       <AddToPlaylistSheet visible={playlistSessionId !== null} sessionId={playlistSessionId ?? ""} onClose={() => setPlaylistSessionId(null)} />
 
       {/* ── Sticky header (aparece con scroll) ── */}
-      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity }]} pointerEvents={stickyActive ? "auto" : "none"} onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}>
+      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"} onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}>
         <GhostPill>
           <BackPill onPress={() => router.back()} />
         </GhostPill>
@@ -445,7 +447,7 @@ export default function MeditacionesGuiadasScreen() {
 
       {/* ── Chips sticky (se pegan debajo del sticky header) ── */}
       {chipsSticky && (
-        <View style={[styles.stickyChips, { top: headerH }]}>
+        <View style={[styles.stickyChips, { top: headerH, backgroundColor: theme.gradient[0], borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.035)" }]}>
           <ChipRow tabs={TABS} activeTab={activeTab}
             onSelect={(id) => { setActiveTab(id); setTimeout(() => scrollRef.current?.scrollTo({ y: chipsOffsetY - headerH + 2, animated: false }), 50); }}
             onClear={() => { setActiveTab(null); setTimeout(() => scrollRef.current?.scrollTo({ y: chipsOffsetY - headerH + 2, animated: false }), 50); }}
