@@ -16,6 +16,9 @@ type Props = {
   onChange: (value: number) => void;
   color: string;
   trackColor: string;
+  thickness?: number;
+  showThumb?: boolean;
+  fillOpacity?: number;
 };
 
 /**
@@ -40,7 +43,15 @@ type Props = {
  *   - Resets externos (p. ej. "restablecer") encuentran gestureActive=false y
  *     valor≠fracción → sync ✓
  */
-export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
+export function VolumeSlider({
+  value,
+  onChange,
+  color,
+  trackColor,
+  thickness = 2,
+  showThumb = true,
+  fillOpacity = 0.5,
+}: Props) {
   const fraction = useSharedValue(value);
   const trackWidth = useSharedValue(1);
   const lastEmitSV = useSharedValue(value);
@@ -140,15 +151,26 @@ export function VolumeSlider({ value, onChange, color, trackColor }: Props) {
           trackWidth.value = Math.max(1, e.nativeEvent.layout.width - TRACK_PAD * 2);
         }}
       >
-        <View style={[styles.track, { backgroundColor: trackColor }]}>
+        <View
+          style={[
+            styles.track,
+            { backgroundColor: trackColor, height: thickness, borderRadius: thickness / 2 },
+          ]}
+        >
           <Animated.View
             pointerEvents="none"
-            style={[styles.fill, { backgroundColor: color }, fillStyle]}
+            style={[
+              styles.fill,
+              { backgroundColor: color, height: thickness, borderRadius: thickness / 2, opacity: fillOpacity },
+              fillStyle,
+            ]}
           />
-          <Animated.View
-            pointerEvents="none"
-            style={[styles.thumb, { backgroundColor: color }, thumbStyle]}
-          />
+          {showThumb ? (
+            <Animated.View
+              pointerEvents="none"
+              style={[styles.thumb, { backgroundColor: color }, thumbStyle]}
+            />
+          ) : null}
         </View>
       </View>
     </GestureDetector>
@@ -162,16 +184,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   track: {
-    height: 2,
-    borderRadius: 1,
     justifyContent: "center",
   },
   fill: {
     position: "absolute",
     left: 0,
-    height: 2,
-    borderRadius: 1,
-    opacity: 0.5,
   },
   thumb: {
     position: "absolute",

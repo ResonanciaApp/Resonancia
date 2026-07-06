@@ -1,16 +1,15 @@
 /**
- * EscenasSheet — panel de "Escenas" (sonido ambiente) en hoja inferior.
+ * EscenasSheet — panel de "Escenas" (sonido ambiente) en pantalla completa.
  * ─────────────────────────────────────────────────────────────────
  * Se monta UNA sola vez a nivel global (app/_layout.tsx) y se abre desde el
- * ícono de loto en Inicio. Mismo patrón de interacción que MixerSheet: Modal +
- * PanResponder para arrastrar hacia abajo y cerrar, slide-in desde abajo.
+ * ícono de loto en Inicio. Modal a pantalla completa, sin tab bar, con slide-in
+ * desde abajo y botón X para cerrar.
  *
  * Cada escena tiene su propio audio en loop (AmbientPlayerContext) + su propio
  * volumen. Cambiar de escena detiene la anterior y arranca la nueva. Cerrar el
  * panel NO detiene el audio — sigue sonando en segundo plano. Incluye un
- * interruptor para apagar el sonido sin cerrar el panel, y un temporizador
- * ("Reproducir sonidos fuera de la aplicación") que detiene el sonido
- * automáticamente tras N minutos.
+ * temporizador ("Reproducir sonidos fuera de la aplicación") que detiene el
+ * sonido automáticamente tras N minutos.
  * ─────────────────────────────────────────────────────────────────
  */
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -21,11 +20,9 @@ import {
   Dimensions,
   Easing,
   Modal,
-  PanResponder,
   Pressable,
   ScrollView,
   StyleSheet,
-  Switch,
   Text,
   View,
 } from "react-native";
@@ -37,7 +34,6 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 
 const WARM = {
-  handle: "rgba(255,255,255,0.25)",
   card: "rgba(74,12,12,0.08)",
   cardActive: "rgba(212,175,55,0.14)",
   border: "rgba(61,14,22,0.40)",
@@ -57,8 +53,8 @@ const TIMER_OPTIONS: Array<{ label: string; value: number | null }> = [
 const SCREEN_W = Dimensions.get("window").width;
 const SHEET_H_PAD = 24;
 const CARD_GAP = 14;
-const CARD_W = Math.floor((SCREEN_W - SHEET_H_PAD * 2) / 2.5);
-const CARD_H = Math.floor(CARD_W * 1.55);
+const CARD_W = Math.floor((SCREEN_W - SHEET_H_PAD * 2) / 2.5) + 20;
+const CARD_H = Math.floor(CARD_W * 1.55) + 40;
 
 export function EscenasSheet() {
   const insets = useSafeAreaInsets();
@@ -70,7 +66,6 @@ export function EscenasSheet() {
     volume,
     setVolume,
     setScene,
-    togglePlayback,
     startAmbient,
     isSheetOpen,
     closeSheet,
@@ -85,28 +80,6 @@ export function EscenasSheet() {
 
   const sheetEnterY = useRef(new Animated.Value(Dimensions.get("window").height)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
-
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: (_, g) => g.dy > 5,
-      onPanResponderMove: (_, g) => {
-        if (g.dy > 0) sheetEnterY.setValue(g.dy);
-      },
-      onPanResponderRelease: (_, g) => {
-        if (g.dy > 80 || g.vy > 0.5) {
-          closeSheet();
-        } else {
-          Animated.timing(sheetEnterY, {
-            toValue: 0,
-            duration: DURATION.PLAYER,
-            easing: easeOutCubic,
-            useNativeDriver: true,
-          }).start();
-        }
-      },
-    }),
-  ).current;
 
   useLayoutEffect(() => {
     if (isSheetOpen) {
@@ -151,21 +124,17 @@ export function EscenasSheet() {
       statusBarTranslucent
       onRequestClose={closeSheet}
     >
-      <Pressable style={styles.backdrop} onPress={closeSheet}>
-        <Animated.View style={[styles.backdropFill, { opacity: backdropOpacity }]} />
-      </Pressable>
       <Animated.View
         style={[
           styles.sheet,
-          { backgroundColor: theme.solid, paddingBottom: Math.max(insets.bottom, 20) },
+          { backgroundColor: theme.solid, paddingTop: Math.max(insets.top, 20), paddingBottom: Math.max(insets.bottom, 20) },
           { transform: [{ translateY: sheetEnterY }] },
         ]}
       >
-        <View {...panResponder.panHandlers}>
-          <View style={[styles.handle, { backgroundColor: WARM.handle }]} />
-          <Text style={styles.title}>Escenas</Text>
-          <Text style={styles.subtitle}>Sonido ambiente de fondo</Text>
-        </View>
+        <Pressable style={styles.closeBtn} onPress={closeSheet} hitSlop={10}>
+          <Feather name="x" size={24} color="#FFFFFF" />
+        </Pressable>
+        <Text style={styles.title}>Escenas</Text>
 
         {/* Volumen de la escena — arriba de las cards */}
         <View style={styles.volumeRow}>
@@ -174,8 +143,11 @@ export function EscenasSheet() {
             <VolumeSlider
               value={volume}
               onChange={setVolume}
-              color="#D4AF37"
-              trackColor="rgba(61,14,22,0.40)"
+              color="#FFFFFF"
+              trackColor="rgba(255,255,255,0.6)"
+              thickness={4}
+              showThumb={false}
+              fillOpacity={1}
             />
           </View>
           <Feather name="volume-2" size={16} color="rgba(255,255,255,0.55)" />
@@ -210,19 +182,6 @@ export function EscenasSheet() {
             })}
           </View>
         )}
-
-        <View style={styles.toggleRow}>
-          <View style={styles.toggleTextWrap}>
-            <Text style={styles.toggleLabel}>Sonido de escena</Text>
-            <Text style={styles.toggleHint}>{soundOn ? currentScene.label : "Apagado"}</Text>
-          </View>
-          <Switch
-            value={soundOn}
-            onValueChange={() => togglePlayback()}
-            trackColor={{ false: "rgba(255,255,255,0.15)", true: "rgba(212,175,55,0.55)" }}
-            thumbColor={soundOn ? "#D4AF37" : "#F4DAD5"}
-          />
-        </View>
 
         <View style={styles.divider} />
 
@@ -278,40 +237,30 @@ export function EscenasSheet() {
 }
 
 const styles = StyleSheet.create({
-  backdrop: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  backdropFill: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.55)",
-  },
   sheet: {
     position: "absolute",
     left: 0,
     right: 0,
+    top: 0,
     bottom: 0,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
     paddingHorizontal: SHEET_H_PAD,
-    paddingTop: 10,
   },
-  handle: {
+  closeBtn: {
     alignSelf: "center",
-    width: 40,
-    height: 4,
-    borderRadius: 2,
-    marginBottom: 16,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: "rgba(0,0,0,0.20)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20,
   },
   title: {
     fontSize: 18,
     fontWeight: "600",
     color: "#F4DAD5",
-    marginBottom: 2,
-  },
-  subtitle: {
-    fontSize: 13,
-    color: "rgba(242,231,228,0.45)",
-    marginBottom: 20,
+    textAlign: "center",
+    marginBottom: 24,
   },
   volumeRow: {
     flexDirection: "row",
@@ -370,25 +319,6 @@ const styles = StyleSheet.create({
   timerDropItemTextActive: {
     color: "#D4AF37",
     fontWeight: "700",
-  },
-  toggleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 12,
-  },
-  toggleTextWrap: {
-    flexShrink: 1,
-  },
-  toggleLabel: {
-    fontSize: 14,
-    color: "#F4DAD5",
-    fontWeight: "500",
-  },
-  toggleHint: {
-    fontSize: 12,
-    color: "rgba(242,231,228,0.45)",
-    marginTop: 2,
   },
   divider: {
     height: 1,
