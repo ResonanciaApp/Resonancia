@@ -30,8 +30,8 @@ import { useUserProfile } from "@/context/UserProfileContext";
 const H_PAD = 18;
 const CARD_GAP = 10;
 const BG: [string, string] = ["#340D1A", "#190913"];
-const EQUIPO_BG = require("@/assets/images/equipo-bg.jpg");
 const MUTED = "#c2c2c2";
+const LOGO_RESONANCIA = require("@/assets/images/logo-resonancia-gold.png");
 const CHIP_ANIM_DURATION = 600;
 const CLOSE_SLOT = 38;
 
@@ -462,13 +462,7 @@ export default function ResonadoresScreen() {
 
   return (
     <View style={styles.root}>
-      <Image
-        source={EQUIPO_BG}
-        style={[StyleSheet.absoluteFill, { backgroundColor: "#210911" }]}
-        contentFit="cover"
-        cachePolicy="memory-disk"
-        transition={200}
-      />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.2)" }]} />
       <StatusBar barStyle="light-content" />
       <LinearGradient
         colors={["rgba(0,0,0,0.35)", "rgba(10,0,4,0.65)", "#0A0004"]}
@@ -540,8 +534,19 @@ export default function ResonadoresScreen() {
                     style={StyleSheet.absoluteFill}
                   />
                 )}
-                <Text style={[styles.tabBtnText, isActive && styles.tabBtnTextActive]}>{label}</Text>
-                <Text style={[styles.tabBtnBajada, isActive && styles.tabBtnBajadaActive]}>{bajada}</Text>
+                <View style={styles.tabBtnContent}>
+                  {t === "resonadores" && (
+                    <Image
+                      source={LOGO_RESONANCIA}
+                      style={styles.tabBtnLogo}
+                      contentFit="contain"
+                    />
+                  )}
+                  <View>
+                    <Text style={[styles.tabBtnText, isActive && styles.tabBtnTextActive]}>{label}</Text>
+                    <Text style={[styles.tabBtnBajada, isActive && styles.tabBtnBajadaActive]}>{bajada}</Text>
+                  </View>
+                </View>
               </Pressable>
             );
           })}
@@ -723,10 +728,21 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   tabBtnActive: {},
+  tabBtnContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+  },
+  tabBtnLogo: {
+    width: 16,
+    height: 16,
+  },
   tabBtnText: {
     fontSize: 15,
     fontWeight: "600",
     color: "rgba(255,255,255,0.70)",
+    textAlign: "center",
   },
   tabBtnTextActive: {
     color: "#1B060F",
