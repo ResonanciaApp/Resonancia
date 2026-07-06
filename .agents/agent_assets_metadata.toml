@@ -1440,6 +1440,12 @@ uri = "file://artifacts/mobile/assets/images/ambient/zafiro.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "O4opl9c6w4BbQbUIaMjlX"
+uri = "file://artifacts/mobile/assets/images/ambient/vino-tinto.png"
+type = "image"
+title = "generated_image"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
@@ -2153,3 +2159,9 @@ id = "Gay-JABDX6abXp0MoIDfc"
 uri = "file://artifacts/mobile/assets/audio/nebulosa_ambiente.mp3"
 type = "audio"
 title = "nebulosa ambiente"
+
+[[outputs]]
+id = "w2Ypf-UBCTU98WU13SQiT"
+uri = "file://artifacts/mobile/assets/audio/vino_tinto_ambiente.mp3"
+type = "audio"
+title = "vino tinto ambiente"

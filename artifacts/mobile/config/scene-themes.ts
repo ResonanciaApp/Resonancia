@@ -83,6 +83,12 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
     gradient: ["#156394", "#2E2F7F"],
     solid: "#2E2F7F",
   },
+  vinoTinto: {
+    id: "vinoTinto",
+    label: "Vino Tinto",
+    gradient: ["#2F0511", "#19020A"],
+    solid: "#19020A",
+  },
 };
 
 export const DEFAULT_THEME_ID: SceneId = "universo";

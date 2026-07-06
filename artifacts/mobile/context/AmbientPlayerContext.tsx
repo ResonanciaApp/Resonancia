@@ -19,7 +19,8 @@ export type SceneId =
   | "musgo"
   | "orquidea"
   | "nebulosa"
-  | "zafiro";
+  | "zafiro"
+  | "vinoTinto";
 
 export type AmbientScene = {
   id: SceneId;
@@ -100,6 +101,13 @@ export const AMBIENT_SCENES: AmbientScene[] = [
     icon: "star",
     image: require("@/assets/images/ambient/zafiro.png"),
   },
+  {
+    id: "vinoTinto",
+    label: "Vino Tinto",
+    colors: ["#2F0511", "#19020A"] as const,
+    icon: "feather",
+    image: require("@/assets/images/ambient/vino-tinto.png"),
+  },
 ];
 
 const DEFAULT_VOLUME = 0.49; // 0.65 − 25%
@@ -126,6 +134,7 @@ const SCENE_AUDIO: Record<SceneId, unknown> = {
   orquidea:   require("@/assets/audio/orquidea_ambiente.mp3"),
   nebulosa:   require("@/assets/audio/nebulosa_ambiente.mp3"),
   zafiro:     require("@/assets/audio/zafiro_ambiente.mp3"),
+  vinoTinto:  require("@/assets/audio/vino_tinto_ambiente.mp3"),
 };
 
 type AmbientCtx = {
@@ -160,6 +169,7 @@ const DEFAULT_VOLUMES: Record<SceneId, number> = {
   orquidea: DEFAULT_VOLUME,
   nebulosa: DEFAULT_VOLUME,
   zafiro: DEFAULT_VOLUME,
+  vinoTinto: DEFAULT_VOLUME,
 };
 
 export function AmbientPlayerProvider({ children }: { children: React.ReactNode }) {
