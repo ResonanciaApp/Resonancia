@@ -355,7 +355,7 @@ export default function NochesScreen() {
             </Pressable>
 
             {/* Tabs con indicador animado */}
-            <View style={[styles.tabBar, { borderBottomColor: "rgba(61,14,22,0.40)", paddingHorizontal: H_PAD }]}>
+            <View style={[styles.tabBar, { borderBottomColor: "rgba(61,14,22,0.60)", paddingHorizontal: H_PAD }]}>
               {TABS.map((tab, idx) => (
                 <Pressable
                   key={tab}
