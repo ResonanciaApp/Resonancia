@@ -39,6 +39,7 @@ import { SOUND_MAP } from "@/config/sound-map";
 import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getNatureSounds } from "@/config/nature-base-map";
 import Svg, { Path, Rect } from "react-native-svg";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
@@ -62,6 +63,7 @@ function formatTime(seconds: number): string {
 
 export default function PlayerScreen() {
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const {
     currentSession,
@@ -699,10 +701,11 @@ export default function PlayerScreen() {
 
           {/* Sheet */}
           <Animated.View style={[styles.optSheet, { paddingBottom: bottomPad + 8 }, sheetAnimStyle]}>
-            <LinearGradient
-              colors={["#340D1A", "#190913"]}
-              locations={[0, 1]}
-              style={[StyleSheet.absoluteFill, { borderTopLeftRadius: 24, borderTopRightRadius: 24 }]}
+            <View
+              style={[
+                StyleSheet.absoluteFill,
+                { backgroundColor: theme.gradient[0], borderTopLeftRadius: 24, borderTopRightRadius: 24 },
+              ]}
               pointerEvents="none"
             />
             {/* Handle */}

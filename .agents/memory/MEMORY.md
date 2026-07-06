@@ -99,3 +99,4 @@
 - [Sticky header divider per-tab scroll](sticky-header-divider-per-tab-scroll.md) — divisor scroll-triggered debe cablearse a onScroll compartido en TODOS los ScrollView bajo el header, no solo la pestaña default
 - [Header divider full-bleed](header-border-full-bleed.md) — divider inside a padded header must be normal-flow + negative marginHorizontal, not absolute inside a padded child, to reach screen edge
 - [Session detail scene-linked](session-detail-scene-linked.md) — session/[id].tsx (Música/Sesiones/Meditaciones) now themes via useSceneTheme; sticky header = gradient[0] (lighter stop); GlowPill bg flattened to rgba(0,0,0,0.015)
+- [Action sheet theme hierarchy](action-sheet-theme-hierarchy.md) — "..." menu backgrounds: Nivel1&2 full gradient, Nivel3 solid gradient[0], Nivel4 Geometrix untouched, Nivel5 Diario/Grupos not themeable

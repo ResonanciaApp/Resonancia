@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
@@ -16,6 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
@@ -67,6 +69,7 @@ function ActionRow({
 export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { theme } = useSceneTheme();
   const { toggleFavorite } = usePlayer();
   const {
     favFolders,
@@ -212,6 +215,7 @@ export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Pro
       >
         <Pressable style={StyleSheet.absoluteFill} onPress={handleClose} />
         <View style={[styles.sheet, { paddingBottom: insets.bottom + 8 }]}>
+          <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} pointerEvents="none" />
           <View style={styles.handle} />
 
           {step === "main" && (
@@ -451,7 +455,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.55)",
   },
   sheet: {
-    backgroundColor: "#340D1A",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 20,

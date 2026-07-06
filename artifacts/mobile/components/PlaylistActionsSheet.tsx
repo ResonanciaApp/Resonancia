@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
@@ -15,6 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   useFoldersPlaylists,
 } from "@/context/FoldersPlaylistsContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 
 const GOLD = "#BE8744";
@@ -64,6 +66,7 @@ function ActionRow({
 export function PlaylistActionsSheet({ itemId, itemKind, visible, onClose }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { theme } = useSceneTheme();
   const {
     playlists,
     folders,
@@ -166,6 +169,7 @@ export function PlaylistActionsSheet({ itemId, itemKind, visible, onClose }: Pro
       <View style={styles.container}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
         <View style={[styles.sheet, { paddingBottom: insets.bottom + 8 }]}>
+        <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} pointerEvents="none" />
         <View style={styles.handle} />
 
         {step === "main" ? (
@@ -332,7 +336,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.55)",
   },
   sheet: {
-    backgroundColor: "#340D1A",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 20,

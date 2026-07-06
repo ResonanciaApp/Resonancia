@@ -9,6 +9,7 @@
  */
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -25,6 +26,7 @@ import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 import { TimerSheet } from "@/components/TimerSheet";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { usePlayer } from "@/context/PlayerContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { type Session } from "@/data/sessions";
 import { getGuideById } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
@@ -38,6 +40,7 @@ type Props = {
 export function SessionActionsSheet({ session, visible, onClose }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { theme } = useSceneTheme();
   const { isFavorite, toggleFavorite, sleepTimerRemaining } = usePlayer();
 
   const [showTimer, setShowTimer] = useState(false);
@@ -127,6 +130,7 @@ export function SessionActionsSheet({ session, visible, onClose }: Props) {
 
           {/* Sheet */}
           <View style={[styles.sheet, { paddingBottom: insets.bottom + 8 }]}>
+          <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} pointerEvents="none" />
           {/* Handle */}
           <View style={styles.handle} />
 
@@ -292,7 +296,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.55)",
   },
   sheet: {
-    backgroundColor: "#340D1A",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 20,
