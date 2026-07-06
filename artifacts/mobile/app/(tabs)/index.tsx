@@ -37,6 +37,7 @@ import { SessionCard } from "@/components/SessionCard";
 import { SessionRow } from "@/components/SessionRow";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
+import { BlurView } from "expo-blur";
 import { Image as ExpoImage } from "expo-image";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
@@ -130,11 +131,8 @@ function NavTabChip({ sel, label, onPress }: { sel: boolean; label: string; onPr
       onPress={onPress}
       style={({ pressed }) => [styles.headerTabChip, !sel && styles.headerTabChipUnsel, { opacity: pressed ? 0.7 : 1 }]}
     >
-      <LinearGradient
-        colors={["rgba(0,0,0,0.2)", "rgba(0,0,0,0.2)"]}
-        start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
+      <BlurView intensity={24} tint="dark" style={StyleSheet.absoluteFill} />
+      <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(18,10,24,0.40)" }]} />
       <Animated.View style={[StyleSheet.absoluteFill, { opacity: selOpacity }]}>
         <LinearGradient
           colors={["#D6A45C", "#BE8744"]}
