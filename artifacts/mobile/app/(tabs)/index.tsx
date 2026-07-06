@@ -69,14 +69,6 @@ import { WeeklyStreakStrip } from "@/components/WeeklyStreakStrip";
 
 const { width } = Dimensions.get("window");
 
-const hexToRgba = (hex: string, alpha: number) => {
-  const h = hex.replace("#", "");
-  const r = parseInt(h.slice(0, 2), 16);
-  const g = parseInt(h.slice(2, 4), 16);
-  const b = parseInt(h.slice(4, 6), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-};
-
 // Sentinel interno para "sin filtro" (ya no hay chip visible de "Todos": es el
 // estado por defecto al entrar a la app).
 const TODOS_TAB_ID = "todos";
@@ -325,12 +317,6 @@ export default function HomeScreen2() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeSceneId]);
-  // "Universo" usa un acento borgoña propio de marca en vez del morado del picker de Escenas
-  // (ese morado, pensado para la card cósmica, se veía rosado sobre el fondo oscuro del botón).
-  const activeSceneAccent =
-    activeSceneId === "universo"
-      ? "#9C2C4B"
-      : AMBIENT_SCENES.find((s) => s.id === activeSceneId)?.colors[1] ?? activeTheme.gradient[0];
   const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
@@ -713,7 +699,7 @@ export default function HomeScreen2() {
               hitSlop={8}
               style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
             >
-              <View style={[styles.universeBtnBg, { backgroundColor: hexToRgba(activeSceneAccent, 0.35) }]}>
+              <View style={[styles.universeBtnBg, { backgroundColor: "rgba(255,255,255,0.3)" }]}>
                 <MaterialCommunityIcons name="spa" size={22} color="#FFFFFF" style={{ opacity: 0.9 }} />
               </View>
             </Pressable>
