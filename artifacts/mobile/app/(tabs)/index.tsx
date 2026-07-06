@@ -533,7 +533,7 @@ export default function HomeScreen2() {
             style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
           >
             <View style={styles.universeBtnBg}>
-              <MaterialCommunityIcons name="spa" size={20} color="#D4AF37" style={{ opacity: 0.9 }} />
+              <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" style={{ opacity: 0.9 }} />
             </View>
           </Pressable>
         </View>
@@ -1167,16 +1167,16 @@ const styles = StyleSheet.create({
     borderColor: "rgba(244,218,213,0.1)",
   },
   headerTabIconChip: {
-    width: 40,
-    height: 40,
+    width: 36,
+    height: 36,
     borderRadius: 999,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 1,
   },
   headerTabIconImg: {
-    width: 30,
-    height: 30,
+    width: 26,
+    height: 26,
   },
   sesSubSpacer: {
     height: 34,
