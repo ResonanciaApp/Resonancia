@@ -254,17 +254,7 @@ function AnimatedNavTabRow({
         {tabs.map((t) => {
           const isSelected = displayTab === t.id;
           const chipStyle = isSelected
-            ? {
-                opacity: 1,
-                transform: [
-                  {
-                    translateX: progress.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [0, targetTranslate],
-                    }),
-                  },
-                ],
-              }
+            ? { opacity: 1 }
             : {
                 opacity: progress.interpolate({
                   inputRange: [0, 1],
@@ -1210,15 +1200,15 @@ const styles = StyleSheet.create({
     borderColor: "rgba(244,218,213,0.2)",
   },
   headerTabIconChip: {
-    width: 34,
-    height: 34,
+    width: 44,
+    height: 44,
     borderRadius: 999,
     alignItems: "center",
     justifyContent: "center",
   },
   headerTabIconImg: {
-    width: 22,
-    height: 22,
+    width: 34,
+    height: 34,
   },
   sesSubSpacer: {
     height: 34,
