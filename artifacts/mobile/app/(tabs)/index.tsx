@@ -535,6 +535,11 @@ export default function HomeScreen2() {
   const scrollYRef = useRef(0);
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
 
+  // ── Borde del sticky header: se activa recién a partir de 3% de scroll ──
+  const HEADER_BORDER_THRESHOLD = 0.03;
+  const [headerBorderActive, setHeaderBorderActive] = useState(false);
+  const headerBorderActiveRef = useRef(false);
+
   const updateSearchBtnVisibility = useCallback(() => {
     const shouldShow = stickyActiveRef.current || searchOpenRef.current;
     Animated.timing(searchBtnAnim, {
@@ -552,6 +557,11 @@ export default function HomeScreen2() {
       stickyActiveRef.current = shouldBeActive;
       setStickyActive(shouldBeActive);
       updateSearchBtnVisibility();
+    }
+    const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
+    if (shouldShowBorder !== headerBorderActiveRef.current) {
+      headerBorderActiveRef.current = shouldShowBorder;
+      setHeaderBorderActive(shouldShowBorder);
     }
   }, [updateSearchBtnVisibility]);
 
@@ -634,7 +644,15 @@ export default function HomeScreen2() {
       <StatusBar barStyle="light-content" />
 
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
-      <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
+      <View
+        style={[
+          styles.stickyHeader,
+          {
+            paddingTop: topPad + 2,
+            borderBottomColor: headerBorderActive ? "rgba(255,255,255,0.05)" : "transparent",
+          },
+        ]}
+      >
         <View style={styles.headerTopRow}>
           <Pressable
             onPress={openEscenasSheet}
@@ -1170,7 +1188,6 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     zIndex: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.08)",
   },
   scroll: { flex: 1 },
 

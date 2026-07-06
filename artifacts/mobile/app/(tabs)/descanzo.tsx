@@ -379,6 +379,12 @@ export default function DescansoScreen() {
   const [headerH,     setHeaderH]     = useState(60);
   const [chipsSticky, setChipsSticky] = useState(false);
 
+  // ── Borde del sticky header: se activa recién a partir de 3% de scroll ──
+  const HEADER_BORDER_THRESHOLD = 0.03;
+  const [headerBorderActive, setHeaderBorderActive] = useState(false);
+  const scrollContentHeightRef = useRef(0);
+  const scrollLayoutHeightRef = useRef(0);
+
   const player = useDescansoPlayer({ timerMinutes: timerMin ?? 0, fadeVolume: fadeVol });
   const {
     currentSession,
@@ -417,6 +423,12 @@ export default function DescansoScreen() {
         contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: topPad + 10 }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
+        onLayout={(e) => {
+          scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
+        }}
+        onContentSizeChange={(_w, h) => {
+          scrollContentHeightRef.current = h;
+        }}
         onScroll={(e) => {
           const y = e.nativeEvent.contentOffset.y;
           scrollY.setValue(y);
@@ -424,6 +436,10 @@ export default function DescansoScreen() {
           if (active !== stickyActive) setStickyActive(active);
           const sticky = y > tabsOffsetY - headerH;
           if (sticky !== chipsSticky) setChipsSticky(sticky);
+          const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
+          const progress = scrollable > 0 ? y / scrollable : 0;
+          const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
+          if (shouldShowBorder !== headerBorderActive) setHeaderBorderActive(shouldShowBorder);
         }}
       >
         {/* ── Hero ── */}
@@ -538,7 +554,14 @@ export default function DescansoScreen() {
 
       {/* ── Sticky header (título) ── */}
       <Animated.View
-        style={[styles.stickyHeader, { paddingTop: topPad + 10, opacity: stickyOpacity }]}
+        style={[
+          styles.stickyHeader,
+          {
+            paddingTop: topPad + 10,
+            opacity: stickyOpacity,
+            borderBottomColor: headerBorderActive ? "rgba(255,255,255,0.05)" : "transparent",
+          },
+        ]}
         pointerEvents={stickyActive ? "auto" : "none"}
         onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}
       >
@@ -815,7 +838,6 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
     backgroundColor: "#0D0512",
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.08)",
   },
   stickyHeaderTitle: {
     fontSize: 15,

@@ -58,6 +58,12 @@ export default function VideoTabScreen() {
   const topPad = Platform.OS === "web" ? 16 : insets.top;
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
 
+  // ── Borde del header: se activa recién a partir de 3% de scroll ──
+  const HEADER_BORDER_THRESHOLD = 0.03;
+  const [headerBorderActive, setHeaderBorderActive] = useState(false);
+  const scrollContentHeightRef = useRef(0);
+  const scrollLayoutHeightRef = useRef(0);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     let list = q
@@ -105,7 +111,15 @@ export default function VideoTabScreen() {
       <StatusBar barStyle="light-content" />
       <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
 
-      <View style={[styles.header, { paddingTop: topPad + 8 }]}>
+      <View
+        style={[
+          styles.header,
+          {
+            paddingTop: topPad + 8,
+            borderBottomColor: headerBorderActive ? "rgba(255,255,255,0.05)" : "transparent",
+          },
+        ]}
+      >
         <Text style={[styles.pageTitle, { color: colors.foreground }]}>Videos</Text>
 
         <View style={styles.searchRow}>
@@ -193,6 +207,20 @@ export default function VideoTabScreen() {
       <ScrollView
         contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 100 + bottomPad, paddingTop: 4 + 15 }}
         showsVerticalScrollIndicator={false}
+        onLayout={(e) => {
+          scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
+        }}
+        onContentSizeChange={(_w, h) => {
+          scrollContentHeightRef.current = h;
+        }}
+        onScroll={(e) => {
+          const y = e.nativeEvent.contentOffset.y;
+          const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
+          const progress = scrollable > 0 ? y / scrollable : 0;
+          const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
+          if (shouldShowBorder !== headerBorderActive) setHeaderBorderActive(shouldShowBorder);
+        }}
+        scrollEventThrottle={16}
       >
         {isLoading ? (
           <View style={styles.empty}>
@@ -261,7 +289,6 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
     gap: 14,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.08)",
   },
   pageTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
 

@@ -283,6 +283,12 @@ export default function ProfileScreen() {
 
   const [perfilTab, setPerfilTab] = useState<PerfilTab>("panel");
 
+  // ── Borde del sticky header: se activa recién a partir de 3% de scroll ──
+  const HEADER_BORDER_THRESHOLD = 0.03;
+  const [headerBorderActive, setHeaderBorderActive] = useState(false);
+  const scrollContentHeightRef = useRef(0);
+  const scrollLayoutHeightRef = useRef(0);
+
   const { width } = useWindowDimensions();
 
   // ── Geometrix creations (for profile background picker) ───────────────────
@@ -753,7 +759,15 @@ export default function ProfileScreen() {
       <GeometrixOverlay active={profileGeoActive} />
 
       {/* ── Sticky header (estilo Calm) ── */}
-      <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
+      <View
+        style={[
+          styles.stickyHeader,
+          {
+            paddingTop: topPad + 2,
+            borderBottomColor: headerBorderActive ? "rgba(255,255,255,0.05)" : "transparent",
+          },
+        ]}
+      >
         <View style={styles.stickyHeaderRow}>
           <Pressable
             onPress={() => router.push("/configuraciones")}
@@ -788,6 +802,20 @@ export default function ProfileScreen() {
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 20 }}
         showsVerticalScrollIndicator={false}
         scrollEnabled={scrollEnabled}
+        onLayout={(e) => {
+          scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
+        }}
+        onContentSizeChange={(_w, h) => {
+          scrollContentHeightRef.current = h;
+        }}
+        onScroll={(e) => {
+          const y = e.nativeEvent.contentOffset.y;
+          const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
+          const progress = scrollable > 0 ? y / scrollable : 0;
+          const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
+          if (shouldShowBorder !== headerBorderActive) setHeaderBorderActive(shouldShowBorder);
+        }}
+        scrollEventThrottle={16}
       >
         {/* ── Acciones ── */}
         <View style={[styles.header, { justifyContent: "flex-end" }]}>
@@ -1319,7 +1347,6 @@ const styles = StyleSheet.create({
     zIndex: 10,
     backgroundColor: "transparent",
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.08)",
   },
   stickyHeaderRow: {
     flexDirection: "row",
