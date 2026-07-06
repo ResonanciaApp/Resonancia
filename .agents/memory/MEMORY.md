@@ -96,3 +96,4 @@
 - [Inicio inline search](inicio-inline-search.md) — buscador de Inicio expande sin Modal (dos capas absolutas + un shared value); lupa/loto/X son un solo botón tri-estado; no confundir con SearchOverlay de Biblioteca (ese sí es Modal)
 - [Scene visual theme](scene-visual-theme.md) — SceneThemeContext persists independently from audio scene; screens with their own decorative identity (Mezclador, Resonadores) are deliberately excluded
 - [Header divider full-bleed](header-border-full-bleed.md) — divider inside a padded header must be normal-flow + negative marginHorizontal, not absolute inside a padded child, to reach screen edge
+- [Session detail scene-linked](session-detail-scene-linked.md) — session/[id].tsx (Música/Sesiones/Meditaciones) now themes via useSceneTheme; sticky header = gradient[0] (lighter stop); GlowPill bg flattened to rgba(0,0,0,0.015)

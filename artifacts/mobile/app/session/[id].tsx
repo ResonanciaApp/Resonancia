@@ -34,13 +34,14 @@ import { useGetSessionPlayCount, getGetSessionPlayCountQueryKey } from "@workspa
 import { getSessionById, SESSIONS } from "@/data/sessions";
 import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 
 const { width } = Dimensions.get("window");
 const HEADER_H = 343;
 
-function GlowPill({ onPress, pillStyle, gradientColors }: { onPress: () => void; pillStyle: object; gradientColors?: [string, string, ...string[]] }) {
+function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: object }) {
   const scale  = useRef(new Animated.Value(1)).current;
   const bright = useRef(new Animated.Value(0)).current;
 
@@ -61,15 +62,11 @@ function GlowPill({ onPress, pillStyle, gradientColors }: { onPress: () => void;
 
   return (
     <Animated.View style={{ transform: [{ scale }] }}>
-      <Pressable onPressIn={handlePressIn} onPressOut={handlePressOut} style={[pillStyle, { overflow: "hidden" }]}>
-        {gradientColors ? (
-          <LinearGradient
-            colors={gradientColors}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={StyleSheet.absoluteFillObject}
-          />
-        ) : null}
+      <Pressable
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        style={[pillStyle, { overflow: "hidden", backgroundColor: "rgba(0,0,0,0.015)" }]}
+      >
         <Animated.View
           pointerEvents="none"
           style={{
@@ -92,6 +89,7 @@ export default function SessionDetailScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { playSession, isFavorite, toggleFavorite, currentSession, isPlaying, progress, getSessionProgress, clearSessionProgress } = usePlayer();
+  const { theme: sceneTheme } = useSceneTheme();
 
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -114,16 +112,9 @@ export default function SessionDetailScreen() {
   const isGuiada = session.categoryId === "meditaciones-guiadas";
   const isAncestral = session.categoryId === "sonidos-ancestrales";
   const isMusica = session.categoryId === "musica-sonidos";
-  const CATEGORY_BG: Record<string, {
-    gradient: [string, string]; solid: string;
-    pillBg: string; labelGradient: [string, string]; labelColor: string;
-  }> = {
-    "sonidos-ancestrales":  { gradient: ["#340D1A", "#190913"], solid: "#210911", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "meditaciones-guiadas": { gradient: ["#340D1A", "#190913"], solid: "#210911", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "musica-sonidos":       { gradient: ["#340D1A", "#190913"], solid: "#210911", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-    "descanso":             { gradient: ["#340D1A", "#190913"], solid: "#210911", pillBg: "#4A0C0C", labelGradient: ["#FFF8EE", "#FFEEDD"], labelColor: "#7A1020" },
-  };
-  const catBg = CATEGORY_BG[session.categoryId] ?? CATEGORY_BG["sonidos-ancestrales"];
+  // Fondo ligado a la Escena activa (universo/naturaleza/bosque/lluvia/viento).
+  const catBg = { gradient: sceneTheme.gradient, solid: sceneTheme.solid };
+  const stickyHeaderColor = sceneTheme.gradient[0];
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
   const [showPlaylistSheet, setShowPlaylistSheet] = useState(false);
@@ -316,7 +307,7 @@ export default function SessionDetailScreen() {
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
             <View style={styles.pillBorder}>
-              <GlowPill onPress={() => router.back()} pillStyle={styles.heroBackPill} gradientColors={catBg.gradient} />
+              <GlowPill onPress={() => router.back()} pillStyle={styles.heroBackPill} />
             </View>
             <Pressable onPress={handleInstagramShare} hitSlop={10} style={({ pressed }) => [styles.igBtn, { opacity: pressed ? 0.6 : 1 }]}>
               <FontAwesome name="instagram" size={20} color="#e8e8e8" />
@@ -570,10 +561,10 @@ export default function SessionDetailScreen() {
       {/* ── Sticky header (aparece al scrollear) ─────────────────────────── */}
       <Animated.View
         pointerEvents="box-none"
-        style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: catBg.solid }]}
+        style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: stickyHeaderColor }]}
       >
         <View style={styles.pillBorder}>
-          <GlowPill onPress={() => router.back()} pillStyle={styles.stickyBackPill} gradientColors={catBg.gradient} />
+          <GlowPill onPress={() => router.back()} pillStyle={styles.stickyBackPill} />
         </View>
         <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
         <View style={{ width: 36 }} />
