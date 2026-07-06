@@ -165,7 +165,7 @@ export default function VideoTabScreen() {
           })}
         </ScrollView>
 
-        <View style={styles.resultsRow}>
+        <View style={[styles.resultsRow, { marginTop: 15 }]}>
           <Text style={[styles.resultsCount, { color: colors.mutedForeground }]}>
             {filtered.length} {filtered.length === 1 ? "resultado" : "resultados"}
           </Text>
@@ -177,7 +177,7 @@ export default function VideoTabScreen() {
       </View>
 
       <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 100 + bottomPad, paddingTop: 4 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 100 + bottomPad, paddingTop: 4 + 15 }}
         showsVerticalScrollIndicator={false}
       >
         {isLoading ? (
