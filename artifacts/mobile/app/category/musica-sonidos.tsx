@@ -18,7 +18,7 @@ import { getGuide } from "@/data/guides";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { useCatalog } from "@/context/CatalogContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { mixBlackTint } from "@/utils/color";
+import { hexToRgba } from "@/utils/color";
 
 const H_PAD = 15;
 const GOLD  = "#BE8744";
@@ -392,13 +392,13 @@ export default function MusicaSonidosScreen() {
           <LinearGradient colors={["transparent","rgba(0,0,0,0.28)","rgba(0,0,0,0.60)"]} locations={[0.50,0.80,1]} style={StyleSheet.absoluteFill} />
           {/* Flecha atrás flotante */}
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
-            <GhostPill style={{ backgroundColor: "rgba(0,0,0,0.7)" }}>
+            <GhostPill style={{ backgroundColor: "rgba(0,0,0,0.15)" }}>
               <BackPill onPress={() => router.back()} />
             </GhostPill>
           </View>
           <View style={styles.heroIconFloat}>
             <View style={styles.heroIconGlow}>
-              <View style={[styles.heroIconCircle, { backgroundColor: mixBlackTint(theme.gradient[1]) }]}>
+              <View style={[styles.heroIconCircle, { backgroundColor: hexToRgba(theme.gradient[1], 0.9) }]}>
                 <Feather name="headphones" size={32} color="#BE8744" />
               </View>
             </View>
@@ -437,7 +437,7 @@ export default function MusicaSonidosScreen() {
 
       {/* ── Sticky header (aparece con scroll) ── */}
       <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"} onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}>
-        <GhostPill style={{ backgroundColor: "rgba(0,0,0,0.7)" }}>
+        <GhostPill style={{ backgroundColor: "rgba(0,0,0,0.15)" }}>
           <BackPill onPress={() => router.back()} />
         </GhostPill>
         <Text style={styles.headerTitle}>Música</Text>

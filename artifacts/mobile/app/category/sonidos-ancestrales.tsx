@@ -18,7 +18,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { mixBlackTint } from "@/utils/color";
+import { hexToRgba } from "@/utils/color";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { SESSIONS, type Session } from "@/data/sessions";
@@ -488,13 +488,13 @@ export default function SonidosAncestalesScreen() {
           <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" />
           <LinearGradient colors={["transparent","rgba(0,0,0,0.28)","rgba(0,0,0,0.60)"]} locations={[0.50,0.80,1]} style={StyleSheet.absoluteFill} />
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
-            <GhostPill style={{ backgroundColor: "rgba(0,0,0,0.7)" }}>
+            <GhostPill style={{ backgroundColor: "rgba(0,0,0,0.15)" }}>
               <BackPill onPress={() => router.back()} />
             </GhostPill>
           </View>
           <View style={styles.heroIconFloat}>
             <View style={styles.heroIconGlow}>
-              <View style={[styles.heroIconCircle, { backgroundColor: mixBlackTint(theme.gradient[1]) }]}>
+              <View style={[styles.heroIconCircle, { backgroundColor: hexToRgba(theme.gradient[1], 0.9) }]}>
                 <Feather name="music" size={32} color="#BE8744" />
               </View>
             </View>
@@ -526,7 +526,7 @@ export default function SonidosAncestalesScreen() {
 
       {/* ── Sticky header ── */}
       <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"} onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}>
-        <GhostPill style={{ backgroundColor: "rgba(0,0,0,0.7)" }}>
+        <GhostPill style={{ backgroundColor: "rgba(0,0,0,0.15)" }}>
           <BackPill onPress={() => router.back()} />
         </GhostPill>
         <Text style={styles.headerTitle}>Sesiones</Text>
