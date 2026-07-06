@@ -133,10 +133,10 @@ function NavTabChip({ sel, label, icon, onPress }: { sel: boolean; label: string
         onPress={onPress}
         style={({ pressed }) => [styles.headerTabIconChip, { opacity: pressed ? 0.7 : 1 }]}
       >
-        {sel && (
-          <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.02)", borderRadius: 999 }]} />
-        )}
         <Image source={icon} style={styles.headerTabIconImg} resizeMode="contain" />
+        {!sel && (
+          <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.15)", borderRadius: 999 }]} />
+        )}
       </Pressable>
     );
   }
@@ -231,15 +231,6 @@ function AnimatedNavTabRow({
 
   return (
     <View style={styles.navAnimWrap}>
-      <Animated.View
-        pointerEvents={filtered ? "auto" : "none"}
-        style={[styles.navAnimCloseBtn, { opacity: progress }]}
-      >
-        <Pressable onPress={handleClear} hitSlop={10} style={styles.navCloseBtn}>
-          <Feather name="x" size={15} color="rgba(244,218,213,0.45)" />
-        </Pressable>
-      </Animated.View>
-
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -1160,22 +1151,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
   },
-  navAnimCloseBtn: {
-    position: "absolute",
-    left: 0,
-    top: 0,
-    bottom: 0,
-    justifyContent: "center",
-    zIndex: 3,
-  },
-  navCloseBtn: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: "rgba(74,12,12,0.08)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   headerTabChip: {
     borderRadius: 20,
     paddingHorizontal: 12,
@@ -1194,6 +1169,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     alignItems: "center",
     justifyContent: "center",
+    marginTop: 1,
   },
   headerTabIconImg: {
     width: 30,
