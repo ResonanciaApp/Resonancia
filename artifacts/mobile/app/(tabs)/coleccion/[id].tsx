@@ -25,11 +25,11 @@ import { getGuide } from "@/data/guides";
 import { getPlaylistById } from "@/data/playlists";
 import { getSessionById } from "@/data/sessions";
 import type { Session } from "@/data/sessions";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const { width } = Dimensions.get("window");
 const SAVED_KEY = "@resonance_saved_colecciones";
 
-const BG = "#210911";
 const GOLD = "#BE8744";
 const FG = "#FAF0EE";
 const MUTED = "#c2c2c2";
@@ -38,6 +38,8 @@ export default function ColeccionScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
   const { playSession, currentSession, isPlaying } = usePlayer();
+  const { theme: activeTheme } = useSceneTheme();
+  const BG = activeTheme.solid;
   const [saved, setSaved] = useState(false);
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
 
@@ -108,7 +110,7 @@ export default function ColeccionScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: BG }]}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 160 }}
@@ -222,7 +224,7 @@ export default function ColeccionScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: BG },
+  root: { flex: 1 },
 
   coverWrap: { width, height: width, position: "relative" },
   cover: { width, height: width },

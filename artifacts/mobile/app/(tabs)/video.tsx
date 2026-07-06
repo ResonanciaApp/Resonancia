@@ -20,6 +20,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const CARD_BG = "rgba(255,255,255,0.045)";
 const CARD_BORDER = "rgba(255,255,255,0.3)";
@@ -43,6 +44,7 @@ function parseDurationToSeconds(label: string): number {
 
 export default function VideoTabScreen() {
   const colors = useColors();
+  const { theme: activeTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { videos, isLoading } = useVideos();
 
@@ -101,7 +103,7 @@ export default function VideoTabScreen() {
     <View style={styles.root}>
       <Stack.Screen options={{ headerShown: false }} />
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#340D1A", "#190913"]} style={styles.rootGradient} />
+      <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
 
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <Text style={[styles.pageTitle, { color: colors.foreground }]}>Videos</Text>

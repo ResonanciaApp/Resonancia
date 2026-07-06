@@ -23,12 +23,18 @@ falls back to the active theme automatically — prefer wiring NEW screens
 through `SacredBackground`/`useSceneTheme()` rather than hardcoding hex
 backgrounds.
 
-**Scope limitation (as of implementation):** only the root providers/nav
-(`app/_layout.tsx`, `app/(tabs)/_layout.tsx`), `SacredBackground`'s fallback,
-and the two highest-traffic screens (Inicio `index.tsx`, Medita
-`explore.tsx`) were migrated to read from the theme. The large remaining
-surface (~70+ other screens, ~30+ components) still hardcodes brand hex
-backgrounds directly and will NOT react to a Scene change until migrated
-screen-by-screen. Do not assume "global theme" means every screen already
-reacts — check whether a given screen reads `useSceneTheme()`/uses
-`SacredBackground` before claiming it's themed.
+**Scope limitation:** root providers/nav (`app/_layout.tsx`,
+`app/(tabs)/_layout.tsx`), `SacredBackground`'s fallback, the drawer menu,
+and several high-traffic tab screens (Inicio, Medita, Video, Colección,
+Perfil) read from the theme. Screens with their own dedicated decorative
+identity (e.g. the Mezclador tab's per-category `ImageBackground`, the
+Mezclador sheet's user-customizable preset backgrounds, Resonadores' hero
+image) are deliberately excluded — forcing the generic Scene theme onto
+them would clobber intentional, unrelated art direction. A long tail of
+lower-traffic screens/components still hardcodes brand hex backgrounds
+directly and will NOT react to a Scene change until migrated. Do not
+assume "global theme" means every screen already reacts — check whether a
+given screen reads `useSceneTheme()`/uses `SacredBackground` before
+claiming it's themed. Cold-start flash is mitigated by resolving the
+persisted Scene id before the splash screen hides and passing it into
+`SceneThemeProvider` as `initialSceneId` (see `loadPersistedSceneId`).

@@ -27,7 +27,8 @@ import { MixerSheet } from "@/components/MixerSheet";
 import { EscenasSheet } from "@/components/EscenasSheet";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
-import { SceneThemeProvider, useSceneTheme } from "@/context/SceneThemeContext";
+import { SceneThemeProvider, useSceneTheme, loadPersistedSceneId } from "@/context/SceneThemeContext";
+import type { SceneId } from "@/context/AmbientPlayerContext";
 import { BrightnessProvider, useBrightness } from "@/context/BrightnessContext";
 import { CatalogProvider } from "@/context/CatalogContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
@@ -326,11 +327,27 @@ export default function RootLayout() {
     OptimaMedium: require("../assets/fonts/OptimaMedium.ttf"),
   });
 
+  // Resuelve la Escena persistida ANTES de montar SceneThemeProvider, para
+  // que el primer render ya use el tema correcto (evita el flash del tema
+  // por defecto cuando el usuario había elegido otra Escena).
+  const [initialSceneId, setInitialSceneId] = React.useState<SceneId | null>(null);
   useEffect(() => {
-    if (fontsLoaded || fontError) {
+    let cancelled = false;
+    loadPersistedSceneId().then((id) => {
+      if (!cancelled) setInitialSceneId(id);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const themeReady = initialSceneId !== null;
+
+  useEffect(() => {
+    if ((fontsLoaded || fontError) && themeReady) {
       SplashScreen.hideAsync().catch(() => {});
     }
-  }, [fontsLoaded, fontError]);
+  }, [fontsLoaded, fontError, themeReady]);
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -371,7 +388,7 @@ export default function RootLayout() {
                       <IntencionProvider>
                         <FoldersPlaylistsProvider>
                         <DiarioFavoritesProvider>
-                          <SceneThemeProvider>
+                          <SceneThemeProvider initialSceneId={initialSceneId ?? undefined}>
                             <ThemedGestureRoot>
                               <StatusBar hidden />
                               <KeyboardProvider>

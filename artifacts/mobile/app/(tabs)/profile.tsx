@@ -43,6 +43,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { QuickAccessGrid } from "@/components/QuickAccessGrid";
 import { SacredBackground } from "@/components/SacredBackground";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
@@ -121,8 +122,6 @@ function computeStreak(events: { playedAt: string }[]): number {
   }
   return count;
 }
-
-const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 
 type PerfilTab = "panel" | "biblioteca" | "historial" | "registros";
 
@@ -254,6 +253,7 @@ function BgGlyph({
 
 export default function ProfileScreen() {
   const colors = useColors();
+  const { theme: activeTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { favorites, elapsed, history, statEvents, currentSession, isPlaying } = usePlayer();
   const { presets } = useMixer();
@@ -642,8 +642,8 @@ export default function ProfileScreen() {
   // retiró de la UI (WatercolorBtn); ya no debe tomar el color de una paleta
   // guardada previamente en AsyncStorage (@profile_bg_gradient/@profile_bg_creation).
   const activeBgColors = useMemo((): readonly string[] => {
-    return BG_GRADIENT;
-  }, []);
+    return activeTheme.gradient;
+  }, [activeTheme]);
 
   // Creación activa (para renderizar glyphs en el fondo)
   const activeBgCreation = useMemo(
@@ -654,7 +654,7 @@ export default function ProfileScreen() {
   const glyphSize = width * 0.96;
 
   // ── Crossfade de fondo ────────────────────────────────────────────────────
-  const defaultBg = BG_GRADIENT;
+  const defaultBg = activeTheme.gradient;
   const [bgFrom, setBgFrom] = useState<readonly string[]>(defaultBg);
   const [bgTo, setBgTo] = useState<readonly string[]>(defaultBg);
   const crossFadeAnim = useRef(new Animated.Value(1)).current;
@@ -1083,7 +1083,7 @@ export default function ProfileScreen() {
           behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
           <LinearGradient
-            colors={["#340D1A", "#190913"]}
+            colors={activeTheme.gradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFill}

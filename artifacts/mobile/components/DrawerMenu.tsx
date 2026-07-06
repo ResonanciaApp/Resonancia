@@ -20,6 +20,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuth } from "@/context/AuthContext";
 import { useDrawer, DRAWER_W, DRAWER_PUSH } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const ND = Platform.OS !== "web";
 
@@ -57,6 +58,7 @@ export function DrawerMenu() {
   const { isRegistered, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
   const { username, lastName, photoUri } = useUserProfile();
+  const { theme: activeTheme } = useSceneTheme();
 
   const loggedIn = isRegistered || isSignedIn;
   const clerkName =
@@ -134,7 +136,7 @@ export function DrawerMenu() {
       >
         <LinearGradient
           style={[styles.drawerInner, { paddingBottom: bottomPad + 24 }]}
-          colors={["#340D1A", "#190913"]}
+          colors={activeTheme.gradient}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
         >

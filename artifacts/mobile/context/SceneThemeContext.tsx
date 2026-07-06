@@ -36,10 +36,34 @@ type SceneThemeCtx = {
 
 const SceneThemeContext = createContext<SceneThemeCtx | null>(null);
 
-export function SceneThemeProvider({ children }: { children: React.ReactNode }) {
-  const [activeSceneId, setActiveSceneId] = useState<SceneId>(DEFAULT_THEME_ID);
+/**
+ * Lee la Escena guardada en AsyncStorage antes del primer render, para que
+ * `SceneThemeProvider` pueda arrancar ya con el tema correcto (evita el
+ * flash del tema por defecto en cold start). El caller (root layout) debe
+ * esperar esta promesa antes de ocultar el splash screen.
+ */
+export async function loadPersistedSceneId(): Promise<SceneId> {
+  try {
+    const saved = await AsyncStorage.getItem(SCENE_THEME_STORAGE_KEY);
+    if (saved && saved in SCENE_THEMES) return saved as SceneId;
+  } catch {
+    // ignore — usa el default
+  }
+  return DEFAULT_THEME_ID;
+}
+
+export function SceneThemeProvider({
+  children,
+  initialSceneId,
+}: {
+  children: React.ReactNode;
+  /** Escena inicial ya resuelta (ver `loadPersistedSceneId`). Evita el flash de re-hidratación. */
+  initialSceneId?: SceneId;
+}) {
+  const [activeSceneId, setActiveSceneId] = useState<SceneId>(initialSceneId ?? DEFAULT_THEME_ID);
 
   useEffect(() => {
+    if (initialSceneId) return;
     AsyncStorage.getItem(SCENE_THEME_STORAGE_KEY)
       .then((saved) => {
         if (saved && saved in SCENE_THEMES) {
@@ -47,6 +71,7 @@ export function SceneThemeProvider({ children }: { children: React.ReactNode }) 
         }
       })
       .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const setActiveScene = useCallback((id: SceneId) => {
