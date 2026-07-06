@@ -289,6 +289,20 @@ export default function ProfileScreen() {
   const headerBorderAnim = useRef(new Animated.Value(0)).current;
   const scrollContentHeightRef = useRef(0);
   const scrollLayoutHeightRef = useRef(0);
+  const handleHeaderScroll = (e: { nativeEvent: { contentOffset: { y: number } } }) => {
+    const y = e.nativeEvent.contentOffset.y;
+    const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
+    const progress = scrollable > 0 ? y / scrollable : 0;
+    const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
+    if (shouldShowBorder !== headerBorderActiveRef.current) {
+      headerBorderActiveRef.current = shouldShowBorder;
+      Animated.timing(headerBorderAnim, {
+        toValue: shouldShowBorder ? 1 : 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
 
   const { width } = useWindowDimensions();
 
@@ -809,20 +823,7 @@ export default function ProfileScreen() {
         onContentSizeChange={(_w, h) => {
           scrollContentHeightRef.current = h;
         }}
-        onScroll={(e) => {
-          const y = e.nativeEvent.contentOffset.y;
-          const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
-          const progress = scrollable > 0 ? y / scrollable : 0;
-          const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
-          if (shouldShowBorder !== headerBorderActiveRef.current) {
-            headerBorderActiveRef.current = shouldShowBorder;
-            Animated.timing(headerBorderAnim, {
-              toValue: shouldShowBorder ? 1 : 0,
-              duration: 300,
-              useNativeDriver: true,
-            }).start();
-          }
-        }}
+        onScroll={handleHeaderScroll}
         scrollEventThrottle={16}
       >
         {/* ── Acciones ── */}
@@ -1067,6 +1068,14 @@ export default function ProfileScreen() {
           style={styles.scroll}
           contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 20 }}
           showsVerticalScrollIndicator={false}
+          onLayout={(e) => {
+            scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
+          }}
+          onContentSizeChange={(_w, h) => {
+            scrollContentHeightRef.current = h;
+          }}
+          onScroll={handleHeaderScroll}
+          scrollEventThrottle={16}
         >
           <HistorialCalendar />
         </ScrollView>
@@ -1077,6 +1086,14 @@ export default function ProfileScreen() {
           style={styles.scroll}
           contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 20 }}
           showsVerticalScrollIndicator={false}
+          onLayout={(e) => {
+            scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
+          }}
+          onContentSizeChange={(_w, h) => {
+            scrollContentHeightRef.current = h;
+          }}
+          onScroll={handleHeaderScroll}
+          scrollEventThrottle={16}
         >
           <View style={styles.registrosCard}>
             {REGISTROS_ITEMS.map((item) => (
@@ -1361,7 +1378,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     height: 1,
-    backgroundColor: "rgba(255,255,255,0.035)",
+    backgroundColor: "rgba(255,255,255,0.1)",
   },
   stickyHeaderRow: {
     flexDirection: "row",
