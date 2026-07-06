@@ -3,7 +3,6 @@ import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { usePlayer } from "@/context/PlayerContext";
-import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const GOLD = "#BE8744";
 const TEXT = "#e8e8e8";
@@ -39,7 +38,6 @@ function minutesByDay(events: { playedAt: string; minutes: number }[]): Map<stri
 
 export function WeeklyStreakStrip() {
   const { statEvents } = usePlayer();
-  const { theme } = useSceneTheme();
 
   const { activeFlags, activeCount, todayIndex } = useMemo(() => {
     const byDay = minutesByDay(statEvents);
@@ -70,7 +68,7 @@ export function WeeklyStreakStrip() {
           return (
             <View key={i} style={styles.dayCol}>
               {met ? (
-                <View style={[styles.circle, styles.circleActive, { borderColor: theme.gradient[0] }]}>
+                <View style={[styles.circle, styles.circleActive]}>
                   <Feather name="check" size={16} color="rgba(255,255,255,0.9)" />
                 </View>
               ) : (
@@ -110,7 +108,8 @@ const styles = StyleSheet.create({
   },
   circleActive: {
     backgroundColor: "rgba(255,255,255,0.20)",
-    borderWidth: 3,
+    borderWidth: 2,
+    borderColor: GOLD,
   },
   circleInactive: {
     backgroundColor: "rgba(255,255,255,0.08)",
