@@ -1419,8 +1419,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   giftBtnIcon: {
-    width: 30,
-    height: 30,
+    width: 33,
+    height: 33,
   },
   universeBtnIcon: {
     width: 28,
