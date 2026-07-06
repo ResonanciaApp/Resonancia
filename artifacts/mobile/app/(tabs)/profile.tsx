@@ -1053,9 +1053,7 @@ export default function ProfileScreen() {
       </ScrollView>
       )}
 
-      {perfilTab === "biblioteca" && (
-        <BibliotecaScreen embedded onScroll={handleHeaderScroll} scrollEventThrottle={16} />
-      )}
+      {perfilTab === "biblioteca" && <BibliotecaScreen embedded />}
 
       {perfilTab === "historial" && (
         <ScrollView
@@ -1360,7 +1358,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     height: 1,
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(255,255,255,0.035)",
   },
   stickyHeaderRow: {
     flexDirection: "row",

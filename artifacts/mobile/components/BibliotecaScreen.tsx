@@ -1002,18 +1002,29 @@ function AnimatedTabContent({
 }
 
 // ── Pantalla principal ────────────────────────────────────────────────────────
-export function BibliotecaScreen({
-  embedded = false,
-  onScroll,
-  scrollEventThrottle,
-}: {
-  embedded?: boolean;
-  onScroll?: (e: NativeSyntheticEvent<NativeScrollEvent>) => void;
-  scrollEventThrottle?: number;
-} = {}) {
+export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = {}) {
   const insets = useSafeAreaInsets();
   const { photoUri } = useUserProfile();
   const { open: openDrawer } = useDrawer();
+
+  // ── Borde bajo los chips (Playlists/Mezclas/Favoritos/Resonadores) ──────
+  // se activa a partir de unos pocos px de scroll dentro de ESTA pantalla
+  // (independiente del sticky header de Perfil / sus demás pestañas)
+  const HEADER_BORDER_THRESHOLD_PX = 8;
+  const headerBorderActiveRef = useRef(false);
+  const headerBorderAnim = useRef(new Animated.Value(0)).current;
+  const handleHeaderScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const y = e.nativeEvent.contentOffset.y;
+    const shouldShowBorder = y >= HEADER_BORDER_THRESHOLD_PX;
+    if (shouldShowBorder !== headerBorderActiveRef.current) {
+      headerBorderActiveRef.current = shouldShowBorder;
+      Animated.timing(headerBorderAnim, {
+        toValue: shouldShowBorder ? 1 : 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -1676,6 +1687,7 @@ export function BibliotecaScreen({
           />
         </View>
 
+        <Animated.View collapsable={false} style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
       </View>
 
       {/* ── CONTENIDO ────────────────────────────────────────────────────── */}
@@ -1683,8 +1695,8 @@ export function BibliotecaScreen({
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 8 }}
         showsVerticalScrollIndicator={false}
-        onScroll={onScroll}
-        scrollEventThrottle={scrollEventThrottle}
+        onScroll={handleHeaderScroll}
+        scrollEventThrottle={16}
       >
         <AnimatedTabContent
           key={activeTab ?? "general"}
@@ -1831,6 +1843,14 @@ const styles = StyleSheet.create({
   // ── Sticky header ───────────────────────────────────────────────────────────
   stickyHeader: {
     zIndex: 10,
+  },
+  stickyHeaderBorder: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.035)",
   },
   stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.025)", marginTop: 10, marginHorizontal: -15 },
   headerRow: {
