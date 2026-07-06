@@ -107,7 +107,12 @@ export default function VideoTabScreen() {
         <Text style={[styles.pageTitle, { color: colors.foreground }]}>Videos</Text>
 
         <View style={styles.searchRow}>
-          <View style={[styles.searchBox, { backgroundColor: CARD_BG, borderColor: CARD_BORDER }]}>
+          <View
+            style={[
+              styles.searchBox,
+              { backgroundColor: "rgba(0,0,0,0.14)", borderColor: "rgba(255,255,255,0.7)" },
+            ]}
+          >
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
               value={query}
@@ -123,49 +128,54 @@ export default function VideoTabScreen() {
               </Pressable>
             )}
           </View>
+        </View>
 
+        <View style={styles.chipsRowOuter}>
           <Pressable
-            style={[styles.settingsBtn, { backgroundColor: CARD_BG, borderColor: CARD_BORDER }]}
+            style={[
+              styles.settingsBtn,
+              { backgroundColor: "rgba(0,0,0,0.15)", borderColor: "rgba(255,255,255,0.1)" },
+            ]}
             hitSlop={8}
             accessibilityLabel="Ajustes"
           >
             <Feather name="sliders" size={17} color={colors.foreground} />
           </Pressable>
-        </View>
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.chipsScroll}
-          contentContainerStyle={styles.chipsRow}
-        >
-          {FILTER_CHIPS.map((chip) => {
-            const sel = chip === activeChip;
-            return (
-              <Pressable
-                key={chip}
-                onPress={() => setActiveChip(chip)}
-                style={[
-                  styles.chip,
-                  {
-                    backgroundColor: sel ? colors.primary : "rgba(0,0,0,0.14)",
-                    borderColor: sel ? colors.primary : CHIP_BORDER,
-                    borderWidth: sel ? StyleSheet.hairlineWidth : 2,
-                  },
-                ]}
-              >
-                <Text
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.chipsScroll}
+            contentContainerStyle={styles.chipsRow}
+          >
+            {FILTER_CHIPS.map((chip) => {
+              const sel = chip === activeChip;
+              return (
+                <Pressable
+                  key={chip}
+                  onPress={() => setActiveChip(chip)}
                   style={[
-                    styles.chipText,
-                    { color: sel ? colors.primaryForeground : colors.mutedForeground },
+                    styles.chip,
+                    {
+                      backgroundColor: sel ? colors.primary : "rgba(0,0,0,0.14)",
+                      borderColor: sel ? colors.primary : CHIP_BORDER,
+                      borderWidth: sel ? StyleSheet.hairlineWidth : 2,
+                    },
                   ]}
                 >
-                  {chip}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
+                  <Text
+                    style={[
+                      styles.chipText,
+                      { color: sel ? colors.primaryForeground : colors.mutedForeground },
+                    ]}
+                  >
+                    {chip}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </View>
 
         <View style={[styles.resultsRow, { marginTop: 15 }]}>
           <Text style={[styles.resultsCount, { color: colors.mutedForeground }]}>
@@ -252,24 +262,25 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-    borderRadius: 14,
-    borderWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: 14,
-    height: 44,
+    gap: 10,
+    borderRadius: 999,
+    borderWidth: 2,
+    paddingHorizontal: 18,
+    height: 52,
   },
   searchInput: { flex: 1, fontSize: 14, padding: 0 },
+  chipsRowOuter: { flexDirection: "row", alignItems: "center", gap: 10 },
   settingsBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    borderWidth: StyleSheet.hairlineWidth,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 2,
     alignItems: "center",
     justifyContent: "center",
   },
 
-  chipsScroll: { marginHorizontal: -20 },
-  chipsRow: { gap: 8, paddingHorizontal: 20 },
+  chipsScroll: { flex: 1 },
+  chipsRow: { gap: 8 },
   chip: {
     borderRadius: 20,
     borderWidth: StyleSheet.hairlineWidth,
