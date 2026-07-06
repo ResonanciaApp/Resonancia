@@ -893,7 +893,6 @@ export default function HomeScreen2() {
                   onPress={() => router.push(`/coleccion/${pl.id}` as never)}
                   style={({ pressed }) => [styles.coleccionCard, { opacity: pressed ? 0.75 : 1 }]}
                 >
-                  <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.14)" }]} />
                   <Image
                     source={pl.coverUrl ? { uri: pl.coverUrl } : pl.cover as number}
                     style={styles.coleccionThumb}
