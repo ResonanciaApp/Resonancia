@@ -252,37 +252,26 @@ function AnimatedNavTabRow({
         contentContainerStyle={styles.headerTabsContent}
       >
         {tabs.map((t) => {
-          const isSelected = displayTab === t.id;
-          const chipStyle = isSelected
-            ? { opacity: 1 }
-            : {
-                opacity: progress.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [1, 0],
-                }),
-              };
-
           return (
-            <Animated.View
+            <View
               key={t.id}
               onLayout={(e) => {
                 offsetsRef.current[t.id] = e.nativeEvent.layout.x;
               }}
-              style={chipStyle}
             >
               <NavTabChip
                 sel={colorTab === t.id}
                 label={t.label}
                 icon={t.icon}
                 onPress={() => {
-                  if (isSelected) {
+                  if (displayTab === t.id) {
                     if (t.id !== TODOS_TAB_ID) handleClear();
                     return;
                   }
                   handleSelect(t.id);
                 }}
               />
-            </Animated.View>
+            </View>
           );
         })}
       </ScrollView>
@@ -1200,15 +1189,15 @@ const styles = StyleSheet.create({
     borderColor: "rgba(244,218,213,0.2)",
   },
   headerTabIconChip: {
-    width: 44,
-    height: 44,
+    width: 40,
+    height: 40,
     borderRadius: 999,
     alignItems: "center",
     justifyContent: "center",
   },
   headerTabIconImg: {
-    width: 34,
-    height: 34,
+    width: 30,
+    height: 30,
   },
   sesSubSpacer: {
     height: 34,
