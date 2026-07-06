@@ -28,3 +28,14 @@ quedaba en opacity 0 permanentemente.
 compartido entre pestañas, primero verificar CUÁNTOS `ScrollView`/`FlatList`
 distintos puede haber debajo del header y si todos disparan el mismo
 handler, antes de sospechar de color/opacidad/zIndex.
+
+**Update:** incluso con el handler cableado en todas partes, un umbral
+basado en **% del contenido scrolleable** (`y / (contentHeight - layoutHeight)`)
+sigue fallando en pestañas cortas cuyo contenido casi no scrollea (ej. una
+lista de 6 ítems que cabe casi entera en pantalla) — `scrollable` puede ser
+pequeño o negativo y el % nunca cruza el umbral. Preferir un umbral en
+**píxeles absolutos** (`y >= 8`) en vez de porcentaje: es válido siempre,
+sin importar cuánto contenido haya. Para pestañas que embeben una pantalla
+completa reutilizada con su propio `ScrollView` interno (ej. Biblioteca),
+exponer `onScroll`/`scrollEventThrottle` como props opcionales pass-through
+en ese componente para conectarlo al mismo handler compartido.

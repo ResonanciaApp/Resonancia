@@ -13,6 +13,8 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Modal,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
   Platform,
   Pressable,
   ScrollView,
@@ -1000,7 +1002,15 @@ function AnimatedTabContent({
 }
 
 // ── Pantalla principal ────────────────────────────────────────────────────────
-export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = {}) {
+export function BibliotecaScreen({
+  embedded = false,
+  onScroll,
+  scrollEventThrottle,
+}: {
+  embedded?: boolean;
+  onScroll?: (e: NativeSyntheticEvent<NativeScrollEvent>) => void;
+  scrollEventThrottle?: number;
+} = {}) {
   const insets = useSafeAreaInsets();
   const { photoUri } = useUserProfile();
   const { open: openDrawer } = useDrawer();
@@ -1673,6 +1683,8 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 8 }}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
       >
         <AnimatedTabContent
           key={activeTab ?? "general"}

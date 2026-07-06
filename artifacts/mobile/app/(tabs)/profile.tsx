@@ -283,17 +283,15 @@ export default function ProfileScreen() {
 
   const [perfilTab, setPerfilTab] = useState<PerfilTab>("panel");
 
-  // ── Borde del sticky header: se activa recién a partir de 1% de scroll ──
-  const HEADER_BORDER_THRESHOLD = 0.01;
+  // ── Borde del sticky header: se activa a partir de unos pocos px de scroll ──
+  // (umbral en píxeles, no en % del contenido — así funciona igual en tabs
+  // cortos que no alcanzan a generar mucho scroll, ej. "Mi Espacio")
+  const HEADER_BORDER_THRESHOLD_PX = 8;
   const headerBorderActiveRef = useRef(false);
   const headerBorderAnim = useRef(new Animated.Value(0)).current;
-  const scrollContentHeightRef = useRef(0);
-  const scrollLayoutHeightRef = useRef(0);
   const handleHeaderScroll = (e: { nativeEvent: { contentOffset: { y: number } } }) => {
     const y = e.nativeEvent.contentOffset.y;
-    const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
-    const progress = scrollable > 0 ? y / scrollable : 0;
-    const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
+    const shouldShowBorder = y >= HEADER_BORDER_THRESHOLD_PX;
     if (shouldShowBorder !== headerBorderActiveRef.current) {
       headerBorderActiveRef.current = shouldShowBorder;
       Animated.timing(headerBorderAnim, {
@@ -817,12 +815,6 @@ export default function ProfileScreen() {
         contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 20 }}
         showsVerticalScrollIndicator={false}
         scrollEnabled={scrollEnabled}
-        onLayout={(e) => {
-          scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
-        }}
-        onContentSizeChange={(_w, h) => {
-          scrollContentHeightRef.current = h;
-        }}
         onScroll={handleHeaderScroll}
         scrollEventThrottle={16}
       >
@@ -1061,19 +1053,15 @@ export default function ProfileScreen() {
       </ScrollView>
       )}
 
-      {perfilTab === "biblioteca" && <BibliotecaScreen embedded />}
+      {perfilTab === "biblioteca" && (
+        <BibliotecaScreen embedded onScroll={handleHeaderScroll} scrollEventThrottle={16} />
+      )}
 
       {perfilTab === "historial" && (
         <ScrollView
           style={styles.scroll}
           contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 20 }}
           showsVerticalScrollIndicator={false}
-          onLayout={(e) => {
-            scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
-          }}
-          onContentSizeChange={(_w, h) => {
-            scrollContentHeightRef.current = h;
-          }}
           onScroll={handleHeaderScroll}
           scrollEventThrottle={16}
         >
@@ -1086,12 +1074,6 @@ export default function ProfileScreen() {
           style={styles.scroll}
           contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 20 }}
           showsVerticalScrollIndicator={false}
-          onLayout={(e) => {
-            scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
-          }}
-          onContentSizeChange={(_w, h) => {
-            scrollContentHeightRef.current = h;
-          }}
           onScroll={handleHeaderScroll}
           scrollEventThrottle={16}
         >
