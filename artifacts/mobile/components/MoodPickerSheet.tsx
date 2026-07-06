@@ -1,3 +1,4 @@
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { GoldGradientFill } from "@/components/GoldGradient";
@@ -10,6 +11,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { MOODS, type MoodId } from "@/data/moods";
 
 type Props = {
@@ -21,6 +23,7 @@ type Props = {
 export function MoodPickerSheet({ visible, onClose, onSelect }: Props) {
   const insets = useSafeAreaInsets();
   const [selected, setSelected] = useState<MoodId | null>(null);
+  const { theme } = useSceneTheme();
 
   function handleContinue() {
     if (!selected) return;
@@ -53,7 +56,12 @@ export function MoodPickerSheet({ visible, onClose, onSelect }: Props) {
           <View style={[StyleSheet.absoluteFill, styles.backdrop]} />
         </Pressable>
 
-        <View style={[styles.sheet, { paddingBottom: insets.bottom + 20 }]}>
+        <LinearGradient
+          colors={theme.gradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={[styles.sheet, { paddingBottom: insets.bottom + 20 }]}
+        >
         <View style={styles.handle} />
 
         <Pressable onPress={handleClose} style={styles.closeBtn} hitSlop={8}>
@@ -98,13 +106,12 @@ export function MoodPickerSheet({ visible, onClose, onSelect }: Props) {
             Continuar
           </Text>
         </Pressable>
-        </View>
+        </LinearGradient>
       </View>
     </Modal>
   );
 }
 
-const SHEET_BG = "#340D1A";
 const PRIMARY = "#BE9650";
 const FG = "#EDE1D3";
 const MUTED = "rgba(237,225,211,0.40)";
@@ -122,7 +129,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.65)",
   },
   sheet: {
-    backgroundColor: SHEET_BG,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 20,
