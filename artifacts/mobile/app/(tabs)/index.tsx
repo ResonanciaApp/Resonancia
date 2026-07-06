@@ -521,6 +521,12 @@ export default function HomeScreen2() {
 
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
       <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
+        <Image
+          source={require("@/assets/images/mi-espacio-header-bg.jpg")}
+          style={styles.stickyHeaderBg}
+          resizeMode="cover"
+        />
+        <View style={styles.stickyHeaderOverlay} />
         <View style={styles.headerTopRow}>
           <AnimatedNavTabRow
             tabs={NAV_TABS}
@@ -973,7 +979,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#210911",
     borderBottomLeftRadius: 28,
     borderBottomRightRadius: 28,
+    overflow: "hidden",
     zIndex: 10,
+  },
+  stickyHeaderBg: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  stickyHeaderOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.3)",
   },
   scroll: { flex: 1 },
 
