@@ -525,8 +525,8 @@ export default function HomeScreen2() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  // ── La lupa solo aparece cuando el sticky header se "activa" (15% scroll) ──
-  const STICKY_ACTIVE_THRESHOLD = 0.15;
+  // ── La lupa solo aparece cuando el sticky header se "activa" (6% scroll) ──
+  const STICKY_ACTIVE_THRESHOLD = 0.06;
   const [stickyActive, setStickyActive] = useState(false);
   const stickyActiveRef = useRef(false);
   const scrollContentHeightRef = useRef(0);
