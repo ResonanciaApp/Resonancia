@@ -43,3 +43,20 @@ When replacing a hardcoded default with a dynamic/linked one:
 - Check sibling components/screens sharing the same persisted key or concept
   for the same hardcoded-fallback pattern; fix all of them for consistency,
   not just the one screen where the bug was reported.
+
+## Same pattern, no storage involved (leftover hardcoded style value)
+
+The same "old default lingers after migrating to a dynamic value" bug also
+shows up WITHOUT any AsyncStorage — as a leftover hardcoded color/style
+branch that a conditional palette never got updated to match. In
+MixerSheet.tsx, `palette.headerFg`'s "default background" branch was still
+hardcoded to an old purple (`rgba(92,31,126,0.85)`) — a leftover from
+before the background itself was migrated to follow the active Escena
+theme. The background got the theme-link fix; this sibling color constant
+in the same conditional block did not, and kept showing the pre-migration
+color long after.
+
+**How to apply**: when migrating one value in a themed/conditional palette
+object to a dynamic source, scan sibling keys in the same
+ternary/conditional block (`hasCustomBg ? ... : isLight ? ... : <here>`)
+for other hardcoded leftovers that should have been migrated together.

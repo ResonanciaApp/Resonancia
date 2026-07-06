@@ -414,7 +414,7 @@ export function MixerSheet() {
     inputBg:        hasCustomBg ? "rgba(255,255,255,0.03)" : isLight ? "rgba(24,2,2,0.05)" : activeBgPreset.image ? "rgba(255,255,255,0.03)" : "rgba(74,12,12,0.08)",
     footerCircleBg: hasCustomBg ? "rgba(255,255,255,0.05)" : isLight ? "rgba(24,2,2,0.05)" : activeBgPreset.image ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.05)",
     footerLabel:    hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "rgba(24,2,2,0.65)" : activeBgPreset.image ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.45)",
-    headerFg:       hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#180202" : "rgba(92,31,126,0.85)",
+    headerFg:       hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#180202" : "rgba(255,255,255,0.09)",
   };
   const { isPremium } = usePremium();
   const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -771,6 +771,7 @@ export function MixerSheet() {
             ) : (
               <LinearGradient
                 colors={[...sheetGradient]}
+                locations={isDefaultBg ? [0, 1, 1] : undefined}
                 start={{ x: 0.5, y: 0 }}
                 end={{ x: 0.5, y: 1 }}
                 style={styles.sheetGradient}
@@ -961,6 +962,7 @@ export function MixerSheet() {
           >
                 <LinearGradient
                   colors={sheetGradient}
+                  locations={isDefaultBg ? [0, 1, 1] : undefined}
                   start={{ x: 0.5, y: 0 }}
                   end={{ x: 0.5, y: 1 }}
                   style={StyleSheet.absoluteFill}
