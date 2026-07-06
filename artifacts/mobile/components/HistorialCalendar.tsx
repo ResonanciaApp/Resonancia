@@ -190,7 +190,7 @@ export function HistorialCalendar() {
         <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi calendario</Text>
       </View>
 
-      <View style={[styles.calendarCard, { backgroundColor: "rgba(255,255,255,0.05)" }]}>
+      <View style={[styles.calendarCard, { backgroundColor: "rgba(0,0,0,0.14)" }]}>
         <View style={styles.calendarNav}>
           <Pressable onPress={goPrevMonth} hitSlop={10} style={styles.navBtn}>
             <Feather name="chevron-left" size={18} color={colors.foreground} />
