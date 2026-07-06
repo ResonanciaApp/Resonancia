@@ -32,6 +32,7 @@ import { useSaveEvent } from "@/context/SaveEventContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
   type MixSound,
   type SoundCategoryId,
@@ -145,9 +146,6 @@ const TAB_NOCHE_BG: Record<MainTabId, [string, string, ...string[]]> = {
   voces:          ["#220830", "#220830", "#220830"],
   bpm:            ["#0A2020", "#0A2020", "#0A2020"],
 };
-
-/** Fondo fijo de la grilla en modo Noche Borgoña — igual para todos los tabs */
-const TAB_NOCHE_GRID_BG = "#190913";
 
 const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
   popular:        ["#5E1E2D", "#5E1E2D"],
@@ -461,6 +459,7 @@ export default function MezcladorScreen() {
   const { isMixerOpen, closeMixer } = useMixerPanel();
   const { isActive, toggleSound, activeBpm, bgPaletteId, setBgPaletteId } = useMixer();
   const { lastSavedAt } = useSaveEvent();
+  const { theme } = useSceneTheme();
 
   const heartGlow = useRef(new Animated.Value(0)).current;
   useEffect(() => {
@@ -677,7 +676,7 @@ export default function MezcladorScreen() {
 
         {/* ── Zona superior ── */}
         <View style={styles.topPanelShadow}>
-          <View style={[styles.topPanel, { paddingTop: topPad + 2, backgroundColor: "#340D1A" }]}>
+          <View style={[styles.topPanel, { paddingTop: topPad + 2, backgroundColor: theme.gradient[0] }]}>
             {/* ── Header ── */}
             <View style={styles.header}>
               <View style={styles.headerRow}>
@@ -780,7 +779,7 @@ export default function MezcladorScreen() {
         {/* ── Scroll principal ── */}
         <View style={styles.scrollBg}>
           {bgPaletteId === "noche" ? (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: TAB_NOCHE_GRID_BG }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: theme.gradient[1] }]} />
           ) : (
             <LinearGradient
               colors={bgPalette.colors}
