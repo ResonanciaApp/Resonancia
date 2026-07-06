@@ -301,12 +301,12 @@ const styles = StyleSheet.create({
   rootGradient: { ...StyleSheet.absoluteFillObject },
   header: {
     paddingHorizontal: 20,
-    paddingBottom: 14,
+    paddingBottom: 0,
     gap: 14,
   },
   chipsSection: {},
   headerBorder: {
-    marginTop: 19,
+    marginTop: 14,
     marginHorizontal: -20,
     height: 1,
     backgroundColor: "rgba(255,255,255,0.035)",
