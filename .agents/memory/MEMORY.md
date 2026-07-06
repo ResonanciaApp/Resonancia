@@ -93,4 +93,5 @@
 - [Mix folders pattern](mix-folders-pattern.md) — MixFolder mirrors playlist folders; "crear mezcla/carpeta" buttons live inside the mezclas tab itself (not a separate general view like Playlists)
 - [Lotus icon → Escenas panel](lotus-icon-escenas.md) — lotus icon on Inicio no longer opens /profile, opens EscenasSheet (ambient sound); Profile now only via DrawerMenu
 - [Descanso 4-tab restructure](descanso-4tabs-restructure.md) — Historias/ASMR=session grids, Binaural/Ambiental=sound grids; enum duplicated in 4 places; session image pool has gaps (no session-3.jpg)
+- [Inicio inline search](inicio-inline-search.md) — buscador de Inicio expande sin Modal (dos capas absolutas + un shared value); lupa/loto/X son un solo botón tri-estado; no confundir con SearchOverlay de Biblioteca (ese sí es Modal)
 - [Scene visual theme](scene-visual-theme.md) — SceneThemeContext persists independently from audio scene; screens with their own decorative identity (Mezclador, Resonadores) are deliberately excluded

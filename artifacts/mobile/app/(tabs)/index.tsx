@@ -9,6 +9,7 @@ import {
   Dimensions,
   Easing as RNEasing,
   Image,
+  Keyboard,
   Modal,
   Platform,
   Pressable,
@@ -16,6 +17,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import RAnimated, {
@@ -532,6 +534,69 @@ export default function HomeScreen2() {
     [updateSearchIconMode],
   );
 
+  // ── Buscador desplegable (se abre desde el ícono de lupa) ────────────────
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchInputRef = useRef<TextInput>(null);
+  const searchOpenSV = useSharedValue(0);
+
+  const openSearch = useCallback(() => {
+    setSearchOpen(true);
+    searchOpenSV.value = withTiming(1, { duration: 260, easing: Easing.out(Easing.cubic) });
+    requestAnimationFrame(() => searchInputRef.current?.focus());
+  }, [searchOpenSV]);
+
+  const closeSearch = useCallback(() => {
+    Keyboard.dismiss();
+    searchOpenSV.value = withTiming(0, { duration: 200, easing: Easing.in(Easing.cubic) }, (finished) => {
+      if (finished) runOnJS(setSearchOpen)(false);
+    });
+    setSearchQuery("");
+  }, [searchOpenSV]);
+
+  const handleUniverseBtnPress = useCallback(() => {
+    if (searchOpen) {
+      closeSearch();
+    } else if (isSearchModeRef.current) {
+      openSearch();
+    } else {
+      openEscenasSheet();
+    }
+  }, [searchOpen, closeSearch, openSearch, openEscenasSheet]);
+
+  const navRowLayerStyle = useAnimatedStyle(() => ({
+    opacity: 1 - searchOpenSV.value,
+    transform: [{ translateX: -searchOpenSV.value * 10 }],
+  }));
+  const searchFieldLayerStyle = useAnimatedStyle(() => ({
+    opacity: searchOpenSV.value,
+    transform: [{ translateX: (1 - searchOpenSV.value) * 16 }],
+  }));
+
+  const searchTerm = searchQuery.trim().toLowerCase();
+  const searchResults = React.useMemo<Session[]>(() => {
+    if (!searchTerm) return [];
+    return SESSIONS.filter(
+      (s) =>
+        s.title.toLowerCase().includes(searchTerm) ||
+        s.categoryLabel.toLowerCase().includes(searchTerm) ||
+        (s.subtitle ?? "").toLowerCase().includes(searchTerm)
+    ).slice(0, 20);
+  }, [searchTerm]);
+
+  const handleSelectSearchResult = useCallback(
+    (s: Session) => {
+      closeSearch();
+      if (s.skipDetail) {
+        playSession(s);
+        router.push("/player" as never);
+        return;
+      }
+      router.push(`/session/${s.id}` as never);
+    },
+    [closeSearch, playSession],
+  );
+
   return (
     <View style={styles.root}>
       <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
@@ -540,53 +605,118 @@ export default function HomeScreen2() {
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
       <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
         <View style={styles.headerTopRow}>
-          <AnimatedNavTabRow
-            tabs={NAV_TABS}
-            activeTab={
-              activeFilter
-                ? NAV_TABS.find((t) => t.cats.join() === activeFilter.join())?.id ?? null
-                : TODOS_TAB_ID
-            }
-            onSelect={(id) => {
-              const tab = NAV_TABS.find((t) => t.id === id);
-              if (!tab) return;
-              setSesionesOpen(false);
-              setSesAncestral(false);
-              setSesMeditacion(false);
-              setActiveFilter(id === TODOS_TAB_ID ? null : tab.cats);
-            }}
-            onClear={() => {
-              setSesionesOpen(false);
-              setSesAncestral(false);
-              setSesMeditacion(false);
-              setActiveFilter(null);
-            }}
-          />
+          <View style={styles.headerRowHost}>
+            <RAnimated.View
+              pointerEvents={searchOpen ? "none" : "auto"}
+              style={[styles.headerRowLayer, navRowLayerStyle]}
+            >
+              <AnimatedNavTabRow
+                tabs={NAV_TABS}
+                activeTab={
+                  activeFilter
+                    ? NAV_TABS.find((t) => t.cats.join() === activeFilter.join())?.id ?? null
+                    : TODOS_TAB_ID
+                }
+                onSelect={(id) => {
+                  const tab = NAV_TABS.find((t) => t.id === id);
+                  if (!tab) return;
+                  setSesionesOpen(false);
+                  setSesAncestral(false);
+                  setSesMeditacion(false);
+                  setActiveFilter(id === TODOS_TAB_ID ? null : tab.cats);
+                }}
+                onClear={() => {
+                  setSesionesOpen(false);
+                  setSesAncestral(false);
+                  setSesMeditacion(false);
+                  setActiveFilter(null);
+                }}
+              />
+            </RAnimated.View>
+            <RAnimated.View
+              pointerEvents={searchOpen ? "auto" : "none"}
+              style={[styles.headerRowLayer, searchFieldLayerStyle]}
+            >
+              <View style={styles.searchInputWrap}>
+                <Ionicons name="search" size={16} color="rgba(242,231,228,0.5)" />
+                <TextInput
+                  ref={searchInputRef}
+                  style={styles.searchInput}
+                  placeholder="Buscar sesiones..."
+                  placeholderTextColor="rgba(242,231,228,0.45)"
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                  returnKeyType="search"
+                  autoCorrect={false}
+                />
+                {searchQuery.length > 0 && (
+                  <Pressable onPress={() => setSearchQuery("")} hitSlop={10}>
+                    <Ionicons name="close-circle" size={16} color="rgba(242,231,228,0.45)" />
+                  </Pressable>
+                )}
+              </View>
+            </RAnimated.View>
+          </View>
           <Pressable
-            onPress={openEscenasSheet}
+            onPress={handleUniverseBtnPress}
             hitSlop={8}
             style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
           >
             <View style={styles.universeBtnBg}>
-              <Animated.View
-                style={{
-                  opacity: searchIconAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
-                  position: "absolute",
-                }}
-              >
-                <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" style={{ opacity: 0.9 }} />
-              </Animated.View>
-              <Animated.View
-                style={{
-                  opacity: searchIconAnim,
-                }}
-              >
-                <Ionicons name="search" size={19} color="#FFFFFF" style={{ opacity: 0.9 }} />
-              </Animated.View>
+              {!searchOpen && (
+                <>
+                  <Animated.View
+                    style={{
+                      opacity: searchIconAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+                      position: "absolute",
+                    }}
+                  >
+                    <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" style={{ opacity: 0.9 }} />
+                  </Animated.View>
+                  <Animated.View
+                    style={{
+                      opacity: searchIconAnim,
+                    }}
+                  >
+                    <Ionicons name="search" size={19} color="#FFFFFF" style={{ opacity: 0.9 }} />
+                  </Animated.View>
+                </>
+              )}
+              {searchOpen && <Ionicons name="close" size={20} color="#FFFFFF" style={{ opacity: 0.9 }} />}
             </View>
           </Pressable>
         </View>
+
+        {searchOpen && searchTerm.length > 0 && (
+          <View style={styles.searchResultsWrap}>
+            {searchResults.length === 0 ? (
+              <View style={styles.searchEmptyWrap}>
+                <Text style={styles.searchEmptyText}>Sin resultados para "{searchQuery.trim()}"</Text>
+              </View>
+            ) : (
+              <ScrollView keyboardShouldPersistTaps="handled" style={styles.searchResultsList}>
+                {searchResults.map((s) => (
+                  <Pressable
+                    key={s.id}
+                    onPress={() => handleSelectSearchResult(s)}
+                    style={({ pressed }) => [styles.searchResultRow, { opacity: pressed ? 0.7 : 1 }]}
+                  >
+                    <Image source={s.image as number} style={styles.searchResultThumb} />
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.searchResultCat} numberOfLines={1}>{s.categoryLabel}</Text>
+                      <Text style={styles.searchResultTitle} numberOfLines={1}>{s.title}</Text>
+                    </View>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            )}
+          </View>
+        )}
       </View>
+
+      {searchOpen && (
+        <Pressable style={styles.searchOutsideCatcher} onPress={closeSearch} />
+      )}
 
       <ScrollView
         style={styles.scroll}
@@ -1155,6 +1285,89 @@ const styles = StyleSheet.create({
   universeBtnIcon: {
     width: 28,
     height: 28,
+  },
+  headerRowHost: {
+    flex: 1,
+    height: 34,
+    justifyContent: "center",
+  },
+  headerRowLayer: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    justifyContent: "center",
+  },
+  searchInputWrap: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "rgba(0,0,0,0.14)",
+    borderRadius: 17,
+    paddingHorizontal: 14,
+    height: 34,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    color: "#F4DAD5",
+    padding: 0,
+  },
+  searchResultsWrap: {
+    marginTop: 10,
+    maxHeight: 320,
+    backgroundColor: "#1B060F",
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.18)",
+    overflow: "hidden",
+  },
+  searchResultsList: {
+    maxHeight: 320,
+  },
+  searchResultRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "rgba(190,150,80,0.12)",
+  },
+  searchResultThumb: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
+  },
+  searchResultCat: {
+    fontSize: 11,
+    color: "rgba(242,231,228,0.45)",
+    marginBottom: 2,
+  },
+  searchResultTitle: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#F4DAD5",
+  },
+  searchEmptyWrap: {
+    paddingVertical: 18,
+    paddingHorizontal: 14,
+    alignItems: "center",
+  },
+  searchEmptyText: {
+    fontSize: 13,
+    color: "rgba(242,231,228,0.45)",
+    textAlign: "center",
+  },
+  searchOutsideCatcher: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 5,
   },
   avatarBtn: {
     width: 33,
