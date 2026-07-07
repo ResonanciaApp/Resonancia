@@ -3,26 +3,22 @@ import { StyleSheet, View } from "react-native";
 
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { useGeoUniverse } from "@/context/GeoUniverseContext";
-import { useSceneTheme } from "@/context/SceneThemeContext";
 
 export function GeoUniverseBackground() {
   const { enabled } = useGeoUniverse();
-  const { theme } = useSceneTheme();
 
   if (!enabled) return null;
-
-  const color = theme.gradient[0];
 
   return (
     <View style={styles.root} pointerEvents="none">
       <View style={styles.topRight}>
-        <SacredGlyph id="flor-vida" color={color} size={340} opacity={0.18} strokeScale={0.7} />
+        <SacredGlyph id="flor-vida" color="#FFFFFF" size={340} opacity={0.1} strokeScale={0.7} />
       </View>
       <View style={styles.bottomLeft}>
-        <SacredGlyph id="metatron" color={color} size={290} opacity={0.14} strokeScale={0.7} />
+        <SacredGlyph id="metatron" color="#FFFFFF" size={290} opacity={0.1} strokeScale={0.7} />
       </View>
       <View style={styles.centerRight}>
-        <SacredGlyph id="mandala" color={color} size={210} opacity={0.10} strokeScale={0.6} />
+        <SacredGlyph id="mandala" color="#FFFFFF" size={210} opacity={0.1} strokeScale={0.6} />
       </View>
     </View>
   );
