@@ -48,9 +48,11 @@ const POST_OPEN_DELAY = 500;
 // Delay total antes del primer elemento
 const BASE_DELAY = MODAL_SLIDE_MS + POST_OPEN_DELAY;
 // Duración de cada fade-in + translateY (lento y zen)
-const ANIM_DUR = 1200;
-// Intervalo entre la aparición de cada elemento
-const STAGGER = 300;
+const ANIM_DUR = 1600;
+// Intervalo entre la aparición de cada elemento de contenido
+const STAGGER = 600;
+// Intervalo antes del botón (más corto)
+const STAGGER_BTN = 400;
 
 export interface InvitarSheetProps {
   visible: boolean;
@@ -100,7 +102,7 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
       fadeSlide(cardOpacity,  cardTransY,  BASE_DELAY).start();
       fadeSlide(titleOpacity, titleTransY, BASE_DELAY + STAGGER).start();
       fadeSlide(descOpacity,  descTransY,  BASE_DELAY + STAGGER * 2).start();
-      fadeSlide(btnOpacity,   btnTransY,   BASE_DELAY + STAGGER * 3).start();
+      fadeSlide(btnOpacity,   btnTransY,   BASE_DELAY + STAGGER * 2 + STAGGER_BTN).start();
     } else {
       resetAnim();
     }
