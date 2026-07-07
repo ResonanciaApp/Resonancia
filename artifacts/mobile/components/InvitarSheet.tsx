@@ -1,8 +1,11 @@
 /**
  * InvitarSheet — bottom sheet premium de invitación a Resonancia.
  * ─────────────────────────────────────────────────────────────────
- * Entrada nativa slide_from_bottom (animationType="slide") + stagger
- * interno de los elementos. Fondo = degradado del tema activo.
+ * Entrada nativa slide_from_bottom (animationType="slide"). Después de
+ * que el modal haya subido completamente (~400 ms) esperamos 2 s antes
+ * de empezar el stagger de contenido:
+ *   tarjeta → título → descripción → botón (350 ms c/u, 20 px translateY)
+ * El botón aparece fijo en el fondo a 30 px del margen de la pantalla.
  * Cerrar: botón X, tap en el handle, o swipe-down (dy>60 / vy>0.5).
  */
 import { Feather } from "@expo/vector-icons";
@@ -38,6 +41,15 @@ const SHIMMER_COLORS = [
 
 const { height: SCREEN_H } = Dimensions.get("window");
 
+// Cuánto tarda el slide nativo del Modal en completarse (aprox.)
+const MODAL_SLIDE_MS = 420;
+// Pausa visible después de que la ventana haya subido
+const POST_OPEN_DELAY = 2000;
+// Delay total antes del primer elemento
+const BASE_DELAY = MODAL_SLIDE_MS + POST_OPEN_DELAY;
+// Duración de cada fade-in + translateY
+const ANIM_DUR = 350;
+
 export interface InvitarSheetProps {
   visible: boolean;
   onClose: () => void;
@@ -47,68 +59,54 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
 
-  // Content stagger (independientes del slide nativo del Modal)
+  // Cuatro animaciones independientes: tarjeta, título, descripción, botón
   const cardOpacity  = useRef(new Animated.Value(0)).current;
-  const cardTransY   = useRef(new Animated.Value(40)).current;
-  const textOpacity  = useRef(new Animated.Value(0)).current;
-  const textTransY   = useRef(new Animated.Value(30)).current;
-  const btnsOpacity  = useRef(new Animated.Value(0)).current;
-  const btnsTransY   = useRef(new Animated.Value(20)).current;
+  const cardTransY   = useRef(new Animated.Value(20)).current;
+  const titleOpacity = useRef(new Animated.Value(0)).current;
+  const titleTransY  = useRef(new Animated.Value(20)).current;
+  const descOpacity  = useRef(new Animated.Value(0)).current;
+  const descTransY   = useRef(new Animated.Value(20)).current;
+  const btnOpacity   = useRef(new Animated.Value(0)).current;
+  const btnTransY    = useRef(new Animated.Value(20)).current;
 
   // Toast
   const [toastVisible, setToastVisible] = useState(false);
   const toastOpacity = useRef(new Animated.Value(0)).current;
 
   const resetAnim = () => {
-    cardOpacity.setValue(0);
-    cardTransY.setValue(40);
-    textOpacity.setValue(0);
-    textTransY.setValue(30);
-    btnsOpacity.setValue(0);
-    btnsTransY.setValue(20);
+    cardOpacity.setValue(0);  cardTransY.setValue(20);
+    titleOpacity.setValue(0); titleTransY.setValue(20);
+    descOpacity.setValue(0);  descTransY.setValue(20);
+    btnOpacity.setValue(0);   btnTransY.setValue(20);
   };
+
+  const easeOut = Easing.out(Easing.cubic);
+
+  const fadeSlide = (opacity: Animated.Value, transY: Animated.Value, delay: number) =>
+    Animated.sequence([
+      Animated.delay(delay),
+      Animated.parallel([
+        Animated.timing(opacity, { toValue: 1, duration: ANIM_DUR, easing: easeOut, useNativeDriver: true }),
+        Animated.timing(transY,  { toValue: 0, duration: ANIM_DUR, easing: easeOut, useNativeDriver: true }),
+      ]),
+    ]);
 
   useEffect(() => {
     if (visible) {
       resetAnim();
-
-      // Gift card entra (delay para que el modal nativo haya subido primero)
-      Animated.sequence([
-        Animated.delay(280),
-        Animated.parallel([
-          Animated.timing(cardOpacity,  { toValue: 1, duration: 460, easing: Easing.out(Easing.quad),   useNativeDriver: true }),
-          Animated.timing(cardTransY,   { toValue: 0, duration: 460, easing: Easing.out(Easing.cubic),  useNativeDriver: true }),
-        ]),
-      ]).start();
-
-      // Título + subtítulo
-      Animated.sequence([
-        Animated.delay(400),
-        Animated.parallel([
-          Animated.timing(textOpacity,  { toValue: 1, duration: 440, easing: Easing.out(Easing.quad),   useNativeDriver: true }),
-          Animated.timing(textTransY,   { toValue: 0, duration: 440, easing: Easing.out(Easing.cubic),  useNativeDriver: true }),
-        ]),
-      ]).start();
-
-      // Botones + microcopy
-      Animated.sequence([
-        Animated.delay(500),
-        Animated.parallel([
-          Animated.timing(btnsOpacity,  { toValue: 1, duration: 420, easing: Easing.out(Easing.quad),   useNativeDriver: true }),
-          Animated.timing(btnsTransY,   { toValue: 0, duration: 420, easing: Easing.out(Easing.cubic),  useNativeDriver: true }),
-        ]),
-      ]).start();
+      // Stagger: tarjeta → título → descripción → botón
+      fadeSlide(cardOpacity,  cardTransY,  BASE_DELAY).start();
+      fadeSlide(titleOpacity, titleTransY, BASE_DELAY + ANIM_DUR).start();
+      fadeSlide(descOpacity,  descTransY,  BASE_DELAY + ANIM_DUR * 2).start();
+      fadeSlide(btnOpacity,   btnTransY,   BASE_DELAY + ANIM_DUR * 3).start();
     } else {
       resetAnim();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible]);
 
-  // Cerrar simplemente propaga onClose; el Modal con animationType="slide"
-  // se encarga del exit (desliza hacia abajo de forma nativa).
   const dismiss = () => onClose();
 
-  // PanResponder para swipe-down
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: (_, gs) =>
@@ -150,6 +148,10 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
     ]).start(() => setToastVisible(false));
   };
 
+  // Espacio reservado para el bloque de botón (altura aprox del bloque absoluto)
+  const BTN_BLOCK_H = 80; // botón único aprox + margen
+  const bottomPad = insets.bottom + 30 + BTN_BLOCK_H + 16;
+
   return (
     <Modal
       visible={visible}
@@ -184,13 +186,8 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
           </View>
         </Pressable>
 
-        {/* Contenido */}
-        <View
-          style={[
-            styles.content,
-            { paddingBottom: Math.max(insets.bottom + 8, 36) },
-          ]}
-        >
+        {/* Contenido central: tarjeta + título + descripción */}
+        <View style={[styles.content, { paddingBottom: bottomPad }]}>
           {/* ── Gift card ── */}
           <Animated.View
             style={[
@@ -216,7 +213,7 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
               {/* Contenido de la card */}
               <View style={styles.cardInner}>
                 <Text style={styles.cardForLabel}>Para tu amigo</Text>
-                <Text style={styles.cardDiscount}>20% OFF</Text>
+                <Text style={styles.cardDiscount}>7 · 30</Text>
                 <Text style={styles.cardBrand}>Resonancia Premium</Text>
               </View>
               {/* Motivos decorativos */}
@@ -225,56 +222,59 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
             </View>
           </Animated.View>
 
-          {/* ── Título y descripción ── */}
+          {/* ── Título ── */}
           <Animated.View
-            style={{
-              opacity: textOpacity,
-              transform: [{ translateY: textTransY }],
-            }}
+            style={{ opacity: titleOpacity, transform: [{ translateY: titleTransY }] }}
           >
-            <Text style={styles.title}>Regala Resonancia</Text>
-            <Text style={styles.subtitle}>
-              Invita a un amigo y ambos reciben un beneficio especial.
+            <Text style={styles.title}>
+              Regala un pase de invitado para 7 días · 30 días de Resonancia
             </Text>
           </Animated.View>
 
-          {/* ── Botones ── */}
+          {/* ── Descripción ── */}
           <Animated.View
-            style={[
-              styles.btnsWrap,
-              {
-                opacity: btnsOpacity,
-                transform: [{ translateY: btnsTransY }],
-              },
-            ]}
+            style={{ opacity: descOpacity, transform: [{ translateY: descTransY }] }}
           >
-            <Pressable
-              style={({ pressed }) => [
-                styles.btnSecondary,
-                { opacity: pressed ? 0.65 : 1 },
-              ]}
-              onPress={handleCopyLink}
-            >
-              <Feather name="copy" size={16} color="rgba(255,255,255,0.75)" />
-              <Text style={styles.btnSecondaryText}>Copiar enlace</Text>
-            </Pressable>
-
-            <Pressable
-              style={({ pressed }) => [
-                styles.btnPrimary,
-                { opacity: pressed ? 0.85 : 1 },
-              ]}
-              onPress={handleShare}
-            >
-              <Feather name="share-2" size={16} color="#1B060F" />
-              <Text style={styles.btnPrimaryText}>Compartir invitación</Text>
-            </Pressable>
-
-            <Text style={styles.microcopy}>
-              Tu amigo recibirá el descuento al registrarse desde tu enlace.
+            <Text style={styles.subtitle}>
+              Envía un pase de invitado a la persona que quieras para que tenga acceso
+              gratuito a todo el contenido de Resonancia Premium durante un mes.
             </Text>
           </Animated.View>
         </View>
+
+        {/* ── Botón — posición absoluta en el fondo ── */}
+        <Animated.View
+          style={[
+            styles.btnAbsolute,
+            {
+              bottom: insets.bottom + 30,
+              opacity: btnOpacity,
+              transform: [{ translateY: btnTransY }],
+            },
+          ]}
+        >
+          <Pressable
+            style={({ pressed }) => [
+              styles.btnSecondary,
+              { opacity: pressed ? 0.65 : 1 },
+            ]}
+            onPress={handleCopyLink}
+          >
+            <Feather name="copy" size={16} color="rgba(255,255,255,0.75)" />
+            <Text style={styles.btnSecondaryText}>Copiar enlace</Text>
+          </Pressable>
+
+          <Pressable
+            style={({ pressed }) => [
+              styles.btnPrimary,
+              { opacity: pressed ? 0.85 : 1 },
+            ]}
+            onPress={handleShare}
+          >
+            <Feather name="share-2" size={16} color="#1B060F" />
+            <Text style={styles.btnPrimaryText}>Compartir invitación</Text>
+          </Pressable>
+        </Animated.View>
 
         {/* Toast inline */}
         {toastVisible && (
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  // ── Content layout ───────────────────────────────────────────────────────
+  // ── Content layout (tarjeta + textos, centrado verticalmente) ────────────
   content: {
     flex: 1,
     paddingHorizontal: 24,
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   // ── Gift card ────────────────────────────────────────────────────────────
   cardWrap: {
     alignItems: "center",
-    marginBottom: 32,
+    marginBottom: 28,
     shadowColor: "#D8A84F",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.45,
@@ -365,11 +365,11 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   cardDiscount: {
-    fontSize: 58,
+    fontSize: 56,
     fontWeight: "800",
     color: "#FFFFFF",
     letterSpacing: -1,
-    lineHeight: 66,
+    lineHeight: 64,
     textShadowColor: "rgba(0,0,0,0.18)",
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 6,
@@ -399,28 +399,32 @@ const styles = StyleSheet.create({
     right: -20,
   },
 
-  // ── Título / descripción ─────────────────────────────────────────────────
+  // ── Título ───────────────────────────────────────────────────────────────
   title: {
-    fontSize: 26,
+    fontSize: 30,
     fontWeight: "700",
-    color: "#FFFFFF",
+    color: "#F6F6F6",
     textAlign: "center",
-    marginBottom: 10,
-    letterSpacing: 0.2,
-  },
-  subtitle: {
-    fontSize: 15,
-    color: "rgba(242,231,228,0.70)",
-    textAlign: "center",
-    lineHeight: 22,
-    marginBottom: 32,
-    paddingHorizontal: 8,
+    marginBottom: 14,
+    letterSpacing: 0.1,
+    lineHeight: 38,
   },
 
-  // ── Botones ───────────────────────────────────────────────────────────────
-  btnsWrap: {
+  // ── Descripción ──────────────────────────────────────────────────────────
+  subtitle: {
+    fontSize: 15,
+    color: "#F6F6F6",
+    textAlign: "center",
+    lineHeight: 23,
+    paddingHorizontal: 4,
+  },
+
+  // ── Botón absoluto en el fondo ────────────────────────────────────────────
+  btnAbsolute: {
+    position: "absolute",
+    left: 24,
+    right: 24,
     gap: 12,
-    alignItems: "center",
   },
   btnSecondary: {
     flexDirection: "row",
@@ -433,7 +437,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.22)",
     backgroundColor: "rgba(255,255,255,0.07)",
-    width: "100%",
   },
   btnSecondaryText: {
     fontSize: 15,
@@ -449,7 +452,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 28,
     borderRadius: 50,
     backgroundColor: "#D4AF37",
-    width: "100%",
     shadowColor: "#D4AF37",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
@@ -462,19 +464,11 @@ const styles = StyleSheet.create({
     color: "#1B060F",
     letterSpacing: 0.2,
   },
-  microcopy: {
-    fontSize: 12,
-    color: "rgba(242,231,228,0.40)",
-    textAlign: "center",
-    lineHeight: 18,
-    marginTop: 4,
-    paddingHorizontal: 12,
-  },
 
   // ── Toast ─────────────────────────────────────────────────────────────────
   toast: {
     position: "absolute",
-    bottom: 80,
+    bottom: 160,
     alignSelf: "center",
     flexDirection: "row",
     alignItems: "center",
