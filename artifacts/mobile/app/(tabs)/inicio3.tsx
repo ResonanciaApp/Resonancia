@@ -682,7 +682,7 @@ export default function HomeScreen2() {
     <View style={styles.root}>
       {/* ── Imagen de fondo — se desvanece con scroll ── */}
       <Animated.View
-        style={{ position: "absolute", top: 0, left: 0, right: 0, height: 355, opacity: backdropAnim }}
+        style={{ position: "absolute", top: 0, left: 0, right: 0, height: 365, opacity: backdropAnim }}
         pointerEvents="none"
       >
         <ExpoImage
