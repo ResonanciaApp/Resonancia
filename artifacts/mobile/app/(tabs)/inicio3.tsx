@@ -675,9 +675,29 @@ export default function HomeScreen2() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={prevGradient} style={styles.rootGradient} />
+      {/* ── Imagen de fondo en área del header — oculta bajo el gradiente ── */}
+      <ExpoImage
+        source={require("@/assets/images/ancestrales-hero.jpg")}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 320,
+        }}
+        contentFit="cover"
+      />
+      <LinearGradient
+        colors={[`${prevGradient[0]}00`, prevGradient[0] as string, prevGradient[1] as string]}
+        locations={[0, 0.37, 1]}
+        style={styles.rootGradient}
+      />
       <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
-        <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
+        <LinearGradient
+          colors={[`${activeTheme.gradient[0]}00`, activeTheme.gradient[0] as string, activeTheme.gradient[1] as string]}
+          locations={[0, 0.37, 1]}
+          style={styles.rootGradient}
+        />
       </Animated.View>
       <GeoUniverseBackground />
       <StatusBar barStyle="light-content" />
@@ -734,7 +754,7 @@ export default function HomeScreen2() {
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 0 }}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: topPad + 12 }}
         showsVerticalScrollIndicator={false}
         onScroll={handleMainScroll}
         scrollEventThrottle={16}
@@ -747,29 +767,8 @@ export default function HomeScreen2() {
           updateStickyActive();
         }}
       >
-        {/* ── Hero image — se desplaza con el contenido como un único bloque ── */}
-        <View style={{ width: "100%", height: topPad + 260, overflow: "hidden" }}>
-          <ExpoImage
-            source={require("@/assets/images/ancestrales-hero.jpg")}
-            style={{ width: "100%", height: "100%" }}
-            contentFit="cover"
-          />
-          <LinearGradient
-            colors={[`${prevGradient[0]}00`, prevGradient[0] as string]}
-            locations={[0.45, 1]}
-            style={StyleSheet.absoluteFill}
-          />
-          <Animated.View style={StyleSheet.absoluteFill} pointerEvents="none">
-            <LinearGradient
-              colors={[`${activeTheme.gradient[0]}00`, activeTheme.gradient[0] as string]}
-              locations={[0.45, 1]}
-              style={StyleSheet.absoluteFill}
-            />
-          </Animated.View>
-        </View>
-
         {/* ── Racha semanal ── */}
-        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 16 }}>
+        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 226 }}>
           <WeeklyStreakStrip />
         </View>
 
