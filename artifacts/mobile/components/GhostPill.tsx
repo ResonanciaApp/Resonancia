@@ -15,9 +15,10 @@ import Svg, {
 interface Props {
   children: React.ReactNode;
   style?: ViewStyle;
+  noBorder?: boolean;
 }
 
-export function GhostPill({ children, style }: Props) {
+export function GhostPill({ children, style, noBorder = false }: Props) {
   const [size, setSize] = useState({ w: 0, h: 0 });
   const rawId = useId();
   const gradId = `ghostPill-${rawId.replace(/:/g, "")}`;
@@ -53,7 +54,7 @@ export function GhostPill({ children, style }: Props) {
         setSize({ w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height })
       }
     >
-      {size.w > 0 && size.h > 0 && (
+      {!noBorder && size.w > 0 && size.h > 0 && (
         <Svg
           width={size.w}
           height={size.h}
