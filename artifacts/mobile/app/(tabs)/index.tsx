@@ -2,7 +2,7 @@ import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts/cinzel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useFocusEffect } from "expo-router";
+import { router } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -42,7 +42,6 @@ import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
-import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
@@ -297,11 +296,6 @@ export default function HomeScreen2() {
   const { presets, loadPreset, openSheet } = useMixer();
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  const { requestHide, showMenu } = useTabBarVisibility();
-  useFocusEffect(useCallback(() => {
-    requestHide();
-    return () => { showMenu(); };
-  }, [requestHide, showMenu]));
   // Fade de 300ms entre degradados de fondo al cambiar de Escena (loto en Inicio):
   // se mantiene el degradado anterior debajo y el nuevo se desvanece encima, en vez
   // de saltar de golpe de un color a otro.
