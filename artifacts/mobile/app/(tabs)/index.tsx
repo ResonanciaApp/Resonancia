@@ -694,7 +694,7 @@ export default function HomeScreen2() {
         ]}
       >
         <Animated.View style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
-        <View style={[styles.headerTopRow, { marginBottom: 0 }]}>
+        <View style={styles.headerTopRow}>
           <Pressable
             onPress={openEscenasSheet}
             hitSlop={8}
@@ -744,6 +744,21 @@ export default function HomeScreen2() {
                 )}
               </View>
             </RAnimated.View>
+            {!searchOpen && (
+              <View style={[styles.headerRowLayer, { justifyContent: "center" }]} pointerEvents="none">
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontSize: 12,
+                    color: "rgba(255,255,255,0.6)",
+                    letterSpacing: 0.25,
+                  }}
+                  numberOfLines={1}
+                >
+                  {dailyPhrase}
+                </Text>
+              </View>
+            )}
           </Animated.View>
           <Animated.View
             pointerEvents={stickyActive || searchOpen ? "none" : "auto"}
@@ -782,22 +797,6 @@ export default function HomeScreen2() {
             </Pressable>
           </Animated.View>
         </View>
-
-        {!searchOpen && (
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 12,
-              color: "rgba(255,255,255,0.6)",
-              marginTop: -6,
-              paddingBottom: 8,
-              letterSpacing: 0.25,
-            }}
-            numberOfLines={1}
-          >
-            {dailyPhrase}
-          </Text>
-        )}
 
         {searchOpen && searchTerm.length > 0 && (
           <View style={styles.searchResultsWrap}>
