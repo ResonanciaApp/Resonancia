@@ -145,16 +145,30 @@ export function EscenasSheet() {
   const [previewScene, setPreviewScene] = useState<(typeof AMBIENT_SCENES)[0] | null>(null);
   const prevSceneIdRef = useRef<SceneId | null>(null);
   const previewSlideY = useRef(new Animated.Value(SCREEN_H)).current;
+  // 0 = invisible / desplazado; 1 = visible en posición final
+  const ctaAnim = useRef(new Animated.Value(0)).current;
 
   // Arrancar la animación DESPUÉS de que el Animated.View se monte
   useEffect(() => {
-    if (!previewScene) return;
-    Animated.timing(previewSlideY, {
-      toValue: 0,
-      duration: 380,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
-    }).start();
+    if (!previewScene) {
+      ctaAnim.setValue(0);
+      return;
+    }
+    ctaAnim.setValue(0);
+    Animated.sequence([
+      Animated.timing(previewSlideY, {
+        toValue: 0,
+        duration: 380,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(ctaAnim, {
+        toValue: 1,
+        duration: 350,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [previewScene]);
 
@@ -397,15 +411,29 @@ export function EscenasSheet() {
             <Text style={styles.previewTitle}>{previewScene.label}</Text>
           </View>
 
-          {/* CTA anclado al fondo */}
-          <View style={[styles.previewBottom, { paddingBottom: insets.bottom + 32 }]}>
+          {/* CTA anclado al fondo — fade-in 350ms + desplazamiento 10px */}
+          <Animated.View
+            style={[
+              styles.previewBottom,
+              { paddingBottom: insets.bottom + 32 },
+              {
+                opacity: ctaAnim,
+                transform: [{
+                  translateY: ctaAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [10, 0],
+                  }),
+                }],
+              },
+            ]}
+          >
             <Pressable
               style={({ pressed }) => [styles.ctaBtn, { opacity: pressed ? 0.82 : 1 }]}
               onPress={() => handleConfirmScene(previewScene.id)}
             >
               <Text style={styles.ctaBtnText}>Elegir escena</Text>
             </Pressable>
-          </View>
+          </Animated.View>
         </Animated.View>
       )}
 
