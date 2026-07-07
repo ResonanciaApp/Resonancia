@@ -1130,7 +1130,7 @@ export default function HomeScreen2() {
         <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, alignItems: "center" }}>
           <ExpoImage
             source={require("@/assets/images/icons/pulso-logo.png")}
-            style={{ width: 107, height: 43 }}
+            style={{ width: 111, height: 45 }}
             contentFit="contain"
           />
         </View>
