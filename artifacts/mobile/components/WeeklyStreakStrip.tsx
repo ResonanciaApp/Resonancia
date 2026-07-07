@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
@@ -133,9 +134,10 @@ export function WeeklyStreakStrip() {
   const { statEvents } = usePlayer();
   const { theme } = useSceneTheme();
 
-  const streakBorderColor = useMemo(
-    () => brightenHex(theme.gradient[0], 40),
-    [theme.gradient[0]]
+  const streakBorderColors = useMemo(
+    () => [brightenHex(theme.gradient[0], 40), brightenHex(theme.gradient[1], 40)] as [string, string],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [theme.gradient[0], theme.gradient[1]]
   );
 
   const { activeFlags, activeCount, todayIndex } = useMemo(() => {
@@ -200,9 +202,16 @@ export function WeeklyStreakStrip() {
           return (
             <View key={i} style={styles.dayCol}>
               {met ? (
-                <View style={[styles.circle, styles.circleActive, { borderColor: streakBorderColor }]}>
-                  <Feather name="check" size={21} color="rgba(255,255,255,0.9)" />
-                </View>
+                <LinearGradient
+                  colors={streakBorderColors}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.circleGradientBorder}
+                >
+                  <View style={styles.circleActiveInner}>
+                    <Feather name="check" size={19} color="rgba(255,255,255,0.9)" />
+                  </View>
+                </LinearGradient>
               ) : (
                 <View style={[
                   styles.circle,
@@ -275,10 +284,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  circleActive: {
-    backgroundColor: "rgba(255,255,255,0.20)",
-    borderWidth: 3,
-    borderColor: GOLD,
+  circleGradientBorder: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    padding: 3,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  circleActiveInner: {
+    flex: 1,
+    width: "100%",
+    borderRadius: 18,
+    backgroundColor: "rgba(255,255,255,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   circleInactive: {
     backgroundColor: "rgba(255,255,255,0.08)",
