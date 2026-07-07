@@ -793,11 +793,18 @@ export default function HomeScreen2() {
             <View style={styles.resBannerCircle1} />
             <View style={styles.resBannerCircle2} />
             <View style={styles.resonadoresBannerInner}>
-              <ExpoImage
-                source={require("@/assets/images/banner-resonador.png")}
-                style={styles.resonadoresBannerLogo}
-                contentFit="contain"
-              />
+              <LinearGradient
+                colors={["rgba(247,203,107,0.7)", "rgba(251,169,128,0.7)"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{ width: 44, height: 44, borderRadius: 15, alignItems: "center", justifyContent: "center" }}
+              >
+                <ExpoImage
+                  source={require("@/assets/images/icons/familia.png")}
+                  style={{ width: 26, height: 26 }}
+                  contentFit="contain"
+                />
+              </LinearGradient>
               <View style={styles.resonadoresBannerContent}>
                 <Text style={styles.resonadoresBannerTitle}>Resonadores</Text>
                 <Text style={styles.resonadoresBannerSub}>Únete a la comunidad</Text>
