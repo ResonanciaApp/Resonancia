@@ -173,8 +173,8 @@ const PillTab = memo(function PillTab({
           : { backgroundColor: "rgba(0,0,0,0.14)", borderColor: "rgba(255,255,255,0.1)" },
       ]}
     >
-      <MaterialCommunityIcons name={tab.icon as any} size={13} color={sel ? "#1B060F" : "#e8e8e8"} />
-      <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "#e8e8e8" }]}>
+      <MaterialCommunityIcons name={tab.icon as any} size={13} color={sel ? "#1B060F" : "#F4F4F4"} />
+      <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "#F4F4F4" }]}>
         {tab.label}
       </Text>
     </Pressable>
@@ -961,7 +961,7 @@ const styles = StyleSheet.create({
     gap: 5,
     backgroundColor: "transparent",
   },
-  pillTabLabel: { fontSize: 11, letterSpacing: 0.1, fontWeight: "700" },
+  pillTabLabel: { fontSize: 11, letterSpacing: 0.1, fontWeight: "400" },
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },
 
@@ -1033,7 +1033,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "rgba(244,218,213,0.2)",
   },
-  subTabText: { fontSize: 11, letterSpacing: 0.1, fontWeight: "700", includeFontPadding: false },
+  subTabText: { fontSize: 11, letterSpacing: 0.1, fontWeight: "400", includeFontPadding: false },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 17, justifyContent: "space-evenly" },
   soundCard: { width: CARD_W },
