@@ -465,58 +465,6 @@ export default function SessionDetailScreen() {
             </View>
           )}
 
-          {/* ── Sobre la voz guía ────────────────────────────────────────── */}
-          <View style={styles.authorSection}>
-            {/* Header row: título + Ver perfil */}
-            <View style={styles.authorHeaderRow}>
-              <Text style={[styles.blockTitle, { color: colors.foreground, marginBottom: 0 }]} numberOfLines={1} ellipsizeMode="tail">
-                {isAncestral
-                  ? "Sobre el Sonoterapeuta"
-                  : isMusica
-                    ? "Sobre el músico"
-                    : authors.length > 1
-                      ? "Sobre las voces guía"
-                      : "Sobre la voz guía"}
-              </Text>
-              {authors[0] && (
-                <Pressable
-                  onPress={() => router.push(authors[0].profilePath as never)}
-                  style={({ pressed }) => ({ opacity: pressed ? 0.65 : 1 })}
-                >
-                  <Text style={[styles.authorLink, { color: "#e8e8e8" }]}>
-                    Ver perfil{"  "}<Feather name="chevron-right" size={13} color="#e8e8e8" />
-                  </Text>
-                </Pressable>
-              )}
-            </View>
-
-            {/* Cards */}
-            {authors.map((a) => (
-              <Pressable
-                key={a.profilePath}
-                onPress={() => router.push(a.profilePath as never)}
-                style={({ pressed }) => [styles.authorCard, { opacity: pressed ? 0.9 : 1 }]}
-              >
-                <Image
-                  source={a.photo as never}
-                  style={styles.authorBigPhoto}
-                  contentFit="cover"
-                  placeholder={BLUR_PLACEHOLDER}
-                  transition={IMAGE_TRANSITION}
-                />
-                <Text style={[styles.authorName, { color: colors.foreground }]}>{a.name}</Text>
-                {!!(a.city || a.country) && (
-                  <Text style={styles.authorCountry}>
-                    {[a.city, a.country].filter(Boolean).join(", ")}
-                  </Text>
-                )}
-                {!!a.bio && (
-                  <Text style={styles.authorBio} numberOfLines={4}>{a.bio}</Text>
-                )}
-              </Pressable>
-            ))}
-          </View>
-
           {/* ── Más sesiones como estas ──────────────────────────────────── */}
           {related.length > 0 && (
             <View style={styles.relatedBlock}>
