@@ -169,7 +169,7 @@ const PillTab = memo(function PillTab({
       style={[
         styles.pillTab,
         sel
-          ? { backgroundColor: "#C9924E", borderColor: "rgba(190,135,68,0.55)" }
+          ? { backgroundColor: "#F4F4F4", borderColor: "#F4F4F4" }
           : { backgroundColor: "rgba(0,0,0,0.14)", borderColor: "rgba(255,255,255,0.1)" },
       ]}
     >
@@ -747,16 +747,10 @@ export default function MezcladorScreen() {
                           style={[
                             styles.subTabBorderOuter,
                             sel
-                              ? { borderColor: "rgba(190,135,68,0.55)" }
+                              ? { backgroundColor: "#F4F4F4", borderColor: "#F4F4F4" }
                               : { backgroundColor: "rgba(0,0,0,0.14)", borderColor: "rgba(255,255,255,0.1)" },
                           ]}
                         >
-                          <LinearGradient
-                            colors={sel ? ["#D6A45C", "#BE8744"] : ["transparent", "transparent"]}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 0, y: 1 }}
-                            style={StyleSheet.absoluteFill}
-                          />
                           <Text style={[styles.subTabText, { color: sel ? "#1B060F" : "#e8e8e8" }]}>
                             {SUB_TAB_LABELS[catId] ?? cat.label}
                           </Text>
