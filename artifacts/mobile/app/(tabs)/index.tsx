@@ -777,7 +777,7 @@ export default function HomeScreen2() {
             >
               <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
                 <Image
-                  source={require("@/assets/images/icons/regalo2.png")}
+                  source={require("@/assets/images/icons/regalo3.png")}
                   style={styles.giftBtnIcon}
                   resizeMode="contain"
                 />
