@@ -53,6 +53,7 @@ import { getExpansorById } from "@/data/expansores";
 import { uploadLocalFile } from "@/lib/upload";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
+import { InvitarSheet } from "@/components/InvitarSheet";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen } from "@/components/BibliotecaScreen";
 import { HistorialCalendar } from "@/components/HistorialCalendar";
@@ -484,6 +485,7 @@ export default function ProfileScreen() {
   }, [sectionsHidden, sectionsAnim]);
 
   // ── Edit modal state ──────────────────────────────────────────────────────
+  const [showInvitar, setShowInvitar] = useState(false);
   const [editVisible, setEditVisible] = useState(false);
   const [editNombre, setEditNombre] = useState(username);
   const [editApellido, setEditApellido] = useState(lastName);
@@ -792,7 +794,7 @@ export default function ProfileScreen() {
           </Pressable>
           <Text style={styles.stickyTitle}>Perfil</Text>
           <Pressable
-            onPress={() => router.push("/invitar" as never)}
+            onPress={() => setShowInvitar(true)}
             hitSlop={8}
             onPressIn={() =>
               Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
@@ -1111,6 +1113,12 @@ export default function ProfileScreen() {
           </View>
         </ScrollView>
       )}
+
+      {/* ── Invitar Sheet ── */}
+      <InvitarSheet
+        visible={showInvitar}
+        onClose={() => setShowInvitar(false)}
+      />
 
       {/* ── Personalize Sheet ── */}
       <SimplePersonalizeSheet

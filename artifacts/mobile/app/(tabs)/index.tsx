@@ -30,6 +30,7 @@ import RAnimated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { InvitarSheet } from "@/components/InvitarSheet";
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
@@ -320,6 +321,7 @@ export default function HomeScreen2() {
 
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
+  const [showInvitar, setShowInvitar] = useState(false);
 
   function handleMoodSelect(moodId: MoodId) {
     setSelectedMood(getMoodById(moodId) ?? null);
@@ -775,7 +777,7 @@ export default function HomeScreen2() {
             style={[styles.giftBtnWrap, { opacity: giftBtnAnim }]}
           >
             <Pressable
-              onPress={() => router.push("/invitar" as never)}
+              onPress={() => setShowInvitar(true)}
               hitSlop={8}
               style={styles.giftBtn}
               onPressIn={() =>
@@ -1251,6 +1253,11 @@ export default function HomeScreen2() {
         session={actionsSession}
         visible={actionsSession !== null}
         onClose={() => setActionsSession(null)}
+      />
+
+      <InvitarSheet
+        visible={showInvitar}
+        onClose={() => setShowInvitar(false)}
       />
 
     </View>
