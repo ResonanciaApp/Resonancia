@@ -24,19 +24,16 @@ import { useVideos } from "@/hooks/useVideos";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
-const CARD_BG = "rgba(255,255,255,0.045)";
-const CARD_BORDER = "rgba(255,255,255,0.3)";
 const CHIP_BORDER = "rgba(255,255,255,0.1)";
-
 const FILTER_CHIPS = ["Todos", "Movimiento", "Respiración", "Naturaleza", "Música"] as const;
 
 type SortOption = "popular" | "puntuacion" | "novedades" | "corto" | "largo";
 const SORT_LABELS: Record<SortOption, string> = {
-  popular: "Popular",
+  popular:    "Popular",
   puntuacion: "Máxima puntuación",
-  novedades: "Novedades",
-  corto: "Más corto",
-  largo: "El más largo",
+  novedades:  "Novedades",
+  corto:      "Más corto",
+  largo:      "El más largo",
 };
 
 function parseDurationToSeconds(label: string): number {
@@ -44,66 +41,67 @@ function parseDurationToSeconds(label: string): number {
   return m * 60 + s;
 }
 
+// Heights of each sticky section
+const SEARCH_H = 63; // search box + top/bottom margin
+const CHIPS_H  = 52; // chips row + top/bottom margin
+
 export default function VideoTabScreen() {
   const colors = useColors();
   const { theme: activeTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { videos, isLoading } = useVideos();
 
-  const [query, setQuery] = useState("");
+  const [query, setQuery]         = useState("");
   const [activeChip, setActiveChip] = useState<(typeof FILTER_CHIPS)[number]>("Todos");
-  const [sortOpen, setSortOpen] = useState(false);
-  const [sortBy, setSortBy] = useState<SortOption>("popular");
-  const sortBtnRef = useRef<View>(null);
+  const [sortOpen, setSortOpen]   = useState(false);
+  const [sortBy, setSortBy]       = useState<SortOption>("popular");
+  const sortBtnRef  = useRef<View>(null);
   const [sortMenuPos, setSortMenuPos] = useState({ top: 0, right: 0 });
 
-  const topPad = Platform.OS === "web" ? 16 : insets.top;
+  const topPad    = Platform.OS === "web" ? 16 : insets.top;
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
 
-  // ── Borde del header: se activa recién a partir de 1% de scroll ──
-  const HEADER_BORDER_THRESHOLD = 0.01;
-  const headerBorderActiveRef = useRef(false);
-  const headerBorderAnim = useRef(new Animated.Value(0)).current;
-  const scrollContentHeightRef = useRef(0);
-  const scrollLayoutHeightRef = useRef(0);
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  // Slide the whole sticky area up by SEARCH_H → search vanishes, chips stick
+  const stickyTranslateY = scrollY.interpolate({
+    inputRange: [0, SEARCH_H],
+    outputRange: [0, -SEARCH_H],
+    extrapolate: "clamp",
+  });
+  const searchOpacity = scrollY.interpolate({
+    inputRange: [0, SEARCH_H * 0.6],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
+  // Divider under chips appears once search is gone
+  const dividerOpacity = scrollY.interpolate({
+    inputRange: [SEARCH_H * 0.6, SEARCH_H],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     let list = q
       ? videos.filter(
-          (v) =>
-            v.title.toLowerCase().includes(q) ||
-            (v.author ?? "").toLowerCase().includes(q),
+          (v) => v.title.toLowerCase().includes(q) || (v.author ?? "").toLowerCase().includes(q),
         )
       : videos;
 
-    if (activeChip !== "Todos") {
-      list = list.filter((v) => v.theme === activeChip);
-    }
+    if (activeChip !== "Todos") list = list.filter((v) => v.theme === activeChip);
 
-    if (sortBy === "puntuacion") {
-      list = [...list].sort((a, b) => (b.rating ?? 4.8) - (a.rating ?? 4.8));
-    } else if (sortBy === "novedades") {
-      list = [...list].sort((a, b) => parseInt(b.id, 10) - parseInt(a.id, 10));
-    } else if (sortBy === "corto") {
-      list = [...list].sort(
-        (a, b) => parseDurationToSeconds(a.durationLabel) - parseDurationToSeconds(b.durationLabel),
-      );
-    } else if (sortBy === "largo") {
-      list = [...list].sort(
-        (a, b) => parseDurationToSeconds(b.durationLabel) - parseDurationToSeconds(a.durationLabel),
-      );
-    }
+    if (sortBy === "puntuacion") list = [...list].sort((a, b) => (b.rating ?? 4.8) - (a.rating ?? 4.8));
+    else if (sortBy === "novedades") list = [...list].sort((a, b) => parseInt(b.id, 10) - parseInt(a.id, 10));
+    else if (sortBy === "corto") list = [...list].sort((a, b) => parseDurationToSeconds(a.durationLabel) - parseDurationToSeconds(b.durationLabel));
+    else if (sortBy === "largo")  list = [...list].sort((a, b) => parseDurationToSeconds(b.durationLabel) - parseDurationToSeconds(a.durationLabel));
 
     return list;
   }, [videos, query, sortBy, activeChip]);
 
   const openSortMenu = () => {
     sortBtnRef.current?.measureInWindow((x, y, w, h) => {
-      setSortMenuPos({
-        top: y + h + 6,
-        right: Dimensions.get("window").width - (x + w),
-      });
+      setSortMenuPos({ top: y + h + 6, right: Dimensions.get("window").width - (x + w) });
       setSortOpen(true);
     });
   };
@@ -112,26 +110,61 @@ export default function VideoTabScreen() {
     <View style={styles.root}>
       <Stack.Screen options={{ headerShown: false }} />
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
+      <LinearGradient colors={activeTheme.gradient} style={StyleSheet.absoluteFill} />
       <GeoUniverseBackground />
 
-      <View
-        style={[
-          styles.header,
-          {
-            paddingTop: topPad + 8,
-          },
-        ]}
+      {/* ── Scrollable content ── */}
+      <Animated.ScrollView
+        style={StyleSheet.absoluteFill}
+        contentContainerStyle={{
+          paddingTop: topPad + SEARCH_H + CHIPS_H + 8,
+          paddingHorizontal: 20,
+          paddingBottom: 100 + bottomPad,
+        }}
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true },
+        )}
       >
-        <Text style={[styles.pageTitle, { color: colors.foreground }]}>Videos</Text>
+        <View style={[styles.resultsRow, { marginBottom: 15 }]}>
+          <Text style={[styles.resultsCount, { color: colors.mutedForeground }]}>
+            {filtered.length} {filtered.length === 1 ? "resultado" : "resultados"}
+          </Text>
+          <Pressable ref={sortBtnRef} onPress={openSortMenu} style={styles.sortBtn} hitSlop={8}>
+            <Text style={[styles.sortText, { color: colors.foreground }]}>{SORT_LABELS[sortBy]}</Text>
+            <Feather name="chevron-down" size={14} color={colors.mutedForeground} />
+          </Pressable>
+        </View>
 
-        <View style={styles.searchRow}>
-          <View
-            style={[
-              styles.searchBox,
-              { backgroundColor: "rgba(0,0,0,0.14)", borderColor: "rgba(255,255,255,0.7)" },
-            ]}
-          >
+        {isLoading ? (
+          <View style={styles.empty}><ActivityIndicator color={colors.primary} /></View>
+        ) : filtered.length === 0 ? (
+          <View style={styles.empty}>
+            <Feather name="film" size={36} color="rgba(255,255,255,0.3)" />
+            <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
+              {query || activeChip !== "Todos" ? "Sin resultados" : "Próximamente"}
+            </Text>
+            <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
+              {query || activeChip !== "Todos"
+                ? "Probá con otra búsqueda o categoría."
+                : "Pronto vas a encontrar videos aquí."}
+            </Text>
+          </View>
+        ) : (
+          filtered.map((v) => <VideoCard key={v.id} video={v} feed />)
+        )}
+      </Animated.ScrollView>
+
+      {/* ── Sticky area: search (hides) + chips (stick) ── */}
+      <Animated.View
+        style={[styles.stickyArea, { top: topPad, transform: [{ translateY: stickyTranslateY }] }]}
+        pointerEvents="box-none"
+      >
+        {/* Search bar */}
+        <Animated.View style={[styles.searchWrap, { opacity: searchOpacity }]}>
+          <View style={[styles.searchBox, { backgroundColor: "rgba(0,0,0,0.14)", borderColor: "rgba(255,255,255,0.7)" }]}>
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
               value={query}
@@ -147,120 +180,43 @@ export default function VideoTabScreen() {
               </Pressable>
             )}
           </View>
+        </Animated.View>
+
+        {/* Chips row — full-bleed */}
+        <View style={[styles.chipsWrap]}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.chipsRow}
+          >
+            {FILTER_CHIPS.map((chip) => {
+              const sel = chip === activeChip;
+              return (
+                <Pressable
+                  key={chip}
+                  onPress={() => setActiveChip(chip)}
+                  style={[
+                    styles.chip,
+                    {
+                      backgroundColor: sel ? colors.primary : "rgba(0,0,0,0.14)",
+                      borderColor: sel ? colors.primary : CHIP_BORDER,
+                    },
+                  ]}
+                >
+                  <Text style={[styles.chipText, { color: sel ? colors.primaryForeground : colors.mutedForeground }]}>
+                    {chip}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+          <Animated.View style={[styles.chipsDivider, { opacity: dividerOpacity }]} />
         </View>
+      </Animated.View>
 
-        <View style={styles.chipsSection}>
-          <View style={styles.chipsRowOuter}>
-            <Pressable
-              style={[
-                styles.settingsBtn,
-                { backgroundColor: "rgba(0,0,0,0.15)", borderColor: "rgba(255,255,255,0.1)" },
-              ]}
-              hitSlop={8}
-              accessibilityLabel="Ajustes"
-            >
-              <Feather name="sliders" size={17} color={colors.foreground} />
-            </Pressable>
-
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.chipsScroll}
-              contentContainerStyle={styles.chipsRow}
-            >
-              {FILTER_CHIPS.map((chip) => {
-                const sel = chip === activeChip;
-                return (
-                  <Pressable
-                    key={chip}
-                    onPress={() => setActiveChip(chip)}
-                    style={[
-                      styles.chip,
-                      {
-                        backgroundColor: sel ? colors.primary : "rgba(0,0,0,0.14)",
-                        borderColor: sel ? colors.primary : CHIP_BORDER,
-                      },
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.chipText,
-                        { color: sel ? colors.primaryForeground : colors.mutedForeground },
-                      ]}
-                    >
-                      {chip}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
-          </View>
-
-          <Animated.View
-            style={[styles.headerBorder, { opacity: headerBorderAnim }]}
-            collapsable={false}
-          />
-        </View>
-      </View>
-
-      <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 100 + bottomPad, paddingTop: 4 + 15 }}
-        showsVerticalScrollIndicator={false}
-        onLayout={(e) => {
-          scrollLayoutHeightRef.current = e.nativeEvent.layout.height;
-        }}
-        onContentSizeChange={(_w, h) => {
-          scrollContentHeightRef.current = h;
-        }}
-        onScroll={(e) => {
-          const y = e.nativeEvent.contentOffset.y;
-          const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
-          const progress = scrollable > 0 ? y / scrollable : 0;
-          const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
-          if (shouldShowBorder !== headerBorderActiveRef.current) {
-            headerBorderActiveRef.current = shouldShowBorder;
-            Animated.timing(headerBorderAnim, {
-              toValue: shouldShowBorder ? 1 : 0,
-              duration: 300,
-              useNativeDriver: true,
-            }).start();
-          }
-        }}
-        scrollEventThrottle={16}
-      >
-        <View style={[styles.resultsRow, { marginBottom: 15 }]}>
-          <Text style={[styles.resultsCount, { color: colors.mutedForeground }]}>
-            {filtered.length} {filtered.length === 1 ? "resultado" : "resultados"}
-          </Text>
-          <Pressable ref={sortBtnRef} onPress={openSortMenu} style={styles.sortBtn} hitSlop={8}>
-            <Text style={[styles.sortText, { color: colors.foreground }]}>{SORT_LABELS[sortBy]}</Text>
-            <Feather name="chevron-down" size={14} color={colors.mutedForeground} />
-          </Pressable>
-        </View>
-
-        {isLoading ? (
-          <View style={styles.empty}>
-            <ActivityIndicator color={colors.primary} />
-          </View>
-        ) : filtered.length === 0 ? (
-          <View style={styles.empty}>
-            <Feather name="film" size={36} color={CARD_BORDER} />
-            <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
-              {query ? "Sin resultados" : "Próximamente"}
-            </Text>
-            <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
-              {query
-                ? "Probá con otra búsqueda."
-                : "Pronto vas a encontrar videos aquí."}
-            </Text>
-          </View>
-        ) : (
-          filtered.map((v) => <VideoCard key={v.id} video={v} feed />)
-        )}
-      </ScrollView>
-
+      {/* Sort menu */}
       <Modal visible={sortOpen} transparent animationType="fade" onRequestClose={() => setSortOpen(false)}>
-        <Pressable style={styles.backdrop} onPress={() => setSortOpen(false)}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={() => setSortOpen(false)}>
           <View
             style={[
               styles.sortMenu,
@@ -272,18 +228,10 @@ export default function VideoTabScreen() {
               return (
                 <Pressable
                   key={opt}
-                  onPress={() => {
-                    setSortBy(opt);
-                    setSortOpen(false);
-                  }}
+                  onPress={() => { setSortBy(opt); setSortOpen(false); }}
                   style={styles.sortItem}
                 >
-                  <Text
-                    style={[
-                      styles.sortItemText,
-                      { color: sel ? colors.accent : colors.foreground, fontWeight: sel ? "700" : "500" },
-                    ]}
-                  >
+                  <Text style={[styles.sortItemText, { color: sel ? colors.accent : colors.foreground, fontWeight: sel ? "700" : "500" }]}>
                     {SORT_LABELS[opt]}
                   </Text>
                   {sel && <Feather name="check" size={16} color={colors.accent} />}
@@ -299,24 +247,22 @@ export default function VideoTabScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#210911" },
-  rootGradient: { ...StyleSheet.absoluteFillObject },
-  header: {
-    paddingHorizontal: 20,
-    paddingBottom: 0,
-    gap: 14,
-  },
-  chipsSection: {},
-  headerBorder: {
-    marginTop: 14,
-    marginHorizontal: -20,
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.035)",
-  },
-  pageTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
 
-  searchRow: { flexDirection: "row", alignItems: "center", gap: 10 },
+  stickyArea: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    zIndex: 10,
+  },
+
+  searchWrap: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 8,
+    height: SEARCH_H,
+    justifyContent: "center",
+  },
   searchBox: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
@@ -326,18 +272,9 @@ const styles = StyleSheet.create({
     height: 45,
   },
   searchInput: { flex: 1, fontSize: 14, padding: 0 },
-  chipsRowOuter: { flexDirection: "row", alignItems: "center", gap: 10 },
-  settingsBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 2,
-    alignItems: "center",
-    justifyContent: "center",
-  },
 
-  chipsScroll: { flex: 1 },
-  chipsRow: { gap: 8 },
+  chipsWrap: { height: CHIPS_H, justifyContent: "center" },
+  chipsRow: { paddingHorizontal: 20, gap: 8, alignItems: "center" },
   chip: {
     borderRadius: 20,
     borderWidth: 1,
@@ -347,6 +284,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   chipText: { fontSize: 12, fontWeight: "600" },
+  chipsDivider: {
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.035)",
+    marginHorizontal: 0,
+    marginTop: 4,
+  },
 
   resultsRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   resultsCount: { fontSize: 13 },
@@ -357,7 +300,6 @@ const styles = StyleSheet.create({
   emptyTitle: { fontSize: 16, fontWeight: "700" },
   emptySub: { fontSize: 13, textAlign: "center" },
 
-  backdrop: { flex: 1 },
   sortMenu: {
     position: "absolute",
     minWidth: 190,
