@@ -80,7 +80,10 @@ export function VideoCard({
         <View style={styles.feedCaptionRow}>
           <View style={{ flexDirection: "row", alignItems: "center", flex: 1, marginRight: 12 }}>
             <Text style={[styles.feedCaption, { color: colors.mutedForeground, flex: 0, marginRight: 0 }]} numberOfLines={1}>
-              {rating.toFixed(1)}<Text style={{ marginLeft: 2 }}>★</Text>
+              {rating.toFixed(1)}
+            </Text>
+            <Text style={[styles.feedCaption, { color: colors.mutedForeground, flex: 0, marginLeft: 2, marginRight: 0 }]} numberOfLines={1}>
+              ★
             </Text>
             <Text style={[styles.feedCaption, { color: colors.mutedForeground, marginLeft: 4, marginRight: 0 }]} numberOfLines={1}>
               {video.subtitle} · {video.durationLabel}
