@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -181,8 +180,6 @@ export function WeeklyStreakStrip() {
           height: RING_SIZE + 18,
           borderRadius: (RING_SIZE + 18) / 2,
           marginTop: -10,
-          borderWidth: 1,
-          borderColor: "rgba(255,255,255,0.015)",
           shadowColor: "#000000",
           shadowOffset: { width: 0, height: 6 },
           shadowOpacity: 0.72,
@@ -190,7 +187,6 @@ export function WeeklyStreakStrip() {
           elevation: 12,
         }]}
       >
-        <BlurView intensity={90} tint="dark" style={[StyleSheet.absoluteFill, { borderRadius: (RING_SIZE + 18) / 2 }]} />
         <View style={[StyleSheet.absoluteFill, { borderRadius: (RING_SIZE + 18) / 2, backgroundColor: "rgba(0,0,0,0.15)" }]} />
         <Svg width={RING_SIZE} height={RING_SIZE}>
           <Circle
