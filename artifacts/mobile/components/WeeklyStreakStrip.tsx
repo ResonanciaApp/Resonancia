@@ -290,9 +290,9 @@ const styles = StyleSheet.create({
   },
   ringCount: {
     color: TEXT,
-    fontSize: 27,
+    fontSize: 30,
     fontWeight: "700",
-    lineHeight: 30,
+    lineHeight: 33,
   },
   ringLabel: {
     color: MUTED,
