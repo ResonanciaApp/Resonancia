@@ -682,7 +682,7 @@ export default function HomeScreen2() {
     <View style={styles.root}>
       {/* ── Imagen de fondo — se desvanece con scroll ── */}
       <Animated.View
-        style={{ position: "absolute", top: 0, left: 0, right: 0, height: 335, opacity: backdropAnim }}
+        style={{ position: "absolute", top: 0, left: 0, right: 0, height: 355, opacity: backdropAnim }}
         pointerEvents="none"
       >
         <ExpoImage
@@ -693,68 +693,18 @@ export default function HomeScreen2() {
       </Animated.View>
       <LinearGradient
         colors={[`${prevGradient[0]}00`, prevGradient[0] as string, prevGradient[1] as string]}
-        locations={[0, 0.38, 1]}
+        locations={[0, 0.46, 1]}
         style={styles.rootGradient}
       />
       <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
         <LinearGradient
           colors={[`${activeTheme.gradient[0]}00`, activeTheme.gradient[0] as string, activeTheme.gradient[1] as string]}
-          locations={[0, 0.38, 1]}
+          locations={[0, 0.46, 1]}
           style={styles.rootGradient}
         />
       </Animated.View>
       <GeoUniverseBackground />
       <StatusBar barStyle="light-content" />
-
-      {/* ── Loto + Regalo flotantes — se desvanecen y cubren con scroll ── */}
-      <Animated.View
-        pointerEvents="box-none"
-        style={{
-          position: "absolute",
-          top: topPad + 2,
-          left: 0,
-          right: 0,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          paddingHorizontal: 14,
-          opacity: backdropAnim,
-        }}
-      >
-        <Pressable
-          onPress={openEscenasSheet}
-          hitSlop={8}
-          style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
-        >
-          <View style={[styles.universeBtnBg, { backgroundColor: "rgba(0,0,0,0.18)" }]}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[0], 0.28) }]} />
-            <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
-          </View>
-        </Pressable>
-
-        <Pressable
-          hitSlop={8}
-          style={styles.giftBtn}
-          onPressIn={() =>
-            Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
-          }
-          onPressOut={() => {
-            Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
-            setTimeout(() => setShowInvitar(true), 500);
-          }}
-        >
-          <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-            <View style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden" }}>
-              <Image
-                source={require("@/assets/images/icons/regalo4.png")}
-                style={styles.giftBtnIcon}
-                resizeMode="contain"
-              />
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.10)" }]} />
-            </View>
-          </Animated.View>
-        </Pressable>
-      </Animated.View>
 
       <ScrollView
         style={styles.scroll}
@@ -1113,6 +1063,56 @@ export default function HomeScreen2() {
         </View>
 
       </ScrollView>
+
+      {/* ── Loto + Regalo flotantes — encima del ScrollView para recibir toques ── */}
+      <Animated.View
+        pointerEvents="box-none"
+        style={{
+          position: "absolute",
+          top: topPad + 2,
+          left: 0,
+          right: 0,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          paddingHorizontal: 14,
+          opacity: backdropAnim,
+        }}
+      >
+        <Pressable
+          onPress={openEscenasSheet}
+          hitSlop={8}
+          style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
+        >
+          <View style={[styles.universeBtnBg, { backgroundColor: "rgba(0,0,0,0.18)" }]}>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[0], 0.28) }]} />
+            <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
+          </View>
+        </Pressable>
+
+        <Pressable
+          hitSlop={8}
+          style={styles.giftBtn}
+          onPressIn={() =>
+            Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
+          }
+          onPressOut={() => {
+            Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
+            setTimeout(() => setShowInvitar(true), 500);
+          }}
+        >
+          <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
+            <View style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden" }}>
+              <Image
+                source={require("@/assets/images/icons/regalo4.png")}
+                style={styles.giftBtnIcon}
+                resizeMode="contain"
+              />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.10)" }]} />
+            </View>
+          </Animated.View>
+        </Pressable>
+      </Animated.View>
 
       <MoodPickerSheet
         visible={moodSheetVisible}
