@@ -169,16 +169,10 @@ const PillTab = memo(function PillTab({
       style={[
         styles.pillTab,
         sel
-          ? { borderColor: "rgba(190,135,68,0.55)" }
+          ? { backgroundColor: "#C9924E", borderColor: "rgba(190,135,68,0.55)" }
           : { backgroundColor: "rgba(0,0,0,0.14)", borderColor: "rgba(255,255,255,0.1)" },
       ]}
     >
-      <LinearGradient
-        colors={sel ? ["#D6A45C", "#BE8744"] : ["transparent", "transparent"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
       <MaterialCommunityIcons name={tab.icon as any} size={13} color={sel ? "#1B060F" : "#e8e8e8"} />
       <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "#e8e8e8" }]}>
         {tab.label}
