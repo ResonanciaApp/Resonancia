@@ -1087,14 +1087,14 @@ export default function HomeScreen2() {
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          paddingHorizontal: 14,
+          paddingHorizontal: 20,
           opacity: backdropAnim,
         }}
       >
         <Pressable
           onPress={openEscenasSheet}
           hitSlop={8}
-          style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1, marginLeft: 3 }]}
+          style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
         >
           <View style={[styles.universeBtnBg, { backgroundColor: hexTint(activeTheme.gradient[0], 0.60) }]}>
             <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[1], 0.30) }]} />
@@ -1104,7 +1104,7 @@ export default function HomeScreen2() {
 
         <Pressable
           hitSlop={8}
-          style={[styles.giftBtn, { marginRight: 3 }]}
+          style={styles.giftBtn}
           onPressIn={() =>
             Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
           }
