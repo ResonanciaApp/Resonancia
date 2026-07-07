@@ -554,9 +554,7 @@ export default function HomeScreen2() {
   const giftBtnAnim = useRef(new Animated.Value(1)).current;
   const giftScaleAnim = useRef(new Animated.Value(1)).current;
 
-  const phraseIndexRef = useRef(0);
-  const [phraseIndex, setPhraseIndex] = useState(0);
-  const phraseOpacity = useRef(new Animated.Value(1)).current;
+  const dailyPhrase = HEADER_PHRASES[new Date().getDate() % HEADER_PHRASES.length];
 
   // ── Loto + tabs: al activarse el sticky header, el loto se desvanece y
   //    los tabs se desplazan sutilmente hacia la izquierda hasta el margen ──
@@ -582,25 +580,6 @@ export default function HomeScreen2() {
       useNativeDriver: true,
     }).start();
   }, [searchBtnAnim, giftBtnAnim]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      Animated.timing(phraseOpacity, {
-        toValue: 0,
-        duration: 500,
-        useNativeDriver: true,
-      }).start(() => {
-        phraseIndexRef.current = (phraseIndexRef.current + 1) % HEADER_PHRASES.length;
-        setPhraseIndex(phraseIndexRef.current);
-        Animated.timing(phraseOpacity, {
-          toValue: 1,
-          duration: 500,
-          useNativeDriver: true,
-        }).start();
-      });
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [phraseOpacity]);
 
   const updateStickyActive = useCallback(() => {
     const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
@@ -805,20 +784,19 @@ export default function HomeScreen2() {
         </View>
 
         {!searchOpen && (
-          <Animated.Text
+          <Text
             style={{
-              opacity: phraseOpacity,
               textAlign: "center",
               fontSize: 12,
               color: "rgba(255,255,255,0.6)",
-              paddingTop: 6,
+              marginTop: -14,
               paddingBottom: 8,
               letterSpacing: 0.25,
             }}
             numberOfLines={1}
           >
-            {HEADER_PHRASES[phraseIndex]}
-          </Animated.Text>
+            {dailyPhrase}
+          </Text>
         )}
 
         {searchOpen && searchTerm.length > 0 && (
