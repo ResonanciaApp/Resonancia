@@ -439,31 +439,24 @@ export default function SessionDetailScreen() {
             </View>
           </Pressable>
 
-          {/* Description */}
-          <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]}>
-            {session.description}
-          </Text>
-
           {/* ── Reproducciones ──────────────────────────────────────────── */}
           {playsData !== undefined && (
             <View style={styles.playsRow}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-                <MaskedView style={{ marginTop: -3 }} maskElement={<Feather name="headphones" size={13} color="#000" />}>
-                  <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ width: 13, height: 13 }} />
-                </MaskedView>
-                <MaskedView
-                  maskElement={
-                    <Text style={styles.playsText}>
-                      {playsData.plays === 0
-                        ? "Sé el primero en escuchar esta sesión"
-                        : `${playsData.plays.toLocaleString("es")} ${playsData.plays === 1 ? "reproducción" : "reproducciones"}${session.createdAt ? ` desde ${new Date(session.createdAt).toLocaleDateString("es", { month: "long", year: "numeric" })}` : ""}`}
-                    </Text>
-                  }>
-                  <LinearGradient colors={["#D6AD5F","#B47344"]} start={{ x:0,y:0 }} end={{ x:1,y:0 }} style={{ height: 18, width: 340 }} />
-                </MaskedView>
+                <Feather name="headphones" size={13} color="#f4f4f4" style={{ marginTop: -2 }} />
+                <Text style={[styles.playsText, { color: "#f4f4f4" }]}>
+                  {playsData.plays === 0
+                    ? "Sé el primero en escuchar esta sesión"
+                    : `${playsData.plays.toLocaleString("es")} ${playsData.plays === 1 ? "reproducción" : "reproducciones"}${session.createdAt ? ` desde ${new Date(session.createdAt).toLocaleDateString("es", { month: "long", year: "numeric" })}` : ""}`}
+                </Text>
               </View>
             </View>
           )}
+
+          {/* Description */}
+          <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]}>
+            {session.description}
+          </Text>
 
           {/* ── Más sesiones como estas ──────────────────────────────────── */}
           {related.length > 0 && (
@@ -1041,8 +1034,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     gap: 6,
-    marginTop: -3,
-    marginBottom: 4,
+    marginTop: 27,
+    marginBottom: -26,
   },
   playsText: {
     fontSize: 12,
