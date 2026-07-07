@@ -134,9 +134,8 @@ export function WeeklyStreakStrip() {
   const { theme } = useSceneTheme();
 
   const streakBorderColors = useMemo(
-    () => [brightenHex(theme.gradient[0], 40), brightenHex(theme.gradient[1], 40)] as [string, string],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [theme.gradient[0], theme.gradient[1]]
+    () => [brightenHex(theme.gradient[0], 62), brightenHex(theme.gradient[0], 18)] as [string, string],
+    [theme.gradient[0]]
   );
 
   const { activeFlags, activeCount, todayIndex } = useMemo(() => {
@@ -204,7 +203,7 @@ export function WeeklyStreakStrip() {
                 <View style={styles.circleGradientBorder}>
                   <Svg width={42} height={42} style={StyleSheet.absoluteFill}>
                     <Defs>
-                      <SvgLinearGradient id={`sg${i}`} x1="0" y1="0" x2="1" y2="1">
+                      <SvgLinearGradient id={`sg${i}`} x1="0.5" y1="0" x2="0.5" y2="1">
                         <Stop offset="0" stopColor={streakBorderColors[0]} />
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
