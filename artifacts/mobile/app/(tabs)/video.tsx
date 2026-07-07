@@ -263,9 +263,9 @@ const styles = StyleSheet.create({
   },
 
   resultsRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  resultsCount: { fontSize: 13 },
+  resultsCount: { fontSize: 11 },
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
-  sortText: { fontSize: 13, fontWeight: "600" },
+  sortText: { fontSize: 11, fontWeight: "400" },
 
   empty: { alignItems: "center", paddingVertical: 80, gap: 10 },
   emptyTitle: { fontSize: 16, fontWeight: "700" },
