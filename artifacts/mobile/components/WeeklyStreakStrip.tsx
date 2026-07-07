@@ -7,6 +7,14 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { usePlayer } from "@/context/PlayerContext";
 
 const GOLD = "#BE8744";
+
+function hexToRgba(hex: string, alpha: number): string {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
 const TEXT = "#e8e8e8";
 const MUTED = "#c2c2c2";
 
@@ -162,7 +170,14 @@ export function WeeklyStreakStrip() {
   return (
     <View style={styles.card}>
       {/* Anillo de progreso */}
-      <View style={styles.ringWrap}>
+      <View style={[styles.ringWrap, {
+        backgroundColor: hexToRgba(theme.gradient[1], 0.14),
+        shadowColor: "#000000",
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.38,
+        shadowRadius: 18,
+        elevation: 7,
+      }]}>
         <Svg width={RING_SIZE} height={RING_SIZE}>
           <Circle
             cx={RING_SIZE / 2}
@@ -252,6 +267,7 @@ const styles = StyleSheet.create({
   ringWrap: {
     width: RING_SIZE,
     height: RING_SIZE,
+    borderRadius: RING_SIZE / 2,
     alignItems: "center",
     justifyContent: "center",
   },
