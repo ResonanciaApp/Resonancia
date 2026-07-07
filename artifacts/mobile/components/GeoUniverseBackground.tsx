@@ -16,13 +16,13 @@ export function GeoUniverseBackground() {
   return (
     <View style={styles.root} pointerEvents="none">
       <View style={styles.topRight}>
-        <SacredGlyph id="flor-vida" color={color} size={340} opacity={0.055} strokeScale={0.55} />
+        <SacredGlyph id="flor-vida" color={color} size={340} opacity={0.18} strokeScale={0.7} />
       </View>
       <View style={styles.bottomLeft}>
-        <SacredGlyph id="metatron" color={color} size={290} opacity={0.042} strokeScale={0.55} />
+        <SacredGlyph id="metatron" color={color} size={290} opacity={0.14} strokeScale={0.7} />
       </View>
       <View style={styles.centerRight}>
-        <SacredGlyph id="mandala" color={color} size={210} opacity={0.032} strokeScale={0.5} />
+        <SacredGlyph id="mandala" color={color} size={210} opacity={0.10} strokeScale={0.6} />
       </View>
     </View>
   );
@@ -31,7 +31,6 @@ export function GeoUniverseBackground() {
 const styles = StyleSheet.create({
   root: {
     ...StyleSheet.absoluteFillObject,
-    zIndex: 0,
   },
   topRight: {
     position: "absolute",
