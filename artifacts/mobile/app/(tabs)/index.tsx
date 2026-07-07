@@ -92,6 +92,14 @@ const RECENT_CARD_W = Math.round((width - GRID_PAD * 2) / 1.85);
 
 const SECTION_GAP = 60;
 const TEMA_GAP = 10;
+
+const HEADER_PHRASES = [
+  "Tu paz es tu práctica.",
+  "Cada respiro, un comienzo.",
+  "Hoy eliges cuidarte.",
+  "La calma está en ti.",
+  "Un momento para ti.",
+];
 const TEMA3_W = Math.floor((width - GRID_PAD * 2 - TEMA_GAP * 2) / 3);
 const VIDEO_HERO_W = Math.round((width - GRID_PAD * 2 - 56) * 1.0);
 
@@ -546,6 +554,10 @@ export default function HomeScreen2() {
   const giftBtnAnim = useRef(new Animated.Value(1)).current;
   const giftScaleAnim = useRef(new Animated.Value(1)).current;
 
+  const phraseIndexRef = useRef(0);
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const phraseOpacity = useRef(new Animated.Value(1)).current;
+
   // ── Loto + tabs: al activarse el sticky header, el loto se desvanece y
   //    los tabs se desplazan sutilmente hacia la izquierda hasta el margen ──
   const LOTUS_SHIFT_DISTANCE = 45 + 15; // ancho del universeBtn + gap del headerTopRow
@@ -570,6 +582,25 @@ export default function HomeScreen2() {
       useNativeDriver: true,
     }).start();
   }, [searchBtnAnim, giftBtnAnim]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      Animated.timing(phraseOpacity, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }).start(() => {
+        phraseIndexRef.current = (phraseIndexRef.current + 1) % HEADER_PHRASES.length;
+        setPhraseIndex(phraseIndexRef.current);
+        Animated.timing(phraseOpacity, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }).start();
+      });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [phraseOpacity]);
 
   const updateStickyActive = useCallback(() => {
     const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
@@ -772,6 +803,23 @@ export default function HomeScreen2() {
             </Pressable>
           </Animated.View>
         </View>
+
+        {!searchOpen && (
+          <Animated.Text
+            style={{
+              opacity: phraseOpacity,
+              textAlign: "center",
+              fontSize: 12,
+              color: "rgba(255,255,255,0.6)",
+              paddingTop: 6,
+              paddingBottom: 8,
+              letterSpacing: 0.25,
+            }}
+            numberOfLines={1}
+          >
+            {HEADER_PHRASES[phraseIndex]}
+          </Animated.Text>
+        )}
 
         {searchOpen && searchTerm.length > 0 && (
           <View style={styles.searchResultsWrap}>
