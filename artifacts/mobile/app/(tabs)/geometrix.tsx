@@ -6180,7 +6180,6 @@ export default function GeometrixScreen() {
               contentFit="contain"
             />
             <Text style={styles.landingTitle}>GEOMETRIX</Text>
-            <Text style={styles.landingSubtitle}>SACRED GEOMETRY</Text>
             <View style={styles.landingSep} />
           </View>
 

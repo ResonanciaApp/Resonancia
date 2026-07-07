@@ -300,7 +300,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
           />
           <View style={{ height: STACK_SIZE + 30, alignItems: "center", justifyContent: "center" }}>
             <Animated.Text style={{ color: "#FFFFFF", fontSize: 15, fontWeight: "500", textAlign: "center", opacity: idleTextOpacity, marginTop: 14 }}>
-              Selecciona un sonido para comenzar
+              Crea tus paisajes sonoros
             </Animated.Text>
           </View>
         </View>
