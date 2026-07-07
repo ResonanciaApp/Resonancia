@@ -881,7 +881,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   heroTitle: {
-    fontSize: 26,
+    fontSize: 27,
     fontWeight: "700",
     letterSpacing: 0.4,
     marginBottom: 10,
