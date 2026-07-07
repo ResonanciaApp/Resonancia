@@ -585,7 +585,7 @@ export default function SessionDetailScreen() {
           <Pressable style={StyleSheet.absoluteFill} onPress={() => setActionsSheetOpen(false)}>
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.65)" }]} />
           </Pressable>
-          <View style={[styles.optSheet, { paddingBottom: bottomPad + 8 }]}>
+          <View style={[styles.optSheet, { paddingBottom: bottomPad + 8, backgroundColor: sceneTheme.gradient[0] }]}>
             <View style={styles.optHandle} />
             <View style={styles.optHeader}>
               <Image
@@ -1186,7 +1186,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     paddingTop: 10,
     maxHeight: "85%",
-    backgroundColor: "#190913",
   },
   optHandle: {
     width: 36,
