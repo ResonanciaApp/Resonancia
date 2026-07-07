@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#1B060F" },
   stickyChips: { position: "absolute", left: 0, right: 0, zIndex: 19, backgroundColor: "#1B060F", paddingTop: 8, paddingBottom: 6 },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
-  headerTitle: { flex: 1, fontSize: 23, fontWeight: "700", color: "#e8e8e8", letterSpacing: 0.2, textAlign: "center" },
+  headerTitle: { flex: 1, fontSize: 18, fontWeight: "700", color: "#e8e8e8", letterSpacing: 0.2, textAlign: "center" },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
 
   heroArea: { height: 238, position: "relative" },
@@ -476,7 +476,7 @@ const styles = StyleSheet.create({
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "#1B060F", borderWidth: 2, borderColor: "rgba(190,135,68,0.5)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
   profileCard: { marginHorizontal: H_PAD, marginTop: 28, paddingBottom: 14, gap: 8, alignItems: "center" },
-  profileTitle: { fontSize: 27, fontWeight: "800", color: TEXT, letterSpacing: 0.3 },
+  profileTitle: { fontSize: 27, fontWeight: "400", color: TEXT, letterSpacing: 0.3 },
   profileDesc: { fontSize: 12, color: "rgba(255,255,255,0.90)", lineHeight: 17, textAlign: "center", maxWidth: 280, marginTop: 3, marginBottom: 28 },
 
   dividerLine: { height: 0 },
