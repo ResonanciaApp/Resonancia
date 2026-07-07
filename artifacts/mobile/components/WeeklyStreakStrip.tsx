@@ -215,7 +215,7 @@ export function WeeklyStreakStrip() {
         </Svg>
         <View style={styles.ringCenter}>
           <Text style={styles.ringCount}>{activeCount}</Text>
-          <Text style={styles.ringLabel}>Días</Text>
+          <Text style={styles.ringLabel}>{activeCount === 1 ? "Día" : "Días"}</Text>
         </View>
       </LinearGradient>
 
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     lineHeight: 36,
   },
   ringLabel: {
-    color: MUTED,
+    color: "rgba(255,255,255,0.95)",
     fontSize: 11,
     fontWeight: "500",
     letterSpacing: 0.3,
