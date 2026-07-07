@@ -778,6 +778,34 @@ export default function HomeScreen2() {
           }}
         />
 
+        {/* ── BANNER RESONADORES ── */}
+        <Pressable
+          onPress={() => router.push("/resonadores" as never)}
+          style={{ marginBottom: 60, marginHorizontal: GRID_PAD }}
+        >
+          <LinearGradient
+            colors={[activeTheme.gradient[0], activeTheme.gradient[1]]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.resonadoresBanner}
+          >
+            <View style={styles.resBannerCircle1} />
+            <View style={styles.resBannerCircle2} />
+            <View style={styles.resonadoresBannerInner}>
+              <ExpoImage
+                source={require("@/assets/images/banner-resonador.png")}
+                style={styles.resonadoresBannerLogo}
+                contentFit="contain"
+              />
+              <View style={styles.resonadoresBannerContent}>
+                <Text style={styles.resonadoresBannerTitle}>Resonadores</Text>
+                <Text style={styles.resonadoresBannerSub}>Únete a la comunidad</Text>
+              </View>
+              <Feather name="chevron-right" size={20} color="rgba(232,232,232,0.7)" style={styles.resonadoresBannerChevron} />
+            </View>
+          </LinearGradient>
+        </Pressable>
+
         {/* ── SESIÓN DESTACADA ── */}
         {filteredFeatured && (
           <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
