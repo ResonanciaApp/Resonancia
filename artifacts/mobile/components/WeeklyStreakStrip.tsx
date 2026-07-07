@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   },
   dayLabel: {
     color: MUTED,
-    fontSize: 16,
+    fontSize: 19,
     fontWeight: "600",
   },
   dayLabelToday: {
