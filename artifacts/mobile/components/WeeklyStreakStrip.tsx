@@ -228,7 +228,7 @@ export function WeeklyStreakStrip() {
             <View key={i} style={styles.dayCol}>
               {met ? (
                 <View style={styles.circleGradientBorder}>
-                  <Svg width={44} height={44} style={StyleSheet.absoluteFill}>
+                  <Svg width={38} height={38} style={StyleSheet.absoluteFill}>
                     <Defs>
                       <SvgLinearGradient id={`sg${i}`} x1="0.5" y1="0" x2="0.5" y2="1">
                         <Stop offset="0" stopColor={streakBorderColors[0]} />
@@ -236,7 +236,7 @@ export function WeeklyStreakStrip() {
                       </SvgLinearGradient>
                     </Defs>
                     <Circle
-                      cx={22} cy={22} r={20}
+                      cx={19} cy={19} r={17}
                       stroke={`url(#sg${i})`}
                       strokeWidth={2}
                       fill="rgba(255,255,255,0.08)"
@@ -246,7 +246,7 @@ export function WeeklyStreakStrip() {
                 </View>
               ) : isToday ? (
                 <View style={styles.circleGradientBorder}>
-                  <Svg width={44} height={44} style={StyleSheet.absoluteFill}>
+                  <Svg width={38} height={38} style={StyleSheet.absoluteFill}>
                     <Defs>
                       <SvgLinearGradient id={`sgToday`} x1="0.5" y1="0" x2="0.5" y2="1">
                         <Stop offset="0" stopColor={streakBorderColors[0]} />
@@ -254,7 +254,7 @@ export function WeeklyStreakStrip() {
                       </SvgLinearGradient>
                     </Defs>
                     <Circle
-                      cx={22} cy={22} r={20}
+                      cx={19} cy={19} r={17}
                       stroke={`url(#sgToday)`}
                       strokeWidth={2}
                       fill="rgba(255,255,255,0.06)"
@@ -338,8 +338,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   circleGradientBorder: {
-    width: 44,
-    height: 44,
+    width: 38,
+    height: 38,
     alignItems: "center",
     justifyContent: "center",
   },
