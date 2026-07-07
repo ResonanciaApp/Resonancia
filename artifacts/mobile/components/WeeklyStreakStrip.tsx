@@ -39,7 +39,7 @@ const STREAK_MESSAGES: Record<number, StreakMessage> = {
   },
   1: {
     highlight: "Excelente comienzo.",
-    body: "Ya llevas un día conectado contigo.\nMañana continúa tu racha.",
+    body: "Ya llevas un día conectado contigo.",
   },
   2: {
     highlight: "¡Dos días seguidos!",
