@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   cardAuthor: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "400",
     flexShrink: 1,
   },
