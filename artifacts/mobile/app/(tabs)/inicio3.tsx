@@ -693,21 +693,21 @@ export default function HomeScreen2() {
       </Animated.View>
       <LinearGradient
         colors={[`${prevGradient[0]}00`, prevGradient[0] as string, prevGradient[1] as string]}
-        locations={[0, 0.37, 1]}
+        locations={[0, 0.45, 1]}
         style={styles.rootGradient}
       />
       <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
         <LinearGradient
           colors={[`${activeTheme.gradient[0]}00`, activeTheme.gradient[0] as string, activeTheme.gradient[1] as string]}
-          locations={[0, 0.37, 1]}
+          locations={[0, 0.45, 1]}
           style={styles.rootGradient}
         />
       </Animated.View>
       <GeoUniverseBackground />
       <StatusBar barStyle="light-content" />
 
-      {/* ── Loto + Regalo flotantes ── */}
-      <View
+      {/* ── Loto + Regalo flotantes — se desvanecen y cubren con scroll ── */}
+      <Animated.View
         pointerEvents="box-none"
         style={{
           position: "absolute",
@@ -718,7 +718,7 @@ export default function HomeScreen2() {
           justifyContent: "space-between",
           alignItems: "center",
           paddingHorizontal: 14,
-          zIndex: 10,
+          opacity: backdropAnim,
         }}
       >
         <Pressable
@@ -754,7 +754,7 @@ export default function HomeScreen2() {
             </View>
           </Animated.View>
         </Pressable>
-      </View>
+      </Animated.View>
 
       <ScrollView
         style={styles.scroll}
