@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   sliderGroup: {
-    width: 120,
+    width: 145,
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
