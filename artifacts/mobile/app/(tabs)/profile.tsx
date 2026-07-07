@@ -807,7 +807,7 @@ export default function ProfileScreen() {
           >
             <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
               <Image
-                source={require("@/assets/images/regalo-perfil.png")}
+                source={require("@/assets/images/icons/regalo4.png")}
                 style={styles.giftIcon}
                 contentFit="contain"
               />
