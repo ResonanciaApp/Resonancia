@@ -42,7 +42,7 @@ const SHIMMER_COLORS = [
 const { height: SCREEN_H } = Dimensions.get("window");
 
 // Cuánto tarda el slide nativo del Modal en completarse (aprox.)
-const MODAL_SLIDE_MS = 250;
+const MODAL_SLIDE_MS = 420;
 // Pausa visible después de que la ventana haya subido (= cuándo arranca la tarjeta)
 const POST_OPEN_DELAY = 800;
 // Delay total antes del primer elemento
@@ -162,7 +162,7 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
     <Modal
       visible={visible}
       transparent={false}
-      animationType="fade"
+      animationType="slide"
       presentationStyle="pageSheet"
       statusBarTranslucent
       onRequestClose={dismiss}
