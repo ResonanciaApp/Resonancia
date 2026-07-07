@@ -1383,7 +1383,7 @@ const styles = StyleSheet.create({
     width: 35,
     height: 35,
     borderRadius: 17.5,
-    marginRight: 2,
+    marginRight: 3,
     marginTop: 1,
   },
   stickyTitle: { fontSize: 18, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3 },
