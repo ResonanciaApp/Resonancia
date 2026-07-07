@@ -923,16 +923,17 @@ export default function HomeScreen2() {
           <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Explora por contenido</Text>
           <View style={{ flexDirection: "row", gap: 10 }}>
             {[
-              { id: "meditaciones-guiadas", label: "Meditaciones" },
-              { id: "sonidos-ancestrales", label: "Sesiones" },
-              { id: "musica-sonidos", label: "Música" },
+              { id: "meditaciones-guiadas", label: "Meditaciones", icon: <MaterialCommunityIcons name="meditation" size={30} color="#e8e8e8" /> },
+              { id: "sonidos-ancestrales", label: "Sesiones",      icon: <MaterialCommunityIcons name="waves" size={30} color="#e8e8e8" /> },
+              { id: "musica-sonidos",       label: "Música",        icon: <Ionicons name="musical-notes-outline" size={30} color="#e8e8e8" /> },
             ].map((c) => (
               <Pressable
                 key={c.id}
                 onPress={() => router.push(`/category/${c.id}` as never)}
                 style={({ pressed }) => [{
                   flex: 1,
-                  paddingVertical: 18 + 30,
+                  paddingVertical: 22,
+                  gap: 10,
                   borderRadius: 14,
                   alignItems: "center",
                   backgroundColor: "rgba(0,0,0,0.08)",
@@ -941,6 +942,7 @@ export default function HomeScreen2() {
                   opacity: pressed ? 0.75 : 1,
                 }]}
               >
+                {c.icon}
                 <Text style={{ fontSize: 14, fontWeight: "700", color: "#e8e8e8", textAlign: "center" }}>
                   {c.label}
                 </Text>
