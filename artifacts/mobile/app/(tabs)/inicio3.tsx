@@ -1096,8 +1096,8 @@ export default function HomeScreen2() {
           hitSlop={8}
           style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
         >
-          <View style={[styles.universeBtnBg, { backgroundColor: "rgba(0,0,0,0.18)" }]}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[0], 0.28) }]} />
+          <View style={[styles.universeBtnBg, { backgroundColor: "rgba(0,0,0,0.20)" }]}>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[1], 0.10) }]} />
             <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
           </View>
         </Pressable>
