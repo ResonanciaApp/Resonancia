@@ -1036,7 +1036,24 @@ export default function HomeScreen2() {
             onPress={() => router.push("/(tabs)/resonadores" as never)}
             style={({ pressed }) => [styles.resonadoresBanner, { opacity: pressed ? 0.85 : 1 }]}
           >
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.14)" }]} />
+            {/* Fondo cobre — base horizontal */}
+            <LinearGradient
+              colors={["#6B2A0C", "#B05828", "#D07848", "#7A3010"]}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={StyleSheet.absoluteFill}
+            />
+            {/* Brillo diagonal (shimmer) */}
+            <LinearGradient
+              colors={["transparent", "rgba(255,255,255,0.18)", "transparent"]}
+              start={{ x: 0.1, y: 0 }}
+              end={{ x: 0.9, y: 1 }}
+              style={StyleSheet.absoluteFill}
+            />
+            {/* Círculo decorativo izquierda */}
+            <View style={styles.resBannerCircle1} pointerEvents="none" />
+            {/* Círculo decorativo derecha */}
+            <View style={styles.resBannerCircle2} pointerEvents="none" />
             <View style={styles.resonadoresBannerInner}>
               <ExpoImage
                 source={require("@/assets/images/logo-resonancia-gold.png")}
@@ -1633,6 +1650,24 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 18,
+  },
+  resBannerCircle1: {
+    position: "absolute",
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "rgba(255,255,255,0.07)",
+    left: -28,
+    top: -30,
+  },
+  resBannerCircle2: {
+    position: "absolute",
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    right: 30,
+    bottom: -24,
   },
   resonadoresBannerInner: {
     flex: 1,
