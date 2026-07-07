@@ -47,11 +47,8 @@ const MODAL_SLIDE_MS = 420;
 const POST_OPEN_DELAY = 500;
 // Delay total antes del primer elemento
 const BASE_DELAY = MODAL_SLIDE_MS + POST_OPEN_DELAY;
-// Duración individual por elemento (ms)
-const DUR_CARD  = 800;
-const DUR_TITLE = 600;
-const DUR_DESC  = 450;
-const DUR_BTN   = 270;
+// Duración de cada fade-in + translateY (lento y zen)
+const ANIM_DUR = 1200;
 // Intervalo entre la aparición de cada elemento
 const STAGGER = 300;
 
@@ -87,12 +84,12 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
 
   const easeOut = Easing.out(Easing.cubic);
 
-  const fadeSlide = (opacity: Animated.Value, transY: Animated.Value, delay: number, dur: number) =>
+  const fadeSlide = (opacity: Animated.Value, transY: Animated.Value, delay: number) =>
     Animated.sequence([
       Animated.delay(delay),
       Animated.parallel([
-        Animated.timing(opacity, { toValue: 1, duration: dur, easing: easeOut, useNativeDriver: true }),
-        Animated.timing(transY,  { toValue: 0, duration: dur, easing: easeOut, useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 1, duration: ANIM_DUR, easing: easeOut, useNativeDriver: true }),
+        Animated.timing(transY,  { toValue: 0, duration: ANIM_DUR, easing: easeOut, useNativeDriver: true }),
       ]),
     ]);
 
@@ -100,10 +97,10 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
     if (visible) {
       resetAnim();
       // Stagger: tarjeta → título → descripción → botón
-      fadeSlide(cardOpacity,  cardTransY,  BASE_DELAY,             DUR_CARD).start();
-      fadeSlide(titleOpacity, titleTransY, BASE_DELAY + STAGGER,   DUR_TITLE).start();
-      fadeSlide(descOpacity,  descTransY,  BASE_DELAY + STAGGER*2, DUR_DESC).start();
-      fadeSlide(btnOpacity,   btnTransY,   BASE_DELAY + STAGGER*3, DUR_BTN).start();
+      fadeSlide(cardOpacity,  cardTransY,  BASE_DELAY).start();
+      fadeSlide(titleOpacity, titleTransY, BASE_DELAY + STAGGER).start();
+      fadeSlide(descOpacity,  descTransY,  BASE_DELAY + STAGGER * 2).start();
+      fadeSlide(btnOpacity,   btnTransY,   BASE_DELAY + STAGGER * 3).start();
     } else {
       resetAnim();
     }
