@@ -1030,46 +1030,6 @@ export default function HomeScreen2() {
           )}
         </View>
 
-        {/* ── Banner Resonadores ── */}
-        <View style={[styles.section, { marginTop: 0, marginBottom: SECTION_GAP }]}>
-          <Pressable
-            onPress={() => router.push("/(tabs)/resonadores" as never)}
-            style={({ pressed }) => [styles.resonadoresBanner, { opacity: pressed ? 0.85 : 1 }]}
-          >
-            {/* Fondo cobre — base horizontal */}
-            <LinearGradient
-              colors={["#6B2A0C", "#B05828", "#D07848", "#7A3010"]}
-              start={{ x: 0, y: 0.5 }}
-              end={{ x: 1, y: 0.5 }}
-              style={StyleSheet.absoluteFill}
-            />
-            {/* Brillo diagonal (shimmer) */}
-            <LinearGradient
-              colors={["transparent", "rgba(255,255,255,0.18)", "transparent"]}
-              start={{ x: 0.1, y: 0 }}
-              end={{ x: 0.9, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-            {/* Círculo decorativo izquierda */}
-            <View style={styles.resBannerCircle1} pointerEvents="none" />
-            {/* Círculo decorativo derecha */}
-            <View style={styles.resBannerCircle2} pointerEvents="none" />
-            <View style={styles.resonadoresBannerInner}>
-              <ExpoImage
-                source={require("@/assets/images/logo-resonancia-gold.png")}
-                style={styles.resonadoresBannerLogo}
-                contentFit="contain"
-              />
-              <View style={styles.resonadoresBannerContent}>
-                <Text style={styles.resonadoresBannerTitle}>Resonadores</Text>
-                <Text style={styles.resonadoresBannerSub} numberOfLines={2}>
-                  Conoce a nuestro equipo certificado
-                </Text>
-              </View>
-            </View>
-            <Feather name="chevron-right" size={20} color="#e8e8e8" style={styles.resonadoresBannerChevron} />
-          </Pressable>
-        </View>
 
 
         {/* ── ESTADO DE ÁNIMO ── */}
