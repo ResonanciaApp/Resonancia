@@ -350,8 +350,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    marginTop: -2,
-    marginBottom: 4,
+    marginVertical: 1,
   },
   circleToday: {
     backgroundColor: "rgba(255,255,255,0.064)",
