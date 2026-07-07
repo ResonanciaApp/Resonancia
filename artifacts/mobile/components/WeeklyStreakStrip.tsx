@@ -228,7 +228,7 @@ export function WeeklyStreakStrip() {
             <View key={i} style={styles.dayCol}>
               {met ? (
                 <View style={styles.circleGradientBorder}>
-                  <Svg width={38} height={38} style={StyleSheet.absoluteFill}>
+                  <Svg width={42} height={42} style={StyleSheet.absoluteFill}>
                     <Defs>
                       <SvgLinearGradient id={`sg${i}`} x1="0.5" y1="0" x2="0.5" y2="1">
                         <Stop offset="0" stopColor={streakBorderColors[0]} />
@@ -236,7 +236,7 @@ export function WeeklyStreakStrip() {
                       </SvgLinearGradient>
                     </Defs>
                     <Circle
-                      cx={19} cy={19} r={17}
+                      cx={21} cy={21} r={19}
                       stroke={`url(#sg${i})`}
                       strokeWidth={2}
                       fill="rgba(255,255,255,0.08)"
@@ -246,7 +246,7 @@ export function WeeklyStreakStrip() {
                 </View>
               ) : isToday ? (
                 <View style={styles.circleGradientBorder}>
-                  <Svg width={38} height={38} style={StyleSheet.absoluteFill}>
+                  <Svg width={42} height={42} style={StyleSheet.absoluteFill}>
                     <Defs>
                       <SvgLinearGradient id={`sgToday`} x1="0.5" y1="0" x2="0.5" y2="1">
                         <Stop offset="0" stopColor={streakBorderColors[0]} />
@@ -254,7 +254,7 @@ export function WeeklyStreakStrip() {
                       </SvgLinearGradient>
                     </Defs>
                     <Circle
-                      cx={19} cy={19} r={17}
+                      cx={21} cy={21} r={19}
                       stroke={`url(#sgToday)`}
                       strokeWidth={2}
                       fill="rgba(255,255,255,0.06)"
@@ -331,15 +331,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   circle: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     alignItems: "center",
     justifyContent: "center",
   },
   circleGradientBorder: {
-    width: 38,
-    height: 38,
+    width: 42,
+    height: 42,
     alignItems: "center",
     justifyContent: "center",
   },
