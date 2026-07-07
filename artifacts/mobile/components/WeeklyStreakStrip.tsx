@@ -264,7 +264,7 @@ export function WeeklyStreakStrip() {
               ) : (
                 <View style={[styles.circle, styles.circleInactive]} />
               )}
-              <Text style={[styles.dayLabel, isToday && styles.dayLabelToday, (!met && !isToday) && styles.dayLabelInactive]}>{label}</Text>
+              <Text style={[styles.dayLabel, isToday && styles.dayLabelToday]}>{label}</Text>
             </View>
           );
         })}
@@ -357,9 +357,7 @@ const styles = StyleSheet.create({
   dayLabelToday: {
     color: TEXT,
   },
-  dayLabelInactive: {
-    fontSize: 10,
-  },
+
   messageWrap: {
     alignItems: "center",
     gap: 3,
