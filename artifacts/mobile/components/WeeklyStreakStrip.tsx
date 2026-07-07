@@ -172,7 +172,7 @@ export function WeeklyStreakStrip() {
     <View style={styles.card}>
       {/* Anillo de progreso */}
       <LinearGradient
-        colors={[hexToRgba(theme.gradient[0], 0.14), hexToRgba(theme.gradient[1], 0.14)]}
+        colors={[hexToRgba(theme.gradient[0], 0.28), hexToRgba(theme.gradient[1], 0.05)]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={[styles.ringWrap, {
