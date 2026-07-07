@@ -1,12 +1,9 @@
 /**
  * InvitarSheet — bottom sheet premium de invitación a Resonancia.
  * ─────────────────────────────────────────────────────────────────
- * Se monta inline en Inicio y Perfil. El fondo usa el degradado del
- * tema activo de Inicio (SceneThemeContext). Los elementos internos
- * animan con opacity + translateY desde abajo, efecto zen/suave.
- *
- * Cerrar: botón X, swipe-down (dy > 60 o vy > 0.5), o tap en el handle.
- * Acciones: Share.share() nativo + expo-clipboard + toast inline.
+ * Entrada nativa slide_from_bottom (animationType="slide") + stagger
+ * interno de los elementos. Fondo = degradado del tema activo.
+ * Cerrar: botón X, tap en el handle, o swipe-down (dy>60 / vy>0.5).
  */
 import { Feather } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
@@ -51,24 +48,19 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
 
-  // Sheet entrance
-  const sheetY = useRef(new Animated.Value(SCREEN_H)).current;
-
-  // Content stagger
-  const cardOpacity = useRef(new Animated.Value(0)).current;
-  const cardTransY = useRef(new Animated.Value(40)).current;
-  const textOpacity = useRef(new Animated.Value(0)).current;
-  const textTransY = useRef(new Animated.Value(30)).current;
-  const btnsOpacity = useRef(new Animated.Value(0)).current;
-  const btnsTransY = useRef(new Animated.Value(20)).current;
+  // Content stagger (independientes del slide nativo del Modal)
+  const cardOpacity  = useRef(new Animated.Value(0)).current;
+  const cardTransY   = useRef(new Animated.Value(40)).current;
+  const textOpacity  = useRef(new Animated.Value(0)).current;
+  const textTransY   = useRef(new Animated.Value(30)).current;
+  const btnsOpacity  = useRef(new Animated.Value(0)).current;
+  const btnsTransY   = useRef(new Animated.Value(20)).current;
 
   // Toast
   const [toastVisible, setToastVisible] = useState(false);
   const toastOpacity = useRef(new Animated.Value(0)).current;
-  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const resetAnim = () => {
-    sheetY.setValue(SCREEN_H);
     cardOpacity.setValue(0);
     cardTransY.setValue(40);
     textOpacity.setValue(0);
@@ -81,38 +73,30 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
     if (visible) {
       resetAnim();
 
-      // 1. Slide up the sheet (420ms easeOutCubic)
-      Animated.timing(sheetY, {
-        toValue: 0,
-        duration: 420,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }).start();
-
-      // 2. Gift card enters (delay 200ms)
+      // Gift card entra (delay para que el modal nativo haya subido primero)
       Animated.sequence([
-        Animated.delay(200),
+        Animated.delay(280),
         Animated.parallel([
-          Animated.timing(cardOpacity, { toValue: 1, duration: 460, easing: Easing.out(Easing.quad), useNativeDriver: true }),
-          Animated.timing(cardTransY, { toValue: 0, duration: 460, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+          Animated.timing(cardOpacity,  { toValue: 1, duration: 460, easing: Easing.out(Easing.quad),   useNativeDriver: true }),
+          Animated.timing(cardTransY,   { toValue: 0, duration: 460, easing: Easing.out(Easing.cubic),  useNativeDriver: true }),
         ]),
       ]).start();
 
-      // 3. Title + subtitle (delay 330ms)
+      // Título + subtítulo
       Animated.sequence([
-        Animated.delay(330),
+        Animated.delay(400),
         Animated.parallel([
-          Animated.timing(textOpacity, { toValue: 1, duration: 440, easing: Easing.out(Easing.quad), useNativeDriver: true }),
-          Animated.timing(textTransY, { toValue: 0, duration: 440, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+          Animated.timing(textOpacity,  { toValue: 1, duration: 440, easing: Easing.out(Easing.quad),   useNativeDriver: true }),
+          Animated.timing(textTransY,   { toValue: 0, duration: 440, easing: Easing.out(Easing.cubic),  useNativeDriver: true }),
         ]),
       ]).start();
 
-      // 4. Buttons + microcopy (delay 450ms)
+      // Botones + microcopy
       Animated.sequence([
-        Animated.delay(450),
+        Animated.delay(500),
         Animated.parallel([
-          Animated.timing(btnsOpacity, { toValue: 1, duration: 420, easing: Easing.out(Easing.quad), useNativeDriver: true }),
-          Animated.timing(btnsTransY, { toValue: 0, duration: 420, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+          Animated.timing(btnsOpacity,  { toValue: 1, duration: 420, easing: Easing.out(Easing.quad),   useNativeDriver: true }),
+          Animated.timing(btnsTransY,   { toValue: 0, duration: 420, easing: Easing.out(Easing.cubic),  useNativeDriver: true }),
         ]),
       ]).start();
     } else {
@@ -121,37 +105,17 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible]);
 
-  const dismiss = () => {
-    Animated.parallel([
-      Animated.timing(sheetY, {
-        toValue: SCREEN_H,
-        duration: 280,
-        easing: Easing.in(Easing.quad),
-        useNativeDriver: true,
-      }),
-      Animated.timing(cardOpacity, { toValue: 0, duration: 180, useNativeDriver: true }),
-      Animated.timing(textOpacity, { toValue: 0, duration: 160, useNativeDriver: true }),
-      Animated.timing(btnsOpacity, { toValue: 0, duration: 140, useNativeDriver: true }),
-    ]).start(() => onClose());
-  };
+  // Cerrar simplemente propaga onClose; el Modal con animationType="slide"
+  // se encarga del exit (desliza hacia abajo de forma nativa).
+  const dismiss = () => onClose();
 
+  // PanResponder para swipe-down
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: (_, gs) =>
-        gs.dy > 8 && Math.abs(gs.dy) > Math.abs(gs.dx),
-      onPanResponderMove: (_, gs) => {
-        if (gs.dy > 0) sheetY.setValue(gs.dy);
-      },
+        gs.dy > 10 && Math.abs(gs.dy) > Math.abs(gs.dx),
       onPanResponderRelease: (_, gs) => {
-        if (gs.dy > 60 || gs.vy > 0.5) {
-          dismiss();
-        } else {
-          Animated.spring(sheetY, {
-            toValue: 0,
-            useNativeDriver: true,
-            bounciness: 4,
-          }).start();
-        }
+        if (gs.dy > 60 || gs.vy > 0.5) dismiss();
       },
     })
   ).current;
@@ -174,29 +138,25 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
   };
 
   const showToast = () => {
-    if (toastTimer.current) clearTimeout(toastTimer.current);
     setToastVisible(true);
     toastOpacity.setValue(0);
     Animated.sequence([
       Animated.timing(toastOpacity, { toValue: 1, duration: 200, useNativeDriver: true }),
       Animated.delay(1600),
       Animated.timing(toastOpacity, { toValue: 0, duration: 300, useNativeDriver: true }),
-    ]).start(() => {
-      setToastVisible(false);
-    });
+    ]).start(() => setToastVisible(false));
   };
 
   return (
     <Modal
       visible={visible}
-      transparent
-      animationType="none"
+      transparent={false}
+      animationType="slide"
+      presentationStyle="pageSheet"
       statusBarTranslucent
       onRequestClose={dismiss}
     >
-      <Animated.View
-        style={[styles.sheet, { transform: [{ translateY: sheetY }] }]}
-      >
+      <View style={styles.sheet}>
         {/* Fondo: degradado del tema activo */}
         <LinearGradient
           colors={theme.gradient}
@@ -205,10 +165,14 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
           style={StyleSheet.absoluteFill}
         />
 
-        {/* Handle arrastrrable */}
-        <View style={styles.handleArea} {...panResponder.panHandlers}>
+        {/* Handle arrastrrable + tap cierra */}
+        <Pressable
+          style={styles.handleArea}
+          onPress={dismiss}
+          {...panResponder.panHandlers}
+        >
           <View style={styles.handle} />
-        </View>
+        </Pressable>
 
         {/* Botón X */}
         <Pressable style={styles.closeBtn} onPress={dismiss} hitSlop={14}>
@@ -218,8 +182,12 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
         </Pressable>
 
         {/* Contenido */}
-        <View style={[styles.content, { paddingBottom: Math.max(insets.bottom + 8, 36) }]}>
-
+        <View
+          style={[
+            styles.content,
+            { paddingBottom: Math.max(insets.bottom + 8, 36) },
+          ]}
+        >
           {/* ── Gift card ── */}
           <Animated.View
             style={[
@@ -248,7 +216,7 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
                 <Text style={styles.cardDiscount}>20% OFF</Text>
                 <Text style={styles.cardBrand}>Resonancia Premium</Text>
               </View>
-              {/* Motivo decorativo: círculo tenue */}
+              {/* Motivos decorativos */}
               <View style={styles.cardCircle1} pointerEvents="none" />
               <View style={styles.cardCircle2} pointerEvents="none" />
             </View>
@@ -256,7 +224,10 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
 
           {/* ── Título y descripción ── */}
           <Animated.View
-            style={{ opacity: textOpacity, transform: [{ translateY: textTransY }] }}
+            style={{
+              opacity: textOpacity,
+              transform: [{ translateY: textTransY }],
+            }}
           >
             <Text style={styles.title}>Regala Resonancia</Text>
             <Text style={styles.subtitle}>
@@ -266,10 +237,19 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
 
           {/* ── Botones ── */}
           <Animated.View
-            style={[styles.btnsWrap, { opacity: btnsOpacity, transform: [{ translateY: btnsTransY }] }]}
+            style={[
+              styles.btnsWrap,
+              {
+                opacity: btnsOpacity,
+                transform: [{ translateY: btnsTransY }],
+              },
+            ]}
           >
             <Pressable
-              style={({ pressed }) => [styles.btnSecondary, { opacity: pressed ? 0.65 : 1 }]}
+              style={({ pressed }) => [
+                styles.btnSecondary,
+                { opacity: pressed ? 0.65 : 1 },
+              ]}
               onPress={handleCopyLink}
             >
               <Feather name="copy" size={16} color="rgba(255,255,255,0.75)" />
@@ -277,7 +257,10 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
             </Pressable>
 
             <Pressable
-              style={({ pressed }) => [styles.btnPrimary, { opacity: pressed ? 0.85 : 1 }]}
+              style={({ pressed }) => [
+                styles.btnPrimary,
+                { opacity: pressed ? 0.85 : 1 },
+              ]}
               onPress={handleShare}
             >
               <Feather name="share-2" size={16} color="#1B060F" />
@@ -292,23 +275,22 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
 
         {/* Toast inline */}
         {toastVisible && (
-          <Animated.View style={[styles.toast, { opacity: toastOpacity }]} pointerEvents="none">
+          <Animated.View
+            style={[styles.toast, { opacity: toastOpacity }]}
+            pointerEvents="none"
+          >
             <Feather name="check-circle" size={14} color="#D4AF37" />
             <Text style={styles.toastText}>Enlace copiado</Text>
           </Animated.View>
         )}
-      </Animated.View>
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
   sheet: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
+    flex: 1,
   },
 
   // ── Handle / drag area ───────────────────────────────────────────────────
@@ -327,7 +309,7 @@ const styles = StyleSheet.create({
   // ── Close button ─────────────────────────────────────────────────────────
   closeBtn: {
     position: "absolute",
-    top: 52,
+    top: 50,
     right: 20,
   },
   closeBtnInner: {
@@ -351,7 +333,6 @@ const styles = StyleSheet.create({
   cardWrap: {
     alignItems: "center",
     marginBottom: 32,
-    // Sombra dorada suave
     shadowColor: "#D8A84F",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.45,
@@ -396,7 +377,6 @@ const styles = StyleSheet.create({
     color: "rgba(80,40,0,0.75)",
     letterSpacing: 0.4,
   },
-  // Decoración circular tenue
   cardCircle1: {
     position: "absolute",
     width: 160,

@@ -794,14 +794,14 @@ export default function ProfileScreen() {
           </Pressable>
           <Text style={styles.stickyTitle}>Perfil</Text>
           <Pressable
-            onPress={() => setShowInvitar(true)}
             hitSlop={8}
             onPressIn={() =>
               Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
             }
-            onPressOut={() =>
-              Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start()
-            }
+            onPressOut={() => {
+              Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
+              setTimeout(() => setShowInvitar(true), 500);
+            }}
           >
             <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
               <Image
