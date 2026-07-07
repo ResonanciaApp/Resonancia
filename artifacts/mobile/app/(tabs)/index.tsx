@@ -1149,7 +1149,7 @@ export default function HomeScreen2() {
         }}
       >
         {/* Logo centrado */}
-        <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, alignItems: "center", gap: 6, transform: [{ translateY: 7 }] }}>
+        <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, alignItems: "center", gap: 6, transform: [{ translateY: 5 }] }}>
           <ExpoImage
             source={require("@/assets/images/icons/pulso-logo.png")}
             style={{ width: 125, height: 57 }}
