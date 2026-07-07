@@ -1,12 +1,18 @@
 import { Feather } from "@expo/vector-icons";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import Svg, { Circle } from "react-native-svg";
 
 import { usePlayer } from "@/context/PlayerContext";
 
 const GOLD = "#BE8744";
 const TEXT = "#e8e8e8";
 const MUTED = "#c2c2c2";
+
+const RING_SIZE = 88;
+const STROKE_W = 7;
+const RADIUS = (RING_SIZE - STROKE_W) / 2;
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 /** Minutos que hay que escuchar en el día para que cuente como "día activo". */
 const GOAL_MINUTES = 5;
@@ -21,8 +27,8 @@ function dayKey(d: Date): string {
 function startOfWeek(d: Date): Date {
   const copy = new Date(d);
   copy.setHours(0, 0, 0, 0);
-  const dow = copy.getDay(); // 0 = domingo
-  const diff = dow === 0 ? -6 : 1 - dow; // retroceder hasta el lunes
+  const dow = copy.getDay();
+  const diff = dow === 0 ? -6 : 1 - dow;
   copy.setDate(copy.getDate() + diff);
   return copy;
 }
@@ -57,10 +63,49 @@ export function WeeklyStreakStrip() {
     return { activeFlags: flags, activeCount: count, todayIndex: todayIdx };
   }, [statEvents]);
 
-  const message = `Muy bien! Usaste Resonancia ${activeCount} días esta semana.\n¡Continúa así!`;
+  const dashOffset = CIRCUMFERENCE * (1 - activeCount / 7);
+
+  const message =
+    activeCount === 0
+      ? "Todavía no completaste ninguna sesión.\nElije una y da el primer paso."
+      : `¡Muy bien! Usaste Resonancia ${activeCount} día${activeCount !== 1 ? "s" : ""} esta semana. ¡Continúa así!`;
 
   return (
     <View style={styles.card}>
+      {/* Anillo de progreso */}
+      <View style={styles.ringWrap}>
+        <Svg width={RING_SIZE} height={RING_SIZE}>
+          {/* Pista de fondo */}
+          <Circle
+            cx={RING_SIZE / 2}
+            cy={RING_SIZE / 2}
+            r={RADIUS}
+            stroke="rgba(255,255,255,0.13)"
+            strokeWidth={STROKE_W}
+            fill="none"
+          />
+          {/* Arco activo */}
+          <Circle
+            cx={RING_SIZE / 2}
+            cy={RING_SIZE / 2}
+            r={RADIUS}
+            stroke={GOLD}
+            strokeWidth={STROKE_W}
+            fill="none"
+            strokeDasharray={`${CIRCUMFERENCE}`}
+            strokeDashoffset={dashOffset}
+            strokeLinecap="round"
+            rotation="-90"
+            origin={`${RING_SIZE / 2}, ${RING_SIZE / 2}`}
+          />
+        </Svg>
+        <View style={styles.ringCenter}>
+          <Text style={styles.ringCount}>{activeCount}</Text>
+          <Text style={styles.ringLabel}>Días</Text>
+        </View>
+      </View>
+
+      {/* Bolitas de días */}
       <View style={styles.row}>
         {DAY_LABELS.map((label, i) => {
           const met = activeFlags[i];
@@ -79,6 +124,7 @@ export function WeeklyStreakStrip() {
           );
         })}
       </View>
+
       <Text style={styles.message}>{message}</Text>
     </View>
   );
@@ -90,14 +136,40 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     paddingHorizontal: 14,
     gap: 13,
+    alignItems: "center",
+  },
+  ringWrap: {
+    width: RING_SIZE,
+    height: RING_SIZE,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  ringCenter: {
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  ringCount: {
+    color: TEXT,
+    fontSize: 26,
+    fontWeight: "700",
+    lineHeight: 30,
+  },
+  ringLabel: {
+    color: MUTED,
+    fontSize: 11,
+    fontWeight: "500",
+    letterSpacing: 0.3,
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
+    width: "100%",
   },
   dayCol: {
     alignItems: "center",
     gap: 8,
+    flex: 1,
   },
   circle: {
     width: 36,
