@@ -262,7 +262,7 @@ export function WeeklyStreakStrip() {
                   </Svg>
                 </View>
               ) : (
-                <View style={[styles.circle, styles.circleInactive]} />
+                <View style={[styles.circle, styles.circleInactive, styles.circleInactiveSize]} />
               )}
               <Text style={[styles.dayLabel, isToday && styles.dayLabelToday]}>{label}</Text>
             </View>
@@ -345,6 +345,11 @@ const styles = StyleSheet.create({
   },
   circleInactive: {
     backgroundColor: "rgba(255,255,255,0.08)",
+  },
+  circleInactiveSize: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
   circleToday: {
     backgroundColor: "rgba(255,255,255,0.064)",
