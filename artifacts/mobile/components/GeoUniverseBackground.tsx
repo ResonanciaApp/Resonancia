@@ -1,130 +1,166 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, Easing, StyleSheet, View } from "react-native";
+import { Animated, Dimensions, Easing, StyleSheet, View } from "react-native";
 
 import { SacredGlyph } from "@/components/SacredGlyph";
+import type { GeometryId } from "@/data/geometries";
 import { useGeoUniverse } from "@/context/GeoUniverseContext";
 
-interface AnimGlyphProps {
-  id: "flor-vida" | "metatron" | "mandala";
+const { height: H } = Dimensions.get("window");
+
+interface GlyphConfig {
+  id: GeometryId;
   size: number;
-  style: object;
-  spinDuration: number;
-  breatheDuration: number;
-  dir?: 1 | -1;
+  pos: { top?: number; bottom?: number; left?: number; right?: number };
+  /** Retraso inicial antes del primer ciclo (ms) */
+  delay: number;
+  /** Tiempo visible en pantalla (ms) */
+  visibleMs: number;
+  /** Tiempo oculto entre ciclos (ms) */
+  hiddenMs: number;
+  /** Duración de una vuelta completa (ms). 0 = sin rotación */
+  spinMs: number;
+  spinDir: 1 | -1;
 }
 
-function AnimGlyph({ id, size, style, spinDuration, breatheDuration, dir = 1 }: AnimGlyphProps) {
-  const rot   = useRef(new Animated.Value(0)).current;
-  const pulse = useRef(new Animated.Value(0)).current;
+const CONFIGS: GlyphConfig[] = [
+  {
+    id: "flor-vida",
+    size: 230,
+    pos: { top: -50, right: -65 },
+    delay: 0,
+    visibleMs: 14000,
+    hiddenMs: 7000,
+    spinMs: 65000,
+    spinDir: 1,
+  },
+  {
+    id: "metatron",
+    size: 200,
+    pos: { bottom: 90, left: -70 },
+    delay: 6000,
+    visibleMs: 12000,
+    hiddenMs: 10000,
+    spinMs: 82000,
+    spinDir: -1,
+  },
+  {
+    id: "mandala",
+    size: 170,
+    pos: { top: H * 0.38, right: -45 },
+    delay: 13000,
+    visibleMs: 10000,
+    hiddenMs: 12000,
+    spinMs: 55000,
+    spinDir: 1,
+  },
+  {
+    id: "vesica",
+    size: 185,
+    pos: { top: H * 0.18, left: -55 },
+    delay: 8000,
+    visibleMs: 11000,
+    hiddenMs: 9000,
+    spinMs: 0,
+    spinDir: 1,
+  },
+  {
+    id: "espiral-fibonacci",
+    size: 155,
+    pos: { bottom: 160, right: -35 },
+    delay: 17000,
+    visibleMs: 9000,
+    hiddenMs: 11000,
+    spinMs: 72000,
+    spinDir: 1,
+  },
+];
+
+function GlyphParticle({ cfg }: { cfg: GlyphConfig }) {
+  const opacity = useRef(new Animated.Value(0)).current;
+  const rot     = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    const a = Animated.loop(
-      Animated.timing(rot, {
-        toValue: 1,
-        duration: spinDuration,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      })
-    );
-    a.start();
-    return () => a.stop();
-  }, [rot, spinDuration]);
+    let cancelled = false;
 
-  useEffect(() => {
-    const a = Animated.loop(
+    // Rotación continua (sin relación con la visibilidad)
+    const spinAnim = cfg.spinMs > 0
+      ? Animated.loop(
+          Animated.timing(rot, {
+            toValue: 1,
+            duration: cfg.spinMs,
+            easing: Easing.linear,
+            useNativeDriver: true,
+          })
+        )
+      : null;
+    spinAnim?.start();
+
+    // Ciclo: aparecer → pausa → desaparecer → pausa → repetir
+    // Usamos "animación de valor estático" para la pausa (evita Animated.delay
+    // que no garantiza useNativeDriver en todas las versiones de RN).
+    const runCycle = () => {
       Animated.sequence([
-        Animated.timing(pulse, {
-          toValue: 1,
-          duration: breatheDuration,
-          easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulse, {
-          toValue: 0,
-          duration: breatheDuration,
-          easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true,
-        }),
-      ])
-    );
-    a.start();
-    return () => a.stop();
-  }, [pulse, breatheDuration]);
+        // Fade in
+        Animated.timing(opacity, { toValue: 0.35, duration: 4000, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+        // Pausa visible (anima al mismo valor → sin cambio visual)
+        Animated.timing(opacity, { toValue: 0.35, duration: cfg.visibleMs, useNativeDriver: true }),
+        // Fade out
+        Animated.timing(opacity, { toValue: 0,    duration: 3500, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+        // Pausa oculto
+        Animated.timing(opacity, { toValue: 0,    duration: cfg.hiddenMs, useNativeDriver: true }),
+      ]).start(({ finished }) => {
+        if (finished && !cancelled) runCycle();
+      });
+    };
+
+    // Retraso inicial para escalonar los glyphs
+    const tId = setTimeout(() => {
+      if (!cancelled) runCycle();
+    }, cfg.delay);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(tId);
+      spinAnim?.stop();
+      opacity.stopAnimation();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const rotDeg = rot.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["0deg", `${360 * dir}deg`],
+    inputRange:  [0, 1],
+    outputRange: ["0deg", `${360 * cfg.spinDir}deg`],
   });
-  const scalePulse = pulse.interpolate({ inputRange: [0, 1], outputRange: [0.93, 1.0] });
 
   return (
     <Animated.View
       style={[
-        style,
+        { position: "absolute", ...cfg.pos },
         {
-          opacity: 0.35,
-          transform: [{ rotate: rotDeg }, { scale: scalePulse }],
+          opacity,
+          transform: cfg.spinMs > 0 ? [{ rotate: rotDeg }] : [],
         },
       ]}
       pointerEvents="none"
     >
-      <SacredGlyph id={id} color="#FFFFFF" size={size} strokeScale={0.7} />
+      <SacredGlyph
+        id={cfg.id}
+        color="#FFFFFF"
+        size={cfg.size}
+        strokeScale={0.65}
+      />
     </Animated.View>
   );
 }
 
 export function GeoUniverseBackground() {
   const { enabled } = useGeoUniverse();
-
   if (!enabled) return null;
-
   return (
-    <View style={styles.root} pointerEvents="none">
-      <AnimGlyph
-        id="flor-vida"
-        size={340}
-        style={styles.topRight}
-        spinDuration={60000}
-        breatheDuration={8000}
-        dir={1}
-      />
-      <AnimGlyph
-        id="metatron"
-        size={290}
-        style={styles.bottomLeft}
-        spinDuration={80000}
-        breatheDuration={10000}
-        dir={-1}
-      />
-      <AnimGlyph
-        id="mandala"
-        size={210}
-        style={styles.centerRight}
-        spinDuration={50000}
-        breatheDuration={7000}
-        dir={1}
-      />
+    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+      {CONFIGS.map((cfg) => (
+        <GlyphParticle key={cfg.id} cfg={cfg} />
+      ))}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  root: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  topRight: {
-    position: "absolute",
-    top: -70,
-    right: -85,
-  },
-  bottomLeft: {
-    position: "absolute",
-    bottom: 100,
-    left: -95,
-  },
-  centerRight: {
-    position: "absolute",
-    top: "38%",
-    right: -50,
-  },
-});
