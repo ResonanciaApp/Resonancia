@@ -197,7 +197,7 @@ export default function SessionDetailScreen() {
       const j = Math.floor(Math.random() * (i + 1));
       [pool[i], pool[j]] = [pool[j], pool[i]];
     }
-    return pool.slice(0, 3);
+    return pool.slice(0, 7);
   }, [session.id]);
 
   const savedProgress = getSessionProgress(session.id);
