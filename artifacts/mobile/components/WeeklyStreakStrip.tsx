@@ -1,8 +1,7 @@
 import { Feather } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Svg, { Circle } from "react-native-svg";
+import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "react-native-svg";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -202,16 +201,23 @@ export function WeeklyStreakStrip() {
           return (
             <View key={i} style={styles.dayCol}>
               {met ? (
-                <LinearGradient
-                  colors={streakBorderColors}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.circleGradientBorder}
-                >
-                  <View style={styles.circleActiveInner}>
-                    <Feather name="check" size={19} color="rgba(255,255,255,0.9)" />
-                  </View>
-                </LinearGradient>
+                <View style={styles.circleGradientBorder}>
+                  <Svg width={42} height={42} style={StyleSheet.absoluteFill}>
+                    <Defs>
+                      <SvgLinearGradient id={`sg${i}`} x1="0" y1="0" x2="1" y2="1">
+                        <Stop offset="0" stopColor={streakBorderColors[0]} />
+                        <Stop offset="1" stopColor={streakBorderColors[1]} />
+                      </SvgLinearGradient>
+                    </Defs>
+                    <Circle
+                      cx={21} cy={21} r={19}
+                      stroke={`url(#sg${i})`}
+                      strokeWidth={3}
+                      fill="none"
+                    />
+                  </Svg>
+                  <Feather name="check" size={19} color="rgba(255,255,255,0.9)" />
+                </View>
               ) : (
                 <View style={[
                   styles.circle,
@@ -287,16 +293,6 @@ const styles = StyleSheet.create({
   circleGradientBorder: {
     width: 42,
     height: 42,
-    borderRadius: 21,
-    padding: 3,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  circleActiveInner: {
-    flex: 1,
-    width: "100%",
-    borderRadius: 18,
-    backgroundColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
   },
