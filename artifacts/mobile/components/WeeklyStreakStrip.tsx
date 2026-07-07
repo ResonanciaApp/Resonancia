@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "react-native-svg";
@@ -170,19 +171,23 @@ export function WeeklyStreakStrip() {
   return (
     <View style={styles.card}>
       {/* Anillo de progreso */}
-      <View style={[styles.ringWrap, {
-        width: RING_SIZE + 18,
-        height: RING_SIZE + 18,
-        borderRadius: (RING_SIZE + 18) / 2,
-        backgroundColor: hexToRgba(theme.gradient[0], 0.14),
-        borderWidth: 1,
-        borderColor: hexToRgba(theme.gradient[0], 0.19),
-        shadowColor: "#000000",
-        shadowOffset: { width: 0, height: 6 },
-        shadowOpacity: 0.72,
-        shadowRadius: 10,
-        elevation: 12,
-      }]}>
+      <LinearGradient
+        colors={[hexToRgba(theme.gradient[0], 0.14), hexToRgba(theme.gradient[1], 0.14)]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={[styles.ringWrap, {
+          width: RING_SIZE + 18,
+          height: RING_SIZE + 18,
+          borderRadius: (RING_SIZE + 18) / 2,
+          borderWidth: 1,
+          borderColor: hexToRgba(theme.gradient[0], 0.19),
+          shadowColor: "#000000",
+          shadowOffset: { width: 0, height: 6 },
+          shadowOpacity: 0.72,
+          shadowRadius: 10,
+          elevation: 12,
+        }]}
+      >
         <Svg width={RING_SIZE} height={RING_SIZE}>
           <Circle
             cx={RING_SIZE / 2}
@@ -210,7 +215,7 @@ export function WeeklyStreakStrip() {
           <Text style={styles.ringCount}>{activeCount}</Text>
           <Text style={styles.ringLabel}>Días</Text>
         </View>
-      </View>
+      </LinearGradient>
 
       {/* Bolitas de días */}
       <View style={styles.row}>
