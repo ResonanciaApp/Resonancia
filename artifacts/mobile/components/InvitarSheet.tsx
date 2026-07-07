@@ -1,10 +1,10 @@
 /**
  * InvitarSheet — bottom sheet premium de invitación a Resonancia.
  * ─────────────────────────────────────────────────────────────────
- * Entrada nativa slide_from_bottom (animationType="slide"). Después de
- * que el modal haya subido completamente (~400 ms) esperamos 2 s antes
- * de empezar el stagger de contenido:
- *   tarjeta → título → descripción → botón (350 ms c/u, 20 px translateY)
+ * Slide propio (animationType="none" + translateY JS) para eliminar
+ * el lag nativo del Modal. Después del slide (~420 ms) + POST_OPEN_DELAY
+ * empieza el stagger de contenido:
+ *   tarjeta → título → descripción → botón
  * El botón aparece fijo en el fondo a 30 px del margen de la pantalla.
  * Cerrar: botón X, tap en el handle, o swipe-down (dy>60 / vy>0.5).
  */
@@ -65,6 +65,9 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
 
+  // Slide propio de la ventana (reemplaza el animationType="slide" nativo)
+  const slideY = useRef(new Animated.Value(SCREEN_H)).current;
+
   // Cuatro animaciones independientes: tarjeta, título, descripción, botón
   const cardOpacity  = useRef(new Animated.Value(0)).current;
   const cardTransY   = useRef(new Animated.Value(35)).current;
@@ -99,19 +102,35 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
 
   useEffect(() => {
     if (visible) {
+      slideY.setValue(SCREEN_H);
       resetAnim();
+      // Slide propio: sube la ventana desde abajo
+      Animated.timing(slideY, {
+        toValue: 0,
+        duration: MODAL_SLIDE_MS,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }).start();
       // Stagger: tarjeta → título → descripción → botón
       fadeSlide(cardOpacity,  cardTransY,  BASE_DELAY).start();
       fadeSlide(titleOpacity, titleTransY, BASE_DELAY + STAGGER).start();
       fadeSlide(descOpacity,  descTransY,  BASE_DELAY + STAGGER + STAGGER_DESC).start();
       fadeSlide(btnOpacity,   btnTransY,   BASE_DELAY + STAGGER + STAGGER_DESC + STAGGER_BTN).start();
     } else {
+      slideY.setValue(SCREEN_H);
       resetAnim();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible]);
 
-  const dismiss = () => onClose();
+  const dismiss = () => {
+    Animated.timing(slideY, {
+      toValue: SCREEN_H,
+      duration: MODAL_SLIDE_MS,
+      easing: Easing.in(Easing.cubic),
+      useNativeDriver: true,
+    }).start(() => onClose());
+  };
 
   const panResponder = useRef(
     PanResponder.create({
@@ -161,13 +180,13 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
   return (
     <Modal
       visible={visible}
-      transparent={false}
-      animationType="slide"
-      presentationStyle="pageSheet"
+      transparent
+      animationType="none"
+      presentationStyle="overFullScreen"
       statusBarTranslucent
       onRequestClose={dismiss}
     >
-      <View style={styles.sheet}>
+      <Animated.View style={[styles.sheet, { transform: [{ translateY: slideY }] }]}>
         {/* Fondo: degradado del tema activo */}
         <LinearGradient
           colors={theme.gradient}
@@ -281,7 +300,7 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
             <Text style={styles.toastText}>Enlace copiado</Text>
           </Animated.View>
         )}
-      </View>
+      </Animated.View>
     </Modal>
   );
 }
