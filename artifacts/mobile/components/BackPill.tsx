@@ -16,7 +16,7 @@ export function BackPill({ onPress, style, color = "#fff", size = 22, hitSlop = 
   return (
     <PressableScale onPress={onPress} containerStyle={style} hitSlop={hitSlop}>
       <View style={[styles.base, bgColor ? { backgroundColor: bgColor, borderRadius: 19 } : undefined]}>
-        <Feather name="arrow-left" size={size} color={color} />
+        <Feather name="chevron-left" size={size} color={color} />
       </View>
     </PressableScale>
   );
