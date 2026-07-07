@@ -18,7 +18,7 @@ function hexToRgba(hex: string, alpha: number): string {
 const TEXT = "#e8e8e8";
 const MUTED = "#c2c2c2";
 
-const RING_SIZE = 88;
+const RING_SIZE = 91;
 const STROKE_W = 7;
 const RADIUS = (RING_SIZE - STROKE_W) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
@@ -174,8 +174,8 @@ export function WeeklyStreakStrip() {
         backgroundColor: hexToRgba(theme.gradient[1], 0.14),
         shadowColor: "#000000",
         shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.38,
-        shadowRadius: 18,
+        shadowOpacity: 0.45,
+        shadowRadius: 21,
         elevation: 7,
       }]}>
         <Svg width={RING_SIZE} height={RING_SIZE}>
