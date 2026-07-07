@@ -849,19 +849,33 @@ export default function HomeScreen2() {
               </View>
               {(() => {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const guideId = (filteredFeatured as any).guideId as string | undefined;
-                const heroAuthor = guideId ? (getGuide(guideId)?.name ?? "Casa del Cuenco") : "Casa del Cuenco";
+                const s = filteredFeatured as any;
+                const guideId  = s.guideId  as string | undefined;
+                const artistId = s.artistId as string | undefined;
+                const guide  = guideId  ? getGuide(guideId)   : undefined;
+                const artist = artistId ? getArtist(artistId) : undefined;
+                const heroAuthor = guide?.name ?? artist?.name ?? "Casa del Cuenco";
+                const heroPhoto  = guide?.photo ?? artist?.photo ?? null;
                 return (
-                  <View style={{ marginTop: 12 }}>
-                    <Text style={styles.heroMetaText}>
-                      {filteredFeatured.categoryLabel} · {filteredFeatured.durationLabel}
-                    </Text>
-                    <Text style={styles.heroTitle} numberOfLines={2}>
-                      {filteredFeatured.title}
-                    </Text>
-                    <Text style={styles.heroAuthor} numberOfLines={1}>
-                      {heroAuthor}
-                    </Text>
+                  <View style={{ marginTop: 12, flexDirection: "row", alignItems: "center", gap: 10 }}>
+                    {heroPhoto && (
+                      <Image
+                        source={heroPhoto}
+                        style={styles.heroAvatar}
+                        resizeMode="cover"
+                      />
+                    )}
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.heroMetaText}>
+                        {filteredFeatured.categoryLabel} · {filteredFeatured.durationLabel}
+                      </Text>
+                      <Text style={styles.heroTitle} numberOfLines={2}>
+                        {filteredFeatured.title}
+                      </Text>
+                      <Text style={styles.heroAuthor} numberOfLines={1}>
+                        {heroAuthor}
+                      </Text>
+                    </View>
                   </View>
                 );
               })()}
@@ -1853,6 +1867,7 @@ const styles = StyleSheet.create({
   heroImage: { width: "100%", height: "100%" },
   heroMetaText: { fontSize: 11, lineHeight: 14, color: "#c2c2c2", marginBottom: 6 },
   heroTitle: { fontSize: 13, fontWeight: "600", lineHeight: 18, color: "#e8e8e8", marginBottom: 4 },
+  heroAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(255,255,255,0.08)" },
   heroAuthor: { fontSize: 12, color: "#c2c2c2", marginTop: 2 },
   heroBtn: {
     width: 46,
