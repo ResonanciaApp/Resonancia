@@ -350,8 +350,8 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    marginTop: -1,
-    marginBottom: 3,
+    marginTop: -2,
+    marginBottom: 4,
   },
   circleToday: {
     backgroundColor: "rgba(255,255,255,0.064)",
@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
     color: TEXT,
   },
   dayLabelInactivePos: {
-    marginTop: -2,
+    marginTop: -3,
   },
 
   messageWrap: {
