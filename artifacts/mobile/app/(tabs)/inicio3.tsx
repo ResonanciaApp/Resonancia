@@ -607,14 +607,8 @@ export default function HomeScreen2() {
       const y = e.nativeEvent.contentOffset.y;
       scrollYRef.current = y;
       updateStickyActive();
-      // Scroll-linked zen: rango 0-260 px, cola de 120 ms con ease-out
-      const targetOpacity = Math.max(0, 1 - y / 260);
-      Animated.timing(backdropAnim, {
-        toValue: targetOpacity,
-        duration: 120,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }).start();
+      // Scroll-linked: imagen visible en y=0, desaparece a los 160px de scroll
+      backdropAnim.setValue(Math.max(0, 1 - y / 160));
     },
     [updateStickyActive, backdropAnim],
   );
