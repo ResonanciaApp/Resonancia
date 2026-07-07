@@ -390,7 +390,7 @@ export default function MeditacionesGuiadasScreen() {
           <LinearGradient colors={["transparent","rgba(0,0,0,0.28)","rgba(0,0,0,0.60)"]} locations={[0.50,0.80,1]} style={StyleSheet.absoluteFill} />
           {/* Flecha atrás flotante */}
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
-            <GhostPill style={{ backgroundColor: hexToRgba(theme.gradient[0], 0.7) }}>
+            <GhostPill style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.9) }}>
               <BackPill onPress={() => router.back()} />
             </GhostPill>
           </View>
@@ -435,7 +435,7 @@ export default function MeditacionesGuiadasScreen() {
 
       {/* ── Sticky header (aparece con scroll) ── */}
       <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"} onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}>
-        <GhostPill style={{ backgroundColor: hexToRgba(theme.gradient[0], 0.7) }}>
+        <GhostPill style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.9) }}>
           <BackPill onPress={() => router.back()} />
         </GhostPill>
         <Text style={styles.headerTitle}>Meditaciones</Text>
