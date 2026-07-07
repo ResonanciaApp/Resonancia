@@ -1325,9 +1325,9 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   universeBtn: {
-    width: 45,
-    height: 45,
-    borderRadius: 22.5,
+    width: 47,
+    height: 47,
+    borderRadius: 23.5,
     overflow: "hidden",
   },
   universeBtnBg: {
