@@ -6,7 +6,6 @@
  * Cerrar: botón X, tap en el handle, o swipe-down (dy>60 / vy>0.5).
  */
 import { Feather } from "@expo/vector-icons";
-import * as Clipboard from "expo-clipboard";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -132,7 +131,11 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
 
   const handleCopyLink = async () => {
     try {
-      await Clipboard.setStringAsync(INVITE_URL);
+      await Share.share(
+        Platform.OS === "ios"
+          ? { message: INVITE_URL, url: INVITE_URL }
+          : { message: INVITE_URL }
+      );
       showToast();
     } catch {}
   };
