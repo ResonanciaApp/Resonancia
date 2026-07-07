@@ -961,7 +961,7 @@ const styles = StyleSheet.create({
     gap: 5,
     backgroundColor: "transparent",
   },
-  pillTabLabel: { fontSize: 11, letterSpacing: 0.1, fontWeight: "400" },
+  pillTabLabel: { fontSize: 13, letterSpacing: 0.1, fontWeight: "400" },
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },
 
@@ -1033,7 +1033,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "rgba(244,218,213,0.2)",
   },
-  subTabText: { fontSize: 11, letterSpacing: 0.1, fontWeight: "400", includeFontPadding: false },
+  subTabText: { fontSize: 13, letterSpacing: 0.1, fontWeight: "400", includeFontPadding: false },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 17, justifyContent: "space-evenly" },
   soundCard: { width: CARD_W },

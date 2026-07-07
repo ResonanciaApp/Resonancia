@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  chipText: { fontSize: 12, fontWeight: "400" },
+  chipText: { fontSize: 13, fontWeight: "400" },
   chipsDivider: {
     height: 1,
     backgroundColor: "rgba(255,255,255,0.035)",
