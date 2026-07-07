@@ -783,11 +783,12 @@ export default function HomeScreen2() {
           onPress={() => router.push("/resonadores" as never)}
           style={{ marginBottom: 60, marginHorizontal: GRID_PAD }}
         >
-          <LinearGradient
-            colors={[activeTheme.gradient[0], activeTheme.gradient[1]]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.resonadoresBanner}
+          <View
+            style={[styles.resonadoresBanner, {
+              backgroundColor: "rgba(0,0,0,0.14)",
+              borderWidth: 2,
+              borderColor: "rgba(255,255,255,0.04)",
+            }]}
           >
             <View style={styles.resBannerCircle1} />
             <View style={styles.resBannerCircle2} />
@@ -803,7 +804,7 @@ export default function HomeScreen2() {
               </View>
               <Feather name="chevron-right" size={20} color="rgba(232,232,232,0.7)" style={styles.resonadoresBannerChevron} />
             </View>
-          </LinearGradient>
+          </View>
         </Pressable>
 
         {/* ── SESIÓN DESTACADA ── */}
