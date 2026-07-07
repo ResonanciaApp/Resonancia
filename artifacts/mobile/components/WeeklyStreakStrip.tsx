@@ -351,8 +351,9 @@ const styles = StyleSheet.create({
   },
   dayLabel: {
     color: MUTED,
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: "600",
+    marginTop: -2,
   },
   dayLabelToday: {
     color: TEXT,
