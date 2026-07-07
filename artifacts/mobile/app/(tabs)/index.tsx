@@ -1407,6 +1407,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 34,
     justifyContent: "center",
+    position: "relative",
   },
   headerRowLayer: {
     position: "absolute",
