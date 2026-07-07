@@ -134,7 +134,7 @@ export function WeeklyStreakStrip() {
   const { theme } = useSceneTheme();
 
   const streakBorderColor = useMemo(
-    () => brightenHex(theme.gradient[0], 10),
+    () => brightenHex(theme.gradient[0], 40),
     [theme.gradient[0]]
   );
 
@@ -207,7 +207,7 @@ export function WeeklyStreakStrip() {
                 <View style={[
                   styles.circle,
                   styles.circleInactive,
-                  isToday && [styles.circleToday, { borderColor: streakBorderColor }],
+                  isToday && styles.circleToday,
                 ]} />
               )}
               <Text style={[styles.dayLabel, isToday && styles.dayLabelToday]}>{label}</Text>
