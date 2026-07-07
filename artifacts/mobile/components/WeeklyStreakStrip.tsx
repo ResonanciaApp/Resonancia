@@ -211,7 +211,7 @@ export function WeeklyStreakStrip() {
                     <Circle
                       cx={21} cy={21} r={19}
                       stroke={`url(#sg${i})`}
-                      strokeWidth={3}
+                      strokeWidth={2}
                       fill="rgba(255,255,255,0.08)"
                     />
                   </Svg>
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   },
   dayLabel: {
     color: MUTED,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "600",
   },
   dayLabelToday: {
