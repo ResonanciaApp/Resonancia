@@ -188,6 +188,7 @@ export function WeeklyStreakStrip() {
           elevation: 12,
         }]}
       >
+        <View style={[StyleSheet.absoluteFill, { borderRadius: (RING_SIZE + 18) / 2, backgroundColor: "rgba(0,0,0,0.15)" }]} />
         <Svg width={RING_SIZE} height={RING_SIZE}>
           <Circle
             cx={RING_SIZE / 2}
