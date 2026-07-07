@@ -168,7 +168,9 @@ const PillTab = memo(function PillTab({
       onPress={onPress}
       style={[
         styles.pillTab,
-        !sel && { backgroundColor: "rgba(0,0,0,0.14)", borderColor: "rgba(255,255,255,0.1)" },
+        sel
+          ? { borderWidth: 2, borderColor: "transparent" }
+          : { borderWidth: 2, backgroundColor: "rgba(0,0,0,0.14)", borderColor: "rgba(255,255,255,0.1)" },
       ]}
     >
       <LinearGradient
