@@ -34,7 +34,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { VolumeSlider } from "@/components/VolumeSlider";
 import { AMBIENT_SCENES, useAmbientPlayer, type SceneId } from "@/context/AmbientPlayerContext";
-import { useSceneTheme } from "@/context/SceneThemeContext";
+import { SceneThemeTransitionOverlay, useSceneTheme } from "@/context/SceneThemeContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 
 const SCREEN_W = Dimensions.get("window").width;
@@ -358,14 +358,16 @@ export function EscenasSheet() {
               style={({ pressed }) => [styles.ctaBtn, { opacity: pressed ? 0.82 : 1 }]}
               onPress={() => handleConfirmScene(previewScene.id)}
             >
-              {previewScene.id === currentScene.id && (
-                <Feather name="check" size={15} color="#3A3A3A" style={{ marginRight: 6 }} />
-              )}
               <Text style={styles.ctaBtnText}>Elegir escena</Text>
             </Pressable>
           </View>
         </Animated.View>
       )}
+
+      {/* Overlay de transición de tema — debe estar dentro del Modal para
+          ser visible sobre el sheet (los Modals renderizan sobre el árbol
+          principal donde vive SceneThemeTransitionOverlay del _layout). */}
+      <SceneThemeTransitionOverlay />
     </Modal>
   );
 }
