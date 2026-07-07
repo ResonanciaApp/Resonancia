@@ -477,7 +477,7 @@ const styles = StyleSheet.create({
 
   profileCard: { marginHorizontal: H_PAD, marginTop: 28, paddingBottom: 14, gap: 8, alignItems: "center" },
   profileTitle: { fontSize: 27, fontWeight: "800", color: TEXT, letterSpacing: 0.3 },
-  profileDesc: { fontSize: 11, color: "rgba(255,255,255,0.90)", lineHeight: 16, textAlign: "center", maxWidth: 280, marginTop: 3, marginBottom: 28 },
+  profileDesc: { fontSize: 12, color: "rgba(255,255,255,0.90)", lineHeight: 17, textAlign: "center", maxWidth: 280, marginTop: 3, marginBottom: 28 },
 
   dividerLine: { height: 0 },
   dividerShadow: { height: 12, marginTop: 0 },
