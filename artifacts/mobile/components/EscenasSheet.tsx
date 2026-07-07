@@ -27,6 +27,7 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   View,
 } from "react-native";
@@ -73,6 +74,7 @@ export function EscenasSheet() {
   } = useAmbientPlayer();
 
   const [timerOpen, setTimerOpen] = useState(false);
+  const [videoEnabled, setVideoEnabled] = useState(false);
   // ID de la escena CONFIRMADA (la que muestra el borde blanco en el carrusel).
   // Se actualiza solo cuando el usuario presiona "Elegir escena", NO al abrir el preview.
   const [confirmedSceneId, setConfirmedSceneId] = useState<SceneId>(currentScene.id);
@@ -234,25 +236,31 @@ export function EscenasSheet() {
 
           {/* Volumen */}
           <View style={styles.volumeRow}>
-            <Feather name="volume-1" size={16} color="rgba(255,255,255,0.55)" />
-            <View style={styles.sliderWrap}>
-              <VolumeSlider
-                value={volume}
-                onChange={setVolume}
-                color="#FFFFFF"
-                trackColor="rgba(255,255,255,0.6)"
-                thickness={7}
-                showThumb={false}
-                fillOpacity={1}
-              />
+            <View style={styles.volumeLabelGroup}>
+              <MaterialCommunityIcons name="spa" size={17} color="rgba(255,255,255,0.65)" style={styles.controlIcon} />
+              <Text style={styles.controlLabel}>Volumen de la escena</Text>
             </View>
-            <Feather name="volume-2" size={16} color="rgba(255,255,255,0.55)" />
+            <View style={styles.sliderGroup}>
+              <Feather name="volume-x" size={13} color="rgba(255,255,255,0.45)" />
+              <View style={styles.sliderWrap}>
+                <VolumeSlider
+                  value={volume}
+                  onChange={setVolume}
+                  color="#FFFFFF"
+                  trackColor="rgba(255,255,255,0.6)"
+                  thickness={7}
+                  showThumb={false}
+                  fillOpacity={1}
+                />
+              </View>
+              <Feather name="volume-2" size={13} color="rgba(255,255,255,0.45)" />
+            </View>
           </View>
 
           {/* Timer */}
           <Pressable style={styles.controlRow} onPress={() => setTimerOpen((v) => !v)}>
             <Feather name="clock" size={17} color="rgba(255,255,255,0.65)" style={styles.controlIcon} />
-            <Text style={styles.controlLabel}>Reproducir fuera de la aplicación</Text>
+            <Text style={styles.controlLabel}>Reproducir sonidos fuera de la aplicación</Text>
             <View style={styles.timerTrigger}>
               <Text style={styles.timerTriggerLabel}>
                 {(
@@ -292,6 +300,19 @@ export function EscenasSheet() {
               })}
             </View>
           )}
+
+          {/* Video de la escena */}
+          <View style={styles.controlRow}>
+            <Feather name="video" size={17} color="rgba(255,255,255,0.65)" style={styles.controlIcon} />
+            <Text style={styles.controlLabel}>Reproducir videos de la escena</Text>
+            <Switch
+              value={videoEnabled}
+              onValueChange={setVideoEnabled}
+              trackColor={{ false: "rgba(255,255,255,0.18)", true: "#D4AF37" }}
+              thumbColor="#FFFFFF"
+              ios_backgroundColor="rgba(255,255,255,0.18)"
+            />
+          </View>
 
           <View style={styles.divider} />
 
@@ -418,8 +439,19 @@ const styles = StyleSheet.create({
   volumeRow: {
     flexDirection: "row",
     alignItems: "center",
+    paddingVertical: 10,
     gap: 10,
-    marginBottom: 16,
+  },
+  volumeLabelGroup: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  sliderGroup: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
   },
   sliderWrap: { flex: 1 },
   controlRow: {
