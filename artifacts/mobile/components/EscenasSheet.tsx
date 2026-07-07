@@ -357,23 +357,26 @@ export function EscenasSheet() {
                   onPress={() => handleOpenPreview(scene)}
                 >
                   <Animated.View
-                    style={[
-                      styles.card,
-                      {
-                        borderWidth: 2,
-                        borderColor: borderAnims[scene.id].interpolate({
-                          inputRange: [0, 1],
-                          outputRange: ["rgba(255,255,255,0)", "rgba(255,255,255,0.7)"],
-                        }),
-                      },
-                      { transform: [{ scale: scaleAnims[scene.id] }] },
-                    ]}
+                    style={{ transform: [{ scale: scaleAnims[scene.id] }] }}
                   >
-                    <Image
-                      source={scene.image}
-                      style={StyleSheet.absoluteFill}
-                      contentFit="cover"
-                    />
+                    <Animated.View
+                      style={[
+                        styles.card,
+                        {
+                          borderWidth: 2,
+                          borderColor: borderAnims[scene.id].interpolate({
+                            inputRange: [0, 1],
+                            outputRange: ["rgba(255,255,255,0)", "rgba(255,255,255,0.7)"],
+                          }),
+                        },
+                      ]}
+                    >
+                      <Image
+                        source={scene.image}
+                        style={StyleSheet.absoluteFill}
+                        contentFit="cover"
+                      />
+                    </Animated.View>
                   </Animated.View>
                   <Text
                     style={[styles.cardLabel, active && styles.cardLabelActive]}
