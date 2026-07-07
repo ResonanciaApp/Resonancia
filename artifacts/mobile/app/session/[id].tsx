@@ -1034,8 +1034,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     gap: 6,
-    marginTop: 27,
-    marginBottom: -26,
+    marginTop: 17,
+    marginBottom: -16,
   },
   playsText: {
     fontSize: 12,
