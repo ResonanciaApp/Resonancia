@@ -247,9 +247,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 12,
   },
-  feedCaption: { fontSize: 13, flex: 1, marginRight: 12 },
-  feedTitle: { fontSize: 18, fontWeight: "700", lineHeight: 24, marginTop: 6 },
-  feedAuthor: { fontSize: 13, marginTop: 4 },
+  feedCaption: { fontSize: 11, flex: 1, marginRight: 12 },
+  feedTitle: { fontSize: 13, fontWeight: "700", lineHeight: 18, marginTop: 6 },
+  feedAuthor: { fontSize: 11, marginTop: 4 },
 
   playOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
   playCircle: {
