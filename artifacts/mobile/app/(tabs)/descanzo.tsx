@@ -66,7 +66,7 @@ function SleepPill({
       style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
     >
       <Animated.View style={[styles.sleepPill, { backgroundColor: bgColor, borderColor, borderWidth: 2 }]}>
-        <Animated.Text style={[styles.sleepPillText, { color: textColor }]} numberOfLines={1}>
+        <Animated.Text style={[styles.sleepPillText, { color: textColor, fontWeight: sel ? "500" : "600" }]} numberOfLines={1}>
           {label}
         </Animated.Text>
       </Animated.View>

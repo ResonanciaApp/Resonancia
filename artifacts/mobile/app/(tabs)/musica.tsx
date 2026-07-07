@@ -168,7 +168,7 @@ const PillTab = memo(function PillTab({
       onPress={onPress}
       style={[
         styles.pillTab,
-        !sel && { backgroundColor: "rgba(0,0,0,0.14)", borderWidth: 2, borderColor: "rgba(255,255,255,0.1)" },
+        !sel && { backgroundColor: "rgba(0,0,0,0.14)", borderColor: "rgba(255,255,255,0.1)" },
       ]}
     >
       <LinearGradient
@@ -331,7 +331,7 @@ const BpmSelector = memo(function BpmSelector({ selected, locked, onSelect }: Bp
                   end={{ x: 0, y: 1 }}
                   style={bpmStyles.chipGrad}
                 >
-                  <Text style={[bpmStyles.chipLabel, { color: "#1A1500", fontWeight: "800" }]}>{bpm}</Text>
+                  <Text style={[bpmStyles.chipLabel, { color: "#1A1500" }]}>{bpm}</Text>
                   <Text style={[bpmStyles.chipUnit,  { color: "rgba(26,21,0,0.65)" }]}>BPM</Text>
                 </LinearGradient>
               ) : (
@@ -944,7 +944,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
     gap: 5,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "rgba(244,218,213,0.2)",
   },
   pillTabBorder: {

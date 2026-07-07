@@ -177,7 +177,6 @@ export default function VideoTabScreen() {
                       {
                         backgroundColor: sel ? colors.primary : "rgba(0,0,0,0.14)",
                         borderColor: sel ? colors.primary : CHIP_BORDER,
-                        borderWidth: sel ? StyleSheet.hairlineWidth : 2,
                       },
                     ]}
                   >
@@ -339,7 +338,7 @@ const styles = StyleSheet.create({
   chipsRow: { gap: 8 },
   chip: {
     borderRadius: 20,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: 1,
     paddingHorizontal: 12,
     height: 34,
     alignItems: "center",

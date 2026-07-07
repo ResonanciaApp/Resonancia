@@ -1429,7 +1429,7 @@ const styles = StyleSheet.create({
     borderColor: "#F4F4F4",
   },
   pillText: { fontSize: 11, fontWeight: "600", color: "#F4F4F4" },
-  pillTextSel: { color: "#1B060F" },
+  pillTextSel: { color: "#1B060F", fontWeight: "500" },
 
   comingSoonWrap: {
     flex: 1,
