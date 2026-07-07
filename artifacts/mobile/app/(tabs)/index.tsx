@@ -802,12 +802,11 @@ export default function HomeScreen2() {
 
         {/* ── EXPLORA POR CONTENIDO ── */}
         <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
-          <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Explora por contenido</Text>
           <View style={{ flexDirection: "row", gap: 10 }}>
             {[
-              { id: "meditaciones-guiadas", label: "Meditaciones", icon: <MaterialCommunityIcons name="meditation" size={21} color="#e8e8e8" /> },
-              { id: "sonidos-ancestrales", label: "Sesiones",      icon: <MaterialCommunityIcons name="waves" size={21} color="#e8e8e8" /> },
-              { id: "musica-sonidos",       label: "Música",        icon: <Ionicons name="musical-notes-outline" size={21} color="#e8e8e8" /> },
+              { id: "meditaciones-guiadas", label: "Meditaciones", icon: <MaterialCommunityIcons name="meditation" size={21} color="#BE8744" /> },
+              { id: "sonidos-ancestrales", label: "Sesiones",      icon: <MaterialCommunityIcons name="waves" size={21} color="#BE8744" /> },
+              { id: "musica-sonidos",       label: "Música",        icon: <Ionicons name="musical-notes-outline" size={21} color="#BE8744" /> },
             ].map((c) => (
               <Pressable
                 key={c.id}
