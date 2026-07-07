@@ -883,8 +883,8 @@ const styles = StyleSheet.create({
 
   // Description
   description: {
-    fontSize: 12,
-    lineHeight: 20,
+    fontSize: 13,
+    lineHeight: 21,
     marginTop: 30,
     marginBottom: 24,
     textAlign: "left",
@@ -1086,7 +1086,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   playsText: {
-    fontSize: 13,
+    fontSize: 12,
     color: "#BE8744",
   },
 
