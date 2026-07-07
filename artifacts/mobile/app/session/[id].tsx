@@ -38,6 +38,8 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { hexToRgba } from "@/utils/color";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
+import { BackPill } from "@/components/BackPill";
+import { GhostPill } from "@/components/GhostPill";
 
 const { width } = Dimensions.get("window");
 const HEADER_H = 343;
@@ -307,9 +309,9 @@ export default function SessionDetailScreen() {
         <View style={[styles.hero, { height: HEADER_H }]}>
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
-            <View style={styles.pillBorder}>
-              <GlowPill onPress={() => router.back()} pillStyle={styles.heroBackPill} bgColor={hexToRgba(sceneTheme.gradient[1], 0.7)} />
-            </View>
+            <GhostPill noBorder style={{ backgroundColor: hexToRgba(sceneTheme.gradient[1], 0.7) }}>
+              <BackPill onPress={() => router.back()} />
+            </GhostPill>
             <Pressable onPress={handleInstagramShare} hitSlop={10} style={({ pressed }) => [styles.igBtn, { opacity: pressed ? 0.6 : 1 }]}>
               <FontAwesome name="instagram" size={20} color="#e8e8e8" />
             </Pressable>
@@ -564,9 +566,9 @@ export default function SessionDetailScreen() {
         pointerEvents="box-none"
         style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: stickyHeaderColor }]}
       >
-        <View style={styles.pillBorder}>
-          <GlowPill onPress={() => router.back()} pillStyle={styles.stickyBackPill} bgColor={hexToRgba(sceneTheme.gradient[1], 0.4)} />
-        </View>
+        <GhostPill noBorder style={{ backgroundColor: hexToRgba(sceneTheme.gradient[1], 0.4) }}>
+          <BackPill onPress={() => router.back()} />
+        </GhostPill>
         <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
         <View style={{ width: 36 }} />
       </Animated.View>
