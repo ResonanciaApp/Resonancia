@@ -789,7 +789,7 @@ export default function HomeScreen2() {
               textAlign: "center",
               fontSize: 12,
               color: "rgba(255,255,255,0.6)",
-              marginTop: -14,
+              marginTop: -24,
               paddingBottom: 8,
               letterSpacing: 0.25,
             }}
