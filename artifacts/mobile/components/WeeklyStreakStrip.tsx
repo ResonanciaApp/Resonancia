@@ -38,7 +38,7 @@ const STREAK_MESSAGES: Record<number, StreakMessage> = {
     body: "Todavía no completaste ninguna sesión.\nElige una y da el primer paso.",
   },
   1: {
-    highlight: "Excelente comienzo.",
+    highlight: "¡Excelente comienzo!",
     body: "Ya llevas un día conectado contigo.",
   },
   2: {
@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
     marginTop: 7,
   },
   messageHighlight: {
-    color: GOLD,
+    color: "rgba(255,255,255,0.90)",
     fontSize: 14,
     fontWeight: "700",
     textAlign: "center",
