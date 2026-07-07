@@ -104,7 +104,7 @@ export function SceneThemeProvider({
     // Fade out overlay → new theme becomes visible
     Animated.timing(overlayOpacity, {
       toValue: 0,
-      duration: 450,
+      duration: 400,
       useNativeDriver: true,
     }).start(() => setOverlayColors(null));
   }, [activeSceneId, overlayOpacity]);

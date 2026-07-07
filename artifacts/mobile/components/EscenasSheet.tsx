@@ -73,6 +73,9 @@ export function EscenasSheet() {
   } = useAmbientPlayer();
 
   const [timerOpen, setTimerOpen] = useState(false);
+  // ID de la escena CONFIRMADA (la que muestra el borde blanco en el carrusel).
+  // Se actualiza solo cuando el usuario presiona "Elegir escena", NO al abrir el preview.
+  const [confirmedSceneId, setConfirmedSceneId] = useState<SceneId>(currentScene.id);
   const timerMinutes =
     sleepTimerRemaining == null
       ? null
@@ -92,6 +95,8 @@ export function EscenasSheet() {
         easing: easeOutCubic,
         useNativeDriver: true,
       }).start();
+      // Sincronizar el borde con la escena activa al abrir
+      setConfirmedSceneId(currentScene.id);
     } else {
       sheetEnterY.setValue(SCREEN_H);
       setTimerOpen(false);
@@ -175,10 +180,10 @@ export function EscenasSheet() {
   };
 
   const handleConfirmScene = (id: SceneId) => {
+    setConfirmedSceneId(id);
     closePreviewAnimated(() => {
-      // Volver al listado → aplicar fade del tema → auto-cerrar sheet
+      // Volver al listado → aplicar fade del tema (el sheet queda abierto)
       setActiveSceneWithFade(id);
-      setTimeout(() => closeSheet(), 900);
     });
   };
 
@@ -280,7 +285,7 @@ export function EscenasSheet() {
             snapToAlignment="start"
           >
             {AMBIENT_SCENES.map((scene) => {
-              const active = scene.id === currentScene.id;
+              const active = scene.id === confirmedSceneId;
               return (
                 <Pressable
                   key={scene.id}
