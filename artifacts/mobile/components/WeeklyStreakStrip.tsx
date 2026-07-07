@@ -19,6 +19,45 @@ const GOAL_MINUTES = 5;
 
 const DAY_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
 
+type StreakMessage = {
+  highlight?: string;
+  body: string;
+};
+
+const STREAK_MESSAGES: Record<number, StreakMessage> = {
+  0: {
+    body: "Todavía no completaste ninguna sesión.\nElige una y da el primer paso.",
+  },
+  1: {
+    highlight: "Excelente comienzo.",
+    body: "Ya llevas un día conectado contigo.\nMañana continúa tu racha.",
+  },
+  2: {
+    highlight: "¡Dos días seguidos!",
+    body: "Estás construyendo un hábito.\nSigue así mañana también.",
+  },
+  3: {
+    highlight: "Tres días de presencia.",
+    body: "Ya estás en ritmo. La constancia\nes la base de todo cambio.",
+  },
+  4: {
+    highlight: "¡A mitad de la semana!",
+    body: "Cuatro días de conexión contigo.\nEl hábito ya está tomando forma.",
+  },
+  5: {
+    highlight: "Cinco días — ¡increíble!",
+    body: "Tu mente y tu cuerpo lo agradecen.\nQueda poco para completar la semana.",
+  },
+  6: {
+    highlight: "Casi una semana completa.",
+    body: "Solo falta un día.\nVas a lograrlo, ¡no pares ahora!",
+  },
+  7: {
+    highlight: "¡Semana completa! 🌟",
+    body: "Completaste los 7 días de esta semana.\nEso es dedicación de verdad.",
+  },
+};
+
 function dayKey(d: Date): string {
   return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 }
@@ -64,11 +103,7 @@ export function WeeklyStreakStrip() {
   }, [statEvents]);
 
   const dashOffset = CIRCUMFERENCE * (1 - activeCount / 7);
-
-  const message =
-    activeCount === 0
-      ? "Todavía no completaste ninguna sesión.\nElije una y da el primer paso."
-      : `¡Muy bien! Usaste Resonancia ${activeCount} día${activeCount !== 1 ? "s" : ""} esta semana. ¡Continúa así!`;
+  const msg = STREAK_MESSAGES[activeCount] ?? STREAK_MESSAGES[0];
 
   return (
     <View style={styles.card}>
@@ -125,7 +160,13 @@ export function WeeklyStreakStrip() {
         })}
       </View>
 
-      <Text style={styles.message}>{message}</Text>
+      {/* Mensaje por cantidad de días */}
+      <View style={styles.messageWrap}>
+        {msg.highlight != null && (
+          <Text style={styles.messageHighlight}>{msg.highlight}</Text>
+        )}
+        <Text style={styles.message}>{msg.body}</Text>
+      </View>
     </View>
   );
 }
@@ -198,6 +239,17 @@ const styles = StyleSheet.create({
   },
   dayLabelToday: {
     color: TEXT,
+  },
+  messageWrap: {
+    alignItems: "center",
+    gap: 3,
+  },
+  messageHighlight: {
+    color: GOLD,
+    fontSize: 14,
+    fontWeight: "700",
+    textAlign: "center",
+    letterSpacing: 0.2,
   },
   message: {
     color: TEXT,
