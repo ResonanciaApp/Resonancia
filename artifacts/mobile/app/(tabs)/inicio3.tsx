@@ -790,9 +790,7 @@ export default function HomeScreen2() {
               borderColor: "rgba(255,255,255,0.04)",
             }]}
           >
-            <View style={styles.resBannerCircle1} />
-            <View style={styles.resBannerCircle2} />
-            <View style={styles.resonadoresBannerInner}>
+            <View style={[styles.resonadoresBannerInner, { justifyContent: "space-between" }]}>
               <LinearGradient
                 colors={["rgba(247,203,107,0.5)", "rgba(251,169,128,0.5)"]}
                 start={{ x: 0, y: 0 }}
@@ -805,11 +803,13 @@ export default function HomeScreen2() {
                   contentFit="contain"
                 />
               </LinearGradient>
-              <View style={styles.resonadoresBannerContent}>
-                <Text style={styles.resonadoresBannerTitle}>Resonadores</Text>
-                <Text style={styles.resonadoresBannerSub}>Únete a la comunidad</Text>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                <View style={styles.resonadoresBannerContent}>
+                  <Text style={styles.resonadoresBannerTitle}>Resonadores</Text>
+                  <Text style={styles.resonadoresBannerSub}>Únete a la comunidad</Text>
+                </View>
+                <Feather name="chevron-right" size={20} color="rgba(232,232,232,0.7)" />
               </View>
-              <Feather name="chevron-right" size={20} color="rgba(232,232,232,0.7)" style={styles.resonadoresBannerChevron} />
             </View>
           </View>
         </Pressable>
