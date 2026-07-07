@@ -498,15 +498,6 @@ export default function SessionDetailScreen() {
                 ))}
               </View>
 
-              {/* ── Adéntrate más ─────────────────────────────────────────── */}
-              <Pressable
-                onPress={() => router.push(`/category/${session.categoryId}` as never)}
-                style={({ pressed }) => [styles.exploreCatBtn, { opacity: pressed ? 0.8 : 1 }]}
-              >
-                <Feather name="layers" size={18} color="#BE8744" />
-                <Text style={styles.exploreCatLabel}>Adéntrate más</Text>
-                <Feather name="chevron-right" size={16} color="rgba(255,255,255,0.4)" style={{ marginLeft: "auto" }} />
-              </Pressable>
             </View>
           )}
         </View>
@@ -926,23 +917,6 @@ const styles = StyleSheet.create({
   relatedAuthorRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   relatedAuthorAvatar: { width: 18, height: 18, borderRadius: 9 },
   relatedCardSub: { fontSize: 12 },
-  exploreCatBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    backgroundColor: "#210911",
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    marginTop: 18,
-  },
-  exploreCatLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#e8e8e8",
-    lineHeight: 18,
-  },
-
   // Sticky header
   stickyHeader: {
     position: "absolute",
