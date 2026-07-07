@@ -340,6 +340,7 @@ const styles = StyleSheet.create({
     height: 42,
     alignItems: "center",
     justifyContent: "center",
+    marginTop: 4,
   },
   circleInactive: {
     backgroundColor: "rgba(255,255,255,0.08)",
@@ -348,7 +349,8 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    marginVertical: 1,
+    marginTop: 5,
+    marginBottom: 1,
   },
   circleToday: {
     backgroundColor: "rgba(255,255,255,0.064)",
