@@ -1165,7 +1165,7 @@ export default function HomeScreen2() {
 
         {/* ── 8. MURO DE AGRADECIMIENTOS ── */}
         <View style={styles.sectionDivider} />
-        <View style={{ marginBottom: SECTION_GAP }}>
+        <View style={{ marginBottom: SECTION_GAP, marginTop: -25 }}>
           <AlmaCommunitySection />
         </View>
 
