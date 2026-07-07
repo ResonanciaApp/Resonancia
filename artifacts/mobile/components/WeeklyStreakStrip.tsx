@@ -171,9 +171,9 @@ export function WeeklyStreakStrip() {
     <View style={styles.card}>
       {/* Anillo de progreso */}
       <View style={[styles.ringWrap, {
-        width: RING_SIZE + 14,
-        height: RING_SIZE + 14,
-        borderRadius: (RING_SIZE + 14) / 2,
+        width: RING_SIZE + 18,
+        height: RING_SIZE + 18,
+        borderRadius: (RING_SIZE + 18) / 2,
         backgroundColor: hexToRgba(theme.gradient[1], 0.14),
         borderWidth: 1,
         borderColor: hexToRgba(theme.gradient[1], 0.19),
