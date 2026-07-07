@@ -830,7 +830,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   sleepPillText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.1,
   },
