@@ -243,6 +243,7 @@ const styles = StyleSheet.create({
   messageWrap: {
     alignItems: "center",
     gap: 3,
+    marginTop: 7,
   },
   messageHighlight: {
     color: GOLD,
