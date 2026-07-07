@@ -686,7 +686,7 @@ export default function HomeScreen2() {
         pointerEvents="none"
       >
         <ExpoImage
-          source={require("@/assets/images/inicio3-backdrop.jpg")}
+          source={AMBIENT_SCENES[activeSceneId].image}
           style={StyleSheet.absoluteFill}
           contentFit="cover"
         />
