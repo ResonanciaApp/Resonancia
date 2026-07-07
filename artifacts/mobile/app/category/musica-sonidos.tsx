@@ -437,7 +437,7 @@ export default function MusicaSonidosScreen() {
 
       {/* ── Sticky header (aparece con scroll) ── */}
       <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"} onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}>
-        <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.7) }}>
+        <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.4) }}>
           <BackPill onPress={() => router.back()} />
         </GhostPill>
         <Text style={styles.headerTitle}>Música</Text>
