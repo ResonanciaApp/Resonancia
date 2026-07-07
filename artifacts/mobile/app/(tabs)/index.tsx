@@ -1350,10 +1350,12 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   universeBtn: {
-    width: 47,
-    height: 47,
-    borderRadius: 23.5,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.035)",
   },
   universeBtnBg: {
     width: "100%",
@@ -1379,8 +1381,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   giftBtnIcon: {
-    width: 35,
-    height: 35,
+    width: 40,
+    height: 40,
     marginLeft: 1,
   },
   universeBtnIcon: {
