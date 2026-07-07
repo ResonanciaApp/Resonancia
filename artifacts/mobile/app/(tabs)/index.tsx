@@ -765,7 +765,7 @@ export default function HomeScreen2() {
               hitSlop={8}
               style={({ pressed }) => [styles.searchBtn, { opacity: pressed ? 0.6 : 1 }]}
             >
-              <Ionicons name={searchOpen ? "close" : "search"} size={searchOpen ? 20 : 22} color="#FFFFFF" style={{ opacity: 0.9 }} />
+              <Ionicons name={searchOpen ? "close" : "search"} size={searchOpen ? 25 : 27} color="#FFFFFF" style={{ opacity: 0.9 }} />
             </Pressable>
           </Animated.View>
         </View>
