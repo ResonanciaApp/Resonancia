@@ -41,8 +41,8 @@ const SHIMMER_COLORS = [
 
 const { height: SCREEN_H } = Dimensions.get("window");
 
-// Cuánto tarda el slide nativo del Modal en completarse (aprox.)
-const MODAL_SLIDE_MS = 250;
+// Sin animación nativa — usamos fade propio del contenedor (instantáneo al tap)
+const MODAL_SLIDE_MS = 0;
 // Pausa visible después de que la ventana haya subido (= cuándo arranca la tarjeta)
 const POST_OPEN_DELAY = 800;
 // Delay total antes del primer elemento
@@ -65,6 +65,9 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
 
+  // Fade rápido de toda la ventana (reemplaza animationType nativo)
+  const containerOpacity = useRef(new Animated.Value(0)).current;
+
   // Cuatro animaciones independientes: tarjeta, título, descripción, botón
   const cardOpacity  = useRef(new Animated.Value(0)).current;
   const cardTransY   = useRef(new Animated.Value(35)).current;
@@ -80,6 +83,7 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
   const toastOpacity = useRef(new Animated.Value(0)).current;
 
   const resetAnim = () => {
+    containerOpacity.setValue(0);
     cardOpacity.setValue(0);  cardTransY.setValue(35);
     titleOpacity.setValue(0); titleTransY.setValue(35);
     descOpacity.setValue(0);  descTransY.setValue(35);
@@ -100,6 +104,10 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
   useEffect(() => {
     if (visible) {
       resetAnim();
+      // Fade rápido de la ventana completa (150 ms)
+      Animated.timing(containerOpacity, {
+        toValue: 1, duration: 150, easing: Easing.out(Easing.quad), useNativeDriver: true,
+      }).start();
       // Stagger: tarjeta → título → descripción → botón
       fadeSlide(cardOpacity,  cardTransY,  BASE_DELAY).start();
       fadeSlide(titleOpacity, titleTransY, BASE_DELAY + STAGGER).start();
@@ -162,12 +170,12 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
     <Modal
       visible={visible}
       transparent={false}
-      animationType="fade"
+      animationType="none"
       presentationStyle="pageSheet"
       statusBarTranslucent
       onRequestClose={dismiss}
     >
-      <View style={styles.sheet}>
+      <Animated.View style={[styles.sheet, { opacity: containerOpacity }]}>
         {/* Fondo: degradado del tema activo */}
         <LinearGradient
           colors={theme.gradient}
@@ -281,7 +289,7 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
             <Text style={styles.toastText}>Enlace copiado</Text>
           </Animated.View>
         )}
-      </View>
+      </Animated.View>
     </Modal>
   );
 }
