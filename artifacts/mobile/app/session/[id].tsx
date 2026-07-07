@@ -296,7 +296,7 @@ export default function SessionDetailScreen() {
       }));
 
   return (
-    <View style={[styles.root, { backgroundColor: catBg.solid }]}>
+    <View style={[styles.root, { backgroundColor: sceneTheme.gradient[0] }]}>
       {/* ── Imagen backdrop — se desvanece con scroll ─────────────────────── */}
       <Animated.View
         pointerEvents="none"
