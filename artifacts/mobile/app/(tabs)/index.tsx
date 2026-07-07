@@ -818,26 +818,6 @@ export default function HomeScreen2() {
           updateStickyActive();
         }}
       >
-        {/* ── INTENCIÓN ── */}
-        <Pressable
-          onPress={handleIntentionPress}
-          style={({ pressed }) => [styles.intencionWrap, { opacity: pressed ? 0.7 : 1 }]}
-        >
-          <Text style={styles.intencionSuper}>Hoy voy a…</Text>
-          <View style={styles.intencionRow}>
-            <Animated.View style={[styles.intencionCursor, { opacity: cursorOpacity }]} />
-            {currentIntencion ? (
-              <Text style={styles.intencionText} numberOfLines={3}>
-                {currentIntencion}
-              </Text>
-            ) : (
-              <Text style={styles.intencionPlaceholder}>
-                Establece tu intención aquí
-              </Text>
-            )}
-          </View>
-        </Pressable>
-
         {/* ── Racha semanal ── */}
         <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: -85 }}>
           <WeeklyStreakStrip />
@@ -952,6 +932,26 @@ export default function HomeScreen2() {
             ))}
           </View>
         </View>
+
+        {/* ── INTENCIÓN ── */}
+        <Pressable
+          onPress={handleIntentionPress}
+          style={({ pressed }) => [styles.intencionWrap, { opacity: pressed ? 0.7 : 1 }]}
+        >
+          <Text style={styles.intencionSuper}>Hoy voy a…</Text>
+          <View style={styles.intencionRow}>
+            <Animated.View style={[styles.intencionCursor, { opacity: cursorOpacity }]} />
+            {currentIntencion ? (
+              <Text style={styles.intencionText} numberOfLines={3}>
+                {currentIntencion}
+              </Text>
+            ) : (
+              <Text style={styles.intencionPlaceholder}>
+                Establece tu intención aquí
+              </Text>
+            )}
+          </View>
+        </Pressable>
 
         {/* ── 1. COLECCIONES (Rituales) ── */}
         {filteredPlaylists.length > 0 && (
