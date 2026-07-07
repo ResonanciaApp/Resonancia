@@ -123,6 +123,23 @@ export function EscenasSheet() {
     Object.fromEntries(AMBIENT_SCENES.map((s) => [s.id, new Animated.Value(1)])),
   ).current;
 
+  // ── Per-card border fade animations ───────────────────────────────────────
+  const borderAnims = useRef<Record<string, Animated.Value>>(
+    Object.fromEntries(
+      AMBIENT_SCENES.map((s) => [s.id, new Animated.Value(s.id === currentScene.id ? 1 : 0)]),
+    ),
+  ).current;
+
+  useEffect(() => {
+    AMBIENT_SCENES.forEach((s) => {
+      Animated.timing(borderAnims[s.id], {
+        toValue: s.id === confirmedSceneId ? 1 : 0,
+        duration: 250,
+        useNativeDriver: false,
+      }).start();
+    });
+  }, [confirmedSceneId]);
+
   const handlePressIn = (id: SceneId) => {
     Animated.spring(scaleAnims[id], {
       toValue: 0.91,
@@ -342,7 +359,13 @@ export function EscenasSheet() {
                   <Animated.View
                     style={[
                       styles.card,
-                      active && styles.cardActive,
+                      {
+                        borderWidth: 2,
+                        borderColor: borderAnims[scene.id].interpolate({
+                          inputRange: [0, 1],
+                          outputRange: ["rgba(255,255,255,0)", "rgba(255,255,255,0.7)"],
+                        }),
+                      },
                       { transform: [{ scale: scaleAnims[scene.id] }] },
                     ]}
                   >
