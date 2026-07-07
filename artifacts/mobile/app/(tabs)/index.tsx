@@ -876,16 +876,16 @@ export default function HomeScreen2() {
           <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Explora por contenido</Text>
           <View style={{ flexDirection: "row", gap: 10 }}>
             {[
-              { id: "meditaciones-guiadas", label: "Meditaciones", icon: <MaterialCommunityIcons name="meditation" size={26} color="#e8e8e8" /> },
-              { id: "sonidos-ancestrales", label: "Sesiones",      icon: <MaterialCommunityIcons name="waves" size={26} color="#e8e8e8" /> },
-              { id: "musica-sonidos",       label: "Música",        icon: <Ionicons name="musical-notes-outline" size={26} color="#e8e8e8" /> },
+              { id: "meditaciones-guiadas", label: "Meditaciones", icon: <MaterialCommunityIcons name="meditation" size={21} color="#e8e8e8" /> },
+              { id: "sonidos-ancestrales", label: "Sesiones",      icon: <MaterialCommunityIcons name="waves" size={21} color="#e8e8e8" /> },
+              { id: "musica-sonidos",       label: "Música",        icon: <Ionicons name="musical-notes-outline" size={21} color="#e8e8e8" /> },
             ].map((c) => (
               <Pressable
                 key={c.id}
                 onPress={() => router.push(`/category/${c.id}` as never)}
                 style={({ pressed }) => [{
                   flex: 1,
-                  paddingVertical: 22,
+                  paddingVertical: 12,
                   gap: 10,
                   borderRadius: 14,
                   alignItems: "center",
