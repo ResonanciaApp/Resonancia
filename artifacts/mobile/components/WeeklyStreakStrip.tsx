@@ -201,7 +201,7 @@ export function WeeklyStreakStrip() {
             <View key={i} style={styles.dayCol}>
               {met ? (
                 <View style={styles.circleGradientBorder}>
-                  <Svg width={46} height={46} style={StyleSheet.absoluteFill}>
+                  <Svg width={44} height={44} style={StyleSheet.absoluteFill}>
                     <Defs>
                       <SvgLinearGradient id={`sg${i}`} x1="0.5" y1="0" x2="0.5" y2="1">
                         <Stop offset="0" stopColor={streakBorderColors[0]} />
@@ -209,7 +209,7 @@ export function WeeklyStreakStrip() {
                       </SvgLinearGradient>
                     </Defs>
                     <Circle
-                      cx={23} cy={23} r={21}
+                      cx={22} cy={22} r={20}
                       stroke={`url(#sg${i})`}
                       strokeWidth={2}
                       fill="rgba(255,255,255,0.08)"
@@ -283,15 +283,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   circle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     alignItems: "center",
     justifyContent: "center",
   },
   circleGradientBorder: {
-    width: 46,
-    height: 46,
+    width: 44,
+    height: 44,
     alignItems: "center",
     justifyContent: "center",
   },
