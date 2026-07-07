@@ -758,7 +758,7 @@ export default function HomeScreen2() {
               </View>
             </RAnimated.View>
             {!searchOpen && (
-              <Animated.View style={[styles.headerRowLayer, { justifyContent: "center", opacity: phraseAnim }]} pointerEvents="none">
+              <Animated.View style={[styles.headerRowLayer, { justifyContent: "center", opacity: phraseAnim, marginTop: 17 }]} pointerEvents="none">
                 <Text
                   style={{
                     textAlign: "center",
