@@ -1115,7 +1115,7 @@ export default function HomeScreen2() {
           }}
         >
           <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-            <View style={{ width: 44, height: 44, borderRadius: 22, overflow: "hidden" }}>
+            <View style={{ width: 49, height: 49, borderRadius: 24.5, overflow: "hidden" }}>
               <Image
                 source={require("@/assets/images/icons/regalo10.png")}
                 style={styles.giftBtnIcon}
