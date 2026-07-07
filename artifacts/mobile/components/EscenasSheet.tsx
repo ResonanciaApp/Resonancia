@@ -341,8 +341,8 @@ export function EscenasSheet() {
 
           {/* Top row */}
           <View style={[styles.previewTop, { paddingTop: Math.max(insets.top, 20) + 10 }]}>
-            <Pressable onPress={handleCancelPreview} hitSlop={14} style={styles.previewIconBtn}>
-              <Feather name="x" size={22} color="#FFF" />
+            <Pressable onPress={handleCancelPreview} hitSlop={10} style={styles.previewIconBtn}>
+              <Feather name="x" size={28} color="#FFF" />
             </Pressable>
             <Text style={styles.previewTitle}>{previewScene.label}</Text>
           </View>
@@ -350,29 +350,13 @@ export function EscenasSheet() {
           {/* CTA anclado al fondo */}
           <View style={[styles.previewBottom, { paddingBottom: insets.bottom + 32 }]}>
             <Pressable
-              style={({ pressed }) => [
-                styles.ctaBtn,
-                previewScene.id === currentScene.id && styles.ctaBtnActive,
-                { opacity: pressed ? 0.82 : 1 },
-              ]}
+              style={({ pressed }) => [styles.ctaBtn, { opacity: pressed ? 0.82 : 1 }]}
               onPress={() => handleConfirmScene(previewScene.id)}
             >
               {previewScene.id === currentScene.id && (
-                <Feather
-                  name="check"
-                  size={15}
-                  color={theme.gradient[0]}
-                  style={{ marginRight: 6 }}
-                />
+                <Feather name="check" size={15} color="#3A3A3A" style={{ marginRight: 6 }} />
               )}
-              <Text
-                style={[
-                  styles.ctaBtnText,
-                  previewScene.id === currentScene.id && { color: theme.gradient[0] },
-                ]}
-              >
-                {previewScene.id === currentScene.id ? "Escena activa" : "Elegir esta escena"}
-              </Text>
+              <Text style={styles.ctaBtnText}>Elegir escena</Text>
             </Pressable>
           </View>
         </Animated.View>
@@ -528,12 +512,12 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
   },
   previewIconBtn: {
-    width: 40,
-    height: 40,
+    width: 52,
+    height: 52,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.38)",
-    borderRadius: 20,
+    backgroundColor: "rgba(0,0,0,0.42)",
+    borderRadius: 26,
   },
   previewTitle: {
     flex: 1,
@@ -584,25 +568,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
-    borderRadius: 50,
-    paddingVertical: 16,
+    borderRadius: 100,
+    paddingVertical: 18,
     paddingHorizontal: 32,
     width: "100%",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.22,
-    shadowRadius: 10,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.28,
+    shadowRadius: 14,
+    elevation: 8,
   },
-  ctaBtnActive: {
-    backgroundColor: "rgba(255,255,255,0.1)",
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.55)",
-  },
+  ctaBtnActive: {},
   ctaBtnText: {
     fontSize: 16,
-    fontWeight: "700",
-    color: "#1A1A22",
-    letterSpacing: 0.2,
+    fontWeight: "600",
+    color: "#2D2D2D",
+    letterSpacing: 0.15,
   },
 });
