@@ -183,7 +183,7 @@ export default function VideoTabScreen() {
         </Animated.View>
 
         {/* Chips row — full-bleed */}
-        <View style={[styles.chipsWrap]}>
+        <View style={[styles.chipsWrap, { backgroundColor: activeTheme.gradient[0] }]}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
