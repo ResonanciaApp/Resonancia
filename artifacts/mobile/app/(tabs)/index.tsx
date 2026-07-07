@@ -291,7 +291,7 @@ export default function HomeScreen2() {
   const insets = useSafeAreaInsets();
   const { playSession, currentSession, isPlaying, pauseResume, history } = usePlayer();
   const { isPremium } = usePremium();
-  const { profile: userProfile } = useUserProfile();
+  const { username: profileUsername } = useUserProfile();
 
   function getGreeting(): string {
     const h = new Date().getHours();
@@ -299,8 +299,9 @@ export default function HomeScreen2() {
     if (h >= 12 && h < 19) return "Buenas tardes";
     return "Buenas noches";
   }
-  const greetingName = userProfile?.username ?? "";
-  const greetingText = greetingName ? `${getGreeting()}, ${greetingName}` : getGreeting();
+  const greetingText = profileUsername
+    ? `${getGreeting()}, ${profileUsername}`
+    : getGreeting();
   const { upcoming: upcomingLiveSessions } = useLiveSessions();
   const nextLiveSession = upcomingLiveSessions[0] ?? null;
   const { videos } = useVideos();
@@ -1214,12 +1215,13 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   greeting: {
-    color: "#F4DAD5",
-    fontSize: 22,
+    color: "rgba(255,255,255,0.88)",
+    fontSize: 16,
     fontWeight: "600",
     letterSpacing: 0.2,
-    marginBottom: 6,
-    marginTop: 4,
+    marginBottom: 4,
+    marginTop: 24,
+    textAlign: "center",
   },
   stickyHeaderBorder: {
     position: "absolute",
