@@ -175,6 +175,8 @@ export function WeeklyStreakStrip() {
         height: RING_SIZE + 22,
         borderRadius: (RING_SIZE + 22) / 2,
         backgroundColor: hexToRgba(theme.gradient[1], 0.14),
+        borderWidth: 1,
+        borderColor: hexToRgba(theme.gradient[1], 0.25),
         shadowColor: "#000000",
         shadowOffset: { width: 0, height: 6 },
         shadowOpacity: 0.72,
