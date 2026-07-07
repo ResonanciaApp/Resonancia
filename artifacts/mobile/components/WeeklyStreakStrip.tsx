@@ -303,7 +303,8 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "100%",
+    alignSelf: "stretch",
+    marginHorizontal: -14,
     marginTop: 6,
   },
   dayCol: {
