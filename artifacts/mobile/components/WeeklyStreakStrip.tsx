@@ -244,12 +244,25 @@ export function WeeklyStreakStrip() {
                   </Svg>
                   <Feather name="check" size={19} color="rgba(255,255,255,0.9)" />
                 </View>
+              ) : isToday ? (
+                <View style={styles.circleGradientBorder}>
+                  <Svg width={44} height={44} style={StyleSheet.absoluteFill}>
+                    <Defs>
+                      <SvgLinearGradient id={`sgToday`} x1="0.5" y1="0" x2="0.5" y2="1">
+                        <Stop offset="0" stopColor={streakBorderColors[0]} />
+                        <Stop offset="1" stopColor={streakBorderColors[1]} />
+                      </SvgLinearGradient>
+                    </Defs>
+                    <Circle
+                      cx={22} cy={22} r={20}
+                      stroke={`url(#sgToday)`}
+                      strokeWidth={2}
+                      fill="rgba(255,255,255,0.06)"
+                    />
+                  </Svg>
+                </View>
               ) : (
-                <View style={[
-                  styles.circle,
-                  styles.circleInactive,
-                  isToday && styles.circleToday,
-                ]} />
+                <View style={[styles.circle, styles.circleInactive]} />
               )}
               <Text style={[styles.dayLabel, isToday && styles.dayLabelToday]}>{label}</Text>
             </View>
@@ -275,6 +288,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     gap: 13,
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.55,
+    shadowRadius: 16,
+    elevation: 14,
   },
   ringWrap: {
     width: RING_SIZE,
