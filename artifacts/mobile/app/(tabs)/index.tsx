@@ -876,9 +876,9 @@ export default function HomeScreen2() {
           <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Explora por contenido</Text>
           <View style={{ flexDirection: "row", gap: 10 }}>
             {[
-              { id: "meditaciones-guiadas", label: "Meditaciones", icon: <MaterialCommunityIcons name="meditation" size={30} color="#e8e8e8" /> },
-              { id: "sonidos-ancestrales", label: "Sesiones",      icon: <MaterialCommunityIcons name="waves" size={30} color="#e8e8e8" /> },
-              { id: "musica-sonidos",       label: "Música",        icon: <Ionicons name="musical-notes-outline" size={30} color="#e8e8e8" /> },
+              { id: "meditaciones-guiadas", label: "Meditaciones", icon: <MaterialCommunityIcons name="meditation" size={26} color="#e8e8e8" /> },
+              { id: "sonidos-ancestrales", label: "Sesiones",      icon: <MaterialCommunityIcons name="waves" size={26} color="#e8e8e8" /> },
+              { id: "musica-sonidos",       label: "Música",        icon: <Ionicons name="musical-notes-outline" size={26} color="#e8e8e8" /> },
             ].map((c) => (
               <Pressable
                 key={c.id}
@@ -896,7 +896,7 @@ export default function HomeScreen2() {
                 }]}
               >
                 {c.icon}
-                <Text style={{ fontSize: 14, fontWeight: "700", color: "#e8e8e8", textAlign: "center" }}>
+                <Text style={{ fontSize: 10, fontWeight: "300", color: "#e8e8e8", textAlign: "center" }}>
                   {c.label}
                 </Text>
               </Pressable>
