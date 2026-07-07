@@ -872,7 +872,7 @@ const styles = StyleSheet.create({
 
   /* Hero */
   hero: {
-    alignItems: "center",
+    alignItems: "flex-start",
     paddingHorizontal: H_PAD,
     paddingBottom: 28,
   },
