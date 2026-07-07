@@ -312,8 +312,8 @@ const styles = StyleSheet.create({
   },
   ringLabel: {
     color: "rgba(255,255,255,0.95)",
-    fontSize: 11,
-    fontWeight: "500",
+    fontSize: 10,
+    fontWeight: "300",
     letterSpacing: 0.3,
   },
   row: {
