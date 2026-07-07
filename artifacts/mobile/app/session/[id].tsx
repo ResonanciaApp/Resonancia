@@ -1210,13 +1210,14 @@ const styles = StyleSheet.create({
   },
   optSessionTitle: {
     fontSize: 15,
-    fontWeight: "700",
+    fontWeight: "400",
     color: "#e8e8e8",
     lineHeight: 20,
+    letterSpacing: -0.3,
     marginBottom: 3,
   },
   optSessionAuthor: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "300",
     color: "rgba(255,255,255,0.60)",
   },
