@@ -692,7 +692,7 @@ export default function HomeScreen2() {
           >
             <View style={[styles.universeBtnBg, { backgroundColor: "rgba(0,0,0,0.2)" }]}>
               <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[0], 0.28) }]} />
-              <MaterialCommunityIcons name="spa" size={28} color="#FFFFFF" style={{ opacity: 0.9 }} />
+              <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
             </View>
           </Pressable>
           <Animated.View
