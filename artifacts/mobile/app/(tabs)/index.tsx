@@ -299,7 +299,8 @@ export default function HomeScreen2() {
     if (h >= 12 && h < 19) return "Buenas tardes";
     return "Buenas noches";
   }
-  const greetingText = `${getGreeting()}, ${userProfile.username}`;
+  const greetingName = userProfile?.username ?? "";
+  const greetingText = greetingName ? `${getGreeting()}, ${greetingName}` : getGreeting();
   const { upcoming: upcomingLiveSessions } = useLiveSessions();
   const nextLiveSession = upcomingLiveSessions[0] ?? null;
   const { videos } = useVideos();
