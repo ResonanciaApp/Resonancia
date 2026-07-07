@@ -134,7 +134,11 @@ function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.6 : 1 }]}>
       <View>
-        <Text style={styles.chipText}>{label}</Text>
+        <Animated.Text
+          style={[styles.chipText, { opacity: selAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}
+        >
+          {label}
+        </Animated.Text>
         <Animated.Text
           style={[styles.chipText, styles.chipTextSel, StyleSheet.absoluteFill, { opacity: selAnim }]}
         >
