@@ -538,7 +538,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#111",
   },
   cardActive: {
-    borderColor: "rgba(255,255,255,0.75)",
+    borderColor: "rgba(255,255,255,0.7)",
     borderWidth: 2,
   },
   cardLabel: {
