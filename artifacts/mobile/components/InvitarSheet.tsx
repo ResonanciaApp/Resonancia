@@ -47,8 +47,10 @@ const MODAL_SLIDE_MS = 420;
 const POST_OPEN_DELAY = 500;
 // Delay total antes del primer elemento
 const BASE_DELAY = MODAL_SLIDE_MS + POST_OPEN_DELAY;
-// Duración de cada fade-in + translateY (lento y zen)
-const ANIM_DUR = 1200;
+// Duración de cada fade-in + translateY del contenido
+const ANIM_DUR = 600;
+// Duración del botón (más rápido)
+const BTN_ANIM_DUR = 480;
 
 export interface InvitarSheetProps {
   visible: boolean;
@@ -98,7 +100,14 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
       fadeSlide(cardOpacity,  cardTransY,  BASE_DELAY).start();
       fadeSlide(titleOpacity, titleTransY, BASE_DELAY + ANIM_DUR).start();
       fadeSlide(descOpacity,  descTransY,  BASE_DELAY + ANIM_DUR * 2).start();
-      fadeSlide(btnOpacity,   btnTransY,   BASE_DELAY + ANIM_DUR * 3).start();
+      // Botón usa su propia duración más rápida
+      Animated.sequence([
+        Animated.delay(BASE_DELAY + ANIM_DUR * 3),
+        Animated.parallel([
+          Animated.timing(btnOpacity, { toValue: 1, duration: BTN_ANIM_DUR, easing: easeOut, useNativeDriver: true }),
+          Animated.timing(btnTransY,  { toValue: 0, duration: BTN_ANIM_DUR, easing: easeOut, useNativeDriver: true }),
+        ]),
+      ]).start();
     } else {
       resetAnim();
     }
