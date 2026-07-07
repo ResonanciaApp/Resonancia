@@ -173,10 +173,10 @@ export function WeeklyStreakStrip() {
       <View style={[styles.ringWrap, {
         backgroundColor: hexToRgba(theme.gradient[1], 0.14),
         shadowColor: "#000000",
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.45,
-        shadowRadius: 13,
-        elevation: 7,
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.72,
+        shadowRadius: 10,
+        elevation: 12,
       }]}>
         <Svg width={RING_SIZE} height={RING_SIZE}>
           <Circle
