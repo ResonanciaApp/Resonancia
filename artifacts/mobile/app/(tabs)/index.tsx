@@ -570,7 +570,7 @@ export default function HomeScreen2() {
   const headerBorderAnim = useRef(new Animated.Value(0)).current;
 
   const updateSearchBtnVisibility = useCallback(() => {
-    const shouldShow = stickyActiveRef.current || searchOpenRef.current;
+    const shouldShow = scrollYRef.current > 10 || searchOpenRef.current;
     Animated.timing(searchBtnAnim, {
       toValue: shouldShow ? 1 : 0,
       duration: 300,
@@ -590,7 +590,6 @@ export default function HomeScreen2() {
     if (shouldBeActive !== stickyActiveRef.current) {
       stickyActiveRef.current = shouldBeActive;
       setStickyActive(shouldBeActive);
-      updateSearchBtnVisibility();
       // loto permanece visible — sin fade al activar sticky header
     }
     const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
@@ -612,12 +611,16 @@ export default function HomeScreen2() {
       if (scrolled && phraseVisibleRef.current) {
         phraseVisibleRef.current = false;
         Animated.timing(phraseAnim, { toValue: 0, duration: 300, useNativeDriver: true }).start();
+        Animated.timing(giftBtnAnim, { toValue: 0, duration: 300, useNativeDriver: true }).start();
+        Animated.timing(searchBtnAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
       } else if (!scrolled && !phraseVisibleRef.current) {
         phraseVisibleRef.current = true;
         Animated.timing(phraseAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
+        Animated.timing(giftBtnAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
+        Animated.timing(searchBtnAnim, { toValue: 0, duration: 300, useNativeDriver: true }).start();
       }
     },
-    [updateStickyActive, phraseAnim],
+    [updateStickyActive, phraseAnim, giftBtnAnim, searchBtnAnim],
   );
 
   // ── Buscador desplegable (se abre desde el ícono de lupa) ────────────────
