@@ -555,6 +555,8 @@ export default function HomeScreen2() {
   const giftScaleAnim = useRef(new Animated.Value(1)).current;
 
   const dailyPhrase = HEADER_PHRASES[new Date().getDate() % HEADER_PHRASES.length];
+  const phraseAnim = useRef(new Animated.Value(1)).current;
+  const phraseVisibleRef = useRef(true);
 
   // ── Loto + tabs: al activarse el sticky header, el loto se desvanece y
   //    los tabs se desplazan sutilmente hacia la izquierda hasta el margen ──
@@ -606,8 +608,16 @@ export default function HomeScreen2() {
     (e: { nativeEvent: { contentOffset: { y: number } } }) => {
       scrollYRef.current = e.nativeEvent.contentOffset.y;
       updateStickyActive();
+      const scrolled = e.nativeEvent.contentOffset.y > 10;
+      if (scrolled && phraseVisibleRef.current) {
+        phraseVisibleRef.current = false;
+        Animated.timing(phraseAnim, { toValue: 0, duration: 300, useNativeDriver: true }).start();
+      } else if (!scrolled && !phraseVisibleRef.current) {
+        phraseVisibleRef.current = true;
+        Animated.timing(phraseAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
+      }
     },
-    [updateStickyActive],
+    [updateStickyActive, phraseAnim],
   );
 
   // ── Buscador desplegable (se abre desde el ícono de lupa) ────────────────
@@ -745,7 +755,7 @@ export default function HomeScreen2() {
               </View>
             </RAnimated.View>
             {!searchOpen && (
-              <View style={[styles.headerRowLayer, { justifyContent: "center" }]} pointerEvents="none">
+              <Animated.View style={[styles.headerRowLayer, { justifyContent: "center", opacity: phraseAnim }]} pointerEvents="none">
                 <Text
                   style={{
                     textAlign: "center",
@@ -757,7 +767,7 @@ export default function HomeScreen2() {
                 >
                   {dailyPhrase}
                 </Text>
-              </View>
+              </Animated.View>
             )}
           </Animated.View>
           <Animated.View
