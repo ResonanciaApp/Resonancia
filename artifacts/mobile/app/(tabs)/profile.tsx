@@ -891,7 +891,7 @@ export default function ProfileScreen() {
               </Text>
               <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>seguidores</Text>
             </Pressable>
-            <View style={[styles.followCountDivider, { backgroundColor: colors.border ?? "#1E2A38" }]} />
+            <View style={[styles.followCountDivider, { backgroundColor: "rgba(255,255,255,0.1)" }]} />
             <Pressable
               onPress={() => router.push("/siguiendo" as never)}
               style={styles.followCountItem}
