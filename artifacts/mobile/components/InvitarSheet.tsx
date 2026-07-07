@@ -56,6 +56,10 @@ const STAGGER_DESC = 500;
 // Intervalo descripción → botón
 const STAGGER_BTN = 400;
 
+// Momento en que el botón termina de aparecer (base del loop 3D)
+const BTN_FINISH =
+  BASE_DELAY + STAGGER + STAGGER_DESC + STAGGER_BTN + ANIM_DUR;
+
 export interface InvitarSheetProps {
   visible: boolean;
   onClose: () => void;
@@ -75,11 +79,20 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
   const btnOpacity   = useRef(new Animated.Value(0)).current;
   const btnTransY    = useRef(new Animated.Value(35)).current;
 
+  // Loop 3D de la tarjeta
+  const cardTilt                                                       = useRef(new Animated.Value(0)).current;
+  const tiltLoopRef  = useRef<Animated.CompositeAnimation | null>(null);
+  const tiltTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   // Toast
   const [toastVisible, setToastVisible] = useState(false);
   const toastOpacity = useRef(new Animated.Value(0)).current;
 
   const resetAnim = () => {
+    tiltLoopRef.current?.stop();
+    tiltLoopRef.current = null;
+    if (tiltTimerRef.current) { clearTimeout(tiltTimerRef.current); tiltTimerRef.current = null; }
+    cardTilt.setValue(0);
     cardOpacity.setValue(0);  cardTransY.setValue(35);
     titleOpacity.setValue(0); titleTransY.setValue(35);
     descOpacity.setValue(0);  descTransY.setValue(35);
@@ -105,6 +118,27 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
       fadeSlide(titleOpacity, titleTransY, BASE_DELAY + STAGGER).start();
       fadeSlide(descOpacity,  descTransY,  BASE_DELAY + STAGGER + STAGGER_DESC).start();
       fadeSlide(btnOpacity,   btnTransY,   BASE_DELAY + STAGGER + STAGGER_DESC + STAGGER_BTN).start();
+
+      // Loop 3D sutil de la tarjeta: arranca cuando el botón termina de aparecer
+      tiltTimerRef.current = setTimeout(() => {
+        tiltLoopRef.current = Animated.loop(
+          Animated.sequence([
+            Animated.timing(cardTilt, {
+              toValue: 1,
+              duration: 4000,
+              easing: Easing.inOut(Easing.sin),
+              useNativeDriver: true,
+            }),
+            Animated.timing(cardTilt, {
+              toValue: 0,
+              duration: 4000,
+              easing: Easing.inOut(Easing.sin),
+              useNativeDriver: true,
+            }),
+          ])
+        );
+        tiltLoopRef.current.start();
+      }, BTN_FINISH);
     } else {
       resetAnim();
     }
@@ -198,7 +232,25 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
           <Animated.View
             style={[
               styles.cardWrap,
-              { opacity: cardOpacity, transform: [{ translateY: cardTransY }] },
+              {
+                opacity: cardOpacity,
+                transform: [
+                  { perspective: 900 },
+                  { translateY: cardTransY },
+                  {
+                    rotateY: cardTilt.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ["-3deg", "3deg"],
+                    }),
+                  },
+                  {
+                    rotateX: cardTilt.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ["1.5deg", "-1deg"],
+                    }),
+                  },
+                ],
+              },
             ]}
           >
             <View style={styles.giftCard}>
