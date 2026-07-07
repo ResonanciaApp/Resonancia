@@ -27,7 +27,7 @@ import { MixerSheet } from "@/components/MixerSheet";
 import { EscenasSheet } from "@/components/EscenasSheet";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
-import { SceneThemeProvider, useSceneTheme, loadPersistedSceneId } from "@/context/SceneThemeContext";
+import { SceneThemeProvider, SceneThemeTransitionOverlay, useSceneTheme, loadPersistedSceneId } from "@/context/SceneThemeContext";
 import type { SceneId } from "@/context/AmbientPlayerContext";
 import { BrightnessProvider, useBrightness } from "@/context/BrightnessContext";
 import { CatalogProvider } from "@/context/CatalogContext";
@@ -395,6 +395,7 @@ export default function RootLayout() {
                                 <RootLayoutNav />
                               </KeyboardProvider>
                               <BrightnessOverlay />
+                              <SceneThemeTransitionOverlay />
                             </ThemedGestureRoot>
                           </SceneThemeProvider>
                         </DiarioFavoritesProvider>
