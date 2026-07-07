@@ -48,7 +48,7 @@ const POST_OPEN_DELAY = 500;
 // Delay total antes del primer elemento
 const BASE_DELAY = MODAL_SLIDE_MS + POST_OPEN_DELAY;
 // Duración de cada fade-in + translateY (lento y zen)
-const ANIM_DUR = 900;
+const ANIM_DUR = 1200;
 
 export interface InvitarSheetProps {
   visible: boolean;
@@ -61,23 +61,23 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
 
   // Cuatro animaciones independientes: tarjeta, título, descripción, botón
   const cardOpacity  = useRef(new Animated.Value(0)).current;
-  const cardTransY   = useRef(new Animated.Value(20)).current;
+  const cardTransY   = useRef(new Animated.Value(35)).current;
   const titleOpacity = useRef(new Animated.Value(0)).current;
-  const titleTransY  = useRef(new Animated.Value(20)).current;
+  const titleTransY  = useRef(new Animated.Value(35)).current;
   const descOpacity  = useRef(new Animated.Value(0)).current;
-  const descTransY   = useRef(new Animated.Value(20)).current;
+  const descTransY   = useRef(new Animated.Value(35)).current;
   const btnOpacity   = useRef(new Animated.Value(0)).current;
-  const btnTransY    = useRef(new Animated.Value(20)).current;
+  const btnTransY    = useRef(new Animated.Value(35)).current;
 
   // Toast
   const [toastVisible, setToastVisible] = useState(false);
   const toastOpacity = useRef(new Animated.Value(0)).current;
 
   const resetAnim = () => {
-    cardOpacity.setValue(0);  cardTransY.setValue(20);
-    titleOpacity.setValue(0); titleTransY.setValue(20);
-    descOpacity.setValue(0);  descTransY.setValue(20);
-    btnOpacity.setValue(0);   btnTransY.setValue(20);
+    cardOpacity.setValue(0);  cardTransY.setValue(35);
+    titleOpacity.setValue(0); titleTransY.setValue(35);
+    descOpacity.setValue(0);  descTransY.setValue(35);
+    btnOpacity.setValue(0);   btnTransY.setValue(35);
   };
 
   const easeOut = Easing.out(Easing.cubic);
