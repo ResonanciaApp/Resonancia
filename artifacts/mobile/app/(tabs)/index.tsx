@@ -547,7 +547,7 @@ export default function HomeScreen2() {
 
   // ── Loto + tabs: al activarse el sticky header, el loto se desvanece y
   //    los tabs se desplazan sutilmente hacia la izquierda hasta el margen ──
-  const LOTUS_SHIFT_DISTANCE = 43 + 15; // ancho del universeBtn + gap del headerTopRow
+  const LOTUS_SHIFT_DISTANCE = 45 + 15; // ancho del universeBtn + gap del headerTopRow
   const lotusFadeAnim = useRef(new Animated.Value(1)).current;
   const tabsShiftAnim = useRef(new Animated.Value(0)).current;
 
@@ -689,7 +689,7 @@ export default function HomeScreen2() {
             style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
           >
             <View style={[styles.universeBtnBg, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
-              <MaterialCommunityIcons name="spa" size={26} color="#FFFFFF" style={{ opacity: 0.9 }} />
+              <MaterialCommunityIcons name="spa" size={28} color="#FFFFFF" style={{ opacity: 0.9 }} />
             </View>
           </Pressable>
           <Animated.View
@@ -1340,9 +1340,9 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   universeBtn: {
-    width: 43,
-    height: 43,
-    borderRadius: 21.5,
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
     overflow: "hidden",
   },
   universeBtnBg: {
