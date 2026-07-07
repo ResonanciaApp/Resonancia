@@ -883,7 +883,7 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     fontSize: 26,
-    fontWeight: "700",
+    fontWeight: "400",
     letterSpacing: 0.4,
     marginBottom: 10,
   },
