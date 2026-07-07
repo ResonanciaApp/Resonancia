@@ -175,7 +175,7 @@ export function WeeklyStreakStrip() {
         shadowColor: "#000000",
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.45,
-        shadowRadius: 21,
+        shadowRadius: 13,
         elevation: 7,
       }]}>
         <Svg width={RING_SIZE} height={RING_SIZE}>
