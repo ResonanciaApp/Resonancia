@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   },
   ringCount: {
     color: TEXT,
-    fontSize: 26,
+    fontSize: 27,
     fontWeight: "700",
     lineHeight: 30,
   },
@@ -276,6 +276,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
+    marginLeft: 6,
   },
   dayCol: {
     alignItems: "center",
