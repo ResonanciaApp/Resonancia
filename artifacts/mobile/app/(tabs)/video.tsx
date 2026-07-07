@@ -131,12 +131,12 @@ export default function VideoTabScreen() {
                   style={[
                     styles.chip,
                     {
-                      backgroundColor: sel ? colors.primary : "rgba(0,0,0,0.14)",
-                      borderColor: sel ? colors.primary : CHIP_BORDER,
+                      backgroundColor: sel ? "#F4F4F4" : "rgba(0,0,0,0.14)",
+                      borderColor: sel ? "#F4F4F4" : CHIP_BORDER,
                     },
                   ]}
                 >
-                  <Text style={[styles.chipText, { color: sel ? colors.primaryForeground : colors.mutedForeground }]}>
+                  <Text style={[styles.chipText, { color: sel ? "#1B060F" : colors.mutedForeground }]}>
                     {chip}
                   </Text>
                 </Pressable>
