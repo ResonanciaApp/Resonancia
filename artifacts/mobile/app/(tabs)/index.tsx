@@ -550,8 +550,6 @@ export default function HomeScreen2() {
   const LOTUS_SHIFT_DISTANCE = 42 + 15; // ancho del universeBtn + gap del headerTopRow
   const lotusFadeAnim = useRef(new Animated.Value(1)).current;
   const tabsShiftAnim = useRef(new Animated.Value(0)).current;
-  // ── Inversión de colores del loto al activar sticky header ──
-  const lotusFillAnim = useRef(new Animated.Value(0)).current;
 
   // ── Borde del sticky header: se activa recién a partir de 1% de scroll ──
   const HEADER_BORDER_THRESHOLD = 0.01;
@@ -581,11 +579,6 @@ export default function HomeScreen2() {
       setStickyActive(shouldBeActive);
       updateSearchBtnVisibility();
       // loto permanece visible — sin fade al activar sticky header
-      Animated.timing(lotusFillAnim, {
-        toValue: shouldBeActive ? 1 : 0,
-        duration: 300,
-        useNativeDriver: false,
-      }).start();
     }
     const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
     if (shouldShowBorder !== headerBorderActiveRef.current) {
@@ -596,7 +589,7 @@ export default function HomeScreen2() {
         useNativeDriver: true,
       }).start();
     }
-  }, [updateSearchBtnVisibility, headerBorderAnim, lotusFillAnim]);
+  }, [updateSearchBtnVisibility, headerBorderAnim]);
 
   const handleMainScroll = useCallback(
     (e: { nativeEvent: { contentOffset: { y: number } } }) => {
@@ -695,26 +688,9 @@ export default function HomeScreen2() {
             hitSlop={8}
             style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
           >
-            <Animated.View
-              style={[
-                styles.universeBtnBg,
-                {
-                  backgroundColor: lotusFillAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: ["rgba(255,255,255,0.08)", "rgba(255,255,255,0.92)"],
-                  }),
-                },
-              ]}
-            >
-              {/* Icono blanco — visible en estado normal */}
-              <Animated.View style={{ position: "absolute", opacity: lotusFillAnim.interpolate({ inputRange: [0, 1], outputRange: [0.9, 0] }) }}>
-                <MaterialCommunityIcons name="spa" size={22} color="#FFFFFF" />
-              </Animated.View>
-              {/* Icono oscuro — visible al activar sticky */}
-              <Animated.View style={{ position: "absolute", opacity: lotusFillAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 1] }) }}>
-                <MaterialCommunityIcons name="spa" size={22} color="#1B060F" />
-              </Animated.View>
-            </Animated.View>
+            <View style={[styles.universeBtnBg, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
+              <MaterialCommunityIcons name="spa" size={22} color="#FFFFFF" style={{ opacity: 0.9 }} />
+            </View>
           </Pressable>
           <Animated.View
             style={[
