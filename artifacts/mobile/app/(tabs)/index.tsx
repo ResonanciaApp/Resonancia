@@ -836,6 +836,11 @@ export default function HomeScreen2() {
           </View>
         </Pressable>
 
+        {/* ── Racha semanal ── */}
+        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: -20 }}>
+          <WeeklyStreakStrip />
+        </View>
+
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP }}>
@@ -865,11 +870,6 @@ export default function HomeScreen2() {
             />
           </View>
         )}
-
-        {/* ── Racha semanal ── */}
-        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: -27 }}>
-          <WeeklyStreakStrip />
-        </View>
 
         <View
           style={{
