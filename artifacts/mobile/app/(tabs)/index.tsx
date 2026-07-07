@@ -694,7 +694,7 @@ export default function HomeScreen2() {
         ]}
       >
         <Animated.View style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
-        <View style={styles.headerTopRow}>
+        <View style={[styles.headerTopRow, { marginBottom: 0 }]}>
           <Pressable
             onPress={openEscenasSheet}
             hitSlop={8}
@@ -789,7 +789,7 @@ export default function HomeScreen2() {
               textAlign: "center",
               fontSize: 12,
               color: "rgba(255,255,255,0.6)",
-              marginTop: -24,
+              marginTop: 4,
               paddingBottom: 8,
               letterSpacing: 0.25,
             }}
