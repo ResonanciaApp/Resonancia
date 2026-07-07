@@ -687,9 +687,17 @@ export default function HomeScreen2() {
         }}
         contentFit="cover"
       />
-      <LinearGradient colors={prevGradient} style={styles.rootGradient} />
+      <LinearGradient
+        colors={["transparent", prevGradient[0] as string, prevGradient[1] as string]}
+        locations={[0, 0.33, 1]}
+        style={styles.rootGradient}
+      />
       <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
-        <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
+        <LinearGradient
+          colors={["transparent", activeTheme.gradient[0] as string, activeTheme.gradient[1] as string]}
+          locations={[0, 0.33, 1]}
+          style={styles.rootGradient}
+        />
       </Animated.View>
       <GeoUniverseBackground />
       <StatusBar barStyle="light-content" />
