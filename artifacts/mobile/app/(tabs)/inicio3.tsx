@@ -686,7 +686,7 @@ export default function HomeScreen2() {
         pointerEvents="none"
       >
         <ExpoImage
-          source={AMBIENT_SCENES[activeSceneId].image}
+          source={AMBIENT_SCENES.find((s) => s.id === activeSceneId)?.image}
           style={StyleSheet.absoluteFill}
           contentFit="cover"
         />
