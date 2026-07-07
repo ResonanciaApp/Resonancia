@@ -794,7 +794,7 @@ export default function HomeScreen2() {
             <View style={styles.resBannerCircle2} />
             <View style={styles.resonadoresBannerInner}>
               <LinearGradient
-                colors={["rgba(247,203,107,0.7)", "rgba(251,169,128,0.7)"]}
+                colors={["rgba(247,203,107,0.5)", "rgba(251,169,128,0.5)"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={{ width: 44, height: 44, borderRadius: 15, alignItems: "center", justifyContent: "center" }}
