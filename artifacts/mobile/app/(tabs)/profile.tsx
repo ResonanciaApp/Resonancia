@@ -1376,7 +1376,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  pageTitle: { fontSize: 28, fontWeight: "400", letterSpacing: 0.5 },
+  pageTitle: { fontSize: 28, fontWeight: "700", letterSpacing: 0.5 },
 
   // ── Sticky header (Panel/Biblioteca/Historial/Registros) ──────────────────
   stickyHeader: {
