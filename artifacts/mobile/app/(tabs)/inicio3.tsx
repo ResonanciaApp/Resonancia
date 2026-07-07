@@ -1104,7 +1104,7 @@ export default function HomeScreen2() {
 
         <Pressable
           hitSlop={8}
-          style={[styles.giftBtn, { marginLeft: 8 }]}
+          style={[styles.giftBtn, { marginLeft: 12 }]}
           onPressIn={() =>
             Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
           }
