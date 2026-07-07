@@ -600,12 +600,17 @@ export default function HomeScreen2() {
     }
   }, [updateSearchBtnVisibility, headerBorderAnim]);
 
+  const backdropAnim = useRef(new Animated.Value(1)).current;
+
   const handleMainScroll = useCallback(
     (e: { nativeEvent: { contentOffset: { y: number } } }) => {
-      scrollYRef.current = e.nativeEvent.contentOffset.y;
+      const y = e.nativeEvent.contentOffset.y;
+      scrollYRef.current = y;
       updateStickyActive();
+      // Scroll-linked: imagen visible en y=0, desaparece a los 160px de scroll
+      backdropAnim.setValue(Math.max(0, 1 - y / 160));
     },
-    [updateStickyActive],
+    [updateStickyActive, backdropAnim],
   );
 
   // ── Buscador desplegable (se abre desde el ícono de lupa) ────────────────
@@ -675,18 +680,17 @@ export default function HomeScreen2() {
 
   return (
     <View style={styles.root}>
-      {/* ── Imagen de fondo en área del header — oculta bajo el gradiente ── */}
-      <ExpoImage
-        source={require("@/assets/images/ancestrales-hero.jpg")}
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: 320,
-        }}
-        contentFit="cover"
-      />
+      {/* ── Imagen de fondo — se desvanece con scroll ── */}
+      <Animated.View
+        style={{ position: "absolute", top: 0, left: 0, right: 0, height: 320, opacity: backdropAnim }}
+        pointerEvents="none"
+      >
+        <ExpoImage
+          source={require("@/assets/images/ancestrales-hero.jpg")}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+        />
+      </Animated.View>
       <LinearGradient
         colors={[`${prevGradient[0]}00`, prevGradient[0] as string, prevGradient[1] as string]}
         locations={[0, 0.37, 1]}
