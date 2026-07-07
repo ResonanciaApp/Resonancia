@@ -1413,7 +1413,7 @@ const styles = StyleSheet.create({
     marginRight: 3,
     marginTop: 1,
   },
-  stickyTitle: { fontSize: 19, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3, flex: 1, textAlign: "center", marginLeft: -4 },
+  stickyTitle: { fontSize: 18, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3, flex: 1, textAlign: "center", marginLeft: -4 },
   pillRow: {
     flexDirection: "row",
     gap: 8,
