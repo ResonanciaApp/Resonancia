@@ -687,6 +687,18 @@ export default function HomeScreen2() {
         }}
         contentFit="cover"
       />
+      <LinearGradient
+        colors={[`${prevGradient[0]}00`, prevGradient[0] as string, prevGradient[1] as string]}
+        locations={[0, 0.37, 1]}
+        style={styles.rootGradient}
+      />
+      <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
+        <LinearGradient
+          colors={[`${activeTheme.gradient[0]}00`, activeTheme.gradient[0] as string, activeTheme.gradient[1] as string]}
+          locations={[0, 0.37, 1]}
+          style={styles.rootGradient}
+        />
+      </Animated.View>
       <GeoUniverseBackground />
       <StatusBar barStyle="light-content" />
 
@@ -755,24 +767,6 @@ export default function HomeScreen2() {
           updateStickyActive();
         }}
       >
-        {/* ── Gradiente que sube con el contenido sobre el backdrop fijo ── */}
-        <LinearGradient
-          colors={[`${prevGradient[0]}00`, prevGradient[0] as string, prevGradient[1] as string]}
-          locations={[0, 0.37, 1]}
-          style={{ position: "absolute", top: 0, left: 0, right: 0, height: 380 }}
-          pointerEvents="none"
-        />
-        <Animated.View
-          pointerEvents="none"
-          style={{ position: "absolute", top: 0, left: 0, right: 0, height: 380, opacity: gradientFade }}
-        >
-          <LinearGradient
-            colors={[`${activeTheme.gradient[0]}00`, activeTheme.gradient[0] as string, activeTheme.gradient[1] as string]}
-            locations={[0, 0.37, 1]}
-            style={StyleSheet.absoluteFill}
-          />
-        </Animated.View>
-
         {/* ── Racha semanal ── */}
         <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 226 }}>
           <WeeklyStreakStrip />
