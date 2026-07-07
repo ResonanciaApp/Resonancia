@@ -159,7 +159,7 @@ export default function VideoTabScreen() {
 
       {/* ── Sticky area: search (hides) + chips (stick) ── */}
       <Animated.View
-        style={[styles.stickyArea, { top: topPad - 40, paddingTop: 40, backgroundColor: "#210911", transform: [{ translateY: stickyTranslateY }] }]}
+        style={[styles.stickyArea, { top: topPad - 40, paddingTop: 40, backgroundColor: "transparent", transform: [{ translateY: stickyTranslateY }] }]}
         pointerEvents="box-none"
       >
         {/* Search bar */}
@@ -183,7 +183,7 @@ export default function VideoTabScreen() {
         </Animated.View>
 
         {/* Chips row — full-bleed */}
-        <View style={styles.chipsWrap}>
+        <View style={[styles.chipsWrap, { backgroundColor: "#210911" }]}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
