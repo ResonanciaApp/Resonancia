@@ -849,7 +849,7 @@ const styles = StyleSheet.create({
     marginTop: 29,
   },
   authorNameInline: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "500",
     color: "#e8e8e8",
     marginTop: 3,
@@ -874,10 +874,10 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "800",
-    lineHeight: 34,
-    letterSpacing: 1.2,
+    fontSize: 15,
+    fontWeight: "400",
+    lineHeight: 22,
+    letterSpacing: -0.3,
     textAlign: "left",
   },
 
