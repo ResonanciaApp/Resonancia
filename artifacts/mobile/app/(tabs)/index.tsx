@@ -885,7 +885,7 @@ export default function HomeScreen2() {
         {filteredFeatured && (
           <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
             <Text style={styles.sectionTitle}>
-              Destacada de hoy
+              Para este momento
             </Text>
             <Pressable
               onPress={() => {

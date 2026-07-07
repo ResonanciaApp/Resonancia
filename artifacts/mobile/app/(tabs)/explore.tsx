@@ -574,7 +574,7 @@ export default function ExploreScreen() {
             {/* ── Destacada de hoy ── */}
             {featuredHoy && (
               <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
-                <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Destacada de hoy</Text>
+                <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Para este momento</Text>
                 <Pressable
                   onPress={() => handleSessionPress(featuredHoy)}
                 >
