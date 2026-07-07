@@ -4,7 +4,6 @@ import { Stack } from "expo-router";
 import React, { useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
-  Animated,
   Dimensions,
   Modal,
   Platform,
@@ -61,25 +60,6 @@ export default function VideoTabScreen() {
   const topPad    = Platform.OS === "web" ? 16 : insets.top;
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
 
-  const scrollY = useRef(new Animated.Value(0)).current;
-
-  // Slide the whole sticky area up by SEARCH_H → search vanishes, chips stick
-  const stickyTranslateY = scrollY.interpolate({
-    inputRange: [0, SEARCH_H],
-    outputRange: [0, -SEARCH_H],
-    extrapolate: "clamp",
-  });
-  const searchOpacity = scrollY.interpolate({
-    inputRange: [0, SEARCH_H * 0.6],
-    outputRange: [1, 0],
-    extrapolate: "clamp",
-  });
-  // Divider under chips appears once search is gone
-  const dividerOpacity = scrollY.interpolate({
-    inputRange: [SEARCH_H * 0.6, SEARCH_H],
-    outputRange: [0, 1],
-    extrapolate: "clamp",
-  });
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -114,7 +94,7 @@ export default function VideoTabScreen() {
       <GeoUniverseBackground />
 
       {/* ── Scrollable content ── */}
-      <Animated.ScrollView
+      <ScrollView
         style={StyleSheet.absoluteFill}
         contentContainerStyle={{
           paddingTop: topPad + SEARCH_H + CHIPS_H + 8,
@@ -122,11 +102,6 @@ export default function VideoTabScreen() {
           paddingBottom: 100 + bottomPad,
         }}
         showsVerticalScrollIndicator={false}
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true },
-        )}
       >
         <View style={[styles.resultsRow, { marginBottom: 15 }]}>
           <Text style={[styles.resultsCount, { color: colors.mutedForeground }]}>
@@ -155,15 +130,15 @@ export default function VideoTabScreen() {
         ) : (
           filtered.map((v) => <VideoCard key={v.id} video={v} feed />)
         )}
-      </Animated.ScrollView>
+      </ScrollView>
 
       {/* ── Sticky area: search (hides) + chips (stick) ── */}
-      <Animated.View
-        style={[styles.stickyArea, { top: topPad, transform: [{ translateY: stickyTranslateY }] }]}
+      <View
+        style={[styles.stickyArea, { top: topPad }]}
         pointerEvents="box-none"
       >
         {/* Search bar */}
-        <Animated.View style={[styles.searchWrap, { opacity: searchOpacity }]}>
+        <View style={styles.searchWrap}>
           <View style={[styles.searchBox, { backgroundColor: "rgba(0,0,0,0.14)", borderColor: "rgba(255,255,255,0.7)" }]}>
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
@@ -180,7 +155,7 @@ export default function VideoTabScreen() {
               </Pressable>
             )}
           </View>
-        </Animated.View>
+        </View>
 
         {/* Chips row — full-bleed */}
         <View style={[styles.chipsWrap, { backgroundColor: activeTheme.gradient[0] }]}>
@@ -210,9 +185,8 @@ export default function VideoTabScreen() {
               );
             })}
           </ScrollView>
-          <Animated.View style={[styles.chipsDivider, { opacity: dividerOpacity }]} />
         </View>
-      </Animated.View>
+      </View>
 
       {/* Sort menu */}
       <Modal visible={sortOpen} transparent animationType="fade" onRequestClose={() => setSortOpen(false)}>
