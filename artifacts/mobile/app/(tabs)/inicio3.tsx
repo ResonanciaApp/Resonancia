@@ -687,12 +687,74 @@ export default function HomeScreen2() {
         }}
         contentFit="cover"
       />
+      <LinearGradient
+        colors={["transparent", prevGradient[0] as string, prevGradient[1] as string]}
+        locations={[0, 0.33, 1]}
+        style={styles.rootGradient}
+      />
+      <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
+        <LinearGradient
+          colors={["transparent", activeTheme.gradient[0] as string, activeTheme.gradient[1] as string]}
+          locations={[0, 0.33, 1]}
+          style={styles.rootGradient}
+        />
+      </Animated.View>
       <GeoUniverseBackground />
       <StatusBar barStyle="light-content" />
 
+      {/* ── Loto + Regalo flotantes ── */}
+      <View
+        pointerEvents="box-none"
+        style={{
+          position: "absolute",
+          top: topPad + 2,
+          left: 0,
+          right: 0,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          paddingHorizontal: 14,
+          zIndex: 10,
+        }}
+      >
+        <Pressable
+          onPress={openEscenasSheet}
+          hitSlop={8}
+          style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
+        >
+          <View style={[styles.universeBtnBg, { backgroundColor: "rgba(0,0,0,0.18)" }]}>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[0], 0.28) }]} />
+            <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
+          </View>
+        </Pressable>
+
+        <Pressable
+          hitSlop={8}
+          style={styles.giftBtn}
+          onPressIn={() =>
+            Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
+          }
+          onPressOut={() => {
+            Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
+            setTimeout(() => setShowInvitar(true), 500);
+          }}
+        >
+          <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
+            <View style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden" }}>
+              <Image
+                source={require("@/assets/images/icons/regalo4.png")}
+                style={styles.giftBtnIcon}
+                resizeMode="contain"
+              />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.10)" }]} />
+            </View>
+          </Animated.View>
+        </Pressable>
+      </View>
+
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad }}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: topPad + 12 }}
         showsVerticalScrollIndicator={false}
         onScroll={handleMainScroll}
         scrollEventThrottle={16}
@@ -705,71 +767,8 @@ export default function HomeScreen2() {
           updateStickyActive();
         }}
       >
-        {/* ── Bloque de header: gradiente + botones — scrollea junto con el contenido ── */}
-        <View style={{ height: topPad + 238 }}>
-          {/* Botones (debajo del gradiente, táctiles) */}
-          <View
-            style={{
-              position: "absolute",
-              top: topPad + 2,
-              left: 14,
-              right: 14,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Pressable
-              onPress={openEscenasSheet}
-              hitSlop={8}
-              style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
-            >
-              <View style={[styles.universeBtnBg, { backgroundColor: "rgba(0,0,0,0.18)" }]}>
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[0], 0.28) }]} />
-                <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
-              </View>
-            </Pressable>
-            <Pressable
-              hitSlop={8}
-              style={styles.giftBtn}
-              onPressIn={() =>
-                Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
-              }
-              onPressOut={() => {
-                Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
-                setTimeout(() => setShowInvitar(true), 500);
-              }}
-            >
-              <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-                <View style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden" }}>
-                  <Image
-                    source={require("@/assets/images/icons/regalo4.png")}
-                    style={styles.giftBtnIcon}
-                    resizeMode="contain"
-                  />
-                  <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.10)" }]} />
-                </View>
-              </Animated.View>
-            </Pressable>
-          </View>
-          {/* Gradiente encima de los botones — pointerEvents none para no bloquear taps */}
-          <LinearGradient
-            colors={["transparent", prevGradient[0] as string, prevGradient[1] as string]}
-            locations={[0, 0.78, 1]}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
-          <Animated.View style={[StyleSheet.absoluteFill, { opacity: gradientFade }]} pointerEvents="none">
-            <LinearGradient
-              colors={["transparent", activeTheme.gradient[0] as string, activeTheme.gradient[1] as string]}
-              locations={[0, 0.78, 1]}
-              style={StyleSheet.absoluteFill}
-            />
-          </Animated.View>
-        </View>
-
         {/* ── Racha semanal ── */}
-        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2 }}>
+        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 226 }}>
           <WeeklyStreakStrip />
         </View>
 
