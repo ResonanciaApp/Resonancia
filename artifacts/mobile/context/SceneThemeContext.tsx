@@ -2,17 +2,18 @@
  * SceneThemeContext — tema visual global activo.
  * ─────────────────────────────────────────────────────────────────
  * Independiente del audio de AmbientPlayerContext: el audio ambiente
- * SIEMPRE arranca en "universo" al abrir la app (por seguridad de la
- * sesión nativa, ver comentario en AmbientPlayerContext), pero el TEMA
- * VISUAL sí se persiste tal cual entre sesiones (requisito de esta
- * tarea). Por eso vive en su propio contexto + su propia clave de
- * AsyncStorage, aunque ambos comparten el mismo set de ids (SceneId) y
- * se actualizan juntos cuando el usuario elige una Escena en el panel.
+ * SIEMPRE arranca en "universo" al abrir la app, pero el TEMA VISUAL
+ * sí se persiste entre sesiones.
  * ─────────────────────────────────────────────────────────────────
- * `setActiveSceneWithFade(id)` — cambia el tema con un fade-in de 450ms:
- * monta un overlay con los colores VIEJOS a opacidad 1, aplica el tema
- * nuevo detrás, y desvanece el overlay → el nuevo tema aparece suavemente.
- * Usar `<SceneThemeTransitionOverlay />` en el root layout para el overlay.
+ * `setActiveSceneWithFade(id)` — transición "zen" sin flash:
+ *   1. Fondo VIEJO queda visible (activeSceneId no cambia todavía).
+ *   2. Overlay con colores NUEVOS monta a opacidad 0.
+ *   3. SceneThemeTransitionOverlay arranca el fade-IN (0 → 1) en
+ *      useLayoutEffect, garantizando que el overlay está pintado.
+ *   4. Al llegar a opacidad 1 (colores nuevos cubren todo):
+ *      - activeSceneId cambia → fondo adopta los nuevos colores.
+ *      - Overlay se desmonta (opacidad 1 → invisible porque ya no existe).
+ *   → Sin flash, sin colores viejos que destellan, transición suave.
  * ─────────────────────────────────────────────────────────────────
  */
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -41,14 +42,20 @@ type SceneThemeCtx = {
   activeSceneId: SceneId;
   theme: SceneTheme;
   setActiveScene: (id: SceneId) => void;
-  /** Cambia el tema con un fade-in de 400ms. */
+  /** Cambia el tema con fade-in zen (sin flash). */
   setActiveSceneWithFade: (id: SceneId) => void;
-  /** Colores del overlay de transición (tema ANTERIOR durante el fade). null = no hay transición. */
+  /**
+   * Colores del overlay de transición (colores NUEVOS durante el fade-in).
+   * null = no hay transición en curso.
+   */
   overlayColors: readonly [string, string] | null;
-  /** Opacidad animada del overlay (1 → 0 durante la transición). */
+  /** Opacidad animada del overlay (0 → 1 durante la transición). */
   overlayOpacity: Animated.Value;
-  /** Limpia el overlay al finalizar el fade. Llamado por el componente overlay desde useLayoutEffect. */
-  clearOverlay: () => void;
+  /**
+   * Aplica el tema pendiente y limpia el overlay.
+   * Llamado por SceneThemeTransitionOverlay al completar la animación.
+   */
+  commitFade: () => void;
 };
 
 const SceneThemeContext = createContext<SceneThemeCtx | null>(null);
@@ -74,9 +81,12 @@ export function SceneThemeProvider({
   initialSceneId?: SceneId;
 }) {
   const [activeSceneId, setActiveSceneId] = useState<SceneId>(initialSceneId ?? DEFAULT_THEME_ID);
+  // Colores del NUEVO tema que se está revelando (overlay fade-in)
   const [overlayColors, setOverlayColors] = useState<readonly [string, string] | null>(null);
   // Stable ref — never re-created, mutated in place by Animated
   const overlayOpacity = useRef(new Animated.Value(0)).current;
+  // ID pendiente de aplicar (se aplica al terminar el fade, no antes)
+  const pendingSceneId = useRef<SceneId | null>(null);
 
   useEffect(() => {
     if (initialSceneId) return;
@@ -95,28 +105,46 @@ export function SceneThemeProvider({
     AsyncStorage.setItem(SCENE_THEME_STORAGE_KEY, id).catch(() => {});
   }, []);
 
-  const clearOverlay = useCallback(() => {
+  /** Aplica el tema pendiente y desmonta el overlay — llamado al final del fade. */
+  const commitFade = useCallback(() => {
+    const id = pendingSceneId.current;
+    pendingSceneId.current = null;
+    if (id) {
+      setActiveSceneId(id);
+      AsyncStorage.setItem(SCENE_THEME_STORAGE_KEY, id).catch(() => {});
+    }
     setOverlayColors(null);
   }, []);
 
-  const setActiveSceneWithFade = useCallback((id: SceneId) => {
-    // Capture current gradient BEFORE updating state
-    const currentGradient = (SCENE_THEMES[activeSceneId] ?? SCENE_THEMES[DEFAULT_THEME_ID]).gradient;
-    // Mount overlay at full opacity with OLD colors
-    overlayOpacity.setValue(1);
-    setOverlayColors(currentGradient);
-    // Apply new theme immediately behind the overlay
-    setActiveSceneId(id);
-    AsyncStorage.setItem(SCENE_THEME_STORAGE_KEY, id).catch(() => {});
-    // La animación de fade-out la inicia SceneThemeTransitionOverlay en su
-    // useLayoutEffect, garantizando que el overlay ya esté pintado antes de animar.
-  }, [activeSceneId, overlayOpacity]);
+  const setActiveSceneWithFade = useCallback(
+    (id: SceneId) => {
+      if (id === activeSceneId) return; // ya es el tema activo
+      // Detener cualquier animación previa
+      overlayOpacity.stopAnimation();
+      // Preparar overlay con colores NUEVOS, empezando invisible
+      const newGradient = (SCENE_THEMES[id] ?? SCENE_THEMES[DEFAULT_THEME_ID]).gradient;
+      overlayOpacity.setValue(0);
+      pendingSceneId.current = id;
+      // Montar overlay — la animación la arranca SceneThemeTransitionOverlay
+      // en su useLayoutEffect (garantiza que está pintado antes de animar)
+      setOverlayColors(newGradient);
+    },
+    [activeSceneId, overlayOpacity],
+  );
 
   const theme = SCENE_THEMES[activeSceneId] ?? SCENE_THEMES[DEFAULT_THEME_ID];
 
   const value = useMemo(
-    () => ({ activeSceneId, theme, setActiveScene, setActiveSceneWithFade, overlayColors, overlayOpacity, clearOverlay }),
-    [activeSceneId, theme, setActiveScene, setActiveSceneWithFade, overlayColors, overlayOpacity, clearOverlay],
+    () => ({
+      activeSceneId,
+      theme,
+      setActiveScene,
+      setActiveSceneWithFade,
+      overlayColors,
+      overlayOpacity,
+      commitFade,
+    }),
+    [activeSceneId, theme, setActiveScene, setActiveSceneWithFade, overlayColors, overlayOpacity, commitFade],
   );
 
   return <SceneThemeContext.Provider value={value}>{children}</SceneThemeContext.Provider>;
@@ -129,28 +157,28 @@ export function useSceneTheme() {
 }
 
 /**
- * Overlay de transición de tema. Montar en el root layout Y dentro de cada Modal
- * que use temas (los Modals de RN flotan por encima del árbol principal).
+ * Overlay de transición zen. Montar en el root layout Y dentro de cada Modal
+ * que use temas de Escena (los Modals de RN flotan sobre el árbol principal).
  *
- * El fade se arranca en `useLayoutEffect` — garantiza que el overlay ya está
- * pintado antes de iniciar la animación, evitando que el nativo anime antes
- * del primer frame y el color aparezca "de golpe".
+ * Muestra los colores NUEVOS que se van revelando (fade 0 → 1).
+ * Al completar, aplica el tema real y se desmonta — sin flash.
  */
 export function SceneThemeTransitionOverlay() {
-  const { overlayColors, overlayOpacity, clearOverlay } = useSceneTheme();
+  const { overlayColors, overlayOpacity, commitFade } = useSceneTheme();
 
   useLayoutEffect(() => {
     if (!overlayColors) return;
-    // El overlay acaba de montarse (o de recibir colores) → arrancar fade-out
+    // Overlay pintado con colores nuevos a opacidad 0 → revelarlo suavemente
     Animated.timing(overlayOpacity, {
-      toValue: 0,
-      duration: 400,
+      toValue: 1,
+      duration: 550,
       useNativeDriver: true,
     }).start(({ finished }) => {
-      if (finished) clearOverlay();
+      // Al llegar a opacidad 1 (nuevos colores cubren todo), aplicar tema real
+      // y desmontar overlay — sin salto visual porque los colores coinciden.
+      if (finished) commitFade();
     });
-  // Solo queremos re-disparar cuando el overlay se activa (colores pasan de null a algo)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [overlayColors]);
 
   if (!overlayColors) return null;
