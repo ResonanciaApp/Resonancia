@@ -181,6 +181,11 @@ export default function SessionDetailScreen() {
   }, []);
 
   const scrollY = useRef(new Animated.Value(0)).current;
+  const backdropOpacity = scrollY.interpolate({
+    inputRange: [0, 160],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
   const STICKY_START = (HEADER_H + topPad) * 0.3;
   const STICKY_END   = (HEADER_H + topPad) * 0.95;
   const stickyOpacity = scrollY.interpolate({
@@ -292,7 +297,25 @@ export default function SessionDetailScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: catBg.solid }]}>
-      <LinearGradient colors={catBg.gradient} style={StyleSheet.absoluteFill} />
+      {/* ── Imagen backdrop — se desvanece con scroll ─────────────────────── */}
+      <Animated.View
+        pointerEvents="none"
+        style={{ position: "absolute", top: 0, left: 0, right: 0, height: 400, opacity: backdropOpacity }}
+      >
+        <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
+      </Animated.View>
+      {/* ── Gradiente — transparente arriba, sólido abajo ─────────────────── */}
+      <LinearGradient
+        colors={[
+          `${sceneTheme.gradient[0]}00`,
+          `${sceneTheme.gradient[0]}1A`,
+          `${sceneTheme.gradient[0]}66`,
+          sceneTheme.gradient[0] as string,
+          sceneTheme.gradient[1] as string,
+        ]}
+        locations={[0, 0.15, 0.33, 0.46, 1]}
+        style={StyleSheet.absoluteFill}
+      />
       <StatusBar barStyle="light-content" />
 
       <Animated.ScrollView
@@ -305,9 +328,8 @@ export default function SessionDetailScreen() {
           { useNativeDriver: false }
         )}
       >
-        {/* ── Hero image ──────────────────────────────────────────────────── */}
+        {/* ── Hero spacer + navBar ─────────────────────────────────────────── */}
         <View style={[styles.hero, { height: HEADER_H }]}>
-          <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
             <GhostPill noBorder style={{ backgroundColor: hexToRgba(sceneTheme.gradient[1], 0.7) }}>
               <BackPill onPress={() => router.back()} />
