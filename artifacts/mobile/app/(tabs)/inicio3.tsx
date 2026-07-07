@@ -1088,7 +1088,7 @@ export default function HomeScreen2() {
           justifyContent: "space-between",
           alignItems: "center",
           paddingLeft: 20,
-          paddingRight: 8,
+          paddingRight: 11,
           opacity: backdropAnim,
         }}
       >
