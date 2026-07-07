@@ -803,10 +803,10 @@ export default function HomeScreen2() {
                   contentFit="contain"
                 />
               </LinearGradient>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginLeft: 25 }}>
-                <View style={[styles.resonadoresBannerContent, { alignItems: "flex-end" }]}>
-                  <Text style={[styles.resonadoresBannerTitle, { textAlign: "right" }]}>Resonadores</Text>
-                  <Text style={[styles.resonadoresBannerSub, { textAlign: "right" }]}>Únete a la comunidad</Text>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                <View style={styles.resonadoresBannerContent}>
+                  <Text style={styles.resonadoresBannerTitle}>Resonadores</Text>
+                  <Text style={styles.resonadoresBannerSub}>Únete a la comunidad</Text>
                 </View>
                 <Feather name="chevron-right" size={20} color="rgba(232,232,232,0.7)" />
               </View>
