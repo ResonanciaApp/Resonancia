@@ -569,7 +569,12 @@ export default function SessionDetailScreen() {
         <GhostPill noBorder style={{ backgroundColor: hexToRgba(sceneTheme.gradient[1], 0.4) }}>
           <BackPill onPress={() => router.back()} />
         </GhostPill>
-        <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
+          <Text style={styles.stickySubtitle} numberOfLines={1}>
+            {[authors[0]?.name, session.durationLabel].filter(Boolean).join(" · ")}
+          </Text>
+        </View>
         <View style={{ width: 36 }} />
       </Animated.View>
 
@@ -883,8 +888,8 @@ const styles = StyleSheet.create({
 
   // Description
   description: {
-    fontSize: 13,
-    lineHeight: 21,
+    fontSize: 14,
+    lineHeight: 22,
     marginTop: 30,
     marginBottom: 24,
     textAlign: "left",
@@ -1012,11 +1017,17 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   stickyTitle: {
-    flex: 1,
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "400",
     color: "#e8e8e8",
     textAlign: "center",
+  },
+  stickySubtitle: {
+    fontSize: 12,
+    fontWeight: "400",
+    color: "rgba(255,255,255,0.5)",
+    textAlign: "center",
+    marginTop: 1,
   },
 
   playBtn: {
