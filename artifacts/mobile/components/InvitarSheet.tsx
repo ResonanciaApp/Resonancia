@@ -44,11 +44,11 @@ const { height: SCREEN_H } = Dimensions.get("window");
 // Cuánto tarda el slide nativo del Modal en completarse (aprox.)
 const MODAL_SLIDE_MS = 420;
 // Pausa visible después de que la ventana haya subido
-const POST_OPEN_DELAY = 2000;
+const POST_OPEN_DELAY = 500;
 // Delay total antes del primer elemento
 const BASE_DELAY = MODAL_SLIDE_MS + POST_OPEN_DELAY;
-// Duración de cada fade-in + translateY
-const ANIM_DUR = 350;
+// Duración de cada fade-in + translateY (lento y zen)
+const ANIM_DUR = 900;
 
 export interface InvitarSheetProps {
   visible: boolean;
@@ -255,24 +255,13 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
         >
           <Pressable
             style={({ pressed }) => [
-              styles.btnSecondary,
-              { opacity: pressed ? 0.65 : 1 },
-            ]}
-            onPress={handleCopyLink}
-          >
-            <Feather name="copy" size={16} color="rgba(255,255,255,0.75)" />
-            <Text style={styles.btnSecondaryText}>Copiar enlace</Text>
-          </Pressable>
-
-          <Pressable
-            style={({ pressed }) => [
               styles.btnPrimary,
               { opacity: pressed ? 0.85 : 1 },
             ]}
             onPress={handleShare}
           >
-            <Feather name="share-2" size={16} color="#1B060F" />
-            <Text style={styles.btnPrimaryText}>Compartir invitación</Text>
+            <Feather name="share-2" size={16} color={theme.gradient[0]} />
+            <Text style={[styles.btnPrimaryText, { color: theme.gradient[0] }]}>Compartir invitación</Text>
           </Pressable>
         </Animated.View>
 
@@ -451,17 +440,16 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 28,
     borderRadius: 50,
-    backgroundColor: "#D4AF37",
-    shadowColor: "#D4AF37",
+    backgroundColor: "#FFFFFF",
+    shadowColor: "#000000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
+    shadowOpacity: 0.18,
     shadowRadius: 12,
     elevation: 8,
   },
   btnPrimaryText: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#1B060F",
     letterSpacing: 0.2,
   },
 
