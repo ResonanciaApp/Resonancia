@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignSelf: "stretch",
     marginHorizontal: -14,
-    marginTop: 6,
+    marginTop: 1,
   },
   dayCol: {
     alignItems: "center",
