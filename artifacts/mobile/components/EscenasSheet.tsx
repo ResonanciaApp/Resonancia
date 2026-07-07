@@ -374,11 +374,6 @@ export function EscenasSheet() {
                       style={StyleSheet.absoluteFill}
                       contentFit="cover"
                     />
-                    {active && soundOn ? (
-                      <View style={styles.playingBadge}>
-                        <Feather name="volume-2" size={11} color="#D4AF37" />
-                      </View>
-                    ) : null}
                   </Animated.View>
                   <Text
                     style={[styles.cardLabel, active && styles.cardLabelActive]}
