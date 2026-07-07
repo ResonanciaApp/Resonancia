@@ -477,7 +477,7 @@ const styles = StyleSheet.create({
 
   profileCard: { marginHorizontal: H_PAD, marginTop: 28, paddingBottom: 14, gap: 8, alignItems: "center" },
   profileTitle: { fontSize: 27, fontWeight: "800", color: TEXT, letterSpacing: 0.3 },
-  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 3, marginBottom: 28 },
+  profileDesc: { fontSize: 11, color: "rgba(255,255,255,0.90)", lineHeight: 16, textAlign: "center", maxWidth: 280, marginTop: 3, marginBottom: 28 },
 
   dividerLine: { height: 0 },
   dividerShadow: { height: 12, marginTop: 0 },
@@ -493,7 +493,7 @@ const styles = StyleSheet.create({
   chipText: { fontSize: 13, fontWeight: "400", color: TEXT, textAlign: "center" },
   chipTextSel: { color: "#1B060F" },
 
-  sectionLabel: { fontSize: 13, fontWeight: "400", color: TEXT, paddingHorizontal: H_PAD, paddingTop: 5, paddingBottom: 4 },
+  sectionLabel: { fontSize: 11, fontWeight: "400", color: TEXT, paddingHorizontal: H_PAD, paddingTop: 5, paddingBottom: 4 },
   scroll: { flex: 1 },
   controlRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingTop: 12, paddingBottom: 8 },
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },

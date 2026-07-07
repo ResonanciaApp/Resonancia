@@ -575,7 +575,7 @@ const styles = StyleSheet.create({
   /* ── Profile card ── */
   profileCard: { marginHorizontal: H_PAD, marginTop: 28, paddingBottom: 14, gap: 8, alignItems: "center" },
   profileTitle: { fontSize: 27, fontWeight: "800", color: TEXT, letterSpacing: 0.3 },
-  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 3, marginBottom: 28 },
+  profileDesc: { fontSize: 11, color: "rgba(255,255,255,0.90)", lineHeight: 16, textAlign: "center", maxWidth: 280, marginTop: 3, marginBottom: 28 },
 
   /* ── Tabs (línea subrayada) ── */
   chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -25 },
@@ -597,7 +597,7 @@ const styles = StyleSheet.create({
   viewToggleBtn: { padding: 2 },
   gridOuter: { paddingHorizontal: H_PAD, gap: GRID_GAP },
   gridRow: { flexDirection: "row", gap: GRID_GAP },
-  sectionLabel: { fontSize: 13, fontWeight: "400", color: TEXT, paddingHorizontal: H_PAD, paddingTop: 5, paddingBottom: 4 },
+  sectionLabel: { fontSize: 11, fontWeight: "400", color: TEXT, paddingHorizontal: H_PAD, paddingTop: 5, paddingBottom: 4 },
   emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },
   loadMoreFooter: { alignItems: "center", paddingVertical: 20 },
   emptyTitle: { fontSize: 17, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 8 },
