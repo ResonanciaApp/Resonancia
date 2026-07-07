@@ -60,7 +60,6 @@ const TAB_CONFIG: Record<
     iconSize?: number;
     iconOffset?: number;
     labelOffset?: number;
-    labelSize?: number;
   }
 > = {
   index:      { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
@@ -68,8 +67,8 @@ const TAB_CONFIG: Record<
   musica:     { label: "Creación",   sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",  featherIcon: "sliders", image: require("@/assets/images/tab-icon-creacion.png") },
   biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark", image: require("@/assets/images/tab-icon-universo.png") },
   video:      { label: "Videos",     sfIcon: "video",               sfIconFill: "video.fill",           featherIcon: "video" },
-  descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon",   labelSize: 13 },
-  profile:    { label: "Perfil",     sfIcon: "person",              sfIconFill: "person.fill",          featherIcon: "user",   labelSize: 13 },
+  descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon" },
+  profile:    { label: "Perfil",     sfIcon: "person",              sfIconFill: "person.fill",          featherIcon: "user" },
 };
 
 function TabItem({
@@ -117,7 +116,7 @@ function TabItem({
           {makeIcon(isFocused)}
         </View>
         <View style={[styles.labelWrap, { transform: [{ translateY: labelOffset }] }]}>
-          <Text style={[styles.label, { color: isFocused ? ACTIVE_COLOR : INACTIVE_COLOR, fontSize: conf.labelSize ?? 9.5 }]} numberOfLines={1}>
+          <Text style={[styles.label, { color: isFocused ? ACTIVE_COLOR : INACTIVE_COLOR }]} numberOfLines={1}>
             {conf.label}
           </Text>
         </View>
