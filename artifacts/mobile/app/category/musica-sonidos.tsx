@@ -436,7 +436,7 @@ export default function MusicaSonidosScreen() {
       <AddToPlaylistSheet visible={playlistSessionId !== null} sessionId={playlistSessionId ?? ""} onClose={() => setPlaylistSessionId(null)} />
 
       {/* ── Sticky header (aparece con scroll) ── */}
-      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"} onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}>
+      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity, backgroundColor: hexToRgba(theme.gradient[0], 0.5) }]} pointerEvents={stickyActive ? "auto" : "none"} onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}>
         <GhostPill style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.9) }}>
           <BackPill onPress={() => router.back()} />
         </GhostPill>
