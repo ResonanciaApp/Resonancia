@@ -1094,9 +1094,9 @@ export default function HomeScreen2() {
         <Pressable
           onPress={openEscenasSheet}
           hitSlop={8}
-          style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
+          style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1, marginLeft: 3 }]}
         >
-          <View style={[styles.universeBtnBg, { backgroundColor: hexTint(activeTheme.gradient[0], 0.70) }]}>
+          <View style={[styles.universeBtnBg, { backgroundColor: hexTint(activeTheme.gradient[0], 0.60) }]}>
             <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[1], 0.30) }]} />
             <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
           </View>
@@ -1104,7 +1104,7 @@ export default function HomeScreen2() {
 
         <Pressable
           hitSlop={8}
-          style={styles.giftBtn}
+          style={[styles.giftBtn, { marginRight: 3 }]}
           onPressIn={() =>
             Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
           }
@@ -1114,7 +1114,7 @@ export default function HomeScreen2() {
           }}
         >
           <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-            <View style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden" }}>
+            <View style={{ width: 44, height: 44, borderRadius: 22, overflow: "hidden" }}>
               <Image
                 source={require("@/assets/images/icons/regalo4.png")}
                 style={styles.giftBtnIcon}
