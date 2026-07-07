@@ -159,7 +159,7 @@ export default function VideoTabScreen() {
 
       {/* ── Sticky area: search (hides) + chips (stick) ── */}
       <Animated.View
-        style={[styles.stickyArea, { top: topPad, transform: [{ translateY: stickyTranslateY }] }]}
+        style={[styles.stickyArea, { top: topPad - 40, paddingTop: 40, transform: [{ translateY: stickyTranslateY }] }]}
         pointerEvents="box-none"
       >
         {/* Search bar */}
