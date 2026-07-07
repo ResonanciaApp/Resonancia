@@ -43,14 +43,14 @@ const { height: SCREEN_H } = Dimensions.get("window");
 
 // Cuánto tarda el slide nativo del Modal en completarse (aprox.)
 const MODAL_SLIDE_MS = 420;
-// Pausa visible después de que la ventana haya subido
-const POST_OPEN_DELAY = 500;
+// Pausa visible después de que la ventana haya subido (= cuándo arranca la tarjeta)
+const POST_OPEN_DELAY = 800;
 // Delay total antes del primer elemento
 const BASE_DELAY = MODAL_SLIDE_MS + POST_OPEN_DELAY;
 // Duración de cada fade-in + translateY (lento y zen)
-const ANIM_DUR = 2300;
-// Intervalo tarjeta → título y título → descripción
-const STAGGER = 600;
+const ANIM_DUR = 3000;
+// Intervalo tarjeta → título
+const STAGGER = 700;
 // Intervalo título → descripción
 const STAGGER_DESC = 500;
 // Intervalo descripción → botón
