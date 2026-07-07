@@ -555,6 +555,7 @@ export default function HomeScreen2() {
   const giftScaleAnim = useRef(new Animated.Value(1)).current;
 
   const dailyPhrase = HEADER_PHRASES[new Date().getDate() % HEADER_PHRASES.length];
+  const phraseAnim = useRef(new Animated.Value(1)).current;
   const phraseVisibleRef = useRef(true);
 
   // ── Loto + tabs: al activarse el sticky header, el loto se desvanece y
@@ -609,15 +610,17 @@ export default function HomeScreen2() {
       const scrolled = e.nativeEvent.contentOffset.y > 10;
       if (scrolled && phraseVisibleRef.current) {
         phraseVisibleRef.current = false;
+        Animated.timing(phraseAnim, { toValue: 0, duration: 300, useNativeDriver: true }).start();
         Animated.timing(giftBtnAnim, { toValue: 0, duration: 300, useNativeDriver: true }).start();
         Animated.timing(searchBtnAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
       } else if (!scrolled && !phraseVisibleRef.current) {
         phraseVisibleRef.current = true;
+        Animated.timing(phraseAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
         Animated.timing(giftBtnAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
         Animated.timing(searchBtnAnim, { toValue: 0, duration: 300, useNativeDriver: true }).start();
       }
     },
-    [updateStickyActive, giftBtnAnim, searchBtnAnim],
+    [updateStickyActive, phraseAnim, giftBtnAnim, searchBtnAnim],
   );
 
   // ── Buscador desplegable (se abre desde el ícono de lupa) ────────────────
@@ -754,6 +757,21 @@ export default function HomeScreen2() {
                 )}
               </View>
             </RAnimated.View>
+            {!searchOpen && (
+              <Animated.View style={[styles.headerRowLayer, { justifyContent: "center", opacity: phraseAnim }]} pointerEvents="none">
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontSize: 12,
+                    color: "rgba(255,255,255,0.6)",
+                    letterSpacing: 0.25,
+                  }}
+                  numberOfLines={1}
+                >
+                  {dailyPhrase}
+                </Text>
+              </Animated.View>
+            )}
           </Animated.View>
           <Animated.View
             pointerEvents={stickyActive || searchOpen ? "none" : "auto"}
@@ -842,22 +860,6 @@ export default function HomeScreen2() {
           updateStickyActive();
         }}
       >
-        {/* ── Frase del día ── */}
-        <Text
-          style={{
-            textAlign: "center",
-            fontSize: 12,
-            color: "rgba(255,255,255,0.6)",
-            letterSpacing: 0.25,
-            paddingHorizontal: GRID_PAD,
-            marginBottom: 14,
-            marginTop: -8,
-          }}
-          numberOfLines={2}
-        >
-          {dailyPhrase}
-        </Text>
-
         {/* ── Racha semanal ── */}
         <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: -14 }}>
           <WeeklyStreakStrip />
