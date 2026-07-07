@@ -147,14 +147,17 @@ export function EscenasSheet() {
   const previewSlideY = useRef(new Animated.Value(SCREEN_H)).current;
   // 0 = invisible / desplazado; 1 = visible en posición final
   const ctaAnim = useRef(new Animated.Value(0)).current;
+  const ctaTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Arrancar la animación DESPUÉS de que el Animated.View se monte
   useEffect(() => {
-    if (!previewScene) {
-      ctaAnim.setValue(0);
-      return;
-    }
+    // Cancelar siempre cualquier timer o animación pendiente del ciclo anterior
+    if (ctaTimerRef.current) clearTimeout(ctaTimerRef.current);
+    ctaAnim.stopAnimation();
     ctaAnim.setValue(0);
+
+    if (!previewScene) return;
+
     // Slide del preview
     Animated.timing(previewSlideY, {
       toValue: 0,
@@ -162,14 +165,20 @@ export function EscenasSheet() {
       easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
     }).start();
-    // CTA entra con delay = duración del slide (sin secuencia → sin frame-gap)
-    Animated.timing(ctaAnim, {
-      toValue: 1,
-      duration: 350,
-      delay: 380,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
-    }).start();
+
+    // CTA: setTimeout JS en vez de delay nativo → cancelable de forma fiable
+    ctaTimerRef.current = setTimeout(() => {
+      Animated.timing(ctaAnim, {
+        toValue: 1,
+        duration: 350,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }).start();
+    }, 380);
+
+    return () => {
+      if (ctaTimerRef.current) clearTimeout(ctaTimerRef.current);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [previewScene]);
 
