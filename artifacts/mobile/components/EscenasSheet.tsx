@@ -43,7 +43,7 @@ const SCREEN_H = Dimensions.get("window").height;
 const SHEET_H_PAD = 24;
 const CARD_GAP = 14;
 const CARD_W = Math.floor((SCREEN_W - SHEET_H_PAD * 2) / 2.5);
-const CARD_H = Math.floor(CARD_W * 1.55);
+const CARD_H = Math.floor(CARD_W * 1.55) + 40;
 
 const WARM_DIVIDER = "rgba(255,255,255,0.055)";
 
@@ -446,12 +446,13 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
+    gap: 10,
   },
   sliderGroup: {
-    flex: 1,
+    width: 120,
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    gap: 5,
   },
   sliderWrap: { flex: 1 },
   controlRow: {
