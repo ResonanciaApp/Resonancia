@@ -18,7 +18,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -83,8 +83,18 @@ export function EscenasSheet() {
           (o) => o.value != null && Math.abs(o.value * 60 - sleepTimerRemaining) <= 90,
         )?.value ?? null);
 
-  // ── Sheet entrance animation ──────────────────────────────────────────────
+  // ── Sheet entrance / exit animations ─────────────────────────────────────
   const sheetEnterY = useRef(new Animated.Value(SCREEN_H)).current;
+
+  /** Anima el sheet hacia abajo y luego llama a closeSheet(). */
+  const handleClose = useCallback(() => {
+    Animated.timing(sheetEnterY, {
+      toValue: SCREEN_H,
+      duration: DURATION.SHEET_CLOSE,
+      easing: easeOutCubic,
+      useNativeDriver: true,
+    }).start(() => closeSheet());
+  }, [sheetEnterY, closeSheet]);
 
   useLayoutEffect(() => {
     if (isSheetOpen) {
@@ -98,9 +108,8 @@ export function EscenasSheet() {
       // Sincronizar el borde con la escena activa al abrir
       setConfirmedSceneId(currentScene.id);
     } else {
-      sheetEnterY.setValue(SCREEN_H);
+      // La animación de cierre ya llevó sheetEnterY a SCREEN_H; solo limpiar estado
       setTimerOpen(false);
-      // Reset preview state when sheet closes
       setPreviewScene(null);
       previewSlideY.setValue(SCREEN_H);
     }
@@ -195,7 +204,7 @@ export function EscenasSheet() {
       transparent
       animationType="none"
       statusBarTranslucent
-      onRequestClose={closeSheet}
+      onRequestClose={handleClose}
     >
       {/* ── Listado de escenas ──────────────────────────────────────────────── */}
       <Animated.View
@@ -218,7 +227,7 @@ export function EscenasSheet() {
           </Animated.View>
         )}
         <View style={{ paddingTop: Math.max(insets.top, 20), paddingBottom: Math.max(insets.bottom, 20), flex: 1 }}>
-          <Pressable style={styles.closeBtn} onPress={closeSheet} hitSlop={10}>
+          <Pressable style={styles.closeBtn} onPress={handleClose} hitSlop={10}>
             <Feather name="x" size={28} color="#FFFFFF" />
           </Pressable>
           <Text style={styles.title}>Escenas</Text>
