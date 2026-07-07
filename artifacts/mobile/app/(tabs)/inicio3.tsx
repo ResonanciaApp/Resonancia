@@ -1120,7 +1120,6 @@ export default function HomeScreen2() {
                 style={styles.giftBtnIcon}
                 resizeMode="contain"
               />
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.10)" }]} />
             </View>
           </Animated.View>
         </Pressable>
