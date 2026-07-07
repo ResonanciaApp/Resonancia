@@ -578,16 +578,7 @@ export default function HomeScreen2() {
       stickyActiveRef.current = shouldBeActive;
       setStickyActive(shouldBeActive);
       updateSearchBtnVisibility();
-      Animated.timing(lotusFadeAnim, {
-        toValue: shouldBeActive ? 0 : 1,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-      Animated.timing(tabsShiftAnim, {
-        toValue: shouldBeActive ? 1 : 0,
-        duration: 250,
-        useNativeDriver: true,
-      }).start();
+      // loto permanece visible — sin fade al activar sticky header
     }
     const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
     if (shouldShowBorder !== headerBorderActiveRef.current) {
@@ -692,20 +683,15 @@ export default function HomeScreen2() {
       >
         <Animated.View style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
         <View style={styles.headerTopRow}>
-          <Animated.View
-            pointerEvents={stickyActive ? "none" : "auto"}
-            style={{ opacity: lotusFadeAnim }}
+          <Pressable
+            onPress={openEscenasSheet}
+            hitSlop={8}
+            style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
           >
-            <Pressable
-              onPress={openEscenasSheet}
-              hitSlop={8}
-              style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
-            >
-              <View style={[styles.universeBtnBg, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
-                <MaterialCommunityIcons name="spa" size={22} color="#FFFFFF" style={{ opacity: 0.9 }} />
-              </View>
-            </Pressable>
-          </Animated.View>
+            <View style={[styles.universeBtnBg, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
+              <MaterialCommunityIcons name="spa" size={22} color="#FFFFFF" style={{ opacity: 0.9 }} />
+            </View>
+          </Pressable>
           <Animated.View
             style={[
               styles.headerRowHost,
