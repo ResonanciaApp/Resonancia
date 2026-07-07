@@ -3,6 +3,7 @@ import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { usePlayer } from "@/context/PlayerContext";
 
 const GOLD = "#BE8744";
@@ -14,7 +15,6 @@ const STROKE_W = 7;
 const RADIUS = (RING_SIZE - STROKE_W) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-/** Minutos que hay que escuchar en el día para que cuente como "día activo". */
 const GOAL_MINUTES = 5;
 
 const DAY_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
@@ -58,11 +58,59 @@ const STREAK_MESSAGES: Record<number, StreakMessage> = {
   },
 };
 
+/** Sube la luminosidad de un color hex por `amount` puntos (0-100 escala HSL). */
+function brightenHex(hex: string, amount: number): string {
+  const clean = hex.replace("#", "");
+  const r = parseInt(clean.slice(0, 2), 16) / 255;
+  const g = parseInt(clean.slice(2, 4), 16) / 255;
+  const b = parseInt(clean.slice(4, 6), 16) / 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h = 0, s = 0;
+  const l = (max + min) / 2;
+
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+      case g: h = ((b - r) / d + 2) / 6; break;
+      case b: h = ((r - g) / d + 4) / 6; break;
+    }
+  }
+
+  const newL = Math.min(1, l + amount / 100);
+
+  const hue2rgb = (p: number, q: number, t: number) => {
+    let tt = t;
+    if (tt < 0) tt += 1;
+    if (tt > 1) tt -= 1;
+    if (tt < 1 / 6) return p + (q - p) * 6 * tt;
+    if (tt < 1 / 2) return q;
+    if (tt < 2 / 3) return p + (q - p) * (2 / 3 - tt) * 6;
+    return p;
+  };
+
+  let rr: number, gg: number, bb: number;
+  if (s === 0) {
+    rr = gg = bb = newL;
+  } else {
+    const q = newL < 0.5 ? newL * (1 + s) : newL + s - newL * s;
+    const p = 2 * newL - q;
+    rr = hue2rgb(p, q, h + 1 / 3);
+    gg = hue2rgb(p, q, h);
+    bb = hue2rgb(p, q, h - 1 / 3);
+  }
+
+  const toHex = (x: number) => Math.round(x * 255).toString(16).padStart(2, "0");
+  return `#${toHex(rr)}${toHex(gg)}${toHex(bb)}`;
+}
+
 function dayKey(d: Date): string {
   return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 }
 
-/** Lunes de la semana que contiene `d` (00:00). */
 function startOfWeek(d: Date): Date {
   const copy = new Date(d);
   copy.setHours(0, 0, 0, 0);
@@ -83,6 +131,12 @@ function minutesByDay(events: { playedAt: string; minutes: number }[]): Map<stri
 
 export function WeeklyStreakStrip() {
   const { statEvents } = usePlayer();
+  const { theme } = useSceneTheme();
+
+  const streakBorderColor = useMemo(
+    () => brightenHex(theme.gradient[0], 10),
+    [theme.gradient[0]]
+  );
 
   const { activeFlags, activeCount, todayIndex } = useMemo(() => {
     const byDay = minutesByDay(statEvents);
@@ -110,7 +164,6 @@ export function WeeklyStreakStrip() {
       {/* Anillo de progreso */}
       <View style={styles.ringWrap}>
         <Svg width={RING_SIZE} height={RING_SIZE}>
-          {/* Pista de fondo */}
           <Circle
             cx={RING_SIZE / 2}
             cy={RING_SIZE / 2}
@@ -119,7 +172,6 @@ export function WeeklyStreakStrip() {
             strokeWidth={STROKE_W}
             fill="none"
           />
-          {/* Arco activo */}
           <Circle
             cx={RING_SIZE / 2}
             cy={RING_SIZE / 2}
@@ -148,11 +200,15 @@ export function WeeklyStreakStrip() {
           return (
             <View key={i} style={styles.dayCol}>
               {met ? (
-                <View style={[styles.circle, styles.circleActive]}>
+                <View style={[styles.circle, styles.circleActive, { borderColor: streakBorderColor }]}>
                   <Feather name="check" size={21} color="rgba(255,255,255,0.9)" />
                 </View>
               ) : (
-                <View style={[styles.circle, styles.circleInactive, isToday && styles.circleToday]} />
+                <View style={[
+                  styles.circle,
+                  styles.circleInactive,
+                  isToday && [styles.circleToday, { borderColor: streakBorderColor }],
+                ]} />
               )}
               <Text style={[styles.dayLabel, isToday && styles.dayLabelToday]}>{label}</Text>
             </View>
@@ -221,7 +277,7 @@ const styles = StyleSheet.create({
   },
   circleActive: {
     backgroundColor: "rgba(255,255,255,0.20)",
-    borderWidth: 2,
+    borderWidth: 3,
     borderColor: GOLD,
   },
   circleInactive: {
