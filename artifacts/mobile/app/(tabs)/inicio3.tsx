@@ -554,9 +554,6 @@ export default function HomeScreen2() {
   const giftBtnAnim = useRef(new Animated.Value(1)).current;
   const giftScaleAnim = useRef(new Animated.Value(1)).current;
 
-  const dailyPhrase = HEADER_PHRASES[new Date().getDate() % HEADER_PHRASES.length];
-  const phraseAnim = useRef(new Animated.Value(1)).current;
-  const phraseVisibleRef = useRef(true);
 
   // ── Loto + tabs: al activarse el sticky header, el loto se desvanece y
   //    los tabs se desplazan sutilmente hacia la izquierda hasta el margen ──
@@ -607,20 +604,8 @@ export default function HomeScreen2() {
     (e: { nativeEvent: { contentOffset: { y: number } } }) => {
       scrollYRef.current = e.nativeEvent.contentOffset.y;
       updateStickyActive();
-      const scrolled = e.nativeEvent.contentOffset.y > 10;
-      if (scrolled && phraseVisibleRef.current) {
-        phraseVisibleRef.current = false;
-        Animated.timing(phraseAnim, { toValue: 0, duration: 300, useNativeDriver: true }).start();
-        Animated.timing(giftBtnAnim, { toValue: 0, duration: 300, useNativeDriver: true }).start();
-        Animated.timing(searchBtnAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
-      } else if (!scrolled && !phraseVisibleRef.current) {
-        phraseVisibleRef.current = true;
-        Animated.timing(phraseAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
-        Animated.timing(giftBtnAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
-        Animated.timing(searchBtnAnim, { toValue: 0, duration: 300, useNativeDriver: true }).start();
-      }
     },
-    [updateStickyActive, phraseAnim, giftBtnAnim, searchBtnAnim],
+    [updateStickyActive],
   );
 
   // ── Buscador desplegable (se abre desde el ícono de lupa) ────────────────
@@ -690,6 +675,18 @@ export default function HomeScreen2() {
 
   return (
     <View style={styles.root}>
+      {/* ── Imagen de fondo en área del header — oculta bajo el gradiente ── */}
+      <ExpoImage
+        source={require("@/assets/images/ancestrales-hero.jpg")}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 320,
+        }}
+        contentFit="cover"
+      />
       <LinearGradient colors={prevGradient} style={styles.rootGradient} />
       <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
         <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
@@ -697,157 +694,10 @@ export default function HomeScreen2() {
       <GeoUniverseBackground />
       <StatusBar barStyle="light-content" />
 
-      {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}
-      <View
-        style={[
-          styles.stickyHeader,
-          {
-            paddingTop: topPad + 2,
-          },
-        ]}
-      >
-        <Animated.View style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
-        <View style={styles.headerTopRow}>
-          <Pressable
-            onPress={openEscenasSheet}
-            hitSlop={8}
-            style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
-          >
-            <View style={[styles.universeBtnBg, { backgroundColor: "rgba(0,0,0,0.18)" }]}>
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[0], 0.28) }]} />
-              <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
-            </View>
-          </Pressable>
-          <Animated.View
-            style={[
-              styles.headerRowHost,
-              {
-                transform: [
-                  {
-                    translateX: tabsShiftAnim.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [0, -LOTUS_SHIFT_DISTANCE],
-                    }),
-                  },
-                ],
-              },
-            ]}
-          >
-            {/* AnimatedNavTabRow oculto — no borrar */}
-            <RAnimated.View
-              pointerEvents={searchOpen ? "auto" : "none"}
-              style={[styles.headerRowLayer, searchFieldLayerStyle]}
-            >
-              <View style={styles.searchInputWrap}>
-                <Ionicons name="search" size={16} color="rgba(242,231,228,0.5)" />
-                <TextInput
-                  ref={searchInputRef}
-                  style={styles.searchInput}
-                  placeholder="Buscar sesiones..."
-                  placeholderTextColor="rgba(242,231,228,0.45)"
-                  value={searchQuery}
-                  onChangeText={setSearchQuery}
-                  returnKeyType="search"
-                  autoCorrect={false}
-                />
-                {searchQuery.length > 0 && (
-                  <Pressable onPress={() => setSearchQuery("")} hitSlop={10}>
-                    <Ionicons name="close-circle" size={16} color="rgba(242,231,228,0.45)" />
-                  </Pressable>
-                )}
-              </View>
-            </RAnimated.View>
-            {!searchOpen && (
-              <Animated.View style={[styles.headerRowLayer, { justifyContent: "center", opacity: phraseAnim, marginTop: 17 }]} pointerEvents="none">
-                <Text
-                  style={{
-                    textAlign: "center",
-                    fontSize: 12,
-                    color: "rgba(255,255,255,0.6)",
-                    letterSpacing: 0.25,
-                  }}
-                  numberOfLines={1}
-                >
-                  {dailyPhrase}
-                </Text>
-              </Animated.View>
-            )}
-          </Animated.View>
-          <Animated.View
-            pointerEvents={stickyActive || searchOpen ? "none" : "auto"}
-            style={[styles.giftBtnWrap, { opacity: giftBtnAnim }]}
-          >
-            <Pressable
-              hitSlop={8}
-              style={styles.giftBtn}
-              onPressIn={() =>
-                Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
-              }
-              onPressOut={() => {
-                Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
-                setTimeout(() => setShowInvitar(true), 500);
-              }}
-            >
-              <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-                <View style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden" }}>
-                  <Image
-                    source={require("@/assets/images/icons/regalo4.png")}
-                    style={styles.giftBtnIcon}
-                    resizeMode="contain"
-                  />
-                  <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.10)" }]} />
-                </View>
-              </Animated.View>
-            </Pressable>
-          </Animated.View>
-          <Animated.View
-            pointerEvents={stickyActive || searchOpen ? "auto" : "none"}
-            style={{ opacity: searchBtnAnim }}
-          >
-            <Pressable
-              onPress={handleSearchBtnPress}
-              hitSlop={8}
-              style={({ pressed }) => [styles.searchBtn, { opacity: pressed ? 0.6 : 1 }]}
-            >
-              <Ionicons name={searchOpen ? "close" : "search"} size={searchOpen ? 25 : 27} color="#FFFFFF" style={{ opacity: 0.9 }} />
-            </Pressable>
-          </Animated.View>
-        </View>
-
-        {searchOpen && searchTerm.length > 0 && (
-          <View style={styles.searchResultsWrap}>
-            {searchResults.length === 0 ? (
-              <View style={styles.searchEmptyWrap}>
-                <Text style={styles.searchEmptyText}>Sin resultados para "{searchQuery.trim()}"</Text>
-              </View>
-            ) : (
-              <ScrollView keyboardShouldPersistTaps="handled" style={styles.searchResultsList}>
-                {searchResults.map((s) => (
-                  <Pressable
-                    key={s.id}
-                    onPress={() => handleSelectSearchResult(s)}
-                    style={({ pressed }) => [styles.searchResultRow, { opacity: pressed ? 0.7 : 1 }]}
-                  >
-                    <Image source={s.image as number} style={styles.searchResultThumb} />
-                    <View style={{ flex: 1 }}>
-                      <Text style={styles.searchResultCat} numberOfLines={1}>{s.categoryLabel}</Text>
-                      <Text style={styles.searchResultTitle} numberOfLines={1}>{s.title}</Text>
-                    </View>
-                  </Pressable>
-                ))}
-              </ScrollView>
-            )}
-          </View>
-        )}
-      </View>
-
-      {searchOpen && (
-        <Pressable style={styles.searchOutsideCatcher} onPress={closeSearch} />
-      )}
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 12 }}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: topPad + 12 }}
         showsVerticalScrollIndicator={false}
         onScroll={handleMainScroll}
         scrollEventThrottle={16}
@@ -861,7 +711,7 @@ export default function HomeScreen2() {
         }}
       >
         {/* ── Racha semanal ── */}
-        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: -14 }}>
+        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 46 }}>
           <WeeklyStreakStrip />
         </View>
 
