@@ -922,7 +922,7 @@ const styles = StyleSheet.create({
     width: 38, height: 38, alignItems: "center", justifyContent: "center",
   },
 
-  pillRow:        { flexGrow: 0, marginTop: -1, marginBottom: -11, backgroundColor: "transparent" },
+  pillRow:        { flexGrow: 0, marginTop: -11, marginBottom: -11, backgroundColor: "transparent" },
   pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingTop: 15, paddingBottom: 24 },
   pillGlow: {
     borderRadius: 999,
