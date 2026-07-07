@@ -541,6 +541,7 @@ export default function HomeScreen2() {
   const scrollYRef = useRef(0);
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
   const giftBtnAnim = useRef(new Animated.Value(1)).current;
+  const giftScaleAnim = useRef(new Animated.Value(1)).current;
 
   // ── Loto + tabs: al activarse el sticky header, el loto se desvanece y
   //    los tabs se desplazan sutilmente hacia la izquierda hasta el margen ──
@@ -776,13 +777,21 @@ export default function HomeScreen2() {
             <Pressable
               onPress={() => router.push("/invitar" as never)}
               hitSlop={8}
-              style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.7 : 1 }]}
+              style={styles.giftBtn}
+              onPressIn={() =>
+                Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
+              }
+              onPressOut={() =>
+                Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start()
+              }
             >
-              <Image
-                source={require("@/assets/images/icons/regalo.png")}
-                style={styles.giftBtnIcon}
-                resizeMode="contain"
-              />
+              <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
+                <Image
+                  source={require("@/assets/images/icons/regalo.png")}
+                  style={styles.giftBtnIcon}
+                  resizeMode="contain"
+                />
+              </Animated.View>
             </Pressable>
           </Animated.View>
           <Animated.View

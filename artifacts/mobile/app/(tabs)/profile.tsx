@@ -677,6 +677,7 @@ export default function ProfileScreen() {
   const [bgFrom, setBgFrom] = useState<readonly string[]>(defaultBg);
   const [bgTo, setBgTo] = useState<readonly string[]>(defaultBg);
   const crossFadeAnim = useRef(new Animated.Value(1)).current;
+  const giftScaleAnim = useRef(new Animated.Value(1)).current;
   const prevBgRef = useRef<readonly string[]>(defaultBg);
   const bgMountedRef = useRef(false);
   // Fade-in del glifo al montar (carga async desde AsyncStorage → aparición suave).
@@ -790,11 +791,24 @@ export default function ProfileScreen() {
             <Feather name="settings" size={25} color="#e8e8e8" />
           </Pressable>
           <Text style={styles.stickyTitle}>Perfil</Text>
-          <Image
-            source={require("@/assets/images/regalo-perfil.png")}
-            style={styles.giftIcon}
-            contentFit="contain"
-          />
+          <Pressable
+            onPress={() => router.push("/invitar" as never)}
+            hitSlop={8}
+            onPressIn={() =>
+              Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
+            }
+            onPressOut={() =>
+              Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start()
+            }
+          >
+            <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
+              <Image
+                source={require("@/assets/images/regalo-perfil.png")}
+                style={styles.giftIcon}
+                contentFit="contain"
+              />
+            </Animated.View>
+          </Pressable>
         </View>
 
         <View style={styles.pillRow}>
