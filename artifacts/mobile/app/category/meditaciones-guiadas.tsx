@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chip: { height: 34, paddingHorizontal: 12, borderRadius: 20, overflow: "hidden", alignItems: "center", justifyContent: "center" },
   chipUnsel: { borderWidth: 2, borderColor: "rgba(255,255,255,0.1)" },
-  chipText: { fontSize: 13, fontWeight: "600", color: TEXT, textAlign: "center" },
+  chipText: { fontSize: 13, fontWeight: "400", color: TEXT, textAlign: "center" },
   chipTextSel: { color: "#1B060F" },
 
   sectionLabel: { fontSize: 13, fontWeight: "400", color: TEXT, paddingHorizontal: H_PAD, paddingTop: 5, paddingBottom: 4 },
