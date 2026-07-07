@@ -296,7 +296,7 @@ export default function SessionDetailScreen() {
       }));
 
   return (
-    <View style={[styles.root, { backgroundColor: sceneTheme.gradient[0] }]}>
+    <View style={[styles.root, { backgroundColor: catBg.solid }]}>
       {/* ── Imagen backdrop — se desvanece con scroll ─────────────────────── */}
       <Animated.View
         pointerEvents="none"
@@ -309,10 +309,11 @@ export default function SessionDetailScreen() {
         colors={[
           `${sceneTheme.gradient[0]}00`,
           `${sceneTheme.gradient[0]}1A`,
-          `${sceneTheme.gradient[0]}99`,
+          `${sceneTheme.gradient[0]}66`,
           sceneTheme.gradient[0] as string,
+          sceneTheme.gradient[1] as string,
         ]}
-        locations={[0, 0.2, 0.42, 0.65]}
+        locations={[0, 0.15, 0.33, 0.46, 1]}
         style={StyleSheet.absoluteFill}
       />
       <StatusBar barStyle="light-content" />
