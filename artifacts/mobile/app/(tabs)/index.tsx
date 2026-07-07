@@ -866,14 +866,11 @@ export default function HomeScreen2() {
                       />
                     )}
                     <View style={{ flex: 1 }}>
-                      <Text style={styles.heroMetaText}>
-                        {filteredFeatured.categoryLabel} · {filteredFeatured.durationLabel}
-                      </Text>
                       <Text style={styles.heroTitle} numberOfLines={2}>
                         {filteredFeatured.title}
                       </Text>
                       <Text style={styles.heroAuthor} numberOfLines={1}>
-                        {heroAuthor}
+                        {filteredFeatured.categoryLabel} · {heroAuthor}
                       </Text>
                     </View>
                   </View>
