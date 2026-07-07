@@ -134,7 +134,7 @@ export default function VideoTabScreen() {
 
       {/* ── Sticky area: search (hides) + chips (stick) ── */}
       <View
-        style={[styles.stickyArea, { top: topPad }]}
+        style={[styles.stickyArea, { top: topPad, backgroundColor: activeTheme.gradient[0] }]}
         pointerEvents="box-none"
       >
         {/* Search bar */}
@@ -158,7 +158,7 @@ export default function VideoTabScreen() {
         </View>
 
         {/* Chips row — full-bleed */}
-        <View style={[styles.chipsWrap, { backgroundColor: activeTheme.gradient[0] }]}>
+        <View style={styles.chipsWrap}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -227,6 +227,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 10,
+    elevation: 10,
   },
 
   searchWrap: {
