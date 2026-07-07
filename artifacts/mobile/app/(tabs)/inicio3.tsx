@@ -734,7 +734,7 @@ export default function HomeScreen2() {
         }}
       >
         {/* ── Racha semanal ── */}
-        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 266 }}>
+        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 260 }}>
           <WeeklyStreakStrip />
         </View>
 
@@ -781,7 +781,7 @@ export default function HomeScreen2() {
         {/* ── BANNER RESONADORES ── */}
         <Pressable
           onPress={() => router.push("/resonadores" as never)}
-          style={{ marginBottom: 60, marginHorizontal: GRID_PAD }}
+          style={{ marginBottom: 35, marginHorizontal: GRID_PAD }}
         >
           <View
             style={[styles.resonadoresBanner, {
@@ -792,7 +792,7 @@ export default function HomeScreen2() {
           >
             <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
               <LinearGradient
-                colors={["rgba(247,203,107,0.5)", "rgba(251,169,128,0.5)"]}
+                colors={["rgba(247,203,107,0.75)", "rgba(251,169,128,0.75)"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={{ width: 44, height: 44, borderRadius: 15, alignItems: "center", justifyContent: "center" }}
