@@ -22,6 +22,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -40,12 +41,14 @@ type SceneThemeCtx = {
   activeSceneId: SceneId;
   theme: SceneTheme;
   setActiveScene: (id: SceneId) => void;
-  /** Cambia el tema con un fade-in de 450ms. */
+  /** Cambia el tema con un fade-in de 400ms. */
   setActiveSceneWithFade: (id: SceneId) => void;
   /** Colores del overlay de transición (tema ANTERIOR durante el fade). null = no hay transición. */
   overlayColors: readonly [string, string] | null;
   /** Opacidad animada del overlay (1 → 0 durante la transición). */
   overlayOpacity: Animated.Value;
+  /** Limpia el overlay al finalizar el fade. Llamado por el componente overlay desde useLayoutEffect. */
+  clearOverlay: () => void;
 };
 
 const SceneThemeContext = createContext<SceneThemeCtx | null>(null);
@@ -92,28 +95,28 @@ export function SceneThemeProvider({
     AsyncStorage.setItem(SCENE_THEME_STORAGE_KEY, id).catch(() => {});
   }, []);
 
+  const clearOverlay = useCallback(() => {
+    setOverlayColors(null);
+  }, []);
+
   const setActiveSceneWithFade = useCallback((id: SceneId) => {
     // Capture current gradient BEFORE updating state
     const currentGradient = (SCENE_THEMES[activeSceneId] ?? SCENE_THEMES[DEFAULT_THEME_ID]).gradient;
     // Mount overlay at full opacity with OLD colors
-    setOverlayColors(currentGradient);
     overlayOpacity.setValue(1);
+    setOverlayColors(currentGradient);
     // Apply new theme immediately behind the overlay
     setActiveSceneId(id);
     AsyncStorage.setItem(SCENE_THEME_STORAGE_KEY, id).catch(() => {});
-    // Fade out overlay → new theme becomes visible
-    Animated.timing(overlayOpacity, {
-      toValue: 0,
-      duration: 400,
-      useNativeDriver: true,
-    }).start(() => setOverlayColors(null));
+    // La animación de fade-out la inicia SceneThemeTransitionOverlay en su
+    // useLayoutEffect, garantizando que el overlay ya esté pintado antes de animar.
   }, [activeSceneId, overlayOpacity]);
 
   const theme = SCENE_THEMES[activeSceneId] ?? SCENE_THEMES[DEFAULT_THEME_ID];
 
   const value = useMemo(
-    () => ({ activeSceneId, theme, setActiveScene, setActiveSceneWithFade, overlayColors, overlayOpacity }),
-    [activeSceneId, theme, setActiveScene, setActiveSceneWithFade, overlayColors, overlayOpacity],
+    () => ({ activeSceneId, theme, setActiveScene, setActiveSceneWithFade, overlayColors, overlayOpacity, clearOverlay }),
+    [activeSceneId, theme, setActiveScene, setActiveSceneWithFade, overlayColors, overlayOpacity, clearOverlay],
   );
 
   return <SceneThemeContext.Provider value={value}>{children}</SceneThemeContext.Provider>;
@@ -126,11 +129,30 @@ export function useSceneTheme() {
 }
 
 /**
- * Overlay de transición de tema. Montar en el root layout (dentro de SceneThemeProvider).
- * Renderiza el degradado del tema ANTERIOR con opacidad 1→0 durante el fade.
+ * Overlay de transición de tema. Montar en el root layout Y dentro de cada Modal
+ * que use temas (los Modals de RN flotan por encima del árbol principal).
+ *
+ * El fade se arranca en `useLayoutEffect` — garantiza que el overlay ya está
+ * pintado antes de iniciar la animación, evitando que el nativo anime antes
+ * del primer frame y el color aparezca "de golpe".
  */
 export function SceneThemeTransitionOverlay() {
-  const { overlayColors, overlayOpacity } = useSceneTheme();
+  const { overlayColors, overlayOpacity, clearOverlay } = useSceneTheme();
+
+  useLayoutEffect(() => {
+    if (!overlayColors) return;
+    // El overlay acaba de montarse (o de recibir colores) → arrancar fade-out
+    Animated.timing(overlayOpacity, {
+      toValue: 0,
+      duration: 400,
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      if (finished) clearOverlay();
+    });
+  // Solo queremos re-disparar cuando el overlay se activa (colores pasan de null a algo)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [overlayColors]);
+
   if (!overlayColors) return null;
   return (
     <Animated.View
