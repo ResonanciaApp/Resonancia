@@ -212,6 +212,8 @@ export default function VideoTabScreen() {
           </ScrollView>
           <Animated.View style={[styles.chipsDivider, { opacity: dividerOpacity }]} />
         </View>
+        {/* Background fill — extends chips bg to screen bottom */}
+        <View style={{ flex: 1, backgroundColor: activeTheme.gradient[0] }} pointerEvents="none" />
       </Animated.View>
 
       {/* Sort menu */}
@@ -252,6 +254,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
+    bottom: 0,
     zIndex: 10,
   },
 
@@ -273,7 +276,7 @@ const styles = StyleSheet.create({
   },
   searchInput: { flex: 1, fontSize: 14, padding: 0 },
 
-  chipsWrap: { height: CHIPS_H, justifyContent: "center" },
+  chipsWrap: { height: CHIPS_H, justifyContent: "center", flexShrink: 0 },
   chipsRow: { paddingHorizontal: 20, gap: 8, alignItems: "center" },
   chip: {
     borderRadius: 20,
