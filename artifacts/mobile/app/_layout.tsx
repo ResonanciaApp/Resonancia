@@ -43,6 +43,7 @@ import { MixerProvider } from "@/context/MixerContext";
 import { SoundsProvider } from "@/context/SoundsContext";
 import { SaveEventProvider } from "@/context/SaveEventContext";
 import { PlayerProvider } from "@/context/PlayerContext";
+import { GeoUniverseProvider } from "@/context/GeoUniverseContext";
 import { PremiumProvider } from "@/context/PremiumContext";
 import { UserProfileProvider } from "@/context/UserProfileContext";
 import { ProfileSync } from "@/components/ProfileSync";
@@ -389,6 +390,7 @@ export default function RootLayout() {
                         <FoldersPlaylistsProvider>
                         <DiarioFavoritesProvider>
                           <SceneThemeProvider initialSceneId={initialSceneId ?? undefined}>
+                          <GeoUniverseProvider>
                             <ThemedGestureRoot>
                               <StatusBar hidden />
                               <KeyboardProvider>
@@ -397,6 +399,7 @@ export default function RootLayout() {
                               <BrightnessOverlay />
                               <SceneThemeTransitionOverlay />
                             </ThemedGestureRoot>
+                          </GeoUniverseProvider>
                           </SceneThemeProvider>
                         </DiarioFavoritesProvider>
                         </FoldersPlaylistsProvider>

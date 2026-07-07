@@ -42,6 +42,7 @@ import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
+import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
@@ -670,6 +671,7 @@ export default function HomeScreen2() {
       <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
         <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
       </Animated.View>
+      <GeoUniverseBackground />
       <StatusBar barStyle="light-content" />
 
       {/* ── STICKY HEADER: avatar + nav-tabs — permanece visible al hacer scroll ── */}

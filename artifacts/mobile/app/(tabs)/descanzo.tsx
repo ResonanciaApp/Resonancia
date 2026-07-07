@@ -20,6 +20,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import Svg, { Path, Rect } from "react-native-svg";
 
+import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useColors } from "@/hooks/useColors";
 import { DESCANSO_SOUNDS } from "@/data/descanso-sounds";
@@ -417,6 +418,7 @@ export default function DescansoScreen() {
       style={styles.root}
     >
       <StatusBar barStyle="light-content" />
+      <GeoUniverseBackground />
       <NightSky />
 
       <ScrollView

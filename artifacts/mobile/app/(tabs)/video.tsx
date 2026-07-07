@@ -18,6 +18,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
 import { useColors } from "@/hooks/useColors";
@@ -112,6 +113,7 @@ export default function VideoTabScreen() {
       <Stack.Screen options={{ headerShown: false }} />
       <StatusBar barStyle="light-content" />
       <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
+      <GeoUniverseBackground />
 
       <View
         style={[

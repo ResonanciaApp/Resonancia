@@ -35,6 +35,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { VolumeSlider } from "@/components/VolumeSlider";
 import { AMBIENT_SCENES, useAmbientPlayer, type SceneId } from "@/context/AmbientPlayerContext";
+import { useGeoUniverse } from "@/context/GeoUniverseContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 
@@ -73,6 +74,7 @@ export function EscenasSheet() {
     setSleepTimer,
   } = useAmbientPlayer();
 
+  const { enabled: geoUniverseEnabled, setEnabled: setGeoUniverseEnabled } = useGeoUniverse();
   const [timerOpen, setTimerOpen] = useState(false);
   const [videoEnabled, setVideoEnabled] = useState(false);
   // ID de la escena CONFIRMADA (la que muestra el borde blanco en el carrusel).
@@ -325,6 +327,19 @@ export function EscenasSheet() {
             <Switch
               value={videoEnabled}
               onValueChange={setVideoEnabled}
+              trackColor={{ false: "rgba(255,255,255,0.18)", true: "#D4AF37" }}
+              thumbColor="#FFFFFF"
+              ios_backgroundColor="rgba(255,255,255,0.18)"
+            />
+          </View>
+
+          {/* Universo geométrico */}
+          <View style={styles.controlRow}>
+            <MaterialCommunityIcons name="hexagon-multiple-outline" size={17} color="rgba(255,255,255,0.65)" style={styles.controlIcon} />
+            <Text style={styles.controlLabel}>Activa el universo geométrico</Text>
+            <Switch
+              value={geoUniverseEnabled}
+              onValueChange={setGeoUniverseEnabled}
               trackColor={{ false: "rgba(255,255,255,0.18)", true: "#D4AF37" }}
               thumbColor="#FFFFFF"
               ios_backgroundColor="rgba(255,255,255,0.18)"
