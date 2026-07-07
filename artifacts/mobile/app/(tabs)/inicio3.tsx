@@ -781,7 +781,7 @@ export default function HomeScreen2() {
         {/* ── BANNER RESONADORES ── */}
         <Pressable
           onPress={() => router.push("/resonadores" as never)}
-          style={{ marginBottom: 35, marginHorizontal: GRID_PAD }}
+          style={{ marginBottom: 35, marginHorizontal: GRID_PAD, marginTop: -12 }}
         >
           <View
             style={[styles.resonadoresBanner, {
@@ -1597,7 +1597,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: { fontSize: 20, fontWeight: "600", letterSpacing: 0.3, marginBottom: 24, color: "#e8e8e8" },
   resonadoresBanner: {
-    height: 90,
+    height: 80,
     borderRadius: 14,
     overflow: "hidden",
     flexDirection: "row",
