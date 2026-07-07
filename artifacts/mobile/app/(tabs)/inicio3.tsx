@@ -1104,7 +1104,7 @@ export default function HomeScreen2() {
 
         <Pressable
           hitSlop={8}
-          style={styles.giftBtn}
+          style={[styles.giftBtn, { marginLeft: 4 }]}
           onPressIn={() =>
             Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
           }
@@ -1116,7 +1116,7 @@ export default function HomeScreen2() {
           <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
             <View style={{ width: 44, height: 44, borderRadius: 22, overflow: "hidden" }}>
               <Image
-                source={require("@/assets/images/icons/regalo4.png")}
+                source={require("@/assets/images/icons/regalo10.png")}
                 style={styles.giftBtnIcon}
                 resizeMode="contain"
               />
@@ -1289,9 +1289,9 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   universeBtn: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
     overflow: "hidden",
   },
   universeBtnBg: {
