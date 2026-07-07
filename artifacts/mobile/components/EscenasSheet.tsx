@@ -134,7 +134,7 @@ export function EscenasSheet() {
     AMBIENT_SCENES.forEach((s) => {
       Animated.timing(borderAnims[s.id], {
         toValue: s.id === confirmedSceneId ? 1 : 0,
-        duration: 250,
+        duration: 700,
         useNativeDriver: false,
       }).start();
     });
