@@ -679,7 +679,7 @@ export default function HomeScreen2() {
   );
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: activeTheme.gradient[0] }]}>
       {/* ── Imagen de fondo — se desvanece con scroll ── */}
       <Animated.View
         style={{ position: "absolute", top: 0, left: 0, right: 0, height: 380, opacity: backdropAnim }}
