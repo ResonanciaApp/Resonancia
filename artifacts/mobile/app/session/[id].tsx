@@ -35,13 +35,14 @@ import { getSessionById, SESSIONS } from "@/data/sessions";
 import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { hexToRgba } from "@/utils/color";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 
 const { width } = Dimensions.get("window");
 const HEADER_H = 343;
 
-function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: object }) {
+function GlowPill({ onPress, pillStyle, bgColor }: { onPress: () => void; pillStyle: object; bgColor?: string }) {
   const scale  = useRef(new Animated.Value(1)).current;
   const bright = useRef(new Animated.Value(0)).current;
 
@@ -65,7 +66,7 @@ function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: obje
       <Pressable
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        style={[pillStyle, { overflow: "hidden", backgroundColor: "rgba(0,0,0,0.14)" }]}
+        style={[pillStyle, { overflow: "hidden", backgroundColor: bgColor ?? "rgba(0,0,0,0.14)" }]}
       >
         <Animated.View
           pointerEvents="none"
@@ -76,7 +77,7 @@ function GlowPill({ onPress, pillStyle }: { onPress: () => void; pillStyle: obje
             opacity: bright,
           }}
         />
-        <Feather name="arrow-left" size={22} color="#FFF" />
+        <Feather name="chevron-left" size={22} color="#FFF" />
       </Pressable>
     </Animated.View>
   );
@@ -307,7 +308,7 @@ export default function SessionDetailScreen() {
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
             <View style={styles.pillBorder}>
-              <GlowPill onPress={() => router.back()} pillStyle={styles.heroBackPill} />
+              <GlowPill onPress={() => router.back()} pillStyle={styles.heroBackPill} bgColor={hexToRgba(sceneTheme.gradient[1], 0.7)} />
             </View>
             <Pressable onPress={handleInstagramShare} hitSlop={10} style={({ pressed }) => [styles.igBtn, { opacity: pressed ? 0.6 : 1 }]}>
               <FontAwesome name="instagram" size={20} color="#e8e8e8" />
@@ -564,7 +565,7 @@ export default function SessionDetailScreen() {
         style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: stickyHeaderColor }]}
       >
         <View style={styles.pillBorder}>
-          <GlowPill onPress={() => router.back()} pillStyle={styles.stickyBackPill} />
+          <GlowPill onPress={() => router.back()} pillStyle={styles.stickyBackPill} bgColor={hexToRgba(sceneTheme.gradient[1], 0.4)} />
         </View>
         <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
         <View style={{ width: 36 }} />
