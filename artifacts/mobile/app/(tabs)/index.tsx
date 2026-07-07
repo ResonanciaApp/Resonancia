@@ -776,11 +776,14 @@ export default function HomeScreen2() {
               }}
             >
               <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-                <Image
-                  source={require("@/assets/images/icons/regalo4.png")}
-                  style={styles.giftBtnIcon}
-                  resizeMode="contain"
-                />
+                <View style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden" }}>
+                  <Image
+                    source={require("@/assets/images/icons/regalo4.png")}
+                    style={styles.giftBtnIcon}
+                    resizeMode="contain"
+                  />
+                  <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.10)" }]} />
+                </View>
               </Animated.View>
             </Pressable>
           </Animated.View>

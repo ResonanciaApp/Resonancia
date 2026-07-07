@@ -806,11 +806,14 @@ export default function ProfileScreen() {
             }}
           >
             <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-              <Image
-                source={require("@/assets/images/icons/regalo4.png")}
-                style={styles.giftIcon}
-                contentFit="contain"
-              />
+              <View style={{ width: 35, height: 35, borderRadius: 17.5, overflow: "hidden" }}>
+                <Image
+                  source={require("@/assets/images/icons/regalo4.png")}
+                  style={styles.giftIcon}
+                  contentFit="contain"
+                />
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.10)" }]} />
+              </View>
             </Animated.View>
           </Pressable>
         </View>
