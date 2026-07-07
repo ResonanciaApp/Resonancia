@@ -136,7 +136,7 @@ export default function VideoTabScreen() {
                     },
                   ]}
                 >
-                  <Text style={[styles.chipText, { color: sel ? "#1B060F" : colors.mutedForeground }]}>
+                  <Text style={[styles.chipText, { color: sel ? "#1B060F" : "#F4F4F4" }]}>
                     {chip}
                   </Text>
                 </Pressable>
