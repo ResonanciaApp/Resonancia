@@ -155,20 +155,21 @@ export function EscenasSheet() {
       return;
     }
     ctaAnim.setValue(0);
-    Animated.sequence([
-      Animated.timing(previewSlideY, {
-        toValue: 0,
-        duration: 380,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }),
-      Animated.timing(ctaAnim, {
-        toValue: 1,
-        duration: 350,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }),
-    ]).start();
+    // Slide del preview
+    Animated.timing(previewSlideY, {
+      toValue: 0,
+      duration: 380,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+    // CTA entra con delay = duración del slide (sin secuencia → sin frame-gap)
+    Animated.timing(ctaAnim, {
+      toValue: 1,
+      duration: 350,
+      delay: 380,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [previewScene]);
 
