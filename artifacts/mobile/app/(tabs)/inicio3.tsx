@@ -311,18 +311,31 @@ export default function HomeScreen2() {
   const [prevGradient, setPrevGradient] = useState(activeTheme.gradient);
   const gradientFade = useRef(new Animated.Value(1)).current;
   const isFirstSceneRender = useRef(true);
+  // Cross-fade imagen backdrop (mismo timing que gradiente)
+  const currentSceneImage = AMBIENT_SCENES.find((s) => s.id === activeSceneId)?.image;
+  const [prevSceneImage, setPrevSceneImage] = useState(currentSceneImage);
+  const imageFade = useRef(new Animated.Value(1)).current;
   useEffect(() => {
     if (isFirstSceneRender.current) {
       isFirstSceneRender.current = false;
       return;
     }
     gradientFade.setValue(0);
-    Animated.timing(gradientFade, {
-      toValue: 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start(() => {
+    imageFade.setValue(0);
+    Animated.parallel([
+      Animated.timing(gradientFade, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(imageFade, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
       setPrevGradient(activeTheme.gradient);
+      setPrevSceneImage(currentSceneImage);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeSceneId]);
@@ -685,11 +698,20 @@ export default function HomeScreen2() {
         style={{ position: "absolute", top: 0, left: 0, right: 0, height: 400, opacity: backdropAnim }}
         pointerEvents="none"
       >
+        {/* Capa anterior (estática mientras dura el fade) */}
         <ExpoImage
-          source={AMBIENT_SCENES.find((s) => s.id === activeSceneId)?.image}
+          source={prevSceneImage}
           style={StyleSheet.absoluteFill}
           contentFit="cover"
         />
+        {/* Nueva imagen — fade-in sincronizado con el gradiente */}
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: imageFade }]}>
+          <ExpoImage
+            source={currentSceneImage}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+          />
+        </Animated.View>
       </Animated.View>
       <LinearGradient
         colors={[
