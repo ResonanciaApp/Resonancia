@@ -364,14 +364,14 @@ const styles = StyleSheet.create({
   },
   messageHighlight: {
     color: "rgba(255,255,255,0.90)",
-    fontSize: 14,
+    fontSize: 10,
     fontWeight: "700",
     textAlign: "center",
     letterSpacing: 0.2,
   },
   message: {
     color: TEXT,
-    fontSize: 13,
+    fontSize: 12,
     lineHeight: 19,
     textAlign: "center",
   },
