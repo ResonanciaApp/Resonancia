@@ -345,7 +345,6 @@ export function EscenasSheet() {
               <Feather name="x" size={22} color="#FFF" />
             </Pressable>
             <Text style={styles.previewTitle}>{previewScene.label}</Text>
-            <View style={styles.previewIconBtn} />
           </View>
 
           {/* Contenido */}
