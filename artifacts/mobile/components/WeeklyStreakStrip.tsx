@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
     color: TEXT,
   },
   dayLabelInactivePos: {
-    marginTop: -3,
+    marginTop: -2,
   },
 
   messageWrap: {
