@@ -1376,7 +1376,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  pageTitle: { fontSize: 28, fontWeight: "700", letterSpacing: 0.5 },
+  pageTitle: { fontSize: 28, fontWeight: "300", letterSpacing: 0.5 },
 
   // ── Sticky header (Panel/Biblioteca/Historial/Registros) ──────────────────
   stickyHeader: {
@@ -1413,7 +1413,7 @@ const styles = StyleSheet.create({
     marginRight: 3,
     marginTop: 1,
   },
-  stickyTitle: { fontSize: 18, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3 },
+  stickyTitle: { fontSize: 18, fontWeight: "300", color: "#F4F4F4", letterSpacing: 0.3 },
   pillRow: {
     flexDirection: "row",
     gap: 8,
@@ -1495,7 +1495,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#1B060F",
   },
-  userName: { fontSize: 20, fontWeight: "700", textAlign: "center" },
+  userName: { fontSize: 20, fontWeight: "300", textAlign: "center" },
   locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },
   locationText: { fontSize: 12 },
   bioText: { fontSize: 13, lineHeight: 19, textAlign: "center", paddingHorizontal: 8, fontStyle: "italic" },
