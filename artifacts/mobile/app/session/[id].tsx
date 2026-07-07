@@ -874,9 +874,9 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   title: {
-    fontSize: 15,
+    fontSize: 23,
     fontWeight: "400",
-    lineHeight: 22,
+    lineHeight: 30,
     letterSpacing: -0.3,
     textAlign: "left",
   },
