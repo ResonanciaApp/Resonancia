@@ -1380,9 +1380,10 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.06)",
   },
   giftIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 35,
+    height: 35,
+    borderRadius: 17.5,
+    marginRight: 1,
   },
   stickyTitle: { fontSize: 18, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3 },
   pillRow: {
