@@ -727,33 +727,7 @@ export default function HomeScreen2() {
               },
             ]}
           >
-            <RAnimated.View
-              pointerEvents={searchOpen ? "none" : "auto"}
-              style={[styles.headerRowLayer, navRowLayerStyle]}
-            >
-              <AnimatedNavTabRow
-                tabs={NAV_TABS}
-                activeTab={
-                  activeFilter
-                    ? NAV_TABS.find((t) => t.cats.join() === activeFilter.join())?.id ?? null
-                    : TODOS_TAB_ID
-                }
-                onSelect={(id) => {
-                  const tab = NAV_TABS.find((t) => t.id === id);
-                  if (!tab) return;
-                  setSesionesOpen(false);
-                  setSesAncestral(false);
-                  setSesMeditacion(false);
-                  setActiveFilter(id === TODOS_TAB_ID ? null : tab.cats);
-                }}
-                onClear={() => {
-                  setSesionesOpen(false);
-                  setSesAncestral(false);
-                  setSesMeditacion(false);
-                  setActiveFilter(null);
-                }}
-              />
-            </RAnimated.View>
+            {/* AnimatedNavTabRow oculto — no borrar */}
             <RAnimated.View
               pointerEvents={searchOpen ? "auto" : "none"}
               style={[styles.headerRowLayer, searchFieldLayerStyle]}
