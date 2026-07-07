@@ -93,12 +93,65 @@ export default function VideoTabScreen() {
       <LinearGradient colors={activeTheme.gradient} style={StyleSheet.absoluteFill} />
       <GeoUniverseBackground />
 
+      {/* ── Sticky header: normal flow — transparent over gradient ── */}
+      <View style={[styles.stickyHeader, { paddingTop: topPad }]}>
+        {/* Search bar */}
+        <View style={styles.searchWrap}>
+          <View style={[styles.searchBox, { backgroundColor: "rgba(0,0,0,0.14)", borderColor: "rgba(255,255,255,0.7)" }]}>
+            <Feather name="search" size={16} color={colors.mutedForeground} />
+            <TextInput
+              value={query}
+              onChangeText={setQuery}
+              placeholder="Buscar videos"
+              placeholderTextColor={colors.mutedForeground}
+              style={[styles.searchInput, { color: colors.foreground }]}
+              returnKeyType="search"
+            />
+            {query.length > 0 && (
+              <Pressable onPress={() => setQuery("")} hitSlop={8}>
+                <Feather name="x-circle" size={15} color={colors.mutedForeground} />
+              </Pressable>
+            )}
+          </View>
+        </View>
+
+        {/* Chips row */}
+        <View style={styles.chipsWrap}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.chipsRow}
+          >
+            {FILTER_CHIPS.map((chip) => {
+              const sel = chip === activeChip;
+              return (
+                <Pressable
+                  key={chip}
+                  onPress={() => setActiveChip(chip)}
+                  style={[
+                    styles.chip,
+                    {
+                      backgroundColor: sel ? colors.primary : "rgba(0,0,0,0.14)",
+                      borderColor: sel ? colors.primary : CHIP_BORDER,
+                    },
+                  ]}
+                >
+                  <Text style={[styles.chipText, { color: sel ? colors.primaryForeground : colors.mutedForeground }]}>
+                    {chip}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </View>
+      </View>
+
       {/* ── Scrollable content ── */}
       <ScrollView
-        style={StyleSheet.absoluteFill}
+        style={{ flex: 1 }}
         contentContainerStyle={{
-          paddingTop: topPad + SEARCH_H + CHIPS_H + 8,
           paddingHorizontal: 20,
+          paddingTop: 8,
           paddingBottom: 100 + bottomPad,
         }}
         showsVerticalScrollIndicator={false}
@@ -131,62 +184,6 @@ export default function VideoTabScreen() {
           filtered.map((v) => <VideoCard key={v.id} video={v} feed />)
         )}
       </ScrollView>
-
-      {/* ── Sticky area: search (hides) + chips (stick) ── */}
-      <View
-        style={[styles.stickyArea, { top: topPad, backgroundColor: activeTheme.gradient[0] }]}
-        pointerEvents="box-none"
-      >
-        {/* Search bar */}
-        <View style={styles.searchWrap}>
-          <View style={[styles.searchBox, { backgroundColor: "rgba(0,0,0,0.14)", borderColor: "rgba(255,255,255,0.7)" }]}>
-            <Feather name="search" size={16} color={colors.mutedForeground} />
-            <TextInput
-              value={query}
-              onChangeText={setQuery}
-              placeholder="Buscar videos"
-              placeholderTextColor={colors.mutedForeground}
-              style={[styles.searchInput, { color: colors.foreground }]}
-              returnKeyType="search"
-            />
-            {query.length > 0 && (
-              <Pressable onPress={() => setQuery("")} hitSlop={8}>
-                <Feather name="x-circle" size={15} color={colors.mutedForeground} />
-              </Pressable>
-            )}
-          </View>
-        </View>
-
-        {/* Chips row — full-bleed */}
-        <View style={styles.chipsWrap}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.chipsRow}
-          >
-            {FILTER_CHIPS.map((chip) => {
-              const sel = chip === activeChip;
-              return (
-                <Pressable
-                  key={chip}
-                  onPress={() => setActiveChip(chip)}
-                  style={[
-                    styles.chip,
-                    {
-                      backgroundColor: sel ? colors.primary : "rgba(0,0,0,0.14)",
-                      borderColor: sel ? colors.primary : CHIP_BORDER,
-                    },
-                  ]}
-                >
-                  <Text style={[styles.chipText, { color: sel ? colors.primaryForeground : colors.mutedForeground }]}>
-                    {chip}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-        </View>
-      </View>
 
       {/* Sort menu */}
       <Modal visible={sortOpen} transparent animationType="fade" onRequestClose={() => setSortOpen(false)}>
@@ -222,12 +219,8 @@ export default function VideoTabScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#210911" },
 
-  stickyArea: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    zIndex: 10,
-    elevation: 10,
+  stickyHeader: {
+    backgroundColor: "transparent",
   },
 
   searchWrap: {
