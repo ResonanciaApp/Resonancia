@@ -90,7 +90,7 @@ export function EscenasSheet() {
   const handleClose = useCallback(() => {
     Animated.timing(sheetEnterY, {
       toValue: SCREEN_H,
-      duration: DURATION.SHEET_CLOSE,
+      duration: 460,
       easing: easeOutCubic,
       useNativeDriver: true,
     }).start(() => closeSheet());
