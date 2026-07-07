@@ -693,13 +693,13 @@ export default function HomeScreen2() {
       </Animated.View>
       <LinearGradient
         colors={[`${prevGradient[0]}00`, prevGradient[0] as string, prevGradient[1] as string]}
-        locations={[0, 0.40, 1]}
+        locations={[0, 0.46, 1]}
         style={styles.rootGradient}
       />
       <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
         <LinearGradient
           colors={[`${activeTheme.gradient[0]}00`, activeTheme.gradient[0] as string, activeTheme.gradient[1] as string]}
-          locations={[0, 0.40, 1]}
+          locations={[0, 0.46, 1]}
           style={styles.rootGradient}
         />
       </Animated.View>
