@@ -800,39 +800,38 @@ export default function HomeScreen2() {
           }}
         />
 
-        {/* ── BANNER RESONADORES ── */}
-        <Pressable
-          onPress={() => router.push("/resonadores" as never)}
-          style={{ marginBottom: 35, marginHorizontal: GRID_PAD, marginTop: -12 }}
-        >
-          <View
-            style={[styles.resonadoresBanner, {
-              backgroundColor: "rgba(0,0,0,0.14)",
-              borderWidth: 2,
-              borderColor: "rgba(255,255,255,0.04)",
-            }]}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-              <LinearGradient
-                colors={["rgba(247,203,107,0.75)", "rgba(251,169,128,0.75)"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={{ width: 44, height: 44, borderRadius: 15, alignItems: "center", justifyContent: "center" }}
+        {/* ── EXPLORA POR CONTENIDO ── */}
+        <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
+          <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Explora por contenido</Text>
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            {[
+              { id: "meditaciones-guiadas", label: "Meditaciones", icon: <MaterialCommunityIcons name="meditation" size={21} color="#e8e8e8" /> },
+              { id: "sonidos-ancestrales", label: "Sesiones",      icon: <MaterialCommunityIcons name="waves" size={21} color="#e8e8e8" /> },
+              { id: "musica-sonidos",       label: "Música",        icon: <Ionicons name="musical-notes-outline" size={21} color="#e8e8e8" /> },
+            ].map((c) => (
+              <Pressable
+                key={c.id}
+                onPress={() => router.push(`/category/${c.id}` as never)}
+                style={({ pressed }) => [{
+                  flex: 1,
+                  paddingVertical: 12,
+                  gap: 10,
+                  borderRadius: 14,
+                  alignItems: "center",
+                  backgroundColor: "rgba(0,0,0,0.08)",
+                  borderWidth: 2,
+                  borderColor: "rgba(255,255,255,0.1)",
+                  opacity: pressed ? 0.75 : 1,
+                }]}
               >
-                <ExpoImage
-                  source={require("@/assets/images/icons/familia.png")}
-                  style={{ width: 26, height: 26 }}
-                  contentFit="contain"
-                />
-              </LinearGradient>
-              <View style={{ flex: 1, marginLeft: 25 }}>
-                <Text style={styles.resonadoresBannerTitle}>Resonadores</Text>
-                <Text style={styles.resonadoresBannerSub}>Únete a la comunidad</Text>
-              </View>
-              <Feather name="chevron-right" size={20} color="rgba(232,232,232,0.7)" />
-            </View>
+                {c.icon}
+                <Text style={{ fontSize: 12, fontWeight: "300", color: "#e8e8e8", textAlign: "center" }}>
+                  {c.label}
+                </Text>
+              </Pressable>
+            ))}
           </View>
-        </Pressable>
+        </View>
 
         {/* ── SESIÓN DESTACADA ── */}
         {filteredFeatured && (
@@ -871,38 +870,39 @@ export default function HomeScreen2() {
           </View>
         )}
 
-        {/* ── EXPLORA POR CONTENIDO ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
-          <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Explora por contenido</Text>
-          <View style={{ flexDirection: "row", gap: 10 }}>
-            {[
-              { id: "meditaciones-guiadas", label: "Meditaciones", icon: <MaterialCommunityIcons name="meditation" size={21} color="#e8e8e8" /> },
-              { id: "sonidos-ancestrales", label: "Sesiones",      icon: <MaterialCommunityIcons name="waves" size={21} color="#e8e8e8" /> },
-              { id: "musica-sonidos",       label: "Música",        icon: <Ionicons name="musical-notes-outline" size={21} color="#e8e8e8" /> },
-            ].map((c) => (
-              <Pressable
-                key={c.id}
-                onPress={() => router.push(`/category/${c.id}` as never)}
-                style={({ pressed }) => [{
-                  flex: 1,
-                  paddingVertical: 12,
-                  gap: 10,
-                  borderRadius: 14,
-                  alignItems: "center",
-                  backgroundColor: "rgba(0,0,0,0.08)",
-                  borderWidth: 2,
-                  borderColor: "rgba(255,255,255,0.1)",
-                  opacity: pressed ? 0.75 : 1,
-                }]}
+        {/* ── BANNER RESONADORES ── */}
+        <Pressable
+          onPress={() => router.push("/resonadores" as never)}
+          style={{ marginBottom: 35, marginHorizontal: GRID_PAD, marginTop: -12 }}
+        >
+          <View
+            style={[styles.resonadoresBanner, {
+              backgroundColor: "rgba(0,0,0,0.14)",
+              borderWidth: 2,
+              borderColor: "rgba(255,255,255,0.04)",
+            }]}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+              <LinearGradient
+                colors={["rgba(247,203,107,0.75)", "rgba(251,169,128,0.75)"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{ width: 44, height: 44, borderRadius: 15, alignItems: "center", justifyContent: "center" }}
               >
-                {c.icon}
-                <Text style={{ fontSize: 12, fontWeight: "300", color: "#e8e8e8", textAlign: "center" }}>
-                  {c.label}
-                </Text>
-              </Pressable>
-            ))}
+                <ExpoImage
+                  source={require("@/assets/images/icons/familia.png")}
+                  style={{ width: 26, height: 26 }}
+                  contentFit="contain"
+                />
+              </LinearGradient>
+              <View style={{ flex: 1, marginLeft: 25 }}>
+                <Text style={styles.resonadoresBannerTitle}>Resonadores</Text>
+                <Text style={styles.resonadoresBannerSub}>Únete a la comunidad</Text>
+              </View>
+              <Feather name="chevron-right" size={20} color="rgba(232,232,232,0.7)" />
+            </View>
           </View>
-        </View>
+        </Pressable>
 
         {/* ── 1. COLECCIONES (Rituales) ── */}
         {filteredPlaylists.length > 0 && (
