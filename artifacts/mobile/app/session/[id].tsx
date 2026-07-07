@@ -1031,7 +1031,7 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   playBtnText: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: "700",
     letterSpacing: 0.5,
   },
@@ -1048,7 +1048,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   shareBtnText: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: "600",
     color: "#D6AD5F",
     letterSpacing: 0.5,
