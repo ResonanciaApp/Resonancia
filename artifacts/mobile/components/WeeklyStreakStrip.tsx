@@ -212,7 +212,7 @@ export function WeeklyStreakStrip() {
                       cx={21} cy={21} r={19}
                       stroke={`url(#sg${i})`}
                       strokeWidth={3}
-                      fill="none"
+                      fill="rgba(255,255,255,0.08)"
                     />
                   </Svg>
                   <Feather name="check" size={19} color="rgba(255,255,255,0.9)" />
