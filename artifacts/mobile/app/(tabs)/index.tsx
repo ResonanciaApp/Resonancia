@@ -918,6 +918,37 @@ export default function HomeScreen2() {
           </View>
         )}
 
+        {/* ── EXPLORA POR CONTENIDO ── */}
+        <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
+          <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Explora por contenido</Text>
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            {[
+              { id: "meditaciones-guiadas", label: "Meditaciones" },
+              { id: "sonidos-ancestrales", label: "Sesiones" },
+              { id: "musica-sonidos", label: "Música" },
+            ].map((c) => (
+              <Pressable
+                key={c.id}
+                onPress={() => router.push(`/category/${c.id}` as never)}
+                style={({ pressed }) => [{
+                  flex: 1,
+                  paddingVertical: 18 + 30,
+                  borderRadius: 14,
+                  alignItems: "center",
+                  backgroundColor: "rgba(0,0,0,0.08)",
+                  borderWidth: 2,
+                  borderColor: "rgba(255,255,255,0.1)",
+                  opacity: pressed ? 0.75 : 1,
+                }]}
+              >
+                <Text style={{ fontSize: 14, fontWeight: "700", color: "#e8e8e8", textAlign: "center" }}>
+                  {c.label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+
         {/* ── 1. COLECCIONES (Rituales) ── */}
         {filteredPlaylists.length > 0 && (
         <View style={[styles.header, { marginBottom: SECTION_GAP }]}>
@@ -1097,36 +1128,6 @@ export default function HomeScreen2() {
           ))}
         </View>
 
-        {/* ── EXPLORA POR CONTENIDO ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
-          <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Explora por contenido</Text>
-          <View style={{ flexDirection: "row", gap: 10 }}>
-            {[
-              { id: "meditaciones-guiadas", label: "Meditaciones" },
-              { id: "sonidos-ancestrales", label: "Sesiones" },
-              { id: "musica-sonidos", label: "Música" },
-            ].map((c) => (
-              <Pressable
-                key={c.id}
-                onPress={() => router.push(`/category/${c.id}` as never)}
-                style={({ pressed }) => [{
-                  flex: 1,
-                  paddingVertical: 18 + 30,
-                  borderRadius: 14,
-                  alignItems: "center",
-                  backgroundColor: "rgba(0,0,0,0.08)",
-                  borderWidth: 2,
-                  borderColor: "rgba(255,255,255,0.1)",
-                  opacity: pressed ? 0.75 : 1,
-                }]}
-              >
-                <Text style={{ fontSize: 14, fontWeight: "700", color: "#e8e8e8", textAlign: "center" }}>
-                  {c.label}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-        </View>
 
         {/* ── BANNER PREMIUM ── */}
         {!isPremium && (
