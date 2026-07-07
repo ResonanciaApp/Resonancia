@@ -42,7 +42,6 @@ import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
-import { useUserProfile } from "@/context/UserProfileContext";
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCatalog } from "@/context/CatalogContext";
@@ -291,17 +290,6 @@ export default function HomeScreen2() {
   const insets = useSafeAreaInsets();
   const { playSession, currentSession, isPlaying, pauseResume, history } = usePlayer();
   const { isPremium } = usePremium();
-  const { username: profileUsername } = useUserProfile();
-
-  function getGreeting(): string {
-    const h = new Date().getHours();
-    if (h >= 5 && h < 12) return "Buenos días";
-    if (h >= 12 && h < 19) return "Buenas tardes";
-    return "Buenas noches";
-  }
-  const greetingText = profileUsername
-    ? `${getGreeting()}, ${profileUsername}`
-    : getGreeting();
   const { upcoming: upcomingLiveSessions } = useLiveSessions();
   const nextLiveSession = upcomingLiveSessions[0] ?? null;
   const { videos } = useVideos();
@@ -557,7 +545,6 @@ export default function HomeScreen2() {
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
   const giftBtnAnim = useRef(new Animated.Value(1)).current;
   const giftScaleAnim = useRef(new Animated.Value(1)).current;
-  const greetingAnim = useRef(new Animated.Value(1)).current;
 
   // ── Loto + tabs: al activarse el sticky header, el loto se desvanece y
   //    los tabs se desplazan sutilmente hacia la izquierda hasta el margen ──
@@ -592,11 +579,7 @@ export default function HomeScreen2() {
       stickyActiveRef.current = shouldBeActive;
       setStickyActive(shouldBeActive);
       updateSearchBtnVisibility();
-      Animated.timing(greetingAnim, {
-        toValue: shouldBeActive ? 0 : 1,
-        duration: 250,
-        useNativeDriver: true,
-      }).start();
+      // loto permanece visible — sin fade al activar sticky header
     }
     const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
     if (shouldShowBorder !== headerBorderActiveRef.current) {
@@ -607,7 +590,7 @@ export default function HomeScreen2() {
         useNativeDriver: true,
       }).start();
     }
-  }, [updateSearchBtnVisibility, headerBorderAnim, greetingAnim]);
+  }, [updateSearchBtnVisibility, headerBorderAnim]);
 
   const handleMainScroll = useCallback(
     (e: { nativeEvent: { contentOffset: { y: number } } }) => {
@@ -701,12 +684,6 @@ export default function HomeScreen2() {
         ]}
       >
         <Animated.View style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
-        <Animated.Text
-          style={[styles.greeting, { opacity: greetingAnim }]}
-          numberOfLines={1}
-        >
-          {greetingText}
-        </Animated.Text>
         <View style={styles.headerTopRow}>
           <Pressable
             onPress={openEscenasSheet}
@@ -1213,15 +1190,6 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     backgroundColor: "transparent",
     zIndex: 10,
-  },
-  greeting: {
-    color: "rgba(255,255,255,0.88)",
-    fontSize: 16,
-    fontWeight: "600",
-    letterSpacing: 0.2,
-    marginBottom: 4,
-    marginTop: 24,
-    textAlign: "center",
   },
   stickyHeaderBorder: {
     position: "absolute",
