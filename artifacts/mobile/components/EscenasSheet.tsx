@@ -34,7 +34,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { VolumeSlider } from "@/components/VolumeSlider";
 import { AMBIENT_SCENES, useAmbientPlayer, type SceneId } from "@/context/AmbientPlayerContext";
-import { SceneThemeTransitionOverlay, useSceneTheme } from "@/context/SceneThemeContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 
 const SCREEN_W = Dimensions.get("window").width;
@@ -57,7 +57,7 @@ const TIMER_OPTIONS: Array<{ label: string; value: number | null }> = [
 
 export function EscenasSheet() {
   const insets = useSafeAreaInsets();
-  const { theme, setActiveSceneWithFade } = useSceneTheme();
+  const { theme, setActiveSceneWithFade, overlayColors, overlayOpacity } = useSceneTheme();
   const {
     currentScene,
     isPlaying,
@@ -201,7 +201,22 @@ export function EscenasSheet() {
       <Animated.View
         style={[styles.sheet, { transform: [{ translateY: sheetEnterY }] }]}
       >
+        {/* Fondo fijo (tema actual — no cambia durante la transición) */}
         <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} />
+        {/* Nuevo tema entrando detrás del contenido — el contenido NUNCA se tapa */}
+        {overlayColors && (
+          <Animated.View
+            style={[StyleSheet.absoluteFill, { opacity: overlayOpacity }]}
+            pointerEvents="none"
+          >
+            <LinearGradient
+              colors={[...overlayColors] as [string, string]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={StyleSheet.absoluteFill}
+            />
+          </Animated.View>
+        )}
         <View style={{ paddingTop: Math.max(insets.top, 20), paddingBottom: Math.max(insets.bottom, 20), flex: 1 }}>
           <Pressable style={styles.closeBtn} onPress={closeSheet} hitSlop={10}>
             <Feather name="x" size={28} color="#FFFFFF" />
@@ -364,10 +379,6 @@ export function EscenasSheet() {
         </Animated.View>
       )}
 
-      {/* Overlay de transición de tema — debe estar dentro del Modal para
-          ser visible sobre el sheet (los Modals renderizan sobre el árbol
-          principal donde vive SceneThemeTransitionOverlay del _layout). */}
-      <SceneThemeTransitionOverlay />
     </Modal>
   );
 }
