@@ -686,7 +686,7 @@ export default function HomeScreen2() {
         pointerEvents="none"
       >
         <ExpoImage
-          source={require("@/assets/images/ancestrales-hero.jpg")}
+          source={require("@/assets/images/inicio3-backdrop.jpg")}
           style={StyleSheet.absoluteFill}
           contentFit="cover"
         />
