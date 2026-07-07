@@ -1126,6 +1126,15 @@ export default function HomeScreen2() {
           opacity: backdropAnim,
         }}
       >
+        {/* Logo centrado */}
+        <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, alignItems: "center" }}>
+          <ExpoImage
+            source={require("@/assets/images/icons/pulso-logo.png")}
+            style={{ width: 90, height: 36 }}
+            contentFit="contain"
+          />
+        </View>
+
         <Pressable
           onPress={openEscenasSheet}
           hitSlop={8}
