@@ -441,11 +441,9 @@ export default function MusicaSonidosScreen() {
           <BackPill onPress={() => router.back()} />
         </GhostPill>
         <Text style={styles.headerTitle}>Música</Text>
-        <GhostPill>
-          <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/musica-info" as never)}>
-            <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
-          </Pressable>
-        </GhostPill>
+        <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/musica-info" as never)}>
+          <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
+        </Pressable>
       </Animated.View>
 
       {/* ── Chips sticky (se pegan debajo del sticky header) ── */}
