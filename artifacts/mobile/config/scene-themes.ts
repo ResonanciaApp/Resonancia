@@ -62,7 +62,7 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   musgo: {
     id: "musgo",
     label: "Musgo",
-    gradient: ["#324828", "#22301B"],
+    gradient: ["#396B3A", "#064439"],
     solid: "#101A16",
   },
   orquidea: {
