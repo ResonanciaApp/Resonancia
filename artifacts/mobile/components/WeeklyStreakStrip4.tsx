@@ -259,13 +259,13 @@ const styles = StyleSheet.create({
   },
   ringCount: {
     color: "#ffffff",
-    fontSize: 40,
+    fontSize: 44,
     fontWeight: "700",
-    lineHeight: 43,
+    lineHeight: 47,
   },
   ringLabel: {
     color: "rgba(255,255,255,0.95)",
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: "300",
     letterSpacing: 0.3,
   },
