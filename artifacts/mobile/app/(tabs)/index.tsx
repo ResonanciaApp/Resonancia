@@ -693,7 +693,7 @@ export default function HomeScreen2() {
   );
 
   return (
-    <View style={[styles.root, { backgroundColor: activeTheme.gradient[0] }]}>
+    <View style={[styles.root, { backgroundColor: activeTheme.gradient[1] }]}>
       {/* ── Imagen de fondo — se desvanece con scroll ── */}
       <Animated.View
         style={{ position: "absolute", top: 0, left: 0, right: 0, height: 400, opacity: backdropAnim }}
@@ -716,11 +716,11 @@ export default function HomeScreen2() {
       </Animated.View>
       <LinearGradient
         colors={[
-          `${prevGradient[0]}00`,
-          `${prevGradient[0]}1A`,
-          `${prevGradient[0]}66`,
-          prevGradient[0] as string,
+          `${prevGradient[1]}00`,
+          `${prevGradient[1]}1A`,
+          `${prevGradient[1]}66`,
           prevGradient[1] as string,
+          prevGradient[0] as string,
         ]}
         locations={[0, 0.15, 0.33, 0.46, 1]}
         style={styles.rootGradient}
@@ -728,11 +728,11 @@ export default function HomeScreen2() {
       <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
         <LinearGradient
           colors={[
-            `${activeTheme.gradient[0]}00`,
-            `${activeTheme.gradient[0]}1A`,
-            `${activeTheme.gradient[0]}66`,
-            activeTheme.gradient[0] as string,
+            `${activeTheme.gradient[1]}00`,
+            `${activeTheme.gradient[1]}1A`,
+            `${activeTheme.gradient[1]}66`,
             activeTheme.gradient[1] as string,
+            activeTheme.gradient[0] as string,
           ]}
           locations={[0, 0.15, 0.33, 0.46, 1]}
           style={styles.rootGradient}
