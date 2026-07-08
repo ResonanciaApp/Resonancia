@@ -26,8 +26,8 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   profundo: {
     id: "profundo",
     label: "Profundo",
-    gradient: ["#07140F", "#040E0B"],
-    solid: "#040E0B",
+    gradient: ["#121816", "#0A0D0C"],
+    solid: "#0A0D0C",
   },
   tibet: {
     id: "tibet",
