@@ -26,7 +26,7 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   universo: {
     id: "universo",
     label: "Universo",
-    gradient: ["#3f0d22", "#2a0c1f"],
+    gradient: ["#3F0D23", "#300A1A"],
     solid: "#1B060F",
   },
   naturaleza: {
@@ -44,31 +44,31 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   lluvia: {
     id: "lluvia",
     label: "Lluvia",
-    gradient: ["#1D2E3A", "#172630"],
+    gradient: ["#284254", "#1D2F3D"],
     solid: "#101B22",
   },
   viento: {
     id: "viento",
     label: "Viento",
-    gradient: ["#1B466C", "#091827"],
+    gradient: ["#1B466C", "#13304A"],
     solid: "#091827",
   },
   fuegoSolar: {
     id: "fuegoSolar",
     label: "Fuego solar",
-    gradient: ["#603127", "#26120F"],
+    gradient: ["#7D2815", "#5C1810"],
     solid: "#26120F",
   },
   musgo: {
     id: "musgo",
     label: "Musgo",
-    gradient: ["#28483E", "#101A16"],
+    gradient: ["#324828", "#22301B"],
     solid: "#101A16",
   },
   orquidea: {
     id: "orquidea",
     label: "Orquídea",
-    gradient: ["#833E6A", "#4F366F"],
+    gradient: ["#833E6A", "#663673"],
     solid: "#4F366F",
   },
   nebulosa: {
@@ -80,13 +80,13 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   zafiro: {
     id: "zafiro",
     label: "Zafiro",
-    gradient: ["#156394", "#2E2F7F"],
+    gradient: ["#156394", "#11527D"],
     solid: "#2E2F7F",
   },
   vinoTinto: {
     id: "vinoTinto",
     label: "Vino Tinto",
-    gradient: ["#2F0511", "#19020A"],
+    gradient: ["#330612", "#290511"],
     solid: "#19020A",
   },
 };
