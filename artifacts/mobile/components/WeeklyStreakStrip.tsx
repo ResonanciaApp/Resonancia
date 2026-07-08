@@ -208,7 +208,6 @@ export function WeeklyStreakStrip() {
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
             style={{ position: "absolute", bottom: 0, left: 0, width: "14%", height: StyleSheet.hairlineWidth }}
           />
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: theme.gradient[0] }]} />
         </View>
         <Svg
           width={MINI_PILL_W}
