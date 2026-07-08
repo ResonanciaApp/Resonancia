@@ -729,12 +729,12 @@ export default function HomeScreen2() {
         <LinearGradient
           colors={[
             `${activeTheme.gradient[0]}00`,
-            `${activeTheme.gradient[0]}0D`,
-            `${activeTheme.gradient[0]}33`,
+            `${activeTheme.gradient[0]}1A`,
+            `${activeTheme.gradient[0]}66`,
             activeTheme.gradient[0] as string,
             activeTheme.gradient[1] as string,
           ]}
-          locations={[0, 0.22, 0.44, 0.46, 1]}
+          locations={[0, 0.15, 0.33, 0.46, 1]}
           style={styles.rootGradient}
         />
       </Animated.View>
