@@ -1206,7 +1206,7 @@ export default function HomeScreen2() {
                 colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
                 style={StyleSheet.absoluteFill}
               />
-              <Feather name="sliders" size={22} color="#D4AF37" style={{ opacity: 0.9, textShadowColor: "rgba(212,175,55,0.25)", textShadowRadius: 6, textShadowOffset: { width: 0, height: 0 } }} />
+              <Feather name="sliders" size={22} color="#FFFFFF" style={{ opacity: 0.9 }} />
             </View>
           </Animated.View>
         </Pressable>
@@ -1377,8 +1377,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(255,255,255,0.18)",
   },
   giftBtnInner: {
     width: 45,
@@ -1387,8 +1385,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(255,255,255,0.18)",
   },
   searchBtn: {
     width: 42,
