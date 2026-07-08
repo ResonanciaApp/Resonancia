@@ -734,7 +734,7 @@ export default function HomeScreen2() {
             activeTheme.gradient[0] as string,
             activeTheme.gradient[1] as string,
           ]}
-          locations={[0, 0.22, 0.34, 0.40, 1]}
+          locations={[0, 0.18, 0.26, 0.30, 1]}
           style={styles.rootGradient}
         />
       </Animated.View>
