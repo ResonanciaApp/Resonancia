@@ -129,14 +129,26 @@ export function WeeklyStreakStrip4() {
 
   return (
     <View style={styles.card}>
-      {/* ── Fila superior: anillo izquierda + card mensaje derecha ── */}
+      {/* ── Fila superior: card full-width detrás + anillo encima ── */}
       <View style={styles.topRow}>
-        {/* Anillo de progreso — margen izquierdo */}
+        {/* Card mensaje — ocupa todo el ancho, queda detrás del anillo */}
+        <View style={styles.msgCard}>
+          {msg.highlight != null && (
+            <Text style={styles.messageHighlight}>{msg.highlight}</Text>
+          )}
+          <Text style={styles.message}>{msg.body}</Text>
+        </View>
+
+        {/* Anillo de progreso — encima de la card */}
         <View
           style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
             width: RING_TOTAL,
             height: RING_TOTAL,
             borderRadius: RING_TOTAL / 2,
+            zIndex: 2,
             shadowColor: "#000",
             shadowOffset: { width: 3, height: 4 },
             shadowOpacity: 0.35,
@@ -183,14 +195,6 @@ export function WeeklyStreakStrip4() {
               <Text style={styles.ringLabel}>{activeCount === 1 ? "Día" : "Días"}</Text>
             </View>
           </View>
-        </View>
-
-        {/* Card mensaje — derecha */}
-        <View style={styles.msgCard}>
-          {msg.highlight != null && (
-            <Text style={styles.messageHighlight}>{msg.highlight}</Text>
-          )}
-          <Text style={styles.message}>{msg.body}</Text>
         </View>
       </View>
 
@@ -248,18 +252,20 @@ const styles = StyleSheet.create({
     gap: 13,
   },
   topRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
+    position: "relative",
+    height: RING_TOTAL,
+    marginHorizontal: -14,
   },
   msgCard: {
-    flex: 1,
-    height: RING_TOTAL,
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
     borderRadius: 12,
     backgroundColor: "rgba(0,0,0,0.4)",
-    borderWidth: 0.2,
-    borderColor: "rgba(255,255,255,0.2)",
-    paddingHorizontal: 14,
+    paddingLeft: RING_TOTAL + 12,
+    paddingRight: 14,
     paddingVertical: 12,
     justifyContent: "center",
     gap: 4,
@@ -308,7 +314,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   circleInactive: {
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: "transparent",
   },
   circleInactiveSize: {
     width: 40,
