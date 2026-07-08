@@ -125,14 +125,6 @@ export function WeeklyStreakStrip4() {
 
   return (
     <View style={styles.card}>
-      {/* ── Glass pill base ── */}
-      <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-      <LinearGradient
-        colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-        start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-        style={StyleSheet.absoluteFill}
-        pointerEvents="none"
-      />
       {/* ── Fila superior: card full-width detrás + anillo encima ── */}
       <View style={styles.topRow}>
         {/* Card mensaje — ocupa todo el ancho, queda detrás del anillo */}
@@ -277,14 +269,10 @@ export function WeeklyStreakStrip4() {
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 999,
-    overflow: "hidden",
-    paddingTop: 15,
-    paddingBottom: 14,
+    borderRadius: 16,
+    paddingVertical: 18,
     paddingHorizontal: 14,
     gap: 13,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(255,255,255,0.12)",
   },
   topRow: {
     position: "relative",
