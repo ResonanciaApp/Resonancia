@@ -171,11 +171,11 @@ export function WeeklyStreakStrip() {
           borderRadius: (RING_SIZE + 18) / 2,
           overflow: "hidden",
           marginTop: -10,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.06,
-          shadowRadius: 10,
-          elevation: 5,
+          shadowColor: "transparent",
+          shadowOffset: { width: 0, height: 0 },
+          shadowOpacity: 0,
+          shadowRadius: 0,
+          elevation: 0,
         }]}
       >
         <BlurView intensity={40} tint="default" style={StyleSheet.absoluteFill} />
