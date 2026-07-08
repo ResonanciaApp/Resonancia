@@ -173,9 +173,9 @@ export function WeeklyStreakStrip() {
           overflow: "hidden",
           marginTop: -10,
           shadowColor: theme.gradient[1],
-          shadowOffset: { width: 0, height: 8 },
-          shadowOpacity: 0.4,
-          shadowRadius: 24,
+          shadowOffset: { width: 0, height: 10 },
+          shadowOpacity: 0.65,
+          shadowRadius: 28,
           elevation: 20,
         }]}
       >
