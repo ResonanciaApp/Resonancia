@@ -313,7 +313,7 @@ export default function SessionDetailScreen() {
           sceneTheme.gradient[0] as string,
           hexToRgba(sceneTheme.gradient[1], 0.85),
         ]}
-        locations={[0, 0.15, 0.33, 0.46, 1]}
+        locations={[0, 0.11, 0.25, 0.35, 1]}
         style={StyleSheet.absoluteFill}
       />
       <StatusBar barStyle="light-content" />
