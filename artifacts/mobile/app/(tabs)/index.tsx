@@ -1877,7 +1877,7 @@ const styles = StyleSheet.create({
   },
   heroImage: { width: "100%", height: "100%" },
   heroMetaText: { fontSize: 11, lineHeight: 14, color: "#c2c2c2", marginBottom: 6 },
-  heroTitle: { fontSize: 15, fontWeight: "400", lineHeight: 20, color: "#e8e8e8", marginBottom: 4 },
+  heroTitle: { fontSize: 15, fontWeight: "700", lineHeight: 20, color: "#e8e8e8", marginBottom: 4 },
   heroAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(255,255,255,0.08)" },
   heroAuthor: { fontSize: 11, color: "#c2c2c2", marginTop: 2 },
   heroBtn: {
