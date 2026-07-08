@@ -685,19 +685,30 @@ export default function HomeScreen2() {
   );
 
   return (
-    <View style={[styles.root, { backgroundColor: activeTheme.gradient[0] }]}>
-      {/* ── Imagen de fondo — se desvanece con scroll ── */}
+    <View style={[styles.root, { backgroundColor: activeTheme.gradient[1] }]}>
+      {/* 1. Degradado de fondo full-screen — detrás de la imagen */}
+      <LinearGradient
+        colors={[prevGradient[0] as string, prevGradient[1] as string]}
+        style={styles.rootGradient}
+        pointerEvents="none"
+      />
+      <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]} pointerEvents="none">
+        <LinearGradient
+          colors={[activeTheme.gradient[0] as string, activeTheme.gradient[1] as string]}
+          style={StyleSheet.absoluteFill}
+        />
+      </Animated.View>
+
+      {/* 2. Imagen de fondo — encima del degradado, se desvanece con scroll */}
       <Animated.View
         style={{ position: "absolute", top: 0, left: 0, right: 0, height: 400, opacity: backdropAnim }}
         pointerEvents="none"
       >
-        {/* Capa anterior (estática mientras dura el fade) */}
         <ExpoImage
           source={prevSceneImage}
           style={StyleSheet.absoluteFill}
           contentFit="cover"
         />
-        {/* Nueva imagen — fade-in sincronizado con el gradiente */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: imageFade }]}>
           <ExpoImage
             source={currentSceneImage}
@@ -706,18 +717,8 @@ export default function HomeScreen2() {
           />
         </Animated.View>
       </Animated.View>
-      {/* Degradado full-screen: gradient[0] → gradient[1] sobre toda la pantalla */}
-      <LinearGradient
-        colors={[prevGradient[0] as string, prevGradient[1] as string]}
-        style={styles.rootGradient}
-      />
-      <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
-        <LinearGradient
-          colors={[activeTheme.gradient[0] as string, activeTheme.gradient[1] as string]}
-          style={StyleSheet.absoluteFill}
-        />
-      </Animated.View>
-      {/* Degradado sobre la imagen: fade suave desde transparente hasta el color de fondo */}
+
+      {/* 3. Fade de la imagen hacia el fondo — encima de la imagen */}
       <LinearGradient
         colors={[
           `${prevGradient[0]}00`,
