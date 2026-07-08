@@ -1,5 +1,6 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts/cinzel";
+import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -803,11 +804,11 @@ export default function HomeScreen2() {
         {/* ── EXPLORA POR CONTENIDO ── */}
         <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: -6 }]}>
           <View style={{ flexDirection: "row", gap: 10 }}>
-            {[
-              { id: "meditaciones-guiadas", label: "Meditaciones", icon: <MaterialCommunityIcons name="meditation" size={21} color="#BE8744" /> },
-              { id: "sonidos-ancestrales", label: "Sesiones",      icon: <MaterialCommunityIcons name="waves" size={21} color="#BE8744" /> },
-              { id: "musica-sonidos",       label: "Música",        icon: <Ionicons name="musical-notes-outline" size={21} color="#BE8744" /> },
-            ].map((c) => (
+            {([
+              { id: "meditaciones-guiadas", label: "Meditaciones", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={21} color={color} /> },
+              { id: "sonidos-ancestrales", label: "Sesiones",      icon: (color: string) => <MaterialCommunityIcons name="waves" size={21} color={color} /> },
+              { id: "musica-sonidos",       label: "Música",        icon: (color: string) => <Ionicons name="musical-notes-outline" size={21} color={color} /> },
+            ] as const).map((c) => (
               <Pressable
                 key={c.id}
                 onPress={() => router.push(`/category/${c.id}` as never)}
@@ -817,13 +818,26 @@ export default function HomeScreen2() {
                   gap: 10,
                   borderRadius: 14,
                   alignItems: "center",
+                  overflow: "hidden",
                   backgroundColor: "rgba(0,0,0,0.08)",
                   borderWidth: 2,
                   borderColor: "rgba(255,255,255,0.1)",
                   opacity: pressed ? 0.75 : 1,
                 }]}
               >
-                {c.icon}
+                {/* 5% tinte del color más oscuro del tema */}
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: hexToRgba(activeTheme.gradient[1], 0.05) }]} />
+                {/* Ícono con degradado de color */}
+                <MaskedView
+                  maskElement={<View style={{ width: 21, height: 21, alignItems: "center", justifyContent: "center" }}>{c.icon("#fff")}</View>}
+                >
+                  <LinearGradient
+                    colors={["#ecedea", "#f8f8f6", "#dcdbd8"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={{ width: 21, height: 21 }}
+                  />
+                </MaskedView>
                 <Text style={{ fontSize: 14, fontWeight: "300", color: "#e8e8e8", textAlign: "center" }}>
                   {c.label}
                 </Text>
