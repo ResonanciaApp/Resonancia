@@ -246,7 +246,18 @@ export function WeeklyStreakStrip4() {
                   </Svg>
                 </View>
               ) : (
-                <View style={[styles.circle, styles.circleInactive, styles.circleInactiveSize]} />
+                <View style={styles.circleGradientBorder}>
+                  <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+                  <LinearGradient
+                    colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+                    start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+                    style={StyleSheet.absoluteFill}
+                    pointerEvents="none"
+                  />
+                  <Svg width={42} height={42} style={StyleSheet.absoluteFill}>
+                    <Circle cx={21} cy={21} r={19} stroke="rgba(255,255,255,0.12)" strokeWidth={1} fill="none" />
+                  </Svg>
+                </View>
               )}
               <Text style={[styles.dayLabel, isToday && styles.dayLabelToday, (!met && !isToday) && styles.dayLabelInactivePos]}>
                 {label}
@@ -290,6 +301,10 @@ const styles = StyleSheet.create({
   },
   ringCenter: {
     position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -310,7 +325,7 @@ const styles = StyleSheet.create({
   },
   ringLabel: {
     color: "rgba(255,255,255,0.95)",
-    fontSize: 15,
+    fontSize: 12,
     fontWeight: "300",
     letterSpacing: 0.3,
   },
