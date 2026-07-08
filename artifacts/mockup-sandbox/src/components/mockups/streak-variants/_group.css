@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg: #1B060F;
+  --bg-mid: #2A0A12;
+  --gold: #D4AF37;
+  --gold-soft: #BE8744;
+  --fg: #F4DAD5;
+  --fg-muted: rgba(242,231,228,0.45);
+}
+
+body {
+  background: var(--bg);
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
