@@ -574,6 +574,7 @@ export default function DescansoScreen() {
           {
             paddingTop: topPad + 10,
             opacity: stickyOpacity,
+            backgroundColor: bgGradient[0],
           },
         ]}
         pointerEvents={stickyActive ? "auto" : "none"}
@@ -584,7 +585,7 @@ export default function DescansoScreen() {
 
       {/* ── Tabs sticky (se pegan debajo del título) ── */}
       {chipsSticky && (
-        <View style={[styles.stickyTabs, { top: headerH }]}>
+        <View style={[styles.stickyTabs, { top: headerH, backgroundColor: bgGradient[0] }]}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
