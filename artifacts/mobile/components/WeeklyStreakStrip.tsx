@@ -191,7 +191,7 @@ export function WeeklyStreakStrip() {
         />
         {/* 3. Brillo inferior — centro a 40% del ancho, fade pronunciado */}
         <LinearGradient
-          colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.12)", "rgba(255,255,255,0.48)", "rgba(255,255,255,0)"]}
+          colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.12)", "rgba(255,255,255,0.7)", "rgba(255,255,255,0)"]}
           locations={[0, 0.18, 0.5, 1]}
           start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
           style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 2.4 }}
