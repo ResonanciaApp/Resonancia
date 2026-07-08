@@ -36,7 +36,7 @@ export const AMBIENT_SCENES: AmbientScene[] = [
     label: "Profundo",
     colors: ["#07140F", "#040E0B"] as const,
     icon: "feather",
-    image: require("@/assets/images/ambient/bosque.jpg"),
+    image: require("@/assets/images/ambient/profundo.jpg"),
   },
   {
     id: "tibet",
