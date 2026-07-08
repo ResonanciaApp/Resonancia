@@ -309,7 +309,7 @@ export default function MeditacionesGuiadasScreen() {
   useEffect(() => {
     Animated.timing(stickyHeaderOpacity, {
       toValue: stickyActive ? 1 : 0,
-      duration: 160,
+      duration: 350,
       useNativeDriver: true,
     }).start();
   }, [stickyActive]);
