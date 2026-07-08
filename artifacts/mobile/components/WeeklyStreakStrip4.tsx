@@ -129,23 +129,6 @@ export function WeeklyStreakStrip4() {
       <View style={styles.topRow}>
         {/* Card mensaje — ocupa todo el ancho, queda detrás del anillo */}
         <View style={styles.msgCard}>
-          {/* 1. Blur base */}
-          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-          {/* 2. Inner glow vertical — luminoso arriba, fade abajo */}
-          <LinearGradient
-            colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-            start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
-          {/* 3. Brillo top-edge hairline */}
-          <LinearGradient
-            colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]}
-            locations={[0, 0.5, 1]}
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-            style={{ position: "absolute", top: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
-            pointerEvents="none"
-          />
           {msg.highlight != null && (
             <Text style={styles.messageHighlight}>{msg.highlight}</Text>
           )}
@@ -286,13 +269,10 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    borderRadius: 12,
-    overflow: "hidden",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(255,255,255,0.12)",
     paddingLeft: RING_TOTAL + 27,
     paddingRight: 14,
-    paddingVertical: 12,
+    paddingTop: 5,
+    paddingBottom: 19,
     justifyContent: "center",
     gap: 4,
   },
