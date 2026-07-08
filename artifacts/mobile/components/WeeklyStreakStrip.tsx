@@ -172,10 +172,10 @@ export function WeeklyStreakStrip() {
           borderRadius: (RING_SIZE + 18) / 2,
           marginTop: -10,
           shadowColor: "#000",
-          shadowOffset: { width: 3, height: 4 },
-          shadowOpacity: 0.35,
-          shadowRadius: 7,
-          elevation: 8,
+          shadowOffset: { width: 1, height: 2 },
+          shadowOpacity: 0.08,
+          shadowRadius: 4,
+          elevation: 2,
         }}
       >
         <View
