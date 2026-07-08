@@ -730,7 +730,7 @@ export default function HomeScreen2() {
           colors={[
             `${activeTheme.gradient[0]}00`,
             `${activeTheme.gradient[0]}0D`,
-            `${activeTheme.gradient[0]}33`,
+            `${activeTheme.gradient[0]}0D`,
             activeTheme.gradient[0] as string,
             activeTheme.gradient[1] as string,
           ]}
