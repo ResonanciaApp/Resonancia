@@ -12,6 +12,7 @@ const TEXT = "#e8e8e8";
 const MUTED = "#c2c2c2";
 
 const RING_TOTAL = 114;
+const MINI = 20;
 
 const GOAL_MINUTES = 5;
 const DAY_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
@@ -120,52 +121,16 @@ export function WeeklyStreakStrip4() {
     return { activeFlags: flags, activeCount: count, todayIndex: todayIdx };
   }, [statEvents]);
 
-  const dashOffset = CIRCUMFERENCE * (1 - activeCount / 7);
   const msg = STREAK_MESSAGES[activeCount] ?? STREAK_MESSAGES[0];
 
   return (
     <View style={styles.card}>
-      {/* ── Fila superior: card full-width detrás + anillo encima ── */}
+      {/* ── Fila: anillo izq. + columna derecha (texto + días mini) ── */}
       <View style={styles.topRow}>
-        {/* Card mensaje — ocupa todo el ancho, queda detrás del anillo */}
-        <View style={styles.msgCard}>
-          <View style={{ marginTop: -7, gap: 4 }}>
-            {msg.highlight != null && (
-              <Text style={styles.messageHighlight}>{msg.highlight}</Text>
-            )}
-            <Text style={styles.message}>{msg.body}</Text>
-          </View>
-        </View>
 
-        {/* Divisor vertical */}
-        <View style={styles.divider} />
-
-        {/* Anillo de progreso — encima de la card */}
-        <View
-          style={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            width: RING_TOTAL,
-            height: RING_TOTAL,
-            borderRadius: RING_TOTAL / 2,
-            zIndex: 2,
-            shadowColor: "#000",
-            shadowOffset: { width: 3, height: 4 },
-            shadowOpacity: 0.35,
-            shadowRadius: 7,
-            elevation: 8,
-          }}
-        >
-          <View
-            style={{
-              width: RING_TOTAL,
-              height: RING_TOTAL,
-              borderRadius: RING_TOTAL / 2,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+        {/* Anillo */}
+        <View style={styles.ringOuter}>
+          <View style={styles.ringInner}>
             <View style={styles.ringCenter}>
               <Svg width={52} height={50}>
                 <Defs>
@@ -182,71 +147,57 @@ export function WeeklyStreakStrip4() {
             </View>
           </View>
         </View>
-      </View>
 
-      {/* ── Bolitas de días (posición original — fila completa) ── */}
-      <View style={styles.row}>
-        {DAY_LABELS.map((label, i) => {
-          const met = activeFlags[i];
-          const isToday = i === todayIndex;
-          return (
-            <View key={i} style={styles.dayCol}>
-              {met ? (
-                <View style={styles.circleGradientBorder}>
-                  <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-                  <LinearGradient
-                    colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-                    start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-                    style={StyleSheet.absoluteFill}
-                    pointerEvents="none"
-                  />
-                  <Svg width={39} height={39} style={StyleSheet.absoluteFill}>
-                    <Defs>
-                      <SvgLinearGradient id={`sg4_${i}`} x1="0.5" y1="0" x2="0.5" y2="1">
-                        <Stop offset="0" stopColor={streakBorderColors[0]} />
-                        <Stop offset="1" stopColor={streakBorderColors[1]} />
-                      </SvgLinearGradient>
-                    </Defs>
-                    <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#sg4_${i})`} strokeWidth={2} fill="none" />
-                  </Svg>
-                  <Feather name="check" size={16} color="rgba(255,255,255,0.9)" />
+        {/* Divisor vertical */}
+        <View style={styles.divider} />
+
+        {/* Columna derecha */}
+        <View style={styles.msgCard}>
+          <View style={{ marginTop: -7, gap: 4 }}>
+            {msg.highlight != null && (
+              <Text style={styles.messageHighlight}>{msg.highlight}</Text>
+            )}
+            <Text style={styles.message}>{msg.body}</Text>
+          </View>
+
+          {/* Días mini */}
+          <View style={styles.miniRow}>
+            {DAY_LABELS.map((label, i) => {
+              const met = activeFlags[i];
+              const isToday = i === todayIndex;
+              return (
+                <View key={i} style={styles.miniCol}>
+                  <View style={styles.miniCircle}>
+                    <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+                    <LinearGradient
+                      colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+                      start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+                      style={StyleSheet.absoluteFill}
+                      pointerEvents="none"
+                    />
+                    {(met || isToday) && (
+                      <Svg width={MINI} height={MINI} style={StyleSheet.absoluteFill}>
+                        <Defs>
+                          <SvgLinearGradient id={`mg_${i}`} x1="0.5" y1="0" x2="0.5" y2="1">
+                            <Stop offset="0" stopColor={streakBorderColors[0]} />
+                            <Stop offset="1" stopColor={streakBorderColors[1]} />
+                          </SvgLinearGradient>
+                        </Defs>
+                        <Circle cx={MINI / 2} cy={MINI / 2} r={MINI / 2 - 1.5} stroke={`url(#mg_${i})`} strokeWidth={1.5} fill="none" />
+                      </Svg>
+                    )}
+                    {met && <Feather name="check" size={9} color="rgba(255,255,255,0.9)" />}
+                    {isToday && !met && <View style={styles.miniDot} />}
+                  </View>
+                  <Text style={[styles.miniLabel, isToday && styles.miniLabelToday]}>
+                    {label}
+                  </Text>
                 </View>
-              ) : isToday ? (
-                <View style={styles.circleGradientBorder}>
-                  <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-                  <LinearGradient
-                    colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-                    start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-                    style={StyleSheet.absoluteFill}
-                    pointerEvents="none"
-                  />
-                  <Svg width={39} height={39} style={StyleSheet.absoluteFill}>
-                    <Defs>
-                      <SvgLinearGradient id="sg4Today" x1="0.5" y1="0" x2="0.5" y2="1">
-                        <Stop offset="0" stopColor={streakBorderColors[0]} />
-                        <Stop offset="1" stopColor={streakBorderColors[1]} />
-                      </SvgLinearGradient>
-                    </Defs>
-                    <Circle cx={19.5} cy={19.5} r={17.5} stroke="url(#sg4Today)" strokeWidth={2} fill="none" />
-                  </Svg>
-                </View>
-              ) : (
-                <View style={styles.circleGradientBorder}>
-                  <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-                  <LinearGradient
-                    colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-                    start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-                    style={StyleSheet.absoluteFill}
-                    pointerEvents="none"
-                  />
-                </View>
-              )}
-              <Text style={[styles.dayLabel, isToday && styles.dayLabelToday, (!met && !isToday) && styles.dayLabelInactivePos]}>
-                {label}
-              </Text>
-            </View>
-          );
-        })}
+              );
+            })}
+          </View>
+        </View>
+
       </View>
     </View>
   );
@@ -260,30 +211,40 @@ const styles = StyleSheet.create({
     gap: 13,
   },
   topRow: {
-    position: "relative",
-    height: RING_TOTAL,
+    flexDirection: "row",
+    alignItems: "center",
+    minHeight: RING_TOTAL,
     marginHorizontal: -14,
     marginTop: 25,
   },
+  ringOuter: {
+    width: RING_TOTAL,
+    height: RING_TOTAL,
+    borderRadius: RING_TOTAL / 2,
+    flexShrink: 0,
+    shadowColor: "#000",
+    shadowOffset: { width: 3, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 7,
+    elevation: 8,
+  },
+  ringInner: {
+    width: RING_TOTAL,
+    height: RING_TOTAL,
+    borderRadius: RING_TOTAL / 2,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   msgCard: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    paddingLeft: RING_TOTAL + 27,
+    flex: 1,
+    paddingLeft: 14,
     paddingRight: 14,
     paddingTop: 5,
-    paddingBottom: 19,
+    paddingBottom: 10,
+    gap: 8,
     justifyContent: "center",
-    gap: 4,
   },
   ringCenter: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
     alignItems: "center",
     justifyContent: "center",
     paddingBottom: 12,
@@ -297,6 +258,37 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.1)",
     zIndex: 1,
   },
+  miniRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  miniCol: {
+    alignItems: "center",
+    gap: 3,
+    flex: 1,
+  },
+  miniCircle: {
+    width: MINI,
+    height: MINI,
+    borderRadius: MINI / 2,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  miniDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "rgba(255,255,255,0.4)",
+  },
+  miniLabel: {
+    color: MUTED,
+    fontSize: 8,
+    fontWeight: "600",
+  },
+  miniLabelToday: {
+    color: "#F4DAD5",
+  },
   ringCount: {
     color: "#ffffff",
     fontSize: 44,
@@ -308,56 +300,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "300",
     letterSpacing: 0.3,
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignSelf: "stretch",
-    marginHorizontal: -14,
-    marginTop: 1,
-  },
-  dayCol: {
-    alignItems: "center",
-    gap: 8,
-    flex: 1,
-  },
-  circle: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  circleGradientBorder: {
-    width: 39,
-    height: 39,
-    borderRadius: 19.5,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 4,
-  },
-  circleInactive: {
-    backgroundColor: "rgba(255,255,255,0.08)",
-  },
-  circleInactiveSize: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginTop: 5,
-    marginBottom: 1,
-  },
-  dayLabel: {
-    color: MUTED,
-    fontSize: 10,
-    fontWeight: "600",
-    marginTop: -2,
-  },
-  dayLabelToday: {
-    color: TEXT,
-  },
-  dayLabelInactivePos: {
-    marginTop: -2,
   },
   messageHighlight: {
     color: "rgba(255,255,255,0.90)",
