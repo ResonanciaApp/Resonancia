@@ -313,8 +313,8 @@ export default function SessionDetailScreen() {
       <LinearGradient
         colors={[
           `${sceneTheme.gradient[0]}00`,
-          `${sceneTheme.gradient[0]}40`,
-          `${sceneTheme.gradient[0]}8C`,
+          `${sceneTheme.gradient[0]}1A`,
+          `${sceneTheme.gradient[0]}66`,
           sceneTheme.gradient[0] as string,
           hexToRgba(sceneTheme.gradient[1], 1),
         ]}
