@@ -503,7 +503,7 @@ export default function SonidosAncestalesScreen() {
           </View>
           <View style={styles.heroIconFloat}>
             <View style={styles.heroIconGlow}>
-              <View style={[styles.heroIconCircle, { backgroundColor: hexToRgba(theme.gradient[1], 0.9) }]}>
+              <View style={[styles.heroIconCircle, { backgroundColor: hexToRgba(theme.gradient[1], 0.5) }]}>
                 <MaskedView maskElement={<View style={{ width: 32, height: 32, alignItems: "center", justifyContent: "center" }}><MaterialCommunityIcons name="waves" size={32} color="#fff" /></View>}>
                   <LinearGradient colors={["#ecedea", "#f8f8f6", "#dcdbd8"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ width: 32, height: 32 }} />
                 </MaskedView>
