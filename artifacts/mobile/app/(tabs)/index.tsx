@@ -72,6 +72,12 @@ import { WeeklyStreakStrip } from "@/components/WeeklyStreakStrip";
 
 const { width } = Dimensions.get("window");
 
+// Ubicaciones del degradado de fondo raíz (fade suave del stop 1 → stop 2).
+// Solo en Inicio, para la Escena "universo" el stop 2 se extiende 60% más
+// hacia arriba (el punto donde domina el 2do color arranca mucho antes).
+const INICIO_GRADIENT_LOCATIONS: readonly number[] = [0, 0.15, 0.33, 0.46, 1];
+const INICIO_UNIVERSO_GRADIENT_LOCATIONS: readonly number[] = [0, 0.044, 0.098, 0.136, 1];
+
 // Sentinel interno para "sin filtro" (ya no hay chip visible de "Todos": es el
 // estado por defecto al entrar a la app).
 const TODOS_TAB_ID = "todos";
@@ -310,6 +316,7 @@ export default function HomeScreen2() {
   // se mantiene el degradado anterior debajo y el nuevo se desvanece encima, en vez
   // de saltar de golpe de un color a otro.
   const [prevGradient, setPrevGradient] = useState(activeTheme.gradient);
+  const [prevSceneId, setPrevSceneId] = useState(activeSceneId);
   const gradientFade = useRef(new Animated.Value(1)).current;
   const isFirstSceneRender = useRef(true);
   // Cross-fade imagen backdrop (mismo timing que gradiente)
@@ -336,6 +343,7 @@ export default function HomeScreen2() {
       }),
     ]).start(() => {
       setPrevGradient(activeTheme.gradient);
+      setPrevSceneId(activeSceneId);
       setPrevSceneImage(currentSceneImage);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -722,7 +730,7 @@ export default function HomeScreen2() {
           prevGradient[0] as string,
           prevGradient[1] as string,
         ]}
-        locations={[0, 0.15, 0.33, 0.46, 1]}
+        locations={prevSceneId === "universo" ? INICIO_UNIVERSO_GRADIENT_LOCATIONS : INICIO_GRADIENT_LOCATIONS}
         style={styles.rootGradient}
       />
       <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
@@ -734,7 +742,7 @@ export default function HomeScreen2() {
             activeTheme.gradient[0] as string,
             activeTheme.gradient[1] as string,
           ]}
-          locations={[0, 0.15, 0.33, 0.46, 1]}
+          locations={activeSceneId === "universo" ? INICIO_UNIVERSO_GRADIENT_LOCATIONS : INICIO_GRADIENT_LOCATIONS}
           style={styles.rootGradient}
         />
       </Animated.View>
