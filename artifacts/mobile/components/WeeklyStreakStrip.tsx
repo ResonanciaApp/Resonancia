@@ -233,13 +233,6 @@ export function WeeklyStreakStrip() {
             <View key={i} style={styles.dayCol}>
               {met ? (
                 <View style={styles.circleGradientBorder}>
-                  <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-                  <LinearGradient
-                    colors={["rgba(255,255,255,0.17)", "rgba(255,255,255,0)"]}
-                    start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-                    style={StyleSheet.absoluteFill}
-                    pointerEvents="none"
-                  />
                   <Svg width={42} height={42} style={StyleSheet.absoluteFill}>
                     <Defs>
                       <SvgLinearGradient id={`sg${i}`} x1="0.5" y1="0" x2="0.5" y2="1">
@@ -247,19 +240,12 @@ export function WeeklyStreakStrip() {
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={21} cy={21} r={19} stroke={`url(#sg${i})`} strokeWidth={2} fill="none" />
+                    <Circle cx={21} cy={21} r={19} stroke={`url(#sg${i})`} strokeWidth={2} fill="rgba(255,255,255,0.08)" />
                   </Svg>
                   <Feather name="check" size={19} color="rgba(255,255,255,0.9)" />
                 </View>
               ) : isToday ? (
                 <View style={styles.circleGradientBorder}>
-                  <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-                  <LinearGradient
-                    colors={["rgba(255,255,255,0.17)", "rgba(255,255,255,0)"]}
-                    start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-                    style={StyleSheet.absoluteFill}
-                    pointerEvents="none"
-                  />
                   <Svg width={42} height={42} style={StyleSheet.absoluteFill}>
                     <Defs>
                       <SvgLinearGradient id="sgToday" x1="0.5" y1="0" x2="0.5" y2="1">
@@ -267,19 +253,11 @@ export function WeeklyStreakStrip() {
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={21} cy={21} r={19} stroke="url(#sgToday)" strokeWidth={2} fill="none" />
+                    <Circle cx={21} cy={21} r={19} stroke="url(#sgToday)" strokeWidth={2} fill="rgba(255,255,255,0.06)" />
                   </Svg>
                 </View>
               ) : (
-                <View style={styles.circleGradientBorder}>
-                  <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-                  <LinearGradient
-                    colors={["rgba(255,255,255,0.17)", "rgba(255,255,255,0)"]}
-                    start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-                    style={StyleSheet.absoluteFill}
-                    pointerEvents="none"
-                  />
-                </View>
+                <View style={[styles.circle, styles.circleInactive, styles.circleInactiveSize]} />
               )}
               <Text style={[styles.dayLabel, isToday && styles.dayLabelToday, (!met && !isToday) && styles.dayLabelInactivePos]}>{label}</Text>
             </View>
@@ -352,8 +330,6 @@ const styles = StyleSheet.create({
   circleGradientBorder: {
     width: 42,
     height: 42,
-    borderRadius: 21,
-    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
     marginTop: 4,
