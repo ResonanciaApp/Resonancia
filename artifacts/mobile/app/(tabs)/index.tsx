@@ -1172,10 +1172,9 @@ export default function HomeScreen2() {
           left: 0,
           right: 0,
           flexDirection: "row",
-          justifyContent: "flex-end",
+          justifyContent: "space-between",
           alignItems: "center",
-          paddingRight: 14,
-          gap: 10,
+          paddingHorizontal: 14,
           opacity: backdropAnim,
         }}
       >
