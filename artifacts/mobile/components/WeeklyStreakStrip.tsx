@@ -165,7 +165,6 @@ export function WeeklyStreakStrip() {
   return (
     <View style={styles.card}>
       {/* Anillo de progreso */}
-      <View style={styles.ringOuter}>
       <View
         style={[styles.ringWrap, {
           width: RING_SIZE + 18,
@@ -205,6 +204,11 @@ export function WeeklyStreakStrip() {
           start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
           style={{ position: "absolute", bottom: 0, left: 0, width: "14%", height: StyleSheet.hairlineWidth }}
           pointerEvents="none"
+        />
+        {/* 5. Acento de color del tema activo */}
+        <View
+          pointerEvents="none"
+          style={[StyleSheet.absoluteFill, { backgroundColor: theme.gradient[0] }]}
         />
         {/* 6. Borde con gradiente — idéntico al de la tab bar */}
         <Svg width={RING_SIZE + 18} height={RING_SIZE + 18} style={StyleSheet.absoluteFill} pointerEvents="none">
@@ -264,7 +268,6 @@ export function WeeklyStreakStrip() {
           <Text style={styles.ringCount}>{activeCount}</Text>
           <Text style={styles.ringLabel}>{activeCount === 1 ? "Día" : "Días"}</Text>
         </View>
-      </View>
       </View>
 
       {/* Bolitas de días */}
@@ -336,10 +339,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     gap: 13,
     alignItems: "center",
-  },
-  ringOuter: {
-    alignItems: "center",
-    justifyContent: "center",
   },
   ringWrap: {
     width: RING_SIZE,
