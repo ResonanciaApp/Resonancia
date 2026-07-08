@@ -826,7 +826,7 @@ export default function HomeScreen2() {
                 }]}
               >
                 {/* 5% tinte del color más oscuro del tema */}
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: hexToRgba(activeTheme.gradient[1], 0.05) }]} />
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[1], 0.05) }]} />
                 {/* Ícono con degradado de color */}
                 <MaskedView
                   maskElement={<View style={{ width: 21, height: 21, alignItems: "center", justifyContent: "center" }}>{c.icon("#fff")}</View>}
