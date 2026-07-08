@@ -721,8 +721,9 @@ export default function HomeScreen2() {
           `${prevGradient[0]}66`,
           prevGradient[0] as string,
           prevGradient[2] as string,
+          prevGradient[2] as string,
         ]}
-        locations={[0, 0.15, 0.33, 0.46, 1]}
+        locations={[0, 0.15, 0.33, 0.46, 0.73, 1]}
         style={styles.rootGradient}
       />
       <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
@@ -733,8 +734,9 @@ export default function HomeScreen2() {
             `${activeTheme.gradient[0]}66`,
             activeTheme.gradient[0] as string,
             activeTheme.gradient[2] as string,
+            activeTheme.gradient[2] as string,
           ]}
-          locations={[0, 0.15, 0.33, 0.46, 1]}
+          locations={[0, 0.15, 0.33, 0.46, 0.73, 1]}
           style={styles.rootGradient}
         />
       </Animated.View>
