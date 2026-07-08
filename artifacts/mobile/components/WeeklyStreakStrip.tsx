@@ -131,7 +131,7 @@ function minutesByDay(events: { playedAt: string; minutes: number }[]): Map<stri
   return map;
 }
 
-export function WeeklyStreakStrip() {
+export function WeeklyStreakStrip({ compact }: { compact?: boolean }) {
   const { statEvents } = usePlayer();
   const { theme } = useSceneTheme();
 
@@ -162,7 +162,7 @@ export function WeeklyStreakStrip() {
   const msg = STREAK_MESSAGES[activeCount] ?? STREAK_MESSAGES[0];
 
   return (
-    <View style={styles.card}>
+    <View style={compact ? styles.compact : styles.card}>
       {/* Anillo de progreso */}
       <View
         style={{
@@ -304,13 +304,13 @@ const styles = StyleSheet.create({
   },
   ringCount: {
     color: "#ffffff",
-    fontSize: 33,
+    fontSize: 36,
     fontWeight: "700",
-    lineHeight: 36,
+    lineHeight: 40,
   },
   ringLabel: {
     color: "rgba(255,255,255,0.95)",
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: "300",
     letterSpacing: 0.3,
   },
@@ -319,6 +319,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignSelf: "stretch",
     marginHorizontal: -14,
+    marginTop: 1,
+  },
+  compact: {
+    alignItems: "flex-start",
+    gap: 8,
+  },
+  compactRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignSelf: "stretch",
     marginTop: 1,
   },
   dayCol: {
@@ -355,7 +365,7 @@ const styles = StyleSheet.create({
   },
   dayLabel: {
     color: MUTED,
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: "600",
     marginTop: -2,
   },
@@ -373,15 +383,15 @@ const styles = StyleSheet.create({
   },
   messageHighlight: {
     color: "rgba(255,255,255,0.90)",
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: "700",
     textAlign: "center",
     letterSpacing: 0.2,
   },
   message: {
     color: TEXT,
-    fontSize: 12,
-    lineHeight: 19,
+    fontSize: 13,
+    lineHeight: 20,
     textAlign: "center",
     marginTop: -3,
   },
