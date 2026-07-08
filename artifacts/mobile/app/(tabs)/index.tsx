@@ -616,6 +616,13 @@ export default function HomeScreen2() {
 
   const backdropAnim = useRef(new Animated.Value(1)).current;
 
+  // ── Degradado oscuro del fondo: se extiende hacia arriba con el scroll ──
+  // A scroll 0 usa los stops base; al llegar a DARK_EXTEND_RANGE los stops
+  // de la zona sólida se acercan un 35% al inicio (cubren más pantalla).
+  const DARK_EXTEND_RANGE = 280;
+  const DARK_EXTEND_MAX = 0.35;
+  const [darkExtendProgress, setDarkExtendProgress] = useState(0);
+
   const handleMainScroll = useCallback(
     (e: { nativeEvent: { contentOffset: { y: number } } }) => {
       const y = e.nativeEvent.contentOffset.y;
@@ -623,9 +630,20 @@ export default function HomeScreen2() {
       updateStickyActive();
       // Scroll-linked: imagen visible en y=0, desaparece a los 280px de scroll
       backdropAnim.setValue(Math.max(0, 1 - y / 280));
+      const progress = Math.min(1, Math.max(0, y / DARK_EXTEND_RANGE));
+      setDarkExtendProgress(progress);
     },
     [updateStickyActive, backdropAnim],
   );
+
+  const darkGradientMultiplier = 1 - DARK_EXTEND_MAX * darkExtendProgress;
+  const darkGradientLocations: [number, number, number, number, number] = [
+    0,
+    0.15 * darkGradientMultiplier,
+    0.33 * darkGradientMultiplier,
+    0.46 * darkGradientMultiplier,
+    1,
+  ];
 
   // ── Buscador desplegable (se abre desde el ícono de lupa) ────────────────
   const [searchOpen, setSearchOpen] = useState(false);
@@ -734,7 +752,7 @@ export default function HomeScreen2() {
             activeTheme.gradient[0] as string,
             activeTheme.gradient[1] as string,
           ]}
-          locations={[0, 0.15, 0.33, 0.46, 1]}
+          locations={darkGradientLocations}
           style={styles.rootGradient}
         />
       </Animated.View>
