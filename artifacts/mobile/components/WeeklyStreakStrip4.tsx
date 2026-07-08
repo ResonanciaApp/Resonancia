@@ -129,10 +129,12 @@ export function WeeklyStreakStrip4() {
       <View style={styles.topRow}>
         {/* Card mensaje — ocupa todo el ancho, queda detrás del anillo */}
         <View style={styles.msgCard}>
-          {msg.highlight != null && (
-            <Text style={styles.messageHighlight}>{msg.highlight}</Text>
-          )}
-          <Text style={styles.message}>{msg.body}</Text>
+          <View style={{ marginTop: -7 }}>
+            {msg.highlight != null && (
+              <Text style={styles.messageHighlight}>{msg.highlight}</Text>
+            )}
+            <Text style={styles.message}>{msg.body}</Text>
+          </View>
         </View>
 
         {/* Divisor vertical */}
