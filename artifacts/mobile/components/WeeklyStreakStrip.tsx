@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -9,13 +10,6 @@ import { usePlayer } from "@/context/PlayerContext";
 
 const GOLD = "#BE8744";
 
-function hexToRgba(hex: string, alpha: number): string {
-  const h = hex.replace("#", "");
-  const r = parseInt(h.slice(0, 2), 16);
-  const g = parseInt(h.slice(2, 4), 16);
-  const b = parseInt(h.slice(4, 6), 16);
-  return `rgba(${r},${g},${b},${alpha})`;
-}
 const TEXT = "#e8e8e8";
 const MUTED = "#c2c2c2";
 
@@ -171,22 +165,27 @@ export function WeeklyStreakStrip() {
   return (
     <View style={styles.card}>
       {/* Anillo de progreso */}
-      <LinearGradient
-        colors={[hexToRgba(brightenHex(theme.gradient[0], 38), 0.18), hexToRgba(brightenHex(theme.gradient[1], 22), 0.14)]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
+      <View
         style={[styles.ringWrap, {
           width: RING_SIZE + 18,
           height: RING_SIZE + 18,
           borderRadius: (RING_SIZE + 18) / 2,
+          overflow: "hidden",
           marginTop: -10,
-          shadowColor: "#000000",
-          shadowOffset: { width: 0, height: 6 },
-          shadowOpacity: 0.72,
-          shadowRadius: 10,
-          elevation: 12,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.22,
+          shadowRadius: 24,
+          elevation: 20,
         }]}
       >
+        <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+        <LinearGradient
+          colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+          start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
         <Svg width={RING_SIZE} height={RING_SIZE}>
           <Circle
             cx={RING_SIZE / 2}
@@ -214,7 +213,7 @@ export function WeeklyStreakStrip() {
           <Text style={styles.ringCount}>{activeCount}</Text>
           <Text style={styles.ringLabel}>{activeCount === 1 ? "Día" : "Días"}</Text>
         </View>
-      </LinearGradient>
+      </View>
 
       {/* Bolitas de días */}
       <View style={styles.row}>
