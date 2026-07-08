@@ -621,8 +621,10 @@ export default function HomeScreen2() {
       const y = e.nativeEvent.contentOffset.y;
       scrollYRef.current = y;
       updateStickyActive();
-      // Scroll-linked: imagen visible en y=0, desaparece a los 310px de scroll
-      backdropAnim.setValue(Math.max(0, 1 - y / 310));
+      // Scroll-linked: imagen visible en y=0. Umbral calculado para que desaparezca
+      // justo cuando la racha semanal queda a 30px del logo "Pulso":
+      // logoBottom = topPad+89, racha top (y=0) = topPad+257 → gap=168-y → y=138 para gap=30
+      backdropAnim.setValue(Math.max(0, 1 - y / 138));
     },
     [updateStickyActive, backdropAnim],
   );
