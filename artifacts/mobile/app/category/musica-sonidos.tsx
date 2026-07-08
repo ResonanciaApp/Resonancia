@@ -379,10 +379,10 @@ export default function MusicaSonidosScreen() {
       <LinearGradient
         colors={[
           `${theme.gradient[0]}00`,
-          `${theme.gradient[0]}05`,
-          `${theme.gradient[0]}99`,
+          `${theme.gradient[0]}26`,
           `${theme.gradient[0]}CC`,
-          hexToRgba(theme.gradient[1], 0.80),
+          theme.gradient[0] as string,
+          hexToRgba(theme.gradient[1], 1),
         ]}
         locations={[0, 0.10, 0.26, 0.38, 1]}
         style={StyleSheet.absoluteFill}
