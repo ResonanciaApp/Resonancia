@@ -70,7 +70,7 @@ import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
 import { WeeklyStreakStrip } from "@/components/WeeklyStreakStrip";
 
-const { width, height: SCREEN_HEIGHT } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 // Sentinel interno para "sin filtro" (ya no hay chip visible de "Todos": es el
 // estado por defecto al entrar a la app).
@@ -326,8 +326,8 @@ export default function HomeScreen2() {
     Animated.parallel([
       Animated.timing(gradientFade, {
         toValue: 1,
-        duration: 550,
-        useNativeDriver: false,
+        duration: 300,
+        useNativeDriver: true,
       }),
       Animated.timing(imageFade, {
         toValue: 1,
@@ -725,33 +725,18 @@ export default function HomeScreen2() {
         locations={[0, 0.15, 0.33, 0.46, 1]}
         style={styles.rootGradient}
       />
-      <Animated.View
-        pointerEvents="none"
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          bottom: 0,
-          overflow: "hidden",
-          height: gradientFade.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, SCREEN_HEIGHT],
-          }),
-        }}
-      >
-        <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: SCREEN_HEIGHT }}>
-          <LinearGradient
-            colors={[
-              `${activeTheme.gradient[0]}00`,
-              `${activeTheme.gradient[0]}1A`,
-              `${activeTheme.gradient[0]}66`,
-              activeTheme.gradient[0] as string,
-              activeTheme.gradient[1] as string,
-            ]}
-            locations={[0, 0.15, 0.33, 0.46, 1]}
-            style={StyleSheet.absoluteFill}
-          />
-        </View>
+      <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
+        <LinearGradient
+          colors={[
+            `${activeTheme.gradient[0]}00`,
+            `${activeTheme.gradient[0]}1A`,
+            `${activeTheme.gradient[0]}66`,
+            activeTheme.gradient[0] as string,
+            activeTheme.gradient[1] as string,
+          ]}
+          locations={[0, 0.15, 0.33, 0.46, 1]}
+          style={styles.rootGradient}
+        />
       </Animated.View>
       <GeoUniverseBackground />
       <StatusBar barStyle="light-content" />
