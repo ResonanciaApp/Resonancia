@@ -213,31 +213,31 @@ export function WeeklyStreakStrip() {
         {/* 6. Borde con gradiente — idéntico al de la tab bar */}
         <Svg width={RING_SIZE + 18} height={RING_SIZE + 18} style={StyleSheet.absoluteFill} pointerEvents="none">
           <Defs>
-            <SvgLinearGradient id="ringBorderA" x1="0.5" y1="0" x2="0.5" y2="1">
+            <SvgLinearGradient id="ringBorderA" x1="0" y1="0" x2="0.65" y2="1">
               <Stop offset="0"   stopColor="#FFFFFF" stopOpacity={0.22} />
-              <Stop offset="0.5" stopColor="#FFFFFF" stopOpacity={0.04} />
-              <Stop offset="1"   stopColor="#FFFFFF" stopOpacity={0}    />
+              <Stop offset="0.4" stopColor="#FFFFFF" stopOpacity={0.05} />
+              <Stop offset="1"   stopColor="#FFFFFF" stopOpacity={0.01} />
             </SvgLinearGradient>
             <SvgLinearGradient id="ringBorderB" x1="1" y1="1" x2="0.3" y2="0">
-              <Stop offset="0"    stopColor="#FFFFFF" stopOpacity={0.04} />
-              <Stop offset="0.45" stopColor="#FFFFFF" stopOpacity={0.01} />
+              <Stop offset="0"    stopColor="#FFFFFF" stopOpacity={0.08} />
+              <Stop offset="0.45" stopColor="#FFFFFF" stopOpacity={0.02} />
               <Stop offset="1"    stopColor="#FFFFFF" stopOpacity={0}    />
             </SvgLinearGradient>
           </Defs>
           <Circle
             cx={(RING_SIZE + 18) / 2}
             cy={(RING_SIZE + 18) / 2}
-            r={(RING_SIZE + 18) / 2 - 0.5}
+            r={(RING_SIZE + 18) / 2 - 0.75}
             stroke="url(#ringBorderA)"
-            strokeWidth={0.5}
+            strokeWidth={1.5}
             fill="none"
           />
           <Circle
             cx={(RING_SIZE + 18) / 2}
             cy={(RING_SIZE + 18) / 2}
-            r={(RING_SIZE + 18) / 2 - 0.5}
+            r={(RING_SIZE + 18) / 2 - 0.75}
             stroke="url(#ringBorderB)"
-            strokeWidth={0.5}
+            strokeWidth={1.5}
             fill="none"
           />
         </Svg>
