@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: "center",
     justifyContent: "center",
-    paddingBottom: 14,
+    paddingBottom: 12,
   },
   divider: {
     position: "absolute",
