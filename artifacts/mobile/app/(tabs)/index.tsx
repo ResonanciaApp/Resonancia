@@ -43,7 +43,6 @@ import { EqualizerBars } from "@/components/EqualizerBars";
 import { SessionCarousel, CoverCarousel } from "@/components/SessionCarousel";
 import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
-import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
@@ -731,7 +730,7 @@ export default function HomeScreen2() {
           style={StyleSheet.absoluteFill}
         />
       </Animated.View>
-      <GeoUniverseBackground />
+
       <StatusBar barStyle="light-content" />
 
       <ScrollView
