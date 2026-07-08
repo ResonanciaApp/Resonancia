@@ -710,24 +710,26 @@ export default function HomeScreen2() {
       <LinearGradient
         colors={[
           `${prevGradient[0]}00`,
-          `${prevGradient[0]}0D`,
-          `${prevGradient[0]}59`,
+          `${prevGradient[0]}00`,
+          `${prevGradient[0]}1A`,
+          `${prevGradient[0]}66`,
           prevGradient[0] as string,
           prevGradient[1] as string,
         ]}
-        locations={[0, 0.25, 0.52, 0.68, 1]}
+        locations={[0, 0.22, 0.40, 0.58, 0.72, 1]}
         style={styles.rootGradient}
       />
       <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
         <LinearGradient
           colors={[
             `${activeTheme.gradient[0]}00`,
-            `${activeTheme.gradient[0]}0D`,
-            `${activeTheme.gradient[0]}59`,
+            `${activeTheme.gradient[0]}00`,
+            `${activeTheme.gradient[0]}1A`,
+            `${activeTheme.gradient[0]}66`,
             activeTheme.gradient[0] as string,
             activeTheme.gradient[1] as string,
           ]}
-          locations={[0, 0.25, 0.52, 0.68, 1]}
+          locations={[0, 0.22, 0.40, 0.58, 0.72, 1]}
           style={styles.rootGradient}
         />
       </Animated.View>
