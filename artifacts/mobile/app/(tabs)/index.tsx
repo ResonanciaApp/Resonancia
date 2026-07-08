@@ -1179,7 +1179,7 @@ export default function HomeScreen2() {
         }}
       >
         {/* Logo izquierda */}
-        <View pointerEvents="none">
+        <View pointerEvents="none" style={{ transform: [{ translateX: 5 }] }}>
           <ExpoImage
             source={require("@/assets/images/icons/pulso-logo.png")}
             style={{ width: 120, height: 52 }}
