@@ -186,10 +186,12 @@ export function WeeklyStreakStrip() {
             overflow: "hidden",
           }]}
         >
+          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
           <LinearGradient
-            colors={theme.gradient}
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
+            colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+            start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFill}
+            pointerEvents="none"
           />
           <Svg width={RING_SIZE} height={RING_SIZE}>
             <Circle
