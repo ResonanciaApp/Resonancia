@@ -44,7 +44,7 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   lluvia: {
     id: "lluvia",
     label: "Lluvia",
-    gradient: ["#1D2E3A", "#0D161D"],
+    gradient: ["#1D2E3A", "#172630"],
     solid: "#101B22",
   },
   viento: {
