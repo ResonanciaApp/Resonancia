@@ -18,7 +18,8 @@ export type SceneId =
   | "bosque"
   | "lluvia"
   | "nebulosa"
-  | "viento";
+  | "viento"
+  | "solaris";
 
 export type AmbientScene = {
   id: SceneId;
@@ -85,6 +86,13 @@ export const AMBIENT_SCENES: AmbientScene[] = [
     icon: "wind",
     image: require("@/assets/images/ambient/viento.jpg"),
   },
+  {
+    id: "solaris",
+    label: "Solaris",
+    colors: ["#4C2245", "#2A1A2F"] as const,
+    icon: "star",
+    image: require("@/assets/images/ambient/nebulosa.png"),
+  },
 ];
 
 const DEFAULT_VOLUME = 0.49; // 0.65 − 25%
@@ -109,6 +117,7 @@ const SCENE_AUDIO: Record<SceneId, unknown> = {
   lluvia:     require("@/assets/audio/riachuelo_stream.mp3"),   // → replace with lluvia.mp3
   nebulosa:   require("@/assets/audio/nebulosa_ambiente.mp3"),
   viento:     require("@/assets/audio/pajaros_ambiente.mp3"),   // → replace with viento.mp3
+  solaris:    require("@/assets/audio/nebulosa_ambiente.mp3"),  // → replace with solaris.mp3
 };
 
 type AmbientCtx = {
@@ -144,6 +153,7 @@ const DEFAULT_VOLUMES: Record<SceneId, number> = {
   lluvia: DEFAULT_VOLUME,
   nebulosa: DEFAULT_VOLUME,
   viento: DEFAULT_VOLUME,
+  solaris: DEFAULT_VOLUME,
 };
 
 export function AmbientPlayerProvider({ children }: { children: React.ReactNode }) {

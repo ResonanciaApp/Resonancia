@@ -71,6 +71,12 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
     gradient: ["#156393", "#2C347F"],
     solid: "#2E2F7F",
   },
+  solaris: {
+    id: "solaris",
+    label: "Solaris",
+    gradient: ["#4C2245", "#2A1A2F"],
+    solid: "#2A1A2F",
+  },
 };
 
 export const DEFAULT_THEME_ID: SceneId = "naturaleza";
