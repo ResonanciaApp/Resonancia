@@ -685,7 +685,7 @@ export default function HomeScreen2() {
   );
 
   return (
-    <View style={[styles.root, { backgroundColor: activeTheme.gradient[1] }]}>
+    <View style={[styles.root, { backgroundColor: activeTheme.gradient[0] }]}>
       {/* 1. Degradado de fondo full-screen — detrás de la imagen */}
       <LinearGradient
         colors={[prevGradient[0] as string, prevGradient[1] as string]}
