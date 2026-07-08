@@ -301,14 +301,7 @@ export default function SessionDetailScreen() {
       }));
 
   return (
-    <View style={styles.root}>
-      {/* ── Fondo base — degradado del tema de Escena activo ────────────────── */}
-      <LinearGradient
-        colors={sceneTheme.gradient}
-        locations={sceneTheme.gradientLocations}
-        style={StyleSheet.absoluteFill}
-        pointerEvents="none"
-      />
+    <View style={[styles.root, { backgroundColor: sceneTheme.gradient[0] }]}>
       {/* ── Imagen backdrop — se desvanece con scroll ─────────────────────── */}
       <Animated.View
         pointerEvents="none"
@@ -325,7 +318,7 @@ export default function SessionDetailScreen() {
           sceneTheme.gradient[0] as string,
           hexToRgba(sceneTheme.gradient[1], 1),
         ]}
-        locations={[0, 0.12, 0.24, 0.32, 0.9]}
+        locations={[0, 0.15, 0.33, 0.46, 1]}
         style={StyleSheet.absoluteFill}
       />
       <StatusBar barStyle="light-content" />
