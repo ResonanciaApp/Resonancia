@@ -134,6 +134,9 @@ export function WeeklyStreakStrip4() {
           <Text style={styles.message}>{msg.body}</Text>
         </View>
 
+        {/* Divisor vertical */}
+        <View style={styles.divider} />
+
         {/* Anillo de progreso — encima de la card */}
         <View
           style={{
@@ -245,15 +248,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  divider: {
+    position: "absolute",
+    left: RING_TOTAL,
+    top: 16,
+    bottom: 16,
+    width: 1,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    zIndex: 1,
+  },
   ringCount: {
     color: "#ffffff",
-    fontSize: 33,
+    fontSize: 40,
     fontWeight: "700",
-    lineHeight: 36,
+    lineHeight: 43,
   },
   ringLabel: {
     color: "rgba(255,255,255,0.95)",
-    fontSize: 10,
+    fontSize: 17,
     fontWeight: "300",
     letterSpacing: 0.3,
   },
