@@ -516,7 +516,7 @@ export default function SonidosAncestalesScreen() {
           <View style={styles.heroIconFloat}>
             <View style={styles.heroIconGlow}>
               <View style={[styles.heroIconCircle, { backgroundColor: hexToRgba(theme.gradient[1], 0.9) }]}>
-                <Feather name="music" size={32} color="#BE8744" />
+                <MaterialCommunityIcons name="waves" size={32} color="#BE8744" />
               </View>
             </View>
           </View>

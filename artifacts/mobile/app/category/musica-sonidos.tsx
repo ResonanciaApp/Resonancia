@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { BackPill } from "@/components/BackPill";
 import { router } from "expo-router";
 import { Image } from "expo-image";
@@ -416,7 +416,7 @@ export default function MusicaSonidosScreen() {
           <View style={styles.heroIconFloat}>
             <View style={styles.heroIconGlow}>
               <View style={[styles.heroIconCircle, { backgroundColor: hexToRgba(theme.gradient[1], 0.9) }]}>
-                <Feather name="headphones" size={32} color="#BE8744" />
+                <Ionicons name="musical-notes-outline" size={32} color="#BE8744" />
               </View>
             </View>
           </View>
