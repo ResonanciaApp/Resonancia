@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
   },
   msgCard: {
     flex: 1,
-    paddingLeft: 4,
+    paddingLeft: 0,
     paddingRight: 14,
     paddingTop: 5,
     paddingBottom: 10,
