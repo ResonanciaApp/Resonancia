@@ -311,7 +311,7 @@ export default function SessionDetailScreen() {
           `${sceneTheme.gradient[0]}1A`,
           `${sceneTheme.gradient[0]}66`,
           sceneTheme.gradient[0] as string,
-          sceneTheme.gradient[1] as string,
+          hexToRgba(sceneTheme.gradient[1], 0.85),
         ]}
         locations={[0, 0.15, 0.33, 0.46, 1]}
         style={StyleSheet.absoluteFill}
