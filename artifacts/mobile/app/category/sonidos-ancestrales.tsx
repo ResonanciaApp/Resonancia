@@ -573,7 +573,7 @@ const styles = StyleSheet.create({
   /* ── Profile card ── */
   profileCard: { marginHorizontal: H_PAD, marginTop: 28, paddingBottom: 14, gap: 8, alignItems: "center" },
   profileTitle: { fontSize: 27, fontWeight: "400", color: TEXT, letterSpacing: 0.3 },
-  profileDesc: { fontSize: 12, color: "rgba(255,255,255,0.90)", lineHeight: 17, textAlign: "center", maxWidth: 140, marginTop: -4, marginBottom: 28 },
+  profileDesc: { fontSize: 12, color: "rgba(255,255,255,0.90)", lineHeight: 17, textAlign: "center", maxWidth: 280, marginTop: -4, marginBottom: 28 },
 
   /* ── Tabs (línea subrayada) ── */
   chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -33 },
