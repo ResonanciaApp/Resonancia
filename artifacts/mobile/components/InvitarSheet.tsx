@@ -190,6 +190,7 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
         {/* Fondo: degradado del tema activo */}
         <LinearGradient
           colors={theme.gradient}
+          locations={theme.gradientLocations}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}

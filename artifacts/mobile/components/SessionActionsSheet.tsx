@@ -130,7 +130,7 @@ export function SessionActionsSheet({ session, visible, onClose }: Props) {
 
           {/* Sheet */}
           <View style={[styles.sheet, { paddingBottom: insets.bottom + 8 }]}>
-          <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} pointerEvents="none" />
+          <LinearGradient colors={theme.gradient} locations={theme.gradientLocations} style={StyleSheet.absoluteFill} pointerEvents="none" />
           {/* Handle */}
           <View style={styles.handle} />
 

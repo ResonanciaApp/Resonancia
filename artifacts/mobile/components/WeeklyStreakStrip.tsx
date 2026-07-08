@@ -187,6 +187,7 @@ export function WeeklyStreakStrip() {
         >
           <LinearGradient
             colors={theme.gradient}
+            locations={theme.gradientLocations}
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
             style={StyleSheet.absoluteFill}
           />

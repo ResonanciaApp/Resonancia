@@ -215,7 +215,7 @@ export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Pro
       >
         <Pressable style={StyleSheet.absoluteFill} onPress={handleClose} />
         <View style={[styles.sheet, { paddingBottom: insets.bottom + 8 }]}>
-          <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} pointerEvents="none" />
+          <LinearGradient colors={theme.gradient} locations={theme.gradientLocations} style={StyleSheet.absoluteFill} pointerEvents="none" />
           <View style={styles.handle} />
 
           {step === "main" && (
