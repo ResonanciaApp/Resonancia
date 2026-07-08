@@ -195,14 +195,14 @@ export function WeeklyStreakStrip() {
           colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.03)", "rgba(255,255,255,0.12)", "rgba(255,255,255,0)"]}
           locations={[0, 0.18, 0.5, 1]}
           start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-          style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
+          style={{ position: "absolute", bottom: -1, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
           pointerEvents="none"
         />
         {/* 4. Acento curva inferior-izquierda — casi imperceptible */}
         <LinearGradient
           colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
           start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-          style={{ position: "absolute", bottom: 0, left: 0, width: "14%", height: StyleSheet.hairlineWidth }}
+          style={{ position: "absolute", bottom: -1, left: 0, width: "14%", height: StyleSheet.hairlineWidth }}
           pointerEvents="none"
         />
         {/* 6. Borde con gradiente — idéntico al de la tab bar */}
