@@ -533,7 +533,7 @@ export default function SessionDetailScreen() {
         <GhostPill noBorder style={{ backgroundColor: hexToRgba(sceneTheme.gradient[1], 0.4) }}>
           <BackPill onPress={() => router.back()} />
         </GhostPill>
-        <View style={{ flex: 1, alignItems: "center" }}>
+        <View style={{ flex: 1, alignItems: "center", paddingTop: 5 }}>
           <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
           <Text style={styles.stickySubtitle} numberOfLines={1}>
             {[authors[0]?.name, session.durationLabel].filter(Boolean).join(" · ")}
