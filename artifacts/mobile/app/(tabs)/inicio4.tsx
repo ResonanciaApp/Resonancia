@@ -799,9 +799,9 @@ export default function HomeScreen2() {
           <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Explora por contenido</Text>
           <View style={{ flexDirection: "row", gap: 10 }}>
             {([
-              { id: "meditaciones-guiadas", label: "Meditaciones", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={21} color={color} /> },
-              { id: "sonidos-ancestrales", label: "Sesiones",      icon: (color: string) => <MaterialCommunityIcons name="waves" size={21} color={color} /> },
-              { id: "musica-sonidos",       label: "Música",        icon: (color: string) => <Ionicons name="musical-notes-outline" size={21} color={color} /> },
+              { id: "meditaciones-guiadas", label: "Meditaciones", tint: "rgba(130,80,200,0.10)", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={21} color={color} /> },
+              { id: "sonidos-ancestrales", label: "Sesiones",      tint: "rgba(60,120,210,0.10)",  icon: (color: string) => <MaterialCommunityIcons name="waves" size={21} color={color} /> },
+              { id: "musica-sonidos",       label: "Música",        tint: "rgba(50,160,100,0.10)",  icon: (color: string) => <Ionicons name="musical-notes-outline" size={21} color={color} /> },
             ] as const).map((c) => (
               <Pressable
                 key={c.id}
@@ -819,6 +819,7 @@ export default function HomeScreen2() {
                 }]}
               >
                 <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: c.tint }]} />
                 <LinearGradient
                   colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
                   start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
