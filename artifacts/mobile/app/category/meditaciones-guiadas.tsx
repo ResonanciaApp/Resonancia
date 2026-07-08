@@ -455,7 +455,12 @@ export default function MeditacionesGuiadasScreen() {
         <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.4) }}>
           <BackPill onPress={() => router.back()} />
         </GhostPill>
-        <Text style={styles.headerTitle}>Meditaciones</Text>
+        <View style={styles.headerTitleCol}>
+          <Text style={styles.headerTitle}>Meditaciones</Text>
+          {activeTab && (
+            <Text style={styles.headerSubtitle}>{TABS.find((t) => t.id === activeTab)?.label}</Text>
+          )}
+        </View>
         <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/meditaciones-info" as never)}>
           <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
         </Pressable>
@@ -470,7 +475,9 @@ const styles = StyleSheet.create({
 
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#1B060F" },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
-  headerTitle: { flex: 1, fontSize: 18, fontWeight: "400", color: "#e8e8e8", letterSpacing: 0.2, textAlign: "center" },
+  headerTitleCol: { flex: 1, alignItems: "center" },
+  headerTitle: { fontSize: 18, fontWeight: "400", color: "#e8e8e8", letterSpacing: 0.2, textAlign: "center" },
+  headerSubtitle: { fontSize: 11, color: "#f4f4f4", letterSpacing: 0.3, marginTop: 1, opacity: 0.7 },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
 
   heroArea: { height: 238, position: "relative" },
