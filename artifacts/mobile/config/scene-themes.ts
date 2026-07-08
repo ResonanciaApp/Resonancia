@@ -38,7 +38,7 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   bosque: {
     id: "bosque",
     label: "Bosque",
-    gradient: ["#14301F", "#081712"],
+    gradient: ["#14301F", "#0F241D"],
     solid: "#0B1710",
   },
   lluvia: {
