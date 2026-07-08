@@ -379,7 +379,7 @@ export default function MusicaSonidosScreen() {
       <LinearGradient
         colors={[
           `${theme.gradient[0]}00`,
-          `${theme.gradient[0]}26`,
+          `${theme.gradient[0]}66`,
           `${theme.gradient[0]}CC`,
           theme.gradient[0] as string,
           hexToRgba(theme.gradient[1], 1),
@@ -486,13 +486,13 @@ const styles = StyleSheet.create({
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
 
   heroArea: { height: 238, position: "relative" },
-  heroIconFloat: { position: "absolute", bottom: -87, left: 0, right: 0, alignItems: "center", zIndex: 2 },
+  heroIconFloat: { position: "absolute", bottom: -17, left: 0, right: 0, alignItems: "center", zIndex: 2 },
   heroIconGlow: { borderRadius: 36 },
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "#1B060F", borderWidth: 2, borderColor: "rgba(190,135,68,0.5)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
-  profileCard: { marginHorizontal: H_PAD, marginTop: 92, paddingBottom: 14, gap: 5, alignItems: "center" },
+  profileCard: { marginHorizontal: H_PAD, marginTop: 28, paddingBottom: 14, gap: 8, alignItems: "center" },
   profileTitle: { fontSize: 27, fontWeight: "400", color: TEXT, letterSpacing: 0.3 },
-  profileDesc: { fontSize: 12, color: "rgba(255,255,255,0.90)", lineHeight: 17, textAlign: "center", maxWidth: 280, marginTop: 0, marginBottom: 28 },
+  profileDesc: { fontSize: 12, color: "rgba(255,255,255,0.90)", lineHeight: 17, textAlign: "center", maxWidth: 280, marginTop: 3, marginBottom: 28 },
 
   dividerLine: { height: 0 },
   dividerShadow: { height: 12, marginTop: 0 },
