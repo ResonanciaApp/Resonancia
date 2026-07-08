@@ -1184,25 +1184,16 @@ export default function HomeScreen2() {
           </Text>
         </View>
 
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginLeft: -3 }}>
-          <Pressable
-            onPress={openEscenasSheet}
-            hitSlop={8}
-            style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
-          >
-            <View style={[styles.universeBtnBg, { backgroundColor: hexTint(activeTheme.gradient[0], 0.60) }]}>
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[1], 0.30) }]} />
-              <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
-            </View>
-          </Pressable>
-          <Pressable
-            onPress={() => router.push("/equipo-info" as never)}
-            hitSlop={10}
-            style={({ pressed }) => [{ width: 38, height: 38, alignItems: "center", justifyContent: "center", opacity: pressed ? 0.8 : 1 }]}
-          >
-            <Feather name="info" size={24} color="#FFFFFF" />
-          </Pressable>
-        </View>
+        <Pressable
+          onPress={openEscenasSheet}
+          hitSlop={8}
+          style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1, marginLeft: -3 }]}
+        >
+          <View style={[styles.universeBtnBg, { backgroundColor: hexTint(activeTheme.gradient[0], 0.60) }]}>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[1], 0.30) }]} />
+            <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
+          </View>
+        </Pressable>
 
         <Pressable
           hitSlop={8}
