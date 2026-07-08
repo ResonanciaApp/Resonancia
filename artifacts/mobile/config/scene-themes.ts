@@ -26,7 +26,7 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   universo: {
     id: "universo",
     label: "Universo",
-    gradient: ["#610F2E", "#470344"],
+    gradient: ["#5E062B", "#2A062B"],
     solid: "#751238",
   },
   naturaleza: {
