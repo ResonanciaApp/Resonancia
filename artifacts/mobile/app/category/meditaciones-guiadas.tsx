@@ -377,7 +377,7 @@ export default function MeditacionesGuiadasScreen() {
       <LinearGradient
         colors={[
           `${theme.gradient[0]}00`,
-          `${theme.gradient[0]}66`,
+          `${theme.gradient[0]}26`,
           `${theme.gradient[0]}CC`,
           theme.gradient[0] as string,
           hexToRgba(theme.gradient[1], 1),
