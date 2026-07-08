@@ -131,7 +131,38 @@ function minutesByDay(events: { playedAt: string; minutes: number }[]): Map<stri
   return map;
 }
 
-export function WeeklyStreakStrip({ compact }: { compact?: boolean }) {
+/** Hook compartido: cuenta cuántos días de la semana cumplieron la meta. */
+export function useStreakCount() {
+  const { statEvents } = usePlayer();
+  return useMemo(() => {
+    const byDay = minutesByDay(statEvents);
+    const monday = startOfWeek(new Date());
+    let count = 0;
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      if ((byDay.get(dayKey(d)) ?? 0) >= GOAL_MINUTES) count++;
+    }
+    return count;
+  }, [statEvents]);
+}
+
+/** Solo el contador "X Días" (sin anillo ni bolitas). */
+export function StreakDayCount() {
+  const count = useStreakCount();
+  return (
+    <View style={{ flex: 1, justifyContent: "center" }}>
+      <Text style={{ color: "#fff", fontSize: 36, fontWeight: "700" }}>
+        {count}
+      </Text>
+      <Text style={{ color: "rgba(255,255,255,0.85)", fontSize: 14 }}>
+        {count === 1 ? "Día" : "Días"}
+      </Text>
+    </View>
+  );
+}
+
+export function WeeklyStreakStrip() {
   const { statEvents } = usePlayer();
   const { theme } = useSceneTheme();
 
@@ -162,7 +193,7 @@ export function WeeklyStreakStrip({ compact }: { compact?: boolean }) {
   const msg = STREAK_MESSAGES[activeCount] ?? STREAK_MESSAGES[0];
 
   return (
-    <View style={compact ? styles.compact : styles.card}>
+    <View style={styles.card}>
       {/* Anillo de progreso */}
       <View
         style={{
@@ -304,13 +335,13 @@ const styles = StyleSheet.create({
   },
   ringCount: {
     color: "#ffffff",
-    fontSize: 36,
+    fontSize: 33,
     fontWeight: "700",
-    lineHeight: 40,
+    lineHeight: 36,
   },
   ringLabel: {
     color: "rgba(255,255,255,0.95)",
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: "300",
     letterSpacing: 0.3,
   },
@@ -319,16 +350,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignSelf: "stretch",
     marginHorizontal: -14,
-    marginTop: 1,
-  },
-  compact: {
-    alignItems: "flex-start",
-    gap: 8,
-  },
-  compactRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignSelf: "stretch",
     marginTop: 1,
   },
   dayCol: {
@@ -365,7 +386,7 @@ const styles = StyleSheet.create({
   },
   dayLabel: {
     color: MUTED,
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: "600",
     marginTop: -2,
   },
@@ -383,15 +404,15 @@ const styles = StyleSheet.create({
   },
   messageHighlight: {
     color: "rgba(255,255,255,0.90)",
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "700",
     textAlign: "center",
     letterSpacing: 0.2,
   },
   message: {
     color: TEXT,
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: 12,
+    lineHeight: 19,
     textAlign: "center",
     marginTop: -3,
   },

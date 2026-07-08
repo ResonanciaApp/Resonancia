@@ -67,7 +67,7 @@ import { LiveSessionCard } from "@/components/LiveSessionCard";
 import { useLiveSessions } from "@/hooks/useLiveSessions";
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
-import { WeeklyStreakStrip } from "@/components/WeeklyStreakStrip";
+import { StreakDayCount, WeeklyStreakStrip } from "@/components/WeeklyStreakStrip";
 
 const { width } = Dimensions.get("window");
 
@@ -748,12 +748,10 @@ export default function HomeScreen2() {
           updateStickyActive();
         }}
       >
-        {/* ── Racha + Resonadores (fila) ── */}
+        {/* ── Fila: Días + Resonadores ── */}
         <View style={{ flexDirection: "row", paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 245, gap: 10 }}>
-          {/* Racha semanal — izquierda, sin fondo */}
-          <View style={{ flex: 1, alignItems: "flex-start" }}>
-            <WeeklyStreakStrip compact />
-          </View>
+          {/* Contador de días — izquierda */}
+          <StreakDayCount />
           {/* Resonadores — derecha, card */}
           <Pressable
             onPress={() => router.push("/resonadores" as never)}
@@ -789,6 +787,11 @@ export default function HomeScreen2() {
               </View>
             </View>
           </Pressable>
+        </View>
+
+        {/* ── Racha semanal (completa) ── */}
+        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2 }}>
+          <WeeklyStreakStrip />
         </View>
 
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
