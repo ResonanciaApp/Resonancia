@@ -1182,7 +1182,7 @@ export default function HomeScreen2() {
         <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, alignItems: "center", transform: [{ translateY: 5 }] }}>
           <ExpoImage
             source={require("@/assets/images/logo-resonancia.png")}
-            style={{ width: 125, height: 57 }}
+            style={{ width: 140, height: 72 }}
             contentFit="contain"
           />
         </View>
