@@ -254,9 +254,6 @@ export function WeeklyStreakStrip4() {
                     style={StyleSheet.absoluteFill}
                     pointerEvents="none"
                   />
-                  <Svg width={42} height={42} style={StyleSheet.absoluteFill}>
-                    <Circle cx={21} cy={21} r={19} stroke="rgba(255,255,255,0.12)" strokeWidth={1} fill="none" />
-                  </Svg>
                 </View>
               )}
               <Text style={[styles.dayLabel, isToday && styles.dayLabelToday, (!met && !isToday) && styles.dayLabelInactivePos]}>
@@ -307,6 +304,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: "center",
     justifyContent: "center",
+    paddingBottom: 8,
   },
   divider: {
     position: "absolute",
