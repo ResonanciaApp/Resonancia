@@ -31,7 +31,6 @@ import RAnimated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { InvitarSheet } from "@/components/InvitarSheet";
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
@@ -344,7 +343,6 @@ export default function HomeScreen2() {
 
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
-  const [showInvitar, setShowInvitar] = useState(false);
 
   function handleMoodSelect(moodId: MoodId) {
     setSelectedMood(getMoodById(moodId) ?? null);
@@ -565,7 +563,6 @@ export default function HomeScreen2() {
   const scrollLayoutHeightRef = useRef(0);
   const scrollYRef = useRef(0);
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
-  const giftBtnAnim = useRef(new Animated.Value(1)).current;
   const giftScaleAnim = useRef(new Animated.Value(1)).current;
 
 
@@ -587,12 +584,7 @@ export default function HomeScreen2() {
       duration: 300,
       useNativeDriver: true,
     }).start();
-    Animated.timing(giftBtnAnim, {
-      toValue: shouldShow ? 0 : 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [searchBtnAnim, giftBtnAnim]);
+  }, [searchBtnAnim]);
 
   const updateStickyActive = useCallback(() => {
     const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
@@ -1195,22 +1187,21 @@ export default function HomeScreen2() {
 
         <Pressable
           hitSlop={8}
-          style={styles.giftBtn}
+          style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1 }]}
           onPressIn={() =>
             Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
           }
           onPressOut={() => {
             Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
-            setTimeout(() => setShowInvitar(true), 500);
+            router.push("/musica" as never);
           }}
         >
           <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-            <View style={{ width: 49, height: 49, borderRadius: 24.5, overflow: "hidden" }}>
-              <Image
-                source={require("@/assets/images/icons/regalo10.png")}
-                style={styles.giftBtnIcon}
-                resizeMode="contain"
-              />
+            <View style={{ width: 45, height: 45, borderRadius: 22.5, overflow: "hidden" }}>
+              <View style={[styles.universeBtnBg, { backgroundColor: hexTint(activeTheme.gradient[0], 0.60) }]}>
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[1], 0.30) }]} />
+                <Feather name="sliders" size={22} color="#D4AF37" style={{ opacity: 0.9, textShadowColor: "rgba(212,175,55,0.25)", textShadowRadius: 6, textShadowOffset: { width: 0, height: 0 } }} />
+              </View>
             </View>
           </Animated.View>
         </Pressable>
@@ -1228,10 +1219,6 @@ export default function HomeScreen2() {
         onClose={() => setActionsSession(null)}
       />
 
-      <InvitarSheet
-        visible={showInvitar}
-        onClose={() => setShowInvitar(false)}
-      />
 
     </View>
   );
@@ -1397,20 +1384,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  giftBtnWrap: {
-    position: "absolute",
-    right: 0,
-  },
   giftBtn: {
     width: 42,
     height: 42,
     alignItems: "center",
     justifyContent: "center",
-  },
-  giftBtnIcon: {
-    width: 42,
-    height: 42,
-    marginLeft: 1,
   },
   universeBtnIcon: {
     width: 28,

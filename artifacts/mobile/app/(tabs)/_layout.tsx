@@ -60,11 +60,12 @@ const TAB_CONFIG: Record<
     iconSize?: number;
     iconOffset?: number;
     labelOffset?: number;
+    activeColor?: string;
   }
 > = {
   index:      { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
   explore:    { label: "Meditación", sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search", image: require("@/assets/images/tab-icon-medita.png"), iconSize: ICON_SIZE + 4, labelOffset: -2 },
-  musica:     { label: "Creación",   sfIcon: "slider.horizontal.3", sfIconFill: "slider.horizontal.3",  featherIcon: "sliders", image: require("@/assets/images/tab-icon-creacion.png") },
+  musica:     { label: "Creación",   mciIcon: "spa", mciIconFill: "spa", featherIcon: "sliders", activeColor: "#D4AF37" },
   biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark", image: require("@/assets/images/tab-icon-universo.png") },
   video:      { label: "Videos",     sfIcon: "video",               sfIconFill: "video.fill",           featherIcon: "video" },
   descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon" },
@@ -90,7 +91,7 @@ function TabItem({
   const tOffset    = [{ translateY: iconOffset }];
 
   const makeIcon = useCallback((active: boolean) => {
-    const color  = active ? ACTIVE_COLOR : INACTIVE_COLOR;
+    const color  = active ? (conf.activeColor ?? ACTIVE_COLOR) : INACTIVE_COLOR;
     const sfName = active ? conf.sfIconFill : conf.sfIcon;
     const mciName = active ? conf.mciIconFill : conf.mciIcon;
     return conf.image ? (
@@ -116,7 +117,7 @@ function TabItem({
           {makeIcon(isFocused)}
         </View>
         <View style={[styles.labelWrap, { transform: [{ translateY: labelOffset }] }]}>
-          <Text style={[styles.label, { color: isFocused ? ACTIVE_COLOR : INACTIVE_COLOR }]} numberOfLines={1}>
+          <Text style={[styles.label, { color: isFocused ? (conf.activeColor ?? ACTIVE_COLOR) : INACTIVE_COLOR }]} numberOfLines={1}>
             {conf.label}
           </Text>
         </View>
