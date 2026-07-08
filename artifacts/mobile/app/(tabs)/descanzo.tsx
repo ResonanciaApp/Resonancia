@@ -386,6 +386,14 @@ export default function DescansoScreen() {
   const [tabsOffsetY, setTabsOffsetY] = useState(HERO_H);
   const [headerH,     setHeaderH]     = useState(60);
   const [chipsSticky, setChipsSticky] = useState(false);
+  const tabsOpacity = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (chipsSticky) {
+      Animated.timing(tabsOpacity, { toValue: 1, duration: 280, useNativeDriver: true }).start();
+    } else {
+      tabsOpacity.setValue(0);
+    }
+  }, [chipsSticky]);
 
   // ── Borde del sticky header (tabs): se activa recién a partir de 1% de scroll ──
   const HEADER_BORDER_THRESHOLD = 0.01;
@@ -585,7 +593,7 @@ export default function DescansoScreen() {
 
       {/* ── Tabs sticky (se pegan debajo del título) ── */}
       {chipsSticky && (
-        <View style={[styles.stickyTabs, { top: headerH, backgroundColor: bgGradient[0] }]}>
+        <Animated.View style={[styles.stickyTabs, { top: headerH, backgroundColor: bgGradient[0], opacity: tabsOpacity }]}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -602,7 +610,7 @@ export default function DescansoScreen() {
             ))}
           </ScrollView>
           <Animated.View style={[styles.stickyTabsBorder, { opacity: headerBorderAnim }]} />
-        </View>
+        </Animated.View>
       )}
 
       <NightTimerSheet
