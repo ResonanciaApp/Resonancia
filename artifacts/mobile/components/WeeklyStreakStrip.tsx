@@ -182,6 +182,8 @@ export function WeeklyStreakStrip() {
         {/* ── Glass material, idéntico a la tab bar ────────────────────────── */}
         {/* 1. Blur base */}
         <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+        {/* 1.5. Tinte negro sutil */}
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.1)" }]} pointerEvents="none" />
         {/* 2. Inner glow vertical — más luminoso arriba, se desvanece abajo */}
         <LinearGradient
           colors={["rgba(255,255,255,0.09)", "rgba(255,255,255,0.09)", "rgba(255,255,255,0)"]}
