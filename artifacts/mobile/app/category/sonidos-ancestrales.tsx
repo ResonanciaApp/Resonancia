@@ -32,7 +32,7 @@ const TEXT  = "#e8e8e8";
 const MUTED = "#c2c2c2";
 const GRID_GAP    = 10;
 const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
-const HERO_H   = 178;
+const HERO_H   = 148;
 
 type CatTab   = string;
 type SortMode = "recientes" | "nuevas" | "populares";
