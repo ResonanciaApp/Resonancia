@@ -214,7 +214,7 @@ export function WeeklyStreakStrip4() {
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={21} cy={21} r={19} stroke={`url(#sg4_${i})`} strokeWidth={2} fill="rgba(255,255,255,0.08)" />
+                    <Circle cx={21} cy={21} r={19} stroke={`url(#sg4_${i})`} strokeWidth={2} fill="none" />
                   </Svg>
                   <Feather name="check" size={19} color="rgba(255,255,255,0.9)" />
                 </View>
@@ -227,7 +227,7 @@ export function WeeklyStreakStrip4() {
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={21} cy={21} r={19} stroke="url(#sg4Today)" strokeWidth={2} fill="rgba(255,255,255,0.06)" />
+                    <Circle cx={21} cy={21} r={19} stroke="url(#sg4Today)" strokeWidth={2} fill="none" />
                   </Svg>
                 </View>
               ) : (
