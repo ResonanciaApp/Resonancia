@@ -70,9 +70,7 @@ import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
 import { WeeklyStreakStrip } from "@/components/WeeklyStreakStrip";
 
-const { width, height: SCREEN_HEIGHT } = Dimensions.get("window");
-const DARK_EXTEND_MAX = 0.35;
-const DARK_EXTEND_OVERLAY_HEIGHT = SCREEN_HEIGHT * 0.54;
+const { width } = Dimensions.get("window");
 
 // Sentinel interno para "sin filtro" (ya no hay chip visible de "Todos": es el
 // estado por defecto al entrar a la app).
@@ -618,13 +616,6 @@ export default function HomeScreen2() {
 
   const backdropAnim = useRef(new Animated.Value(1)).current;
 
-  // ── Degradado oscuro del fondo: se extiende hacia arriba con el scroll ──
-  // En vez de recalcular los "locations" del LinearGradient en cada frame
-  // (costoso: regenera el gradiente nativo), se superpone una capa sólida
-  // con opacidad animada — mucho más barato (solo compositing).
-  const DARK_EXTEND_RANGE = 280;
-  const darkExtendAnim = useRef(new Animated.Value(0)).current;
-
   const handleMainScroll = useCallback(
     (e: { nativeEvent: { contentOffset: { y: number } } }) => {
       const y = e.nativeEvent.contentOffset.y;
@@ -632,9 +623,8 @@ export default function HomeScreen2() {
       updateStickyActive();
       // Scroll-linked: imagen visible en y=0, desaparece a los 280px de scroll
       backdropAnim.setValue(Math.max(0, 1 - y / 280));
-      darkExtendAnim.setValue(Math.min(1, Math.max(0, y / DARK_EXTEND_RANGE)));
     },
-    [updateStickyActive, backdropAnim, darkExtendAnim],
+    [updateStickyActive, backdropAnim],
   );
 
   // ── Buscador desplegable (se abre desde el ícono de lupa) ────────────────
@@ -746,23 +736,6 @@ export default function HomeScreen2() {
           ]}
           locations={[0, 0.15, 0.33, 0.46, 1]}
           style={styles.rootGradient}
-        />
-        <Animated.View
-          pointerEvents="none"
-          style={[
-            styles.darkExtendOverlay,
-            {
-              backgroundColor: activeTheme.gradient[1] as string,
-              transform: [
-                {
-                  translateY: darkExtendAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0, -(DARK_EXTEND_OVERLAY_HEIGHT * DARK_EXTEND_MAX)],
-                  }),
-                },
-              ],
-            },
-          ]}
         />
       </Animated.View>
       <GeoUniverseBackground />
@@ -1269,13 +1242,6 @@ export default function HomeScreen2() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#210911" },
   rootGradient: { ...StyleSheet.absoluteFillObject },
-  darkExtendOverlay: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: DARK_EXTEND_OVERLAY_HEIGHT,
-  },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
     paddingBottom: 0,
