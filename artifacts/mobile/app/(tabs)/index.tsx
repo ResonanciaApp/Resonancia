@@ -86,8 +86,6 @@ const GRID_PAD = 20;
 const CARD_W = (width - GRID_PAD * 2 - GRID_GAP) / 2;
 const CARD_H = CARD_W * 0.72;
 const HERO_HEIGHT = 320;
-const BACKDROP_HEIGHT = 400;
-const BACKDROP_FADE_ZONE = 140;
 
 const VIDEO_REG_W = 200;
 // 1 card completa + 25% del siguiente visible: W = (screenWidth - leftPad - gap) / 1.25
@@ -617,13 +615,6 @@ export default function HomeScreen2() {
   }, [updateSearchBtnVisibility, headerBorderAnim]);
 
   const backdropAnim = useRef(new Animated.Value(1)).current;
-  // Reveal/hide de la imagen de fondo de abajo hacia arriba (no fade parejo):
-  // una máscara con zona blanca (visible) + banda de degradado se desliza hacia
-  // arriba con el scroll, "comiéndose" primero la parte inferior de la foto.
-  const backdropRevealTranslateY = backdropAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-(BACKDROP_HEIGHT + BACKDROP_FADE_ZONE), 0],
-  });
 
   const handleMainScroll = useCallback(
     (e: { nativeEvent: { contentOffset: { y: number } } }) => {
@@ -703,39 +694,26 @@ export default function HomeScreen2() {
 
   return (
     <View style={[styles.root, { backgroundColor: activeTheme.gradient[0] }]}>
-      {/* ── Imagen de fondo — se revela/oculta con scroll, de abajo hacia arriba ── */}
-      <View
-        style={{ position: "absolute", top: 0, left: 0, right: 0, height: BACKDROP_HEIGHT, overflow: "hidden" }}
+      {/* ── Imagen de fondo — se desvanece con scroll ── */}
+      <Animated.View
+        style={{ position: "absolute", top: 0, left: 0, right: 0, height: 400, opacity: backdropAnim }}
         pointerEvents="none"
       >
-        <MaskedView
+        {/* Capa anterior (estática mientras dura el fade) */}
+        <ExpoImage
+          source={prevSceneImage}
           style={StyleSheet.absoluteFill}
-          maskElement={
-            <Animated.View style={{ width: "100%", transform: [{ translateY: backdropRevealTranslateY }] }}>
-              <View style={{ width: "100%", height: BACKDROP_HEIGHT, backgroundColor: "#fff" }} />
-              <LinearGradient
-                colors={["#fff", "transparent"]}
-                style={{ width: "100%", height: BACKDROP_FADE_ZONE }}
-              />
-            </Animated.View>
-          }
-        >
-          {/* Capa anterior (estática mientras dura el fade) */}
+          contentFit="cover"
+        />
+        {/* Nueva imagen — fade-in sincronizado con el gradiente */}
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: imageFade }]}>
           <ExpoImage
-            source={prevSceneImage}
+            source={currentSceneImage}
             style={StyleSheet.absoluteFill}
             contentFit="cover"
           />
-          {/* Nueva imagen — fade-in sincronizado con el gradiente */}
-          <Animated.View style={[StyleSheet.absoluteFill, { opacity: imageFade }]}>
-            <ExpoImage
-              source={currentSceneImage}
-              style={StyleSheet.absoluteFill}
-              contentFit="cover"
-            />
-          </Animated.View>
-        </MaskedView>
-      </View>
+        </Animated.View>
+      </Animated.View>
       <LinearGradient
         colors={[
           `${prevGradient[0]}00`,
