@@ -443,7 +443,7 @@ export default function DescansoScreen() {
           scrollY.setValue(y);
           const active = y > HERO_H * 0.9;
           if (active !== stickyActive) setStickyActive(active);
-          const sticky = y > tabsOffsetY - headerH;
+          const sticky = y > HERO_H * 1.25;
           if (sticky !== chipsSticky) setChipsSticky(sticky);
           const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
           const progress = scrollable > 0 ? y / scrollable : 0;
