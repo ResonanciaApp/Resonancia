@@ -382,7 +382,7 @@ export default function DescansoScreen() {
 
   const scrollY      = useRef(new Animated.Value(0)).current;
   const [stickyActive, setStickyActive] = useState(false);
-  const stickyOpacity = scrollY.interpolate({ inputRange: [HERO_H * 0.30, HERO_H * 0.95], outputRange: [0, 1], extrapolate: "clamp" });
+  const stickyOpacity = scrollY.interpolate({ inputRange: [HERO_H * 0.60, HERO_H * 1.25], outputRange: [0, 1], extrapolate: "clamp" });
   const [tabsOffsetY, setTabsOffsetY] = useState(HERO_H);
   const [headerH,     setHeaderH]     = useState(60);
   const [chipsSticky, setChipsSticky] = useState(false);
@@ -441,7 +441,7 @@ export default function DescansoScreen() {
         onScroll={(e) => {
           const y = e.nativeEvent.contentOffset.y;
           scrollY.setValue(y);
-          const active = y > HERO_H * 0.5;
+          const active = y > HERO_H * 0.9;
           if (active !== stickyActive) setStickyActive(active);
           const sticky = y > tabsOffsetY - headerH;
           if (sticky !== chipsSticky) setChipsSticky(sticky);
