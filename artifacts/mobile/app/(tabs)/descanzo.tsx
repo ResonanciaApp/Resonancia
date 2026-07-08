@@ -387,7 +387,7 @@ export default function DescansoScreen() {
   useEffect(() => {
     if (chipsSticky) {
       setTabsMounted(true);
-      Animated.timing(tabsOpacity, { toValue: 1, duration: 280, useNativeDriver: true }).start();
+      Animated.timing(tabsOpacity, { toValue: 1, duration: 400, useNativeDriver: true }).start();
     } else {
       Animated.timing(tabsOpacity, { toValue: 0, duration: 220, useNativeDriver: true }).start(({ finished }) => {
         if (finished) setTabsMounted(false);
@@ -451,7 +451,7 @@ export default function DescansoScreen() {
           scrollY.setValue(y);
           const active = y > HERO_H * 0.63;
           if (active !== stickyActive) setStickyActive(active);
-          const sticky = y > HERO_H * 0.6475;
+          const sticky = y > HERO_H * 0.5565;
           if (sticky !== chipsSticky) setChipsSticky(sticky);
           const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
           const progress = scrollable > 0 ? y / scrollable : 0;
