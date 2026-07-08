@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
   chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -33 },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 8 },
   chipRowWrapper: { position: "relative" },
-  chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "transparent", marginTop: 11 },
+  chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.05)", marginTop: 11 },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chip: { height: 34, paddingHorizontal: 12, borderRadius: 20, overflow: "hidden", alignItems: "center", justifyContent: "center" },
