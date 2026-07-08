@@ -11,6 +11,7 @@ import React, {
 import { AppState, type AppStateStatus } from "react-native";
 
 export type SceneId =
+  | "tibet"
   | "naturaleza"
   | "musgo"
   | "zafiro"
@@ -28,6 +29,13 @@ export type AmbientScene = {
 };
 
 export const AMBIENT_SCENES: AmbientScene[] = [
+  {
+    id: "tibet",
+    label: "Tibet",
+    colors: ["#2A040F", "#19020A"] as const,
+    icon: "star",
+    image: require("@/assets/images/ambient/nebulosa.png"),
+  },
   {
     id: "naturaleza",
     label: "Naturaleza",
@@ -93,6 +101,7 @@ async function fadeIn(sound: Audio.Sound, targetVolume: number) {
 
 // ── Audio sources per scene ───────────────────────────────────────────────────
 const SCENE_AUDIO: Record<SceneId, unknown> = {
+  tibet:      require("@/assets/audio/nebulosa_ambiente.mp3"), // → replace with tibet.mp3
   naturaleza: require("@/assets/audio/pajaros_ambiente.mp3"),
   musgo:      require("@/assets/audio/musgo_ambiente.mp3"),
   zafiro:     require("@/assets/audio/zafiro_ambiente.mp3"),
@@ -127,6 +136,7 @@ const AmbientContext = createContext<AmbientCtx | null>(null);
 const STORAGE_KEY = "@ambient_scene";
 
 const DEFAULT_VOLUMES: Record<SceneId, number> = {
+  tibet: DEFAULT_VOLUME,
   naturaleza: DEFAULT_VOLUME,
   musgo: DEFAULT_VOLUME,
   zafiro: DEFAULT_VOLUME,
