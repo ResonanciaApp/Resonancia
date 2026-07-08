@@ -326,8 +326,8 @@ export default function HomeScreen2() {
     Animated.parallel([
       Animated.timing(gradientFade, {
         toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
+        duration: 550,
+        useNativeDriver: false,
       }),
       Animated.timing(imageFade, {
         toValue: 1,
@@ -726,31 +726,32 @@ export default function HomeScreen2() {
         style={styles.rootGradient}
       />
       <Animated.View
-        style={[
-          styles.rootGradient,
-          {
-            transform: [
-              {
-                translateY: gradientFade.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [SCREEN_HEIGHT, 0],
-                }),
-              },
-            ],
-          },
-        ]}
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          overflow: "hidden",
+          height: gradientFade.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, SCREEN_HEIGHT],
+          }),
+        }}
       >
-        <LinearGradient
-          colors={[
-            `${activeTheme.gradient[0]}00`,
-            `${activeTheme.gradient[0]}1A`,
-            `${activeTheme.gradient[0]}66`,
-            activeTheme.gradient[0] as string,
-            activeTheme.gradient[1] as string,
-          ]}
-          locations={[0, 0.15, 0.33, 0.46, 1]}
-          style={styles.rootGradient}
-        />
+        <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: SCREEN_HEIGHT }}>
+          <LinearGradient
+            colors={[
+              `${activeTheme.gradient[0]}00`,
+              `${activeTheme.gradient[0]}1A`,
+              `${activeTheme.gradient[0]}66`,
+              activeTheme.gradient[0] as string,
+              activeTheme.gradient[1] as string,
+            ]}
+            locations={[0, 0.15, 0.33, 0.46, 1]}
+            style={StyleSheet.absoluteFill}
+          />
+        </View>
       </Animated.View>
       <GeoUniverseBackground />
       <StatusBar barStyle="light-content" />
