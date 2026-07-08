@@ -36,27 +36,27 @@ const STREAK_MESSAGES: Record<number, StreakMessage> = {
   },
   2: {
     highlight: "¡Dos días seguidos!",
-    body: "Estás construyendo un hábito.\nSigue así mañana también.",
+    body: "Estás construyendo un hábito.",
   },
   3: {
     highlight: "Tres días de presencia.",
-    body: "Ya estás en ritmo. La constancia\nes la base de todo cambio.",
+    body: "Ya estás en ritmo.",
   },
   4: {
     highlight: "¡A mitad de la semana!",
-    body: "Cuatro días de conexión contigo.\nEl hábito ya está tomando forma.",
+    body: "Cuatro días de conexión contigo.",
   },
   5: {
     highlight: "Cinco días — ¡increíble!",
-    body: "Tu mente y tu cuerpo lo agradecen.\nQueda poco para completar la semana.",
+    body: "Tu mente y tu cuerpo lo agradecen.",
   },
   6: {
     highlight: "Casi una semana completa.",
-    body: "Solo falta un día.\nVas a lograrlo, ¡no pares ahora!",
+    body: "Solo falta un día.",
   },
   7: {
     highlight: "¡Semana completa! 🌟",
-    body: "Completaste los 7 días de esta semana.\nEso es dedicación de verdad.",
+    body: "Completaste los 7 días de esta semana.",
   },
 };
 
