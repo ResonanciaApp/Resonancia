@@ -24,6 +24,7 @@ import {
 import RAnimated, {
   Easing,
   runOnJS,
+  useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -71,6 +72,8 @@ import { useVideos } from "@/hooks/useVideos";
 import { WeeklyStreakStrip } from "@/components/WeeklyStreakStrip";
 
 const { width } = Dimensions.get("window");
+
+const AnimatedLinearGradient = RAnimated.createAnimatedComponent(LinearGradient);
 
 // Sentinel interno para "sin filtro" (ya no hay chip visible de "Todos": es el
 // estado por defecto al entrar a la app).
@@ -619,9 +622,11 @@ export default function HomeScreen2() {
   // ── Degradado oscuro del fondo: se extiende hacia arriba con el scroll ──
   // A scroll 0 usa los stops base; al llegar a DARK_EXTEND_RANGE los stops
   // de la zona sólida se acercan un 35% al inicio (cubren más pantalla).
+  // Shared value (UI thread) — evita re-render de toda la pantalla en cada
+  // frame de scroll (causaba lag con setState).
   const DARK_EXTEND_RANGE = 280;
   const DARK_EXTEND_MAX = 0.35;
-  const [darkExtendProgress, setDarkExtendProgress] = useState(0);
+  const darkExtendSV = useSharedValue(0);
 
   const handleMainScroll = useCallback(
     (e: { nativeEvent: { contentOffset: { y: number } } }) => {
@@ -630,20 +635,17 @@ export default function HomeScreen2() {
       updateStickyActive();
       // Scroll-linked: imagen visible en y=0, desaparece a los 280px de scroll
       backdropAnim.setValue(Math.max(0, 1 - y / 280));
-      const progress = Math.min(1, Math.max(0, y / DARK_EXTEND_RANGE));
-      setDarkExtendProgress(progress);
+      darkExtendSV.value = Math.min(1, Math.max(0, y / DARK_EXTEND_RANGE));
     },
-    [updateStickyActive, backdropAnim],
+    [updateStickyActive, backdropAnim, darkExtendSV],
   );
 
-  const darkGradientMultiplier = 1 - DARK_EXTEND_MAX * darkExtendProgress;
-  const darkGradientLocations: [number, number, number, number, number] = [
-    0,
-    0.15 * darkGradientMultiplier,
-    0.33 * darkGradientMultiplier,
-    0.46 * darkGradientMultiplier,
-    1,
-  ];
+  const darkGradientAnimatedProps = useAnimatedProps(() => {
+    const multiplier = 1 - DARK_EXTEND_MAX * darkExtendSV.value;
+    return {
+      locations: [0, 0.15 * multiplier, 0.33 * multiplier, 0.46 * multiplier, 1],
+    };
+  });
 
   // ── Buscador desplegable (se abre desde el ícono de lupa) ────────────────
   const [searchOpen, setSearchOpen] = useState(false);
@@ -744,7 +746,7 @@ export default function HomeScreen2() {
         style={styles.rootGradient}
       />
       <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
-        <LinearGradient
+        <AnimatedLinearGradient
           colors={[
             `${activeTheme.gradient[0]}00`,
             `${activeTheme.gradient[0]}1A`,
@@ -752,7 +754,7 @@ export default function HomeScreen2() {
             activeTheme.gradient[0] as string,
             activeTheme.gradient[1] as string,
           ]}
-          locations={darkGradientLocations}
+          animatedProps={darkGradientAnimatedProps}
           style={styles.rootGradient}
         />
       </Animated.View>
