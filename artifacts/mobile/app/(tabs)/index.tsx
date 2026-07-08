@@ -72,12 +72,6 @@ import { WeeklyStreakStrip } from "@/components/WeeklyStreakStrip";
 
 const { width } = Dimensions.get("window");
 
-// Ubicaciones del degradado de fondo raíz (fade suave del stop 1 → stop 2).
-// Solo en Inicio, para la Escena "universo" el stop 2 se extiende 60% más
-// hacia arriba (el punto donde domina el 2do color arranca mucho antes).
-const INICIO_GRADIENT_LOCATIONS: readonly number[] = [0, 0.15, 0.33, 0.46, 1];
-const INICIO_UNIVERSO_GRADIENT_LOCATIONS: readonly number[] = [0, 0.044, 0.098, 0.136, 1];
-
 // Sentinel interno para "sin filtro" (ya no hay chip visible de "Todos": es el
 // estado por defecto al entrar a la app).
 const TODOS_TAB_ID = "todos";
@@ -316,16 +310,12 @@ export default function HomeScreen2() {
   // se mantiene el degradado anterior debajo y el nuevo se desvanece encima, en vez
   // de saltar de golpe de un color a otro.
   const [prevGradient, setPrevGradient] = useState(activeTheme.gradient);
-  const [prevSceneId, setPrevSceneId] = useState(activeSceneId);
   const gradientFade = useRef(new Animated.Value(1)).current;
   const isFirstSceneRender = useRef(true);
   // Cross-fade imagen backdrop (mismo timing que gradiente)
   const currentSceneImage = AMBIENT_SCENES.find((s) => s.id === activeSceneId)?.image;
   const [prevSceneImage, setPrevSceneImage] = useState(currentSceneImage);
   const imageFade = useRef(new Animated.Value(1)).current;
-  // El stop 2 extendido de Universo solo se activa DESPUÉS de que termine el
-  // fade de la imagen (si no, tapa el backdrop mientras aún se está revelando).
-  const [universoLocationsReady, setUniversoLocationsReady] = useState(activeSceneId === "universo");
   useEffect(() => {
     if (isFirstSceneRender.current) {
       isFirstSceneRender.current = false;
@@ -333,7 +323,6 @@ export default function HomeScreen2() {
     }
     gradientFade.setValue(0);
     imageFade.setValue(0);
-    setUniversoLocationsReady(false);
     Animated.parallel([
       Animated.timing(gradientFade, {
         toValue: 1,
@@ -347,9 +336,7 @@ export default function HomeScreen2() {
       }),
     ]).start(() => {
       setPrevGradient(activeTheme.gradient);
-      setPrevSceneId(activeSceneId);
       setPrevSceneImage(currentSceneImage);
-      setUniversoLocationsReady(activeSceneId === "universo");
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeSceneId]);
@@ -735,7 +722,7 @@ export default function HomeScreen2() {
           prevGradient[0] as string,
           prevGradient[1] as string,
         ]}
-        locations={prevSceneId === "universo" ? INICIO_UNIVERSO_GRADIENT_LOCATIONS : INICIO_GRADIENT_LOCATIONS}
+        locations={[0, 0.15, 0.33, 0.46, 1]}
         style={styles.rootGradient}
       />
       <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
@@ -747,7 +734,7 @@ export default function HomeScreen2() {
             activeTheme.gradient[0] as string,
             activeTheme.gradient[1] as string,
           ]}
-          locations={activeSceneId === "universo" && universoLocationsReady ? INICIO_UNIVERSO_GRADIENT_LOCATIONS : INICIO_GRADIENT_LOCATIONS}
+          locations={[0, 0.15, 0.33, 0.46, 1]}
           style={styles.rootGradient}
         />
       </Animated.View>
