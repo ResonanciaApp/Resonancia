@@ -215,16 +215,16 @@ export function WeeklyStreakStrip4() {
                     style={StyleSheet.absoluteFill}
                     pointerEvents="none"
                   />
-                  <Svg width={42} height={42} style={StyleSheet.absoluteFill}>
+                  <Svg width={39} height={39} style={StyleSheet.absoluteFill}>
                     <Defs>
                       <SvgLinearGradient id={`sg4_${i}`} x1="0.5" y1="0" x2="0.5" y2="1">
                         <Stop offset="0" stopColor={streakBorderColors[0]} />
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={21} cy={21} r={19} stroke={`url(#sg4_${i})`} strokeWidth={2} fill="none" />
+                    <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#sg4_${i})`} strokeWidth={2} fill="none" />
                   </Svg>
-                  <Feather name="check" size={19} color="rgba(255,255,255,0.9)" />
+                  <Feather name="check" size={16} color="rgba(255,255,255,0.9)" />
                 </View>
               ) : isToday ? (
                 <View style={styles.circleGradientBorder}>
@@ -235,14 +235,14 @@ export function WeeklyStreakStrip4() {
                     style={StyleSheet.absoluteFill}
                     pointerEvents="none"
                   />
-                  <Svg width={42} height={42} style={StyleSheet.absoluteFill}>
+                  <Svg width={39} height={39} style={StyleSheet.absoluteFill}>
                     <Defs>
                       <SvgLinearGradient id="sg4Today" x1="0.5" y1="0" x2="0.5" y2="1">
                         <Stop offset="0" stopColor={streakBorderColors[0]} />
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={21} cy={21} r={19} stroke="url(#sg4Today)" strokeWidth={2} fill="none" />
+                    <Circle cx={19.5} cy={19.5} r={17.5} stroke="url(#sg4Today)" strokeWidth={2} fill="none" />
                   </Svg>
                 </View>
               ) : (
@@ -347,9 +347,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   circleGradientBorder: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: 39,
+    height: 39,
+    borderRadius: 19.5,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
