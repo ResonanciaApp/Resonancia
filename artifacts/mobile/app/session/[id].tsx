@@ -182,7 +182,7 @@ export default function SessionDetailScreen() {
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const backdropOpacity = scrollY.interpolate({
-    inputRange: [0, 160],
+    inputRange: [0, 250],
     outputRange: [1, 0],
     extrapolate: "clamp",
   });
