@@ -181,11 +181,16 @@ export default function SessionDetailScreen() {
   }, []);
 
   const scrollY = useRef(new Animated.Value(0)).current;
-  const backdropOpacity = scrollY.interpolate({
-    inputRange: [0, 250],
-    outputRange: [1, 0],
-    extrapolate: "clamp",
-  });
+  const backdropAnim = useRef(new Animated.Value(1)).current;
+  const handleScroll = useCallback(
+    (e: { nativeEvent: { contentOffset: { y: number } } }) => {
+      const y = e.nativeEvent.contentOffset.y;
+      scrollY.setValue(y);
+      // Scroll-linked: imagen visible en y=0, desaparece a los 250px de scroll
+      backdropAnim.setValue(Math.max(0, 1 - y / 250));
+    },
+    [scrollY, backdropAnim],
+  );
   const STICKY_START = HEADER_H + 140 - topPad;
   const STICKY_END   = STICKY_START + 40;
   const stickyOpacity = scrollY.interpolate({
@@ -300,7 +305,7 @@ export default function SessionDetailScreen() {
       {/* ── Imagen backdrop — se desvanece con scroll ─────────────────────── */}
       <Animated.View
         pointerEvents="none"
-        style={{ position: "absolute", top: 0, left: 0, right: 0, height: 400, opacity: backdropOpacity }}
+        style={{ position: "absolute", top: 0, left: 0, right: 0, height: 400, opacity: backdropAnim }}
       >
         <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
       </Animated.View>
@@ -323,10 +328,7 @@ export default function SessionDetailScreen() {
         contentContainerStyle={{ paddingBottom: bottomPad + 24 }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: false }
-        )}
+        onScroll={handleScroll}
       >
         {/* ── Hero spacer + navBar ─────────────────────────────────────────── */}
         <View style={[styles.hero, { height: HEADER_H }]}>
