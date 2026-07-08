@@ -129,7 +129,7 @@ export function WeeklyStreakStrip4() {
       <View style={styles.topRow}>
         {/* Card mensaje — ocupa todo el ancho, queda detrás del anillo */}
         <View style={styles.msgCard}>
-          <View style={{ marginTop: -7 }}>
+          <View style={{ marginTop: -7, gap: 4 }}>
             {msg.highlight != null && (
               <Text style={styles.messageHighlight}>{msg.highlight}</Text>
             )}
