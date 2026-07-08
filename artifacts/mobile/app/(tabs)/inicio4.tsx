@@ -2,6 +2,7 @@ import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts/cinzel";
 import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -1179,10 +1180,12 @@ export default function HomeScreen2() {
           hitSlop={8}
           style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1, marginLeft: -3 }]}
         >
-          <View style={[styles.universeBtnBg, { backgroundColor: hexTint(activeTheme.gradient[0], 0.60) }]}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[1], 0.30) }]} />
-            <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
-          </View>
+          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+          <LinearGradient
+            colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+            style={StyleSheet.absoluteFill}
+          />
+          <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
         </Pressable>
 
         <Pressable
@@ -1197,11 +1200,13 @@ export default function HomeScreen2() {
           }}
         >
           <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-            <View style={{ width: 45, height: 45, borderRadius: 22.5, overflow: "hidden" }}>
-              <View style={[styles.universeBtnBg, { backgroundColor: hexTint(activeTheme.gradient[0], 0.60) }]}>
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[1], 0.30) }]} />
-                <Feather name="sliders" size={22} color="#D4AF37" style={{ opacity: 0.9, textShadowColor: "rgba(212,175,55,0.25)", textShadowRadius: 6, textShadowOffset: { width: 0, height: 0 } }} />
-              </View>
+            <View style={styles.giftBtnInner}>
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient
+                colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+                style={StyleSheet.absoluteFill}
+              />
+              <Feather name="sliders" size={22} color="#D4AF37" style={{ opacity: 0.9, textShadowColor: "rgba(212,175,55,0.25)", textShadowRadius: 6, textShadowOffset: { width: 0, height: 0 } }} />
             </View>
           </Animated.View>
         </Pressable>
@@ -1370,6 +1375,10 @@ const styles = StyleSheet.create({
     height: 45,
     borderRadius: 22.5,
     overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255,255,255,0.18)",
   },
   universeBtnBg: {
     width: "100%",
@@ -1377,6 +1386,16 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(14,10,24,0.15)",
     alignItems: "center",
     justifyContent: "center",
+  },
+  giftBtnInner: {
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255,255,255,0.18)",
   },
   searchBtn: {
     width: 42,
