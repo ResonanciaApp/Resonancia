@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "react-native-svg";
@@ -171,14 +172,74 @@ export function WeeklyStreakStrip() {
           borderRadius: (RING_SIZE + 18) / 2,
           overflow: "hidden",
           marginTop: -10,
-          shadowColor: "transparent",
-          shadowOffset: { width: 0, height: 0 },
-          shadowOpacity: 0,
-          shadowRadius: 0,
-          elevation: 0,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.22,
+          shadowRadius: 24,
+          elevation: 20,
         }]}
       >
-        <BlurView intensity={40} tint="default" style={StyleSheet.absoluteFill} />
+        {/* ── Glass material, idéntico a la tab bar ────────────────────────── */}
+        {/* 1. Blur base */}
+        <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+        {/* 2. Inner glow vertical — más luminoso arriba, se desvanece abajo */}
+        <LinearGradient
+          colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+          start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
+        {/* 3. Brillo inferior — centro a 40% del ancho, fade pronunciado */}
+        <LinearGradient
+          colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.04)", "rgba(255,255,255,0.14)", "rgba(255,255,255,0)"]}
+          locations={[0, 0.18, 0.5, 1]}
+          start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+          style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
+          pointerEvents="none"
+        />
+        {/* 4. Acento curva inferior-izquierda — casi imperceptible */}
+        <LinearGradient
+          colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+          start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+          style={{ position: "absolute", bottom: 0, left: 0, width: "14%", height: StyleSheet.hairlineWidth }}
+          pointerEvents="none"
+        />
+        {/* 5. Acento de color del tema activo */}
+        <View
+          pointerEvents="none"
+          style={[StyleSheet.absoluteFill, { backgroundColor: theme.gradient[0] }]}
+        />
+        {/* 6. Borde con gradiente — idéntico al de la tab bar */}
+        <Svg width={RING_SIZE + 18} height={RING_SIZE + 18} style={StyleSheet.absoluteFill} pointerEvents="none">
+          <Defs>
+            <SvgLinearGradient id="ringBorderA" x1="0.5" y1="0" x2="0.5" y2="1">
+              <Stop offset="0"   stopColor="#FFFFFF" stopOpacity={0.22} />
+              <Stop offset="0.5" stopColor="#FFFFFF" stopOpacity={0.04} />
+              <Stop offset="1"   stopColor="#FFFFFF" stopOpacity={0}    />
+            </SvgLinearGradient>
+            <SvgLinearGradient id="ringBorderB" x1="1" y1="1" x2="0.3" y2="0">
+              <Stop offset="0"    stopColor="#FFFFFF" stopOpacity={0.04} />
+              <Stop offset="0.45" stopColor="#FFFFFF" stopOpacity={0.01} />
+              <Stop offset="1"    stopColor="#FFFFFF" stopOpacity={0}    />
+            </SvgLinearGradient>
+          </Defs>
+          <Circle
+            cx={(RING_SIZE + 18) / 2}
+            cy={(RING_SIZE + 18) / 2}
+            r={(RING_SIZE + 18) / 2 - 0.5}
+            stroke="url(#ringBorderA)"
+            strokeWidth={0.5}
+            fill="none"
+          />
+          <Circle
+            cx={(RING_SIZE + 18) / 2}
+            cy={(RING_SIZE + 18) / 2}
+            r={(RING_SIZE + 18) / 2 - 0.5}
+            stroke="url(#ringBorderB)"
+            strokeWidth={0.5}
+            fill="none"
+          />
+        </Svg>
         <Svg width={RING_SIZE} height={RING_SIZE}>
           <Circle
             cx={RING_SIZE / 2}
