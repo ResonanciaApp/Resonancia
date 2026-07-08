@@ -41,7 +41,7 @@ export const AMBIENT_SCENES: AmbientScene[] = [
   {
     id: "tibet",
     label: "Tibet",
-    colors: ["#22131B", "#140C10"] as const,
+    colors: ["#170B10", "#140A0F"] as const,
     icon: "star",
     image: require("@/assets/images/ambient/tibet.jpg"),
   },
