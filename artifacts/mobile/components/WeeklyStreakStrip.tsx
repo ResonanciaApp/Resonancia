@@ -184,7 +184,8 @@ export function WeeklyStreakStrip() {
         <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
         {/* 2. Inner glow vertical — más luminoso arriba, se desvanece abajo */}
         <LinearGradient
-          colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+          colors={["rgba(255,255,255,0.09)", "rgba(255,255,255,0.09)", "rgba(255,255,255,0)"]}
+          locations={[0, 0.45, 1]}
           start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
           pointerEvents="none"
