@@ -299,6 +299,8 @@ export default function MusicaSonidosScreen() {
   const [playlistSessionId, setPlaylistSessionId] = useState<string|null>(null);
 
   const scrollRef  = useRef<ScrollView>(null);
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const backdropOpacity = scrollY.interpolate({ inputRange: [0, 250], outputRange: [1, 0], extrapolate: "clamp" });
   const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
   const [stickyActive,  setStickyActive]  = useState(false);
   const [chipsOffsetY,  setChipsOffsetY]  = useState(9999);
@@ -363,7 +365,11 @@ export default function MusicaSonidosScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: "#1B060F" }]}>
+    <View style={[styles.root, { backgroundColor: theme.gradient[0] }]}>
+      {/* Backdrop image — se desvanece con scroll */}
+      <Animated.View pointerEvents="none" style={{ position: "absolute", top: 0, left: 0, right: 0, height: 400, opacity: backdropOpacity }}>
+        <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" />
+      </Animated.View>
 
       <ScrollView
         ref={scrollRef}
@@ -373,6 +379,7 @@ export default function MusicaSonidosScreen() {
         scrollEventThrottle={16}
         onScroll={(e) => {
           const y = e.nativeEvent.contentOffset.y;
+          scrollY.setValue(y);
           const active = y > chipsOffsetY - topPad - 8;
           if (active !== stickyActive) setStickyActive(active);
           const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
