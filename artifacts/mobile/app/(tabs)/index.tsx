@@ -729,7 +729,7 @@ export default function HomeScreen2() {
         <LinearGradient
           colors={[
             `${activeTheme.gradient[0]}00`,
-            `${activeTheme.gradient[0]}0D`,
+            `${activeTheme.gradient[0]}1A`,
             `${activeTheme.gradient[0]}0D`,
             activeTheme.gradient[0] as string,
             activeTheme.gradient[1] as string,
