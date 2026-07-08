@@ -602,7 +602,7 @@ const styles = StyleSheet.create({
   chip: { height: 34, paddingHorizontal: 12, borderRadius: 20, overflow: "hidden", alignItems: "center", justifyContent: "center" },
   chipUnsel: { borderWidth: 2, borderColor: "rgba(255,255,255,0.1)" },
   chipText: { fontSize: 13, fontWeight: "400", color: TEXT, textAlign: "center" },
-  chipTextSel: { color: "#1B060F" },
+  chipTextSel: { color: "#1B060F", fontWeight: "600" },
 
   /* ── Content ── */
   scroll: { flex: 1 },
