@@ -1173,15 +1173,12 @@ export default function HomeScreen2() {
         }}
       >
         {/* Logo centrado */}
-        <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, alignItems: "center", gap: 6, transform: [{ translateY: 5 }] }}>
+        <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, alignItems: "center", transform: [{ translateY: 5 }] }}>
           <ExpoImage
             source={require("@/assets/images/icons/pulso-logo.png")}
             style={{ width: 125, height: 57 }}
             contentFit="contain"
           />
-          <Text style={{ color: "rgba(255,255,255,0.95)", fontSize: 11, fontWeight: "400", letterSpacing: 0.4, marginTop: -7 }}>
-            Encuentra tu ritmo
-          </Text>
         </View>
 
         <Pressable
