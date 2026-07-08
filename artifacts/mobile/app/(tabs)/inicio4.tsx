@@ -67,7 +67,7 @@ import { LiveSessionCard } from "@/components/LiveSessionCard";
 import { useLiveSessions } from "@/hooks/useLiveSessions";
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
-import { WeeklyStreakStrip } from "@/components/WeeklyStreakStrip";
+import { WeeklyStreakStrip4 } from "@/components/WeeklyStreakStrip4";
 
 const { width } = Dimensions.get("window");
 
@@ -750,7 +750,7 @@ export default function HomeScreen2() {
       >
         {/* ── Racha semanal ── */}
         <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 245 }}>
-          <WeeklyStreakStrip />
+          <WeeklyStreakStrip4 />
         </View>
 
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
