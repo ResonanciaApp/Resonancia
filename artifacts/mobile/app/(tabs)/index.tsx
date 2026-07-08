@@ -711,26 +711,24 @@ export default function HomeScreen2() {
         colors={[
           `${prevGradient[0]}00`,
           `${prevGradient[0]}00`,
-          `${prevGradient[0]}1A`,
-          `${prevGradient[0]}66`,
+          `${prevGradient[0]}26`,
+          `${prevGradient[0]}99`,
           prevGradient[0] as string,
-          prevGradient[1] as string,
         ]}
-        locations={[0, 0.22, 0.40, 0.58, 0.72, 1]}
-        style={styles.rootGradient}
+        locations={[0, 0.38, 0.58, 0.80, 1]}
+        style={styles.imgGradient}
       />
-      <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
+      <Animated.View style={[styles.imgGradient, { opacity: gradientFade }]}>
         <LinearGradient
           colors={[
             `${activeTheme.gradient[0]}00`,
             `${activeTheme.gradient[0]}00`,
-            `${activeTheme.gradient[0]}1A`,
-            `${activeTheme.gradient[0]}66`,
+            `${activeTheme.gradient[0]}26`,
+            `${activeTheme.gradient[0]}99`,
             activeTheme.gradient[0] as string,
-            activeTheme.gradient[1] as string,
           ]}
-          locations={[0, 0.22, 0.40, 0.58, 0.72, 1]}
-          style={styles.rootGradient}
+          locations={[0, 0.38, 0.58, 0.80, 1]}
+          style={StyleSheet.absoluteFill}
         />
       </Animated.View>
       <GeoUniverseBackground />
@@ -1234,6 +1232,7 @@ export default function HomeScreen2() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#210911" },
   rootGradient: { ...StyleSheet.absoluteFillObject },
+  imgGradient: { position: "absolute", top: 0, left: 0, right: 0, height: 400 },
   stickyHeader: {
     paddingHorizontal: GRID_PAD,
     paddingBottom: 0,
