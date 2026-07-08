@@ -80,7 +80,7 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   zafiro: {
     id: "zafiro",
     label: "Zafiro",
-    gradient: ["#156394", "#11527D"],
+    gradient: ["#156393", "#2C347F"],
     solid: "#2E2F7F",
   },
   vinoTinto: {
