@@ -463,7 +463,7 @@ const styles = StyleSheet.create({
   headerSubtitle: { fontSize: 11, color: "#f7f7f7", letterSpacing: 0.3, marginTop: 1, opacity: 0.7 },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
 
-  heroArea: { height: 238, position: "relative" },
+  heroArea: { height: 178, position: "relative" },
   heroIconFloat: { position: "absolute", bottom: -17, left: 0, right: 0, alignItems: "center", zIndex: 2 },
   heroIconGlow: { borderRadius: 36 },
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "#1B060F", borderWidth: 2, borderColor: "rgba(190,135,68,0.5)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
