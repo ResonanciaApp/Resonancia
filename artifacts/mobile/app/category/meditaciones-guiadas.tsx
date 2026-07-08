@@ -464,7 +464,7 @@ export default function MeditacionesGuiadasScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#210911" },
 
-  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#1B060F", borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.12)" },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#1B060F", borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.1)" },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   headerTitleCol: { flex: 1, alignItems: "center" },
   headerTitle: { fontSize: 18, fontWeight: "400", color: "#e8e8e8", letterSpacing: 0.2, textAlign: "center" },
