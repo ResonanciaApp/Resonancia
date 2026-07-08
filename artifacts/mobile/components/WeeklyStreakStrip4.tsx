@@ -148,9 +148,6 @@ export function WeeklyStreakStrip4() {
           </View>
         </View>
 
-        {/* Divisor vertical */}
-        <View style={styles.divider} />
-
         {/* Columna derecha */}
         <View style={styles.msgCard}>
           <View style={{ marginTop: -7, gap: 4 }}>
@@ -237,7 +234,7 @@ const styles = StyleSheet.create({
   },
   msgCard: {
     flex: 1,
-    paddingLeft: 14,
+    paddingLeft: 4,
     paddingRight: 14,
     paddingTop: 5,
     paddingBottom: 10,
