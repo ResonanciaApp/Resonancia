@@ -11,6 +11,7 @@ import React, {
 import { AppState, type AppStateStatus } from "react-native";
 
 export type SceneId =
+  | "profundo"
   | "tibet"
   | "naturaleza"
   | "musgo"
@@ -30,6 +31,13 @@ export type AmbientScene = {
 };
 
 export const AMBIENT_SCENES: AmbientScene[] = [
+  {
+    id: "profundo",
+    label: "Profundo",
+    colors: ["#0D1F1B", "#183A36"] as const,
+    icon: "feather",
+    image: require("@/assets/images/ambient/bosque.jpg"),
+  },
   {
     id: "tibet",
     label: "Tibet",
@@ -109,6 +117,7 @@ async function fadeIn(sound: Audio.Sound, targetVolume: number) {
 
 // ── Audio sources per scene ───────────────────────────────────────────────────
 const SCENE_AUDIO: Record<SceneId, unknown> = {
+  profundo:   require("@/assets/audio/riachuelo_pajaros.mp3"), // → replace with profundo.mp3
   tibet:      require("@/assets/audio/nebulosa_ambiente.mp3"), // → replace with tibet.mp3
   naturaleza: require("@/assets/audio/pajaros_ambiente.mp3"),
   musgo:      require("@/assets/audio/musgo_ambiente.mp3"),
@@ -145,6 +154,7 @@ const AmbientContext = createContext<AmbientCtx | null>(null);
 const STORAGE_KEY = "@ambient_scene";
 
 const DEFAULT_VOLUMES: Record<SceneId, number> = {
+  profundo: DEFAULT_VOLUME,
   tibet: DEFAULT_VOLUME,
   naturaleza: DEFAULT_VOLUME,
   musgo: DEFAULT_VOLUME,
@@ -157,7 +167,7 @@ const DEFAULT_VOLUMES: Record<SceneId, number> = {
 };
 
 export function AmbientPlayerProvider({ children }: { children: React.ReactNode }) {
-  const [currentSceneId, setCurrentSceneId] = useState<SceneId>("naturaleza");
+  const [currentSceneId, setCurrentSceneId] = useState<SceneId>("profundo");
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volumes, setVolumes] = useState<Record<SceneId, number>>(DEFAULT_VOLUMES);
@@ -170,7 +180,7 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
   // Refs so callbacks can read latest state without re-creating
   const isPlayingRef = useRef(false);
   const isMutedRef = useRef(false);
-  const currentSceneIdRef = useRef<SceneId>("naturaleza");
+  const currentSceneIdRef = useRef<SceneId>("profundo");
   const volumesRef = useRef<Record<SceneId, number>>(DEFAULT_VOLUMES);
   // expo-av session is configured lazily on first ambient use, never at launch.
   const sessionConfiguredRef = useRef(false);
@@ -276,10 +286,10 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
   // (SIGABRT) ~1s after launch. The expo-av session + default scene are now loaded
   // lazily on first ambient use (ensureAmbientSession + preload/loadAndPlay).
   useEffect(() => {
-    // Always start on "naturaleza" (first scene) — ignore saved preference on cold start.
+    // Always start on "profundo" (first scene) — ignore saved preference on cold start.
     // User can still switch scenes during the session.
-    AsyncStorage.setItem(STORAGE_KEY, "naturaleza").catch(() => {});
-    setCurrentSceneId("naturaleza");
+    AsyncStorage.setItem(STORAGE_KEY, "profundo").catch(() => {});
+    setCurrentSceneId("profundo");
 
     return () => {
       soundRef.current?.unloadAsync().catch(() => {});

@@ -23,6 +23,12 @@ export type SceneTheme = {
 };
 
 export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
+  profundo: {
+    id: "profundo",
+    label: "Profundo",
+    gradient: ["#0D1F1B", "#183A36"],
+    solid: "#0D1F1B",
+  },
   tibet: {
     id: "tibet",
     label: "Tibet",
@@ -79,6 +85,6 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   },
 };
 
-export const DEFAULT_THEME_ID: SceneId = "naturaleza";
+export const DEFAULT_THEME_ID: SceneId = "profundo";
 
 export const SCENE_THEME_STORAGE_KEY = "@active_theme_scene";
