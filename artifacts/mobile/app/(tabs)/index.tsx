@@ -323,6 +323,9 @@ export default function HomeScreen2() {
   const currentSceneImage = AMBIENT_SCENES.find((s) => s.id === activeSceneId)?.image;
   const [prevSceneImage, setPrevSceneImage] = useState(currentSceneImage);
   const imageFade = useRef(new Animated.Value(1)).current;
+  // El stop 2 extendido de Universo solo se activa DESPUÉS de que termine el
+  // fade de la imagen (si no, tapa el backdrop mientras aún se está revelando).
+  const [universoLocationsReady, setUniversoLocationsReady] = useState(activeSceneId === "universo");
   useEffect(() => {
     if (isFirstSceneRender.current) {
       isFirstSceneRender.current = false;
@@ -330,6 +333,7 @@ export default function HomeScreen2() {
     }
     gradientFade.setValue(0);
     imageFade.setValue(0);
+    setUniversoLocationsReady(false);
     Animated.parallel([
       Animated.timing(gradientFade, {
         toValue: 1,
@@ -345,6 +349,7 @@ export default function HomeScreen2() {
       setPrevGradient(activeTheme.gradient);
       setPrevSceneId(activeSceneId);
       setPrevSceneImage(currentSceneImage);
+      setUniversoLocationsReady(activeSceneId === "universo");
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeSceneId]);
@@ -742,7 +747,7 @@ export default function HomeScreen2() {
             activeTheme.gradient[0] as string,
             activeTheme.gradient[1] as string,
           ]}
-          locations={activeSceneId === "universo" ? INICIO_UNIVERSO_GRADIENT_LOCATIONS : INICIO_GRADIENT_LOCATIONS}
+          locations={activeSceneId === "universo" && universoLocationsReady ? INICIO_UNIVERSO_GRADIENT_LOCATIONS : INICIO_GRADIENT_LOCATIONS}
           style={styles.rootGradient}
         />
       </Animated.View>
