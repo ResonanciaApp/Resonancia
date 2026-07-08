@@ -715,7 +715,7 @@ export default function HomeScreen2() {
           `${prevGradient[0]}99`,
           prevGradient[0] as string,
         ]}
-        locations={[0, 0.38, 0.58, 0.80, 1]}
+        locations={[0, 0.52, 0.72, 0.90, 1]}
         style={styles.imgGradient}
       />
       <Animated.View style={[styles.imgGradient, { opacity: gradientFade }]}>
@@ -727,7 +727,7 @@ export default function HomeScreen2() {
             `${activeTheme.gradient[0]}99`,
             activeTheme.gradient[0] as string,
           ]}
-          locations={[0, 0.38, 0.58, 0.80, 1]}
+          locations={[0, 0.52, 0.72, 0.90, 1]}
           style={StyleSheet.absoluteFill}
         />
       </Animated.View>
