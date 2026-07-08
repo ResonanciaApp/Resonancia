@@ -172,10 +172,10 @@ export function WeeklyStreakStrip() {
           overflow: "hidden",
           marginTop: -10,
           shadowColor: "#000",
-          shadowOffset: { width: 0, height: 8 },
-          shadowOpacity: 0.22,
-          shadowRadius: 24,
-          elevation: 20,
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.12,
+          shadowRadius: 16,
+          elevation: 10,
         }]}
       >
         <BlurView intensity={40} tint="default" style={StyleSheet.absoluteFill} />
