@@ -7,15 +7,10 @@ import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "re
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { usePlayer } from "@/context/PlayerContext";
 
-const GOLD = "#BE8744";
 const TEXT = "#e8e8e8";
 const MUTED = "#c2c2c2";
 
-const RING_SIZE = 96;
-const STROKE_W = 7;
-const RADIUS = (RING_SIZE - STROKE_W) / 2;
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-const RING_TOTAL = RING_SIZE + 18;
+const RING_TOTAL = 114;
 
 const GOAL_MINUTES = 5;
 const DAY_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
@@ -165,25 +160,6 @@ export function WeeklyStreakStrip4() {
               justifyContent: "center",
             }}
           >
-            <Svg width={RING_SIZE} height={RING_SIZE}>
-              <Circle
-                cx={RING_SIZE / 2} cy={RING_SIZE / 2} r={RADIUS}
-                stroke="rgba(255,255,255,0.13)"
-                strokeWidth={STROKE_W}
-                fill="none"
-              />
-              <Circle
-                cx={RING_SIZE / 2} cy={RING_SIZE / 2} r={RADIUS}
-                stroke="#ffffff"
-                strokeWidth={STROKE_W}
-                fill="none"
-                strokeDasharray={`${CIRCUMFERENCE}`}
-                strokeDashoffset={dashOffset}
-                strokeLinecap="round"
-                rotation="-90"
-                origin={`${RING_SIZE / 2}, ${RING_SIZE / 2}`}
-              />
-            </Svg>
             <View style={styles.ringCenter}>
               <Text style={styles.ringCount}>{activeCount}</Text>
               <Text style={styles.ringLabel}>{activeCount === 1 ? "Día" : "Días"}</Text>
