@@ -67,7 +67,7 @@ import { LiveSessionCard } from "@/components/LiveSessionCard";
 import { useLiveSessions } from "@/hooks/useLiveSessions";
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
-import { StreakDayCount, WeeklyStreakStrip } from "@/components/WeeklyStreakStrip";
+import { WeeklyStreakStrip } from "@/components/WeeklyStreakStrip";
 
 const { width } = Dimensions.get("window");
 
@@ -748,49 +748,8 @@ export default function HomeScreen2() {
           updateStickyActive();
         }}
       >
-        {/* ── Fila: Días + Resonadores ── */}
-        <View style={{ flexDirection: "row", paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 245, gap: 10 }}>
-          {/* Contador de días — izquierda */}
-          <StreakDayCount />
-          {/* Resonadores — derecha, card */}
-          <Pressable
-            onPress={() => router.push("/resonadores" as never)}
-            style={{ flex: 1 }}
-          >
-            <View
-              style={[styles.resonadoresBanner, {
-                backgroundColor: "rgba(0,0,0,0.14)",
-                borderWidth: 2,
-                borderColor: "rgba(255,255,255,0.04)",
-                height: "100%",
-                paddingHorizontal: 12,
-              }]}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center", flex: 1, gap: 10 }}>
-                <LinearGradient
-                  colors={["rgba(247,203,107,0.75)", "rgba(251,169,128,0.75)"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={{ width: 40, height: 40, borderRadius: 12, alignItems: "center", justifyContent: "center" }}
-                >
-                  <ExpoImage
-                    source={require("@/assets/images/icons/familia.png")}
-                    style={{ width: 24, height: 24 }}
-                    contentFit="contain"
-                  />
-                </LinearGradient>
-                <View style={{ flex: 1 }}>
-                  <Text style={[styles.resonadoresBannerTitle, { fontSize: 18 }]}>Resonadores</Text>
-                  <Text style={[styles.resonadoresBannerSub, { fontSize: 12 }]}>Únete</Text>
-                </View>
-                <Feather name="chevron-right" size={18} color="rgba(232,232,232,0.7)" />
-              </View>
-            </View>
-          </Pressable>
-        </View>
-
-        {/* ── Racha semanal (completa) ── */}
-        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2 }}>
+        {/* ── Racha semanal ── */}
+        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 245 }}>
           <WeeklyStreakStrip />
         </View>
 
@@ -823,6 +782,50 @@ export default function HomeScreen2() {
             />
           </View>
         )}
+
+        <View
+          style={{
+            marginHorizontal: GRID_PAD,
+            marginBottom: SECTION_GAP / 2,
+            marginTop: -6,
+            height: StyleSheet.hairlineWidth,
+            backgroundColor: "rgba(255,255,255,0.15)",
+          }}
+        />
+
+        {/* ── BANNER RESONADORES ── */}
+        <Pressable
+          onPress={() => router.push("/resonadores" as never)}
+          style={{ marginBottom: 35, marginHorizontal: GRID_PAD, marginTop: -6 }}
+        >
+          <View
+            style={[styles.resonadoresBanner, {
+              backgroundColor: "rgba(0,0,0,0.14)",
+              borderWidth: 2,
+              borderColor: "rgba(255,255,255,0.04)",
+            }]}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+              <LinearGradient
+                colors={["rgba(247,203,107,0.75)", "rgba(251,169,128,0.75)"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{ width: 44, height: 44, borderRadius: 15, alignItems: "center", justifyContent: "center" }}
+              >
+                <ExpoImage
+                  source={require("@/assets/images/icons/familia.png")}
+                  style={{ width: 26, height: 26 }}
+                  contentFit="contain"
+                />
+              </LinearGradient>
+              <View style={{ flex: 1, marginLeft: 25 }}>
+                <Text style={styles.resonadoresBannerTitle}>Resonadores</Text>
+                <Text style={styles.resonadoresBannerSub}>Únete a la comunidad</Text>
+              </View>
+              <Feather name="chevron-right" size={20} color="rgba(232,232,232,0.7)" />
+            </View>
+          </View>
+        </Pressable>
 
         {/* ── SESIÓN DESTACADA ── */}
         {filteredFeatured && (

@@ -51,8 +51,8 @@ const TAB_CONFIG: Record<
   string,
   {
     label: string;
-    sfIcon?: string;
-    sfIconFill?: string;
+    sfIcon: string;
+    sfIconFill: string;
     featherIcon: string;
     mciIcon?: string;
     mciIconFill?: string;

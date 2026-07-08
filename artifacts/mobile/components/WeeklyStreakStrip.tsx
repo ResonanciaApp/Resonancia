@@ -131,37 +131,6 @@ function minutesByDay(events: { playedAt: string; minutes: number }[]): Map<stri
   return map;
 }
 
-/** Hook compartido: cuenta cuántos días de la semana cumplieron la meta. */
-export function useStreakCount() {
-  const { statEvents } = usePlayer();
-  return useMemo(() => {
-    const byDay = minutesByDay(statEvents);
-    const monday = startOfWeek(new Date());
-    let count = 0;
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(monday);
-      d.setDate(monday.getDate() + i);
-      if ((byDay.get(dayKey(d)) ?? 0) >= GOAL_MINUTES) count++;
-    }
-    return count;
-  }, [statEvents]);
-}
-
-/** Solo el contador "X Días" (sin anillo ni bolitas). */
-export function StreakDayCount() {
-  const count = useStreakCount();
-  return (
-    <View style={{ flex: 1, justifyContent: "center" }}>
-      <Text style={{ color: "#fff", fontSize: 36, fontWeight: "700" }}>
-        {count}
-      </Text>
-      <Text style={{ color: "rgba(255,255,255,0.85)", fontSize: 14 }}>
-        {count === 1 ? "Día" : "Días"}
-      </Text>
-    </View>
-  );
-}
-
 export function WeeklyStreakStrip() {
   const { statEvents } = usePlayer();
   const { theme } = useSceneTheme();
