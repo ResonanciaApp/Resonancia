@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
+
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "react-native-svg";
@@ -161,16 +161,10 @@ export function WeeklyStreakStrip4() {
               width: RING_TOTAL,
               height: RING_TOTAL,
               borderRadius: RING_TOTAL / 2,
-              overflow: "hidden",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <LinearGradient
-              colors={theme.gradient}
-              start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
             <Svg width={RING_SIZE} height={RING_SIZE}>
               <Circle
                 cx={RING_SIZE / 2} cy={RING_SIZE / 2} r={RADIUS}
@@ -214,7 +208,7 @@ export function WeeklyStreakStrip4() {
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={21} cy={21} r={19} stroke={`url(#sg4_${i})`} strokeWidth={2} fill="none" />
+                    <Circle cx={21} cy={21} r={19} stroke={`url(#sg4_${i})`} strokeWidth={2} fill="rgba(255,255,255,0.08)" />
                   </Svg>
                   <Feather name="check" size={19} color="rgba(255,255,255,0.9)" />
                 </View>
@@ -227,7 +221,7 @@ export function WeeklyStreakStrip4() {
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={21} cy={21} r={19} stroke="url(#sg4Today)" strokeWidth={2} fill="none" />
+                    <Circle cx={21} cy={21} r={19} stroke="url(#sg4Today)" strokeWidth={2} fill="rgba(255,255,255,0.06)" />
                   </Svg>
                 </View>
               ) : (
