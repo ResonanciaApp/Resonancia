@@ -386,12 +386,16 @@ export default function DescansoScreen() {
   const [tabsOffsetY, setTabsOffsetY] = useState(HERO_H);
   const [headerH,     setHeaderH]     = useState(60);
   const [chipsSticky, setChipsSticky] = useState(false);
+  const [tabsMounted, setTabsMounted] = useState(false);
   const tabsOpacity = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     if (chipsSticky) {
+      setTabsMounted(true);
       Animated.timing(tabsOpacity, { toValue: 1, duration: 280, useNativeDriver: true }).start();
     } else {
-      tabsOpacity.setValue(0);
+      Animated.timing(tabsOpacity, { toValue: 0, duration: 220, useNativeDriver: true }).start(({ finished }) => {
+        if (finished) setTabsMounted(false);
+      });
     }
   }, [chipsSticky]);
 
@@ -592,7 +596,7 @@ export default function DescansoScreen() {
       </Animated.View>
 
       {/* ── Tabs sticky (se pegan debajo del título) ── */}
-      {chipsSticky && (
+      {tabsMounted && (
         <Animated.View style={[styles.stickyTabs, { top: headerH, backgroundColor: bgGradient[0], opacity: tabsOpacity }]}>
           <ScrollView
             horizontal
