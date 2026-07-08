@@ -6,7 +6,7 @@
  * tema activo se lee desde `context/SceneThemeContext.tsx` y se aplica
  * a los contenedores raíz (layout, tabs) y a `SacredBackground`.
  *
- * El tema por defecto ("universo") conserva la estética actual
+ * El tema por defecto ("naturaleza") conserva la estética actual
  * (borgoña + dorado). Los demás son variaciones oscuras coherentes con
  * la marca, pensadas para mantener legibilidad del dorado/texto claro.
  * ─────────────────────────────────────────────────────────────────
@@ -23,12 +23,6 @@ export type SceneTheme = {
 };
 
 export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
-  universo: {
-    id: "universo",
-    label: "Universo",
-    gradient: ["#3F0D23", "#300A1A"],
-    solid: "#1B060F",
-  },
   naturaleza: {
     id: "naturaleza",
     label: "Naturaleza",
@@ -65,12 +59,6 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
     gradient: ["#396B3A", "#064439"],
     solid: "#101A16",
   },
-  orquidea: {
-    id: "orquidea",
-    label: "Orquídea",
-    gradient: ["#833E6A", "#663673"],
-    solid: "#4F366F",
-  },
   nebulosa: {
     id: "nebulosa",
     label: "Nebulosa",
@@ -83,14 +71,8 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
     gradient: ["#156393", "#2C347F"],
     solid: "#2E2F7F",
   },
-  vinoTinto: {
-    id: "vinoTinto",
-    label: "Vino Tinto",
-    gradient: ["#330612", "#290511"],
-    solid: "#19020A",
-  },
 };
 
-export const DEFAULT_THEME_ID: SceneId = "universo";
+export const DEFAULT_THEME_ID: SceneId = "naturaleza";
 
 export const SCENE_THEME_STORAGE_KEY = "@active_theme_scene";

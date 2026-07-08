@@ -11,17 +11,14 @@ import React, {
 import { AppState, type AppStateStatus } from "react-native";
 
 export type SceneId =
-  | "universo"
   | "naturaleza"
   | "bosque"
   | "lluvia"
   | "viento"
   | "fuegoSolar"
   | "musgo"
-  | "orquidea"
   | "nebulosa"
-  | "zafiro"
-  | "vinoTinto";
+  | "zafiro";
 
 export type AmbientScene = {
   id: SceneId;
@@ -32,13 +29,6 @@ export type AmbientScene = {
 };
 
 export const AMBIENT_SCENES: AmbientScene[] = [
-  {
-    id: "universo",
-    label: "Universo",
-    colors: ["#1A0A3C", "#6B3FA0"] as const,
-    icon: "star",
-    image: require("@/assets/images/ambient/universo.jpg"),
-  },
   {
     id: "naturaleza",
     label: "Naturaleza",
@@ -82,13 +72,6 @@ export const AMBIENT_SCENES: AmbientScene[] = [
     image: require("@/assets/images/ambient/musgo.png"),
   },
   {
-    id: "orquidea",
-    label: "Orquídea",
-    colors: ["#833E6A", "#4F366F"] as const,
-    icon: "star",
-    image: require("@/assets/images/ambient/orquidea.png"),
-  },
-  {
     id: "nebulosa",
     label: "Nebulosa",
     colors: ["#351E62", "#113071"] as const,
@@ -101,13 +84,6 @@ export const AMBIENT_SCENES: AmbientScene[] = [
     colors: ["#156394", "#2E2F7F"] as const,
     icon: "star",
     image: require("@/assets/images/ambient/zafiro.png"),
-  },
-  {
-    id: "vinoTinto",
-    label: "Vino Tinto",
-    colors: ["#2F0511", "#19020A"] as const,
-    icon: "feather",
-    image: require("@/assets/images/ambient/vino-tinto.png"),
   },
 ];
 
@@ -125,17 +101,14 @@ async function fadeIn(sound: Audio.Sound, targetVolume: number) {
 
 // ── Audio sources per scene ───────────────────────────────────────────────────
 const SCENE_AUDIO: Record<SceneId, unknown> = {
-  universo:   require("@/assets/audio/pad_la.mp3"),
   naturaleza: require("@/assets/audio/pajaros_ambiente.mp3"),
   bosque:     require("@/assets/audio/riachuelo_pajaros.mp3"),
   lluvia:     require("@/assets/audio/riachuelo_stream.mp3"),   // → replace with lluvia.mp3
   viento:     require("@/assets/audio/pajaros_ambiente.mp3"),   // → replace with viento.mp3
   fuegoSolar: require("@/assets/audio/fuego_solar_ambiente.mp3"),
   musgo:      require("@/assets/audio/musgo_ambiente.mp3"),
-  orquidea:   require("@/assets/audio/orquidea_ambiente.mp3"),
   nebulosa:   require("@/assets/audio/nebulosa_ambiente.mp3"),
   zafiro:     require("@/assets/audio/zafiro_ambiente.mp3"),
-  vinoTinto:  require("@/assets/audio/vino_tinto_ambiente.mp3"),
 };
 
 type AmbientCtx = {
@@ -163,21 +136,18 @@ const AmbientContext = createContext<AmbientCtx | null>(null);
 const STORAGE_KEY = "@ambient_scene";
 
 const DEFAULT_VOLUMES: Record<SceneId, number> = {
-  universo: DEFAULT_VOLUME,
   naturaleza: DEFAULT_VOLUME,
   bosque: DEFAULT_VOLUME,
   lluvia: DEFAULT_VOLUME,
   viento: DEFAULT_VOLUME,
   fuegoSolar: DEFAULT_VOLUME,
   musgo: DEFAULT_VOLUME,
-  orquidea: DEFAULT_VOLUME,
   nebulosa: DEFAULT_VOLUME,
   zafiro: DEFAULT_VOLUME,
-  vinoTinto: DEFAULT_VOLUME,
 };
 
 export function AmbientPlayerProvider({ children }: { children: React.ReactNode }) {
-  const [currentSceneId, setCurrentSceneId] = useState<SceneId>("universo");
+  const [currentSceneId, setCurrentSceneId] = useState<SceneId>("naturaleza");
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volumes, setVolumes] = useState<Record<SceneId, number>>(DEFAULT_VOLUMES);
@@ -190,7 +160,7 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
   // Refs so callbacks can read latest state without re-creating
   const isPlayingRef = useRef(false);
   const isMutedRef = useRef(false);
-  const currentSceneIdRef = useRef<SceneId>("universo");
+  const currentSceneIdRef = useRef<SceneId>("naturaleza");
   const volumesRef = useRef<Record<SceneId, number>>(DEFAULT_VOLUMES);
   // expo-av session is configured lazily on first ambient use, never at launch.
   const sessionConfiguredRef = useRef(false);
@@ -296,10 +266,10 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
   // (SIGABRT) ~1s after launch. The expo-av session + default scene are now loaded
   // lazily on first ambient use (ensureAmbientSession + preload/loadAndPlay).
   useEffect(() => {
-    // Always start on "universo" (first scene) — ignore saved preference on cold start.
+    // Always start on "naturaleza" (first scene) — ignore saved preference on cold start.
     // User can still switch scenes during the session.
-    AsyncStorage.setItem(STORAGE_KEY, "universo").catch(() => {});
-    setCurrentSceneId("universo");
+    AsyncStorage.setItem(STORAGE_KEY, "naturaleza").catch(() => {});
+    setCurrentSceneId("naturaleza");
 
     return () => {
       soundRef.current?.unloadAsync().catch(() => {});

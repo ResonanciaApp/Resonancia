@@ -2,7 +2,7 @@
  * SceneThemeContext — tema visual global activo.
  * ─────────────────────────────────────────────────────────────────
  * Independiente del audio de AmbientPlayerContext: el audio ambiente
- * SIEMPRE arranca en "universo" al abrir la app, pero el TEMA VISUAL
+ * SIEMPRE arranca en "naturaleza" al abrir la app, pero el TEMA VISUAL
  * sí se persiste entre sesiones.
  * ─────────────────────────────────────────────────────────────────
  * `setActiveSceneWithFade(id)` — transición "zen" sin flash:

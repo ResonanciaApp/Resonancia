@@ -115,7 +115,7 @@ export default function SessionDetailScreen() {
   const isGuiada = session.categoryId === "meditaciones-guiadas";
   const isAncestral = session.categoryId === "sonidos-ancestrales";
   const isMusica = session.categoryId === "musica-sonidos";
-  // Fondo ligado a la Escena activa (universo/naturaleza/bosque/lluvia/viento).
+  // Fondo ligado a la Escena activa (naturaleza/bosque/lluvia/viento/...).
   const catBg = { gradient: sceneTheme.gradient, solid: sceneTheme.solid };
   const stickyHeaderColor = sceneTheme.gradient[0];
   const [localFav, setLocalFav] = useState<boolean | null>(null);
