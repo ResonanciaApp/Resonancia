@@ -837,7 +837,7 @@ export default function HomeScreen2() {
 
         {/* ── SESIÓN DESTACADA ── */}
         {filteredFeatured && (
-          <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: -38 }]}>
+          <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: -13 }]}>
             <Text style={styles.sectionTitle}>
               Para este momento
             </Text>
@@ -885,6 +885,7 @@ export default function HomeScreen2() {
 
         {/* ── EXPLORA POR CONTENIDO ── */}
         <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: -12 }]}>
+          <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Explora por contenido</Text>
           <View style={{ flexDirection: "row", gap: 10 }}>
             {([
               { id: "meditaciones-guiadas", label: "Meditaciones", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={21} color={color} /> },
