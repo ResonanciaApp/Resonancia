@@ -47,12 +47,6 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
     gradient: ["#1B466C", "#13304A"],
     solid: "#091827",
   },
-  fuegoSolar: {
-    id: "fuegoSolar",
-    label: "Fuego solar",
-    gradient: ["#7D2815", "#5C1810"],
-    solid: "#26120F",
-  },
   musgo: {
     id: "musgo",
     label: "Musgo",

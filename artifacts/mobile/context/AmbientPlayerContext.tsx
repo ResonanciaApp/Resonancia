@@ -12,13 +12,12 @@ import { AppState, type AppStateStatus } from "react-native";
 
 export type SceneId =
   | "naturaleza"
+  | "musgo"
+  | "zafiro"
   | "bosque"
   | "lluvia"
-  | "viento"
-  | "fuegoSolar"
-  | "musgo"
   | "nebulosa"
-  | "zafiro";
+  | "viento";
 
 export type AmbientScene = {
   id: SceneId;
@@ -37,6 +36,20 @@ export const AMBIENT_SCENES: AmbientScene[] = [
     image: require("@/assets/images/ambient/naturaleza.jpg"),
   },
   {
+    id: "musgo",
+    label: "Musgo",
+    colors: ["#28483E", "#101A16"] as const,
+    icon: "feather",
+    image: require("@/assets/images/ambient/musgo.png"),
+  },
+  {
+    id: "zafiro",
+    label: "Zafiro",
+    colors: ["#156394", "#2E2F7F"] as const,
+    icon: "star",
+    image: require("@/assets/images/ambient/zafiro.png"),
+  },
+  {
     id: "bosque",
     label: "Bosque",
     colors: ["#1C3A1C", "#4A7A4A"] as const,
@@ -51,27 +64,6 @@ export const AMBIENT_SCENES: AmbientScene[] = [
     image: require("@/assets/images/ambient/lluvia.jpg"),
   },
   {
-    id: "viento",
-    label: "Viento",
-    colors: ["#6E8FA8", "#C5D9E8"] as const,
-    icon: "wind",
-    image: require("@/assets/images/ambient/viento.jpg"),
-  },
-  {
-    id: "fuegoSolar",
-    label: "Fuego solar",
-    colors: ["#603127", "#26120F"] as const,
-    icon: "sun",
-    image: require("@/assets/images/ambient/fuego-solar.png"),
-  },
-  {
-    id: "musgo",
-    label: "Musgo",
-    colors: ["#28483E", "#101A16"] as const,
-    icon: "feather",
-    image: require("@/assets/images/ambient/musgo.png"),
-  },
-  {
     id: "nebulosa",
     label: "Nebulosa",
     colors: ["#351E62", "#113071"] as const,
@@ -79,11 +71,11 @@ export const AMBIENT_SCENES: AmbientScene[] = [
     image: require("@/assets/images/ambient/nebulosa.png"),
   },
   {
-    id: "zafiro",
-    label: "Zafiro",
-    colors: ["#156394", "#2E2F7F"] as const,
-    icon: "star",
-    image: require("@/assets/images/ambient/zafiro.png"),
+    id: "viento",
+    label: "Viento",
+    colors: ["#6E8FA8", "#C5D9E8"] as const,
+    icon: "wind",
+    image: require("@/assets/images/ambient/viento.jpg"),
   },
 ];
 
@@ -102,13 +94,12 @@ async function fadeIn(sound: Audio.Sound, targetVolume: number) {
 // ── Audio sources per scene ───────────────────────────────────────────────────
 const SCENE_AUDIO: Record<SceneId, unknown> = {
   naturaleza: require("@/assets/audio/pajaros_ambiente.mp3"),
+  musgo:      require("@/assets/audio/musgo_ambiente.mp3"),
+  zafiro:     require("@/assets/audio/zafiro_ambiente.mp3"),
   bosque:     require("@/assets/audio/riachuelo_pajaros.mp3"),
   lluvia:     require("@/assets/audio/riachuelo_stream.mp3"),   // → replace with lluvia.mp3
-  viento:     require("@/assets/audio/pajaros_ambiente.mp3"),   // → replace with viento.mp3
-  fuegoSolar: require("@/assets/audio/fuego_solar_ambiente.mp3"),
-  musgo:      require("@/assets/audio/musgo_ambiente.mp3"),
   nebulosa:   require("@/assets/audio/nebulosa_ambiente.mp3"),
-  zafiro:     require("@/assets/audio/zafiro_ambiente.mp3"),
+  viento:     require("@/assets/audio/pajaros_ambiente.mp3"),   // → replace with viento.mp3
 };
 
 type AmbientCtx = {
@@ -137,13 +128,12 @@ const STORAGE_KEY = "@ambient_scene";
 
 const DEFAULT_VOLUMES: Record<SceneId, number> = {
   naturaleza: DEFAULT_VOLUME,
+  musgo: DEFAULT_VOLUME,
+  zafiro: DEFAULT_VOLUME,
   bosque: DEFAULT_VOLUME,
   lluvia: DEFAULT_VOLUME,
-  viento: DEFAULT_VOLUME,
-  fuegoSolar: DEFAULT_VOLUME,
-  musgo: DEFAULT_VOLUME,
   nebulosa: DEFAULT_VOLUME,
-  zafiro: DEFAULT_VOLUME,
+  viento: DEFAULT_VOLUME,
 };
 
 export function AmbientPlayerProvider({ children }: { children: React.ReactNode }) {
