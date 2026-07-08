@@ -174,7 +174,7 @@ export function WeeklyStreakStrip4() {
               />
               <Circle
                 cx={RING_SIZE / 2} cy={RING_SIZE / 2} r={RADIUS}
-                stroke={GOLD}
+                stroke="#ffffff"
                 strokeWidth={STROKE_W}
                 fill="none"
                 strokeDasharray={`${CIRCUMFERENCE}`}
