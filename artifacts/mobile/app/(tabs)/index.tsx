@@ -706,6 +706,18 @@ export default function HomeScreen2() {
           />
         </Animated.View>
       </Animated.View>
+      {/* Degradado full-screen: gradient[0] → gradient[1] sobre toda la pantalla */}
+      <LinearGradient
+        colors={[prevGradient[0] as string, prevGradient[1] as string]}
+        style={styles.rootGradient}
+      />
+      <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
+        <LinearGradient
+          colors={[activeTheme.gradient[0] as string, activeTheme.gradient[1] as string]}
+          style={StyleSheet.absoluteFill}
+        />
+      </Animated.View>
+      {/* Degradado sobre la imagen: fade suave desde transparente hasta el color de fondo */}
       <LinearGradient
         colors={[
           `${prevGradient[0]}00`,
@@ -716,8 +728,9 @@ export default function HomeScreen2() {
         ]}
         locations={[0, 0.52, 0.72, 0.90, 1]}
         style={styles.imgGradient}
+        pointerEvents="none"
       />
-      <Animated.View style={[styles.imgGradient, { opacity: gradientFade }]}>
+      <Animated.View style={[styles.imgGradient, { opacity: gradientFade }]} pointerEvents="none">
         <LinearGradient
           colors={[
             `${activeTheme.gradient[0]}00`,
