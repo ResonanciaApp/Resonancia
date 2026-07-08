@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import MaskedView from "@react-native-masked-view/masked-view";
 import Svg, { Path } from "react-native-svg";
 import { BackPill } from "@/components/BackPill";
 import { router } from "expo-router";
@@ -516,7 +517,9 @@ export default function SonidosAncestalesScreen() {
           <View style={styles.heroIconFloat}>
             <View style={styles.heroIconGlow}>
               <View style={[styles.heroIconCircle, { backgroundColor: hexToRgba(theme.gradient[1], 0.9) }]}>
-                <MaterialCommunityIcons name="waves" size={32} color="#BE8744" />
+                <MaskedView maskElement={<View style={{ width: 32, height: 32, alignItems: "center", justifyContent: "center" }}><MaterialCommunityIcons name="waves" size={32} color="#fff" /></View>}>
+                  <LinearGradient colors={["#ecedea", "#f8f8f6", "#dcdbd8"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ width: 32, height: 32 }} />
+                </MaskedView>
               </View>
             </View>
           </View>
