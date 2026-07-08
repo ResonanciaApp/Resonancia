@@ -178,7 +178,7 @@ export function WeeklyStreakStrip() {
           elevation: 20,
         }]}
       >
-        <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+        <BlurView intensity={40} tint="default" style={StyleSheet.absoluteFill} />
         <Svg width={RING_SIZE} height={RING_SIZE}>
           <Circle
             cx={RING_SIZE / 2}
