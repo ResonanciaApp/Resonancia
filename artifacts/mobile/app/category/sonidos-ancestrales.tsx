@@ -501,7 +501,7 @@ export default function SonidosAncestalesScreen() {
               </Pressable>
             </GhostPill>
           </View>
-          <View style={styles.heroRow}>
+          <View style={styles.heroIconFloat}>
             <View style={styles.heroIconGlow}>
               <View style={[styles.heroIconCircle, { backgroundColor: hexToRgba(theme.gradient[1], 0.9) }]}>
                 <MaskedView maskElement={<View style={{ width: 32, height: 32, alignItems: "center", justifyContent: "center" }}><MaterialCommunityIcons name="waves" size={32} color="#fff" /></View>}>
@@ -509,13 +509,15 @@ export default function SonidosAncestalesScreen() {
                 </MaskedView>
               </View>
             </View>
-            <View style={styles.heroTextCol}>
-              <Text style={styles.profileTitleLeft}>Sesiones</Text>
-              <Text style={styles.profileDescLeft} numberOfLines={2}>
-                Sonidos ancestrales para sanar cuerpo y espíritu.
-              </Text>
-            </View>
           </View>
+        </View>
+
+        {/* ── Título + Descripción ── */}
+        <View style={styles.profileCard}>
+          <Text style={styles.profileTitle}>Sesiones</Text>
+          <Text style={styles.profileDesc} numberOfLines={2}>
+            Sonidos ancestrales para sanar cuerpo y espíritu.
+          </Text>
         </View>
 
         {/* ── Tabs ── */}
@@ -574,12 +576,9 @@ const styles = StyleSheet.create({
 
   /* ── Hero ── */
   heroArea: { height: HERO_H, position: "relative" },
-  heroRow: { position: "absolute", bottom: -34, left: H_PAD, right: H_PAD, flexDirection: "row", alignItems: "center", zIndex: 2 },
+  heroIconFloat: { position: "absolute", bottom: -17, left: 0, right: 0, alignItems: "center", zIndex: 2 },
   heroIconGlow: { borderRadius: 36, shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 14, shadowOffset: { width: 0, height: 0 }, elevation: 8 },
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "#1B060F", borderWidth: 2, borderColor: "rgba(255,255,255,0.1)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
-  heroTextCol: { marginLeft: 20, flex: 1, gap: 4 },
-  profileTitleLeft: { fontSize: 22, fontWeight: "400", color: TEXT, letterSpacing: 0.3, textAlign: "left" },
-  profileDescLeft: { fontSize: 12, color: "rgba(255,255,255,0.90)", lineHeight: 17, textAlign: "left" },
 
   /* ── Profile card ── */
   profileCard: { marginHorizontal: H_PAD, marginTop: 28, paddingBottom: 14, gap: 8, alignItems: "center" },
@@ -587,7 +586,7 @@ const styles = StyleSheet.create({
   profileDesc: { fontSize: 12, color: "rgba(255,255,255,0.90)", lineHeight: 17, textAlign: "center", maxWidth: 280, marginTop: -4, marginBottom: 28 },
 
   /* ── Tabs (línea subrayada) ── */
-  chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: 46 },
+  chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -33 },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 0 },
   chipRowWrapper: { position: "relative" },
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.1)", marginTop: 11, marginHorizontal: H_PAD },
