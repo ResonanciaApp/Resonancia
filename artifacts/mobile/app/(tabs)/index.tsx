@@ -720,7 +720,7 @@ export default function HomeScreen2() {
           `${prevGradient[0]}1A`,
           `${prevGradient[0]}66`,
           prevGradient[0] as string,
-          prevGradient[1] as string,
+          prevGradient[2] as string,
         ]}
         locations={[0, 0.15, 0.33, 0.46, 1]}
         style={styles.rootGradient}
@@ -732,7 +732,7 @@ export default function HomeScreen2() {
             `${activeTheme.gradient[0]}1A`,
             `${activeTheme.gradient[0]}66`,
             activeTheme.gradient[0] as string,
-            activeTheme.gradient[1] as string,
+            activeTheme.gradient[2] as string,
           ]}
           locations={[0, 0.15, 0.33, 0.46, 1]}
           style={styles.rootGradient}
