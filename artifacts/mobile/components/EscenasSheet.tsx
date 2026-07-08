@@ -239,7 +239,7 @@ export function EscenasSheet() {
             pointerEvents="none"
           >
             <LinearGradient
-              colors={[...overlayColors] as [string, string]}
+              colors={overlayColors}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={StyleSheet.absoluteFill}

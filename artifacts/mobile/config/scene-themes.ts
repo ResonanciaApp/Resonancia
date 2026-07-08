@@ -16,8 +16,8 @@ import type { SceneId } from "@/context/AmbientPlayerContext";
 export type SceneTheme = {
   id: SceneId;
   label: string;
-  /** Degradado de fondo (2 stops) usado en pantallas con LinearGradient de raíz. */
-  gradient: readonly [string, string];
+  /** Degradado de fondo (2+ stops) usado en pantallas con LinearGradient de raíz. */
+  gradient: readonly [string, string, ...string[]];
   /** Color sólido de fondo — contenedores raíz, tab bar, sheets. */
   solid: string;
 };
@@ -26,7 +26,7 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   universo: {
     id: "universo",
     label: "Universo",
-    gradient: ["#400815", "#1B062E"],
+    gradient: ["#400815", "#0D1957", "#1B062E"],
     solid: "#751238",
   },
   naturaleza: {
