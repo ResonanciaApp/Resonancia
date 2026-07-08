@@ -738,7 +738,6 @@ export default function HomeScreen2() {
           style={styles.rootGradient}
         />
       </Animated.View>
-      <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(74,12,12,0.06)" }]} />
       <GeoUniverseBackground />
       <StatusBar barStyle="light-content" />
 
