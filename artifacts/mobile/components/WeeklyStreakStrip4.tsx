@@ -3,7 +3,7 @@ import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "react-native-svg";
+import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop, Text as SvgText } from "react-native-svg";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -182,7 +182,17 @@ export function WeeklyStreakStrip4() {
             }}
           >
             <View style={styles.ringCenter}>
-              <Text style={styles.ringCount}>{activeCount}</Text>
+              <Svg width={52} height={50}>
+                <Defs>
+                  <SvgLinearGradient id="goldNum" x1="0" y1="0" x2="0" y2="1">
+                    <Stop offset="0" stopColor="#E9C46A" />
+                    <Stop offset="1" stopColor="#BE8744" />
+                  </SvgLinearGradient>
+                </Defs>
+                <SvgText x="26" y="44" fill="url(#goldNum)" fontSize={44} fontWeight="700" textAnchor="middle">
+                  {String(activeCount)}
+                </SvgText>
+              </Svg>
               <Text style={styles.ringLabel}>{activeCount === 1 ? "Día" : "Días"}</Text>
             </View>
           </View>
@@ -198,6 +208,13 @@ export function WeeklyStreakStrip4() {
             <View key={i} style={styles.dayCol}>
               {met ? (
                 <View style={styles.circleGradientBorder}>
+                  <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+                  <LinearGradient
+                    colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+                    start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+                    style={StyleSheet.absoluteFill}
+                    pointerEvents="none"
+                  />
                   <Svg width={42} height={42} style={StyleSheet.absoluteFill}>
                     <Defs>
                       <SvgLinearGradient id={`sg4_${i}`} x1="0.5" y1="0" x2="0.5" y2="1">
@@ -205,12 +222,19 @@ export function WeeklyStreakStrip4() {
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={21} cy={21} r={19} stroke={`url(#sg4_${i})`} strokeWidth={2} fill="rgba(255,255,255,0.08)" />
+                    <Circle cx={21} cy={21} r={19} stroke={`url(#sg4_${i})`} strokeWidth={2} fill="none" />
                   </Svg>
                   <Feather name="check" size={19} color="rgba(255,255,255,0.9)" />
                 </View>
               ) : isToday ? (
                 <View style={styles.circleGradientBorder}>
+                  <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+                  <LinearGradient
+                    colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+                    start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+                    style={StyleSheet.absoluteFill}
+                    pointerEvents="none"
+                  />
                   <Svg width={42} height={42} style={StyleSheet.absoluteFill}>
                     <Defs>
                       <SvgLinearGradient id="sg4Today" x1="0.5" y1="0" x2="0.5" y2="1">
@@ -218,7 +242,7 @@ export function WeeklyStreakStrip4() {
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={21} cy={21} r={19} stroke="url(#sg4Today)" strokeWidth={2} fill="rgba(255,255,255,0.06)" />
+                    <Circle cx={21} cy={21} r={19} stroke="url(#sg4Today)" strokeWidth={2} fill="none" />
                   </Svg>
                 </View>
               ) : (
@@ -246,6 +270,7 @@ const styles = StyleSheet.create({
     position: "relative",
     height: RING_TOTAL,
     marginHorizontal: -14,
+    marginTop: 25,
   },
   msgCard: {
     position: "absolute",
@@ -311,6 +336,8 @@ const styles = StyleSheet.create({
   circleGradientBorder: {
     width: 42,
     height: 42,
+    borderRadius: 21,
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
     marginTop: 4,
