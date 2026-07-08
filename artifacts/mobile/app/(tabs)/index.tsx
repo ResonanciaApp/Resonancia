@@ -70,7 +70,7 @@ import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
 import { WeeklyStreakStrip } from "@/components/WeeklyStreakStrip";
 
-const { width } = Dimensions.get("window");
+const { width, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 // Sentinel interno para "sin filtro" (ya no hay chip visible de "Todos": es el
 // estado por defecto al entrar a la app).
@@ -725,7 +725,21 @@ export default function HomeScreen2() {
         locations={[0, 0.15, 0.33, 0.46, 1]}
         style={styles.rootGradient}
       />
-      <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
+      <Animated.View
+        style={[
+          styles.rootGradient,
+          {
+            transform: [
+              {
+                translateY: gradientFade.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [SCREEN_HEIGHT, 0],
+                }),
+              },
+            ],
+          },
+        ]}
+      >
         <LinearGradient
           colors={[
             `${activeTheme.gradient[0]}00`,
