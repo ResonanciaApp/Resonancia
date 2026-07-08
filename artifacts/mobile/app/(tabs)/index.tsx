@@ -1158,26 +1158,17 @@ export default function HomeScreen2() {
           left: 0,
           right: 0,
           flexDirection: "row",
-          justifyContent: "space-between",
+          justifyContent: "flex-end",
           alignItems: "center",
-          paddingLeft: 20,
           paddingRight: 14,
+          gap: 10,
           opacity: backdropAnim,
         }}
       >
-        {/* Logo centrado */}
-        <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, alignItems: "center", transform: [{ translateY: 5 }] }}>
-          <ExpoImage
-            source={require("@/assets/images/icons/pulso-logo.png")}
-            style={{ width: 125, height: 57 }}
-            contentFit="contain"
-          />
-        </View>
-
         <Pressable
           onPress={openEscenasSheet}
           hitSlop={8}
-          style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1, marginLeft: -3 }]}
+          style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
         >
           <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
           <LinearGradient
