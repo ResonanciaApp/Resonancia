@@ -1636,7 +1636,7 @@ const styles = StyleSheet.create({
     marginHorizontal: GRID_PAD * 2,
     marginBottom: SECTION_GAP,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(255,255,255,0.025)",
+    backgroundColor: "rgba(255,255,255,0.12)",
   },
   sectionRow: {
     flexDirection: "row",
