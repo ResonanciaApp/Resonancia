@@ -205,11 +205,6 @@ export function WeeklyStreakStrip() {
           style={{ position: "absolute", bottom: 0, left: 0, width: "14%", height: StyleSheet.hairlineWidth }}
           pointerEvents="none"
         />
-        {/* 5. Acento de color del tema activo */}
-        <View
-          pointerEvents="none"
-          style={[StyleSheet.absoluteFill, { backgroundColor: theme.gradient[0] }]}
-        />
         {/* 6. Borde con gradiente — idéntico al de la tab bar */}
         <Svg width={RING_SIZE + 18} height={RING_SIZE + 18} style={StyleSheet.absoluteFill} pointerEvents="none">
           <Defs>
