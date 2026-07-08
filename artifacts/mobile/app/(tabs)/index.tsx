@@ -817,13 +817,25 @@ export default function HomeScreen2() {
                   gap: 10,
                   borderRadius: 14,
                   alignItems: "center",
+                  overflow: "hidden",
                   backgroundColor: "rgba(0,0,0,0.08)",
                   borderWidth: 2,
                   borderColor: "rgba(255,255,255,0.1)",
                   opacity: pressed ? 0.75 : 1,
                 }]}
               >
-                {c.icon}
+                {/* 5% tinte del color más oscuro del tema */}
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: hexToRgba(activeTheme.gradient[1], 0.05) }]} />
+                {/* Halo degradado detrás del icono */}
+                <View style={{ alignItems: "center", justifyContent: "center" }}>
+                  <LinearGradient
+                    colors={["#ecedea", "#f8f8f6", "#dcdbd8"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={{ position: "absolute", width: 44, height: 44, borderRadius: 22, opacity: 0.15 }}
+                  />
+                  {c.icon}
+                </View>
                 <Text style={{ fontSize: 14, fontWeight: "300", color: "#e8e8e8", textAlign: "center" }}>
                   {c.label}
                 </Text>
