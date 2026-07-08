@@ -110,6 +110,14 @@ function brightenHex(hex: string, amount: number): string {
   return `#${toHex(rr)}${toHex(gg)}${toHex(bb)}`;
 }
 
+function hexToRgba(hex: string, alpha: number): string {
+  const clean = hex.replace("#", "");
+  const r = parseInt(clean.slice(0, 2), 16);
+  const g = parseInt(clean.slice(2, 4), 16);
+  const b = parseInt(clean.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 function dayKey(d: Date): string {
   return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 }
@@ -182,6 +190,18 @@ export function WeeklyStreakStrip() {
         {/* ── Glass material, idéntico a la tab bar ────────────────────────── */}
         {/* 1. Blur base */}
         <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+        {/* 1.5. Halo de color sutil — tono más claro del degradado del tema activo */}
+        <LinearGradient
+          colors={[
+            hexToRgba(theme.gradient[0], 0),
+            hexToRgba(theme.gradient[0], 0.16),
+            hexToRgba(theme.gradient[0], 0),
+          ]}
+          locations={[0, 0.4, 1]}
+          start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
         {/* 2. Inner glow vertical — más luminoso arriba, se desvanece abajo */}
         <LinearGradient
           colors={["rgba(255,255,255,0.09)", "rgba(255,255,255,0.09)", "rgba(255,255,255,0)"]}
