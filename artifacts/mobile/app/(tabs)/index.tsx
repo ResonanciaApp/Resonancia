@@ -45,7 +45,6 @@ import { Image as ExpoImage } from "expo-image";
 import { useAmbientPlayer, AMBIENT_SCENES } from "@/context/AmbientPlayerContext";
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { lightenColor } from "@/utils/color";
 import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useMixer } from "@/context/MixerContext";
@@ -833,7 +832,7 @@ export default function HomeScreen2() {
                   maskElement={<View style={{ width: 21, height: 21, alignItems: "center", justifyContent: "center" }}>{c.icon("#fff")}</View>}
                 >
                   <LinearGradient
-                    colors={[lightenColor(activeTheme.gradient[0], 0.2), lightenColor(activeTheme.gradient[0], 0.2)]}
+                    colors={["#ecedea", "#f8f8f6", "#dcdbd8"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={{ width: 21, height: 21 }}

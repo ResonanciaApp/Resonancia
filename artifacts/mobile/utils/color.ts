@@ -45,20 +45,3 @@ export function darkenColor(hex: string, ratio: number): string {
   const toHex = (n: number) => n.toString(16).padStart(2, "0");
   return `#${toHex(dr)}${toHex(dg)}${toHex(db)}`;
 }
-
-/**
- * lightenColor — aclara un color hex (#RRGGBB) acercando cada canal a 255
- * en la proporción `ratio`. Devuelve un hex #RRGGBB. Usado para derivar un
- * tono más brillante del stop claro del degradado del tema activo.
- */
-export function lightenColor(hex: string, ratio: number): string {
-  const h = hex.replace("#", "");
-  const r = parseInt(h.substring(0, 2), 16) || 0;
-  const g = parseInt(h.substring(2, 4), 16) || 0;
-  const b = parseInt(h.substring(4, 6), 16) || 0;
-  const lr = Math.min(255, Math.round(r + (255 - r) * ratio));
-  const lg = Math.min(255, Math.round(g + (255 - g) * ratio));
-  const lb = Math.min(255, Math.round(b + (255 - b) * ratio));
-  const toHex = (n: number) => n.toString(16).padStart(2, "0");
-  return `#${toHex(lr)}${toHex(lg)}${toHex(lb)}`;
-}

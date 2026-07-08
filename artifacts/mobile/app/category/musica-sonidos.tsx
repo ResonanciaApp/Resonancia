@@ -19,7 +19,7 @@ import { getGuide } from "@/data/guides";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { useCatalog } from "@/context/CatalogContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { hexToRgba, lightenColor } from "@/utils/color";
+import { hexToRgba } from "@/utils/color";
 
 const H_PAD = 15;
 const GOLD  = "#BE8744";
@@ -404,7 +404,7 @@ export default function MusicaSonidosScreen() {
             <View style={styles.heroIconGlow}>
               <View style={[styles.heroIconCircle, { backgroundColor: hexToRgba(theme.gradient[1], 0.5) }]}>
                 <MaskedView maskElement={<View style={{ width: 32, height: 32, alignItems: "center", justifyContent: "center" }}><Ionicons name="musical-notes-outline" size={32} color="#fff" /></View>}>
-                  <LinearGradient colors={[lightenColor(theme.gradient[0], 0.2), lightenColor(theme.gradient[0], 0.2)]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ width: 32, height: 32 }} />
+                  <LinearGradient colors={["#ecedea", "#f8f8f6", "#dcdbd8"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ width: 32, height: 32 }} />
                 </MaskedView>
               </View>
             </View>
