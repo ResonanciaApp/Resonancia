@@ -392,6 +392,13 @@ export default function MeditacionesGuiadasScreen() {
               <BackPill onPress={() => router.back()} />
             </GhostPill>
           </View>
+          <View style={[styles.heroOverlayRight, { top: topPad + 8 }]}>
+            <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.7) }}>
+              <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/meditaciones-info" as never)}>
+                <Feather name="info" size={23} color="rgba(255,255,255,0.85)" />
+              </Pressable>
+            </GhostPill>
+          </View>
           <View style={styles.heroIconFloat}>
             <View style={styles.heroIconGlow}>
               <View style={[styles.heroIconCircle, { backgroundColor: hexToRgba(theme.gradient[1], 0.9) }]}>
@@ -444,9 +451,11 @@ export default function MeditacionesGuiadasScreen() {
             <Text style={styles.headerSubtitle}>{TABS.find((t) => t.id === activeTab)?.label}</Text>
           )}
         </View>
-        <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/meditaciones-info" as never)}>
-          <Feather name="info" size={20} color="rgba(255,255,255,0.85)" />
-        </Pressable>
+        <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.4) }}>
+          <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/meditaciones-info" as never)}>
+            <Feather name="info" size={23} color="rgba(255,255,255,0.85)" />
+          </Pressable>
+        </GhostPill>
       </Animated.View>
 
     </View>
@@ -462,6 +471,7 @@ const styles = StyleSheet.create({
   headerTitle: { fontSize: 18, fontWeight: "400", color: "#e8e8e8", letterSpacing: 0.2, textAlign: "center" },
   headerSubtitle: { fontSize: 11, color: "#f7f7f7", letterSpacing: 0.3, marginTop: 1, opacity: 0.7 },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
+  heroOverlayRight: { position: "absolute", right: H_PAD, zIndex: 10 },
 
   heroArea: { height: 148, position: "relative" },
   heroIconFloat: { position: "absolute", bottom: -17, left: 0, right: 0, alignItems: "center", zIndex: 2 },
