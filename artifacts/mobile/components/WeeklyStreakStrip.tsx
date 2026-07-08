@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
   messageHighlight: {
     color: "rgba(255,255,255,0.90)",
     fontSize: 12,
-    fontWeight: "700",
+    fontWeight: "300",
     textAlign: "center",
     letterSpacing: 0.2,
   },
