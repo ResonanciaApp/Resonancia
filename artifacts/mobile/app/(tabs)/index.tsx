@@ -306,10 +306,13 @@ export default function HomeScreen2() {
   const { presets, loadPreset, openSheet } = useMixer();
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  // Degradado exclusivo de Inicio para la Escena "Naturaleza" (el resto de
+  // Degradado exclusivo de Inicio para ciertas Escenas (el resto de
   // pantallas sigue usando el degradado estándar de SCENE_THEMES).
-  const homeGradient: readonly [string, string] =
-    activeSceneId === "naturaleza" ? ["#312267", "#25184D"] : activeTheme.gradient;
+  const HOME_GRADIENT_OVERRIDES: Partial<Record<typeof activeSceneId, readonly [string, string]>> = {
+    naturaleza: ["#312267", "#25184D"],
+    viento: ["#1B466C", "#163859"],
+  };
+  const homeGradient: readonly [string, string] = HOME_GRADIENT_OVERRIDES[activeSceneId] ?? activeTheme.gradient;
   // Fade de 300ms entre degradados de fondo al cambiar de Escena (loto en Inicio):
   // se mantiene el degradado anterior debajo y el nuevo se desvanece encima, en vez
   // de saltar de golpe de un color a otro.
