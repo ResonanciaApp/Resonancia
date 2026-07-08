@@ -479,7 +479,7 @@ const styles = StyleSheet.create({
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   headerTitleCol: { flex: 1, alignItems: "center" },
   headerTitle: { fontSize: 18, fontWeight: "400", color: "#e8e8e8", letterSpacing: 0.2, textAlign: "center" },
-  headerSubtitle: { fontSize: 11, color: "#f4f4f4", letterSpacing: 0.3, marginTop: 1, opacity: 0.7 },
+  headerSubtitle: { fontSize: 11, color: "#f7f7f7", letterSpacing: 0.3, marginTop: 1, opacity: 0.7 },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
 
   heroArea: { height: 238, position: "relative" },
