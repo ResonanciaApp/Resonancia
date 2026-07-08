@@ -309,9 +309,6 @@ export default function MeditacionesGuiadasScreen() {
     extrapolate: "clamp",
   });
   const [stickyActive,  setStickyActive]  = useState(false);
-  const [chipsOffsetY,  setChipsOffsetY]  = useState(350);
-  const [headerH,       setHeaderH]       = useState(100);
-  const [chipsSticky,   setChipsSticky]   = useState(false);
 
   const PAGE_SIZE = 20;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -395,8 +392,6 @@ export default function MeditacionesGuiadasScreen() {
           scrollY.setValue(y);
           const active = y > HERO_AREA_H * 0.50;
           if (active !== stickyActive) setStickyActive(active);
-          const sticky = y > chipsOffsetY - headerH;
-          if (sticky !== chipsSticky) setChipsSticky(sticky);
           const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
           if (contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
             setVisibleCount((c) => c + PAGE_SIZE);
@@ -430,10 +425,10 @@ export default function MeditacionesGuiadasScreen() {
         </View>
 
         {/* ── Tabs ── */}
-        <View style={styles.chipsArea} onLayout={(e) => setChipsOffsetY(e.nativeEvent.layout.y)}>
+        <View style={styles.chipsArea}>
           <ChipRow tabs={TABS} activeTab={activeTab}
-            onSelect={(id) => { setActiveTab(id); if (chipsSticky) setTimeout(() => scrollRef.current?.scrollTo({ y: chipsOffsetY - headerH + 2, animated: false }), 50); }}
-            onClear={() => { setActiveTab(null); if (chipsSticky) setTimeout(() => scrollRef.current?.scrollTo({ y: chipsOffsetY - headerH + 2, animated: false }), 50); }}
+            onSelect={(id) => setActiveTab(id)}
+            onClear={() => setActiveTab(null)}
           />
         </View>
 
@@ -452,7 +447,7 @@ export default function MeditacionesGuiadasScreen() {
       <AddToPlaylistSheet visible={playlistSessionId !== null} sessionId={playlistSessionId ?? ""} onClose={() => setPlaylistSessionId(null)} />
 
       {/* ── Sticky header (aparece con scroll) ── */}
-      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"} onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}>
+      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"}>
         <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.4) }}>
           <BackPill onPress={() => router.back()} />
         </GhostPill>
@@ -462,15 +457,6 @@ export default function MeditacionesGuiadasScreen() {
         </Pressable>
       </Animated.View>
 
-      {/* ── Chips sticky (se pegan debajo del sticky header) ── */}
-      {chipsSticky && (
-        <View style={[styles.stickyChips, { top: headerH, backgroundColor: theme.gradient[0], borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.035)" }]}>
-          <ChipRow tabs={TABS} activeTab={activeTab}
-            onSelect={(id) => { setActiveTab(id); setTimeout(() => scrollRef.current?.scrollTo({ y: chipsOffsetY - headerH + 2, animated: false }), 50); }}
-            onClear={() => { setActiveTab(null); setTimeout(() => scrollRef.current?.scrollTo({ y: chipsOffsetY - headerH + 2, animated: false }), 50); }}
-          />
-        </View>
-      )}
     </View>
   );
 }
@@ -479,7 +465,6 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#210911" },
 
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#1B060F" },
-  stickyChips: { position: "absolute", left: 0, right: 0, zIndex: 19, backgroundColor: "#1B060F", paddingTop: 8, paddingBottom: 6 },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   headerTitle: { flex: 1, fontSize: 18, fontWeight: "400", color: "#e8e8e8", letterSpacing: 0.2, textAlign: "center" },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
