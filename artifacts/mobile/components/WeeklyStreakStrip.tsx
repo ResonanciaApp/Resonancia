@@ -235,7 +235,7 @@ export function WeeklyStreakStrip() {
                 <View style={styles.circleGradientBorder}>
                   <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
                   <LinearGradient
-                    colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+                    colors={["rgba(255,255,255,0.17)", "rgba(255,255,255,0)"]}
                     start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
                     style={StyleSheet.absoluteFill}
                     pointerEvents="none"
@@ -255,7 +255,7 @@ export function WeeklyStreakStrip() {
                 <View style={styles.circleGradientBorder}>
                   <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
                   <LinearGradient
-                    colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+                    colors={["rgba(255,255,255,0.17)", "rgba(255,255,255,0)"]}
                     start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
                     style={StyleSheet.absoluteFill}
                     pointerEvents="none"
@@ -274,7 +274,7 @@ export function WeeklyStreakStrip() {
                 <View style={styles.circleGradientBorder}>
                   <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
                   <LinearGradient
-                    colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+                    colors={["rgba(255,255,255,0.17)", "rgba(255,255,255,0)"]}
                     start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
                     style={StyleSheet.absoluteFill}
                     pointerEvents="none"
