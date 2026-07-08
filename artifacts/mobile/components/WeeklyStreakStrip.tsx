@@ -277,11 +277,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     gap: 13,
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.55,
-    shadowRadius: 16,
-    elevation: 14,
   },
   ringWrap: {
     width: RING_SIZE,
