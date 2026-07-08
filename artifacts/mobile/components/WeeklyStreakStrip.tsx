@@ -165,45 +165,58 @@ export function WeeklyStreakStrip() {
     <View style={styles.card}>
       {/* Anillo de progreso */}
       <View
-        style={[styles.ringWrap, {
+        style={{
           width: RING_SIZE + 18,
           height: RING_SIZE + 18,
           borderRadius: (RING_SIZE + 18) / 2,
-          overflow: "hidden",
           marginTop: -10,
-        }]}
+          shadowColor: "#000",
+          shadowOffset: { width: 3, height: 4 },
+          shadowOpacity: 0.45,
+          shadowRadius: 3,
+          elevation: 8,
+        }}
       >
-        <LinearGradient
-          colors={theme.gradient}
-          start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
-        <Svg width={RING_SIZE} height={RING_SIZE}>
-          <Circle
-            cx={RING_SIZE / 2}
-            cy={RING_SIZE / 2}
-            r={RADIUS}
-            stroke="rgba(255,255,255,0.13)"
-            strokeWidth={STROKE_W}
-            fill="none"
+        <View
+          style={[styles.ringWrap, {
+            width: RING_SIZE + 18,
+            height: RING_SIZE + 18,
+            borderRadius: (RING_SIZE + 18) / 2,
+            overflow: "hidden",
+          }]}
+        >
+          <LinearGradient
+            colors={theme.gradient}
+            start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
           />
-          <Circle
-            cx={RING_SIZE / 2}
-            cy={RING_SIZE / 2}
-            r={RADIUS}
-            stroke="rgba(255,255,255,0.95)"
-            strokeWidth={STROKE_W}
-            fill="none"
-            strokeDasharray={`${CIRCUMFERENCE}`}
-            strokeDashoffset={dashOffset}
-            strokeLinecap="round"
-            rotation="-90"
-            origin={`${RING_SIZE / 2}, ${RING_SIZE / 2}`}
-          />
-        </Svg>
-        <View style={styles.ringCenter}>
-          <Text style={styles.ringCount}>{activeCount}</Text>
-          <Text style={styles.ringLabel}>{activeCount === 1 ? "Día" : "Días"}</Text>
+          <Svg width={RING_SIZE} height={RING_SIZE}>
+            <Circle
+              cx={RING_SIZE / 2}
+              cy={RING_SIZE / 2}
+              r={RADIUS}
+              stroke="rgba(255,255,255,0.13)"
+              strokeWidth={STROKE_W}
+              fill="none"
+            />
+            <Circle
+              cx={RING_SIZE / 2}
+              cy={RING_SIZE / 2}
+              r={RADIUS}
+              stroke="rgba(255,255,255,0.95)"
+              strokeWidth={STROKE_W}
+              fill="none"
+              strokeDasharray={`${CIRCUMFERENCE}`}
+              strokeDashoffset={dashOffset}
+              strokeLinecap="round"
+              rotation="-90"
+              origin={`${RING_SIZE / 2}, ${RING_SIZE / 2}`}
+            />
+          </Svg>
+          <View style={styles.ringCenter}>
+            <Text style={styles.ringCount}>{activeCount}</Text>
+            <Text style={styles.ringLabel}>{activeCount === 1 ? "Día" : "Días"}</Text>
+          </View>
         </View>
       </View>
 
