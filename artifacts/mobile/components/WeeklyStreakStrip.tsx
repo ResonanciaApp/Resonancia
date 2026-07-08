@@ -3,7 +3,7 @@ import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Path, Stop } from "react-native-svg";
+import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "react-native-svg";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { usePlayer } from "@/context/PlayerContext";
@@ -17,29 +17,6 @@ const RING_SIZE = 96;
 const STROKE_W = 7;
 const RADIUS = (RING_SIZE - STROKE_W) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-
-const MINI_PILL_W = 56;
-const MINI_PILL_H = 20;
-const MINI_PILL_SW = 0.5;
-const miniPillPath = (() => {
-  const r = MINI_PILL_H / 2 - MINI_PILL_SW / 2;
-  const x0 = MINI_PILL_SW / 2;
-  const y0 = MINI_PILL_SW / 2;
-  const x1 = MINI_PILL_W - MINI_PILL_SW / 2;
-  const y1 = MINI_PILL_H - MINI_PILL_SW / 2;
-  return (
-    `M ${x0 + r} ${y0} ` +
-    `L ${x1 - r} ${y0} ` +
-    `A ${r} ${r} 0 0 1 ${x1} ${y0 + r} ` +
-    `L ${x1} ${y1 - r} ` +
-    `A ${r} ${r} 0 0 1 ${x1 - r} ${y1} ` +
-    `L ${x0 + r} ${y1} ` +
-    `A ${r} ${r} 0 0 1 ${x0} ${y1 - r} ` +
-    `L ${x0} ${y0 + r} ` +
-    `A ${r} ${r} 0 0 1 ${x0 + r} ${y0} ` +
-    `Z`
-  );
-})();
 
 const GOAL_MINUTES = 5;
 
@@ -189,47 +166,6 @@ export function WeeklyStreakStrip() {
     <View style={styles.card}>
       {/* Anillo de progreso */}
       <View style={styles.ringOuter}>
-        {/* Píldora fantasma — copia del tab bar sin iconos/texto */}
-        <View style={styles.miniPillWrap} pointerEvents="none">
-          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-          <LinearGradient
-            colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-            start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-            style={StyleSheet.absoluteFill}
-          />
-          <LinearGradient
-            colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.04)", "rgba(255,255,255,0.14)", "rgba(255,255,255,0)"]}
-            locations={[0, 0.18, 0.5, 1]}
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-            style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
-          />
-          <LinearGradient
-            colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-            style={{ position: "absolute", bottom: 0, left: 0, width: "14%", height: StyleSheet.hairlineWidth }}
-          />
-        </View>
-        <Svg
-          width={MINI_PILL_W}
-          height={MINI_PILL_H}
-          style={styles.miniPillBorder}
-          pointerEvents="none"
-        >
-          <Defs>
-            <SvgLinearGradient id="miniPillBorderA" x1="0.5" y1="0" x2="0.5" y2="1">
-              <Stop offset="0"   stopColor="#FFFFFF" stopOpacity={0.22} />
-              <Stop offset="0.5" stopColor="#FFFFFF" stopOpacity={0.04} />
-              <Stop offset="1"   stopColor="#FFFFFF" stopOpacity={0}    />
-            </SvgLinearGradient>
-            <SvgLinearGradient id="miniPillBorderB" x1="1" y1="1" x2="0.3" y2="0">
-              <Stop offset="0"    stopColor="#FFFFFF" stopOpacity={0.04} />
-              <Stop offset="0.45" stopColor="#FFFFFF" stopOpacity={0.01} />
-              <Stop offset="1"    stopColor="#FFFFFF" stopOpacity={0}    />
-            </SvgLinearGradient>
-          </Defs>
-          <Path d={miniPillPath} fill="none" stroke="url(#miniPillBorderA)" strokeWidth={0.5} />
-          <Path d={miniPillPath} fill="none" stroke="url(#miniPillBorderB)" strokeWidth={0.5} />
-        </Svg>
       <View
         style={[styles.ringWrap, {
           width: RING_SIZE + 18,
@@ -411,28 +347,6 @@ const styles = StyleSheet.create({
     borderRadius: RING_SIZE / 2,
     alignItems: "center",
     justifyContent: "center",
-  },
-  miniPillWrap: {
-    position: "absolute",
-    top: -MINI_PILL_H / 2,
-    alignSelf: "center",
-    width: MINI_PILL_W,
-    height: MINI_PILL_H,
-    borderRadius: MINI_PILL_H / 2,
-    overflow: "hidden",
-    zIndex: 10,
-    elevation: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-  },
-  miniPillBorder: {
-    position: "absolute",
-    top: -MINI_PILL_H / 2,
-    alignSelf: "center",
-    zIndex: 11,
-    elevation: 11,
   },
   ringCenter: {
     position: "absolute",
