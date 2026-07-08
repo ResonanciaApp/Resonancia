@@ -33,7 +33,6 @@ const MUTED = "#c2c2c2";
 const GRID_GAP    = 10;
 const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
 const HERO_H   = 238;
-const HERO_IMG = require("@/assets/images/sessions/session-1.jpg");
 
 type CatTab   = string;
 type SortMode = "recientes" | "nuevas" | "populares";
@@ -389,14 +388,8 @@ export default function SonidosAncestalesScreen() {
   const [playlistSessionId, setPlaylistSessionId] = useState<string|null>(null);
   const toggleView = useCallback(()=>setViewMode((v)=>(v==="list"?"grid":"list")),[]);
 
-  const scrollY   = useRef(new Animated.Value(0)).current;
   const scrollRef  = useRef<ScrollView>(null);
   const HERO_AREA_H = HERO_H;
-  const backdropOpacity = scrollY.interpolate({
-    inputRange: [0, 250],
-    outputRange: [1, 0],
-    extrapolate: "clamp",
-  });
   const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
   const [stickyActive,  setStickyActive]  = useState(false);
   const [chipsOffsetY,  setChipsOffsetY]  = useState(9999);
@@ -472,20 +465,8 @@ export default function SonidosAncestalesScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: theme.gradient[0] }]}>
-      {/* Backdrop image — se desvanece con scroll */}
-      <Animated.View pointerEvents="none" style={{ position: "absolute", top: 0, left: 0, right: 0, height: 400, opacity: backdropOpacity }}>
-        <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" />
-      </Animated.View>
-      {/* Gradiente — transparente arriba, sólido abajo */}
       <LinearGradient
-        colors={[
-          `${theme.gradient[0]}00`,
-          `${theme.gradient[0]}66`,
-          `${theme.gradient[0]}CC`,
-          theme.gradient[0] as string,
-          hexToRgba(theme.gradient[1], 1),
-        ]}
-        locations={[0, 0.10, 0.26, 0.38, 1]}
+        colors={[theme.gradient[0] as string, theme.gradient[1] as string]}
         style={StyleSheet.absoluteFill}
       />
       <ScrollView
@@ -497,7 +478,6 @@ export default function SonidosAncestalesScreen() {
 
         onScroll={(e) => {
           const y = e.nativeEvent.contentOffset.y;
-          scrollY.setValue(y);
           const active = y > chipsOffsetY - topPad - 8;
           if (active !== stickyActive) setStickyActive(active);
           const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
