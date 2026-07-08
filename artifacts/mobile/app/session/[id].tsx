@@ -845,17 +845,17 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   title: {
-    fontSize: 29,
+    fontSize: 26,
     fontWeight: "400",
-    lineHeight: 36,
+    lineHeight: 33,
     letterSpacing: -0.3,
     textAlign: "left",
   },
 
   // Description
   description: {
-    fontSize: 14,
-    lineHeight: 22,
+    fontSize: 15,
+    lineHeight: 23,
     marginTop: 30,
     marginBottom: 24,
     textAlign: "left",
