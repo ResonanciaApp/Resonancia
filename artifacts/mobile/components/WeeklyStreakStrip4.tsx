@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     borderRadius: 12,
     backgroundColor: "rgba(0,0,0,0.4)",
-    paddingLeft: RING_TOTAL + 12,
+    paddingLeft: RING_TOTAL + 27,
     paddingRight: 14,
     paddingVertical: 12,
     justifyContent: "center",
