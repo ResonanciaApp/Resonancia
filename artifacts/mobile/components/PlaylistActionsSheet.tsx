@@ -169,7 +169,7 @@ export function PlaylistActionsSheet({ itemId, itemKind, visible, onClose }: Pro
       <View style={styles.container}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
         <View style={[styles.sheet, { paddingBottom: insets.bottom + 8 }]}>
-        <LinearGradient colors={theme.gradient} locations={theme.gradientLocations} style={StyleSheet.absoluteFill} pointerEvents="none" />
+        <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} pointerEvents="none" />
         <View style={styles.handle} />
 
         {step === "main" ? (

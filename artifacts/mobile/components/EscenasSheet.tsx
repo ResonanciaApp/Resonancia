@@ -231,7 +231,7 @@ export function EscenasSheet() {
         style={[styles.sheet, { transform: [{ translateY: sheetEnterY }] }]}
       >
         {/* Fondo fijo (tema actual — no cambia durante la transición) */}
-        <LinearGradient colors={theme.gradient} locations={theme.gradientLocations} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} />
         {/* Nuevo tema entrando detrás del contenido — el contenido NUNCA se tapa */}
         {overlayColors && (
           <Animated.View
@@ -239,7 +239,7 @@ export function EscenasSheet() {
             pointerEvents="none"
           >
             <LinearGradient
-              colors={overlayColors}
+              colors={[...overlayColors] as [string, string]}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={StyleSheet.absoluteFill}

@@ -38,7 +38,6 @@ export function SacredBackground({ variant = "solid", solidColor }: SacredBackgr
     return (
       <LinearGradient
         colors={theme.gradient}
-        locations={theme.gradientLocations}
         style={StyleSheet.absoluteFill}
         pointerEvents="none"
       />
