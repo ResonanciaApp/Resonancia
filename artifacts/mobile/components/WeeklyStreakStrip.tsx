@@ -187,6 +187,7 @@ export function WeeklyStreakStrip() {
           }]}
         >
           <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(27,6,15,0.07)" }]} pointerEvents="none" />
           <LinearGradient
             colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
             start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
