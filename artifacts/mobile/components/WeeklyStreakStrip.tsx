@@ -192,10 +192,10 @@ export function WeeklyStreakStrip() {
         />
         {/* 3. Brillo inferior — centro a 40% del ancho, fade pronunciado */}
         <LinearGradient
-          colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.12)", "rgba(255,255,255,0.7)", "rgba(255,255,255,0)"]}
-          locations={[0, 0.18, 0.5, 1]}
+          colors={["rgba(255,255,255,0.15)", "rgba(255,255,255,0.35)", "rgba(255,255,255,0.7)", "rgba(255,255,255,0.35)", "rgba(255,255,255,0.15)"]}
+          locations={[0, 0.18, 0.5, 0.82, 1]}
           start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-          style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 2.4 }}
+          style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 3 }}
           pointerEvents="none"
         />
         {/* 4. Acento curva inferior-izquierda — casi imperceptible */}
@@ -214,30 +214,30 @@ export function WeeklyStreakStrip() {
         <Svg width={RING_SIZE + 18} height={RING_SIZE + 18} style={StyleSheet.absoluteFill} pointerEvents="none">
           <Defs>
             <SvgLinearGradient id="ringBorderA" x1="0.5" y1="0" x2="0.5" y2="1">
-              <Stop offset="0"   stopColor="#FFFFFF" stopOpacity={0.22} />
-              <Stop offset="0.5" stopColor="#FFFFFF" stopOpacity={0.04} />
-              <Stop offset="1"   stopColor="#FFFFFF" stopOpacity={0}    />
+              <Stop offset="0"   stopColor="#FFFFFF" stopOpacity={0.3} />
+              <Stop offset="0.5" stopColor="#FFFFFF" stopOpacity={0.16} />
+              <Stop offset="1"   stopColor="#FFFFFF" stopOpacity={0.22}    />
             </SvgLinearGradient>
             <SvgLinearGradient id="ringBorderB" x1="1" y1="1" x2="0.3" y2="0">
-              <Stop offset="0"    stopColor="#FFFFFF" stopOpacity={0.04} />
-              <Stop offset="0.45" stopColor="#FFFFFF" stopOpacity={0.01} />
+              <Stop offset="0"    stopColor="#FFFFFF" stopOpacity={0.28} />
+              <Stop offset="0.45" stopColor="#FFFFFF" stopOpacity={0.1} />
               <Stop offset="1"    stopColor="#FFFFFF" stopOpacity={0}    />
             </SvgLinearGradient>
           </Defs>
           <Circle
             cx={(RING_SIZE + 18) / 2}
             cy={(RING_SIZE + 18) / 2}
-            r={(RING_SIZE + 18) / 2 - 0.5}
+            r={(RING_SIZE + 18) / 2 - 0.75}
             stroke="url(#ringBorderA)"
-            strokeWidth={0.5}
+            strokeWidth={1.5}
             fill="none"
           />
           <Circle
             cx={(RING_SIZE + 18) / 2}
             cy={(RING_SIZE + 18) / 2}
-            r={(RING_SIZE + 18) / 2 - 0.5}
+            r={(RING_SIZE + 18) / 2 - 0.75}
             stroke="url(#ringBorderB)"
-            strokeWidth={0.5}
+            strokeWidth={1.5}
             fill="none"
           />
         </Svg>
