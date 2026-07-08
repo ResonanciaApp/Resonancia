@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "react-native-svg";
@@ -170,9 +171,13 @@ export function WeeklyStreakStrip() {
           borderRadius: (RING_SIZE + 18) / 2,
           overflow: "hidden",
           marginTop: -10,
-          backgroundColor: theme.gradient[1],
         }]}
       >
+        <LinearGradient
+          colors={theme.gradient}
+          start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
         <Svg width={RING_SIZE} height={RING_SIZE}>
           <Circle
             cx={RING_SIZE / 2}
