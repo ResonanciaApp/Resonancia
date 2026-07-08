@@ -391,6 +391,11 @@ export default function SonidosAncestalesScreen() {
   const scrollY   = useRef(new Animated.Value(0)).current;
   const scrollRef  = useRef<ScrollView>(null);
   const HERO_AREA_H = HERO_H;
+  const backdropOpacity = scrollY.interpolate({
+    inputRange: [0, 250],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
   const stickyOpacity = scrollY.interpolate({ inputRange: [HERO_AREA_H * 0.30, HERO_AREA_H * 0.95], outputRange: [0, 1], extrapolate: "clamp" });
   const [stickyActive,  setStickyActive]  = useState(false);
   const [chipsOffsetY,  setChipsOffsetY]  = useState(350);
@@ -460,8 +465,23 @@ export default function SonidosAncestalesScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: theme.gradient[1] }]}>
-      <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} />
+    <View style={[styles.root, { backgroundColor: theme.gradient[0] }]}>
+      {/* Backdrop image — se desvanece con scroll */}
+      <Animated.View pointerEvents="none" style={{ position: "absolute", top: 0, left: 0, right: 0, height: 400, opacity: backdropOpacity }}>
+        <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" />
+      </Animated.View>
+      {/* Gradiente — transparente arriba, sólido abajo */}
+      <LinearGradient
+        colors={[
+          `${theme.gradient[0]}00`,
+          `${theme.gradient[0]}1A`,
+          `${theme.gradient[0]}66`,
+          theme.gradient[0] as string,
+          hexToRgba(theme.gradient[1], 0.85),
+        ]}
+        locations={[0, 0.15, 0.33, 0.46, 1]}
+        style={StyleSheet.absoluteFill}
+      />
       <ScrollView
         ref={scrollRef}
         style={styles.scroll}
@@ -485,8 +505,6 @@ export default function SonidosAncestalesScreen() {
 
         {/* ── Hero banner ── */}
         <View style={styles.heroArea}>
-          <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" />
-          <LinearGradient colors={["transparent","rgba(0,0,0,0.28)","rgba(0,0,0,0.60)"]} locations={[0.50,0.80,1]} style={StyleSheet.absoluteFill} />
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
             <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.7) }}>
               <BackPill onPress={() => router.back()} />
