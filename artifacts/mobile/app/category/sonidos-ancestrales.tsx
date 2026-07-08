@@ -396,8 +396,16 @@ export default function SonidosAncestalesScreen() {
     outputRange: [1, 0],
     extrapolate: "clamp",
   });
-  const stickyOpacity = scrollY.interpolate({ inputRange: [HERO_AREA_H * 0.30, HERO_AREA_H * 0.95], outputRange: [0, 1], extrapolate: "clamp" });
+  const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
   const [stickyActive,  setStickyActive]  = useState(false);
+  const [chipsOffsetY,  setChipsOffsetY]  = useState(9999);
+  useEffect(() => {
+    Animated.timing(stickyHeaderOpacity, {
+      toValue: stickyActive ? 1 : 0,
+      duration: 160,
+      useNativeDriver: true,
+    }).start();
+  }, [stickyActive]);
 
   const playCounts = useMemo(()=>{ const c:Record<string,number>={}; for (const e of history) c[e.sessionId]=(c[e.sessionId]??0)+1; return c; },[history]);
   const sessions   = useMemo(()=>applySort(getSessionsForTab(activeTab),sort,playCounts),[activeTab,sort,playCounts,version]);
@@ -489,7 +497,7 @@ export default function SonidosAncestalesScreen() {
         onScroll={(e) => {
           const y = e.nativeEvent.contentOffset.y;
           scrollY.setValue(y);
-          const active = y > HERO_AREA_H * 0.50;
+          const active = y > chipsOffsetY - topPad - 8;
           if (active !== stickyActive) setStickyActive(active);
           const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
           if (hasMore && contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
@@ -523,7 +531,7 @@ export default function SonidosAncestalesScreen() {
         </View>
 
         {/* ── Tabs ── */}
-        <View style={styles.chipsArea}>
+        <View style={styles.chipsArea} onLayout={(e) => setChipsOffsetY(e.nativeEvent.layout.y)}>
           <ChipRow tabs={TABS} activeTab={activeTab}
             onSelect={(id) => setActiveTab(id)}
             onClear={() => setActiveTab(null)}
@@ -538,7 +546,7 @@ export default function SonidosAncestalesScreen() {
       </ScrollView>
 
       {/* ── Sticky header ── */}
-      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"}>
+      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"}>
         <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.4) }}>
           <BackPill onPress={() => router.back()} />
         </GhostPill>
