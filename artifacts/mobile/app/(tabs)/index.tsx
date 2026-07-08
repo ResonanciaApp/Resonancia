@@ -824,7 +824,7 @@ export default function HomeScreen2() {
                 }]}
               >
                 {c.icon}
-                <Text style={{ fontSize: 12, fontWeight: "300", color: "#e8e8e8", textAlign: "center" }}>
+                <Text style={{ fontSize: 14, fontWeight: "300", color: "#e8e8e8", textAlign: "center" }}>
                   {c.label}
                 </Text>
               </Pressable>
