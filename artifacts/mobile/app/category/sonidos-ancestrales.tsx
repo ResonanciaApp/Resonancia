@@ -490,12 +490,12 @@ export default function SonidosAncestalesScreen() {
         {/* ── Hero banner ── */}
         <View style={styles.heroArea}>
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
-            <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.7) }}>
+            <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.4) }}>
               <BackPill onPress={() => router.back()} />
             </GhostPill>
           </View>
           <View style={[styles.heroOverlayRight, { top: topPad + 8 }]}>
-            <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.7) }}>
+            <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.4) }}>
               <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
                 <Feather name="info" size={23} color="rgba(255,255,255,0.85)" />
               </Pressable>

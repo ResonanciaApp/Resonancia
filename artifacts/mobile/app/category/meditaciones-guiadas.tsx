@@ -388,12 +388,12 @@ export default function MeditacionesGuiadasScreen() {
         <View style={styles.heroArea}>
           {/* Flecha atrás flotante */}
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
-            <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.7) }}>
+            <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.4) }}>
               <BackPill onPress={() => router.back()} />
             </GhostPill>
           </View>
           <View style={[styles.heroOverlayRight, { top: topPad + 8 }]}>
-            <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.7) }}>
+            <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.4) }}>
               <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/meditaciones-info" as never)}>
                 <Feather name="info" size={23} color="rgba(255,255,255,0.85)" />
               </Pressable>
