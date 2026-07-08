@@ -620,8 +620,8 @@ export default function HomeScreen2() {
       const y = e.nativeEvent.contentOffset.y;
       scrollYRef.current = y;
       updateStickyActive();
-      // Scroll-linked: imagen visible en y=0, desaparece a los 160px de scroll
-      backdropAnim.setValue(Math.max(0, 1 - y / 160));
+      // Scroll-linked: imagen visible en y=0, desaparece a los 320px de scroll
+      backdropAnim.setValue(Math.max(0, 1 - y / 320));
     },
     [updateStickyActive, backdropAnim],
   );
