@@ -136,8 +136,8 @@ export function WeeklyStreakStrip() {
   const { theme } = useSceneTheme();
 
   const streakBorderColors = useMemo(
-    () => [GOLD, GOLD] as [string, string],
-    []
+    () => [brightenHex(theme.gradient[0], 62), brightenHex(theme.gradient[0], 18)] as [string, string],
+    [theme.gradient[0]]
   );
 
   const { activeFlags, activeCount, todayIndex } = useMemo(() => {
