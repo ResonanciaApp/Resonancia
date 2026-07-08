@@ -227,17 +227,17 @@ export function WeeklyStreakStrip() {
           <Circle
             cx={(RING_SIZE + 18) / 2}
             cy={(RING_SIZE + 18) / 2}
-            r={(RING_SIZE + 18) / 2 - 0.75}
+            r={(RING_SIZE + 18) / 2 - 0.5}
             stroke="url(#ringBorderA)"
-            strokeWidth={1.5}
+            strokeWidth={1}
             fill="none"
           />
           <Circle
             cx={(RING_SIZE + 18) / 2}
             cy={(RING_SIZE + 18) / 2}
-            r={(RING_SIZE + 18) / 2 - 0.75}
+            r={(RING_SIZE + 18) / 2 - 0.5}
             stroke="url(#ringBorderB)"
-            strokeWidth={1.5}
+            strokeWidth={1}
             fill="none"
           />
         </Svg>
