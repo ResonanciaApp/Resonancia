@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   circleInactive: {
-    backgroundColor: "transparent",
+    backgroundColor: "rgba(255,255,255,0.08)",
   },
   circleInactiveSize: {
     width: 40,
