@@ -29,7 +29,6 @@ import { useDescansoPlayer } from "@/hooks/useDescansoPlayer";
 import { SessionCard } from "@/components/SessionCard";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { darkenColor } from "@/utils/color";
 
 /* ─── Descanso tabs ─────────────────────────────────────────────────── */
 const SLEEP_TABS = [
@@ -370,10 +369,7 @@ export default function DescansoScreen() {
   const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const { theme: sceneTheme } = useSceneTheme();
-  const bgGradient: [string, string] = [
-    darkenColor(darkenColor(sceneTheme.gradient[0], 0.4), 0.2),
-    darkenColor(darkenColor(sceneTheme.gradient[1], 0.4), 0.2),
-  ];
+  const bgGradient: [string, string] = [sceneTheme.gradient[0], sceneTheme.gradient[1]];
 
   const [activeTab,   setActiveTab]   = useState<SleepTabId>("historias");
   const [timerSheet,  setTimerSheet]  = useState(false);
