@@ -306,17 +306,10 @@ export default function HomeScreen2() {
   const { presets, loadPreset, openSheet } = useMixer();
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  // Degradado exclusivo de Inicio para ciertas Escenas (el resto de
-  // pantallas sigue usando el degradado estándar de SCENE_THEMES).
-  const HOME_GRADIENT_OVERRIDES: Partial<Record<typeof activeSceneId, readonly [string, string]>> = {
-    naturaleza: ["#312267", "#25184D"],
-    viento: ["#1B466C", "#163859"],
-  };
-  const homeGradient: readonly [string, string] = HOME_GRADIENT_OVERRIDES[activeSceneId] ?? activeTheme.gradient;
   // Fade de 300ms entre degradados de fondo al cambiar de Escena (loto en Inicio):
   // se mantiene el degradado anterior debajo y el nuevo se desvanece encima, en vez
   // de saltar de golpe de un color a otro.
-  const [prevGradient, setPrevGradient] = useState(homeGradient);
+  const [prevGradient, setPrevGradient] = useState(activeTheme.gradient);
   const gradientFade = useRef(new Animated.Value(1)).current;
   const isFirstSceneRender = useRef(true);
   // Cross-fade imagen backdrop (mismo timing que gradiente)
@@ -342,7 +335,7 @@ export default function HomeScreen2() {
         useNativeDriver: true,
       }),
     ]).start(() => {
-      setPrevGradient(homeGradient);
+      setPrevGradient(activeTheme.gradient);
       setPrevSceneImage(currentSceneImage);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -700,7 +693,7 @@ export default function HomeScreen2() {
   );
 
   return (
-    <View style={[styles.root, { backgroundColor: homeGradient[0] }]}>
+    <View style={[styles.root, { backgroundColor: activeTheme.gradient[0] }]}>
       {/* ── Imagen de fondo — se desvanece con scroll ── */}
       <Animated.View
         style={{ position: "absolute", top: 0, left: 0, right: 0, height: 400, opacity: backdropAnim }}
@@ -735,11 +728,11 @@ export default function HomeScreen2() {
       <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
         <LinearGradient
           colors={[
-            `${homeGradient[0]}00`,
-            `${homeGradient[0]}1A`,
-            `${homeGradient[0]}66`,
-            homeGradient[0] as string,
-            homeGradient[1] as string,
+            `${activeTheme.gradient[0]}00`,
+            `${activeTheme.gradient[0]}1A`,
+            `${activeTheme.gradient[0]}66`,
+            activeTheme.gradient[0] as string,
+            activeTheme.gradient[1] as string,
           ]}
           locations={[0, 0.15, 0.33, 0.46, 1]}
           style={styles.rootGradient}
@@ -833,7 +826,7 @@ export default function HomeScreen2() {
                 }]}
               >
                 {/* 5% tinte del color más oscuro del tema */}
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(homeGradient[1], 0.05) }]} />
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[1], 0.05) }]} />
                 {/* Ícono con degradado de color */}
                 <MaskedView
                   maskElement={<View style={{ width: 21, height: 21, alignItems: "center", justifyContent: "center" }}>{c.icon("#fff")}</View>}
@@ -1196,8 +1189,8 @@ export default function HomeScreen2() {
           hitSlop={8}
           style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1, marginLeft: -3 }]}
         >
-          <View style={[styles.universeBtnBg, { backgroundColor: hexTint(homeGradient[0], 0.60) }]}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(homeGradient[1], 0.30) }]} />
+          <View style={[styles.universeBtnBg, { backgroundColor: hexTint(activeTheme.gradient[0], 0.60) }]}>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[1], 0.30) }]} />
             <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
           </View>
         </Pressable>
