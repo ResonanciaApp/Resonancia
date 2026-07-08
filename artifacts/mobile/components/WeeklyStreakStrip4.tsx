@@ -215,10 +215,13 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   ringOuter: {
+    position: "absolute",
+    right: 0,
+    top: 0,
     width: RING_TOTAL,
     height: RING_TOTAL,
     borderRadius: RING_TOTAL / 2,
-    flexShrink: 0,
+    zIndex: 2,
     shadowColor: "#000",
     shadowOffset: { width: 3, height: 4 },
     shadowOpacity: 0.35,
@@ -235,7 +238,7 @@ const styles = StyleSheet.create({
   msgCard: {
     flex: 1,
     paddingLeft: 0,
-    paddingRight: 14,
+    paddingRight: RING_TOTAL + 8,
     paddingTop: 5,
     paddingBottom: 10,
     gap: 8,
