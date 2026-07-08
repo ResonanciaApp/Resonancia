@@ -28,3 +28,20 @@ export function hexToRgba(hex: string, alpha = 1): string {
   const b = parseInt(h.substring(4, 6), 16) || 0;
   return `rgba(${r},${g},${b},${alpha})`;
 }
+
+/**
+ * darkenColor — oscurece un color hex (#RRGGBB) multiplicando cada canal
+ * por (1 - ratio). Devuelve un hex #RRGGBB. Usado para derivar stops de
+ * degradado más oscuros a partir de un color base del tema activo.
+ */
+export function darkenColor(hex: string, ratio: number): string {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.substring(0, 2), 16) || 0;
+  const g = parseInt(h.substring(2, 4), 16) || 0;
+  const b = parseInt(h.substring(4, 6), 16) || 0;
+  const dr = Math.max(0, Math.round(r * (1 - ratio)));
+  const dg = Math.max(0, Math.round(g * (1 - ratio)));
+  const db = Math.max(0, Math.round(b * (1 - ratio)));
+  const toHex = (n: number) => n.toString(16).padStart(2, "0");
+  return `#${toHex(dr)}${toHex(dg)}${toHex(db)}`;
+}

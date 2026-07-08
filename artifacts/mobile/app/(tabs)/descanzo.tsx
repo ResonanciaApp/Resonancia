@@ -28,6 +28,8 @@ import { getSessionsByDescansoTag } from "@/data/sessions";
 import { useDescansoPlayer } from "@/hooks/useDescansoPlayer";
 import { SessionCard } from "@/components/SessionCard";
 import { usePlayer } from "@/context/PlayerContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
+import { darkenColor } from "@/utils/color";
 
 /* ─── Descanso tabs ─────────────────────────────────────────────────── */
 const SLEEP_TABS = [
@@ -367,6 +369,8 @@ export default function DescansoScreen() {
   const insets    = useSafeAreaInsets();
   const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const { theme: sceneTheme } = useSceneTheme();
+  const bgBottomColor = darkenColor(sceneTheme.gradient[1], 0.15);
 
   const [activeTab,   setActiveTab]   = useState<SleepTabId>("historias");
   const [timerSheet,  setTimerSheet]  = useState(false);
@@ -413,7 +417,7 @@ export default function DescansoScreen() {
 
   return (
     <LinearGradient
-      colors={["#09060F", "#120A18", "#180A18", "#1F0B18"]}
+      colors={["#09060F", "#120A18", "#180A18", bgBottomColor]}
       locations={[0, 0.33, 0.66, 1]}
       style={styles.root}
     >
