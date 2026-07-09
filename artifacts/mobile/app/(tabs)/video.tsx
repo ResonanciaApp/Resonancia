@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
   chip: {
     borderRadius: 999,
     paddingHorizontal: 14,
-    height: 34,
+    height: 32,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(244,244,244,0.1)",
   },
   chipSel: { borderWidth: 0 },
-  chipText: { fontSize: 13, fontWeight: "400" },
+  chipText: { fontSize: 11, fontWeight: "380" },
   chipsDivider: {
     height: 1,
     backgroundColor: "rgba(255,255,255,0.035)",

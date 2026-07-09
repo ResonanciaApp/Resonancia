@@ -925,7 +925,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 14,
-    height: 34,
+    height: 32,
     borderRadius: 999,
     overflow: "hidden",
     gap: 5,
@@ -953,7 +953,7 @@ const styles = StyleSheet.create({
     gap: 5,
     backgroundColor: "transparent",
   },
-  pillTabLabel: { fontSize: 13, letterSpacing: 0.1, fontWeight: "400" },
+  pillTabLabel: { fontSize: 11, letterSpacing: 0.1, fontWeight: "380" },
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },
 
@@ -1021,7 +1021,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 14,
-    height: 34,
+    height: 32,
     borderRadius: 999,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.035)",
@@ -1029,7 +1029,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(244,244,244,0.1)",
   },
   subTabSel: { borderWidth: 0 },
-  subTabText: { fontSize: 13, letterSpacing: 0.1, fontWeight: "400", includeFontPadding: false },
+  subTabText: { fontSize: 11, letterSpacing: 0.1, fontWeight: "380", includeFontPadding: false },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 17, justifyContent: "space-evenly" },
   soundCard: { width: CARD_W },

@@ -1426,7 +1426,7 @@ const styles = StyleSheet.create({
   pillBorder: {},
   pillBorderSel: {},
   pill: {
-    height: 34,
+    height: 32,
     paddingHorizontal: 14,
     borderRadius: 999,
     overflow: "hidden",
@@ -1437,8 +1437,8 @@ const styles = StyleSheet.create({
     borderColor: "rgba(244,244,244,0.1)",
   },
   pillSel: { borderWidth: 0 },
-  pillText: { fontSize: 13, fontWeight: "400", color: "#F4F4F4" },
-  pillTextSel: { color: "#2D0D3A", fontWeight: "600" },
+  pillText: { fontSize: 11, fontWeight: "380", color: "#F4F4F4" },
+  pillTextSel: { color: "#2D0D3A", fontWeight: "500" },
 
   comingSoonWrap: {
     flex: 1,
