@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   titleRow: { alignItems: "center", paddingHorizontal: 15, paddingBottom: 10, paddingTop: 6 },
-  pageTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center", marginTop: 5 },
+  pageTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center", marginTop: 10 },
 
   searchWrap: {
     paddingHorizontal: 19,
