@@ -386,7 +386,6 @@ export default function ExploreScreen() {
     <View style={[styles.root, { backgroundColor: activeTheme.gradient[0] as string }]}>
       <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
       <StatusBar barStyle="light-content" />
-      <SacredBackground variant="solid" />
 
       <ScrollView
         style={styles.scroll}
@@ -398,7 +397,7 @@ export default function ExploreScreen() {
         <View style={styles.header}>
           <View style={styles.headerRow}>
             <View style={{ flex: 1 }}>
-              <Text style={[styles.pageTitle, { transform: [{ translateY: 2 }] }]}>Meditación</Text>
+              <Text style={[styles.pageTitle, { transform: [{ translateY: 2 }] }]}>Explorar</Text>
             </View>
             <Pressable
               hitSlop={12}
