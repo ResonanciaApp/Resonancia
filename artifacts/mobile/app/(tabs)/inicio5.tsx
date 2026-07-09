@@ -620,11 +620,14 @@ export default function HomeScreen2() {
   useFocusEffect(
     useCallback(() => {
       phraseAnim.setValue(0);
-      phraseTimerRef.current = setTimeout(() => {
-        Animated.timing(phraseAnim, { toValue: 1, duration: 450, useNativeDriver: true }).start();
-      }, 550);
+      const seq = Animated.sequence([
+        Animated.timing(phraseAnim, { toValue: 1, duration: 2400, useNativeDriver: true }),
+        Animated.delay(5000),
+        Animated.timing(phraseAnim, { toValue: 0, duration: 2400, useNativeDriver: true }),
+      ]);
+      seq.start();
       return () => {
-        if (phraseTimerRef.current) clearTimeout(phraseTimerRef.current);
+        seq.stop();
         phraseAnim.stopAnimation();
         phraseAnim.setValue(0);
       };
@@ -782,7 +785,7 @@ export default function HomeScreen2() {
             opacity: backdropAnim,
           }}
         >
-          <View style={{ paddingHorizontal: GRID_PAD, marginTop: -6 }}>
+          <Animated.View style={{ paddingHorizontal: GRID_PAD, marginTop: -6, opacity: phraseAnim }}>
             <Text
               style={{
                 color: "rgba(255,255,255,0.70)",
@@ -795,7 +798,7 @@ export default function HomeScreen2() {
             >
               {"El presente es tu único lugar"}
             </Text>
-          </View>
+          </Animated.View>
         </Animated.View>
       )}
 
