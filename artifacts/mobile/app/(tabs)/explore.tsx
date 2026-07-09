@@ -446,15 +446,10 @@ export default function ExploreScreen() {
                   <Pressable
                     key={t.id}
                     onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
-                    style={[styles.temaCell, { width: TEMA3_W, height: TEMA3_W, borderRadius: 11, overflow: "hidden" }]}
+                    style={[styles.temaCell, { width: TEMA3_W, height: TEMA3_W, borderRadius: 11, overflow: "hidden", backgroundColor: "rgba(255,255,255,0.035)" }]}
                   >
                     {({ pressed }) => (
                       <>
-                        <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-                        <LinearGradient
-                          colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-                          style={StyleSheet.absoluteFill}
-                        />
                         {pressed && <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(t.color, 0.22) }]} />}
                         {t.image != null ? (
                           <Image
@@ -497,11 +492,6 @@ export default function ExploreScreen() {
                         { opacity: pressed ? 0.75 : 1 },
                       ]}
                     >
-                      <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-                      <LinearGradient
-                        colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-                        style={StyleSheet.absoluteFill}
-                      />
                       {sel && (
                         <LinearGradient
                           colors={["#D6A45C", "#BE8744"]}
@@ -622,7 +612,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     minWidth: 76,
     height: 38,
-    backgroundColor: "transparent",
+    backgroundColor: "rgba(255,255,255,0.035)",
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
