@@ -616,7 +616,7 @@ export default function HomeScreen2() {
   const phraseAnim = useRef(new Animated.Value(0)).current;
   const greetingAnim5 = useRef(new Animated.Value(0)).current;
   const logoAnim5     = useRef(new Animated.Value(1)).current;
-  const logoLoadAnim  = useRef(new Animated.Value(0)).current;
+  const logoLoadAnim  = useRef(new Animated.Value(1)).current;
   const logoOpacity   = useRef(Animated.multiply(logoLoadAnim, logoAnim5)).current;
   const weeklyPhrase = useRef(getWeeklyPhrase()).current;
   const phraseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -1177,7 +1177,6 @@ export default function HomeScreen2() {
         <View style={{ width: 210, height: 44, justifyContent: "center" }}>
           <Animated.Image
             source={require("@/assets/images/pulso-logo.png")}
-            onLoad={() => Animated.timing(logoLoadAnim, { toValue: 1, duration: 250, useNativeDriver: true }).start()}
             style={{ position: "absolute", width: 160, height: 44, opacity: logoOpacity, left: -19 }}
             resizeMode="contain"
           />
