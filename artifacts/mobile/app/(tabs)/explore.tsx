@@ -401,7 +401,7 @@ export default function ExploreScreen() {
 
         {/* ── Barra de búsqueda ── */}
         <View style={styles.searchWrap}>
-          <View style={[styles.searchBox, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.14)" }]}>
+          <View style={[styles.searchBox, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(255,255,255,0.14)" }]}>
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
               value={query}
@@ -452,7 +452,7 @@ export default function ExploreScreen() {
                         height: TEMA3_W,
                         backgroundColor: pressed
                           ? hexTint(t.color, 0.22)
-                          : "rgba(255,255,255,0.055)",
+                          : "rgba(120,60,160,0.40)",
                         borderRadius: 11,
                       },
                     ]}
@@ -616,7 +616,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     minWidth: 76,
     height: 38,
-    backgroundColor: "rgba(255,255,255,0.055)",
+    backgroundColor: "rgba(120,60,160,0.40)",
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
