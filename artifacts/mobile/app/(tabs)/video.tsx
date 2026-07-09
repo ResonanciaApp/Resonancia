@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack } from "expo-router";
 import React, { useMemo, useRef, useState } from "react";
@@ -130,14 +131,10 @@ export default function VideoTabScreen() {
                 <Pressable
                   key={chip}
                   onPress={() => setActiveChip(chip)}
-                  style={[
-                    styles.chip,
-                    {
-                      backgroundColor: sel ? "#F4F4F4" : "rgba(255,255,255,0.05)",
-                      borderColor: sel ? "#F4F4F4" : CHIP_BORDER,
-                    },
-                  ]}
+                  style={[styles.chip, sel ? { backgroundColor: "#F4F4F4" } : undefined]}
                 >
+                  {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
+                  {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
                   <Text style={[styles.chipText, { color: sel ? "#1B060F" : "#F4F4F4" }]}>
                     {chip}
                   </Text>
@@ -248,11 +245,11 @@ const styles = StyleSheet.create({
   chipsRow: { paddingHorizontal: 20, gap: 8, alignItems: "center" },
   chip: {
     borderRadius: 20,
-    borderWidth: 2,
     paddingHorizontal: 12,
     height: 34,
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
   },
   chipText: { fontSize: 13, fontWeight: "400" },
   chipsDivider: {
