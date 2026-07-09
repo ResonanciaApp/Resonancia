@@ -202,7 +202,7 @@ function TabOjear({
             onPress={() => router.push(`/grupo/${g.id}` as never)}
             style={({ pressed }) => [
               styles.popularRow,
-              { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
+              { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
             ]}
           >
             <LocalGrupoAvatar grupo={g} size={54} />
@@ -260,7 +260,7 @@ function TabMisGrupos({
         <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Grupos que gestiono</Text>
           <Pressable onPress={onCreatePress} hitSlop={8}>
-            <View style={[styles.addBtn, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)" }]}>
+            <View style={[styles.addBtn, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(61,14,22,0.40)" }]}>
               <Feather name="plus" size={20} color={colors.foreground} />
             </View>
           </Pressable>
@@ -279,7 +279,7 @@ function TabMisGrupos({
               onPress={() => router.push(`/grupo/${g.id}` as never)}
               style={({ pressed }) => [
                 styles.unitoRow,
-                { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
+                { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
               ]}
             >
               <LocalGrupoAvatar grupo={g} size={54} />
@@ -321,7 +321,7 @@ function TabMisGrupos({
               onPress={() => router.push(`/grupo/${g.id}` as never)}
               style={({ pressed }) => [
                 styles.unitoRow,
-                { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
+                { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
               ]}
             >
               <GroupAvatar gradient={g.gradient} icon={g.icon} color={g.color} size={54} />
@@ -359,7 +359,7 @@ function TabTablon({ colors }: { colors: ReturnType<typeof useColors> }) {
       {FEED_POSTS.map((post) => (
         <View
           key={post.id}
-          style={[styles.feedCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)" }]}
+          style={[styles.feedCard, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(61,14,22,0.40)" }]}
         >
           {/* Post header */}
           <View style={styles.feedHeader}>

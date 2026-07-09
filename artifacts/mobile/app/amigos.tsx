@@ -112,7 +112,7 @@ export default function AmigosScreen() {
 function GuestPrompt() {
   const colors = useColors();
   return (
-    <View style={[styles.guestCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)" }]}>
+    <View style={[styles.guestCard, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(61,14,22,0.40)" }]}>
       <Feather name="users" size={28} color={colors.primary} />
       <Text style={[styles.guestTitle, { color: colors.foreground }]}>Crea tu cuenta para agregar amigos</Text>
       <Text style={[styles.guestText, { color: colors.mutedForeground }]}>
@@ -201,7 +201,7 @@ function SignedInAmigos() {
 
   return (
     <>
-      <View style={[styles.searchRow, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)" }]}>
+      <View style={[styles.searchRow, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(61,14,22,0.40)" }]}>
         <Feather name="search" size={16} color={colors.mutedForeground} />
         <TextInput
           value={search}
@@ -315,7 +315,7 @@ function SearchResultRow({
       onPress={onPress}
       style={({ pressed }) => [
         styles.friendRow,
-        { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.75 : 1 },
+        { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.75 : 1 },
       ]}
     >
       <Avatar user={user} />
@@ -355,7 +355,7 @@ function RequestRow({
   const colors = useColors();
   const requester = request.requester;
   return (
-    <View style={[styles.requestCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)" }]}>
+    <View style={[styles.requestCard, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(61,14,22,0.40)" }]}>
       <Avatar user={requester} />
       <View style={{ flex: 1 }}>
         <Text style={[styles.friendName, { color: colors.foreground }]}>{requester.displayName}</Text>
@@ -398,7 +398,7 @@ function FriendRow({
       delayLongPress={350}
       style={({ pressed }) => [
         styles.friendRow,
-        { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
+        { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
       ]}
     >
       <Avatar user={friend} />
@@ -429,7 +429,7 @@ function ConversationRow({ conversation }: { conversation: Conversation }) {
       onPress={() => router.push(`/chat/${friend.id}` as never)}
       style={({ pressed }) => [
         styles.friendRow,
-        { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
+        { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
       ]}
     >
       <Avatar user={friend} />

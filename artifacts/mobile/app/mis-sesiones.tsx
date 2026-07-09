@@ -216,7 +216,7 @@ function PastSessionRow({ session }: { session: LiveSessionItem }) {
       <View
         style={[
           pastStyles.badge,
-          { backgroundColor: isCompleted ? "rgba(92,184,92,0.12)" : "rgba(255,255,255,0.05)" },
+          { backgroundColor: isCompleted ? "rgba(92,184,92,0.12)" : "rgba(120,60,160,0.40)" },
         ]}
       >
         <Text
@@ -245,7 +245,7 @@ const pastStyles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "rgba(74,12,12,0.3)",
+    backgroundColor: "rgba(120,60,160,0.40)",
   },
   name: { color: FOREGROUND, fontSize: 13, fontFamily: "Inter_600SemiBold" },
   date: { color: MUTED, fontSize: 11, fontFamily: "Inter_400Regular", marginTop: 2 },
