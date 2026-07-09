@@ -329,7 +329,7 @@ export function EscenasSheet() {
               <Switch
                 value={greetingVisible}
                 onValueChange={setGreetingVisible}
-                trackColor={{ false: "transparent", true: "rgba(255,255,255,0.40)" }}
+                trackColor={{ false: "transparent", true: "rgba(255,255,255,0.24)" }}
                 thumbColor="#FFFFFF"
                 ios_backgroundColor="transparent"
               />
@@ -344,7 +344,7 @@ export function EscenasSheet() {
               <Switch
                 value={brightMode}
                 onValueChange={setBrightMode}
-                trackColor={{ false: "transparent", true: "rgba(255,255,255,0.40)" }}
+                trackColor={{ false: "transparent", true: "rgba(255,255,255,0.24)" }}
                 thumbColor="#FFFFFF"
                 ios_backgroundColor="transparent"
               />
