@@ -898,7 +898,7 @@ export default function HomeScreen2() {
           onPress={() => router.push("/resonadores" as never)}
           style={{ marginBottom: 35, marginHorizontal: GRID_PAD, marginTop: -6 }}
         >
-          <View style={[styles.resonadoresBanner, { backgroundColor: "rgba(255,255,255,0.11)" }]}>
+          <View style={[styles.resonadoresBanner, { backgroundColor: "rgba(0,0,0,0.5)" }]}>
             <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
               <LinearGradient
                 colors={["rgb(247,203,107)", "rgb(251,169,128)"]}
