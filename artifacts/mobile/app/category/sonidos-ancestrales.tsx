@@ -152,7 +152,8 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress: () => void }) {
   const iconColor = sel ? "#1B060F" : "#e8e8e8";
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, !sel && styles.chipUnsel, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1, backgroundColor: sel ? "#F4F4F4" : "rgba(255,255,255,0.05)" }]}>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, !sel && styles.chipUnsel, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1, backgroundColor: sel ? "#F4F4F4" : "transparent" }]}>
+      {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
         <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
       </View>
@@ -587,7 +588,7 @@ const styles = StyleSheet.create({
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chip: { height: 34, paddingHorizontal: 12, borderRadius: 20, overflow: "hidden", alignItems: "center", justifyContent: "center" },
-  chipUnsel: { borderWidth: 2, borderColor: "rgba(255,255,255,0.1)" },
+  chipUnsel: { borderWidth: 0.5, borderColor: "rgba(255,255,255,0.25)" },
   chipSel: { height: 32 },
   chipText: { fontSize: 13, fontWeight: "400", color: TEXT, textAlign: "center" },
   chipTextSel: { color: "#1B060F", fontWeight: "600" },
