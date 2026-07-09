@@ -170,8 +170,8 @@ const PillTab = memo(function PillTab({
       style={[styles.pillTab, sel && styles.pillTabSel]}
     >
       {sel && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
-      <MaterialCommunityIcons name={tab.icon as any} size={13} color={sel ? "#2D0D3A" : "#F4F4F4"} />
-      <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#2D0D3A" : "#F4F4F4" }]}>
+      <MaterialCommunityIcons name={tab.icon as any} size={13} color={sel ? "#1A1A1A" : "#F4F4F4"} />
+      <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#1A1A1A" : "#F4F4F4", fontWeight: sel ? "400" : "380" }]}>
         {tab.label}
       </Text>
     </Pressable>
@@ -745,7 +745,7 @@ export default function MezcladorScreen() {
                           style={[styles.subTab, sel && styles.subTabSel]}
                         >
                           {sel && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
-                          <Text style={[styles.subTabText, { color: sel ? "#2D0D3A" : "#FBFBFB" }]}>
+                          <Text style={[styles.subTabText, { color: sel ? "#1A1A1A" : "#FBFBFB", fontWeight: sel ? "400" : "380" }]}>
                             {SUB_TAB_LABELS[catId] ?? cat.label}
                           </Text>
                         </Pressable>

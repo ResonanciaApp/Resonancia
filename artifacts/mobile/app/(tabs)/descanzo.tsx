@@ -804,7 +804,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.1,
     color: "#F4F4F4",
   },
-  sleepPillTextSel: { color: "#2D0D3A", fontWeight: "500" },
+  sleepPillTextSel: { color: "#1A1A1A", fontWeight: "400" },
 
   /* Sticky header */
   stickyHeader: {
