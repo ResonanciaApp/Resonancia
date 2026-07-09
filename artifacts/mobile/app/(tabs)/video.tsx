@@ -97,7 +97,7 @@ export default function VideoTabScreen() {
       {/* ── Sticky header: normal flow — transparent over gradient ── */}
       <View style={[styles.stickyHeader, { paddingTop: topPad }]}>
         {/* Title */}
-        <Text style={[styles.pageTitle, { color: colors.foreground, paddingHorizontal: 20, paddingTop: 8, paddingBottom: 2 }]}>Videos</Text>
+        <Text style={[styles.pageTitle, { color: colors.foreground, paddingHorizontal: 19, paddingTop: 8, paddingBottom: 2 }]}>Videos</Text>
         {/* Search bar */}
         <View style={styles.searchWrap}>
           <View style={[styles.searchBox, { backgroundColor: "rgba(255,255,255,0.035)", borderColor: "rgba(255,255,255,0.25)", borderWidth: 1 }]}>
@@ -151,7 +151,7 @@ export default function VideoTabScreen() {
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{
-          paddingHorizontal: 20,
+          paddingHorizontal: 19,
           paddingTop: 8,
           paddingBottom: 100 + bottomPad,
         }}
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
   pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.5 },
 
   searchWrap: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 19,
     paddingTop: 8,
     paddingBottom: 8,
     height: SEARCH_H,
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, fontSize: 14, padding: 0 },
 
   chipsWrap: { height: CHIPS_H, justifyContent: "center" },
-  chipsRow: { paddingHorizontal: 20, gap: 8, alignItems: "center" },
+  chipsRow: { paddingHorizontal: 19, gap: 8, alignItems: "center" },
   chipBorder: {
     borderRadius: 999,
   },

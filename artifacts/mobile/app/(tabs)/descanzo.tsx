@@ -77,7 +77,7 @@ function SleepPill({
   );
 }
 
-const H_PAD = 20;
+const H_PAD = 19;
 const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
 
