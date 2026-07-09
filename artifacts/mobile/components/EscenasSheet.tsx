@@ -325,26 +325,30 @@ export function EscenasSheet() {
           <View style={styles.controlRow}>
             <MaterialCommunityIcons name="image-outline" size={17} color="#F4F4F4" style={styles.controlIcon} />
             <Text style={styles.controlLabel}>Activar logo</Text>
-            <Switch
-              value={greetingVisible}
-              onValueChange={setGreetingVisible}
-              trackColor={{ false: "rgba(255,255,255,0.18)", true: "#F7CB6B" }}
-              thumbColor="#FFFFFF"
-              ios_backgroundColor="rgba(255,255,255,0.18)"
-            />
+            <View collapsable={false}>
+              <Switch
+                value={greetingVisible}
+                onValueChange={setGreetingVisible}
+                trackColor={{ false: "rgba(255,255,255,0.18)", true: "rgba(244,244,244,0.06)" }}
+                thumbColor="#FFFFFF"
+                ios_backgroundColor="rgba(255,255,255,0.18)"
+              />
+            </View>
           </View>
 
           {/* Modo brillante */}
           <View style={styles.controlRow}>
             <MaterialCommunityIcons name="brightness-6" size={17} color="#F4F4F4" style={styles.controlIcon} />
             <Text style={styles.controlLabel}>Modo brillante</Text>
-            <Switch
-              value={brightMode}
-              onValueChange={setBrightMode}
-              trackColor={{ false: "rgba(255,255,255,0.18)", true: "#F7CB6B" }}
-              thumbColor="#FFFFFF"
-              ios_backgroundColor="rgba(255,255,255,0.18)"
-            />
+            <View collapsable={false}>
+              <Switch
+                value={brightMode}
+                onValueChange={setBrightMode}
+                trackColor={{ false: "rgba(255,255,255,0.18)", true: "rgba(244,244,244,0.06)" }}
+                thumbColor="#FFFFFF"
+                ios_backgroundColor="rgba(255,255,255,0.18)"
+              />
+            </View>
           </View>
 
 
