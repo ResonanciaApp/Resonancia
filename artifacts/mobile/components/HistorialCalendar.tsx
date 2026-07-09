@@ -340,9 +340,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   entryThumb: {
-    width: 48,
-    height: 48,
-    borderRadius: 10,
+    width: 77,
+    height: 77,
+    borderRadius: 14,
   },
   entryTime: { fontSize: 11, marginBottom: 5 },
   entryTitle: { fontSize: 13, fontWeight: "700" },
