@@ -13,7 +13,7 @@ const GOLD = "#F7CB6B";
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
-const RING_SIZE = 96;
+const RING_SIZE = 93;
 const STROKE_W = 7;
 const RADIUS = (RING_SIZE - STROKE_W) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
@@ -239,27 +239,27 @@ export function WeeklyStreakStrip() {
             <View key={i} style={styles.dayCol}>
               {met ? (
                 <View style={styles.circleGradientBorder}>
-                  <Svg width={42} height={42} style={StyleSheet.absoluteFill}>
+                  <Svg width={39} height={39} style={StyleSheet.absoluteFill}>
                     <Defs>
                       <SvgLinearGradient id={`sg${i}`} x1="0.5" y1="0" x2="0.5" y2="1">
                         <Stop offset="0" stopColor={streakBorderColors[0]} />
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={21} cy={21} r={19} stroke={`url(#sg${i})`} strokeWidth={2} fill="rgba(255,255,255,0.11)" />
+                    <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#sg${i})`} strokeWidth={2} fill="rgba(255,255,255,0.11)" />
                   </Svg>
-                  <Feather name="check" size={19} color="rgba(255,255,255,0.9)" />
+                  <Feather name="check" size={18} color="rgba(255,255,255,0.9)" />
                 </View>
               ) : isToday ? (
                 <View style={styles.circleGradientBorder}>
-                  <Svg width={42} height={42} style={StyleSheet.absoluteFill}>
+                  <Svg width={39} height={39} style={StyleSheet.absoluteFill}>
                     <Defs>
                       <SvgLinearGradient id="sgToday" x1="0.5" y1="0" x2="0.5" y2="1">
                         <Stop offset="0" stopColor={streakBorderColors[0]} />
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={21} cy={21} r={19} stroke="url(#sgToday)" strokeWidth={2} fill="rgba(255,255,255,0.11)" />
+                    <Circle cx={19.5} cy={19.5} r={17.5} stroke="url(#sgToday)" strokeWidth={2} fill="rgba(255,255,255,0.11)" />
                   </Svg>
                 </View>
               ) : (
@@ -327,15 +327,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   circle: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: 39,
+    height: 39,
+    borderRadius: 19.5,
     alignItems: "center",
     justifyContent: "center",
   },
   circleGradientBorder: {
-    width: 42,
-    height: 42,
+    width: 39,
+    height: 39,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 4,
@@ -344,9 +344,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.11)",
   },
   circleInactiveSize: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 37,
+    height: 37,
+    borderRadius: 18.5,
     marginTop: 5,
     marginBottom: 1,
   },
