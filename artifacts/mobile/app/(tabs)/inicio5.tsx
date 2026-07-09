@@ -768,13 +768,13 @@ export default function HomeScreen2() {
         />
       </Animated.View>
 
-      {/* ── Saludo + Frase — anclados, posición fija, se ocultan con el backdrop al hacer scroll ── */}
+      {/* ── Frase — anclada, posición fija, se oculta con el backdrop al hacer scroll ── */}
       {greetingVisible && (
         <Animated.View
           pointerEvents="none"
           style={{
             position: "absolute",
-            top: topPad + 80,
+            top: topPad + 115,
             left: 0,
             right: 0,
             alignItems: "center",
