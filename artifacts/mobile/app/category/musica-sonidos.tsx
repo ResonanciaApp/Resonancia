@@ -389,7 +389,7 @@ export default function MusicaSonidosScreen() {
             <View style={styles.lotoBtn}>
               <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
               <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
-              <BackPill onPress={() => router.back()} />
+              <BackPill onPress={() => router.back()} size={25} style={{ transform: [{ translateX: -2 }] }} />
             </View>
           </View>
           <View style={[styles.heroOverlayRight, { top: topPad + 8 }]}>
