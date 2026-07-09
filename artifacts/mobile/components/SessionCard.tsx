@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   cardAuthor: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: "400",
     flexShrink: 1,
   },
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   hAuthor: {
-    fontSize: 13,
+    fontSize: 12,
     flex: 1,
   },
   hGradient: {
