@@ -397,7 +397,7 @@ export default function ExploreScreen() {
       >
         {/* ── Header ── */}
         <View style={styles.header}>
-          <Text style={styles.pageTitle}>Explorar</Text>
+          <Text style={[styles.pageTitle, { color: colors.foreground, paddingTop: 8, paddingBottom: 2 }]}>Explorar</Text>
         </View>
 
         {/* ── Barra de búsqueda ── */}
@@ -574,10 +574,10 @@ const styles = StyleSheet.create({
   rootGradient: { ...StyleSheet.absoluteFillObject },
   scroll: { flex: 1 },
 
-  header:       { paddingHorizontal: H_PAD, marginBottom: 10 },
+  header:       { paddingHorizontal: H_PAD, marginBottom: 0 },
   headerRow:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  pageTitle:    { fontSize: 24, fontWeight: "700", letterSpacing: 0.5, color: "#e8e8e8" },
-  searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 6, paddingBottom: 10 },
+  pageTitle:    { fontSize: 26, fontWeight: "700", letterSpacing: 0.5 },
+  searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 8, paddingBottom: 8 },
   searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1.5, paddingHorizontal: 18, height: 45 },
   searchInput:  { flex: 1, fontSize: 14, padding: 0 },
   pageSubtitle: { fontSize: 14, color: "rgba(255,255,255,0.55)", marginTop: 2 },
