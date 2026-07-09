@@ -1664,7 +1664,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 0,
   },
-  sectionTitle: { fontSize: 20, fontWeight: "400", letterSpacing: 0.3, marginBottom: 24, color: "#e8e8e8" },
+  sectionTitle: { fontSize: 21, fontWeight: "400", letterSpacing: 0.3, marginBottom: 24, color: "#e8e8e8" },
   resonadoresBanner: {
     height: 80,
     borderRadius: 14,
