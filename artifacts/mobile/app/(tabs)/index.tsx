@@ -624,7 +624,7 @@ export default function HomeScreen2() {
           Animated.delay(5000),
           Animated.timing(phraseAnim, { toValue: 0, duration: 450, useNativeDriver: true }),
         ]).start();
-      }, 600);
+      }, 550);
       return () => {
         if (phraseTimerRef.current) clearTimeout(phraseTimerRef.current);
         phraseAnim.stopAnimation();
