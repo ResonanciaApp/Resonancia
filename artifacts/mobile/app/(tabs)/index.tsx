@@ -861,12 +861,7 @@ export default function HomeScreen2() {
           onPress={() => router.push("/resonadores" as never)}
           style={{ marginBottom: 35, marginHorizontal: GRID_PAD, marginTop: -6 }}
         >
-          <View style={styles.resonadoresBanner}>
-            <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-            <LinearGradient
-              colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-              style={StyleSheet.absoluteFill}
-            />
+          <View style={[styles.resonadoresBanner, { backgroundColor: "rgba(255,255,255,0.035)" }]}>
             <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
               <LinearGradient
                 colors={["rgb(247,203,107)", "rgb(251,169,128)"]}
