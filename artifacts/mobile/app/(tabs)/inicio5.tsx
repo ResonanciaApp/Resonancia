@@ -992,7 +992,20 @@ export default function HomeScreen2() {
                   opacity: pressed ? 0.75 : 1,
                 }]}
               >
-                {c.icon("#F4F4F4")}
+                <MaskedView
+                  maskElement={
+                    <View style={{ width: 34, height: 34, alignItems: "center", justifyContent: "center" }}>
+                      {c.icon("#fff")}
+                    </View>
+                  }
+                >
+                  <LinearGradient
+                    colors={["#F7CB6B", "#FBA980"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={{ width: 34, height: 34 }}
+                  />
+                </MaskedView>
                 <Text style={{ fontSize: 12, fontWeight: "700", color: "#FBFBFB", textAlign: "center" }}>
                   {c.label}
                 </Text>
