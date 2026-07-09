@@ -59,18 +59,21 @@ function SleepPill({
   });
 
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
-    >
-      <Animated.View style={[styles.sleepPill, { backgroundColor: bgColor }]}>
-        {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
-        {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
-        <Animated.Text style={[styles.sleepPillText, { color: textColor, fontWeight: sel ? "500" : "400" }]} numberOfLines={1}>
-          {label}
-        </Animated.Text>
-      </Animated.View>
-    </Pressable>
+    <View style={[styles.sleepPillBorder, sel && styles.sleepPillBorderSel]}>
+      <Pressable
+        onPress={onPress}
+        style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
+      >
+        <Animated.View style={[styles.sleepPill, { backgroundColor: bgColor }]}>
+          {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
+          {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
+          {!sel && <LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
+          <Animated.Text style={[styles.sleepPillText, { color: textColor, fontWeight: sel ? "500" : "400" }]} numberOfLines={1}>
+            {label}
+          </Animated.Text>
+        </Animated.View>
+      </Pressable>
+    </View>
   );
 }
 
@@ -831,6 +834,14 @@ const styles = StyleSheet.create({
     gap: 8,
     flexDirection: "row",
     alignItems: "center",
+  },
+  sleepPillBorder: {
+    borderRadius: 999,
+    borderWidth: 0.5,
+    borderColor: "rgba(255,255,255,0.25)",
+  },
+  sleepPillBorderSel: {
+    borderColor: "transparent",
   },
   sleepPill: {
     flexDirection: "row",
