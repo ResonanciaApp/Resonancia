@@ -44,8 +44,8 @@ const SCREEN_W = Dimensions.get("window").width;
 const SCREEN_H = Dimensions.get("window").height;
 const SHEET_H_PAD = 24;
 const CARD_GAP = 14;
-const CARD_W = Math.floor((SCREEN_W - SHEET_H_PAD * 2) / 2.5) - 15;
-const CARD_H = Math.floor(CARD_W * 1.55) + 75;
+const CARD_W = Math.floor((SCREEN_W - SHEET_H_PAD * 2 - CARD_GAP) / 2);
+const CARD_H = Math.floor(CARD_W * 1.1);
 
 const WARM_DIVIDER = "rgba(255,255,255,0.055)";
 
@@ -341,15 +341,8 @@ export function EscenasSheet() {
             <Text style={styles.sceneTitle}>Escenas</Text>
           </View>
 
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.carousel}
-            decelerationRate="fast"
-            snapToInterval={CARD_W + CARD_GAP}
-            snapToAlignment="start"
-          >
-            {AMBIENT_SCENES.map((scene) => {
+          <View style={styles.carousel}>
+            {AMBIENT_SCENES.slice(0, 2).map((scene) => {
               const active = scene.id === confirmedSceneId;
               return (
                 <Pressable
@@ -390,7 +383,7 @@ export function EscenasSheet() {
                 </Pressable>
               );
             })}
-          </ScrollView>
+          </View>
         </View>
       </Animated.View>
 
@@ -547,6 +540,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: CARD_GAP,
     paddingBottom: 4,
+    paddingHorizontal: SHEET_H_PAD,
   },
   cardWrap: {
     width: CARD_W,
