@@ -1082,7 +1082,7 @@ export default function HomeScreen2() {
           >
             <BlurView intensity={40} tint="dark" pointerEvents="none" style={StyleSheet.absoluteFill} />
             <LinearGradient
-              colors={["rgba(255,255,255,0.11)", "rgba(255,255,255,0.4)"]}
+              colors={["rgba(255,255,255,0.11)", "rgba(255,255,255,0.03)"]}
               pointerEvents="none"
               style={StyleSheet.absoluteFill}
             />
