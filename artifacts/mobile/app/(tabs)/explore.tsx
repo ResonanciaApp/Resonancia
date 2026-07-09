@@ -450,10 +450,12 @@ export default function ExploreScreen() {
                   <Pressable
                     key={t.id}
                     onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
-                    style={[styles.temaCell, { width: TEMA3_W, height: TEMA3_W, borderRadius: 11, overflow: "hidden", backgroundColor: "rgba(255,255,255,0.11)" }]}
+                    style={[styles.temaCell, { width: TEMA3_W, height: TEMA3_W, borderRadius: 11, overflow: "hidden", borderColor: "rgba(255,255,255,0.22)", borderWidth: 1 }]}
                   >
                     {({ pressed }) => (
                       <>
+                        <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
+                        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
                         {pressed && <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(t.color, 0.22) }]} />}
                         {t.image != null ? (
                           <Image
