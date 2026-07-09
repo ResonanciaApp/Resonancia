@@ -39,7 +39,7 @@ import { useCatalog } from "@/context/CatalogContext";
 import { useGetPopularSessions, getGetPopularSessionsQueryKey, useGetPinnedFeatured } from "@workspace/api-client-react";
 
 const { width } = Dimensions.get("window");
-const H_PAD = 15;
+const H_PAD = 20;
 const GAP = 16;
 const TEMA_GAP = 10;
 const SECTION_GAP = 60;
