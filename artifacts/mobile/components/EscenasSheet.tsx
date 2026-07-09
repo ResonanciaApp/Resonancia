@@ -540,7 +540,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: CARD_GAP,
     paddingBottom: 4,
-    paddingHorizontal: SHEET_H_PAD,
   },
   cardWrap: {
     width: CARD_W,
