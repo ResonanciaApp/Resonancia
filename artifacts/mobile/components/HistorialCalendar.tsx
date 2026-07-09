@@ -1,5 +1,6 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import React, { useMemo, useRef, useState } from "react";
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -147,7 +148,7 @@ function DayCell({
 
 export function HistorialCalendar() {
   const colors = useColors();
-  const { history, isFavorite, toggleFavorite } = usePlayer();
+  const { history, isFavorite, toggleFavorite, playSession } = usePlayer();
 
   const today = useMemo(() => new Date(), []);
   const [viewMonth, setViewMonth] = useState<Date>(startOfMonth(today));
@@ -253,9 +254,17 @@ export function HistorialCalendar() {
           if (!session) return null;
           const fav = isFavorite(session.id);
           return (
-            <View
+            <Pressable
               key={`${entry.sessionId}-${entry.playedAt}-${i}`}
-              style={[styles.entryRow, { borderBottomColor: colors.border }]}
+              style={({ pressed }) => [styles.entryRow, { opacity: pressed ? 0.75 : 1 }]}
+              onPress={() => {
+                if (session.skipDetail) {
+                  playSession(session);
+                  router.push("/player" as never);
+                } else {
+                  router.push(`/session/${session.id}` as never);
+                }
+              }}
             >
               <Image source={session.image} style={styles.entryThumb} contentFit="cover" />
               <View style={{ flex: 1 }}>
@@ -267,7 +276,7 @@ export function HistorialCalendar() {
                 </Text>
               </View>
               <FavoriteHeartButton favorited={fav} onToggle={() => toggleFavorite(session.id)} />
-            </View>
+            </Pressable>
           );
         })
       )}
