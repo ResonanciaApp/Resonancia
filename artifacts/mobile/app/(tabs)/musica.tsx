@@ -20,7 +20,6 @@ import {
   View,
 } from "react-native";
 
-import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
