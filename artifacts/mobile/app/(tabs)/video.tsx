@@ -135,7 +135,7 @@ export default function VideoTabScreen() {
                 >
                   {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
                   {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
-                  {!sel && <LinearGradient colors={["rgba(255,255,255,0.18)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
+                  {!sel && <LinearGradient colors={["rgba(255,255,255,0.13)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
                   <Text style={[styles.chipText, { color: sel ? "#1B060F" : "#F4F4F4" }]}>
                     {chip}
                   </Text>
