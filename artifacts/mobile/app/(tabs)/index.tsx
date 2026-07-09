@@ -766,8 +766,8 @@ export default function HomeScreen2() {
         />
       </Animated.View>
 
-      {/* ── Saludo + Frase — anclados, posición fija ── */}
-      <View
+      {/* ── Saludo + Frase — anclados, posición fija, se ocultan con el backdrop al hacer scroll ── */}
+      <Animated.View
         pointerEvents="none"
         style={{
           position: "absolute",
@@ -776,6 +776,7 @@ export default function HomeScreen2() {
           right: 0,
           alignItems: "center",
           gap: 6,
+          opacity: backdropAnim,
         }}
       >
         <GreetingHeader />
@@ -793,8 +794,7 @@ export default function HomeScreen2() {
             {"El presente es tu único lugar"}
           </Text>
         </View>
-      </View>
-
+      </Animated.View>
 
       <StatusBar barStyle="light-content" />
 
