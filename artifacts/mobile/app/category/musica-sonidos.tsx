@@ -496,7 +496,7 @@ const styles = StyleSheet.create({
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chip: { height: 34, paddingHorizontal: 12, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center" },
   chipBorder: { borderRadius: 999 },
-  chipBorderSel: {},
+  chipBorderSel: { borderWidth: 1, borderColor: "rgba(255,255,255,0.1)", borderRadius: 999 },
   chipUnsel: {},
   chipSel: { height: 32 },
   chipText: { fontSize: 13, fontWeight: "400", color: TEXT, textAlign: "center" },

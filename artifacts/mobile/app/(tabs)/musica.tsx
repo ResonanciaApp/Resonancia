@@ -167,7 +167,7 @@ const PillTab = memo(function PillTab({
   return (
     <Pressable
       onPress={onPress}
-      style={[styles.pillTab]}
+      style={[styles.pillTab, sel && styles.pillTabSel]}
     >
       {sel
         ? <LinearGradient colors={["rgba(190,100,80,0.55)", "rgba(120,60,160,0.55)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
@@ -925,6 +925,7 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 6,
   },
+  pillTabSel: { borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" },
   pillTab: {
     flexDirection: "row",
     alignItems: "center",
@@ -1020,7 +1021,7 @@ const styles = StyleSheet.create({
   subTabBorderOuter: {
     borderRadius: 999,
   },
-  subTabBorderSel: {},
+  subTabBorderSel: { borderWidth: 1, borderColor: "rgba(255,255,255,0.1)", borderRadius: 999 },
   subTab: {
     flexDirection: "row",
     alignItems: "center",
