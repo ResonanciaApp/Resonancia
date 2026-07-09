@@ -31,9 +31,6 @@ export function GreetingHeader() {
     <View style={styles.container} pointerEvents="none">
       <Animated.View style={{ opacity: greetingOpacity }}>
         <Text style={styles.greetingText}>{greeting}</Text>
-        <Text style={styles.descText} numberOfLines={1}>
-          Grandes cosas tienen pequeños inicios
-        </Text>
       </Animated.View>
     </View>
   );
@@ -48,7 +45,7 @@ const styles = StyleSheet.create({
   },
   greetingText: {
     color: "rgba(255,255,255,0.92)",
-    fontSize: 22,
+    fontSize: 26,
     fontWeight: "600",
     letterSpacing: 0.3,
   },
