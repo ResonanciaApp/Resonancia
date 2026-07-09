@@ -358,23 +358,21 @@ export default function DescansoScreen() {
   const [fadeVol,     setFadeVol]     = useState(false);
 
   const scrollY      = useRef(new Animated.Value(0)).current;
-  const [stickyActive, setStickyActive] = useState(false);
-  const stickyOpacity = scrollY.interpolate({ inputRange: [HERO_H * 0.42, HERO_H * 0.875], outputRange: [0, 1], extrapolate: "clamp" });
+  const [stickyVisible, setStickyVisible] = useState(false);
+  const stickyAnim = useRef(new Animated.Value(0)).current;
   const [tabsOffsetY, setTabsOffsetY] = useState(HERO_H);
   const [headerH,     setHeaderH]     = useState(60);
-  const [chipsSticky, setChipsSticky] = useState(false);
   const [tabsMounted, setTabsMounted] = useState(false);
-  const tabsOpacity = useRef(new Animated.Value(0)).current;
   useEffect(() => {
-    if (chipsSticky) {
+    if (stickyVisible) {
       setTabsMounted(true);
-      Animated.timing(tabsOpacity, { toValue: 1, duration: 400, useNativeDriver: true }).start();
+      Animated.timing(stickyAnim, { toValue: 1, duration: 250, useNativeDriver: true }).start();
     } else {
-      Animated.timing(tabsOpacity, { toValue: 0, duration: 220, useNativeDriver: true }).start(({ finished }) => {
+      Animated.timing(stickyAnim, { toValue: 0, duration: 250, useNativeDriver: true }).start(({ finished }) => {
         if (finished) setTabsMounted(false);
       });
     }
-  }, [chipsSticky]);
+  }, [stickyVisible]);
 
   // ── Borde del sticky header (tabs): se activa recién a partir de 1% de scroll ──
   const HEADER_BORDER_THRESHOLD = 0.01;
@@ -430,10 +428,8 @@ export default function DescansoScreen() {
         onScroll={(e) => {
           const y = e.nativeEvent.contentOffset.y;
           scrollY.setValue(y);
-          const active = y > HERO_H * 0.63;
-          if (active !== stickyActive) setStickyActive(active);
-          const sticky = y > HERO_H * 0.5565;
-          if (sticky !== chipsSticky) setChipsSticky(sticky);
+          const visible = y > HERO_H * 0.5565;
+          if (visible !== stickyVisible) setStickyVisible(visible);
           const scrollable = scrollContentHeightRef.current - scrollLayoutHeightRef.current;
           const progress = scrollable > 0 ? y / scrollable : 0;
           const shouldShowBorder = progress >= HEADER_BORDER_THRESHOLD;
@@ -530,11 +526,11 @@ export default function DescansoScreen() {
           styles.stickyHeader,
           {
             paddingTop: topPad + 10,
-            opacity: stickyOpacity,
+            opacity: stickyAnim,
             backgroundColor: bgGradient[0],
           },
         ]}
-        pointerEvents={stickyActive ? "auto" : "none"}
+        pointerEvents={stickyVisible ? "auto" : "none"}
         onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}
       >
         <Text style={[styles.stickyHeaderTitle, { color: colors.foreground }]}>Dormir</Text>
@@ -542,7 +538,7 @@ export default function DescansoScreen() {
 
       {/* ── Tabs sticky (se pegan debajo del título) ── */}
       {tabsMounted && (
-        <Animated.View style={[styles.stickyTabs, { top: headerH, backgroundColor: bgGradient[0], opacity: tabsOpacity }]}>
+        <Animated.View style={[styles.stickyTabs, { top: headerH, backgroundColor: bgGradient[0], opacity: stickyAnim }]}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
