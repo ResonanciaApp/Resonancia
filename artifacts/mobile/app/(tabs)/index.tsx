@@ -779,7 +779,7 @@ export default function HomeScreen2() {
         }}
       >
         <GreetingHeader />
-        <View style={{ paddingHorizontal: GRID_PAD }}>
+        <View style={{ paddingHorizontal: GRID_PAD, marginTop: -6 }}>
           <Text
             style={{
               color: "rgba(255,255,255,0.70)",
@@ -794,6 +794,7 @@ export default function HomeScreen2() {
           </Text>
         </View>
       </View>
+
 
       <StatusBar barStyle="light-content" />
 
