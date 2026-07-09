@@ -38,6 +38,7 @@ import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
 import { FoldersPlaylistsProvider } from "@/context/FoldersPlaylistsContext";
 import { DrawerProvider, useDrawer } from "@/context/DrawerContext";
 import { MixerPanelProvider } from "@/context/MixerPanelContext";
+import { GreetingVisibleProvider } from "@/context/GreetingVisibleContext";
 import { IntencionProvider } from "@/context/IntencionContext";
 import { MixerProvider } from "@/context/MixerContext";
 import { SoundsProvider } from "@/context/SoundsContext";
@@ -386,6 +387,7 @@ export default function RootLayout() {
                     <SaveEventProvider>
                     <UserProfileProvider>
                       <ProfileSync />
+                      <GreetingVisibleProvider>
                       <IntencionProvider>
                         <FoldersPlaylistsProvider>
                         <DiarioFavoritesProvider>
@@ -404,6 +406,7 @@ export default function RootLayout() {
                         </DiarioFavoritesProvider>
                         </FoldersPlaylistsProvider>
                       </IntencionProvider>
+                      </GreetingVisibleProvider>
                     </UserProfileProvider>
                     </SaveEventProvider>
                     </MixerProvider>

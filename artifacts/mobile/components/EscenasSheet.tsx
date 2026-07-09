@@ -35,6 +35,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { VolumeSlider } from "@/components/VolumeSlider";
 import { AMBIENT_SCENES, useAmbientPlayer, type SceneId } from "@/context/AmbientPlayerContext";
+import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
@@ -75,7 +76,7 @@ export function EscenasSheet() {
   } = useAmbientPlayer();
 
   const [timerOpen, setTimerOpen] = useState(false);
-  const [videoEnabled, setVideoEnabled] = useState(false);
+  const { greetingVisible, setGreetingVisible } = useGreetingVisible();
   // ID de la escena CONFIRMADA (la que muestra el borde blanco en el carrusel).
   // Se actualiza solo cuando el usuario presiona "Elegir escena", NO al abrir el preview.
   const [confirmedSceneId, setConfirmedSceneId] = useState<SceneId>(currentScene.id);
@@ -319,13 +320,13 @@ export function EscenasSheet() {
             </View>
           )}
 
-          {/* Video de la escena */}
+          {/* Saludo de bienvenida */}
           <View style={styles.controlRow}>
-            <Feather name="video" size={17} color="rgba(255,255,255,0.65)" style={styles.controlIcon} />
-            <Text style={styles.controlLabel}>Reproducir videos de la escena</Text>
+            <MaterialCommunityIcons name="hand-wave-outline" size={17} color="rgba(255,255,255,0.65)" style={styles.controlIcon} />
+            <Text style={styles.controlLabel}>Activar saludo de bienvenida</Text>
             <Switch
-              value={videoEnabled}
-              onValueChange={setVideoEnabled}
+              value={greetingVisible}
+              onValueChange={setGreetingVisible}
               trackColor={{ false: "rgba(255,255,255,0.18)", true: "#D4AF37" }}
               thumbColor="#FFFFFF"
               ios_backgroundColor="rgba(255,255,255,0.18)"

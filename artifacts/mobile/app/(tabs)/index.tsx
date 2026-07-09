@@ -34,6 +34,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { GreetingHeader } from "@/components/GreetingHeader";
+import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { getWeeklyPhrase } from "@/data/greeting-phrases";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
@@ -610,6 +611,7 @@ export default function HomeScreen2() {
     }
   }, [updateSearchBtnVisibility, headerBorderAnim]);
 
+  const { greetingVisible } = useGreetingVisible();
   const backdropAnim = useRef(new Animated.Value(1)).current;
   const phraseAnim = useRef(new Animated.Value(0)).current;
   const weeklyPhrase = useRef(getWeeklyPhrase()).current;
@@ -767,34 +769,36 @@ export default function HomeScreen2() {
       </Animated.View>
 
       {/* ── Saludo + Frase — anclados, posición fija, se ocultan con el backdrop al hacer scroll ── */}
-      <Animated.View
-        pointerEvents="none"
-        style={{
-          position: "absolute",
-          top: topPad + 80,
-          left: 0,
-          right: 0,
-          alignItems: "center",
-          gap: 6,
-          opacity: backdropAnim,
-        }}
-      >
-        <GreetingHeader />
-        <View style={{ paddingHorizontal: GRID_PAD, marginTop: -6 }}>
-          <Text
-            style={{
-              color: "rgba(255,255,255,0.70)",
-              fontSize: 13,
-              fontFamily: "Inter_400Regular",
-              fontStyle: "italic",
-              textAlign: "center",
-              letterSpacing: 0.2,
-            }}
-          >
-            {"El presente es tu único lugar"}
-          </Text>
-        </View>
-      </Animated.View>
+      {greetingVisible && (
+        <Animated.View
+          pointerEvents="none"
+          style={{
+            position: "absolute",
+            top: topPad + 80,
+            left: 0,
+            right: 0,
+            alignItems: "center",
+            gap: 6,
+            opacity: backdropAnim,
+          }}
+        >
+          <GreetingHeader />
+          <View style={{ paddingHorizontal: GRID_PAD, marginTop: -6 }}>
+            <Text
+              style={{
+                color: "rgba(255,255,255,0.70)",
+                fontSize: 13,
+                fontFamily: "Inter_400Regular",
+                fontStyle: "italic",
+                textAlign: "center",
+                letterSpacing: 0.2,
+              }}
+            >
+              {"El presente es tu único lugar"}
+            </Text>
+          </View>
+        </Animated.View>
+      )}
 
       <StatusBar barStyle="light-content" />
 
