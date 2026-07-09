@@ -943,7 +943,7 @@ export default function HomeScreen2() {
           sessions={filteredListened}
           isPremium={isPremium}
           onPress={(s) => { if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } router.push(`/session/${s.id}` as never); }}
-          style={{ marginBottom: SECTION_GAP }}
+          style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
           titleOffset={10}
           cardWidth={RECENT_CARD_W}
         />
@@ -954,7 +954,7 @@ export default function HomeScreen2() {
           sessions={favoriteSessions}
           isPremium={isPremium}
           onPress={(s) => { if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } router.push(`/session/${s.id}` as never); }}
-          style={{ marginBottom: SECTION_GAP }}
+          style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
           titleOffset={10}
           cardWidth={RECENT_CARD_W}
         />
