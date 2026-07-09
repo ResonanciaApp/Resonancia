@@ -45,7 +45,7 @@ const PILL_MARGIN_H  = 15;   // margen horizontal de la píldora
 
 
 // Rutas que nunca aparecen en el menú inferior
-const HIDDEN_ROUTES = new Set(["biblioteca", "explore"]);
+const HIDDEN_ROUTES = new Set(["biblioteca", "explore", "musica"]);
 
 const TAB_CONFIG: Record<
   string,
@@ -70,7 +70,6 @@ const TAB_CONFIG: Record<
   video:      { label: "Videos",     sfIcon: "video",               sfIconFill: "video.fill",           featherIcon: "video" },
   descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon" },
   profile:    { label: "Perfil",     sfIcon: "person",              sfIconFill: "person.fill",          featherIcon: "user" },
-  inicio4:    { label: "Inicio 4",   sfIcon: "number",              sfIconFill: "number",              featherIcon: "hash" },
 };
 
 function TabItem({
@@ -443,7 +442,6 @@ function TabLayoutInner() {
         <Tabs.Screen name="video"          options={{ title: "Videos" }} />
         <Tabs.Screen name="descanzo"       options={{ title: "Dormir" }} />
         <Tabs.Screen name="profile"        options={{ title: "Perfil" }} />
-        <Tabs.Screen name="inicio4"        options={{ title: "Inicio 4" }} />
       </Tabs>
 
       {/* ── Mixer Drawer Panel — siempre montado, desliza desde la izquierda ── */}
