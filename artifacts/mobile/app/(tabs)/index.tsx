@@ -619,14 +619,15 @@ export default function HomeScreen2() {
     useCallback(() => {
       phraseAnim.setValue(0);
       phraseTimerRef.current = setTimeout(() => {
-        Animated.timing(phraseAnim, {
-          toValue: 1,
-          duration: 450,
-          useNativeDriver: true,
-        }).start();
+        Animated.sequence([
+          Animated.timing(phraseAnim, { toValue: 1, duration: 450, useNativeDriver: true }),
+          Animated.delay(5000),
+          Animated.timing(phraseAnim, { toValue: 0, duration: 450, useNativeDriver: true }),
+        ]).start();
       }, 3000);
       return () => {
         if (phraseTimerRef.current) clearTimeout(phraseTimerRef.current);
+        phraseAnim.stopAnimation();
         phraseAnim.setValue(0);
       };
     }, []),
