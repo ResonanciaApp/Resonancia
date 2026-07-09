@@ -766,6 +766,36 @@ export default function HomeScreen2() {
         />
       </Animated.View>
 
+      {/* ── Saludo + Frase — absolutos sobre el backdrop, tapados al hacer scroll ── */}
+      <Animated.View
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          top: topPad + 60,
+          left: 0,
+          right: 0,
+          opacity: backdropAnim,
+          alignItems: "center",
+          gap: 6,
+        }}
+      >
+        <GreetingHeader />
+        <Animated.View style={{ opacity: phraseAnim, paddingHorizontal: GRID_PAD }}>
+          <Text
+            style={{
+              color: "rgba(255,255,255,0.70)",
+              fontSize: 13,
+              fontFamily: "Inter_400Regular",
+              fontStyle: "italic",
+              textAlign: "center",
+              letterSpacing: 0.2,
+            }}
+          >
+            {weeklyPhrase}
+          </Text>
+        </Animated.View>
+      </Animated.View>
+
       <StatusBar barStyle="light-content" />
 
       <ScrollView
@@ -783,35 +813,6 @@ export default function HomeScreen2() {
           updateStickyActive();
         }}
       >
-        {/* ── Saludo ── */}
-        <View style={{ marginTop: 10 }}>
-          <GreetingHeader />
-        </View>
-
-        {/* ── Frase semanal ── */}
-        <Animated.View
-          style={{
-            marginTop: 6,
-            paddingHorizontal: GRID_PAD,
-            alignItems: "center",
-            opacity: phraseAnim,
-          }}
-          pointerEvents="none"
-        >
-          <Text
-            style={{
-              color: "rgba(255,255,255,0.70)",
-              fontSize: 13,
-              fontFamily: "Inter_400Regular",
-              fontStyle: "italic",
-              textAlign: "center",
-              letterSpacing: 0.2,
-            }}
-          >
-            {weeklyPhrase}
-          </Text>
-        </Animated.View>
-
         {/* ── Racha semanal ── */}
         <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 85 }}>
           <WeeklyStreakStrip />
