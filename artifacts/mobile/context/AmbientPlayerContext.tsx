@@ -100,7 +100,7 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
   // Refs so callbacks can read latest state without re-creating
   const isPlayingRef = useRef(false);
   const isMutedRef = useRef(false);
-  const currentSceneIdRef = useRef<SceneId>("profundo");
+  const currentSceneIdRef = useRef<SceneId>("tibet");
   const volumesRef = useRef<Record<SceneId, number>>(DEFAULT_VOLUMES);
   // expo-av session is configured lazily on first ambient use, never at launch.
   const sessionConfiguredRef = useRef(false);
@@ -206,10 +206,10 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
   // (SIGABRT) ~1s after launch. The expo-av session + default scene are now loaded
   // lazily on first ambient use (ensureAmbientSession + preload/loadAndPlay).
   useEffect(() => {
-    // Always start on "profundo" (first scene) — ignore saved preference on cold start.
+    // Always start on "tibet" (first scene) — ignore saved preference on cold start.
     // User can still switch scenes during the session.
-    AsyncStorage.setItem(STORAGE_KEY, "profundo").catch(() => {});
-    setCurrentSceneId("profundo");
+    AsyncStorage.setItem(STORAGE_KEY, "tibet").catch(() => {});
+    setCurrentSceneId("tibet");
 
     return () => {
       soundRef.current?.unloadAsync().catch(() => {});
