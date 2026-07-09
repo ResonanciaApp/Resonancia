@@ -231,7 +231,7 @@ const ac = StyleSheet.create({
   imgContainer:{width:"100%",aspectRatio:1,borderRadius:17,overflow:"hidden"},
   cardImage:{width:"100%",height:"100%"},
   cardTitle:{fontSize:13,fontWeight:"600",color:TEXT,lineHeight:18},
-  cardAuthor:{fontSize:11,color:MUTED},
+  cardAuthor:{fontSize:11,color:"#F4F4F4"},
   durationBadge:{position:"absolute",bottom:8,left:8,backgroundColor:"rgba(27,6,15,0.72)",borderRadius:8,paddingHorizontal:8,paddingVertical:3},
   durationBadgeText:{fontSize:11,fontWeight:"600",color:"#fff"},
   lockDot:{position:"absolute",top:6,right:6,width:20,height:20,borderRadius:10,backgroundColor:"rgba(0,0,0,0.55)",alignItems:"center",justifyContent:"center"},
