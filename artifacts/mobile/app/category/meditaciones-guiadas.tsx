@@ -401,7 +401,7 @@ export default function MeditacionesGuiadasScreen() {
 
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
-          <Text style={styles.profileTitle}>Meditaciones</Text>
+          <Text style={styles.profileTitle}>Meditación</Text>
           <Text style={styles.profileDesc} numberOfLines={1}>
             El encuentro contigo mismo
           </Text>
