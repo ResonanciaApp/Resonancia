@@ -1442,7 +1442,7 @@ const styles = StyleSheet.create({
   },
   searchResultCat: {
     fontSize: 11,
-    color: "rgba(242,231,228,0.45)",
+    color: "#F4F4F4",
     marginBottom: 2,
   },
   searchResultTitle: {
@@ -1658,7 +1658,7 @@ const styles = StyleSheet.create({
   },
   resonadoresBannerSub: {
     fontSize: 12,
-    color: "rgba(232,232,232,0.75)",
+    color: "#F4F4F4",
     marginTop: 2,
   },
   resonadoresBannerChevron: {
@@ -1796,7 +1796,7 @@ const styles = StyleSheet.create({
   },
   recentCreatorName: {
     fontSize: 11,
-    color: "#c2c2c2",
+    color: "#F4F4F4",
     flex: 1,
     marginTop: 4,
   },
@@ -1809,7 +1809,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   heroImage: { width: "100%", height: "100%" },
-  heroMetaText: { fontSize: 11, lineHeight: 14, color: "#c2c2c2", marginBottom: 6 },
+  heroMetaText: { fontSize: 11, lineHeight: 14, color: "#F4F4F4", marginBottom: 6 },
   heroTitle: { fontSize: 15, fontWeight: "700", lineHeight: 20, color: "#FBFBFB", marginBottom: 4 },
   heroAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(255,255,255,0.05)" },
   heroAuthor: { fontSize: 11, color: "#F4F4F4", marginTop: 2 },
@@ -1890,7 +1890,7 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   premTitle: { fontSize: 15, fontWeight: "700", color: "#FBFBFB", lineHeight: 20, marginBottom: 2 },
-  premSub:   { fontSize: 12, color: "rgba(255,255,255,0.52)" },
+  premSub:   { fontSize: 12, color: "#F4F4F4" },
   premChevron: {
     width: 26, height: 26, borderRadius: 13,
     backgroundColor: "rgba(255,255,255,0.025)",
