@@ -898,7 +898,9 @@ export default function HomeScreen2() {
           onPress={() => router.push("/resonadores" as never)}
           style={{ marginBottom: 35, marginHorizontal: GRID_PAD, marginTop: -6 }}
         >
-          <View style={[styles.resonadoresBanner, { backgroundColor: "rgba(255,255,255,0.11)" }]}>
+          <View style={styles.resonadoresBanner}>
+            <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)", borderRadius: 14, borderWidth: 1, borderColor: "rgba(255,255,255,0.22)" }]} />
             <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
               <LinearGradient
                 colors={["rgb(247,203,107)", "rgb(251,169,128)"]}
@@ -988,10 +990,14 @@ export default function HomeScreen2() {
                   gap: 10,
                   borderRadius: 14,
                   alignItems: "center",
-                  backgroundColor: "rgba(255,255,255,0.11)",
+                  overflow: "hidden" as const,
+                  borderWidth: 1,
+                  borderColor: "rgba(255,255,255,0.22)",
                   opacity: pressed ? 0.75 : 1,
                 }]}
               >
+                <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
                 <MaskedView
                   maskElement={
                     <View style={{ width: 34, height: 34, alignItems: "center", justifyContent: "center" }}>
@@ -1101,6 +1107,8 @@ export default function HomeScreen2() {
         <View style={styles.recoSection}>
           {moodRecommended.map((s) => (
             <View key={s.id} style={styles.recoCard}>
+              <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
               <SessionRow
                 session={s}
                 imageSize={84}
@@ -1326,8 +1334,10 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   recoCard: {
-    backgroundColor: "rgba(255,255,255,0.11)",
     borderRadius: 14,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.22)",
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
