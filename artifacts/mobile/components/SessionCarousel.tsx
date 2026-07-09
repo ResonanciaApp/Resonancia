@@ -135,11 +135,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: GRID_PAD,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: "400",
+    fontSize: 21,
+    fontWeight: "700",
     letterSpacing: 0.3,
     marginBottom: 24,
-    color: "#FFFFFF",
+    color: "#e8e8e8",
   },
   card: { width: CARD_W },
   thumbWrap: {
