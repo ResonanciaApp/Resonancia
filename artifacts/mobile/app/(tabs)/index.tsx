@@ -1033,7 +1033,7 @@ export default function HomeScreen2() {
 
 
         {/* ── ESTADO DE ÁNIMO ── */}
-        <View style={{ paddingHorizontal: 16 }}>
+        <View style={{ paddingHorizontal: GRID_PAD }}>
           <Text style={styles.sectionTitle}>Personaliza tus recomendaciones</Text>
         </View>
 
@@ -1075,7 +1075,7 @@ export default function HomeScreen2() {
         )}
 
         {/* ── RECOMENDADO PARA TI ── */}
-        <View style={{ paddingHorizontal: 16 }}>
+        <View style={{ paddingHorizontal: GRID_PAD }}>
           <Text style={[styles.sectionTitle, { marginTop: 24 }]}>
             {selectedMood ? "Para tu estado de ánimo" : "Recomendado para ti"}
           </Text>
@@ -1257,7 +1257,7 @@ const styles = StyleSheet.create({
   moodRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginHorizontal: 16,
+    marginHorizontal: GRID_PAD,
     marginBottom: 8,
     borderRadius: 24,
     overflow: "hidden",
@@ -1300,7 +1300,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   recoSection: {
-    marginHorizontal: 16,
+    marginHorizontal: GRID_PAD,
     marginBottom: SECTION_GAP,
     flexDirection: "column",
     gap: 16,
