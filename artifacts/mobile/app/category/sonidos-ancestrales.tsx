@@ -265,9 +265,9 @@ function CategoryCard({
 
 const ac = StyleSheet.create({
   hRow:{ flexDirection:"row", alignItems:"center", gap:12, paddingVertical:6, marginBottom:11 },
-  hImgWrap:{ width:130, height:130, borderRadius:8, overflow:"hidden" },
+  hImgWrap:{ width:87, height:87, borderRadius:8, overflow:"hidden" },
   hImgOverlay:{ ...StyleSheet.absoluteFillObject, backgroundColor:"rgba(0,0,0,0.18)" },
-  hImage:  { width:130, height:130 },
+  hImage:  { width:87, height:87 },
   hContent:{ flex:1, justifyContent:"center", gap:2 },
   hDuration:{ fontSize:11, fontWeight:"400", color:MUTED },
   hDurLabel:{ position:"absolute", bottom:6, left:8, fontSize:13, fontWeight:"700", color:"#fff", textShadowColor:"rgba(0,0,0,0.85)", textShadowOffset:{width:0,height:1}, textShadowRadius:4 },
