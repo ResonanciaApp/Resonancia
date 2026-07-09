@@ -33,6 +33,7 @@ import RAnimated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
+import { GreetingHeader } from "@/components/GreetingHeader";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
 import { MoodPickerSheet } from "@/components/MoodPickerSheet";
@@ -1109,14 +1110,8 @@ export default function HomeScreen2() {
           opacity: backdropAnim,
         }}
       >
-        {/* Logo izquierda */}
-        <View pointerEvents="none" style={{ transform: [{ translateX: 5 }] }}>
-          <ExpoImage
-            source={require("@/assets/images/icons/pulso-logo.png")}
-            style={{ width: 120, height: 52 }}
-            contentFit="contain"
-          />
-        </View>
+        {/* Saludo animado */}
+        <GreetingHeader />
 
         {/* Loto + Regalo — derecha */}
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
