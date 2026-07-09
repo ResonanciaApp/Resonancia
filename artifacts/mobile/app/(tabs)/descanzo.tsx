@@ -51,11 +51,12 @@ function SleepPill({
 
   const bgColor = selAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["transparent", "#F4F4F4"],
+    outputRange: ["transparent", "transparent"],
   });
+  const gradOpacity = selAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
   const textColor = selAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["#F4F4F4", "#14031E"],
+    outputRange: ["#F4F4F4", "#fff"],
   });
 
   return (
@@ -68,6 +69,9 @@ function SleepPill({
           {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
           {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
           {!sel && <LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
+          <Animated.View style={[StyleSheet.absoluteFill, { opacity: gradOpacity }]} pointerEvents="none">
+            <LinearGradient colors={["rgba(190,100,80,0.55)", "rgba(120,60,160,0.55)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
+          </Animated.View>
           <Animated.Text style={[styles.sleepPillText, { color: textColor, fontWeight: sel ? "500" : "400" }]} numberOfLines={1}>
             {label}
           </Animated.Text>

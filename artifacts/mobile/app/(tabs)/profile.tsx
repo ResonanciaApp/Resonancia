@@ -826,11 +826,11 @@ export default function ProfileScreen() {
               <View key={t.id} style={[styles.pillBorder, sel && styles.pillBorderSel]}>
                 <Pressable
                   onPress={() => setPerfilTab(t.id)}
-                  style={({ pressed }) => [styles.pill, sel && styles.pillSel, { opacity: pressed ? 0.8 : 1 }]}
+                  style={({ pressed }) => [styles.pill, { opacity: pressed ? 0.8 : 1 }]}
                 >
-                  {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
-                  {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
-                  {!sel && <LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
+                  {sel
+                    ? <LinearGradient colors={["rgba(190,100,80,0.55)", "rgba(120,60,160,0.55)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
+                    : <><BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} /></>}
                   <Text style={[styles.pillText, sel && styles.pillTextSel]}>{t.label}</Text>
                 </Pressable>
               </View>
@@ -1438,11 +1438,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  pillSel: {
-    backgroundColor: "#F4F4F4",
-  },
+  pillSel: {},
   pillText: { fontSize: 13, fontWeight: "400", color: "#F4F4F4" },
-  pillTextSel: { color: "#1B060F", fontWeight: "500" },
+  pillTextSel: { color: "#fff", fontWeight: "500" },
 
   comingSoonWrap: {
     flex: 1,

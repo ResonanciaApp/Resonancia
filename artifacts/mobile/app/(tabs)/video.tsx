@@ -131,12 +131,12 @@ export default function VideoTabScreen() {
                 <View key={chip} style={[styles.chipBorder, sel && styles.chipBorderSel]}>
                   <Pressable
                     onPress={() => setActiveChip(chip)}
-                    style={[styles.chip, sel ? { backgroundColor: "#F4F4F4" } : undefined]}
+                    style={[styles.chip]}
                   >
-                    {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
-                    {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
-                    {!sel && <LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
-                    <Text style={[styles.chipText, { color: sel ? "#1B060F" : "#F4F4F4" }]}>
+                    {sel
+                      ? <LinearGradient colors={["rgba(190,100,80,0.55)", "rgba(120,60,160,0.55)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
+                      : <><BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} /></>}
+                    <Text style={[styles.chipText, { color: "#F4F4F4" }]}>
                       {chip}
                     </Text>
                   </Pressable>

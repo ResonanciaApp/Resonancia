@@ -95,10 +95,10 @@ function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel
   const iconColor = sel ? "#1B060F" : "#e8e8e8";
   return (
     <View style={[styles.chipBorder, sel && styles.chipBorderSel]}>
-      <Pressable onPress={onPress} style={({pressed})=>[styles.chip, !sel && styles.chipUnsel, sel && styles.chipSel, {opacity:pressed?0.7:1, backgroundColor: sel ? "#F4F4F4" : "transparent"}]}>
-        {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
-        {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
-        {!sel && <LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
+      <Pressable onPress={onPress} style={({pressed})=>[styles.chip, !sel && styles.chipUnsel, sel && styles.chipSel, {opacity:pressed?0.7:1, backgroundColor:"transparent"}]}>
+        {sel
+          ? <LinearGradient colors={["rgba(190,100,80,0.55)", "rgba(120,60,160,0.55)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
+          : <><BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} /></>}
         <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
           <Text style={[styles.chipText, sel&&styles.chipTextSel]}>{label}</Text>
         </View>
@@ -500,7 +500,7 @@ const styles = StyleSheet.create({
   chipUnsel: {},
   chipSel: { height: 32 },
   chipText: { fontSize: 13, fontWeight: "400", color: TEXT, textAlign: "center" },
-  chipTextSel: { color: "#1B060F", fontWeight: "600" },
+  chipTextSel: { color: "#fff", fontWeight: "600" },
 
   sectionLabel: { fontSize: 11, fontWeight: "400", color: TEXT, paddingHorizontal: H_PAD, paddingTop: 5, paddingBottom: 4 },
   scroll: { flex: 1 },
