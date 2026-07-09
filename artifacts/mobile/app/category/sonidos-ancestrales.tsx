@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import MaskedView from "@react-native-masked-view/masked-view";
 import Svg, { Path } from "react-native-svg";
 import { BackPill } from "@/components/BackPill";
@@ -483,16 +484,20 @@ export default function SonidosAncestalesScreen() {
         {/* ── Hero banner ── */}
         <View style={styles.heroArea}>
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
-            <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.4) }}>
+            <View style={styles.lotoBtn}>
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
               <BackPill onPress={() => router.back()} />
-            </GhostPill>
+            </View>
           </View>
           <View style={[styles.heroOverlayRight, { top: topPad + 8 }]}>
-            <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.4) }}>
+            <View style={styles.lotoBtn}>
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
               <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
                 <Feather name="info" size={23} color="rgba(255,255,255,0.85)" />
               </Pressable>
-            </GhostPill>
+            </View>
           </View>
         </View>
 
@@ -521,20 +526,24 @@ export default function SonidosAncestalesScreen() {
 
       {/* ── Sticky header ── */}
       <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"}>
-        <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.4) }}>
+        <View style={styles.lotoBtn}>
+          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
           <BackPill onPress={() => router.back()} />
-        </GhostPill>
+        </View>
         <View style={styles.headerTitleCol}>
           <Text style={styles.headerTitle}>Sesiones</Text>
           {activeTab && (
             <Text style={styles.headerSubtitle}>{TABS.find((t) => t.id === activeTab)?.label}</Text>
           )}
         </View>
-        <GhostPill noBorder style={{ backgroundColor: hexToRgba(theme.gradient[1], 0.4) }}>
+        <View style={styles.lotoBtn}>
+          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
           <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
             <Feather name="info" size={23} color="rgba(255,255,255,0.85)" />
           </Pressable>
-        </GhostPill>
+        </View>
       </Animated.View>
 
       <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} categoryId="sonidos-ancestrales" placeholderTxt="Buscar en Sesiones..." />
@@ -560,6 +569,7 @@ const styles = StyleSheet.create({
 
   /* ── Hero ── */
   heroArea: { height: HERO_H, position: "relative" },
+  lotoBtn: { width: 45, height: 45, borderRadius: 22.5, overflow: "hidden", alignItems: "center", justifyContent: "center" },
   heroIconFloat: { position: "absolute", bottom: 13, left: 0, right: 0, alignItems: "center", zIndex: 2 },
   heroIconGlow: { borderRadius: 28, shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 14, shadowOffset: { width: 0, height: 0 }, elevation: 8 },
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "#1B060F", borderWidth: 2, borderColor: "rgba(255,255,255,0.1)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
