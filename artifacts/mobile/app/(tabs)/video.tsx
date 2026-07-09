@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   stickyHeader: {
     backgroundColor: "transparent",
   },
-  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.5 },
+  pageTitle: { fontSize: 28, fontWeight: "700", letterSpacing: 0.5 },
 
   searchWrap: {
     paddingHorizontal: 19,
