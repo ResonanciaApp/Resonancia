@@ -245,6 +245,7 @@ export default function ExploreScreen() {
   const { photoUri } = useUserProfile();
   const { open: openDrawer } = useDrawer();
   const [searchVisible, setSearchVisible] = useState(false);
+  const [query, setQuery] = useState("");
 
   const { isPremium } = usePremium();
   const { playSession, history } = usePlayer();
@@ -395,19 +396,47 @@ export default function ExploreScreen() {
       >
         {/* ── Header ── */}
         <View style={styles.header}>
-          <View style={styles.headerRow}>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.pageTitle, { transform: [{ translateY: 2 }] }]}>Explorar</Text>
-            </View>
-            <Pressable
-              hitSlop={12}
-              onPress={() => setSearchVisible(true)}
-              style={styles.searchIconBtn}
-            >
-              <Feather name="search" size={25} color="#FFFFFF" />
-            </Pressable>
+          <Text style={styles.pageTitle}>Explorar</Text>
+        </View>
+
+        {/* ── Barra de búsqueda ── */}
+        <View style={styles.searchWrap}>
+          <View style={[styles.searchBox, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.14)" }]}>
+            <Feather name="search" size={16} color={colors.mutedForeground} />
+            <TextInput
+              value={query}
+              onChangeText={setQuery}
+              placeholder="Buscar..."
+              placeholderTextColor={colors.mutedForeground}
+              style={[styles.searchInput, { color: colors.foreground }]}
+              returnKeyType="search"
+            />
+            {query.length > 0 && (
+              <Pressable onPress={() => setQuery("")} hitSlop={8}>
+                <Feather name="x-circle" size={15} color={colors.mutedForeground} />
+              </Pressable>
+            )}
           </View>
         </View>
+
+        {/* ── Para este momento ── */}
+        {featuredHoy && (
+          <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 8 }]}>
+            <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Para este momento</Text>
+            <Pressable onPress={() => handleSessionPress(featuredHoy)}>
+              <View style={styles.heroImageContainer}>
+                <Image source={featuredHoy.image as number} style={styles.heroImage} contentFit="cover" />
+              </View>
+              <View style={{ marginTop: 12 }}>
+                <Text style={styles.heroMetaText}>
+                  {featuredHoy.categoryLabel} · {featuredHoy.durationLabel}
+                </Text>
+                <Text style={styles.heroTitle} numberOfLines={2}>{featuredHoy.title}</Text>
+                <Text style={styles.heroAuthor} numberOfLines={1}>{getSessionAuthor(featuredHoy)}</Text>
+              </View>
+            </Pressable>
+          </View>
+        )}
 
             {/* ── Explorar todo (TEMAS) ── */}
             <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
@@ -521,30 +550,6 @@ export default function ExploreScreen() {
             </View>
 
 
-            {/* ── Destacada de hoy ── */}
-            {featuredHoy && (
-              <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
-                <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Para este momento</Text>
-                <Pressable
-                  onPress={() => handleSessionPress(featuredHoy)}
-                >
-                  <View style={styles.heroImageContainer}>
-                    <Image source={featuredHoy.image as number} style={styles.heroImage} contentFit="cover" />
-                  </View>
-                  <View style={{ marginTop: 12 }}>
-                    <Text style={styles.heroMetaText}>
-                      {featuredHoy.categoryLabel} · {featuredHoy.durationLabel}
-                    </Text>
-                    <Text style={styles.heroTitle} numberOfLines={2}>
-                      {featuredHoy.title}
-                    </Text>
-                    <Text style={styles.heroAuthor} numberOfLines={1}>
-                      {getSessionAuthor(featuredHoy)}
-                    </Text>
-                  </View>
-                </Pressable>
-              </View>
-            )}
 
 
             {/* ── Las más escuchadas ── */}
@@ -563,11 +568,12 @@ const styles = StyleSheet.create({
   rootGradient: { ...StyleSheet.absoluteFillObject },
   scroll: { flex: 1 },
 
-  header:         { paddingHorizontal: H_PAD, marginBottom: 18 },
-  headerPillBtn:  { width: 43, height: 43, alignItems: "center", justifyContent: "center" },
-  searchIconBtn:  { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
-  headerRow:      { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  pageTitle:    { fontSize: 27, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4, color: "#e8e8e8" },
+  header:       { paddingHorizontal: H_PAD, marginBottom: 10 },
+  headerRow:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  pageTitle:    { fontSize: 28, fontWeight: "700", letterSpacing: 0.5, color: "#e8e8e8" },
+  searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 6, paddingBottom: 10 },
+  searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1.5, paddingHorizontal: 18, height: 45 },
+  searchInput:  { flex: 1, fontSize: 14, padding: 0 },
   pageSubtitle: { fontSize: 14, color: "rgba(255,255,255,0.55)", marginTop: 2 },
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
