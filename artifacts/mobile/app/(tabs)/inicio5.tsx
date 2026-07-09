@@ -1087,7 +1087,7 @@ export default function HomeScreen2() {
         </View>
         <View style={styles.recoSection}>
           {moodRecommended.map((s) => (
-            <View key={s.id} style={[styles.recoCard, { backgroundColor: "rgba(255,255,255,0.035)" }]}>
+            <View key={s.id} style={styles.recoCard}>
               <SessionRow
                 session={s}
                 imageSize={84}
@@ -1313,13 +1313,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   recoCard: {
-    backgroundColor: "transparent",
-    borderRadius: 14,
-    overflow: "hidden",
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-    shadowOpacity: 0,
-    elevation: 0,
+    paddingVertical: 4,
   },
 
   // Intención
