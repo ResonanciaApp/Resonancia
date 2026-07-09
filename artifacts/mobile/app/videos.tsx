@@ -134,8 +134,9 @@ export default function VideosScreen() {
         <Animated.View
           style={[styles.searchWrap, { opacity: searchOpacity }]}
         >
-          <View style={[styles.searchBar, { backgroundColor: "rgba(74,12,12,0.18)" }]}>
-            <Feather name="search" size={14} color={colors.mutedForeground} />
+          <BlurView intensity={28} tint="dark" style={[styles.searchBar, { overflow: "hidden", borderColor: "rgba(255,255,255,0.22)", borderWidth: 1 }]}>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+            <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
               style={[styles.searchInput, { color: colors.foreground }]}
               placeholder="Buscar videos..."
@@ -145,10 +146,10 @@ export default function VideosScreen() {
             />
             {searchQuery.length > 0 && (
               <Pressable onPress={() => setSearchQuery("")} hitSlop={8}>
-                <Feather name="x" size={14} color={colors.mutedForeground} />
+                <Feather name="x-circle" size={15} color={colors.mutedForeground} />
               </Pressable>
             )}
-          </View>
+          </BlurView>
         </Animated.View>
 
         {/* Category pills — full-bleed horizontal scroll */}
@@ -223,10 +224,10 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    height: 42,
-    gap: 8,
+    borderRadius: 999,
+    paddingHorizontal: 18,
+    height: 45,
+    gap: 10,
   },
   searchInput: {
     flex: 1,
