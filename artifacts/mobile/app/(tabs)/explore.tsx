@@ -402,14 +402,7 @@ export default function ExploreScreen() {
 
         {/* ── Barra de búsqueda ── */}
         <View style={styles.searchWrap}>
-          <View style={[styles.searchBox, { backgroundColor: "transparent", borderColor: "rgba(255,255,255,0.14)" }]}>
-            <View style={[StyleSheet.absoluteFill, { borderRadius: 999, overflow: "hidden" }]}>
-              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-              <LinearGradient
-                colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-                style={StyleSheet.absoluteFill}
-              />
-            </View>
+          <View style={[styles.searchBox, { backgroundColor: "rgba(255,255,255,0.3)", borderColor: "rgba(255,255,255,0.5)", borderWidth: 1 }]}>
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
               value={query}
