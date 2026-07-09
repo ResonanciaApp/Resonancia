@@ -471,7 +471,7 @@ const styles = StyleSheet.create({
   chipUnsel: {},
   chipSel: { borderWidth: 0 },
   chipText: { fontSize: 11, fontWeight: "380", color: TEXT, textAlign: "center" },
-  chipTextSel: { color: "#1A1A1A", fontWeight: "400" },
+  chipTextSel: { color: "#2D0D3A", fontWeight: "500" },
 
   sectionLabel: { fontSize: 11, fontWeight: "400", color: TEXT, paddingHorizontal: H_PAD, paddingTop: 5, paddingBottom: 4 },
   scroll: { flex: 1 },
