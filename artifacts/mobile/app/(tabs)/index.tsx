@@ -1769,10 +1769,10 @@ const styles = StyleSheet.create({
   },
   coleccionTitle: {
     flex: 1,
-    fontSize: 11,
+    fontSize: 14,
     fontWeight: "300",
     color: "#e8e8e8",
-    lineHeight: 18,
+    lineHeight: 21,
   },
   catGrid: {
     flexDirection: "row",
