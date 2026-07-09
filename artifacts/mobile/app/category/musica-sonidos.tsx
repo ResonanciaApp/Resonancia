@@ -7,7 +7,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState, useEffect, useMemo } from "react";
 import {
-  ActivityIndicator, Animated, Easing, Keyboard, Modal, Platform,
+  ActivityIndicator, Animated, Dimensions, Easing, Keyboard, Modal, Platform,
   Pressable, ScrollView, StyleSheet, Text, TextInput, View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -23,6 +23,8 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { hexToRgba } from "@/utils/color";
 
 const H_PAD = 15;
+const { width: W } = Dimensions.get("window");
+const cardW = (W - H_PAD * 2 - 14) / 2;
 const GOLD  = "#F7CB6B";
 const TEXT  = "#FBFBFB";
 const MUTED = "#c2c2c2";
@@ -276,7 +278,7 @@ export default function MusicaSonidosScreen() {
   const insets    = useSafeAreaInsets();
   const topPad    = Platform.OS==="web" ? 0 : insets.top;
   const bottomPad = Platform.OS==="web" ? 34 : insets.bottom;
-  const { isFavorite, toggleFavorite, history } = usePlayer();
+  const { isFavorite, toggleFavorite } = usePlayer();
   const { version } = useCatalog();
   const { theme } = useSceneTheme();
 
@@ -334,31 +336,16 @@ export default function MusicaSonidosScreen() {
         <Text style={styles.emptySub}>Estamos componiendo los mejores paisajes sonoros.</Text>
       </View>
     );
-    const tabIds = new Set(allTabSessions.map((s)=>s.id));
-    const recentEntry = history.find((e)=>tabIds.has(e.sessionId));
-    const recentSession = recentEntry ? allTabSessions.find((s)=>s.id===recentEntry.sessionId) : null;
-    const recommended = recentSession
-      ? shuffledSessions.filter((s)=>s.id!==recentSession.id)
-      : shuffledSessions;
-    const visibleRec = recommended.slice(0, visibleCount);
-    const hasMoreRec = visibleCount < recommended.length;
+    const visibleSessions = shuffledSessions.slice(0, visibleCount);
+    const hasMore = visibleCount < shuffledSessions.length;
     return (
       <>
-        {recentSession && (
-          <>
-            <Text style={styles.sectionLabel}>Escuchado recientemente</Text>
-            <View style={{paddingHorizontal:H_PAD, marginTop:1}}>
-              <CategoryCard session={recentSession} horizontal onLongPress={()=>setSelectedSession(recentSession)} onOptions={()=>setSelectedSession(recentSession)} />
-            </View>
-          </>
-        )}
-        <Text style={[styles.sectionLabel, { paddingTop: 23 }]}>Recomendado</Text>
-        <View style={{paddingHorizontal:H_PAD, marginTop:1}}>
-          {visibleRec.map((s)=>(
-            <CategoryCard key={s.id} session={s} horizontal onLongPress={()=>setSelectedSession(s)} onOptions={()=>setSelectedSession(s)} />
+        <View style={styles.sessionGrid}>
+          {visibleSessions.map((s)=>(
+            <CategoryCard key={s.id} session={s} width={cardW} onLongPress={()=>setSelectedSession(s)} onOptions={()=>setSelectedSession(s)} />
           ))}
         </View>
-        {hasMoreRec && <View style={styles.loadMoreFooter}><ActivityIndicator size="small" color={MUTED} /></View>}
+        {hasMore && <View style={styles.loadMoreFooter}><ActivityIndicator size="small" color={MUTED} /></View>}
       </>
     );
   };
@@ -506,6 +493,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   controlRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingTop: 12, paddingBottom: 8 },
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
+  sessionGrid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", paddingHorizontal: H_PAD, rowGap: 20, marginTop: 8, marginBottom: 6 },
   emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },
   loadMoreFooter: { alignItems: "center", paddingVertical: 20 },
   emptyTitle: { fontSize: 17, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 8 },
