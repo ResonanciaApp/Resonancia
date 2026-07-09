@@ -246,7 +246,7 @@ export function WeeklyStreakStrip() {
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={21} cy={21} r={19} stroke={`url(#sg${i})`} strokeWidth={2} fill="rgba(255,255,255,0.08)" />
+                    <Circle cx={21} cy={21} r={19} stroke={`url(#sg${i})`} strokeWidth={2} fill="rgba(255,255,255,0.11)" />
                   </Svg>
                   <Feather name="check" size={19} color="rgba(255,255,255,0.9)" />
                 </View>
@@ -259,7 +259,7 @@ export function WeeklyStreakStrip() {
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={21} cy={21} r={19} stroke="url(#sgToday)" strokeWidth={2} fill="rgba(255,255,255,0.08)" />
+                    <Circle cx={21} cy={21} r={19} stroke="url(#sgToday)" strokeWidth={2} fill="rgba(255,255,255,0.11)" />
                   </Svg>
                 </View>
               ) : (
@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   circleInactive: {
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: "rgba(255,255,255,0.11)",
   },
   circleInactiveSize: {
     width: 40,
