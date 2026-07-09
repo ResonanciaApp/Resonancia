@@ -4,7 +4,7 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -34,6 +34,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { GreetingHeader } from "@/components/GreetingHeader";
+import { getWeeklyPhrase } from "@/data/greeting-phrases";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
 import { MoodPickerSheet } from "@/components/MoodPickerSheet";
@@ -610,6 +611,26 @@ export default function HomeScreen2() {
   }, [updateSearchBtnVisibility, headerBorderAnim]);
 
   const backdropAnim = useRef(new Animated.Value(1)).current;
+  const phraseAnim = useRef(new Animated.Value(0)).current;
+  const weeklyPhrase = useRef(getWeeklyPhrase()).current;
+  const phraseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      phraseAnim.setValue(0);
+      phraseTimerRef.current = setTimeout(() => {
+        Animated.timing(phraseAnim, {
+          toValue: 1,
+          duration: 450,
+          useNativeDriver: true,
+        }).start();
+      }, 3000);
+      return () => {
+        if (phraseTimerRef.current) clearTimeout(phraseTimerRef.current);
+        phraseAnim.setValue(0);
+      };
+    }, []),
+  );
 
   const handleMainScroll = useCallback(
     (e: { nativeEvent: { contentOffset: { y: number } } }) => {
@@ -765,8 +786,32 @@ export default function HomeScreen2() {
           updateStickyActive();
         }}
       >
+        {/* ── Frase semanal ── */}
+        <Animated.View
+          style={{
+            marginTop: 152,
+            paddingHorizontal: GRID_PAD,
+            alignItems: "center",
+            opacity: phraseAnim,
+          }}
+          pointerEvents="none"
+        >
+          <Text
+            style={{
+              color: "rgba(255,255,255,0.70)",
+              fontSize: 13,
+              fontFamily: "Inter_400Regular",
+              fontStyle: "italic",
+              textAlign: "center",
+              letterSpacing: 0.2,
+            }}
+          >
+            {weeklyPhrase}
+          </Text>
+        </Animated.View>
+
         {/* ── Racha semanal ── */}
-        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 210 }}>
+        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 35 }}>
           <WeeklyStreakStrip />
         </View>
 
