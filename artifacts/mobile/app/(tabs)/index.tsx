@@ -976,7 +976,7 @@ export default function HomeScreen2() {
                     height: TEMA3_W,
                     backgroundColor: pressed
                       ? hexTint(t.color, 0.22)
-                      : "rgba(0,0,0,0.14)",
+                      : "rgba(255,255,255,0.06)",
                     borderRadius: 11,
                   },
                 ]}
