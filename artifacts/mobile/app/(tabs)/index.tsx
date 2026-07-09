@@ -789,7 +789,7 @@ export default function HomeScreen2() {
         {/* ── Frase semanal ── */}
         <Animated.View
           style={{
-            marginTop: 127,
+            marginTop: 122,
             paddingHorizontal: GRID_PAD,
             alignItems: "center",
             opacity: phraseAnim,
