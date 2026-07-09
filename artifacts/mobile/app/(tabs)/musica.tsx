@@ -741,20 +741,19 @@ export default function MezcladorScreen() {
                       if (!cat) return null;
                       const sel = subTab === catId;
                       return (
-                        <Pressable
-                          key={catId}
-                          onPress={() => setSubTab(sel ? null : catId)}
-                          style={[
-                            styles.subTabBorderOuter,
-                            sel
-                              ? { backgroundColor: "#F4F4F4", borderColor: "#F4F4F4" }
-                              : { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.1)" },
-                          ]}
-                        >
-                          <Text style={[styles.subTabText, { color: sel ? "#1B060F" : "#e8e8e8" }]}>
-                            {SUB_TAB_LABELS[catId] ?? cat.label}
-                          </Text>
-                        </Pressable>
+                        <View key={catId} style={[styles.subTabBorderOuter, sel && styles.subTabBorderSel]}>
+                          <Pressable
+                            onPress={() => setSubTab(sel ? null : catId)}
+                            style={[styles.subTab, sel && { backgroundColor: "#F4F4F4" }]}
+                          >
+                            {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
+                            {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
+                            {!sel && <LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
+                            <Text style={[styles.subTabText, { color: sel ? "#1B060F" : "#e8e8e8" }]}>
+                              {SUB_TAB_LABELS[catId] ?? cat.label}
+                            </Text>
+                          </Pressable>
+                        </View>
                       );
                     })}
                   </ScrollView>
@@ -1023,15 +1022,21 @@ const styles = StyleSheet.create({
   subTabZone: { position: "relative", justifyContent: "center", marginTop: -6 },
   subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 15 },
   subTabBorderOuter: {
+    borderRadius: 999,
+    borderWidth: 0.5,
+    borderColor: "rgba(255,255,255,0.25)",
+  },
+  subTabBorderSel: {
+    borderColor: "transparent",
+  },
+  subTab: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     height: 34,
-    borderRadius: 20,
+    borderRadius: 999,
     overflow: "hidden",
-    borderWidth: 2,
-    borderColor: "rgba(244,218,213,0.2)",
   },
   subTabText: { fontSize: 13, letterSpacing: 0.1, fontWeight: "400", includeFontPadding: false },
 
