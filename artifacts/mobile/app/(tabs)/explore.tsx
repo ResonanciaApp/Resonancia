@@ -498,13 +498,18 @@ export default function ExploreScreen() {
                         { opacity: pressed ? 0.75 : 1 },
                       ]}
                     >
-                      {sel && (
+                      {sel ? (
                         <LinearGradient
                           colors={["#D6A45C", "#F7CB6B"]}
                           start={{ x: 0, y: 0 }}
                           end={{ x: 0, y: 1 }}
                           style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
                         />
+                      ) : (
+                        <>
+                          <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
+                          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+                        </>
                       )}
                       <Text
                         style={[styles.durPillText, sel && styles.durPillTextActive]}
@@ -620,10 +625,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     minWidth: 76,
     height: 38,
-    backgroundColor: "rgba(255,255,255,0.11)",
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.22)",
   },
   durPillActive: {
     borderColor: "transparent",
