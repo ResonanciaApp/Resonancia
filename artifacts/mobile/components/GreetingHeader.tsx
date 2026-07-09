@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
   },
   greetingText: {
     color: "rgba(255,255,255,0.92)",
-    fontSize: 23,
-    fontWeight: "400",
+    fontSize: 25,
+    fontWeight: "700",
     letterSpacing: 0.3,
     textAlign: "center",
   },
