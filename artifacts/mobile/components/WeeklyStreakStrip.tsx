@@ -13,7 +13,7 @@ const GOLD = "#F7CB6B";
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
-const RING_SIZE = 93;
+const RING_SIZE = 91;
 const STROKE_W = 7;
 const RADIUS = (RING_SIZE - STROKE_W) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
