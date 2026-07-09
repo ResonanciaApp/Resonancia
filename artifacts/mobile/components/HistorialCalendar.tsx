@@ -338,7 +338,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12,
     paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   entryThumb: {
     width: 48,
@@ -346,5 +345,5 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   entryTime: { fontSize: 11, marginBottom: 3 },
-  entryTitle: { fontSize: 14, fontWeight: "700" },
+  entryTitle: { fontSize: 11, fontWeight: "700" },
 });

@@ -314,9 +314,9 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   hTitle: {
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: "700",
-    lineHeight: 18,
+    lineHeight: 21,
     marginBottom: 3,
   },
   hMeta: {

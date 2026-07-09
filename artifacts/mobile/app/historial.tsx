@@ -150,9 +150,11 @@ export default function HistorialScreen() {
           grouped.map(({ dayLabel, entries }) => (
             <View key={dayLabel} style={styles.group}>
               <View style={styles.dayRow}>
+                <View style={[styles.dayLine, { backgroundColor: "rgba(212,175,55,0.18)" }]} />
                 <View style={[styles.dayPill, { backgroundColor: colors.card }]}>
                   <Text style={[styles.dayText, { color: colors.accent }]}>{dayLabel}</Text>
                 </View>
+                <View style={[styles.dayLine, { backgroundColor: "rgba(212,175,55,0.18)" }]} />
               </View>
 
               {entries.map((entry, ei) => {
