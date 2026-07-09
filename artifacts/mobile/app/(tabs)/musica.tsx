@@ -1,4 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useMixerPanel } from "@/context/MixerPanelContext";
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState, memo } from "react";
@@ -166,13 +168,10 @@ const PillTab = memo(function PillTab({
   return (
     <Pressable
       onPress={onPress}
-      style={[
-        styles.pillTab,
-        sel
-          ? { backgroundColor: "#F4F4F4", borderColor: "#F4F4F4" }
-          : { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.1)" },
-      ]}
+      style={[styles.pillTab, sel ? { backgroundColor: "#F4F4F4" } : undefined]}
     >
+      {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
+      {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
       <MaterialCommunityIcons name={tab.icon as any} size={13} color={sel ? "#1B060F" : "#F4F4F4"} />
       <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "#F4F4F4" }]}>
         {tab.label}
@@ -935,8 +934,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
     gap: 5,
-    borderWidth: 2,
-    borderColor: "rgba(244,218,213,0.2)",
   },
   pillTabBorder: {
     borderRadius: 999,
