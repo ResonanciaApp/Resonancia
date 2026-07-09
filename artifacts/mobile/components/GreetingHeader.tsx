@@ -28,26 +28,23 @@ export function GreetingHeader() {
   );
 
   return (
-    <View style={styles.container} pointerEvents="none">
-      <Animated.View style={{ opacity: greetingOpacity }}>
-        <Text style={styles.greetingText}>{greeting}</Text>
-      </Animated.View>
-    </View>
+    <Animated.View style={[styles.container, { opacity: greetingOpacity }]} pointerEvents="none">
+      <Text style={styles.greetingText}>{greeting}</Text>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingRight: 8,
-    justifyContent: "center",
-    minHeight: 52,
+    alignItems: "center",
+    paddingHorizontal: 8,
   },
   greetingText: {
     color: "rgba(255,255,255,0.92)",
-    fontSize: 26,
-    fontWeight: "600",
+    fontSize: 23,
+    fontWeight: "400",
     letterSpacing: 0.3,
+    textAlign: "center",
   },
   descText: {
     color: "rgba(255,255,255,0.45)",

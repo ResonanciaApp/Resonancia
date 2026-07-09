@@ -787,10 +787,15 @@ export default function HomeScreen2() {
           updateStickyActive();
         }}
       >
+        {/* ── Saludo ── */}
+        <View style={{ marginTop: 107 }}>
+          <GreetingHeader />
+        </View>
+
         {/* ── Frase semanal ── */}
         <Animated.View
           style={{
-            marginTop: 117,
+            marginTop: 6,
             paddingHorizontal: GRID_PAD,
             alignItems: "center",
             opacity: phraseAnim,
@@ -1140,15 +1145,12 @@ export default function HomeScreen2() {
           left: 0,
           right: 0,
           flexDirection: "row",
-          justifyContent: "space-between",
+          justifyContent: "flex-end",
           alignItems: "center",
           paddingHorizontal: 14,
           opacity: backdropAnim,
         }}
       >
-        {/* Saludo animado */}
-        <GreetingHeader />
-
         {/* Loto + Regalo — derecha */}
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <Pressable
