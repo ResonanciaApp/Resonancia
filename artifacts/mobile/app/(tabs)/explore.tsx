@@ -572,7 +572,7 @@ const styles = StyleSheet.create({
   header:       { paddingHorizontal: H_PAD, marginBottom: 0 },
   headerRow:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   pageTitle:    { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center", marginTop: 10 },
-  searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 8, paddingBottom: 8 },
+  searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 13, paddingBottom: 8 },
   searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1.5, paddingHorizontal: 18, height: 45 },
   searchInput:  { flex: 1, fontSize: 14, padding: 0 },
   pageSubtitle: { fontSize: 14, color: "#F4F4F4", marginTop: 2 },
