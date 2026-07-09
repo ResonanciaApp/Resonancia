@@ -151,8 +151,7 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress: () => void }) {
   const iconColor = sel ? "#1B060F" : "#e8e8e8";
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, !sel && styles.chipUnsel, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
-      <LinearGradient colors={sel?["#F4F4F4","#F4F4F4"]:["rgba(255,255,255,0.06)","rgba(255,255,255,0.06)"]} start={{x:0,y:0}} end={{x:0,y:1}} style={StyleSheet.absoluteFill} />
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, !sel && styles.chipUnsel, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1, backgroundColor: sel ? "#F4F4F4" : "rgba(255,255,255,0.06)" }]}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
         <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
       </View>
