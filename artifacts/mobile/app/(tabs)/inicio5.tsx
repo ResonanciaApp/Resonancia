@@ -988,28 +988,11 @@ export default function HomeScreen2() {
                   gap: 10,
                   borderRadius: 14,
                   alignItems: "center",
-                  overflow: "hidden",
+                  backgroundColor: "rgba(255,255,255,0.035)",
                   opacity: pressed ? 0.75 : 1,
                 }]}
               >
-                <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-                <LinearGradient
-                  colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-                  style={StyleSheet.absoluteFill}
-                />
-                {/* 5% tinte del color más oscuro del tema */}
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[1], 0.05) }]} />
-                {/* Ícono plateado */}
-                <MaskedView
-                  maskElement={<View style={{ width: 34, height: 34, alignItems: "center", justifyContent: "center" }}>{c.icon("#fff")}</View>}
-                >
-                  <LinearGradient
-                    colors={["#C8C8D0", "#E8E8F0"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={{ width: 34, height: 34 }}
-                  />
-                </MaskedView>
+                {c.icon("#F4F4F4")}
                 <Text style={{ fontSize: 14, fontWeight: "700", color: "#FBFBFB", textAlign: "center" }}>
                   {c.label}
                 </Text>
