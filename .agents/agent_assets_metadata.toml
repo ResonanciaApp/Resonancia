@@ -1482,6 +1482,36 @@ uri = "file://attached_assets/vino-opt5.png"
 type = "image"
 title = "vino-opt5"
 
+[[generated]]
+id = "SzEe7fwIlzGOCs2euWthB"
+uri = "file://attached_assets/tibet-opt1.png"
+type = "image"
+title = "tibet-opt1"
+
+[[generated]]
+id = "gjNHLv0ekoYILytBlb-FK"
+uri = "file://attached_assets/tibet-opt2.png"
+type = "image"
+title = "tibet-opt2"
+
+[[generated]]
+id = "vKXDB3BVlYsFHiPcp5yAF"
+uri = "file://attached_assets/tibet-opt3.png"
+type = "image"
+title = "tibet-opt3"
+
+[[generated]]
+id = "x1UCSUk_y5pZ0DouTD1L6"
+uri = "file://attached_assets/tibet-opt4.png"
+type = "image"
+title = "tibet-opt4"
+
+[[generated]]
+id = "F9pY5HJ1y3zSpYxLZVEpn"
+uri = "file://attached_assets/tibet-opt5.png"
+type = "image"
+title = "tibet-opt5"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
@@ -2237,3 +2267,33 @@ id = "UdUGzG1vt0KBVycGUJogQ"
 uri = "file://attached_assets/vino-opt5.png"
 type = "image"
 title = "Opción 5 — Uvas en roble con candela"
+
+[[outputs]]
+id = "WxJ0vq7Op4-GZcMGEDuoo"
+uri = "file://attached_assets/tibet-opt1.png"
+type = "image"
+title = "Opción 1 — Cuenco con incienso en altar"
+
+[[outputs]]
+id = "hcALWfoqTYSsNWB8f0cQi"
+uri = "file://attached_assets/tibet-opt2.png"
+type = "image"
+title = "Opción 2 — Cuenco bronce primer plano"
+
+[[outputs]]
+id = "yS9Sd8Sz6kITOAOmm55AN"
+uri = "file://attached_assets/tibet-opt3.png"
+type = "image"
+title = "Opción 3 — Inciensos en templo oscuro"
+
+[[outputs]]
+id = "1JMBhD2xw9tGUausGOWZJ"
+uri = "file://attached_assets/tibet-opt4.png"
+type = "image"
+title = "Opción 4 — Cuenco con flores y cristales"
+
+[[outputs]]
+id = "C8sIBcHFPp74LGyVaIveQ"
+uri = "file://attached_assets/tibet-opt5.png"
+type = "image"
+title = "Opción 5 — Humo de incienso abstracto"
