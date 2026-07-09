@@ -160,11 +160,10 @@ export default function VideosScreen() {
         >
           <Pressable
             onPress={() => setSelectedTheme(null)}
-            style={[styles.pill, selectedTheme === null && { backgroundColor: colors.primary }]}
+            style={[styles.pill, selectedTheme === null && styles.pillSel]}
           >
-            {selectedTheme !== null && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
-            {selectedTheme !== null && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
-            <Text style={[styles.pillText, { color: selectedTheme === null ? colors.background : colors.mutedForeground }]}>
+            {selectedTheme === null && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
+            <Text style={[styles.pillText, { color: selectedTheme === null ? "#2D0D3A" : colors.mutedForeground }]}>
               Todos
             </Text>
           </Pressable>
@@ -173,11 +172,10 @@ export default function VideosScreen() {
             <Pressable
               key={t}
               onPress={() => setSelectedTheme(selectedTheme === t ? null : t)}
-              style={[styles.pill, selectedTheme === t && { backgroundColor: colors.primary }]}
+              style={[styles.pill, selectedTheme === t && styles.pillSel]}
             >
-              {selectedTheme !== t && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
-              {selectedTheme !== t && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
-              <Text style={[styles.pillText, { color: selectedTheme === t ? colors.background : colors.mutedForeground }]}>
+              {selectedTheme === t && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
+              <Text style={[styles.pillText, { color: selectedTheme === t ? "#2D0D3A" : colors.mutedForeground }]}>
                 {t}
               </Text>
             </Pressable>
@@ -251,7 +249,11 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.035)",
+    borderWidth: 2,
+    borderColor: "rgba(244,244,244,0.1)",
   },
+  pillSel: { borderWidth: 0 },
   pillText: {
     fontSize: 13,
     fontWeight: "600",

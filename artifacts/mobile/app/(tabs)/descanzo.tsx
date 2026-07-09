@@ -44,40 +44,16 @@ const SOUND_TAB_IDS: SleepTabId[] = ["binaural", "ambiental"];
 function SleepPill({
   sel, label, onPress,
 }: { sel: boolean; label: string; onPress: () => void }) {
-  const selAnim = useRef(new Animated.Value(sel ? 1 : 0)).current;
-  useEffect(() => {
-    Animated.timing(selAnim, { toValue: sel ? 1 : 0, duration: 180, useNativeDriver: false }).start();
-  }, [sel]);
-
-  const bgColor = selAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["transparent", "transparent"],
-  });
-  const gradOpacity = selAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
-  const textColor = selAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["#F4F4F4", "#2D0D3A"],
-  });
-
   return (
-    <View style={[styles.sleepPillBorder, sel && styles.sleepPillBorderSel]}>
-      <Pressable
-        onPress={onPress}
-        style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
-      >
-        <Animated.View style={[styles.sleepPill, { backgroundColor: bgColor }]}>
-          {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
-          {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
-          {!sel && <LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
-          <Animated.View style={[StyleSheet.absoluteFill, { opacity: gradOpacity }]} pointerEvents="none">
-            <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
-          </Animated.View>
-          <Animated.Text style={[styles.sleepPillText, { color: textColor, fontWeight: sel ? "500" : "400" }]} numberOfLines={1}>
-            {label}
-          </Animated.Text>
-        </Animated.View>
-      </Pressable>
-    </View>
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [styles.sleepPill, sel && styles.sleepPillSel, { opacity: pressed ? 0.7 : 1 }]}
+    >
+      {sel && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
+      <Text style={[styles.sleepPillText, sel && styles.sleepPillTextSel]} numberOfLines={1}>
+        {label}
+      </Text>
+    </Pressable>
   );
 }
 
@@ -839,24 +815,27 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  sleepPillBorder: {
-    borderRadius: 999,
-  },
+  sleepPillBorder: {},
   sleepPillBorderSel: {},
   sleepPill: {
     flexDirection: "row",
     alignItems: "center",
     height: 34,
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
     borderRadius: 999,
     gap: 5,
     overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.035)",
+    borderWidth: 2,
+    borderColor: "rgba(244,244,244,0.1)",
   },
+  sleepPillSel: { borderWidth: 0 },
   sleepPillText: {
     fontSize: 13,
     fontWeight: "400",
     letterSpacing: 0.1,
   },
+  sleepPillTextSel: { color: "#2D0D3A", fontWeight: "500" },
 
   /* Sticky header */
   stickyHeader: {

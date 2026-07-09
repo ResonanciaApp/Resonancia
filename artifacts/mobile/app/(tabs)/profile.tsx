@@ -823,17 +823,14 @@ export default function ProfileScreen() {
           {PERFIL_TABS.map((t) => {
             const sel = perfilTab === t.id;
             return (
-              <View key={t.id} style={[styles.pillBorder, sel && styles.pillBorderSel]}>
-                <Pressable
-                  onPress={() => setPerfilTab(t.id)}
-                  style={({ pressed }) => [styles.pill, { opacity: pressed ? 0.8 : 1 }]}
-                >
-                  {sel
-                    ? <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
-                    : <><BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} /></>}
-                  <Text style={[styles.pillText, sel && styles.pillTextSel]}>{t.label}</Text>
-                </Pressable>
-              </View>
+              <Pressable
+                key={t.id}
+                onPress={() => setPerfilTab(t.id)}
+                style={({ pressed }) => [styles.pill, sel && styles.pillSel, { opacity: pressed ? 0.8 : 1 }]}
+              >
+                {sel && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
+                <Text style={[styles.pillText, sel && styles.pillTextSel]}>{t.label}</Text>
+              </Pressable>
             );
           })}
         </View>
@@ -1426,19 +1423,20 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
     marginTop: 10,
   },
-  pillBorder: {
-    borderRadius: 999,
-  },
+  pillBorder: {},
   pillBorderSel: {},
   pill: {
     height: 34,
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
     borderRadius: 999,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.035)",
+    borderWidth: 2,
+    borderColor: "rgba(244,244,244,0.1)",
   },
-  pillSel: {},
+  pillSel: { borderWidth: 0 },
   pillText: { fontSize: 13, fontWeight: "400", color: "#F4F4F4" },
   pillTextSel: { color: "#2D0D3A", fontWeight: "600" },
 

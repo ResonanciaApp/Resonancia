@@ -167,11 +167,9 @@ const PillTab = memo(function PillTab({
   return (
     <Pressable
       onPress={onPress}
-      style={[styles.pillTab]}
+      style={[styles.pillTab, sel && styles.pillTabSel]}
     >
-      {sel
-        ? <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
-        : <><BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} /></>}
+      {sel && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
       <MaterialCommunityIcons name={tab.icon as any} size={13} color={sel ? "#2D0D3A" : "#F4F4F4"} />
       <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#2D0D3A" : "#F4F4F4" }]}>
         {tab.label}
@@ -741,19 +739,16 @@ export default function MezcladorScreen() {
                       if (!cat) return null;
                       const sel = subTab === catId;
                       return (
-                        <View key={catId} style={[styles.subTabBorderOuter, sel && styles.subTabBorderSel]}>
-                          <Pressable
-                            onPress={() => setSubTab(sel ? null : catId)}
-                            style={[styles.subTab]}
-                          >
-                            {sel
-                              ? <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
-                              : <><BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} /></>}
-                            <Text style={[styles.subTabText, { color: sel ? "#2D0D3A" : "#FBFBFB" }]}>
-                              {SUB_TAB_LABELS[catId] ?? cat.label}
-                            </Text>
-                          </Pressable>
-                        </View>
+                        <Pressable
+                          key={catId}
+                          onPress={() => setSubTab(sel ? null : catId)}
+                          style={[styles.subTab, sel && styles.subTabSel]}
+                        >
+                          {sel && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
+                          <Text style={[styles.subTabText, { color: sel ? "#2D0D3A" : "#FBFBFB" }]}>
+                            {SUB_TAB_LABELS[catId] ?? cat.label}
+                          </Text>
+                        </Pressable>
                       );
                     })}
                   </ScrollView>
@@ -934,11 +929,13 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     overflow: "hidden",
     gap: 5,
+    backgroundColor: "rgba(255,255,255,0.035)",
+    borderWidth: 2,
+    borderColor: "rgba(244,244,244,0.1)",
   },
-  pillTabBorder: {
-    borderRadius: 999,
-  },
+  pillTabBorder: {},
   pillTabBorderSel: {},
+  pillTabSel: { borderWidth: 0 },
   pillTabInner: {
     flexDirection: "row",
     alignItems: "center",
@@ -1017,9 +1014,7 @@ const styles = StyleSheet.create({
 
   subTabZone: { position: "relative", justifyContent: "center", marginTop: -6 },
   subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 15 },
-  subTabBorderOuter: {
-    borderRadius: 999,
-  },
+  subTabBorderOuter: {},
   subTabBorderSel: {},
   subTab: {
     flexDirection: "row",
@@ -1029,7 +1024,11 @@ const styles = StyleSheet.create({
     height: 34,
     borderRadius: 999,
     overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.035)",
+    borderWidth: 2,
+    borderColor: "rgba(244,244,244,0.1)",
   },
+  subTabSel: { borderWidth: 0 },
   subTabText: { fontSize: 13, letterSpacing: 0.1, fontWeight: "400", includeFontPadding: false },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 17, justifyContent: "space-evenly" },
