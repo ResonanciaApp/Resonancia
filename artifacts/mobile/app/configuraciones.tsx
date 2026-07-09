@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Application from "expo-application";
 import * as Haptics from "expo-haptics";
 import * as Linking from "expo-linking";
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Notifications from "expo-notifications";
 import * as StoreReview from "expo-store-review";
@@ -308,7 +309,9 @@ export default function ConfiguracionesScreen() {
 
         {/* ── Notificaciones ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>NOTIFICACIONES</Text>
-        <View style={[styles.group, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "transparent" }]}>
+        <View style={[styles.group, { backgroundColor: "transparent", borderColor: "transparent" }]}>
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
           <View style={styles.row}>
             <RowIcon icon="bell" colors={colors} />
             <View style={{ flex: 1 }}>
@@ -378,7 +381,9 @@ export default function ConfiguracionesScreen() {
 
         {/* ── Reproductor ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>REPRODUCTOR</Text>
-        <View style={[styles.group, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "transparent" }]}>
+        <View style={[styles.group, { backgroundColor: "transparent", borderColor: "transparent" }]}>
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
           <View style={styles.subBlock}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 12 }}>
               <RowIcon icon="moon" colors={colors} />
@@ -426,7 +431,9 @@ export default function ConfiguracionesScreen() {
 
         {/* ── Cuenta ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>CUENTA</Text>
-        <View style={[styles.group, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "transparent" }]}>
+        <View style={[styles.group, { backgroundColor: "transparent", borderColor: "transparent" }]}>
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
           <ActionRow
             icon="user"
             label="Editar perfil"
@@ -447,7 +454,9 @@ export default function ConfiguracionesScreen() {
         {(isCreator || isAdmin) && (
           <>
             <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>CREADORES</Text>
-            <View style={[styles.group, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "transparent" }]}>
+            <View style={[styles.group, { backgroundColor: "transparent", borderColor: "transparent" }]}>
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
               {isCreator && (
                 <ActionRow
                   icon="upload-cloud"
@@ -492,7 +501,9 @@ export default function ConfiguracionesScreen() {
 
         {/* ── Apariencia ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>APARIENCIA</Text>
-        <View style={[styles.group, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "transparent" }]}>
+        <View style={[styles.group, { backgroundColor: "transparent", borderColor: "transparent" }]}>
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
           <View style={[styles.row, { flexDirection: "column", alignItems: "flex-start", paddingVertical: 14, gap: 10 }]}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
               <RowIcon icon="sun" colors={colors} />
@@ -514,7 +525,9 @@ export default function ConfiguracionesScreen() {
 
         {/* ── App ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>APP</Text>
-        <View style={[styles.group, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "transparent" }]}>
+        <View style={[styles.group, { backgroundColor: "transparent", borderColor: "transparent" }]}>
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
           <ActionRow icon="info" label="Acerca de RESONANCIA" onPress={handleAbout} colors={colors} />
           <ActionRow icon="star" label="Calificar la app" onPress={handleRate} colors={colors} border />
           <ActionRow icon="file-text" label="Términos y privacidad" onPress={handleTerms} colors={colors} border />
@@ -530,7 +543,9 @@ export default function ConfiguracionesScreen() {
 
         {/* ── Soporte ── */}
         <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>SOPORTE</Text>
-        <View style={[styles.group, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "transparent" }]}>
+        <View style={[styles.group, { backgroundColor: "transparent", borderColor: "transparent" }]}>
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
           <ActionRow
             icon="mail"
             label="Contactar al equipo"
@@ -550,7 +565,9 @@ export default function ConfiguracionesScreen() {
         {__DEV__ && (
           <>
             <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>DESARROLLO</Text>
-            <View style={[styles.group, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "transparent" }]}>
+            <View style={[styles.group, { backgroundColor: "transparent", borderColor: "transparent" }]}>
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
               <View style={styles.row}>
                 <RowIcon icon="star" colors={colors} />
                 <Text style={[styles.rowLabel, { color: colors.foreground }]}>Modo Premium (testing)</Text>

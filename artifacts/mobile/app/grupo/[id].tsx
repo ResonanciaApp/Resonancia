@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { GoldGradientFill } from "@/components/GoldGradient";
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -496,11 +497,16 @@ export default function GrupoDetailScreen() {
                     style={[
                       styles.postCard,
                       {
-                        backgroundColor: post.pinned ? colors.primary + "10" : "rgba(120,60,160,0.40)",
+                        backgroundColor: "transparent",
+                        overflow: "hidden",
                         borderColor: post.pinned ? colors.primary + "44" : colors.border,
                       },
                     ]}
                   >
+                    {post.pinned
+                      ? <LinearGradient colors={[colors.primary + "10", colors.primary + "08"]} style={StyleSheet.absoluteFill} />
+                      : <><BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} /></>
+                    }
                     {post.pinned && (
                       <View style={styles.pinnedRow}>
                         <Feather name="bookmark" size={11} color={colors.primary} />
@@ -596,7 +602,9 @@ export default function GrupoDetailScreen() {
 
             {/* Compose bar */}
             <View style={[styles.composeBar, { paddingBottom: bottomPad + 8, backgroundColor: colors.background, borderTopColor: colors.border }]}>
-              <View style={[styles.composeInput, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: colors.border }]}>
+              <View style={[styles.composeInput, { backgroundColor: "transparent", overflow: "hidden", borderColor: colors.border }]}>
+                <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+                <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
                 <TextInput
                   value={compose}
                   onChangeText={setCompose}
@@ -629,7 +637,9 @@ export default function GrupoDetailScreen() {
               {grupo.members} {grupo.members === 1 ? "miembro" : "miembros"}
             </Text>
             {grupo.memberList.map((m) => (
-              <View key={m.name} style={[styles.memberRow, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: colors.border }]}>
+              <View key={m.name} style={[styles.memberRow, { backgroundColor: "transparent", overflow: "hidden", borderColor: colors.border }]}>
+                <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+                <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
                 <View style={{ position: "relative" }}>
                   <View style={[styles.memberAvatar, { backgroundColor: m.color + "30" }]}>
                     <Text style={[styles.memberInitials, { color: m.color }]}>{m.initials}</Text>
@@ -667,7 +677,9 @@ export default function GrupoDetailScreen() {
             showsVerticalScrollIndicator={false}
           >
             {/* About */}
-            <View style={[styles.infoCard, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: colors.border }]}>
+            <View style={[styles.infoCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: colors.border }]}>
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
               <View style={styles.infoCardHeader}>
                 <Feather name="info" size={16} color={colors.primary} />
                 <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>Sobre el grupo</Text>
@@ -686,7 +698,9 @@ export default function GrupoDetailScreen() {
             </View>
 
             {/* Moderator */}
-            <View style={[styles.infoCard, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: colors.border }]}>
+            <View style={[styles.infoCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: colors.border }]}>
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
               <View style={styles.infoCardHeader}>
                 <Feather name="shield" size={16} color={colors.primary} />
                 <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>
@@ -703,7 +717,9 @@ export default function GrupoDetailScreen() {
 
             {/* Invite link (local groups) */}
             {grupo.isLocalGroup && grupo.inviteCode && (
-              <View style={[styles.infoCard, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: colors.border }]}>
+              <View style={[styles.infoCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: colors.border }]}>
+                <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+                <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
                 <View style={styles.infoCardHeader}>
                   <Feather name="link" size={16} color={colors.primary} />
                   <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>Enlace de invitación</Text>
@@ -717,7 +733,9 @@ export default function GrupoDetailScreen() {
             )}
 
             {/* Rules */}
-            <View style={[styles.infoCard, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: colors.border }]}>
+            <View style={[styles.infoCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: colors.border }]}>
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
               <View style={styles.infoCardHeader}>
                 <Feather name="book-open" size={16} color={colors.primary} />
                 <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>Reglas del espacio</Text>

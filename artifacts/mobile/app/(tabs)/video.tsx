@@ -100,7 +100,12 @@ export default function VideoTabScreen() {
         <Text style={[styles.pageTitle, { color: colors.foreground, paddingHorizontal: 20, paddingTop: 8, paddingBottom: 2 }]}>Videos</Text>
         {/* Search bar */}
         <View style={styles.searchWrap}>
-          <View style={[styles.searchBox, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(255,255,255,0.7)" }]}>
+          <View style={[styles.searchBox, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.7)" }]}>
+            <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+            <LinearGradient
+              colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+              style={StyleSheet.absoluteFill}
+            />
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
               value={query}

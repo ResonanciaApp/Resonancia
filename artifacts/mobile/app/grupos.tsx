@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { GhostPill } from "@/components/GhostPill";
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
@@ -202,9 +203,11 @@ function TabOjear({
             onPress={() => router.push(`/grupo/${g.id}` as never)}
             style={({ pressed }) => [
               styles.popularRow,
-              { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
+              { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
             ]}
           >
+            <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+            <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
             <LocalGrupoAvatar grupo={g} size={54} />
             <View style={{ flex: 1 }}>
               <Text style={[styles.popularTipo, { color: colors.mutedForeground }]}>
@@ -260,7 +263,9 @@ function TabMisGrupos({
         <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Grupos que gestiono</Text>
           <Pressable onPress={onCreatePress} hitSlop={8}>
-            <View style={[styles.addBtn, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(61,14,22,0.40)" }]}>
+            <View style={[styles.addBtn, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(61,14,22,0.40)" }]}>
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
               <Feather name="plus" size={20} color={colors.foreground} />
             </View>
           </Pressable>
@@ -279,9 +284,11 @@ function TabMisGrupos({
               onPress={() => router.push(`/grupo/${g.id}` as never)}
               style={({ pressed }) => [
                 styles.unitoRow,
-                { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
+                { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
               ]}
             >
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
               <LocalGrupoAvatar grupo={g} size={54} />
               <View style={{ flex: 1 }}>
                 <View style={styles.grupoNameRow}>
@@ -321,9 +328,11 @@ function TabMisGrupos({
               onPress={() => router.push(`/grupo/${g.id}` as never)}
               style={({ pressed }) => [
                 styles.unitoRow,
-                { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
+                { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
               ]}
             >
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
               <GroupAvatar gradient={g.gradient} icon={g.icon} color={g.color} size={54} />
               <View style={{ flex: 1 }}>
                 <Text style={[styles.popularName, { color: colors.foreground }]} numberOfLines={1}>
@@ -359,8 +368,10 @@ function TabTablon({ colors }: { colors: ReturnType<typeof useColors> }) {
       {FEED_POSTS.map((post) => (
         <View
           key={post.id}
-          style={[styles.feedCard, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(61,14,22,0.40)" }]}
+          style={[styles.feedCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(61,14,22,0.40)" }]}
         >
+          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
           {/* Post header */}
           <View style={styles.feedHeader}>
             <View style={[styles.feedAvatar, { backgroundColor: post.color + "30" }]}>

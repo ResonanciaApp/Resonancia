@@ -20,6 +20,7 @@ import { Image } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -401,7 +402,12 @@ export default function ExploreScreen() {
 
         {/* ── Barra de búsqueda ── */}
         <View style={styles.searchWrap}>
-          <View style={[styles.searchBox, { backgroundColor: "rgba(120,60,160,0.40)", borderColor: "rgba(255,255,255,0.14)" }]}>
+          <View style={[styles.searchBox, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.14)" }]}>
+            <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+            <LinearGradient
+              colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+              style={StyleSheet.absoluteFill}
+            />
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
               value={query}
@@ -445,30 +451,30 @@ export default function ExploreScreen() {
                   <Pressable
                     key={t.id}
                     onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
-                    style={({ pressed }) => [
-                      styles.temaCell,
-                      {
-                        width: TEMA3_W,
-                        height: TEMA3_W,
-                        backgroundColor: pressed
-                          ? hexTint(t.color, 0.22)
-                          : "rgba(120,60,160,0.40)",
-                        borderRadius: 11,
-                      },
-                    ]}
+                    style={[styles.temaCell, { width: TEMA3_W, height: TEMA3_W, borderRadius: 11, overflow: "hidden" }]}
                   >
-                    {t.image != null ? (
-                      <Image
-                        source={t.image}
-                        style={styles.temaCellIcon}
-                        contentFit="contain"
-                      />
-                    ) : (
-                      <MaterialCommunityIcons name={t.icon} size={28} color={t.color} />
+                    {({ pressed }) => (
+                      <>
+                        <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+                        <LinearGradient
+                          colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+                          style={StyleSheet.absoluteFill}
+                        />
+                        {pressed && <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(t.color, 0.22) }]} />}
+                        {t.image != null ? (
+                          <Image
+                            source={t.image}
+                            style={styles.temaCellIcon}
+                            contentFit="contain"
+                          />
+                        ) : (
+                          <MaterialCommunityIcons name={t.icon} size={28} color={t.color} />
+                        )}
+                        <Text style={[styles.temaCellLabel, { color: "#e8e8e8" }]} numberOfLines={2}>
+                          {t.label}
+                        </Text>
+                      </>
                     )}
-                    <Text style={[styles.temaCellLabel, { color: "#e8e8e8" }]} numberOfLines={2}>
-                      {t.label}
-                    </Text>
                   </Pressable>
                 ))}
               </View>
@@ -496,6 +502,11 @@ export default function ExploreScreen() {
                         { opacity: pressed ? 0.75 : 1 },
                       ]}
                     >
+                      <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+                      <LinearGradient
+                        colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+                        style={StyleSheet.absoluteFill}
+                      />
                       {sel && (
                         <LinearGradient
                           colors={["#D6A45C", "#BE8744"]}
@@ -616,7 +627,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     minWidth: 76,
     height: 38,
-    backgroundColor: "rgba(120,60,160,0.40)",
+    backgroundColor: "transparent",
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",

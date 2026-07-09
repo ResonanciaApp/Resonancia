@@ -814,11 +814,12 @@ export default function HomeScreen2() {
           onPress={() => router.push("/resonadores" as never)}
           style={{ marginBottom: 35, marginHorizontal: GRID_PAD, marginTop: -6 }}
         >
-          <View
-            style={[styles.resonadoresBanner, {
-              backgroundColor: "rgba(120,60,160,0.40)",
-            }]}
-          >
+          <View style={styles.resonadoresBanner}>
+            <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+            <LinearGradient
+              colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+              style={StyleSheet.absoluteFill}
+            />
             <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
               <LinearGradient
                 colors={["rgb(247,203,107)", "rgb(251,169,128)"]}
@@ -909,10 +910,14 @@ export default function HomeScreen2() {
                   borderRadius: 14,
                   alignItems: "center",
                   overflow: "hidden",
-                  backgroundColor: "rgba(120,60,160,0.40)",
                   opacity: pressed ? 0.75 : 1,
                 }]}
               >
+                <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+                <LinearGradient
+                  colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+                  style={StyleSheet.absoluteFill}
+                />
                 {/* 5% tinte del color más oscuro del tema */}
                 <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[1], 0.05) }]} />
                 {/* Ícono plateado */}
@@ -968,9 +973,14 @@ export default function HomeScreen2() {
         {selectedMood ? (
           <Pressable
             onPress={() => setMoodSheetVisible(true)}
-            style={({ pressed }) => [styles.moodRow, styles.moodRowActive, { opacity: pressed ? 0.78 : 1 }]}
+            style={({ pressed }) => [styles.moodRow, styles.moodRowActive, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
           >
-            <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(120,60,160,0.40)" }]} />
+            <BlurView intensity={40} tint="dark" pointerEvents="none" style={StyleSheet.absoluteFill} />
+            <LinearGradient
+              colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+              pointerEvents="none"
+              style={StyleSheet.absoluteFill}
+            />
             <Text style={styles.moodSientesLabel}>Sientes:</Text>
             <View style={{ flex: 1 }} />
             <LinearGradient
@@ -993,9 +1003,14 @@ export default function HomeScreen2() {
         ) : (
           <Pressable
             onPress={() => setMoodSheetVisible(true)}
-            style={({ pressed }) => [styles.moodRow, { opacity: pressed ? 0.78 : 1 }]}
+            style={({ pressed }) => [styles.moodRow, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
           >
-            <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(120,60,160,0.40)" }]} />
+            <BlurView intensity={40} tint="dark" pointerEvents="none" style={StyleSheet.absoluteFill} />
+            <LinearGradient
+              colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+              pointerEvents="none"
+              style={StyleSheet.absoluteFill}
+            />
             <Text style={styles.moodEmoji}>🙂</Text>
             <Text style={styles.moodRowLabel}>¿Cómo te sientes hoy?</Text>
             <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" />
@@ -1010,18 +1025,23 @@ export default function HomeScreen2() {
         </View>
         <View style={styles.recoSection}>
           {moodRecommended.map((s) => (
-            <SessionRow
-              key={s.id}
-              session={s}
-              style={styles.recoCard}
-              imageSize={84}
-              metaText={s.categoryLabel}
-              onPress={() => {
-                if (s.isPremium && !isPremium) { router.push("/membresia" as never); return; }
-                if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
-                router.push(`/session/${s.id}` as never);
-              }}
-            />
+            <View key={s.id} style={styles.recoCard}>
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient
+                colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+                style={StyleSheet.absoluteFill}
+              />
+              <SessionRow
+                session={s}
+                imageSize={84}
+                metaText={s.categoryLabel}
+                onPress={() => {
+                  if (s.isPremium && !isPremium) { router.push("/membresia" as never); return; }
+                  if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
+                  router.push(`/session/${s.id}` as never);
+                }}
+              />
+            </View>
           ))}
         </View>
 
@@ -1234,8 +1254,9 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   recoCard: {
-    backgroundColor: "rgba(120,60,160,0.40)",
+    backgroundColor: "transparent",
     borderRadius: 14,
+    overflow: "hidden",
     paddingHorizontal: 14,
     paddingVertical: 14,
     shadowOpacity: 0,

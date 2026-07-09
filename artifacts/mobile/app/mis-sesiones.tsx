@@ -5,6 +5,7 @@
  */
 import { Feather } from "@expo/vector-icons";
 import { GhostPill } from "@/components/GhostPill";
+import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useCallback } from "react";
@@ -216,9 +217,15 @@ function PastSessionRow({ session }: { session: LiveSessionItem }) {
       <View
         style={[
           pastStyles.badge,
-          { backgroundColor: isCompleted ? "rgba(92,184,92,0.12)" : "rgba(120,60,160,0.40)" },
+          { backgroundColor: isCompleted ? "rgba(92,184,92,0.12)" : "transparent", overflow: "hidden" },
         ]}
       >
+        {!isCompleted && (
+          <>
+            <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+            <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
+          </>
+        )}
         <Text
           style={[
             pastStyles.badgeText,
@@ -245,7 +252,8 @@ const pastStyles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "rgba(120,60,160,0.40)",
+    backgroundColor: "transparent",
+    overflow: "hidden",
   },
   name: { color: FOREGROUND, fontSize: 13, fontFamily: "Inter_600SemiBold" },
   date: { color: MUTED, fontSize: 11, fontFamily: "Inter_400Regular", marginTop: 2 },
