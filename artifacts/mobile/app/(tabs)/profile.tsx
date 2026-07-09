@@ -1428,12 +1428,8 @@ const styles = StyleSheet.create({
   },
   pillBorder: {
     borderRadius: 999,
-    borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.25)",
   },
-  pillBorderSel: {
-    borderColor: "transparent",
-  },
+  pillBorderSel: {},
   pill: {
     height: 34,
     paddingHorizontal: 12,
