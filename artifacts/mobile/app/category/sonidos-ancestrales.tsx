@@ -168,7 +168,6 @@ function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: {id: string; la
             onPress={() => activeTab === t.id ? onClear() : onSelect(t.id)} />
         ))}
       </ScrollView>
-      <View style={styles.chipRowBorder} />
     </View>
   );
 }
@@ -576,7 +575,7 @@ const styles = StyleSheet.create({
   gridOuter: { paddingHorizontal: H_PAD, gap: GRID_GAP },
   gridRow: { flexDirection: "row", gap: GRID_GAP },
   sectionLabel: { fontSize: 11, fontWeight: "400", color: TEXT, paddingHorizontal: H_PAD, paddingTop: 5, paddingBottom: 4 },
-  sessionGrid: { flexDirection: "row", flexWrap: "wrap", columnGap: 18, paddingHorizontal: H_PAD, rowGap: 20, marginTop: 8, marginBottom: 6 },
+  sessionGrid: { flexDirection: "row", flexWrap: "wrap", columnGap: 20, paddingHorizontal: H_PAD, rowGap: 24, marginTop: 18, marginBottom: 6 },
   emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },
   loadMoreFooter: { alignItems: "center", paddingVertical: 20 },
   emptyTitle: { fontSize: 17, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 8 },
