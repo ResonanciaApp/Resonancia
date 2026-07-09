@@ -22,7 +22,7 @@ import { useCatalog } from "@/context/CatalogContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { hexToRgba } from "@/utils/color";
 
-const H_PAD = 15;
+const H_PAD = 20;
 const { width: W } = Dimensions.get("window");
 const cardW = (W - H_PAD * 2 - 14) / 2;
 const GOLD  = "#F7CB6B";

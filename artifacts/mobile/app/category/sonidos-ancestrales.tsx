@@ -26,7 +26,7 @@ import { getGuide } from "@/data/guides";
 import { SESSIONS, type Session } from "@/data/sessions";
 
 const { width } = Dimensions.get("window");
-const H_PAD = 15;
+const H_PAD = 20;
 const GOLD  = "#F7CB6B";
 
 const TEXT  = "#FBFBFB";
