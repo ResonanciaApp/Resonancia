@@ -422,7 +422,7 @@ export default function ExploreScreen() {
 
         {/* ── Para este momento ── */}
         {featuredHoy && (
-          <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 8 }]}>
+          <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 26 }]}>
             <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Para este momento</Text>
             <Pressable onPress={() => handleSessionPress(featuredHoy)}>
               <View style={styles.heroImageContainer}>
