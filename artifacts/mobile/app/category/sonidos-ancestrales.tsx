@@ -154,6 +154,7 @@ function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, !sel && styles.chipUnsel, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1, backgroundColor: sel ? "#F4F4F4" : "transparent" }]}>
       {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
+      {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
         <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
       </View>
