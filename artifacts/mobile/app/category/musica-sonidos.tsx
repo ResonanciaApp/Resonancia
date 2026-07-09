@@ -469,8 +469,8 @@ const styles = StyleSheet.create({
   heroIconGlow: { borderRadius: 28, shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 14, shadowOffset: { width: 0, height: 0 }, elevation: 8 },
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "#1B060F", borderWidth: 2, borderColor: "rgba(255,255,255,0.1)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
-  profileCard: { marginHorizontal: H_PAD, marginTop: -37, paddingBottom: 14, gap: 8, alignItems: "center" },
-  profileTitle: { fontSize: 27, fontWeight: "400", color: TEXT, letterSpacing: 0.3 },
+  profileCard: { marginHorizontal: H_PAD, marginTop: -52, paddingBottom: 14, gap: 8, alignItems: "center" },
+  profileTitle: { fontSize: 27, fontWeight: "700", color: TEXT, letterSpacing: 0.3 },
   profileDesc: { fontSize: 13, color: "rgba(255,255,255,0.90)", lineHeight: 18, textAlign: "center", maxWidth: 280, marginTop: -4, marginBottom: 28 },
 
   dividerLine: { height: 0 },
