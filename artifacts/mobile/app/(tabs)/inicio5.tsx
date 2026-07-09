@@ -1187,11 +1187,25 @@ export default function HomeScreen2() {
           opacity: backdropAnim,
         }}
       >
-        {/* Logo Pulso + Saludo — izquierda (superpuestos) */}
-        <View style={{ width: 210, height: 44, justifyContent: "center" }}>
+        {/* Loto — izquierda */}
+        <Pressable
+          onPress={openEscenasSheet}
+          hitSlop={8}
+          style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
+        >
+          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+          <LinearGradient
+            colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+            style={StyleSheet.absoluteFill}
+          />
+          <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
+        </Pressable>
+
+        {/* Logo + Saludo — centro */}
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center", height: 44 }}>
           <Animated.Image
             source={require("@/assets/images/pulso-logo.png")}
-            style={{ position: "absolute", width: 159, height: 39, opacity: logoOpacity, left: -13 }}
+            style={{ position: "absolute", width: 159, height: 39, opacity: logoOpacity }}
             resizeMode="contain"
           />
           <Animated.Text numberOfLines={1} style={{ position: "absolute", color: "#FBFBFB", fontSize: 25, fontWeight: "700", letterSpacing: 0.3, opacity: greetingAnim5 }}>
@@ -1199,43 +1213,29 @@ export default function HomeScreen2() {
           </Animated.Text>
         </View>
 
-        {/* Loto + Mezclador — derecha */}
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <Pressable
-            onPress={openEscenasSheet}
-            hitSlop={8}
-            style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
-          >
-            <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-            <LinearGradient
-              colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-              style={StyleSheet.absoluteFill}
-            />
-            <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
-          </Pressable>
-          <Pressable
-            hitSlop={8}
-            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1 }]}
-            onPressIn={() =>
-              Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
-            }
-            onPressOut={() => {
-              Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
-              openMixer();
-            }}
-          >
-            <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-              <View style={styles.giftBtnInner}>
-                <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-                <LinearGradient
-                  colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-                  style={StyleSheet.absoluteFill}
-                />
-                <Feather name="sliders" size={22} color="#FFFFFF" style={{ opacity: 0.9 }} />
-              </View>
-            </Animated.View>
-          </Pressable>
-        </View>
+        {/* Mezclador — derecha */}
+        <Pressable
+          hitSlop={8}
+          style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1 }]}
+          onPressIn={() =>
+            Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
+          }
+          onPressOut={() => {
+            Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
+            openMixer();
+          }}
+        >
+          <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
+            <View style={styles.giftBtnInner}>
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient
+                colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+                style={StyleSheet.absoluteFill}
+              />
+              <Feather name="sliders" size={22} color="#FFFFFF" style={{ opacity: 0.9 }} />
+            </View>
+          </Animated.View>
+        </Pressable>
       </Animated.View>
 
       <MoodPickerSheet
