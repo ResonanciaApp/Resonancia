@@ -219,8 +219,6 @@ const styles = StyleSheet.create({
 
   stickyHeader: {
     backgroundColor: "transparent",
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.04)",
   },
   pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.5 },
 
