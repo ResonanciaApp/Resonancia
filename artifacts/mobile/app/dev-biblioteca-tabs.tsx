@@ -18,7 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 
 const GOLD = "#BE8744";
-const TEXT = "#e8e8e8";
+const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 const H_PAD = 15;
 

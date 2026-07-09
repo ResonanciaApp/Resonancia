@@ -24,7 +24,7 @@ import { hexToRgba } from "@/utils/color";
 
 const H_PAD = 15;
 const GOLD  = "#BE8744";
-const TEXT  = "#e8e8e8";
+const TEXT  = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
 type CatTab   = string;
@@ -93,7 +93,7 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 }
 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress:()=>void }) {
-  const iconColor = sel ? "#1B060F" : "#e8e8e8";
+  const iconColor = sel ? "#1B060F" : "#FBFBFB";
   return (
     <View style={[styles.chipBorder, sel && styles.chipBorderSel]}>
       <Pressable onPress={onPress} style={({pressed})=>[styles.chip, !sel && styles.chipUnsel, sel && styles.chipSel, {opacity:pressed?0.7:1, backgroundColor:"transparent"}]}>
@@ -468,7 +468,7 @@ const styles = StyleSheet.create({
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#1B060F", borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.1)" },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   headerTitleCol: { flex: 1, alignItems: "center" },
-  headerTitle: { fontSize: 18, fontWeight: "400", color: "#e8e8e8", letterSpacing: 0.2, textAlign: "center" },
+  headerTitle: { fontSize: 18, fontWeight: "400", color: "#FBFBFB", letterSpacing: 0.2, textAlign: "center" },
   headerSubtitle: { fontSize: 11, color: "#f7f7f7", letterSpacing: 0.3, marginTop: 1, opacity: 0.7 },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
   heroOverlayRight: { position: "absolute", right: H_PAD, zIndex: 10 },

@@ -230,7 +230,7 @@ export default function InmersivoMixerScreen() {
               <MaterialCommunityIcons
                 name={sleepTimerRemaining != null ? "clock-check" : "clock-outline"}
                 size={14}
-                color={sleepTimerRemaining != null ? "#E9C46A" : "rgba(255,255,255,0.65)"}
+                color={sleepTimerRemaining != null ? "#E9C46A" : "#F4F4F4"}
               />
               <Text style={[styles.timerText, sleepTimerRemaining != null && styles.timerTextActive]}>
                 {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "Timer"}
@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.30)",
   },
   timerText: {
-    color: "rgba(255,255,255,0.65)",
+    color: "#F4F4F4",
     fontSize: 12,
     fontWeight: "600",
     fontVariant: ["tabular-nums"],
@@ -463,7 +463,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.10)",
   },
   soundPillText: {
-    color: "rgba(255,255,255,0.60)",
+    color: "#F4F4F4",
     fontSize: 10,
     fontWeight: "500",
   },
@@ -556,7 +556,7 @@ const styles = StyleSheet.create({
   timerOptText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "rgba(255,255,255,0.65)",
+    color: "#F4F4F4",
   },
   timerOptTextSel: {
     color: "#E9C46A",

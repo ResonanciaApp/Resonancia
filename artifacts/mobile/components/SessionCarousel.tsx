@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 0.3,
     marginBottom: 24,
-    color: "#e8e8e8",
+    color: "#FBFBFB",
   },
   card: { width: CARD_W },
   thumbWrap: {

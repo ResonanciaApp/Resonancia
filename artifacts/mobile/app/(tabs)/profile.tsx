@@ -793,7 +793,7 @@ export default function ProfileScreen() {
             style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.7 : 1 }]}
             hitSlop={10}
           >
-            <Feather name="settings" size={25} color="#e8e8e8" />
+            <Feather name="settings" size={25} color="#FBFBFB" />
           </Pressable>
           <Text style={styles.stickyTitle}>Perfil</Text>
           <Pressable
@@ -1722,7 +1722,7 @@ const styles = StyleSheet.create({
   dvCertBannerIcon: { flex: 1, borderRadius: 16, overflow: "hidden", alignItems: "center", justifyContent: "center" },
   dvCertBannerStar: { fontSize: 17, color: "rgba(212,175,55,0.90)", fontWeight: "800" },
   dvServiceTitle: { fontSize: 15, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.2 },
-  dvServiceDesc: { fontSize: 13, lineHeight: 20, color: "rgba(255,255,255,0.65)" },
+  dvServiceDesc: { fontSize: 13, lineHeight: 20, color: "#F4F4F4" },
   dvReadMoreBtn: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 6, alignSelf: "flex-start" },
   dvReadMoreText: { fontSize: 13, fontWeight: "600", color: "#BE8744" },
   dvSpecialtyWrap: { flexDirection: "row", gap: 8, alignItems: "center" },
@@ -1745,7 +1745,7 @@ const styles = StyleSheet.create({
   dvGalleryCell: { borderRadius: 10, backgroundColor: "rgba(255,255,255,0.05)" },
   dvQuoteWrap: { alignItems: "center", paddingVertical: 8, paddingHorizontal: 8, marginBottom: 16 },
   dvQuoteText: {
-    fontSize: 18, fontStyle: "italic", color: "rgba(255,255,255,0.70)",
+    fontSize: 18, fontStyle: "italic", color: "#F6F6F6",
     textAlign: "center", lineHeight: 28, letterSpacing: 0.2,
   },
   dvLightboxBackdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.92)", alignItems: "center", justifyContent: "center" },

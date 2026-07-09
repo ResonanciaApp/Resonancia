@@ -242,7 +242,7 @@ function ExpansorChevronFilter({
       <Pressable onPress={toggle} style={({ pressed }) => [styles.chevronTrigger, { opacity: pressed ? 0.75 : 1 }]}>
         <Text style={styles.chevronTriggerText}>{label}</Text>
         <Animated.View style={{ transform: [{ rotate: chevronRotate }] }}>
-          <Feather name="chevron-down" size={14} color="rgba(255,255,255,0.70)" />
+          <Feather name="chevron-down" size={14} color="#F6F6F6" />
         </Animated.View>
       </Pressable>
 
@@ -726,7 +726,7 @@ const styles = StyleSheet.create({
   tabBtnText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "rgba(255,255,255,0.70)",
+    color: "#F6F6F6",
   },
   tabBtnTextActive: {
     color: "#1B060F",
@@ -879,7 +879,7 @@ const styles = StyleSheet.create({
   cardTag: {
     fontSize: 10,
     fontWeight: "400",
-    color: "rgba(255,255,255,0.55)",
+    color: "#F4F4F4",
     textAlign: "center",
     marginBottom: 3,
   },

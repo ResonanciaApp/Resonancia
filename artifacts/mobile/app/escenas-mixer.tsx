@@ -314,7 +314,7 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
               </Pressable>
               <Text style={styles.previewTitle}>{previewScene.name}</Text>
               <Pressable onPress={handleDelete} hitSlop={14} style={styles.previewIconBtn}>
-                <Feather name="trash-2" size={20} color="rgba(255,255,255,0.65)" />
+                <Feather name="trash-2" size={20} color="#F4F4F4" />
               </Pressable>
             </View>
 
@@ -594,7 +594,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.92)",
+    backgroundColor: "#FBFBFB",
     borderRadius: 32,
     paddingHorizontal: 32,
     paddingVertical: 16,

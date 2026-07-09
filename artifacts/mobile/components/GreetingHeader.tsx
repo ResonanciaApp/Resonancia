@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   greetingText: {
-    color: "rgba(255,255,255,0.92)",
+    color: "#FBFBFB",
     fontSize: 25,
     fontWeight: "700",
     letterSpacing: 0.3,

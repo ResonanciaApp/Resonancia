@@ -438,7 +438,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
           <Text style={[styles.title, { color: "#FFFFFF" }]} numberOfLines={1}>
             {currentSession!.title}
           </Text>
-          <Text style={[styles.sub, { color: "rgba(255,255,255,0.55)" }]} numberOfLines={1}>
+          <Text style={[styles.sub, { color: "#F4F4F4" }]} numberOfLines={1}>
             {currentSession!.categoryLabel} · {currentSession!.durationLabel}
           </Text>
         </View>
@@ -590,7 +590,7 @@ const styles = StyleSheet.create({
   },
   mixSub: {
     fontSize: 11,
-    color: "rgba(255,255,255,0.55)",
+    color: "#F4F4F4",
   },
 
   // ── Play/Pause ────────────────────────────────────────────────

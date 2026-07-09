@@ -29,7 +29,7 @@ import { useColors } from "@/hooks/useColors";
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
 const GOLD = "#BE8744";
-const TEXT = "#e8e8e8";
+const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 const HERO_H = 238;
 const HERO_IMG = require("@/assets/images/sessions/session-1.jpg");

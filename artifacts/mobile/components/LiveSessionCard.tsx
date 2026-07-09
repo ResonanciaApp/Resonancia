@@ -11,7 +11,7 @@ const WARM_BLACK = "#1B060F";
 const PRIMARY_GOLD = "#BE8744";
 const ACCENT_GOLD = "#E9C46A";
 const FOREGROUND = "#FFFFFF";
-const MUTED = "rgba(255,255,255,0.55)";
+const MUTED = "#F4F4F4";
 const BORDER = "#3D0E16";
 const CARD_BG = "rgba(74,12,12,0.14)";
 

@@ -852,7 +852,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   specialtyText: { fontSize: 13, color: "#FFFFFF", fontWeight: "400", letterSpacing: 0.1 },
-  serviceDesc: { fontSize: 13, lineHeight: 20, color: "rgba(255,255,255,0.65)" },
+  serviceDesc: { fontSize: 13, lineHeight: 20, color: "#F4F4F4" },
   readMoreBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -972,7 +972,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   formacionTitulo: { fontSize: 13, fontWeight: "700", color: "#FAF0EE" },
-  formacionInst: { fontSize: 12, color: "rgba(255,255,255,0.65)", marginTop: 1 },
+  formacionInst: { fontSize: 12, color: "#F4F4F4", marginTop: 1 },
   formacionYears: { fontSize: 11, color: GOLD_MUTED, marginTop: 2 },
 
   /* ── Chip Apóyalo ── */
@@ -995,7 +995,7 @@ const styles = StyleSheet.create({
   quoteText: {
     fontSize: 18,
     fontStyle: "italic",
-    color: "rgba(255,255,255,0.70)",
+    color: "#F6F6F6",
     textAlign: "center",
     lineHeight: 28,
     letterSpacing: 0.2,

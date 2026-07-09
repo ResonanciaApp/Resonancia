@@ -55,7 +55,7 @@ const H_PAD = 15;
 const GOLD = "#BE8744";
 const NAVY = "#210911";
 const DARK_BLUE = "#210911";
-const TEXT = "#e8e8e8";
+const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
 type LibTab = "playlists" | "mezclas" | "geometrix" | "favoritos" | "resonadores";
@@ -561,16 +561,16 @@ const blStyles = StyleSheet.create({
   root:         { flex: 1, backgroundColor: "#190913" },
   overlay:      { flexDirection: "row", alignItems: "center", backgroundColor: "#190913", paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
   bar:          { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.09)", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 11 },
-  input:        { flex: 1, fontSize: 14, color: "#e8e8e8" },
+  input:        { flex: 1, fontSize: 14, color: "#FBFBFB" },
   cancel:       { paddingVertical: 6 },
   cancelText:   { color: "#BE8744", fontSize: 14, fontWeight: "600" },
   empty:        { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, paddingTop: 60 },
-  emptyTitle:   { fontSize: 18, fontWeight: "700", color: "#e8e8e8", textAlign: "center", marginBottom: 10 },
+  emptyTitle:   { fontSize: 18, fontWeight: "700", color: "#FBFBFB", textAlign: "center", marginBottom: 10 },
   emptySub:     { fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
   resultRow:    { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 5 },
   thumb:        { width: 75, height: 75, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.07)" },
   resultCat:    { fontSize: 12, color: "rgba(242,231,228,0.45)", marginBottom: 3 },
-  resultTitle:  { fontSize: 15, fontWeight: "700", color: "#e8e8e8", marginBottom: 3 },
+  resultTitle:  { fontSize: 15, fontWeight: "700", color: "#FBFBFB", marginBottom: 3 },
   resultAuthor: { fontSize: 12, color: "rgba(242,231,228,0.45)" },
 });
 
@@ -1873,7 +1873,7 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: "rgba(212,175,55,0.25)",
   },
   headerTitle: { fontSize: 27, fontWeight: "700", color: TEXT, letterSpacing: 0.5 },
-  headerSubtitle: { fontSize: 14, color: "rgba(255,255,255,0.55)", marginTop: 2 },
+  headerSubtitle: { fontSize: 14, color: "#F4F4F4", marginTop: 2 },
   headerIcons: { flexDirection: "row", alignItems: "center", gap: 4 },
   headerIconBtn: { width: 43, height: 43, alignItems: "center", justifyContent: "center" },
 

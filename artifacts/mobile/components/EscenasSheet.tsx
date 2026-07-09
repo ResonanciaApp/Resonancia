@@ -256,7 +256,7 @@ export function EscenasSheet() {
           {/* Volumen */}
           <View style={styles.volumeRow}>
             <View style={styles.volumeLabelGroup}>
-              <MaterialCommunityIcons name="spa" size={17} color="rgba(255,255,255,0.65)" style={styles.controlIcon} />
+              <MaterialCommunityIcons name="spa" size={17} color="#F4F4F4" style={styles.controlIcon} />
               <Text style={styles.controlLabel}>Volumen de la escena</Text>
             </View>
             <View style={styles.sliderGroup}>
@@ -278,7 +278,7 @@ export function EscenasSheet() {
 
           {/* Timer */}
           <Pressable style={styles.controlRow} onPress={() => setTimerOpen((v) => !v)}>
-            <Feather name="clock" size={17} color="rgba(255,255,255,0.65)" style={styles.controlIcon} />
+            <Feather name="clock" size={17} color="#F4F4F4" style={styles.controlIcon} />
             <Text style={styles.controlLabel}>Reproducir sonidos fuera de la aplicación</Text>
             <View style={styles.timerTrigger}>
               <Text style={styles.timerTriggerLabel}>
@@ -289,7 +289,7 @@ export function EscenasSheet() {
               <Feather
                 name={timerOpen ? "chevron-up" : "chevron-down"}
                 size={14}
-                color="rgba(255,255,255,0.55)"
+                color="#F4F4F4"
               />
             </View>
           </Pressable>
@@ -322,7 +322,7 @@ export function EscenasSheet() {
 
           {/* Logo Pulso */}
           <View style={styles.controlRow}>
-            <MaterialCommunityIcons name="image-outline" size={17} color="rgba(255,255,255,0.65)" style={styles.controlIcon} />
+            <MaterialCommunityIcons name="image-outline" size={17} color="#F4F4F4" style={styles.controlIcon} />
             <Text style={styles.controlLabel}>Activar logo</Text>
             <Switch
               value={greetingVisible}
@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "600",
-    color: "#e8e8e8",
+    color: "#FBFBFB",
     textAlign: "center",
     marginBottom: 22,
   },
@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
   timerDropItemText: {
     fontSize: 14,
     fontWeight: "500",
-    color: "rgba(242,231,228,0.7)",
+    color: "#F6F6F6",
   },
   timerDropItemTextActive: {
     color: "#D4AF37",

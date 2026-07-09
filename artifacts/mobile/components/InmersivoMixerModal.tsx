@@ -215,7 +215,7 @@ export function InmersivoContent() {
               <MaterialCommunityIcons
                 name={sleepTimerRemaining != null ? "clock-check" : "clock-outline"}
                 size={14}
-                color={sleepTimerRemaining != null ? "#E9C46A" : "rgba(255,255,255,0.65)"}
+                color={sleepTimerRemaining != null ? "#E9C46A" : "#F4F4F4"}
               />
               <Text style={[styles.timerText, sleepTimerRemaining != null && styles.timerTextActive]}>
                 {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "Timer"}
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
   },
   introHintText: {
-    color: "rgba(255,255,255,0.70)",
+    color: "#F6F6F6",
     fontSize: 18,
     fontWeight: "700",
     textAlign: "center",
@@ -328,12 +328,12 @@ const styles = StyleSheet.create({
   iconBtn: { width: 44, height: 44, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.22)", borderRadius: 22 },
   timerBadge: { flexDirection: "row", alignItems: "center", gap: 5, backgroundColor: "rgba(0,0,0,0.28)", borderRadius: 16, paddingHorizontal: 11, paddingVertical: 7, borderWidth: 1, borderColor: "rgba(255,255,255,0.10)" },
   timerBadgeActive: { backgroundColor: "rgba(212,175,55,0.12)", borderColor: "rgba(212,175,55,0.30)" },
-  timerText: { color: "rgba(255,255,255,0.65)", fontSize: 12, fontWeight: "600", fontVariant: ["tabular-nums"] },
+  timerText: { color: "#F4F4F4", fontSize: 12, fontWeight: "600", fontVariant: ["tabular-nums"] },
   timerTextActive: { color: "#E9C46A" },
   footer: { alignItems: "center", gap: 14, paddingHorizontal: 20 },
   soundsRow: { flexDirection: "row", flexWrap: "wrap", gap: 6, justifyContent: "center" },
   soundPill: { paddingHorizontal: 4, paddingVertical: 2 },
-  soundPillText: { color: "rgba(255,255,255,0.60)", fontSize: 10, fontWeight: "500" },
+  soundPillText: { color: "#F4F4F4", fontSize: 10, fontWeight: "500" },
   playBtn: { width: 72, height: 72, borderRadius: 36, backgroundColor: "rgba(0,0,0,0.25)", alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)" },
   timerPanel: { position: "absolute", right: 12, left: 12, backgroundColor: "rgba(12,6,10,0.92)", borderRadius: 18, borderWidth: 1, borderColor: "rgba(212,175,55,0.18)", overflow: "hidden", paddingBottom: 4 },
   timerPanelHeader: { flexDirection: "row", alignItems: "center", gap: 7, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 10 },
@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
   timerOptionsRow: { flexDirection: "row", gap: 8, paddingHorizontal: 14, paddingBottom: 12 },
   timerOpt: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: "rgba(255,255,255,0.07)", borderWidth: 1, borderColor: "rgba(255,255,255,0.10)" },
   timerOptSel: { backgroundColor: "rgba(212,175,55,0.16)", borderColor: "rgba(212,175,55,0.40)" },
-  timerOptText: { fontSize: 13, fontWeight: "600", color: "rgba(255,255,255,0.65)" },
+  timerOptText: { fontSize: 13, fontWeight: "600", color: "#F4F4F4" },
   timerOptTextSel: { color: "#E9C46A" },
   timerCountdownRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 14, paddingBottom: 14, paddingTop: 2, gap: 8 },
   timerCountdownBadge: { flexDirection: "row", alignItems: "center", gap: 5, backgroundColor: "rgba(212,175,55,0.10)", borderRadius: 12, paddingHorizontal: 10, paddingVertical: 5 },

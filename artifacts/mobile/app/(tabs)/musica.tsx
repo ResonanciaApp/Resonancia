@@ -401,7 +401,7 @@ const bpmStyles = StyleSheet.create({
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "rgba(26,30,43,0.12)",
-    backgroundColor: "rgba(255,255,255,0.55)",
+    backgroundColor: "#F4F4F4",
     height: 56,
   },
   chipSelected: {
@@ -677,7 +677,7 @@ export default function MezcladorScreen() {
               <View style={styles.headerRow}>
                 <GhostPill style={{ marginLeft: -11, marginRight: 30, backgroundColor: "rgba(255,255,255,0.05)" }}>
                   <Pressable onPress={closeMixer} hitSlop={10} style={styles.headerPillBtn}>
-                    <MaterialCommunityIcons name="chevron-left" size={32} color="#e8e8e8" />
+                    <MaterialCommunityIcons name="chevron-left" size={32} color="#FBFBFB" />
                   </Pressable>
                 </GhostPill>
                 <View style={{ flex: 1 }}>
@@ -692,7 +692,7 @@ export default function MezcladorScreen() {
                       accessibilityRole="button"
                       accessibilityLabel="Mezclas de la comunidad"
                     >
-                      <MaterialCommunityIcons name="account-group" size={24} color="#e8e8e8" />
+                      <MaterialCommunityIcons name="account-group" size={24} color="#FBFBFB" />
                     </Pressable>
                     <Pressable
                       onPress={() => setSettingsVisible(true)}
@@ -701,7 +701,7 @@ export default function MezcladorScreen() {
                       accessibilityRole="button"
                       accessibilityLabel="Filtros del Mezclador"
                     >
-                      <MaterialCommunityIcons name="filter-variant" size={24} color="#e8e8e8" />
+                      <MaterialCommunityIcons name="filter-variant" size={24} color="#FBFBFB" />
                     </Pressable>
                   </GhostPill>
                 </View>
@@ -749,7 +749,7 @@ export default function MezcladorScreen() {
                             {sel
                               ? <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
                               : <><BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} /></>}
-                            <Text style={[styles.subTabText, { color: sel ? "#2D0D3A" : "#e8e8e8" }]}>
+                            <Text style={[styles.subTabText, { color: sel ? "#2D0D3A" : "#FBFBFB" }]}>
                               {SUB_TAB_LABELS[catId] ?? cat.label}
                             </Text>
                           </Pressable>
@@ -905,8 +905,8 @@ const styles = StyleSheet.create({
   emptyState: { alignItems: "center", justifyContent: "center", paddingTop: 70, paddingHorizontal: 40, gap: 8 },
   emptyTitle: { fontSize: 15, fontWeight: "700", color: "rgba(26,30,43,0.7)", textAlign: "center" },
   emptyHint:  { fontSize: 13, color: "rgba(26,30,43,0.45)", textAlign: "center", lineHeight: 19 },
-  pageTitle:    { fontSize: 26, fontWeight: "700", letterSpacing: 0.5, color: "#e8e8e8" },
-  pageSubtitle: { fontSize: 13, fontWeight: "400", color: "rgba(255,255,255,0.55)", marginTop: 2 },
+  pageTitle:    { fontSize: 26, fontWeight: "700", letterSpacing: 0.5, color: "#FBFBFB" },
+  pageSubtitle: { fontSize: 13, fontWeight: "400", color: "#F4F4F4", marginTop: 2 },
   heartBtn: {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
     borderRadius: 12, backgroundColor: "rgba(0,0,0,0.05)",

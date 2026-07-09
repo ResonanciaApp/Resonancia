@@ -207,7 +207,7 @@ export function AmbientSoundPickerSheet({
               style={[styles.noSoundChip, localSelected === null && styles.noSoundChipSelected]}
               onPress={() => { setLocalSelected(null); onPreviewStart?.(null); }}
             >
-              <Feather name="volume-x" size={14} color={localSelected === null ? "#BE8744" : "rgba(255,255,255,0.65)"} />
+              <Feather name="volume-x" size={14} color={localSelected === null ? "#BE8744" : "#F4F4F4"} />
               <Text style={[styles.noSoundText, localSelected === null && { color: "#BE8744" }]}>
                 Sin sonido
               </Text>
@@ -480,7 +480,7 @@ function TrackRow({
               <View style={[styles.trackSliderThumb, { left: `${volume * 100}%` as any }]} />
             </View>
           </View>
-          <Feather name="volume-2" size={18} color="rgba(255,255,255,0.60)" style={{ marginLeft: 8 }} />
+          <Feather name="volume-2" size={18} color="#F4F4F4" style={{ marginLeft: 8 }} />
         </View>
       </View>
     </View>
@@ -629,7 +629,7 @@ const styles = StyleSheet.create({
   },
   noSoundText: {
     fontSize: 14,
-    color: "rgba(255,255,255,0.65)",
+    color: "#F4F4F4",
   },
 
   sectionTitle: {
@@ -665,7 +665,7 @@ const styles = StyleSheet.create({
   },
   tabLabel: {
     fontSize: 13,
-    color: "rgba(255,255,255,0.55)",
+    color: "#F4F4F4",
     fontWeight: "400",
   },
 

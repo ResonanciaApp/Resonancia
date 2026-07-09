@@ -8,7 +8,7 @@ import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop, Text as S
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { usePlayer } from "@/context/PlayerContext";
 
-const TEXT = "#e8e8e8";
+const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
 const RING_TOTAL = 114;

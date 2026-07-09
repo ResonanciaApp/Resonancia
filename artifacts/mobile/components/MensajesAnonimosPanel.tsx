@@ -565,7 +565,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   headerSubtitle: {
-    color: "rgba(255,255,255,0.65)",
+    color: "#F4F4F4",
     fontSize: 11,
     marginTop: 2,
   },

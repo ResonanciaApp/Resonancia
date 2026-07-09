@@ -35,7 +35,7 @@ const BURGUNDY_MID = "#4A0C0C";
 const PRIMARY_GOLD = "#BE8744";
 const ACCENT_GOLD = "#E9C46A";
 const FOREGROUND = "#FFFFFF";
-const MUTED = "rgba(255,255,255,0.55)";
+const MUTED = "#F4F4F4";
 const BORDER = "#3D0E16";
 
 type Phase = "idle" | "confirm";

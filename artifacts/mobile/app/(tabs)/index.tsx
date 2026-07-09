@@ -786,7 +786,7 @@ export default function HomeScreen2() {
           <View style={{ paddingHorizontal: GRID_PAD, marginTop: -6 }}>
             <Text
               style={{
-                color: "rgba(255,255,255,0.70)",
+                color: "#F6F6F6",
                 fontSize: 13,
                 fontFamily: "Inter_400Regular",
                 fontStyle: "italic",
@@ -979,7 +979,7 @@ export default function HomeScreen2() {
                     style={{ width: 34, height: 34 }}
                   />
                 </MaskedView>
-                <Text style={{ fontSize: 14, fontWeight: "700", color: "#e8e8e8", textAlign: "center" }}>
+                <Text style={{ fontSize: 14, fontWeight: "700", color: "#FBFBFB", textAlign: "center" }}>
                   {c.label}
                 </Text>
               </Pressable>
@@ -1258,12 +1258,12 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     fontWeight: "600",
-    color: "#e8e8e8",
+    color: "#FBFBFB",
   },
   moodSientesLabel: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#e8e8e8",
+    color: "#FBFBFB",
   },
   moodPill: {
     flexDirection: "row",
@@ -1327,7 +1327,7 @@ const styles = StyleSheet.create({
   },
   intencionText: {
     fontSize: 22,
-    color: "#e8e8e8",
+    color: "#FBFBFB",
     fontWeight: "300",
     textAlign: "center",
     flexShrink: 1,
@@ -1411,7 +1411,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 14,
-    color: "#e8e8e8",
+    color: "#FBFBFB",
     padding: 0,
   },
   searchResultsWrap: {
@@ -1448,7 +1448,7 @@ const styles = StyleSheet.create({
   searchResultTitle: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#e8e8e8",
+    color: "#FBFBFB",
   },
   searchEmptyWrap: {
     paddingVertical: 18,
@@ -1563,7 +1563,7 @@ const styles = StyleSheet.create({
   headerTabText: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#e8e8e8",
+    color: "#FBFBFB",
     letterSpacing: 0.1,
   },
   headerTabTextActive: {
@@ -1610,7 +1610,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 0,
   },
-  sectionTitle: { fontSize: 21, fontWeight: "700", letterSpacing: 0.3, marginBottom: 24, color: "#e8e8e8" },
+  sectionTitle: { fontSize: 21, fontWeight: "700", letterSpacing: 0.3, marginBottom: 24, color: "#FBFBFB" },
   resonadoresBanner: {
     height: 80,
     borderRadius: 14,
@@ -1654,7 +1654,7 @@ const styles = StyleSheet.create({
   resonadoresBannerTitle: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#e8e8e8",
+    color: "#FBFBFB",
   },
   resonadoresBannerSub: {
     fontSize: 12,
@@ -1735,7 +1735,7 @@ const styles = StyleSheet.create({
   catCardLabel: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#e8e8e8",
+    color: "#FBFBFB",
     lineHeight: 18,
   },
 
@@ -1773,12 +1773,12 @@ const styles = StyleSheet.create({
   recentDurText: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#e8e8e8",
+    color: "#FBFBFB",
   },
   recentTitle: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#e8e8e8",
+    color: "#FBFBFB",
     lineHeight: 17,
     marginTop: 8,
   },
@@ -1810,7 +1810,7 @@ const styles = StyleSheet.create({
   },
   heroImage: { width: "100%", height: "100%" },
   heroMetaText: { fontSize: 11, lineHeight: 14, color: "#c2c2c2", marginBottom: 6 },
-  heroTitle: { fontSize: 15, fontWeight: "700", lineHeight: 20, color: "#e8e8e8", marginBottom: 4 },
+  heroTitle: { fontSize: 15, fontWeight: "700", lineHeight: 20, color: "#FBFBFB", marginBottom: 4 },
   heroAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(255,255,255,0.05)" },
   heroAuthor: { fontSize: 11, color: "#c2c2c2", marginTop: 2 },
   heroBtn: {
@@ -1846,7 +1846,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  squareTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2, marginTop: 12, textAlign: "center", color: "#e8e8e8" },
+  squareTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2, marginTop: 12, textAlign: "center", color: "#FBFBFB" },
   squareSub: { fontSize: 12.5, lineHeight: 17, marginTop: 4, textAlign: "center" },
   diarioList: { gap: 10 },
 
@@ -1889,7 +1889,7 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     flexShrink: 0,
   },
-  premTitle: { fontSize: 15, fontWeight: "700", color: "#e8e8e8", lineHeight: 20, marginBottom: 2 },
+  premTitle: { fontSize: 15, fontWeight: "700", color: "#FBFBFB", lineHeight: 20, marginBottom: 2 },
   premSub:   { fontSize: 12, color: "rgba(255,255,255,0.52)" },
   premChevron: {
     width: 26, height: 26, borderRadius: 13,

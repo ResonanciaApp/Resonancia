@@ -299,10 +299,10 @@ export default function SessionDetailScreen() {
             <Text style={[styles.title, { color: colors.foreground }]} numberOfLines={3}>{session.title}</Text>
             <View style={styles.titleActions}>
               <Pressable onPress={handleFav} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-                <Feather name="heart" size={22} color={fav ? "#C4A8F5" : "rgba(255,255,255,0.55)"} />
+                <Feather name="heart" size={22} color={fav ? "#C4A8F5" : "#F4F4F4"} />
               </Pressable>
               <Pressable onPress={() => setActionsSheetOpen(true)} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-                <Feather name="more-vertical" size={22} color="rgba(255,255,255,0.55)" />
+                <Feather name="more-vertical" size={22} color="#F4F4F4" />
               </Pressable>
             </View>
           </View>
@@ -525,7 +525,7 @@ const styles = StyleSheet.create({
   },
   metaText: {
     fontSize: 13,
-    color: "rgba(255,255,255,0.55)",
+    color: "#F4F4F4",
     fontWeight: "500",
   },
   metaDot: {
@@ -777,7 +777,7 @@ const styles = StyleSheet.create({
   playsInline: {
     textAlign: "center",
     fontSize: 13,
-    color: "rgba(255,255,255,0.55)",
+    color: "#F4F4F4",
     marginBottom: 28,
   },
   mixerBannerWrap: {

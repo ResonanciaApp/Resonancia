@@ -225,16 +225,16 @@ const srStyles = StyleSheet.create({
   root:        { flex: 1, backgroundColor: "#190913" },
   overlay:     { flexDirection: "row", alignItems: "center", backgroundColor: "#190913", paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
   bar:         { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.09)", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 11 },
-  input:       { flex: 1, fontSize: 14, color: "#e8e8e8" },
+  input:       { flex: 1, fontSize: 14, color: "#FBFBFB" },
   cancel:      { paddingVertical: 6 },
   cancelText:  { color: "#BE8744", fontSize: 14, fontWeight: "600" },
   empty:       { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, paddingTop: 60 },
-  emptyTitle:  { fontSize: 18, fontWeight: "700", color: "#e8e8e8", textAlign: "center", marginBottom: 10 },
+  emptyTitle:  { fontSize: 18, fontWeight: "700", color: "#FBFBFB", textAlign: "center", marginBottom: 10 },
   emptySub:    { fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
   resultRow:   { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 5 },
   thumb:       { width: 75, height: 75, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.025)" },
   resultCat:   { fontSize: 12, color: "rgba(242,231,228,0.45)", marginBottom: 3 },
-  resultTitle: { fontSize: 15, fontWeight: "700", color: "#e8e8e8", marginBottom: 3 },
+  resultTitle: { fontSize: 15, fontWeight: "700", color: "#FBFBFB", marginBottom: 3 },
   resultAuthor:{ fontSize: 12, color: "rgba(242,231,228,0.45)" },
 });
 
@@ -371,7 +371,7 @@ export default function ExploreScreen() {
                   </View>
                 )}
               </View>
-              <Text style={[styles.sqTitle, { color: "#e8e8e8" }]} numberOfLines={2}>
+              <Text style={[styles.sqTitle, { color: "#FBFBFB" }]} numberOfLines={2}>
                 {s.title}
               </Text>
               <Text style={[styles.sqAuthor, { color: "#c2c2c2" }]} numberOfLines={1}>
@@ -460,7 +460,7 @@ export default function ExploreScreen() {
                         ) : (
                           <MaterialCommunityIcons name={t.icon} size={28} color={t.color} />
                         )}
-                        <Text style={[styles.temaCellLabel, { color: "#e8e8e8" }]} numberOfLines={2}>
+                        <Text style={[styles.temaCellLabel, { color: "#FBFBFB" }]} numberOfLines={2}>
                           {t.label}
                         </Text>
                       </>
@@ -570,11 +570,11 @@ const styles = StyleSheet.create({
   searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 8, paddingBottom: 8 },
   searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1.5, paddingHorizontal: 18, height: 45 },
   searchInput:  { flex: 1, fontSize: 14, padding: 0 },
-  pageSubtitle: { fontSize: 14, color: "rgba(255,255,255,0.55)", marginTop: 2 },
+  pageSubtitle: { fontSize: 14, color: "#F4F4F4", marginTop: 2 },
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 24 },
-  sectionTitle: { fontSize: 20, fontWeight: "600", letterSpacing: 0.5, color: "#e8e8e8", marginBottom: 24 },
+  sectionTitle: { fontSize: 20, fontWeight: "600", letterSpacing: 0.5, color: "#FBFBFB", marginBottom: 24 },
 
   // Recomendado para ti
   recoSection: {
@@ -623,7 +623,7 @@ const styles = StyleSheet.create({
   durPillText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#e8e8e8",
+    color: "#FBFBFB",
     letterSpacing: 0.2,
   },
   durPillTextActive: {
@@ -701,7 +701,7 @@ const styles = StyleSheet.create({
   },
   heroImage: { width: "100%", height: "100%" },
   heroMetaText: { fontSize: 11, lineHeight: 14, color: "#c2c2c2", marginBottom: 6 },
-  heroTitle: { fontSize: 18, fontWeight: "600", lineHeight: 24, color: "#e8e8e8", marginBottom: 4 },
+  heroTitle: { fontSize: 18, fontWeight: "600", lineHeight: 24, color: "#FBFBFB", marginBottom: 4 },
   heroAuthor: { fontSize: 12, color: "#c2c2c2", marginTop: 2 },
 
   sqAuthor: {
@@ -724,7 +724,7 @@ const styles = StyleSheet.create({
   introHeroTitle: {
     fontSize: 26,
     fontWeight: "700",
-    color: "#e8e8e8",
+    color: "#FBFBFB",
     letterSpacing: 0.3,
     marginBottom: 6,
   },
@@ -759,7 +759,7 @@ const styles = StyleSheet.create({
   breathingName: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#e8e8e8",
+    color: "#FBFBFB",
     marginBottom: 3,
   },
   breathingDesc: {
@@ -818,7 +818,7 @@ const styles = StyleSheet.create({
   tagCardLabel: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#e8e8e8",
+    color: "#FBFBFB",
     lineHeight: 17,
   },
 

@@ -663,7 +663,7 @@ const styles = StyleSheet.create({
   sheetTitle: {
     fontSize: 17,
     fontWeight: "700",
-    color: "rgba(255,255,255,0.92)",
+    color: "#FBFBFB",
   },
   sheetLabel: {
     fontSize: 12,

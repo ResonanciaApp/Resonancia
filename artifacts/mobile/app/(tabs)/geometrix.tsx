@@ -4011,7 +4011,7 @@ export default function GeometrixScreen() {
             accessibilityRole="button"
             accessibilityLabel="Salir del lienzo"
           >
-            <Feather name="chevron-left" size={20} color="rgba(255,255,255,0.55)" />
+            <Feather name="chevron-left" size={20} color="#F4F4F4" />
           </Pressable>
           <ScrollView
             horizontal
@@ -7091,7 +7091,7 @@ const styles = StyleSheet.create({
   rotBadgeText: {
     fontSize: 11,
     fontWeight: "600" as const,
-    color: "rgba(255,255,255,0.92)",
+    color: "#FBFBFB",
     letterSpacing: 0.3,
     padding: 0,
     width: 38,
