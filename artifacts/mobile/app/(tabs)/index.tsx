@@ -910,7 +910,7 @@ export default function HomeScreen2() {
                   borderRadius: 14,
                   alignItems: "center",
                   overflow: "hidden",
-                  backgroundColor: "rgba(0,0,0,0.08)",
+                  backgroundColor: "rgba(255,255,255,0.08)",
                   borderWidth: 2,
                   borderColor: "rgba(255,255,255,0.1)",
                   opacity: pressed ? 0.75 : 1,
@@ -1765,7 +1765,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 10,
     gap: 6,
-    backgroundColor: "rgba(0,0,0,0.14)",
+    backgroundColor: "rgba(255,255,255,0.08)",
   },
   coleccionTitle: {
     flex: 1,
