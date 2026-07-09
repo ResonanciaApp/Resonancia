@@ -961,37 +961,6 @@ export default function HomeScreen2() {
         />
 
 
-        {/* ── Videos destacados ── */}
-        <View style={[styles.section, { marginTop: 0, marginBottom: SECTION_GAP }]}>
-          <View style={styles.sectionRow}>
-            <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Videos destacados</Text>
-            {videos.length > 0 && (
-              <Pressable onPress={() => router.push("/videos" as never)} hitSlop={8}>
-                <Text style={{ fontSize: 13, color: colors.accent }}>Ver todos</Text>
-              </Pressable>
-            )}
-          </View>
-          {videos.length === 0 ? (
-            <View style={styles.videosEmpty}>
-              <Feather name="film" size={28} color={colors.primary} style={{ marginBottom: 10 }} />
-              <Text style={[styles.videosEmptyTitle, { color: "#e8e8e8" }]}>Próximamente</Text>
-              <Text style={[styles.videosEmptySub, { color: colors.mutedForeground }]}>
-                Pronto vas a encontrar videos aquí.
-              </Text>
-            </View>
-          ) : (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{ marginHorizontal: -GRID_PAD }}
-              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 16 }}
-            >
-              {videos.map((v) => (
-                <VideoCard key={v.id} video={v} width={VIDEO_HERO_W} />
-              ))}
-            </ScrollView>
-          )}
-        </View>
 
 
 
