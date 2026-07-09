@@ -1404,7 +1404,7 @@ const styles = StyleSheet.create({
     borderRadius: 20.5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(255,255,255,0.05)",
   },
   giftIcon: {
     width: 35,
@@ -1427,7 +1427,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderWidth: 2,
     borderColor: "rgba(244,218,213,0.1)",
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(255,255,255,0.05)",
   },
   pillSel: {
     backgroundColor: "#F4F4F4",

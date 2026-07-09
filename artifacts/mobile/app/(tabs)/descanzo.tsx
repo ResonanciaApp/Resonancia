@@ -51,7 +51,7 @@ function SleepPill({
 
   const bgColor = selAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(255,255,255,0.06)", "#F4F4F4"],
+    outputRange: ["rgba(255,255,255,0.05)", "#F4F4F4"],
   });
   const borderColor = selAnim.interpolate({
     inputRange: [0, 1],
@@ -677,7 +677,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 10,
     borderRadius: 10,
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(255,255,255,0.05)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.08)",
     alignItems: "center",
@@ -701,7 +701,7 @@ const styles = StyleSheet.create({
     gap: 16,
     paddingVertical: 16,
     borderTopWidth: 1,
-    borderTopColor: "rgba(255,255,255,0.06)",
+    borderTopColor: "rgba(255,255,255,0.05)",
   },
   fadeTitle: {
     fontSize: 15,

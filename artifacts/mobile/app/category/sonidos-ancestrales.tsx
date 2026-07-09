@@ -151,7 +151,7 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress: () => void }) {
   const iconColor = sel ? "#1B060F" : "#e8e8e8";
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, !sel && styles.chipUnsel, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1, backgroundColor: sel ? "#F4F4F4" : "rgba(255,255,255,0.06)" }]}>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, !sel && styles.chipUnsel, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1, backgroundColor: sel ? "#F4F4F4" : "rgba(255,255,255,0.05)" }]}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
         <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
       </View>

@@ -170,7 +170,7 @@ const PillTab = memo(function PillTab({
         styles.pillTab,
         sel
           ? { backgroundColor: "#F4F4F4", borderColor: "#F4F4F4" }
-          : { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" },
+          : { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.1)" },
       ]}
     >
       <MaterialCommunityIcons name={tab.icon as any} size={13} color={sel ? "#1B060F" : "#F4F4F4"} />
@@ -676,7 +676,7 @@ export default function MezcladorScreen() {
             {/* ── Header ── */}
             <View style={styles.header}>
               <View style={styles.headerRow}>
-                <GhostPill style={{ marginLeft: -11, marginRight: 30, backgroundColor: "rgba(255,255,255,0.06)" }}>
+                <GhostPill style={{ marginLeft: -11, marginRight: 30, backgroundColor: "rgba(255,255,255,0.05)" }}>
                   <Pressable onPress={closeMixer} hitSlop={10} style={styles.headerPillBtn}>
                     <MaterialCommunityIcons name="chevron-left" size={32} color="#e8e8e8" />
                   </Pressable>
@@ -685,7 +685,7 @@ export default function MezcladorScreen() {
                   <Text style={[styles.pageTitle, { transform: [{ translateX: -19 }, { translateY: -1 }] }]}>Creación</Text>
                 </View>
                 <View style={styles.headerActions}>
-                  <GhostPill style={{ gap: 6, backgroundColor: "rgba(255,255,255,0.06)" }}>
+                  <GhostPill style={{ gap: 6, backgroundColor: "rgba(255,255,255,0.05)" }}>
                     <Pressable
                       onPress={() => router.push("/mezclas-comunidad" as never)}
                       style={[styles.headerPillBtn, { width: 43, height: 43 }]}
@@ -748,7 +748,7 @@ export default function MezcladorScreen() {
                             styles.subTabBorderOuter,
                             sel
                               ? { backgroundColor: "#F4F4F4", borderColor: "#F4F4F4" }
-                              : { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" },
+                              : { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(255,255,255,0.1)" },
                           ]}
                         >
                           <Text style={[styles.subTabText, { color: sel ? "#1B060F" : "#e8e8e8" }]}>
@@ -992,7 +992,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 9,
     borderRadius: 14,
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(255,255,255,0.05)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.13)",
     gap: 10,

@@ -816,7 +816,7 @@ export default function HomeScreen2() {
         >
           <View
             style={[styles.resonadoresBanner, {
-              backgroundColor: "rgba(255,255,255,0.06)",
+              backgroundColor: "rgba(255,255,255,0.05)",
               borderWidth: 2,
               borderColor: "rgba(255,255,255,0.04)",
             }]}
@@ -910,7 +910,7 @@ export default function HomeScreen2() {
                   borderRadius: 14,
                   alignItems: "center",
                   overflow: "hidden",
-                  backgroundColor: "rgba(255,255,255,0.06)",
+                  backgroundColor: "rgba(255,255,255,0.05)",
                   borderWidth: 2,
                   borderColor: "rgba(255,255,255,0.1)",
                   opacity: pressed ? 0.75 : 1,
@@ -976,7 +976,7 @@ export default function HomeScreen2() {
                     height: TEMA3_W,
                     backgroundColor: pressed
                       ? hexTint(t.color, 0.22)
-                      : "rgba(255,255,255,0.06)",
+                      : "rgba(255,255,255,0.05)",
                     borderRadius: 11,
                   },
                 ]}
@@ -1042,7 +1042,7 @@ export default function HomeScreen2() {
             onPress={() => setMoodSheetVisible(true)}
             style={({ pressed }) => [styles.moodRow, styles.moodRowActive, { opacity: pressed ? 0.78 : 1 }]}
           >
-            <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.06)" }]} />
+            <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.05)" }]} />
             <Text style={styles.moodSientesLabel}>Sientes:</Text>
             <View style={{ flex: 1 }} />
             <LinearGradient
@@ -1067,7 +1067,7 @@ export default function HomeScreen2() {
             onPress={() => setMoodSheetVisible(true)}
             style={({ pressed }) => [styles.moodRow, { opacity: pressed ? 0.78 : 1 }]}
           >
-            <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.06)" }]} />
+            <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.05)" }]} />
             <Text style={styles.moodEmoji}>🙂</Text>
             <Text style={styles.moodRowLabel}>¿Cómo te sientes hoy?</Text>
             <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" />
@@ -1112,7 +1112,7 @@ export default function HomeScreen2() {
                 style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
               />
               <LinearGradient
-                colors={["rgba(255,255,255,0.06)", "transparent"]}
+                colors={["rgba(255,255,255,0.05)", "transparent"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 0.6, y: 1 }}
                 style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
@@ -1306,7 +1306,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   recoCard: {
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(255,255,255,0.05)",
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: 14,
@@ -1649,7 +1649,7 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(255,255,255,0.05)",
     right: 30,
     bottom: -24,
   },
@@ -1827,7 +1827,7 @@ const styles = StyleSheet.create({
   heroImage: { width: "100%", height: "100%" },
   heroMetaText: { fontSize: 11, lineHeight: 14, color: "#c2c2c2", marginBottom: 6 },
   heroTitle: { fontSize: 15, fontWeight: "700", lineHeight: 20, color: "#e8e8e8", marginBottom: 4 },
-  heroAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(255,255,255,0.06)" },
+  heroAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(255,255,255,0.05)" },
   heroAuthor: { fontSize: 11, color: "#c2c2c2", marginTop: 2 },
   heroBtn: {
     width: 46,

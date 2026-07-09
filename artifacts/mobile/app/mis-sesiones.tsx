@@ -216,7 +216,7 @@ function PastSessionRow({ session }: { session: LiveSessionItem }) {
       <View
         style={[
           pastStyles.badge,
-          { backgroundColor: isCompleted ? "rgba(92,184,92,0.12)" : "rgba(255,255,255,0.06)" },
+          { backgroundColor: isCompleted ? "rgba(92,184,92,0.12)" : "rgba(255,255,255,0.05)" },
         ]}
       >
         <Text
