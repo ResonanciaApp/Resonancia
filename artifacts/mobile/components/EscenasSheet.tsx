@@ -342,7 +342,7 @@ export function EscenasSheet() {
           </View>
 
           <View style={styles.carousel}>
-            {AMBIENT_SCENES.slice(0, 2).map((scene) => {
+            {AMBIENT_SCENES.slice(0, 4).map((scene) => {
               const active = scene.id === confirmedSceneId;
               return (
                 <Pressable
@@ -538,6 +538,7 @@ const styles = StyleSheet.create({
   },
   carousel: {
     flexDirection: "row",
+    flexWrap: "wrap",
     gap: CARD_GAP,
     paddingBottom: 4,
   },

@@ -13,6 +13,8 @@ import { AppState, type AppStateStatus } from "react-native";
 export type SceneId =
   | "profundo"
   | "tibet"
+  | "orquidea"
+  | "vino-tinto"
   | "naturaleza"
   | "musgo"
   | "zafiro"
@@ -44,6 +46,20 @@ export const AMBIENT_SCENES: AmbientScene[] = [
     colors: ["#22131B", "#140C10"] as const,
     icon: "star",
     image: require("@/assets/images/ambient/tibet.png"),
+  },
+  {
+    id: "orquidea",
+    label: "Orquídea",
+    colors: ["#2E1529", "#1E0D1C"] as const,
+    icon: "star",
+    image: require("@/assets/images/ambient/orquidea.png"),
+  },
+  {
+    id: "vino-tinto",
+    label: "Vino tinto",
+    colors: ["#2E0D16", "#1A0810"] as const,
+    icon: "feather",
+    image: require("@/assets/images/ambient/vino-tinto.png"),
   },
   {
     id: "naturaleza",
@@ -119,6 +135,8 @@ async function fadeIn(sound: Audio.Sound, targetVolume: number) {
 const SCENE_AUDIO: Record<SceneId, unknown> = {
   profundo:   require("@/assets/audio/riachuelo_pajaros.mp3"), // → replace with profundo.mp3
   tibet:      require("@/assets/audio/nebulosa_ambiente.mp3"), // → replace with tibet.mp3
+  orquidea:   require("@/assets/audio/nebulosa_ambiente.mp3"), // → replace with orquidea.mp3
+  "vino-tinto": require("@/assets/audio/riachuelo_pajaros.mp3"), // → replace with vino-tinto.mp3
   naturaleza: require("@/assets/audio/pajaros_ambiente.mp3"),
   musgo:      require("@/assets/audio/musgo_ambiente.mp3"),
   zafiro:     require("@/assets/audio/zafiro_ambiente.mp3"),
@@ -156,6 +174,8 @@ const STORAGE_KEY = "@ambient_scene";
 const DEFAULT_VOLUMES: Record<SceneId, number> = {
   profundo: DEFAULT_VOLUME,
   tibet: DEFAULT_VOLUME,
+  orquidea: DEFAULT_VOLUME,
+  "vino-tinto": DEFAULT_VOLUME,
   naturaleza: DEFAULT_VOLUME,
   musgo: DEFAULT_VOLUME,
   zafiro: DEFAULT_VOLUME,

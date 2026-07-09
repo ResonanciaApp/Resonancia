@@ -35,6 +35,18 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
     gradient: ["#170e21", "#140c1c"],
     solid: "#140c1c",
   },
+  orquidea: {
+    id: "orquidea",
+    label: "Orquídea",
+    gradient: ["#2E1529", "#1E0D1C"],
+    solid: "#1E0D1C",
+  },
+  "vino-tinto": {
+    id: "vino-tinto",
+    label: "Vino tinto",
+    gradient: ["#2E0D16", "#1A0810"],
+    solid: "#1A0810",
+  },
   naturaleza: {
     id: "naturaleza",
     label: "Naturaleza",
