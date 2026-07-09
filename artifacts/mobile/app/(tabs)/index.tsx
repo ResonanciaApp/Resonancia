@@ -896,9 +896,9 @@ export default function HomeScreen2() {
           <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Explora por contenido</Text>
           <View style={{ flexDirection: "row", gap: 10 }}>
             {([
-              { id: "meditaciones-guiadas", label: "Meditaciones", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={26} color={color} /> },
-              { id: "sonidos-ancestrales", label: "Sesiones",      icon: (color: string) => <MaterialCommunityIcons name="waves" size={26} color={color} /> },
-              { id: "musica-sonidos",       label: "Música",        icon: (color: string) => <Ionicons name="musical-notes-outline" size={26} color={color} /> },
+              { id: "meditaciones-guiadas", label: "Meditaciones", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={34} color={color} /> },
+              { id: "sonidos-ancestrales", label: "Sesiones",      icon: (color: string) => <MaterialCommunityIcons name="waves" size={34} color={color} /> },
+              { id: "musica-sonidos",       label: "Música",        icon: (color: string) => <Ionicons name="musical-notes-outline" size={34} color={color} /> },
             ] as const).map((c) => (
               <Pressable
                 key={c.id}
@@ -920,13 +920,13 @@ export default function HomeScreen2() {
                 <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[1], 0.05) }]} />
                 {/* Ícono dorado */}
                 <MaskedView
-                  maskElement={<View style={{ width: 26, height: 26, alignItems: "center", justifyContent: "center" }}>{c.icon("#fff")}</View>}
+                  maskElement={<View style={{ width: 34, height: 34, alignItems: "center", justifyContent: "center" }}>{c.icon("#fff")}</View>}
                 >
                   <LinearGradient
                     colors={["#D4AF37", "#E9C46A"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
-                    style={{ width: 26, height: 26 }}
+                    style={{ width: 34, height: 34 }}
                   />
                 </MaskedView>
                 <Text style={{ fontSize: 14, fontWeight: "300", color: "#e8e8e8", textAlign: "center" }}>
