@@ -614,8 +614,17 @@ export default function HomeScreen2() {
   const { greetingVisible } = useGreetingVisible();
   const backdropAnim = useRef(new Animated.Value(1)).current;
   const phraseAnim = useRef(new Animated.Value(0)).current;
+  const greetingAnim5 = useRef(new Animated.Value(0)).current;
   const weeklyPhrase = useRef(getWeeklyPhrase()).current;
   const phraseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      greetingAnim5.setValue(0);
+      Animated.timing(greetingAnim5, { toValue: 1, duration: 2400, useNativeDriver: true }).start();
+      return () => { greetingAnim5.stopAnimation(); greetingAnim5.setValue(0); };
+    }, []),
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -1155,9 +1164,9 @@ export default function HomeScreen2() {
         }}
       >
         {/* Título saludo — izquierda */}
-        <Text style={{ color: "rgba(255,255,255,0.92)", fontSize: 25, fontWeight: "700", letterSpacing: 0.3 }}>
+        <Animated.Text style={{ color: "rgba(255,255,255,0.92)", fontSize: 25, fontWeight: "700", letterSpacing: 0.3, opacity: greetingAnim5 }}>
           {(() => { const h = new Date().getHours(); return h >= 6 && h < 12 ? "Buenos días" : h >= 12 && h < 19 ? "Buenas tardes" : "Buenas noches"; })()}
-        </Text>
+        </Animated.Text>
 
         {/* Loto + Mezclador — derecha */}
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
