@@ -937,12 +937,8 @@ const styles = StyleSheet.create({
   },
   pillTabBorder: {
     borderRadius: 999,
-    borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.25)",
   },
-  pillTabBorderSel: {
-    borderColor: "transparent",
-  },
+  pillTabBorderSel: {},
   pillTabInner: {
     flexDirection: "row",
     alignItems: "center",
@@ -1023,12 +1019,8 @@ const styles = StyleSheet.create({
   subTabRow:  { flexDirection: "row", gap: 8, paddingTop: 4, paddingBottom: 12, paddingHorizontal: 15 },
   subTabBorderOuter: {
     borderRadius: 999,
-    borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.25)",
   },
-  subTabBorderSel: {
-    borderColor: "transparent",
-  },
+  subTabBorderSel: {},
   subTab: {
     flexDirection: "row",
     alignItems: "center",

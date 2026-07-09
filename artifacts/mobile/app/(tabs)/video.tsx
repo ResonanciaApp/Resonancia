@@ -247,12 +247,8 @@ const styles = StyleSheet.create({
   chipsRow: { paddingHorizontal: 20, gap: 8, alignItems: "center" },
   chipBorder: {
     borderRadius: 999,
-    borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.25)",
   },
-  chipBorderSel: {
-    borderColor: "transparent",
-  },
+  chipBorderSel: {},
   chip: {
     borderRadius: 999,
     paddingHorizontal: 12,
