@@ -398,7 +398,7 @@ export default function ExploreScreen() {
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: topPad + 50 }}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 4 }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
