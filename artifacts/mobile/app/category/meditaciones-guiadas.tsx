@@ -399,11 +399,9 @@ export default function MeditacionesGuiadasScreen() {
           </View>
           <View style={styles.heroIconFloat}>
             <View style={styles.heroIconGlow}>
-              <View style={[styles.heroIconCircle, { backgroundColor: hexToRgba(theme.gradient[1], 0.5) }]}>
-                <MaskedView maskElement={<View style={{ width: 32, height: 32, alignItems: "center", justifyContent: "center" }}><MaterialCommunityIcons name="meditation" size={32} color="#fff" /></View>}>
-                  <LinearGradient colors={["#ecedea", "#f8f8f6", "#dcdbd8"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ width: 32, height: 32 }} />
-                </MaskedView>
-              </View>
+              <MaskedView maskElement={<View style={{ width: 36, height: 36, alignItems: "center", justifyContent: "center" }}><MaterialCommunityIcons name="meditation" size={36} color="#fff" /></View>}>
+                <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ width: 36, height: 36 }} />
+              </MaskedView>
             </View>
           </View>
         </View>
