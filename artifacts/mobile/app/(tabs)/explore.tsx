@@ -383,7 +383,7 @@ export default function ExploreScreen() {
   }
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: activeTheme.gradient[0] as string }]}>
       <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
       <StatusBar barStyle="light-content" />
       <SacredBackground variant="solid" />
