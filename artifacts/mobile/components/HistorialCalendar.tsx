@@ -344,6 +344,6 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 10,
   },
-  entryTime: { fontSize: 11, marginBottom: 3 },
-  entryTitle: { fontSize: 11, fontWeight: "700" },
+  entryTime: { fontSize: 11, marginBottom: 5 },
+  entryTitle: { fontSize: 13, fontWeight: "700" },
 });
