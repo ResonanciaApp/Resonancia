@@ -919,12 +919,12 @@ export default function HomeScreen2() {
               >
                 {/* 5% tinte del color más oscuro del tema */}
                 <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[1], 0.05) }]} />
-                {/* Ícono dorado */}
+                {/* Ícono plateado */}
                 <MaskedView
                   maskElement={<View style={{ width: 34, height: 34, alignItems: "center", justifyContent: "center" }}>{c.icon("#fff")}</View>}
                 >
                   <LinearGradient
-                    colors={["#D4AF37", "#E9C46A"]}
+                    colors={["#C8C8D0", "#E8E8F0"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={{ width: 34, height: 34 }}
