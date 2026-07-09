@@ -823,7 +823,7 @@ export default function HomeScreen2() {
           >
             <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
               <LinearGradient
-                colors={["rgba(247,203,107,0.75)", "rgba(251,169,128,0.75)"]}
+                colors={["rgb(247,203,107)", "rgb(251,169,128)"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={{ width: 44, height: 44, borderRadius: 15, alignItems: "center", justifyContent: "center" }}
