@@ -96,8 +96,10 @@ export default function VideoTabScreen() {
 
       {/* ── Sticky header: normal flow — transparent over gradient ── */}
       <View style={[styles.stickyHeader, { paddingTop: topPad }]}>
-        {/* Title */}
-        <Text style={[styles.pageTitle, { color: colors.foreground, paddingHorizontal: 19, paddingTop: 8, paddingBottom: 2 }]}>Videos</Text>
+        {/* Title row — igual que Perfil */}
+        <View style={styles.titleRow}>
+          <Text style={[styles.pageTitle, { color: "#F4F4F4" }]}>Videos</Text>
+        </View>
         {/* Search bar */}
         <View style={styles.searchWrap}>
           <View style={[styles.searchBox, { backgroundColor: "rgba(255,255,255,0.035)", borderColor: "rgba(255,255,255,0.25)", borderWidth: 1 }]}>
@@ -220,7 +222,8 @@ const styles = StyleSheet.create({
   stickyHeader: {
     backgroundColor: "transparent",
   },
-  pageTitle: { fontSize: 28, fontWeight: "700", letterSpacing: 0.5 },
+  titleRow: { alignItems: "center", paddingHorizontal: 15, paddingBottom: 10, paddingTop: 6 },
+  pageTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center" },
 
   searchWrap: {
     paddingHorizontal: 19,

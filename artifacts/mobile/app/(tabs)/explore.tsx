@@ -389,16 +389,19 @@ export default function ExploreScreen() {
       <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
       <StatusBar barStyle="light-content" />
 
+      {/* ── Header fijo — igual que Perfil ── */}
+      <View style={[styles.fixedHeader, { paddingTop: topPad }]}>
+        <View style={styles.titleRow}>
+          <Text style={styles.pageTitle}>Explorar</Text>
+        </View>
+      </View>
+
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: topPad + 2 }}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: topPad + 50 }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {/* ── Header ── */}
-        <View style={styles.header}>
-          <Text style={[styles.pageTitle, { color: colors.foreground, paddingTop: 8, paddingBottom: 2 }]}>Explorar</Text>
-        </View>
 
         {/* ── Barra de búsqueda ── */}
         <View style={styles.searchWrap}>
@@ -564,9 +567,11 @@ const styles = StyleSheet.create({
   rootGradient: { ...StyleSheet.absoluteFillObject },
   scroll: { flex: 1 },
 
+  fixedHeader:  { zIndex: 10 },
+  titleRow:     { alignItems: "center", paddingHorizontal: 15, paddingBottom: 10, paddingTop: 6 },
   header:       { paddingHorizontal: H_PAD, marginBottom: 0 },
   headerRow:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  pageTitle:    { fontSize: 28, fontWeight: "700", letterSpacing: 0.5 },
+  pageTitle:    { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center" },
   searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 8, paddingBottom: 8 },
   searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1.5, paddingHorizontal: 18, height: 45 },
   searchInput:  { flex: 1, fontSize: 14, padding: 0 },
