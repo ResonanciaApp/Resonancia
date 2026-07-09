@@ -896,16 +896,16 @@ export default function HomeScreen2() {
           <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Explora por contenido</Text>
           <View style={{ flexDirection: "row", gap: 10 }}>
             {([
-              { id: "meditaciones-guiadas", label: "Meditaciones", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={21} color={color} /> },
-              { id: "sonidos-ancestrales", label: "Sesiones",      icon: (color: string) => <MaterialCommunityIcons name="waves" size={21} color={color} /> },
-              { id: "musica-sonidos",       label: "Música",        icon: (color: string) => <Ionicons name="musical-notes-outline" size={21} color={color} /> },
+              { id: "meditaciones-guiadas", label: "Meditaciones", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={26} color={color} /> },
+              { id: "sonidos-ancestrales", label: "Sesiones",      icon: (color: string) => <MaterialCommunityIcons name="waves" size={26} color={color} /> },
+              { id: "musica-sonidos",       label: "Música",        icon: (color: string) => <Ionicons name="musical-notes-outline" size={26} color={color} /> },
             ] as const).map((c) => (
               <Pressable
                 key={c.id}
                 onPress={() => router.push(`/category/${c.id}` as never)}
                 style={({ pressed }) => [{
                   flex: 1,
-                  paddingVertical: 12,
+                  paddingVertical: 22,
                   gap: 10,
                   borderRadius: 14,
                   alignItems: "center",
@@ -918,15 +918,15 @@ export default function HomeScreen2() {
               >
                 {/* 5% tinte del color más oscuro del tema */}
                 <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(activeTheme.gradient[1], 0.05) }]} />
-                {/* Ícono con degradado de color */}
+                {/* Ícono dorado */}
                 <MaskedView
-                  maskElement={<View style={{ width: 21, height: 21, alignItems: "center", justifyContent: "center" }}>{c.icon("#fff")}</View>}
+                  maskElement={<View style={{ width: 26, height: 26, alignItems: "center", justifyContent: "center" }}>{c.icon("#fff")}</View>}
                 >
                   <LinearGradient
-                    colors={["#ecedea", "#f8f8f6", "#dcdbd8"]}
+                    colors={["#D4AF37", "#E9C46A"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
-                    style={{ width: 21, height: 21 }}
+                    style={{ width: 26, height: 26 }}
                   />
                 </MaskedView>
                 <Text style={{ fontSize: 14, fontWeight: "300", color: "#e8e8e8", textAlign: "center" }}>
