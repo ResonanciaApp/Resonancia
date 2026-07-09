@@ -790,7 +790,7 @@ export default function HomeScreen2() {
               letterSpacing: 0.2,
             }}
           >
-            {weeklyPhrase}
+            {weeklyPhrase.split(" ").slice(2).join(" ")}
           </Text>
         </View>
       </View>
