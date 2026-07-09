@@ -571,7 +571,7 @@ const styles = StyleSheet.create({
   titleRow:     { alignItems: "center", paddingHorizontal: 15, paddingBottom: 10, paddingTop: 6 },
   header:       { paddingHorizontal: H_PAD, marginBottom: 0 },
   headerRow:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  pageTitle:    { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center" },
+  pageTitle:    { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center", transform: [{ translateY: 4 }] },
   searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 8, paddingBottom: 8 },
   searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1.5, paddingHorizontal: 18, height: 45 },
   searchInput:  { flex: 1, fontSize: 14, padding: 0 },
