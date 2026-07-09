@@ -834,6 +834,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "400",
     letterSpacing: 0.1,
+    color: "#F4F4F4",
   },
   sleepPillTextSel: { color: "#2D0D3A", fontWeight: "500" },
 
