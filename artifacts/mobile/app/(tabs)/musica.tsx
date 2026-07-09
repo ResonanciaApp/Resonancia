@@ -170,10 +170,10 @@ const PillTab = memo(function PillTab({
       style={[styles.pillTab]}
     >
       {sel
-        ? <LinearGradient colors={["rgba(190,100,80,0.55)", "rgba(120,60,160,0.55)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
+        ? <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
         : <><BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} /></>}
-      <MaterialCommunityIcons name={tab.icon as any} size={13} color="#F4F4F4" />
-      <Text numberOfLines={1} style={[styles.pillTabLabel, { color: "#F4F4F4" }]}>
+      <MaterialCommunityIcons name={tab.icon as any} size={13} color={sel ? "#2D0D3A" : "#F4F4F4"} />
+      <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#2D0D3A" : "#F4F4F4" }]}>
         {tab.label}
       </Text>
     </Pressable>
@@ -747,9 +747,9 @@ export default function MezcladorScreen() {
                             style={[styles.subTab]}
                           >
                             {sel
-                              ? <LinearGradient colors={["rgba(190,100,80,0.55)", "rgba(120,60,160,0.55)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
+                              ? <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
                               : <><BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} /></>}
-                            <Text style={[styles.subTabText, { color: "#e8e8e8" }]}>
+                            <Text style={[styles.subTabText, { color: sel ? "#2D0D3A" : "#e8e8e8" }]}>
                               {SUB_TAB_LABELS[catId] ?? cat.label}
                             </Text>
                           </Pressable>

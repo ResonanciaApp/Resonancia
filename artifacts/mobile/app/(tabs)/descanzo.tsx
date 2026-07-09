@@ -56,7 +56,7 @@ function SleepPill({
   const gradOpacity = selAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
   const textColor = selAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["#F4F4F4", "#fff"],
+    outputRange: ["#F4F4F4", "#2D0D3A"],
   });
 
   return (
@@ -70,7 +70,7 @@ function SleepPill({
           {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
           {!sel && <LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
           <Animated.View style={[StyleSheet.absoluteFill, { opacity: gradOpacity }]} pointerEvents="none">
-            <LinearGradient colors={["rgba(190,100,80,0.55)", "rgba(120,60,160,0.55)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
+            <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
           </Animated.View>
           <Animated.Text style={[styles.sleepPillText, { color: textColor, fontWeight: sel ? "500" : "400" }]} numberOfLines={1}>
             {label}
