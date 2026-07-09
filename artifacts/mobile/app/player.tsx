@@ -440,29 +440,22 @@ export default function PlayerScreen() {
     <View style={styles.root}>
       <StatusBar hidden />
 
-      {/* Fondo dinámico degradado */}
-      <LinearGradient
-        colors={[dominantColor, midColor, darkColor]}
-        locations={[0, 0.45, 1]}
-        style={StyleSheet.absoluteFill}
-      />
-
-      {/* ── Hero image con Ken Burns ──────────────────────────────────────── */}
-      <View style={styles.heroContainer}>
-        <Animated.View style={[{ width, height: HERO_HEIGHT }, kenBurnsStyle]}>
+      {/* ── Hero image con Ken Burns — pantalla completa ─────────────────── */}
+      <View style={[styles.heroContainer, StyleSheet.absoluteFill]}>
+        <Animated.View style={[StyleSheet.absoluteFill, kenBurnsStyle]}>
           <ExpoImage
             source={currentSession.image as any}
-            style={{ width, height: HERO_HEIGHT }}
+            style={StyleSheet.absoluteFill as object}
             contentFit="cover"
             placeholder={BLUR_PLACEHOLDER}
             transition={IMAGE_TRANSITION}
           />
         </Animated.View>
 
-        {/* Degradado inferior: imagen → negro */}
+        {/* Degradado inferior: imagen → negro para legibilidad de controles */}
         <LinearGradient
-          colors={["transparent", "rgba(0,0,0,0.35)", "#000000"]}
-          locations={[0.35, 0.70, 1]}
+          colors={["transparent", "rgba(0,0,0,0.25)", "rgba(0,0,0,0.72)", "#000000"]}
+          locations={[0.25, 0.52, 0.78, 1]}
           style={StyleSheet.absoluteFill}
           pointerEvents="none"
         />
@@ -945,8 +938,6 @@ const styles = StyleSheet.create({
 
   // Hero
   heroContainer: {
-    width,
-    height: HERO_HEIGHT,
     overflow: "hidden",
   },
   heroControls: {
@@ -992,7 +983,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 28,
     paddingTop: 22,
-    backgroundColor: "#000000",
+    backgroundColor: "transparent",
   },
   timeActionsRow: {
     flexDirection: "row",
