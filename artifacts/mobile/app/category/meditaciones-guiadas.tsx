@@ -399,8 +399,8 @@ export default function MeditacionesGuiadasScreen() {
           </View>
           <View style={styles.heroIconFloat}>
             <View style={styles.heroIconGlow}>
-              <MaskedView maskElement={<View style={{ width: 36, height: 36, alignItems: "center", justifyContent: "center" }}><MaterialCommunityIcons name="meditation" size={36} color="#fff" /></View>}>
-                <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ width: 36, height: 36 }} />
+              <MaskedView maskElement={<View style={{ width: 56, height: 56, alignItems: "center", justifyContent: "center" }}><MaterialCommunityIcons name="meditation" size={56} color="#fff" /></View>}>
+                <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ width: 56, height: 56 }} />
               </MaskedView>
             </View>
           </View>
@@ -409,7 +409,7 @@ export default function MeditacionesGuiadasScreen() {
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
           <Text style={styles.profileTitle}>Meditaciones</Text>
-          <Text style={styles.profileDesc} numberOfLines={2}>
+          <Text style={styles.profileDesc} numberOfLines={1}>
             Voz guiada para aquietar la mente y despertar la presencia.
           </Text>
         </View>
@@ -470,13 +470,13 @@ const styles = StyleSheet.create({
   heroOverlayRight: { position: "absolute", right: H_PAD, zIndex: 10 },
 
   heroArea: { height: 148, position: "relative" },
-  heroIconFloat: { position: "absolute", bottom: -17, left: 0, right: 0, alignItems: "center", zIndex: 2 },
-  heroIconGlow: { borderRadius: 36, shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 14, shadowOffset: { width: 0, height: 0 }, elevation: 8 },
+  heroIconFloat: { position: "absolute", bottom: 13, left: 0, right: 0, alignItems: "center", zIndex: 2 },
+  heroIconGlow: { borderRadius: 28, shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 14, shadowOffset: { width: 0, height: 0 }, elevation: 8 },
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "#1B060F", borderWidth: 2, borderColor: "rgba(255,255,255,0.1)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
   profileCard: { marginHorizontal: H_PAD, marginTop: 28, paddingBottom: 14, gap: 8, alignItems: "center" },
   profileTitle: { fontSize: 27, fontWeight: "400", color: TEXT, letterSpacing: 0.3 },
-  profileDesc: { fontSize: 12, color: "rgba(255,255,255,0.90)", lineHeight: 17, textAlign: "center", maxWidth: 280, marginTop: -4, marginBottom: 28 },
+  profileDesc: { fontSize: 13, color: "rgba(255,255,255,0.90)", lineHeight: 18, textAlign: "center", maxWidth: 280, marginTop: -4, marginBottom: 28 },
 
   dividerLine: { height: 0 },
   dividerShadow: { height: 12, marginTop: 0 },
