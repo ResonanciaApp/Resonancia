@@ -1692,7 +1692,7 @@ const styles = StyleSheet.create({
   },
   resonadoresBannerSub: {
     fontSize: 12,
-    color: "rgba(232,232,232,0.75)",
+    color: "#F4F4F4",
     marginTop: 2,
   },
   resonadoresBannerChevron: {

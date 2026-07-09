@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
     marginTop: 7,
   },
   messageHighlight: {
-    color: "rgba(255,255,255,0.90)",
+    color: "#FBFBFB",
     fontSize: 12,
     fontWeight: "300",
     textAlign: "center",
