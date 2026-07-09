@@ -59,7 +59,7 @@ export const AMBIENT_SCENES: AmbientScene[] = [
     label: "Vino tinto",
     colors: ["#2E0D16", "#1A0810"] as const,
     icon: "feather",
-    image: require("@/assets/images/ambient/vino-tinto.png"),
+    image: require("@/assets/images/ambient/vino-tinto.jpg"),
   },
   {
     id: "naturaleza",
