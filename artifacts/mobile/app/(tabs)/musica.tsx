@@ -170,7 +170,7 @@ const PillTab = memo(function PillTab({
         styles.pillTab,
         sel
           ? { backgroundColor: "#F4F4F4", borderColor: "#F4F4F4" }
-          : { backgroundColor: "rgba(255,255,255,0.08)", borderColor: "rgba(255,255,255,0.1)" },
+          : { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" },
       ]}
     >
       <MaterialCommunityIcons name={tab.icon as any} size={13} color={sel ? "#1B060F" : "#F4F4F4"} />
@@ -748,7 +748,7 @@ export default function MezcladorScreen() {
                             styles.subTabBorderOuter,
                             sel
                               ? { backgroundColor: "#F4F4F4", borderColor: "#F4F4F4" }
-                              : { backgroundColor: "rgba(255,255,255,0.08)", borderColor: "rgba(255,255,255,0.1)" },
+                              : { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" },
                           ]}
                         >
                           <Text style={[styles.subTabText, { color: sel ? "#1B060F" : "#e8e8e8" }]}>
