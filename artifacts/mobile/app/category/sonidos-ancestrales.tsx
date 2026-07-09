@@ -465,7 +465,7 @@ export default function SonidosAncestalesScreen() {
         <View style={styles.heroArea}>
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
             <View style={styles.lotoBtn}>
-              <BackPill onPress={() => router.back()} size={25} style={{ transform: [{ translateX: -2 }] }} />
+              <BackPill onPress={() => router.back()} size={15} style={{ transform: [{ translateX: -2 }] }} />
             </View>
           </View>
           <View style={[styles.heroOverlayRight, { top: topPad + 8 }]}>
@@ -503,7 +503,7 @@ export default function SonidosAncestalesScreen() {
       {/* ── Sticky header ── */}
       <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"}>
         <View style={styles.lotoBtn}>
-          <BackPill onPress={() => router.back()} />
+          <BackPill onPress={() => router.back()} size={15} />
         </View>
         <View style={styles.headerTitleCol}>
           <Text style={styles.headerTitle}>Sesiones</Text>
