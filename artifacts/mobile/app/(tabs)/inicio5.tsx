@@ -1336,8 +1336,6 @@ const styles = StyleSheet.create({
   recoCard: {
     borderRadius: 14,
     overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.22)",
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
