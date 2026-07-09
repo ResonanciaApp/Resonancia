@@ -1426,7 +1426,7 @@ const styles = StyleSheet.create({
   pillBorder: {},
   pillBorderSel: {},
   pill: {
-    height: 32,
+    height: 28,
     paddingHorizontal: 14,
     borderRadius: 999,
     overflow: "hidden",
