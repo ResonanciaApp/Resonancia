@@ -1452,6 +1452,36 @@ uri = "file://attached_assets/vino-tinto-generated.png"
 type = "image"
 title = "tibetan sanctuary wine red warm bowls"
 
+[[generated]]
+id = "CMe_BlWGH_QXsmzR5qTdD"
+uri = "file://attached_assets/vino-opt1.png"
+type = "image"
+title = "vino-opt1"
+
+[[generated]]
+id = "ThBrTp6HD3bAD945g0JYe"
+uri = "file://attached_assets/vino-opt2.png"
+type = "image"
+title = "vino-opt2"
+
+[[generated]]
+id = "SasNusGUxI5HnVgL6Vma2"
+uri = "file://attached_assets/vino-opt3.png"
+type = "image"
+title = "vino-opt3"
+
+[[generated]]
+id = "6zJtknOl3aVSJ978Bb_Uv"
+uri = "file://attached_assets/vino-opt4.png"
+type = "image"
+title = "vino-opt4"
+
+[[generated]]
+id = "QH9ucSNPqOoVDgHE02KnM"
+uri = "file://attached_assets/vino-opt5.png"
+type = "image"
+title = "vino-opt5"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
@@ -2177,3 +2207,33 @@ id = "HTpfwXlk5UyAkD_Z-xDJB"
 uri = "file://attached_assets/vino-tinto-generated.png"
 type = "image"
 title = "Header Vino Tinto — Santuario Tibetano"
+
+[[outputs]]
+id = "161NXKIg4NaqCY_J84aMI"
+uri = "file://attached_assets/vino-opt1.png"
+type = "image"
+title = "Opción 1 — Bodega con vela y copa"
+
+[[outputs]]
+id = "4qRkoPXmn-arPvhRLbV7k"
+uri = "file://attached_assets/vino-opt2.png"
+type = "image"
+title = "Opción 2 — Copa de vino primer plano"
+
+[[outputs]]
+id = "_A7Ma6n1Ykq4kf6mruQjE"
+uri = "file://attached_assets/vino-opt3.png"
+type = "image"
+title = "Opción 3 — Vela en madera oscura"
+
+[[outputs]]
+id = "utbCKA_bpNYVzKOvT6T3n"
+uri = "file://attached_assets/vino-opt4.png"
+type = "image"
+title = "Opción 4 — Líquido abstracto carmesí"
+
+[[outputs]]
+id = "UdUGzG1vt0KBVycGUJogQ"
+uri = "file://attached_assets/vino-opt5.png"
+type = "image"
+title = "Opción 5 — Uvas en roble con candela"
