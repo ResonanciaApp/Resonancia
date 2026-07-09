@@ -624,33 +624,43 @@ export default function HomeScreen2() {
   useFocusEffect(
     useCallback(() => {
       phraseAnim.setValue(0);
-      greetingAnim5.setValue(0);
-      logoAnim5.setValue(1);
-      const seq = Animated.sequence([
-        // frase entra
-        Animated.timing(phraseAnim, { toValue: 1, duration: 2400, useNativeDriver: true }),
-        // permanece 5s
-        Animated.delay(5000),
-        // frase sale
-        Animated.timing(phraseAnim, { toValue: 0, duration: 2400, useNativeDriver: true }),
-        // logo sale (600ms)
-        Animated.timing(logoAnim5, { toValue: 0, duration: 600, useNativeDriver: true }),
-        // pausa 500ms
-        Animated.delay(500),
-        // saludo entra y se queda (600ms)
-        Animated.timing(greetingAnim5, { toValue: 1, duration: 600, useNativeDriver: true }),
-      ]);
-      seq.start();
-      return () => {
-        seq.stop();
-        phraseAnim.stopAnimation();
-        greetingAnim5.stopAnimation();
-        logoAnim5.stopAnimation();
-        phraseAnim.setValue(0);
+      if (greetingVisible) {
+        // Modo logo ON: logo visible, frase entra/sale, logo se queda, saludo nunca aparece
         greetingAnim5.setValue(0);
         logoAnim5.setValue(1);
-      };
-    }, []),
+        const seq = Animated.sequence([
+          Animated.timing(phraseAnim, { toValue: 1, duration: 2400, useNativeDriver: true }),
+          Animated.delay(5000),
+          Animated.timing(phraseAnim, { toValue: 0, duration: 2400, useNativeDriver: true }),
+        ]);
+        seq.start();
+        return () => {
+          seq.stop();
+          phraseAnim.stopAnimation();
+          logoAnim5.stopAnimation();
+          phraseAnim.setValue(0);
+          greetingAnim5.setValue(0);
+          logoAnim5.setValue(1);
+        };
+      } else {
+        // Modo logo OFF: sin logo, saludo inmediato, frase igual
+        greetingAnim5.setValue(1);
+        logoAnim5.setValue(0);
+        const seq = Animated.sequence([
+          Animated.timing(phraseAnim, { toValue: 1, duration: 2400, useNativeDriver: true }),
+          Animated.delay(5000),
+          Animated.timing(phraseAnim, { toValue: 0, duration: 2400, useNativeDriver: true }),
+        ]);
+        seq.start();
+        return () => {
+          seq.stop();
+          phraseAnim.stopAnimation();
+          phraseAnim.setValue(0);
+          greetingAnim5.setValue(1);
+          logoAnim5.setValue(0);
+        };
+      }
+    }, [greetingVisible]),
   );
 
   const handleMainScroll = useCallback(

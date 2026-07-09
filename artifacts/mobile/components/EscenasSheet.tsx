@@ -320,10 +320,10 @@ export function EscenasSheet() {
             </View>
           )}
 
-          {/* Saludo de bienvenida */}
+          {/* Logo Pulso */}
           <View style={styles.controlRow}>
-            <MaterialCommunityIcons name="hand-wave-outline" size={17} color="rgba(255,255,255,0.65)" style={styles.controlIcon} />
-            <Text style={styles.controlLabel}>Activar saludo de bienvenida</Text>
+            <MaterialCommunityIcons name="image-outline" size={17} color="rgba(255,255,255,0.65)" style={styles.controlIcon} />
+            <Text style={styles.controlLabel}>Activar logo</Text>
             <Switch
               value={greetingVisible}
               onValueChange={setGreetingVisible}
