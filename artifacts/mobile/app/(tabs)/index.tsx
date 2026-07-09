@@ -766,21 +766,20 @@ export default function HomeScreen2() {
         />
       </Animated.View>
 
-      {/* ── Saludo + Frase — absolutos sobre el backdrop, tapados al hacer scroll ── */}
-      <Animated.View
+      {/* ── Saludo + Frase — anclados, posición fija ── */}
+      <View
         pointerEvents="none"
         style={{
           position: "absolute",
           top: topPad + 60,
           left: 0,
           right: 0,
-          opacity: backdropAnim,
           alignItems: "center",
           gap: 6,
         }}
       >
         <GreetingHeader />
-        <Animated.View style={{ opacity: phraseAnim, paddingHorizontal: GRID_PAD }}>
+        <View style={{ paddingHorizontal: GRID_PAD }}>
           <Text
             style={{
               color: "rgba(255,255,255,0.70)",
@@ -793,8 +792,8 @@ export default function HomeScreen2() {
           >
             {weeklyPhrase}
           </Text>
-        </Animated.View>
-      </Animated.View>
+        </View>
+      </View>
 
       <StatusBar barStyle="light-content" />
 
