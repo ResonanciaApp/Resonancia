@@ -790,7 +790,7 @@ export default function HomeScreen2() {
               letterSpacing: 0.2,
             }}
           >
-            {weeklyPhrase.split(" ").slice(2).join(" ")}
+            {"El presente es tu único lugar"}
           </Text>
         </View>
       </View>
