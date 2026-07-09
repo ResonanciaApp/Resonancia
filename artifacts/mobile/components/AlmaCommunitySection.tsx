@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -67,18 +66,12 @@ export function AlmaCommunitySection() {
       {/* Compose tap area */}
       <Pressable
         onPress={() => router.push("/mensajes-del-alma" as never)}
-        style={({ pressed }) => [{ alignSelf: "center", marginBottom: 16, opacity: pressed ? 0.75 : 1 }]}
+        style={({ pressed }) => [
+          styles.composeTap,
+          { opacity: pressed ? 0.75 : 1 },
+        ]}
       >
-        <LinearGradient
-          colors={["#F7CB6B", "#FBA980"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.composeBorder}
-        >
-          <View style={styles.composeInner}>
-            <Text style={[styles.composeChipText, { color: colors.primary }]}>Publicar</Text>
-          </View>
-        </LinearGradient>
+        <Text style={[styles.composeChipText, { color: colors.primary }]}>Publicar</Text>
       </Pressable>
 
       {/* Messages preview */}
@@ -161,15 +154,14 @@ const styles = StyleSheet.create({
   title: { fontSize: 18, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
   subtitle: { fontSize: 12, marginTop: 4, lineHeight: 16, textAlign: "center" },
 
-  composeBorder: {
+  composeTap: {
+    alignSelf: "center",
     borderRadius: 15,
-    padding: 2,
-  },
-  composeInner: {
-    borderRadius: 13,
-    backgroundColor: "#1B060F",
+    borderWidth: 1,
+    borderColor: "rgba(212,175,55,0.35)",
     paddingHorizontal: 28,
     paddingVertical: 9,
+    marginBottom: 16,
   },
   composeChipText: { fontSize: 13, fontWeight: "600" },
 
