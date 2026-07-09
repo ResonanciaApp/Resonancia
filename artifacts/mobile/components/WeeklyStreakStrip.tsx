@@ -195,6 +195,12 @@ export function WeeklyStreakStrip() {
             pointerEvents="none"
           />
           <Svg width={RING_SIZE} height={RING_SIZE}>
+            <Defs>
+              <SvgLinearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                <Stop offset="0" stopColor="#F7CB6B" />
+                <Stop offset="1" stopColor="#FBA980" />
+              </SvgLinearGradient>
+            </Defs>
             <Circle
               cx={RING_SIZE / 2}
               cy={RING_SIZE / 2}
@@ -207,7 +213,7 @@ export function WeeklyStreakStrip() {
               cx={RING_SIZE / 2}
               cy={RING_SIZE / 2}
               r={RADIUS}
-              stroke="rgba(255,255,255,0.9)"
+              stroke="url(#ringGrad)"
               strokeWidth={STROKE_W}
               fill="none"
               strokeDasharray={`${CIRCUMFERENCE}`}
