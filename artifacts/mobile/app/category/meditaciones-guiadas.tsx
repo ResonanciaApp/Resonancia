@@ -24,7 +24,7 @@ import { hexToRgba } from "@/utils/color";
 
 const H_PAD = 20;
 const { width: W } = Dimensions.get("window");
-const cardW = (W - H_PAD * 2 - 14) / 2;
+const cardW = (W - H_PAD * 2 - 10) / 2;
 const GOLD  = "#F7CB6B";
 const TEXT  = "#FBFBFB";
 const MUTED = "#c2c2c2";
@@ -491,7 +491,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   controlRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingTop: 12, paddingBottom: 8 },
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
-  sessionGrid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", paddingHorizontal: H_PAD, rowGap: 20, marginTop: 8, marginBottom: 6 },
+  sessionGrid: { flexDirection: "row", flexWrap: "wrap", columnGap: 10, paddingHorizontal: H_PAD, rowGap: 20, marginTop: 8, marginBottom: 6 },
   emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },
   loadMoreFooter: { alignItems: "center", paddingVertical: 20 },
   emptyTitle: { fontSize: 17, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 8 },

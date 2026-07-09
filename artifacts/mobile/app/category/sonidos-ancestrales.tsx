@@ -33,7 +33,7 @@ const TEXT  = "#FBFBFB";
 const MUTED = "#c2c2c2";
 const GRID_GAP    = 10;
 const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
-const cardW = (width - H_PAD * 2 - 14) / 2;
+const cardW = (width - H_PAD * 2 - 10) / 2;
 const HERO_H   = 148;
 
 type CatTab   = string;
@@ -591,7 +591,7 @@ const styles = StyleSheet.create({
   gridOuter: { paddingHorizontal: H_PAD, gap: GRID_GAP },
   gridRow: { flexDirection: "row", gap: GRID_GAP },
   sectionLabel: { fontSize: 11, fontWeight: "400", color: TEXT, paddingHorizontal: H_PAD, paddingTop: 5, paddingBottom: 4 },
-  sessionGrid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", paddingHorizontal: H_PAD, rowGap: 20, marginTop: 8, marginBottom: 6 },
+  sessionGrid: { flexDirection: "row", flexWrap: "wrap", columnGap: 10, paddingHorizontal: H_PAD, rowGap: 20, marginTop: 8, marginBottom: 6 },
   emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },
   loadMoreFooter: { alignItems: "center", paddingVertical: 20 },
   emptyTitle: { fontSize: 17, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 8 },
