@@ -782,7 +782,6 @@ export default function HomeScreen2() {
             opacity: backdropAnim,
           }}
         >
-          <GreetingHeader />
           <View style={{ paddingHorizontal: GRID_PAD, marginTop: -6 }}>
             <Text
               style={{
@@ -1152,22 +1151,25 @@ export default function HomeScreen2() {
           opacity: backdropAnim,
         }}
       >
-        {/* Loto — izquierda */}
-        <Pressable
-          onPress={openEscenasSheet}
-          hitSlop={8}
-          style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
-        >
-          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-          <LinearGradient
-            colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-            style={StyleSheet.absoluteFill}
-          />
-          <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
-        </Pressable>
+        {/* Título saludo — izquierda */}
+        <Text style={{ color: "rgba(255,255,255,0.92)", fontSize: 25, fontWeight: "700", letterSpacing: 0.3 }}>
+          {(() => { const h = new Date().getHours(); return h >= 6 && h < 12 ? "Buenos días" : h >= 12 && h < 19 ? "Buenas tardes" : "Buenas noches"; })()}
+        </Text>
 
-        {/* Regalo — derecha */}
+        {/* Loto + Mezclador — derecha */}
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <Pressable
+            onPress={openEscenasSheet}
+            hitSlop={8}
+            style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
+          >
+            <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+            <LinearGradient
+              colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+              style={StyleSheet.absoluteFill}
+            />
+            <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
+          </Pressable>
           <Pressable
             hitSlop={8}
             style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1 }]}
