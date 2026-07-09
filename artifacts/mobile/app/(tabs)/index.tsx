@@ -1061,7 +1061,7 @@ export default function HomeScreen2() {
             onPress={() => setMoodSheetVisible(true)}
             style={({ pressed }) => [styles.moodRow, styles.moodRowActive, { opacity: pressed ? 0.78 : 1 }]}
           >
-            <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.14)" }]} />
+            <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.08)" }]} />
             <Text style={styles.moodSientesLabel}>Sientes:</Text>
             <View style={{ flex: 1 }} />
             <LinearGradient
@@ -1086,7 +1086,7 @@ export default function HomeScreen2() {
             onPress={() => setMoodSheetVisible(true)}
             style={({ pressed }) => [styles.moodRow, { opacity: pressed ? 0.78 : 1 }]}
           >
-            <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.14)" }]} />
+            <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.08)" }]} />
             <Text style={styles.moodEmoji}>🙂</Text>
             <Text style={styles.moodRowLabel}>¿Cómo te sientes hoy?</Text>
             <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" />
@@ -1325,7 +1325,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   recoCard: {
-    backgroundColor: "rgba(0,0,0,0.14)",
+    backgroundColor: "rgba(255,255,255,0.08)",
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: 14,
