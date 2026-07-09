@@ -771,7 +771,7 @@ export default function HomeScreen2() {
         pointerEvents="none"
         style={{
           position: "absolute",
-          top: topPad + 60,
+          top: topPad + 80,
           left: 0,
           right: 0,
           alignItems: "center",
