@@ -133,7 +133,7 @@ export default function VideoTabScreen() {
                   style={[
                     styles.chip,
                     {
-                      backgroundColor: sel ? "#F4F4F4" : "rgba(0,0,0,0.14)",
+                      backgroundColor: sel ? "#F4F4F4" : "rgba(255,255,255,0.08)",
                       borderColor: sel ? "#F4F4F4" : CHIP_BORDER,
                     },
                   ]}
