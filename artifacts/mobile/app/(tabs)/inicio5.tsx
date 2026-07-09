@@ -23,6 +23,7 @@ import {
   View,
 } from "react-native";
 import RAnimated, {
+  cancelAnimation,
   Easing,
   runOnJS,
   useAnimatedStyle,
@@ -616,8 +617,8 @@ export default function HomeScreen2() {
   const phraseAnim = useRef(new Animated.Value(0)).current;
   const greetingAnim5  = useRef(new Animated.Value(0)).current;
   const logoAnim5      = useRef(new Animated.Value(1)).current;
-  const sweepAnim      = useRef(new Animated.Value(0)).current;
-  const sweepTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sweepWidthSV   = useSharedValue(0);
+  const sweepOpacitySV = useSharedValue(0);
   const weeklyPhrase   = useRef(getWeeklyPhrase()).current;
   const phraseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const greetingText   = useRef((() => {
@@ -646,25 +647,30 @@ export default function HomeScreen2() {
       ]);
       seq.start(({ finished }) => {
         if (finished) {
-          sweepTimerRef.current = setTimeout(() => {
-            Animated.timing(sweepAnim, { toValue: 1, duration: 700, useNativeDriver: false }).start();
-          }, 800);
+          sweepOpacitySV.value = 1;
+          sweepWidthSV.value = withDelay(800, withTiming(210, { duration: 700 }));
         }
       });
       return () => {
         seq.stop();
-        if (sweepTimerRef.current) clearTimeout(sweepTimerRef.current);
         phraseAnim.stopAnimation();
         greetingAnim5.stopAnimation();
         logoAnim5.stopAnimation();
-        sweepAnim.stopAnimation();
+        cancelAnimation(sweepWidthSV);
+        cancelAnimation(sweepOpacitySV);
         phraseAnim.setValue(0);
         greetingAnim5.setValue(0);
         logoAnim5.setValue(1);
-        sweepAnim.setValue(0);
+        sweepWidthSV.value = 0;
+        sweepOpacitySV.value = 0;
       };
     }, []),
   );
+
+  const sweepStyle = useAnimatedStyle(() => ({
+    width: sweepWidthSV.value,
+    opacity: sweepOpacitySV.value,
+  }));
 
   const handleMainScroll = useCallback(
     (e: { nativeEvent: { contentOffset: { y: number } } }) => {
@@ -1198,13 +1204,7 @@ export default function HomeScreen2() {
             {greetingText}
           </Animated.Text>
           {/* Sweep degradado que revela el texto de izquierda a derecha */}
-          <Animated.View style={{
-            position: "absolute",
-            overflow: "hidden",
-            height: 44,
-            width: sweepAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 210] }),
-            opacity: greetingAnim5,
-          }}>
+          <RAnimated.View style={[{ position: "absolute", overflow: "hidden", height: 44 }, sweepStyle]}>
             <MaskedView
               style={{ width: 210, height: 44, justifyContent: "center" }}
               maskElement={
@@ -1222,7 +1222,7 @@ export default function HomeScreen2() {
                 style={{ width: 210, height: 44 }}
               />
             </MaskedView>
-          </Animated.View>
+          </RAnimated.View>
         </View>
 
         {/* Loto + Mezclador — derecha */}
