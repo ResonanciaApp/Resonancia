@@ -1072,12 +1072,7 @@ export default function HomeScreen2() {
         </View>
         <View style={styles.recoSection}>
           {moodRecommended.map((s) => (
-            <View key={s.id} style={styles.recoCard}>
-              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-              <LinearGradient
-                colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-                style={StyleSheet.absoluteFill}
-              />
+            <View key={s.id} style={[styles.recoCard, { backgroundColor: "rgba(255,255,255,0.035)" }]}>
               <SessionRow
                 session={s}
                 imageSize={84}
