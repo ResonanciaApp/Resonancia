@@ -1145,27 +1145,28 @@ export default function HomeScreen2() {
           left: 0,
           right: 0,
           flexDirection: "row",
-          justifyContent: "flex-end",
+          justifyContent: "space-between",
           alignItems: "center",
           paddingHorizontal: 14,
           opacity: backdropAnim,
         }}
       >
-        {/* Loto + Regalo — derecha */}
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <Pressable
-            onPress={openEscenasSheet}
-            hitSlop={8}
-            style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
-          >
-            <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-            <LinearGradient
-              colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-              style={StyleSheet.absoluteFill}
-            />
-            <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
-          </Pressable>
+        {/* Loto — izquierda */}
+        <Pressable
+          onPress={openEscenasSheet}
+          hitSlop={8}
+          style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1 }]}
+        >
+          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+          <LinearGradient
+            colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+            style={StyleSheet.absoluteFill}
+          />
+          <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
+        </Pressable>
 
+        {/* Regalo — derecha */}
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <Pressable
             hitSlop={8}
             style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1 }]}
