@@ -615,30 +615,38 @@ export default function HomeScreen2() {
   const backdropAnim = useRef(new Animated.Value(1)).current;
   const phraseAnim = useRef(new Animated.Value(0)).current;
   const greetingAnim5 = useRef(new Animated.Value(0)).current;
+  const logoAnim5     = useRef(new Animated.Value(1)).current;
   const weeklyPhrase = useRef(getWeeklyPhrase()).current;
   const phraseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useFocusEffect(
     useCallback(() => {
-      greetingAnim5.setValue(0);
-      Animated.timing(greetingAnim5, { toValue: 1, duration: 2400, useNativeDriver: true }).start();
-      return () => { greetingAnim5.stopAnimation(); greetingAnim5.setValue(0); };
-    }, []),
-  );
-
-  useFocusEffect(
-    useCallback(() => {
       phraseAnim.setValue(0);
+      greetingAnim5.setValue(0);
+      logoAnim5.setValue(1);
       const seq = Animated.sequence([
+        // frase entra
         Animated.timing(phraseAnim, { toValue: 1, duration: 2400, useNativeDriver: true }),
+        // permanece 5s
         Animated.delay(5000),
+        // frase sale
         Animated.timing(phraseAnim, { toValue: 0, duration: 2400, useNativeDriver: true }),
+        // logo sale (600ms)
+        Animated.timing(logoAnim5, { toValue: 0, duration: 600, useNativeDriver: true }),
+        // pausa 500ms
+        Animated.delay(500),
+        // saludo entra y se queda (600ms)
+        Animated.timing(greetingAnim5, { toValue: 1, duration: 600, useNativeDriver: true }),
       ]);
       seq.start();
       return () => {
         seq.stop();
         phraseAnim.stopAnimation();
+        greetingAnim5.stopAnimation();
+        logoAnim5.stopAnimation();
         phraseAnim.setValue(0);
+        greetingAnim5.setValue(0);
+        logoAnim5.setValue(1);
       };
     }, []),
   );
@@ -1163,10 +1171,17 @@ export default function HomeScreen2() {
           opacity: backdropAnim,
         }}
       >
-        {/* Título saludo — izquierda */}
-        <Animated.Text style={{ color: "rgba(255,255,255,0.92)", fontSize: 25, fontWeight: "700", letterSpacing: 0.3, opacity: greetingAnim5 }}>
-          {(() => { const h = new Date().getHours(); return h >= 6 && h < 12 ? "Buenos días" : h >= 12 && h < 19 ? "Buenas tardes" : "Buenas noches"; })()}
-        </Animated.Text>
+        {/* Logo Pulso + Saludo — izquierda (superpuestos) */}
+        <View style={{ width: 130, height: 44, justifyContent: "center" }}>
+          <Animated.Image
+            source={require("@/assets/images/pulso-logo.png")}
+            style={{ position: "absolute", width: 130, height: 44, opacity: logoAnim5 }}
+            resizeMode="contain"
+          />
+          <Animated.Text style={{ position: "absolute", color: "rgba(255,255,255,0.92)", fontSize: 25, fontWeight: "700", letterSpacing: 0.3, opacity: greetingAnim5 }}>
+            {(() => { const h = new Date().getHours(); return h >= 6 && h < 12 ? "Buenos días" : h >= 12 && h < 19 ? "Buenas tardes" : "Buenas noches"; })()}
+          </Animated.Text>
+        </View>
 
         {/* Loto + Mezclador — derecha */}
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
