@@ -564,7 +564,7 @@ const styles = StyleSheet.create({
   chipUnsel: {},
   chipSel: { borderWidth: 0 },
   chipText: { fontSize: 13, fontWeight: "400", color: TEXT, textAlign: "center" },
-  chipTextSel: { color: "#2D0D3A", fontWeight: "600" },
+  chipTextSel: { color: "#2D0D3A", fontWeight: "380" },
 
   /* ── Content ── */
   scroll: { flex: 1 },
