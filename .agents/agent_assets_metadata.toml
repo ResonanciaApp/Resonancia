@@ -1512,6 +1512,66 @@ uri = "file://attached_assets/tibet-opt5.png"
 type = "image"
 title = "tibet-opt5"
 
+[[generated]]
+id = "VCF1ivrpUDwbBQBiXZD-b"
+uri = "file://attached_assets/tib-01.png"
+type = "image"
+title = "tib-01"
+
+[[generated]]
+id = "CORizq3mt2HeDBXgk-73s"
+uri = "file://attached_assets/tib-02.png"
+type = "image"
+title = "tib-02"
+
+[[generated]]
+id = "S74-aYNte6Y6f_mQROb3c"
+uri = "file://attached_assets/tib-03.png"
+type = "image"
+title = "tib-03"
+
+[[generated]]
+id = "bFO-oB5RxhyyX1WMSzwLF"
+uri = "file://attached_assets/tib-04.png"
+type = "image"
+title = "tib-04"
+
+[[generated]]
+id = "tPeP9Xgks8Wm7n361BoKk"
+uri = "file://attached_assets/tib-05.png"
+type = "image"
+title = "tib-05"
+
+[[generated]]
+id = "64cHYtDGPGnTyqRUzLk2q"
+uri = "file://attached_assets/tib-06.png"
+type = "image"
+title = "tib-06"
+
+[[generated]]
+id = "yRR2qJOYiZa9QkvSsBL1D"
+uri = "file://attached_assets/tib-07.png"
+type = "image"
+title = "tib-07"
+
+[[generated]]
+id = "v5dzS1Kur9a0-Ld2s2WgL"
+uri = "file://attached_assets/tib-08.png"
+type = "image"
+title = "tib-08"
+
+[[generated]]
+id = "9MJojohUaZw0ZpbtYn39I"
+uri = "file://attached_assets/tib-09.png"
+type = "image"
+title = "tib-09"
+
+[[generated]]
+id = "WOfrqM13QeNhuGo8sLlpF"
+uri = "file://attached_assets/tib-10.png"
+type = "image"
+title = "tib-10"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
@@ -2297,3 +2357,63 @@ id = "C8sIBcHFPp74LGyVaIveQ"
 uri = "file://attached_assets/tibet-opt5.png"
 type = "image"
 title = "Opción 5 — Humo de incienso abstracto"
+
+[[outputs]]
+id = "EVve8JP85LHSuGcWT7hQl"
+uri = "file://attached_assets/tib-01.png"
+type = "image"
+title = "01 — Altar con cuencos y thangkas"
+
+[[outputs]]
+id = "q57mFAHfNUMJuJwkma7Of"
+uri = "file://attached_assets/tib-02.png"
+type = "image"
+title = "02 — Cuencos sobre alfombra roja"
+
+[[outputs]]
+id = "TC98rcdCNqGI4v5qAjsxs"
+uri = "file://attached_assets/tib-03.png"
+type = "image"
+title = "03 — Santuario con lámparas de mantequilla"
+
+[[outputs]]
+id = "1eLoA2LyCeeudnziPw-UH"
+uri = "file://attached_assets/tib-04.png"
+type = "image"
+title = "04 — Sala de sanación sonica, paredes ocre"
+
+[[outputs]]
+id = "B4BeUYUK7s97KgtYHao0C"
+uri = "file://attached_assets/tib-05.png"
+type = "image"
+title = "05 — Altar monasterio, tela carmesi"
+
+[[outputs]]
+id = "Qwpf3M2rvRS66qbFDCBiZ"
+uri = "file://attached_assets/tib-06.png"
+type = "image"
+title = "06 — Círculo de cuencos desde arriba"
+
+[[outputs]]
+id = "OEOMeautz-QM-8boDNehm"
+uri = "file://attached_assets/tib-07.png"
+type = "image"
+title = "07 — Filas de cuencos con banderas de oraciones"
+
+[[outputs]]
+id = "Vx6aPLm1wbydP8ljSacNL"
+uri = "file://attached_assets/tib-08.png"
+type = "image"
+title = "08 — Cuencos en estantes, paredes con mandalas"
+
+[[outputs]]
+id = "qR1I6iOfkZ7uQcCvCKeN4"
+uri = "file://attached_assets/tib-09.png"
+type = "image"
+title = "09 — Vista baja, santuario de piedra"
+
+[[outputs]]
+id = "PqDG3jpB0WCnorW7wECs0"
+uri = "file://attached_assets/tib-10.png"
+type = "image"
+title = "10 — Espacio de meditación con seda roja"
