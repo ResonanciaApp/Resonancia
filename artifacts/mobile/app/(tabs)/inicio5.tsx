@@ -1175,7 +1175,7 @@ export default function HomeScreen2() {
         <View style={{ width: 210, height: 44, justifyContent: "center" }}>
           <Animated.Image
             source={require("@/assets/images/pulso-logo.png")}
-            style={{ position: "absolute", width: 160, height: 44, opacity: logoAnim5, left: -26 }}
+            style={{ position: "absolute", width: 160, height: 44, opacity: logoAnim5, left: -19 }}
             resizeMode="contain"
           />
           <Animated.Text numberOfLines={1} style={{ position: "absolute", color: "rgba(255,255,255,0.92)", fontSize: 25, fontWeight: "700", letterSpacing: 0.3, opacity: greetingAnim5 }}>
