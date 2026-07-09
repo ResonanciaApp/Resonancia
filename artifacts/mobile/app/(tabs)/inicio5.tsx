@@ -1313,7 +1313,10 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   recoCard: {
-    paddingVertical: 4,
+    backgroundColor: "rgba(255,255,255,0.035)",
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
   },
 
   // Intención
