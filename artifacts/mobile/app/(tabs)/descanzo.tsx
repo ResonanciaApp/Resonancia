@@ -817,6 +817,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingBottom: 14,
     backgroundColor: "#0D0512",
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.04)",
   },
   stickyHeaderTitle: {
     fontSize: 18,
