@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
   messageWrap: {
     alignItems: "center",
     gap: 3,
-    marginTop: 7,
+    marginTop: 3,
   },
   messageHighlight: {
     color: "#FBFBFB",
