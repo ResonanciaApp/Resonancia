@@ -931,6 +931,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 18,
     gap: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.04)",
     zIndex: 10,
   },
   pillBorder: {
