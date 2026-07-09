@@ -789,7 +789,7 @@ export default function HomeScreen2() {
         {/* ── Frase semanal ── */}
         <Animated.View
           style={{
-            marginTop: 122,
+            marginTop: 117,
             paddingHorizontal: GRID_PAD,
             alignItems: "center",
             opacity: phraseAnim,
@@ -811,7 +811,7 @@ export default function HomeScreen2() {
         </Animated.View>
 
         {/* ── Racha semanal ── */}
-        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 75 }}>
+        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 80 }}>
           <WeeklyStreakStrip />
         </View>
 
