@@ -24,7 +24,7 @@ import { hexToRgba } from "@/utils/color";
 
 const H_PAD = 20;
 const { width: W } = Dimensions.get("window");
-const cardW = (W - H_PAD * 2 - 18) / 2;
+const cardW = (W - H_PAD * 2 - 20) / 2;
 const GOLD  = "#F7CB6B";
 const TEXT  = "#FBFBFB";
 const MUTED = "#c2c2c2";
