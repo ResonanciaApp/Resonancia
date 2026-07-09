@@ -171,6 +171,7 @@ const PillTab = memo(function PillTab({
     >
       {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
       {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
+      {!sel && <LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
       <MaterialCommunityIcons name={tab.icon as any} size={13} color={sel ? "#1B060F" : "#F4F4F4"} />
       <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#1B060F" : "#F4F4F4" }]}>
         {tab.label}
@@ -715,12 +716,13 @@ export default function MezcladorScreen() {
               contentContainerStyle={styles.pillRowContent}
             >
               {MAIN_TABS.map((tab) => (
-                <PillTab
-                  key={tab.id}
-                  tab={tab}
-                  sel={mainTab === tab.id}
-                  onPress={() => handleMainTab(tab.id)}
-                />
+                <View key={tab.id} style={[styles.pillTabBorder, mainTab === tab.id && styles.pillTabBorderSel]}>
+                  <PillTab
+                    tab={tab}
+                    sel={mainTab === tab.id}
+                    onPress={() => handleMainTab(tab.id)}
+                  />
+                </View>
               ))}
             </ScrollView>
 
@@ -938,6 +940,9 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderWidth: 0.5,
     borderColor: "rgba(255,255,255,0.25)",
+  },
+  pillTabBorderSel: {
+    borderColor: "transparent",
   },
   pillTabInner: {
     flexDirection: "row",
