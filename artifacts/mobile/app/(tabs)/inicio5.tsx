@@ -898,7 +898,7 @@ export default function HomeScreen2() {
           onPress={() => router.push("/resonadores" as never)}
           style={{ marginBottom: 35, marginHorizontal: GRID_PAD, marginTop: -6 }}
         >
-          <View style={[styles.resonadoresBanner, { backgroundColor: "rgba(255,255,255,0.035)" }]}>
+          <View style={[styles.resonadoresBanner, { backgroundColor: "rgba(255,255,255,0.11)" }]}>
             <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
               <LinearGradient
                 colors={["rgb(247,203,107)", "rgb(251,169,128)"]}
@@ -988,7 +988,7 @@ export default function HomeScreen2() {
                   gap: 10,
                   borderRadius: 14,
                   alignItems: "center",
-                  backgroundColor: "rgba(255,255,255,0.035)",
+                  backgroundColor: "rgba(255,255,255,0.11)",
                   opacity: pressed ? 0.75 : 1,
                 }]}
               >
@@ -1326,7 +1326,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   recoCard: {
-    backgroundColor: "rgba(255,255,255,0.035)",
+    backgroundColor: "rgba(255,255,255,0.11)",
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: 10,
