@@ -1195,7 +1195,7 @@ export default function HomeScreen2() {
         >
           <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
           <LinearGradient
-            colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+            colors={["rgba(255,255,255,0.04)", "rgba(255,255,255,0)"]}
             style={StyleSheet.absoluteFill}
           />
           <MaterialCommunityIcons name="spa" size={25} color="#FFFFFF" style={{ opacity: 0.9 }} />
@@ -1229,7 +1229,7 @@ export default function HomeScreen2() {
             <View style={styles.giftBtnInner}>
               <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
               <LinearGradient
-                colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+                colors={["rgba(255,255,255,0.04)", "rgba(255,255,255,0)"]}
                 style={StyleSheet.absoluteFill}
               />
               <Feather name="sliders" size={22} color="#FFFFFF" style={{ opacity: 0.9 }} />
