@@ -816,7 +816,7 @@ export default function HomeScreen2() {
         >
           <View
             style={[styles.resonadoresBanner, {
-              backgroundColor: "rgba(0,0,0,0.14)",
+              backgroundColor: "rgba(0,0,0,0.20)",
               borderWidth: 2,
               borderColor: "rgba(255,255,255,0.04)",
             }]}
