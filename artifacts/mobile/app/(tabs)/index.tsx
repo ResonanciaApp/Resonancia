@@ -788,7 +788,7 @@ export default function HomeScreen2() {
         }}
       >
         {/* ── Saludo ── */}
-        <View style={{ marginTop: 107 }}>
+        <View style={{ marginTop: 77 }}>
           <GreetingHeader />
         </View>
 
