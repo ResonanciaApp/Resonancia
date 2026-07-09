@@ -829,7 +829,7 @@ export default function ProfileScreen() {
                   style={({ pressed }) => [styles.pill, { opacity: pressed ? 0.8 : 1 }]}
                 >
                   {sel
-                    ? <LinearGradient colors={["rgba(190,100,80,0.55)", "rgba(120,60,160,0.55)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
+                    ? <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
                     : <><BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} /><LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} /></>}
                   <Text style={[styles.pillText, sel && styles.pillTextSel]}>{t.label}</Text>
                 </Pressable>
