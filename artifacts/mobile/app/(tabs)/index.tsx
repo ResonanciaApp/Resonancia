@@ -818,7 +818,7 @@ export default function HomeScreen2() {
             style={[styles.resonadoresBanner, {
               backgroundColor: "rgba(255,255,255,0.08)",
               borderWidth: 2,
-              borderColor: "rgba(255,255,255,0.04)",
+              borderColor: activeTheme.gradient[1] as string,
             }]}
           >
             <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
