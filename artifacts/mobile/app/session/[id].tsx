@@ -117,7 +117,7 @@ export default function SessionDetailScreen() {
   const isMusica = session.categoryId === "musica-sonidos";
   // Fondo ligado a la Escena activa (naturaleza/bosque/lluvia/viento/...).
   const catBg = { gradient: sceneTheme.gradient, solid: sceneTheme.solid };
-  const stickyHeaderColor = sceneTheme.gradient[0];
+  const stickyHeaderColor = colors.background;
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
   const [showPlaylistSheet, setShowPlaylistSheet] = useState(false);
@@ -298,16 +298,7 @@ export default function SessionDetailScreen() {
       }));
 
   return (
-    <View style={[styles.root, { backgroundColor: sceneTheme.gradient[0] }]}>
-      {/* ── Imagen de fondo fija ────────────────────────────────────────────── */}
-      <View pointerEvents="none" style={{ position: "absolute", top: 0, left: 0, right: 0, height: 400 }}>
-        <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
-        <LinearGradient
-          colors={["transparent", "rgba(0,0,0,0.18)", "rgba(27,6,15,0.72)", "#1B060F"]}
-          locations={[0, 0.38, 0.7, 1]}
-          style={StyleSheet.absoluteFill}
-        />
-      </View>
+    <View style={[styles.root, { backgroundColor: colors.background }]}>
       <StatusBar barStyle="light-content" />
 
       <Animated.ScrollView
@@ -317,10 +308,16 @@ export default function SessionDetailScreen() {
         scrollEventThrottle={16}
         onScroll={handleScroll}
       >
-        {/* ── Hero spacer + navBar ─────────────────────────────────────────── */}
+        {/* ── Hero — imagen que sube con el contenido ──────────────────────── */}
         <View style={[styles.hero, { height: HEADER_H }]}>
+          <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
+          <LinearGradient
+            colors={["transparent", "rgba(27,6,15,0.55)", "#1B060F"]}
+            locations={[0.35, 0.72, 1]}
+            style={StyleSheet.absoluteFill}
+          />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
-            <GhostPill noBorder style={{ backgroundColor: hexToRgba(sceneTheme.gradient[1], 0.7) }}>
+            <GhostPill noBorder style={{ backgroundColor: "rgba(27,6,15,0.45)" }}>
               <BackPill onPress={() => router.back()} />
             </GhostPill>
             <Pressable onPress={handleInstagramShare} hitSlop={10} style={({ pressed }) => [styles.igBtn, { opacity: pressed ? 0.6 : 1 }]}>
@@ -519,7 +516,7 @@ export default function SessionDetailScreen() {
         pointerEvents="box-none"
         style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: stickyHeaderColor }]}
       >
-        <GhostPill noBorder style={{ backgroundColor: hexToRgba(sceneTheme.gradient[1], 0.4) }}>
+        <GhostPill noBorder style={{ backgroundColor: "rgba(27,6,15,0.45)" }}>
           <BackPill onPress={() => router.back()} />
         </GhostPill>
         <View style={{ flex: 1, alignItems: "center", paddingTop: 5 }}>
