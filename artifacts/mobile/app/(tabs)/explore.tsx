@@ -405,7 +405,7 @@ export default function ExploreScreen() {
 
         {/* ── Barra de búsqueda ── */}
         <View style={styles.searchWrap}>
-          <View style={[styles.searchBox, { backgroundColor: "rgba(255,255,255,0.035)", borderColor: "rgba(255,255,255,0.6)", borderWidth: 1 }]}>
+          <View style={[styles.searchBox, { backgroundColor: "rgba(255,255,255,0.11)", borderColor: "rgba(255,255,255,0.6)", borderWidth: 1 }]}>
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
               value={query}
@@ -449,7 +449,7 @@ export default function ExploreScreen() {
                   <Pressable
                     key={t.id}
                     onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
-                    style={[styles.temaCell, { width: TEMA3_W, height: TEMA3_W, borderRadius: 11, overflow: "hidden", backgroundColor: "rgba(255,255,255,0.035)" }]}
+                    style={[styles.temaCell, { width: TEMA3_W, height: TEMA3_W, borderRadius: 11, overflow: "hidden", backgroundColor: "rgba(255,255,255,0.11)" }]}
                   >
                     {({ pressed }) => (
                       <>
@@ -617,7 +617,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     minWidth: 76,
     height: 38,
-    backgroundColor: "transparent",
+    backgroundColor: "rgba(255,255,255,0.11)",
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
