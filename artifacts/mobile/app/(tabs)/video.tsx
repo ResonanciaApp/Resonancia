@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     height: 45,
   },
-  searchInput: { flex: 1, fontSize: 16, fontWeight: "300", padding: 0 },
+  searchInput: { flex: 1, fontSize: 15, fontWeight: "300", padding: 0 },
 
   chipsWrap: { height: CHIPS_H, justifyContent: "center" },
   chipsRow: { paddingHorizontal: 19, gap: 8, alignItems: "center" },
