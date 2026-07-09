@@ -822,13 +822,19 @@ export default function HomeScreen2() {
             }]}
           >
             <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-              <View style={{ width: 44, height: 44, borderRadius: 15, alignItems: "center", justifyContent: "center", backgroundColor: activeTheme.gradient[1] as string }}>
+              <LinearGradient
+                colors={["rgb(247,203,107)", "rgb(251,169,128)"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{ width: 44, height: 44, borderRadius: 15, alignItems: "center", justifyContent: "center" }}
+              >
                 <ExpoImage
                   source={require("@/assets/images/icons/familia.png")}
                   style={{ width: 26, height: 26 }}
                   contentFit="contain"
+                  tintColor={activeTheme.gradient[1] as string}
                 />
-              </View>
+              </LinearGradient>
               <View style={{ flex: 1, marginLeft: 25 }}>
                 <Text style={styles.resonadoresBannerTitle}>Resonadores</Text>
                 <Text style={styles.resonadoresBannerSub}>Únete a la comunidad</Text>
