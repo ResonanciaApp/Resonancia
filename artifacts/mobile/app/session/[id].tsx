@@ -117,7 +117,7 @@ export default function SessionDetailScreen() {
   const isMusica = session.categoryId === "musica-sonidos";
   // Fondo ligado a la Escena activa (naturaleza/bosque/lluvia/viento/...).
   const catBg = { gradient: sceneTheme.gradient, solid: sceneTheme.solid };
-  const stickyHeaderColor = colors.background;
+  const stickyHeaderColor = sceneTheme.gradient[0];
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
   const [showPlaylistSheet, setShowPlaylistSheet] = useState(false);
@@ -298,7 +298,7 @@ export default function SessionDetailScreen() {
       }));
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root, { backgroundColor: sceneTheme.gradient[0] }]}>
       <StatusBar barStyle="light-content" />
 
       <Animated.ScrollView
@@ -311,11 +311,6 @@ export default function SessionDetailScreen() {
         {/* ── Hero — imagen que sube con el contenido ──────────────────────── */}
         <View style={[styles.hero, { height: HEADER_H }]}>
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
-          <LinearGradient
-            colors={["transparent", "rgba(27,6,15,0.55)", "#1B060F"]}
-            locations={[0.35, 0.72, 1]}
-            style={StyleSheet.absoluteFill}
-          />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
             <GhostPill noBorder style={{ backgroundColor: "rgba(27,6,15,0.45)" }}>
               <BackPill onPress={() => router.back()} />
