@@ -284,7 +284,7 @@ const ac = StyleSheet.create({
   hDotsBtn: { paddingLeft:12, paddingRight:4, paddingVertical:8, alignItems:"center", justifyContent:"center", gap:3, flexDirection:"row" },
   hDot: { width:4, height:4, borderRadius:2, backgroundColor: MUTED },
   card:     { gap:6 },
-  imgContainer:{ width:"100%", aspectRatio:1, borderRadius:20, overflow:"hidden" },
+  imgContainer:{ width:"100%", aspectRatio:1, borderRadius:17, overflow:"hidden" },
   cardImage:   { width:"100%", height:"100%" },
   cardTitle:   { fontSize:13, fontWeight:"600", color:TEXT, lineHeight:18 },
   cardAuthor:  { fontSize:11, color:MUTED },
