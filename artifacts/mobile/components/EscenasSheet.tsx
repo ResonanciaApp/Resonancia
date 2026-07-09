@@ -495,8 +495,8 @@ const styles = StyleSheet.create({
   controlIcon: { width: 20 },
   controlLabel: {
     flex: 1,
-    fontSize: 18,
-    fontWeight: "500",
+    fontSize: 16,
+    fontWeight: "400",
     color: "#F9F9F9",
   },
   timerTrigger: {
