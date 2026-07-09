@@ -403,7 +403,7 @@ export default function MeditacionesGuiadasScreen() {
         <View style={styles.profileCard}>
           <Text style={styles.profileTitle}>Meditaciones</Text>
           <Text style={styles.profileDesc} numberOfLines={1}>
-            Voz guiada para aquietar la mente y despertar la presencia.
+            El encuentro contigo mismo
           </Text>
         </View>
 

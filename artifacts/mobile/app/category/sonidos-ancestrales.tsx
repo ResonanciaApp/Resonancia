@@ -505,7 +505,7 @@ export default function SonidosAncestalesScreen() {
         <View style={styles.profileCard}>
           <Text style={styles.profileTitle}>Sesiones</Text>
           <Text style={styles.profileDesc} numberOfLines={1}>
-            Sonidos ancestrales para sanar cuerpo y espíritu.
+            Sonidos ancestrales del mundo
           </Text>
         </View>
 

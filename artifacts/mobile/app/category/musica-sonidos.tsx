@@ -405,7 +405,7 @@ export default function MusicaSonidosScreen() {
         <View style={styles.profileCard}>
           <Text style={styles.profileTitle}>Música</Text>
           <Text style={styles.profileDesc} numberOfLines={1}>
-            Música ambient y tribal para el viaje interior.
+            Canciones que expanden
           </Text>
         </View>
 
