@@ -1,4 +1,6 @@
 import { Feather } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 import { Stack, router } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
@@ -158,16 +160,11 @@ export default function VideosScreen() {
         >
           <Pressable
             onPress={() => setSelectedTheme(null)}
-            style={[
-              styles.pill,
-              { borderColor: colors.border },
-              selectedTheme === null && { backgroundColor: colors.primary, borderColor: colors.primary },
-            ]}
+            style={[styles.pill, selectedTheme === null && { backgroundColor: colors.primary }]}
           >
-            <Text style={[
-              styles.pillText,
-              { color: selectedTheme === null ? colors.background : colors.mutedForeground },
-            ]}>
+            {selectedTheme !== null && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
+            {selectedTheme !== null && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
+            <Text style={[styles.pillText, { color: selectedTheme === null ? colors.background : colors.mutedForeground }]}>
               Todos
             </Text>
           </Pressable>
@@ -176,16 +173,11 @@ export default function VideosScreen() {
             <Pressable
               key={t}
               onPress={() => setSelectedTheme(selectedTheme === t ? null : t)}
-              style={[
-                styles.pill,
-                { borderColor: colors.border },
-                selectedTheme === t && { backgroundColor: colors.primary, borderColor: colors.primary },
-              ]}
+              style={[styles.pill, selectedTheme === t && { backgroundColor: colors.primary }]}
             >
-              <Text style={[
-                styles.pillText,
-                { color: selectedTheme === t ? colors.background : colors.mutedForeground },
-              ]}>
+              {selectedTheme !== t && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
+              {selectedTheme !== t && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
+              <Text style={[styles.pillText, { color: selectedTheme === t ? colors.background : colors.mutedForeground }]}>
                 {t}
               </Text>
             </Pressable>
@@ -256,7 +248,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    borderWidth: 2,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
   },
   pillText: {
     fontSize: 13,

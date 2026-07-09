@@ -51,11 +51,7 @@ function SleepPill({
 
   const bgColor = selAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["rgba(255,255,255,0.05)", "#F4F4F4"],
-  });
-  const borderColor = selAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["rgba(244,218,213,0.1)", "#F4F4F4"],
+    outputRange: ["transparent", "#F4F4F4"],
   });
   const textColor = selAnim.interpolate({
     inputRange: [0, 1],
@@ -67,7 +63,9 @@ function SleepPill({
       onPress={onPress}
       style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
     >
-      <Animated.View style={[styles.sleepPill, { backgroundColor: bgColor, borderColor, borderWidth: 2 }]}>
+      <Animated.View style={[styles.sleepPill, { backgroundColor: bgColor }]}>
+        {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
+        {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
         <Animated.Text style={[styles.sleepPillText, { color: textColor, fontWeight: sel ? "500" : "400" }]} numberOfLines={1}>
           {label}
         </Animated.Text>
@@ -840,7 +838,6 @@ const styles = StyleSheet.create({
     height: 36,
     paddingHorizontal: 14,
     borderRadius: 999,
-    borderWidth: 1,
     gap: 5,
     overflow: "hidden",
   },

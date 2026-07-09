@@ -5,6 +5,7 @@ import { Image } from "expo-image";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router, useFocusEffect } from "expo-router";
@@ -827,6 +828,8 @@ export default function ProfileScreen() {
                 onPress={() => setPerfilTab(t.id)}
                 style={({ pressed }) => [styles.pill, sel && styles.pillSel, { opacity: pressed ? 0.8 : 1 }]}
               >
+                {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
+                {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
                 <Text style={[styles.pillText, sel && styles.pillTextSel]}>{t.label}</Text>
               </Pressable>
             );
@@ -1425,13 +1428,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 9,
     borderRadius: 999,
-    borderWidth: 2,
-    borderColor: "rgba(244,218,213,0.1)",
-    backgroundColor: "rgba(255,255,255,0.05)",
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
   },
   pillSel: {
     backgroundColor: "#F4F4F4",
-    borderColor: "#F4F4F4",
   },
   pillText: { fontSize: 13, fontWeight: "400", color: "#F4F4F4" },
   pillTextSel: { color: "#1B060F", fontWeight: "500" },
