@@ -771,7 +771,7 @@ export default function HomeScreen2() {
         pointerEvents="none"
         style={{
           position: "absolute",
-          top: topPad + 80,
+          top: topPad + 60,
           left: 0,
           right: 0,
           opacity: backdropAnim,
@@ -814,7 +814,7 @@ export default function HomeScreen2() {
         }}
       >
         {/* ── Racha semanal ── */}
-        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 105 }}>
+        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 85 }}>
           <WeeklyStreakStrip />
         </View>
 
