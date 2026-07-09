@@ -778,7 +778,7 @@ export default function HomeScreen2() {
       <LinearGradient
         colors={[
           `${prevGradient[0]}00`,
-          `${prevGradient[0]}2B`,
+          `${prevGradient[0]}40`,
           `${prevGradient[0]}66`,
           prevGradient[0] as string,
           prevGradient[1] as string,
@@ -790,7 +790,7 @@ export default function HomeScreen2() {
         <LinearGradient
           colors={[
             `${activeTheme.gradient[0]}00`,
-            `${activeTheme.gradient[0]}2B`,
+            `${activeTheme.gradient[0]}40`,
             `${activeTheme.gradient[0]}66`,
             activeTheme.gradient[0] as string,
             activeTheme.gradient[1] as string,
