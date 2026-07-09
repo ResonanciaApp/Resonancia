@@ -181,15 +181,12 @@ export default function SessionDetailScreen() {
   }, []);
 
   const scrollY = useRef(new Animated.Value(0)).current;
-  const backdropAnim = useRef(new Animated.Value(1)).current;
   const handleScroll = useCallback(
     (e: { nativeEvent: { contentOffset: { y: number } } }) => {
       const y = e.nativeEvent.contentOffset.y;
       scrollY.setValue(y);
-      // Scroll-linked: imagen visible en y=0, desaparece a los 250px de scroll
-      backdropAnim.setValue(Math.max(0, 1 - y / 250));
     },
-    [scrollY, backdropAnim],
+    [scrollY],
   );
   const STICKY_START = HEADER_H + 140 - topPad;
   const STICKY_END   = STICKY_START + 40;
@@ -302,25 +299,15 @@ export default function SessionDetailScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: sceneTheme.gradient[0] }]}>
-      {/* ── Imagen backdrop — se desvanece con scroll ─────────────────────── */}
-      <Animated.View
-        pointerEvents="none"
-        style={{ position: "absolute", top: 0, left: 0, right: 0, height: 400, opacity: backdropAnim }}
-      >
+      {/* ── Imagen de fondo fija ────────────────────────────────────────────── */}
+      <View pointerEvents="none" style={{ position: "absolute", top: 0, left: 0, right: 0, height: 400 }}>
         <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
-      </Animated.View>
-      {/* ── Gradiente — transparente arriba, sólido abajo ─────────────────── */}
-      <LinearGradient
-        colors={[
-          `${sceneTheme.gradient[0]}00`,
-          `${sceneTheme.gradient[0]}1A`,
-          `${sceneTheme.gradient[0]}66`,
-          sceneTheme.gradient[0] as string,
-          hexToRgba(sceneTheme.gradient[1], 1),
-        ]}
-        locations={[0, 0.15, 0.33, 0.46, 1]}
-        style={StyleSheet.absoluteFill}
-      />
+        <LinearGradient
+          colors={["transparent", "rgba(0,0,0,0.18)", "rgba(27,6,15,0.72)", "#1B060F"]}
+          locations={[0, 0.38, 0.7, 1]}
+          style={StyleSheet.absoluteFill}
+        />
+      </View>
       <StatusBar barStyle="light-content" />
 
       <Animated.ScrollView
