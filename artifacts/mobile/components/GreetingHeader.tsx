@@ -8,6 +8,14 @@ import { getWeeklyDescription, getWeeklyPhrase } from "@/data/greeting-phrases";
 
 const STORAGE_KEY = "@greeting_shown_date";
 
+function getLocalDateString(): string {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 function getGreeting(): string {
   const hour = new Date().getHours();
   if (hour >= 6 && hour < 12) return "Buenos días";
@@ -29,72 +37,88 @@ export function GreetingHeader() {
 
   useEffect(() => {
     let cancelled = false;
-    let timer: ReturnType<typeof setTimeout> | undefined;
+    const timers: ReturnType<typeof setTimeout>[] = [];
 
-    (async () => {
-      const today = new Date().toISOString().slice(0, 10);
-      const stored = await AsyncStorage.getItem(STORAGE_KEY);
+    const addTimer = (fn: () => void, ms: number) => {
+      const t = setTimeout(() => { if (!cancelled) fn(); }, ms);
+      timers.push(t);
+      return t;
+    };
 
-      if (cancelled) return;
+    const runPhaseA = () => {
+      setPhase("a");
 
-      if (stored !== today) {
-        await AsyncStorage.setItem(STORAGE_KEY, today);
-        setPhase("a");
+      Animated.parallel([
+        Animated.spring(cardOpacity, {
+          toValue: 1,
+          speed: 10,
+          bounciness: 4,
+          useNativeDriver: true,
+        }),
+        Animated.spring(cardTranslateY, {
+          toValue: 0,
+          speed: 10,
+          bounciness: 4,
+          useNativeDriver: true,
+        }),
+      ]).start();
 
+      addTimer(() => {
+        Animated.timing(phraseOpacity, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }).start();
+      }, 300);
+
+      addTimer(() => {
         Animated.parallel([
-          Animated.spring(cardOpacity, {
-            toValue: 1,
-            speed: 10,
-            bounciness: 4,
+          Animated.timing(cardOpacity, {
+            toValue: 0,
+            duration: 600,
             useNativeDriver: true,
           }),
-          Animated.spring(cardTranslateY, {
+          Animated.timing(phraseOpacity, {
             toValue: 0,
-            speed: 10,
-            bounciness: 4,
+            duration: 600,
             useNativeDriver: true,
           }),
         ]).start(() => {
           if (cancelled) return;
-          Animated.timing(phraseOpacity, {
+          setPhase("b");
+          Animated.timing(greetingOpacity, {
             toValue: 1,
             duration: 400,
             useNativeDriver: true,
           }).start();
         });
+      }, 10000);
+    };
 
-        timer = setTimeout(() => {
-          if (cancelled) return;
-          Animated.parallel([
-            Animated.timing(cardOpacity, {
-              toValue: 0,
-              duration: 600,
-              useNativeDriver: true,
-            }),
-            Animated.timing(phraseOpacity, {
-              toValue: 0,
-              duration: 600,
-              useNativeDriver: true,
-            }),
-          ]).start(() => {
-            if (cancelled) return;
-            setPhase("b");
-            Animated.timing(greetingOpacity, {
-              toValue: 1,
-              duration: 400,
-              useNativeDriver: true,
-            }).start();
-          });
-        }, 10000);
-      } else {
-        setPhase("b");
-        greetingOpacity.setValue(1);
+    (async () => {
+      try {
+        const today = getLocalDateString();
+        const stored = await AsyncStorage.getItem(STORAGE_KEY);
+        if (cancelled) return;
+
+        if (stored !== today) {
+          await AsyncStorage.setItem(STORAGE_KEY, today);
+          runPhaseA();
+        } else {
+          setPhase("b");
+          greetingOpacity.setValue(1);
+        }
+      } catch {
+        if (!cancelled) {
+          setPhase("b");
+          greetingOpacity.setValue(1);
+        }
       }
     })();
 
     return () => {
       cancelled = true;
-      if (timer !== undefined) clearTimeout(timer);
+      timers.forEach(clearTimeout);
     };
   }, []);
 
