@@ -671,7 +671,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: H_PAD,
     rowGap: 35,
-    marginTop: -11,
+    marginTop: -17,
     marginBottom: 6,
   },
 
@@ -681,7 +681,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     paddingHorizontal: H_PAD,
     gap: 10,
-    marginTop: -11,
+    marginTop: -17,
     marginBottom: 6,
   },
   soundCell: {
@@ -691,7 +691,7 @@ const styles = StyleSheet.create({
   soundImageWrap: {
     width: "100%",
     aspectRatio: 1,
-    borderRadius: 18,
+    borderRadius: 17,
     overflow: "hidden",
     borderWidth: 2,
     borderColor: "transparent",
