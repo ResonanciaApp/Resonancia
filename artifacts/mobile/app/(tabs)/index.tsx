@@ -60,7 +60,6 @@ import { getMoodById, type Mood, type MoodId } from "@/data/moods";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { usePremium } from "@/context/PremiumContext";
-import { PLAYLISTS } from "@/data/playlists";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
@@ -519,13 +518,6 @@ export default function HomeScreen2() {
   );
 
   // ── Filtros por categoría ─────────────────────────────────────────────────
-  const filteredPlaylists = React.useMemo(() => {
-    if (!activeFilter) return PLAYLISTS;
-    return PLAYLISTS.filter((pl) =>
-      pl.sessionIds.some((sid) => activeFilter!.includes(getSessionById(sid)?.categoryId ?? ""))
-    );
-  }, [activeFilter]);
-
   const filteredRecommended = React.useMemo(() => {
     if (!activeFilter) return recommendedSessions;
     return recommendedSessions.filter((s) => activeFilter.includes(s.categoryId));
@@ -944,36 +936,6 @@ export default function HomeScreen2() {
             ))}
           </View>
         </View>
-
-        {/* ── 1. COLECCIONES (Rituales) ── */}
-        {filteredPlaylists.length > 0 && (
-        <View style={[styles.header, { marginBottom: SECTION_GAP }]}>
-          <Text style={styles.sectionTitle}>Rituales recomendados</Text>
-
-          <View style={styles.coleccionGrid}>
-              {filteredPlaylists.map((pl) => (
-                <Pressable
-                  key={pl.id}
-                  onPress={() => router.push(`/coleccion/${pl.id}` as never)}
-                  style={({ pressed }) => [styles.coleccionCard, { opacity: pressed ? 0.75 : 1 }]}
-                >
-                  <Image
-                    source={pl.coverUrl ? { uri: pl.coverUrl } : pl.cover as number}
-                    style={styles.coleccionThumb}
-                    resizeMode="cover"
-                  />
-                  <View style={styles.coleccionTitleRow}>
-                    <Text style={styles.coleccionTitle} numberOfLines={2}>{pl.title}</Text>
-                    {isPlaying && currentSession && pl.sessionIds.includes(currentSession.id) && (
-                      <EqualizerBars color="#BE8744" size="sm" />
-                    )}
-                  </View>
-                </Pressable>
-              ))}
-          </View>
-
-        </View>
-        )}
 
         {/* ── ESCUCHADAS RECIENTEMENTE ── */}
         <SessionCarousel
@@ -1760,39 +1722,6 @@ const styles = StyleSheet.create({
   videosEmptySub: { fontSize: 13, textAlign: "center", lineHeight: 19 },
 
   // Categories — 2×2 grid cards
-  coleccionGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  coleccionCard: {
-    width: "48.5%",
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 8,
-    overflow: "hidden",
-    height: 62,
-  },
-  coleccionThumb: {
-    width: 62,
-    height: 62,
-  },
-  coleccionTitleRow: {
-    flex: 1,
-    alignSelf: "stretch",
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 10,
-    gap: 6,
-    backgroundColor: "rgba(255,255,255,0.06)",
-  },
-  coleccionTitle: {
-    flex: 1,
-    fontSize: 14,
-    fontWeight: "300",
-    color: "#e8e8e8",
-    lineHeight: 21,
-  },
   catGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
