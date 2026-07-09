@@ -763,14 +763,14 @@ export default function HomeScreen2() {
         {/* ── Degradé inferior: mezcla la imagen con el fondo ── */}
         <LinearGradient
           colors={["transparent", prevGradient[0] as string]}
-          locations={[0.3, 1]}
-          style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 220 }}
+          locations={[0.6, 1]}
+          style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 120 }}
           pointerEvents="none"
         />
-        <Animated.View style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 220, opacity: imageFade }} pointerEvents="none">
+        <Animated.View style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 120, opacity: imageFade }} pointerEvents="none">
           <LinearGradient
             colors={["transparent", activeTheme.gradient[0] as string]}
-            locations={[0.3, 1]}
+            locations={[0.6, 1]}
             style={StyleSheet.absoluteFill}
           />
         </Animated.View>
