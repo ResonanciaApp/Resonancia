@@ -1682,7 +1682,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
         }]}
       >
         {/* Fila 2: chips de tab (animados) */}
-        <View style={{ marginTop: -36, marginBottom: -34 }}>
+        <View style={{ marginTop: -36, marginBottom: -54 }}>
           <AnimatedChipRow
             tabs={LIB_TABS}
             activeTab={activeTab}
@@ -1710,14 +1710,6 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
             : "fade"
           }
         >
-          {/* Ordenar + toggle vista */}
-          <View style={styles.controlRow}>
-            <Pressable onPress={() => setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
-              <Text style={styles.sortText}>
-                {sort === "recientes" ? "Recientes" : sort === "agregado" ? "Agregado recientemente" : "Alfabéticamente"}
-              </Text>
-            </Pressable>
-          </View>
           {renderContent()}
         </AnimatedTabContent>
       </ScrollView>
