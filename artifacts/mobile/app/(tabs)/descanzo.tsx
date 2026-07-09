@@ -471,38 +471,6 @@ export default function DescansoScreen() {
           </ScrollView>
         </View>
 
-        {/* ── Banner Prepara tu noche ── */}
-        <Pressable
-          style={({ pressed }) => [styles.nightBannerWrap, pressed && { opacity: 0.82 }]}
-          onPress={() => setTimerSheet(true)}
-        >
-          <View style={styles.nightBanner}>
-            <View style={{ flex: 1 }}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <Text style={styles.nightBannerTitle}>Prepara tu noche</Text>
-                <Feather name="chevron-down" size={18} color="rgba(255,255,255,0.6)" />
-              </View>
-              <Text style={styles.nightBannerSub}>
-                {timerMin ? `${timerMin} min` : "Sin límite"}{fadeVol ? " · fade" : ""}
-              </Text>
-            </View>
-            {currentSession ? (
-              <DormirMiniPlayer
-                elapsed={sessionElapsed}
-                duration={sessionDuration}
-                isPlaying={sessionIsPlaying}
-                onToggle={pauseResume}
-              />
-            ) : player.selectedId ? (
-              <DormirMiniPlayer
-                elapsed={player.elapsedSeconds}
-                duration={player.durationSeconds}
-                isPlaying={player.isPlaying}
-                onToggle={player.togglePause}
-              />
-            ) : null}
-          </View>
-        </Pressable>
 
         {isSoundTab ? (
           <>
