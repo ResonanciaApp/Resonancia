@@ -1713,16 +1713,9 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
           {/* Ordenar + toggle vista */}
           <View style={styles.controlRow}>
             <Pressable onPress={() => setSortVisible(true)} style={styles.sortBtn} hitSlop={8}>
-              <Feather name="chevrons-down" size={18} color={MUTED} />
               <Text style={styles.sortText}>
                 {sort === "recientes" ? "Recientes" : sort === "agregado" ? "Agregado recientemente" : "Alfabéticamente"}
               </Text>
-            </Pressable>
-            <Pressable onPress={toggleView} hitSlop={10} style={styles.viewToggleBtn}>
-              {viewMode === "list"
-                ? <MaterialCommunityIcons name="view-grid-outline" size={21} color={MUTED} />
-                : <MaterialCommunityIcons name="view-list-outline" size={21} color={MUTED} />
-              }
             </Pressable>
           </View>
           {renderContent()}
