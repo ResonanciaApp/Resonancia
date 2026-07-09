@@ -7,6 +7,7 @@ import { Animated, StyleSheet, Text, View } from "react-native";
 import { getWeeklyDescription, getWeeklyPhrase } from "@/data/greeting-phrases";
 
 const STORAGE_KEY = "@greeting_shown_date";
+const FORCE_ANIMATION = true;
 
 function getLocalDateString(): string {
   const d = new Date();
@@ -101,7 +102,7 @@ export function GreetingHeader() {
         const stored = await AsyncStorage.getItem(STORAGE_KEY);
         if (cancelled) return;
 
-        if (stored !== today) {
+        if (FORCE_ANIMATION || stored !== today) {
           await AsyncStorage.setItem(STORAGE_KEY, today);
           runPhaseA();
         } else {
