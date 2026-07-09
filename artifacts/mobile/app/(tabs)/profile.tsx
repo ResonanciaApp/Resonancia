@@ -823,15 +823,17 @@ export default function ProfileScreen() {
           {PERFIL_TABS.map((t) => {
             const sel = perfilTab === t.id;
             return (
-              <Pressable
-                key={t.id}
-                onPress={() => setPerfilTab(t.id)}
-                style={({ pressed }) => [styles.pill, sel && styles.pillSel, { opacity: pressed ? 0.8 : 1 }]}
-              >
-                {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
-                {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
-                <Text style={[styles.pillText, sel && styles.pillTextSel]}>{t.label}</Text>
-              </Pressable>
+              <View key={t.id} style={[styles.pillBorder, sel && styles.pillBorderSel]}>
+                <Pressable
+                  onPress={() => setPerfilTab(t.id)}
+                  style={({ pressed }) => [styles.pill, sel && styles.pillSel, { opacity: pressed ? 0.8 : 1 }]}
+                >
+                  {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
+                  {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
+                  {!sel && <LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
+                  <Text style={[styles.pillText, sel && styles.pillTextSel]}>{t.label}</Text>
+                </Pressable>
+              </View>
             );
           })}
         </View>
@@ -1423,6 +1425,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingBottom: 14,
     marginTop: 10,
+  },
+  pillBorder: {
+    borderRadius: 999,
+    borderWidth: 0.5,
+    borderColor: "rgba(255,255,255,0.25)",
+  },
+  pillBorderSel: {
+    borderColor: "transparent",
   },
   pill: {
     paddingHorizontal: 15,
