@@ -227,8 +227,9 @@ const styles = StyleSheet.create({
 
   searchWrap: {
     paddingHorizontal: 19,
-    paddingTop: 15,
+    paddingTop: 8,
     paddingBottom: 8,
+    marginTop: 7,
     height: SEARCH_H,
     justifyContent: "center",
   },
