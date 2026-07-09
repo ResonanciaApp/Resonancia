@@ -1172,13 +1172,13 @@ export default function HomeScreen2() {
         }}
       >
         {/* Logo Pulso + Saludo — izquierda (superpuestos) */}
-        <View style={{ width: 130, height: 44, justifyContent: "center" }}>
+        <View style={{ width: 210, height: 44, justifyContent: "center" }}>
           <Animated.Image
             source={require("@/assets/images/pulso-logo.png")}
-            style={{ position: "absolute", width: 130, height: 44, opacity: logoAnim5 }}
+            style={{ position: "absolute", width: 160, height: 44, opacity: logoAnim5 }}
             resizeMode="contain"
           />
-          <Animated.Text style={{ position: "absolute", color: "rgba(255,255,255,0.92)", fontSize: 25, fontWeight: "700", letterSpacing: 0.3, opacity: greetingAnim5 }}>
+          <Animated.Text numberOfLines={1} style={{ position: "absolute", color: "rgba(255,255,255,0.92)", fontSize: 25, fontWeight: "700", letterSpacing: 0.3, opacity: greetingAnim5 }}>
             {(() => { const h = new Date().getHours(); return h >= 6 && h < 12 ? "Buenos días" : h >= 12 && h < 19 ? "Buenas tardes" : "Buenas noches"; })()}
           </Animated.Text>
         </View>
