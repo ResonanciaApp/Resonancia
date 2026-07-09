@@ -499,13 +499,6 @@ export default function SonidosAncestalesScreen() {
               </Pressable>
             </GhostPill>
           </View>
-          <View style={styles.heroIconFloat}>
-            <View style={styles.heroIconGlow}>
-              <MaskedView maskElement={<View style={{ width: 56, height: 56, alignItems: "center", justifyContent: "center" }}><MaterialCommunityIcons name="waves" size={56} color="#fff" /></View>}>
-                <LinearGradient colors={["#D4AF37", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ width: 56, height: 56 }} />
-              </MaskedView>
-            </View>
-          </View>
         </View>
 
         {/* ── Título + Descripción ── */}
@@ -577,7 +570,7 @@ const styles = StyleSheet.create({
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "#1B060F", borderWidth: 2, borderColor: "rgba(255,255,255,0.1)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
   /* ── Profile card ── */
-  profileCard: { marginHorizontal: H_PAD, marginTop: -2, paddingBottom: 14, gap: 8, alignItems: "center" },
+  profileCard: { marginHorizontal: H_PAD, marginTop: -37, paddingBottom: 14, gap: 8, alignItems: "center" },
   profileTitle: { fontSize: 27, fontWeight: "400", color: TEXT, letterSpacing: 0.3 },
   profileDesc: { fontSize: 13, color: "rgba(255,255,255,0.90)", lineHeight: 18, textAlign: "center", maxWidth: 280, marginTop: -4, marginBottom: 28 },
 
