@@ -629,9 +629,9 @@ export default function HomeScreen2() {
         greetingAnim5.setValue(0);
         logoAnim5.setValue(1);
         const seq = Animated.sequence([
-          Animated.timing(phraseAnim, { toValue: 1, duration: 2400, useNativeDriver: true }),
+          Animated.timing(phraseAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
           Animated.delay(5000),
-          Animated.timing(phraseAnim, { toValue: 0, duration: 2400, useNativeDriver: true }),
+          Animated.timing(phraseAnim, { toValue: 0, duration: 800, useNativeDriver: true }),
         ]);
         seq.start();
         return () => {
@@ -647,9 +647,9 @@ export default function HomeScreen2() {
         greetingAnim5.setValue(1);
         logoAnim5.setValue(0);
         const seq = Animated.sequence([
-          Animated.timing(phraseAnim, { toValue: 1, duration: 2400, useNativeDriver: true }),
+          Animated.timing(phraseAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
           Animated.delay(5000),
-          Animated.timing(phraseAnim, { toValue: 0, duration: 2400, useNativeDriver: true }),
+          Animated.timing(phraseAnim, { toValue: 0, duration: 800, useNativeDriver: true }),
         ]);
         seq.start();
         return () => {
