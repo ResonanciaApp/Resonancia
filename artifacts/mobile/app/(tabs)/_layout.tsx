@@ -33,6 +33,7 @@ import {
 import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useBrightness, applyBrightSat } from "@/context/BrightnessContext";
 
 const ACTIVE_COLOR   = "#FFFFFF";
 const INACTIVE_COLOR = "rgba(255,255,255,0.88)";
@@ -405,6 +406,8 @@ function TabLayoutInner() {
   const { hidden }         = useTabBarVisibility();
   const { isMixerOpen, closeMixer, panelAnim } = useMixerPanel();
   const { theme } = useSceneTheme();
+  const { brightMode } = useBrightness();
+  const bg = brightMode ? applyBrightSat(theme.solid) : theme.solid;
 
   const panelTranslateX = panelAnim.interpolate({
     inputRange:  [0, 1],
@@ -425,9 +428,9 @@ function TabLayoutInner() {
 
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme.solid }}>
+    <View style={{ flex: 1, backgroundColor: bg }}>
       <Tabs
-        screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: theme.solid } }}
+        screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: bg } }}
         tabBar={(props) => <CustomTabBar {...props} />}
       >
         <Tabs.Screen name="index"          options={{ href: null }} />
