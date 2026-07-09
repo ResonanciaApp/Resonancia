@@ -297,7 +297,7 @@ export default function HomeScreen2() {
   const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
   const currentIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
   const insets = useSafeAreaInsets();
-  const { playSession, currentSession, isPlaying, pauseResume, history } = usePlayer();
+  const { playSession, currentSession, isPlaying, pauseResume, history, favorites } = usePlayer();
   const { isPremium } = usePremium();
   const { upcoming: upcomingLiveSessions } = useLiveSessions();
   const nextLiveSession = upcomingLiveSessions[0] ?? null;
@@ -535,6 +535,14 @@ export default function HomeScreen2() {
     if (!activeFilter) return listenedRecently;
     return listenedRecently.filter((s) => activeFilter.includes(s.categoryId));
   }, [listenedRecently, activeFilter]);
+
+  // Favoritos — sesiones marcadas como favoritas, en orden de guardado (más reciente primero)
+  const favoriteSessions = React.useMemo<Session[]>(() => {
+    return favorites
+      .map((id) => getSessionById(id))
+      .filter((s): s is Session => s !== undefined)
+      .slice(0, 10);
+  }, [favorites]);
 
 
   const filteredFeatured = React.useMemo(() => {
@@ -975,6 +983,17 @@ export default function HomeScreen2() {
           onPress={(s) => { if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } router.push(`/session/${s.id}` as never); }}
           style={{ marginBottom: SECTION_GAP }}
           titleOffset={10}
+          cardWidth={RECENT_CARD_W}
+        />
+
+        {/* ── FAVORITOS ── */}
+        <SessionCarousel
+          title="Mis favoritos"
+          sessions={favoriteSessions}
+          isPremium={isPremium}
+          onPress={(s) => { if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } router.push(`/session/${s.id}` as never); }}
+          style={{ marginBottom: SECTION_GAP }}
+          titleOffset={24}
           cardWidth={RECENT_CARD_W}
         />
 
