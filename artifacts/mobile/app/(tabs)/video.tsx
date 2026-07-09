@@ -128,18 +128,19 @@ export default function VideoTabScreen() {
             {FILTER_CHIPS.map((chip) => {
               const sel = chip === activeChip;
               return (
-                <Pressable
-                  key={chip}
-                  onPress={() => setActiveChip(chip)}
-                  style={[styles.chip, sel ? { backgroundColor: "#F4F4F4" } : undefined]}
-                >
-                  {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
-                  {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
-                  {!sel && <LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
-                  <Text style={[styles.chipText, { color: sel ? "#1B060F" : "#F4F4F4" }]}>
-                    {chip}
-                  </Text>
-                </Pressable>
+                <View key={chip} style={[styles.chipBorder, sel && styles.chipBorderSel]}>
+                  <Pressable
+                    onPress={() => setActiveChip(chip)}
+                    style={[styles.chip, sel ? { backgroundColor: "#F4F4F4" } : undefined]}
+                  >
+                    {!sel && <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />}
+                    {!sel && <LinearGradient colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />}
+                    {!sel && <LinearGradient colors={["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
+                    <Text style={[styles.chipText, { color: sel ? "#1B060F" : "#F4F4F4" }]}>
+                      {chip}
+                    </Text>
+                  </Pressable>
+                </View>
               );
             })}
           </ScrollView>
@@ -244,6 +245,14 @@ const styles = StyleSheet.create({
 
   chipsWrap: { height: CHIPS_H, justifyContent: "center" },
   chipsRow: { paddingHorizontal: 20, gap: 8, alignItems: "center" },
+  chipBorder: {
+    borderRadius: 20,
+    borderWidth: 0.5,
+    borderColor: "rgba(255,255,255,0.25)",
+  },
+  chipBorderSel: {
+    borderColor: "transparent",
+  },
   chip: {
     borderRadius: 20,
     paddingHorizontal: 12,
@@ -251,8 +260,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
-    borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.25)",
   },
   chipText: { fontSize: 13, fontWeight: "400" },
   chipsDivider: {
