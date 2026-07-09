@@ -1435,8 +1435,8 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   pill: {
-    paddingHorizontal: 15,
-    paddingVertical: 9,
+    height: 34,
+    paddingHorizontal: 12,
     borderRadius: 999,
     overflow: "hidden",
     alignItems: "center",

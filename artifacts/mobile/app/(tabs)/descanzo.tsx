@@ -846,15 +846,15 @@ const styles = StyleSheet.create({
   sleepPill: {
     flexDirection: "row",
     alignItems: "center",
-    height: 36,
-    paddingHorizontal: 14,
+    height: 34,
+    paddingHorizontal: 12,
     borderRadius: 999,
     gap: 5,
     overflow: "hidden",
   },
   sleepPillText: {
     fontSize: 13,
-    fontWeight: "600",
+    fontWeight: "400",
     letterSpacing: 0.1,
   },
 
