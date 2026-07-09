@@ -1812,7 +1812,7 @@ const styles = StyleSheet.create({
   heroMetaText: { fontSize: 11, lineHeight: 14, color: "#c2c2c2", marginBottom: 6 },
   heroTitle: { fontSize: 15, fontWeight: "700", lineHeight: 20, color: "#FBFBFB", marginBottom: 4 },
   heroAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(255,255,255,0.05)" },
-  heroAuthor: { fontSize: 11, color: "#c2c2c2", marginTop: 2 },
+  heroAuthor: { fontSize: 11, color: "#F4F4F4", marginTop: 2 },
   heroBtn: {
     width: 46,
     height: 46,
