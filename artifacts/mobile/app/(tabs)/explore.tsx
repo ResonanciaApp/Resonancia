@@ -409,30 +409,44 @@ export default function ExploreScreen() {
           </View>
         </View>
 
-            {/* ── Hero: Vuelve a ti ── */}
-            <View style={[styles.section, { marginTop: SECTION_GAP - 50, marginBottom: 0 }]}>
-              <View style={styles.introHeroContainer}>
-                <Image
-                  source={require("@/assets/images/hero-vuelve-a-ti.jpg")}
-                  style={styles.introHeroImage}
-                  contentFit="cover"
-                  placeholder={BLUR_PLACEHOLDER}
-                  transition={IMAGE_TRANSITION}
-                  cachePolicy="memory-disk"
-                />
-                <LinearGradient
-                  colors={["rgba(6,10,15,0.05)", "rgba(6,10,15,0.65)"]}
-                  style={StyleSheet.absoluteFill}
-                />
-                <View style={styles.introHeroTextWrap}>
-                  <Text style={styles.introHeroTitle}>Vuelve a ti</Text>
-                  <Text style={styles.introHeroSubtitle}>Meditar es reconocer lo que eres</Text>
-                </View>
+            {/* ── Explorar todo (TEMAS) ── */}
+            <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
+              <View style={[styles.temaGrid, { marginTop: 0 }]}>
+                {TEMAS.map((t) => (
+                  <Pressable
+                    key={t.id}
+                    onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
+                    style={({ pressed }) => [
+                      styles.temaCell,
+                      {
+                        width: TEMA3_W,
+                        height: TEMA3_W,
+                        backgroundColor: pressed
+                          ? hexTint(t.color, 0.22)
+                          : "rgba(255,255,255,0.055)",
+                        borderRadius: 11,
+                      },
+                    ]}
+                  >
+                    {t.image != null ? (
+                      <Image
+                        source={t.image}
+                        style={styles.temaCellIcon}
+                        contentFit="contain"
+                      />
+                    ) : (
+                      <MaterialCommunityIcons name={t.icon} size={28} color={t.color} />
+                    )}
+                    <Text style={[styles.temaCellLabel, { color: "#e8e8e8" }]} numberOfLines={2}>
+                      {t.label}
+                    </Text>
+                  </Pressable>
+                ))}
               </View>
             </View>
 
             {/* ── ¿Cuánto tiempo tienes hoy? ── */}
-            <View style={[styles.durSection, { marginTop: 60, marginBottom: SECTION_GAP }]}>
+            <View style={[styles.durSection, { marginTop: 0, marginBottom: SECTION_GAP }]}>
               <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>
                 ¿Cuánto tiempo tienes hoy?
               </Text>
@@ -506,69 +520,6 @@ export default function ExploreScreen() {
               )}
             </View>
 
-            {/* ── Explorar todo (TEMAS 6×2) ── */}
-            <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
-              <View style={styles.sectionRow}>
-                <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Explorar todo</Text>
-              </View>
-              <View style={[styles.temaGrid, { marginTop: 0 }]}>
-                {TEMAS.map((t, i) => (
-                  <Pressable
-                    key={t.id}
-                    onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
-                    style={({ pressed }) => [
-                      styles.temaCell,
-                      {
-                        width: TEMA3_W,
-                        height: TEMA3_W,
-                        backgroundColor: pressed
-                          ? hexTint(t.color, 0.22)
-                          : "rgba(255,255,255,0.055)",
-                        borderRadius: 11,
-                      },
-                    ]}
-                  >
-                    {t.image != null ? (
-                      <Image
-                        source={t.image}
-                        style={styles.temaCellIcon}
-                        contentFit="contain"
-                      />
-                    ) : (
-                      <MaterialCommunityIcons name={t.icon} size={28} color={t.color} />
-                    )}
-                    <Text style={[styles.temaCellLabel, { color: "#e8e8e8" }]} numberOfLines={2}>
-                      {t.label}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-            </View>
-
-            {/* ── Ejercicios de respiración ── */}
-            <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
-              <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Ejercicios de respiración</Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={{ marginHorizontal: -H_PAD }}
-                contentContainerStyle={styles.breathingRow}
-              >
-                {BREATHING_EXERCISES.map((ex) => (
-                  <Pressable
-                    key={ex.id}
-                    onPress={() => router.push(`/respiracion?pattern=${ex.id}` as never)}
-                    style={({ pressed }) => [styles.breathingCard, { opacity: pressed ? 0.82 : 1 }]}
-                  >
-                    <View style={styles.breathingIconWrap}>
-                      <Feather name="wind" size={22} color="#BE8744" />
-                    </View>
-                    <Text style={styles.breathingName}>{ex.name}</Text>
-                    <Text style={styles.breathingDesc} numberOfLines={1}>{ex.subtitle}</Text>
-                  </Pressable>
-                ))}
-              </ScrollView>
-            </View>
 
             {/* ── Destacada de hoy ── */}
             {featuredHoy && (
@@ -595,16 +546,6 @@ export default function ExploreScreen() {
               </View>
             )}
 
-            {/* ── Meditaciones recomendadas ── */}
-            {renderCarousel("Meditaciones recomendadas", dailyRecs, "/category/meditaciones-guiadas")}
-
-            {/* ── Recientes ── */}
-            {recientesMeditaciones.length > 0 &&
-              renderCarousel("Recientes", recientesMeditaciones, "/category/meditaciones-guiadas")}
-
-            {/* ── Escuchadas recientemente ── */}
-            {escuchadasRecientemente.length > 0 &&
-              renderCarousel("Escuchadas recientemente", escuchadasRecientemente, "/category/meditaciones-guiadas")}
 
             {/* ── Las más escuchadas ── */}
             {masEscuchadasMeditaciones.length > 0 &&
