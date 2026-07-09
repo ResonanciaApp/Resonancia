@@ -36,7 +36,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import { AMBIENT_SCENES, useAmbientPlayer, type SceneId } from "@/context/AmbientPlayerContext";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
-
+import { useBrightness } from "@/context/BrightnessContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 
@@ -45,7 +45,7 @@ const SCREEN_H = Dimensions.get("window").height;
 const SHEET_H_PAD = 24;
 const CARD_GAP = 14;
 const CARD_W = Math.floor((SCREEN_W - SHEET_H_PAD * 2 - CARD_GAP) / 2);
-const CARD_H = Math.floor(CARD_W * 1.1);
+const CARD_H = Math.floor(CARD_W * 1.1) + 70;
 
 const WARM_DIVIDER = "rgba(255,255,255,0.055)";
 
@@ -77,6 +77,7 @@ export function EscenasSheet() {
 
   const [timerOpen, setTimerOpen] = useState(false);
   const { greetingVisible, setGreetingVisible } = useGreetingVisible();
+  const { brightMode, setBrightMode } = useBrightness();
   // ID de la escena CONFIRMADA (la que muestra el borde blanco en el carrusel).
   // Se actualiza solo cuando el usuario presiona "Elegir escena", NO al abrir el preview.
   const [confirmedSceneId, setConfirmedSceneId] = useState<SceneId>(currentScene.id);
@@ -333,6 +334,19 @@ export function EscenasSheet() {
             />
           </View>
 
+          {/* Modo brillante */}
+          <View style={styles.controlRow}>
+            <MaterialCommunityIcons name="brightness-6" size={17} color="#F4F4F4" style={styles.controlIcon} />
+            <Text style={styles.controlLabel}>Modo brillante</Text>
+            <Switch
+              value={brightMode}
+              onValueChange={setBrightMode}
+              trackColor={{ false: "rgba(255,255,255,0.18)", true: "#F7CB6B" }}
+              thumbColor="#FFFFFF"
+              ios_backgroundColor="rgba(255,255,255,0.18)"
+            />
+          </View>
+
 
           <View style={styles.divider} />
 
@@ -447,9 +461,9 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
   title: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "600",
-    color: "#FBFBFB",
+    color: "#F9F9F9",
     textAlign: "center",
     marginBottom: 22,
   },
@@ -481,9 +495,9 @@ const styles = StyleSheet.create({
   controlIcon: { width: 20 },
   controlLabel: {
     flex: 1,
-    fontSize: 13,
+    fontSize: 18,
     fontWeight: "500",
-    color: "rgba(242,231,228,0.8)",
+    color: "#F9F9F9",
   },
   timerTrigger: {
     flexDirection: "row",
@@ -531,9 +545,9 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
   sceneTitle: {
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: "700",
-    color: "#F4F4F4",
+    color: "#F9F9F9",
     letterSpacing: 0.2,
   },
   carousel: {
@@ -560,9 +574,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   cardLabel: {
-    marginTop: 7,
-    fontSize: 12,
-    color: "rgba(255,255,255,0.7)",
+    marginTop: 13,
+    fontSize: 14,
+    color: "#F4F4F4",
     textAlign: "center",
   },
   cardLabelActive: {
