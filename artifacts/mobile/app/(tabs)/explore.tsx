@@ -405,7 +405,7 @@ export default function ExploreScreen() {
 
         {/* ── Barra de búsqueda ── */}
         <View style={styles.searchWrap}>
-          <View style={[styles.searchBox, { backgroundColor: "rgba(255,255,255,0.035)", borderColor: "rgba(255,255,255,0.25)", borderWidth: 1 }]}>
+          <View style={[styles.searchBox, { backgroundColor: "rgba(255,255,255,0.035)", borderColor: "rgba(255,255,255,0.6)", borderWidth: 1 }]}>
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
               value={query}
