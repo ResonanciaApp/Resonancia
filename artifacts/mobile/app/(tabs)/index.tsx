@@ -896,7 +896,7 @@ export default function HomeScreen2() {
           <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Explora por contenido</Text>
           <View style={{ flexDirection: "row", gap: 10 }}>
             {([
-              { id: "meditaciones-guiadas", label: "Meditaciones", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={34} color={color} /> },
+              { id: "meditaciones-guiadas", label: "Meditación", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={34} color={color} /> },
               { id: "sonidos-ancestrales", label: "Sesiones",      icon: (color: string) => <MaterialCommunityIcons name="waves" size={34} color={color} /> },
               { id: "musica-sonidos",       label: "Música",        icon: (color: string) => <Ionicons name="musical-notes-outline" size={34} color={color} /> },
             ] as const).map((c) => (
@@ -929,7 +929,7 @@ export default function HomeScreen2() {
                     style={{ width: 34, height: 34 }}
                   />
                 </MaskedView>
-                <Text style={{ fontSize: 14, fontWeight: "300", color: "#e8e8e8", textAlign: "center" }}>
+                <Text style={{ fontSize: 14, fontWeight: "700", color: "#e8e8e8", textAlign: "center" }}>
                   {c.label}
                 </Text>
               </Pressable>
