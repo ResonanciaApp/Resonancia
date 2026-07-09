@@ -617,9 +617,8 @@ export default function HomeScreen2() {
   const phraseAnim = useRef(new Animated.Value(0)).current;
   const greetingAnim5  = useRef(new Animated.Value(0)).current;
   const logoAnim5      = useRef(new Animated.Value(1)).current;
-  const sweepWidthSV      = useSharedValue(0);
-  const sweepOpacitySV    = useSharedValue(0);
-  const baseTextOpacitySV = useSharedValue(1);
+  const sweepWidthSV   = useSharedValue(0);
+  const sweepOpacitySV = useSharedValue(0);
   const weeklyPhrase   = useRef(getWeeklyPhrase()).current;
   const phraseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const greetingText   = useRef((() => {
@@ -650,7 +649,6 @@ export default function HomeScreen2() {
         if (finished) {
           sweepOpacitySV.value = 1;
           sweepWidthSV.value = withDelay(800, withTiming(210, { duration: 700 }));
-          baseTextOpacitySV.value = withDelay(800, withTiming(0, { duration: 700 }));
         }
       });
       return () => {
@@ -660,13 +658,11 @@ export default function HomeScreen2() {
         logoAnim5.stopAnimation();
         cancelAnimation(sweepWidthSV);
         cancelAnimation(sweepOpacitySV);
-        cancelAnimation(baseTextOpacitySV);
         phraseAnim.setValue(0);
         greetingAnim5.setValue(0);
         logoAnim5.setValue(1);
         sweepWidthSV.value = 0;
         sweepOpacitySV.value = 0;
-        baseTextOpacitySV.value = 1;
       };
     }, []),
   );
@@ -674,10 +670,6 @@ export default function HomeScreen2() {
   const sweepStyle = useAnimatedStyle(() => ({
     width: sweepWidthSV.value,
     opacity: sweepOpacitySV.value,
-  }));
-
-  const baseTextFadeStyle = useAnimatedStyle(() => ({
-    opacity: baseTextOpacitySV.value,
   }));
 
   const handleMainScroll = useCallback(
@@ -1207,12 +1199,10 @@ export default function HomeScreen2() {
             style={{ position: "absolute", width: 160, height: 44, opacity: logoAnim5, left: -19 }}
             resizeMode="contain"
           />
-          {/* Texto base blanco (se desvanece cuando arranca el sweep) */}
-          <RAnimated.View style={[{ position: "absolute" }, baseTextFadeStyle]}>
-            <Animated.Text numberOfLines={1} style={{ color: "rgba(255,255,255,0.92)", fontSize: 25, fontWeight: "700", letterSpacing: 0.3, opacity: greetingAnim5 }}>
-              {greetingText}
-            </Animated.Text>
-          </RAnimated.View>
+          {/* Texto base blanco (visible mientras llega el sweep) */}
+          <Animated.Text numberOfLines={1} style={{ position: "absolute", color: "rgba(255,255,255,0.92)", fontSize: 25, fontWeight: "700", letterSpacing: 0.3, opacity: greetingAnim5 }}>
+            {greetingText}
+          </Animated.Text>
           {/* Sweep degradado que revela el texto de izquierda a derecha */}
           <RAnimated.View style={[{ position: "absolute", overflow: "hidden", height: 44 }, sweepStyle]}>
             <MaskedView
