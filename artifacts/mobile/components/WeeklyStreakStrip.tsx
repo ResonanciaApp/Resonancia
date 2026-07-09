@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   ringCount: {
-    color: "#FFFFFF",
+    color: "#F9F9F9",
     fontSize: 33,
     fontWeight: "700",
     lineHeight: 36,
