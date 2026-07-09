@@ -972,7 +972,7 @@ export default function HomeScreen2() {
 
         {/* ── EXPLORA POR CONTENIDO ── */}
         <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: -12 }]}>
-          <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Explora por contenido</Text>
+          <Text style={[styles.sectionTitle, { marginBottom: 21 }]}>Explora por contenido</Text>
           <View style={{ flexDirection: "row", gap: 10 }}>
             {([
               { id: "meditaciones-guiadas", label: "Meditación", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={34} color={color} /> },
@@ -1644,7 +1644,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 0,
   },
-  sectionTitle: { fontSize: 21, fontWeight: "700", letterSpacing: 0.3, marginBottom: 24, color: "#FBFBFB" },
+  sectionTitle: { fontSize: 21, fontWeight: "700", letterSpacing: 0.3, marginBottom: 21, color: "#FBFBFB" },
   resonadoresBanner: {
     height: 80,
     borderRadius: 14,
