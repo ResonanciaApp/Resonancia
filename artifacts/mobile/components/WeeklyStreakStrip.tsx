@@ -253,7 +253,7 @@ export function WeeklyStreakStrip() {
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={21} cy={21} r={19} stroke="url(#sgToday)" strokeWidth={2} fill="rgba(255,255,255,0.05)" />
+                    <Circle cx={21} cy={21} r={19} stroke="url(#sgToday)" strokeWidth={2} fill="rgba(255,255,255,0.08)" />
                   </Svg>
                 </View>
               ) : (
