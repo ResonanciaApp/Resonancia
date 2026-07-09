@@ -97,14 +97,33 @@ function PushBridge() {
   return null;
 }
 
-/** GestureHandlerRootView con el color de fondo del tema activo. */
+/** GestureHandlerRootView con el color de fondo del tema activo.
+ *  Cuando Modo brillante está activo añade un overlay blanco semitransparente
+ *  con pointerEvents="none" para no bloquear taps. */
 function ThemedGestureRoot({ children }: { children: React.ReactNode }) {
   const { theme } = useSceneTheme();
   const { brightMode } = useBrightness();
   const bg = brightMode ? applyBrightSat(theme.solid) : theme.solid;
+  const overlayOpacity = React.useRef(new Animated.Value(brightMode ? 1 : 0)).current;
+
+  React.useEffect(() => {
+    Animated.timing(overlayOpacity, {
+      toValue: brightMode ? 1 : 0,
+      duration: 350,
+      useNativeDriver: true,
+    }).start();
+  }, [brightMode]);
+
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: bg }}>
       {children}
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          StyleSheet.absoluteFill,
+          { backgroundColor: "#FFFFFF", opacity: overlayOpacity.interpolate({ inputRange: [0, 1], outputRange: [0, 0.06] }) },
+        ]}
+      />
     </GestureHandlerRootView>
   );
 }
