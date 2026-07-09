@@ -11,18 +11,8 @@ import React, {
 import { AppState, type AppStateStatus } from "react-native";
 
 export type SceneId =
-  | "profundo"
   | "tibet"
-  | "orquidea"
-  | "vino-tinto"
-  | "naturaleza"
-  | "musgo"
-  | "zafiro"
-  | "bosque"
-  | "lluvia"
-  | "nebulosa"
-  | "viento"
-  | "solaris";
+  | "vino-tinto";
 
 export type AmbientScene = {
   id: SceneId;
@@ -34,13 +24,6 @@ export type AmbientScene = {
 
 export const AMBIENT_SCENES: AmbientScene[] = [
   {
-    id: "profundo",
-    label: "Profundo",
-    colors: ["#22131B", "#140C10"] as const,
-    icon: "feather",
-    image: require("@/assets/images/ambient/profundo.jpg"),
-  },
-  {
     id: "tibet",
     label: "Tibet",
     colors: ["#22131B", "#140C10"] as const,
@@ -48,74 +31,11 @@ export const AMBIENT_SCENES: AmbientScene[] = [
     image: require("@/assets/images/ambient/tibet.png"),
   },
   {
-    id: "orquidea",
-    label: "Orquídea",
-    colors: ["#2E1529", "#1E0D1C"] as const,
-    icon: "star",
-    image: require("@/assets/images/ambient/orquidea.png"),
-  },
-  {
     id: "vino-tinto",
     label: "Vino tinto",
     colors: ["#2E0D16", "#1A0810"] as const,
     icon: "feather",
     image: require("@/assets/images/ambient/vino-tinto.jpg"),
-  },
-  {
-    id: "naturaleza",
-    label: "Naturaleza",
-    colors: ["#1A5C2A", "#6AB46D"] as const,
-    icon: "sun",
-    image: require("@/assets/images/ambient/naturaleza.jpg"),
-  },
-  {
-    id: "musgo",
-    label: "Musgo",
-    colors: ["#28483E", "#101A16"] as const,
-    icon: "feather",
-    image: require("@/assets/images/ambient/musgo.png"),
-  },
-  {
-    id: "zafiro",
-    label: "Zafiro",
-    colors: ["#156394", "#2E2F7F"] as const,
-    icon: "star",
-    image: require("@/assets/images/ambient/zafiro.png"),
-  },
-  {
-    id: "bosque",
-    label: "Bosque",
-    colors: ["#1C3A1C", "#4A7A4A"] as const,
-    icon: "feather",
-    image: require("@/assets/images/ambient/bosque.jpg"),
-  },
-  {
-    id: "lluvia",
-    label: "Lluvia",
-    colors: ["#2C3E50", "#7F8C8D"] as const,
-    icon: "cloud-rain",
-    image: require("@/assets/images/ambient/lluvia.jpg"),
-  },
-  {
-    id: "nebulosa",
-    label: "Nebulosa",
-    colors: ["#351E62", "#113071"] as const,
-    icon: "star",
-    image: require("@/assets/images/ambient/nebulosa.png"),
-  },
-  {
-    id: "viento",
-    label: "Viento",
-    colors: ["#6E8FA8", "#C5D9E8"] as const,
-    icon: "wind",
-    image: require("@/assets/images/ambient/viento.jpg"),
-  },
-  {
-    id: "solaris",
-    label: "Solaris",
-    colors: ["#4C2245", "#2A1A2F"] as const,
-    icon: "star",
-    image: require("@/assets/images/ambient/nebulosa.png"),
   },
 ];
 
@@ -133,18 +53,8 @@ async function fadeIn(sound: Audio.Sound, targetVolume: number) {
 
 // ── Audio sources per scene ───────────────────────────────────────────────────
 const SCENE_AUDIO: Record<SceneId, unknown> = {
-  profundo:   require("@/assets/audio/riachuelo_pajaros.mp3"), // → replace with profundo.mp3
-  tibet:      require("@/assets/audio/nebulosa_ambiente.mp3"), // → replace with tibet.mp3
-  orquidea:   require("@/assets/audio/nebulosa_ambiente.mp3"), // → replace with orquidea.mp3
-  "vino-tinto": require("@/assets/audio/riachuelo_pajaros.mp3"), // → replace with vino-tinto.mp3
-  naturaleza: require("@/assets/audio/pajaros_ambiente.mp3"),
-  musgo:      require("@/assets/audio/musgo_ambiente.mp3"),
-  zafiro:     require("@/assets/audio/zafiro_ambiente.mp3"),
-  bosque:     require("@/assets/audio/riachuelo_pajaros.mp3"),
-  lluvia:     require("@/assets/audio/riachuelo_stream.mp3"),   // → replace with lluvia.mp3
-  nebulosa:   require("@/assets/audio/nebulosa_ambiente.mp3"),
-  viento:     require("@/assets/audio/pajaros_ambiente.mp3"),   // → replace with viento.mp3
-  solaris:    require("@/assets/audio/nebulosa_ambiente.mp3"),  // → replace with solaris.mp3
+  tibet:        require("@/assets/audio/nebulosa_ambiente.mp3"),
+  "vino-tinto": require("@/assets/audio/riachuelo_pajaros.mp3"),
 };
 
 type AmbientCtx = {
@@ -172,22 +82,12 @@ const AmbientContext = createContext<AmbientCtx | null>(null);
 const STORAGE_KEY = "@ambient_scene";
 
 const DEFAULT_VOLUMES: Record<SceneId, number> = {
-  profundo: DEFAULT_VOLUME,
   tibet: DEFAULT_VOLUME,
-  orquidea: DEFAULT_VOLUME,
   "vino-tinto": DEFAULT_VOLUME,
-  naturaleza: DEFAULT_VOLUME,
-  musgo: DEFAULT_VOLUME,
-  zafiro: DEFAULT_VOLUME,
-  bosque: DEFAULT_VOLUME,
-  lluvia: DEFAULT_VOLUME,
-  nebulosa: DEFAULT_VOLUME,
-  viento: DEFAULT_VOLUME,
-  solaris: DEFAULT_VOLUME,
 };
 
 export function AmbientPlayerProvider({ children }: { children: React.ReactNode }) {
-  const [currentSceneId, setCurrentSceneId] = useState<SceneId>("profundo");
+  const [currentSceneId, setCurrentSceneId] = useState<SceneId>("tibet");
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volumes, setVolumes] = useState<Record<SceneId, number>>(DEFAULT_VOLUMES);
