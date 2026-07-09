@@ -1440,7 +1440,7 @@ const styles = StyleSheet.create({
   },
   pillSel: {},
   pillText: { fontSize: 13, fontWeight: "400", color: "#F4F4F4" },
-  pillTextSel: { color: "#fff", fontWeight: "500" },
+  pillTextSel: { color: "#2D0D3A", fontWeight: "600" },
 
   comingSoonWrap: {
     flex: 1,
