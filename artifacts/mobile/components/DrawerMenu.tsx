@@ -153,7 +153,7 @@ export function DrawerMenu() {
                 </View>
               ) : (
                 <View style={[styles.profilePhotoFallback, !loggedIn && styles.profilePhotoGuest]}>
-                  <Feather name="user" size={22} color={loggedIn ? "#BE8744" : "#c2c2c2"} />
+                  <Feather name="user" size={22} color={loggedIn ? "#F7CB6B" : "#c2c2c2"} />
                 </View>
               )}
 
@@ -163,7 +163,7 @@ export function DrawerMenu() {
                     <Text style={styles.profileName} numberOfLines={1}>{fullName || "Mi perfil"}</Text>
                     <Pressable onPress={() => navigate("/(tabs)/profile")} style={styles.verPerfilBtn}>
                       <Text style={styles.verPerfilText}>Ver Perfil</Text>
-                      <Feather name="chevron-right" size={11} color="#BE8744" />
+                      <Feather name="chevron-right" size={11} color="#F7CB6B" />
                     </Pressable>
                   </>
                 ) : (
@@ -171,14 +171,14 @@ export function DrawerMenu() {
                     <Text style={styles.profileNameMuted}>No conectado</Text>
                     <Pressable onPress={() => navigate("/(auth)/sign-in")} style={styles.verPerfilBtn}>
                       <Text style={styles.verPerfilText}>Iniciar sesión</Text>
-                      <Feather name="chevron-right" size={11} color="#BE8744" />
+                      <Feather name="chevron-right" size={11} color="#F7CB6B" />
                     </Pressable>
                   </>
                 )}
               </View>
 
               <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
-                <Feather name="x" size={20} color="#BE8744" />
+                <Feather name="x" size={20} color="#F7CB6B" />
               </Pressable>
             </View>
 
@@ -213,7 +213,7 @@ export function DrawerMenu() {
                   <Text
                     style={[
                       styles.itemLabel,
-                      item.label === "Tu Premium" && { color: "#BE8744" },
+                      item.label === "Tu Premium" && { color: "#F7CB6B" },
                     ]}
                   >
                     {item.label}
@@ -222,7 +222,7 @@ export function DrawerMenu() {
               ))}
             </View>
 
-            <View style={[styles.divider, { backgroundColor: "#BE874410", marginVertical: 16 }]} />
+            <View style={[styles.divider, { backgroundColor: "#F7CB6B10", marginVertical: 16 }]} />
 
             <View style={[styles.itemGroup, { marginTop: 11 }]}>
               {SECONDARY_ITEMS.map((item) => (
@@ -291,14 +291,14 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 24,
     borderWidth: 2,
-    borderColor: "#BE8744",
+    borderColor: "#F7CB6B",
   },
   profilePhotoFallback: {
     width: 48,
     height: 48,
     borderRadius: 24,
     borderWidth: 2,
-    borderColor: "#BE8744",
+    borderColor: "#F7CB6B",
     backgroundColor: "rgba(212,175,55,0.12)",
     alignItems: "center",
     justifyContent: "center",
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   profileInitial: {
-    color: "#BE8744",
+    color: "#F7CB6B",
     fontSize: 20,
     fontWeight: "700",
     letterSpacing: 0.5,
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   verPerfilText: {
-    color: "#BE8744",
+    color: "#F7CB6B",
     fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.3,

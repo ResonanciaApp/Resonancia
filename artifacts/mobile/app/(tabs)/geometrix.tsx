@@ -2011,7 +2011,7 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
 /* ─── Crear Geometría Card — Crystal Nebula ──────────────────────────────── */
 const CB_BLUE  = "#6584d4";
 const CB_BLUE2 = "#c7caec";
-const CB_GOLD  = "#BE9650";
+const CB_GOLD  = "#F7CB6B";
 
 // Puntos de estrella de 12 vértices (alternando r=16 y r=8)
 const STAR_PTS = Array.from({ length: 12 }, (_, i) => {
@@ -6199,7 +6199,7 @@ export default function GeometrixScreen() {
               onPress={() => router.push("/geometrix-creaciones")}
             >
               <View style={styles.landingItemIcon}>
-                <Feather name="grid" size={20} color="#BE9650" />
+                <Feather name="grid" size={20} color="#F7CB6B" />
               </View>
               <View style={styles.landingItemText}>
                 <Text style={styles.landingItemTitle}>Mis Creaciones</Text>
@@ -6214,7 +6214,7 @@ export default function GeometrixScreen() {
               onPress={() => router.push("/geometrix-comunidad")}
             >
               <View style={styles.landingItemIcon}>
-                <Feather name="users" size={20} color="#BE9650" />
+                <Feather name="users" size={20} color="#F7CB6B" />
               </View>
               <View style={styles.landingItemText}>
                 <Text style={styles.landingItemTitle}>Comunidad</Text>
@@ -6229,7 +6229,7 @@ export default function GeometrixScreen() {
               onPress={() => router.push("/geometrix-aprende")}
             >
               <View style={styles.landingItemIcon}>
-                <Feather name="book-open" size={20} color="#BE9650" />
+                <Feather name="book-open" size={20} color="#F7CB6B" />
               </View>
               <View style={styles.landingItemText}>
                 <Text style={styles.landingItemTitle}>Aprende</Text>
@@ -6480,7 +6480,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 12,
   },
-  themeRowOn: { backgroundColor: hexAlpha("#BE9650", 0.08) },
+  themeRowOn: { backgroundColor: hexAlpha("#F7CB6B", 0.08) },
   themeStopRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -6488,7 +6488,7 @@ const styles = StyleSheet.create({
     paddingVertical: 11,
     paddingHorizontal: 10,
     borderRadius: 12,
-    backgroundColor: hexAlpha("#BE9650", 0.1),
+    backgroundColor: hexAlpha("#F7CB6B", 0.1),
     marginTop: 12,
   },
   themeRowIcon: {
@@ -7108,7 +7108,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     overflow: "hidden",
     zIndex: 30,
-    shadowColor: "#BE9650",
+    shadowColor: "#F7CB6B",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.45,
     shadowRadius: 16,

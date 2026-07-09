@@ -36,7 +36,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const ACTIVE_COLOR   = "#FFFFFF";
 const INACTIVE_COLOR = "rgba(255,255,255,0.88)";
-const GRAD_END       = "#E9C46A";
+const GRAD_END       = "#FBA980";
 const GHOST_PILL_BG  = "rgba(255,255,255,0.12)";
 
 const ICON_SIZE      = 27;
@@ -65,7 +65,7 @@ const TAB_CONFIG: Record<
 > = {
   inicio5:    { label: "Inicio",      sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
   explore:    { label: "Explorar",   sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
-  musica:     { label: "Creación",   mciIcon: "spa", mciIconFill: "spa", featherIcon: "sliders", activeColor: "#D4AF37" },
+  musica:     { label: "Creación",   mciIcon: "spa", mciIconFill: "spa", featherIcon: "sliders", activeColor: "#F7CB6B" },
   biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark", image: require("@/assets/images/tab-icon-universo.png") },
   video:      { label: "Videos",     sfIcon: "video",               sfIconFill: "video.fill",           featherIcon: "video" },
   descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon" },

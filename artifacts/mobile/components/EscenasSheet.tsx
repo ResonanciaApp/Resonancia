@@ -327,7 +327,7 @@ export function EscenasSheet() {
             <Switch
               value={greetingVisible}
               onValueChange={setGreetingVisible}
-              trackColor={{ false: "rgba(255,255,255,0.18)", true: "#D4AF37" }}
+              trackColor={{ false: "rgba(255,255,255,0.18)", true: "#F7CB6B" }}
               thumbColor="#FFFFFF"
               ios_backgroundColor="rgba(255,255,255,0.18)"
             />
@@ -516,7 +516,7 @@ const styles = StyleSheet.create({
     color: "#F6F6F6",
   },
   timerDropItemTextActive: {
-    color: "#D4AF37",
+    color: "#F7CB6B",
     fontWeight: "700",
   },
   divider: {

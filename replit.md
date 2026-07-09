@@ -89,7 +89,7 @@ Panel admin-only que reusa la misma DB/API. Auth = **Clerk cookie-based same-ori
 
 - **"RA"** = "Restart App" — reiniciar el workflow `artifacts/mobile: expo`
 - Idioma: español neutro en toda la UI y en las respuestas del agente (no usar modismos argentinos)
-- Colores (borgoña + dorado): bg `#1B060F` (warmBlack), bgMid `#4A0C0C`, primary `#D4AF37`, accent `#E9C46A`, fg `#F4DAD5`, mutedForeground `rgba(242,231,228,0.45)`, border `#3D0E16`, secondary `#27070E`.
+- Colores (borgoña + dorado): bg `#1B060F` (warmBlack), bgMid `#4A0C0C`, primary `#F7CB6B`, accent `#FBA980`, fg `#F4DAD5`, mutedForeground `#F4F4F4`, border `#3D0E16`, secondary `#27070E`. Degradado dorado: `["#F7CB6B","#FBA980"]` (= streak + íconos).
 - **Fondo de cards y módulos (estándar)**: tinte `rgba(74,12,12,0.08)` (= `#4A0C0C` al 8%) sobre el bg oscuro. Es EL color que deben usar todas las cards/módulos. Token central en `artifacts/mobile/constants/colors.ts` (`card` y alias `darkChocolate`). Nota: muchas pantallas hardcodean fondos de card que NO usan el token; migrarlas progresivamente a este tinte cuando se toquen.
 - Pre-existing TS errors (ignorar): VozInterior, MensajesAnon, MiniPlayer, session/[id], SessionCard, PlayerContext, player.tsx
 

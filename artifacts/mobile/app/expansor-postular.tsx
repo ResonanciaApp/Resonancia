@@ -23,7 +23,7 @@ import { useColors } from "@/hooks/useColors";
 import { EXPANSOR_SUBTIPO_OPTIONS, type ExpansorSubtipo } from "@/data/expansores";
 
 const BG_GRADIENT = ["#340D1A", "#190913"] as const;
-const GOLD = "#BE8744";
+const GOLD = "#F7CB6B";
 
 export default function ExpansorPostularScreen() {
   const colors = useColors();

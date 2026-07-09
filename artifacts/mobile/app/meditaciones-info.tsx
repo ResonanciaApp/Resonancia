@@ -8,8 +8,8 @@ import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { width: W, height: H } = Dimensions.get("window");
-const GOLD  = "#BE8744";
-const GOLD2 = "#E9C46A";
+const GOLD  = "#F7CB6B";
+const GOLD2 = "#FBA980";
 const TEXT  = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.5)";
 const BG    = "#1B060F";

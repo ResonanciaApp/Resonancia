@@ -79,7 +79,7 @@ function GlowPill({ onPress, pillStyle, gradientColors }: { onPress: () => void;
 
 
 function GradPillLabel({ icon, label, active }: { icon: React.ComponentProps<typeof Feather>["name"]; label: string; active?: boolean }) {
-  const iconColor = active ? "#BE8744" : "rgba(255,255,255,0.9)";
+  const iconColor = active ? "#F7CB6B" : "rgba(255,255,255,0.9)";
   return (
     <View style={{ alignItems: "center", gap: 8 }}>
       <Feather name={icon} size={23} color={iconColor} />
@@ -657,7 +657,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 30,
     marginTop: 8,
-    shadowColor: "#BE8744",
+    shadowColor: "#F7CB6B",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,
@@ -748,7 +748,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingVertical: 15,
     borderRadius: 30,
-    shadowColor: "#BE8744",
+    shadowColor: "#F7CB6B",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,
@@ -815,7 +815,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     borderRadius: 30,
     overflow: "hidden",
-    shadowColor: "#BE8744",
+    shadowColor: "#F7CB6B",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,

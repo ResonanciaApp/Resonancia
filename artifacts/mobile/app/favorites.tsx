@@ -35,7 +35,7 @@ const TABS = [
 ];
 type TabId = (typeof TABS)[number]["id"];
 
-const TAB_INDICATOR_COLOR = "#BE8744";
+const TAB_INDICATOR_COLOR = "#F7CB6B";
 
 // ── Mini-stack de imágenes de sonidos (interactivo) ──────────────
 const THUMB = 38;

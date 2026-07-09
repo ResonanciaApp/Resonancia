@@ -15,7 +15,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Svg, { Circle, G, Line, Path } from "react-native-svg";
 
-const GOLD  = "#BE8744";
+const GOLD  = "#F7CB6B";
 const GOLD2 = "#D6A85B";
 const CREAM = "#FAF0EE";
 

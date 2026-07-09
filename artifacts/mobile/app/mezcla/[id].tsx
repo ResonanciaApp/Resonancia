@@ -297,7 +297,7 @@ export default function CommunityMixScreen() {
 
           {/* Categoría + título */}
           {categoryMeta && (
-            <Text style={[styles.category, { color: "#BE8744" }]}>
+            <Text style={[styles.category, { color: "#F7CB6B" }]}>
               {categoryMeta.label.toUpperCase()}
             </Text>
           )}
@@ -313,7 +313,7 @@ export default function CommunityMixScreen() {
                 <Feather
                   name="heart"
                   size={22}
-                  color={mix.likedByMe ? "#BE8744" : "#FFFFFF"}
+                  color={mix.likedByMe ? "#F7CB6B" : "#FFFFFF"}
                 />
               </Pressable>
             </View>
@@ -339,7 +339,7 @@ export default function CommunityMixScreen() {
             ]}
           >
             <LinearGradient
-              colors={["#D6A45C", "#BE8744"]}
+              colors={["#D6A45C", "#F7CB6B"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={StyleSheet.absoluteFill}
@@ -358,7 +358,7 @@ export default function CommunityMixScreen() {
             style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, marginBottom: 14 })}
           >
             <LinearGradient
-              colors={["#D6A45C", "#BE8744"]}
+              colors={["#D6A45C", "#F7CB6B"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={styles.shareBtnGradientBorder}
@@ -400,7 +400,7 @@ export default function CommunityMixScreen() {
               disabled={!draft.trim() || addComment.isPending}
               style={{ opacity: draft.trim() && !addComment.isPending ? 1 : 0.3, padding: 4 }}
             >
-              <Feather name="corner-down-left" size={20} color="#BE8744" />
+              <Feather name="corner-down-left" size={20} color="#F7CB6B" />
             </Pressable>
           </View>
 
@@ -493,7 +493,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 10,
     borderRadius: 30,
-    shadowColor: "#BE8744",
+    shadowColor: "#F7CB6B",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,

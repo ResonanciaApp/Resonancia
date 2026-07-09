@@ -385,7 +385,7 @@ export default function UsuarioScreen() {
             {/* Banner certificado — siempre visible */}
             <View style={styles.epCertBanner}>
               <LinearGradient
-                colors={["#E9C46A", "#B8860B"]}
+                colors={["#FBA980", "#B8860B"]}
                 start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
                 style={styles.epCertBannerBar}
               />
@@ -413,7 +413,7 @@ export default function UsuarioScreen() {
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6, paddingRight: 4 }}>
                   {(expansorProfile?.specialties ?? []).map((s) => (
                     <View key={s} style={[styles.epChip, { borderColor: "rgba(212,175,55,0.30)", backgroundColor: "rgba(212,175,55,0.07)" }]}>
-                      <Text style={[styles.epChipText, { color: "#BE8744" }]}>{s}</Text>
+                      <Text style={[styles.epChipText, { color: "#F7CB6B" }]}>{s}</Text>
                     </View>
                   ))}
                 </ScrollView>
@@ -433,8 +433,8 @@ export default function UsuarioScreen() {
                 </Text>
                 {epDescOverflows && (
                   <Pressable onPress={() => setEpDescExpanded((v) => !v)} style={({ pressed }) => [styles.epReadMore, { opacity: pressed ? 0.7 : 1 }]}>
-                    <Text style={{ fontSize: 13, color: "#BE8744", fontWeight: "600" }}>{epDescExpanded ? "Leer menos" : "Leer más"}</Text>
-                    <Feather name={epDescExpanded ? "chevron-up" : "chevron-down"} size={13} color="#BE8744" />
+                    <Text style={{ fontSize: 13, color: "#F7CB6B", fontWeight: "600" }}>{epDescExpanded ? "Leer menos" : "Leer más"}</Text>
+                    <Feather name={epDescExpanded ? "chevron-up" : "chevron-down"} size={13} color="#F7CB6B" />
                   </Pressable>
                 )}
               </View>
@@ -651,7 +651,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "800",
     letterSpacing: 1.4,
-    color: "#BE8744",
+    color: "#F7CB6B",
   },
   epCertBannerSub: { fontSize: 11, marginTop: 2 },
   epCertIconBorder: {
@@ -664,7 +664,7 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     overflow: "hidden",
   },
-  epCertStar: { fontSize: 13, color: "#BE8744" },
+  epCertStar: { fontSize: 13, color: "#F7CB6B" },
   epGalleryWrap: { marginTop: 12 },
   epGalleryGrid: {
     flexDirection: "row",

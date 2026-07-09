@@ -857,7 +857,7 @@ export default function ProfileScreen() {
                 style={({ pressed }) => [styles.expansorEditIconBtn, { opacity: pressed ? 0.7 : 1 }]}
                 hitSlop={10}
               >
-                <Feather name="edit" size={17} color="#BE8744" />
+                <Feather name="edit" size={17} color="#F7CB6B" />
               </Pressable>
             )}
           </View>
@@ -945,13 +945,13 @@ export default function ProfileScreen() {
             {/* Banner certificado — fuera del fondo */}
             <View style={[styles.dvCertBanner, { marginTop: -20, marginBottom: 20 }]}>
               <LinearGradient
-                colors={["#E9C46A", "#B8860B"]}
+                colors={["#FBA980", "#B8860B"]}
                 start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
                 style={styles.dvCertBannerBar}
               />
               <View style={{ flex: 1, paddingLeft: 12, paddingVertical: 10, justifyContent: "center" }}>
                 <MaskedView maskElement={<Text style={styles.dvCertBannerTitle}>EXPANSOR</Text>}>
-                  <LinearGradient colors={["#BE8744", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+                  <LinearGradient colors={["#F7CB6B", "#FBA980"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
                     <Text style={[styles.dvCertBannerTitle, { opacity: 0 }]}>EXPANSOR</Text>
                   </LinearGradient>
                 </MaskedView>
@@ -1000,7 +1000,7 @@ export default function ProfileScreen() {
                   {dvDescOverflows && (
                     <Pressable onPress={() => setDvDescExpanded((v) => !v)} style={({ pressed }) => [styles.dvReadMoreBtn, { opacity: pressed ? 0.7 : 1 }]}>
                       <Text style={styles.dvReadMoreText}>{dvDescExpanded ? "Leer menos" : "Leer más"}</Text>
-                      <Feather name={dvDescExpanded ? "chevron-up" : "chevron-down"} size={13} color="#BE8744" />
+                      <Feather name={dvDescExpanded ? "chevron-up" : "chevron-down"} size={13} color="#F7CB6B" />
                     </Pressable>
                   )}
                 </View>
@@ -1037,7 +1037,7 @@ export default function ProfileScreen() {
               {/* Placeholder si el perfil está vacío */}
               {!expansorProfile && (
                 <Pressable onPress={openExpansorEdit} style={({ pressed }) => [styles.dvEmptyPrompt, { opacity: pressed ? 0.7 : 1 }]}>
-                  <Feather name="plus-circle" size={16} color="#BE8744" />
+                  <Feather name="plus-circle" size={16} color="#F7CB6B" />
                   <Text style={styles.dvEmptyPromptText}>Completa tu perfil expansor</Text>
                 </Pressable>
               )}
@@ -1297,8 +1297,8 @@ export default function ProfileScreen() {
                         style={({ pressed }) => [styles.epPhotoAddBtn, { opacity: (pressed || epPhotoUploading) ? 0.6 : 1 }]}
                       >
                         {epPhotoUploading
-                          ? <ActivityIndicator size="small" color="#BE8744" />
-                          : <Feather name="plus" size={22} color="#BE8744" />
+                          ? <ActivityIndicator size="small" color="#F7CB6B" />
+                          : <Feather name="plus" size={22} color="#F7CB6B" />
                         }
                       </Pressable>
                     )}
@@ -1652,12 +1652,12 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "#BE8744",
+    backgroundColor: "#F7CB6B",
     alignItems: "center",
     justifyContent: "center",
   },
   expansorBadgeStar: { fontSize: 14, color: "#1B060F", fontWeight: "800" },
-  expansorTitle: { fontSize: 14, fontWeight: "700", color: "#BE8744" },
+  expansorTitle: { fontSize: 14, fontWeight: "700", color: "#F7CB6B" },
   expansorCertLabel: { fontSize: 11, color: "rgba(212,175,55,0.60)", marginTop: 1 },
   expansorViewBtn: {
     flexDirection: "row",
@@ -1668,7 +1668,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "rgba(212,175,55,0.10)",
   },
-  expansorViewText: { fontSize: 12, color: "#BE8744", fontWeight: "600" },
+  expansorViewText: { fontSize: 12, color: "#F7CB6B", fontWeight: "600" },
   expansorSpecWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   expansorChip: {
     paddingHorizontal: 12,
@@ -1692,7 +1692,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.20)",
   },
-  expansorLinkText: { fontSize: 12, color: "#BE8744", fontWeight: "600" },
+  expansorLinkText: { fontSize: 12, color: "#F7CB6B", fontWeight: "600" },
 
   // ── Sección Daniela Vega (expansor) ──
   dvExpansorSection: {
@@ -1713,7 +1713,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.05)",
   },
   dvCertBannerBar: { width: 5 },
-  dvCertBannerTitle: { fontSize: 13, fontWeight: "800", letterSpacing: 0.4, color: "#BE8744" },
+  dvCertBannerTitle: { fontSize: 13, fontWeight: "800", letterSpacing: 0.4, color: "#F7CB6B" },
   dvCertBannerSub: { fontSize: 11, color: "rgba(255,255,255,0.90)", marginTop: 2 },
   dvCertBannerIconBorder: {
     width: 35, height: 35, borderRadius: 18,
@@ -1724,7 +1724,7 @@ const styles = StyleSheet.create({
   dvServiceTitle: { fontSize: 15, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.2 },
   dvServiceDesc: { fontSize: 13, lineHeight: 20, color: "#F4F4F4" },
   dvReadMoreBtn: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 6, alignSelf: "flex-start" },
-  dvReadMoreText: { fontSize: 13, fontWeight: "600", color: "#BE8744" },
+  dvReadMoreText: { fontSize: 13, fontWeight: "600", color: "#F7CB6B" },
   dvSpecialtyWrap: { flexDirection: "row", gap: 8, alignItems: "center" },
   dvSpecialtyChip: {
     borderRadius: 20, paddingHorizontal: 14, height: 34, overflow: "hidden",
@@ -1758,7 +1758,7 @@ const styles = StyleSheet.create({
     flexDirection: "row", alignItems: "center", gap: 8,
     paddingVertical: 12, justifyContent: "center",
   },
-  dvEmptyPromptText: { fontSize: 14, color: "#BE8744", fontWeight: "600" },
+  dvEmptyPromptText: { fontSize: 14, color: "#F7CB6B", fontWeight: "600" },
   expansorEditIconBtn: {
     width: 34, height: 34, borderRadius: 17,
     backgroundColor: "rgba(212,175,55,0.10)",

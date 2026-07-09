@@ -23,7 +23,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { hexToRgba } from "@/utils/color";
 
 const H_PAD = 15;
-const GOLD  = "#BE8744";
+const GOLD  = "#F7CB6B";
 const TEXT  = "#FBFBFB";
 const MUTED = "#c2c2c2";
 

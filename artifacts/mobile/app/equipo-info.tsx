@@ -17,8 +17,8 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
-const GOLD = "#BE8744";
-const GOLD2 = "#E9C46A";
+const GOLD = "#F7CB6B";
+const GOLD2 = "#FBA980";
 const TEXT = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.55)";
 const BG: [string, string] = ["#340D1A", "#190913"];

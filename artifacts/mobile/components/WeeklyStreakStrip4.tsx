@@ -135,8 +135,8 @@ export function WeeklyStreakStrip4() {
               <Svg width={52} height={50}>
                 <Defs>
                   <SvgLinearGradient id="goldNum" x1="0" y1="0" x2="0" y2="1">
-                    <Stop offset="0" stopColor="#E9C46A" />
-                    <Stop offset="1" stopColor="#BE8744" />
+                    <Stop offset="0" stopColor="#FBA980" />
+                    <Stop offset="1" stopColor="#F7CB6B" />
                   </SvgLinearGradient>
                 </Defs>
                 <SvgText x="26" y="44" fill="url(#goldNum)" fontSize={44} fontWeight="700" textAnchor="middle">

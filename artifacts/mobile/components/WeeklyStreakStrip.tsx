@@ -8,7 +8,7 @@ import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "re
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { usePlayer } from "@/context/PlayerContext";
 
-const GOLD = "#BE8744";
+const GOLD = "#F7CB6B";
 
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";

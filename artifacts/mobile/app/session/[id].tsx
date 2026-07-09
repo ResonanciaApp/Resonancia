@@ -366,7 +366,7 @@ export default function SessionDetailScreen() {
                 <Feather name="more-horizontal" size={22} color="#FBFBFB" />
               </Pressable>
               <Pressable onPress={handleFav} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-                <Feather name="heart" size={22} color={fav ? "#BE8744" : "#FBFBFB"} />
+                <Feather name="heart" size={22} color={fav ? "#F7CB6B" : "#FBFBFB"} />
               </Pressable>
             </View>
           </View>
@@ -393,7 +393,7 @@ export default function SessionDetailScreen() {
                 style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
               >
                 <LinearGradient
-                  colors={["#D6A45C", "#BE8744"]}
+                  colors={["#D6A45C", "#F7CB6B"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 0, y: 1 }}
                   style={StyleSheet.absoluteFill}
@@ -410,7 +410,7 @@ export default function SessionDetailScreen() {
                 style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
               >
                 <LinearGradient
-                  colors={["#D6A45C", "#BE8744"]}
+                  colors={["#D6A45C", "#F7CB6B"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 0, y: 1 }}
                   style={StyleSheet.absoluteFill}
@@ -433,7 +433,7 @@ export default function SessionDetailScreen() {
               ]}
             >
               <LinearGradient
-                colors={["#D6A45C", "#BE8744"]}
+                colors={["#D6A45C", "#F7CB6B"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 0, y: 1 }}
                 style={StyleSheet.absoluteFill}
@@ -588,11 +588,11 @@ export default function SessionDetailScreen() {
               </Pressable>
               {/* Agregar a favoritos */}
               <Pressable style={styles.optRow} onPress={() => { handleFav(); }}>
-                <Feather name="heart" size={18} color={fav ? "#BE8744" : "#FBFBFB"} style={styles.optIcon} />
-                <Text style={[styles.optRowText, fav ? { color: "#BE8744" } : {}]}>
+                <Feather name="heart" size={18} color={fav ? "#F7CB6B" : "#FBFBFB"} style={styles.optIcon} />
+                <Text style={[styles.optRowText, fav ? { color: "#F7CB6B" } : {}]}>
                   {fav ? "En favoritos" : "Agregar a favoritos"}
                 </Text>
-                {fav && <Feather name="check" size={15} color="#BE8744" />}
+                {fav && <Feather name="check" size={15} color="#F7CB6B" />}
               </Pressable>
               {/* Añadir a carpeta */}
               <Pressable
@@ -754,12 +754,12 @@ export default function SessionDetailScreen() {
         />
         {/* Branding top */}
         <View style={{ position: "absolute", top: 64, left: 0, right: 0, alignItems: "center" }}>
-          <Text style={{ color: "#BE8744", fontSize: 11, letterSpacing: 5, fontWeight: "700" }}>RESONANCIA</Text>
+          <Text style={{ color: "#F7CB6B", fontSize: 11, letterSpacing: 5, fontWeight: "700" }}>RESONANCIA</Text>
           <Text style={{ color: "#F4F4F4", fontSize: 10, letterSpacing: 2, marginTop: 3 }}>Casa del Cuenco</Text>
         </View>
         {/* Session info center */}
         <View style={{ position: "absolute", bottom: 190, left: 36, right: 36 }}>
-          <Text style={{ color: "#BE8744", fontSize: 11, letterSpacing: 2, textAlign: "center", marginBottom: 12, textTransform: "uppercase" }}>
+          <Text style={{ color: "#F7CB6B", fontSize: 11, letterSpacing: 2, textAlign: "center", marginBottom: 12, textTransform: "uppercase" }}>
             {session.categoryLabel}
           </Text>
           <Text style={{ color: "#FAF0EE", fontSize: 26, fontWeight: "700", lineHeight: 34, textAlign: "center" }}>
@@ -899,7 +899,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 30,
     marginTop: 8,
-    shadowColor: "#BE8744",
+    shadowColor: "#F7CB6B",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,
@@ -1000,7 +1000,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 10,
     borderRadius: 30,
-    shadowColor: "#BE8744",
+    shadowColor: "#F7CB6B",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,
@@ -1033,7 +1033,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderRadius: 30,
     overflow: "hidden",
-    shadowColor: "#BE8744",
+    shadowColor: "#F7CB6B",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,
@@ -1063,7 +1063,7 @@ const styles = StyleSheet.create({
   },
   playsText: {
     fontSize: 12,
-    color: "#BE8744",
+    color: "#F7CB6B",
   },
 
   // Rating modal

@@ -28,7 +28,7 @@ import { useColors } from "@/hooks/useColors";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
-const GOLD = "#BE8744";
+const GOLD = "#F7CB6B";
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 const HERO_H = 238;
@@ -58,7 +58,7 @@ function Chip({ chip, sel, onPress }: { chip: ChipDef; sel: boolean; onPress: ()
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
       <LinearGradient
-        colors={sel ? ["#D6A45C", "#BE8744"] : ["rgba(255,255,255,0.055)", "rgba(255,255,255,0.055)"]}
+        colors={sel ? ["#D6A45C", "#F7CB6B"] : ["rgba(255,255,255,0.055)", "rgba(255,255,255,0.055)"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFill}
@@ -255,7 +255,7 @@ export default function MezclasComunidadScreen() {
           <View style={styles.heroIconFloat}>
             <View style={styles.heroIconGlow}>
               <View style={styles.heroIconCircle}>
-                <Feather name="users" size={32} color="#BE8744" />
+                <Feather name="users" size={32} color="#F7CB6B" />
               </View>
             </View>
           </View>

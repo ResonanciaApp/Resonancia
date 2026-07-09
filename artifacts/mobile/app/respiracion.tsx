@@ -210,12 +210,12 @@ export default function RespiracionScreen() {
                   style={[
                     styles.chip,
                     {
-                      borderColor: active ? "#BE8744" : "rgba(61,14,22,0.40)",
+                      borderColor: active ? "#F7CB6B" : "rgba(61,14,22,0.40)",
                       backgroundColor: active ? "rgba(212,175,55,0.18)" : "rgba(74,12,12,0.08)",
                     },
                   ]}
                 >
-                  <Text style={[styles.chipText, { color: active ? "#BE8744" : colors.mutedForeground }]}>
+                  <Text style={[styles.chipText, { color: active ? "#F7CB6B" : colors.mutedForeground }]}>
                     {p.name}
                   </Text>
                 </Pressable>
@@ -268,7 +268,7 @@ export default function RespiracionScreen() {
                 {
                   backgroundColor:
                     i < cycles
-                      ? "#BE8744"
+                      ? "#F7CB6B"
                       : i === cycles && running
                         ? "rgba(212,175,55,0.45)"
                         : "rgba(61,14,22,0.40)",
@@ -394,13 +394,13 @@ const styles = StyleSheet.create({
   countdownNum: {
     fontSize: 38,
     fontWeight: "200",
-    color: "#BE8744",
+    color: "#F7CB6B",
     marginTop: 2,
     lineHeight: 44,
   },
   completedIcon: {
     fontSize: 44,
-    color: "#BE8744",
+    color: "#F7CB6B",
   },
 
   cycleRow: {

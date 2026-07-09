@@ -16,7 +16,7 @@ export const THEME_A = {
   colors: {
     background:          "#070E09",
     card:                "#111E16",
-    primary:             "#BE8744",
+    primary:             "#F7CB6B",
     primaryForeground:   "#070E09",
     foreground:          "#C8C1B5",
     cardForeground:      "#C8C1B5",
@@ -66,7 +66,7 @@ export const THEME_A = {
     clockIcon:          "#C8A860",
     infoIcon:           "rgba(200,168,96,0.7)",
     iconBg:             "rgba(212,175,55,0.22)",
-    mainIcon:           "#BE8744",
+    mainIcon:           "#F7CB6B",
   },
 
   // ── data/categories.ts — 3 Minutos de Sabiduría ─────────────────────────
@@ -91,7 +91,7 @@ export const THEME_B = {
   colors: {
     background:          "#070E09",
     card:                "#1A2A1E",
-    primary:             "#BE8744",
+    primary:             "#F7CB6B",
     primaryForeground:   "#070E09",
     foreground:          "#C8C1B5",
     cardForeground:      "#C8C1B5",

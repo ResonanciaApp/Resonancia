@@ -27,7 +27,7 @@ import { resolveAvatarUrl } from "@/lib/avatar";
 import { useColors } from "@/hooks/useColors";
 
 
-const GOLD = "#BE8744";
+const GOLD = "#F7CB6B";
 const STACK_THUMB = 93;
 const MAX_VISIBLE = 8;
 
@@ -252,7 +252,7 @@ export function MixRow({
       {/* Likes */}
       {mix.likes > 0 && (
         <View style={styles.likeChip}>
-          <AntDesign name="heart" size={14} color="#BE8744" />
+          <AntDesign name="heart" size={14} color="#F7CB6B" />
           <Text style={styles.likeCount}>{mix.likes}</Text>
         </View>
       )}
@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
   mixAuthor: { fontSize: 10, marginTop: 2 },
   mixCount: { fontSize: 12, fontWeight: "500" },
   likeChip: { flexDirection: "row", alignItems: "center", gap: 3, flexShrink: 0 },
-  likeCount: { fontSize: 13, fontWeight: "600", color: "#BE8744" },
+  likeCount: { fontSize: 13, fontWeight: "600", color: "#F7CB6B" },
   dotsBtn: {
     width: 32,
     height: 32,

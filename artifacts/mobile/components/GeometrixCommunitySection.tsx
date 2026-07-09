@@ -127,7 +127,7 @@ function GlyphLayer({
     <Animated.View style={[StyleSheet.absoluteFill, styles.layerCenter, aStyle]} pointerEvents="none">
       <SacredGlyph
         id={id}
-        color={settings.color ?? "#BE9650"}
+        color={settings.color ?? "#F7CB6B"}
         gradient={gradientColors(settings.gradientId ?? null)}
         size={glyphSize}
         strokeWidth={1 + (settings.thickness ?? 0.5) * 2}
@@ -248,7 +248,7 @@ function GlyphCard({
         </View>
         {glyph.likes > 0 && (
           <View style={styles.likes}>
-            <Feather name="heart" size={11} color="#BE9650" />
+            <Feather name="heart" size={11} color="#F7CB6B" />
             <Text style={[styles.likeCount, { color: colors.mutedForeground }]}>{glyph.likes}</Text>
           </View>
         )}

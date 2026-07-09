@@ -228,7 +228,7 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
                 value={videoEnabled}
                 onValueChange={setVideoEnabled}
                 disabled
-                trackColor={{ false: "#CCC", true: "#BE8744" }}
+                trackColor={{ false: "#CCC", true: "#F7CB6B" }}
                 thumbColor="#FFF"
               />
             </View>
@@ -331,7 +331,7 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
                 ]}
               >
                 {selectedId === previewScene.id && (
-                  <Feather name="check" size={17} color="#BE8744" style={{ marginRight: 6 }} />
+                  <Feather name="check" size={17} color="#F7CB6B" style={{ marginRight: 6 }} />
                 )}
                 <Text style={[
                   styles.applyBtnText,
@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     borderRadius: 16,
     borderWidth: 3,
-    borderColor: "#BE8744",
+    borderColor: "#F7CB6B",
   },
   activeOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -494,7 +494,7 @@ const styles = StyleSheet.create({
   },
   gradientFallback: { borderRadius: 14 },
   cardLabel: { marginTop: 6, fontSize: 11, color: "#555", fontWeight: "500", textAlign: "center" },
-  cardLabelActive: { color: "#BE8744", fontWeight: "700" },
+  cardLabelActive: { color: "#F7CB6B", fontWeight: "700" },
 
   hint: {
     marginTop: 20,
@@ -608,8 +608,8 @@ const styles = StyleSheet.create({
   applyBtnActive: {
     backgroundColor: "rgba(212,175,55,0.15)",
     borderWidth: 1.5,
-    borderColor: "#BE8744",
+    borderColor: "#F7CB6B",
   },
   applyBtnText: { fontSize: 16, fontWeight: "700", color: "#1A1A22" },
-  applyBtnTextActive: { color: "#BE8744" },
+  applyBtnTextActive: { color: "#F7CB6B" },
 });

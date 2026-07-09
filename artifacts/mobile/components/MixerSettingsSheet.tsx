@@ -29,7 +29,7 @@ type Props = {
   onClear: () => void;
 };
 
-const PRIMARY = "#BE9650";
+const PRIMARY = "#F7CB6B";
 const SWATCH_SIZE = 34;
 
 const c = {

@@ -33,7 +33,7 @@ import { useColors } from "@/hooks/useColors";
 import { useGetMe, getGetMeQueryKey } from "@workspace/api-client-react";
 
 const H_PAD = 20;
-const GOLD = "#BE8744";
+const GOLD = "#F7CB6B";
 const GOLD_MUTED = "rgba(212,175,55,0.70)";
 
 const PLATFORM_ICON: Record<ExternalProject["platform"], string> = {
@@ -350,7 +350,7 @@ export default function ResonadorPerfilScreen() {
               <MaskedView
                 maskElement={<Text style={styles.bannerTitle}>RESONADOR</Text>}
               >
-                <LinearGradient colors={[GOLD, "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+                <LinearGradient colors={[GOLD, "#FBA980"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
                   <Text style={[styles.bannerTitle, { opacity: 0 }]}>RESONADOR</Text>
                 </LinearGradient>
               </MaskedView>
@@ -792,7 +792,7 @@ const styles = StyleSheet.create({
   resonadorBannerOuter: {
     borderRadius: 14,
     padding: 1,
-    shadowColor: "#BE8744",
+    shadowColor: "#F7CB6B",
     shadowOffset: { width: 0, height: -1 },
     shadowOpacity: 0.45,
     shadowRadius: 2,

@@ -24,7 +24,7 @@ import { uploadLocalFile } from "@/lib/upload";
 import type { ResonadorSubtipo } from "@/data/resonadores";
 
 const BG_GRADIENT = ["#340D1A", "#190913"] as const;
-const GOLD = "#BE8744";
+const GOLD = "#F7CB6B";
 const APORTE_OPTIONS: ResonadorSubtipo[] = ["Voz guía", "Sonoterapeuta", "Músico", "Productor"];
 
 interface PickedAudio {

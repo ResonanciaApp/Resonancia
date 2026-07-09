@@ -133,7 +133,7 @@ export default function ExpansorPerfilScreen() {
               style={styles.pillBtn}
               hitSlop={8}
             >
-              <Feather name="edit-2" size={17} color="#BE8744" />
+              <Feather name="edit-2" size={17} color="#F7CB6B" />
             </Pressable>
           </GhostPill>
         ) : (
@@ -268,7 +268,7 @@ export default function ExpansorPerfilScreen() {
           <View style={styles.certBanner}>
             {/* Barra lateral izquierda — absolute para cubrir toda la altura */}
             <LinearGradient
-              colors={["#E9C46A", "#B8860B"]}
+              colors={["#FBA980", "#B8860B"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={styles.certBannerBar}
@@ -292,7 +292,7 @@ export default function ExpansorPerfilScreen() {
                 <MaskedView
                   maskElement={<Text style={styles.certBannerTitle}>EXPANSOR</Text>}
                 >
-                  <LinearGradient colors={["#BE8744", "#E9C46A"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+                  <LinearGradient colors={["#F7CB6B", "#FBA980"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
                     <Text style={[styles.certBannerTitle, { opacity: 0 }]}>EXPANSOR</Text>
                   </LinearGradient>
                 </MaskedView>
@@ -346,7 +346,7 @@ export default function ExpansorPerfilScreen() {
                     <Feather
                       name={descExpanded ? "chevron-up" : "chevron-down"}
                       size={13}
-                      color="#BE8744"
+                      color="#F7CB6B"
                     />
                   </Pressable>
                 )}
@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: "#BE8744",
+    backgroundColor: "#F7CB6B",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
@@ -595,7 +595,7 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   certBannerTitle: {
-    fontSize: 14, fontWeight: "800", letterSpacing: 0.6, color: "#BE8744",
+    fontSize: 14, fontWeight: "800", letterSpacing: 0.6, color: "#F7CB6B",
   },
   certBannerSub: {
     fontSize: 12, color: "rgba(255,255,255,0.90)", marginTop: 2,
@@ -648,7 +648,7 @@ const styles = StyleSheet.create({
   readMoreText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#BE8744",
+    color: "#F7CB6B",
   },
   specialtyWrap: { flexDirection: "row", gap: 8, alignItems: "center" },
   specialtyChip: {

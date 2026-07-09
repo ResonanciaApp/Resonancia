@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   moodChipLabel: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#BE9650",
+    color: "#F7CB6B",
   },
   chipClose: {
     marginLeft: 2,

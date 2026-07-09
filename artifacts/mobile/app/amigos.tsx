@@ -126,7 +126,7 @@ function GuestPrompt() {
         onPress={() => router.push("/(auth)/sign-up")}
         style={({ pressed }) => [styles.guestBtn, { opacity: pressed ? 0.85 : 1 }]}
       >
-        <LinearGradient colors={["#BE8744", "#C49F27", "#B08820"]} style={styles.guestBtnGrad}>
+        <LinearGradient colors={["#F7CB6B", "#C49F27", "#B08820"]} style={styles.guestBtnGrad}>
           <Text style={styles.guestBtnText}>Crear cuenta</Text>
           <Feather name="arrow-right" size={16} color="#1B060F" />
         </LinearGradient>

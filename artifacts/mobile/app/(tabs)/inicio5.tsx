@@ -172,7 +172,7 @@ function NavTabChip({ sel, label, icon, iconSel, onPress }: { sel: boolean; labe
     >
       <Animated.View style={[StyleSheet.absoluteFill, { opacity: selOpacity }]}>
         <LinearGradient
-          colors={["#D6A45C", "#BE8744"]}
+          colors={["#D6A45C", "#F7CB6B"]}
           start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
@@ -862,7 +862,7 @@ export default function HomeScreen2() {
                 onPress={() => router.push("/mis-sesiones" as never)}
                 hitSlop={8}
               >
-                <Text style={{ color: "#BE8744", fontSize: 13, fontFamily: "Inter_400Regular" }}>
+                <Text style={{ color: "#F7CB6B", fontSize: 13, fontFamily: "Inter_400Regular" }}>
                   Ver todas
                 </Text>
               </Pressable>
@@ -1144,7 +1144,7 @@ export default function HomeScreen2() {
                 <Text style={styles.premSub}>Desbloquea todo el contenido</Text>
               </View>
               <View style={styles.premChevron}>
-                <Feather name="chevron-right" size={14} color="#BE8744" />
+                <Feather name="chevron-right" size={14} color="#F7CB6B" />
               </View>
             </Pressable>
           </View>
@@ -1356,7 +1356,7 @@ const styles = StyleSheet.create({
     width: 2,
     height: 26,
     borderRadius: 1,
-    backgroundColor: "#BE9650",
+    backgroundColor: "#F7CB6B",
     marginRight: 6,
   },
   intencionText: {
@@ -1536,7 +1536,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   avatarInitialText: {
-    color: "#BE8744",
+    color: "#F7CB6B",
     fontSize: 14,
     fontWeight: "700",
     letterSpacing: 0.3,

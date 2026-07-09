@@ -19,7 +19,7 @@ import {
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useColors } from "@/hooks/useColors";
 
-const GOLD = "#BE8744";
+const GOLD = "#F7CB6B";
 
 type Props = {
   itemId: string | null;

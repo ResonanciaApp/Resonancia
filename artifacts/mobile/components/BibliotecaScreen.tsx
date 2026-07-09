@@ -52,7 +52,7 @@ import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
-const GOLD = "#BE8744";
+const GOLD = "#F7CB6B";
 const NAVY = "#210911";
 const DARK_BLUE = "#210911";
 const TEXT = "#FBFBFB";
@@ -478,7 +478,7 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
         {/* Placeholder vacío */}
         {q.length === 0 && kbReady && (
           <Animated.View style={[blStyles.empty, { opacity: fadeAnim }]}>
-            <Feather name="headphones" size={52} color="#BE8744" style={{ marginBottom: 16 }} />
+            <Feather name="headphones" size={52} color="#F7CB6B" style={{ marginBottom: 16 }} />
             <Text style={blStyles.emptyTitle}>Encuentra en tu biblioteca</Text>
             <Text style={blStyles.emptySub}>Busca favoritos, playlists y mezclas…</Text>
           </Animated.View>
@@ -563,7 +563,7 @@ const blStyles = StyleSheet.create({
   bar:          { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.09)", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 11 },
   input:        { flex: 1, fontSize: 14, color: "#FBFBFB" },
   cancel:       { paddingVertical: 6 },
-  cancelText:   { color: "#BE8744", fontSize: 14, fontWeight: "600" },
+  cancelText:   { color: "#F7CB6B", fontSize: 14, fontWeight: "600" },
   empty:        { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, paddingTop: 60 },
   emptyTitle:   { fontSize: 18, fontWeight: "700", color: "#FBFBFB", textAlign: "center", marginBottom: 10 },
   emptySub:     { fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
@@ -1212,7 +1212,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
             onPress={() => setNombreVisible(true)}
           >
             <View style={styles.addResonadorIcon}>
-              <Feather name="music" size={24} color="#BE8744" />
+              <Feather name="music" size={24} color="#F7CB6B" />
             </View>
             <Text style={styles.addResonadorLabel}>Crear un Ritual</Text>
           </Pressable>
@@ -1221,7 +1221,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
             onPress={() => setNombreCarpetaVisible(true)}
           >
             <View style={styles.addResonadorIcon}>
-              <Feather name="folder" size={25} color="#BE8744" />
+              <Feather name="folder" size={25} color="#F7CB6B" />
             </View>
             <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
           </Pressable>
@@ -1230,7 +1230,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
             onPress={() => { setAddResonadorQ(""); setAddResonadorVisible(true); }}
           >
             <View style={styles.addResonadorIcon}>
-              <Feather name="plus" size={24} color="#BE8744" />
+              <Feather name="plus" size={24} color="#F7CB6B" />
             </View>
             <Text style={styles.addResonadorLabel}>Agregar Resonador</Text>
           </Pressable>
@@ -1329,7 +1329,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
             onPress={() => { openMixer(); router.navigate("/(tabs)/musica" as never); }}
           >
             <View style={styles.addResonadorIcon}>
-              <MaterialCommunityIcons name="tune-variant" size={24} color="#BE8744" />
+              <MaterialCommunityIcons name="tune-variant" size={24} color="#F7CB6B" />
             </View>
             <Text style={styles.addResonadorLabel}>Crear una mezcla</Text>
           </Pressable>
@@ -1338,7 +1338,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
             onPress={() => setNombreCarpetaMezclaVisible(true)}
           >
             <View style={styles.addResonadorIcon}>
-              <Feather name="folder" size={25} color="#BE8744" />
+              <Feather name="folder" size={25} color="#F7CB6B" />
             </View>
             <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
           </Pressable>
@@ -1536,7 +1536,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
           onPress={() => setNombreCarpetaFavVisible(true)}
         >
           <View style={styles.addResonadorIcon}>
-            <Feather name="folder" size={25} color="#BE8744" />
+            <Feather name="folder" size={25} color="#F7CB6B" />
           </View>
           <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
         </Pressable>

@@ -56,8 +56,8 @@ try {
 // ── Paleta (coherente con el resto de la app) ─────────────────────────────────
 const WARM_BLACK = "#1B060F";
 const BURGUNDY_MID = "#4A0C0C";
-const PRIMARY_GOLD = "#BE8744";
-const ACCENT_GOLD = "#E9C46A";
+const PRIMARY_GOLD = "#F7CB6B";
+const ACCENT_GOLD = "#FBA980";
 const FOREGROUND = "#FFFFFF";
 const MUTED = "#F4F4F4";
 const BORDER = "#3D0E16";

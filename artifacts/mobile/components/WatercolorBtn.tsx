@@ -12,7 +12,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-const GOLD = "#BE8744";
+const GOLD = "#F7CB6B";
 const ICON = require("@/assets/images/personalize-icon.png") as number;
 
 interface Props {

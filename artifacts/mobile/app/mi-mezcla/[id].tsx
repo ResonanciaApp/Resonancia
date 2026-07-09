@@ -33,7 +33,7 @@ import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { useLoadMix } from "@/hooks/useLoadMix";
 
 const BG_GRADIENT = ["#190913", "#190913"] as const;
-const GOLD = "#BE8744";
+const GOLD = "#F7CB6B";
 const TEXT = "#FAF0EE";
 const MUTED = "#c2c2c2";
 
