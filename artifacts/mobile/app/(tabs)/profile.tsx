@@ -1429,7 +1429,7 @@ const styles = StyleSheet.create({
   pillBorder: {
     borderRadius: 999,
   },
-  pillBorderSel: { borderWidth: 1, borderColor: "rgba(255,255,255,0.1)", borderRadius: 999 },
+  pillBorderSel: {},
   pill: {
     height: 34,
     paddingHorizontal: 12,

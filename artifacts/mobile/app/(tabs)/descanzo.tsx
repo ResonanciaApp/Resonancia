@@ -842,7 +842,7 @@ const styles = StyleSheet.create({
   sleepPillBorder: {
     borderRadius: 999,
   },
-  sleepPillBorderSel: { borderWidth: 1, borderColor: "rgba(255,255,255,0.1)", borderRadius: 999 },
+  sleepPillBorderSel: {},
   sleepPill: {
     flexDirection: "row",
     alignItems: "center",

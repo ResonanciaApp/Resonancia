@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
   chipBorder: {
     borderRadius: 999,
   },
-  chipBorderSel: { borderWidth: 1, borderColor: "rgba(255,255,255,0.1)", borderRadius: 999 },
+  chipBorderSel: {},
   chip: {
     borderRadius: 999,
     paddingHorizontal: 12,
