@@ -371,7 +371,7 @@ export default function MusicaSonidosScreen() {
           {/* Flecha atrás flotante */}
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
             <View style={styles.lotoBtn}>
-              <BackPill onPress={() => router.back()} size={15} style={{ transform: [{ translateX: -2 }] }} />
+              <BackPill onPress={() => router.back()} size={23} style={{ transform: [{ translateX: -2 }] }} />
             </View>
           </View>
           <View style={[styles.heroOverlayRight, { top: topPad + 8 }]}>
@@ -416,7 +416,7 @@ export default function MusicaSonidosScreen() {
       {/* ── Sticky header (aparece con scroll) ── */}
       <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"}>
         <View style={styles.lotoBtn}>
-          <BackPill onPress={() => router.back()} size={15} />
+          <BackPill onPress={() => router.back()} size={23} />
         </View>
         <View style={styles.headerTitleCol}>
           <Text style={styles.headerTitle}>Música</Text>
