@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   chipsWrap: { height: CHIPS_H, justifyContent: "center" },
   chipsRow: { paddingHorizontal: 20, gap: 8, alignItems: "center" },
   chipBorder: {
-    borderRadius: 20,
+    borderRadius: 999,
     borderWidth: 0.5,
     borderColor: "rgba(255,255,255,0.25)",
   },
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   chip: {
-    borderRadius: 20,
+    borderRadius: 999,
     paddingHorizontal: 12,
     height: 34,
     alignItems: "center",
