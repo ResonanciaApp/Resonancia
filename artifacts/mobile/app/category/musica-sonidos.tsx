@@ -189,9 +189,6 @@ function CategoryCard({
             </View>
           )}
         </View>
-        <Pressable onPress={onOptions??onLongPress} hitSlop={10} style={ac.hDotsBtn}>
-          <View style={ac.hDot} /><View style={ac.hDot} /><View style={ac.hDot} />
-        </Pressable>
       </Pressable>
     );
   }
@@ -210,9 +207,9 @@ function CategoryCard({
 
 const ac = StyleSheet.create({
   hRow:{ flexDirection:"row", alignItems:"center", gap:12, paddingVertical:6, marginBottom:11 },
-  hImgWrap:{ width:87, height:87, borderRadius:8, overflow:"hidden" },
+  hImgWrap:{ width:130, height:130, borderRadius:8, overflow:"hidden" },
   hImgOverlay:{ ...StyleSheet.absoluteFillObject, backgroundColor:"rgba(0,0,0,0.18)" },
-  hImage:{ width:87, height:87 },
+  hImage:{ width:130, height:130 },
   hContent:{ flex:1, justifyContent:"center", gap:2 },
   hDuration:{ fontSize:11, fontWeight:"400", color:MUTED },
   hTitle:{ fontSize:13, fontWeight:"600", color:TEXT, lineHeight:18 },
