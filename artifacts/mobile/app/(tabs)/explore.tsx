@@ -405,7 +405,8 @@ export default function ExploreScreen() {
 
         {/* ── Barra de búsqueda ── */}
         <View style={styles.searchWrap}>
-          <View style={[styles.searchBox, { backgroundColor: "rgba(255,255,255,0.11)", borderColor: "rgba(255,255,255,0.6)", borderWidth: 1 }]}>
+          <BlurView intensity={28} tint="dark" style={[styles.searchBox, { overflow: "hidden", borderRadius: 14, borderColor: "rgba(255,255,255,0.22)", borderWidth: 1 }]}>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
               value={query}
@@ -420,7 +421,7 @@ export default function ExploreScreen() {
                 <Feather name="x-circle" size={15} color={colors.mutedForeground} />
               </Pressable>
             )}
-          </View>
+          </BlurView>
         </View>
 
         {/* ── Para este momento ── */}
