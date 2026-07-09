@@ -280,7 +280,7 @@ export function EscenasSheet() {
           {/* Timer */}
           <Pressable style={styles.controlRow} onPress={() => setTimerOpen((v) => !v)}>
             <Feather name="clock" size={17} color="#F4F4F4" style={styles.controlIcon} />
-            <Text style={styles.controlLabel}>Reproducir sonidos fuera de la aplicación</Text>
+            <Text style={styles.controlLabel}>{`Reproducir sonidos\nfuera de la aplicación`}</Text>
             <View style={styles.timerTrigger}>
               <Text style={styles.timerTriggerLabel}>
                 {(
