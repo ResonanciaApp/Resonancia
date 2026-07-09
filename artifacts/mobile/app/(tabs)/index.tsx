@@ -619,11 +619,7 @@ export default function HomeScreen2() {
     useCallback(() => {
       phraseAnim.setValue(0);
       phraseTimerRef.current = setTimeout(() => {
-        Animated.sequence([
-          Animated.timing(phraseAnim, { toValue: 1, duration: 450, useNativeDriver: true }),
-          Animated.delay(5000),
-          Animated.timing(phraseAnim, { toValue: 0, duration: 450, useNativeDriver: true }),
-        ]).start();
+        Animated.timing(phraseAnim, { toValue: 1, duration: 450, useNativeDriver: true }).start();
       }, 550);
       return () => {
         if (phraseTimerRef.current) clearTimeout(phraseTimerRef.current);
@@ -788,7 +784,7 @@ export default function HomeScreen2() {
         }}
       >
         {/* ── Saludo ── */}
-        <View style={{ marginTop: 77 }}>
+        <View style={{ marginTop: 10 }}>
           <GreetingHeader />
         </View>
 
