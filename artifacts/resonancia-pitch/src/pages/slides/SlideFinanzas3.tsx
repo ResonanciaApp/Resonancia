@@ -15,7 +15,7 @@ function CostRow({ label, sub, value }: { label: string; sub?: string; value: st
       <Diamond />
       <div style={{ flex: 1 }}>
         <div style={{ fontSize: "1.15vw", fontWeight: 600, color: "#F4DAD5", lineHeight: 1.2 }}>{label}</div>
-        {sub && <div style={{ fontSize: "0.85vw", color: "#3D0E16" }}>{sub}</div>}
+        {sub && <div style={{ fontSize: "0.85vw", color: "rgba(249,249,249,0.45)" }}>{sub}</div>}
       </div>
       <div style={{ fontSize: "1.15vw", fontWeight: 700, color: "rgba(242,231,228,0.50)", textAlign: "right", minWidth: "7vw" }}>
         {value}
@@ -147,7 +147,7 @@ export default function SlideFinanzas3() {
               </div>
               <div style={{ textAlign: "right" }}>
                 <div style={{ fontSize: "1.45vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>$1.500.000</div>
-                <div style={{ fontSize: "0.8vw", color: "#3D0E16" }}>$0 en Mes 1–2</div>
+                <div style={{ fontSize: "0.8vw", color: "rgba(249,249,249,0.45)" }}>$0 en Mes 1–2</div>
               </div>
             </div>
           </div>
@@ -189,7 +189,7 @@ export default function SlideFinanzas3() {
                   const v = [p.fijo, p.contenido, p.mkt][ki];
                   return (
                     <div key={k} style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.25vh" }}>
-                      <div style={{ fontSize: "0.8vw", color: "#3D0E16" }}>{k}</div>
+                      <div style={{ fontSize: "0.8vw", color: "rgba(249,249,249,0.45)" }}>{k}</div>
                       <div style={{ fontSize: "0.8vw", color: "#F4DAD5", textAlign: "right" }}>{v}</div>
                     </div>
                   );
@@ -198,7 +198,7 @@ export default function SlideFinanzas3() {
                   <div style={{ fontSize: "0.85vw", fontWeight: 700, color: "#F4DAD5" }}>Total</div>
                   <div style={{ fontSize: "0.85vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>{p.total}</div>
                 </div>
-                <div style={{ fontSize: "0.75vw", color: "#3D0E16", marginTop: "0.3vh", whiteSpace: "pre-line", lineHeight: 1.2 }}>{p.note}</div>
+                <div style={{ fontSize: "0.75vw", color: "rgba(249,249,249,0.45)", marginTop: "0.3vh", whiteSpace: "pre-line", lineHeight: 1.2 }}>{p.note}</div>
               </div>
             ))}
           </div>
