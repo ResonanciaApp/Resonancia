@@ -246,7 +246,7 @@ export function WaveStreakStrip() {
 
         {/* Número centrado */}
         <View style={[StyleSheet.absoluteFill, styles.numberWrap]} pointerEvents="none">
-          <View style={{ marginTop: -20 }}>
+          <View style={{ marginTop: -20, marginLeft: 2 }}>
             <Text style={styles.numberText}>{weekCount}</Text>
             <Text style={styles.daysLabel}>{weekCount === 1 ? "DÍA" : "DÍAS"}</Text>
           </View>
