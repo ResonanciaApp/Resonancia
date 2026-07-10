@@ -1221,8 +1221,15 @@ export default function HomeScreen2() {
           opacity: backdropAnim,
         }}
       >
-        {/* Loto + Mezclador — izquierda, apilados verticalmente */}
-        <View style={{ flexDirection: "column", alignItems: "center", gap: 8 }}>
+        {/* Pulso 4 — izquierda */}
+        <Image
+          source={require("@/assets/images/pulso-4-logo.png")}
+          style={{ width: 110, height: 36 }}
+          resizeMode="contain"
+        />
+
+        {/* Loto + Mezclador — derecha, en fila */}
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <Pressable
             onPress={openEscenasSheet}
             hitSlop={8}
