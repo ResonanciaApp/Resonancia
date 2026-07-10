@@ -85,7 +85,7 @@ const STREAK_MESSAGES: Record<number, StreakMessage> = {
   4: { highlight: "¡A mitad de la semana!", body: "Cuatro días de conexión contigo." },
   5: { highlight: "Cinco días — ¡increíble!", body: "Tu mente y tu cuerpo lo agradecen." },
   6: { highlight: "Casi una semana completa.", body: "Solo falta un día." },
-  7: { highlight: "¡Semana completa! 🌟", body: "Completaste los 7 días de esta semana." },
+  7: { highlight: "¡Excelente comienzo!", body: "Resonaste 7 días de esta semana." },
 };
 
 // Sube la luminosidad de un color hex en `pct` puntos (HSL)
