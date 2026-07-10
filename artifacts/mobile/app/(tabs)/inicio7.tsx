@@ -66,7 +66,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
-import { WaveStreakStrip } from "@/components/WaveStreakStrip";
+import { SonicStreakWave } from "@/components/SonicStreakWave";
 import { LiveSessionCard } from "@/components/LiveSessionCard";
 import { useLiveSessions } from "@/hooks/useLiveSessions";
 import { VideoCard } from "@/components/VideoCard";
@@ -852,7 +852,7 @@ export default function HomeScreen2() {
       >
         {/* ── Racha semanal ── */}
         <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 247 }}>
-          <WaveStreakStrip hideWaves />
+          <SonicStreakWave />
         </View>
 
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}

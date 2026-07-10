@@ -1,0 +1,79 @@
+Quiero reemplazar el diseño actual de ondas expansivas separadas del contador de racha por una onda sonora continua, más orgánica, elegante y relacionada directamente con el concepto de Resonancia.
+
+El número de la racha debe mantenerse en el centro:
+
+        3
+      DÍAS
+
+A cada lado debe existir una línea ondulada horizontal, formando una composición perfectamente simétrica:
+
+〰〰〰〰      3      〰〰〰〰
+           DÍAS
+
+Las ondas deben sentirse como una frecuencia sonora que nace desde el número central y avanza hacia los extremos.
+
+Diseño de las ondas
+
+Crear una única onda continua a cada lado del número mediante SVG.
+
+Cada onda debe tener:
+
+3 ondulaciones amplias y suaves.
+Curvas fluidas y orgánicas.
+Grosor de 3 px.
+Extremos completamente redondeados.
+Sin esquinas ni cortes visibles.
+Sin relleno; utilizar únicamente stroke.
+La onda derecha debe ser un reflejo horizontal exacto de la izquierda.
+Mantener suficiente espacio entre las ondas y el número para que la composición respire.
+
+No utilizar ondas muy pequeñas, rápidas o similares a un ecualizador. Deben ser largas, suaves y meditativas.
+
+Funcionamiento del progreso
+
+La onda completa representa un ciclo de 7 días.
+
+Al comenzar, toda la onda debe estar visible en un color morado/borgoña muy sutil. A medida que aumenta la racha, una capa dorada debe ir recorriendo la misma línea desde el centro hacia los extremos.
+
+El progreso debe funcionar así:
+
+Día 0 → toda la onda permanece inactiva.
+Día 1 → se ilumina aproximadamente el primer 14% de la onda, comenzando junto al número.
+Día 2 → se ilumina el 28%.
+Día 3 → se ilumina el 42%.
+Día 4 → se ilumina el 57%.
+Día 5 → se ilumina el 71%.
+Día 6 → se ilumina el 85%.
+Día 7 → ambas ondas quedan completamente doradas.
+
+El avance debe ser continuo. No dividir visualmente la onda en siete partes ni crear segmentos separados.
+
+Utilizar:
+
+const progress = Math.min(streakDays / 7, 1);
+
+La onda dorada debe avanzar simultáneamente desde el centro hacia ambos extremos.
+
+Colores
+
+Onda pendiente:
+
+rgba(113, 74, 112, 0.25)
+
+Onda completada:
+
+#D6A451
+
+Agregar un degradado suave a la sección activa:
+
+#FFE3A0 → #D6A451 → #A9723E
+
+El tono más luminoso debe comenzar cerca del número y disminuir suavemente hacia los extremos.
+
+Número:
+
+#E8B85D
+
+Texto “DÍAS”:
+
+#D8CEDD
