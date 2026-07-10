@@ -22,7 +22,7 @@ const COMP_W    = SCREEN_W - GRID_PAD * 2;
 const SVG_H     = 64;
 const CY        = SVG_H / 2;
 const NUM_BOX_W = 88;
-const SIDE_GAP  = 20;
+const SIDE_GAP  = 0;
 const WAVE_W    = (COMP_W - NUM_BOX_W) / 2 - SIDE_GAP;
 const AMP       = 12;
 const N_CYCLES  = 3;
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     letterSpacing: 2.5,
     textAlign: "center",
-    transform: [{ translateY: 4 }],
+    transform: [{ translateY: 0 }],
   },
   row: {
     flexDirection: "row",
