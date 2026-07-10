@@ -34,7 +34,7 @@ function ScenarioCard({
           ["Múltiplo", multiple],
         ].map(([k, v]) => (
           <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
-            <div style={{ fontSize: "0.95vw", color: "#3D0E16" }}>{k}</div>
+            <div style={{ fontSize: "0.95vw", color: "rgba(249,249,249,0.55)" }}>{k}</div>
             <div style={{ fontSize: "1.0vw", color: "#F4DAD5" }}>{v}</div>
           </div>
         ))}
@@ -113,19 +113,19 @@ export default function SlideAnexoInversion() {
               </div>
               <div style={{ display: "flex", gap: "0.8vw" }}>
                 <div style={{ flex: 1, backgroundColor: "rgba(247,203,107,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
-                  <div style={{ fontSize: "0.85vw", color: "#3D0E16" }}>Inversión</div>
+                  <div style={{ fontSize: "0.85vw", color: "rgba(249,249,249,0.55)" }}>Inversión</div>
                   <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4DAD5" }}>$27M</div>
-                  <div style={{ fontSize: "0.78vw", color: "#3D0E16" }}>CLP</div>
+                  <div style={{ fontSize: "0.78vw", color: "rgba(249,249,249,0.55)" }}>CLP</div>
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(247,203,107,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
-                  <div style={{ fontSize: "0.85vw", color: "#3D0E16" }}>Equity</div>
+                  <div style={{ fontSize: "0.85vw", color: "rgba(249,249,249,0.55)" }}>Equity</div>
                   <div style={{ fontSize: "1.25vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>5,0%</div>
-                  <div style={{ fontSize: "0.78vw", color: "#3D0E16" }}>fijo</div>
+                  <div style={{ fontSize: "0.78vw", color: "rgba(249,249,249,0.55)" }}>fijo</div>
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(247,203,107,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
-                  <div style={{ fontSize: "0.85vw", color: "#3D0E16" }}>Post-money</div>
+                  <div style={{ fontSize: "0.85vw", color: "rgba(249,249,249,0.55)" }}>Post-money</div>
                   <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4DAD5" }}>$540M</div>
-                  <div style={{ fontSize: "0.78vw", color: "#3D0E16" }}>CLP</div>
+                  <div style={{ fontSize: "0.78vw", color: "rgba(249,249,249,0.55)" }}>CLP</div>
                 </div>
               </div>
             </div>
@@ -134,9 +134,9 @@ export default function SlideAnexoInversion() {
 
         {/* Arrow */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "0.8vh" }}>
-          <div style={{ fontSize: "0.9vw", color: "#3D0E16", letterSpacing: "0.08em" }}>12 MESES</div>
+          <div style={{ fontSize: "0.9vw", color: "rgba(249,249,249,0.55)", letterSpacing: "0.08em" }}>12 MESES</div>
           <div style={{ fontSize: "2.5vw", color: "rgba(247,203,107,0.5)" }}>→</div>
-          <div style={{ fontSize: "0.85vw", color: "#3D0E16", textAlign: "center" }}>múltiplo<br/>ARR</div>
+          <div style={{ fontSize: "0.85vw", color: "rgba(249,249,249,0.55)", textAlign: "center" }}>múltiplo<br/>ARR</div>
         </div>
 
         {/* Right: M12 scenarios */}
@@ -176,7 +176,7 @@ export default function SlideAnexoInversion() {
       </div>
 
       {/* Footer */}
-      <div style={{ fontSize: "1.0vw", color: "#3D0E16", lineHeight: 1.45, marginTop: "1.5vh" }}>
+      <div style={{ fontSize: "1.0vw", color: "rgba(249,249,249,0.55)", lineHeight: 1.45, marginTop: "1.5vh" }}>
         El % de equity depende solo de la valoración de entrada, no de los costos operativos. ARR neto = suscriptores M12 × ARPU neto $4.350 × 12 ·
         Múltiplos de referencia para consumer subscription en etapa temprana (Calm valuó en ~4–8× ARR en rondas tempranas) ·
         Valoración estimada ilustrativa, no garantizada. El retorno real depende del exit y dilución en rondas futuras.
