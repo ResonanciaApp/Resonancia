@@ -43,7 +43,7 @@ export default function SlideFinanzas2() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ background: "linear-gradient(160deg, #1f132c 0%, #170e21 100%)", color: "#F4DAD5", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
+      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div style={{ flexShrink: 0 }}>
@@ -194,7 +194,7 @@ export default function SlideFinanzas2() {
               key={s.label}
               style={{
                 padding: "1.6vh 1.4vw",
-                backgroundColor: "#170e21",
+                backgroundColor: "#1A0810",
                 border: `1.5px solid ${s.highlight ? "#F7CB6B" : "rgba(255,255,255,0.09)"}`,
                 borderRadius: "0.8vw",
               }}

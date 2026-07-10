@@ -13,7 +13,7 @@ export default function SlideFinanzas1() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ background: "linear-gradient(160deg, #1f132c 0%, #170e21 100%)", color: "#F4DAD5", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
+      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
     >
       <div>
         <div style={{ fontSize: "1.4vw", fontWeight: 600, color: "rgba(242,231,228,0.50)", letterSpacing: "0.14em", marginBottom: "1.2vh" }}>
@@ -88,7 +88,7 @@ export default function SlideFinanzas1() {
           padding: "1.8vh 1.2vw",
           borderTop: "1px solid rgba(247,203,107,0.35)",
           marginTop: "0.8vh",
-          backgroundColor: "#170e21",
+          backgroundColor: "#1A0810",
           borderRadius: "0.6vw",
         }}>
           <div style={{ fontSize: "1.45vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>AÑO 1 TOTAL</div>

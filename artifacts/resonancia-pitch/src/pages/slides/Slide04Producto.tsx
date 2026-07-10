@@ -4,7 +4,7 @@ export default function Slide04Producto() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden flex font-display"
-      style={{ background: "linear-gradient(160deg, #1f132c 0%, #170e21 100%)", color: "#F4DAD5" }}
+      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5" }}
     >
       {/* Left column — text */}
       <div
@@ -53,7 +53,7 @@ export default function Slide04Producto() {
       </div>
 
       {/* Right column — iPhones, centered and larger */}
-      <div style={{ width: "48vw", height: "100vh", position: "relative", backgroundColor: "#1f132c", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ width: "48vw", height: "100vh", position: "relative", backgroundColor: "#2E0D16", display: "flex", alignItems: "center", justifyContent: "center" }}>
         {/* Ambient glow */}
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%, rgba(212,175,55,0.06) 0%, rgba(27,6,15,0) 65%)" }} />
 
@@ -62,20 +62,20 @@ export default function Slide04Producto() {
           position: "relative",
           width: "20vw",
           height: "43.4vw",
-          backgroundColor: "#170e21",
+          backgroundColor: "#1A0810",
           borderRadius: "3.5vw",
           padding: "0.65vw",
           boxShadow: "0 2.4vw 9vw rgba(0,0,0,0.95), 0 0 0 0.14vw rgba(255,255,255,0.07)",
           zIndex: 1
         }}>
           <div style={{ position: "absolute", top: "1.65vw", left: "50%", transform: "translateX(-50%)", width: "4.7vw", height: "1vw", backgroundColor: "#000", borderRadius: "0.68vw", zIndex: 10 }} />
-          <div style={{ width: "100%", height: "100%", borderRadius: "3vw", overflow: "hidden", backgroundColor: "#1f132c" }}>
+          <div style={{ width: "100%", height: "100%", borderRadius: "3vw", overflow: "hidden", backgroundColor: "#2E0D16" }}>
             <img src={`${base}mockup-musica.jpg`} crossOrigin="anonymous" alt="Mi Música" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
           </div>
         </div>
 
         {/* Blend gradient on left edge */}
-        <div style={{ position: "absolute", top: 0, left: 0, width: "10%", height: "100%", background: "linear-gradient(90deg, #1f132c 0%, rgba(27,6,15,0) 100%)", zIndex: 3 }} />
+        <div style={{ position: "absolute", top: 0, left: 0, width: "10%", height: "100%", background: "linear-gradient(90deg, #2E0D16 0%, rgba(27,6,15,0) 100%)", zIndex: 3 }} />
       </div>
     </div>
   );

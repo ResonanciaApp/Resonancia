@@ -15,7 +15,7 @@ function ScenarioCard({
     <div
       style={{
         flex: 1,
-        backgroundColor: highlight ? "#170e21" : "transparent",
+        backgroundColor: highlight ? "#1A0810" : "transparent",
         border: highlight ? "1.5px solid #F7CB6B" : "1.5px solid #3D0E16",
         borderRadius: "1vw",
         padding: "3.2vh 1.9vw",
@@ -45,7 +45,7 @@ export default function SlideProyeccion() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ background: "linear-gradient(160deg, #1f132c 0%, #170e21 100%)", color: "#F4DAD5", padding: "9vh 6vw", boxSizing: "border-box" }}
+      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5", padding: "9vh 6vw", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>

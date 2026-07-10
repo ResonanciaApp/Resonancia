@@ -29,7 +29,7 @@ export default function SlideTramosInversion() {
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col"
       style={{
-        background: "linear-gradient(160deg, #1f132c 0%, #170e21 100%)",
+        background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)",
         color: "#F4DAD5",
         padding: "7vh 6vw 5vh",
         boxSizing: "border-box",
@@ -93,7 +93,7 @@ export default function SlideTramosInversion() {
                 gridTemplateColumns: "1.2fr 1fr 1.2fr 1.6fr 1fr",
                 gap: "0.5vw",
                 alignItems: "center",
-                backgroundColor: isHighlight ? "#170e21" : "rgba(255,255,255,0.02)",
+                backgroundColor: isHighlight ? "#1A0810" : "rgba(255,255,255,0.02)",
                 border: isHighlight
                   ? "1.5px solid rgba(247,203,107,0.55)"
                   : "1px solid rgba(255,255,255,0.06)",

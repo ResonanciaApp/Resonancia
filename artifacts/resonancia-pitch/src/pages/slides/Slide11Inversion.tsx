@@ -63,7 +63,7 @@ export default function Slide11Inversion() {
   };
 
   const card: CSSProperties = {
-    backgroundColor: "#170e21",
+    backgroundColor: "#1A0810",
     border: "1px solid rgba(247,203,107,0.18)",
     borderRadius: "0.7vw",
     padding: "1.6vh 1.4vw",
@@ -82,7 +82,7 @@ export default function Slide11Inversion() {
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col"
       style={{
-        background: "linear-gradient(160deg, #1f132c 0%, #170e21 100%)",
+        background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)",
         color: "#F4DAD5",
         padding: "7vh 6vw 5vh",
         boxSizing: "border-box",
