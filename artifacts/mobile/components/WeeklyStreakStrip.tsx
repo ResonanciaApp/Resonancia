@@ -166,7 +166,7 @@ export function WeeklyStreakStrip() {
     <View style={styles.card}>
       {/* Tinte degradado del tema */}
       <LinearGradient
-        colors={[`${theme.gradient[0]}28`, `${theme.gradient[1]}14`] as [string, string]}
+        colors={[`${theme.gradient[0]}45`, `${theme.gradient[1]}45`] as [string, string]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
