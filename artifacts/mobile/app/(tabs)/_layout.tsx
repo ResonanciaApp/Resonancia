@@ -64,8 +64,6 @@ const TAB_CONFIG: Record<
     activeColor?: string;
   }
 > = {
-  inicio5:    { label: "Inicio",      sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
-  inicio6:    { label: "Inicio",      sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
   inicio7:    { label: "Inicio",      sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
   explore:    { label: "Explorar",   sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
   musica:     { label: "Creación",   mciIcon: "spa", mciIconFill: "spa", featherIcon: "sliders", activeColor: "#F7CB6B" },
@@ -436,8 +434,8 @@ function TabLayoutInner() {
         tabBar={(props) => <CustomTabBar {...props} />}
       >
         <Tabs.Screen name="index"          options={{ href: null }} />
-        <Tabs.Screen name="inicio5"        options={{ href: null, title: "Inicio" }} />
-        <Tabs.Screen name="inicio6"        options={{ href: null, title: "Inicio" }} />
+        <Tabs.Screen name="inicio5"        options={{ href: null }} />
+        <Tabs.Screen name="inicio6"        options={{ href: null }} />
         <Tabs.Screen name="inicio7"        options={{ title: "Inicio" }} />
         <Tabs.Screen name="musica"         options={{ title: "Creación" }} />
         <Tabs.Screen name="coleccion/[id]" options={{ href: null }} />
