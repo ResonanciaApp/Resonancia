@@ -41,8 +41,6 @@ const DEPTH_INC = 5;
 
 const COLOR_ACTIVE = "#D6A451";
 const COLOR_HIGHLIGHT = "#FFE6A8";
-const N_GLOW = 3;
-const GLOW_OPACITIES = [0.15, 0.07, 0.03];
 const GOAL_MINUTES = 5;
 const DAY_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
 
@@ -236,24 +234,6 @@ export function WaveStreakStrip({ scrollY }: Props) {
                 </SvgLinearGradient>
               );
             })}
-            {/* Glow: gradientes horizontales desde el centro hacia cada onda inactiva */}
-            {activeWaves > 0 && activeWaves < N_WAVES && Array.from({ length: N_GLOW }, (_, gi) => {
-              const wi = activeWaves + gi;
-              if (wi >= N_WAVES) return null;
-              const gOp = GLOW_OPACITIES[gi];
-              const xL = CX - WAVE_OFFSETS[wi];
-              const xR = CX + WAVE_OFFSETS[wi];
-              return [
-                <SvgLinearGradient key={`glL${gi}`} id={`glL${gi}`} gradientUnits="userSpaceOnUse" x1={CX} y1={CY} x2={xL} y2={CY}>
-                  <Stop offset="0" stopColor={COLOR_ACTIVE} stopOpacity={gOp} />
-                  <Stop offset="1" stopColor={COLOR_ACTIVE} stopOpacity="0" />
-                </SvgLinearGradient>,
-                <SvgLinearGradient key={`glR${gi}`} id={`glR${gi}`} gradientUnits="userSpaceOnUse" x1={CX} y1={CY} x2={xR} y2={CY}>
-                  <Stop offset="0" stopColor={COLOR_ACTIVE} stopOpacity={gOp} />
-                  <Stop offset="1" stopColor={COLOR_ACTIVE} stopOpacity="0" />
-                </SvgLinearGradient>,
-              ];
-            })}
           </Defs>
 
           <G>
@@ -279,17 +259,6 @@ export function WaveStreakStrip({ scrollY }: Props) {
                 fill="none"
               />
             ))}
-            {/* Glow en borde interior de ondas siguientes a la racha */}
-            {activeWaves > 0 && activeWaves < N_WAVES && Array.from({ length: N_GLOW }, (_, gi) => {
-              const wi = activeWaves + gi;
-              if (wi >= N_WAVES) return null;
-              return (
-                <G key={`gl${gi}`}>
-                  <Path d={wavePath("left",  wi)} stroke={`url(#glL${gi})`} strokeWidth={2.8} strokeLinecap="butt" fill="none" />
-                  <Path d={wavePath("right", wi)} stroke={`url(#glR${gi})`} strokeWidth={2.8} strokeLinecap="butt" fill="none" />
-                </G>
-              );
-            })}
           </G>
         </Svg>
 
