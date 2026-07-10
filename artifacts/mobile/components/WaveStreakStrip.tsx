@@ -78,11 +78,14 @@ const STREAK_MESSAGES: Record<number, StreakMessage> = {
 
 function getWaveComponents(waveIndex: number, activeWaves: number): { color: string; opacity: number } {
   if (waveIndex >= activeWaves) {
-    const opacity = Math.max(0.10, 0.28 - waveIndex * 0.025);
+    const opacity = Math.max(0.10, 0.22 - waveIndex * 0.018);
     return { color: "rgb(140,68,87)", opacity };
   }
-  if (activeWaves > 0 && waveIndex === activeWaves - 1) return { color: COLOR_HIGHLIGHT, opacity: 1 };
-  return { color: COLOR_ACTIVE, opacity: 1 };
+  // Activas: rampa de intensidad — la más interna (0) es tenue, la más externa es plena
+  const t = activeWaves <= 1 ? 1 : waveIndex / (activeWaves - 1);
+  const opacity = 0.22 + t * 0.78; // 0.22 → 1.0
+  if (waveIndex === activeWaves - 1) return { color: COLOR_HIGHLIGHT, opacity: 1 };
+  return { color: COLOR_ACTIVE, opacity };
 }
 
 function wavePath(side: "left" | "right", index: number): string {
