@@ -1223,20 +1223,7 @@ export default function HomeScreen2() {
           hitSlop={8}
           style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1, backgroundColor: "rgba(255,255,255,0.08)" }]}
         >
-          <MaskedView
-            maskElement={
-              <View style={{ width: 25, height: 25, alignItems: "center", justifyContent: "center" }}>
-                <MaterialCommunityIcons name="spa" size={25} color="#fff" />
-              </View>
-            }
-          >
-            <LinearGradient
-              colors={["#764446", "#552f6d"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={{ width: 25, height: 25 }}
-            />
-          </MaskedView>
+          <MaterialCommunityIcons name="spa" size={23} color="#f9f9f9" style={{ marginTop: 1 }} />
         </Pressable>
 
         {/* Logo + Saludo — centro */}
