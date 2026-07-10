@@ -27,7 +27,7 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Switch,
+
   Text,
   View,
 } from "react-native";
@@ -45,7 +45,7 @@ const SCREEN_H = Dimensions.get("window").height;
 const SHEET_H_PAD = 24;
 const CARD_GAP = 14;
 const CARD_W = Math.floor((SCREEN_W - SHEET_H_PAD * 2 - CARD_GAP) / 2);
-const CARD_H = Math.floor(CARD_W * 1.1) + 70;
+const CARD_H = Math.floor(CARD_W * 1.1) + 120;
 
 const WARM_DIVIDER = "rgba(255,255,255,0.055)";
 
@@ -321,35 +321,6 @@ export function EscenasSheet() {
             </View>
           )}
 
-          {/* Logo Pulso */}
-          <View style={styles.controlRow}>
-            <MaterialCommunityIcons name="image-outline" size={17} color="#F4F4F4" style={styles.controlIcon} />
-            <Text style={styles.controlLabel}>Activar logo</Text>
-            <View collapsable={false}>
-              <Switch
-                value={greetingVisible}
-                onValueChange={setGreetingVisible}
-                trackColor={{ false: "transparent", true: "rgba(255,255,255,0.05)" }}
-                thumbColor="#FFFFFF"
-                ios_backgroundColor="transparent"
-              />
-            </View>
-          </View>
-
-          {/* Modo brillante */}
-          <View style={styles.controlRow}>
-            <MaterialCommunityIcons name="brightness-6" size={17} color="#F4F4F4" style={styles.controlIcon} />
-            <Text style={styles.controlLabel}>Modo brillante</Text>
-            <View collapsable={false}>
-              <Switch
-                value={brightMode}
-                onValueChange={setBrightMode}
-                trackColor={{ false: "transparent", true: "rgba(255,255,255,0.05)" }}
-                thumbColor="#FFFFFF"
-                ios_backgroundColor="transparent"
-              />
-            </View>
-          </View>
 
 
           <View style={styles.divider} />
