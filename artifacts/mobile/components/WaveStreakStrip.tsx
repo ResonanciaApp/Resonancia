@@ -128,7 +128,7 @@ function getWaveComponents(waveIndex: number, activeWaves: number): { color: str
 
   if (waveIndex >= activeWaves) {
     // Inactivas: casi imperceptibles afuera, levemente visibles adentro
-    const opacity = 0.04 + 0.22 * tPos;
+    const opacity = 0.07 + 0.22 * tPos;
     return { color: "rgb(140,68,87)", opacity };
   }
   // Activas: rampa de saturación de color + rampa de opacidad interior→exterior
