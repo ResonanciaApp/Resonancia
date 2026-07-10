@@ -76,7 +76,7 @@ export default function SlideFinanzas1() {
             <div style={{ fontSize: "1.4vw", color: "#F4DAD5" }}>{r.subs}</div>
             <div style={{ fontSize: "1.4vw", color: "#F4DAD5" }}>{r.ingreso}</div>
             <div style={{ fontSize: "1.4vw", color: "rgba(242,231,228,0.50)" }}>{r.costoFijo}</div>
-            <div style={{ fontSize: "1.4vw", color: r.costoVar === "$0" ? "#3D0E16" : "rgba(242,231,228,0.50)" }}>{r.costoVar}</div>
+            <div style={{ fontSize: "1.4vw", color: r.costoVar === "$0" ? "rgba(249,249,249,0.45)" : "rgba(242,231,228,0.50)" }}>{r.costoVar}</div>
             <div style={{ fontSize: "1.5vw", fontWeight: 700, color: r.neg ? "#F9F9F9" : "#6EC49A" }}>{r.resultado}</div>
           </div>
         ))}
@@ -101,7 +101,7 @@ export default function SlideFinanzas1() {
       </div>
 
       {/* Footnote */}
-      <div style={{ fontSize: "1.15vw", color: "#3D0E16", lineHeight: 1.5 }}>
+      <div style={{ fontSize: "1.15vw", color: "rgba(249,249,249,0.45)", lineHeight: 1.5 }}>
         Curva: +400 subs/mes (M1=400…M11=4.400, M12=5.000) · ARPU neto blended ~$4.350/mes · Precio $8.990/mes (IVA incl.) o $59.990/año ·
         Fijos M1-2: $3,25M/mes; M3+: $3,75-4,75M/mes (contenido + mkt) · Break-even operacional M3 · Inversión $27M ya incluida en pre-lanzamiento.
       </div>
