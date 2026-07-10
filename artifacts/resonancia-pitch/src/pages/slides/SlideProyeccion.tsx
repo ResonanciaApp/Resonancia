@@ -81,12 +81,39 @@ export default function SlideProyeccion() {
       </div>
 
       {/* Assumptions */}
-      <div style={{ fontSize: "1.4vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.55, maxWidth: "84vw" }}>
-        Supuestos: 1.000.000+ seguidores → 20% instala (200.000 usuarios free) → en año 1 convierte ~2,5% a premium (5.000); a madurez ~5% (techo 10.000) ·
-        precio $8.990/mes (IVA incl. 19%), $59.990/año · ARPU neto blended ~$4.350/mes (descontado IVA + comisión tienda 30%) · mix 60% mensual / 40% anual.
-        <span style={{ color: "rgba(242,231,228,0.50)", fontSize: "1.3vw", display: "block", marginTop: "1vh" }}>
-          Núcleo orgánico = costo de adquisición casi nulo; la pauta paga es crecimiento incremental. Recuperación de la inversión ($27M CLP) estimada en mes 7–8. Escenarios ilustrativos, no garantizados.
-        </span>
+      <div>
+        {/* Key figures row */}
+        <div style={{ display: "flex", gap: "1.2vw", alignItems: "stretch", marginBottom: "1.4vh" }}>
+          {[
+            { label: "Mensual", value: "$8.990", note: "IVA incl. 19%" },
+            { label: "Anual",   value: "$59.990", note: "IVA incl. 19%" },
+            { label: "ARPU neto blended", value: "~$4.350/mes", note: "desc. IVA + comisión 30%" },
+            { label: "Comisión tienda",   value: "30%", note: "Apple / Google" },
+            { label: "IVA",               value: "19%", note: "incluido en precio" },
+          ].map((k) => (
+            <div
+              key={k.label}
+              style={{
+                flex: 1,
+                backgroundColor: "rgba(26,8,16,0.70)",
+                border: "1px solid rgba(247,203,107,0.20)",
+                borderRadius: "0.6vw",
+                padding: "1.0vh 1.1vw",
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.3vh",
+              }}
+            >
+              <div style={{ fontSize: "0.85vw", color: "rgba(242,231,228,0.40)", letterSpacing: "0.08em" }}>{k.label.toUpperCase()}</div>
+              <div style={{ fontSize: "1.5vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1.1 }}>{k.value}</div>
+              <div style={{ fontSize: "0.85vw", color: "rgba(242,231,228,0.35)" }}>{k.note}</div>
+            </div>
+          ))}
+        </div>
+        {/* Short disclaimer */}
+        <div style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.35)", lineHeight: 1.5 }}>
+          Base: 1M seguidores · 20% instala · 2,5% convierte a premium. Recuperación estimada mes 7–8. Escenarios ilustrativos.
+        </div>
       </div>
     </div>
   );
