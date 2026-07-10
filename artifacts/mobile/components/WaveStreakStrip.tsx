@@ -175,6 +175,8 @@ export function WaveStreakStrip({ scrollY }: Props) {
     brightenHex(theme.gradient[0], 25),
   ];
 
+  const DEBUG_STREAK = 4; // ← TEST: forzar racha; poner null para usar datos reales
+
   const { consecutiveStreak, activeWaves, activeFlags, todayIndex, weekCount } = useMemo(() => {
     const byDay = minutesByDay(statEvents);
     const today = new Date();
@@ -205,12 +207,13 @@ export function WaveStreakStrip({ scrollY }: Props) {
       if (dayKey(d) === dayKey(today)) todayIdx = i;
     }
 
+    const finalCnt = DEBUG_STREAK ?? weekCnt;
     return {
-      consecutiveStreak: streak,
-      activeWaves: Math.min(weekCnt, N_WAVES),
-      activeFlags: flags,
+      consecutiveStreak: DEBUG_STREAK ?? streak,
+      activeWaves: Math.min(finalCnt, N_WAVES),
+      activeFlags: DEBUG_STREAK != null ? Array.from({ length: 7 }, (_, i) => i < DEBUG_STREAK) : flags,
       todayIndex: todayIdx,
-      weekCount: weekCnt,
+      weekCount: finalCnt,
     };
   }, [statEvents]);
 
