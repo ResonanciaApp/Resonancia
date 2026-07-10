@@ -164,6 +164,14 @@ export function WeeklyStreakStrip() {
 
   return (
     <View style={styles.card}>
+      {/* Tinte degradado del tema */}
+      <LinearGradient
+        colors={[`${theme.gradient[0]}28`, `${theme.gradient[1]}14`] as [string, string]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
+        pointerEvents="none"
+      />
       {/* Anillo de progreso */}
       <View
         style={{
