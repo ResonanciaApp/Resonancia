@@ -45,7 +45,7 @@ const SCREEN_H = Dimensions.get("window").height;
 const SHEET_H_PAD = 24;
 const CARD_GAP = 14;
 const CARD_W = Math.floor((SCREEN_W - SHEET_H_PAD * 2 - CARD_GAP) / 2);
-const CARD_H = Math.floor(CARD_W * 1.1) + 120;
+const CARD_H = Math.floor(CARD_W * 1.1) + 160;
 
 const WARM_DIVIDER = "rgba(255,255,255,0.055)";
 
