@@ -164,18 +164,38 @@ export function SonicStreakWave() {
       <View style={{ width: COMP_W, height: SVG_H, alignItems: "center", justifyContent: "center" }}>
         <Svg width={COMP_W} height={SVG_H} style={StyleSheet.absoluteFill}>
           <Defs>
-            <SvgGradient id="swGradR" x1={0} y1={0} x2={WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
-              <Stop offset="0"   stopColor="#FFE3A0" />
-              <Stop offset="0.5" stopColor="#D6A451" />
-              <Stop offset="1"   stopColor="#A9723E" />
+            {/* ── Inactiva derecha: opacidad 0 en ambos extremos → punta afilada ── */}
+            <SvgGradient id="swInactR" x1={0} y1={0} x2={WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
+              <Stop offset="0"    stopColor="#714A70" stopOpacity="0"    />
+              <Stop offset="0.06" stopColor="#714A70" stopOpacity="0.25" />
+              <Stop offset="0.86" stopColor="#714A70" stopOpacity="0.25" />
+              <Stop offset="1"    stopColor="#714A70" stopOpacity="0"    />
             </SvgGradient>
+            {/* ── Inactiva izquierda (misma lógica, eje −x) ── */}
+            <SvgGradient id="swInactL" x1={0} y1={0} x2={-WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
+              <Stop offset="0"    stopColor="#714A70" stopOpacity="0"    />
+              <Stop offset="0.06" stopColor="#714A70" stopOpacity="0.25" />
+              <Stop offset="0.86" stopColor="#714A70" stopOpacity="0.25" />
+              <Stop offset="1"    stopColor="#714A70" stopOpacity="0"    />
+            </SvgGradient>
+            {/* ── Activa derecha: dorado + fade en punta exterior ── */}
+            <SvgGradient id="swGradR" x1={0} y1={0} x2={WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
+              <Stop offset="0"    stopColor="#FFE3A0" stopOpacity="0.7" />
+              <Stop offset="0.06" stopColor="#FFE3A0" stopOpacity="1"   />
+              <Stop offset="0.5"  stopColor="#D6A451" stopOpacity="1"   />
+              <Stop offset="0.86" stopColor="#A9723E" stopOpacity="1"   />
+              <Stop offset="1"    stopColor="#A9723E" stopOpacity="0"   />
+            </SvgGradient>
+            {/* ── Activa izquierda ── */}
             <SvgGradient id="swGradL" x1={0} y1={0} x2={-WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
-              <Stop offset="0"   stopColor="#FFE3A0" />
-              <Stop offset="0.5" stopColor="#D6A451" />
-              <Stop offset="1"   stopColor="#A9723E" />
+              <Stop offset="0"    stopColor="#FFE3A0" stopOpacity="0.7" />
+              <Stop offset="0.06" stopColor="#FFE3A0" stopOpacity="1"   />
+              <Stop offset="0.5"  stopColor="#D6A451" stopOpacity="1"   />
+              <Stop offset="0.86" stopColor="#A9723E" stopOpacity="1"   />
+              <Stop offset="1"    stopColor="#A9723E" stopOpacity="0"   />
             </SvgGradient>
             <ClipPath id="swClipR">
-              <Rect x={0}       y={clipY} width={activeW} height={clipH} />
+              <Rect x={0}        y={clipY} width={activeW} height={clipH} />
             </ClipPath>
             <ClipPath id="swClipL">
               <Rect x={-activeW} y={clipY} width={activeW} height={clipH} />
@@ -184,7 +204,7 @@ export function SonicStreakWave() {
 
           {/* Onda derecha */}
           <G transform={`translate(${RIGHT_START}, ${CY})`}>
-            <Path d={RIGHT_PATH} stroke="rgba(113,74,112,0.25)" strokeWidth={3} strokeLinecap="butt" fill="none" />
+            <Path d={RIGHT_PATH} stroke="url(#swInactR)" strokeWidth={3} strokeLinecap="butt" fill="none" />
             <G clipPath="url(#swClipR)">
               <Path d={RIGHT_PATH} stroke="url(#swGradR)" strokeWidth={3} strokeLinecap="butt" fill="none" />
             </G>
@@ -192,7 +212,7 @@ export function SonicStreakWave() {
 
           {/* Onda izquierda */}
           <G transform={`translate(${LEFT_START}, ${CY})`}>
-            <Path d={LEFT_PATH} stroke="rgba(113,74,112,0.25)" strokeWidth={3} strokeLinecap="butt" fill="none" />
+            <Path d={LEFT_PATH} stroke="url(#swInactL)" strokeWidth={3} strokeLinecap="butt" fill="none" />
             <G clipPath="url(#swClipL)">
               <Path d={LEFT_PATH} stroke="url(#swGradL)" strokeWidth={3} strokeLinecap="butt" fill="none" />
             </G>
