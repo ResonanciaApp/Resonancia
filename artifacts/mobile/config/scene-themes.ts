@@ -27,13 +27,13 @@ export type SceneTheme = {
 export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   tibet: {
     id: "tibet",
-    label: "Tibet",
+    label: "Universo",
     gradient: ["#1f132c", "#170e21"],
     solid: "#170e21",
   },
   "vino-tinto": {
     id: "vino-tinto",
-    label: "Vino tinto",
+    label: "Tíbet",
     gradient: ["#2E0D16", "#1A0810"],
     solid: "#1A0810",
     backgroundImage: require("@/assets/images/scenes/vino-tinto-buda.jpg"),

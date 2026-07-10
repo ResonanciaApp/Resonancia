@@ -25,14 +25,14 @@ export type AmbientScene = {
 export const AMBIENT_SCENES: AmbientScene[] = [
   {
     id: "tibet",
-    label: "Tibet",
+    label: "Universo",
     colors: ["#22131B", "#140C10"] as const,
     icon: "star",
     image: require("@/assets/images/ambient/tibet.png"),
   },
   {
     id: "vino-tinto",
-    label: "Vino tinto",
+    label: "Tíbet",
     colors: ["#2E0D16", "#1A0810"] as const,
     icon: "feather",
     image: require("@/assets/images/ambient/vino-tinto-hero2.jpg"),
