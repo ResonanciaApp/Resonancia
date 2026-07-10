@@ -202,8 +202,9 @@ export function WeeklyStreakStrip() {
           <Svg width={RING_SIZE} height={RING_SIZE}>
             <Defs>
               <SvgLinearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
-                <Stop offset="0" stopColor="#F7CB6B" />
-                <Stop offset="1" stopColor="#FBA980" />
+                <Stop offset="0" stopColor="#8D3349" />
+                <Stop offset="0.65" stopColor="#8D3349" />
+                <Stop offset="1" stopColor="#EBCC9A" />
               </SvgLinearGradient>
             </Defs>
             <Circle
