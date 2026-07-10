@@ -6,7 +6,6 @@ import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
-import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
@@ -773,7 +772,6 @@ export default function ProfileScreen() {
         </Animated.View>
       )}
       <StatusBar barStyle="light-content" />
-      <GeoUniverseBackground />
       <SacredBackground variant="gradient" />
       <GeometrixOverlay active={profileGeoActive} />
 
