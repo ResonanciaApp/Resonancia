@@ -32,16 +32,8 @@
     "speakerNotes": ""
   },
   {
-    "id": "a1f4c2d0-1111-4a01-9c01-000000000018",
-    "position": 5,
-    "filepath": "src/pages/slides/SlideValleDeCaja.tsx",
-    "title": "Anexo · Uso de la inversión (valle de caja)",
-    "description": "Cuánto capital cubre los meses en rojo (1-3) y cómo la ronda US$30.000 lo cubre con holgura.",
-    "speakerNotes": ""
-  },
-  {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000015",
-    "position": 6,
+    "position": 5,
     "filepath": "src/pages/slides/SlideFinanzas1.tsx",
     "title": "Anexo Financiero · Flujo de caja año 1",
     "description": "Tabla mes a mes: suscriptores, ingresos netos, costos fijos, costos de contenido y resultado.",
@@ -49,7 +41,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000016",
-    "position": 7,
+    "position": 6,
     "filepath": "src/pages/slides/SlideFinanzas2.tsx",
     "title": "Anexo Financiero · Curva de crecimiento y escenarios",
     "description": "Gráfico de barras de suscriptores + tabla de 3 escenarios + KPIs clave del año 1.",
@@ -57,7 +49,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000017",
-    "position": 8,
+    "position": 7,
     "filepath": "src/pages/slides/SlideFinanzas3.tsx",
     "title": "Anexo Financiero · Desglose de costos mensuales",
     "description": "Costos fijos, variables (contenido), marketing ramp-up y totales por fase.",
