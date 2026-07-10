@@ -182,13 +182,13 @@ function wavePath(side: "left" | "right", index: number): string {
   return `M ${x.toFixed(1)} ${top.toFixed(1)} Q ${qx.toFixed(1)} ${CY.toFixed(1)} ${x.toFixed(1)} ${bot.toFixed(1)}`;
 }
 
-type Props = { scrollY?: SharedValue<number> };
+type Props = { scrollY?: SharedValue<number>; hideWaves?: boolean };
 
 // Fade empieza al 60% del recorrido (~146px), completa en ~180px (≈600ms scroll)
 const FADE_START = 146;
 const FADE_END   = 386;
 
-export function WaveStreakStrip({ scrollY }: Props) {
+export function WaveStreakStrip({ scrollY, hideWaves = false }: Props) {
   const { statEvents } = usePlayer();
   const { theme } = useSceneTheme();
   const streakBorderColors: [string, string] = [
@@ -262,46 +262,46 @@ export function WaveStreakStrip({ scrollY }: Props) {
     <View style={styles.card}>
       {/* ── Ondas + número ── */}
       <Animated.View style={[{ width: COMP_W, height: SVG_H, marginTop: 0 }, fadeStyle]}>
-        <Svg width={COMP_W} height={SVG_H} style={{ position: "absolute", top: -2, left: 0, right: 0, bottom: 0 }}>
-          <Defs>
-            {Array.from({ length: N_WAVES }, (_, i) => {
-              const { color, opacity } = getWaveComponents(i, activeWaves, waveSatLow, waveSatHigh, waveInactive);
-              return (
-                <SvgLinearGradient key={`wg${i}`} id={`wg${i}`} x1="0" y1="0" x2="0" y2="1">
-                  <Stop offset="0"    stopColor={color} stopOpacity="0" />
-                  <Stop offset="0.16" stopColor={color} stopOpacity={opacity} />
-                  <Stop offset="0.84" stopColor={color} stopOpacity={opacity} />
-                  <Stop offset="1"    stopColor={color} stopOpacity="0" />
-                </SvgLinearGradient>
-              );
-            })}
-          </Defs>
+        {!hideWaves && (
+          <Svg width={COMP_W} height={SVG_H} style={{ position: "absolute", top: -2, left: 0, right: 0, bottom: 0 }}>
+            <Defs>
+              {Array.from({ length: N_WAVES }, (_, i) => {
+                const { color, opacity } = getWaveComponents(i, activeWaves, waveSatLow, waveSatHigh, waveInactive);
+                return (
+                  <SvgLinearGradient key={`wg${i}`} id={`wg${i}`} x1="0" y1="0" x2="0" y2="1">
+                    <Stop offset="0"    stopColor={color} stopOpacity="0" />
+                    <Stop offset="0.16" stopColor={color} stopOpacity={opacity} />
+                    <Stop offset="0.84" stopColor={color} stopOpacity={opacity} />
+                    <Stop offset="1"    stopColor={color} stopOpacity="0" />
+                  </SvgLinearGradient>
+                );
+              })}
+            </Defs>
 
-          <G>
-            {/* Ondas izquierda (de exterior a interior para que el interior quede encima) */}
-            {Array.from({ length: N_WAVES }, (_, i) => N_WAVES - 1 - i).map((waveIdx) => (
-              <Path
-                key={`L${waveIdx}`}
-                d={wavePath("left", waveIdx)}
-                stroke={`url(#wg${waveIdx})`}
-                strokeWidth={1.6}
-                strokeLinecap="butt"
-                fill="none"
-              />
-            ))}
-            {/* Ondas derecha */}
-            {Array.from({ length: N_WAVES }, (_, i) => N_WAVES - 1 - i).map((waveIdx) => (
-              <Path
-                key={`R${waveIdx}`}
-                d={wavePath("right", waveIdx)}
-                stroke={`url(#wg${waveIdx})`}
-                strokeWidth={1.6}
-                strokeLinecap="butt"
-                fill="none"
-              />
-            ))}
-          </G>
-        </Svg>
+            <G>
+              {Array.from({ length: N_WAVES }, (_, i) => N_WAVES - 1 - i).map((waveIdx) => (
+                <Path
+                  key={`L${waveIdx}`}
+                  d={wavePath("left", waveIdx)}
+                  stroke={`url(#wg${waveIdx})`}
+                  strokeWidth={1.6}
+                  strokeLinecap="butt"
+                  fill="none"
+                />
+              ))}
+              {Array.from({ length: N_WAVES }, (_, i) => N_WAVES - 1 - i).map((waveIdx) => (
+                <Path
+                  key={`R${waveIdx}`}
+                  d={wavePath("right", waveIdx)}
+                  stroke={`url(#wg${waveIdx})`}
+                  strokeWidth={1.6}
+                  strokeLinecap="butt"
+                  fill="none"
+                />
+              ))}
+            </G>
+          </Svg>
+        )}
 
         {/* Número centrado */}
         <View style={[StyleSheet.absoluteFill, styles.numberWrap]} pointerEvents="none">
