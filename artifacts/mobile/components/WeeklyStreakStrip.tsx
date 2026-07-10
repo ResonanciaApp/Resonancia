@@ -186,7 +186,6 @@ export function WeeklyStreakStrip() {
             overflow: "hidden",
           }]}
         >
-          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(27,6,15,0.07)" }]} pointerEvents="none" />
           <LinearGradient
             colors={[`${theme.gradient[0]}99`, `${theme.gradient[1]}99`] as [string, string]}
