@@ -157,8 +157,8 @@ export function WaveStreakStrip() {
   const { statEvents } = usePlayer();
   const { theme } = useSceneTheme();
   const streakBorderColors: [string, string] = [
-    brightenHex(theme.gradient[0], 4),
-    brightenHex(theme.gradient[1], 4),
+    brightenHex(theme.gradient[0], 19),
+    brightenHex(theme.gradient[1], 19),
   ];
 
   const { consecutiveStreak, activeWaves, activeFlags, todayIndex, weekCount } = useMemo(() => {
