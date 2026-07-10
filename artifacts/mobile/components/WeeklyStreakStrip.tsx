@@ -219,7 +219,7 @@ export function WeeklyStreakStrip() {
               cx={RING_SIZE / 2}
               cy={RING_SIZE / 2}
               r={RADIUS}
-              stroke="url(#ringGrad)"
+              stroke="#F9F9F9"
               strokeWidth={STROKE_W}
               fill="none"
               strokeDasharray={`${CIRCUMFERENCE}`}
