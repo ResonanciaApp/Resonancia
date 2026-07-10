@@ -13,7 +13,7 @@ const SVG_H = 118;
 const CX = COMP_W / 2;
 const CY = SVG_H * 0.47;
 
-const N_WAVES = 8;
+const N_WAVES = 7;
 const CENTER_GAP = 30;
 const SPACING = 13;
 const BASE_ARC_H = 28;
