@@ -1,6 +1,12 @@
 import { Feather } from "@expo/vector-icons";
 import React, { useMemo } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
+import Animated, {
+  Extrapolation,
+  interpolate,
+  type SharedValue,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 import Svg, { Circle, Defs, G, LinearGradient as SvgLinearGradient, Path, Stop } from "react-native-svg";
 
 import { usePlayer } from "@/context/PlayerContext";
@@ -148,7 +154,13 @@ function wavePath(side: "left" | "right", index: number): string {
   return `M ${x.toFixed(1)} ${top.toFixed(1)} Q ${qx.toFixed(1)} ${CY.toFixed(1)} ${x.toFixed(1)} ${bot.toFixed(1)}`;
 }
 
-export function WaveStreakStrip() {
+type Props = { scrollY?: SharedValue<number> };
+
+// Fade empieza al 35% del recorrido (~85px), completa en ~180px (≈600ms scroll)
+const FADE_START = 85;
+const FADE_END   = 265;
+
+export function WaveStreakStrip({ scrollY }: Props) {
   const { statEvents } = usePlayer();
   const { theme } = useSceneTheme();
   const streakBorderColors: [string, string] = [
@@ -195,12 +207,18 @@ export function WaveStreakStrip() {
     };
   }, [statEvents]);
 
+  const fadeStyle = useAnimatedStyle(() => ({
+    opacity: scrollY
+      ? interpolate(scrollY.value, [FADE_START, FADE_END], [1, 0], Extrapolation.CLAMP)
+      : 1,
+  }));
+
   const streakBody = weekCount === 0
     ? STREAK_MESSAGE_ZERO
     : `Resonaste ${weekCount} ${weekCount === 1 ? "día" : "días"} de esta semana.`;
 
   return (
-    <View style={styles.card}>
+    <Animated.View style={[styles.card, fadeStyle]}>
       {/* ── Ondas + número ── */}
       <View style={{ width: COMP_W, height: SVG_H, marginTop: 0 }}>
         <Svg width={COMP_W} height={SVG_H} style={{ position: "absolute", top: -14, left: 0, right: 0, bottom: 0 }}>
@@ -301,7 +319,7 @@ export function WaveStreakStrip() {
         </Text>
         <Text style={styles.message}>¡Lo estás haciendo muy bien!</Text>
       </View>
-    </View>
+    </Animated.View>
   );
 }
 
