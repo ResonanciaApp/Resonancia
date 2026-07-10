@@ -325,9 +325,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     lineHeight: 44,
     letterSpacing: -1,
-    textShadowColor: "rgba(247,203,107,0.45)",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 14,
   },
   daysLabel: {
     color: "#f9f9f9",
