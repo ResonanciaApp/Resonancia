@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   number: {
-    color: "#E8B85D",
+    color: "#F9F9F9",
     fontSize: 42,
     fontWeight: "700",
     lineHeight: 44,
