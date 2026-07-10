@@ -76,16 +76,27 @@ const STREAK_MESSAGES: Record<number, StreakMessage> = {
   7: { highlight: "¡Semana completa! 🌟", body: "Completaste los 7 días de esta semana." },
 };
 
+// Rampa de saturación para ondas activas
+// Interior (0): dorado muy desaturado — Exterior (N-1): dorado pleno / highlight
+const SAT_LOW  = { r: 165, g: 148, b: 125 }; // beige cálido, casi neutro
+const SAT_HIGH = { r: 214, g: 164, b:  81 }; // #D6A451 — dorado activo
+
+function lerpColor(a: typeof SAT_LOW, b: typeof SAT_LOW, t: number): string {
+  const r = Math.round(a.r + (b.r - a.r) * t);
+  const g = Math.round(a.g + (b.g - a.g) * t);
+  const b2 = Math.round(a.b + (b.b - a.b) * t);
+  return `rgb(${r},${g},${b2})`;
+}
+
 function getWaveComponents(waveIndex: number, activeWaves: number): { color: string; opacity: number } {
   if (waveIndex >= activeWaves) {
-    const opacity = Math.max(0.10, 0.22 - waveIndex * 0.018);
+    const opacity = Math.max(0.10, 0.28 - waveIndex * 0.025);
     return { color: "rgb(140,68,87)", opacity };
   }
-  // Activas: rampa de intensidad — la más interna (0) es tenue, la más externa es plena
+  // Activas: rampa de saturación de color, opacidad plena
   const t = activeWaves <= 1 ? 1 : waveIndex / (activeWaves - 1);
-  const opacity = 0.22 + t * 0.78; // 0.22 → 1.0
   if (waveIndex === activeWaves - 1) return { color: COLOR_HIGHLIGHT, opacity: 1 };
-  return { color: COLOR_ACTIVE, opacity };
+  return { color: lerpColor(SAT_LOW, SAT_HIGH, t), opacity: 1 };
 }
 
 function wavePath(side: "left" | "right", index: number): string {
