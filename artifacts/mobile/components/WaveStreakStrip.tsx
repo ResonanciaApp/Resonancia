@@ -158,7 +158,7 @@ type Props = { scrollY?: SharedValue<number> };
 
 // Fade empieza al 60% del recorrido (~146px), completa en ~180px (≈600ms scroll)
 const FADE_START = 146;
-const FADE_END   = 506;
+const FADE_END   = 386;
 
 export function WaveStreakStrip({ scrollY }: Props) {
   const { statEvents } = usePlayer();
