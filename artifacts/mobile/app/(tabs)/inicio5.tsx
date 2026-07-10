@@ -760,34 +760,6 @@ export default function HomeScreen2() {
             contentFit="cover"
           />
         </Animated.View>
-        {/* ── Lateral izquierdo sube (brazo izq de la U) ── */}
-        <LinearGradient
-          colors={[`${prevGradient[0]}44`, "transparent"]}
-          start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-          style={{ position: "absolute", bottom: 0, left: 0, width: 80, height: 280 }}
-          pointerEvents="none"
-        />
-        <Animated.View style={{ position: "absolute", bottom: 0, left: 0, width: 80, height: 280, opacity: imageFade }} pointerEvents="none">
-          <LinearGradient
-            colors={[`${activeTheme.gradient[0]}44`, "transparent"]}
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-            style={StyleSheet.absoluteFill}
-          />
-        </Animated.View>
-        {/* ── Lateral derecho sube (brazo der de la U) ── */}
-        <LinearGradient
-          colors={[`${prevGradient[0]}44`, "transparent"]}
-          start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }}
-          style={{ position: "absolute", bottom: 0, right: 0, width: 80, height: 280 }}
-          pointerEvents="none"
-        />
-        <Animated.View style={{ position: "absolute", bottom: 0, right: 0, width: 80, height: 280, opacity: imageFade }} pointerEvents="none">
-          <LinearGradient
-            colors={[`${activeTheme.gradient[0]}44`, "transparent"]}
-            start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }}
-            style={StyleSheet.absoluteFill}
-          />
-        </Animated.View>
         {/* ── Degradé inferior: mezcla la imagen con el fondo ── */}
         <LinearGradient
           colors={["transparent", prevGradient[0] as string]}
@@ -806,24 +778,24 @@ export default function HomeScreen2() {
       <LinearGradient
         colors={[
           `${prevGradient[0]}00`,
-          `${prevGradient[0]}2B`,
+          `${prevGradient[0]}40`,
           `${prevGradient[0]}66`,
           prevGradient[0] as string,
           prevGradient[1] as string,
         ]}
-        locations={[0, 0.22, 0.34, 0.45, 1]}
+        locations={[0, 0.15, 0.28, 0.40, 1]}
         style={styles.rootGradient}
       />
       <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
         <LinearGradient
           colors={[
             `${activeTheme.gradient[0]}00`,
-            `${activeTheme.gradient[0]}2B`,
+            `${activeTheme.gradient[0]}40`,
             `${activeTheme.gradient[0]}66`,
             activeTheme.gradient[0] as string,
             activeTheme.gradient[1] as string,
           ]}
-          locations={[0, 0.22, 0.34, 0.45, 1]}
+          locations={[0, 0.15, 0.28, 0.40, 1]}
           style={styles.rootGradient}
         />
       </Animated.View>
