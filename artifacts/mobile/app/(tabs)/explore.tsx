@@ -405,8 +405,15 @@ export default function ExploreScreen() {
 
         {/* ── Barra de búsqueda ── */}
         <View style={styles.searchWrap}>
-          <BlurView intensity={28} tint="dark" style={[styles.searchBox, { overflow: "hidden", borderColor: "rgba(255,255,255,0.22)", borderWidth: 1 }]}>
+          <BlurView intensity={28} tint="dark" style={[styles.searchBox, { overflow: "hidden" }]}>
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
+            <LinearGradient
+              colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
+              start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+              style={StyleSheet.absoluteFill}
+              pointerEvents="none"
+            />
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
               value={query}
@@ -450,12 +457,19 @@ export default function ExploreScreen() {
                   <Pressable
                     key={t.id}
                     onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
-                    style={[styles.temaCell, { width: TEMA3_W, height: TEMA3_W, borderRadius: 11, overflow: "hidden", borderColor: "rgba(255,255,255,0.22)", borderWidth: 1 }]}
+                    style={[styles.temaCell, { width: TEMA3_W, height: TEMA3_W, borderRadius: 11, overflow: "hidden" }]}
                   >
                     {({ pressed }) => (
                       <>
                         <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
                         <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+                        <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
+                        <LinearGradient
+                          colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
+                          start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+                          style={StyleSheet.absoluteFill}
+                          pointerEvents="none"
+                        />
                         {pressed && <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(t.color, 0.22) }]} />}
                         {t.image != null ? (
                           <Image
