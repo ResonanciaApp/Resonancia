@@ -17,7 +17,7 @@ function ScenarioCard({
   return (
     <div style={{
       flex: 1,
-      backgroundColor: highlight ? "#1A0810" : "rgba(255,255,255,0.02)",
+      backgroundColor: highlight ? "#170e21" : "rgba(255,255,255,0.02)",
       border: `1.5px solid ${highlight ? "#F7CB6B" : "rgba(255,255,255,0.08)"}`,
       borderRadius: "0.8vw",
       padding: "1.5vh 1.2vw",
@@ -67,7 +67,7 @@ export default function SlideAnexoInversion() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5", padding: "5vh 6vw 4.5vh", boxSizing: "border-box" }}
+      style={{ background: "linear-gradient(160deg, #1f132c 0%, #170e21 100%)", color: "#F4DAD5", padding: "5vh 6vw 4.5vh", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
@@ -87,7 +87,7 @@ export default function SlideAnexoInversion() {
           <div style={{ fontSize: "0.95vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: "0.1em", marginBottom: "1vh" }}>VALORACIÓN HOY (PRE-INVERSIÓN)</div>
 
           <div style={{
-            backgroundColor: "#1A0810",
+            backgroundColor: "#170e21",
             border: "1.5px solid rgba(247,203,107,0.35)",
             borderRadius: "0.9vw",
             padding: "1.8vh 1.5vw",

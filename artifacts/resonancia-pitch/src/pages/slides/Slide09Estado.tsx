@@ -2,7 +2,7 @@ export default function Slide09Estado() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5", padding: "9vh 6vw", boxSizing: "border-box" }}
+      style={{ background: "linear-gradient(160deg, #1f132c 0%, #170e21 100%)", color: "#F4DAD5", padding: "9vh 6vw", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
@@ -16,7 +16,7 @@ export default function Slide09Estado() {
 
       {/* Two columns */}
       <div style={{ display: "flex", gap: "2.5vw" }}>
-        <div style={{ flex: 1, backgroundColor: "#1A0810", borderRadius: "1vw", padding: "3.5vh 2.2vw", boxSizing: "border-box" }}>
+        <div style={{ flex: 1, backgroundColor: "#170e21", borderRadius: "1vw", padding: "3.5vh 2.2vw", boxSizing: "border-box" }}>
           <div style={{ fontSize: "1.9vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "2.2vh", display: "flex", alignItems: "center", gap: "0.7vw" }}>
             Construido
             <svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "1.8vw", height: "1.8vw", flexShrink: 0 }}>
@@ -27,7 +27,7 @@ export default function Slide09Estado() {
             App iOS y Android funcional · Catálogo de sesiones y reproductor · Comunidad, diario y perfiles · Infraestructura de audio y backend · Diseño y marca definidos
           </div>
         </div>
-        <div style={{ flex: 1, backgroundColor: "#1A0810", borderRadius: "1vw", padding: "3.5vh 2.2vw", boxSizing: "border-box" }}>
+        <div style={{ flex: 1, backgroundColor: "#170e21", borderRadius: "1vw", padding: "3.5vh 2.2vw", boxSizing: "border-box" }}>
           <div style={{ fontSize: "1.9vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "2.2vh" }}>En camino</div>
           <div style={{ fontSize: "1.6vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.7 }}>
             Cobros con RevenueCat · Publicación en App Store y Google Play · Notificaciones push · Migración de video a CDN · Crecimiento del catálogo

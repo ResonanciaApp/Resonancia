@@ -63,7 +63,7 @@ export default function Slide11Inversion() {
   };
 
   const card: CSSProperties = {
-    backgroundColor: "#1A0810",
+    backgroundColor: "#170e21",
     border: "1px solid rgba(247,203,107,0.18)",
     borderRadius: "0.7vw",
     padding: "1.6vh 1.4vw",
@@ -82,7 +82,7 @@ export default function Slide11Inversion() {
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col"
       style={{
-        background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)",
+        background: "linear-gradient(160deg, #1f132c 0%, #170e21 100%)",
         color: "#F4DAD5",
         padding: "7vh 6vw 5vh",
         boxSizing: "border-box",
@@ -184,10 +184,6 @@ export default function Slide11Inversion() {
       <div style={{ flexShrink: 0, borderTop: "1px solid rgba(247,203,107,0.12)", paddingTop: "1.5vh", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ fontSize: "1.15vw", color: "rgba(242,231,228,0.40)" }}>
           [nombre] · [correo] · [teléfono]
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: "1.3vw", fontWeight: 700, letterSpacing: "-0.04em", background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>RESONANCIA</div>
-          <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.40)", letterSpacing: "0.08em" }}>CASA DEL CUENCO</div>
         </div>
       </div>
     </div>

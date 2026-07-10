@@ -37,7 +37,7 @@ export default function SlideFinanzas3() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col"
-      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5", padding: "4.5vh 6vw 4vh", boxSizing: "border-box", gap: "1.1vh" }}
+      style={{ background: "linear-gradient(160deg, #1f132c 0%, #170e21 100%)", color: "#F4DAD5", padding: "4.5vh 6vw 4vh", boxSizing: "border-box", gap: "1.1vh" }}
     >
       {/* Header */}
       <div>
@@ -70,7 +70,7 @@ export default function SlideFinanzas3() {
 
       {/* Plan mix → blended ARPU */}
       <div style={{
-        backgroundColor: "#1A0810",
+        backgroundColor: "#170e21",
         border: "1px solid rgba(247,203,107,0.18)",
         borderRadius: "0.6vw",
         padding: "0.85vh 1.4vw",
@@ -156,7 +156,7 @@ export default function SlideFinanzas3() {
         {/* Right: marketing + phase totals */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: "0.9vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: "0.1em", marginBottom: "0.5vh" }}>MARKETING: RAMP-UP MENSUAL</div>
-          <div style={{ backgroundColor: "#1A0810", border: "1px solid rgba(247,203,107,0.15)", borderRadius: "0.7vw", padding: "0.8vh 1.1vw", marginBottom: "1.2vh" }}>
+          <div style={{ backgroundColor: "#170e21", border: "1px solid rgba(247,203,107,0.15)", borderRadius: "0.7vw", padding: "0.8vh 1.1vw", marginBottom: "1.2vh" }}>
             {[
               { rango: "Mes 1–2",   desc: "Cubierto por campaña de lanzamiento ($3M upfront)",   valor: "$0" },
               { rango: "Mes 3–6",   desc: "Pauta social básica + contenido orgánico",             valor: "$500.000" },
@@ -178,7 +178,7 @@ export default function SlideFinanzas3() {
               <div
                 key={i}
                 style={{
-                  backgroundColor: "#1A0810",
+                  backgroundColor: "#170e21",
                   border: `1px solid ${i === 1 ? "rgba(247,203,107,0.35)" : "rgba(255,255,255,0.07)"}`,
                   borderRadius: "0.6vw",
                   padding: "0.9vh 0.85vw",

@@ -2,7 +2,7 @@ export default function SlideAudiencia() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5", padding: "9vh 6vw", boxSizing: "border-box" }}
+      style={{ background: "linear-gradient(160deg, #1f132c 0%, #170e21 100%)", color: "#F4DAD5", padding: "9vh 6vw", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
@@ -26,19 +26,19 @@ export default function SlideAudiencia() {
 
       {/* Three advantage cards */}
       <div style={{ display: "flex", gap: "2.5vw" }}>
-        <div style={{ flex: 1, backgroundColor: "#1A0810", borderRadius: "1vw", padding: "3vh 2vw", boxSizing: "border-box" }}>
+        <div style={{ flex: 1, backgroundColor: "#170e21", borderRadius: "1vw", padding: "3vh 2vw", boxSizing: "border-box" }}>
           <div style={{ fontSize: "1.9vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.2vh" }}>Canal propio</div>
           <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.5 }}>
             Un canal de lanzamiento propio: llegamos a cientos de miles de personas sin depender de la publicidad pagada.
           </div>
         </div>
-        <div style={{ flex: 1, backgroundColor: "#1A0810", borderRadius: "1vw", padding: "3vh 2vw", boxSizing: "border-box" }}>
+        <div style={{ flex: 1, backgroundColor: "#170e21", borderRadius: "1vw", padding: "3vh 2vw", boxSizing: "border-box" }}>
           <div style={{ fontSize: "1.9vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.2vh" }}>Costo de adquisición bajo</div>
           <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.5 }}>
             La audiencia ya existe y confía en la marca: cada nueva descarga cuesta una fracción de lo que paga la competencia.
           </div>
         </div>
-        <div style={{ flex: 1, backgroundColor: "#1A0810", borderRadius: "1vw", padding: "3vh 2vw", boxSizing: "border-box" }}>
+        <div style={{ flex: 1, backgroundColor: "#170e21", borderRadius: "1vw", padding: "3vh 2vw", boxSizing: "border-box" }}>
           <div style={{ fontSize: "1.9vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.2vh" }}>Marca validada</div>
           <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.5 }}>
             Una comunidad fiel que valida la propuesta de bienestar y nos da retroalimentación real antes de escalar.

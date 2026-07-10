@@ -2,7 +2,7 @@ export default function Slide06Competencia() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5", padding: "9vh 6vw", boxSizing: "border-box" }}
+      style={{ background: "linear-gradient(160deg, #1f132c 0%, #170e21 100%)", color: "#F4DAD5", padding: "9vh 6vw", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
@@ -16,7 +16,7 @@ export default function Slide06Competencia() {
 
       {/* Two columns */}
       <div style={{ display: "flex", gap: "2.5vw" }}>
-        <div style={{ flex: 1, backgroundColor: "#1A0810", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
+        <div style={{ flex: 1, backgroundColor: "#170e21", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
           <div style={{ fontSize: "2vw", fontWeight: 700, color: "#F4DAD5", marginBottom: "2vh" }}>Calm</div>
           <div style={{ fontSize: "3.2vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1 }}>~US$ 227M</div>
           <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)", marginBottom: "2vh" }}>ingresos anuales</div>
@@ -24,7 +24,7 @@ export default function Slide06Competencia() {
             ~4,5 millones de suscriptores pagos. Pensado en inglés; español traducido.
           </div>
         </div>
-        <div style={{ flex: 1, backgroundColor: "#1A0810", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
+        <div style={{ flex: 1, backgroundColor: "#170e21", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
           <div style={{ fontSize: "2vw", fontWeight: 700, color: "#F4DAD5", marginBottom: "2vh" }}>Headspace</div>
           <div style={{ fontSize: "3.2vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1 }}>~US$ 348M</div>
           <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)", marginBottom: "2vh" }}>ingresos anuales</div>

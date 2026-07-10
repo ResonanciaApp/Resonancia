@@ -15,7 +15,7 @@ export default function SlideValleDeCaja() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
+      style={{ background: "linear-gradient(160deg, #1f132c 0%, #170e21 100%)", color: "#F4DAD5", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
@@ -92,7 +92,7 @@ export default function SlideValleDeCaja() {
             <div style={{
               flex: 1,
               padding: "1.6vh 1.4vw",
-              backgroundColor: "#1A0810",
+              backgroundColor: "#170e21",
               border: "1px solid rgba(224,112,112,0.35)",
               borderRadius: "0.7vw",
             }}>
@@ -103,7 +103,7 @@ export default function SlideValleDeCaja() {
             <div style={{
               flex: 1,
               padding: "1.6vh 1.4vw",
-              backgroundColor: "#1A0810",
+              backgroundColor: "#170e21",
               border: "1px solid rgba(247,203,107,0.25)",
               borderRadius: "0.7vw",
             }}>
@@ -122,7 +122,7 @@ export default function SlideValleDeCaja() {
 
           <div style={{
             flex: 1,
-            backgroundColor: "#1A0810",
+            backgroundColor: "#170e21",
             border: "1px solid rgba(247,203,107,0.3)",
             borderRadius: "0.9vw",
             padding: "2.4vh 2vw",

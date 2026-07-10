@@ -2,7 +2,7 @@ export default function Slide03Solucion() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5", padding: "9vh 6vw", boxSizing: "border-box" }}
+      style={{ background: "linear-gradient(160deg, #1f132c 0%, #170e21 100%)", color: "#F4DAD5", padding: "9vh 6vw", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
@@ -16,19 +16,19 @@ export default function Slide03Solucion() {
 
       {/* Three columns */}
       <div style={{ display: "flex", gap: "2.5vw" }}>
-        <div style={{ flex: 1, backgroundColor: "#1A0810", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
+        <div style={{ flex: 1, backgroundColor: "#170e21", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
           <div style={{ fontSize: "2vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>Voz propia</div>
           <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.5 }}>
             Meditaciones, historias y voces guía creadas en español neutro, no traducidas.
           </div>
         </div>
-        <div style={{ flex: 1, backgroundColor: "#1A0810", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
+        <div style={{ flex: 1, backgroundColor: "#170e21", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
           <div style={{ fontSize: "2vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>Sonido ancestral</div>
           <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.5 }}>
             Cuencos, frecuencias binaurales y música ambiente curada por artistas certificados.
           </div>
         </div>
-        <div style={{ flex: 1, backgroundColor: "#1A0810", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
+        <div style={{ flex: 1, backgroundColor: "#170e21", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
           <div style={{ fontSize: "2vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>Comunidad</div>
           <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.5 }}>
             Diario, intención del día y un espacio para acompañarse entre personas.

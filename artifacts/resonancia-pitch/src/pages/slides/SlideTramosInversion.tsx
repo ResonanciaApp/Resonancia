@@ -29,7 +29,7 @@ export default function SlideTramosInversion() {
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col"
       style={{
-        background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)",
+        background: "linear-gradient(160deg, #1f132c 0%, #170e21 100%)",
         color: "#F4DAD5",
         padding: "7vh 6vw 5vh",
         boxSizing: "border-box",
@@ -93,7 +93,7 @@ export default function SlideTramosInversion() {
                 gridTemplateColumns: "1.2fr 1fr 1.2fr 1.6fr 1fr",
                 gap: "0.5vw",
                 alignItems: "center",
-                backgroundColor: isHighlight ? "#1A0810" : "rgba(255,255,255,0.02)",
+                backgroundColor: isHighlight ? "#170e21" : "rgba(255,255,255,0.02)",
                 border: isHighlight
                   ? "1.5px solid rgba(247,203,107,0.55)"
                   : "1px solid rgba(255,255,255,0.06)",
@@ -172,10 +172,6 @@ export default function SlideTramosInversion() {
       <div style={{ flexShrink: 0, borderTop: "1px solid rgba(247,203,107,0.12)", paddingTop: "1.5vh", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
         <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.32)", maxWidth: "68vw", lineHeight: 1.5 }}>
           Stake M12 calculado sobre valoración base (5.000 suscriptores × $4.350 ARPU × 12 meses × 4× ARR = $1.044M CLP) · Retorno estimado ilustrativo, no garantizado · El retorno real depende del exit y dilución en rondas futuras.
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: "1.3vw", fontWeight: 700, letterSpacing: "-0.04em", background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>RESONANCIA</div>
-          <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.35)", letterSpacing: "0.08em" }}>CASA DEL CUENCO</div>
         </div>
       </div>
     </div>

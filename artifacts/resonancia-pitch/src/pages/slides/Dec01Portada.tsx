@@ -2,7 +2,7 @@ export default function Dec01Portada() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display"
-      style={{ backgroundColor: "#1A0810", color: "#F4DAD5", fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
+      style={{ backgroundColor: "#170e21", color: "#F4DAD5", fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
     >
       {/* Background grid lines */}
       <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px)", backgroundSize: "8vw 8vw", zIndex: 0 }} />

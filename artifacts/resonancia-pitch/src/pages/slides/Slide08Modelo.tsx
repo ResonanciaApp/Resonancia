@@ -2,7 +2,7 @@ export default function Slide08Modelo() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5", padding: "9vh 6vw", boxSizing: "border-box" }}
+      style={{ background: "linear-gradient(160deg, #1f132c 0%, #170e21 100%)", color: "#F4DAD5", padding: "9vh 6vw", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
@@ -16,7 +16,7 @@ export default function Slide08Modelo() {
 
       {/* Two columns Free vs Premium */}
       <div style={{ display: "flex", gap: "2.5vw" }}>
-        <div style={{ flex: 1, backgroundColor: "#1A0810", borderRadius: "1vw", padding: "3.5vh 2.2vw", boxSizing: "border-box" }}>
+        <div style={{ flex: 1, backgroundColor: "#170e21", borderRadius: "1vw", padding: "3.5vh 2.2vw", boxSizing: "border-box" }}>
           <div style={{ fontSize: "2.2vw", fontWeight: 700, color: "#F4DAD5", marginBottom: "2.2vh" }}>Free</div>
           <div style={{ fontSize: "1.6vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.7 }}>
             Sesiones sampler · Intención y frase del día · Comunidad completa · Diario y favoritos limitados · Temporizador hasta 30 min
@@ -41,7 +41,7 @@ export default function Slide08Modelo() {
           <div key={s.big} style={{ display: "flex", alignItems: "center", gap: "0.8vw", flex: 1 }}>
             <div style={{
               flex: 1,
-              backgroundColor: s.gold ? "rgba(212,175,55,0.08)" : "#1A0810",
+              backgroundColor: s.gold ? "rgba(212,175,55,0.08)" : "#170e21",
               border: s.gold ? "1.5px solid #F7CB6B" : "1px solid rgba(255,255,255,0.08)",
               borderRadius: "0.8vw",
               padding: "1.8vh 0.8vw",

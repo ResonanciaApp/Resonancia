@@ -4,7 +4,7 @@ export default function Slide01Portada() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden flex font-display"
-      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5" }}
+      style={{ background: "linear-gradient(160deg, #1f132c 0%, #170e21 100%)", color: "#F4DAD5" }}
     >
       {/* Left column */}
       <div
@@ -47,7 +47,7 @@ export default function Slide01Portada() {
       </div>
 
       {/* Right column — iPhone mockups, centered and larger */}
-      <div style={{ width: "50vw", height: "100vh", position: "relative", backgroundColor: "#2E0D16", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ width: "50vw", height: "100vh", position: "relative", backgroundColor: "#1f132c", display: "flex", alignItems: "center", justifyContent: "center" }}>
         {/* Ambient glow */}
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%, rgba(212,175,55,0.07) 0%, rgba(27,6,15,0) 65%)" }} />
 
@@ -61,7 +61,7 @@ export default function Slide01Portada() {
             top: "10%",
             width: "14vw",
             height: "30.4vw",
-            backgroundColor: "#2E0D16",
+            backgroundColor: "#1f132c",
             borderRadius: "2.5vw",
             padding: "0.46vw",
             boxShadow: "0 1vw 3.5vw rgba(0,0,0,0.75)",
@@ -69,7 +69,7 @@ export default function Slide01Portada() {
             opacity: 0.6
           }}>
             <div style={{ position: "absolute", top: "1.2vw", left: "50%", transform: "translateX(-50%)", width: "3.3vw", height: "0.72vw", backgroundColor: "#000", borderRadius: "0.48vw", zIndex: 10 }} />
-            <div style={{ width: "100%", height: "100%", borderRadius: "2.1vw", overflow: "hidden", backgroundColor: "#2E0D16" }}>
+            <div style={{ width: "100%", height: "100%", borderRadius: "2.1vw", overflow: "hidden", backgroundColor: "#1f132c" }}>
               <img src={`${base}mockup-sonidos.jpg`} crossOrigin="anonymous" alt="Sonidos Ancestrales" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
             </div>
           </div>
@@ -81,14 +81,14 @@ export default function Slide01Portada() {
             top: 0,
             width: "17vw",
             height: "36.9vw",
-            backgroundColor: "#1A0810",
+            backgroundColor: "#170e21",
             borderRadius: "3vw",
             padding: "0.55vw",
             boxShadow: "0 2vw 8vw rgba(0,0,0,0.95), 0 0 0 0.12vw rgba(255,255,255,0.07)",
             zIndex: 2
           }}>
             <div style={{ position: "absolute", top: "1.4vw", left: "50%", transform: "translateX(-50%)", width: "4vw", height: "0.85vw", backgroundColor: "#000", borderRadius: "0.58vw", zIndex: 10 }} />
-            <div style={{ width: "100%", height: "100%", borderRadius: "2.55vw", overflow: "hidden", backgroundColor: "#2E0D16" }}>
+            <div style={{ width: "100%", height: "100%", borderRadius: "2.55vw", overflow: "hidden", backgroundColor: "#1f132c" }}>
               <img src={`${base}mockup-home.jpg`} crossOrigin="anonymous" alt="Inicio" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
             </div>
           </div>
@@ -96,7 +96,7 @@ export default function Slide01Portada() {
         </div>
 
         {/* Blend gradient on left edge */}
-        <div style={{ position: "absolute", top: 0, left: 0, width: "12%", height: "100%", background: "linear-gradient(90deg, #2E0D16 0%, rgba(27,6,15,0) 100%)", zIndex: 3 }} />
+        <div style={{ position: "absolute", top: 0, left: 0, width: "12%", height: "100%", background: "linear-gradient(90deg, #1f132c 0%, rgba(27,6,15,0) 100%)", zIndex: 3 }} />
       </div>
     </div>
   );
