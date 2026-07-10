@@ -130,9 +130,11 @@ export function WaveStreakStrip() {
     const byDay = minutesByDay(statEvents);
     const today = new Date();
 
-    // Consecutive streak (for number display + wave activation)
+    // Consecutive streak — si hoy aún no cumplió la meta, contar desde ayer
+    const todayMet = (byDay.get(dayKey(today)) ?? 0) >= GOAL_MINUTES;
+    const startI = todayMet ? 0 : 1;
     let streak = 0;
-    for (let i = 0; i < 365; i++) {
+    for (let i = startI; i < 365; i++) {
       const d = new Date(today);
       d.setDate(today.getDate() - i);
       d.setHours(0, 0, 0, 0);
@@ -230,7 +232,7 @@ export function WaveStreakStrip() {
             <View key={i} style={styles.dayCol}>
               {met ? (
                 <View style={styles.circleGradientBorder}>
-                  <Svg width={39} height={39} style={StyleSheet.absoluteFill}>
+                  <Svg width={39} height={39} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
                     <Defs>
                       <SvgLinearGradient id={`sg${i}`} x1="0.5" y1="0" x2="0.5" y2="1">
                         <Stop offset="0" stopColor={streakBorderColors[0]} />
@@ -243,7 +245,7 @@ export function WaveStreakStrip() {
                 </View>
               ) : isToday ? (
                 <View style={styles.circleGradientBorder}>
-                  <Svg width={39} height={39} style={StyleSheet.absoluteFill}>
+                  <Svg width={39} height={39} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
                     <Defs>
                       <SvgLinearGradient id="sgToday" x1="0.5" y1="0" x2="0.5" y2="1">
                         <Stop offset="0" stopColor={streakBorderColors[0]} />
