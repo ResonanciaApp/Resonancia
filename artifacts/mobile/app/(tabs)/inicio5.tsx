@@ -775,6 +775,30 @@ export default function HomeScreen2() {
           />
         </Animated.View>
       </Animated.View>
+      <LinearGradient
+        colors={[
+          `${prevGradient[0]}00`,
+          `${prevGradient[0]}2B`,
+          `${prevGradient[0]}66`,
+          prevGradient[0] as string,
+          prevGradient[1] as string,
+        ]}
+        locations={[0, 0.10, 0.22, 0.33, 1]}
+        style={styles.rootGradient}
+      />
+      <Animated.View style={[styles.rootGradient, { opacity: gradientFade }]}>
+        <LinearGradient
+          colors={[
+            `${activeTheme.gradient[0]}00`,
+            `${activeTheme.gradient[0]}2B`,
+            `${activeTheme.gradient[0]}66`,
+            activeTheme.gradient[0] as string,
+            activeTheme.gradient[1] as string,
+          ]}
+          locations={[0, 0.10, 0.22, 0.33, 1]}
+          style={styles.rootGradient}
+        />
+      </Animated.View>
 
       {/* ── Frase — anclada, posición fija, se oculta con el backdrop al hacer scroll ── */}
       {greetingVisible && (
