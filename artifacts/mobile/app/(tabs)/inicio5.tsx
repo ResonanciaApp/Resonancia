@@ -916,8 +916,8 @@ export default function HomeScreen2() {
                 />
               </LinearGradient>
               <View style={{ flex: 1, marginLeft: 25 }}>
-                <Text style={styles.resonadoresBannerTitle}>Resonadores</Text>
-                <Text style={styles.resonadoresBannerSub}>Únete a la comunidad</Text>
+                <Text style={styles.resonadoresBannerTitle}>Conoce nuestros Resonadores</Text>
+                <Text style={styles.resonadoresBannerSub}>La esencia de este espacio</Text>
               </View>
               <Feather name="chevron-right" size={20} color="rgba(232,232,232,0.7)" />
             </View>

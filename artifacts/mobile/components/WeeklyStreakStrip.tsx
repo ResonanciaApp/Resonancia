@@ -137,7 +137,7 @@ export function WeeklyStreakStrip() {
   const { theme } = useSceneTheme();
 
   const streakBorderColors = useMemo(
-    () => [brightenHex(theme.gradient[0], 62), brightenHex(theme.gradient[0], 18)] as [string, string],
+    () => [brightenHex(theme.gradient[0], 62), brightenHex(theme.gradient[0], 36)] as [string, string],
     [theme.gradient[0]]
   );
 
@@ -304,9 +304,9 @@ const styles = StyleSheet.create({
   },
   ringCount: {
     color: "#F9F9F9",
-    fontSize: 33,
+    fontSize: 34,
     fontWeight: "700",
-    lineHeight: 36,
+    lineHeight: 37,
   },
   ringLabel: {
     color: "rgba(255,255,255,0.95)",
