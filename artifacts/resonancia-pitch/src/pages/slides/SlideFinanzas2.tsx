@@ -1,15 +1,16 @@
 export default function SlideFinanzas2() {
   // Suscriptores mes a mes (escenario base, 12 meses)
+  // M1 = lanzamiento: ~800 subs iniciales (comunidad 1M+ ya lista)
   // ARPU neto blended: $4.350/mes
   const meses = [
-    { label: "M1",  subs: 0     },
-    { label: "M2",  subs: 400   },
-    { label: "M3",  subs: 1000  },
-    { label: "M4",  subs: 2000  },
-    { label: "M5",  subs: 2700  },
-    { label: "M6",  subs: 3300  },
-    { label: "M7",  subs: 3800  },
-    { label: "M8",  subs: 4200  },
+    { label: "M1",  subs: 800   },
+    { label: "M2",  subs: 1200  },
+    { label: "M3",  subs: 2000  },
+    { label: "M4",  subs: 2700  },
+    { label: "M5",  subs: 3200  },
+    { label: "M6",  subs: 3600  },
+    { label: "M7",  subs: 4000  },
+    { label: "M8",  subs: 4300  },
     { label: "M9",  subs: 4500  },
     { label: "M10", subs: 4700  },
     { label: "M11", subs: 4900  },
@@ -19,9 +20,9 @@ export default function SlideFinanzas2() {
   const maxSubs = 5000;
 
   const scenarios = [
-    { label: "Base",      subs12: "5.000",  ing12: "$21,75M/mes", ingAnual: "~$159M", highlight: true },
-    { label: "Optimista", subs12: "7.000",  ing12: "$30,45M/mes", ingAnual: "~$220M", color: "#6EC49A" },
-    { label: "Agresivo",  subs12: "10.000", ing12: "$43,5M/mes",  ingAnual: "~$308M", color: "#6EC49A" },
+    { label: "Base",      subs12: "5.000",  ing12: "$21,75M/mes", ingAnual: "~$172M", highlight: true },
+    { label: "Optimista", subs12: "7.000",  ing12: "$30,45M/mes", ingAnual: "~$240M", color: "#6EC49A" },
+    { label: "Agresivo",  subs12: "10.000", ing12: "$43,5M/mes",  ingAnual: "~$335M", color: "#6EC49A" },
   ];
 
   return (
@@ -45,7 +46,7 @@ export default function SlideFinanzas2() {
         {/* Left: bar chart suscriptores */}
         <div style={{ flex: 1.4, display: "flex", flexDirection: "column", height: "34vh" }}>
           <div style={{ fontSize: "1.15vw", fontWeight: 600, color: "rgba(242,231,228,0.50)", letterSpacing: "0.08em", marginBottom: "1.2vh" }}>
-            SUSCRIPTORES PREMIUM · ESCENARIO BASE
+            SUSCRIPTORES PREMIUM · ESCENARIO BASE (M1 = LANZAMIENTO)
           </div>
           <div style={{ flex: 1, display: "flex", gap: "0.5vw", alignItems: "flex-end", borderBottom: "1px solid rgba(255,255,255,0.12)", paddingBottom: "0.6vh" }}>
             {meses.map((m) => {
@@ -56,11 +57,7 @@ export default function SlideFinanzas2() {
                     <div style={{
                       width: "100%",
                       height: `${Math.max(pct, 2)}%`,
-                      background: m.subs >= 1500
-                        ? "linear-gradient(180deg, #F7CB6B 0%, #C8963E 100%)"
-                        : m.subs > 0
-                        ? "rgba(247,203,107,0.4)"
-                        : "rgba(224,112,112,0.3)",
+                      background: "linear-gradient(180deg, #F7CB6B 0%, #C8963E 100%)",
                       borderRadius: "0.25vw 0.25vw 0 0",
                     }} />
                   </div>
@@ -111,10 +108,10 @@ export default function SlideFinanzas2() {
       {/* KPIs row */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1.5vw", marginTop: "3vh" }}>
         {[
-          { label: "Inversión inicial",   value: "$27M CLP",    sub: "capital inicial requerido" },
-          { label: "Break-even acum.",    value: "Mes 7–8",     sub: "incl. recuperar inversión" },
+          { label: "Inversión inicial",   value: "$27M CLP",    sub: "íntegra pre-lanzamiento" },
+          { label: "Break-even acum.",    value: "Mes 3–4",     sub: "desde el día 1 positivo" },
           { label: "ARPU neto blended",   value: "$4.350 CLP",  sub: "post IVA 19% + tienda 30%" },
-          { label: "ROI proyectado año 1",value: "+$95M neto",  sub: "excl. inversión inicial" },
+          { label: "ROI proyectado año 1",value: "+$109M neto", sub: "excl. inversión inicial" },
         ].map((k) => (
           <div
             key={k.label}
@@ -134,8 +131,8 @@ export default function SlideFinanzas2() {
 
       {/* Footnote */}
       <div style={{ fontSize: "1.1vw", color: "#3D0E16", lineHeight: 1.5, marginTop: "2vh" }}>
-        Precio $8.990/mes (IVA 19% incl.) · $59.990/año · ARPU neto blended ~$4.350/mes (60% mensual × $5.288 neto + 40% anual × $2.941 neto equiv.) ·
-        Fijos $3,25M/mes (RRHH $2,8M + hosting $250K + otros $200K) · Contenido $1,5M/mes desde M3 · Escenarios ilustrativos.
+        M1 = lanzamiento; inversión $27M ya desplegada en los 3 meses previos · Precio $8.990/mes (IVA incl.) · $59.990/año · ARPU neto blended ~$4.350/mes ·
+        Fijos $3,25M/mes · Contenido $1,5M/mes desde M3 · ~800 subs el día 1 por comunidad 1M+ precalentada · Escenarios ilustrativos.
       </div>
     </div>
   );

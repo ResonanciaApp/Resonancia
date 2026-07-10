@@ -64,19 +64,19 @@ export default function SlideProyeccion() {
           highlight
           installs="200.000"
           subs="5.000"
-          revenue="$159M CLP"
+          revenue="$172M CLP"
         />
         <ScenarioCard
           label="Optimista"
           installs="250.000"
           subs="7.000"
-          revenue="$220M CLP"
+          revenue="$240M CLP"
         />
         <ScenarioCard
           label="Agresivo"
           installs="300.000"
           subs="10.000"
-          revenue="$308M CLP"
+          revenue="$335M CLP"
         />
       </div>
 
