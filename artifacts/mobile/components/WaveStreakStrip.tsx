@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import React, { useMemo } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
-import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Path, Stop } from "react-native-svg";
+import Svg, { Circle, Defs, G, LinearGradient as SvgLinearGradient, Mask, Path, Rect, Stop } from "react-native-svg";
 
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -148,28 +148,42 @@ export function WaveStreakStrip() {
       {/* ── Ondas + número ── */}
       <View style={{ width: COMP_W, height: SVG_H }}>
         <Svg width={COMP_W} height={SVG_H} style={StyleSheet.absoluteFill}>
-          {/* Ondas izquierda (de exterior a interior para que el interior quede encima) */}
-          {Array.from({ length: N_WAVES }, (_, i) => N_WAVES - 1 - i).map((waveIdx) => (
-            <Path
-              key={`L${waveIdx}`}
-              d={wavePath("left", waveIdx)}
-              stroke={getWaveColor(waveIdx, activeWaves)}
-              strokeWidth={1.6}
-              strokeLinecap="round"
-              fill="none"
-            />
-          ))}
-          {/* Ondas derecha */}
-          {Array.from({ length: N_WAVES }, (_, i) => N_WAVES - 1 - i).map((waveIdx) => (
-            <Path
-              key={`R${waveIdx}`}
-              d={wavePath("right", waveIdx)}
-              stroke={getWaveColor(waveIdx, activeWaves)}
-              strokeWidth={1.6}
-              strokeLinecap="round"
-              fill="none"
-            />
-          ))}
+          <Defs>
+            <SvgLinearGradient id="waveFade" x1="0" y1="0" x2="0" y2="1">
+              <Stop offset="0"    stopColor="white" stopOpacity="0" />
+              <Stop offset="0.18" stopColor="white" stopOpacity="1" />
+              <Stop offset="0.82" stopColor="white" stopOpacity="1" />
+              <Stop offset="1"    stopColor="white" stopOpacity="0" />
+            </SvgLinearGradient>
+            <Mask id="waveMask" x="0" y="0" width="1" height="1">
+              <Rect x={0} y={0} width={COMP_W} height={SVG_H} fill="url(#waveFade)" />
+            </Mask>
+          </Defs>
+
+          <G mask="url(#waveMask)">
+            {/* Ondas izquierda (de exterior a interior para que el interior quede encima) */}
+            {Array.from({ length: N_WAVES }, (_, i) => N_WAVES - 1 - i).map((waveIdx) => (
+              <Path
+                key={`L${waveIdx}`}
+                d={wavePath("left", waveIdx)}
+                stroke={getWaveColor(waveIdx, activeWaves)}
+                strokeWidth={1.6}
+                strokeLinecap="round"
+                fill="none"
+              />
+            ))}
+            {/* Ondas derecha */}
+            {Array.from({ length: N_WAVES }, (_, i) => N_WAVES - 1 - i).map((waveIdx) => (
+              <Path
+                key={`R${waveIdx}`}
+                d={wavePath("right", waveIdx)}
+                stroke={getWaveColor(waveIdx, activeWaves)}
+                strokeWidth={1.6}
+                strokeLinecap="round"
+                fill="none"
+              />
+            ))}
+          </G>
         </Svg>
 
         {/* Número centrado */}
