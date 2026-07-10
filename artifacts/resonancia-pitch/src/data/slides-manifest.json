@@ -16,19 +16,19 @@
     "speakerNotes": ""
   },
   {
-    "id": "a1f4c2d0-1111-4a01-9c01-000000000014",
-    "position": 3,
-    "filepath": "src/pages/slides/SlideAnexoInversion.tsx",
-    "title": "Anexo · Escenarios de inversión",
-    "description": "Matriz de monto a levantar vs valoración vs porcentaje cedido.",
-    "speakerNotes": ""
-  },
-  {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000019",
-    "position": 4,
+    "position": 3,
     "filepath": "src/pages/slides/SlideTramosInversion.tsx",
     "title": "Tramos de inversión",
     "description": "Tabla de 5 tramos: inversión, equity, post-money, valor del stake al mes 12 y retorno estimado.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000014",
+    "position": 4,
+    "filepath": "src/pages/slides/SlideAnexoInversion.tsx",
+    "title": "Anexo · Valoración estimada",
+    "description": "Pre-money, post-money y escenarios de retorno al mes 12.",
     "speakerNotes": ""
   },
   {
