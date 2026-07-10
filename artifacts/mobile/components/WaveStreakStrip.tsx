@@ -201,7 +201,7 @@ export function WaveStreakStrip() {
             })}
           </Defs>
 
-          <G transform="translate(-2, 0)">
+          <G>
             {/* Ondas izquierda (de exterior a interior para que el interior quede encima) */}
             {Array.from({ length: N_WAVES }, (_, i) => N_WAVES - 1 - i).map((waveIdx) => (
               <Path
