@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   numberText: {
-    color: "#f9f9f9",
+    color: "#F7CB6B",
     fontSize: 42,
     fontWeight: "700",
     lineHeight: 44,
