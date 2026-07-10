@@ -154,7 +154,9 @@ export function SonicStreakWave() {
     };
   }, [statEvents]);
 
-  const progress   = Math.min(weekCount / GOAL_DAYS, 1);
+  const rawProgress = Math.min(weekCount / GOAL_DAYS, 1);
+  // Bonus mínimo de 6px para que 1 día sea siempre visible
+  const progress   = rawProgress > 0 ? Math.min(rawProgress + 6 / WAVE_W, 1) : 0;
   // Fade suave en el borde del progreso (zona de ~20 px)
   const fadeZone   = Math.min(0.18, 20 / WAVE_W);
   const fadeStart  = Math.max(0.07, progress - fadeZone);
