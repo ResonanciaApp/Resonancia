@@ -776,8 +776,8 @@ export default function HomeScreen2() {
             `${activeTheme.gradient[0]}C0`,
             activeTheme.gradient[0] as string,
           ]}
-          locations={[0, 0.35, 0.50, 0.60, 0.70, 0.80, 0.88, 0.94, 1]}
-          style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 320 }}
+          locations={[0, 0.25, 0.40, 0.52, 0.63, 0.74, 0.84, 0.93, 1]}
+          style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 380 }}
           pointerEvents="none"
         />
       </Animated.View>
