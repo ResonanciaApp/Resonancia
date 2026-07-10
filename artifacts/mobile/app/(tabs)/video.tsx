@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
   chip: {
     borderRadius: 999,
     paddingHorizontal: 14,
-    height: 28,
+    height: 26,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
