@@ -35,6 +35,26 @@ export function SacredBackground({ variant = "solid", solidColor }: SacredBackgr
   }
 
   if (variant === "gradient") {
+    if (theme.backgroundImage != null) {
+      return (
+        <View style={StyleSheet.absoluteFill} pointerEvents="none">
+          <Image
+            source={theme.backgroundImage}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+            priority="high"
+            cachePolicy="memory-disk"
+          />
+          {/* Overlay oscuro para mantener legibilidad */}
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.52)" }]} />
+          {/* Degradado del tema encima — aporta el tinte de color */}
+          <LinearGradient
+            colors={[`${theme.gradient[0]}99`, `${theme.gradient[1]}CC`]}
+            style={StyleSheet.absoluteFill}
+          />
+        </View>
+      );
+    }
     return (
       <LinearGradient
         colors={theme.gradient}

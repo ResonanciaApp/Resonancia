@@ -20,6 +20,8 @@ export type SceneTheme = {
   gradient: readonly [string, string];
   /** Color sólido de fondo — contenedores raíz, tab bar, sheets. */
   solid: string;
+  /** Imagen de fondo opcional (require). Se muestra en variant="gradient" con overlay oscuro. */
+  backgroundImage?: number;
 };
 
 export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
@@ -34,6 +36,7 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
     label: "Vino tinto",
     gradient: ["#2E0D16", "#1A0810"],
     solid: "#1A0810",
+    backgroundImage: require("@/assets/images/scenes/vino-tinto.png"),
   },
 };
 
