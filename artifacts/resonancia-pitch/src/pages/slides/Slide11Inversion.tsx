@@ -1,81 +1,193 @@
-const base = import.meta.env.BASE_URL;
+import type { CSSProperties } from "react";
 
 export default function Slide11Inversion() {
-  const items = [
-    { pct: "24%", monto: "$6,4M", desc: "Contenido: 107 sesiones con artistas y guiadores de voz." },
-    { pct: "9%",  monto: "$2,5M", desc: "Programación extra: desarrollo y funcionalidades adicionales." },
-    { pct: "6%",  monto: "$1,5M", desc: "Masterización: postproducción y control de calidad de audio." },
-    { pct: "15%", monto: "$4,0M", desc: "Equipamiento: micrófonos, tratamiento acústico y estudio." },
-    { pct: "11%", monto: "$3,0M", desc: "Marketing de lanzamiento: orgánico + pauta inicial." },
-    { pct: "2%",  monto: "$500K", desc: "Trámites legales: constitución, T&C y publicación en tiendas." },
-    { pct: "31%", monto: "$8,4M", desc: "Runway operativo: sueldos del equipo en los meses 1–3." },
-    { pct: "2%",  monto: "$500K", desc: "Colchón para imprevistos." },
+  const grupos = [
+    {
+      titulo: "GASTOS OPERACIONALES",
+      items: [
+        { label: "Contenido",                  monto: "$6.400.000" },
+        { label: "Marketing",                  monto: "$3.000.000" },
+        { label: "Runway operativo (3 meses)", monto: "$8.400.000" },
+      ],
+      total: "$17.800.000",
+    },
+    {
+      titulo: "EQUIPAMIENTO",
+      items: [
+        { label: "Equipamiento (estudio + hardware)", monto: "$4.700.000" },
+      ],
+      total: "$4.700.000",
+    },
+    {
+      titulo: "EXTERNOS",
+      items: [
+        { label: "Programación extra", monto: "$2.500.000" },
+        { label: "Masterización",      monto: "$1.500.000" },
+      ],
+      total: "$4.000.000",
+    },
+    {
+      titulo: "OTROS",
+      items: [
+        { label: "Trámites legales", monto: "$500.000" },
+        { label: "Colchón",          monto: "$500.000" },
+      ],
+      total: "$1.000.000",
+    },
   ];
+
+  const rrhh = [
+    { label: "Gerente General",               monto: "$600.000" },
+    { label: "Programador Chief",             monto: "$700.000" },
+    { label: "Coordinador / Contenidos",      monto: "$500.000" },
+    { label: "Ventas / Logística",            monto: "$500.000" },
+    { label: "Super admin / Atención cliente",monto: "$500.000" },
+  ];
+
+  const equipos = [
+    { label: "Estudio grabación", monto: "$1.500.000" },
+    { label: "Equipos Loops",     monto: "$1.500.000" },
+    { label: "Grabadora",         monto: "$800.000"   },
+    { label: "Micrófono",         monto: "$900.000"   },
+  ];
+
+  const colHdr: CSSProperties = {
+    fontSize: "0.9vw",
+    fontWeight: 700,
+    background: "linear-gradient(90deg, #F7CB6B, #FBA980)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    backgroundClip: "text",
+    letterSpacing: "0.1em",
+    marginBottom: "1.2vh",
+  };
+
+  const card: CSSProperties = {
+    backgroundColor: "#1A0810",
+    border: "1px solid rgba(247,203,107,0.18)",
+    borderRadius: "0.7vw",
+    padding: "1.6vh 1.4vw",
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.5vh",
+  };
+
+  const row: CSSProperties = {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "baseline",
+  };
 
   return (
     <div
-      className="relative w-screen h-screen overflow-hidden flex font-display"
-      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5" }}
+      className="relative w-screen h-screen overflow-hidden font-display flex flex-col"
+      style={{
+        background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)",
+        color: "#F4DAD5",
+        padding: "7vh 6vw 5vh",
+        boxSizing: "border-box",
+        gap: "2.5vh",
+      }}
     >
-      {/* Left column — content */}
-      <div
-        className="flex flex-col justify-between"
-        style={{ width: "56vw", height: "100vh", padding: "9vh 5vw", boxSizing: "border-box" }}
-      >
+      {/* Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexShrink: 0 }}>
         <div>
-          <div style={{ fontSize: "1.5vw", fontWeight: 600, color: "rgba(242,231,228,0.50)", letterSpacing: "0.14em", marginBottom: "1.5vh" }}>
+          <div style={{ fontSize: "1.4vw", fontWeight: 600, color: "rgba(242,231,228,0.50)", letterSpacing: "0.14em", marginBottom: "0.8vh" }}>
             LA INVERSIÓN
           </div>
-          <div style={{ fontSize: "4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "48vw" }}>
-            Buscamos <span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>$27 millones</span>
+          <div style={{ fontSize: "3.6vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
+            Buscamos{" "}
+            <span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+              $27.500.000 CLP
+            </span>
           </div>
-          <div style={{ fontSize: "1.9vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.5, marginTop: "2vh", maxWidth: "46vw" }}>
-            para producir el catálogo, equipar el estudio, lanzar al mercado y operar hasta alcanzar flujo positivo.
+          <div style={{ fontSize: "1.3vw", color: "rgba(242,231,228,0.45)", marginTop: "0.6vh" }}>
+            para producir el catálogo, equipar el estudio, lanzar al mercado y operar los 3 meses pre-lanzamiento.
           </div>
         </div>
+        <div style={{ textAlign: "right", flexShrink: 0 }}>
+          <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.40)", letterSpacing: "0.1em" }}>TOTAL INVERSIÓN</div>
+          <div style={{ fontSize: "2.8vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1.1 }}>$27.500.000</div>
+        </div>
+      </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.9vh" }}>
-          {items.map((item, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "baseline", gap: "1.2vw" }}>
-              <div style={{ width: "0.75vw", height: "0.75vw", backgroundColor: "#F7CB6B", flexShrink: 0, transform: "translateY(0.35vw) rotate(45deg)" }} />
-              <div style={{ fontSize: "1.45vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.4 }}>
-                <span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", fontWeight: 700 }}>{item.pct} · {item.monto}</span>
-                {" "}— {item.desc}
+      {/* 4 group cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1.2vw", flexShrink: 0 }}>
+        {grupos.map((g) => (
+          <div key={g.titulo} style={card}>
+            <div style={colHdr}>{g.titulo}</div>
+            {g.items.map((it) => (
+              <div key={it.label} style={row}>
+                <div style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.65)" }}>{it.label}</div>
+                <div style={{ fontSize: "1.1vw", fontWeight: 600, color: "#F4DAD5" }}>{it.monto}</div>
               </div>
+            ))}
+            <div style={{ height: "1px", backgroundColor: "rgba(247,203,107,0.2)", marginTop: "0.4vh" }} />
+            <div style={{ ...row, marginTop: "0.1vh" }}>
+              <div style={{ fontSize: "1.0vw", fontWeight: 700, color: "rgba(242,231,228,0.50)" }}>Subtotal</div>
+              <div style={{ fontSize: "1.2vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>{g.total}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Divider label */}
+      <div style={{ display: "flex", alignItems: "center", gap: "1vw", flexShrink: 0 }}>
+        <div style={{ height: "1px", flex: 1, backgroundColor: "rgba(247,203,107,0.15)" }} />
+        <div style={{ fontSize: "0.9vw", color: "rgba(242,231,228,0.35)", letterSpacing: "0.1em" }}>DESGLOSE</div>
+        <div style={{ height: "1px", flex: 1, backgroundColor: "rgba(247,203,107,0.15)" }} />
+      </div>
+
+      {/* Two detail tables */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.8vw", flex: 1 }}>
+
+        {/* RH – Runway Operativo */}
+        <div style={card}>
+          <div style={colHdr}>RH · RUNWAY OPERATIVO</div>
+          {rrhh.map((it) => (
+            <div key={it.label} style={row}>
+              <div style={{ fontSize: "1.1vw", color: "rgba(242,231,228,0.65)" }}>{it.label}</div>
+              <div style={{ fontSize: "1.15vw", fontWeight: 600, color: "#F4DAD5" }}>{it.monto}</div>
             </div>
           ))}
+          <div style={{ height: "1px", backgroundColor: "rgba(247,203,107,0.2)", marginTop: "0.5vh" }} />
+          <div style={{ ...row, marginTop: "0.2vh" }}>
+            <div style={{ fontSize: "1.0vw", fontWeight: 700, color: "rgba(242,231,228,0.50)" }}>Total mensual</div>
+            <div style={{ fontSize: "1.3vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>$2.800.000</div>
+          </div>
+          <div style={{ fontSize: "0.9vw", color: "rgba(242,231,228,0.35)", marginTop: "0.2vh" }}>
+            × 3 meses = $8.400.000 runway total
+          </div>
         </div>
 
-        <div>
-          <div style={{ fontSize: "1.5vw", fontWeight: 500, color: "rgba(242,231,228,0.50)", letterSpacing: "0.1em", marginBottom: "0.8vh" }}>
-            CONTACTO
+        {/* Equipamiento – Runway Operativo */}
+        <div style={card}>
+          <div style={colHdr}>EQUIPAMIENTO · DESGLOSE</div>
+          {equipos.map((it) => (
+            <div key={it.label} style={row}>
+              <div style={{ fontSize: "1.1vw", color: "rgba(242,231,228,0.65)" }}>{it.label}</div>
+              <div style={{ fontSize: "1.15vw", fontWeight: 600, color: "#F4DAD5" }}>{it.monto}</div>
+            </div>
+          ))}
+          <div style={{ height: "1px", backgroundColor: "rgba(247,203,107,0.2)", marginTop: "0.5vh" }} />
+          <div style={{ ...row, marginTop: "0.2vh" }}>
+            <div style={{ fontSize: "1.0vw", fontWeight: 700, color: "rgba(242,231,228,0.50)" }}>Total</div>
+            <div style={{ fontSize: "1.3vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>$4.700.000</div>
           </div>
-          <div style={{ fontSize: "1.6vw", fontWeight: 500, color: "#F4DAD5" }}>
-            [nombre] · [correo] · [teléfono]
+          <div style={{ fontSize: "0.9vw", color: "rgba(242,231,228,0.35)", marginTop: "0.2vh" }}>
+            Inversión única · hardware para producción de audio
           </div>
         </div>
       </div>
 
-      {/* Right column — image */}
-      <div style={{ width: "44vw", height: "100vh", position: "relative" }}>
-        <img
-          src={`${base}hero-atmosphere.png`}
-          crossOrigin="anonymous"
-          alt="Atmósfera sonora de RESONANCIA"
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
-        <div style={{
-          position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
-          background: "linear-gradient(90deg, #2E0D16 0%, rgba(46,13,22,0.12) 32%, rgba(46,13,22,0) 58%)"
-        }} />
-        <div style={{
-          position: "absolute", bottom: 0, left: 0, width: "100%", height: "32%",
-          background: "linear-gradient(0deg, #2E0D16 0%, rgba(46,13,22,0) 100%)"
-        }} />
-        {/* Brand mark bottom-right */}
-        <div style={{ position: "absolute", bottom: "8vh", right: "3vw", textAlign: "right" }}>
-          <div style={{ fontSize: "1.6vw", fontWeight: 700, letterSpacing: "-0.05em", background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>RESONANCIA</div>
-          <div style={{ fontSize: "1.5vw", fontWeight: 500, color: "rgba(242,231,228,0.50)", letterSpacing: "0.08em" }}>CASA DEL CUENCO</div>
+      {/* Contact footer */}
+      <div style={{ flexShrink: 0, borderTop: "1px solid rgba(247,203,107,0.12)", paddingTop: "1.5vh", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ fontSize: "1.15vw", color: "rgba(242,231,228,0.40)" }}>
+          [nombre] · [correo] · [teléfono]
+        </div>
+        <div style={{ textAlign: "right" }}>
+          <div style={{ fontSize: "1.3vw", fontWeight: 700, letterSpacing: "-0.04em", background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>RESONANCIA</div>
+          <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.40)", letterSpacing: "0.08em" }}>CASA DEL CUENCO</div>
         </div>
       </div>
     </div>
