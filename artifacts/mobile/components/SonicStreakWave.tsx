@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     letterSpacing: 2.5,
     textAlign: "center",
-    transform: [{ translateY: -5 }, { translateX: 4 }],
+    transform: [{ translateY: -5 }, { translateX: 2 }],
   },
   row: {
     flexDirection: "row",
