@@ -211,7 +211,7 @@ export function SonicStreakWave() {
           </G>
 
           {/* Onda izquierda */}
-          <G transform={`translate(${LEFT_START}, ${CY})`}>
+          <G transform={`translate(${LEFT_START + 2}, ${CY})`}>
             <Path d={LEFT_PATH} stroke="url(#swInactL)" strokeWidth={3} strokeLinecap="butt" fill="none" />
             <Path d={LEFT_PATH} stroke="url(#swGradL)"  strokeWidth={3} strokeLinecap="butt" fill="none" />
           </G>
