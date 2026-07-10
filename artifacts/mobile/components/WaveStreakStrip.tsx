@@ -146,7 +146,7 @@ export function WaveStreakStrip() {
   return (
     <View style={styles.card}>
       {/* ── Ondas + número ── */}
-      <View style={{ width: COMP_W, height: SVG_H }}>
+      <View style={{ width: COMP_W, height: SVG_H, marginTop: 20 }}>
         <Svg width={COMP_W} height={SVG_H} style={StyleSheet.absoluteFill}>
           <Defs>
             {Array.from({ length: N_WAVES }, (_, i) => {
@@ -194,7 +194,7 @@ export function WaveStreakStrip() {
       </View>
 
       {/* ── Bolitas de días ── */}
-      <View style={styles.row}>
+      <View style={[styles.row, { marginTop: -20 }]}>
         {DAY_LABELS.map((label, i) => {
           const met = activeFlags[i];
           const isToday = i === todayIndex;
