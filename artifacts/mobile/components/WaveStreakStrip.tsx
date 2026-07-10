@@ -156,9 +156,12 @@ function wavePath(side: "left" | "right", index: number): string {
 export function WaveStreakStrip() {
   const { statEvents } = usePlayer();
   const { theme } = useSceneTheme();
-  const circleFill = brightenHex(theme.gradient[0], 4);
+  const streakBorderColors: [string, string] = [
+    brightenHex(theme.gradient[0], 4),
+    brightenHex(theme.gradient[1], 4),
+  ];
 
-  const { streakBorderColors, consecutiveStreak, activeWaves, activeFlags, todayIndex, weekCount } = useMemo(() => {
+  const { consecutiveStreak, activeWaves, activeFlags, todayIndex, weekCount } = useMemo(() => {
     const byDay = minutesByDay(statEvents);
     const today = new Date();
 
@@ -188,10 +191,7 @@ export function WaveStreakStrip() {
       if (dayKey(d) === dayKey(today)) todayIdx = i;
     }
 
-    const border: [string, string] = ["#F7CB6B", "#FBA980"];
-
     return {
-      streakBorderColors: border,
       consecutiveStreak: streak,
       activeWaves: Math.min(weekCnt, N_WAVES),
       activeFlags: flags,
@@ -271,7 +271,7 @@ export function WaveStreakStrip() {
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#sg${i})`} strokeWidth={2} fill={circleFill} />
+                    <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#sg${i})`} strokeWidth={2} fill="rgba(255,255,255,0.11)" />
                   </Svg>
                   <Feather name="check" size={18} color="rgba(255,255,255,0.9)" />
                 </View>
@@ -284,7 +284,7 @@ export function WaveStreakStrip() {
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={19.5} cy={19.5} r={17.5} stroke="url(#sgToday)" strokeWidth={2} fill={circleFill} />
+                    <Circle cx={19.5} cy={19.5} r={17.5} stroke="url(#sgToday)" strokeWidth={2} fill="rgba(255,255,255,0.11)" />
                   </Svg>
                 </View>
               ) : (
