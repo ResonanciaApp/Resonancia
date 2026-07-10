@@ -76,17 +76,7 @@ function computeConsecutiveStreak(events: { playedAt: string; minutes: number }[
   return streak;
 }
 
-type StreakMessage = { highlight?: string; body: string };
-const STREAK_MESSAGES: Record<number, StreakMessage> = {
-  0: { body: "Todavía no completaste ninguna sesión.\nElige una y da el primer paso." },
-  1: { highlight: "¡Excelente comienzo!", body: "Ya llevas un día conectado contigo." },
-  2: { highlight: "¡Dos días seguidos!", body: "Estás construyendo un hábito." },
-  3: { highlight: "Tres días de presencia.", body: "Ya estás en ritmo." },
-  4: { highlight: "¡A mitad de la semana!", body: "Cuatro días de conexión contigo." },
-  5: { highlight: "Cinco días — ¡increíble!", body: "Tu mente y tu cuerpo lo agradecen." },
-  6: { highlight: "Casi una semana completa.", body: "Solo falta un día." },
-  7: { highlight: "¡Excelente comienzo!", body: "Resonaste 7 días de esta semana." },
-};
+const STREAK_MESSAGE_ZERO = "Todavía no completaste ninguna sesión.\nElige una y da el primer paso.";
 
 // Sube la luminosidad de un color hex en `pct` puntos (HSL)
 function brightenHex(hex: string, pct: number): string {
@@ -205,8 +195,9 @@ export function WaveStreakStrip() {
     };
   }, [statEvents]);
 
-  const msgKey = Math.min(weekCount, 7);
-  const msg = STREAK_MESSAGES[msgKey] ?? STREAK_MESSAGES[0];
+  const streakBody = weekCount === 0
+    ? STREAK_MESSAGE_ZERO
+    : `Resonaste ${weekCount} ${weekCount === 1 ? "día" : "días"} de esta semana.`;
 
   return (
     <View style={styles.card}>
@@ -305,10 +296,10 @@ export function WaveStreakStrip() {
 
       {/* ── Mensaje ── */}
       <View style={styles.messageWrap}>
-        {msg.highlight != null && (
-          <Text style={styles.messageHighlight}>{msg.highlight}</Text>
+        {weekCount > 0 && (
+          <Text style={styles.messageHighlight}>¡Excelente comienzo!</Text>
         )}
-        <Text style={styles.message}>{msg.body}</Text>
+        <Text style={styles.message}>{streakBody}</Text>
       </View>
     </View>
   );
