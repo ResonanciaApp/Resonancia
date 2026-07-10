@@ -126,20 +126,7 @@ export function WaveStreakStrip() {
   const { statEvents } = usePlayer();
   const { theme } = useSceneTheme();
 
-  const DEBUG_STREAK = 7; // ← quitar para producción
-
   const { streakBorderColors, consecutiveStreak, activeWaves, activeFlags, todayIndex, weekCount } = useMemo(() => {
-    if (DEBUG_STREAK > 0) {
-      return {
-        streakBorderColors: ["#F7CB6B", "#FBA980"] as [string, string],
-        consecutiveStreak: DEBUG_STREAK,
-        activeWaves: Math.min(DEBUG_STREAK, N_WAVES),
-        activeFlags: Array.from({ length: 7 }, (_, i) => i < DEBUG_STREAK),
-        todayIndex: Math.min(DEBUG_STREAK - 1, 6),
-        weekCount: Math.min(DEBUG_STREAK, 7),
-      };
-    }
-
     const byDay = minutesByDay(statEvents);
     const today = new Date();
 
