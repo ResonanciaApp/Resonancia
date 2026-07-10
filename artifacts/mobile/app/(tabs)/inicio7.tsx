@@ -70,7 +70,6 @@ import { LiveSessionCard } from "@/components/LiveSessionCard";
 import { useLiveSessions } from "@/hooks/useLiveSessions";
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
-import { WaveStreakStrip } from "@/components/WaveStreakStrip";
 
 const { width } = Dimensions.get("window");
 
@@ -567,7 +566,7 @@ export default function HomeScreen2() {
   const scrollContentHeightRef = useRef(0);
   const scrollLayoutHeightRef = useRef(0);
   const scrollYRef = useRef(0);
-  const waveScrollY = useSharedValue(0);
+
   const searchBtnAnim = useRef(new Animated.Value(0)).current;
   const giftScaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -668,7 +667,7 @@ export default function HomeScreen2() {
     (e: { nativeEvent: { contentOffset: { y: number } } }) => {
       const y = e.nativeEvent.contentOffset.y;
       scrollYRef.current = y;
-      waveScrollY.value = y;
+
       updateStickyActive();
       // Scroll-linked: imagen visible en y=0, desaparece a los 280px de scroll
       backdropAnim.setValue(Math.max(0, 1 - y / 280));
@@ -852,7 +851,6 @@ export default function HomeScreen2() {
       >
         {/* ── Racha semanal ── */}
         <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 247 }}>
-          <WaveStreakStrip scrollY={waveScrollY} />
         </View>
 
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
