@@ -1224,7 +1224,7 @@ export default function HomeScreen2() {
         {/* Pulso 4 — izquierda */}
         <Image
           source={require("@/assets/images/pulso-4-logo.png")}
-          style={{ width: 110, height: 36 }}
+          style={{ width: 115, height: 38, marginLeft: -4 }}
           resizeMode="contain"
         />
 
