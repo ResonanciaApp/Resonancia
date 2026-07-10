@@ -1404,6 +1404,11 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
+    borderTopWidth: 0.5,
+    borderLeftWidth: 0.5,
+    borderBottomWidth: 0,
+    borderRightWidth: 0,
+    borderColor: "rgba(255,255,255,0.35)",
   },
   searchBtn: {
     width: 42,
