@@ -194,7 +194,7 @@ export function WeeklyStreakStrip() {
             pointerEvents="none"
           />
           <LinearGradient
-            colors={["rgba(255,255,255,0.85)", "rgba(255,255,255,0.04)"]}
+            colors={["rgba(255,255,255,0.085)", "rgba(255,255,255,0.04)"]}
             start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFill}
             pointerEvents="none"
