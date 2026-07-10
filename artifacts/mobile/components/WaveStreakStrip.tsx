@@ -29,7 +29,7 @@ const WAVE_OFFSETS: number[] = (() => {
   return offsets;
 })();
 const BASE_ARC_H = 28;
-const ARC_H_INC = 9;
+const ARC_H_INC = 10;
 const BASE_DEPTH = 7;
 const DEPTH_INC = 5;
 
