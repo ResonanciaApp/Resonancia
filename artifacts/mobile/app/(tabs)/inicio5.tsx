@@ -1405,7 +1405,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.01)",
+    borderColor: "rgba(255,255,255,0.09)",
   },
   searchBtn: {
     width: 42,
