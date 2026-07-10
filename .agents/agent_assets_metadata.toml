@@ -2417,3 +2417,9 @@ id = "PqDG3jpB0WCnorW7wECs0"
 uri = "file://attached_assets/tib-10.png"
 type = "image"
 title = "10 — Espacio de meditación con seda roja"
+
+[[outputs]]
+id = "FKPDVkNensY9H8nM4sI0s"
+uri = "file://.local/outputs/RESONANCIA-Decisiones-Lanzamiento.pdf"
+type = "pdf"
+title = "RESONANCIA — Decisiones de Lanzamiento (PDF, diapositivas 9–16)"
