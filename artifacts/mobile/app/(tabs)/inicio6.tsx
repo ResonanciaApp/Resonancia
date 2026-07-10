@@ -911,28 +911,6 @@ export default function HomeScreen2() {
               style={StyleSheet.absoluteFill}
               pointerEvents="none"
             />
-            {/* Borde superior — asimétrico: nace cerca del centro-izquierdo y desvanece en los extremos */}
-            <LinearGradient
-              colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.40)", "rgba(255,255,255,0.35)", "rgba(255,255,255,0)"]}
-              locations={[0, 0.28, 0.72, 1]}
-              start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-              style={{ position: "absolute", top: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
-              pointerEvents="none"
-            />
-            {/* Borde izquierdo — fade de arriba hacia abajo */}
-            <LinearGradient
-              colors={["rgba(255,255,255,0.18)", "rgba(255,255,255,0)"]}
-              start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-              style={{ position: "absolute", top: 0, left: 0, width: StyleSheet.hairlineWidth, bottom: 0 }}
-              pointerEvents="none"
-            />
-            {/* Borde derecho — apenas perceptible */}
-            <LinearGradient
-              colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-              start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-              style={{ position: "absolute", top: 0, right: 0, width: StyleSheet.hairlineWidth, bottom: 0 }}
-              pointerEvents="none"
-            />
             <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
               <LinearGradient
                 colors={["rgb(247,203,107)", "rgb(251,169,128)"]}
