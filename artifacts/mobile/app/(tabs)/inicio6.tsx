@@ -904,14 +904,14 @@ export default function HomeScreen2() {
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
             {/* Luz interior — más luminoso arriba, se desvanece hacia abajo */}
             <LinearGradient
-              colors={["rgba(255,255,255,0.02)", "rgba(255,255,255,0)"]}
+              colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
               start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
               style={StyleSheet.absoluteFill}
               pointerEvents="none"
             />
             {/* Borde superior — asimétrico: nace cerca del centro-izquierdo y desvanece en los extremos */}
             <LinearGradient
-              colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.60)", "rgba(255,255,255,0.28)", "rgba(255,255,255,0)"]}
+              colors={["rgba(255,255,255,0.24)", "rgba(255,255,255,0.40)", "rgba(255,255,255,0.35)", "rgba(255,255,255,0.24)"]}
               locations={[0, 0.28, 0.72, 1]}
               start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
               style={{ position: "absolute", top: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
