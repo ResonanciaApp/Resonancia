@@ -172,10 +172,10 @@ export function WeeklyStreakStrip() {
           borderRadius: (RING_SIZE + 18) / 2,
           marginTop: -10,
           shadowColor: "#000",
-          shadowOffset: { width: 0, height: 5 },
-          shadowOpacity: 0.28,
-          shadowRadius: 13,
-          elevation: 8,
+          shadowOffset: { width: 1, height: 2 },
+          shadowOpacity: 0.08,
+          shadowRadius: 4,
+          elevation: 2,
         }}
       >
         <View
@@ -186,15 +186,10 @@ export function WeeklyStreakStrip() {
             overflow: "hidden",
           }]}
         >
+          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(27,6,15,0.07)" }]} pointerEvents="none" />
           <LinearGradient
-            colors={[`${theme.gradient[0]}99`, `${theme.gradient[1]}99`] as [string, string]}
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
-          <LinearGradient
-            colors={["rgba(255,255,255,0.075)", "rgba(255,255,255,0.04)"]}
+            colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
             start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFill}
             pointerEvents="none"
@@ -202,24 +197,23 @@ export function WeeklyStreakStrip() {
           <Svg width={RING_SIZE} height={RING_SIZE}>
             <Defs>
               <SvgLinearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
-                <Stop offset="0" stopColor={theme.gradient[0]} />
-                <Stop offset="1" stopColor={theme.gradient[1]} />
+                <Stop offset="0" stopColor="#F7CB6B" />
+                <Stop offset="1" stopColor="#FBA980" />
               </SvgLinearGradient>
             </Defs>
             <Circle
               cx={RING_SIZE / 2}
               cy={RING_SIZE / 2}
               r={RADIUS}
-              stroke="url(#ringGrad)"
+              stroke="rgba(255,255,255,0.13)"
               strokeWidth={STROKE_W}
-              strokeOpacity={0.05}
               fill="none"
             />
             <Circle
               cx={RING_SIZE / 2}
               cy={RING_SIZE / 2}
               r={RADIUS}
-              stroke="#F9F9F9"
+              stroke="url(#ringGrad)"
               strokeWidth={STROKE_W}
               fill="none"
               strokeDasharray={`${CIRCUMFERENCE}`}
