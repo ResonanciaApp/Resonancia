@@ -218,8 +218,8 @@ export function WaveStreakStrip() {
 
         {/* Número centrado */}
         <View style={[StyleSheet.absoluteFill, styles.numberWrap]} pointerEvents="none">
-          <Text style={styles.numberText}>{consecutiveStreak}</Text>
-          <Text style={styles.daysLabel}>{consecutiveStreak === 1 ? "DÍA" : "DÍAS"}</Text>
+          <Text style={styles.numberText}>{weekCount}</Text>
+          <Text style={styles.daysLabel}>{weekCount === 1 ? "DÍA" : "DÍAS"}</Text>
         </View>
       </View>
 
