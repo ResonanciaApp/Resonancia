@@ -1191,7 +1191,7 @@ export default function HomeScreen2() {
         pointerEvents="box-none"
         style={{
           position: "absolute",
-          top: topPad + 12,
+          top: topPad - 3,
           left: 0,
           right: 0,
           flexDirection: "row",
