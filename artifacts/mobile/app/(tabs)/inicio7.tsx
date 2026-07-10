@@ -762,6 +762,24 @@ export default function HomeScreen2() {
             contentFit="cover"
           />
         </Animated.View>
+
+        {/* Borrador suave inferior — funde imagen con el fondo (curva Photoshop) */}
+        <LinearGradient
+          colors={[
+            "transparent",
+            "transparent",
+            `${activeTheme.gradient[0]}06`,
+            `${activeTheme.gradient[0]}12`,
+            `${activeTheme.gradient[0]}28`,
+            `${activeTheme.gradient[0]}50`,
+            `${activeTheme.gradient[0]}84`,
+            `${activeTheme.gradient[0]}C0`,
+            activeTheme.gradient[0] as string,
+          ]}
+          locations={[0, 0.45, 0.58, 0.66, 0.74, 0.82, 0.89, 0.95, 1]}
+          style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 260 }}
+          pointerEvents="none"
+        />
       </Animated.View>
       <LinearGradient
         colors={[
