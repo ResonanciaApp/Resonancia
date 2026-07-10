@@ -302,12 +302,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   days: {
-    color: "#D8CEDD",
+    color: "#F9F9F9",
     fontSize: 8,
     fontWeight: "400",
     letterSpacing: 2.5,
     textAlign: "center",
-    transform: [{ translateY: -3 }],
+    transform: [{ translateY: -3 }, { translateX: 1 }],
   },
   row: {
     flexDirection: "row",
