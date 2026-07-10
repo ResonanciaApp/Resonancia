@@ -119,6 +119,11 @@ export function SonicStreakWave() {
   const borderColor0 = brightenHex(theme.gradient[0], 60);
   const borderColor1 = brightenHex(theme.gradient[0], 50);
 
+  // Colores de onda activa derivados del tema (mismo patrón que WaveStreakStrip)
+  const waveHigh = brightenHex(theme.gradient[0], 68); // más claro → junto al número
+  const waveMid  = brightenHex(theme.gradient[0], 52);
+  const waveLow  = brightenHex(theme.gradient[0], 36); // más oscuro → extremo
+
   const { weekCount, activeFlags, todayIndex } = useMemo(() => {
     const byDay = new Map<string, number>();
     for (const e of statEvents) {
@@ -178,21 +183,21 @@ export function SonicStreakWave() {
               <Stop offset="0.86" stopColor="#714A70" stopOpacity="0.25" />
               <Stop offset="1"    stopColor="#714A70" stopOpacity="0"    />
             </SvgGradient>
-            {/* Activa derecha: dorado hasta fadeStart → fade suave → transparente en fadeEnd */}
+            {/* Activa derecha: color del tema hasta fadeStart → fade suave → transparente */}
             <SvgGradient id="swGradR" x1={0} y1={0} x2={WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
-              <Stop offset={0}          stopColor="#FFE3A0" stopOpacity={progress > 0 ? 0   : 0} />
-              <Stop offset={0.06}       stopColor="#FFE3A0" stopOpacity={progress > 0 ? 1   : 0} />
-              <Stop offset={fadeStart}  stopColor="#D6A451" stopOpacity={progress > 0 ? 1   : 0} />
-              <Stop offset={fadeEnd}    stopColor="#A9723E" stopOpacity={0} />
-              <Stop offset={1}          stopColor="#A9723E" stopOpacity={0} />
+              <Stop offset={0}          stopColor={waveHigh} stopOpacity={progress > 0 ? 0 : 0} />
+              <Stop offset={0.06}       stopColor={waveHigh} stopOpacity={progress > 0 ? 1 : 0} />
+              <Stop offset={fadeStart}  stopColor={waveMid}  stopOpacity={progress > 0 ? 1 : 0} />
+              <Stop offset={fadeEnd}    stopColor={waveLow}  stopOpacity={0} />
+              <Stop offset={1}          stopColor={waveLow}  stopOpacity={0} />
             </SvgGradient>
             {/* Activa izquierda */}
             <SvgGradient id="swGradL" x1={0} y1={0} x2={-WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
-              <Stop offset={0}          stopColor="#FFE3A0" stopOpacity={progress > 0 ? 0   : 0} />
-              <Stop offset={0.06}       stopColor="#FFE3A0" stopOpacity={progress > 0 ? 1   : 0} />
-              <Stop offset={fadeStart}  stopColor="#D6A451" stopOpacity={progress > 0 ? 1   : 0} />
-              <Stop offset={fadeEnd}    stopColor="#A9723E" stopOpacity={0} />
-              <Stop offset={1}          stopColor="#A9723E" stopOpacity={0} />
+              <Stop offset={0}          stopColor={waveHigh} stopOpacity={progress > 0 ? 0 : 0} />
+              <Stop offset={0.06}       stopColor={waveHigh} stopOpacity={progress > 0 ? 1 : 0} />
+              <Stop offset={fadeStart}  stopColor={waveMid}  stopOpacity={progress > 0 ? 1 : 0} />
+              <Stop offset={fadeEnd}    stopColor={waveLow}  stopOpacity={0} />
+              <Stop offset={1}          stopColor={waveLow}  stopOpacity={0} />
             </SvgGradient>
           </Defs>
 
