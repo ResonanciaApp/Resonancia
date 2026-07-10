@@ -128,12 +128,19 @@ function lerpColor(a: typeof SAT_LOW, b: typeof SAT_LOW, t: number): string {
   return `rgb(${r},${g},${b2})`;
 }
 
+const INACTIVE_COLOR = { r: 140, g: 68, b: 87 };
+
 function getWaveComponents(waveIndex: number, activeWaves: number): { color: string; opacity: number } {
   // t=1 → más interior (index 0), t=0 → más exterior (index N_WAVES-1)
   const tPos = 1 - waveIndex / (N_WAVES - 1);
 
   if (waveIndex >= activeWaves) {
-    // Inactivas: casi imperceptibles afuera, levemente visibles adentro
+    // Onda siguiente a la racha: tinte dorado sutil
+    if (waveIndex === activeWaves && activeWaves > 0) {
+      const opacity = 0.12 + 0.18 * tPos;
+      return { color: lerpColor(INACTIVE_COLOR, SAT_HIGH, 0.38), opacity };
+    }
+    // Resto inactivas: casi imperceptibles afuera, levemente visibles adentro
     const opacity = 0.07 + 0.22 * tPos;
     return { color: "rgb(140,68,87)", opacity };
   }
