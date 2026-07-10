@@ -389,6 +389,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     letterSpacing: 2.5,
     marginTop: 1,
+    transform: [{ translateY: 4 }],
   },
   row: {
     flexDirection: "row",
