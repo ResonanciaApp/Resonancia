@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "react-native-svg";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -17,6 +17,10 @@ const RING_SIZE = 91;
 const STROKE_W = 7;
 const RADIUS = (RING_SIZE - STROKE_W) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+
+const SCREEN_W = Dimensions.get("window").width;
+const OUTER_PAD = 19; // GRID_PAD en inicio5
+const DAY_SIZE = Math.floor((SCREEN_W - OUTER_PAD * 2) / 7);
 
 const GOAL_MINUTES = 5;
 
@@ -235,32 +239,32 @@ export function WeeklyStreakStrip() {
           return (
             <View key={i} style={styles.dayCol}>
               {met ? (
-                <View style={styles.circleGradientBorder}>
-                  <Svg width={39} height={39} style={StyleSheet.absoluteFill}>
+                <View style={[styles.circleGradientBorder, { width: DAY_SIZE, height: DAY_SIZE }]}>
+                  <Svg width={DAY_SIZE} height={DAY_SIZE} style={StyleSheet.absoluteFill}>
                     <Defs>
                       <SvgLinearGradient id={`sg${i}`} x1="0.5" y1="0" x2="0.5" y2="1">
                         <Stop offset="0" stopColor={streakBorderColors[0]} />
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#sg${i})`} strokeWidth={2} fill="rgba(255,255,255,0.11)" />
+                    <Circle cx={DAY_SIZE / 2} cy={DAY_SIZE / 2} r={DAY_SIZE / 2 - 1} stroke={`url(#sg${i})`} strokeWidth={2} fill="rgba(255,255,255,0.11)" />
                   </Svg>
                   <Feather name="check" size={18} color="rgba(255,255,255,0.9)" />
                 </View>
               ) : isToday ? (
-                <View style={styles.circleGradientBorder}>
-                  <Svg width={39} height={39} style={StyleSheet.absoluteFill}>
+                <View style={[styles.circleGradientBorder, { width: DAY_SIZE, height: DAY_SIZE }]}>
+                  <Svg width={DAY_SIZE} height={DAY_SIZE} style={StyleSheet.absoluteFill}>
                     <Defs>
                       <SvgLinearGradient id="sgToday" x1="0.5" y1="0" x2="0.5" y2="1">
                         <Stop offset="0" stopColor={streakBorderColors[0]} />
                         <Stop offset="1" stopColor={streakBorderColors[1]} />
                       </SvgLinearGradient>
                     </Defs>
-                    <Circle cx={19.5} cy={19.5} r={17.5} stroke="url(#sgToday)" strokeWidth={2} fill="rgba(255,255,255,0.11)" />
+                    <Circle cx={DAY_SIZE / 2} cy={DAY_SIZE / 2} r={DAY_SIZE / 2 - 1} stroke="url(#sgToday)" strokeWidth={2} fill="rgba(255,255,255,0.11)" />
                   </Svg>
                 </View>
               ) : (
-                <View style={[styles.circle, styles.circleInactive, styles.circleInactiveSize]} />
+                <View style={[styles.circle, styles.circleInactive, { width: DAY_SIZE, height: DAY_SIZE, borderRadius: DAY_SIZE / 2 }]} />
               )}
               <Text style={[styles.dayLabel, isToday && styles.dayLabelToday, (!met && !isToday) && styles.dayLabelInactivePos]}>{label}</Text>
             </View>
@@ -331,21 +335,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   circleGradientBorder: {
-    width: 39,
-    height: 39,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 4,
   },
   circleInactive: {
     backgroundColor: "rgba(255,255,255,0.11)",
-  },
-  circleInactiveSize: {
-    width: 37,
-    height: 37,
-    borderRadius: 18.5,
-    marginTop: 5,
-    marginBottom: 1,
+    marginTop: 4,
   },
   circleToday: {
     backgroundColor: "rgba(255,255,255,0.064)",
