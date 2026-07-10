@@ -1240,8 +1240,7 @@ export default function HomeScreen2() {
             hitSlop={8}
             style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1 }]}
           >
-            <View style={styles.giftBtnInner}>
-              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+            <View style={[styles.giftBtnInner, { backgroundColor: activeTheme.gradient[1] + "33" }]}>
               <MaterialCommunityIcons name="spa" size={23} color="#f9f9f9" style={{ marginTop: 1 }} />
             </View>
           </Pressable>
@@ -1258,8 +1257,7 @@ export default function HomeScreen2() {
             }}
           >
             <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-              <View style={styles.giftBtnInner}>
-                <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <View style={[styles.giftBtnInner, { backgroundColor: activeTheme.gradient[1] + "33" }]}>
                 <Image source={require("@/assets/images/icon-mixer-new.png")} style={{ width: 22, height: 22 }} resizeMode="contain" />
               </View>
             </Animated.View>
