@@ -1,15 +1,20 @@
 export default function SlideTramosInversion() {
-  // Anchor: $27.5M → 10% → post-money $275M → pre-money $247.5M
-  const PRE_MONEY = 247.5;
-  // Valoración estimada M12 escenario base (5.000 subs × $4.350 × 12 × 4×)
-  const VAL_M12 = 1044;
+  // Modelo acelerado: tasa de equity crece con el tamaño del cheque
+  // Anchor máximo: $27,5M → 10%
+  const VAL_M12 = 1044; // millones CLP · 5.000 subs × $4.350 × 12 × 4×
 
-  const tramos = [5, 10, 15, 20, 27.5].map((inv) => {
-    const postMoney = PRE_MONEY + inv;
-    const equity = (inv / postMoney) * 100;
+  const tramos = [
+    { inv: 5,    equity: 1.2 },
+    { inv: 10,   equity: 3.0 },
+    { inv: 15,   equity: 5.0 },
+    { inv: 20,   equity: 7.0 },
+    { inv: 27.5, equity: 10.0 },
+  ].map(({ inv, equity }) => {
+    const postMoney = inv / (equity / 100);
     const stakeM12 = (equity / 100) * VAL_M12;
     const retorno = stakeM12 / inv;
-    return { inv, postMoney, equity, stakeM12, retorno };
+    const tasaMM = equity / inv; // % por millón invertido
+    return { inv, equity, postMoney, stakeM12, retorno, tasaMM };
   });
 
   const fmt = (n: number, dec = 1) =>
@@ -20,9 +25,9 @@ export default function SlideTramosInversion() {
   const COL_HEADERS = [
     "INVERSIÓN",
     "EQUITY",
-    "POST-MONEY",
+    "VALUACIÓN IMPLÍCITA",
     "STAKE VALE · M12 (BASE)",
-    "RETORNO ESTIMADO",
+    "RETORNO EST.",
   ];
 
   return (
@@ -33,7 +38,7 @@ export default function SlideTramosInversion() {
         color: "#F4DAD5",
         padding: "7vh 6vw 5vh",
         boxSizing: "border-box",
-        gap: "2.8vh",
+        gap: "2.4vh",
       }}
     >
       {/* Header */}
@@ -42,13 +47,13 @@ export default function SlideTramosInversion() {
           TRAMOS DE INVERSIÓN
         </div>
         <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Elige el nivel que{" "}
+          Más inversión,{" "}
           <span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-            se ajuste a ti.
+            mejor tasa.
           </span>
         </div>
         <div style={{ fontSize: "1.2vw", color: "rgba(242,231,228,0.40)", marginTop: "0.7vh" }}>
-          Valuación pre-money fija · $247,5M CLP · mismo precio por cada peso invertido
+          Modelo de prima por escala · cada tramo mayor recibe más equity por peso invertido · ancla máxima $27,5M = 10%
         </div>
       </div>
 
@@ -56,7 +61,7 @@ export default function SlideTramosInversion() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1.2fr 1fr 1.2fr 1.6fr 1fr",
+          gridTemplateColumns: "1.3fr 1fr 1.3fr 1.6fr 1fr",
           gap: "0.5vw",
           flexShrink: 0,
           paddingBottom: "1vh",
@@ -82,15 +87,15 @@ export default function SlideTramosInversion() {
       </div>
 
       {/* Rows */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "1.0vh", flex: 1 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.9vh", flex: 1 }}>
         {tramos.map((t, i) => {
-          const isHighlight = i === 4; // Tramo E ($27.5M) = recomendado
+          const isHighlight = i === 4; // Tramo E ($27,5M)
           return (
             <div
               key={i}
               style={{
                 display: "grid",
-                gridTemplateColumns: "1.2fr 1fr 1.2fr 1.6fr 1fr",
+                gridTemplateColumns: "1.3fr 1fr 1.3fr 1.6fr 1fr",
                 gap: "0.5vw",
                 alignItems: "center",
                 backgroundColor: isHighlight ? "#1A0810" : "rgba(255,255,255,0.02)",
@@ -98,7 +103,7 @@ export default function SlideTramosInversion() {
                   ? "1.5px solid rgba(247,203,107,0.55)"
                   : "1px solid rgba(255,255,255,0.06)",
                 borderRadius: "0.7vw",
-                padding: "1.5vh 1.2vw",
+                padding: "1.4vh 1.2vw",
               }}
             >
               {/* Inversión */}
@@ -123,24 +128,29 @@ export default function SlideTramosInversion() {
                 </div>
               </div>
 
-              {/* Equity */}
-              <div style={{
-                fontSize: isHighlight ? "2.0vw" : "1.7vw",
-                fontWeight: 700,
-                background: isHighlight
-                  ? "linear-gradient(90deg, #F7CB6B, #FBA980)"
-                  : "none",
-                WebkitBackgroundClip: isHighlight ? "text" : "unset",
-                WebkitTextFillColor: isHighlight ? "transparent" : "unset",
-                backgroundClip: isHighlight ? "text" : "unset",
-                color: isHighlight ? undefined : "rgba(242,231,228,0.65)",
-              }}>
-                {fmtPct(t.equity)}
+              {/* Equity + tasa */}
+              <div>
+                <div style={{
+                  fontSize: isHighlight ? "2.0vw" : "1.7vw",
+                  fontWeight: 700,
+                  background: isHighlight
+                    ? "linear-gradient(90deg, #F7CB6B, #FBA980)"
+                    : "none",
+                  WebkitBackgroundClip: isHighlight ? "text" : "unset",
+                  WebkitTextFillColor: isHighlight ? "transparent" : "unset",
+                  backgroundClip: isHighlight ? "text" : "unset",
+                  color: isHighlight ? undefined : "rgba(242,231,228,0.65)",
+                }}>
+                  {fmtPct(t.equity)}
+                </div>
+                <div style={{ fontSize: "0.78vw", color: "rgba(247,203,107,0.55)", marginTop: "0.15vh" }}>
+                  {t.tasaMM.toFixed(2).replace(".", ",")}%/M
+                </div>
               </div>
 
-              {/* Post-money */}
+              {/* Valuación implícita */}
               <div style={{ fontSize: "1.3vw", color: "rgba(242,231,228,0.50)" }}>
-                ${t.postMoney.toFixed(1).replace(".", ",")}M CLP
+                ~${fmt(t.postMoney, 0)} CLP
               </div>
 
               {/* Stake M12 */}
@@ -170,8 +180,8 @@ export default function SlideTramosInversion() {
 
       {/* Footer note */}
       <div style={{ flexShrink: 0, borderTop: "1px solid rgba(247,203,107,0.12)", paddingTop: "1.5vh", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-        <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.32)", maxWidth: "68vw", lineHeight: 1.5 }}>
-          Stake M12 calculado sobre valoración base (5.000 suscriptores × $4.350 ARPU × 12 meses × 4× ARR = $1.044M CLP) · Retorno estimado ilustrativo, no garantizado · El retorno real depende del exit y dilución en rondas futuras.
+        <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.32)", maxWidth: "88vw", lineHeight: 1.5 }}>
+          Stake M12 calculado sobre valoración base (5.000 suscriptores × $4.350 ARPU × 12 meses × 4× ARR = $1.044B CLP) · Retorno estimado ilustrativo, no garantizado · El retorno real depende del exit y dilución en rondas futuras.
         </div>
       </div>
     </div>
