@@ -1257,7 +1257,7 @@ export default function HomeScreen2() {
                 colors={["rgba(255,255,255,0.04)", "rgba(255,255,255,0)"]}
                 style={StyleSheet.absoluteFill}
               />
-              <Image source={require("@/assets/images/icon-mixer-waves.png")} style={{ width: 22, height: 22, opacity: 0.9 }} resizeMode="contain" />
+              <Image source={require("@/assets/images/icon-mixer-new.png")} style={{ width: 22, height: 22, opacity: 0.9 }} resizeMode="contain" />
             </View>
           </Animated.View>
         </Pressable>
