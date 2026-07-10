@@ -153,7 +153,7 @@ function getWaveComponents(waveIndex: number, activeWaves: number): { color: str
 function wavePath(side: "left" | "right", index: number): string {
   const offset = WAVE_OFFSETS[index];
   const x = side === "left" ? CX - offset : CX + offset;
-  const arcH = BASE_ARC_H + index * ARC_H_INC + (index === 3 ? 3 : 0) + (index === 4 ? 4 : 0) + (index === 5 ? 6 : 0);
+  const arcH = BASE_ARC_H + index * ARC_H_INC + (index === 3 ? 3 : 0) + (index === 4 ? 4 : 0) + (index === 5 ? 6 : 0) + (index === 6 ? 8 : 0);
   const depth = BASE_DEPTH + index * DEPTH_INC;
   const top = CY - arcH / 2;
   const bot = CY + arcH / 2;
