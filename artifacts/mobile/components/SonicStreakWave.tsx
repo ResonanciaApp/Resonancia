@@ -161,7 +161,7 @@ export function SonicStreakWave() {
   return (
     <View style={styles.card}>
       {/* ── Ondas + número ── */}
-      <View style={{ width: COMP_W, height: SVG_H, alignItems: "center", justifyContent: "center" }}>
+      <View style={{ width: COMP_W, height: SVG_H, alignItems: "center", justifyContent: "center", marginTop: -15 }}>
         <Svg width={COMP_W} height={SVG_H} style={StyleSheet.absoluteFill}>
           <Defs>
             {/* Inactiva derecha */}
