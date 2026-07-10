@@ -28,9 +28,9 @@ const WAVE_OFFSETS: number[] = (() => {
   }
   return offsets;
 })();
-const BASE_ARC_H = 28;
+const BASE_ARC_H = 32;
 const ARC_H_INC = 10;
-const BASE_DEPTH = 7;
+const BASE_DEPTH = 11;
 const DEPTH_INC = 5;
 
 const COLOR_ACTIVE = "#D6A451";
