@@ -1221,19 +1221,7 @@ export default function HomeScreen2() {
           opacity: backdropAnim,
         }}
       >
-        {/* Logo + Saludo — izquierda */}
-        <View style={{ flex: 1, alignItems: "flex-start", justifyContent: "center", height: 44 }}>
-          <Animated.Image
-            source={require("@/assets/images/resonancia-hero-logo.png")}
-            style={{ width: 140, height: 37, opacity: logoOpacity, marginLeft: -2 }}
-            resizeMode="contain"
-          />
-          <Animated.Text numberOfLines={1} style={{ position: "absolute", color: "#FBFBFB", fontSize: 25, fontWeight: "400", letterSpacing: 0.3, opacity: greetingAnim5 }}>
-            {(() => { const h = new Date().getHours(); return h >= 6 && h < 12 ? "Buenos días" : h >= 12 && h < 19 ? "Buenas tardes" : "Buenas noches"; })()}
-          </Animated.Text>
-        </View>
-
-        {/* Loto + Mezclador — derecha */}
+        {/* Loto + Mezclador — izquierda */}
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <Pressable
             onPress={openEscenasSheet}
