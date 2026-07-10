@@ -405,7 +405,7 @@ export default function ExploreScreen() {
 
         {/* ── Barra de búsqueda ── */}
         <View style={styles.searchWrap}>
-          <BlurView intensity={28} tint="dark" style={[styles.searchBox, { overflow: "hidden" }]}>
+          <BlurView intensity={28} tint="dark" style={[styles.searchBox, { overflow: "hidden", borderColor: "rgba(255,255,255,0.5)", borderWidth: 1 }]}>
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
             <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
             <LinearGradient
@@ -523,6 +523,13 @@ export default function ExploreScreen() {
                         <>
                           <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
                           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+                          <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
+                          <LinearGradient
+                            colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
+                            start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+                            style={StyleSheet.absoluteFill}
+                            pointerEvents="none"
+                          />
                         </>
                       )}
                       <Text
@@ -642,12 +649,8 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.22)",
   },
-  durPillActive: {
-    borderColor: "transparent",
-  },
+  durPillActive: {},
   durPillText: {
     fontSize: 14,
     fontWeight: "600",
