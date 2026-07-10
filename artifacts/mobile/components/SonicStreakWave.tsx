@@ -240,7 +240,7 @@ export function SonicStreakWave() {
                         <Stop offset="1" stopColor={borderColor1} stopOpacity="0.53" />
                       </SvgGradient>
                     </Defs>
-                    <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#swsg${i})`} strokeWidth={2} fill="rgba(255,255,255,0.11)" />
+                    <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#swsg${i})`} strokeWidth={2} fill="rgba(255,255,255,0.18)" />
                   </Svg>
                   <Feather name="check" size={18} color="rgba(255,255,255,0.9)" />
                 </View>
@@ -253,7 +253,7 @@ export function SonicStreakWave() {
                         <Stop offset="1" stopColor={borderColor1} stopOpacity="0.53" />
                       </SvgGradient>
                     </Defs>
-                    <Circle cx={19.5} cy={19.5} r={17.5} stroke="url(#swsgToday)" strokeWidth={2} fill="rgba(255,255,255,0.11)" />
+                    <Circle cx={19.5} cy={19.5} r={17.5} stroke="url(#swsgToday)" strokeWidth={2} fill="rgba(255,255,255,0.18)" />
                   </Svg>
                 </View>
               ) : (
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
     marginBottom: 1,
   },
   circleInactive: {
-    backgroundColor: "rgba(255,255,255,0.11)",
+    backgroundColor: "rgba(255,255,255,0.18)",
   },
   dayLabel: {
     color: "#c2c2c2",
