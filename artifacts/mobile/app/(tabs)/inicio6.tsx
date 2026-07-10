@@ -931,6 +931,20 @@ export default function HomeScreen2() {
               style={{ position: "absolute", top: 0, right: 0, width: StyleSheet.hairlineWidth, bottom: 0 }}
               pointerEvents="none"
             />
+            {/* Curva esquina superior-izquierda */}
+            <LinearGradient
+              colors={["rgba(255,255,255,0.28)", "rgba(255,255,255,0)"]}
+              start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
+              style={{ position: "absolute", top: 0, left: 0, width: 18, height: 18 }}
+              pointerEvents="none"
+            />
+            {/* Curva esquina superior-derecha */}
+            <LinearGradient
+              colors={["rgba(255,255,255,0.20)", "rgba(255,255,255,0)"]}
+              start={{ x: 1, y: 0 }} end={{ x: 0, y: 1 }}
+              style={{ position: "absolute", top: 0, right: 0, width: 18, height: 18 }}
+              pointerEvents="none"
+            />
             <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
               <LinearGradient
                 colors={["rgb(247,203,107)", "rgb(251,169,128)"]}
