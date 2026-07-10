@@ -210,7 +210,7 @@ export function WeeklyStreakStrip() {
               cx={RING_SIZE / 2}
               cy={RING_SIZE / 2}
               r={RADIUS}
-              stroke="#3E1F28"
+              stroke="#672437"
               strokeWidth={STROKE_W}
               fill="none"
             />
