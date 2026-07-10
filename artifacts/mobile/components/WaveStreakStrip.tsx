@@ -14,7 +14,7 @@ const CX = COMP_W / 2;
 const CY = SVG_H * 0.47;
 
 const N_WAVES = 7;
-const CENTER_GAP = 30;
+const CENTER_GAP = 33;
 const BASE_GAP = 11;      // hueco entre onda 0 y 1
 const GAP_GROW = 1.10;    // cada hueco es 10% mayor que el anterior
 
