@@ -1232,7 +1232,7 @@ export default function HomeScreen2() {
                 colors={["rgba(255,255,255,0.04)", "rgba(255,255,255,0)"]}
                 style={StyleSheet.absoluteFill}
               />
-              <Feather name="sliders" size={22} color="#FFFFFF" style={{ opacity: 0.9 }} />
+              <Image source={require("@/assets/images/icon-mixer-waves.png")} style={{ width: 22, height: 22, opacity: 0.9 }} resizeMode="contain" />
             </View>
           </Animated.View>
         </Pressable>
