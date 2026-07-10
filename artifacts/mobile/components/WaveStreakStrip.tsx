@@ -313,7 +313,7 @@ export function WaveStreakStrip({ scrollY }: Props) {
       </Animated.View>
 
       {/* ── Bolitas de días ── */}
-      <View style={[styles.row, { marginTop: -26 }]}>
+      <View style={[styles.row, { marginTop: -22 }]}>
         {DAY_LABELS.map((label, i) => {
           const met = activeFlags[i];
           const isToday = i === todayIndex;
