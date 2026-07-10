@@ -1694,8 +1694,8 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   resonadoresBannerTitle: {
-    fontSize: 18,
-    fontWeight: "700",
+    fontSize: 16,
+    fontWeight: "400",
     color: "#FBFBFB",
   },
   resonadoresBannerSub: {
