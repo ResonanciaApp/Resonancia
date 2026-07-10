@@ -20,9 +20,11 @@ type SacredBackgroundProps = {
   variant?: "texture" | "solid" | "gradient";
   /** Color del fondo sólido (solo aplica con variant="solid"). */
   solidColor?: string;
+  /** Si es true, omite la imagen de fondo aunque el tema la tenga (solo aplica con variant="gradient"). */
+  noImage?: boolean;
 };
 
-export function SacredBackground({ variant = "solid", solidColor }: SacredBackgroundProps) {
+export function SacredBackground({ variant = "solid", solidColor, noImage = false }: SacredBackgroundProps) {
   const { theme } = useSceneTheme();
 
   if (variant === "solid") {
@@ -35,7 +37,7 @@ export function SacredBackground({ variant = "solid", solidColor }: SacredBackgr
   }
 
   if (variant === "gradient") {
-    if (theme.backgroundImage != null) {
+    if (theme.backgroundImage != null && !noImage) {
       return (
         <View style={StyleSheet.absoluteFill} pointerEvents="none">
           <Image
