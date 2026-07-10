@@ -393,7 +393,8 @@ const styles = StyleSheet.create({
   },
   message: {
     color: "#FBFBFB",
-    fontSize: 12,
+    fontSize: 11,
+    fontWeight: "300",
     lineHeight: 19,
     textAlign: "center",
     marginTop: -3,
