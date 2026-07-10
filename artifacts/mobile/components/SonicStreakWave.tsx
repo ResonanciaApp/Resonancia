@@ -203,13 +203,13 @@ export function SonicStreakWave() {
           </Defs>
 
           {/* Onda derecha: inactiva debajo, dorada encima (sin clip) */}
-          <G transform={`translate(${RIGHT_START}, ${CY})`}>
+          <G transform={`translate(${RIGHT_START + 2}, ${CY})`}>
             <Path d={RIGHT_PATH} stroke="url(#swInactR)" strokeWidth={3} strokeLinecap="butt" fill="none" />
             <Path d={RIGHT_PATH} stroke="url(#swGradR)"  strokeWidth={3} strokeLinecap="butt" fill="none" />
           </G>
 
           {/* Onda izquierda */}
-          <G transform={`translate(${LEFT_START}, ${CY})`}>
+          <G transform={`translate(${LEFT_START + 2}, ${CY})`}>
             <Path d={LEFT_PATH} stroke="url(#swInactL)" strokeWidth={3} strokeLinecap="butt" fill="none" />
             <Path d={LEFT_PATH} stroke="url(#swGradL)"  strokeWidth={3} strokeLinecap="butt" fill="none" />
           </G>
