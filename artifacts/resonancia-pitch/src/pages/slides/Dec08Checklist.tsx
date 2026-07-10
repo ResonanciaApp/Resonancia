@@ -19,12 +19,12 @@ export default function Dec08Checklist() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden"
-      style={{ backgroundColor: "#0E0508", color: "#F4DAD5", fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
+      style={{ backgroundColor: "#1A0810", color: "#F4DAD5", fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
     >
       <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px)", backgroundSize: "8vw 8vw", zIndex: 0 }} />
 
       <div style={{ position: "absolute", top: 0, left: 0, right: 0, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "3.5vh 5vw", borderBottom: "1px solid rgba(212,175,55,0.15)", zIndex: 2 }}>
-        <span style={{ fontSize: "0.85vw", fontWeight: 700, letterSpacing: "0.06em", background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>RESONANCIA</span>
+        <span style={{ fontSize: "0.85vw", fontWeight: 700, letterSpacing: "0.06em", background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>RESONANCIA</span>
         <div style={{ fontSize: "0.8vw", color: "rgba(242,231,228,0.35)", letterSpacing: "0.1em" }}>CHECKLIST DE LANZAMIENTO</div>
       </div>
 
@@ -57,7 +57,7 @@ export default function Dec08Checklist() {
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "2vh 5vw", borderTop: "1px solid rgba(212,175,55,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 2 }}>
         <span style={{ fontSize: "0.8vw", color: "rgba(242,231,228,0.25)" }}>Casa del Cuenco · Uso interno · Confidencial</span>
         <div style={{ display: "flex", alignItems: "center", gap: "0.5vw" }}>
-          <div style={{ width: "0.4vw", height: "0.4vw", borderRadius: "50%", background: "linear-gradient(135deg, #D4AF37, #E9C46A)" }} />
+          <div style={{ width: "0.4vw", height: "0.4vw", borderRadius: "50%", background: "linear-gradient(135deg, #F7CB6B, #FBA980)" }} />
           <span style={{ fontSize: "0.8vw", color: "rgba(242,231,228,0.25)" }}>RESONANCIA 2026</span>
         </div>
       </div>

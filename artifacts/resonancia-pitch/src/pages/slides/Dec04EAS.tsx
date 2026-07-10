@@ -16,15 +16,15 @@ export default function Dec04EAS() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden"
-      style={{ backgroundColor: "#0E0508", color: "#F4DAD5", fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
+      style={{ backgroundColor: "#1A0810", color: "#F4DAD5", fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
     >
       <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px)", backgroundSize: "8vw 8vw", zIndex: 0 }} />
 
       <div style={{ position: "absolute", top: 0, left: 0, right: 0, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "3.5vh 5vw", borderBottom: "1px solid rgba(212,175,55,0.15)", zIndex: 2 }}>
-        <span style={{ fontSize: "0.85vw", fontWeight: 700, letterSpacing: "0.06em", background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>RESONANCIA</span>
+        <span style={{ fontSize: "0.85vw", fontWeight: 700, letterSpacing: "0.06em", background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>RESONANCIA</span>
         <div style={{ display: "flex", alignItems: "center", gap: "0.8vw" }}>
           <span style={{ fontSize: "0.8vw", color: "rgba(242,231,228,0.35)", letterSpacing: "0.1em" }}>DECISIÓN</span>
-          <span style={{ fontSize: "1.4vw", fontWeight: 700, color: "#D4AF37" }}>02</span>
+          <span style={{ fontSize: "1.4vw", fontWeight: 700, color: "#F7CB6B" }}>02</span>
         </div>
       </div>
 
@@ -36,14 +36,14 @@ export default function Dec04EAS() {
           {/* Done */}
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.8vw", marginBottom: "1.5vh" }}>
-              <div style={{ width: "0.5vw", height: "0.5vw", borderRadius: "50%", background: "#D4AF37" }} />
-              <span style={{ fontSize: "0.8vw", fontWeight: 600, color: "#D4AF37", letterSpacing: "0.12em", textTransform: "uppercase" }}>Listo en código</span>
+              <div style={{ width: "0.5vw", height: "0.5vw", borderRadius: "50%", background: "#F7CB6B" }} />
+              <span style={{ fontSize: "0.8vw", fontWeight: 600, color: "#F7CB6B", letterSpacing: "0.12em", textTransform: "uppercase" }}>Listo en código</span>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.9vh" }}>
               {done.map((item, i) => (
                 <div key={i} style={{ background: "rgba(212,175,55,0.05)", border: "1px solid rgba(212,175,55,0.13)", borderRadius: "0.6vw", padding: "1.4vh 1.5vw" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "0.8vw", marginBottom: "0.4vh" }}>
-                    <span style={{ color: "#D4AF37", fontSize: "0.9vw" }}>✅</span>
+                    <span style={{ color: "#F7CB6B", fontSize: "0.9vw" }}>✅</span>
                     <span style={{ fontSize: "0.95vw", fontWeight: 600, color: "#F4DAD5" }}>{item.label}</span>
                   </div>
                   <div style={{ fontSize: "0.82vw", color: "rgba(242,231,228,0.45)", paddingLeft: "1.7vw" }}>{item.detail}</div>
@@ -69,7 +69,7 @@ export default function Dec04EAS() {
                     <div style={{ fontSize: "0.82vw", color: "rgba(242,231,228,0.3)", paddingLeft: "1.7vw" }}>{item.detail}</div>
                   </div>
                   {item.cost && (
-                    <span style={{ fontSize: "0.82vw", fontWeight: 700, color: "#D4AF37", background: "rgba(212,175,55,0.1)", borderRadius: "0.4vw", padding: "0.3vh 0.7vw", whiteSpace: "nowrap", marginLeft: "1vw", flexShrink: 0 }}>{item.cost}</span>
+                    <span style={{ fontSize: "0.82vw", fontWeight: 700, color: "#F7CB6B", background: "rgba(212,175,55,0.1)", borderRadius: "0.4vw", padding: "0.3vh 0.7vw", whiteSpace: "nowrap", marginLeft: "1vw", flexShrink: 0 }}>{item.cost}</span>
                   )}
                 </div>
               ))}

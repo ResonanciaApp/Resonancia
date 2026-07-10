@@ -19,7 +19,7 @@ export default function SlideFinanzas2() {
   const maxSubs = 5000;
 
   const scenarios = [
-    { label: "Base",        subs12: "5.000",  ing12: "$16,5M/mes", ingAnual: "~$121M", background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", highlight: true },
+    { label: "Base",        subs12: "5.000",  ing12: "$16,5M/mes", ingAnual: "~$121M", background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", highlight: true },
     { label: "Optimista",   subs12: "8.000",  ing12: "$26,4M/mes", ingAnual: "~$193M", color: "#6EC49A" },
     { label: "Agresivo",    subs12: "10.000", ing12: "$33,0M/mes", ingAnual: "~$241M", color: "#6EC49A" },
   ];
@@ -27,7 +27,7 @@ export default function SlideFinanzas2() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ backgroundColor: "#1B060F", color: "#F4DAD5", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
+      style={{ backgroundColor: "#2E0D16", color: "#F4DAD5", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
@@ -35,7 +35,7 @@ export default function SlideFinanzas2() {
           ANEXO FINANCIERO · HOJA 2 DE 3
         </div>
         <div style={{ fontSize: "3.8vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Curva de crecimiento y <span style={{ background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>escenarios.</span>
+          Curva de crecimiento y <span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>escenarios.</span>
         </div>
       </div>
 
@@ -57,21 +57,21 @@ export default function SlideFinanzas2() {
                       width: "100%",
                       height: `${Math.max(pct, 2)}%`,
                       background: m.subs >= 1500
-                        ? "linear-gradient(180deg, #D4AF37 0%, #8A6A30 100%)"
+                        ? "linear-gradient(180deg, #F7CB6B 0%, #C8963E 100%)"
                         : m.subs > 0
                         ? "rgba(212,175,55,0.4)"
                         : "rgba(224,112,112,0.3)",
                       borderRadius: "0.25vw 0.25vw 0 0",
                     }} />
                   </div>
-                  <div style={{ fontSize: "0.9vw", color: "#3D4F62", textAlign: "center" }}>{m.label}</div>
+                  <div style={{ fontSize: "0.9vw", color: "#3D0E16", textAlign: "center" }}>{m.label}</div>
                 </div>
               );
             })}
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.8vh" }}>
             {[0, 1700, 3400, 5000].map(v => (
-              <div key={v} style={{ fontSize: "1vw", color: "#3D4F62" }}>{v === 0 ? "0" : `${v.toLocaleString("es-CL")}`}</div>
+              <div key={v} style={{ fontSize: "1vw", color: "#3D0E16" }}>{v === 0 ? "0" : `${v.toLocaleString("es-CL")}`}</div>
             ))}
           </div>
         </div>
@@ -86,8 +86,8 @@ export default function SlideFinanzas2() {
               key={s.label}
               style={{
                 padding: "1.6vh 1.4vw",
-                backgroundColor: s.highlight ? "#27070E" : "transparent",
-                border: `1.5px solid ${s.highlight ? "#D4AF37" : "rgba(255,255,255,0.09)"}`,
+                backgroundColor: s.highlight ? "#1A0810" : "transparent",
+                border: `1.5px solid ${s.highlight ? "#F7CB6B" : "rgba(255,255,255,0.09)"}`,
                 borderRadius: "0.8vw",
                 display: "flex",
                 alignItems: "center",
@@ -96,11 +96,11 @@ export default function SlideFinanzas2() {
             >
               <div style={{ width: "0.5vw", height: "3vh", backgroundColor: s.color, borderRadius: "0.2vw", flexShrink: 0 }} />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: "1.3vw", fontWeight: 700, color: s.highlight ? "#D4AF37" : "#F4DAD5" }}>{s.label}</div>
+                <div style={{ fontSize: "1.3vw", fontWeight: 700, color: s.highlight ? "#F7CB6B" : "#F4DAD5" }}>{s.label}</div>
                 <div style={{ fontSize: "1.1vw", color: "rgba(242,231,228,0.50)" }}>{s.subs12} suscriptores al mes 12</div>
               </div>
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: "1.55vw", fontWeight: 700, color: s.highlight ? "#D4AF37" : "#F4DAD5" }}>{s.ingAnual}</div>
+                <div style={{ fontSize: "1.55vw", fontWeight: 700, color: s.highlight ? "#F7CB6B" : "#F4DAD5" }}>{s.ingAnual}</div>
                 <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.50)" }}>{s.ing12}</div>
               </div>
             </div>
@@ -120,20 +120,20 @@ export default function SlideFinanzas2() {
             key={k.label}
             style={{
               padding: "1.8vh 1.2vw",
-              backgroundColor: "#27070E",
+              backgroundColor: "#1A0810",
               border: "1px solid rgba(212,175,55,0.18)",
               borderRadius: "0.8vw",
             }}
           >
             <div style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.50)", letterSpacing: "0.06em", marginBottom: "0.6vh" }}>{k.label.toUpperCase()}</div>
-            <div style={{ fontSize: "1.9vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1 }}>{k.value}</div>
-            <div style={{ fontSize: "1.05vw", color: "#3D4F62", marginTop: "0.5vh" }}>{k.sub}</div>
+            <div style={{ fontSize: "1.9vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1 }}>{k.value}</div>
+            <div style={{ fontSize: "1.05vw", color: "#3D0E16", marginTop: "0.5vh" }}>{k.sub}</div>
           </div>
         ))}
       </div>
 
       {/* Footnote */}
-      <div style={{ fontSize: "1.1vw", color: "#3D4F62", lineHeight: 1.5, marginTop: "2vh" }}>
+      <div style={{ fontSize: "1.1vw", color: "#3D0E16", lineHeight: 1.5, marginTop: "2vh" }}>
         Precio $6.900/mes (IVA 19% incl.) · $43.900/año · ARPU neto blended ~$3.300/mes (descontado IVA + comisión tienda 30%) ·
         Fijos $3,05M/mes (gerente $1,3M + coordinador $700K + TI $200K + hosting $250K + admin $250K + otros $350K) · Contenido $2,0M/mes desde M3 · Escenarios ilustrativos.
       </div>

@@ -12,7 +12,7 @@ export default function SlideValleDeCaja() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ backgroundColor: "#1B060F", color: "#F4DAD5", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
+      style={{ backgroundColor: "#2E0D16", color: "#F4DAD5", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
@@ -20,7 +20,7 @@ export default function SlideValleDeCaja() {
           ANEXO · USO DE LA INVERSIÓN
         </div>
         <div style={{ fontSize: "3.8vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          El valle de caja, <span style={{ background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>cubierto.</span>
+          El valle de caja, <span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>cubierto.</span>
         </div>
         <div style={{ fontSize: "1.45vw", color: "rgba(242,231,228,0.50)", marginTop: "1vh" }}>
           Cómo se reparte la ronda de US$30.000: construir y lanzar, sostener los meses en rojo y un colchón · escenario base
@@ -31,7 +31,7 @@ export default function SlideValleDeCaja() {
       <div style={{ flex: 1, display: "flex", gap: "2.5vw", alignItems: "stretch", marginTop: "2vh" }}>
         {/* Left: the valley */}
         <div style={{ flex: 1.15, display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: "0.08em", marginBottom: "1.5vh" }}>
+          <div style={{ fontSize: "1.1vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: "0.08em", marginBottom: "1.5vh" }}>
             MESES EN ROJO · ANTES DE CRECER
           </div>
 
@@ -72,7 +72,7 @@ export default function SlideValleDeCaja() {
           <div style={{
             marginTop: "2vh",
             padding: "2vh 1.8vw",
-            backgroundColor: "#27070E",
+            backgroundColor: "#1A0810",
             border: "1px solid rgba(224,112,112,0.35)",
             borderRadius: "0.7vw",
             display: "flex",
@@ -92,13 +92,13 @@ export default function SlideValleDeCaja() {
 
         {/* Right: how the round covers it */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: "1.1vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: "0.08em", marginBottom: "1.5vh" }}>
+          <div style={{ fontSize: "1.1vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: "0.08em", marginBottom: "1.5vh" }}>
             CÓMO SE DESPLIEGA LA RONDA
           </div>
 
           <div style={{
             flex: 1,
-            backgroundColor: "#27070E",
+            backgroundColor: "#1A0810",
             border: "1px solid rgba(212,175,55,0.3)",
             borderRadius: "0.9vw",
             padding: "2.4vh 2vw",
@@ -109,7 +109,7 @@ export default function SlideValleDeCaja() {
           }}>
             <div>
               <div style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.50)", letterSpacing: "0.06em" }}>RONDA TOTAL</div>
-              <div style={{ fontSize: "3.2vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1.05 }}>US$ 30.000</div>
+              <div style={{ fontSize: "3.2vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1.05 }}>US$ 30.000</div>
               <div style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.50)" }}>$27M CLP · TC $900</div>
             </div>
 
@@ -139,7 +139,7 @@ export default function SlideValleDeCaja() {
       </div>
 
       {/* Footnote */}
-      <div style={{ fontSize: "1.2vw", color: "#3D4F62", lineHeight: 1.5, marginTop: "2vh" }}>
+      <div style={{ fontSize: "1.2vw", color: "#3D0E16", lineHeight: 1.5, marginTop: "2vh" }}>
         Escenario base · ARPU neto blended ~$3.300/mes (post IVA 19% + comisión tienda 30%) · Fijos $3,05M/mes (sueldos en efectivo desde el mes 1) ·
         Contenido $0 en M1–2, $2,0M/mes desde M3 · El negocio se autofinancia desde el mes 4; la inversión cubre el arranque, no la operación continua.
       </div>

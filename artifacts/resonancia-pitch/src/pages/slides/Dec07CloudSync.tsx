@@ -2,15 +2,15 @@ export default function Dec07CloudSync() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden"
-      style={{ backgroundColor: "#0E0508", color: "#F4DAD5", fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
+      style={{ backgroundColor: "#1A0810", color: "#F4DAD5", fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
     >
       <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px)", backgroundSize: "8vw 8vw", zIndex: 0 }} />
 
       <div style={{ position: "absolute", top: 0, left: 0, right: 0, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "3.5vh 5vw", borderBottom: "1px solid rgba(212,175,55,0.15)", zIndex: 2 }}>
-        <span style={{ fontSize: "0.85vw", fontWeight: 700, letterSpacing: "0.06em", background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>RESONANCIA</span>
+        <span style={{ fontSize: "0.85vw", fontWeight: 700, letterSpacing: "0.06em", background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>RESONANCIA</span>
         <div style={{ display: "flex", alignItems: "center", gap: "0.8vw" }}>
           <span style={{ fontSize: "0.8vw", color: "rgba(242,231,228,0.35)", letterSpacing: "0.1em" }}>DECISIÓN</span>
-          <span style={{ fontSize: "1.4vw", fontWeight: 700, color: "#D4AF37" }}>06</span>
+          <span style={{ fontSize: "1.4vw", fontWeight: 700, color: "#F7CB6B" }}>06</span>
         </div>
       </div>
 
@@ -23,7 +23,7 @@ export default function Dec07CloudSync() {
             <h2 style={{ fontSize: "2.5vw", fontWeight: 700, margin: 0, letterSpacing: "-0.02em" }}>Sync en la Nube</h2>
           </div>
           <div style={{ display: "inline-flex", alignItems: "center", gap: "0.6vw", background: "rgba(212,175,55,0.1)", border: "1px solid rgba(212,175,55,0.25)", borderRadius: "2vw", padding: "0.6vh 1.2vw", marginBottom: "2.5vh" }}>
-            <span style={{ fontSize: "0.85vw", fontWeight: 700, color: "#D4AF37" }}>FASE 1 ACTIVA</span>
+            <span style={{ fontSize: "0.85vw", fontWeight: 700, color: "#F7CB6B" }}>FASE 1 ACTIVA</span>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "1vh" }}>
@@ -49,7 +49,7 @@ export default function Dec07CloudSync() {
               { label: "Favoritos / Progreso", rule: "Unión en primer sync, luego local autoritativo" },
             ].map((item, i) => (
               <div key={i} style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "0.6vw", padding: "1.4vh 1.5vw" }}>
-                <div style={{ fontSize: "0.78vw", fontWeight: 700, color: "#D4AF37", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "0.6vh" }}>{item.label}</div>
+                <div style={{ fontSize: "0.78vw", fontWeight: 700, color: "#F7CB6B", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "0.6vh" }}>{item.label}</div>
                 <div style={{ fontSize: "0.9vw", color: "rgba(242,231,228,0.6)", lineHeight: 1.4 }}>{item.rule}</div>
               </div>
             ))}

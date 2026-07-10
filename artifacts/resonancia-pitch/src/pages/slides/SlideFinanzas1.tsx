@@ -13,7 +13,7 @@ export default function SlideFinanzas1() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ backgroundColor: "#1B060F", color: "#F4DAD5", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
+      style={{ backgroundColor: "#2E0D16", color: "#F4DAD5", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
@@ -21,7 +21,7 @@ export default function SlideFinanzas1() {
           ANEXO FINANCIERO · HOJA 1 DE 3
         </div>
         <div style={{ fontSize: "3.8vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Flujo de caja <span style={{ background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>año 1.</span>
+          Flujo de caja <span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>año 1.</span>
         </div>
         <div style={{ fontSize: "1.45vw", color: "rgba(242,231,228,0.50)", marginTop: "1vh" }}>
           En millones de pesos chilenos (CLP) · TC referencial $900/USD · escenario base
@@ -39,7 +39,7 @@ export default function SlideFinanzas1() {
           marginBottom: "0.5vh",
         }}>
           {["Período", "Suscriptores", "Ingresos netos", "Fijo + mkt", "Contenido", "Resultado mes"].map((h) => (
-            <div key={h} style={{ fontSize: "1.15vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: "0.06em" }}>{h}</div>
+            <div key={h} style={{ fontSize: "1.15vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: "0.06em" }}>{h}</div>
           ))}
         </div>
 
@@ -59,7 +59,7 @@ export default function SlideFinanzas1() {
             <div style={{ fontSize: "1.45vw", color: "#F4DAD5" }}>{r.subs}</div>
             <div style={{ fontSize: "1.45vw", color: "#F4DAD5" }}>{r.ingreso}</div>
             <div style={{ fontSize: "1.45vw", color: "rgba(242,231,228,0.50)" }}>{r.costoFijo}</div>
-            <div style={{ fontSize: "1.45vw", color: r.costoVar === "$0" ? "#3D4F62" : "rgba(242,231,228,0.50)" }}>{r.costoVar}</div>
+            <div style={{ fontSize: "1.45vw", color: r.costoVar === "$0" ? "#3D0E16" : "rgba(242,231,228,0.50)" }}>{r.costoVar}</div>
             <div style={{ fontSize: "1.6vw", fontWeight: 700, color: r.neg ? "#E07070" : "#6EC49A" }}>{r.resultado}</div>
           </div>
         ))}
@@ -71,10 +71,10 @@ export default function SlideFinanzas1() {
           padding: "1.8vh 1.2vw",
           borderTop: "1px solid rgba(212,175,55,0.35)",
           marginTop: "0.8vh",
-          backgroundColor: "#27070E",
+          backgroundColor: "#1A0810",
           borderRadius: "0.6vw",
         }}>
-          <div style={{ fontSize: "1.5vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>AÑO 1 TOTAL</div>
+          <div style={{ fontSize: "1.5vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>AÑO 1 TOTAL</div>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#F4DAD5" }}>5.000 al cierre</div>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#F4DAD5" }}>~$121M</div>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "rgba(242,231,228,0.50)" }}>~$46M</div>
@@ -84,7 +84,7 @@ export default function SlideFinanzas1() {
       </div>
 
       {/* Footnote */}
-      <div style={{ fontSize: "1.2vw", color: "#3D4F62", lineHeight: 1.5 }}>
+      <div style={{ fontSize: "1.2vw", color: "#3D0E16", lineHeight: 1.5 }}>
         Ingresos netos = precio excl. IVA (19%) × 70% (comisión Apple/Google 30%) · ARPU neto blended ~$3.300/mes ·
         Contenido $0 en M1-2, $2,0M/mes desde M3 (~28 sesiones × $70.000 promedio) ·
         Fijo + mkt: gerente $1,3M + coordinador $700K + hosting $250K + asesoría TI $200K + admin $250K + otros $350K + marketing variable ·

@@ -2,7 +2,7 @@ export default function Slide08Modelo() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ backgroundColor: "#1B060F", color: "#F4DAD5", padding: "9vh 6vw", boxSizing: "border-box" }}
+      style={{ backgroundColor: "#2E0D16", color: "#F4DAD5", padding: "9vh 6vw", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
@@ -10,20 +10,20 @@ export default function Slide08Modelo() {
           07 · MODELO DE NEGOCIO
         </div>
         <div style={{ fontSize: "4.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "66vw" }}>
-          Suscripción <span style={{ background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>freemium.</span>
+          Suscripción <span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>freemium.</span>
         </div>
       </div>
 
       {/* Two columns Free vs Premium */}
       <div style={{ display: "flex", gap: "2.5vw" }}>
-        <div style={{ flex: 1, backgroundColor: "#27070E", borderRadius: "1vw", padding: "3.5vh 2.2vw", boxSizing: "border-box" }}>
+        <div style={{ flex: 1, backgroundColor: "#1A0810", borderRadius: "1vw", padding: "3.5vh 2.2vw", boxSizing: "border-box" }}>
           <div style={{ fontSize: "2.2vw", fontWeight: 700, color: "#F4DAD5", marginBottom: "2.2vh" }}>Free</div>
           <div style={{ fontSize: "1.6vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.7 }}>
             Sesiones sampler · Intención y frase del día · Comunidad completa · Diario y favoritos limitados · Temporizador hasta 30 min
           </div>
         </div>
-        <div style={{ flex: 1, border: "1.5px solid #D4AF37", borderRadius: "1vw", padding: "3.5vh 2.2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "2.2vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "2.2vh" }}>Premium</div>
+        <div style={{ flex: 1, border: "1.5px solid #F7CB6B", borderRadius: "1vw", padding: "3.5vh 2.2vw", boxSizing: "border-box" }}>
+          <div style={{ fontSize: "2.2vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "2.2vh" }}>Premium</div>
           <div style={{ fontSize: "1.6vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.7 }}>
             Catálogo completo · Descargas offline · Diario y favoritos ilimitados · Temporizador hasta 8 hs · Estadísticas y personalización avanzada
           </div>
@@ -41,13 +41,13 @@ export default function Slide08Modelo() {
           <div key={s.big} style={{ display: "flex", alignItems: "center", gap: "0.8vw", flex: 1 }}>
             <div style={{
               flex: 1,
-              backgroundColor: s.gold ? "rgba(212,175,55,0.08)" : "#27070E",
-              border: s.gold ? "1.5px solid #D4AF37" : "1px solid rgba(255,255,255,0.08)",
+              backgroundColor: s.gold ? "rgba(212,175,55,0.08)" : "#1A0810",
+              border: s.gold ? "1.5px solid #F7CB6B" : "1px solid rgba(255,255,255,0.08)",
               borderRadius: "0.8vw",
               padding: "1.8vh 0.8vw",
               textAlign: "center",
             }}>
-              <div style={{ fontSize: "2vw", fontWeight: 700, color: s.gold ? "#D4AF37" : "#F4DAD5", lineHeight: 1 }}>{s.big}</div>
+              <div style={{ fontSize: "2vw", fontWeight: 700, color: s.gold ? "#F7CB6B" : "#F4DAD5", lineHeight: 1 }}>{s.big}</div>
               <div style={{ fontSize: "0.95vw", color: "rgba(242,231,228,0.50)", marginTop: "0.6vh" }}>{s.small}</div>
             </div>
             {i < 3 && <div style={{ fontSize: "1.6vw", color: "rgba(212,175,55,0.5)", flexShrink: 0 }}>→</div>}
@@ -62,7 +62,7 @@ export default function Slide08Modelo() {
         </div>
         <div style={{ flex: 1, textAlign: "right" }}>
           <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)" }}>Precios sugeridos</div>
-          <div style={{ fontSize: "2vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>[mensual] · [anual]</div>
+          <div style={{ fontSize: "2vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>[mensual] · [anual]</div>
         </div>
       </div>
     </div>

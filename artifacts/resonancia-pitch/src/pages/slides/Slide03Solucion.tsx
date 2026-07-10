@@ -2,7 +2,7 @@ export default function Slide03Solucion() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ backgroundColor: "#1B060F", color: "#F4DAD5", padding: "9vh 6vw", boxSizing: "border-box" }}
+      style={{ backgroundColor: "#2E0D16", color: "#F4DAD5", padding: "9vh 6vw", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
@@ -10,26 +10,26 @@ export default function Slide03Solucion() {
           02 · LA SOLUCIÓN
         </div>
         <div style={{ fontSize: "4.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "66vw" }}>
-          Un refugio de sonido, <span style={{ background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>nativo en español.</span>
+          Un refugio de sonido, <span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>nativo en español.</span>
         </div>
       </div>
 
       {/* Three columns */}
       <div style={{ display: "flex", gap: "2.5vw" }}>
-        <div style={{ flex: 1, backgroundColor: "#27070E", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "2vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>Voz propia</div>
+        <div style={{ flex: 1, backgroundColor: "#1A0810", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
+          <div style={{ fontSize: "2vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>Voz propia</div>
           <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.5 }}>
             Meditaciones, historias y voces guía creadas en español neutro, no traducidas.
           </div>
         </div>
-        <div style={{ flex: 1, backgroundColor: "#27070E", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "2vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>Sonido ancestral</div>
+        <div style={{ flex: 1, backgroundColor: "#1A0810", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
+          <div style={{ fontSize: "2vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>Sonido ancestral</div>
           <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.5 }}>
             Cuencos, frecuencias binaurales y música ambiente curada por artistas certificados.
           </div>
         </div>
-        <div style={{ flex: 1, backgroundColor: "#27070E", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "2vw", fontWeight: 700, background: "linear-gradient(90deg, #D4AF37, #E9C46A)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>Comunidad</div>
+        <div style={{ flex: 1, backgroundColor: "#1A0810", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
+          <div style={{ fontSize: "2vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>Comunidad</div>
           <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.5 }}>
             Diario, intención del día y un espacio para acompañarse entre personas.
           </div>
