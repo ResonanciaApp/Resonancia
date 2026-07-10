@@ -138,30 +138,31 @@ export default function VideoTabScreen() {
             {FILTER_CHIPS.map((chip) => {
               const sel = chip === activeChip;
               return (
-                <Pressable
-                  key={chip}
-                  onPress={() => setActiveChip(chip)}
-                  style={[styles.chip, sel && styles.chipSel]}
-                >
-                  {sel ? (
-                    <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
-                  ) : (
-                    <>
-                      <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
-                      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
-                      <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
-                      <LinearGradient
-                        colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
-                        start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-                        style={StyleSheet.absoluteFill}
-                        pointerEvents="none"
-                      />
-                    </>
-                  )}
-                  <Text style={[styles.chipText, { color: sel ? "#2D0D3A" : "#F4F4F4" }]}>
-                    {chip}
-                  </Text>
-                </Pressable>
+                <View key={chip} style={styles.chipBorderWrap}>
+                  <Pressable
+                    onPress={() => setActiveChip(chip)}
+                    style={[styles.chip, sel && styles.chipSel]}
+                  >
+                    {sel ? (
+                      <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+                    ) : (
+                      <>
+                        <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
+                        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+                        <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
+                        <LinearGradient
+                          colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
+                          start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+                          style={StyleSheet.absoluteFill}
+                          pointerEvents="none"
+                        />
+                      </>
+                    )}
+                    <Text style={[styles.chipText, { color: sel ? "#2D0D3A" : "#F4F4F4" }]}>
+                      {chip}
+                    </Text>
+                  </Pressable>
+                </View>
               );
             })}
           </ScrollView>
@@ -270,6 +271,11 @@ const styles = StyleSheet.create({
   chipsRow: { paddingHorizontal: 19, gap: 8, alignItems: "center" },
   chipBorder: {},
   chipBorderSel: {},
+  chipBorderWrap: {
+    borderRadius: 999,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.06)",
+  },
   chip: {
     borderRadius: 999,
     paddingHorizontal: 14,
@@ -277,8 +283,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.06)",
   },
   chipSel: {},
   chipText: { fontSize: 11, fontWeight: "380" },
