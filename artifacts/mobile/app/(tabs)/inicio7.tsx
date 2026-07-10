@@ -1234,9 +1234,16 @@ export default function HomeScreen2() {
           <Pressable
             onPress={openEscenasSheet}
             hitSlop={8}
-            style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1, backgroundColor: "rgba(255,255,255,0.08)" }]}
+            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1 }]}
           >
-            <MaterialCommunityIcons name="spa" size={23} color="#f9f9f9" style={{ marginTop: 1 }} />
+            <View style={styles.giftBtnInner}>
+              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+              <LinearGradient
+                colors={["rgba(255,255,255,0.04)", "rgba(255,255,255,0)"]}
+                style={StyleSheet.absoluteFill}
+              />
+              <MaterialCommunityIcons name="spa" size={23} color="#f9f9f9" style={{ marginTop: 1 }} />
+            </View>
           </Pressable>
 
           <Pressable
