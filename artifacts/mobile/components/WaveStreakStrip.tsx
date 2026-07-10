@@ -21,7 +21,7 @@ const CY = SVG_H * 0.47;
 
 const N_WAVES = 7;
 const CENTER_GAP = 33;
-const BASE_GAP = 15;      // hueco entre onda 0 y 1
+const BASE_GAP = 10;      // hueco entre onda 0 y 1
 const GAP_GROW = 1.10;    // cada hueco es 10% mayor que el anterior
 
 // Distancias acumuladas desde el centro para cada onda
