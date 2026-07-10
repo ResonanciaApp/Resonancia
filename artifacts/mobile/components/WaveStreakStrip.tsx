@@ -107,7 +107,6 @@ function getWaveComponents(waveIndex: number, activeWaves: number): { color: str
   }
   // Activas: rampa de saturación de color, opacidad plena
   const t = activeWaves <= 1 ? 1 : waveIndex / (activeWaves - 1);
-  if (waveIndex === activeWaves - 1) return { color: COLOR_HIGHLIGHT, opacity: 1 };
   return { color: lerpColor(SAT_LOW, SAT_HIGH, t), opacity: 1 };
 }
 
