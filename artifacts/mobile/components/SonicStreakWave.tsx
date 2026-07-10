@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
   },
   number: {
     color: "#F9F9F9",
-    fontSize: 48,
+    fontSize: 52,
     fontWeight: "700",
     lineHeight: 44,
     letterSpacing: -1,
