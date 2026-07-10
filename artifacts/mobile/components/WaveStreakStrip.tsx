@@ -212,7 +212,7 @@ export function WaveStreakStrip() {
     <View style={styles.card}>
       {/* ── Ondas + número ── */}
       <View style={{ width: COMP_W, height: SVG_H, marginTop: 20 }}>
-        <Svg width={COMP_W} height={SVG_H} style={{ position: "absolute", top: -14, left: 0, right: 0, bottom: 0 }}>
+        <Svg width={COMP_W} height={SVG_H} style={{ position: "absolute", top: -14, left: -1, right: 0, bottom: 0 }}>
           <Defs>
             {Array.from({ length: N_WAVES }, (_, i) => {
               const { color, opacity } = getWaveComponents(i, activeWaves);
