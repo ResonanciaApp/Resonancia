@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import React, { useMemo } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
-import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Path, Stop } from "react-native-svg";
+import Svg, { Circle, Defs, G, LinearGradient as SvgLinearGradient, Path, Stop } from "react-native-svg";
 
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -175,28 +175,30 @@ export function WaveStreakStrip() {
             })}
           </Defs>
 
-          {/* Ondas izquierda (de exterior a interior para que el interior quede encima) */}
-          {Array.from({ length: N_WAVES }, (_, i) => N_WAVES - 1 - i).map((waveIdx) => (
-            <Path
-              key={`L${waveIdx}`}
-              d={wavePath("left", waveIdx)}
-              stroke={`url(#wg${waveIdx})`}
-              strokeWidth={1.6}
-              strokeLinecap="butt"
-              fill="none"
-            />
-          ))}
-          {/* Ondas derecha */}
-          {Array.from({ length: N_WAVES }, (_, i) => N_WAVES - 1 - i).map((waveIdx) => (
-            <Path
-              key={`R${waveIdx}`}
-              d={wavePath("right", waveIdx)}
-              stroke={`url(#wg${waveIdx})`}
-              strokeWidth={1.6}
-              strokeLinecap="butt"
-              fill="none"
-            />
-          ))}
+          <G transform="translate(-3, 0)">
+            {/* Ondas izquierda (de exterior a interior para que el interior quede encima) */}
+            {Array.from({ length: N_WAVES }, (_, i) => N_WAVES - 1 - i).map((waveIdx) => (
+              <Path
+                key={`L${waveIdx}`}
+                d={wavePath("left", waveIdx)}
+                stroke={`url(#wg${waveIdx})`}
+                strokeWidth={1.6}
+                strokeLinecap="butt"
+                fill="none"
+              />
+            ))}
+            {/* Ondas derecha */}
+            {Array.from({ length: N_WAVES }, (_, i) => N_WAVES - 1 - i).map((waveIdx) => (
+              <Path
+                key={`R${waveIdx}`}
+                d={wavePath("right", waveIdx)}
+                stroke={`url(#wg${waveIdx})`}
+                strokeWidth={1.6}
+                strokeLinecap="butt"
+                fill="none"
+              />
+            ))}
+          </G>
         </Svg>
 
         {/* Número centrado */}
