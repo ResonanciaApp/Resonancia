@@ -172,32 +172,28 @@ export function SonicStreakWave() {
       <View style={{ width: COMP_W, height: SVG_H, alignItems: "center", justifyContent: "center", marginTop: -15 }}>
         <Svg width={COMP_W} height={SVG_H} style={StyleSheet.absoluteFill}>
           <Defs>
-            {/* Inactiva derecha */}
+            {/* Inactiva derecha — sólida en el inicio, fade solo en extremo exterior */}
             <SvgGradient id="swInactR" x1={0} y1={0} x2={WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
-              <Stop offset="0"    stopColor="#714A70" stopOpacity="0"    />
-              <Stop offset="0.06" stopColor="#714A70" stopOpacity="0.25" />
+              <Stop offset="0"    stopColor="#714A70" stopOpacity="0.25" />
               <Stop offset="0.86" stopColor="#714A70" stopOpacity="0.25" />
               <Stop offset="1"    stopColor="#714A70" stopOpacity="0"    />
             </SvgGradient>
             {/* Inactiva izquierda */}
             <SvgGradient id="swInactL" x1={0} y1={0} x2={-WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
-              <Stop offset="0"    stopColor="#714A70" stopOpacity="0"    />
-              <Stop offset="0.06" stopColor="#714A70" stopOpacity="0.25" />
+              <Stop offset="0"    stopColor="#714A70" stopOpacity="0.25" />
               <Stop offset="0.86" stopColor="#714A70" stopOpacity="0.25" />
               <Stop offset="1"    stopColor="#714A70" stopOpacity="0"    />
             </SvgGradient>
-            {/* Activa derecha: color del tema hasta fadeStart → fade suave → transparente */}
+            {/* Activa derecha: sólida en inicio, fade solo en borde de progreso */}
             <SvgGradient id="swGradR" x1={0} y1={0} x2={WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
-              <Stop offset={0}          stopColor={waveHigh} stopOpacity={progress > 0 ? 0 : 0} />
-              <Stop offset={0.06}       stopColor={waveHigh} stopOpacity={progress > 0 ? 1 : 0} />
+              <Stop offset={0}          stopColor={waveHigh} stopOpacity={progress > 0 ? 1 : 0} />
               <Stop offset={fadeStart}  stopColor={waveMid}  stopOpacity={progress > 0 ? 1 : 0} />
               <Stop offset={fadeEnd}    stopColor={waveLow}  stopOpacity={0} />
               <Stop offset={1}          stopColor={waveLow}  stopOpacity={0} />
             </SvgGradient>
             {/* Activa izquierda */}
             <SvgGradient id="swGradL" x1={0} y1={0} x2={-WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
-              <Stop offset={0}          stopColor={waveHigh} stopOpacity={progress > 0 ? 0 : 0} />
-              <Stop offset={0.06}       stopColor={waveHigh} stopOpacity={progress > 0 ? 1 : 0} />
+              <Stop offset={0}          stopColor={waveHigh} stopOpacity={progress > 0 ? 1 : 0} />
               <Stop offset={fadeStart}  stopColor={waveMid}  stopOpacity={progress > 0 ? 1 : 0} />
               <Stop offset={fadeEnd}    stopColor={waveLow}  stopOpacity={0} />
               <Stop offset={1}          stopColor={waveLow}  stopOpacity={0} />
@@ -206,14 +202,14 @@ export function SonicStreakWave() {
 
           {/* Onda derecha: inactiva debajo, dorada encima (sin clip) */}
           <G transform={`translate(${RIGHT_START}, ${CY})`}>
-            <Path d={RIGHT_PATH} stroke="url(#swInactR)" strokeWidth={3} strokeLinecap="butt" fill="none" />
-            <Path d={RIGHT_PATH} stroke="url(#swGradR)"  strokeWidth={3} strokeLinecap="butt" fill="none" />
+            <Path d={RIGHT_PATH} stroke="url(#swInactR)" strokeWidth={3} strokeLinecap="round" fill="none" />
+            <Path d={RIGHT_PATH} stroke="url(#swGradR)"  strokeWidth={3} strokeLinecap="round" fill="none" />
           </G>
 
           {/* Onda izquierda */}
           <G transform={`translate(${LEFT_START + 2}, ${CY})`}>
-            <Path d={LEFT_PATH} stroke="url(#swInactL)" strokeWidth={3} strokeLinecap="butt" fill="none" />
-            <Path d={LEFT_PATH} stroke="url(#swGradL)"  strokeWidth={3} strokeLinecap="butt" fill="none" />
+            <Path d={LEFT_PATH} stroke="url(#swInactL)" strokeWidth={3} strokeLinecap="round" fill="none" />
+            <Path d={LEFT_PATH} stroke="url(#swGradL)"  strokeWidth={3} strokeLinecap="round" fill="none" />
           </G>
         </Svg>
 
