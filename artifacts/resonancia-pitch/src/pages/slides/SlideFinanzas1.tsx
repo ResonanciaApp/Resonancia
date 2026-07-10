@@ -72,12 +72,12 @@ export default function SlideFinanzas1() {
               border: r.neg ? "1px solid rgba(224,112,112,0.14)" : "none",
             }}
           >
-            <div style={{ fontSize: "1.4vw", fontWeight: 700, color: r.neg ? "#E07070" : "#F4DAD5" }}>{r.mes}</div>
+            <div style={{ fontSize: "1.4vw", fontWeight: 700, color: r.neg ? "#F9F9F9" : "#F4DAD5" }}>{r.mes}</div>
             <div style={{ fontSize: "1.4vw", color: "#F4DAD5" }}>{r.subs}</div>
             <div style={{ fontSize: "1.4vw", color: "#F4DAD5" }}>{r.ingreso}</div>
             <div style={{ fontSize: "1.4vw", color: "rgba(242,231,228,0.50)" }}>{r.costoFijo}</div>
             <div style={{ fontSize: "1.4vw", color: r.costoVar === "$0" ? "#3D0E16" : "rgba(242,231,228,0.50)" }}>{r.costoVar}</div>
-            <div style={{ fontSize: "1.5vw", fontWeight: 700, color: r.neg ? "#E07070" : "#6EC49A" }}>{r.resultado}</div>
+            <div style={{ fontSize: "1.5vw", fontWeight: 700, color: r.neg ? "#F9F9F9" : "#6EC49A" }}>{r.resultado}</div>
           </div>
         ))}
 

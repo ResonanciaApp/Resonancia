@@ -46,7 +46,7 @@ export default function SlideValleDeCaja() {
             {preLaunch.map((m) => (
               <div key={m.mes} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "22vh" }}>
                 <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "flex-start", width: "100%", alignItems: "center" }}>
-                  <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#E07070", marginBottom: "0.6vh" }}>{m.val}</div>
+                  <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#F9F9F9", marginBottom: "0.6vh" }}>{m.val}</div>
                   <div
                     style={{
                       width: "70%",
@@ -98,7 +98,7 @@ export default function SlideValleDeCaja() {
             }}>
               <div style={{ fontSize: "1.05vw", fontWeight: 700, color: "#F4DAD5", marginBottom: "0.3vh" }}>RRHH pre-lanzamiento</div>
               <div style={{ fontSize: "0.9vw", color: "rgba(242,231,228,0.50)", marginBottom: "0.5vh" }}>3 meses × $2,8M/mes</div>
-              <div style={{ fontSize: "2.0vw", fontWeight: 700, color: "#E07070", lineHeight: 1 }}>$8,4M CLP</div>
+              <div style={{ fontSize: "2.0vw", fontWeight: 700, color: "#F9F9F9", lineHeight: 1 }}>$8,4M CLP</div>
             </div>
             <div style={{
               flex: 1,
@@ -145,7 +145,7 @@ export default function SlideValleDeCaja() {
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
               <div style={{ fontSize: "1.2vw", color: "#F4DAD5" }}>RRHH 3 meses pre-lanzamiento</div>
-              <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#E07070" }}>$8,4M</div>
+              <div style={{ fontSize: "1.4vw", fontWeight: 700, color: "#F9F9F9" }}>$8,4M</div>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
               <div style={{ fontSize: "1.2vw", color: "#F4DAD5" }}>Colchón / imprevistos</div>

@@ -132,7 +132,7 @@ export default function SlideFinanzas2() {
                             : `${bottomPct + barHeightPct + 1}%`,
                           fontSize: "0.68vw",
                           fontWeight: 700,
-                          color: isNeg ? "#E07070" : "#6EC49A",
+                          color: isNeg ? "#F9F9F9" : "#6EC49A",
                           whiteSpace: "nowrap",
                           zIndex: 2,
                         }}
@@ -178,7 +178,7 @@ export default function SlideFinanzas2() {
               </div>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.3vh" }}>
-              <div style={{ fontSize: "0.8vw", color: "#E07070" }}>Negativo M1–M3</div>
+              <div style={{ fontSize: "0.8vw", color: "#F9F9F9" }}>Negativo M1–M3</div>
               <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#6EC49A" }}>M12 ≈ $75M en caja</div>
             </div>
           </div>
