@@ -37,7 +37,7 @@ export default function SlideFinanzas3() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col"
-      style={{ backgroundColor: "#2E0D16", color: "#F4DAD5", padding: "4.5vh 6vw 4vh", boxSizing: "border-box", gap: "1.1vh" }}
+      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5", padding: "4.5vh 6vw 4vh", boxSizing: "border-box", gap: "1.1vh" }}
     >
       {/* Header */}
       <div>

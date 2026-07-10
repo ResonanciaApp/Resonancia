@@ -67,7 +67,7 @@ export default function SlideAnexoInversion() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ backgroundColor: "#2E0D16", color: "#F4DAD5", padding: "5vh 6vw 4.5vh", boxSizing: "border-box" }}
+      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5", padding: "5vh 6vw 4.5vh", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>

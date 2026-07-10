@@ -4,7 +4,7 @@ export default function Slide01Portada() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden flex font-display"
-      style={{ backgroundColor: "#2E0D16", color: "#F4DAD5" }}
+      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5" }}
     >
       {/* Left column */}
       <div
