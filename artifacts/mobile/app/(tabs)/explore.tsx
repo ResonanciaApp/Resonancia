@@ -644,15 +644,15 @@ const styles = StyleSheet.create({
   durPill: {
     borderRadius: 20,
     paddingHorizontal: 10,
-    minWidth: 76,
-    height: 38,
+    minWidth: 80,
+    height: 42,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
   },
   durPillActive: {},
   durPillText: {
-    fontSize: 14,
+    fontSize: 18,
     fontWeight: "600",
     color: "#FBFBFB",
     letterSpacing: 0.2,
