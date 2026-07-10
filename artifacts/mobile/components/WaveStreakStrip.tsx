@@ -175,7 +175,7 @@ export function WaveStreakStrip() {
             })}
           </Defs>
 
-          <G transform="translate(-3, 0)">
+          <G transform="translate(-2, 0)">
             {/* Ondas izquierda (de exterior a interior para que el interior quede encima) */}
             {Array.from({ length: N_WAVES }, (_, i) => N_WAVES - 1 - i).map((waveIdx) => (
               <Path
@@ -284,8 +284,8 @@ const styles = StyleSheet.create({
     textShadowRadius: 14,
   },
   daysLabel: {
-    color: "rgba(247,203,107,0.75)",
-    fontSize: 10,
+    color: "#f9f9f9",
+    fontSize: 8,
     fontWeight: "400",
     letterSpacing: 2.5,
     marginTop: 1,
