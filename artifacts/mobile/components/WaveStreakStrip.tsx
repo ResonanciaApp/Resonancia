@@ -15,7 +15,19 @@ const CY = SVG_H * 0.47;
 
 const N_WAVES = 7;
 const CENTER_GAP = 30;
-const SPACING = 13;
+const BASE_GAP = 11;      // hueco entre onda 0 y 1
+const GAP_GROW = 1.10;    // cada hueco es 10% mayor que el anterior
+
+// Distancias acumuladas desde el centro para cada onda
+const WAVE_OFFSETS: number[] = (() => {
+  const offsets: number[] = [];
+  let acc = CENTER_GAP;
+  for (let i = 0; i < N_WAVES; i++) {
+    offsets.push(acc);
+    acc += BASE_GAP * Math.pow(GAP_GROW, i);
+  }
+  return offsets;
+})();
 const BASE_ARC_H = 28;
 const ARC_H_INC = 9;
 const BASE_DEPTH = 7;
@@ -100,7 +112,7 @@ function getWaveComponents(waveIndex: number, activeWaves: number): { color: str
 }
 
 function wavePath(side: "left" | "right", index: number): string {
-  const offset = CENTER_GAP + index * SPACING;
+  const offset = WAVE_OFFSETS[index];
   const x = side === "left" ? CX - offset : CX + offset;
   const arcH = BASE_ARC_H + index * ARC_H_INC;
   const depth = BASE_DEPTH + index * DEPTH_INC;
