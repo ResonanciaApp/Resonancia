@@ -1,19 +1,19 @@
 export default function SlideTramosInversion() {
   // Modelo acelerado: tasa de equity crece con el tamaño del cheque
-  // Anchor máximo: $27,5M → 10%
+  // Anchor máximo: $23,19M → 10%
   const VAL_M12 = 1044; // millones CLP · 5.000 subs × $4.350 × 12 × 4×
 
   const tramos = [
-    { inv: 5,    equity: 1.2 },
-    { inv: 10,   equity: 3.0 },
-    { inv: 15,   equity: 5.0 },
-    { inv: 20,   equity: 7.0 },
-    { inv: 27.5, equity: 10.0 },
+    { inv: 5,     equity: 1.2  },
+    { inv: 10,    equity: 3.0  },
+    { inv: 15,    equity: 5.0  },
+    { inv: 20,    equity: 7.0  },
+    { inv: 23.19, equity: 10.0 },
   ].map(({ inv, equity }) => {
     const postMoney = inv / (equity / 100);
     const stakeM12 = (equity / 100) * VAL_M12;
     const retorno = stakeM12 / inv;
-    const tasaMM = equity / inv; // % por millón invertido
+    const tasaMM = equity / inv;
     return { inv, equity, postMoney, stakeM12, retorno, tasaMM };
   });
 
@@ -21,6 +21,10 @@ export default function SlideTramosInversion() {
     n.toFixed(dec).replace(".", ",") + "M";
   const fmtPct = (n: number) => n.toFixed(1).replace(".", ",") + "%";
   const fmtX = (n: number) => n.toFixed(1).replace(".", ",") + "×";
+  const fmtInv = (inv: number) => {
+    if (inv === 23.19) return "23,19";
+    return inv.toFixed(0);
+  };
 
   const COL_HEADERS = [
     "INVERSIÓN",
@@ -53,7 +57,7 @@ export default function SlideTramosInversion() {
           </span>
         </div>
         <div style={{ fontSize: "1.2vw", color: "rgba(242,231,228,0.40)", marginTop: "0.7vh" }}>
-          Modelo de prima por escala · cada tramo mayor recibe más equity por peso invertido · ancla máxima $27,5M = 10%
+          Modelo de prima por escala · cada tramo mayor recibe más equity por peso invertido · ancla máxima $23,19M = 10%
         </div>
       </div>
 
@@ -89,7 +93,7 @@ export default function SlideTramosInversion() {
       {/* Rows */}
       <div style={{ display: "flex", flexDirection: "column", gap: "0.9vh", flex: 1 }}>
         {tramos.map((t, i) => {
-          const isHighlight = i === 4; // Tramo E ($27,5M)
+          const isHighlight = i === 4; // Tramo E ($23,19M)
           return (
             <div
               key={i}
@@ -124,7 +128,7 @@ export default function SlideTramosInversion() {
                   fontWeight: 700,
                   color: isHighlight ? "#F4DAD5" : "rgba(242,231,228,0.70)",
                 }}>
-                  ${t.inv === 27.5 ? "27,5" : t.inv.toFixed(0)}M CLP
+                  ${fmtInv(t.inv)}M CLP
                 </div>
               </div>
 
@@ -179,8 +183,8 @@ export default function SlideTramosInversion() {
       </div>
 
       {/* Footer note */}
-      <div style={{ flexShrink: 0, borderTop: "1px solid rgba(247,203,107,0.12)", paddingTop: "1.5vh", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-        <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.32)", maxWidth: "88vw", lineHeight: 1.5 }}>
+      <div style={{ flexShrink: 0, borderTop: "1px solid rgba(247,203,107,0.12)", paddingTop: "1.5vh" }}>
+        <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.32)", lineHeight: 1.5 }}>
           Stake M12 calculado sobre valoración base (5.000 suscriptores × $4.350 ARPU × 12 meses × 4× ARR = $1.044B CLP) · Retorno estimado ilustrativo, no garantizado · El retorno real depende del exit y dilución en rondas futuras.
         </div>
       </div>

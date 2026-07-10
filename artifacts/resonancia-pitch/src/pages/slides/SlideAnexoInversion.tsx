@@ -96,8 +96,8 @@ export default function SlideAnexoInversion() {
             flexDirection: "column",
           }}>
             <div style={{ fontSize: "1.1vw", color: "rgba(242,231,228,0.50)", marginBottom: "0.3vh" }}>VALORACIÓN PRE-MONEY</div>
-            <div style={{ fontSize: "3.2vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1, marginBottom: "0.4vh" }}>$247,5M CLP</div>
-            <div style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.50)", marginBottom: "1.4vh" }}>doscientos cuarenta y siete millones</div>
+            <div style={{ fontSize: "3.2vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1, marginBottom: "0.4vh" }}>$208,7M CLP</div>
+            <div style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.50)", marginBottom: "1.4vh" }}>doscientos ocho millones</div>
 
             <div style={{ marginBottom: "1.4vh" }}>
               <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#F4DAD5", letterSpacing: "0.06em", marginBottom: "0.6vh" }}>POR QUÉ ES DEFENDIBLE</div>
@@ -109,23 +109,23 @@ export default function SlideAnexoInversion() {
 
             <div style={{ borderTop: "1px solid rgba(247,203,107,0.2)", paddingTop: "1vh", marginTop: "auto" }}>
               <div style={{ fontSize: "0.95vw", color: "rgba(242,231,228,0.50)", marginBottom: "0.5vh" }}>
-                $27,5M ÷ post-money $275M ={" "}
+                $23,19M ÷ post-money $231,9M ={" "}
                 <span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", fontWeight: 700 }}>10,0%</span>
               </div>
               <div style={{ display: "flex", gap: "0.8vw" }}>
                 <div style={{ flex: 1, backgroundColor: "rgba(247,203,107,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "rgba(242,231,228,0.45)" }}>Inversión</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4DAD5" }}>$27,5M</div>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4DAD5" }}>$23,19M</div>
                   <div style={{ fontSize: "0.78vw", color: "rgba(242,231,228,0.35)" }}>CLP</div>
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(247,203,107,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "rgba(242,231,228,0.45)" }}>Equity</div>
                   <div style={{ fontSize: "1.25vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>10,0%</div>
-                  <div style={{ fontSize: "0.78vw", color: "rgba(242,231,228,0.35)" }}>fijo</div>
+                  <div style={{ fontSize: "0.78vw", color: "rgba(242,231,228,0.35)" }}>máx.</div>
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(247,203,107,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "rgba(242,231,228,0.45)" }}>Post-money</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4DAD5" }}>$275M</div>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4DAD5" }}>$231,9M</div>
                   <div style={{ fontSize: "0.78vw", color: "rgba(242,231,228,0.35)" }}>CLP</div>
                 </div>
               </div>
@@ -144,36 +144,36 @@ export default function SlideAnexoInversion() {
         <div style={{ flex: 1.7, display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: "0.95vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", letterSpacing: "0.1em", marginBottom: "1vh" }}>VALORACIÓN ESTIMADA · MES 12 (CLP)</div>
           <div style={{ display: "flex", gap: "1.1vw", flex: 1 }}>
-            {/* Base: 5.000 subs × $4.350 × 12 × 4× = $1.044M → 10% = $104.4M → 104.4/27.5 = 3.8× */}
+            {/* Base: 5.000 subs × $4.350 × 12 × 4× = $1.044B → 10% = $104.4M → 104.4/23.19 = 4.5× */}
             <ScenarioCard
               label="Base"
               highlight
               subs="5.000"
               arr="$261M CLP"
               multiple="4× ARR"
-              valuation="$1.044M"
+              valuation="$1.044B"
               stakeVal="$104M CLP"
-              returnX="3,8×"
+              returnX="4,5×"
             />
-            {/* Optimista: 7.000 × $4.350 × 12 × 5× = $1.827M → 10% = $182.7M → 6.6× */}
+            {/* Optimista: 7.000 × $4.350 × 12 × 5× = $1.827B → 10% = $182.7M → 182.7/23.19 = 7.9× */}
             <ScenarioCard
               label="Optimista"
               subs="7.000"
               arr="$365M CLP"
               multiple="5× ARR"
-              valuation="$1.827M"
+              valuation="$1.827B"
               stakeVal="$183M CLP"
-              returnX="6,6×"
+              returnX="7,9×"
             />
-            {/* Agresivo: 10.000 × $4.350 × 12 × 6× = $3.132M → 10% = $313.2M → 11.4× */}
+            {/* Agresivo: 10.000 × $4.350 × 12 × 6× = $3.132B → 10% = $313.2M → 313.2/23.19 = 13.5× */}
             <ScenarioCard
               label="Agresivo"
               subs="10.000"
               arr="$522M CLP"
               multiple="6× ARR"
-              valuation="$3.132M"
+              valuation="$3.132B"
               stakeVal="$313M CLP"
-              returnX="11,4×"
+              returnX="13,5×"
             />
           </div>
         </div>
