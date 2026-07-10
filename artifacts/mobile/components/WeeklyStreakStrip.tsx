@@ -218,7 +218,7 @@ export function WeeklyStreakStrip() {
               cx={RING_SIZE / 2}
               cy={RING_SIZE / 2}
               r={RADIUS}
-              stroke={`${theme.gradient[0]}0D`}
+              stroke={`${theme.gradient[0]}26`}
               strokeWidth={STROKE_W}
               fill="none"
             />
