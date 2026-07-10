@@ -184,17 +184,17 @@ export function SonicStreakWave() {
 
           {/* Onda derecha */}
           <G transform={`translate(${RIGHT_START}, ${CY})`}>
-            <Path d={RIGHT_PATH} stroke="rgba(113,74,112,0.25)" strokeWidth={3} strokeLinecap="round" fill="none" />
+            <Path d={RIGHT_PATH} stroke="rgba(113,74,112,0.25)" strokeWidth={3} strokeLinecap="butt" fill="none" />
             <G clipPath="url(#swClipR)">
-              <Path d={RIGHT_PATH} stroke="url(#swGradR)" strokeWidth={3} strokeLinecap="round" fill="none" />
+              <Path d={RIGHT_PATH} stroke="url(#swGradR)" strokeWidth={3} strokeLinecap="butt" fill="none" />
             </G>
           </G>
 
           {/* Onda izquierda */}
           <G transform={`translate(${LEFT_START}, ${CY})`}>
-            <Path d={LEFT_PATH} stroke="rgba(113,74,112,0.25)" strokeWidth={3} strokeLinecap="round" fill="none" />
+            <Path d={LEFT_PATH} stroke="rgba(113,74,112,0.25)" strokeWidth={3} strokeLinecap="butt" fill="none" />
             <G clipPath="url(#swClipL)">
-              <Path d={LEFT_PATH} stroke="url(#swGradL)" strokeWidth={3} strokeLinecap="round" fill="none" />
+              <Path d={LEFT_PATH} stroke="url(#swGradL)" strokeWidth={3} strokeLinecap="butt" fill="none" />
             </G>
           </G>
         </Svg>
