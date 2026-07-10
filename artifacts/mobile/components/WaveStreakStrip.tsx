@@ -290,7 +290,6 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 16,
     paddingVertical: 18,
-    paddingHorizontal: 14,
     gap: 13,
     alignItems: "center",
   },
@@ -367,6 +366,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 3,
     marginTop: 3,
+    paddingHorizontal: 14,
+    width: COMP_W,
   },
   messageHighlight: {
     color: "#FBFBFB",
