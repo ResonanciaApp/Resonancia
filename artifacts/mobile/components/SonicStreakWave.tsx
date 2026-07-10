@@ -116,13 +116,14 @@ export function SonicStreakWave() {
   const { statEvents } = usePlayer();
   const { theme } = useSceneTheme();
 
-  const borderColor0 = brightenHex(theme.gradient[0], 60);
-  const borderColor1 = brightenHex(theme.gradient[0], 50);
-
   // Colores de onda activa derivados del tema (mismo patrón que WaveStreakStrip)
   const waveHigh = brightenHex(theme.gradient[0], 68); // más claro → junto al número
   const waveMid  = brightenHex(theme.gradient[0], 52);
   const waveLow  = brightenHex(theme.gradient[0], 36); // más oscuro → extremo
+
+  // Bordes de bolitas = mismos colores que las ondas (consistencia por tema)
+  const borderColor0 = waveHigh;
+  const borderColor1 = waveMid;
 
   const { weekCount, activeFlags, todayIndex } = useMemo(() => {
     const byDay = new Map<string, number>();
