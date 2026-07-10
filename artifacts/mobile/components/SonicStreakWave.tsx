@@ -20,7 +20,7 @@ const COMP_W    = SCREEN_W - GRID_PAD * 2;
 const SVG_H     = 64;
 const CY        = SVG_H / 2;
 const NUM_BOX_W = 88;
-const SIDE_GAP  = 30;            // define el largo de la onda
+const SIDE_GAP  = 15;            // define el largo de la onda
 const INSET     = 25;            // desplazamiento hacia el centro (solo posición)
 const WAVE_W    = (COMP_W - NUM_BOX_W) / 2 - SIDE_GAP;
 const AMP       = 12;
@@ -292,10 +292,6 @@ const styles = StyleSheet.create({
   },
   numberWrap: {
     position: "absolute",
-    width: NUM_BOX_W,
-    height: NUM_BOX_W,
-    borderRadius: NUM_BOX_W / 2,
-    backgroundColor: "rgba(255,255,255,0.18)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -319,7 +315,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: COMP_W,
-    marginTop: 3,
+    marginTop: -12,
   },
   dayCol: {
     alignItems: "center",
