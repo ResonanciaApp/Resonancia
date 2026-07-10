@@ -3,12 +3,10 @@ import React, { useMemo } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import Svg, {
   Circle,
-  ClipPath,
   Defs,
   G,
   LinearGradient as SvgGradient,
   Path,
-  Rect,
   Stop,
 } from "react-native-svg";
 
@@ -150,10 +148,11 @@ export function SonicStreakWave() {
     };
   }, [statEvents]);
 
-  const progress = Math.min(weekCount / GOAL_DAYS, 1);
-  const activeW  = WAVE_W * progress;
-  const clipH    = AMP * 2 + 8;
-  const clipY    = -AMP - 4;
+  const progress   = Math.min(weekCount / GOAL_DAYS, 1);
+  // Fade suave en el borde del progreso (zona de ~20 px)
+  const fadeZone   = Math.min(0.18, 20 / WAVE_W);
+  const fadeStart  = Math.max(0.07, progress - fadeZone);
+  const fadeEnd    = progress; // borde donde el dorado se vuelve transparente
 
   const streakBody = weekCount === 0
     ? STREAK_MESSAGE_ZERO
@@ -165,58 +164,48 @@ export function SonicStreakWave() {
       <View style={{ width: COMP_W, height: SVG_H, alignItems: "center", justifyContent: "center" }}>
         <Svg width={COMP_W} height={SVG_H} style={StyleSheet.absoluteFill}>
           <Defs>
-            {/* ── Inactiva derecha: opacidad 0 en ambos extremos → punta afilada ── */}
+            {/* Inactiva derecha */}
             <SvgGradient id="swInactR" x1={0} y1={0} x2={WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
               <Stop offset="0"    stopColor="#714A70" stopOpacity="0"    />
               <Stop offset="0.06" stopColor="#714A70" stopOpacity="0.25" />
               <Stop offset="0.86" stopColor="#714A70" stopOpacity="0.25" />
               <Stop offset="1"    stopColor="#714A70" stopOpacity="0"    />
             </SvgGradient>
-            {/* ── Inactiva izquierda (misma lógica, eje −x) ── */}
+            {/* Inactiva izquierda */}
             <SvgGradient id="swInactL" x1={0} y1={0} x2={-WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
               <Stop offset="0"    stopColor="#714A70" stopOpacity="0"    />
               <Stop offset="0.06" stopColor="#714A70" stopOpacity="0.25" />
               <Stop offset="0.86" stopColor="#714A70" stopOpacity="0.25" />
               <Stop offset="1"    stopColor="#714A70" stopOpacity="0"    />
             </SvgGradient>
-            {/* ── Activa derecha: dorado + fade en punta exterior ── */}
+            {/* Activa derecha: dorado hasta fadeStart → fade suave → transparente en fadeEnd */}
             <SvgGradient id="swGradR" x1={0} y1={0} x2={WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
-              <Stop offset="0"    stopColor="#FFE3A0" stopOpacity="0.7" />
-              <Stop offset="0.06" stopColor="#FFE3A0" stopOpacity="1"   />
-              <Stop offset="0.5"  stopColor="#D6A451" stopOpacity="1"   />
-              <Stop offset="0.86" stopColor="#A9723E" stopOpacity="1"   />
-              <Stop offset="1"    stopColor="#A9723E" stopOpacity="0"   />
+              <Stop offset={0}          stopColor="#FFE3A0" stopOpacity={progress > 0 ? 0   : 0} />
+              <Stop offset={0.06}       stopColor="#FFE3A0" stopOpacity={progress > 0 ? 1   : 0} />
+              <Stop offset={fadeStart}  stopColor="#D6A451" stopOpacity={progress > 0 ? 1   : 0} />
+              <Stop offset={fadeEnd}    stopColor="#A9723E" stopOpacity={0} />
+              <Stop offset={1}          stopColor="#A9723E" stopOpacity={0} />
             </SvgGradient>
-            {/* ── Activa izquierda ── */}
+            {/* Activa izquierda */}
             <SvgGradient id="swGradL" x1={0} y1={0} x2={-WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
-              <Stop offset="0"    stopColor="#FFE3A0" stopOpacity="0.7" />
-              <Stop offset="0.06" stopColor="#FFE3A0" stopOpacity="1"   />
-              <Stop offset="0.5"  stopColor="#D6A451" stopOpacity="1"   />
-              <Stop offset="0.86" stopColor="#A9723E" stopOpacity="1"   />
-              <Stop offset="1"    stopColor="#A9723E" stopOpacity="0"   />
+              <Stop offset={0}          stopColor="#FFE3A0" stopOpacity={progress > 0 ? 0   : 0} />
+              <Stop offset={0.06}       stopColor="#FFE3A0" stopOpacity={progress > 0 ? 1   : 0} />
+              <Stop offset={fadeStart}  stopColor="#D6A451" stopOpacity={progress > 0 ? 1   : 0} />
+              <Stop offset={fadeEnd}    stopColor="#A9723E" stopOpacity={0} />
+              <Stop offset={1}          stopColor="#A9723E" stopOpacity={0} />
             </SvgGradient>
-            <ClipPath id="swClipR">
-              <Rect x={0}        y={clipY} width={activeW} height={clipH} />
-            </ClipPath>
-            <ClipPath id="swClipL">
-              <Rect x={-activeW} y={clipY} width={activeW} height={clipH} />
-            </ClipPath>
           </Defs>
 
-          {/* Onda derecha */}
+          {/* Onda derecha: inactiva debajo, dorada encima (sin clip) */}
           <G transform={`translate(${RIGHT_START}, ${CY})`}>
             <Path d={RIGHT_PATH} stroke="url(#swInactR)" strokeWidth={3} strokeLinecap="butt" fill="none" />
-            <G clipPath="url(#swClipR)">
-              <Path d={RIGHT_PATH} stroke="url(#swGradR)" strokeWidth={3} strokeLinecap="butt" fill="none" />
-            </G>
+            <Path d={RIGHT_PATH} stroke="url(#swGradR)"  strokeWidth={3} strokeLinecap="butt" fill="none" />
           </G>
 
           {/* Onda izquierda */}
           <G transform={`translate(${LEFT_START}, ${CY})`}>
             <Path d={LEFT_PATH} stroke="url(#swInactL)" strokeWidth={3} strokeLinecap="butt" fill="none" />
-            <G clipPath="url(#swClipL)">
-              <Path d={LEFT_PATH} stroke="url(#swGradL)" strokeWidth={3} strokeLinecap="butt" fill="none" />
-            </G>
+            <Path d={LEFT_PATH} stroke="url(#swGradL)"  strokeWidth={3} strokeLinecap="butt" fill="none" />
           </G>
         </Svg>
 
