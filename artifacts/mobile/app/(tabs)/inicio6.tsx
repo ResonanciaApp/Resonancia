@@ -904,7 +904,7 @@ export default function HomeScreen2() {
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
             {/* Luz interior — más luminoso arriba, se desvanece hacia abajo */}
             <LinearGradient
-              colors={["rgba(255,255,255,0.04)", "rgba(255,255,255,0)"]}
+              colors={["rgba(255,255,255,0.02)", "rgba(255,255,255,0)"]}
               start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
               style={StyleSheet.absoluteFill}
               pointerEvents="none"
