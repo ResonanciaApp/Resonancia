@@ -1,6 +1,17 @@
 const base = import.meta.env.BASE_URL;
 
 export default function Slide11Inversion() {
+  const items = [
+    { pct: "24%", monto: "$6,4M", desc: "Contenido: 107 sesiones con artistas y guiadores de voz." },
+    { pct: "9%",  monto: "$2,5M", desc: "Programación extra: desarrollo y funcionalidades adicionales." },
+    { pct: "6%",  monto: "$1,5M", desc: "Masterización: postproducción y control de calidad de audio." },
+    { pct: "15%", monto: "$4,0M", desc: "Equipamiento: micrófonos, tratamiento acústico y estudio." },
+    { pct: "11%", monto: "$3,0M", desc: "Marketing de lanzamiento: orgánico + pauta inicial." },
+    { pct: "2%",  monto: "$500K", desc: "Trámites legales: constitución, T&C y publicación en tiendas." },
+    { pct: "31%", monto: "$8,4M", desc: "Runway operativo: sueldos del equipo en los meses 1–3." },
+    { pct: "2%",  monto: "$500K", desc: "Colchón para imprevistos." },
+  ];
+
   return (
     <div
       className="relative w-screen h-screen overflow-hidden flex font-display"
@@ -13,41 +24,26 @@ export default function Slide11Inversion() {
       >
         <div>
           <div style={{ fontSize: "1.5vw", fontWeight: 600, color: "rgba(242,231,228,0.50)", letterSpacing: "0.14em", marginBottom: "1.5vh" }}>
-            12 · LA INVERSIÓN
+            LA INVERSIÓN
           </div>
           <div style={{ fontSize: "4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "48vw" }}>
-            Buscamos <span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>US$ 30.000</span>
+            Buscamos <span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>$27 millones</span>
           </div>
           <div style={{ fontSize: "1.9vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.5, marginTop: "2vh", maxWidth: "46vw" }}>
             para producir el catálogo, equipar el estudio, lanzar al mercado y operar hasta alcanzar flujo positivo.
           </div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.35vh" }}>
-          <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
-            <div style={{ width: "0.8vw", height: "0.8vw", backgroundColor: "#F7CB6B", flexShrink: 0, transform: "translateY(0.4vw) rotate(45deg)" }} />
-            <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.4 }}><span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", fontWeight: 700 }}>22% · US$6.670</span> — Contenido: pistas con artistas certificados y pago a guiadores de voz.</div>
-          </div>
-          <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
-            <div style={{ width: "0.8vw", height: "0.8vw", backgroundColor: "#F7CB6B", flexShrink: 0, transform: "translateY(0.4vw) rotate(45deg)" }} />
-            <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.4 }}><span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", fontWeight: 700 }}>15% · US$4.440</span> — Equipos de estudio: micrófonos, tratamiento acústico y ambientación.</div>
-          </div>
-          <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
-            <div style={{ width: "0.8vw", height: "0.8vw", backgroundColor: "#F7CB6B", flexShrink: 0, transform: "translateY(0.4vw) rotate(45deg)" }} />
-            <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.4 }}><span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", fontWeight: 700 }}>15% · US$4.440</span> — Marketing de lanzamiento (orgánico + pauta).</div>
-          </div>
-          <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
-            <div style={{ width: "0.8vw", height: "0.8vw", backgroundColor: "#F7CB6B", flexShrink: 0, transform: "translateY(0.4vw) rotate(45deg)" }} />
-            <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.4 }}><span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", fontWeight: 700 }}>11% · US$3.330</span> — Legal, constitución, T&C y publicación en tiendas.</div>
-          </div>
-          <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
-            <div style={{ width: "0.8vw", height: "0.8vw", backgroundColor: "#F7CB6B", flexShrink: 0, transform: "translateY(0.4vw) rotate(45deg)" }} />
-            <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.4 }}><span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", fontWeight: 700 }}>26% · US$7.900</span> — Runway operativo: sueldos del equipo en los meses 1–3 (hasta flujo positivo).</div>
-          </div>
-          <div style={{ display: "flex", alignItems: "baseline", gap: "1.5vw" }}>
-            <div style={{ width: "0.8vw", height: "0.8vw", backgroundColor: "#F7CB6B", flexShrink: 0, transform: "translateY(0.4vw) rotate(45deg)" }} />
-            <div style={{ fontSize: "1.5vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.4 }}><span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", fontWeight: 700 }}>11% · US$3.220</span> — Colchón para imprevistos.</div>
-          </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.9vh" }}>
+          {items.map((item, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "baseline", gap: "1.2vw" }}>
+              <div style={{ width: "0.75vw", height: "0.75vw", backgroundColor: "#F7CB6B", flexShrink: 0, transform: "translateY(0.35vw) rotate(45deg)" }} />
+              <div style={{ fontSize: "1.45vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.4 }}>
+                <span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", fontWeight: 700 }}>{item.pct} · {item.monto}</span>
+                {" "}— {item.desc}
+              </div>
+            </div>
+          ))}
         </div>
 
         <div>
@@ -70,11 +66,11 @@ export default function Slide11Inversion() {
         />
         <div style={{
           position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
-          background: "linear-gradient(90deg, #2E0D16 0%, rgba(27,6,15,0.12) 32%, rgba(27,6,15,0) 58%)"
+          background: "linear-gradient(90deg, #2E0D16 0%, rgba(46,13,22,0.12) 32%, rgba(46,13,22,0) 58%)"
         }} />
         <div style={{
           position: "absolute", bottom: 0, left: 0, width: "100%", height: "32%",
-          background: "linear-gradient(0deg, #2E0D16 0%, rgba(27,6,15,0) 100%)"
+          background: "linear-gradient(0deg, #2E0D16 0%, rgba(46,13,22,0) 100%)"
         }} />
         {/* Brand mark bottom-right */}
         <div style={{ position: "absolute", bottom: "8vh", right: "3vw", textAlign: "right" }}>

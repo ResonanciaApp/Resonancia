@@ -1,6 +1,6 @@
 export default function SlideFinanzas2() {
   // Suscriptores mes a mes (escenario base, 12 meses)
-  // ARPU neto: $3.300/mes
+  // ARPU neto blended: $4.350/mes
   const meses = [
     { label: "M1",  subs: 0     },
     { label: "M2",  subs: 400   },
@@ -11,7 +11,7 @@ export default function SlideFinanzas2() {
     { label: "M7",  subs: 3800  },
     { label: "M8",  subs: 4200  },
     { label: "M9",  subs: 4500  },
-    { label: "M10", subs: 4750  },
+    { label: "M10", subs: 4700  },
     { label: "M11", subs: 4900  },
     { label: "M12", subs: 5000  },
   ];
@@ -19,9 +19,9 @@ export default function SlideFinanzas2() {
   const maxSubs = 5000;
 
   const scenarios = [
-    { label: "Base",        subs12: "5.000",  ing12: "$16,5M/mes", ingAnual: "~$121M", background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", highlight: true },
-    { label: "Optimista",   subs12: "8.000",  ing12: "$26,4M/mes", ingAnual: "~$193M", color: "#6EC49A" },
-    { label: "Agresivo",    subs12: "10.000", ing12: "$33,0M/mes", ingAnual: "~$241M", color: "#6EC49A" },
+    { label: "Base",      subs12: "5.000",  ing12: "$21,75M/mes", ingAnual: "~$159M", highlight: true },
+    { label: "Optimista", subs12: "7.000",  ing12: "$30,45M/mes", ingAnual: "~$220M", color: "#6EC49A" },
+    { label: "Agresivo",  subs12: "10.000", ing12: "$43,5M/mes",  ingAnual: "~$308M", color: "#6EC49A" },
   ];
 
   return (
@@ -59,7 +59,7 @@ export default function SlideFinanzas2() {
                       background: m.subs >= 1500
                         ? "linear-gradient(180deg, #F7CB6B 0%, #C8963E 100%)"
                         : m.subs > 0
-                        ? "rgba(212,175,55,0.4)"
+                        ? "rgba(247,203,107,0.4)"
                         : "rgba(224,112,112,0.3)",
                       borderRadius: "0.25vw 0.25vw 0 0",
                     }} />
@@ -111,17 +111,17 @@ export default function SlideFinanzas2() {
       {/* KPIs row */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1.5vw", marginTop: "3vh" }}>
         {[
-          { label: "Inversión inicial",   value: "$27M CLP",  sub: "US$30.000 · TC $900" },
-          { label: "Break-even acum.",    value: "Mes 10",      sub: "incl. recuperar inversión" },
-          { label: "ARPU neto mensual",   value: "$3.300 CLP",  sub: "post IVA 19% + tienda 30%" },
-          { label: "ROI proyectado año 1",value: "+$55M neto",  sub: "excl. inversión inicial" },
+          { label: "Inversión inicial",   value: "$27M CLP",    sub: "capital inicial requerido" },
+          { label: "Break-even acum.",    value: "Mes 7–8",     sub: "incl. recuperar inversión" },
+          { label: "ARPU neto blended",   value: "$4.350 CLP",  sub: "post IVA 19% + tienda 30%" },
+          { label: "ROI proyectado año 1",value: "+$95M neto",  sub: "excl. inversión inicial" },
         ].map((k) => (
           <div
             key={k.label}
             style={{
               padding: "1.8vh 1.2vw",
               backgroundColor: "#1A0810",
-              border: "1px solid rgba(212,175,55,0.18)",
+              border: "1px solid rgba(247,203,107,0.18)",
               borderRadius: "0.8vw",
             }}
           >
@@ -134,8 +134,8 @@ export default function SlideFinanzas2() {
 
       {/* Footnote */}
       <div style={{ fontSize: "1.1vw", color: "#3D0E16", lineHeight: 1.5, marginTop: "2vh" }}>
-        Precio $6.900/mes (IVA 19% incl.) · $43.900/año · ARPU neto blended ~$3.300/mes (descontado IVA + comisión tienda 30%) ·
-        Fijos $3,05M/mes (gerente $1,3M + coordinador $700K + TI $200K + hosting $250K + admin $250K + otros $350K) · Contenido $2,0M/mes desde M3 · Escenarios ilustrativos.
+        Precio $8.990/mes (IVA 19% incl.) · $59.990/año · ARPU neto blended ~$4.350/mes (60% mensual × $5.288 neto + 40% anual × $2.941 neto equiv.) ·
+        Fijos $3,25M/mes (RRHH $2,8M + hosting $250K + otros $200K) · Contenido $1,5M/mes desde M3 · Escenarios ilustrativos.
       </div>
     </div>
   );
