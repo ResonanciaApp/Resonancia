@@ -764,10 +764,10 @@ export default function HomeScreen2() {
         <LinearGradient
           colors={["transparent", prevGradient[0] as string]}
           locations={[0, 1]}
-          style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 280 }}
+          style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 180 }}
           pointerEvents="none"
         />
-        <Animated.View style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 280, opacity: imageFade }} pointerEvents="none">
+        <Animated.View style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 180, opacity: imageFade }} pointerEvents="none">
           <LinearGradient
             colors={["transparent", activeTheme.gradient[0] as string]}
             locations={[0, 1]}
