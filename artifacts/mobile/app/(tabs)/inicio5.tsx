@@ -760,31 +760,31 @@ export default function HomeScreen2() {
             contentFit="cover"
           />
         </Animated.View>
-        {/* ── Esquina inferior-izquierda diagonal (forma U) ── */}
+        {/* ── Lateral izquierdo sube (brazo izq de la U) ── */}
         <LinearGradient
           colors={[`${prevGradient[0]}44`, "transparent"]}
-          start={{ x: 0, y: 1 }} end={{ x: 0.6, y: 0 }}
-          style={{ position: "absolute", bottom: 0, left: 0, width: 120, height: 200 }}
+          start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+          style={{ position: "absolute", bottom: 0, left: 0, width: 80, height: 280 }}
           pointerEvents="none"
         />
-        <Animated.View style={{ position: "absolute", bottom: 0, left: 0, width: 120, height: 200, opacity: imageFade }} pointerEvents="none">
+        <Animated.View style={{ position: "absolute", bottom: 0, left: 0, width: 80, height: 280, opacity: imageFade }} pointerEvents="none">
           <LinearGradient
             colors={[`${activeTheme.gradient[0]}44`, "transparent"]}
-            start={{ x: 0, y: 1 }} end={{ x: 0.6, y: 0 }}
+            start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
             style={StyleSheet.absoluteFill}
           />
         </Animated.View>
-        {/* ── Esquina inferior-derecha diagonal (forma U) ── */}
+        {/* ── Lateral derecho sube (brazo der de la U) ── */}
         <LinearGradient
           colors={[`${prevGradient[0]}44`, "transparent"]}
-          start={{ x: 1, y: 1 }} end={{ x: 0.4, y: 0 }}
-          style={{ position: "absolute", bottom: 0, right: 0, width: 120, height: 200 }}
+          start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }}
+          style={{ position: "absolute", bottom: 0, right: 0, width: 80, height: 280 }}
           pointerEvents="none"
         />
-        <Animated.View style={{ position: "absolute", bottom: 0, right: 0, width: 120, height: 200, opacity: imageFade }} pointerEvents="none">
+        <Animated.View style={{ position: "absolute", bottom: 0, right: 0, width: 80, height: 280, opacity: imageFade }} pointerEvents="none">
           <LinearGradient
             colors={[`${activeTheme.gradient[0]}44`, "transparent"]}
-            start={{ x: 1, y: 1 }} end={{ x: 0.4, y: 0 }}
+            start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }}
             style={StyleSheet.absoluteFill}
           />
         </Animated.View>
