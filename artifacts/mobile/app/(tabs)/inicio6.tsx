@@ -911,7 +911,7 @@ export default function HomeScreen2() {
             />
             {/* Borde superior — asimétrico: nace cerca del centro-izquierdo y desvanece en los extremos */}
             <LinearGradient
-              colors={["rgba(255,255,255,0.24)", "rgba(255,255,255,0.40)", "rgba(255,255,255,0.35)", "rgba(255,255,255,0.24)"]}
+              colors={["rgba(255,255,255,0)", "rgba(255,255,255,0.40)", "rgba(255,255,255,0.35)", "rgba(255,255,255,0)"]}
               locations={[0, 0.28, 0.72, 1]}
               start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
               style={{ position: "absolute", top: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
