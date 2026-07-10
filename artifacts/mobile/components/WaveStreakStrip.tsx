@@ -39,8 +39,7 @@ const ARC_H_INC = 10;
 const BASE_DEPTH = 11;
 const DEPTH_INC = 5;
 
-const COLOR_ACTIVE = "#D6A451";
-const COLOR_HIGHLIGHT = "#FFE6A8";
+
 const GOAL_MINUTES = 5;
 const DAY_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
 
@@ -116,38 +115,60 @@ function brightenHex(hex: string, pct: number): string {
   return `rgb(${rr},${gg},${bb})`;
 }
 
-// Rampa de saturación para ondas activas
-// Interior (0): dorado muy desaturado — Exterior (N-1): dorado pleno / highlight
-const SAT_LOW  = { r: 165, g: 148, b: 125 }; // beige cálido, casi neutro
-const SAT_HIGH = { r: 214, g: 164, b:  81 }; // #D6A451 — dorado activo
+type RGB = { r: number; g: number; b: number };
 
-function lerpColor(a: typeof SAT_LOW, b: typeof SAT_LOW, t: number): string {
+function hexToRgb(hex: string): RGB {
+  const h = hex.replace("#", "");
+  return {
+    r: parseInt(h.slice(0, 2), 16),
+    g: parseInt(h.slice(2, 4), 16),
+    b: parseInt(h.slice(4, 6), 16),
+  };
+}
+
+// Eleva el color para que el canal máximo sea al menos `target` (asegura visibilidad)
+function liftBrightness(c: RGB, target = 200): RGB {
+  const max = Math.max(c.r, c.g, c.b, 1);
+  if (max >= target) return c;
+  const scale = target / max;
+  return {
+    r: Math.min(255, Math.round(c.r * scale)),
+    g: Math.min(255, Math.round(c.g * scale)),
+    b: Math.min(255, Math.round(c.b * scale)),
+  };
+}
+
+function lerpColor(a: RGB, b: RGB, t: number): string {
   const r = Math.round(a.r + (b.r - a.r) * t);
   const g = Math.round(a.g + (b.g - a.g) * t);
   const b2 = Math.round(a.b + (b.b - a.b) * t);
   return `rgb(${r},${g},${b2})`;
 }
 
-const INACTIVE_COLOR = { r: 140, g: 68, b: 87 };
-
-function getWaveComponents(waveIndex: number, activeWaves: number): { color: string; opacity: number } {
+function getWaveComponents(
+  waveIndex: number,
+  activeWaves: number,
+  satLow: RGB,
+  satHigh: RGB,
+  inactiveColor: RGB,
+): { color: string; opacity: number } {
   // t=1 → más interior (index 0), t=0 → más exterior (index N_WAVES-1)
   const tPos = 1 - waveIndex / (N_WAVES - 1);
 
   if (waveIndex >= activeWaves) {
-    // Onda siguiente a la racha: tinte dorado sutil
+    // Onda siguiente a la racha: tinte del tema sutil
     if (waveIndex === activeWaves && activeWaves > 0) {
       const opacity = 0.12 + 0.18 * tPos;
-      return { color: lerpColor(INACTIVE_COLOR, SAT_HIGH, 0.38), opacity };
+      return { color: lerpColor(inactiveColor, satHigh, 0.38), opacity };
     }
     // Resto inactivas: casi imperceptibles afuera, levemente visibles adentro
     const opacity = 0.07 + 0.22 * tPos;
-    return { color: "rgb(140,68,87)", opacity };
+    return { color: `rgb(${inactiveColor.r},${inactiveColor.g},${inactiveColor.b})`, opacity };
   }
   // Activas: rampa de saturación de color + rampa de opacidad interior→exterior
   const tColor = activeWaves <= 1 ? 1 : waveIndex / (activeWaves - 1);
   const opacity = 0.18 + 0.82 * tPos; // exterior: 0.18, interior: 1.0
-  return { color: lerpColor(SAT_LOW, SAT_HIGH, tColor), opacity };
+  return { color: lerpColor(satLow, satHigh, tColor), opacity };
 }
 
 function wavePath(side: "left" | "right", index: number): string {
@@ -174,6 +195,16 @@ export function WaveStreakStrip({ scrollY }: Props) {
     brightenHex(theme.gradient[0], 60),
     brightenHex(theme.gradient[0], 50),
   ];
+
+  // Colores de ondas derivados del tema — misma intensidad/degradado, hue del tema
+  const NEUTRAL_WARM: RGB = { r: 165, g: 155, b: 148 };
+  const waveSatHigh: RGB = liftBrightness(hexToRgb(theme.gradient[0]), 200);
+  const waveSatLow:  RGB = {
+    r: Math.round((waveSatHigh.r + NEUTRAL_WARM.r) / 2),
+    g: Math.round((waveSatHigh.g + NEUTRAL_WARM.g) / 2),
+    b: Math.round((waveSatHigh.b + NEUTRAL_WARM.b) / 2),
+  };
+  const waveInactive: RGB = liftBrightness(hexToRgb(theme.gradient[1] ?? theme.gradient[0]), 90);
 
   const DEBUG_STREAK = 4; // ← TEST: forzar racha; poner null para usar datos reales
 
@@ -234,7 +265,7 @@ export function WaveStreakStrip({ scrollY }: Props) {
         <Svg width={COMP_W} height={SVG_H} style={{ position: "absolute", top: -2, left: 0, right: 0, bottom: 0 }}>
           <Defs>
             {Array.from({ length: N_WAVES }, (_, i) => {
-              const { color, opacity } = getWaveComponents(i, activeWaves);
+              const { color, opacity } = getWaveComponents(i, activeWaves, waveSatLow, waveSatHigh, waveInactive);
               return (
                 <SvgLinearGradient key={`wg${i}`} id={`wg${i}`} x1="0" y1="0" x2="0" y2="1">
                   <Stop offset="0"    stopColor={color} stopOpacity="0" />
