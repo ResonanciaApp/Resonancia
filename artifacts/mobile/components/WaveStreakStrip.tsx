@@ -171,8 +171,8 @@ export function WaveStreakStrip({ scrollY }: Props) {
   const { statEvents } = usePlayer();
   const { theme } = useSceneTheme();
   const streakBorderColors: [string, string] = [
-    brightenHex(theme.gradient[0], 55),
-    brightenHex(theme.gradient[0], 25),
+    brightenHex(theme.gradient[0], 40),
+    brightenHex(theme.gradient[0], 33),
   ];
 
   const DEBUG_STREAK = 4; // ← TEST: forzar racha; poner null para usar datos reales
