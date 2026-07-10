@@ -292,6 +292,10 @@ const styles = StyleSheet.create({
   },
   numberWrap: {
     position: "absolute",
+    width: NUM_BOX_W,
+    height: NUM_BOX_W,
+    borderRadius: NUM_BOX_W / 2,
+    backgroundColor: "rgba(255,255,255,0.18)",
     alignItems: "center",
     justifyContent: "center",
   },
