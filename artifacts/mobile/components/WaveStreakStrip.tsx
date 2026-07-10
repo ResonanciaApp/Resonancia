@@ -158,11 +158,11 @@ function getWaveComponents(
   if (waveIndex >= activeWaves) {
     // Onda siguiente a la racha: tinte del tema sutil
     if (waveIndex === activeWaves && activeWaves > 0) {
-      const opacity = 0.12 + 0.18 * tPos;
+      const opacity = 0.20 + 0.25 * tPos;
       return { color: lerpColor(inactiveColor, satHigh, 0.38), opacity };
     }
-    // Resto inactivas: casi imperceptibles afuera, levemente visibles adentro
-    const opacity = 0.07 + 0.22 * tPos;
+    // Resto inactivas: más visibles que antes
+    const opacity = 0.14 + 0.32 * tPos;
     return { color: `rgb(${inactiveColor.r},${inactiveColor.g},${inactiveColor.b})`, opacity };
   }
   // Activas: rampa de saturación de color + rampa de opacidad interior→exterior
@@ -204,7 +204,7 @@ export function WaveStreakStrip({ scrollY }: Props) {
     g: Math.round((waveSatHigh.g + NEUTRAL_WARM.g) / 2),
     b: Math.round((waveSatHigh.b + NEUTRAL_WARM.b) / 2),
   };
-  const waveInactive: RGB = liftBrightness(hexToRgb(theme.gradient[1] ?? theme.gradient[0]), 90);
+  const waveInactive: RGB = liftBrightness(hexToRgb(theme.gradient[1] ?? theme.gradient[0]), 130);
 
   const DEBUG_STREAK = 4; // ← TEST: forzar racha; poner null para usar datos reales
 
