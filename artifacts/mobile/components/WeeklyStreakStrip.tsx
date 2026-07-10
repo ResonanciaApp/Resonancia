@@ -210,15 +210,7 @@ export function WeeklyStreakStrip() {
               cx={RING_SIZE / 2}
               cy={RING_SIZE / 2}
               r={RADIUS}
-              stroke="rgba(255,255,255,0.13)"
-              strokeWidth={STROKE_W}
-              fill="none"
-            />
-            <Circle
-              cx={RING_SIZE / 2}
-              cy={RING_SIZE / 2}
-              r={RADIUS}
-              stroke={`${theme.gradient[0]}33`}
+              stroke="#3E1F28"
               strokeWidth={STROKE_W}
               fill="none"
             />
