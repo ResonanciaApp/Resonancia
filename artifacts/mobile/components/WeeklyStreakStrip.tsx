@@ -212,6 +212,7 @@ export function WeeklyStreakStrip() {
               r={RADIUS}
               stroke="url(#ringGrad)"
               strokeWidth={STROKE_W}
+              strokeOpacity={0.05}
               fill="none"
             />
             <Circle
