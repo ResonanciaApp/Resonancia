@@ -1221,8 +1221,8 @@ export default function HomeScreen2() {
           opacity: backdropAnim,
         }}
       >
-        {/* Loto + Mezclador — izquierda */}
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+        {/* Loto + Mezclador — izquierda, apilados verticalmente */}
+        <View style={{ flexDirection: "column", alignItems: "center", gap: 8 }}>
           <Pressable
             onPress={openEscenasSheet}
             hitSlop={8}
@@ -1245,7 +1245,7 @@ export default function HomeScreen2() {
             }}
           >
             <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-              <View style={[styles.giftBtnInner, { backgroundColor: "rgba(255,255,255,0.08)", marginLeft: 5 }]}>
+              <View style={[styles.giftBtnInner, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
                 <Image source={require("@/assets/images/icon-mixer-new.png")} style={{ width: 22, height: 22 }} resizeMode="contain" />
               </View>
             </Animated.View>
