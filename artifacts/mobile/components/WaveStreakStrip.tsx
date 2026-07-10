@@ -133,7 +133,7 @@ export function WaveStreakStrip() {
     return {
       streakBorderColors: border,
       consecutiveStreak: streak,
-      activeWaves: Math.min(streak, N_WAVES),
+      activeWaves: Math.min(weekCnt, N_WAVES),
       activeFlags: flags,
       todayIndex: todayIdx,
       weekCount: weekCnt,
