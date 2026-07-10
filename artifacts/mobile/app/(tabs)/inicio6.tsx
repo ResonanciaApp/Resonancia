@@ -1230,7 +1230,7 @@ export default function HomeScreen2() {
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center", height: 44 }}>
           <Animated.Image
             source={require("@/assets/images/resonancia-hero-logo.png")}
-            style={{ position: "absolute", width: 140, height: 37, opacity: logoOpacity }}
+            style={{ position: "absolute", width: 140, height: 37, opacity: logoOpacity, marginLeft: -2 }}
             resizeMode="contain"
           />
           <Animated.Text numberOfLines={1} style={{ position: "absolute", color: "#FBFBFB", fontSize: 25, fontWeight: "700", letterSpacing: 0.3, opacity: greetingAnim5 }}>
