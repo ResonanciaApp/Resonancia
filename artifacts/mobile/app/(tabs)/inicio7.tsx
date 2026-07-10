@@ -1238,10 +1238,6 @@ export default function HomeScreen2() {
           >
             <View style={styles.giftBtnInner}>
               <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-              <LinearGradient
-                colors={["rgba(255,255,255,0.04)", "rgba(255,255,255,0)"]}
-                style={StyleSheet.absoluteFill}
-              />
               <MaterialCommunityIcons name="spa" size={23} color="#f9f9f9" style={{ marginTop: 1 }} />
             </View>
           </Pressable>
@@ -1260,11 +1256,7 @@ export default function HomeScreen2() {
             <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
               <View style={styles.giftBtnInner}>
                 <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-                <LinearGradient
-                  colors={["rgba(255,255,255,0.04)", "rgba(255,255,255,0)"]}
-                  style={StyleSheet.absoluteFill}
-                />
-                <Image source={require("@/assets/images/icon-mixer-new.png")} style={{ width: 22, height: 22, opacity: 0.9 }} resizeMode="contain" />
+                <Image source={require("@/assets/images/icon-mixer-new.png")} style={{ width: 22, height: 22 }} resizeMode="contain" />
               </View>
             </Animated.View>
           </Pressable>
