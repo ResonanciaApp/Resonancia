@@ -21,7 +21,7 @@ const CY = SVG_H * 0.47;
 
 const N_WAVES = 7;
 const CENTER_GAP = 33;
-const BASE_GAP = 10;      // hueco entre onda 0 y 1
+const BASE_GAP = 15;      // hueco entre onda 0 y 1
 const GAP_GROW = 1.10;    // cada hueco es 10% mayor que el anterior
 
 // Distancias acumuladas desde el centro para cada onda
@@ -34,7 +34,7 @@ const WAVE_OFFSETS: number[] = (() => {
   }
   return offsets;
 })();
-const BASE_ARC_H = 44;
+const BASE_ARC_H = 32;
 const ARC_H_INC = 10;
 const BASE_DEPTH = 11;
 const DEPTH_INC = 5;
