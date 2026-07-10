@@ -762,28 +762,28 @@ export default function HomeScreen2() {
         </Animated.View>
         {/* ── Viñeta lateral izquierda ── */}
         <LinearGradient
-          colors={[`${prevGradient[0]}55`, "transparent"]}
+          colors={[`${prevGradient[0]}33`, "transparent"]}
           start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-          style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: 90 }}
+          style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: 35 }}
           pointerEvents="none"
         />
-        <Animated.View style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: 90, opacity: imageFade }} pointerEvents="none">
+        <Animated.View style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: 35, opacity: imageFade }} pointerEvents="none">
           <LinearGradient
-            colors={[`${activeTheme.gradient[0]}55`, "transparent"]}
+            colors={[`${activeTheme.gradient[0]}33`, "transparent"]}
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
             style={StyleSheet.absoluteFill}
           />
         </Animated.View>
         {/* ── Viñeta lateral derecha ── */}
         <LinearGradient
-          colors={[`${prevGradient[0]}55`, "transparent"]}
+          colors={[`${prevGradient[0]}33`, "transparent"]}
           start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }}
-          style={{ position: "absolute", top: 0, bottom: 0, right: 0, width: 90 }}
+          style={{ position: "absolute", top: 0, bottom: 0, right: 0, width: 35 }}
           pointerEvents="none"
         />
-        <Animated.View style={{ position: "absolute", top: 0, bottom: 0, right: 0, width: 90, opacity: imageFade }} pointerEvents="none">
+        <Animated.View style={{ position: "absolute", top: 0, bottom: 0, right: 0, width: 35, opacity: imageFade }} pointerEvents="none">
           <LinearGradient
-            colors={[`${activeTheme.gradient[0]}55`, "transparent"]}
+            colors={[`${activeTheme.gradient[0]}33`, "transparent"]}
             start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }}
             style={StyleSheet.absoluteFill}
           />
