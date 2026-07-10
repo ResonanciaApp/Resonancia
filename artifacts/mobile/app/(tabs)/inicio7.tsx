@@ -1217,20 +1217,11 @@ export default function HomeScreen2() {
           opacity: backdropAnim,
         }}
       >
-        {/* Loto — izquierda */}
-        <Pressable
-          onPress={openEscenasSheet}
-          hitSlop={8}
-          style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1, backgroundColor: "rgba(255,255,255,0.08)" }]}
-        >
-          <MaterialCommunityIcons name="spa" size={23} color="#f9f9f9" style={{ marginTop: 1 }} />
-        </Pressable>
-
-        {/* Logo + Saludo — centro */}
-        <View style={{ flex: 1, alignItems: "center", justifyContent: "center", height: 44 }}>
+        {/* Logo + Saludo — izquierda */}
+        <View style={{ flex: 1, alignItems: "flex-start", justifyContent: "center", height: 44 }}>
           <Animated.Image
             source={require("@/assets/images/resonancia-hero-logo.png")}
-            style={{ position: "absolute", width: 140, height: 37, opacity: logoOpacity, marginLeft: -2 }}
+            style={{ width: 140, height: 37, opacity: logoOpacity, marginLeft: -2 }}
             resizeMode="contain"
           />
           <Animated.Text numberOfLines={1} style={{ position: "absolute", color: "#FBFBFB", fontSize: 25, fontWeight: "700", letterSpacing: 0.3, opacity: greetingAnim5 }}>
@@ -1238,29 +1229,39 @@ export default function HomeScreen2() {
           </Animated.Text>
         </View>
 
-        {/* Mezclador — derecha */}
-        <Pressable
-          hitSlop={8}
-          style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1 }]}
-          onPressIn={() =>
-            Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
-          }
-          onPressOut={() => {
-            Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
-            openMixer();
-          }}
-        >
-          <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-            <View style={styles.giftBtnInner}>
-              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-              <LinearGradient
-                colors={["rgba(255,255,255,0.04)", "rgba(255,255,255,0)"]}
-                style={StyleSheet.absoluteFill}
-              />
-              <Image source={require("@/assets/images/icon-mixer-new.png")} style={{ width: 22, height: 22, opacity: 0.9 }} resizeMode="contain" />
-            </View>
-          </Animated.View>
-        </Pressable>
+        {/* Loto + Mezclador — derecha */}
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+          <Pressable
+            onPress={openEscenasSheet}
+            hitSlop={8}
+            style={({ pressed }) => [styles.universeBtn, { opacity: pressed ? 0.8 : 1, backgroundColor: "rgba(255,255,255,0.08)" }]}
+          >
+            <MaterialCommunityIcons name="spa" size={23} color="#f9f9f9" style={{ marginTop: 1 }} />
+          </Pressable>
+
+          <Pressable
+            hitSlop={8}
+            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1 }]}
+            onPressIn={() =>
+              Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
+            }
+            onPressOut={() => {
+              Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
+              openMixer();
+            }}
+          >
+            <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
+              <View style={styles.giftBtnInner}>
+                <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+                <LinearGradient
+                  colors={["rgba(255,255,255,0.04)", "rgba(255,255,255,0)"]}
+                  style={StyleSheet.absoluteFill}
+                />
+                <Image source={require("@/assets/images/icon-mixer-new.png")} style={{ width: 22, height: 22, opacity: 0.9 }} resizeMode="contain" />
+              </View>
+            </Animated.View>
+          </Pressable>
+        </View>
       </Animated.View>
 
       <MoodPickerSheet
