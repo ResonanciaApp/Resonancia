@@ -743,7 +743,7 @@ export default function HomeScreen2() {
     <View style={[styles.root, { backgroundColor: activeTheme.gradient[0] }]}>
       {/* ── Imagen de fondo — se desvanece con scroll ── */}
       <Animated.View
-        style={{ position: "absolute", top: 0, left: 0, right: 0, height: 400, opacity: backdropAnim }}
+        style={{ position: "absolute", top: 0, left: 0, right: 0, height: 310, opacity: backdropAnim }}
         pointerEvents="none"
       >
         {/* Capa anterior (estática mientras dura el fade) */}
