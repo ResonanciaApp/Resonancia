@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
   },
   message: {
     color: "#FBFBFB",
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: "300",
     lineHeight: 19,
     textAlign: "center",
