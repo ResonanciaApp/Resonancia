@@ -116,12 +116,12 @@ export function SonicStreakWave() {
   const { statEvents } = usePlayer();
   const { theme } = useSceneTheme();
 
-  // Colores de onda activa derivados del tema (mismo patrón que WaveStreakStrip)
-  const waveHigh = brightenHex(theme.gradient[0], 68); // más claro → junto al número
-  const waveMid  = brightenHex(theme.gradient[0], 52);
-  const waveLow  = brightenHex(theme.gradient[0], 36); // más oscuro → extremo
+  // Tibet: colores derivados del tema. Resto: dorado fijo.
+  const isTibet = theme.id === "tibet";
+  const waveHigh = isTibet ? brightenHex(theme.gradient[0], 68) : "#FFE3A0";
+  const waveMid  = isTibet ? brightenHex(theme.gradient[0], 52) : "#D6A451";
+  const waveLow  = isTibet ? brightenHex(theme.gradient[0], 36) : "#A9723E";
 
-  // Bordes de bolitas = mismos colores que las ondas (consistencia por tema)
   const borderColor0 = waveHigh;
   const borderColor1 = waveMid;
 
