@@ -133,13 +133,18 @@ function lerpColor(a: typeof SAT_LOW, b: typeof SAT_LOW, t: number): string {
 }
 
 function getWaveComponents(waveIndex: number, activeWaves: number): { color: string; opacity: number } {
+  // t=1 → más interior (index 0), t=0 → más exterior (index N_WAVES-1)
+  const tPos = 1 - waveIndex / (N_WAVES - 1);
+
   if (waveIndex >= activeWaves) {
-    const opacity = Math.max(0.10, 0.28 - waveIndex * 0.025);
+    // Inactivas: casi imperceptibles afuera, levemente visibles adentro
+    const opacity = 0.04 + 0.22 * tPos;
     return { color: "rgb(140,68,87)", opacity };
   }
-  // Activas: rampa de saturación de color, opacidad plena
-  const t = activeWaves <= 1 ? 1 : waveIndex / (activeWaves - 1);
-  return { color: lerpColor(SAT_LOW, SAT_HIGH, t), opacity: 1 };
+  // Activas: rampa de saturación de color + rampa de opacidad interior→exterior
+  const tColor = activeWaves <= 1 ? 1 : waveIndex / (activeWaves - 1);
+  const opacity = 0.18 + 0.82 * tPos; // exterior: 0.18, interior: 1.0
+  return { color: lerpColor(SAT_LOW, SAT_HIGH, tColor), opacity };
 }
 
 function wavePath(side: "left" | "right", index: number): string {
