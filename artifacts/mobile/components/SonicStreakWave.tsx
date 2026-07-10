@@ -22,7 +22,8 @@ const COMP_W    = SCREEN_W - GRID_PAD * 2;
 const SVG_H     = 64;
 const CY        = SVG_H / 2;
 const NUM_BOX_W = 88;
-const SIDE_GAP  = 15;
+const SIDE_GAP  = 15;            // define el largo de la onda
+const INSET     = 10;            // desplazamiento hacia el centro (solo posición)
 const WAVE_W    = (COMP_W - NUM_BOX_W) / 2 - SIDE_GAP;
 const AMP       = 12;
 const N_CYCLES  = 3;
@@ -75,8 +76,8 @@ function buildLeftPath(): string {
 
 const RIGHT_PATH  = buildRightPath();
 const LEFT_PATH   = buildLeftPath();
-const RIGHT_START = COMP_W / 2 + NUM_BOX_W / 2 + SIDE_GAP;
-const LEFT_START  = COMP_W / 2 - NUM_BOX_W / 2 - SIDE_GAP;
+const RIGHT_START = COMP_W / 2 + NUM_BOX_W / 2 + SIDE_GAP - INSET;
+const LEFT_START  = COMP_W / 2 - NUM_BOX_W / 2 - SIDE_GAP + INSET;
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function brightenHex(hex: string, pct: number): string {
