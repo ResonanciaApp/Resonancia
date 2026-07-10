@@ -296,10 +296,9 @@ export function WaveStreakStrip() {
 
       {/* ── Mensaje ── */}
       <View style={styles.messageWrap}>
-        {weekCount > 0 && (
-          <Text style={styles.messageHighlight}>¡Excelente comienzo!</Text>
-        )}
-        <Text style={styles.message}>{streakBody}</Text>
+        <Text style={styles.message}>
+          {weekCount > 0 ? `¡Excelente comienzo! ${streakBody}` : streakBody}
+        </Text>
       </View>
     </View>
   );
