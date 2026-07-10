@@ -258,7 +258,7 @@ export function WaveStreakStrip() {
       </View>
 
       {/* ── Bolitas de días ── */}
-      <View style={[styles.row, { marginTop: -20 }]}>
+      <View style={[styles.row, { marginTop: -26 }]}>
         {DAY_LABELS.map((label, i) => {
           const met = activeFlags[i];
           const isToday = i === todayIndex;
