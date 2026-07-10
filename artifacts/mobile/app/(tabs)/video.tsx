@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
   chipBorderWrap: {
     borderRadius: 999,
     borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.06)",
+    borderColor: "rgba(255,255,255,0.15)",
   },
   chip: {
     borderRadius: 999,
