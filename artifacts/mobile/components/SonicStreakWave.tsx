@@ -283,7 +283,8 @@ export function SonicStreakWave() {
 const styles = StyleSheet.create({
   card: {
     borderRadius: 16,
-    paddingVertical: 18,
+    paddingTop: 43,
+    paddingBottom: 18,
     gap: 13,
     alignItems: "center",
   },
