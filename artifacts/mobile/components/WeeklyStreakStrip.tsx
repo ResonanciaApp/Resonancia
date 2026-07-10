@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "react-native-svg";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -12,6 +12,10 @@ const GOLD = "#F7CB6B";
 
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
+
+const SCREEN_W = Dimensions.get("window").width;
+const GRID_PAD = 19;
+const ROW_W = SCREEN_W - GRID_PAD * 2;
 
 const RING_SIZE = 91;
 const STROKE_W = 7;
@@ -315,8 +319,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignSelf: "stretch",
-    marginHorizontal: -14,
+    width: ROW_W,
     marginTop: 1,
   },
   dayCol: {
