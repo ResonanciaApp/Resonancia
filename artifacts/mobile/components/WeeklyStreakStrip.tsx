@@ -173,7 +173,7 @@ export function WeeklyStreakStrip() {
           marginTop: -10,
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.09,
+          shadowOpacity: 0.14,
           shadowRadius: 13,
           elevation: 5,
         }}
