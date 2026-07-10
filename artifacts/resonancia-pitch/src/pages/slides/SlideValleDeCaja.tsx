@@ -131,8 +131,7 @@ export default function SlideValleDeCaja() {
             <div style={{ height: "1px", backgroundColor: "rgba(247,203,107,0.2)" }} />
 
             <div style={{ fontSize: "1.1vw", color: "rgba(242,231,228,0.50)", lineHeight: 1.5 }}>
-              La ronda se despliega en dos fases: <strong style={{ color: "#F4DAD5" }}>construir y lanzar</strong> antes del mes 1, y
-              <strong style={{ color: "#F4DAD5" }}> sostener la operación</strong> hasta que el negocio se autofinancia (mes 4), con un colchón de seguridad.
+              Los $27M se reciben y comprometen <strong style={{ color: "#F4DAD5" }}>antes del lanzamiento</strong>: $17,9M se gastan en producción y puesta a punto, y $8,4M quedan en reserva como fondo de runway para <strong style={{ color: "#F4DAD5" }}>cubrir nómina mes a mes</strong> hasta que el negocio se autofinancia (mes 4).
             </div>
           </div>
         </div>
