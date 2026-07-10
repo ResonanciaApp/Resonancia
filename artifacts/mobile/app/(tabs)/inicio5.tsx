@@ -760,6 +760,34 @@ export default function HomeScreen2() {
             contentFit="cover"
           />
         </Animated.View>
+        {/* ── Viñeta lateral izquierda ── */}
+        <LinearGradient
+          colors={[`${prevGradient[0]}55`, "transparent"]}
+          start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+          style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: 90 }}
+          pointerEvents="none"
+        />
+        <Animated.View style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: 90, opacity: imageFade }} pointerEvents="none">
+          <LinearGradient
+            colors={[`${activeTheme.gradient[0]}55`, "transparent"]}
+            start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+            style={StyleSheet.absoluteFill}
+          />
+        </Animated.View>
+        {/* ── Viñeta lateral derecha ── */}
+        <LinearGradient
+          colors={[`${prevGradient[0]}55`, "transparent"]}
+          start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }}
+          style={{ position: "absolute", top: 0, bottom: 0, right: 0, width: 90 }}
+          pointerEvents="none"
+        />
+        <Animated.View style={{ position: "absolute", top: 0, bottom: 0, right: 0, width: 90, opacity: imageFade }} pointerEvents="none">
+          <LinearGradient
+            colors={[`${activeTheme.gradient[0]}55`, "transparent"]}
+            start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }}
+            style={StyleSheet.absoluteFill}
+          />
+        </Animated.View>
         {/* ── Degradé inferior: mezcla la imagen con el fondo ── */}
         <LinearGradient
           colors={["transparent", prevGradient[0] as string]}
