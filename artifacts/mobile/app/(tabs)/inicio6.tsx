@@ -1003,13 +1003,18 @@ export default function HomeScreen2() {
                   borderRadius: 14,
                   alignItems: "center",
                   overflow: "hidden" as const,
-                  borderWidth: 1,
-                  borderColor: "rgba(255,255,255,0.22)",
                   opacity: pressed ? 0.75 : 1,
                 }]}
               >
                 <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
                 <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
+                <LinearGradient
+                  colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
+                  start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+                  style={StyleSheet.absoluteFill}
+                  pointerEvents="none"
+                />
                 <MaskedView
                   maskElement={
                     <View style={{ width: 34, height: 34, alignItems: "center", justifyContent: "center" }}>
