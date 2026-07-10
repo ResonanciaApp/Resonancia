@@ -1073,9 +1073,12 @@ export default function HomeScreen2() {
             onPress={() => setMoodSheetVisible(true)}
             style={({ pressed }) => [styles.moodRow, styles.moodRowActive, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
           >
-            <BlurView intensity={40} tint="dark" pointerEvents="none" style={StyleSheet.absoluteFill} />
+            <BlurView intensity={28} tint="dark" pointerEvents="none" style={StyleSheet.absoluteFill} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
             <LinearGradient
-              colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+              colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
+              start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
               pointerEvents="none"
               style={StyleSheet.absoluteFill}
             />
@@ -1103,9 +1106,12 @@ export default function HomeScreen2() {
             onPress={() => setMoodSheetVisible(true)}
             style={({ pressed }) => [styles.moodRow, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
           >
-            <BlurView intensity={40} tint="dark" pointerEvents="none" style={StyleSheet.absoluteFill} />
+            <BlurView intensity={28} tint="dark" pointerEvents="none" style={StyleSheet.absoluteFill} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
             <LinearGradient
-              colors={["rgba(255,255,255,0.11)", "rgba(255,255,255,0.03)"]}
+              colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
+              start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
               pointerEvents="none"
               style={StyleSheet.absoluteFill}
             />
@@ -1126,6 +1132,13 @@ export default function HomeScreen2() {
             <View key={s.id} style={styles.recoCard}>
               <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
               <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
+              <LinearGradient
+                colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
+                start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+                style={StyleSheet.absoluteFill}
+                pointerEvents="none"
+              />
               <SessionRow
                 session={s}
                 imageSize={84}
