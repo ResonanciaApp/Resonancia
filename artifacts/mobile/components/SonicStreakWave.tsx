@@ -30,7 +30,7 @@ const N_CYCLES  = 3;
 const GOAL_DAYS    = 7;
 const GOAL_MINUTES = 5;
 const DAY_LABELS   = ["L", "M", "M", "J", "V", "S", "D"];
-const DEBUG_DAYS   = 1; // ← TEST: poner null para datos reales
+const DEBUG_DAYS   = 3; // ← TEST: poner null para datos reales
 
 const STREAK_MESSAGE_ZERO =
   "Todavía no completaste ninguna sesión.\nElige una y da el primer paso.";
