@@ -903,7 +903,7 @@ export default function HomeScreen2() {
             {/* Tinte base */}
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
             {/* Tinte del color claro del tema al 10% */}
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}40` }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
             {/* Luz interior — más luminoso arriba, se desvanece hacia abajo */}
             <LinearGradient
               colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
