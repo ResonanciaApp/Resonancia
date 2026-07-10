@@ -136,10 +136,7 @@ export function WeeklyStreakStrip() {
   const { statEvents } = usePlayer();
   const { theme } = useSceneTheme();
 
-  const streakBorderColors = useMemo(
-    () => [brightenHex(theme.gradient[0], 62), brightenHex(theme.gradient[0], 36)] as [string, string],
-    [theme.gradient[0]]
-  );
+  const streakBorderColors: [string, string] = ["#F7CB6B", "#FBA980"];
 
   const { activeFlags, activeCount, todayIndex } = useMemo(() => {
     const byDay = minutesByDay(statEvents);
