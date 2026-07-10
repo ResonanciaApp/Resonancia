@@ -277,6 +277,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.06)",
   },
   chipSel: {},
   chipText: { fontSize: 11, fontWeight: "380" },
