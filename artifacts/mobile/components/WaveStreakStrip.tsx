@@ -156,9 +156,9 @@ function wavePath(side: "left" | "right", index: number): string {
 
 type Props = { scrollY?: SharedValue<number> };
 
-// Fade empieza al 35% del recorrido (~85px), completa en ~180px (≈600ms scroll)
-const FADE_START = 85;
-const FADE_END   = 265;
+// Fade empieza al 60% del recorrido (~146px), completa en ~180px (≈600ms scroll)
+const FADE_START = 146;
+const FADE_END   = 326;
 
 export function WaveStreakStrip({ scrollY }: Props) {
   const { statEvents } = usePlayer();
@@ -218,9 +218,9 @@ export function WaveStreakStrip({ scrollY }: Props) {
     : `Resonaste ${weekCount} ${weekCount === 1 ? "día" : "días"} de esta semana.`;
 
   return (
-    <Animated.View style={[styles.card, fadeStyle]}>
+    <View style={styles.card}>
       {/* ── Ondas + número ── */}
-      <View style={{ width: COMP_W, height: SVG_H, marginTop: 0 }}>
+      <Animated.View style={[{ width: COMP_W, height: SVG_H, marginTop: 0 }, fadeStyle]}>
         <Svg width={COMP_W} height={SVG_H} style={{ position: "absolute", top: -14, left: 0, right: 0, bottom: 0 }}>
           <Defs>
             {Array.from({ length: N_WAVES }, (_, i) => {
@@ -269,7 +269,7 @@ export function WaveStreakStrip({ scrollY }: Props) {
             <Text style={styles.daysLabel}>{weekCount === 1 ? "DÍA" : "DÍAS"}</Text>
           </View>
         </View>
-      </View>
+      </Animated.View>
 
       {/* ── Bolitas de días ── */}
       <View style={[styles.row, { marginTop: -26 }]}>
@@ -319,7 +319,7 @@ export function WaveStreakStrip({ scrollY }: Props) {
         </Text>
         <Text style={styles.message}>¡Lo estás haciendo muy bien!</Text>
       </View>
-    </Animated.View>
+    </View>
   );
 }
 
