@@ -313,15 +313,17 @@ export default function SessionDetailScreen() {
         <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ scale: heroScale }] }]}>
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
         </Animated.View>
-        <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
-          <GhostPill noBorder style={{ backgroundColor: "rgba(27,6,15,0.45)" }}>
-            <BackPill onPress={() => router.back()} />
-          </GhostPill>
-          <Pressable onPress={handleInstagramShare} hitSlop={10} style={({ pressed }) => [styles.igBtn, { opacity: pressed ? 0.6 : 1 }]}>
-            <FontAwesome name="instagram" size={20} color="#FBFBFB" />
-          </Pressable>
-        </View>
       </Animated.View>
+
+      {/* ── NavBar flotante — encima del ScrollView ────────────────────── */}
+      <View style={[styles.navBar, { paddingTop: topPad + 8, position: "absolute", top: 0, left: 0, right: 0, zIndex: 3 }]}>
+        <GhostPill noBorder style={{ backgroundColor: "rgba(27,6,15,0.45)" }}>
+          <BackPill onPress={() => router.back()} />
+        </GhostPill>
+        <Pressable onPress={handleInstagramShare} hitSlop={10} style={({ pressed }) => [styles.igBtn, { opacity: pressed ? 0.6 : 1 }]}>
+          <FontAwesome name="instagram" size={20} color="#FBFBFB" />
+        </Pressable>
+      </View>
 
       <Animated.ScrollView
         style={[styles.scroll, { zIndex: 2 }]}
