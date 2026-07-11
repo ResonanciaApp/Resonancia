@@ -56,19 +56,19 @@
     "speakerNotes": ""
   },
   {
-    "id": "a1f4c2d0-1111-4a01-9c01-000000000021",
-    "position": 8,
-    "filepath": "src/pages/slides/SlideContacto.tsx",
-    "title": "Contacto",
-    "description": "Slide de cierre con datos de contacto.",
-    "speakerNotes": ""
-  },
-  {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000017",
-    "position": 9,
+    "position": 8,
     "filepath": "src/pages/slides/SlideFinanzas3.tsx",
     "title": "Anexo Financiero · Desglose de costos mensuales",
     "description": "Costos fijos, variables (contenido), marketing ramp-up y totales por fase.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000021",
+    "position": 9,
+    "filepath": "src/pages/slides/SlideContacto.tsx",
+    "title": "Contacto",
+    "description": "Slide de cierre con datos de contacto.",
     "speakerNotes": ""
   }
 ]

@@ -10,21 +10,20 @@ export default function SlideContacto() {
       {/* Center block */}
       <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "6vh", maxWidth: "52vw", textAlign: "center" }}>
 
-        {/* RESONANCIA brand mark */}
-        <div>
-          <div style={{ fontSize: "1.0vw", fontWeight: 700, letterSpacing: "0.35em", color: "rgba(255,255,255,0.35)", marginBottom: "1.2vh" }}>
-            RESONANCIA
-          </div>
-          <div style={{ width: "3vw", height: "1.5px", backgroundColor: "rgba(255,255,255,0.20)", margin: "0 auto" }} />
-        </div>
+        {/* Pulso 4 logo */}
+        <img
+          src={`${import.meta.env.BASE_URL}logo-pulso4.png`}
+          alt="Pulso 4"
+          style={{ width: "20vw", display: "block", opacity: 0.88 }}
+        />
 
         {/* Heading */}
         <div>
           <div style={{ fontSize: "3.5vw", fontWeight: 300, lineHeight: 1.1, letterSpacing: "-0.03em", color: "rgba(255,255,255,0.60)", marginBottom: "0.6vh" }}>
-            Hablemos de
+            Juntos expandimos
           </div>
           <div style={{ fontSize: "3.5vw", fontWeight: 700, lineHeight: 1.1, letterSpacing: "-0.03em", color: "#FFFFFF" }}>
-            construir juntos.
+            la vibración.
           </div>
         </div>
 
@@ -71,7 +70,7 @@ export default function SlideContacto() {
 
       {/* Pulso 4 · logo esquina */}
       <div style={{ position: "absolute", top: "3.5vh", right: "3vw", zIndex: 200, pointerEvents: "none" }}>
-        <img src={`${import.meta.env.BASE_URL}logo-pulso4.png`} alt="Pulso 4" style={{ height: "3.2vh", opacity: 0.45, display: "block" }} />
+        <img src={`${import.meta.env.BASE_URL}logo-pulso4.png`} alt="Pulso 4" style={{ height: "4.5vh", opacity: 0.50, display: "block" }} />
       </div>
     </div>
   );
