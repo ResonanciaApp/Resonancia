@@ -12,7 +12,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import Svg, { Path, Rect } from "react-native-svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
@@ -845,48 +844,18 @@ export function MixerSheet() {
 
           {/* Separador sonidos / tab — oculto */}
 
-          {/* ── Glass footer: Píldora + controles ── */}
-          <BlurView
-            intensity={70}
-            tint={isLight ? "light" : "dark"}
+          {/* ── Footer: Timer | Play | Guardar ── */}
+          <View
             style={[
               styles.glassFooter,
               {
                 paddingBottom: insets.bottom + 8,
-                marginTop: -28,
-                paddingTop: 28,
-                borderColor: isLight ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.05)",
-                backgroundColor: isLight ? "rgba(0,0,0,0.02)" : "rgba(255,255,255,0.005)",
+                paddingTop: 12,
+                backgroundColor: "transparent",
+                borderTopWidth: 0,
               },
             ]}
           >
-            <View style={[styles.pillAboveFooter, { transform: [{ translateY: -20 }] }]}>
-              <GhostPill style={{ backgroundColor: "rgba(255,255,255,0.05)" }}>
-                <Pressable
-                  onPress={() => setEscenasOpen(true)}
-                  hitSlop={8}
-                  style={styles.headerPillBtn}
-                  accessibilityRole="button"
-                  accessibilityLabel="Escenas y ajustes de fondo"
-                >
-                  <MaterialCommunityIcons
-                    name="tune-variant"
-                    size={22}
-                    color={palette.headerFg}
-                  />
-                </Pressable>
-                <Pressable
-                  onPress={() => openImmersivo(bgPresetId)}
-                  hitSlop={8}
-                  style={styles.headerPillBtn}
-                  accessibilityRole="button"
-                  accessibilityLabel="Modo Inmersivo"
-                >
-                  <Feather name="eye" size={22} color={palette.headerFg} />
-                </Pressable>
-              </GhostPill>
-            </View>
-
             {/* Footer: Timer | Play | Guardar + Actualizar */}
             <View style={styles.footerRow}>
 
@@ -936,7 +905,7 @@ export function MixerSheet() {
               </View>
 
             </View>
-          </BlurView>
+          </View>
 
         </Pressable>
         </Animated.View>
