@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import { router, useFocusEffect } from "expo-router";
 import { Image } from "expo-image";
@@ -1010,6 +1011,8 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
   const insets = useSafeAreaInsets();
   const { photoUri } = useUserProfile();
   const { open: openDrawer } = useDrawer();
+  const { activeSceneId } = useSceneTheme();
+  const iconPlaceholderColor = activeSceneId === "tibet" ? GOLD : "#15224a";
 
   // ── Borde bajo los chips (Playlists/Mezclas/Favoritos/Resonadores) ──────
   // se activa a partir de unos pocos px de scroll dentro de ESTA pantalla
@@ -1253,7 +1256,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
       if (displayPl.length === 0 && userFolders.length === 0) {
         return (
           <View style={styles.emptyState}>
-            <Feather name="music" size={52} color={GOLD} style={{ marginBottom: 16 }} />
+            <Feather name="music" size={52} color={iconPlaceholderColor} style={{ marginBottom: 16 }} />
             <Text style={styles.emptyTitle}>Tus playlists aparecerán aquí</Text>
             <Text style={styles.emptySub}>Crea una playlist para organizar tus sesiones favoritas.</Text>
           </View>
@@ -1349,7 +1352,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
         return (
           <View style={{ gap: 15 }}>
             <View style={styles.emptyState}>
-              <MaterialCommunityIcons name="tune-variant" size={52} color={GOLD} style={{ marginBottom: 16 }} />
+              <MaterialCommunityIcons name="tune-variant" size={52} color={iconPlaceholderColor} style={{ marginBottom: 16 }} />
               <Text style={styles.emptyTitle}>Tus mezclas aparecerán aquí</Text>
               <Text style={styles.emptySub}>Guarda una mezcla desde el Mezclador para verla en tu biblioteca.</Text>
             </View>
@@ -1440,7 +1443,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
       if (geometrixCreations.length === 0) {
         return (
           <View style={styles.emptyState}>
-            <Feather name="hexagon" size={48} color={GOLD} style={{ marginBottom: 16 }} />
+            <Feather name="hexagon" size={48} color={iconPlaceholderColor} style={{ marginBottom: 16 }} />
             <Text style={styles.emptyTitle}>Tus Geometrix aparecerán aquí</Text>
             <Text style={styles.emptySub}>Crea y guarda una geometría sagrada para verla aquí.</Text>
             <Pressable style={styles.emptyBtn} onPress={() => router.navigate("/(tabs)/geometrix" as never)}>
@@ -1546,7 +1549,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
         return (
           <View style={{ gap: 15 }}>
             <View style={styles.emptyState}>
-              <Feather name="heart" size={52} color={GOLD} style={{ marginBottom: 16 }} />
+              <Feather name="heart" size={52} color={iconPlaceholderColor} style={{ marginBottom: 16 }} />
               <Text style={styles.emptyTitle}>Tus favoritos aparecerán aquí</Text>
               <Text style={styles.emptySub}>Toca el corazón en cualquier sesión para guardarla aquí.</Text>
             </View>
