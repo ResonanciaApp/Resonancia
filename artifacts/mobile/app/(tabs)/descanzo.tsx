@@ -842,7 +842,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.035)",
     borderWidth: 2,
-    borderColor: "rgba(244,244,244,0.1)",
+    borderColor: "rgba(244,244,244,0.4)",
   },
   sleepPillSel: { borderWidth: 0 },
   sleepPillText: {
