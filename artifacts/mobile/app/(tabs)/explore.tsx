@@ -390,21 +390,12 @@ export default function ExploreScreen() {
       <LinearGradient colors={activeTheme.gradient} style={styles.rootGradient} />
       <StatusBar barStyle="light-content" />
 
-      {/* ── Header fijo — igual que Perfil ── */}
+      {/* ── Header fijo — título + barra de búsqueda sticky ── */}
       <View style={[styles.fixedHeader, { paddingTop: topPad }]}>
         <View style={styles.titleRow}>
           <Text style={styles.pageTitle}>Explorar</Text>
         </View>
-      </View>
-
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 4 }}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
-
-        {/* ── Barra de búsqueda ── */}
+        {/* Barra de búsqueda pegada al header */}
         <View style={styles.searchWrap}>
           <View style={[styles.searchBox, { overflow: "hidden", borderColor: "rgba(255,255,255,0.5)", borderWidth: 1 }]}>
             <CardTint />
@@ -424,6 +415,14 @@ export default function ExploreScreen() {
             )}
           </View>
         </View>
+      </View>
+
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16 }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
 
         {/* ── Para este momento ── */}
         {featuredHoy && (
