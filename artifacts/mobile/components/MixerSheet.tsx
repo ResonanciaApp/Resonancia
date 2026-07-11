@@ -800,7 +800,7 @@ export function MixerSheet() {
               >
                 <Feather name="chevron-down" size={24} color={palette.headerFg} />
               </Pressable>
-              <Text style={[styles.title, { color: palette.headerFg, flex: 1 }]} numberOfLines={1}>
+              <Text style={[styles.title, { color: palette.headerFg, flex: 1, textAlign: "center", fontSize: 15 }]} numberOfLines={1}>
                 {originPreset?.name ?? "Tu mezcla"}
               </Text>
               <Pressable
@@ -1161,12 +1161,12 @@ const styles = StyleSheet.create({
   thumbRadius: { borderRadius: 10 },
   removeBtnOverlay: {
     position: "absolute",
-    top: 4,
-    left: 4,
+    top: -7,
+    left: -7,
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: "rgba(0,0,0,0.16)",
+    backgroundColor: "rgba(0,0,0,0.40)",
     alignItems: "center",
     justifyContent: "center",
   },
