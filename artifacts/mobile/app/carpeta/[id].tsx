@@ -263,6 +263,7 @@ function AddSheet({
   visible, onClose, onPlaylist, onCarpeta,
 }: { visible: boolean; onClose: () => void; onPlaylist: () => void; onCarpeta: () => void }) {
   const insets = useSafeAreaInsets();
+  const { activeSceneId } = useSceneTheme();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
   const ITEMS = [
     { icon: "music" as const,  title: "Ritual",  sub: "Crea un ritual con canciones o episodios", onPress: onPlaylist },
@@ -271,7 +272,7 @@ function AddSheet({
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose} statusBarTranslucent>
       <Pressable style={styles.backdrop} onPress={onClose} />
-      <View style={[styles.sheet, { paddingBottom: bottomPad }]}>
+      <View style={[styles.sheet, { paddingBottom: bottomPad, backgroundColor: activeSceneId === "tibet" ? "#1f2a62" : SHEET_BG }]}>
         <View style={styles.sheetHandle} />
         {ITEMS.map((it) => (
           <Pressable
