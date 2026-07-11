@@ -1007,15 +1007,7 @@ export default function HomeScreen2() {
                   opacity: pressed ? 0.75 : 1,
                 }]}
               >
-                <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
-                <LinearGradient
-                  colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
-                  start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-                  style={StyleSheet.absoluteFill}
-                  pointerEvents="none"
-                />
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.27)" }]} />
                 <MaskedView
                   maskElement={
                     <View style={{ width: 34, height: 34, alignItems: "center", justifyContent: "center" }}>
@@ -1074,15 +1066,7 @@ export default function HomeScreen2() {
             onPress={() => setMoodSheetVisible(true)}
             style={({ pressed }) => [styles.moodRow, styles.moodRowActive, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
           >
-            <BlurView intensity={28} tint="dark" pointerEvents="none" style={StyleSheet.absoluteFill} />
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
-            <LinearGradient
-              colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
-              start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-              pointerEvents="none"
-              style={StyleSheet.absoluteFill}
-            />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.27)" }]} />
             <Text style={styles.moodSientesLabel}>Sientes:</Text>
             <View style={{ flex: 1 }} />
             <LinearGradient
@@ -1107,15 +1091,7 @@ export default function HomeScreen2() {
             onPress={() => setMoodSheetVisible(true)}
             style={({ pressed }) => [styles.moodRow, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
           >
-            <BlurView intensity={28} tint="dark" pointerEvents="none" style={StyleSheet.absoluteFill} />
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
-            <LinearGradient
-              colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
-              start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-              pointerEvents="none"
-              style={StyleSheet.absoluteFill}
-            />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.27)" }]} />
             <Text style={styles.moodEmoji}>🙂</Text>
             <Text style={styles.moodRowLabel}>¿Cómo te sientes hoy?</Text>
             <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" />
@@ -1131,15 +1107,7 @@ export default function HomeScreen2() {
         <View style={styles.recoSection}>
           {moodRecommended.map((s) => (
             <View key={s.id} style={styles.recoCard}>
-              <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
-              <LinearGradient
-                colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
-                start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-                style={StyleSheet.absoluteFill}
-                pointerEvents="none"
-              />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.27)" }]} />
               <SessionRow
                 session={s}
                 imageSize={84}

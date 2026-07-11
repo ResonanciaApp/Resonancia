@@ -405,15 +405,8 @@ export default function ExploreScreen() {
 
         {/* ── Barra de búsqueda ── */}
         <View style={styles.searchWrap}>
-          <BlurView intensity={28} tint="dark" style={[styles.searchBox, { overflow: "hidden", borderColor: "rgba(255,255,255,0.5)", borderWidth: 1 }]}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
-            <LinearGradient
-              colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
-              start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-              style={StyleSheet.absoluteFill}
-              pointerEvents="none"
-            />
+          <View style={[styles.searchBox, { overflow: "hidden", borderColor: "rgba(255,255,255,0.5)", borderWidth: 1 }]}>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.27)" }]} />
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
               value={query}
@@ -428,7 +421,7 @@ export default function ExploreScreen() {
                 <Feather name="x-circle" size={15} color={colors.mutedForeground} />
               </Pressable>
             )}
-          </BlurView>
+          </View>
         </View>
 
         {/* ── Para este momento ── */}
@@ -461,15 +454,7 @@ export default function ExploreScreen() {
                   >
                     {({ pressed }) => (
                       <>
-                        <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
-                        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
-                        <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
-                        <LinearGradient
-                          colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
-                          start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-                          style={StyleSheet.absoluteFill}
-                          pointerEvents="none"
-                        />
+                        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.27)" }]} />
                         {pressed && <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(t.color, 0.22) }]} />}
                         {t.image != null ? (
                           <Image
@@ -521,15 +506,7 @@ export default function ExploreScreen() {
                         />
                       ) : (
                         <>
-                          <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
-                          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
-                          <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
-                          <LinearGradient
-                            colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
-                            start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-                            style={StyleSheet.absoluteFill}
-                            pointerEvents="none"
-                          />
+                          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.27)" }]} />
                         </>
                       )}
                       <Text
