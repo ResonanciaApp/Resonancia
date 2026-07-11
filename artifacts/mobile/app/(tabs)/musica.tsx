@@ -1,9 +1,9 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useMixerPanel } from "@/context/MixerPanelContext";
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState, memo } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, memo } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Alert,
@@ -569,6 +569,18 @@ export default function MezcladorScreen() {
       setTabBarColors(null);
     };
   }, [isMixerOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Al cambiar de tab (las tabs quedan montadas), restaurar siempre el tab bar;
+  // y si se vuelve con el mixer abierto, ocultarlo de nuevo.
+  useFocusEffect(
+    useCallback(() => {
+      if (isMixerOpen) requestHide();
+      return () => {
+        showMenu();
+        setTabBarColors(null);
+      };
+    }, [isMixerOpen, requestHide, showMenu, setTabBarColors]),
+  );
 
   const [bannerIdx,     setBannerIdx]     = useState(0);
   const bannerOpacity = useRef(new Animated.Value(1)).current;
