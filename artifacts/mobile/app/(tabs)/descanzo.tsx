@@ -17,7 +17,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import { BlurView } from "expo-blur";
 import Svg, { Path, Rect } from "react-native-svg";
 
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
@@ -288,47 +287,26 @@ function PlayingDot() {
   );
 }
 
-function formatMiniTime(seconds: number) {
-  const s = Math.max(0, Math.floor(seconds || 0));
-  const m = Math.floor(s / 60);
-  const r = s % 60;
-  return `${m}:${r < 10 ? "0" : ""}${r}`;
-}
-
 function DormirMiniPlayer({
-  elapsed,
-  duration,
+  sound,
   isPlaying,
   onToggle,
+  bottomOffset,
 }: {
-  elapsed: number;
-  duration: number;
+  sound: import("@/data/descanso-sounds").DescansoSound;
   isPlaying: boolean;
   onToggle: () => void;
+  bottomOffset: number;
 }) {
   return (
-    <View style={styles.dormirMiniPlayer}>
-      {/* ── Fondo idéntico a la tab bar horizontal (iOS Glass Material) ── */}
-      <BlurView intensity={15} tint="dark" style={StyleSheet.absoluteFill} />
-      <LinearGradient
-        colors={["rgba(255,255,255,0.04)", "rgba(255,255,255,0)"]}
-        start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-        style={StyleSheet.absoluteFill}
-        pointerEvents="none"
-      />
-
-      <Text style={styles.dormirMiniPlayerTime} numberOfLines={1}>
-        {formatMiniTime(elapsed)} / {formatMiniTime(duration)}
-      </Text>
-
-      <View style={{ width: 15, flexShrink: 0 }} />
-
+    <View style={[styles.dormirMiniPlayer, { bottom: bottomOffset }]}>
+      <Image source={sound.image} style={styles.dormirMiniImg} resizeMode="cover" />
       <Pressable
         onPress={(e) => { e.stopPropagation(); onToggle(); }}
-        style={styles.dormirMiniPlayerBtn}
+        style={styles.dormirMiniPlayBtn}
         hitSlop={8}
       >
-        <Svg width={14} height={14} viewBox="0 0 48 48">
+        <Svg width={16} height={16} viewBox="0 0 48 48">
           {isPlaying ? (
             <>
               <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
@@ -339,6 +317,12 @@ function DormirMiniPlayer({
           )}
         </Svg>
       </Pressable>
+      <View style={{ flex: 1 }}>
+        <Text style={styles.dormirMiniTitle} numberOfLines={1}>{sound.label}</Text>
+        <Text style={styles.dormirMiniSub}>
+          {sound.categoryId === "binaural" ? "Sonidos Binaurales" : "Ambientales"}
+        </Text>
+      </View>
     </View>
   );
 }
@@ -396,6 +380,11 @@ export default function DescansoScreen() {
   const visibleSounds = isSoundTab
     ? DESCANSO_SOUNDS.filter((s) => s.categoryId === activeTab)
     : [];
+
+  const selectedSound = player.selectedId
+    ? (DESCANSO_SOUNDS.find((s) => s.id === player.selectedId) ?? null)
+    : null;
+  const tabBarH = 68 + Math.max(8, bottomPad - 10);
 
   const visibleSessions = activeTab === "historias"
     ? [...getSessionsByDescansoTag("Historias para dormir"), ...getSessionsByDescansoTag("Historias infantiles")]
@@ -566,6 +555,15 @@ export default function DescansoScreen() {
         fadeVol={fadeVol}
         setFadeVol={setFadeVol}
       />
+
+      {selectedSound && (
+        <DormirMiniPlayer
+          sound={selectedSound}
+          isPlaying={player.isPlaying}
+          onToggle={() => player.toggle(selectedSound.id, selectedSound.audioUri)}
+          bottomOffset={tabBarH}
+        />
+      )}
     </LinearGradient>
   );
 }
@@ -742,31 +740,39 @@ const styles = StyleSheet.create({
     color: "rgba(255,255,255,0.5)",
   },
   dormirMiniPlayer: {
+    position: "absolute",
+    left: 0,
+    right: 0,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    height: 54,
-    width: 168,
-    transform: [{ translateY: -5 }],
-    borderRadius: 25,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.03)",
-    overflow: "hidden",
+    backgroundColor: "rgba(0,0,0,0.40)",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    gap: 12,
+    height: 64,
   },
-  dormirMiniPlayerTime: {
-    width: 82,
-    fontSize: 13,
-    fontWeight: "600",
-    textAlign: "center",
-    color: "rgba(255,255,255,0.85)",
+  dormirMiniImg: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
   },
-  dormirMiniPlayerBtn: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
+  dormirMiniPlayBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.15)",
+  },
+  dormirMiniTitle: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "rgba(255,255,255,0.92)",
+    marginBottom: 2,
+  },
+  dormirMiniSub: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.48)",
   },
 
   /* Sleep pills */
