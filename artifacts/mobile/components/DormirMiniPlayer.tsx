@@ -20,8 +20,10 @@ export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOff
 
   const opacity    = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(80)).current;
+  const closingRef = useRef(false);
 
   useEffect(() => {
+    closingRef.current = false;
     opacity.setValue(0);
     translateY.setValue(80);
     Animated.parallel([
@@ -29,6 +31,15 @@ export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOff
       Animated.timing(translateY, { toValue: 0, duration: 300, useNativeDriver: true }),
     ]).start();
   }, [sound.id]);
+
+  const handleClose = () => {
+    if (closingRef.current) return;
+    closingRef.current = true;
+    Animated.parallel([
+      Animated.timing(opacity,    { toValue: 0, duration: 300, useNativeDriver: true }),
+      Animated.timing(translateY, { toValue: 80, duration: 300, useNativeDriver: true }),
+    ]).start(() => onStop());
+  };
 
   return (
     <Animated.View style={[styles.container, { bottom: bottomOffset, backgroundColor: bgColor, opacity, transform: [{ translateY }] }]}>
@@ -59,7 +70,7 @@ export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOff
       </View>
 
       <Pressable
-        onPress={(e) => { e.stopPropagation(); onStop(); }}
+        onPress={(e) => { e.stopPropagation(); handleClose(); }}
         hitSlop={10}
         style={{ paddingRight: 16 }}
       >
