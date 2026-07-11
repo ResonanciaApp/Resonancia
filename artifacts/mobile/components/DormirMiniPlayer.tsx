@@ -3,6 +3,7 @@ import { Animated, Image, Pressable, StyleSheet, Text, View } from "react-native
 import Svg, { Path, Rect } from "react-native-svg";
 import { Feather } from "@expo/vector-icons";
 import type { DescansoSound } from "@/data/descanso-sounds";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 interface Props {
   sound: DescansoSound;
@@ -14,6 +15,9 @@ interface Props {
 }
 
 export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOffset, closeColor }: Props) {
+  const { activeSceneId } = useSceneTheme();
+  const bgColor = activeSceneId === "tibet" ? "#1a1243" : "rgba(0,0,0,0.40)";
+
   const opacity    = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(15)).current;
 
@@ -27,7 +31,7 @@ export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOff
   }, [sound.id]);
 
   return (
-    <Animated.View style={[styles.container, { bottom: bottomOffset, opacity, transform: [{ translateY }] }]}>
+    <Animated.View style={[styles.container, { bottom: bottomOffset, backgroundColor: bgColor, opacity, transform: [{ translateY }] }]}>
       <Image source={sound.image} style={styles.img} resizeMode="cover" />
 
       <Pressable
@@ -72,7 +76,6 @@ const styles = StyleSheet.create({
     right: 0,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.40)",
     gap: 12,
     height: 64,
     overflow: "hidden",
