@@ -255,8 +255,8 @@ export function SonicStreakWave() {
             <Svg width={RING_SIZE + 18} height={RING_SIZE + 18} style={StyleSheet.absoluteFill} pointerEvents="none">
               <Defs>
                 <SvgGradient id="swBorderGrad" x1="0.5" y1="0" x2="0.5" y2="1">
-                  <Stop offset="0" stopColor={borderColor0} stopOpacity="0.6" />
-                  <Stop offset="1" stopColor={borderColor1} stopOpacity="0.53" />
+                  <Stop offset="0" stopColor={borderColor0} stopOpacity="0.68" />
+                  <Stop offset="1" stopColor={borderColor1} stopOpacity="0.6" />
                 </SvgGradient>
               </Defs>
               <Circle
@@ -284,8 +284,8 @@ export function SonicStreakWave() {
                   <Svg width={39} height={39} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
                     <Defs>
                       <SvgGradient id={`swsg${i}`} x1="0.5" y1="0" x2="0.5" y2="1">
-                        <Stop offset="0" stopColor={borderColor0} stopOpacity="0.6" />
-                        <Stop offset="1" stopColor={borderColor1} stopOpacity="0.53" />
+                        <Stop offset="0" stopColor={borderColor0} stopOpacity="0.68" />
+                        <Stop offset="1" stopColor={borderColor1} stopOpacity="0.6" />
                       </SvgGradient>
                     </Defs>
                     <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#swsg${i})`} strokeWidth={2} fill="rgba(255,255,255,0.18)" />
@@ -297,8 +297,8 @@ export function SonicStreakWave() {
                   <Svg width={39} height={39} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
                     <Defs>
                       <SvgGradient id="swsgToday" x1="0.5" y1="0" x2="0.5" y2="1">
-                        <Stop offset="0" stopColor={borderColor0} stopOpacity="0.6" />
-                        <Stop offset="1" stopColor={borderColor1} stopOpacity="0.53" />
+                        <Stop offset="0" stopColor={borderColor0} stopOpacity="0.68" />
+                        <Stop offset="1" stopColor={borderColor1} stopOpacity="0.6" />
                       </SvgGradient>
                     </Defs>
                     <Circle cx={19.5} cy={19.5} r={17.5} stroke="url(#swsgToday)" strokeWidth={2} fill="rgba(255,255,255,0.18)" />
