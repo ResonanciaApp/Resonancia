@@ -338,6 +338,7 @@ const styles = StyleSheet.create({
     fontSize: 42,
     fontWeight: "700",
     lineHeight: 46,
+    transform: [{ translateY: 7 }],
   },
   ringLabel: {
     fontFamily: "Manrope",
