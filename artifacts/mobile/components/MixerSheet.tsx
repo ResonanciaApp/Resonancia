@@ -815,7 +815,6 @@ export function MixerSheet() {
             </View>
 
             {/* Línea divisora sutil */}
-            <View style={[styles.headerDivider, { backgroundColor: "rgba(255,255,255,0.04)" }]} />
           </View>
 
           <GHScrollView
