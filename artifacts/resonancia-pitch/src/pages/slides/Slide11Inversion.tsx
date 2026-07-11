@@ -214,13 +214,6 @@ export default function Slide11Inversion() {
         </div>
       </div>
 
-      {/* Contact footer */}
-      <div style={{ flexShrink: 0, borderTop: "1px solid rgba(255,255,255,0.12)", paddingTop: "1.2vh", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ fontSize: "1.1vw", color: "rgba(244,244,244,0.40)" }}>
-          [nombre] · [correo] · [teléfono]
-        </div>
-      </div>
-
       {/* Pulso 4 · logo esquina */}
       <div style={{ position: "absolute", top: "3.5vh", right: "3vw", zIndex: 200, pointerEvents: "none" }}>
         <img src={`${import.meta.env.BASE_URL}logo-pulso4.png`} alt="Pulso 4" style={{ height: "4.5vh", opacity: 0.50, display: "block" }} />
