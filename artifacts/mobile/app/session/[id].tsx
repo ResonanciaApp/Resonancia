@@ -451,16 +451,16 @@ export default function SessionDetailScreen() {
           </Pressable>
 
           {/* Duration label + rating */}
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 10 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 5, marginBottom: 5 }}>
             {ratingStars > 0 && (
               <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-                <Text style={{ fontSize: 12, fontWeight: "600", color: "#FBFBFB" }}>
+                <Text style={{ fontSize: 17, fontWeight: "600", color: "#FBFBFB" }}>
                   {ratingStars.toFixed(1)}
                 </Text>
-                <Text style={{ fontSize: 9, color: "#FBFBFB", lineHeight: 14 }}>★</Text>
+                <Text style={{ fontSize: 14, color: "#FBFBFB", lineHeight: 19 }}>★</Text>
               </View>
             )}
-            <Text style={[styles.durationLabel, { marginTop: 0 }]}>{session.durationLabel}</Text>
+            <Text style={[styles.durationLabel, { marginTop: 0, fontSize: 17 }]}>{session.durationLabel}</Text>
           </View>
 
           {/* ── Reproducciones ──────────────────────────────────────────── */}
