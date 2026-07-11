@@ -995,9 +995,9 @@ export default function HomeScreen2() {
           <Text style={[styles.sectionTitle, { marginBottom: 21 }]}>Explora por contenido</Text>
           <View style={{ flexDirection: "row", gap: 10 }}>
             {([
-              { id: "meditaciones-guiadas", label: "Meditación", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={34} color={color} /> },
-              { id: "sonidos-ancestrales", label: "Sesiones",      icon: (color: string) => <MaterialCommunityIcons name="waves" size={34} color={color} /> },
-              { id: "musica-sonidos",       label: "Música",        icon: (color: string) => <Ionicons name="musical-notes-outline" size={34} color={color} /> },
+              { id: "meditaciones-guiadas", label: "Meditación", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={31} color={color} /> },
+              { id: "sonidos-ancestrales", label: "Sesiones",      icon: (color: string) => <MaterialCommunityIcons name="waves" size={31} color={color} /> },
+              { id: "musica-sonidos",       label: "Música",        icon: (color: string) => <Ionicons name="musical-notes-outline" size={31} color={color} /> },
             ] as const).map((c) => (
               <Pressable
                 key={c.id}
@@ -1021,20 +1021,9 @@ export default function HomeScreen2() {
                   style={StyleSheet.absoluteFill}
                   pointerEvents="none"
                 />
-                <MaskedView
-                  maskElement={
-                    <View style={{ width: 34, height: 34, alignItems: "center", justifyContent: "center" }}>
-                      {c.icon("#fff")}
-                    </View>
-                  }
-                >
-                  <LinearGradient
-                    colors={["#F7CB6B", "#FBA980"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={{ width: 34, height: 34 }}
-                  />
-                </MaskedView>
+                <View style={{ width: 31, height: 31, alignItems: "center", justifyContent: "center" }}>
+                  {c.icon("#f9f9f9")}
+                </View>
                 <Text style={{ fontSize: 12, fontWeight: "700", color: "#FBFBFB", textAlign: "center" }}>
                   {c.label}
                 </Text>
