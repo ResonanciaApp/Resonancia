@@ -675,7 +675,7 @@ export default function MezcladorScreen() {
                 <Pressable
                   onPress={closeMixer}
                   hitSlop={10}
-                  style={{ width: 43, height: 43, borderRadius: 21.5, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginRight: 20, marginLeft: -4 }}
+                  style={{ width: 43, height: 43, borderRadius: 21.5, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginRight: 20, marginLeft: -6 }}
                 >
                   <MaterialCommunityIcons name="chevron-left" size={32} color="#FBFBFB" />
                 </Pressable>
