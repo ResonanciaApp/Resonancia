@@ -435,10 +435,8 @@ export default function DescansoScreen() {
                     <View style={[
                       styles.soundImageWrap,
                       { borderRadius: colors.radius - 4 },
-                      sel && styles.soundImageWrapSel,
                     ]}>
                       <Image source={sound.image} style={styles.soundImage} resizeMode="cover" />
-                      {playing && <PlayingDot />}
                     </View>
                     <Text style={[styles.soundLabel, sel && styles.soundLabelSel]} numberOfLines={2}>
                       {sound.label}
