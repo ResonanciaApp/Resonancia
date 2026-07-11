@@ -65,6 +65,7 @@ const TAB_CONFIG: Record<
   }
 > = {
   inicio7:    { label: "Inicio",      sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
+  inicio8:    { label: "Inicio 8",   sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
   explore:    { label: "Explorar",   sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
   musica:     { label: "Creación",   mciIcon: "spa", mciIconFill: "spa", featherIcon: "sliders", activeColor: "#F7CB6B" },
   biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark", image: require("@/assets/images/tab-icon-universo.png") },
@@ -437,6 +438,7 @@ function TabLayoutInner() {
         <Tabs.Screen name="inicio5"        options={{ href: null }} />
         <Tabs.Screen name="inicio6"        options={{ href: null }} />
         <Tabs.Screen name="inicio7"        options={{ title: "Inicio" }} />
+        <Tabs.Screen name="inicio8"        options={{ title: "Inicio 8" }} />
         <Tabs.Screen name="musica"         options={{ title: "Creación" }} />
         <Tabs.Screen name="coleccion/[id]" options={{ href: null }} />
         <Tabs.Screen name="explore"        options={{ title: "Medita" }} />
