@@ -66,10 +66,10 @@ export default function SlideFinanzas1() {
               display: "grid",
               gridTemplateColumns: "1.4fr 1fr 1fr 1fr 1fr 1fr",
               padding: "1.5vh 1.2vw",
-              backgroundColor: i < 2 ? "rgba(255,255,255,0.025)" : r.neg ? "rgba(224,112,112,0.04)" : i % 2 === 0 ? "rgba(255,255,255,0.025)" : "transparent",
+              backgroundColor: (i === 0 || i === 2) ? "rgba(255,255,255,0.025)" : r.neg ? "rgba(224,112,112,0.04)" : i % 2 === 0 ? "rgba(255,255,255,0.025)" : "transparent",
               borderRadius: "0.4vw",
               alignItems: "center",
-              border: i >= 2 && r.neg ? "1px solid rgba(224,112,112,0.14)" : "none",
+              border: r.neg && i !== 0 && i !== 2 ? "1px solid rgba(224,112,112,0.14)" : "none",
             }}
           >
             <div style={{ fontSize: "1.4vw", fontWeight: 700, color: r.neg ? "#F4F4F4" : "#F4F4F4" }}>{r.mes}</div>
