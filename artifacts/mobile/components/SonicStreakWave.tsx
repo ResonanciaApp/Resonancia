@@ -349,6 +349,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     alignItems: "center",
     justifyContent: "center",
+    transform: [{ translateY: -2 }],
   },
   ringCount: {
     fontFamily: "Manrope",
