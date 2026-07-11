@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
+  Dimensions,
   Image,
   Pressable,
   StyleSheet,
@@ -14,21 +15,29 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { sessionMiniPlayerEvents } from "@/lib/miniPlayerEvents";
 
+const SCREEN_H = Dimensions.get("window").height;
 const PLAYER_H = 64;
 
 interface Props {
   bottomOffset: number;
+  topOffset: number;
 }
 
-export function SessionMiniPlayer({ bottomOffset }: Props) {
+export function SessionMiniPlayer({ bottomOffset, topOffset }: Props) {
+  // Misma lógica que DormirMiniPlayer al colapsar desde expanded:
+  // el mini player arranca justo debajo del logo Pulso (topOffset + 56)
+  // y desciende hasta su posición en reposo (bottom: bottomOffset).
+  // delta = (topOffset + 56) − (SCREEN_H − bottomOffset − PLAYER_H)
+  const startY = topOffset + 56 + PLAYER_H + bottomOffset - SCREEN_H;
+
   const { currentSession, isPlaying, pauseResume, stop } = usePlayer();
   const { activeSceneId } = useSceneTheme();
   const bgColor = activeSceneId === "tibet" ? "#1a1243" : "rgba(0,0,0,0.40)";
 
   const opacity    = useRef(new Animated.Value(0)).current;
-  const translateY = useRef(new Animated.Value(80)).current;
+  const translateY = useRef(new Animated.Value(startY)).current;
   const closingRef = useRef(false);
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible]   = useState(false);
 
   // Disparo del evento "minimizar desde el reproductor"
   useEffect(() => {
@@ -37,20 +46,18 @@ export function SessionMiniPlayer({ bottomOffset }: Props) {
       closingRef.current = false;
       setVisible(true);
       opacity.setValue(0);
-      translateY.setValue(-80);
+      translateY.setValue(startY);
       Animated.parallel([
         Animated.timing(opacity,    { toValue: 1, duration: 300, useNativeDriver: true }),
         Animated.timing(translateY, { toValue: 0, duration: 300, useNativeDriver: true }),
       ]).start();
     });
     return unsub;
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [startY]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Sesión termina de forma natural → ocultar
   useEffect(() => {
-    if (!currentSession && visible) {
-      animateOut(() => {});
-    }
+    if (!currentSession && visible) animateOut(() => {});
   }, [currentSession]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const animateOut = (onDone: () => void) => {

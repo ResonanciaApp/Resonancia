@@ -530,7 +530,7 @@ function TabLayoutInner() {
       )}
 
       {/* ── SessionMiniPlayer (Historias/ASMR minimizadas desde el player) ─── */}
-      <SessionMiniPlayer bottomOffset={miniPlayerBottom} />
+      <SessionMiniPlayer bottomOffset={miniPlayerBottom} topOffset={topPad} />
 
       {/* ── PlaylistMiniPlayer persistente (visible en todos los tabs) ─────── */}
       {activePlaylist && currentSession && (
