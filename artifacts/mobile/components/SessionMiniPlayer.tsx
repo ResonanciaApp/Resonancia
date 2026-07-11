@@ -37,7 +37,7 @@ export function SessionMiniPlayer({ bottomOffset }: Props) {
       closingRef.current = false;
       setVisible(true);
       opacity.setValue(0);
-      translateY.setValue(80);
+      translateY.setValue(-80);
       Animated.parallel([
         Animated.timing(opacity,    { toValue: 1, duration: 300, useNativeDriver: true }),
         Animated.timing(translateY, { toValue: 0, duration: 300, useNativeDriver: true }),
