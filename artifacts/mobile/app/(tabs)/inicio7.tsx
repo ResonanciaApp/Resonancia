@@ -294,6 +294,9 @@ function AnimatedNavTabRow({
 }
 
 export default function HomeScreen2() {
+  // inicio7 está oculto del tab bar — redirigir siempre a inicio8
+  useFocusEffect(useCallback(() => { router.replace("/inicio8" as never); }, []));
+
   const colors = useColors();
   const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
   const currentIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
