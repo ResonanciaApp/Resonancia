@@ -345,21 +345,8 @@ export default function SessionDetailScreen() {
         {/* ── Content ────────────────────────────────────────────────────── */}
         <View style={styles.content}>
 
-          {/* Duration label + rating */}
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 34 }}>
-            {ratingStars > 0 && (
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-                <Text style={{ fontSize: 12, fontWeight: "600", color: "#FBFBFB" }}>
-                  {ratingStars.toFixed(1)}
-                </Text>
-                <Text style={{ fontSize: 9, color: "#FBFBFB", lineHeight: 14 }}>★</Text>
-              </View>
-            )}
-            <Text style={[styles.durationLabel, { marginTop: 0 }]}>{session.durationLabel}</Text>
-          </View>
-
           {/* Title + acciones */}
-          <View style={styles.titleRow}>
+          <View style={[styles.titleRow, { marginTop: 24 }]}>
             <Text style={[styles.title, { color: colors.foreground, flex: 1 }]} numberOfLines={3}>{session.title}</Text>
             <View style={styles.titleActions}>
               <Pressable onPress={() => setActionsSheetOpen(true)} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
@@ -462,6 +449,19 @@ export default function SessionDetailScreen() {
               <Feather name="send" size={15} color="#D6A45C" />
             </View>
           </Pressable>
+
+          {/* Duration label + rating */}
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            {ratingStars > 0 && (
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+                <Text style={{ fontSize: 12, fontWeight: "600", color: "#FBFBFB" }}>
+                  {ratingStars.toFixed(1)}
+                </Text>
+                <Text style={{ fontSize: 9, color: "#FBFBFB", lineHeight: 14 }}>★</Text>
+              </View>
+            )}
+            <Text style={[styles.durationLabel, { marginTop: 0 }]}>{session.durationLabel}</Text>
+          </View>
 
           {/* ── Reproducciones ──────────────────────────────────────────── */}
           {playsData !== undefined && (
