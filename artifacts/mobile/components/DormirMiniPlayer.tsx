@@ -57,7 +57,7 @@ export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOff
     Animated.timing(translateY, {
       toValue: isExpanded ? expandedY : 0,
       duration: 250,
-      delay: isExpanded ? 200 : 0,
+      delay: isExpanded ? 50 : 0,
       useNativeDriver: true,
     }).start();
   }, [isExpanded]); // eslint-disable-line react-hooks/exhaustive-deps
