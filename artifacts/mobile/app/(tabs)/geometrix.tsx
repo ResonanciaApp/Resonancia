@@ -3,6 +3,7 @@
  * El usuario activa geometrías por capas para componer un fondo en vivo.
  */
 import { Feather } from "@expo/vector-icons";
+import MaskedView from "@react-native-masked-view/masked-view";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -2007,6 +2008,20 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
     </>
   );
 });
+
+/* ─── Ícono con degradado para las cards del landing ─────────────────────── */
+function LandingGradientIcon({ name }: { name: React.ComponentProps<typeof Feather>["name"] }) {
+  return (
+    <MaskedView maskElement={<Feather name={name} size={20} color="white" />}>
+      <LinearGradient
+        colors={["#fffeff", "#d7fffe"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{ width: 20, height: 20 }}
+      />
+    </MaskedView>
+  );
+}
 
 /* ─── Crear Geometría Card — Crystal Nebula ──────────────────────────────── */
 const CB_BLUE  = "#6584d4";
@@ -6199,7 +6214,7 @@ export default function GeometrixScreen() {
               onPress={() => router.push("/geometrix-creaciones")}
             >
               <View style={styles.landingItemIcon}>
-                <Feather name="grid" size={20} color="#F7CB6B" />
+                <LandingGradientIcon name="grid" />
               </View>
               <View style={styles.landingItemText}>
                 <Text style={styles.landingItemTitle}>Mis Creaciones</Text>
@@ -6214,7 +6229,7 @@ export default function GeometrixScreen() {
               onPress={() => router.push("/geometrix-comunidad")}
             >
               <View style={styles.landingItemIcon}>
-                <Feather name="users" size={20} color="#F7CB6B" />
+                <LandingGradientIcon name="users" />
               </View>
               <View style={styles.landingItemText}>
                 <Text style={styles.landingItemTitle}>Comunidad</Text>
@@ -6229,7 +6244,7 @@ export default function GeometrixScreen() {
               onPress={() => router.push("/geometrix-aprende")}
             >
               <View style={styles.landingItemIcon}>
-                <Feather name="book-open" size={20} color="#F7CB6B" />
+                <LandingGradientIcon name="book-open" />
               </View>
               <View style={styles.landingItemText}>
                 <Text style={styles.landingItemTitle}>Aprende</Text>
@@ -6376,7 +6391,7 @@ const styles = StyleSheet.create({
     gap: 14,
     padding: 15,
     borderRadius: 16,
-    backgroundColor: "rgba(255,255,255,0.04)",
+    backgroundColor: "rgba(255,255,255,0.3)",
   },
   landingItemIcon: {
     width: 46,
