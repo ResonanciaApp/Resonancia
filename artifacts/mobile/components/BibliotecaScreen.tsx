@@ -505,7 +505,7 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
         {/* Placeholder vacío */}
         {q.length === 0 && kbReady && (
           <Animated.View style={[blStyles.empty, { opacity: fadeAnim }]}>
-            <Feather name="headphones" size={52} color="#F7CB6B" style={{ marginBottom: 16 }} />
+            <Feather name="headphones" size={52} color={accentColor} style={{ marginBottom: 16 }} />
             <Text style={blStyles.emptyTitle}>Encuentra en tu biblioteca</Text>
             <Text style={blStyles.emptySub}>Busca favoritos, playlists y mezclas…</Text>
           </Animated.View>
