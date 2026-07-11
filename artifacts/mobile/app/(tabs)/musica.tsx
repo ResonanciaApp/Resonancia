@@ -757,17 +757,7 @@ export default function MezcladorScreen() {
         </View>
 
         {/* ── Scroll principal ── */}
-        <View style={styles.scrollBg}>
-          {bgPaletteId === "noche" ? (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: theme.gradient[1] }]} />
-          ) : (
-            <LinearGradient
-              colors={bgPalette.colors}
-              start={{ x: 0.5, y: 0 }}
-              end={{ x: 0.5, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-          )}
+        <View style={[styles.scrollBg, { backgroundColor: theme.gradient[0] }]}>
         <ScrollView
           style={styles.scroll}
           contentContainerStyle={[styles.scrollContent, { paddingBottom: 200 + bottomPad }]}
