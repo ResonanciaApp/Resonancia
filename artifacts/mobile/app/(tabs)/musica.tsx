@@ -55,7 +55,6 @@ import {
   emitBgPresetChange,
 } from "@/config/immersive-presets";
 import { MixerSettingsSheet } from "@/components/MixerSettingsSheet";
-import { GhostPill } from "@/components/GhostPill";
 import Svg, { Defs, LinearGradient as SvgLG, Stop, Rect } from "react-native-svg";
 import { useSounds } from "@/context/SoundsContext";
 import { REMOTE_SOUND_MAP, REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
@@ -673,18 +672,20 @@ export default function MezcladorScreen() {
             {/* ── Header ── */}
             <View style={styles.header}>
               <View style={styles.headerRow}>
-                <GhostPill style={{ marginLeft: -11, marginRight: 30, backgroundColor: "rgba(255,255,255,0.05)" }}>
-                  <Pressable onPress={closeMixer} hitSlop={10} style={styles.headerPillBtn}>
-                    <MaterialCommunityIcons name="chevron-left" size={32} color="#FBFBFB" />
-                  </Pressable>
-                </GhostPill>
+                <Pressable
+                  onPress={closeMixer}
+                  hitSlop={10}
+                  style={{ width: 43, height: 43, borderRadius: 21.5, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginRight: 20 }}
+                >
+                  <MaterialCommunityIcons name="chevron-left" size={32} color="#FBFBFB" />
+                </Pressable>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.pageTitle, { transform: [{ translateX: -19 }, { translateY: -1 }] }]}>Creación</Text>
                 </View>
                 <View style={[styles.headerActions, { flexDirection: "row", gap: 4 }]}>
                     <Pressable
                       onPress={() => router.push("/mezclas-comunidad" as never)}
-                      style={[styles.headerPillBtn, { width: 43, height: 43, borderRadius: 21.5, backgroundColor: "rgba(255,255,255,0.10)" }]}
+                      style={{ width: 43, height: 43, borderRadius: 21.5, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center" }}
                       hitSlop={8}
                       accessibilityRole="button"
                       accessibilityLabel="Mezclas de la comunidad"
@@ -693,7 +694,7 @@ export default function MezcladorScreen() {
                     </Pressable>
                     <Pressable
                       onPress={() => setSettingsVisible(true)}
-                      style={[styles.headerPillBtn, { width: 43, height: 43, borderRadius: 21.5, backgroundColor: "rgba(255,255,255,0.10)" }]}
+                      style={{ width: 43, height: 43, borderRadius: 21.5, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center" }}
                       hitSlop={8}
                       accessibilityRole="button"
                       accessibilityLabel="Filtros del Mezclador"
