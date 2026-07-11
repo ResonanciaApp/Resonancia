@@ -316,48 +316,39 @@ function DormirMiniPlayer({
 
   return (
     <Animated.View style={[styles.dormirMiniPlayer, { bottom: bottomOffset, opacity, transform: [{ translateY }] }]}>
-      {/* Imagen de fondo full-width */}
-      <Image source={sound.image} style={StyleSheet.absoluteFill} resizeMode="cover" />
-      {/* Overlay oscuro para legibilidad */}
-      <View style={{ ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.45)" }} />
+      <Image source={sound.image} style={styles.dormirMiniImg} resizeMode="cover" />
 
-      {/* Controles encima */}
-      <View style={styles.dormirMiniControls}>
-        {/* Play/Pause sin fondo, ícono 26 px */}
-        <Pressable
-          onPress={(e) => { e.stopPropagation(); onToggle(); }}
-          style={styles.dormirMiniPlayBtn}
-          hitSlop={8}
-        >
-          <Svg width={26} height={26} viewBox="0 0 48 48">
-            {isPlaying ? (
-              <>
-                <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-                <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-              </>
-            ) : (
-              <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
-            )}
-          </Svg>
-        </Pressable>
+      <Pressable
+        onPress={(e) => { e.stopPropagation(); onToggle(); }}
+        style={styles.dormirMiniPlayBtn}
+        hitSlop={8}
+      >
+        <Svg width={26} height={26} viewBox="0 0 48 48">
+          {isPlaying ? (
+            <>
+              <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+              <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+            </>
+          ) : (
+            <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
+          )}
+        </Svg>
+      </Pressable>
 
-        {/* Títulos */}
-        <View style={{ flex: 1 }}>
-          <Text style={styles.dormirMiniTitle} numberOfLines={1}>{sound.label}</Text>
-          <Text style={styles.dormirMiniSub}>
-            {sound.categoryId === "binaural" ? "Sonidos Binaurales" : "Ambientales"}
-          </Text>
-        </View>
-
-        {/* Botón X */}
-        <Pressable
-          onPress={(e) => { e.stopPropagation(); onStop(); }}
-          hitSlop={10}
-          style={{ paddingRight: 16 }}
-        >
-          <Feather name="x" size={20} color={closeColor} style={{ opacity: 0.6 }} />
-        </Pressable>
+      <View style={{ flex: 1 }}>
+        <Text style={styles.dormirMiniTitle} numberOfLines={1}>{sound.label}</Text>
+        <Text style={styles.dormirMiniSub}>
+          {sound.categoryId === "binaural" ? "Sonidos Binaurales" : "Ambientales"}
+        </Text>
       </View>
+
+      <Pressable
+        onPress={(e) => { e.stopPropagation(); onStop(); }}
+        hitSlop={10}
+        style={{ paddingRight: 16 }}
+      >
+        <Feather name="x" size={20} color={closeColor} style={{ opacity: 0.6 }} />
+      </Pressable>
     </Animated.View>
   );
 }
@@ -794,12 +785,11 @@ const styles = StyleSheet.create({
     height: 64,
     overflow: "hidden",
   },
-  dormirMiniControls: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    paddingLeft: 16,
-    gap: 12,
+  dormirMiniImg: {
+    width: 54,
+    height: 64,
+    borderRadius: 0,
+    marginLeft: 10,
   },
   dormirMiniPlayBtn: {
     width: 36,
