@@ -459,22 +459,26 @@ export default function DescansoScreen() {
 
         {isSoundTab ? (
           <>
-            {/* ── Grilla de sonidos ── */}
-            <View style={styles.soundGrid}>
+            {/* ── Grilla de sonidos (estilo idéntico a SessionCard) ── */}
+            <View style={styles.sessionGrid}>
               {visibleSounds.map((sound) => {
-                const sel       = player.selectedId === sound.id;
-                const playing   = sel && player.isPlaying;
+                const sel     = player.selectedId === sound.id;
+                const playing = sel && player.isPlaying;
                 return (
                   <Pressable
                     key={sound.id}
                     onPress={() => player.toggle(sound.id, sound.audioUri ?? null)}
-                    style={({ pressed }) => [styles.soundCell, pressed && { opacity: 0.88 }]}
+                    style={({ pressed }) => [{ width: cardW, opacity: pressed ? 0.85 : 1 }]}
                   >
-                    <View style={[styles.soundImageWrap, sel && styles.soundImageWrapSel]}>
+                    <View style={[
+                      styles.soundImageWrap,
+                      { borderRadius: colors.radius - 4 },
+                      sel && styles.soundImageWrapSel,
+                    ]}>
                       <Image source={sound.image} style={styles.soundImage} resizeMode="cover" />
                       {playing && <PlayingDot />}
                     </View>
-                    <Text style={[styles.soundLabel, sel && styles.soundLabelSel]} numberOfLines={1}>
+                    <Text style={[styles.soundLabel, sel && styles.soundLabelSel]} numberOfLines={2}>
                       {sound.label}
                     </Text>
                   </Pressable>
@@ -701,14 +705,15 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.38)",
   },
   soundLabel: {
-    marginTop: 6,
-    fontSize: 11,
-    color: "rgba(255,255,255,0.5)",
-    textAlign: "center",
+    fontSize: 13,
+    fontWeight: "600",
+    lineHeight: 18,
+    marginTop: 8,
+    paddingHorizontal: 2,
+    color: "rgba(255,255,255,0.55)",
   },
   soundLabelSel: {
-    color: "rgba(255,255,255,0.95)",
-    fontWeight: "600",
+    color: "#F4DAD5",
   },
 
   /* Banner Prepara tu noche */
