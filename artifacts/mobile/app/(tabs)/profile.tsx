@@ -826,7 +826,6 @@ export default function ProfileScreen() {
                 onPress={() => setPerfilTab(t.id)}
                 style={({ pressed }) => [styles.pill, sel && styles.pillSel, { opacity: pressed ? 0.8 : 1 }]}
               >
-                {sel && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
                 <Text style={[styles.pillText, sel && styles.pillTextSel]}>{t.label}</Text>
               </Pressable>
             );
@@ -1430,11 +1429,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.035)",
-    borderWidth: 2,
-    borderColor: "rgba(244,244,244,0.1)",
+    backgroundColor: "rgba(0,0,0,0.27)",
   },
-  pillSel: { borderWidth: 0 },
+  pillSel: { borderWidth: 0, backgroundColor: "#f9f9f9" },
   pillText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "380", color: "#F4F4F4" },
   pillTextSel: { fontFamily: "Manrope", color: "#2D0D3A", fontWeight: "500" },
 

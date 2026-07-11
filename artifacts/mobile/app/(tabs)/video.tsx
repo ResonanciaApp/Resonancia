@@ -257,11 +257,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.035)",
-    borderWidth: 2,
-    borderColor: "rgba(244,244,244,0.1)",
+    backgroundColor: "rgba(0,0,0,0.27)",
   },
-  chipSel: { borderWidth: 0 },
+  chipSel: { borderWidth: 0, backgroundColor: "#f9f9f9" },
   chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "380" },
   chipsDivider: {
     height: 1,
