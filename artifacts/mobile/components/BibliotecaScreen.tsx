@@ -1885,11 +1885,11 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   chipText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: MUTED },
-  chipTextSel: { color: GOLD },
+  chipTextSel: { color: "#f9f9f9" },
   chipUnderline: {
     height: 2,
     borderRadius: 1,
-    backgroundColor: GOLD,
+    backgroundColor: "#f9f9f9",
     marginTop: 6,
     alignSelf: "stretch",
   },
