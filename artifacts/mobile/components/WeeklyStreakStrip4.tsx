@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   miniLabelToday: {
-    color: "#F4DAD5",
+    color: "#FBFBFB",
   },
   ringCount: {
     fontFamily: "Manrope",

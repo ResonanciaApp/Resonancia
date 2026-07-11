@@ -671,10 +671,10 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     marginTop: 8,
     paddingHorizontal: 2,
-    color: "#F4DAD5",
+    color: "#FBFBFB",
   },
   soundLabelSel: {
-    color: "#F4DAD5",
+    color: "#FBFBFB",
   },
 
   /* Banner Prepara tu noche */
