@@ -1215,7 +1215,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
             onPress={() => setNombreVisible(true)}
           >
             <View style={styles.addResonadorIcon}>
-              <Feather name="music" size={24} color="#F7CB6B" />
+              <Feather name="music" size={24} color={iconPlaceholderColor} />
             </View>
             <Text style={styles.addResonadorLabel}>Crear un Ritual</Text>
           </Pressable>
@@ -1224,7 +1224,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
             onPress={() => setNombreCarpetaVisible(true)}
           >
             <View style={styles.addResonadorIcon}>
-              <Feather name="folder" size={25} color="#F7CB6B" />
+              <Feather name="folder" size={25} color={iconPlaceholderColor} />
             </View>
             <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
           </Pressable>
@@ -1256,7 +1256,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
       if (displayPl.length === 0 && userFolders.length === 0) {
         return (
           <View style={styles.emptyState}>
-            <Feather name="music" size={52} color={iconPlaceholderColor} style={{ marginBottom: 16 }} />
+            <Feather name="music" size={52} color={GOLD} style={{ marginBottom: 16 }} />
             <Text style={styles.emptyTitle}>Tus playlists aparecerán aquí</Text>
             <Text style={styles.emptySub}>Crea una playlist para organizar tus sesiones favoritas.</Text>
           </View>
@@ -1332,7 +1332,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
             onPress={() => { openMixer(); router.navigate("/(tabs)/musica" as never); }}
           >
             <View style={styles.addResonadorIcon}>
-              <MaterialCommunityIcons name="tune-variant" size={24} color="#F7CB6B" />
+              <MaterialCommunityIcons name="tune-variant" size={24} color={iconPlaceholderColor} />
             </View>
             <Text style={styles.addResonadorLabel}>Crear una mezcla</Text>
           </Pressable>
@@ -1341,7 +1341,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
             onPress={() => setNombreCarpetaMezclaVisible(true)}
           >
             <View style={styles.addResonadorIcon}>
-              <Feather name="folder" size={25} color="#F7CB6B" />
+              <Feather name="folder" size={25} color={iconPlaceholderColor} />
             </View>
             <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
           </Pressable>
@@ -1352,7 +1352,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
         return (
           <View style={{ gap: 15 }}>
             <View style={styles.emptyState}>
-              <MaterialCommunityIcons name="tune-variant" size={52} color={iconPlaceholderColor} style={{ marginBottom: 16 }} />
+              <MaterialCommunityIcons name="tune-variant" size={52} color={GOLD} style={{ marginBottom: 16 }} />
               <Text style={styles.emptyTitle}>Tus mezclas aparecerán aquí</Text>
               <Text style={styles.emptySub}>Guarda una mezcla desde el Mezclador para verla en tu biblioteca.</Text>
             </View>
@@ -1443,7 +1443,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
       if (geometrixCreations.length === 0) {
         return (
           <View style={styles.emptyState}>
-            <Feather name="hexagon" size={48} color={iconPlaceholderColor} style={{ marginBottom: 16 }} />
+            <Feather name="hexagon" size={48} color={GOLD} style={{ marginBottom: 16 }} />
             <Text style={styles.emptyTitle}>Tus Geometrix aparecerán aquí</Text>
             <Text style={styles.emptySub}>Crea y guarda una geometría sagrada para verla aquí.</Text>
             <Pressable style={styles.emptyBtn} onPress={() => router.navigate("/(tabs)/geometrix" as never)}>
@@ -1539,7 +1539,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
           onPress={() => setNombreCarpetaFavVisible(true)}
         >
           <View style={styles.addResonadorIcon}>
-            <Feather name="folder" size={25} color="#F7CB6B" />
+            <Feather name="folder" size={25} color={iconPlaceholderColor} />
           </View>
           <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
         </Pressable>
@@ -1549,7 +1549,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
         return (
           <View style={{ gap: 15 }}>
             <View style={styles.emptyState}>
-              <Feather name="heart" size={52} color={iconPlaceholderColor} style={{ marginBottom: 16 }} />
+              <Feather name="heart" size={52} color={GOLD} style={{ marginBottom: 16 }} />
               <Text style={styles.emptyTitle}>Tus favoritos aparecerán aquí</Text>
               <Text style={styles.emptySub}>Toca el corazón en cualquier sesión para guardarla aquí.</Text>
             </View>
