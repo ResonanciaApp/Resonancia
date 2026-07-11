@@ -1430,6 +1430,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.27)",
+    borderWidth: 1.5,
+    borderColor: "rgba(255,255,255,0.05)",
   },
   pillSel: { borderWidth: 0, backgroundColor: "#f9f9f9" },
   pillText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "380", color: "#F4F4F4" },
