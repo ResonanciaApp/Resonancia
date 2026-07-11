@@ -97,7 +97,10 @@ function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel
   const { theme: chipTheme } = useSceneTheme();
   return (
     <Pressable onPress={onPress} style={({pressed})=>[styles.chip, sel && styles.chipSel, chipTheme?.id === "tibet" && !sel && { backgroundColor: "rgba(0,0,0,0.27)", borderWidth: 1.5, borderColor: "rgba(255,255,255,0.4)" }, {opacity:pressed?0.7:1}]}>
-      {sel && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
+      {sel && (chipTheme?.id === "tibet"
+        ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
+        : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+      )}
       <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
     </Pressable>
   );
