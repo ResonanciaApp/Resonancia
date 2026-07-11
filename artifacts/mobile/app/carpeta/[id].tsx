@@ -19,11 +19,12 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
 
-const BG = ["#340D1A", "#190913"] as const;
+const BG_FALLBACK = ["#340D1A", "#190913"] as const;
 const GOLD = "#F7CB6B";
 const TEXT = "#FAF0EE";
 const MUTED = "#c2c2c2";
@@ -32,6 +33,8 @@ const SHEET_BG = "#1B060F";
 export default function CarpetaDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
+  const { theme: sceneTheme } = useSceneTheme();
+  const BG = sceneTheme.gradient;
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 

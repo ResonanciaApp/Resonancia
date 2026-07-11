@@ -30,6 +30,7 @@ import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { usePlayer } from "@/context/PlayerContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { getGuideById } from "@/data/guides";
@@ -37,7 +38,7 @@ import { getArtist } from "@/data/artists";
 import { type GeometryId } from "@/data/geometries";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 
-const BG_GRADIENT = ["#340D1A", "#190913"] as const;
+const BG_GRADIENT_FALLBACK = ["#340D1A", "#190913"] as const;
 const GOLD = "#F7CB6B";
 const TEXT = "#FAF0EE";
 const MUTED = "#c2c2c2";
@@ -90,6 +91,8 @@ function shuffle<T>(arr: T[]): T[] {
 export default function PlaylistDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
+  const { theme: sceneTheme } = useSceneTheme();
+  const BG_GRADIENT = sceneTheme.gradient;
   const { isPremium } = usePremium();
   const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistDescription, reorderPlaylist, setPlaylistCover, setPlaylistCoverColor, setPlaylistCoverGeometry, setPlaylistCoverCreation } = useFoldersPlaylists();
   const { playSession, pauseResume, isPlaying, currentSession } = usePlayer();
@@ -758,6 +761,8 @@ function CoverPickerModal({
 }) {
   const [showGeometries, setShowGeometries] = useState(false);
   const { creations } = useGeometrixCreations();
+  const { theme: sceneTheme } = useSceneTheme();
+  const BG_GRADIENT = sceneTheme.gradient;
   const insets = useSafeAreaInsets();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
 
@@ -812,7 +817,7 @@ function CoverPickerModal({
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={modalStyles.backdrop} onPress={onClose} />
       <View style={[modalStyles.sheet, { paddingBottom: bottomPad }]}>
-        <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={[...BG_GRADIENT]} style={StyleSheet.absoluteFill} />
         <View style={modalStyles.handle} />
         <Text style={modalStyles.sheetTitle}>Foto de la playlist</Text>
         <Pressable
@@ -1035,13 +1040,15 @@ function PlaylistMenuSheet({
   visible: boolean; onClose: () => void; onShare: () => void;
   onAddSessions: () => void; onEditOrder: () => void; onEditInfo: () => void;
 }) {
+  const { theme: sceneTheme } = useSceneTheme();
+  const BG_GRADIENT = sceneTheme.gradient;
   const insets = useSafeAreaInsets();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={menuSt.backdrop} onPress={onClose} />
       <View style={[menuSt.sheet, { paddingBottom: bottomPad + 8 }]}>
-        <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={[...BG_GRADIENT]} style={StyleSheet.absoluteFill} />
         <View style={menuSt.handle} />
         {([
           { icon: "share", label: "Compartir", action: () => { onClose(); onShare(); } },
@@ -1133,6 +1140,8 @@ function DragReorderModal({ visible, sessions, onClose, onSave }: {
   visible: boolean; sessions: Session[]; onClose: () => void;
   onSave: (newIds: string[]) => void;
 }) {
+  const { theme: sceneTheme } = useSceneTheme();
+  const BG_GRADIENT = sceneTheme.gradient;
   const insets = useSafeAreaInsets();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
   const [draftIds, setDraftIds] = useState<string[]>([]);
@@ -1189,7 +1198,7 @@ function DragReorderModal({ visible, sessions, onClose, onSave }: {
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <View style={dreSt.backdrop}>
         <View style={[dreSt.sheet, { paddingBottom: bottomPad }]}>
-          <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={[...BG_GRADIENT]} style={StyleSheet.absoluteFill} />
           <View style={dreSt.handle} />
           <View style={dreSt.header}>
             <Pressable onPress={onClose} hitSlop={12} style={dreSt.closeBtn}>
@@ -1284,6 +1293,8 @@ function EditInfoModal({ visible, playlist, onClose, onSave, onChangeCover, onDe
   onChangeCover: () => void;
   onDelete: () => void;
 }) {
+  const { theme: sceneTheme } = useSceneTheme();
+  const BG_GRADIENT = sceneTheme.gradient;
   const insets = useSafeAreaInsets();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
   const [name, setName] = useState("");
@@ -1303,7 +1314,7 @@ function EditInfoModal({ visible, playlist, onClose, onSave, onChangeCover, onDe
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <View style={eiSt.backdrop}>
         <View style={[eiSt.sheet, { paddingBottom: bottomPad }]}>
-          <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={[...BG_GRADIENT]} style={StyleSheet.absoluteFill} />
           <View style={eiSt.handle} />
           <View style={eiSt.header}>
             <Pressable onPress={onClose} hitSlop={12} style={eiSt.closeBtn}>
