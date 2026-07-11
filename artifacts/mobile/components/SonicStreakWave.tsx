@@ -290,6 +290,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     alignItems: "center",
     justifyContent: "center",
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: "rgba(0,0,0,0.27)",
+    overflow: "hidden",
   },
   number: {
     fontFamily: "Manrope",
