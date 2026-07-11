@@ -742,7 +742,13 @@ export default function HomeScreen2() {
   );
 
   return (
-    <View style={[styles.root, { backgroundColor: "#1B060F" }]}>
+    <View style={[styles.root, { backgroundColor: activeTheme.gradient[activeTheme.gradient.length - 1] as string }]}>
+      {/* ── Fondo degradado del tema (4 stops) ── */}
+      <LinearGradient
+        colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
 
       {/* ── Frase — anclada, posición fija, se oculta con el backdrop al hacer scroll ── */}
       {greetingVisible && (
