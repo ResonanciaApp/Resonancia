@@ -258,12 +258,41 @@ export function SonicStreakWave() {
                   <Stop offset="0" stopColor={borderColor0} stopOpacity="0.68" />
                   <Stop offset="1" stopColor={borderColor1} stopOpacity="0.6" />
                 </SvgGradient>
+                {/* Glow lado izquierdo: brillante en x=0, desvanece al centro */}
+                <SvgGradient id="swBorderGlowL" x1="0" y1="0.5" x2="0.5" y2="0.5">
+                  <Stop offset="0" stopColor={borderColor0} stopOpacity="0.5" />
+                  <Stop offset="1" stopColor={borderColor0} stopOpacity="0" />
+                </SvgGradient>
+                {/* Glow lado derecho: brillante en x=1, desvanece al centro */}
+                <SvgGradient id="swBorderGlowR" x1="1" y1="0.5" x2="0.5" y2="0.5">
+                  <Stop offset="0" stopColor={borderColor0} stopOpacity="0.5" />
+                  <Stop offset="1" stopColor={borderColor0} stopOpacity="0" />
+                </SvgGradient>
               </Defs>
+              {/* Base border */}
               <Circle
                 cx={(RING_SIZE + 18) / 2}
                 cy={(RING_SIZE + 18) / 2}
                 r={(RING_SIZE + 18) / 2 - 1.5}
                 stroke="url(#swBorderGrad)"
+                strokeWidth={3}
+                fill="none"
+              />
+              {/* Glow izquierda */}
+              <Circle
+                cx={(RING_SIZE + 18) / 2}
+                cy={(RING_SIZE + 18) / 2}
+                r={(RING_SIZE + 18) / 2 - 1.5}
+                stroke="url(#swBorderGlowL)"
+                strokeWidth={3}
+                fill="none"
+              />
+              {/* Glow derecha */}
+              <Circle
+                cx={(RING_SIZE + 18) / 2}
+                cy={(RING_SIZE + 18) / 2}
+                r={(RING_SIZE + 18) / 2 - 1.5}
+                stroke="url(#swBorderGlowR)"
                 strokeWidth={3}
                 fill="none"
               />
