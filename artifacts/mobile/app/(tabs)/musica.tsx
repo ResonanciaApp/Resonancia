@@ -759,7 +759,7 @@ export default function MezcladorScreen() {
         {/* ── Scroll principal ── */}
         <View style={[styles.scrollBg, { backgroundColor: theme.gradient[0] }]}>
         <ScrollView
-          style={[styles.scroll, { marginTop: -6 }]}
+          style={[styles.scroll, { marginTop: -3 }]}
           contentContainerStyle={[styles.scrollContent, { paddingBottom: 200 + bottomPad }]}
           showsVerticalScrollIndicator={false}
         >
