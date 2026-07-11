@@ -789,7 +789,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 64,
     borderRadius: 0,
-    marginLeft: 4,
+    marginLeft: -1,
   },
   dormirMiniPlayBtn: {
     width: 36,
