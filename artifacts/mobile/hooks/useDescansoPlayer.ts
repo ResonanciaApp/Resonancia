@@ -103,25 +103,31 @@ export function useDescansoPlayer({
       setIsPlaying(false);
       return;
     }
-    const player = createAudioPlayer({ uri: audioUri });
-    player.loop  = true;
-    player.play();
-    playerRef.current = player;
     setSelectedId(id);
-    setIsPlaying(true);
     setElapsedSeconds(0);
 
-    clearElapsed();
-    elapsedTimerRef.current = setInterval(() => {
-      setElapsedSeconds((prev) => prev + 1);
-    }, ELAPSED_TICK_MS);
+    try {
+      const player = createAudioPlayer({ uri: audioUri });
+      player.loop  = true;
+      player.play();
+      playerRef.current = player;
+      setIsPlaying(true);
 
-    if (timerMinutes > 0) {
-      const totalMs = timerMinutes * 60 * 1000;
-      setTimeout(() => {
-        if (!fadeVolume) stopCurrent();
-      }, totalMs);
-      startFade(totalMs);
+      clearElapsed();
+      elapsedTimerRef.current = setInterval(() => {
+        setElapsedSeconds((prev) => prev + 1);
+      }, ELAPSED_TICK_MS);
+
+      if (timerMinutes > 0) {
+        const totalMs = timerMinutes * 60 * 1000;
+        setTimeout(() => {
+          if (!fadeVolume) stopCurrent();
+        }, totalMs);
+        startFade(totalMs);
+      }
+    } catch (e) {
+      console.warn("[DescansoPlayer] error al iniciar audio:", e);
+      setIsPlaying(false);
     }
   }, [selectedId, timerMinutes, fadeVolume, stopCurrent, startFade, clearElapsed]);
 
