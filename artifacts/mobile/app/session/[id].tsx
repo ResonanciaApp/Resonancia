@@ -186,13 +186,6 @@ export default function SessionDetailScreen() {
     { useNativeDriver: false },
   );
 
-  // Pull-down: el hero crece para tapar el gap entre imagen y contenido.
-  // Base = HEADER_H + 12 (solapamiento extra) para cubrir el lag del JS thread.
-  const heroHeight = scrollY.interpolate({
-    inputRange: [-300, 0],
-    outputRange: [HEADER_H + 312, HEADER_H + 12],
-    extrapolate: "clamp",
-  });
   // Zoom suave en la imagen — sutil, se deshace solo al soltar (rebote nativo)
   const heroScale = scrollY.interpolate({
     inputRange: [-260, 0],
@@ -312,8 +305,11 @@ export default function SessionDetailScreen() {
     <View style={[styles.root, { backgroundColor: sceneTheme.gradient[sceneTheme.gradient.length - 1] as string }]}>
       <StatusBar barStyle="light-content" />
 
-      {/* ── Hero fijo — crece hacia abajo en pull-down para tapar el gap ───── */}
-      <Animated.View style={[styles.hero, { height: heroHeight, position: "absolute", top: 0, left: 0, right: 0, zIndex: 1 }]}>
+      {/* Colchón de color fijo — cubre cualquier gap durante scroll rápido sin lag */}
+      <View style={{ position: "absolute", top: HEADER_H - 2, left: 0, right: 0, height: 400, backgroundColor: sceneTheme.gradient[0] as string, zIndex: 0 }} pointerEvents="none" />
+
+      {/* ── Hero fijo ──────────────────────────────────────────────────────── */}
+      <Animated.View style={[styles.hero, { height: HEADER_H, position: "absolute", top: 0, left: 0, right: 0, zIndex: 1 }]}>
         <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ scale: heroScale }] }]}>
           <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
         </Animated.View>
