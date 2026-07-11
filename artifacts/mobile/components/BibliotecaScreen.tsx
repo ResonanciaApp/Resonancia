@@ -1012,7 +1012,8 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
   const { photoUri } = useUserProfile();
   const { open: openDrawer } = useDrawer();
   const { activeSceneId } = useSceneTheme();
-  const iconPlaceholderColor = activeSceneId === "tibet" ? GOLD : "#15224a";
+  // "tibet" = tema Universo (azul marino); "vino-tinto" = tema Tíbet (borgoña, dorado)
+  const iconPlaceholderColor = activeSceneId === "vino-tinto" ? GOLD : "#15224a";
 
   // ── Borde bajo los chips (Playlists/Mezclas/Favoritos/Resonadores) ──────
   // se activa a partir de unos pocos px de scroll dentro de ESTA pantalla
@@ -1233,7 +1234,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
             onPress={() => { setAddResonadorQ(""); setAddResonadorVisible(true); }}
           >
             <View style={styles.addResonadorIcon}>
-              <Feather name="plus" size={24} color="#F7CB6B" />
+              <Feather name="plus" size={24} color={iconPlaceholderColor} />
             </View>
             <Text style={styles.addResonadorLabel}>Agregar Resonador</Text>
           </Pressable>
