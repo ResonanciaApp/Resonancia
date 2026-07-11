@@ -451,7 +451,13 @@ function TabLayoutInner() {
         <Tabs.Screen name="inicio7"        options={{ title: "Inicio" }} />
         <Tabs.Screen name="inicio8"        options={{ title: "Inicio 8" }} />
         <Tabs.Screen name="musica"         options={{ title: "Creación" }} />
-        <Tabs.Screen name="coleccion/[id]" options={{ href: null }} />
+        <Tabs.Screen name="coleccion/[id]"              options={{ href: null }} />
+        <Tabs.Screen name="category/meditaciones-guiadas" options={{ href: null }} />
+        <Tabs.Screen name="category/musica-sonidos"       options={{ href: null }} />
+        <Tabs.Screen name="category/sonidos-ancestrales"  options={{ href: null }} />
+        <Tabs.Screen name="category/mananas"              options={{ href: null }} />
+        <Tabs.Screen name="category/noches"               options={{ href: null }} />
+        <Tabs.Screen name="category/[id]"                 options={{ href: null }} />
         <Tabs.Screen name="explore"        options={{ title: "Medita" }} />
         <Tabs.Screen name="biblioteca"     options={{ title: "Biblioteca" }} />
         <Tabs.Screen name="resonadores"    options={{ title: "Equipo" }} />
