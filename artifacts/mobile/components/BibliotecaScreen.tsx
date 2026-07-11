@@ -1013,7 +1013,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
   const { open: openDrawer } = useDrawer();
   const { activeSceneId } = useSceneTheme();
   // "tibet" = tema Universo (azul marino); "vino-tinto" = tema Tíbet (borgoña, dorado)
-  const iconPlaceholderColor = activeSceneId === "vino-tinto" ? GOLD : "#9f77fa";
+  const iconPlaceholderColor = activeSceneId === "vino-tinto" ? GOLD : "#fefefe";
 
   // ── Borde bajo los chips (Playlists/Mezclas/Favoritos/Resonadores) ──────
   // se activa a partir de unos pocos px de scroll dentro de ESTA pantalla
