@@ -796,45 +796,48 @@ export default function HomeScreen2() {
         <View
           style={{
             flexDirection: "row",
-            justifyContent: "space-between",
             alignItems: "center",
             paddingHorizontal: 14,
-            marginBottom: 0,
           }}
         >
-          <Image
-            source={require("@/assets/images/pulso-4-logo.png")}
-            style={{ width: 115, height: 38, marginLeft: -9 }}
-            resizeMode="contain"
-          />
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-            <Pressable
-              onPress={openEscenasSheet}
-              hitSlop={8}
-              style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginLeft: -3 }]}
-            >
-              <View style={[styles.giftBtnInner, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
-                <MaterialCommunityIcons name="spa" size={23} color="#f9f9f9" style={{ marginTop: 1 }} />
-              </View>
-            </Pressable>
-            <Pressable
-              hitSlop={8}
-              style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1 }]}
-              onPressIn={() =>
-                Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
-              }
-              onPressOut={() => {
-                Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
-                openMixer();
-              }}
-            >
-              <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-                <View style={[styles.giftBtnInner, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
-                  <Image source={require("@/assets/images/icon-mixer-new.png")} style={{ width: 22, height: 22 }} resizeMode="contain" />
-                </View>
-              </Animated.View>
-            </Pressable>
+          {/* Izquierda: Escenas */}
+          <Pressable
+            onPress={openEscenasSheet}
+            hitSlop={8}
+            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1 }]}
+          >
+            <View style={[styles.giftBtnInner, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
+              <MaterialCommunityIcons name="spa" size={23} color="#f9f9f9" style={{ marginTop: 1 }} />
+            </View>
+          </Pressable>
+
+          {/* Centro: Logo */}
+          <View style={{ flex: 1, alignItems: "center" }}>
+            <Image
+              source={require("@/assets/images/pulso-4-logo.png")}
+              style={{ width: 115, height: 38 }}
+              resizeMode="contain"
+            />
           </View>
+
+          {/* Derecha: Mezclador */}
+          <Pressable
+            hitSlop={8}
+            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1 }]}
+            onPressIn={() =>
+              Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
+            }
+            onPressOut={() => {
+              Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
+              openMixer();
+            }}
+          >
+            <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
+              <View style={[styles.giftBtnInner, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
+                <Image source={require("@/assets/images/icon-mixer-new.png")} style={{ width: 22, height: 22 }} resizeMode="contain" />
+              </View>
+            </Animated.View>
+          </Pressable>
         </View>
 
         {/* ── Racha semanal ── */}
