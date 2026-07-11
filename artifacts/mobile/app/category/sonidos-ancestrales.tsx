@@ -152,6 +152,7 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress: () => void }) {
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
+      {sel && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
       <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
     </Pressable>
   );
@@ -557,11 +558,11 @@ const styles = StyleSheet.create({
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.1)", marginTop: 11, marginHorizontal: H_PAD },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-  chip: { height: 28, paddingHorizontal: 14, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.27)", borderWidth: 1.5, borderColor: "rgba(255,255,255,0.05)" },
+  chip: { height: 28, paddingHorizontal: 14, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.035)", borderWidth: 2, borderColor: "rgba(244,244,244,0.1)" },
   chipBorder: {},
   chipBorderSel: {},
   chipUnsel: {},
-  chipSel: { borderWidth: 0, backgroundColor: "#f9f9f9" },
+  chipSel: { borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400", color: TEXT, textAlign: "center" },
   chipTextSel: { fontFamily: "Manrope", color: "#2D0D3A", fontWeight: "380" },
 

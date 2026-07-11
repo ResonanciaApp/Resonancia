@@ -48,6 +48,7 @@ function SleepPill({
       onPress={onPress}
       style={({ pressed }) => [styles.sleepPill, sel && styles.sleepPillSel, { opacity: pressed ? 0.7 : 1 }]}
     >
+      {sel && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
       <Text style={[styles.sleepPillText, sel && styles.sleepPillTextSel]} numberOfLines={1}>
         {label}
       </Text>
@@ -838,11 +839,11 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     gap: 5,
     overflow: "hidden",
-    backgroundColor: "rgba(0,0,0,0.27)",
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(255,255,255,0.035)",
+    borderWidth: 2,
+    borderColor: "rgba(244,244,244,0.1)",
   },
-  sleepPillSel: { borderWidth: 0, backgroundColor: "#f9f9f9" },
+  sleepPillSel: { borderWidth: 0 },
   sleepPillText: {
     fontFamily: "Manrope",
     fontSize: 11,

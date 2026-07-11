@@ -166,6 +166,7 @@ const PillTab = memo(function PillTab({
       onPress={onPress}
       style={[styles.pillTab, sel && styles.pillTabSel]}
     >
+      {sel && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
       <MaterialCommunityIcons name={tab.icon as any} size={13} color={sel ? "#2D0D3A" : "#F4F4F4"} />
       <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#2D0D3A" : "#F4F4F4" }]}>
         {tab.label}
@@ -922,13 +923,13 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     overflow: "hidden",
     gap: 5,
-    backgroundColor: "rgba(0,0,0,0.27)",
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(255,255,255,0.035)",
+    borderWidth: 2,
+    borderColor: "rgba(244,244,244,0.1)",
   },
   pillTabBorder: {},
   pillTabBorderSel: {},
-  pillTabSel: { borderWidth: 0, backgroundColor: "#f9f9f9" },
+  pillTabSel: { borderWidth: 0 },
   pillTabInner: {
     flexDirection: "row",
     alignItems: "center",
@@ -1019,11 +1020,11 @@ const styles = StyleSheet.create({
     height: 28,
     borderRadius: 999,
     overflow: "hidden",
-    backgroundColor: "rgba(0,0,0,0.27)",
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(255,255,255,0.035)",
+    borderWidth: 2,
+    borderColor: "rgba(244,244,244,0.1)",
   },
-  subTabSel: { borderWidth: 0, backgroundColor: "#f9f9f9" },
+  subTabSel: { borderWidth: 0 },
   subTabText: { fontFamily: "Manrope", fontSize: 11, letterSpacing: 0.1, fontWeight: "380", includeFontPadding: false },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 17, justifyContent: "space-evenly" },
