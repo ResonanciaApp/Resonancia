@@ -17,14 +17,12 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import Svg, { Path, Rect } from "react-native-svg";
-
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useColors } from "@/hooks/useColors";
 import { DESCANSO_SOUNDS } from "@/data/descanso-sounds";
 import { getSessionsByDescansoTag } from "@/data/sessions";
-import { useDescansoPlayer } from "@/hooks/useDescansoPlayer";
+import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 import { SessionCard } from "@/components/SessionCard";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -293,72 +291,6 @@ function PlayingDot() {
   );
 }
 
-function DormirMiniPlayer({
-  sound,
-  isPlaying,
-  onToggle,
-  onStop,
-  bottomOffset,
-  closeColor,
-}: {
-  sound: import("@/data/descanso-sounds").DescansoSound;
-  isPlaying: boolean;
-  onToggle: () => void;
-  onStop: () => void;
-  bottomOffset: number;
-  closeColor: string;
-}) {
-  const opacity    = useRef(new Animated.Value(0)).current;
-  const translateY = useRef(new Animated.Value(15)).current;
-
-  useEffect(() => {
-    opacity.setValue(0);
-    translateY.setValue(15);
-    Animated.parallel([
-      Animated.timing(opacity,    { toValue: 1, duration: 600, useNativeDriver: true }),
-      Animated.timing(translateY, { toValue: 0, duration: 600, useNativeDriver: true }),
-    ]).start();
-  }, [sound.id]);
-
-  return (
-    <Animated.View style={[styles.dormirMiniPlayer, { bottom: bottomOffset, opacity, transform: [{ translateY }] }]}>
-      <Image source={sound.image} style={styles.dormirMiniImg} resizeMode="cover" />
-
-      <Pressable
-        onPress={(e) => { e.stopPropagation(); onToggle(); }}
-        style={styles.dormirMiniPlayBtn}
-        hitSlop={8}
-      >
-        <Svg width={26} height={26} viewBox="0 0 48 48">
-          {isPlaying ? (
-            <>
-              <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-              <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-            </>
-          ) : (
-            <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
-          )}
-        </Svg>
-      </Pressable>
-
-      <View style={{ flex: 1 }}>
-        <Text style={styles.dormirMiniTitle} numberOfLines={1}>{sound.label}</Text>
-        <Text style={styles.dormirMiniSub}>
-          {sound.categoryId === "binaural" ? "Sonidos Binaurales" : "Ambientales"}
-        </Text>
-      </View>
-
-      <Pressable
-        onPress={(e) => { e.stopPropagation(); onStop(); }}
-        hitSlop={10}
-        style={{ paddingRight: 16 }}
-      >
-        <Feather name="x" size={20} color={closeColor} style={{ opacity: 0.6 }} />
-      </Pressable>
-    </Animated.View>
-  );
-}
-
 /* ─── Pantalla ──────────────────────────────────────────────────────── */
 export default function DescansoScreen() {
   const colors    = useColors();
@@ -370,8 +302,7 @@ export default function DescansoScreen() {
 
   const [activeTab,   setActiveTab]   = useState<SleepTabId>("historias");
   const [timerSheet,  setTimerSheet]  = useState(false);
-  const [timerMin,    setTimerMin]    = useState<number | null>(30);
-  const [fadeVol,     setFadeVol]     = useState(false);
+  const { timerMinutes: timerMin, setTimerMinutes: setTimerMin, fadeVolume: fadeVol, setFadeVolume: setFadeVol, ...player } = useDescansoPlayerContext();
 
   const scrollY      = useRef(new Animated.Value(0)).current;
   const [stickyVisible, setStickyVisible] = useState(false);
@@ -397,7 +328,6 @@ export default function DescansoScreen() {
   const scrollContentHeightRef = useRef(0);
   const scrollLayoutHeightRef = useRef(0);
 
-  const player = useDescansoPlayer({ timerMinutes: timerMin ?? 0, fadeVolume: fadeVol });
   const {
     currentSession,
     isPlaying: sessionIsPlaying,
@@ -591,16 +521,6 @@ export default function DescansoScreen() {
         setFadeVol={setFadeVol}
       />
 
-      {selectedSound && (
-        <DormirMiniPlayer
-          sound={selectedSound}
-          isPlaying={player.isPlaying}
-          onToggle={() => player.toggle(selectedSound.id, selectedSound.audioUri)}
-          onStop={() => player.stop()}
-          bottomOffset={tabBarH}
-          closeColor={sceneTheme.gradient[sceneTheme.gradient.length - 1]}
-        />
-      )}
     </LinearGradient>
   );
 }

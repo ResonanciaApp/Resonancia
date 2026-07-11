@@ -39,6 +39,7 @@ import { PremiumProvider } from "@/context/PremiumContext";
 import { UserProfileProvider } from "@/context/UserProfileContext";
 import { ProfileSync } from "@/components/ProfileSync";
 import { NotificationsProvider } from "@/context/NotificationsContext";
+import { DescansoPlayerProvider } from "@/context/DescansoPlayerContext";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 if (apiUrl) setBaseUrl(apiUrl);
@@ -385,6 +386,7 @@ export default function RootLayout() {
                 <PremiumProvider>
                 <PlayerProvider>
                   <AmbientPlayerProvider>
+                    <DescansoPlayerProvider>
                     <MixerProvider>
                     <SaveEventProvider>
                     <UserProfileProvider>
@@ -411,6 +413,7 @@ export default function RootLayout() {
                     </UserProfileProvider>
                     </SaveEventProvider>
                     </MixerProvider>
+                    </DescansoPlayerProvider>
                   </AmbientPlayerProvider>
                 </PlayerProvider>
                 </PremiumProvider>

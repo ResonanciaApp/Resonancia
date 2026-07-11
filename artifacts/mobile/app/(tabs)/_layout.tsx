@@ -23,8 +23,11 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MiniPlayer } from "@/components/MiniPlayer";
+import { DormirMiniPlayer } from "@/components/DormirMiniPlayer";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
+import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
+import { DESCANSO_SOUNDS } from "@/data/descanso-sounds";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import {
   TabBarVisibilityProvider,
@@ -422,6 +425,11 @@ function TabLayoutInner() {
   const mixActive      = !currentSession && activeSounds.length > 0;
   const miniPlayerBottom = hidden ? bottomPb + 10 : tabBarHeight - 10;
 
+  const descansoPlayer = useDescansoPlayerContext();
+  const selectedSound = descansoPlayer.selectedId
+    ? (DESCANSO_SOUNDS.find((s) => s.id === descansoPlayer.selectedId) ?? null)
+    : null;
+
   // ¿La sesión actual pertenece a alguna playlist? → PlaylistMiniPlayer persistente
   const activePlaylist = currentSession
     ? (playlists.find((p) => p.sessionIds.includes(currentSession.id)) ?? null)
@@ -470,6 +478,18 @@ function TabLayoutInner() {
       >
         <Pressable style={{ flex: 1 }} onPress={closeMixer} />
       </Animated.View>
+
+      {/* ── DormirMiniPlayer persistente (binaurales/ambientales) ───────── */}
+      {selectedSound && (
+        <DormirMiniPlayer
+          sound={selectedSound}
+          isPlaying={descansoPlayer.isPlaying}
+          onToggle={() => descansoPlayer.toggle(selectedSound.id, selectedSound.audioUri ?? null)}
+          onStop={() => descansoPlayer.stop()}
+          bottomOffset={miniPlayerBottom}
+          closeColor="#ffffff"
+        />
+      )}
 
       {/* ── PlaylistMiniPlayer persistente (visible en todos los tabs) ─────── */}
       {activePlaylist && currentSession && (
