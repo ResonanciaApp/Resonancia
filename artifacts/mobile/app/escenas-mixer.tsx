@@ -20,6 +20,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { VolumeSlider } from "@/components/VolumeSlider";
 import { useMixer } from "@/context/MixerContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import {
   DEFAULT_BG_PRESET_ID,
   DEFAULT_OVERLAY,
@@ -66,6 +67,7 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
     sleepTimerRemaining,
     setSleepTimer,
   } = useMixer();
+  const { theme } = useSceneTheme();
 
   const [selectedId, setSelectedId] = useState<string>(
     contextBgPresetId ?? DEFAULT_BG_PRESET_ID,
@@ -238,6 +240,21 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
           {/* ── Sección escenas ── */}
           <View style={styles.scenesTitleRow}>
             <Text style={styles.sectionTitle}>Escenas</Text>
+            {selectedId !== DEFAULT_BG_PRESET_ID && (
+              <Pressable
+                onPress={() => applyScene(DEFAULT_BG_PRESET_ID)}
+                style={({ pressed }) => [styles.restablecerBtn, { opacity: pressed ? 0.7 : 1 }]}
+                hitSlop={8}
+              >
+                <LinearGradient
+                  colors={[theme.gradient[0], theme.gradient[1]]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.restablecerDot}
+                />
+                <Text style={styles.restablecerText}>Restablecer</Text>
+              </Pressable>
+            )}
           </View>
 
           <ScrollView
@@ -450,13 +467,18 @@ const styles = StyleSheet.create({
   restablecerBtn: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
+    gap: 6,
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "rgba(140,26,43,0.45)",
     backgroundColor: "rgba(140,26,43,0.1)",
+  },
+  restablecerDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
   },
   restablecerText: {
     fontSize: 11,

@@ -872,11 +872,6 @@ export default function MezcladorScreen() {
           emitBgPresetChange(id === "noche" ? "oscuro" : DEFAULT_BG_PRESET_ID);
         }}
         onClear={clearForMode}
-        sceneGradient={theme.gradient}
-        onResetToScene={() => {
-          setBgPaletteId(DEFAULT_MIXER_BG_PALETTE);
-          emitBgPresetChange("oscuro");
-        }}
       />
 
     </ImageBackground>
