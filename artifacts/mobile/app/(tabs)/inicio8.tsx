@@ -849,7 +849,7 @@ export default function HomeScreen2() {
         {/* ── ESTABLECE TU INTENCIÓN ── */}
         <Pressable
           onPress={() => router.push("/intencion-onboarding" as never)}
-          style={({ pressed }) => [styles.intencionWrap, { marginTop: 30, transform: [], opacity: pressed ? 0.75 : 1 }]}
+          style={({ pressed }) => [styles.intencionWrap, { marginTop: 30, marginBottom: 0, transform: [], opacity: pressed ? 0.75 : 1 }]}
         >
           <Text style={styles.intencionSuper}>ESTABLECE TU INTENCIÓN</Text>
           <View style={styles.intencionRow}>
