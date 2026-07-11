@@ -317,10 +317,10 @@ export default function SessionDetailScreen() {
 
       {/* ── NavBar flotante — encima del ScrollView ────────────────────── */}
       <View style={[styles.navBar, { paddingTop: topPad + 8, position: "absolute", top: 0, left: 0, right: 0, zIndex: 3 }]}>
-        <GhostPill noBorder style={{ backgroundColor: "rgba(255,255,255,0.3)" }}>
+        <GhostPill noBorder style={{ backgroundColor: sceneTheme.id === "tibet" ? "rgba(6,11,49,0.3)" : "rgba(255,255,255,0.3)" }}>
           <BackPill
             onPress={() => router.back()}
-            color={sceneTheme.id === "tibet" ? "#060b31" : "#fff"}
+            color="#fff"
             size={sceneTheme.id === "tibet" ? 30 : 22}
             style={{ marginLeft: sceneTheme.id === "tibet" ? -1 : 0 }}
           />
