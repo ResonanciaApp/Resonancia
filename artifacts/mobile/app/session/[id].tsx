@@ -193,10 +193,10 @@ export default function SessionDetailScreen() {
     outputRange: [HEADER_H + 312, HEADER_H + 12],
     extrapolate: "clamp",
   });
-  // Zoom suave en la imagen al crecer el hero
+  // Zoom suave en la imagen — sutil, se deshace solo al soltar (rebote nativo)
   const heroScale = scrollY.interpolate({
-    inputRange: [-180, 0],
-    outputRange: [1.5, 1],
+    inputRange: [-260, 0],
+    outputRange: [1.12, 1],
     extrapolate: "clamp",
   });
   const STICKY_START = HEADER_H + 140 - topPad;
