@@ -88,8 +88,6 @@ export default function SlideProyeccion() {
             { label: "Mensual", value: "$8.990", note: "IVA incl. 19%" },
             { label: "Anual",   value: "$59.990", note: "IVA incl. 19%" },
             { label: "ARPU neto blended", value: "~$4.350/mes", note: "desc. IVA + comisión 30%" },
-            { label: "Comisión tienda",   value: "30%", note: "Apple / Google" },
-            { label: "IVA",               value: "19%", note: "incluido en precio" },
           ].map((k) => (
             <div
               key={k.label}
