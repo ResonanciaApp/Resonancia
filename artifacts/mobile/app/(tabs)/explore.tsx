@@ -456,12 +456,16 @@ export default function ExploreScreen() {
                       ]}
                     >
                       {sel ? (
-                        <LinearGradient
-                          colors={["#D6A45C", "#F7CB6B"]}
-                          start={{ x: 0, y: 0 }}
-                          end={{ x: 0, y: 1 }}
-                          style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-                        />
+                        activeSceneId === "tibet" ? (
+                          <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: "#f9f9f9" }]} />
+                        ) : (
+                          <LinearGradient
+                            colors={["#D6A45C", "#F7CB6B"]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 0, y: 1 }}
+                            style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+                          />
+                        )
                       ) : (
                         <>
                           <CardTint />
@@ -471,7 +475,7 @@ export default function ExploreScreen() {
                         style={[
                           styles.durPillText,
                           sel && styles.durPillTextActive,
-                          sel && activeSceneId === "tibet" && { color: "#f9f9f9" },
+                          sel && activeSceneId === "tibet" && { color: "#0a0719" },
                         ]}
                         numberOfLines={1}
                         adjustsFontSizeToFit
