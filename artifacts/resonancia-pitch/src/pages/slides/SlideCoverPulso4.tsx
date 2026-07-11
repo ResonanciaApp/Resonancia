@@ -26,7 +26,7 @@ export default function SlideCoverPulso4() {
             Presentación Privada · Inversionistas
           </div>
           <div style={{ fontSize: "1.0vw", fontWeight: 400, letterSpacing: "0.15em", color: "rgba(255,255,255,0.28)" }}>
-            RESONANCIA — Casa del Cuenco · 2026
+            Casa del Cuenco · 2026
           </div>
         </div>
       </div>
