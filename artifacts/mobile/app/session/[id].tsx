@@ -298,7 +298,13 @@ export default function SessionDetailScreen() {
       }));
 
   return (
-    <View style={[styles.root, { backgroundColor: sceneTheme.gradient[0] }]}>
+    <View style={[styles.root, { backgroundColor: sceneTheme.gradient[sceneTheme.gradient.length - 1] as string }]}>
+      {/* ── Fondo degradado del tema (todos los stops, igual que inicio) ── */}
+      <LinearGradient
+        colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
       <StatusBar barStyle="light-content" />
 
       <Animated.ScrollView
