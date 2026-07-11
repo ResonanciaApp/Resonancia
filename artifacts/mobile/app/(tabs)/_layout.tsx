@@ -24,6 +24,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MiniPlayer } from "@/components/MiniPlayer";
 import { DormirMiniPlayer } from "@/components/DormirMiniPlayer";
+import { DormirExpandedPlayer } from "@/components/DormirExpandedPlayer";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
 import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
@@ -424,11 +425,13 @@ function TabLayoutInner() {
 
   const mixActive      = !currentSession && activeSounds.length > 0;
   const miniPlayerBottom = hidden ? bottomPb + 10 : tabBarHeight - 10;
+  const topPad         = isWeb ? 67 : insets.top;
 
   const descansoPlayer = useDescansoPlayerContext();
   const selectedSound = descansoPlayer.selectedId
     ? (DESCANSO_SOUNDS.find((s) => s.id === descansoPlayer.selectedId) ?? null)
     : null;
+  const { isExpanded, setIsExpanded } = descansoPlayer;
 
   // ¿La sesión actual pertenece a alguna playlist? → PlaylistMiniPlayer persistente
   const activePlaylist = currentSession
@@ -481,14 +484,29 @@ function TabLayoutInner() {
 
       {/* ── DormirMiniPlayer persistente (binaurales/ambientales) ───────── */}
       {selectedSound && (
-        <DormirMiniPlayer
-          sound={selectedSound}
-          isPlaying={descansoPlayer.isPlaying}
-          onToggle={() => descansoPlayer.toggle(selectedSound.id, selectedSound.audioUri ?? null)}
-          onStop={() => descansoPlayer.stop()}
-          bottomOffset={miniPlayerBottom}
-          closeColor="#ffffff"
-        />
+        <>
+          <DormirMiniPlayer
+            sound={selectedSound}
+            isPlaying={descansoPlayer.isPlaying}
+            onToggle={() => descansoPlayer.toggle(selectedSound.id, selectedSound.audioUri ?? null)}
+            onStop={() => { setIsExpanded(false); descansoPlayer.stop(); }}
+            bottomOffset={miniPlayerBottom}
+            closeColor="#ffffff"
+            isExpanded={isExpanded}
+            topOffset={topPad}
+            onExpand={() => setIsExpanded(true)}
+          />
+          <DormirExpandedPlayer
+            sound={selectedSound}
+            isPlaying={descansoPlayer.isPlaying}
+            isExpanded={isExpanded}
+            onToggle={() => descansoPlayer.toggle(selectedSound.id, selectedSound.audioUri ?? null)}
+            onCollapse={() => setIsExpanded(false)}
+            onStop={() => { setIsExpanded(false); descansoPlayer.stop(); }}
+            bottomInset={bottomPb}
+            topInset={topPad}
+          />
+        </>
       )}
 
       {/* ── PlaylistMiniPlayer persistente (visible en todos los tabs) ─────── */}

@@ -6,6 +6,8 @@ type DescansoPlayerCtx = ReturnType<typeof useDescansoPlayer> & {
   setTimerMinutes: (v: number | null) => void;
   fadeVolume: boolean;
   setFadeVolume: (v: boolean) => void;
+  isExpanded: boolean;
+  setIsExpanded: (v: boolean) => void;
 };
 
 const DescansoPlayerContext = createContext<DescansoPlayerCtx | null>(null);
@@ -13,11 +15,12 @@ const DescansoPlayerContext = createContext<DescansoPlayerCtx | null>(null);
 export function DescansoPlayerProvider({ children }: { children: React.ReactNode }) {
   const [timerMinutes, setTimerMinutes] = React.useState<number | null>(30);
   const [fadeVolume, setFadeVolume] = React.useState(false);
+  const [isExpanded, setIsExpanded] = React.useState(false);
 
   const player = useDescansoPlayer({ timerMinutes: timerMinutes ?? 0, fadeVolume });
 
   return (
-    <DescansoPlayerContext.Provider value={{ ...player, timerMinutes, setTimerMinutes, fadeVolume, setFadeVolume }}>
+    <DescansoPlayerContext.Provider value={{ ...player, timerMinutes, setTimerMinutes, fadeVolume, setFadeVolume, isExpanded, setIsExpanded }}>
       {children}
     </DescansoPlayerContext.Provider>
   );
