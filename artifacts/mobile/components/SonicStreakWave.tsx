@@ -262,9 +262,9 @@ export function SonicStreakWave() {
               <Circle
                 cx={(RING_SIZE + 18) / 2}
                 cy={(RING_SIZE + 18) / 2}
-                r={(RING_SIZE + 18) / 2 - 1}
+                r={(RING_SIZE + 18) / 2 - 1.5}
                 stroke="url(#swBorderGrad)"
-                strokeWidth={2}
+                strokeWidth={3}
                 fill="none"
               />
             </Svg>
