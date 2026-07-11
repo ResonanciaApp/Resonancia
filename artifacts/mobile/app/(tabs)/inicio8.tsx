@@ -70,6 +70,7 @@ import { SonicStreakWave } from "@/components/SonicStreakWave";
 import { LiveSessionCard } from "@/components/LiveSessionCard";
 import { useLiveSessions } from "@/hooks/useLiveSessions";
 import { VideoCard } from "@/components/VideoCard";
+import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
 
 const { width } = Dimensions.get("window");
@@ -1007,7 +1008,7 @@ export default function HomeScreen2() {
                   opacity: pressed ? 0.75 : 1,
                 }]}
               >
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.27)" }]} />
+                <CardTint />
                 <MaskedView
                   maskElement={
                     <View style={{ width: 34, height: 34, alignItems: "center", justifyContent: "center" }}>
@@ -1066,7 +1067,7 @@ export default function HomeScreen2() {
             onPress={() => setMoodSheetVisible(true)}
             style={({ pressed }) => [styles.moodRow, styles.moodRowActive, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
           >
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.27)" }]} />
+            <CardTint />
             <Text style={styles.moodSientesLabel}>Sientes:</Text>
             <View style={{ flex: 1 }} />
             <LinearGradient
@@ -1091,7 +1092,7 @@ export default function HomeScreen2() {
             onPress={() => setMoodSheetVisible(true)}
             style={({ pressed }) => [styles.moodRow, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
           >
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.27)" }]} />
+            <CardTint />
             <Text style={styles.moodEmoji}>🙂</Text>
             <Text style={styles.moodRowLabel}>¿Cómo te sientes hoy?</Text>
             <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" />
@@ -1107,7 +1108,7 @@ export default function HomeScreen2() {
         <View style={styles.recoSection}>
           {moodRecommended.map((s) => (
             <View key={s.id} style={styles.recoCard}>
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.27)" }]} />
+              <CardTint />
               <SessionRow
                 session={s}
                 imageSize={84}

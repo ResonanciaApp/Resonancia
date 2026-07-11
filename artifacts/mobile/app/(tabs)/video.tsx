@@ -20,6 +20,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { VideoCard } from "@/components/VideoCard";
+import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -103,7 +104,7 @@ export default function VideoTabScreen() {
         {/* Search bar */}
         <View style={styles.searchWrap}>
           <View style={[styles.searchBox, { overflow: "hidden", borderColor: "rgba(255,255,255,0.5)", borderWidth: 1 }]}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.27)" }]} />
+            <CardTint />
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
               value={query}

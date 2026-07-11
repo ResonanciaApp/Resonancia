@@ -23,6 +23,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
+import { CardTint } from "@/components/CardTint";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SessionCard } from "@/components/SessionCard";
 import { SESSIONS, getSessionById } from "@/data/sessions";
@@ -406,7 +407,7 @@ export default function ExploreScreen() {
         {/* ── Barra de búsqueda ── */}
         <View style={styles.searchWrap}>
           <View style={[styles.searchBox, { overflow: "hidden", borderColor: "rgba(255,255,255,0.5)", borderWidth: 1 }]}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.27)" }]} />
+            <CardTint />
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
               value={query}
@@ -454,7 +455,7 @@ export default function ExploreScreen() {
                   >
                     {({ pressed }) => (
                       <>
-                        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.27)" }]} />
+                        <CardTint />
                         {pressed && <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(t.color, 0.22) }]} />}
                         {t.image != null ? (
                           <Image
@@ -506,7 +507,7 @@ export default function ExploreScreen() {
                         />
                       ) : (
                         <>
-                          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.27)" }]} />
+                          <CardTint />
                         </>
                       )}
                       <Text
