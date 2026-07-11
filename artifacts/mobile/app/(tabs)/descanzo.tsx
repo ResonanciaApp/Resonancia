@@ -43,10 +43,11 @@ const SOUND_TAB_IDS: SleepTabId[] = ["binaural", "ambiental"];
 function SleepPill({
   sel, label, onPress,
 }: { sel: boolean; label: string; onPress: () => void }) {
+  const { theme: pillTheme } = useSceneTheme();
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.sleepPill, sel && styles.sleepPillSel, { opacity: pressed ? 0.7 : 1 }]}
+      style={({ pressed }) => [styles.sleepPill, sel && styles.sleepPillSel, pillTheme?.id === "tibet" && !sel && { backgroundColor: "rgba(0,0,0,0.27)", borderWidth: 1.5, borderColor: "rgba(255,255,255,0.4)" }, { opacity: pressed ? 0.7 : 1 }]}
     >
       {sel && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
       <Text style={[styles.sleepPillText, sel && styles.sleepPillTextSel]} numberOfLines={1}>

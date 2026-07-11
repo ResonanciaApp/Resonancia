@@ -824,7 +824,7 @@ export default function ProfileScreen() {
               <Pressable
                 key={t.id}
                 onPress={() => setPerfilTab(t.id)}
-                style={({ pressed }) => [styles.pill, sel && styles.pillSel, { opacity: pressed ? 0.8 : 1 }]}
+                style={({ pressed }) => [styles.pill, sel && styles.pillSel, activeTheme?.id === "tibet" && !sel && { backgroundColor: "rgba(0,0,0,0.27)", borderWidth: 1.5, borderColor: "rgba(255,255,255,0.4)" }, { opacity: pressed ? 0.8 : 1 }]}
               >
                 {sel && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
                 <Text style={[styles.pillText, sel && styles.pillTextSel]}>{t.label}</Text>

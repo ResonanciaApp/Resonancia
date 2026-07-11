@@ -158,13 +158,16 @@ const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
 const GOLD_BORDER: [string, string] = ["#F7CB6B", "#FBA980"];
 const GOLD_BORDER_PILL = ["rgba(212,175,55,0.20)", "rgba(233,196,106,0.20)", "rgba(212,175,55,0.20)"] as const;
 
+const UNIVERSO_PILL_UNSEL = { backgroundColor: "rgba(0,0,0,0.27)", borderWidth: 1.5, borderColor: "rgba(255,255,255,0.4)" } as const;
+
 const PillTab = memo(function PillTab({
   tab, sel, onPress,
 }: { tab: (typeof MAIN_TABS)[0]; sel: boolean; onPress: () => void }) {
+  const { theme: pillTheme } = useSceneTheme();
   return (
     <Pressable
       onPress={onPress}
-      style={[styles.pillTab, sel && styles.pillTabSel]}
+      style={[styles.pillTab, sel && styles.pillTabSel, pillTheme?.id === "tibet" && !sel && UNIVERSO_PILL_UNSEL]}
     >
       {sel && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
       <MaterialCommunityIcons name={tab.icon as any} size={13} color={sel ? "#2D0D3A" : "#F4F4F4"} />
@@ -748,7 +751,7 @@ export default function MezcladorScreen() {
                         <Pressable
                           key={catId}
                           onPress={() => setSubTab(sel ? null : catId)}
-                          style={[styles.subTab, sel && styles.subTabSel]}
+                          style={[styles.subTab, sel && styles.subTabSel, theme?.id === "tibet" && !sel && UNIVERSO_PILL_UNSEL]}
                         >
                           {sel && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
                           <Text style={[styles.subTabText, { color: sel ? "#2D0D3A" : "#FBFBFB" }]}>
