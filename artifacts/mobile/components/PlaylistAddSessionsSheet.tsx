@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: 36, height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(74,12,12,0.35)",
+    backgroundColor: "rgba(255,255,255,0.08)",
     marginTop: 10, marginBottom: 4,
   },
 
@@ -572,7 +572,6 @@ const styles = StyleSheet.create({
   tabsScroll: {
     flexGrow: 0,
     flexShrink: 0,
-    backgroundColor: "rgba(255,255,255,0.08)",
   },
   tabsWrapper: {
     flexDirection: "row",
