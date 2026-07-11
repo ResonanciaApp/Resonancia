@@ -4,10 +4,10 @@ export default function SlideTramosInversion() {
   const VAL_M12 = 1044; // millones CLP · 5.000 subs × $4.350 × 12 × 4×
 
   const tramos = [
-    { inv: 5,     equity: 3.0  },
-    { inv: 10,    equity: 5.0  },
-    { inv: 15,    equity: 7.0  },
-    { inv: 20,    equity: 9.0  },
+    { inv: 5,     equity: 1.2  },
+    { inv: 10,    equity: 3.0  },
+    { inv: 15,    equity: 5.0  },
+    { inv: 20,    equity: 7.0  },
     { inv: 23.19, equity: 10.0 },
   ].map(({ inv, equity }) => {
     const postMoney = inv / (equity / 100);
@@ -51,13 +51,13 @@ export default function SlideTramosInversion() {
           TRAMOS DE INVERSIÓN
         </div>
         <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Mayor riesgo,{" "}
+          Más inversión,{" "}
           <span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-            mayor retorno.
+            mejor tasa.
           </span>
         </div>
         <div style={{ fontSize: "1.2vw", color: "rgba(242,231,228,0.40)", marginTop: "0.7vh" }}>
-          Inversores pequeños: mejor tasa por peso · inversores grandes: mayor participación absoluta · ancla máxima $23,19M = 10%
+          Modelo de prima por escala · cada tramo mayor recibe más equity por peso invertido · ancla máxima $23,19M = 10%
         </div>
       </div>
 
