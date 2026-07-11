@@ -681,11 +681,10 @@ export default function MezcladorScreen() {
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.pageTitle, { transform: [{ translateX: -19 }, { translateY: -1 }] }]}>Creación</Text>
                 </View>
-                <View style={styles.headerActions}>
-                  <GhostPill style={{ gap: 6, backgroundColor: "rgba(255,255,255,0.05)" }}>
+                <View style={[styles.headerActions, { flexDirection: "row", gap: 4 }]}>
                     <Pressable
                       onPress={() => router.push("/mezclas-comunidad" as never)}
-                      style={[styles.headerPillBtn, { width: 43, height: 43 }]}
+                      style={[styles.headerPillBtn, { width: 43, height: 43, borderRadius: 21.5, backgroundColor: "rgba(255,255,255,0.10)" }]}
                       hitSlop={8}
                       accessibilityRole="button"
                       accessibilityLabel="Mezclas de la comunidad"
@@ -694,14 +693,13 @@ export default function MezcladorScreen() {
                     </Pressable>
                     <Pressable
                       onPress={() => setSettingsVisible(true)}
-                      style={[styles.headerPillBtn, { width: 43, height: 43 }]}
+                      style={[styles.headerPillBtn, { width: 43, height: 43, borderRadius: 21.5, backgroundColor: "rgba(255,255,255,0.10)" }]}
                       hitSlop={8}
                       accessibilityRole="button"
                       accessibilityLabel="Filtros del Mezclador"
                     >
                       <MaterialCommunityIcons name="filter-variant" size={24} color="#FBFBFB" />
                     </Pressable>
-                  </GhostPill>
                 </View>
               </View>
             </View>
@@ -872,6 +870,7 @@ export default function MezcladorScreen() {
           emitBgPresetChange(id === "noche" ? "oscuro" : DEFAULT_BG_PRESET_ID);
         }}
         onClear={clearForMode}
+        bgColor={theme.gradient[0]}
       />
 
     </ImageBackground>

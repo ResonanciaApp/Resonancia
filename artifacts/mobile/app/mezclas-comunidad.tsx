@@ -25,6 +25,7 @@ import { MixContextMenu } from "@/components/CommunityMixesCarousel";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -136,6 +137,7 @@ const gc = StyleSheet.create({
 
 export default function MezclasComunidadScreen() {
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 0 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -230,9 +232,9 @@ export default function MezclasComunidadScreen() {
   }, [allMixes]);
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: theme.gradient[1] }]}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#340D1A", "#190913"]} style={{ position: "absolute", top: 0, left: 0, right: 0, height: HERO_H }} />
+      <LinearGradient colors={[theme.gradient[0], theme.gradient[1]]} style={{ position: "absolute", top: 0, left: 0, right: 0, height: HERO_H }} />
 
       <ScrollView
         style={styles.scroll}

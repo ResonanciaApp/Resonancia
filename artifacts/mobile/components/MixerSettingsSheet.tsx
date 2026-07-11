@@ -27,6 +27,7 @@ type Props = {
   bgPaletteId: MixerBgPaletteId;
   onBgPaletteChange: (id: MixerBgPaletteId) => void;
   onClear: () => void;
+  bgColor?: string;
 };
 
 const PRIMARY = "#F7CB6B";
@@ -48,6 +49,7 @@ export function MixerSettingsSheet({
   bgPaletteId,
   onBgPaletteChange,
   onClear,
+  bgColor = "#340D1A",
 }: Props) {
   const insets = useSafeAreaInsets();
 
@@ -65,7 +67,7 @@ export function MixerSettingsSheet({
         <View
           style={[
             styles.sheet,
-            { paddingTop: insets.top + 14, paddingBottom: insets.bottom + 16, backgroundColor: "#340D1A" },
+            { paddingTop: insets.top + 14, paddingBottom: insets.bottom + 16, backgroundColor: bgColor },
           ]}
         >
           {/* ── Header: X + título en la misma fila ── */}
