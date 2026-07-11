@@ -168,11 +168,15 @@ function AnimatedChipRow({
   activeTab,
   onSelect,
   onClear,
+  onSearch,
+  onAdd,
 }: {
   tabs: { id: LibTab; label: string }[];
   activeTab: LibTab | null;
   onSelect: (id: LibTab) => void;
   onClear: () => void;
+  onSearch?: () => void;
+  onAdd?: () => void;
 }) {
   const progress = useRef(new Animated.Value(activeTab ? 1 : 0)).current;
   const offsetsRef = useRef<Record<string, number>>({});
@@ -231,6 +235,28 @@ function AnimatedChipRow({
           <Feather name="x" size={15} color={MUTED} />
         </Pressable>
       </Animated.View>
+
+      {/* Lupa + Más — a la derecha, se ocultan cuando hay tab seleccionado */}
+      {(onSearch || onAdd) && (
+        <Animated.View
+          pointerEvents={filtered ? "none" : "auto"}
+          style={[
+            styles.chipRowActions,
+            { opacity: progress.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) },
+          ]}
+        >
+          {onSearch && (
+            <Pressable onPress={onSearch} hitSlop={10} style={styles.chipActionBtn}>
+              <Feather name="search" size={18} color={MUTED} />
+            </Pressable>
+          )}
+          {onAdd && (
+            <Pressable onPress={onAdd} hitSlop={10} style={styles.chipActionBtn}>
+              <Feather name="plus" size={20} color={MUTED} />
+            </Pressable>
+          )}
+        </Animated.View>
+      )}
 
       <ScrollView
         horizontal
@@ -1692,6 +1718,8 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
             activeTab={activeTab}
             onSelect={(id) => setActiveTab(id)}
             onClear={() => setActiveTab(null)}
+            onSearch={() => setSearchVisible(true)}
+            onAdd={() => setCreateVisible(true)}
           />
         </View>
 
@@ -1867,6 +1895,8 @@ const styles = StyleSheet.create({
   headerIconBtn: { width: 43, height: 43, alignItems: "center", justifyContent: "center" },
 
   animChipWrap: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
+  chipRowActions: { flexDirection: "row", alignItems: "center", gap: 2, position: "absolute", right: H_PAD, top: 0, bottom: 0, marginTop: -21, zIndex: 3 },
+  chipActionBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center" },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, marginTop: -21, justifyContent: "center", zIndex: 3 },
   chipRow: { flexGrow: 0, marginTop: -21 },
   chipRowContent: { flexDirection: "row", gap: 22, paddingTop: 5, paddingBottom: 2, paddingLeft: H_PAD + 4, paddingRight: H_PAD },
