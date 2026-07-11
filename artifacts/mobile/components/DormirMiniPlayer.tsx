@@ -25,8 +25,8 @@ export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOff
     opacity.setValue(0);
     translateY.setValue(15);
     Animated.parallel([
-      Animated.timing(opacity,    { toValue: 1, duration: 600, useNativeDriver: true }),
-      Animated.timing(translateY, { toValue: 0, duration: 600, useNativeDriver: true }),
+      Animated.timing(opacity,    { toValue: 1, duration: 300, useNativeDriver: true }),
+      Animated.timing(translateY, { toValue: 0, duration: 300, useNativeDriver: true }),
     ]).start();
   }, [sound.id]);
 
