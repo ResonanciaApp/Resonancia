@@ -1,4 +1,5 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -462,6 +463,7 @@ export default function DescansoScreen() {
                     stop();
                   } else {
                     playSession(session);
+                    router.push({ pathname: "/player", params: { anim: "fade" } } as never);
                   }
                 }}
                 playing={currentSession?.id === session.id}

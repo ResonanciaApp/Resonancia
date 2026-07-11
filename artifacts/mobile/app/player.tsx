@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Image as ExpoImage } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
@@ -62,6 +62,7 @@ function formatTime(seconds: number): string {
 }
 
 export default function PlayerScreen() {
+  const { anim } = useLocalSearchParams<{ anim?: string }>();
   const colors = useColors();
   const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
@@ -438,6 +439,7 @@ export default function PlayerScreen() {
 
   return (
     <View style={styles.root}>
+      <Stack.Screen options={{ animation: anim === "fade" ? "fade" : "slide_from_bottom", animationDuration: 300 }} />
       <StatusBar hidden />
 
       {/* ── Hero image con Ken Burns — pantalla completa ─────────────────── */}
