@@ -4,6 +4,7 @@ import { BlurView } from "expo-blur";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack, useLocalSearchParams } from "expo-router";
+import { sessionMiniPlayerEvents } from "@/lib/miniPlayerEvents";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Image as ExpoImage } from "expo-image";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
@@ -586,7 +587,14 @@ export default function PlayerScreen() {
             pointerEvents={isPlaying ? "none" : "auto"}
           >
             <Pressable
-              onPress={() => { stop(); router.back(); }}
+              onPress={() => {
+                if (anim === "fade") {
+                  sessionMiniPlayerEvents.triggerShow();
+                } else {
+                  stop();
+                }
+                router.back();
+              }}
               style={[styles.terminarBtn, StyleSheet.absoluteFill]}
             >
               <Text style={styles.terminarText}>{progress >= 1 ? "Continuar" : "Terminar"}</Text>
@@ -648,7 +656,14 @@ export default function PlayerScreen() {
 
       {/* ── Botones flotantes superiores ─────────────────────────────────── */}
       <Pressable
-        onPress={() => { stop(); router.back(); }}
+        onPress={() => {
+          if (anim === "fade") {
+            sessionMiniPlayerEvents.triggerShow();
+          } else {
+            stop();
+          }
+          router.back();
+        }}
         style={[
           styles.topBtn,
           { top: topPad + 6, left: 16 },

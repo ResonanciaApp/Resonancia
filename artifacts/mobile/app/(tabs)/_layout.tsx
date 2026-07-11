@@ -25,6 +25,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MiniPlayer } from "@/components/MiniPlayer";
 import { DormirMiniPlayer } from "@/components/DormirMiniPlayer";
 import { DormirExpandedPlayer } from "@/components/DormirExpandedPlayer";
+import { SessionMiniPlayer } from "@/components/SessionMiniPlayer";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
 import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
@@ -527,6 +528,9 @@ function TabLayoutInner() {
           />
         </>
       )}
+
+      {/* ── SessionMiniPlayer (Historias/ASMR minimizadas desde el player) ─── */}
+      <SessionMiniPlayer bottomOffset={miniPlayerBottom} />
 
       {/* ── PlaylistMiniPlayer persistente (visible en todos los tabs) ─────── */}
       {activePlaylist && currentSession && (
