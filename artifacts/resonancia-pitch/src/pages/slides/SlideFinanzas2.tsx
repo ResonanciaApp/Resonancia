@@ -92,7 +92,7 @@ export default function SlideFinanzas2() {
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.3vh" }}>
               <div style={{ fontSize: "0.8vw", color: "#3D0E16" }}>0</div>
-              <div style={{ fontSize: "0.8vw", color: "#3D0E16" }}>5.000 subs</div>
+              <div style={{ fontSize: "0.8vw", color: "#f9f9f9" }}>5.000 subs</div>
             </div>
           </div>
 
@@ -182,6 +182,13 @@ export default function SlideFinanzas2() {
               <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#6EC49A" }}>M12 ≈ $75M en caja</div>
             </div>
           </div>
+
+          {/* Footnote — bajo el último gráfico */}
+          <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)", lineHeight: 1.5, marginTop: "1.2vh" }}>
+            Curva base: +400 subs/mes (M1=400…M11=4.400, M12=5.000) · ARPU neto blended ~$4.350/mes ·
+            Break-even operacional M3 · Caja incluye $0,5M colchón pre-lanzamiento ·
+            Optimista/Agresivo = curva más acelerada, mismos costos fijos.
+          </div>
         </div>
 
         {/* Right: scenario cards + KPI */}
@@ -238,13 +245,6 @@ export default function SlideFinanzas2() {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Footnote */}
-      <div style={{ fontSize: "1.0vw", color: "#3D0E16", lineHeight: 1.5, marginTop: "1.5vh" }}>
-        Curva base: +400 subs/mes (M1=400…M11=4.400, M12=5.000) · ARPU neto blended ~$4.350/mes ·
-        Break-even operacional M3 · Caja incluye $0,5M colchón pre-lanzamiento ·
-        Optimista/Agresivo = curva más acelerada, mismos costos fijos.
       </div>
 
       {/* Pulso 4 · logo esquina */}
