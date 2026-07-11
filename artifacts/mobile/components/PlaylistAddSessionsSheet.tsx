@@ -227,7 +227,7 @@ const SessionRow = React.memo(function SessionRow({
       />
       <View style={styles.sessionInfo}>
         <Text style={styles.sessionTitle} numberOfLines={2}>{session.title}</Text>
-        <Text style={styles.sessionAuthor} numberOfLines={1}>{author}</Text>
+        <Text style={styles.sessionAuthor} numberOfLines={1}>{author}{session.durationLabel ? ` · ${session.durationLabel}` : ""}</Text>
       </View>
       <AddButton added={isAdded} onPress={onAddRemove} />
     </Pressable>
