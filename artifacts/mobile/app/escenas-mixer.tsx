@@ -172,7 +172,7 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
                   value={masterVolume}
                   onChange={setMasterVolume}
                   color="#4A4A5A"
-                  trackColor="rgba(0,0,0,0.12)"
+                  trackColor="rgba(255,255,255,0.10)"
                 />
               </View>
               <MaterialCommunityIcons name="volume-high" size={16} color="#555" />

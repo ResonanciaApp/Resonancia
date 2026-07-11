@@ -517,7 +517,7 @@ export default function ConfiguracionesScreen() {
                 value={brightness}
                 onChange={setBrightness}
                 color={colors.primary}
-                trackColor="rgba(61,14,22,0.50)"
+                trackColor="rgba(255,255,255,0.10)"
               />
             </View>
           </View>

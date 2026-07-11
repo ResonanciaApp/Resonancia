@@ -20,7 +20,7 @@ import { useMixer } from "@/context/MixerContext";
 import { getSoundById, hasSoundFile } from "@/data/sounds";
 
 const ACCENT = "#D6AD5F";
-const TRACK = "rgba(61,14,22,0.40)";
+const TRACK = "rgba(255,255,255,0.10)";
 
 function formatRemaining(seconds: number | null): string {
   if (seconds == null) return "Sin límite";

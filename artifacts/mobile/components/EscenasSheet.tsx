@@ -267,7 +267,7 @@ export function EscenasSheet() {
                   value={volume}
                   onChange={setVolume}
                   color="#FFFFFF"
-                  trackColor="rgba(255,255,255,0.6)"
+                  trackColor="rgba(255,255,255,0.10)"
                   thickness={7}
                   showThumb={false}
                   fillOpacity={1}

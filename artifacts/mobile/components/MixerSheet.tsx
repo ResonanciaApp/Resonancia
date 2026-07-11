@@ -106,7 +106,7 @@ const WARM = {
   trackBg: "#27070E",
   trackBorder: "rgba(61,14,22,0.40)",
   sliderThumb: "#FFFFFF",
-  sliderTrack: "rgba(61,14,22,0.40)",
+  sliderTrack: "rgba(255,255,255,0.10)",
   addBorder: "transparent",
   addText: "rgba(255,255,255,0.30)",
   separator: "rgba(61,14,22,0.40)",
@@ -398,7 +398,7 @@ export function MixerSheet() {
   const palette = {
     handle:         isLight ? "rgba(0,0,0,0.12)"    : WARM.handle,
     sliderThumb:    hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#3b0808" : WARM.sliderThumb,
-    sliderTrack:    hasCustomBg ? "rgba(255,255,255,0.40)" : isLight ? "rgba(59,8,8,0.20)" : activeBgPreset.image ? "rgba(255,255,255,0.22)" : WARM.sliderTrack,
+    sliderTrack:    "rgba(255,255,255,0.10)",
     addText:        hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "rgba(24,2,2,0.55)" : "rgba(255,255,255,0.80)",
     separator:      isLight ? "rgba(24,2,2,0.10)" : activeBgPreset.image ? "rgba(255,255,255,0.18)" : WARM.separator,
     iconColor:      hasCustomBg ? "rgba(255,255,255,0.90)" : isLight ? "#180202" : "rgba(255,255,255,0.90)",
