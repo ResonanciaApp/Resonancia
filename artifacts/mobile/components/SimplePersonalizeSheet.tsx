@@ -149,12 +149,14 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   title: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
     color: "#FAF0EE",
     letterSpacing: 0.3,
   },
   sectionLabel: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "600",
     color: "rgba(212,175,55,0.75)",
@@ -203,11 +205,13 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   geoLabel: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
     color: "#FAF0EE",
   },
   geoSub: {
+    fontFamily: "Manrope",
     fontSize: 11,
     color: "#c2c2c2",
     marginTop: 2,

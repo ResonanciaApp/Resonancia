@@ -158,8 +158,8 @@ const styles = StyleSheet.create({
   header: { flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12, gap: 12 },
   backBtn: { width: 36, height: 36, borderRadius: 18, borderWidth: 1, alignItems: "center", justifyContent: "center" },
   iconBtn: { width: 36, height: 36, borderRadius: 18, borderWidth: 1, alignItems: "center", justifyContent: "center" },
-  title: { flex: 1, fontSize: 20, fontWeight: "700" },
-  intro: { fontSize: 13, lineHeight: 20, paddingHorizontal: 22, marginBottom: 16 },
+  title: { fontFamily: "Manrope", flex: 1, fontSize: 20, fontWeight: "700" },
+  intro: { fontFamily: "Manrope", fontSize: 13, lineHeight: 20, paddingHorizontal: 22, marginBottom: 16 },
   divider: { height: 1, marginHorizontal: 20, marginBottom: 16 },
   list: { paddingHorizontal: 20, paddingTop: 4, gap: 12 },
   card: {
@@ -175,13 +175,13 @@ const styles = StyleSheet.create({
   },
   cardText: { flex: 1 },
   cardRow: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 4 },
-  cardTitle: { fontSize: 15, fontWeight: "700" },
+  cardTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700" },
   badge: {
     borderRadius: 8,
     paddingHorizontal: 8, paddingVertical: 2,
   },
-  badgeText: { fontSize: 11, fontWeight: "600" },
-  cardDesc: { fontSize: 12, lineHeight: 18 },
+  badgeText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600" },
+  cardDesc: { fontFamily: "Manrope", fontSize: 12, lineHeight: 18 },
   comingSoon: {
     flexDirection: "row", alignItems: "center", gap: 12,
     padding: 14, borderRadius: 16,
@@ -190,6 +190,6 @@ const styles = StyleSheet.create({
     width: 36, height: 36, borderRadius: 10,
     alignItems: "center", justifyContent: "center",
   },
-  csTitle: { fontSize: 13, fontWeight: "600" },
-  csDesc: { fontSize: 11, marginTop: 2 },
+  csTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
+  csDesc: { fontFamily: "Manrope", fontSize: 11, marginTop: 2 },
 });

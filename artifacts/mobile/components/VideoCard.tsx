@@ -192,6 +192,7 @@ const styles = StyleSheet.create({
   },
   cardImage: { width: "100%", height: "100%" },
   cardTitle: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
     lineHeight: 18,
@@ -199,6 +200,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
   },
   cardAuthor: {
+    fontFamily: "Manrope",
     fontSize: 11,
     marginTop: 4,
     paddingHorizontal: 2,
@@ -212,7 +214,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
   },
-  durText: { fontSize: 11, fontWeight: "600", color: "#FFFFFF" },
+  durText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#FFFFFF" },
 
   hRow: {
     flexDirection: "row",
@@ -225,10 +227,10 @@ const styles = StyleSheet.create({
   hImageWrap: { width: 140, height: 96 },
   hImage: { width: 140, height: 96 },
   hContent: { flex: 1, paddingHorizontal: 14, paddingVertical: 12, justifyContent: "center" },
-  hKicker: { fontSize: 10, letterSpacing: 1, textTransform: "uppercase", marginBottom: 3 },
-  hTitle: { fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 5 },
+  hKicker: { fontFamily: "Manrope", fontSize: 10, letterSpacing: 1, textTransform: "uppercase", marginBottom: 3 },
+  hTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 5 },
   hMeta: { flexDirection: "row", alignItems: "center" },
-  hDuration: { fontSize: 11 },
+  hDuration: { fontFamily: "Manrope", fontSize: 11 },
 
   feedItem: { width: "100%", marginBottom: 28 },
   feedImageWrap: {
@@ -252,9 +254,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 12,
   },
-  feedCaption: { fontSize: 11, flex: 1, marginRight: 12 },
-  feedTitle: { fontSize: 13, fontWeight: "700", lineHeight: 18, marginTop: 6 },
-  feedAuthor: { fontSize: 11, marginTop: 4 },
+  feedCaption: { fontFamily: "Manrope", fontSize: 11, flex: 1, marginRight: 12 },
+  feedTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", lineHeight: 18, marginTop: 6 },
+  feedAuthor: { fontFamily: "Manrope", fontSize: 11, marginTop: 4 },
 
   playOverlay: { ...StyleSheet.absoluteFillObject, alignItems: "center", justifyContent: "center" },
   playCircle: {

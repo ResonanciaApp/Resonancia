@@ -86,10 +86,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#210911",
   },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
-  headerTitle: { fontSize: 21, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },
+  headerTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700", color: "#fff", letterSpacing: 0.2 },
 
   content: { paddingTop: 24, paddingHorizontal: H_PAD },
   subtitle: {
+    fontFamily: "Manrope",
     fontSize: 14,
     color: "rgba(250,240,238,0.55)",
     lineHeight: 20,
@@ -106,6 +107,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   cellTitle: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "700",
     color: "#fff",

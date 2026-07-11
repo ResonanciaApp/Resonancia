@@ -292,6 +292,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   number: {
+    fontFamily: "Manrope",
     color: "#F9F9F9",
     fontSize: 52,
     fontWeight: "700",
@@ -300,6 +301,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   days: {
+    fontFamily: "Manrope",
     color: "#F9F9F9",
     fontSize: 8,
     fontWeight: "400",
@@ -338,6 +340,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.18)",
   },
   dayLabel: {
+    fontFamily: "Manrope",
     color: "#c2c2c2",
     fontSize: 10,
     fontWeight: "600",
@@ -357,6 +360,7 @@ const styles = StyleSheet.create({
     width: COMP_W,
   },
   message: {
+    fontFamily: "Manrope",
     color: "#FBFBFB",
     fontSize: 12,
     fontWeight: "300",

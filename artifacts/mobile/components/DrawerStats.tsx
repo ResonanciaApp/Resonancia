@@ -87,12 +87,14 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   cardValue: {
+    fontFamily: "Manrope",
     color: "#FAF0EE",
     fontSize: 20,
     fontWeight: "700",
     letterSpacing: 0.2,
   },
   cardLabel: {
+    fontFamily: "Manrope",
     color: "rgba(255,255,255,0.9)",
     fontSize: 11,
     fontWeight: "400",
@@ -107,6 +109,7 @@ const styles = StyleSheet.create({
   },
   linkPressed: { opacity: 0.6 },
   linkText: {
+    fontFamily: "Manrope",
     color: "#F7CB6B",
     fontSize: 12,
     fontWeight: "600",

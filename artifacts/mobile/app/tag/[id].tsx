@@ -334,6 +334,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   stickyTitle: {
+    fontFamily: "Manrope",
     fontSize: 22,
     fontWeight: "700",
     flex: 1,
@@ -363,6 +364,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   pageTitle: {
+    fontFamily: "Manrope",
     fontSize: 26,
     fontWeight: "700",
     textAlign: "center",
@@ -370,6 +372,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   pageDesc: {
+    fontFamily: "Manrope",
     fontSize: 14,
     textAlign: "center",
     lineHeight: 22,
@@ -389,6 +392,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   filterLabel: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
   },
@@ -398,6 +402,7 @@ const styles = StyleSheet.create({
     marginBottom: 28,
   },
   sectionTitle: {
+    fontFamily: "Manrope",
     fontSize: 18,
     fontWeight: "700",
     paddingHorizontal: H_PAD,
@@ -420,12 +425,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   hCardTitle: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
     lineHeight: 18,
     marginBottom: 3,
   },
   hCardSub: {
+    fontFamily: "Manrope",
     fontSize: 11,
     lineHeight: 15,
   },
@@ -441,6 +448,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   durationText: {
+    fontFamily: "Manrope",
     color: "#FFFFFF",
     fontSize: 10,
     fontWeight: "600",
@@ -471,12 +479,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listTitle: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
     lineHeight: 20,
     marginBottom: 5,
   },
   listSub: {
+    fontFamily: "Manrope",
     fontSize: 12,
     lineHeight: 16,
   },
@@ -490,6 +500,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 8,
   },
-  emptyTitle: { fontSize: 16, fontWeight: "700", marginBottom: 6 },
-  emptySub: { fontSize: 13 },
+  emptyTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", marginBottom: 6 },
+  emptySub: { fontFamily: "Manrope", fontSize: 13 },
 });

@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.25)",
   },
-  verPerfilText: { fontSize: 13, color: "#F7CB6B", fontWeight: "600" },
+  verPerfilText: { fontFamily: "Manrope", fontSize: 13, color: "#F7CB6B", fontWeight: "600" },
   backBtn: {
     width: 38,
     height: 38,
@@ -191,8 +191,8 @@ const styles = StyleSheet.create({
   },
   scroll: { paddingTop: 16 },
   notFound: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12 },
-  notFoundTitle: { fontSize: 18, fontWeight: "700" },
-  notFoundSub: { fontSize: 14, textAlign: "center", paddingHorizontal: 32 },
+  notFoundTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
+  notFoundSub: { fontFamily: "Manrope", fontSize: 14, textAlign: "center", paddingHorizontal: 32 },
 
   profileTop: {
     flexDirection: "row",
@@ -221,20 +221,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  certStar: { fontSize: 11, color: "#1B060F", fontWeight: "800" },
+  certStar: { fontFamily: "Manrope", fontSize: 11, color: "#1B060F", fontWeight: "800" },
   nameBlock: { flex: 1, gap: 4 },
-  name: { fontSize: 22, fontWeight: "700", letterSpacing: 0.2 },
+  name: { fontFamily: "Manrope", fontSize: 22, fontWeight: "700", letterSpacing: 0.2 },
   certRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
   },
-  certLabel: { fontSize: 12, color: "#F7CB6B", fontWeight: "600" },
+  certLabel: { fontFamily: "Manrope", fontSize: 12, color: "#F7CB6B", fontWeight: "600" },
   locationRow: { flexDirection: "row", alignItems: "center", gap: 5, marginTop: 2 },
-  location: { fontSize: 13, color: "#F4F4F4" },
+  location: { fontFamily: "Manrope", fontSize: 13, color: "#F4F4F4" },
 
   section: { marginBottom: 24 },
   sectionTitle: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "700",
     color: "rgba(212,175,55,0.65)",
@@ -251,8 +252,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.20)",
   },
-  specialtyText: { fontSize: 13, color: "#FAF0EE", fontWeight: "500" },
-  bio: { fontSize: 15, lineHeight: 23, opacity: 0.85 },
+  specialtyText: { fontFamily: "Manrope", fontSize: 13, color: "#FAF0EE", fontWeight: "500" },
+  bio: { fontFamily: "Manrope", fontSize: 15, lineHeight: 23, opacity: 0.85 },
 
   linksRow: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   linkBtn: {
@@ -266,7 +267,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.25)",
   },
-  linkLabel: { fontSize: 13, color: "#F7CB6B", fontWeight: "600" },
+  linkLabel: { fontFamily: "Manrope", fontSize: 13, color: "#F7CB6B", fontWeight: "600" },
 
   certCard: {
     borderRadius: 14,
@@ -279,7 +280,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.20)",
     marginBottom: 8,
   },
-  certCardStar: { fontSize: 20, color: "#F7CB6B", marginTop: 2 },
-  certCardTitle: { fontSize: 13, fontWeight: "700", color: "#F7CB6B", marginBottom: 4 },
-  certCardSub: { fontSize: 12, color: "#F4F4F4", lineHeight: 18 },
+  certCardStar: { fontFamily: "Manrope", fontSize: 20, color: "#F7CB6B", marginTop: 2 },
+  certCardTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", color: "#F7CB6B", marginBottom: 4 },
+  certCardSub: { fontFamily: "Manrope", fontSize: 12, color: "#F4F4F4", lineHeight: 18 },
 });

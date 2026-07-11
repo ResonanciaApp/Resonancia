@@ -209,6 +209,7 @@ const styles = StyleSheet.create({
   backCenter: { flex: 1, alignItems: "center", justifyContent: "center", gap: 10 },
   thinRule: { width: 56, height: 0.8, backgroundColor: "#4A7A55", opacity: 0.7 },
   backTitle: {
+    fontFamily: "Manrope",
     color: "#A8C8B0",
     fontSize: 11,
     fontWeight: "700",
@@ -216,6 +217,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   frontTopLabel: {
+    fontFamily: "Manrope",
     color: "#5A8A65",
     fontSize: 9,
     letterSpacing: 2,
@@ -238,6 +240,7 @@ const styles = StyleSheet.create({
     fontFamily: "serif",
   },
   frontDate: {
+    fontFamily: "Manrope",
     color: "#3A6A45",
     fontSize: 8,
     letterSpacing: 1.2,
@@ -250,6 +253,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   hintText: {
+    fontFamily: "Manrope",
     color: "#4A7055",
     fontSize: 11,
     letterSpacing: 0.8,
@@ -265,6 +269,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(74,122,85,0.10)",
   },
   newBtnText: {
+    fontFamily: "Manrope",
     color: "#7AAA85",
     fontSize: 11,
     letterSpacing: 1.5,

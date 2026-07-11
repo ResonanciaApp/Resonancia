@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   greetingText: {
+    fontFamily: "Manrope",
     color: "#FBFBFB",
     fontSize: 25,
     fontWeight: "700",
@@ -47,6 +48,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   descText: {
+    fontFamily: "Manrope",
     color: "rgba(255,255,255,0.45)",
     fontSize: 11,
     marginTop: 3,

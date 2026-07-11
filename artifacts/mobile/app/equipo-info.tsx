@@ -204,8 +204,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  headerTitle: { fontSize: 17, fontWeight: "700", color: TEXT },
+  headerTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: TEXT },
   intro: {
+    fontFamily: "Manrope",
     fontSize: 14,
     lineHeight: 21,
     color: MUTED,
@@ -241,12 +242,14 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   bannerTitle: {
+    fontFamily: "Manrope",
     fontSize: 30,
     fontWeight: "800",
     color: GOLD,
     letterSpacing: 0.5,
   },
   bannerBajada: {
+    fontFamily: "Manrope",
     fontSize: 13.5,
     color: "rgba(250,240,238,0.85)",
     marginTop: 4,
@@ -273,6 +276,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   benefitText: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 14.5,
     color: TEXT,
@@ -291,6 +295,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   ctaBtnText: {
+    fontFamily: "Manrope",
     fontSize: 15.5,
     fontWeight: "700",
     color: "#1B060F",

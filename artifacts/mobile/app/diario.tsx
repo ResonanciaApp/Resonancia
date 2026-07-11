@@ -218,6 +218,7 @@ const styles = StyleSheet.create({
   },
   topBtn: { padding: 4 },
   screenTitle: {
+    fontFamily: "Manrope",
     fontSize: 32,
     fontWeight: "700",
     letterSpacing: 0.3,
@@ -232,8 +233,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 48,
   },
-  emptyTitle: { fontSize: 17, fontWeight: "700", marginBottom: 8 },
-  emptyText: { fontSize: 14, lineHeight: 21, textAlign: "center" },
+  emptyTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", marginBottom: 8 },
+  emptyText: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, textAlign: "center" },
 
   dayRow: {
     flexDirection: "row",
@@ -241,14 +242,14 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   dateCol: { width: 40, alignItems: "flex-start", paddingTop: 2 },
-  dateMonth: { fontSize: 11, fontWeight: "600", letterSpacing: 0.5 },
-  dateDay: { fontSize: 20, fontWeight: "700", marginTop: 2 },
+  dateMonth: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", letterSpacing: 0.5 },
+  dateDay: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", marginTop: 2 },
   entryDivider: { width: 1, alignSelf: "stretch", marginHorizontal: 14 },
   dayEntries: { flex: 1 },
   entryBody: { flex: 1 },
   entryBodySpacing: { marginTop: 16 },
-  entryTime: { fontSize: 12, marginBottom: 4 },
-  entryText: { fontSize: 15, lineHeight: 21 },
+  entryTime: { fontFamily: "Manrope", fontSize: 12, marginBottom: 4 },
+  entryText: { fontFamily: "Manrope", fontSize: 15, lineHeight: 21 },
 
   footer: {
     paddingHorizontal: 20,
@@ -260,5 +261,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  addBtnText: { fontSize: 16, fontWeight: "700", color: "#1B060F" },
+  addBtnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: "#1B060F" },
 });

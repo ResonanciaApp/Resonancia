@@ -436,6 +436,7 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
   title: {
+    fontFamily: "Manrope",
     fontSize: 22,
     fontWeight: "600",
     color: "#F9F9F9",
@@ -469,6 +470,7 @@ const styles = StyleSheet.create({
   },
   controlIcon: { width: 20 },
   controlLabel: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 16,
     fontWeight: "400",
@@ -480,6 +482,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   timerTriggerLabel: {
+    fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "600",
     color: "rgba(255,255,255,0.6)",
@@ -500,11 +503,13 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.18)",
   },
   timerDropItemText: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "500",
     color: "#F6F6F6",
   },
   timerDropItemTextActive: {
+    fontFamily: "Manrope",
     color: "#F7CB6B",
     fontWeight: "700",
   },
@@ -520,6 +525,7 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
   sceneTitle: {
+    fontFamily: "Manrope",
     fontSize: 17,
     fontWeight: "700",
     color: "#F9F9F9",
@@ -549,12 +555,14 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   cardLabel: {
+    fontFamily: "Manrope",
     marginTop: 13,
     fontSize: 14,
     color: "#F4F4F4",
     textAlign: "center",
   },
   cardLabelActive: {
+    fontFamily: "Manrope",
     color: "#FFF",
     fontWeight: "600",
   },
@@ -587,6 +595,7 @@ const styles = StyleSheet.create({
     borderRadius: 26,
   },
   previewTitle: {
+    fontFamily: "Manrope",
     flex: 1,
     textAlign: "center",
     fontSize: 19,
@@ -608,6 +617,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   previewSectionLabel: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
     color: "rgba(255,255,255,0.82)",
@@ -647,6 +657,7 @@ const styles = StyleSheet.create({
   },
   ctaBtnActive: {},
   ctaBtnText: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "600",
     color: "#2D2D2D",

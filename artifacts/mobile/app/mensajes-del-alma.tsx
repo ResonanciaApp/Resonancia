@@ -295,8 +295,8 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   topTitleBlock: { flex: 1, alignItems: "center" },
-  topTitle: { fontSize: 15, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
-  topSub: { fontSize: 11, marginTop: 2 },
+  topTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
+  topSub: { fontFamily: "Manrope", fontSize: 11, marginTop: 2 },
 
   composeCard: {
     marginHorizontal: 20,
@@ -312,6 +312,7 @@ const styles = StyleSheet.create({
     padding: 14,
   },
   composeInput: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 15,
     lineHeight: 22,
@@ -326,7 +327,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
-  charCount: { fontSize: 11 },
+  charCount: { fontFamily: "Manrope", fontSize: 11 },
   composeFooterRight: { flexDirection: "row", alignItems: "center", gap: 8 },
   infoBadge: {
     flexDirection: "row",
@@ -337,7 +338,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
-  infoBadgeText: { fontSize: 10 },
+  infoBadgeText: { fontFamily: "Manrope", fontSize: 10 },
   sendBtn: {
     borderRadius: 20,
     paddingHorizontal: 18,
@@ -345,7 +346,7 @@ const styles = StyleSheet.create({
     minWidth: 90,
     alignItems: "center",
   },
-  sendBtnText: { fontSize: 13, fontWeight: "700" },
+  sendBtnText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700" },
 
   dividerRow: {
     flexDirection: "row",
@@ -355,11 +356,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   dividerLine: { flex: 1, height: 1 },
-  dividerLabel: { fontSize: 10, fontWeight: "700", letterSpacing: 1.2 },
+  dividerLabel: { fontFamily: "Manrope", fontSize: 10, fontWeight: "700", letterSpacing: 1.2 },
 
   emptyState: { alignItems: "center", paddingTop: 56, gap: 12, paddingHorizontal: 32 },
-  emptyTitle: { fontSize: 15, fontWeight: "700", textAlign: "center" },
-  emptyText: { fontSize: 13, textAlign: "center", lineHeight: 20 },
+  emptyTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", textAlign: "center" },
+  emptyText: { fontFamily: "Manrope", fontSize: 13, textAlign: "center", lineHeight: 20 },
 
   feedList: { paddingHorizontal: 20 },
   msgCard: {
@@ -376,9 +377,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 5,
   },
-  msgAuthor: { fontSize: 13, fontWeight: "600" },
-  msgTime: { fontSize: 10 },
-  msgContent: { fontSize: 13, lineHeight: 19, opacity: 0.82 },
+  msgAuthor: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
+  msgTime: { fontFamily: "Manrope", fontSize: 10 },
+  msgContent: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, opacity: 0.82 },
   msgFooter: {
     flexDirection: "row",
     alignItems: "center",
@@ -386,5 +387,5 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   expiringTag: { flexDirection: "row", alignItems: "center", gap: 3 },
-  expiringText: { fontSize: 9, color: "#C07060" },
+  expiringText: { fontFamily: "Manrope", fontSize: 9, color: "#C07060" },
 });

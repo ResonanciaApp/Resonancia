@@ -149,12 +149,14 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   heroTitle: {
+    fontFamily: "Manrope",
     fontSize: 26,
     fontWeight: "700",
     marginBottom: 6,
     lineHeight: 32,
   },
   heroSub: {
+    fontFamily: "Manrope",
     fontSize: 14,
     lineHeight: 20,
     marginBottom: 14,
@@ -169,6 +171,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   metaBadgeText: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "600",
   },
@@ -176,6 +179,7 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   sectionTitle: {
+    fontFamily: "Manrope",
     fontSize: 18,
     fontWeight: "700",
     marginBottom: 16,
@@ -186,6 +190,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   emptyText: {
+    fontFamily: "Manrope",
     fontSize: 16,
   },
 });

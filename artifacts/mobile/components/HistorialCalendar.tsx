@@ -286,7 +286,7 @@ export function HistorialCalendar() {
 
 const styles = StyleSheet.create({
   sectionHeader: { marginBottom: 14 },
-  sectionTitle: { fontSize: 18, fontWeight: "700" },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
   calendarCard: {
     borderRadius: 18,
     paddingVertical: 16,
@@ -305,12 +305,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  monthLabel: { fontSize: 15, fontWeight: "700", minWidth: 100, textAlign: "center" },
+  monthLabel: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", minWidth: 100, textAlign: "center" },
   weekRow: {
     flexDirection: "row",
     marginBottom: 6,
   },
   weekLabel: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 10,
     fontWeight: "600",
@@ -334,14 +335,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  dayNum: { fontSize: 13, fontWeight: "500" },
+  dayNum: { fontFamily: "Manrope", fontSize: 13, fontWeight: "500" },
   emptyWrap: {
     borderRadius: 16,
     paddingVertical: 32,
     paddingHorizontal: 20,
     alignItems: "center",
   },
-  emptyText: { fontSize: 13, textAlign: "center" },
+  emptyText: { fontFamily: "Manrope", fontSize: 13, textAlign: "center" },
   entryRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -353,6 +354,6 @@ const styles = StyleSheet.create({
     height: 77,
     borderRadius: 14,
   },
-  entryTime: { fontSize: 11, marginBottom: 5 },
-  entryTitle: { fontSize: 13, fontWeight: "700" },
+  entryTime: { fontFamily: "Manrope", fontSize: 11, marginBottom: 5 },
+  entryTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700" },
 });

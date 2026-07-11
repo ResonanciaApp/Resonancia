@@ -546,6 +546,7 @@ const styles = StyleSheet.create({
   },
   headerSpacer: { width: 28 },
   headerTitle: {
+    fontFamily: "Manrope",
     flex: 1,
     textAlign: "center",
     color: TEXT,
@@ -572,8 +573,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.10)",
   },
   tabChipActive: { overflow: "hidden" },
-  tabText: { color: TEXT, fontSize: 14, fontWeight: "600" },
-  tabTextActive: { color: "#1B060F", fontWeight: "700" },
+  tabText: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600" },
+  tabTextActive: { fontFamily: "Manrope", color: "#1B060F", fontWeight: "700" },
 
   // Session rows
   sessionRow: {
@@ -608,8 +609,8 @@ const styles = StyleSheet.create({
   },
 
   sessionInfo: { flex: 1 },
-  sessionTitle: { color: TEXT, fontSize: 14, fontWeight: "600", lineHeight: 19 },
-  sessionAuthor: { color: MUTED, fontSize: 12, marginTop: 2 },
+  sessionTitle: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600", lineHeight: 19 },
+  sessionAuthor: { fontFamily: "Manrope", color: MUTED, fontSize: 12, marginTop: 2 },
 
   // Add button
   addBtnOuter: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
@@ -630,5 +631,5 @@ const styles = StyleSheet.create({
 
   // Empty
   emptyWrap: { flex: 1, alignItems: "center", justifyContent: "center", paddingBottom: 60 },
-  emptyText: { color: MUTED, fontSize: 14, textAlign: "center" },
+  emptyText: { fontFamily: "Manrope", color: MUTED, fontSize: 14, textAlign: "center" },
 });

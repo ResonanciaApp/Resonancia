@@ -561,6 +561,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   label: {
+    fontFamily: "Manrope",
     fontSize: 9.5,
     letterSpacing: 0.3,
     fontWeight: "500",
@@ -572,6 +573,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   labelActive: {
+    fontFamily: "Manrope",
     color: GRAD_END,
     fontWeight: "600",
   },
@@ -647,11 +649,13 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.08)",
   },
   playlistTitle: {
+    fontFamily: "Manrope",
     color: "#FAF0EE",
     fontSize: 14,
     fontWeight: "700",
   },
   playlistArtist: {
+    fontFamily: "Manrope",
     color: "#c2c2c2",
     fontSize: 12,
   },

@@ -782,7 +782,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   headerTitleRow: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 },
-  headerTitle: { fontSize: 22, fontWeight: "700" },
+  headerTitle: { fontFamily: "Manrope", fontSize: 22, fontWeight: "700" },
 
   // Tabs
   tabBar: {
@@ -796,7 +796,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
   },
-  tabLabel: { fontSize: 15 },
+  tabLabel: { fontFamily: "Manrope", fontSize: 15 },
   tabIndicator: {
     position: "absolute",
     bottom: 0,
@@ -814,8 +814,8 @@ const styles = StyleSheet.create({
     padding: 18,
     backgroundColor: "rgba(74,12,12,0.08)",
   },
-  cardTitle: { fontSize: 14, fontWeight: "700", marginBottom: 2 },
-  cardSub: { fontSize: 11, marginBottom: 14 },
+  cardTitle: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", marginBottom: 2 },
+  cardSub: { fontFamily: "Manrope", fontSize: 11, marginBottom: 14 },
 
   // Racha
   streakTop: { flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 18 },
@@ -826,9 +826,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  flameEmoji: { fontSize: 24 },
-  streakValue: { fontSize: 17, fontWeight: "700", marginBottom: 3 },
-  streakSub: { fontSize: 12, lineHeight: 16 },
+  flameEmoji: { fontFamily: "Manrope", fontSize: 24 },
+  streakValue: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", marginBottom: 3 },
+  streakSub: { fontFamily: "Manrope", fontSize: 12, lineHeight: 16 },
 
   weekRow: {
     flexDirection: "row",
@@ -836,7 +836,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   dayPill: { alignItems: "center", gap: 5 },
-  dayLabel: { fontSize: 11, fontWeight: "600" },
+  dayLabel: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600" },
   dayCircle: {
     width: 34,
     height: 34,
@@ -861,9 +861,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  maxStreakLabel: { fontSize: 13, fontWeight: "600" },
-  maxStreakSub: { fontSize: 11, marginTop: 1 },
-  maxStreakValue: { fontSize: 17, fontWeight: "700" },
+  maxStreakLabel: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
+  maxStreakSub: { fontFamily: "Manrope", fontSize: 11, marginTop: 1 },
+  maxStreakValue: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
 
   // Stats
   statsRow: { flexDirection: "row", gap: 10 },
@@ -874,9 +874,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(74,12,12,0.08)",
   },
-  statIcon: { fontSize: 22, marginBottom: 6 },
-  statValue: { fontSize: 17, fontWeight: "700" },
+  statIcon: { fontFamily: "Manrope", fontSize: 22, marginBottom: 6 },
+  statValue: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
   statLabel: {
+    fontFamily: "Manrope",
     fontSize: 10,
     textAlign: "center",
     marginTop: 3,
@@ -884,7 +885,7 @@ const styles = StyleSheet.create({
   },
 
   // Challenges
-  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.5, marginTop: 8, marginBottom: 4 },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.5, marginTop: 8, marginBottom: 4 },
   challengeCard: {
     borderRadius: 14,
     padding: 14,
@@ -899,15 +900,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexShrink: 0,
   },
-  challengeLabel: { fontSize: 13, fontWeight: "600" },
-  challengeProgress: { fontSize: 11, marginTop: 2 },
+  challengeLabel: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
+  challengeProgress: { fontFamily: "Manrope", fontSize: 11, marginTop: 2 },
   progressBar: { height: 4, borderRadius: 2 },
   progressFill: { height: "100%", borderRadius: 2 },
 
   // Heat-map
   heatmapContainer: { flexDirection: "row", alignItems: "flex-start", gap: 5 },
   heatmapDayLabels: { flexDirection: "column", gap: 4, paddingTop: 1 },
-  heatDayLabel: { fontSize: 8, height: 11, lineHeight: 11 },
+  heatDayLabel: { fontFamily: "Manrope", fontSize: 8, height: 11, lineHeight: 11 },
   heatmapGrid: { flex: 1, flexDirection: "row", gap: 4 },
   heatCol: { flex: 1, flexDirection: "column", gap: 4 },
   heatCell: { height: 11, borderRadius: 2 },
@@ -918,13 +919,13 @@ const styles = StyleSheet.create({
     marginTop: 12,
     justifyContent: "flex-end",
   },
-  heatLegendLabel: { fontSize: 9 },
+  heatLegendLabel: { fontFamily: "Manrope", fontSize: 9 },
   heatLegendCell: { width: 10, height: 10, borderRadius: 2 },
 
   // History
   historyItem: { gap: 6 },
   historyMeta: { flexDirection: "row", alignItems: "center", gap: 6, paddingLeft: 4 },
-  historyDate: { fontSize: 12, fontWeight: "600" },
+  historyDate: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600" },
 
   // Empty
   emptyState: {
@@ -934,10 +935,10 @@ const styles = StyleSheet.create({
     gap: 12,
     backgroundColor: "rgba(74,12,12,0.08)",
   },
-  emptyStateText: { fontSize: 13, textAlign: "center", lineHeight: 20 },
+  emptyStateText: { fontFamily: "Manrope", fontSize: 13, textAlign: "center", lineHeight: 20 },
 
   // Coming soon
   comingSoonCard: { borderRadius: 14, padding: 16, backgroundColor: "rgba(74,12,12,0.08)" },
-  comingSoonLabel: { fontSize: 11, fontWeight: "700", letterSpacing: 0.8, marginBottom: 6 },
-  comingSoonText: { fontSize: 13, lineHeight: 19 },
+  comingSoonLabel: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700", letterSpacing: 0.8, marginBottom: 6 },
+  comingSoonText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19 },
 });

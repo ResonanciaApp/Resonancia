@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 4,
   },
-  headerTitle: { fontSize: 17, fontWeight: "700" },
+  headerTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
   backBtn: {
     width: 38,
     height: 38,
@@ -528,8 +528,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   centered: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12, paddingHorizontal: 32 },
-  notFoundTitle: { fontSize: 18, fontWeight: "700" },
-  notFoundSub: { fontSize: 14, textAlign: "center", lineHeight: 21 },
+  notFoundTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
+  notFoundSub: { fontFamily: "Manrope", fontSize: 14, textAlign: "center", lineHeight: 21 },
 
   scroll: { paddingTop: 4, gap: 16 },
 
@@ -543,17 +543,17 @@ const styles = StyleSheet.create({
   avatarWrapper: { position: "relative", marginBottom: 8 },
   avatarImage: { width: 80, height: 80, borderRadius: 40 },
   avatarFallback: { alignItems: "center", justifyContent: "center" },
-  initials: { fontSize: 28, fontWeight: "700" },
-  userName: { fontSize: 20, fontWeight: "700", textAlign: "center" },
-  handle: { fontSize: 13 },
+  initials: { fontFamily: "Manrope", fontSize: 28, fontWeight: "700" },
+  userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
+  handle: { fontFamily: "Manrope", fontSize: 13 },
   metaRow: { flexDirection: "row", alignItems: "center", gap: 4 },
-  metaText: { fontSize: 12 },
+  metaText: { fontFamily: "Manrope", fontSize: 12 },
 
   /* — Seguidores/stats row — */
   followCountsRow: { flexDirection: "row", alignItems: "center", marginTop: 14, marginBottom: 4 },
   followCountItem: { alignItems: "center", paddingHorizontal: 16 },
-  followCountNum: { fontSize: 18, fontWeight: "700" },
-  followCountLabel: { fontSize: 11, marginTop: 1 },
+  followCountNum: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
+  followCountLabel: { fontFamily: "Manrope", fontSize: 11, marginTop: 1 },
   followCountDivider: { width: 1, height: 28 },
 
   /* — Pills de acción — */
@@ -583,12 +583,13 @@ const styles = StyleSheet.create({
   actionPillActive: { backgroundColor: "transparent" },
   actionPillSent: { backgroundColor: "rgba(255,255,255,0.04)" },
   actionPillText: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "400",
     color: "#FFFFFF",
     letterSpacing: 0.1,
   },
-  actionPillTextActive: { color: "#1B060F", fontWeight: "600" },
+  actionPillTextActive: { fontFamily: "Manrope", color: "#1B060F", fontWeight: "600" },
   actionPillTextSent: { color: "#c2c2c2" },
 
   /* ── Categoría más escuchada ── */
@@ -599,8 +600,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 14,
   },
-  topCatLabel: { fontSize: 13, flex: 1 },
-  topCatValue: { fontSize: 14, fontWeight: "700" },
+  topCatLabel: { fontFamily: "Manrope", fontSize: 13, flex: 1 },
+  topCatValue: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700" },
 
   /* ── Sección expansor ── */
   expansorSection: {
@@ -611,15 +612,15 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 16,
   },
-  epSectionTitle: { fontSize: 13, fontWeight: "700", letterSpacing: 0.3 },
+  epSectionTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", letterSpacing: 0.3 },
   epChip: {
     paddingHorizontal: 11,
     paddingVertical: 5,
     borderRadius: 20,
     borderWidth: 1,
   },
-  epChipText: { fontSize: 12, fontWeight: "600" },
-  epDesc: { fontSize: 14, lineHeight: 21 },
+  epChipText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600" },
+  epDesc: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21 },
   epReadMore: { flexDirection: "row", alignItems: "center", gap: 4 },
   epContactRow: { flexDirection: "row", gap: 8 },
   epContactPill: {
@@ -632,9 +633,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.07)",
   },
-  epContactPillText: { fontSize: 13, color: "#FFFFFF" },
+  epContactPillText: { fontFamily: "Manrope", fontSize: 13, color: "#FFFFFF" },
   epQuoteWrap: { paddingTop: 4 },
-  epQuoteText: { fontSize: 13, fontStyle: "italic", lineHeight: 20, textAlign: "center" },
+  epQuoteText: { fontFamily: "Manrope", fontSize: 13, fontStyle: "italic", lineHeight: 20, textAlign: "center" },
 
   /* ── Banner certificado ── */
   epCertBanner: {
@@ -648,12 +649,13 @@ const styles = StyleSheet.create({
   },
   epCertBannerBar: { width: 4 },
   epCertBannerTitle: {
+    fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "800",
     letterSpacing: 1.4,
     color: "#F7CB6B",
   },
-  epCertBannerSub: { fontSize: 11, marginTop: 2 },
+  epCertBannerSub: { fontFamily: "Manrope", fontSize: 11, marginTop: 2 },
   epCertIconBorder: {
     width: 34, height: 34, borderRadius: 17,
     borderWidth: 1, borderColor: "rgba(212,175,55,0.35)",
@@ -664,7 +666,7 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     overflow: "hidden",
   },
-  epCertStar: { fontSize: 13, color: "#F7CB6B" },
+  epCertStar: { fontFamily: "Manrope", fontSize: 13, color: "#F7CB6B" },
   epGalleryWrap: { marginTop: 12 },
   epGalleryGrid: {
     flexDirection: "row",

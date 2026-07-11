@@ -124,6 +124,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   badgeText: {
+    fontFamily: "Manrope",
     fontSize: 10,
     fontWeight: "700",
     color: "#1B060F",

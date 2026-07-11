@@ -239,6 +239,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   coverTitle: {
+    fontFamily: "Manrope",
     position: "absolute",
     bottom: 20,
     left: 20,
@@ -253,12 +254,12 @@ const styles = StyleSheet.create({
   },
 
   meta: { paddingHorizontal: 20, paddingTop: 18, paddingBottom: 4 },
-  description: { fontSize: 14, color: MUTED, lineHeight: 21, marginBottom: 12 },
+  description: { fontFamily: "Manrope", fontSize: 14, color: MUTED, lineHeight: 21, marginBottom: 12 },
   hechaRow: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 6 },
   goldDot: { width: 20, height: 20, borderRadius: 10 },
-  hechaText: { fontSize: 13, color: MUTED },
-  hechaLabel: { color: FG, fontWeight: "600" },
-  savedCount: { fontSize: 12, color: MUTED, marginTop: 2 },
+  hechaText: { fontFamily: "Manrope", fontSize: 13, color: MUTED },
+  hechaLabel: { fontFamily: "Manrope", color: FG, fontWeight: "600" },
+  savedCount: { fontFamily: "Manrope", fontSize: 12, color: MUTED, marginTop: 2 },
 
   actionRow: {
     flexDirection: "row",
@@ -295,7 +296,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(74,12,12,0.08)",
   },
   trackInfo: { flex: 1 },
-  trackTitle: { fontSize: 14, fontWeight: "600", color: FG, marginBottom: 3 },
-  trackArtist: { fontSize: 12, color: MUTED },
+  trackTitle: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: FG, marginBottom: 3 },
+  trackArtist: { fontFamily: "Manrope", fontSize: 12, color: MUTED },
   trackMore: { paddingHorizontal: 4 },
 });

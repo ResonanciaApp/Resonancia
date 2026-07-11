@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   headerBtn: { width: 36, alignItems: "center", justifyContent: "center" },
-  headerTitle: { flex: 1, textAlign: "center", fontSize: 17, fontWeight: "700", color: "#1A1A22", letterSpacing: 0.2 },
+  headerTitle: { fontFamily: "Manrope", flex: 1, textAlign: "center", fontSize: 17, fontWeight: "700", color: "#1A1A22", letterSpacing: 0.2 },
 
   scrollContent: { paddingHorizontal: H_PAD, paddingTop: 8 },
 
@@ -398,8 +398,8 @@ const styles = StyleSheet.create({
   },
   controlIcon: { marginRight: 12, width: 22 },
   controlText: { flex: 1 },
-  controlLabel: { fontSize: 14, fontWeight: "600", color: "#1A1A22" },
-  controlSub: { fontSize: 12, color: "#888", marginTop: 1 },
+  controlLabel: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: "#1A1A22" },
+  controlSub: { fontFamily: "Manrope", fontSize: 12, color: "#888", marginTop: 1 },
   sliderWrap: {
     flexDirection: "row",
     alignItems: "center",
@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
-  statusBadgeText: { fontSize: 11, fontWeight: "600", color: "#FFF" },
+  statusBadgeText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#FFF" },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.08)", marginHorizontal: -18 },
 
   timerTrigger: {
@@ -422,6 +422,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   timerTriggerLabel: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
     color: "#1A1A22",
@@ -443,11 +444,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#1A1A22",
   },
   timerDropItemText: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "500",
     color: "#333",
   },
   timerDropItemTextActive: {
+    fontFamily: "Manrope",
     color: "#FFF",
     fontWeight: "700",
   },
@@ -459,6 +462,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   sectionTitle: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
     color: "#1A1A22",
@@ -481,6 +485,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   restablecerText: {
+    fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "600",
     color: "#8C1A2B",
@@ -515,10 +520,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   gradientFallback: { borderRadius: 14 },
-  cardLabel: { marginTop: 6, fontSize: 11, color: "#555", fontWeight: "500", textAlign: "center" },
-  cardLabelActive: { color: "#F7CB6B", fontWeight: "700" },
+  cardLabel: { fontFamily: "Manrope", marginTop: 6, fontSize: 11, color: "#555", fontWeight: "500", textAlign: "center" },
+  cardLabelActive: { fontFamily: "Manrope", color: "#F7CB6B", fontWeight: "700" },
 
   hint: {
+    fontFamily: "Manrope",
     marginTop: 20,
     marginBottom: 8,
     fontSize: 11,
@@ -545,6 +551,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#111",
   },
   thumbLabel: {
+    fontFamily: "Manrope",
     marginTop: 6,
     fontSize: 11,
     color: "#555",
@@ -562,6 +569,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   presetBadgeText: {
+    fontFamily: "Manrope",
     fontSize: 8,
     fontWeight: "700",
     color: "#1A1A22",
@@ -576,6 +584,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   verMasText: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "600",
     color: "#8C1A2B",
@@ -597,6 +606,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   previewTitle: {
+    fontFamily: "Manrope",
     flex: 1,
     textAlign: "center",
     fontSize: 18,
@@ -632,6 +642,6 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: "#F7CB6B",
   },
-  applyBtnText: { fontSize: 16, fontWeight: "700", color: "#1A1A22" },
+  applyBtnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: "#1A1A22" },
   applyBtnTextActive: { color: "#F7CB6B" },
 });

@@ -377,6 +377,7 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   numberText: {
+    fontFamily: "Manrope",
     color: "#F9F9F9",
     fontSize: 42,
     fontWeight: "700",
@@ -384,6 +385,7 @@ const styles = StyleSheet.create({
     letterSpacing: -1,
   },
   daysLabel: {
+    fontFamily: "Manrope",
     color: "#f9f9f9",
     fontSize: 8,
     fontWeight: "400",
@@ -427,6 +429,7 @@ const styles = StyleSheet.create({
     marginBottom: 1,
   },
   dayLabel: {
+    fontFamily: "Manrope",
     color: "#c2c2c2",
     fontSize: 10,
     fontWeight: "600",
@@ -446,6 +449,7 @@ const styles = StyleSheet.create({
     width: COMP_W,
   },
   messageHighlight: {
+    fontFamily: "Manrope",
     color: "#FBFBFB",
     fontSize: 12,
     fontWeight: "300",
@@ -453,6 +457,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   message: {
+    fontFamily: "Manrope",
     color: "#FBFBFB",
     fontSize: 12,
     fontWeight: "300",

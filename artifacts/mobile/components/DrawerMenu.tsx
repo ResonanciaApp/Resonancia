@@ -312,18 +312,21 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   profileName: {
+    fontFamily: "Manrope",
     color: "#FFFFFF",
     fontSize: 15,
     fontWeight: "700",
     letterSpacing: 0.2,
   },
   profileNameMuted: {
+    fontFamily: "Manrope",
     color: "#c2c2c2",
     fontSize: 14,
     fontWeight: "500",
     letterSpacing: 0.2,
   },
   profileInitial: {
+    fontFamily: "Manrope",
     color: "#F7CB6B",
     fontSize: 20,
     fontWeight: "700",
@@ -336,6 +339,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   verPerfilText: {
+    fontFamily: "Manrope",
     color: "#F7CB6B",
     fontSize: 12,
     fontWeight: "600",
@@ -363,12 +367,14 @@ const styles = StyleSheet.create({
   itemPressed: { backgroundColor: "rgba(212,175,55,0.08)" },
   itemIcon: { width: 26, alignItems: "center" },
   itemLabel: {
+    fontFamily: "Manrope",
     color: "#FFFFFF",
     fontSize: 15,
     fontWeight: "500",
     letterSpacing: 0.2,
   },
   itemLabelMuted: {
+    fontFamily: "Manrope",
     color: "rgba(255,255,255,0.7)",
     fontSize: 14,
     fontWeight: "400",

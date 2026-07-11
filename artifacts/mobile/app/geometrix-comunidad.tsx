@@ -447,12 +447,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 8,
   },
-  headerTitle: { fontSize: 22, fontWeight: "700" },
-  count: { fontSize: 13, marginBottom: 14 },
+  headerTitle: { fontFamily: "Manrope", fontSize: 22, fontWeight: "700" },
+  count: { fontFamily: "Manrope", fontSize: 13, marginBottom: 14 },
 
   centerState: { alignItems: "center", gap: 12, marginTop: 60, paddingHorizontal: 20 },
-  stateTitle: { fontSize: 17, fontWeight: "700", textAlign: "center" },
-  stateText: { fontSize: 13, textAlign: "center", lineHeight: 20 },
+  stateTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", textAlign: "center" },
+  stateText: { fontFamily: "Manrope", fontSize: 13, textAlign: "center", lineHeight: 20 },
 
   grid: { flexDirection: "row", flexWrap: "wrap" },
   card: { borderRadius: 16, borderWidth: 1, borderColor: "rgba(167,159,184,0.1)", overflow: "hidden", backgroundColor: "rgba(123,100,255,0.05)" },
@@ -483,8 +483,8 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 10,
   },
-  name: { fontSize: 12, fontWeight: "700", marginBottom: 1 },
-  author: { fontSize: 11 },
+  name: { fontFamily: "Manrope", fontSize: 12, fontWeight: "700", marginBottom: 1 },
+  author: { fontFamily: "Manrope", fontSize: 11 },
 
   likeBtn: { flexDirection: "row", alignItems: "center", gap: 3 },
   likeOverlay: {
@@ -499,8 +499,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 4,
   },
-  likeCount: { fontSize: 11, fontWeight: "600" },
-  authorLink: { textDecorationLine: "underline", opacity: 0.9 },
+  likeCount: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600" },
+  authorLink: { fontFamily: "Manrope", textDecorationLine: "underline", opacity: 0.9 },
 
   sheetBackdrop: {
     flex: 1,
@@ -534,9 +534,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(239,68,68,0.4)",
     marginBottom: 2,
   },
-  confirmTitle: { fontSize: 19, fontWeight: "700", color: "#FAF0EE" },
-  confirmSubtitle: { fontSize: 13.5, color: "#c2c2c2", textAlign: "center", lineHeight: 20 },
-  confirmName: { color: "#FAF0EE", fontWeight: "600" },
+  confirmTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", color: "#FAF0EE" },
+  confirmSubtitle: { fontFamily: "Manrope", fontSize: 13.5, color: "#c2c2c2", textAlign: "center", lineHeight: 20 },
+  confirmName: { fontFamily: "Manrope", color: "#FAF0EE", fontWeight: "600" },
   confirmActions: { flexDirection: "row", gap: 10, marginTop: 14, alignSelf: "stretch" },
   btnGhost: {
     flex: 1,
@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
     borderColor: "#161f33",
     alignItems: "center",
   },
-  btnGhostText: { fontSize: 14, fontWeight: "600", color: "#c2c2c2" },
+  btnGhostText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: "#c2c2c2" },
   btnDanger: { flex: 1, paddingVertical: 12, borderRadius: 12, backgroundColor: "#ef4444", alignItems: "center" },
-  btnDangerText: { fontSize: 14, fontWeight: "700", color: "#ffffff" },
+  btnDangerText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", color: "#ffffff" },
 });

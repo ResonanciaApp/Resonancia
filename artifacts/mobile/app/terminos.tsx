@@ -83,8 +83,8 @@ function Section({ title, children, colors }: { title: string; children: string;
 const styles = StyleSheet.create({
   root: { flex: 1 },
   back: { width: 40, height: 40, justifyContent: "center", marginBottom: 8 },
-  title: { fontSize: 26, fontWeight: "700", marginTop: 8 },
-  updated: { fontSize: 12, marginTop: 6 },
-  h: { fontSize: 15, fontWeight: "700", marginBottom: 6, letterSpacing: 0.2 },
-  body: { fontSize: 14, lineHeight: 21 },
+  title: { fontFamily: "Manrope", fontSize: 26, fontWeight: "700", marginTop: 8 },
+  updated: { fontFamily: "Manrope", fontSize: 12, marginTop: 6 },
+  h: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", marginBottom: 6, letterSpacing: 0.2 },
+  body: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21 },
 });

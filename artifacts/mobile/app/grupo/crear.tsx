@@ -110,17 +110,17 @@ function GroupPreview({
 const preview = StyleSheet.create({
   root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#210911" },
   image: { width: 72, height: 72, borderRadius: 18, alignItems: "center", justifyContent: "center", marginBottom: 10 },
-  initial: { fontSize: 28, fontWeight: "700", color: "#FFFFFF" },
-  name: { color: "#FFFFFF", fontSize: 18, fontWeight: "700", marginBottom: 4 },
-  meta: { color: "rgba(237,225,211,0.55)", fontSize: 12, letterSpacing: 0.8, marginBottom: 14 },
+  initial: { fontFamily: "Manrope", fontSize: 28, fontWeight: "700", color: "#FFFFFF" },
+  name: { fontFamily: "Manrope", color: "#FFFFFF", fontSize: 18, fontWeight: "700", marginBottom: 4 },
+  meta: { fontFamily: "Manrope", color: "rgba(237,225,211,0.55)", fontSize: 12, letterSpacing: 0.8, marginBottom: 14 },
   inviteRow: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 16 },
   memberDot: { width: 30, height: 30, borderRadius: 15, backgroundColor: "#0F1A2A", alignItems: "center", justifyContent: "center" },
-  memberDotText: { color: "#A8C4A8", fontSize: 13, fontWeight: "700" },
+  memberDotText: { fontFamily: "Manrope", color: "#A8C4A8", fontSize: 13, fontWeight: "700" },
   inviteBtn: { flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: "rgba(237,225,211,0.12)", borderRadius: 14, paddingHorizontal: 12, paddingVertical: 6 },
-  inviteBtnText: { color: "#FFFFFF", fontSize: 13, fontWeight: "600" },
+  inviteBtnText: { fontFamily: "Manrope", color: "#FFFFFF", fontSize: 13, fontWeight: "600" },
   tabs: { flexDirection: "row", width: "100%", borderTopWidth: 1, paddingHorizontal: 16 },
-  tab: { paddingVertical: 12, marginRight: 24, color: "rgba(237,225,211,0.4)", fontSize: 14 },
-  tabActive: { color: "#FFFFFF", borderBottomWidth: 2, borderBottomColor: "#FFFFFF", fontWeight: "600" },
+  tab: { fontFamily: "Manrope", paddingVertical: 12, marginRight: 24, color: "rgba(237,225,211,0.4)", fontSize: 14 },
+  tabActive: { fontFamily: "Manrope", color: "#FFFFFF", borderBottomWidth: 2, borderBottomColor: "#FFFFFF", fontWeight: "600" },
 });
 
 // ─── Bottom sheet wrapper ─────────────────────────────────────────────────────
@@ -463,33 +463,34 @@ const styles = StyleSheet.create({
   // Step 1
   closeBtn: { marginBottom: 36, alignSelf: "flex-start" },
   closeBtnInner: { width: 34, height: 34, borderRadius: 17, backgroundColor: "rgba(237,225,211,0.12)", alignItems: "center", justifyContent: "center" },
-  stepTitle: { color: "#FFFFFF", fontSize: 24, fontWeight: "700", marginBottom: 24 },
+  stepTitle: { fontFamily: "Manrope", color: "#FFFFFF", fontSize: 24, fontWeight: "700", marginBottom: 24 },
   nameInputBox: {
     flexDirection: "row", alignItems: "center",
     borderRadius: 14, borderWidth: 1,
     paddingHorizontal: 16, paddingVertical: 14,
   },
-  nameInput: { flex: 1, fontSize: 16 },
-  nameCounter: { fontSize: 13, fontWeight: "600", marginLeft: 8 },
+  nameInput: { fontFamily: "Manrope", flex: 1, fontSize: 16 },
+  nameCounter: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", marginLeft: 8 },
   stepFooter: { paddingHorizontal: 20 },
   nextBtn: { borderRadius: 16, paddingVertical: 16, alignItems: "center", overflow: "hidden" },
-  nextBtnText: { fontSize: 16, fontWeight: "700" },
+  nextBtnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700" },
 
   // Shared sheet styles
   sheetTopRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 8 },
-  sheetTitle: { fontSize: 20, fontWeight: "700" },
-  sheetSub: { fontSize: 14, lineHeight: 21, marginBottom: 16 },
-  skipText: { fontSize: 14, fontWeight: "600" },
+  sheetTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700" },
+  sheetSub: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, marginBottom: 16 },
+  skipText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600" },
   sheetTextarea: {
+    fontFamily: "Manrope",
     borderWidth: 1, borderRadius: 14,
     paddingHorizontal: 14, paddingVertical: 12,
     fontSize: 14, minHeight: 100, textAlignVertical: "top",
   },
   sheetNavRow: { flexDirection: "row", gap: 12, marginTop: 14, alignItems: "center" },
   prevBtn: { paddingVertical: 16, paddingHorizontal: 4 },
-  prevBtnText: { fontSize: 15, fontWeight: "600" },
+  prevBtnText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600" },
   sheetNext: { borderRadius: 16, paddingVertical: 16, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 8, overflow: "hidden" },
-  sheetNextText: { fontSize: 16, fontWeight: "700" },
+  sheetNextText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700" },
 
   // Gallery
   galleryGrid: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
@@ -502,5 +503,5 @@ const styles = StyleSheet.create({
   successIcon: { alignSelf: "center", marginBottom: 16, borderRadius: 30, overflow: "hidden" },
   successGrad: { width: 60, height: 60, alignItems: "center", justifyContent: "center" },
   linkBox: { flexDirection: "row", alignItems: "center", borderRadius: 12, borderWidth: 1, paddingHorizontal: 14, paddingVertical: 12 },
-  linkText: { fontSize: 13, fontWeight: "600", flex: 1 },
+  linkText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", flex: 1 },
 });

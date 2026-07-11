@@ -406,6 +406,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.30)",
   },
   timerText: {
+    fontFamily: "Manrope",
     color: "#F4F4F4",
     fontSize: 12,
     fontWeight: "600",
@@ -441,8 +442,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.18)",
     borderColor: "rgba(212,175,55,0.40)",
   },
-  packEmoji: { fontSize: 14 },
+  packEmoji: { fontFamily: "Manrope", fontSize: 14 },
   packLabel: {
+    fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "700",
     color: "#FBA980",
@@ -463,6 +465,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.10)",
   },
   soundPillText: {
+    fontFamily: "Manrope",
     color: "#F4F4F4",
     fontSize: 10,
     fontWeight: "500",
@@ -487,6 +490,7 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   msgText: {
+    fontFamily: "Manrope",
     fontSize: 22,
     fontWeight: "300",
     color: "rgba(255,255,255,0.88)",
@@ -530,6 +534,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   timerPanelTitle: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
     color: "rgba(255,255,255,0.80)",
@@ -554,6 +559,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.40)",
   },
   timerOptText: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
     color: "#F4F4F4",
@@ -580,6 +586,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   timerCountdownText: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "600",
     color: "#FBA980",
@@ -593,6 +600,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   timerCancelText: {
+    fontFamily: "Manrope",
     fontSize: 12,
     color: "rgba(255,255,255,0.45)",
     fontWeight: "500",

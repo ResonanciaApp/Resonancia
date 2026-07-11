@@ -208,6 +208,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   cardTitle: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
     lineHeight: 18,
@@ -227,6 +228,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   cardAuthor: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "400",
     flexShrink: 1,
@@ -239,6 +241,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   durationBadgeText: {
+    fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "600",
     color: "#FFFFFF",
@@ -258,6 +261,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   hDurLabel: {
+    fontFamily: "Manrope",
     position: "absolute",
     bottom: 6,
     left: 8,
@@ -280,6 +284,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   hAuthor: {
+    fontFamily: "Manrope",
     fontSize: 12,
     flex: 1,
   },
@@ -304,6 +309,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   hCategory: {
+    fontFamily: "Manrope",
     fontSize: 8,
     letterSpacing: 0.7,
     textTransform: "uppercase",
@@ -314,6 +320,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   hTitle: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
     lineHeight: 21,
@@ -324,6 +331,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   hDuration: {
+    fontFamily: "Manrope",
     fontSize: 10,
   },
   freqPill: {
@@ -334,6 +342,7 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
   },
   freqText: {
+    fontFamily: "Manrope",
     fontSize: 9,
     letterSpacing: 0.5,
   },

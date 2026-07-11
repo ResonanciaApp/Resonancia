@@ -230,6 +230,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   searchInput: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 14,
     paddingVertical: 0,
@@ -256,11 +257,12 @@ const styles = StyleSheet.create({
   },
   pillSel: { borderWidth: 0 },
   pillText: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
   },
 
   empty: { alignItems: "center", paddingVertical: 80, gap: 10 },
-  emptyTitle: { fontSize: 16, fontWeight: "700" },
-  emptySub: { fontSize: 13, textAlign: "center" },
+  emptyTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700" },
+  emptySub: { fontFamily: "Manrope", fontSize: 13, textAlign: "center" },
 });

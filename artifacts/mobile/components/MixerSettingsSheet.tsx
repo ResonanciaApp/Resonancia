@@ -189,18 +189,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   closeX: {
+    fontFamily: "Manrope",
     fontSize: 16,
   },
   closePlaceholder: {
     width: 32,
   },
   title: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 20,
     fontWeight: "700",
     textAlign: "center",
   },
   sectionTitle: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
     marginBottom: 12,
@@ -225,14 +228,17 @@ const styles = StyleSheet.create({
     borderColor: PRIMARY,
   },
   swatchCheck: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "900",
   },
   swatchLabel: {
+    fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "500",
   },
   swatchLabelSel: {
+    fontFamily: "Manrope",
     fontWeight: "700",
   },
   chipWrap: {
@@ -250,6 +256,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   chipText: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "500",
   },
@@ -264,6 +271,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(190,150,80,0.18)",
   },
   clearBtnText: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
     color: "#0B0F14",

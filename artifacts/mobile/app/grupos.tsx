@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   fixedHeader: { zIndex: 10 },
   headerRow: { flexDirection: "row", alignItems: "center", height: 44 },
-  title: { fontSize: 26, fontWeight: "700", marginBottom: 10, marginTop: 2 },
+  title: { fontFamily: "Manrope", fontSize: 26, fontWeight: "700", marginBottom: 10, marginTop: 2 },
   tabRow: {
     flexDirection: "row",
     paddingHorizontal: 20,
@@ -531,14 +531,14 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   tabItem: { paddingVertical: 11, marginRight: 28, borderBottomWidth: 2, borderBottomColor: "transparent" },
-  tabText: { fontSize: 15 },
+  tabText: { fontFamily: "Manrope", fontSize: 15 },
   content: { flex: 1, paddingHorizontal: 20, paddingTop: 20 },
 
   // Sections
   section: { marginBottom: 24 },
   sectionHeader: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 14 },
-  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.5 },
-  verTodos: { fontSize: 14, fontWeight: "600" },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.5 },
+  verTodos: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600" },
   addBtn: {
     width: 32, height: 32, borderRadius: 16,
     alignItems: "center", justifyContent: "center",
@@ -555,9 +555,9 @@ const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 10,
   },
-  popularTipo: { fontSize: 11, marginBottom: 2 },
-  popularName: { fontSize: 14, fontWeight: "700" },
-  popularMembers: { fontSize: 12, marginTop: 2 },
+  popularTipo: { fontFamily: "Manrope", fontSize: 11, marginBottom: 2 },
+  popularName: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700" },
+  popularMembers: { fontFamily: "Manrope", fontSize: 12, marginTop: 2 },
 
   // Tema rows
   temaRow: {
@@ -568,11 +568,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   temaIconBg: { width: 36, height: 36, borderRadius: 10, alignItems: "center", justifyContent: "center" },
-  temaLabel: { flex: 1, fontSize: 15 },
+  temaLabel: { fontFamily: "Manrope", flex: 1, fontSize: 15 },
 
   // Mis Grupos
   emptyBox: { borderWidth: 1, borderRadius: 14, padding: 16, borderStyle: "dashed" },
-  emptyText: { fontSize: 14, lineHeight: 22 },
+  emptyText: { fontFamily: "Manrope", fontSize: 14, lineHeight: 22 },
   divider: { height: 1, marginBottom: 24 },
   unitoRow: {
     flexDirection: "row",
@@ -586,7 +586,7 @@ const styles = StyleSheet.create({
 
   grupoNameRow: { flexDirection: "row", alignItems: "center", gap: 6, flex: 1 },
   adminBadge: { borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 },
-  adminBadgeText: { fontSize: 9, fontWeight: "700", letterSpacing: 0.5 },
+  adminBadgeText: { fontFamily: "Manrope", fontSize: 9, fontWeight: "700", letterSpacing: 0.5 },
 
   // Feed / tablón
   feedCard: {
@@ -598,13 +598,13 @@ const styles = StyleSheet.create({
   },
   feedHeader: { flexDirection: "row", alignItems: "flex-start", gap: 10 },
   feedAvatar: { width: 42, height: 42, borderRadius: 21, alignItems: "center", justifyContent: "center" },
-  feedInitials: { fontSize: 14, fontWeight: "700" },
-  feedAuthor: { fontSize: 14, fontWeight: "700", marginBottom: 3 },
+  feedInitials: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700" },
+  feedAuthor: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", marginBottom: 3 },
   feedMeta: { flexDirection: "row", alignItems: "center", gap: 5 },
-  feedGroup: { fontSize: 12, fontWeight: "600", flex: 1 },
-  feedTime: { fontSize: 12 },
-  feedText: { fontSize: 14, lineHeight: 22 },
-  leerMas: { fontSize: 14, fontWeight: "600", marginTop: -6 },
+  feedGroup: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", flex: 1 },
+  feedTime: { fontFamily: "Manrope", fontSize: 12 },
+  feedText: { fontFamily: "Manrope", fontSize: 14, lineHeight: 22 },
+  leerMas: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", marginTop: -6 },
   feedActions: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -612,7 +612,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
   },
   feedAction: { flexDirection: "row", alignItems: "center", gap: 5 },
-  feedActionText: { fontSize: 13 },
+  feedActionText: { fontFamily: "Manrope", fontSize: 13 },
 
   // Sheet
   sheetOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)" },
@@ -625,7 +625,7 @@ const styles = StyleSheet.create({
   },
   sheetHandle: { width: 40, height: 4, borderRadius: 2, alignSelf: "center", marginBottom: 8 },
   sheetCloseRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  sheetTitle: { fontSize: 20, fontWeight: "700" },
+  sheetTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700" },
   sheetCloseBtn: {
     width: 32, height: 32, borderRadius: 16,
     alignItems: "center", justifyContent: "center",
@@ -642,6 +642,6 @@ const styles = StyleSheet.create({
     width: 48, height: 48, borderRadius: 24,
     alignItems: "center", justifyContent: "center",
   },
-  sheetOptionTitle: { fontSize: 16, fontWeight: "700", marginBottom: 2 },
-  sheetOptionSub: { fontSize: 13 },
+  sheetOptionTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", marginBottom: 2 },
+  sheetOptionSub: { fontFamily: "Manrope", fontSize: 13 },
 });

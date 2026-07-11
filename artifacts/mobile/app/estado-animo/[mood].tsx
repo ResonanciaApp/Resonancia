@@ -176,6 +176,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   stickyTitle: {
+    fontFamily: "Manrope",
     fontSize: 22,
     fontWeight: "700",
     flex: 1,
@@ -203,8 +204,9 @@ const styles = StyleSheet.create({
     gap: 6,
     marginBottom: 20,
   },
-  moodChipEmoji: { fontSize: 18 },
+  moodChipEmoji: { fontFamily: "Manrope", fontSize: 18 },
   moodChipLabel: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "600",
     color: "#F7CB6B",
@@ -230,6 +232,7 @@ const styles = StyleSheet.create({
     paddingVertical: 60,
   },
   emptyText: {
+    fontFamily: "Manrope",
     fontSize: 15,
     color: "rgba(237,225,211,0.45)",
     textAlign: "center",

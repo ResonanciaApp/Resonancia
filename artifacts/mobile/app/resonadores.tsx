@@ -270,6 +270,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   heroTitle: {
+    fontFamily: "Manrope",
     fontSize: 30,
     fontWeight: "800",
     color: C.fg,
@@ -278,6 +279,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   heroSub: {
+    fontFamily: "Manrope",
     fontSize: 14,
     color: C.muted,
     textAlign: "center",
@@ -291,6 +293,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   heroCertText: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
     color: C.certified,
@@ -312,6 +315,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   sectionTitle: {
+    fontFamily: "Manrope",
     fontSize: 20,
     fontWeight: "700",
     color: C.fg,
@@ -319,6 +323,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   sectionSub: {
+    fontFamily: "Manrope",
     fontSize: 12.5,
     color: C.muted,
     lineHeight: 18,
@@ -359,6 +364,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   name: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
     color: C.fg,
@@ -366,6 +372,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   specialty: {
+    fontFamily: "Manrope",
     fontSize: 12.5,
     color: C.muted,
     lineHeight: 16,
@@ -377,6 +384,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   metaText: {
+    fontFamily: "Manrope",
     fontSize: 11,
     color: C.muted,
   },
@@ -396,6 +404,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   roleText: {
+    fontFamily: "Manrope",
     fontSize: 9,
     fontWeight: "700",
     letterSpacing: 0.8,
@@ -409,6 +418,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   certText: {
+    fontFamily: "Manrope",
     fontSize: 10.5,
     color: C.certified,
     fontWeight: "600",
@@ -427,6 +437,7 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   footerText: {
+    fontFamily: "Manrope",
     fontSize: 11.5,
     color: C.muted,
     textAlign: "center",

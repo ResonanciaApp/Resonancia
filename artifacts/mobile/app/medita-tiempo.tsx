@@ -97,14 +97,14 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   titleWrap: { flex: 1 },
-  pageTitle: { fontSize: 24, fontWeight: "700", letterSpacing: 0.3 },
-  pageSub: { fontSize: 12, marginTop: 2 },
+  pageTitle: { fontFamily: "Manrope", fontSize: 24, fontWeight: "700", letterSpacing: 0.3 },
+  pageSub: { fontFamily: "Manrope", fontSize: 12, marginTop: 2 },
 
   empty: {
     alignItems: "center",
     paddingTop: 80,
     gap: 12,
   },
-  emptyTitle: { fontSize: 17, fontWeight: "600" },
-  emptySub: { fontSize: 13, textAlign: "center" },
+  emptyTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "600" },
+  emptySub: { fontFamily: "Manrope", fontSize: 13, textAlign: "center" },
 });

@@ -308,8 +308,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  headerTitle: { fontSize: 17, fontWeight: "700" },
+  headerTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
   label: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
     marginTop: 18,
@@ -326,6 +327,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   inputText: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 15,
   },
@@ -342,7 +344,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
   },
-  dropdownText: { fontSize: 15 },
+  dropdownText: { fontFamily: "Manrope", fontSize: 15 },
   textareaRow: {
     borderRadius: 14,
     borderWidth: 1,
@@ -351,6 +353,7 @@ const styles = StyleSheet.create({
     minHeight: 120,
   },
   textareaText: {
+    fontFamily: "Manrope",
     fontSize: 15,
     minHeight: 96,
   },
@@ -370,7 +373,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  audioText: { flex: 1, fontSize: 15 },
+  audioText: { fontFamily: "Manrope", flex: 1, fontSize: 15 },
   submitBtn: {
     marginTop: 28,
     height: 52,
@@ -380,6 +383,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   submitText: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
     color: "#1B060F",

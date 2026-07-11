@@ -498,6 +498,7 @@ const styles = StyleSheet.create({
     backgroundColor: MIX_BG,
   },
   openPillText: {
+    fontFamily: "Manrope",
     color: "#FFFFFF",
     fontSize: 13,
     fontWeight: "600",
@@ -583,12 +584,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   mixTitle: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
     color: "#FFFFFF",
     marginBottom: 1,
   },
   mixSub: {
+    fontFamily: "Manrope",
     fontSize: 11,
     color: "#F4F4F4",
   },
@@ -603,6 +606,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.2)",
   },
   cinematicText: {
+    fontFamily: "Manrope",
     position: "absolute",
     bottom: 20,
     left: 0,
@@ -637,8 +641,8 @@ const styles = StyleSheet.create({
   },
   art:  { width: 44, height: 44, borderRadius: 8 },
   info: { flex: 1 },
-  title: { fontSize: 14, fontWeight: "600", marginBottom: 2 },
-  sub:   { fontSize: 11 },
+  title: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", marginBottom: 2 },
+  sub:   { fontFamily: "Manrope", fontSize: 11 },
   btn: {
     width: 38,
     height: 38,

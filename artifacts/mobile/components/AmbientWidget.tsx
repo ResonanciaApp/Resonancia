@@ -223,6 +223,7 @@ const styles = StyleSheet.create({
     height: SCENE_THUMB,
   },
   sceneLabel: {
+    fontFamily: "Manrope",
     color: "#587060",
     fontSize: 9,
     fontWeight: "500",

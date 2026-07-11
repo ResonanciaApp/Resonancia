@@ -254,6 +254,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   perkText: {
+    fontFamily: "Manrope",
     fontSize: 13.5,
     flex: 1,
     letterSpacing: 0.2,
@@ -276,6 +277,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   eyebrow: {
+    fontFamily: "Manrope",
     fontSize: 13,
     letterSpacing: 0.5,
     marginBottom: 6,
@@ -288,12 +290,14 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   title: {
+    fontFamily: "Manrope",
     fontSize: 34,
     fontWeight: "800",
     letterSpacing: 0.5,
     textAlign: "center",
   },
   star: {
+    fontFamily: "Manrope",
     fontSize: 20,
     fontWeight: "700",
   },
@@ -303,6 +307,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   sub: {
+    fontFamily: "Manrope",
     fontSize: 13.5,
     textAlign: "center",
     lineHeight: 21,
@@ -336,6 +341,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 36,
   },
   btnText: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
     letterSpacing: 0.3,

@@ -364,6 +364,7 @@ const bpmStyles = StyleSheet.create({
     marginBottom: 12,
   },
   headerText: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 12,
     fontWeight: "600",
@@ -382,6 +383,7 @@ const bpmStyles = StyleSheet.create({
     paddingVertical: 3,
   },
   lockedText: {
+    fontFamily: "Manrope",
     fontSize: 10,
     fontWeight: "700",
     color: "#B8860B",
@@ -423,18 +425,21 @@ const bpmStyles = StyleSheet.create({
     justifyContent: "center",
   },
   chipLabel: {
+    fontFamily: "Manrope",
     fontSize: 20,
     fontWeight: "700",
     letterSpacing: -0.5,
     lineHeight: 24,
   },
   chipUnit: {
+    fontFamily: "Manrope",
     fontSize: 10,
     fontWeight: "600",
     letterSpacing: 0.3,
     lineHeight: 13,
   },
   hint: {
+    fontFamily: "Manrope",
     fontSize: 11,
     color: "rgba(26,30,43,0.4)",
     textAlign: "center",
@@ -884,10 +889,10 @@ const styles = StyleSheet.create({
   headerActions: { flexDirection: "row", alignItems: "center", gap: 8, marginRight: -6 },
 
   emptyState: { alignItems: "center", justifyContent: "center", paddingTop: 70, paddingHorizontal: 40, gap: 8 },
-  emptyTitle: { fontSize: 15, fontWeight: "700", color: "rgba(26,30,43,0.7)", textAlign: "center" },
-  emptyHint:  { fontSize: 13, color: "rgba(26,30,43,0.45)", textAlign: "center", lineHeight: 19 },
-  pageTitle:    { fontSize: 26, fontWeight: "700", letterSpacing: 0.5, color: "#FBFBFB" },
-  pageSubtitle: { fontSize: 13, fontWeight: "400", color: "#F4F4F4", marginTop: 2 },
+  emptyTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "rgba(26,30,43,0.7)", textAlign: "center" },
+  emptyHint:  { fontFamily: "Manrope", fontSize: 13, color: "rgba(26,30,43,0.45)", textAlign: "center", lineHeight: 19 },
+  pageTitle:    { fontFamily: "Manrope", fontSize: 26, fontWeight: "700", letterSpacing: 0.5, color: "#FBFBFB" },
+  pageSubtitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400", color: "#F4F4F4", marginTop: 2 },
   heartBtn: {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
     borderRadius: 12, backgroundColor: "rgba(0,0,0,0.05)",
@@ -939,7 +944,7 @@ const styles = StyleSheet.create({
     gap: 5,
     backgroundColor: "transparent",
   },
-  pillTabLabel: { fontSize: 11, letterSpacing: 0.1, fontWeight: "380" },
+  pillTabLabel: { fontFamily: "Manrope", fontSize: 11, letterSpacing: 0.1, fontWeight: "380" },
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },
 
@@ -955,8 +960,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.1)",
     borderWidth: 1, borderColor: "#827b7a",
   },
-  activeChipText: { fontSize: 12, fontWeight: "600", color: "#827b7a" },
-  activeChipX:    { fontSize: 11, fontWeight: "700", color: "rgba(130,123,122,0.65)" },
+  activeChipText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: "#827b7a" },
+  activeChipX:    { fontFamily: "Manrope", fontSize: 11, fontWeight: "700", color: "rgba(130,123,122,0.65)" },
 
   scrollBg:      { flex: 1 },
   scroll:        { flex: 1, backgroundColor: "transparent" },
@@ -976,6 +981,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   bannerText: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 12,
     color: "rgba(255,255,255,0.88)",
@@ -992,6 +998,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   bannerBtnText: {
+    fontFamily: "Manrope",
     fontSize: 10,
     fontWeight: "600",
     color: "#FBA980",
@@ -1015,7 +1022,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(244,244,244,0.1)",
   },
   subTabSel: { borderWidth: 0 },
-  subTabText: { fontSize: 11, letterSpacing: 0.1, fontWeight: "380", includeFontPadding: false },
+  subTabText: { fontFamily: "Manrope", fontSize: 11, letterSpacing: 0.1, fontWeight: "380", includeFontPadding: false },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 17, justifyContent: "space-evenly" },
   soundCard: { width: CARD_W },
@@ -1031,7 +1038,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.08)",
   },
   cardFooter: { paddingHorizontal: 4, paddingTop: 13, height: 38, overflow: "hidden" },
-  soundName:  { fontSize: 11.5, fontWeight: "500", letterSpacing: 0.1, textAlign: "center", color: DARK },
+  soundName:  { fontFamily: "Manrope", fontSize: 11.5, fontWeight: "500", letterSpacing: 0.1, textAlign: "center", color: DARK },
   lockBadge:      { position: "absolute", top: 4, right: 4 },
   activeIconWrap: {
     position: "absolute",

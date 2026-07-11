@@ -79,11 +79,13 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   value: {
+    fontFamily: "Manrope",
     fontSize: 22,
     fontWeight: "700",
     letterSpacing: 0.3,
   },
   label: {
+    fontFamily: "Manrope",
     fontSize: 12,
   },
   btnRow: {
@@ -101,6 +103,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   socialText: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "600",
   },

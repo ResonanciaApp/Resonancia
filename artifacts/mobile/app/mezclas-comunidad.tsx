@@ -107,8 +107,8 @@ const gc = StyleSheet.create({
   card: { gap: 6 },
   imgContainer: { width: "100%", aspectRatio: 1, borderRadius: 10, overflow: "hidden" },
   cardImage: { width: "100%", height: "100%", alignItems: "center", justifyContent: "center" },
-  cardTitle: { fontSize: 15, fontWeight: "600", color: TEXT, lineHeight: 20 },
-  cardAuthor: { fontSize: 13, color: MUTED },
+  cardTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: TEXT, lineHeight: 20 },
+  cardAuthor: { fontFamily: "Manrope", fontSize: 13, color: MUTED },
   likeBadge: {
     position: "absolute",
     bottom: 8,
@@ -121,7 +121,7 @@ const gc = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
   },
-  likeBadgeText: { fontSize: 11, fontWeight: "600", color: "#fff" },
+  likeBadgeText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#fff" },
   dotsBtn: {
     position: "absolute",
     top: 4,
@@ -356,15 +356,15 @@ const styles = StyleSheet.create({
 
   /* ── Profile card ── */
   profileCard: { marginHorizontal: H_PAD, marginTop: 28, paddingBottom: 14, gap: 8, alignItems: "center" },
-  profileTitle: { fontSize: 27, fontWeight: "800", color: TEXT, letterSpacing: 0.3, textAlign: "center" },
-  profileDesc: { fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 3, marginBottom: 8 },
+  profileTitle: { fontFamily: "Manrope", fontSize: 27, fontWeight: "800", color: TEXT, letterSpacing: 0.3, textAlign: "center" },
+  profileDesc: { fontFamily: "Manrope", fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 3, marginBottom: 8 },
 
   /* ── Chips ── */
   chipsArea: { paddingTop: 10, paddingBottom: 15 },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chip: { minWidth: 96, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center" },
-  chipText: { fontSize: 13, fontWeight: "600", color: TEXT, textAlign: "center" },
+  chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: TEXT, textAlign: "center" },
   chipTextSel: { color: "#1B060F" },
 
   /* ── Grid ── */
@@ -373,6 +373,6 @@ const styles = StyleSheet.create({
 
   /* ── Empty ── */
   emptyState: { alignItems: "center", paddingVertical: 60, gap: 6, paddingHorizontal: H_PAD },
-  emptyText: { fontSize: 14, fontWeight: "600", color: TEXT },
-  emptySub: { fontSize: 12, textAlign: "center", color: MUTED },
+  emptyText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: TEXT },
+  emptySub: { fontFamily: "Manrope", fontSize: 12, textAlign: "center", color: MUTED },
 });

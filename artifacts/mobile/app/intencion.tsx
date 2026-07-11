@@ -300,6 +300,7 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   hoyLabel: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
     letterSpacing: 0.5,
@@ -314,6 +315,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   input: {
+    fontFamily: "Manrope",
     fontSize: 18,
     fontWeight: "500",
     lineHeight: 26,
@@ -326,7 +328,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginTop: 10,
   },
-  saveBtnText: { fontSize: 13, fontWeight: "700", color: "#070E09" },
+  saveBtnText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", color: "#070E09" },
 
   tabRow: {
     flexDirection: "row",
@@ -339,7 +341,7 @@ const styles = StyleSheet.create({
     marginRight: 24,
     position: "relative",
   },
-  tabLabel: { fontSize: 14, fontWeight: "600" },
+  tabLabel: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600" },
   tabUnderline: {
     position: "absolute",
     bottom: 0,
@@ -359,7 +361,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
   },
-  ideaText: { flex: 1, fontSize: 14, lineHeight: 20 },
+  ideaText: { fontFamily: "Manrope", flex: 1, fontSize: 14, lineHeight: 20 },
   ideaArrow: { marginLeft: 8 },
 
   emptyState: {
@@ -367,8 +369,8 @@ const styles = StyleSheet.create({
     paddingTop: 48,
     gap: 12,
   },
-  emptyTitle: { fontSize: 16, fontWeight: "700" },
-  emptyText: { fontSize: 13, lineHeight: 20, textAlign: "center" },
+  emptyTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700" },
+  emptyText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 20, textAlign: "center" },
 
   savedList: { gap: 12 },
   savedCard: {
@@ -381,14 +383,15 @@ const styles = StyleSheet.create({
   },
   savedCardLeft: { flex: 1 },
   hoyLabelSmall: {
+    fontFamily: "Manrope",
     fontSize: 10,
     fontWeight: "600",
     letterSpacing: 0.8,
     textTransform: "uppercase",
     marginBottom: 4,
   },
-  savedText: { fontSize: 14, lineHeight: 20, marginBottom: 4 },
-  expiryLabel: { fontSize: 11 },
+  savedText: { fontFamily: "Manrope", fontSize: 14, lineHeight: 20, marginBottom: 4 },
+  expiryLabel: { fontFamily: "Manrope", fontSize: 11 },
   savedActions: { flexDirection: "column", gap: 8 },
   actionBtn: {
     width: 34,

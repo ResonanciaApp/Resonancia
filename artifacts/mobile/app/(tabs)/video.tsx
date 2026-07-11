@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   titleRow: { alignItems: "center", paddingHorizontal: 15, paddingBottom: 10, paddingTop: 6 },
-  pageTitle: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center", marginTop: 10 },
+  pageTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center", marginTop: 10 },
 
   searchWrap: {
     paddingHorizontal: 19,
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     height: 45,
   },
-  searchInput: { flex: 1, fontSize: 15, fontWeight: "300", padding: 0 },
+  searchInput: { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "300", padding: 0 },
 
   chipsWrap: { height: CHIPS_H, justifyContent: "center" },
   chipsRow: { paddingHorizontal: 19, gap: 8, alignItems: "center" },
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(244,244,244,0.1)",
   },
   chipSel: { borderWidth: 0 },
-  chipText: { fontSize: 11, fontWeight: "380" },
+  chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "380" },
   chipsDivider: {
     height: 1,
     backgroundColor: "rgba(255,255,255,0.035)",
@@ -271,13 +271,13 @@ const styles = StyleSheet.create({
   },
 
   resultsRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  resultsCount: { fontSize: 11 },
+  resultsCount: { fontFamily: "Manrope", fontSize: 11 },
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
-  sortText: { fontSize: 11, fontWeight: "400" },
+  sortText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400" },
 
   empty: { alignItems: "center", paddingVertical: 80, gap: 10 },
-  emptyTitle: { fontSize: 16, fontWeight: "700" },
-  emptySub: { fontSize: 13, textAlign: "center" },
+  emptyTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700" },
+  emptySub: { fontFamily: "Manrope", fontSize: 13, textAlign: "center" },
 
   sortMenu: {
     position: "absolute",
@@ -299,5 +299,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  sortItemText: { fontSize: 14 },
+  sortItemText: { fontFamily: "Manrope", fontSize: 14 },
 });

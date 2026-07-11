@@ -561,17 +561,17 @@ const blStyles = StyleSheet.create({
   root:         { flex: 1, backgroundColor: "#190913" },
   overlay:      { flexDirection: "row", alignItems: "center", backgroundColor: "#190913", paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
   bar:          { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.09)", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 11 },
-  input:        { flex: 1, fontSize: 14, color: "#FBFBFB" },
+  input:        { fontFamily: "Manrope", flex: 1, fontSize: 14, color: "#FBFBFB" },
   cancel:       { paddingVertical: 6 },
-  cancelText:   { color: "#F7CB6B", fontSize: 14, fontWeight: "600" },
+  cancelText:   { fontFamily: "Manrope", color: "#F7CB6B", fontSize: 14, fontWeight: "600" },
   empty:        { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, paddingTop: 60 },
-  emptyTitle:   { fontSize: 18, fontWeight: "700", color: "#FBFBFB", textAlign: "center", marginBottom: 10 },
-  emptySub:     { fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
+  emptyTitle:   { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#FBFBFB", textAlign: "center", marginBottom: 10 },
+  emptySub:     { fontFamily: "Manrope", fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
   resultRow:    { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 5 },
   thumb:        { width: 75, height: 75, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.07)" },
-  resultCat:    { fontSize: 12, color: "rgba(242,231,228,0.45)", marginBottom: 3 },
-  resultTitle:  { fontSize: 15, fontWeight: "700", color: "#FBFBFB", marginBottom: 3 },
-  resultAuthor: { fontSize: 12, color: "rgba(242,231,228,0.45)" },
+  resultCat:    { fontFamily: "Manrope", fontSize: 12, color: "rgba(242,231,228,0.45)", marginBottom: 3 },
+  resultTitle:  { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FBFBFB", marginBottom: 3 },
+  resultAuthor: { fontFamily: "Manrope", fontSize: 12, color: "rgba(242,231,228,0.45)" },
 });
 
 // ── Modal de nombre de carpeta ────────────────────────────────────────────────
@@ -1857,8 +1857,8 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     borderWidth: 1, borderColor: "rgba(212,175,55,0.25)",
   },
-  headerTitle: { fontSize: 27, fontWeight: "700", color: TEXT, letterSpacing: 0.5 },
-  headerSubtitle: { fontSize: 14, color: "#F4F4F4", marginTop: 2 },
+  headerTitle: { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", color: TEXT, letterSpacing: 0.5 },
+  headerSubtitle: { fontFamily: "Manrope", fontSize: 14, color: "#F4F4F4", marginTop: 2 },
   headerIcons: { flexDirection: "row", alignItems: "center", gap: 4 },
   headerIconBtn: { width: 43, height: 43, alignItems: "center", justifyContent: "center" },
 
@@ -1884,7 +1884,7 @@ const styles = StyleSheet.create({
   chip: {
     paddingVertical: 6,
   },
-  chipText: { fontSize: 12, fontWeight: "600", color: MUTED },
+  chipText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: MUTED },
   chipTextSel: { color: GOLD },
   chipUnderline: {
     height: 2,
@@ -1909,7 +1909,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
-  sortText: { fontSize: 13, color: MUTED, fontWeight: "500" },
+  sortText: { fontFamily: "Manrope", fontSize: 13, color: MUTED, fontWeight: "500" },
   viewToggleBtn: { padding: 2 },
 
 
@@ -1937,8 +1937,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.025)",
   },
   rowInfo: { flex: 1, gap: 3 },
-  rowTitle: { fontSize: 15, fontWeight: "600", color: TEXT },
-  rowSub:   { fontSize: 12, color: MUTED },
+  rowTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: TEXT },
+  rowSub:   { fontFamily: "Manrope", fontSize: 12, color: MUTED },
   mixMenuBtn: {
     width: 32,
     height: 32,
@@ -1955,7 +1955,7 @@ const styles = StyleSheet.create({
     paddingTop: 4,
   },
   gridThumb: { borderRadius: 6, backgroundColor: "rgba(255,255,255,0.055)" },
-  gridTitle: { fontSize: 12, color: TEXT, marginTop: 6, fontWeight: "500" },
+  gridTitle: { fontFamily: "Manrope", fontSize: 12, color: TEXT, marginTop: 6, fontWeight: "500" },
 
   // ── SortSheet ────────────────────────────────────────────────────────────────
   sortSheet: {
@@ -1978,6 +1978,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   sortSheetTitle: {
+    fontFamily: "Manrope",
     color: TEXT,
     fontSize: 15,
     fontWeight: "700",
@@ -1991,8 +1992,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "rgba(61,14,22,0.40)",
   },
-  sortSheetLabel: { color: MUTED, fontSize: 15, flex: 1 },
-  sortSheetLabelActive: { color: TEXT, fontWeight: "600" },
+  sortSheetLabel: { fontFamily: "Manrope", color: MUTED, fontSize: 15, flex: 1 },
+  sortSheetLabelActive: { fontFamily: "Manrope", color: TEXT, fontWeight: "600" },
 
   // ── Resonadores ─────────────────────────────────────────────────────────────
   resonadorAvatar: {
@@ -2002,12 +2003,13 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   verifiedRow: { flexDirection: "row", alignItems: "center", gap: 4 },
-  verifiedText: { fontSize: 11, color: MUTED },
+  verifiedText: { fontFamily: "Manrope", fontSize: 11, color: MUTED },
   resonadorTag: {},
-  resonadorTagText: { fontSize: 11, color: "rgba(255,255,255,0.85)" },
+  resonadorTagText: { fontFamily: "Manrope", fontSize: 11, color: "rgba(255,255,255,0.85)" },
 
   // ── Estado vacío ────────────────────────────────────────────────────────────
   generalSectionLabel: {
+    fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "700",
     color: MUTED,
@@ -2018,6 +2020,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   recentSectionTitle: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "500",
     color: MUTED,
@@ -2027,15 +2030,15 @@ const styles = StyleSheet.create({
     paddingTop: 80,
     paddingHorizontal: H_PAD,
   },
-  emptyTitle: { fontSize: 17, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 8 },
-  emptySub:   { fontSize: 13, color: MUTED, textAlign: "center", lineHeight: 20 },
+  emptyTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 8 },
+  emptySub:   { fontFamily: "Manrope", fontSize: 13, color: MUTED, textAlign: "center", lineHeight: 20 },
   emptyBtn: {
     marginTop: 24,
     overflow: "hidden",
     paddingHorizontal: 24, paddingVertical: 12,
     borderRadius: 999,
   },
-  emptyBtnText: { color: "#000", fontWeight: "700", fontSize: 14 },
+  emptyBtnText: { fontFamily: "Manrope", color: "#000", fontWeight: "700", fontSize: 14 },
 
   // Geometrix rows
   geoRow: {
@@ -2057,8 +2060,8 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.025)",
   },
   geoInfo: { flex: 1 },
-  geoName: { color: TEXT, fontSize: 14, fontWeight: "600" },
-  geoSub:  { color: MUTED, fontSize: 12, marginTop: 3 },
+  geoName: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600" },
+  geoSub:  { fontFamily: "Manrope", color: MUTED, fontSize: 12, marginTop: 3 },
 
   // ── User playlist cover ──────────────────────────────────────────────────────
   userPlCover: {
@@ -2097,6 +2100,7 @@ const styles = StyleSheet.create({
     right: 20,
   },
   nameCardTitle: {
+    fontFamily: "Manrope",
     color: TEXT,
     fontSize: 18,
     fontWeight: "600",
@@ -2114,6 +2118,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   nameInput: {
+    fontFamily: "Manrope",
     color: TEXT,
     fontSize: 26,
     fontWeight: "600",
@@ -2127,6 +2132,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   nameCreateBtnText: {
+    fontFamily: "Manrope",
     color: "#1B060F",
     fontSize: 16,
     fontWeight: "800",
@@ -2148,7 +2154,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.055)",
     alignSelf: "center", marginBottom: 20,
   },
-  sheetTitle: { fontSize: 17, fontWeight: "700", color: TEXT, marginBottom: 20 },
+  sheetTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: TEXT, marginBottom: 20 },
   sheetRow: {
     flexDirection: "row", alignItems: "center", gap: 16,
     paddingVertical: 14,
@@ -2160,8 +2166,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.055)",
     alignItems: "center", justifyContent: "center",
   },
-  sheetItemTitle: { fontSize: 15, fontWeight: "600", color: TEXT, marginBottom: 2 },
-  sheetItemSub:   { fontSize: 12, color: MUTED },
+  sheetItemTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: TEXT, marginBottom: 2 },
+  sheetItemSub:   { fontFamily: "Manrope", fontSize: 12, color: MUTED },
 
   // ── Cargar más ────────────────────────────────────────────────────────────────
   loadMoreBtn: {
@@ -2176,6 +2182,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.025)",
   },
   loadMoreText: {
+    fontFamily: "Manrope",
     color: GOLD,
     fontSize: 14,
     fontWeight: "600",
@@ -2201,6 +2208,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.22)",
   },
   addResonadorLabel: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "600",
     color: TEXT,
@@ -2226,6 +2234,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   addResModalTitle: {
+    fontFamily: "Manrope",
     fontSize: 18,
     fontWeight: "700",
     color: TEXT,
@@ -2244,6 +2253,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.20)",
   },
   addResSearchInput: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 15,
     color: TEXT,

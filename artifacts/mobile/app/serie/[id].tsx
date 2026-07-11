@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  stickyTitle: { fontSize: 17, fontWeight: "700", flex: 1 },
+  stickyTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", flex: 1 },
 
   hero: { width: "100%", overflow: "hidden" },
   heroBack: {
@@ -207,12 +207,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   kicker: {
+    fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 1.4,
     marginBottom: 10,
   },
   pageTitle: {
+    fontFamily: "Manrope",
     fontSize: 26,
     fontWeight: "700",
     textAlign: "center",
@@ -220,6 +222,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   pageDesc: {
+    fontFamily: "Manrope",
     fontSize: 14,
     textAlign: "center",
     lineHeight: 22,
@@ -243,7 +246,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexShrink: 0,
   },
-  dayLabel: { fontSize: 13, fontWeight: "700" },
+  dayLabel: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700" },
   thumb: {
     width: 64,
     height: 64,
@@ -260,9 +263,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     paddingVertical: 1,
   },
-  durationText: { color: "#FFFFFF", fontSize: 9, fontWeight: "600" },
+  durationText: { fontFamily: "Manrope", color: "#FFFFFF", fontSize: 9, fontWeight: "600" },
   meta: { flex: 1 },
-  dayKicker: { fontSize: 10, fontWeight: "700", letterSpacing: 1, marginBottom: 3 },
-  title: { fontSize: 14, fontWeight: "700", lineHeight: 19, marginBottom: 3 },
-  sub: { fontSize: 11, lineHeight: 15 },
+  dayKicker: { fontFamily: "Manrope", fontSize: 10, fontWeight: "700", letterSpacing: 1, marginBottom: 3 },
+  title: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", lineHeight: 19, marginBottom: 3 },
+  sub: { fontFamily: "Manrope", fontSize: 11, lineHeight: 15 },
 });

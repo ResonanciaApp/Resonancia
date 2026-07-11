@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "rgba(61,14,22,0.40)",
   },
   backBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
-  title: { flex: 1, fontSize: 18, fontWeight: "700", textAlign: "center" },
+  title: { fontFamily: "Manrope", flex: 1, fontSize: 18, fontWeight: "700", textAlign: "center" },
   list: { paddingHorizontal: 20, paddingTop: 8 },
   row: {
     flexDirection: "row",
@@ -145,8 +145,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  rowName: { fontSize: 16, fontWeight: "600" },
-  rowMeta: { fontSize: 13, marginTop: 2 },
+  rowName: { fontFamily: "Manrope", fontSize: 16, fontWeight: "600" },
+  rowMeta: { fontFamily: "Manrope", fontSize: 13, marginTop: 2 },
   playBtn: {
     width: 32, height: 32,
     borderRadius: 16,
@@ -159,6 +159,6 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     marginBottom: 20,
   },
-  emptyTitle: { fontSize: 18, fontWeight: "700", textAlign: "center", marginBottom: 10 },
-  emptySubtitle: { fontSize: 14, lineHeight: 20, textAlign: "center" },
+  emptyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", textAlign: "center", marginBottom: 10 },
+  emptySubtitle: { fontFamily: "Manrope", fontSize: 14, lineHeight: 20, textAlign: "center" },
 });

@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 4,
   },
-  headerTitle: { fontSize: 17, fontWeight: "700" },
+  headerTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
   backBtn: {
     width: 38,
     height: 38,
@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   centered: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12 },
-  notFoundTitle: { fontSize: 18, fontWeight: "700" },
+  notFoundTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
 
   scroll: { paddingTop: 4, gap: 16 },
 
@@ -524,11 +524,12 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#1B060F",
   },
-  certBadgeStar: { fontSize: 10, color: "#1B060F", fontWeight: "800" },
-  userName: { fontSize: 20, fontWeight: "700", textAlign: "center" },
+  certBadgeStar: { fontFamily: "Manrope", fontSize: 10, color: "#1B060F", fontWeight: "800" },
+  userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
   locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },
-  locationText: { fontSize: 12 },
+  locationText: { fontFamily: "Manrope", fontSize: 12 },
   bioText: {
+    fontFamily: "Manrope",
     fontSize: 13,
     lineHeight: 19,
     textAlign: "center",
@@ -537,8 +538,8 @@ const styles = StyleSheet.create({
   },
   followCountsRow: { flexDirection: "row", alignItems: "center", marginTop: 14, marginBottom: 4 },
   followCountItem: { alignItems: "center", paddingHorizontal: 20 },
-  followCountNum: { fontSize: 18, fontWeight: "700" },
-  followCountLabel: { fontSize: 11, marginTop: 1 },
+  followCountNum: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
+  followCountLabel: { fontFamily: "Manrope", fontSize: 11, marginTop: 1 },
   followCountDivider: { width: 1, height: 28 },
 
   /* ── Pills de acción ── */
@@ -558,12 +559,13 @@ const styles = StyleSheet.create({
   actionPillActive: { backgroundColor: "transparent" },
   actionPillSent: { backgroundColor: "rgba(255,255,255,0.04)" },
   actionPillText: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "400",
     color: "#FFFFFF",
     letterSpacing: 0.1,
   },
-  actionPillTextActive: { color: "#1B060F", fontWeight: "600" },
+  actionPillTextActive: { fontFamily: "Manrope", color: "#1B060F", fontWeight: "600" },
   actionPillTextSent: { color: "#c2c2c2" },
 
   /* ── Sección Expansor ── */
@@ -595,9 +597,11 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   certBannerTitle: {
+    fontFamily: "Manrope",
     fontSize: 14, fontWeight: "800", letterSpacing: 0.6, color: "#F7CB6B",
   },
   certBannerSub: {
+    fontFamily: "Manrope",
     fontSize: 12, color: "rgba(255,255,255,0.90)", marginTop: 2,
   },
   certBannerIconBorder: {
@@ -609,8 +613,8 @@ const styles = StyleSheet.create({
     flex: 1, borderRadius: 21, overflow: "hidden",
     alignItems: "center", justifyContent: "center",
   },
-  certBannerStar: { fontSize: 18, color: "rgba(212,175,55,0.90)", fontWeight: "800" },
-  certBannerVerified: { fontSize: 10, color: "#F4F4F4", marginTop: 2, letterSpacing: 0.2 },
+  certBannerStar: { fontFamily: "Manrope", fontSize: 18, color: "rgba(212,175,55,0.90)", fontWeight: "800" },
+  certBannerVerified: { fontFamily: "Manrope", fontSize: 10, color: "#F4F4F4", marginTop: 2, letterSpacing: 0.2 },
   editBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   pillBtn: {
     width: 36,
@@ -621,6 +625,7 @@ const styles = StyleSheet.create({
 
   sectionBlock: { gap: 10 },
   sectionLabel: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "600",
     color: "rgba(255,255,255,0.90)",
@@ -628,12 +633,14 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   serviceTitle: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
     color: "#FAF0EE",
     letterSpacing: 0.2,
   },
   serviceDesc: {
+    fontFamily: "Manrope",
     fontSize: 13,
     lineHeight: 20,
     color: "#F4F4F4",
@@ -646,6 +653,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   readMoreText: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
     color: "#F7CB6B",
@@ -660,7 +668,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  specialtyText: { fontSize: 13, color: "#FFFFFF", fontWeight: "400", letterSpacing: 0.1 },
+  specialtyText: { fontFamily: "Manrope", fontSize: 13, color: "#FFFFFF", fontWeight: "400", letterSpacing: 0.1 },
 
   contactRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   contactPill: { flex: 1, justifyContent: "center" },
@@ -672,6 +680,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   quoteText: {
+    fontFamily: "Manrope",
     fontSize: 18,
     fontStyle: "italic",
     color: "#F6F6F6",
@@ -688,6 +697,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   galleryTitle: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
     letterSpacing: 0.2,

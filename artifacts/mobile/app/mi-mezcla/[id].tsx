@@ -462,6 +462,7 @@ const s = StyleSheet.create({
     justifyContent: "center",
   },
   headerTitle: {
+    fontFamily: "Manrope",
     flex: 1,
     color: TEXT,
     fontSize: 18,
@@ -487,6 +488,7 @@ const s = StyleSheet.create({
     borderColor: "#1B060F",
   },
   label: {
+    fontFamily: "Manrope",
     color: MUTED,
     fontSize: 12,
     fontWeight: "600",
@@ -496,6 +498,7 @@ const s = StyleSheet.create({
     marginTop: 4,
   },
   input: {
+    fontFamily: "Manrope",
     backgroundColor: "rgba(74,12,12,0.35)",
     borderRadius: 12,
     borderWidth: StyleSheet.hairlineWidth,
@@ -530,6 +533,7 @@ const s = StyleSheet.create({
     borderRadius: 25,
   },
   playBtnText: {
+    fontFamily: "Manrope",
     color: "#1B060F",
     fontSize: 16,
     fontWeight: "700",
@@ -569,6 +573,7 @@ const s = StyleSheet.create({
     paddingVertical: 6,
   },
   catCellLabel: {
+    fontFamily: "Manrope",
     color: MUTED,
     fontSize: 11,
     fontWeight: "600",
@@ -598,6 +603,7 @@ const ms = StyleSheet.create({
     marginTop: 10, marginBottom: 4,
   },
   sheetTitle: {
+    fontFamily: "Manrope",
     color: TEXT,
     fontSize: 16,
     fontWeight: "700",
@@ -619,6 +625,7 @@ const ms = StyleSheet.create({
     borderBottomColor: "rgba(61,14,22,0.40)",
   },
   rowText: {
+    fontFamily: "Manrope",
     flex: 1,
     color: TEXT,
     fontSize: 15,
@@ -640,6 +647,7 @@ const ms = StyleSheet.create({
     borderRadius: 12,
   },
   presetLabel: {
+    fontFamily: "Manrope",
     color: MUTED,
     fontSize: 11,
     textTransform: "capitalize",
@@ -658,6 +666,7 @@ const ms = StyleSheet.create({
     justifyContent: "center",
   },
   geoName: {
+    fontFamily: "Manrope",
     color: MUTED,
     fontSize: 11,
     textAlign: "center",

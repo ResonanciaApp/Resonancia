@@ -200,6 +200,7 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   stickyTitle: {
+    fontFamily: "Manrope",
     fontSize: 22,
     fontWeight: "700",
     color: "#FFFFFF",
@@ -223,6 +224,7 @@ const styles = StyleSheet.create({
 
   // Page header
   pageTitle: {
+    fontFamily: "Manrope",
     fontSize: 30,
     fontWeight: "700",
     color: "#FFFFFF",
@@ -230,6 +232,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   pageSubtitle: {
+    fontFamily: "Manrope",
     fontSize: 14,
     color: "rgba(255,255,255,0.50)",
     lineHeight: 20,
@@ -261,6 +264,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.22)",
   },
   weekBadgeText: {
+    fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "700",
     color: GOLD,
@@ -278,6 +282,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   avatarInitials: {
+    fontFamily: "Manrope",
     fontSize: 20,
     fontWeight: "700",
     letterSpacing: 0.5,
@@ -285,6 +290,7 @@ const styles = StyleSheet.create({
 
   // Quote text
   quoteText: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "600",
     lineHeight: 25,
@@ -295,6 +301,7 @@ const styles = StyleSheet.create({
 
   // Author
   authorText: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "500",
     color: "rgba(255,255,255,0.50)",

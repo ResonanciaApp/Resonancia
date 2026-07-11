@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     gap: 12,
   },
-  title: { flex: 1, fontSize: 16, fontWeight: "700" },
+  title: { fontFamily: "Manrope", flex: 1, fontSize: 16, fontWeight: "700" },
   filterBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -138,5 +138,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  itemText: { fontSize: 14 },
+  itemText: { fontFamily: "Manrope", fontSize: 14 },
 });

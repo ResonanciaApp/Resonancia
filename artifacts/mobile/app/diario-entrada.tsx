@@ -153,9 +153,10 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   trashBtn: { padding: 2 },
-  headerTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2 },
-  saveText: { fontSize: 15, fontWeight: "700", textAlign: "right" },
+  headerTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", letterSpacing: 0.2 },
+  saveText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", textAlign: "right" },
   input: {
+    fontFamily: "Manrope",
     flex: 1,
     paddingHorizontal: 20,
     paddingTop: 8,

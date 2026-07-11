@@ -595,7 +595,7 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   centered: { flex: 1, alignItems: "center", justifyContent: "center" },
-  centeredText: { fontSize: 16 },
+  centeredText: { fontFamily: "Manrope", fontSize: 16 },
 
   headerRow: {
     flexDirection: "row",
@@ -611,7 +611,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  headerTitle: { fontSize: 17, fontWeight: "700", color: FG },
+  headerTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: FG },
   saveBtn: {
     paddingHorizontal: 14,
     paddingVertical: 7,
@@ -619,7 +619,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.45)",
   },
-  saveBtnText: { fontSize: 13, fontWeight: "600", color: GOLD },
+  saveBtnText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: GOLD },
 
   /* Photo */
   photoSection: {
@@ -638,7 +638,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
   },
-  photoCameraText: { fontSize: 13, fontWeight: "600", color: "#FFFFFF" },
+  photoCameraText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#FFFFFF" },
 
   /* Section card */
   sectionCard: {
@@ -650,9 +650,10 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   sectionHeader: { marginBottom: 6 },
-  sectionTitle: { fontSize: 20, fontWeight: "700", color: FG, letterSpacing: 0.5 },
-  sectionHint: { fontSize: 11, color: MUTED, marginTop: 2 },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: FG, letterSpacing: 0.5 },
+  sectionHint: { fontFamily: "Manrope", fontSize: 11, color: MUTED, marginTop: 2 },
   fieldLabel: {
+    fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "600",
     color: MUTED,
@@ -664,6 +665,7 @@ const styles = StyleSheet.create({
 
   /* Inputs */
   input: {
+    fontFamily: "Manrope",
     backgroundColor: INPUT_BG,
     borderRadius: 10,
     borderWidth: 1,
@@ -701,9 +703,9 @@ const styles = StyleSheet.create({
     borderColor: GOLD,
     backgroundColor: "rgba(212,175,55,0.10)",
   },
-  optionPillText: { fontSize: 13, color: MUTED },
-  optionPillTextSm: { fontSize: 12, color: MUTED },
-  optionPillTextActive: { color: GOLD, fontWeight: "600" },
+  optionPillText: { fontFamily: "Manrope", fontSize: 13, color: MUTED },
+  optionPillTextSm: { fontFamily: "Manrope", fontSize: 12, color: MUTED },
+  optionPillTextActive: { fontFamily: "Manrope", color: GOLD, fontWeight: "600" },
 
   /* Dynamic lists */
   listItem: { marginBottom: 8 },
@@ -735,7 +737,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.04)",
     marginTop: 8,
   },
-  addBtnText: { fontSize: 13, color: GOLD, fontWeight: "500" },
+  addBtnText: { fontFamily: "Manrope", fontSize: 13, color: GOLD, fontWeight: "500" },
 
   /* Bottom save button */
   saveBottomBtn: {
@@ -748,7 +750,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginTop: 8,
   },
-  saveBottomBtnText: { fontSize: 15, fontWeight: "700", color: "#1B060F" },
+  saveBottomBtnText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#1B060F" },
   gridWrap: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -784,5 +786,5 @@ const styles = StyleSheet.create({
     gap: 4,
     backgroundColor: "rgba(212,175,55,0.04)",
   },
-  gridAddText: { fontSize: 10, color: GOLD },
+  gridAddText: { fontFamily: "Manrope", fontSize: 10, color: GOLD },
 });

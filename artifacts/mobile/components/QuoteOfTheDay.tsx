@@ -92,11 +92,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   author: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "600",
     color: GOLD,
   },
   quoteText: {
+    fontFamily: "Manrope",
     fontSize: 17,
     fontWeight: "600",
     lineHeight: 26,
@@ -123,6 +125,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   menuItemText: {
+    fontFamily: "Manrope",
     fontSize: 16,
     color: "#FAF0EE",
     fontWeight: "500",

@@ -190,12 +190,14 @@ const styles = StyleSheet.create({
     maxWidth: 600,
   },
   title: {
+    fontFamily: "Manrope",
     fontSize: 28,
     fontWeight: "700",
     textAlign: "center",
     lineHeight: 40,
   },
   message: {
+    fontFamily: "Manrope",
     fontSize: 16,
     textAlign: "center",
     lineHeight: 24,
@@ -226,6 +228,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   buttonText: {
+    fontFamily: "Manrope",
     fontWeight: "600",
     textAlign: "center",
     fontSize: 16,
@@ -251,6 +254,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   modalTitle: {
+    fontFamily: "Manrope",
     fontSize: 20,
     fontWeight: "600",
   },
@@ -273,6 +277,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   errorText: {
+    fontFamily: "Manrope",
     fontSize: 12,
     lineHeight: 18,
     width: "100%",

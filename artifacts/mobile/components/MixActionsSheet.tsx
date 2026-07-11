@@ -592,8 +592,8 @@ const styles = StyleSheet.create({
     alignSelf: "center", marginBottom: 16,
   },
   header: { flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 14 },
-  mixName: { fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 3 },
-  mixMeta: { fontSize: 13 },
+  mixName: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 3 },
+  mixMeta: { fontFamily: "Manrope", fontSize: 13 },
   closeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
   divider: { height: StyleSheet.hairlineWidth, marginBottom: 4 },
   stackThumb: {
@@ -605,9 +605,9 @@ const styles = StyleSheet.create({
   stackThumbImg: { width: THUMB, height: THUMB, borderRadius: 8 },
   actionRow: { flexDirection: "row", alignItems: "center", paddingVertical: 14 },
   actionIcon: { width: 30, marginRight: 14 },
-  actionLabel: { flex: 1, fontSize: 16 },
-  actionRight: { fontSize: 14, marginRight: 6 },
-  emptyText: { fontSize: 14, textAlign: "center", paddingVertical: 24 },
+  actionLabel: { fontFamily: "Manrope", flex: 1, fontSize: 16 },
+  actionRight: { fontFamily: "Manrope", fontSize: 14, marginRight: 6 },
+  emptyText: { fontFamily: "Manrope", fontSize: 14, textAlign: "center", paddingVertical: 24 },
   folderRow: {
     flexDirection: "row", alignItems: "center",
     paddingVertical: 13, gap: 12,
@@ -619,13 +619,14 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(190,150,80,0.06)",
     alignItems: "center", justifyContent: "center",
   },
-  folderLabel: { flex: 1, fontSize: 15, fontWeight: "500" },
+  folderLabel: { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "500" },
   folderHeaderIcon: {
     width: THUMB, height: THUMB, borderRadius: 10,
     backgroundColor: "rgba(190,150,80,0.08)",
     alignItems: "center", justifyContent: "center",
   },
   renameInput: {
+    fontFamily: "Manrope",
     borderWidth: 1,
     borderRadius: 12,
     paddingHorizontal: 16,
@@ -640,6 +641,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   saveBtnLabel: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
     color: "#1B060F",
@@ -650,5 +652,5 @@ const styles = StyleSheet.create({
     borderRadius: 14, paddingVertical: 14, paddingHorizontal: 16,
     borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(61,14,22,0.40)",
   },
-  toastText: { fontSize: 15, fontWeight: "600" },
+  toastText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600" },
 });

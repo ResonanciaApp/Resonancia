@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
   },
   toggleLabel: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
     letterSpacing: 0.2,
@@ -132,12 +133,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cardTitle: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "700",
     marginBottom: 4,
     lineHeight: 20,
   },
   cardBody: {
+    fontFamily: "Manrope",
     fontSize: 13,
     lineHeight: 19,
   },
@@ -148,6 +151,7 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   quoteText: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontStyle: "italic",
     lineHeight: 22,
@@ -157,6 +161,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   whyText: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 13,
     lineHeight: 19,

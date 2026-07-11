@@ -250,8 +250,8 @@ const styles = StyleSheet.create({
     width: 36, height: 36, borderRadius: 18,
     alignItems: "center", justifyContent: "center",
   },
-  pageTitle: { fontSize: 20, fontWeight: "700", letterSpacing: -0.4, color: "#FFFFFF" },
-  pageSub:   { fontSize: 13, color: MUTED, marginTop: 2 },
+  pageTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: -0.4, color: "#FFFFFF" },
+  pageSub:   { fontFamily: "Manrope", fontSize: 13, color: MUTED, marginTop: 2 },
 
   // Tab bar
   tabRow: {
@@ -273,12 +273,12 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
     backgroundColor: "rgba(74,12,12,0.08)",
   },
-  tabLabel: { fontSize: 15, letterSpacing: 0.1 },
+  tabLabel: { fontFamily: "Manrope", fontSize: 15, letterSpacing: 0.1 },
 
   // Scroll
   scroll:        { flex: 1 },
   scrollContent: { paddingHorizontal: 16, paddingTop: 20 },
-  emptyText:     { fontSize: 13, lineHeight: 19 },
+  emptyText:     { fontFamily: "Manrope", fontSize: 13, lineHeight: 19 },
 
   // Mix row
   mixRow: {
@@ -291,8 +291,8 @@ const styles = StyleSheet.create({
     borderBottomColor: BORDER,
   },
   mixInfo:    { flex: 1, minWidth: 0 },
-  mixName:    { fontSize: 15, fontWeight: "700" },
-  mixMeta:    { fontSize: 12, marginTop: 3 },
+  mixName:    { fontFamily: "Manrope", fontSize: 15, fontWeight: "700" },
+  mixMeta:    { fontFamily: "Manrope", fontSize: 12, marginTop: 3 },
   playingRow: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 3 },
   menuBtn:    { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
 

@@ -627,10 +627,10 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   heroInfo: { flex: 1, gap: 8, paddingTop: 4 },
-  playlistName: { color: "#FFFFFF", fontSize: 20, fontWeight: "400", lineHeight: 26 },
+  playlistName: { fontFamily: "Manrope", color: "#FFFFFF", fontSize: 20, fontWeight: "400", lineHeight: 26 },
   creatorRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   creatorDot: { width: 18, height: 18, borderRadius: 9 },
-  creatorText: { color: MUTED, fontSize: 12 },
+  creatorText: { fontFamily: "Manrope", color: MUTED, fontSize: 12 },
 
   // Stats
   statsRow: {
@@ -640,7 +640,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 8,
   },
-  statsText: { color: MUTED, fontSize: 12 },
+  statsText: { fontFamily: "Manrope", color: MUTED, fontSize: 12 },
 
   // Actions / Toolbar
   actionsRow: {
@@ -667,7 +667,7 @@ const styles = StyleSheet.create({
   },
 
   // Playlist description
-  playlistDesc: { color: MUTED, fontSize: 13, lineHeight: 18 },
+  playlistDesc: { fontFamily: "Manrope", color: MUTED, fontSize: 13, lineHeight: 18 },
 
   // Top panel (segundo fondo con fade)
   topPanel: {
@@ -686,10 +686,11 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: "rgba(190,150,80,0.06)",
   },
-  addBtnText: { color: TEXT, fontSize: 14, fontWeight: "600" },
+  addBtnText: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600" },
 
   // Section header
   sectionHeader: {
+    fontFamily: "Manrope",
     color: TEXT,
     fontSize: 18,
     fontWeight: "800",
@@ -709,10 +710,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "rgba(61,14,22,0.30)",
   },
-  orderNum: { width: 20, fontSize: 13, textAlign: "center", fontWeight: "600", color: MUTED },
+  orderNum: { fontFamily: "Manrope", width: 20, fontSize: 13, textAlign: "center", fontWeight: "600", color: MUTED },
   thumb: { width: 52, height: 52, borderRadius: 8 },
-  rowName: { color: TEXT, fontSize: 14, fontWeight: "600", lineHeight: 19 },
-  rowMeta: { color: MUTED, fontSize: 12, marginTop: 2 },
+  rowName: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600", lineHeight: 19 },
+  rowMeta: { fontFamily: "Manrope", color: MUTED, fontSize: 12, marginTop: 2 },
   moreBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
   removeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
   addIconBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
@@ -852,6 +853,7 @@ const modalStyles = StyleSheet.create({
     marginTop: 10, marginBottom: 4,
   },
   sheetTitle: {
+    fontFamily: "Manrope",
     color: TEXT,
     fontSize: 16,
     fontWeight: "700",
@@ -867,6 +869,7 @@ const modalStyles = StyleSheet.create({
     borderBottomColor: "rgba(61,14,22,0.40)",
   },
   sheetRowText: {
+    fontFamily: "Manrope",
     color: TEXT,
     fontSize: 15,
     fontWeight: "600",
@@ -878,6 +881,7 @@ const modalStyles = StyleSheet.create({
   },
   headerSpacer: { width: 32 },
   headerTitle: {
+    fontFamily: "Manrope",
     flex: 1,
     textAlign: "center",
     color: TEXT,
@@ -901,6 +905,7 @@ const modalStyles = StyleSheet.create({
     justifyContent: "center",
   },
   creationName: {
+    fontFamily: "Manrope",
     color: TEXT,
     fontSize: 12,
     marginTop: 8,
@@ -924,6 +929,7 @@ const cpStyles = StyleSheet.create({
     paddingBottom: 40,
   },
   title: {
+    fontFamily: "Manrope",
     color: TEXT,
     fontSize: 17,
     fontWeight: "700",
@@ -931,6 +937,7 @@ const cpStyles = StyleSheet.create({
     marginBottom: 4,
   },
   sub: {
+    fontFamily: "Manrope",
     color: MUTED,
     fontSize: 13,
     textAlign: "center",
@@ -949,6 +956,7 @@ const cpStyles = StyleSheet.create({
     opacity: 0.45,
   },
   previewLabel: {
+    fontFamily: "Manrope",
     color: "rgba(255,255,255,0.6)",
     fontSize: 12,
     letterSpacing: 1,
@@ -999,6 +1007,7 @@ const cpStyles = StyleSheet.create({
     justifyContent: "center",
   },
   btnCancelText: {
+    fontFamily: "Manrope",
     color: MUTED,
     fontSize: 15,
     fontWeight: "600",
@@ -1012,6 +1021,7 @@ const cpStyles = StyleSheet.create({
     justifyContent: "center",
   },
   btnConfirmText: {
+    fontFamily: "Manrope",
     color: "#1B060F",
     fontSize: 15,
     fontWeight: "700",
@@ -1065,7 +1075,7 @@ const menuSt = StyleSheet.create({
     paddingVertical: 16,
     borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(61,14,22,0.35)",
   },
-  rowText: { color: TEXT, fontSize: 15, fontWeight: "600" },
+  rowText: { fontFamily: "Manrope", color: TEXT, fontSize: 15, fontWeight: "600" },
 });
 
 // ── DragReorderModal ────────────────────────────────────────────────────────
@@ -1246,8 +1256,8 @@ const dreSt = StyleSheet.create({
   },
   header: { flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingVertical: 12 },
   closeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
-  title: { flex: 1, textAlign: "center", color: TEXT, fontSize: 16, fontWeight: "700" },
-  hint: { color: MUTED, fontSize: 12, textAlign: "center", marginBottom: 4, paddingHorizontal: 20 },
+  title: { fontFamily: "Manrope", flex: 1, textAlign: "center", color: TEXT, fontSize: 16, fontWeight: "700" },
+  hint: { fontFamily: "Manrope", color: MUTED, fontSize: 12, textAlign: "center", marginBottom: 4, paddingHorizontal: 20 },
   row: {
     height: DRAG_ROW_H, flexDirection: "row", alignItems: "center", gap: 12,
     paddingHorizontal: 4,
@@ -1256,13 +1266,13 @@ const dreSt = StyleSheet.create({
   rowActive: { backgroundColor: "rgba(212,175,55,0.12)", opacity: 0.7 },
   dragHandle: { width: 56, height: DRAG_ROW_H, alignItems: "center", justifyContent: "center" },
   thumb: { width: 44, height: 44, borderRadius: 6 },
-  rowTitle: { color: TEXT, fontSize: 14, fontWeight: "600", lineHeight: 18 },
+  rowTitle: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600", lineHeight: 18 },
   dropLine: { height: 3, backgroundColor: GOLD, marginHorizontal: 16, borderRadius: 2 },
   saveBtn: {
     margin: 16, height: 50, borderRadius: 14, backgroundColor: GOLD,
     alignItems: "center", justifyContent: "center",
   },
-  saveBtnText: { color: "#1B060F", fontSize: 15, fontWeight: "700" },
+  saveBtnText: { fontFamily: "Manrope", color: "#1B060F", fontSize: 15, fontWeight: "700" },
 });
 
 // ── EditInfoModal (Nombre y datos) ─────────────────────────────────────────
@@ -1374,8 +1384,8 @@ const eiSt = StyleSheet.create({
   },
   header: { flexDirection: "row", alignItems: "center", paddingVertical: 14 },
   closeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
-  title: { flex: 1, textAlign: "center", color: TEXT, fontSize: 16, fontWeight: "700" },
-  saveText: { color: GOLD, fontSize: 15, fontWeight: "700" },
+  title: { fontFamily: "Manrope", flex: 1, textAlign: "center", color: TEXT, fontSize: 16, fontWeight: "700" },
+  saveText: { fontFamily: "Manrope", color: GOLD, fontSize: 15, fontWeight: "700" },
   coverRow: {
     flexDirection: "row", alignItems: "center", gap: 14,
     paddingVertical: 14, marginBottom: 8,
@@ -1386,10 +1396,11 @@ const eiSt = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.08)",
     alignItems: "center", justifyContent: "center",
   },
-  coverLabel: { color: TEXT, fontSize: 14, fontWeight: "600" },
-  coverSub: { color: MUTED, fontSize: 12, marginTop: 2 },
-  fieldLabel: { color: MUTED, fontSize: 12, fontWeight: "600", marginTop: 16, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 },
+  coverLabel: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600" },
+  coverSub: { fontFamily: "Manrope", color: MUTED, fontSize: 12, marginTop: 2 },
+  fieldLabel: { fontFamily: "Manrope", color: MUTED, fontSize: 12, fontWeight: "600", marginTop: 16, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 },
   input: {
+    fontFamily: "Manrope",
     backgroundColor: "rgba(74,12,12,0.18)", borderRadius: 10, padding: 12,
     color: TEXT, fontSize: 15,
     borderWidth: StyleSheet.hairlineWidth, borderColor: "rgba(212,175,55,0.2)",
@@ -1401,6 +1412,6 @@ const eiSt = StyleSheet.create({
     borderWidth: 1, borderColor: "rgba(224,82,82,0.35)",
     backgroundColor: "rgba(224,82,82,0.08)",
   },
-  deleteBtnText: { color: "#E05252", fontSize: 15, fontWeight: "600" },
+  deleteBtnText: { fontFamily: "Manrope", color: "#E05252", fontSize: 15, fontWeight: "600" },
 });
 

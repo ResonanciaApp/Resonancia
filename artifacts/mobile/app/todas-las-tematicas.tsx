@@ -110,11 +110,13 @@ const styles = StyleSheet.create({
   },
   headerText: { flex: 1 },
   title: {
+    fontFamily: "Manrope",
     fontSize: 20,
     fontWeight: "700",
     letterSpacing: 0.2,
   },
   subtitle: {
+    fontFamily: "Manrope",
     fontSize: 13,
     marginTop: 2,
   },
@@ -136,6 +138,7 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   label: {
+    fontFamily: "Manrope",
     color: "#FFFFFF",
     fontSize: 14,
     fontWeight: "700",

@@ -194,9 +194,9 @@ export default function DevBibliotecaTabsBackup() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#1B060F" },
-  title: { color: TEXT, fontSize: 18, fontWeight: "700" },
-  subtitle: { color: MUTED, fontSize: 12, marginTop: 6, lineHeight: 17 },
-  hint: { color: MUTED, fontSize: 12, marginTop: 20 },
+  title: { fontFamily: "Manrope", color: TEXT, fontSize: 18, fontWeight: "700" },
+  subtitle: { fontFamily: "Manrope", color: MUTED, fontSize: 12, marginTop: 6, lineHeight: 17 },
+  hint: { fontFamily: "Manrope", color: MUTED, fontSize: 12, marginTop: 20 },
 
   animChipWrap: { flexDirection: "row", alignItems: "center" },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
@@ -216,6 +216,6 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     overflow: "hidden",
   },
-  chipText: { fontSize: 11, fontWeight: "600", color: TEXT },
+  chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: TEXT },
   chipTextSel: { color: "#1B060F" },
 });

@@ -253,12 +253,12 @@ const styles = StyleSheet.create({
 
   hero: { alignItems: "center", marginBottom: 28, gap: 10 },
   heroIcon: { width: 44, height: 44 },
-  heroLabel: { fontSize: 26, fontWeight: "700", letterSpacing: 0.3 },
-  heroSub: { fontSize: 14, lineHeight: 20, textAlign: "center" },
+  heroLabel: { fontFamily: "Manrope", fontSize: 26, fontWeight: "700", letterSpacing: 0.3 },
+  heroSub: { fontFamily: "Manrope", fontSize: 14, lineHeight: 20, textAlign: "center" },
 
   section: { marginBottom: 22, marginTop: 20 },
-  sectionTitle: { fontSize: 20, fontWeight: "700", letterSpacing: 0.5, marginBottom: 10 },
-  emptyText: { fontSize: 13, lineHeight: 19 },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.5, marginBottom: 10 },
+  emptyText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19 },
 
   // ── Mix row ─────────────────────────────────────────────────────
   mixRow: {
@@ -299,8 +299,8 @@ const styles = StyleSheet.create({
 
   // ── Info ────────────────────────────────────────────────────────
   mixInfo: { flex: 1, minWidth: 0 },
-  mixName: { fontSize: 15, fontWeight: "700" },
-  mixMeta: { fontSize: 12, marginTop: 3 },
+  mixName: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700" },
+  mixMeta: { fontFamily: "Manrope", fontSize: 12, marginTop: 3 },
   playingRow: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 3 },
 
   // ── Menú ────────────────────────────────────────────────────────

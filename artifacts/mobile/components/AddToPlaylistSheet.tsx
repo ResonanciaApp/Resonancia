@@ -227,6 +227,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "rgba(61,14,22,0.40)",
   },
   topTitle: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 17,
     fontWeight: "700",
@@ -261,12 +262,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   emptyTitle: {
+    fontFamily: "Manrope",
     fontSize: 18,
     fontWeight: "700",
     textAlign: "center",
     marginBottom: 10,
   },
   emptySubtitle: {
+    fontFamily: "Manrope",
     fontSize: 14,
     lineHeight: 20,
     textAlign: "center",
@@ -287,10 +290,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   rowLabel: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "600",
   },
   rowMeta: {
+    fontFamily: "Manrope",
     fontSize: 13,
     marginTop: 2,
   },
@@ -315,11 +320,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   createLabel: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "600",
   },
 
   input: {
+    fontFamily: "Manrope",
     borderWidth: 1,
     borderRadius: 12,
     paddingHorizontal: 16,
@@ -329,6 +336,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   inputHint: {
+    fontFamily: "Manrope",
     fontSize: 13,
     lineHeight: 18,
     marginBottom: 24,
@@ -340,6 +348,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   createBtnLabel: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
   },

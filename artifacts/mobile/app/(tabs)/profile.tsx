@@ -1376,7 +1376,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  pageTitle: { fontSize: 28, fontWeight: "700", letterSpacing: 0.5 },
+  pageTitle: { fontFamily: "Manrope", fontSize: 28, fontWeight: "700", letterSpacing: 0.5 },
 
   // ── Sticky header (Panel/Biblioteca/Historial/Registros) ──────────────────
   stickyHeader: {
@@ -1413,7 +1413,7 @@ const styles = StyleSheet.create({
     marginRight: 3,
     marginTop: 1,
   },
-  stickyTitle: { fontSize: 18, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3, flex: 1, textAlign: "center", marginLeft: -4, transform: [{ translateY: 4 }] },
+  stickyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3, flex: 1, textAlign: "center", marginLeft: -4, transform: [{ translateY: 4 }] },
   pillRow: {
     flexDirection: "row",
     gap: 8,
@@ -1435,8 +1435,8 @@ const styles = StyleSheet.create({
     borderColor: "rgba(244,244,244,0.1)",
   },
   pillSel: { borderWidth: 0 },
-  pillText: { fontSize: 11, fontWeight: "380", color: "#F4F4F4" },
-  pillTextSel: { color: "#2D0D3A", fontWeight: "500" },
+  pillText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "380", color: "#F4F4F4" },
+  pillTextSel: { fontFamily: "Manrope", color: "#2D0D3A", fontWeight: "500" },
 
   comingSoonWrap: {
     flex: 1,
@@ -1444,7 +1444,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 10,
   },
-  comingSoonText: { fontSize: 15, color: "rgba(244,218,213,0.45)", fontWeight: "600" },
+  comingSoonText: { fontFamily: "Manrope", fontSize: 15, color: "rgba(244,218,213,0.45)", fontWeight: "600" },
 
   // Registros
   registrosCard: { borderRadius: 16, overflow: "hidden" },
@@ -1455,7 +1455,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     gap: 14,
   },
-  registrosLabel: { flex: 1, fontSize: 19, fontWeight: "500" },
+  registrosLabel: { fontFamily: "Manrope", flex: 1, fontSize: 19, fontWeight: "500" },
 
   settingsBtn: {
     width: 40,
@@ -1497,10 +1497,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#1B060F",
   },
-  userName: { fontSize: 20, fontWeight: "700", textAlign: "center" },
+  userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
   locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },
-  locationText: { fontSize: 12 },
-  bioText: { fontSize: 13, lineHeight: 19, textAlign: "center", paddingHorizontal: 8, fontStyle: "italic" },
+  locationText: { fontFamily: "Manrope", fontSize: 12 },
+  bioText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center", paddingHorizontal: 8, fontStyle: "italic" },
   editBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -1510,41 +1510,41 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     marginTop: 6,
   },
-  editBtnText: { fontSize: 13, fontWeight: "600" },
+  editBtnText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
 
   // Seguidores / Siguiendo
   followCountsRow: { flexDirection: "row", alignItems: "center", marginTop: 14, marginBottom: 4 },
   followCountItem: { alignItems: "center", paddingHorizontal: 20 },
-  followCountNum: { fontSize: 18, fontWeight: "700" },
-  followCountLabel: { fontSize: 11, marginTop: 1 },
+  followCountNum: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
+  followCountLabel: { fontFamily: "Manrope", fontSize: 11, marginTop: 1 },
   followCountDivider: { width: 1, height: 28 },
 
   // Plan card
   planCard: { borderRadius: 18, paddingHorizontal: 16, paddingVertical: 14, flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 10 },
   planIconWrap: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },
-  planTitle: { fontSize: 15, fontWeight: "700", marginBottom: 2 },
-  planSub: { fontSize: 12 },
+  planTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", marginBottom: 2 },
+  planSub: { fontFamily: "Manrope", fontSize: 12 },
   planMejorar: { flexDirection: "row", alignItems: "center", gap: 2 },
-  planMejorarText: { fontSize: 14, fontWeight: "700" },
+  planMejorarText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700" },
 
   // Tu Progreso — racha card
   rachaCard: { borderRadius: 18, padding: 18, marginBottom: 12 },
   rachaTop: { flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 18 },
   rachaBubble: { width: 48, height: 48, borderRadius: 24, alignItems: "center", justifyContent: "center" },
-  rachaFlame: { fontSize: 24 },
-  rachaValue: { fontSize: 17, fontWeight: "700", marginBottom: 3 },
-  rachaSub: { fontSize: 12, lineHeight: 16 },
+  rachaFlame: { fontFamily: "Manrope", fontSize: 24 },
+  rachaValue: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", marginBottom: 3 },
+  rachaSub: { fontFamily: "Manrope", fontSize: 12, lineHeight: 16 },
   rachaWeekRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 2 },
   rachaDayPill: { alignItems: "center", gap: 5 },
-  rachaDayLabel: { fontSize: 11, fontWeight: "600" },
+  rachaDayLabel: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600" },
   rachaDayCircle: { width: 34, height: 34, borderRadius: 17, borderWidth: 2, alignItems: "center", justifyContent: "center" },
   rachaMaxRow: { flexDirection: "row", alignItems: "center", gap: 12, marginTop: 16, paddingTop: 14, borderTopWidth: 1 },
   rachaMaxIcon: { width: 38, height: 38, borderRadius: 10, alignItems: "center", justifyContent: "center" },
-  rachaMaxLabel: { fontSize: 13, fontWeight: "600" },
-  rachaMaxSub: { fontSize: 11, marginTop: 1 },
-  rachaMaxValue: { fontSize: 17, fontWeight: "700" },
+  rachaMaxLabel: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
+  rachaMaxSub: { fontFamily: "Manrope", fontSize: 11, marginTop: 1 },
+  rachaMaxValue: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
   rachaVerMas: { flexDirection: "row", alignItems: "center", justifyContent: "flex-end", gap: 4, marginTop: 14 },
-  rachaVerMasText: { fontSize: 13, fontWeight: "600" },
+  rachaVerMasText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
 
   // Membresía
   membershipRow: {
@@ -1556,9 +1556,9 @@ const styles = StyleSheet.create({
     gap: 12,
     marginBottom: 32,
   },
-  membershipPlan: { fontSize: 15, fontWeight: "700", marginBottom: 2 },
-  membershipSub: { fontSize: 12 },
-  membershipAction: { fontSize: 13, fontWeight: "600" },
+  membershipPlan: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", marginBottom: 2 },
+  membershipSub: { fontFamily: "Manrope", fontSize: 12 },
+  membershipAction: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
 
 
   // Favoritos
@@ -1572,8 +1572,8 @@ const styles = StyleSheet.create({
   },
   favImg: { width: 52, height: 52, borderRadius: 10 },
   favInfo: { flex: 1 },
-  favTitle: { fontSize: 14, fontWeight: "600", marginBottom: 3 },
-  favSub: { fontSize: 12 },
+  favTitle: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", marginBottom: 3 },
+  favSub: { fontFamily: "Manrope", fontSize: 12 },
 
   // Menu
   menuCard: {
@@ -1587,9 +1587,9 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     gap: 14,
   },
-  menuLabel: { flex: 1, fontSize: 15, fontWeight: "500" },
+  menuLabel: { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "500" },
 
-  footer: { textAlign: "center", fontSize: 11, letterSpacing: 1, marginBottom: 8 },
+  footer: { fontFamily: "Manrope", textAlign: "center", fontSize: 11, letterSpacing: 1, marginBottom: 8 },
 
   // Edit modal
   modalRoot: { flex: 1 },
@@ -1601,12 +1601,12 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     borderBottomWidth: 1,
   },
-  modalTitle: { fontSize: 17, fontWeight: "700" },
+  modalTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
   modalForm: { padding: 24, gap: 20, paddingBottom: 60 },
 
   // Modal fields
   fieldWrap: { gap: 7 },
-  fieldLabel: { fontSize: 11, fontWeight: "700", letterSpacing: 1.2, textTransform: "uppercase" },
+  fieldLabel: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700", letterSpacing: 1.2, textTransform: "uppercase" },
   fieldBox: {
     flexDirection: "row",
     alignItems: "center",
@@ -1616,9 +1616,9 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     gap: 10,
   },
-  fieldInput: { flex: 1, fontSize: 15, backgroundColor: "transparent" },
+  fieldInput: { fontFamily: "Manrope", flex: 1, fontSize: 15, backgroundColor: "transparent" },
   saveBtn: { borderRadius: 14, paddingVertical: 16, alignItems: "center", marginTop: 8 },
-  saveBtnText: { fontSize: 16, fontWeight: "700" },
+  saveBtnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700" },
 
   communityRow: { flexDirection: "row", gap: 8, marginBottom: 43 },
   communityCard: {
@@ -1631,7 +1631,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 8,
   },
-  communityLabel: { fontSize: 12, fontWeight: "500", textAlign: "center", letterSpacing: 0.2 },
+  communityLabel: { fontFamily: "Manrope", fontSize: 12, fontWeight: "500", textAlign: "center", letterSpacing: 0.2 },
 
   // Expansor section
   expansorSection: {
@@ -1652,9 +1652,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  expansorBadgeStar: { fontSize: 14, color: "#1B060F", fontWeight: "800" },
-  expansorTitle: { fontSize: 14, fontWeight: "700", color: "#F7CB6B" },
-  expansorCertLabel: { fontSize: 11, color: "rgba(212,175,55,0.60)", marginTop: 1 },
+  expansorBadgeStar: { fontFamily: "Manrope", fontSize: 14, color: "#1B060F", fontWeight: "800" },
+  expansorTitle: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", color: "#F7CB6B" },
+  expansorCertLabel: { fontFamily: "Manrope", fontSize: 11, color: "rgba(212,175,55,0.60)", marginTop: 1 },
   expansorViewBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -1664,7 +1664,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "rgba(212,175,55,0.10)",
   },
-  expansorViewText: { fontSize: 12, color: "#F7CB6B", fontWeight: "600" },
+  expansorViewText: { fontFamily: "Manrope", fontSize: 12, color: "#F7CB6B", fontWeight: "600" },
   expansorSpecWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   expansorChip: {
     paddingHorizontal: 12,
@@ -1674,8 +1674,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.20)",
   },
-  expansorChipText: { fontSize: 12, color: "#FAF0EE", fontWeight: "500" },
-  expansorBio: { fontSize: 13, lineHeight: 20, color: "rgba(255,255,255,0.75)" },
+  expansorChipText: { fontFamily: "Manrope", fontSize: 12, color: "#FAF0EE", fontWeight: "500" },
+  expansorBio: { fontFamily: "Manrope", fontSize: 13, lineHeight: 20, color: "rgba(255,255,255,0.75)" },
   expansorLinksRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   expansorLinkBtn: {
     flexDirection: "row",
@@ -1688,7 +1688,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.20)",
   },
-  expansorLinkText: { fontSize: 12, color: "#F7CB6B", fontWeight: "600" },
+  expansorLinkText: { fontFamily: "Manrope", fontSize: 12, color: "#F7CB6B", fontWeight: "600" },
 
   // ── Sección Daniela Vega (expansor) ──
   dvExpansorSection: {
@@ -1709,31 +1709,31 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.05)",
   },
   dvCertBannerBar: { width: 5 },
-  dvCertBannerTitle: { fontSize: 13, fontWeight: "800", letterSpacing: 0.4, color: "#F7CB6B" },
-  dvCertBannerSub: { fontSize: 11, color: "rgba(255,255,255,0.90)", marginTop: 2 },
+  dvCertBannerTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "800", letterSpacing: 0.4, color: "#F7CB6B" },
+  dvCertBannerSub: { fontFamily: "Manrope", fontSize: 11, color: "rgba(255,255,255,0.90)", marginTop: 2 },
   dvCertBannerIconBorder: {
     width: 35, height: 35, borderRadius: 18,
     borderWidth: 1.5, borderColor: "rgba(212,175,55,0.20)", flexShrink: 0,
   },
   dvCertBannerIcon: { flex: 1, borderRadius: 16, overflow: "hidden", alignItems: "center", justifyContent: "center" },
-  dvCertBannerStar: { fontSize: 17, color: "rgba(212,175,55,0.90)", fontWeight: "800" },
-  dvServiceTitle: { fontSize: 15, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.2 },
-  dvServiceDesc: { fontSize: 13, lineHeight: 20, color: "#F4F4F4" },
+  dvCertBannerStar: { fontFamily: "Manrope", fontSize: 17, color: "rgba(212,175,55,0.90)", fontWeight: "800" },
+  dvServiceTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.2 },
+  dvServiceDesc: { fontFamily: "Manrope", fontSize: 13, lineHeight: 20, color: "#F4F4F4" },
   dvReadMoreBtn: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 6, alignSelf: "flex-start" },
-  dvReadMoreText: { fontSize: 13, fontWeight: "600", color: "#F7CB6B" },
+  dvReadMoreText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F7CB6B" },
   dvSpecialtyWrap: { flexDirection: "row", gap: 8, alignItems: "center" },
   dvSpecialtyChip: {
     borderRadius: 20, paddingHorizontal: 14, height: 34, overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.07)", alignItems: "center", justifyContent: "center",
   },
-  dvSpecialtyText: { fontSize: 13, color: "#FFFFFF", fontWeight: "400", letterSpacing: 0.1 },
+  dvSpecialtyText: { fontFamily: "Manrope", fontSize: 13, color: "#FFFFFF", fontWeight: "400", letterSpacing: 0.1 },
   dvContactRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   dvActionPill: {
     flexDirection: "row", alignItems: "center", gap: 6,
     borderRadius: 20, paddingHorizontal: 14, height: 34, overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.07)",
   },
-  dvActionPillText: { fontSize: 13, fontWeight: "400", color: "#FFFFFF", letterSpacing: 0.1 },
+  dvActionPillText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400", color: "#FFFFFF", letterSpacing: 0.1 },
   dvGallerySection: {
     borderRadius: 18, padding: 16, gap: 12, marginBottom: 16,
   },
@@ -1741,6 +1741,7 @@ const styles = StyleSheet.create({
   dvGalleryCell: { borderRadius: 10, backgroundColor: "rgba(255,255,255,0.05)" },
   dvQuoteWrap: { alignItems: "center", paddingVertical: 8, paddingHorizontal: 8, marginBottom: 16 },
   dvQuoteText: {
+    fontFamily: "Manrope",
     fontSize: 18, fontStyle: "italic", color: "#F6F6F6",
     textAlign: "center", lineHeight: 28, letterSpacing: 0.2,
   },
@@ -1754,7 +1755,7 @@ const styles = StyleSheet.create({
     flexDirection: "row", alignItems: "center", gap: 8,
     paddingVertical: 12, justifyContent: "center",
   },
-  dvEmptyPromptText: { fontSize: 14, color: "#F7CB6B", fontWeight: "600" },
+  dvEmptyPromptText: { fontFamily: "Manrope", fontSize: 14, color: "#F7CB6B", fontWeight: "600" },
   expansorEditIconBtn: {
     width: 34, height: 34, borderRadius: 17,
     backgroundColor: "rgba(212,175,55,0.10)",
@@ -1773,7 +1774,7 @@ const styles = StyleSheet.create({
   epModalHeader: {
     flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 4,
   },
-  epModalTitle: { fontSize: 17, fontWeight: "700", color: "#FAF0EE" },
+  epModalTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: "#FAF0EE" },
   epPhotoGrid: {
     flexDirection: "row",
     flexWrap: "wrap",

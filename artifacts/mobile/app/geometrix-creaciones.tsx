@@ -977,8 +977,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 8,
   },
-  headerTitle: { fontSize: 22, fontWeight: "700", textAlign: "center" },
-  count: { fontSize: 13, marginBottom: 14 },
+  headerTitle: { fontFamily: "Manrope", fontSize: 22, fontWeight: "700", textAlign: "center" },
+  count: { fontFamily: "Manrope", fontSize: 13, marginBottom: 14 },
 
   grid: { flexDirection: "row", flexWrap: "wrap" },
 
@@ -997,7 +997,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  newLabel: { fontSize: 13, fontWeight: "600" },
+  newLabel: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
 
   card: { borderRadius: 16, borderWidth: 1, borderColor: "rgba(167,159,184,0.1)", overflow: "hidden", backgroundColor: "rgba(123,100,255,0.05)" },
   preview: { width: "100%", overflow: "hidden" },
@@ -1017,11 +1017,11 @@ const styles = StyleSheet.create({
   },
 
   info: { flexDirection: "row", alignItems: "center", gap: 8, padding: 10 },
-  name: { fontSize: 13, fontWeight: "700", marginBottom: 2 },
-  meta: { fontSize: 11 },
+  name: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", marginBottom: 2 },
+  meta: { fontFamily: "Manrope", fontSize: 11 },
   moreBtn: { padding: 2, flexShrink: 0 },
 
-  emptyHint: { fontSize: 13, textAlign: "center", marginTop: 20, lineHeight: 20, paddingHorizontal: 20 },
+  emptyHint: { fontFamily: "Manrope", fontSize: 13, textAlign: "center", marginTop: 20, lineHeight: 20, paddingHorizontal: 20 },
 
   modalBackdrop: {
     flex: 1,
@@ -1031,11 +1031,11 @@ const styles = StyleSheet.create({
     padding: 32,
   },
   modalCard: { width: "100%", borderRadius: 18, borderWidth: 1, padding: 20, gap: 14 },
-  modalTitle: { fontSize: 16, fontWeight: "700" },
-  modalInput: { borderRadius: 12, borderWidth: 1, paddingHorizontal: 14, paddingVertical: 12, fontSize: 15 },
+  modalTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700" },
+  modalInput: { fontFamily: "Manrope", borderRadius: 12, borderWidth: 1, paddingHorizontal: 14, paddingVertical: 12, fontSize: 15 },
   modalActions: { flexDirection: "row", justifyContent: "flex-end", gap: 8 },
   modalBtn: { paddingHorizontal: 14, paddingVertical: 8 },
-  modalBtnText: { fontSize: 14 },
+  modalBtnText: { fontFamily: "Manrope", fontSize: 14 },
 
   // Popups temáticos (navy + dorado) — igual estilo que los de Geometrix.
   sheetBackdrop: {
@@ -1059,6 +1059,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   sheetTitle: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
     color: "#FAF0EE",
@@ -1087,8 +1088,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(239,68,68,0.12)",
     borderColor: "rgba(239,68,68,0.4)",
   },
-  sheetRowText: { fontSize: 15, fontWeight: "600", color: "#FAF0EE" },
-  sheetRowSub: { fontSize: 12, color: "#c2c2c2", marginTop: 1 },
+  sheetRowText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#FAF0EE" },
+  sheetRowSub: { fontFamily: "Manrope", fontSize: 12, color: "#c2c2c2", marginTop: 1 },
   exportHidden: {
     position: "absolute",
     left: 0,
@@ -1121,7 +1122,7 @@ const styles = StyleSheet.create({
     borderColor: "#151c3a",
     backgroundColor: "#130A3A",
   },
-  exportToastText: { fontSize: 14, fontWeight: "600", color: "#FAF0EE" },
+  exportToastText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: "#FAF0EE" },
   sheetCancel: {
     marginTop: 6,
     paddingVertical: 12,
@@ -1131,7 +1132,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  sheetCancelText: { fontSize: 14, fontWeight: "600", color: "#c2c2c2" },
+  sheetCancelText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: "#c2c2c2" },
 
   confirmCard: {
     width: "100%",
@@ -1158,14 +1159,15 @@ const styles = StyleSheet.create({
     borderColor: "rgba(239,68,68,0.4)",
     marginBottom: 2,
   },
-  confirmTitle: { fontSize: 19, fontWeight: "700", color: "#FAF0EE" },
+  confirmTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", color: "#FAF0EE" },
   confirmSubtitle: {
+    fontFamily: "Manrope",
     fontSize: 13.5,
     color: "#c2c2c2",
     textAlign: "center",
     lineHeight: 20,
   },
-  confirmName: { color: "#FAF0EE", fontWeight: "600" },
+  confirmName: { fontFamily: "Manrope", color: "#FAF0EE", fontWeight: "600" },
   confirmActions: {
     flexDirection: "row",
     gap: 10,
@@ -1181,7 +1183,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  confirmBtnGhostText: { fontSize: 14, fontWeight: "600", color: "#c2c2c2" },
+  confirmBtnGhostText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: "#c2c2c2" },
   confirmBtnDanger: {
     flex: 1,
     paddingVertical: 12,
@@ -1190,5 +1192,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  confirmBtnDangerText: { fontSize: 14, fontWeight: "700", color: "#ffffff" },
+  confirmBtnDangerText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", color: "#ffffff" },
 });

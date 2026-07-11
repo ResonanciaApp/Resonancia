@@ -420,8 +420,8 @@ const mixStyles = StyleSheet.create({
   },
   thumbImg: { width: THUMB, height: THUMB, borderRadius: 8 },
   info: { flex: 1, minWidth: 0 },
-  name: { fontSize: 15, fontWeight: "700" },
-  meta: { fontSize: 12, marginTop: 3 },
+  name: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700" },
+  meta: { fontFamily: "Manrope", fontSize: 12, marginTop: 3 },
 });
 
 // ── Estilos pantalla ─────────────────────────────────────────────
@@ -452,6 +452,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   tabLabel: {
+    fontFamily: "Manrope",
     fontSize: 15,
     letterSpacing: 0.2,
   },
@@ -473,14 +474,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   searchInput: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 14,
     padding: 0,
   },
 
   // Textos
-  pageTitle: { fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4 },
-  pageSub: { fontSize: 13 },
+  pageTitle: { fontFamily: "Manrope", fontSize: 30, fontWeight: "700", letterSpacing: 0.5, marginBottom: 4 },
+  pageSub: { fontFamily: "Manrope", fontSize: 13 },
 
   // Empty
   emptySmall: {
@@ -490,11 +492,11 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 16,
   },
-  emptySmallText: { fontSize: 13, flex: 1 },
+  emptySmallText: { fontFamily: "Manrope", fontSize: 13, flex: 1 },
   emptyLink: {
     borderRadius: 14,
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
-  emptyLinkText: { fontSize: 12, fontWeight: "600" },
+  emptyLinkText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600" },
 });

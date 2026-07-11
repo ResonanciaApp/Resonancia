@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
+    fontFamily: "Manrope",
     fontSize: 20,
     fontWeight: "bold",
   },
@@ -40,6 +41,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   linkText: {
+    fontFamily: "Manrope",
     fontSize: 14,
   },
 });

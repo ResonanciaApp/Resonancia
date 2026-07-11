@@ -956,6 +956,7 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   skipText: {
+    fontFamily: "Manrope",
     color: "rgba(255,255,255,0.75)",
     fontSize: 11,
     fontWeight: "600",
@@ -1038,11 +1039,13 @@ const styles = StyleSheet.create({
     marginBottom: 22,
   },
   timeLabelText: {
+    fontFamily: "Manrope",
     fontSize: 12,
     color: "#F4F4F4",
   },
 
   titleText: {
+    fontFamily: "Manrope",
     fontSize: 20,
     fontWeight: "800",
     color: "#FBFBFB",
@@ -1050,11 +1053,13 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   authorText: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "300",
     color: "#FBFBFB",
   },
   signature: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
     color: "rgba(255,255,255,0.9)",
@@ -1076,6 +1081,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.20)",
   },
   durationChipText: {
+    fontFamily: "Manrope",
     color: "rgba(255,255,255,0.80)",
     fontSize: 12,
     fontWeight: "600",
@@ -1094,13 +1100,14 @@ const styles = StyleSheet.create({
   sliderSection: {},
   sliderHeader: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 10 },
   sliderLabel: {
+    fontFamily: "Manrope",
     fontSize: 11,
     letterSpacing: 0.5,
     textTransform: "uppercase",
     flex: 1,
     color: "rgba(255,255,255,0.50)",
   },
-  sliderPercent: { fontSize: 11, fontWeight: "700", letterSpacing: 0.5, color: "rgba(255,255,255,0.80)" },
+  sliderPercent: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700", letterSpacing: 0.5, color: "rgba(255,255,255,0.80)" },
   sliderHitArea: { height: 44, justifyContent: "center", overflow: "visible" },
   sliderTrack: {
     height: 4,
@@ -1123,8 +1130,8 @@ const styles = StyleSheet.create({
   // Sleep timer
   timerSection: { paddingTop: 28, marginTop: 8 },
   timerHeader: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 12 },
-  timerLabel: { fontSize: 11, letterSpacing: 0.5, textTransform: "uppercase", color: "rgba(255,255,255,0.50)" },
-  timerCountdown: { fontSize: 11, fontWeight: "700", letterSpacing: 0.5, color: "rgba(255,255,255,0.80)" },
+  timerLabel: { fontFamily: "Manrope", fontSize: 11, letterSpacing: 0.5, textTransform: "uppercase", color: "rgba(255,255,255,0.50)" },
+  timerCountdown: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700", letterSpacing: 0.5, color: "rgba(255,255,255,0.80)" },
   timerChips: { flexDirection: "row", gap: 8, paddingVertical: 2 },
   timerChip: {
     paddingHorizontal: 14,
@@ -1140,7 +1147,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.18)",
     borderColor: "rgba(255,255,255,0.45)",
   },
-  timerChipText: { fontSize: 13, fontWeight: "600", color: "#F4F4F4" },
+  timerChipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4F4F4" },
   timerChipTextSelected: { color: "#FBFBFB" },
 
   // Floating top buttons
@@ -1163,6 +1170,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   topBtnLabel: {
+    fontFamily: "Manrope",
     color: "#FBFBFB",
     fontSize: 15,
     fontWeight: "600",
@@ -1182,13 +1190,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   terminarText: {
+    fontFamily: "Manrope",
     color: "#000000",
     fontSize: 16,
     fontWeight: "600",
     letterSpacing: 0.3,
   },
 
-  noSession: { fontSize: 16, marginTop: 16, marginBottom: 24 },
+  noSession: { fontFamily: "Manrope", fontSize: 16, marginTop: 16, marginBottom: 24 },
   backBtnSolo: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20, borderWidth: 1 },
 
   // Options sheet
@@ -1220,6 +1229,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.08)",
   },
   optSessionTitle: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
     color: "#FBFBFB",
@@ -1227,6 +1237,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   optSessionAuthor: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "300",
     color: "#F4F4F4",
@@ -1244,21 +1255,25 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   optIcon: {
+    fontFamily: "Manrope",
     marginRight: 16,
     width: 22,
     textAlign: "center",
   },
   optRowText: {
+    fontFamily: "Manrope",
     fontSize: 16,
     color: "#FBFBFB",
     flex: 1,
   },
   optRowBadge: {
+    fontFamily: "Manrope",
     fontSize: 13,
     color: "rgba(255,255,255,0.50)",
     marginRight: 6,
   },
   optRowMuted: {
+    fontFamily: "Manrope",
     fontSize: 12,
     color: "rgba(255,255,255,0.35)",
     fontStyle: "italic",

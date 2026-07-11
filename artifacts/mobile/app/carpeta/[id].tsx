@@ -360,6 +360,7 @@ const styles = StyleSheet.create({
   },
   iconBtn: { width: 44, height: 44, alignItems: "center", justifyContent: "center" },
   headerName: {
+    fontFamily: "Manrope",
     flex: 1,
     color: TEXT,
     fontSize: 20,
@@ -367,6 +368,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   renameInput: {
+    fontFamily: "Manrope",
     flex: 1,
     color: TEXT,
     fontSize: 20,
@@ -387,6 +389,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
   },
   emptyTitle: {
+    fontFamily: "Manrope",
     color: TEXT,
     fontSize: 20,
     fontWeight: "700",
@@ -394,6 +397,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   emptySub: {
+    fontFamily: "Manrope",
     color: MUTED,
     fontSize: 14,
     textAlign: "center",
@@ -420,8 +424,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  plName: { color: TEXT, fontSize: 15, fontWeight: "600", lineHeight: 20 },
-  plMeta: { color: MUTED, fontSize: 12, marginTop: 2 },
+  plName: { fontFamily: "Manrope", color: TEXT, fontSize: 15, fontWeight: "600", lineHeight: 20 },
+  plMeta: { fontFamily: "Manrope", color: MUTED, fontSize: 12, marginTop: 2 },
   removePlBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
 
   // Sheet
@@ -462,8 +466,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  sheetItemTitle: { color: TEXT, fontSize: 16, fontWeight: "700" },
-  sheetItemSub: { color: MUTED, fontSize: 13, marginTop: 2 },
+  sheetItemTitle: { fontFamily: "Manrope", color: TEXT, fontSize: 16, fontWeight: "700" },
+  sheetItemSub: { fontFamily: "Manrope", color: MUTED, fontSize: 13, marginTop: 2 },
 
   // Naming modal
   nameOverlay: {
@@ -486,6 +490,7 @@ const styles = StyleSheet.create({
   },
   nameCloseBtn: { alignSelf: "flex-end", marginBottom: 8 },
   nameCardTitle: {
+    fontFamily: "Manrope",
     color: TEXT,
     fontSize: 17,
     fontWeight: "700",
@@ -504,6 +509,7 @@ const styles = StyleSheet.create({
     marginBottom: 28,
   },
   nameInput: {
+    fontFamily: "Manrope",
     color: TEXT,
     fontSize: 22,
     fontWeight: "700",
@@ -517,6 +523,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   nameCreateBtnText: {
+    fontFamily: "Manrope",
     color: "#1B060F",
     fontSize: 15,
     fontWeight: "800",

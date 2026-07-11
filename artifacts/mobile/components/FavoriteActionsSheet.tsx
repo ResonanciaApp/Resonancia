@@ -484,12 +484,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   itemTitle: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
     lineHeight: 20,
     marginBottom: 2,
   },
   itemSub: {
+    fontFamily: "Manrope",
     fontSize: 13,
   },
   closeBtn: {
@@ -512,10 +514,12 @@ const styles = StyleSheet.create({
     marginRight: 14,
   },
   actionLabel: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 16,
   },
   emptyText: {
+    fontFamily: "Manrope",
     fontSize: 14,
     textAlign: "center",
     paddingVertical: 24,
@@ -537,6 +541,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   folderLabel: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 15,
     fontWeight: "500",
@@ -557,10 +562,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   newLabel: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "600",
   },
   input: {
+    fontFamily: "Manrope",
     borderWidth: 1,
     borderRadius: 12,
     paddingHorizontal: 16,
@@ -576,6 +583,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   createBtnLabel: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
   },

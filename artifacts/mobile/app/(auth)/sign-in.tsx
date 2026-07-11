@@ -167,6 +167,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   subtitle: {
+    fontFamily: "Manrope",
     color: COLORS.muted,
     fontSize: 14,
     textAlign: "center",
@@ -211,13 +212,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 24,
   },
-  footerText: { color: COLORS.muted, fontSize: 14 },
+  footerText: { fontFamily: "Manrope", color: COLORS.muted, fontSize: 14 },
   footerLink: {
     color: COLORS.accent,
     fontSize: 14,
     fontFamily: "Manrope", fontWeight: "600",
   },
   errorText: {
+    fontFamily: "Manrope",
     color: COLORS.error,
     fontSize: 13,
     marginTop: 6,

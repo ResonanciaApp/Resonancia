@@ -230,15 +230,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
   },
-  badgeText: { fontSize: 10, fontWeight: "700", letterSpacing: 0.4 },
-  dateText: { fontSize: 10, flex: 1 },
+  badgeText: { fontFamily: "Manrope", fontSize: 10, fontWeight: "700", letterSpacing: 0.4 },
+  dateText: { fontFamily: "Manrope", fontSize: 10, flex: 1 },
   deleteBtn: { padding: 4 },
 
-  bodyText: { fontSize: 13, lineHeight: 20 },
-  expandHint: { fontSize: 10, marginTop: 3, letterSpacing: 0.3 },
+  bodyText: { fontFamily: "Manrope", fontSize: 13, lineHeight: 20 },
+  expandHint: { fontFamily: "Manrope", fontSize: 10, marginTop: 3, letterSpacing: 0.3 },
 
-  vozTitle: { fontSize: 14, fontWeight: "600" },
-  vozTitleEmpty: { fontSize: 13, fontStyle: "italic" },
+  vozTitle: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600" },
+  vozTitleEmpty: { fontFamily: "Manrope", fontSize: 13, fontStyle: "italic" },
 
   playRow: {
     flexDirection: "row",
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  durationText: { fontSize: 13, fontWeight: "600", fontVariant: ["tabular-nums"] },
+  durationText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", fontVariant: ["tabular-nums"] },
 
   progressTrack: {
     height: 3,

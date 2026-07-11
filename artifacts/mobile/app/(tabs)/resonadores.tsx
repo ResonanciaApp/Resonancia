@@ -650,6 +650,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -5 }],
   },
   bannerText: {
+    fontFamily: "Manrope",
     fontSize: 17,
     fontWeight: "600",
     color: "#FFFFFF",
@@ -677,12 +678,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {
+    fontFamily: "Manrope",
     fontSize: 27,
     fontWeight: "700",
     color: "#FAF0EE",
     letterSpacing: 0.5,
   },
   subtitle: {
+    fontFamily: "Manrope",
     fontSize: 13,
     color: "rgba(255,255,255,0.45)",
     marginBottom: 10,
@@ -700,6 +703,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   searchInput: {
+    fontFamily: "Manrope",
     flex: 1,
     color: "#FAF0EE",
     fontSize: 13,
@@ -724,15 +728,18 @@ const styles = StyleSheet.create({
   },
   tabBtnActive: {},
   tabBtnText: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "600",
     color: "#F6F6F6",
   },
   tabBtnTextActive: {
+    fontFamily: "Manrope",
     color: "#1B060F",
     fontWeight: "700",
   },
   tabBtnBajada: {
+    fontFamily: "Manrope",
     fontSize: 9,
     fontWeight: "400",
     color: "rgba(255,255,255,0.50)",
@@ -763,6 +770,7 @@ const styles = StyleSheet.create({
     paddingVertical: 9,
   },
   chevronTriggerText: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "500",
     color: "rgba(255,255,255,0.85)",
@@ -795,11 +803,13 @@ const styles = StyleSheet.create({
     borderBottomColor: "rgba(255,255,255,0.08)",
   },
   chevronOptionText: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "400",
     color: "rgba(255,255,255,0.80)",
   },
   chevronOptionTextSel: {
+    fontFamily: "Manrope",
     color: "#FBA980",
     fontWeight: "600",
   },
@@ -832,8 +842,8 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.10)",
     overflow: "hidden",
   },
-  chipText: { fontSize: 13, fontWeight: "400", color: "#FFFFFF" },
-  chipTextSel: { color: "#1B060F", fontWeight: "700" },
+  chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400", color: "#FFFFFF" },
+  chipTextSel: { fontFamily: "Manrope", color: "#1B060F", fontWeight: "700" },
 
   // Grid
   grid: { paddingHorizontal: H_PAD, paddingTop: 0 },
@@ -867,9 +877,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  certStar: { fontSize: 9, color: "#1B060F", fontWeight: "800" },
+  certStar: { fontFamily: "Manrope", fontSize: 9, color: "#1B060F", fontWeight: "800" },
   cardInfo: { alignItems: "center", paddingHorizontal: 6 },
   cardName: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "700",
     color: "#FAF0EE",
@@ -877,6 +888,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   cardTag: {
+    fontFamily: "Manrope",
     fontSize: 10,
     fontWeight: "400",
     color: "#F4F4F4",
@@ -884,16 +896,17 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   cardSub: {
+    fontFamily: "Manrope",
     fontSize: 10,
     color: "rgba(212,175,55,0.75)",
     marginBottom: 4,
     textAlign: "center",
   },
   locationRow: { flexDirection: "row", alignItems: "center", gap: 3 },
-  cardLocation: { fontSize: 10, color: "rgba(255,255,255,0.40)", textAlign: "center" },
+  cardLocation: { fontFamily: "Manrope", fontSize: 10, color: "rgba(255,255,255,0.40)", textAlign: "center" },
 
   empty: { alignItems: "center", paddingTop: 60, gap: 12 },
-  emptyText: { fontSize: 14, color: "rgba(255,255,255,0.30)" },
+  emptyText: { fontFamily: "Manrope", fontSize: 14, color: "rgba(255,255,255,0.30)" },
   loadMoreBtn: {
     alignSelf: "center",
     marginTop: 8,
@@ -906,6 +919,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.30)",
   },
   loadMoreText: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
     color: "#FFFFFF",
@@ -923,12 +937,14 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   recentTitle: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
     color: "#FAF0EE",
     letterSpacing: 0.2,
   },
   recentSub: {
+    fontFamily: "Manrope",
     fontSize: 11,
     color: "rgba(255,255,255,0.45)",
     marginTop: 3,
@@ -969,17 +985,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   recentPremiumStar: {
+    fontFamily: "Manrope",
     fontSize: 8,
     color: "#1B060F",
     fontWeight: "800",
   },
   recentCardTitle: {
+    fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "600",
     color: "#FAF0EE",
     lineHeight: 15,
   },
   recentCardCat: {
+    fontFamily: "Manrope",
     fontSize: 10,
     color: "rgba(212,175,55,0.70)",
     marginTop: 2,
@@ -1011,6 +1030,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.35)",
   },
   ctaIconText: {
+    fontFamily: "Manrope",
     fontSize: 16,
     color: "#F7CB6B",
   },
@@ -1018,12 +1038,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   ctaQuestion: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "700",
     color: "#FAF0EE",
     letterSpacing: 0.2,
   },
   ctaHint: {
+    fontFamily: "Manrope",
     fontSize: 11,
     color: "rgba(255,255,255,0.50)",
     marginTop: 2,

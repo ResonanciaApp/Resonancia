@@ -372,6 +372,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   cardForLabel: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "500",
     color: "rgba(90,50,0,0.72)",
@@ -379,6 +380,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   cardDiscount: {
+    fontFamily: "Manrope",
     fontSize: 56,
     fontWeight: "800",
     color: "#FFFFFF",
@@ -389,6 +391,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 6,
   },
   cardBrand: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "600",
     color: "rgba(80,40,0,0.75)",
@@ -415,6 +418,7 @@ const styles = StyleSheet.create({
 
   // ── Título ───────────────────────────────────────────────────────────────
   title: {
+    fontFamily: "Manrope",
     fontSize: 30,
     fontWeight: "700",
     color: "#F6F6F6",
@@ -426,6 +430,7 @@ const styles = StyleSheet.create({
 
   // ── Descripción ──────────────────────────────────────────────────────────
   subtitle: {
+    fontFamily: "Manrope",
     fontSize: 15,
     color: "#F6F6F6",
     textAlign: "center",
@@ -453,6 +458,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.07)",
   },
   btnSecondaryText: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "600",
     color: "rgba(255,255,255,0.80)",
@@ -473,6 +479,7 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   btnPrimaryText: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
     letterSpacing: 0.2,
@@ -494,6 +501,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.3)",
   },
   toastText: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
     color: "#F7CB6B",

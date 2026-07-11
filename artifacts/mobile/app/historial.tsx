@@ -203,10 +203,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  pageTitle: { fontSize: 26, fontWeight: "700", letterSpacing: 0.3 },
-  pageSub: { fontSize: 12, marginTop: 2 },
+  pageTitle: { fontFamily: "Manrope", fontSize: 26, fontWeight: "700", letterSpacing: 0.3 },
+  pageSub: { fontFamily: "Manrope", fontSize: 12, marginTop: 2 },
   clearBtn: { paddingVertical: 6, paddingHorizontal: 4 },
-  clearBtnText: { fontSize: 13, fontWeight: "600" },
+  clearBtnText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
   group: { marginBottom: 24 },
   dayRow: {
     flexDirection: "row",
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 5,
   },
-  dayText: { fontSize: 12, fontWeight: "600" },
+  dayText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600" },
   entryRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -228,6 +228,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   entryTime: {
+    fontFamily: "Manrope",
     fontSize: 11,
     width: 42,
     textAlign: "right",
@@ -240,8 +241,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 20,
   },
-  emptyTitle: { fontSize: 18, fontWeight: "700", marginBottom: 10 },
-  emptySub: { fontSize: 13, textAlign: "center", lineHeight: 20 },
+  emptyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", marginBottom: 10 },
+  emptySub: { fontFamily: "Manrope", fontSize: 13, textAlign: "center", lineHeight: 20 },
   footerNote: {
     flexDirection: "row",
     alignItems: "center",
@@ -249,5 +250,5 @@ const styles = StyleSheet.create({
     paddingTop: 18,
     marginTop: 4,
   },
-  footerNoteText: { fontSize: 12, flex: 1, lineHeight: 17 },
+  footerNoteText: { fontFamily: "Manrope", fontSize: 12, flex: 1, lineHeight: 17 },
 });

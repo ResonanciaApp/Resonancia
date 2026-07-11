@@ -382,18 +382,20 @@ const styles = StyleSheet.create({
     borderRadius: 20, paddingHorizontal: 12, paddingVertical: 4,
     marginBottom: 18,
   },
-  heroCategoryText: { color: GOLD, fontSize: 10, fontWeight: "700", letterSpacing: 1.5 },
+  heroCategoryText: { fontFamily: "Manrope", color: GOLD, fontSize: 10, fontWeight: "700", letterSpacing: 1.5 },
   heroTitle: {
+    fontFamily: "Manrope",
     fontSize: 46, fontWeight: "800",
     color: TEXT, lineHeight: 52,
     marginBottom: 16,
   },
   heroTagline: {
+    fontFamily: "Manrope",
     fontSize: 15, color: "rgba(255,255,255,0.75)",
     lineHeight: 22, marginBottom: 48,
   },
   scrollIndicator: { alignItems: "center", gap: 6 },
-  scrollText: { fontSize: 11, color: GOLD, letterSpacing: 0.8 },
+  scrollText: { fontFamily: "Manrope", fontSize: 11, color: GOLD, letterSpacing: 0.8 },
 
   // ── Secciones genéricas ────────────────────────────────────────────────────
   section: { paddingHorizontal: 24, paddingTop: 52, paddingBottom: 20 },
@@ -402,14 +404,17 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   sectionTag: {
+    fontFamily: "Manrope",
     fontSize: 10, fontWeight: "700", letterSpacing: 2,
     color: GOLD, marginBottom: 10,
   },
   sectionTitle: {
+    fontFamily: "Manrope",
     fontSize: 32, fontWeight: "800",
     color: TEXT, lineHeight: 38, marginBottom: 18,
   },
   sectionBody: {
+    fontFamily: "Manrope",
     fontSize: 15, color: MUTED, lineHeight: 24,
   },
 
@@ -435,18 +440,20 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     marginBottom: 12,
   },
-  benefitLabel: { fontSize: 16, fontWeight: "700", color: TEXT, marginBottom: 6 },
-  benefitSub:   { fontSize: 13, color: MUTED, lineHeight: 19 },
+  benefitLabel: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: TEXT, marginBottom: 6 },
+  benefitSub:   { fontFamily: "Manrope", fontSize: 13, color: MUTED, lineHeight: 19 },
 
   // ── Instrumentos ───────────────────────────────────────────────────────────
   instCard: { marginTop: 28 },
   instImgWrap: { borderRadius: 16, overflow: "hidden", height: 200, justifyContent: "flex-end" },
   instImg:  { ...StyleSheet.absoluteFillObject },
   instName: {
+    fontFamily: "Manrope",
     fontSize: 22, fontWeight: "800",
     color: TEXT, padding: 16,
   },
   instDesc: {
+    fontFamily: "Manrope",
     fontSize: 14, color: MUTED, lineHeight: 21,
     marginTop: 12,
   },
@@ -460,9 +467,9 @@ const styles = StyleSheet.create({
   freqBar:     { width: 5 },
   freqContent: { flex: 1, padding: 18 },
   freqHeader:  { flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 },
-  freqName:    { fontSize: 18, fontWeight: "800", color: TEXT },
-  freqHz:      { fontSize: 11, color: GOLD, fontWeight: "600", letterSpacing: 0.5 },
-  freqDesc:    { fontSize: 13, color: MUTED, lineHeight: 20 },
+  freqName:    { fontFamily: "Manrope", fontSize: 18, fontWeight: "800", color: TEXT },
+  freqHz:      { fontFamily: "Manrope", fontSize: 11, color: GOLD, fontWeight: "600", letterSpacing: 0.5 },
+  freqDesc:    { fontFamily: "Manrope", fontSize: 13, color: MUTED, lineHeight: 20 },
 
   // ── CTA ────────────────────────────────────────────────────────────────────
   ctaSection: {
@@ -475,14 +482,17 @@ const styles = StyleSheet.create({
   },
   ctaContent: { paddingHorizontal: 24, paddingTop: 60, paddingBottom: 20 },
   ctaEyebrow: {
+    fontFamily: "Manrope",
     fontSize: 10, fontWeight: "700", letterSpacing: 2,
     color: GOLD, marginBottom: 10,
   },
   ctaTitle: {
+    fontFamily: "Manrope",
     fontSize: 36, fontWeight: "800",
     color: TEXT, lineHeight: 42, marginBottom: 16,
   },
   ctaBody: {
+    fontFamily: "Manrope",
     fontSize: 14, color: MUTED, lineHeight: 22, marginBottom: 36,
   },
   ctaBtn: {
@@ -490,5 +500,5 @@ const styles = StyleSheet.create({
     gap: 10, height: 52, borderRadius: 26,
     overflow: "hidden",
   },
-  ctaBtnText: { fontSize: 16, fontWeight: "700", color: BG },
+  ctaBtnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: BG },
 });

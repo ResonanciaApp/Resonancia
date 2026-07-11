@@ -202,12 +202,14 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   pageTitle: {
+    fontFamily: "Manrope",
     fontSize: 28,
     fontWeight: "700",
     letterSpacing: 0.2,
     marginBottom: 10,
   },
   pageDesc: {
+    fontFamily: "Manrope",
     fontSize: 14,
     lineHeight: 22,
     maxWidth: 340,
@@ -240,11 +242,13 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   durationText: {
+    fontFamily: "Manrope",
     color: "#FFFFFF",
     fontSize: 10,
     fontWeight: "600",
   },
   cardTitle: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
     lineHeight: 18,
@@ -255,6 +259,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   cardDuration: {
+    fontFamily: "Manrope",
     fontSize: 11,
   },
 
@@ -269,10 +274,12 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   emptyTitle: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
   },
   emptySub: {
+    fontFamily: "Manrope",
     fontSize: 13,
     textAlign: "center",
     paddingHorizontal: 24,

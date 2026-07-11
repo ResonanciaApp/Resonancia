@@ -279,6 +279,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.4)",
   },
   miniLabel: {
+    fontFamily: "Manrope",
     color: MUTED,
     fontSize: 8,
     fontWeight: "600",
@@ -287,24 +288,28 @@ const styles = StyleSheet.create({
     color: "#F4DAD5",
   },
   ringCount: {
+    fontFamily: "Manrope",
     color: "#ffffff",
     fontSize: 44,
     fontWeight: "700",
     lineHeight: 47,
   },
   ringLabel: {
+    fontFamily: "Manrope",
     color: "rgba(255,255,255,0.95)",
     fontSize: 12,
     fontWeight: "300",
     letterSpacing: 0.3,
   },
   messageHighlight: {
+    fontFamily: "Manrope",
     color: "rgba(255,255,255,0.90)",
     fontSize: 12,
     fontWeight: "700",
     letterSpacing: 0.2,
   },
   message: {
+    fontFamily: "Manrope",
     color: TEXT,
     fontSize: 12,
     lineHeight: 18,

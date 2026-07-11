@@ -443,7 +443,7 @@ export default function CommunityMixScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 14 },
-  notFound: { fontSize: 16, fontWeight: "600", textAlign: "center" },
+  notFound: { fontFamily: "Manrope", fontSize: 16, fontWeight: "600", textAlign: "center" },
   backPill: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 22, borderWidth: 1 },
 
   topBar: { paddingHorizontal: 12, paddingBottom: 8 },
@@ -464,7 +464,7 @@ const styles = StyleSheet.create({
   },
   soundCard: { width: 72, alignItems: "center", gap: 6 },
   soundImg: { width: 72, height: 72, borderRadius: 12 },
-  soundLabel: { fontSize: 10, textAlign: "center", width: 72 },
+  soundLabel: { fontFamily: "Manrope", fontSize: 10, textAlign: "center", width: 72 },
 
   glassPanel: {
     borderRadius: 24,
@@ -473,10 +473,11 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
 
-  category: { fontSize: 11, fontWeight: "700", letterSpacing: 1.8, marginBottom: 6 },
-  title: { fontSize: 26, fontWeight: "800", letterSpacing: 0.3, lineHeight: 32, marginBottom: 18 },
+  category: { fontFamily: "Manrope", fontSize: 11, fontWeight: "700", letterSpacing: 1.8, marginBottom: 6 },
+  title: { fontFamily: "Manrope", fontSize: 26, fontWeight: "800", letterSpacing: 0.3, lineHeight: 32, marginBottom: 18 },
 
   authorNameInline: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "500",
     color: "#FFFFFF",
@@ -484,6 +485,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   authorNameLink: {
+    fontFamily: "Manrope",
     textDecorationLine: "underline",
     textDecorationColor: "#FFFFFF",
   },
@@ -499,7 +501,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 6,
   },
-  playTxt: { fontSize: 16, fontWeight: "700", letterSpacing: 0.5 },
+  playTxt: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", letterSpacing: 0.5 },
   shareBtnGradientBorder: { borderRadius: 30, padding: 1.5 },
   shareBtnInner: {
     flexDirection: "row",
@@ -511,7 +513,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#210911",
     paddingHorizontal: 24,
   },
-  shareBtnText: { fontSize: 16, fontWeight: "600", color: "#D6AD5F", letterSpacing: 0.5 },
+  shareBtnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "600", color: "#D6AD5F", letterSpacing: 0.5 },
 
   commentsHeader: {
     flexDirection: "row",
@@ -520,8 +522,8 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     marginTop: 22,
   },
-  sectionTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.5, flex: 1 },
-  commentsCount: { fontSize: 10, fontWeight: "600" },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", letterSpacing: 0.5, flex: 1 },
+  commentsCount: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600" },
 
   composer: {
     flexDirection: "row",
@@ -532,6 +534,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   input: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 15,
     paddingVertical: 6,
@@ -543,10 +546,10 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
   },
 
-  emptyComments: { fontSize: 13.5, lineHeight: 19 },
+  emptyComments: { fontFamily: "Manrope", fontSize: 13.5, lineHeight: 19 },
   commentRow: { flexDirection: "row", gap: 12, marginTop: 20 },
   commentBody: { flex: 1, gap: 4 },
   commentTop: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 },
-  commentAuthor: { flex: 1, fontSize: 14, fontWeight: "600" },
-  commentTxt: { fontSize: 14, lineHeight: 19 },
+  commentAuthor: { fontFamily: "Manrope", flex: 1, fontSize: 14, fontWeight: "600" },
+  commentTxt: { fontFamily: "Manrope", fontSize: 14, lineHeight: 19 },
 });

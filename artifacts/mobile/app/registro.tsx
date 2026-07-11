@@ -575,6 +575,7 @@ const styles = StyleSheet.create({
   stepContent: { flex: 1 },
 
   stepTitle: {
+    fontFamily: "Manrope",
     fontSize: 28,
     fontWeight: "700",
     marginBottom: 32,
@@ -591,15 +592,15 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     gap: 10,
   },
-  socialBtnText: { fontSize: 15, fontWeight: "600" },
-  googleG: { fontSize: 17, fontWeight: "700", letterSpacing: -0.5 },
+  socialBtnText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600" },
+  googleG: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", letterSpacing: -0.5 },
   loginRow: {
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 28,
   },
-  loginHint: { fontSize: 14 },
-  loginLink: { fontSize: 14, fontWeight: "700" },
+  loginHint: { fontFamily: "Manrope", fontSize: 14 },
+  loginLink: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700" },
 
   // Email form
   emailForm: { gap: 14, marginBottom: 28 },
@@ -613,7 +614,7 @@ const styles = StyleSheet.create({
     gap: 8,
     backgroundColor: "rgba(74,12,12,0.08)",
   },
-  inputText: { flex: 1, fontSize: 15 },
+  inputText: { fontFamily: "Manrope", flex: 1, fontSize: 15 },
   passHintRow: { flexDirection: "row", alignItems: "flex-start", gap: 8 },
   passHintDot: {
     width: 14,
@@ -623,7 +624,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
     flexShrink: 0,
   },
-  passHintText: { fontSize: 12, lineHeight: 18, flex: 1 },
+  passHintText: { fontFamily: "Manrope", fontSize: 12, lineHeight: 18, flex: 1 },
 
   // Shared continue button
   continueBtn: {
@@ -632,7 +633,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 8,
   },
-  continueBtnText: { fontSize: 16, fontWeight: "700" },
+  continueBtnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700" },
 
   // Verify email
   verifyContent: {
@@ -641,12 +642,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   verifyTitle: {
+    fontFamily: "Manrope",
     fontSize: 30,
     fontWeight: "700",
     lineHeight: 38,
     marginBottom: 16,
   },
-  verifySub: { fontSize: 15, lineHeight: 22, marginBottom: 24 },
+  verifySub: { fontFamily: "Manrope", fontSize: 15, lineHeight: 22, marginBottom: 24 },
   emailRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -656,24 +658,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
   },
-  emailDisplay: { fontSize: 15, flex: 1, marginRight: 12 },
-  editLink: { fontSize: 14, fontWeight: "600" },
+  emailDisplay: { fontFamily: "Manrope", fontSize: 15, flex: 1, marginRight: 12 },
+  editLink: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600" },
   verifyBottom: {
     alignItems: "center",
     paddingHorizontal: 24,
     gap: 14,
   },
-  resendText: { fontSize: 15, fontWeight: "600" },
+  resendText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600" },
   skipLink: { marginTop: 4 },
-  skipText: { fontSize: 12 },
+  skipText: { fontFamily: "Manrope", fontSize: 12 },
 
   // Name
   nameContent: {
     flex: 1,
     paddingHorizontal: 24,
   },
-  nameSub: { fontSize: 15, lineHeight: 22, marginBottom: 40 },
+  nameSub: { fontFamily: "Manrope", fontSize: 15, lineHeight: 22, marginBottom: 40 },
   nameInput: {
+    fontFamily: "Manrope",
     fontSize: 28,
     fontWeight: "400",
     borderBottomWidth: 1.5,
@@ -684,6 +687,7 @@ const styles = StyleSheet.create({
   birthRoot: { flex: 1 },
   birthHeader: { paddingHorizontal: 24, marginBottom: 24 },
   birthSub: {
+    fontFamily: "Manrope",
     fontSize: 14,
     lineHeight: 20,
     textAlign: "center",
@@ -727,11 +731,11 @@ const styles = StyleSheet.create({
     marginTop: 2,
     flexShrink: 0,
   },
-  termsText: { fontSize: 12, lineHeight: 18, flex: 1 },
+  termsText: { fontFamily: "Manrope", fontSize: 12, lineHeight: 18, flex: 1 },
   createBtn: {
     borderRadius: 14,
     paddingVertical: 16,
     alignItems: "center",
   },
-  createBtnText: { fontSize: 16, fontWeight: "700" },
+  createBtnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700" },
 });

@@ -229,6 +229,7 @@ const styles = StyleSheet.create({
   },
   headerCenter: { flex: 1, alignItems: "center" },
   headerKicker: {
+    fontFamily: "Manrope",
     color: "#c2c2c2",
     fontSize: 10,
     fontWeight: "700",
@@ -236,6 +237,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   headerTitle: {
+    fontFamily: "Manrope",
     color: "#FFFFFF",
     fontSize: 18,
     fontWeight: "700",
@@ -249,12 +251,14 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   remainingLabel: {
+    fontFamily: "Manrope",
     color: "#c2c2c2",
     fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.5,
   },
   remaining: {
+    fontFamily: "Manrope",
     color: "#FFFFFF",
     fontSize: 52,
     fontWeight: "200",
@@ -286,6 +290,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(61,14,22,0.40)",
   },
   panelTitle: {
+    fontFamily: "Manrope",
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "700",

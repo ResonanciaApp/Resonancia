@@ -99,17 +99,20 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
     lineHeight: 18,
     marginBottom: 4,
   },
   subtitle: {
+    fontFamily: "Manrope",
     fontSize: 12,
     lineHeight: 16,
     marginBottom: 6,
   },
   count: {
+    fontFamily: "Manrope",
     fontSize: 11,
     letterSpacing: 0.5,
   },

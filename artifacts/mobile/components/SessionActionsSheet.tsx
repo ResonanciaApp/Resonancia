@@ -322,12 +322,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   sessionTitle: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
     lineHeight: 20,
     marginBottom: 3,
   },
   sessionAuthor: {
+    fontFamily: "Manrope",
     fontSize: 13,
   },
   closeBtn: {
@@ -350,10 +352,12 @@ const styles = StyleSheet.create({
     marginRight: 14,
   },
   actionLabel: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 16,
   },
   actionRight: {
+    fontFamily: "Manrope",
     fontSize: 14,
     marginRight: 6,
   },
@@ -371,6 +375,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(61,14,22,0.40)",
   },
   toastText: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "600",
   },

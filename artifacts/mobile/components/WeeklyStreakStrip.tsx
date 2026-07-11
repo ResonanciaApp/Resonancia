@@ -305,12 +305,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   ringCount: {
+    fontFamily: "Manrope",
     color: "#F9F9F9",
     fontSize: 34,
     fontWeight: "700",
     lineHeight: 37,
   },
   ringLabel: {
+    fontFamily: "Manrope",
     color: "rgba(255,255,255,0.95)",
     fontSize: 10,
     fontWeight: "300",
@@ -355,6 +357,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.064)",
   },
   dayLabel: {
+    fontFamily: "Manrope",
     color: MUTED,
     fontSize: 10,
     fontWeight: "600",
@@ -373,6 +376,7 @@ const styles = StyleSheet.create({
     marginTop: 3,
   },
   messageHighlight: {
+    fontFamily: "Manrope",
     color: "#FBFBFB",
     fontSize: 12,
     fontWeight: "300",
@@ -380,6 +384,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   message: {
+    fontFamily: "Manrope",
     color: TEXT,
     fontSize: 12,
     lineHeight: 19,

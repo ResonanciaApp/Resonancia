@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: GRID_PAD,
   },
   sectionTitle: {
+    fontFamily: "Manrope",
     fontSize: 21,
     fontWeight: "700",
     letterSpacing: 0.3,
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
   },
-  durText: { fontSize: 11, fontWeight: "600", color: "#FFFFFF" },
+  durText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#FFFFFF" },
   cardTitleWrap: {
     width: CARD_W,
     backgroundColor: "rgba(27,6,15,0.30)",
@@ -177,10 +178,11 @@ const styles = StyleSheet.create({
     marginTop: 0,
   },
   cardTitle: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
     color: "#FFFFFF",
     lineHeight: 17,
   },
-  cardAuthor: { fontSize: 11, color: "#F4F4F4", marginTop: 5 },
+  cardAuthor: { fontFamily: "Manrope", fontSize: 11, color: "#F4F4F4", marginTop: 5 },
 });

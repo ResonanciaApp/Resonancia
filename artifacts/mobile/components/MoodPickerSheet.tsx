@@ -152,10 +152,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   closeX: {
+    fontFamily: "Manrope",
     fontSize: 16,
     color: MUTED,
   },
   title: {
+    fontFamily: "Manrope",
     fontSize: 22,
     fontWeight: "700",
     color: FG,
@@ -183,18 +185,21 @@ const styles = StyleSheet.create({
     backgroundColor: CARD_SELECTED_BG,
   },
   emoji: {
+    fontFamily: "Manrope",
     fontSize: 28,
     lineHeight: 34,
     textAlign: "center",
     marginBottom: 4,
   },
   cardLabel: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "500",
     color: MUTED,
     textAlign: "center",
   },
   cardLabelSelected: {
+    fontFamily: "Manrope",
     color: PRIMARY,
     fontWeight: "700",
   },
@@ -208,6 +213,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(190,150,80,0.20)",
   },
   continueBtnText: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
     color: "#0B0F14",

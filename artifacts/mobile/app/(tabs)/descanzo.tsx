@@ -630,11 +630,13 @@ const styles = StyleSheet.create({
     marginBottom: 28,
   },
   sheetTitle: {
+    fontFamily: "Manrope",
     fontSize: 17,
     fontWeight: "700",
     color: "#FBFBFB",
   },
   sheetLabel: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "600",
     color: "rgba(255,255,255,0.45)",
@@ -661,11 +663,13 @@ const styles = StyleSheet.create({
     borderColor: "rgba(196,168,245,0.5)",
   },
   timerChipText: {
+    fontFamily: "Manrope",
     fontSize: 12,
     color: "rgba(255,255,255,0.45)",
     fontWeight: "500",
   },
   timerChipTextSel: {
+    fontFamily: "Manrope",
     color: "#C4A8F5",
     fontWeight: "700",
   },
@@ -678,12 +682,14 @@ const styles = StyleSheet.create({
     borderTopColor: "rgba(255,255,255,0.05)",
   },
   fadeTitle: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "600",
     color: "rgba(255,255,255,0.88)",
     marginBottom: 2,
   },
   fadeSub: {
+    fontFamily: "Manrope",
     fontSize: 12,
     color: "rgba(255,255,255,0.4)",
     lineHeight: 16,
@@ -733,6 +739,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.38)",
   },
   soundLabel: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
     lineHeight: 18,
@@ -761,12 +768,14 @@ const styles = StyleSheet.create({
     minHeight: 78,
   },
   nightBannerTitle: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "700",
     color: "rgba(255,255,255,0.9)",
     marginBottom: 3,
   },
   nightBannerSub: {
+    fontFamily: "Manrope",
     fontSize: 12,
     lineHeight: 17,
     color: "rgba(255,255,255,0.5)",
@@ -798,12 +807,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   dormirMiniTitle: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
     color: "rgba(255,255,255,0.92)",
     marginBottom: 2,
   },
   dormirMiniSub: {
+    fontFamily: "Manrope",
     fontSize: 12,
     color: "rgba(255,255,255,0.48)",
   },
@@ -834,12 +845,13 @@ const styles = StyleSheet.create({
   },
   sleepPillSel: { borderWidth: 0 },
   sleepPillText: {
+    fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "380",
     letterSpacing: 0.1,
     color: "#F4F4F4",
   },
-  sleepPillTextSel: { color: "#2D0D3A", fontWeight: "500" },
+  sleepPillTextSel: { fontFamily: "Manrope", color: "#2D0D3A", fontWeight: "500" },
 
   /* Sticky header */
   stickyHeader: {
@@ -854,6 +866,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#0D0512",
   },
   stickyHeaderTitle: {
+    fontFamily: "Manrope",
     fontSize: 18,
     fontWeight: "700",
     letterSpacing: 0.2,
@@ -887,6 +900,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   heroTitle: {
+    fontFamily: "Manrope",
     fontSize: 26,
     fontWeight: "700",
     letterSpacing: 0.4,

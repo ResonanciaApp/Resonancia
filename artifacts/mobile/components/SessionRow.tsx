@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   sessionImg: { width: 80, height: 80 },
   sessionContent: { flex: 1 },
   sessionMeta: { flexDirection: "row", alignItems: "center", marginBottom: 4 },
-  sessionMetaText: { fontSize: 11, lineHeight: 14 },
-  sessionTitle: { fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 4 },
-  sessionAuthor: { fontSize: 12 },
+  sessionMetaText: { fontFamily: "Manrope", fontSize: 11, lineHeight: 14 },
+  sessionTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 4 },
+  sessionAuthor: { fontFamily: "Manrope", fontSize: 12 },
 });

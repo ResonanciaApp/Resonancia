@@ -565,11 +565,13 @@ const styles = StyleSheet.create({
     borderBottomColor: "rgba(255,255,255,0.08)",
   },
   cancelBtn: {
+    fontFamily: "Manrope",
     fontSize: 16,
     color: "#FFFFFF",
     width: 70,
   },
   topTitle: {
+    fontFamily: "Manrope",
     fontSize: 17,
     fontWeight: "700",
     color: "white",
@@ -600,6 +602,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   nextBtnText: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
     color: "rgba(0,0,0,1)",
@@ -628,11 +631,13 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.10)",
   },
   noSoundText: {
+    fontFamily: "Manrope",
     fontSize: 14,
     color: "#F4F4F4",
   },
 
   sectionTitle: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "700",
     color: "rgba(255,255,255,0.40)",
@@ -643,6 +648,7 @@ const styles = StyleSheet.create({
   },
 
   favPlaceholder: {
+    fontFamily: "Manrope",
     fontSize: 13,
     color: "rgba(255,255,255,0.30)",
     fontStyle: "italic",
@@ -664,6 +670,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   tabLabel: {
+    fontFamily: "Manrope",
     fontSize: 13,
     color: "#F4F4F4",
     fontWeight: "400",
@@ -722,6 +729,7 @@ const styles = StyleSheet.create({
   },
 
   cardName: {
+    fontFamily: "Manrope",
     fontSize: 11,
     color: "rgba(255,255,255,0.80)",
     textAlign: "center",
@@ -737,6 +745,7 @@ const styles = StyleSheet.create({
     width: 110,
   },
   descartarText: {
+    fontFamily: "Manrope",
     fontSize: 15,
     color: "rgba(255,255,255,0.75)",
   },
@@ -753,6 +762,7 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   controlesTitulo: {
+    fontFamily: "Manrope",
     fontSize: 17,
     fontWeight: "600",
     color: "white",
@@ -790,6 +800,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   trackName: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "500",
     color: "white",
@@ -834,6 +845,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   guardarText: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "600",
     color: "white",
@@ -866,6 +878,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   popupName: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
     color: "white",
@@ -886,6 +899,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   popupFavText: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
     color: "white",

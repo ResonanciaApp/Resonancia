@@ -162,12 +162,14 @@ const styles = StyleSheet.create({
   },
   titleBlock: {},
   title: {
+    fontFamily: "Manrope",
     fontSize: 26,
     fontWeight: "700",
     letterSpacing: 0.2,
     marginBottom: 4,
   },
   subtitle: {
+    fontFamily: "Manrope",
     fontSize: 13,
   },
 
@@ -186,6 +188,7 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
   },
   indexNum: {
+    fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "600",
     letterSpacing: 0.5,
@@ -210,17 +213,20 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   newBadgeText: {
+    fontFamily: "Manrope",
     fontSize: 9,
     fontWeight: "700",
     color: "#1B060F",
     letterSpacing: 0.5,
   },
   cardTitle: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
     lineHeight: 20,
   },
   cardSub: {
+    fontFamily: "Manrope",
     fontSize: 11,
   },
   metaRow: {
@@ -229,6 +235,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   metaText: {
+    fontFamily: "Manrope",
     fontSize: 11,
   },
 
@@ -241,6 +248,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   loadMoreText: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
   },
@@ -253,6 +261,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   endText: {
+    fontFamily: "Manrope",
     fontSize: 13,
   },
 });

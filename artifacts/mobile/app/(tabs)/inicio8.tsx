@@ -1230,15 +1230,18 @@ const styles = StyleSheet.create({
     paddingVertical: 11,
   },
   moodEmoji: {
+    fontFamily: "Manrope",
     fontSize: 22,
   },
   moodRowLabel: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 16,
     fontWeight: "600",
     color: "#FBFBFB",
   },
   moodSientesLabel: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "600",
     color: "#FBFBFB",
@@ -1253,9 +1256,11 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   moodPillEmoji: {
+    fontFamily: "Manrope",
     fontSize: 16,
   },
   moodPillLabel: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
     color: "#fff",
@@ -1283,6 +1288,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -37 }],
   },
   intencionSuper: {
+    fontFamily: "Manrope",
     fontSize: 13,
     color: "rgba(237,225,211,0.45)",
     marginBottom: 8,
@@ -1301,6 +1307,7 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   intencionText: {
+    fontFamily: "Manrope",
     fontSize: 22,
     color: "#FBFBFB",
     fontWeight: "300",
@@ -1308,6 +1315,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   intencionPlaceholder: {
+    fontFamily: "Manrope",
     fontSize: 20,
     color: "rgba(255,255,255,0.9)",
     fontWeight: "600",
@@ -1386,6 +1394,7 @@ const styles = StyleSheet.create({
     height: 34,
   },
   searchInput: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 14,
     color: "#FBFBFB",
@@ -1418,11 +1427,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   searchResultCat: {
+    fontFamily: "Manrope",
     fontSize: 11,
     color: "rgba(242,231,228,0.45)",
     marginBottom: 2,
   },
   searchResultTitle: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
     color: "#FBFBFB",
@@ -1433,6 +1444,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   searchEmptyText: {
+    fontFamily: "Manrope",
     fontSize: 13,
     color: "rgba(242,231,228,0.45)",
     textAlign: "center",
@@ -1479,6 +1491,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   avatarInitialText: {
+    fontFamily: "Manrope",
     color: "#F7CB6B",
     fontSize: 14,
     fontWeight: "700",
@@ -1538,12 +1551,14 @@ const styles = StyleSheet.create({
     paddingLeft: 6,
   },
   headerTabText: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "600",
     color: "#FBFBFB",
     letterSpacing: 0.1,
   },
   headerTabTextActive: {
+    fontFamily: "Manrope",
     color: "#1B060F",
     fontWeight: "600",
   },
@@ -1553,6 +1568,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   intentionLabel: {
+    fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "500",
     letterSpacing: 0.5,
@@ -1567,6 +1583,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   intentionPlaceholder: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
     letterSpacing: 0.1,
@@ -1587,7 +1604,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 0,
   },
-  sectionTitle: { fontSize: 21, fontWeight: "700", letterSpacing: 0.3, marginBottom: 21, color: "#FBFBFB" },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700", letterSpacing: 0.3, marginBottom: 21, color: "#FBFBFB" },
   resonadoresBanner: {
     height: 80,
     borderRadius: 14,
@@ -1629,11 +1646,13 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   resonadoresBannerTitle: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "400",
     color: "#FBFBFB",
   },
   resonadoresBannerSub: {
+    fontFamily: "Manrope",
     fontSize: 12,
     color: "#F4F4F4",
     marginTop: 2,
@@ -1641,7 +1660,7 @@ const styles = StyleSheet.create({
   resonadoresBannerChevron: {
     marginLeft: 8,
   },
-  verTodasLink: { fontSize: 13, fontWeight: "400" },
+  verTodasLink: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400" },
 
   // Explorar todo — grid 2 columnas, icono arriba + texto centrado
   temaGrid: {
@@ -1664,6 +1683,7 @@ const styles = StyleSheet.create({
     height: 28,
   },
   temaCellLabel: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
     textAlign: "center",
@@ -1679,8 +1699,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     alignItems: "center",
   },
-  videosEmptyTitle: { fontSize: 16, fontWeight: "700", marginBottom: 8 },
-  videosEmptySub: { fontSize: 13, textAlign: "center", lineHeight: 19 },
+  videosEmptyTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", marginBottom: 8 },
+  videosEmptySub: { fontFamily: "Manrope", fontSize: 13, textAlign: "center", lineHeight: 19 },
 
   // Categories — 2×2 grid cards
   catGrid: {
@@ -1710,6 +1730,7 @@ const styles = StyleSheet.create({
     height: 32,
   },
   catCardLabel: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
     color: "#FBFBFB",
@@ -1748,11 +1769,13 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
   },
   recentDurText: {
+    fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "600",
     color: "#FBFBFB",
   },
   recentTitle: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
     color: "#FBFBFB",
@@ -1772,6 +1795,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(74,12,12,0.08)",
   },
   recentCreatorName: {
+    fontFamily: "Manrope",
     fontSize: 11,
     color: "#F4F4F4",
     flex: 1,
@@ -1786,10 +1810,10 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   heroImage: { width: "100%", height: "100%" },
-  heroMetaText: { fontSize: 11, lineHeight: 14, color: "#F4F4F4", marginBottom: 6 },
-  heroTitle: { fontSize: 15, fontWeight: "700", lineHeight: 20, color: "#FBFBFB", marginBottom: 4 },
+  heroMetaText: { fontFamily: "Manrope", fontSize: 11, lineHeight: 14, color: "#F4F4F4", marginBottom: 6 },
+  heroTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, color: "#FBFBFB", marginBottom: 4 },
   heroAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(255,255,255,0.05)" },
-  heroAuthor: { fontSize: 12, color: "#F4F4F4", marginTop: 2 },
+  heroAuthor: { fontFamily: "Manrope", fontSize: 12, color: "#F4F4F4", marginTop: 2 },
   heroBtn: {
     width: 46,
     height: 46,
@@ -1823,8 +1847,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  squareTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.2, marginTop: 12, textAlign: "center", color: "#FBFBFB" },
-  squareSub: { fontSize: 12.5, lineHeight: 17, marginTop: 4, textAlign: "center" },
+  squareTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", letterSpacing: 0.2, marginTop: 12, textAlign: "center", color: "#FBFBFB" },
+  squareSub: { fontFamily: "Manrope", fontSize: 12.5, lineHeight: 17, marginTop: 4, textAlign: "center" },
   diarioList: { gap: 10 },
 
   // Legacy
@@ -1836,10 +1860,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  sectionSub: { fontSize: 12, marginTop: 4, marginBottom: 16 },
-  seeAll: { fontSize: 13 },
-  heroLabel: { fontSize: 10, letterSpacing: 2, marginBottom: 6, fontWeight: "600" },
-  heroSub: { fontSize: 13, marginBottom: 18, opacity: 0.85 },
+  sectionSub: { fontFamily: "Manrope", fontSize: 12, marginTop: 4, marginBottom: 16 },
+  seeAll: { fontFamily: "Manrope", fontSize: 13 },
+  heroLabel: { fontFamily: "Manrope", fontSize: 10, letterSpacing: 2, marginBottom: 6, fontWeight: "600" },
+  heroSub: { fontFamily: "Manrope", fontSize: 13, marginBottom: 18, opacity: 0.85 },
 
   // Banner premium compacto
   premBannerOuter: {
@@ -1866,8 +1890,8 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     flexShrink: 0,
   },
-  premTitle: { fontSize: 15, fontWeight: "700", color: "#FBFBFB", lineHeight: 20, marginBottom: 2 },
-  premSub:   { fontSize: 12, color: "rgba(255,255,255,0.52)" },
+  premTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FBFBFB", lineHeight: 20, marginBottom: 2 },
+  premSub:   { fontFamily: "Manrope", fontSize: 12, color: "rgba(255,255,255,0.52)" },
   premChevron: {
     width: 26, height: 26, borderRadius: 13,
     backgroundColor: "rgba(255,255,255,0.025)",

@@ -168,9 +168,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  title: { fontSize: 18, fontWeight: "700" },
+  title: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
   empty: { flex: 1, alignItems: "center", justifyContent: "center", paddingBottom: 80 },
-  emptyText: { fontSize: 14, textAlign: "center" },
+  emptyText: { fontFamily: "Manrope", fontSize: 14, textAlign: "center" },
   row: {
     flexDirection: "row",
     alignItems: "center",
@@ -186,13 +186,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  name: { fontSize: 14, fontWeight: "700" },
-  username: { fontSize: 12, marginTop: 1 },
+  name: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700" },
+  username: { fontFamily: "Manrope", fontSize: 12, marginTop: 1 },
   followBtn: {
     borderRadius: 20,
     borderWidth: 1.5,
     paddingHorizontal: 16,
     paddingVertical: 6,
   },
-  followBtnText: { fontSize: 13, fontWeight: "700" },
+  followBtnText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700" },
 });

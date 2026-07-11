@@ -315,8 +315,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  headerTitle: { color: "#FFFFFF", fontSize: 15, fontWeight: "700", lineHeight: 20 },
-  headerSubtitle: { color: "#FFFFFF", fontSize: 11, marginTop: 1 },
+  headerTitle: { fontFamily: "Manrope", color: "#FFFFFF", fontSize: 15, fontWeight: "700", lineHeight: 20 },
+  headerSubtitle: { fontFamily: "Manrope", color: "#FFFFFF", fontSize: 11, marginTop: 1 },
   historyToggle: {
     flexDirection: "row",
     alignItems: "center",
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
-  historyCount: { color: "#FFFFFF", fontSize: 12, fontWeight: "600" },
+  historyCount: { fontFamily: "Manrope", color: "#FFFFFF", fontSize: 12, fontWeight: "600" },
   historyHeaderRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 6,
   },
-  deleteAllText: { fontSize: 10, fontWeight: "700", letterSpacing: 0.4 },
+  deleteAllText: { fontFamily: "Manrope", fontSize: 10, fontWeight: "700", letterSpacing: 0.4 },
 
   recordArea: {
     alignItems: "center",
@@ -393,11 +393,11 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: "#D4304A",
   },
-  timerText: { fontSize: 18, fontWeight: "700", letterSpacing: 2, fontVariant: ["tabular-nums"] },
-  timerHint: { fontSize: 12, letterSpacing: 0.3 },
+  timerText: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 2, fontVariant: ["tabular-nums"] },
+  timerHint: { fontFamily: "Manrope", fontSize: 12, letterSpacing: 0.3 },
 
   history: { borderTopWidth: 1, padding: 14, gap: 10 },
-  historyTitle: { fontSize: 10, letterSpacing: 1.5, fontWeight: "600", marginBottom: 4 },
+  historyTitle: { fontFamily: "Manrope", fontSize: 10, letterSpacing: 1.5, fontWeight: "600", marginBottom: 4 },
 
   // Entry card
   entryCard: { borderWidth: 1, borderRadius: 14, padding: 12, gap: 8 },
@@ -413,11 +413,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   titleText: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
     flex: 1,
   },
   titlePlaceholder: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontStyle: "italic",
     flex: 1,
@@ -426,6 +428,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   titleInput: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
     borderBottomWidth: 1,
@@ -446,8 +449,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   entryMeta: { flex: 1 },
-  entryDate: { fontSize: 10, fontWeight: "600", letterSpacing: 0.4 },
-  entryDuration: { fontSize: 13, fontWeight: "600", marginTop: 2, fontVariant: ["tabular-nums"] },
+  entryDate: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600", letterSpacing: 0.4 },
+  entryDuration: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", marginTop: 2, fontVariant: ["tabular-nums"] },
   deleteBtn: { padding: 6 },
   progressTrack: {
     height: 3,
@@ -470,6 +473,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
   },
   favBadgeText: {
+    fontFamily: "Manrope",
     fontSize: 9,
     fontWeight: "700",
     letterSpacing: 0.4,

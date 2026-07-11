@@ -343,16 +343,17 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
   },
   backBtn: { width: 40, alignItems: "flex-start" },
-  headerTitle: { fontSize: 17, fontWeight: "600", letterSpacing: 0.3 },
+  headerTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "600", letterSpacing: 0.3 },
 
   scroll: { paddingTop: 10 },
 
   chipWrap: { marginHorizontal: 0, marginBottom: 4 },
   chipRow: { paddingHorizontal: 20, gap: 10 },
   chip: { paddingHorizontal: 20, paddingVertical: 9, borderRadius: 20, borderWidth: 1 },
-  chipText: { fontSize: 14, fontWeight: "600" },
+  chipText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600" },
 
   description: {
+    fontFamily: "Manrope",
     fontSize: 13,
     textAlign: "center",
     lineHeight: 20,
@@ -386,12 +387,14 @@ const styles = StyleSheet.create({
   },
   circleContent: { alignItems: "center" },
   phaseLabel: {
+    fontFamily: "Manrope",
     fontSize: 22,
     fontWeight: "700",
     color: "#FFFFFF",
     letterSpacing: 0.4,
   },
   countdownNum: {
+    fontFamily: "Manrope",
     fontSize: 38,
     fontWeight: "200",
     color: "#F7CB6B",
@@ -399,6 +402,7 @@ const styles = StyleSheet.create({
     lineHeight: 44,
   },
   completedIcon: {
+    fontFamily: "Manrope",
     fontSize: 44,
     color: "#F7CB6B",
   },
@@ -410,7 +414,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   cycleDot: { width: 9, height: 9, borderRadius: 5 },
-  cycleLabel: { fontSize: 13, textAlign: "center", marginBottom: 30, letterSpacing: 0.2 },
+  cycleLabel: { fontFamily: "Manrope", fontSize: 13, textAlign: "center", marginBottom: 30, letterSpacing: 0.2 },
 
   legend: {
     flexDirection: "row",
@@ -422,7 +426,7 @@ const styles = StyleSheet.create({
   },
   legendItem: { flexDirection: "row", alignItems: "center", gap: 7 },
   legendDot: { width: 6, height: 6, borderRadius: 3 },
-  legendText: { fontSize: 12.5 },
+  legendText: { fontFamily: "Manrope", fontSize: 12.5 },
 
   mainBtn: {
     flexDirection: "row",
@@ -436,6 +440,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   mainBtnText: {
+    fontFamily: "Manrope",
     fontSize: 17,
     fontWeight: "700",
     color: "#1B060F",

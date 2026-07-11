@@ -789,16 +789,18 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 20,
   },
-  badgeText: { fontSize: 9, letterSpacing: 1.5, fontWeight: "700" },
+  badgeText: { fontFamily: "Manrope", fontSize: 9, letterSpacing: 1.5, fontWeight: "700" },
 
   // Category pill
   durationLabel: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "500",
     color: "#FBFBFB",
     marginTop: 29,
   },
   authorNameInline: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "500",
     color: "#FBFBFB",
@@ -806,6 +808,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   authorNameLink: {
+    fontFamily: "Manrope",
     textDecorationLine: "underline",
     textDecorationColor: "#FBFBFB",
   },
@@ -824,6 +827,7 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   title: {
+    fontFamily: "Manrope",
     fontSize: 26,
     fontWeight: "400",
     lineHeight: 33,
@@ -833,6 +837,7 @@ const styles = StyleSheet.create({
 
   // Description
   description: {
+    fontFamily: "Manrope",
     fontSize: 15,
     lineHeight: 23,
     marginTop: 30,
@@ -848,7 +853,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
   },
-  tagChipText: { fontSize: 12, fontWeight: "600", letterSpacing: 0.2 },
+  tagChipText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", letterSpacing: 0.2 },
 
   // Author section
   authorSection: { marginTop: 37, marginBottom: 28 },
@@ -868,10 +873,10 @@ const styles = StyleSheet.create({
     marginTop: 7,
     marginBottom: 14,
   },
-  authorName: { fontSize: 22, fontWeight: "800", marginTop: 15, marginBottom: 4 },
-  authorCountry: { fontSize: 14, color: "#FBFBFB", marginTop: 6, marginBottom: 8 },
-  authorBio: { fontSize: 14, lineHeight: 21, color: "#FBFBFB", marginTop: 6 },
-  authorLink: { fontSize: 13, fontWeight: "600" },
+  authorName: { fontFamily: "Manrope", fontSize: 22, fontWeight: "800", marginTop: 15, marginBottom: 4 },
+  authorCountry: { fontFamily: "Manrope", fontSize: 14, color: "#FBFBFB", marginTop: 6, marginBottom: 8 },
+  authorBio: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21, color: "#FBFBFB", marginTop: 6 },
+  authorLink: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
   allContentsBtn: {
     alignItems: "center",
     justifyContent: "center",
@@ -885,6 +890,7 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   allContentsBtnText: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
     letterSpacing: 0.3,
@@ -892,6 +898,7 @@ const styles = StyleSheet.create({
   },
 
   blockTitle: {
+    fontFamily: "Manrope",
     fontSize: 18,
     fontWeight: "700",
     letterSpacing: 0.2,
@@ -916,10 +923,10 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 4,
   },
-  relatedCardTitle: { fontSize: 14, fontWeight: "700", lineHeight: 19 },
+  relatedCardTitle: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", lineHeight: 19 },
   relatedAuthorRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   relatedAuthorAvatar: { width: 18, height: 18, borderRadius: 9 },
-  relatedCardSub: { fontSize: 12 },
+  relatedCardSub: { fontFamily: "Manrope", fontSize: 12 },
   // Sticky header
   stickyHeader: {
     position: "absolute",
@@ -963,12 +970,14 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   stickyTitle: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "400",
     color: "#FBFBFB",
     textAlign: "center",
   },
   stickySubtitle: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "400",
     color: "rgba(255,255,255,0.5)",
@@ -988,6 +997,7 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   playBtnText: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
     letterSpacing: 0.5,
@@ -1005,6 +1015,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   shareBtnText: {
+    fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
     color: "#D6AD5F",
@@ -1043,6 +1054,7 @@ const styles = StyleSheet.create({
     marginBottom: -16,
   },
   playsText: {
+    fontFamily: "Manrope",
     fontSize: 12,
     color: "#F7CB6B",
   },
@@ -1081,6 +1093,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   ratingTitle: {
+    fontFamily: "Manrope",
     fontSize: 22,
     fontWeight: "700",
     color: "#FBFBFB",
@@ -1089,6 +1102,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   ratingSubtitle: {
+    fontFamily: "Manrope",
     fontSize: 14,
     color: "#F4F4F4",
     textAlign: "center",
@@ -1102,6 +1116,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   ratingReviewInput: {
+    fontFamily: "Manrope",
     width: "80%",
     minHeight: 80,
     backgroundColor: "rgba(255,255,255,0.07)",
@@ -1126,12 +1141,14 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   ratingSubmitText: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
     color: "#1B060F",
     letterSpacing: 0.5,
   },
   ratingDismissText: {
+    fontFamily: "Manrope",
     fontSize: 14,
     color: "rgba(255,255,255,0.50)",
     paddingVertical: 4,
@@ -1166,6 +1183,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.08)",
   },
   optSessionTitle: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "400",
     color: "#FBFBFB",
@@ -1174,6 +1192,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   optSessionAuthor: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "300",
     color: "#F4F4F4",
@@ -1191,11 +1210,13 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   optIcon: {
+    fontFamily: "Manrope",
     marginRight: 16,
     width: 22,
     textAlign: "center",
   },
   optRowText: {
+    fontFamily: "Manrope",
     fontSize: 16,
     color: "#FBFBFB",
     flex: 1,

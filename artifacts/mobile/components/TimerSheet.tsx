@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   title: {
+    fontFamily: "Manrope",
     flex: 1,
     fontSize: 17,
     fontWeight: "700",
@@ -167,6 +168,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   description: {
+    fontFamily: "Manrope",
     fontSize: 13,
     lineHeight: 19,
     marginBottom: 16,
@@ -180,6 +182,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "rgba(61,14,22,0.40)",
   },
   optLabel: {
+    fontFamily: "Manrope",
     fontSize: 16,
   },
 });

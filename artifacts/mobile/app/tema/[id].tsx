@@ -214,6 +214,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   stickyTitle: {
+    fontFamily: "Manrope",
     fontSize: 22,
     fontWeight: "700",
     flex: 1,
@@ -239,6 +240,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
+    fontFamily: "Manrope",
     fontSize: 28,
     fontWeight: "700",
     letterSpacing: 0.2,
@@ -246,6 +248,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   description: {
+    fontFamily: "Manrope",
     fontSize: 14,
     lineHeight: 22,
     textAlign: "center",
@@ -272,6 +275,7 @@ const styles = StyleSheet.create({
     paddingVertical: 60,
   },
   emptyText: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "600",
   },

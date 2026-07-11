@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  pillLabel: { fontSize: 14, fontWeight: "700", textAlign: "center", paddingLeft: 3 },
+  pillLabel: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", textAlign: "center", paddingLeft: 3 },
 
   token: {
     width: 96,
@@ -245,6 +245,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 14,
   },
-  msgTitle: { fontSize: 19, fontWeight: "700", letterSpacing: 0.3, marginBottom: 6 },
-  msgSub: { fontSize: 14, lineHeight: 20, textAlign: "center" },
+  msgTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", letterSpacing: 0.3, marginBottom: 6 },
+  msgSub: { fontFamily: "Manrope", fontSize: 14, lineHeight: 20, textAlign: "center" },
 });

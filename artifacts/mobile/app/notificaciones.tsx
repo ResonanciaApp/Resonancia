@@ -258,8 +258,8 @@ export default function NotificacionesScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   headerRow: { flexDirection: "row", alignItems: "center", marginBottom: 16, height: 40 },
-  title: { fontSize: 26, fontWeight: "700", marginBottom: 20 },
-  empty: { fontSize: 14, textAlign: "center", marginTop: 40 },
+  title: { fontFamily: "Manrope", fontSize: 26, fontWeight: "700", marginBottom: 20 },
+  empty: { fontFamily: "Manrope", fontSize: 14, textAlign: "center", marginTop: 40 },
   row: {
     flexDirection: "row",
     alignItems: "center",
@@ -282,9 +282,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  initials: { fontSize: 15, fontWeight: "700" },
-  text: { fontSize: 14, lineHeight: 20, marginBottom: 4 },
-  time: { fontSize: 12 },
+  initials: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700" },
+  text: { fontFamily: "Manrope", fontSize: 14, lineHeight: 20, marginBottom: 4 },
+  time: { fontFamily: "Manrope", fontSize: 12 },
   dot: { width: 8, height: 8, borderRadius: 4 },
   countBadge: {
     minWidth: 24,
@@ -294,5 +294,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  countText: { color: "#080F0A", fontSize: 12, fontWeight: "700" },
+  countText: { fontFamily: "Manrope", color: "#080F0A", fontSize: 12, fontWeight: "700" },
 });

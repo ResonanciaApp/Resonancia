@@ -133,6 +133,6 @@ const styles = StyleSheet.create({
   },
   btnText: { color: COLORS.fg, fontFamily: "Manrope", fontWeight: "600", fontSize: 15 },
   googleG: { color: "#EA4335", fontSize: 18, fontFamily: "Manrope", fontWeight: "700" },
-  appleIcon: { color: COLORS.fg, fontSize: 18 },
-  errorText: { color: COLORS.error, fontSize: 13, marginTop: 6, textAlign: "center" },
+  appleIcon: { fontFamily: "Manrope", color: COLORS.fg, fontSize: 18 },
+  errorText: { fontFamily: "Manrope", color: COLORS.error, fontSize: 13, marginTop: 6, textAlign: "center" },
 });

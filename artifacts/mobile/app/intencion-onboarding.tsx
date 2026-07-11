@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
+    fontFamily: "Manrope",
     fontSize: 28,
     fontWeight: "700",
     textAlign: "center",
@@ -126,6 +127,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   subtitle: {
+    fontFamily: "Manrope",
     fontSize: 15,
     lineHeight: 23,
     textAlign: "center",
@@ -139,6 +141,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   tipsTitle: {
+    fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "700",
     marginBottom: 18,
@@ -155,7 +158,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexShrink: 0,
   },
-  tipText: { fontSize: 14, lineHeight: 20, flex: 1 },
+  tipText: { fontFamily: "Manrope", fontSize: 14, lineHeight: 20, flex: 1 },
 
   exampleCard: {
     borderRadius: 16,
@@ -164,13 +167,14 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   exampleLabel: {
+    fontFamily: "Manrope",
     fontSize: 10,
     fontWeight: "700",
     letterSpacing: 2,
     marginBottom: 8,
   },
-  exampleHoy: { fontSize: 12, marginBottom: 4 },
-  exampleText: { fontSize: 15, fontWeight: "600", fontStyle: "italic", lineHeight: 22 },
+  exampleHoy: { fontFamily: "Manrope", fontSize: 12, marginBottom: 4 },
+  exampleText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", fontStyle: "italic", lineHeight: 22 },
 
   footer: {
     paddingHorizontal: 28,
@@ -185,5 +189,5 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     gap: 8,
   },
-  btnText: { fontSize: 16, fontWeight: "700", color: "#070E09" },
+  btnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: "#070E09" },
 });

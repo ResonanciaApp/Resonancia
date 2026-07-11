@@ -6277,6 +6277,7 @@ const styles = StyleSheet.create({
     opacity: 0.95,
   },
   landingTitle: {
+    fontFamily: "Manrope",
     fontSize: 26,
     fontWeight: "700",
     color: "#EDE1D3",
@@ -6284,6 +6285,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   landingSubtitle: {
+    fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "500",
     color: "#e8e6f5",
@@ -6328,6 +6330,7 @@ const styles = StyleSheet.create({
   },
   cbText: { flex: 1 },
   cbTitle: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700" as const,
     color: "#EDE1D3",
@@ -6335,6 +6338,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   cbDesc: {
+    fontFamily: "Manrope",
     fontSize: 12,
     color: "#a79fb8",
     lineHeight: 17,
@@ -6350,6 +6354,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   cbTagText: {
+    fontFamily: "Manrope",
     fontSize: 10,
     color: "#dbd1f3",
     letterSpacing: 0.5,
@@ -6386,16 +6391,19 @@ const styles = StyleSheet.create({
   },
   landingItemText: { flex: 1 },
   landingItemTitle: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "700",
     color: "#EDE1D3",
     marginBottom: 2,
   },
   landingItemDesc: {
+    fontFamily: "Manrope",
     fontSize: 12,
     color: "#a79fb8",
   },
   landingHint: {
+    fontFamily: "Manrope",
     textAlign: "center",
     fontSize: 11,
     color: "rgba(122,143,168,0.6)",
@@ -6429,9 +6437,9 @@ const styles = StyleSheet.create({
   // Título + logo cubo-3 en línea; el logo a la altura del texto del título.
   titleRow: { flexDirection: "row", alignItems: "center" },
   titleLogo: { width: 18, height: 18, marginLeft: 5, opacity: 0.92 },
-  title: { fontSize: 25, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3, lineHeight: 25 },
-  titleDesc: { fontSize: 12, color: "#BBA8E8", marginTop: 3, letterSpacing: 0.2 },
-  subtitle: { fontSize: 13, color: "#BBA8E8", marginTop: 3 },
+  title: { fontFamily: "Manrope", fontSize: 25, fontWeight: "700", color: "#FFFFFF", letterSpacing: 0.3, lineHeight: 25 },
+  titleDesc: { fontFamily: "Manrope", fontSize: 12, color: "#BBA8E8", marginTop: 3, letterSpacing: 0.2 },
+  subtitle: { fontFamily: "Manrope", fontSize: 13, color: "#BBA8E8", marginTop: 3 },
 
   // ── Botón "tema de fondo" (top-right del header) ──
   // Mismo tamaño y fondo que el botón Fuego de Inicio (40×40, borderRadius 20)
@@ -6458,8 +6466,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  themeTitle: { fontSize: 20, fontWeight: "700", color: colors.foreground },
-  themeSub: { fontSize: 13, color: "#BBA8E8", marginTop: 4, marginBottom: 14 },
+  themeTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: colors.foreground },
+  themeSub: { fontFamily: "Manrope", fontSize: 13, color: "#BBA8E8", marginTop: 4, marginBottom: 14 },
   themeSearchBar: {
     flexDirection: "row",
     alignItems: "center",
@@ -6469,9 +6477,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     height: 44,
   },
-  themeSearchInput: { flex: 1, fontSize: 15, color: colors.foreground, paddingVertical: 0 },
+  themeSearchInput: { fontFamily: "Manrope", flex: 1, fontSize: 15, color: colors.foreground, paddingVertical: 0 },
   themeResults: { marginTop: 12, flex: 1 },
-  themeHint: { color: "#BBA8E8", fontSize: 13, textAlign: "center", marginTop: 24 },
+  themeHint: { fontFamily: "Manrope", color: "#BBA8E8", fontSize: 13, textAlign: "center", marginTop: 24 },
   themeRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -6499,8 +6507,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.04)",
   },
-  themeRowTitle: { fontSize: 14, fontWeight: "600", color: colors.foreground },
-  themeRowSub: { fontSize: 12, color: "#BBA8E8", marginTop: 2 },
+  themeRowTitle: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: colors.foreground },
+  themeRowSub: { fontFamily: "Manrope", fontSize: 12, color: "#BBA8E8", marginTop: 2 },
   themeSelectBtn: {
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -6510,6 +6518,7 @@ const styles = StyleSheet.create({
     borderColor: hexAlpha(colors.primary, 0.5),
   },
   themeSelectBtnText: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "700",
     color: colors.primary,
@@ -6537,6 +6546,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(101,132,212,0.15)",
   },
   catChipText: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "600",
     color: "#c7caec",
@@ -6556,6 +6566,7 @@ const styles = StyleSheet.create({
   tileWrap: { position: "absolute", left: 0, top: 0 },
   tileDragging: { zIndex: 50, elevation: 8 },
   tileTitle: {
+    fontFamily: "Manrope",
     marginTop: 3,
     paddingHorizontal: 4,
     paddingBottom: 1,
@@ -6572,7 +6583,7 @@ const styles = StyleSheet.create({
   },
   tileGlyph: { flex: 1, alignItems: "center", justifyContent: "center" },
   tileHaloWrap: { alignItems: "center", justifyContent: "center" },
-  tileLabel: { fontSize: 11, fontWeight: "600", textAlign: "center", paddingHorizontal: 4 },
+  tileLabel: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", textAlign: "center", paddingHorizontal: 4 },
 
   divider: {
     height: StyleSheet.hairlineWidth,
@@ -6804,6 +6815,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   menuGlyphName: {
+    fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
     color: "#7A8FA8",
@@ -6817,6 +6829,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
   },
   menuItemText: {
+    fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "400",
     color: CANVAS_ICON,
@@ -6877,14 +6890,15 @@ const styles = StyleSheet.create({
     borderColor: "rgba(190,150,80,0.4)",
     marginBottom: 2,
   },
-  savedTitle: { fontSize: 19, fontWeight: "700", color: colors.foreground },
+  savedTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", color: colors.foreground },
   savedSubtitle: {
+    fontFamily: "Manrope",
     fontSize: 13.5,
     color: "#BBA8E8",
     textAlign: "center",
     lineHeight: 20,
   },
-  savedName: { color: colors.foreground, fontWeight: "600" },
+  savedName: { fontFamily: "Manrope", color: colors.foreground, fontWeight: "600" },
   savedActions: {
     flexDirection: "row",
     gap: 10,
@@ -6900,7 +6914,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  savedBtnGhostText: { fontSize: 14, fontWeight: "600", color: colors.mutedForeground },
+  savedBtnGhostText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: colors.mutedForeground },
   savedBtnPrimary: {
     flex: 1,
     paddingVertical: 12,
@@ -6909,7 +6923,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  savedBtnPrimaryText: { fontSize: 14, fontWeight: "700", color: colors.primaryForeground },
+  savedBtnPrimaryText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", color: colors.primaryForeground },
 
   // Interruptor
   toggle: {
@@ -6958,6 +6972,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   previewLabel: {
+    fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "600",
     color: colors.mutedForeground,
@@ -7008,14 +7023,15 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.04)",
     marginBottom: 14,
   },
-  sheetTitle: { fontSize: 20, fontWeight: "700", color: CANVAS_ICON },
+  sheetTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: CANVAS_ICON },
   sheetEmpty: { alignItems: "center", gap: 10, paddingVertical: 40 },
-  sheetEmptyText: { fontSize: 14, color: colors.mutedForeground, textAlign: "center" },
+  sheetEmptyText: { fontFamily: "Manrope", fontSize: 14, color: colors.mutedForeground, textAlign: "center" },
 
   geoCard: {
     gap: 8,
   },
   geoCardName: {
+    fontFamily: "Manrope",
     flexShrink: 1,
     minWidth: 0,
     fontSize: 14,
@@ -7038,6 +7054,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   toggleTriLabel: {
+    fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "600",
     color: colors.mutedForeground,
@@ -7046,7 +7063,7 @@ const styles = StyleSheet.create({
   },
 
   gradientLabel: { marginTop: 10 },
-  fieldLabel: { fontSize: 12, fontWeight: "600", color: CANVAS_ICON },
+  fieldLabel: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: CANVAS_ICON },
   fieldRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -7089,6 +7106,7 @@ const styles = StyleSheet.create({
     zIndex: 20,
   },
   rotBadgeText: {
+    fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "600" as const,
     color: "#FBFBFB",
@@ -7124,7 +7142,7 @@ const styles = StyleSheet.create({
   empty: { alignItems: "center", gap: 6 },
   emptyLogoWrap: { marginBottom: 10 },
   emptyLogo: { width: 43, height: 43, opacity: 0.9 },
-  emptyText: { fontSize: 14, fontWeight: "600", color: "#FFFFFF", marginTop: 4 },
-  emptySub: { fontSize: 12, color: colors.mutedForeground },
+  emptyText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: "#FFFFFF", marginTop: 4 },
+  emptySub: { fontFamily: "Manrope", fontSize: 12, color: colors.mutedForeground },
 
 });

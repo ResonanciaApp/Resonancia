@@ -588,7 +588,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: BORDER,
   },
-  rippleEmoji: { fontSize: 36 },
+  rippleEmoji: { fontFamily: "Manrope", fontSize: 36 },
   closingTitle: {
     color: FG,
     fontSize: 28,
@@ -632,7 +632,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: BORDER,
   },
-  backArrow: { color: GOLD, fontSize: 18 },
+  backArrow: { fontFamily: "Manrope", color: GOLD, fontSize: 18 },
 
   // Dots
   dots: { flexDirection: "row", alignItems: "center", gap: 5 },
@@ -677,7 +677,7 @@ const styles = StyleSheet.create({
     borderColor: GOLD,
     backgroundColor: "rgba(212,175,55,0.08)",
   },
-  optionEmoji: { fontSize: 26 },
+  optionEmoji: { fontFamily: "Manrope", fontSize: 26 },
   optionLabel: {
     flex: 1,
     color: FG,
@@ -693,7 +693,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  checkText: { color: "#fff", fontSize: 12, fontWeight: "700" },
+  checkText: { fontFamily: "Manrope", color: "#fff", fontSize: 12, fontWeight: "700" },
 
   // CTA
   ctaContainer: {
