@@ -2423,3 +2423,9 @@ id = "FKPDVkNensY9H8nM4sI0s"
 uri = "file://.local/outputs/RESONANCIA-Decisiones-Lanzamiento.pdf"
 type = "pdf"
 title = "RESONANCIA — Decisiones de Lanzamiento (PDF, diapositivas 9–16)"
+
+[[outputs]]
+id = "sTv5UDnaneLSjXtks6ptc"
+uri = "file://.local/outputs/RESONANCIA-Pitch-Pulso4.pdf"
+type = "pdf"
+title = "RESONANCIA — Pitch Pulso 4 (PDF)"
