@@ -667,8 +667,7 @@ export default function MezcladorScreen() {
       <View style={styles.inner}>
 
         {/* ── Zona superior ── */}
-        <View style={styles.topPanelShadow}>
-          <View style={[styles.topPanel, { paddingTop: topPad + 2, backgroundColor: theme.gradient[0] }]}>
+        <View style={{ zIndex: 10, paddingTop: topPad + 2, backgroundColor: theme.gradient[0] }}>
             {/* ── Header ── */}
             <View style={styles.header}>
               <View style={styles.headerRow}>
@@ -753,11 +752,8 @@ export default function MezcladorScreen() {
                   </ScrollView>
                 </SubTabSlide>
               </View>
-            ) : (
-              <View style={styles.separator} />
             )}
 
-          </View>
         </View>
 
         {/* ── Scroll principal ── */}
