@@ -25,6 +25,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MiniPlayer } from "@/components/MiniPlayer";
 import { DormirMiniPlayer } from "@/components/DormirMiniPlayer";
 import { DormirExpandedPlayer } from "@/components/DormirExpandedPlayer";
+import { DormirSessionExpandedPlayer } from "@/components/DormirSessionExpandedPlayer";
 import { SessionMiniPlayer } from "@/components/SessionMiniPlayer";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
@@ -445,7 +446,7 @@ function TabLayoutInner() {
   const selectedSound = descansoPlayer.selectedId
     ? (DESCANSO_SOUNDS.find((s) => s.id === descansoPlayer.selectedId) ?? null)
     : null;
-  const { isExpanded, setIsExpanded } = descansoPlayer;
+  const { isExpanded, setIsExpanded, isSessionExpanded, setIsSessionExpanded } = descansoPlayer;
 
   // ¿La sesión actual pertenece a alguna playlist? → PlaylistMiniPlayer persistente
   const activePlaylist = currentSession
@@ -528,6 +529,14 @@ function TabLayoutInner() {
           />
         </>
       )}
+
+      {/* ── DormirSessionExpandedPlayer (Historias/ASMR desde Dormir) ──────── */}
+      <DormirSessionExpandedPlayer
+        isExpanded={isSessionExpanded}
+        onCollapse={() => setIsSessionExpanded(false)}
+        bottomInset={bottomPb}
+        topInset={topPad}
+      />
 
       {/* ── SessionMiniPlayer (Historias/ASMR minimizadas desde el player) ─── */}
       <SessionMiniPlayer bottomOffset={miniPlayerBottom} topOffset={topPad} />

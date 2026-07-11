@@ -303,7 +303,7 @@ export default function DescansoScreen() {
 
   const [activeTab,   setActiveTab]   = useState<SleepTabId>("historias");
   const [timerSheet,  setTimerSheet]  = useState(false);
-  const { timerMinutes: timerMin, setTimerMinutes: setTimerMin, fadeVolume: fadeVol, setFadeVolume: setFadeVol, ...player } = useDescansoPlayerContext();
+  const { timerMinutes: timerMin, setTimerMinutes: setTimerMin, fadeVolume: fadeVol, setFadeVolume: setFadeVol, setIsSessionExpanded, ...player } = useDescansoPlayerContext();
 
   const scrollY      = useRef(new Animated.Value(0)).current;
   const [stickyVisible, setStickyVisible] = useState(false);
@@ -460,10 +460,10 @@ export default function DescansoScreen() {
                 showAuthorAvatar={false}
                 overridePress={() => {
                   if (currentSession?.id === session.id) {
-                    stop();
+                    setIsSessionExpanded(true);
                   } else {
                     playSession(session);
-                    router.push({ pathname: "/player", params: { anim: "fade" } } as never);
+                    setIsSessionExpanded(true);
                   }
                 }}
                 playing={currentSession?.id === session.id}
