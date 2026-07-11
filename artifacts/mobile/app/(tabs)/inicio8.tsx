@@ -840,6 +840,22 @@ export default function HomeScreen2() {
           </Pressable>
         </View>
 
+        {/* ── ESTABLECE TU INTENCIÓN ── */}
+        <Pressable
+          onPress={() => router.push("/intencion-onboarding" as never)}
+          style={({ pressed }) => [styles.intencionWrap, { marginTop: 30, transform: [], opacity: pressed ? 0.75 : 1 }]}
+        >
+          <Text style={styles.intencionSuper}>ESTABLECE TU INTENCIÓN</Text>
+          <View style={styles.intencionRow}>
+            <View style={styles.intencionCursor} />
+            {currentIntencion ? (
+              <Text style={styles.intencionText} numberOfLines={2}>{currentIntencion}</Text>
+            ) : (
+              <Text style={styles.intencionPlaceholder}>¿Cuál es tu intención hoy?</Text>
+            )}
+          </View>
+        </Pressable>
+
         {/* ── Racha semanal ── */}
         <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 195 }}>
           <SonicStreakWave />
