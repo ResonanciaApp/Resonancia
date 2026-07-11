@@ -786,10 +786,10 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   dormirMiniImg: {
-    width: 54,
+    width: 60,
     height: 64,
     borderRadius: 0,
-    marginLeft: 10,
+    marginLeft: 4,
   },
   dormirMiniPlayBtn: {
     width: 36,
