@@ -58,8 +58,8 @@ const NAVY_CHECK = "#060A0F";
 const TEXT      = "#FAF0EE";
 const MUTED     = "#c2c2c2";
 
-const THUMB_SIZE      = 50;
-const RING_RADIUS     = 23;
+const THUMB_SIZE      = 75;
+const RING_RADIUS     = 35;
 const CIRCUMFERENCE   = 2 * Math.PI * RING_RADIUS;
 const PREVIEW_MS      = 11_000;
 
@@ -122,7 +122,7 @@ function PreviewThumb({
             cx={THUMB_SIZE / 2}
             cy={THUMB_SIZE / 2}
             r={RING_RADIUS}
-            stroke={GOLD}
+            stroke="#f9f9f9"
             strokeWidth={2.5}
             strokeDasharray={`${CIRCUMFERENCE} ${CIRCUMFERENCE}`}
             strokeLinecap="round"
@@ -186,10 +186,10 @@ function AddButton({ added, onPress }: { added: boolean; onPress: () => void }) 
       </Animated.View>
       <Animated.View style={[styles.addCircle, circleStyle]}>
         <Animated.View style={[StyleSheet.absoluteFill, styles.centered, plusStyle]}>
-          <Feather name="plus" size={16} color={MUTED} />
+          <Feather name="plus" size={20} color={MUTED} />
         </Animated.View>
         <Animated.View style={[StyleSheet.absoluteFill, styles.centered, checkStyle]}>
-          <Feather name="check" size={16} color={NAVY_CHECK} />
+          <Feather name="check" size={20} color={NAVY_CHECK} />
         </Animated.View>
       </Animated.View>
     </Pressable>
@@ -459,13 +459,13 @@ export function PlaylistAddSessionsSheet({
         />
         <View style={styles.handle} />
 
-        {/* Header — título centrado */}
+        {/* Header — X a la izquierda */}
         <View style={styles.headerRow}>
-          <View style={styles.headerSpacer} />
-          <Text style={styles.headerTitle}>Agregar a un Ritual</Text>
           <Pressable onPress={onClose} hitSlop={12} style={styles.headerClose}>
-            <Feather name="x" size={20} color={MUTED} />
+            <Feather name="x" size={26} color={MUTED} />
           </Pressable>
+          <Text style={styles.headerTitle}>Agregar a un Ritual</Text>
+          <View style={styles.headerSpacer} />
         </View>
 
         {/* Tabs — scroll horizontal para que no se corten */}
@@ -518,7 +518,7 @@ export function PlaylistAddSessionsSheet({
               extraData={previewId}
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{ paddingTop: 4 }}
-              getItemLayout={(_, index) => ({ length: 68, offset: 68 * index, index })}
+              getItemLayout={(_, index) => ({ length: 102, offset: 102 * index, index })}
               windowSize={5}
               maxToRenderPerBatch={12}
               initialNumToRender={12}
@@ -572,6 +572,7 @@ const styles = StyleSheet.create({
   tabsScroll: {
     flexGrow: 0,
     flexShrink: 0,
+    backgroundColor: "rgba(255,255,255,0.08)",
   },
   tabsWrapper: {
     flexDirection: "row",
@@ -605,9 +606,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingVertical: 9,
+    paddingVertical: 12,
     gap: 12,
-    height: 68,
+    height: 102,
   },
 
   // Miniatura con overlay
@@ -637,18 +638,18 @@ const styles = StyleSheet.create({
   sessionAuthor: { fontFamily: "Manrope", color: "#f4f4f4", fontSize: 11, marginTop: 2 },
 
   // Add button
-  addBtnOuter: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
+  addBtnOuter: { width: 48, height: 48, alignItems: "center", justifyContent: "center" },
   addCircle: {
-    width: 30, height: 30,
-    borderRadius: 15,
+    width: 38, height: 38,
+    borderRadius: 19,
     alignItems: "center",
     justifyContent: "center",
   },
   centered: { alignItems: "center", justifyContent: "center" },
   rippleCore: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     overflow: "hidden",
   },
 
