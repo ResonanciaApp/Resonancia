@@ -19,11 +19,11 @@ export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOff
   const bgColor = activeSceneId === "tibet" ? "#1a1243" : "rgba(0,0,0,0.40)";
 
   const opacity    = useRef(new Animated.Value(0)).current;
-  const translateY = useRef(new Animated.Value(15)).current;
+  const translateY = useRef(new Animated.Value(80)).current;
 
   useEffect(() => {
     opacity.setValue(0);
-    translateY.setValue(15);
+    translateY.setValue(80);
     Animated.parallel([
       Animated.timing(opacity,    { toValue: 1, duration: 300, useNativeDriver: true }),
       Animated.timing(translateY, { toValue: 0, duration: 300, useNativeDriver: true }),
