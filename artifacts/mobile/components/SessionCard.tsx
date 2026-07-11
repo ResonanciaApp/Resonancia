@@ -148,10 +148,9 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         style,
       ]}
     >
-      <View style={[styles.imageContainer, { borderRadius: colors.radius - 4 }, playing && styles.imageContainerPlaying]}>
+      <View style={[styles.imageContainer, { borderRadius: colors.radius - 4 }]}>
         <Image source={session.image} style={styles.cardImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
         {!playing && <View style={styles.cardOverlay} />}
-        {playing && <PlayingDot />}
         {locked && <LockStar />}
         {showDuration && (
           <View style={styles.durationBadge}>
@@ -186,9 +185,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderWidth: 2,
     borderColor: "transparent",
-  },
-  imageContainerPlaying: {
-    borderColor: "#FFFFFF",
   },
   cardImage: {
     width: "100%",
