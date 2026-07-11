@@ -335,9 +335,9 @@ const styles = StyleSheet.create({
   ringCount: {
     fontFamily: "Manrope",
     color: "#F9F9F9",
-    fontSize: 34,
+    fontSize: 42,
     fontWeight: "700",
-    lineHeight: 37,
+    lineHeight: 46,
   },
   ringLabel: {
     fontFamily: "Manrope",
