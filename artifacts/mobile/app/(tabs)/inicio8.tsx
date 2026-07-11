@@ -1264,7 +1264,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     overflow: "hidden",
     paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingVertical: 5,
   },
 
   // Intención
