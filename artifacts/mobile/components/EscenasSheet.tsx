@@ -250,7 +250,7 @@ export function EscenasSheet() {
         )}
         <View style={{ paddingTop: Math.max(insets.top, 20), paddingBottom: Math.max(insets.bottom, 20), flex: 1 }}>
           <Pressable style={styles.closeBtn} onPress={handleClose} hitSlop={10}>
-            <Feather name="x" size={28} color="#FFFFFF" />
+            <Feather name="x" size={26} color="#FFFFFF" />
           </Pressable>
           <Text style={styles.title}>Escenas</Text>
 
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: "rgba(0,0,0,0.22)",
+    backgroundColor: "rgba(255,255,255,0.10)",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 18,
