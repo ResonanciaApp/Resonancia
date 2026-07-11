@@ -181,13 +181,23 @@ export default function SessionDetailScreen() {
   }, []);
 
   const scrollY = useRef(new Animated.Value(0)).current;
-  const handleScroll = useCallback(
-    (e: { nativeEvent: { contentOffset: { y: number } } }) => {
-      const y = e.nativeEvent.contentOffset.y;
-      scrollY.setValue(y);
-    },
-    [scrollY],
+  const handleScroll = Animated.event(
+    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+    { useNativeDriver: false },
   );
+
+  // Pull-down: el hero crece para tapar el gap entre imagen y contenido
+  const heroHeight = scrollY.interpolate({
+    inputRange: [-300, 0],
+    outputRange: [HEADER_H + 300, HEADER_H],
+    extrapolate: "clamp",
+  });
+  // Zoom suave en la imagen al crecer el hero
+  const heroScale = scrollY.interpolate({
+    inputRange: [-180, 0],
+    outputRange: [1.5, 1],
+    extrapolate: "clamp",
+  });
   const STICKY_START = HEADER_H + 140 - topPad;
   const STICKY_END   = STICKY_START + 40;
   const stickyOpacity = scrollY.interpolate({
@@ -301,9 +311,11 @@ export default function SessionDetailScreen() {
     <View style={[styles.root, { backgroundColor: sceneTheme.gradient[sceneTheme.gradient.length - 1] as string }]}>
       <StatusBar barStyle="light-content" />
 
-      {/* ── Hero fijo — no se mueve con el scroll ──────────────────────────── */}
-      <View style={[styles.hero, { height: HEADER_H, position: "absolute", top: 0, left: 0, right: 0, zIndex: 1 }]}>
-        <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
+      {/* ── Hero fijo — crece hacia abajo en pull-down para tapar el gap ───── */}
+      <Animated.View style={[styles.hero, { height: heroHeight, position: "absolute", top: 0, left: 0, right: 0, zIndex: 1 }]}>
+        <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ scale: heroScale }] }]}>
+          <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
+        </Animated.View>
         <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
           <GhostPill noBorder style={{ backgroundColor: "rgba(27,6,15,0.45)" }}>
             <BackPill onPress={() => router.back()} />
@@ -312,7 +324,7 @@ export default function SessionDetailScreen() {
             <FontAwesome name="instagram" size={20} color="#FBFBFB" />
           </Pressable>
         </View>
-      </View>
+      </Animated.View>
 
       <Animated.ScrollView
         style={[styles.scroll, { zIndex: 2 }]}
