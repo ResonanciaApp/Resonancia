@@ -91,8 +91,8 @@ function shuffle<T>(arr: T[]): T[] {
 export default function PlaylistDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
-  const { theme: sceneTheme } = useSceneTheme();
-  const BG_GRADIENT = sceneTheme.gradient;
+  const { theme: sceneTheme, activeSceneId } = useSceneTheme();
+  const BG_GRADIENT = activeSceneId === "tibet" ? sceneTheme.gradient : BG_GRADIENT_FALLBACK;
   const { isPremium } = usePremium();
   const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistDescription, reorderPlaylist, setPlaylistCover, setPlaylistCoverColor, setPlaylistCoverGeometry, setPlaylistCoverCreation } = useFoldersPlaylists();
   const { playSession, pauseResume, isPlaying, currentSession } = usePlayer();
@@ -591,7 +591,7 @@ function RecommendedRow({ session, onAdd }: { session: Session; onAdd: () => voi
         <Text style={styles.rowMeta}>{author} · {session.durationLabel}</Text>
       </View>
       <Pressable onPress={onAdd} hitSlop={10} style={styles.addIconBtn}>
-        <Feather name="plus-circle" size={24} color={MUTED} />
+        <Feather name="plus" size={20} color={MUTED} />
       </Pressable>
     </View>
   );
@@ -715,8 +715,8 @@ const styles = StyleSheet.create({
   },
   orderNum: { fontFamily: "Manrope", width: 20, fontSize: 13, textAlign: "center", fontWeight: "600", color: MUTED },
   thumb: { width: 52, height: 52, borderRadius: 8 },
-  rowName: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600", lineHeight: 19 },
-  rowMeta: { fontFamily: "Manrope", color: MUTED, fontSize: 12, marginTop: 2 },
+  rowName: { fontFamily: "Manrope", color: TEXT, fontSize: 13, fontWeight: "600", lineHeight: 18 },
+  rowMeta: { fontFamily: "Manrope", color: "#f4f4f4", fontSize: 11, marginTop: 2 },
   moreBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
   removeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
   addIconBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },

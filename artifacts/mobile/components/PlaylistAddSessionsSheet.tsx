@@ -47,6 +47,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { AMBIENT_MAP, AUDIO_MAP } from "@/config/audio-map";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
@@ -264,6 +265,7 @@ export function PlaylistAddSessionsSheet({
   onClose: () => void;
 }) {
   const insets    = useSafeAreaInsets();
+  const { activeSceneId } = useSceneTheme();
   // colorTab: chip dorado (actualización inmediata al tap)
   // displayTab: datos del FlatList (actualización solo al terminar la animación)
   const [colorTab,   setColorTab]   = useState<Tab>("Sesiones sugeridas");
@@ -451,7 +453,10 @@ export function PlaylistAddSessionsSheet({
       <Pressable style={styles.backdrop} onPress={onClose} />
 
       <View style={[styles.sheet, { paddingBottom: bottomPad }]}>
-        <LinearGradient colors={["#340D1A", "#340D1A"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient
+          colors={activeSceneId === "tibet" ? ["#2d1c52", "#1f2a62"] : ["#340D1A", "#340D1A"]}
+          style={StyleSheet.absoluteFill}
+        />
         <View style={styles.handle} />
 
         {/* Header — título centrado */}
@@ -475,10 +480,18 @@ export function PlaylistAddSessionsSheet({
             return (
               <Pressable
                 key={tab}
-                style={({ pressed }) => [styles.tabChip, active && styles.tabChipActive, { opacity: pressed ? 0.8 : 1 }]}
+                style={({ pressed }) => [
+                  styles.tabChip,
+                  active ? styles.tabChipActive : (activeSceneId === "tibet" ? styles.tabChipInactiveTibet : null),
+                  { opacity: pressed ? 0.8 : 1 },
+                ]}
                 onPress={() => switchTab(tab)}
               >
-                {active && <GoldGradientFill />}
+                {active && (
+                  activeSceneId === "tibet"
+                    ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
+                    : <GoldGradientFill />
+                )}
                 <Text style={[styles.tabText, active && styles.tabTextActive]}>{tab}</Text>
               </Pressable>
             );
@@ -568,13 +581,24 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   tabChip: {
-    paddingHorizontal: 18, paddingVertical: 9,
-    borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.10)",
+    height: 28,
+    paddingHorizontal: 14,
+    borderRadius: 999,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.035)",
+    borderWidth: 2,
+    borderColor: "rgba(244,244,244,0.4)",
   },
-  tabChipActive: { overflow: "hidden" },
-  tabText: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600" },
-  tabTextActive: { fontFamily: "Manrope", color: "#1B060F", fontWeight: "700" },
+  tabChipActive: { borderWidth: 0 },
+  tabChipInactiveTibet: {
+    backgroundColor: "rgba(0,0,0,0.27)",
+    borderWidth: 1.5,
+    borderColor: "rgba(255,255,255,0.4)",
+  },
+  tabText: { fontFamily: "Manrope", color: "#F4F4F4", fontSize: 11, fontWeight: "380" },
+  tabTextActive: { color: "#2D0D3A", fontWeight: "500" },
 
   // Session rows
   sessionRow: {
@@ -609,15 +633,14 @@ const styles = StyleSheet.create({
   },
 
   sessionInfo: { flex: 1 },
-  sessionTitle: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600", lineHeight: 19 },
-  sessionAuthor: { fontFamily: "Manrope", color: MUTED, fontSize: 12, marginTop: 2 },
+  sessionTitle: { fontFamily: "Manrope", color: TEXT, fontSize: 13, fontWeight: "600", lineHeight: 18 },
+  sessionAuthor: { fontFamily: "Manrope", color: "#f4f4f4", fontSize: 11, marginTop: 2 },
 
   // Add button
   addBtnOuter: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   addCircle: {
     width: 30, height: 30,
     borderRadius: 15,
-    borderWidth: 1.5,
     alignItems: "center",
     justifyContent: "center",
   },
