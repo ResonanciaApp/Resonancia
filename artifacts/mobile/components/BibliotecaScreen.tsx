@@ -414,7 +414,7 @@ type LibResult =
   | { kind: "mix";      data: MixPreset }
   | { kind: "playlist"; data: UserPlaylist };
 
-function SearchOverlay({ visible, onClose, gradient }: { visible: boolean; onClose: () => void; gradient: readonly string[] }) {
+function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: boolean; onClose: () => void; gradient: readonly string[]; accentColor: string }) {
   const [q, setQ] = useState("");
   const inputRef  = useRef<TextInput>(null);
   const [kbHeight, setKbHeight] = useState(0);
@@ -480,7 +480,7 @@ function SearchOverlay({ visible, onClose, gradient }: { visible: boolean; onClo
         {/* Barra */}
         <View style={[blStyles.overlay, { paddingTop: insets.top + 14, backgroundColor: "transparent" }]}>
           <View style={blStyles.bar}>
-            <Feather name="search" size={16} color="rgba(242,231,228,0.45)" />
+            <Feather name="search" size={16} color={accentColor} />
             <TextInput
               ref={inputRef}
               style={blStyles.input}
@@ -498,7 +498,7 @@ function SearchOverlay({ visible, onClose, gradient }: { visible: boolean; onClo
             )}
           </View>
           <Pressable onPress={onClose} style={blStyles.cancel}>
-            <Text style={blStyles.cancelText}>Cancelar</Text>
+            <Text style={[blStyles.cancelText, { color: accentColor }]}>Cancelar</Text>
           </Pressable>
         </View>
 
@@ -1748,7 +1748,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
       </ScrollView>
 
       {/* Overlays */}
-      <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} gradient={sceneTheme.gradient} />
+      <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} gradient={sceneTheme.gradient} accentColor={activeSceneId === "vino-tinto" ? GOLD : "#f9f9f9"} />
       <CreateSheet
         visible={createVisible}
         onClose={() => setCreateVisible(false)}
