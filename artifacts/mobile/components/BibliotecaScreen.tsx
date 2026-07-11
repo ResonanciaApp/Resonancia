@@ -480,7 +480,7 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
         {/* Barra */}
         <View style={[blStyles.overlay, { paddingTop: insets.top + 14, backgroundColor: "transparent" }]}>
           <View style={blStyles.bar}>
-            <Feather name="search" size={16} color={accentColor} />
+            <Feather name="search" size={16} color={accentColor} style={{ opacity: 0.8 }} />
             <TextInput
               ref={inputRef}
               style={blStyles.input}
