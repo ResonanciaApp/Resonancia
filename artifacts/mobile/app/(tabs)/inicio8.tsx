@@ -913,18 +913,7 @@ export default function HomeScreen2() {
           style={{ marginBottom: 35, marginHorizontal: GRID_PAD, marginTop: -6 }}
         >
           <View style={styles.resonadoresBanner}>
-            <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
-            {/* Tinte base */}
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
-            {/* Tinte del color claro del tema al 10% */}
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
-            {/* Luz interior — más luminoso arriba, se desvanece hacia abajo */}
-            <LinearGradient
-              colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
-              start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-              style={StyleSheet.absoluteFill}
-              pointerEvents="none"
-            />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.7)" }]} />
             <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
               <LinearGradient
                 colors={["rgb(247,203,107)", "rgb(251,169,128)"]}
