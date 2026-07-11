@@ -186,10 +186,11 @@ export default function SessionDetailScreen() {
     { useNativeDriver: false },
   );
 
-  // Pull-down: el hero crece para tapar el gap entre imagen y contenido
+  // Pull-down: el hero crece para tapar el gap entre imagen y contenido.
+  // Base = HEADER_H + 12 (solapamiento extra) para cubrir el lag del JS thread.
   const heroHeight = scrollY.interpolate({
     inputRange: [-300, 0],
-    outputRange: [HEADER_H + 300, HEADER_H],
+    outputRange: [HEADER_H + 312, HEADER_H + 12],
     extrapolate: "clamp",
   });
   // Zoom suave en la imagen al crecer el hero
