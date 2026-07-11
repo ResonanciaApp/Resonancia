@@ -24,9 +24,10 @@ export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOff
   const { activeSceneId } = useSceneTheme();
   const bgColor = activeSceneId === "tibet" ? "#1a1243" : "rgba(0,0,0,0.40)";
 
-  const opacity    = useRef(new Animated.Value(0)).current;
-  const translateY = useRef(new Animated.Value(80)).current;
-  const closingRef = useRef(false);
+  const opacity      = useRef(new Animated.Value(0)).current;
+  const translateY   = useRef(new Animated.Value(80)).current;
+  const closingRef   = useRef(false);
+  const expandMountedRef = useRef(false);
 
   // translateY negativo para llevar el mini player justo debajo del área del header (logo Pulso)
   // top edge actual = SCREEN_H - bottomOffset - PLAYER_H
@@ -45,8 +46,13 @@ export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOff
     ]).start();
   }, [sound.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Expansión / colapso
+  // Expansión / colapso — omitir ejecución del primer montaje para no
+  // cancelar la animación de entrada del efecto [sound.id]
   useEffect(() => {
+    if (!expandMountedRef.current) {
+      expandMountedRef.current = true;
+      return;
+    }
     if (closingRef.current) return;
     Animated.timing(translateY, {
       toValue: isExpanded ? expandedY : 0,
