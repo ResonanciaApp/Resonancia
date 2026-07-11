@@ -728,7 +728,7 @@ export default function MezcladorScreen() {
             {(!subTabCategories || subTabCategories.length <= 1) && (
               <View style={{ height: 8 }} />
             )}
-            {subTabCategories && subTabCategories.length > 1 ? (
+            {subTabCategories && subTabCategories.length > 1 && (
               <View style={styles.subTabZone}>
                 <SubTabSlide key={subTabAnimKey}>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.subTabRow}>
