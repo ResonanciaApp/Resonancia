@@ -16,7 +16,7 @@ function ScenarioCard({
       style={{
         flex: 1,
         backgroundColor: highlight ? "#1f2a62" : "transparent",
-        border: "1.5px solid rgba(255,255,255,0.3)",
+        border: highlight ? "1.5px solid rgba(255,255,255,0.7)" : "1.5px solid rgba(255,255,255,0.3)",
         borderRadius: "1vw",
         padding: "3.2vh 1.9vw",
         boxSizing: "border-box",
