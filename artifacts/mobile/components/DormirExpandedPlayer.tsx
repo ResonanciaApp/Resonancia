@@ -40,13 +40,21 @@ export function DormirExpandedPlayer({
 }: Props) {
   const { activeSceneId } = useSceneTheme();
   const translateY = useRef(new Animated.Value(SCREEN_H)).current;
+  const opacity    = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.timing(translateY, {
-      toValue: isExpanded ? 0 : SCREEN_H,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
+    Animated.parallel([
+      Animated.timing(translateY, {
+        toValue: isExpanded ? 0 : SCREEN_H,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacity, {
+        toValue: isExpanded ? 1 : 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
   }, [isExpanded]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const bgTop = activeSceneId === "tibet" ? "#1a1243" : "#0d0318";
@@ -55,7 +63,7 @@ export function DormirExpandedPlayer({
   return (
     <Animated.View
       pointerEvents={isExpanded ? "box-none" : "none"}
-      style={[styles.root, { transform: [{ translateY }] }]}
+      style={[styles.root, { opacity, transform: [{ translateY }] }]}
     >
       <BlurView intensity={60} tint="dark" style={StyleSheet.absoluteFill} />
       <LinearGradient
