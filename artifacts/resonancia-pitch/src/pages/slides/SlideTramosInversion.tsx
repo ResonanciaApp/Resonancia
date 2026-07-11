@@ -91,6 +91,7 @@ export default function SlideTramosInversion() {
       <div style={{ display: "flex", flexDirection: "column", gap: "0.9vh", flex: 1 }}>
         {tramos.map((t, i) => {
           const isHighlight = i === 4; // Tramo E ($23,19M)
+          const rowBg = ["rgba(0,0,0,0.12)", "rgba(0,0,0,0.15)", "rgba(0,0,0,0.18)", "rgba(0,0,0,0.20)"];
           return (
             <div
               key={i}
@@ -99,7 +100,7 @@ export default function SlideTramosInversion() {
                 gridTemplateColumns: "1.3fr 1fr 1.3fr 1.6fr 1fr",
                 gap: "0.5vw",
                 alignItems: "center",
-                backgroundColor: isHighlight ? "#1f2a62" : "rgba(255,255,255,0.02)",
+                backgroundColor: isHighlight ? "#1f2a62" : rowBg[i],
                 border: isHighlight
                   ? "1.5px solid rgba(255,255,255,0.55)"
                   : "1px solid rgba(255,255,255,0.06)",
