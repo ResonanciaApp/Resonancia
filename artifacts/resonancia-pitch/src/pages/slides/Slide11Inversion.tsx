@@ -61,17 +61,14 @@ export default function Slide11Inversion() {
   const colHdr: CSSProperties = {
     fontSize: "0.85vw",
     fontWeight: 700,
-    background: "linear-gradient(90deg, #F7CB6B, #FBA980)",
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
-    backgroundClip: "text",
+    color: "#FFFFFF",
     letterSpacing: "0.1em",
     marginBottom: "1.0vh",
   };
 
   const card: CSSProperties = {
-    backgroundColor: "#1A0810",
-    border: "1px solid rgba(247,203,107,0.18)",
+    backgroundColor: "rgba(0,0,0,0.14)",
+    border: "1px solid rgba(255,255,255,0.18)",
     borderRadius: "0.7vw",
     padding: "1.4vh 1.2vw",
     display: "flex",
@@ -86,18 +83,15 @@ export default function Slide11Inversion() {
   };
 
   const goldGrad: CSSProperties = {
-    background: "linear-gradient(90deg, #F7CB6B, #FBA980)",
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
-    backgroundClip: "text",
+    color: "#FFFFFF",
   };
 
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col"
       style={{
-        background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)",
-        color: "#F4DAD5",
+        background: "linear-gradient(160deg, #2d1c52 0%, #24245d 33%, #1f2a62 66%, #2d4081 100%)",
+        color: "#F4F4F4",
         padding: "6vh 6vw 4vh",
         boxSizing: "border-box",
         gap: "2.0vh",
@@ -106,7 +100,7 @@ export default function Slide11Inversion() {
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexShrink: 0 }}>
         <div>
-          <div style={{ fontSize: "1.3vw", fontWeight: 600, color: "rgba(242,231,228,0.50)", letterSpacing: "0.14em", marginBottom: "0.6vh" }}>
+          <div style={{ fontSize: "1.3vw", fontWeight: 600, color: "rgba(244,244,244,0.50)", letterSpacing: "0.14em", marginBottom: "0.6vh" }}>
             LA INVERSIÓN
           </div>
           <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
@@ -115,12 +109,12 @@ export default function Slide11Inversion() {
               $23.190.000 CLP
             </span>
           </div>
-          <div style={{ fontSize: "1.2vw", color: "rgba(242,231,228,0.45)", marginTop: "0.5vh" }}>
+          <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.45)", marginTop: "0.5vh" }}>
             para producir el catálogo, equipar el estudio, lanzar al mercado y operar los 3 meses pre-lanzamiento.
           </div>
         </div>
         <div style={{ textAlign: "right", flexShrink: 0 }}>
-          <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.40)", letterSpacing: "0.1em" }}>TOTAL INVERSIÓN</div>
+          <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.40)", letterSpacing: "0.1em" }}>TOTAL INVERSIÓN</div>
           <div style={{ fontSize: "2.8vw", fontWeight: 700, ...goldGrad, lineHeight: 1.1 }}>$23.190.000</div>
         </div>
       </div>
@@ -132,13 +126,13 @@ export default function Slide11Inversion() {
             <div style={colHdr}>{g.titulo}</div>
             {g.items.map((it) => (
               <div key={it.label} style={row}>
-                <div style={{ fontSize: "0.95vw", color: "rgba(242,231,228,0.65)" }}>{it.label}</div>
-                <div style={{ fontSize: "1.0vw", fontWeight: 600, color: "#F4DAD5" }}>{it.monto}</div>
+                <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.65)" }}>{it.label}</div>
+                <div style={{ fontSize: "1.0vw", fontWeight: 600, color: "#F4F4F4" }}>{it.monto}</div>
               </div>
             ))}
-            <div style={{ height: "1px", backgroundColor: "rgba(247,203,107,0.2)", marginTop: "0.4vh" }} />
+            <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.2)", marginTop: "0.4vh" }} />
             <div style={{ ...row, marginTop: "0.1vh" }}>
-              <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(242,231,228,0.50)" }}>Subtotal</div>
+              <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>Subtotal</div>
               <div style={{ fontSize: "1.1vw", fontWeight: 700, ...goldGrad }}>{g.total}</div>
             </div>
           </div>
@@ -147,9 +141,9 @@ export default function Slide11Inversion() {
 
       {/* Divider */}
       <div style={{ display: "flex", alignItems: "center", gap: "1vw", flexShrink: 0 }}>
-        <div style={{ height: "1px", flex: 1, backgroundColor: "rgba(247,203,107,0.15)" }} />
-        <div style={{ fontSize: "0.85vw", color: "rgba(242,231,228,0.35)", letterSpacing: "0.1em" }}>DESGLOSE</div>
-        <div style={{ height: "1px", flex: 1, backgroundColor: "rgba(247,203,107,0.15)" }} />
+        <div style={{ height: "1px", flex: 1, backgroundColor: "rgba(255,255,255,0.15)" }} />
+        <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.35)", letterSpacing: "0.1em" }}>DESGLOSE</div>
+        <div style={{ height: "1px", flex: 1, backgroundColor: "rgba(255,255,255,0.15)" }} />
       </div>
 
       {/* Three detail tables */}
@@ -160,16 +154,16 @@ export default function Slide11Inversion() {
           <div style={colHdr}>RH · RUNWAY OPERATIVO</div>
           {rrhh.map((it) => (
             <div key={it.label} style={row}>
-              <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.65)" }}>{it.label}</div>
-              <div style={{ fontSize: "1.05vw", fontWeight: 600, color: "#F4DAD5" }}>{it.monto}</div>
+              <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.65)" }}>{it.label}</div>
+              <div style={{ fontSize: "1.05vw", fontWeight: 600, color: "#F4F4F4" }}>{it.monto}</div>
             </div>
           ))}
-          <div style={{ height: "1px", backgroundColor: "rgba(247,203,107,0.2)", marginTop: "0.5vh" }} />
+          <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.2)", marginTop: "0.5vh" }} />
           <div style={{ ...row, marginTop: "0.2vh" }}>
-            <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(242,231,228,0.50)" }}>Total mensual</div>
+            <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>Total mensual</div>
             <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$2.280.000</div>
           </div>
-          <div style={{ fontSize: "0.85vw", color: "rgba(242,231,228,0.35)", marginTop: "0.2vh" }}>
+          <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.35)", marginTop: "0.2vh" }}>
             × 3 meses = $6.840.000 runway total
           </div>
         </div>
@@ -179,16 +173,16 @@ export default function Slide11Inversion() {
           <div style={colHdr}>EQUIPAMIENTO · DESGLOSE</div>
           {equipos.map((it) => (
             <div key={it.label} style={row}>
-              <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.65)" }}>{it.label}</div>
-              <div style={{ fontSize: "1.05vw", fontWeight: 600, color: "#F4DAD5" }}>{it.monto}</div>
+              <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.65)" }}>{it.label}</div>
+              <div style={{ fontSize: "1.05vw", fontWeight: 600, color: "#F4F4F4" }}>{it.monto}</div>
             </div>
           ))}
-          <div style={{ height: "1px", backgroundColor: "rgba(247,203,107,0.2)", marginTop: "0.5vh" }} />
+          <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.2)", marginTop: "0.5vh" }} />
           <div style={{ ...row, marginTop: "0.2vh" }}>
-            <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(242,231,228,0.50)" }}>Total</div>
+            <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>Total</div>
             <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$4.700.000</div>
           </div>
-          <div style={{ fontSize: "0.85vw", color: "rgba(242,231,228,0.35)", marginTop: "0.2vh" }}>
+          <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.35)", marginTop: "0.2vh" }}>
             Inversión única · hardware para producción de audio
           </div>
         </div>
@@ -198,31 +192,31 @@ export default function Slide11Inversion() {
           <div style={colHdr}>CONTENIDO · DESGLOSE</div>
           {/* Sub-header */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto", gap: "0.6vw", marginBottom: "0.3vh" }}>
-            <div style={{ fontSize: "0.75vw", color: "rgba(242,231,228,0.35)", letterSpacing: "0.06em" }}></div>
-            <div style={{ fontSize: "0.75vw", color: "rgba(242,231,228,0.35)", letterSpacing: "0.06em", textAlign: "right", minWidth: "4.5vw" }}>VALOR</div>
-            <div style={{ fontSize: "0.75vw", color: "rgba(242,231,228,0.35)", letterSpacing: "0.06em", textAlign: "right", minWidth: "3vw" }}>CANT.</div>
+            <div style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.35)", letterSpacing: "0.06em" }}></div>
+            <div style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.35)", letterSpacing: "0.06em", textAlign: "right", minWidth: "4.5vw" }}>VALOR</div>
+            <div style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.35)", letterSpacing: "0.06em", textAlign: "right", minWidth: "3vw" }}>CANT.</div>
           </div>
           {contenido.map((it) => (
             <div key={it.label} style={{ display: "grid", gridTemplateColumns: "1fr auto auto", gap: "0.6vw", alignItems: "baseline" }}>
-              <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.65)" }}>{it.label}</div>
-              <div style={{ fontSize: "0.95vw", color: "rgba(242,231,228,0.50)", textAlign: "right", minWidth: "4.5vw" }}>{it.valor}</div>
-              <div style={{ fontSize: "0.95vw", color: "rgba(242,231,228,0.50)", textAlign: "right", minWidth: "3vw" }}>×{it.cantidad}</div>
+              <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.65)" }}>{it.label}</div>
+              <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.50)", textAlign: "right", minWidth: "4.5vw" }}>{it.valor}</div>
+              <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.50)", textAlign: "right", minWidth: "3vw" }}>×{it.cantidad}</div>
             </div>
           ))}
-          <div style={{ height: "1px", backgroundColor: "rgba(247,203,107,0.2)", marginTop: "0.5vh" }} />
+          <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.2)", marginTop: "0.5vh" }} />
           <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "0.6vw", alignItems: "baseline", marginTop: "0.2vh" }}>
-            <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(242,231,228,0.50)" }}>Total contenido</div>
+            <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>Total contenido</div>
             <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$5.350.000</div>
           </div>
-          <div style={{ fontSize: "0.85vw", color: "rgba(242,231,228,0.35)", marginTop: "0.2vh" }}>
+          <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.35)", marginTop: "0.2vh" }}>
             90 piezas de audio producidas para lanzamiento
           </div>
         </div>
       </div>
 
       {/* Contact footer */}
-      <div style={{ flexShrink: 0, borderTop: "1px solid rgba(247,203,107,0.12)", paddingTop: "1.2vh", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ fontSize: "1.1vw", color: "rgba(242,231,228,0.40)" }}>
+      <div style={{ flexShrink: 0, borderTop: "1px solid rgba(255,255,255,0.12)", paddingTop: "1.2vh", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ fontSize: "1.1vw", color: "rgba(244,244,244,0.40)" }}>
           [nombre] · [correo] · [teléfono]
         </div>
       </div>

@@ -2,42 +2,42 @@ export default function Slide03Solucion() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5", padding: "9vh 6vw", boxSizing: "border-box" }}
+      style={{ background: "linear-gradient(160deg, #2d1c52 0%, #24245d 33%, #1f2a62 66%, #2d4081 100%)", color: "#F4F4F4", padding: "9vh 6vw", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
-        <div style={{ fontSize: "1.5vw", fontWeight: 600, color: "rgba(242,231,228,0.50)", letterSpacing: "0.14em", marginBottom: "1.5vh" }}>
+        <div style={{ fontSize: "1.5vw", fontWeight: 600, color: "rgba(244,244,244,0.50)", letterSpacing: "0.14em", marginBottom: "1.5vh" }}>
           02 · LA SOLUCIÓN
         </div>
         <div style={{ fontSize: "4.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "66vw" }}>
-          Un refugio de sonido, <span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>nativo en español.</span>
+          Un refugio de sonido, <span style={{ color: "#FFFFFF" }}>nativo en español.</span>
         </div>
       </div>
 
       {/* Three columns */}
       <div style={{ display: "flex", gap: "2.5vw" }}>
-        <div style={{ flex: 1, backgroundColor: "#1A0810", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "2vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>Voz propia</div>
-          <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.5 }}>
+        <div style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.14)", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
+          <div style={{ fontSize: "2vw", fontWeight: 700, color: "#FFFFFF", marginBottom: "1.5vh" }}>Voz propia</div>
+          <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "rgba(244,244,244,0.50)", lineHeight: 1.5 }}>
             Meditaciones, historias y voces guía creadas en español neutro, no traducidas.
           </div>
         </div>
-        <div style={{ flex: 1, backgroundColor: "#1A0810", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "2vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>Sonido ancestral</div>
-          <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.5 }}>
+        <div style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.14)", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
+          <div style={{ fontSize: "2vw", fontWeight: 700, color: "#FFFFFF", marginBottom: "1.5vh" }}>Sonido ancestral</div>
+          <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "rgba(244,244,244,0.50)", lineHeight: 1.5 }}>
             Cuencos, frecuencias binaurales y música ambiente curada por artistas certificados.
           </div>
         </div>
-        <div style={{ flex: 1, backgroundColor: "#1A0810", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
-          <div style={{ fontSize: "2vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", marginBottom: "1.5vh" }}>Comunidad</div>
-          <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.5 }}>
+        <div style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.14)", borderRadius: "1vw", padding: "3.5vh 2vw", boxSizing: "border-box" }}>
+          <div style={{ fontSize: "2vw", fontWeight: 700, color: "#FFFFFF", marginBottom: "1.5vh" }}>Comunidad</div>
+          <div style={{ fontSize: "1.6vw", fontWeight: 400, color: "rgba(244,244,244,0.50)", lineHeight: 1.5 }}>
             Diario, intención del día y un espacio para acompañarse entre personas.
           </div>
         </div>
       </div>
 
       {/* Closing line */}
-      <div style={{ fontSize: "1.7vw", fontWeight: 400, color: "rgba(242,231,228,0.50)", lineHeight: 1.5, maxWidth: "72vw" }}>
+      <div style={{ fontSize: "1.7vw", fontWeight: 400, color: "rgba(244,244,244,0.50)", lineHeight: 1.5, maxWidth: "72vw" }}>
         Meditación, sueño, sonido y comunidad en una sola app cálida, pensada para descansar.
       </div>
     </div>

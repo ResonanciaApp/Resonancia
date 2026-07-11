@@ -2,15 +2,15 @@ export default function Dec05GitHub() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden"
-      style={{ backgroundColor: "#1A0810", color: "#F4DAD5", fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
+      style={{ backgroundColor: "rgba(0,0,0,0.14)", color: "#F4F4F4", fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
     >
-      <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px)", backgroundSize: "8vw 8vw", zIndex: 0 }} />
+      <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)", backgroundSize: "8vw 8vw", zIndex: 0 }} />
 
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "3.5vh 5vw", borderBottom: "1px solid rgba(212,175,55,0.15)", zIndex: 2 }}>
-        <span style={{ fontSize: "0.85vw", fontWeight: 700, letterSpacing: "0.06em", background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>RESONANCIA</span>
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "3.5vh 5vw", borderBottom: "1px solid rgba(255,255,255,0.15)", zIndex: 2 }}>
+        <span style={{ fontSize: "0.85vw", fontWeight: 700, letterSpacing: "0.06em", color: "#FFFFFF" }}>RESONANCIA</span>
         <div style={{ display: "flex", alignItems: "center", gap: "0.8vw" }}>
-          <span style={{ fontSize: "0.8vw", color: "rgba(242,231,228,0.35)", letterSpacing: "0.1em" }}>DECISIÓN</span>
-          <span style={{ fontSize: "1.4vw", fontWeight: 700, color: "#F7CB6B" }}>03</span>
+          <span style={{ fontSize: "0.8vw", color: "rgba(244,244,244,0.35)", letterSpacing: "0.1em" }}>DECISIÓN</span>
+          <span style={{ fontSize: "1.4vw", fontWeight: 700, color: "#FFFFFF" }}>03</span>
         </div>
       </div>
 
@@ -19,7 +19,7 @@ export default function Dec05GitHub() {
         {/* Left */}
         <div>
           <h2 style={{ fontSize: "3vw", fontWeight: 700, margin: "0 0 0.5vh 0", letterSpacing: "-0.02em" }}>GitHub</h2>
-          <p style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.45)", margin: "0 0 3vh 0", lineHeight: 1.5 }}>El código está listo para subir — ahora es seguro y recomendado.</p>
+          <p style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.45)", margin: "0 0 3vh 0", lineHeight: 1.5 }}>El código está listo para subir — ahora es seguro y recomendado.</p>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "1vh", marginBottom: "2.5vh" }}>
             {[
@@ -27,25 +27,25 @@ export default function Dec05GitHub() {
               { label: "Sin secretos hardcodeados", detail: "Todo usa process.env + Replit Secrets" },
               { label: "Código listo", detail: "Todos los archivos en orden, sin placeholders activos" },
             ].map((item, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "1vw", background: "rgba(212,175,55,0.05)", border: "1px solid rgba(212,175,55,0.13)", borderRadius: "0.6vw", padding: "1.4vh 1.5vw" }}>
-                <span style={{ color: "#F7CB6B", fontSize: "1vw", flexShrink: 0 }}>✅</span>
+              <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "1vw", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.13)", borderRadius: "0.6vw", padding: "1.4vh 1.5vw" }}>
+                <span style={{ color: "#FFFFFF", fontSize: "1vw", flexShrink: 0 }}>✅</span>
                 <div>
-                  <div style={{ fontSize: "0.95vw", fontWeight: 600, color: "#F4DAD5", marginBottom: "0.3vh" }}>{item.label}</div>
-                  <div style={{ fontSize: "0.82vw", color: "rgba(242,231,228,0.45)" }}>{item.detail}</div>
+                  <div style={{ fontSize: "0.95vw", fontWeight: 600, color: "#F4F4F4", marginBottom: "0.3vh" }}>{item.label}</div>
+                  <div style={{ fontSize: "0.82vw", color: "rgba(244,244,244,0.45)" }}>{item.detail}</div>
                 </div>
               </div>
             ))}
           </div>
 
-          <div style={{ background: "linear-gradient(135deg, rgba(212,175,55,0.12), rgba(233,196,106,0.06))", border: "1px solid rgba(212,175,55,0.3)", borderRadius: "0.8vw", padding: "2vh 2vw" }}>
-            <div style={{ fontSize: "0.8vw", fontWeight: 600, color: "#F7CB6B", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.8vh" }}>Recomendación</div>
-            <div style={{ fontSize: "0.95vw", color: "#F4DAD5", lineHeight: 1.5 }}>Repo <strong>privado</strong> hasta el lanzamiento público. Subir ahora.</div>
+          <div style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.12), rgba(233,196,106,0.06))", border: "1px solid rgba(255,255,255,0.3)", borderRadius: "0.8vw", padding: "2vh 2vw" }}>
+            <div style={{ fontSize: "0.8vw", fontWeight: 600, color: "#FFFFFF", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.8vh" }}>Recomendación</div>
+            <div style={{ fontSize: "0.95vw", color: "#F4F4F4", lineHeight: 1.5 }}>Repo <strong>privado</strong> hasta el lanzamiento público. Subir ahora.</div>
           </div>
         </div>
 
         {/* Right */}
         <div>
-          <div style={{ fontSize: "0.85vw", fontWeight: 600, color: "rgba(242,231,228,0.4)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "1.5vh", marginTop: "5.5vh" }}>Beneficios inmediatos</div>
+          <div style={{ fontSize: "0.85vw", fontWeight: 600, color: "rgba(244,244,244,0.4)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "1.5vh", marginTop: "5.5vh" }}>Beneficios inmediatos</div>
           <div style={{ display: "flex", flexDirection: "column", gap: "1.2vh" }}>
             {[
               { icon: "📦", title: "Backup externo", desc: "Copia fuera de Replit — protección ante cualquier incidente de plataforma" },
@@ -56,8 +56,8 @@ export default function Dec05GitHub() {
               <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "1.5vw", background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "0.7vw", padding: "1.6vh 1.8vw" }}>
                 <span style={{ fontSize: "1.4vw", flexShrink: 0 }}>{item.icon}</span>
                 <div>
-                  <div style={{ fontSize: "0.95vw", fontWeight: 600, color: "rgba(242,231,228,0.85)", marginBottom: "0.4vh" }}>{item.title}</div>
-                  <div style={{ fontSize: "0.82vw", color: "rgba(242,231,228,0.4)", lineHeight: 1.4 }}>{item.desc}</div>
+                  <div style={{ fontSize: "0.95vw", fontWeight: 600, color: "rgba(244,244,244,0.85)", marginBottom: "0.4vh" }}>{item.title}</div>
+                  <div style={{ fontSize: "0.82vw", color: "rgba(244,244,244,0.4)", lineHeight: 1.4 }}>{item.desc}</div>
                 </div>
               </div>
             ))}
@@ -65,9 +65,9 @@ export default function Dec05GitHub() {
         </div>
       </div>
 
-      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "2vh 5vw", borderTop: "1px solid rgba(212,175,55,0.08)", display: "flex", justifyContent: "space-between", zIndex: 2 }}>
-        <span style={{ fontSize: "0.8vw", color: "rgba(242,231,228,0.25)" }}>Casa del Cuenco · Uso interno</span>
-        <span style={{ fontSize: "0.8vw", color: "rgba(242,231,228,0.25)" }}>4 / 6</span>
+      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "2vh 5vw", borderTop: "1px solid rgba(0,0,0,0.27)", display: "flex", justifyContent: "space-between", zIndex: 2 }}>
+        <span style={{ fontSize: "0.8vw", color: "rgba(244,244,244,0.25)" }}>Casa del Cuenco · Uso interno</span>
+        <span style={{ fontSize: "0.8vw", color: "rgba(244,244,244,0.25)" }}>4 / 6</span>
       </div>
     </div>
   );

@@ -38,8 +38,8 @@ export default function SlideTramosInversion() {
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col"
       style={{
-        background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)",
-        color: "#F4DAD5",
+        background: "linear-gradient(160deg, #2d1c52 0%, #24245d 33%, #1f2a62 66%, #2d4081 100%)",
+        color: "#F4F4F4",
         padding: "7vh 6vw 5vh",
         boxSizing: "border-box",
         gap: "2.4vh",
@@ -47,16 +47,16 @@ export default function SlideTramosInversion() {
     >
       {/* Header */}
       <div style={{ flexShrink: 0 }}>
-        <div style={{ fontSize: "1.4vw", fontWeight: 600, color: "rgba(242,231,228,0.45)", letterSpacing: "0.14em", marginBottom: "0.8vh" }}>
+        <div style={{ fontSize: "1.4vw", fontWeight: 600, color: "rgba(244,244,244,0.45)", letterSpacing: "0.14em", marginBottom: "0.8vh" }}>
           TRAMOS DE INVERSIÓN
         </div>
         <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
           Más inversión,{" "}
-          <span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+          <span style={{ color: "#FFFFFF" }}>
             mejor tasa.
           </span>
         </div>
-        <div style={{ fontSize: "1.2vw", color: "rgba(242,231,228,0.40)", marginTop: "0.7vh" }}>
+        <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.40)", marginTop: "0.7vh" }}>
           Modelo de prima por escala · cada tramo mayor recibe más equity por peso invertido · ancla máxima $23,19M = 10%
         </div>
       </div>
@@ -69,7 +69,7 @@ export default function SlideTramosInversion() {
           gap: "0.5vw",
           flexShrink: 0,
           paddingBottom: "1vh",
-          borderBottom: "1px solid rgba(247,203,107,0.20)",
+          borderBottom: "1px solid rgba(255,255,255,0.20)",
         }}
       >
         {COL_HEADERS.map((h) => (
@@ -79,10 +79,7 @@ export default function SlideTramosInversion() {
               fontSize: "0.82vw",
               fontWeight: 700,
               letterSpacing: "0.1em",
-              background: "linear-gradient(90deg, #F7CB6B, #FBA980)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
+              color: "#FFFFFF",
             }}
           >
             {h}
@@ -102,9 +99,9 @@ export default function SlideTramosInversion() {
                 gridTemplateColumns: "1.3fr 1fr 1.3fr 1.6fr 1fr",
                 gap: "0.5vw",
                 alignItems: "center",
-                backgroundColor: isHighlight ? "#1A0810" : "rgba(255,255,255,0.02)",
+                backgroundColor: isHighlight ? "#1f2a62" : "rgba(255,255,255,0.02)",
                 border: isHighlight
-                  ? "1.5px solid rgba(247,203,107,0.55)"
+                  ? "1.5px solid rgba(255,255,255,0.55)"
                   : "1px solid rgba(255,255,255,0.06)",
                 borderRadius: "0.7vw",
                 padding: "1.4vh 1.2vw",
@@ -115,9 +112,8 @@ export default function SlideTramosInversion() {
                 {isHighlight && (
                   <div style={{
                     fontSize: "0.72vw", fontWeight: 700, letterSpacing: "0.08em",
-                    background: "linear-gradient(90deg, #F7CB6B, #FBA980)",
-                    WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
-                    border: "1px solid rgba(247,203,107,0.40)", borderRadius: "0.3vw",
+                    color: "#FFFFFF",
+                    border: "1px solid rgba(255,255,255,0.40)", borderRadius: "0.3vw",
                     padding: "0.1vh 0.4vw", whiteSpace: "nowrap",
                   }}>
                     COMPLETO
@@ -126,7 +122,7 @@ export default function SlideTramosInversion() {
                 <div style={{
                   fontSize: isHighlight ? "1.8vw" : "1.6vw",
                   fontWeight: 700,
-                  color: isHighlight ? "#F4DAD5" : "rgba(242,231,228,0.70)",
+                  color: isHighlight ? "#F4F4F4" : "rgba(244,244,244,0.70)",
                 }}>
                   ${fmtInv(t.inv)}M CLP
                 </div>
@@ -138,22 +134,22 @@ export default function SlideTramosInversion() {
                   fontSize: isHighlight ? "2.0vw" : "1.7vw",
                   fontWeight: 700,
                   background: isHighlight
-                    ? "linear-gradient(90deg, #F7CB6B, #FBA980)"
+                    ? "linear-gradient(90deg, #FFFFFF, #FFFFFF)"
                     : "none",
                   WebkitBackgroundClip: isHighlight ? "text" : "unset",
                   WebkitTextFillColor: isHighlight ? "transparent" : "unset",
                   backgroundClip: isHighlight ? "text" : "unset",
-                  color: isHighlight ? undefined : "rgba(242,231,228,0.65)",
+                  color: isHighlight ? undefined : "rgba(244,244,244,0.65)",
                 }}>
                   {fmtPct(t.equity)}
                 </div>
-                <div style={{ fontSize: "0.78vw", color: "rgba(247,203,107,0.55)", marginTop: "0.15vh" }}>
+                <div style={{ fontSize: "0.78vw", color: "rgba(255,255,255,0.55)", marginTop: "0.15vh" }}>
                   {t.tasaMM.toFixed(2).replace(".", ",")}%/M
                 </div>
               </div>
 
               {/* Valuación implícita */}
-              <div style={{ fontSize: "1.3vw", color: "rgba(242,231,228,0.50)" }}>
+              <div style={{ fontSize: "1.3vw", color: "rgba(244,244,244,0.50)" }}>
                 ~${fmt(t.postMoney, 0)} CLP
               </div>
 
@@ -166,14 +162,14 @@ export default function SlideTramosInversion() {
                 }}>
                   ~${fmt(t.stakeM12)}
                 </div>
-                <div style={{ fontSize: "0.9vw", color: "rgba(242,231,228,0.35)" }}>CLP</div>
+                <div style={{ fontSize: "0.9vw", color: "rgba(244,244,244,0.35)" }}>CLP</div>
               </div>
 
               {/* Retorno */}
               <div style={{
                 fontSize: isHighlight ? "1.9vw" : "1.6vw",
                 fontWeight: 700,
-                color: isHighlight ? "#F7CB6B" : "rgba(242,231,228,0.55)",
+                color: isHighlight ? "#FFFFFF" : "rgba(244,244,244,0.55)",
               }}>
                 {fmtX(t.retorno)}
               </div>
@@ -183,8 +179,8 @@ export default function SlideTramosInversion() {
       </div>
 
       {/* Footer note */}
-      <div style={{ flexShrink: 0, borderTop: "1px solid rgba(247,203,107,0.12)", paddingTop: "1.5vh" }}>
-        <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.32)", lineHeight: 1.5 }}>
+      <div style={{ flexShrink: 0, borderTop: "1px solid rgba(255,255,255,0.12)", paddingTop: "1.5vh" }}>
+        <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.32)", lineHeight: 1.5 }}>
           Stake M12 calculado sobre valoración base (5.000 suscriptores × $4.350 ARPU × 12 meses × 4× ARR = $1.044B CLP) · Retorno estimado ilustrativo, no garantizado · El retorno real depende del exit y dilución en rondas futuras.
         </div>
       </div>

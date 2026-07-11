@@ -15,27 +15,27 @@ function ScenarioCard({
     <div
       style={{
         flex: 1,
-        backgroundColor: highlight ? "#1A0810" : "transparent",
-        border: highlight ? "1.5px solid #F7CB6B" : "1.5px solid #3D0E16",
+        backgroundColor: highlight ? "#1f2a62" : "transparent",
+        border: highlight ? "1.5px solid #FFFFFF" : "1.5px solid #3D0E16",
         borderRadius: "1vw",
         padding: "3.2vh 1.9vw",
         boxSizing: "border-box",
       }}
     >
-      <div style={{ fontSize: "1.7vw", fontWeight: 700, color: highlight ? "#F7CB6B" : "#F4DAD5", marginBottom: "2.4vh" }}>
+      <div style={{ fontSize: "1.7vw", fontWeight: 700, color: highlight ? "#FFFFFF" : "#F4F4F4", marginBottom: "2.4vh" }}>
         {label}
       </div>
       <div style={{ marginBottom: "2vh" }}>
-        <div style={{ fontSize: "1.2vw", color: "rgba(242,231,228,0.50)", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>INSTALACIONES</div>
-        <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#F4DAD5", lineHeight: 1 }}>{installs}</div>
+        <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.50)", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>INSTALACIONES</div>
+        <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#F4F4F4", lineHeight: 1 }}>{installs}</div>
       </div>
       <div style={{ marginBottom: "2vh" }}>
-        <div style={{ fontSize: "1.2vw", color: "rgba(242,231,228,0.50)", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>SUSCRIPTORES MES 12</div>
-        <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#F4DAD5", lineHeight: 1 }}>{subs}</div>
+        <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.50)", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>SUSCRIPTORES MES 12</div>
+        <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#F4F4F4", lineHeight: 1 }}>{subs}</div>
       </div>
       <div>
-        <div style={{ fontSize: "1.2vw", color: "rgba(242,231,228,0.50)", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>INGRESO NETO AÑO 1</div>
-        <div style={{ fontSize: "2.4vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1 }}>{revenue}</div>
+        <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.50)", letterSpacing: "0.06em", marginBottom: "0.4vh" }}>INGRESO NETO AÑO 1</div>
+        <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1 }}>{revenue}</div>
       </div>
     </div>
   );
@@ -45,15 +45,15 @@ export default function SlideProyeccion() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5", padding: "9vh 6vw", boxSizing: "border-box" }}
+      style={{ background: "linear-gradient(160deg, #2d1c52 0%, #24245d 33%, #1f2a62 66%, #2d4081 100%)", color: "#F4F4F4", padding: "9vh 6vw", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
-        <div style={{ fontSize: "1.5vw", fontWeight: 600, color: "rgba(242,231,228,0.50)", letterSpacing: "0.14em", marginBottom: "1.5vh" }}>
+        <div style={{ fontSize: "1.5vw", fontWeight: 600, color: "rgba(244,244,244,0.50)", letterSpacing: "0.14em", marginBottom: "1.5vh" }}>
           PROYECCIÓN A 12 MESES
         </div>
         <div style={{ fontSize: "4.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "66vw" }}>
-          Un primer año <span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>realista.</span>
+          Un primer año <span style={{ color: "#FFFFFF" }}>realista.</span>
         </div>
       </div>
 
@@ -94,7 +94,7 @@ export default function SlideProyeccion() {
               style={{
                 flex: 1,
                 backgroundColor: "rgba(26,8,16,0.70)",
-                border: "1px solid rgba(247,203,107,0.20)",
+                border: "1px solid rgba(255,255,255,0.20)",
                 borderRadius: "0.6vw",
                 padding: "1.0vh 1.1vw",
                 display: "flex",
@@ -102,14 +102,14 @@ export default function SlideProyeccion() {
                 gap: "0.3vh",
               }}
             >
-              <div style={{ fontSize: "0.85vw", color: "rgba(242,231,228,0.40)", letterSpacing: "0.08em" }}>{k.label.toUpperCase()}</div>
-              <div style={{ fontSize: "1.5vw", fontWeight: 700, background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", lineHeight: 1.1 }}>{k.value}</div>
-              <div style={{ fontSize: "0.85vw", color: "rgba(242,231,228,0.35)" }}>{k.note}</div>
+              <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.40)", letterSpacing: "0.08em" }}>{k.label.toUpperCase()}</div>
+              <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.1 }}>{k.value}</div>
+              <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.35)" }}>{k.note}</div>
             </div>
           ))}
         </div>
         {/* Short disclaimer */}
-        <div style={{ fontSize: "1.05vw", color: "rgba(242,231,228,0.35)", lineHeight: 1.5 }}>
+        <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.35)", lineHeight: 1.5 }}>
           Base: 1M seguidores · 20% instala · 2,5% convierte a premium. Recuperación estimada mes 7–8. Escenarios ilustrativos.
         </div>
       </div>

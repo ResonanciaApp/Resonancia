@@ -43,16 +43,16 @@ export default function SlideFinanzas2() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ background: "linear-gradient(160deg, #2E0D16 0%, #1A0810 100%)", color: "#F4DAD5", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
+      style={{ background: "linear-gradient(160deg, #2d1c52 0%, #24245d 33%, #1f2a62 66%, #2d4081 100%)", color: "#F4F4F4", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div style={{ flexShrink: 0 }}>
-        <div style={{ fontSize: "1.4vw", fontWeight: 600, color: "rgba(242,231,228,0.50)", letterSpacing: "0.14em", marginBottom: "1.2vh" }}>
+        <div style={{ fontSize: "1.4vw", fontWeight: 600, color: "rgba(244,244,244,0.50)", letterSpacing: "0.14em", marginBottom: "1.2vh" }}>
           ANEXO FINANCIERO · HOJA 2 DE 3
         </div>
         <div style={{ fontSize: "3.8vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
           Caja acumulada y{" "}
-          <span style={{ background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+          <span style={{ color: "#FFFFFF" }}>
             escenarios.
           </span>
         </div>
@@ -66,7 +66,7 @@ export default function SlideFinanzas2() {
 
           {/* Subscriber bars */}
           <div style={{ flex: 0.8, display: "flex", flexDirection: "column" }}>
-            <div style={{ fontSize: "1.0vw", fontWeight: 600, color: "rgba(242,231,228,0.40)", letterSpacing: "0.1em", marginBottom: "0.8vh" }}>
+            <div style={{ fontSize: "1.0vw", fontWeight: 600, color: "rgba(244,244,244,0.40)", letterSpacing: "0.1em", marginBottom: "0.8vh" }}>
               SUSCRIPTORES PREMIUM — ESCENARIO BASE
             </div>
             <div style={{ flex: 1, display: "flex", gap: "0.55vw", alignItems: "flex-end", borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "0.4vh" }}>
@@ -79,13 +79,13 @@ export default function SlideFinanzas2() {
                         style={{
                           width: "100%",
                           height: `${Math.max(pct, 3)}%`,
-                          background: "linear-gradient(180deg, #F7CB6B 0%, #C8963E 100%)",
+                          background: "linear-gradient(180deg, #FFFFFF 0%, #C8963E 100%)",
                           borderRadius: "0.2vw 0.2vw 0 0",
                           opacity: 0.85,
                         }}
                       />
                     </div>
-                    <div style={{ fontSize: "0.72vw", color: "rgba(242,231,228,0.40)", textAlign: "center", marginTop: "0.2vh" }}>{m.label}</div>
+                    <div style={{ fontSize: "0.72vw", color: "rgba(244,244,244,0.40)", textAlign: "center", marginTop: "0.2vh" }}>{m.label}</div>
                   </div>
                 );
               })}
@@ -98,7 +98,7 @@ export default function SlideFinanzas2() {
 
           {/* Cumulative cash bars */}
           <div style={{ flex: 1.2, display: "flex", flexDirection: "column" }}>
-            <div style={{ fontSize: "1.0vw", fontWeight: 600, color: "rgba(242,231,228,0.40)", letterSpacing: "0.1em", marginBottom: "0.8vh" }}>
+            <div style={{ fontSize: "1.0vw", fontWeight: 600, color: "rgba(244,244,244,0.40)", letterSpacing: "0.1em", marginBottom: "0.8vh" }}>
               CAJA ACUMULADA MES A MES (MM CLP)
             </div>
             <div style={{ flex: 1, position: "relative" }}>
@@ -132,7 +132,7 @@ export default function SlideFinanzas2() {
                             : `${bottomPct + barHeightPct + 1}%`,
                           fontSize: "0.68vw",
                           fontWeight: 700,
-                          color: isNeg ? "#F9F9F9" : "#6EC49A",
+                          color: isNeg ? "#F4F4F4" : "#6EC49A",
                           whiteSpace: "nowrap",
                           zIndex: 2,
                         }}
@@ -166,7 +166,7 @@ export default function SlideFinanzas2() {
                           left: "50%",
                           transform: "translateX(-50%)",
                           fontSize: "0.68vw",
-                          color: "rgba(242,231,228,0.40)",
+                          color: "rgba(244,244,244,0.40)",
                           whiteSpace: "nowrap",
                         }}
                       >
@@ -178,7 +178,7 @@ export default function SlideFinanzas2() {
               </div>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.3vh" }}>
-              <div style={{ fontSize: "0.8vw", color: "#F9F9F9" }}>Negativo M1–M3</div>
+              <div style={{ fontSize: "0.8vw", color: "#F4F4F4" }}>Negativo M1–M3</div>
               <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#6EC49A" }}>M12 ≈ $75M en caja</div>
             </div>
           </div>
@@ -186,7 +186,7 @@ export default function SlideFinanzas2() {
 
         {/* Right: scenario cards + KPI */}
         <div style={{ flex: 0.8, display: "flex", flexDirection: "column", gap: "1.6vh" }}>
-          <div style={{ fontSize: "1.0vw", fontWeight: 600, color: "rgba(242,231,228,0.40)", letterSpacing: "0.1em" }}>
+          <div style={{ fontSize: "1.0vw", fontWeight: 600, color: "rgba(244,244,244,0.40)", letterSpacing: "0.1em" }}>
             ESCENARIOS AÑO 1
           </div>
           {scenarios.map((s) => (
@@ -194,18 +194,18 @@ export default function SlideFinanzas2() {
               key={s.label}
               style={{
                 padding: "1.6vh 1.4vw",
-                backgroundColor: "#1A0810",
-                border: `1.5px solid ${s.highlight ? "#F7CB6B" : "rgba(255,255,255,0.09)"}`,
+                backgroundColor: "rgba(0,0,0,0.14)",
+                border: `1.5px solid ${s.highlight ? "#FFFFFF" : "rgba(255,255,255,0.09)"}`,
                 borderRadius: "0.8vw",
               }}
             >
-              <div style={{ fontSize: "1.3vw", fontWeight: 700, color: s.highlight ? "#F7CB6B" : "#F4DAD5", marginBottom: "0.3vh" }}>
+              <div style={{ fontSize: "1.3vw", fontWeight: 700, color: s.highlight ? "#FFFFFF" : "#F4F4F4", marginBottom: "0.3vh" }}>
                 {s.label}
               </div>
-              <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.50)", marginBottom: "0.6vh" }}>
+              <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.6vh" }}>
                 {s.subs12} subs al mes 12
               </div>
-              <div style={{ fontSize: "1.6vw", fontWeight: 700, color: "#F4DAD5" }}>{s.ingAnual}</div>
+              <div style={{ fontSize: "1.6vw", fontWeight: 700, color: "#F4F4F4" }}>{s.ingAnual}</div>
               <div style={{ fontSize: "1.1vw", color: "#6EC49A", fontWeight: 600 }}>neto {s.neto}</div>
             </div>
           ))}
@@ -220,23 +220,20 @@ export default function SlideFinanzas2() {
               borderRadius: "0.8vw",
             }}
           >
-            <div style={{ fontSize: "1.0vw", color: "rgba(242,231,228,0.50)", marginBottom: "0.5vh" }}>
+            <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.5vh" }}>
               CAJA AL MES 12 (BASE)
             </div>
             <div
               style={{
                 fontSize: "2.8vw",
                 fontWeight: 700,
-                background: "linear-gradient(90deg, #F7CB6B, #FBA980)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
+                color: "#FFFFFF",
                 lineHeight: 1,
               }}
             >
               ~$75M CLP
             </div>
-            <div style={{ fontSize: "0.9vw", color: "rgba(242,231,228,0.50)", marginTop: "0.4vh" }}>
+            <div style={{ fontSize: "0.9vw", color: "rgba(244,244,244,0.50)", marginTop: "0.4vh" }}>
               acumulados post-lanzamiento
             </div>
           </div>

@@ -2,18 +2,18 @@ export default function Dec01Portada() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display"
-      style={{ backgroundColor: "#1A0810", color: "#F4DAD5", fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
+      style={{ backgroundColor: "rgba(0,0,0,0.14)", color: "#F4F4F4", fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
     >
       {/* Background grid lines */}
-      <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px)", backgroundSize: "8vw 8vw", zIndex: 0 }} />
+      <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)", backgroundSize: "8vw 8vw", zIndex: 0 }} />
 
       {/* Top bar */}
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "3.5vh 5vw", borderBottom: "1px solid rgba(212,175,55,0.15)", zIndex: 2 }}>
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "3.5vh 5vw", borderBottom: "1px solid rgba(255,255,255,0.15)", zIndex: 2 }}>
         <div style={{ display: "flex", alignItems: "center", gap: "1.2vw" }}>
-          <div style={{ width: "2.2vw", height: "2.2vw", background: "linear-gradient(135deg, #F7CB6B, #FBA980)", borderRadius: "0.4vw" }} />
-          <span style={{ fontSize: "1.1vw", fontWeight: 700, letterSpacing: "0.06em", background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>RESONANCIA</span>
+          <div style={{ width: "2.2vw", height: "2.2vw", background: "linear-gradient(135deg, #FFFFFF, #FFFFFF)", borderRadius: "0.4vw" }} />
+          <span style={{ fontSize: "1.1vw", fontWeight: 700, letterSpacing: "0.06em", color: "#FFFFFF" }}>RESONANCIA</span>
         </div>
-        <div style={{ display: "flex", gap: "3vw", fontSize: "0.85vw", fontWeight: 500, color: "rgba(242,231,228,0.45)", letterSpacing: "0.1em" }}>
+        <div style={{ display: "flex", gap: "3vw", fontSize: "0.85vw", fontWeight: 500, color: "rgba(244,244,244,0.45)", letterSpacing: "0.1em" }}>
           <span>DECISIONES DE LANZAMIENTO</span>
           <span>JUNIO 2026</span>
         </div>
@@ -21,16 +21,16 @@ export default function Dec01Portada() {
 
       {/* Main content — left column */}
       <div style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", left: "5vw", width: "52vw", zIndex: 2 }}>
-        <div style={{ fontSize: "1vw", fontWeight: 600, letterSpacing: "0.18em", color: "#F7CB6B", marginBottom: "2.5vh", textTransform: "uppercase" }}>
+        <div style={{ fontSize: "1vw", fontWeight: 600, letterSpacing: "0.18em", color: "#FFFFFF", marginBottom: "2.5vh", textTransform: "uppercase" }}>
           Deck Interno · Casa del Cuenco
         </div>
-        <h1 style={{ fontSize: "5.5vw", fontWeight: 300, lineHeight: 1.05, letterSpacing: "-0.03em", margin: "0 0 1.5vh 0", color: "#F4DAD5" }}>
+        <h1 style={{ fontSize: "5.5vw", fontWeight: 300, lineHeight: 1.05, letterSpacing: "-0.03em", margin: "0 0 1.5vh 0", color: "#F4F4F4" }}>
           Decisiones
         </h1>
-        <h1 style={{ fontSize: "5.5vw", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.03em", margin: "0 0 4vh 0", background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+        <h1 style={{ fontSize: "5.5vw", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.03em", margin: "0 0 4vh 0", color: "#FFFFFF" }}>
           Clave
         </h1>
-        <p style={{ fontSize: "1.4vw", fontWeight: 400, color: "rgba(242,231,228,0.55)", lineHeight: 1.6, maxWidth: "38vw" }}>
+        <p style={{ fontSize: "1.4vw", fontWeight: 400, color: "rgba(244,244,244,0.55)", lineHeight: 1.6, maxWidth: "38vw" }}>
           Roadmap técnico y estratégico antes de publicar RESONANCIA en App Store y Google Play.
         </p>
       </div>
@@ -45,18 +45,18 @@ export default function Dec01Portada() {
           { num: "05", label: "Infraestructura de Video" },
           { num: "06", label: "Sincronización en la Nube" },
         ].map((item) => (
-          <div key={item.num} style={{ display: "flex", alignItems: "center", gap: "1.5vw", background: "rgba(212,175,55,0.04)", border: "1px solid rgba(212,175,55,0.12)", borderRadius: "0.8vw", padding: "1.8vh 2vw" }}>
-            <span style={{ fontSize: "1.1vw", fontWeight: 700, color: "#F7CB6B", fontVariantNumeric: "tabular-nums", minWidth: "2.5vw" }}>{item.num}</span>
-            <div style={{ width: "1px", height: "2.5vh", background: "rgba(212,175,55,0.2)" }} />
-            <span style={{ fontSize: "1.1vw", fontWeight: 500, color: "rgba(242,231,228,0.8)" }}>{item.label}</span>
+          <div key={item.num} style={{ display: "flex", alignItems: "center", gap: "1.5vw", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "0.8vw", padding: "1.8vh 2vw" }}>
+            <span style={{ fontSize: "1.1vw", fontWeight: 700, color: "#FFFFFF", fontVariantNumeric: "tabular-nums", minWidth: "2.5vw" }}>{item.num}</span>
+            <div style={{ width: "1px", height: "2.5vh", background: "rgba(255,255,255,0.2)" }} />
+            <span style={{ fontSize: "1.1vw", fontWeight: 500, color: "rgba(244,244,244,0.8)" }}>{item.label}</span>
           </div>
         ))}
       </div>
 
       {/* Bottom bar */}
-      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "2.5vh 5vw", borderTop: "1px solid rgba(212,175,55,0.1)", display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 2 }}>
-        <span style={{ fontSize: "0.85vw", color: "rgba(242,231,228,0.3)", letterSpacing: "0.06em" }}>Casa del Cuenco · Uso interno</span>
-        <span style={{ fontSize: "0.85vw", color: "rgba(242,231,228,0.3)", letterSpacing: "0.06em" }}>Confidencial</span>
+      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "2.5vh 5vw", borderTop: "1px solid rgba(255,255,255,0.1)", display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 2 }}>
+        <span style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.3)", letterSpacing: "0.06em" }}>Casa del Cuenco · Uso interno</span>
+        <span style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.3)", letterSpacing: "0.06em" }}>Confidencial</span>
       </div>
     </div>
   );

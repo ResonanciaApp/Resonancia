@@ -19,18 +19,18 @@ export default function Dec08Checklist() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden"
-      style={{ backgroundColor: "#1A0810", color: "#F4DAD5", fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
+      style={{ backgroundColor: "rgba(0,0,0,0.14)", color: "#F4F4F4", fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
     >
-      <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px)", backgroundSize: "8vw 8vw", zIndex: 0 }} />
+      <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)", backgroundSize: "8vw 8vw", zIndex: 0 }} />
 
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "3.5vh 5vw", borderBottom: "1px solid rgba(212,175,55,0.15)", zIndex: 2 }}>
-        <span style={{ fontSize: "0.85vw", fontWeight: 700, letterSpacing: "0.06em", background: "linear-gradient(90deg, #F7CB6B, #FBA980)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>RESONANCIA</span>
-        <div style={{ fontSize: "0.8vw", color: "rgba(242,231,228,0.35)", letterSpacing: "0.1em" }}>CHECKLIST DE LANZAMIENTO</div>
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "3.5vh 5vw", borderBottom: "1px solid rgba(255,255,255,0.15)", zIndex: 2 }}>
+        <span style={{ fontSize: "0.85vw", fontWeight: 700, letterSpacing: "0.06em", color: "#FFFFFF" }}>RESONANCIA</span>
+        <div style={{ fontSize: "0.8vw", color: "rgba(244,244,244,0.35)", letterSpacing: "0.1em" }}>CHECKLIST DE LANZAMIENTO</div>
       </div>
 
       <div style={{ position: "absolute", top: "13vh", left: "5vw", right: "5vw", bottom: "10vh", zIndex: 2 }}>
         <h2 style={{ fontSize: "2.8vw", fontWeight: 700, margin: "0 0 0.5vh 0", letterSpacing: "-0.02em" }}>Antes del primer build</h2>
-        <p style={{ fontSize: "1vw", color: "rgba(242,231,228,0.4)", margin: "0 0 2.5vh 0" }}>10 pasos en orden — del código a las tiendas.</p>
+        <p style={{ fontSize: "1vw", color: "rgba(244,244,244,0.4)", margin: "0 0 2.5vh 0" }}>10 pasos en orden — del código a las tiendas.</p>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1vw 3vw" }}>
           {[col1, col2].map((col, colIdx) => (
@@ -39,12 +39,12 @@ export default function Dec08Checklist() {
                 const globalIdx = colIdx * half + i + 1;
                 return (
                   <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "1.2vw", background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "0.55vw", padding: "1.2vh 1.4vw" }}>
-                    <div style={{ width: "2.2vw", height: "2.2vw", borderRadius: "50%", background: "rgba(212,175,55,0.08)", border: "1.5px solid rgba(212,175,55,0.25)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "0.1vh" }}>
-                      <span style={{ fontSize: "0.78vw", fontWeight: 700, color: "rgba(212,175,55,0.7)" }}>{globalIdx.toString().padStart(2, "0")}</span>
+                    <div style={{ width: "2.2vw", height: "2.2vw", borderRadius: "50%", background: "rgba(0,0,0,0.27)", border: "1.5px solid rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "0.1vh" }}>
+                      <span style={{ fontSize: "0.78vw", fontWeight: 700, color: "rgba(255,255,255,0.7)" }}>{globalIdx.toString().padStart(2, "0")}</span>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: "0.9vw", fontWeight: 500, color: "rgba(242,231,228,0.8)", lineHeight: 1.3, marginBottom: "0.25vh" }}>{item.text}</div>
-                      <div style={{ fontSize: "0.75vw", color: "rgba(212,175,55,0.6)", fontWeight: 500 }}>{item.rec}</div>
+                      <div style={{ fontSize: "0.9vw", fontWeight: 500, color: "rgba(244,244,244,0.8)", lineHeight: 1.3, marginBottom: "0.25vh" }}>{item.text}</div>
+                      <div style={{ fontSize: "0.75vw", color: "rgba(255,255,255,0.6)", fontWeight: 500 }}>{item.rec}</div>
                     </div>
                   </div>
                 );
@@ -54,11 +54,11 @@ export default function Dec08Checklist() {
         </div>
       </div>
 
-      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "2vh 5vw", borderTop: "1px solid rgba(212,175,55,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 2 }}>
-        <span style={{ fontSize: "0.8vw", color: "rgba(242,231,228,0.25)" }}>Casa del Cuenco · Uso interno · Confidencial</span>
+      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "2vh 5vw", borderTop: "1px solid rgba(0,0,0,0.27)", display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 2 }}>
+        <span style={{ fontSize: "0.8vw", color: "rgba(244,244,244,0.25)" }}>Casa del Cuenco · Uso interno · Confidencial</span>
         <div style={{ display: "flex", alignItems: "center", gap: "0.5vw" }}>
-          <div style={{ width: "0.4vw", height: "0.4vw", borderRadius: "50%", background: "linear-gradient(135deg, #F7CB6B, #FBA980)" }} />
-          <span style={{ fontSize: "0.8vw", color: "rgba(242,231,228,0.25)" }}>RESONANCIA 2026</span>
+          <div style={{ width: "0.4vw", height: "0.4vw", borderRadius: "50%", background: "linear-gradient(135deg, #FFFFFF, #FFFFFF)" }} />
+          <span style={{ fontSize: "0.8vw", color: "rgba(244,244,244,0.25)" }}>RESONANCIA 2026</span>
         </div>
       </div>
     </div>
