@@ -16,7 +16,7 @@ function ScenarioCard({
       style={{
         flex: 1,
         backgroundColor: highlight ? "#1f2a62" : "transparent",
-        border: highlight ? "1.5px solid #FFFFFF" : "1.5px solid #3D0E16",
+        border: "1.5px solid rgba(255,255,255,0.3)",
         borderRadius: "1vw",
         padding: "3.2vh 1.9vw",
         boxSizing: "border-box",
@@ -93,7 +93,7 @@ export default function SlideProyeccion() {
               key={k.label}
               style={{
                 flex: 1,
-                backgroundColor: "rgba(26,8,16,0.70)",
+                backgroundColor: "rgba(0,0,0,0.23)",
                 border: "1px solid rgba(255,255,255,0.20)",
                 borderRadius: "0.6vw",
                 padding: "1.0vh 1.1vw",
