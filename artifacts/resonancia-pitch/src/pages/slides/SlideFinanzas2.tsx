@@ -246,6 +246,11 @@ export default function SlideFinanzas2() {
         Break-even operacional M3 · Caja incluye $0,5M colchón pre-lanzamiento ·
         Optimista/Agresivo = curva más acelerada, mismos costos fijos.
       </div>
+
+      {/* Pulso 4 · logo esquina */}
+      <div style={{ position: "absolute", top: "3.5vh", right: "3vw", zIndex: 200, pointerEvents: "none" }}>
+        <span style={{ fontFamily: "inherit", fontSize: "0.85vw", fontWeight: 700, letterSpacing: "0.22em", color: "rgba(255,255,255,0.28)" }}>PULSO 4</span>
+      </div>
     </div>
   );
 }
