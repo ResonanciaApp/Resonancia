@@ -414,7 +414,7 @@ type LibResult =
   | { kind: "mix";      data: MixPreset }
   | { kind: "playlist"; data: UserPlaylist };
 
-function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+function SearchOverlay({ visible, onClose, gradient }: { visible: boolean; onClose: () => void; gradient: readonly string[] }) {
   const [q, setQ] = useState("");
   const inputRef  = useRef<TextInput>(null);
   const [kbHeight, setKbHeight] = useState(0);
@@ -476,9 +476,9 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
 
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose} onShow={() => inputRef.current?.focus()}>
-      <View style={[blStyles.root, { paddingBottom: kbHeight }]}>
+      <LinearGradient colors={gradient as string[]} style={[blStyles.root, { paddingBottom: kbHeight }]}>
         {/* Barra */}
-        <View style={[blStyles.overlay, { paddingTop: insets.top + 14 }]}>
+        <View style={[blStyles.overlay, { paddingTop: insets.top + 14, backgroundColor: "transparent" }]}>
           <View style={blStyles.bar}>
             <Feather name="search" size={16} color="rgba(242,231,228,0.45)" />
             <TextInput
@@ -579,14 +579,14 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
             }}
           />
         )}
-      </View>
+      </LinearGradient>
     </Modal>
   );
 }
 
 const blStyles = StyleSheet.create({
-  root:         { flex: 1, backgroundColor: "#190913" },
-  overlay:      { flexDirection: "row", alignItems: "center", backgroundColor: "#190913", paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
+  root:         { flex: 1 },
+  overlay:      { flexDirection: "row", alignItems: "center", paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
   bar:          { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.09)", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 11 },
   input:        { fontFamily: "Manrope", flex: 1, fontSize: 14, color: "#FBFBFB" },
   cancel:       { paddingVertical: 6 },
@@ -854,12 +854,13 @@ function FavFolderRow({ folder, onPress, onLongPress }: { folder: FavFolder; onP
 }
 
 // ── Hoja de crear ────────────────────────────────────────────────────────────
-function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGoMezclas }: {
+function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGoMezclas, gradient }: {
   visible: boolean;
   onClose: () => void;
   onCreatePlaylist: () => void;
   onCreateCarpeta: () => void;
   onGoMezclas: () => void;
+  gradient: readonly string[];
 }) {
   const ITEMS = [
     { icon: "list" as const,     title: "Crear un Ritual",        sub: "Crea un ritual con sesiones",           onPress: () => { onClose(); onCreatePlaylist(); } },
@@ -870,7 +871,7 @@ function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGo
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <Pressable style={[StyleSheet.absoluteFill, styles.sheetBackdrop]} onPress={onClose} />
-      <View style={styles.sheet}>
+      <LinearGradient colors={gradient as string[]} style={styles.sheet}>
         <View style={styles.sheetHandle} />
         <Text style={styles.sheetTitle}>¿Qué quieres crear?</Text>
         {ITEMS.map((it) => (
@@ -884,7 +885,7 @@ function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGo
             </View>
           </Pressable>
         ))}
-      </View>
+      </LinearGradient>
     </Modal>
   );
 }
@@ -1037,7 +1038,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
   const insets = useSafeAreaInsets();
   const { photoUri } = useUserProfile();
   const { open: openDrawer } = useDrawer();
-  const { activeSceneId } = useSceneTheme();
+  const { activeSceneId, theme: sceneTheme } = useSceneTheme();
   // "tibet" = tema Universo (azul marino); "vino-tinto" = tema Tíbet (borgoña, dorado)
   const iconPlaceholderColor = activeSceneId === "vino-tinto" ? GOLD : "#fefefe";
 
@@ -1747,13 +1748,14 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
       </ScrollView>
 
       {/* Overlays */}
-      <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} />
+      <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} gradient={sceneTheme.gradient} />
       <CreateSheet
         visible={createVisible}
         onClose={() => setCreateVisible(false)}
         onCreatePlaylist={() => setNombreVisible(true)}
         onCreateCarpeta={() => setNombreCarpetaVisible(true)}
         onGoMezclas={() => { openMixer(); router.navigate("/(tabs)/musica" as never); }}
+        gradient={sceneTheme.gradient}
       />
       <NombrePlaylistModal visible={nombreVisible} onClose={() => setNombreVisible(false)} />
       <NombreCarpetaModal visible={nombreCarpetaVisible} onClose={() => setNombreCarpetaVisible(false)} />
@@ -2179,9 +2181,9 @@ const styles = StyleSheet.create({
   },
   sheet: {
     position: "absolute", left: 0, right: 0, bottom: 0,
-    backgroundColor: "#190913",
     borderTopLeftRadius: 24, borderTopRightRadius: 24,
     paddingHorizontal: 20, paddingTop: 12, paddingBottom: 36,
+    overflow: "hidden",
   },
   sheetHandle: {
     width: 40, height: 4, borderRadius: 999,
