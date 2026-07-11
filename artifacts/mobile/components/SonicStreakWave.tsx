@@ -250,6 +250,23 @@ export function SonicStreakWave() {
               <Text style={styles.ringCount}>{weekCount}</Text>
               <Text style={styles.ringLabel}>{weekCount === 1 ? "Día" : "Días"}</Text>
             </View>
+            {/* Borde degradado — mismo gradiente que bolitas de días */}
+            <Svg width={RING_SIZE + 18} height={RING_SIZE + 18} style={StyleSheet.absoluteFill} pointerEvents="none">
+              <Defs>
+                <SvgGradient id="swBorderGrad" x1="0.5" y1="0" x2="0.5" y2="1">
+                  <Stop offset="0" stopColor={borderColor0} stopOpacity="0.6" />
+                  <Stop offset="1" stopColor={borderColor1} stopOpacity="0.53" />
+                </SvgGradient>
+              </Defs>
+              <Circle
+                cx={(RING_SIZE + 18) / 2}
+                cy={(RING_SIZE + 18) / 2}
+                r={(RING_SIZE + 18) / 2 - 1}
+                stroke="url(#swBorderGrad)"
+                strokeWidth={2}
+                fill="none"
+              />
+            </Svg>
           </View>
         </View>
       </View>
