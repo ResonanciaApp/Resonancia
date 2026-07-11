@@ -446,6 +446,7 @@ export default function ExploreScreen() {
 
             {/* ── Explorar todo (TEMAS) ── */}
             <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
+              <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Explorar todo</Text>
               <View style={[styles.temaGrid, { marginTop: 0 }]}>
                 {TEMAS.map((t) => (
                   <Pressable
