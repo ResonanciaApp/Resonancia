@@ -299,12 +299,6 @@ export default function SessionDetailScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: sceneTheme.gradient[sceneTheme.gradient.length - 1] as string }]}>
-      {/* ── Fondo degradado: arranca justo debajo del hero ── */}
-      <LinearGradient
-        colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
-        style={[StyleSheet.absoluteFill, { top: HEADER_H }]}
-        pointerEvents="none"
-      />
       <StatusBar barStyle="light-content" />
 
       {/* ── Hero fijo — no se mueve con el scroll ──────────────────────────── */}
@@ -322,12 +316,22 @@ export default function SessionDetailScreen() {
 
       <Animated.ScrollView
         style={[styles.scroll, { zIndex: 2 }]}
-        contentContainerStyle={{ paddingTop: HEADER_H, paddingBottom: bottomPad + 24 }}
+        contentContainerStyle={{ paddingBottom: bottomPad + 24 }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
         onScroll={handleScroll}
       >
-        {/* ── Content ─────────────────────────────────────────────────────── */}
+        {/* Spacer transparente — muestra el hero fijo debajo */}
+        <View style={{ height: HEADER_H }} pointerEvents="none" />
+
+        {/* ── Bloque fondo+contenido que cubre el hero al hacer scroll ──── */}
+        <View style={{ backgroundColor: sceneTheme.gradient[sceneTheme.gradient.length - 1] as string }}>
+          <LinearGradient
+            colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
+        {/* ── Content ────────────────────────────────────────────────────── */}
         <View style={styles.content}>
 
           {/* Duration label + rating */}
@@ -510,6 +514,7 @@ export default function SessionDetailScreen() {
             </View>
           )}
         </View>
+        </View>{/* /bloque fondo+contenido */}
       </Animated.ScrollView>
 
       {/* ── Sticky header (aparece al scrollear) ─────────────────────────── */}
