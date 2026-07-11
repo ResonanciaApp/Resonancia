@@ -230,6 +230,7 @@ export function SonicStreakWave() {
             shadowOpacity: 0.08,
             shadowRadius: 4,
             elevation: 2,
+            transform: [{ translateX: 1 }],
           }}
         >
           <View style={[styles.ringWrap, {
