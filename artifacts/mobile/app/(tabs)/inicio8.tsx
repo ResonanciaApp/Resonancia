@@ -913,7 +913,7 @@ export default function HomeScreen2() {
           style={{ marginBottom: 35, marginHorizontal: GRID_PAD, marginTop: -6 }}
         >
           <View style={styles.resonadoresBanner}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.7)" }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.14)" }]} />
             <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
               <LinearGradient
                 colors={["rgb(247,203,107)", "rgb(251,169,128)"]}
