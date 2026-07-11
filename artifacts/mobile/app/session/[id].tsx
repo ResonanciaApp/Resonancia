@@ -181,13 +181,17 @@ export default function SessionDetailScreen() {
   }, []);
 
   const scrollY = useRef(new Animated.Value(0)).current;
-  const handleScroll = useCallback(
-    (e: { nativeEvent: { contentOffset: { y: number } } }) => {
-      const y = e.nativeEvent.contentOffset.y;
-      scrollY.setValue(y);
-    },
-    [scrollY],
+  const handleScroll = Animated.event(
+    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+    { useNativeDriver: false },
   );
+
+  // Hero zoom: cuando scrollY < 0 (pull-down) la imagen crece para tapar el backdrop
+  const heroScale = scrollY.interpolate({
+    inputRange: [-180, 0],
+    outputRange: [1.55, 1],
+    extrapolate: "clamp",
+  });
   const STICKY_START = HEADER_H + 140 - topPad;
   const STICKY_END   = STICKY_START + 40;
   const stickyOpacity = scrollY.interpolate({
@@ -299,10 +303,10 @@ export default function SessionDetailScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: sceneTheme.gradient[sceneTheme.gradient.length - 1] as string }]}>
-      {/* ── Fondo degradado del tema (todos los stops, igual que inicio) ── */}
+      {/* ── Fondo degradado: arranca justo debajo del hero ── */}
       <LinearGradient
         colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
-        style={StyleSheet.absoluteFill}
+        style={[StyleSheet.absoluteFill, { top: HEADER_H }]}
         pointerEvents="none"
       />
       <StatusBar barStyle="light-content" />
@@ -316,7 +320,10 @@ export default function SessionDetailScreen() {
       >
         {/* ── Hero — imagen que sube con el contenido ──────────────────────── */}
         <View style={[styles.hero, { height: HEADER_H }]}>
-          <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
+          {/* Zoom en pull-down: la imagen crece con el rebote natural de iOS */}
+          <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ scale: heroScale }] }]}>
+            <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
+          </Animated.View>
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
             <GhostPill noBorder style={{ backgroundColor: "rgba(27,6,15,0.45)" }}>
               <BackPill onPress={() => router.back()} />
