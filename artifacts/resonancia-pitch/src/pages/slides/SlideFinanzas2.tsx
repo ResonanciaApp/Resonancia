@@ -185,7 +185,7 @@ export default function SlideFinanzas2() {
         </div>
 
         {/* Right: scenario cards + KPI */}
-        <div style={{ flex: 0.8, display: "flex", flexDirection: "column", gap: "1.6vh" }}>
+        <div style={{ flex: 0.8, display: "flex", flexDirection: "column", gap: "1.6vh", marginTop: "-25px" }}>
           <div style={{ fontSize: "1.0vw", fontWeight: 600, color: "rgba(244,244,244,0.40)", letterSpacing: "0.1em" }}>
             ESCENARIOS AÑO 1
           </div>
