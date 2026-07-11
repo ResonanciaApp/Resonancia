@@ -307,26 +307,26 @@ export default function SessionDetailScreen() {
       />
       <StatusBar barStyle="light-content" />
 
+      {/* ── Hero fijo — no se mueve con el scroll ──────────────────────────── */}
+      <View style={[styles.hero, { height: HEADER_H, position: "absolute", top: 0, left: 0, right: 0, zIndex: 1 }]}>
+        <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
+        <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
+          <GhostPill noBorder style={{ backgroundColor: "rgba(27,6,15,0.45)" }}>
+            <BackPill onPress={() => router.back()} />
+          </GhostPill>
+          <Pressable onPress={handleInstagramShare} hitSlop={10} style={({ pressed }) => [styles.igBtn, { opacity: pressed ? 0.6 : 1 }]}>
+            <FontAwesome name="instagram" size={20} color="#FBFBFB" />
+          </Pressable>
+        </View>
+      </View>
+
       <Animated.ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: bottomPad + 24 }}
+        style={[styles.scroll, { zIndex: 2 }]}
+        contentContainerStyle={{ paddingTop: HEADER_H, paddingBottom: bottomPad + 24 }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
         onScroll={handleScroll}
       >
-        {/* ── Hero — imagen que sube con el contenido ──────────────────────── */}
-        <View style={[styles.hero, { height: HEADER_H }]}>
-          <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
-          <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
-            <GhostPill noBorder style={{ backgroundColor: "rgba(27,6,15,0.45)" }}>
-              <BackPill onPress={() => router.back()} />
-            </GhostPill>
-            <Pressable onPress={handleInstagramShare} hitSlop={10} style={({ pressed }) => [styles.igBtn, { opacity: pressed ? 0.6 : 1 }]}>
-              <FontAwesome name="instagram" size={20} color="#FBFBFB" />
-            </Pressable>
-          </View>
-        </View>
-
         {/* ── Content ─────────────────────────────────────────────────────── */}
         <View style={styles.content}>
 
