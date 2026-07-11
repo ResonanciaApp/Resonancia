@@ -680,7 +680,7 @@ export default function MezcladorScreen() {
                   <MaterialCommunityIcons name="chevron-left" size={32} color="#FBFBFB" />
                 </Pressable>
                 <View style={{ flex: 1 }}>
-                  <Text style={[styles.pageTitle, { transform: [{ translateX: -19 }, { translateY: -1 }] }]}>Creación</Text>
+                  <Text style={[styles.pageTitle, { transform: [{ translateX: -9 }, { translateY: -1 }] }]}>Creación</Text>
                 </View>
                 <View style={[styles.headerActions, { flexDirection: "row", gap: 4 }]}>
                     <Pressable
