@@ -27,6 +27,9 @@ type Props = {
   bgPaletteId: MixerBgPaletteId;
   onBgPaletteChange: (id: MixerBgPaletteId) => void;
   onClear: () => void;
+  /** Degradado de la escena activa en Inicio (para preview y restablecer) */
+  sceneGradient: readonly [string, string];
+  onResetToScene: () => void;
 };
 
 const PRIMARY = "#F7CB6B";
@@ -48,6 +51,8 @@ export function MixerSettingsSheet({
   bgPaletteId,
   onBgPaletteChange,
   onClear,
+  sceneGradient,
+  onResetToScene,
 }: Props) {
   const insets = useSafeAreaInsets();
 
@@ -116,6 +121,38 @@ export function MixerSettingsSheet({
                   </Pressable>
                 );
               })}
+            </View>
+
+            {/* ── Restablecer escena ── */}
+            <View style={styles.resetRow}>
+              <View style={styles.resetPreview}>
+                <LinearGradient
+                  colors={[sceneGradient[0], sceneGradient[1]]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.resetPreviewGradient}
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.resetLabel, { color: c.fg }]}>Escena activa</Text>
+                <Text style={[styles.resetSub, { color: c.mutedDim }]}>Color de la escena elegida en Inicio</Text>
+              </View>
+              <Pressable
+                onPress={onResetToScene}
+                disabled={bgPaletteId === DEFAULT_MIXER_BG_PALETTE}
+                style={({ pressed }) => [
+                  styles.resetBtn,
+                  bgPaletteId === DEFAULT_MIXER_BG_PALETTE && styles.resetBtnActive,
+                  { opacity: pressed ? 0.7 : 1 },
+                ]}
+              >
+                <Text style={[
+                  styles.resetBtnText,
+                  { color: bgPaletteId === DEFAULT_MIXER_BG_PALETTE ? PRIMARY : c.fg },
+                ]}>
+                  {bgPaletteId === DEFAULT_MIXER_BG_PALETTE ? "Activa" : "Restablecer"}
+                </Text>
+              </Pressable>
             </View>
 
             {/* ── Etiquetas ── */}
@@ -265,5 +302,52 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
     color: "#0B0F14",
+  },
+  resetRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginTop: 16,
+    padding: 12,
+    borderRadius: 12,
+    backgroundColor: "rgba(255,255,255,0.05)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.09)",
+  },
+  resetPreview: {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    overflow: "hidden",
+    borderWidth: 1.5,
+    borderColor: "rgba(247,203,107,0.35)",
+  },
+  resetPreviewGradient: {
+    flex: 1,
+  },
+  resetLabel: {
+    fontSize: 13,
+    fontWeight: "600",
+    marginBottom: 2,
+  },
+  resetSub: {
+    fontSize: 11,
+    lineHeight: 14,
+  },
+  resetBtn: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: "rgba(255,255,255,0.25)",
+    backgroundColor: "rgba(255,255,255,0.07)",
+  },
+  resetBtnActive: {
+    borderColor: "rgba(247,203,107,0.5)",
+    backgroundColor: "rgba(247,203,107,0.1)",
+  },
+  resetBtnText: {
+    fontSize: 12,
+    fontWeight: "700",
   },
 });
