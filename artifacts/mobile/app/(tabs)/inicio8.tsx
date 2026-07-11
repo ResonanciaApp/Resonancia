@@ -743,44 +743,6 @@ export default function HomeScreen2() {
 
   return (
     <View style={[styles.root, { backgroundColor: activeTheme.gradient[0] }]}>
-      {/* ── Imagen de fondo — se desvanece con scroll ── */}
-      <Animated.View
-        style={{ position: "absolute", top: 0, left: 0, right: 0, height: 400, opacity: backdropAnim }}
-        pointerEvents="none"
-      >
-        {/* Capa anterior (estática mientras dura el fade) */}
-        <ExpoImage
-          source={prevSceneImage}
-          style={StyleSheet.absoluteFill}
-          contentFit="cover"
-        />
-        {/* Nueva imagen — fade-in sincronizado con el gradiente */}
-        <Animated.View style={[StyleSheet.absoluteFill, { opacity: imageFade }]}>
-          <ExpoImage
-            source={currentSceneImage}
-            style={StyleSheet.absoluteFill}
-            contentFit="cover"
-          />
-        </Animated.View>
-
-        {/* Borrador suave inferior — funde imagen con el fondo (curva Photoshop) */}
-        <LinearGradient
-          colors={[
-            "transparent",
-            "transparent",
-            `${activeTheme.gradient[0]}06`,
-            `${activeTheme.gradient[0]}12`,
-            `${activeTheme.gradient[0]}28`,
-            `${activeTheme.gradient[0]}50`,
-            `${activeTheme.gradient[0]}84`,
-            `${activeTheme.gradient[0]}C0`,
-            activeTheme.gradient[0] as string,
-          ]}
-          locations={[0, 0.18, 0.33, 0.45, 0.57, 0.69, 0.80, 0.91, 1]}
-          style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 400 }}
-          pointerEvents="none"
-        />
-      </Animated.View>
       <LinearGradient
         colors={[
           `${prevGradient[0]}00`,
