@@ -396,26 +396,15 @@ export default function ExploreScreen() {
           <Text style={styles.pageTitle}>Explorar</Text>
         </View>
         {/* Barra de búsqueda pegada al header */}
-        <View style={styles.searchWrap}>
-          <View style={[styles.searchBox, { overflow: "hidden", borderColor: "rgba(255,255,255,0.5)", borderWidth: 1 }]}>
+        <Pressable style={styles.searchWrap} onPress={() => setSearchVisible(true)}>
+          <View style={[styles.searchBox, { overflow: "hidden", borderColor: "rgba(255,255,255,0.5)", borderWidth: 1 }]} pointerEvents="none">
             <CardTint />
             <Feather name="search" size={16} color={colors.mutedForeground} />
-            <TextInput
-              value={query}
-              onChangeText={setQuery}
-              onFocus={() => setSearchVisible(true)}
-              placeholder="Titulo, voz guía, artista o tema"
-              placeholderTextColor={colors.mutedForeground}
-              style={[styles.searchInput, { color: colors.foreground }]}
-              returnKeyType="search"
-            />
-            {query.length > 0 && (
-              <Pressable onPress={() => setQuery("")} hitSlop={8}>
-                <Feather name="x-circle" size={15} color={colors.mutedForeground} />
-              </Pressable>
-            )}
+            <Text style={[styles.searchInput, { color: colors.mutedForeground, flex: 1 }]} numberOfLines={1}>
+              Titulo, voz guía, artista o tema
+            </Text>
           </View>
-        </View>
+        </Pressable>
       </View>
 
       <ScrollView
