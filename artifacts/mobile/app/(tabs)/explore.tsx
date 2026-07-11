@@ -252,7 +252,7 @@ export default function ExploreScreen() {
   const { isPremium } = usePremium();
   const { playSession, history } = usePlayer();
   const { version: catalogVersion } = useCatalog();
-  const { theme: activeTheme } = useSceneTheme();
+  const { theme: activeTheme, activeSceneId } = useSceneTheme();
 
   const ancestralesSessions  = SESSIONS.filter(s => s.categoryId === "sonidos-ancestrales").slice(0, 10);
   const musicaSessions       = SESSIONS.filter(s => s.categoryId === "musica-sonidos").slice(0, 10);
@@ -444,39 +444,6 @@ export default function ExploreScreen() {
           </View>
         )}
 
-            {/* ── Explorar todo (TEMAS) ── */}
-            <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
-              <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Explorar todo</Text>
-              <View style={[styles.temaGrid, { marginTop: 0 }]}>
-                {TEMAS.map((t) => (
-                  <Pressable
-                    key={t.id}
-                    onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
-                    style={[styles.temaCell, { width: TEMA3_W, height: TEMA3_W, borderRadius: 11, overflow: "hidden" }]}
-                  >
-                    {({ pressed }) => (
-                      <>
-                        <CardTint />
-                        {pressed && <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(t.color, 0.22) }]} />}
-                        {t.image != null ? (
-                          <Image
-                            source={t.image}
-                            style={styles.temaCellIcon}
-                            contentFit="contain"
-                          />
-                        ) : (
-                          <MaterialCommunityIcons name={t.icon} size={28} color={t.color} />
-                        )}
-                        <Text style={[styles.temaCellLabel, { color: "#FBFBFB" }]} numberOfLines={2}>
-                          {t.label}
-                        </Text>
-                      </>
-                    )}
-                  </Pressable>
-                ))}
-              </View>
-            </View>
-
             {/* ── ¿Cuánto tiempo tienes hoy? ── */}
             <View style={[styles.durSection, { marginTop: 0, marginBottom: SECTION_GAP }]}>
               <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>
@@ -512,7 +479,11 @@ export default function ExploreScreen() {
                         </>
                       )}
                       <Text
-                        style={[styles.durPillText, sel && styles.durPillTextActive]}
+                        style={[
+                          styles.durPillText,
+                          sel && styles.durPillTextActive,
+                          sel && activeSceneId === "tibet" && { color: "#f9f9f9" },
+                        ]}
                         numberOfLines={1}
                         adjustsFontSizeToFit
                         minimumFontScale={0.7}
@@ -525,7 +496,7 @@ export default function ExploreScreen() {
               </ScrollView>
 
               {selectedDur && (
-                <View style={styles.durResults}>
+                <View style={[styles.durResults, { marginHorizontal: 0 }]}>
                   {/* Filtro de orden */}
                   <View style={styles.durSortRow}>
                     <Pressable onPress={() => setDurSort("recientes")}>
@@ -556,8 +527,38 @@ export default function ExploreScreen() {
               )}
             </View>
 
-
-
+            {/* ── Explorar todo (TEMAS) ── */}
+            <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
+              <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Explorar todo</Text>
+              <View style={[styles.temaGrid, { marginTop: 0 }]}>
+                {TEMAS.map((t) => (
+                  <Pressable
+                    key={t.id}
+                    onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
+                    style={[styles.temaCell, { width: TEMA3_W, height: TEMA3_W, borderRadius: 11, overflow: "hidden" }]}
+                  >
+                    {({ pressed }) => (
+                      <>
+                        <CardTint />
+                        {pressed && <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(t.color, 0.22) }]} />}
+                        {t.image != null ? (
+                          <Image
+                            source={t.image}
+                            style={styles.temaCellIcon}
+                            contentFit="contain"
+                          />
+                        ) : (
+                          <MaterialCommunityIcons name={t.icon} size={28} color={t.color} />
+                        )}
+                        <Text style={[styles.temaCellLabel, { color: "#FBFBFB" }]} numberOfLines={2}>
+                          {t.label}
+                        </Text>
+                      </>
+                    )}
+                  </Pressable>
+                ))}
+              </View>
+            </View>
 
             {/* ── Las más escuchadas ── */}
             {masEscuchadasMeditaciones.length > 0 &&
