@@ -120,7 +120,7 @@ const WARM = {
 
 /** Miniatura cuadrada de la pista: imagen del sonido (fallback degradé negro). */
 // ─── Drag-and-drop reorder ────────────────────────────────────────────────────
-const ITEM_H = 61; // height of each slot (row content ~54px + gap between items)
+const ITEM_H = 77; // height of each slot (row content ~69px + gap between items)
 
 type TrackPalette = {
   muted: string; fg: string; sliderThumb: string;
@@ -219,7 +219,18 @@ function DraggableTrackRow({
             <MaterialCommunityIcons name="drag-vertical" size={22} color={palette.muted} />
           </View>
         </GestureDetector>
-        <TrackThumb sound={sound} />
+        <View>
+          <TrackThumb sound={sound} />
+          <Pressable
+            onPress={() => removeSound(id)}
+            hitSlop={4}
+            style={styles.removeBtnOverlay}
+            accessibilityRole="button"
+            accessibilityLabel={`Quitar ${sound.name} de la mezcla`}
+          >
+            <Feather name="x" size={11} color="#fff" />
+          </Pressable>
+        </View>
         <View style={styles.trackInfo}>
           <Text style={[styles.trackName, { color: palette.fg }]} numberOfLines={1}>
             {sound.name}
@@ -231,15 +242,6 @@ function DraggableTrackRow({
             trackColor={palette.sliderTrack}
           />
         </View>
-        <Pressable
-          onPress={() => removeSound(id)}
-          hitSlop={10}
-          style={styles.removeBtn}
-          accessibilityRole="button"
-          accessibilityLabel={`Quitar ${sound.name} de la mezcla`}
-        >
-          <Feather name="x" size={16} color={palette.muted} />
-        </Pressable>
       </View>
     </Reanimated.View>
   );
@@ -1101,7 +1103,7 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 0,
   },
-  headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
+  headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center", borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)" },
   headerPillBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   caption: { fontSize: 10, letterSpacing: 1.8, textTransform: "uppercase", marginBottom: 4, fontWeight: "400" },
   title: { fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
@@ -1155,8 +1157,19 @@ const styles = StyleSheet.create({
   },
   warmSeparator: { height: 1, marginTop: 14, marginBottom: 0, marginHorizontal: -20, backgroundColor: "rgba(61,14,22,0.40)" },
   headerDivider: { height: 1, marginTop: 4, marginBottom: 4, marginHorizontal: -20 },
-  thumb: { width: 42, height: 42, borderRadius: 9, overflow: "hidden", borderWidth: 1, borderColor: "rgba(255,255,255,0.50)" },
-  thumbRadius: { borderRadius: 8 },
+  thumb: { width: 57, height: 57, borderRadius: 11, overflow: "hidden", borderWidth: 1, borderColor: "rgba(255,255,255,0.50)" },
+  thumbRadius: { borderRadius: 10 },
+  removeBtnOverlay: {
+    position: "absolute",
+    top: 4,
+    left: 4,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: "rgba(0,0,0,0.16)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   trackInfo: { flex: 1, justifyContent: "center" },
   trackName: { fontSize: 12, fontWeight: "700", marginBottom: -2, paddingLeft: 8, marginTop: 6 },
   _reorderPill_unused: {
