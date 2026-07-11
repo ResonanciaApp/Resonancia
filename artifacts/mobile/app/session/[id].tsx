@@ -181,17 +181,13 @@ export default function SessionDetailScreen() {
   }, []);
 
   const scrollY = useRef(new Animated.Value(0)).current;
-  const handleScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-    { useNativeDriver: false },
+  const handleScroll = useCallback(
+    (e: { nativeEvent: { contentOffset: { y: number } } }) => {
+      const y = e.nativeEvent.contentOffset.y;
+      scrollY.setValue(y);
+    },
+    [scrollY],
   );
-
-  // Hero zoom: cuando scrollY < 0 (pull-down) la imagen crece para tapar el backdrop
-  const heroScale = scrollY.interpolate({
-    inputRange: [-180, 0],
-    outputRange: [1.55, 1],
-    extrapolate: "clamp",
-  });
   const STICKY_START = HEADER_H + 140 - topPad;
   const STICKY_END   = STICKY_START + 40;
   const stickyOpacity = scrollY.interpolate({
@@ -320,10 +316,7 @@ export default function SessionDetailScreen() {
       >
         {/* ── Hero — imagen que sube con el contenido ──────────────────────── */}
         <View style={[styles.hero, { height: HEADER_H }]}>
-          {/* Zoom en pull-down: la imagen crece con el rebote natural de iOS */}
-          <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ scale: heroScale }] }]}>
-            <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
-          </Animated.View>
+          <Image source={session.image} style={StyleSheet.absoluteFill as object} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
           <View style={[styles.navBar, { paddingTop: topPad + 8 }]}>
             <GhostPill noBorder style={{ backgroundColor: "rgba(27,6,15,0.45)" }}>
               <BackPill onPress={() => router.back()} />
