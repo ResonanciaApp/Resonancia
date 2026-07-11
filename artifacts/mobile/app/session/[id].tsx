@@ -850,8 +850,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: "Manrope",
-    fontSize: 26,
-    fontWeight: "400",
+    fontSize: 21,
+    fontWeight: "700",
     lineHeight: 33,
     letterSpacing: -0.3,
     textAlign: "left",
