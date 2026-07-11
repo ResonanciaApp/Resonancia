@@ -151,7 +151,7 @@ export default function SlideAnexoInversion() {
               subs="5.000"
               arr="$261M CLP"
               multiple="4× ARR"
-              valuation="$1.044B"
+              valuation="$1,044M"
               stakeVal="$104M CLP"
               returnX="4,5×"
             />
@@ -161,7 +161,7 @@ export default function SlideAnexoInversion() {
               subs="7.000"
               arr="$365M CLP"
               multiple="5× ARR"
-              valuation="$1.827B"
+              valuation="$1,827M"
               stakeVal="$183M CLP"
               returnX="7,9×"
             />
@@ -171,7 +171,7 @@ export default function SlideAnexoInversion() {
               subs="10.000"
               arr="$522M CLP"
               multiple="6× ARR"
-              valuation="$3.132B"
+              valuation="$3,132M"
               stakeVal="$313M CLP"
               returnX="13,5×"
             />
