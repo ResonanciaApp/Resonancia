@@ -689,7 +689,7 @@ export default function MezcladorScreen() {
                       accessibilityRole="button"
                       accessibilityLabel="Mezclas de la comunidad"
                     >
-                      <MaterialCommunityIcons name="account-group" size={24} color="#FBFBFB" />
+                      <MaterialCommunityIcons name="account-group" size={24} color="#FBFBFB" style={{ transform: [{ translateX: 2 }, { translateY: -3 }] }} />
                     </Pressable>
                     <Pressable
                       onPress={() => setSettingsVisible(true)}
@@ -698,7 +698,7 @@ export default function MezcladorScreen() {
                       accessibilityRole="button"
                       accessibilityLabel="Filtros del Mezclador"
                     >
-                      <MaterialCommunityIcons name="filter-variant" size={24} color="#FBFBFB" />
+                      <MaterialCommunityIcons name="filter-variant" size={24} color="#FBFBFB" style={{ transform: [{ translateX: 2 }, { translateY: 4 }] }} />
                     </Pressable>
                 </View>
               </View>
