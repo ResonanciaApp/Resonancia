@@ -18,31 +18,25 @@ export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOff
   const { activeSceneId } = useSceneTheme();
   const bgColor = activeSceneId === "tibet" ? "#1a1243" : "rgba(0,0,0,0.40)";
 
-  const opacity    = useRef(new Animated.Value(0)).current;
-  const translateY = useRef(new Animated.Value(80)).current;
+  const OFFSCREEN = 130; // mayor que height(64) + tab bar para salir de pantalla
+
+  const translateY = useRef(new Animated.Value(OFFSCREEN)).current;
   const closingRef = useRef(false);
 
   useEffect(() => {
     closingRef.current = false;
-    opacity.setValue(0);
-    translateY.setValue(80);
-    Animated.parallel([
-      Animated.timing(opacity,    { toValue: 1, duration: 300, useNativeDriver: true }),
-      Animated.timing(translateY, { toValue: 0, duration: 300, useNativeDriver: true }),
-    ]).start();
+    translateY.setValue(OFFSCREEN);
+    Animated.timing(translateY, { toValue: 0, duration: 350, useNativeDriver: true }).start();
   }, [sound.id]);
 
   const handleClose = () => {
     if (closingRef.current) return;
     closingRef.current = true;
-    Animated.parallel([
-      Animated.timing(opacity,    { toValue: 0, duration: 300, useNativeDriver: true }),
-      Animated.timing(translateY, { toValue: 80, duration: 300, useNativeDriver: true }),
-    ]).start(() => onStop());
+    Animated.timing(translateY, { toValue: OFFSCREEN, duration: 350, useNativeDriver: true }).start(() => onStop());
   };
 
   return (
-    <Animated.View style={[styles.container, { bottom: bottomOffset, backgroundColor: bgColor, opacity, transform: [{ translateY }] }]}>
+    <Animated.View style={[styles.container, { bottom: bottomOffset, backgroundColor: bgColor, transform: [{ translateY }] }]}>
       <Image source={sound.image} style={styles.img} resizeMode="cover" />
 
       <Pressable
