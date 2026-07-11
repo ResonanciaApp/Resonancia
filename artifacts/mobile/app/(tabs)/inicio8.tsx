@@ -742,7 +742,7 @@ export default function HomeScreen2() {
   );
 
   return (
-    <View style={[styles.root, { backgroundColor: activeTheme.gradient[0] }]}>
+    <View style={[styles.root, { backgroundColor: "#1B060F" }]}>
 
       {/* ── Frase — anclada, posición fija, se oculta con el backdrop al hacer scroll ── */}
       {greetingVisible && (
