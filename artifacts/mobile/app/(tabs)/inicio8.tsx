@@ -1145,7 +1145,7 @@ export default function HomeScreen2() {
       </ScrollView>
 
       {/* ── Loto + Regalo flotantes — encima del ScrollView para recibir toques ── */}
-      <Animated.View
+      <View
         pointerEvents="box-none"
         style={{
           position: "absolute",
@@ -1156,7 +1156,6 @@ export default function HomeScreen2() {
           justifyContent: "space-between",
           alignItems: "center",
           paddingHorizontal: 14,
-          opacity: backdropAnim,
         }}
       >
         {/* Pulso 4 — izquierda */}
@@ -1196,7 +1195,7 @@ export default function HomeScreen2() {
             </Animated.View>
           </Pressable>
         </View>
-      </Animated.View>
+      </View>
 
       <MoodPickerSheet
         visible={moodSheetVisible}
