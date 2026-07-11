@@ -70,13 +70,5 @@
     "title": "Contacto",
     "description": "Slide de cierre con datos de contacto.",
     "speakerNotes": ""
-  },
-  {
-    "id": "a1f4c2d0-1111-4a01-9c01-000000000022",
-    "position": 10,
-    "filepath": "src/pages/slides/SlideFondo.tsx",
-    "title": "Fondo",
-    "description": "Diapo vacía — solo el fondo degradado.",
-    "speakerNotes": ""
   }
 ]
