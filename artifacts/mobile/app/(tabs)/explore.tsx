@@ -586,7 +586,7 @@ const styles = StyleSheet.create({
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 24 },
-  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "600", letterSpacing: 0.5, color: "#FBFBFB", marginBottom: 24 },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 24 },
 
   // Recomendado para ti
   recoSection: {
