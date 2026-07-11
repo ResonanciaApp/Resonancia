@@ -298,8 +298,20 @@ function DormirMiniPlayer({
   onToggle: () => void;
   bottomOffset: number;
 }) {
+  const opacity   = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(15)).current;
+
+  useEffect(() => {
+    opacity.setValue(0);
+    translateY.setValue(15);
+    Animated.parallel([
+      Animated.timing(opacity,    { toValue: 1, duration: 600, useNativeDriver: true }),
+      Animated.timing(translateY, { toValue: 0, duration: 600, useNativeDriver: true }),
+    ]).start();
+  }, [sound.id]);
+
   return (
-    <View style={[styles.dormirMiniPlayer, { bottom: bottomOffset }]}>
+    <Animated.View style={[styles.dormirMiniPlayer, { bottom: bottomOffset, opacity, transform: [{ translateY }] }]}>
       <Image source={sound.image} style={styles.dormirMiniImg} resizeMode="cover" />
       <Pressable
         onPress={(e) => { e.stopPropagation(); onToggle(); }}
@@ -323,7 +335,7 @@ function DormirMiniPlayer({
           {sound.categoryId === "binaural" ? "Sonidos Binaurales" : "Ambientales"}
         </Text>
       </View>
-    </View>
+    </Animated.View>
   );
 }
 
