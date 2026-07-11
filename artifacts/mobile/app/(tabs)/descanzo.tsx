@@ -671,7 +671,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     marginTop: 8,
     paddingHorizontal: 2,
-    color: "rgba(255,255,255,0.55)",
+    color: "#F4DAD5",
   },
   soundLabelSel: {
     color: "#F4DAD5",
