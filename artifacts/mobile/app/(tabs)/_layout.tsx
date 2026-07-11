@@ -158,13 +158,26 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
 
   const visibleCount = state.routes.filter((r: { name: string }) => isRenderedTab(r.name)).length;
 
-  const visibleIndex = (() => {
+  const currentIsRendered = isRenderedTab(state.routes[state.index]?.name ?? "");
+
+  const computeVisibleIndex = (routeIndex: number) => {
     let idx = 0;
-    for (let i = 0; i < state.index; i++) {
+    for (let i = 0; i < routeIndex; i++) {
       if (isRenderedTab(state.routes[i].name)) idx++;
     }
     return idx;
-  })();
+  };
+
+  // Cuando el route actual es href:null (categorías, coleccion, etc.) el índice
+  // del tabs navigator apunta a esa pantalla en lugar de al tab real — guardamos
+  // el último tab real activo y lo usamos como referencia.
+  const lastRealRouteIndex = useRef(state.index);
+  if (currentIsRendered) {
+    lastRealRouteIndex.current = state.index;
+  }
+  const effectiveRouteIndex = currentIsRendered ? state.index : lastRealRouteIndex.current;
+
+  const visibleIndex = computeVisibleIndex(effectiveRouteIndex);
 
   const [tabWidth, setTabWidth] = useState(0);
   const pillX          = useRef(new Animated.Value(0)).current;
@@ -282,7 +295,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
           {state.routes.map((route: { key: string; name: string; params?: object }, index: number) => {
             if (HIDDEN_ROUTES.has(route.name)) return null;
 
-            const isFocused = state.index === index;
+            const isFocused = effectiveRouteIndex === index;
             const onPress   = () => {
               if (route.name === "musica") {
                 openMixer();
