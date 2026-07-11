@@ -17,9 +17,6 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 
 // ─── Ring ────────────────────────────────────────────────────────────────────
 const RING_SIZE    = 91;
-const STROKE_W     = 7;
-const RING_RADIUS  = (RING_SIZE - STROKE_W) / 2;
-const RING_CIRCUM  = 2 * Math.PI * RING_RADIUS;
 
 // ─── Layout ──────────────────────────────────────────────────────────────────
 const SCREEN_W  = Dimensions.get("window").width;
@@ -249,27 +246,6 @@ export function SonicStreakWave() {
               style={StyleSheet.absoluteFill}
               pointerEvents="none"
             />
-            <Svg width={RING_SIZE} height={RING_SIZE}>
-              <Defs>
-                <SvgGradient id="swRingGrad" x1="0" y1="0" x2="1" y2="1">
-                  <Stop offset="0" stopColor="#F7CB6B" />
-                  <Stop offset="1" stopColor="#FBA980" />
-                </SvgGradient>
-              </Defs>
-              <Circle
-                cx={RING_SIZE / 2} cy={RING_SIZE / 2} r={RING_RADIUS}
-                stroke="rgba(255,255,255,0.13)" strokeWidth={STROKE_W} fill="none"
-              />
-              <Circle
-                cx={RING_SIZE / 2} cy={RING_SIZE / 2} r={RING_RADIUS}
-                stroke="url(#swRingGrad)" strokeWidth={STROKE_W} fill="none"
-                strokeDasharray={`${RING_CIRCUM}`}
-                strokeDashoffset={RING_CIRCUM * (1 - weekCount / GOAL_DAYS)}
-                strokeLinecap="round"
-                rotation="-90"
-                origin={`${RING_SIZE / 2}, ${RING_SIZE / 2}`}
-              />
-            </Svg>
             <View style={styles.ringCenter}>
               <Text style={styles.ringCount}>{weekCount}</Text>
               <Text style={styles.ringLabel}>{weekCount === 1 ? "Día" : "Días"}</Text>
