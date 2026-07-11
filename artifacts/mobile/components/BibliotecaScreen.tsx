@@ -2194,8 +2194,6 @@ const styles = StyleSheet.create({
   sheetRow: {
     flexDirection: "row", alignItems: "center", gap: 16,
     paddingVertical: 14,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(61,14,22,0.40)",
   },
   sheetIcon: {
     width: 44, height: 44, borderRadius: 12,
