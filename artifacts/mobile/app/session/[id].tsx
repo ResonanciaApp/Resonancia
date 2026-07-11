@@ -321,7 +321,7 @@ export default function SessionDetailScreen() {
           <BackPill
             onPress={() => router.back()}
             color={sceneTheme.id === "tibet" ? "#060b31" : "#fff"}
-            size={sceneTheme.id === "tibet" ? 26 : 22}
+            size={sceneTheme.id === "tibet" ? 30 : 22}
             style={{ marginLeft: sceneTheme.id === "tibet" ? -1 : 0 }}
           />
         </GhostPill>
