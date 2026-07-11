@@ -1,4 +1,6 @@
 import { Feather } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import Svg, {
@@ -12,6 +14,12 @@ import Svg, {
 
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+
+// ─── Ring ────────────────────────────────────────────────────────────────────
+const RING_SIZE    = 91;
+const STROKE_W     = 7;
+const RING_RADIUS  = (RING_SIZE - STROKE_W) / 2;
+const RING_CIRCUM  = 2 * Math.PI * RING_RADIUS;
 
 // ─── Layout ──────────────────────────────────────────────────────────────────
 const SCREEN_W  = Dimensions.get("window").width;
@@ -213,10 +221,60 @@ export function SonicStreakWave() {
           </G>
         </Svg>
 
-        {/* Número centrado */}
-        <View style={styles.numberWrap} pointerEvents="none">
-          <Text style={styles.number}>{weekCount}</Text>
-          <Text style={styles.days}>{weekCount === 1 ? "DÍA" : "DÍAS"}</Text>
+        {/* Anillo de progreso — igual a WeeklyStreakStrip */}
+        <View
+          pointerEvents="none"
+          style={{
+            width: RING_SIZE + 18,
+            height: RING_SIZE + 18,
+            borderRadius: (RING_SIZE + 18) / 2,
+            shadowColor: "#000",
+            shadowOffset: { width: 1, height: 2 },
+            shadowOpacity: 0.08,
+            shadowRadius: 4,
+            elevation: 2,
+          }}
+        >
+          <View style={[styles.ringWrap, {
+            width: RING_SIZE + 18,
+            height: RING_SIZE + 18,
+            borderRadius: (RING_SIZE + 18) / 2,
+            overflow: "hidden",
+          }]}>
+            <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(27,6,15,0.07)" }]} />
+            <LinearGradient
+              colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+              start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+              style={StyleSheet.absoluteFill}
+              pointerEvents="none"
+            />
+            <Svg width={RING_SIZE} height={RING_SIZE}>
+              <Defs>
+                <SvgGradient id="swRingGrad" x1="0" y1="0" x2="1" y2="1">
+                  <Stop offset="0" stopColor="#F7CB6B" />
+                  <Stop offset="1" stopColor="#FBA980" />
+                </SvgGradient>
+              </Defs>
+              <Circle
+                cx={RING_SIZE / 2} cy={RING_SIZE / 2} r={RING_RADIUS}
+                stroke="rgba(255,255,255,0.13)" strokeWidth={STROKE_W} fill="none"
+              />
+              <Circle
+                cx={RING_SIZE / 2} cy={RING_SIZE / 2} r={RING_RADIUS}
+                stroke="url(#swRingGrad)" strokeWidth={STROKE_W} fill="none"
+                strokeDasharray={`${RING_CIRCUM}`}
+                strokeDashoffset={RING_CIRCUM * (1 - weekCount / GOAL_DAYS)}
+                strokeLinecap="round"
+                rotation="-90"
+                origin={`${RING_SIZE / 2}, ${RING_SIZE / 2}`}
+              />
+            </Svg>
+            <View style={styles.ringCenter}>
+              <Text style={styles.ringCount}>{weekCount}</Text>
+              <Text style={styles.ringLabel}>{weekCount === 1 ? "Día" : "Días"}</Text>
+            </View>
+          </View>
         </View>
       </View>
 
@@ -286,33 +344,31 @@ const styles = StyleSheet.create({
     gap: 13,
     alignItems: "center",
   },
-  numberWrap: {
+  ringWrap: {
+    width: RING_SIZE,
+    height: RING_SIZE,
+    borderRadius: RING_SIZE / 2,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  ringCenter: {
     position: "absolute",
     alignItems: "center",
     justifyContent: "center",
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    backgroundColor: "rgba(0,0,0,0.27)",
-    overflow: "hidden",
   },
-  number: {
+  ringCount: {
     fontFamily: "Manrope",
     color: "#F9F9F9",
-    fontSize: 52,
+    fontSize: 34,
     fontWeight: "700",
-    lineHeight: 56,
-    letterSpacing: -1,
-    textAlign: "center",
+    lineHeight: 37,
   },
-  days: {
+  ringLabel: {
     fontFamily: "Manrope",
-    color: "#F9F9F9",
-    fontSize: 8,
-    fontWeight: "400",
-    letterSpacing: 2.5,
-    textAlign: "center",
-    transform: [{ translateY: -5 }, { translateX: 2 }],
+    color: "rgba(255,255,255,0.95)",
+    fontSize: 10,
+    fontWeight: "300",
+    letterSpacing: 0.3,
   },
   row: {
     flexDirection: "row",
