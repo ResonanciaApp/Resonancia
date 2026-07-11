@@ -16,8 +16,8 @@ import type { SceneId } from "@/context/AmbientPlayerContext";
 export type SceneTheme = {
   id: SceneId;
   label: string;
-  /** Degradado de fondo (2 stops) usado en pantallas con LinearGradient de raíz. */
-  gradient: readonly [string, string];
+  /** Degradado de fondo (mínimo 2 stops) usado en pantallas con LinearGradient de raíz. */
+  gradient: readonly [string, string, ...string[]];
   /** Color sólido de fondo — contenedores raíz, tab bar, sheets. */
   solid: string;
   /** Imagen de fondo opcional (require). Se muestra en variant="gradient" con overlay oscuro. */
@@ -28,8 +28,8 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   tibet: {
     id: "tibet",
     label: "Universo",
-    gradient: ["#1f132c", "#170e21"],
-    solid: "#170e21",
+    gradient: ["#2A1340", "#1F0F31", "#160B24", "#0E0716"],
+    solid: "#0E0716",
   },
   "vino-tinto": {
     id: "vino-tinto",

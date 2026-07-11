@@ -334,7 +334,7 @@ export default function DescansoScreen() {
   const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const { theme: sceneTheme } = useSceneTheme();
-  const bgGradient: [string, string] = [sceneTheme.gradient[0], sceneTheme.gradient[1]];
+  const bgGradient = sceneTheme.gradient;
 
   const [activeTab,   setActiveTab]   = useState<SleepTabId>("historias");
   const [timerSheet,  setTimerSheet]  = useState(false);
