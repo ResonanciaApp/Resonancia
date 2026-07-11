@@ -146,7 +146,7 @@ export default function ReservarSesionScreen() {
           <Text style={styles.confirmTitle}>¡Reserva confirmada!</Text>
           <Text style={styles.confirmSub}>
             Tu sesión con{" "}
-            <Text style={{ color: ACCENT_GOLD, fontFamily: "Inter_600SemiBold" }}>
+            <Text style={{ color: ACCENT_GOLD, fontFamily: "Manrope", fontWeight: "600" }}>
               {displayName}
             </Text>{" "}
             quedó agendada.
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: FOREGROUND,
     fontSize: 17,
-    fontFamily: "Inter_600SemiBold",
+    fontFamily: "Manrope", fontWeight: "600",
     flex: 1,
     textAlign: "center",
   },
@@ -319,14 +319,14 @@ const styles = StyleSheet.create({
   guideName: {
     color: FOREGROUND,
     fontSize: 22,
-    fontFamily: "PlayfairDisplay_700Bold",
+    fontFamily: "Manrope", fontWeight: "800",
     textAlign: "center",
     marginBottom: 4,
   },
   guideSpecialty: {
     color: MUTED,
     fontSize: 13,
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Manrope",
     textAlign: "center",
   },
 
@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: MUTED,
     fontSize: 13,
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Manrope",
     lineHeight: 19,
   },
 
@@ -355,9 +355,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  primaryBtnText: { color: WARM_BLACK, fontSize: 16, fontFamily: "Inter_600SemiBold" },
+  primaryBtnText: { color: WARM_BLACK, fontSize: 16, fontFamily: "Manrope", fontWeight: "600" },
   secondaryBtn: { alignItems: "center", padding: 12 },
-  secondaryBtnText: { color: MUTED, fontSize: 14, fontFamily: "Inter_400Regular" },
+  secondaryBtnText: { color: MUTED, fontSize: 14, fontFamily: "Manrope" },
 
   centeredContainer: {
     flex: 1,
@@ -380,13 +380,13 @@ const styles = StyleSheet.create({
   confirmTitle: {
     color: FOREGROUND,
     fontSize: 24,
-    fontFamily: "PlayfairDisplay_700Bold",
+    fontFamily: "Manrope", fontWeight: "800",
     textAlign: "center",
   },
   confirmSub: {
     color: MUTED,
     fontSize: 15,
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Manrope",
     textAlign: "center",
     lineHeight: 22,
   },
@@ -409,14 +409,14 @@ const styles = StyleSheet.create({
   modalTitle: {
     color: FOREGROUND,
     fontSize: 20,
-    fontFamily: "PlayfairDisplay_700Bold",
+    fontFamily: "Manrope", fontWeight: "800",
     textAlign: "center",
     marginBottom: 8,
   },
   modalSub: {
     color: MUTED,
     fontSize: 14,
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Manrope",
     textAlign: "center",
     lineHeight: 20,
   },

@@ -993,7 +993,7 @@ const styles = StyleSheet.create({
   },
   timeDisplay: {
     fontSize: 46,
-    fontFamily: "OptimaRegular",
+    fontFamily: "Manrope",
     color: "#FBFBFB",
     letterSpacing: -1.5,
     lineHeight: 52,

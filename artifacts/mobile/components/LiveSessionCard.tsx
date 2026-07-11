@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   guideName: {
     color: FOREGROUND,
     fontSize: 14,
-    fontFamily: "Inter_600SemiBold",
+    fontFamily: "Manrope", fontWeight: "600",
   },
   dateRow: {
     flexDirection: "row",
@@ -172,14 +172,14 @@ const styles = StyleSheet.create({
   dateText: {
     color: MUTED,
     fontSize: 11,
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Manrope",
     flex: 1,
     lineHeight: 15,
   },
   eventTitle: {
     color: ACCENT_GOLD,
     fontSize: 11,
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Manrope",
     marginTop: 1,
   },
   statusBadge: {
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   statusText: {
     color: MUTED,
     fontSize: 10,
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Manrope",
     fontStyle: "italic",
   },
   enterBtn: {
@@ -211,12 +211,12 @@ const styles = StyleSheet.create({
   enterBtnText: {
     color: WARM_BLACK,
     fontSize: 13,
-    fontFamily: "Inter_600SemiBold",
+    fontFamily: "Manrope", fontWeight: "600",
   },
   enterBtnTextDisabled: {
     color: MUTED,
     fontSize: 12,
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Manrope",
   },
   footer: {
     flexDirection: "row",
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   footerText: {
     color: MUTED,
     fontSize: 11,
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Manrope",
     flex: 1,
     lineHeight: 15,
   },

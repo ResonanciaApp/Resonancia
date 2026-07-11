@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   wrap: { width: "100%", marginTop: 20, gap: 10 },
   dividerRow: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 6 },
   dividerLine: { flex: 1, height: 1, backgroundColor: COLORS.border },
-  dividerText: { color: COLORS.muted, fontSize: 12, fontFamily: "Inter_400Regular" },
+  dividerText: { color: COLORS.muted, fontSize: 12, fontFamily: "Manrope" },
   btn: {
     flexDirection: "row",
     alignItems: "center",
@@ -131,8 +131,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 14,
   },
-  btnText: { color: COLORS.fg, fontFamily: "Inter_600SemiBold", fontSize: 15 },
-  googleG: { color: "#EA4335", fontSize: 18, fontFamily: "Inter_700Bold" },
+  btnText: { color: COLORS.fg, fontFamily: "Manrope", fontWeight: "600", fontSize: 15 },
+  googleG: { color: "#EA4335", fontSize: 18, fontFamily: "Manrope", fontWeight: "700" },
   appleIcon: { color: COLORS.fg, fontSize: 18 },
   errorText: { color: COLORS.error, fontSize: 13, marginTop: 6, textAlign: "center" },
 });

@@ -1,5 +1,4 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { Cinzel_400Regular, Cinzel_900Black, useFonts } from "@expo-google-fonts/cinzel";
 import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
@@ -343,7 +342,6 @@ export default function HomeScreen2() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeSceneId]);
-  const [fontsLoaded] = useFonts({ Cinzel_900Black, Cinzel_400Regular });
 
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
@@ -821,7 +819,7 @@ export default function HomeScreen2() {
               style={{
                 color: "#F6F6F6",
                 fontSize: 13,
-                fontFamily: "Inter_400Regular",
+                fontFamily: "Manrope",
                 fontStyle: "italic",
                 textAlign: "center",
                 letterSpacing: 0.2,
@@ -864,7 +862,7 @@ export default function HomeScreen2() {
                 onPress={() => router.push("/mis-sesiones" as never)}
                 hitSlop={8}
               >
-                <Text style={{ color: "#F7CB6B", fontSize: 13, fontFamily: "Inter_400Regular" }}>
+                <Text style={{ color: "#F7CB6B", fontSize: 13, fontFamily: "Manrope" }}>
                   Ver todas
                 </Text>
               </Pressable>

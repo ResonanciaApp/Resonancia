@@ -154,14 +154,14 @@ const styles = StyleSheet.create({
   header: { marginBottom: 36, alignItems: "center" },
   brand: {
     color: COLORS.primary,
-    fontFamily: "PlayfairDisplay_700Bold",
+    fontFamily: "Manrope", fontWeight: "800",
     fontSize: 14,
     letterSpacing: 6,
     marginBottom: 24,
   },
   title: {
     color: COLORS.fg,
-    fontFamily: "PlayfairDisplay_700Bold",
+    fontFamily: "Manrope", fontWeight: "800",
     fontSize: 28,
     marginBottom: 8,
     textAlign: "center",
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
   form: { width: "100%" },
   label: {
     color: COLORS.fg,
-    fontFamily: "Inter_500Medium",
+    fontFamily: "Manrope", fontWeight: "500",
     fontSize: 13,
     marginBottom: 8,
     letterSpacing: 0.3,
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     color: COLORS.fg,
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Manrope",
     fontSize: 15,
   },
   primaryBtn: {
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   },
   primaryBtnText: {
     color: COLORS.bg,
-    fontFamily: "Inter_600SemiBold",
+    fontFamily: "Manrope", fontWeight: "600",
     fontSize: 16,
     letterSpacing: 0.5,
   },
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   footerLink: {
     color: COLORS.accent,
     fontSize: 14,
-    fontFamily: "Inter_600SemiBold",
+    fontFamily: "Manrope", fontWeight: "600",
   },
   errorText: {
     color: COLORS.error,

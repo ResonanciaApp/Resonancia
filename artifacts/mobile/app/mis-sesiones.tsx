@@ -255,14 +255,14 @@ const pastStyles = StyleSheet.create({
     backgroundColor: "transparent",
     overflow: "hidden",
   },
-  name: { color: FOREGROUND, fontSize: 13, fontFamily: "Inter_600SemiBold" },
-  date: { color: MUTED, fontSize: 11, fontFamily: "Inter_400Regular", marginTop: 2 },
+  name: { color: FOREGROUND, fontSize: 13, fontFamily: "Manrope", fontWeight: "600" },
+  date: { color: MUTED, fontSize: 11, fontFamily: "Manrope", marginTop: 2 },
   badge: {
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
   },
-  badgeText: { fontSize: 11, fontFamily: "Inter_400Regular" },
+  badgeText: { fontSize: 11, fontFamily: "Manrope" },
 });
 
 // ── Estilos ───────────────────────────────────────────────────────────────────
@@ -284,14 +284,14 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: FOREGROUND,
     fontSize: 17,
-    fontFamily: "Inter_600SemiBold",
+    fontFamily: "Manrope", fontWeight: "600",
     flex: 1,
     textAlign: "center",
   },
   sectionLabel: {
     color: FOREGROUND,
     fontSize: 13,
-    fontFamily: "Inter_600SemiBold",
+    fontFamily: "Manrope", fontWeight: "600",
     letterSpacing: 0.8,
     textTransform: "uppercase",
     opacity: 0.6,
@@ -314,12 +314,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     color: FOREGROUND,
     fontSize: 18,
-    fontFamily: "Inter_600SemiBold",
+    fontFamily: "Manrope", fontWeight: "600",
   },
   emptyText: {
     color: MUTED,
     fontSize: 14,
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Manrope",
     textAlign: "center",
     lineHeight: 20,
   },
@@ -335,6 +335,6 @@ const styles = StyleSheet.create({
   authBtnText: {
     color: WARM_BLACK,
     fontSize: 15,
-    fontFamily: "Inter_600SemiBold",
+    fontFamily: "Manrope", fontWeight: "600",
   },
 });
