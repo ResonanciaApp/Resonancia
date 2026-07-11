@@ -11,17 +11,13 @@ export default function SlideCoverPulso4() {
       <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "5vh" }}>
 
         {/* Pulso 4 logo */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2.5vh" }}>
-          {/* Diamond icon */}
-          <div style={{ width: "2.8vw", height: "2.8vw", border: "2px solid rgba(255,255,255,0.55)", transform: "rotate(45deg)" }} />
-
-          {/* Wordmark */}
-          <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: "5.5vw", fontWeight: 800, letterSpacing: "0.25em", color: "#FFFFFF", lineHeight: 1 }}>
-              PULSO 4
-            </div>
-            <div style={{ width: "100%", height: "1.5px", backgroundColor: "rgba(255,255,255,0.25)", marginTop: "2vh" }} />
-          </div>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "3vh" }}>
+          <img
+            src={`${import.meta.env.BASE_URL}logo-pulso4.png`}
+            alt="Pulso 4"
+            style={{ width: "30vw", display: "block", opacity: 0.92 }}
+          />
+          <div style={{ width: "60%", height: "1.5px", backgroundColor: "rgba(255,255,255,0.20)" }} />
         </div>
 
         {/* Subtitle */}
@@ -44,7 +40,7 @@ export default function SlideCoverPulso4() {
 
       {/* Pulso 4 · logo esquina */}
       <div style={{ position: "absolute", top: "3.5vh", right: "3vw", zIndex: 200, pointerEvents: "none" }}>
-        <span style={{ fontFamily: "inherit", fontSize: "0.85vw", fontWeight: 700, letterSpacing: "0.22em", color: "rgba(255,255,255,0.28)" }}>PULSO 4</span>
+        <img src={`${import.meta.env.BASE_URL}logo-pulso4.png`} alt="Pulso 4" style={{ height: "3.2vh", opacity: 0.45, display: "block" }} />
       </div>
     </div>
   );

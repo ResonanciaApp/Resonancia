@@ -223,7 +223,7 @@ export default function Slide11Inversion() {
 
       {/* Pulso 4 · logo esquina */}
       <div style={{ position: "absolute", top: "3.5vh", right: "3vw", zIndex: 200, pointerEvents: "none" }}>
-        <span style={{ fontFamily: "inherit", fontSize: "0.85vw", fontWeight: 700, letterSpacing: "0.22em", color: "rgba(255,255,255,0.28)" }}>PULSO 4</span>
+        <img src={`${import.meta.env.BASE_URL}logo-pulso4.png`} alt="Pulso 4" style={{ height: "3.2vh", opacity: 0.45, display: "block" }} />
       </div>
     </div>
   );
