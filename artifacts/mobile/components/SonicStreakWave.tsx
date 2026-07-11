@@ -16,7 +16,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 // ─── Ring ────────────────────────────────────────────────────────────────────
-const RING_SIZE    = 91;
+const RING_SIZE    = 85;
 
 // ─── Layout ──────────────────────────────────────────────────────────────────
 const SCREEN_W  = Dimensions.get("window").width;
