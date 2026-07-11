@@ -657,7 +657,7 @@ const styles = StyleSheet.create({
   },
   durSortActive: {
     fontFamily: "Manrope",
-    color: "#F7CB6B",
+    color: "#f9f9f9",
     fontWeight: "700",
   },
   durSortSep: {
