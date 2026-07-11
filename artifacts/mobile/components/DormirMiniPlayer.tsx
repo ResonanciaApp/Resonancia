@@ -1,20 +1,23 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Dimensions, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import Svg, { Path, Rect } from "react-native-svg";
 import { Feather } from "@expo/vector-icons";
 import type { DescansoSound } from "@/data/descanso-sounds";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 interface Props {
   sound: DescansoSound;
   isPlaying: boolean;
   onToggle: () => void;
   onStop: () => void;
+  onPress?: () => void;
   bottomOffset: number;
   closeColor: string;
 }
 
-export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOffset, closeColor }: Props) {
+export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, onPress, bottomOffset, closeColor }: Props) {
   const { activeSceneId } = useSceneTheme();
   const bgColor = activeSceneId === "tibet" ? "#1a1243" : "rgba(0,0,0,0.40)";
 
@@ -41,8 +44,26 @@ export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOff
     ]).start(() => onStop());
   };
 
+  const handlePress = () => {
+    if (!onPress || closingRef.current) return;
+    const screenH = Dimensions.get("window").height;
+    Animated.timing(translateY, {
+      toValue: -screenH,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+    onPress();
+    setTimeout(() => {
+      translateY.setValue(0);
+      opacity.setValue(1);
+    }, 650);
+  };
+
   return (
-    <Animated.View style={[styles.container, { bottom: bottomOffset, backgroundColor: bgColor, opacity, transform: [{ translateY }] }]}>
+    <AnimatedPressable
+      onPress={handlePress}
+      style={[styles.container, { bottom: bottomOffset, backgroundColor: bgColor, opacity, transform: [{ translateY }] }]}
+    >
       <Image source={sound.image} style={styles.img} resizeMode="cover" />
 
       <Pressable
@@ -76,7 +97,7 @@ export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOff
       >
         <Feather name="x" size={20} color={closeColor} style={{ opacity: 0.6 }} />
       </Pressable>
-    </Animated.View>
+    </AnimatedPressable>
   );
 }
 

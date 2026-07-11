@@ -2,7 +2,7 @@ import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import Svg, { Defs, LinearGradient as SvgLinearGradient, Path, Stop } from "react-native-svg";
 import { Image as ExpoImage } from "expo-image";
-import { Tabs } from "expo-router";
+import { Tabs, router } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useCallback, useState } from "react";
@@ -486,6 +486,7 @@ function TabLayoutInner() {
           isPlaying={descansoPlayer.isPlaying}
           onToggle={() => descansoPlayer.toggle(selectedSound.id, selectedSound.audioUri ?? null)}
           onStop={() => descansoPlayer.stop()}
+          onPress={() => router.push(`/descanzo-session/${selectedSound.id}` as never)}
           bottomOffset={miniPlayerBottom}
           closeColor="#ffffff"
         />

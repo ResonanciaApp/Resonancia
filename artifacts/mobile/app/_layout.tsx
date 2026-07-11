@@ -213,7 +213,7 @@ function NavStack() {
         />
         <Stack.Screen
           name="descanzo-session/[id]"
-          options={{ headerShown: false, animation: "slide_from_right" }}
+          options={{ headerShown: false, animation: "slide_from_bottom" }}
         />
         <Stack.Screen
           name="artista/[id]"
