@@ -150,7 +150,6 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
     >
       <View style={[styles.imageContainer, { borderRadius: colors.radius - 4 }]}>
         <Image source={session.image} style={styles.cardImage} contentFit="cover" placeholder={BLUR_PLACEHOLDER} transition={IMAGE_TRANSITION} />
-        {!playing && <View style={styles.cardOverlay} />}
         {locked && <LockStar />}
         {showDuration && (
           <View style={styles.durationBadge}>
