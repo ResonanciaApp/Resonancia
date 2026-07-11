@@ -291,14 +291,18 @@ function DormirMiniPlayer({
   sound,
   isPlaying,
   onToggle,
+  onStop,
   bottomOffset,
+  closeColor,
 }: {
   sound: import("@/data/descanso-sounds").DescansoSound;
   isPlaying: boolean;
   onToggle: () => void;
+  onStop: () => void;
   bottomOffset: number;
+  closeColor: string;
 }) {
-  const opacity   = useRef(new Animated.Value(0)).current;
+  const opacity    = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(15)).current;
 
   useEffect(() => {
@@ -312,13 +316,20 @@ function DormirMiniPlayer({
 
   return (
     <Animated.View style={[styles.dormirMiniPlayer, { bottom: bottomOffset, opacity, transform: [{ translateY }] }]}>
-      <Image source={sound.image} style={styles.dormirMiniImg} resizeMode="cover" />
+      {/* Imagen: pegada al borde izquierdo, alto completo, 54 px de ancho */}
+      <Image
+        source={sound.image}
+        style={styles.dormirMiniImg}
+        resizeMode="cover"
+      />
+
+      {/* Play/Pause sin fondo, ícono 26 px */}
       <Pressable
         onPress={(e) => { e.stopPropagation(); onToggle(); }}
         style={styles.dormirMiniPlayBtn}
         hitSlop={8}
       >
-        <Svg width={16} height={16} viewBox="0 0 48 48">
+        <Svg width={26} height={26} viewBox="0 0 48 48">
           {isPlaying ? (
             <>
               <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
@@ -329,12 +340,23 @@ function DormirMiniPlayer({
           )}
         </Svg>
       </Pressable>
+
+      {/* Títulos */}
       <View style={{ flex: 1 }}>
         <Text style={styles.dormirMiniTitle} numberOfLines={1}>{sound.label}</Text>
         <Text style={styles.dormirMiniSub}>
           {sound.categoryId === "binaural" ? "Sonidos Binaurales" : "Ambientales"}
         </Text>
       </View>
+
+      {/* Botón X */}
+      <Pressable
+        onPress={(e) => { e.stopPropagation(); onStop(); }}
+        hitSlop={10}
+        style={{ paddingRight: 16 }}
+      >
+        <Feather name="x" size={20} color={closeColor} style={{ opacity: 0.6 }} />
+      </Pressable>
     </Animated.View>
   );
 }
@@ -576,7 +598,9 @@ export default function DescansoScreen() {
           sound={selectedSound}
           isPlaying={player.isPlaying}
           onToggle={() => player.toggle(selectedSound.id, selectedSound.audioUri)}
+          onStop={() => player.stop()}
           bottomOffset={tabBarH}
+          closeColor={sceneTheme.gradient[sceneTheme.gradient.length - 1]}
         />
       )}
     </LinearGradient>
@@ -762,23 +786,23 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0.40)",
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingLeft: 0,
+    paddingRight: 0,
+    paddingVertical: 0,
     gap: 12,
     height: 64,
+    overflow: "hidden",
   },
   dormirMiniImg: {
-    width: 44,
-    height: 44,
-    borderRadius: 10,
+    width: 54,
+    height: 64,
+    borderRadius: 0,
   },
   dormirMiniPlayBtn: {
     width: 36,
     height: 36,
-    borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.15)",
   },
   dormirMiniTitle: {
     fontSize: 14,
