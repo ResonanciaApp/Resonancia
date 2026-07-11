@@ -47,8 +47,8 @@ export default function Slide11Inversion() {
   const equipos = [
     { label: "Estudio grabación (Acústica)", monto: "$1.500.000" },
     { label: "Equipos Loops",               monto: "$1.500.000" },
-    { label: "Grabadora",                   monto: "$800.000"   },
-    { label: "Micrófono",                   monto: "$900.000"   },
+    { label: "Grabadora PodCast",            monto: "$800.000"   },
+    { label: "Lente gran angular",          monto: "$900.000"   },
   ];
 
   const contenido = [
