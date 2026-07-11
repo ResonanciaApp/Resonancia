@@ -10,7 +10,6 @@ import {
   Animated,
   Dimensions,
   Easing,
-  ImageBackground,
   Platform,
   Pressable,
   ScrollView,
@@ -24,7 +23,6 @@ import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const BG_HEADER = require("../../assets/images/mezclador-bg-v3.jpg");
 
 import { getSoundImage } from "@/config/sound-images";
 import { usePremium } from "@/context/PremiumContext";
@@ -666,13 +664,18 @@ export default function MezcladorScreen() {
   }, [mainTab, subTab, popularSounds, subTabCategories, moodFilter, tagFilters, effectiveBpm]);
 
   return (
-    <ImageBackground source={BG_HEADER} style={styles.root} resizeMode="cover">
+    <View style={[styles.root, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string }]}>
+      <LinearGradient
+        colors={theme.gradient as unknown as [string, string, ...string[]]}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
       <StatusBar barStyle="light-content" />
 
       <View style={styles.inner}>
 
         {/* ── Zona superior ── */}
-        <View style={{ zIndex: 10, paddingTop: topPad + 2, backgroundColor: theme.gradient[0] }}>
+        <View style={{ zIndex: 10, paddingTop: topPad + 2, backgroundColor: "transparent" }}>
             {/* ── Header ── */}
             <View style={styles.header}>
               <View style={styles.headerRow}>
@@ -762,7 +765,7 @@ export default function MezcladorScreen() {
         </View>
 
         {/* ── Scroll principal ── */}
-        <View style={[styles.scrollBg, { backgroundColor: theme.gradient[0] }]}>
+        <View style={[styles.scrollBg, { backgroundColor: "transparent" }]}>
         <ScrollView
           style={[styles.scroll, { marginTop: -3 }]}
           contentContainerStyle={[styles.scrollContent, { paddingBottom: 200 + bottomPad }]}
@@ -865,7 +868,7 @@ export default function MezcladorScreen() {
         bgColor={theme.gradient[0]}
       />
 
-    </ImageBackground>
+    </View>
   );
 }
 
