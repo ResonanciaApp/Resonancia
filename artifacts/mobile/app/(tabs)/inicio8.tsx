@@ -803,6 +803,7 @@ export default function HomeScreen2() {
             flexDirection: "row",
             alignItems: "center",
             paddingHorizontal: 14,
+            marginTop: 5,
           }}
         >
           {/* Izquierda: Escenas */}
