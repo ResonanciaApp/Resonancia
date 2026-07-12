@@ -386,8 +386,7 @@ export function EscenasSheet() {
 
           {/* ── Escenas animadas (Geometrix) ── */}
           {geoScenes.length > 0 && (
-            <View style={{ marginTop: 22 }}>
-              <View style={styles.divider} />
+            <View style={{ marginTop: 7 }}>
               <View style={[styles.sceneTitleRow, { marginTop: 18 }]}>
                 <MaterialCommunityIcons name="star-four-points-outline" size={16} color="rgba(255,255,255,0.8)" />
                 <Text style={styles.sceneTitle}>Escenas animadas</Text>
