@@ -450,8 +450,8 @@ export default function SessionDetailScreen() {
             style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, marginTop: -11, marginBottom: 14 })}
           >
             <View style={[styles.shareBtnInner, sceneTheme.id === "tibet" ? { borderColor: "#F9F9F9" } : undefined]}>
-              <Text style={styles.shareBtnText}>Compartir</Text>
-              <Feather name="send" size={15} color="#D6A45C" />
+              <Text style={[styles.shareBtnText, sceneTheme.id === "tibet" ? { color: "#F9F9F9" } : undefined]}>Compartir</Text>
+              <Feather name="send" size={15} color={sceneTheme.id === "tibet" ? "#F9F9F9" : "#D6A45C"} />
             </View>
           </Pressable>
 
