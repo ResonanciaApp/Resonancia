@@ -123,7 +123,7 @@ export function SonicStreakWave() {
           return (
             <View key={i} style={styles.dayCol}>
               {met ? (
-                <View style={styles.circleGradientBorder}>
+                <View style={[styles.circleGradientBorder, styles.circleMetFill]}>
                   <Feather name="check" size={18} color="rgba(255,255,255,0.9)" />
                 </View>
               ) : isToday ? (
@@ -186,9 +186,13 @@ const styles = StyleSheet.create({
   circleGradientBorder: {
     width: 39,
     height: 39,
+    borderRadius: 19.5,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 4,
+  },
+  circleMetFill: {
+    backgroundColor: "rgba(255,255,255,0.18)",
   },
   circle: {
     width: 37,
