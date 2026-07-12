@@ -898,35 +898,39 @@ export default function HomeScreen2() {
         )}
 
 
-        {/* ── BANNER RESONADORES ── */}
-        <Pressable
-          onPress={() => router.push("/resonadores" as never)}
-          style={{ marginBottom: 35, marginHorizontal: GRID_PAD, marginTop: -21 }}
-        >
-          <View style={styles.resonadoresBanner}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.33)" }]} />
-            <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-              <LinearGradient
-                colors={["rgb(247,203,107)", "rgb(251,169,128)"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={{ width: 44, height: 44, borderRadius: 15, alignItems: "center", justifyContent: "center" }}
+        {/* ── EXPLORA POR CONTENIDO ── */}
+        <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: -12 }]}>
+          <Text style={[styles.sectionTitle, { marginBottom: 21 }]}>Explora por contenido</Text>
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            {([
+              { id: "meditaciones-guiadas", label: "Meditación", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={31} color={color} /> },
+              { id: "sonidos-ancestrales", label: "Sesiones",      icon: (color: string) => <MaterialCommunityIcons name="waves" size={31} color={color} /> },
+              { id: "musica-sonidos",       label: "Música",        icon: (color: string) => <Ionicons name="musical-notes-outline" size={31} color={color} /> },
+            ] as const).map((c) => (
+              <Pressable
+                key={c.id}
+                onPress={() => router.push(`/category/${c.id}` as never)}
+                style={({ pressed }) => [{
+                  flex: 1,
+                  paddingVertical: 22,
+                  gap: 10,
+                  borderRadius: 14,
+                  alignItems: "center",
+                  overflow: "hidden" as const,
+                  opacity: pressed ? 0.75 : 1,
+                }]}
               >
-                <ExpoImage
-                  source={require("@/assets/images/icon-resonadores.png")}
-                  style={{ width: 26, height: 26 }}
-                  contentFit="contain"
-                  tintColor={activeTheme.gradient[1] as string}
-                />
-              </LinearGradient>
-              <View style={{ flex: 1, marginLeft: 25 }}>
-                <Text style={styles.resonadoresBannerTitle}>Conoce nuestros Resonadores</Text>
-                <Text style={styles.resonadoresBannerSub}>La esencia de este espacio</Text>
-              </View>
-              <Feather name="chevron-right" size={20} color="rgba(232,232,232,0.7)" />
-            </View>
+                <CardTint />
+                <View style={{ width: 31, height: 31, alignItems: "center", justifyContent: "center" }}>
+                  {c.icon("#f9f9f9")}
+                </View>
+                <Text style={{ fontSize: 12, fontWeight: "700", color: "#FBFBFB", textAlign: "center" }}>
+                  {c.label}
+                </Text>
+              </Pressable>
+            ))}
           </View>
-        </Pressable>
+        </View>
 
         {/* ── SESIÓN DESTACADA ── */}
         {filteredFeatured && (
@@ -976,39 +980,35 @@ export default function HomeScreen2() {
           </View>
         )}
 
-        {/* ── EXPLORA POR CONTENIDO ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: -12 }]}>
-          <Text style={[styles.sectionTitle, { marginBottom: 21 }]}>Explora por contenido</Text>
-          <View style={{ flexDirection: "row", gap: 10 }}>
-            {([
-              { id: "meditaciones-guiadas", label: "Meditación", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={31} color={color} /> },
-              { id: "sonidos-ancestrales", label: "Sesiones",      icon: (color: string) => <MaterialCommunityIcons name="waves" size={31} color={color} /> },
-              { id: "musica-sonidos",       label: "Música",        icon: (color: string) => <Ionicons name="musical-notes-outline" size={31} color={color} /> },
-            ] as const).map((c) => (
-              <Pressable
-                key={c.id}
-                onPress={() => router.push(`/category/${c.id}` as never)}
-                style={({ pressed }) => [{
-                  flex: 1,
-                  paddingVertical: 22,
-                  gap: 10,
-                  borderRadius: 14,
-                  alignItems: "center",
-                  overflow: "hidden" as const,
-                  opacity: pressed ? 0.75 : 1,
-                }]}
+        {/* ── BANNER RESONADORES ── */}
+        <Pressable
+          onPress={() => router.push("/resonadores" as never)}
+          style={{ marginBottom: 35, marginHorizontal: GRID_PAD, marginTop: -21 }}
+        >
+          <View style={styles.resonadoresBanner}>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.33)" }]} />
+            <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+              <LinearGradient
+                colors={["rgb(247,203,107)", "rgb(251,169,128)"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{ width: 44, height: 44, borderRadius: 15, alignItems: "center", justifyContent: "center" }}
               >
-                <CardTint />
-                <View style={{ width: 31, height: 31, alignItems: "center", justifyContent: "center" }}>
-                  {c.icon("#f9f9f9")}
-                </View>
-                <Text style={{ fontSize: 12, fontWeight: "700", color: "#FBFBFB", textAlign: "center" }}>
-                  {c.label}
-                </Text>
-              </Pressable>
-            ))}
+                <ExpoImage
+                  source={require("@/assets/images/icon-resonadores.png")}
+                  style={{ width: 26, height: 26 }}
+                  contentFit="contain"
+                  tintColor={activeTheme.gradient[1] as string}
+                />
+              </LinearGradient>
+              <View style={{ flex: 1, marginLeft: 25 }}>
+                <Text style={styles.resonadoresBannerTitle}>Conoce nuestros Resonadores</Text>
+                <Text style={styles.resonadoresBannerSub}>La esencia de este espacio</Text>
+              </View>
+              <Feather name="chevron-right" size={20} color="rgba(232,232,232,0.7)" />
+            </View>
           </View>
-        </View>
+        </Pressable>
 
         {/* ── ESCUCHADAS RECIENTEMENTE ── */}
         <SessionCarousel
