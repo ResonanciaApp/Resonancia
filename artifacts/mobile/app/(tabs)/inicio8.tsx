@@ -852,7 +852,7 @@ export default function HomeScreen2() {
           onPress={() => setProgresoVisible(true)}
           style={({ pressed }) => ({
             marginHorizontal: GRID_PAD,
-            marginTop: 170,
+            marginTop: 320,
             marginBottom: SECTION_GAP / 2,
             flexDirection: "row",
             alignItems: "center",
