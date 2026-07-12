@@ -931,7 +931,7 @@ export default function HomeScreen2() {
                   ...corners[i],
                 }]}
               >
-                <CardTint />
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
                 <View style={{ width: 26, alignItems: "center", justifyContent: "center" }}>
                   {c.icon("#F7CB6B")}
                 </View>

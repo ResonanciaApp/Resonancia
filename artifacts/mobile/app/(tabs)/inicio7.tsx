@@ -926,15 +926,7 @@ export default function HomeScreen2() {
                   ...corners[i],
                 }]}
               >
-                <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
                 <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
-                <LinearGradient
-                  colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
-                  start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-                  style={StyleSheet.absoluteFill}
-                  pointerEvents="none"
-                />
                 <View style={{ width: 26, alignItems: "center", justifyContent: "center" }}>
                   {c.icon("#F7CB6B")}
                 </View>
