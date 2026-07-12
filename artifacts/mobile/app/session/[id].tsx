@@ -385,7 +385,7 @@ export default function SessionDetailScreen() {
                 style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
               >
                 <LinearGradient
-                  colors={sceneTheme.id === "tibet" ? ["#F9F9F9", "#F9F9F9"] : ["#D6A45C", "#F7CB6B"]}
+                  colors={["#D6A45C", "#F7CB6B"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 0, y: 1 }}
                   style={StyleSheet.absoluteFill}
@@ -402,7 +402,7 @@ export default function SessionDetailScreen() {
                 style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
               >
                 <LinearGradient
-                  colors={sceneTheme.id === "tibet" ? ["#F9F9F9", "#F9F9F9"] : ["#D6A45C", "#F7CB6B"]}
+                  colors={["#D6A45C", "#F7CB6B"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 0, y: 1 }}
                   style={StyleSheet.absoluteFill}
@@ -425,7 +425,7 @@ export default function SessionDetailScreen() {
               ]}
             >
               <LinearGradient
-                colors={sceneTheme.id === "tibet" ? ["#F9F9F9", "#F9F9F9"] : ["#D6A45C", "#F7CB6B"]}
+                colors={["#D6A45C", "#F7CB6B"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 0, y: 1 }}
                 style={StyleSheet.absoluteFill}
@@ -449,9 +449,9 @@ export default function SessionDetailScreen() {
             onPress={handleShare}
             style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, marginTop: -11, marginBottom: 14 })}
           >
-            <View style={[styles.shareBtnInner, sceneTheme.id === "tibet" ? { borderColor: "#F9F9F9" } : undefined]}>
-              <Text style={[styles.shareBtnText, sceneTheme.id === "tibet" ? { color: "#F9F9F9" } : undefined]}>Compartir</Text>
-              <Feather name="send" size={15} color={sceneTheme.id === "tibet" ? "#F9F9F9" : "#D6A45C"} />
+            <View style={styles.shareBtnInner}>
+              <Text style={styles.shareBtnText}>Compartir</Text>
+              <Feather name="send" size={15} color="#D6A45C" />
             </View>
           </Pressable>
 
