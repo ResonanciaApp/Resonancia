@@ -469,8 +469,7 @@ function SearchOverlay({ visible, onClose, gradient, accentColor }: { visible: b
     if (result.kind === "session") router.push(`/session/${result.data.id}` as never);
     else if (result.kind === "playlist") router.push(`/playlist/${result.data.id}` as never);
     else {
-      if (loadedPresetId === result.data.id) openSheet();
-      else if (loadMix(result.data)) openSheet();
+      if (loadedPresetId !== result.data.id) loadMix(result.data);
     }
   };
 
@@ -1405,7 +1404,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
                   <View key={mix.id} style={{ width: cellW }}>
                     <Pressable
                       style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1 }]}
-                      onPress={() => { if (loadedPresetId === mix.id) { openSheet(); } else if (loadMix(mix)) { openSheet(); } }}
+                      onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
                     >
                       <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
                         <MixCover mix={mix} size={cellW} radius={8} />
@@ -1416,7 +1415,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
                         )}
                       </View>
                     </Pressable>
-                    <Pressable onPress={() => { if (loadedPresetId === mix.id) { openSheet(); } else if (loadMix(mix)) { openSheet(); } }}>
+                    <Pressable onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}>
                       <Text style={styles.gridTitle} numberOfLines={2}>{mix.name}</Text>
                     </Pressable>
                     <Text style={[styles.gridTitle, { color: MUTED, fontWeight: "400", marginTop: 1 }]} numberOfLines={1}>
@@ -1451,9 +1450,9 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
                 key={mix.id}
                 mix={mix}
                 isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
-                onPress={() => { if (loadedPresetId === mix.id) { openSheet(); } else if (loadMix(mix)) { openSheet(); } }}
+                onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
                 onLongPress={() => setMixMenuPreset(mix)}
-                onPressThumb={() => { if (loadedPresetId === mix.id) { openSheet(); } else if (loadMix(mix)) { openSheet(); } }}
+                onPressThumb={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
                 onPressMenu={() => setMixMenuPreset(mix)}
               />
             ))}

@@ -23,6 +23,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MiniPlayer } from "@/components/MiniPlayer";
+import { MezclaMiniPlayer } from "@/components/MezclaMiniPlayer";
 import { DormirMiniPlayer } from "@/components/DormirMiniPlayer";
 import { DormirExpandedPlayer } from "@/components/DormirExpandedPlayer";
 import { DormirSessionExpandedPlayer } from "@/components/DormirSessionExpandedPlayer";
@@ -492,7 +493,7 @@ function TabLayoutInner() {
         <MezcladorScreen />
         {!activePlaylist && (
           <View style={styles.miniPlayerFloat} pointerEvents="box-none">
-            <MiniPlayer idle={!currentSession && !mixActive} />
+            <MiniPlayer idle={!currentSession} />
           </View>
         )}
       </Animated.View>
@@ -502,6 +503,9 @@ function TabLayoutInner() {
       >
         <Pressable style={{ flex: 1 }} onPress={closeMixer} />
       </Animated.View>
+
+      {/* ── MezclaMiniPlayer (mezclas cargadas desde Biblioteca) ─────────── */}
+      <MezclaMiniPlayer bottomOffset={miniPlayerBottom} />
 
       {/* ── DormirMiniPlayer persistente (binaurales/ambientales) ───────── */}
       {selectedSound && (
