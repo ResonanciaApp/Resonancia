@@ -938,7 +938,7 @@ export default function HomeScreen2() {
                 <View style={{ width: 26, alignItems: "center", justifyContent: "center" }}>
                   {c.icon("#F7CB6B")}
                 </View>
-                <Text style={{ fontSize: 13, fontWeight: "700", color: "#FBFBFB" }}>
+                <Text style={{ fontSize: 15, fontWeight: "700", color: "#FBFBFB" }}>
                   {c.label}
                 </Text>
               </Pressable>
