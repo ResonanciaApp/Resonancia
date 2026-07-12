@@ -65,7 +65,6 @@ import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
-import { SonicStreakWave } from "@/components/SonicStreakWave";
 import { ProgresoModal } from "@/components/ProgresoModal";
 import { LiveSessionCard } from "@/components/LiveSessionCard";
 import { useLiveSessions } from "@/hooks/useLiveSessions";
@@ -300,7 +299,7 @@ export default function HomeScreen2() {
   const { savedEntries: intencionSaved, favorites: intencionFavs } = useIntencion();
   const currentIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
   const insets = useSafeAreaInsets();
-  const { playSession, currentSession, isPlaying, pauseResume, history, favorites } = usePlayer();
+  const { playSession, currentSession, isPlaying, pauseResume, history, favorites, statEvents } = usePlayer();
   const { isPremium } = usePremium();
   const { upcoming: upcomingLiveSessions } = useLiveSessions();
   const nextLiveSession = upcomingLiveSessions[0] ?? null;
@@ -859,12 +858,35 @@ export default function HomeScreen2() {
           updateStickyActive();
         }}
       >
-        {/* ── Racha semanal ── */}
+        {/* ── Racha semanal (chip compacto) ── */}
         <Pressable
           onPress={() => setProgresoVisible(true)}
-          style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 247 }}
+          style={({ pressed }) => ({
+            marginHorizontal: GRID_PAD,
+            marginTop: 247,
+            marginBottom: SECTION_GAP / 2,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingVertical: 13,
+            paddingHorizontal: 16,
+            borderRadius: 14,
+            backgroundColor: "rgba(255,255,255,0.07)",
+            opacity: pressed ? 0.75 : 1,
+          })}
         >
-          <SonicStreakWave />
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <Text style={{ fontSize: 20, lineHeight: 24 }}>🔥</Text>
+            <View>
+              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4DAD5" }}>
+                Tu progreso semanal
+              </Text>
+              <Text style={{ fontFamily: "Manrope", fontSize: 11, color: "rgba(244,218,213,0.55)", marginTop: 1 }}>
+                Ver racha y sesiones
+              </Text>
+            </View>
+          </View>
+          <Feather name="chevron-right" size={16} color="rgba(244,218,213,0.45)" />
         </Pressable>
         <ProgresoModal visible={progresoVisible} onClose={() => setProgresoVisible(false)} />
 
