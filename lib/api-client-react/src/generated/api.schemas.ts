@@ -1708,6 +1708,57 @@ export interface BunnyVideoStatusResponse {
   availableResolutions?: string | null;
 }
 
+export type SceneAnimationRecipe = { [key: string]: unknown };
+
+export interface SceneAnimation {
+  id: number;
+  name: string;
+  description?: string | null;
+  recipe: SceneAnimationRecipe;
+  isActive: boolean;
+  isPremium: boolean;
+  sortOrder: number;
+  submittedBy?: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SceneAnimationsListResponse {
+  scenes: SceneAnimation[];
+}
+
+export type CreateSceneAnimationBodyRecipe = { [key: string]: unknown };
+
+export interface CreateSceneAnimationBody {
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  name: string;
+  /** @maxLength 300 */
+  description?: string | null;
+  recipe: CreateSceneAnimationBodyRecipe;
+  isActive?: boolean;
+  isPremium?: boolean;
+  sortOrder?: number;
+}
+
+export type UpdateSceneAnimationBodyRecipe = { [key: string]: unknown };
+
+export interface UpdateSceneAnimationBody {
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  name?: string;
+  /** @maxLength 300 */
+  description?: string | null;
+  recipe?: UpdateSceneAnimationBodyRecipe;
+  isActive?: boolean;
+  isPremium?: boolean;
+  sortOrder?: number;
+}
+
 export interface DescansoSoundItem {
   id: string;
   label: string;

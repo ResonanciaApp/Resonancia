@@ -17,12 +17,16 @@ import {
   updateCatalogPlaylistSchema,
   insertGuideConfigSchema,
   updateGuideConfigSchema,
+  sceneAnimationsTable,
+  CreateSceneAnimationSchema,
+  UpdateSceneAnimationSchema,
   type CatalogCategory,
   type CatalogPlaylist,
   type SharedMix,
   type User,
   type MixerSound,
   type GuideConfig,
+  type SceneAnimation,
   catalogTagOptionsTable,
 } from "@workspace/db";
 import {
@@ -786,6 +790,107 @@ router.delete("/admin/tag-options/:id", requireAuth, requireRole("admin"), async
   } catch (err) {
     req.log.error({ err }, "error deleting tag option");
     res.status(500).json({ error: "Error al eliminar etiqueta" });
+  }
+});
+
+// ── Scene animations (admin) ────────────────────────────────────────────────
+
+function serializeScene(s: SceneAnimation) {
+  return {
+    id: s.id,
+    name: s.name,
+    description: s.description ?? null,
+    recipe: s.recipe,
+    isActive: s.isActive,
+    isPremium: s.isPremium,
+    sortOrder: s.sortOrder,
+    submittedBy: s.submittedBy ?? null,
+    createdAt: s.createdAt.toISOString(),
+    updatedAt: s.updatedAt.toISOString(),
+  };
+}
+
+// GET /admin/scene-animations — listar todas las escenas (admin).
+router.get("/admin/scene-animations", requireAuth, requireRole("admin"), async (req, res) => {
+  try {
+    const rows = await db
+      .select()
+      .from(sceneAnimationsTable)
+      .orderBy(asc(sceneAnimationsTable.sortOrder), desc(sceneAnimationsTable.createdAt));
+    res.json({ scenes: rows.map(serializeScene) });
+  } catch (err) {
+    req.log.error({ err }, "error fetching scene animations (admin)");
+    res.status(500).json({ error: "Error al obtener escenas" });
+  }
+});
+
+// POST /admin/scene-animations — crear una escena (admin).
+router.post("/admin/scene-animations", requireAuth, requireRole("admin"), async (req, res) => {
+  const parsed = CreateSceneAnimationSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Datos inválidos", details: parsed.error.issues });
+    return;
+  }
+  try {
+    const [scene] = await db
+      .insert(sceneAnimationsTable)
+      .values({
+        name: parsed.data.name,
+        description: parsed.data.description ?? null,
+        recipe: parsed.data.recipe,
+        isActive: parsed.data.isActive ?? false,
+        isPremium: parsed.data.isPremium ?? false,
+        sortOrder: parsed.data.sortOrder ?? 0,
+        updatedAt: new Date(),
+      })
+      .returning();
+    req.log.info({ sceneId: scene.id }, "scene animation created");
+    res.status(201).json(serializeScene(scene));
+  } catch (err) {
+    req.log.error({ err }, "error creating scene animation");
+    res.status(500).json({ error: "Error al crear la escena" });
+  }
+});
+
+// PATCH /admin/scene-animations/:id — actualizar una escena (admin).
+router.patch("/admin/scene-animations/:id", requireAuth, requireRole("admin"), async (req, res) => {
+  const id = parseInt(String(req.params.id), 10);
+  if (isNaN(id)) { res.status(400).json({ error: "ID inválido" }); return; }
+  const parsed = UpdateSceneAnimationSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Datos inválidos", details: parsed.error.issues });
+    return;
+  }
+  try {
+    const [updated] = await db
+      .update(sceneAnimationsTable)
+      .set({ ...parsed.data, updatedAt: new Date() })
+      .where(eq(sceneAnimationsTable.id, id))
+      .returning();
+    if (!updated) { res.status(404).json({ error: "Escena no encontrada" }); return; }
+    req.log.info({ sceneId: id }, "scene animation updated");
+    res.json(serializeScene(updated));
+  } catch (err) {
+    req.log.error({ err }, "error updating scene animation");
+    res.status(500).json({ error: "Error al actualizar la escena" });
+  }
+});
+
+// DELETE /admin/scene-animations/:id — eliminar una escena (admin).
+router.delete("/admin/scene-animations/:id", requireAuth, requireRole("admin"), async (req, res) => {
+  const id = parseInt(String(req.params.id), 10);
+  if (isNaN(id)) { res.status(400).json({ error: "ID inválido" }); return; }
+  try {
+    const [deleted] = await db
+      .delete(sceneAnimationsTable)
+      .where(eq(sceneAnimationsTable.id, id))
+      .returning();
+    if (!deleted) { res.status(404).json({ error: "Escena no encontrada" }); return; }
+    req.log.info({ sceneId: id }, "scene animation deleted");
+    res.status(204).end();
+  } catch (err) {
+    req.log.error({ err }, "error deleting scene animation");
+    res.status(500).json({ error: "Error al eliminar la escena" });
   }
 });
 

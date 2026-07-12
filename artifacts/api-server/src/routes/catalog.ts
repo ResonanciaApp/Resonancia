@@ -10,11 +10,14 @@ import {
   playbackHistoryTable,
   notificationsTable,
   usersTable,
+  sceneAnimationsTable,
+  CreateSceneAnimationSchema,
   type CatalogCategory,
   type CatalogSession,
   type CatalogAudioFile,
   type CatalogPlaylist,
   type User,
+  type SceneAnimation,
 } from "@workspace/db";
 import {
   CreateSubmissionBody,
@@ -765,6 +768,81 @@ router.post(
     } catch (err) {
       req.log.error({ err }, "error unhiding submission");
       res.status(500).json({ error: "Error al volver a publicar la pieza" });
+    }
+  },
+);
+
+// ── Scene animations ────────────────────────────────────────────────────────
+
+function serializeScene(s: SceneAnimation) {
+  return {
+    id: s.id,
+    name: s.name,
+    description: s.description ?? null,
+    recipe: s.recipe,
+    isActive: s.isActive,
+    isPremium: s.isPremium,
+    sortOrder: s.sortOrder,
+    submittedBy: s.submittedBy ?? null,
+    createdAt: s.createdAt.toISOString(),
+    updatedAt: s.updatedAt.toISOString(),
+  };
+}
+
+// GET /catalog/scene-animations — lista las escenas activas (público).
+router.get("/catalog/scene-animations", async (req, res) => {
+  try {
+    const rows = await db
+      .select()
+      .from(sceneAnimationsTable)
+      .where(eq(sceneAnimationsTable.isActive, true))
+      .orderBy(asc(sceneAnimationsTable.sortOrder), asc(sceneAnimationsTable.createdAt));
+    res.json({ scenes: rows.map(serializeScene) });
+  } catch (err) {
+    req.log.error({ err }, "error fetching scene animations");
+    res.status(500).json({ error: "Error al obtener escenas" });
+  }
+});
+
+// POST /catalog/scene-animations — subir una escena desde la app (requiere auth).
+router.post(
+  "/catalog/scene-animations",
+  requireAuth,
+  async (req, res) => {
+    const parsed = CreateSceneAnimationSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: "Datos inválidos", details: parsed.error.issues });
+      return;
+    }
+    const userId = (req as unknown as { auth: { userId: string } }).auth.userId;
+    try {
+      const [dbUser] = await db
+        .select({ id: usersTable.id })
+        .from(usersTable)
+        .where(eq(usersTable.clerkUserId, userId))
+        .limit(1);
+      if (!dbUser) {
+        res.status(401).json({ error: "Usuario no encontrado" });
+        return;
+      }
+      const [scene] = await db
+        .insert(sceneAnimationsTable)
+        .values({
+          name: parsed.data.name,
+          description: parsed.data.description ?? null,
+          recipe: parsed.data.recipe,
+          isActive: parsed.data.isActive ?? false,
+          isPremium: parsed.data.isPremium ?? false,
+          sortOrder: parsed.data.sortOrder ?? 0,
+          submittedBy: dbUser.id,
+          updatedAt: new Date(),
+        })
+        .returning();
+      req.log.info({ sceneId: scene.id }, "scene animation submitted");
+      res.status(201).json(serializeScene(scene));
+    } catch (err) {
+      req.log.error({ err }, "error creating scene animation");
+      res.status(500).json({ error: "Error al subir la escena" });
     }
   },
 );

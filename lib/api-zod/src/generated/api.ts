@@ -2645,6 +2645,130 @@ export const DeleteAdminDescansoSoundParams = zod.object({
 
 
 /**
+ * @summary Listar escenas animadas activas
+ */
+export const GetSceneAnimationsResponse = zod.object({
+  "scenes": zod.array(zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "description": zod.string().nullish(),
+  "recipe": zod.record(zod.string(), zod.unknown()),
+  "isActive": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "sortOrder": zod.number(),
+  "submittedBy": zod.number().nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Subir una escena desde la app (requiere auth)
+ */
+export const submitSceneAnimationBodyNameMax = 80;
+
+export const submitSceneAnimationBodyDescriptionMax = 300;
+
+export const submitSceneAnimationBodyIsActiveDefault = false;
+export const submitSceneAnimationBodyIsPremiumDefault = false;
+export const submitSceneAnimationBodySortOrderDefault = 0;
+
+export const SubmitSceneAnimationBody = zod.object({
+  "name": zod.string().min(1).max(submitSceneAnimationBodyNameMax),
+  "description": zod.string().max(submitSceneAnimationBodyDescriptionMax).nullish(),
+  "recipe": zod.record(zod.string(), zod.unknown()),
+  "isActive": zod.boolean().default(submitSceneAnimationBodyIsActiveDefault),
+  "isPremium": zod.boolean().default(submitSceneAnimationBodyIsPremiumDefault),
+  "sortOrder": zod.number().default(submitSceneAnimationBodySortOrderDefault)
+})
+
+
+/**
+ * @summary Listar todas las escenas animadas (admin)
+ */
+export const GetAdminSceneAnimationsResponse = zod.object({
+  "scenes": zod.array(zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "description": zod.string().nullish(),
+  "recipe": zod.record(zod.string(), zod.unknown()),
+  "isActive": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "sortOrder": zod.number(),
+  "submittedBy": zod.number().nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Crear una escena animada (admin)
+ */
+export const createAdminSceneAnimationBodyNameMax = 80;
+
+export const createAdminSceneAnimationBodyDescriptionMax = 300;
+
+export const createAdminSceneAnimationBodyIsActiveDefault = false;
+export const createAdminSceneAnimationBodyIsPremiumDefault = false;
+export const createAdminSceneAnimationBodySortOrderDefault = 0;
+
+export const CreateAdminSceneAnimationBody = zod.object({
+  "name": zod.string().min(1).max(createAdminSceneAnimationBodyNameMax),
+  "description": zod.string().max(createAdminSceneAnimationBodyDescriptionMax).nullish(),
+  "recipe": zod.record(zod.string(), zod.unknown()),
+  "isActive": zod.boolean().default(createAdminSceneAnimationBodyIsActiveDefault),
+  "isPremium": zod.boolean().default(createAdminSceneAnimationBodyIsPremiumDefault),
+  "sortOrder": zod.number().default(createAdminSceneAnimationBodySortOrderDefault)
+})
+
+
+/**
+ * @summary Actualizar una escena animada (admin)
+ */
+export const UpdateAdminSceneAnimationParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const updateAdminSceneAnimationBodyNameMax = 80;
+
+export const updateAdminSceneAnimationBodyDescriptionMax = 300;
+
+
+
+export const UpdateAdminSceneAnimationBody = zod.object({
+  "name": zod.string().min(1).max(updateAdminSceneAnimationBodyNameMax).optional(),
+  "description": zod.string().max(updateAdminSceneAnimationBodyDescriptionMax).nullish(),
+  "recipe": zod.record(zod.string(), zod.unknown()).optional(),
+  "isActive": zod.boolean().optional(),
+  "isPremium": zod.boolean().optional(),
+  "sortOrder": zod.number().optional()
+})
+
+export const UpdateAdminSceneAnimationResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "description": zod.string().nullish(),
+  "recipe": zod.record(zod.string(), zod.unknown()),
+  "isActive": zod.boolean(),
+  "isPremium": zod.boolean(),
+  "sortOrder": zod.number(),
+  "submittedBy": zod.number().nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Eliminar una escena animada (admin)
+ */
+export const DeleteAdminSceneAnimationParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+/**
  * @summary Listar todos los sonidos del mixer (admin)
  */
 export const GetAdminSoundsResponse = zod.object({

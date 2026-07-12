@@ -46,6 +46,7 @@ import type {
   CreateDescansoSoundBody,
   CreateMessageBody,
   CreateMixerSoundBody,
+  CreateSceneAnimationBody,
   CreateTagOptionBody,
   CreateVideoBody,
   CreatorSubmissionInput,
@@ -104,6 +105,8 @@ import type {
   RequestUploadUrlResponse,
   ReviewEditBody,
   ReviewRejectBody,
+  SceneAnimation,
+  SceneAnimationsListResponse,
   SearchUsersParams,
   SendDirectMessageBody,
   SetPinnedFeatured200,
@@ -126,6 +129,7 @@ import type {
   UpdateApplicationStatusInput,
   UpdateDescansoSoundBody,
   UpdateMixerSoundBody,
+  UpdateSceneAnimationBody,
   UpdateVideoBody,
   UserProfile,
   UserProfileUpdate,
@@ -7364,6 +7368,444 @@ export const useDeleteAdminDescansoSound = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getDeleteAdminDescansoSoundMutationOptions(options));
+    }
+
+export const getGetSceneAnimationsUrl = () => {
+
+
+
+
+  return `/api/catalog/scene-animations`
+}
+
+/**
+ * @summary Listar escenas animadas activas
+ */
+export const getSceneAnimations = async ( options?: RequestInit): Promise<SceneAnimationsListResponse> => {
+
+  return customFetch<SceneAnimationsListResponse>(getGetSceneAnimationsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetSceneAnimationsQueryKey = () => {
+    return [
+    `/api/catalog/scene-animations`
+    ] as const;
+    }
+
+
+export const getGetSceneAnimationsQueryOptions = <TData = Awaited<ReturnType<typeof getSceneAnimations>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSceneAnimations>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetSceneAnimationsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSceneAnimations>>> = ({ signal }) => getSceneAnimations({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSceneAnimations>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetSceneAnimationsQueryResult = NonNullable<Awaited<ReturnType<typeof getSceneAnimations>>>
+export type GetSceneAnimationsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Listar escenas animadas activas
+ */
+
+export function useGetSceneAnimations<TData = Awaited<ReturnType<typeof getSceneAnimations>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSceneAnimations>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetSceneAnimationsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getSubmitSceneAnimationUrl = () => {
+
+
+
+
+  return `/api/catalog/scene-animations`
+}
+
+/**
+ * @summary Subir una escena desde la app (requiere auth)
+ */
+export const submitSceneAnimation = async (createSceneAnimationBody: CreateSceneAnimationBody, options?: RequestInit): Promise<SceneAnimation> => {
+
+  return customFetch<SceneAnimation>(getSubmitSceneAnimationUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createSceneAnimationBody,)
+  }
+);}
+
+
+
+
+export const getSubmitSceneAnimationMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof submitSceneAnimation>>, TError,{data: BodyType<CreateSceneAnimationBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof submitSceneAnimation>>, TError,{data: BodyType<CreateSceneAnimationBody>}, TContext> => {
+
+const mutationKey = ['submitSceneAnimation'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof submitSceneAnimation>>, {data: BodyType<CreateSceneAnimationBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  submitSceneAnimation(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SubmitSceneAnimationMutationResult = NonNullable<Awaited<ReturnType<typeof submitSceneAnimation>>>
+    export type SubmitSceneAnimationMutationBody = BodyType<CreateSceneAnimationBody>
+    export type SubmitSceneAnimationMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Subir una escena desde la app (requiere auth)
+ */
+export const useSubmitSceneAnimation = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof submitSceneAnimation>>, TError,{data: BodyType<CreateSceneAnimationBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof submitSceneAnimation>>,
+        TError,
+        {data: BodyType<CreateSceneAnimationBody>},
+        TContext
+      > => {
+      return useMutation(getSubmitSceneAnimationMutationOptions(options));
+    }
+
+export const getGetAdminSceneAnimationsUrl = () => {
+
+
+
+
+  return `/api/admin/scene-animations`
+}
+
+/**
+ * @summary Listar todas las escenas animadas (admin)
+ */
+export const getAdminSceneAnimations = async ( options?: RequestInit): Promise<SceneAnimationsListResponse> => {
+
+  return customFetch<SceneAnimationsListResponse>(getGetAdminSceneAnimationsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminSceneAnimationsQueryKey = () => {
+    return [
+    `/api/admin/scene-animations`
+    ] as const;
+    }
+
+
+export const getGetAdminSceneAnimationsQueryOptions = <TData = Awaited<ReturnType<typeof getAdminSceneAnimations>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminSceneAnimations>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminSceneAnimationsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminSceneAnimations>>> = ({ signal }) => getAdminSceneAnimations({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminSceneAnimations>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminSceneAnimationsQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminSceneAnimations>>>
+export type GetAdminSceneAnimationsQueryError = ErrorType<void>
+
+
+/**
+ * @summary Listar todas las escenas animadas (admin)
+ */
+
+export function useGetAdminSceneAnimations<TData = Awaited<ReturnType<typeof getAdminSceneAnimations>>, TError = ErrorType<void>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminSceneAnimations>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminSceneAnimationsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateAdminSceneAnimationUrl = () => {
+
+
+
+
+  return `/api/admin/scene-animations`
+}
+
+/**
+ * @summary Crear una escena animada (admin)
+ */
+export const createAdminSceneAnimation = async (createSceneAnimationBody: CreateSceneAnimationBody, options?: RequestInit): Promise<SceneAnimation> => {
+
+  return customFetch<SceneAnimation>(getCreateAdminSceneAnimationUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createSceneAnimationBody,)
+  }
+);}
+
+
+
+
+export const getCreateAdminSceneAnimationMutationOptions = <TError = ErrorType<ErrorResponse | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminSceneAnimation>>, TError,{data: BodyType<CreateSceneAnimationBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createAdminSceneAnimation>>, TError,{data: BodyType<CreateSceneAnimationBody>}, TContext> => {
+
+const mutationKey = ['createAdminSceneAnimation'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAdminSceneAnimation>>, {data: BodyType<CreateSceneAnimationBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createAdminSceneAnimation(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateAdminSceneAnimationMutationResult = NonNullable<Awaited<ReturnType<typeof createAdminSceneAnimation>>>
+    export type CreateAdminSceneAnimationMutationBody = BodyType<CreateSceneAnimationBody>
+    export type CreateAdminSceneAnimationMutationError = ErrorType<ErrorResponse | void>
+
+    /**
+ * @summary Crear una escena animada (admin)
+ */
+export const useCreateAdminSceneAnimation = <TError = ErrorType<ErrorResponse | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminSceneAnimation>>, TError,{data: BodyType<CreateSceneAnimationBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createAdminSceneAnimation>>,
+        TError,
+        {data: BodyType<CreateSceneAnimationBody>},
+        TContext
+      > => {
+      return useMutation(getCreateAdminSceneAnimationMutationOptions(options));
+    }
+
+export const getUpdateAdminSceneAnimationUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/scene-animations/${id}`
+}
+
+/**
+ * @summary Actualizar una escena animada (admin)
+ */
+export const updateAdminSceneAnimation = async (id: number,
+    updateSceneAnimationBody: UpdateSceneAnimationBody, options?: RequestInit): Promise<SceneAnimation> => {
+
+  return customFetch<SceneAnimation>(getUpdateAdminSceneAnimationUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateSceneAnimationBody,)
+  }
+);}
+
+
+
+
+export const getUpdateAdminSceneAnimationMutationOptions = <TError = ErrorType<ErrorResponse | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminSceneAnimation>>, TError,{id: number;data: BodyType<UpdateSceneAnimationBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminSceneAnimation>>, TError,{id: number;data: BodyType<UpdateSceneAnimationBody>}, TContext> => {
+
+const mutationKey = ['updateAdminSceneAnimation'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminSceneAnimation>>, {id: number;data: BodyType<UpdateSceneAnimationBody>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateAdminSceneAnimation(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminSceneAnimationMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminSceneAnimation>>>
+    export type UpdateAdminSceneAnimationMutationBody = BodyType<UpdateSceneAnimationBody>
+    export type UpdateAdminSceneAnimationMutationError = ErrorType<ErrorResponse | void>
+
+    /**
+ * @summary Actualizar una escena animada (admin)
+ */
+export const useUpdateAdminSceneAnimation = <TError = ErrorType<ErrorResponse | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminSceneAnimation>>, TError,{id: number;data: BodyType<UpdateSceneAnimationBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminSceneAnimation>>,
+        TError,
+        {id: number;data: BodyType<UpdateSceneAnimationBody>},
+        TContext
+      > => {
+      return useMutation(getUpdateAdminSceneAnimationMutationOptions(options));
+    }
+
+export const getDeleteAdminSceneAnimationUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/scene-animations/${id}`
+}
+
+/**
+ * @summary Eliminar una escena animada (admin)
+ */
+export const deleteAdminSceneAnimation = async (id: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteAdminSceneAnimationUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteAdminSceneAnimationMutationOptions = <TError = ErrorType<void | ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminSceneAnimation>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAdminSceneAnimation>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['deleteAdminSceneAnimation'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAdminSceneAnimation>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteAdminSceneAnimation(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAdminSceneAnimationMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAdminSceneAnimation>>>
+
+    export type DeleteAdminSceneAnimationMutationError = ErrorType<void | ErrorResponse>
+
+    /**
+ * @summary Eliminar una escena animada (admin)
+ */
+export const useDeleteAdminSceneAnimation = <TError = ErrorType<void | ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminSceneAnimation>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAdminSceneAnimation>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getDeleteAdminSceneAnimationMutationOptions(options));
     }
 
 export const getGetAdminSoundsUrl = () => {

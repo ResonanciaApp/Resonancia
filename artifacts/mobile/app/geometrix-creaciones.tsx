@@ -36,9 +36,9 @@ import Animated, {
 
 import { LinearGradient } from "expo-linear-gradient";
 
-import { useAuth } from "@clerk/expo";
+import { useAuth } from "@/context/AuthContext";
 
-import { useShareGlyph } from "@workspace/api-client-react";
+import { useShareGlyph, useSubmitSceneAnimation } from "@workspace/api-client-react";
 
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
@@ -232,11 +232,40 @@ export default function GeometrixCreacionesScreen() {
   const exportRef = useRef<View>(null);
   const capturingRef = useRef(false);
 
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isAdmin } = useAuth();
   const shareGlyphMutation = useShareGlyph();
+  const submitSceneMutation = useSubmitSceneAnimation();
   const [sharingFor, setSharingFor] = useState<GeometrixCreation | null>(null);
   const [shareName, setShareName] = useState("");
   const [sharePosting, setSharePosting] = useState(false);
+  const [uploadingScene, setUploadingScene] = useState(false);
+
+  async function doUploadScene(c: GeometrixCreation) {
+    if (!isSignedIn) {
+      Alert.alert("Iniciá sesión", "Necesitás una cuenta para subir escenas.");
+      return;
+    }
+    setUploadingScene(true);
+    try {
+      await submitSceneMutation.mutateAsync({
+        data: {
+          name: c.name,
+          recipe: {
+            active: c.active,
+            master: c.master,
+            settings: c.settings as Record<string, unknown>,
+          },
+          isActive: false,
+          isPremium: false,
+        },
+      });
+      Alert.alert("¡Escena subida!", "La composición fue enviada como escena. Podés activarla desde el panel de administración.");
+    } catch {
+      Alert.alert("Error al subir", "No se pudo subir la escena. Verificá tu conexión e intentá de nuevo.");
+    } finally {
+      setUploadingScene(false);
+    }
+  }
 
   async function doShareGlyph() {
     if (!sharingFor) return;
@@ -692,6 +721,35 @@ export default function GeometrixCreacionesScreen() {
               </View>
               <Text style={styles.sheetRowText}>Compartir en comunidad</Text>
             </Pressable>
+            {isAdmin && (
+              <Pressable
+                style={styles.sheetRow}
+                onPress={() => {
+                  const c = actionsFor;
+                  setActionsFor(null);
+                  if (c) {
+                    Alert.alert(
+                      "Subir como Escena",
+                      `¿Subir "${c.name}" como escena animada? Quedará inactiva hasta que la actives desde el panel admin.`,
+                      [
+                        { text: "Cancelar", style: "cancel" },
+                        {
+                          text: "Subir",
+                          onPress: () => doUploadScene(c),
+                        },
+                      ],
+                    );
+                  }
+                }}
+                accessibilityRole="button"
+                disabled={uploadingScene}
+              >
+                <View style={styles.sheetRowIcon}>
+                  <Feather name="upload-cloud" size={17} color={colors.primary} />
+                </View>
+                <Text style={styles.sheetRowText}>Subir como Escena</Text>
+              </Pressable>
+            )}
             <Pressable
               style={styles.sheetRow}
               onPress={() => {

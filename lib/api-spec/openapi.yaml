@@ -2676,6 +2676,153 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /catalog/scene-animations:
+    get:
+      operationId: getSceneAnimations
+      tags: [catalog]
+      summary: Listar escenas animadas activas
+      responses:
+        "200":
+          description: Lista de escenas activas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SceneAnimationsListResponse"
+    post:
+      operationId: submitSceneAnimation
+      tags: [catalog]
+      summary: Subir una escena desde la app (requiere auth)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSceneAnimationBody"
+      responses:
+        "201":
+          description: Escena creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SceneAnimation"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/scene-animations:
+    get:
+      operationId: getAdminSceneAnimations
+      tags: [admin]
+      summary: Listar todas las escenas animadas (admin)
+      responses:
+        "200":
+          description: Lista de escenas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SceneAnimationsListResponse"
+        "401":
+          description: No autenticado
+        "403":
+          description: No autorizado
+    post:
+      operationId: createAdminSceneAnimation
+      tags: [admin]
+      summary: Crear una escena animada (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSceneAnimationBody"
+      responses:
+        "201":
+          description: Escena creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SceneAnimation"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+        "403":
+          description: No autorizado
+  /admin/scene-animations/{id}:
+    patch:
+      operationId: updateAdminSceneAnimation
+      tags: [admin]
+      summary: Actualizar una escena animada (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSceneAnimationBody"
+      responses:
+        "200":
+          description: Escena actualizada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SceneAnimation"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: No autenticado
+        "403":
+          description: No autorizado
+        "404":
+          description: No encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteAdminSceneAnimation
+      tags: [admin]
+      summary: Eliminar una escena animada (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Eliminada
+        "401":
+          description: No autenticado
+        "403":
+          description: No autorizado
+        "404":
+          description: No encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /admin/sounds:
     get:
       operationId: getAdminSounds
@@ -5322,6 +5469,87 @@ components:
         availableResolutions:
           type: string
           nullable: true
+    SceneAnimation:
+      type: object
+      required: [id, name, recipe, isActive, isPremium, sortOrder, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        recipe:
+          type: object
+          additionalProperties: true
+        isActive:
+          type: boolean
+        isPremium:
+          type: boolean
+        sortOrder:
+          type: integer
+        submittedBy:
+          type: integer
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    SceneAnimationsListResponse:
+      type: object
+      required: [scenes]
+      properties:
+        scenes:
+          type: array
+          items:
+            $ref: "#/components/schemas/SceneAnimation"
+    CreateSceneAnimationBody:
+      type: object
+      required: [name, recipe]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 80
+        description:
+          type: string
+          maxLength: 300
+          nullable: true
+        recipe:
+          type: object
+          additionalProperties: true
+        isActive:
+          type: boolean
+          default: false
+        isPremium:
+          type: boolean
+          default: false
+        sortOrder:
+          type: integer
+          default: 0
+    UpdateSceneAnimationBody:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 80
+        description:
+          type: string
+          maxLength: 300
+          nullable: true
+        recipe:
+          type: object
+          additionalProperties: true
+        isActive:
+          type: boolean
+        isPremium:
+          type: boolean
+        sortOrder:
+          type: integer
     DescansoSoundItem:
       type: object
       required: [id, label, categoryId, audioObjectPath, thumbnailObjectPath, sortOrder, isActive]
