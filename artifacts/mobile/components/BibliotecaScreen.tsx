@@ -247,12 +247,12 @@ function AnimatedChipRow({
         >
           {onSearch && (
             <Pressable onPress={onSearch} hitSlop={10} style={styles.chipActionBtn}>
-              <Feather name="search" size={18} color={MUTED} />
+              <Feather name="search" size={18} color="#f9f9f9" />
             </Pressable>
           )}
           {onAdd && (
             <Pressable onPress={onAdd} hitSlop={10} style={styles.chipActionBtn}>
-              <Feather name="plus" size={20} color={MUTED} />
+              <Feather name="plus" size={20} color="#f9f9f9" />
             </Pressable>
           )}
         </Animated.View>
@@ -1921,7 +1921,7 @@ const styles = StyleSheet.create({
   chip: {
     paddingVertical: 6,
   },
-  chipText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: MUTED },
+  chipText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: "#f9f9f9" },
   chipTextSel: { color: "#f9f9f9" },
   chipUnderline: {
     height: 2,
