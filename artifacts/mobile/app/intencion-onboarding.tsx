@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { LinearGradient } from "expo-linear-gradient";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const SEEN_KEY = "cdc_intencion_onboarding_seen";
 
@@ -28,6 +29,7 @@ const TIPS = [
 
 export default function IntencionOnboardingScreen() {
   const colors = useColors();
+  const { theme: activeTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 56 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -40,7 +42,7 @@ export default function IntencionOnboardingScreen() {
   return (
     <LinearGradient
       style={styles.root}
-      colors={["#340D1A", "#190913"]}
+      colors={activeTheme.gradient as [string, string]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >

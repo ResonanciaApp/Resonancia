@@ -19,6 +19,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useIntencion } from "@/context/IntencionContext";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const IDEAS: string[] = [
   "Escucharme con más atención",
@@ -45,6 +46,7 @@ const TAB_LABELS: Record<Tab, string> = {
 
 export default function IntencionScreen() {
   const colors = useColors();
+  const { theme: activeTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 56 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -78,7 +80,7 @@ export default function IntencionScreen() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <LinearGradient
         style={styles.root}
-        colors={["#340D1A", "#190913"]}
+        colors={activeTheme.gradient as [string, string]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
       >
