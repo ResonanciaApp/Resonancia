@@ -1,38 +1,22 @@
 import { Feather } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import Svg, {
   Circle,
   Defs,
-  G,
   LinearGradient as SvgGradient,
-  Path,
   Stop,
 } from "react-native-svg";
 
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
-// ─── Ring ────────────────────────────────────────────────────────────────────
-const RING_SIZE    = 79;
-
 // ─── Layout ──────────────────────────────────────────────────────────────────
 const SCREEN_W  = Dimensions.get("window").width;
 const GRID_PAD  = 19;
 const COMP_W    = SCREEN_W - GRID_PAD * 2;
-const SVG_H     = 64;
-const CY        = SVG_H / 2;
-const NUM_BOX_W = 88;
-const SIDE_GAP  = 15;            // define el largo de la onda
-const INSET     = 25;            // desplazamiento hacia el centro (solo posición)
-const WAVE_W    = (COMP_W - NUM_BOX_W) / 2 - SIDE_GAP;
-const AMP       = 12;
-const N_CYCLES  = 3;
 
 // ─── Data ────────────────────────────────────────────────────────────────────
-const GOAL_DAYS    = 7;
 const GOAL_MINUTES = 5;
 const DAY_LABELS   = ["L", "M", "M", "J", "V", "S", "D"];
 const DEBUG_DAYS   = 3; // ← TEST: poner null para datos reales
@@ -51,36 +35,6 @@ function startOfWeek(d: Date): Date {
   copy.setDate(copy.getDate() + (dow === 0 ? -6 : 1 - dow));
   return copy;
 }
-
-// ─── Wave paths ───────────────────────────────────────────────────────────────
-function buildRightPath(): string {
-  const pw = WAVE_W / N_CYCLES;
-  const hw = pw / 2;
-  let d = `M 0,0`;
-  for (let c = 0; c < N_CYCLES; c++) {
-    const x0 = c * pw;
-    d += ` C ${(x0 + hw * 0.36).toFixed(1)},${-AMP} ${(x0 + hw * 0.64).toFixed(1)},${-AMP} ${(x0 + hw).toFixed(1)},0`;
-    d += ` C ${(x0 + hw * 1.36).toFixed(1)},${AMP} ${(x0 + hw * 1.64).toFixed(1)},${AMP} ${(x0 + pw).toFixed(1)},0`;
-  }
-  return d;
-}
-
-function buildLeftPath(): string {
-  const pw = WAVE_W / N_CYCLES;
-  const hw = pw / 2;
-  let d = `M 0,0`;
-  for (let c = 0; c < N_CYCLES; c++) {
-    const x0 = c * pw;
-    d += ` C ${-(x0 + hw * 0.36).toFixed(1)},${-AMP} ${-(x0 + hw * 0.64).toFixed(1)},${-AMP} ${-(x0 + hw).toFixed(1)},0`;
-    d += ` C ${-(x0 + hw * 1.36).toFixed(1)},${AMP} ${-(x0 + hw * 1.64).toFixed(1)},${AMP} ${-(x0 + pw).toFixed(1)},0`;
-  }
-  return d;
-}
-
-const RIGHT_PATH  = buildRightPath();
-const LEFT_PATH   = buildLeftPath();
-const RIGHT_START = COMP_W / 2 + NUM_BOX_W / 2 + SIDE_GAP - INSET;
-const LEFT_START  = COMP_W / 2 - NUM_BOX_W / 2 - SIDE_GAP + INSET;
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function brightenHex(hex: string, pct: number): string {
@@ -123,12 +77,8 @@ export function SonicStreakWave() {
 
   // Tibet: colores derivados del tema. Resto: dorado fijo.
   const isTibet = theme.id === "tibet";
-  const waveHigh = isTibet ? brightenHex(theme.gradient[0], 68) : "#FFE3A0";
-  const waveMid  = isTibet ? brightenHex(theme.gradient[0], 52) : "#D6A451";
-  const waveLow  = isTibet ? brightenHex(theme.gradient[0], 36) : "#A9723E";
-
-  const borderColor0 = waveHigh;
-  const borderColor1 = waveMid;
+  const borderColor0 = isTibet ? brightenHex(theme.gradient[0], 68) : "#FFE3A0";
+  const borderColor1 = isTibet ? brightenHex(theme.gradient[0], 52) : "#D6A451";
 
   const { weekCount, activeFlags, todayIndex } = useMemo(() => {
     const byDay = new Map<string, number>();
@@ -159,148 +109,12 @@ export function SonicStreakWave() {
     };
   }, [statEvents]);
 
-  const rawProgress = Math.min(weekCount / GOAL_DAYS, 1);
-  // Bonus mínimo de 6px para que 1 día sea siempre visible
-  const progress   = rawProgress > 0 ? Math.min(rawProgress + 12 / WAVE_W, 1) : 0;
-  // Fade suave en el borde del progreso (zona de ~20 px)
-  const fadeZone   = Math.min(0.18, 20 / WAVE_W);
-  const fadeStart  = Math.max(0.07, progress - fadeZone);
-  const fadeEnd    = progress; // borde donde el dorado se vuelve transparente
-
   const streakBody = weekCount === 0
     ? STREAK_MESSAGE_ZERO
     : `Resonaste ${weekCount} ${weekCount === 1 ? "día" : "días"} de esta semana.`;
 
   return (
     <View style={styles.card}>
-      {/* ── Ondas + número ── */}
-      <View style={{ width: COMP_W, height: SVG_H, alignItems: "center", justifyContent: "center", marginTop: -15 }}>
-        <Svg width={COMP_W} height={SVG_H} style={StyleSheet.absoluteFill}>
-          <Defs>
-            {/* Inactiva derecha — sólida en el inicio, fade solo en extremo exterior */}
-            <SvgGradient id="swInactR" x1={0} y1={0} x2={WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
-              <Stop offset="0"    stopColor="#714A70" stopOpacity="0.25" />
-              <Stop offset="0.86" stopColor="#714A70" stopOpacity="0.25" />
-              <Stop offset="1"    stopColor="#714A70" stopOpacity="0"    />
-            </SvgGradient>
-            {/* Inactiva izquierda */}
-            <SvgGradient id="swInactL" x1={0} y1={0} x2={-WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
-              <Stop offset="0"    stopColor="#714A70" stopOpacity="0.25" />
-              <Stop offset="0.86" stopColor="#714A70" stopOpacity="0.25" />
-              <Stop offset="1"    stopColor="#714A70" stopOpacity="0"    />
-            </SvgGradient>
-            {/* Activa derecha: sólida en inicio, fade solo en borde de progreso */}
-            <SvgGradient id="swGradR" x1={0} y1={0} x2={WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
-              <Stop offset={0}          stopColor={waveHigh} stopOpacity={progress > 0 ? 1 : 0} />
-              <Stop offset={fadeStart}  stopColor={waveMid}  stopOpacity={progress > 0 ? 1 : 0} />
-              <Stop offset={fadeEnd}    stopColor={waveLow}  stopOpacity={0} />
-              <Stop offset={1}          stopColor={waveLow}  stopOpacity={0} />
-            </SvgGradient>
-            {/* Activa izquierda */}
-            <SvgGradient id="swGradL" x1={0} y1={0} x2={-WAVE_W} y2={0} gradientUnits="userSpaceOnUse">
-              <Stop offset={0}          stopColor={waveHigh} stopOpacity={progress > 0 ? 1 : 0} />
-              <Stop offset={fadeStart}  stopColor={waveMid}  stopOpacity={progress > 0 ? 1 : 0} />
-              <Stop offset={fadeEnd}    stopColor={waveLow}  stopOpacity={0} />
-              <Stop offset={1}          stopColor={waveLow}  stopOpacity={0} />
-            </SvgGradient>
-          </Defs>
-
-          {/* Onda derecha: inactiva debajo, dorada encima (sin clip) */}
-          <G transform={`translate(${RIGHT_START + 14}, ${CY + 4})`}>
-            <Path d={RIGHT_PATH} stroke="url(#swInactR)" strokeWidth={3} strokeLinecap="round" fill="none" />
-            <Path d={RIGHT_PATH} stroke="url(#swGradR)"  strokeWidth={3} strokeLinecap="round" fill="none" />
-          </G>
-
-          {/* Onda izquierda */}
-          <G transform={`translate(${LEFT_START + 2 - 14}, ${CY + 4})`}>
-            <Path d={LEFT_PATH} stroke="url(#swInactL)" strokeWidth={3} strokeLinecap="round" fill="none" />
-            <Path d={LEFT_PATH} stroke="url(#swGradL)"  strokeWidth={3} strokeLinecap="round" fill="none" />
-          </G>
-        </Svg>
-
-        {/* Anillo de progreso — igual a WeeklyStreakStrip */}
-        <View
-          pointerEvents="none"
-          style={{
-            width: RING_SIZE + 18,
-            height: RING_SIZE + 18,
-            borderRadius: (RING_SIZE + 18) / 2,
-            shadowColor: "#000",
-            shadowOffset: { width: 1, height: 2 },
-            shadowOpacity: 0.08,
-            shadowRadius: 4,
-            elevation: 2,
-            transform: [{ translateX: 1 }],
-          }}
-        >
-          <View style={[styles.ringWrap, {
-            width: RING_SIZE + 18,
-            height: RING_SIZE + 18,
-            borderRadius: (RING_SIZE + 18) / 2,
-            overflow: "hidden",
-          }]}>
-            <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(27,6,15,0.07)" }]} />
-            <LinearGradient
-              colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
-              start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-              style={StyleSheet.absoluteFill}
-              pointerEvents="none"
-            />
-            <View style={styles.ringCenter}>
-              <Text style={styles.ringCount}>{weekCount}</Text>
-              <Text style={styles.ringLabel}>{weekCount === 1 ? "Día" : "Días"}</Text>
-            </View>
-            {/* Borde degradado — mismo gradiente que bolitas de días */}
-            <Svg width={RING_SIZE + 18} height={RING_SIZE + 18} style={StyleSheet.absoluteFill} pointerEvents="none">
-              <Defs>
-                <SvgGradient id="swBorderGrad" x1="0.5" y1="0" x2="0.5" y2="1">
-                  <Stop offset="0" stopColor={borderColor0} stopOpacity="0.68" />
-                  <Stop offset="1" stopColor={borderColor1} stopOpacity="0.6" />
-                </SvgGradient>
-                {/* Glow lado izquierdo: brillante en x=0, desvanece al centro */}
-                <SvgGradient id="swBorderGlowL" x1="0" y1="0.5" x2="0.5" y2="0.5">
-                  <Stop offset="0" stopColor={borderColor0} stopOpacity="0.5" />
-                  <Stop offset="1" stopColor={borderColor0} stopOpacity="0" />
-                </SvgGradient>
-                {/* Glow lado derecho: brillante en x=1, desvanece al centro */}
-                <SvgGradient id="swBorderGlowR" x1="1" y1="0.5" x2="0.5" y2="0.5">
-                  <Stop offset="0" stopColor={borderColor0} stopOpacity="0.5" />
-                  <Stop offset="1" stopColor={borderColor0} stopOpacity="0" />
-                </SvgGradient>
-              </Defs>
-              {/* Base border */}
-              <Circle
-                cx={(RING_SIZE + 18) / 2}
-                cy={(RING_SIZE + 18) / 2}
-                r={(RING_SIZE + 18) / 2 - 1.5}
-                stroke="url(#swBorderGrad)"
-                strokeWidth={3}
-                fill="none"
-              />
-              {/* Glow izquierda */}
-              <Circle
-                cx={(RING_SIZE + 18) / 2}
-                cy={(RING_SIZE + 18) / 2}
-                r={(RING_SIZE + 18) / 2 - 1.5}
-                stroke="url(#swBorderGlowL)"
-                strokeWidth={3}
-                fill="none"
-              />
-              {/* Glow derecha */}
-              <Circle
-                cx={(RING_SIZE + 18) / 2}
-                cy={(RING_SIZE + 18) / 2}
-                r={(RING_SIZE + 18) / 2 - 1.5}
-                stroke="url(#swBorderGlowR)"
-                strokeWidth={3}
-                fill="none"
-              />
-            </Svg>
-          </View>
-        </View>
-      </View>
-
       {/* ── Bolitas de días ── */}
       <View style={styles.row}>
         {DAY_LABELS.map((label, i) => {
@@ -362,38 +176,10 @@ export function SonicStreakWave() {
 const styles = StyleSheet.create({
   card: {
     borderRadius: 16,
-    paddingTop: 73,
+    paddingTop: 16,
     paddingBottom: 18,
     gap: 13,
     alignItems: "center",
-  },
-  ringWrap: {
-    width: RING_SIZE,
-    height: RING_SIZE,
-    borderRadius: RING_SIZE / 2,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  ringCenter: {
-    position: "absolute",
-    alignItems: "center",
-    justifyContent: "center",
-    transform: [{ translateY: -2 }],
-  },
-  ringCount: {
-    fontFamily: "Manrope",
-    color: "#F9F9F9",
-    fontSize: 42,
-    fontWeight: "700",
-    lineHeight: 46,
-    transform: [{ translateY: 7 }],
-  },
-  ringLabel: {
-    fontFamily: "Manrope",
-    color: "rgba(255,255,255,0.95)",
-    fontSize: 10,
-    fontWeight: "300",
-    letterSpacing: 0.3,
   },
   row: {
     flexDirection: "row",
