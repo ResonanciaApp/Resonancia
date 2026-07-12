@@ -21,6 +21,7 @@ import Svg, { Circle, Defs, RadialGradient, Stop } from "react-native-svg";
 import { GEOMETRIES, type GeometryId } from "@/data/geometries";
 import { getGeometryLearn } from "@/data/geometry-learn";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 // ── Glifo animado genérico (Flor de la Vida) ─────────────────────────────────
 function HeroGlyph({ id, color, pulseAnim }: { id: string; color: string; pulseAnim: Animated.Value }) {
@@ -57,6 +58,7 @@ function HeroGlyph({ id, color, pulseAnim }: { id: string; color: string; pulseA
 
 export default function GeometrixAprendeDetalleScreen() {
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
 
@@ -80,7 +82,7 @@ export default function GeometrixAprendeDetalleScreen() {
   if (!geo) {
     return (
       <View style={[styles.root, { justifyContent: "center", alignItems: "center" }]}>
-        <LinearGradient colors={["#10091F", "#070512"]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
+        <LinearGradient colors={theme.gradient as unknown as [string, string, ...string[]]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
         <Text style={{ color: colors.mutedForeground }}>Geometría no encontrada</Text>
       </View>
     );
@@ -90,7 +92,7 @@ export default function GeometrixAprendeDetalleScreen() {
 
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
-      <LinearGradient colors={["#10091F", "#070512"]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
+      <LinearGradient colors={theme.gradient as unknown as [string, string, ...string[]]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
       <StatusBar barStyle="light-content" />
 
       {/* Header */}

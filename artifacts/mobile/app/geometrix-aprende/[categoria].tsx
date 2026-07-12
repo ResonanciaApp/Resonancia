@@ -25,8 +25,7 @@ import {
 } from "@/data/geometries";
 import { getGeometryLearn, CATEGORY_META } from "@/data/geometry-learn";
 import { useColors } from "@/hooks/useColors";
-
-const GEO_BG = ["#10091F", "#0E071A", "#070512"] as const;
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 function MiniGlyph({ id, color }: { id: string; color: string }) {
   // Flor de la Vida mini
@@ -79,6 +78,7 @@ function MiniGlyph({ id, color }: { id: string; color: string }) {
 
 export default function GeometrixAprendeCategoriaScreen() {
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { categoria } = useLocalSearchParams<{ categoria: string }>();
 
@@ -90,7 +90,7 @@ export default function GeometrixAprendeCategoriaScreen() {
   if (!catInfo) {
     return (
       <View style={[styles.root, { justifyContent: "center", alignItems: "center" }]}>
-        <LinearGradient colors={GEO_BG} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
+        <LinearGradient colors={theme.gradient as unknown as [string, string, ...string[]]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
         <Text style={{ color: colors.mutedForeground }}>Categoría no encontrada</Text>
       </View>
     );
@@ -98,7 +98,7 @@ export default function GeometrixAprendeCategoriaScreen() {
 
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
-      <LinearGradient colors={GEO_BG} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
+      <LinearGradient colors={theme.gradient as unknown as [string, string, ...string[]]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
       <StatusBar barStyle="light-content" />
 
       {/* Header */}

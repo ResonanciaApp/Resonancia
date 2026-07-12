@@ -52,8 +52,7 @@ import {
   type GeoSettings,
 } from "@/data/geometrix-creations";
 import { useColors } from "@/hooks/useColors";
-
-const MURAL_BG = ["#10091F", "#0E071A", "#070512"] as const;
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 // ── Capa animable (misma lógica que PreviewGlyph en geometrix-creaciones) ──
 function GlyphLayer({
@@ -197,6 +196,7 @@ function GlyphPreview({
 
 export default function GeometrixComunidadScreen() {
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const qc = useQueryClient();
@@ -258,7 +258,7 @@ export default function GeometrixComunidadScreen() {
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={MURAL_BG}
+        colors={theme.gradient as unknown as [string, string, ...string[]]}
         start={{ x: 0.1, y: 0 }}
         end={{ x: 0.9, y: 1 }}
         style={StyleSheet.absoluteFill}

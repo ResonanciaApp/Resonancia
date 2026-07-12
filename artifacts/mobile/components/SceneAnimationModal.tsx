@@ -19,6 +19,7 @@ import RAnimated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredGlyph } from "@/components/SacredGlyph";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { bgGradientColors, gradientColors, type GeoSettings } from "@/data/geometrix-creations";
 import { baseOf } from "@/data/geometries";
 import type { SceneAnimation } from "@workspace/api-client-react";
@@ -121,6 +122,7 @@ interface Props {
 
 export function SceneAnimationModal({ scene, onClose }: Props) {
   const insets = useSafeAreaInsets();
+  const { theme } = useSceneTheme();
 
   if (!scene) return null;
 
@@ -132,11 +134,11 @@ export function SceneAnimationModal({ scene, onClose }: Props) {
   const motion = master.motion !== false;
 
   const bgGrad = bgGradientColors(master.bgGradientId ?? null);
-  const bgColors: [string, string] = master.bgColor
+  const bgColors: [string, string, ...string[]] = master.bgColor
     ? [master.bgColor, master.bgColor]
     : bgGrad
     ? [...(bgGrad as [string, string])]
-    : ["#08051A", "#130A2A"];
+    : (theme.gradient as unknown as [string, string, ...string[]]);
 
   const glyphSize = SCREEN_W * 0.75;
 
@@ -219,7 +221,7 @@ export function SceneAnimationModal({ scene, onClose }: Props) {
 }
 
 const s = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#08051A" },
+  root: { flex: 1, backgroundColor: "#1B060F" },
   center: { alignItems: "center", justifyContent: "center" },
   emptyText: { fontSize: 48, color: "rgba(255,255,255,0.12)" },
   header: {
