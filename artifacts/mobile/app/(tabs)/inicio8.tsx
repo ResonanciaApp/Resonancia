@@ -810,7 +810,7 @@ export default function HomeScreen2() {
           <Pressable
             onPress={openEscenasSheet}
             hitSlop={8}
-            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1 }]}
+            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginLeft: 5 }]}
           >
             <View style={[styles.giftBtnInner, { backgroundColor: activeSceneId === "tibet" ? "rgba(26,18,67,0.6)" : "rgba(255,255,255,0.08)", ...(activeSceneId === "tibet" ? { borderWidth: 0 } : {}) }]}>
               <MaterialCommunityIcons name="spa" size={23} color="#f9f9f9" style={{ marginTop: 1 }} />
@@ -829,7 +829,7 @@ export default function HomeScreen2() {
           {/* Derecha: Mezclador */}
           <Pressable
             hitSlop={8}
-            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1 }]}
+            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginRight: 5 }]}
             onPressIn={() =>
               Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
             }
