@@ -900,30 +900,33 @@ export default function HomeScreen2() {
 
         {/* ── EXPLORA POR CONTENIDO ── */}
         <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: -12 }]}>
-          <View style={{ flexDirection: "row", gap: 10 }}>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
             {([
-              { id: "meditaciones-guiadas", label: "Meditación", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={31} color={color} /> },
-              { id: "sonidos-ancestrales", label: "Sesiones",      icon: (color: string) => <MaterialCommunityIcons name="waves" size={31} color={color} /> },
-              { id: "musica-sonidos",       label: "Música",        icon: (color: string) => <Ionicons name="musical-notes-outline" size={31} color={color} /> },
+              { id: "meditaciones-guiadas", label: "Meditación", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={24} color={color} /> },
+              { id: "sonidos-ancestrales",  label: "Sesiones",   icon: (color: string) => <MaterialCommunityIcons name="waves" size={24} color={color} /> },
+              { id: "musica-sonidos",        label: "Música",     icon: (color: string) => <Ionicons name="musical-notes-outline" size={24} color={color} /> },
+              { id: "noches",                label: "Dormir",     icon: (color: string) => <Feather name="moon" size={22} color={color} /> },
             ] as const).map((c) => (
               <Pressable
                 key={c.id}
                 onPress={() => router.push(`/category/${c.id}` as never)}
                 style={({ pressed }) => [{
-                  flex: 1,
-                  paddingVertical: 22,
-                  gap: 10,
+                  width: "48%",
+                  paddingVertical: 18,
+                  paddingHorizontal: 16,
+                  flexDirection: "row" as const,
+                  alignItems: "center" as const,
+                  gap: 12,
                   borderRadius: 14,
-                  alignItems: "center",
                   overflow: "hidden" as const,
                   opacity: pressed ? 0.75 : 1,
                 }]}
               >
                 <CardTint />
-                <View style={{ width: 31, height: 31, alignItems: "center", justifyContent: "center" }}>
+                <View style={{ width: 26, alignItems: "center", justifyContent: "center" }}>
                   {c.icon("#F7CB6B")}
                 </View>
-                <Text style={{ fontSize: 12, fontWeight: "700", color: "#FBFBFB", textAlign: "center" }}>
+                <Text style={{ fontSize: 13, fontWeight: "700", color: "#FBFBFB" }}>
                   {c.label}
                 </Text>
               </Pressable>
