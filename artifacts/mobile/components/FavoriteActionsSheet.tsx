@@ -69,7 +69,8 @@ function ActionRow({
 export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { theme } = useSceneTheme();
+  const { theme, activeSceneId } = useSceneTheme();
+  const sheetGradient = activeSceneId === "tibet" ? (["#24245d", "#24245d"] as const) : theme.gradient;
   const { toggleFavorite } = usePlayer();
   const {
     favFolders,
@@ -215,7 +216,7 @@ export function FavoriteActionsSheet({ itemId, itemKind, visible, onClose }: Pro
       >
         <Pressable style={StyleSheet.absoluteFill} onPress={handleClose} />
         <View style={[styles.sheet, { paddingBottom: insets.bottom + 8 }]}>
-          <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} pointerEvents="none" />
+          <LinearGradient colors={sheetGradient} style={StyleSheet.absoluteFill} pointerEvents="none" />
           <View style={styles.handle} />
 
           {step === "main" && (
