@@ -901,7 +901,15 @@ export default function HomeScreen2() {
               { id: "sonidos-ancestrales",  label: "Sesiones",   icon: (color: string) => <MaterialCommunityIcons name="waves" size={24} color={color} /> },
               { id: "musica-sonidos",        label: "Música",     icon: (color: string) => <Ionicons name="musical-notes-outline" size={24} color={color} /> },
               { id: "noches",                label: "Dormir",     icon: (color: string) => <Feather name="moon" size={22} color={color} /> },
-            ] as const).map((c) => (
+            ] as const).map((c, i) => {
+              const R = 14;
+              const corners = [
+                { borderTopLeftRadius: R,    borderTopRightRadius: R,    borderBottomLeftRadius: R,    borderBottomRightRadius: 0 },
+                { borderTopLeftRadius: R,    borderTopRightRadius: R,    borderBottomLeftRadius: 0,    borderBottomRightRadius: R },
+                { borderTopLeftRadius: 0,    borderTopRightRadius: R,    borderBottomLeftRadius: R,    borderBottomRightRadius: R },
+                { borderTopLeftRadius: R,    borderTopRightRadius: 0,    borderBottomLeftRadius: R,    borderBottomRightRadius: R },
+              ];
+              return (
               <Pressable
                 key={c.id}
                 onPress={() => router.push(`/category/${c.id}` as never)}
@@ -912,9 +920,9 @@ export default function HomeScreen2() {
                   flexDirection: "row" as const,
                   alignItems: "center" as const,
                   gap: 12,
-                  borderRadius: 14,
                   overflow: "hidden" as const,
                   opacity: pressed ? 0.75 : 1,
+                  ...corners[i],
                 }]}
               >
                 <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
@@ -933,7 +941,7 @@ export default function HomeScreen2() {
                   {c.label}
                 </Text>
               </Pressable>
-            ))}
+            );})}
           </View>
         </View>
 
