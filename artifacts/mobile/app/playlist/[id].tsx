@@ -762,7 +762,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   orderNum: { fontFamily: "Manrope", width: 20, fontSize: 13, textAlign: "center", fontWeight: "600", color: MUTED },
-  thumb: { width: 68, height: 68, borderRadius: 8 },
+  thumb: { width: 88, height: 88, borderRadius: 8 },
   rowName: { fontFamily: "Manrope", color: "#f9f9f9", fontSize: 13, fontWeight: "600", lineHeight: 18 },
   rowMeta: { fontFamily: "Manrope", color: "#f4f4f4", fontSize: 11, marginTop: 2 },
   moreBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
