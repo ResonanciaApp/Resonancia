@@ -505,7 +505,7 @@ function TabLayoutInner() {
       </Animated.View>
 
       {/* ── MezclaMiniPlayer (mezclas cargadas desde Biblioteca) ─────────── */}
-      <MezclaMiniPlayer bottomOffset={miniPlayerBottom} />
+      <MezclaMiniPlayer bottomOffset={miniPlayerBottom} topOffset={topPad} />
 
       {/* ── DormirMiniPlayer persistente (binaurales/ambientales) ───────── */}
       {selectedSound && (

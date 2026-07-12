@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 import { Image } from "expo-image";
 import Svg, { Path, Rect } from "react-native-svg";
 import { Feather } from "@expo/vector-icons";
@@ -8,40 +8,49 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getSoundImage } from "@/config/sound-images";
 import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 
+const SCREEN_H  = Dimensions.get("window").height;
 const PLAYER_H  = 64;
-const THUMB_SZ  = 40;   // tamaño de cada thumbnail
-const THUMB_OFF = 14;   // desplazamiento entre thumbs apiladas
+const THUMB_SZ  = 40;
+const THUMB_OFF = 14;
 
 interface Props {
   bottomOffset: number;
+  topOffset: number;
 }
 
-export function MezclaMiniPlayer({ bottomOffset }: Props) {
+export function MezclaMiniPlayer({ bottomOffset, topOffset }: Props) {
   const {
     presets,
     loadedPresetId,
     activeSounds,
     isPlaying: mixPlaying,
+    isSheetOpen,
     togglePlay,
+    openSheet,
     stopAll,
   } = useMixer();
   const { activeSceneId } = useSceneTheme();
 
   const bgColor = activeSceneId === "tibet" ? "#1a1243" : "rgba(0,0,0,0.40)";
 
+  // translateY negativo lleva el miniplayer justo debajo del header (igual que DormirMiniPlayer)
+  const expandedY = topOffset + 56 + PLAYER_H + bottomOffset - SCREEN_H;
+
   const opacity    = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(80)).current;
-  const closingRef = useRef(false);
-  const prevIdRef  = useRef<string | null>(null);
+  const closingRef     = useRef(false);
+  const prevIdRef      = useRef<string | null>(null);
+  const expandMounted  = useRef(false);
 
-  const visible = !!(loadedPresetId && activeSounds.length > 0);
+  const visible      = !!(loadedPresetId && activeSounds.length > 0);
   const loadedPreset = presets.find((p) => p.id === loadedPresetId) ?? null;
 
-  // Animación de entrada cada vez que se carga una nueva mezcla
+  // ── Entrada al cargar una nueva mezcla ──────────────────────────────────────
   useEffect(() => {
     if (!visible) return;
     if (loadedPresetId === prevIdRef.current) return;
-    prevIdRef.current = loadedPresetId;
+    prevIdRef.current  = loadedPresetId;
+    expandMounted.current = false;   // reset para el efecto de expansión
 
     closingRef.current = false;
     opacity.setValue(0);
@@ -52,6 +61,31 @@ export function MezclaMiniPlayer({ bottomOffset }: Props) {
     ]).start();
   }, [loadedPresetId, visible]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // ── Expansión / colapso al abrir/cerrar la MixerSheet ───────────────────────
+  useEffect(() => {
+    // Saltar la primera ejecución (igual que DormirMiniPlayer)
+    if (!expandMounted.current) {
+      expandMounted.current = true;
+      return;
+    }
+    if (closingRef.current) return;
+    if (!visible) return;
+
+    Animated.timing(translateY, {
+      toValue:  isSheetOpen ? expandedY : 0,
+      duration: 250,
+      delay:    isSheetOpen ? 50 : 0,
+      useNativeDriver: true,
+    }).start();
+  }, [isSheetOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Tap sobre el miniplayer → sube y abre la sheet ──────────────────────────
+  const handleExpand = () => {
+    if (closingRef.current) return;
+    openSheet();   // la animación de subida la dispara el efecto de isSheetOpen
+  };
+
+  // ── X → cerrar con fade-out y parar la mezcla ───────────────────────────────
   const handleClose = () => {
     if (closingRef.current) return;
     closingRef.current = true;
@@ -67,11 +101,13 @@ export function MezclaMiniPlayer({ bottomOffset }: Props) {
   if (!visible || !loadedPreset) return null;
 
   const thumbSounds = loadedPreset.sounds.slice(0, 3);
-  // Ancho del stack: THUMB_SZ + (n-1) * THUMB_OFF
-  const stackW = THUMB_SZ + Math.max(0, thumbSounds.length - 1) * THUMB_OFF;
+  const stackW      = THUMB_SZ + Math.max(0, thumbSounds.length - 1) * THUMB_OFF;
 
   return (
-    <View style={[styles.wrapper, { bottom: bottomOffset }]} pointerEvents="box-none">
+    <Pressable
+      onPress={handleExpand}
+      style={[styles.wrapper, { bottom: bottomOffset }]}
+    >
       <Animated.View
         style={[
           styles.container,
@@ -82,17 +118,16 @@ export function MezclaMiniPlayer({ bottomOffset }: Props) {
         <View style={[styles.thumbStack, { width: stackW }]}>
           {thumbSounds.map((s, i) => {
             const localImg  = getSoundImage(s.id);
-            const remoteUri = REMOTE_SOUND_IMAGE_MAP[s.id] ? { uri: REMOTE_SOUND_IMAGE_MAP[s.id] } : undefined;
+            const remoteUri = REMOTE_SOUND_IMAGE_MAP[s.id]
+              ? { uri: REMOTE_SOUND_IMAGE_MAP[s.id] }
+              : undefined;
             const src = localImg ?? remoteUri;
             return (
               <View
                 key={s.id}
                 style={[
                   styles.thumb,
-                  {
-                    left:   i * THUMB_OFF,
-                    zIndex: thumbSounds.length - i,
-                  },
+                  { left: i * THUMB_OFF, zIndex: thumbSounds.length - i },
                 ]}
               >
                 {src ? (
@@ -109,7 +144,7 @@ export function MezclaMiniPlayer({ bottomOffset }: Props) {
 
         {/* ── Play / Pause ─────────────────────────────────────────── */}
         <Pressable
-          onPress={togglePlay}
+          onPress={(e) => { e.stopPropagation(); togglePlay(); }}
           style={styles.playBtn}
           hitSlop={8}
         >
@@ -137,11 +172,15 @@ export function MezclaMiniPlayer({ bottomOffset }: Props) {
         </View>
 
         {/* ── Cerrar ───────────────────────────────────────────────── */}
-        <Pressable onPress={handleClose} hitSlop={10} style={styles.closeBtn}>
+        <Pressable
+          onPress={(e) => { e.stopPropagation(); handleClose(); }}
+          hitSlop={10}
+          style={styles.closeBtn}
+        >
           <Feather name="x" size={20} color="#ffffff" style={{ opacity: 0.6 }} />
         </Pressable>
       </Animated.View>
-    </View>
+    </Pressable>
   );
 }
 
