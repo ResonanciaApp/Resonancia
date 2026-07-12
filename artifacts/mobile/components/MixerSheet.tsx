@@ -142,13 +142,17 @@ interface DraggableTrackRowProps {
   removeSound: (id: string) => void;
   onDragStart: () => void;
   onDragEnd: (from: number, to: number) => void;
+  breathingIds: string[];
+  toggleBreathe: (id: string) => void;
 }
 
 function DraggableTrackRow({
   id, sound, volume, n,
   orderSV, draggingId, dragOriginSlot, dragDeltaY, insertAt,
   palette, setVolume, removeSound, onDragStart, onDragEnd,
+  breathingIds, toggleBreathe,
 }: DraggableTrackRowProps) {
+  const isBreathing = breathingIds.includes(id);
   const didActivate = useSharedValue(0);
 
   const pan = Gesture.Pan()
@@ -235,12 +239,25 @@ function DraggableTrackRow({
           <Text style={[styles.trackName, { color: palette.fg }]} numberOfLines={1}>
             {sound.name}
           </Text>
-          <VolumeSlider
-            value={volume}
-            onChange={(v) => setVolume(id, v)}
-            color={palette.sliderThumb}
-            trackColor={palette.sliderTrack}
-          />
+          <View style={styles.sliderRow}>
+            <View style={{ flex: 1 }}>
+              <VolumeSlider
+                value={volume}
+                onChange={(v) => setVolume(id, v)}
+                color={palette.sliderThumb}
+                trackColor={palette.sliderTrack}
+              />
+            </View>
+            <Pressable
+              onPress={() => toggleBreathe(id)}
+              hitSlop={8}
+              style={[styles.breatheBtn, isBreathing && styles.breatheBtnActive]}
+              accessibilityRole="button"
+              accessibilityLabel="Respiración de volumen"
+            >
+              <Feather name="activity" size={14} color={isBreathing ? "#F7CB6B" : palette.muted} />
+            </Pressable>
+          </View>
         </View>
       </View>
     </Reanimated.View>
@@ -254,10 +271,13 @@ interface DraggableSoundListProps {
   removeSound: (id: string) => void;
   reorderSounds: (from: number, to: number) => void;
   onScrollEnabled: (enabled: boolean) => void;
+  breathingIds: string[];
+  toggleBreathe: (id: string) => void;
 }
 
 function DraggableSoundList({
   activeMix, palette, setVolume, removeSound, reorderSounds, onScrollEnabled,
+  breathingIds, toggleBreathe,
 }: DraggableSoundListProps) {
   const n = activeMix.length;
   const ids = activeMix.map((x) => x.sound.id);
@@ -307,6 +327,8 @@ function DraggableSoundList({
           removeSound={removeSound}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
+          breathingIds={breathingIds}
+          toggleBreathe={toggleBreathe}
         />
       ))}
     </View>
@@ -433,6 +455,8 @@ export function MixerSheet() {
     openImmersivo,
     inmersivoOpen,
     closeImmersivo,
+    breathingIds,
+    toggleBreathe,
   } = useMixer();
 
   // Preset del que partió esta edición (sobrevive a cambios de pistas, que
@@ -872,6 +896,8 @@ export function MixerSheet() {
               removeSound={removeSound}
               reorderSounds={reorderSounds}
               onScrollEnabled={setScrollEnabled}
+              breathingIds={breathingIds}
+              toggleBreathe={toggleBreathe}
             />
 
             <Pressable
@@ -1214,6 +1240,18 @@ const styles = StyleSheet.create({
   },
   trackInfo: { flex: 1, justifyContent: "center" },
   trackName: { fontFamily: "Manrope", fontSize: 12, fontWeight: "700", marginBottom: -2, paddingLeft: 8, marginTop: 6 },
+  sliderRow: { flexDirection: "row", alignItems: "center", gap: 6 },
+  breatheBtn: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.06)",
+  },
+  breatheBtnActive: {
+    backgroundColor: "rgba(247,203,107,0.15)",
+  },
   _reorderPill_unused: {
     flexDirection: "row",
     alignItems: "center",

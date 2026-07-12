@@ -210,6 +210,10 @@ type MixerContextType = {
   addMixFolderToFolder: (parentId: string, childId: string) => void;
   removeMixFolderFromFolder: (parentId: string, childId: string) => void;
   isMixFolderInFolder: (parentId: string, childId: string) => boolean;
+  /** IDs de sonidos con "respiración" de volumen activa (oscilación suave ±35%). */
+  breathingIds: string[];
+  /** Activa/desactiva la oscilación suave de volumen para un sonido. */
+  toggleBreathe: (id: string) => void;
 };
 
 const MixerContext = createContext<MixerContextType | null>(null);
@@ -227,6 +231,11 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const [masterVolume, setMasterVolumeSt] = useState(1.0);
   const [bgPaletteId, setBgPaletteId] = useState<MixerBgPaletteId>(DEFAULT_MIXER_BG_PALETTE);
   const masterVolumeRef = useRef(1.0);
+
+  // ── Respiración de volumen ─────────────────────────────────────────────────
+  const [breathingIds, setBreathingIds] = useState<string[]>([]);
+  const breatheBaseRef  = useRef<Map<string, number>>(new Map());
+  const breathePhaseRef = useRef<Map<string, number>>(new Map());
 
   const setMasterVolume = useCallback((v: number) => {
     const clamped = Math.max(0, Math.min(1, v));
@@ -1452,6 +1461,55 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     setActiveSounds((prev) => prev.map((s) => (s.id === id ? { ...s, volume } : s)));
   }, []);
 
+  /** Aplica volumen de respiración al audio + slider SIN modificar baseVolumesRef. */
+  const applyBreathVolume = useCallback((id: string, vol: number) => {
+    const clamped = Math.max(0, Math.min(1, vol));
+    if (getSoundById(id)?.bpm !== undefined && bpmSystemRef.current === "engine") {
+      bpmAudioEngine.setVolume(id, clamped);
+    } else if (getSoundById(id)?.category === "binaural" && binauralEngineActiveRef.current.has(id)) {
+      bpmAudioEngine.setVolume(id, clamped);
+    }
+    setActiveSounds((prev) => prev.map((s) => s.id === id ? { ...s, volume: clamped } : s));
+  }, []);
+
+  const toggleBreathe = useCallback((id: string) => {
+    setBreathingIds((prev) => {
+      if (prev.includes(id)) {
+        // Detener: restaurar volumen base guardado
+        const base = breatheBaseRef.current.get(id);
+        breatheBaseRef.current.delete(id);
+        breathePhaseRef.current.delete(id);
+        if (base !== undefined) {
+          setTimeout(() => setVolume(id, base), 0);
+        }
+        return prev.filter((x) => x !== id);
+      } else {
+        // Activar: guardar volumen actual como base
+        const base = baseVolumesRef.current.get(id) ?? DEFAULT_VOLUME;
+        breatheBaseRef.current.set(id, base);
+        breathePhaseRef.current.set(id, 0);
+        return [...prev, id];
+      }
+    });
+  }, [setVolume]);
+
+  /** Oscilación suave de volumen para los sonidos con "respiración" activa. */
+  useEffect(() => {
+    if (breathingIds.length === 0) return;
+    const TICK_MS   = 80;
+    const PERIOD_MS = 9000;
+    const DEPTH     = 0.35; // ±35 % del volumen base (≤ 50 % cap)
+    const timer = setInterval(() => {
+      breathingIds.forEach((soundId) => {
+        const phase = (breathePhaseRef.current.get(soundId) ?? 0) + (TICK_MS / PERIOD_MS) * 2 * Math.PI;
+        breathePhaseRef.current.set(soundId, phase);
+        const base = breatheBaseRef.current.get(soundId) ?? DEFAULT_VOLUME;
+        applyBreathVolume(soundId, base * (1 + DEPTH * Math.sin(phase)));
+      });
+    }, TICK_MS);
+    return () => clearInterval(timer);
+  }, [breathingIds, applyBreathVolume]);
+
 
   const moveSound = useCallback((id: string, direction: "up" | "down") => {
     setActiveSounds((prev) => {
@@ -2090,6 +2148,8 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
         addMixFolderToFolder,
         removeMixFolderFromFolder,
         isMixFolderInFolder,
+        breathingIds,
+        toggleBreathe,
       }}
     >
       {children}
