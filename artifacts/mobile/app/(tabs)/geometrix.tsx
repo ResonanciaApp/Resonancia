@@ -102,6 +102,7 @@ import {
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { useGeometrixCatalog } from "@/hooks/useGeometrixCatalog";
 import { AUDIO_MAP } from "@/config/audio-map";
@@ -3878,18 +3879,17 @@ export default function GeometrixScreen() {
   // Color del fondo del lienzo (lienzo, vista previa e inmersión). Es el
   // degradado seleccionado o, por defecto, el de Inicio; ambos modulados por
   // el slider de brillo de Ajustes generales.
+  const { theme: sceneTheme } = useSceneTheme();
   const bgFactor = brightnessFactor(master.bgBrightness);
   const selectedBg = master.bgColor
     ? ([master.bgColor, master.bgColor] as string[])
     : bgGradientColors(master.bgGradientId);
-  const canvasBgColors = selectedBg
-    ? scaleColors(selectedBg, bgFactor)
-    : HOME_GRADIENT;
-  const canvasBgLocations = selectedBg ? undefined : ([0, 0.5, 1] as [number, number, number]);
-  // Header del canvas: +3% lightness sobre el fondo del lienzo.
-  const headerBgColors = selectedBg
-    ? scaleColors(selectedBg, bgFactor * 1.15)
-    : HEADER_GRADIENT;
+  // Un solo degradado para toda la pantalla. Default = tema activo (igual que Inicio).
+  const canvasBgColors: [string, string, ...string[]] = selectedBg
+    ? (scaleColors(selectedBg, bgFactor) as [string, string, ...string[]])
+    : (sceneTheme.gradient as [string, string, ...string[]]);
+  // locations=undefined → LinearGradient distribuye stops de forma uniforme (válido para 2 ó 4 stops).
+  const canvasBgLocations = undefined;
 
 
   // Fondo de los sheets que responde al tono del degradado seleccionado.
@@ -3903,24 +3903,21 @@ export default function GeometrixScreen() {
   }, [master.bgGradientId, master.bgColor]);
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: canvasBgColors[canvasBgColors.length - 1] as string }]}>
+      {/* Fondo único — cubre header y lienzo sin costura */}
+      <LinearGradient
+        colors={canvasBgColors}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
       {/* Oculta la barra de estado en pantalla completa (View absoluto, no Modal). */}
       <StatusBar hidden={fullscreenEdit} translucent />
 
       <View style={styles.content}>
         {/* ── Zona superior: header + carrusel ── */}
         <View style={[styles.topPanel, { paddingTop: insets.top + 4 }]}>
-          {/* Fondo del header (+3% brillo sobre el lienzo) */}
-          <View pointerEvents="none" style={styles.headerBgLayer}>
-            <LinearGradient
-              colors={headerBgColors}
-              locations={canvasBgLocations}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-          </View>
-
         {/* ── Buscador de tema de fondo (audio propio de Geometrix) ── */}
         <Modal
           visible={themeSearchOpen}
@@ -4086,16 +4083,9 @@ export default function GeometrixScreen() {
             divisora y la tab bar. paddingBottom despeja la tab bar para que el
             lienzo no se recorte. */}
         <View style={[styles.canvasWrap, { paddingBottom: bottomReserve }]}>
-          {/* Fondo del lienzo */}
-          <View pointerEvents="none" style={styles.canvasBgLayer}>
-            <LinearGradient
-              colors={canvasBgColors}
-              locations={canvasBgLocations}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-            {master.bgPattern && (
+          {/* Patrón decorativo — el fondo lo provee el LinearGradient raíz */}
+          {master.bgPattern && (
+            <View pointerEvents="none" style={styles.canvasBgLayer}>
               <GeometrixPatternBg
                 geoId={master.bgPattern.geoId}
                 opacity={master.bgPattern.opacity}
@@ -4103,8 +4093,8 @@ export default function GeometrixScreen() {
                 spacing={master.bgPattern.spacing}
                 color={colors.primary}
               />
-            )}
-          </View>
+            </View>
+          )}
           {/* Caja de clip independiente del transform del stage.
               - marginHorizontal:-20 → extiende hasta el borde de pantalla (cancela el paddingH del content)
               - overflow:hidden sin translateY → el clip superior cae exactamente en la divisora
