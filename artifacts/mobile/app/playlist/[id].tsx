@@ -93,6 +93,11 @@ export default function PlaylistDetailScreen() {
   const insets = useSafeAreaInsets();
   const { theme: sceneTheme, activeSceneId } = useSceneTheme();
   const BG_GRADIENT = activeSceneId === "tibet" ? sceneTheme.gradient : BG_GRADIENT_FALLBACK;
+  const darkestStop = BG_GRADIENT[BG_GRADIENT.length - 1];
+  const darkestRgb  = hexToRgb(darkestStop);
+  const menuBtnBg   = darkestRgb
+    ? `rgba(${darkestRgb[0]},${darkestRgb[1]},${darkestRgb[2]},0.5)`
+    : "rgba(0,0,0,0.5)";
   const { isPremium } = usePremium();
   const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistDescription, reorderPlaylist, setPlaylistCover, setPlaylistCoverColor, setPlaylistCoverGeometry, setPlaylistCoverCreation } = useFoldersPlaylists();
   const { playSession, pauseResume, isPlaying, currentSession } = usePlayer();
@@ -241,6 +246,13 @@ export default function PlaylistDetailScreen() {
           <Pressable onPress={() => router.back()} style={styles.iconBtn}>
             <Feather name="arrow-left" size={22} color={TEXT} />
           </Pressable>
+          <Pressable
+            onPress={() => setMenuVisible(true)}
+            hitSlop={10}
+            style={[styles.iconBtn, { backgroundColor: menuBtnBg, borderRadius: 20 }]}
+          >
+            <Feather name="more-horizontal" size={22} color={TEXT} />
+          </Pressable>
         </View>
 
         {/* ── Panel superior (segundo fondo con fade) ─────────────────────── */}
@@ -315,10 +327,6 @@ export default function PlaylistDetailScreen() {
           {/* Compartir */}
           <Pressable style={({ pressed }) => [styles.toolBtn, { opacity: pressed ? 0.6 : 1 }]} hitSlop={10} onPress={handleShare}>
             <Feather name="share" size={22} color={MUTED} />
-          </Pressable>
-          {/* Tres puntos */}
-          <Pressable style={({ pressed }) => [styles.toolBtn, { opacity: pressed ? 0.6 : 1 }]} hitSlop={10} onPress={() => setMenuVisible(true)}>
-            <Feather name="more-horizontal" size={22} color={MUTED} />
           </Pressable>
         </View>
 
@@ -613,6 +621,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 12,
     paddingBottom: 8,
   },
@@ -703,6 +712,26 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "700",
+  },
+  pillOutline: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    backgroundColor: "transparent",
+    borderRadius: 30,
+    borderWidth: 1.5,
+    borderColor: "#f9f9f9",
+    paddingVertical: 10.5,
+    paddingHorizontal: 14,
+  },
+  pillOutlineText: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#f9f9f9",
+    letterSpacing: 0.5,
   },
 
   // Playlist description
