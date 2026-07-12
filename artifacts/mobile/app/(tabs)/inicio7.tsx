@@ -1229,7 +1229,7 @@ export default function HomeScreen2() {
             hitSlop={8}
             style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginLeft: 2 }]}
           >
-            <View style={[styles.giftBtnInner, { backgroundColor: activeSceneId === "tibet" ? "rgba(26,18,67,0.4)" : "rgba(255,255,255,0.08)" }]}>
+            <View style={[styles.giftBtnInner, { backgroundColor: `${activeTheme.gradient[0]}60` }]}>
               <MaterialCommunityIcons name="spa" size={23} color="#f9f9f9" style={{ marginTop: 1 }} />
             </View>
           </Pressable>
