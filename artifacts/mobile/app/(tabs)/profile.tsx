@@ -1424,7 +1424,7 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingHorizontal: 19,
     paddingBottom: 14,
-    marginTop: -17,
+    marginTop: 10,
   },
   pillBorder: {},
   pillBorderSel: {},
