@@ -279,7 +279,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "transparent" }]} />
         {/* Tinte Universo */}
         {activeSceneId === "tibet" && (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(45,64,129,0.10)" }]} pointerEvents="none" />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(31,42,98,0.20)" }]} pointerEvents="none" />
         )}
 
         <View
