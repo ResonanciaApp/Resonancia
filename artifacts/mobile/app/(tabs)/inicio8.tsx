@@ -969,8 +969,8 @@ export default function HomeScreen2() {
           </View>
         </View>
 
-        {/* ── ESCENAS ANIMADAS ── (oculto por ahora) */}
-        {false && activeScenes.length > 0 && (
+        {/* ── ESCENAS ANIMADAS ── */}
+        {activeScenes.length > 0 && (
           <View style={{ marginBottom: SECTION_GAP }}>
             <View style={{ paddingHorizontal: GRID_PAD, flexDirection: "row", alignItems: "center", marginBottom: 18, gap: 8 }}>
               <Text style={styles.sectionTitle}>Escenas animadas</Text>
