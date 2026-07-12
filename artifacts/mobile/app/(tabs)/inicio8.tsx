@@ -304,6 +304,27 @@ export default function HomeScreen2() {
   const currentIntencion = intencionSaved[0]?.text ?? intencionFavs[0] ?? null;
   const insets = useSafeAreaInsets();
   const { playSession, currentSession, isPlaying, pauseResume, history, favorites, statEvents } = usePlayer();
+
+  const weekDays = React.useMemo(() => {
+    const LETTERS = ["L", "M", "X", "J", "V", "S", "D"];
+    const activeDayKeys = new Set(statEvents.map((e) => {
+      const d = new Date(e.playedAt);
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    }));
+    const today = new Date();
+    const dow = today.getDay(); // 0=Sun
+    const mondayOffset = dow === 0 ? -6 : 1 - dow;
+    const monday = new Date(today);
+    monday.setDate(today.getDate() + mondayOffset);
+    return LETTERS.map((letter, i) => {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+      const isToday = key === `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
+      return { letter, isToday, isActive: activeDayKeys.has(key) };
+    });
+  }, [statEvents]);
+
   const { isPremium } = usePremium();
   const { upcoming: upcomingLiveSessions } = useLiveSessions();
   const nextLiveSession = upcomingLiveSessions[0] ?? null;
@@ -876,35 +897,57 @@ export default function HomeScreen2() {
           onPress={headerScene ? () => setSelectedScene(headerScene) : undefined}
         />
 
-        {/* ── Racha semanal (chip compacto) ── */}
+        {/* ── 7 días de la semana ── */}
         <Pressable
           onPress={() => setProgresoVisible(true)}
           style={({ pressed }) => ({
             marginHorizontal: GRID_PAD,
             marginTop: 20,
             marginBottom: SECTION_GAP / 2,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingVertical: 13,
-            paddingHorizontal: 16,
+            paddingVertical: 16,
+            paddingHorizontal: 20,
             borderRadius: 14,
             backgroundColor: "rgba(255,255,255,0.07)",
             opacity: pressed ? 0.75 : 1,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
           })}
         >
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-            <Text style={{ fontSize: 20, lineHeight: 24 }}>🔥</Text>
-            <View>
-              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4DAD5" }}>
-                Tu progreso semanal
-              </Text>
-              <Text style={{ fontFamily: "Manrope", fontSize: 11, color: "rgba(244,218,213,0.55)", marginTop: 1 }}>
-                Ver racha y sesiones
+          {weekDays.map(({ letter, isToday, isActive }) => (
+            <View key={letter + String(isToday)} style={{ alignItems: "center", gap: 7 }}>
+              <View
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 17,
+                  backgroundColor: isActive
+                    ? "#F7CB6B"
+                    : isToday
+                    ? "rgba(247,203,107,0.12)"
+                    : "rgba(255,255,255,0.07)",
+                  borderWidth: isToday && !isActive ? 1 : 0,
+                  borderColor: "rgba(247,203,107,0.45)",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {isActive && (
+                  <Feather name="check" size={15} color="#1B060F" />
+                )}
+              </View>
+              <Text
+                style={{
+                  fontSize: 11,
+                  fontFamily: "Manrope",
+                  fontWeight: "600",
+                  color: isToday ? "#F7CB6B" : "rgba(244,218,213,0.45)",
+                }}
+              >
+                {letter}
               </Text>
             </View>
-          </View>
-          <Feather name="chevron-right" size={16} color="rgba(244,218,213,0.45)" />
+          ))}
         </Pressable>
         <ProgresoModal visible={progresoVisible} onClose={() => setProgresoVisible(false)} />
 
