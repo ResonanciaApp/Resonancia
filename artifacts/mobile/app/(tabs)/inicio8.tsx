@@ -839,7 +839,7 @@ export default function HomeScreen2() {
           >
             <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
               <View style={[styles.giftBtnInner, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
-                <Image source={require("@/assets/images/icon-mixer-new.png")} style={{ width: 22, height: 22 }} resizeMode="contain" />
+                <Image source={require("@/assets/images/icon-mixer-eq.png")} style={{ width: 22, height: 22 }} resizeMode="contain" />
               </View>
             </Animated.View>
           </Pressable>
