@@ -842,7 +842,7 @@ export default function ProfileScreen() {
       {perfilTab === "panel" && (
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 20 }}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 19 }}
         showsVerticalScrollIndicator={false}
         scrollEnabled={scrollEnabled}
         onScroll={handleHeaderScroll}
@@ -1088,7 +1088,7 @@ export default function ProfileScreen() {
       {perfilTab === "historial" && (
         <ScrollView
           style={styles.scroll}
-          contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 20 }}
+          contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 19 }}
           showsVerticalScrollIndicator={false}
           onScroll={handleHeaderScroll}
           scrollEventThrottle={16}
@@ -1100,7 +1100,7 @@ export default function ProfileScreen() {
       {perfilTab === "registros" && (
         <ScrollView
           style={styles.scroll}
-          contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 20 }}
+          contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 19 }}
           showsVerticalScrollIndicator={false}
           onScroll={handleHeaderScroll}
           scrollEventThrottle={16}
@@ -1400,7 +1400,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 15,
+    paddingHorizontal: 19,
     paddingBottom: 10,
   },
   gearBtn: {
@@ -1422,9 +1422,9 @@ const styles = StyleSheet.create({
   pillRow: {
     flexDirection: "row",
     gap: 8,
-    paddingHorizontal: 15,
+    paddingHorizontal: 19,
     paddingBottom: 14,
-    marginTop: 10,
+    marginTop: -17,
   },
   pillBorder: {},
   pillBorderSel: {},
