@@ -757,12 +757,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     gap: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(61,14,22,0.30)",
   },
   orderNum: { fontFamily: "Manrope", width: 20, fontSize: 13, textAlign: "center", fontWeight: "600", color: MUTED },
   thumb: { width: 52, height: 52, borderRadius: 8 },
-  rowName: { fontFamily: "Manrope", color: TEXT, fontSize: 13, fontWeight: "600", lineHeight: 18 },
+  rowName: { fontFamily: "Manrope", color: "#f9f9f9", fontSize: 13, fontWeight: "600", lineHeight: 18 },
   rowMeta: { fontFamily: "Manrope", color: "#f4f4f4", fontSize: 11, marginTop: 2 },
   moreBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
   removeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
@@ -776,6 +774,7 @@ const styles = StyleSheet.create({
     height: "100%",
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.1)",
   },
   coverPlusBadge: {
     position: "absolute",
@@ -787,8 +786,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 2,
-    borderColor: "#1B060F",
   },
 });
 
