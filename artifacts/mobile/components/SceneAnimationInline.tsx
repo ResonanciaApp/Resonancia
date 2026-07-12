@@ -46,7 +46,7 @@ function AnimatedLayer({
   size: number;
 }) {
   const rot = useSharedValue(0);
-  const { rotate, rotateLeft, rotateSpeed, breatheAmount } = settings;
+  const { rotate, rotateLeft, rotateSpeed, breatheAmount, thickness, zoom, scale } = settings;
   const safeSpeed = Number.isFinite(rotateSpeed) ? Math.max(0, Math.min(1, rotateSpeed)) : 0.5;
   const spinDuration = ((38000 + index * 6000) / (0.5 + safeSpeed * 2.5)) * 1.6;
   const dir = rotateLeft ? -1 : 1;
@@ -54,6 +54,19 @@ function AnimatedLayer({
   const safeAmount = Number.isFinite(breatheAmount) ? Math.max(0, Math.min(1, breatheAmount)) : 0;
   const breatheDepth = 0.04 + safeAmount * 0.18;
   const pulse = useSharedValue(0);
+  // Replica la fórmula exacta de GeometryLayerInner:
+  //   base1px = 100 / effectiveSize  (el viewBox es 0–100, así que 1px real = 100/size)
+  //   sw = base1px × (1 + thickness × 5)
+  // Esto hace que el trazo sea proporcional al tamaño real del glifo (zoom × scale),
+  // igual que en el editor. La fórmula anterior (1 + thickness × 2) ignoraba zoom/scale
+  // y producía trazos gruesos cuando la geometría es grande.
+  const safeThickness = Number.isFinite(thickness) ? Math.max(0, Math.min(1, thickness)) : 0;
+  const safeZoom = Number.isFinite(zoom) ? Math.max(0.1, zoom) : 1;
+  const userScale = Number.isFinite(scale) ? Math.max(0.1, scale) : 1;
+  const committedMag = userScale * safeZoom;
+  const effectiveSize = size * committedMag;
+  const base1px = effectiveSize > 0 ? 100 / effectiveSize : 1;
+  const sw = base1px * (1 + safeThickness * 5);
 
   useEffect(() => {
     if (!spin) {
@@ -101,7 +114,7 @@ function AnimatedLayer({
         color={settings.color}
         gradient={grad}
         size={size}
-        strokeWidth={1 + settings.thickness * 2}
+        strokeWidth={sw}
       />
     </RAnimated.View>
   );
