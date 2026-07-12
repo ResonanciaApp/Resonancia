@@ -901,7 +901,7 @@ export default function HomeScreen2() {
         {/* ── BANNER RESONADORES ── */}
         <Pressable
           onPress={() => router.push("/resonadores" as never)}
-          style={{ marginBottom: 35, marginHorizontal: GRID_PAD, marginTop: -6 }}
+          style={{ marginBottom: 35, marginHorizontal: GRID_PAD, marginTop: -21 }}
         >
           <View style={styles.resonadoresBanner}>
             <CardTint />
