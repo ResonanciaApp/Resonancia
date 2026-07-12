@@ -405,7 +405,7 @@ export function EscenasSheet() {
                     size={118}
                     onPress={() => {
                       handleClose();
-                      setTimeout(() => setSelectedScene(scene), 460);
+                      setTimeout(() => setSelectedScene(scene), 700);
                     }}
                   />
                 ))}
