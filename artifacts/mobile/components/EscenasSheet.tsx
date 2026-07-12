@@ -253,7 +253,12 @@ export function EscenasSheet() {
             />
           </Animated.View>
         )}
-        <View style={{ paddingTop: Math.max(insets.top, 20), paddingBottom: Math.max(insets.bottom, 20), flex: 1 }}>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{ paddingTop: Math.max(insets.top, 20), paddingBottom: Math.max(insets.bottom, 24) }}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
           <Pressable style={styles.closeBtn} onPress={handleClose} hitSlop={10}>
             <Feather name="x" size={26} color="#FFFFFF" />
           </Pressable>
@@ -407,7 +412,7 @@ export function EscenasSheet() {
               </ScrollView>
             </View>
           )}
-        </View>
+        </ScrollView>
       </Animated.View>
 
       {/* ── Preview fullscreen (mismo Modal, absoluteFill encima) ─────────── */}
