@@ -901,7 +901,7 @@ export default function HomeScreen2() {
           <View style={styles.resonadoresBanner}>
             <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
             {/* Tinte dorado */}
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(212,175,55,0.16)" }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(212,175,55,0.07)" }]} />
             {/* Luz interior — más luminoso arriba, se desvanece hacia abajo */}
             <LinearGradient
               colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
