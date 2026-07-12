@@ -821,7 +821,7 @@ export default function HomeScreen2() {
           <View style={{ flex: 1, alignItems: "center" }}>
             <Image
               source={require("@/assets/images/pulso-4-logo.png")}
-              style={{ width: 115, height: 38 }}
+              style={{ width: 133, height: 44 }}
               resizeMode="contain"
             />
           </View>
