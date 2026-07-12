@@ -900,7 +900,7 @@ export default function HomeScreen2() {
 
         {/* ── EXPLORA POR CONTENIDO ── */}
         <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: -12 }]}>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 7 }}>
             {([
               { id: "meditaciones-guiadas", label: "Meditación", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={24} color={color} /> },
               { id: "sonidos-ancestrales",  label: "Sesiones",   icon: (color: string) => <MaterialCommunityIcons name="waves" size={24} color={color} /> },
