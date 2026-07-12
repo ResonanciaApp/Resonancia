@@ -20,6 +20,8 @@ export const sceneAnimationsTable = pgTable("scene_animations", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
+  /** Frase corta opcional que aparece en el modal de la escena. */
+  phrase: text("phrase"),
   /** Receta visual — capas activas, ajustes por capa y master. */
   recipe: jsonb("recipe").$type<Record<string, unknown>>().notNull(),
   /** Si true, se muestra en la app. */
@@ -53,6 +55,7 @@ export type InsertSceneAnimation = typeof sceneAnimationsTable.$inferInsert;
 export const CreateSceneAnimationSchema = z.object({
   name: z.string().min(1).max(80),
   description: z.string().max(300).optional().nullable(),
+  phrase: z.string().max(200).optional().nullable(),
   recipe: z.record(z.string(), z.unknown()),
   isActive: z.boolean().optional(),
   isPremium: z.boolean().optional(),
@@ -62,6 +65,7 @@ export const CreateSceneAnimationSchema = z.object({
 export const UpdateSceneAnimationSchema = z.object({
   name: z.string().min(1).max(80).optional(),
   description: z.string().max(300).optional().nullable(),
+  phrase: z.string().max(200).optional().nullable(),
   recipe: z.record(z.string(), z.unknown()).optional(),
   isActive: z.boolean().optional(),
   isPremium: z.boolean().optional(),

@@ -2647,11 +2647,16 @@ export const DeleteAdminDescansoSoundParams = zod.object({
 /**
  * @summary Listar escenas animadas activas
  */
+export const getSceneAnimationsResponseScenesItemPhraseMax = 200;
+
+
+
 export const GetSceneAnimationsResponse = zod.object({
   "scenes": zod.array(zod.object({
   "id": zod.number(),
   "name": zod.string(),
   "description": zod.string().nullish(),
+  "phrase": zod.string().max(getSceneAnimationsResponseScenesItemPhraseMax).nullish(),
   "recipe": zod.record(zod.string(), zod.unknown()),
   "isActive": zod.boolean(),
   "isPremium": zod.boolean(),
@@ -2664,34 +2669,18 @@ export const GetSceneAnimationsResponse = zod.object({
 
 
 /**
- * @summary Subir una escena desde la app (requiere auth)
- */
-export const submitSceneAnimationBodyNameMax = 80;
-
-export const submitSceneAnimationBodyDescriptionMax = 300;
-
-export const submitSceneAnimationBodyIsActiveDefault = false;
-export const submitSceneAnimationBodyIsPremiumDefault = false;
-export const submitSceneAnimationBodySortOrderDefault = 0;
-
-export const SubmitSceneAnimationBody = zod.object({
-  "name": zod.string().min(1).max(submitSceneAnimationBodyNameMax),
-  "description": zod.string().max(submitSceneAnimationBodyDescriptionMax).nullish(),
-  "recipe": zod.record(zod.string(), zod.unknown()),
-  "isActive": zod.boolean().default(submitSceneAnimationBodyIsActiveDefault),
-  "isPremium": zod.boolean().default(submitSceneAnimationBodyIsPremiumDefault),
-  "sortOrder": zod.number().default(submitSceneAnimationBodySortOrderDefault)
-})
-
-
-/**
  * @summary Listar todas las escenas animadas (admin)
  */
+export const getAdminSceneAnimationsResponseScenesItemPhraseMax = 200;
+
+
+
 export const GetAdminSceneAnimationsResponse = zod.object({
   "scenes": zod.array(zod.object({
   "id": zod.number(),
   "name": zod.string(),
   "description": zod.string().nullish(),
+  "phrase": zod.string().max(getAdminSceneAnimationsResponseScenesItemPhraseMax).nullish(),
   "recipe": zod.record(zod.string(), zod.unknown()),
   "isActive": zod.boolean(),
   "isPremium": zod.boolean(),
@@ -2710,6 +2699,8 @@ export const createAdminSceneAnimationBodyNameMax = 80;
 
 export const createAdminSceneAnimationBodyDescriptionMax = 300;
 
+export const createAdminSceneAnimationBodyPhraseMax = 200;
+
 export const createAdminSceneAnimationBodyIsActiveDefault = false;
 export const createAdminSceneAnimationBodyIsPremiumDefault = false;
 export const createAdminSceneAnimationBodySortOrderDefault = 0;
@@ -2717,6 +2708,7 @@ export const createAdminSceneAnimationBodySortOrderDefault = 0;
 export const CreateAdminSceneAnimationBody = zod.object({
   "name": zod.string().min(1).max(createAdminSceneAnimationBodyNameMax),
   "description": zod.string().max(createAdminSceneAnimationBodyDescriptionMax).nullish(),
+  "phrase": zod.string().max(createAdminSceneAnimationBodyPhraseMax).nullish(),
   "recipe": zod.record(zod.string(), zod.unknown()),
   "isActive": zod.boolean().default(createAdminSceneAnimationBodyIsActiveDefault),
   "isPremium": zod.boolean().default(createAdminSceneAnimationBodyIsPremiumDefault),
@@ -2735,21 +2727,29 @@ export const updateAdminSceneAnimationBodyNameMax = 80;
 
 export const updateAdminSceneAnimationBodyDescriptionMax = 300;
 
+export const updateAdminSceneAnimationBodyPhraseMax = 200;
+
 
 
 export const UpdateAdminSceneAnimationBody = zod.object({
   "name": zod.string().min(1).max(updateAdminSceneAnimationBodyNameMax).optional(),
   "description": zod.string().max(updateAdminSceneAnimationBodyDescriptionMax).nullish(),
+  "phrase": zod.string().max(updateAdminSceneAnimationBodyPhraseMax).nullish(),
   "recipe": zod.record(zod.string(), zod.unknown()).optional(),
   "isActive": zod.boolean().optional(),
   "isPremium": zod.boolean().optional(),
   "sortOrder": zod.number().optional()
 })
 
+export const updateAdminSceneAnimationResponsePhraseMax = 200;
+
+
+
 export const UpdateAdminSceneAnimationResponse = zod.object({
   "id": zod.number(),
   "name": zod.string(),
   "description": zod.string().nullish(),
+  "phrase": zod.string().max(updateAdminSceneAnimationResponsePhraseMax).nullish(),
   "recipe": zod.record(zod.string(), zod.unknown()),
   "isActive": zod.boolean(),
   "isPremium": zod.boolean(),

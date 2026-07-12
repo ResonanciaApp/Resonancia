@@ -779,6 +779,7 @@ function serializeScene(s: SceneAnimation) {
     id: s.id,
     name: s.name,
     description: s.description ?? null,
+    phrase: s.phrase ?? null,
     recipe: s.recipe,
     isActive: s.isActive,
     isPremium: s.isPremium,
@@ -803,48 +804,5 @@ router.get("/catalog/scene-animations", async (req, res) => {
     res.status(500).json({ error: "Error al obtener escenas" });
   }
 });
-
-// POST /catalog/scene-animations — subir una escena desde la app (requiere auth).
-router.post(
-  "/catalog/scene-animations",
-  requireAuth,
-  async (req, res) => {
-    const parsed = CreateSceneAnimationSchema.safeParse(req.body);
-    if (!parsed.success) {
-      res.status(400).json({ error: "Datos inválidos", details: parsed.error.issues });
-      return;
-    }
-    const userId = (req as unknown as { auth: { userId: string } }).auth.userId;
-    try {
-      const [dbUser] = await db
-        .select({ id: usersTable.id })
-        .from(usersTable)
-        .where(eq(usersTable.clerkUserId, userId))
-        .limit(1);
-      if (!dbUser) {
-        res.status(401).json({ error: "Usuario no encontrado" });
-        return;
-      }
-      const [scene] = await db
-        .insert(sceneAnimationsTable)
-        .values({
-          name: parsed.data.name,
-          description: parsed.data.description ?? null,
-          recipe: parsed.data.recipe,
-          isActive: parsed.data.isActive ?? false,
-          isPremium: parsed.data.isPremium ?? false,
-          sortOrder: parsed.data.sortOrder ?? 0,
-          submittedBy: dbUser.id,
-          updatedAt: new Date(),
-        })
-        .returning();
-      req.log.info({ sceneId: scene.id }, "scene animation submitted");
-      res.status(201).json(serializeScene(scene));
-    } catch (err) {
-      req.log.error({ err }, "error creating scene animation");
-      res.status(500).json({ error: "Error al subir la escena" });
-    }
-  },
-);
 
 export default router;

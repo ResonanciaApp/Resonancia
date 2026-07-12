@@ -38,7 +38,7 @@ import { LinearGradient } from "expo-linear-gradient";
 
 import { useAuth } from "@/context/AuthContext";
 
-import { useShareGlyph, useSubmitSceneAnimation } from "@workspace/api-client-react";
+import { useShareGlyph, useCreateAdminSceneAnimation } from "@workspace/api-client-react";
 
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, type GeometryId } from "@/data/geometries";
@@ -234,7 +234,7 @@ export default function GeometrixCreacionesScreen() {
 
   const { isSignedIn, isAdmin } = useAuth();
   const shareGlyphMutation = useShareGlyph();
-  const submitSceneMutation = useSubmitSceneAnimation();
+  const submitSceneMutation = useCreateAdminSceneAnimation();
   const [sharingFor, setSharingFor] = useState<GeometrixCreation | null>(null);
   const [shareName, setShareName] = useState("");
   const [sharePosting, setSharePosting] = useState(false);

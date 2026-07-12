@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { and, asc, count, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, ilike, inArray, ne, or, sql } from "drizzle-orm";
 import {
   db,
   usersTable,
@@ -800,6 +800,7 @@ function serializeScene(s: SceneAnimation) {
     id: s.id,
     name: s.name,
     description: s.description ?? null,
+    phrase: s.phrase ?? null,
     recipe: s.recipe,
     isActive: s.isActive,
     isPremium: s.isPremium,
@@ -824,6 +825,8 @@ router.get("/admin/scene-animations", requireAuth, requireRole("admin"), async (
   }
 });
 
+const MAX_ACTIVE_SCENES = 9;
+
 // POST /admin/scene-animations — crear una escena (admin).
 router.post("/admin/scene-animations", requireAuth, requireRole("admin"), async (req, res) => {
   const parsed = CreateSceneAnimationSchema.safeParse(req.body);
@@ -832,11 +835,22 @@ router.post("/admin/scene-animations", requireAuth, requireRole("admin"), async 
     return;
   }
   try {
+    if (parsed.data.isActive) {
+      const [{ count }] = await db
+        .select({ count: sql<number>`count(*)::int` })
+        .from(sceneAnimationsTable)
+        .where(eq(sceneAnimationsTable.isActive, true));
+      if (count >= MAX_ACTIVE_SCENES) {
+        res.status(409).json({ error: `Límite alcanzado: solo puede haber ${MAX_ACTIVE_SCENES} escenas activas simultáneas.` });
+        return;
+      }
+    }
     const [scene] = await db
       .insert(sceneAnimationsTable)
       .values({
         name: parsed.data.name,
         description: parsed.data.description ?? null,
+        phrase: parsed.data.phrase ?? null,
         recipe: parsed.data.recipe,
         isActive: parsed.data.isActive ?? false,
         isPremium: parsed.data.isPremium ?? false,
@@ -862,6 +876,16 @@ router.patch("/admin/scene-animations/:id", requireAuth, requireRole("admin"), a
     return;
   }
   try {
+    if (parsed.data.isActive === true) {
+      const [{ count }] = await db
+        .select({ count: sql<number>`count(*)::int` })
+        .from(sceneAnimationsTable)
+        .where(and(eq(sceneAnimationsTable.isActive, true), ne(sceneAnimationsTable.id, id)));
+      if (count >= MAX_ACTIVE_SCENES) {
+        res.status(409).json({ error: `Límite alcanzado: solo puede haber ${MAX_ACTIVE_SCENES} escenas activas simultáneas.` });
+        return;
+      }
+    }
     const [updated] = await db
       .update(sceneAnimationsTable)
       .set({ ...parsed.data, updatedAt: new Date() })

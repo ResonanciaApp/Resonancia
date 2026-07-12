@@ -2688,35 +2688,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SceneAnimationsListResponse"
-    post:
-      operationId: submitSceneAnimation
-      tags: [catalog]
-      summary: Subir una escena desde la app (requiere auth)
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateSceneAnimationBody"
-      responses:
-        "201":
-          description: Escena creada
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SceneAnimation"
-        "400":
-          description: Datos inválidos
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "401":
-          description: No autenticado
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
   /admin/scene-animations:
     get:
       operationId: getAdminSceneAnimations
@@ -5480,6 +5451,10 @@ components:
         description:
           type: string
           nullable: true
+        phrase:
+          type: string
+          nullable: true
+          maxLength: 200
         recipe:
           type: object
           additionalProperties: true
@@ -5518,6 +5493,10 @@ components:
           type: string
           maxLength: 300
           nullable: true
+        phrase:
+          type: string
+          maxLength: 200
+          nullable: true
         recipe:
           type: object
           additionalProperties: true
@@ -5540,6 +5519,10 @@ components:
         description:
           type: string
           maxLength: 300
+          nullable: true
+        phrase:
+          type: string
+          maxLength: 200
           nullable: true
         recipe:
           type: object

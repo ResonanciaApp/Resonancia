@@ -190,11 +190,11 @@ export function SceneAnimationModal({ scene, onClose }: Props) {
           {scene.isPremium && <Text style={{ fontSize: 14 }}>👑</Text>}
         </View>
 
-        {/* Descripción */}
-        {!!scene.description && (
+        {/* Frase / descripción */}
+        {!!(scene.phrase ?? scene.description) && (
           <View style={[s.descWrap, { top: Math.max(insets.top, 20) + 68 }]}>
             <Text style={s.desc} numberOfLines={2}>
-              {scene.description}
+              {scene.phrase ?? scene.description}
             </Text>
           </View>
         )}

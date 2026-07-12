@@ -1714,6 +1714,8 @@ export interface SceneAnimation {
   id: number;
   name: string;
   description?: string | null;
+  /** @maxLength 200 */
+  phrase?: string | null;
   recipe: SceneAnimationRecipe;
   isActive: boolean;
   isPremium: boolean;
@@ -1737,6 +1739,8 @@ export interface CreateSceneAnimationBody {
   name: string;
   /** @maxLength 300 */
   description?: string | null;
+  /** @maxLength 200 */
+  phrase?: string | null;
   recipe: CreateSceneAnimationBodyRecipe;
   isActive?: boolean;
   isPremium?: boolean;
@@ -1753,6 +1757,8 @@ export interface UpdateSceneAnimationBody {
   name?: string;
   /** @maxLength 300 */
   description?: string | null;
+  /** @maxLength 200 */
+  phrase?: string | null;
   recipe?: UpdateSceneAnimationBodyRecipe;
   isActive?: boolean;
   isPremium?: boolean;

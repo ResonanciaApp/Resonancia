@@ -36,6 +36,7 @@ interface SceneAnimation {
   id: number;
   name: string;
   description: string | null;
+  phrase: string | null;
   recipe: Record<string, unknown>;
   isActive: boolean;
   isPremium: boolean;
@@ -110,6 +111,7 @@ function SceneRow({
   onTogglePremium,
   onSaveName,
   onSaveDescription,
+  onSavePhrase,
   onDelete,
 }: {
   scene: SceneAnimation;
@@ -121,10 +123,12 @@ function SceneRow({
   onTogglePremium: () => void;
   onSaveName: (name: string) => void;
   onSaveDescription: (desc: string) => void;
+  onSavePhrase: (phrase: string) => void;
   onDelete: () => void;
 }) {
   const [localName, setLocalName] = useState(scene.name);
   const [localDesc, setLocalDesc] = useState(scene.description ?? "");
+  const [localPhrase, setLocalPhrase] = useState(scene.phrase ?? "");
 
   const layers = layerCount(scene.recipe);
 
@@ -206,6 +210,29 @@ function SceneRow({
           </div>
 
           <div className="space-y-1">
+            <Label className="text-xs text-muted-foreground">Frase (opcional)</Label>
+            <div className="flex gap-1.5">
+              <Input
+                value={localPhrase}
+                onChange={(e) => setLocalPhrase(e.target.value)}
+                placeholder="Frase corta que aparece en el modal…"
+                maxLength={200}
+                className="h-8 text-sm flex-1"
+              />
+              {localPhrase !== (scene.phrase ?? "") && (
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="h-8 px-2 text-xs"
+                  onClick={() => onSavePhrase(localPhrase)}
+                >
+                  Guardar
+                </Button>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-1 lg:col-span-2">
             <Label className="text-xs text-muted-foreground">Descripción</Label>
             <div className="flex gap-1.5">
               <Textarea
@@ -420,6 +447,9 @@ export default function EscenasPage() {
                 onSaveName={(name) => handlePatch(scene.id, { name })}
                 onSaveDescription={(description) =>
                   handlePatch(scene.id, { description: description || null })
+                }
+                onSavePhrase={(phrase) =>
+                  handlePatch(scene.id, { phrase: phrase || null })
                 }
                 onDelete={() => handleDelete(scene.id)}
               />
