@@ -3,8 +3,8 @@
  * (sin modal), en un View de altura fija. Se usa en el header de Inicio
  * entre el logo y "Tu progreso semanal".
  */
-import React, { useEffect } from "react";
-import { Pressable, StyleSheet, View, type ViewStyle } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { Animated, Easing as RNEasing, Pressable, StyleSheet, View, type ViewStyle } from "react-native";
 import RAnimated, {
   cancelAnimation,
   Easing,
@@ -115,6 +115,22 @@ interface Props {
 }
 
 export function SceneAnimationInline({ scene, height, onPress, style }: Props) {
+  const fadeAnim = useRef(new Animated.Value(scene ? 0 : 1)).current;
+  const prevSceneId = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!scene) return;
+    if (scene.id === prevSceneId.current) return;
+    prevSceneId.current = scene.id;
+    fadeAnim.setValue(0);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 2000,
+      easing: RNEasing.out(RNEasing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [scene?.id]);
+
   if (!scene) return <View style={[{ height }, style]} />;
 
   const recipe = scene.recipe as SceneRecipe;
@@ -129,26 +145,28 @@ export function SceneAnimationInline({ scene, height, onPress, style }: Props) {
   const hasBg = !!(master.bgColor || bgGrad);
 
   return (
-    <Pressable
-      onPress={onPress}
-      style={[s.container, { height }, hasBg && s.containerBg, style]}
-    >
-      {active.map((instanceId, i) => {
-        const gs = settings[instanceId];
-        if (!gs) return null;
-        return (
-          <AnimatedLayer
-            key={instanceId}
-            instanceId={instanceId}
-            settings={gs}
-            masterOpacity={masterOpacity}
-            index={i}
-            motion={motion}
-            size={glyphSize}
-          />
-        );
-      })}
-    </Pressable>
+    <Animated.View style={[{ opacity: fadeAnim }, style]}>
+      <Pressable
+        onPress={onPress}
+        style={[s.container, { height }, hasBg && s.containerBg]}
+      >
+        {active.map((instanceId, i) => {
+          const gs = settings[instanceId];
+          if (!gs) return null;
+          return (
+            <AnimatedLayer
+              key={instanceId}
+              instanceId={instanceId}
+              settings={gs}
+              masterOpacity={masterOpacity}
+              index={i}
+              motion={motion}
+              size={glyphSize}
+            />
+          );
+        })}
+      </Pressable>
+    </Animated.View>
   );
 }
 
