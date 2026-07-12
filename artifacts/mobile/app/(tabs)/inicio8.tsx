@@ -60,6 +60,7 @@ import { useGetPinnedFeatured, useGetSceneAnimations } from "@workspace/api-clie
 import type { SceneAnimation } from "@workspace/api-client-react";
 import { SceneAnimationCard } from "@/components/SceneAnimationCard";
 import { SceneAnimationModal } from "@/components/SceneAnimationModal";
+import { SceneAnimationInline } from "@/components/SceneAnimationInline";
 import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/data/sessions";
 import { getMoodById, type Mood, type MoodId } from "@/data/moods";
 import { getArtist } from "@/data/artists";
@@ -374,6 +375,21 @@ export default function HomeScreen2() {
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const activeScenes = sceneAnimationsData?.scenes ?? [];
   const [selectedScene, setSelectedScene] = useState<SceneAnimation | null>(null);
+
+  // Escena activa en el header (persistida entre sesiones)
+  const HEADER_SCENE_KEY = "@resonancia_header_scene_id";
+  const [headerSceneId, setHeaderSceneId] = useState<number | null>(null);
+  useEffect(() => {
+    AsyncStorage.getItem(HEADER_SCENE_KEY).then((raw) => {
+      if (raw) setHeaderSceneId(parseInt(raw, 10));
+    });
+  }, []);
+  const headerScene = activeScenes.find((s) => s.id === headerSceneId) ?? activeScenes[0] ?? null;
+
+  function selectHeaderScene(scene: SceneAnimation) {
+    setHeaderSceneId(scene.id);
+    AsyncStorage.setItem(HEADER_SCENE_KEY, String(scene.id));
+  }
 
   const featuredSession = React.useMemo(() => {
     // Si el admin pineó una sesión, usarla directamente.
@@ -853,12 +869,19 @@ export default function HomeScreen2() {
           </Pressable>
         </View>
 
+        {/* ── Escena animada en header ── */}
+        <SceneAnimationInline
+          scene={headerScene}
+          height={260}
+          onPress={headerScene ? () => setSelectedScene(headerScene) : undefined}
+        />
+
         {/* ── Racha semanal (chip compacto) ── */}
         <Pressable
           onPress={() => setProgresoVisible(true)}
           style={({ pressed }) => ({
             marginHorizontal: GRID_PAD,
-            marginTop: 290,
+            marginTop: 20,
             marginBottom: SECTION_GAP / 2,
             flexDirection: "row",
             alignItems: "center",
@@ -977,7 +1000,7 @@ export default function HomeScreen2() {
                   key={scene.id}
                   scene={scene}
                   size={136}
-                  onPress={() => setSelectedScene(scene)}
+                  onPress={() => selectHeaderScene(scene)}
                 />
               ))}
             </ScrollView>
