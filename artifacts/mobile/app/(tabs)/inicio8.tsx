@@ -876,7 +876,7 @@ export default function HomeScreen2() {
           scene={headerScene}
           height={260}
           onPress={headerScene ? () => setSelectedScene(headerScene) : undefined}
-          style={{ marginTop: 22, marginBottom: -15 }}
+          style={{ marginTop: 47 }}
         />
 
         {/* ── 7 días de la semana ── */}
