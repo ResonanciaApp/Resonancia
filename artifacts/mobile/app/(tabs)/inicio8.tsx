@@ -880,7 +880,6 @@ export default function HomeScreen2() {
         />
 
         {/* ── 7 días de la semana ── */}
-        <View style={styles.divider} />
         <Pressable
           onPress={() => setProgresoVisible(true)}
           style={({ pressed }) => ({
