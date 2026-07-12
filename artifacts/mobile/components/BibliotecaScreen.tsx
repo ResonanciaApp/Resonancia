@@ -720,6 +720,7 @@ function NombrePlaylistModal({ visible, onClose, bgColor }: { visible: boolean; 
 // ── Modal de nombre de carpeta de mezclas ─────────────────────────────────────
 function NombreCarpetaMezclaModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const { mixFolders, createMixFolder } = useMixer();
+  const { activeSceneId } = useSceneTheme();
   const [name, setName] = useState("");
   const inputRef = useRef<TextInput>(null);
 
@@ -744,7 +745,7 @@ function NombreCarpetaMezclaModal({ visible, onClose }: { visible: boolean; onCl
       onRequestClose={onClose}
     >
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
-        <View style={styles.nameCard}>
+        <View style={[styles.nameCard, activeSceneId === "tibet" ? { backgroundColor: "#1f2a62" } : undefined]}>
           <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
             <Feather name="x" size={22} color={TEXT} />
           </Pressable>

@@ -19,12 +19,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { type MixFolder, useMixer } from "@/context/MixerContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useLoadMix } from "@/hooks/useLoadMix";
 import { MixActionsSheet } from "@/components/MixActionsSheet";
 import { MixCover } from "@/app/mi-mezcla/[id]";
 import { EqualizerBars } from "@/components/EqualizerBars";
 
-const BG = ["#340D1A", "#190913"] as const;
+const BG_FALLBACK = ["#340D1A", "#190913"] as const;
 const GOLD = "#F7CB6B";
 const TEXT = "#FAF0EE";
 const MUTED = "#c2c2c2";
@@ -33,6 +34,8 @@ const SHEET_BG = "#1B060F";
 export default function CarpetaMezclaDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
+  const { theme: sceneTheme, activeSceneId } = useSceneTheme();
+  const BG = activeSceneId === "tibet" ? sceneTheme.gradient : BG_FALLBACK;
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -252,11 +255,12 @@ function AddSheet({
   onNuevaCarpeta: () => void;
 }) {
   const insets = useSafeAreaInsets();
+  const { activeSceneId } = useSceneTheme();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose} statusBarTranslucent>
       <Pressable style={styles.backdrop} onPress={onClose} />
-      <View style={[styles.sheet, { paddingBottom: bottomPad, maxHeight: "70%" }]}>
+      <View style={[styles.sheet, { paddingBottom: bottomPad, maxHeight: "70%", backgroundColor: activeSceneId === "tibet" ? "#1f2a62" : SHEET_BG }]}>
         <View style={styles.sheetHandle} />
         <ScrollView showsVerticalScrollIndicator={false}>
           <Pressable
@@ -264,7 +268,7 @@ function AddSheet({
             onPress={onNuevaMezcla}
           >
             <View style={styles.sheetIconWrap}>
-              <MaterialCommunityIcons name="tune-variant" size={22} color={GOLD} />
+              <MaterialCommunityIcons name="tune-variant" size={22} color="#f9f9f9" />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.sheetItemTitle}>Crea una mezcla</Text>
@@ -276,7 +280,7 @@ function AddSheet({
             onPress={onNuevaCarpeta}
           >
             <View style={styles.sheetIconWrap}>
-              <Feather name="folder" size={22} color={GOLD} />
+              <Feather name="folder" size={22} color="#f9f9f9" />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.sheetItemTitle}>Nueva carpeta</Text>
@@ -453,7 +457,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(74,12,12,0.35)",
+    backgroundColor: "rgba(255,255,255,0.07)",
     marginBottom: 8,
     marginTop: 4,
   },
@@ -463,19 +467,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     gap: 16,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(61,14,22,0.40)",
   },
   sheetIconWrap: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "rgba(190,150,80,0.06)",
+    backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
   },
   sheetItemTitle: { fontFamily: "Manrope", color: TEXT, fontSize: 16, fontWeight: "700" },
-  sheetItemSub: { fontFamily: "Manrope", color: MUTED, fontSize: 13, marginTop: 2 },
+  sheetItemSub: { fontFamily: "Manrope", color: "#f4f4f4", fontSize: 13, marginTop: 2 },
 
   // Naming modal
   nameOverlay: {
