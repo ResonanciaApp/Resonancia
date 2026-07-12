@@ -380,7 +380,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
             </Animated.View>
 
             {/* Botón play/pause — absoluto a la derecha, nunca se empuja */}
-            <View style={[styles.waveWrap, { position: "absolute", right: 10, zIndex: 2 }]}>
+            <View style={[styles.waveWrap, { position: "absolute", right: 25, zIndex: 2 }]}>
               {[wave1, wave2].map((w, idx) => (
                 <Animated.View key={idx} pointerEvents="none" style={[styles.wave, styles.waveMix, {
                   opacity:   w.interpolate({ inputRange: [0, 0.15, 1], outputRange: [0, 0.28, 0] }),
