@@ -459,6 +459,40 @@ export function MixerSheet() {
   // así no aparece de golpe (era el "overlay negro" que flasheaba en tema claro).
   const backdropOpacity = useRef(new Animated.Value(0)).current;
 
+  // Ref para evitar cierre doble (p.ej. backdrop + gesto simultáneos)
+  const closingRef = useRef(false);
+
+  // Cierre animado: desliza hacia abajo + desvanece dim, luego cierra de verdad.
+  // Se accede vía ref para que el PanResponder (capturado una sola vez) use
+  // siempre la versión actualizada sin necesidad de reconstruirlo.
+  const handleAnimatedCloseRef = useRef<(stopAudio?: boolean) => void>(() => {});
+  handleAnimatedCloseRef.current = (stopAudio = false) => {
+    if (closingRef.current) return;
+    closingRef.current = true;
+    // Mantener el Modal visible aunque activeSounds se vacíe (caso X + stopAll)
+    setForceShowModal(true);
+    if (stopAudio) stopAll();
+    const SCREEN_H = Dimensions.get("window").height;
+    Animated.parallel([
+      Animated.timing(sheetEnterY, {
+        toValue: SCREEN_H,
+        duration: DURATION.SHEET_CLOSE,
+        easing: Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(backdropOpacity, {
+        toValue: 0,
+        duration: DURATION.SHEET_CLOSE,
+        easing: Easing.in(Easing.quad),
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      closingRef.current = false;
+      closeSheet();
+      setForceShowModal(false);
+    });
+  };
+
   // PanResponder para arrastrar hacia abajo y cerrar
   const panResponder = useRef(
     PanResponder.create({
@@ -469,7 +503,7 @@ export function MixerSheet() {
       },
       onPanResponderRelease: (_, g) => {
         if (g.dy > 80 || g.vy > 0.5) {
-          closeSheet();
+          handleAnimatedCloseRef.current();
         } else {
           Animated.timing(sheetEnterY, {
             toValue: 0,
@@ -559,7 +593,7 @@ export function MixerSheet() {
   }, [activeSounds, snapshotSounds]);
 
   const handleAddSounds = () => {
-    closeSheet();
+    handleAnimatedCloseRef.current();
     router.push("/(tabs)/musica" as never);
   };
 
@@ -717,12 +751,12 @@ export function MixerSheet() {
       visible={modalVisible}
       transparent
       animationType="none"
-      onRequestClose={() => { if (inmersivoOpen) closeImmersivo(); else closeSheet(); }}
+      onRequestClose={() => { if (inmersivoOpen) closeImmersivo(); else handleAnimatedCloseRef.current(); }}
     >
       {/* La opacidad envuelve TODA la superficie (backdrop + sheet) para que
           el fade cubra el MixerPanel subyacente sin flashes */}
       <Animated.View style={{ flex: 1, opacity: sheetOpacity }}>
-      <Pressable style={styles.backdrop} onPress={closeSheet}>
+      <Pressable style={styles.backdrop} onPress={() => handleAnimatedCloseRef.current()}>
         <Animated.View
           style={[styles.backdropDim, { opacity: backdropOpacity }]}
           pointerEvents="none"
@@ -792,7 +826,7 @@ export function MixerSheet() {
           >
             <View style={[styles.headerRow, { marginTop: -15 }]}>
               <Pressable
-                onPress={closeSheet}
+                onPress={() => handleAnimatedCloseRef.current()}
                 hitSlop={10}
                 style={[styles.headerBtn, { marginLeft: -7 }]}
                 accessibilityRole="button"
@@ -804,7 +838,7 @@ export function MixerSheet() {
                 {originPreset?.name ?? "Tu mezcla"}
               </Text>
               <Pressable
-                onPress={() => { stopAll(); closeSheet(); }}
+                onPress={() => handleAnimatedCloseRef.current(true)}
                 hitSlop={10}
                 style={[styles.headerBtn, { marginRight: -8 }]}
                 accessibilityRole="button"
