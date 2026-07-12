@@ -871,13 +871,16 @@ export default function HomeScreen2() {
           </Pressable>
         </View>
 
-        {/* ── Escena animada en header ── */}
-        <SceneAnimationInline
-          scene={headerScene}
-          height={260}
-          onPress={headerScene ? () => setSelectedScene(headerScene) : undefined}
-          style={{ marginTop: 47 }}
-        />
+        {/* ── Escena animada: fondo libre, pasa por debajo del contenido ── */}
+        {/* El View mantiene el espacio en el flujo; la animación es absoluta para no cortar. */}
+        <View style={{ height: 260, marginTop: 47, overflow: "visible" }} pointerEvents="box-none">
+          <SceneAnimationInline
+            scene={headerScene}
+            height={300}
+            onPress={headerScene ? () => setSelectedScene(headerScene) : undefined}
+            style={{ position: "absolute", top: 0, left: -16, right: -16 }}
+          />
+        </View>
 
         {/* ── 7 días de la semana ── */}
         <Pressable

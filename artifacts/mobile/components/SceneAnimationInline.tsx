@@ -357,7 +357,7 @@ export function SceneAnimationInline({ scene, height, onPress, style }: Props) {
 const s = StyleSheet.create({
   container: {
     width: "100%",
-    overflow: "hidden",
+    overflow: "visible",
   },
   containerBg: {
     backgroundColor: "transparent",
