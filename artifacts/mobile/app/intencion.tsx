@@ -2,8 +2,9 @@ import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router } from "expo-router";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  Animated,
   Keyboard,
   Platform,
   Pressable,
@@ -54,6 +55,18 @@ export default function IntencionScreen() {
   const [text, setText] = useState("");
   const [tab, setTab] = useState<Tab>("ideas");
   const inputRef = useRef<TextInput>(null);
+  const glowAnim = useRef(new Animated.Value(0.35)).current;
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(glowAnim, { toValue: 1, duration: 900, useNativeDriver: true }),
+        Animated.timing(glowAnim, { toValue: 0.35, duration: 900, useNativeDriver: true }),
+      ])
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [glowAnim]);
 
   const { savedEntries, favorites, addSaved, removeSaved, addFavorite, removeFavorite, isFavorite } =
     useIntencion();
@@ -99,14 +112,14 @@ export default function IntencionScreen() {
 
         {/* ── Input area ── */}
         <View style={styles.inputSection}>
-          <Text style={[styles.hoyLabel, { color: colors.mutedForeground }]}>Hoy voy a...</Text>
+          <Text style={[styles.hoyLabel, { color: colors.mutedForeground }]}>Establece tu intención aquí</Text>
 
           <View style={[styles.inputCard, { backgroundColor: colors.card, borderColor: colors.primary + "40" }]}>
             <TextInput
               ref={inputRef}
               value={text}
               onChangeText={setText}
-              placeholder="Establece tu intención aquí"
+              placeholder="Hoy voy a..."
               placeholderTextColor={colors.mutedForeground + "80"}
               style={[styles.input, { color: colors.foreground }]}
               multiline
@@ -138,7 +151,11 @@ export default function IntencionScreen() {
               <Text style={[styles.tabLabel, { color: tab === t ? colors.primary : colors.mutedForeground }]}>
                 {TAB_LABELS[t]}
               </Text>
-              {tab === t && <GoldGradient style={styles.tabUnderline} />}
+              {tab === t && (
+                <Animated.View style={[styles.tabUnderline, { opacity: glowAnim }]}>
+                  <GoldGradient style={StyleSheet.absoluteFill} />
+                </Animated.View>
+              )}
             </Pressable>
           ))}
         </View>
