@@ -242,7 +242,7 @@ export default function GeometrixCreacionesScreen() {
 
   async function doUploadScene(c: GeometrixCreation) {
     if (!isSignedIn) {
-      Alert.alert("Iniciá sesión", "Necesitás una cuenta para subir escenas.");
+      router.push("/(auth)/sign-in");
       return;
     }
     setUploadingScene(true);
