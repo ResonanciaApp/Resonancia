@@ -904,7 +904,7 @@ export default function HomeScreen2() {
           style={{ marginBottom: 35, marginHorizontal: GRID_PAD, marginTop: -21 }}
         >
           <View style={styles.resonadoresBanner}>
-            <CardTint />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(212,175,55,0.16)" }]} />
             <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
               <LinearGradient
                 colors={["rgb(247,203,107)", "rgb(251,169,128)"]}
@@ -1594,7 +1594,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 18,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderColor: "rgba(212,175,55,0.20)",
   },
   resBannerCircle1: {
     position: "absolute",

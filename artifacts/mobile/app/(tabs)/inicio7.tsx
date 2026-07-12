@@ -900,10 +900,8 @@ export default function HomeScreen2() {
         >
           <View style={styles.resonadoresBanner}>
             <BlurView intensity={28} tint="dark" style={StyleSheet.absoluteFill} />
-            {/* Tinte base */}
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
-            {/* Tinte del color claro del tema al 10% */}
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: `${activeTheme.gradient[0]}73` }]} />
+            {/* Tinte dorado */}
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(212,175,55,0.16)" }]} />
             {/* Luz interior — más luminoso arriba, se desvanece hacia abajo */}
             <LinearGradient
               colors={["rgba(255,255,255,0.01)", "rgba(255,255,255,0)"]}
@@ -1685,7 +1683,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 18,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderColor: "rgba(212,175,55,0.20)",
   },
   resBannerCircle1: {
     position: "absolute",
