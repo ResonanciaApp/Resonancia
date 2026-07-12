@@ -99,8 +99,8 @@ export default function PlaylistDetailScreen() {
     ? `rgba(${darkestRgb[0]},${darkestRgb[1]},${darkestRgb[2]},0.5)`
     : "rgba(0,0,0,0.5)";
   const plusBadgeBg = darkestRgb
-    ? `rgba(${darkestRgb[0]},${darkestRgb[1]},${darkestRgb[2]},0.7)`
-    : "rgba(0,0,0,0.7)";
+    ? `rgba(${darkestRgb[0]},${darkestRgb[1]},${darkestRgb[2]},0.96)`
+    : "rgba(0,0,0,0.96)";
   const { isPremium } = usePremium();
   const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistDescription, reorderPlaylist, setPlaylistCover, setPlaylistCoverColor, setPlaylistCoverGeometry, setPlaylistCoverCreation } = useFoldersPlaylists();
   const { playSession, pauseResume, isPlaying, currentSession } = usePlayer();
