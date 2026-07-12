@@ -930,7 +930,7 @@ export default function HomeScreen2() {
                 style={{ width: 44, height: 44, borderRadius: 15, alignItems: "center", justifyContent: "center" }}
               >
                 <ExpoImage
-                  source={require("@/assets/images/icons/familia.png")}
+                  source={require("@/assets/images/icon-resonadores.png")}
                   style={{ width: 26, height: 26 }}
                   contentFit="contain"
                   tintColor={activeTheme.gradient[1] as string}
