@@ -873,7 +873,7 @@ export default function HomeScreen2() {
 
         {/* ── Escena animada: fondo libre, pasa por debajo del contenido ── */}
         {/* El View mantiene el espacio en el flujo; la animación es absoluta para no cortar. */}
-        <View style={{ height: 260, marginTop: 47, overflow: "visible" }} pointerEvents="box-none">
+        <View style={{ height: 260, marginTop: 22, overflow: "visible" }} pointerEvents="box-none">
           <SceneAnimationInline
             scene={headerScene}
             height={300}
