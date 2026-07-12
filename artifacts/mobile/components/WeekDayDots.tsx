@@ -1,8 +1,7 @@
 /**
  * WeekDayDots — fila de 7 bolitas de días de la semana.
- * Mismo diseño que la sección inferior de SonicStreakWave.
+ * La letra del día se muestra dentro del círculo.
  */
-import { Feather } from "@expo/vector-icons";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import React, { useMemo } from "react";
 import Svg, { Circle, Defs, LinearGradient as SvgGradient, Stop } from "react-native-svg";
@@ -107,7 +106,7 @@ export function WeekDayDots() {
                   </Defs>
                   <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#wdd${i})`} strokeWidth={2} fill="rgba(255,255,255,0.18)" />
                 </Svg>
-                <Feather name="check" size={18} color="rgba(255,255,255,0.9)" />
+                <Text style={s.labelMet}>{label}</Text>
               </View>
             ) : isToday ? (
               <View style={s.circleGradientBorder}>
@@ -120,13 +119,13 @@ export function WeekDayDots() {
                   </Defs>
                   <Circle cx={19.5} cy={19.5} r={17.5} stroke="url(#wddToday)" strokeWidth={2} fill="rgba(255,255,255,0.18)" />
                 </Svg>
+                <Text style={s.labelToday}>{label}</Text>
               </View>
             ) : (
-              <View style={[s.circle, s.circleInactive]} />
+              <View style={[s.circle, s.circleInactive]}>
+                <Text style={s.labelInactive}>{label}</Text>
+              </View>
             )}
-            <Text style={[s.dayLabel, isToday && s.dayLabelToday]}>
-              {label}
-            </Text>
           </View>
         );
       })}
@@ -141,7 +140,6 @@ const s = StyleSheet.create({
   },
   dayCol: {
     alignItems: "center",
-    gap: 8,
     flex: 1,
   },
   circleGradientBorder: {
@@ -158,19 +156,26 @@ const s = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 5,
-    marginBottom: 1,
   },
   circleInactive: {
     backgroundColor: "rgba(255,255,255,0.18)",
   },
-  dayLabel: {
+  labelMet: {
     fontFamily: "Manrope",
-    color: "#c2c2c2",
-    fontSize: 10,
-    fontWeight: "600",
-    marginTop: -2,
+    fontSize: 12,
+    fontWeight: "700",
+    color: "rgba(255,255,255,0.95)",
   },
-  dayLabelToday: {
+  labelToday: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "700",
     color: "#FBFBFB",
+  },
+  labelInactive: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#c2c2c2",
   },
 });
