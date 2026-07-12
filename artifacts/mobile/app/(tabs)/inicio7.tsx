@@ -66,6 +66,7 @@ import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
 import QuoteOfTheDay from "@/components/QuoteOfTheDay";
 import { SonicStreakWave } from "@/components/SonicStreakWave";
+import { ProgresoModal } from "@/components/ProgresoModal";
 import { LiveSessionCard } from "@/components/LiveSessionCard";
 import { useLiveSessions } from "@/hooks/useLiveSessions";
 import { VideoCard } from "@/components/VideoCard";
@@ -407,6 +408,7 @@ export default function HomeScreen2() {
   const [sesionesVisible, setSesionesVisible] = useState(false);
   const [sesAncestral,    setSesAncestral]    = useState(false);
   const [sesMeditacion,   setSesMeditacion]   = useState(false);
+  const [progresoVisible, setProgresoVisible] = useState(false);
   const spacerWidthSV  = useSharedValue(0);
   const pillOpacitySV  = useSharedValue(0);
   const pillTranslateSV = useSharedValue(20);
@@ -858,9 +860,13 @@ export default function HomeScreen2() {
         }}
       >
         {/* ── Racha semanal ── */}
-        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 247 }}>
+        <Pressable
+          onPress={() => setProgresoVisible(true)}
+          style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP / 2, marginTop: 247 }}
+        >
           <SonicStreakWave />
-        </View>
+        </Pressable>
+        <ProgresoModal visible={progresoVisible} onClose={() => setProgresoVisible(false)} />
 
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
