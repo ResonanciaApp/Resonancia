@@ -158,11 +158,11 @@ function getWaveComponents(
   if (waveIndex >= activeWaves) {
     // Onda siguiente a la racha: tinte del tema sutil
     if (waveIndex === activeWaves && activeWaves > 0) {
-      const opacity = 0.20 + 0.25 * tPos;
+      const opacity = 0.38 + 0.22 * tPos;
       return { color: lerpColor(inactiveColor, satHigh, 0.38), opacity };
     }
-    // Resto inactivas: más visibles que antes
-    const opacity = 0.14 + 0.32 * tPos;
+    // Resto inactivas
+    const opacity = 0.28 + 0.30 * tPos;
     return { color: `rgb(${inactiveColor.r},${inactiveColor.g},${inactiveColor.b})`, opacity };
   }
   // Activas: rampa de saturación de color + rampa de opacidad interior→exterior
