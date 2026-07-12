@@ -149,6 +149,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const barHeight = PILL_H + barBottom + 40;
 
   const { hidden, showMenu, tabBarColors } = useTabBarVisibility();
+  const { activeSceneId } = useSceneTheme();
   const translateY    = useRef(new Animated.Value(0)).current;
   const handleOpacity = useRef(new Animated.Value(0)).current;
   const accentOpacity = useRef(new Animated.Value(0)).current;
@@ -276,6 +277,10 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         />
         {/* Acento del tab activo (crossfade) */}
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: accentOpacity, backgroundColor: tabBarColors ? tabBarColors[0] : "transparent" }]} />
+        {/* Tinte Universo */}
+        {activeSceneId === "tibet" && (
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(45,64,129,0.10)" }]} pointerEvents="none" />
+        )}
 
         <View
           style={[styles.row, isWeb && styles.rowWeb]}
