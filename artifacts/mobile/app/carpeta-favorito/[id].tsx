@@ -15,6 +15,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 import { type FavFolder, useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { SESSIONS } from "@/data/sessions";
@@ -30,6 +31,8 @@ const SHEET_BG = "#1B060F";
 export default function CarpetaFavoritoDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
+  const { activeSceneId } = useSceneTheme();
+  const bgColors = activeSceneId === "tibet" ? (["#24245d", "#24245d"] as const) : BG;
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -49,7 +52,7 @@ export default function CarpetaFavoritoDetailScreen() {
 
   if (!folder) {
     return (
-      <LinearGradient colors={BG} style={styles.root}>
+      <LinearGradient colors={bgColors} style={styles.root}>
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
           <Feather name="folder" size={48} color={MUTED} style={{ marginBottom: 16 }} />
           <Text style={{ color: MUTED, fontSize: 16 }}>Carpeta no encontrada</Text>
@@ -78,7 +81,7 @@ export default function CarpetaFavoritoDetailScreen() {
   };
 
   return (
-    <LinearGradient style={styles.root} colors={BG} locations={[0, 0.5, 1]}>
+    <LinearGradient style={styles.root} colors={bgColors}>
       <StatusBar barStyle="light-content" />
 
       {/* Header */}

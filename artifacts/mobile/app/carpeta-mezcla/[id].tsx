@@ -260,7 +260,7 @@ function AddSheet({
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose} statusBarTranslucent>
       <Pressable style={styles.backdrop} onPress={onClose} />
-      <View style={[styles.sheet, { paddingBottom: bottomPad, maxHeight: "70%", backgroundColor: activeSceneId === "tibet" ? "#1f2a62" : SHEET_BG }]}>
+      <View style={[styles.sheet, { paddingBottom: bottomPad, maxHeight: "70%", backgroundColor: activeSceneId === "tibet" ? "#24245d" : SHEET_BG }]}>
         <View style={styles.sheetHandle} />
         <ScrollView showsVerticalScrollIndicator={false}>
           <Pressable
