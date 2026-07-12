@@ -320,26 +320,6 @@ export default function PlaylistDetailScreen() {
           <Pressable style={({ pressed }) => [styles.toolBtn, { opacity: pressed ? 0.6 : 1 }]} hitSlop={10} onPress={() => setMenuVisible(true)}>
             <Feather name="more-horizontal" size={22} color={MUTED} />
           </Pressable>
-          {/* Spacer */}
-          <View style={{ flex: 1 }} />
-          {/* Modo aleatorio */}
-          <Pressable style={({ pressed }) => [styles.toolBtn, { opacity: pressed ? 0.6 : 1 }]} hitSlop={10} onPress={handleShuffle}>
-            <Feather name="shuffle" size={22} color={MUTED} />
-          </Pressable>
-          {/* Play / Pause */}
-          {sessions.length > 0 && (
-            <Pressable
-              style={({ pressed }) => [styles.playAllFab, { opacity: pressed ? 0.8 : 1 }]}
-              onPress={handleTogglePlay}
-            >
-              <GoldGradientFill />
-              <Feather
-                name={miniPlayerVisible && displayIsPlaying ? "pause" : "play"}
-                size={20}
-                color="#1B060F"
-              />
-            </Pressable>
-          )}
         </View>
 
         </View>{/* fin topPanel */}
@@ -359,6 +339,42 @@ export default function PlaylistDetailScreen() {
           />
         ))}
         </View>
+
+        {/* ── Píldoras Reproducir + Aleatorio ─────────────────────────── */}
+        {sessions.length > 0 && (
+          <View style={styles.pillsRow}>
+            {/* Play / Pause */}
+            <Pressable
+              style={({ pressed }) => [styles.pill, { opacity: pressed ? 0.85 : 1 }]}
+              onPress={handleTogglePlay}
+            >
+              <Feather
+                name={miniPlayerVisible && displayIsPlaying ? "pause" : "play"}
+                size={16}
+                color={BG_GRADIENT[BG_GRADIENT.length - 1]}
+                style={{ marginRight: 7 }}
+              />
+              <Text style={[styles.pillText, { color: BG_GRADIENT[BG_GRADIENT.length - 1] }]}>
+                {miniPlayerVisible && displayIsPlaying ? "Pausar" : "Reproducir"}
+              </Text>
+            </Pressable>
+            {/* Aleatorio */}
+            <Pressable
+              style={({ pressed }) => [styles.pill, styles.pillMuted, { opacity: pressed ? 0.75 : 0.7 }]}
+              onPress={handleShuffle}
+            >
+              <Feather
+                name="shuffle"
+                size={16}
+                color={BG_GRADIENT[BG_GRADIENT.length - 1]}
+                style={{ marginRight: 7 }}
+              />
+              <Text style={[styles.pillText, { color: BG_GRADIENT[BG_GRADIENT.length - 1] }]}>
+                Aleatorio
+              </Text>
+            </Pressable>
+          </View>
+        )}
 
         {/* + Agregar a esta playlist */}
         <Pressable
@@ -667,6 +683,33 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginLeft: 8,
+  },
+
+  // Píldoras Reproducir + Aleatorio
+  pillsRow: {
+    flexDirection: "row",
+    gap: 10,
+    marginHorizontal: 20,
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  pill: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f9f9f9",
+    borderRadius: 30,
+    paddingVertical: 11,
+    paddingHorizontal: 14,
+  },
+  pillMuted: {
+    backgroundColor: "rgba(249,249,249,0.7)",
+  },
+  pillText: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "700",
   },
 
   // Playlist description
