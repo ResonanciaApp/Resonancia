@@ -32,7 +32,7 @@ export default function CarpetaFavoritoDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
   const { activeSceneId } = useSceneTheme();
-  const bgColors = activeSceneId === "tibet" ? (["#24245d", "#24245d"] as const) : BG;
+  const bgColors = activeSceneId === "tibet" ? (["#2d4081", "#2d4081"] as const) : BG;
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 

@@ -120,7 +120,7 @@ export function MixActionsSheet({
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { theme, activeSceneId } = useSceneTheme();
-  const sheetGradient = activeSceneId === "tibet" ? (["#24245d", "#24245d"] as const) : theme.gradient;
+  const sheetGradient = activeSceneId === "tibet" ? (["#2d4081", "#2d4081"] as const) : theme.gradient;
   const {
     togglePresetFavorite,
     mixFolders,

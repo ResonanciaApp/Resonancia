@@ -229,7 +229,7 @@ export default function PlaylistDetailScreen() {
   };
 
   return (
-    <View style={[styles.root, activeSceneId === "tibet" ? { backgroundColor: "#24245d" } : undefined]}>
+    <View style={[styles.root, activeSceneId === "tibet" ? { backgroundColor: "#2d4081" } : undefined]}>
       <LinearGradient
         colors={BG_GRADIENT}
         style={StyleSheet.absoluteFill}

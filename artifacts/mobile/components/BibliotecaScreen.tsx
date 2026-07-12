@@ -744,7 +744,7 @@ function NombreCarpetaMezclaModal({ visible, onClose }: { visible: boolean; onCl
       onRequestClose={onClose}
     >
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
-        <View style={[styles.nameCard, activeSceneId === "tibet" ? { backgroundColor: "#24245d" } : undefined]}>
+        <View style={[styles.nameCard, activeSceneId === "tibet" ? { backgroundColor: "#2d4081" } : undefined]}>
           <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
             <Feather name="x" size={22} color={TEXT} />
           </Pressable>
@@ -1757,8 +1757,8 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
         onGoMezclas={() => { openMixer(); router.navigate("/(tabs)/musica" as never); }}
         gradient={sceneTheme.gradient}
       />
-      <NombrePlaylistModal visible={nombreVisible} onClose={() => setNombreVisible(false)} bgColor={activeSceneId === "tibet" ? "#24245d" : undefined} />
-      <NombreCarpetaModal visible={nombreCarpetaVisible} onClose={() => setNombreCarpetaVisible(false)} bgColor={activeSceneId === "tibet" ? "#24245d" : undefined} />
+      <NombrePlaylistModal visible={nombreVisible} onClose={() => setNombreVisible(false)} bgColor={activeSceneId === "tibet" ? "#2d4081" : undefined} />
+      <NombreCarpetaModal visible={nombreCarpetaVisible} onClose={() => setNombreCarpetaVisible(false)} bgColor={activeSceneId === "tibet" ? "#2d4081" : undefined} />
       <NombreCarpetaMezclaModal visible={nombreCarpetaMezclaVisible} onClose={() => setNombreCarpetaMezclaVisible(false)} />
       <NombreCarpetaFavModal visible={nombreCarpetaFavVisible} onClose={() => setNombreCarpetaFavVisible(false)} />
       <PlaylistActionsSheet
