@@ -233,9 +233,14 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
   const masterVolumeRef = useRef(1.0);
 
   // ── Respiración de volumen ─────────────────────────────────────────────────
+  /** Estado por sonido del oscilador orgánico. */
+  type BreathState = {
+    base: number;
+    p1: number; p2: number; p3: number; // fases independientes
+    T1: number; T2: number; T3: number; // períodos aleatorios (ms)
+  };
   const [breathingIds, setBreathingIds] = useState<string[]>([]);
-  const breatheBaseRef  = useRef<Map<string, number>>(new Map());
-  const breathePhaseRef = useRef<Map<string, number>>(new Map());
+  const breatheStateRef = useRef<Map<string, BreathState>>(new Map());
 
   const setMasterVolume = useCallback((v: number) => {
     const clamped = Math.max(0, Math.min(1, v));
@@ -1476,35 +1481,50 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     setBreathingIds((prev) => {
       if (prev.includes(id)) {
         // Detener: restaurar volumen base guardado
-        const base = breatheBaseRef.current.get(id);
-        breatheBaseRef.current.delete(id);
-        breathePhaseRef.current.delete(id);
-        if (base !== undefined) {
-          setTimeout(() => setVolume(id, base), 0);
+        const st = breatheStateRef.current.get(id);
+        breatheStateRef.current.delete(id);
+        if (st !== undefined) {
+          setTimeout(() => setVolume(id, st.base), 0);
         }
         return prev.filter((x) => x !== id);
       } else {
-        // Activar: guardar volumen actual como base
+        // Activar: inicializar oscilador con períodos y fases aleatorias únicas
         const base = baseVolumesRef.current.get(id) ?? DEFAULT_VOLUME;
-        breatheBaseRef.current.set(id, base);
-        breathePhaseRef.current.set(id, 0);
+        breatheStateRef.current.set(id, {
+          base,
+          p1: Math.random() * 2 * Math.PI,
+          p2: Math.random() * 2 * Math.PI,
+          p3: Math.random() * 2 * Math.PI,
+          // Períodos irracionales entre sí → nunca se repite el patrón
+          T1: 5200  + Math.random() * 2400,  // 5.2–7.6 s  (rápido)
+          T2: 9800  + Math.random() * 3800,  // 9.8–13.6 s (medio)
+          T3: 17000 + Math.random() * 7000,  // 17–24 s    (lento)
+        });
         return [...prev, id];
       }
     });
   }, [setVolume]);
 
-  /** Oscilación suave de volumen para los sonidos con "respiración" activa. */
+  /** Oscilador orgánico: 3 senos con períodos y fases independientes por sonido.
+   *  Profundidad máxima ±28 % del base (w1·0.5 + w2·0.3 + w3·0.2 = 1.0 → ×0.28). */
   useEffect(() => {
     if (breathingIds.length === 0) return;
-    const TICK_MS   = 80;
-    const PERIOD_MS = 9000;
-    const DEPTH     = 0.35; // ±35 % del volumen base (≤ 50 % cap)
+    const TICK_MS = 32; // ~30 fps — suave sin lag visible
+    const DEPTH   = 0.28; // swing máximo ±28 % (< 50 % cap)
+    const W1 = 0.50, W2 = 0.30, W3 = 0.20; // pesos que suman 1.0
+
     const timer = setInterval(() => {
       breathingIds.forEach((soundId) => {
-        const phase = (breathePhaseRef.current.get(soundId) ?? 0) + (TICK_MS / PERIOD_MS) * 2 * Math.PI;
-        breathePhaseRef.current.set(soundId, phase);
-        const base = breatheBaseRef.current.get(soundId) ?? DEFAULT_VOLUME;
-        applyBreathVolume(soundId, base * (1 + DEPTH * Math.sin(phase)));
+        const s = breatheStateRef.current.get(soundId);
+        if (!s) return;
+        // Avanzar fases
+        const dt = TICK_MS;
+        s.p1 += (dt / s.T1) * 2 * Math.PI;
+        s.p2 += (dt / s.T2) * 2 * Math.PI;
+        s.p3 += (dt / s.T3) * 2 * Math.PI;
+        // Combinar senos (resultado ∈ [-1, 1])
+        const combined = W1 * Math.sin(s.p1) + W2 * Math.sin(s.p2) + W3 * Math.sin(s.p3);
+        applyBreathVolume(soundId, s.base * (1 + DEPTH * combined));
       });
     }, TICK_MS);
     return () => clearInterval(timer);
