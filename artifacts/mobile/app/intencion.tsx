@@ -145,7 +145,7 @@ export default function IntencionScreen() {
         </View>
 
         {/* ── Tabs ── */}
-        <View style={[styles.tabRow, { borderBottomColor: colors.border }]}>
+        <View style={[styles.tabRow, { borderBottomColor: "rgba(255,255,255,0.05)" }]}>
           {(["ideas", "guardados", "favoritos"] as Tab[]).map((t) => (
             <Pressable key={t} onPress={() => setTab(t)} style={styles.tabBtn}>
               <Text style={[styles.tabLabel, { color: tab === t ? colors.primary : colors.mutedForeground }]}>
@@ -307,7 +307,6 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 12,
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
