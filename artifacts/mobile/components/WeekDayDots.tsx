@@ -90,7 +90,7 @@ export function WeekDayDots() {
   }, [statEvents]);
 
   return (
-    <View style={[s.row, { width: COMP_W }]}>
+    <View style={s.row}>
       {DAY_LABELS.map((label, i) => {
         const met     = activeFlags[i];
         const isToday = i === todayIndex;

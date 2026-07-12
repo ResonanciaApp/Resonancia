@@ -885,10 +885,7 @@ export default function HomeScreen2() {
             marginHorizontal: GRID_PAD,
             marginTop: 20,
             marginBottom: SECTION_GAP / 2,
-            paddingVertical: 16,
-            paddingHorizontal: 20,
-            borderRadius: 14,
-            backgroundColor: "rgba(255,255,255,0.07)",
+            paddingVertical: 12,
             opacity: pressed ? 0.75 : 1,
           })}
         >
