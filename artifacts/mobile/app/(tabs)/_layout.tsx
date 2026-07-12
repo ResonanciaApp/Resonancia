@@ -385,8 +385,8 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         })()}
       </Animated.View>
 
-      {/* Pestañita para recuperar el menú cuando está oculto (todos los tabs menos Mezclador) */}
-      {state.routes[state.index]?.name !== "musica" && (
+      {/* Pestañita para recuperar el menú cuando está oculto (todos los tabs menos Mezclador y Geometrix) */}
+      {state.routes[state.index]?.name !== "musica" && state.routes[state.index]?.name !== "geometrix" && (
         <Animated.View
           pointerEvents={hidden ? "auto" : "none"}
           style={{
