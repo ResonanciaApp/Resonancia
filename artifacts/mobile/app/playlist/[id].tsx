@@ -297,15 +297,16 @@ export default function PlaylistDetailScreen() {
 
           {/* Info */}
           <View style={styles.heroInfo}>
-            <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 8, marginTop: 14 }}>
-              <Text style={[styles.playlistName, { flex: 1 }]} numberOfLines={3}>{playlist.name}</Text>
-              <Pressable
-                onPress={() => setMenuVisible(true)}
-                hitSlop={10}
-                style={[styles.iconBtn, { backgroundColor: menuBtnBg, borderRadius: 20, flexShrink: 0, marginTop: -4 }]}
-              >
-                <Feather name="more-horizontal" size={22} color={TEXT} />
-              </Pressable>
+            {/* Tres puntos — alineado al borde superior de la imagen */}
+            <Pressable
+              onPress={() => setMenuVisible(true)}
+              hitSlop={10}
+              style={[styles.iconBtn, { backgroundColor: menuBtnBg, borderRadius: 20, position: "absolute", top: 0, right: 0 }]}
+            >
+              <Feather name="more-horizontal" size={22} color={TEXT} />
+            </Pressable>
+            <View style={{ marginTop: 14, paddingRight: 44 }}>
+              <Text style={styles.playlistName} numberOfLines={3}>{playlist.name}</Text>
             </View>
             {!!playlist.description && (
               <Text style={styles.playlistDesc} numberOfLines={2}>{playlist.description}</Text>
