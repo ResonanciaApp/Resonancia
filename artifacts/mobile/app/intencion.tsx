@@ -114,7 +114,7 @@ export default function IntencionScreen() {
         <View style={styles.inputSection}>
           <Text style={[styles.hoyLabel, { color: colors.mutedForeground }]}>Establece tu intención aquí</Text>
 
-          <View style={[styles.inputCard, { backgroundColor: colors.card, borderColor: colors.primary + "40" }]}>
+          <View style={[styles.inputCard, { backgroundColor: "rgba(255,255,255,0.07)" }]}>
             <TextInput
               ref={inputRef}
               value={text}
@@ -177,8 +177,7 @@ export default function IntencionScreen() {
                   style={({ pressed }) => [
                     styles.ideaChip,
                     {
-                      backgroundColor: text === idea ? "rgba(212,175,55,0.10)" : "rgba(74,12,12,0.08)",
-                      borderColor: text === idea ? "rgba(212,175,55,0.35)" : "rgba(61,14,22,0.40)",
+                      backgroundColor: "rgba(255,255,255,0.07)",
                       opacity: pressed ? 0.75 : 1,
                     },
                   ]}
@@ -220,7 +219,7 @@ export default function IntencionScreen() {
                 {savedEntries.map((entry) => (
                   <View
                     key={entry.text + entry.savedAt}
-                    style={[styles.savedCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+                    style={[styles.savedCard, { backgroundColor: "rgba(255,255,255,0.07)" }]}
                   >
                     <Pressable style={styles.savedCardLeft} onPress={() => handleIdeaTap(entry.text)}>
                       <Text style={[styles.hoyLabelSmall, { color: colors.mutedForeground }]}>
@@ -235,14 +234,14 @@ export default function IntencionScreen() {
                       <Pressable
                         onPress={() => handleHeartInSaved(entry.text)}
                         hitSlop={8}
-                        style={[styles.actionBtn, { backgroundColor: colors.primary + "18", borderColor: colors.primary + "44" }]}
+                        style={[styles.actionBtn, { backgroundColor: "rgba(255,255,255,0.07)" }]}
                       >
                         <Feather name="heart" size={15} color={colors.primary} />
                       </Pressable>
                       <Pressable
                         onPress={() => removeSaved(entry.text)}
                         hitSlop={8}
-                        style={[styles.actionBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+                        style={[styles.actionBtn, { backgroundColor: "rgba(255,255,255,0.07)" }]}
                       >
                         <Feather name="trash-2" size={14} color={colors.mutedForeground} />
                       </Pressable>
@@ -268,7 +267,7 @@ export default function IntencionScreen() {
                 {favorites.map((fav) => (
                   <View
                     key={fav}
-                    style={[styles.savedCard, { backgroundColor: colors.card, borderColor: colors.primary + "30" }]}
+                    style={[styles.savedCard, { backgroundColor: "rgba(255,255,255,0.07)" }]}
                   >
                     <Pressable style={styles.savedCardLeft} onPress={() => handleIdeaTap(fav)}>
                       <Text style={[styles.hoyLabelSmall, { color: colors.mutedForeground }]}>
@@ -279,7 +278,7 @@ export default function IntencionScreen() {
                     <Pressable
                       onPress={() => removeFavorite(fav)}
                       hitSlop={8}
-                      style={[styles.actionBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+                      style={[styles.actionBtn, { backgroundColor: "rgba(255,255,255,0.07)" }]}
                     >
                       <Feather name="trash-2" size={14} color={colors.mutedForeground} />
                     </Pressable>
@@ -328,7 +327,6 @@ const styles = StyleSheet.create({
   },
   inputCard: {
     borderRadius: 18,
-    borderWidth: 1,
     padding: 18,
     minHeight: 110,
     justifyContent: "space-between",
@@ -373,7 +371,6 @@ const styles = StyleSheet.create({
   ideasGrid: { gap: 10 },
   ideaChip: {
     borderRadius: 14,
-    borderWidth: 1,
     paddingHorizontal: 16,
     paddingVertical: 13,
     flexDirection: "row",
@@ -394,7 +391,6 @@ const styles = StyleSheet.create({
   savedList: { gap: 12 },
   savedCard: {
     borderRadius: 16,
-    borderWidth: 1,
     padding: 16,
     flexDirection: "row",
     alignItems: "center",
@@ -416,7 +412,6 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 10,
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },

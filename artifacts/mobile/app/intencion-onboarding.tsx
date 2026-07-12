@@ -54,7 +54,7 @@ export default function IntencionOnboardingScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Icon */}
-        <View style={[styles.iconWrap, { backgroundColor: "rgba(212,175,55,0.09)", borderColor: "rgba(212,175,55,0.20)" }]}>
+        <View style={[styles.iconWrap, { backgroundColor: "rgba(255,255,255,0.07)" }]}>
           <Feather name="target" size={28} color={colors.primary} />
         </View>
 
@@ -65,12 +65,12 @@ export default function IntencionOnboardingScreen() {
         </Text>
 
         {/* Tips card */}
-        <View style={[styles.tipsCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(212,175,55,0.12)" }]}>
+        <View style={[styles.tipsCard, { backgroundColor: "rgba(255,255,255,0.07)" }]}>
           <Text style={[styles.tipsTitle, { color: colors.foreground }]}>Las mejores intenciones...</Text>
           <View style={styles.tipsList}>
             {TIPS.map((tip) => (
               <View key={tip} style={styles.tipRow}>
-                <View style={[styles.checkCircle, { backgroundColor: "rgba(212,175,55,0.10)", borderColor: "rgba(212,175,55,0.25)" }]}>
+                <View style={[styles.checkCircle, { backgroundColor: "rgba(255,255,255,0.07)" }]}>
                   <Feather name="check" size={12} color={colors.primary} />
                 </View>
                 <Text style={[styles.tipText, { color: colors.mutedForeground }]}>{tip}</Text>
@@ -80,7 +80,7 @@ export default function IntencionOnboardingScreen() {
         </View>
 
         {/* Example */}
-        <View style={[styles.exampleCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(212,175,55,0.15)" }]}>
+        <View style={[styles.exampleCard, { backgroundColor: "rgba(255,255,255,0.07)" }]}>
           <Text style={[styles.exampleLabel, { color: colors.primary }]}>EJEMPLO</Text>
           <Text style={[styles.exampleHoy, { color: colors.mutedForeground }]}>Hoy voy a...</Text>
           <Text style={[styles.exampleText, { color: colors.foreground }]}>
@@ -117,7 +117,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: 8,
     marginBottom: 28,
-    borderWidth: 1,
   },
 
   title: {
@@ -138,7 +137,6 @@ const styles = StyleSheet.create({
 
   tipsCard: {
     borderRadius: 20,
-    borderWidth: 1,
     padding: 22,
     marginBottom: 20,
   },
@@ -155,7 +153,6 @@ const styles = StyleSheet.create({
     width: 26,
     height: 26,
     borderRadius: 13,
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
@@ -164,7 +161,6 @@ const styles = StyleSheet.create({
 
   exampleCard: {
     borderRadius: 16,
-    borderWidth: 1,
     padding: 20,
     marginBottom: 16,
   },
