@@ -134,13 +134,13 @@ export default function VideosScreen() {
         <Animated.View
           style={[styles.searchWrap, { opacity: searchOpacity }]}
         >
-          <BlurView intensity={40} tint="light" style={[styles.searchBar, { overflow: "hidden", borderColor: "rgba(255,255,255,0.18)", borderWidth: 1 }]}>
+          <BlurView intensity={40} tint="light" style={[styles.searchBar, { overflow: "hidden", borderColor: "rgba(255,255,255,0.5)", borderWidth: 1 }]}>
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.13)" }]} />
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
               style={[styles.searchInput, { color: colors.foreground }]}
               placeholder="Buscar videos..."
-              placeholderTextColor={colors.mutedForeground}
+              placeholderTextColor="#F4F4F4"
               value={searchQuery}
               onChangeText={setSearchQuery}
             />
