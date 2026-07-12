@@ -324,22 +324,6 @@ export default function PlaylistDetailScreen() {
 
         </View>{/* fin topPanel */}
 
-        {/* Sessions list */}
-        <View style={{ marginTop: -25 }}>
-        {sessions.map((session) => (
-          <PlaylistSessionRow
-            key={session.id}
-            session={session}
-            isPremium={isPremium}
-            isActive={currentSession?.id === session.id}
-            isPlaying={displayIsPlaying}
-            onPlay={() => playSession(session)}
-            onActionsPress={() => setActionsSession(session)}
-            onRemove={() => removeFromPlaylist(playlist.id, session.id)}
-          />
-        ))}
-        </View>
-
         {/* ── Píldoras Reproducir + Aleatorio ─────────────────────────── */}
         {sessions.length > 0 && (
           <View style={styles.pillsRow}>
@@ -360,21 +344,30 @@ export default function PlaylistDetailScreen() {
             </Pressable>
             {/* Aleatorio */}
             <Pressable
-              style={({ pressed }) => [styles.pill, styles.pillMuted, { opacity: pressed ? 0.75 : 0.7 }]}
+              style={({ pressed }) => [styles.pillOutline, { opacity: pressed ? 0.75 : 1 }]}
               onPress={handleShuffle}
             >
-              <Feather
-                name="shuffle"
-                size={16}
-                color={BG_GRADIENT[BG_GRADIENT.length - 1]}
-                style={{ marginRight: 7 }}
-              />
-              <Text style={[styles.pillText, { color: BG_GRADIENT[BG_GRADIENT.length - 1] }]}>
-                Aleatorio
-              </Text>
+              <Text style={styles.pillOutlineText}>Aleatorio</Text>
+              <Feather name="shuffle" size={15} color="#f9f9f9" />
             </Pressable>
           </View>
         )}
+
+        {/* Sessions list */}
+        <View style={{ marginTop: 0 }}>
+        {sessions.map((session) => (
+          <PlaylistSessionRow
+            key={session.id}
+            session={session}
+            isPremium={isPremium}
+            isActive={currentSession?.id === session.id}
+            isPlaying={displayIsPlaying}
+            onPlay={() => playSession(session)}
+            onActionsPress={() => setActionsSession(session)}
+            onRemove={() => removeFromPlaylist(playlist.id, session.id)}
+          />
+        ))}
+        </View>
 
         {/* + Agregar a esta playlist */}
         <Pressable
