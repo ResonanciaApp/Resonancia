@@ -324,8 +324,8 @@ export function WaveStreakStrip({ scrollY, hideWaves = false }: Props) {
                   <Svg width={39} height={39} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
                     <Defs>
                       <SvgLinearGradient id={`sg${i}`} x1="0.5" y1="0" x2="0.5" y2="1">
-                        <Stop offset="0" stopColor={streakBorderColors[0]} stopOpacity="0.6" />
-                        <Stop offset="1" stopColor={streakBorderColors[1]} stopOpacity="0.53" />
+                        <Stop offset="0" stopColor={streakBorderColors[0]} stopOpacity="0.70" />
+                        <Stop offset="1" stopColor={streakBorderColors[1]} stopOpacity="0.63" />
                       </SvgLinearGradient>
                     </Defs>
                     <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#sg${i})`} strokeWidth={2} fill="rgba(255,255,255,0.11)" />
@@ -337,8 +337,8 @@ export function WaveStreakStrip({ scrollY, hideWaves = false }: Props) {
                   <Svg width={39} height={39} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
                     <Defs>
                       <SvgLinearGradient id="sgToday" x1="0.5" y1="0" x2="0.5" y2="1">
-                        <Stop offset="0" stopColor={streakBorderColors[0]} stopOpacity="0.6" />
-                        <Stop offset="1" stopColor={streakBorderColors[1]} stopOpacity="0.53" />
+                        <Stop offset="0" stopColor={streakBorderColors[0]} stopOpacity="0.70" />
+                        <Stop offset="1" stopColor={streakBorderColors[1]} stopOpacity="0.63" />
                       </SvgLinearGradient>
                     </Defs>
                     <Circle cx={19.5} cy={19.5} r={17.5} stroke="url(#sgToday)" strokeWidth={2} fill="rgba(255,255,255,0.11)" />
