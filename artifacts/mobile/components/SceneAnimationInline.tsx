@@ -111,10 +111,10 @@ function RippleRings({ size, color, amount }: { size: number; color: string; amo
 
 // ── Expansión: eco del glifo que crece y se desvanece en bucle ────────────
 function ExpansionEcho({
-  geoId, color, grad, size, kaleidoscope, kaleidSegments, amount,
+  geoId, color, grad, size, strokeScale, kaleidoscope, kaleidSegments, amount,
 }: {
   geoId: GeometryId; color: string; grad: readonly [string, string] | undefined;
-  size: number; kaleidoscope: boolean; kaleidSegments: number; amount: number;
+  size: number; strokeScale: number; kaleidoscope: boolean; kaleidSegments: number; amount: number;
 }) {
   const t = useSharedValue(0);
   useEffect(() => {
@@ -129,7 +129,7 @@ function ExpansionEcho({
   return (
     <RAnimated.View style={[s.layer, st]} pointerEvents="none">
       <SacredGlyph id={geoId} color={color} gradient={grad} size={size}
-        kaleidoscope={kaleidoscope} kaleidSegments={kaleidSegments} />
+        strokeScale={strokeScale} kaleidoscope={kaleidoscope} kaleidSegments={kaleidSegments} />
     </RAnimated.View>
   );
 }
