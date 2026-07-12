@@ -1213,7 +1213,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
 
-  trackScroll: { flex: 1, paddingTop: 10 },
+  trackScroll: { flex: 1, paddingTop: 30 },
   trackRow: {
     flexDirection: "row",
     alignItems: "center",
