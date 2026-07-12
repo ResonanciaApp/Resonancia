@@ -961,6 +961,29 @@ export default function HomeScreen2() {
           </View>
         </View>
 
+        {/* ── ESCENAS ANIMADAS ── */}
+        {activeScenes.length > 0 && (
+          <View style={{ marginBottom: SECTION_GAP }}>
+            <View style={{ paddingHorizontal: GRID_PAD, flexDirection: "row", alignItems: "center", marginBottom: 18, gap: 8 }}>
+              <Text style={styles.sectionTitle}>Escenas animadas</Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 12 }}
+            >
+              {activeScenes.map((scene) => (
+                <SceneAnimationCard
+                  key={scene.id}
+                  scene={scene}
+                  size={136}
+                  onPress={() => setSelectedScene(scene)}
+                />
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
         {/* ── SESIÓN DESTACADA ── */}
         {filteredFeatured && (
           <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: -8 }]}>
@@ -1163,29 +1186,6 @@ export default function HomeScreen2() {
                 <Feather name="chevron-right" size={14} color="#F7CB6B" />
               </View>
             </Pressable>
-          </View>
-        )}
-
-        {/* ── ESCENAS ANIMADAS ── */}
-        {activeScenes.length > 0 && (
-          <View style={{ marginBottom: SECTION_GAP }}>
-            <View style={{ paddingHorizontal: GRID_PAD, flexDirection: "row", alignItems: "center", marginBottom: 18, gap: 8 }}>
-              <Text style={styles.sectionTitle}>Escenas animadas</Text>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 12 }}
-            >
-              {activeScenes.map((scene) => (
-                <SceneAnimationCard
-                  key={scene.id}
-                  scene={scene}
-                  size={136}
-                  onPress={() => setSelectedScene(scene)}
-                />
-              ))}
-            </ScrollView>
           </View>
         )}
 
