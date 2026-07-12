@@ -1,9 +1,8 @@
-import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { SacredGlyph } from "@/components/SacredGlyph";
-import { bgGradientColors, gradientColors, type GeoSettings } from "@/data/geometrix-creations";
+import { gradientColors, type GeoSettings } from "@/data/geometrix-creations";
 import { baseOf } from "@/data/geometries";
 import type { SceneAnimation } from "@workspace/api-client-react";
 
@@ -30,13 +29,6 @@ export function SceneAnimationCard({ scene, size, onPress }: Props) {
   const master = recipe.master ?? {};
   const masterOpacity = master.opacity ?? 1;
 
-  const bgGrad = bgGradientColors(master.bgGradientId ?? null);
-  const bgColors: [string, string] = master.bgColor
-    ? [master.bgColor, master.bgColor]
-    : bgGrad
-    ? [...(bgGrad as [string, string])]
-    : ["#08051A", "#130A2A"];
-
   const previewLayers = active.slice(0, 3);
 
   return (
@@ -48,12 +40,6 @@ export function SceneAnimationCard({ scene, size, onPress }: Props) {
       ]}
     >
       <View style={s.card}>
-        <LinearGradient
-          colors={bgColors}
-          start={{ x: 0.4, y: 0 }}
-          end={{ x: 0.6, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
         {previewLayers.map((instanceId) => {
           const gs = settings[instanceId];
           if (!gs) return null;
