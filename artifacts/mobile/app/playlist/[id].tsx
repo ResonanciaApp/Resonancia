@@ -246,13 +246,6 @@ export default function PlaylistDetailScreen() {
           <Pressable onPress={() => router.back()} style={styles.iconBtn}>
             <Feather name="arrow-left" size={22} color={TEXT} />
           </Pressable>
-          <Pressable
-            onPress={() => setMenuVisible(true)}
-            hitSlop={10}
-            style={[styles.iconBtn, { backgroundColor: menuBtnBg, borderRadius: 20 }]}
-          >
-            <Feather name="more-horizontal" size={22} color={TEXT} />
-          </Pressable>
         </View>
 
         {/* ── Panel superior (segundo fondo con fade) ─────────────────────── */}
@@ -302,7 +295,16 @@ export default function PlaylistDetailScreen() {
 
           {/* Info */}
           <View style={styles.heroInfo}>
-            <Text style={styles.playlistName} numberOfLines={3}>{playlist.name}</Text>
+            <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 8 }}>
+              <Text style={[styles.playlistName, { flex: 1 }]} numberOfLines={3}>{playlist.name}</Text>
+              <Pressable
+                onPress={() => setMenuVisible(true)}
+                hitSlop={10}
+                style={[styles.iconBtn, { backgroundColor: menuBtnBg, borderRadius: 20, flexShrink: 0 }]}
+              >
+                <Feather name="more-horizontal" size={22} color={TEXT} />
+              </Pressable>
+            </View>
             {!!playlist.description && (
               <Text style={styles.playlistDesc} numberOfLines={2}>{playlist.description}</Text>
             )}
@@ -584,9 +586,6 @@ function PlaylistSessionRow({
         </View>
         <Text style={styles.rowMeta}>{author} · {session.durationLabel}</Text>
       </Pressable>
-      <Pressable onPress={onActionsPress} hitSlop={10} style={styles.moreBtn}>
-        <Feather name="more-vertical" size={18} color={MUTED} />
-      </Pressable>
       <Pressable onPress={onRemove} hitSlop={10} style={styles.removeBtn}>
         <Feather name="x" size={16} color={MUTED} />
       </Pressable>
@@ -621,7 +620,6 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: 12,
     paddingBottom: 8,
   },
@@ -692,7 +690,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     marginHorizontal: 20,
-    marginTop: 16,
+    marginTop: -14,
     marginBottom: 8,
   },
   pill: {
@@ -748,7 +746,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginHorizontal: 16,
-    marginTop: 4,
+    marginTop: 11,
     marginBottom: 20,
     paddingVertical: 9,
     borderRadius: 30,
