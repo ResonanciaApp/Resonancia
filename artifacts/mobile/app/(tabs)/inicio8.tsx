@@ -908,7 +908,7 @@ export default function HomeScreen2() {
               { id: "musica-sonidos",        label: "Música",     icon: (color: string) => <Ionicons name="musical-notes-outline" size={24} color={color} /> },
               { id: "noches",                label: "Dormir",     icon: (color: string) => <Feather name="moon" size={22} color={color} /> },
             ] as const).map((c, i) => {
-              const R = 14;
+              const R = 21;
               const corners = [
                 { borderTopLeftRadius: R,    borderTopRightRadius: R,    borderBottomLeftRadius: R,    borderBottomRightRadius: 0 },
                 { borderTopLeftRadius: R,    borderTopRightRadius: R,    borderBottomLeftRadius: 0,    borderBottomRightRadius: R },
