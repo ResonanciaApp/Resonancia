@@ -103,7 +103,7 @@ export default function VideoTabScreen() {
         </View>
         {/* Search bar */}
         <View style={styles.searchWrap}>
-          <View style={[styles.searchBox, { overflow: "hidden", borderColor: "rgba(255,255,255,0.5)", borderWidth: 1 }]}>
+          <View style={[styles.searchBox, { overflow: "hidden", borderColor: "#ffffff", borderWidth: 1 }]}>
             <CardTint />
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
