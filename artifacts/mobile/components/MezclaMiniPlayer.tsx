@@ -31,7 +31,7 @@ export function MezclaMiniPlayer({ bottomOffset, topOffset }: Props) {
   } = useMixer();
   const { activeSceneId } = useSceneTheme();
 
-  const bgColor = activeSceneId === "tibet" ? "#21306a" : "rgba(0,0,0,0.40)";
+  const bgColor = "rgba(0,0,0,0.40)";
 
   // translateY negativo lleva el miniplayer justo debajo del header (igual que DormirMiniPlayer)
   const expandedY = topOffset + 56 + PLAYER_H + bottomOffset - SCREEN_H;
