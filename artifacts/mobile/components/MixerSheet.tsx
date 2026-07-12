@@ -472,6 +472,12 @@ export function MixerSheet() {
     // Mantener el Modal visible aunque activeSounds se vacíe (caso X + stopAll)
     setForceShowModal(true);
     if (stopAudio) stopAll();
+    // Cerrar el estado YA para que MezclaMiniPlayer arranque su colapso al mismo
+    // tiempo que la animación del sheet (si llamáramos closeSheet en el callback,
+    // el mini-player recibiría la señal 280ms más tarde → desincronizado).
+    // El useLayoutEffect bloqueará el reset de sheetEnterY/backdropOpacity
+    // mientras closingRef.current === true.
+    closeSheet();
     const SCREEN_H = Dimensions.get("window").height;
     Animated.parallel([
       Animated.timing(sheetEnterY, {
@@ -488,7 +494,6 @@ export function MixerSheet() {
       }),
     ]).start(() => {
       closingRef.current = false;
-      closeSheet();
       setForceShowModal(false);
     });
   };
@@ -562,10 +567,12 @@ export function MixerSheet() {
       }).start();
       setOriginId(loadedPresetId);
       setSnapshotSounds(activeSounds.map((s) => ({ id: s.id, volume: s.volume })));
-    } else {
+    } else if (!closingRef.current) {
       // Reset a estado "cerrado": el PRÓXIMO montaje del Modal pinta su primer
       // frame ya fuera de pantalla y sin dim (mata el flash de la escena/overlay
       // negro que aparecía arriba por el translateY=0 residual + dim instantáneo).
+      // Guard: si closingRef.current === true la animación de cierre ya está
+      // corriendo y maneja los valores ella misma; no interrumpir.
       sheetEnterY.setValue(Dimensions.get("window").height);
       backdropOpacity.setValue(0);
     }
