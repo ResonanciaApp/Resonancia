@@ -20,6 +20,7 @@ import { BlurView } from "expo-blur";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
 import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
@@ -88,6 +89,10 @@ function StackThumbItem({ image, style, onPress, onLongPress, primaryColor }: St
 
 export function MiniPlayer({ idle = false }: { idle?: boolean }) {
   const insets = useSafeAreaInsets();
+  const { activeSceneId } = useSceneTheme();
+  const tibetTint = activeSceneId === "tibet"
+    ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(33,48,106,0.20)" }]} pointerEvents="none" />
+    : null;
   const { currentSession, isPlaying, progress, pauseResume } = usePlayer();
   const {
     activeSounds,
@@ -284,6 +289,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
         <View style={[styles.wrapper, { paddingTop: 10, paddingBottom: insets.bottom }]}>
           <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
+          {tibetTint}
           <LinearGradient
             colors={["rgba(255,255,255,0.13)", "rgba(255,255,255,0.03)", "transparent"]}
             start={{ x: 0, y: 0 }}
@@ -329,6 +335,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
           {/* Fondo glassmorphism */}
           <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
+          {tibetTint}
           {/* Reflejo de luz diagonal — cristal */}
           <LinearGradient
             colors={["rgba(255,255,255,0.13)", "rgba(255,255,255,0.03)", "transparent"]}

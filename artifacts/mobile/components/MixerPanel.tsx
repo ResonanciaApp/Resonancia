@@ -18,7 +18,6 @@ import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 import { MAX_ACTIVE_SOUNDS, useMixer } from "@/context/MixerContext";
 import { type MixSound, getSoundById } from "@/data/sounds";
 import { useColors } from "@/hooks/useColors";
-import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const isIOS = Platform.OS === "ios";
 
@@ -28,8 +27,6 @@ const MAX_STACK = 3;
 
 export function MixerPanel() {
   const colors = useColors();
-  const { activeSceneId } = useSceneTheme();
-  const panelBg = activeSceneId === "tibet" ? "#21306a" : "#502b7e";
   const {
     activeSounds,
     isPlaying,
@@ -61,7 +58,7 @@ export function MixerPanel() {
   return (
     <Pressable onPress={() => router.push("/(tabs)/musica" as never)} style={styles.wrapper}>
       {/* Fondo */}
-      <View style={[StyleSheet.absoluteFill, { backgroundColor: panelBg, borderRadius: 18 }]} />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: "#502b7e", borderRadius: 18 }]} />
       <View style={styles.border} />
 
       {/* Contenido */}
