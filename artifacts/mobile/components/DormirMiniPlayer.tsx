@@ -74,7 +74,7 @@ export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOff
   return (
     <Pressable
       onPress={!isExpanded ? onExpand : undefined}
-      style={[styles.wrapper, { bottom: bottomOffset }]}
+      style={[styles.wrapper, { bottom: bottomOffset + 2 }]}
     >
       <Animated.View style={[styles.container, { backgroundColor: bgColor, opacity, transform: [{ translateY }] }]}>
         <Image source={sound.image} style={styles.img} resizeMode="cover" />
