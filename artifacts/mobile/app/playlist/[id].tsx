@@ -285,8 +285,7 @@ export default function PlaylistDetailScreen() {
               <View style={styles.coverEmpty}>
                 <Feather name="music" size={40} color={MUTED} />
                 {/* Badge "+" en esquina inferior derecha */}
-                <View style={styles.coverPlusBadge}>
-                  <GoldGradientFill />
+                <View style={[styles.coverPlusBadge, { backgroundColor: menuBtnBg }]}>
                   <Feather name="plus" size={14} color="#FFFFFF" />
                 </View>
               </View>
@@ -308,29 +307,14 @@ export default function PlaylistDetailScreen() {
             {!!playlist.description && (
               <Text style={styles.playlistDesc} numberOfLines={2}>{playlist.description}</Text>
             )}
-            <View style={styles.creatorRow}>
-              <Text style={styles.creatorText}>Casa del Cuenco</Text>
-            </View>
           </View>
         </View>
 
         {/* Stats */}
         <View style={styles.statsRow}>
-          <Feather name="globe" size={13} color={MUTED} />
           <Text style={styles.statsText}>{totalMin} min</Text>
         </View>
 
-        {/* ── Toolbar Spotify-style ─────────────────────────────────────── */}
-        <View style={styles.actionsRow}>
-          {/* Descargar */}
-          <Pressable style={({ pressed }) => [styles.toolBtn, { opacity: pressed ? 0.6 : 1 }]} hitSlop={10}>
-            <Feather name="download" size={22} color={MUTED} />
-          </Pressable>
-          {/* Compartir */}
-          <Pressable style={({ pressed }) => [styles.toolBtn, { opacity: pressed ? 0.6 : 1 }]} hitSlop={10} onPress={handleShare}>
-            <Feather name="share" size={22} color={MUTED} />
-          </Pressable>
-        </View>
 
         </View>{/* fin topPanel */}
 
@@ -628,7 +612,7 @@ const styles = StyleSheet.create({
   // Hero
   hero: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     paddingHorizontal: 20,
     paddingTop: 12,
     paddingBottom: 8,
@@ -645,8 +629,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexShrink: 0,
   },
-  heroInfo: { flex: 1, gap: 8, paddingTop: 4 },
-  playlistName: { fontFamily: "Manrope", color: "#FFFFFF", fontSize: 20, fontWeight: "400", lineHeight: 26 },
+  heroInfo: { flex: 1, gap: 8, paddingTop: 0, justifyContent: "center" },
+  playlistName: { fontFamily: "Manrope", color: "#FFFFFF", fontSize: 20, fontWeight: "700", lineHeight: 26 },
   creatorRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   creatorDot: { width: 18, height: 18, borderRadius: 9 },
   creatorText: { fontFamily: "Manrope", color: MUTED, fontSize: 12 },
@@ -659,7 +643,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 8,
   },
-  statsText: { fontFamily: "Manrope", color: MUTED, fontSize: 12 },
+  statsText: { fontFamily: "Manrope", color: MUTED, fontSize: 16 },
 
   // Actions / Toolbar
   actionsRow: {
