@@ -891,16 +891,6 @@ export default function HomeScreen2() {
           })}
         >
           <WeekDayDots />
-          <Text style={{
-            fontFamily: "Manrope",
-            fontSize: 11,
-            fontWeight: "400",
-            color: "rgba(244,218,213,0.45)",
-            textAlign: "center",
-            marginTop: 14,
-          }} numberOfLines={1}>
-            {headerScene?.phrase ?? headerScene?.description ?? "Tu práctica esta semana"}
-          </Text>
         </Pressable>
         <ProgresoModal visible={progresoVisible} onClose={() => setProgresoVisible(false)} />
 
