@@ -406,7 +406,6 @@ export function EscenasSheet() {
                     onPress={() => {
                       setBgScene(scene);
                       handleClose();
-                      setTimeout(() => setSelectedScene(scene), 700);
                     }}
                   />
                 ))}
