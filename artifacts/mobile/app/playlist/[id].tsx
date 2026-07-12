@@ -305,7 +305,7 @@ export default function PlaylistDetailScreen() {
             >
               <Feather name="more-horizontal" size={22} color={TEXT} />
             </Pressable>
-            <View style={{ marginTop: 14, paddingRight: 44 }}>
+            <View style={{ marginTop: 8, paddingRight: 44 }}>
               <Text style={styles.playlistName} numberOfLines={3}>{playlist.name}</Text>
             </View>
             {!!playlist.description && (
