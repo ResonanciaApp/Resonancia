@@ -101,8 +101,8 @@ function MixRow({
         <Text style={styles.rowTitle} numberOfLines={1}>{mix.name}</Text>
         {isPlayingThis ? (
           <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-            <EqualizerBars color={GOLD} size="sm" />
-            <Text style={[styles.rowSub, { color: GOLD }]}>Reproduciendo</Text>
+            <EqualizerBars color="#f9f9f9" size="sm" />
+            <Text style={[styles.rowSub, { color: "#f9f9f9" }]}>Reproduciendo</Text>
           </View>
         ) : (
           <Text style={styles.rowSub} numberOfLines={1}>
