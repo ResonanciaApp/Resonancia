@@ -10,10 +10,10 @@ import {
 } from "react-native";
 import Svg, { Path, Rect } from "react-native-svg";
 import { Feather } from "@expo/vector-icons";
-import { router } from "expo-router";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { sessionMiniPlayerEvents } from "@/lib/miniPlayerEvents";
+import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 
 const SCREEN_H = Dimensions.get("window").height;
 const PLAYER_H = 64;
@@ -32,6 +32,7 @@ export function SessionMiniPlayer({ bottomOffset, topOffset }: Props) {
 
   const { currentSession, isPlaying, pauseResume, stop } = usePlayer();
   const { activeSceneId } = useSceneTheme();
+  const { setIsSessionExpanded } = useDescansoPlayerContext();
   const bgColor = activeSceneId === "tibet" ? "#1a1243" : "rgba(0,0,0,0.40)";
 
   const opacity    = useRef(new Animated.Value(0)).current;
@@ -79,9 +80,7 @@ export function SessionMiniPlayer({ bottomOffset, topOffset }: Props) {
 
   return (
     <Pressable
-      onPress={() =>
-        router.push({ pathname: "/player", params: { anim: "fade" } } as never)
-      }
+      onPress={() => setIsSessionExpanded(true)}
       style={[styles.wrapper, { bottom: bottomOffset }]}
     >
       <Animated.View
