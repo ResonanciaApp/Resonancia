@@ -65,7 +65,7 @@ export function EscenasSheet() {
   const { theme, setActiveSceneWithFade, overlayColors, overlayOpacity } = useSceneTheme();
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const geoScenes = sceneAnimationsData?.scenes ?? [];
-  const { setSelectedScene } = useSelectedScene();
+  const { setSelectedScene, setBgScene } = useSelectedScene();
   const {
     currentScene,
     isPlaying,
@@ -404,6 +404,7 @@ export function EscenasSheet() {
                     scene={scene}
                     size={118}
                     onPress={() => {
+                      setBgScene(scene);
                       handleClose();
                       setTimeout(() => setSelectedScene(scene), 700);
                     }}

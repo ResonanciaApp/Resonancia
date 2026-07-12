@@ -376,7 +376,7 @@ export default function HomeScreen2() {
   const { data: pinnedFeaturedData } = useGetPinnedFeatured();
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const activeScenes = sceneAnimationsData?.scenes ?? [];
-  const { setSelectedScene } = useSelectedScene();
+  const { setSelectedScene, bgScene } = useSelectedScene();
 
   // Escena activa en el header (persistida entre sesiones)
   const HEADER_SCENE_KEY = "@resonancia_header_scene_id";
@@ -386,7 +386,7 @@ export default function HomeScreen2() {
       if (raw) setHeaderSceneId(parseInt(raw, 10));
     });
   }, []);
-  const headerScene = activeScenes.find((s) => s.id === headerSceneId) ?? activeScenes[0] ?? null;
+  const headerScene = bgScene ?? activeScenes.find((s) => s.id === headerSceneId) ?? activeScenes[0] ?? null;
 
   function selectHeaderScene(scene: SceneAnimation) {
     setHeaderSceneId(scene.id);
