@@ -894,9 +894,9 @@ export default function HomeScreen2() {
 
 
         {/* ── EXPLORA POR CONTENIDO ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: -12 }]}>
+        <View style={[styles.section, { marginBottom: SECTION_GAP - 20, marginTop: -12 }]}>
           <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.1)", marginTop: -10, marginBottom: 10 }} />
-          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 7 }}>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 7, marginTop: 20 }}>
             {([
               { id: "meditaciones-guiadas", label: "Meditación", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={24} color={color} /> },
               { id: "sonidos-ancestrales",  label: "Sesiones",   icon: (color: string) => <MaterialCommunityIcons name="waves" size={24} color={color} /> },
