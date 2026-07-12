@@ -22,6 +22,7 @@ import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
+import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 import { getSoundImage } from "@/config/sound-images";
 import { REMOTE_SOUND_IMAGE_MAP } from "@/lib/remoteSoundMap";
 import { useColors } from "@/hooks/useColors";
@@ -100,6 +101,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
 
   const colors = useColors();
   const { isMixerOpen } = useMixerPanel();
+  const { setIsSessionExpanded } = useDescansoPlayerContext();
 
   // ── Swipe-up en handle → abre la sheet ─────────────────────────
   const openSheetRef = useRef(openSheet);
@@ -424,8 +426,16 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
   }
 
   // ── Modo sesión ───────────────────────────────────────────────
+  const handleSessionPress = () => {
+    if (currentSession?.descansoTag) {
+      setIsSessionExpanded(true);
+    } else {
+      router.push("/player" as never);
+    }
+  };
+
   return (
-    <Pressable onPress={() => router.push("/player" as never)} style={styles.wrapper}>
+    <Pressable onPress={handleSessionPress} style={styles.wrapper}>
       <LinearGradient
         colors={GRAD_COLORS}
         start={{ x: 0, y: 0 }}
