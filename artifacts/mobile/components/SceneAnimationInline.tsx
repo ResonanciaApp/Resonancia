@@ -319,7 +319,7 @@ export function SceneAnimationInline({ scene, height, onPress, style }: Props) {
     fadeAnim.setValue(0);
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 2000,
+      duration: 6000,
       easing: RNEasing.out(RNEasing.cubic),
       useNativeDriver: true,
     }).start();
