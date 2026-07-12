@@ -391,7 +391,7 @@ export default function SessionDetailScreen() {
                   style={StyleSheet.absoluteFill}
                 />
                 <Feather name="rotate-ccw" size={16} color={colors.primaryForeground} />
-                <Text style={[styles.playBtnText, { color: colors.primaryForeground }]}>Reiniciar</Text>
+                <Text style={[styles.playBtnText, { color: "#F9F9F9" }]}>Reiniciar</Text>
               </Pressable>
 
               <View style={styles.splitDivider} />
@@ -413,7 +413,7 @@ export default function SessionDetailScreen() {
                     fill={colors.primaryForeground}
                   />
                 </Svg>
-                <Text style={[styles.playBtnText, { color: colors.primaryForeground }]}>Continuar</Text>
+                <Text style={[styles.playBtnText, { color: "#F9F9F9" }]}>Continuar</Text>
               </Pressable>
             </View>
           ) : (
@@ -437,7 +437,7 @@ export default function SessionDetailScreen() {
                     fill={colors.primaryForeground}
                   />
                 </Svg>
-                <Text style={[styles.playBtnText, { color: colors.primaryForeground }]}>
+                <Text style={[styles.playBtnText, { color: "#F9F9F9" }]}>
                   {isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora"}
                 </Text>
               </View>
@@ -1045,7 +1045,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
-    color: "#D6AD5F",
+    color: "#F9F9F9",
     letterSpacing: 0.5,
   },
   splitBtnRow: {
