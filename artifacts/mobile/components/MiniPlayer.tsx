@@ -290,13 +290,6 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
           <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
           {tibetTint}
-          <LinearGradient
-            colors={["rgba(255,255,255,0.13)", "rgba(255,255,255,0.03)", "transparent"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
           {/* Borde superior con fade en extremos */}
           <LinearGradient
             colors={["transparent", "rgba(255,255,255,0.22)", "rgba(255,255,255,0.22)", "transparent"]}
@@ -336,14 +329,6 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
           <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
           {tibetTint}
-          {/* Reflejo de luz diagonal — cristal */}
-          <LinearGradient
-            colors={["rgba(255,255,255,0.13)", "rgba(255,255,255,0.03)", "transparent"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
           {/* Borde superior con fade en extremos */}
           <LinearGradient
             colors={["transparent", "rgba(255,255,255,0.22)", "rgba(255,255,255,0.22)", "transparent"]}
