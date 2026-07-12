@@ -56,7 +56,10 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useIntencion } from "@/context/IntencionContext";
 import { CATEGORIES } from "@/data/categories";
 import { TEMAS } from "@/data/temas";
-import { useGetPinnedFeatured } from "@workspace/api-client-react";
+import { useGetPinnedFeatured, useGetSceneAnimations } from "@workspace/api-client-react";
+import type { SceneAnimation } from "@workspace/api-client-react";
+import { SceneAnimationCard } from "@/components/SceneAnimationCard";
+import { SceneAnimationModal } from "@/components/SceneAnimationModal";
 import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/data/sessions";
 import { getMoodById, type Mood, type MoodId } from "@/data/moods";
 import { getArtist } from "@/data/artists";
@@ -368,6 +371,9 @@ export default function HomeScreen2() {
   }, [cursorOpacity]);
 
   const { data: pinnedFeaturedData } = useGetPinnedFeatured();
+  const { data: sceneAnimationsData } = useGetSceneAnimations();
+  const activeScenes = sceneAnimationsData?.scenes ?? [];
+  const [selectedScene, setSelectedScene] = useState<SceneAnimation | null>(null);
 
   const featuredSession = React.useMemo(() => {
     // Si el admin pineó una sesión, usarla directamente.
@@ -1160,6 +1166,29 @@ export default function HomeScreen2() {
           </View>
         )}
 
+        {/* ── ESCENAS ANIMADAS ── */}
+        {activeScenes.length > 0 && (
+          <View style={{ marginBottom: SECTION_GAP }}>
+            <View style={{ paddingHorizontal: GRID_PAD, flexDirection: "row", alignItems: "center", marginBottom: 18, gap: 8 }}>
+              <Text style={styles.sectionTitle}>Escenas animadas</Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 12 }}
+            >
+              {activeScenes.map((scene) => (
+                <SceneAnimationCard
+                  key={scene.id}
+                  scene={scene}
+                  size={136}
+                  onPress={() => setSelectedScene(scene)}
+                />
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
         {/* ── 8. MURO DE AGRADECIMIENTOS ── */}
         <View style={styles.sectionDivider} />
         <View style={{ marginBottom: SECTION_GAP, marginTop: -25 }}>
@@ -1187,6 +1216,10 @@ export default function HomeScreen2() {
         onClose={() => setActionsSession(null)}
       />
 
+      <SceneAnimationModal
+        scene={selectedScene}
+        onClose={() => setSelectedScene(null)}
+      />
 
     </View>
   );
