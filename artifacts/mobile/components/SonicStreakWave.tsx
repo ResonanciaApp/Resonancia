@@ -124,15 +124,6 @@ export function SonicStreakWave() {
             <View key={i} style={styles.dayCol}>
               {met ? (
                 <View style={styles.circleGradientBorder}>
-                  <Svg width={39} height={39} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
-                    <Defs>
-                      <SvgGradient id={`swsg${i}`} x1="0.5" y1="0" x2="0.5" y2="1">
-                        <Stop offset="0" stopColor={borderColor0} stopOpacity="0.78" />
-                        <Stop offset="1" stopColor={borderColor1} stopOpacity="0.70" />
-                      </SvgGradient>
-                    </Defs>
-                    <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#swsg${i})`} strokeWidth={2} fill="rgba(255,255,255,0.18)" />
-                  </Svg>
                   <Feather name="check" size={18} color="rgba(255,255,255,0.9)" />
                 </View>
               ) : isToday ? (
