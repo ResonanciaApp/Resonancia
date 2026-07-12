@@ -281,7 +281,7 @@ function AddSheet({
             onPress={it.onPress}
           >
             <View style={styles.sheetIconWrap}>
-              <Feather name={it.icon} size={22} color={GOLD} />
+              <Feather name={it.icon} size={22} color="#f9f9f9" />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.sheetItemTitle}>{it.title}</Text>
@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(74,12,12,0.35)",
+    backgroundColor: "rgba(255,255,255,0.07)",
     marginBottom: 8,
     marginTop: 4,
   },
@@ -459,19 +459,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     gap: 16,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(61,14,22,0.40)",
   },
   sheetIconWrap: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "rgba(190,150,80,0.06)",
+    backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
   },
   sheetItemTitle: { fontFamily: "Manrope", color: TEXT, fontSize: 16, fontWeight: "700" },
-  sheetItemSub: { fontFamily: "Manrope", color: MUTED, fontSize: 13, marginTop: 2 },
+  sheetItemSub: { fontFamily: "Manrope", color: "#f4f4f4", fontSize: 13, marginTop: 2 },
 
   // Naming modal
   nameOverlay: {
