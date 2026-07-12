@@ -297,7 +297,7 @@ export default function PlaylistDetailScreen() {
 
           {/* Info */}
           <View style={styles.heroInfo}>
-            <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 8 }}>
+            <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 8, marginTop: 10 }}>
               <Text style={[styles.playlistName, { flex: 1 }]} numberOfLines={3}>{playlist.name}</Text>
               <Pressable
                 onPress={() => setMenuVisible(true)}
