@@ -27,14 +27,16 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-
   Text,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { VolumeSlider } from "@/components/VolumeSlider";
+import { SceneAnimationCard } from "@/components/SceneAnimationCard";
 import { AMBIENT_SCENES, useAmbientPlayer, type SceneId } from "@/context/AmbientPlayerContext";
+import { useSelectedScene } from "@/context/SelectedSceneContext";
+import { useGetSceneAnimations } from "@workspace/api-client-react";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useBrightness } from "@/context/BrightnessContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -61,6 +63,9 @@ const TIMER_OPTIONS: Array<{ label: string; value: number | null }> = [
 export function EscenasSheet() {
   const insets = useSafeAreaInsets();
   const { theme, setActiveSceneWithFade, overlayColors, overlayOpacity } = useSceneTheme();
+  const { data: sceneAnimationsData } = useGetSceneAnimations();
+  const geoScenes = sceneAnimationsData?.scenes ?? [];
+  const { setSelectedScene } = useSelectedScene();
   const {
     currentScene,
     isPlaying,
@@ -373,6 +378,35 @@ export function EscenasSheet() {
               );
             })}
           </View>
+
+          {/* ── Escenas animadas (Geometrix) ── */}
+          {geoScenes.length > 0 && (
+            <View style={{ marginTop: 22 }}>
+              <View style={styles.divider} />
+              <View style={[styles.sceneTitleRow, { marginTop: 18 }]}>
+                <MaterialCommunityIcons name="star-four-points-outline" size={16} color="rgba(255,255,255,0.8)" />
+                <Text style={styles.sceneTitle}>Escenas animadas</Text>
+              </View>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ gap: 12, paddingRight: 4 }}
+                style={{ marginTop: 14 }}
+              >
+                {geoScenes.map((scene) => (
+                  <SceneAnimationCard
+                    key={scene.id}
+                    scene={scene}
+                    size={118}
+                    onPress={() => {
+                      handleClose();
+                      setTimeout(() => setSelectedScene(scene), 460);
+                    }}
+                  />
+                ))}
+              </ScrollView>
+            </View>
+          )}
         </View>
       </Animated.View>
 

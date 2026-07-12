@@ -15,6 +15,8 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { DrawerMenu } from "@/components/DrawerMenu";
 import { MixerSheet } from "@/components/MixerSheet";
 import { EscenasSheet } from "@/components/EscenasSheet";
+import { SceneAnimationModal } from "@/components/SceneAnimationModal";
+import { SelectedSceneProvider, useSelectedScene } from "@/context/SelectedSceneContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AmbientPlayerProvider } from "@/context/AmbientPlayerContext";
 import { SceneThemeProvider, SceneThemeTransitionOverlay, useSceneTheme, loadPersistedSceneId } from "@/context/SceneThemeContext";
@@ -301,21 +303,34 @@ function NavStack() {
   );
 }
 
+function GlobalSceneModal() {
+  const { selectedScene, setSelectedScene } = useSelectedScene();
+  return (
+    <SceneAnimationModal
+      scene={selectedScene}
+      onClose={() => setSelectedScene(null)}
+    />
+  );
+}
+
 function RootLayoutNav() {
   return (
-    <MixerPanelProvider>
-      <DrawerProvider>
-        <ApiAuthBridge />
-        <AuthGate />
-        <PushBridge />
-        <PushWrapper>
-          <NavStack />
-        </PushWrapper>
-        <DrawerMenu />
-        <MixerSheet />
-        <EscenasSheet />
-      </DrawerProvider>
-    </MixerPanelProvider>
+    <SelectedSceneProvider>
+      <MixerPanelProvider>
+        <DrawerProvider>
+          <ApiAuthBridge />
+          <AuthGate />
+          <PushBridge />
+          <PushWrapper>
+            <NavStack />
+          </PushWrapper>
+          <DrawerMenu />
+          <MixerSheet />
+          <EscenasSheet />
+          <GlobalSceneModal />
+        </DrawerProvider>
+      </MixerPanelProvider>
+    </SelectedSceneProvider>
   );
 }
 

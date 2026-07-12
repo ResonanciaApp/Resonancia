@@ -59,7 +59,7 @@ import { TEMAS } from "@/data/temas";
 import { useGetPinnedFeatured, useGetSceneAnimations } from "@workspace/api-client-react";
 import type { SceneAnimation } from "@workspace/api-client-react";
 import { SceneAnimationCard } from "@/components/SceneAnimationCard";
-import { SceneAnimationModal } from "@/components/SceneAnimationModal";
+import { useSelectedScene } from "@/context/SelectedSceneContext";
 import { SceneAnimationInline } from "@/components/SceneAnimationInline";
 import { WeekDayDots } from "@/components/WeekDayDots";
 import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/data/sessions";
@@ -376,7 +376,7 @@ export default function HomeScreen2() {
   const { data: pinnedFeaturedData } = useGetPinnedFeatured();
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const activeScenes = sceneAnimationsData?.scenes ?? [];
-  const [selectedScene, setSelectedScene] = useState<SceneAnimation | null>(null);
+  const { setSelectedScene } = useSelectedScene();
 
   // Escena activa en el header (persistida entre sesiones)
   const HEADER_SCENE_KEY = "@resonancia_header_scene_id";
@@ -969,8 +969,8 @@ export default function HomeScreen2() {
           </View>
         </View>
 
-        {/* ── ESCENAS ANIMADAS ── */}
-        {activeScenes.length > 0 && (
+        {/* ── ESCENAS ANIMADAS ── (se muestran en EscenasSheet) */}
+        {false && activeScenes.length > 0 && (
           <View style={{ marginBottom: SECTION_GAP }}>
             <View style={{ paddingHorizontal: GRID_PAD, flexDirection: "row", alignItems: "center", marginBottom: 18, gap: 8 }}>
               <Text style={styles.sectionTitle}>Escenas animadas</Text>
@@ -1224,10 +1224,7 @@ export default function HomeScreen2() {
         onClose={() => setActionsSession(null)}
       />
 
-      <SceneAnimationModal
-        scene={selectedScene}
-        onClose={() => setSelectedScene(null)}
-      />
+      {/* SceneAnimationModal lives at root (_layout.tsx) via SelectedSceneContext */}
 
     </View>
   );
