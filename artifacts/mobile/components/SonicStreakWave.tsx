@@ -204,13 +204,13 @@ const styles = StyleSheet.create({
     color: "#c2c2c2",
     fontSize: 10,
     fontWeight: "600",
-    marginTop: -2,
+    marginTop: -4,
   },
   dayLabelToday: {
     color: "#FBFBFB",
   },
   dayLabelInactive: {
-    marginTop: -2,
+    marginTop: -4,
   },
   messageWrap: {
     alignItems: "center",

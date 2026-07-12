@@ -897,15 +897,6 @@ export default function HomeScreen2() {
           </View>
         )}
 
-        <View
-          style={{
-            marginHorizontal: GRID_PAD,
-            marginBottom: SECTION_GAP / 2,
-            marginTop: -6,
-            height: StyleSheet.hairlineWidth,
-            backgroundColor: "rgba(255,255,255,0.1)",
-          }}
-        />
 
         {/* ── BANNER RESONADORES ── */}
         <Pressable
