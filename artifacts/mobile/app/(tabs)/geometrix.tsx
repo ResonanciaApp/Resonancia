@@ -2139,6 +2139,11 @@ export default function GeometrixScreen() {
   // Landing screen: se muestra al entrar con el canvas vacío. Se oculta al
   // tocar "Crear Geometría" o al cargar una creación existente.
   const [showLanding, setShowLanding] = useState(true);
+  // Pausa todas las animaciones de Reanimated (withRepeat) cuando el usuario
+  // abandona la pestaña. Las tabs quedan montadas en React Navigation, así que
+  // sin esta guarda rot/pulse/fade/ripple/expansión siguen corriendo en el fondo
+  // y generan lag en el resto de la app. Se activa en useFocusEffect.
+  const [tabFocused, setTabFocused] = useState(false);
 
   // `active` guarda IDs de instancia (ver `baseOf`): el original de cada
   // geometría usa el id base pelado; los duplicados usan `${base}::${sufijo}`.
@@ -2615,6 +2620,8 @@ export default function GeometrixScreen() {
   // Al entrar: disparar el intro de audio si el lienzo está vacío.
   useFocusEffect(
     useCallback(() => {
+      // Marcar la pestaña como activa → las animaciones de Reanimated se reanudan.
+      setTabFocused(true);
       // Mostrar landing si el canvas está vacío (sin params de carga directa).
       if (activeRef.current.length === 0 && !params.load && !params.new && !params.preloadId) {
         setShowLanding(true);
@@ -2625,6 +2632,9 @@ export default function GeometrixScreen() {
         playIntro();
       }
       return () => {
+        // Marcar la pestaña como inactiva → pausa todos los withRepeat de Reanimated
+        // (rot, pulse, fade, ripple, expansión) para que no consuman CPU en el fondo.
+        setTabFocused(false);
         stopIntro();
         setSettingsOpen(false);
         setSettingsGeoId(null);
@@ -4153,7 +4163,7 @@ export default function GeometrixScreen() {
                         holdRotDeltaDeg={holdRotDeltaDeg}
                         holdRotActive={holdRotActive}
                         masterOpacity={master.opacity}
-                        motion={master.motion}
+                        motion={master.motion && tabFocused}
                         glow={master.glow}
                       />
                     );
@@ -4484,7 +4494,7 @@ export default function GeometrixScreen() {
                 size={immersiveSize}
                 settings={getSettings(m.iid)}
                 masterOpacity={master.opacity}
-                motion={master.motion}
+                motion={master.motion && tabFocused}
                 glow={master.glow}
               />
             ))}
@@ -4551,7 +4561,7 @@ export default function GeometrixScreen() {
                     holdRotDeltaDeg={holdRotDeltaDeg}
                     holdRotActive={holdRotActive}
                     masterOpacity={master.opacity}
-                    motion={master.motion}
+                    motion={master.motion && tabFocused}
                     glow={master.glow}
                   />
                 );
@@ -4982,7 +4992,7 @@ export default function GeometrixScreen() {
                   size={generalPreviewSize * 0.96}
                   settings={getSettings(m.iid)}
                   masterOpacity={master.opacity}
-                  motion={master.motion}
+                  motion={master.motion && tabFocused}
                   glow={master.glow}
                 />
               ))}
@@ -5746,7 +5756,7 @@ export default function GeometrixScreen() {
                   size={previewSize * 0.96}
                   settings={getSettings(m.iid)}
                   masterOpacity={master.opacity}
-                  motion={master.motion}
+                  motion={master.motion && tabFocused}
                   glow={master.glow}
                 />
               ))}
