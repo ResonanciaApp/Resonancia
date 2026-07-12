@@ -906,7 +906,7 @@ export default function HomeScreen2() {
               { id: "meditaciones-guiadas", label: "Meditación", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={24} color={color} /> },
               { id: "sonidos-ancestrales",  label: "Sesiones",   icon: (color: string) => <MaterialCommunityIcons name="waves" size={24} color={color} /> },
               { id: "musica-sonidos",        label: "Música",     icon: (color: string) => <Ionicons name="musical-notes-outline" size={24} color={color} /> },
-              { id: "noches",                label: "Dormir",     icon: (color: string) => <Feather name="moon" size={22} color={color} /> },
+              { id: "__descanzo__",           label: "Dormir",     icon: (color: string) => <Feather name="moon" size={22} color={color} /> },
             ] as const).map((c, i) => {
               const R = 21;
               const corners = [
@@ -918,7 +918,7 @@ export default function HomeScreen2() {
               return (
               <Pressable
                 key={c.id}
-                onPress={() => router.push(`/category/${c.id}` as never)}
+                onPress={() => router.push((c.id === "__descanzo__" ? "/(tabs)/descanzo" : `/category/${c.id}`) as never)}
                 style={({ pressed }) => [{
                   width: "48%",
                   paddingVertical: 18,
