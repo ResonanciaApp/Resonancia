@@ -900,7 +900,6 @@ export default function HomeScreen2() {
 
         {/* ── EXPLORA POR CONTENIDO ── */}
         <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: -12 }]}>
-          <Text style={[styles.sectionTitle, { marginBottom: 21 }]}>Explora por contenido</Text>
           <View style={{ flexDirection: "row", gap: 10 }}>
             {([
               { id: "meditaciones-guiadas", label: "Meditación", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={31} color={color} /> },
