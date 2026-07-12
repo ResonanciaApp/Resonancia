@@ -711,11 +711,9 @@ export default function PlayerScreen() {
 
           {/* Sheet */}
           <Animated.View style={[styles.optSheet, { paddingBottom: bottomPad + 8 }, sheetAnimStyle]}>
-            <View
-              style={[
-                StyleSheet.absoluteFill,
-                { backgroundColor: theme.gradient[0], borderTopLeftRadius: 24, borderTopRightRadius: 24 },
-              ]}
+            <LinearGradient
+              colors={theme.id === "tibet" ? ["#2d1c52", "#2d4081"] : [theme.gradient[0] as string, theme.gradient[0] as string]}
+              style={[StyleSheet.absoluteFill, { borderTopLeftRadius: 24, borderTopRightRadius: 24 }]}
               pointerEvents="none"
             />
             {/* Handle */}
