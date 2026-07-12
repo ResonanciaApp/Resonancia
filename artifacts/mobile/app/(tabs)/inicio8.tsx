@@ -1300,9 +1300,9 @@ const styles = StyleSheet.create({
   },
   intencionText: {
     fontFamily: "Manrope",
-    fontSize: 22,
-    color: "#FBFBFB",
-    fontWeight: "300",
+    fontSize: 20,
+    color: "rgba(255,255,255,0.9)",
+    fontWeight: "600",
     textAlign: "center",
     flexShrink: 1,
   },
