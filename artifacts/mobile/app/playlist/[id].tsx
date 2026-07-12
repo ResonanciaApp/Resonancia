@@ -98,6 +98,9 @@ export default function PlaylistDetailScreen() {
   const menuBtnBg   = darkestRgb
     ? `rgba(${darkestRgb[0]},${darkestRgb[1]},${darkestRgb[2]},0.5)`
     : "rgba(0,0,0,0.5)";
+  const plusBadgeBg = darkestRgb
+    ? `rgba(${darkestRgb[0]},${darkestRgb[1]},${darkestRgb[2]},0.7)`
+    : "rgba(0,0,0,0.7)";
   const { isPremium } = usePremium();
   const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistDescription, reorderPlaylist, setPlaylistCover, setPlaylistCoverColor, setPlaylistCoverGeometry, setPlaylistCoverCreation } = useFoldersPlaylists();
   const { playSession, pauseResume, isPlaying, currentSession } = usePlayer();
@@ -285,7 +288,7 @@ export default function PlaylistDetailScreen() {
               <View style={styles.coverEmpty}>
                 <Feather name="music" size={40} color={MUTED} />
                 {/* Badge "+" en esquina inferior derecha */}
-                <View style={[styles.coverPlusBadge, { backgroundColor: menuBtnBg }]}>
+                <View style={[styles.coverPlusBadge, { backgroundColor: plusBadgeBg }]}>
                   <Feather name="plus" size={14} color="#FFFFFF" />
                 </View>
               </View>
