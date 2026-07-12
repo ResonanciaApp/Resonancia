@@ -925,9 +925,9 @@ export default function HomeScreen2() {
                   pointerEvents="none"
                 />
                 <View style={{ width: 31, height: 31, alignItems: "center", justifyContent: "center" }}>
-                  {c.icon("#f9f9f9")}
+                  {c.icon("#F7CB6B")}
                 </View>
-                <Text style={{ fontSize: 12, fontWeight: "700", color: "#FBFBFB", textAlign: "center" }}>
+                <Text style={{ fontSize: 12, fontWeight: "700", color: "#F7CB6B", textAlign: "center" }}>
                   {c.label}
                 </Text>
               </Pressable>
