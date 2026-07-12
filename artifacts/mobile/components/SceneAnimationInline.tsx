@@ -7,7 +7,7 @@
  * tamaño efectivo (scale × zoom), efectos de bloom/glow/halo/ripple/expansión,
  * kaleidoscopio, opacidad y desplazamiento.
  */
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { Animated, Easing as RNEasing, Pressable, StyleSheet, View, type ViewStyle } from "react-native";
 import { Circle, Defs, RadialGradient, Stop, Svg } from "react-native-svg";
 import RAnimated, {
@@ -22,6 +22,7 @@ import RAnimated, {
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { bgGradientColors, gradientColors, type GeoSettings } from "@/data/geometrix-creations";
 import { baseOf, type GeometryId } from "@/data/geometries";
+import { useGeometrixCatalog } from "@/hooks/useGeometrixCatalog";
 import type { SceneAnimation } from "@workspace/api-client-react";
 
 // ── Utilidades de color (copiadas de geometrix.tsx) ────────────────────────
@@ -141,6 +142,7 @@ function AnimatedLayer({
   index,
   motion,
   baseSize,
+  strokeModeMap,
 }: {
   instanceId: string;
   settings: GeoSettings;
@@ -148,6 +150,7 @@ function AnimatedLayer({
   index: number;
   motion: boolean;
   baseSize: number;
+  strokeModeMap: Map<string, "thin" | "natural">;
 }) {
   const {
     rotate, rotateLeft, rotateSpeed,
@@ -228,6 +231,8 @@ function AnimatedLayer({
   }));
 
   const geoId = baseOf(instanceId) as GeometryId;
+  // strokeMode del catálogo: "thin" → strokeScale 0.45 (igual que Geometrix)
+  const thinFactor = strokeModeMap.get(geoId) === "thin" ? 0.45 : 1;
 
   return (
     <RAnimated.View style={[s.layer, aStyle]} pointerEvents="none">
@@ -241,11 +246,11 @@ function AnimatedLayer({
         <>
           <View style={[s.layer, { opacity: 0.14 * safeBloom }]} pointerEvents="none">
             <SacredGlyph id={geoId} color={bloomColor} size={effectiveSize}
-              kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs} />
+              strokeScale={thinFactor} kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs} />
           </View>
           <View style={[s.layer, { opacity: 0.22 * safeBloom }]} pointerEvents="none">
             <SacredGlyph id={geoId} color={bloomColor} size={effectiveSize}
-              kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs} />
+              strokeScale={thinFactor} kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs} />
           </View>
         </>
       )}
@@ -253,22 +258,23 @@ function AnimatedLayer({
         <>
           <View style={[s.layer, { opacity: 0.16 * safeGeoGlow }]} pointerEvents="none">
             <SacredGlyph id={geoId} color={dispColor} gradient={dispGrad} size={effectiveSize}
-              kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs} />
+              strokeScale={thinFactor} kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs} />
           </View>
           <View style={[s.layer, { opacity: 0.26 * safeGeoGlow }]} pointerEvents="none">
             <SacredGlyph id={geoId} color={dispColor} gradient={dispGrad} size={effectiveSize}
-              kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs} />
+              strokeScale={thinFactor} kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs} />
           </View>
         </>
       )}
       {safeExpansion > 0 && motion && (
         <ExpansionEcho geoId={geoId} color={dispColor} grad={dispGrad}
-          size={effectiveSize} kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs}
+          size={effectiveSize} strokeScale={thinFactor}
+          kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs}
           amount={safeExpansion} />
       )}
       <View style={s.layer} pointerEvents="none">
         <SacredGlyph id={geoId} color={dispColor} gradient={dispGrad} size={effectiveSize}
-          kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs} />
+          strokeScale={thinFactor} kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs} />
       </View>
     </RAnimated.View>
   );
@@ -297,6 +303,14 @@ interface Props {
 export function SceneAnimationInline({ scene, height, onPress, style }: Props) {
   const fadeAnim = useRef(new Animated.Value(scene ? 0 : 1)).current;
   const prevSceneId = useRef<number | null>(null);
+
+  // strokeModeMap: geometryId → "thin" | "natural", desde el catálogo del servidor.
+  // Si aún carga, defaultea a "natural" (strokeScale=1) → no rompe el render.
+  const { geometries: catalogGeos } = useGeometrixCatalog();
+  const strokeModeMap = useMemo(
+    () => new Map(catalogGeos.map((g) => [g.id, g.strokeMode])),
+    [catalogGeos],
+  );
 
   useEffect(() => {
     if (!scene) return;
@@ -346,6 +360,7 @@ export function SceneAnimationInline({ scene, height, onPress, style }: Props) {
               index={i}
               motion={motion}
               baseSize={baseSize}
+              strokeModeMap={strokeModeMap}
             />
           );
         })}
