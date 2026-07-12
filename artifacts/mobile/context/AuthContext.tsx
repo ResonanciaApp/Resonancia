@@ -135,7 +135,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       clerkUserId: clerkUser?.id ?? null,
       role,
       isCreator: role === "creator" || role === "admin",
-      isAdmin: role === "admin",
+      isAdmin:
+        role === "admin" ||
+        (__DEV__ && process.env.EXPO_PUBLIC_DEV_ADMIN === "true"),
       register,
       logout,
     };
