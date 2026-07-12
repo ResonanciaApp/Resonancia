@@ -10,73 +10,27 @@ import {
   Text,
   View,
 } from "react-native";
-import Svg, {
-  Circle,
-  Defs,
-  LinearGradient as SvgGradient,
-  Stop,
-} from "react-native-svg";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getSessionById } from "@/data/sessions";
+import { WaveStreakStrip } from "@/components/WaveStreakStrip";
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-const DAY_LABELS = ["L", "M", "M", "J", "V", "S", "D"];
-const GOAL_DAYS  = 3;
-const RING_R     = 54;
-const RING_CX    = 72;
-const RING_CY    = 72;
-const CIRCUMFERENCE = 2 * Math.PI * RING_R;
-
-function dayKey(d: Date) {
-  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-}
-function startOfWeek(d: Date): Date {
-  const copy = new Date(d);
-  copy.setHours(0, 0, 0, 0);
-  const dow = copy.getDay();
-  copy.setDate(copy.getDate() + (dow === 0 ? -6 : 1 - dow));
-  return copy;
-}
-
-// ─── Props ────────────────────────────────────────────────────────────────────
 interface Props {
   visible: boolean;
   onClose: () => void;
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
 export function ProgresoModal({ visible, onClose }: Props) {
   const insets = useSafeAreaInsets();
   const { statEvents } = usePlayer();
   const { theme } = useSceneTheme();
 
-  const grad0 = "#F7CB6B";
-  const grad1 = "#FBA980";
+  // Gradiente del fondo = mismo que la pantalla de Inicio activa
+  const bgColors = theme.gradient as unknown as [string, string, ...string[]];
 
-  const { weekCount, activeFlags, todayIndex, recentSessions } = useMemo(() => {
-    const byDay = new Map<string, number>();
-    for (const e of statEvents) {
-      const k = dayKey(new Date(e.playedAt));
-      byDay.set(k, (byDay.get(k) ?? 0) + (e.minutes ?? 0));
-    }
-    const today  = new Date();
-    const monday = startOfWeek(today);
-    const flags: boolean[] = [];
-    let weekCnt  = 0;
-    let todayIdx = 0;
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(monday);
-      d.setDate(monday.getDate() + i);
-      const met = (byDay.get(dayKey(d)) ?? 0) >= 5;
-      flags.push(met);
-      if (met) weekCnt++;
-      if (dayKey(d) === dayKey(today)) todayIdx = i;
-    }
-
-    // Historial: dedup por sessionId (más reciente), luego ordenado por playedAt desc
+  const recentSessions = useMemo(() => {
     const byId = new Map<string, { sessionId: string; playedAt: string }>();
     for (const e of statEvents) {
       const existing = byId.get(e.sessionId);
@@ -84,18 +38,12 @@ export function ProgresoModal({ visible, onClose }: Props) {
         byId.set(e.sessionId, { sessionId: e.sessionId, playedAt: e.playedAt });
       }
     }
-    const sorted = [...byId.values()].sort(
-      (a, b) => new Date(b.playedAt).getTime() - new Date(a.playedAt).getTime()
-    );
-    const sessions = sorted
+    return [...byId.values()]
+      .sort((a, b) => new Date(b.playedAt).getTime() - new Date(a.playedAt).getTime())
       .map((e) => getSessionById(e.sessionId))
       .filter((s): s is NonNullable<typeof s> => s != null)
       .slice(0, 20);
-
-    return { weekCount: weekCnt, activeFlags: flags, todayIndex: todayIdx, recentSessions: sessions };
   }, [statEvents]);
-
-  const dashOffset = CIRCUMFERENCE * (1 - weekCount / 7);
 
   return (
     <Modal
@@ -104,10 +52,7 @@ export function ProgresoModal({ visible, onClose }: Props) {
       presentationStyle="pageSheet"
       onRequestClose={onClose}
     >
-      <LinearGradient
-        colors={["#1B060F", "#27070E", "#1B060F"]}
-        style={{ flex: 1 }}
-      >
+      <LinearGradient colors={bgColors} style={{ flex: 1 }}>
         {/* ── Header ── */}
         <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
           <Pressable onPress={onClose} hitSlop={10} style={styles.closeBtn}>
@@ -116,7 +61,7 @@ export function ProgresoModal({ visible, onClose }: Props) {
           <View style={styles.headerCenter}>
             <Text style={styles.title}>Tu progreso</Text>
             <Text style={styles.subtitle}>
-              Medita al menos {GOAL_DAYS} días a la semana y transforma tu vida
+              Medita al menos 3 días a la semana y transforma tu vida
             </Text>
           </View>
           <View style={{ width: 38 }} />
@@ -129,82 +74,8 @@ export function ProgresoModal({ visible, onClose }: Props) {
           {/* ── Esta semana ── */}
           <Text style={styles.sectionLabel}>ESTA SEMANA</Text>
 
-          {/* ── Círculo de progreso ── */}
-          <View style={styles.ringWrap}>
-            <Svg width={RING_CX * 2} height={RING_CY * 2}>
-              <Defs>
-                <SvgGradient id="pmRingGrad" x1="0" y1="0" x2="1" y2="1">
-                  <Stop offset="0" stopColor={grad0} stopOpacity="1" />
-                  <Stop offset="1" stopColor={grad1} stopOpacity="1" />
-                </SvgGradient>
-              </Defs>
-              {/* Track */}
-              <Circle
-                cx={RING_CX}
-                cy={RING_CY}
-                r={RING_R}
-                stroke="rgba(255,255,255,0.10)"
-                strokeWidth={7}
-                fill="none"
-              />
-              {/* Progress */}
-              <Circle
-                cx={RING_CX}
-                cy={RING_CY}
-                r={RING_R}
-                stroke="url(#pmRingGrad)"
-                strokeWidth={7}
-                strokeLinecap="round"
-                fill="none"
-                strokeDasharray={`${CIRCUMFERENCE}`}
-                strokeDashoffset={dashOffset}
-                rotation="-90"
-                origin={`${RING_CX}, ${RING_CY}`}
-              />
-            </Svg>
-            <View style={styles.ringCenter} pointerEvents="none">
-              <Text style={styles.ringCount}>{weekCount}</Text>
-              <Text style={styles.ringLabel}>Días</Text>
-            </View>
-          </View>
-
-          {/* ── Días de la semana ── */}
-          <View style={styles.daysRow}>
-            {DAY_LABELS.map((label, i) => {
-              const met     = activeFlags[i];
-              const isToday = i === todayIndex;
-              return (
-                <View key={i} style={styles.dayCol}>
-                  {met ? (
-                    <View style={[styles.dayCircle, styles.dayCircleMet]}>
-                      <Feather name="check" size={18} color="rgba(255,255,255,0.9)" />
-                    </View>
-                  ) : isToday ? (
-                    <View style={styles.dayCircleToday}>
-                      <Svg width={39} height={39} style={StyleSheet.absoluteFill}>
-                        <Defs>
-                          <SvgGradient id="pmTodayGrad" x1="0.5" y1="0" x2="0.5" y2="1">
-                            <Stop offset="0" stopColor={grad0} stopOpacity="0.78" />
-                            <Stop offset="1" stopColor={grad1} stopOpacity="0.70" />
-                          </SvgGradient>
-                        </Defs>
-                        <Circle cx={19.5} cy={19.5} r={17.5} stroke="url(#pmTodayGrad)" strokeWidth={2} fill="rgba(255,255,255,0.12)" />
-                      </Svg>
-                    </View>
-                  ) : (
-                    <View style={styles.dayCircleInactive} />
-                  )}
-                  <Text style={[
-                    styles.dayLabel,
-                    met && styles.dayLabelMet,
-                    isToday && !met && styles.dayLabelToday,
-                  ]}>
-                    {label}
-                  </Text>
-                </View>
-              );
-            })}
-          </View>
+          {/* ── Ondas + días (WaveStreakStrip) ── */}
+          <WaveStreakStrip />
 
           {/* ── Divider ── */}
           <View style={styles.divider} />
@@ -246,13 +117,12 @@ export function ProgresoModal({ visible, onClose }: Props) {
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "flex-start",
     paddingHorizontal: 20,
-    paddingBottom: 12,
+    paddingBottom: 8,
   },
   closeBtn: {
     width: 38,
@@ -287,8 +157,8 @@ const styles = StyleSheet.create({
 
   content: {
     alignItems: "center",
-    paddingHorizontal: 24,
-    paddingTop: 20,
+    paddingHorizontal: 0,
+    paddingTop: 12,
   },
 
   sectionLabel: {
@@ -297,85 +167,14 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "rgba(255,255,255,0.45)",
     letterSpacing: 1.8,
-    marginBottom: 20,
-  },
-
-  ringWrap: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 24,
-  },
-  ringCenter: {
-    position: "absolute",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  ringCount: {
-    fontFamily: "Manrope",
-    fontSize: 42,
-    fontWeight: "700",
-    color: "#F4DAD5",
-    lineHeight: 46,
-  },
-  ringLabel: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "400",
-    color: "rgba(244,218,213,0.55)",
-    marginTop: 2,
-  },
-
-  daysRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    marginBottom: 28,
-  },
-  dayCol: {
-    alignItems: "center",
-    gap: 6,
-    flex: 1,
-  },
-  dayCircle: {
-    width: 39,
-    height: 39,
-    borderRadius: 19.5,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  dayCircleMet: {
-    backgroundColor: "rgba(255,255,255,0.18)",
-  },
-  dayCircleToday: {
-    width: 39,
-    height: 39,
-    borderRadius: 19.5,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  dayCircleInactive: {
-    width: 37,
-    height: 37,
-    borderRadius: 18.5,
-    backgroundColor: "rgba(255,255,255,0.10)",
-  },
-  dayLabel: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "600",
-    color: "rgba(255,255,255,0.4)",
-  },
-  dayLabelMet: {
-    color: "#F4DAD5",
-  },
-  dayLabelToday: {
-    color: "#F4DAD5",
+    marginBottom: 4,
   },
 
   divider: {
     width: "100%",
     height: 1,
     backgroundColor: "rgba(255,255,255,0.08)",
+    marginTop: 8,
     marginBottom: 20,
   },
 
@@ -386,6 +185,7 @@ const styles = StyleSheet.create({
     color: "rgba(244,218,213,0.8)",
     alignSelf: "flex-start",
     marginBottom: 14,
+    paddingHorizontal: 20,
   },
 
   emptyWrap: {
@@ -404,6 +204,7 @@ const styles = StyleSheet.create({
   sessionList: {
     width: "100%",
     gap: 4,
+    paddingHorizontal: 20,
   },
   sessionRow: {
     flexDirection: "row",
