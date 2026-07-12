@@ -1684,6 +1684,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 18,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
   },
   resBannerCircle1: {
     position: "absolute",
