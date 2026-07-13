@@ -73,7 +73,6 @@ import Svg, {
 } from "react-native-svg";
 
 import { GeometrixPatternBg } from "@/components/GeometrixPatternBg";
-import { LandingBgGeo } from "@/components/LandingBgGeo";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import {
@@ -6176,12 +6175,6 @@ export default function GeometrixScreen() {
             end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFill}
           />
-
-          {/* Geometrías sagradas animadas en el fondo. Solo mientras la pestaña
-              tiene foco: las tabs quedan montadas al navegar a otra, y estos 12
-              loops infinitos (withRepeat) seguían consumiendo CPU de fondo →
-              lag en el resto de la app. Al desenfocar se desmonta (cancela). */}
-          {tabFocused && <LandingBgGeo />}
 
           {/* Botón volver */}
           <Pressable
