@@ -1,4 +1,4 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
@@ -46,8 +46,12 @@ import { MOODS, MOOD_SOUND_TAGS, type MoodId } from "@/data/moods";
 import {
   DEFAULT_MIXER_BG_PALETTE,
   getMixerBgPalette,
+  MIXER_BG_PALETTES,
   type MixerBgPaletteId,
 } from "@/data/mixer-bg-palettes";
+import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
+import { useGetSharedMixes } from "@workspace/api-client-react";
+import type { SharedMix } from "@workspace/api-client-react";
 import {
   DEFAULT_BG_PRESET_ID,
   emitBgPresetChange,
@@ -453,6 +457,94 @@ const bpmStyles = StyleSheet.create({
   },
 });
 
+// ── ComunidadPanel (tab Comunidad del menú inline) ────────────────────────────
+const GRID_GAP = 12;
+const COMM_CARD_W = (SCREEN_W - 30 - GRID_GAP) / 2;
+
+function ComunidadPanel({ commCat, setCommCat, onClose }: {
+  commCat: MixCategory | null;
+  setCommCat: (c: MixCategory | null) => void;
+  onClose: () => void;
+}) {
+  const { loadPreset } = useMixer();
+  const { data, isLoading } = useGetSharedMixes(
+    commCat ? { category: commCat } : undefined,
+  );
+  const mixes: SharedMix[] = data?.mixes ?? [];
+
+  return (
+    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.menuPanelBody}>
+      {/* Chips de categoría */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingBottom: 14 }}>
+        {MIX_CATEGORIES.map((cat) => {
+          const sel = commCat === cat.id;
+          return (
+            <Pressable
+              key={cat.id}
+              onPress={() => setCommCat(sel ? null : cat.id)}
+              style={({ pressed }) => [styles.commChip, { opacity: pressed ? 0.75 : 1 }]}
+            >
+              <LinearGradient
+                colors={sel ? ["#D6A45C", "#F7CB6B"] : ["rgba(255,255,255,0.06)", "rgba(255,255,255,0.06)"]}
+                start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <Feather name={cat.icon as any} size={13} color={sel ? "#1B060F" : GOLD} />
+              <Text style={[styles.commChipText, { color: sel ? "#1B060F" : GOLD }]}>{cat.label}</Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+
+      {/* Grid de mezclas */}
+      {isLoading ? (
+        <View style={{ alignItems: "center", paddingTop: 40 }}>
+          <Text style={{ color: "rgba(255,255,255,0.45)", fontFamily: "Manrope", fontSize: 13 }}>Cargando…</Text>
+        </View>
+      ) : mixes.length === 0 ? (
+        <View style={{ alignItems: "center", paddingTop: 40, gap: 8 }}>
+          <Feather name="music" size={28} color="rgba(255,255,255,0.25)" />
+          <Text style={{ color: "rgba(255,255,255,0.45)", fontFamily: "Manrope", fontSize: 13 }}>Sin mezclas en esta categoría</Text>
+        </View>
+      ) : (
+        <View style={styles.commGrid}>
+          {mixes.map((mix) => {
+            const catMeta = MIX_CATEGORIES.find((c) => c.id === mix.category);
+            return (
+              <Pressable
+                key={mix.id}
+                onPress={() => {
+                  if (mix.sounds) loadPreset(mix.sounds as any);
+                  onClose();
+                }}
+                style={({ pressed }) => [styles.commCard, { width: COMM_CARD_W, opacity: pressed ? 0.82 : 1 }]}
+              >
+                <View style={styles.commCardImg}>
+                  {catMeta ? (
+                    <Image source={catMeta.image} style={StyleSheet.absoluteFill} contentFit="cover" />
+                  ) : (
+                    <LinearGradient colors={["#1B060F", "#2E0A18"]} style={StyleSheet.absoluteFill}>
+                      <Feather name="music" size={22} color="rgba(212,175,55,0.5)" />
+                    </LinearGradient>
+                  )}
+                  {mix.likes > 0 && (
+                    <View style={styles.commLikeBadge}>
+                      <AntDesign name="heart" size={9} color="#fff" />
+                      <Text style={styles.commLikeBadgeText}>{mix.likes}</Text>
+                    </View>
+                  )}
+                </View>
+                <Text style={styles.commCardTitle} numberOfLines={2}>{mix.name}</Text>
+                <Text style={styles.commCardAuthor} numberOfLines={1}>{mix.author?.displayName ?? "Anónimo"}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      )}
+    </ScrollView>
+  );
+}
+
 // ── PANTALLA ──────────────────────────────────────────────────────────────────
 export default function MezcladorScreen() {
   const insets      = useSafeAreaInsets();
@@ -487,8 +579,32 @@ export default function MezcladorScreen() {
   const [contentDir,     setContentDir]     = useState<"right" | "left">("right");
   const [subTabAnimKey,  setSubTabAnimKey]  = useState(0);
 
+  // ── Menú inline (3 puntitos) ──
+  const [menuOpen, setMenuOpen]   = useState(false);
+  const [menuTab,  setMenuTab]    = useState<"comunidad" | "filtros">("comunidad");
+  const [commCat,  setCommCat]    = useState<MixCategory | null>(null);
+  const menuSlide = useRef(new Animated.Value(300)).current;
+  const menuFade  = useRef(new Animated.Value(0)).current;
+
+  const openMenu = (tab: "comunidad" | "filtros") => {
+    setMenuTab(tab);
+    setMenuOpen(true);
+    menuSlide.setValue(260);
+    menuFade.setValue(0);
+    Animated.parallel([
+      Animated.timing(menuSlide, { toValue: 0, duration: 260, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+      Animated.timing(menuFade,  { toValue: 1, duration: 200, useNativeDriver: true }),
+    ]).start();
+  };
+
+  const closeMenu = () => {
+    Animated.parallel([
+      Animated.timing(menuSlide, { toValue: 260, duration: 220, easing: Easing.in(Easing.quad), useNativeDriver: true }),
+      Animated.timing(menuFade,  { toValue: 0, duration: 180, useNativeDriver: true }),
+    ]).start(() => setMenuOpen(false));
+  };
+
   // ── Ajustes del Mezclador (filtros: tema + etiquetas) ──
-  const [settingsVisible, setSettingsVisible] = useState(false);
   const [moodFilter,      setMoodFilter]      = useState<MoodId | null>(null);
   const [tagFilters,      setTagFilters]      = useState<SoundTagId[]>([]);
   const settingsLoaded = useRef(false);
@@ -711,22 +827,13 @@ export default function MezcladorScreen() {
                 </View>
                 <View style={[styles.headerActions, { flexDirection: "row", gap: 4 }]}>
                     <Pressable
-                      onPress={() => router.push("/mezclas-comunidad" as never)}
+                      onPress={() => openMenu("comunidad")}
                       style={{ width: 43, height: 43, borderRadius: 21.5, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center" }}
                       hitSlop={8}
                       accessibilityRole="button"
-                      accessibilityLabel="Mezclas de la comunidad"
+                      accessibilityLabel="Menú del Mezclador"
                     >
-                      <MaterialCommunityIcons name="account-group" size={24} color="#FBFBFB" style={{ transform: [{ translateX: 1 }, { translateY: -1 }] }} />
-                    </Pressable>
-                    <Pressable
-                      onPress={() => setSettingsVisible(true)}
-                      style={{ width: 43, height: 43, borderRadius: 21.5, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center" }}
-                      hitSlop={8}
-                      accessibilityRole="button"
-                      accessibilityLabel="Filtros del Mezclador"
-                    >
-                      <MaterialCommunityIcons name="filter-variant" size={24} color="#FBFBFB" style={{ transform: [{ translateX: 1 }, { translateY: 1 }] }} />
+                      <MaterialCommunityIcons name="dots-horizontal" size={26} color="#FBFBFB" />
                     </Pressable>
                 </View>
               </View>
@@ -878,20 +985,113 @@ export default function MezcladorScreen() {
         </View>
       </View>
 
-      <MixerSettingsSheet
-        visible={settingsVisible}
-        onClose={() => setSettingsVisible(false)}
-        tagFilters={tagFilters}
-        onToggleTag={toggleTagFilter}
-        bgPaletteId={bgPaletteId}
-        onBgPaletteChange={(id) => {
-          setBgPaletteId(id);
-          // Sincroniza el fondo de "Tu Mezcla" con la escena elegida
-          emitBgPresetChange(id === "noche" ? "oscuro" : DEFAULT_BG_PRESET_ID);
-        }}
-        onClear={clearForMode}
-        bgColor={theme.gradient[0]}
-      />
+      {/* ── Backdrop + panel inline ── */}
+      {menuOpen && (
+        <Pressable style={[StyleSheet.absoluteFill, { zIndex: 40, backgroundColor: "rgba(0,0,0,0.45)" }]} onPress={closeMenu} />
+      )}
+      <Animated.View
+        pointerEvents={menuOpen ? "box-none" : "none"}
+        style={[
+          styles.menuPanel,
+          { transform: [{ translateY: menuSlide }], opacity: menuFade },
+        ]}
+      >
+        {/* ── Tab bar del panel ── */}
+        <View style={styles.menuPanelHeader}>
+          <View style={styles.menuPanelTabs}>
+            {(["comunidad", "filtros"] as const).map((t) => (
+              <Pressable key={t} onPress={() => setMenuTab(t)} style={[styles.menuPanelTab, menuTab === t && styles.menuPanelTabSel]}>
+                <Text style={[styles.menuPanelTabText, menuTab === t && styles.menuPanelTabTextSel]}>
+                  {t === "comunidad" ? "Comunidad" : "Filtros"}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+          <Pressable onPress={closeMenu} hitSlop={10} style={styles.menuPanelClose}>
+            <MaterialCommunityIcons name="close" size={20} color="rgba(255,255,255,0.55)" />
+          </Pressable>
+        </View>
+
+        {menuTab === "filtros" ? (
+          /* ── Tab: Filtros ── */
+          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.menuPanelBody}>
+            <Text style={styles.menuSectionTitle}>Tema</Text>
+            <View style={styles.swatchRow}>
+              {MIXER_BG_PALETTES.map((p) => {
+                const sel = bgPaletteId === p.id;
+                return (
+                  <Pressable
+                    key={p.id}
+                    onPress={() => {
+                      setBgPaletteId(p.id);
+                      emitBgPresetChange(p.id === "noche" ? "oscuro" : DEFAULT_BG_PRESET_ID);
+                    }}
+                    style={styles.swatchItem}
+                    hitSlop={6}
+                  >
+                    <LinearGradient
+                      colors={p.colors}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={[styles.swatchCircle, sel && styles.swatchCircleSel]}
+                    >
+                      {sel && <Text style={[styles.swatchCheck, { color: p.id === "noche" ? "#FFFFFF" : "#5C1A1A" }]}>✓</Text>}
+                    </LinearGradient>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginTop: 6 }}>
+                      <MaterialCommunityIcons
+                        name={p.id === "arena" ? "white-balance-sunny" : "moon-waning-crescent"}
+                        size={11}
+                        color={sel ? GOLD : "rgba(255,255,255,0.5)"}
+                      />
+                      <Text style={[styles.swatchLabel, { color: sel ? GOLD : "rgba(255,255,255,0.5)" }, sel && styles.swatchLabelSel]} numberOfLines={1}>
+                        {p.label}
+                      </Text>
+                    </View>
+                  </Pressable>
+                );
+              })}
+            </View>
+
+            <Text style={[styles.menuSectionTitle, { marginTop: 22 }]}>Etiquetas</Text>
+            <View style={styles.menuChipWrap}>
+              {SOUND_TAGS.map((tag) => {
+                const sel = tagFilters.includes(tag.id);
+                return (
+                  <Pressable
+                    key={tag.id}
+                    onPress={() => toggleTagFilter(tag.id)}
+                    style={({ pressed }) => [
+                      styles.menuChip,
+                      { backgroundColor: sel ? "rgba(190,150,80,0.22)" : "rgba(255,255,255,0.07)", borderColor: sel ? GOLD : "rgba(255,255,255,0.18)", opacity: pressed ? 0.8 : 1 },
+                    ]}
+                  >
+                    <Text style={[styles.menuChipText, { color: sel ? GOLD : "rgba(255,255,255,0.9)", fontWeight: sel ? "700" : "500" }]}>
+                      {tag.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+
+            <Pressable
+              onPress={clearForMode}
+              disabled={tagFilters.length === 0 && bgPaletteId === DEFAULT_MIXER_BG_PALETTE}
+              style={({ pressed }) => [
+                styles.menuClearBtn,
+                (tagFilters.length === 0 && bgPaletteId === DEFAULT_MIXER_BG_PALETTE) && styles.menuClearBtnDisabled,
+                { opacity: pressed ? 0.8 : 1 },
+              ]}
+            >
+              <Text style={[styles.menuClearBtnText, (tagFilters.length === 0 && bgPaletteId === DEFAULT_MIXER_BG_PALETTE) && { color: "rgba(255,255,255,0.4)" }]}>
+                Limpiar filtros
+              </Text>
+            </Pressable>
+          </ScrollView>
+        ) : (
+          /* ── Tab: Comunidad ── */
+          <ComunidadPanel commCat={commCat} setCommCat={setCommCat} onClose={closeMenu} />
+        )}
+      </Animated.View>
 
     </View>
   );
@@ -1078,4 +1278,102 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.5)",
     alignItems: "center", justifyContent: "center",
   },
+
+  // ── Menú inline (3 puntitos) ──────────────────────────────────────────────
+  menuPanel: {
+    position: "absolute",
+    bottom: 0, left: 0, right: 0,
+    height: "72%",
+    zIndex: 50,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor: "#1A1020",
+    overflow: "hidden",
+  },
+  menuPanelHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 18,
+    paddingTop: 14,
+    paddingBottom: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "rgba(255,255,255,0.10)",
+  },
+  menuPanelTabs: { flex: 1, flexDirection: "row", gap: 6 },
+  menuPanelTab: {
+    paddingHorizontal: 14, paddingVertical: 6,
+    borderRadius: 999,
+    backgroundColor: "transparent",
+  },
+  menuPanelTabSel: { backgroundColor: "rgba(255,255,255,0.10)" },
+  menuPanelTabText: {
+    fontFamily: "Manrope", fontSize: 14, fontWeight: "500",
+    color: "rgba(255,255,255,0.45)",
+  },
+  menuPanelTabTextSel: { color: "#F4DAD5", fontWeight: "700" },
+  menuPanelClose: {
+    width: 32, height: 32, alignItems: "center", justifyContent: "center",
+  },
+  menuPanelBody: { paddingHorizontal: 16, paddingTop: 14, paddingBottom: 30 },
+
+  menuSectionTitle: {
+    fontFamily: "Manrope", fontSize: 13, fontWeight: "700",
+    color: "rgba(255,255,255,0.55)", letterSpacing: 0.5,
+    textTransform: "uppercase", marginBottom: 12,
+  },
+  swatchRow:  { flexDirection: "row", gap: 22, marginBottom: 6 },
+  swatchItem: { alignItems: "center" },
+  swatchCircle: {
+    width: 36, height: 36, borderRadius: 18,
+    borderWidth: 2, borderColor: "rgba(0,0,0,0.08)",
+    alignItems: "center", justifyContent: "center",
+  },
+  swatchCircleSel: { borderColor: GOLD },
+  swatchCheck:  { fontFamily: "Manrope", fontSize: 14, fontWeight: "900" },
+  swatchLabel:  { fontFamily: "Manrope", fontSize: 11, fontWeight: "500" },
+  swatchLabelSel: { fontWeight: "700" },
+
+  menuChipWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  menuChip: {
+    paddingHorizontal: 14, paddingVertical: 9,
+    borderRadius: 999, borderWidth: 1.5,
+  },
+  menuChipText: { fontFamily: "Manrope", fontSize: 13 },
+
+  menuClearBtn: {
+    marginTop: 18, borderRadius: 40, paddingVertical: 13,
+    alignItems: "center", backgroundColor: GOLD,
+  },
+  menuClearBtnDisabled: { backgroundColor: "rgba(190,150,80,0.18)" },
+  menuClearBtnText: {
+    fontFamily: "Manrope", fontSize: 14, fontWeight: "700", color: "#1B060F",
+  },
+
+  // ── Comunidad (tab inline) ─────────────────────────────────────────────────
+  commChip: {
+    flexDirection: "row", alignItems: "center", gap: 5,
+    paddingHorizontal: 13, paddingVertical: 7,
+    borderRadius: 999, overflow: "hidden",
+    borderWidth: 1, borderColor: "rgba(247,203,107,0.3)",
+  },
+  commChipText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600" },
+  commGrid: {
+    flexDirection: "row", flexWrap: "wrap",
+    gap: GRID_GAP, justifyContent: "space-between",
+  },
+  commCard: { gap: 5 },
+  commCardImg: {
+    width: "100%", aspectRatio: 1, borderRadius: 10, overflow: "hidden",
+    alignItems: "center", justifyContent: "center",
+    backgroundColor: "#1B060F",
+  },
+  commCardTitle:  { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#FBFBFB", lineHeight: 18 },
+  commCardAuthor: { fontFamily: "Manrope", fontSize: 11, color: "#c2c2c2" },
+  commLikeBadge: {
+    position: "absolute", bottom: 6, left: 6,
+    flexDirection: "row", alignItems: "center", gap: 3,
+    backgroundColor: "rgba(27,6,15,0.72)", borderRadius: 7,
+    paddingHorizontal: 6, paddingVertical: 3,
+  },
+  commLikeBadgeText: { fontFamily: "Manrope", fontSize: 10, fontWeight: "700", color: "#fff" },
 });
