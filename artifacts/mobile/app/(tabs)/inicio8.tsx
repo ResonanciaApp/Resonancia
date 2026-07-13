@@ -1252,14 +1252,14 @@ export default function HomeScreen2() {
       {/* ── Modo inmersivo — animación centrada, fade in/out ── */}
       {headerScene && (
         <Animated.View
-          style={[StyleSheet.absoluteFill, { opacity: immersiveAnim }]}
+          style={[StyleSheet.absoluteFill, { opacity: immersiveAnim, justifyContent: "center" }]}
           pointerEvents={immersive ? "box-none" : "none"}
         >
           <SceneAnimationInline
             scene={headerScene}
-            height={height}
+            height={300}
             onPress={toggleImmersive}
-            style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+            style={{ left: -16, right: -16 }}
           />
         </Animated.View>
       )}
