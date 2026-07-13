@@ -1163,7 +1163,7 @@ export default function HomeScreen2() {
                       />
                     )
                   ) : (
-                    <CardTint />
+                    <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: "rgba(255,255,255,0.07)" }]} />
                   )}
                   <Text
                     style={[
