@@ -334,9 +334,7 @@ export function EscenasSheet() {
 
 
 
-          <View style={styles.divider} />
-
-          <View style={[styles.sceneTitleRow, { justifyContent: "space-between", marginBottom: 0 }]}>
+          <View style={[styles.sceneTitleRow, { justifyContent: "space-between", marginBottom: 14 }]}>
             <Text style={styles.sceneTitle}>Color</Text>
             <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
               {AMBIENT_SCENES.slice(0, 4).map((scene) => {
@@ -351,11 +349,11 @@ export function EscenasSheet() {
                   >
                     <View
                       style={{
-                        width: 17,
-                        height: 17,
-                        borderRadius: 8.5,
+                        width: 34,
+                        height: 34,
+                        borderRadius: 17,
                         overflow: "hidden",
-                        borderWidth: 1.5,
+                        borderWidth: 2,
                         borderColor: isActive ? "rgba(255,255,255,0.85)" : "transparent",
                       }}
                     >
@@ -371,6 +369,8 @@ export function EscenasSheet() {
               })}
             </View>
           </View>
+
+          <View style={styles.divider} />
 
           {/* ── Escenas animadas (Geometrix) ── */}
           {geoScenes.length > 0 && (
