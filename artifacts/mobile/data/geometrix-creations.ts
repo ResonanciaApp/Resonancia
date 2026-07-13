@@ -111,8 +111,8 @@ export type GeometrixAudio = { moduleKey: string; trackId: string } | null;
 // fondo y brillo. Así la miniatura coincide con lo que se ve al reabrir.
 // ───────────────────────────────────────────────────────────────────────────
 
-/** Degradado por defecto del lienzo (fondo de Inicio). */
-export const HOME_GRADIENT = ["#10091F", "#0E071A", "#070512"] as const;
+/** Degradado por defecto del lienzo — tema Universo (Tibet), 4 stops. */
+export const HOME_GRADIENT = ["#2d1c52", "#24245d", "#1f2a62", "#2d4081"] as const;
 
 /** Degradado del header del canvas (+3% lightness sobre HOME_GRADIENT). */
 export const HEADER_GRADIENT = ["#140D23", "#10091F", "#0A0717"] as const;

@@ -6171,7 +6171,7 @@ export default function GeometrixScreen() {
         <View style={styles.landingOverlay}>
           <LinearGradient
             colors={HOME_GRADIENT}
-            locations={[0, 0.5, 1]}
+            locations={[0, 0.33, 0.66, 1]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFill}
