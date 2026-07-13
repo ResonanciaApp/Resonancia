@@ -396,7 +396,7 @@ export function EscenasSheet() {
                   flexDirection: "row",
                   flexWrap: "wrap",
                   gap: 12,
-                  marginTop: 14,
+                  marginTop: 4,
                   justifyContent: "center",
                 }}
               >
@@ -405,7 +405,7 @@ export function EscenasSheet() {
                     key={scene.id}
                     scene={scene}
                     size={Math.floor((SCREEN_W - SHEET_H_PAD * 2 - 12) / 2 * 0.8) + 31}
-                    height={Math.round((Math.floor((SCREEN_W - SHEET_H_PAD * 2 - 12) / 2 * 0.8) + 31) * 1.32) - 10}
+                    height={Math.round((Math.floor((SCREEN_W - SHEET_H_PAD * 2 - 12) / 2 * 0.8) + 31) * 1.32) - 17}
                     onPress={() => {
                       setBgScene(scene);
                       handleClose();
