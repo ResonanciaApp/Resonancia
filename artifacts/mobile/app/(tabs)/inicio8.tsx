@@ -27,8 +27,10 @@ import RAnimated, {
   useAnimatedStyle,
   useSharedValue,
   withDelay,
+  withSpring,
   withTiming,
 } from "react-native-reanimated";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
@@ -369,6 +371,34 @@ export default function HomeScreen2() {
       useNativeDriver: true,
     }).start();
   }, [immersiveAnim, requestHide, showMenu]);
+
+  // ── Zoom del modo inmersivo (pinch) ───────────────────────────────────────
+  const pinchScale = useSharedValue(1);
+  const lastScale  = useSharedValue(1);
+
+  const pinchGesture = Gesture.Pinch()
+    .onUpdate((e) => {
+      pinchScale.value = Math.max(0.4, Math.min(3.5, lastScale.value * e.scale));
+    })
+    .onEnd(() => {
+      const clamped = Math.max(0.5, Math.min(3, pinchScale.value));
+      pinchScale.value = withSpring(clamped, { damping: 18, stiffness: 220 });
+      lastScale.value = clamped;
+    });
+
+  // Doble-tap: resetear zoom a 1×
+  const doubleTap = Gesture.Tap()
+    .numberOfTaps(2)
+    .onEnd(() => {
+      pinchScale.value = withSpring(1, { damping: 18, stiffness: 220 });
+      lastScale.value = 1;
+    });
+
+  const immersiveGesture = Gesture.Simultaneous(pinchGesture, doubleTap);
+
+  const immersiveZoomStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: pinchScale.value }],
+  }));
 
   function handleMoodSelect(moodId: MoodId) {
     setSelectedMood(getMoodById(moodId) ?? null);
@@ -1264,19 +1294,23 @@ export default function HomeScreen2() {
 
       {/* SceneAnimationModal lives at root (_layout.tsx) via SelectedSceneContext */}
 
-      {/* ── Modo inmersivo — animación centrada, fade in/out ── */}
+      {/* ── Modo inmersivo — animación centrada, fade in/out + pinch zoom ── */}
       {headerScene && (
         <Animated.View
           style={[StyleSheet.absoluteFill, { opacity: immersiveAnim, justifyContent: "center" }]}
           pointerEvents={immersive ? "box-none" : "none"}
         >
-          <SceneAnimationInline
-            scene={headerScene}
-            height={300}
-            onPress={toggleImmersive}
-            style={undefined}
-            paused={!tabFocused || !immersive}
-          />
+          <GestureDetector gesture={immersiveGesture}>
+            <RAnimated.View style={[StyleSheet.absoluteFill, { justifyContent: "center" }, immersiveZoomStyle]}>
+              <SceneAnimationInline
+                scene={headerScene}
+                height={300}
+                onPress={toggleImmersive}
+                style={undefined}
+                paused={!tabFocused || !immersive}
+              />
+            </RAnimated.View>
+          </GestureDetector>
         </Animated.View>
       )}
 
