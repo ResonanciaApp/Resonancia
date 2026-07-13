@@ -106,7 +106,7 @@ export function WeekDayDots() {
                   </Defs>
                   <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#wdd${i})`} strokeWidth={2} fill="rgba(255,255,255,0.18)" />
                 </Svg>
-                <Text style={s.labelMet}>{label}</Text>
+                <Text style={s.labelMet}>✓</Text>
               </View>
             ) : isToday ? (
               <View style={s.circleGradientBorder}>
