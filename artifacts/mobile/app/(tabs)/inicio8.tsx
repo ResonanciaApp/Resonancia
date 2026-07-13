@@ -1213,36 +1213,6 @@ export default function HomeScreen2() {
           )}
         </View>
 
-        {/* ── BANNER RESONADORES ── */}
-        <Pressable
-          onPress={() => router.push("/resonadores" as never)}
-          style={{ marginBottom: 35, marginHorizontal: GRID_PAD, marginTop: -21 }}
-        >
-          <View style={styles.resonadoresBanner}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.33)" }]} />
-            <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-              <LinearGradient
-                colors={["rgb(247,203,107)", "rgb(251,169,128)"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={{ width: 44, height: 44, borderRadius: 15, alignItems: "center", justifyContent: "center" }}
-              >
-                <ExpoImage
-                  source={require("@/assets/images/icon-resonadores.png")}
-                  style={{ width: 26, height: 26 }}
-                  contentFit="contain"
-                  tintColor={activeTheme.gradient[1] as string}
-                />
-              </LinearGradient>
-              <View style={{ flex: 1, marginLeft: 25 }}>
-                <Text style={styles.resonadoresBannerTitle}>Conoce nuestros Resonadores</Text>
-                <Text style={styles.resonadoresBannerSub}>La esencia de este espacio</Text>
-              </View>
-              <Feather name="chevron-right" size={20} color="rgba(232,232,232,0.7)" />
-            </View>
-          </View>
-        </Pressable>
-
         {/* ── ESCUCHADAS RECIENTEMENTE ── */}
         <SessionCarousel
           title="Escuchadas recientemente"
@@ -1335,6 +1305,35 @@ export default function HomeScreen2() {
           ))}
         </View>
 
+        {/* ── BANNER RESONADORES ── */}
+        <Pressable
+          onPress={() => router.push("/resonadores" as never)}
+          style={{ marginBottom: 35, marginHorizontal: GRID_PAD, marginTop: 20 }}
+        >
+          <View style={styles.resonadoresBanner}>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.33)" }]} />
+            <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+              <LinearGradient
+                colors={["rgb(247,203,107)", "rgb(251,169,128)"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{ width: 44, height: 44, borderRadius: 15, alignItems: "center", justifyContent: "center" }}
+              >
+                <ExpoImage
+                  source={require("@/assets/images/icon-resonadores.png")}
+                  style={{ width: 26, height: 26 }}
+                  contentFit="contain"
+                  tintColor={activeTheme.gradient[1] as string}
+                />
+              </LinearGradient>
+              <View style={{ flex: 1, marginLeft: 25 }}>
+                <Text style={styles.resonadoresBannerTitle}>Conoce nuestros Resonadores</Text>
+                <Text style={styles.resonadoresBannerSub}>La esencia de este espacio</Text>
+              </View>
+              <Feather name="chevron-right" size={20} color="rgba(232,232,232,0.7)" />
+            </View>
+          </View>
+        </Pressable>
 
         {/* ── BANNER PREMIUM ── */}
         {!isPremium && (
