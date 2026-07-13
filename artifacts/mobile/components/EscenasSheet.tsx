@@ -18,6 +18,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -405,6 +406,7 @@ export function EscenasSheet() {
                     onPress={() => {
                       setBgScene(scene);
                       handleClose();
+                      router.push("/(tabs)/geometrix" as never);
                     }}
                   />
                 ))}
