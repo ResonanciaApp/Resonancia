@@ -908,7 +908,7 @@ export default function HomeScreen2() {
         <View style={{ height: 260, marginTop: 22, overflow: "visible" }} pointerEvents="box-none">
           <SceneAnimationInline
             scene={headerScene}
-            height={300}
+            height={293}
             onPress={headerScene ? toggleImmersive : undefined}
             style={{ position: "absolute", top: 0, left: -16, right: -16 }}
             paused={!tabFocused}
