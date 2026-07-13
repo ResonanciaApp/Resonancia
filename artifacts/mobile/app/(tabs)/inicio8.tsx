@@ -353,6 +353,20 @@ export default function HomeScreen2() {
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
   const [immersive, setImmersive] = useState(false);
+  const immersiveRef = useRef(false);
+  const immersiveAnim = useRef(new Animated.Value(0)).current;
+  const contentOpacity = immersiveAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] });
+  const toggleImmersive = useCallback(() => {
+    const next = !immersiveRef.current;
+    immersiveRef.current = next;
+    setImmersive(next);
+    Animated.timing(immersiveAnim, {
+      toValue: next ? 1 : 0,
+      duration: 700,
+      easing: RNEasing.out(RNEasing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [immersiveAnim]);
 
   function handleMoodSelect(moodId: MoodId) {
     setSelectedMood(getMoodById(moodId) ?? null);
@@ -775,6 +789,9 @@ export default function HomeScreen2() {
         pointerEvents="none"
       />
 
+      {/* ── Todo el contenido se desvanece en modo inmersivo ── */}
+      <Animated.View style={{ flex: 1, opacity: contentOpacity }} pointerEvents={immersive ? "none" : "auto"}>
+
       {/* ── Frase — anclada, posición fija, se oculta con el backdrop al hacer scroll ── */}
       {greetingVisible && (
         <Animated.View
@@ -878,7 +895,7 @@ export default function HomeScreen2() {
           <SceneAnimationInline
             scene={headerScene}
             height={300}
-            onPress={headerScene ? () => setImmersive(true) : undefined}
+            onPress={headerScene ? toggleImmersive : undefined}
             style={{ position: "absolute", top: 0, left: -16, right: -16 }}
           />
         </View>
@@ -1215,6 +1232,8 @@ export default function HomeScreen2() {
 
       </ScrollView>
 
+      </Animated.View>{/* fin contenido desvanecible */}
+
 
       <MoodPickerSheet
         visible={moodSheetVisible}
@@ -1230,25 +1249,19 @@ export default function HomeScreen2() {
 
       {/* SceneAnimationModal lives at root (_layout.tsx) via SelectedSceneContext */}
 
-      {/* ── Modo inmersivo ── fondo + animación a pantalla completa, tap para salir */}
-      {immersive && headerScene && (
-        <Pressable
-          style={StyleSheet.absoluteFill}
-          onPress={() => setImmersive(false)}
+      {/* ── Modo inmersivo — animación centrada, fade in/out ── */}
+      {headerScene && (
+        <Animated.View
+          style={[StyleSheet.absoluteFill, { opacity: immersiveAnim }]}
+          pointerEvents={immersive ? "box-none" : "none"}
         >
-          <StatusBar hidden />
-          <LinearGradient
-            colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
           <SceneAnimationInline
             scene={headerScene}
             height={height}
-            onPress={() => setImmersive(false)}
+            onPress={toggleImmersive}
             style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
           />
-        </Pressable>
+        </Animated.View>
       )}
 
     </View>
