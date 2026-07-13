@@ -480,6 +480,7 @@ export default function HomeScreen2() {
   const [sesAncestral,    setSesAncestral]    = useState(false);
   const [sesMeditacion,   setSesMeditacion]   = useState(false);
   const [progresoVisible, setProgresoVisible] = useState(false);
+  const [rachaEnabled, setRachaEnabled] = useState(true);
   const spacerWidthSV  = useSharedValue(0);
   const pillOpacitySV  = useSharedValue(0);
   const pillTranslateSV = useSharedValue(20);
@@ -702,6 +703,18 @@ export default function HomeScreen2() {
     useCallback(() => {
       setTabFocused(true);
       return () => setTabFocused(false);
+    }, []),
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      AsyncStorage.getItem("@resonance_settings").then((raw) => {
+        if (!raw) return;
+        try {
+          const parsed = JSON.parse(raw);
+          setRachaEnabled(parsed.rachaEnabled !== false);
+        } catch {}
+      });
     }, []),
   );
 
@@ -946,18 +959,20 @@ export default function HomeScreen2() {
         </View>
 
         {/* ── 7 días de la semana ── */}
-        <Pressable
-          onPress={() => setProgresoVisible(true)}
-          style={({ pressed }) => ({
-            marginHorizontal: GRID_PAD,
-            marginTop: 54,
-            marginBottom: SECTION_GAP / 2 - 20,
-            paddingVertical: 12,
-            opacity: pressed ? 0.75 : 1,
-          })}
-        >
-          <WeekDayDots />
-        </Pressable>
+        {rachaEnabled && (
+          <Pressable
+            onPress={() => setProgresoVisible(true)}
+            style={({ pressed }) => ({
+              marginHorizontal: GRID_PAD,
+              marginTop: 54,
+              marginBottom: SECTION_GAP / 2 - 20,
+              paddingVertical: 12,
+              opacity: pressed ? 0.75 : 1,
+            })}
+          >
+            <WeekDayDots />
+          </Pressable>
+        )}
         <ProgresoModal visible={progresoVisible} onClose={() => setProgresoVisible(false)} />
 
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}

@@ -49,6 +49,7 @@ type Settings = {
   dailyMinute: number;
   communityEnabled: boolean;
   defaultSleepMinutes: number | null;
+  rachaEnabled: boolean;
 };
 
 const DEFAULTS: Settings = {
@@ -57,6 +58,7 @@ const DEFAULTS: Settings = {
   dailyMinute: 0,
   communityEnabled: true,
   defaultSleepMinutes: null,
+  rachaEnabled: true,
 };
 
 const TIME_OPTIONS = [
@@ -559,6 +561,28 @@ export default function ConfiguracionesScreen() {
             colors={colors}
             border
           />
+        </View>
+
+        {/* ── Inicio ── */}
+        <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>INICIO</Text>
+        <View style={[styles.group, { backgroundColor: "transparent", borderColor: "transparent" }]}>
+          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
+          <View style={styles.row}>
+            <RowIcon icon="activity" colors={colors} />
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.rowLabel, { color: colors.foreground }]}>Activar días de racha</Text>
+              <Text style={[styles.rowSub, { color: colors.mutedForeground }]}>
+                Muestra los 7 días de racha en el inicio
+              </Text>
+            </View>
+            <Switch
+              value={settings.rachaEnabled}
+              onValueChange={(v) => update({ rachaEnabled: v })}
+              trackColor={{ false: "rgba(61,14,22,0.50)", true: colors.primary + "88" }}
+              thumbColor={settings.rachaEnabled ? colors.primary : "#666"}
+            />
+          </View>
         </View>
 
         {/* ── Dev (solo testing premium) ── */}

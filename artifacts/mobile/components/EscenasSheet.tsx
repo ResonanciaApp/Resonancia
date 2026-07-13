@@ -401,54 +401,11 @@ export function EscenasSheet() {
             </View>
           </View>
 
-          {/* Timer */}
-          <Pressable style={styles.controlRow} onPress={() => setTimerOpen((v) => !v)}>
-            <Feather name="clock" size={17} color="#F4F4F4" style={styles.controlIcon} />
-            <Text style={styles.controlLabel}>{`Reproducir sonidos\nfuera de la aplicación`}</Text>
-            <View style={styles.timerTrigger}>
-              <Text style={styles.timerTriggerLabel}>
-                {(
-                  TIMER_OPTIONS.find((o) => o.value === timerMinutes)?.label ?? "Sin límite"
-                ).toUpperCase()}
-              </Text>
-              <Feather
-                name={timerOpen ? "chevron-up" : "chevron-down"}
-                size={14}
-                color="#F4F4F4"
-              />
+          <View style={[styles.volumeRow, { marginBottom: 2 }]}>
+            <View style={styles.volumeLabelGroup}>
+              <MaterialCommunityIcons name="palette-outline" size={17} color="#F4F4F4" style={styles.controlIcon} />
+              <Text style={styles.controlLabel}>Color</Text>
             </View>
-          </Pressable>
-          {timerOpen && (
-            <View style={styles.timerDropdown}>
-              {TIMER_OPTIONS.map((opt) => {
-                const active = timerMinutes === opt.value;
-                return (
-                  <Pressable
-                    key={String(opt.value)}
-                    onPress={() => {
-                      setSleepTimer(opt.value);
-                      setTimerOpen(false);
-                    }}
-                    style={[styles.timerDropItem, active && styles.timerDropItemActive]}
-                  >
-                    <Text
-                      style={[
-                        styles.timerDropItemText,
-                        active && styles.timerDropItemTextActive,
-                      ]}
-                    >
-                      {opt.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-          )}
-
-
-
-          <View style={[styles.sceneTitleRow, { justifyContent: "space-between", marginBottom: 14 }]}>
-            <Text style={styles.sceneTitle}>Color</Text>
             <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
               {AMBIENT_SCENES.slice(0, 4).map((scene) => {
                 const sceneGradient = SCENE_THEMES[scene.id as keyof typeof SCENE_THEMES]?.gradient;
