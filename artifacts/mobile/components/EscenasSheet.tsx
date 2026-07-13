@@ -405,6 +405,7 @@ export function EscenasSheet() {
                     key={scene.id}
                     scene={scene}
                     size={Math.floor((SCREEN_W - SHEET_H_PAD * 2 - 12) / 2 * 0.8) + 31}
+                    height={Math.round((Math.floor((SCREEN_W - SHEET_H_PAD * 2 - 12) / 2 * 0.8) + 31) * 1.32) - 10}
                     onPress={() => {
                       setBgScene(scene);
                       handleClose();

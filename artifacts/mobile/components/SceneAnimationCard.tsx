@@ -19,10 +19,11 @@ type SceneRecipe = {
 interface Props {
   scene: SceneAnimation;
   size: number;
+  height?: number;
   onPress: () => void;
 }
 
-export function SceneAnimationCard({ scene, size, onPress }: Props) {
+export function SceneAnimationCard({ scene, size, height, onPress }: Props) {
   const recipe = scene.recipe as SceneRecipe;
   const active = recipe.active ?? [];
   const settings = recipe.settings ?? {};
@@ -36,7 +37,7 @@ export function SceneAnimationCard({ scene, size, onPress }: Props) {
       onPress={onPress}
       style={({ pressed }) => [
         s.wrap,
-        { width: size, height: Math.round(size * 1.32), opacity: pressed ? 0.8 : 1 },
+        { width: size, height: height ?? Math.round(size * 1.32), opacity: pressed ? 0.8 : 1 },
       ]}
     >
       <View style={s.card}>
