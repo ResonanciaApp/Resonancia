@@ -6,6 +6,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, {
+  cancelAnimation,
   Easing,
   useAnimatedStyle,
   useSharedValue,
@@ -42,6 +43,9 @@ function useFadeCycle(
         false,
       ),
     );
+    // Cancelar el loop infinito al desmontar: sin esto, el withRepeat sigue
+    // corriendo en el hilo UI aunque el componente ya no exista.
+    return () => cancelAnimation(opacity);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -49,6 +49,7 @@
 - [MiniPlayer carousel scrollable](miniplayer-carousel-scroll.md) — thumbnails apilados del mezclador: ScrollView horizontal con scrollEnabled=stackOpen; contentContainerStyle necesita width explícito cuando hijos son position:absolute; reset scroll animated:false en collapse y en n changes
 - [Tab-screen audio focus cleanup](tab-screen-audio-focus-cleanup.md) — audio propio de una tab debe pararse con useFocusEffect (las tabs quedan montadas; el cleanup de unmount no corre al cambiar de tab)
 - [Geometrix intro audio](geometrix-intro-audio.md) — sonido de carga única: precargar en root layout (tabs montan lazy → preload en la tab llega tarde) + flag de módulo = one-shot por lanzamiento
+- [Geometrix landing focus gate](geometrix-landing-focus-gate.md) — landing queda montado al blur; loops infinitos ahí = lag global; gatear por tabFocused + cancelAnimation en cleanup
 - [Geometrix Mis creaciones](geometrix-creations.md) — composición = receta (datos, no imagen); degradados/brillo en módulo data compartido (previews fieles); param ruta `load` se limpia a "" no undefined
 - [SVG gradient import clash](svg-gradient-import-clash.md) — react-native-svg LinearGradient choca con expo-linear-gradient (mismo nombre); aliasear + sanear useId (quitar ":") + colors refs estables para memo
 - [Geometrix zoom = render size](geometrix-zoom-vector.md) — escalar geometrías plegando la magnificación confirmada en el size real del SVG (no transform scale) → vector nítido + trazo constante; transform solo lleva respiración + delta de pinch en vivo

@@ -6177,8 +6177,11 @@ export default function GeometrixScreen() {
             style={StyleSheet.absoluteFill}
           />
 
-          {/* Geometrías sagradas animadas en el fondo */}
-          <LandingBgGeo />
+          {/* Geometrías sagradas animadas en el fondo. Solo mientras la pestaña
+              tiene foco: las tabs quedan montadas al navegar a otra, y estos 12
+              loops infinitos (withRepeat) seguían consumiendo CPU de fondo →
+              lag en el resto de la app. Al desenfocar se desmonta (cancela). */}
+          {tabFocused && <LandingBgGeo />}
 
           {/* Botón volver */}
           <Pressable
