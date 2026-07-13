@@ -77,7 +77,7 @@ import { VideoCard } from "@/components/VideoCard";
 import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 // Sentinel interno para "sin filtro" (ya no hay chip visible de "Todos": es el
 // estado por defecto al entrar a la app).
@@ -352,6 +352,7 @@ export default function HomeScreen2() {
 
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
+  const [immersive, setImmersive] = useState(false);
 
   function handleMoodSelect(moodId: MoodId) {
     setSelectedMood(getMoodById(moodId) ?? null);
@@ -877,7 +878,7 @@ export default function HomeScreen2() {
           <SceneAnimationInline
             scene={headerScene}
             height={300}
-            onPress={headerScene ? () => setSelectedScene(headerScene) : undefined}
+            onPress={headerScene ? () => setImmersive(true) : undefined}
             style={{ position: "absolute", top: 0, left: -16, right: -16 }}
           />
         </View>
@@ -1228,6 +1229,26 @@ export default function HomeScreen2() {
       />
 
       {/* SceneAnimationModal lives at root (_layout.tsx) via SelectedSceneContext */}
+
+      {/* ── Modo inmersivo ── fondo + animación a pantalla completa, tap para salir */}
+      {immersive && headerScene && (
+        <Pressable
+          style={StyleSheet.absoluteFill}
+          onPress={() => setImmersive(false)}
+        >
+          <StatusBar hidden />
+          <LinearGradient
+            colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
+          <SceneAnimationInline
+            scene={headerScene}
+            height={height}
+            style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+          />
+        </Pressable>
+      )}
 
     </View>
   );
