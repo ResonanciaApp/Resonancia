@@ -948,20 +948,20 @@ export default function HomeScreen2() {
         </View>
 
         {/* ── 7 días de la semana ── */}
-        {rachaEnabled && (
-          <Pressable
-            onPress={() => setProgresoVisible(true)}
-            style={({ pressed }) => ({
-              marginHorizontal: GRID_PAD,
-              marginTop: 54,
-              marginBottom: SECTION_GAP / 2 - 20,
-              paddingVertical: 12,
-              opacity: pressed ? 0.75 : 1,
-            })}
-          >
-            <WeekDayDots />
-          </Pressable>
-        )}
+        <Pressable
+          onPress={() => { if (rachaEnabled) setProgresoVisible(true); }}
+          pointerEvents={rachaEnabled ? "auto" : "none"}
+          style={({ pressed }) => ({
+            marginHorizontal: GRID_PAD,
+            marginTop: 54,
+            marginBottom: SECTION_GAP / 2 - 20,
+            paddingVertical: 12,
+            opacity: rachaEnabled ? (pressed ? 0.75 : 1) : 0,
+          })}
+        >
+          <WeekDayDots />
+        </Pressable>
+        {!rachaEnabled && <View style={{ height: 30 }} />}
         <ProgresoModal visible={progresoVisible} onClose={() => setProgresoVisible(false)} />
 
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
@@ -996,7 +996,7 @@ export default function HomeScreen2() {
 
 
         {/* ── EXPLORA POR CONTENIDO ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP - 20, marginTop: rachaEnabled ? -12 : 18 }]}>
+        <View style={[styles.section, { marginBottom: SECTION_GAP - 20, marginTop: -12 }]}>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 7, marginTop: 20 }}>
             {([
               { id: "meditaciones-guiadas", label: "Meditación", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={24} color={color} /> },
