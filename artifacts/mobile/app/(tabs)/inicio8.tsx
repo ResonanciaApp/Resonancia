@@ -1275,7 +1275,7 @@ export default function HomeScreen2() {
             height={300}
             onPress={toggleImmersive}
             style={undefined}
-            paused={!tabFocused}
+            paused={!tabFocused || !immersive}
           />
         </Animated.View>
       )}
