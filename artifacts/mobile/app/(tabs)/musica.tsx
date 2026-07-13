@@ -1,4 +1,4 @@
-import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
@@ -49,9 +49,6 @@ import {
   MIXER_BG_PALETTES,
   type MixerBgPaletteId,
 } from "@/data/mixer-bg-palettes";
-import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
-import { useGetSharedMixes } from "@workspace/api-client-react";
-import type { SharedMix } from "@workspace/api-client-react";
 import {
   DEFAULT_BG_PRESET_ID,
   emitBgPresetChange,
@@ -468,99 +465,6 @@ const bpmStyles = StyleSheet.create({
   },
 });
 
-// ── CatTab — sub-tab de categoría comunidad (igual estilo que PillTab) ────────
-function CatTab({ cat, sel, onPress }: { cat: { id: MixCategory; label: string; icon: string; iconFamily?: string }; sel: boolean; onPress: () => void }) {
-  const selAnim = useRef(new Animated.Value(sel ? 1 : 0)).current;
-  useEffect(() => {
-    Animated.timing(selAnim, { toValue: sel ? 1 : 0, duration: 550, easing: Easing.inOut(Easing.cubic), useNativeDriver: true }).start();
-  }, [sel]);
-  return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.pillTab, { opacity: pressed ? 0.6 : 1 }]}>
-      <Animated.View style={{ opacity: selAnim.interpolate({ inputRange: [0, 1], outputRange: [0.45, 1] }), alignItems: "center" }}>
-        <Feather name={cat.icon as any} size={18} color="#f9f9f9" style={{ marginBottom: 3 }} />
-      </Animated.View>
-      <View>
-        <Animated.Text style={[styles.pillTabLabel, { opacity: selAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}>{cat.label}</Animated.Text>
-        <Animated.Text style={[styles.pillTabLabel, styles.pillTabLabelSel, StyleSheet.absoluteFill, { opacity: selAnim }]}>{cat.label}</Animated.Text>
-        <Animated.View style={[styles.pillTabUnderline, { opacity: selAnim, transform: [{ scaleX: selAnim }] }]} />
-      </View>
-    </Pressable>
-  );
-}
-
-// ── ComunidadPanel (tab Comunidad del menú inline) ────────────────────────────
-const GRID_GAP = 12;
-const COMM_CARD_W = Math.floor((SCREEN_W - 32 - GRID_GAP) / 2);
-
-function ComunidadPanel({ commCat, setCommCat, onClose }: {
-  commCat: MixCategory | null;
-  setCommCat: (c: MixCategory | null) => void;
-  onClose: () => void;
-}) {
-  const { loadPreset } = useMixer();
-  const { data, isLoading } = useGetSharedMixes(
-    commCat ? { category: commCat } : undefined,
-  );
-  const mixes: SharedMix[] = data?.mixes ?? [];
-
-  return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.menuPanelBody}>
-      {/* Sub-tabs de categoría — estilo mixer (icono + texto + subrayado) */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexDirection: "row", gap: 22, paddingBottom: 10, paddingHorizontal: 4 }}>
-        {MIX_CATEGORIES.map((cat) => (
-          <CatTab key={cat.id} cat={cat} sel={commCat === cat.id} onPress={() => setCommCat(commCat === cat.id ? null : cat.id)} />
-        ))}
-      </ScrollView>
-
-      {/* Grid de mezclas */}
-      {isLoading ? (
-        <View style={{ alignItems: "center", paddingTop: 40 }}>
-          <Text style={{ color: "rgba(255,255,255,0.45)", fontFamily: "Manrope", fontSize: 13 }}>Cargando…</Text>
-        </View>
-      ) : mixes.length === 0 ? (
-        <View style={{ alignItems: "center", paddingTop: 40, gap: 8 }}>
-          <Feather name="music" size={28} color="rgba(255,255,255,0.25)" />
-          <Text style={{ color: "rgba(255,255,255,0.45)", fontFamily: "Manrope", fontSize: 13 }}>Sin mezclas en esta categoría</Text>
-        </View>
-      ) : (
-        <View style={styles.commGrid}>
-          {mixes.map((mix) => {
-            const catMeta = MIX_CATEGORIES.find((c) => c.id === mix.category);
-            return (
-              <Pressable
-                key={mix.id}
-                onPress={() => {
-                  if (mix.sounds) loadPreset(mix.sounds as any);
-                  onClose();
-                }}
-                style={({ pressed }) => [styles.commCard, { width: COMM_CARD_W, opacity: pressed ? 0.82 : 1 }]}
-              >
-                <View style={styles.commCardImg}>
-                  {catMeta ? (
-                    <Image source={catMeta.image} style={StyleSheet.absoluteFill} contentFit="cover" />
-                  ) : (
-                    <LinearGradient colors={["#1B060F", "#2E0A18"]} style={StyleSheet.absoluteFill}>
-                      <Feather name="music" size={22} color="rgba(212,175,55,0.5)" />
-                    </LinearGradient>
-                  )}
-                  {mix.likes > 0 && (
-                    <View style={styles.commLikeBadge}>
-                      <AntDesign name="heart" size={9} color="#fff" />
-                      <Text style={styles.commLikeBadgeText}>{mix.likes}</Text>
-                    </View>
-                  )}
-                </View>
-                <Text style={styles.commCardTitle} numberOfLines={2}>{mix.name}</Text>
-                <Text style={styles.commCardAuthor} numberOfLines={1}>{mix.author?.displayName ?? "Anónimo"}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
-      )}
-    </ScrollView>
-  );
-}
-
 // ── PANTALLA ──────────────────────────────────────────────────────────────────
 export default function MezcladorScreen() {
   const insets      = useSafeAreaInsets();
@@ -597,13 +501,11 @@ export default function MezcladorScreen() {
 
   // ── Menú inline (3 puntitos) ──
   const [menuOpen, setMenuOpen]   = useState(false);
-  const [menuTab,  setMenuTab]    = useState<"comunidad" | "filtros">("comunidad");
-  const [commCat,  setCommCat]    = useState<MixCategory | null>(null);
+
   const menuSlide = useRef(new Animated.Value(300)).current;
   const menuFade  = useRef(new Animated.Value(0)).current;
 
-  const openMenu = (tab: "comunidad" | "filtros") => {
-    setMenuTab(tab);
+  const openMenu = () => {
     setMenuOpen(true);
     menuSlide.setValue(260);
     menuFade.setValue(0);
@@ -843,7 +745,7 @@ export default function MezcladorScreen() {
                 </View>
                 <View style={[styles.headerActions, { flexDirection: "row", gap: 4 }]}>
                     <Pressable
-                      onPress={() => openMenu("comunidad")}
+                      onPress={() => openMenu()}
                       style={{ width: 43, height: 43, borderRadius: 21.5, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center" }}
                       hitSlop={8}
                       accessibilityRole="button"
@@ -1016,24 +918,16 @@ export default function MezcladorScreen() {
           },
         ]}
       >
-        {/* ── Tab bar del panel ── */}
+        {/* ── Header del panel (solo botón cerrar) ── */}
         <View style={styles.menuPanelHeader}>
-          <View style={styles.menuPanelTabs}>
-            {(["comunidad", "filtros"] as const).map((t) => (
-              <Pressable key={t} onPress={() => setMenuTab(t)} style={[styles.menuPanelTab, menuTab === t && styles.menuPanelTabSel]}>
-                <Text style={[styles.menuPanelTabText, menuTab === t && styles.menuPanelTabTextSel]}>
-                  {t === "comunidad" ? "Comunidad" : "Filtros"}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
+          <Text style={[styles.menuPanelTabText, styles.menuPanelTabTextSel, { flex: 1, paddingLeft: 4 }]}>Filtros</Text>
           <Pressable onPress={closeMenu} hitSlop={10} style={styles.menuPanelClose}>
             <MaterialCommunityIcons name="close" size={20} color="rgba(255,255,255,0.55)" />
           </Pressable>
         </View>
 
-        {menuTab === "filtros" ? (
-          /* ── Tab: Filtros ── */
+        {(
+          /* ── Filtros ── */
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.menuPanelBody}>
             <Text style={styles.menuSectionTitle}>Tema</Text>
             <View style={styles.swatchRow}>
@@ -1107,9 +1001,6 @@ export default function MezcladorScreen() {
               </Text>
             </Pressable>
           </ScrollView>
-        ) : (
-          /* ── Tab: Comunidad ── */
-          <ComunidadPanel commCat={commCat} setCommCat={setCommCat} onClose={closeMenu} />
         )}
       </Animated.View>
 
@@ -1276,7 +1167,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 18,
-    paddingTop: 74,
+    paddingTop: 114,
     paddingBottom: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "rgba(255,255,255,0.10)",
