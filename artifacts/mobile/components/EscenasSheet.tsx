@@ -344,25 +344,40 @@ export function EscenasSheet() {
                 return (
                   <Pressable
                     key={scene.id}
-                    onPress={() => setActiveSceneWithFade(scene.id)}
+                    onPress={() => {
+                      setActiveSceneWithFade(scene.id);
+                      handleClose();
+                    }}
                     hitSlop={10}
                   >
+                    {/* Anillo activo — sin overflow:hidden para no distorsionar el borde */}
                     <View
                       style={{
-                        width: 34,
-                        height: 34,
-                        borderRadius: 17,
-                        overflow: "hidden",
+                        width: 38,
+                        height: 38,
+                        borderRadius: 19,
                         borderWidth: 2,
-                        borderColor: isActive ? "rgba(255,255,255,0.85)" : "transparent",
+                        borderColor: isActive ? "rgba(255,255,255,0.85)" : "rgba(0,0,0,0)",
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
                     >
-                      <LinearGradient
-                        colors={[sceneGradient[0], sceneGradient[sceneGradient.length - 1]] as [string, string]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        style={{ flex: 1 }}
-                      />
+                      {/* Círculo de color — overflow:hidden aquí sin borde = redondeo perfecto */}
+                      <View
+                        style={{
+                          width: 30,
+                          height: 30,
+                          borderRadius: 15,
+                          overflow: "hidden",
+                        }}
+                      >
+                        <LinearGradient
+                          colors={[sceneGradient[0], sceneGradient[sceneGradient.length - 1]] as [string, string]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 1 }}
+                          style={{ flex: 1 }}
+                        />
+                      </View>
                     </View>
                   </Pressable>
                 );

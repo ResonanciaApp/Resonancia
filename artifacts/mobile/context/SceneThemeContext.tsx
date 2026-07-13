@@ -171,7 +171,7 @@ export function SceneThemeTransitionOverlay() {
     // Overlay pintado con colores nuevos a opacidad 0 → revelarlo suavemente
     Animated.timing(overlayOpacity, {
       toValue: 1,
-      duration: 550,
+      duration: 280,
       useNativeDriver: true,
     }).start(({ finished }) => {
       // Al llegar a opacidad 1 (nuevos colores cubren todo), aplicar tema real
