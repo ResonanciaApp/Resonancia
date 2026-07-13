@@ -73,7 +73,7 @@ const TAB_CONFIG: Record<
 > = {
   inicio8:    { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
   explore:    { label: "Explorar",   sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
-  musica:     { label: "Mezclador",  mciIcon: "spa", mciIconFill: "spa", featherIcon: "sliders", activeColor: "#F7CB6B" },
+  musica:     { label: "Mezclador",  mciIcon: "tune-variant", mciIconFill: "tune-variant", featherIcon: "sliders", activeColor: "#F7CB6B" },
   biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark", image: require("@/assets/images/tab-icon-universo.png") },
   video:      { label: "Videos",     sfIcon: "video",               sfIconFill: "video.fill",           featherIcon: "video" },
   descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon" },

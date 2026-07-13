@@ -922,7 +922,7 @@ export default function HomeScreen2() {
             style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginLeft: 5 }]}
           >
             <View style={[styles.giftBtnInner, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
-              <MaterialCommunityIcons name="tune-variant" size={23} color="#f9f9f9" style={{ marginTop: 1 }} />
+              <MaterialCommunityIcons name="spa" size={23} color="#f9f9f9" style={{ marginTop: 1 }} />
             </View>
           </Pressable>
 
