@@ -391,24 +391,26 @@ export function EscenasSheet() {
                 <MaterialCommunityIcons name="star-four-points-outline" size={16} color="rgba(255,255,255,0.8)" />
                 <Text style={styles.sceneTitle}>Escenas animadas</Text>
               </View>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ gap: 12, paddingRight: 4 }}
-                style={{ marginTop: 14 }}
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  gap: 12,
+                  marginTop: 14,
+                }}
               >
                 {geoScenes.map((scene) => (
                   <SceneAnimationCard
                     key={scene.id}
                     scene={scene}
-                    size={118}
+                    size={Math.floor((SCREEN_W - SHEET_H_PAD * 2 - 12) / 2)}
                     onPress={() => {
                       setBgScene(scene);
                       handleClose();
                     }}
                   />
                 ))}
-              </ScrollView>
+              </View>
             </View>
           )}
         </ScrollView>
