@@ -409,10 +409,6 @@ export default function HomeScreen2() {
 
   const immersiveGesture = Gesture.Simultaneous(pinchGesture, doubleTap);
 
-  const immersiveZoomStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: pinchScale.value }],
-  }));
-
   function handleMoodSelect(moodId: MoodId) {
     setSelectedMood(getMoodById(moodId) ?? null);
   }
@@ -1407,15 +1403,16 @@ export default function HomeScreen2() {
           pointerEvents={immersive ? "box-none" : "none"}
         >
           <GestureDetector gesture={immersiveGesture}>
-            <RAnimated.View style={[StyleSheet.absoluteFill, { justifyContent: "center" }, immersiveZoomStyle]}>
+            <View style={[StyleSheet.absoluteFill, { justifyContent: "center" }]}>
               <SceneAnimationInline
                 scene={headerScene}
                 height={300}
                 onPress={toggleImmersive}
                 style={undefined}
                 paused={!tabFocused || !immersive}
+                liveScaleSV={pinchScale}
               />
-            </RAnimated.View>
+            </View>
           </GestureDetector>
         </Animated.View>
       )}

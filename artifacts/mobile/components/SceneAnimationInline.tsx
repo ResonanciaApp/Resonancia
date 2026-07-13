@@ -18,6 +18,7 @@ import RAnimated, {
   withRepeat,
   withTiming,
 } from "react-native-reanimated";
+import type { SharedValue } from "react-native-reanimated";
 
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { bgGradientColors, gradientColors, type GeoSettings } from "@/data/geometrix-creations";
@@ -143,6 +144,7 @@ function AnimatedLayer({
   motion,
   baseSize,
   strokeModeMap,
+  liveScaleSV,
 }: {
   instanceId: string;
   settings: GeoSettings;
@@ -151,6 +153,7 @@ function AnimatedLayer({
   motion: boolean;
   baseSize: number;
   strokeModeMap: Map<string, "thin" | "natural">;
+  liveScaleSV?: SharedValue<number>;
 }) {
   const {
     rotate, rotateLeft, rotateSpeed,
@@ -274,7 +277,8 @@ function AnimatedLayer({
       )}
       <View style={s.layer} pointerEvents="none">
         <SacredGlyph id={geoId} color={dispColor} gradient={dispGrad} size={effectiveSize}
-          strokeScale={thinFactor} kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs} />
+          strokeScale={thinFactor} kaleidoscope={safeKaleid} kaleidSegments={safeKaleidSegs}
+          liveScaleSV={liveScaleSV} />
       </View>
     </RAnimated.View>
   );
@@ -300,9 +304,12 @@ interface Props {
   style?: ViewStyle;
   /** Cuando true, fuerza motion=false en todas las capas (usar al perder foco de tab). */
   paused?: boolean;
+  /** SharedValue del zoom vivo por pinch. Si se pasa, el glifo redibuja al tamaño real
+   *  en el UI thread (sin transform:scale en el contenedor → sin pixelación). */
+  liveScaleSV?: SharedValue<number>;
 }
 
-export function SceneAnimationInline({ scene, height, onPress, style, paused }: Props) {
+export function SceneAnimationInline({ scene, height, onPress, style, paused, liveScaleSV }: Props) {
   const fadeAnim = useRef(new Animated.Value(scene ? 0 : 1)).current;
   const prevSceneId = useRef<number | null>(null);
 
@@ -364,6 +371,7 @@ export function SceneAnimationInline({ scene, height, onPress, style, paused }: 
               motion={motion}
               baseSize={baseSize}
               strokeModeMap={strokeModeMap}
+              liveScaleSV={liveScaleSV}
             />
           );
         })}
