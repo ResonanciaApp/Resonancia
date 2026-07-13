@@ -935,7 +935,7 @@ export default function HomeScreen2() {
             />
           </View>
 
-          {/* Derecha: Mezclador */}
+          {/* Derecha: Racha */}
           <Pressable
             hitSlop={8}
             style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginRight: 5 }]}
@@ -944,12 +944,12 @@ export default function HomeScreen2() {
             }
             onPressOut={() => {
               Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
-              openMixer();
+              if (rachaEnabled) setProgresoVisible(true);
             }}
           >
             <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
               <View style={[styles.giftBtnInner, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
-                <Image source={require("@/assets/images/icon-mixer-eq.png")} style={{ width: 22, height: 22 }} resizeMode="contain" />
+                <MaterialCommunityIcons name="fire" size={22} color="#F7CB6B" />
               </View>
             </Animated.View>
           </Pressable>
