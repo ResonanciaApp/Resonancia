@@ -444,9 +444,9 @@ export default function SonidosAncestalesScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: theme.gradient[0] }]}>
+    <View style={[styles.root, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string }]}>
       <LinearGradient
-        colors={[theme.gradient[0] as string, theme.gradient[1] as string]}
+        colors={theme.gradient as unknown as [string, string, ...string[]]}
         style={StyleSheet.absoluteFill}
       />
       <ScrollView

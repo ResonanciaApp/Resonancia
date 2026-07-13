@@ -28,6 +28,8 @@ import { usePlayer } from "@/context/PlayerContext";
 import { SESSIONS } from "@/data/sessions";
 import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
+import { LinearGradient } from "expo-linear-gradient";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const H_PAD = 20;
 const ICON_COLOR = "#C87BB5";
@@ -122,6 +124,7 @@ const TABS: ActiveTab[] = ["Audios", "Videos", "Maestros"];
 
 export default function NochesScreen() {
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { history } = usePlayer();
 
@@ -213,7 +216,8 @@ export default function NochesScreen() {
   };
 
   return (
-        <View style={styles.root}>
+        <View style={[styles.root, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string }]}>
+      <LinearGradient colors={theme.gradient as unknown as [string, string, ...string[]]} style={StyleSheet.absoluteFill} />
       <StatusBar barStyle="light-content" />
 
       <ScrollView
@@ -456,7 +460,7 @@ export default function NochesScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#16040A" },
+  root: { flex: 1 },
   scroll: { flex: 1 },
 
   header: { alignItems: "center", marginBottom: 28, paddingTop: 4 },
