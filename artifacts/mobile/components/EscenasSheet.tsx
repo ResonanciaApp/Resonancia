@@ -404,7 +404,7 @@ export function EscenasSheet() {
                   <SceneAnimationCard
                     key={scene.id}
                     scene={scene}
-                    size={Math.floor((SCREEN_W - SHEET_H_PAD * 2 - 12) / 2 * 0.8) + 1}
+                    size={Math.floor((SCREEN_W - SHEET_H_PAD * 2 - 12) / 2 * 0.8) + 15}
                     onPress={() => {
                       setBgScene(scene);
                       handleClose();
