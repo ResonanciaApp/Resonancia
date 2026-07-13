@@ -344,10 +344,7 @@ export function EscenasSheet() {
                 return (
                   <Pressable
                     key={scene.id}
-                    onPress={() => {
-                      setActiveSceneWithFade(scene.id);
-                      handleClose();
-                    }}
+                    onPress={() => setActiveSceneWithFade(scene.id)}
                     hitSlop={10}
                   >
                     {/* Anillo activo — sin overflow:hidden para no distorsionar el borde */}
