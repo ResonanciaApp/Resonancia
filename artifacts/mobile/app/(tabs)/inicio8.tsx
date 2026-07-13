@@ -1245,6 +1245,7 @@ export default function HomeScreen2() {
           <SceneAnimationInline
             scene={headerScene}
             height={height}
+            onPress={() => setImmersive(false)}
             style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
           />
         </Pressable>
