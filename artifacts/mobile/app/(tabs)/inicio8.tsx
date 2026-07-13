@@ -942,7 +942,7 @@ export default function HomeScreen2() {
             scene={headerScene}
             height={293}
             onPress={headerScene ? toggleImmersive : undefined}
-            style={{ position: "absolute", top: 0, left: -16, right: -16 }}
+            style={{ position: "absolute", top: 10, left: -16, right: -16 }}
             paused={!tabFocused}
           />
         </View>
