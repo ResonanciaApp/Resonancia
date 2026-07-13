@@ -37,6 +37,7 @@ import { SoundsProvider } from "@/context/SoundsContext";
 import { SaveEventProvider } from "@/context/SaveEventContext";
 import { PlayerProvider } from "@/context/PlayerContext";
 import { GeoUniverseProvider } from "@/context/GeoUniverseContext";
+import { RachaProvider } from "@/context/RachaContext";
 import { PremiumProvider } from "@/context/PremiumContext";
 import { UserProfileProvider } from "@/context/UserProfileContext";
 import { ProfileSync } from "@/components/ProfileSync";
@@ -404,6 +405,7 @@ export default function RootLayout() {
                         <DiarioFavoritesProvider>
                           <SceneThemeProvider initialSceneId={initialSceneId ?? undefined}>
                           <GeoUniverseProvider>
+                          <RachaProvider>
                             <ThemedGestureRoot>
                               <StatusBar hidden />
                               <KeyboardProvider>
@@ -411,6 +413,7 @@ export default function RootLayout() {
                               </KeyboardProvider>
                               <SceneThemeTransitionOverlay />
                             </ThemedGestureRoot>
+                          </RachaProvider>
                           </GeoUniverseProvider>
                           </SceneThemeProvider>
                         </DiarioFavoritesProvider>

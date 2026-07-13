@@ -61,6 +61,7 @@ import { TEMAS } from "@/data/temas";
 import { useGetPinnedFeatured, useGetSceneAnimations } from "@workspace/api-client-react";
 import type { SceneAnimation } from "@workspace/api-client-react";
 import { SceneAnimationCard } from "@/components/SceneAnimationCard";
+import { useRacha } from "@/context/RachaContext";
 import { useSelectedScene } from "@/context/SelectedSceneContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { SceneAnimationInline } from "@/components/SceneAnimationInline";
@@ -480,7 +481,7 @@ export default function HomeScreen2() {
   const [sesAncestral,    setSesAncestral]    = useState(false);
   const [sesMeditacion,   setSesMeditacion]   = useState(false);
   const [progresoVisible, setProgresoVisible] = useState(false);
-  const [rachaEnabled, setRachaEnabled] = useState(true);
+  const { rachaEnabled } = useRacha();
   const spacerWidthSV  = useSharedValue(0);
   const pillOpacitySV  = useSharedValue(0);
   const pillTranslateSV = useSharedValue(20);
@@ -703,18 +704,6 @@ export default function HomeScreen2() {
     useCallback(() => {
       setTabFocused(true);
       return () => setTabFocused(false);
-    }, []),
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      AsyncStorage.getItem("@resonance_settings").then((raw) => {
-        if (!raw) return;
-        try {
-          const parsed = JSON.parse(raw);
-          setRachaEnabled(parsed.rachaEnabled !== false);
-        } catch {}
-      });
     }, []),
   );
 

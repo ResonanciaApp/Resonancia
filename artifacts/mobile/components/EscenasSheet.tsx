@@ -28,6 +28,7 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   View,
 } from "react-native";
@@ -42,6 +43,7 @@ import type { SceneAnimation } from "@workspace/api-client-react";
 import { useGetSceneAnimations } from "@workspace/api-client-react";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useBrightness } from "@/context/BrightnessContext";
+import { useRacha } from "@/context/RachaContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
@@ -180,6 +182,7 @@ export function EscenasSheet() {
   } = useAmbientPlayer();
 
   const [timerOpen, setTimerOpen] = useState(false);
+  const { rachaEnabled, setRachaEnabled } = useRacha();
   const { greetingVisible, setGreetingVisible } = useGreetingVisible();
   const { brightMode, setBrightMode } = useBrightness();
   // ID de la escena CONFIRMADA (la que muestra el borde blanco en el carrusel).
@@ -450,6 +453,18 @@ export function EscenasSheet() {
                 );
               })}
             </View>
+          </View>
+
+          {/* Días de racha */}
+          <View style={styles.controlRow}>
+            <MaterialCommunityIcons name="fire" size={17} color="#F4F4F4" style={styles.controlIcon} />
+            <Text style={styles.controlLabel}>Días de racha</Text>
+            <Switch
+              value={rachaEnabled}
+              onValueChange={setRachaEnabled}
+              trackColor={{ false: "rgba(61,14,22,0.60)", true: "rgba(247,203,107,0.55)" }}
+              thumbColor={rachaEnabled ? "#F7CB6B" : "#666"}
+            />
           </View>
 
           <View style={styles.divider} />
