@@ -468,9 +468,29 @@ const bpmStyles = StyleSheet.create({
   },
 });
 
+// ── CatTab — sub-tab de categoría comunidad (igual estilo que PillTab) ────────
+function CatTab({ cat, sel, onPress }: { cat: { id: MixCategory; label: string; icon: string; iconFamily?: string }; sel: boolean; onPress: () => void }) {
+  const selAnim = useRef(new Animated.Value(sel ? 1 : 0)).current;
+  useEffect(() => {
+    Animated.timing(selAnim, { toValue: sel ? 1 : 0, duration: 550, easing: Easing.inOut(Easing.cubic), useNativeDriver: true }).start();
+  }, [sel]);
+  return (
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.pillTab, { opacity: pressed ? 0.6 : 1 }]}>
+      <Animated.View style={{ opacity: selAnim.interpolate({ inputRange: [0, 1], outputRange: [0.45, 1] }), alignItems: "center" }}>
+        <Feather name={cat.icon as any} size={18} color="#f9f9f9" style={{ marginBottom: 3 }} />
+      </Animated.View>
+      <View>
+        <Animated.Text style={[styles.pillTabLabel, { opacity: selAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}>{cat.label}</Animated.Text>
+        <Animated.Text style={[styles.pillTabLabel, styles.pillTabLabelSel, StyleSheet.absoluteFill, { opacity: selAnim }]}>{cat.label}</Animated.Text>
+        <Animated.View style={[styles.pillTabUnderline, { opacity: selAnim, transform: [{ scaleX: selAnim }] }]} />
+      </View>
+    </Pressable>
+  );
+}
+
 // ── ComunidadPanel (tab Comunidad del menú inline) ────────────────────────────
 const GRID_GAP = 12;
-const COMM_CARD_W = (SCREEN_W - 30 - GRID_GAP) / 2;
+const COMM_CARD_W = Math.floor((SCREEN_W - 32 - GRID_GAP) / 2);
 
 function ComunidadPanel({ commCat, setCommCat, onClose }: {
   commCat: MixCategory | null;
@@ -485,26 +505,11 @@ function ComunidadPanel({ commCat, setCommCat, onClose }: {
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.menuPanelBody}>
-      {/* Chips de categoría */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingBottom: 14 }}>
-        {MIX_CATEGORIES.map((cat) => {
-          const sel = commCat === cat.id;
-          return (
-            <Pressable
-              key={cat.id}
-              onPress={() => setCommCat(sel ? null : cat.id)}
-              style={({ pressed }) => [styles.commChip, { opacity: pressed ? 0.75 : 1 }]}
-            >
-              <LinearGradient
-                colors={sel ? ["#D6A45C", "#F7CB6B"] : ["rgba(255,255,255,0.06)", "rgba(255,255,255,0.06)"]}
-                start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
-                style={StyleSheet.absoluteFill}
-              />
-              <Feather name={cat.icon as any} size={13} color={sel ? "#1B060F" : GOLD} />
-              <Text style={[styles.commChipText, { color: sel ? "#1B060F" : GOLD }]}>{cat.label}</Text>
-            </Pressable>
-          );
-        })}
+      {/* Sub-tabs de categoría — estilo mixer (icono + texto + subrayado) */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexDirection: "row", gap: 22, paddingBottom: 10, paddingHorizontal: 4 }}>
+        {MIX_CATEGORIES.map((cat) => (
+          <CatTab key={cat.id} cat={cat} sel={commCat === cat.id} onPress={() => setCommCat(commCat === cat.id ? null : cat.id)} />
+        ))}
       </ScrollView>
 
       {/* Grid de mezclas */}
@@ -1271,7 +1276,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 18,
-    paddingTop: 14,
+    paddingTop: 74,
     paddingBottom: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "rgba(255,255,255,0.10)",
