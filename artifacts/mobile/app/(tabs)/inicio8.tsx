@@ -60,6 +60,7 @@ import { useGetPinnedFeatured, useGetSceneAnimations } from "@workspace/api-clie
 import type { SceneAnimation } from "@workspace/api-client-react";
 import { SceneAnimationCard } from "@/components/SceneAnimationCard";
 import { useSelectedScene } from "@/context/SelectedSceneContext";
+import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { SceneAnimationInline } from "@/components/SceneAnimationInline";
 import { WeekDayDots } from "@/components/WeekDayDots";
 import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/data/sessions";
@@ -360,13 +361,14 @@ export default function HomeScreen2() {
     const next = !immersiveRef.current;
     immersiveRef.current = next;
     setImmersive(next);
+    if (next) { requestHide(); } else { showMenu(); }
     Animated.timing(immersiveAnim, {
       toValue: next ? 1 : 0,
       duration: 700,
       easing: RNEasing.out(RNEasing.cubic),
       useNativeDriver: true,
     }).start();
-  }, [immersiveAnim]);
+  }, [immersiveAnim, requestHide, showMenu]);
 
   function handleMoodSelect(moodId: MoodId) {
     setSelectedMood(getMoodById(moodId) ?? null);
@@ -392,6 +394,7 @@ export default function HomeScreen2() {
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const activeScenes = sceneAnimationsData?.scenes ?? [];
   const { setSelectedScene, bgScene } = useSelectedScene();
+  const { requestHide, showMenu } = useTabBarVisibility();
 
   // Escena activa en el header (persistida entre sesiones)
   const HEADER_SCENE_KEY = "@resonancia_header_scene_id";
@@ -1259,7 +1262,7 @@ export default function HomeScreen2() {
             scene={headerScene}
             height={300}
             onPress={toggleImmersive}
-            style={{ transform: [{ translateX: 4 }] }}
+            style={undefined}
           />
         </Animated.View>
       )}
