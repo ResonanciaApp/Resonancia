@@ -1781,6 +1781,7 @@ type GeometrixCarouselProps = {
   commitReorder: (id: string, idx: number) => void;
   getSettings: (id: string) => GeoSettings;
   catalogGeometries: GeometryMetaExtended[];
+  tabFocused: boolean;
 };
 const GeometrixCarousel = React.memo(function GeometrixCarousel({
   active,
@@ -1795,6 +1796,7 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
   commitReorder,
   getSettings,
   catalogGeometries,
+  tabFocused,
 }: GeometrixCarouselProps) {
   const { width } = useWindowDimensions();
   const tileW = (width - 20 * 2 - 8 * 3) / 3.3;
@@ -1810,7 +1812,10 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
   const carScrollHandler = useAnimatedScrollHandler((e) => {
     carScrollX.value = e.contentOffset.x;
   });
-  useFrameCallback(() => {
+  // Frame callback para auto-scroll de arrastre en el borde del carrusel.
+  // Se pausa al salir de la pestaña (tabFocused=false): las tabs quedan montadas
+  // en Expo Router y este callback corría 60fps en el hilo UI de fondo → lag.
+  const edgeScrollCb = useFrameCallback(() => {
     if (carDragActive.value !== 1) return;
     const v = carEdgeIntent.value;
     if (v === 0) return;
@@ -1820,6 +1825,9 @@ const GeometrixCarousel = React.memo(function GeometrixCarousel({
       scrollTo(carouselScrollRef, next, 0, false);
     }
   });
+  useEffect(() => {
+    edgeScrollCb.setActive(tabFocused);
+  }, [tabFocused, edgeScrollCb]);
 
   // activeCategory viene del padre; al cambiar se resetea el scroll del carrusel.
   useEffect(() => {
@@ -4075,6 +4083,7 @@ export default function GeometrixScreen() {
           commitReorder={commitReorder}
           getSettings={getSettings}
           catalogGeometries={catalogGeometries}
+          tabFocused={tabFocused}
         />
         <View style={styles.carouselDivider} />
 

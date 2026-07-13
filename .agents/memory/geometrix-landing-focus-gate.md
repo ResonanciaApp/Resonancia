@@ -3,8 +3,10 @@ name: Geometrix landing focus gate
 description: El landing de Geometrix queda montado al salir de la pestaña; toda animación infinita ahí debe gatearse por tabFocused y cancelarse al desmontar.
 ---
 
-**Regla:** cualquier componente con loops infinitos de Reanimated (`withRepeat -1`) que se renderice dentro del landing de Geometrix (overlay `showLanding`) debe (1) montarse solo con `tabFocused` y (2) tener `cancelAnimation` en el cleanup de su useEffect.
+**Regla:** cualquier loop infinito de Reanimated (withRepeat) o frame callback (useFrameCallback) dentro de GeometrixCarousel o componentes del landing debe gatearse por `tabFocused` y cancelarse/detenerse al perder foco.
 
-**Why:** las tabs de Expo Router quedan montadas al navegar; `showLanding` se mantiene true al desenfocar (se re-activa en focus). LandingBgGeo corría 12 loops infinitos en el hilo UI que nunca morían → lag en toda la app tras visitar Geometrix. Los loops de Reanimated sobre shared values no mueren de forma confiable con el componente si no se cancelan explícitamente.
+**Why:** las tabs de Expo Router quedan montadas al navegar. Dos fuentes de lag confirmadas:
+1. `LandingBgGeo` corría 12 loops infinitos withRepeat (ya eliminado el componente).
+2. `useFrameCallback` en `GeometrixCarousel` (auto-scroll de borde al arrastrar) corría 60fps en el hilo UI sin parar → lag persistente en toda la app. Fix: `const cb = useFrameCallback(...)` + `useEffect(() => { cb.setActive(tabFocused); }, [tabFocused])`. `tabFocused` se pasa como prop al carousel.
 
-**How to apply:** al agregar decoración animada al landing, seguir el patrón `{tabFocused && <Componente />}` + cleanup con `cancelAnimation`. Las capas del canvas ya están cubiertas vía `motion={master.motion && tabFocused}`. Nota: `ParticleField`/`Particle` en geometrix.tsx es código muerto (definido, nunca renderizado) — candidato a borrar. Posible sospechoso futuro de lag fuera de Geometrix: `SceneAnimationInline` de Inicio (withRepeat sin gate de foco).
+**How to apply:** al agregar animaciones o frame callbacks en cualquier componente que viva montado en una tab de Expo Router, gatear con tabFocused. Los loops de Reanimated sobre shared values no mueren al desmontar si no se cancelan explícitamente. `useFrameCallback` arranca activo por defecto; hay que llamar `setActive(false)` explícitamente. Nota: `ParticleField`/`Particle` en geometrix.tsx es código muerto — candidato a borrar. Posible sospechoso futuro: `SceneAnimationInline` de Inicio (withRepeat sin gate de foco).
