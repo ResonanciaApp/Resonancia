@@ -256,10 +256,13 @@ router.delete("/admin/geometrix/:id", requireAuth, requireRole("admin"), async (
 });
 
 // GET /geometrix/settings — configuración pública para la app móvil
+// Se incluyen geometrías soft-deleted con visible=false para que el cliente
+// las detecte y las excluya del carrusel (sin este flag el cliente no tiene
+// entrada en el settingsMap y cae al fallback que las muestra).
 router.get("/geometrix/settings", async (req, res) => {
   try {
     const rows = await db.select().from(geometrixSettingsTable);
-    res.json({ geometries: buildMerged(rows) });
+    res.json({ geometries: buildMerged(rows, { includeDeleted: true }) });
   } catch (err) {
     req.log.error({ err }, "Error getting geometrix settings (public)");
     res.status(500).json({ error: "Error interno" });
