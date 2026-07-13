@@ -1221,31 +1221,4 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope", fontSize: 14, fontWeight: "700", color: "#1B060F",
   },
 
-  // ── Comunidad (tab inline) ─────────────────────────────────────────────────
-  commChip: {
-    flexDirection: "row", alignItems: "center", gap: 5,
-    paddingHorizontal: 13, paddingVertical: 7,
-    borderRadius: 999, overflow: "hidden",
-    borderWidth: 1, borderColor: "rgba(247,203,107,0.3)",
-  },
-  commChipText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600" },
-  commGrid: {
-    flexDirection: "row", flexWrap: "wrap",
-    gap: GRID_GAP, justifyContent: "space-between",
-  },
-  commCard: { gap: 5 },
-  commCardImg: {
-    width: "100%", aspectRatio: 1, borderRadius: 10, overflow: "hidden",
-    alignItems: "center", justifyContent: "center",
-    backgroundColor: "#1B060F",
-  },
-  commCardTitle:  { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#FBFBFB", lineHeight: 18 },
-  commCardAuthor: { fontFamily: "Manrope", fontSize: 11, color: "#c2c2c2" },
-  commLikeBadge: {
-    position: "absolute", bottom: 6, left: 6,
-    flexDirection: "row", alignItems: "center", gap: 3,
-    backgroundColor: "rgba(27,6,15,0.72)", borderRadius: 7,
-    paddingHorizontal: 6, paddingVertical: 3,
-  },
-  commLikeBadgeText: { fontFamily: "Manrope", fontSize: 10, fontWeight: "700", color: "#fff" },
 });
