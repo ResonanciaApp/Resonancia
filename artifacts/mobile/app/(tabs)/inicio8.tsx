@@ -1259,7 +1259,7 @@ export default function HomeScreen2() {
             scene={headerScene}
             height={300}
             onPress={toggleImmersive}
-            style={{ left: -16, right: -16 }}
+            style={{ transform: [{ translateX: 4 }] }}
           />
         </Animated.View>
       )}
