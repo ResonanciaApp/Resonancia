@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -113,6 +113,16 @@ const HEADER_PHRASES = [
   "Un momento para ti.",
 ];
 const TEMA3_W = Math.floor((width - GRID_PAD * 2 - TEMA_GAP * 2) / 3);
+
+const DURATION_SLOTS = [
+  { label: "5 min",  min: 0,  max: 5  },
+  { label: "10 min", min: 6,  max: 10 },
+  { label: "20 min", min: 11, max: 25 },
+  { label: "30 min", min: 26, max: 35 },
+  { label: "60 min", min: 36, max: Infinity },
+] as const;
+type DurSlot = (typeof DURATION_SLOTS)[number]["label"];
+const DUR_PILL_W = Math.round((width - GRID_PAD * 2 - 6 * 4) / 4.3);
 const VIDEO_HERO_W = Math.round((width - GRID_PAD * 2 - 56) * 1.0);
 
 /** Convierte un color hex + alpha a rgba() para usar como fondo tintado. */
@@ -357,6 +367,8 @@ export default function HomeScreen2() {
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
   const [immersive, setImmersive] = useState(false);
+  const [selectedDur, setSelectedDur] = useState<DurSlot | null>(null);
+  const [durSort, setDurSort] = useState<"recientes" | "populares">("recientes");
   const immersiveRef = useRef(false);
   const immersiveAnim = useRef(new Animated.Value(0)).current;
   const contentOpacity = immersiveAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] });
@@ -553,6 +565,14 @@ export default function HomeScreen2() {
     }
     return shuffled.slice(0, 10);
   }, [history, catalogVersion]);
+
+  const durationSessions = useMemo(() => {
+    if (!selectedDur) return [];
+    const slot = DURATION_SLOTS.find((s) => s.label === selectedDur)!;
+    const list = SESSIONS.filter((s) => s.duration >= slot.min && s.duration <= slot.max);
+    if (durSort === "recientes") return [...list].sort((a, b) => parseInt(b.id) - parseInt(a.id));
+    return list;
+  }, [selectedDur, durSort]);
 
   // Escuchadas recientemente — historial deduplicado, más recientes primero
   // (history ya viene ordenado con el más reciente al inicio, ver addToHistory)
@@ -1108,6 +1128,90 @@ export default function HomeScreen2() {
             </Pressable>
           </View>
         )}
+
+        {/* ── ¿Cuánto tiempo tienes hoy? ── */}
+        <View style={[styles.durSection, { marginBottom: SECTION_GAP }]}>
+          <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>
+            ¿Cuánto tiempo tienes hoy?
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.durPillRow}
+          >
+            {DURATION_SLOTS.map((slot) => {
+              const sel = selectedDur === slot.label;
+              return (
+                <Pressable
+                  key={slot.label}
+                  onPress={() => setSelectedDur(sel ? null : slot.label)}
+                  style={({ pressed }) => [
+                    styles.durPill,
+                    sel && styles.durPillActive,
+                    { opacity: pressed ? 0.75 : 1 },
+                  ]}
+                >
+                  {sel ? (
+                    activeSceneId === "tibet" ? (
+                      <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: "#f9f9f9" }]} />
+                    ) : (
+                      <LinearGradient
+                        colors={["#D6A45C", "#F7CB6B"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 0, y: 1 }}
+                        style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+                      />
+                    )
+                  ) : (
+                    <CardTint />
+                  )}
+                  <Text
+                    style={[
+                      styles.durPillText,
+                      sel && styles.durPillTextActive,
+                      sel && activeSceneId === "tibet" && { color: "#0a0719" },
+                    ]}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.7}
+                  >
+                    {slot.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+
+          {selectedDur && (
+            <View style={[styles.durResults, { marginHorizontal: 0 }]}>
+              <View style={styles.durSortRow}>
+                <Pressable onPress={() => setDurSort("recientes")}>
+                  <Text style={[styles.durSortOption, durSort === "recientes" && styles.durSortActive]}>
+                    Recientes
+                  </Text>
+                </Pressable>
+                <Text style={styles.durSortSep}>·</Text>
+                <Pressable onPress={() => setDurSort("populares")}>
+                  <Text style={[styles.durSortOption, durSort === "populares" && styles.durSortActive]}>
+                    Más escuchadas
+                  </Text>
+                </Pressable>
+              </View>
+              {durationSessions.length === 0 ? (
+                <Text style={[styles.durEmpty, { color: "#c2c2c2" }]}>
+                  Sin sesiones para este rango
+                </Text>
+              ) : (
+                durationSessions.map((s, i) => (
+                  <React.Fragment key={s.id}>
+                    {i > 0 && <View style={styles.recoDivider} />}
+                    <SessionCard session={s} horizontal />
+                  </React.Fragment>
+                ))
+              )}
+            </View>
+          )}
+        </View>
 
         {/* ── BANNER RESONADORES ── */}
         <Pressable
@@ -2034,5 +2138,78 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.35)",
     alignItems: "center", justifyContent: "center",
     flexShrink: 0,
+  },
+
+  // ¿Cuánto tiempo tienes hoy?
+  recoDivider: {
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.07)",
+    marginHorizontal: 4,
+  },
+  durSection: {
+    paddingHorizontal: GRID_PAD,
+  },
+  durPillRow: {
+    flexDirection: "row",
+    paddingHorizontal: 0,
+    paddingRight: DUR_PILL_W * 0.3,
+    gap: 6,
+    paddingBottom: 2,
+  },
+  durPill: {
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    minWidth: 80,
+    height: 42,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  durPillActive: {},
+  durPillText: {
+    fontFamily: "Manrope",
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#FBFBFB",
+    letterSpacing: 0.2,
+    marginTop: -3,
+  },
+  durPillTextActive: {
+    color: "#1B060F",
+  },
+  durResults: {
+    marginTop: 16,
+    gap: 6,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderRadius: 15,
+    padding: 12,
+  },
+  durSortRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 10,
+  },
+  durSortOption: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "500",
+    color: "#c2c2c2",
+  },
+  durSortActive: {
+    fontFamily: "Manrope",
+    color: "#f9f9f9",
+    fontWeight: "700",
+  },
+  durSortSep: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    color: "#c2c2c2",
+  },
+  durEmpty: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    textAlign: "center",
+    paddingVertical: 16,
   },
 });
