@@ -35,6 +35,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { VolumeSlider } from "@/components/VolumeSlider";
 import { SceneAnimationCard } from "@/components/SceneAnimationCard";
 import { AMBIENT_SCENES, useAmbientPlayer, type SceneId } from "@/context/AmbientPlayerContext";
+import { SCENE_THEMES } from "@/config/scene-themes";
 import { useSelectedScene } from "@/context/SelectedSceneContext";
 import { useGetSceneAnimations } from "@workspace/api-client-react";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
@@ -62,7 +63,7 @@ const TIMER_OPTIONS: Array<{ label: string; value: number | null }> = [
 
 export function EscenasSheet() {
   const insets = useSafeAreaInsets();
-  const { theme, setActiveSceneWithFade, overlayColors, overlayOpacity } = useSceneTheme();
+  const { theme, activeSceneId, setActiveSceneWithFade, overlayColors, overlayOpacity } = useSceneTheme();
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const geoScenes = sceneAnimationsData?.scenes ?? [];
   const { setSelectedScene, setBgScene } = useSelectedScene();
@@ -335,53 +336,40 @@ export function EscenasSheet() {
 
           <View style={styles.divider} />
 
-          <View style={styles.sceneTitleRow}>
-            <MaterialCommunityIcons name="spa" size={16} color="rgba(255,255,255,0.8)" />
-            <Text style={styles.sceneTitle}>Escenas</Text>
-          </View>
-
-          <View style={styles.carousel}>
-            {AMBIENT_SCENES.slice(0, 4).map((scene) => {
-              const active = scene.id === confirmedSceneId;
-              return (
-                <Pressable
-                  key={scene.id}
-                  style={styles.cardWrap}
-                  onPressIn={() => handlePressIn(scene.id)}
-                  onPressOut={() => handlePressOut(scene.id)}
-                  onPress={() => handleOpenPreview(scene)}
-                >
-                  <Animated.View
-                    style={{ transform: [{ scale: scaleAnims[scene.id] }] }}
+          <View style={[styles.sceneTitleRow, { justifyContent: "space-between", marginBottom: 0 }]}>
+            <Text style={styles.sceneTitle}>Color</Text>
+            <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
+              {AMBIENT_SCENES.slice(0, 4).map((scene) => {
+                const sceneGradient = SCENE_THEMES[scene.id as keyof typeof SCENE_THEMES]?.gradient;
+                if (!sceneGradient) return null;
+                const isActive = scene.id === activeSceneId;
+                return (
+                  <Pressable
+                    key={scene.id}
+                    onPress={() => setActiveSceneWithFade(scene.id)}
+                    hitSlop={10}
                   >
-                    <Animated.View
-                      style={[
-                        styles.card,
-                        {
-                          borderWidth: 2,
-                          borderColor: borderAnims[scene.id].interpolate({
-                            inputRange: [0, 1],
-                            outputRange: ["rgba(255,255,255,0)", "rgba(255,255,255,0.7)"],
-                          }),
-                        },
-                      ]}
+                    <View
+                      style={{
+                        width: 17,
+                        height: 17,
+                        borderRadius: 8.5,
+                        overflow: "hidden",
+                        borderWidth: 1.5,
+                        borderColor: isActive ? "rgba(255,255,255,0.85)" : "transparent",
+                      }}
                     >
-                      <Image
-                        source={scene.image}
-                        style={StyleSheet.absoluteFill}
-                        contentFit="cover"
+                      <LinearGradient
+                        colors={[sceneGradient[0], sceneGradient[sceneGradient.length - 1]] as [string, string]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={{ flex: 1 }}
                       />
-                    </Animated.View>
-                  </Animated.View>
-                  <Text
-                    style={[styles.cardLabel, active && styles.cardLabelActive]}
-                    numberOfLines={1}
-                  >
-                    {scene.label}
-                  </Text>
-                </Pressable>
-              );
-            })}
+                    </View>
+                  </Pressable>
+                );
+              })}
+            </View>
           </View>
 
           {/* ── Escenas animadas (Geometrix) ── */}
