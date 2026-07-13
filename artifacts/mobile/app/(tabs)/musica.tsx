@@ -189,7 +189,6 @@ const PillTab = memo(function PillTab({
         <Animated.Text style={[styles.pillTabLabel, styles.pillTabLabelSel, StyleSheet.absoluteFill, { opacity: selAnim }]}>
           {tab.label}
         </Animated.Text>
-        <Animated.View style={[styles.pillTabUnderline, { opacity: selAnim, transform: [{ scaleX: selAnim }] }]} />
       </View>
     </Pressable>
   );
