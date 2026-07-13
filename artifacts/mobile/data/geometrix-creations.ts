@@ -112,7 +112,7 @@ export type GeometrixAudio = { moduleKey: string; trackId: string } | null;
 // ───────────────────────────────────────────────────────────────────────────
 
 /** Degradado por defecto del lienzo — tema Universo (Tibet), 4 stops. */
-export const HOME_GRADIENT = ["#2d1c52", "#24245d", "#1f2a62", "#2d4081"] as const;
+export const HOME_GRADIENT = ["#2d1c52", "#24245d", "#1f2a62", "#814D2D"] as const;
 
 /** Degradado del header del canvas (+3% lightness sobre HOME_GRADIENT). */
 export const HEADER_GRADIENT = ["#140D23", "#10091F", "#0A0717"] as const;
