@@ -298,9 +298,11 @@ interface Props {
   height: number;
   onPress?: () => void;
   style?: ViewStyle;
+  /** Cuando true, fuerza motion=false en todas las capas (usar al perder foco de tab). */
+  paused?: boolean;
 }
 
-export function SceneAnimationInline({ scene, height, onPress, style }: Props) {
+export function SceneAnimationInline({ scene, height, onPress, style, paused }: Props) {
   const fadeAnim = useRef(new Animated.Value(scene ? 0 : 1)).current;
   const prevSceneId = useRef<number | null>(null);
 
@@ -332,7 +334,8 @@ export function SceneAnimationInline({ scene, height, onPress, style }: Props) {
   const settingsMap = recipe.settings ?? {};
   const master = recipe.master ?? {};
   const masterOpacity = master.opacity ?? 1;
-  const motion = master.motion !== false;
+  // paused=true (tab sin foco) fuerza motion=false → cancela todos los withRepeat
+  const motion = !paused && (master.motion !== false);
 
   // baseSize: el tamaño de referencia desde el que se aplica el committedMag
   // de cada geometría. Se toma height * 1.15 igual que antes, pero ahora

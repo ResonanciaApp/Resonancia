@@ -664,6 +664,17 @@ export default function HomeScreen2() {
   const weeklyPhrase = useRef(getWeeklyPhrase()).current;
   const phraseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Pausa las animaciones de SceneAnimationInline al salir de esta tab.
+  // Las tabs quedan montadas en Expo Router; sin este gate los withRepeat
+  // de las capas siguen corriendo 60fps de fondo → lag acumulativo.
+  const [tabFocused, setTabFocused] = useState(false);
+  useFocusEffect(
+    useCallback(() => {
+      setTabFocused(true);
+      return () => setTabFocused(false);
+    }, []),
+  );
+
   useFocusEffect(
     useCallback(() => {
       phraseAnim.setValue(0);
@@ -900,6 +911,7 @@ export default function HomeScreen2() {
             height={300}
             onPress={headerScene ? toggleImmersive : undefined}
             style={{ position: "absolute", top: 0, left: -16, right: -16 }}
+            paused={!tabFocused}
           />
         </View>
 
@@ -1263,6 +1275,7 @@ export default function HomeScreen2() {
             height={300}
             onPress={toggleImmersive}
             style={undefined}
+            paused={!tabFocused}
           />
         </Animated.View>
       )}
