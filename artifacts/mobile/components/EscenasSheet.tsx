@@ -18,6 +18,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -33,15 +34,18 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { VolumeSlider } from "@/components/VolumeSlider";
-import { SceneAnimationCard } from "@/components/SceneAnimationCard";
+import { SceneAnimationCard, type SceneItem } from "@/components/SceneAnimationCard";
 import { AMBIENT_SCENES, useAmbientPlayer, type SceneId } from "@/context/AmbientPlayerContext";
 import { SCENE_THEMES } from "@/config/scene-themes";
 import { useSelectedScene } from "@/context/SelectedSceneContext";
+import type { SceneAnimation } from "@workspace/api-client-react";
 import { useGetSceneAnimations } from "@workspace/api-client-react";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useBrightness } from "@/context/BrightnessContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
+import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
+import type { GeometrixCreation } from "@/data/geometrix-creations";
 
 const SCREEN_W = Dimensions.get("window").width;
 const SCREEN_H = Dimensions.get("window").height;
@@ -49,6 +53,8 @@ const SHEET_H_PAD = 24;
 const CARD_GAP = 14;
 const CARD_W = Math.floor((SCREEN_W - SHEET_H_PAD * 2 - CARD_GAP) / 2);
 const CARD_H = Math.floor(CARD_W * 1.1) + 30;
+const ANIM_CARD_SIZE = Math.floor((SCREEN_W - SHEET_H_PAD * 2 - 12) / 2 * 0.8) + 31;
+const ANIM_CARD_H = Math.round(ANIM_CARD_SIZE * 1.32) - 17;
 
 const WARM_DIVIDER = "rgba(255,255,255,0.055)";
 
@@ -61,11 +67,103 @@ const TIMER_OPTIONS: Array<{ label: string; value: number | null }> = [
   { label: "90 minutos", value: 90 },
 ];
 
+/** Convierte una creación de Geometrix al shape mínimo que necesita SceneAnimationCard. */
+function creationToSceneItem(c: GeometrixCreation): SceneItem {
+  return {
+    name: c.name,
+    isPremium: false,
+    recipe: { active: c.active, master: c.master, settings: c.settings },
+  };
+}
+
+/** Convierte una creación de Geometrix al tipo SceneAnimation para el contexto. */
+function creationToSceneAnimation(c: GeometrixCreation): SceneAnimation {
+  return {
+    id: parseInt(c.id, 10) || 0,
+    name: c.name,
+    description: null,
+    phrase: null,
+    recipe: { active: c.active, master: c.master, settings: c.settings },
+    isActive: true,
+    isPremium: false,
+    sortOrder: 0,
+    submittedBy: null,
+    createdAt: c.createdAt,
+    updatedAt: c.updatedAt,
+  } as unknown as SceneAnimation;
+}
+
+// ── Card CTA "Crea tu animación" ──────────────────────────────────────────
+function SceneAnimationCtaCard({
+  size,
+  height,
+  onPress,
+}: {
+  size: number;
+  height: number;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        ctaS.wrap,
+        { width: size, height: height, opacity: pressed ? 0.75 : 1 },
+      ]}
+    >
+      <LinearGradient
+        colors={["rgba(190,150,80,0.10)", "rgba(190,150,80,0.04)"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={[StyleSheet.absoluteFill, { borderRadius: 18 }]}
+      />
+      <View style={ctaS.card}>
+        <Text style={ctaS.plus}>✦</Text>
+        <Text style={ctaS.label}>{`Crea tu\nanimación`}</Text>
+      </View>
+    </Pressable>
+  );
+}
+
+const ctaS = StyleSheet.create({
+  wrap: {
+    alignItems: "center",
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.28)",
+    overflow: "hidden",
+    justifyContent: "center",
+  },
+  card: {
+    flex: 1,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+  },
+  plus: {
+    fontSize: 28,
+    color: "#F7CB6B",
+    opacity: 0.85,
+  },
+  label: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#F7CB6B",
+    textAlign: "center",
+    lineHeight: 18,
+    letterSpacing: 0.2,
+  },
+});
+
 export function EscenasSheet() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const { theme, activeSceneId, setActiveSceneWithFade, overlayColors, overlayOpacity } = useSceneTheme();
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const geoScenes = sceneAnimationsData?.scenes ?? [];
+  const { creations: geometrixCreations, reload: reloadCreations } = useGeometrixCreations();
   const { setSelectedScene, setBgScene } = useSelectedScene();
   const {
     currentScene,
@@ -107,6 +205,19 @@ export function EscenasSheet() {
     }).start(() => closeSheet());
   }, [sheetEnterY, closeSheet]);
 
+  /** Cierra el sheet y navega a la pestaña Geometrix. */
+  const handleGoToGeometrix = useCallback(() => {
+    Animated.timing(sheetEnterY, {
+      toValue: SCREEN_H,
+      duration: 380,
+      easing: easeOutCubic,
+      useNativeDriver: true,
+    }).start(() => {
+      closeSheet();
+      router.navigate("/(tabs)/geometrix");
+    });
+  }, [sheetEnterY, closeSheet, router]);
+
   useLayoutEffect(() => {
     if (isSheetOpen) {
       sheetEnterY.setValue(SCREEN_H);
@@ -118,6 +229,8 @@ export function EscenasSheet() {
       }).start();
       // Sincronizar el borde con la escena activa al abrir
       setConfirmedSceneId(currentScene.id);
+      // Refrescar creaciones del usuario por si se guardó algo en Geometrix
+      reloadCreations();
     } else {
       // La animación de cierre ya llevó sheetEnterY a SCREEN_H; solo limpiar estado
       setTimerOpen(false);
@@ -384,37 +497,55 @@ export function EscenasSheet() {
 
           <View style={styles.divider} />
 
-          {/* ── Escenas animadas (Geometrix) ── */}
-          {geoScenes.length > 0 && (
-            <View style={{ marginTop: 0 }}>
-              <View style={[styles.sceneTitleRow, { marginTop: 10 }]}>
-                <MaterialCommunityIcons name="star-four-points-outline" size={16} color="rgba(255,255,255,0.8)" />
-                <Text style={styles.sceneTitle}>Escenas animadas</Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  flexWrap: "wrap",
-                  gap: 12,
-                  marginTop: 4,
-                  justifyContent: "center",
-                }}
-              >
-                {geoScenes.map((scene) => (
-                  <SceneAnimationCard
-                    key={scene.id}
-                    scene={scene}
-                    size={Math.floor((SCREEN_W - SHEET_H_PAD * 2 - 12) / 2 * 0.8) + 31}
-                    height={Math.round((Math.floor((SCREEN_W - SHEET_H_PAD * 2 - 12) / 2 * 0.8) + 31) * 1.32) - 17}
-                    onPress={() => {
-                      setBgScene(scene);
-                      handleClose();
-                    }}
-                  />
-                ))}
-              </View>
+          {/* ── Escenas animadas: admin curadas + creaciones del usuario + CTA ── */}
+          <View style={{ marginTop: 0 }}>
+            <View style={[styles.sceneTitleRow, { marginTop: 10 }]}>
+              <MaterialCommunityIcons name="star-four-points-outline" size={16} color="rgba(255,255,255,0.8)" />
+              <Text style={styles.sceneTitle}>Escenas animadas</Text>
             </View>
-          )}
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                gap: 12,
+                marginTop: 4,
+                justifyContent: "center",
+              }}
+            >
+              {/* Escenas curadas por el admin (en orden sortOrder) */}
+              {geoScenes.map((scene) => (
+                <SceneAnimationCard
+                  key={`admin-${scene.id}`}
+                  scene={scene}
+                  size={ANIM_CARD_SIZE}
+                  height={ANIM_CARD_H}
+                  onPress={() => {
+                    setBgScene(scene);
+                    handleClose();
+                  }}
+                />
+              ))}
+              {/* Animaciones creadas por el usuario en Geometrix (más nueva primero) */}
+              {geometrixCreations.map((creation) => (
+                <SceneAnimationCard
+                  key={`user-${creation.id}`}
+                  scene={creationToSceneItem(creation)}
+                  size={ANIM_CARD_SIZE}
+                  height={ANIM_CARD_H}
+                  onPress={() => {
+                    setBgScene(creationToSceneAnimation(creation));
+                    handleClose();
+                  }}
+                />
+              ))}
+              {/* CTA: siempre al final */}
+              <SceneAnimationCtaCard
+                size={ANIM_CARD_SIZE}
+                height={ANIM_CARD_H}
+                onPress={handleGoToGeometrix}
+              />
+            </View>
+          </View>
         </ScrollView>
       </Animated.View>
 

@@ -4,7 +4,6 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { gradientColors, type GeoSettings } from "@/data/geometrix-creations";
 import { baseOf } from "@/data/geometries";
-import type { SceneAnimation } from "@workspace/api-client-react";
 
 type SceneRecipe = {
   active?: string[];
@@ -16,8 +15,14 @@ type SceneRecipe = {
   settings?: Record<string, GeoSettings>;
 };
 
+export type SceneItem = {
+  name: string;
+  isPremium: boolean;
+  recipe: object;
+};
+
 interface Props {
-  scene: SceneAnimation;
+  scene: SceneItem;
   size: number;
   height?: number;
   onPress: () => void;
