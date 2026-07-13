@@ -397,6 +397,7 @@ export function EscenasSheet() {
                   flexWrap: "wrap",
                   gap: 12,
                   marginTop: 14,
+                  justifyContent: "center",
                 }}
               >
                 {geoScenes.map((scene) => (
