@@ -961,7 +961,6 @@ export default function HomeScreen2() {
         >
           <WeekDayDots />
         </Pressable>
-        {!rachaEnabled && <View style={{ height: 30 }} />}
         <ProgresoModal visible={progresoVisible} onClose={() => setProgresoVisible(false)} />
 
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
@@ -996,7 +995,7 @@ export default function HomeScreen2() {
 
 
         {/* ── EXPLORA POR CONTENIDO ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP - 20, marginTop: -12 }]}>
+        <View style={[styles.section, { marginBottom: SECTION_GAP - 20, marginTop: rachaEnabled ? -12 : -62 }]}>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 7, marginTop: 20 }}>
             {([
               { id: "meditaciones-guiadas", label: "Meditación", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={24} color={color} /> },
