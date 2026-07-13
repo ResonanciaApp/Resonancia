@@ -158,31 +158,34 @@ const TAB_GRADIENT: Record<MainTabId, [string, string]> = {
   bpm:            ["#1A5454", "#0D3535"],
 };
 
-// ── PillTab ───────────────────────────────────────────────────────────────────
-const GOLD_BORDER: [string, string] = ["#F7CB6B", "#FBA980"];
-const GOLD_BORDER_PILL = ["rgba(212,175,55,0.20)", "rgba(233,196,106,0.20)", "rgba(212,175,55,0.20)"] as const;
-
-const UNIVERSO_PILL_UNSEL = { backgroundColor: "rgba(0,0,0,0.27)", borderWidth: 1.5, borderColor: "rgba(255,255,255,0.4)" } as const;
+// ── PillTab — estilo Biblioteca (texto + subrayado animado) ──────────────────
+const CHIP_ANIM_DURATION = 550;
 
 const PillTab = memo(function PillTab({
   tab, sel, onPress,
 }: { tab: (typeof MAIN_TABS)[0]; sel: boolean; onPress: () => void }) {
-  const { theme: pillTheme } = useSceneTheme();
+  const selAnim = useRef(new Animated.Value(sel ? 1 : 0)).current;
+
+  useEffect(() => {
+    Animated.timing(selAnim, {
+      toValue: sel ? 1 : 0,
+      duration: CHIP_ANIM_DURATION,
+      easing: Easing.inOut(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [sel]);
+
   return (
-    <Pressable
-      onPress={onPress}
-      style={[styles.pillTab, sel && styles.pillTabSel, pillTheme?.id === "tibet" && !sel && UNIVERSO_PILL_UNSEL]}
-    >
-      {sel && (pillTheme?.id === "tibet"
-        ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
-        : pillTheme?.id === "vino-tinto"
-          ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgb(247,203,107)" }]} />
-          : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
-      )}
-      <MaterialCommunityIcons name={tab.icon as any} size={13} color={sel ? "#2D0D3A" : "#F4F4F4"} />
-      <Text numberOfLines={1} style={[styles.pillTabLabel, { color: sel ? "#2D0D3A" : "#F4F4F4" }]}>
-        {tab.label}
-      </Text>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.pillTab, { opacity: pressed ? 0.6 : 1 }]}>
+      <View>
+        <Animated.Text style={[styles.pillTabLabel, { opacity: selAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}>
+          {tab.label}
+        </Animated.Text>
+        <Animated.Text style={[styles.pillTabLabel, styles.pillTabLabelSel, StyleSheet.absoluteFill, { opacity: selAnim }]}>
+          {tab.label}
+        </Animated.Text>
+        <Animated.View style={[styles.pillTabUnderline, { opacity: selAnim, transform: [{ scaleX: selAnim }] }]} />
+      </View>
     </Pressable>
   );
 });
@@ -847,7 +850,7 @@ export default function MezcladorScreen() {
               contentContainerStyle={styles.pillRowContent}
             >
               {MAIN_TABS.map((tab) => (
-                <View key={tab.id} style={[styles.pillTabBorder, mainTab === tab.id && styles.pillTabBorderSel]}>
+                <View key={tab.id}>
                   <PillTab
                     tab={tab}
                     sel={mainTab === tab.id}
@@ -875,7 +878,7 @@ export default function MezcladorScreen() {
                         <Pressable
                           key={catId}
                           onPress={() => setSubTab(sel ? null : catId)}
-                          style={[styles.subTab, sel && styles.subTabSel, theme?.id === "tibet" && !sel && UNIVERSO_PILL_UNSEL]}
+                          style={[styles.subTab, sel && styles.subTabSel]}
                         >
                           {sel && (theme?.id === "tibet"
                             ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
@@ -993,7 +996,11 @@ export default function MezcladorScreen() {
         pointerEvents={menuOpen ? "box-none" : "none"}
         style={[
           styles.menuPanel,
-          { transform: [{ translateY: menuSlide }], opacity: menuFade },
+          {
+            transform: [{ translateY: menuSlide }],
+            opacity: menuFade,
+            backgroundColor: theme?.id === "tibet" ? "#24245d" : "#1A1020",
+          },
         ]}
       >
         {/* ── Tab bar del panel ── */}
@@ -1129,50 +1136,15 @@ const styles = StyleSheet.create({
     width: 38, height: 38, alignItems: "center", justifyContent: "center",
   },
 
-  pillRow:        { flexGrow: 0, marginTop: -16, marginBottom: -11, backgroundColor: "transparent" },
-  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingTop: 15, paddingBottom: 24 },
-  pillGlow: {
-    borderRadius: 999,
-    shadowColor: "#FFFFFF",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.24,
-    shadowRadius: 6,
-    elevation: 6,
+  pillRow:        { flexGrow: 0, marginTop: -12, marginBottom: -8, backgroundColor: "transparent" },
+  pillRowContent: { flexDirection: "row", gap: 22, paddingHorizontal: 18, paddingTop: 12, paddingBottom: 20 },
+  pillTab:        { paddingVertical: 6 },
+  pillTabLabel:   { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "rgba(255,255,255,0.55)" },
+  pillTabLabelSel:{ color: "#f9f9f9" },
+  pillTabUnderline: {
+    height: 2, borderRadius: 1, backgroundColor: "#f9f9f9",
+    marginTop: 5, alignSelf: "stretch",
   },
-  pillTab: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 14,
-    height: 28,
-    borderRadius: 999,
-    overflow: "hidden",
-    gap: 5,
-    backgroundColor: "rgba(255,255,255,0.035)",
-    borderWidth: 2,
-    borderColor: "rgba(244,244,244,0.4)",
-  },
-  pillTabBorder: {},
-  pillTabBorderSel: {},
-  pillTabSel: { borderWidth: 0 },
-  pillTabInner: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 19,
-    paddingVertical: 9,
-    borderRadius: 999,
-    overflow: "hidden",
-    gap: 5,
-  },
-  pillTabMaskContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 5,
-    backgroundColor: "transparent",
-  },
-  pillTabLabel: { fontFamily: "Manrope", fontSize: 11, letterSpacing: 0.1, fontWeight: "380" },
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },
 
@@ -1282,11 +1254,8 @@ const styles = StyleSheet.create({
   // ── Menú inline (3 puntitos) ──────────────────────────────────────────────
   menuPanel: {
     position: "absolute",
-    bottom: 0, left: 0, right: 0,
-    height: "72%",
+    top: 0, bottom: 0, left: 0, right: 0,
     zIndex: 50,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
     backgroundColor: "#1A1020",
     overflow: "hidden",
   },
@@ -1301,16 +1270,16 @@ const styles = StyleSheet.create({
   },
   menuPanelTabs: { flex: 1, flexDirection: "row", gap: 6 },
   menuPanelTab: {
-    paddingHorizontal: 14, paddingVertical: 6,
-    borderRadius: 999,
-    backgroundColor: "transparent",
+    paddingHorizontal: 18, paddingVertical: 8,
+    borderRadius: 999, overflow: "hidden",
+    backgroundColor: "rgba(249,249,249,0.10)",
   },
-  menuPanelTabSel: { backgroundColor: "rgba(255,255,255,0.10)" },
+  menuPanelTabSel: { backgroundColor: "#f9f9f9" },
   menuPanelTabText: {
-    fontFamily: "Manrope", fontSize: 14, fontWeight: "500",
-    color: "rgba(255,255,255,0.45)",
+    fontFamily: "Manrope", fontSize: 14, fontWeight: "600",
+    color: "#f9f9f9",
   },
-  menuPanelTabTextSel: { color: "#F4DAD5", fontWeight: "700" },
+  menuPanelTabTextSel: { color: "#06071F", fontWeight: "700" },
   menuPanelClose: {
     width: 32, height: 32, alignItems: "center", justifyContent: "center",
   },
