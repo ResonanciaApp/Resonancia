@@ -3063,6 +3063,8 @@ export default function GeometrixScreen() {
       resetHistory();
       // Registrar la creación cargada para habilitar el botón "Actualizar".
       setEditingCreation({ id: c.id, name: c.name });
+      // Ocultar el landing — la creación abre el canvas directamente.
+      setShowLanding(false);
       // Reset de la sesión actual antes de aplicar la receta.
       stopIntro();
       setSettings(c.settings);
