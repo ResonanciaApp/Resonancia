@@ -966,7 +966,7 @@ export default function HomeScreen2() {
             onPress={handleIntentionPress}
             style={({ pressed }) => [
               styles.intencionWrap,
-              { marginTop: 1, marginBottom: 0, transform: [], opacity: pressed ? 0.75 : 1 },
+              { marginTop: -5, marginBottom: 0, transform: [], opacity: pressed ? 0.75 : 1 },
             ]}
           >
             <Text style={styles.intencionSuper}>Hoy voy a...</Text>
