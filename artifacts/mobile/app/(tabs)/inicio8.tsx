@@ -966,7 +966,7 @@ export default function HomeScreen2() {
             onPress={handleIntentionPress}
             style={({ pressed }) => [
               styles.intencionWrap,
-              { marginTop: 44, marginBottom: 0, transform: [], opacity: pressed ? 0.75 : 1 },
+              { marginTop: 14, marginBottom: 0, transform: [], opacity: pressed ? 0.75 : 1 },
             ]}
           >
             <Text style={styles.intencionSuper}>Hoy voy a...</Text>
@@ -1029,7 +1029,7 @@ export default function HomeScreen2() {
 
 
         {/* ── EXPLORA POR CONTENIDO ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP - 20, marginTop: rachaEnabled ? -12 : -68 }]}>
+        <View style={[styles.section, { marginBottom: SECTION_GAP - 20, marginTop: intencionDiariaEnabled ? (rachaEnabled ? -37 : -93) : (rachaEnabled ? -12 : -68) }]}>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 7, marginTop: 20 }}>
             {([
               { id: "meditaciones-guiadas", label: "Meditación", color: "#C9A8ED", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={24} color={color} /> },
