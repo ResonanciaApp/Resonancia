@@ -1,14 +1,14 @@
 export default function SlideTramosInversion() {
   // Modelo acelerado: tasa de equity crece con el tamaño del cheque
-  // Anchor máximo: $23,19M → 10%
+  // Anchor máximo: $23,504M → 10%
   const VAL_M12 = 1044; // millones CLP · 5.000 subs × $4.350 × 12 × 4×
 
   const tramos = [
-    { inv: 5,     equity: 1.2  },
-    { inv: 10,    equity: 3.0  },
-    { inv: 15,    equity: 5.0  },
-    { inv: 20,    equity: 7.0  },
-    { inv: 23.19, equity: 10.0 },
+    { inv: 5,      equity: 1.2  },
+    { inv: 10,     equity: 3.0  },
+    { inv: 15,     equity: 5.0  },
+    { inv: 20,     equity: 7.0  },
+    { inv: 23.504, equity: 10.0 },
   ].map(({ inv, equity }) => {
     const postMoney = inv / (equity / 100);
     const stakeM12 = (equity / 100) * VAL_M12;
@@ -22,7 +22,7 @@ export default function SlideTramosInversion() {
   const fmtPct = (n: number) => n.toFixed(1).replace(".", ",") + "%";
   const fmtX = (n: number) => n.toFixed(1).replace(".", ",") + "×";
   const fmtInv = (inv: number) => {
-    if (inv === 23.19) return "23,19";
+    if (inv === 23.504) return "23,50";
     return inv.toFixed(0);
   };
 
@@ -57,7 +57,7 @@ export default function SlideTramosInversion() {
           </span>
         </div>
         <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.40)", marginTop: "0.7vh" }}>
-          Modelo de prima por escala · cada tramo mayor recibe más equity por peso invertido · ancla máxima $23,19M = 10%
+          Modelo de prima por escala · cada tramo mayor recibe más equity por peso invertido · ancla máxima $23,50M = 10%
         </div>
       </div>
 
@@ -90,7 +90,7 @@ export default function SlideTramosInversion() {
       {/* Rows */}
       <div style={{ display: "flex", flexDirection: "column", gap: "0.9vh", flex: 1 }}>
         {tramos.map((t, i) => {
-          const isHighlight = i === 4; // Tramo E ($23,19M)
+          const isHighlight = i === 4; // Tramo E ($23,50M)
           const rowBg = ["rgba(0,0,0,0.12)", "rgba(0,0,0,0.15)", "rgba(0,0,0,0.18)", "rgba(0,0,0,0.20)"];
           return (
             <div

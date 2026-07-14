@@ -5,11 +5,11 @@ export default function Slide11Inversion() {
     {
       titulo: "GASTOS OPERACIONALES",
       items: [
-        { label: "Contenido",                  monto: "$5.350.000" },
-        { label: "Marketing",                  monto: "$3.500.000" },
-        { label: "Runway operativo (3 meses)", monto: "$6.840.000" },
+        { label: "Contenido",                  monto: "$4.100.000" },
+        { label: "Marketing",                  monto: "$3.000.000" },
+        { label: "Runway operativo (3 meses)", monto: "$4.104.000" },
       ],
-      total: "$15.690.000",
+      total: "$11.204.000",
     },
     {
       titulo: "EQUIPAMIENTO",
@@ -21,10 +21,10 @@ export default function Slide11Inversion() {
     {
       titulo: "EXTERNOS",
       items: [
-        { label: "Programación extra", monto: "$1.000.000" },
-        { label: "Masterización",      monto: "$800.000"   },
+        { label: "Programación extra", monto: "$6.000.000" },
+        { label: "Masterización",      monto: "$600.000"   },
       ],
-      total: "$1.800.000",
+      total: "$6.600.000",
     },
     {
       titulo: "OTROS",
@@ -38,22 +38,19 @@ export default function Slide11Inversion() {
 
   const rrhh = [
     { label: "Gerente General",               monto: "$400.000" },
-    { label: "Programador Chief",             monto: "$500.000" },
-    { label: "Coordinador / Contenidos",      monto: "$300.000" },
     { label: "Ventas / Logística",            monto: "$400.000" },
     { label: "Super admin / Atención cliente",monto: "$400.000" },
   ];
 
   const equipos = [
-    { label: "Estudio grabación (Acústica)", monto: "$1.500.000" },
-    { label: "Equipos Loops",               monto: "$1.500.000" },
-    { label: "Grabadora PodCast",            monto: "$800.000"   },
-    { label: "Lente gran angular",          monto: "$900.000"   },
+    { label: "Estudio grabación (Acústica/Termo)", monto: "$1.500.000" },
+    { label: "Grabadora Podcast",                  monto: "$800.000"   },
+    { label: "Lente gran angular",                 monto: "$900.000"   },
   ];
 
   const contenido = [
-    { label: "Sesiones de Sonoterapia", valor: "$70.000",  cantidad: 30, total: "$2.100.000" },
-    { label: "Voces Guía",             valor: "$30.000",  cantidad: 25, total: "$750.000"   },
+    { label: "Sesiones de Sonoterapia", valor: "$50.000",  cantidad: 20, total: "$1.000.000" },
+    { label: "Voces Guía",             valor: "$30.000",  cantidad: 20, total: "$600.000"   },
     { label: "Música Ambient",         valor: "$80.000",  cantidad: 20, total: "$1.600.000" },
     { label: "Mundo Holístico",        valor: "$60.000",  cantidad: 15, total: "$900.000"   },
   ];
@@ -106,7 +103,7 @@ export default function Slide11Inversion() {
           <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
             Buscamos{" "}
             <span style={goldGrad}>
-              $23.190.000 CLP
+              $23.504.000 CLP
             </span>
           </div>
           <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.45)", marginTop: "0.5vh" }}>
@@ -115,7 +112,7 @@ export default function Slide11Inversion() {
         </div>
         <div style={{ textAlign: "right", flexShrink: 0 }}>
           <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.40)", letterSpacing: "0.1em" }}>TOTAL INVERSIÓN</div>
-          <div style={{ fontSize: "2.8vw", fontWeight: 700, ...goldGrad, lineHeight: 1.1 }}>$23.190.000</div>
+          <div style={{ fontSize: "2.8vw", fontWeight: 700, ...goldGrad, lineHeight: 1.1 }}>$23.504.000</div>
         </div>
       </div>
 
@@ -161,10 +158,10 @@ export default function Slide11Inversion() {
           <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.2)", marginTop: "0.5vh" }} />
           <div style={{ ...row, marginTop: "0.2vh" }}>
             <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>Total mensual</div>
-            <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$2.280.000</div>
+            <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$1.368.000</div>
           </div>
           <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.35)", marginTop: "0.2vh" }}>
-            × 3 meses = $6.840.000 runway total
+            × 3 meses = $4.104.000 runway total
           </div>
         </div>
 
@@ -180,7 +177,7 @@ export default function Slide11Inversion() {
           <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.2)", marginTop: "0.5vh" }} />
           <div style={{ ...row, marginTop: "0.2vh" }}>
             <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>Total</div>
-            <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$4.700.000</div>
+            <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$3.200.000</div>
           </div>
           <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.35)", marginTop: "0.2vh" }}>
             Inversión única · hardware para producción de audio
@@ -206,10 +203,10 @@ export default function Slide11Inversion() {
           <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.2)", marginTop: "0.5vh" }} />
           <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "0.6vw", alignItems: "baseline", marginTop: "0.2vh" }}>
             <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>Total contenido</div>
-            <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$5.350.000</div>
+            <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$4.100.000</div>
           </div>
           <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.35)", marginTop: "0.2vh" }}>
-            90 piezas de audio producidas para lanzamiento
+            75 piezas de audio producidas para lanzamiento
           </div>
         </div>
       </div>
