@@ -939,6 +939,46 @@ export default function ProfileScreen() {
           </Pressable>
         </View>
 
+        {/* ── Estadísticas de Racha ── */}
+        {(() => {
+          const totalListen = Math.round(statEvents.reduce((s, e) => s + e.minutes, 0));
+          const activeDays  = new Set(statEvents.map((e) => dayKey(new Date(e.playedAt)))).size;
+          const fmtMin = (m: number) => m < 60 ? `${m}m` : `${Math.floor(m / 60)}h ${m % 60 > 0 ? ` ${m % 60}m` : ""}`.trim();
+          const weekDone = activity.weekActivity.filter(Boolean).length;
+          const stats4 = [
+            { emoji: "🔥", value: String(activity.streak), label: "Racha actual", sub: "días" },
+            { emoji: "🏆", value: String(activity.maxStreak), label: "Racha más larga", sub: "días" },
+            { emoji: "📅", value: String(activeDays), label: "Días activos", sub: "total" },
+            { emoji: "⏱", value: totalListen > 0 ? fmtMin(totalListen) : "—", label: "Total escuchado", sub: "" },
+          ];
+          return (
+            <View style={[styles.rachaStatsCard, { backgroundColor: "rgba(74,12,12,0.18)", borderColor: "rgba(247,203,107,0.13)" }]}>
+              <View style={styles.rachaStatsHeader}>
+                <Text style={[styles.rachaStatsTitle, { color: colors.foreground }]}>Tu Racha</Text>
+                <View style={[styles.rachaWeekPills]}>
+                  {["L","M","X","J","V","S","D"].map((d, i) => (
+                    <View key={i} style={[styles.rachaWeekPill, activity.weekActivity[i] && { backgroundColor: "rgba(247,203,107,0.25)", borderColor: "rgba(247,203,107,0.55)" }]}>
+                      <Text style={[styles.rachaWeekPillText, { color: activity.weekActivity[i] ? "#F7CB6B" : colors.mutedForeground }]}>{d}</Text>
+                    </View>
+                  ))}
+                </View>
+                <Text style={[styles.rachaWeekSub, { color: colors.mutedForeground }]}>{weekDone}/7 esta semana</Text>
+              </View>
+              <View style={styles.rachaStatsRow}>
+                {stats4.map((s, i) => (
+                  <View key={i} style={styles.rachaStatCol}>
+                    {i > 0 && <View style={[styles.rachaStatDivider, { backgroundColor: "rgba(255,255,255,0.08)" }]} />}
+                    <Text style={styles.rachaStatEmoji}>{s.emoji}</Text>
+                    <Text style={[styles.rachaStatVal, { color: colors.foreground }]}>{s.value}</Text>
+                    <Text style={[styles.rachaStatLabel, { color: colors.mutedForeground }]}>{s.label}</Text>
+                    {s.sub ? <Text style={[styles.rachaStatSub, { color: "rgba(244,218,213,0.45)" }]}>{s.sub}</Text> : null}
+                  </View>
+                ))}
+              </View>
+            </View>
+          );
+        })()}
+
         {/* ── Sección Expansor (solo si role === "expansor") ── */}
         {isExpansor && (
           <>
@@ -1818,5 +1858,94 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.05)",
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  // ── Racha Stats Card ──────────────────────────────────────────────────────
+  rachaStatsCard: {
+    borderRadius: 18,
+    borderWidth: 1,
+    marginBottom: 20,
+    overflow: "hidden",
+  },
+  rachaStatsHeader: {
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.06)",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  rachaStatsTitle: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "700",
+    letterSpacing: 0.4,
+    marginRight: 4,
+  },
+  rachaWeekPills: {
+    flexDirection: "row",
+    gap: 5,
+    flex: 1,
+  },
+  rachaWeekPill: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  rachaWeekPillText: {
+    fontFamily: "Manrope",
+    fontSize: 10,
+    fontWeight: "700",
+  },
+  rachaWeekSub: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    fontWeight: "500",
+  },
+  rachaStatsRow: {
+    flexDirection: "row",
+    paddingVertical: 14,
+  },
+  rachaStatCol: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 4,
+    position: "relative",
+  },
+  rachaStatDivider: {
+    position: "absolute",
+    left: 0,
+    top: "15%",
+    bottom: "15%",
+    width: 1,
+  },
+  rachaStatEmoji: {
+    fontSize: 18,
+    marginBottom: 4,
+  },
+  rachaStatVal: {
+    fontFamily: "Manrope",
+    fontSize: 20,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+  },
+  rachaStatLabel: {
+    fontFamily: "Manrope",
+    fontSize: 10,
+    fontWeight: "500",
+    textAlign: "center",
+    marginTop: 2,
+  },
+  rachaStatSub: {
+    fontFamily: "Manrope",
+    fontSize: 9,
+    marginTop: 1,
   },
 });
