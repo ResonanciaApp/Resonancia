@@ -1314,6 +1314,7 @@ export default function HomeScreen2() {
 
 
         {/* ── ESTADO DE ÁNIMO ── */}
+        <View style={styles.sectionDivider} />
         <View style={{ paddingHorizontal: GRID_PAD }}>
           <Text style={styles.sectionTitle}>Personaliza tus recomendaciones</Text>
         </View>
@@ -1403,7 +1404,7 @@ export default function HomeScreen2() {
         {/* ── CARRUSEL RESONADORES ── */}
         <View style={{ marginBottom: 32, marginTop: 57 }}>
           <Text style={[styles.sectionTitle, { paddingHorizontal: GRID_PAD, marginBottom: 16 }]}>
-            Los resonadores
+            Los Resonadores
           </Text>
           <ScrollView
             horizontal
