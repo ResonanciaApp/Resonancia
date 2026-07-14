@@ -1036,6 +1036,8 @@ export default function HomeScreen2() {
               { id: "sonidos-ancestrales",  label: "Sesiones",   icon: (color: string) => <MaterialCommunityIcons name="waves" size={24} color={color} /> },
               { id: "musica-sonidos",        label: "Música",     icon: (color: string) => <Ionicons name="musical-notes-outline" size={24} color={color} /> },
               { id: "__descanzo__",           label: "Dormir",     icon: (color: string) => <Feather name="moon" size={22} color={color} /> },
+              { id: "__mezcla__",             label: "Mezclador",  icon: (color: string) => <MaterialCommunityIcons name="tune-variant" size={24} color={color} /> },
+              { id: "__geometrix__",          label: "Geometrix",  icon: (color: string) => <MaterialCommunityIcons name="vector-polygon" size={24} color={color} /> },
             ] as const).map((c, i) => {
               const R = 21;
               const corners = [
@@ -1043,11 +1045,18 @@ export default function HomeScreen2() {
                 { borderTopLeftRadius: R,    borderTopRightRadius: R,    borderBottomLeftRadius: 0,    borderBottomRightRadius: R },
                 { borderTopLeftRadius: R,    borderTopRightRadius: 0,    borderBottomLeftRadius: R,    borderBottomRightRadius: R },
                 { borderTopLeftRadius: 0,    borderTopRightRadius: R,    borderBottomLeftRadius: R,    borderBottomRightRadius: R },
+                { borderTopLeftRadius: R,    borderTopRightRadius: 0,    borderBottomLeftRadius: R,    borderBottomRightRadius: R },
+                { borderTopLeftRadius: 0,    borderTopRightRadius: R,    borderBottomLeftRadius: R,    borderBottomRightRadius: R },
               ];
               return (
               <Pressable
                 key={c.id}
-                onPress={() => router.push((c.id === "__descanzo__" ? "/(tabs)/descanzo" : `/category/${c.id}`) as never)}
+                onPress={() => {
+                  if (c.id === "__descanzo__") router.push("/(tabs)/descanzo" as never);
+                  else if (c.id === "__mezcla__") router.push("/(tabs)/mezcla" as never);
+                  else if (c.id === "__geometrix__") router.push("/(tabs)/universo" as never);
+                  else router.push(`/category/${c.id}` as never);
+                }}
                 style={({ pressed }) => [{
                   width: "48%",
                   paddingVertical: 18,
