@@ -500,6 +500,7 @@ export default function HomeScreen2() {
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
   const [activeFilter, setActiveFilter] = useState<string[] | null>(null);
+  const [recoOffset, setRecoOffset] = useState(0);
 
   // Sub-filtros de Sesiones
   const [sesionesOpen,    setSesionesOpen]    = useState(false);
@@ -555,7 +556,7 @@ export default function HomeScreen2() {
       return [...boosted, ...rest].slice(0, 5);
     }
     const pool = SESSIONS.filter((s) => RECO_CATS.includes(s.categoryId));
-    const seed = new Date().toDateString();
+    const seed = new Date().toDateString() + recoOffset;
     let hash = 0;
     for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) & 0x7fffffff;
     const shuffled = [...pool];
@@ -564,7 +565,7 @@ export default function HomeScreen2() {
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled.slice(0, 5);
-  }, [selectedMood, catalogVersion]);
+  }, [selectedMood, catalogVersion, recoOffset]);
 
   // Sesiones recomendadas — no escuchadas aún, barajadas con semilla diaria
   const recommendedSessions = React.useMemo<Session[]>(() => {
@@ -1376,6 +1377,30 @@ export default function HomeScreen2() {
             </View>
           ))}
         </View>
+
+        {/* Botón actualizar recomendaciones */}
+        <Pressable
+          onPress={() => setRecoOffset((n) => n + 1)}
+          style={({ pressed }) => ({
+            alignSelf: "center",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 6,
+            marginTop: 4,
+            marginBottom: 8,
+            paddingVertical: 9,
+            paddingHorizontal: 18,
+            borderRadius: 20,
+            borderWidth: 0.5,
+            borderColor: "rgba(247,203,107,0.35)",
+            backgroundColor: pressed ? "rgba(247,203,107,0.1)" : "rgba(247,203,107,0.05)",
+          })}
+        >
+          <Feather name="refresh-cw" size={13} color="#F7CB6B" />
+          <Text style={{ fontFamily: "Manrope", fontSize: 13, color: "#F7CB6B", fontWeight: "500" }}>
+            Actualizar recomendaciones
+          </Text>
+        </Pressable>
 
         {/* ── BANNER RESONADORES ── */}
         <Pressable
