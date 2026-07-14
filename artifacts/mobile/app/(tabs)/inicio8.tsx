@@ -1132,9 +1132,6 @@ export default function HomeScreen2() {
         {/* ── SESIÓN DESTACADA ── */}
         {filteredFeatured && (
           <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: -8 }]}>
-            <Text style={styles.heroAuthor} numberOfLines={1}>
-              {filteredFeatured.categoryLabel}{filteredFeatured.durationLabel ? ` · ${filteredFeatured.durationLabel}` : ""}
-            </Text>
             <Text style={styles.sectionTitle}>
               Para este momento
             </Text>
@@ -1166,6 +1163,9 @@ export default function HomeScreen2() {
                       />
                     )}
                     <View style={{ flex: 1 }}>
+                      <Text style={styles.heroAuthor} numberOfLines={1}>
+                        {filteredFeatured.categoryLabel}{filteredFeatured.durationLabel ? ` · ${filteredFeatured.durationLabel}` : ""}
+                      </Text>
                       <Text style={styles.heroTitle} numberOfLines={2}>
                         {filteredFeatured.title}
                       </Text>
