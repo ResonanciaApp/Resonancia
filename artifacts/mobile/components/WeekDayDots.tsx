@@ -113,14 +113,14 @@ export function WeekDayDots() {
               </LinearGradient>
             ) : isToday ? (
               <View style={s.circleGradientBorder}>
-                <Svg width={39} height={39} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
+                <Svg width={42} height={42} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
                   <Defs>
                     <SvgGradient id="wddToday" x1="0.5" y1="0" x2="0.5" y2="1">
                       <Stop offset="0" stopColor={borderColor0} stopOpacity="0.78" />
                       <Stop offset="1" stopColor={borderColor1} stopOpacity="0.70" />
                     </SvgGradient>
                   </Defs>
-                  <Circle cx={19.5} cy={19.5} r={17.5} stroke="url(#wddToday)" strokeWidth={2} fill="rgba(255,255,255,0.18)" />
+                  <Circle cx={21} cy={21} r={19} stroke="url(#wddToday)" strokeWidth={2} fill="rgba(255,255,255,0.18)" />
                 </Svg>
                 <Text style={s.labelToday}>{label}</Text>
               </View>
@@ -156,8 +156,8 @@ const s = StyleSheet.create({
     borderColor: "rgba(249,249,249,0.7)",
   },
   circleGradientBorder: {
-    width: 39,
-    height: 39,
+    width: 42,
+    height: 42,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 4,
