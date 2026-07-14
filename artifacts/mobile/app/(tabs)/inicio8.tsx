@@ -321,6 +321,22 @@ export default function HomeScreen2() {
   const insets = useSafeAreaInsets();
   const { playSession, currentSession, isPlaying, pauseResume, history, favorites, statEvents } = usePlayer();
 
+  const currentStreak = useMemo(() => {
+    if (!statEvents.length) return 0;
+    const dk = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    const days = new Set(statEvents.map((e) => dk(new Date(e.playedAt))));
+    const today = new Date();
+    const yest = new Date(today); yest.setDate(today.getDate() - 1);
+    let cursor: Date | null = null;
+    if (days.has(dk(today))) cursor = today;
+    else if (days.has(dk(yest))) cursor = yest;
+    else return 0;
+    let count = 0;
+    const walk = new Date(cursor);
+    while (days.has(dk(walk))) { count++; walk.setDate(walk.getDate() - 1); }
+    return count;
+  }, [statEvents]);
+
   const { isPremium } = usePremium();
   const { upcoming: upcomingLiveSessions } = useLiveSessions();
   const nextLiveSession = upcomingLiveSessions[0] ?? null;
@@ -930,7 +946,7 @@ export default function HomeScreen2() {
           {/* Derecha: Racha */}
           <Pressable
             hitSlop={8}
-            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginRight: 5, marginTop: -15 }]}
+            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginRight: 0, marginTop: -15, flexDirection: "row", alignItems: "center" }]}
             onPressIn={() =>
               Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
             }
@@ -939,10 +955,15 @@ export default function HomeScreen2() {
               if (rachaEnabled) setProgresoVisible(true);
             }}
           >
-            <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
+            <Animated.View style={{ transform: [{ scale: giftScaleAnim }], flexDirection: "row", alignItems: "center", gap: 4 }}>
               <View style={[styles.giftBtnInner, { backgroundColor: "transparent", borderWidth: 0 }]}>
                 <MaterialCommunityIcons name="fire" size={22} color="#F7CB6B" />
               </View>
+              {rachaEnabled && currentStreak > 0 && (
+                <Text style={{ fontSize: 15, fontWeight: "700", color: "#F7CB6B", fontFamily: "Manrope" }}>
+                  {currentStreak}
+                </Text>
+              )}
             </Animated.View>
           </Pressable>
         </View>
