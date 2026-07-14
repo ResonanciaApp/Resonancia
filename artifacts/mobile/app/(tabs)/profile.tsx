@@ -950,9 +950,10 @@ export default function ProfileScreen() {
             { emoji: "🏆", value: String(activity.maxStreak), label: "Racha máxima", sub: "días" },
           ];
           return (
-            <View style={[styles.rachaStatsCard, { backgroundColor: "rgba(74,12,12,0.18)", borderColor: "rgba(247,203,107,0.13)" }]}>
+            <>
+            <Text style={[styles.rachaStatsTitle, { color: colors.foreground, marginBottom: 10 }]}>Tu Racha</Text>
+            <View style={[styles.rachaStatsCard, { backgroundColor: "rgba(255,255,255,0.1)", borderColor: "rgba(247,203,107,0.13)" }]}>
               <View style={styles.rachaStatsHeader}>
-                <Text style={[styles.rachaStatsTitle, { color: colors.foreground }]}>Tu Racha</Text>
                 <View style={[styles.rachaWeekPills]}>
                   {["L","M","X","J","V","S","D"].map((d, i) => (
                     <View key={i} style={[styles.rachaWeekPill, activity.weekActivity[i] && { backgroundColor: "rgba(247,203,107,0.25)", borderColor: "rgba(247,203,107,0.55)" }]}>
@@ -960,7 +961,6 @@ export default function ProfileScreen() {
                     </View>
                   ))}
                 </View>
-                <Text style={[styles.rachaWeekSub, { color: colors.mutedForeground }]}>{weekDone}/7 esta semana</Text>
               </View>
               <View style={styles.rachaStatsRow}>
                 {stats4.map((s, i) => (
@@ -974,6 +974,7 @@ export default function ProfileScreen() {
                 ))}
               </View>
             </View>
+            </>
           );
         })()}
 
