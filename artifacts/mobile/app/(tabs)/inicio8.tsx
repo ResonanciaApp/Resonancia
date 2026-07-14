@@ -1163,7 +1163,7 @@ export default function HomeScreen2() {
                       />
                     )}
                     <View style={{ flex: 1 }}>
-                      <Text style={styles.heroAuthor} numberOfLines={1}>
+                      <Text style={[styles.heroAuthor, { marginBottom: 4 }]} numberOfLines={1}>
                         {filteredFeatured.categoryLabel}{filteredFeatured.durationLabel ? ` · ${filteredFeatured.durationLabel}` : ""}
                       </Text>
                       <Text style={styles.heroTitle} numberOfLines={2}>
