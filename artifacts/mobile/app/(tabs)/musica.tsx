@@ -172,8 +172,7 @@ const PillTab = memo(function PillTab({
     }).start();
   }, [sel]);
 
-  const iconColor = selAnim.interpolate({ inputRange: [0, 1], outputRange: ["#FBFBFB", "#2D0D3A"] });
-  const textColor = selAnim.interpolate({ inputRange: [0, 1], outputRange: ["#FBFBFB", "#2D0D3A"] });
+  const fgColor = sel ? "#2D0D3A" : "#FBFBFB";
 
   return (
     <Pressable
@@ -196,18 +195,16 @@ const PillTab = memo(function PillTab({
       </Animated.View>
 
       {/* Ícono */}
-      <Animated.View style={{ opacity: selAnim.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] }) }}>
-        <MaterialCommunityIcons
-          name={tab.icon as any}
-          size={15}
-          color={iconColor as any}
-        />
-      </Animated.View>
+      <MaterialCommunityIcons
+        name={tab.icon as any}
+        size={15}
+        color={fgColor}
+      />
 
       {/* Texto */}
-      <Animated.Text style={[styles.pillTabLabel, { color: textColor as any }]}>
+      <Text style={[styles.pillTabLabel, { color: fgColor }]}>
         {tab.label}
-      </Animated.Text>
+      </Text>
     </Pressable>
   );
 });
