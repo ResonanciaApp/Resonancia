@@ -153,7 +153,7 @@ const s = StyleSheet.create({
     justifyContent: "center",
     marginTop: 4,
     borderWidth: 2,
-    borderColor: "#f9f9f9",
+    borderColor: "rgba(249,249,249,0.7)",
   },
   circleGradientBorder: {
     width: 39,
