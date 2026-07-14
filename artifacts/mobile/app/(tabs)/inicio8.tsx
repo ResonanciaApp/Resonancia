@@ -956,14 +956,14 @@ export default function HomeScreen2() {
             }}
           >
             <Animated.View style={{ transform: [{ scale: giftScaleAnim }], flexDirection: "row", alignItems: "center", gap: 4 }}>
-              <View style={[styles.giftBtnInner, { backgroundColor: "transparent", borderWidth: 0 }]}>
-                <MaterialCommunityIcons name="fire" size={22} color="#F7CB6B" />
-              </View>
               {rachaEnabled && currentStreak > 0 && (
                 <Text style={{ fontSize: 15, fontWeight: "700", color: "#F7CB6B", fontFamily: "Manrope" }}>
                   {currentStreak}
                 </Text>
               )}
+              <View style={[styles.giftBtnInner, { backgroundColor: "transparent", borderWidth: 0 }]}>
+                <MaterialCommunityIcons name="fire" size={22} color="#F7CB6B" />
+              </View>
             </Animated.View>
           </Pressable>
         </View>
