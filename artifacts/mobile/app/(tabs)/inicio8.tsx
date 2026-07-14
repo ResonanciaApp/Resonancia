@@ -1029,7 +1029,7 @@ export default function HomeScreen2() {
 
 
         {/* ── EXPLORA POR CONTENIDO ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP - 20, marginTop: intencionDiariaEnabled ? (rachaEnabled ? -37 : -93) : (rachaEnabled ? -12 : -68) }]}>
+        <View style={[styles.section, { marginBottom: SECTION_GAP - 20, marginTop: intencionDiariaEnabled ? (rachaEnabled ? -24 : -80) : (rachaEnabled ? -12 : -68) }]}>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 7, marginTop: 20 }}>
             {([
               { id: "meditaciones-guiadas", label: "Meditación", color: "#C9A8ED", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={24} color={color} /> },
