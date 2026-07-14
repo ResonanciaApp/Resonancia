@@ -1034,10 +1034,10 @@ export default function HomeScreen2() {
             {([
               { id: "meditaciones-guiadas", label: "Meditación", color: "#C9A8ED", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={24} color={color} /> },
               { id: "sonidos-ancestrales",  label: "Sesiones",   color: "#F7A98A", icon: (color: string) => <MaterialCommunityIcons name="waves" size={24} color={color} /> },
-              { id: "musica-sonidos",        label: "Música",     color: "#8AC4F5", icon: (color: string) => <Ionicons name="musical-notes-outline" size={24} color={color} /> },
+              { id: "musica-sonidos",        label: "Música",     color: "#7FD6C8", icon: (color: string) => <Ionicons name="musical-notes-outline" size={24} color={color} /> },
               { id: "__descanzo__",           label: "Dormir",     color: "#8ED6F0", icon: (color: string) => <Feather name="moon" size={22} color={color} /> },
               { id: "__mezcla__",             label: "Mezclador",  color: "#F7CB6B", icon: (color: string) => <MaterialCommunityIcons name="tune-variant" size={24} color={color} /> },
-              { id: "__geometrix__",          label: "Geometrix",  color: "#F7CB6B", icon: (color: string) => <MaterialCommunityIcons name="vector-polygon" size={24} color={color} /> },
+              { id: "__geometrix__",          label: "Geometrix",  color: "#C4C8D4", icon: (color: string) => <MaterialCommunityIcons name="vector-polygon" size={24} color={color} /> },
             ] as const).map((c, i) => {
               const R = 21;
               const corners = [
