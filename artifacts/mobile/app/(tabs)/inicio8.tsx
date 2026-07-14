@@ -72,6 +72,7 @@ import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/d
 import { getMoodById, type Mood, type MoodId } from "@/data/moods";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
+import { RESONADORES, COUNTRY_FLAGS } from "@/data/resonadores";
 import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
@@ -1428,6 +1429,43 @@ export default function HomeScreen2() {
             </View>
           </View>
         </Pressable>
+
+        {/* ── CARRUSEL RESONADORES ── */}
+        <View style={{ marginBottom: 32 }}>
+          <Text style={[styles.sectionTitle, { paddingHorizontal: GRID_PAD, marginBottom: 16 }]}>
+            Los resonadores
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 20 }}
+          >
+            {RESONADORES.map((r) => (
+              <Pressable
+                key={r.id}
+                onPress={() => router.push(`/resonador/${r.id}` as never)}
+                style={({ pressed }) => ({ alignItems: "center", opacity: pressed ? 0.75 : 1, width: 80 })}
+              >
+                <View style={{ width: 68, height: 68, borderRadius: 34, overflow: "hidden", borderWidth: 1.5, borderColor: "rgba(247,203,107,0.35)", marginBottom: 8 }}>
+                  <ExpoImage
+                    source={r.photo}
+                    style={{ width: 68, height: 68 }}
+                    contentFit="cover"
+                  />
+                </View>
+                <Text
+                  numberOfLines={2}
+                  style={{ fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: "#f9f9f9", textAlign: "center", lineHeight: 16 }}
+                >
+                  {r.name}
+                </Text>
+                <Text style={{ fontFamily: "Manrope", fontSize: 11, color: "rgba(249,249,249,0.55)", marginTop: 2, textAlign: "center" }}>
+                  {COUNTRY_FLAGS[r.country] ?? ""} {r.country}
+                </Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
 
         {/* ── BANNER PREMIUM ── */}
         {!isPremium && (
