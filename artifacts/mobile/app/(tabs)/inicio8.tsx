@@ -1389,8 +1389,8 @@ export default function HomeScreen2() {
             alignItems: "center",
             justifyContent: "center",
             gap: 6,
-            paddingVertical: 18,
-            borderRadius: 20,
+            paddingVertical: 12,
+            borderRadius: 100,
             backgroundColor: pressed ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.07)",
           })}
         >
