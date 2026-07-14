@@ -942,14 +942,12 @@ export default function ProfileScreen() {
         {/* ── Estadísticas de Racha ── */}
         {(() => {
           const totalListen = Math.round(statEvents.reduce((s, e) => s + e.minutes, 0));
-          const activeDays  = new Set(statEvents.map((e) => dayKey(new Date(e.playedAt)))).size;
           const fmtMin = (m: number) => m < 60 ? `${m}m` : `${Math.floor(m / 60)}h ${m % 60 > 0 ? ` ${m % 60}m` : ""}`.trim();
           const weekDone = activity.weekActivity.filter(Boolean).length;
           const stats4 = [
-            { emoji: "🔥", value: String(activity.streak), label: "Racha actual", sub: "días" },
-            { emoji: "🏆", value: String(activity.maxStreak), label: "Racha más larga", sub: "días" },
-            { emoji: "📅", value: String(activeDays), label: "Días activos", sub: "total" },
-            { emoji: "⏱", value: totalListen > 0 ? fmtMin(totalListen) : "—", label: "Total escuchado", sub: "" },
+            { emoji: "🎧", value: String(history.length), label: "Sesiones completadas", sub: "" },
+            { emoji: "⏱", value: totalListen > 0 ? fmtMin(totalListen) : "—", label: "Tiempo de expansión", sub: "" },
+            { emoji: "🏆", value: String(activity.maxStreak), label: "Racha máxima", sub: "días" },
           ];
           return (
             <View style={[styles.rachaStatsCard, { backgroundColor: "rgba(74,12,12,0.18)", borderColor: "rgba(247,203,107,0.13)" }]}>
