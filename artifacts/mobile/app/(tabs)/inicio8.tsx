@@ -1276,17 +1276,17 @@ export default function HomeScreen2() {
           <View style={{ borderRadius: 18, overflow: "hidden", padding: 20 }}>
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.06)" }]} />
             {/* Título + botón compartir */}
-            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
-              <Pressable
-                hitSlop={8}
-                onPress={() => Share.share({ message: `"${getWeeklyPhrase()}" — Resonancia` })}
-                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1, marginRight: 10 })}
-              >
-                <Feather name="share" size={16} color="#F7CB6B" />
-              </Pressable>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
               <Text style={{ fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#F7CB6B", letterSpacing: 1.2, textTransform: "uppercase" }}>
                 Frase del día
               </Text>
+              <Pressable
+                hitSlop={8}
+                onPress={() => Share.share({ message: `"${getWeeklyPhrase()}" — Resonancia` })}
+                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+              >
+                <Feather name="share" size={16} color="#F7CB6B" />
+              </Pressable>
             </View>
             <Text style={{ fontFamily: "Manrope", fontSize: 16, fontStyle: "italic", color: "#f9f9f9", lineHeight: 24, letterSpacing: 0.2 }}>
               "{getWeeklyPhrase()}"
