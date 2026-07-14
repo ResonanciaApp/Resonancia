@@ -2429,3 +2429,9 @@ id = "sTv5UDnaneLSjXtks6ptc"
 uri = "file://.local/outputs/RESONANCIA-Pitch-Pulso4.pdf"
 type = "pdf"
 title = "RESONANCIA — Pitch Pulso 4 (PDF)"
+
+[[outputs]]
+id = "GsCARqSSaN_g6-VGgjPuJ"
+uri = "file://.local/outputs/RESONANCIA-Pitch-Inversionistas.pdf"
+type = "pdf"
+title = "RESONANCIA — Pitch Inversionistas (PDF)"
