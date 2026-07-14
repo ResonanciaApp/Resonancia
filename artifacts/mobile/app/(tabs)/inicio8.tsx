@@ -1389,13 +1389,12 @@ export default function HomeScreen2() {
             alignItems: "center",
             justifyContent: "center",
             gap: 6,
-            paddingVertical: 11,
+            paddingVertical: 18,
             borderRadius: 20,
             backgroundColor: pressed ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.07)",
           })}
         >
-          <Feather name="refresh-cw" size={13} color="#F7CB6B" />
-          <Text style={{ fontFamily: "Manrope", fontSize: 13, color: "#F7CB6B", fontWeight: "500" }}>
+          <Text style={{ fontFamily: "Manrope", fontSize: 17, color: "#F7CB6B", fontWeight: "500" }}>
             Actualizar recomendaciones
           </Text>
         </Pressable>
