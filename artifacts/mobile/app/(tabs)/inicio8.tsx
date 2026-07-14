@@ -960,7 +960,7 @@ export default function HomeScreen2() {
           >
             <Animated.View style={{ transform: [{ scale: giftScaleAnim }], flexDirection: "row", alignItems: "center", gap: 0 }}>
               {rachaEnabled && currentStreak > 0 && (
-                <Text style={{ fontSize: 15, fontWeight: "300", color: "#f9f9f9", fontFamily: "Manrope", marginRight: -2 }}>
+                <Text style={{ fontSize: 15, fontWeight: "300", color: "#f9f9f9", fontFamily: "Manrope", marginRight: -2, marginLeft: -6 }}>
                   {currentStreak}
                 </Text>
               )}
