@@ -2,6 +2,7 @@
  * WeekDayDots — fila de 7 bolitas de días de la semana.
  * La letra del día se muestra dentro del círculo.
  */
+import { Feather } from "@expo/vector-icons";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import React, { useMemo } from "react";
 import Svg, { Circle, Defs, LinearGradient as SvgGradient, Stop } from "react-native-svg";
@@ -106,7 +107,7 @@ export function WeekDayDots() {
                   </Defs>
                   <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#wdd${i})`} strokeWidth={2} fill="rgba(255,255,255,0.18)" />
                 </Svg>
-                <Text style={s.labelMet}>✓</Text>
+                <Feather name="check" size={18} color="#F7CB6B" />
               </View>
             ) : isToday ? (
               <View style={s.circleGradientBorder}>
@@ -159,12 +160,6 @@ const s = StyleSheet.create({
   },
   circleInactive: {
     backgroundColor: "rgba(255,255,255,0.18)",
-  },
-  labelMet: {
-    fontFamily: "Manrope",
-    fontSize: 17,
-    fontWeight: "700",
-    color: "rgba(255,255,255,0.95)",
   },
   labelToday: {
     fontFamily: "Manrope",
