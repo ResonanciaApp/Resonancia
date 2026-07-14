@@ -1269,6 +1269,19 @@ export default function HomeScreen2() {
           cardWidth={RECENT_CARD_W}
         />
 
+        {/* ── FRASE DEL DÍA ── */}
+        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP }}>
+          <View style={{ borderRadius: 18, overflow: "hidden", padding: 20 }}>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.06)" }]} />
+            <Text style={{ fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#F7CB6B", letterSpacing: 1.2, textTransform: "uppercase", marginBottom: 10 }}>
+              Frase de la semana
+            </Text>
+            <Text style={{ fontFamily: "Manrope", fontSize: 16, fontStyle: "italic", color: "#F4DAD5", lineHeight: 24, letterSpacing: 0.2 }}>
+              "{getWeeklyPhrase()}"
+            </Text>
+          </View>
+        </View>
+
         {/* ── FAVORITOS ── */}
         <SessionCarousel
           title="Mis favoritos"
