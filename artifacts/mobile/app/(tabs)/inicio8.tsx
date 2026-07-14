@@ -917,26 +917,20 @@ export default function HomeScreen2() {
           <Pressable
             onPress={openEscenasSheet}
             hitSlop={8}
-            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginLeft: 5 }]}
+            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginLeft: 5, marginTop: -15 }]}
           >
             <View style={[styles.giftBtnInner, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
               <MaterialCommunityIcons name="spa" size={23} color="#f9f9f9" style={{ marginTop: 1 }} />
             </View>
           </Pressable>
 
-          {/* Centro: Logo */}
-          <View style={{ flex: 1, alignItems: "center" }}>
-            <Image
-              source={require("@/assets/images/pulso-4-logo.png")}
-              style={{ width: 133, height: 44 }}
-              resizeMode="contain"
-            />
-          </View>
+          {/* Centro: Logo (oculto) */}
+          <View style={{ flex: 1 }} />
 
           {/* Derecha: Racha */}
           <Pressable
             hitSlop={8}
-            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginRight: 5 }]}
+            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginRight: 5, marginTop: -15 }]}
             onPressIn={() =>
               Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
             }
@@ -946,7 +940,7 @@ export default function HomeScreen2() {
             }}
           >
             <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-              <View style={[styles.giftBtnInner, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
+              <View style={[styles.giftBtnInner, { backgroundColor: "transparent", borderWidth: 0 }]}>
                 <MaterialCommunityIcons name="fire" size={22} color="#F7CB6B" />
               </View>
             </Animated.View>
