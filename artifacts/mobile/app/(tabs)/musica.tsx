@@ -173,13 +173,12 @@ const PillTab = memo(function PillTab({
   }, [sel]);
 
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.pillTab, { opacity: pressed ? 0.6 : 1 }]}>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.pillTab, { flexDirection: "row", alignItems: "center", gap: 5, opacity: pressed ? 0.6 : 1 }]}>
       <Animated.View style={{ opacity: selAnim.interpolate({ inputRange: [0, 1], outputRange: [0.45, 1] }) }}>
         <MaterialCommunityIcons
           name={tab.icon as any}
-          size={18}
+          size={16}
           color="#f9f9f9"
-          style={{ alignSelf: "center", marginBottom: 3 }}
         />
       </Animated.View>
       <View>
