@@ -3,6 +3,7 @@
  * La letra del día se muestra dentro del círculo.
  */
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import React, { useMemo } from "react";
 import Svg, { Circle, Defs, LinearGradient as SvgGradient, Stop } from "react-native-svg";
@@ -69,6 +70,8 @@ export function WeekDayDots() {
   const borderColor0 = waveHigh;
   const borderColor1 = waveMid;
 
+  const gradColors = [theme.gradient[0], theme.gradient[1] ?? theme.gradient[0]] as [string, string];
+
   const { activeFlags, todayIndex } = useMemo(() => {
     const byDay = new Map<string, number>();
     for (const e of statEvents) {
@@ -97,18 +100,14 @@ export function WeekDayDots() {
         return (
           <View key={i} style={s.dayCol}>
             {met ? (
-              <View style={s.circleGradientBorder}>
-                <Svg width={39} height={39} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
-                  <Defs>
-                    <SvgGradient id={`wdd${i}`} x1="0.5" y1="0" x2="0.5" y2="1">
-                      <Stop offset="0" stopColor={borderColor0} stopOpacity="0.78" />
-                      <Stop offset="1" stopColor={borderColor1} stopOpacity="0.70" />
-                    </SvgGradient>
-                  </Defs>
-                  <Circle cx={19.5} cy={19.5} r={17.5} stroke={`url(#wdd${i})`} strokeWidth={2} fill="rgba(255,255,255,0.18)" />
-                </Svg>
-                <Feather name="check" size={18} color="#F7CB6B" />
-              </View>
+              <LinearGradient
+                colors={gradColors}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 1 }}
+                style={s.circleCompleted}
+              >
+                <Feather name="check" size={18} color="#f9f9f9" />
+              </LinearGradient>
             ) : isToday ? (
               <View style={s.circleGradientBorder}>
                 <Svg width={39} height={39} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
@@ -142,6 +141,14 @@ const s = StyleSheet.create({
   dayCol: {
     alignItems: "center",
     flex: 1,
+  },
+  circleCompleted: {
+    width: 39,
+    height: 39,
+    borderRadius: 19.5,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 4,
   },
   circleGradientBorder: {
     width: 39,
