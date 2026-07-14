@@ -1412,6 +1412,7 @@ export default function HomeScreen2() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
+            style={{ marginTop: 20 }}
             contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 10 }}
           >
             {RESONADORES.map((r) => (
