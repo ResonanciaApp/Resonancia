@@ -162,19 +162,19 @@ const s = StyleSheet.create({
   },
   labelMet: {
     fontFamily: "Manrope",
-    fontSize: 12,
+    fontSize: 17,
     fontWeight: "700",
     color: "rgba(255,255,255,0.95)",
   },
   labelToday: {
     fontFamily: "Manrope",
-    fontSize: 12,
+    fontSize: 17,
     fontWeight: "700",
     color: "#FBFBFB",
   },
   labelInactive: {
     fontFamily: "Manrope",
-    fontSize: 12,
+    fontSize: 17,
     fontWeight: "600",
     color: "#c2c2c2",
   },
