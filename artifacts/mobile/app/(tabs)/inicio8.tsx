@@ -1401,7 +1401,7 @@ export default function HomeScreen2() {
         </Pressable>
 
         {/* ── CARRUSEL RESONADORES ── */}
-        <View style={{ marginBottom: 32 }}>
+        <View style={{ marginBottom: 32, marginTop: 57 }}>
           <Text style={[styles.sectionTitle, { paddingHorizontal: GRID_PAD, marginBottom: 16 }]}>
             Los resonadores
           </Text>
