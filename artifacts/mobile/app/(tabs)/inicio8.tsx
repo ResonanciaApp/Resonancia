@@ -1382,9 +1382,9 @@ export default function HomeScreen2() {
         <Pressable
           onPress={() => setRecoOffset((n) => n + 1)}
           style={({ pressed }) => ({
-            marginTop: 25,
+            marginTop: -25,
             marginHorizontal: GRID_PAD,
-            marginBottom: 8,
+            marginBottom: 0,
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
