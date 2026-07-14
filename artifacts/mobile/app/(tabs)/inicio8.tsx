@@ -1382,14 +1382,14 @@ export default function HomeScreen2() {
         <Pressable
           onPress={() => setRecoOffset((n) => n + 1)}
           style={({ pressed }) => ({
-            alignSelf: "center",
+            marginTop: 25,
+            marginHorizontal: GRID_PAD,
+            marginBottom: 8,
             flexDirection: "row",
             alignItems: "center",
+            justifyContent: "center",
             gap: 6,
-            marginTop: 4,
-            marginBottom: 8,
-            paddingVertical: 9,
-            paddingHorizontal: 18,
+            paddingVertical: 11,
             borderRadius: 20,
             borderWidth: 0.5,
             borderColor: "rgba(247,203,107,0.35)",
