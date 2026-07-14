@@ -1438,7 +1438,7 @@ export default function HomeScreen2() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 30 }}
+            contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 10 }}
           >
             {RESONADORES.map((r) => (
               <Pressable
