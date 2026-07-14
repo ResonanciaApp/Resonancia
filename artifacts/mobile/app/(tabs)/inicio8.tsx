@@ -991,6 +991,7 @@ export default function HomeScreen2() {
             marginBottom: SECTION_GAP / 2 - 20,
             paddingVertical: 12,
             opacity: rachaEnabled ? (pressed ? 0.75 : 1) : 0,
+            transform: [{ translateX: -3 }],
           })}
         >
           <WeekDayDots />
