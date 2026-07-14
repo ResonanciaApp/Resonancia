@@ -952,7 +952,7 @@ export default function ProfileScreen() {
           return (
             <>
             <Text style={[styles.rachaStatsTitle, { color: colors.foreground, marginBottom: 10 }]}>Tu Racha</Text>
-            <View style={[styles.rachaStatsCard, { backgroundColor: "rgba(255,255,255,0.1)", borderColor: "rgba(247,203,107,0.13)" }]}>
+            <View style={[styles.rachaStatsCard, { backgroundColor: "rgba(255,255,255,0.07)", borderColor: "rgba(247,203,107,0.13)" }]}>
               <View style={styles.rachaStatsHeader}>
                 <View style={[styles.rachaWeekPills]}>
                   {["L","M","X","J","V","S","D"].map((d, i) => (
@@ -1878,7 +1878,7 @@ const styles = StyleSheet.create({
   },
   rachaStatsTitle: {
     fontFamily: "Manrope",
-    fontSize: 14,
+    fontSize: 22,
     fontWeight: "700",
     letterSpacing: 0.4,
     marginRight: 4,
@@ -1891,7 +1891,7 @@ const styles = StyleSheet.create({
   rachaWeekPill: {
     flex: 1,
     aspectRatio: 1,
-    borderRadius: 10,
+    borderRadius: 999,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.12)",
     alignItems: "center",
