@@ -1885,21 +1885,22 @@ const styles = StyleSheet.create({
   },
   rachaWeekPills: {
     flexDirection: "row",
-    gap: 5,
+    gap: 6,
     flex: 1,
   },
   rachaWeekPill: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
+    flex: 1,
+    aspectRatio: 1,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.12)",
     alignItems: "center",
     justifyContent: "center",
+    paddingVertical: 8,
   },
   rachaWeekPillText: {
     fontFamily: "Manrope",
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: "700",
   },
   rachaWeekSub: {
