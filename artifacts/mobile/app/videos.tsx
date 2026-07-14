@@ -163,7 +163,7 @@ export default function VideosScreen() {
             onPress={() => setSelectedTheme(null)}
             style={[styles.pill, selectedTheme === null && styles.pillSel]}
           >
-            {selectedTheme === null && <View style={[StyleSheet.absoluteFill, { backgroundColor: "#fbdfa2" }]} />}
+            {selectedTheme === null && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
             <Text style={[styles.pillText, { color: selectedTheme === null ? "#2D0D3A" : colors.mutedForeground }]}>
               Todos
             </Text>
@@ -175,7 +175,7 @@ export default function VideosScreen() {
               onPress={() => setSelectedTheme(selectedTheme === t ? null : t)}
               style={[styles.pill, selectedTheme === t && styles.pillSel]}
             >
-              {selectedTheme === t && <View style={[StyleSheet.absoluteFill, { backgroundColor: "#fbdfa2" }]} />}
+              {selectedTheme === t && <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />}
               <Text style={[styles.pillText, { color: selectedTheme === t ? "#2D0D3A" : colors.mutedForeground }]}>
                 {t}
               </Text>

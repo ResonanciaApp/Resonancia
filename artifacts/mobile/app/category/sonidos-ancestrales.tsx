@@ -157,7 +157,7 @@ function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel
         ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
         : chipTheme?.id === "vino-tinto"
           ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgb(247,203,107)" }]} />
-          : <View style={[StyleSheet.absoluteFill, { backgroundColor: "#fbdfa2" }]} />
+          : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
       )}
       <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
     </Pressable>

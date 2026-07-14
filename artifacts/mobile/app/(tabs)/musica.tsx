@@ -183,9 +183,16 @@ const PillTab = memo(function PillTab({
       <Animated.View
         style={[
           StyleSheet.absoluteFill,
-          { borderRadius: 999, overflow: "hidden", opacity: selAnim, backgroundColor: "#fbdfa2" },
+          { borderRadius: 999, overflow: "hidden", opacity: selAnim },
         ]}
-      />
+      >
+        <LinearGradient
+          colors={["#F7CB6B", "#FBA980"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+      </Animated.View>
 
       {/* Ícono */}
       <MaterialCommunityIcons
@@ -806,7 +813,7 @@ export default function MezcladorScreen() {
                             ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
                             : theme?.id === "vino-tinto"
                               ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgb(247,203,107)" }]} />
-                              : <View style={[StyleSheet.absoluteFill, { backgroundColor: "#fbdfa2" }]} />
+                              : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
                           )}
                           <Text style={[styles.subTabText, { color: sel ? "#2D0D3A" : "#FBFBFB" }]}>
                             {SUB_TAB_LABELS[catId] ?? cat.label}

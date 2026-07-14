@@ -52,7 +52,7 @@ function SleepPill({
         ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
         : pillTheme?.id === "vino-tinto"
           ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgb(247,203,107)" }]} />
-          : <View style={[StyleSheet.absoluteFill, { backgroundColor: "#fbdfa2" }]} />
+          : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
       )}
       <Text style={[styles.sleepPillText, sel && styles.sleepPillTextSel]} numberOfLines={1}>
         {label}
