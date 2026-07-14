@@ -1438,28 +1438,28 @@ export default function HomeScreen2() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 20 }}
+            contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 30 }}
           >
             {RESONADORES.map((r) => (
               <Pressable
                 key={r.id}
                 onPress={() => router.push(`/resonador/${r.id}` as never)}
-                style={({ pressed }) => ({ alignItems: "center", opacity: pressed ? 0.75 : 1, width: 80 })}
+                style={({ pressed }) => ({ alignItems: "center", opacity: pressed ? 0.75 : 1, width: 120 })}
               >
-                <View style={{ width: 68, height: 68, borderRadius: 34, overflow: "hidden", borderWidth: 1.5, borderColor: "rgba(247,203,107,0.35)", marginBottom: 8 }}>
+                <View style={{ width: 102, height: 102, borderRadius: 51, overflow: "hidden", borderWidth: 1.5, borderColor: "rgba(247,203,107,0.35)", marginBottom: 12 }}>
                   <ExpoImage
                     source={r.photo}
-                    style={{ width: 68, height: 68 }}
+                    style={{ width: 102, height: 102 }}
                     contentFit="cover"
                   />
                 </View>
                 <Text
                   numberOfLines={2}
-                  style={{ fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: "#f9f9f9", textAlign: "center", lineHeight: 16 }}
+                  style={{ fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: "#f9f9f9", textAlign: "center", lineHeight: 19 }}
                 >
                   {r.name}
                 </Text>
-                <Text style={{ fontFamily: "Manrope", fontSize: 11, color: "rgba(249,249,249,0.55)", marginTop: 2, textAlign: "center" }}>
+                <Text style={{ fontFamily: "Manrope", fontSize: 12, color: "rgba(249,249,249,0.55)", marginTop: 3, textAlign: "center" }}>
                   {COUNTRY_FLAGS[r.country] ?? ""} {r.country}
                 </Text>
               </Pressable>
