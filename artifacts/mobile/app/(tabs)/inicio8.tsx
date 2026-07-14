@@ -1396,7 +1396,7 @@ export default function HomeScreen2() {
             backgroundColor: pressed ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.07)",
           })}
         >
-          <Text style={{ fontFamily: "Manrope", fontSize: 14, color: "#F7CB6B", fontWeight: "500" }}>
+          <Text style={{ fontFamily: "Manrope", fontSize: 14, color: "#f9f9f9", fontWeight: "500" }}>
             Actualizar recomendaciones
           </Text>
         </Pressable>
