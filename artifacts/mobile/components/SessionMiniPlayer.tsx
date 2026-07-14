@@ -81,7 +81,7 @@ export function SessionMiniPlayer({ bottomOffset, topOffset }: Props) {
   return (
     <Pressable
       onPress={() => setIsSessionExpanded(true)}
-      style={[styles.wrapper, { bottom: bottomOffset }]}
+      style={[styles.wrapper, { bottom: bottomOffset + 5 }]}
     >
       <Animated.View
         style={[

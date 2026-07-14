@@ -683,7 +683,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 10,
     right: 10,
-    bottom: 0,
+    bottom: 5,
   },
   mixerPanel: {
     position: "absolute",
