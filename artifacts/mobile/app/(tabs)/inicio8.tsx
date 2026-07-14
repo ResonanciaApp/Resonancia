@@ -929,42 +929,25 @@ export default function HomeScreen2() {
             marginTop: 5,
           }}
         >
-          {/* Izquierda: Escenas */}
+          {/* Izquierda: Logo RESONANCIA */}
+          <Image
+            source={require("@/assets/images/logo-resonancia-text.png")}
+            style={{ width: 130, height: 28, marginLeft: 5, marginTop: -15 }}
+            resizeMode="contain"
+          />
+
+          {/* Centro: espacio */}
+          <View style={{ flex: 1 }} />
+
+          {/* Derecha: Escenas (loto) */}
           <Pressable
             onPress={openEscenasSheet}
             hitSlop={8}
-            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginLeft: 5, marginTop: -15 }]}
+            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginRight: 0, marginTop: -15 }]}
           >
             <View style={[styles.giftBtnInner, { backgroundColor: "rgba(255,255,255,0.08)", width: 40, height: 40, borderRadius: 20 }]}>
               <MaterialCommunityIcons name="spa" size={18} color="#f9f9f9" style={{ marginTop: 1 }} />
             </View>
-          </Pressable>
-
-          {/* Centro: Logo (oculto) */}
-          <View style={{ flex: 1 }} />
-
-          {/* Derecha: Racha */}
-          <Pressable
-            hitSlop={8}
-            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginRight: 0, marginTop: -15, flexDirection: "row", alignItems: "center" }]}
-            onPressIn={() =>
-              Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
-            }
-            onPressOut={() => {
-              Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
-              if (rachaEnabled) setProgresoVisible(true);
-            }}
-          >
-            <Animated.View style={{ transform: [{ scale: giftScaleAnim }], flexDirection: "row", alignItems: "center", gap: 0 }}>
-              {rachaEnabled && currentStreak > 0 && (
-                <Text style={{ fontSize: 15, fontWeight: "300", color: "#f9f9f9", fontFamily: "Manrope", marginRight: -2 }}>
-                  {currentStreak}
-                </Text>
-              )}
-              <View style={[styles.giftBtnInner, { backgroundColor: "transparent", borderWidth: 0 }]}>
-                <MaterialCommunityIcons name="fire" size={22} color="#f9f9f9" />
-              </View>
-            </Animated.View>
           </Pressable>
         </View>
 
