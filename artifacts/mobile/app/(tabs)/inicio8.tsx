@@ -927,8 +927,8 @@ export default function HomeScreen2() {
           {/* Centro: Logo */}
           <View style={{ flex: 1, alignItems: "center" }}>
             <Image
-              source={require("@/assets/images/logo-resonancia-text.png")}
-              style={{ width: 108, height: 18 }}
+              source={require("@/assets/images/pulso-4-logo.png")}
+              style={{ width: 133, height: 44 }}
               resizeMode="contain"
             />
           </View>
