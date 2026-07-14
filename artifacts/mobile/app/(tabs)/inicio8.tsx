@@ -1403,9 +1403,12 @@ export default function HomeScreen2() {
 
         {/* ── CARRUSEL RESONADORES ── */}
         <View style={{ marginBottom: 32, marginTop: 57 }}>
-          <Text style={[styles.sectionTitle, { paddingHorizontal: GRID_PAD, marginBottom: 16 }]}>
-            Los Resonadores
-          </Text>
+          <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: GRID_PAD, marginBottom: 16 }}>
+            <Text style={[styles.sectionTitle, { flex: 1 }]}>Los Resonadores</Text>
+            <Pressable onPress={() => router.push("/resonadores" as never)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F7CB6B" }}>Ver todos</Text>
+            </Pressable>
+          </View>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
