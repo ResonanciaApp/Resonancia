@@ -224,6 +224,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
     paddingHorizontal: 20,
     marginBottom: 8,
+    marginTop: 20,
   },
   scroll: { flex: 1 },
 
