@@ -172,23 +172,42 @@ const PillTab = memo(function PillTab({
     }).start();
   }, [sel]);
 
+  const iconColor = selAnim.interpolate({ inputRange: [0, 1], outputRange: ["#FBFBFB", "#2D0D3A"] });
+  const textColor = selAnim.interpolate({ inputRange: [0, 1], outputRange: ["#FBFBFB", "#2D0D3A"] });
+
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.pillTab, { flexDirection: "row", alignItems: "center", gap: 5, opacity: pressed ? 0.6 : 1 }]}>
-      <Animated.View style={{ opacity: selAnim.interpolate({ inputRange: [0, 1], outputRange: [0.45, 1] }) }}>
-        <MaterialCommunityIcons
-          name={tab.icon as any}
-          size={16}
-          color="#f9f9f9"
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [styles.pillTab, sel && { borderWidth: 0 }, { opacity: pressed ? 0.7 : 1 }]}
+    >
+      {/* Fondo seleccionado: degradado dorado */}
+      <Animated.View
+        style={[
+          StyleSheet.absoluteFill,
+          { borderRadius: 999, overflow: "hidden", opacity: selAnim },
+        ]}
+      >
+        <LinearGradient
+          colors={["#F7CB6B", "#FBA980"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFill}
         />
       </Animated.View>
-      <View>
-        <Animated.Text style={[styles.pillTabLabel, { opacity: selAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}>
-          {tab.label}
-        </Animated.Text>
-        <Animated.Text style={[styles.pillTabLabel, styles.pillTabLabelSel, StyleSheet.absoluteFill, { opacity: selAnim }]}>
-          {tab.label}
-        </Animated.Text>
-      </View>
+
+      {/* Ícono */}
+      <Animated.View style={{ opacity: selAnim.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] }) }}>
+        <MaterialCommunityIcons
+          name={tab.icon as any}
+          size={15}
+          color={iconColor as any}
+        />
+      </Animated.View>
+
+      {/* Texto */}
+      <Animated.Text style={[styles.pillTabLabel, { color: textColor as any }]}>
+        {tab.label}
+      </Animated.Text>
     </Pressable>
   );
 });
@@ -1039,14 +1058,22 @@ const styles = StyleSheet.create({
   },
 
   pillRow:        { flexGrow: 0, marginTop: -12, marginBottom: -8, backgroundColor: "transparent" },
-  pillRowContent: { flexDirection: "row", gap: 22, paddingHorizontal: 18, paddingTop: 12, paddingBottom: 20 },
-  pillTab:        { paddingVertical: 6 },
-  pillTabLabel:   { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "rgba(255,255,255,0.55)" },
-  pillTabLabelSel:{ color: "#f9f9f9" },
-  pillTabUnderline: {
-    height: 2, borderRadius: 1, backgroundColor: "#f9f9f9",
-    marginTop: 5, alignSelf: "stretch",
+  pillRowContent: { flexDirection: "row", gap: 8, paddingHorizontal: 15, paddingTop: 12, paddingBottom: 20 },
+  pillTab: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 13,
+    height: 30,
+    borderRadius: 999,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderWidth: 1.5,
+    borderColor: "rgba(244,244,244,0.30)",
   },
+  pillTabLabel:   { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: "#FBFBFB" },
+  pillTabLabelSel:{ color: "#2D0D3A" },
+  pillTabUnderline: {},
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },
 
