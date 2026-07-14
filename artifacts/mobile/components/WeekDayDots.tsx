@@ -70,7 +70,10 @@ export function WeekDayDots() {
   const borderColor0 = waveHigh;
   const borderColor1 = waveMid;
 
-  const gradColors = [theme.gradient[0], theme.gradient[1] ?? theme.gradient[0]] as [string, string];
+  const gradColors = [
+    brightenHex(theme.gradient[0], 10),
+    brightenHex(theme.gradient[1] ?? theme.gradient[0], 10),
+  ] as [string, string];
 
   const { activeFlags, todayIndex } = useMemo(() => {
     const byDay = new Map<string, number>();
@@ -149,6 +152,8 @@ const s = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 4,
+    borderWidth: 2,
+    borderColor: "#f9f9f9",
   },
   circleGradientBorder: {
     width: 39,
