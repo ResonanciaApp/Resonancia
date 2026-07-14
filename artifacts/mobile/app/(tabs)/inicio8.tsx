@@ -1391,9 +1391,7 @@ export default function HomeScreen2() {
             gap: 6,
             paddingVertical: 11,
             borderRadius: 20,
-            borderWidth: 0.5,
-            borderColor: "rgba(247,203,107,0.35)",
-            backgroundColor: pressed ? "rgba(247,203,107,0.1)" : "rgba(247,203,107,0.05)",
+            backgroundColor: pressed ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.07)",
           })}
         >
           <Feather name="refresh-cw" size={13} color="#F7CB6B" />
