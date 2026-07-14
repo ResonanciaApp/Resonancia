@@ -1314,7 +1314,7 @@ export default function HomeScreen2() {
 
 
         {/* ── ESTADO DE ÁNIMO ── */}
-        <View style={styles.sectionDivider} />
+        <View style={[styles.sectionDivider, { marginTop: -15 }]} />
         <View style={{ paddingHorizontal: GRID_PAD }}>
           <Text style={styles.sectionTitle}>Personaliza tus recomendaciones</Text>
         </View>
