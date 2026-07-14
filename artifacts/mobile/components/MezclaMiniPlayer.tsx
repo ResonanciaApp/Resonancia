@@ -106,7 +106,7 @@ export function MezclaMiniPlayer({ bottomOffset, topOffset }: Props) {
   return (
     <Pressable
       onPress={handleExpand}
-      style={[styles.wrapper, { bottom: bottomOffset }]}
+      style={[styles.wrapper, { bottom: bottomOffset - 5 }]}
     >
       <Animated.View
         style={[
