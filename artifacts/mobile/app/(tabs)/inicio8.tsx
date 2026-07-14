@@ -1043,8 +1043,8 @@ export default function HomeScreen2() {
               const corners = [
                 { borderTopLeftRadius: R,    borderTopRightRadius: R,    borderBottomLeftRadius: R,    borderBottomRightRadius: 0 },
                 { borderTopLeftRadius: R,    borderTopRightRadius: R,    borderBottomLeftRadius: 0,    borderBottomRightRadius: R },
-                { borderTopLeftRadius: R,    borderTopRightRadius: 0,    borderBottomLeftRadius: R,    borderBottomRightRadius: R },
-                { borderTopLeftRadius: 0,    borderTopRightRadius: R,    borderBottomLeftRadius: R,    borderBottomRightRadius: R },
+                { borderTopLeftRadius: R,    borderTopRightRadius: 0,    borderBottomLeftRadius: R,    borderBottomRightRadius: 0 },
+                { borderTopLeftRadius: 0,    borderTopRightRadius: R,    borderBottomLeftRadius: 0,    borderBottomRightRadius: R },
                 { borderTopLeftRadius: R,    borderTopRightRadius: 0,    borderBottomLeftRadius: R,    borderBottomRightRadius: R },
                 { borderTopLeftRadius: 0,    borderTopRightRadius: R,    borderBottomLeftRadius: R,    borderBottomRightRadius: R },
               ];
