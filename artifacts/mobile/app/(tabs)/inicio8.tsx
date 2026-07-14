@@ -90,7 +90,7 @@ const { width, height } = Dimensions.get("window");
 // estado por defecto al entrar a la app).
 const TODOS_TAB_ID = "todos";
 const NAV_TABS = [
-  { id: "meditaciones",  label: "Meditación",    cats: ["meditaciones-guiadas"] },
+  { id: "meditaciones",  label: "Meditaciones",   cats: ["meditaciones-guiadas"] },
   { id: "sesiones",      label: "Sesiones",      cats: ["sonidos-ancestrales"] },
   { id: "musica",        label: "Música",        cats: ["musica-sonidos"] },
 ];
@@ -1057,7 +1057,7 @@ export default function HomeScreen2() {
         <View style={[styles.section, { marginBottom: SECTION_GAP - 20, marginTop: intencionDiariaEnabled ? (rachaEnabled ? -18 : -74) : (rachaEnabled ? -12 : -68) }]}>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 7, marginTop: 20 }}>
             {([
-              { id: "meditaciones-guiadas", label: "Meditación", color: "#C9A8ED", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={24} color={color} /> },
+              { id: "meditaciones-guiadas", label: "Meditaciones", color: "#C9A8ED", icon: (color: string) => <MaterialCommunityIcons name="meditation" size={24} color={color} /> },
               { id: "sonidos-ancestrales",  label: "Sesiones",   color: "#F7A98A", icon: (color: string) => <MaterialCommunityIcons name="waves" size={24} color={color} /> },
               { id: "musica-sonidos",        label: "Música",     color: "#7FD6C8", icon: (color: string) => <Ionicons name="musical-notes-outline" size={24} color={color} /> },
               { id: "__descanzo__",           label: "Dormir",     color: "#8ED6F0", icon: (color: string) => <Feather name="moon" size={22} color={color} /> },
