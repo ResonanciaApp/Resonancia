@@ -928,7 +928,7 @@ export default function HomeScreen2() {
           <View style={{ flex: 1, alignItems: "center" }}>
             <Image
               source={require("@/assets/images/logo-resonancia-text.png")}
-              style={{ width: 158, height: 26 }}
+              style={{ width: 108, height: 18 }}
               resizeMode="contain"
             />
           </View>
