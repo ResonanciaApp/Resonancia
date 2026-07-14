@@ -44,6 +44,7 @@ import { useGetSceneAnimations } from "@workspace/api-client-react";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useBrightness } from "@/context/BrightnessContext";
 import { useRacha } from "@/context/RachaContext";
+import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
@@ -183,6 +184,7 @@ export function EscenasSheet() {
 
   const [timerOpen, setTimerOpen] = useState(false);
   const { rachaEnabled, setRachaEnabled } = useRacha();
+  const { intencionDiariaEnabled, setIntencionDiariaEnabled } = useIntencionDiaria();
   const { greetingVisible, setGreetingVisible } = useGreetingVisible();
   const { brightMode, setBrightMode } = useBrightness();
   // ID de la escena CONFIRMADA (la que muestra el borde blanco en el carrusel).
@@ -464,6 +466,18 @@ export function EscenasSheet() {
               onValueChange={setRachaEnabled}
               trackColor={{ false: "rgba(61,14,22,0.60)", true: "rgba(247,203,107,0.55)" }}
               thumbColor={rachaEnabled ? "#F7CB6B" : "#666"}
+            />
+          </View>
+
+          {/* Intención diaria (reemplaza la escena animada en Inicio) */}
+          <View style={styles.controlRow}>
+            <MaterialCommunityIcons name="feather" size={17} color="#F4F4F4" style={styles.controlIcon} />
+            <Text style={styles.controlLabel}>Activar intención diaria</Text>
+            <Switch
+              value={intencionDiariaEnabled}
+              onValueChange={setIntencionDiariaEnabled}
+              trackColor={{ false: "rgba(61,14,22,0.60)", true: "rgba(247,203,107,0.55)" }}
+              thumbColor={intencionDiariaEnabled ? "#F7CB6B" : "#666"}
             />
           </View>
 

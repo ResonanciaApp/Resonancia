@@ -62,6 +62,7 @@ import { useGetPinnedFeatured, useGetSceneAnimations } from "@workspace/api-clie
 import type { SceneAnimation } from "@workspace/api-client-react";
 import { SceneAnimationCard } from "@/components/SceneAnimationCard";
 import { useRacha } from "@/context/RachaContext";
+import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
 import { useSelectedScene } from "@/context/SelectedSceneContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { SceneAnimationInline } from "@/components/SceneAnimationInline";
@@ -490,6 +491,7 @@ export default function HomeScreen2() {
   const [sesMeditacion,   setSesMeditacion]   = useState(false);
   const [progresoVisible, setProgresoVisible] = useState(false);
   const { rachaEnabled } = useRacha();
+  const { intencionDiariaEnabled } = useIntencionDiaria();
   const spacerWidthSV  = useSharedValue(0);
   const pillOpacitySV  = useSharedValue(0);
   const pillTranslateSV = useSharedValue(20);
@@ -951,17 +953,39 @@ export default function HomeScreen2() {
           </Pressable>
         </View>
 
-        {/* ── Escena animada: fondo libre, pasa por debajo del contenido ── */}
-        {/* El View mantiene el espacio en el flujo; la animación es absoluta para no cortar. */}
-        <View style={{ height: 260, marginTop: 22, overflow: "visible" }} pointerEvents="box-none">
-          <SceneAnimationInline
-            scene={headerScene}
-            height={293}
-            onPress={headerScene ? toggleImmersive : undefined}
-            style={{ position: "absolute", top: 10, left: -16, right: -16 }}
-            paused={!tabFocused}
-          />
-        </View>
+        {/* ── Escena animada o Intención diaria (según toggle en Escenas) ── */}
+        {!intencionDiariaEnabled ? (
+          /* Escena animada: fondo libre, pasa por debajo del contenido.
+             El View mantiene el espacio en el flujo; la animación es absoluta para no cortar. */
+          <View style={{ height: 260, marginTop: 22, overflow: "visible" }} pointerEvents="box-none">
+            <SceneAnimationInline
+              scene={headerScene}
+              height={293}
+              onPress={headerScene ? toggleImmersive : undefined}
+              style={{ position: "absolute", top: 10, left: -16, right: -16 }}
+              paused={!tabFocused}
+            />
+          </View>
+        ) : (
+          /* Establece tu intención aquí (modo intención diaria) */
+          <Pressable
+            onPress={handleIntentionPress}
+            style={({ pressed }) => [
+              styles.intencionWrap,
+              { marginTop: 44, marginBottom: 0, transform: [], opacity: pressed ? 0.75 : 1 },
+            ]}
+          >
+            <Text style={styles.intencionSuper}>Hoy voy a...</Text>
+            <View style={styles.intencionRow}>
+              <Animated.View style={[styles.intencionCursor, { opacity: cursorOpacity }]} />
+              {currentIntencion ? (
+                <Text style={styles.intencionText} numberOfLines={2}>{currentIntencion}</Text>
+              ) : (
+                <Text style={styles.intencionPlaceholder}>Establece tu intención aquí</Text>
+              )}
+            </View>
+          </Pressable>
+        )}
 
         {/* ── 7 días de la semana ── */}
         <Pressable
@@ -969,7 +993,7 @@ export default function HomeScreen2() {
           pointerEvents={rachaEnabled ? "auto" : "none"}
           style={({ pressed }) => ({
             marginHorizontal: GRID_PAD,
-            marginTop: 54,
+            marginTop: intencionDiariaEnabled ? 24 : 54,
             marginBottom: SECTION_GAP / 2 - 20,
             paddingVertical: 12,
             opacity: rachaEnabled ? (pressed ? 0.75 : 1) : 0,

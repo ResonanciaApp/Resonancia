@@ -38,6 +38,7 @@ import { SaveEventProvider } from "@/context/SaveEventContext";
 import { PlayerProvider } from "@/context/PlayerContext";
 import { GeoUniverseProvider } from "@/context/GeoUniverseContext";
 import { RachaProvider } from "@/context/RachaContext";
+import { IntencionDiariaProvider } from "@/context/IntencionDiariaContext";
 import { PremiumProvider } from "@/context/PremiumContext";
 import { UserProfileProvider } from "@/context/UserProfileContext";
 import { ProfileSync } from "@/components/ProfileSync";
@@ -406,6 +407,7 @@ export default function RootLayout() {
                           <SceneThemeProvider initialSceneId={initialSceneId ?? undefined}>
                           <GeoUniverseProvider>
                           <RachaProvider>
+                          <IntencionDiariaProvider>
                             <ThemedGestureRoot>
                               <StatusBar hidden />
                               <KeyboardProvider>
@@ -413,6 +415,7 @@ export default function RootLayout() {
                               </KeyboardProvider>
                               <SceneThemeTransitionOverlay />
                             </ThemedGestureRoot>
+                          </IntencionDiariaProvider>
                           </RachaProvider>
                           </GeoUniverseProvider>
                           </SceneThemeProvider>
