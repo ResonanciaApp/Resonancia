@@ -269,26 +269,6 @@ export default function MeditacionesGuiadasScreen() {
   const { theme } = useSceneTheme();
   const { history, playSession, favorites } = usePlayer();
   const { isPremium } = usePremium();
-  const recentInCategory = useMemo(() => {
-    const seen = new Set<string>(); const result: Session[] = [];
-    for (const h of history) {
-      if (seen.has(h.sessionId)) continue;
-      seen.add(h.sessionId);
-      const s = getSessionById(h.sessionId);
-      if (s && s.categoryId === "meditaciones-guiadas") result.push(s);
-      if (result.length === 10) break;
-    }
-    return result;
-  }, [history]);
-
-  const favoritesInCategory = useMemo(() => {
-    const result: Session[] = [];
-    for (const id of favorites) {
-      const s = getSessionById(id);
-      if (s && s.categoryId === "meditaciones-guiadas") result.push(s);
-    }
-    return result;
-  }, [favorites]);
 
   const TABS = useMemo(() => {
     const extra = Array.from(
@@ -334,6 +314,30 @@ export default function MeditacionesGuiadasScreen() {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const allTabSessions = useMemo(()=>getSessionsForTab(activeTab),[activeTab,version]);
+
+  const recentInCategory = useMemo(() => {
+    const tabIds = activeTab !== null ? new Set(allTabSessions.map((s) => s.id)) : null;
+    const seen = new Set<string>(); const result: Session[] = [];
+    for (const h of history) {
+      if (seen.has(h.sessionId)) continue;
+      seen.add(h.sessionId);
+      const s = getSessionById(h.sessionId);
+      if (s && s.categoryId === "meditaciones-guiadas" && (tabIds === null || tabIds.has(s.id))) result.push(s);
+      if (result.length === 10) break;
+    }
+    return result;
+  }, [history, activeTab, allTabSessions]);
+
+  const favoritesInCategory = useMemo(() => {
+    const tabIds = activeTab !== null ? new Set(allTabSessions.map((s) => s.id)) : null;
+    const result: Session[] = [];
+    for (const id of favorites) {
+      const s = getSessionById(id);
+      if (s && s.categoryId === "meditaciones-guiadas" && (tabIds === null || tabIds.has(s.id))) result.push(s);
+    }
+    return result;
+  }, [favorites, activeTab, allTabSessions]);
+
   const [shuffledSessions, setShuffledSessions] = useState<typeof allTabSessions>([]);
   useEffect(()=>{
     const arr = [...allTabSessions];
