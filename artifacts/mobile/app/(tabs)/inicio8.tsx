@@ -1169,8 +1169,8 @@ export default function HomeScreen2() {
                       <Text style={styles.heroTitle} numberOfLines={2}>
                         {filteredFeatured.title}
                       </Text>
-                      <Text style={styles.heroAuthor} numberOfLines={1}>
-                        {filteredFeatured.categoryLabel} · {heroAuthor}
+                      <Text style={[styles.heroAuthor, { marginTop: -2 }]} numberOfLines={1}>
+                        {heroAuthor}
                       </Text>
                     </View>
                   </View>
