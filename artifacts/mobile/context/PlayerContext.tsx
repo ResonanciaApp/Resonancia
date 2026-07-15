@@ -840,7 +840,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       // Sesiones "pasar directo al miniplayer": mostrar la barra flotante
       // (SessionMiniPlayer) de inmediato en la pantalla donde se tocó.
       if (session.skipMiniPlayer) {
-        sessionMiniPlayerEvents.triggerShow();
+        sessionMiniPlayerEvents.triggerShow("bottom");
       }
       const savedProgress = sessionProgressRef.current[session.id] ?? 0;
       const resumeFraction =

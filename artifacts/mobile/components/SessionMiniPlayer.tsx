@@ -44,12 +44,14 @@ export function SessionMiniPlayer({ bottomOffset, topOffset, suppressed }: Props
 
   // Disparo del evento "minimizar desde el reproductor"
   useEffect(() => {
-    const unsub = sessionMiniPlayerEvents.subscribe(() => {
+    const unsub = sessionMiniPlayerEvents.subscribe((from) => {
       if (closingRef.current) return;
       closingRef.current = false;
       setVisible(true);
       opacity.setValue(0);
-      translateY.setValue(startY);
+      // "bottom": entra desde abajo con fade (patrón DormirMiniPlayer);
+      // "top": cae desde arriba (minimizar desde el reproductor).
+      translateY.setValue(from === "bottom" ? 80 : startY);
       Animated.parallel([
         Animated.timing(opacity,    { toValue: 1, duration: 300, useNativeDriver: true }),
         Animated.timing(translateY, { toValue: 0, duration: 300, useNativeDriver: true }),
