@@ -474,6 +474,7 @@ router.post(
           podcastTag: body.podcastTag ?? null,
           sonidosTag: body.sonidosTag ?? null,
           descansoTag: body.descansoTag ?? null,
+          themeTag: body.themeTag ?? null,
           sleepTag: body.sleepTag ?? null,
           voiceTag: body.voiceTag ?? null,
           guideId: body.guideId ?? null,
