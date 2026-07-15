@@ -110,8 +110,8 @@ function SubIcon({ sub, size }: { sub: SubDef; size: number }) {
   );
 }
 
-type ActiveTab = "Audios" | "Videos" | "Maestros";
-const TABS: ActiveTab[] = ["Audios", "Videos", "Maestros"];
+type ActiveTab = "Todos" | "Audios" | "Videos" | "Maestros";
+const TABS: ActiveTab[] = ["Todos", "Audios", "Videos", "Maestros"];
 
 
 export default function MananasScreen() {
@@ -375,6 +375,28 @@ export default function MananasScreen() {
                 </Animated.View>
               )}
             </View>
+
+            {/* ── Tab: Todos ── */}
+            {activeTab === "Todos" && (
+              <View style={{ paddingTop: 24 }}>
+                {filteredSessions.length === 0 ? (
+                  <View style={styles.emptyWrap}>
+                    <Feather name="sunrise" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
+                    <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>Próximamente</Text>
+                  </View>
+                ) : (
+                  filteredSessions.map((s) => (
+                    <SessionRow
+                      key={s.id}
+                      session={s}
+                      rating={ratings[s.id]}
+                      style={{ marginHorizontal: H_PAD }}
+                      onActionsPress={() => setActionsSession(s)}
+                    />
+                  ))
+                )}
+              </View>
+            )}
 
             {/* ── Tab: Audios ── */}
             {activeTab === "Audios" && (

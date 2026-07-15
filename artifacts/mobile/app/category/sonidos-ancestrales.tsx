@@ -169,6 +169,7 @@ function ChipRow({ tabs, activeTab, onSelect, onClear }: { tabs: {id: string; la
     <View style={styles.chipRowWrapper}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}
         style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
+        <Chip label="Todos" sel={activeTab === null} onPress={onClear} />
         {tabs.map((t) => (
           <Chip key={t.id} label={t.label} icon={t.icon} sel={activeTab === t.id}
             onPress={() => activeTab === t.id ? onClear() : onSelect(t.id)} />
@@ -378,7 +379,7 @@ export default function SonidosAncestalesScreen() {
     return [...FIXED_TABS, ...extraTags.map((tag) => ({ id: tag, label: tag, icon: EXTRA_TAB_ICONS[tag.toLowerCase()] }))];
   }, [version]);
 
-  const [activeTab,         setActiveTab]         = useState<CatTab|null>(FIXED_TABS[0].id);
+  const [activeTab,         setActiveTab]         = useState<CatTab|null>(null);
   const [sort,              setSort]              = useState<SortMode>("recientes");
   const [sortVisible,       setSortVisible]       = useState(false);
   const [searchVisible,     setSearchVisible]     = useState(false);
