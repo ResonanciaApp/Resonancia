@@ -1920,7 +1920,7 @@ const styles = StyleSheet.create({
   chip: {
     paddingVertical: 6,
   },
-  chipText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: "#f9f9f9" },
+  chipText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#f9f9f9" },
   chipTextSel: { color: "#f9f9f9" },
   chipUnderline: {
     height: 2,
