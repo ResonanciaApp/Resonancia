@@ -510,7 +510,7 @@ export default function SonidosAncestalesScreen() {
             <View style={styles.featuredDivider} />
           </>
         )}
-        {recentInCategory.length > 0 && (
+        {activeTab === null && recentInCategory.length > 0 && (
           <>
             <SessionCarousel
               title="Escuchadas recientemente"
@@ -524,7 +524,7 @@ export default function SonidosAncestalesScreen() {
             <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
         )}
-        {favoritesInCategory.length > 0 && (
+        {activeTab === null && favoritesInCategory.length > 0 && (
           <>
             <SessionCarousel
               title="Favoritos"
