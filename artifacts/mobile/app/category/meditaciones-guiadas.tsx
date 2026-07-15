@@ -538,20 +538,21 @@ export default function MeditacionesGuiadasScreen() {
 
       {/* ── Sticky header (aparece con scroll) ── */}
       <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"}>
-        <View style={styles.lotoBtn}>
-          <BackPill onPress={() => router.back()} size={31} />
+        <View style={styles.stickyHeaderRow}>
+          <View style={styles.lotoBtn}>
+            <BackPill onPress={() => router.back()} size={31} />
+          </View>
+          <View style={styles.headerTitleCol}>
+            <Text style={styles.headerTitle}>Meditaciones</Text>
+          </View>
+          <View style={styles.lotoBtn}>
+            <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/meditaciones-info" as never)}>
+              <Feather name="info" size={23} color="rgba(255,255,255,0.85)" />
+            </Pressable>
+          </View>
         </View>
-        <View style={styles.headerTitleCol}>
-          <Text style={styles.headerTitle}>Meditaciones</Text>
-          {activeTab && (
-            <Text style={styles.headerSubtitle}>{TABS.find((t) => t.id === activeTab)?.label}</Text>
-          )}
-        </View>
-        <View style={styles.lotoBtn}>
-          <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/meditaciones-info" as never)}>
-            <Feather name="info" size={23} color="rgba(255,255,255,0.85)" />
-          </Pressable>
-        </View>
+        <ChipRow tabs={TABS} activeTab={activeTab} onSelect={setActiveTab} onClear={() => setActiveTab(null)} />
+        <View style={styles.stickyTabsDivider} />
       </Animated.View>
 
     </View>
@@ -561,7 +562,9 @@ export default function MeditacionesGuiadasScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#210911" },
 
-  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, backgroundColor: "#1B060F", borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.1)" },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, paddingHorizontal: H_PAD, paddingBottom: 8, backgroundColor: "#1B060F" },
+  stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
+  stickyTabsDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.4)", marginHorizontal: -H_PAD, marginTop: 8 },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   headerTitleCol: { flex: 1, alignItems: "center" },
   headerTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "400", color: "#FBFBFB", letterSpacing: 0.2, textAlign: "center" },
