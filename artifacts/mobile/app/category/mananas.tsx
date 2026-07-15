@@ -233,9 +233,6 @@ export default function MananasScreen() {
                 />
               </View>
               <Text style={[styles.pageTitle, { color: colors.foreground }]}>Mañanas</Text>
-              <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
-                Rituales para comenzar el día con energía
-              </Text>
               <View style={styles.searchBar}>
                 <Feather name="search" size={17} color={colors.mutedForeground} />
                 <TextInput
@@ -480,7 +477,7 @@ const styles = StyleSheet.create({
   },
   searchInput: { fontFamily: "Manrope", flex: 1, fontSize: 14, padding: 0 },
   noResults: { fontFamily: "Manrope", fontSize: 14, textAlign: "center", paddingVertical: 24 },
-  pageTitle: { fontFamily: "Manrope", fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "center" },
+  pageTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700", letterSpacing: 0.2, marginTop: -15, marginBottom: 4, textAlign: "center" },
   pageSub: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center" },
 
   catList: {},

@@ -241,9 +241,6 @@ export default function NochesScreen() {
                 />
               </View>
               <Text style={[styles.pageTitle, { color: colors.foreground }]}>Noches</Text>
-              <Text style={[styles.pageSub, { color: "#FFFFFF" }]}>
-                Prepara tu cuerpo y mente para el descanso
-              </Text>
               <View style={styles.searchBar}>
                 <Feather name="search" size={17} color={colors.mutedForeground} />
                 <TextInput
@@ -477,7 +474,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   titleRow: { flexDirection: "row", alignItems: "center", gap: 14 },
-  pageTitle: { fontFamily: "Manrope", fontSize: 26, fontWeight: "700", letterSpacing: 0.2, marginBottom: 4, textAlign: "center" },
+  pageTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700", letterSpacing: 0.2, marginTop: -15, marginBottom: 4, textAlign: "center" },
   pageSub: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center" },
   searchBar: {
     flexDirection: "row", alignItems: "center", gap: 10,

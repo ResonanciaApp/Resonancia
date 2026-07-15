@@ -85,9 +85,6 @@ export default function CategoryScreen() {
               )}
             </View>
             <Text style={[styles.heroTitle, { color: colors.foreground }]}>{category.title}</Text>
-            <Text style={[styles.heroSub, { color: colors.foreground }]}>
-              {category.subtitle}
-            </Text>
             <View style={styles.heroMeta}>
               <View style={[styles.metaBadge, { backgroundColor: "rgba(212,175,55,0.15)" }]}>
                 <Text style={[styles.metaBadgeText, { color: colors.accent }]}>
@@ -150,10 +147,11 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     fontFamily: "Manrope",
-    fontSize: 26,
+    fontSize: 21,
     fontWeight: "700",
+    marginTop: -15,
     marginBottom: 6,
-    lineHeight: 32,
+    lineHeight: 28,
   },
   heroSub: {
     fontFamily: "Manrope",

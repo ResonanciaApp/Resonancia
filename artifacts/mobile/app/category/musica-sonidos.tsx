@@ -395,9 +395,6 @@ export default function MusicaSonidosScreen() {
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
           <Text style={styles.profileTitle}>Música</Text>
-          <Text style={styles.profileDesc} numberOfLines={1}>
-            Canciones que expanden
-          </Text>
         </View>
 
         {/* ── Tabs ── */}
@@ -461,8 +458,8 @@ const styles = StyleSheet.create({
   heroIconGlow: { borderRadius: 28, shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 14, shadowOffset: { width: 0, height: 0 }, elevation: 8 },
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "#1B060F", borderWidth: 2, borderColor: "rgba(255,255,255,0.1)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
-  profileCard: { marginHorizontal: H_PAD, marginTop: -52, paddingBottom: 14, gap: 8, alignItems: "center" },
-  profileTitle: { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", color: TEXT, letterSpacing: 0.3 },
+  profileCard: { marginHorizontal: H_PAD, marginTop: -67, paddingBottom: 14, gap: 8, alignItems: "center" },
+  profileTitle: { fontFamily: "Manrope", fontSize: 22, fontWeight: "700", color: TEXT, letterSpacing: 0.3 },
   profileDesc: { fontFamily: "Manrope", fontSize: 13, color: "rgba(255,255,255,0.90)", lineHeight: 18, textAlign: "center", maxWidth: 280, marginTop: -4, marginBottom: 28 },
 
   dividerLine: { height: 0 },
