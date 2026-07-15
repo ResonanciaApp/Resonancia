@@ -56,6 +56,7 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
             >
               <View style={[styles.thumbWrap, thumbStyle]}>
                 <Image source={s.image as number} style={[styles.thumb, thumbStyle]} resizeMode="cover" />
+                <View style={styles.durBadge}><Text style={styles.durText}>{s.durationLabel}</Text></View>
                 {locked && (
                   <Image
                     source={require("@/assets/images/estrella-premium.png")}
@@ -64,7 +65,7 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
                   />
                 )}
               </View>
-              <Text style={[styles.cardTitle, titleOffset ? { marginTop: titleOffset } : null]} numberOfLines={2}>{s.title}</Text>
+              <Text style={[styles.cardTitle, { marginTop: titleOffset ?? 10 }]} numberOfLines={2}>{s.title}</Text>
               {(() => {
                 const authorObj = s.guideId ? getGuide(s.guideId) : getArtist(s.artistId);
                 const authorName = authorObj?.name;
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontFamily: "Manrope",
-    fontSize: 21,
+    fontSize: 17,
     fontWeight: "700",
     letterSpacing: 0.3,
     marginBottom: 21,
@@ -162,8 +163,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 8,
     left: 8,
-    backgroundColor: "rgba(0,0,0,0.72)",
-    borderRadius: 20,
+    backgroundColor: "rgba(27,6,15,0.72)",
+    borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 3,
   },
