@@ -305,6 +305,8 @@ function EditDialog({
   const [isPremium, setIsPremium] = useState(submission.isPremium);
   const [isFeatured, setIsFeatured] = useState(submission.isFeatured);
   const [isNew, setIsNew] = useState(submission.isNew);
+  const [skipDetail, setSkipDetail] = useState(submission.skipDetail ?? false);
+  const [skipMiniPlayer, setSkipMiniPlayer] = useState(submission.skipMiniPlayer ?? false);
   const [voiceTag, setVoiceTag] = useState(submission.voiceTag ?? "__none__");
   const [ancestralTag, setAncestralTag] = useState(submission.ancestralTag ?? "");
   const [meditationTag, setMeditationTag] = useState(submission.meditationTag ?? "");
@@ -322,6 +324,15 @@ function EditDialog({
       onError: () => toast.error("No se pudo editar."),
     },
   });
+
+  const handleSkipDetail = (v: boolean) => {
+    setSkipDetail(v);
+    if (v) setSkipMiniPlayer(false);
+  };
+  const handleSkipMiniPlayer = (v: boolean) => {
+    setSkipMiniPlayer(v);
+    if (v) setSkipDetail(false);
+  };
 
   const catId = submission.categoryId;
   const isAncestral   = catId === "sonidos-ancestrales";
@@ -391,6 +402,18 @@ function EditDialog({
               <div className="flex items-center justify-between">
                 <Label htmlFor="edit-new">Marcar como nueva</Label>
                 <Switch id="edit-new" checked={isNew} onCheckedChange={setIsNew} />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="edit-skipDetail" className="cursor-pointer">
+                  Pasar directo al reproductor
+                </Label>
+                <Switch id="edit-skipDetail" checked={skipDetail} onCheckedChange={handleSkipDetail} />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="edit-skipMiniPlayer" className="cursor-pointer">
+                  Pasar directo al miniplayer
+                </Label>
+                <Switch id="edit-skipMiniPlayer" checked={skipMiniPlayer} onCheckedChange={handleSkipMiniPlayer} />
               </div>
             </div>
 
@@ -486,6 +509,8 @@ function EditDialog({
                   isPremium,
                   isFeatured,
                   isNew,
+                  skipDetail,
+                  skipMiniPlayer,
                   voiceTag: voiceTag === "__none__" ? null : (voiceTag as "Guiada" | "Sin voz"),
                   ...(isAncestral ? { ancestralTag: ancestralTag || null } : {}),
                   ...(isMeditation ? { meditationTag: meditationTag || null } : {}),
