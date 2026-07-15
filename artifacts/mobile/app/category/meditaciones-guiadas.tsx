@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GhostPill } from "@/components/GhostPill";
-import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
+import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { getArtist } from "@/data/artists";
@@ -236,46 +236,10 @@ const ac = StyleSheet.create({
   lockDot:{position:"absolute",top:6,right:6,width:20,height:20,borderRadius:10,backgroundColor:"rgba(0,0,0,0.55)",alignItems:"center",justifyContent:"center"},
 });
 
-function SessionQuickSheet({ session, onClose, onPlaylist, isFavorite, onToggleFavorite }: { session: Session|null; onClose:()=>void; onPlaylist:()=>void; isFavorite:(id:string)=>boolean; onToggleFavorite:(id:string)=>void }) {
-  const insets = useSafeAreaInsets();
-  const slide  = useRef(new Animated.Value(300)).current;
-  useEffect(()=>{ if (session) Animated.spring(slide,{toValue:0,useNativeDriver:true,bounciness:0}).start(); else slide.setValue(300); },[session,slide]);
-  if (!session) return null;
-  const fav = isFavorite(session.id);
-  return (
-    <Modal visible={!!session} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
-      <Pressable style={styles.qsBackdrop} onPress={onClose} />
-      <Animated.View style={[styles.qsSheet,{paddingBottom:Math.max(insets.bottom,24),transform:[{translateY:slide}]}]}>
-        <View style={styles.qsHandle} />
-        <View style={styles.qsHeader}>
-          <Image source={session.image as never} style={styles.qsThumb} contentFit="cover" />
-          <View style={{flex:1}}>
-            <Text style={styles.qsTitle} numberOfLines={2}>{session.title}</Text>
-            <Text style={styles.qsSub}>{session.categoryLabel} · {session.durationLabel}</Text>
-          </View>
-          <Pressable onPress={onClose} hitSlop={10} style={styles.qsClose}><Feather name="x" size={20} color={MUTED} /></Pressable>
-        </View>
-        <View style={styles.qsDivider} />
-        <Pressable onPress={onPlaylist} style={({pressed})=>[styles.qsRow,styles.qsRowBorder,{opacity:pressed?0.7:1}]}>
-          <Feather name="list" size={20} color={TEXT} style={styles.qsIcon} />
-          <Text style={styles.qsLabel}>Agregar a un Ritual</Text>
-          <Feather name="chevron-right" size={16} color={MUTED} />
-        </Pressable>
-        <Pressable onPress={()=>{ onToggleFavorite(session.id); onClose(); }} style={({pressed})=>[styles.qsRow,{opacity:pressed?0.7:1}]}>
-          <Feather name="heart" size={20} color={fav?"#E05C5C":TEXT} style={styles.qsIcon} />
-          <Text style={[styles.qsLabel,fav&&{color:"#E05C5C"}]}>{fav?"Quitar de favoritos":"Agregar a favoritos"}</Text>
-          <Feather name="chevron-right" size={16} color={MUTED} />
-        </Pressable>
-      </Animated.View>
-    </Modal>
-  );
-}
-
 export default function MeditacionesGuiadasScreen() {
   const insets    = useSafeAreaInsets();
   const topPad    = Platform.OS==="web" ? 0 : insets.top;
   const bottomPad = Platform.OS==="web" ? 34 : insets.bottom;
-  const { isFavorite, toggleFavorite } = usePlayer();
   const { version } = useCatalog();
   const { theme } = useSceneTheme();
 
@@ -295,7 +259,6 @@ export default function MeditacionesGuiadasScreen() {
   const [sortVisible,       setSortVisible]       = useState(false);
   const [searchVisible,     setSearchVisible]     = useState(false);
   const [selectedSession,   setSelectedSession]   = useState<Session|null>(null);
-  const [playlistSessionId, setPlaylistSessionId] = useState<string|null>(null);
 
   const scrollRef  = useRef<ScrollView>(null);
   const HERO_AREA_H = 238;
@@ -410,10 +373,7 @@ export default function MeditacionesGuiadasScreen() {
 
       <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} />
       <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={() => setSortVisible(false)} />
-      <SessionQuickSheet session={selectedSession} onClose={() => setSelectedSession(null)}
-        onPlaylist={() => { if (selectedSession) setPlaylistSessionId(selectedSession.id); setSelectedSession(null); }}
-        isFavorite={isFavorite} onToggleFavorite={toggleFavorite} />
-      <AddToPlaylistSheet visible={playlistSessionId !== null} sessionId={playlistSessionId ?? ""} onClose={() => setPlaylistSessionId(null)} />
+      <SessionActionsSheet session={selectedSession} visible={!!selectedSession} onClose={() => setSelectedSession(null)} />
 
       {/* ── Sticky header (aparece con scroll) ── */}
       <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"}>
