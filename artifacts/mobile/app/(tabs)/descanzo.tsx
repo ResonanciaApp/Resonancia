@@ -533,14 +533,14 @@ export default function DescansoScreen() {
               <>
                 <Text style={styles.todosSectionTitle}>Sonidos Binaurales</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 12, paddingTop: 14, paddingBottom: 4 }}>
+                  contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 12, paddingBottom: 4 }}>
                   {binauralSounds.slice(0, 5).map((sound) => {
                     const sel = player.selectedId === sound.id;
                     const playing = sel && player.isPlaying;
                     return (
                       <Pressable key={sound.id} onPress={() => player.toggle(sound.id, sound.audioUri ?? null)}
-                        style={({ pressed }) => [{ width: SOUND_CARD_W, opacity: pressed ? 0.85 : 1 }]}>
-                        <View style={[styles.soundImageWrap, { borderRadius: 12 }]}>
+                        style={({ pressed }) => [{ width: RECENT_CARD_W, opacity: pressed ? 0.85 : 1 }]}>
+                        <View style={styles.soundImageWrap}>
                           <Image source={sound.image} style={styles.soundImage} resizeMode="cover" />
                           {playing && <PlayingDot />}
                         </View>
@@ -550,8 +550,8 @@ export default function DescansoScreen() {
                   })}
                   {binauralSounds.length > 5 && (
                     <Pressable onPress={() => setActiveTab("binaural")}
-                      style={{ width: SOUND_CARD_W, alignItems: "center", justifyContent: "center", gap: 6 }}>
-                      <View style={{ width: SOUND_CARD_W, aspectRatio: 1, borderRadius: 12, backgroundColor: "rgba(255,255,255,0.06)", alignItems: "center", justifyContent: "center" }}>
+                      style={{ width: RECENT_CARD_W, alignItems: "center", justifyContent: "center", gap: 6 }}>
+                      <View style={{ width: RECENT_CARD_W, aspectRatio: 1, borderRadius: 17, backgroundColor: "rgba(255,255,255,0.06)", alignItems: "center", justifyContent: "center" }}>
                         <Feather name="chevron-right" size={26} color="rgba(255,255,255,0.5)" />
                       </View>
                       <Text style={{ fontFamily: "Manrope", fontSize: 12, color: "rgba(255,255,255,0.5)" }}>Ver más</Text>
@@ -567,14 +567,14 @@ export default function DescansoScreen() {
               <>
                 <Text style={styles.todosSectionTitle}>Ambientales</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 12, paddingTop: 14, paddingBottom: 4 }}>
+                  contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 12, paddingBottom: 4 }}>
                   {ambientalSounds.slice(0, 5).map((sound) => {
                     const sel = player.selectedId === sound.id;
                     const playing = sel && player.isPlaying;
                     return (
                       <Pressable key={sound.id} onPress={() => player.toggle(sound.id, sound.audioUri ?? null)}
-                        style={({ pressed }) => [{ width: SOUND_CARD_W, opacity: pressed ? 0.85 : 1 }]}>
-                        <View style={[styles.soundImageWrap, { borderRadius: 12 }]}>
+                        style={({ pressed }) => [{ width: RECENT_CARD_W, opacity: pressed ? 0.85 : 1 }]}>
+                        <View style={styles.soundImageWrap}>
                           <Image source={sound.image} style={styles.soundImage} resizeMode="cover" />
                           {playing && <PlayingDot />}
                         </View>
@@ -584,8 +584,8 @@ export default function DescansoScreen() {
                   })}
                   {ambientalSounds.length > 5 && (
                     <Pressable onPress={() => setActiveTab("ambiental")}
-                      style={{ width: SOUND_CARD_W, alignItems: "center", justifyContent: "center", gap: 6 }}>
-                      <View style={{ width: SOUND_CARD_W, aspectRatio: 1, borderRadius: 12, backgroundColor: "rgba(255,255,255,0.06)", alignItems: "center", justifyContent: "center" }}>
+                      style={{ width: RECENT_CARD_W, alignItems: "center", justifyContent: "center", gap: 6 }}>
+                      <View style={{ width: RECENT_CARD_W, aspectRatio: 1, borderRadius: 17, backgroundColor: "rgba(255,255,255,0.06)", alignItems: "center", justifyContent: "center" }}>
                         <Feather name="chevron-right" size={26} color="rgba(255,255,255,0.5)" />
                       </View>
                       <Text style={{ fontFamily: "Manrope", fontSize: 12, color: "rgba(255,255,255,0.5)" }}>Ver más</Text>
@@ -820,12 +820,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   todosSectionTitle: {
-    fontFamily: "PlayfairDisplay",
+    fontFamily: "Manrope",
     fontSize: 19,
     fontWeight: "700",
-    color: "#F4DAD5",
-    marginTop: 22,
-    marginBottom: 0,
+    letterSpacing: 0.3,
+    color: "#FBFBFB",
+    marginTop: 24,
+    marginBottom: 21,
     paddingHorizontal: H_PAD,
   },
   soundImageWrap: {
