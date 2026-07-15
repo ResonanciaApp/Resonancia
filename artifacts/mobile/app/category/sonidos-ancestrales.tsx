@@ -3,6 +3,7 @@ import { BlurView } from "expo-blur";
 import MaskedView from "@react-native-masked-view/masked-view";
 import Svg, { Path } from "react-native-svg";
 import { BackPill } from "@/components/BackPill";
+import { SessionCarousel } from "@/components/SessionCarousel";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -23,10 +24,11 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { hexToRgba } from "@/utils/color";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
-import { SESSIONS, type Session } from "@/data/sessions";
+import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
+const RECENT_CARD_W = Math.round((width - H_PAD * 2) / 1.85);
 const GOLD  = "#F7CB6B";
 
 const TEXT  = "#FBFBFB";
@@ -389,7 +391,19 @@ export default function SonidosAncestalesScreen() {
   const insets    = useSafeAreaInsets();
   const topPad    = Platform.OS==="web" ? 0 : insets.top;
   const bottomPad = Platform.OS==="web" ? 34 : insets.bottom;
-  const { isFavorite, toggleFavorite, history } = usePlayer();
+  const { isFavorite, toggleFavorite, history, playSession } = usePlayer();
+  const { isPremium } = usePremium();
+  const recentInCategory = useMemo(() => {
+    const seen = new Set<string>(); const result: Session[] = [];
+    for (const h of history) {
+      if (seen.has(h.sessionId)) continue;
+      seen.add(h.sessionId);
+      const s = getSessionById(h.sessionId);
+      if (s && s.categoryId === "sonidos-ancestrales") result.push(s);
+      if (result.length === 10) break;
+    }
+    return result;
+  }, [history]);
   const { version } = useCatalog();
   const { theme } = useSceneTheme();
 
@@ -473,6 +487,16 @@ export default function SonidosAncestalesScreen() {
             </ScrollView>
             <View style={styles.featuredDivider} />
           </>
+        )}
+        {recentInCategory.length > 0 && (
+          <SessionCarousel
+            title="Escuchadas recientemente"
+            sessions={recentInCategory}
+            isPremium={isPremium}
+            onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
+            style={{ marginTop: 24, marginBottom: 0 }}
+            cardWidth={RECENT_CARD_W}
+          />
         )}
         <View style={styles.sessionGrid}>
           {visibleSessions.map((s)=>(

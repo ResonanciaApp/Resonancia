@@ -2,6 +2,7 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { BackPill } from "@/components/BackPill";
+import { SessionCarousel } from "@/components/SessionCarousel";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -17,7 +18,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
-import { SESSIONS, type Session } from "@/data/sessions";
+import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
 import { useCatalog } from "@/context/CatalogContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { hexToRgba } from "@/utils/color";
@@ -25,6 +26,7 @@ import { hexToRgba } from "@/utils/color";
 const H_PAD = 20;
 const { width: W } = Dimensions.get("window");
 const cardW = (W - H_PAD * 2 - 20) / 2;
+const RECENT_CARD_W = Math.round((W - H_PAD * 2) / 1.85);
 const GOLD  = "#F7CB6B";
 const TEXT  = "#FBFBFB";
 const MUTED = "#c2c2c2";
@@ -265,6 +267,19 @@ export default function MeditacionesGuiadasScreen() {
   const bottomPad = Platform.OS==="web" ? 34 : insets.bottom;
   const { version } = useCatalog();
   const { theme } = useSceneTheme();
+  const { history, playSession } = usePlayer();
+  const { isPremium } = usePremium();
+  const recentInCategory = useMemo(() => {
+    const seen = new Set<string>(); const result: Session[] = [];
+    for (const h of history) {
+      if (seen.has(h.sessionId)) continue;
+      seen.add(h.sessionId);
+      const s = getSessionById(h.sessionId);
+      if (s && s.categoryId === "meditaciones-guiadas") result.push(s);
+      if (result.length === 10) break;
+    }
+    return result;
+  }, [history]);
 
   const TABS = useMemo(() => {
     const extra = Array.from(
@@ -339,6 +354,16 @@ export default function MeditacionesGuiadasScreen() {
             </ScrollView>
             <View style={styles.featuredDivider} />
           </>
+        )}
+        {recentInCategory.length > 0 && (
+          <SessionCarousel
+            title="Escuchadas recientemente"
+            sessions={recentInCategory}
+            isPremium={isPremium}
+            onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
+            style={{ marginTop: 24, marginBottom: 0 }}
+            cardWidth={RECENT_CARD_W}
+          />
         )}
         <View style={styles.sessionGrid}>
           {visibleSessions.map((s)=>(

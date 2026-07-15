@@ -1,6 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import { BackPill } from "@/components/BackPill";
+import { SessionCarousel } from "@/components/SessionCarousel";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -16,6 +17,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  Dimensions,
   TextInput,
   View,
 } from "react-native";
@@ -26,13 +28,15 @@ import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { SessionRow } from "@/components/SessionRow";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
-import { SESSIONS } from "@/data/sessions";
+import { SESSIONS, getSessionById } from "@/data/sessions";
 import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const H_PAD = 20;
+const { width: W } = Dimensions.get("window");
+const RECENT_CARD_W = Math.round((W - H_PAD * 2) / 1.85);
 const ICON_COLOR = "#f4c993";
 const RATINGS_KEY = "@resonance_ratings";
 
@@ -154,7 +158,19 @@ export default function MananasScreen() {
   const colors = useColors();
   const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
-  const { history } = usePlayer();
+  const { history, playSession } = usePlayer();
+  const { isPremium } = usePremium();
+  const recentInCategory = useMemo(() => {
+    const seen = new Set<string>(); const result: Session[] = [];
+    for (const h of history) {
+      if (seen.has(h.sessionId)) continue;
+      seen.add(h.sessionId);
+      const s = getSessionById(h.sessionId);
+      if (s && s.categoryId === "mananas") result.push(s);
+      if (result.length === 10) break;
+    }
+    return result;
+  }, [history]);
 
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -428,6 +444,16 @@ export default function MananasScreen() {
                     </ScrollView>
                     <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20 }} />
                   </>
+                )}
+                {recentInCategory.length > 0 && (
+                  <SessionCarousel
+                    title="Escuchadas recientemente"
+                    sessions={recentInCategory}
+                    isPremium={isPremium}
+                    onPress={(s) => { playSession(s); router.push("/player" as never); }}
+                    style={{ marginTop: 24, marginBottom: 0 }}
+                    cardWidth={RECENT_CARD_W}
+                  />
                 )}
                 {filteredSessions.length === 0 ? (
                   <View style={styles.emptyWrap}>
