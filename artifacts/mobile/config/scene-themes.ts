@@ -38,6 +38,12 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
     solid: "#17040A",
     backgroundImage: require("@/assets/images/scenes/vino-tinto-buda.jpg"),
   },
+  profundo: {
+    id: "profundo",
+    label: "Profundo",
+    gradient: ["#1C1538", "#1A1A3C", "#191E3E", "#1A263D"],
+    solid: "#1A263D",
+  },
 };
 
 export const DEFAULT_THEME_ID: SceneId = "tibet";
