@@ -1959,7 +1959,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 0,
   },
-  sectionTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700", letterSpacing: 0.3, marginBottom: 21, color: "#FBFBFB" },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.3, marginBottom: 21, color: "#FBFBFB" },
   resonadoresBanner: {
     height: 80,
     borderRadius: 14,
