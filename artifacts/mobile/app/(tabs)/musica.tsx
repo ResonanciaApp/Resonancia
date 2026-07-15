@@ -750,22 +750,22 @@ export default function MezcladorScreen() {
                 <Pressable
                   onPress={closeMixer}
                   hitSlop={10}
-                  style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginRight: 20, marginLeft: -6 }}
+                  style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginRight: 14, marginLeft: -6 }}
                 >
-                  <MaterialCommunityIcons name="chevron-left" size={32} color="#FBFBFB" />
+                  <MaterialCommunityIcons name="chevron-left" size={22} color="#FBFBFB" />
                 </Pressable>
                 <View style={{ flex: 1 }}>
-                  <Text style={[styles.pageTitle, { transform: [{ translateX: -9 }, { translateY: -1 }] }]}>Creación</Text>
+                  <Text style={[styles.pageTitle, { transform: [{ translateX: -6 }, { translateY: -1 }] }]}>Creación</Text>
                 </View>
                 <View style={[styles.headerActions, { flexDirection: "row", gap: 4 }]}>
                     <Pressable
                       onPress={() => openMenu()}
-                      style={{ width: 43, height: 43, borderRadius: 21.5, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center" }}
+                      style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center" }}
                       hitSlop={8}
                       accessibilityRole="button"
                       accessibilityLabel="Menú del Mezclador"
                     >
-                      <MaterialCommunityIcons name="dots-horizontal" size={26} color="#FBFBFB" />
+                      <MaterialCommunityIcons name="dots-horizontal" size={18} color="#FBFBFB" />
                     </Pressable>
                 </View>
               </View>
@@ -1044,7 +1044,7 @@ const styles = StyleSheet.create({
   emptyState: { alignItems: "center", justifyContent: "center", paddingTop: 70, paddingHorizontal: 40, gap: 8 },
   emptyTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "rgba(26,30,43,0.7)", textAlign: "center" },
   emptyHint:  { fontFamily: "Manrope", fontSize: 13, color: "rgba(26,30,43,0.45)", textAlign: "center", lineHeight: 19 },
-  pageTitle:    { fontFamily: "Manrope", fontSize: 26, fontWeight: "700", letterSpacing: 0.5, color: "#FBFBFB" },
+  pageTitle:    { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.5, color: "#FBFBFB" },
   pageSubtitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400", color: "#F4F4F4", marginTop: 2 },
   heartBtn: {
     width: 40, height: 40, alignItems: "center", justifyContent: "center",
