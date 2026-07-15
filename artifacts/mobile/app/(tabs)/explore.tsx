@@ -286,14 +286,24 @@ export default function ExploreScreen() {
 
   // ── Destacada de hoy (solo meditaciones) ──
   const { data: pinnedFeaturedData } = useGetPinnedFeatured();
-  const themeCarousels = React.useMemo(() =>
-    TAG_CARDS
-      .map((tc) => ({
-        label: tc.label,
-        sessions: SESSIONS.filter((s) => s.themeTag?.includes(tc.label)),
-      }))
-      .filter((tc) => tc.sessions.length > 0),
-  [catalogVersion]); // eslint-disable-line react-hooks/exhaustive-deps
+  const themeCarousels = React.useMemo(() => {
+    // Derivar tags únicos de las sesiones (bundle + DB), en el orden de TAG_CARDS primero.
+    const knownOrder = TAG_CARDS.map((tc) => tc.label as string);
+    const allTags = Array.from(
+      new Set(SESSIONS.flatMap((s) => s.themeTag ?? []))
+    ).sort((a, b) => {
+      const ia = knownOrder.indexOf(a);
+      const ib = knownOrder.indexOf(b);
+      if (ia === -1 && ib === -1) return 0;
+      if (ia === -1) return 1;
+      if (ib === -1) return -1;
+      return ia - ib;
+    });
+    return allTags.map((tag) => ({
+      label: tag,
+      sessions: SESSIONS.filter((s) => s.themeTag?.includes(tag)),
+    }));
+  }, [catalogVersion]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const featuredHoy = React.useMemo(() => {
     const pinned = pinnedFeaturedData?.session;
