@@ -302,11 +302,11 @@ export default function SessionDetailScreen() {
       }));
 
   return (
-    <View style={[styles.root, { backgroundColor: "#142761" }]}>
+    <View style={[styles.root, { backgroundColor: sceneTheme.gradient[sceneTheme.gradient.length - 1] as string }]}>
       <StatusBar barStyle="light-content" />
 
       {/* Colchón de color fijo — cubre cualquier gap durante scroll rápido sin lag */}
-      <View style={{ position: "absolute", top: HEADER_H - 2, left: 0, right: 0, height: 400, backgroundColor: "#142761", zIndex: 0 }} pointerEvents="none" />
+      <View style={{ position: "absolute", top: HEADER_H - 2, left: 0, right: 0, height: 400, backgroundColor: sceneTheme.gradient[0] as string, zIndex: 0 }} pointerEvents="none" />
 
       {/* ── Hero fijo ──────────────────────────────────────────────────────── */}
       <Animated.View style={[styles.hero, { height: HEADER_H, position: "absolute", top: 0, left: 0, right: 0, zIndex: 1 }]}>
@@ -341,7 +341,12 @@ export default function SessionDetailScreen() {
         <View style={{ height: HEADER_H }} pointerEvents="none" />
 
         {/* ── Bloque fondo+contenido que cubre el hero al hacer scroll ──── */}
-        <View style={{ backgroundColor: "#142761" }}>
+        <View style={{ backgroundColor: sceneTheme.gradient[sceneTheme.gradient.length - 1] as string }}>
+          <LinearGradient
+            colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
         {/* ── Content ────────────────────────────────────────────────────── */}
         <View style={styles.content}>
 
@@ -945,6 +950,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 18,
     gap: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.04)",
     zIndex: 10,
   },
   pillBorder: {
@@ -1046,8 +1053,8 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   splitDivider: {
-    width: 0,
-    backgroundColor: "transparent",
+    width: 1,
+    backgroundColor: "rgba(0,0,0,0.25)",
     zIndex: 2,
   },
   playsRow: {
@@ -1203,8 +1210,8 @@ const styles = StyleSheet.create({
     color: "#F4F4F4",
   },
   optDivider: {
-    height: 0,
-    backgroundColor: "transparent",
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.08)",
     marginHorizontal: 20,
     marginBottom: 4,
   },
