@@ -817,7 +817,7 @@ export default function ProfileScreen() {
           </Pressable>
         </View>
 
-        <View style={styles.pillRow}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.pillRowScroll} contentContainerStyle={styles.pillRow}>
           {PERFIL_TABS.map((t) => {
             const sel = perfilTab === t.id;
             return (
@@ -836,7 +836,7 @@ export default function ProfileScreen() {
               </Pressable>
             );
           })}
-        </View>
+        </ScrollView>
       </View>
 
       {perfilTab === "panel" && (
@@ -1458,12 +1458,12 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   stickyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3, flex: 1, textAlign: "center", marginLeft: -4, transform: [{ translateY: 4 }] },
+  pillRowScroll: { marginTop: 10 },
   pillRow: {
     flexDirection: "row",
     gap: 8,
     paddingHorizontal: 19,
     paddingBottom: 14,
-    marginTop: 10,
   },
   pillBorder: {},
   pillBorderSel: {},
