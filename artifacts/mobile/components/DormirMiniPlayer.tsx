@@ -113,8 +113,6 @@ export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOff
           </Pressable>
         )}
 
-        {/* ── Barra de progreso (track decorativo, sonido en loop) ── */}
-        <View style={styles.progressTrack} pointerEvents="none" />
       </Animated.View>
     </Pressable>
   );
