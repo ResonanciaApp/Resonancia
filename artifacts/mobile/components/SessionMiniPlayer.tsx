@@ -10,10 +10,10 @@ import {
 } from "react-native";
 import Svg, { Path, Rect } from "react-native-svg";
 import { Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { sessionMiniPlayerEvents } from "@/lib/miniPlayerEvents";
-import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 
 const SCREEN_H = Dimensions.get("window").height;
 const PLAYER_H = 64;
@@ -34,19 +34,21 @@ export function SessionMiniPlayer({ bottomOffset, topOffset, suppressed }: Props
 
   const { currentSession, isPlaying, pauseResume, stop } = usePlayer();
   const { activeSceneId } = useSceneTheme();
-  const { setIsSessionExpanded } = useDescansoPlayerContext();
   const bgColor = activeSceneId === "tibet" ? "#1a1243" : "rgba(0,0,0,0.40)";
 
   const opacity    = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(startY)).current;
   const closingRef = useRef(false);
+  const visibleRef = useRef(false);
   const [visible, setVisible]   = useState(false);
 
   // Disparo del evento "minimizar desde el reproductor"
   useEffect(() => {
     const unsub = sessionMiniPlayerEvents.subscribe((from) => {
       if (closingRef.current) return;
-      closingRef.current = false;
+      // Ya visible (ej: volver de /player abierto desde esta barra) → no re-animar.
+      if (visibleRef.current) return;
+      visibleRef.current = true;
       setVisible(true);
       opacity.setValue(0);
       // "bottom": entra desde abajo con fade (patrón DormirMiniPlayer);
@@ -72,6 +74,7 @@ export function SessionMiniPlayer({ bottomOffset, topOffset, suppressed }: Props
       Animated.timing(opacity,    { toValue: 0, duration: 300, useNativeDriver: true }),
       Animated.timing(translateY, { toValue: 80, duration: 300, useNativeDriver: true }),
     ]).start(() => {
+      visibleRef.current = false;
       setVisible(false);
       closingRef.current = false;
       onDone();
@@ -84,7 +87,7 @@ export function SessionMiniPlayer({ bottomOffset, topOffset, suppressed }: Props
 
   return (
     <Pressable
-      onPress={() => setIsSessionExpanded(true)}
+      onPress={() => router.push("/player" as never)}
       style={[styles.wrapper, { bottom: bottomOffset + 5 }]}
     >
       <Animated.View

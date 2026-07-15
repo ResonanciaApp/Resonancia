@@ -657,7 +657,9 @@ export default function PlayerScreen() {
       {/* ── Botones flotantes superiores ─────────────────────────────────── */}
       <Pressable
         onPress={() => {
-          if (anim === "fade") {
+          // Sesiones de miniplayer (skipMiniPlayer o Historias/ASMR): cerrar
+          // el reproductor = minimizar a la barrita, sin cortar el audio.
+          if (anim === "fade" || currentSession?.skipMiniPlayer || currentSession?.descansoTag) {
             sessionMiniPlayerEvents.triggerShow();
           } else {
             stop();
