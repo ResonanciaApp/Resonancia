@@ -34,17 +34,14 @@ const MUTED = "#c2c2c2";
 type CatTab   = string;
 type SortMode = "recientes" | "nuevas" | "populares";
 
-const FIXED_TABS: { id: string; label: string; icon?: string }[] = [
-  { id: "noduales", label: "No Duales",      icon: "layers" },
-  { id: "visual",   label: "Visualizaciones",icon: "eye" },
-  { id: "mantras",  label: "Mantras",        icon: "mic" },
-  { id: "escaneo",  label: "Escaneo",        icon: "activity" },
-  { id: "manifest", label: "Manifestación",  icon: "star" },
-  { id: "tres",     label: "3 Min",          icon: "clock" },
-];
-const FIXED_MED_TAGS = new Set([
-  "No Duales","Visualizaciones","Mantras","Escaneo Corporal","Manifestación","3 Minutos de Sabiduría",
-]);
+const TAG_ICONS: Record<string, string> = {
+  "no duales":              "layers",
+  "visualizaciones":        "eye",
+  "mantras":                "mic",
+  "escaneo corporal":       "activity",
+  "manifestación":          "star",
+  "3 minutos de sabiduría": "clock",
+};
 
 const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
   { id: "recientes", label: "Escuchadas recientemente", icon: "clock" },
@@ -55,15 +52,7 @@ const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
 function getSessionsForTab(tab: string | null) {
   const all = SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas");
   if (!tab) return all;
-  switch (tab) {
-    case "noduales": return all.filter((s) => s.meditationTag === "No Duales");
-    case "visual":   return all.filter((s) => s.meditationTag === "Visualizaciones");
-    case "mantras":  return all.filter((s) => s.meditationTag === "Mantras");
-    case "escaneo":  return all.filter((s) => s.meditationTag === "Escaneo Corporal");
-    case "manifest": return all.filter((s) => s.meditationTag === "Manifestación");
-    case "tres":     return all.filter((s) => s.meditationTag === "3 Minutos de Sabiduría");
-    default:         return all.filter((s) => s.meditationTag === tab);
-  }
+  return all.filter((s) => s.meditationTag === tab);
 }
 
 
@@ -271,14 +260,11 @@ export default function MeditacionesGuiadasScreen() {
   const { isPremium } = usePremium();
 
   const TABS = useMemo(() => {
-    const extra = Array.from(
-      new Set(
-        SESSIONS
-          .filter((s) => s.categoryId === "meditaciones-guiadas" && s.meditationTag && !FIXED_MED_TAGS.has(s.meditationTag))
-          .map((s) => s.meditationTag as string)
-      )
-    ).map((tag) => ({ id: tag, label: tag }));
-    return [...FIXED_TABS, ...extra];
+    const uniqueTags = [...new Set(
+      SESSIONS.filter((s) => s.categoryId === "meditaciones-guiadas" && s.meditationTag)
+              .map((s) => s.meditationTag as string)
+    )];
+    return uniqueTags.map((tag) => ({ id: tag, label: tag, icon: TAG_ICONS[tag.toLowerCase()] }));
   }, [version]);
 
   const [activeTab,         setActiveTab]         = useState<CatTab|null>(null);

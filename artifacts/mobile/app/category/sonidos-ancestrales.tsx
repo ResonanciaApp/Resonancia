@@ -56,30 +56,22 @@ function TibetanBowlIcon({ size = 20, color = "#fff" }: { size?: number; color?:
 }
 
 // Tags agrupados bajo cada tab fija (no generan tab propia si ya están acá)
-const FIXED_TABS: { id: string; label: string; icon?: string }[] = [
-  { id: "cuencos",  label: "Cuencos",  icon: "disc" },
-  { id: "gongs",    label: "Gongs",    icon: "target" },
-  { id: "campanas", label: "Campanas", icon: "bell" },
-];
-const MIX_TAGS = new Set(["Full Instrumentos","Vientos","Cantos","Percusión","Selva","Mix de Cuencos"]);
-
-const EXTRA_TAB_ICONS: Record<string, string> = {
-  "didgeridoo":   "wind",
-  "digeridoo":    "wind",
-  "didgerido":    "wind",
-  "digerido":     "wind",
-  "flauta":       "wind",
-  "vientos":      "wind",
-  "cantos":       "mic",
-  "percusión":    "zap",
-  "selva":        "feather",
-  "tambor":       "zap",
+const TAG_ICONS: Record<string, string> = {
+  "cuencos tibetanos":  "disc",
+  "cuencos de cuarzo":  "disc",
+  "mix de cuencos":     "disc",
+  "cuencos y gongs":    "target",
+  "gongs":              "target",
+  "campanas":           "bell",
+  "full instrumentos":  "music",
+  "vientos":            "wind",
+  "cantos":             "mic",
+  "percusión":          "zap",
+  "selva":              "feather",
+  "tambor":             "zap",
+  "didgeridoo":         "wind",
+  "flauta":             "wind",
 };
-
-function tagCoveredByFixed(tag: string): boolean {
-  const t = tag.toLowerCase();
-  return t.includes("cuenco") || t.includes("gong") || t.includes("campana") || MIX_TAGS.has(tag);
-}
 
 const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
   { id: "recientes", label: "Escuchadas recientemente", icon: "clock" },
@@ -90,13 +82,7 @@ const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
 function getSessionsForTab(tab: string | null) {
   const all = SESSIONS.filter((s) => s.categoryId === "sonidos-ancestrales");
   if (!tab) return all;
-  switch (tab) {
-    case "cuencos":  return all.filter((s) => s.ancestralTag?.toLowerCase().includes("cuenco"));
-    case "gongs":    return all.filter((s) => s.ancestralTag?.toLowerCase().includes("gong"));
-    case "campanas": return all.filter((s) => s.ancestralTag?.toLowerCase().includes("campana"));
-    case "mix":      return all.filter((s) => MIX_TAGS.has(s.ancestralTag ?? ""));
-    default:         return all.filter((s) => s.ancestralTag === tab);
-  }
+  return all.filter((s) => s.ancestralTag === tab);
 }
 
 function applySort(arr: ReturnType<typeof getSessionsForTab>, sort: SortMode, playCounts: Record<string,number> = {}) {
@@ -396,12 +382,11 @@ export default function SonidosAncestalesScreen() {
   const { version } = useCatalog();
   const { theme } = useSceneTheme();
 
-  // TABS dinámicas: fijas + cualquier ancestralTag nuevo no cubierto por los grupos fijos
+  // TABS dinámicas: un chip por cada ancestralTag distinto en las sesiones
   const TABS = useMemo(() => {
     const ancestralSessions = SESSIONS.filter((s) => s.categoryId === "sonidos-ancestrales");
     const uniqueTags = [...new Set(ancestralSessions.map((s) => s.ancestralTag).filter(Boolean))] as string[];
-    const extraTags = uniqueTags.filter((tag) => !tagCoveredByFixed(tag));
-    return [...FIXED_TABS, ...extraTags.map((tag) => ({ id: tag, label: tag, icon: EXTRA_TAB_ICONS[tag.toLowerCase()] }))];
+    return uniqueTags.map((tag) => ({ id: tag, label: tag, icon: TAG_ICONS[tag.toLowerCase()] }));
   }, [version]);
 
   const [activeTab,         setActiveTab]         = useState<CatTab|null>(null);

@@ -34,15 +34,12 @@ const MUTED = "#c2c2c2";
 type CatTab   = string;
 type SortMode = "recientes" | "nuevas" | "populares";
 
-const FIXED_TABS: { id: string; label: string; icon?: string }[] = [
-  { id: "ambient", label: "Ambient",   icon: "cloud" },
-  { id: "enteo",   label: "Enteógena", icon: "feather" },
-  { id: "tribal",  label: "Tribal",    icon: "zap" },
-  { id: "etnica",  label: "Étnica",    icon: "globe" },
-];
-const FIXED_SOUND_TAGS = new Set([
-  "Música Ambient","Música Enteógena","Música Tribal","Música Étnica",
-]);
+const TAG_ICONS: Record<string, string> = {
+  "música ambient":    "cloud",
+  "música enteógena":  "feather",
+  "música tribal":     "zap",
+  "música étnica":     "globe",
+};
 
 const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
   { id: "recientes", label: "Escuchadas recientemente", icon: "clock" },
@@ -53,13 +50,7 @@ const SORT_OPTIONS: { id: SortMode; label: string; icon: string }[] = [
 function getSessionsForTab(tab: string | null) {
   const all = SESSIONS.filter((s) => s.categoryId === "musica-sonidos");
   if (!tab) return all;
-  switch (tab) {
-    case "ambient": return all.filter((s) => s.soundTag === "Música Ambient");
-    case "enteo":   return all.filter((s) => s.soundTag === "Música Enteógena");
-    case "tribal":  return all.filter((s) => s.soundTag === "Música Tribal");
-    case "etnica":  return all.filter((s) => s.soundTag === "Música Étnica");
-    default:        return all.filter((s) => s.soundTag === tab);
-  }
+  return all.filter((s) => s.soundTag === tab);
 }
 
 
@@ -272,14 +263,11 @@ export default function MusicaSonidosScreen() {
   const { isPremium } = usePremium();
 
   const TABS = useMemo(() => {
-    const extra = Array.from(
-      new Set(
-        SESSIONS
-          .filter((s) => s.categoryId === "musica-sonidos" && s.soundTag && !FIXED_SOUND_TAGS.has(s.soundTag))
-          .map((s) => s.soundTag as string)
-      )
-    ).map((tag) => ({ id: tag, label: tag }));
-    return [...FIXED_TABS, ...extra];
+    const uniqueTags = [...new Set(
+      SESSIONS.filter((s) => s.categoryId === "musica-sonidos" && s.soundTag)
+              .map((s) => s.soundTag as string)
+    )];
+    return uniqueTags.map((tag) => ({ id: tag, label: tag, icon: TAG_ICONS[tag.toLowerCase()] }));
   }, [version]);
 
   const [activeTab,         setActiveTab]         = useState<CatTab|null>(null);
