@@ -26,6 +26,7 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { CardTint } from "@/components/CardTint";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SessionCard } from "@/components/SessionCard";
+import { SessionCarousel } from "@/components/SessionCarousel";
 import { SESSIONS, getSessionById } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
@@ -285,6 +286,15 @@ export default function ExploreScreen() {
 
   // ── Destacada de hoy (solo meditaciones) ──
   const { data: pinnedFeaturedData } = useGetPinnedFeatured();
+  const themeCarousels = React.useMemo(() =>
+    TAG_CARDS
+      .map((tc) => ({
+        label: tc.label,
+        sessions: SESSIONS.filter((s) => s.themeTag?.includes(tc.label)),
+      }))
+      .filter((tc) => tc.sessions.length > 0),
+  [catalogVersion]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const featuredHoy = React.useMemo(() => {
     const pinned = pinnedFeaturedData?.session;
     if (pinned && pinned.categoryId === "meditaciones-guiadas") {
@@ -416,7 +426,7 @@ export default function ExploreScreen() {
       >
         {/* ── Para este momento ── */}
         {featuredHoy && (
-          <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 10 }]}>
+          <View style={[styles.section, { marginBottom: themeCarousels.length > 0 ? 0 : SECTION_GAP, marginTop: 10 }]}>
             <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Para este momento</Text>
             <Pressable
               onPress={() => {
@@ -452,6 +462,32 @@ export default function ExploreScreen() {
               })()}
             </Pressable>
           </View>
+        )}
+
+        {/* ── Carruseles por temática ── */}
+        {themeCarousels.length > 0 && (
+          <>
+            <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+            {themeCarousels.map((tc, idx) => {
+              const isLast = idx === themeCarousels.length - 1;
+              return (
+                <React.Fragment key={tc.label}>
+                  <SessionCarousel
+                    title={tc.label}
+                    sessions={tc.sessions}
+                    isPremium={isPremium}
+                    onPress={(s) => handleSessionPress(s)}
+                    style={{ marginTop: 24, marginBottom: 0 }}
+                    cardWidth={SQCARD_W}
+                    titleSize={19}
+                  />
+                  {!isLast && (
+                    <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </>
         )}
       </ScrollView>
 
