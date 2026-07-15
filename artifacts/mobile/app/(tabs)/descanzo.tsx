@@ -404,12 +404,11 @@ export default function DescansoScreen() {
 
   // ── "Todas las sesiones" Modal ──
   const [allVisible,      setAllVisible]      = useState(false);
-  const [allTab,          setAllTab]          = useState<"historias" | "asmr" | null>(null);
   const [allVisibleCount, setAllVisibleCount] = useState(20);
   const slideX = useRef(new Animated.Value(W)).current;
   const closeAll = () => {
     Animated.timing(slideX, { toValue: W, duration: 280, easing: Easing.in(Easing.cubic), useNativeDriver: true })
-      .start(() => { setAllVisible(false); setAllTab(null); setAllVisibleCount(20); });
+      .start(() => { setAllVisible(false); setAllVisibleCount(20); });
   };
   useEffect(() => {
     if (!allVisible) return;
@@ -417,11 +416,10 @@ export default function DescansoScreen() {
     Animated.timing(slideX, { toValue: 0, duration: 320, easing: Easing.out(Easing.cubic), useNativeDriver: true }).start();
   }, [allVisible]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const allDormiSessions = useMemo(() => {
-    if (allTab === "historias") return historiasForTodos;
-    if (allTab === "asmr")      return asmrForTodos;
-    return [...historiasForTodos, ...asmrForTodos];
-  }, [allTab, historiasForTodos, asmrForTodos]);
+  const allDormiSessions = useMemo(
+    () => [...historiasForTodos, ...asmrForTodos],
+    [historiasForTodos, asmrForTodos],
+  );
 
   return (
     <LinearGradient
@@ -742,17 +740,6 @@ export default function DescansoScreen() {
               Sesiones de Dormir
             </Text>
           </View>
-
-          {/* Chips: Todos | Historias | ASMR */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 8, paddingBottom: 12 }}
-          >
-            <SleepPill sel={allTab === null}         label="Todos"     onPress={() => { setAllTab(null);         setAllVisibleCount(20); }} />
-            <SleepPill sel={allTab === "historias"}  label="Historias" onPress={() => { setAllTab("historias"); setAllVisibleCount(20); }} />
-            <SleepPill sel={allTab === "asmr"}       label="ASMR"      onPress={() => { setAllTab("asmr");      setAllVisibleCount(20); }} />
-          </ScrollView>
 
           {/* Grilla paginada */}
           <ScrollView
