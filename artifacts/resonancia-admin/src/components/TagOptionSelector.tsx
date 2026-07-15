@@ -64,7 +64,9 @@ export function TagOptionSelector({
       setDbTags((p) => [...p, created]);
       setNewLabel("");
       setAdding(false);
-      toast.success(`"${trimmed}" agregada`);
+      // Auto-seleccionar la etiqueta recién creada
+      if (!selected.includes(trimmed)) onToggle(trimmed);
+      toast.success(`"${trimmed}" agregada y seleccionada`);
     } catch {
       toast.error("No se pudo agregar la etiqueta");
     } finally {
