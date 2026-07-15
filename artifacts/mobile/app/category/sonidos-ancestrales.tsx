@@ -311,7 +311,7 @@ const ac = StyleSheet.create({
   durationBadge:{ position:"absolute", bottom:8, left:8, backgroundColor:"rgba(27,6,15,0.72)", borderRadius:8, paddingHorizontal:8, paddingVertical:3 },
   durationBadgeText:{ fontFamily: "Manrope", fontSize:11, fontWeight:"600", color:"#fff" },
   lockDot:{ position:"absolute", top:6, right:6, width:20, height:20, borderRadius:10, backgroundColor:"rgba(0,0,0,0.55)", alignItems:"center", justifyContent:"center" },
-  lCard:{ width:240, height:135, borderRadius:14, overflow:"hidden" },
+  lCard:{ width:360, height:202, borderRadius:14, overflow:"hidden" },
   lBottom:{ position:"absolute", bottom:0, left:0, right:0, padding:11, gap:2 },
   lDur:{ fontFamily:"Manrope", fontSize:10, fontWeight:"500", color:"rgba(255,255,255,0.72)" },
   lTitle:{ fontFamily:"Manrope", fontSize:14, fontWeight:"700", color:"#fff", lineHeight:18 },
