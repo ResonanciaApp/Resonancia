@@ -357,14 +357,18 @@ export default function MusicaSonidosScreen() {
           </>
         )}
         {recentInCategory.length > 0 && (
-          <SessionCarousel
-            title="Escuchadas recientemente"
-            sessions={recentInCategory}
-            isPremium={isPremium}
-            onPress={(s) => { playSession(s); router.push("/player" as never); }}
-            style={{ marginTop: 24, marginBottom: 0 }}
-            cardWidth={RECENT_CARD_W}
-          />
+          <>
+            <SessionCarousel
+              title="Escuchadas recientemente"
+              sessions={recentInCategory}
+              isPremium={isPremium}
+              onPress={(s) => { playSession(s); router.push("/player" as never); }}
+              style={{ marginTop: 24, marginBottom: 0 }}
+              cardWidth={RECENT_CARD_W}
+              titleSize={19}
+            />
+            <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+          </>
         )}
         <View style={styles.sessionGrid}>
           {visibleSessions.map((s)=>(
@@ -506,7 +510,7 @@ const styles = StyleSheet.create({
   controlRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingTop: 12, paddingBottom: 8 },
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
   sessionGrid: { flexDirection: "row", flexWrap: "wrap", columnGap: 20, paddingHorizontal: H_PAD, rowGap: 24, marginTop: 18, marginBottom: 6 },
-  featuredTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 30 },
+  featuredTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 30 },
   featuredRow: { paddingHorizontal: H_PAD, gap: 16, paddingTop: 21 },
   featuredDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20 },
   emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },
