@@ -2286,7 +2286,7 @@ const styles = StyleSheet.create({
   durPillActive: {},
   durPillText: {
     fontFamily: "Manrope",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "600",
     color: "#FBFBFB",
     letterSpacing: 0.2,
