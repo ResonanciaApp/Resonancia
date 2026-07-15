@@ -27,16 +27,17 @@ type SessionCarouselProps = {
   style?: object;
   titleOffset?: number;
   cardWidth?: number;
+  titleSize?: number;
 };
 
-export function SessionCarousel({ title, sessions, isPremium, onPress, style, titleOffset, cardWidth }: SessionCarouselProps) {
+export function SessionCarousel({ title, sessions, isPremium, onPress, style, titleOffset, cardWidth, titleSize }: SessionCarouselProps) {
   if (sessions.length === 0) return null;
   const cw = cardWidth ?? CARD_W;
   const cardStyle = cw !== CARD_W ? { width: cw } : undefined;
   const thumbStyle = cw !== CARD_W ? { width: cw, height: cw } : undefined;
   return (
     <View style={[styles.section, style]}>
-      <Text style={styles.sectionTitle}>{title}</Text>
+      <Text style={[styles.sectionTitle, titleSize !== undefined && { fontSize: titleSize }]}>{title}</Text>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}

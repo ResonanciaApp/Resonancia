@@ -1136,7 +1136,7 @@ export default function HomeScreen2() {
         {/* ── SESIÓN DESTACADA ── */}
         {filteredFeatured && (
           <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: -8 }]}>
-            <Text style={styles.sectionTitle}>
+            <Text style={[styles.sectionTitle, { fontSize: 20 }]}>
               Para este momento
             </Text>
             <Pressable
@@ -1275,10 +1275,14 @@ export default function HomeScreen2() {
           sessions={filteredListened}
           isPremium={isPremium}
           onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } router.push(`/session/${s.id}` as never); }}
-          style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
+          style={{ marginBottom: 20, paddingHorizontal: GRID_PAD }}
           titleOffset={10}
           cardWidth={RECENT_CARD_W}
+          titleSize={19}
         />
+        {filteredListened.length > 0 && (
+          <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: GRID_PAD, marginBottom: SECTION_GAP - 20 }} />
+        )}
 
         {/* ── FRASE DEL DÍA ── */}
         <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP }}>
