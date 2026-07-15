@@ -497,7 +497,7 @@ export default function DescansoScreen() {
                   onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
                   style={{ marginTop: 24, marginBottom: 0 }}
                   cardWidth={RECENT_CARD_W}
-                  titleSize={19}
+                  titleSize={18}
                 />
                 <View style={styles.sectionDivider} />
               </>
@@ -511,7 +511,7 @@ export default function DescansoScreen() {
                   onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
                   style={{ marginTop: 24, marginBottom: 0 }}
                   cardWidth={RECENT_CARD_W}
-                  titleSize={19}
+                  titleSize={18}
                 />
                 <View style={styles.sectionDivider} />
               </>
@@ -525,7 +525,7 @@ export default function DescansoScreen() {
                   onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
                   style={{ marginTop: 24, marginBottom: 0 }}
                   cardWidth={RECENT_CARD_W}
-                  titleSize={19}
+                  titleSize={18}
                   onViewAll={historiasForTodos.length > 5 ? () => setActiveTab("historias") : undefined}
                 />
                 <View style={styles.sectionDivider} />
@@ -540,7 +540,7 @@ export default function DescansoScreen() {
                   onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
                   style={{ marginTop: 24, marginBottom: 0 }}
                   cardWidth={RECENT_CARD_W}
-                  titleSize={19}
+                  titleSize={18}
                   onViewAll={asmrForTodos.length > 5 ? () => setActiveTab("asmr") : undefined}
                 />
                 {(binauralSounds.length > 0 || ambientalSounds.length > 0) && (

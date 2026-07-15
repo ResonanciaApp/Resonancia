@@ -512,7 +512,7 @@ export default function ExploreScreen() {
                     onPress={(s) => handleSessionPress(s)}
                     style={{ marginTop: 24, marginBottom: 0 }}
                     cardWidth={SQCARD_W}
-                    titleSize={19}
+                    titleSize={18}
                   />
                   {!isLast && (
                     <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
