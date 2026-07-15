@@ -135,7 +135,7 @@ export default function VideoTabScreen() {
                 <Pressable
                   key={chip}
                   onPress={() => setActiveChip(chip)}
-                  style={[styles.chip, sel && styles.chipSel, activeTheme?.id === "tibet" && !sel && { backgroundColor: "rgba(0,0,0,0.27)", borderWidth: 1.5, borderColor: "rgba(255,255,255,0.4)" }]}
+                  style={[styles.chip, sel && styles.chipSel]}
                 >
                   {sel && (activeTheme?.id === "tibet"
                     ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
@@ -262,9 +262,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.035)",
-    borderWidth: 2,
-    borderColor: "rgba(244,244,244,0.4)",
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderWidth: 1.5,
+    borderColor: "rgba(244,244,244,0.30)",
   },
   chipSel: { borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "380" },

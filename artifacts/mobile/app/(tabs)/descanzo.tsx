@@ -46,7 +46,7 @@ function SleepPill({
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.sleepPill, sel && styles.sleepPillSel, pillTheme?.id === "tibet" && !sel && { backgroundColor: "rgba(0,0,0,0.27)", borderWidth: 1.5, borderColor: "rgba(255,255,255,0.4)" }, { opacity: pressed ? 0.7 : 1 }]}
+      style={({ pressed }) => [styles.sleepPill, sel && styles.sleepPillSel, { opacity: pressed ? 0.7 : 1 }]}
     >
       {sel && (pillTheme?.id === "tibet"
         ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
@@ -763,9 +763,9 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     gap: 5,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.035)",
-    borderWidth: 2,
-    borderColor: "rgba(244,244,244,0.4)",
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderWidth: 1.5,
+    borderColor: "rgba(244,244,244,0.30)",
   },
   sleepPillSel: { borderWidth: 0 },
   sleepPillText: {

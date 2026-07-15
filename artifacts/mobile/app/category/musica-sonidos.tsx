@@ -96,7 +96,7 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress: ()=>void }) {
   const { theme: chipTheme } = useSceneTheme();
   return (
-    <Pressable onPress={onPress} style={({pressed})=>[styles.chip, sel && styles.chipSel, chipTheme?.id === "tibet" && !sel && { backgroundColor: "rgba(0,0,0,0.27)", borderWidth: 1.5, borderColor: "rgba(255,255,255,0.4)" }, {opacity:pressed?0.7:1}]}>
+    <Pressable onPress={onPress} style={({pressed})=>[styles.chip, sel && styles.chipSel, {opacity:pressed?0.7:1}]}>
       {sel && (chipTheme?.id === "tibet"
         ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
         : chipTheme?.id === "vino-tinto"
@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.1)", marginTop: 11, marginHorizontal: H_PAD },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-  chip: { height: 28, paddingHorizontal: 14, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.035)", borderWidth: 2, borderColor: "rgba(244,244,244,0.4)" },
+  chip: { height: 28, paddingHorizontal: 14, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.04)", borderWidth: 1.5, borderColor: "rgba(244,244,244,0.30)" },
   chipBorder: {},
   chipBorderSel: {},
   chipUnsel: {},

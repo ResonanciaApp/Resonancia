@@ -824,7 +824,7 @@ export default function ProfileScreen() {
               <Pressable
                 key={t.id}
                 onPress={() => setPerfilTab(t.id)}
-                style={({ pressed }) => [styles.pill, sel && styles.pillSel, activeTheme?.id === "tibet" && !sel && { backgroundColor: "rgba(0,0,0,0.27)", borderWidth: 1.5, borderColor: "rgba(255,255,255,0.4)" }, { opacity: pressed ? 0.8 : 1 }]}
+                style={({ pressed }) => [styles.pill, sel && styles.pillSel, { opacity: pressed ? 0.8 : 1 }]}
               >
                 {sel && (activeTheme?.id === "tibet"
                   ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
@@ -1474,9 +1474,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.035)",
-    borderWidth: 2,
-    borderColor: "rgba(244,244,244,0.4)",
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderWidth: 1.5,
+    borderColor: "rgba(244,244,244,0.30)",
   },
   pillSel: { borderWidth: 0 },
   pillText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "380", color: "#F4F4F4" },
