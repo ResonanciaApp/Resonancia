@@ -1074,7 +1074,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: "rgba(244,244,244,0.30)",
   },
-  pillTabLabel:   { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FBFBFB" },
+  pillTabLabel:   { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", color: "#FBFBFB" },
   pillTabLabelSel:{ color: "#2D0D3A" },
   pillTabUnderline: {},
 
@@ -1154,7 +1154,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(244,244,244,0.30)",
   },
   subTabSel: { borderWidth: 0 },
-  subTabText: { fontFamily: "Manrope", fontSize: 11, letterSpacing: 0.1, fontWeight: "380", includeFontPadding: false },
+  subTabText: { fontFamily: "Manrope", fontSize: 9, letterSpacing: 0.1, fontWeight: "380", includeFontPadding: false },
 
   grid:      { flexDirection: "row", flexWrap: "wrap", columnGap: 20, rowGap: 17, justifyContent: "space-evenly" },
   soundCard: { width: CARD_W },
