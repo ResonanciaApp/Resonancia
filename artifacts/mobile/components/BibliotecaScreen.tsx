@@ -59,14 +59,13 @@ const DARK_BLUE = "#210911";
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
-type LibTab = "playlists" | "mezclas" | "geometrix" | "favoritos" | "resonadores";
+type LibTab = "playlists" | "mezclas" | "favoritos" | "resonadores";
 type SortMode = "recientes" | "agregado" | "alfabetico";
 type ViewMode = "list" | "grid";
 
 const LIB_TABS: { id: LibTab; label: string }[] = [
   { id: "playlists",   label: "Rituales" },
   { id: "mezclas",     label: "Mezclas" },
-  { id: "geometrix",   label: "Geometrix" },
   { id: "favoritos",   label: "Favoritos" },
 ];
 
