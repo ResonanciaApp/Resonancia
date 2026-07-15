@@ -1,6 +1,6 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -25,7 +25,9 @@ import { DESCANSO_SOUNDS } from "@/data/descanso-sounds";
 import { getSessionsByDescansoTag } from "@/data/sessions";
 import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 import { SessionCard } from "@/components/SessionCard";
+import { SessionCarousel } from "@/components/SessionCarousel";
 import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 /* ─── Descanso tabs ─────────────────────────────────────────────────── */
@@ -64,6 +66,8 @@ function SleepPill({
 const H_PAD = 19;
 const HERO_H = 220;
 const { width: W, height: H } = Dimensions.get("window");
+const RECENT_CARD_W = Math.round((W - H_PAD * 2) / 1.85);
+const SOUND_CARD_W  = 120;
 
 /* ─── Estrellas estáticas pre-generadas ─────────────────────────────── */
 const STAR_ZONE = H * 0.42;
@@ -301,7 +305,7 @@ export default function DescansoScreen() {
   const { theme: sceneTheme } = useSceneTheme();
   const bgGradient = sceneTheme.gradient;
 
-  const [activeTab,   setActiveTab]   = useState<SleepTabId>("historias");
+  const [activeTab,   setActiveTab]   = useState<SleepTabId | null>(null);
   const [timerSheet,  setTimerSheet]  = useState(false);
   const { timerMinutes: timerMin, setTimerMinutes: setTimerMin, fadeVolume: fadeVol, setFadeVolume: setFadeVol, ...player } = useDescansoPlayerContext();
 
@@ -339,7 +343,9 @@ export default function DescansoScreen() {
     stop,
   } = usePlayer();
 
-  const isSoundTab = SOUND_TAB_IDS.includes(activeTab);
+  const { isPremium } = usePremium();
+
+  const isSoundTab = activeTab !== null && SOUND_TAB_IDS.includes(activeTab);
   const visibleSounds = isSoundTab
     ? DESCANSO_SOUNDS.filter((s) => s.categoryId === activeTab)
     : [];
@@ -354,6 +360,14 @@ export default function DescansoScreen() {
     : activeTab === "asmr"
       ? getSessionsByDescansoTag("ASMR")
       : [];
+
+  const historiasForTodos = useMemo(() =>
+    [...getSessionsByDescansoTag("Historias para dormir"), ...getSessionsByDescansoTag("Historias infantiles")],
+    [],
+  );
+  const asmrForTodos = useMemo(() => getSessionsByDescansoTag("ASMR"), []);
+  const binauralSounds = useMemo(() => DESCANSO_SOUNDS.filter((s) => s.categoryId === "binaural"), []);
+  const ambientalSounds = useMemo(() => DESCANSO_SOUNDS.filter((s) => s.categoryId === "ambiental"), []);
 
   const cardW = (W - H_PAD * 2 - 14) / 2;
 
@@ -408,6 +422,7 @@ export default function DescansoScreen() {
             style={styles.tabGrid}
             contentContainerStyle={styles.tabGridContent}
           >
+            <SleepPill sel={activeTab === null} label="Todos" onPress={() => setActiveTab(null)} />
             {SLEEP_TABS.map((tab) => (
               <SleepPill
                 key={tab.id}
@@ -420,7 +435,108 @@ export default function DescansoScreen() {
         </View>
 
 
-        {isSoundTab ? (
+        {activeTab === null ? (
+          /* ── Vista "Todos": carruseles por subcategoría ── */
+          <View>
+            {historiasForTodos.length > 0 && (
+              <>
+                <SessionCarousel
+                  title="Historias"
+                  sessions={historiasForTodos.slice(0, 5)}
+                  isPremium={isPremium}
+                  onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
+                  style={{ marginTop: 24, marginBottom: 0 }}
+                  cardWidth={RECENT_CARD_W}
+                  titleSize={19}
+                  onViewAll={historiasForTodos.length > 5 ? () => setActiveTab("historias") : undefined}
+                />
+                <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+              </>
+            )}
+            {asmrForTodos.length > 0 && (
+              <>
+                <SessionCarousel
+                  title="ASMR"
+                  sessions={asmrForTodos.slice(0, 5)}
+                  isPremium={isPremium}
+                  onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
+                  style={{ marginTop: 24, marginBottom: 0 }}
+                  cardWidth={RECENT_CARD_W}
+                  titleSize={19}
+                  onViewAll={asmrForTodos.length > 5 ? () => setActiveTab("asmr") : undefined}
+                />
+                {(binauralSounds.length > 0 || ambientalSounds.length > 0) && (
+                  <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+                )}
+              </>
+            )}
+            {binauralSounds.length > 0 && (
+              <>
+                <Text style={styles.todosSectionTitle}>Sonidos Binaurales</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 12, paddingTop: 14, paddingBottom: 4 }}>
+                  {binauralSounds.slice(0, 5).map((sound) => {
+                    const sel = player.selectedId === sound.id;
+                    const playing = sel && player.isPlaying;
+                    return (
+                      <Pressable key={sound.id} onPress={() => player.toggle(sound.id, sound.audioUri ?? null)}
+                        style={({ pressed }) => [{ width: SOUND_CARD_W, opacity: pressed ? 0.85 : 1 }]}>
+                        <View style={[styles.soundImageWrap, { borderRadius: 12 }]}>
+                          <Image source={sound.image} style={styles.soundImage} resizeMode="cover" />
+                          {playing && <PlayingDot />}
+                        </View>
+                        <Text style={[styles.soundLabel, sel && styles.soundLabelSel]} numberOfLines={2}>{sound.label}</Text>
+                      </Pressable>
+                    );
+                  })}
+                  {binauralSounds.length > 5 && (
+                    <Pressable onPress={() => setActiveTab("binaural")}
+                      style={{ width: SOUND_CARD_W, alignItems: "center", justifyContent: "center", gap: 6 }}>
+                      <View style={{ width: SOUND_CARD_W, aspectRatio: 1, borderRadius: 12, backgroundColor: "rgba(255,255,255,0.06)", alignItems: "center", justifyContent: "center" }}>
+                        <Feather name="chevron-right" size={26} color="rgba(255,255,255,0.5)" />
+                      </View>
+                      <Text style={{ fontFamily: "Manrope", fontSize: 12, color: "rgba(255,255,255,0.5)" }}>Ver más</Text>
+                    </Pressable>
+                  )}
+                </ScrollView>
+                {ambientalSounds.length > 0 && (
+                  <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+                )}
+              </>
+            )}
+            {ambientalSounds.length > 0 && (
+              <>
+                <Text style={styles.todosSectionTitle}>Ambientales</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 12, paddingTop: 14, paddingBottom: 4 }}>
+                  {ambientalSounds.slice(0, 5).map((sound) => {
+                    const sel = player.selectedId === sound.id;
+                    const playing = sel && player.isPlaying;
+                    return (
+                      <Pressable key={sound.id} onPress={() => player.toggle(sound.id, sound.audioUri ?? null)}
+                        style={({ pressed }) => [{ width: SOUND_CARD_W, opacity: pressed ? 0.85 : 1 }]}>
+                        <View style={[styles.soundImageWrap, { borderRadius: 12 }]}>
+                          <Image source={sound.image} style={styles.soundImage} resizeMode="cover" />
+                          {playing && <PlayingDot />}
+                        </View>
+                        <Text style={[styles.soundLabel, sel && styles.soundLabelSel]} numberOfLines={2}>{sound.label}</Text>
+                      </Pressable>
+                    );
+                  })}
+                  {ambientalSounds.length > 5 && (
+                    <Pressable onPress={() => setActiveTab("ambiental")}
+                      style={{ width: SOUND_CARD_W, alignItems: "center", justifyContent: "center", gap: 6 }}>
+                      <View style={{ width: SOUND_CARD_W, aspectRatio: 1, borderRadius: 12, backgroundColor: "rgba(255,255,255,0.06)", alignItems: "center", justifyContent: "center" }}>
+                        <Feather name="chevron-right" size={26} color="rgba(255,255,255,0.5)" />
+                      </View>
+                      <Text style={{ fontFamily: "Manrope", fontSize: 12, color: "rgba(255,255,255,0.5)" }}>Ver más</Text>
+                    </Pressable>
+                  )}
+                </ScrollView>
+              </>
+            )}
+          </View>
+        ) : isSoundTab ? (
           <>
             {/* ── Grilla de sonidos (estilo idéntico a SessionCard) ── */}
             <View style={styles.sessionGrid}>
@@ -497,6 +613,7 @@ export default function DescansoScreen() {
             style={[styles.tabGrid, { marginBottom: 18 }]}
             contentContainerStyle={styles.tabGridContent}
           >
+            <SleepPill sel={activeTab === null} label="Todos" onPress={() => setActiveTab(null)} />
             {SLEEP_TABS.map((tab) => (
               <SleepPill
                 key={tab.id}
@@ -642,6 +759,15 @@ const styles = StyleSheet.create({
   soundCell: {
     width: (W - H_PAD * 2 - 20) / 3,
     alignItems: "center",
+  },
+  todosSectionTitle: {
+    fontFamily: "PlayfairDisplay",
+    fontSize: 19,
+    fontWeight: "700",
+    color: "#F4DAD5",
+    marginTop: 22,
+    marginBottom: 0,
+    paddingHorizontal: H_PAD,
   },
   soundImageWrap: {
     width: "100%",
