@@ -596,14 +596,14 @@ const styles = StyleSheet.create({
 
   /* ── Quick sheet ── */
   qsBackdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.55)" },
-  qsSheet: { position: "absolute", bottom: 0, left: 0, right: 0, backgroundColor: "#2E0510", borderTopLeftRadius: 22, borderTopRightRadius: 22, paddingTop: 10, paddingHorizontal: 20, borderTopWidth: StyleSheet.hairlineWidth, borderColor: "#3D0E16" },
+  qsSheet: { position: "absolute", bottom: 0, left: 0, right: 0, backgroundColor: "#142761", borderTopLeftRadius: 22, borderTopRightRadius: 22, paddingTop: 10, paddingHorizontal: 20 },
   qsHandle: { alignSelf: "center", width: 36, height: 4, borderRadius: 2, backgroundColor: "rgba(212,175,55,0.25)", marginBottom: 14 },
   qsHeader: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 14 },
   qsThumb: { width: 54, height: 54, borderRadius: 10 },
   qsTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: TEXT, marginBottom: 2 },
   qsSub: { fontFamily: "Manrope", fontSize: 12, color: MUTED },
   qsClose: { padding: 4 },
-  qsDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "#3D0E16", marginBottom: 6 },
+  qsDivider: { height: 0, marginBottom: 6 },
   qsSepDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "#3D0E16", marginVertical: 4 },
   qsRow: { flexDirection: "row", alignItems: "center", paddingVertical: 14, gap: 14 },
   qsIcon: { width: 22 },
