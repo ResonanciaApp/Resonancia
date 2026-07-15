@@ -468,7 +468,7 @@ export default function DescansoScreen() {
 
         {activeTab === null ? (
           /* ── Vista "Todos": recientes + favoritos + carruseles por subcategoría ── */
-          <View>
+          <View style={{ marginTop: -25 }}>
             {recentInDescanso.length > 0 && (
               <>
                 <SessionCarousel
