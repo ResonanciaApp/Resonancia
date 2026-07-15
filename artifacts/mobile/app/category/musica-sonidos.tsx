@@ -414,12 +414,16 @@ export default function MusicaSonidosScreen() {
             </React.Fragment>
           );
         })}
-        <View style={styles.sessionGrid}>
-          {visibleSessions.map((s)=>(
-            <CategoryCard key={s.id} session={s} width={cardW} onLongPress={()=>setSelectedSession(s)} onOptions={()=>setSelectedSession(s)} />
-          ))}
-        </View>
-        {hasMore && <View style={styles.loadMoreFooter}><ActivityIndicator size="small" color={MUTED} /></View>}
+        {activeTab !== null && (
+          <>
+            <View style={styles.sessionGrid}>
+              {visibleSessions.map((s)=>(
+                <CategoryCard key={s.id} session={s} width={cardW} onLongPress={()=>setSelectedSession(s)} onOptions={()=>setSelectedSession(s)} />
+              ))}
+            </View>
+            {hasMore && <View style={styles.loadMoreFooter}><ActivityIndicator size="small" color={MUTED} /></View>}
+          </>
+        )}
       </>
     );
   };
