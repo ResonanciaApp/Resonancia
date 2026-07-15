@@ -1209,7 +1209,7 @@ export default function HomeScreen2() {
                 >
                   {sel ? (
                     activeSceneId === "tibet" ? (
-                      <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: "#c98a4b" }]} />
+                      <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: "#f9f9f9" }]} />
                     ) : (
                       <LinearGradient
                         colors={["#D6A45C", "#F7CB6B"]}
@@ -1225,7 +1225,7 @@ export default function HomeScreen2() {
                     style={[
                       styles.durPillText,
                       sel && styles.durPillTextActive,
-                      sel && activeSceneId === "tibet" && { color: "#FFFFFF" },
+                      sel && activeSceneId === "tibet" && { color: "#0a0719" },
                     ]}
                     numberOfLines={1}
                     adjustsFontSizeToFit
