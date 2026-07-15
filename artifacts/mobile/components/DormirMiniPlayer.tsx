@@ -22,7 +22,7 @@ interface Props {
 
 export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOffset, closeColor, isExpanded, topOffset, onExpand }: Props) {
   const { activeSceneId } = useSceneTheme();
-  const bgColor = activeSceneId === "tibet" ? "#1a1243" : "rgba(0,0,0,0.40)";
+  const bgColor = activeSceneId === "tibet" ? "#1d3c4c" : "rgba(0,0,0,0.40)";
 
   const opacity      = useRef(new Animated.Value(0)).current;
   const translateY   = useRef(new Animated.Value(80)).current;
