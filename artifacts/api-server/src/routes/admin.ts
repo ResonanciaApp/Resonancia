@@ -957,20 +957,79 @@ function serializeExploreSection(s: ExploreSection) {
   };
 }
 
-/** Asegura que existan las secciones por defecto. Llamado en el GET para auto-seed. */
+/** Convierte un label de tag a un slug simple (minúsculas, sin acentos, guiones). */
+function labelToSlug(label: string): string {
+  return label
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+/**
+ * Asegura que existan en explore_sections:
+ * 1. Los 9 tags fijos por defecto.
+ * 2. Cualquier themeTag único que ya esté en sesiones de la DB.
+ * Llamado en el GET para auto-seed.
+ */
 async function ensureDefaultSections() {
-  const existing = await db.select({ slug: exploreSectionsTable.slug }).from(exploreSectionsTable);
+  const existing = await db
+    .select({ slug: exploreSectionsTable.slug, sortOrder: exploreSectionsTable.sortOrder })
+    .from(exploreSectionsTable);
   const existingSlugs = new Set(existing.map((r) => r.slug));
-  const missing = DEFAULT_EXPLORE_SLUGS.filter((s) => !existingSlugs.has(s));
-  if (missing.length === 0) return;
-  await db.insert(exploreSectionsTable).values(
-    missing.map((slug, i) => ({
+  const maxOrder = existing.reduce((m, r) => Math.max(m, r.sortOrder), -1);
+
+  // 1. Tags fijos que faltan
+  const missingDefaults = DEFAULT_EXPLORE_SLUGS.filter((s) => !existingSlugs.has(s));
+
+  // 2. Tags custom en sesiones que aún no tienen entrada
+  const sessionRows = await db
+    .select({ themeTag: catalogSessionsTable.themeTag })
+    .from(catalogSessionsTable)
+    .where(sql`theme_tag is not null`);
+
+  const customLabels = new Set<string>();
+  for (const row of sessionRows) {
+    for (const tag of row.themeTag ?? []) {
+      const slug = labelToSlug(tag);
+      if (!existingSlugs.has(slug) && !DEFAULT_EXPLORE_SLUGS.includes(slug)) {
+        customLabels.add(slug);
+      }
+    }
+  }
+
+  // Reconstruir mapa slug→label para los custom
+  const customLabelMap = new Map<string, string>();
+  for (const row of sessionRows) {
+    for (const tag of row.themeTag ?? []) {
+      const slug = labelToSlug(tag);
+      if (customLabels.has(slug)) customLabelMap.set(slug, tag);
+    }
+  }
+
+  const toInsert: { slug: string; label: string; visible: boolean; sortOrder: number }[] = [];
+  let nextOrder = maxOrder + 1;
+
+  for (const slug of missingDefaults) {
+    toInsert.push({
       slug,
       label:     DEFAULT_EXPLORE_LABELS[slug] ?? slug,
       visible:   true,
-      sortOrder: DEFAULT_EXPLORE_SLUGS.indexOf(slug) + (existing.length > 0 ? existing.length : 0),
-    })),
-  );
+      sortOrder: DEFAULT_EXPLORE_SLUGS.indexOf(slug),
+    });
+  }
+
+  for (const slug of customLabels) {
+    toInsert.push({
+      slug,
+      label:     customLabelMap.get(slug) ?? slug,
+      visible:   true,
+      sortOrder: nextOrder++,
+    });
+  }
+
+  if (toInsert.length === 0) return;
+  await db.insert(exploreSectionsTable).values(toInsert);
 }
 
 // GET /admin/explore-sections — listar todas las secciones con su orden y visibilidad.
