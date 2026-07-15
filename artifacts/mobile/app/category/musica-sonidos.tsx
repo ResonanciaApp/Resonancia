@@ -188,9 +188,9 @@ function CategoryCard({
         style={({ pressed }) => [ac.lCard, { opacity: pressed ? 0.85 : 1 }]}>
         <View style={ac.lImgWrap}>
           <Image source={session.image} style={StyleSheet.absoluteFill} contentFit="cover" />
+          <View style={ac.lDurPill}><Text style={ac.lDur}>{session.durationLabel}</Text></View>
           {locked && <View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
         </View>
-        <Text style={ac.lDur}>{session.durationLabel}</Text>
         <Text style={ac.lTitle} numberOfLines={2}>{session.title}</Text>
         {!!author && <Text style={ac.lAuthor} numberOfLines={1}>{author}</Text>}
       </Pressable>
@@ -253,10 +253,11 @@ const ac = StyleSheet.create({
   lockDot:{position:"absolute",top:6,right:6,width:20,height:20,borderRadius:10,backgroundColor:"rgba(0,0,0,0.55)",alignItems:"center",justifyContent:"center"},
   lCard:{ width:299 },
   lImgWrap:{ width:299, height:187, borderRadius:14, overflow:"hidden" },
+  lDurPill:{ position:"absolute", bottom:8, left:8, backgroundColor:"rgba(0,0,0,0.55)", borderRadius:4, paddingHorizontal:6, paddingVertical:2 },
   
-  lDur:{ fontFamily:"Manrope", fontSize:10, fontWeight:"500", color:MUTED, marginTop:8 },
+  lDur:{ fontFamily:"Manrope", fontSize:10, fontWeight:"600", color:"#fff" },
   lTitle:{ fontFamily:"Manrope", fontSize:13, fontWeight:"600", color:TEXT, lineHeight:17, marginTop:3 },
-  lAuthor:{ fontFamily:"Manrope", fontSize:11, color:MUTED },
+  lAuthor:{ fontFamily:"Manrope", fontSize:11, color:MUTED, marginTop:3 },
 });
 
 export default function MusicaSonidosScreen() {

@@ -117,13 +117,13 @@ function FeaturedCard({ session }: { session: Session }) {
       style={({ pressed }) => [fcStyles.card, { opacity: pressed ? 0.85 : 1 }]}>
       <View style={fcStyles.imgWrap}>
         <Image source={session.image as number} style={fcStyles.img} resizeMode="cover" />
+        <View style={fcStyles.durPill}><Text style={fcStyles.dur}>{session.durationLabel}</Text></View>
         {locked && (
           <View style={fcStyles.lock}>
             <Feather name="lock" size={9} color="#fff" />
           </View>
         )}
       </View>
-      <Text style={fcStyles.dur}>{session.durationLabel}</Text>
       <Text style={fcStyles.title} numberOfLines={2}>{session.title}</Text>
     </Pressable>
   );
@@ -132,8 +132,9 @@ const fcStyles = StyleSheet.create({
   card:    { width: 299 },
   imgWrap: { width: 299, height: 187, borderRadius: 14, overflow: "hidden" },
   img:     { width: 299, height: 187 },
-  dur:     { fontFamily: "Manrope", fontSize: 10, fontWeight: "500", color: "#F4F4F4", marginTop: 8 },
-  title:   { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4DAD5", lineHeight: 17, marginTop: 3 },
+  durPill: { position: "absolute", bottom: 8, left: 8, backgroundColor: "rgba(0,0,0,0.55)", borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 },
+  dur:     { fontFamily: "Manrope", fontSize: 10, fontWeight: "600", color: "#fff" },
+  title:   { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4DAD5", lineHeight: 17, marginTop: 8 },
   lock:    { position: "absolute", top: 6, right: 6, width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(0,0,0,0.55)", alignItems: "center", justifyContent: "center" },
 });
 
