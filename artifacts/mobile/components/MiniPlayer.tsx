@@ -511,7 +511,7 @@ const styles = StyleSheet.create({
   },
   handle: {
     width: 36,
-    height: 4,
+    height: 3,
     borderRadius: 2,
     backgroundColor: "rgba(255,255,255,0.25)",
   },
@@ -647,11 +647,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   progressBar: {
-    height: 4,
+    height: 3,
     backgroundColor: "rgba(255,255,255,0.15)",
   },
   progressFill: {
-    height: 4,
+    height: 3,
     backgroundColor: "rgba(255,255,255,0.85)",
     borderRadius: 1,
   },
