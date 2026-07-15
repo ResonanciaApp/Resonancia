@@ -352,9 +352,9 @@ export default function MusicaSonidosScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: "#142761" }]}>
+    <View style={[styles.root, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string }]}>
       <LinearGradient
-        colors={["#1D1E54", "#142761"]}
+        colors={theme.gradient as unknown as [string, string, ...string[]]}
         style={StyleSheet.absoluteFill}
       />
 
@@ -420,7 +420,7 @@ export default function MusicaSonidosScreen() {
       <AddToPlaylistSheet visible={playlistSessionId !== null} sessionId={playlistSessionId ?? ""} onClose={() => setPlaylistSessionId(null)} />
 
       {/* ── Sticky header (aparece con scroll) ── */}
-      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity, backgroundColor: "#1D1E54" }]} pointerEvents={stickyActive ? "auto" : "none"}>
+      <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"}>
         <View style={styles.lotoBtn}>
           <BackPill onPress={() => router.back()} size={31} />
         </View>
