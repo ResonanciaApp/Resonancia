@@ -408,7 +408,52 @@ export default function ExploreScreen() {
         </Pressable>
       </View>
 
-      <View style={{ flex: 1 }} />
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16 }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* ── Para este momento ── */}
+        {featuredHoy && (
+          <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 10 }]}>
+            <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Para este momento</Text>
+            <Pressable
+              onPress={() => {
+                if (featuredHoy.skipMiniPlayer) { handleSessionPress(featuredHoy); return; }
+                if (featuredHoy.skipDetail) { handleSessionPress(featuredHoy); return; }
+                handleSessionPress(featuredHoy);
+              }}
+            >
+              <View style={styles.heroImageContainer}>
+                <Image source={featuredHoy.image as number} style={styles.heroImage} contentFit="cover" />
+              </View>
+              {(() => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const s = featuredHoy as any;
+                const guide  = s.guideId  ? getGuide(s.guideId)   : undefined;
+                const artist = s.artistId ? getArtist(s.artistId) : undefined;
+                const heroAuthorName = guide?.name ?? artist?.name ?? "Casa del Cuenco";
+                const heroPhoto      = guide?.photo ?? artist?.photo ?? null;
+                return (
+                  <View style={{ marginTop: 12, flexDirection: "row", alignItems: "center", gap: 10 }}>
+                    {heroPhoto && (
+                      <Image source={heroPhoto} style={styles.heroAvatar} contentFit="cover" />
+                    )}
+                    <View style={{ flex: 1 }}>
+                      <Text style={[styles.heroAuthor, { marginBottom: 4 }]} numberOfLines={1}>
+                        {featuredHoy.categoryLabel}{featuredHoy.durationLabel ? ` · ${featuredHoy.durationLabel}` : ""}
+                      </Text>
+                      <Text style={styles.heroTitle} numberOfLines={2}>{featuredHoy.title}</Text>
+                      <Text style={[styles.heroAuthor, { marginTop: -1 }]} numberOfLines={1}>{heroAuthorName}</Text>
+                    </View>
+                  </View>
+                );
+              })()}
+            </Pressable>
+          </View>
+        )}
+      </ScrollView>
 
       <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} />
     </View>
@@ -566,6 +611,7 @@ const styles = StyleSheet.create({
   heroMetaText: { fontFamily: "Manrope", fontSize: 11, lineHeight: 14, color: "#c2c2c2", marginBottom: 6 },
   heroTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "600", lineHeight: 24, color: "#FBFBFB", marginBottom: 4 },
   heroAuthor: { fontFamily: "Manrope", fontSize: 12, color: "#c2c2c2", marginTop: 2 },
+  heroAvatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(255,255,255,0.05)" },
 
   sqAuthor: {
     fontFamily: "Manrope",
