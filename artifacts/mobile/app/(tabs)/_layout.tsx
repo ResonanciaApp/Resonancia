@@ -81,10 +81,12 @@ function TabItem({
   route,
   isFocused,
   onPress,
+  tibetMode = false,
 }: {
   route: { key: string; name: string };
   isFocused: boolean;
   onPress: () => void;
+  tibetMode?: boolean;
 }) {
   const conf = TAB_CONFIG[route.name];
   if (!conf) return null;
@@ -95,8 +97,11 @@ function TabItem({
   const labelOffset = conf.labelOffset ?? 0;
   const tOffset    = [{ translateY: iconOffset }];
 
+  const activeCol   = tibetMode ? "#ffffff" : (conf.activeColor ?? ACTIVE_COLOR);
+  const inactiveCol = tibetMode ? "#f9f9f9" : INACTIVE_COLOR;
+
   const makeIcon = useCallback((active: boolean) => {
-    const color  = active ? (conf.activeColor ?? ACTIVE_COLOR) : INACTIVE_COLOR;
+    const color  = active ? activeCol : inactiveCol;
     const sfName = active ? conf.sfIconFill : conf.sfIcon;
     const mciName = active ? conf.mciIconFill : conf.mciIcon;
     return conf.image ? (
@@ -108,7 +113,7 @@ function TabItem({
     ) : (
       <Feather name={conf.featherIcon as never} size={iconSize} color={color} style={{ transform: tOffset }} />
     );
-  }, [conf, iconSize, isIOS, tOffset]);
+  }, [conf, iconSize, isIOS, tOffset, activeCol, inactiveCol]);
 
   return (
     <Pressable
@@ -122,7 +127,7 @@ function TabItem({
           {makeIcon(isFocused)}
         </View>
         <View style={[styles.labelWrap, { transform: [{ translateY: labelOffset }] }]}>
-          <Text style={[styles.label, { color: isFocused ? (conf.activeColor ?? ACTIVE_COLOR) : INACTIVE_COLOR }]} numberOfLines={1}>
+          <Text style={[styles.label, { color: isFocused ? activeCol : inactiveCol }]} numberOfLines={1}>
             {conf.label}
           </Text>
         </View>
@@ -321,6 +326,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
                 route={route}
                 isFocused={isFocused}
                 onPress={onPress}
+                tibetMode={activeSceneId === "tibet"}
               />
             );
           })}
