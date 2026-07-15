@@ -125,8 +125,8 @@ function FeaturedCard({ session }: { session: Session }) {
   );
 }
 const fcStyles = StyleSheet.create({
-  card: { width: 306, height: 172, borderRadius: 14, overflow: "hidden" },
-  img:  { width: 306, height: 172 },
+  card: { width: 299, height: 187, borderRadius: 14, overflow: "hidden" },
+  img:  { width: 299, height: 187 },
   bottom: { position: "absolute", bottom: 0, left: 0, right: 0, padding: 11, gap: 3 },
   dur:  { fontFamily: "Manrope", fontSize: 10, fontWeight: "500", color: "rgba(255,255,255,0.72)" },
   title: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", color: "#fff", lineHeight: 18 },
