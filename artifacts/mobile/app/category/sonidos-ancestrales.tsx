@@ -525,6 +525,27 @@ export default function SonidosAncestalesScreen() {
             <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
         )}
+        {activeTab === null && TABS.map((tab) => {
+          const tabSessions = getSessionsForTab(tab.id);
+          if (tabSessions.length === 0) return null;
+          const preview = tabSessions.slice(0, 5);
+          const hasMore = tabSessions.length > 5;
+          return (
+            <React.Fragment key={tab.id}>
+              <SessionCarousel
+                title={tab.label}
+                sessions={preview}
+                isPremium={isPremium}
+                onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
+                style={{ marginTop: 24, marginBottom: 0 }}
+                cardWidth={RECENT_CARD_W}
+                titleSize={19}
+                onViewAll={hasMore ? () => setActiveTab(tab.id as CatTab) : undefined}
+              />
+              <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+            </React.Fragment>
+          );
+        })}
         <View style={styles.sessionGrid}>
           {visibleSessions.map((s)=>(
             <CategoryCard key={s.id} session={s} width={cardW} onLongPress={()=>setSelectedSession(s)} onOptions={()=>setSelectedSession(s)} />

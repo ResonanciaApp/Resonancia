@@ -28,16 +28,27 @@ type SessionCarouselProps = {
   titleOffset?: number;
   cardWidth?: number;
   titleSize?: number;
+  onViewAll?: () => void;
 };
 
-export function SessionCarousel({ title, sessions, isPremium, onPress, style, titleOffset, cardWidth, titleSize }: SessionCarouselProps) {
+export function SessionCarousel({ title, sessions, isPremium, onPress, style, titleOffset, cardWidth, titleSize, onViewAll }: SessionCarouselProps) {
   if (sessions.length === 0) return null;
   const cw = cardWidth ?? CARD_W;
   const cardStyle = cw !== CARD_W ? { width: cw } : undefined;
   const thumbStyle = cw !== CARD_W ? { width: cw, height: cw } : undefined;
+  const titleFontSize = titleSize ?? 17;
   return (
     <View style={[styles.section, style]}>
-      <Text style={[styles.sectionTitle, titleSize !== undefined && { fontSize: titleSize }]}>{title}</Text>
+      {onViewAll ? (
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 21 }}>
+          <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: 0 }]}>{title}</Text>
+          <Pressable onPress={onViewAll} hitSlop={8}>
+            <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F7CB6B" }}>Ver todos</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <Text style={[styles.sectionTitle, { fontSize: titleFontSize }]}>{title}</Text>
+      )}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
