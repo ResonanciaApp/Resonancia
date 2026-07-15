@@ -1082,8 +1082,8 @@ export default function HomeScreen2() {
                 key={c.id}
                 onPress={() => {
                   if (c.id === "__descanzo__") router.push("/(tabs)/descanzo" as never);
-                  else if (c.id === "__mezcla__") router.push("/(tabs)/mezcla" as never);
-                  else if (c.id === "__geometrix__") router.push("/(tabs)/universo" as never);
+                  else if (c.id === "__mezcla__") router.push("/(tabs)/musica" as never);
+                  else if (c.id === "__geometrix__") router.push("/(tabs)/geometrix" as never);
                   else router.push(`/category/${c.id}` as never);
                 }}
                 style={({ pressed }) => [{
