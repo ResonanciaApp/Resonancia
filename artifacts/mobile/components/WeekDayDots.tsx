@@ -103,14 +103,9 @@ export function WeekDayDots() {
         return (
           <View key={i} style={s.dayCol}>
             {met ? (
-              <LinearGradient
-                colors={gradColors}
-                start={{ x: 0.5, y: 0 }}
-                end={{ x: 0.5, y: 1 }}
-                style={s.circleCompleted}
-              >
+              <View style={[s.circleCompleted, { backgroundColor: theme.gradient[0] }]}>
                 <Feather name="check" size={18} color="#f9f9f9" />
-              </LinearGradient>
+              </View>
             ) : isToday ? (
               <View style={s.circleGradientBorder}>
                 <Svg width={42} height={42} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
@@ -152,8 +147,6 @@ const s = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 4,
-    borderWidth: 2,
-    borderColor: "rgba(249,249,249,0.7)",
   },
   circleGradientBorder: {
     width: 42,
