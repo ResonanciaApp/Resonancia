@@ -499,7 +499,7 @@ const styles = StyleSheet.create({
   },
   detailDesc: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21 },
 
-  tabBar: { flexDirection: "row", borderBottomWidth: 1, position: "relative" },
+  tabBar: { flexDirection: "row", borderBottomWidth: 1, position: "relative", marginTop: 17 },
   tabItem: { paddingVertical: 10, paddingHorizontal: 4, marginRight: 22 },
   tabLabel: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600" },
   tabIndicator: {
