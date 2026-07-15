@@ -1098,7 +1098,7 @@ export default function HomeScreen2() {
                   ...corners[i],
                 }]}
               >
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(15,21,51,0.50)" }]} />
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(15,21,51,0.80)" }]} />
                 <View style={{ width: 26, alignItems: "center", justifyContent: "center" }}>
                   {c.icon(c.color)}
                 </View>
@@ -1283,7 +1283,7 @@ export default function HomeScreen2() {
         {/* ── FRASE DEL DÍA ── */}
         <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP }}>
           <View style={{ borderRadius: 18, overflow: "hidden", padding: 20 }}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(15,21,51,0.50)" }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(15,21,51,0.80)" }]} />
             {/* Título + botón compartir */}
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
               <Text style={{ fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#F7CB6B", letterSpacing: 1.2, textTransform: "uppercase" }}>
@@ -1332,7 +1332,7 @@ export default function HomeScreen2() {
             onPress={() => setMoodSheetVisible(true)}
             style={({ pressed }) => [styles.moodRow, styles.moodRowActive, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
           >
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(15,21,51,0.50)" }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(15,21,51,0.80)" }]} />
             <Text style={styles.moodSientesLabel}>Sientes:</Text>
             <View style={{ flex: 1 }} />
             <LinearGradient
@@ -1357,7 +1357,7 @@ export default function HomeScreen2() {
             onPress={() => setMoodSheetVisible(true)}
             style={({ pressed }) => [styles.moodRow, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
           >
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(15,21,51,0.50)" }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(15,21,51,0.80)" }]} />
             <Text style={styles.moodEmoji}>🙂</Text>
             <Text style={styles.moodRowLabel}>¿Cómo te sientes hoy?</Text>
             <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" />
@@ -1373,7 +1373,7 @@ export default function HomeScreen2() {
         <View style={styles.recoSection}>
           {moodRecommended.map((s) => (
             <View key={s.id} style={styles.recoCard}>
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(15,21,51,0.50)" }]} />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(15,21,51,0.80)" }]} />
               <SessionRow
                 session={s}
                 imageSize={84}
