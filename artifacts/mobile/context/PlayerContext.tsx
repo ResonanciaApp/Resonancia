@@ -25,6 +25,7 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { usePremium } from "@/context/PremiumContext";
 import { syncActivity } from "@/lib/cloudSync";
+import { sessionMiniPlayerEvents } from "@/lib/miniPlayerEvents";
 import { FREE_FAVORITES_LIMIT, FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 
 export interface HistoryEntry {
@@ -836,6 +837,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       pendingSeekRef.current = null;
 
       setCurrentSession(session);
+      // Sesiones "pasar directo al miniplayer": mostrar la barra flotante
+      // (SessionMiniPlayer) de inmediato en la pantalla donde se tocó.
+      if (session.skipMiniPlayer) {
+        sessionMiniPlayerEvents.triggerShow();
+      }
       const savedProgress = sessionProgressRef.current[session.id] ?? 0;
       const resumeFraction =
         savedProgress > 0 && savedProgress < COMPLETED_THRESHOLD ? savedProgress : 0;

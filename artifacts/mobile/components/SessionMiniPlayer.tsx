@@ -21,9 +21,11 @@ const PLAYER_H = 64;
 interface Props {
   bottomOffset: number;
   topOffset: number;
+  /** Oculta la barra sin desmontar (mantiene viva la suscripción al evento). */
+  suppressed?: boolean;
 }
 
-export function SessionMiniPlayer({ bottomOffset, topOffset }: Props) {
+export function SessionMiniPlayer({ bottomOffset, topOffset, suppressed }: Props) {
   // Misma lógica que DormirMiniPlayer al colapsar desde expanded:
   // el mini player arranca justo debajo del logo Pulso (topOffset + 56)
   // y desciende hasta su posición en reposo (bottom: bottomOffset).
@@ -76,7 +78,7 @@ export function SessionMiniPlayer({ bottomOffset, topOffset }: Props) {
 
   const handleClose = () => animateOut(() => stop());
 
-  if (!visible || !currentSession) return null;
+  if (!visible || !currentSession || suppressed) return null;
 
   return (
     <Pressable
