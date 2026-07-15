@@ -1208,12 +1208,16 @@ export default function HomeScreen2() {
                   ]}
                 >
                   {sel ? (
-                    <LinearGradient
-                      colors={activeSceneId === "tibet" ? ["#c98a4b", "#b2494e"] : ["#D6A45C", "#F7CB6B"]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 0, y: 1 }}
-                      style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-                    />
+                    activeSceneId === "tibet" ? (
+                      <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: "#c98a4b" }]} />
+                    ) : (
+                      <LinearGradient
+                        colors={["#D6A45C", "#F7CB6B"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 0, y: 1 }}
+                        style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+                      />
+                    )
                   ) : (
                     <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: "rgba(255,255,255,0.07)" }]} />
                   )}
