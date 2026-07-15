@@ -1,44 +1,49 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { GoldGradientFill } from "@/components/GoldGradient";
 import { BackPill } from "@/components/BackPill";
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { router } from "expo-router";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Image } from "react-native";
+import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import {
-  Animated,
-  Easing,
-  LayoutChangeEvent,
-  Platform,
-  Pressable,
-  ScrollView,
-  Share,
-  StatusBar,
-  StyleSheet,
-  Text,
-  Dimensions,
-  TextInput,
-  View,
+  ActivityIndicator, Animated, Dimensions, Easing, Modal, Platform,
+  Pressable, ScrollView, StyleSheet, Text, View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
-import { SessionActionsSheet } from "@/components/SessionActionsSheet";
-import { SessionRow } from "@/components/SessionRow";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
-import { SESSIONS, getSessionById } from "@/data/sessions";
-import type { Session } from "@/data/sessions";
-import { useColors } from "@/hooks/useColors";
-import { LinearGradient } from "expo-linear-gradient";
+import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
+import { useCatalog } from "@/context/CatalogContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { getArtist } from "@/data/artists";
+import { getGuide } from "@/data/guides";
 
-const H_PAD = 20;
+const H_PAD   = 20;
 const { width: W } = Dimensions.get("window");
+const cardW   = (W - H_PAD * 2 - 20) / 2;
 const RECENT_CARD_W = Math.round((W - H_PAD * 2) / 1.85);
 const ICON_COLOR = "#C87BB5";
-const RATINGS_KEY = "@resonance_ratings";
+const GOLD    = "#F7CB6B";
+const TEXT    = "#FBFBFB";
+const MUTED   = "#c2c2c2";
+
+type CatTab = string;
+
+type SubDef = {
+  tag: string;
+  icon: string;
+  family: "Feather" | "MaterialCommunityIcons";
+};
+
+const SUBCATEGORIES: SubDef[] = [
+  { tag: "Guiadas",                icon: "mic",        family: "Feather" },
+  { tag: "Música",                 icon: "music",      family: "Feather" },
+  { tag: "Sonidos de la Naturaleza", icon: "leaf",     family: "MaterialCommunityIcons" },
+  { tag: "Yoga Nidra",             icon: "meditation", family: "MaterialCommunityIcons" },
+  { tag: "Música Ambient",         icon: "waveform",   family: "MaterialCommunityIcons" },
+  { tag: "Sonidos Ancestrales",    icon: "bowl-mix",   family: "MaterialCommunityIcons" },
+];
 
 const NOCHES_SESSIONS = SESSIONS.filter((s) => s.categoryId === "noches");
 
@@ -48,66 +53,57 @@ const matchTag = (s: Session, tag: string) =>
   (s as Session & { ancestralTag?: string }).ancestralTag === tag ||
   ((s as Session & { themeTag?: string[] }).themeTag?.includes(tag) ?? false);
 
-type SubDef = {
-  tag: string;
-  icon: string;
-  family: "Feather" | "MaterialCommunityIcons";
-  description: string;
-  longDescription: string;
-};
+function getSessionsForTab(tab: CatTab | null) {
+  if (!tab) return NOCHES_SESSIONS;
+  return NOCHES_SESSIONS.filter((s) => matchTag(s, tab));
+}
 
-const SUBCATEGORIES: SubDef[] = [
-  {
-    tag: "Guiadas",
-    icon: "mic",
-    family: "Feather",
-    description: "Voces que te acompañan al dormir",
-    longDescription:
-      "Una voz suave te acompaña mientras el sueño llega. Sin necesidad de hacer nada, solo seguir las instrucciones y dejar que el cuerpo se relaje por completo. Las sesiones guiadas nocturnas activan el sistema nervioso parasimpático, preparando cuerpo y mente para el descanso profundo.",
-  },
-  {
-    tag: "Música",
-    icon: "music",
-    family: "Feather",
-    description: "Melodías suaves para descansar",
-    longDescription:
-      "Melodías diseñadas para ralentizar las ondas cerebrales y facilitar la transición al sueño. Sin letras ni ritmos estimulantes, solo capas de sonido que envuelven y acompañan hasta que la conciencia se disuelve suavemente.",
-  },
-  {
-    tag: "Sonidos de la Naturaleza",
-    icon: "leaf",
-    family: "MaterialCommunityIcons",
-    description: "Bosque, lluvia y mar para soltar",
-    longDescription:
-      "El bosque, la lluvia y el mar tienen un efecto calmante medido: normalizan el ritmo cardíaco y reducen el cortisol. Estas grabaciones crean un entorno sonoro natural que invita al descanso sin distracciones tecnológicas.",
-  },
-  {
-    tag: "Yoga Nidra",
-    icon: "meditation",
-    family: "MaterialCommunityIcons",
-    description: "Relajación profunda y consciente",
-    longDescription:
-      "Un estado entre el sueño y la vigilia donde el cuerpo se rinde completamente pero la conciencia permanece alerta. Practicado regularmente, equivale a horas de sueño profundo y activa procesos de sanación y reintegración.",
-  },
-  {
-    tag: "Música Ambient",
-    icon: "waveform",
-    family: "MaterialCommunityIcons",
-    description: "Atmósferas envolventes y etéreas",
-    longDescription:
-      "Atmósferas etéreas sin ritmo ni melodía definida, pensadas para flotar. El ambiente sonoro no dirige, acompaña. Ideal para quienes necesitan silenciar el ruido mental sin estimulación adicional.",
-  },
-  {
-    tag: "Sonidos Ancestrales",
-    icon: "bowl-mix",
-    family: "MaterialCommunityIcons",
-    description: "Cuencos y frecuencias para el descanso",
-    longDescription:
-      "Cuencos y frecuencias sagradas que resuenan en el campo energético durante el sueño. Su efecto es acumulativo: cuanto más se practican, más profundo y reparador se vuelve el descanso nocturno.",
-  },
-];
+function AnimatedTabContent({ animKey, children }: { animKey: string; children: React.ReactNode }) {
+  const opacity = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    opacity.setValue(0);
+    Animated.timing(opacity, { toValue: 1, duration: 1200, easing: Easing.out(Easing.quad), useNativeDriver: true }).start();
+  }, [animKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  return <Animated.View style={{ opacity }}>{children}</Animated.View>;
+}
 
-function FeaturedCard({ session }: { session: Session }) {
+function Chip({ label, sel, onPress }: { label: string; sel: boolean; onPress: () => void }) {
+  const { theme: chipTheme } = useSceneTheme();
+  return (
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
+      {sel && (chipTheme?.id === "tibet"
+        ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
+        : chipTheme?.id === "vino-tinto"
+          ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgb(247,203,107)" }]} />
+          : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+      )}
+      <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
+    </Pressable>
+  );
+}
+
+function ChipRow({ tabs, activeTab, onSelect, onClear }: {
+  tabs: SubDef[]; activeTab: CatTab | null; onSelect: (id: CatTab) => void; onClear: () => void;
+}) {
+  return (
+    <View style={styles.chipRowWrapper}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}
+        style={styles.chipRow} contentContainerStyle={styles.chipRowContent}>
+        <Chip label="Todos" sel={activeTab === null} onPress={onClear} />
+        {tabs.map((t) => (
+          <Chip key={t.tag} label={t.tag} sel={activeTab === t.tag}
+            onPress={() => activeTab === t.tag ? onClear() : onSelect(t.tag)} />
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
+function CategoryCard({
+  session, width: cardWidth = 200, horizontal = false, landscape = false, onLongPress, onOptions,
+}: {
+  session: Session; width?: number; horizontal?: boolean; landscape?: boolean; onLongPress?: () => void; onOptions?: () => void;
+}) {
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
   const locked = !!session.isPremium && !isPremium;
@@ -116,440 +112,355 @@ function FeaturedCard({ session }: { session: Session }) {
     playSession(session);
     router.push("/player" as never);
   };
+  const authorObj = session.guideId ? getGuide(session.guideId) : getArtist(session.artistId);
+  const author = authorObj.name;
+
+  if (landscape) {
+    return (
+      <Pressable onPress={handlePress} onLongPress={onLongPress}
+        style={({ pressed }) => [ac.lCard, { opacity: pressed ? 0.85 : 1 }]}>
+        <View style={ac.lImgWrap}>
+          <Image source={session.image} style={StyleSheet.absoluteFill} contentFit="cover" />
+          <View style={ac.lDurPill}><Text style={ac.lDur}>{session.durationLabel}</Text></View>
+          {locked && <View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
+        </View>
+        <Text style={ac.lTitle} numberOfLines={2}>{session.title}</Text>
+        {!!author && <Text style={ac.lAuthor} numberOfLines={1}>{author}</Text>}
+      </Pressable>
+    );
+  }
+
+  if (horizontal) {
+    return (
+      <Pressable onPress={handlePress} onLongPress={onLongPress} style={({ pressed }) => [ac.hRow, { opacity: pressed ? 0.8 : 1 }]}>
+        <View style={ac.hImgWrap}>
+          <Image source={session.image} style={ac.hImage} contentFit="cover" />
+          <View style={ac.hImgOverlay} />
+          {locked && <View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
+        </View>
+        <View style={ac.hContent}>
+          <Text style={ac.hDuration}>{session.durationLabel}</Text>
+          <Text style={ac.hTitle} numberOfLines={2}>{session.title}</Text>
+          {!!author && <Text style={ac.hAuthor} numberOfLines={1}>{author}</Text>}
+        </View>
+      </Pressable>
+    );
+  }
+
   return (
-    <Pressable onPress={handlePress}
-      style={({ pressed }) => [fcStyles.card, { opacity: pressed ? 0.85 : 1 }]}>
-      <View style={fcStyles.imgWrap}>
-        <Image source={session.image as number} style={fcStyles.img} resizeMode="cover" />
-        <View style={fcStyles.durPill}><Text style={fcStyles.dur}>{session.durationLabel}</Text></View>
-        {locked && (
-          <View style={fcStyles.lock}>
-            <Feather name="lock" size={9} color="#fff" />
-          </View>
-        )}
+    <Pressable onPress={handlePress} onLongPress={onLongPress}
+      style={({ pressed }) => [ac.card, { width: cardWidth, opacity: pressed ? 0.85 : 1 }]}>
+      <View style={ac.imgContainer}>
+        <Image source={session.image} style={ac.cardImage} contentFit="cover" />
+        {locked && <View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
+        <View style={ac.durationBadge}><Text style={ac.durationBadgeText}>{session.durationLabel}</Text></View>
       </View>
-      <Text style={fcStyles.title} numberOfLines={2}>{session.title}</Text>
+      <Text style={ac.cardTitle} numberOfLines={2}>{session.title}</Text>
+      {!!author && <Text style={ac.cardAuthor} numberOfLines={1}>{author}</Text>}
     </Pressable>
   );
 }
-const fcStyles = StyleSheet.create({
-  card:    { width: 299 },
-  imgWrap: { width: 299, height: 187, borderRadius: 14, overflow: "hidden" },
-  img:     { width: 299, height: 187 },
-  durPill: { position: "absolute", bottom: 8, left: 8, backgroundColor: "rgba(27,6,15,0.72)", borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
-  dur:     { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#fff" },
-  title:   { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4DAD5", lineHeight: 17, marginTop: 10 },
-  lock:    { position: "absolute", top: 6, right: 6, width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(0,0,0,0.55)", alignItems: "center", justifyContent: "center" },
+
+const ac = StyleSheet.create({
+  hRow: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 6, marginBottom: 11 },
+  hImgWrap: { width: 87, height: 87, borderRadius: 8, overflow: "hidden" },
+  hImgOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.18)" },
+  hImage: { width: 87, height: 87 },
+  hContent: { flex: 1, justifyContent: "center", gap: 2 },
+  hDuration: { fontFamily: "Manrope", fontSize: 11, color: MUTED },
+  hTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: TEXT, lineHeight: 18 },
+  hAuthor: { fontFamily: "Manrope", fontSize: 11, color: MUTED },
+  card: { gap: 6 },
+  imgContainer: { width: "100%", aspectRatio: 1, borderRadius: 17, overflow: "hidden" },
+  cardImage: { width: "100%", height: "100%" },
+  cardTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: TEXT, lineHeight: 18 },
+  cardAuthor: { fontFamily: "Manrope", fontSize: 11, color: "#F4F4F4" },
+  durationBadge: { position: "absolute", bottom: 8, left: 8, backgroundColor: "rgba(27,6,15,0.72)", borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
+  durationBadgeText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#fff" },
+  lockDot: { position: "absolute", top: 6, right: 6, width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(0,0,0,0.55)", alignItems: "center", justifyContent: "center" },
+  lCard: { width: 299 },
+  lImgWrap: { width: 299, height: 187, borderRadius: 14, overflow: "hidden" },
+  lDurPill: { position: "absolute", bottom: 8, left: 8, backgroundColor: "rgba(27,6,15,0.72)", borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
+  lDur: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#fff" },
+  lTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: TEXT, lineHeight: 17, marginTop: 10 },
+  lAuthor: { fontFamily: "Manrope", fontSize: 11, color: MUTED, marginTop: 3 },
 });
 
-function SubIcon({ sub, size }: { sub: SubDef; size: number }) {
-  return sub.family === "MaterialCommunityIcons" ? (
-    <MaterialCommunityIcons
-      name={sub.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]}
-      size={size}
-      color={ICON_COLOR}
-    />
-  ) : (
-    <Feather
-      name={sub.icon as React.ComponentProps<typeof Feather>["name"]}
-      size={size}
-      color={ICON_COLOR}
-    />
-  );
-}
-
-type ActiveTab = "Todos" | "Audios" | "Videos" | "Maestros";
-const TABS: ActiveTab[] = ["Todos", "Audios", "Videos", "Maestros"];
-
-
 export default function NochesScreen() {
-  const colors = useColors();
+  const insets    = useSafeAreaInsets();
+  const topPad    = Platform.OS === "web" ? 0 : insets.top;
+  const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const { version } = useCatalog();
   const { theme } = useSceneTheme();
-  const insets = useSafeAreaInsets();
-  const { history, playSession } = usePlayer();
+  const { history, playSession, favorites } = usePlayer();
   const { isPremium } = usePremium();
+
+  const TABS = useMemo(
+    () => SUBCATEGORIES.filter((sub) => NOCHES_SESSIONS.some((s) => matchTag(s, sub.tag))),
+    [version], // eslint-disable-line react-hooks/exhaustive-deps
+  );
+
+  const [activeTab,       setActiveTab]       = useState<CatTab | null>(null);
+  const [selectedSession, setSelectedSession] = useState<Session | null>(null);
+  const [allVisible,      setAllVisible]      = useState(false);
+  const slideX = useRef(new Animated.Value(W)).current;
+
+  const closeAll = () => {
+    Animated.timing(slideX, { toValue: W, duration: 280, easing: Easing.in(Easing.cubic), useNativeDriver: true }).start(() => setAllVisible(false));
+  };
+  useEffect(() => {
+    if (!allVisible) return;
+    slideX.setValue(W);
+    Animated.timing(slideX, { toValue: 0, duration: 320, easing: Easing.out(Easing.cubic), useNativeDriver: true }).start();
+  }, [allVisible]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const scrollRef = useRef<ScrollView>(null);
+  const stickyHeaderOpacity = useRef(new Animated.Value(0)).current;
+  const [stickyActive,  setStickyActive]  = useState(false);
+  const [chipsOffsetY,  setChipsOffsetY]  = useState(9999);
+  useEffect(() => {
+    Animated.timing(stickyHeaderOpacity, {
+      toValue: stickyActive ? 1 : 0,
+      duration: 350,
+      useNativeDriver: true,
+    }).start();
+  }, [stickyActive]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const PAGE_SIZE = 20;
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+
+  const allTabSessions = useMemo(() => getSessionsForTab(activeTab), [activeTab, version]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const recentInCategory = useMemo(() => {
+    const tabIds = activeTab !== null ? new Set(allTabSessions.map((s) => s.id)) : null;
     const seen = new Set<string>(); const result: Session[] = [];
     for (const h of history) {
       if (seen.has(h.sessionId)) continue;
       seen.add(h.sessionId);
       const s = getSessionById(h.sessionId);
-      if (s && s.categoryId === "noches") result.push(s);
+      if (s && s.categoryId === "noches" && (tabIds === null || tabIds.has(s.id))) result.push(s);
       if (result.length === 10) break;
     }
     return result;
-  }, [history]);
+  }, [history, activeTab, allTabSessions]);
 
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const [query, setQuery] = useState("");
-  const [ratings, setRatings] = useState<Record<string, number>>({});
-  const [descExpanded, setDescExpanded] = useState(false);
-  const [activeTab, setActiveTab] = useState<ActiveTab>("Audios");
-  const [actionsSession, setActionsSession] = useState<Session | null>(null);
-
-  const indicatorAnim = useRef(new Animated.Value(0)).current;
-  const [indicatorWidth, setIndicatorWidth] = useState(0);
-  const tabLayouts = useRef<{ x: number; width: number }[]>([]);
-
-  const onTabLayout = (idx: number, e: LayoutChangeEvent) => {
-    const { x, width } = e.nativeEvent.layout;
-    tabLayouts.current[idx] = { x, width };
-    if (idx === 0 && indicatorWidth === 0) {
-      setIndicatorWidth(width);
-      indicatorAnim.setValue(x);
+  const favoritesInCategory = useMemo(() => {
+    const tabIds = activeTab !== null ? new Set(allTabSessions.map((s) => s.id)) : null;
+    const result: Session[] = [];
+    for (const id of favorites) {
+      const s = getSessionById(id);
+      if (s && s.categoryId === "noches" && (tabIds === null || tabIds.has(s.id))) result.push(s);
     }
-  };
+    return result;
+  }, [favorites, activeTab, allTabSessions]);
 
-  const selectTab = (tab: ActiveTab, idx: number) => {
-    setActiveTab(tab);
-    const layout = tabLayouts.current[idx];
-    if (layout) {
-      setIndicatorWidth(layout.width);
-      Animated.timing(indicatorAnim, {
-        toValue: layout.x,
-        duration: 220,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }).start();
-    }
-  };
-
+  const [shuffledSessions, setShuffledSessions] = useState<typeof allTabSessions>([]);
   useEffect(() => {
-    AsyncStorage.getItem(RATINGS_KEY).then((val) => {
-      if (val) setRatings(JSON.parse(val));
-    });
-  }, []);
-
-  useEffect(() => {
-    setDescExpanded(false);
-    setActiveTab("Audios");
-    const layout = tabLayouts.current[0];
-    if (layout) {
-      setIndicatorWidth(layout.width);
-      indicatorAnim.setValue(layout.x);
+    const arr = [...allTabSessions];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-  }, [selectedTag]);
+    setShuffledSessions(arr);
+    setVisibleCount(PAGE_SIZE);
+  }, [allTabSessions]);
 
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
-  const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const featuredSessions = useMemo(
+    () => (activeTab === null ? allTabSessions.filter((s) => s.isFeaturedCategory) : []),
+    [allTabSessions, activeTab],
+  );
 
-  const filteredSessions = useMemo(() => {
-    if (!selectedTag) return NOCHES_SESSIONS;
-    return NOCHES_SESSIONS.filter((s) => matchTag(s, selectedTag));
-  }, [selectedTag]);
-
-  const countByTag = useMemo(() => {
-    const map: Record<string, number> = {};
-    for (const sub of SUBCATEGORIES) {
-      map[sub.tag] = NOCHES_SESSIONS.filter((s) => matchTag(s, sub.tag)).length;
-    }
-    return map;
-  }, []);
-
-  const selectedSub = SUBCATEGORIES.find((c) => c.tag === selectedTag);
-
-  const recentlyPlayed = useMemo(() => {
-    if (!selectedTag) return null;
-    const subIds = new Set(filteredSessions.map((s) => s.id));
-    const entry = [...history]
-      .sort((a, b) => new Date(b.playedAt).getTime() - new Date(a.playedAt).getTime())
-      .find((e) => subIds.has(e.sessionId));
-    return entry ? filteredSessions.find((s) => s.id === entry.sessionId) ?? null : null;
-  }, [history, filteredSessions, selectedTag]);
-
-  const handleShare = async () => {
-    try {
-      await Share.share({
-        message: `Escuchá "${selectedTag}" en Resonancia — rituales nocturnos para el descanso.`,
-      });
-    } catch {
-      // silent
-    }
+  const renderContent = () => {
+    if (shuffledSessions.length === 0) return (
+      <View style={styles.emptyState}>
+        <Feather name="moon" size={48} color={GOLD} style={{ marginBottom: 16 }} />
+        <Text style={styles.emptyTitle}>Próximamente en {activeTab ?? "Noches"}</Text>
+        <Text style={styles.emptySub}>Estamos preparando el mejor contenido para tu descanso.</Text>
+      </View>
+    );
+    const visibleSessions = shuffledSessions.slice(0, visibleCount);
+    const hasMore = visibleCount < shuffledSessions.length;
+    return (
+      <>
+        {featuredSessions.length > 0 && (
+          <>
+            <Text style={styles.featuredTitle}>Contenido destacado</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.featuredRow}>
+              {featuredSessions.map((s) => (
+                <CategoryCard key={`feat-${s.id}`} session={s} landscape
+                  onLongPress={() => setSelectedSession(s)} onOptions={() => setSelectedSession(s)} />
+              ))}
+            </ScrollView>
+            <View style={styles.featuredDivider} />
+          </>
+        )}
+        {activeTab === null && recentInCategory.length > 0 && (
+          <>
+            <SessionCarousel
+              title="Escuchadas recientemente"
+              sessions={recentInCategory}
+              isPremium={isPremium}
+              onPress={(s) => { playSession(s); router.push("/player" as never); }}
+              style={{ marginTop: 24, marginBottom: 0 }}
+              cardWidth={RECENT_CARD_W}
+              titleSize={19}
+            />
+            <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+          </>
+        )}
+        {activeTab === null && favoritesInCategory.length > 0 && (
+          <>
+            <SessionCarousel
+              title="Favoritos"
+              sessions={favoritesInCategory}
+              isPremium={isPremium}
+              onPress={(s) => { playSession(s); router.push("/player" as never); }}
+              style={{ marginTop: 24, marginBottom: 0 }}
+              cardWidth={RECENT_CARD_W}
+              titleSize={19}
+            />
+            <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+          </>
+        )}
+        {activeTab === null && TABS.map((sub) => {
+          const tabSessions = getSessionsForTab(sub.tag);
+          if (tabSessions.length === 0) return null;
+          const preview = tabSessions.slice(0, 5);
+          const subHasMore = tabSessions.length > 5;
+          return (
+            <React.Fragment key={sub.tag}>
+              <SessionCarousel
+                title={sub.tag}
+                sessions={preview}
+                isPremium={isPremium}
+                onPress={(s) => { playSession(s); router.push("/player" as never); }}
+                style={{ marginTop: 24, marginBottom: 0 }}
+                cardWidth={RECENT_CARD_W}
+                titleSize={19}
+                onViewAll={subHasMore ? () => setActiveTab(sub.tag) : undefined}
+              />
+              <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+            </React.Fragment>
+          );
+        })}
+        {activeTab === null && (
+          <Pressable
+            onPress={() => setAllVisible(true)}
+            style={({ pressed }) => [{ flexDirection: "row", alignItems: "center", justifyContent: "center", paddingVertical: 18, gap: 6, marginTop: 4, opacity: pressed ? 0.7 : 1 }]}
+          >
+            <Text style={{ fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: GOLD }}>Todas las Noches</Text>
+            <Feather name="chevron-right" size={16} color={GOLD} />
+          </Pressable>
+        )}
+        {activeTab !== null && (
+          <>
+            <View style={styles.sessionGrid}>
+              {visibleSessions.map((s) => (
+                <CategoryCard key={s.id} session={s} width={cardW}
+                  onLongPress={() => setSelectedSession(s)} onOptions={() => setSelectedSession(s)} />
+              ))}
+            </View>
+            {hasMore && <View style={styles.loadMoreFooter}><ActivityIndicator size="small" color={MUTED} /></View>}
+          </>
+        )}
+      </>
+    );
   };
 
   return (
-        <View style={[styles.root, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string }]}>
+    <View style={[styles.root, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string }]}>
       <LinearGradient colors={theme.gradient as unknown as [string, string, ...string[]]} style={StyleSheet.absoluteFill} />
-      <StatusBar barStyle="light-content" />
 
       <ScrollView
+        ref={scrollRef}
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 40 + bottomPad }}
+        contentContainerStyle={{ paddingBottom: 140 + bottomPad }}
         showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
+        scrollEventThrottle={16}
+        onScroll={(e) => {
+          const y = e.nativeEvent.contentOffset.y;
+          const active = y > chipsOffsetY - topPad - 8;
+          if (active !== stickyActive) setStickyActive(active);
+          const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
+          if (contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
+            setVisibleCount((c) => c + PAGE_SIZE);
+          }
+        }}
       >
-        {/* ════════════════════════════════════
-            VISTA LISTA DE SUBCATEGORÍAS
-        ════════════════════════════════════ */}
-        {!selectedTag && (
-          <>
-            <View style={[styles.header, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
-              <BackPill onPress={() => router.back()} color={colors.foreground} />
-              <View style={[styles.catIconCircle, { backgroundColor: ICON_COLOR + "1A" }]}>
-                <Image
-                  source={require("../../assets/images/cat-noches.png")}
-                  style={{ width: 34, height: 34 }}
-                  resizeMode="contain"
-                />
-              </View>
-              <Text style={[styles.pageTitle, { color: colors.foreground }]}>Noches</Text>
-              <View style={styles.searchBar}>
-                <Feather name="search" size={17} color={colors.mutedForeground} />
-                <TextInput
-                  style={[styles.searchInput, { color: colors.foreground }]}
-                  placeholder="Buscar en Noches…"
-                  placeholderTextColor={colors.mutedForeground}
-                  value={query}
-                  onChangeText={setQuery}
-                  returnKeyType="search"
-                />
-              </View>
+        {/* ── Hero ── */}
+        <View style={styles.heroArea}>
+          <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
+            <View style={styles.lotoBtn}>
+              <BackPill onPress={() => router.back()} size={31} style={{ transform: [{ translateX: -2 }] }} />
             </View>
-
-            <View style={[styles.catList, { paddingHorizontal: H_PAD }]}>
-              {SUBCATEGORIES.filter((c) => {
-                const q = query.trim().toLowerCase();
-                return !q || c.tag.toLowerCase().includes(q);
-              }).length === 0 && (
-                <Text style={[styles.noResults, { color: colors.mutedForeground }]}>
-                  Sin resultados para “{query.trim()}”
-                </Text>
-              )}
-              {SUBCATEGORIES.filter((c) => {
-                const q = query.trim().toLowerCase();
-                return !q || c.tag.toLowerCase().includes(q);
-              }).map((sub, idx, arr) => {
-                const isLast = idx === arr.length - 1;
-                return (
-                  <Pressable
-                    key={sub.tag}
-                    onPress={() => setSelectedTag(sub.tag)}
-                    style={({ pressed }) => [
-                      styles.catRow,
-                      !isLast && { borderBottomWidth: 1, borderBottomColor: "rgba(212,175,55,0.08)" },
-                      { opacity: pressed ? 0.75 : 1 },
-                    ]}
-                  >
-                    <View style={styles.iconCircle}>
-                      <SubIcon sub={sub} size={22} />
-                    </View>
-                    <Text style={[styles.catName, { color: colors.foreground }]}>{sub.tag}</Text>
-                    <View style={styles.catRight}>
-                      <Text style={[styles.catCount, { color: colors.foreground }]}>
-                        {countByTag[sub.tag] ?? 0}
-                      </Text>
-                      <Feather name="chevron-right" size={17} color={colors.foreground} />
-                    </View>
-                  </Pressable>
-                );
-              })}
+          </View>
+          <View style={[styles.heroIconFloat]}>
+            <View style={[styles.heroIconCircle, { borderColor: ICON_COLOR + "33" }]}>
+              <Image
+                source={require("../../assets/images/cat-noches.png")}
+                style={{ width: 42, height: 42 }}
+                contentFit="contain"
+              />
             </View>
+          </View>
+        </View>
 
-            <CategoryInfoPanel
-              accentColor={ICON_COLOR}
-              heading="¿Por qué cuidar tus noches?"
-              items={[
-                {
-                  icon: "moon",
-                  title: "Un ritual de cierre",
-                  body: "Una rutina suave antes de dormir le avisa a tu cuerpo que es hora de soltar. La mente se calma y el sueño llega con más facilidad.",
-                },
-                {
-                  icon: "volume-2",
-                  title: "El sonido que relaja",
-                  body: "Voces guía, música y sonidos de la naturaleza reducen la rumiación mental y acompañan la transición al descanso profundo.",
-                },
-                {
-                  icon: "activity",
-                  title: "Descanso reparador",
-                  body: "Dormir mejor mejora tu memoria, tu ánimo y tu energía. El descanso no es un lujo: es la base de tu bienestar.",
-                },
-              ]}
-              quote="El descanso también es una forma de cuidarte."
-              whyItems={[
-                { icon: "moon", text: "Porque un buen día empieza la noche anterior." },
-                { icon: "heart", text: "Porque mereces dormir en paz, sin pantallas ni prisa." },
-              ]}
-            />
-          </>
-        )}
+        {/* ── Título ── */}
+        <View style={styles.profileCard}>
+          <Text style={styles.profileTitle}>Noches</Text>
+        </View>
 
-        {/* ════════════════════════════════════
-            VISTA DETALLE DE SUBCATEGORÍA
-        ════════════════════════════════════ */}
-        {selectedTag && selectedSub && (
-          <>
-            {/* Top bar: atrás + compartir */}
-            <View style={[styles.detailTopBar, { paddingTop: topPad + 8, paddingHorizontal: H_PAD }]}>
-              <Pressable onPress={() => setSelectedTag(null)} style={styles.iconBtn}>
-                <Feather name="arrow-left" size={22} color={colors.foreground} />
-              </Pressable>
-              <Pressable onPress={handleShare} style={styles.iconBtn}>
-                <Feather name="share" size={20} color={colors.foreground} />
-              </Pressable>
-            </View>
+        {/* ── Chips ── */}
+        <View style={styles.chipsArea} onLayout={(e) => setChipsOffsetY(e.nativeEvent.layout.y)}>
+          <ChipRow
+            tabs={TABS}
+            activeTab={activeTab}
+            onSelect={(id) => setActiveTab(id)}
+            onClear={() => setActiveTab(null)}
+          />
+        </View>
 
-            {/* Título */}
-            <Text style={[styles.detailTitle, { color: colors.foreground, paddingHorizontal: H_PAD }]}>
-              {selectedTag}
-            </Text>
-
-            {/* Descripción colapsable */}
-            <Pressable
-              onPress={() => setDescExpanded((v) => !v)}
-              style={{ paddingHorizontal: H_PAD, marginBottom: 20 }}
-            >
-              <Text
-                style={[styles.detailDesc, { color: colors.foreground }]}
-                numberOfLines={descExpanded ? undefined : 3}
-              >
-                {selectedSub.longDescription}
-              </Text>
-            </Pressable>
-
-            {/* Tabs con indicador animado */}
-            <View style={[styles.tabBar, { borderBottomColor: "rgba(61,14,22,0.60)", paddingHorizontal: H_PAD }]}>
-              {TABS.map((tab, idx) => (
-                <Pressable
-                  key={tab}
-                  onLayout={(e) => onTabLayout(idx, e)}
-                  onPress={() => selectTab(tab, idx)}
-                  style={styles.tabItem}
-                >
-                  <Text style={[
-                    styles.tabLabel,
-                    { color: tab === activeTab ? colors.foreground : colors.mutedForeground },
-                  ]}>
-                    {tab}
-                  </Text>
-                </Pressable>
-              ))}
-              {indicatorWidth > 0 && (
-                <Animated.View
-                  style={[
-                    styles.tabIndicator,
-                    { width: indicatorWidth, transform: [{ translateX: indicatorAnim }] },
-                  ]}
-                >
-                  <GoldGradientFill />
-                </Animated.View>
-              )}
-            </View>
-
-            {/* ── Tab: Todos ── */}
-            {activeTab === "Todos" && (
-              <View style={{ paddingTop: 21 }}>
-                {filteredSessions.some((s) => s.isFeaturedCategory) && (
-                  <>
-                    <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD, marginBottom: 24, marginTop: 10 }]}>
-                      Contenido destacado
-                    </Text>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false}
-                      contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 14, paddingBottom: 4 }}>
-                      {filteredSessions.filter((s) => s.isFeaturedCategory).map((s) => (
-                        <FeaturedCard key={`feat-${s.id}`} session={s} />
-                      ))}
-                    </ScrollView>
-                    <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20 }} />
-                  </>
-                )}
-                {recentInCategory.length > 0 && (
-                  <SessionCarousel
-                    title="Escuchadas recientemente"
-                    sessions={recentInCategory}
-                    isPremium={isPremium}
-                    onPress={(s) => { playSession(s); router.push("/player" as never); }}
-                    style={{ marginTop: 24, marginBottom: 0 }}
-                    cardWidth={RECENT_CARD_W}
-                  />
-                )}
-                {filteredSessions.length === 0 ? (
-                  <View style={styles.emptyWrap}>
-                    <Feather name="moon" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
-                    <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>Próximamente</Text>
-                  </View>
-                ) : (
-                  filteredSessions.map((s) => (
-                    <SessionRow
-                      key={s.id}
-                      session={s}
-                      rating={ratings[s.id]}
-                      style={{ marginHorizontal: H_PAD }}
-                      onActionsPress={() => setActionsSession(s)}
-                    />
-                  ))
-                )}
-              </View>
-            )}
-
-            {/* ── Tab: Audios ── */}
-            {activeTab === "Audios" && (
-              <View style={{ paddingTop: 21 }}>
-                <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD }]}>
-                  Escuchado Recientemente
-                </Text>
-                {recentlyPlayed ? (
-                  <SessionRow
-                    session={recentlyPlayed}
-                    rating={ratings[recentlyPlayed.id]}
-                    style={{ marginHorizontal: H_PAD, marginTop: 10, marginBottom: 24 }}
-                    onActionsPress={() => setActionsSession(recentlyPlayed)}
-                  />
-                ) : (
-                  <View style={[styles.recentPlaceholder, { marginHorizontal: H_PAD, backgroundColor: "rgba(74,12,12,0.08)" }]}>
-                    <Feather name="headphones" size={28} color={colors.mutedForeground} />
-                    <Text style={[styles.placeholderText, { color: colors.mutedForeground }]}>
-                      Aún no escuchaste ninguna sesión en esta categoría
-                    </Text>
-                  </View>
-                )}
-
-                <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD, marginBottom: 10 }]}>
-                  Recientes
-                </Text>
-                {filteredSessions.length === 0 ? (
-                  <View style={styles.emptyWrap}>
-                    <Feather name="moon" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
-                    <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>Próximamente</Text>
-                  </View>
-                ) : (
-                  filteredSessions.map((s) => (
-                    <SessionRow
-                      key={s.id}
-                      session={s}
-                      rating={ratings[s.id]}
-                      style={{ marginHorizontal: H_PAD }}
-                      onActionsPress={() => setActionsSession(s)}
-                    />
-                  ))
-                )}
-              </View>
-            )}
-
-            {/* ── Tab: Videos ── */}
-            {activeTab === "Videos" && (
-              <View style={styles.emptyWrap}>
-                <Feather name="video" size={36} color={colors.mutedForeground} style={{ marginBottom: 14 }} />
-                <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>Próximamente</Text>
-              </View>
-            )}
-
-            {/* ── Tab: Maestros ── */}
-            {activeTab === "Maestros" && (
-              <View style={styles.emptyWrap}>
-                <Feather name="users" size={36} color={colors.mutedForeground} style={{ marginBottom: 14 }} />
-                <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>Próximamente</Text>
-              </View>
-            )}
-          </>
-        )}
+        {/* ── Contenido ── */}
+        <AnimatedTabContent animKey={activeTab ?? "all"}>
+          {renderContent()}
+        </AnimatedTabContent>
       </ScrollView>
 
-      <SessionActionsSheet
-        session={actionsSession}
-        visible={actionsSession !== null}
-        onClose={() => setActionsSession(null)}
-      />
+      <SessionActionsSheet session={selectedSession} visible={!!selectedSession} onClose={() => setSelectedSession(null)} />
+
+      {/* ── Vista "Todas las sesiones" (desliza desde la derecha) ── */}
+      <Modal visible={allVisible} transparent animationType="none" onRequestClose={closeAll} statusBarTranslucent>
+        <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string, transform: [{ translateX: slideX }] }]}>
+          <LinearGradient colors={theme.gradient as unknown as [string, string, ...string[]]} style={StyleSheet.absoluteFill} />
+          <View style={{ flexDirection: "row", alignItems: "center", paddingTop: topPad + 14, paddingHorizontal: H_PAD, paddingBottom: 14, gap: 4 }}>
+            <Pressable onPress={closeAll} hitSlop={12} style={{ padding: 4 }}>
+              <Feather name="chevron-left" size={28} color={TEXT} />
+            </Pressable>
+            <Text style={{ fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: TEXT, flex: 1 }}>Todas las Noches</Text>
+          </View>
+          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap", columnGap: 20, paddingHorizontal: H_PAD, rowGap: 24, paddingTop: 8, paddingBottom: 120 + bottomPad }}>
+            {getSessionsForTab(null).map((s) => (
+              <CategoryCard key={s.id} session={s} width={cardW} />
+            ))}
+          </ScrollView>
+        </Animated.View>
+      </Modal>
+
+      {/* ── Sticky header ── */}
+      <Animated.View
+        style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity, backgroundColor: theme.gradient[0] }]}
+        pointerEvents={stickyActive ? "auto" : "none"}
+      >
+        <View style={styles.lotoBtn}>
+          <BackPill onPress={() => router.back()} size={31} />
+        </View>
+        <View style={styles.headerTitleCol}>
+          <Text style={styles.headerTitle}>Noches</Text>
+          {activeTab && <Text style={styles.headerSubtitle}>{activeTab}</Text>}
+        </View>
+        <View style={styles.lotoBtn} />
+      </Animated.View>
     </View>
   );
 }
@@ -558,70 +469,37 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1 },
 
-  header: { alignItems: "center", marginBottom: 28, paddingTop: 4 },
-  backBtn: {
-    alignSelf: "flex-start",
-    width: 40, height: 40,
-    alignItems: "center", justifyContent: "center",
-    marginBottom: 16,
-  },
-  catIconCircle: {
-    width: 60, height: 60,
-    borderRadius: 30,
-    alignItems: "center", justifyContent: "center",
-    marginBottom: 12,
-  },
-  titleRow: { flexDirection: "row", alignItems: "center", gap: 14 },
-  pageTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700", letterSpacing: 0.2, marginTop: -15, marginBottom: 4, textAlign: "center" },
-  pageSub: { fontFamily: "Manrope", fontSize: 13, lineHeight: 19, textAlign: "center" },
-  searchBar: {
-    flexDirection: "row", alignItems: "center", gap: 10,
-    alignSelf: "stretch",
-    backgroundColor: "rgba(74,12,12,0.08)",
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: Platform.OS === "ios" ? 12 : 8,
-    marginTop: 18,
-  },
-  searchInput: { fontFamily: "Manrope", flex: 1, fontSize: 14, padding: 0 },
-  noResults: { fontFamily: "Manrope", fontSize: 14, textAlign: "center", paddingVertical: 24 },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: H_PAD, paddingBottom: 14, borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.1)" },
+  headerTitleCol: { flex: 1, alignItems: "center" },
+  headerTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "400", color: TEXT, letterSpacing: 0.2, textAlign: "center" },
+  headerSubtitle: { fontFamily: "Manrope", fontSize: 11, color: "#f7f7f7", letterSpacing: 0.3, marginTop: 1, opacity: 0.7 },
 
-  catList: {},
-  catRow: { flexDirection: "row", alignItems: "center", paddingVertical: 12, gap: 14 },
-  iconCircle: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
-  catName: { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "600", letterSpacing: 0.1 },
-  catRight: { flexDirection: "row", alignItems: "center", gap: 6 },
-  catCount: { fontFamily: "Manrope", fontSize: 13, fontWeight: "500" },
+  heroArea: { height: 148, position: "relative", alignItems: "center", justifyContent: "flex-end" },
+  heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
+  heroIconFloat: { alignItems: "center", paddingBottom: 13, zIndex: 2 },
+  heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: ICON_COLOR + "1A", borderWidth: 2, alignItems: "center", justifyContent: "center", overflow: "hidden" },
+  lotoBtn: { width: 45, height: 45, borderRadius: 22.5, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.035)" },
 
-  detailTopBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 18,
-  },
-  iconBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
-  detailTitle: {
-    fontFamily: "Manrope",
-    fontSize: 32, fontWeight: "800", letterSpacing: -0.3,
-    lineHeight: 38, marginBottom: 12,
-  },
-  detailDesc: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21 },
+  profileCard: { marginHorizontal: H_PAD, marginTop: 4, paddingBottom: 14, gap: 8, alignItems: "center" },
+  profileTitle: { fontFamily: "Manrope", fontSize: 22, fontWeight: "700", color: TEXT, letterSpacing: 0.3 },
 
-  tabBar: { flexDirection: "row", borderBottomWidth: 1, position: "relative", marginTop: 31 },
-  tabItem: { paddingVertical: 10, paddingHorizontal: 4, marginRight: 22 },
-  tabLabel: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600" },
-  tabIndicator: {
-    position: "absolute", bottom: 0, height: 2,
-    overflow: "hidden", borderRadius: 1,
-  },
+  chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -2 },
+  chipRowWrapper: { position: "relative" },
+  chipRow: { flexGrow: 0 },
+  chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
+  chip: { height: 32, paddingHorizontal: 14, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.04)", borderWidth: 1.5, borderColor: "rgba(244,244,244,0.30)" },
+  chipSel: { borderWidth: 0 },
+  chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", color: TEXT, textAlign: "center" },
+  chipTextSel: { fontFamily: "Manrope", color: "#2D0D3A", fontWeight: "380" as import("react-native").TextStyle["fontWeight"] },
 
-  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.5, marginBottom: 0 },
-  recentPlaceholder: {
-    flexDirection: "row", alignItems: "center", gap: 14,
-    borderRadius: 14, padding: 16, marginBottom: 28,
-  },
-  placeholderText: { fontFamily: "Manrope", flex: 1, fontSize: 13, lineHeight: 18 },
+  featuredTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 30 },
+  featuredRow: { paddingHorizontal: H_PAD, gap: 16, paddingTop: 21 },
+  featuredDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20 },
 
-  emptyWrap: { alignItems: "center", paddingVertical: 60 },
-  emptyText: { fontFamily: "Manrope", fontSize: 16, textAlign: "center" },
+  sessionGrid: { flexDirection: "row", flexWrap: "wrap", columnGap: 20, paddingHorizontal: H_PAD, rowGap: 24, marginTop: 18, marginBottom: 6 },
+  loadMoreFooter: { alignItems: "center", paddingVertical: 20 },
+
+  emptyState: { alignItems: "center", paddingTop: 80, paddingHorizontal: H_PAD },
+  emptyTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: TEXT, textAlign: "center", marginBottom: 8 },
+  emptySub: { fontFamily: "Manrope", fontSize: 13, color: MUTED, textAlign: "center", lineHeight: 20 },
 });
