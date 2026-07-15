@@ -109,7 +109,7 @@ export function WeekDayDots() {
                 end={{ x: 0.5, y: 1 }}
                 style={s.circleCompleted}
               >
-                <Feather name="check" size={22} color="#1a2a4a" />
+                <Feather name="check" size={22} color="#EBB881" />
               </LinearGradient>
             ) : isToday ? (
               <View style={s.circleGradientBorder}>
