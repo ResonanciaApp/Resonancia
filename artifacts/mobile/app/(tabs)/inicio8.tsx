@@ -1278,6 +1278,7 @@ export default function HomeScreen2() {
           style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
           titleOffset={10}
           cardWidth={RECENT_CARD_W}
+          titleSize={18}
         />
 
         {/* ── FRASE DEL DÍA ── */}
@@ -1315,6 +1316,7 @@ export default function HomeScreen2() {
           style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
           titleOffset={10}
           cardWidth={RECENT_CARD_W}
+          titleSize={18}
         />
 
 
