@@ -162,6 +162,7 @@ const PillTab = memo(function PillTab({
   tab, sel, onPress,
 }: { tab: (typeof MAIN_TABS)[0]; sel: boolean; onPress: () => void }) {
   const selAnim = useRef(new Animated.Value(sel ? 1 : 0)).current;
+  const { theme: pillTheme } = useSceneTheme();
 
   useEffect(() => {
     Animated.timing(selAnim, {
@@ -179,19 +180,23 @@ const PillTab = memo(function PillTab({
       onPress={onPress}
       style={({ pressed }) => [styles.pillTab, sel && { borderWidth: 0 }, { opacity: pressed ? 0.7 : 1 }]}
     >
-      {/* Fondo seleccionado: degradado dorado */}
+      {/* Fondo seleccionado */}
       <Animated.View
         style={[
           StyleSheet.absoluteFill,
           { borderRadius: 999, overflow: "hidden", opacity: selAnim },
         ]}
       >
-        <LinearGradient
-          colors={["#F7CB6B", "#FBA980"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
+        {pillTheme?.id === "tibet" ? (
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
+        ) : (
+          <LinearGradient
+            colors={["#F7CB6B", "#FBA980"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+        )}
       </Animated.View>
 
       {/* Ícono */}
