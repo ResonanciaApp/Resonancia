@@ -103,9 +103,14 @@ export function WeekDayDots() {
         return (
           <View key={i} style={s.dayCol}>
             {met ? (
-              <View style={[s.circleCompleted, { backgroundColor: "#F7CB6B" }]}>
+              <LinearGradient
+                colors={["#EBAE2A", "#C37322"]}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 1 }}
+                style={s.circleCompleted}
+              >
                 <Feather name="check" size={22} color="#1a2a4a" />
-              </View>
+              </LinearGradient>
             ) : isToday ? (
               <View style={s.circleGradientBorder}>
                 <Svg width={42} height={42} style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}>
