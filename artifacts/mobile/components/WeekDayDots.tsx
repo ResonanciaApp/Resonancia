@@ -103,7 +103,7 @@ export function WeekDayDots() {
         return (
           <View key={i} style={s.dayCol}>
             {met ? (
-              <View style={[s.circleCompleted, { backgroundColor: theme.gradient[0] }]}>
+              <View style={[s.circleCompleted, { backgroundColor: "#F7CB6B" }]}>
                 <Feather name="check" size={18} color="#f9f9f9" />
               </View>
             ) : isToday ? (
