@@ -27,27 +27,33 @@ export function TagOptionSelector({
   pill = false,
 }: TagOptionSelectorProps) {
   const [dbTags, setDbTags] = useState<TagOption[]>([]);
+  const [hiddenIds, setHiddenIds] = useState<Map<string, number>>(new Map());
   const [adding, setAdding] = useState(false);
   const [newLabel, setNewLabel] = useState("");
   const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
+
+  const hiddenType = `${tagType}_hidden`;
 
   const load = useCallback(async () => {
     try {
-      const res = await fetch(`/api/admin/tag-options?type=${encodeURIComponent(tagType)}`, {
-        credentials: "include",
-      });
-      if (res.ok) {
-        const data: TagOption[] = await res.json();
-        setDbTags(data);
+      const [resCustom, resHidden] = await Promise.all([
+        fetch(`/api/admin/tag-options?type=${encodeURIComponent(tagType)}`, { credentials: "include" }),
+        fetch(`/api/admin/tag-options?type=${encodeURIComponent(hiddenType)}`, { credentials: "include" }),
+      ]);
+      if (resCustom.ok) setDbTags(await resCustom.json());
+      if (resHidden.ok) {
+        const hidden: TagOption[] = await resHidden.json();
+        setHiddenIds(new Map(hidden.map((h) => [h.label.toLowerCase(), h.id])));
       }
     } catch {
       // silently ignore
     }
-  }, [tagType]);
+  }, [tagType, hiddenType]);
 
   useEffect(() => { load(); }, [load]);
 
+  // ── Agregar tag custom nueva ──────────────────────────────────────────────
   const handleAdd = async () => {
     const trimmed = newLabel.trim();
     if (!trimmed) return;
@@ -64,7 +70,6 @@ export function TagOptionSelector({
       setDbTags((p) => [...p, created]);
       setNewLabel("");
       setAdding(false);
-      // Auto-seleccionar la etiqueta recién creada
       if (!selected.includes(trimmed)) onToggle(trimmed);
       toast.success(`"${trimmed}" agregada y seleccionada`);
     } catch {
@@ -74,14 +79,15 @@ export function TagOptionSelector({
     }
   };
 
-  const handleDelete = async (opt: TagOption) => {
-    setDeleting(opt.id);
+  // ── Eliminar tag custom (DB) ──────────────────────────────────────────────
+  const handleDeleteCustom = async (opt: TagOption) => {
+    setDeleting(`custom-${opt.id}`);
     try {
       const res = await fetch(`/api/admin/tag-options/${opt.id}`, {
         method: "DELETE",
         credentials: "include",
       });
-      if (!res.ok) throw new Error("Error al eliminar");
+      if (!res.ok) throw new Error();
       setDbTags((p) => p.filter((t) => t.id !== opt.id));
       toast.success(`"${opt.label}" eliminada`);
     } catch {
@@ -91,9 +97,35 @@ export function TagOptionSelector({
     }
   };
 
-  const allDefaults = defaults;
+  // ── Ocultar default (guarda en catalog_tag_options con tipo _hidden) ───────
+  const handleHideDefault = async (tag: string) => {
+    const key = tag.toLowerCase();
+    if (hiddenIds.has(key)) return;
+    setDeleting(`default-${key}`);
+    try {
+      const res = await fetch("/api/admin/tag-options", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: hiddenType, label: tag }),
+      });
+      if (!res.ok) throw new Error();
+      const created: TagOption = await res.json();
+      setHiddenIds((prev) => new Map(prev).set(key, created.id));
+      toast.success(`"${tag}" eliminada`);
+    } catch {
+      toast.error("No se pudo eliminar");
+    } finally {
+      setDeleting(null);
+    }
+  };
+
+  // ── Derivados ─────────────────────────────────────────────────────────────
+  const visibleDefaults = defaults.filter(
+    (d) => !hiddenIds.has(d.toLowerCase()),
+  );
   const customOnly = dbTags.filter(
-    (d) => !allDefaults.some((def) => def.toLowerCase() === d.label.toLowerCase()),
+    (d) => !defaults.some((def) => def.toLowerCase() === d.label.toLowerCase()),
   );
 
   const btnClass = (tag: string) =>
@@ -103,39 +135,51 @@ export function TagOptionSelector({
         : "border-border text-muted-foreground hover:border-foreground"
     }`;
 
+  const deleteBtn = (key: string, busy: boolean, onClick: () => void) => (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={busy}
+      className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+    >
+      {busy ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <X className="w-2.5 h-2.5" />}
+    </button>
+  );
+
   return (
     <div className="space-y-2">
       <Label className="text-sm font-medium">{label}</Label>
       <div className="flex flex-wrap gap-2 items-center">
-        {allDefaults.map((tag) => (
-          <button key={tag} type="button" onClick={() => onToggle(tag)} className={btnClass(tag)}>
-            {tag}
-          </button>
-        ))}
-        {customOnly.map((opt) => (
-          <div key={opt.id} className="relative flex items-center group">
-            <button
-              type="button"
-              onClick={() => onToggle(opt.label)}
-              className={btnClass(opt.label)}
-            >
-              {opt.label}
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDelete(opt)}
-              disabled={deleting === opt.id}
-              className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-              {deleting === opt.id ? (
-                <Loader2 className="w-2.5 h-2.5 animate-spin" />
-              ) : (
-                <X className="w-2.5 h-2.5" />
-              )}
-            </button>
-          </div>
-        ))}
 
+        {/* ── Defaults visibles (con X para ocultar) ── */}
+        {visibleDefaults.map((tag) => {
+          const key = `default-${tag.toLowerCase()}`;
+          const busy = deleting === key;
+          return (
+            <div key={tag} className="relative flex items-center group">
+              <button type="button" onClick={() => onToggle(tag)} className={btnClass(tag)}>
+                {tag}
+              </button>
+              {deleteBtn(key, busy, () => handleHideDefault(tag))}
+            </div>
+          );
+        })}
+
+        {/* ── Tags custom (con X para eliminar de DB) ── */}
+        {customOnly.map((opt) => {
+          const key = `custom-${opt.id}`;
+          const busy = deleting === key;
+          return (
+            <div key={opt.id} className="relative flex items-center group">
+              <button type="button" onClick={() => onToggle(opt.label)} className={btnClass(opt.label)}>
+                {opt.label}
+              </button>
+              {deleteBtn(key, busy, () => handleDeleteCustom(opt))}
+            </div>
+          );
+        })}
+
+        {/* ── Agregar nueva ── */}
         {adding ? (
           <div className="flex items-center gap-1">
             <input
