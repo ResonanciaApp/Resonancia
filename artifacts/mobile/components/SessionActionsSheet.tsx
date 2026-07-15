@@ -130,7 +130,7 @@ export function SessionActionsSheet({ session, visible, onClose }: Props) {
 
           {/* Sheet */}
           <View style={[styles.sheet, { paddingBottom: insets.bottom + 8 }]}>
-          <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} pointerEvents="none" />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#142761" }]} pointerEvents="none" />
           {/* Handle */}
           <View style={styles.handle} />
 
@@ -158,7 +158,7 @@ export function SessionActionsSheet({ session, visible, onClose }: Props) {
           </View>
 
           {/* Divider */}
-          <View style={[styles.divider, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
+          <View style={styles.divider} />
 
           {/* ── Opciones ── */}
           <ActionRow
@@ -261,7 +261,7 @@ function ActionRow({
       onPress={onPress}
       style={({ pressed }) => [
         styles.actionRow,
-        !last && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(61,14,22,0.40)" },
+        !last && {},
         { opacity: pressed ? 0.7 : 1 },
       ]}
     >
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   divider: {
-    height: StyleSheet.hairlineWidth,
+    height: 0,
     marginBottom: 4,
   },
   actionRow: {
