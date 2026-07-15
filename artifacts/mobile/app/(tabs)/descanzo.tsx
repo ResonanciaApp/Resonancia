@@ -470,53 +470,67 @@ export default function DescansoScreen() {
           /* ── Vista "Todos": recientes + favoritos + carruseles por subcategoría ── */
           <View style={{ marginTop: -25 }}>
             {recentInDescanso.length > 0 && (
-              <SessionCarousel
-                title="Escuchadas recientemente"
-                sessions={recentInDescanso}
-                isPremium={isPremium}
-                onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
-                style={{ paddingHorizontal: H_PAD }}
-                cardWidth={RECENT_CARD_W}
-                titleSize={19}
-              />
+              <>
+                <SessionCarousel
+                  title="Escuchadas recientemente"
+                  sessions={recentInDescanso}
+                  isPremium={isPremium}
+                  onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
+                  style={{ marginTop: 24, marginBottom: 0 }}
+                  cardWidth={RECENT_CARD_W}
+                  titleSize={19}
+                />
+                <View style={styles.sectionDivider} />
+              </>
             )}
             {favoritesInDescanso.length > 0 && (
-              <SessionCarousel
-                title="Favoritos"
-                sessions={favoritesInDescanso}
-                isPremium={isPremium}
-                onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
-                style={{ paddingHorizontal: H_PAD }}
-                cardWidth={RECENT_CARD_W}
-                titleSize={19}
-              />
+              <>
+                <SessionCarousel
+                  title="Favoritos"
+                  sessions={favoritesInDescanso}
+                  isPremium={isPremium}
+                  onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
+                  style={{ marginTop: 24, marginBottom: 0 }}
+                  cardWidth={RECENT_CARD_W}
+                  titleSize={19}
+                />
+                <View style={styles.sectionDivider} />
+              </>
             )}
             {historiasForTodos.length > 0 && (
-              <SessionCarousel
-                title="Historias"
-                sessions={historiasForTodos.slice(0, 5)}
-                isPremium={isPremium}
-                onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
-                style={{ paddingHorizontal: H_PAD }}
-                cardWidth={RECENT_CARD_W}
-                titleSize={19}
-                onViewAll={historiasForTodos.length > 5 ? () => setActiveTab("historias") : undefined}
-              />
+              <>
+                <SessionCarousel
+                  title="Historias"
+                  sessions={historiasForTodos.slice(0, 5)}
+                  isPremium={isPremium}
+                  onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
+                  style={{ marginTop: 24, marginBottom: 0 }}
+                  cardWidth={RECENT_CARD_W}
+                  titleSize={19}
+                  onViewAll={historiasForTodos.length > 5 ? () => setActiveTab("historias") : undefined}
+                />
+                <View style={styles.sectionDivider} />
+              </>
             )}
             {asmrForTodos.length > 0 && (
-              <SessionCarousel
-                title="ASMR"
-                sessions={asmrForTodos.slice(0, 5)}
-                isPremium={isPremium}
-                onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
-                style={{ paddingHorizontal: H_PAD }}
-                cardWidth={RECENT_CARD_W}
-                titleSize={19}
-                onViewAll={asmrForTodos.length > 5 ? () => setActiveTab("asmr") : undefined}
-              />
+              <>
+                <SessionCarousel
+                  title="ASMR"
+                  sessions={asmrForTodos.slice(0, 5)}
+                  isPremium={isPremium}
+                  onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
+                  style={{ marginTop: 24, marginBottom: 0 }}
+                  cardWidth={RECENT_CARD_W}
+                  titleSize={19}
+                  onViewAll={asmrForTodos.length > 5 ? () => setActiveTab("asmr") : undefined}
+                />
+                {(binauralSounds.length > 0 || ambientalSounds.length > 0) && (
+                  <View style={styles.sectionDivider} />
+                )}
+              </>
             )}
             {binauralSounds.length > 0 && (
-              <View style={{ marginBottom: 60 }}>
+              <>
                 <Text style={styles.todosSectionTitle}>Sonidos Binaurales</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}
                   contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 12, paddingBottom: 4 }}>
@@ -544,10 +558,11 @@ export default function DescansoScreen() {
                     </Pressable>
                   )}
                 </ScrollView>
-              </View>
+                {ambientalSounds.length > 0 && <View style={styles.sectionDivider} />}
+              </>
             )}
             {ambientalSounds.length > 0 && (
-              <View style={{ marginBottom: 60 }}>
+              <>
                 <Text style={styles.todosSectionTitle}>Ambientales</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}
                   contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 12, paddingBottom: 4 }}>
@@ -575,7 +590,7 @@ export default function DescansoScreen() {
                     </Pressable>
                   )}
                 </ScrollView>
-              </View>
+              </>
             )}
           </View>
         ) : isSoundTab ? (
@@ -801,6 +816,13 @@ const styles = StyleSheet.create({
   soundCell: {
     width: (W - H_PAD * 2 - 20) / 3,
     alignItems: "center",
+  },
+  sectionDivider: {
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    marginHorizontal: H_PAD,
+    marginTop: 20,
+    marginBottom: 4,
   },
   todosSectionTitle: {
     fontFamily: "Manrope",
