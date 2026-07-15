@@ -402,6 +402,27 @@ export default function DescansoScreen() {
 
   const cardW = (W - H_PAD * 2 - 14) / 2;
 
+  // ── "Todas las sesiones" Modal ──
+  const [allVisible,      setAllVisible]      = useState(false);
+  const [allTab,          setAllTab]          = useState<"historias" | "asmr" | null>(null);
+  const [allVisibleCount, setAllVisibleCount] = useState(20);
+  const slideX = useRef(new Animated.Value(W)).current;
+  const closeAll = () => {
+    Animated.timing(slideX, { toValue: W, duration: 280, easing: Easing.in(Easing.cubic), useNativeDriver: true })
+      .start(() => { setAllVisible(false); setAllTab(null); setAllVisibleCount(20); });
+  };
+  useEffect(() => {
+    if (!allVisible) return;
+    slideX.setValue(W);
+    Animated.timing(slideX, { toValue: 0, duration: 320, easing: Easing.out(Easing.cubic), useNativeDriver: true }).start();
+  }, [allVisible]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const allDormiSessions = useMemo(() => {
+    if (allTab === "historias") return historiasForTodos;
+    if (allTab === "asmr")      return asmrForTodos;
+    return [...historiasForTodos, ...asmrForTodos];
+  }, [allTab, historiasForTodos, asmrForTodos]);
+
   return (
     <LinearGradient
       colors={bgGradient}
@@ -592,6 +613,20 @@ export default function DescansoScreen() {
                 </ScrollView>
               </>
             )}
+
+            {/* ── Botón "Ver todas las sesiones de Dormir" ── */}
+            <Pressable
+              onPress={() => setAllVisible(true)}
+              style={({ pressed }) => [{
+                flexDirection: "row", alignItems: "center", justifyContent: "center",
+                paddingVertical: 18, gap: 6, marginTop: 4, opacity: pressed ? 0.7 : 1,
+              }]}
+            >
+              <Text style={{ fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#F7CB6B" }}>
+                Todas las sesiones de Dormir
+              </Text>
+              <Feather name="chevron-right" size={16} color="#F7CB6B" />
+            </Pressable>
           </View>
         ) : isSoundTab ? (
           <>
@@ -692,6 +727,82 @@ export default function DescansoScreen() {
         fadeVol={fadeVol}
         setFadeVol={setFadeVol}
       />
+
+      {/* ── Modal "Todas las sesiones de Dormir" (desliza desde la derecha) ── */}
+      <Modal visible={allVisible} transparent animationType="none" onRequestClose={closeAll} statusBarTranslucent>
+        <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: bgGradient[bgGradient.length - 1] as string, transform: [{ translateX: slideX }] }]}>
+          <LinearGradient colors={bgGradient} style={StyleSheet.absoluteFill} />
+
+          {/* Cabecera */}
+          <View style={{ flexDirection: "row", alignItems: "center", paddingTop: topPad + 14, paddingHorizontal: H_PAD, paddingBottom: 14, gap: 4 }}>
+            <Pressable onPress={closeAll} hitSlop={12} style={{ padding: 4 }}>
+              <Feather name="chevron-left" size={28} color="#FBFBFB" />
+            </Pressable>
+            <Text style={{ fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: "#FBFBFB", flex: 1 }}>
+              Sesiones de Dormir
+            </Text>
+          </View>
+
+          {/* Chips: Todos | Historias | ASMR */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 8, paddingBottom: 12 }}
+          >
+            <SleepPill sel={allTab === null}         label="Todos"     onPress={() => { setAllTab(null);         setAllVisibleCount(20); }} />
+            <SleepPill sel={allTab === "historias"}  label="Historias" onPress={() => { setAllTab("historias"); setAllVisibleCount(20); }} />
+            <SleepPill sel={allTab === "asmr"}       label="ASMR"      onPress={() => { setAllTab("asmr");      setAllVisibleCount(20); }} />
+          </ScrollView>
+
+          {/* Grilla paginada */}
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              flexDirection: "row", flexWrap: "wrap",
+              columnGap: 14, paddingHorizontal: H_PAD,
+              rowGap: 24, paddingTop: 8, paddingBottom: 120 + bottomPad,
+            }}
+            scrollEventThrottle={16}
+            onScroll={(e) => {
+              const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
+              if (contentOffset.y + layoutMeasurement.height >= contentSize.height - 300) {
+                setAllVisibleCount((c) => c + 20);
+              }
+            }}
+          >
+            {allDormiSessions.slice(0, allVisibleCount).map((s) => {
+              const locked = !!s.isPremium && !isPremium;
+              return (
+                <Pressable
+                  key={s.id}
+                  onPress={() => {
+                    if (locked) { router.push("/membresia" as never); return; }
+                    closeAll();
+                    if (currentSession?.id !== s.id) playSession(s);
+                    router.push("/player" as never);
+                  }}
+                  style={({ pressed }) => [{ width: cardW, opacity: pressed ? 0.85 : 1 }]}
+                >
+                  <View style={{ width: "100%", aspectRatio: 1, borderRadius: 17, overflow: "hidden" }}>
+                    <Image source={s.image as number} style={{ width: "100%", height: "100%" }} resizeMode="cover" />
+                    <View style={{ position: "absolute", bottom: 8, left: 8, backgroundColor: "rgba(27,6,15,0.72)", borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 }}>
+                      <Text style={{ fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#fff" }}>{s.durationLabel}</Text>
+                    </View>
+                    {locked && (
+                      <View style={{ position: "absolute", top: 6, right: 6, width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(0,0,0,0.55)", alignItems: "center", justifyContent: "center" }}>
+                        <Feather name="lock" size={9} color="#fff" />
+                      </View>
+                    )}
+                  </View>
+                  <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#FBFBFB", lineHeight: 18, marginTop: 8 }} numberOfLines={2}>
+                    {s.title}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </Animated.View>
+      </Modal>
 
     </LinearGradient>
   );
