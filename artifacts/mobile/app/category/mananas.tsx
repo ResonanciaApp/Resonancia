@@ -124,9 +124,9 @@ const fcStyles = StyleSheet.create({
   card:    { width: 299 },
   imgWrap: { width: 299, height: 187, borderRadius: 14, overflow: "hidden" },
   img:     { width: 299, height: 187 },
-  durPill: { position: "absolute", bottom: 8, left: 8, backgroundColor: "rgba(0,0,0,0.55)", borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 },
-  dur:     { fontFamily: "Manrope", fontSize: 10, fontWeight: "600", color: "#fff" },
-  title:   { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4DAD5", lineHeight: 17, marginTop: 8 },
+  durPill: { position: "absolute", bottom: 8, left: 8, backgroundColor: "rgba(27,6,15,0.72)", borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
+  dur:     { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#fff" },
+  title:   { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4DAD5", lineHeight: 17, marginTop: 10 },
   lock:    { position: "absolute", top: 6, right: 6, width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(0,0,0,0.55)", alignItems: "center", justifyContent: "center" },
 });
 
