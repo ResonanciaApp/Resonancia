@@ -160,6 +160,31 @@ const ctaS = StyleSheet.create({
   },
 });
 
+const userS = StyleSheet.create({
+  sectionRow: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    paddingHorizontal: 4,
+    marginTop: 4,
+    marginBottom: 4,
+  },
+  sectionLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "rgba(190,150,80,0.18)",
+  },
+  sectionLabel: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    fontWeight: "600",
+    color: "rgba(190,150,80,0.65)",
+    letterSpacing: 1.1,
+    textTransform: "uppercase",
+  },
+});
+
 export function EscenasSheet() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
@@ -511,7 +536,14 @@ export function EscenasSheet() {
                   }}
                 />
               ))}
-              {/* Animaciones creadas por el usuario en Geometrix (más nueva primero) */}
+              {/* Creaciones del usuario en Geometrix (más nueva primero) + CTA */}
+              {geometrixCreations.length > 0 && (
+                <View style={userS.sectionRow}>
+                  <View style={userS.sectionLine} />
+                  <Text style={userS.sectionLabel}>Mis animaciones</Text>
+                  <View style={userS.sectionLine} />
+                </View>
+              )}
               {geometrixCreations.map((creation) => (
                 <SceneAnimationCard
                   key={`user-${creation.id}`}
