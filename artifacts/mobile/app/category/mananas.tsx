@@ -420,7 +420,7 @@ export default function MananasScreen() {
               <View style={{ paddingTop: 24 }}>
                 {filteredSessions.some((s) => s.isFeaturedCategory) && (
                   <>
-                    <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD, marginBottom: 12 }]}>
+                    <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD, marginBottom: 12, marginTop: 10 }]}>
                       Destacados de {selectedTag}
                     </Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}
