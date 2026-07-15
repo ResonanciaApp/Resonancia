@@ -22,7 +22,7 @@ import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useColors } from "@/hooks/useColors";
 import { DESCANSO_SOUNDS } from "@/data/descanso-sounds";
-import { getSessionsByDescansoTag } from "@/data/sessions";
+import { getSessionsByDescansoTag, getSessionById } from "@/data/sessions";
 import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
 import { SessionCard } from "@/components/SessionCard";
 import { SessionCarousel } from "@/components/SessionCarousel";
@@ -341,6 +341,8 @@ export default function DescansoScreen() {
     playSession,
     pauseResume,
     stop,
+    history,
+    favorites,
   } = usePlayer();
 
   const { isPremium } = usePremium();
@@ -366,6 +368,35 @@ export default function DescansoScreen() {
     [],
   );
   const asmrForTodos = useMemo(() => getSessionsByDescansoTag("ASMR"), []);
+
+  const allDescansoIds = useMemo(() => {
+    const ids = new Set<string>();
+    historiasForTodos.forEach((s) => ids.add(s.id));
+    asmrForTodos.forEach((s) => ids.add(s.id));
+    return ids;
+  }, [historiasForTodos, asmrForTodos]);
+
+  const recentInDescanso = useMemo(() => {
+    const seen = new Set<string>();
+    const result: import("@/data/sessions").Session[] = [];
+    for (const h of history) {
+      if (seen.has(h.sessionId)) continue;
+      seen.add(h.sessionId);
+      const s = getSessionById(h.sessionId);
+      if (s && allDescansoIds.has(s.id)) result.push(s);
+      if (result.length === 10) break;
+    }
+    return result;
+  }, [history, allDescansoIds]);
+
+  const favoritesInDescanso = useMemo(() => {
+    const result: import("@/data/sessions").Session[] = [];
+    for (const id of favorites) {
+      const s = getSessionById(id);
+      if (s && allDescansoIds.has(s.id)) result.push(s);
+    }
+    return result;
+  }, [favorites, allDescansoIds]);
   const binauralSounds = useMemo(() => DESCANSO_SOUNDS.filter((s) => s.categoryId === "binaural"), []);
   const ambientalSounds = useMemo(() => DESCANSO_SOUNDS.filter((s) => s.categoryId === "ambiental"), []);
 
@@ -436,8 +467,36 @@ export default function DescansoScreen() {
 
 
         {activeTab === null ? (
-          /* ── Vista "Todos": carruseles por subcategoría ── */
+          /* ── Vista "Todos": recientes + favoritos + carruseles por subcategoría ── */
           <View>
+            {recentInDescanso.length > 0 && (
+              <>
+                <SessionCarousel
+                  title="Escuchadas recientemente"
+                  sessions={recentInDescanso}
+                  isPremium={isPremium}
+                  onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
+                  style={{ marginTop: 24, marginBottom: 0 }}
+                  cardWidth={RECENT_CARD_W}
+                  titleSize={19}
+                />
+                <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+              </>
+            )}
+            {favoritesInDescanso.length > 0 && (
+              <>
+                <SessionCarousel
+                  title="Favoritos"
+                  sessions={favoritesInDescanso}
+                  isPremium={isPremium}
+                  onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
+                  style={{ marginTop: 24, marginBottom: 0 }}
+                  cardWidth={RECENT_CARD_W}
+                  titleSize={19}
+                />
+                <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+              </>
+            )}
             {historiasForTodos.length > 0 && (
               <>
                 <SessionCarousel
