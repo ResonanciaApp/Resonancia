@@ -307,6 +307,16 @@ export default function MusicaSonidosScreen() {
   const [sortVisible,       setSortVisible]       = useState(false);
   const [searchVisible,     setSearchVisible]     = useState(false);
   const [selectedSession,   setSelectedSession]   = useState<Session|null>(null);
+  const [allVisible,        setAllVisible]         = useState(false);
+  const slideX = useRef(new Animated.Value(W)).current;
+  const closeAll = () => {
+    Animated.timing(slideX, { toValue: W, duration: 280, easing: Easing.in(Easing.cubic), useNativeDriver: true }).start(() => setAllVisible(false));
+  };
+  useEffect(() => {
+    if (!allVisible) return;
+    slideX.setValue(W);
+    Animated.timing(slideX, { toValue: 0, duration: 320, easing: Easing.out(Easing.cubic), useNativeDriver: true }).start();
+  }, [allVisible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const scrollRef  = useRef<ScrollView>(null);
   const HERO_AREA_H = 238;
@@ -414,6 +424,15 @@ export default function MusicaSonidosScreen() {
             </React.Fragment>
           );
         })}
+        {activeTab === null && (
+          <Pressable
+            onPress={() => setAllVisible(true)}
+            style={({ pressed }) => [{ flexDirection: "row", alignItems: "center", justifyContent: "center", paddingVertical: 18, gap: 6, marginTop: 4, opacity: pressed ? 0.7 : 1 }]}
+          >
+            <Text style={{ fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#F7CB6B" }}>Toda la Música y Sonidos</Text>
+            <Feather name="chevron-right" size={16} color="#F7CB6B" />
+          </Pressable>
+        )}
         {activeTab !== null && (
           <>
             <View style={styles.sessionGrid}>
@@ -492,6 +511,24 @@ export default function MusicaSonidosScreen() {
       <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} />
       <SortSheet visible={sortVisible} current={sort} onSelect={setSort} onClose={() => setSortVisible(false)} />
       <SessionActionsSheet session={selectedSession} visible={!!selectedSession} onClose={() => setSelectedSession(null)} />
+
+      {/* ── Vista "Todas las sesiones" (desliza desde la derecha) ── */}
+      <Modal visible={allVisible} transparent animationType="none" onRequestClose={closeAll} statusBarTranslucent>
+        <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string, transform: [{ translateX: slideX }] }]}>
+          <LinearGradient colors={theme.gradient as unknown as [string, string, ...string[]]} style={StyleSheet.absoluteFill} />
+          <View style={{ flexDirection: "row", alignItems: "center", paddingTop: topPad + 14, paddingHorizontal: H_PAD, paddingBottom: 14, gap: 4 }}>
+            <Pressable onPress={closeAll} hitSlop={12} style={{ padding: 4 }}>
+              <Feather name="chevron-left" size={28} color="#FBFBFB" />
+            </Pressable>
+            <Text style={{ fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: "#FBFBFB", flex: 1 }}>Toda la Música y Sonidos</Text>
+          </View>
+          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap", columnGap: 20, paddingHorizontal: H_PAD, rowGap: 24, paddingTop: 8, paddingBottom: 120 + bottomPad }}>
+            {getSessionsForTab(null).map((s) => (
+              <CategoryCard key={s.id} session={s} width={cardW} />
+            ))}
+          </ScrollView>
+        </Animated.View>
+      </Modal>
 
       {/* ── Sticky header (aparece con scroll) ── */}
       <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"}>
