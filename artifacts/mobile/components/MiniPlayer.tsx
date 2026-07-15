@@ -648,11 +648,11 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: 2,
-    backgroundColor: "rgba(61,14,22,0.40)",
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
   progressFill: {
     height: 2,
-    backgroundColor: "#D6AD5F",
+    backgroundColor: "rgba(255,255,255,0.85)",
     borderRadius: 1,
   },
 });

@@ -112,6 +112,9 @@ export function DormirMiniPlayer({ sound, isPlaying, onToggle, onStop, bottomOff
             <Feather name="x" size={20} color={closeColor} style={{ opacity: 0.6 }} />
           </Pressable>
         )}
+
+        {/* ── Barra de progreso (track decorativo, sonido en loop) ── */}
+        <View style={styles.progressTrack} pointerEvents="none" />
       </Animated.View>
     </Pressable>
   );
@@ -151,5 +154,13 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     color: "rgba(255,255,255,0.48)",
+  },
+  progressTrack: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 2,
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
 });

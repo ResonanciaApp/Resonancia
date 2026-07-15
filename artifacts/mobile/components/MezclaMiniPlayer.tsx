@@ -179,6 +179,9 @@ export function MezclaMiniPlayer({ bottomOffset, topOffset }: Props) {
         >
           <Feather name="x" size={20} color="#ffffff" style={{ opacity: 0.6 }} />
         </Pressable>
+
+        {/* ── Barra de progreso (track decorativo, mezcla en loop) ── */}
+        <View style={styles.progressTrack} pointerEvents="none" />
       </Animated.View>
     </Pressable>
   );
@@ -243,5 +246,13 @@ const styles = StyleSheet.create({
   closeBtn: {
     paddingRight: 14,
     paddingLeft: 4,
+  },
+  progressTrack: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 2,
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
 });

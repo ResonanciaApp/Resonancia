@@ -32,7 +32,7 @@ export function SessionMiniPlayer({ bottomOffset, topOffset, suppressed }: Props
   // delta = (topOffset + 56) − (SCREEN_H − bottomOffset − PLAYER_H)
   const startY = topOffset + 56 + PLAYER_H + bottomOffset - SCREEN_H;
 
-  const { currentSession, isPlaying, pauseResume, stop } = usePlayer();
+  const { currentSession, isPlaying, pauseResume, stop, progress } = usePlayer();
   const { activeSceneId } = useSceneTheme();
   const bgColor = activeSceneId === "tibet" ? "#1a1243" : "rgba(0,0,0,0.40)";
 
@@ -135,6 +135,11 @@ export function SessionMiniPlayer({ bottomOffset, topOffset, suppressed }: Props
         >
           <Feather name="x" size={20} color="#ffffff" style={{ opacity: 0.6 }} />
         </Pressable>
+
+        {/* ── Barra de progreso ───────────────────────────────────── */}
+        <View style={styles.progressTrack} pointerEvents="none">
+          <View style={[styles.progressFill, { width: `${Math.min(1, Math.max(0, progress)) * 100}%` as any }]} />
+        </View>
       </Animated.View>
     </Pressable>
   );
@@ -174,5 +179,18 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     color: "rgba(255,255,255,0.48)",
+  },
+  progressTrack: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 2,
+    backgroundColor: "rgba(255,255,255,0.15)",
+  },
+  progressFill: {
+    height: 2,
+    backgroundColor: "rgba(255,255,255,0.85)",
+    borderRadius: 1,
   },
 });
