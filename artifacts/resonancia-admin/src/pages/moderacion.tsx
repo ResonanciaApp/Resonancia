@@ -304,6 +304,7 @@ function EditDialog({
   const [description, setDescription] = useState(submission.description ?? "");
   const [isPremium, setIsPremium] = useState(submission.isPremium);
   const [isFeatured, setIsFeatured] = useState(submission.isFeatured);
+  const [isFeaturedCategory, setIsFeaturedCategory] = useState(submission.isFeaturedCategory);
   const [isNew, setIsNew] = useState(submission.isNew);
   const [skipDetail, setSkipDetail] = useState(submission.skipDetail ?? false);
   const [skipMiniPlayer, setSkipMiniPlayer] = useState(submission.skipMiniPlayer ?? false);
@@ -396,8 +397,12 @@ function EditDialog({
                 <Switch id="edit-premium" checked={isPremium} onCheckedChange={setIsPremium} />
               </div>
               <div className="flex items-center justify-between">
-                <Label htmlFor="edit-featured">Destacada</Label>
+                <Label htmlFor="edit-featured">Destacada en Inicio</Label>
                 <Switch id="edit-featured" checked={isFeatured} onCheckedChange={setIsFeatured} />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="edit-featured-category">Destacada en su categoría</Label>
+                <Switch id="edit-featured-category" checked={isFeaturedCategory} onCheckedChange={setIsFeaturedCategory} />
               </div>
               <div className="flex items-center justify-between">
                 <Label htmlFor="edit-new">Marcar como nueva</Label>
@@ -508,6 +513,7 @@ function EditDialog({
                   ...(description.trim() ? { description: description.trim() } : {}),
                   isPremium,
                   isFeatured,
+                  isFeaturedCategory,
                   isNew,
                   skipDetail,
                   skipMiniPlayer,

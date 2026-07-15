@@ -40,6 +40,8 @@ export const catalogSessionsTable = pgTable("catalog_sessions", {
   imageKey: text("image_key"),
   imageUrl: text("image_url"),
   isFeatured: boolean("is_featured").notNull().default(false),
+  /** Si true, la sesión aparece en la sección "Destacados de [categoría]" dentro de su pantalla de categoría. */
+  isFeaturedCategory: boolean("is_featured_category").notNull().default(false),
   /** Si true, esta sesión se muestra como "Destacada de hoy" en la pantalla de inicio (solo una a la vez). */
   isPinnedFeatured: boolean("is_pinned_featured").notNull().default(false),
   isNew: boolean("is_new").notNull().default(false),

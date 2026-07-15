@@ -716,6 +716,7 @@ export interface CatalogSession {
   imageKey?: string | null;
   imageUrl?: string | null;
   isFeatured: boolean;
+  isFeaturedCategory: boolean;
   isNew: boolean;
   isPremium: boolean;
   skipDetail?: boolean;
@@ -1062,6 +1063,7 @@ export interface Submission {
   imageKey?: string | null;
   imageUrl?: string | null;
   isFeatured: boolean;
+  isFeaturedCategory: boolean;
   isNew: boolean;
   isPremium: boolean;
   skipDetail?: boolean;
@@ -1144,6 +1146,7 @@ export interface ReviewEditBody {
   skipDetail?: boolean;
   skipMiniPlayer?: boolean;
   isFeatured?: boolean;
+  isFeaturedCategory?: boolean;
   isNew?: boolean;
   voiceTag?: ReviewEditBodyVoiceTag;
   ancestralTag?: string | null;

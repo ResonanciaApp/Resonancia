@@ -53,6 +53,8 @@ export type Session = {
   image: import("react-native").ImageSourcePropType;
   audio?: number;
   isFeatured?: boolean;
+  /** Destacada dentro de su propia pantalla de categoría ("Destacados de [categoría]"). */
+  isFeaturedCategory?: boolean;
   isNew?: boolean;
   isPremium?: boolean;
   skipDetail?: boolean;
@@ -1290,6 +1292,7 @@ export type CatalogSessionSnapshot = {
   benefits: string[];
   instruments: string[];
   isFeatured: boolean;
+  isFeaturedCategory?: boolean;
   isNew: boolean;
   isPremium: boolean;
   skipDetail?: boolean;
@@ -1352,6 +1355,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     local.benefits = r.benefits;
     local.instruments = r.instruments;
     local.isFeatured = r.isFeatured;
+    local.isFeaturedCategory = r.isFeaturedCategory ?? false;
     local.isNew = r.isNew;
     local.isPremium = r.isPremium;
     local.skipDetail = r.skipDetail ?? false;
@@ -1412,6 +1416,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
       instruments: r.instruments,
       image,
       isFeatured: r.isFeatured,
+      isFeaturedCategory: r.isFeaturedCategory ?? false,
       isNew: r.isNew,
       isPremium: r.isPremium,
       skipDetail: r.skipDetail ?? false,

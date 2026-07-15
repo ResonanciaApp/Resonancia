@@ -102,4 +102,5 @@
 - [Header divider full-bleed](header-border-full-bleed.md) — divider inside a padded header must be normal-flow + negative marginHorizontal, not absolute inside a padded child, to reach screen edge
 - [Session detail scene-linked](session-detail-scene-linked.md) — session/[id].tsx (Música/Sesiones/Meditaciones) now themes via useSceneTheme; sticky header = gradient[0] (lighter stop); GlowPill bg flattened to rgba(0,0,0,0.015)
 - [Action sheet theme hierarchy](action-sheet-theme-hierarchy.md) — "..." menu backgrounds: Nivel1&2 full gradient, Nivel3 solid gradient[0], Nivel4 Geometrix untouched, Nivel5 Diario/Grupos not themeable
+- [Destacados por categoría](featured-category-flag.md) — isFeaturedCategory independiente de isFeatured; duplicado en grilla es deliberado; Noches/Mañanas no ven sesiones DB-only (constantes de módulo)
 - [Session tap three-state](session-tap-three-state.md) — prioridad skipMiniPlayer > skipDetail > detalle, duplicada en ~22 sitios incl. onPress inline de carruseles (SessionCard no los cubre)

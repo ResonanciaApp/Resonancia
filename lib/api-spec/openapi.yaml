@@ -4132,6 +4132,8 @@ components:
           nullable: true
         isFeatured:
           type: boolean
+        isFeaturedCategory:
+          type: boolean
         isNew:
           type: boolean
         isPremium:
@@ -4199,7 +4201,7 @@ components:
           items:
             $ref: "#/components/schemas/CatalogAudioFile"
       required:
-        [id, title, subtitle, categoryId, categoryLabel, duration, durationLabel, description, benefits, instruments, isFeatured, isNew, isPremium, status, sortOrder, audioFiles]
+        [id, title, subtitle, categoryId, categoryLabel, duration, durationLabel, description, benefits, instruments, isFeatured, isFeaturedCategory, isNew, isPremium, status, sortOrder, audioFiles]
     CatalogPlaylist:
       type: object
       properties:
@@ -4601,6 +4603,8 @@ components:
           nullable: true
         isFeatured:
           type: boolean
+        isFeaturedCategory:
+          type: boolean
         isNew:
           type: boolean
         isPremium:
@@ -4676,7 +4680,7 @@ components:
           items:
             $ref: "#/components/schemas/CatalogAudioFile"
       required:
-        [id, title, subtitle, categoryId, categoryLabel, duration, durationLabel, description, benefits, instruments, isFeatured, isNew, isPremium, status, sortOrder, createdAt, updatedAt, audioFiles]
+        [id, title, subtitle, categoryId, categoryLabel, duration, durationLabel, description, benefits, instruments, isFeatured, isFeaturedCategory, isNew, isPremium, status, sortOrder, createdAt, updatedAt, audioFiles]
     SubmissionList:
       type: object
       properties:
@@ -4740,6 +4744,8 @@ components:
           type: boolean
           default: false
         isFeatured:
+          type: boolean
+        isFeaturedCategory:
           type: boolean
         isNew:
           type: boolean

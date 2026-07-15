@@ -777,7 +777,7 @@ router.post("/admin/tag-options", requireAuth, requireRole("admin"), async (req,
 });
 
 router.delete("/admin/tag-options/:id", requireAuth, requireRole("admin"), async (req, res) => {
-  const id = parseInt(req.params.id, 10);
+  const id = parseInt(String(req.params.id), 10);
   if (isNaN(id)) { res.status(400).json({ error: "ID inválido" }); return; }
   try {
     const [deleted] = await db

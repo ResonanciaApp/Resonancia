@@ -387,6 +387,23 @@ export default function NochesScreen() {
             {/* ── Tab: Todos ── */}
             {activeTab === "Todos" && (
               <View style={{ paddingTop: 24 }}>
+                {filteredSessions.some((s) => s.isFeaturedCategory) && (
+                  <>
+                    <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD, marginBottom: 10 }]}>
+                      Destacados de {selectedTag}
+                    </Text>
+                    {filteredSessions.filter((s) => s.isFeaturedCategory).map((s) => (
+                      <SessionRow
+                        key={`feat-${s.id}`}
+                        session={s}
+                        rating={ratings[s.id]}
+                        style={{ marginHorizontal: H_PAD }}
+                        onActionsPress={() => setActionsSession(s)}
+                      />
+                    ))}
+                    <View style={{ height: 14 }} />
+                  </>
+                )}
                 {filteredSessions.length === 0 ? (
                   <View style={styles.emptyWrap}>
                     <Feather name="moon" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />

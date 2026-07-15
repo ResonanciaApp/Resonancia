@@ -226,7 +226,7 @@ router.put("/admin/geometrix", requireAuth, requireRole("admin"), async (req, re
 
 // DELETE /admin/geometrix/:id — soft-delete (marca deleted=true)
 router.delete("/admin/geometrix/:id", requireAuth, requireRole("admin"), async (req, res) => {
-  const { id } = req.params;
+  const id = String(req.params.id);
   const isValid = GEOMETRY_DEFAULTS.some((g) => g.id === id);
   if (!isValid) {
     res.status(404).json({ error: "Geometría no encontrada" });

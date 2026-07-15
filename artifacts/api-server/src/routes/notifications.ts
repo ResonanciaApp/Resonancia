@@ -82,7 +82,8 @@ router.post("/notifications/read-all", requireAuth, async (req, res) => {
 // ── DEV ONLY: seed one notification of each type for the current user ─────────
 router.post("/notifications/seed-dev", requireAuth, async (req, res) => {
   if (process.env.NODE_ENV === "production") {
-    return res.status(404).json({ error: "Not found" });
+    res.status(404).json({ error: "Not found" });
+    return;
   }
   const me = req.currentUser!;
   try {
