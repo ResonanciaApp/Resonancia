@@ -165,9 +165,9 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose:()=>voi
 }
 
 function CategoryCard({
-  session, width: cardWidth=200, horizontal=false, onLongPress, onOptions,
+  session, width: cardWidth=200, horizontal=false, landscape=false, onLongPress, onOptions,
 }: {
-  session: Session; width?: number; horizontal?: boolean; onLongPress?: ()=>void; onOptions?: ()=>void;
+  session: Session; width?: number; horizontal?: boolean; landscape?: boolean; onLongPress?: ()=>void; onOptions?: ()=>void;
 }) {
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
@@ -180,6 +180,25 @@ function CategoryCard({
   };
   const authorObj = session.guideId ? getGuide(session.guideId) : getArtist(session.artistId);
   const author = authorObj.name;
+
+  if (landscape) {
+    return (
+      <Pressable onPress={handlePress} onLongPress={onLongPress}
+        style={({ pressed }) => [ac.lCard, { opacity: pressed ? 0.85 : 1 }]}>
+        <Image source={session.image} style={StyleSheet.absoluteFill} contentFit="cover" />
+        <LinearGradient
+          colors={["transparent", "rgba(0,0,0,0.82)"]}
+          style={StyleSheet.absoluteFill}
+        />
+        {locked && <View style={ac.lockDot}><Feather name="lock" size={9} color="#fff" /></View>}
+        <View style={ac.lBottom}>
+          <Text style={ac.lDur}>{session.durationLabel}</Text>
+          <Text style={ac.lTitle} numberOfLines={2}>{session.title}</Text>
+          {!!author && <Text style={ac.lAuthor} numberOfLines={1}>{author}</Text>}
+        </View>
+      </Pressable>
+    );
+  }
 
   if (horizontal) {
     return (
@@ -235,6 +254,11 @@ const ac = StyleSheet.create({
   durationBadge:{position:"absolute",bottom:8,left:8,backgroundColor:"rgba(27,6,15,0.72)",borderRadius:8,paddingHorizontal:8,paddingVertical:3},
   durationBadgeText:{ fontFamily: "Manrope",fontSize:11,fontWeight:"600",color:"#fff"},
   lockDot:{position:"absolute",top:6,right:6,width:20,height:20,borderRadius:10,backgroundColor:"rgba(0,0,0,0.55)",alignItems:"center",justifyContent:"center"},
+  lCard:{ width:240, height:135, borderRadius:14, overflow:"hidden" },
+  lBottom:{ position:"absolute", bottom:0, left:0, right:0, padding:11, gap:2 },
+  lDur:{ fontFamily:"Manrope", fontSize:10, fontWeight:"500", color:"rgba(255,255,255,0.72)" },
+  lTitle:{ fontFamily:"Manrope", fontSize:14, fontWeight:"700", color:"#fff", lineHeight:18 },
+  lAuthor:{ fontFamily:"Manrope", fontSize:11, color:"rgba(255,255,255,0.65)" },
 });
 
 export default function MeditacionesGuiadasScreen() {
@@ -312,7 +336,7 @@ export default function MeditacionesGuiadasScreen() {
             <ScrollView horizontal showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.featuredRow}>
               {featuredSessions.map((s)=>(
-                <CategoryCard key={`feat-${s.id}`} session={s} width={cardW} onLongPress={()=>setSelectedSession(s)} onOptions={()=>setSelectedSession(s)} />
+                <CategoryCard key={`feat-${s.id}`} session={s} landscape onLongPress={()=>setSelectedSession(s)} onOptions={()=>setSelectedSession(s)} />
               ))}
             </ScrollView>
           </>

@@ -25,6 +25,7 @@ import { CategoryInfoPanel } from "@/components/CategoryInfoPanel";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
 import { SessionRow } from "@/components/SessionRow";
 import { usePlayer } from "@/context/PlayerContext";
+import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS } from "@/data/sessions";
 import type { Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -101,6 +102,44 @@ const SUBCATEGORIES: SubDef[] = [
       "Cuencos y frecuencias sagradas que resuenan en el campo energético durante el sueño. Su efecto es acumulativo: cuanto más se practican, más profundo y reparador se vuelve el descanso nocturno.",
   },
 ];
+
+function FeaturedCard({ session }: { session: Session }) {
+  const { isPremium } = usePremium();
+  const { playSession } = usePlayer();
+  const locked = !!session.isPremium && !isPremium;
+  const handlePress = () => {
+    if (locked) { router.push("/membresia" as never); return; }
+    playSession(session);
+    router.push("/player" as never);
+  };
+  return (
+    <Pressable onPress={handlePress}
+      style={({ pressed }) => [fcStyles.card, { opacity: pressed ? 0.85 : 1 }]}>
+      <Image source={session.image as number} style={fcStyles.img} resizeMode="cover" />
+      <LinearGradient
+        colors={["transparent", "rgba(0,0,0,0.82)"]}
+        style={StyleSheet.absoluteFill}
+      />
+      {locked && (
+        <View style={fcStyles.lock}>
+          <Feather name="lock" size={9} color="#fff" />
+        </View>
+      )}
+      <View style={fcStyles.bottom}>
+        <Text style={fcStyles.dur}>{session.durationLabel}</Text>
+        <Text style={fcStyles.title} numberOfLines={2}>{session.title}</Text>
+      </View>
+    </Pressable>
+  );
+}
+const fcStyles = StyleSheet.create({
+  card: { width: 240, height: 135, borderRadius: 14, overflow: "hidden" },
+  img:  { width: 240, height: 135 },
+  bottom: { position: "absolute", bottom: 0, left: 0, right: 0, padding: 11, gap: 3 },
+  dur:  { fontFamily: "Manrope", fontSize: 10, fontWeight: "500", color: "rgba(255,255,255,0.72)" },
+  title: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", color: "#fff", lineHeight: 18 },
+  lock: { position: "absolute", top: 6, right: 6, width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(0,0,0,0.55)", alignItems: "center", justifyContent: "center" },
+});
 
 function SubIcon({ sub, size }: { sub: SubDef; size: number }) {
   return sub.family === "MaterialCommunityIcons" ? (
@@ -389,19 +428,16 @@ export default function NochesScreen() {
               <View style={{ paddingTop: 24 }}>
                 {filteredSessions.some((s) => s.isFeaturedCategory) && (
                   <>
-                    <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD, marginBottom: 10 }]}>
+                    <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD, marginBottom: 12 }]}>
                       Destacados de {selectedTag}
                     </Text>
-                    {filteredSessions.filter((s) => s.isFeaturedCategory).map((s) => (
-                      <SessionRow
-                        key={`feat-${s.id}`}
-                        session={s}
-                        rating={ratings[s.id]}
-                        style={{ marginHorizontal: H_PAD }}
-                        onActionsPress={() => setActionsSession(s)}
-                      />
-                    ))}
-                    <View style={{ height: 14 }} />
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 14, paddingBottom: 4 }}>
+                      {filteredSessions.filter((s) => s.isFeaturedCategory).map((s) => (
+                        <FeaturedCard key={`feat-${s.id}`} session={s} />
+                      ))}
+                    </ScrollView>
+                    <View style={{ height: 20 }} />
                   </>
                 )}
                 {filteredSessions.length === 0 ? (
