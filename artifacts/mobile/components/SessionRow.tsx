@@ -37,6 +37,7 @@ export function SessionRow({ session, rating, style, imageSize = 80, metaText, o
 
   const defaultPress = () => {
     if (locked) { router.push("/membresia" as never); return; }
+    if (session.skipMiniPlayer) { playSession(session); return; }
     if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
     router.push(`/session/${session.id}` as never);
   };

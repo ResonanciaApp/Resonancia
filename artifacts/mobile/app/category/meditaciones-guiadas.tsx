@@ -173,6 +173,7 @@ function CategoryCard({
   const locked   = !!session.isPremium && !isPremium;
   const handlePress = () => {
     if (locked) { router.push("/membresia" as never); return; }
+    if (session.skipMiniPlayer) { playSession(session); return; }
     if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
     router.push(`/session/${session.id}` as never);
   };

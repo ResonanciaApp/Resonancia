@@ -4139,6 +4139,9 @@ components:
         skipDetail:
           type: boolean
           default: false
+        skipMiniPlayer:
+          type: boolean
+          default: false
         frequency:
           type: string
           nullable: true
@@ -4158,6 +4161,9 @@ components:
           type: string
           nullable: true
         sonidosTag:
+          type: string
+          nullable: true
+        descansoTag:
           type: string
           nullable: true
         themeTag:
@@ -4421,6 +4427,9 @@ components:
         skipDetail:
           type: boolean
           default: false
+        skipMiniPlayer:
+          type: boolean
+          default: false
         imageObjectPath:
           type: string
           nullable: true
@@ -4451,6 +4460,9 @@ components:
           type: string
           nullable: true
         sonidosTag:
+          type: string
+          nullable: true
+        descansoTag:
           type: string
           nullable: true
         sleepTag:
@@ -4596,6 +4608,9 @@ components:
         skipDetail:
           type: boolean
           default: false
+        skipMiniPlayer:
+          type: boolean
+          default: false
         frequency:
           type: string
           nullable: true
@@ -4615,6 +4630,9 @@ components:
           type: string
           nullable: true
         sonidosTag:
+          type: string
+          nullable: true
+        descansoTag:
           type: string
           nullable: true
         themeTag:
@@ -4716,6 +4734,9 @@ components:
         isPremium:
           type: boolean
         skipDetail:
+          type: boolean
+          default: false
+        skipMiniPlayer:
           type: boolean
           default: false
         isFeatured:

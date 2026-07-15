@@ -729,6 +729,10 @@ export default function HomeScreen2() {
   const handleSelectSearchResult = useCallback(
     (s: Session) => {
       closeSearch();
+      if (s.skipMiniPlayer) {
+        playSession(s);
+        return;
+      }
       if (s.skipDetail) {
         playSession(s);
         router.push("/player" as never);
@@ -942,6 +946,7 @@ export default function HomeScreen2() {
             </Text>
             <Pressable
               onPress={() => {
+                if (filteredFeatured.skipMiniPlayer) { playSession(filteredFeatured); return; }
                 if (filteredFeatured.skipDetail) { playSession(filteredFeatured); router.push("/player" as never); }
                 else router.push(`/session/${filteredFeatured.id}` as never);
               }}
@@ -1040,7 +1045,7 @@ export default function HomeScreen2() {
           title="Escuchadas recientemente"
           sessions={filteredListened}
           isPremium={isPremium}
-          onPress={(s) => { if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } router.push(`/session/${s.id}` as never); }}
+          onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } router.push(`/session/${s.id}` as never); }}
           style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
           titleOffset={10}
           cardWidth={RECENT_CARD_W}
@@ -1051,7 +1056,7 @@ export default function HomeScreen2() {
           title="Mis favoritos"
           sessions={favoriteSessions}
           isPremium={isPremium}
-          onPress={(s) => { if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } router.push(`/session/${s.id}` as never); }}
+          onPress={(s) => { if (s.skipMiniPlayer) { playSession(s); return; } if (s.skipDetail) { playSession(s); router.push("/player" as never); return; } router.push(`/session/${s.id}` as never); }}
           style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
           titleOffset={10}
           cardWidth={RECENT_CARD_W}
@@ -1143,6 +1148,7 @@ export default function HomeScreen2() {
                 metaText={s.categoryLabel}
                 onPress={() => {
                   if (s.isPremium && !isPremium) { router.push("/membresia" as never); return; }
+                  if (s.skipMiniPlayer) { playSession(s); return; }
                   if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
                   router.push(`/session/${s.id}` as never);
                 }}

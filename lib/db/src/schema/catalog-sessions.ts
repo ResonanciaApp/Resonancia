@@ -46,6 +46,8 @@ export const catalogSessionsTable = pgTable("catalog_sessions", {
   isPremium: boolean("is_premium").notNull().default(false),
   /** Si es true, el tap en la card lanza el reproductor directo (sin pantalla de descripción). */
   skipDetail: boolean("skip_detail").notNull().default(false),
+  /** Si es true, el tap en la card empieza a reproducir directo en el miniplayer (sin abrir descripción ni reproductor). */
+  skipMiniPlayer: boolean("skip_mini_player").notNull().default(false),
   frequency: text("frequency"),
   soundTag: text("sound_tag"),
   meditationTag: text("meditation_tag"),
@@ -53,6 +55,8 @@ export const catalogSessionsTable = pgTable("catalog_sessions", {
   sabiduriaTag: text("sabiduria_tag"),
   podcastTag: text("podcast_tag"),
   sonidosTag: text("sonidos_tag"),
+  /** Subcategoría de Dormir (ej. "Relajaciones", "Historias para dormir"). */
+  descansoTag: text("descanso_tag"),
   themeTag: text("theme_tag").array(),
   sleepTag: text("sleep_tag"),
   /** Etiqueta de voz mostrada en las cards ("Guiada" / "Sin voz"). Vacío = sin etiqueta. */

@@ -331,6 +331,7 @@ export default function ExploreScreen() {
   function handleSessionPress(s: Session) {
     const locked = s.isPremium && !isPremium;
     if (locked) { router.push("/membresia" as never); return; }
+    if (s.skipMiniPlayer) { playSession(s); return; }
     if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
     router.push(`/session/${s.id}` as never);
   }

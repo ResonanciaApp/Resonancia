@@ -719,6 +719,7 @@ export interface CatalogSession {
   isNew: boolean;
   isPremium: boolean;
   skipDetail?: boolean;
+  skipMiniPlayer?: boolean;
   frequency?: string | null;
   soundTag?: string | null;
   meditationTag?: string | null;
@@ -726,6 +727,7 @@ export interface CatalogSession {
   sabiduriaTag?: string | null;
   podcastTag?: string | null;
   sonidosTag?: string | null;
+  descansoTag?: string | null;
   themeTag?: string[] | null;
   sleepTag?: string | null;
   voiceTag?: CatalogSessionVoiceTag;
@@ -922,6 +924,7 @@ export interface CreatorSubmissionInput {
   instruments?: string[];
   isPremium?: boolean;
   skipDetail?: boolean;
+  skipMiniPlayer?: boolean;
   imageObjectPath?: string | null;
   imageContentType?: string | null;
   /** @minimum 1 */
@@ -934,6 +937,7 @@ export interface CreatorSubmissionInput {
   sabiduriaTag?: string | null;
   podcastTag?: string | null;
   sonidosTag?: string | null;
+  descansoTag?: string | null;
   sleepTag?: string | null;
   voiceTag?: CreatorSubmissionInputVoiceTag;
   themeTag?: string[] | null;
@@ -1061,6 +1065,7 @@ export interface Submission {
   isNew: boolean;
   isPremium: boolean;
   skipDetail?: boolean;
+  skipMiniPlayer?: boolean;
   frequency?: string | null;
   soundTag?: string | null;
   meditationTag?: string | null;
@@ -1068,6 +1073,7 @@ export interface Submission {
   sabiduriaTag?: string | null;
   podcastTag?: string | null;
   sonidosTag?: string | null;
+  descansoTag?: string | null;
   themeTag?: string[] | null;
   sleepTag?: string | null;
   voiceTag?: SubmissionVoiceTag;
@@ -1136,6 +1142,7 @@ export interface ReviewEditBody {
   instruments?: string[];
   isPremium?: boolean;
   skipDetail?: boolean;
+  skipMiniPlayer?: boolean;
   isFeatured?: boolean;
   isNew?: boolean;
   voiceTag?: ReviewEditBodyVoiceTag;

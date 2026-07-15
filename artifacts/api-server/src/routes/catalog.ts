@@ -84,6 +84,7 @@ function serializeSession(s: CatalogSession, audioFiles: CatalogAudioFile[]) {
     isNew: s.isNew,
     isPremium: s.isPremium,
     skipDetail: s.skipDetail,
+    skipMiniPlayer: s.skipMiniPlayer,
     frequency: s.frequency,
     soundTag: s.soundTag,
     meditationTag: s.meditationTag,
@@ -91,6 +92,7 @@ function serializeSession(s: CatalogSession, audioFiles: CatalogAudioFile[]) {
     sabiduriaTag: s.sabiduriaTag,
     podcastTag: s.podcastTag,
     sonidosTag: s.sonidosTag,
+    descansoTag: s.descansoTag,
     themeTag: s.themeTag,
     sleepTag: s.sleepTag,
     voiceTag: s.voiceTag,
@@ -462,6 +464,7 @@ router.post(
           imageUrl: body.imageObjectPath ?? null,
           isPremium: body.isPremium ?? false,
           skipDetail: body.skipDetail ?? false,
+          skipMiniPlayer: body.skipMiniPlayer ?? false,
           frequency: body.frequency ?? null,
           soundTag: body.soundTag ?? null,
           meditationTag: body.meditationTag ?? null,
@@ -469,6 +472,7 @@ router.post(
           sabiduriaTag: body.sabiduriaTag ?? null,
           podcastTag: body.podcastTag ?? null,
           sonidosTag: body.sonidosTag ?? null,
+          descansoTag: body.descansoTag ?? null,
           sleepTag: body.sleepTag ?? null,
           voiceTag: body.voiceTag ?? null,
           guideId: body.guideId ?? null,
@@ -668,6 +672,7 @@ router.patch(
     if (data.instruments !== undefined) updates.instruments = data.instruments;
     if (data.isPremium !== undefined) updates.isPremium = data.isPremium;
     if (data.skipDetail !== undefined) updates.skipDetail = data.skipDetail;
+    if (data.skipMiniPlayer !== undefined) updates.skipMiniPlayer = data.skipMiniPlayer;
     if (data.isFeatured !== undefined) updates.isFeatured = data.isFeatured;
     if (data.isNew !== undefined) updates.isNew = data.isNew;
     if (data.voiceTag !== undefined) updates.voiceTag = data.voiceTag;

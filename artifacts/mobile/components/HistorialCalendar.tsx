@@ -258,6 +258,10 @@ export function HistorialCalendar() {
               key={`${entry.sessionId}-${entry.playedAt}-${i}`}
               style={({ pressed }) => [styles.entryRow, { opacity: pressed ? 0.75 : 1 }]}
               onPress={() => {
+                if (session.skipMiniPlayer) {
+                  playSession(session);
+                  return;
+                }
                 if (session.skipDetail) {
                   playSession(session);
                   router.push("/player" as never);

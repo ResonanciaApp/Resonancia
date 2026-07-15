@@ -1109,6 +1109,7 @@ export const SetMyProgressResponse = zod.object({
  * @summary Catálogo público (categorías, sesiones y metadata de audio publicadas)
  */
 export const getCatalogResponseSessionsItemSkipDetailDefault = false;
+export const getCatalogResponseSessionsItemSkipMiniPlayerDefault = false;
 
 export const GetCatalogResponse = zod.object({
   "categories": zod.array(zod.object({
@@ -1141,6 +1142,7 @@ export const GetCatalogResponse = zod.object({
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(getCatalogResponseSessionsItemSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(getCatalogResponseSessionsItemSkipMiniPlayerDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1148,6 +1150,7 @@ export const GetCatalogResponse = zod.object({
   "sabiduriaTag": zod.string().nullish(),
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
+  "descansoTag": zod.string().nullish(),
   "themeTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
@@ -1196,6 +1199,7 @@ export const GetCatalogResponse = zod.object({
  * @summary Sesión "Destacada de hoy" elegida manualmente por el admin (o null)
  */
 export const getPinnedFeaturedResponseSessionOneSkipDetailDefault = false;
+export const getPinnedFeaturedResponseSessionOneSkipMiniPlayerDefault = false;
 
 export const GetPinnedFeaturedResponse = zod.object({
   "session": zod.union([zod.object({
@@ -1215,6 +1219,7 @@ export const GetPinnedFeaturedResponse = zod.object({
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(getPinnedFeaturedResponseSessionOneSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(getPinnedFeaturedResponseSessionOneSkipMiniPlayerDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1222,6 +1227,7 @@ export const GetPinnedFeaturedResponse = zod.object({
   "sabiduriaTag": zod.string().nullish(),
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
+  "descansoTag": zod.string().nullish(),
   "themeTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
@@ -1291,6 +1297,7 @@ export const GetPopularSessionsQueryParams = zod.object({
 })
 
 export const getPopularSessionsResponseSessionsItemSkipDetailDefault = false;
+export const getPopularSessionsResponseSessionsItemSkipMiniPlayerDefault = false;
 
 export const GetPopularSessionsResponse = zod.object({
   "sessions": zod.array(zod.object({
@@ -1310,6 +1317,7 @@ export const GetPopularSessionsResponse = zod.object({
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(getPopularSessionsResponseSessionsItemSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(getPopularSessionsResponseSessionsItemSkipMiniPlayerDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1317,6 +1325,7 @@ export const GetPopularSessionsResponse = zod.object({
   "sabiduriaTag": zod.string().nullish(),
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
+  "descansoTag": zod.string().nullish(),
   "themeTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
@@ -1369,6 +1378,7 @@ export const createSubmissionBodyInstrumentsItemMax = 80;
 export const createSubmissionBodyInstrumentsMax = 12;
 
 export const createSubmissionBodySkipDetailDefault = false;
+export const createSubmissionBodySkipMiniPlayerDefault = false;
 export const createSubmissionBodyFrequencyMax = 60;
 
 
@@ -1394,6 +1404,7 @@ export const CreateSubmissionBody = zod.object({
   "instruments": zod.array(zod.string().max(createSubmissionBodyInstrumentsItemMax)).max(createSubmissionBodyInstrumentsMax).optional(),
   "isPremium": zod.boolean().optional(),
   "skipDetail": zod.boolean().default(createSubmissionBodySkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(createSubmissionBodySkipMiniPlayerDefault),
   "imageObjectPath": zod.string().nullish(),
   "imageContentType": zod.string().nullish(),
   "imageSizeBytes": zod.number().min(1).nullish(),
@@ -1404,6 +1415,7 @@ export const CreateSubmissionBody = zod.object({
   "sabiduriaTag": zod.string().nullish(),
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
+  "descansoTag": zod.string().nullish(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "themeTag": zod.array(zod.string()).nullish(),
@@ -1429,6 +1441,7 @@ export const GetPendingSubmissionsQueryParams = zod.object({
 })
 
 export const getPendingSubmissionsResponseSubmissionsItemSkipDetailDefault = false;
+export const getPendingSubmissionsResponseSubmissionsItemSkipMiniPlayerDefault = false;
 
 export const GetPendingSubmissionsResponse = zod.object({
   "submissions": zod.array(zod.object({
@@ -1448,6 +1461,7 @@ export const GetPendingSubmissionsResponse = zod.object({
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(getPendingSubmissionsResponseSubmissionsItemSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(getPendingSubmissionsResponseSubmissionsItemSkipMiniPlayerDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1455,6 +1469,7 @@ export const GetPendingSubmissionsResponse = zod.object({
   "sabiduriaTag": zod.string().nullish(),
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
+  "descansoTag": zod.string().nullish(),
   "themeTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
@@ -1495,6 +1510,7 @@ export const GetPendingSubmissionsResponse = zod.object({
  * @summary Envíos del creador autenticado (con estado y motivo de rechazo)
  */
 export const getMySubmissionsResponseSubmissionsItemSkipDetailDefault = false;
+export const getMySubmissionsResponseSubmissionsItemSkipMiniPlayerDefault = false;
 
 export const GetMySubmissionsResponse = zod.object({
   "submissions": zod.array(zod.object({
@@ -1514,6 +1530,7 @@ export const GetMySubmissionsResponse = zod.object({
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(getMySubmissionsResponseSubmissionsItemSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(getMySubmissionsResponseSubmissionsItemSkipMiniPlayerDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1521,6 +1538,7 @@ export const GetMySubmissionsResponse = zod.object({
   "sabiduriaTag": zod.string().nullish(),
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
+  "descansoTag": zod.string().nullish(),
   "themeTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
@@ -1565,6 +1583,7 @@ export const ApproveSubmissionParams = zod.object({
 })
 
 export const approveSubmissionResponseSkipDetailDefault = false;
+export const approveSubmissionResponseSkipMiniPlayerDefault = false;
 
 export const ApproveSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -1583,6 +1602,7 @@ export const ApproveSubmissionResponse = zod.object({
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(approveSubmissionResponseSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(approveSubmissionResponseSkipMiniPlayerDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1590,6 +1610,7 @@ export const ApproveSubmissionResponse = zod.object({
   "sabiduriaTag": zod.string().nullish(),
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
+  "descansoTag": zod.string().nullish(),
   "themeTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
@@ -1641,6 +1662,7 @@ export const RejectSubmissionBody = zod.object({
 })
 
 export const rejectSubmissionResponseSkipDetailDefault = false;
+export const rejectSubmissionResponseSkipMiniPlayerDefault = false;
 
 export const RejectSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -1659,6 +1681,7 @@ export const RejectSubmissionResponse = zod.object({
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(rejectSubmissionResponseSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(rejectSubmissionResponseSkipMiniPlayerDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1666,6 +1689,7 @@ export const RejectSubmissionResponse = zod.object({
   "sabiduriaTag": zod.string().nullish(),
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
+  "descansoTag": zod.string().nullish(),
   "themeTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
@@ -1728,6 +1752,7 @@ export const editSubmissionBodyInstrumentsItemMax = 80;
 export const editSubmissionBodyInstrumentsMax = 12;
 
 export const editSubmissionBodySkipDetailDefault = false;
+export const editSubmissionBodySkipMiniPlayerDefault = false;
 
 export const EditSubmissionBody = zod.object({
   "title": zod.string().min(1).max(editSubmissionBodyTitleMax).optional(),
@@ -1740,6 +1765,7 @@ export const EditSubmissionBody = zod.object({
   "instruments": zod.array(zod.string().max(editSubmissionBodyInstrumentsItemMax)).max(editSubmissionBodyInstrumentsMax).optional(),
   "isPremium": zod.boolean().optional(),
   "skipDetail": zod.boolean().default(editSubmissionBodySkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(editSubmissionBodySkipMiniPlayerDefault),
   "isFeatured": zod.boolean().optional(),
   "isNew": zod.boolean().optional(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
@@ -1751,6 +1777,7 @@ export const EditSubmissionBody = zod.object({
 })
 
 export const editSubmissionResponseSkipDetailDefault = false;
+export const editSubmissionResponseSkipMiniPlayerDefault = false;
 
 export const EditSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -1769,6 +1796,7 @@ export const EditSubmissionResponse = zod.object({
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(editSubmissionResponseSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(editSubmissionResponseSkipMiniPlayerDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1776,6 +1804,7 @@ export const EditSubmissionResponse = zod.object({
   "sabiduriaTag": zod.string().nullish(),
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
+  "descansoTag": zod.string().nullish(),
   "themeTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
@@ -1819,6 +1848,7 @@ export const HideSubmissionParams = zod.object({
 })
 
 export const hideSubmissionResponseSkipDetailDefault = false;
+export const hideSubmissionResponseSkipMiniPlayerDefault = false;
 
 export const HideSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -1837,6 +1867,7 @@ export const HideSubmissionResponse = zod.object({
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(hideSubmissionResponseSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(hideSubmissionResponseSkipMiniPlayerDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1844,6 +1875,7 @@ export const HideSubmissionResponse = zod.object({
   "sabiduriaTag": zod.string().nullish(),
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
+  "descansoTag": zod.string().nullish(),
   "themeTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
@@ -1887,6 +1919,7 @@ export const UnhideSubmissionParams = zod.object({
 })
 
 export const unhideSubmissionResponseSkipDetailDefault = false;
+export const unhideSubmissionResponseSkipMiniPlayerDefault = false;
 
 export const UnhideSubmissionResponse = zod.object({
   "id": zod.string(),
@@ -1905,6 +1938,7 @@ export const UnhideSubmissionResponse = zod.object({
   "isNew": zod.boolean(),
   "isPremium": zod.boolean(),
   "skipDetail": zod.boolean().default(unhideSubmissionResponseSkipDetailDefault),
+  "skipMiniPlayer": zod.boolean().default(unhideSubmissionResponseSkipMiniPlayerDefault),
   "frequency": zod.string().nullish(),
   "soundTag": zod.string().nullish(),
   "meditationTag": zod.string().nullish(),
@@ -1912,6 +1946,7 @@ export const UnhideSubmissionResponse = zod.object({
   "sabiduriaTag": zod.string().nullish(),
   "podcastTag": zod.string().nullish(),
   "sonidosTag": zod.string().nullish(),
+  "descansoTag": zod.string().nullish(),
   "themeTag": zod.array(zod.string()).nullish(),
   "sleepTag": zod.string().nullish(),
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),

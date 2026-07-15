@@ -21,13 +21,11 @@ import {
   LogOut,
   PlusCircle,
   Music2,
-  Music,
   Hexagon,
   Library,
   UserPlus,
   Radio,
   Film,
-  Moon,
   Sparkles,
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
@@ -40,7 +38,6 @@ import ModeracionPage from "@/pages/moderacion";
 import MezclasPage from "@/pages/mezclas";
 import CategoriasPage from "@/pages/categorias";
 import SesionesPage from "@/pages/sesiones";
-import CancionesPage from "@/pages/canciones";
 import SonidosPage from "@/pages/sonidos";
 import GeometrixPage from "@/pages/geometrix";
 import PlaylistsPage from "@/pages/playlists";
@@ -169,12 +166,10 @@ const NAV = [
   { href: "/categorias", label: "Categorías", icon: FolderTree },
   { href: "/playlists", label: "Playlists", icon: Library },
   { href: "/sesiones/nueva", label: "Nueva sesión", icon: PlusCircle },
-  { href: "/canciones/nueva", label: "Nueva canción", icon: Music },
   { href: "/sonidos", label: "Sonidos Mixer", icon: Music2 },
   { href: "/geometrix", label: "Geometrix", icon: Hexagon },
   { href: "/guiadores-vivo", label: "Sesiones en vivo", icon: Radio },
   { href: "/videos", label: "Videos", icon: Film },
-  { href: "/descanso-sonidos", label: "Sonidos Descanso", icon: Moon },
   { href: "/escenas", label: "Escenas Geometrix", icon: Sparkles },
 ];
 
@@ -290,7 +285,6 @@ function AdminGate() {
         <Route path="/mezclas" component={MezclasPage} />
         <Route path="/categorias" component={CategoriasPage} />
         <Route path="/sesiones/nueva" component={SesionesPage} />
-        <Route path="/canciones/nueva" component={CancionesPage} />
         <Route path="/playlists" component={PlaylistsPage} />
         <Route path="/sonidos" component={SonidosPage} />
         <Route path="/geometrix" component={GeometrixPage} />

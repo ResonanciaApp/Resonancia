@@ -25,14 +25,17 @@ import {
 
 const CATS = [
   { id: "sonidos-ancestrales", label: "Sesiones",  categoryLabel: "Sesiones", color: "#D4AF37" },
+  { id: "descanso", label: "Dormir", categoryLabel: "Dormir", color: "#8AAAD4" },
   { id: "meditaciones-guiadas", label: "Meditaciones", categoryLabel: "Meditaciones", color: "#E9C46A" },
+  { id: "musica-sonidos", label: "Música", categoryLabel: "Música", color: "#FBA980" },
 ] as const;
 
 type CatId = typeof CATS[number]["id"];
 
 const ANCESTRAL_TAGS = ["Cuencos Tibetanos","Cuencos de Cuarzo","Mix de Cuencos","Gongs","Cuencos y Gongs","Full Instrumentos"];
 const MEDITATION_TAGS = ["No Duales","Visualizaciones","Mantras","Escaneo Corporal","Manifestación","3 Minutos de Sabiduría"];
-const SOUND_TAGS = ["Música Ambient","Música Enteógena","Música Étnica"];
+const SOUND_TAGS = ["Música Ambient","Música Enteógena","Música Étnica","Música Tribal"];
+const DESCANSO_TAGS = ["Relajaciones","Sueño profundo","Ruidos","Meditaciones","Historias para dormir","Historias infantiles","ASMR"];
 const SONIDOS_TAGS = ["Sonidos Binaurales","Sonidos Naturaleza","Sonidos Atmosféricos"];
 const PODCAST_TAGS = ["Espiritualidad","Salud y Bienestar","Disciplinas","Psicología Transpersonal","Enteógenos","Sobrenatural","Neurociencia"];
 const SLEEP_TAGS = ["Sonidos Binaurales","Sonidos Ancestrales","ASMR Expansivos"];
@@ -74,12 +77,26 @@ export default function SesionesPage() {
   const [duration, setDuration] = useState("");
   const [isPremium, setIsPremium] = useState(false);
   const [skipDetail, setSkipDetail] = useState(false);
+  const [skipMiniPlayer, setSkipMiniPlayer] = useState(false);
   const [frequency, setFrequency] = useState("");
   const [voiceTag, setVoiceTag] = useState("");
+
+  // Toggles mutuamente excluyentes (reproductor directo vs miniplayer directo)
+  const handleSkipDetail = (v: boolean) => {
+    setSkipDetail(v);
+    if (v) setSkipMiniPlayer(false);
+  };
+  const handleSkipMiniPlayer = (v: boolean) => {
+    setSkipMiniPlayer(v);
+    if (v) setSkipDetail(false);
+  };
 
   // Tags por categoría
   const [ancestralTag, setAncestralTag] = useState("");
   const [meditationTag, setMeditationTag] = useState("");
+  const [soundTag, setSoundTag] = useState("");
+  const [descansoTag, setDescansoTag] = useState("");
+  const [artistId, setArtistId] = useState("");
   const [sonidosTag, setSonidosTag] = useState("");
   const [podcastTag, setPodcastTag] = useState("");
   const [podcastMode, setPodcastMode] = useState<"sonidos"|"podcast">("sonidos");
@@ -200,6 +217,8 @@ export default function SesionesPage() {
   // ── Validación rápida ──
   const validate = (): string | null => {
     if (!categoryId) return "Seleccioná una categoría";
+    if (categoryId === "descanso" && !descansoTag) return "Seleccioná una subcategoría de Dormir";
+    if (categoryId === "musica-sonidos" && !soundTag) return "Seleccioná una subcategoría de Música";
     if (!title.trim()) return "El título es requerido";
     if (!subtitle.trim()) return "El subtítulo es requerido";
     if (!description.trim()) return "La descripción es requerida";
@@ -269,6 +288,7 @@ export default function SesionesPage() {
         duration: Number(duration),
         isPremium,
         skipDetail,
+        skipMiniPlayer,
         frequency: frequency.trim() || null,
         voiceTag: (voiceTag as Parameters<typeof createSubmission>[0]["data"]["voiceTag"]) || undefined,
         benefits: benefits.length ? benefits : undefined,
@@ -277,9 +297,12 @@ export default function SesionesPage() {
         sleepTag: sleepTag as Parameters<typeof createSubmission>[0]["data"]["sleepTag"] || undefined,
         ancestralTag: ancestralTag as Parameters<typeof createSubmission>[0]["data"]["ancestralTag"] || undefined,
         meditationTag: meditationTag as Parameters<typeof createSubmission>[0]["data"]["meditationTag"] || undefined,
+        soundTag: soundTag as Parameters<typeof createSubmission>[0]["data"]["soundTag"] || undefined,
+        descansoTag: descansoTag || undefined,
         sonidosTag: sonidosTag as Parameters<typeof createSubmission>[0]["data"]["sonidosTag"] || undefined,
         podcastTag: podcastTag as Parameters<typeof createSubmission>[0]["data"]["podcastTag"] || undefined,
-        guideId: guideIds.filter(Boolean)[0]?.trim() || null,
+        artistId: categoryId === "musica-sonidos" ? (artistId.trim() || null) : null,
+        guideId: categoryId === "musica-sonidos" ? null : (guideIds.filter(Boolean)[0]?.trim() || null),
         imageObjectPath: imgUploaded?.objectPath ?? null,
         imageContentType: imgUploaded?.contentType ?? null,
         imageSizeBytes: imgUploaded?.sizeBytes ?? null,
@@ -309,8 +332,9 @@ export default function SesionesPage() {
   const handleReset = () => {
     setDone(false);
     setCategoryId(""); setTitle(""); setSubtitle(""); setDescription("");
-    setDuration(""); setIsPremium(false); setSkipDetail(false); setFrequency(""); setVoiceTag("");
+    setDuration(""); setIsPremium(false); setSkipDetail(false); setSkipMiniPlayer(false); setFrequency(""); setVoiceTag("");
     setAncestralTag(""); setMeditationTag("");
+    setSoundTag(""); setDescansoTag(""); setArtistId("");
     setSonidosTag(""); setPodcastTag(""); setSleepTag(""); setThemeTag([]);
     setGuideIds([""]);
     setBenefits([]); setInstruments([]);
@@ -364,14 +388,15 @@ export default function SesionesPage() {
                 setCategoryId(cat.id);
                 // reset tags al cambiar categoría
                 setAncestralTag(""); setMeditationTag("");
+                setSoundTag(""); setDescansoTag(""); setArtistId("");
                 setSonidosTag(""); setPodcastTag(""); setGuideIds([""]);
                 // auto-mostrar audio2 con rol correcto según categoría
-                if (cat.id === "sonidos-ancestrales" || cat.id === "meditaciones-guiadas") {
+                if (cat.id === "sonidos-ancestrales" || cat.id === "meditaciones-guiadas" || cat.id === "descanso") {
                   setShowAudio2(true);
                   setAudio2((a) => ({ ...a, role: "voice" }));
                 } else {
                   setShowAudio2(false);
-                  setAudio2(emptyAudioSlot());
+                  setAudio2({ ...emptyAudioSlot(), role: "ambient" });
                 }
               }}
               className={`relative flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-left transition-all ${
@@ -423,7 +448,21 @@ export default function SesionesPage() {
             <span className="text-xs text-muted-foreground">{description.length}/2000</span>
           </Field>
 
-          {categoryId && (
+          {categoryId === "musica-sonidos" && (
+            <Field label="Artista (opcional)">
+              <Input
+                value={artistId}
+                onChange={(e) => setArtistId(e.target.value)}
+                placeholder="id-del-artista (ej: lumen-sonora)"
+                maxLength={100}
+              />
+              <span className="text-xs text-muted-foreground">
+                Default si se deja vacío: Resonancia
+              </span>
+            </Field>
+          )}
+
+          {categoryId && categoryId !== "musica-sonidos" && (
             <Field label="Autores / Voces guía">
               <div className="flex flex-col gap-2">
                 {guideIds.map((gid, i) => (
@@ -516,10 +555,17 @@ export default function SesionesPage() {
             </Label>
           </div>
           <div className="flex items-center gap-3">
-            <Switch id="skipDetail" checked={skipDetail} onCheckedChange={setSkipDetail} />
+            <Switch id="skipDetail" checked={skipDetail} onCheckedChange={handleSkipDetail} />
             <Label htmlFor="skipDetail" className="cursor-pointer">
               Pasar directo al reproductor
               <span className="ml-2 text-xs text-muted-foreground">(omite la pantalla de descripción)</span>
+            </Label>
+          </div>
+          <div className="flex items-center gap-3">
+            <Switch id="skipMiniPlayer" checked={skipMiniPlayer} onCheckedChange={handleSkipMiniPlayer} />
+            <Label htmlFor="skipMiniPlayer" className="cursor-pointer">
+              Pasar directo al miniplayer
+              <span className="ml-2 text-xs text-muted-foreground">(reproduce al instante en el miniplayer, sin abrir pantallas)</span>
             </Label>
           </div>
         </div>
@@ -553,6 +599,26 @@ export default function SesionesPage() {
               />
             )}
 
+            {categoryId === "descanso" && (
+              <SingleTagOptionSelector
+                tagType="descanso"
+                defaults={DESCANSO_TAGS}
+                label="Subcategoría *"
+                selected={descansoTag}
+                onSelect={setDescansoTag}
+              />
+            )}
+
+            {categoryId === "musica-sonidos" && (
+              <SingleTagOptionSelector
+                tagType="sound"
+                defaults={SOUND_TAGS}
+                label="Subcategoría *"
+                selected={soundTag}
+                onSelect={setSoundTag}
+              />
+            )}
+
           </div>
         </Section>
       )}
@@ -582,6 +648,16 @@ export default function SesionesPage() {
               onToggle={toggleTheme}
               pill
             />
+
+            {(categoryId === "musica-sonidos" || categoryId === "descanso") && (
+              <SingleTagOptionSelector
+                tagType="sleep"
+                defaults={SLEEP_TAGS}
+                label="Etiqueta Dormir (opcional)"
+                selected={sleepTag}
+                onSelect={setSleepTag}
+              />
+            )}
           </div>
         </Section>
       )}
@@ -593,9 +669,9 @@ export default function SesionesPage() {
         onToggle={() => toggleSection("audios")}
       >
         {(() => {
-          const isAncestralOrMed = categoryId === "sonidos-ancestrales" || categoryId === "meditaciones-guiadas";
-          const audio1Label = "Audio base *";
-          const audio2Label = "Voz guía (opcional)";
+          const isMusica = categoryId === "musica-sonidos";
+          const audio1Label = isMusica ? "Audio principal *" : "Audio base *";
+          const audio2Label = isMusica ? "Audio ambiente (opcional)" : "Voz guía (opcional)";
           return (
             <div className="space-y-6">
               <AudioUploadSlot

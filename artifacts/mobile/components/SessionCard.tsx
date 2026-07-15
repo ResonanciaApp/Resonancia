@@ -89,6 +89,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const handlePress = () => {
     if (locked) { router.push("/membresia" as never); return; }
     if (overridePress) { overridePress(); return; }
+    if (session.skipMiniPlayer) { playSession(session); return; }
     const SKIP_DETAIL_CATS = ["sonidos-ancestrales", "musica-sonidos"];
     const goToPlayer = session.skipDetail !== false && (session.skipDetail === true || SKIP_DETAIL_CATS.includes(session.categoryId ?? ""));
     if (goToPlayer) { playSession(session); router.push("/player" as never); return; }

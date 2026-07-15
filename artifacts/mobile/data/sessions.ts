@@ -56,6 +56,8 @@ export type Session = {
   isNew?: boolean;
   isPremium?: boolean;
   skipDetail?: boolean;
+  /** Al tocar la card: reproduce al instante y solo aparece el miniplayer (sin abrir pantallas). */
+  skipMiniPlayer?: boolean;
   frequency?: string;
   soundTag?: SoundTag;
   meditationTag?: MeditationTag;
@@ -1291,6 +1293,7 @@ export type CatalogSessionSnapshot = {
   isNew: boolean;
   isPremium: boolean;
   skipDetail?: boolean;
+  skipMiniPlayer?: boolean;
   frequency?: string | null;
   soundTag?: string | null;
   meditationTag?: string | null;
@@ -1298,6 +1301,7 @@ export type CatalogSessionSnapshot = {
   sabiduriaTag?: string | null;
   podcastTag?: string | null;
   sonidosTag?: string | null;
+  descansoTag?: string | null;
   themeTag?: string[] | null;
   sleepTag?: string | null;
   voiceTag?: string | null;
@@ -1351,6 +1355,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     local.isNew = r.isNew;
     local.isPremium = r.isPremium;
     local.skipDetail = r.skipDetail ?? false;
+    local.skipMiniPlayer = r.skipMiniPlayer ?? false;
     local.frequency = r.frequency ?? undefined;
     local.soundTag = (r.soundTag ?? undefined) as SoundTag | undefined;
     local.meditationTag = (r.meditationTag ?? undefined) as MeditationTag | undefined;
@@ -1358,6 +1363,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     local.sabiduriaTag = (r.sabiduriaTag ?? undefined) as SabiduriaTag | undefined;
     local.podcastTag = (r.podcastTag ?? undefined) as PodcastTag | undefined;
     local.sonidosTag = (r.sonidosTag ?? undefined) as SonidosTag | undefined;
+    local.descansoTag = (r.descansoTag ?? undefined) as DescansoTag | undefined;
     local.themeTag = (r.themeTag ?? undefined) as ThemeTag[] | undefined;
     local.sleepTag = (r.sleepTag ?? undefined) as SleepTag | undefined;
     // Sesión bundleada: solo sobrescribir si el admin fijó una etiqueta explícita.
@@ -1409,6 +1415,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
       isNew: r.isNew,
       isPremium: r.isPremium,
       skipDetail: r.skipDetail ?? false,
+      skipMiniPlayer: r.skipMiniPlayer ?? false,
       frequency: r.frequency ?? undefined,
       soundTag: (r.soundTag ?? undefined) as SoundTag | undefined,
       meditationTag: (r.meditationTag ?? undefined) as MeditationTag | undefined,
@@ -1416,6 +1423,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
       sabiduriaTag: (r.sabiduriaTag ?? undefined) as SabiduriaTag | undefined,
       podcastTag: (r.podcastTag ?? undefined) as PodcastTag | undefined,
       sonidosTag: (r.sonidosTag ?? undefined) as SonidosTag | undefined,
+      descansoTag: (r.descansoTag ?? undefined) as DescansoTag | undefined,
       themeTag: (r.themeTag ?? undefined) as ThemeTag[] | undefined,
       sleepTag: (r.sleepTag ?? undefined) as SleepTag | undefined,
       voiceTag: (r.voiceTag ?? null) as "Guiada" | "Sin voz" | null,
