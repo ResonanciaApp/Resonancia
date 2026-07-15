@@ -115,30 +115,26 @@ function FeaturedCard({ session }: { session: Session }) {
   return (
     <Pressable onPress={handlePress}
       style={({ pressed }) => [fcStyles.card, { opacity: pressed ? 0.85 : 1 }]}>
-      <Image source={session.image as number} style={fcStyles.img} resizeMode="cover" />
-      <LinearGradient
-        colors={["transparent", "rgba(0,0,0,0.82)"]}
-        style={StyleSheet.absoluteFill}
-      />
-      {locked && (
-        <View style={fcStyles.lock}>
-          <Feather name="lock" size={9} color="#fff" />
-        </View>
-      )}
-      <View style={fcStyles.bottom}>
-        <Text style={fcStyles.dur}>{session.durationLabel}</Text>
-        <Text style={fcStyles.title} numberOfLines={2}>{session.title}</Text>
+      <View style={fcStyles.imgWrap}>
+        <Image source={session.image as number} style={fcStyles.img} resizeMode="cover" />
+        {locked && (
+          <View style={fcStyles.lock}>
+            <Feather name="lock" size={9} color="#fff" />
+          </View>
+        )}
       </View>
+      <Text style={fcStyles.dur}>{session.durationLabel}</Text>
+      <Text style={fcStyles.title} numberOfLines={2}>{session.title}</Text>
     </Pressable>
   );
 }
 const fcStyles = StyleSheet.create({
-  card: { width: 299, height: 187, borderRadius: 14, overflow: "hidden" },
-  img:  { width: 299, height: 187 },
-  bottom: { position: "absolute", bottom: 0, left: 0, right: 0, padding: 11, gap: 3 },
-  dur:  { fontFamily: "Manrope", fontSize: 10, fontWeight: "500", color: "rgba(255,255,255,0.72)" },
-  title: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", color: "#fff", lineHeight: 18 },
-  lock: { position: "absolute", top: 6, right: 6, width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(0,0,0,0.55)", alignItems: "center", justifyContent: "center" },
+  card:    { width: 299 },
+  imgWrap: { width: 299, height: 187, borderRadius: 14, overflow: "hidden" },
+  img:     { width: 299, height: 187 },
+  dur:     { fontFamily: "Manrope", fontSize: 10, fontWeight: "500", color: "#F4F4F4", marginTop: 8 },
+  title:   { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4DAD5", lineHeight: 17, marginTop: 3 },
+  lock:    { position: "absolute", top: 6, right: 6, width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(0,0,0,0.55)", alignItems: "center", justifyContent: "center" },
 });
 
 function SubIcon({ sub, size }: { sub: SubDef; size: number }) {
@@ -429,7 +425,7 @@ export default function NochesScreen() {
                 {filteredSessions.some((s) => s.isFeaturedCategory) && (
                   <>
                     <Text style={[styles.sectionTitle, { color: colors.foreground, paddingHorizontal: H_PAD, marginBottom: 24, marginTop: 10 }]}>
-                      Destacados de {selectedTag}
+                      Contenido destacado
                     </Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}
                       contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 14, paddingBottom: 4 }}>
@@ -437,7 +433,7 @@ export default function NochesScreen() {
                         <FeaturedCard key={`feat-${s.id}`} session={s} />
                       ))}
                     </ScrollView>
-                    <View style={{ height: 20 }} />
+                    <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20 }} />
                   </>
                 )}
                 {filteredSessions.length === 0 ? (
