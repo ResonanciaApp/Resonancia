@@ -323,27 +323,30 @@ export default function NochesScreen() {
             <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
         )}
-        {activeTab === null && TABS.map((sub) => {
-          const tabSessions = getSessionsForTab(sub.tag);
-          if (tabSessions.length === 0) return null;
-          const preview = tabSessions.slice(0, 5);
-          const subHasMore = tabSessions.length > 5;
-          return (
-            <React.Fragment key={sub.tag}>
-              <SessionCarousel
-                title={sub.tag}
-                sessions={preview}
-                isPremium={isPremium}
-                onPress={(s) => { playSession(s); router.push("/player" as never); }}
-                style={{ marginTop: 24, marginBottom: 0 }}
-                cardWidth={RECENT_CARD_W}
-                titleSize={19}
-                onViewAll={subHasMore ? () => setActiveTab(sub.tag) : undefined}
-              />
-              <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
-            </React.Fragment>
-          );
-        })}
+        {activeTab === null && (() => {
+          const visibleSubs = TABS.filter((sub) => getSessionsForTab(sub.tag).length > 0);
+          return visibleSubs.map((sub, idx) => {
+            const tabSessions = getSessionsForTab(sub.tag);
+            const preview = tabSessions.slice(0, 5);
+            const subHasMore = tabSessions.length > 5;
+            const isLast = idx === visibleSubs.length - 1;
+            return (
+              <React.Fragment key={sub.tag}>
+                <SessionCarousel
+                  title={sub.tag}
+                  sessions={preview}
+                  isPremium={isPremium}
+                  onPress={(s) => { playSession(s); router.push("/player" as never); }}
+                  style={{ marginTop: 24, marginBottom: 0 }}
+                  cardWidth={RECENT_CARD_W}
+                  titleSize={19}
+                  onViewAll={subHasMore ? () => setActiveTab(sub.tag) : undefined}
+                />
+                {!isLast && <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />}
+              </React.Fragment>
+            );
+          });
+        })()}
         {activeTab === null && (
           <Pressable
             onPress={() => setAllVisible(true)}
