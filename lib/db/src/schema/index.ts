@@ -48,3 +48,4 @@ export * from "./catalog-tag-options";
 export * from "./catalog-videos";
 export * from "./descanso-sounds";
 export * from "./scene-animations";
+export * from "./explore-sections";

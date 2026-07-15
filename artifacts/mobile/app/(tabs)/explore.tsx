@@ -286,12 +286,35 @@ export default function ExploreScreen() {
 
   // ── Destacada de hoy (solo meditaciones) ──
   const { data: pinnedFeaturedData } = useGetPinnedFeatured();
+
+  // ── Orden de carruseles desde la API ──
+  const [exploreSections, setExploreSections] = React.useState<
+    { slug: string; label: string; visible: boolean; sortOrder: number }[]
+  >([]);
+  React.useEffect(() => {
+    const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "";
+    fetch(`${API_URL}/api/explore-sections`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data?.sections) setExploreSections(data.sections); })
+      .catch(() => {/* usa fallback */});
+  }, []);
+
   const themeCarousels = React.useMemo(() => {
-    // Derivar tags únicos de las sesiones (bundle + DB), en el orden de TAG_CARDS primero.
+    const sessionLabels = Array.from(new Set(SESSIONS.flatMap((s) => s.themeTag ?? [])));
+
+    // Si ya cargó la config de la API, usarla
+    if (exploreSections.length > 0) {
+      return exploreSections
+        .filter((sec) => sec.visible && sessionLabels.includes(sec.label))
+        .map((sec) => ({
+          label: sec.label,
+          sessions: SESSIONS.filter((s) => s.themeTag?.includes(sec.label)),
+        }));
+    }
+
+    // Fallback: orden de TAG_CARDS (mientras carga)
     const knownOrder = TAG_CARDS.map((tc) => tc.label as string);
-    const allTags = Array.from(
-      new Set(SESSIONS.flatMap((s) => s.themeTag ?? []))
-    ).sort((a, b) => {
+    const allTags = [...sessionLabels].sort((a, b) => {
       const ia = knownOrder.indexOf(a);
       const ib = knownOrder.indexOf(b);
       if (ia === -1 && ib === -1) return 0;
@@ -303,7 +326,7 @@ export default function ExploreScreen() {
       label: tag,
       sessions: SESSIONS.filter((s) => s.themeTag?.includes(tag)),
     }));
-  }, [catalogVersion]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [catalogVersion, exploreSections]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const featuredHoy = React.useMemo(() => {
     const pinned = pinnedFeaturedData?.session;

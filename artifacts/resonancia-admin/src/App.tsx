@@ -27,6 +27,7 @@ import {
   Radio,
   Film,
   Sparkles,
+  LayoutList,
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/queryClient";
@@ -46,6 +47,7 @@ import GuiadoresVivoPage from "@/pages/guiadores-vivo";
 import VideosPage from "@/pages/videos";
 import DescansoSonidosPage from "@/pages/descanso-sonidos";
 import EscenasPage from "@/pages/escenas";
+import ExplorarPage from "@/pages/explorar";
 
 const clerkPubKey = publishableKeyFromHost(
   window.location.hostname,
@@ -171,6 +173,7 @@ const NAV = [
   { href: "/guiadores-vivo", label: "Sesiones en vivo", icon: Radio },
   { href: "/videos", label: "Videos", icon: Film },
   { href: "/escenas", label: "Escenas Geometrix", icon: Sparkles },
+  { href: "/explorar", label: "Explorar — orden", icon: LayoutList },
 ];
 
 function isActive(location: string, href: string) {
@@ -292,6 +295,7 @@ function AdminGate() {
         <Route path="/videos" component={VideosPage} />
         <Route path="/descanso-sonidos" component={DescansoSonidosPage} />
         <Route path="/escenas" component={EscenasPage} />
+        <Route path="/explorar" component={ExplorarPage} />
         <Route component={NotFound} />
       </Switch>
     </DashboardShell>

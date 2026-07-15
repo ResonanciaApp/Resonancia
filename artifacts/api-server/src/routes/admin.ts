@@ -28,6 +28,8 @@ import {
   type GuideConfig,
   type SceneAnimation,
   catalogTagOptionsTable,
+  exploreSectionsTable,
+  type ExploreSection,
 } from "@workspace/db";
 import {
   GetAdminUsersQueryParams,
@@ -915,6 +917,166 @@ router.delete("/admin/scene-animations/:id", requireAuth, requireRole("admin"), 
   } catch (err) {
     req.log.error({ err }, "error deleting scene animation");
     res.status(500).json({ error: "Error al eliminar la escena" });
+  }
+});
+
+// ── Explore sections ────────────────────────────────────────────────────────
+
+// Tags fijos que se usan como seed inicial
+const DEFAULT_EXPLORE_SLUGS = [
+  "para-la-ansiedad",
+  "energiza-tus-mananas",
+  "foco-concentracion",
+  "suelto-la-rabia",
+  "crecimiento-personal",
+  "armonia-familiar",
+  "respiracion-consciente",
+  "meditaciones-activas",
+  "astrologia",
+];
+
+const DEFAULT_EXPLORE_LABELS: Record<string, string> = {
+  "para-la-ansiedad":       "Para la ansiedad",
+  "energiza-tus-mananas":   "Energiza tus mañanas",
+  "foco-concentracion":     "Foco y concentración",
+  "suelto-la-rabia":        "Suelto la Rabia",
+  "crecimiento-personal":   "Crecimiento personal",
+  "armonia-familiar":       "Armonía familiar",
+  "respiracion-consciente": "Respiración consciente",
+  "meditaciones-activas":   "Meditaciones Activas",
+  "astrologia":             "Astrología",
+};
+
+function serializeExploreSection(s: ExploreSection) {
+  return {
+    id:        s.id,
+    slug:      s.slug,
+    label:     s.label,
+    visible:   s.visible,
+    sortOrder: s.sortOrder,
+  };
+}
+
+/** Asegura que existan las secciones por defecto. Llamado en el GET para auto-seed. */
+async function ensureDefaultSections() {
+  const existing = await db.select({ slug: exploreSectionsTable.slug }).from(exploreSectionsTable);
+  const existingSlugs = new Set(existing.map((r) => r.slug));
+  const missing = DEFAULT_EXPLORE_SLUGS.filter((s) => !existingSlugs.has(s));
+  if (missing.length === 0) return;
+  await db.insert(exploreSectionsTable).values(
+    missing.map((slug, i) => ({
+      slug,
+      label:     DEFAULT_EXPLORE_LABELS[slug] ?? slug,
+      visible:   true,
+      sortOrder: DEFAULT_EXPLORE_SLUGS.indexOf(slug) + (existing.length > 0 ? existing.length : 0),
+    })),
+  );
+}
+
+// GET /admin/explore-sections — listar todas las secciones con su orden y visibilidad.
+router.get("/admin/explore-sections", requireAuth, requireRole("admin"), async (req, res) => {
+  try {
+    await ensureDefaultSections();
+    const rows = await db
+      .select()
+      .from(exploreSectionsTable)
+      .orderBy(asc(exploreSectionsTable.sortOrder), asc(exploreSectionsTable.id));
+    res.json({ sections: rows.map(serializeExploreSection) });
+  } catch (err) {
+    req.log.error({ err }, "error fetching explore sections");
+    res.status(500).json({ error: "Error al obtener secciones" });
+  }
+});
+
+// GET /explore-sections — versión pública para la app mobile (sin auth).
+router.get("/explore-sections", async (req, res) => {
+  try {
+    await ensureDefaultSections();
+    const rows = await db
+      .select()
+      .from(exploreSectionsTable)
+      .orderBy(asc(exploreSectionsTable.sortOrder), asc(exploreSectionsTable.id));
+    res.json({ sections: rows.map(serializeExploreSection) });
+  } catch (err) {
+    req.log.error({ err }, "error fetching explore sections (public)");
+    res.status(500).json({ error: "Error al obtener secciones" });
+  }
+});
+
+// PATCH /admin/explore-sections — actualizar orden y visibilidad de una lista de secciones.
+// Body: { sections: [{ id, sortOrder, visible }] }
+router.patch("/admin/explore-sections", requireAuth, requireRole("admin"), async (req, res) => {
+  const items = req.body?.sections;
+  if (!Array.isArray(items) || items.length === 0) {
+    res.status(400).json({ error: "Se esperaba un array de secciones" });
+    return;
+  }
+  try {
+    await db.transaction(async (tx) => {
+      for (const item of items) {
+        const id = typeof item.id === "number" ? item.id : parseInt(String(item.id), 10);
+        if (isNaN(id)) continue;
+        const updates: Partial<{ visible: boolean; sortOrder: number }> = {};
+        if (typeof item.visible === "boolean") updates.visible = item.visible;
+        if (typeof item.sortOrder === "number") updates.sortOrder = item.sortOrder;
+        if (Object.keys(updates).length === 0) continue;
+        await tx
+          .update(exploreSectionsTable)
+          .set({ ...updates, updatedAt: new Date() })
+          .where(eq(exploreSectionsTable.id, id));
+      }
+    });
+    const rows = await db
+      .select()
+      .from(exploreSectionsTable)
+      .orderBy(asc(exploreSectionsTable.sortOrder), asc(exploreSectionsTable.id));
+    req.log.info({ count: items.length }, "explore sections updated");
+    res.json({ sections: rows.map(serializeExploreSection) });
+  } catch (err) {
+    req.log.error({ err }, "error updating explore sections");
+    res.status(500).json({ error: "Error al actualizar secciones" });
+  }
+});
+
+// POST /admin/explore-sections — agregar una sección nueva (tag custom no en la lista por defecto).
+router.post("/admin/explore-sections", requireAuth, requireRole("admin"), async (req, res) => {
+  const { slug, label } = req.body as { slug?: string; label?: string };
+  if (!slug?.trim() || !label?.trim()) {
+    res.status(400).json({ error: "slug y label son requeridos" });
+    return;
+  }
+  try {
+    const [maxRow] = await db
+      .select({ max: sql<number>`max(sort_order)` })
+      .from(exploreSectionsTable);
+    const nextOrder = (maxRow?.max ?? -1) + 1;
+    const [row] = await db
+      .insert(exploreSectionsTable)
+      .values({ slug: slug.trim(), label: label.trim(), visible: true, sortOrder: nextOrder })
+      .returning();
+    req.log.info({ slug, label }, "explore section created");
+    res.status(201).json(serializeExploreSection(row!));
+  } catch (err) {
+    req.log.error({ err }, "error creating explore section");
+    res.status(500).json({ error: "Error al crear sección" });
+  }
+});
+
+// DELETE /admin/explore-sections/:id — eliminar una sección custom.
+router.delete("/admin/explore-sections/:id", requireAuth, requireRole("admin"), async (req, res) => {
+  const id = parseInt(String(req.params.id), 10);
+  if (isNaN(id)) { res.status(400).json({ error: "ID inválido" }); return; }
+  try {
+    const [deleted] = await db
+      .delete(exploreSectionsTable)
+      .where(eq(exploreSectionsTable.id, id))
+      .returning();
+    if (!deleted) { res.status(404).json({ error: "Sección no encontrada" }); return; }
+    req.log.info({ id }, "explore section deleted");
+    res.status(204).end();
+  } catch (err) {
+    req.log.error({ err }, "error deleting explore section");
+    res.status(500).json({ error: "Error al eliminar sección" });
   }
 });
 
