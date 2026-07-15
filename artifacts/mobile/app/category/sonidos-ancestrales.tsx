@@ -391,7 +391,7 @@ export default function SonidosAncestalesScreen() {
   const insets    = useSafeAreaInsets();
   const topPad    = Platform.OS==="web" ? 0 : insets.top;
   const bottomPad = Platform.OS==="web" ? 34 : insets.bottom;
-  const { isFavorite, toggleFavorite, history, playSession } = usePlayer();
+  const { isFavorite, toggleFavorite, history, playSession, favorites } = usePlayer();
   const { isPremium } = usePremium();
   const recentInCategory = useMemo(() => {
     const seen = new Set<string>(); const result: Session[] = [];
@@ -404,6 +404,15 @@ export default function SonidosAncestalesScreen() {
     }
     return result;
   }, [history]);
+
+  const favoritesInCategory = useMemo(() => {
+    const result: Session[] = [];
+    for (const id of favorites) {
+      const s = getSessionById(id);
+      if (s && s.categoryId === "sonidos-ancestrales") result.push(s);
+    }
+    return result;
+  }, [favorites]);
   const { version } = useCatalog();
   const { theme } = useSceneTheme();
 
@@ -493,6 +502,20 @@ export default function SonidosAncestalesScreen() {
             <SessionCarousel
               title="Escuchadas recientemente"
               sessions={recentInCategory}
+              isPremium={isPremium}
+              onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
+              style={{ marginTop: 24, marginBottom: 0 }}
+              cardWidth={RECENT_CARD_W}
+              titleSize={19}
+            />
+            <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+          </>
+        )}
+        {favoritesInCategory.length > 0 && (
+          <>
+            <SessionCarousel
+              title="Favoritos"
+              sessions={favoritesInCategory}
               isPremium={isPremium}
               onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
               style={{ marginTop: 24, marginBottom: 0 }}

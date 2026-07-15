@@ -267,7 +267,7 @@ export default function MeditacionesGuiadasScreen() {
   const bottomPad = Platform.OS==="web" ? 34 : insets.bottom;
   const { version } = useCatalog();
   const { theme } = useSceneTheme();
-  const { history, playSession } = usePlayer();
+  const { history, playSession, favorites } = usePlayer();
   const { isPremium } = usePremium();
   const recentInCategory = useMemo(() => {
     const seen = new Set<string>(); const result: Session[] = [];
@@ -280,6 +280,15 @@ export default function MeditacionesGuiadasScreen() {
     }
     return result;
   }, [history]);
+
+  const favoritesInCategory = useMemo(() => {
+    const result: Session[] = [];
+    for (const id of favorites) {
+      const s = getSessionById(id);
+      if (s && s.categoryId === "meditaciones-guiadas") result.push(s);
+    }
+    return result;
+  }, [favorites]);
 
   const TABS = useMemo(() => {
     const extra = Array.from(
@@ -360,6 +369,20 @@ export default function MeditacionesGuiadasScreen() {
             <SessionCarousel
               title="Escuchadas recientemente"
               sessions={recentInCategory}
+              isPremium={isPremium}
+              onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
+              style={{ marginTop: 24, marginBottom: 0 }}
+              cardWidth={RECENT_CARD_W}
+              titleSize={19}
+            />
+            <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+          </>
+        )}
+        {favoritesInCategory.length > 0 && (
+          <>
+            <SessionCarousel
+              title="Favoritos"
+              sessions={favoritesInCategory}
               isPremium={isPremium}
               onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
               style={{ marginTop: 24, marginBottom: 0 }}
