@@ -140,7 +140,6 @@ const REGISTROS_ITEMS: { label: string; route: string; icon: keyof typeof Feathe
   { label: "Mis Sesiones", route: "/mis-sesiones", icon: "calendar" },
   { label: "Amigos",       route: "/amigos",       icon: "user-plus" },
   { label: "Resonadores",  route: "/resonadores",  icon: "radio" },
-  { label: "Geometrix",    route: "/(tabs)/geometrix",    icon: "hexagon" },
 ];
 
 
