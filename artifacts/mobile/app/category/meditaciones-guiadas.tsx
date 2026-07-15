@@ -562,7 +562,7 @@ export default function MeditacionesGuiadasScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#210911" },
 
-  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, paddingHorizontal: H_PAD, paddingBottom: 8, backgroundColor: "#1B060F" },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, paddingHorizontal: H_PAD, paddingBottom: 0, backgroundColor: "#1B060F" },
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
   stickyTabsDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.4)", marginHorizontal: -H_PAD, marginTop: 8 },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
@@ -587,7 +587,7 @@ const styles = StyleSheet.create({
 
   chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -2 },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 8 },
-  chipRowWrapper: { position: "relative" },
+  chipRowWrapper: { position: "relative", marginHorizontal: -H_PAD },
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.1)", marginTop: 11, marginHorizontal: H_PAD },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
