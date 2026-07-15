@@ -1,7 +1,6 @@
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import Svg, { Defs, LinearGradient as SvgLinearGradient, Path, Stop } from "react-native-svg";
-import { Image as ExpoImage } from "expo-image";
 import { Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -27,6 +26,7 @@ import { MezclaMiniPlayer } from "@/components/MezclaMiniPlayer";
 import { DormirMiniPlayer } from "@/components/DormirMiniPlayer";
 import { DormirExpandedPlayer } from "@/components/DormirExpandedPlayer";
 import { SessionMiniPlayer } from "@/components/SessionMiniPlayer";
+import { sessionMiniPlayerEvents } from "@/lib/miniPlayerEvents";
 import { usePlayer } from "@/context/PlayerContext";
 import { useMixer } from "@/context/MixerContext";
 import { useDescansoPlayerContext } from "@/context/DescansoPlayerContext";
@@ -36,8 +36,6 @@ import {
   TabBarVisibilityProvider,
   useTabBarVisibility,
 } from "@/context/TabBarVisibilityContext";
-import { getGuideById } from "@/data/guides";
-import { getArtist } from "@/data/artists";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBrightness, applyBrightSat } from "@/context/BrightnessContext";
 
@@ -452,10 +450,23 @@ function TabLayoutInner() {
     : null;
   const { isExpanded, setIsExpanded } = descansoPlayer;
 
-  // ¿La sesión actual pertenece a alguna playlist? → PlaylistMiniPlayer persistente
+  // ¿La sesión actual pertenece a alguna playlist?
   const activePlaylist = currentSession
     ? (playlists.find((p) => p.sessionIds.includes(currentSession.id)) ?? null)
     : null;
+
+  // Cuando una sesión de playlist se activa → mostrar SessionMiniPlayer igual que skipMiniPlayer
+  const prevPlaylistSessionIdRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (activePlaylist && currentSession) {
+      if (currentSession.id !== prevPlaylistSessionIdRef.current) {
+        prevPlaylistSessionIdRef.current = currentSession.id;
+        sessionMiniPlayerEvents.triggerShow("bottom");
+      }
+    } else {
+      prevPlaylistSessionIdRef.current = null;
+    }
+  }, [activePlaylist?.id, currentSession?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
   return (
@@ -493,11 +504,9 @@ function TabLayoutInner() {
         style={[styles.mixerPanel, { transform: [{ translateX: panelTranslateX }] }]}
       >
         <MezcladorScreen />
-        {!activePlaylist && (
-          <View style={styles.miniPlayerFloat} pointerEvents="box-none">
-            <MiniPlayer idle={!currentSession} />
-          </View>
-        )}
+        <View style={styles.miniPlayerFloat} pointerEvents="box-none">
+          <MiniPlayer idle={!currentSession} />
+        </View>
       </Animated.View>
       <Animated.View
         pointerEvents={isMixerOpen ? "auto" : "none"}
@@ -540,43 +549,7 @@ function TabLayoutInner() {
       <SessionMiniPlayer
         bottomOffset={miniPlayerBottom}
         topOffset={topPad}
-        suppressed={!!activePlaylist}
       />
-
-      {/* ── PlaylistMiniPlayer persistente (visible en todos los tabs) ─────── */}
-      {activePlaylist && currentSession && (
-        <View style={[styles.playlistBar, { bottom: miniPlayerBottom }]}>
-          <Pressable
-            onPress={stop}
-            hitSlop={12}
-            style={({ pressed }) => [styles.playlistCloseBtn, { opacity: pressed ? 0.6 : 1 }]}
-          >
-            <Feather name="x" size={18} color="#c2c2c2" />
-          </Pressable>
-          <ExpoImage
-            source={currentSession.image as never}
-            style={styles.playlistCover}
-            contentFit="cover"
-          />
-          <View style={{ flex: 1, gap: 3 }}>
-            <Text style={styles.playlistTitle} numberOfLines={1}>{currentSession.title}</Text>
-            <Text style={styles.playlistArtist} numberOfLines={1}>
-              {currentSession.guideId
-                ? (getGuideById(currentSession.guideId)?.name ?? "Casa del Cuenco")
-                : currentSession.artistId
-                  ? (getArtist(currentSession.artistId)?.name ?? "Resonancia")
-                  : "Casa del Cuenco"}
-            </Text>
-          </View>
-          <Pressable
-            onPress={pauseResume}
-            hitSlop={12}
-            style={({ pressed }) => [styles.playlistPlayBtn, { opacity: pressed ? 0.7 : 1 }]}
-          >
-            <Feather name={isPlaying ? "pause" : "play"} size={26} color="#FFFFFF" />
-          </Pressable>
-        </View>
-      )}
     </View>
   );
 }
@@ -700,47 +673,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     zIndex: 499,
     elevation: 0,
-  },
-  playlistBar: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    height: 68,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.8)",
-    paddingHorizontal: 16,
-    gap: 12,
-    zIndex: 100,
-    elevation: 100,
-  },
-  playlistCover: {
-    width: 44,
-    height: 44,
-    borderRadius: 8,
-    backgroundColor: "rgba(212,175,55,0.08)",
-  },
-  playlistTitle: {
-    fontFamily: "Manrope",
-    color: "#FAF0EE",
-    fontSize: 14,
-    fontWeight: "700",
-  },
-  playlistArtist: {
-    fontFamily: "Manrope",
-    color: "#c2c2c2",
-    fontSize: 12,
-  },
-  playlistCloseBtn: {
-    width: 32,
-    height: 32,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  playlistPlayBtn: {
-    width: 44,
-    height: 44,
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
