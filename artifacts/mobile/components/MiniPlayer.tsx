@@ -36,7 +36,7 @@ const CAROUSEL_THUMB_GAP  = 6;    // separación fija entre thumbnails en el car
 const CAROUSEL_MAX_OPEN_W = 280;  // techo para que el texto nunca desaparezca del todo
 const MAX_STACK_LAYOUT_W  = STACK_SIZE + 6 * STACK_SHIFT; // 6 thumbs completos, 7mo se corta
 
-const GRAD_COLORS: [string, string] = ["#2A153D", "#3C1D58"];
+const GRAD_COLORS: [string, string] = ["#121b53", "#121b53"];
 const MIX_BG      = "rgba(0,0,0,0.85)";
 const PILL_BORDER = "rgba(110,80,200,0.5)";
 const BORDER_R    = 12;
