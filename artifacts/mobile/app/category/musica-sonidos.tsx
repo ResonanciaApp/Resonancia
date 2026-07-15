@@ -173,8 +173,10 @@ function CategoryCard({
   const handlePress = () => {
     if (locked) { router.push("/membresia" as never); return; }
     if (session.skipMiniPlayer) { playSession(session); return; }
-    if (session.skipDetail) { playSession(session); router.push("/player" as never); return; }
-    router.push(`/session/${session.id}` as never);
+    // Música/Sonidos: siempre abre el reproductor (no pantalla de detalle).
+    // skipDetail explícito o el default de categoría → player.
+    playSession(session);
+    router.push("/player" as never);
   };
   const authorObj = session.guideId ? getGuide(session.guideId) : getArtist(session.artistId);
   const author = authorObj.name;
