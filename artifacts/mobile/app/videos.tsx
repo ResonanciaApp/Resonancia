@@ -245,8 +245,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   pill: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: 11,
+    paddingVertical: 7,
     borderRadius: 20,
     overflow: "hidden",
     alignItems: "center",
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   pillSel: { borderWidth: 0 },
   pillText: {
     fontFamily: "Manrope",
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: "600",
   },
 
