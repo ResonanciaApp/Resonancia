@@ -969,7 +969,7 @@ const styles = StyleSheet.create({
   },
 
   // Sobre el guiador / artista
-  aboutBlock: { marginTop: 28, marginBottom: 8 },
+  aboutBlock: { marginTop: 18, marginBottom: 8 },
   aboutCard: {
     backgroundColor: "rgba(255,255,255,0.06)",
     borderRadius: 16,
