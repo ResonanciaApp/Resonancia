@@ -829,9 +829,7 @@ export default function ProfileScreen() {
                   ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
                   : activeTheme?.id === "vino-tinto"
                     ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgb(247,203,107)" }]} />
-                    : activeTheme?.id === "indigo"
-                      ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#D4A94E" }]} />
-                      : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+                    : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
                 )}
                 <Text style={[styles.pillText, sel && styles.pillTextSel]}>{t.label}</Text>
               </Pressable>
