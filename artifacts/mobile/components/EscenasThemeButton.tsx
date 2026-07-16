@@ -10,7 +10,7 @@ const LAYERS: { base: [string, string]; bright: [string, string] }[] = [
   { base: ["#211538", "#19273F"], bright: ["#3A2E51", "#2E3F5A"] }, // indigo
 ];
 
-const SIZE = 40;
+const SIZE = 30;
 
 interface Props {
   onPress: () => void;
