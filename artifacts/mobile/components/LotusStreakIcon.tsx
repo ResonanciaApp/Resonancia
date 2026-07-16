@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleSheet } from "react-native";
+import { Image } from "react-native";
 
 const LOTUS_IMAGE = require("../assets/images/lotus-streak.png");
 

@@ -974,8 +974,8 @@ export default function HomeScreen2() {
                   {currentStreak}
                 </Text>
               )}
-              <View style={[styles.giftBtnInner, { backgroundColor: "transparent", borderWidth: 0 }]}>
-                <LotusStreakIcon size={26} />
+              <View style={[styles.giftBtnInner, { backgroundColor: "transparent", borderWidth: 0, marginLeft: -3 }]}>
+                <LotusStreakIcon size={29} />
               </View>
             </Animated.View>
           </Pressable>
