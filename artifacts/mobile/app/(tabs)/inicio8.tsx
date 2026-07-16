@@ -348,7 +348,11 @@ export default function HomeScreen2() {
   const { openMixer } = useMixerPanel();
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  const cardBg = activeSceneId === "indigo" ? "rgba(255,255,255,0.045)" : "rgba(255,255,255,0.07)";
+  const cardBg = activeSceneId === "indigo"
+    ? "rgba(255,255,255,0.045)"
+    : activeSceneId === "profundo"
+      ? "rgba(255,255,255,0.06)"
+      : "rgba(255,255,255,0.07)";
   // Fade de 300ms entre degradados de fondo al cambiar de Escena (loto en Inicio):
   // se mantiene el degradado anterior debajo y el nuevo se desvanece encima, en vez
   // de saltar de golpe de un color a otro.
