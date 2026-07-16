@@ -284,7 +284,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
     // ── Estado inactivo del Mezclador ─────────────────────────────
     return (
       <View style={styles.mixOuter}>
-        <View style={[styles.wrapper, { paddingTop: 10, paddingBottom: insets.bottom }]}>
+        <View style={[styles.wrapper, { paddingTop: 15, paddingBottom: insets.bottom }]}>
           <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
           {tibetTint}
@@ -313,7 +313,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
     return (
       <View style={styles.mixOuter}>
         {/* ── Card del miniplayer ── */}
-        <View style={[styles.wrapper, { paddingTop: 10, paddingBottom: insets.bottom }]}>
+        <View style={[styles.wrapper, { paddingTop: 15, paddingBottom: insets.bottom }]}>
           {/* Fondo glassmorphism */}
           <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
