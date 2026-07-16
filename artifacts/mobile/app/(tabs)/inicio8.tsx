@@ -967,13 +967,21 @@ export default function HomeScreen2() {
               if (rachaEnabled) setProgresoVisible(true);
             }}
           >
-            <Animated.View style={{ transform: [{ scale: giftScaleAnim }], flexDirection: "row", alignItems: "center", gap: 0 }}>
-              {rachaEnabled && currentStreak > 0 && (
-                <Text style={{ fontSize: 15, fontWeight: "300", color: "#f9f9f9", fontFamily: "Manrope", marginRight: -2, marginLeft: -6 }}>
-                  {currentStreak}
-                </Text>
-              )}
-              <View style={[styles.giftBtnInner, { backgroundColor: "rgba(255,255,255,0.08)", width: 40, height: 40, borderRadius: 20 }]}>
+            <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
+              <View style={{
+                backgroundColor: "rgba(255,255,255,0.08)",
+                borderRadius: 20,
+                height: 36,
+                paddingHorizontal: rachaEnabled && currentStreak > 0 ? 10 : 10,
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 5,
+              }}>
+                {rachaEnabled && currentStreak > 0 && (
+                  <Text style={{ fontSize: 14, fontWeight: "300", color: "#f9f9f9", fontFamily: "Manrope", lineHeight: 18 }}>
+                    {currentStreak}
+                  </Text>
+                )}
                 <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" style={{ marginTop: 1 }} />
               </View>
             </Animated.View>
