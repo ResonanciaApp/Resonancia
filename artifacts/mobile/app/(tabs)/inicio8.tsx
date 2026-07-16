@@ -962,7 +962,7 @@ export default function HomeScreen2() {
           {/* Derecha: Racha */}
           <Pressable
             hitSlop={8}
-            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginRight: 0, marginTop: -15, flexDirection: "row", alignItems: "center" }]}
+            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginRight: 4, marginTop: -15, flexDirection: "row", alignItems: "center" }]}
             onPressIn={() =>
               Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
             }
