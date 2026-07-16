@@ -44,6 +44,12 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
     gradient: ["#30213A","#2C1E36","#291C32","#261A2E","#23182B","#211628"],
     solid: "#30213A",
   },
+  indigo: {
+    id: "indigo",
+    label: "Índigo",
+    gradient: ["#1A152E","#1C1732","#1B1836","#1C1D3B","#1D203B","#1F1D3B"],
+    solid: "#1A152E",
+  },
 };
 
 export const DEFAULT_THEME_ID: SceneId = "tibet";

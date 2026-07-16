@@ -13,7 +13,8 @@ import { AppState, type AppStateStatus } from "react-native";
 export type SceneId =
   | "tibet"
   | "vino-tinto"
-  | "profundo";
+  | "profundo"
+  | "indigo";
 
 export type AmbientScene = {
   id: SceneId;
@@ -45,6 +46,13 @@ export const AMBIENT_SCENES: AmbientScene[] = [
     icon: "moon",
     image: require("@/assets/images/ambient/profundo.jpg"),
   },
+  {
+    id: "indigo",
+    label: "Índigo",
+    colors: ["#1A152E", "#1F1D3B"] as const,
+    icon: "layers",
+    image: require("@/assets/images/ambient/zafiro.png"),
+  },
 ];
 
 const DEFAULT_VOLUME = 0.49; // 0.65 − 25%
@@ -64,6 +72,7 @@ const SCENE_AUDIO: Record<SceneId, unknown> = {
   tibet:        require("@/assets/audio/nebulosa_ambiente.mp3"),
   "vino-tinto": require("@/assets/audio/riachuelo_pajaros.mp3"),
   profundo:     require("@/assets/audio/nebulosa_ambiente.mp3"),
+  indigo:       require("@/assets/audio/nebulosa_ambiente.mp3"),
 };
 
 type AmbientCtx = {
@@ -94,6 +103,7 @@ const DEFAULT_VOLUMES: Record<SceneId, number> = {
   tibet: DEFAULT_VOLUME,
   "vino-tinto": DEFAULT_VOLUME,
   profundo: DEFAULT_VOLUME,
+  indigo: DEFAULT_VOLUME,
 };
 
 export function AmbientPlayerProvider({ children }: { children: React.ReactNode }) {
