@@ -161,18 +161,7 @@ const CHIP_ANIM_DURATION = 550;
 const PillTab = memo(function PillTab({
   tab, sel, onPress,
 }: { tab: (typeof MAIN_TABS)[0]; sel: boolean; onPress: () => void }) {
-  const selAnim = useRef(new Animated.Value(sel ? 1 : 0)).current;
   const { theme: pillTheme } = useSceneTheme();
-
-  useEffect(() => {
-    Animated.timing(selAnim, {
-      toValue: sel ? 1 : 0,
-      duration: CHIP_ANIM_DURATION,
-      easing: Easing.inOut(Easing.cubic),
-      useNativeDriver: true,
-    }).start();
-  }, [sel]);
-
   const fgColor = sel ? "#2D0D3A" : "#FBFBFB";
 
   return (
@@ -181,23 +170,20 @@ const PillTab = memo(function PillTab({
       style={({ pressed }) => [styles.pillTab, sel && { borderWidth: 0 }, { opacity: pressed ? 0.7 : 1 }]}
     >
       {/* Fondo seleccionado */}
-      <Animated.View
-        style={[
-          StyleSheet.absoluteFill,
-          { borderRadius: 999, overflow: "hidden", opacity: selAnim },
-        ]}
-      >
-        {pillTheme?.id === "tibet" ? (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
-        ) : (
-          <LinearGradient
-            colors={["#F7CB6B", "#FBA980"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={StyleSheet.absoluteFill}
-          />
-        )}
-      </Animated.View>
+      {sel && (
+        <View style={[StyleSheet.absoluteFill, { borderRadius: 999, overflow: "hidden" }]}>
+          {pillTheme?.id === "tibet" ? (
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
+          ) : (
+            <LinearGradient
+              colors={["#F7CB6B", "#FBA980"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={StyleSheet.absoluteFill}
+            />
+          )}
+        </View>
+      )}
 
       {/* Ícono */}
       <MaterialCommunityIcons
@@ -215,32 +201,12 @@ const PillTab = memo(function PillTab({
 });
 
 // ── ContentSlide / SubTabSlide ────────────────────────────────────────────────
-const ContentSlide = memo(function ContentSlide({ dir, children }: { dir: "right" | "left"; children: React.ReactNode }) {
-  const slideX  = useRef(new Animated.Value(dir === "right" ? 38 : -38)).current;
-  const opacity = useRef(new Animated.Value(0)).current;
-  useLayoutEffect(() => {
-    const a = Animated.parallel([
-      Animated.timing(opacity, { toValue: 1, duration: 220, useNativeDriver: true }),
-      Animated.timing(slideX,  { toValue: 0, duration: 220, useNativeDriver: true }),
-    ]);
-    a.start();
-    return () => a.stop();
-  }, []);
-  return <Animated.View style={{ opacity, transform: [{ translateX: slideX }] }}>{children}</Animated.View>;
+const ContentSlide = memo(function ContentSlide({ dir: _dir, children }: { dir: "right" | "left"; children: React.ReactNode }) {
+  return <View>{children}</View>;
 });
 
 const SubTabSlide = memo(function SubTabSlide({ children }: { children: React.ReactNode }) {
-  const slideX  = useRef(new Animated.Value(-20)).current;
-  const opacity = useRef(new Animated.Value(0)).current;
-  useLayoutEffect(() => {
-    const a = Animated.parallel([
-      Animated.timing(opacity, { toValue: 1, duration: 200, useNativeDriver: true }),
-      Animated.timing(slideX,  { toValue: 0, duration: 200, useNativeDriver: true }),
-    ]);
-    a.start();
-    return () => a.stop();
-  }, []);
-  return <Animated.View style={{ opacity, transform: [{ translateX: slideX }] }}>{children}</Animated.View>;
+  return <View>{children}</View>;
 });
 
 // ── SoundCard ─────────────────────────────────────────────────────────────────
