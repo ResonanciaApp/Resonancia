@@ -443,10 +443,10 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     gap: 6,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 12,
-    elevation: 12,
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.16,
+    shadowRadius: 6,
+    elevation: 6,
   },
 
   // ── Píldora "Abrir" ───────────────────────────────────────────
