@@ -90,7 +90,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
   const insets = useSafeAreaInsets();
   const { activeSceneId } = useSceneTheme();
   const tibetTint = activeSceneId === "tibet"
-    ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(33,48,106,0.20)" }]} pointerEvents="none" />
+    ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(42,75,124,0.20)" }]} pointerEvents="none" />
     : null;
   const { currentSession, isPlaying, progress, pauseResume } = usePlayer();
   const {
