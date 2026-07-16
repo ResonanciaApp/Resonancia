@@ -331,9 +331,9 @@ export default function SessionDetailScreen() {
       </Animated.View>
 
       {/* ── NavBar flotante — encima del ScrollView ────────────────────── */}
-      <View style={[styles.navBar, { paddingTop: topPad + 8, position: "absolute", top: 0, left: 0, right: 0, zIndex: 3 }]}>
+      <View style={[styles.navBar, { paddingTop: topPad, position: "absolute", top: 0, left: 0, right: 0, zIndex: 3 }]}>
         <GhostPill noBorder style={{ backgroundColor: "rgba(27,6,15,0.45)" }}>
-          <BackPill onPress={() => router.back()} />
+          <BackPill onPress={() => router.back()} size={27} />
         </GhostPill>
         <Pressable onPress={handleInstagramShare} hitSlop={10} style={({ pressed }) => [styles.igBtn, { opacity: pressed ? 0.6 : 1 }]}>
           <FontAwesome name="instagram" size={20} color="#FBFBFB" />
@@ -569,7 +569,7 @@ export default function SessionDetailScreen() {
         style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: stickyHeaderColor }]}
       >
         <GhostPill noBorder style={{ backgroundColor: "rgba(27,6,15,0.45)" }}>
-          <BackPill onPress={() => router.back()} />
+          <BackPill onPress={() => router.back()} size={27} />
         </GhostPill>
         <View style={{ flex: 1, alignItems: "center", paddingTop: 8 }}>
           <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
@@ -825,8 +825,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 20,
-    paddingBottom: 12,
+    paddingHorizontal: 16,
+    paddingBottom: 18,
   },
   navBtn: {
     width: 40,
