@@ -952,7 +952,7 @@ export default function HomeScreen2() {
             style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginLeft: 5, marginTop: -15 }]}
           >
             <View style={[styles.giftBtnInner, { backgroundColor: "rgba(255,255,255,0.08)", width: 40, height: 40, borderRadius: 20 }]}>
-              <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" style={{ marginTop: 1 }} />
+              <Image source={require("../../assets/images/escenas-icon.png")} style={{ width: 22, height: 22 }} resizeMode="contain" />
             </View>
           </Pressable>
 
