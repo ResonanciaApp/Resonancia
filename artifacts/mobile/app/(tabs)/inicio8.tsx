@@ -1,4 +1,5 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { EscenasThemeButton } from "@/components/EscenasThemeButton";
 import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
@@ -946,15 +947,10 @@ export default function HomeScreen2() {
           }}
         >
           {/* Izquierda: Escenas */}
-          <Pressable
+          <EscenasThemeButton
             onPress={openEscenasSheet}
-            hitSlop={8}
-            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginLeft: 5, marginTop: -15 }]}
-          >
-            <View style={[styles.giftBtnInner, { backgroundColor: "rgba(255,255,255,0.08)", width: 40, height: 40, borderRadius: 20 }]}>
-              <Image source={require("../../assets/images/escenas-icon.png")} style={{ width: 22, height: 22 }} resizeMode="contain" />
-            </View>
-          </Pressable>
+            style={{ marginLeft: 5, marginTop: -15 }}
+          />
 
           {/* Centro: espacio */}
           <View style={{ flex: 1 }} />
