@@ -500,7 +500,7 @@ export default function ExploreScreen() {
         {/* ── Carruseles por temática ── */}
         {themeCarousels.length > 0 && (
           <>
-            <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+            <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
             {themeCarousels.map((tc, idx) => {
               const isLast = idx === themeCarousels.length - 1;
               return (
@@ -515,7 +515,7 @@ export default function ExploreScreen() {
                     titleSize={20}
                   />
                   {!isLast && (
-                    <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+                    <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
                   )}
                 </React.Fragment>
               );
@@ -564,7 +564,7 @@ const styles = StyleSheet.create({
   },
   recoDivider: {
     height: 1,
-    backgroundColor: "rgba(255,255,255,0.07)",
+    backgroundColor: "rgba(255,255,255,0.06)",
     marginHorizontal: 4,
   },
 
