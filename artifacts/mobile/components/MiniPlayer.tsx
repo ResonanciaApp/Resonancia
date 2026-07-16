@@ -429,7 +429,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
           ))}
           <Pressable
             onPress={(e) => { e.stopPropagation(); pauseResume(); }}
-            style={[styles.btn, { backgroundColor: "rgba(255,255,255,0.15)", marginTop: -2 }]}
+            style={[styles.btn, { backgroundColor: "rgba(255,255,255,0.15)", transform: [{ translateY: -2 }] }]}
           >
             <Svg width={18} height={18} viewBox="0 0 48 48">
               {isPlaying ? (
