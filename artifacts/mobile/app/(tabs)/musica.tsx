@@ -703,9 +703,9 @@ export default function MezcladorScreen() {
   }, [mainTab, subTab, popularSounds, subTabCategories, moodFilter, tagFilters, effectiveBpm]);
 
   return (
-    <View style={[styles.root, { backgroundColor: "#362061" }]}>
+    <View style={[styles.root, { backgroundColor: "#241947" }]}>
       <LinearGradient
-        colors={["#362061", "#1D3A7A"]}
+        colors={["#241947", "#122153"]}
         style={StyleSheet.absoluteFill}
         pointerEvents="none"
       />
