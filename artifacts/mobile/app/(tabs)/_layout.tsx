@@ -40,7 +40,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBrightness, applyBrightSat } from "@/context/BrightnessContext";
 
 const ACTIVE_COLOR   = "#F9F9F9";
-const INACTIVE_COLOR = "#8B98B9";
+const INACTIVE_COLOR = "#F4F4F4";
 const GRAD_END       = "#FBA980";
 const GHOST_PILL_BG  = "rgba(255,255,255,0.12)";
 
@@ -98,7 +98,7 @@ function TabItem({
   const tOffset    = [{ translateY: iconOffset }];
 
   const activeCol   = tibetMode ? "#ffffff" : (conf.activeColor ?? ACTIVE_COLOR);
-  const inactiveCol = tibetMode ? "#f9f9f9" : INACTIVE_COLOR;
+  const inactiveCol = tibetMode ? "#F4F4F4" : INACTIVE_COLOR;
 
   const makeIcon = useCallback((active: boolean) => {
     const color  = active ? activeCol : inactiveCol;
