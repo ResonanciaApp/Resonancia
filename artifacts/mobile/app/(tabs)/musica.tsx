@@ -705,7 +705,7 @@ export default function MezcladorScreen() {
   return (
     <View style={[styles.root, { backgroundColor: "#342261" }]}>
       <LinearGradient
-        colors={["#342261", "#20376A"]}
+        colors={["#342261", "#1F396E"]}
         style={StyleSheet.absoluteFill}
         pointerEvents="none"
       />
