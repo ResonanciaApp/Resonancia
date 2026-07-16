@@ -58,7 +58,6 @@ const FADE_OUT_SEC = 0.25;
 /** Crossfade corto al reemplazar una voz que ya suena: evita el click de empalme. */
 const XFADE_SEC = 0.02;
 
-const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 
 /** Segundos de contenido musical del loop (sin la cola de silencio). */
 function loopSeconds(bpm: number, loopBars: number): number {

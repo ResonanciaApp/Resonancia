@@ -512,7 +512,7 @@ export default function ExploreScreen() {
                     onPress={(s) => handleSessionPress(s)}
                     style={{ marginTop: 24, marginBottom: 0 }}
                     cardWidth={SQCARD_W}
-                    titleSize={18}
+                    titleSize={20}
                   />
                   {!isLast && (
                     <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 24 },
-  sectionTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 24 },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 24 },
 
   // Recomendado para ti
   recoSection: {

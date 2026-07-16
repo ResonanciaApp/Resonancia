@@ -1278,7 +1278,7 @@ export default function HomeScreen2() {
           style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
           titleOffset={10}
           cardWidth={RECENT_CARD_W}
-          titleSize={18}
+          titleSize={20}
         />
 
         {/* ── FRASE DEL DÍA ── */}
@@ -1316,7 +1316,7 @@ export default function HomeScreen2() {
           style={{ marginBottom: SECTION_GAP, paddingHorizontal: GRID_PAD }}
           titleOffset={10}
           cardWidth={RECENT_CARD_W}
-          titleSize={18}
+          titleSize={20}
         />
 
 
@@ -1961,7 +1961,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 0,
   },
-  sectionTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.3, marginBottom: 21, color: "#FBFBFB" },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, marginBottom: 21, color: "#FBFBFB" },
   resonadoresBanner: {
     height: 80,
     borderRadius: 14,

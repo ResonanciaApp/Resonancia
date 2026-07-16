@@ -504,7 +504,7 @@ export default function SonidosAncestalesScreen() {
               onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
               style={{ marginTop: 24, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
-              titleSize={18}
+              titleSize={20}
             />
             <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
@@ -518,7 +518,7 @@ export default function SonidosAncestalesScreen() {
               onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
               style={{ marginTop: 24, marginBottom: 0 }}
               cardWidth={RECENT_CARD_W}
-              titleSize={18}
+              titleSize={20}
             />
             <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
@@ -539,7 +539,7 @@ export default function SonidosAncestalesScreen() {
                   onPress={(s) => { playSession(s); router.push(`/session/${s.id}` as never); }}
                   style={{ marginTop: 24, marginBottom: 0 }}
                   cardWidth={RECENT_CARD_W}
-                  titleSize={18}
+                  titleSize={20}
                   onViewAll={hasMore ? () => setActiveTab(tab.id as CatTab) : undefined}
                 />
                 {!isLast && <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />}
