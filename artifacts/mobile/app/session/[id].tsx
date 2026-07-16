@@ -551,7 +551,6 @@ export default function SessionDetailScreen() {
                         const g = getGuide(s.guideIds?.[0] ?? s.guideId ?? undefined);
                         return (
                           <View style={styles.relatedAuthorRow}>
-                            <Image source={g.photo} style={styles.relatedAuthorAvatar} contentFit="cover" />
                             <Text style={[styles.relatedCardSub, { color: "rgba(255,255,255,0.9)" }]} numberOfLines={1}>
                               {g.name}
                             </Text>
@@ -986,7 +985,7 @@ const styles = StyleSheet.create({
 
   // Related vertical list
   relatedBlock: { marginBottom: 20, marginTop: 39 },
-  relatedList: { gap: 18, marginTop: 15 },
+  relatedList: { gap: 18, marginTop: 21 },
   relatedCard: {
     flexDirection: "row",
     alignItems: "center",
