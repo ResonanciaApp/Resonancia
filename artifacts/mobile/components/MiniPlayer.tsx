@@ -324,9 +324,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
 
             {/* Chevron arriba — toca para abrir la sheet */}
             <Pressable onPress={() => openSheetRef.current()} hitSlop={8} style={styles.chevronLeft}>
-              <GhostPill>
-                <Feather name="chevron-up" size={22} color="rgba(255,255,255,0.95)" />
-              </GhostPill>
+              <Feather name="chevron-up" size={27} color="rgba(255,255,255,0.95)" />
             </Pressable>
 
             {/* Stack / carrusel — ancho animado + maxWidth para que nunca empuje el play */}
