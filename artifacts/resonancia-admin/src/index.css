@@ -69,66 +69,70 @@
   --elevate-1: rgba(255,255,255, .04);
   --elevate-2: rgba(255,255,255, .09);
 
-  /* Fondo raíz (#16040A — mismo que Inicio) */
-  --background: 340 69% 5%;
-  /* Foreground cálido (#F4DAD5) */
-  --foreground: 10 59% 90%;
+  /* ── Tibet palette ──────────────────────────────────────────────────────────
+     Gradient: #2D1C52 → #261F57 → #1F255A → #1F2A62 → #283673 → #2D4082
+  --------------------------------------------------------------------------- */
 
-  /* Borders (#3D0E16) */
-  --border: 350 63% 15%;
-  /* Input (#27070E) */
-  --input: 347 70% 9%;
-  /* Ring — dorado (#BE8744) */
+  /* Fondo raíz — #2D1C52 */
+  --background: 259 49% 22%;
+  /* Foreground — blanco frío claro */
+  --foreground: 220 55% 96%;
+
+  /* Borders — indigo medio visible */
+  --border: 229 42% 38%;
+  /* Input — indigo oscuro */
+  --input: 248 50% 19%;
+  /* Ring — dorado */
   --ring: 33 48% 51%;
 
-  /* Cards — tinte dorado translúcido (override en --color-card abajo) */
-  --card: 347 70% 9%;
-  --card-foreground: 10 59% 90%;
-  --card-border: 350 63% 15%;
-  /* Override rgba para bg-card (sidebar + cards) */
-  --color-card: rgba(190, 150, 80, 0.06);
+  /* Cards — indigo ligeramente más claro que bg */
+  --card: 248 47% 24%;
+  --card-foreground: 220 55% 96%;
+  --card-border: 229 42% 38%;
+  /* Override rgba para bg-card: tinte indigo translúcido */
+  --color-card: rgba(45, 64, 130, 0.14);
 
-  /* Sidebar (#16040A) */
-  --sidebar: 340 69% 5%;
-  --sidebar-foreground: 10 59% 90%;
-  --sidebar-border: 350 63% 15%;
+  /* Sidebar — más oscuro que bg */
+  --sidebar: 259 55% 17%;
+  --sidebar-foreground: 220 55% 96%;
+  --sidebar-border: 229 42% 32%;
   --sidebar-primary: 33 48% 51%;
-  --sidebar-primary-foreground: 340 69% 5%;
-  --sidebar-accent: 350 63% 15%;
-  --sidebar-accent-foreground: 10 59% 90%;
+  --sidebar-primary-foreground: 259 55% 17%;
+  --sidebar-accent: 229 49% 30%;
+  --sidebar-accent-foreground: 220 55% 96%;
   --sidebar-ring: 33 48% 51%;
 
   /* Popover */
-  --popover: 347 70% 9%;
-  --popover-foreground: 10 59% 90%;
-  --popover-border: 350 63% 15%;
+  --popover: 248 47% 22%;
+  --popover-foreground: 220 55% 96%;
+  --popover-border: 229 42% 38%;
 
   /* Primary — dorado (#BE8744) */
   --primary: 33 48% 51%;
-  --primary-foreground: 340 69% 5%;
+  --primary-foreground: 259 49% 16%;
 
-  /* Secondary — borgoña medio (#3D0E16) */
-  --secondary: 350 63% 15%;
-  --secondary-foreground: 10 59% 90%;
+  /* Secondary — indigo medio (#283673) */
+  --secondary: 229 49% 30%;
+  --secondary-foreground: 220 55% 96%;
 
-  /* Muted */
-  --muted: 350 63% 15%;
-  --muted-foreground: 10 30% 60%;
+  /* Muted — indigo suave */
+  --muted: 233 45% 28%;
+  --muted-foreground: 220 28% 65%;
 
   /* Accent — dorado claro (#E9C46A) */
   --accent: 43 74% 67%;
-  --accent-foreground: 334 63% 7%;
+  --accent-foreground: 259 49% 16%;
 
   /* Destructive */
   --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 10 59% 90%;
+  --destructive-foreground: 220 55% 96%;
 
   /* Charts */
   --chart-1: 33 48% 51%;
   --chart-2: 43 74% 67%;
-  --chart-3: 10 30% 60%;
-  --chart-4: 350 63% 20%;
-  --chart-5: 10 59% 90%;
+  --chart-3: 220 28% 65%;
+  --chart-4: 229 49% 30%;
+  --chart-5: 220 55% 96%;
 
   --app-font-sans: 'Inter', sans-serif;
   --app-font-serif: Georgia, serif;
@@ -165,7 +169,10 @@
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased text-foreground;
+    background: linear-gradient(160deg, #2D1C52 0%, #261F57 20%, #1F255A 40%, #1F2A62 60%, #283673 80%, #2D4082 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
   }
 }
 
