@@ -288,15 +288,6 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
           <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
           {tibetTint}
-          {/* Borde superior con fade en extremos */}
-          <LinearGradient
-            colors={["transparent", "rgba(255,255,255,0.22)", "rgba(255,255,255,0.22)", "transparent"]}
-            locations={[0, 0.14, 0.86, 1]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={{ position: "absolute", top: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
-            pointerEvents="none"
-          />
           <View style={{ height: STACK_SIZE + 30, alignItems: "center", justifyContent: "center" }}>
             <Animated.Text style={{ color: "#FFFFFF", fontSize: 15, fontWeight: "500", textAlign: "center", opacity: idleTextOpacity, marginTop: 14 }}>
               Crea tus paisajes sonoros
@@ -327,15 +318,6 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
           <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
           {tibetTint}
-          {/* Borde superior con fade en extremos */}
-          <LinearGradient
-            colors={["transparent", "rgba(255,255,255,0.22)", "rgba(255,255,255,0.22)", "transparent"]}
-            locations={[0, 0.14, 0.86, 1]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={{ position: "absolute", top: 0, left: 0, right: 0, height: StyleSheet.hairlineWidth }}
-            pointerEvents="none"
-          />
 
           {/* ── Row principal ── */}
           <View style={styles.mixRow}>
