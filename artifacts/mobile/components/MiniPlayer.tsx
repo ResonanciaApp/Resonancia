@@ -275,7 +275,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
           {tibetTint}
           <View style={{ height: STACK_SIZE + 30, alignItems: "center", justifyContent: "center" }}>
-            <Animated.Text style={{ color: "#FFFFFF", fontSize: 15, fontWeight: "500", textAlign: "center", opacity: idleTextOpacity, marginTop: 14 }}>
+            <Animated.Text style={{ color: "#FFFFFF", fontSize: 15, fontWeight: "500", textAlign: "center", opacity: idleTextOpacity, marginTop: 2 }}>
               Crea tus paisajes sonoros
             </Animated.Text>
           </View>
