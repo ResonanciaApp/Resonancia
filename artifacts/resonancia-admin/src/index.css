@@ -73,8 +73,8 @@
      Gradient: #2D1C52 → #261F57 → #1F255A → #1F2A62 → #283673 → #2D4082
   --------------------------------------------------------------------------- */
 
-  /* Fondo raíz — #271A4C */
-  --background: 256 49% 20%;
+  /* Fondo raíz — #2D1C52 */
+  --background: 259 49% 22%;
   /* Foreground — blanco frío claro */
   --foreground: 220 55% 96%;
 
@@ -170,7 +170,7 @@
 
   body {
     @apply font-sans antialiased text-foreground;
-    background: linear-gradient(160deg, #271A4C 0%, #251748 25%, #221645 50%, #1E1847 75%, #1B1C48 100%);
+    background: linear-gradient(160deg, #2D1C52 0%, #2E1F57 20%, #291F5A 40%, #1F2362 60%, #282F73 80%, #2D3882 100%);
     background-attachment: fixed;
     min-height: 100vh;
   }
