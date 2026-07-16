@@ -576,7 +576,7 @@ export default function SessionDetailScreen() {
         <GhostPill noBorder style={{ backgroundColor: "rgba(27,6,15,0.45)" }}>
           <BackPill onPress={() => router.back()} />
         </GhostPill>
-        <View style={{ flex: 1, alignItems: "center", paddingTop: 5 }}>
+        <View style={{ flex: 1, alignItems: "center", paddingTop: 8 }}>
           <Text style={styles.stickyTitle} numberOfLines={1}>{session.title}</Text>
           <Text style={styles.stickySubtitle} numberOfLines={1}>
             {[authors[0]?.name, session.durationLabel].filter(Boolean).join(" · ")}
@@ -1017,7 +1017,7 @@ const styles = StyleSheet.create({
     paddingBottom: 18,
     gap: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.04)",
+    borderBottomColor: "rgba(255,255,255,0.07)",
     zIndex: 10,
   },
   pillBorder: {
