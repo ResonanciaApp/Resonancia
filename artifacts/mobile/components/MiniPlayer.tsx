@@ -89,9 +89,7 @@ function StackThumbItem({ image, style, onPress, onLongPress, primaryColor }: St
 export function MiniPlayer({ idle = false }: { idle?: boolean }) {
   const insets = useSafeAreaInsets();
   const { activeSceneId } = useSceneTheme();
-  const tibetTint = activeSceneId === "tibet"
-    ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(42,75,124,0.20)" }]} pointerEvents="none" />
-    : null;
+  const tibetTint = null;
   const { currentSession, isPlaying, progress, pauseResume } = usePlayer();
   const {
     activeSounds,
