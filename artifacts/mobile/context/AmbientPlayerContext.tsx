@@ -12,7 +12,6 @@ import { AppState, type AppStateStatus } from "react-native";
 
 export type SceneId =
   | "tibet"
-  | "vino-tinto"
   | "profundo"
   | "indigo";
 
@@ -31,13 +30,6 @@ export const AMBIENT_SCENES: AmbientScene[] = [
     colors: ["#22131B", "#140C10"] as const,
     icon: "star",
     image: require("@/assets/images/ambient/tibet.png"),
-  },
-  {
-    id: "vino-tinto",
-    label: "Tíbet",
-    colors: ["#2E0D16", "#1A0810"] as const,
-    icon: "feather",
-    image: require("@/assets/images/ambient/vino-tinto-hero2.jpg"),
   },
   {
     id: "profundo",
@@ -69,10 +61,9 @@ async function fadeIn(sound: Audio.Sound, targetVolume: number) {
 
 // ── Audio sources per scene ───────────────────────────────────────────────────
 const SCENE_AUDIO: Record<SceneId, unknown> = {
-  tibet:        require("@/assets/audio/nebulosa_ambiente.mp3"),
-  "vino-tinto": require("@/assets/audio/riachuelo_pajaros.mp3"),
-  profundo:     require("@/assets/audio/nebulosa_ambiente.mp3"),
-  indigo:       require("@/assets/audio/nebulosa_ambiente.mp3"),
+  tibet:    require("@/assets/audio/nebulosa_ambiente.mp3"),
+  profundo: require("@/assets/audio/nebulosa_ambiente.mp3"),
+  indigo:   require("@/assets/audio/nebulosa_ambiente.mp3"),
 };
 
 type AmbientCtx = {
@@ -100,10 +91,9 @@ const AmbientContext = createContext<AmbientCtx | null>(null);
 const STORAGE_KEY = "@ambient_scene";
 
 const DEFAULT_VOLUMES: Record<SceneId, number> = {
-  tibet: DEFAULT_VOLUME,
-  "vino-tinto": DEFAULT_VOLUME,
+  tibet:    DEFAULT_VOLUME,
   profundo: DEFAULT_VOLUME,
-  indigo: DEFAULT_VOLUME,
+  indigo:   DEFAULT_VOLUME,
 };
 
 export function AmbientPlayerProvider({ children }: { children: React.ReactNode }) {

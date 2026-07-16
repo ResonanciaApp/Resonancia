@@ -31,13 +31,6 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
     gradient: ["#2D1C52", "#261F57", "#1F255A", "#1F2A62", "#283673", "#2D4082"],
     solid: "#2D1C52",
   },
-  "vino-tinto": {
-    id: "vino-tinto",
-    label: "Tíbet",
-    gradient: ["#2A0812", "#17040A"],
-    solid: "#17040A",
-    backgroundImage: require("@/assets/images/scenes/vino-tinto-buda.jpg"),
-  },
   profundo: {
     id: "profundo",
     label: "Profundo",

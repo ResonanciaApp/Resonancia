@@ -1038,8 +1038,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
   const { photoUri } = useUserProfile();
   const { open: openDrawer } = useDrawer();
   const { activeSceneId, theme: sceneTheme } = useSceneTheme();
-  // "tibet" = tema Universo (azul marino); "vino-tinto" = tema Tíbet (borgoña, dorado)
-  const iconPlaceholderColor = activeSceneId === "vino-tinto" ? GOLD : "#fefefe";
+  const iconPlaceholderColor = "#fefefe";
 
   // ── Borde bajo los chips (Playlists/Mezclas/Favoritos/Resonadores) ──────
   // se activa a partir de unos pocos px de scroll dentro de ESTA pantalla
@@ -1747,7 +1746,7 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
       </ScrollView>
 
       {/* Overlays */}
-      <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} gradient={sceneTheme.gradient} accentColor={activeSceneId === "vino-tinto" ? GOLD : "#f9f9f9"} />
+      <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} gradient={sceneTheme.gradient} accentColor="#f9f9f9" />
       <CreateSheet
         visible={createVisible}
         onClose={() => setCreateVisible(false)}
