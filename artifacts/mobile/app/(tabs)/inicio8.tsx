@@ -1,5 +1,4 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { LotusStreakIcon } from "@/components/LotusStreakIcon";
 import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
@@ -974,8 +973,8 @@ export default function HomeScreen2() {
                   {currentStreak}
                 </Text>
               )}
-              <View style={[styles.giftBtnInner, { backgroundColor: "transparent", borderWidth: 0, marginLeft: -3 }]}>
-                <LotusStreakIcon size={29} />
+              <View style={[styles.giftBtnInner, { backgroundColor: "rgba(255,255,255,0.08)", width: 40, height: 40, borderRadius: 20 }]}>
+                <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" style={{ marginTop: 1 }} />
               </View>
             </Animated.View>
           </Pressable>
