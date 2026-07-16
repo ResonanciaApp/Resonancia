@@ -945,7 +945,7 @@ export default function HomeScreen2() {
           >
             <ExpoImage
               source={require("@/assets/images/icono-escenas.png")}
-              style={{ width: 36, height: 36 }}
+              style={{ width: 30, height: 30 }}
               contentFit="contain"
             />
           </Pressable>
