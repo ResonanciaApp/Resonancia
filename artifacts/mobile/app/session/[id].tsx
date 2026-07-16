@@ -394,7 +394,7 @@ export default function SessionDetailScreen() {
                 onPress={handlePlayFromStart}
                 style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
               >
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: "#2c356d" }]} />
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: "#472de9" }]} />
                 <Feather name="rotate-ccw" size={16} color="#FFFFFF" />
                 <Text style={[styles.playBtnText, { color: "#FFFFFF" }]}>Reiniciar</Text>
               </Pressable>
@@ -406,7 +406,7 @@ export default function SessionDetailScreen() {
                 onPress={handleContinue}
                 style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
               >
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: "#2c356d" }]} />
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: "#472de9" }]} />
                 <Svg width={16} height={16} viewBox="0 0 48 48">
                   <Path
                     d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
@@ -424,7 +424,7 @@ export default function SessionDetailScreen() {
                 { overflow: "hidden", opacity: pressed ? 0.88 : 1, marginTop: 24, marginBottom: 26 },
               ]}
             >
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "#2c356d" }]} />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "#472de9" }]} />
               <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                 <Svg width={18} height={18} viewBox="0 0 48 48">
                   <Path
