@@ -446,7 +446,7 @@ export default function SessionDetailScreen() {
           >
             <View style={styles.shareBtnInner}>
               <Text style={styles.shareBtnText}>Compartir</Text>
-              <Feather name="send" size={15} color="#D6A45C" />
+              <Feather name="send" size={15} color="#F9F9F9" />
             </View>
           </Pressable>
 
@@ -1084,14 +1084,14 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: "transparent",
     borderWidth: 1.5,
-    borderColor: "#D6A45C",
+    borderColor: "#F9F9F9",
     paddingHorizontal: 24,
   },
   shareBtnText: {
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
-    color: "#D6AD5F",
+    color: "#F9F9F9",
     letterSpacing: 0.5,
   },
   splitBtnRow: {
