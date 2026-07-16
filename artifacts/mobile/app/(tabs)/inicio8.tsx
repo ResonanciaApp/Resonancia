@@ -348,6 +348,7 @@ export default function HomeScreen2() {
   const { openMixer } = useMixerPanel();
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
+  const cardBg = activeSceneId === "indigo" ? "rgba(255,255,255,0.045)" : "rgba(255,255,255,0.07)";
   // Fade de 300ms entre degradados de fondo al cambiar de Escena (loto en Inicio):
   // se mantiene el degradado anterior debajo y el nuevo se desvanece encima, en vez
   // de saltar de golpe de un color a otro.
@@ -1098,7 +1099,7 @@ export default function HomeScreen2() {
                   ...corners[i],
                 }]}
               >
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
                 <View style={{ width: 26, alignItems: "center", justifyContent: "center" }}>
                   {c.icon(c.color)}
                 </View>
@@ -1219,7 +1220,7 @@ export default function HomeScreen2() {
                       />
                     )
                   ) : (
-                    <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: "rgba(255,255,255,0.07)" }]} />
+                    <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: cardBg }]} />
                   )}
                   <Text
                     style={[
@@ -1284,7 +1285,7 @@ export default function HomeScreen2() {
         {/* ── FRASE DEL DÍA ── */}
         <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP }}>
           <View style={{ borderRadius: 18, overflow: "hidden", padding: 20 }}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
             {/* Título + botón compartir */}
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
               <Text style={{ fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#F7CB6B", letterSpacing: 1.2, textTransform: "uppercase" }}>
@@ -1334,7 +1335,7 @@ export default function HomeScreen2() {
             onPress={() => setMoodSheetVisible(true)}
             style={({ pressed }) => [styles.moodRow, styles.moodRowActive, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
           >
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
             <Text style={styles.moodSientesLabel}>Sientes:</Text>
             <View style={{ flex: 1 }} />
             <LinearGradient
@@ -1359,7 +1360,7 @@ export default function HomeScreen2() {
             onPress={() => setMoodSheetVisible(true)}
             style={({ pressed }) => [styles.moodRow, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
           >
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
             <Text style={styles.moodEmoji}>🙂</Text>
             <Text style={styles.moodRowLabel}>¿Cómo te sientes hoy?</Text>
             <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" />
@@ -1406,7 +1407,7 @@ export default function HomeScreen2() {
             borderRadius: 100,
             borderWidth: 1.5,
             borderColor: "rgba(249,249,249,0.5)",
-            backgroundColor: pressed ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.07)",
+            backgroundColor: pressed ? "rgba(255,255,255,0.12)" : cardBg,
           })}
         >
           <Text style={{ fontFamily: "Manrope", fontSize: 14, color: "#f9f9f9", fontWeight: "500" }}>
