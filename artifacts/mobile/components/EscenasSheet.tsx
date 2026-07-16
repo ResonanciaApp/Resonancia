@@ -408,29 +408,6 @@ export function EscenasSheet() {
           </Pressable>
           <Text style={styles.title}>Escenas</Text>
 
-          {/* Volumen */}
-          <View style={styles.volumeRow}>
-            <View style={styles.volumeLabelGroup}>
-              <MaterialCommunityIcons name="spa" size={17} color="#F4F4F4" style={styles.controlIcon} />
-              <Text style={styles.controlLabel}>Volumen de la escena</Text>
-            </View>
-            <View style={styles.sliderGroup}>
-              <Feather name="volume-x" size={13} color="rgba(255,255,255,0.45)" />
-              <View style={styles.sliderWrap}>
-                <VolumeSlider
-                  value={volume}
-                  onChange={setVolume}
-                  color="#FFFFFF"
-                  trackColor="rgba(255,255,255,0.10)"
-                  thickness={7}
-                  showThumb={false}
-                  fillOpacity={1}
-                />
-              </View>
-              <Feather name="volume-2" size={13} color="rgba(255,255,255,0.45)" />
-            </View>
-          </View>
-
           <View style={[styles.volumeRow, { marginBottom: 2 }]}>
             <View style={styles.volumeLabelGroup}>
               <MaterialCommunityIcons name="palette-outline" size={17} color="#F4F4F4" style={styles.controlIcon} />

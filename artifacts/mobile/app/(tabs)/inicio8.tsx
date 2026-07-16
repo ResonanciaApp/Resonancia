@@ -2,6 +2,7 @@ import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
+import { Image as ExpoImage } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -942,9 +943,11 @@ export default function HomeScreen2() {
             hitSlop={8}
             style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginLeft: 5, marginTop: -15 }]}
           >
-            <View style={[styles.giftBtnInner, { backgroundColor: "rgba(255,255,255,0.08)", width: 40, height: 40, borderRadius: 20 }]}>
-              <MaterialCommunityIcons name="spa" size={18} color="#F7CB6B" style={{ marginTop: 1 }} />
-            </View>
+            <ExpoImage
+              source={require("@/assets/images/icono-escenas.png")}
+              style={{ width: 36, height: 36 }}
+              contentFit="contain"
+            />
           </Pressable>
 
           {/* Centro: espacio */}
