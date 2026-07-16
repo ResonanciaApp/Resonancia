@@ -490,7 +490,7 @@ export default function SessionDetailScreen() {
           {/* ── Sobre el/la guiador/artista ─────────────────────────────── */}
           {aboutPerson && (
             <View style={styles.aboutBlock}>
-              <Text style={[styles.blockTitle, { color: colors.foreground }]}>
+              <Text style={[styles.blockTitle, { color: colors.foreground, marginBottom: 21 }]}>
                 {`Sobre ${aboutPerson.firstName}`}
               </Text>
               <View style={styles.aboutCard}>
