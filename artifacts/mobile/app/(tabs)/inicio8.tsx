@@ -942,11 +942,9 @@ export default function HomeScreen2() {
             hitSlop={8}
             style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginLeft: 5, marginTop: -15 }]}
           >
-            <ExpoImage
-              source={require("@/assets/images/icono-escenas.png")}
-              style={{ width: 30, height: 30 }}
-              contentFit="contain"
-            />
+            <View style={[styles.giftBtnInner, { backgroundColor: "rgba(255,255,255,0.08)", width: 40, height: 40, borderRadius: 20 }]}>
+              <MaterialCommunityIcons name="spa" size={18} color="#F7CB6B" style={{ marginTop: 1 }} />
+            </View>
           </Pressable>
 
           {/* Centro: espacio */}
