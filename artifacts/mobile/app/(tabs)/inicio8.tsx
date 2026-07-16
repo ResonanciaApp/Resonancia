@@ -981,7 +981,7 @@ export default function HomeScreen2() {
                 alignItems: "center",
                 gap: 5,
               }}>
-                {rachaEnabled && currentStreakDisplay > 0 && (
+                {currentStreakDisplay > 0 && (
                   <Text style={{ fontSize: 14, fontWeight: "300", color: "#f9f9f9", fontFamily: "Manrope", lineHeight: 18 }}>
                     {currentStreakDisplay}
                   </Text>
