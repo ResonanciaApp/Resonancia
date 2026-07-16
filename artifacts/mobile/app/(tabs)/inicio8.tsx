@@ -1,4 +1,5 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { LotusStreakIcon } from "@/components/LotusStreakIcon";
 import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
@@ -974,7 +975,7 @@ export default function HomeScreen2() {
                 </Text>
               )}
               <View style={[styles.giftBtnInner, { backgroundColor: "transparent", borderWidth: 0 }]}>
-                <MaterialCommunityIcons name="fire" size={22} color="#f9f9f9" />
+                <LotusStreakIcon streak={currentStreak} size={26} />
               </View>
             </Animated.View>
           </Pressable>
