@@ -339,6 +339,10 @@ export default function HomeScreen2() {
     return count;
   }, [statEvents]);
 
+  // DEV: forzar racha para pruebas visuales
+  const DEV_STREAK = 3;
+  const currentStreakDisplay = DEV_STREAK > 0 ? DEV_STREAK : currentStreak;
+
   const { isPremium } = usePremium();
   const { upcoming: upcomingLiveSessions } = useLiveSessions();
   const nextLiveSession = upcomingLiveSessions[0] ?? null;
@@ -972,14 +976,14 @@ export default function HomeScreen2() {
                 backgroundColor: "rgba(255,255,255,0.08)",
                 borderRadius: 20,
                 height: 36,
-                paddingHorizontal: rachaEnabled && currentStreak > 0 ? 10 : 10,
+                paddingHorizontal: 10,
                 flexDirection: "row",
                 alignItems: "center",
                 gap: 5,
               }}>
-                {rachaEnabled && currentStreak > 0 && (
+                {rachaEnabled && currentStreakDisplay > 0 && (
                   <Text style={{ fontSize: 14, fontWeight: "300", color: "#f9f9f9", fontFamily: "Manrope", lineHeight: 18 }}>
-                    {currentStreak}
+                    {currentStreakDisplay}
                   </Text>
                 )}
                 <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" style={{ marginTop: 1 }} />
