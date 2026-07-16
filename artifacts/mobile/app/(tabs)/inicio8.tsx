@@ -1376,7 +1376,7 @@ export default function HomeScreen2() {
         <View style={styles.recoSection}>
           {moodRecommended.map((s) => (
             <View key={s.id} style={styles.recoCard}>
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
               <SessionRow
                 session={s}
                 imageSize={84}
