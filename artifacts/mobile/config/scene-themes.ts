@@ -28,8 +28,8 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   tibet: {
     id: "tibet",
     label: "Universo",
-    gradient: ["#271A4C", "#251748", "#221645", "#201847", "#1D1B48", "#1A1F49", "#16224E", "#142351", "#132455", "#132458"],
-    solid: "#271A4C",
+    gradient: ["#2F2254", "#2D1F50", "#2A1E4D", "#28204F", "#252350", "#222751", "#1E2A56", "#1C2B59", "#1B2C5D", "#1B2C60"],
+    solid: "#2F2254",
   },
   "vino-tinto": {
     id: "vino-tinto",
