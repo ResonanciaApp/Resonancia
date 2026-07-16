@@ -90,7 +90,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
   const insets = useSafeAreaInsets();
   const { activeSceneId } = useSceneTheme();
   const tibetTint = activeSceneId === "tibet"
-    ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(42,75,124,0.20)" }]} pointerEvents="none" />
+    ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(42,75,124,0.40)" }]} pointerEvents="none" />
     : null;
   const { currentSession, isPlaying, progress, pauseResume } = usePlayer();
   const {
@@ -272,7 +272,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
       <View style={styles.mixOuter}>
         <View style={[styles.wrapper, { paddingTop: 15, paddingBottom: insets.bottom }]}>
           <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.48)" }]} />
           {tibetTint}
           <View style={{ height: STACK_SIZE + 30, alignItems: "center", justifyContent: "center" }}>
             <Animated.Text style={{ color: "#FFFFFF", fontSize: 18, fontWeight: "500", textAlign: "center", opacity: idleTextOpacity, marginTop: 0 }}>
@@ -302,7 +302,7 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
         <View style={[styles.wrapper, { paddingTop: 15, paddingBottom: insets.bottom }]}>
           {/* Fondo glassmorphism */}
           <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.28)" }]} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.48)" }]} />
           {tibetTint}
 
           {/* ── Row principal ── */}
