@@ -170,7 +170,7 @@
 
   body {
     @apply font-sans antialiased text-foreground;
-    background: linear-gradient(160deg, #2D1C52 0%, #291F57 20%, #241F5A 40%, #1F2A62 60%, #283673 80%, #2D4082 100%);
+    background: linear-gradient(160deg, #2D1C52 0%, #291F57 20%, #241F5A 40%, #1F2362 60%, #282F73 80%, #2D3E82 100%);
     background-attachment: fixed;
     min-height: 100vh;
   }
