@@ -682,7 +682,7 @@ const styles = StyleSheet.create({
 
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 20, paddingHorizontal: H_PAD, paddingBottom: 0, backgroundColor: "#1B060F" },
   stickyHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 6 },
-  stickyTabsDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.4)", marginHorizontal: -H_PAD, marginTop: 8 },
+  stickyTabsDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: -H_PAD, marginTop: 8 },
   headerBtn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
   headerTitleCol: { flex: 1, alignItems: "center" },
   headerTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "400", color: "#FBFBFB", letterSpacing: 0.2, textAlign: "center" },
