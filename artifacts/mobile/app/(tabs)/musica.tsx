@@ -703,9 +703,9 @@ export default function MezcladorScreen() {
   }, [mainTab, subTab, popularSounds, subTabCategories, moodFilter, tagFilters, effectiveBpm]);
 
   return (
-    <View style={[styles.root, { backgroundColor: "#1F255A" }]}>
+    <View style={[styles.root, { backgroundColor: "#283673" }]}>
       <LinearGradient
-        colors={["#1F255A", "#1F2A62"]}
+        colors={["#283673", "#2D4082"]}
         style={StyleSheet.absoluteFill}
         pointerEvents="none"
       />
@@ -866,7 +866,7 @@ export default function MezcladorScreen() {
                 </Text>
               </View>
             ) : (
-              <View style={[styles.grid, { marginTop: 4 }]}>
+              <View style={[styles.grid, { marginTop: 19 }]}>
                 {displayedSounds.map((s, i) => (
                   <SoundCard
                     key={s.id}

@@ -369,7 +369,7 @@ export function MixerSheet() {
     GRADIENT_PRESETS.find((p) => p.id === bgPresetId) ??
     GRADIENT_PRESETS.find((p) => p.id === DEFAULT_BG_PRESET_ID)!;
   const activeBgPreset = isDefaultBg
-    ? { ...rawBgPreset, colors: ["#1F255A", "#1F275E", "#1F2A62"] as const, image: undefined, isLight: false }
+    ? { ...rawBgPreset, colors: ["#283673", "#2A3B7A", "#2D4082"] as const, image: undefined, isLight: false }
     : rawBgPreset;
   const sheetGradient = activeBgPreset.colors;
   const isLight = activeBgPreset.isLight ?? false;
