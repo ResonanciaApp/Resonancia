@@ -239,29 +239,15 @@ export function MiniPlayer({ idle = false }: { idle?: boolean }) {
     }).start();
   };
 
-  // Sincroniza el ancho cuando cambia n: cerrado → stacked, abierto → carousel
-  // Si se agrega un sonido mientras está apilado → auto-expandir
+  // Sincroniza ancho del carrusel al cambiar n
   useEffect(() => {
-    const added = n > prevN.current;
     prevN.current = n;
     // Si al quitar un sonido el carrusel quedó scrolleado más allá del nuevo
     // contenido, el offset persistiría mostrando espacio vacío → reset a 0.
     scrollRef.current?.scrollTo({ x: 0, animated: false });
     if (!stackOpen) {
-      if (added) {
-        // Nuevo sonido agregado mientras estaba apilado → auto-expandir
-        setStackOpen(true);
-        Animated.timing(stackWidthAnim, {
-          toValue: carouselOpenW,
-          useNativeDriver: false, duration: DURATION.PLAYER, easing: easeOutCubic,
-        }).start();
-        Animated.timing(openProgress, {
-          toValue: 1,
-          useNativeDriver: true, duration: DURATION.PLAYER, easing: easeOutCubic,
-        }).start();
-      } else {
-        stackWidthAnim.setValue(stackWidthStackedCap);
-      }
+      // Apilado: mantener ancho apilado siempre (no expandir al agregar)
+      stackWidthAnim.setValue(stackWidthStackedCap);
     } else {
       Animated.timing(stackWidthAnim, {
         toValue: carouselOpenW,
