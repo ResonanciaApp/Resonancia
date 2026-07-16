@@ -721,9 +721,9 @@ export default function MezcladorScreen() {
                 <Pressable
                   onPress={closeMixer}
                   hitSlop={10}
-                  style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginRight: 14, marginLeft: -6 }}
+                  style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginRight: 14, marginLeft: -6 }}
                 >
-                  <MaterialCommunityIcons name="chevron-left" size={22} color="#FBFBFB" />
+                  <MaterialCommunityIcons name="chevron-left" size={24} color="#FBFBFB" />
                 </Pressable>
                 <View style={{ position: "absolute", left: 0, right: 0, alignItems: "center" }} pointerEvents="none">
                   <Text style={styles.pageTitle}>Mezclador</Text>
@@ -732,12 +732,12 @@ export default function MezcladorScreen() {
                 <View style={[styles.headerActions, { flexDirection: "row", gap: 4 }]}>
                     <Pressable
                       onPress={() => openMenu()}
-                      style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center" }}
+                      style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center" }}
                       hitSlop={8}
                       accessibilityRole="button"
                       accessibilityLabel="Menú del Mezclador"
                     >
-                      <MaterialCommunityIcons name="dots-horizontal" size={18} color="#FBFBFB" />
+                      <MaterialCommunityIcons name="dots-horizontal" size={22} color="#FBFBFB" />
                     </Pressable>
                 </View>
               </View>
