@@ -826,7 +826,7 @@ export default function ProfileScreen() {
                 style={({ pressed }) => [styles.pill, sel && styles.pillSel, { opacity: pressed ? 0.8 : 1 }]}
               >
                 {!sel && activeTheme?.id === "profundo" && (
-                  <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.1)" }]} />
+                  <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)" }]} />
                 )}
                 {sel && (activeTheme?.id === "tibet"
                   ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
