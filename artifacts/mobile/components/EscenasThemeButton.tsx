@@ -49,7 +49,7 @@ export function EscenasThemeButton({ onPress, style }: Props) {
           width: CONTAINER,
           height: CONTAINER,
           borderRadius: CONTAINER / 2,
-          backgroundColor: "rgba(255,255,255,0.15)",
+          backgroundColor: "rgba(255,255,255,0.07)",
         }} />
 
         {/* Ondas expansivas */}
