@@ -306,7 +306,7 @@ export default function NochesScreen() {
               cardWidth={RECENT_CARD_W}
               titleSize={19}
             />
-            <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+            <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
         )}
         {activeTab === null && favoritesInCategory.length > 0 && (
@@ -320,7 +320,7 @@ export default function NochesScreen() {
               cardWidth={RECENT_CARD_W}
               titleSize={19}
             />
-            <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+            <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
           </>
         )}
         {activeTab === null && (() => {
@@ -342,7 +342,7 @@ export default function NochesScreen() {
                   titleSize={19}
                   onViewAll={subHasMore ? () => setActiveTab(sub.tag) : undefined}
                 />
-                {!isLast && <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />}
+                {!isLast && <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />}
               </React.Fragment>
             );
           });
@@ -497,7 +497,7 @@ const styles = StyleSheet.create({
 
   featuredTitle: { fontFamily: "Manrope", fontSize: 19, fontWeight: "700", color: TEXT, paddingHorizontal: H_PAD, marginTop: 30 },
   featuredRow: { paddingHorizontal: H_PAD, gap: 16, paddingTop: 21 },
-  featuredDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20 },
+  featuredDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20 },
 
   sessionGrid: { flexDirection: "row", flexWrap: "wrap", columnGap: 20, paddingHorizontal: H_PAD, rowGap: 24, marginTop: 18, marginBottom: 6 },
   loadMoreFooter: { alignItems: "center", paddingVertical: 20 },

@@ -442,7 +442,7 @@ export default function MananasScreen() {
                         <FeaturedCard key={`feat-${s.id}`} session={s} />
                       ))}
                     </ScrollView>
-                    <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.1)", marginHorizontal: H_PAD, marginTop: 20 }} />
+                    <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20 }} />
                   </>
                 )}
                 {recentInCategory.length > 0 && (
