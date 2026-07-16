@@ -526,7 +526,7 @@ const styles = StyleSheet.create({
   stackThumb: {
     width: STACK_SIZE,
     height: STACK_SIZE,
-    borderRadius: 9,
+    borderRadius: 999,
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.3)",
@@ -539,7 +539,7 @@ const styles = StyleSheet.create({
   stackFallback: {
     width: STACK_SIZE,
     height: STACK_SIZE,
-    borderRadius: 9,
+    borderRadius: 999,
     backgroundColor: "rgba(212,175,55,0.18)",
     alignItems: "center",
     justifyContent: "center",
