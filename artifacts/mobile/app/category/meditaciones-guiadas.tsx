@@ -571,7 +571,7 @@ const styles = StyleSheet.create({
   dividerLine: { height: 0 },
   dividerShadow: { height: 12, marginTop: 0 },
 
-  chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -2 },
+  chipsArea: { paddingTop: 10, paddingBottom: 5, overflow: "visible", marginTop: -2, paddingHorizontal: H_PAD },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(212,175,55,0.15)", marginHorizontal: H_PAD, marginTop: 8 },
   chipRowWrapper: { position: "relative", marginHorizontal: -H_PAD },
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.06)", marginTop: 11, marginHorizontal: H_PAD },
