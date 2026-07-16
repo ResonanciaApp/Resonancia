@@ -2,7 +2,7 @@ import React, { useCallback, useRef } from "react";
 import { Animated, Pressable, View } from "react-native";
 
 const DOT = 7;
-const CONTAINER = 40;
+const CONTAINER = 32;
 
 interface Props {
   onPress: () => void;
