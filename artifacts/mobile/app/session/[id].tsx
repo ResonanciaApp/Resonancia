@@ -95,6 +95,8 @@ export default function SessionDetailScreen() {
   const { playSession, isFavorite, toggleFavorite, currentSession, isPlaying, progress, getSessionProgress, clearSessionProgress } = usePlayer();
   const { theme: sceneTheme } = useSceneTheme();
 
+  const accentColor = sceneTheme.id === "tibet" ? "#F9F9F9" : "rgb(247,203,107)";
+
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const topPad = Platform.OS === "web" ? 67 : insets.top;
 
@@ -394,7 +396,12 @@ export default function SessionDetailScreen() {
                 onPress={handlePlayFromStart}
                 style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
               >
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
+                {sceneTheme.id === "tibet"
+                  ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
+                  : sceneTheme.id === "vino-tinto"
+                    ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgb(247,203,107)" }]} />
+                    : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+                }
                 <Feather name="rotate-ccw" size={16} color="#0d0c26" />
                 <Text style={[styles.playBtnText, { color: "#0d0c26" }]}>Reiniciar</Text>
               </Pressable>
@@ -406,7 +413,12 @@ export default function SessionDetailScreen() {
                 onPress={handleContinue}
                 style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
               >
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
+                {sceneTheme.id === "tibet"
+                  ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
+                  : sceneTheme.id === "vino-tinto"
+                    ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgb(247,203,107)" }]} />
+                    : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+                }
                 <Svg width={16} height={16} viewBox="0 0 48 48">
                   <Path
                     d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
@@ -424,7 +436,12 @@ export default function SessionDetailScreen() {
                 { overflow: "hidden", opacity: pressed ? 0.88 : 1, marginTop: 24, marginBottom: 26 },
               ]}
             >
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
+              {sceneTheme.id === "tibet"
+                ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
+                : sceneTheme.id === "vino-tinto"
+                  ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgb(247,203,107)" }]} />
+                  : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+              }
               <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                 <Svg width={18} height={18} viewBox="0 0 48 48">
                   <Path
@@ -444,9 +461,9 @@ export default function SessionDetailScreen() {
             onPress={handleShare}
             style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, marginTop: -11, marginBottom: 14 })}
           >
-            <View style={styles.shareBtnInner}>
-              <Text style={styles.shareBtnText}>Compartir</Text>
-              <Feather name="send" size={15} color="#F9F9F9" />
+            <View style={[styles.shareBtnInner, { borderColor: accentColor }]}>
+              <Text style={[styles.shareBtnText, { color: accentColor }]}>Compartir</Text>
+              <Feather name="send" size={15} color={accentColor} />
             </View>
           </Pressable>
 
