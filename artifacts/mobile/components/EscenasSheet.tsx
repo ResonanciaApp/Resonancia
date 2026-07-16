@@ -43,7 +43,6 @@ import type { SceneAnimation } from "@workspace/api-client-react";
 import { useGetSceneAnimations } from "@workspace/api-client-react";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useBrightness } from "@/context/BrightnessContext";
-import { useRacha } from "@/context/RachaContext";
 import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
@@ -208,7 +207,6 @@ export function EscenasSheet() {
   } = useAmbientPlayer();
 
   const [timerOpen, setTimerOpen] = useState(false);
-  const { rachaEnabled, setRachaEnabled } = useRacha();
   const { intencionDiariaEnabled, setIntencionDiariaEnabled } = useIntencionDiaria();
   const { greetingVisible, setGreetingVisible } = useGreetingVisible();
   const { brightMode, setBrightMode } = useBrightness();
@@ -459,17 +457,6 @@ export function EscenasSheet() {
             </View>
           </View>
 
-          {/* Días de racha */}
-          <View style={styles.controlRow}>
-            <MaterialCommunityIcons name="fire" size={17} color="#F4F4F4" style={styles.controlIcon} />
-            <Text style={styles.controlLabel}>Días de racha</Text>
-            <Switch
-              value={rachaEnabled}
-              onValueChange={setRachaEnabled}
-              trackColor={{ false: "rgba(61,14,22,0.60)", true: "rgba(247,203,107,0.55)" }}
-              thumbColor={rachaEnabled ? "#F7CB6B" : "#666"}
-            />
-          </View>
 
           {/* Intención diaria (reemplaza la escena animada en Inicio) */}
           <View style={styles.controlRow}>
