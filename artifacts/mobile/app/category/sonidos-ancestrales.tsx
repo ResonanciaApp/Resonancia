@@ -709,7 +709,7 @@ const styles = StyleSheet.create({
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.06)", marginTop: 11, marginHorizontal: H_PAD },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-  chip: { height: 30, paddingHorizontal: 11, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.04)", borderWidth: 1.5, borderColor: "rgba(244,244,244,0.30)" },
+  chip: { height: 30, paddingHorizontal: 11, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.15)", borderWidth: 1.5, borderColor: "rgba(244,244,244,0.30)" },
   chipBorder: {},
   chipBorderSel: {},
   chipUnsel: {},

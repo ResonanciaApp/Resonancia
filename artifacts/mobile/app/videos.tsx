@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.035)",
+    backgroundColor: "rgba(0,0,0,0.15)",
     borderWidth: 2,
     borderColor: "rgba(244,244,244,0.1)",
   },
