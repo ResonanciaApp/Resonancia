@@ -116,8 +116,11 @@ export default function SessionDetailScreen() {
   const isAncestral = session.categoryId === "sonidos-ancestrales";
   const isMusica = session.categoryId === "musica-sonidos";
   // Fondo ligado a la Escena activa (naturaleza/bosque/lluvia/viento/...).
-  const catBg = { gradient: sceneTheme.gradient, solid: sceneTheme.solid };
-  const stickyHeaderColor = sceneTheme.gradient[0];
+  const sessionGradient: string[] = sceneTheme.id === "tibet"
+    ? ["#261F57", "#1F255A"]
+    : sceneTheme.gradient;
+  const catBg = { gradient: sessionGradient, solid: sceneTheme.solid };
+  const stickyHeaderColor = sessionGradient[0];
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
   const [showPlaylistSheet, setShowPlaylistSheet] = useState(false);
@@ -302,11 +305,11 @@ export default function SessionDetailScreen() {
       }));
 
   return (
-    <View style={[styles.root, { backgroundColor: sceneTheme.gradient[sceneTheme.gradient.length - 1] as string }]}>
+    <View style={[styles.root, { backgroundColor: sessionGradient[sessionGradient.length - 1] }]}>
       <StatusBar barStyle="light-content" />
 
       {/* Colchón de color fijo — cubre cualquier gap durante scroll rápido sin lag */}
-      <View style={{ position: "absolute", top: HEADER_H - 2, left: 0, right: 0, height: 400, backgroundColor: sceneTheme.gradient[0] as string, zIndex: 0 }} pointerEvents="none" />
+      <View style={{ position: "absolute", top: HEADER_H - 2, left: 0, right: 0, height: 400, backgroundColor: sessionGradient[0], zIndex: 0 }} pointerEvents="none" />
 
       {/* ── Hero fijo ──────────────────────────────────────────────────────── */}
       <Animated.View style={[styles.hero, { height: HEADER_H, position: "absolute", top: 0, left: 0, right: 0, zIndex: 1 }]}>
@@ -341,9 +344,9 @@ export default function SessionDetailScreen() {
         <View style={{ height: HEADER_H }} pointerEvents="none" />
 
         {/* ── Bloque fondo+contenido que cubre el hero al hacer scroll ──── */}
-        <View style={{ backgroundColor: sceneTheme.gradient[sceneTheme.gradient.length - 1] as string }}>
+        <View style={{ backgroundColor: sessionGradient[sessionGradient.length - 1] }}>
           <LinearGradient
-            colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
+            colors={sessionGradient as unknown as [string, string, ...string[]]}
             style={StyleSheet.absoluteFill}
             pointerEvents="none"
           />
