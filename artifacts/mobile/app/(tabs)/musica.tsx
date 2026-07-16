@@ -769,7 +769,7 @@ export default function MezcladorScreen() {
             )}
             {subTabCategories && subTabCategories.length > 1 && (
               <View style={styles.subTabZone}>
-                <SubTabSlide key={subTabAnimKey}>
+                <SubTabSlide>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.subTabRow}>
                     {subTabCategories.map((catId) => {
                       const cat = SOUND_CATEGORIES.find((c) => c.id === catId);
@@ -807,7 +807,7 @@ export default function MezcladorScreen() {
           contentContainerStyle={[styles.scrollContent, { paddingBottom: 200 + bottomPad }]}
           showsVerticalScrollIndicator={false}
         >
-          <ContentSlide key={contentAnimKey} dir={contentDir}>
+          <ContentSlide dir={contentDir}>
             {/* ── Chips de filtros activos ── */}
             {(tagFilters.length > 0 || moodFilter !== null) && (
               <ScrollView
