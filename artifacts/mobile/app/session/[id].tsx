@@ -33,6 +33,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useGetSessionPlayCount, getGetSessionPlayCountQueryKey } from "@workspace/api-client-react";
 import { getSessionById, SESSIONS } from "@/data/sessions";
 import { getGuide } from "@/data/guides";
+import { getArtist } from "@/data/artists";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { hexToRgba } from "@/utils/color";
@@ -304,6 +305,17 @@ export default function SessionDetailScreen() {
         bio: g.bio, profilePath: `/guiador/${g.id}`,
       }));
 
+  // ── Perfil "Sobre el…" ───────────────────────────────────────────────────────
+  // Guiadas → guiador | Música ambient/enteógena → artista | resto → null
+  const aboutPerson: { name: string; firstName: string; photo: import("react-native").ImageSourcePropType; city?: string; country?: string; bio: string; profilePath: string } | null = (() => {
+    if (isGuiada) return authors[0] ?? null;
+    if (isMusica && session.artistId) {
+      const a = getArtist(session.artistId);
+      return { name: a.name, firstName: a.name.split(" ")[0], photo: a.photo, city: a.city, country: a.country, bio: a.bio, profilePath: `/artista/${a.id}` };
+    }
+    return null;
+  })();
+
   return (
     <View style={[styles.root, { backgroundColor: sessionGradient[sessionGradient.length - 1] }]}>
       <StatusBar barStyle="light-content" />
@@ -474,6 +486,42 @@ export default function SessionDetailScreen() {
           <Text style={[styles.description, { color: colors.softSand ?? "#FFFFFF" }]}>
             {session.description}
           </Text>
+
+          {/* ── Sobre el/la guiador/artista ─────────────────────────────── */}
+          {aboutPerson && (
+            <View style={styles.aboutBlock}>
+              <Text style={[styles.blockTitle, { color: colors.foreground }]}>
+                {`Sobre ${aboutPerson.firstName}`}
+              </Text>
+              <View style={styles.aboutCard}>
+                <View style={styles.aboutCardHeader}>
+                  <Image
+                    source={aboutPerson.photo}
+                    style={styles.aboutAvatar}
+                    contentFit="cover"
+                    placeholder={BLUR_PLACEHOLDER}
+                    transition={IMAGE_TRANSITION}
+                  />
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.aboutName}>{aboutPerson.name}</Text>
+                    {(aboutPerson.city || aboutPerson.country) && (
+                      <Text style={styles.aboutLocation}>
+                        {[aboutPerson.city, aboutPerson.country].filter(Boolean).join(", ")}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+                <Text style={styles.aboutBio}>{aboutPerson.bio}</Text>
+                <Pressable
+                  onPress={() => router.push(aboutPerson.profilePath as never)}
+                  style={({ pressed }) => [styles.aboutProfileLink, { opacity: pressed ? 0.7 : 1 }]}
+                >
+                  <Text style={styles.aboutProfileLinkText}>Ver perfil</Text>
+                  <Feather name="chevron-right" size={14} color="#D6A45C" />
+                </Pressable>
+              </View>
+            </View>
+          )}
 
           {/* ── Más sesiones como estas ──────────────────────────────────── */}
           {related.length > 0 && (
@@ -919,6 +967,22 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
     marginBottom: 14,
   },
+
+  // Sobre el guiador / artista
+  aboutBlock: { marginTop: 28, marginBottom: 8 },
+  aboutCard: {
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderRadius: 16,
+    padding: 16,
+    gap: 10,
+  },
+  aboutCardHeader: { flexDirection: "row", alignItems: "center", gap: 12 },
+  aboutAvatar: { width: 52, height: 52, borderRadius: 26 },
+  aboutName: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#FBFBFB" },
+  aboutLocation: { fontFamily: "Manrope", fontSize: 12, color: "rgba(255,255,255,0.55)", marginTop: 2 },
+  aboutBio: { fontFamily: "Manrope", fontSize: 13, color: "rgba(255,255,255,0.75)", lineHeight: 19 },
+  aboutProfileLink: { flexDirection: "row", alignItems: "center", gap: 3, alignSelf: "flex-start", marginTop: 2 },
+  aboutProfileLinkText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#D6A45C" },
 
   // Related vertical list
   relatedBlock: { marginBottom: 20, marginTop: 1 },
