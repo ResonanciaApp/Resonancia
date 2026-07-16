@@ -188,7 +188,7 @@ const PillTab = memo(function PillTab({
       {/* Ícono */}
       <MaterialCommunityIcons
         name={tab.icon as any}
-        size={15}
+        size={13}
         color={fgColor}
       />
 
@@ -1032,15 +1032,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
-    paddingHorizontal: 13,
-    height: 32,
+    paddingHorizontal: 11,
+    height: 30,
     borderRadius: 999,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.04)",
     borderWidth: 1.5,
     borderColor: "rgba(244,244,244,0.30)",
   },
-  pillTabLabel:   { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", color: "#FBFBFB" },
+  pillTabLabel:   { fontFamily: "Manrope", fontSize: 11, fontWeight: "700", color: "#FBFBFB" },
   pillTabLabelSel:{ color: "#2D0D3A" },
   pillTabUnderline: {},
 
