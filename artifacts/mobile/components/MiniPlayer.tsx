@@ -458,6 +458,11 @@ const styles = StyleSheet.create({
     width: "100%",
     alignSelf: "center",
     gap: 6,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
+    elevation: 12,
   },
 
   // ── Píldora "Abrir" ───────────────────────────────────────────
