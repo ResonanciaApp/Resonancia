@@ -225,7 +225,12 @@ export default function BusquedaScreen() {
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: tc.bg }]}>
+    <LinearGradient
+      colors={theme.gradient as unknown as [string, string, ...string[]]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+      style={styles.root}
+    >
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
@@ -372,7 +377,7 @@ export default function BusquedaScreen() {
         tc={tc}
         gradient={theme.gradient}
       />
-    </View>
+    </LinearGradient>
   );
 }
 
