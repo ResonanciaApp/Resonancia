@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Svg, { Defs, Rect, RadialGradient as SvgRadialGradient, Stop } from "react-native-svg";
 
 import { SessionCard } from "@/components/SessionCard";
 import { SacredGlyph } from "@/components/SacredGlyph";
@@ -77,10 +78,25 @@ export default function ChakraScreen() {
     );
   }
 
+  const isAjna = chakra.id === "chakra-6";
+
   return (
-    <View style={[styles.root, { backgroundColor: chakra.gradient[2] }]}>
+    <View style={[styles.root, { backgroundColor: isAjna ? "#100E48" : chakra.gradient[2] }]}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={chakra.gradient} style={StyleSheet.absoluteFill} />
+      {isAjna ? (
+        <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+          <Defs>
+            <SvgRadialGradient id="ajnaBg" cx="50" cy="52.5" r="72.5" gradientUnits="userSpaceOnUse">
+              <Stop offset="0" stopColor="#0E355C" stopOpacity="1" />
+              <Stop offset="0.9" stopColor="#100E48" stopOpacity="1" />
+              <Stop offset="1" stopColor="#100E48" stopOpacity="1" />
+            </SvgRadialGradient>
+          </Defs>
+          <Rect x="0" y="0" width="100" height="100" fill="url(#ajnaBg)" />
+        </Svg>
+      ) : (
+        <LinearGradient colors={chakra.gradient} style={StyleSheet.absoluteFill} />
+      )}
 
       <ScrollView
         style={styles.scroll}
