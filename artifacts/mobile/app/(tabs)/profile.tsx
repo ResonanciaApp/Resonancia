@@ -89,41 +89,6 @@ function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   });
 }
 
-/** Local day key (year-month-day) using device time, for streak grouping */
-function dayKey(d: Date): string {
-  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-}
-
-const WEEK_INITIALS = ["L", "M", "M", "J", "V", "S", "D"];
-
-/** Day-of-week index Mon=0 … Sun=6 (ISO aligned) */
-function isoDow(d: Date): number {
-  return (d.getDay() + 6) % 7;
-}
-
-/** Count consecutive active days ending today or yesterday */
-function computeStreak(events: { playedAt: string }[]): number {
-  if (events.length === 0) return 0;
-  const days = new Set(events.map((e) => dayKey(new Date(e.playedAt))));
-  const today = new Date();
-  const todayKey = dayKey(today);
-  const yesterday = new Date(today);
-  yesterday.setDate(today.getDate() - 1);
-  const yKey = dayKey(yesterday);
-
-  let cursor: Date;
-  if (days.has(todayKey)) cursor = today;
-  else if (days.has(yKey)) cursor = yesterday;
-  else return 0;
-
-  let count = 0;
-  const walk = new Date(cursor);
-  while (days.has(dayKey(walk))) {
-    count++;
-    walk.setDate(walk.getDate() - 1);
-  }
-  return count;
-}
 
 type PerfilTab = "panel" | "biblioteca" | "historial" | "registros";
 
@@ -484,6 +449,9 @@ export default function ProfileScreen() {
     }).start();
   }, [sectionsHidden, sectionsAnim]);
 
+  // ── Muro de reflexiones (placeholders) ───────────────────────────────────
+  const [muroExpanded, setMuroExpanded] = useState<boolean[]>([false, false, false]);
+
   // ── Edit modal state ──────────────────────────────────────────────────────
   const [showInvitar, setShowInvitar] = useState(false);
   const [editVisible, setEditVisible] = useState(false);
@@ -581,82 +549,6 @@ export default function ProfileScreen() {
     .map((id) => getSessionById(id))
     .filter(Boolean);
 
-  // ── Activity summary (week minutes, top category, top session, streak) ──────
-  const activity = useMemo(() => {
-    const weekCutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
-    let weeklyMinutes = 0;
-    const categoryCount = new Map<string, number>();
-    const sessionCount = new Map<string, number>();
-
-    for (const e of statEvents) {
-      if (new Date(e.playedAt).getTime() >= weekCutoff) {
-        weeklyMinutes += e.minutes;
-      }
-      categoryCount.set(e.categoryLabel, (categoryCount.get(e.categoryLabel) ?? 0) + 1);
-      sessionCount.set(e.sessionId, (sessionCount.get(e.sessionId) ?? 0) + 1);
-    }
-
-    let topCategory: string | null = null;
-    let topCategoryN = 0;
-    for (const [label, n] of categoryCount) {
-      if (n > topCategoryN) {
-        topCategoryN = n;
-        topCategory = label;
-      }
-    }
-
-    let topSessionId: string | null = null;
-    let topSessionN = 0;
-    for (const [id, n] of sessionCount) {
-      if (n > topSessionN) {
-        topSessionN = n;
-        topSessionId = id;
-      }
-    }
-
-    const topSession = topSessionId ? getSessionById(topSessionId) : null;
-    const streak = computeStreak(statEvents);
-
-    // Max streak
-    const days = Array.from(new Set(statEvents.map((e) => dayKey(new Date(e.playedAt))))).sort();
-    let maxStreak = 0;
-    let run = 0;
-    for (let i = 0; i < days.length; i++) {
-      if (i === 0) { run = 1; }
-      else {
-        const prev = new Date(days[i - 1].split("-").map(Number).join("-"));
-        const curr = new Date(days[i].split("-").map(Number).join("-"));
-        const diffMs = curr.getTime() - prev.getTime();
-        run = diffMs <= 24 * 60 * 60 * 1000 + 60_000 ? run + 1 : 1;
-      }
-      if (run > maxStreak) maxStreak = run;
-    }
-
-    // This-week day activity (Mon=0..Sun=6)
-    const minutesByDay = new Map<string, number>();
-    for (const e of statEvents) {
-      const k = dayKey(new Date(e.playedAt));
-      minutesByDay.set(k, (minutesByDay.get(k) ?? 0) + e.minutes);
-    }
-    const today = new Date();
-    const todayDow = isoDow(today);
-    const weekActivity: boolean[] = Array(7).fill(false);
-    for (let d = 0; d <= todayDow; d++) {
-      const target = new Date(today);
-      target.setDate(today.getDate() - (todayDow - d));
-      weekActivity[d] = minutesByDay.has(dayKey(target));
-    }
-
-    return {
-      weeklyMinutes: Math.round(weeklyMinutes),
-      topCategory,
-      topSession,
-      streak,
-      maxStreak,
-      weekActivity,
-      hasData: statEvents.length > 0,
-    };
-  }, [statEvents]);
 
   // ── Fondo activo (degradado de perfil) ────────────────────────────────────
   // Fondo fijo (mismo degradado que Inicio). La personalización de fondo se
@@ -936,42 +828,73 @@ export default function ProfileScreen() {
           </Pressable>
         </View>
 
-        {/* ── Estadísticas de Racha ── */}
+        {/* ── Muro de reflexiones ── */}
         {(() => {
-          const totalListen = Math.round(statEvents.reduce((s, e) => s + e.minutes, 0));
-          const fmtMin = (m: number) => m < 60 ? `${m}m` : `${Math.floor(m / 60)}h ${m % 60 > 0 ? ` ${m % 60}m` : ""}`.trim();
-          const weekDone = activity.weekActivity.filter(Boolean).length;
-          const stats4 = [
-            { emoji: "🎧", value: String(history.length), label: "Sesiones completadas", sub: "" },
-            { emoji: "⏱", value: totalListen > 0 ? fmtMin(totalListen) : "—", label: "Tiempo de expansión", sub: "" },
-            { emoji: "🏆", value: String(activity.maxStreak), label: "Racha máxima", sub: "días" },
+          const MURO_PLACEHOLDERS = [
+            {
+              sessionId: "1",
+              message: "Hoy comprendí que la respiración profunda no solo calma la mente, sino que me conecta con algo más grande que yo mismo. Fue una sesión completamente transformadora y espero poder repetirla pronto.",
+            },
+            {
+              sessionId: "5",
+              message: "Esta meditación me ayudó a soltar el control y confiar más en el proceso. Quedé muy tranquila y con muchas ganas de volver mañana.",
+            },
+            {
+              sessionId: "8",
+              message: "Aprendí que la gratitud no necesita de grandes cosas. En el silencio encontré todo lo que necesitaba en este momento. Cada respiración fue un regalo.",
+            },
           ];
+          const MAX_LINES = 3;
           return (
-            <>
-            <Text style={[styles.rachaStatsTitle, { color: colors.foreground, marginBottom: 10 }]}>Tu Racha</Text>
-            <View style={[styles.rachaStatsCard, { backgroundColor: "rgba(255,255,255,0.07)", borderColor: "rgba(247,203,107,0.13)" }]}>
-              <View style={styles.rachaStatsHeader}>
-                <View style={[styles.rachaWeekPills]}>
-                  {["L","M","X","J","V","S","D"].map((d, i) => (
-                    <View key={i} style={[styles.rachaWeekPill, activity.weekActivity[i] && { backgroundColor: "rgba(247,203,107,0.25)", borderColor: "rgba(247,203,107,0.55)" }]}>
-                      <Text style={[styles.rachaWeekPillText, { color: activity.weekActivity[i] ? "#F7CB6B" : colors.mutedForeground }]}>{d}</Text>
+            <View style={{ marginTop: 20 }}>
+              <Text style={[styles.muroSectionTitle, { color: colors.foreground }]}>Mis reflexiones</Text>
+              {MURO_PLACEHOLDERS.map((item, idx) => {
+                const session = getSessionById(item.sessionId);
+                const expanded = muroExpanded[idx] ?? false;
+                return (
+                  <View key={idx} style={styles.muroCard}>
+                    {/* Columna izquierda: imagen + título */}
+                    <View style={styles.muroLeft}>
+                      {session?.image ? (
+                        <Image source={session.image as number} style={styles.muroThumb} contentFit="cover" />
+                      ) : (
+                        <View style={[styles.muroThumb, { backgroundColor: "rgba(255,255,255,0.08)" }]} />
+                      )}
+                      <Text style={[styles.muroSessionTitle, { color: colors.mutedForeground }]} numberOfLines={2}>
+                        {session?.title ?? "Sesión"}
+                      </Text>
                     </View>
-                  ))}
-                </View>
-              </View>
-              <View style={styles.rachaStatsRow}>
-                {stats4.map((s, i) => (
-                  <View key={i} style={styles.rachaStatCol}>
-                    {i > 0 && <View style={[styles.rachaStatDivider, { backgroundColor: "rgba(255,255,255,0.08)" }]} />}
-                    <Text style={styles.rachaStatEmoji}>{s.emoji}</Text>
-                    <Text style={[styles.rachaStatVal, { color: colors.foreground }]}>{s.value}</Text>
-                    <Text style={[styles.rachaStatLabel, { color: colors.mutedForeground }]}>{s.label}</Text>
-                    {s.sub ? <Text style={[styles.rachaStatSub, { color: "rgba(244,218,213,0.45)" }]}>{s.sub}</Text> : null}
+
+                    {/* Columna derecha: mensaje con expand */}
+                    <View style={styles.muroRight}>
+                      <View style={styles.muroMsgCard}>
+                        <Text
+                          style={[styles.muroMsgText, { color: colors.foreground }]}
+                          numberOfLines={expanded ? undefined : MAX_LINES}
+                        >
+                          {item.message}
+                        </Text>
+                        <Pressable
+                          onPress={() =>
+                            setMuroExpanded((prev) => {
+                              const next = [...prev];
+                              next[idx] = !next[idx];
+                              return next;
+                            })
+                          }
+                          hitSlop={8}
+                          style={{ marginTop: 8, alignSelf: "flex-end" }}
+                        >
+                          <Text style={styles.muroVerMas}>
+                            {expanded ? "Ver menos" : "Ver más"}
+                          </Text>
+                        </Pressable>
+                      </View>
+                    </View>
                   </View>
-                ))}
-              </View>
+                );
+              })}
             </View>
-            </>
           );
         })()}
 
@@ -1854,6 +1777,62 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.05)",
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  // ── Muro de reflexiones ───────────────────────────────────────────────────
+  muroSectionTitle: {
+    fontFamily: "Manrope",
+    fontSize: 20,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+    marginBottom: 18,
+  },
+  muroCard: {
+    flexDirection: "row",
+    gap: 12,
+    marginBottom: 25,
+    alignItems: "flex-start",
+  },
+  muroLeft: {
+    width: 88,
+    alignItems: "center",
+    gap: 8,
+    flexShrink: 0,
+  },
+  muroThumb: {
+    width: 88,
+    height: 88,
+    borderRadius: 14,
+    backgroundColor: "rgba(255,255,255,0.06)",
+  },
+  muroSessionTitle: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    fontWeight: "600",
+    textAlign: "center",
+    lineHeight: 15,
+  },
+  muroRight: {
+    flex: 1,
+  },
+  muroMsgCard: {
+    backgroundColor: "rgba(0,0,0,0.15)",
+    borderRadius: 14,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.06)",
+  },
+  muroMsgText: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    lineHeight: 20,
+    letterSpacing: 0.1,
+  },
+  muroVerMas: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#F7CB6B",
   },
 
   // ── Racha Stats Card ──────────────────────────────────────────────────────
