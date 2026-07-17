@@ -72,7 +72,7 @@ export function EscenasThemeButton({ onPress, style }: Props) {
             strokeLinecap="round"
             strokeLinejoin="round"
             fill="none"
-            opacity={0.75}
+            opacity={0.5}
           />
         ))}
       </Svg>
