@@ -1042,7 +1042,7 @@ const styles = StyleSheet.create({
   aboutProfileLinkText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#D6A45C" },
 
   // Related vertical list
-  relatedBlock: { marginBottom: 20, marginTop: 39 },
+  relatedBlock: { marginBottom: 20, marginTop: 19 },
   relatedList: { gap: 18, marginTop: 21 },
   relatedCard: {
     flexDirection: "row",
