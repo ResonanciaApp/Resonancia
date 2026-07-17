@@ -885,7 +885,7 @@ function FilterBar({
   );
 }
 
-function SubmissionList({ status, filters }: { status: GetPendingSubmissionsStatus; filters: ActiveFilters }) {
+function SubmissionList({ status, filters = {} }: { status: GetPendingSubmissionsStatus; filters?: ActiveFilters }) {
   const params: GetPendingSubmissionsParams = {
     status,
     ...(filters.categoryId ? { categoryId: filters.categoryId } : {}),
