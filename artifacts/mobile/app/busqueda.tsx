@@ -22,6 +22,7 @@ import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
@@ -45,13 +46,51 @@ type CategoryLabel = (typeof CATEGORY_OPTIONS)[number]["label"];
 
 const OPTION_W = (width - H_PAD * 2 - 12) / 2;
 
+/** Aclara un color hex multiplicando canales (clamp 255). */
+function brighten(hex: string, factor = 1.5): string {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!m) return hex;
+  const n = parseInt(m[1], 16);
+  const ch = (v: number) => Math.min(255, Math.round(v * factor));
+  const r = ch((n >> 16) & 255);
+  const g = ch((n >> 8) & 255);
+  const b = ch(n & 255);
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
+}
+
 function getSessionAuthor(s: Session): string | null {
   if (s.guideId) return getGuide(s.guideId).name;
   if (s.artistId) return getArtist(s.artistId).name;
   return s.subtitle ?? null;
 }
 
-// ── Bottom sheet de filtro (grilla 2 columnas) ─────────────────────────────
+// ── Colores derivados del tema de Escena ─────────────────────────────────────
+type ThemeColors = {
+  bg: string;         // fondo raíz
+  sheetBg: string;    // fondo del bottom sheet
+  accent: string;     // color de acento (borde, seleccionado, dorado equivalente)
+  accentBg: string;   // fondo de opción seleccionada (accent + alpha)
+  pillActiveBg: string; // fondo de pill activa
+  pillActiveText: string; // texto de pill activa (legible sobre pillActiveBg)
+  borderFaint: string;  // borde sutil
+};
+
+function deriveThemeColors(solid: string, gradient: readonly [string, string, ...string[]]): ThemeColors {
+  // Acento = último stop del degradado aclarado (el stop más "claro" del gradiente)
+  const lastStop = gradient[gradient.length - 1];
+  const accent = brighten(lastStop, 2.8);
+  return {
+    bg: solid,
+    sheetBg: brighten(solid, 1.35),
+    accent,
+    accentBg: accent + "18",  // ~10% opacidad hex
+    pillActiveBg: accent,
+    pillActiveText: "#080610",
+    borderFaint: accent + "44",  // ~27% opacidad
+  };
+}
+
+// ── Bottom sheet de filtro ───────────────────────────────────────────────────
 function FilterSheet({
   visible,
   title,
@@ -60,6 +99,7 @@ function FilterSheet({
   onSelect,
   onClear,
   onClose,
+  tc,
 }: {
   visible: boolean;
   title: string;
@@ -68,6 +108,7 @@ function FilterSheet({
   onSelect: (v: string) => void;
   onClear: () => void;
   onClose: () => void;
+  tc: ThemeColors;
 }) {
   const insets = useSafeAreaInsets();
   return (
@@ -75,11 +116,14 @@ function FilterSheet({
       <View style={StyleSheet.absoluteFill}>
         <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]} onPress={onClose} />
         <View style={sheetStyles.container} pointerEvents="box-none">
-          <View style={[sheetStyles.sheet, { paddingBottom: (Platform.OS === "web" ? 24 : insets.bottom) + 20 }]}>
+          <View style={[sheetStyles.sheet, {
+            backgroundColor: tc.sheetBg,
+            paddingBottom: (Platform.OS === "web" ? 24 : insets.bottom) + 20,
+          }]}>
             <View style={sheetStyles.headerRow}>
-              <Text style={sheetStyles.title}>{title}</Text>
+              <Text style={[sheetStyles.title, { color: tc.accent }]}>{title}</Text>
               <Pressable onPress={onClose} hitSlop={10} style={sheetStyles.closeBtn}>
-                <Feather name="x" size={20} color="#F4F4F4" />
+                <Feather name="x" size={20} color={tc.accent} />
               </Pressable>
             </View>
             <View style={sheetStyles.grid}>
@@ -91,11 +135,15 @@ function FilterSheet({
                     onPress={() => { onSelect(opt); onClose(); }}
                     style={({ pressed }) => [
                       sheetStyles.option,
-                      sel && sheetStyles.optionSelected,
-                      { opacity: pressed ? 0.75 : 1 },
+                      {
+                        borderColor: sel ? tc.accent : tc.borderFaint,
+                        backgroundColor: sel ? tc.accentBg : "rgba(255,255,255,0.04)",
+                        borderWidth: sel ? 1.5 : 1,
+                        opacity: pressed ? 0.75 : 1,
+                      },
                     ]}
                   >
-                    <Text style={[sheetStyles.optionText, sel && sheetStyles.optionTextSelected]} numberOfLines={1}>
+                    <Text style={[sheetStyles.optionText, { color: sel ? tc.accent : "#F4F4F4" }]} numberOfLines={1}>
                       {opt}
                     </Text>
                   </Pressable>
@@ -106,7 +154,7 @@ function FilterSheet({
               onPress={() => { onClear(); onClose(); }}
               style={({ pressed }) => [sheetStyles.clearBtn, { opacity: pressed ? 0.7 : 1 }]}
             >
-              <Text style={sheetStyles.clearText}>Borrar</Text>
+              <Text style={[sheetStyles.clearText, { color: tc.accent }]}>Borrar</Text>
             </Pressable>
           </View>
         </View>
@@ -115,13 +163,16 @@ function FilterSheet({
   );
 }
 
-// ── Pantalla de búsqueda ───────────────────────────────────────────────────
+// ── Pantalla de búsqueda ─────────────────────────────────────────────────────
 export default function BusquedaScreen() {
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 56 : insets.top;
   const { tiempo } = useLocalSearchParams<{ tiempo?: string }>();
   const { isPremium } = usePremium();
   const { playSession } = usePlayer();
+  const { theme } = useSceneTheme();
+
+  const tc = useMemo(() => deriveThemeColors(theme.solid, theme.gradient), [theme]);
 
   const initialDur = DURATION_SLOTS.find((s) => s.label === tiempo)?.label ?? null;
   const [q, setQ] = useState("");
@@ -166,10 +217,10 @@ export default function BusquedaScreen() {
   }
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: tc.bg }]}>
       <StatusBar barStyle="light-content" />
 
-      {/* Header: back + título centrado */}
+      {/* Header */}
       <View style={[styles.topBar, { paddingTop: topPad + 6 }]}>
         <Pressable onPress={() => router.back()} hitSlop={10} style={styles.backBtn}>
           <Feather name="chevron-left" size={24} color="#F4F4F4" />
@@ -180,13 +231,13 @@ export default function BusquedaScreen() {
 
       {/* Barra de búsqueda */}
       <View style={styles.searchWrap}>
-        <View style={[styles.searchBox, { overflow: "hidden" }]}>
+        <View style={[styles.searchBox, { borderColor: tc.borderFaint, overflow: "hidden" }]}>
           <CardTint />
           <Feather name="search" size={16} color="#F4F4F4" />
           <TextInput
             style={styles.searchInput}
             placeholder="Buscar sesiones, músicas, sonidos..."
-            placeholderTextColor="#F4F4F4"
+            placeholderTextColor="rgba(244,244,244,0.5)"
             value={q}
             onChangeText={setQ}
             returnKeyType="search"
@@ -204,26 +255,40 @@ export default function BusquedaScreen() {
       <View style={styles.filterRow}>
         <Pressable
           onPress={() => setCatSheetOpen(true)}
-          style={({ pressed }) => [styles.filterPill, selectedCat && styles.filterPillActive, { opacity: pressed ? 0.75 : 1 }]}
+          style={({ pressed }) => [
+            styles.filterPill,
+            {
+              borderColor: selectedCat ? tc.accent : tc.borderFaint,
+              backgroundColor: selectedCat ? tc.pillActiveBg : "transparent",
+              opacity: pressed ? 0.75 : 1,
+            },
+          ]}
         >
-          <Text style={[styles.filterPillText, selectedCat && styles.filterPillTextActive]} numberOfLines={1}>
+          <Text style={[styles.filterPillText, { color: selectedCat ? tc.pillActiveText : "#F4F4F4" }]} numberOfLines={1}>
             {selectedCat ?? "Categoría"}
           </Text>
-          <Feather name="chevron-down" size={14} color={selectedCat ? "#1B060F" : "#F4F4F4"} />
+          <Feather name="chevron-down" size={14} color={selectedCat ? tc.pillActiveText : "#F4F4F4"} />
         </Pressable>
         <Pressable
           onPress={() => setDurSheetOpen(true)}
-          style={({ pressed }) => [styles.filterPill, selectedDur && styles.filterPillActive, { opacity: pressed ? 0.75 : 1 }]}
+          style={({ pressed }) => [
+            styles.filterPill,
+            {
+              borderColor: selectedDur ? tc.accent : tc.borderFaint,
+              backgroundColor: selectedDur ? tc.pillActiveBg : "transparent",
+              opacity: pressed ? 0.75 : 1,
+            },
+          ]}
         >
-          <Text style={[styles.filterPillText, selectedDur && styles.filterPillTextActive]} numberOfLines={1}>
+          <Text style={[styles.filterPillText, { color: selectedDur ? tc.pillActiveText : "#F4F4F4" }]} numberOfLines={1}>
             {selectedDur ?? "Tiempo"}
           </Text>
-          <Feather name="chevron-down" size={14} color={selectedDur ? "#1B060F" : "#F4F4F4"} />
+          <Feather name="chevron-down" size={14} color={selectedDur ? tc.pillActiveText : "#F4F4F4"} />
         </Pressable>
         <View style={{ flex: 1 }} />
         {hasFilters && (
           <Pressable onPress={clearAll} hitSlop={8} style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}>
-            <Text style={styles.clearAllText}>Borrar todo</Text>
+            <Text style={[styles.clearAllText, { color: tc.accent }]}>Borrar todo</Text>
           </Pressable>
         )}
       </View>
@@ -231,7 +296,7 @@ export default function BusquedaScreen() {
       {/* Resultados */}
       {!hasFilters ? (
         <View style={styles.empty}>
-          <Feather name="headphones" size={48} color="#F7CB6B" style={{ marginBottom: 16 }} />
+          <Feather name="headphones" size={48} color={tc.accent} style={{ marginBottom: 16 }} />
           <Text style={styles.emptyTitle}>Encuentra tus sesiones favoritas</Text>
           <Text style={styles.emptySub}>Busca por texto o filtra por categoría y tiempo</Text>
         </View>
@@ -259,7 +324,7 @@ export default function BusquedaScreen() {
                   <Image source={item.image as number} style={styles.thumb} contentFit="cover" />
                   {item.isPremium && !isPremium && (
                     <View style={styles.premiumBadge}>
-                      <Feather name="star" size={9} color="#F7CB6B" />
+                      <Feather name="star" size={9} color={tc.accent} />
                     </View>
                   )}
                 </View>
@@ -285,6 +350,7 @@ export default function BusquedaScreen() {
         onSelect={(v) => setSelectedCat(v as CategoryLabel)}
         onClear={() => setSelectedCat(null)}
         onClose={() => setCatSheetOpen(false)}
+        tc={tc}
       />
       <FilterSheet
         visible={durSheetOpen}
@@ -294,13 +360,14 @@ export default function BusquedaScreen() {
         onSelect={(v) => setSelectedDur(v as DurSlotLabel)}
         onClear={() => setSelectedDur(null)}
         onClose={() => setDurSheetOpen(false)}
+        tc={tc}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#190913" },
+  root: { flex: 1 },
 
   topBar: {
     flexDirection: "row",
@@ -326,7 +393,6 @@ const styles = StyleSheet.create({
     gap: 10,
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: "#ffffff",
     paddingHorizontal: 18,
     height: 45,
   },
@@ -346,14 +412,11 @@ const styles = StyleSheet.create({
     gap: 6,
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.55)",
     paddingHorizontal: 14,
     height: 36,
   },
-  filterPillActive: { backgroundColor: "#F7CB6B", borderColor: "#F7CB6B" },
-  filterPillText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4F4F4" },
-  filterPillTextActive: { color: "#1B060F" },
-  clearAllText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F7CB6B" },
+  filterPillText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
+  clearAllText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600" },
 
   empty: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, paddingBottom: 80 },
   emptyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#FBFBFB", textAlign: "center", marginBottom: 10 },
@@ -377,29 +440,23 @@ const styles = StyleSheet.create({
 const sheetStyles = StyleSheet.create({
   container: { ...StyleSheet.absoluteFillObject, justifyContent: "flex-end" },
   sheet: {
-    backgroundColor: "#27070E",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: H_PAD,
     paddingTop: 18,
   },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 18 },
-  title: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", color: "#FBFBFB" },
+  title: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
   closeBtn: { width: 32, height: 32, alignItems: "center", justifyContent: "center" },
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
   option: {
     width: OPTION_W,
     height: 48,
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.18)",
-    backgroundColor: "rgba(255,255,255,0.04)",
     alignItems: "center",
     justifyContent: "center",
   },
-  optionSelected: { borderColor: "#F7CB6B", borderWidth: 1.5, backgroundColor: "rgba(247,203,107,0.08)" },
-  optionText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: "#F4F4F4" },
-  optionTextSelected: { color: "#F7CB6B" },
+  optionText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600" },
   clearBtn: { alignSelf: "center", marginTop: 22, paddingVertical: 6, paddingHorizontal: 12 },
-  clearText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: "#F7CB6B" },
+  clearText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600" },
 });
