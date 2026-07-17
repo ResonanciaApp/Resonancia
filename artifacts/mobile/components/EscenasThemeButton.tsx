@@ -12,7 +12,7 @@ const R = 24;
 const REST_DX = 12; // media distancia en reposo (cx 38/62)
 // Trazo de 2 px en pantalla → unidades de viewBox
 const STROKE_W = 2 * (VB / S);
-const STROKE_OPACITY = 0.4;
+const STROKE_OPACITY = 0.25;
 
 const WHITE = "#FFFFFF";
 
@@ -84,9 +84,13 @@ export function EscenasThemeButton({ onPress, style }: Props) {
       onPress();
     }, OPEN_DELAY_MS);
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-    const start = Date.now();
+    // Avance por cuadro fijo (no reloj de pared): si el hilo JS se bloquea
+    // (p. ej. al montar el panel de Escenas), la animación se reanuda donde
+    // quedó y completa el ciclo entero en vez de saltar al final.
+    const STEP = 16.7 / ANIM_MS;
+    let p = 0;
     const tick = () => {
-      const p = Math.min(1, (Date.now() - start) / ANIM_MS);
+      p = Math.min(1, p + STEP);
       setT(p);
       if (p < 1) {
         rafRef.current = requestAnimationFrame(tick);
