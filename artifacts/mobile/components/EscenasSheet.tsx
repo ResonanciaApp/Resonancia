@@ -407,7 +407,7 @@ export function EscenasSheet() {
           <Text style={styles.title}>Escenas</Text>
 
           {/* ── Color picker: 3 rectángulos horizontales ── */}
-          <View style={{ marginBottom: 14 }}>
+          <View style={{ marginBottom: 14, marginTop: 20 }}>
             <View style={{ flexDirection: "row", gap: 8, marginTop: 6 }}>
               {AMBIENT_SCENES.filter((s) => !!SCENE_THEMES[s.id as keyof typeof SCENE_THEMES]).map((scene) => {
                 const themeData = SCENE_THEMES[scene.id as keyof typeof SCENE_THEMES];
