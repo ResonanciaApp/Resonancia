@@ -284,7 +284,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         )}
         {/* Tinte Índigo */}
         {activeSceneId === "indigo" && (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(26,21,46,0.80)" }]} pointerEvents="none" />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(26,21,46,0.70)" }]} pointerEvents="none" />
         )}
 
         <View
