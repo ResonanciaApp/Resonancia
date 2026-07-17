@@ -1089,8 +1089,8 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 19,
     backgroundColor: "#0D0512",
-    paddingTop: 6,
-    paddingBottom: 6,
+    paddingTop: 18,
+    paddingBottom: 0,
   },
   stickyTabsBorder: {
     position: "absolute",
