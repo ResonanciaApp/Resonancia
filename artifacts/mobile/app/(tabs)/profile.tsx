@@ -90,10 +90,11 @@ function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
 }
 
 
-type PerfilTab = "panel" | "biblioteca" | "historial" | "registros";
+type PerfilTab = "panel" | "reflexiones" | "biblioteca" | "historial" | "registros";
 
 const PERFIL_TABS: { id: PerfilTab; label: string }[] = [
   { id: "panel",       label: "Muro" },
+  { id: "reflexiones", label: "Reflexiones" },
   { id: "biblioteca",  label: "Biblioteca" },
   { id: "historial",   label: "Historial" },
   { id: "registros",   label: "Mi Espacio" },
@@ -778,75 +779,6 @@ export default function ProfileScreen() {
 
         </View>
 
-        {/* ── Muro de reflexiones ── */}
-        {(() => {
-          const MURO_PLACEHOLDERS = [
-            {
-              sessionId: "1",
-              message: "Hoy comprendí que la respiración profunda no solo calma la mente, sino que me conecta con algo más grande que yo mismo. Fue una sesión completamente transformadora y espero poder repetirla pronto.",
-            },
-            {
-              sessionId: "5",
-              message: "Esta meditación me ayudó a soltar el control y confiar más en el proceso. Quedé muy tranquila y con muchas ganas de volver mañana.",
-            },
-            {
-              sessionId: "8",
-              message: "Aprendí que la gratitud no necesita de grandes cosas. En el silencio encontré todo lo que necesitaba en este momento. Cada respiración fue un regalo.",
-            },
-          ];
-          const MAX_LINES = 3;
-          return (
-            <View style={{ marginTop: -25 }}>
-              <Text style={[styles.muroSectionTitle, { color: colors.foreground }]}>Mis reflexiones</Text>
-              {MURO_PLACEHOLDERS.map((item, idx) => {
-                const session = getSessionById(item.sessionId);
-                const expanded = muroExpanded[idx] ?? false;
-                return (
-                  <View key={idx} style={styles.muroCard}>
-                    {/* Columna izquierda: imagen + título */}
-                    <View style={styles.muroLeft}>
-                      {session?.image ? (
-                        <Image source={session.image as number} style={styles.muroThumb} contentFit="cover" />
-                      ) : (
-                        <View style={[styles.muroThumb, { backgroundColor: "rgba(255,255,255,0.08)" }]} />
-                      )}
-                      <Text style={[styles.muroSessionTitle, { color: colors.mutedForeground }]} numberOfLines={2}>
-                        {session?.title ?? "Sesión"}
-                      </Text>
-                    </View>
-
-                    {/* Columna derecha: mensaje con expand */}
-                    <View style={styles.muroRight}>
-                      <View style={styles.muroMsgCard}>
-                        <Text
-                          style={[styles.muroMsgText, { color: colors.foreground }]}
-                          numberOfLines={expanded ? undefined : MAX_LINES}
-                        >
-                          {item.message}
-                        </Text>
-                        <Pressable
-                          onPress={() =>
-                            setMuroExpanded((prev) => {
-                              const next = [...prev];
-                              next[idx] = !next[idx];
-                              return next;
-                            })
-                          }
-                          hitSlop={8}
-                          style={{ marginTop: 8, alignSelf: "flex-end" }}
-                        >
-                          <Text style={styles.muroVerMas}>
-                            {expanded ? "Ver menos" : "Ver más"}
-                          </Text>
-                        </Pressable>
-                      </View>
-                    </View>
-                  </View>
-                );
-              })}
-            </View>
-          );
-        })()}
 
         {/* ── Sección Expansor (solo si role === "expansor") ── */}
         {isExpansor && (
@@ -990,6 +922,84 @@ export default function ProfileScreen() {
 
         </Animated.View>
       </ScrollView>
+      )}
+
+      {perfilTab === "reflexiones" && (
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 19 }}
+          showsVerticalScrollIndicator={false}
+          onScroll={handleHeaderScroll}
+          scrollEventThrottle={16}
+        >
+          {(() => {
+            const MURO_PLACEHOLDERS = [
+              {
+                sessionId: "1",
+                message: "Hoy comprendí que la respiración profunda no solo calma la mente, sino que me conecta con algo más grande que yo mismo. Fue una sesión completamente transformadora y espero poder repetirla pronto.",
+              },
+              {
+                sessionId: "5",
+                message: "Esta meditación me ayudó a soltar el control y confiar más en el proceso. Quedé muy tranquila y con muchas ganas de volver mañana.",
+              },
+              {
+                sessionId: "8",
+                message: "Aprendí que la gratitud no necesita de grandes cosas. En el silencio encontré todo lo que necesitaba en este momento. Cada respiración fue un regalo.",
+              },
+            ];
+            const MAX_LINES = 3;
+            return (
+              <View style={{ marginTop: 4 }}>
+                {MURO_PLACEHOLDERS.map((item, idx) => {
+                  const session = getSessionById(item.sessionId);
+                  const expanded = muroExpanded[idx] ?? false;
+                  return (
+                    <View key={idx} style={styles.muroCard}>
+                      {/* Columna izquierda: imagen + título */}
+                      <View style={styles.muroLeft}>
+                        {session?.image ? (
+                          <Image source={session.image as number} style={styles.muroThumb} contentFit="cover" />
+                        ) : (
+                          <View style={[styles.muroThumb, { backgroundColor: "rgba(255,255,255,0.08)" }]} />
+                        )}
+                        <Text style={[styles.muroSessionTitle, { color: colors.mutedForeground }]} numberOfLines={2}>
+                          {session?.title ?? "Sesión"}
+                        </Text>
+                      </View>
+
+                      {/* Columna derecha: mensaje con expand */}
+                      <View style={styles.muroRight}>
+                        <View style={styles.muroMsgCard}>
+                          <Text
+                            style={[styles.muroMsgText, { color: colors.foreground }]}
+                            numberOfLines={expanded ? undefined : MAX_LINES}
+                          >
+                            {item.message}
+                          </Text>
+                          <Pressable
+                            onPress={() =>
+                              setMuroExpanded((prev) => {
+                                const next = [...prev];
+                                next[idx] = !next[idx];
+                                return next;
+                              })
+                            }
+                            hitSlop={8}
+                            style={{ marginTop: 8, alignSelf: "flex-end" }}
+                          >
+                            <Text style={styles.muroVerMas}>
+                              {expanded ? "Ver menos" : "Ver más"}
+                            </Text>
+                          </Pressable>
+                        </View>
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+            );
+          })()}
+        </ScrollView>
       )}
 
       {perfilTab === "biblioteca" && <BibliotecaScreen embedded />}
