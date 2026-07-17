@@ -86,7 +86,7 @@ export const CHAKRAS: Chakra[] = [
     name: "Sahasrara",
     tagLabel: "Séptimo Chakra",
     tagAliases: [],
-    color: "#A85BF1",
+    color: "#A861EB",
     gradient: ["#0C0614", "#3A1268", "#5E2488"],
     description: "Conexión y unidad. Sesiones para expandir la consciencia y unirte con el todo.",
   },
