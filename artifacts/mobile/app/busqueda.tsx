@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
@@ -76,17 +77,17 @@ type ThemeColors = {
 };
 
 function deriveThemeColors(solid: string, gradient: readonly [string, string, ...string[]]): ThemeColors {
-  // Acento = último stop del degradado aclarado (el stop más "claro" del gradiente)
   const lastStop = gradient[gradient.length - 1];
   const accent = brighten(lastStop, 2.8);
   return {
     bg: solid,
     sheetBg: brighten(solid, 1.35),
     accent,
-    accentBg: accent + "18",  // ~10% opacidad hex
-    pillActiveBg: accent,
-    pillActiveText: "#080610",
-    borderFaint: accent + "44",  // ~27% opacidad
+    accentBg: accent + "18",
+    // Pills activas siempre #f9f9f9 con texto oscuro (igual en todos los temas)
+    pillActiveBg: "#f9f9f9",
+    pillActiveText: "#1B060F",
+    borderFaint: accent + "44",
   };
 }
 
@@ -100,6 +101,7 @@ function FilterSheet({
   onClear,
   onClose,
   tc,
+  gradient,
 }: {
   visible: boolean;
   title: string;
@@ -109,6 +111,7 @@ function FilterSheet({
   onClear: () => void;
   onClose: () => void;
   tc: ThemeColors;
+  gradient: readonly [string, string, ...string[]];
 }) {
   const insets = useSafeAreaInsets();
   return (
@@ -116,10 +119,15 @@ function FilterSheet({
       <View style={StyleSheet.absoluteFill}>
         <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]} onPress={onClose} />
         <View style={sheetStyles.container} pointerEvents="box-none">
-          <View style={[sheetStyles.sheet, {
-            backgroundColor: tc.sheetBg,
-            paddingBottom: (Platform.OS === "web" ? 24 : insets.bottom) + 20,
-          }]}>
+          {/* Degradado del tema como fondo del sheet (de abajo hacia arriba = stops invertidos) */}
+          <LinearGradient
+            colors={[...gradient].reverse() as [string, string, ...string[]]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={[sheetStyles.sheet, {
+              paddingBottom: (Platform.OS === "web" ? 24 : insets.bottom) + 20,
+            }]}
+          >
             <View style={sheetStyles.headerRow}>
               <Text style={[sheetStyles.title, { color: tc.accent }]}>{title}</Text>
               <Pressable onPress={onClose} hitSlop={10} style={sheetStyles.closeBtn}>
@@ -156,7 +164,7 @@ function FilterSheet({
             >
               <Text style={[sheetStyles.clearText, { color: tc.accent }]}>Borrar</Text>
             </Pressable>
-          </View>
+          </LinearGradient>
         </View>
       </View>
     </Modal>
@@ -351,6 +359,7 @@ export default function BusquedaScreen() {
         onClear={() => setSelectedCat(null)}
         onClose={() => setCatSheetOpen(false)}
         tc={tc}
+        gradient={theme.gradient}
       />
       <FilterSheet
         visible={durSheetOpen}
@@ -361,6 +370,7 @@ export default function BusquedaScreen() {
         onClear={() => setSelectedDur(null)}
         onClose={() => setDurSheetOpen(false)}
         tc={tc}
+        gradient={theme.gradient}
       />
     </View>
   );
