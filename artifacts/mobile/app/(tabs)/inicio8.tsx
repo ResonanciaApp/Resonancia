@@ -949,7 +949,7 @@ export default function HomeScreen2() {
           {/* Izquierda: Escenas */}
           <EscenasThemeButton
             onPress={openEscenasSheet}
-            style={{ marginLeft: 5, marginTop: -15 }}
+            style={{ marginLeft: 0, marginTop: -15 }}
           />
 
           {/* Centro: espacio */}
