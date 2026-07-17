@@ -7,13 +7,11 @@ const S  = 45;          // display size
 const CX = S / 2;       // 22.5
 const CY = S / 2;       // 22.5
 
-// Radios directamente en px de display (sin mapeo)
+// punto + 2 anillos visibles + 1 tenue = 3 anillos
 const RINGS = [
-  { r: 4.5,  sw: 0.6, restOpacity: 0.18 }, // dim 1
-  { r: 8.5,  sw: 0.6, restOpacity: 0.60 }, // visible 1
-  { r: 12.5, sw: 0.6, restOpacity: 0.70 }, // visible 2
-  { r: 16.5, sw: 0.6, restOpacity: 0.55 }, // visible 3
-  { r: 20.5, sw: 0.5, restOpacity: 0.10 }, // dim 2
+  { r: 7,    sw: 0.6, restOpacity: 0.60 }, // visible 1
+  { r: 13,   sw: 0.6, restOpacity: 0.65 }, // visible 2
+  { r: 19,   sw: 0.5, restOpacity: 0.12 }, // dim
 ];
 
 const DOT_R = 2;
