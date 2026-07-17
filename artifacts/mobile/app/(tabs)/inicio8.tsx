@@ -954,8 +954,8 @@ export default function HomeScreen2() {
             }
             onPressOut={() => {
               Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
-              if (rachaEnabled) setProgresoVisible(true);
             }}
+            onPress={() => { if (rachaEnabled) setProgresoVisible(true); }}
           >
             <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
               <View style={{
