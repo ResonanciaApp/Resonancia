@@ -24,16 +24,15 @@ function easeInOutCubic(t: number): number {
 }
 
 /** Lente (intersección) de dos círculos de radio R centrados en (50±dx, 50).
- *  null = coinciden (círculo pleno); recalculada por cuadro durante el cruce.
- *  Orientación VERTICAL: los círculos se apilan arriba/abajo; intersección en (50±w, 50). */
-function lensPath(dy: number): string | null {
-  const d = Math.abs(dy) * 2;
+ *  null = coinciden (círculo pleno); recalculada por cuadro durante el cruce. */
+function lensPath(dx: number): string | null {
+  const d = Math.abs(dx) * 2;
   if (d < 0.6) return null;
-  const w = Math.sqrt(R * R - (d / 2) * (d / 2));
+  const h = Math.sqrt(R * R - (d / 2) * (d / 2));
   return (
-    `M ${50 - w} 50 ` +
-    `A ${R} ${R} 0 0 1 ${50 + w} 50 ` +
-    `A ${R} ${R} 0 0 1 ${50 - w} 50 Z`
+    `M 50 ${50 - h} ` +
+    `A ${R} ${R} 0 0 1 50 ${50 + h} ` +
+    `A ${R} ${R} 0 0 1 50 ${50 - h} Z`
   );
 }
 
@@ -92,13 +91,13 @@ export function EscenasThemeButton({ onPress, style }: Props) {
     rafRef.current = requestAnimationFrame(tick);
   }, [onPress]);
 
-  // dy: +12 → −12 (los círculos se cruzan e intercambian arriba/abajo)
-  const dy = REST_DX * (1 - 2 * easeInOutCubic(t));
-  const cyT = 50 - dy;
-  const cyB = 50 + dy;
-  const lens = lensPath(dy);
+  // dx: +12 → −12 (los círculos se cruzan e intercambian de lado)
+  const dx = REST_DX * (1 - 2 * easeInOutCubic(t));
+  const cxL = 50 - dx;
+  const cxR = 50 + dx;
+  const lens = lensPath(dx);
   // Brillo central: máximo cuando los círculos coinciden, 0 en reposo
-  const glow = 1 - Math.abs(dy) / REST_DX;
+  const glow = 1 - Math.abs(dx) / REST_DX;
 
   return (
     <Pressable onPress={handlePress} hitSlop={10} style={style}>
@@ -115,8 +114,8 @@ export function EscenasThemeButton({ onPress, style }: Props) {
         </Defs>
 
         {/* Medialunas: relleno suave */}
-        <Circle cx={50} cy={cyT} r={R} fill="url(#vesicaCrescentGrad)" fillOpacity={0.35} />
-        <Circle cx={50} cy={cyB} r={R} fill="url(#vesicaCrescentGrad)" fillOpacity={0.35} />
+        <Circle cx={cxL} cy={50} r={R} fill="url(#vesicaCrescentGrad)" fillOpacity={0.35} />
+        <Circle cx={cxR} cy={50} r={R} fill="url(#vesicaCrescentGrad)" fillOpacity={0.35} />
 
         {/* Fondo de la intersección (lente) — #f9f9f9 al 60%.
             Al coincidir los círculos (dx≈0) la lente es el círculo completo. */}
@@ -132,7 +131,7 @@ export function EscenasThemeButton({ onPress, style }: Props) {
         )}
 
         <Circle
-          cx={50} cy={cyT} r={R}
+          cx={cxL} cy={50} r={R}
           stroke={WHITE}
           strokeWidth={STROKE_W}
           strokeLinecap="round"
@@ -141,7 +140,7 @@ export function EscenasThemeButton({ onPress, style }: Props) {
           opacity={STROKE_OPACITY}
         />
         <Circle
-          cx={50} cy={cyB} r={R}
+          cx={cxR} cy={50} r={R}
           stroke={WHITE}
           strokeWidth={STROKE_W}
           strokeLinecap="round"
