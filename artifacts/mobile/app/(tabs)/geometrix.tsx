@@ -6331,7 +6331,7 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   cbCard: {
-    backgroundColor: "rgba(16,9,31,0.97)",
+    backgroundColor: "rgba(16,9,31,0.5)",
     borderRadius: 18,
     borderWidth: 1,
     borderColor: "rgba(123,100,255,0.45)",
