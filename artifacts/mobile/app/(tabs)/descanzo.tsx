@@ -1051,7 +1051,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     gap: 5,
     overflow: "hidden",
-    backgroundColor: "rgba(0,0,0,0.15)",
+    backgroundColor: "rgba(255,255,255,0.04)",
     borderWidth: 1.5,
     borderColor: "rgba(244,244,244,0.30)",
   },
@@ -1059,7 +1059,7 @@ const styles = StyleSheet.create({
   sleepPillText: {
     fontFamily: "Manrope",
     fontSize: 11,
-    fontWeight: "700",
+    fontWeight: "380",
     letterSpacing: 0.1,
     color: "#F4F4F4",
   },
