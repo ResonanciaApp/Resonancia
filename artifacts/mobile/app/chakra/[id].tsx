@@ -122,7 +122,7 @@ export default function ChakraScreen() {
                   onPress={() => handleSessionPress(session)}
                   style={({ pressed }) => [
                     styles.trackRow,
-                    { backgroundColor: "rgba(74,12,12,0.08)", opacity: pressed ? 0.8 : 1 },
+                    { opacity: pressed ? 0.8 : 1 },
                   ]}
                 >
                   <View style={styles.trackImgWrap}>
@@ -142,9 +142,6 @@ export default function ChakraScreen() {
                     <Text style={[styles.trackSub, { color: colors.mutedForeground }]} numberOfLines={1}>
                       {session.categoryLabel} · {session.durationLabel}
                     </Text>
-                  </View>
-                  <View style={[styles.playBtn, { backgroundColor: "rgba(212,175,55,0.18)" }]}>
-                    <Feather name={locked ? "lock" : "play"} size={15} color={colors.primary} />
                   </View>
                 </Pressable>
               );
@@ -193,12 +190,11 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
   },
-  trackImgWrap: { width: 52, height: 52, borderRadius: 10, overflow: "hidden", marginRight: 12 },
-  trackImg: { width: 52, height: 52 },
-  trackMeta: { flex: 1, marginRight: 10 },
+  trackImgWrap: { width: 65, height: 65, borderRadius: 12, overflow: "hidden", marginRight: 12 },
+  trackImg: { width: 65, height: 65 },
+  trackMeta: { flex: 1 },
   trackTitle: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700" },
   trackSub: { fontFamily: "Manrope", fontSize: 12, marginTop: 3 },
-  playBtn: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },
 
   notFound: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, gap: 10 },
   notFoundTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
