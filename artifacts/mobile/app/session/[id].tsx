@@ -120,7 +120,7 @@ export default function SessionDetailScreen() {
   const isMusica = session.categoryId === "musica-sonidos";
   // Fondo ligado a la Escena activa (naturaleza/bosque/lluvia/viento/...).
   const sessionGradient: string[] = sceneTheme.id === "tibet"
-    ? ["#261F57", "#1F255A"]
+    ? ["#2D1C52", "#261F57", "#1F255A", "#1F2A62", "#283673", "#2D4082"]
     : sceneTheme.gradient;
   const catBg = { gradient: sessionGradient, solid: sceneTheme.solid };
   const stickyHeaderColor = sessionGradient[0];
@@ -604,7 +604,7 @@ export default function SessionDetailScreen() {
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.65)" }]} />
           </Pressable>
           <View style={[styles.optSheet, { paddingBottom: bottomPad + 8 }]}>
-            <LinearGradient colors={sceneTheme.id === "tibet" ? ["#2d1c52", "#1f2a62"] : sceneTheme.gradient} style={StyleSheet.absoluteFill} />
+            <LinearGradient colors={sceneTheme.id === "tibet" ? ["#2D1C52", "#261F57", "#1F255A", "#1F2A62", "#283673", "#2D4082"] : sceneTheme.gradient} style={StyleSheet.absoluteFill} />
             <View style={styles.optHandle} />
             <View style={styles.optHeader}>
               <Image
