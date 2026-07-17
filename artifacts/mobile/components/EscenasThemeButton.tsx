@@ -51,7 +51,7 @@ export function EscenasThemeButton({ onPress, style }: Props) {
             strokeLinecap="round"
             strokeLinejoin="round"
             fill="none"
-            opacity={0.9}
+            opacity={0.75}
           />
         ))}
 
