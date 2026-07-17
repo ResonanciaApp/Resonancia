@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 18,
   },
-  name: { fontFamily: "Manrope", fontSize: 24, fontWeight: "700", letterSpacing: 0.3 },
+  name: { fontFamily: "Manrope", fontSize: 24, fontWeight: "700", letterSpacing: 0.3, marginTop: 20 },
   tagLabel: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", letterSpacing: 0.4, marginTop: 6 },
   description: {
     fontFamily: "Manrope",
