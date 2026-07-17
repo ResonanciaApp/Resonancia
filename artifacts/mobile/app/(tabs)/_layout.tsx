@@ -282,10 +282,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
         {activeSceneId === "tibet" && (
           <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(14,9,30,0.82)" }]} pointerEvents="none" />
         )}
-        {/* Tinte Índigo */}
-        {activeSceneId === "indigo" && (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(26,21,46,0.70)" }]} pointerEvents="none" />
-        )}
 
         <View
           style={[styles.row, isWeb && styles.rowWeb]}
