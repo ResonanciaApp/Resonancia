@@ -2,21 +2,24 @@ import React, { useCallback, useRef } from "react";
 import { Animated, Pressable } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 
-const SVG_SIZE = 45;
+// viewBox 1:1 con el display — sin escalado, coordenadas exactas en px
+const S  = 45;          // display size
+const CX = S / 2;       // 22.5
+const CY = S / 2;       // 22.5
 
+// Radios directamente en px de display (sin mapeo)
 const RINGS = [
-  { r: 11,   sw: 1.0, restOpacity: 0.18 },
-  { r: 19.5, sw: 1.0, restOpacity: 0.60 },
-  { r: 28,   sw: 1.0, restOpacity: 0.70 },
-  { r: 37,   sw: 0.9, restOpacity: 0.55 },
-  { r: 46,   sw: 0.8, restOpacity: 0.10 },
+  { r: 4.5,  sw: 0.6, restOpacity: 0.18 }, // dim 1
+  { r: 8.5,  sw: 0.6, restOpacity: 0.60 }, // visible 1
+  { r: 12.5, sw: 0.6, restOpacity: 0.70 }, // visible 2
+  { r: 16.5, sw: 0.6, restOpacity: 0.55 }, // visible 3
+  { r: 20.5, sw: 0.5, restOpacity: 0.10 }, // dim 2
 ];
 
-const DOT_R = 5;
+const DOT_R = 2;
 const GOLD  = "#F7CB6B";
 const WHITE = "#FFFFFF";
 
-// AnimatedCircle: anima props SVG directamente (sin rasterización de wrapper)
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 interface Props {
@@ -53,13 +56,14 @@ export function EscenasThemeButton({ onPress, style }: Props) {
 
   return (
     <Pressable onPress={handlePress} hitSlop={10} style={style}>
-      <Svg width={SVG_SIZE} height={SVG_SIZE} viewBox="0 0 100 100">
+      {/* viewBox = "0 0 45 45": coordenadas = px de display, sin escalar */}
+      <Svg width={S} height={S} viewBox={`0 0 ${S} ${S}`}>
 
-        {/* Anillos blancos — reposo (estáticos, sin wrapper) */}
+        {/* Anillos blancos — reposo */}
         {RINGS.map((ring, i) => (
           <Circle
             key={`w${i}`}
-            cx="50" cy="50"
+            cx={CX} cy={CY}
             r={ring.r}
             stroke={WHITE}
             strokeWidth={ring.sw}
@@ -69,13 +73,13 @@ export function EscenasThemeButton({ onPress, style }: Props) {
         ))}
 
         {/* Punto blanco central */}
-        <Circle cx="50" cy="50" r={DOT_R} fill={WHITE} />
+        <Circle cx={CX} cy={CY} r={DOT_R} fill={WHITE} />
 
-        {/* Anillos dorados — animados directamente sobre el elemento SVG */}
+        {/* Anillos dorados — animados */}
         {RINGS.map((ring, i) => (
           <AnimatedCircle
             key={`g${i}`}
-            cx="50" cy="50"
+            cx={CX} cy={CY}
             r={ring.r}
             stroke={GOLD}
             strokeWidth={ring.sw}
@@ -84,13 +88,8 @@ export function EscenasThemeButton({ onPress, style }: Props) {
           />
         ))}
 
-        {/* Punto dorado central — animado */}
-        <AnimatedCircle
-          cx="50" cy="50"
-          r={DOT_R}
-          fill={GOLD}
-          opacity={goldDotAnim}
-        />
+        {/* Punto dorado — animado */}
+        <AnimatedCircle cx={CX} cy={CY} r={DOT_R} fill={GOLD} opacity={goldDotAnim} />
 
       </Svg>
     </Pressable>
