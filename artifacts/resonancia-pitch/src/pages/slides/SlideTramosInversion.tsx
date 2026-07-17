@@ -5,10 +5,10 @@ export default function SlideTramosInversion() {
 
   const tramos = [
     { inv: 5,      equity: 5.0   },
-    { inv: 10,     equity: 12.5  },
-    { inv: 15,     equity: 20.25 },
-    { inv: 20,     equity: 28.0   },
-    { inv: 23.504, equity: 35.256 },
+    { inv: 10,     equity: 12.0 },
+    { inv: 15,     equity: 20.0 },
+    { inv: 20,     equity: 28.0 },
+    { inv: 23.504, equity: 35.0 },
   ].map(({ inv, equity }) => {
     const postMoney = inv / (equity / 100);
     const stakeM12 = (equity / 100) * VAL_M12;
@@ -57,7 +57,7 @@ export default function SlideTramosInversion() {
           </span>
         </div>
         <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.40)", marginTop: "0.7vh" }}>
-          Modelo de prima por escala · cada tramo mayor recibe más equity por peso invertido · ancla máxima $23,50M = 35,3%
+          Modelo de prima por escala · cada tramo mayor recibe más equity por peso invertido · ancla máxima $23,50M = 35%
         </div>
       </div>
 
