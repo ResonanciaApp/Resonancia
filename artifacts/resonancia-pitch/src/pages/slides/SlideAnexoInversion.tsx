@@ -46,7 +46,7 @@ function ScenarioCard({
       </div>
 
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "0.7vh" }}>
-        <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.3vh" }}>STAKE 37,0% VALE</div>
+        <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.3vh" }}>STAKE 30,0% VALE</div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#6EC49A" }}>{stakeVal}</div>
           <div style={{
@@ -109,8 +109,8 @@ export default function SlideAnexoInversion() {
 
             <div style={{ borderTop: "1px solid rgba(255,255,255,0.2)", paddingTop: "1vh", marginTop: "auto" }}>
               <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.5vh" }}>
-                $23,50M ÷ post-money $63,5M ={" "}
-                <span style={{ color: "#FFFFFF", fontWeight: 700 }}>37,0%</span>
+                $23,50M ÷ post-money $78,3M ={" "}
+                <span style={{ color: "#FFFFFF", fontWeight: 700 }}>30,0%</span>
               </div>
               <div style={{ display: "flex", gap: "0.8vw" }}>
                 <div style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
@@ -120,13 +120,13 @@ export default function SlideAnexoInversion() {
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.45)" }}>Equity</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#FFFFFF" }}>37,0%</div>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#FFFFFF" }}>30,0%</div>
 
                   <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)" }}>máx.</div>
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.45)" }}>Post-money</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$63,5M</div>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$78,3M</div>
                   <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)" }}>CLP</div>
                 </div>
               </div>
@@ -153,28 +153,28 @@ export default function SlideAnexoInversion() {
               arr="$261M CLP"
               multiple="4× ARR"
               valuation="$1,044M"
-              stakeVal="$386M CLP"
-              returnX="16,4×"
+              stakeVal="$313M CLP"
+              returnX="13,3×"
             />
-            {/* Optimista: 7.000 × $4.350 × 12 × 5× = $1.827B → 37% = $675.99M → 676/23.50 = 28.8× */}
+            {/* Optimista: 7.000 × $4.350 × 12 × 5× = $1.827B → 30% = $548.1M → 548/23.50 = 23.3× */}
             <ScenarioCard
               label="Optimista"
               subs="7.000"
               arr="$365M CLP"
               multiple="5× ARR"
               valuation="$1,827M"
-              stakeVal="$676M CLP"
-              returnX="28,8×"
+              stakeVal="$548M CLP"
+              returnX="23,3×"
             />
-            {/* Agresivo: 10.000 × $4.350 × 12 × 6× = $3.132B → 37% = $1.158.84M → 1159/23.50 = 49.3× */}
+            {/* Agresivo: 10.000 × $4.350 × 12 × 6× = $3.132B → 30% = $939.6M → 940/23.50 = 40.0× */}
             <ScenarioCard
               label="Agresivo"
               subs="10.000"
               arr="$522M CLP"
               multiple="6× ARR"
               valuation="$3,132M"
-              stakeVal="$1.159M CLP"
-              returnX="49,3×"
+              stakeVal="$940M CLP"
+              returnX="40,0×"
             />
           </div>
         </div>
