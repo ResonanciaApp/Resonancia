@@ -695,11 +695,11 @@ export default function DescansoScreen() {
 
       {/* ── Tabs sticky (se pegan debajo del título) ── */}
       {tabsMounted && (
-        <Animated.View style={[styles.stickyTabs, { top: headerH + 5, backgroundColor: bgGradient[0], opacity: stickyAnim }]}>
+        <Animated.View style={[styles.stickyTabs, { top: headerH, backgroundColor: bgGradient[0], opacity: stickyAnim }]}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={[styles.tabGrid, { marginBottom: 18 }]}
+            style={[styles.tabGrid, { marginBottom: 13 }]}
             contentContainerStyle={styles.tabGridContent}
           >
             <SleepPill sel={activeTab === null} label="Todos" onPress={() => setActiveTab(null)} />
@@ -1089,7 +1089,7 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 19,
     backgroundColor: "#0D0512",
-    paddingTop: 19,
+    paddingTop: 24,
     paddingBottom: 0,
   },
   stickyTabsBorder: {
