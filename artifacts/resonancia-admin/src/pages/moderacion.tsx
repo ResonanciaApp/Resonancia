@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   useGetPendingSubmissions,
+  useGetSubmissionFilterOptions,
   useApproveSubmission,
   useRejectSubmission,
   useEditSubmission,
@@ -13,6 +14,7 @@ import {
 import type {
   Submission,
   GetPendingSubmissionsStatus,
+  GetPendingSubmissionsParams,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -47,6 +49,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ChevronDown, X } from "lucide-react";
 import {
   TagOptionSelector,
   SingleTagOptionSelector,
@@ -664,8 +672,229 @@ function SubmissionCard({ submission }: { submission: Submission }) {
   );
 }
 
-function SubmissionList({ status }: { status: GetPendingSubmissionsStatus }) {
-  const { data, isLoading, error } = useGetPendingSubmissions({ status });
+// ─── Filtros ─────────────────────────────────────────────────────────────────
+
+const FECHA_RANGES = ["Hoy", "Esta semana", "Este mes", "Últimos 3 meses"] as const;
+type FechaRange = (typeof FECHA_RANGES)[number];
+
+function getCreatedAfter(range: FechaRange): string {
+  const now = new Date();
+  switch (range) {
+    case "Hoy": {
+      const d = new Date(now); d.setHours(0, 0, 0, 0); return d.toISOString();
+    }
+    case "Esta semana": {
+      const d = new Date(now);
+      d.setDate(d.getDate() - d.getDay());
+      d.setHours(0, 0, 0, 0);
+      return d.toISOString();
+    }
+    case "Este mes":
+      return new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    case "Últimos 3 meses": {
+      const d = new Date(now);
+      d.setMonth(d.getMonth() - 3);
+      d.setHours(0, 0, 0, 0);
+      return d.toISOString();
+    }
+  }
+}
+
+type ActiveFilters = {
+  categoryId?: string;
+  fechaRange?: FechaRange;
+  themeTag?: string;
+  otherTag?: string;
+};
+
+function FilterPill({
+  label,
+  active,
+  children,
+}: {
+  label: string;
+  active: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant={active ? "default" : "outline"}
+          size="sm"
+          className="h-8 gap-1 text-xs font-medium"
+        >
+          {label}
+          <ChevronDown className="w-3 h-3 opacity-60" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-56 p-1">
+        {children}
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+function OptionItem({
+  selected,
+  onSelect,
+  children,
+}: {
+  selected: boolean;
+  onSelect: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onSelect}
+      className={`w-full text-left text-sm px-3 py-1.5 rounded-sm flex items-center gap-2 transition-colors ${
+        selected
+          ? "bg-primary text-primary-foreground font-medium"
+          : "hover:bg-accent"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function FilterBar({
+  filters,
+  onChange,
+}: {
+  filters: ActiveFilters;
+  onChange: (f: ActiveFilters) => void;
+}) {
+  const { data: opts } = useGetSubmissionFilterOptions();
+  const hasFilters =
+    !!filters.categoryId || !!filters.fechaRange || !!filters.themeTag || !!filters.otherTag;
+
+  const set = (patch: Partial<ActiveFilters>) => onChange({ ...filters, ...patch });
+  const clear = (key: keyof ActiveFilters) =>
+    onChange({ ...filters, [key]: undefined });
+
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      {/* Categoría */}
+      <FilterPill label={filters.categoryId ? (opts?.categories.find(c => c.id === filters.categoryId)?.label ?? "Categoría") : "Categoría"} active={!!filters.categoryId}>
+        <div className="py-1">
+          {!!filters.categoryId && (
+            <OptionItem selected={false} onSelect={() => clear("categoryId")}>
+              <X className="w-3 h-3" /> Todas las categorías
+            </OptionItem>
+          )}
+          {(opts?.categories ?? []).map((c) => (
+            <OptionItem
+              key={c.id}
+              selected={filters.categoryId === c.id}
+              onSelect={() => set({ categoryId: c.id })}
+            >
+              {c.label}
+            </OptionItem>
+          ))}
+          {!opts && (
+            <p className="text-xs text-muted-foreground px-3 py-2">Cargando…</p>
+          )}
+        </div>
+      </FilterPill>
+
+      {/* Fecha */}
+      <FilterPill label={filters.fechaRange ?? "Fecha"} active={!!filters.fechaRange}>
+        <div className="py-1">
+          {!!filters.fechaRange && (
+            <OptionItem selected={false} onSelect={() => clear("fechaRange")}>
+              <X className="w-3 h-3" /> Todo el tiempo
+            </OptionItem>
+          )}
+          {FECHA_RANGES.map((r) => (
+            <OptionItem
+              key={r}
+              selected={filters.fechaRange === r}
+              onSelect={() => set({ fechaRange: r })}
+            >
+              {r}
+            </OptionItem>
+          ))}
+        </div>
+      </FilterPill>
+
+      {/* Temática (nivel 1) */}
+      <FilterPill label={filters.themeTag ?? "Temática"} active={!!filters.themeTag}>
+        <div className="py-1 max-h-60 overflow-y-auto">
+          {!!filters.themeTag && (
+            <OptionItem selected={false} onSelect={() => clear("themeTag")}>
+              <X className="w-3 h-3" /> Todas las temáticas
+            </OptionItem>
+          )}
+          {(opts?.themeTags ?? []).map((t) => (
+            <OptionItem
+              key={t}
+              selected={filters.themeTag === t}
+              onSelect={() => set({ themeTag: t })}
+            >
+              {t}
+            </OptionItem>
+          ))}
+          {opts && opts.themeTags.length === 0 && (
+            <p className="text-xs text-muted-foreground px-3 py-2">Sin etiquetas.</p>
+          )}
+          {!opts && (
+            <p className="text-xs text-muted-foreground px-3 py-2">Cargando…</p>
+          )}
+        </div>
+      </FilterPill>
+
+      {/* Otras etiquetas */}
+      <FilterPill label={filters.otherTag ?? "Otras etiquetas"} active={!!filters.otherTag}>
+        <div className="py-1 max-h-60 overflow-y-auto">
+          {!!filters.otherTag && (
+            <OptionItem selected={false} onSelect={() => clear("otherTag")}>
+              <X className="w-3 h-3" /> Todas las etiquetas
+            </OptionItem>
+          )}
+          {(opts?.otherTags ?? []).map((t) => (
+            <OptionItem
+              key={t}
+              selected={filters.otherTag === t}
+              onSelect={() => set({ otherTag: t })}
+            >
+              {t}
+            </OptionItem>
+          ))}
+          {opts && opts.otherTags.length === 0 && (
+            <p className="text-xs text-muted-foreground px-3 py-2">Sin etiquetas.</p>
+          )}
+          {!opts && (
+            <p className="text-xs text-muted-foreground px-3 py-2">Cargando…</p>
+          )}
+        </div>
+      </FilterPill>
+
+      {hasFilters && (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 text-xs text-muted-foreground"
+          onClick={() => onChange({})}
+        >
+          <X className="w-3 h-3 mr-1" />
+          Limpiar filtros
+        </Button>
+      )}
+    </div>
+  );
+}
+
+function SubmissionList({ status, filters }: { status: GetPendingSubmissionsStatus; filters: ActiveFilters }) {
+  const params: GetPendingSubmissionsParams = {
+    status,
+    ...(filters.categoryId ? { categoryId: filters.categoryId } : {}),
+    ...(filters.fechaRange ? { createdAfter: getCreatedAfter(filters.fechaRange) } : {}),
+    ...(filters.themeTag ? { themeTag: filters.themeTag } : {}),
+    ...(filters.otherTag ? { otherTag: filters.otherTag } : {}),
+  };
+
+  const { data, isLoading, error } = useGetPendingSubmissions(params);
 
   if (isLoading) {
     return (
@@ -700,6 +929,12 @@ function SubmissionList({ status }: { status: GetPendingSubmissionsStatus }) {
 
 export default function ModeracionPage() {
   const [tab, setTab] = useState<GetPendingSubmissionsStatus>("pending");
+  const [filters, setFilters] = useState<ActiveFilters>({});
+
+  const handleTabChange = (v: string) => {
+    setTab(v as GetPendingSubmissionsStatus);
+    setFilters({});
+  };
 
   return (
     <div className="space-y-6">
@@ -712,20 +947,22 @@ export default function ModeracionPage() {
 
       <DestacadaDeHoy />
 
-      <Tabs
-        value={tab}
-        onValueChange={(v) => setTab(v as GetPendingSubmissionsStatus)}
-      >
-        <TabsList>
-          {STATUS_TABS.map((t) => (
-            <TabsTrigger key={t.value} value={t.value}>
-              {t.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+      <Tabs value={tab} onValueChange={handleTabChange}>
+        <div className="flex flex-wrap items-center gap-3">
+          <TabsList className="shrink-0">
+            {STATUS_TABS.map((t) => (
+              <TabsTrigger key={t.value} value={t.value}>
+                {t.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
+          <FilterBar filters={filters} onChange={setFilters} />
+        </div>
+
         {STATUS_TABS.map((t) => (
           <TabsContent key={t.value} value={t.value} className="mt-4">
-            {tab === t.value && <SubmissionList status={t.value} />}
+            {tab === t.value && <SubmissionList status={t.value} filters={filters} />}
           </TabsContent>
         ))}
       </Tabs>

@@ -1532,6 +1532,29 @@ paths:
           schema:
             type: string
             enum: [draft, pending, published, rejected]
+        - name: categoryId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: createdAfter
+          in: query
+          required: false
+          description: ISO 8601 date string — solo devuelve sesiones creadas desde esta fecha
+          schema:
+            type: string
+        - name: themeTag
+          in: query
+          required: false
+          description: Filtrar por un valor exacto dentro del array themeTag
+          schema:
+            type: string
+        - name: otherTag
+          in: query
+          required: false
+          description: Filtrar por valor en sleepTag, meditationTag, soundTag o ancestralTag
+          schema:
+            type: string
       responses:
         "200":
           description: Lista de envíos
@@ -1539,6 +1562,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SubmissionList"
+        "401":
+          description: No autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: No autorizado (requiere rol admin)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /catalog/submissions/filter-options:
+    get:
+      operationId: getSubmissionFilterOptions
+      tags: [catalog]
+      summary: Opciones disponibles para filtros en la cola de revisión (admin)
+      responses:
+        "200":
+          description: Listas de valores únicos para los filtros
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubmissionFilterOptions"
         "401":
           description: No autenticado
           content:
@@ -4693,6 +4740,28 @@ components:
           items:
             $ref: "#/components/schemas/Submission"
       required: [submissions]
+    SubmissionFilterOptions:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              label:
+                type: string
+            required: [id, label]
+        themeTags:
+          type: array
+          items:
+            type: string
+        otherTags:
+          type: array
+          items:
+            type: string
+      required: [categories, themeTags, otherTags]
     ReviewRejectBody:
       type: object
       properties:

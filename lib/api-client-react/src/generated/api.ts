@@ -119,6 +119,7 @@ import type {
   SharedMixReportInput,
   SharedMixesPage,
   Submission,
+  SubmissionFilterOptions,
   SubmissionList,
   TagOption,
   TopMessageResponse,
@@ -4851,6 +4852,83 @@ export function useGetPendingSubmissions<TData = Awaited<ReturnType<typeof getPe
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
   const queryOptions = getGetPendingSubmissionsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetSubmissionFilterOptionsUrl = () => {
+
+
+
+
+  return `/api/catalog/submissions/filter-options`
+}
+
+/**
+ * @summary Opciones disponibles para filtros en la cola de revisión (admin)
+ */
+export const getSubmissionFilterOptions = async ( options?: RequestInit): Promise<SubmissionFilterOptions> => {
+
+  return customFetch<SubmissionFilterOptions>(getGetSubmissionFilterOptionsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetSubmissionFilterOptionsQueryKey = () => {
+    return [
+    `/api/catalog/submissions/filter-options`
+    ] as const;
+    }
+
+
+export const getGetSubmissionFilterOptionsQueryOptions = <TData = Awaited<ReturnType<typeof getSubmissionFilterOptions>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSubmissionFilterOptions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetSubmissionFilterOptionsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSubmissionFilterOptions>>> = ({ signal }) => getSubmissionFilterOptions({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSubmissionFilterOptions>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetSubmissionFilterOptionsQueryResult = NonNullable<Awaited<ReturnType<typeof getSubmissionFilterOptions>>>
+export type GetSubmissionFilterOptionsQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Opciones disponibles para filtros en la cola de revisión (admin)
+ */
+
+export function useGetSubmissionFilterOptions<TData = Awaited<ReturnType<typeof getSubmissionFilterOptions>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSubmissionFilterOptions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetSubmissionFilterOptionsQueryOptions(options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

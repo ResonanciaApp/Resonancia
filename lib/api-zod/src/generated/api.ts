@@ -1443,7 +1443,11 @@ export const CreateSubmissionBody = zod.object({
  * @summary Cola de revisión (admin) — envíos por estado (default pending)
  */
 export const GetPendingSubmissionsQueryParams = zod.object({
-  "status": zod.enum(['draft', 'pending', 'published', 'rejected']).optional()
+  "status": zod.enum(['draft', 'pending', 'published', 'rejected']).optional(),
+  "categoryId": zod.coerce.string().optional(),
+  "createdAfter": zod.coerce.string().optional().describe('ISO 8601 date string — solo devuelve sesiones creadas desde esta fecha'),
+  "themeTag": zod.coerce.string().optional().describe('Filtrar por un valor exacto dentro del array themeTag'),
+  "otherTag": zod.coerce.string().optional().describe('Filtrar por valor en sleepTag, meditationTag, soundTag o ancestralTag')
 })
 
 export const getPendingSubmissionsResponseSubmissionsItemSkipDetailDefault = false;
@@ -1510,6 +1514,19 @@ export const GetPendingSubmissionsResponse = zod.object({
   "createdAt": zod.coerce.date()
 }))
 }))
+})
+
+
+/**
+ * @summary Opciones disponibles para filtros en la cola de revisión (admin)
+ */
+export const GetSubmissionFilterOptionsResponse = zod.object({
+  "categories": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string()
+})),
+  "themeTags": zod.array(zod.string()),
+  "otherTags": zod.array(zod.string())
 })
 
 

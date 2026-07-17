@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { randomUUID } from "node:crypto";
-import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, or, sql } from "drizzle-orm";
 import {
   db,
   catalogCategoriesTable,
@@ -543,17 +543,100 @@ router.get(
       res.status(400).json({ error: "Consulta inválida" });
       return;
     }
-    const status = parsed.data.status ?? "pending";
+    const { status: rawStatus, categoryId, createdAfter, themeTag, otherTag } = parsed.data;
+    const status = rawStatus ?? "pending";
     try {
+      const conditions = [eq(catalogSessionsTable.status, status)];
+      if (categoryId) {
+        conditions.push(eq(catalogSessionsTable.categoryId, categoryId));
+      }
+      if (createdAfter) {
+        const afterDate = new Date(createdAfter);
+        if (!isNaN(afterDate.getTime())) {
+          conditions.push(gte(catalogSessionsTable.createdAt, afterDate));
+        }
+      }
+      if (themeTag) {
+        conditions.push(
+          sql`${catalogSessionsTable.themeTag} @> ARRAY[${themeTag}]::text[]`,
+        );
+      }
+      if (otherTag) {
+        conditions.push(
+          or(
+            eq(catalogSessionsTable.sleepTag, otherTag),
+            eq(catalogSessionsTable.meditationTag, otherTag),
+            eq(catalogSessionsTable.soundTag, otherTag),
+            eq(catalogSessionsTable.ancestralTag, otherTag),
+          )!,
+        );
+      }
       const sessions = await db
         .select()
         .from(catalogSessionsTable)
-        .where(eq(catalogSessionsTable.status, status))
+        .where(and(...conditions))
         .orderBy(desc(catalogSessionsTable.createdAt));
       res.json({ submissions: await serializeSubmissionList(sessions) });
     } catch (err) {
       req.log.error({ err }, "error listing submissions");
       res.status(500).json({ error: "Error al obtener la cola de revisión" });
+    }
+  },
+);
+
+// GET /catalog/submissions/filter-options — valores únicos para filtros (admin).
+router.get(
+  "/catalog/submissions/filter-options",
+  requireAuth,
+  requireRole("admin"),
+  async (req, res) => {
+    try {
+      const rows = await db
+        .select({
+          categoryId: catalogSessionsTable.categoryId,
+          categoryLabel: catalogSessionsTable.categoryLabel,
+          themeTag: catalogSessionsTable.themeTag,
+          sleepTag: catalogSessionsTable.sleepTag,
+          meditationTag: catalogSessionsTable.meditationTag,
+          soundTag: catalogSessionsTable.soundTag,
+          ancestralTag: catalogSessionsTable.ancestralTag,
+        })
+        .from(catalogSessionsTable);
+
+      // Categorías únicas ordenadas
+      const catMap = new Map<string, string>();
+      for (const r of rows) {
+        if (!catMap.has(r.categoryId)) catMap.set(r.categoryId, r.categoryLabel);
+      }
+      const categories = [...catMap.entries()]
+        .map(([id, label]) => ({ id, label }))
+        .sort((a, b) => a.label.localeCompare(b.label));
+
+      // themeTags: aplanar arrays únicos
+      const themeTagSet = new Set<string>();
+      for (const r of rows) {
+        for (const t of r.themeTag ?? []) {
+          if (t) themeTagSet.add(t);
+        }
+      }
+
+      // otherTags: sleepTag + meditationTag + soundTag + ancestralTag únicos
+      const otherTagSet = new Set<string>();
+      for (const r of rows) {
+        if (r.sleepTag) otherTagSet.add(r.sleepTag);
+        if (r.meditationTag) otherTagSet.add(r.meditationTag);
+        if (r.soundTag) otherTagSet.add(r.soundTag);
+        if (r.ancestralTag) otherTagSet.add(r.ancestralTag);
+      }
+
+      res.json({
+        categories,
+        themeTags: [...themeTagSet].sort(),
+        otherTags: [...otherTagSet].sort(),
+      });
+    } catch (err) {
+      req.log.error({ err }, "error fetching filter options");
+      res.status(500).json({ error: "Error al obtener opciones de filtro" });
     }
   },
 );

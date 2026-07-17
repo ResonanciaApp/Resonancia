@@ -1096,6 +1096,17 @@ export interface SubmissionList {
   submissions: Submission[];
 }
 
+export type SubmissionFilterOptionsCategoriesItem = {
+  id: string;
+  label: string;
+};
+
+export interface SubmissionFilterOptions {
+  categories: SubmissionFilterOptionsCategoriesItem[];
+  themeTags: string[];
+  otherTags: string[];
+}
+
 export interface ReviewRejectBody {
   /**
      * @minLength 1
@@ -1905,6 +1916,19 @@ limit?: number;
 
 export type GetPendingSubmissionsParams = {
 status?: GetPendingSubmissionsStatus;
+categoryId?: string;
+/**
+ * ISO 8601 date string — solo devuelve sesiones creadas desde esta fecha
+ */
+createdAfter?: string;
+/**
+ * Filtrar por un valor exacto dentro del array themeTag
+ */
+themeTag?: string;
+/**
+ * Filtrar por valor en sleepTag, meditationTag, soundTag o ancestralTag
+ */
+otherTag?: string;
 };
 
 export type GetPendingSubmissionsStatus = typeof GetPendingSubmissionsStatus[keyof typeof GetPendingSubmissionsStatus];
