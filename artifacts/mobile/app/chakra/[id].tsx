@@ -77,7 +77,7 @@ export default function ChakraScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: chakra.gradient[2] }]}>
+    <View style={[styles.root, { backgroundColor: chakra.gradient[1] }]}>
       <StatusBar barStyle="light-content" />
       <LinearGradient colors={chakra.gradient} style={StyleSheet.absoluteFill} />
 
