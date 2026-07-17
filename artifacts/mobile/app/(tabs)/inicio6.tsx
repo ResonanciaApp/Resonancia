@@ -1119,7 +1119,7 @@ export default function HomeScreen2() {
               style={StyleSheet.absoluteFill}
             />
             <Text style={styles.moodEmoji}>🙂</Text>
-            <Text style={styles.moodRowLabel}>¿Cómo te sientes hoy?</Text>
+            <Text style={styles.moodRowLabel}>Expresa tu emoción</Text>
             <Feather name="chevron-right" size={16} color="rgba(190,150,80,0.6)" />
           </Pressable>
         )}

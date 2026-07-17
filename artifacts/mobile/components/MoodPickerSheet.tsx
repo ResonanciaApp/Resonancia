@@ -68,7 +68,7 @@ export function MoodPickerSheet({ visible, onClose, onSelect }: Props) {
           <Text style={styles.closeX}>✕</Text>
         </Pressable>
 
-        <Text style={styles.title}>¿Cómo te sientes hoy?</Text>
+        <Text style={styles.title}>Expresa tu emoción</Text>
 
         <View style={styles.grid}>
           {MOODS.map((mood) => {
