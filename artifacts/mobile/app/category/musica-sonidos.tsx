@@ -550,7 +550,7 @@ const styles = StyleSheet.create({
   stickyTabsDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: -H_PAD, marginTop: 8 },
   headerBtn: { width: 45, height: 45, alignItems: "center", justifyContent: "center" },
   headerTitleCol: { flex: 1, alignItems: "center" },
-  headerTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "400", color: "#FBFBFB", letterSpacing: 0.2, textAlign: "center" },
+  headerTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "400", color: "#FBFBFB", letterSpacing: 0.2, textAlign: "center", includeFontPadding: false, textAlignVertical: "center" },
   headerSubtitle: { fontFamily: "Manrope", fontSize: 11, color: "#f7f7f7", letterSpacing: 0.3, marginTop: 1, opacity: 0.7 },
   heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
   heroOverlayRight: { position: "absolute", right: H_PAD, zIndex: 10 },
