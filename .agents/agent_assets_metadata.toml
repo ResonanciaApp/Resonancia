@@ -2435,3 +2435,9 @@ id = "GsCARqSSaN_g6-VGgjPuJ"
 uri = "file://.local/outputs/RESONANCIA-Pitch-Inversionistas.pdf"
 type = "pdf"
 title = "RESONANCIA — Pitch Inversionistas (PDF)"
+
+[[outputs]]
+id = "MJ0TubshM6zrH5Y9mIv7S"
+uri = "file://.local/outputs/RESONANCIA-Inversion-Slides4y5.pdf"
+type = "pdf"
+title = "RESONANCIA — Inversión · Slides 4 y 5 (PDF)"
