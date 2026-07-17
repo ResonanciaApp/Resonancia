@@ -17,6 +17,7 @@ import {
   Pressable,
   ScrollView,
   Share,
+  Alert,
   StatusBar,
   StyleSheet,
   Text,
@@ -502,7 +503,11 @@ export default function PlayerScreen() {
             <Feather name="chevron-down" size={22} color="#FBFBFB" />
           </Pressable>
 
-          <Pressable style={styles.topCircleBtn} hitSlop={8}>
+          <Pressable
+            style={styles.topCircleBtn}
+            hitSlop={8}
+            onPress={() => Alert.alert("Próximamente", "La descarga estará disponible en una próxima versión.")}
+          >
             {Platform.OS !== "web" ? (
               <BlurView intensity={22} tint="dark" style={StyleSheet.absoluteFill} />
             ) : (
@@ -795,7 +800,10 @@ export default function PlayerScreen() {
               </Pressable>
 
               {/* Descargar */}
-              <Pressable style={styles.optRow}>
+              <Pressable
+                style={styles.optRow}
+                onPress={() => Alert.alert("Próximamente", "La descarga estará disponible en una próxima versión.")}
+              >
                 <Feather name="download" size={18} color="#FBFBFB" style={styles.optIcon} />
                 <Text style={styles.optRowText}>Descargar</Text>
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
