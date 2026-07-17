@@ -32,6 +32,8 @@ import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { TEMAS } from "@/data/temas";
 import { TAG_CARDS } from "@/data/tags";
+import { CHAKRAS, isChakraTag } from "@/data/chakras";
+import { SacredGlyph } from "@/components/SacredGlyph";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
@@ -57,6 +59,8 @@ function hexTint(hex: string, alpha: number): string {
 }
 
 const SQCARD_W = Math.round((width - H_PAD * 2) / 1.85);
+const CHAKRA_CARD = 110;
+const CHAKRA_GLYPH = 74;
 const TEMA_COL_W = Math.floor((width - H_PAD * 2 - GAP) / 2);
 const TEMA3_W    = Math.floor((width - H_PAD * 2 - TEMA_GAP * 2) / 3);
 
@@ -300,7 +304,9 @@ export default function ExploreScreen() {
   }, []);
 
   const themeCarousels = React.useMemo(() => {
-    const sessionLabels = Array.from(new Set(SESSIONS.flatMap((s) => s.themeTag ?? [])));
+    const sessionLabels: string[] = Array.from(
+      new Set<string>(SESSIONS.flatMap((s) => s.themeTag ?? [])),
+    ).filter((t) => !isChakraTag(t));
 
     // Si ya cargó la config de la API, usarla
     if (exploreSections.length > 0) {
@@ -308,7 +314,9 @@ export default function ExploreScreen() {
         .filter((sec) => sec.visible && sessionLabels.includes(sec.label))
         .map((sec) => ({
           label: sec.label,
-          sessions: SESSIONS.filter((s) => s.themeTag?.includes(sec.label)),
+          sessions: SESSIONS.filter((s) =>
+            (s.themeTag as readonly string[] | undefined)?.includes(sec.label),
+          ),
         }));
     }
 
@@ -324,7 +332,9 @@ export default function ExploreScreen() {
     });
     return allTags.map((tag) => ({
       label: tag,
-      sessions: SESSIONS.filter((s) => s.themeTag?.includes(tag)),
+      sessions: SESSIONS.filter((s) =>
+        (s.themeTag as readonly string[] | undefined)?.includes(tag),
+      ),
     }));
   }, [catalogVersion, exploreSections]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -459,7 +469,7 @@ export default function ExploreScreen() {
       >
         {/* ── Para este momento ── */}
         {featuredHoy && (
-          <View style={[styles.section, { marginBottom: themeCarousels.length > 0 ? 0 : SECTION_GAP, marginTop: 10 }]}>
+          <View style={[styles.section, { marginBottom: 0, marginTop: 10 }]}>
             <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Para este momento</Text>
             <Pressable
               onPress={() => {
@@ -496,6 +506,30 @@ export default function ExploreScreen() {
             </Pressable>
           </View>
         )}
+
+        {/* ── Chakras ── */}
+        <View style={{ marginTop: featuredHoy ? 44 : 10 }}>
+          <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 24 }]}>Chakras</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 14 }}
+          >
+            {CHAKRAS.map((c) => (
+              <Pressable
+                key={c.id}
+                onPress={() => router.push(`/chakra/${c.id}` as never)}
+                style={({ pressed }) => [{ width: CHAKRA_CARD, opacity: pressed ? 0.85 : 1 }]}
+              >
+                <View style={styles.chakraCard}>
+                  <SacredGlyph id={c.geometryId} color={c.color} size={CHAKRA_GLYPH} />
+                </View>
+                <Text style={styles.chakraName} numberOfLines={1}>{c.name}</Text>
+                <Text style={styles.chakraSub} numberOfLines={1}>{c.tagLabel}</Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
 
         {/* ── Carruseles por temática ── */}
         {themeCarousels.length > 0 && (
@@ -545,6 +579,18 @@ const styles = StyleSheet.create({
   pageSubtitle: { fontFamily: "Manrope", fontSize: 14, color: "#F4F4F4", marginTop: 2 },
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
+
+  // Chakras
+  chakraCard: {
+    width: CHAKRA_CARD,
+    height: CHAKRA_CARD,
+    borderRadius: 25,
+    backgroundColor: "rgba(0,0,0,0.15)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  chakraName: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", color: "#FBFBFB", marginTop: 10, textAlign: "center" },
+  chakraSub:  { fontFamily: "Manrope", fontSize: 11, color: "#c2c2c2", marginTop: 3, textAlign: "center" },
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 24 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 24 },
 
