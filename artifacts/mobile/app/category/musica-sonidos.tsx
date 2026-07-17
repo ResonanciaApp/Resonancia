@@ -481,7 +481,7 @@ export default function MusicaSonidosScreen() {
 
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
-          <Image source={require("@/assets/images/cat-musica.png")} style={{ width: 26, height: 26 }} contentFit="contain" />
+          <Image source={require("@/assets/images/cat-musica.png")} style={{ width: 34, height: 34 }} contentFit="contain" />
           <Text style={styles.profileTitle}>Música</Text>
         </View>
 

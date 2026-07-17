@@ -478,7 +478,7 @@ export default function MeditacionesGuiadasScreen() {
 
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
-          <Image source={require("@/assets/images/cat-meditaciones.png")} style={{ width: 22, height: 22 }} contentFit="contain" />
+          <Image source={require("@/assets/images/cat-meditaciones.png")} style={{ width: 30, height: 30 }} contentFit="contain" />
           <Text style={styles.profileTitle}>Meditaciones</Text>
         </View>
 

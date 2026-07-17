@@ -608,7 +608,7 @@ export default function SonidosAncestalesScreen() {
 
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
-          <Image source={require("@/assets/images/cat-sesiones.png")} style={{ width: 26, height: 26 }} contentFit="contain" />
+          <Image source={require("@/assets/images/cat-sesiones.png")} style={{ width: 34, height: 34 }} contentFit="contain" />
           <Text style={styles.profileTitle}>Sesiones</Text>
         </View>
 
