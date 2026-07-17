@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(244,244,244,0.30)",
   },
   chipSel: { borderWidth: 0 },
-  chipText: { fontFamily: "Manrope", fontSize: 9, fontWeight: "380" },
+  chipText: { fontFamily: "Manrope", fontSize: 11, fontWeight: "380" },
   chipsDivider: {
     height: 1,
     backgroundColor: "rgba(255,255,255,0.035)",
