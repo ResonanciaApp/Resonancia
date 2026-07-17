@@ -2,19 +2,18 @@ import React, { useCallback, useRef } from "react";
 import { Animated, Pressable } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 
-// viewBox 1:1 con el display — sin escalado, coordenadas exactas en px
-const S  = 45;          // display size
-const CX = S / 2;       // 22.5
-const CY = S / 2;       // 22.5
+// Vesica Piscis (de data/glyph-strings.ts, glifo "vesica"):
+// dos círculos cx=38/62, cy=50, r=24 en viewBox 0 0 100 100.
+const S = 45; // display size
+const VB = 100;
+// Trazo de 3 px en pantalla → unidades de viewBox
+const STROKE_W = 3 * (VB / S);
 
-// punto + 2 anillos visibles + 1 tenue = 3 anillos
-const RINGS = [
-  { r: 7,    sw: 0.6, restOpacity: 0.60 }, // visible 1
-  { r: 13,   sw: 0.6, restOpacity: 0.65 }, // visible 2
-  { r: 19,   sw: 0.5, restOpacity: 0.12 }, // dim
+const CIRCLES = [
+  { cx: 38, cy: 50, r: 24 },
+  { cx: 62, cy: 50, r: 24 },
 ];
 
-const DOT_R = 2;
 const GOLD  = "#F7CB6B";
 const WHITE = "#FFFFFF";
 
@@ -26,69 +25,49 @@ interface Props {
 }
 
 export function EscenasThemeButton({ onPress, style }: Props) {
-  const goldRingAnims = useRef(RINGS.map(() => new Animated.Value(0))).current;
-  const goldDotAnim   = useRef(new Animated.Value(0)).current;
+  const goldAnim = useRef(new Animated.Value(0)).current;
 
   const handlePress = useCallback(() => {
-    goldRingAnims.forEach((a) => a.setValue(0));
-    goldDotAnim.setValue(0);
-
-    const ringAnimations = RINGS.map((ring, i) =>
-      Animated.sequence([
-        Animated.timing(goldRingAnims[i], { toValue: ring.restOpacity, duration: 140, useNativeDriver: true }),
-        Animated.timing(goldRingAnims[i], { toValue: 0,                duration: 380, useNativeDriver: true }),
-      ])
-    );
-
-    Animated.parallel([
-      Animated.stagger(90, ringAnimations),
-      Animated.sequence([
-        Animated.timing(goldDotAnim, { toValue: 1, duration: 120, useNativeDriver: true }),
-        Animated.timing(goldDotAnim, { toValue: 0, duration: 380, useNativeDriver: true }),
-      ]),
+    goldAnim.setValue(0);
+    Animated.sequence([
+      Animated.timing(goldAnim, { toValue: 1, duration: 140, useNativeDriver: true }),
+      Animated.timing(goldAnim, { toValue: 0, duration: 380, useNativeDriver: true }),
     ]).start();
 
     const t = setTimeout(() => onPress(), 500);
     return () => clearTimeout(t);
-  }, [goldRingAnims, goldDotAnim, onPress]);
+  }, [goldAnim, onPress]);
 
   return (
     <Pressable onPress={handlePress} hitSlop={10} style={style}>
-      {/* viewBox = "0 0 45 45": coordenadas = px de display, sin escalar */}
-      <Svg width={S} height={S} viewBox={`0 0 ${S} ${S}`}>
-
-        {/* Anillos blancos — reposo */}
-        {RINGS.map((ring, i) => (
+      <Svg width={S} height={S} viewBox={`0 0 ${VB} ${VB}`}>
+        {/* Vesica piscis blanca — reposo */}
+        {CIRCLES.map((c, i) => (
           <Circle
             key={`w${i}`}
-            cx={CX} cy={CY}
-            r={ring.r}
+            cx={c.cx} cy={c.cy} r={c.r}
             stroke={WHITE}
-            strokeWidth={ring.sw}
+            strokeWidth={STROKE_W}
+            strokeLinecap="round"
+            strokeLinejoin="round"
             fill="none"
-            opacity={ring.restOpacity}
+            opacity={0.9}
           />
         ))}
 
-        {/* Punto blanco central */}
-        <Circle cx={CX} cy={CY} r={DOT_R} fill={WHITE} />
-
-        {/* Anillos dorados — animados */}
-        {RINGS.map((ring, i) => (
+        {/* Vesica piscis dorada — animada al tocar */}
+        {CIRCLES.map((c, i) => (
           <AnimatedCircle
             key={`g${i}`}
-            cx={CX} cy={CY}
-            r={ring.r}
+            cx={c.cx} cy={c.cy} r={c.r}
             stroke={GOLD}
-            strokeWidth={ring.sw}
+            strokeWidth={STROKE_W}
+            strokeLinecap="round"
+            strokeLinejoin="round"
             fill="none"
-            opacity={goldRingAnims[i]}
+            opacity={goldAnim}
           />
         ))}
-
-        {/* Punto dorado — animado */}
-        <AnimatedCircle cx={CX} cy={CY} r={DOT_R} fill={GOLD} opacity={goldDotAnim} />
-
       </Svg>
     </Pressable>
   );
