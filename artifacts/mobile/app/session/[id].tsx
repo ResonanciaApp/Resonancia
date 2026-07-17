@@ -511,7 +511,7 @@ export default function SessionDetailScreen() {
                 onPress={() => router.push(`/chakra/${chakra.id}` as never)}
                 style={({ pressed }) => [styles.chakraBanner, { opacity: pressed ? 0.75 : 1 }]}
               >
-                <SacredGlyph id={chakra.geometryId} color={chakra.color} size={34} />
+                <SacredGlyph id={chakra.geometryId} color={chakra.color} size={29} />
                 <Text style={styles.chakraBannerText}>
                   {"Te ayuda a armonizar el "}
                   <Text style={[styles.chakraBannerBold, { color: chakra.color }]}>{chakra.tagLabel}</Text>
