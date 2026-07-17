@@ -12,8 +12,8 @@ export type Chakra = {
   tagAliases: string[];
   /** Color tradicional del chakra (acento, glifo). */
   color: string;
-  /** Degradado de 2 paradas para la pantalla de detalle. */
-  gradient: [string, string];
+  /** Degradado de 3 paradas para la pantalla de detalle. */
+  gradient: [string, string, string];
   /** Descripción corta (2 líneas) en español neutro. */
   description: string;
 };
@@ -26,7 +26,7 @@ export const CHAKRAS: Chakra[] = [
     tagLabel: "Primer Chakra",
     tagAliases: [],
     color: "#E63946",
-    gradient: ["#8B1E1E", "#E63946"],
+    gradient: ["#5B1517", "#7A1E22", "#A23B3E"],
     description: "Raíz y seguridad. Sesiones para anclarte a la tierra y sentirte a salvo en tu cuerpo.",
   },
   {
@@ -36,7 +36,7 @@ export const CHAKRAS: Chakra[] = [
     tagLabel: "Segundo Chakra",
     tagAliases: [],
     color: "#FF8C42",
-    gradient: ["#CC5A1A", "#FF8C42"],
+    gradient: ["#6A2F13", "#8A471C", "#B5632B"],
     description: "Emoción y creatividad. Sesiones para fluir con tus emociones y despertar tu energía vital.",
   },
   {
@@ -46,7 +46,7 @@ export const CHAKRAS: Chakra[] = [
     tagLabel: "Tercer Chakra",
     tagAliases: [],
     color: "#FFD24C",
-    gradient: ["#D4A017", "#FFD24C"],
+    gradient: ["#7A5B16", "#9A701E", "#C18F2F"],
     description: "Poder personal. Sesiones para fortalecer tu voluntad, tu confianza y tu determinación.",
   },
   {
@@ -56,7 +56,7 @@ export const CHAKRAS: Chakra[] = [
     tagLabel: "Cuarto Chakra",
     tagAliases: [],
     color: "#49B88A",
-    gradient: ["#1E7A5A", "#49B88A"],
+    gradient: ["#1B4338", "#2A5E4C", "#3E7A61"],
     description: "Amor y compasión. Sesiones para abrir el corazón y cultivar la aceptación.",
   },
   {
@@ -66,7 +66,7 @@ export const CHAKRAS: Chakra[] = [
     tagLabel: "Quinto Chakra",
     tagAliases: [],
     color: "#3CA0D8",
-    gradient: ["#145D8C", "#3CA0D8"],
+    gradient: ["#153A4D", "#1E5570", "#2D7A9A"],
     description: "Expresión y verdad. Sesiones para liberar tu voz y comunicar desde la autenticidad.",
   },
   {
@@ -77,7 +77,7 @@ export const CHAKRAS: Chakra[] = [
     // La DB tiene hoy la variante "Sexo Chakra"; se trata como "Sexto Chakra".
     tagAliases: ["Sexo Chakra"],
     color: "#5A4FCF",
-    gradient: ["#2E2680", "#5A4FCF"],
+    gradient: ["#28295A", "#3A3D7A", "#4F53A0"],
     description: "Intuición y visión. Sesiones para aquietar la mente y despertar la percepción interior.",
   },
   {
@@ -87,7 +87,7 @@ export const CHAKRAS: Chakra[] = [
     tagLabel: "Séptimo Chakra",
     tagAliases: [],
     color: "#A855F7",
-    gradient: ["#6B2D91", "#A855F7"],
+    gradient: ["#4A2966", "#6C3C8F", "#8E5FB7"],
     description: "Conexión y unidad. Sesiones para expandir la consciencia y unirte con el todo.",
   },
 ];
