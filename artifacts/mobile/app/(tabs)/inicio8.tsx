@@ -1190,13 +1190,13 @@ export default function HomeScreen2() {
 
         {/* ── ¿Cuánto tiempo tienes hoy? ── */}
         <View style={[styles.durSection, { marginBottom: SECTION_GAP }]}>
-          <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>
+          <Text style={[styles.sectionTitle, { marginBottom: 24, paddingHorizontal: GRID_PAD }]}>
             ¿Cuánto tiempo tienes hoy?
           </Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.durPillRow}
+            contentContainerStyle={[styles.durPillRow, { paddingLeft: GRID_PAD }]}
           >
             {DURATION_SLOTS.map((slot) => (
               <Pressable
@@ -2219,7 +2219,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   durSection: {
-    paddingHorizontal: GRID_PAD,
   },
   durPillRow: {
     flexDirection: "row",
