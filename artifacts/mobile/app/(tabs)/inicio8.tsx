@@ -1062,7 +1062,7 @@ export default function HomeScreen2() {
 
         {/* ── EXPLORA POR CONTENIDO ── */}
         <View style={[styles.section, { marginBottom: SECTION_GAP - 20, marginTop: intencionDiariaEnabled ? (rachaEnabled ? -18 : -74) : (rachaEnabled ? -12 : -68) }]}>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 7, marginTop: 20 }}>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 7, marginTop: 20, justifyContent: "center" }}>
             {([
               { id: "meditaciones-guiadas", label: "Meditaciones", color: "#C8A6FF", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cat-meditaciones.png")} style={{ width: 22, height: 22 }} contentFit="contain" /> },
               { id: "sonidos-ancestrales",  label: "Sesiones",   color: "#E7A36E", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cat-sesiones.png")} style={{ width: 26, height: 26 }} contentFit="contain" /> },
