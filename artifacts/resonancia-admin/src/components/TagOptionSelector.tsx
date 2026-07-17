@@ -1,7 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
+import { useAuth } from "@clerk/react";
 import { Plus, X, Loader2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+
+function authHeaders(token: string | null): Record<string, string> {
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
 interface TagOption {
   id: number;
@@ -26,6 +31,7 @@ export function TagOptionSelector({
   onToggle,
   pill = false,
 }: TagOptionSelectorProps) {
+  const { getToken } = useAuth();
   const [dbTags, setDbTags] = useState<TagOption[]>([]);
   const [hiddenIds, setHiddenIds] = useState<Map<string, number>>(new Map());
   const [adding, setAdding] = useState(false);
@@ -37,9 +43,16 @@ export function TagOptionSelector({
 
   const load = useCallback(async () => {
     try {
+      const token = await getToken();
       const [resCustom, resHidden] = await Promise.all([
-        fetch(`/api/admin/tag-options?type=${encodeURIComponent(tagType)}`, { credentials: "include" }),
-        fetch(`/api/admin/tag-options?type=${encodeURIComponent(hiddenType)}`, { credentials: "include" }),
+        fetch(`/api/admin/tag-options?type=${encodeURIComponent(tagType)}`, {
+          credentials: "include",
+          headers: authHeaders(token),
+        }),
+        fetch(`/api/admin/tag-options?type=${encodeURIComponent(hiddenType)}`, {
+          credentials: "include",
+          headers: authHeaders(token),
+        }),
       ]);
       if (resCustom.ok) setDbTags(await resCustom.json());
       if (resHidden.ok) {
@@ -49,7 +62,7 @@ export function TagOptionSelector({
     } catch {
       // silently ignore
     }
-  }, [tagType, hiddenType]);
+  }, [tagType, hiddenType, getToken]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -59,10 +72,11 @@ export function TagOptionSelector({
     if (!trimmed) return;
     setSaving(true);
     try {
+      const token = await getToken();
       const res = await fetch("/api/admin/tag-options", {
         method: "POST",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders(token) },
         body: JSON.stringify({ type: tagType, label: trimmed }),
       });
       if (!res.ok) throw new Error("Error al crear");
@@ -83,9 +97,11 @@ export function TagOptionSelector({
   const handleDeleteCustom = async (opt: TagOption) => {
     setDeleting(`custom-${opt.id}`);
     try {
+      const token = await getToken();
       const res = await fetch(`/api/admin/tag-options/${opt.id}`, {
         method: "DELETE",
         credentials: "include",
+        headers: authHeaders(token),
       });
       if (!res.ok) throw new Error();
       setDbTags((p) => p.filter((t) => t.id !== opt.id));
@@ -103,10 +119,11 @@ export function TagOptionSelector({
     if (hiddenIds.has(key)) return;
     setDeleting(`default-${key}`);
     try {
+      const token = await getToken();
       const res = await fetch("/api/admin/tag-options", {
         method: "POST",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders(token) },
         body: JSON.stringify({ type: hiddenType, label: tag }),
       });
       if (!res.ok) throw new Error();

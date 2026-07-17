@@ -5,11 +5,14 @@ description: How the resonancia-admin web panel authenticates and gates admin ac
 
 # Admin web panel (resonancia-admin) auth model
 
-The web admin artifact reuses the same DB/API as the mobile app, but auth works differently from mobile.
+The web admin artifact reuses the same DB/API as the mobile app.
 
-- **Web uses Clerk cookie-based, same-origin auth.** Generated API client calls hit `/api/...` (relative), so the browser sends Clerk cookies automatically. Do NOT use `setBaseUrl`, `setAuthTokenGetter`, or Bearer tokens in the web admin — that is mobile's pattern, not web's.
+- **Web admin uses Clerk Bearer tokens, NOT cookies.** `ClerkTokenSync` in `App.tsx` calls `setAuthTokenGetter(() => getToken())`, so the generated API client (Orval hooks) attaches `Authorization: Bearer <token>` automatically. Cookies alone do NOT authenticate against the API — `credentials: "include"` without the Bearer header returns 401.
+- **Any raw `fetch` in the admin panel must attach the token manually**: `const { getToken } = useAuth()`, then `headers: { Authorization: \`Bearer ${await getToken()}\` }`. Pattern helper `authHeaders(token)` exists in `pages/escenas.tsx`, `pages/geometrix.tsx`, and `components/TagOptionSelector.tsx`.
 - **Real authorization is server-side only.** Admin endpoints use `requireAuth + requireRole("admin")`. The frontend `AdminGate` (via `useGetMe`, `role !== "admin"` → AccessDenied) is UX only, never the security boundary.
 
-**Why:** Mixing the mobile Bearer pattern into the web app breaks same-origin cookie auth and creates a false sense of client-side security. The server is authoritative.
+**Why:** A raw fetch with only `credentials: "include"` fails with 401 even while Orval-based requests on the same page succeed — this asymmetric failure (some admin endpoints 200, others 401) is the signature of a missing Bearer header, not an expired session.
 
-**How to apply:** When adding admin features, gate the new route on the server with `requireRole("admin")` first; the web UI just shows/hides. The role-update contract enum (`UserRoleUpdate` in `lib/api-spec/openapi.yaml`) includes `admin` so admins can promote/demote admins — backend sets role generically, so only the enum gates allowed values.
+**How to apply:** When adding admin features, prefer the generated Orval hooks (token handled automatically). If a raw fetch is unavoidable, always use `useAuth().getToken()` + Authorization header. Gate the new route on the server with `requireRole("admin")` first; the web UI just shows/hides.
+
+**Debugging note:** 401 on a *specific* admin route while others work can also mean a stale esbuild bundle missing the route (grep `dist/index.mjs`, restart the API workflow to rebuild) — check both.
