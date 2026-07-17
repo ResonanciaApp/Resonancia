@@ -140,7 +140,7 @@ export function TagOptionSelector({
       type="button"
       onClick={onClick}
       disabled={busy}
-      className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+      className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity"
     >
       {busy ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <X className="w-2.5 h-2.5" />}
     </button>
