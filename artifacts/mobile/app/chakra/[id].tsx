@@ -3,6 +3,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import {
   Dimensions,
+  ImageBackground,
   Platform,
   Pressable,
   ScrollView,
@@ -22,6 +23,11 @@ import { usePremium } from "@/context/PremiumContext";
 import { chakraMatchesTag, getChakraById } from "@/data/chakras";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CHAKRA_BG_IMAGES: Record<string, any> = {
+  "chakra-1": require("@/assets/images/chakras/chakra-bg-1.jpg"),
+};
 
 const { width: W } = Dimensions.get("window");
 const H_PAD = 20;
@@ -77,54 +83,69 @@ export default function ChakraScreen() {
     );
   }
 
+  const bgImage = CHAKRA_BG_IMAGES[chakra.id];
+
+  const scrollContent = (
+    <ScrollView
+      style={styles.scroll}
+      contentContainerStyle={{ paddingBottom: 120 + bottomPad, paddingTop: topPad + 8 }}
+      showsVerticalScrollIndicator={false}
+    >
+      {/* Header */}
+      <View style={[styles.headerRow, { paddingHorizontal: H_PAD }]}>
+        <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
+          <Feather name="arrow-left" size={22} color={colors.foreground} />
+        </Pressable>
+      </View>
+
+      {/* Glifo + título + descripción */}
+      <View style={styles.hero}>
+        <SacredGlyph id={chakra.geometryId} color={chakra.color} size={GLYPH_SIZE} />
+        <Text style={[styles.name, { color: colors.foreground }]}>{chakra.name}</Text>
+        <Text style={[styles.tagLabel, { color: "#F9F9F9" }]}>{chakra.tagLabel}</Text>
+        <Text style={[styles.description, { color: colors.mutedForeground }]} numberOfLines={2}>
+          {chakra.description}
+        </Text>
+      </View>
+
+      {sessions.length === 0 ? (
+        <Text style={[styles.empty, { color: colors.mutedForeground, paddingHorizontal: H_PAD }]}>
+          Todavía no hay sesiones para este chakra.
+        </Text>
+      ) : (
+        <View style={styles.sessionGrid}>
+          {sessions.map((session) => (
+            <SessionCard
+              key={session.id}
+              session={session}
+              width={CARD_W}
+              style={{ marginRight: 0 }}
+              showDuration={false}
+              showAuthorAvatar={false}
+              playing={currentSession?.id === session.id}
+              overridePress={() => handleSessionPress(session)}
+            />
+          ))}
+        </View>
+      )}
+    </ScrollView>
+  );
+
+  if (bgImage) {
+    return (
+      <View style={styles.root}>
+        <StatusBar barStyle="light-content" />
+        <ImageBackground source={bgImage} style={StyleSheet.absoluteFill} resizeMode="cover" />
+        {scrollContent}
+      </View>
+    );
+  }
+
   return (
     <View style={[styles.root, { backgroundColor: chakra.gradient[2] }]}>
       <StatusBar barStyle="light-content" />
       <LinearGradient colors={chakra.gradient} style={StyleSheet.absoluteFill} />
-
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 120 + bottomPad, paddingTop: topPad + 8 }}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Header */}
-        <View style={[styles.headerRow, { paddingHorizontal: H_PAD }]}>
-          <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
-            <Feather name="arrow-left" size={22} color={colors.foreground} />
-          </Pressable>
-        </View>
-
-        {/* Glifo + título + descripción */}
-        <View style={styles.hero}>
-          <SacredGlyph id={chakra.geometryId} color={chakra.color} size={GLYPH_SIZE} />
-          <Text style={[styles.name, { color: colors.foreground }]}>{chakra.name}</Text>
-          <Text style={[styles.tagLabel, { color: "#F9F9F9" }]}>{chakra.tagLabel}</Text>
-          <Text style={[styles.description, { color: colors.mutedForeground }]} numberOfLines={2}>
-            {chakra.description}
-          </Text>
-        </View>
-
-        {sessions.length === 0 ? (
-          <Text style={[styles.empty, { color: colors.mutedForeground, paddingHorizontal: H_PAD }]}>
-            Todavía no hay sesiones para este chakra.
-          </Text>
-        ) : (
-          <View style={styles.sessionGrid}>
-            {sessions.map((session) => (
-              <SessionCard
-                key={session.id}
-                session={session}
-                width={CARD_W}
-                style={{ marginRight: 0 }}
-                showDuration={false}
-                showAuthorAvatar={false}
-                playing={currentSession?.id === session.id}
-                overridePress={() => handleSessionPress(session)}
-              />
-            ))}
-          </View>
-        )}
-      </ScrollView>
+      {scrollContent}
     </View>
   );
 }
