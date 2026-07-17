@@ -76,16 +76,6 @@ const BREATHING_EXERCISES = [
 
 type Session = (typeof SESSIONS)[number];
 
-const DURATION_SLOTS = [
-  { label: "5 min",   min: 0,  max: 5  },
-  { label: "10 min",  min: 6,  max: 10 },
-  { label: "20 min",  min: 11, max: 25 },
-  { label: "30 min",  min: 26, max: 35 },
-  { label: "60 min",  min: 36, max: Infinity },
-] as const;
-type DurSlot = (typeof DURATION_SLOTS)[number]["label"];
-const DUR_PILL_W = Math.round((width - H_PAD * 2 - 6 * 4) / 4.3);
-
 /** Seed numérico basado en la fecha (YYYYMMDD) → mismo resultado todo el día */
 function dateSeed(): number {
   const d = new Date();
@@ -364,19 +354,6 @@ export default function ExploreScreen() {
       .slice(0, 10);
   }, [popularData, catalogVersion]);
 
-  // ¿Cuánto tiempo tienes hoy?
-  const [selectedDur, setSelectedDur] = useState<DurSlot | null>(null);
-  const [durSort, setDurSort] = useState<"recientes" | "populares">("recientes");
-  const durationSessions = React.useMemo(() => {
-    if (!selectedDur) return [];
-    const slot = DURATION_SLOTS.find((s) => s.label === selectedDur)!;
-    const list = SESSIONS.filter((s) => s.duration >= slot.min && s.duration <= slot.max);
-    if (durSort === "recientes") {
-      return [...list].sort((a, b) => parseInt(b.id) - parseInt(a.id));
-    }
-    return list;
-  }, [selectedDur, durSort]);
-
   const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -613,76 +590,6 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "rgba(255,255,255,0.06)",
     marginHorizontal: 4,
-  },
-
-  // ¿Cuánto tiempo tienes hoy?
-  durSection: {
-    paddingHorizontal: H_PAD,
-    marginBottom: SECTION_GAP,
-  },
-  durPillRow: {
-    flexDirection: "row",
-    paddingHorizontal: 0,
-    paddingRight: DUR_PILL_W * 0.3,
-    gap: 6,
-    paddingBottom: 2,
-  },
-  durPill: {
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    minWidth: 80,
-    height: 42,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  durPillActive: {},
-  durPillText: {
-    fontFamily: "Manrope",
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#FBFBFB",
-    letterSpacing: 0.2,
-    marginTop: -3,
-  },
-  durPillTextActive: {
-    color: "#1B060F",
-  },
-  durResults: {
-    marginTop: 16,
-    marginHorizontal: H_PAD,
-    gap: 6,
-    backgroundColor: "rgba(255,255,255,0.04)",
-    borderRadius: 15,
-    padding: 12,
-  },
-  durSortRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginBottom: 10,
-  },
-  durSortOption: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "500",
-    color: "#c2c2c2",
-  },
-  durSortActive: {
-    fontFamily: "Manrope",
-    color: "#f9f9f9",
-    fontWeight: "700",
-  },
-  durSortSep: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    color: "#c2c2c2",
-  },
-  durEmpty: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    textAlign: "center",
-    paddingVertical: 16,
   },
 
   // Carrusel cuadrado

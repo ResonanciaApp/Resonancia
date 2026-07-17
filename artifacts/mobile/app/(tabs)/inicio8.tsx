@@ -396,8 +396,6 @@ export default function HomeScreen2() {
   const [moodSheetVisible, setMoodSheetVisible] = useState(false);
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
   const [immersive, setImmersive] = useState(false);
-  const [selectedDur, setSelectedDur] = useState<DurSlot | null>(null);
-  const [durSort, setDurSort] = useState<"recientes" | "populares">("recientes");
   const immersiveRef = useRef(false);
   const immersiveAnim = useRef(new Animated.Value(0)).current;
   const contentOpacity = immersiveAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] });
@@ -592,14 +590,6 @@ export default function HomeScreen2() {
     }
     return shuffled.slice(0, 10);
   }, [history, catalogVersion]);
-
-  const durationSessions = useMemo(() => {
-    if (!selectedDur) return [];
-    const slot = DURATION_SLOTS.find((s) => s.label === selectedDur)!;
-    const list = SESSIONS.filter((s) => s.duration >= slot.min && s.duration <= slot.max);
-    if (durSort === "recientes") return [...list].sort((a, b) => parseInt(b.id) - parseInt(a.id));
-    return list;
-  }, [selectedDur, durSort]);
 
   // Escuchadas recientemente — historial deduplicado, más recientes primero
   // (history ya viene ordenado con el más reciente al inicio, ver addToHistory)
@@ -1208,78 +1198,27 @@ export default function HomeScreen2() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.durPillRow}
           >
-            {DURATION_SLOTS.map((slot) => {
-              const sel = selectedDur === slot.label;
-              return (
-                <Pressable
-                  key={slot.label}
-                  onPress={() => setSelectedDur(sel ? null : slot.label)}
-                  style={({ pressed }) => [
-                    styles.durPill,
-                    sel && styles.durPillActive,
-                    { opacity: pressed ? 0.75 : 1 },
-                  ]}
+            {DURATION_SLOTS.map((slot) => (
+              <Pressable
+                key={slot.label}
+                onPress={() => router.push(`/busqueda?tiempo=${encodeURIComponent(slot.label)}` as never)}
+                style={({ pressed }) => [
+                  styles.durPill,
+                  { opacity: pressed ? 0.75 : 1 },
+                ]}
+              >
+                <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: cardBg }]} />
+                <Text
+                  style={styles.durPillText}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.7}
                 >
-                  {sel ? (
-                    activeSceneId === "tibet" ? (
-                      <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: "#f9f9f9" }]} />
-                    ) : (
-                      <LinearGradient
-                        colors={["#D6A45C", "#F7CB6B"]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 0, y: 1 }}
-                        style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
-                      />
-                    )
-                  ) : (
-                    <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: cardBg }]} />
-                  )}
-                  <Text
-                    style={[
-                      styles.durPillText,
-                      sel && styles.durPillTextActive,
-                      sel && activeSceneId === "tibet" && { color: "#0a0719" },
-                    ]}
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                    minimumFontScale={0.7}
-                  >
-                    {slot.label}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-
-          {selectedDur && (
-            <View style={[styles.durResults, { marginHorizontal: 0 }]}>
-              <View style={styles.durSortRow}>
-                <Pressable onPress={() => setDurSort("recientes")}>
-                  <Text style={[styles.durSortOption, durSort === "recientes" && styles.durSortActive]}>
-                    Recientes
-                  </Text>
-                </Pressable>
-                <Text style={styles.durSortSep}>·</Text>
-                <Pressable onPress={() => setDurSort("populares")}>
-                  <Text style={[styles.durSortOption, durSort === "populares" && styles.durSortActive]}>
-                    Más escuchadas
-                  </Text>
-                </Pressable>
-              </View>
-              {durationSessions.length === 0 ? (
-                <Text style={[styles.durEmpty, { color: "#c2c2c2" }]}>
-                  Sin sesiones para este rango
+                  {slot.label}
                 </Text>
-              ) : (
-                durationSessions.map((s, i) => (
-                  <React.Fragment key={s.id}>
-                    {i > 0 && <View style={styles.recoDivider} />}
-                    <SessionCard session={s} horizontal />
-                  </React.Fragment>
-                ))
-              )}
-            </View>
-          )}
+              </Pressable>
+            ))}
+          </ScrollView>
         </View>
 
         {/* ── ESCUCHADAS RECIENTEMENTE ── */}
@@ -2298,7 +2237,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  durPillActive: {},
   durPillText: {
     fontFamily: "Manrope",
     fontSize: 16,
@@ -2306,43 +2244,5 @@ const styles = StyleSheet.create({
     color: "#FBFBFB",
     letterSpacing: 0.2,
     marginTop: -3,
-  },
-  durPillTextActive: {
-    color: "#1B060F",
-  },
-  durResults: {
-    marginTop: 16,
-    gap: 6,
-    backgroundColor: "rgba(255,255,255,0.04)",
-    borderRadius: 15,
-    padding: 12,
-  },
-  durSortRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginBottom: 10,
-  },
-  durSortOption: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "500",
-    color: "#c2c2c2",
-  },
-  durSortActive: {
-    fontFamily: "Manrope",
-    color: "#f9f9f9",
-    fontWeight: "700",
-  },
-  durSortSep: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    color: "#c2c2c2",
-  },
-  durEmpty: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    textAlign: "center",
-    paddingVertical: 16,
   },
 });

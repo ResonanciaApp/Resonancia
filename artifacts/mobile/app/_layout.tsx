@@ -244,6 +244,10 @@ function NavStack() {
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
+          name="busqueda"
+          options={{ headerShown: false, animation: "slide_from_right" }}
+        />
+        <Stack.Screen
           name="tag/[id]"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
