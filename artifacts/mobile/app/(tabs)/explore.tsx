@@ -545,8 +545,8 @@ export default function ExploreScreen() {
                     isPremium={isPremium}
                     onPress={(s) => handleSessionPress(s)}
                     style={{ marginTop: 24, marginBottom: 0 }}
-                    cardWidth={299}
-                    cardHeight={187}
+                    cardWidth={tc.label === "Para la ansiedad" ? 299 : SQCARD_W}
+                    cardHeight={tc.label === "Para la ansiedad" ? 187 : undefined}
                     titleSize={20}
                   />
                   {!isLast && (
