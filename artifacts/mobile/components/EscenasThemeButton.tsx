@@ -12,7 +12,7 @@ const R = 24;
 const REST_DX = 12; // media distancia en reposo (cx 38/62)
 // Trazo de 2 px en pantalla → unidades de viewBox
 const STROKE_W = 2 * (VB / S);
-const STROKE_OPACITY = 0.25;
+const STROKE_OPACITY = 0.37;
 
 const WHITE = "#FFFFFF";
 
