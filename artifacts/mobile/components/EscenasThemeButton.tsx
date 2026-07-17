@@ -60,7 +60,18 @@ export function EscenasThemeButton({ onPress, style }: Props) {
           </SvgLinearGradient>
         </Defs>
 
-        {/* Fondo de la intersección (lente) — degradado del tema +15% brillo */}
+        {/* Medialunas: relleno suave del mismo degradado para que no se vean
+            más oscuras que el fondo por contraste con la lente brillante */}
+        {CIRCLES.map((c, i) => (
+          <Circle
+            key={`f${i}`}
+            cx={c.cx} cy={c.cy} r={c.r}
+            fill="url(#vesicaLensGrad)"
+            fillOpacity={0.35}
+          />
+        ))}
+
+        {/* Fondo de la intersección (lente) — degradado del tema aclarado */}
         <Path d={LENS_PATH} fill="url(#vesicaLensGrad)" />
 
         {CIRCLES.map((c, i) => (
