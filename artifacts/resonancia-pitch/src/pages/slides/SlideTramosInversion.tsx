@@ -1,14 +1,14 @@
 export default function SlideTramosInversion() {
   // Modelo acelerado: tasa de equity crece con el tamaño del cheque
-  // Anchor máximo: $23,504M → 10%
+  // Anchor máximo: $23,504M → 25%
   const VAL_M12 = 1044; // millones CLP · 5.000 subs × $4.350 × 12 × 4×
 
   const tramos = [
-    { inv: 5,      equity: 1.2  },
-    { inv: 10,     equity: 3.0  },
-    { inv: 15,     equity: 5.0  },
-    { inv: 20,     equity: 7.0  },
-    { inv: 23.504, equity: 10.0 },
+    { inv: 5,      equity: 2.4  },
+    { inv: 10,     equity: 6.0  },
+    { inv: 15,     equity: 10.0 },
+    { inv: 20,     equity: 14.0 },
+    { inv: 23.504, equity: 25.0 },
   ].map(({ inv, equity }) => {
     const postMoney = inv / (equity / 100);
     const stakeM12 = (equity / 100) * VAL_M12;
@@ -57,7 +57,7 @@ export default function SlideTramosInversion() {
           </span>
         </div>
         <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.40)", marginTop: "0.7vh" }}>
-          Modelo de prima por escala · cada tramo mayor recibe más equity por peso invertido · ancla máxima $23,50M = 10%
+          Modelo de prima por escala · cada tramo mayor recibe más equity por peso invertido · ancla máxima $23,50M = 25%
         </div>
       </div>
 
