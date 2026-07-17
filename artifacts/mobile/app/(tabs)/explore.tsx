@@ -68,6 +68,14 @@ const CAT_CARD_GAP = 16;
 const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.625);
 const HERO_HEIGHT = 320;
 
+const DURATION_SLOTS = [
+  { label: "5 min",  min: 0,  max: 5 },
+  { label: "10 min", min: 6,  max: 10 },
+  { label: "20 min", min: 11, max: 25 },
+  { label: "30 min", min: 26, max: 35 },
+  { label: "60 min", min: 36, max: Infinity },
+] as const;
+
 const BREATHING_EXERCISES = [
   { id: "478", name: "4-7-8", subtitle: "Calma y sueño" },
   { id: "box", name: "Cuadrada", subtitle: "Foco y equilibrio" },
@@ -490,8 +498,29 @@ export default function ExploreScreen() {
           </View>
         )}
 
+        {/* ── ¿Cuánto tiempo tienes hoy? ── */}
+        <View style={[styles.section, { marginBottom: 36, marginTop: featuredHoy ? 44 : 10 }]}>
+          <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>¿Cuánto tiempo tienes hoy?</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ marginHorizontal: -H_PAD }}
+            contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 10 }}
+          >
+            {DURATION_SLOTS.map((slot) => (
+              <Pressable
+                key={slot.label}
+                onPress={() => router.push(`/busqueda?tiempo=${encodeURIComponent(slot.label)}` as never)}
+                style={({ pressed }) => [styles.durPill, { opacity: pressed ? 0.75 : 1 }]}
+              >
+                <Text style={styles.durPillText}>{slot.label}</Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
+
         {/* ── Chakras ── */}
-        <View style={{ marginTop: featuredHoy ? 44 : 10 }}>
+        <View style={{ marginTop: 0 }}>
           <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 24 }]}>Según cada Chakra</Text>
           <ScrollView
             horizontal
@@ -672,6 +701,22 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 14,
     color: "rgba(244,218,213,0.75)",
+  },
+
+  // Pills de duración → /busqueda
+  durPill: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 999,
+    backgroundColor: "rgba(247,203,107,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(247,203,107,0.30)",
+  },
+  durPillText: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#F7CB6B",
   },
 
   // Ejercicios de respiración
