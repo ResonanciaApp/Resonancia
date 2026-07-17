@@ -119,9 +119,9 @@ function FilterSheet({
       <View style={StyleSheet.absoluteFill}>
         <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]} onPress={onClose} />
         <View style={sheetStyles.container} pointerEvents="box-none">
-          {/* Degradado del tema como fondo del sheet (de abajo hacia arriba = stops invertidos) */}
+          {/* Degradado del tema como fondo del sheet: mismo orden que Inicio */}
           <LinearGradient
-            colors={[...gradient].reverse() as [string, string, ...string[]]}
+            colors={gradient as unknown as [string, string, ...string[]]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={[sheetStyles.sheet, {
