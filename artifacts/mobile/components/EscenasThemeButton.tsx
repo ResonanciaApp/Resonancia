@@ -49,14 +49,21 @@ export function EscenasThemeButton({ onPress, style }: Props) {
   const [g0, g1] = theme.gradient;
   const top = brighten(g0);
   const bottom = brighten(g1);
+  // Lente (fondo interno): 40% más de brillo extra
+  const lensTop = brighten(g0, 1.5 * 1.4);
+  const lensBottom = brighten(g1, 1.5 * 1.4);
 
   return (
     <Pressable onPress={onPress} hitSlop={10} style={style}>
       <Svg width={S} height={S} viewBox={`0 0 ${VB} ${VB}`}>
         <Defs>
-          <SvgLinearGradient id="vesicaLensGrad" x1="0" y1="0" x2="0" y2="1">
+          <SvgLinearGradient id="vesicaCrescentGrad" x1="0" y1="0" x2="0" y2="1">
             <Stop offset="0" stopColor={top} />
             <Stop offset="1" stopColor={bottom} />
+          </SvgLinearGradient>
+          <SvgLinearGradient id="vesicaLensGrad" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor={lensTop} />
+            <Stop offset="1" stopColor={lensBottom} />
           </SvgLinearGradient>
         </Defs>
 
@@ -66,7 +73,7 @@ export function EscenasThemeButton({ onPress, style }: Props) {
           <Circle
             key={`f${i}`}
             cx={c.cx} cy={c.cy} r={c.r}
-            fill="url(#vesicaLensGrad)"
+            fill="url(#vesicaCrescentGrad)"
             fillOpacity={0.35}
           />
         ))}
