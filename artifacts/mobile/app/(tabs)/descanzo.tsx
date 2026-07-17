@@ -1074,7 +1074,7 @@ const styles = StyleSheet.create({
     zIndex: 20,
     alignItems: "center",
     justifyContent: "center",
-    paddingBottom: 14,
+    paddingBottom: 4,
     backgroundColor: "#0D0512",
   },
   stickyHeaderTitle: {
@@ -1089,7 +1089,7 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 19,
     backgroundColor: "#0D0512",
-    paddingTop: 8,
+    paddingTop: 6,
     paddingBottom: 6,
   },
   stickyTabsBorder: {
