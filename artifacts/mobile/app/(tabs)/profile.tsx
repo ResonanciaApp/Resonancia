@@ -795,29 +795,6 @@ export default function ProfileScreen() {
             </View>
           ) : null}
 
-          {/* Seguidores / Siguiendo */}
-          <View style={styles.followCountsRow}>
-            <Pressable
-              onPress={() => router.push("/seguidores" as never)}
-              style={styles.followCountItem}
-            >
-              <Text style={[styles.followCountNum, { color: colors.foreground }]}>
-                {followCounts?.followersCount ?? 0}
-              </Text>
-              <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>seguidores</Text>
-            </Pressable>
-            <View style={[styles.followCountDivider, { backgroundColor: "rgba(255,255,255,0.1)" }]} />
-            <Pressable
-              onPress={() => router.push("/siguiendo" as never)}
-              style={styles.followCountItem}
-            >
-              <Text style={[styles.followCountNum, { color: colors.foreground }]}>
-                {followCounts?.followingCount ?? 0}
-              </Text>
-              <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>siguiendo</Text>
-            </Pressable>
-          </View>
-
           {/* Editar Detalles button */}
           <Pressable
             onPress={openEdit}
@@ -846,7 +823,7 @@ export default function ProfileScreen() {
           ];
           const MAX_LINES = 3;
           return (
-            <View style={{ marginTop: 20 }}>
+            <View style={{ marginTop: 0 }}>
               <Text style={[styles.muroSectionTitle, { color: colors.foreground }]}>Mis reflexiones</Text>
               {MURO_PLACEHOLDERS.map((item, idx) => {
                 const session = getSessionById(item.sessionId);
