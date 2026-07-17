@@ -6178,8 +6178,7 @@ export default function GeometrixScreen() {
       {showLanding && (
         <View style={styles.landingOverlay}>
           <LinearGradient
-            colors={["#1B1430", "#1B1738", "#181D3D", "#1A213D"]}
-            locations={[0, 0.33, 0.66, 1]}
+            colors={canvasBgColors as [string, string, ...string[]]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFill}
