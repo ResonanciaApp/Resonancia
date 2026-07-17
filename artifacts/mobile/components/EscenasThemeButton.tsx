@@ -3,7 +3,7 @@ import { Animated, Pressable, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 
 const CONTAINER = 32;
-const GLYPH_SIZE = 22; // tamaño del SVG dentro del círculo
+const GLYPH_SIZE = 32; // tamaño del SVG dentro del círculo
 
 // Semilla de la Vida — viewBox 0 0 100 100
 const SEMILLA_XML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
@@ -55,15 +55,6 @@ export function EscenasThemeButton({ onPress, style }: Props) {
   return (
     <Pressable onPress={handlePress} hitSlop={8} style={style}>
       <View style={{ width: CONTAINER, height: CONTAINER, alignItems: "center", justifyContent: "center" }}>
-
-        {/* Fondo */}
-        <View style={{
-          position: "absolute",
-          width: CONTAINER,
-          height: CONTAINER,
-          borderRadius: CONTAINER / 2,
-          backgroundColor: "rgba(255,255,255,0.07)",
-        }} />
 
         {/* Ondas expansivas — basadas en el tamaño del glifo */}
         {scales.map((scale, i) => (
