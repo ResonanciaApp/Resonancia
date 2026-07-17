@@ -571,7 +571,6 @@ export default function ProfileScreen() {
   const [bgFrom, setBgFrom] = useState<readonly string[]>(defaultBg);
   const [bgTo, setBgTo] = useState<readonly string[]>(defaultBg);
   const crossFadeAnim = useRef(new Animated.Value(1)).current;
-  const giftScaleAnim = useRef(new Animated.Value(1)).current;
   const prevBgRef = useRef<readonly string[]>(defaultBg);
   const bgMountedRef = useRef(false);
   // Fade-in del glifo al montar (carga async desde AsyncStorage → aparición suave).
@@ -685,26 +684,8 @@ export default function ProfileScreen() {
             <Feather name="settings" size={25} color="#FBFBFB" />
           </Pressable>
           <Text style={styles.stickyTitle}>Perfil</Text>
-          <Pressable
-            hitSlop={8}
-            onPressIn={() =>
-              Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
-            }
-            onPressOut={() => {
-              Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
-              setTimeout(() => setShowInvitar(true), 500);
-            }}
-          >
-            <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-              <View style={{ width: 35, height: 35, borderRadius: 17.5, overflow: "hidden" }}>
-                <Image
-                  source={require("@/assets/images/icons/regalo4.png")}
-                  style={styles.giftIcon}
-                  contentFit="contain"
-                />
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.10)" }]} />
-              </View>
-            </Animated.View>
+          <Pressable hitSlop={8} onPress={openEdit}>
+            <Feather name="edit-2" size={22} color="#FBFBFB" />
           </Pressable>
         </View>
 
@@ -795,14 +776,6 @@ export default function ProfileScreen() {
             </View>
           ) : null}
 
-          {/* Editar Detalles button */}
-          <Pressable
-            onPress={openEdit}
-            style={({ pressed }) => [styles.editBtn, { opacity: pressed ? 0.75 : 1 }]}
-          >
-            <Feather name="edit-2" size={13} color={colors.primary} />
-            <Text style={[styles.editBtnText, { color: colors.primary }]}>Editar Detalles</Text>
-          </Pressable>
         </View>
 
         {/* ── Muro de reflexiones ── */}
@@ -823,7 +796,7 @@ export default function ProfileScreen() {
           ];
           const MAX_LINES = 3;
           return (
-            <View style={{ marginTop: 0 }}>
+            <View style={{ marginTop: -25 }}>
               <Text style={[styles.muroSectionTitle, { color: colors.foreground }]}>Mis reflexiones</Text>
               {MURO_PLACEHOLDERS.map((item, idx) => {
                 const session = getSessionById(item.sessionId);
