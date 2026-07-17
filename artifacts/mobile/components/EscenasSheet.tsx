@@ -467,7 +467,7 @@ export function EscenasSheet() {
           </View>
 
           {/* ── Escenas animadas: admin curadas + creaciones del usuario + CTA ── */}
-          <View style={{ marginTop: 15 }}>
+          <View style={{ marginTop: 25 }}>
             <View style={[styles.sceneTitleRow, { marginTop: 10 }]}>
               <MaterialCommunityIcons name="star-four-points-outline" size={16} color="rgba(255,255,255,0.8)" />
               <Text style={styles.sceneTitle}>Escenas animadas</Text>
