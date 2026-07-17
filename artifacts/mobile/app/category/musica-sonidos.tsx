@@ -481,6 +481,7 @@ export default function MusicaSonidosScreen() {
 
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
+          <Image source={require("@/assets/images/cat-musica.png")} style={{ width: 26, height: 26 }} contentFit="contain" />
           <Text style={styles.profileTitle}>Música</Text>
         </View>
 
@@ -528,7 +529,6 @@ export default function MusicaSonidosScreen() {
             <BackPill onPress={() => router.back()} size={31} />
           </View>
           <View style={styles.headerTitleCol}>
-            <Image source={require("@/assets/images/cat-musica.png")} style={{ width: 26, height: 26, marginBottom: 3 }} contentFit="contain" />
             <Text style={styles.headerTitle}>Música</Text>
           </View>
           <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/musica-info" as never)}>

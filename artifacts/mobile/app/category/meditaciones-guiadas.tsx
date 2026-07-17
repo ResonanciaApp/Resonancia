@@ -478,6 +478,7 @@ export default function MeditacionesGuiadasScreen() {
 
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
+          <Image source={require("@/assets/images/cat-meditaciones.png")} style={{ width: 22, height: 22 }} contentFit="contain" />
           <Text style={styles.profileTitle}>Meditaciones</Text>
         </View>
 
@@ -525,7 +526,6 @@ export default function MeditacionesGuiadasScreen() {
             <BackPill onPress={() => router.back()} size={31} />
           </View>
           <View style={styles.headerTitleCol}>
-            <Image source={require("@/assets/images/cat-meditaciones.png")} style={{ width: 22, height: 22, marginBottom: 3 }} contentFit="contain" />
             <Text style={styles.headerTitle}>Meditaciones</Text>
           </View>
           <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/meditaciones-info" as never)}>

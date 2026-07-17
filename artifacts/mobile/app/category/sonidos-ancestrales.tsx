@@ -608,6 +608,7 @@ export default function SonidosAncestalesScreen() {
 
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
+          <Image source={require("@/assets/images/cat-sesiones.png")} style={{ width: 26, height: 26 }} contentFit="contain" />
           <Text style={styles.profileTitle}>Sesiones</Text>
         </View>
 
@@ -633,7 +634,6 @@ export default function SonidosAncestalesScreen() {
             <BackPill onPress={() => router.back()} size={31} />
           </View>
           <View style={styles.headerTitleCol}>
-            <Image source={require("@/assets/images/cat-sesiones.png")} style={{ width: 26, height: 26, marginBottom: 3 }} contentFit="contain" />
             <Text style={styles.headerTitle}>Sesiones</Text>
           </View>
           <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
