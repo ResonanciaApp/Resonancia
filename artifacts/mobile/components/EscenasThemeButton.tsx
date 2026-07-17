@@ -18,8 +18,6 @@ const WHITE = "#FFFFFF";
 
 // Animación "Cruce Zen": los círculos intercambian de lado atravesándose (0,8 s).
 const ANIM_MS = 800;
-// Retraso de apertura del panel de Escenas
-const OPEN_DELAY_MS = 400;
 
 function easeInOutCubic(t: number): number {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -77,16 +75,10 @@ export function EscenasThemeButton({ onPress, style }: Props) {
   }, []);
 
   const handlePress = useCallback(() => {
-    // El panel de Escenas se abre con un pequeño retraso para que se aprecie el cruce
     if (openTimerRef.current !== null) clearTimeout(openTimerRef.current);
-    openTimerRef.current = setTimeout(() => {
-      openTimerRef.current = null;
-      onPress();
-    }, OPEN_DELAY_MS);
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-    // Avance por cuadro fijo (no reloj de pared): si el hilo JS se bloquea
-    // (p. ej. al montar el panel de Escenas), la animación se reanuda donde
-    // quedó y completa el ciclo entero en vez de saltar al final.
+    // Avance por cuadro fijo (no reloj de pared): si el hilo JS se bloquea,
+    // la animación se reanuda donde quedó y completa el ciclo entero.
     const STEP = 16.7 / ANIM_MS;
     let p = 0;
     const tick = () => {
@@ -96,6 +88,12 @@ export function EscenasThemeButton({ onPress, style }: Props) {
         rafRef.current = requestAnimationFrame(tick);
       } else {
         rafRef.current = null;
+        // El panel de Escenas se abre recién al COMPLETARSE el ciclo, así la
+        // apertura (que bloquea el hilo JS un instante) nunca corta el cruce.
+        openTimerRef.current = setTimeout(() => {
+          openTimerRef.current = null;
+          onPress();
+        }, 0);
       }
     };
     setT(0);
