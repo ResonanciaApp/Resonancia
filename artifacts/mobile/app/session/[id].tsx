@@ -388,78 +388,93 @@ export default function SessionDetailScreen() {
             </Pressable>
           )}
 
-          {/* ── Botón Escuchar / Split Reiniciar+Continuar ───────────── */}
+          {/* ── Botones Escuchar / Compartir ─────────────────────────── */}
           {hasProgress ? (
-            <View style={[styles.splitBtnRow, { marginTop: 18, marginBottom: 26 }]}>
-              {/* Reiniciar */}
-              <Pressable
-                onPress={handlePlayFromStart}
-                style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
-              >
-                {sceneTheme.id === "tibet"
-                  ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
-                  : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
-                }
-                <Feather name="rotate-ccw" size={16} color="#0d0c26" />
-                <Text style={[styles.playBtnText, { color: "#0d0c26" }]}>Reiniciar</Text>
-              </Pressable>
+            <>
+              <View style={[styles.splitBtnRow, { marginTop: 18, marginBottom: 12 }]}>
+                {/* Reiniciar */}
+                <Pressable
+                  onPress={handlePlayFromStart}
+                  style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
+                >
+                  {sceneTheme.id === "tibet"
+                    ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
+                    : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+                  }
+                  <Feather name="rotate-ccw" size={16} color="#0d0c26" />
+                  <Text style={[styles.playBtnText, { color: "#0d0c26" }]}>Reiniciar</Text>
+                </Pressable>
 
-              <View style={styles.splitDivider} />
+                <View style={styles.splitDivider} />
 
-              {/* Continuar */}
-              <Pressable
-                onPress={handleContinue}
-                style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
-              >
-                {sceneTheme.id === "tibet"
-                  ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
-                  : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
-                }
-                <Svg width={16} height={16} viewBox="0 0 48 48">
-                  <Path
-                    d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
-                    fill="#0d0c26"
-                  />
-                </Svg>
-                <Text style={[styles.playBtnText, { color: "#0d0c26" }]}>Continuar</Text>
-              </Pressable>
-            </View>
-          ) : (
-            <Pressable
-              onPress={handlePlay}
-              style={({ pressed }) => [
-                styles.playBtn,
-                { overflow: "hidden", opacity: pressed ? 0.88 : 1, marginTop: 24, marginBottom: 26 },
-              ]}
-            >
-              {sceneTheme.id === "tibet"
-                ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
-                : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
-              }
-              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                <Svg width={18} height={18} viewBox="0 0 48 48">
-                  <Path
-                    d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
-                    fill="#0d0c26"
-                  />
-                </Svg>
-                <Text style={[styles.playBtnText, { color: "#0d0c26" }]}>
-                  {isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora"}
-                </Text>
+                {/* Continuar */}
+                <Pressable
+                  onPress={handleContinue}
+                  style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
+                >
+                  {sceneTheme.id === "tibet"
+                    ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
+                    : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+                  }
+                  <Svg width={16} height={16} viewBox="0 0 48 48">
+                    <Path
+                      d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
+                      fill="#0d0c26"
+                    />
+                  </Svg>
+                  <Text style={[styles.playBtnText, { color: "#0d0c26" }]}>Continuar</Text>
+                </Pressable>
               </View>
-            </Pressable>
-          )}
 
-          {/* ── Botón Compartir ──────────────────────────────────────────── */}
-          <Pressable
-            onPress={handleShare}
-            style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, marginTop: -11, marginBottom: 14 })}
-          >
-            <View style={[styles.shareBtnInner, { borderColor: accentColor }]}>
-              <Text style={[styles.shareBtnText, { color: accentColor }]}>Compartir</Text>
-              <Feather name="send" size={15} color={accentColor} />
+              {/* Compartir — debajo del split */}
+              <Pressable
+                onPress={handleShare}
+                style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, marginBottom: 26 })}
+              >
+                <View style={[styles.shareBtnInner, { borderColor: accentColor }]}>
+                  <Text style={[styles.shareBtnText, { color: accentColor }]}>Compartir</Text>
+                  <Feather name="send" size={15} color={accentColor} />
+                </View>
+              </Pressable>
+            </>
+          ) : (
+            /* Escuchar ahora + Compartir lado a lado */
+            <View style={{ flexDirection: "row", gap: 10, marginTop: 24, marginBottom: 26 }}>
+              <Pressable
+                onPress={handlePlay}
+                style={({ pressed }) => [
+                  styles.playBtn,
+                  { flex: 1, overflow: "hidden", opacity: pressed ? 0.88 : 1 },
+                ]}
+              >
+                {sceneTheme.id === "tibet"
+                  ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
+                  : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+                }
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                  <Svg width={18} height={18} viewBox="0 0 48 48">
+                    <Path
+                      d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
+                      fill="#0d0c26"
+                    />
+                  </Svg>
+                  <Text style={[styles.playBtnText, { color: "#0d0c26" }]}>
+                    {isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora"}
+                  </Text>
+                </View>
+              </Pressable>
+
+              <Pressable
+                onPress={handleShare}
+                style={({ pressed }) => ({ flex: 1, opacity: pressed ? 0.75 : 1 })}
+              >
+                <View style={[styles.shareBtnInner, { borderColor: accentColor, flex: 1 }]}>
+                  <Text style={[styles.shareBtnText, { color: accentColor }]}>Compartir</Text>
+                  <Feather name="send" size={15} color={accentColor} />
+                </View>
+              </Pressable>
             </View>
-          </Pressable>
+          )}
 
           {/* Duration label + rating */}
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 5, marginBottom: 5 }}>
