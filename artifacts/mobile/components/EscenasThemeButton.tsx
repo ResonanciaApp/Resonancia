@@ -6,8 +6,8 @@ import Svg, { Circle } from "react-native-svg";
 // dos círculos cx=38/62, cy=50, r=24 en viewBox 0 0 100 100.
 const S = 45; // display size
 const VB = 100;
-// Trazo de 3 px en pantalla → unidades de viewBox
-const STROKE_W = 3 * (VB / S);
+// Trazo de 2 px en pantalla → unidades de viewBox
+const STROKE_W = 2 * (VB / S);
 
 const CIRCLES = [
   { cx: 38, cy: 50, r: 24 },
