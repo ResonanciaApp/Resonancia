@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useAuth } from "@clerk/react";
 import { GripVertical, Eye, EyeOff, Loader2, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -12,6 +13,7 @@ interface Section {
 }
 
 export default function ExplorarPage() {
+  const { getToken } = useAuth();
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -24,7 +26,11 @@ export default function ExplorarPage() {
   async function load() {
     setLoading(true);
     try {
-      const res = await fetch("/api/admin/explore-sections", { credentials: "include" });
+      const token = await getToken();
+      const res = await fetch("/api/admin/explore-sections", {
+        credentials: "include",
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (!res.ok) throw new Error("Error al cargar");
       const data = await res.json();
       setSections(data.sections);
@@ -35,7 +41,7 @@ export default function ExplorarPage() {
     }
   }
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function toggleVisible(id: number) {
     setSections((prev) =>
@@ -69,6 +75,7 @@ export default function ExplorarPage() {
   async function save() {
     setSaving(true);
     try {
+      const token = await getToken();
       const payload = sections.map((s, i) => ({
         id: s.id,
         sortOrder: i,
@@ -77,7 +84,7 @@ export default function ExplorarPage() {
       const res = await fetch("/api/admin/explore-sections", {
         method: "PATCH",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ sections: payload }),
       });
       if (!res.ok) throw new Error("Error al guardar");
