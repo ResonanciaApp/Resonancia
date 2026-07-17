@@ -1,8 +1,8 @@
 import { Feather } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { Image as ExpoImage } from "expo-image";
 import React from "react";
 import {
+  Dimensions,
   Platform,
   Pressable,
   ScrollView,
@@ -14,9 +14,8 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { PremiumBadge } from "@/components/PremiumBadge";
+import { SessionCard } from "@/components/SessionCard";
 import { SacredGlyph } from "@/components/SacredGlyph";
-import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
@@ -24,15 +23,17 @@ import { chakraMatchesTag, getChakraById } from "@/data/chakras";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 
+const { width: W } = Dimensions.get("window");
 const H_PAD = 20;
 const GLYPH_CARD = 170;
 const GLYPH_SIZE = 120;
+const CARD_W = (W - H_PAD * 2 - 14) / 2;
 
 export default function ChakraScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
-  const { playSession } = usePlayer();
+  const { playSession, currentSession } = usePlayer();
   const { version: catalogVersion } = useCatalog();
   const { id } = useLocalSearchParams<{ id: string }>();
 
@@ -46,6 +47,14 @@ export default function ChakraScreen() {
     return SESSIONS.filter((s) => s.themeTag?.some((t) => chakraMatchesTag(chakra, t)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chakra, catalogVersion]);
+
+  const handleSessionPress = (s: Session) => {
+    const locked = !!s.isPremium && !isPremium;
+    if (locked) { router.push("/membresia" as never); return; }
+    if (s.skipMiniPlayer) { playSession(s); return; }
+    if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
+    router.push(`/session/${s.id}` as never);
+  };
 
   if (!chakra) {
     return (
@@ -67,14 +76,6 @@ export default function ChakraScreen() {
       </View>
     );
   }
-
-  const handleSessionPress = (s: Session) => {
-    const locked = !!s.isPremium && !isPremium;
-    if (locked) { router.push("/membresia" as never); return; }
-    if (s.skipMiniPlayer) { playSession(s); return; }
-    if (s.skipDetail) { playSession(s); router.push("/player" as never); return; }
-    router.push(`/session/${s.id}` as never);
-  };
 
   return (
     <View style={[styles.root, { backgroundColor: chakra.gradient[2] }]}>
@@ -106,48 +107,30 @@ export default function ChakraScreen() {
         </View>
 
         {/* Sesiones */}
-        <View style={[styles.section, { paddingHorizontal: H_PAD }]}>
+        <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Sesiones</Text>
-
-          {sessions.length === 0 ? (
-            <Text style={[styles.empty, { color: colors.mutedForeground }]}>
-              Todavía no hay sesiones para este chakra.
-            </Text>
-          ) : (
-            sessions.map((session) => {
-              const locked = !!session.isPremium && !isPremium;
-              return (
-                <Pressable
-                  key={session.id}
-                  onPress={() => handleSessionPress(session)}
-                  style={({ pressed }) => [
-                    styles.trackRow,
-                    { opacity: pressed ? 0.8 : 1 },
-                  ]}
-                >
-                  <View style={styles.trackImgWrap}>
-                    <ExpoImage
-                      source={session.image as any}
-                      style={styles.trackImg}
-                      contentFit="cover"
-                      placeholder={BLUR_PLACEHOLDER}
-                      transition={IMAGE_TRANSITION}
-                    />
-                    <PremiumBadge session={session} size={16} top={4} right={4} />
-                  </View>
-                  <View style={styles.trackMeta}>
-                    <Text style={[styles.trackTitle, { color: colors.foreground }]} numberOfLines={1}>
-                      {session.title}
-                    </Text>
-                    <Text style={[styles.trackSub, { color: colors.mutedForeground }]} numberOfLines={1}>
-                      {session.categoryLabel} · {session.durationLabel}
-                    </Text>
-                  </View>
-                </Pressable>
-              );
-            })
-          )}
         </View>
+
+        {sessions.length === 0 ? (
+          <Text style={[styles.empty, { color: colors.mutedForeground, paddingHorizontal: H_PAD }]}>
+            Todavía no hay sesiones para este chakra.
+          </Text>
+        ) : (
+          <View style={styles.sessionGrid}>
+            {sessions.map((session) => (
+              <SessionCard
+                key={session.id}
+                session={session}
+                width={CARD_W}
+                style={{ marginRight: 0 }}
+                showDuration={false}
+                showAuthorAvatar={false}
+                playing={currentSession?.id === session.id}
+                overridePress={() => handleSessionPress(session)}
+              />
+            ))}
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -179,22 +162,19 @@ const styles = StyleSheet.create({
     marginTop: 14,
   },
 
-  section: {},
-  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.5, marginBottom: 12 },
+  sectionHeader: { paddingHorizontal: H_PAD, marginBottom: 12 },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.5 },
   empty: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21 },
 
-  trackRow: {
+  sessionGrid: {
     flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 14,
-    padding: 10,
-    marginBottom: 10,
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    paddingHorizontal: H_PAD,
+    rowGap: 35,
+    marginTop: -17,
+    marginBottom: 6,
   },
-  trackImgWrap: { width: 81, height: 81, borderRadius: 14, overflow: "hidden", marginRight: 12 },
-  trackImg: { width: 81, height: 81 },
-  trackMeta: { flex: 1 },
-  trackTitle: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700" },
-  trackSub: { fontFamily: "Manrope", fontSize: 12, marginTop: 3 },
 
   notFound: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, gap: 10 },
   notFoundTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
