@@ -2,7 +2,7 @@ import React, { useCallback, useRef } from "react";
 import { Animated, Pressable, View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 
-const SVG_SIZE = 80; // tamaño visual total (los anillos pueden usar todo el espacio)
+const SVG_SIZE = 65; // tamaño visual total (los anillos pueden usar todo el espacio)
 
 // Radios de los 5 anillos en viewBox 0–100 (centro 50,50)
 // 3 visibles en reposo + 2 muy tenues
