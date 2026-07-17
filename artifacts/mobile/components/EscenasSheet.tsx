@@ -460,7 +460,7 @@ export function EscenasSheet() {
 
           {/* Intención diaria (reemplaza la escena animada en Inicio) */}
           <View style={[styles.controlRow, {
-            backgroundColor: "rgba(249,249,249,0.3)",
+            backgroundColor: "rgba(249,249,249,0.075)",
             borderRadius: 14,
             paddingHorizontal: 12,
           }]}>
