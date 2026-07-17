@@ -695,7 +695,7 @@ export default function DescansoScreen() {
 
       {/* ── Tabs sticky (se pegan debajo del título) ── */}
       {tabsMounted && (
-        <Animated.View style={[styles.stickyTabs, { top: headerH + 15, backgroundColor: bgGradient[0], opacity: stickyAnim }]}>
+        <Animated.View style={[styles.stickyTabs, { top: headerH, backgroundColor: bgGradient[0], opacity: stickyAnim }]}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
