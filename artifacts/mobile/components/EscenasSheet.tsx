@@ -408,9 +408,11 @@ export function EscenasSheet() {
 
           {/* ── Color picker: 3 rectángulos horizontales ── */}
           <View style={{ marginBottom: 14 }}>
-            <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "500", color: "#F4F4F4", marginBottom: 10 }}>
-              Color
-            </Text>
+            {/* Título igual que "Activar intención diaria": ícono + label en fila */}
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 10 }}>
+              <MaterialCommunityIcons name="palette-outline" size={17} color="#F4F4F4" style={styles.controlIcon} />
+              <Text style={styles.controlLabel}>Color</Text>
+            </View>
             <View style={{ flexDirection: "row", gap: 8 }}>
               {AMBIENT_SCENES.filter((s) => !!SCENE_THEMES[s.id as keyof typeof SCENE_THEMES]).map((scene) => {
                 const themeData = SCENE_THEMES[scene.id as keyof typeof SCENE_THEMES];
@@ -457,6 +459,7 @@ export function EscenasSheet() {
             backgroundColor: "rgba(249,249,249,0.075)",
             borderRadius: 14,
             paddingHorizontal: 12,
+            marginTop: 20,
           }]}>
             <MaterialCommunityIcons name="feather" size={17} color="#F4F4F4" style={styles.controlIcon} />
             <Text style={styles.controlLabel}>Activar intención diaria</Text>
@@ -467,8 +470,6 @@ export function EscenasSheet() {
               thumbColor="#f9f9f9"
             />
           </View>
-
-          <View style={styles.divider} />
 
           {/* ── Escenas animadas: admin curadas + creaciones del usuario + CTA ── */}
           <View style={{ marginTop: 0 }}>
