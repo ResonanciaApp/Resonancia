@@ -1,24 +1,21 @@
 import React, { useCallback, useRef } from "react";
 import { Animated, Pressable, View } from "react-native";
-import { SvgXml } from "react-native-svg";
+import Svg, { Circle } from "react-native-svg";
 
-const CONTAINER = 32;
-const GLYPH_SIZE = 32; // tamaño del SVG dentro del círculo
+const SVG_SIZE = 80; // tamaño visual total (los anillos pueden usar todo el espacio)
 
-// Semilla de la Vida — viewBox 0 0 100 100
-const SEMILLA_XML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <g transform="translate(0,0) scale(1)" stroke="#FFFFFF" fill="none"
-     stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="38.7417" cy="56.5"  r="13"/>
-    <circle cx="50"      cy="63"    r="13"/>
-    <circle cx="38.7417" cy="43.5"  r="13"/>
-    <circle cx="50"      cy="50"    r="13"/>
-    <circle cx="61.2583" cy="56.5"  r="13"/>
-    <circle cx="50"      cy="37"    r="13"/>
-    <circle cx="61.2583" cy="43.5"  r="13"/>
-    <circle cx="50"      cy="50"    r="39"/>
-  </g>
-</svg>`;
+// Radios de los 5 anillos en viewBox 0–100 (centro 50,50)
+// 3 visibles en reposo + 2 muy tenues
+const RINGS = [
+  { r: 11,   sw: 1.0, restOpacity: 0.18 }, // dim 1 (oculto)
+  { r: 19.5, sw: 1.0, restOpacity: 0.60 }, // visible 1
+  { r: 28,   sw: 1.0, restOpacity: 0.70 }, // visible 2
+  { r: 37,   sw: 0.9, restOpacity: 0.55 }, // visible 3
+  { r: 46,   sw: 0.8, restOpacity: 0.10 }, // dim 2 (oculto)
+];
+
+const GOLD = "#F7CB6B";
+const DOT_R = 5;
 
 interface Props {
   onPress: () => void;
@@ -26,54 +23,52 @@ interface Props {
 }
 
 export function EscenasThemeButton({ onPress, style }: Props) {
-  const scales  = useRef([0, 1, 2].map(() => new Animated.Value(1))).current;
-  const opacity = useRef([0, 1, 2].map(() => new Animated.Value(0))).current;
+  const ringAnims = useRef(RINGS.map((r) => new Animated.Value(r.restOpacity))).current;
 
   const handlePress = useCallback(() => {
-    scales.forEach((s) => s.setValue(1));
-    opacity.forEach((o) => o.setValue(0.5));
+    // Cada anillo: destello → vuelve a reposo
+    const animations = RINGS.map((ring, i) =>
+      Animated.sequence([
+        Animated.timing(ringAnims[i], { toValue: 1,              duration: 140, useNativeDriver: true }),
+        Animated.timing(ringAnims[i], { toValue: ring.restOpacity, duration: 380, useNativeDriver: true }),
+      ])
+    );
 
-    Animated.stagger(160, [
-      Animated.parallel([
-        Animated.timing(scales[0],  { toValue: 4.5, duration: 600, useNativeDriver: true }),
-        Animated.timing(opacity[0], { toValue: 0,   duration: 600, useNativeDriver: true }),
-      ]),
-      Animated.parallel([
-        Animated.timing(scales[1],  { toValue: 4.5, duration: 600, useNativeDriver: true }),
-        Animated.timing(opacity[1], { toValue: 0,   duration: 600, useNativeDriver: true }),
-      ]),
-      Animated.parallel([
-        Animated.timing(scales[2],  { toValue: 4.5, duration: 600, useNativeDriver: true }),
-        Animated.timing(opacity[2], { toValue: 0,   duration: 600, useNativeDriver: true }),
-      ]),
-    ]).start();
+    // Iluminación de adentro hacia afuera, escalonada 90 ms
+    Animated.stagger(90, animations).start();
 
-    const t = setTimeout(() => onPress(), 380);
+    // Abrir sheet cuando el último anillo ya se iluminó
+    const t = setTimeout(() => onPress(), 500);
     return () => clearTimeout(t);
-  }, [scales, opacity, onPress]);
+  }, [ringAnims, onPress]);
 
   return (
-    <Pressable onPress={handlePress} hitSlop={8} style={style}>
-      <View style={{ width: CONTAINER, height: CONTAINER, alignItems: "center", justifyContent: "center" }}>
+    <Pressable onPress={handlePress} hitSlop={10} style={style}>
+      <View style={{ width: SVG_SIZE, height: SVG_SIZE, alignItems: "center", justifyContent: "center" }}>
 
-        {/* Ondas expansivas — basadas en el tamaño del glifo */}
-        {scales.map((scale, i) => (
+        {/* Anillos — cada uno en su propio Animated.View para opacidad nativa */}
+        {RINGS.map((ring, i) => (
           <Animated.View
             key={i}
-            style={{
-              position: "absolute",
-              width: GLYPH_SIZE,
-              height: GLYPH_SIZE,
-              borderRadius: GLYPH_SIZE / 2,
-              backgroundColor: "rgba(255,255,255,0.4)",
-              opacity: opacity[i],
-              transform: [{ scale }],
-            }}
-          />
+            style={{ position: "absolute", opacity: ringAnims[i] }}
+          >
+            <Svg width={SVG_SIZE} height={SVG_SIZE} viewBox="0 0 100 100">
+              <Circle
+                cx="50" cy="50"
+                r={ring.r}
+                stroke={GOLD}
+                strokeWidth={ring.sw}
+                fill="none"
+              />
+            </Svg>
+          </Animated.View>
         ))}
 
-        {/* Semilla de la Vida */}
-        <SvgXml xml={SEMILLA_XML} width={GLYPH_SIZE} height={GLYPH_SIZE} />
+        {/* Punto central dorado */}
+        <Svg width={SVG_SIZE} height={SVG_SIZE} viewBox="0 0 100 100" style={{ position: "absolute" }}>
+          <Circle cx="50" cy="50" r={DOT_R} fill={GOLD} />
+        </Svg>
+
       </View>
     </Pressable>
   );
