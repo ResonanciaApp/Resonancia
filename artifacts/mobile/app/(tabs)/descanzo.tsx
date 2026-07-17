@@ -1089,7 +1089,7 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 19,
     backgroundColor: "#0D0512",
-    paddingTop: 18,
+    paddingTop: 24,
     paddingBottom: 0,
   },
   stickyTabsBorder: {
