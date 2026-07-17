@@ -493,7 +493,7 @@ export default function DescansoScreen() {
                   sessions={recentInDescanso}
                   isPremium={isPremium}
                   onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
-                  style={{ marginTop: 24, marginBottom: 0 }}
+                  style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={20}
                 />
@@ -507,7 +507,7 @@ export default function DescansoScreen() {
                   sessions={favoritesInDescanso}
                   isPremium={isPremium}
                   onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
-                  style={{ marginTop: 24, marginBottom: 0 }}
+                  style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={20}
                 />
@@ -521,7 +521,7 @@ export default function DescansoScreen() {
                   sessions={historiasForTodos.slice(0, 5)}
                   isPremium={isPremium}
                   onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
-                  style={{ marginTop: 24, marginBottom: 0 }}
+                  style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={20}
                   onViewAll={historiasForTodos.length > 5 ? () => setActiveTab("historias") : undefined}
@@ -536,7 +536,7 @@ export default function DescansoScreen() {
                   sessions={asmrForTodos.slice(0, 5)}
                   isPremium={isPremium}
                   onPress={(s) => { if (currentSession?.id !== s.id) playSession(s); router.push("/player" as never); }}
-                  style={{ marginTop: 24, marginBottom: 0 }}
+                  style={{ marginTop: 24, marginBottom: 0, paddingHorizontal: H_PAD }}
                   cardWidth={RECENT_CARD_W}
                   titleSize={20}
                   onViewAll={asmrForTodos.length > 5 ? () => setActiveTab("asmr") : undefined}
