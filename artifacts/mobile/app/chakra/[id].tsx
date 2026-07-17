@@ -106,11 +106,6 @@ export default function ChakraScreen() {
           </Text>
         </View>
 
-        {/* Sesiones */}
-        <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Sesiones</Text>
-        </View>
-
         {sessions.length === 0 ? (
           <Text style={[styles.empty, { color: colors.mutedForeground, paddingHorizontal: H_PAD }]}>
             Todavía no hay sesiones para este chakra.
