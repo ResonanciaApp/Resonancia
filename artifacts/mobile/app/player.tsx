@@ -121,6 +121,19 @@ export default function PlayerScreen() {
   const progressShared = useSharedValue(0);
   const progressBarWidthShared = useSharedValue(0);
   const terminarOpacity = useRef(new RNAnimated.Value(0)).current;
+  const uiOpacity = useRef(new RNAnimated.Value(1)).current;
+  const [uiShown, setUiShown] = useState(true);
+
+  const toggleUI = useCallback(() => {
+    const next = !uiShown;
+    setUiShown(next);
+    RNAnimated.timing(uiOpacity, {
+      toValue: next ? 1 : 0,
+      duration: 280,
+      easing: easeOutCubic,
+      useNativeDriver: true,
+    }).start();
+  }, [uiShown, uiOpacity]);
 
   const [selectedTimerMinutes, setSelectedTimerMinutes] = useState<number | null>(null);
   const [rating, setRating] = useState(0);
@@ -426,12 +439,12 @@ export default function PlayerScreen() {
 
   const skipForward = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    seekTo(Math.min(1, progress + 10 / totalSeconds));
+    seekTo(Math.min(1, progress + 15 / totalSeconds));
   };
 
   const skipBackward = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    seekTo(Math.max(0, progress - 10 / totalSeconds));
+    seekTo(Math.max(0, progress - 15 / totalSeconds));
   };
 
   const authorLabel = currentSession.guideId
@@ -443,7 +456,7 @@ export default function PlayerScreen() {
       <Stack.Screen options={{ animation: anim === "fade" ? "fade" : "slide_from_bottom", animationDuration: 300 }} />
       <StatusBar hidden />
 
-      {/* ── Hero image con Ken Burns — pantalla completa ─────────────────── */}
+      {/* ── Imagen de fondo con Ken Burns ────────────────────────────────── */}
       <View style={[styles.heroContainer, StyleSheet.absoluteFill]}>
         <Animated.View style={[StyleSheet.absoluteFill, kenBurnsStyle]}>
           <ExpoImage
@@ -454,248 +467,197 @@ export default function PlayerScreen() {
             transition={IMAGE_TRANSITION}
           />
         </Animated.View>
-
-        {/* Degradado inferior: imagen → negro para legibilidad de controles */}
-        <LinearGradient
-          colors={["transparent", "rgba(0,0,0,0.25)", "rgba(0,0,0,0.72)", "#000000"]}
-          locations={[0.25, 0.52, 0.78, 1]}
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
-        />
-
       </View>
 
-      {/* ── Controles de reproducción — centrados en pantalla ───────────── */}
-      <View style={styles.heroControls} pointerEvents="box-none">
-        <Pressable onPress={skipBackward} style={styles.skipBtn} hitSlop={8}>
-          <Feather name="rotate-ccw" size={26} color="rgba(255,255,255,0.90)" />
-          <Text style={styles.skipText}>10</Text>
-        </Pressable>
+      {/* ── Tap invisible para ocultar/mostrar UI ────────────────────────── */}
+      <Pressable style={StyleSheet.absoluteFill} onPress={toggleUI} />
 
-        {/* Play/Pause — glass */}
-        <Pressable
-          onPress={handlePlayPause}
-          disabled={isLoading}
-          style={[styles.playBtnGlass, { opacity: isLoading ? 0.65 : 1 }]}
-        >
-          {Platform.OS !== "web" ? (
-            <BlurView intensity={28} tint="light" style={StyleSheet.absoluteFill} />
-          ) : (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.22)" }]} />
-          )}
-          {isLoading ? (
-            <Feather name="loader" size={46} color="#FBFBFB" />
-          ) : isPlaying ? (
-            <Svg width={46} height={46} viewBox="0 0 46 46">
-              <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-              <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
-            </Svg>
-          ) : (
-            <Svg width={46} height={46} viewBox="0 0 46 46">
-              <Path
-                d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
-                fill="white"
-              />
-            </Svg>
-          )}
-        </Pressable>
-
-        <Pressable onPress={skipForward} style={styles.skipBtn} hitSlop={8}>
-          <Feather name="rotate-cw" size={26} color="rgba(255,255,255,0.90)" />
-          <Text style={styles.skipText}>10</Text>
-        </Pressable>
-      </View>
-
-      {/* ── Panel inferior ─────────────────────────────────────────────────── */}
-      <ScrollView
-        style={styles.bottomPanel}
-        showsVerticalScrollIndicator={false}
-        bounces={false}
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end", paddingBottom: bottomPad + 24 }}
+      {/* ── Toda la UI (se desvanece al tap) ─────────────────────────────── */}
+      <RNAnimated.View
+        style={[StyleSheet.absoluteFill, { opacity: uiOpacity }]}
+        pointerEvents="box-none"
       >
-        {/* Tiempo grande + acciones */}
-        <View style={styles.timeActionsRow}>
-          <Text style={styles.timeDisplay}>{formatTime(remaining)}</Text>
-          <View style={styles.actionIcons}>
+        {/* Overlay oscuro */}
+        <View style={[StyleSheet.absoluteFill, styles.darkOverlay]} pointerEvents="none" />
+
+        {/* ── Botones top: chevron + descarga ─────────────────────────────── */}
+        <View style={[styles.topRow, { paddingTop: topPad + 8 }]} pointerEvents="box-none">
+          <Pressable
+            onPress={() => {
+              if (anim === "fade" || currentSession?.skipMiniPlayer || currentSession?.descansoTag) {
+                sessionMiniPlayerEvents.triggerShow();
+              } else {
+                stop();
+              }
+              router.back();
+            }}
+            style={styles.topCircleBtn}
+            hitSlop={8}
+          >
+            {Platform.OS !== "web" ? (
+              <BlurView intensity={22} tint="dark" style={StyleSheet.absoluteFill} />
+            ) : (
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.38)" }]} />
+            )}
+            <Feather name="chevron-down" size={22} color="#FBFBFB" />
+          </Pressable>
+
+          <Pressable style={styles.topCircleBtn} hitSlop={8}>
+            {Platform.OS !== "web" ? (
+              <BlurView intensity={22} tint="dark" style={StyleSheet.absoluteFill} />
+            ) : (
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.38)" }]} />
+            )}
+            <Feather name="download-cloud" size={20} color="#FBFBFB" />
+          </Pressable>
+        </View>
+
+        {/* ── Contenido principal ──────────────────────────────────────────── */}
+        <View
+          style={[styles.mainContent, { paddingTop: topPad + 68, paddingBottom: bottomPad + 12 }]}
+          pointerEvents="box-none"
+        >
+          {/* Título */}
+          <Text style={styles.titleText} numberOfLines={3}>
+            {currentSession.title}
+          </Text>
+
+          {/* Descripción del reproductor (opcional) */}
+          {!!currentSession.playerDescription && (
+            <Text style={styles.playerDesc} numberOfLines={3}>
+              {currentSession.playerDescription}
+            </Text>
+          )}
+
+          {/* Autor */}
+          <View style={styles.authorSection}>
+            <Text style={styles.authorLabel}>
+              {currentSession.guideId ? "VOZ GUÍA" : "AUTOR(A)"}
+            </Text>
+            <Text style={styles.authorName}>{authorLabel}</Text>
+          </View>
+
+          {/* Spacer */}
+          <View style={{ flex: 1 }} />
+
+          {/* ── Fila de acciones ─────────────────────────────────────────── */}
+          <View style={styles.actionRow}>
             <Pressable
-              onPress={() => setRepeatMode((r) => !r)}
-              hitSlop={8}
-            >
-              <Feather
-                name="repeat"
-                size={24}
-                color={repeatMode ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.95)"}
-              />
-            </Pressable>
-            <Pressable
+              style={styles.actionBtn}
               onPress={() => {
                 toggleFavorite(currentSession.id);
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               }}
               hitSlop={8}
             >
+              <Feather name="heart" size={22} color={fav ? "#F7CB6B" : "rgba(255,255,255,0.92)"} />
+            </Pressable>
+            <Pressable style={styles.actionBtn} onPress={handleShare} hitSlop={8}>
+              <Feather name="share" size={22} color="rgba(255,255,255,0.92)" />
+            </Pressable>
+            <Pressable
+              style={styles.actionBtn}
+              onPress={() => setShowPlaylistSheet(true)}
+              hitSlop={8}
+            >
+              <Feather name="list" size={22} color="rgba(255,255,255,0.92)" />
+            </Pressable>
+          </View>
+
+          {/* ── Fila de controles ─────────────────────────────────────────── */}
+          <View style={styles.controlsRow}>
+            {/* Ajustes */}
+            <Pressable
+              onPress={isOptionsCategory ? openSheet : undefined}
+              style={styles.ctrlBtn}
+              hitSlop={10}
+            >
               <Feather
-                name="heart"
-                size={24}
-                color={fav ? "#F7CB6B" : "rgba(255,255,255,0.95)"}
+                name="sliders"
+                size={22}
+                color={isOptionsCategory ? "rgba(255,255,255,0.88)" : "rgba(255,255,255,0.28)"}
               />
             </Pressable>
-            <Pressable onPress={isOptionsCategory ? openSheet : handleShare} hitSlop={8}>
-              <Feather name="more-horizontal" size={24} color="rgba(255,255,255,0.95)" />
+
+            {/* Retroceder 15s */}
+            <Pressable onPress={skipBackward} style={styles.ctrlBtn} hitSlop={10}>
+              <Feather name="rotate-ccw" size={26} color="rgba(255,255,255,0.90)" />
+              <Text style={styles.ctrlSkipLabel}>15</Text>
             </Pressable>
-          </View>
-        </View>
 
-        {/* Barra de progreso */}
-        <View
-          ref={progressBarRef}
-          style={styles.progressTrack}
-          onLayout={(e: LayoutChangeEvent) => {
-            progressBarWidthShared.value = e.nativeEvent.layout.width;
-            progressBarRef.current?.measure((_x, _y, _w, _h, px) => {
-              progressBarPageX.current = px;
-            });
-          }}
-          onStartShouldSetResponder={() => true}
-          onMoveShouldSetResponder={() => true}
-          onResponderGrant={handleProgressGrant}
-          onResponderMove={handleProgressMove}
-          onResponderRelease={handleProgressRelease}
-          onResponderTerminate={handleProgressRelease}
-        >
-          <View style={styles.progressBg}>
-            <Animated.View style={[styles.progressFill, fillAnimStyle]} />
-            <Animated.View style={[styles.progressThumb, thumbAnimStyle]} />
-          </View>
-        </View>
+            {/* Play / Pause */}
+            <Pressable
+              onPress={handlePlayPause}
+              disabled={isLoading}
+              style={[styles.playBtn, { opacity: isLoading ? 0.65 : 1 }]}
+              hitSlop={4}
+            >
+              {isLoading ? (
+                <Feather name="loader" size={36} color="#FBFBFB" />
+              ) : isPlaying ? (
+                <Svg width={36} height={36} viewBox="0 0 46 46">
+                  <Rect x="7"  y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                  <Rect x="27" y="5" width="12" height="36" rx="5" ry="5" fill="white" />
+                </Svg>
+              ) : (
+                <Svg width={36} height={36} viewBox="0 0 46 46">
+                  <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="white" />
+                </Svg>
+              )}
+            </Pressable>
 
-        {/* Etiquetas de tiempo */}
-        <View style={styles.timeLabels}>
-          <Text style={styles.timeLabelText}>{formatTime(elapsed)}</Text>
-          <Text style={styles.timeLabelText}>-{formatTime(remaining)}</Text>
-        </View>
+            {/* Avanzar 15s */}
+            <Pressable onPress={skipForward} style={styles.ctrlBtn} hitSlop={10}>
+              <Feather name="rotate-cw" size={26} color="rgba(255,255,255,0.90)" />
+              <Text style={styles.ctrlSkipLabel}>15</Text>
+            </Pressable>
 
-        {/* Título + autor, con botón Terminar superpuesto en pausa */}
-        <View style={styles.titleAuthorWrapper}>
-          <Text style={styles.titleText} numberOfLines={2}>
-            {currentSession.title}
-          </Text>
-          <Text style={styles.authorText}>{authorLabel}</Text>
-
-          <RNAnimated.View
-            style={[{ position: "absolute", top: 0, bottom: 0, left: -5, right: -5 }, { opacity: terminarOpacity }]}
-            pointerEvents={isPlaying ? "none" : "auto"}
-          >
+            {/* Stop */}
             <Pressable
               onPress={() => {
-                if (anim === "fade") {
-                  sessionMiniPlayerEvents.triggerShow();
-                } else {
-                  stop();
-                }
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                stop();
                 router.back();
               }}
-              style={[styles.terminarBtn, StyleSheet.absoluteFill]}
+              style={styles.ctrlBtn}
+              hitSlop={10}
             >
-              <Text style={styles.terminarText}>{progress >= 1 ? "Continuar" : "Terminar"}</Text>
+              <Svg width={22} height={22} viewBox="0 0 24 24">
+                <Rect x="4" y="4" width="16" height="16" rx="3" ry="3" fill="rgba(255,255,255,0.88)" />
+              </Svg>
             </Pressable>
-          </RNAnimated.View>
+          </View>
+
+          {/* ── Barra de progreso ─────────────────────────────────────────── */}
+          <View
+            ref={progressBarRef}
+            style={styles.progressTrack}
+            onLayout={(e: LayoutChangeEvent) => {
+              progressBarWidthShared.value = e.nativeEvent.layout.width;
+              progressBarRef.current?.measure((_x, _y, _w, _h, px) => {
+                progressBarPageX.current = px;
+              });
+            }}
+            onStartShouldSetResponder={() => true}
+            onMoveShouldSetResponder={() => true}
+            onResponderGrant={handleProgressGrant}
+            onResponderMove={handleProgressMove}
+            onResponderRelease={handleProgressRelease}
+            onResponderTerminate={handleProgressRelease}
+          >
+            <View style={styles.progressBg}>
+              <Animated.View style={[styles.progressFill, fillAnimStyle]} />
+              <Animated.View style={[styles.progressThumb, thumbAnimStyle]} />
+            </View>
+          </View>
+
+          {/* Etiquetas de tiempo */}
+          <View style={styles.timeLabels}>
+            <Text style={styles.timeLabelText}>{formatTime(elapsed)}</Text>
+            <Text style={styles.timeLabelText}>{formatTime(remaining)}</Text>
+          </View>
         </View>
-
-        {/* Slider voz guiada */}
-        {hasVoiceTrack && (
-          <View style={[styles.sliderSection, { marginTop: 28 }]}>
-            <View style={styles.sliderHeader}>
-              <Feather name="mic" size={13} color="rgba(255,255,255,0.5)" />
-              <Text style={styles.sliderLabel}>Voz guiada</Text>
-              <Text style={styles.sliderPercent}>{Math.round(voiceVolume * 100)}%</Text>
-            </View>
-            <View
-              ref={voiceTrackRef}
-              style={styles.sliderHitArea}
-              onLayout={(e: LayoutChangeEvent) => { voiceTrackWidth.current = e.nativeEvent.layout.width; }}
-              onStartShouldSetResponder={() => true}
-              onMoveShouldSetResponder={() => true}
-              onResponderGrant={handleVoiceGrant}
-              onResponderMove={handleVoiceMove}
-            >
-              <View style={styles.sliderTrack}>
-                <View pointerEvents="none" style={[styles.sliderFill, { width: `${voiceVolume * 100}%` as any }]} />
-                <View pointerEvents="none" style={[styles.sliderThumb, { left: `${voiceVolume * 100}%` as any }]} />
-              </View>
-            </View>
-          </View>
-        )}
-
-        {/* Slider ambiente */}
-        {hasAmbientTrack && (
-          <View style={[styles.sliderSection, { marginTop: 22 }]}>
-            <View style={styles.sliderHeader}>
-              <Feather name="wind" size={13} color="rgba(255,255,255,0.5)" />
-              <Text style={styles.sliderLabel}>{isNature ? "Sonidos Ambiente" : "Pájaros"}</Text>
-              <Text style={styles.sliderPercent}>{Math.round(ambientVolume * 100)}%</Text>
-            </View>
-            <View
-              ref={ambientTrackRef}
-              style={styles.sliderHitArea}
-              onLayout={(e: LayoutChangeEvent) => { ambientTrackWidth.current = e.nativeEvent.layout.width; }}
-              onStartShouldSetResponder={() => true}
-              onMoveShouldSetResponder={() => true}
-              onResponderGrant={handleAmbientGrant}
-              onResponderMove={handleAmbientMove}
-            >
-              <View style={styles.sliderTrack}>
-                <View pointerEvents="none" style={[styles.sliderFill, { width: `${ambientVolume * 100}%` as any }]} />
-                <View pointerEvents="none" style={[styles.sliderThumb, { left: `${ambientVolume * 100}%` as any }]} />
-              </View>
-            </View>
-          </View>
-        )}
-
-      </ScrollView>
-
-      {/* ── Botones flotantes superiores ─────────────────────────────────── */}
-      <Pressable
-        onPress={() => {
-          // Sesiones de miniplayer (skipMiniPlayer o Historias/ASMR): cerrar
-          // el reproductor = minimizar a la barrita, sin cortar el audio.
-          if (anim === "fade" || currentSession?.skipMiniPlayer || currentSession?.descansoTag) {
-            sessionMiniPlayerEvents.triggerShow();
-          } else {
-            stop();
-          }
-          router.back();
-        }}
-        style={[
-          styles.topBtn,
-          { top: topPad + 6, left: 16 },
-          !isPlaying && styles.topBtnExpanded,
-        ]}
-        hitSlop={8}
-      >
-        {Platform.OS !== "web" ? (
-          <BlurView intensity={22} tint="dark" style={StyleSheet.absoluteFill} />
-        ) : (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.38)" }]} />
-        )}
-        <Feather name="x" size={20} color="#FBFBFB" />
-        {!isPlaying && (
-          <Text style={styles.topBtnLabel}>Descartar</Text>
-        )}
-      </Pressable>
-
-      <Pressable
-        onPress={handleShare}
-        style={[styles.topBtn, { top: topPad + 6, right: 16 }]}
-        hitSlop={8}
-      >
-        {Platform.OS !== "web" ? (
-          <BlurView intensity={22} tint="dark" style={StyleSheet.absoluteFill} />
-        ) : (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.38)" }]} />
-        )}
-        <Feather name="share" size={18} color="#FBFBFB" />
-      </Pressable>
+      </RNAnimated.View>
 
       {/* ── Options Sheet ──────────────────────────────────────────────────── */}
       <Modal
@@ -953,74 +915,143 @@ export default function PlayerScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
 
-  // Hero
+  // Fondo
   heroContainer: {
     overflow: "hidden",
   },
-  heroControls: {
+
+  // Overlay oscuro (se desvanece con la UI)
+  darkOverlay: {
+    backgroundColor: "rgba(0,0,0,0.50)",
+  },
+
+  // Fila superior: chevron izq + descarga der
+  topRow: {
+    position: "absolute",
+    top: 0,
+    left: 16,
+    right: 16,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    zIndex: 20,
+  },
+  topCircleBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.15)",
+  },
+
+  // Columna de contenido principal (ocupa toda la pantalla)
+  mainContent: {
     position: "absolute",
     top: 0,
     bottom: 0,
     left: 0,
     right: 0,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 44,
-  },
-  skipBtn: {
-    alignItems: "center",
-    gap: 3,
-  },
-  skipText: {
-    fontFamily: "Manrope",
-    color: "rgba(255,255,255,0.75)",
-    fontSize: 11,
-    fontWeight: "600",
-    letterSpacing: 0.3,
-  },
-  playBtnGlass: {
-    width: 108,
-    height: 108,
-    borderRadius: 54,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.28)",
-    backgroundColor: "rgba(255,255,255,0.12)",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.18,
-    shadowRadius: 20,
-    elevation: 10,
+    paddingHorizontal: 28,
+    flexDirection: "column",
   },
 
-  // Panel inferior
-  bottomPanel: {
-    flex: 1,
-    paddingHorizontal: 28,
-    paddingTop: 22,
-    backgroundColor: "transparent",
+  // Título grande centrado
+  titleText: {
+    fontFamily: "Manrope",
+    fontSize: 28,
+    fontWeight: "800",
+    color: "#FBFBFB",
+    letterSpacing: 0.1,
+    textAlign: "center",
+    marginBottom: 10,
   },
-  timeActionsRow: {
+
+  // Descripción corta del reproductor
+  playerDesc: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "400",
+    color: "rgba(255,255,255,0.62)",
+    textAlign: "center",
+    lineHeight: 20,
+    marginBottom: 14,
+  },
+
+  // Sección autor/voz
+  authorSection: {
+    alignItems: "center",
+    marginTop: 2,
+  },
+  authorLabel: {
+    fontFamily: "Manrope",
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 2.2,
+    textTransform: "uppercase",
+    color: "rgba(255,255,255,0.42)",
+    marginBottom: 3,
+  },
+  authorName: {
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "300",
+    color: "rgba(255,255,255,0.88)",
+    letterSpacing: 0.2,
+  },
+
+  // Fila de acciones (♥ compartir playlist)
+  actionRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 36,
+    marginBottom: 28,
+  },
+  actionBtn: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    backgroundColor: "rgba(255,255,255,0.10)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  // Fila de controles (ajustes · back15 · play · fwd15 · stop)
+  controlsRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 14,
+    paddingHorizontal: 4,
+    marginBottom: 20,
   },
-  timeDisplay: {
-    fontSize: 46,
-    fontFamily: "Manrope",
-    color: "#FBFBFB",
-    letterSpacing: -1.5,
-    lineHeight: 52,
-  },
-  actionIcons: {
-    flexDirection: "row",
+  ctrlBtn: {
     alignItems: "center",
-    gap: 20,
-    paddingBottom: 4,
+    justifyContent: "center",
+    width: 44,
+    height: 44,
+    gap: 2,
+  },
+  ctrlSkipLabel: {
+    fontFamily: "Manrope",
+    color: "rgba(255,255,255,0.75)",
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+  },
+  playBtn: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    backgroundColor: "rgba(255,255,255,0.14)",
+    borderWidth: 1.5,
+    borderColor: "rgba(255,255,255,0.28)",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   // Barra de progreso
@@ -1049,11 +1080,11 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
 
+  // Etiquetas tiempo
   timeLabels: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 4,
-    marginBottom: 22,
   },
   timeLabelText: {
     fontFamily: "Manrope",
@@ -1061,57 +1092,8 @@ const styles = StyleSheet.create({
     color: "#F4F4F4",
   },
 
-  titleText: {
-    fontFamily: "Manrope",
-    fontSize: 20,
-    fontWeight: "800",
-    color: "#FBFBFB",
-    letterSpacing: 0.2,
-    marginBottom: 6,
-  },
-  authorText: {
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "300",
-    color: "#FBFBFB",
-  },
-  signature: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "700",
-    color: "rgba(255,255,255,0.9)",
-    letterSpacing: 5,
-    marginTop: 10,
-    marginBottom: 2,
-  },
-
-  durationChip: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    alignSelf: "flex-start",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.10)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.20)",
-  },
-  durationChipText: {
-    fontFamily: "Manrope",
-    color: "rgba(255,255,255,0.80)",
-    fontSize: 12,
-    fontWeight: "600",
-    letterSpacing: 0.3,
-  },
-
-  ratingRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 16,
-    gap: 4,
-  },
-  starBtn: { padding: 4 },
+  noSession: { fontFamily: "Manrope", fontSize: 16, marginTop: 16, marginBottom: 24 },
+  backBtnSolo: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20, borderWidth: 1 },
 
   // Sliders
   sliderSection: {},
@@ -1166,56 +1148,6 @@ const styles = StyleSheet.create({
   },
   timerChipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4F4F4" },
   timerChipTextSelected: { color: "#FBFBFB" },
-
-  // Floating top buttons
-  topBtn: {
-    position: "absolute",
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 20,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.15)",
-  },
-  topBtnExpanded: {
-    width: "auto" as any,
-    paddingHorizontal: 14,
-    flexDirection: "row",
-    gap: 6,
-  },
-  topBtnLabel: {
-    fontFamily: "Manrope",
-    color: "#FBFBFB",
-    fontSize: 15,
-    fontWeight: "600",
-  },
-  titleAuthorWrapper: {
-    position: "relative",
-  },
-  terminarBtn: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  terminarText: {
-    fontFamily: "Manrope",
-    color: "#000000",
-    fontSize: 16,
-    fontWeight: "600",
-    letterSpacing: 0.3,
-  },
-
-  noSession: { fontFamily: "Manrope", fontSize: 16, marginTop: 16, marginBottom: 24 },
-  backBtnSolo: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20, borderWidth: 1 },
 
   // Options sheet
   optSheet: {

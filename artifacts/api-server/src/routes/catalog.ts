@@ -479,6 +479,7 @@ router.post(
           voiceTag: body.voiceTag ?? null,
           guideId: body.guideId ?? null,
           artistId: body.artistId ?? null,
+          playerDescription: body.playerDescription ?? null,
           status: "pending",
           createdBy: me.id,
         });

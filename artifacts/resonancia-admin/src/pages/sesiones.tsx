@@ -74,6 +74,7 @@ export default function SesionesPage() {
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [description, setDescription] = useState("");
+  const [playerDescription, setPlayerDescription] = useState("");
   const [duration, setDuration] = useState("");
   const [isPremium, setIsPremium] = useState(false);
   const [skipDetail, setSkipDetail] = useState(false);
@@ -303,6 +304,7 @@ export default function SesionesPage() {
         podcastTag: podcastTag as Parameters<typeof createSubmission>[0]["data"]["podcastTag"] || undefined,
         artistId: categoryId === "musica-sonidos" ? (artistId.trim() || null) : null,
         guideId: categoryId === "musica-sonidos" ? null : (guideIds.filter(Boolean)[0]?.trim() || null),
+        playerDescription: playerDescription.trim() || null,
         imageObjectPath: imgUploaded?.objectPath ?? null,
         imageContentType: imgUploaded?.contentType ?? null,
         imageSizeBytes: imgUploaded?.sizeBytes ?? null,
@@ -331,7 +333,7 @@ export default function SesionesPage() {
 
   const handleReset = () => {
     setDone(false);
-    setCategoryId(""); setTitle(""); setSubtitle(""); setDescription("");
+    setCategoryId(""); setTitle(""); setSubtitle(""); setDescription(""); setPlayerDescription("");
     setDuration(""); setIsPremium(false); setSkipDetail(false); setSkipMiniPlayer(false); setFrequency(""); setVoiceTag("");
     setAncestralTag(""); setMeditationTag("");
     setSoundTag(""); setDescansoTag(""); setArtistId("");
@@ -446,6 +448,17 @@ export default function SesionesPage() {
               className="resize-none"
             />
             <span className="text-xs text-muted-foreground">{description.length}/2000</span>
+          </Field>
+          <Field label="Descripción reproductor (opcional)">
+            <Textarea
+              value={playerDescription}
+              onChange={(e) => setPlayerDescription(e.target.value)}
+              placeholder="Texto corto que aparece bajo el título en el reproductor…"
+              rows={2}
+              maxLength={300}
+              className="resize-none"
+            />
+            <span className="text-xs text-muted-foreground">{playerDescription.length}/300</span>
           </Field>
 
           {categoryId === "musica-sonidos" && (

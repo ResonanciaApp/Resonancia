@@ -71,6 +71,8 @@ export const catalogSessionsTable = pgTable("catalog_sessions", {
   createdBy: integer("created_by").references(() => usersTable.id, {
     onDelete: "set null",
   }),
+  /** Descripción corta que se muestra en el reproductor (distinta de la descripción larga de la sesión). */
+  playerDescription: text("player_description"),
   /** Motivo de rechazo (solo cuando status = "rejected"). */
   rejectionReason: text("rejection_reason"),
   /** Admin que aprobó/rechazó la pieza (trail de revisión). */

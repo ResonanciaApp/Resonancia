@@ -1384,6 +1384,8 @@ export const createSubmissionBodySkipDetailDefault = false;
 export const createSubmissionBodySkipMiniPlayerDefault = false;
 export const createSubmissionBodyFrequencyMax = 60;
 
+export const createSubmissionBodyPlayerDescriptionMax = 300;
+
 
 export const createSubmissionBodyAudioFilesItemNameMax = 200;
 
@@ -1424,6 +1426,7 @@ export const CreateSubmissionBody = zod.object({
   "themeTag": zod.array(zod.string()).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
+  "playerDescription": zod.string().max(createSubmissionBodyPlayerDescriptionMax).nullish(),
   "audioFiles": zod.array(zod.object({
   "role": zod.enum(['main', 'voice', 'ambient', 'base', 'sound']).optional(),
   "objectPath": zod.string().min(1),

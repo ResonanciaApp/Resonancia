@@ -4485,6 +4485,10 @@ components:
         artistId:
           type: string
           nullable: true
+        playerDescription:
+          type: string
+          maxLength: 300
+          nullable: true
         audioFiles:
           type: array
           minItems: 1

@@ -944,6 +944,8 @@ export interface CreatorSubmissionInput {
   themeTag?: string[] | null;
   guideId?: string | null;
   artistId?: string | null;
+  /** @maxLength 300 */
+  playerDescription?: string | null;
   /**
      * @minItems 1
      * @maxItems 5
