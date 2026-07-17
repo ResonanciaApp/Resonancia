@@ -41,6 +41,8 @@ import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 import { BackPill } from "@/components/BackPill";
 import { GhostPill } from "@/components/GhostPill";
+import { SacredGlyph } from "@/components/SacredGlyph";
+import { CHAKRAS, chakraMatchesTag, isChakraTag } from "@/data/chakras";
 
 const { width } = Dimensions.get("window");
 const HEADER_H = 343;
@@ -499,6 +501,26 @@ export default function SessionDetailScreen() {
             {session.description}
           </Text>
 
+          {/* ── Banner de chakra ─────────────────────────────────────────── */}
+          {(() => {
+            const chakraTag = session.themeTag?.find((t) => isChakraTag(t));
+            const chakra = chakraTag ? CHAKRAS.find((c) => chakraMatchesTag(c, chakraTag)) : null;
+            if (!chakra) return null;
+            return (
+              <Pressable
+                onPress={() => router.push(`/chakra/${chakra.id}` as never)}
+                style={({ pressed }) => [styles.chakraBanner, { opacity: pressed ? 0.75 : 1 }]}
+              >
+                <SacredGlyph id={chakra.geometryId} color={chakra.color} size={34} />
+                <Text style={styles.chakraBannerText}>
+                  {"Esta sesión te ayuda a equilibrar el "}
+                  <Text style={[styles.chakraBannerBold, { color: chakra.color }]}>{chakra.tagLabel}</Text>
+                </Text>
+                <Feather name="chevron-right" size={14} color="rgba(255,255,255,0.4)" />
+              </Pressable>
+            );
+          })()}
+
           {/* ── Sobre el/la guiador/artista ─────────────────────────────── */}
           {aboutPerson && (
             <View style={styles.aboutBlock}>
@@ -917,6 +939,30 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 24,
     textAlign: "left",
+  },
+
+  // Chakra banner
+  chakraBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    marginBottom: 24,
+  },
+  chakraBannerText: {
+    flex: 1,
+    fontFamily: "Manrope",
+    fontSize: 13,
+    lineHeight: 18,
+    color: "rgba(255,255,255,0.70)",
+  },
+  chakraBannerBold: {
+    fontFamily: "Manrope",
+    fontWeight: "700",
+    fontSize: 13,
   },
 
   // Theme tag chips
