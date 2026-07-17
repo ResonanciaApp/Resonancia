@@ -408,11 +408,6 @@ export function EscenasSheet() {
 
           {/* ── Color picker: 3 rectángulos horizontales ── */}
           <View style={{ marginBottom: 14 }}>
-            {/* Título igual que "Activar intención diaria": ícono + label en fila */}
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 10, marginLeft: 5 }}>
-              <MaterialCommunityIcons name="palette-outline" size={17} color="#F4F4F4" style={styles.controlIcon} />
-              <Text style={styles.controlLabel}>Color</Text>
-            </View>
             <View style={{ flexDirection: "row", gap: 8, marginTop: 6 }}>
               {AMBIENT_SCENES.filter((s) => !!SCENE_THEMES[s.id as keyof typeof SCENE_THEMES]).map((scene) => {
                 const themeData = SCENE_THEMES[scene.id as keyof typeof SCENE_THEMES];
