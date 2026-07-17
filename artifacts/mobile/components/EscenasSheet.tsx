@@ -591,12 +591,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: "Manrope",
-    fontSize: 17,
+    fontSize: 22,
     fontWeight: "600",
     color: "#F9F9F9",
     textAlign: "center",
     marginBottom: 22,
-    marginTop: -30,
+    marginTop: -33,
   },
   volumeRow: {
     flexDirection: "row",
