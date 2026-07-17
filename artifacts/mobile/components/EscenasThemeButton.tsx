@@ -6,17 +6,20 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 
 // Vesica Piscis (de data/glyph-strings.ts, glifo "vesica"):
 // dos círculos cx=38/62, cy=50, r=24 en viewBox 0 0 100 100.
-const S = 45; // display size
+const S = 48; // display size
 const VB = 100;
 const R = 24;
 const REST_DX = 12; // media distancia en reposo (cx 38/62)
-// Trazo de 1 px en pantalla → unidades de viewBox
-const STROKE_W = 1 * (VB / S);
+// Trazo de 2 px en pantalla → unidades de viewBox
+const STROKE_W = 2 * (VB / S);
+const STROKE_OPACITY = 0.4;
 
 const WHITE = "#FFFFFF";
 
-// Animación "Cruce Zen": los círculos intercambian de lado atravesándose (1 s).
-const ANIM_MS = 1000;
+// Animación "Cruce Zen": los círculos intercambian de lado atravesándose (0,8 s).
+const ANIM_MS = 800;
+// Retraso de apertura del panel de Escenas
+const OPEN_DELAY_MS = 400;
 
 function easeInOutCubic(t: number): number {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -64,15 +67,22 @@ export function EscenasThemeButton({ onPress, style }: Props) {
   // t ∈ [0,1] del cruce; en reposo t=1 (geometría idéntica al reposo inicial)
   const [t, setT] = useState(1);
   const rafRef = useRef<number | null>(null);
+  const openTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     return () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+      if (openTimerRef.current !== null) clearTimeout(openTimerRef.current);
     };
   }, []);
 
   const handlePress = useCallback(() => {
-    onPress();
+    // El panel de Escenas se abre con un pequeño retraso para que se aprecie el cruce
+    if (openTimerRef.current !== null) clearTimeout(openTimerRef.current);
+    openTimerRef.current = setTimeout(() => {
+      openTimerRef.current = null;
+      onPress();
+    }, OPEN_DELAY_MS);
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     const start = Date.now();
     const tick = () => {
@@ -139,7 +149,7 @@ export function EscenasThemeButton({ onPress, style }: Props) {
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
-          opacity={0.5}
+          opacity={STROKE_OPACITY}
         />
         <Circle
           cx={cxR} cy={50} r={R}
@@ -148,7 +158,7 @@ export function EscenasThemeButton({ onPress, style }: Props) {
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
-          opacity={0.5}
+          opacity={STROKE_OPACITY}
         />
       </Svg>
     </Pressable>
