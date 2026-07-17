@@ -300,8 +300,14 @@ export default function ExploreScreen() {
 
     // Si ya cargó la config de la API, usarla
     if (exploreSections.length > 0) {
+      const seen = new Set<string>();
       return exploreSections
-        .filter((sec) => sec.visible && sessionLabels.includes(sec.label))
+        .filter((sec) => {
+          if (!sec.visible || !sessionLabels.includes(sec.label)) return false;
+          if (seen.has(sec.label)) return false;
+          seen.add(sec.label);
+          return true;
+        })
         .map((sec) => ({
           label: sec.label,
           sessions: SESSIONS.filter((s) =>
