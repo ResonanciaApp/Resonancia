@@ -96,11 +96,9 @@ export default function ChakraScreen() {
 
         {/* Glifo + título + descripción */}
         <View style={styles.hero}>
-          <View style={styles.glyphCard}>
-            <SacredGlyph id={chakra.geometryId} color={chakra.color} size={GLYPH_SIZE} />
-          </View>
+          <SacredGlyph id={chakra.geometryId} color={chakra.color} size={GLYPH_SIZE} />
           <Text style={[styles.name, { color: colors.foreground }]}>{chakra.name}</Text>
-          <Text style={[styles.tagLabel, { color: chakra.color }]}>{chakra.tagLabel}</Text>
+          <Text style={[styles.tagLabel, { color: "#F9F9F9" }]}>{chakra.tagLabel}</Text>
           <Text style={[styles.description, { color: colors.mutedForeground }]} numberOfLines={2}>
             {chakra.description}
           </Text>
@@ -167,7 +165,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: H_PAD,
     rowGap: 35,
-    marginTop: -17,
+    marginTop: -7,
     marginBottom: 6,
   },
 
