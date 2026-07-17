@@ -14,6 +14,10 @@ export type Chakra = {
   color: string;
   /** Degradado de 3 paradas para la pantalla de detalle. */
   gradient: [string, string, string];
+  /** Color central del fondo radial de la pantalla (más luminoso). */
+  radialCenter: string;
+  /** Color exterior del fondo radial de la pantalla (más oscuro). */
+  radialOuter: string;
   /** Descripción corta (2 líneas) en español neutro. */
   description: string;
 };
@@ -27,6 +31,8 @@ export const CHAKRAS: Chakra[] = [
     tagAliases: [],
     color: "#C65860",
     gradient: ["#2A0808", "#6B1510", "#9A2018"],
+    radialCenter: "#5B1015",
+    radialOuter: "#470F13",
     description: "Raíz y seguridad. Sesiones para anclarte a la tierra y sentirte a salvo en tu cuerpo.",
   },
   {
@@ -37,6 +43,8 @@ export const CHAKRAS: Chakra[] = [
     tagAliases: [],
     color: "#DE9363",
     gradient: ["#1A0A04", "#7A3008", "#B04A10"],
+    radialCenter: "#5B2D10",
+    radialOuter: "#47250F",
     description: "Emoción y creatividad. Sesiones para fluir con tus emociones y despertar tu energía vital.",
   },
   {
@@ -47,6 +55,8 @@ export const CHAKRAS: Chakra[] = [
     tagAliases: [],
     color: "#DFC26B",
     gradient: ["#16120A", "#6E520E", "#B08020"],
+    radialCenter: "#5B4810",
+    radialOuter: "#47390F",
     description: "Poder personal. Sesiones para fortalecer tu voluntad, tu confianza y tu determinación.",
   },
   {
@@ -57,6 +67,8 @@ export const CHAKRAS: Chakra[] = [
     tagAliases: [],
     color: "#60A186",
     gradient: ["#060E0A", "#1A4A32", "#287A50"],
+    radialCenter: "#105B3C",
+    radialOuter: "#0F4730",
     description: "Amor y compasión. Sesiones para abrir el corazón y cultivar la aceptación.",
   },
   {
@@ -67,6 +79,8 @@ export const CHAKRAS: Chakra[] = [
     tagAliases: [],
     color: "#5998BB",
     gradient: ["#06101A", "#162E6E", "#204A98"],
+    radialCenter: "#10415B",
+    radialOuter: "#0F3447",
     description: "Expresión y verdad. Sesiones para liberar tu voz y comunicar desde la autenticidad.",
   },
   {
@@ -78,6 +92,8 @@ export const CHAKRAS: Chakra[] = [
     tagAliases: ["Sexo Chakra"],
     color: "#6F68B6",
     gradient: ["#04060E", "#0E1640", "#161E58"],
+    radialCenter: "#0E355C",
+    radialOuter: "#100E48",
     description: "Intuición y visión. Sesiones para aquietar la mente y despertar la percepción interior.",
   },
   {
@@ -88,6 +104,8 @@ export const CHAKRAS: Chakra[] = [
     tagAliases: [],
     color: "#A776D6",
     gradient: ["#0C0614", "#3A1268", "#5E2488"],
+    radialCenter: "#37105B",
+    radialOuter: "#2C0F47",
     description: "Conexión y unidad. Sesiones para expandir la consciencia y unirte con el todo.",
   },
 ];
