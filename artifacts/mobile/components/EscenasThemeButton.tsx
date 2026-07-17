@@ -27,8 +27,8 @@ const LENS_PATH =
 
 const WHITE = "#FFFFFF";
 
-/** Aclara un color hex un 15% (multiplica canales, clamp 255). */
-function brighten(hex: string, factor = 1.15): string {
+/** Aclara un color hex un 50% (multiplica canales, clamp 255). */
+function brighten(hex: string, factor = 1.5): string {
   const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
   if (!m) return hex;
   const n = parseInt(m[1], 16);
