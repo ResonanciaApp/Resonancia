@@ -459,14 +459,18 @@ export function EscenasSheet() {
 
 
           {/* Intención diaria (reemplaza la escena animada en Inicio) */}
-          <View style={styles.controlRow}>
+          <View style={[styles.controlRow, {
+            backgroundColor: "rgba(249,249,249,0.3)",
+            borderRadius: 14,
+            paddingHorizontal: 12,
+          }]}>
             <MaterialCommunityIcons name="feather" size={17} color="#F4F4F4" style={styles.controlIcon} />
             <Text style={styles.controlLabel}>Activar intención diaria</Text>
             <Switch
               value={intencionDiariaEnabled}
               onValueChange={setIntencionDiariaEnabled}
-              trackColor={{ false: "rgba(61,14,22,0.60)", true: "rgba(247,203,107,0.55)" }}
-              thumbColor={intencionDiariaEnabled ? "#F7CB6B" : "#666"}
+              trackColor={{ false: "rgba(249,249,249,0.35)", true: "rgba(249,249,249,0.7)" }}
+              thumbColor="#f9f9f9"
             />
           </View>
 
