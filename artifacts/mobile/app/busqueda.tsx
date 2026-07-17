@@ -447,9 +447,9 @@ const styles = StyleSheet.create({
     borderRadius: 9,
     padding: 3,
   },
-  resultCat: { fontFamily: "Manrope", fontSize: 12, color: "rgba(242,231,228,0.45)", marginBottom: 3 },
+  resultCat: { fontFamily: "Manrope", fontSize: 12, color: "#f4f4f4", marginBottom: 3 },
   resultTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FBFBFB", marginBottom: 3 },
-  resultAuthor: { fontFamily: "Manrope", fontSize: 12, color: "rgba(242,231,228,0.45)" },
+  resultAuthor: { fontFamily: "Manrope", fontSize: 12, color: "#f4f4f4" },
 });
 
 const sheetStyles = StyleSheet.create({
