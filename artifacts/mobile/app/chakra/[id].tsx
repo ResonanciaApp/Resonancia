@@ -51,7 +51,7 @@ export default function ChakraScreen() {
     return (
       <View style={[styles.root, { backgroundColor: "#210911" }]}>
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={["#340D1A", "#190913", "#0D0808"]} style={StyleSheet.absoluteFill} />
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
           <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
@@ -77,9 +77,9 @@ export default function ChakraScreen() {
   };
 
   return (
-    <View style={[styles.root, { backgroundColor: "#1B060F" }]}>
+    <View style={[styles.root, { backgroundColor: chakra.gradient[2] }]}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={chakra.gradient} style={StyleSheet.absoluteFill} />
 
       <ScrollView
         style={styles.scroll}
