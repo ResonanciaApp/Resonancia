@@ -513,7 +513,7 @@ export default function SessionDetailScreen() {
               >
                 <SacredGlyph id={chakra.geometryId} color={chakra.color} size={34} />
                 <Text style={styles.chakraBannerText}>
-                  {"Esta sesión te ayuda a equilibrar el "}
+                  {"Te ayuda a armonizar el "}
                   <Text style={[styles.chakraBannerBold, { color: chakra.color }]}>{chakra.tagLabel}</Text>
                 </Text>
                 <Feather name="chevron-right" size={14} color="rgba(255,255,255,0.4)" />
