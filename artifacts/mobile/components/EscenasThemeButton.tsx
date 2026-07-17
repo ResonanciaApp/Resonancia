@@ -6,7 +6,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 
 // Vesica Piscis (de data/glyph-strings.ts, glifo "vesica"):
 // dos círculos cx=38/62, cy=50, r=24 en viewBox 0 0 100 100.
-const S = 48; // display size
+const S = 53; // display size
 const VB = 100;
 const R = 24;
 const REST_DX = 12; // media distancia en reposo (cx 38/62)
@@ -58,24 +58,18 @@ export function EscenasThemeButton({ onPress, style }: Props) {
   const [g0, g1] = theme.gradient;
   const top = brighten(g0);
   const bottom = brighten(g1);
-  // Lente (fondo interno): 40% más de brillo extra
-  const lensTop = brighten(g0, 1.5 * 1.4);
-  const lensBottom = brighten(g1, 1.5 * 1.4);
 
   // t ∈ [0,1] del cruce; en reposo t=1 (geometría idéntica al reposo inicial)
   const [t, setT] = useState(1);
   const rafRef = useRef<number | null>(null);
-  const openTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     return () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-      if (openTimerRef.current !== null) clearTimeout(openTimerRef.current);
     };
   }, []);
 
   const handlePress = useCallback(() => {
-    if (openTimerRef.current !== null) clearTimeout(openTimerRef.current);
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     // Avance por cuadro fijo (no reloj de pared): si el hilo JS se bloquea,
     // la animación se reanuda donde quedó y completa el ciclo entero.
@@ -88,12 +82,9 @@ export function EscenasThemeButton({ onPress, style }: Props) {
         rafRef.current = requestAnimationFrame(tick);
       } else {
         rafRef.current = null;
-        // El panel de Escenas se abre recién al COMPLETARSE el ciclo, así la
-        // apertura (que bloquea el hilo JS un instante) nunca corta el cruce.
-        openTimerRef.current = setTimeout(() => {
-          openTimerRef.current = null;
-          onPress();
-        }, 0);
+        // Abrir al terminar el último cuadro, sin ningún setTimeout,
+        // para que no haya fracción de demora perceptible.
+        onPress();
       }
     };
     setT(0);
@@ -116,27 +107,22 @@ export function EscenasThemeButton({ onPress, style }: Props) {
             <Stop offset="0" stopColor={top} />
             <Stop offset="1" stopColor={bottom} />
           </SvgLinearGradient>
-          <SvgLinearGradient id="vesicaLensGrad" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0" stopColor={lensTop} />
-            <Stop offset="1" stopColor={lensBottom} />
-          </SvgLinearGradient>
           <RadialGradient id="vesicaGlowGrad" cx="0.5" cy="0.5" r="0.5">
             <Stop offset="0" stopColor={WHITE} stopOpacity="0.9" />
             <Stop offset="1" stopColor={WHITE} stopOpacity="0" />
           </RadialGradient>
         </Defs>
 
-        {/* Medialunas: relleno suave del mismo degradado para que no se vean
-            más oscuras que el fondo por contraste con la lente brillante */}
+        {/* Medialunas: relleno suave */}
         <Circle cx={cxL} cy={50} r={R} fill="url(#vesicaCrescentGrad)" fillOpacity={0.35} />
         <Circle cx={cxR} cy={50} r={R} fill="url(#vesicaCrescentGrad)" fillOpacity={0.35} />
 
-        {/* Fondo de la intersección (lente) — degradado del tema aclarado.
+        {/* Fondo de la intersección (lente) — #f9f9f9 al 60%.
             Al coincidir los círculos (dx≈0) la lente es el círculo completo. */}
         {lens === null ? (
-          <Circle cx={50} cy={50} r={R} fill="url(#vesicaLensGrad)" />
+          <Circle cx={50} cy={50} r={R} fill="#f9f9f9" fillOpacity={0.6} />
         ) : (
-          <Path d={lens} fill="url(#vesicaLensGrad)" />
+          <Path d={lens} fill="#f9f9f9" fillOpacity={0.6} />
         )}
 
         {/* Destello central durante el cruce */}
