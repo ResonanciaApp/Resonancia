@@ -27,15 +27,17 @@ type SessionCarouselProps = {
   style?: object;
   titleOffset?: number;
   cardWidth?: number;
+  cardHeight?: number;
   titleSize?: number;
   onViewAll?: () => void;
 };
 
-export function SessionCarousel({ title, sessions, isPremium, onPress, style, titleOffset, cardWidth, titleSize, onViewAll }: SessionCarouselProps) {
+export function SessionCarousel({ title, sessions, isPremium, onPress, style, titleOffset, cardWidth, cardHeight, titleSize, onViewAll }: SessionCarouselProps) {
   if (sessions.length === 0) return null;
   const cw = cardWidth ?? CARD_W;
+  const ch = cardHeight ?? cw;
   const cardStyle = cw !== CARD_W ? { width: cw } : undefined;
-  const thumbStyle = cw !== CARD_W ? { width: cw, height: cw } : undefined;
+  const thumbStyle = cw !== CARD_W ? { width: cw, height: ch } : undefined;
   const titleFontSize = titleSize ?? 17;
   return (
     <View style={[styles.section, style]}>

@@ -545,7 +545,8 @@ export default function ExploreScreen() {
                     isPremium={isPremium}
                     onPress={(s) => handleSessionPress(s)}
                     style={{ marginTop: 24, marginBottom: 0 }}
-                    cardWidth={SQCARD_W}
+                    cardWidth={299}
+                    cardHeight={187}
                     titleSize={20}
                   />
                   {!isLast && (
