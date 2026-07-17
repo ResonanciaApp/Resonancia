@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   pageTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center", marginTop: 10 },
 
   searchWrap: {
-    paddingHorizontal: 19,
+    paddingHorizontal: 20,
     paddingTop: 8,
     paddingBottom: 8,
     marginTop: 7,
