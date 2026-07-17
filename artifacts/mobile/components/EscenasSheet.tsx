@@ -406,51 +406,45 @@ export function EscenasSheet() {
           </Pressable>
           <Text style={styles.title}>Escenas</Text>
 
-          <View style={[styles.volumeRow, { marginBottom: 2 }]}>
-            <View style={styles.volumeLabelGroup}>
-              <MaterialCommunityIcons name="palette-outline" size={17} color="#F4F4F4" style={styles.controlIcon} />
-              <Text style={styles.controlLabel}>Color</Text>
-            </View>
-            <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-              {AMBIENT_SCENES.slice(0, 4).map((scene) => {
-                const sceneGradient = SCENE_THEMES[scene.id as keyof typeof SCENE_THEMES]?.gradient;
-                if (!sceneGradient) return null;
+          {/* ── Color picker: 3 rectángulos horizontales ── */}
+          <View style={{ marginBottom: 14 }}>
+            <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "500", color: "#F4F4F4", marginBottom: 10 }}>
+              Color
+            </Text>
+            <View style={{ flexDirection: "row", gap: 8 }}>
+              {AMBIENT_SCENES.filter((s) => !!SCENE_THEMES[s.id as keyof typeof SCENE_THEMES]).map((scene) => {
+                const themeData = SCENE_THEMES[scene.id as keyof typeof SCENE_THEMES];
+                if (!themeData) return null;
                 const isActive = scene.id === activeSceneId;
                 return (
                   <Pressable
                     key={scene.id}
                     onPress={() => setActiveSceneWithFade(scene.id)}
-                    hitSlop={10}
+                    style={{ flex: 1, alignItems: "center", gap: 6 }}
+                    hitSlop={6}
                   >
-                    {/* Anillo activo — sin overflow:hidden para no distorsionar el borde */}
-                    <View
-                      style={{
-                        width: 38,
-                        height: 38,
-                        borderRadius: 19,
-                        borderWidth: 2,
-                        borderColor: isActive ? "rgba(255,255,255,0.85)" : "rgba(0,0,0,0)",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {/* Círculo de color — overflow:hidden aquí sin borde = redondeo perfecto */}
-                      <View
-                        style={{
-                          width: 30,
-                          height: 30,
-                          borderRadius: 15,
-                          overflow: "hidden",
-                        }}
-                      >
+                    {/* Borde externo (sin overflow:hidden para no recortar el borde) */}
+                    <View style={{
+                      width: "100%",
+                      height: 30,
+                      borderRadius: 17,
+                      borderWidth: 2,
+                      borderColor: isActive ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.035)",
+                      padding: 2,
+                    }}>
+                      {/* Relleno con degradado (overflow:hidden para el redondeo interior) */}
+                      <View style={{ flex: 1, borderRadius: 13, overflow: "hidden" }}>
                         <LinearGradient
-                          colors={[sceneGradient[0], sceneGradient[sceneGradient.length - 1]] as [string, string]}
+                          colors={[themeData.gradient[0], themeData.gradient[themeData.gradient.length - 1]] as [string, string]}
                           start={{ x: 0, y: 0 }}
-                          end={{ x: 1, y: 1 }}
+                          end={{ x: 1, y: 0 }}
                           style={{ flex: 1 }}
                         />
                       </View>
                     </View>
+                    <Text style={{ fontFamily: "Manrope", fontSize: 11, color: isActive ? "#F9F9F9" : "rgba(249,249,249,0.55)", textAlign: "center" }}>
+                      {themeData.label}
+                    </Text>
                   </Pressable>
                 );
               })}
