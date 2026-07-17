@@ -473,11 +473,9 @@ export default function MusicaSonidosScreen() {
             </View>
           </View>
           <View style={[styles.heroOverlayRight, { top: topPad + 8 }]}>
-            <View style={styles.lotoBtn}>
-              <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/musica-info" as never)}>
-                <Feather name="info" size={23} color="rgba(255,255,255,0.85)" />
-              </Pressable>
-            </View>
+            <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/musica-info" as never)}>
+              <Feather name="book-open" size={21} color="rgba(255,255,255,0.85)" />
+            </Pressable>
           </View>
         </View>
 
@@ -532,11 +530,9 @@ export default function MusicaSonidosScreen() {
           <View style={styles.headerTitleCol}>
             <Text style={styles.headerTitle}>Música</Text>
           </View>
-          <View style={styles.lotoBtn}>
-            <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/musica-info" as never)}>
-              <Feather name="info" size={23} color="rgba(255,255,255,0.85)" />
-            </Pressable>
-          </View>
+          <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/musica-info" as never)}>
+            <Feather name="book-open" size={21} color="rgba(255,255,255,0.85)" />
+          </Pressable>
         </View>
         <ChipRow tabs={TABS} activeTab={activeTab} onSelect={setActiveTab} onClear={() => setActiveTab(null)} />
         <View style={styles.stickyTabsDivider} />
