@@ -120,9 +120,9 @@ export function EscenasThemeButton({ onPress, style }: Props) {
         {/* Fondo de la intersección (lente) — #f9f9f9 al 60%.
             Al coincidir los círculos (dx≈0) la lente es el círculo completo. */}
         {lens === null ? (
-          <Circle cx={50} cy={50} r={R} fill="#f9f9f9" fillOpacity={0.6} />
+          <Circle cx={50} cy={50} r={R} fill="#f9f9f9" fillOpacity={0.2} />
         ) : (
-          <Path d={lens} fill="#f9f9f9" fillOpacity={0.6} />
+          <Path d={lens} fill="#f9f9f9" fillOpacity={0.2} />
         )}
 
         {/* Destello central durante el cruce */}
