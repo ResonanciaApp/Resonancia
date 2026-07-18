@@ -719,7 +719,7 @@ export default function ExploreScreen() {
                           <Feather name="chevron-right" size={18} color="#c2c2c2" />
                         </Pressable>
                         <View style={styles.tagGrid}>
-                          {TAG_CARDS.slice(0, 8).map((tag) => (
+                          {TAG_CARDS.filter((t) => !themeCarousels.some((tc) => tc.label === t.label)).slice(0, 8).map((tag) => (
                             <Pressable
                               key={tag.id}
                               onPress={() => router.push(`/tag/${tag.id}` as never)}
