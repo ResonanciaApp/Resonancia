@@ -708,15 +708,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 999,
-    backgroundColor: "rgba(247,203,107,0.12)",
+    backgroundColor: "rgba(255,255,255,0.75)",
     borderWidth: 1,
-    borderColor: "rgba(247,203,107,0.30)",
+    borderColor: "rgba(255,255,255,0.45)",
   },
   durPillText: {
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "600",
-    color: "#F7CB6B",
+    color: "#f9f9f9",
   },
 
   // Ejercicios de respiración
