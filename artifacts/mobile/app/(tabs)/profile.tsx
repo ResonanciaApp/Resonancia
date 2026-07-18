@@ -1346,7 +1346,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.053)",
   },
   pillSel: { borderWidth: 0 },
-  pillText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", color: "#F4F4F4" },
+  pillText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "450", letterSpacing: 0.3, color: "#F4F4F4" },
   pillTextSel: { fontFamily: "Manrope", color: "#2D0D3A", fontWeight: "500" },
 
   comingSoonWrap: {
