@@ -1536,6 +1536,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     gap: 10,
+    borderWidth: 1,
+    borderColor: "rgba(247,203,107,0.1)",
   },
   moodRowActive: {
     paddingVertical: 11,
