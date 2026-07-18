@@ -18,6 +18,7 @@ import { router } from "expo-router";
 
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 type Props = {
   visible: boolean;
@@ -30,6 +31,7 @@ type Step = "list" | "create";
 export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { theme } = useSceneTheme();
   const { playlists, createPlaylist, addToPlaylist, removeFromPlaylist, isInPlaylist } =
     useFoldersPlaylists();
 
@@ -70,7 +72,10 @@ export function AddToPlaylistSheet({ visible, sessionId, onClose }: Props) {
         style={styles.root}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <LinearGradient colors={["#1B060F", "#1B060F"]} style={StyleSheet.absoluteFill} />
+        <LinearGradient
+          colors={theme.gradient as unknown as [string, string, ...string[]]}
+          style={StyleSheet.absoluteFill}
+        />
         {/* ── Paso: Lista de playlists ── */}
         {step === "list" && (
           <>
