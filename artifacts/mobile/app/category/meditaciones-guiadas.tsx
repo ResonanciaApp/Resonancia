@@ -88,7 +88,7 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress:()=>void }) {
   return (
     <Pressable onPress={onPress} style={({pressed})=>[styles.chip, sel && styles.chipSel, {opacity:pressed?0.7:1}]}>
-      {sel && <View style={[StyleSheet.absoluteFill, { backgroundColor: "#CAAFF6" }]} />}
+      {sel && <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />}
       <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
     </Pressable>
   );
