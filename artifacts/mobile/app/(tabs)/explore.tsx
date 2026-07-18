@@ -613,10 +613,10 @@ export default function ExploreScreen() {
               source={require("@/assets/images/chakra-silhouette.png")}
               style={{
                 position: "absolute",
-                width: 220,
-                height: 620,
+                width: 660,
+                height: 1860,
                 top: -18,
-                left: (width - 220) / 2,
+                left: (width - 660) / 2,
                 opacity: 0.18,
               }}
               contentFit="contain"
