@@ -423,6 +423,18 @@ export default function PlayerScreen() {
   const remaining = totalSeconds - elapsed;
   const fav = isFavorite(currentSession.id);
 
+  const scaleHeart    = useRef(new RNAnimated.Value(1)).current;
+  const scaleShare    = useRef(new RNAnimated.Value(1)).current;
+  const scalePlaylist = useRef(new RNAnimated.Value(1)).current;
+
+  const bounce = (sv: RNAnimated.Value) => {
+    sv.setValue(1);
+    RNAnimated.sequence([
+      RNAnimated.timing(sv, { toValue: 1.25, duration: 120, useNativeDriver: true }),
+      RNAnimated.spring(sv, { toValue: 1, friction: 3, tension: 140, useNativeDriver: true }),
+    ]).start();
+  };
+
   const { dominant: dominantColor, mid: midColor, dark: darkColor } = imageColors;
 
   const handlePlayPause = () => {
@@ -573,22 +585,33 @@ export default function PlayerScreen() {
             <Pressable
               style={styles.actionBtn}
               onPress={() => {
+                bounce(scaleHeart);
                 toggleFavorite(currentSession.id);
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               }}
               hitSlop={8}
             >
-              <FontAwesome name="heart" size={20} color={fav ? "#F7CB6B" : "rgba(255,255,255,0.92)"} />
-            </Pressable>
-            <Pressable style={styles.actionBtn} onPress={handleShare} hitSlop={8}>
-              <Feather name="share" size={22} color="rgba(255,255,255,0.92)" />
+              <RNAnimated.View style={{ transform: [{ scale: scaleHeart }] }}>
+                <FontAwesome name="heart" size={20} color={fav ? "#F7CB6B" : "rgba(255,255,255,0.92)"} />
+              </RNAnimated.View>
             </Pressable>
             <Pressable
               style={styles.actionBtn}
-              onPress={() => setShowPlaylistSheet(true)}
+              onPress={() => { bounce(scaleShare); handleShare(); }}
               hitSlop={8}
             >
-              <Feather name="list" size={22} color="rgba(255,255,255,0.92)" />
+              <RNAnimated.View style={{ transform: [{ scale: scaleShare }] }}>
+                <Feather name="share" size={22} color="rgba(255,255,255,0.92)" />
+              </RNAnimated.View>
+            </Pressable>
+            <Pressable
+              style={styles.actionBtn}
+              onPress={() => { bounce(scalePlaylist); setShowPlaylistSheet(true); }}
+              hitSlop={8}
+            >
+              <RNAnimated.View style={{ transform: [{ scale: scalePlaylist }] }}>
+                <Feather name="list" size={22} color="rgba(255,255,255,0.92)" />
+              </RNAnimated.View>
             </Pressable>
           </View>
 
