@@ -36,6 +36,7 @@ import type { MixComment, SharedMixesPage } from "@workspace/api-client-react";
 
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import Svg, { Path } from "react-native-svg";
 
 import { getSoundImage } from "@/config/sound-images";
 import { SOUNDS } from "@/data/sounds";
@@ -58,6 +59,7 @@ export default function CommunityMixScreen() {
   const { isSignedIn } = useAuth();
   const { photoUri } = useUserProfile();
   const { isPlaying, togglePlay, loadedPresetId, stopAll } = useMixer();
+  const accentColor = "rgb(247,203,107)";
 
   useEffect(() => () => { stopAll(); }, []);
   const loadMix = useLoadMix();
@@ -332,45 +334,45 @@ export default function CommunityMixScreen() {
             </Text>
           </Pressable>
 
-          {/* Botón reproducir */}
-          <Pressable
-            onPress={handlePlayPause}
-            style={({ pressed }) => [
-              styles.playBtn,
-              { overflow: "hidden", opacity: pressed ? 0.88 : 1, marginTop: 24, marginBottom: 14 },
-            ]}
-          >
-            <LinearGradient
-              colors={["#D6A45C", "#F7CB6B"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-              <Feather name={isPlayingThis ? "pause" : "play"} size={18} color={colors.primaryForeground} />
-              <Text style={[styles.playTxt, { color: colors.primaryForeground }]}>
-                {isPlayingThis ? "Pausar" : isThisLoaded ? "Reanudar" : "Reproducir mezcla"}
-              </Text>
-            </View>
-          </Pressable>
-
-          {/* Botón compartir */}
-          <Pressable
-            onPress={handleShare}
-            style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, marginBottom: 14 })}
-          >
-            <LinearGradient
-              colors={["#D6A45C", "#F7CB6B"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={styles.shareBtnGradientBorder}
+          {/* Botones Reproducir / Compartir — 2 columnas estilo sesión */}
+          <View style={{ flexDirection: "row", gap: 10, marginTop: 24, marginBottom: 26 }}>
+            <Pressable
+              onPress={handlePlayPause}
+              style={({ pressed }) => [
+                styles.playBtn,
+                { flex: 1, overflow: "hidden", opacity: pressed ? 0.88 : 1 },
+              ]}
             >
-              <View style={styles.shareBtnInner}>
-                <Text style={styles.shareBtnText}>Compartir</Text>
-                <Feather name="send" size={15} color="#D6A45C" />
+              <LinearGradient
+                colors={["#D6A45C", "#F7CB6B"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                {isPlayingThis ? (
+                  <Feather name="pause" size={16} color="#0d0c26" />
+                ) : (
+                  <Svg width={16} height={16} viewBox="0 0 48 48">
+                    <Path d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z" fill="#0d0c26" />
+                  </Svg>
+                )}
+                <Text style={styles.playBtnText}>
+                  {isPlayingThis ? "Pausar" : isThisLoaded ? "Reanudar" : "Reproducir mezcla"}
+                </Text>
               </View>
-            </LinearGradient>
-          </Pressable>
+            </Pressable>
+
+            <Pressable
+              onPress={handleShare}
+              style={({ pressed }) => ({ flex: 1, opacity: pressed ? 0.75 : 1 })}
+            >
+              <View style={[styles.shareBtnInner, { borderColor: accentColor, flex: 1 }]}>
+                <Text style={[styles.shareBtnText, { color: accentColor }]}>Compartir</Text>
+                <Feather name="send" size={15} color={accentColor} />
+              </View>
+            </Pressable>
+          </View>
 
 
           {/* Comentarios */}
@@ -503,19 +505,31 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 6,
   },
-  playTxt: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", letterSpacing: 0.5 },
-  shareBtnGradientBorder: { borderRadius: 30, padding: 1.5 },
+  playBtnText: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+    color: "#0d0c26",
+  },
   shareBtnInner: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    paddingVertical: 9,
-    borderRadius: 29,
-    backgroundColor: "#210911",
+    paddingVertical: 10.5,
+    borderRadius: 30,
+    backgroundColor: "transparent",
+    borderWidth: 1.5,
+    borderColor: "#F9F9F9",
     paddingHorizontal: 24,
   },
-  shareBtnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "600", color: "#D6AD5F", letterSpacing: 0.5 },
+  shareBtnText: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "600",
+    letterSpacing: 0.5,
+  },
 
   commentsHeader: {
     flexDirection: "row",
