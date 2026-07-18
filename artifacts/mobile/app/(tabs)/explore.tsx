@@ -607,20 +607,15 @@ export default function ExploreScreen() {
           </View>
 
           {/* Panel de orbs */}
-          <View style={{ width, height: CHAKRA_PANEL_H, position: "relative", overflow: "hidden" }}>
-            {/* Silueta meditando — alineada con los centros energéticos */}
-            <Image
-              source={require("@/assets/images/chakra-silhouette.png")}
-              style={{
-                position: "absolute",
-                width: 360,
-                height: 640,
-                top: -30,
-                left: (width - 360) / 2,
-                opacity: 0.18,
-              }}
-              contentFit="contain"
-            />
+          <View style={{
+            width: width - H_PAD * 2,
+            alignSelf: "center",
+            height: CHAKRA_PANEL_H,
+            position: "relative",
+            backgroundColor: "rgba(0,0,0,0.15)",
+            borderRadius: 25,
+            overflow: "hidden",
+          }}>
             {CHAKRAS_VISUAL.map((c, i) => (
               <ChakraBodyRow key={c.id} chakra={c} topPct={CHAKRA_TOP_PCTS[i]} side={i % 2 === 0 ? "right" : "left"} />
             ))}
