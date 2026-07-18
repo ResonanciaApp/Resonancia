@@ -66,6 +66,16 @@ const CHAKRA_LINE_W = 36; // longitud fija del conector a cada lado
 const CHAKRAS_VISUAL = [...CHAKRAS].reverse(); // Sahasrara (corona) primero → Muladhara (raíz) último
 // +8 px de separación acumulada entre cada chakra respecto a los originales
 const CHAKRA_TOP_PCTS = [0.087, 0.233, 0.380, 0.527, 0.673, 0.820, 0.966] as const;
+// Textos izquierda — mismo orden que CHAKRAS_VISUAL (Sahasrara → Muladhara)
+const CHAKRA_LEFT_LABELS = [
+  "Consciencia cósmica",
+  "Visión interior",
+  "Voz auténtica",
+  "Amor incondicional",
+  "Voluntad",
+  "Fluir creativo",
+  "Fuerza interior",
+] as const;
 const TEMA_COL_W = Math.floor((width - H_PAD * 2 - GAP) / 2);
 const TEMA3_W    = Math.floor((width - H_PAD * 2 - TEMA_GAP * 2) / 3);
 
@@ -294,7 +304,7 @@ function ChakraBodyRow({ chakra, topPct, side }: { chakra: Chakra; topPct: numbe
         <Animated.View style={[{ marginLeft: GLOW_R - CHAKRA_ORB_SIZE / 2 }, glyphAnimStyle]}>
           <SacredGlyph id={chakra.geometryId} color={chakra.color} size={CHAKRA_ORB_SIZE} />
         </Animated.View>
-        <View style={{ marginLeft: 8 }}>
+        <View style={{ marginLeft: 23 }}>
           <Text style={{ color: "#FBFBFB", fontFamily: "Manrope", fontSize: 13, fontWeight: "700" }}>
             {chakra.name}
           </Text>
@@ -615,6 +625,24 @@ export default function ExploreScreen() {
               backgroundColor: "rgba(0,0,0,0.15)",
               borderRadius: 25,
             }} />
+            {CHAKRA_LEFT_LABELS.map((label, i) => {
+              const rowTop = Math.round(CHAKRA_TOP_PCTS[i] * CHAKRA_PANEL_H) - ROW_H / 2;
+              return (
+                <View key={`lbl-${i}`} style={{
+                  position: "absolute",
+                  top: rowTop,
+                  left: H_PAD + 8,
+                  right: width - CHAKRA_ORB_CENTER_X + 10,
+                  height: ROW_H,
+                  justifyContent: "center",
+                  alignItems: "flex-end",
+                }}>
+                  <Text style={{ color: "#F9F9F9", fontFamily: "Manrope", fontSize: 12, textAlign: "right" }}>
+                    {label}
+                  </Text>
+                </View>
+              );
+            })}
             {CHAKRAS_VISUAL.map((c, i) => (
               <ChakraBodyRow key={c.id} chakra={c} topPct={CHAKRA_TOP_PCTS[i]} side="right" />
             ))}
