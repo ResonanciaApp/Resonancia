@@ -92,7 +92,7 @@ function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel
     <Pressable onPress={onPress} style={({pressed})=>[styles.chip, sel && styles.chipSel, {opacity:pressed?0.7:1}]}>
       {sel && (chipTheme?.id === "tibet"
         ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
-        : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+        : <LinearGradient colors={["#D6A45C", "#F7CB6B"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
       )}
       <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
     </Pressable>

@@ -176,9 +176,9 @@ const PillTab = memo(function PillTab({
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
           ) : (
             <LinearGradient
-              colors={["#F7CB6B", "#FBA980"]}
+              colors={["#D6A45C", "#F7CB6B"]}
               start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
+              end={{ x: 0, y: 1 }}
               style={StyleSheet.absoluteFill}
             />
           )}
@@ -783,7 +783,7 @@ export default function MezcladorScreen() {
                         >
                           {sel && (theme?.id === "tibet"
                             ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
-                            : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+                            : <LinearGradient colors={["#D6A45C", "#F7CB6B"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
                           )}
                           <Text style={[styles.subTabText, { color: sel ? "#2D0D3A" : "#FBFBFB" }]}>
                             {SUB_TAB_LABELS[catId] ?? cat.label}
