@@ -90,11 +90,10 @@ function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
 }
 
 
-type PerfilTab = "panel" | "reflexiones" | "biblioteca" | "historial" | "registros";
+type PerfilTab = "panel" | "biblioteca" | "historial" | "registros";
 
 const PERFIL_TABS: { id: PerfilTab; label: string }[] = [
   { id: "panel",       label: "Muro" },
-  { id: "reflexiones", label: "Reflexiones" },
   { id: "biblioteca",  label: "Biblioteca" },
   { id: "historial",   label: "Historial" },
   { id: "registros",   label: "Mi Espacio" },
@@ -921,17 +920,10 @@ export default function ProfileScreen() {
 
 
         </Animated.View>
-      </ScrollView>
-      )}
 
-      {perfilTab === "reflexiones" && (
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 19 }}
-          showsVerticalScrollIndicator={false}
-          onScroll={handleHeaderScroll}
-          scrollEventThrottle={16}
-        >
+        {/* ── Reflexiones ── */}
+        <View style={{ marginTop: 28 }}>
+          <Text style={[styles.muroSectionTitle, { color: colors.mutedForeground, marginBottom: 12 }]}>Reflexiones</Text>
           {(() => {
             const MURO_PLACEHOLDERS = [
               {
@@ -955,7 +947,6 @@ export default function ProfileScreen() {
                   const expanded = muroExpanded[idx] ?? false;
                   return (
                     <View key={idx} style={styles.muroCard}>
-                      {/* Columna izquierda: imagen + título */}
                       <View style={styles.muroLeft}>
                         {session?.image ? (
                           <Image source={session.image as number} style={styles.muroThumb} contentFit="cover" />
@@ -966,8 +957,6 @@ export default function ProfileScreen() {
                           {session?.title ?? "Sesión"}
                         </Text>
                       </View>
-
-                      {/* Columna derecha: mensaje con expand */}
                       <View style={styles.muroRight}>
                         <View style={styles.muroMsgCard}>
                           <Text
@@ -987,9 +976,7 @@ export default function ProfileScreen() {
                             hitSlop={8}
                             style={{ marginTop: 8, alignSelf: "flex-end" }}
                           >
-                            <Text style={styles.muroVerMas}>
-                              {expanded ? "Ver menos" : "Ver más"}
-                            </Text>
+                            <Text style={styles.muroVerMas}>{expanded ? "Ver menos" : "Ver más"}</Text>
                           </Pressable>
                         </View>
                       </View>
@@ -999,8 +986,10 @@ export default function ProfileScreen() {
               </View>
             );
           })()}
-        </ScrollView>
+        </View>
+      </ScrollView>
       )}
+
 
       {perfilTab === "biblioteca" && <BibliotecaScreen embedded />}
 
