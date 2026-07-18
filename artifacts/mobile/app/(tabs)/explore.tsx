@@ -575,7 +575,7 @@ export default function ExploreScreen() {
         {/* ── Para este momento ── */}
         {featuredHoy && (
           <View style={[styles.section, { marginBottom: 0, marginTop: 10 }]}>
-            <Text style={[styles.sectionTitle, { marginBottom: 24 }]}>Para este momento</Text>
+            <Text style={styles.sectionTitle}>Para este momento</Text>
             <Pressable
               onPress={() => {
                 if (featuredHoy.skipMiniPlayer) { handleSessionPress(featuredHoy); return; }
@@ -614,7 +614,7 @@ export default function ExploreScreen() {
 
         {/* ── ¿Cuánto tiempo tienes hoy? ── */}
         <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: SECTION_GAP }]}>
-          <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>¿Cuánto tiempo tienes hoy?</Text>
+          <Text style={styles.sectionTitle}>¿Cuánto tiempo tienes hoy?</Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -725,7 +725,7 @@ export default function ExploreScreen() {
                     <>
                       {/* ── Descubre algo nuevo ── */}
                       <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
-                        <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Descubre algo nuevo</Text>
+                        <Text style={styles.sectionTitle}>Descubre algo nuevo</Text>
                         <ScrollView
                           horizontal
                           showsHorizontalScrollIndicator={false}
@@ -823,7 +823,7 @@ const styles = StyleSheet.create({
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
 
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 24 },
-  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 24 },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 21 },
 
   // Recomendado para ti
   recoSection: {
