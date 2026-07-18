@@ -49,7 +49,7 @@ function SleepPill({
       onPress={onPress}
       style={({ pressed }) => [styles.sleepPill, sel && styles.sleepPillSel, { opacity: pressed ? 0.7 : 1 }]}
     >
-      {sel && <View style={[StyleSheet.absoluteFill, { backgroundColor: "#C6B0ED" }]} />}
+      {sel && <View style={[StyleSheet.absoluteFill, { backgroundColor: "#9AD6F4" }]} />}
       <Text style={[styles.sleepPillText, sel && styles.sleepPillTextSel]} numberOfLines={1}>
         {label}
       </Text>
