@@ -626,7 +626,9 @@ export default function ExploreScreen() {
                     sessions={tc.sessions}
                     isPremium={isPremium}
                     onPress={(s) => handleSessionPress(s)}
-                    style={{ marginTop: 0, marginBottom: SECTION_GAP }}
+                    style={tc.label === "Para la ansiedad"
+                      ? { marginTop: -40, marginBottom: SECTION_GAP + 40 }
+                      : { marginTop: 0, marginBottom: SECTION_GAP }}
                     cardWidth={tc.label === "Para la ansiedad" ? 299 : SQCARD_W}
                     cardHeight={tc.label === "Para la ansiedad" ? 187 : undefined}
                     titleSize={20}
