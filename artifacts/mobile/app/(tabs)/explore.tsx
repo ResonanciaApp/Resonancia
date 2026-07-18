@@ -611,8 +611,29 @@ export default function ExploreScreen() {
           </View>
         )}
 
+        {/* ── ¿Cuánto tiempo tienes hoy? ── */}
+        <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: SECTION_GAP }]}>
+          <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>¿Cuánto tiempo tienes hoy?</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ marginHorizontal: -H_PAD }}
+            contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 10 }}
+          >
+            {DURATION_SLOTS.map((slot) => (
+              <Pressable
+                key={slot.label}
+                onPress={() => router.push(`/busqueda?tiempo=${encodeURIComponent(slot.label)}` as never)}
+                style={({ pressed }) => [styles.durPill, { opacity: pressed ? 0.75 : 1 }]}
+              >
+                <Text style={styles.durPillText}>{slot.label}</Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
+
         {/* ── Chakras ── */}
-        <View style={{ marginTop: SECTION_GAP, marginBottom: SECTION_GAP + 40 }}>
+        <View style={{ marginTop: 0, marginBottom: SECTION_GAP + 40 }}>
           {/* Título encima */}
           <View style={{ paddingHorizontal: H_PAD, marginBottom: 28 }}>
             <Text style={{ fontFamily: "Manrope", fontSize: 22, fontWeight: "700", color: "#FBFBFB" }}>
@@ -682,27 +703,6 @@ export default function ExploreScreen() {
                   />
                   {isFoco && (
                     <>
-                      {/* ── ¿Cuánto tiempo tienes hoy? ── */}
-                      <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
-                        <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>¿Cuánto tiempo tienes hoy?</Text>
-                        <ScrollView
-                          horizontal
-                          showsHorizontalScrollIndicator={false}
-                          style={{ marginHorizontal: -H_PAD }}
-                          contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 10 }}
-                        >
-                          {DURATION_SLOTS.map((slot) => (
-                            <Pressable
-                              key={slot.label}
-                              onPress={() => router.push(`/busqueda?tiempo=${encodeURIComponent(slot.label)}` as never)}
-                              style={({ pressed }) => [styles.durPill, { opacity: pressed ? 0.75 : 1 }]}
-                            >
-                              <Text style={styles.durPillText}>{slot.label}</Text>
-                            </Pressable>
-                          ))}
-                        </ScrollView>
-                      </View>
-
                       {/* ── Otras temáticas ── */}
                       <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
                         <Pressable
