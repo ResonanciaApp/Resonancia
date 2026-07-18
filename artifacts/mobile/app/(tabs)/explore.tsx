@@ -499,7 +499,7 @@ export default function ExploreScreen() {
         )}
 
         {/* ── Chakras ── */}
-        <View style={{ marginTop: 0 }}>
+        <View style={{ marginTop: 0, marginBottom: SECTION_GAP }}>
           <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 24 }]}>Según cada Chakra</Text>
           <ScrollView
             horizontal
@@ -525,9 +525,7 @@ export default function ExploreScreen() {
         {/* ── Carruseles por temática ── */}
         {themeCarousels.length > 0 && (
           <>
-            <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
-            {themeCarousels.map((tc, idx) => {
-              const isLast = idx === themeCarousels.length - 1;
+            {themeCarousels.map((tc) => {
               const isFoco = tc.label === "Foco y concentración";
               return (
                 <React.Fragment key={tc.label}>
@@ -536,13 +534,13 @@ export default function ExploreScreen() {
                     sessions={tc.sessions}
                     isPremium={isPremium}
                     onPress={(s) => handleSessionPress(s)}
-                    style={{ marginTop: 24, marginBottom: 0 }}
+                    style={{ marginTop: 0, marginBottom: SECTION_GAP }}
                     cardWidth={tc.label === "Para la ansiedad" ? 299 : SQCARD_W}
                     cardHeight={tc.label === "Para la ansiedad" ? 187 : undefined}
                     titleSize={20}
                   />
                   {isFoco && (
-                    <View style={[styles.section, { marginBottom: 36, marginTop: 48 }]}>
+                    <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
                       <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>¿Cuánto tiempo tienes hoy?</Text>
                       <ScrollView
                         horizontal
@@ -561,12 +559,6 @@ export default function ExploreScreen() {
                         ))}
                       </ScrollView>
                     </View>
-                  )}
-                  {!isLast && !isFoco && (
-                    <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
-                  )}
-                  {!isLast && isFoco && (
-                    <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginBottom: 4 }} />
                   )}
                 </React.Fragment>
               );
