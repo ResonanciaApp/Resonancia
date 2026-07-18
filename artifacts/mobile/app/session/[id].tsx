@@ -364,35 +364,15 @@ export default function SessionDetailScreen() {
         {/* ── Content ────────────────────────────────────────────────────── */}
         <View style={styles.content}>
 
-          {/* Avatar autor */}
-          {authors[0]?.photo && (
-            <Pressable
-              onPress={() => router.push(authors[0].profilePath as never)}
-              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1, marginTop: 24, marginBottom: 10, alignSelf: "flex-start" })}
-            >
-              <Image
-                source={authors[0].photo as never}
-                style={{ width: 46, height: 46, borderRadius: 23 }}
-                contentFit="cover"
-              />
-            </Pressable>
-          )}
-
           {/* Title + acciones */}
-          <View style={[styles.titleRow, { marginTop: authors[0]?.photo ? 0 : 24 }]}>
+          <View style={[styles.titleRow, { marginTop: 24 }]}>
             <Text style={[styles.title, { color: colors.foreground, flex: 1 }]} numberOfLines={3}>{session.title}</Text>
             <View style={styles.titleActions}>
               <Pressable onPress={() => setActionsSheetOpen(true)} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-                <View style={styles.iconBtn}>
-                  <Feather name="more-horizontal" size={20} color="#FBFBFB" />
-                </View>
+                <Feather name="more-horizontal" size={22} color="#FBFBFB" />
               </Pressable>
               <Pressable onPress={handleFav} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-                <View style={styles.iconBtn}>
-                  {fav
-                    ? <FontAwesome name="heart" size={18} color="#F7CB6B" />
-                    : <Feather name="heart" size={20} color="#FBFBFB" />}
-                </View>
+                <Feather name="heart" size={22} color={fav ? "#F7CB6B" : "#FBFBFB"} />
               </Pressable>
             </View>
           </View>
@@ -944,19 +924,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: "Manrope",
-    fontSize: 20,
+    fontSize: 23,
     fontWeight: "700",
-    lineHeight: 29,
+    lineHeight: 33,
     letterSpacing: -0.3,
     textAlign: "left",
-  },
-  iconBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "rgba(255,255,255,0.1)",
-    alignItems: "center",
-    justifyContent: "center",
   },
 
   // Description

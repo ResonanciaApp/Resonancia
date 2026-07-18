@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
 import * as Haptics from "expo-haptics";
@@ -452,6 +452,14 @@ export default function PlayerScreen() {
     ? getGuide(currentSession.guideId).name
     : getArtist(currentSession.artistId).name;
 
+  const authorPhoto = currentSession.guideId
+    ? getGuide(currentSession.guideId).photo
+    : getArtist(currentSession.artistId).photo;
+
+  const authorProfilePath = currentSession.guideId
+    ? `/guiador/${currentSession.guideId}`
+    : `/artista/${currentSession.artistId}`;
+
   return (
     <View style={styles.root}>
       <Stack.Screen options={{ animation: anim === "fade" ? "fade" : "slide_from_bottom", animationDuration: 300 }} />
@@ -522,6 +530,21 @@ export default function PlayerScreen() {
           style={[styles.mainContent, { paddingTop: topPad + 68, paddingBottom: bottomPad + 12 }]}
           pointerEvents="box-none"
         >
+          {/* Avatar autor */}
+          {authorPhoto && (
+            <Pressable
+              onPress={() => router.push(authorProfilePath as never)}
+              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1, alignSelf: "center", marginBottom: 12 })}
+              hitSlop={8}
+            >
+              <ExpoImage
+                source={authorPhoto as never}
+                style={{ width: 52, height: 52, borderRadius: 26 }}
+                contentFit="cover"
+              />
+            </Pressable>
+          )}
+
           {/* Título */}
           <Text style={styles.titleText} numberOfLines={3}>
             {currentSession.title}
@@ -555,7 +578,9 @@ export default function PlayerScreen() {
               }}
               hitSlop={8}
             >
-              <Feather name="heart" size={22} color={fav ? "#F7CB6B" : "rgba(255,255,255,0.92)"} />
+              {fav
+                ? <FontAwesome name="heart" size={20} color="#F7CB6B" />
+                : <Feather name="heart" size={22} color="rgba(255,255,255,0.92)" />}
             </Pressable>
             <Pressable style={styles.actionBtn} onPress={handleShare} hitSlop={8}>
               <Feather name="share" size={22} color="rgba(255,255,255,0.92)" />
@@ -969,7 +994,7 @@ const styles = StyleSheet.create({
   // Título grande centrado
   titleText: {
     fontFamily: "Manrope",
-    fontSize: 28,
+    fontSize: 25,
     fontWeight: "800",
     color: "#FBFBFB",
     letterSpacing: 0.1,
