@@ -45,10 +45,12 @@ import { useUserProfile } from "@/context/UserProfileContext";
 import { getCategoryMeta, type MixCategory } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 import { resolveAvatarUrl } from "@/lib/avatar";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useLoadMix } from "@/hooks/useLoadMix";
 
 export default function CommunityMixScreen() {
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const mixId = Number(id);
@@ -215,7 +217,7 @@ export default function CommunityMixScreen() {
 
   if (isLoading) {
     return (
-      <LinearGradient colors={["#340D1A", "#190913"]} style={styles.center}>
+      <LinearGradient colors={theme.gradient} style={styles.center}>
         <ActivityIndicator color={colors.primary} />
       </LinearGradient>
     );
@@ -223,7 +225,7 @@ export default function CommunityMixScreen() {
 
   if (!mix) {
     return (
-      <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={[styles.center, { paddingHorizontal: 32 }]}>
+      <LinearGradient colors={theme.gradient} style={[styles.center, { paddingHorizontal: 32 }]}>
         <Feather name="cloud-off" size={32} color={colors.mutedForeground} />
         <Text style={[styles.notFound, { color: colors.foreground }]}>
           Esta mezcla ya no está disponible.
@@ -241,7 +243,7 @@ export default function CommunityMixScreen() {
 
   return (
     <LinearGradient
-      colors={["#340D1A", "#190913"]}
+      colors={theme.gradient}
       style={styles.root}
     >
     <KeyboardAvoidingView
