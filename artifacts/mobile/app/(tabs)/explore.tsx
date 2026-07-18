@@ -60,11 +60,12 @@ function hexTint(hex: string, alpha: number): string {
 
 const SQCARD_W = Math.round((width - H_PAD * 2) / 1.85);
 const CHAKRA_PANEL_H = 560;
-const CHAKRA_ORB_SIZE = 38;
+const CHAKRA_ORB_SIZE = 46;
 const CHAKRA_ORB_CENTER_X = Math.round(width / 2);
 const CHAKRA_LINE_W = 46; // longitud fija del conector a cada lado
 const CHAKRAS_VISUAL = [...CHAKRAS].reverse(); // Sahasrara (corona) primero → Muladhara (raíz) último
-const CHAKRA_TOP_PCTS = [0.09, 0.21, 0.33, 0.46, 0.58, 0.70, 0.83] as const;
+// +8 px de separación acumulada entre cada chakra respecto a los originales
+const CHAKRA_TOP_PCTS = [0.09, 0.224, 0.359, 0.503, 0.637, 0.771, 0.916] as const;
 const TEMA_COL_W = Math.floor((width - H_PAD * 2 - GAP) / 2);
 const TEMA3_W    = Math.floor((width - H_PAD * 2 - TEMA_GAP * 2) / 3);
 
@@ -248,16 +249,29 @@ const srStyles = StyleSheet.create({
 
 // ── ChakraBodyRow ──────────────────────────────────────────────────────────────
 const GLOW_R = 34;
-const ROW_H = 46;
+const ROW_H = 54;
 
 function ChakraBodyRow({ chakra, topPct, side }: { chakra: Chakra; topPct: number; side: "left" | "right" }) {
-  const glowAnim = useRef(new Animated.Value(0)).current;
+  const glowAnim  = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const dimAnim   = useRef(new Animated.Value(0.42)).current;
 
   const handlePress = () => {
     glowAnim.setValue(0);
-    Animated.sequence([
-      Animated.timing(glowAnim, { toValue: 1, duration: 160, useNativeDriver: true }),
-      Animated.timing(glowAnim, { toValue: 0, duration: 240, useNativeDriver: true }),
+    scaleAnim.setValue(1);
+    Animated.parallel([
+      Animated.sequence([
+        Animated.timing(glowAnim,  { toValue: 1,    duration: 150, useNativeDriver: true }),
+        Animated.timing(glowAnim,  { toValue: 0,    duration: 300, useNativeDriver: true }),
+      ]),
+      Animated.sequence([
+        Animated.timing(scaleAnim, { toValue: 1.18, duration: 120, useNativeDriver: true }),
+        Animated.timing(scaleAnim, { toValue: 1,    duration: 200, useNativeDriver: true }),
+      ]),
+      Animated.sequence([
+        Animated.timing(dimAnim,   { toValue: 1,    duration: 120, useNativeDriver: true }),
+        Animated.timing(dimAnim,   { toValue: 0.42, duration: 500, useNativeDriver: true }),
+      ]),
     ]).start(() => router.push(`/chakra/${chakra.id}` as never));
   };
 
@@ -271,7 +285,12 @@ function ChakraBodyRow({ chakra, topPct, side }: { chakra: Chakra; topPct: numbe
     top: ROW_H / 2 - GLOW_R,
     backgroundColor: chakra.color,
     opacity: glowAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 0.65] }),
-    transform: [{ scale: glowAnim.interpolate({ inputRange: [0, 1], outputRange: [0.5, 2.4] }) }],
+    transform: [{ scale: glowAnim.interpolate({ inputRange: [0, 1], outputRange: [0.5, 2.6] }) }],
+  };
+
+  const glyphAnimStyle = {
+    transform: [{ scale: scaleAnim }],
+    opacity: dimAnim,
   };
 
   if (side === "right") {
@@ -290,9 +309,9 @@ function ChakraBodyRow({ chakra, topPct, side }: { chakra: Chakra; topPct: numbe
         }}
       >
         <Animated.View style={[glowStyle, { left: 0 }]} />
-        <View style={{ marginLeft: GLOW_R - CHAKRA_ORB_SIZE / 2 }}>
+        <Animated.View style={[{ marginLeft: GLOW_R - CHAKRA_ORB_SIZE / 2 }, glyphAnimStyle]}>
           <SacredGlyph id={chakra.geometryId} color={chakra.color} size={CHAKRA_ORB_SIZE} />
-        </View>
+        </Animated.View>
         <View style={{ width: CHAKRA_LINE_W, height: 1, backgroundColor: chakra.color, opacity: 0.5, marginLeft: 4 }} />
         <View style={{ marginLeft: 9 }}>
           <Text style={{ color: "#FBFBFB", fontFamily: "Manrope", fontSize: 13, fontWeight: "700" }}>
@@ -322,9 +341,9 @@ function ChakraBodyRow({ chakra, topPct, side }: { chakra: Chakra; topPct: numbe
       }}
     >
       <Animated.View style={[glowStyle, { right: 0 }]} />
-      <View style={{ marginRight: GLOW_R - CHAKRA_ORB_SIZE / 2 }}>
+      <Animated.View style={[{ marginRight: GLOW_R - CHAKRA_ORB_SIZE / 2 }, glyphAnimStyle]}>
         <SacredGlyph id={chakra.geometryId} color={chakra.color} size={CHAKRA_ORB_SIZE} />
-      </View>
+      </Animated.View>
       <View style={{ width: CHAKRA_LINE_W, height: 1, backgroundColor: chakra.color, opacity: 0.5, marginRight: 4 }} />
       <View style={{ marginRight: 9, alignItems: "flex-end" }}>
         <Text style={{ color: "#FBFBFB", fontFamily: "Manrope", fontSize: 13, fontWeight: "700", textAlign: "right" }}>
