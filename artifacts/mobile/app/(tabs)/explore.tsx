@@ -60,7 +60,7 @@ function hexTint(hex: string, alpha: number): string {
 
 const SQCARD_W = Math.round((width - H_PAD * 2) / 1.85);
 const CHAKRA_PANEL_H = 560;
-const CHAKRA_ORB_SIZE = 46;
+const CHAKRA_ORB_SIZE = 64;
 const CHAKRA_ORB_CENTER_X = Math.round(width / 2);
 const CHAKRA_LINE_W = 46; // longitud fija del conector a cada lado
 const CHAKRAS_VISUAL = [...CHAKRAS].reverse(); // Sahasrara (corona) primero → Muladhara (raíz) último
@@ -249,7 +249,7 @@ const srStyles = StyleSheet.create({
 
 // ── ChakraBodyRow ──────────────────────────────────────────────────────────────
 const GLOW_R = 34;
-const ROW_H = 54;
+const ROW_H = 72;
 
 function ChakraBodyRow({ chakra, topPct, side }: { chakra: Chakra; topPct: number; side: "left" | "right" }) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
