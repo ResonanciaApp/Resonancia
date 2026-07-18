@@ -1,6 +1,6 @@
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import Svg, { Defs, LinearGradient as SvgLinearGradient, Path, Stop } from "react-native-svg";
+import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Path, Stop } from "react-native-svg";
 import { Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -66,6 +66,7 @@ const TAB_CONFIG: Record<
     iconOffset?: number;
     labelOffset?: number;
     activeColor?: string;
+    useGradientActive?: boolean;
   }
 > = {
   inicio8:    { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
@@ -74,8 +75,23 @@ const TAB_CONFIG: Record<
   biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark", image: require("@/assets/images/tab-icon-universo.png") },
   video:      { label: "Videos",     sfIcon: "video",               sfIconFill: "video.fill",           featherIcon: "video" },
   descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon" },
-  profile:    { label: "Perfil",     sfIcon: "person",              sfIconFill: "person.fill",          featherIcon: "user" },
+  profile:    { label: "Perfil",     sfIcon: "person",              sfIconFill: "person.fill",          featherIcon: "user", activeColor: "#F7CB6B", useGradientActive: true },
 };
+
+function GradientPersonIcon({ size }: { size: number }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Defs>
+        <SvgLinearGradient id="profTabGrad" x1="0" y1="0" x2="0" y2="1">
+          <Stop offset="0" stopColor="#D6A45C" stopOpacity="1" />
+          <Stop offset="1" stopColor="#F7CB6B" stopOpacity="1" />
+        </SvgLinearGradient>
+      </Defs>
+      <Circle cx="12" cy="7.5" r="4" fill="url(#profTabGrad)" />
+      <Path d="M4 20 C4 15 7.5 12.5 12 12.5 C16.5 12.5 20 15 20 20 Z" fill="url(#profTabGrad)" />
+    </Svg>
+  );
+}
 
 function TabItem({
   route,
@@ -104,6 +120,13 @@ function TabItem({
     const color  = active ? activeCol : inactiveCol;
     const sfName = active ? conf.sfIconFill : conf.sfIcon;
     const mciName = active ? conf.mciIconFill : conf.mciIcon;
+    if (active && conf.useGradientActive) {
+      return (
+        <View style={{ transform: tOffset }}>
+          <GradientPersonIcon size={iconSize} />
+        </View>
+      );
+    }
     return conf.image ? (
       <Image source={conf.image} style={{ width: iconSize, height: iconSize, transform: tOffset }} tintColor={color} resizeMode="contain" />
     ) : mciName ? (
