@@ -630,6 +630,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.15)",
     alignItems: "center",
     justifyContent: "center",
+    filter: [{ saturate: 1.1 }],
   },
   chakraName: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", color: "#FBFBFB", marginTop: 10, textAlign: "center" },
   chakraSub:  { fontFamily: "Manrope", fontSize: 11, color: "#c2c2c2", marginTop: 3, textAlign: "center" },
