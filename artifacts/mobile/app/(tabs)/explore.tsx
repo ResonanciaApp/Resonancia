@@ -61,8 +61,8 @@ function hexTint(hex: string, alpha: number): string {
 const SQCARD_W = Math.round((width - H_PAD * 2) / 1.85);
 const CHAKRA_PANEL_H = 560;
 const CHAKRA_ORB_SIZE = 38;
-const CHAKRA_ORB_CENTER_X = Math.round(width * 0.38);
-const CHAKRA_LINE_END_X = Math.round(width * 0.56);
+const CHAKRA_ORB_CENTER_X = Math.round(width / 2);
+const CHAKRA_LINE_W = 46; // longitud fija del conector a cada lado
 const CHAKRAS_VISUAL = [...CHAKRAS].reverse(); // Sahasrara (corona) primero → Muladhara (raíz) último
 const CHAKRA_TOP_PCTS = [0.09, 0.21, 0.33, 0.46, 0.58, 0.70, 0.83] as const;
 const TEMA_COL_W = Math.floor((width - H_PAD * 2 - GAP) / 2);
@@ -250,7 +250,7 @@ const srStyles = StyleSheet.create({
 const GLOW_R = 34;
 const ROW_H = 46;
 
-function ChakraBodyRow({ chakra, topPct }: { chakra: Chakra; topPct: number }) {
+function ChakraBodyRow({ chakra, topPct, side }: { chakra: Chakra; topPct: number; side: "left" | "right" }) {
   const glowAnim = useRef(new Animated.Value(0)).current;
 
   const handlePress = () => {
@@ -262,8 +262,51 @@ function ChakraBodyRow({ chakra, topPct }: { chakra: Chakra; topPct: number }) {
   };
 
   const rowTop = Math.round(topPct * CHAKRA_PANEL_H) - ROW_H / 2;
-  const lineW = Math.max(0, CHAKRA_LINE_END_X - CHAKRA_ORB_CENTER_X - CHAKRA_ORB_SIZE / 2 - 2);
 
+  const glowStyle = {
+    position: "absolute" as const,
+    width: GLOW_R * 2,
+    height: GLOW_R * 2,
+    borderRadius: GLOW_R,
+    top: ROW_H / 2 - GLOW_R,
+    backgroundColor: chakra.color,
+    opacity: glowAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 0.65] }),
+    transform: [{ scale: glowAnim.interpolate({ inputRange: [0, 1], outputRange: [0.5, 2.4] }) }],
+  };
+
+  if (side === "right") {
+    return (
+      <Pressable
+        onPress={handlePress}
+        hitSlop={6}
+        style={{
+          position: "absolute",
+          top: rowTop,
+          left: CHAKRA_ORB_CENTER_X - GLOW_R,
+          right: 0,
+          height: ROW_H,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <Animated.View style={[glowStyle, { left: 0 }]} />
+        <View style={{ marginLeft: GLOW_R - CHAKRA_ORB_SIZE / 2 }}>
+          <ChakraOrb color={chakra.color} size={CHAKRA_ORB_SIZE} />
+        </View>
+        <View style={{ width: CHAKRA_LINE_W, height: 1, backgroundColor: chakra.color, opacity: 0.5, marginLeft: 4 }} />
+        <View style={{ marginLeft: 9 }}>
+          <Text style={{ color: "#FBFBFB", fontFamily: "Manrope", fontSize: 13, fontWeight: "700" }}>
+            {chakra.name}
+          </Text>
+          <Text style={{ color: "rgba(255,255,255,0.58)", fontFamily: "Manrope", fontSize: 11, marginTop: 2 }}>
+            {chakra.subtitle}
+          </Text>
+        </View>
+      </Pressable>
+    );
+  }
+
+  // side === "left" — espejo: label → línea → orb
   return (
     <Pressable
       onPress={handlePress}
@@ -271,47 +314,23 @@ function ChakraBodyRow({ chakra, topPct }: { chakra: Chakra; topPct: number }) {
       style={{
         position: "absolute",
         top: rowTop,
-        left: CHAKRA_ORB_CENTER_X - CHAKRA_ORB_SIZE / 2 - GLOW_R,
-        right: 0,
+        left: 0,
+        right: width - CHAKRA_ORB_CENTER_X - GLOW_R,
         height: ROW_H,
-        flexDirection: "row",
+        flexDirection: "row-reverse",
         alignItems: "center",
       }}
     >
-      {/* Glow burst (tap) */}
-      <Animated.View
-        style={{
-          position: "absolute",
-          left: 0,
-          top: ROW_H / 2 - GLOW_R,
-          width: GLOW_R * 2,
-          height: GLOW_R * 2,
-          borderRadius: GLOW_R,
-          backgroundColor: chakra.color,
-          opacity: glowAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 0.65] }),
-          transform: [{ scale: glowAnim.interpolate({ inputRange: [0, 1], outputRange: [0.5, 2.4] }) }],
-        }}
-      />
-      {/* Orb */}
-      <View style={{ marginLeft: GLOW_R - CHAKRA_ORB_SIZE / 2 }}>
+      <Animated.View style={[glowStyle, { right: 0 }]} />
+      <View style={{ marginRight: GLOW_R - CHAKRA_ORB_SIZE / 2 }}>
         <ChakraOrb color={chakra.color} size={CHAKRA_ORB_SIZE} />
       </View>
-      {/* Connector line */}
-      <View
-        style={{
-          width: lineW,
-          height: 1,
-          backgroundColor: chakra.color,
-          opacity: 0.5,
-          marginLeft: 3,
-        }}
-      />
-      {/* Labels */}
-      <View style={{ marginLeft: 9 }}>
-        <Text style={{ color: "#FBFBFB", fontFamily: "Manrope", fontSize: 13, fontWeight: "700" }}>
+      <View style={{ width: CHAKRA_LINE_W, height: 1, backgroundColor: chakra.color, opacity: 0.5, marginRight: 4 }} />
+      <View style={{ marginRight: 9, alignItems: "flex-end" }}>
+        <Text style={{ color: "#FBFBFB", fontFamily: "Manrope", fontSize: 13, fontWeight: "700", textAlign: "right" }}>
           {chakra.name}
         </Text>
-        <Text style={{ color: "rgba(255,255,255,0.58)", fontFamily: "Manrope", fontSize: 11, marginTop: 2 }}>
+        <Text style={{ color: "rgba(255,255,255,0.58)", fontFamily: "Manrope", fontSize: 11, marginTop: 2, textAlign: "right" }}>
           {chakra.subtitle}
         </Text>
       </View>
@@ -590,7 +609,7 @@ export default function ExploreScreen() {
           {/* Panel de orbs */}
           <View style={{ width, height: CHAKRA_PANEL_H, position: "relative" }}>
             {CHAKRAS_VISUAL.map((c, i) => (
-              <ChakraBodyRow key={c.id} chakra={c} topPct={CHAKRA_TOP_PCTS[i]} />
+              <ChakraBodyRow key={c.id} chakra={c} topPct={CHAKRA_TOP_PCTS[i]} side={i % 2 === 0 ? "right" : "left"} />
             ))}
           </View>
         </View>
