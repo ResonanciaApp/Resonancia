@@ -59,10 +59,10 @@ function hexTint(hex: string, alpha: number): string {
 }
 
 const SQCARD_W = Math.round((width - H_PAD * 2) / 1.85);
-const CHAKRA_PANEL_H = 660;
+const CHAKRA_PANEL_H = 560;
 const CHAKRA_ORB_SIZE = 38;
-const CHAKRA_ORB_CENTER_X = Math.round(width * 0.42);
-const CHAKRA_LINE_END_X = Math.round(width * 0.525);
+const CHAKRA_ORB_CENTER_X = Math.round(width * 0.38);
+const CHAKRA_LINE_END_X = Math.round(width * 0.56);
 const CHAKRAS_VISUAL = [...CHAKRAS].reverse(); // Sahasrara (corona) primero → Muladhara (raíz) último
 const CHAKRA_TOP_PCTS = [0.09, 0.21, 0.33, 0.46, 0.58, 0.70, 0.83] as const;
 const TEMA_COL_W = Math.floor((width - H_PAD * 2 - GAP) / 2);
@@ -577,27 +577,18 @@ export default function ExploreScreen() {
 
         {/* ── Chakras ── */}
         <View style={{ marginTop: SECTION_GAP, marginBottom: SECTION_GAP }}>
-          <View style={{ width, height: CHAKRA_PANEL_H, position: "relative", overflow: "hidden" }}>
-            {/* Silueta de fondo */}
-            <Image
-              source={require("../../assets/images/chakras-body.png")}
-              style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
-              contentFit="cover"
-            />
-            {/* Velo oscuro para contraste */}
-            <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(8,3,18,0.48)" }} />
+          {/* Título encima */}
+          <View style={{ paddingHorizontal: H_PAD, marginBottom: 28 }}>
+            <Text style={{ fontFamily: "Manrope", fontSize: 22, fontWeight: "700", color: "#FBFBFB" }}>
+              Tus chakras, tu energía
+            </Text>
+            <Text style={{ fontFamily: "Manrope", fontSize: 13, color: "rgba(255,255,255,0.58)", marginTop: 8, lineHeight: 19 }}>
+              Selecciona un chakra para comenzar tu armonización.
+            </Text>
+          </View>
 
-            {/* Título + descripción (esquina superior izquierda) */}
-            <View style={{ position: "absolute", top: 32, left: H_PAD, width: Math.round(width * 0.44) }}>
-              <Text style={{ fontFamily: "Manrope", fontSize: 26, fontWeight: "700", color: "#FBFBFB", lineHeight: 32 }}>
-                {"Tus chakras,\ntu energía"}
-              </Text>
-              <Text style={{ fontFamily: "Manrope", fontSize: 12, color: "rgba(255,255,255,0.60)", marginTop: 10, lineHeight: 18 }}>
-                {"Selecciona un chakra para comenzar tu armonización."}
-              </Text>
-            </View>
-
-            {/* Filas de chakras (Sahasrara arriba → Muladhara abajo) */}
+          {/* Panel de orbs */}
+          <View style={{ width, height: CHAKRA_PANEL_H, position: "relative" }}>
             {CHAKRAS_VISUAL.map((c, i) => (
               <ChakraBodyRow key={c.id} chakra={c} topPct={CHAKRA_TOP_PCTS[i]} />
             ))}
