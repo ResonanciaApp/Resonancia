@@ -653,6 +653,8 @@ export default function ExploreScreen() {
               left: H_PAD, right: H_PAD,
               backgroundColor: "rgba(255,255,255,0.024)",
               borderRadius: 25,
+              borderWidth: 1,
+              borderColor: "rgba(255,255,255,0.07)",
             }} />
             {CHAKRA_LEFT_LABELS.map((label, i) => {
               const rowTop = Math.round(CHAKRA_TOP_PCTS[i] * CHAKRA_PANEL_H) - ROW_H / 2;
