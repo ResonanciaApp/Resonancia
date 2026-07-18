@@ -540,25 +540,65 @@ export default function ExploreScreen() {
                     titleSize={20}
                   />
                   {isFoco && (
-                    <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
-                      <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>¿Cuánto tiempo tienes hoy?</Text>
-                      <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        style={{ marginHorizontal: -H_PAD }}
-                        contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 10 }}
-                      >
-                        {DURATION_SLOTS.map((slot) => (
-                          <Pressable
-                            key={slot.label}
-                            onPress={() => router.push(`/busqueda?tiempo=${encodeURIComponent(slot.label)}` as never)}
-                            style={({ pressed }) => [styles.durPill, { opacity: pressed ? 0.75 : 1 }]}
-                          >
-                            <Text style={styles.durPillText}>{slot.label}</Text>
-                          </Pressable>
-                        ))}
-                      </ScrollView>
-                    </View>
+                    <>
+                      {/* ── ¿Cuánto tiempo tienes hoy? ── */}
+                      <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
+                        <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>¿Cuánto tiempo tienes hoy?</Text>
+                        <ScrollView
+                          horizontal
+                          showsHorizontalScrollIndicator={false}
+                          style={{ marginHorizontal: -H_PAD }}
+                          contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 10 }}
+                        >
+                          {DURATION_SLOTS.map((slot) => (
+                            <Pressable
+                              key={slot.label}
+                              onPress={() => router.push(`/busqueda?tiempo=${encodeURIComponent(slot.label)}` as never)}
+                              style={({ pressed }) => [styles.durPill, { opacity: pressed ? 0.75 : 1 }]}
+                            >
+                              <Text style={styles.durPillText}>{slot.label}</Text>
+                            </Pressable>
+                          ))}
+                        </ScrollView>
+                      </View>
+
+                      {/* ── Otras temáticas ── */}
+                      <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
+                        <Pressable
+                          onPress={() => router.push("/todas-las-tematicas" as never)}
+                          style={({ pressed }) => [styles.sectionRow, { opacity: pressed ? 0.7 : 1 }]}
+                        >
+                          <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Otras temáticas</Text>
+                          <Feather name="chevron-right" size={18} color="#c2c2c2" />
+                        </Pressable>
+                        <ScrollView
+                          horizontal
+                          showsHorizontalScrollIndicator={false}
+                          style={{ marginHorizontal: -H_PAD, marginTop: 20 }}
+                          contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 12 }}
+                        >
+                          {TAG_CARDS.map((tag) => (
+                            <Pressable
+                              key={tag.id}
+                              onPress={() => router.push(`/tag/${tag.id}` as never)}
+                              style={({ pressed }) => [styles.tagCard, { opacity: pressed ? 0.85 : 1 }]}
+                            >
+                              <View style={styles.tagCardImage}>
+                                <Image
+                                  source={tag.image}
+                                  style={StyleSheet.absoluteFill}
+                                  contentFit="cover"
+                                  cachePolicy="memory-disk"
+                                />
+                                <View style={styles.tagCardOverlay}>
+                                  <Text style={styles.tagCardLabel} numberOfLines={2}>{tag.label}</Text>
+                                </View>
+                              </View>
+                            </Pressable>
+                          ))}
+                        </ScrollView>
+                      </View>
+                    </>
                   )}
                 </React.Fragment>
               );
