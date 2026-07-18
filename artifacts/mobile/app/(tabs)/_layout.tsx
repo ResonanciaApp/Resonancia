@@ -39,7 +39,7 @@ import {
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useBrightness, applyBrightSat } from "@/context/BrightnessContext";
 
-const ACTIVE_COLOR   = "#F7CB6B";
+const ACTIVE_COLOR   = "#F9F9F9";
 const INACTIVE_COLOR = "#F4F4F4";
 const GRAD_END       = "#FBA980";
 const GHOST_PILL_BG  = "rgba(255,255,255,0.12)";
