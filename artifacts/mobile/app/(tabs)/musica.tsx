@@ -161,7 +161,6 @@ const CHIP_ANIM_DURATION = 550;
 const PillTab = memo(function PillTab({
   tab, sel, onPress,
 }: { tab: (typeof MAIN_TABS)[0]; sel: boolean; onPress: () => void }) {
-  const { theme: pillTheme } = useSceneTheme();
   const fgColor = sel ? "#2D0D3A" : "#FBFBFB";
 
   return (
@@ -172,16 +171,12 @@ const PillTab = memo(function PillTab({
       {/* Fondo seleccionado */}
       {sel && (
         <View style={[StyleSheet.absoluteFill, { borderRadius: 999, overflow: "hidden" }]}>
-          {pillTheme?.id === "tibet" ? (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
-          ) : (
-            <LinearGradient
-              colors={["#D6A45C", "#F7CB6B"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-          )}
+          <LinearGradient
+            colors={["#D6A45C", "#F7CB6B"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
         </View>
       )}
 
@@ -781,10 +776,7 @@ export default function MezcladorScreen() {
                           onPress={() => setSubTab(sel ? null : catId)}
                           style={[styles.subTab, sel && styles.subTabSel]}
                         >
-                          {sel && (theme?.id === "tibet"
-                            ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
-                            : <LinearGradient colors={["#D6A45C", "#F7CB6B"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
-                          )}
+                          {sel && <LinearGradient colors={["#D6A45C", "#F7CB6B"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />}
                           <Text style={[styles.subTabText, { color: sel ? "#2D0D3A" : "#FBFBFB" }]}>
                             {SUB_TAB_LABELS[catId] ?? cat.label}
                           </Text>

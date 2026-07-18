@@ -87,13 +87,9 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 }
 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress: ()=>void }) {
-  const { theme: chipTheme } = useSceneTheme();
   return (
     <Pressable onPress={onPress} style={({pressed})=>[styles.chip, sel && styles.chipSel, {opacity:pressed?0.7:1}]}>
-      {sel && (chipTheme?.id === "tibet"
-        ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
-        : <LinearGradient colors={["#D6A45C", "#F7CB6B"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
-      )}
+      {sel && <LinearGradient colors={["#D6A45C", "#F7CB6B"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />}
       <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
     </Pressable>
   );
