@@ -4,7 +4,7 @@
  * con previews animables (play/pause por card) y enlace a la pantalla completa.
  */
 import { Feather } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
+
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -34,12 +34,7 @@ import {
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { baseOf, GEOMETRIES, type GeometryId } from "@/data/geometries";
 import {
-  bgGradientColors,
-  brightnessFactor,
   gradientColors,
-  HOME_GRADIENT,
-  scaleColors,
-  scaleHex,
   type GeoSettings,
 } from "@/data/geometrix-creations";
 import { useColors } from "@/hooks/useColors";
@@ -147,23 +142,11 @@ function GlyphPreview({
   playing: boolean;
 }) {
   const { recipe } = glyph;
-  const bgFactor = brightnessFactor(recipe.master.bgBrightness);
-  const bgGrad = bgGradientColors(recipe.master.bgGradientId ?? null);
-  const bgColors = recipe.master.bgColor
-    ? ([scaleHex(recipe.master.bgColor, bgFactor), scaleHex(recipe.master.bgColor, bgFactor)] as const)
-    : scaleColors(bgGrad ?? HOME_GRADIENT, bgFactor);
-
   const glyphSize = previewH * 0.72;
 
   return (
     <>
-      <LinearGradient
-        colors={bgColors as readonly [string, string, ...string[]]}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={StyleSheet.absoluteFill}
-        pointerEvents="none"
-      />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.15)" }]} pointerEvents="none" />
       {recipe.active.map((id, i) => {
         const geoId = baseOf(id);
         const s = recipe.settings[id] as GeoSettings | undefined;
