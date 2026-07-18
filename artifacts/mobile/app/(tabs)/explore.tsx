@@ -261,12 +261,18 @@ const srStyles = StyleSheet.create({
 const GLOW_R = 34;
 const ROW_H = 72;
 
-function ChakraBodyRow({ chakra, topPct, side }: { chakra: Chakra; topPct: number; side: "left" | "right" }) {
+function ChakraBodyRow({ chakra, topPct, side, colorAnim }: { chakra: Chakra; topPct: number; side: "left" | "right"; colorAnim: Animated.Value }) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const dimAnim   = useRef(new Animated.Value(0.42)).current;
 
   const handlePress = () => {
     scaleAnim.setValue(1);
+    // Color (JS driver — no puede mezclarse con native)
+    Animated.sequence([
+      Animated.timing(colorAnim, { toValue: 1, duration: 300, useNativeDriver: false }),
+      Animated.timing(colorAnim, { toValue: 0, duration: 500, useNativeDriver: false }),
+    ]).start();
+    // Scale + dim (native driver)
     Animated.parallel([
       Animated.sequence([
         Animated.timing(scaleAnim, { toValue: 1.18, duration: 300, useNativeDriver: true }),
@@ -361,6 +367,8 @@ export default function ExploreScreen() {
   const { playSession, history } = usePlayer();
   const { version: catalogVersion } = useCatalog();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
+  // Animated values para el color de los textos izquierda de cada chakra
+  const chakraColorAnims = useRef(CHAKRAS_VISUAL.map(() => new Animated.Value(0))).current;
 
   const ancestralesSessions  = SESSIONS.filter(s => s.categoryId === "sonidos-ancestrales").slice(0, 10);
   const musicaSessions       = SESSIONS.filter(s => s.categoryId === "musica-sonidos").slice(0, 10);
@@ -627,6 +635,10 @@ export default function ExploreScreen() {
             }} />
             {CHAKRA_LEFT_LABELS.map((label, i) => {
               const rowTop = Math.round(CHAKRA_TOP_PCTS[i] * CHAKRA_PANEL_H) - ROW_H / 2;
+              const animColor = chakraColorAnims[i].interpolate({
+                inputRange: [0, 1],
+                outputRange: ["rgba(249,249,249,0.5)", CHAKRAS_VISUAL[i].color],
+              });
               return (
                 <View key={`lbl-${i}`} style={{
                   position: "absolute",
@@ -637,14 +649,14 @@ export default function ExploreScreen() {
                   justifyContent: "center",
                   alignItems: "flex-end",
                 }}>
-                  <Text style={{ color: "#F9F9F9", fontFamily: "Manrope", fontSize: 12, textAlign: "right" }}>
+                  <Animated.Text style={{ color: animColor, fontFamily: "Manrope", fontSize: 12, textAlign: "right" }}>
                     {label}
-                  </Text>
+                  </Animated.Text>
                 </View>
               );
             })}
             {CHAKRAS_VISUAL.map((c, i) => (
-              <ChakraBodyRow key={c.id} chakra={c} topPct={CHAKRA_TOP_PCTS[i]} side="right" />
+              <ChakraBodyRow key={c.id} chakra={c} topPct={CHAKRA_TOP_PCTS[i]} side="right" colorAnim={chakraColorAnims[i]} />
             ))}
           </View>
         </View>
