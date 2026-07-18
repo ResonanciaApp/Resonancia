@@ -62,7 +62,7 @@ const SQCARD_W = Math.round((width - H_PAD * 2) / 1.85);
 const CHAKRA_PANEL_H = 580;
 const CHAKRA_ORB_SIZE = 64;
 const CHAKRA_ORB_CENTER_X = Math.round(width / 2);
-const CHAKRA_LINE_W = 46; // longitud fija del conector a cada lado
+const CHAKRA_LINE_W = 36; // longitud fija del conector a cada lado
 const CHAKRAS_VISUAL = [...CHAKRAS].reverse(); // Sahasrara (corona) primero → Muladhara (raíz) último
 // +8 px de separación acumulada entre cada chakra respecto a los originales
 const CHAKRA_TOP_PCTS = [0.087, 0.233, 0.380, 0.527, 0.673, 0.820, 0.966] as const;
@@ -295,7 +295,7 @@ function ChakraBodyRow({ chakra, topPct, side }: { chakra: Chakra; topPct: numbe
           <SacredGlyph id={chakra.geometryId} color={chakra.color} size={CHAKRA_ORB_SIZE} />
         </Animated.View>
         <View style={{ width: CHAKRA_LINE_W, height: 1, backgroundColor: chakra.color, opacity: 0.3, marginLeft: 4 }} />
-        <View style={{ marginLeft: 9 }}>
+        <View style={{ marginLeft: -1 }}>
           <Text style={{ color: "#FBFBFB", fontFamily: "Manrope", fontSize: 13, fontWeight: "700" }}>
             {chakra.name}
           </Text>
