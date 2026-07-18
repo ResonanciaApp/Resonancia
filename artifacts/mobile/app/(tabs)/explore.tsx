@@ -723,7 +723,7 @@ export default function ExploreScreen() {
                             <Pressable
                               key={tag.id}
                               onPress={() => router.push(`/tag/${tag.id}` as never)}
-                              style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1, width: TAG_CARD_W }]}
+                              style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1, width: TAG_CARD_W - 10 }]}
                             >
                               <View style={styles.tagCard}>
                                 <Image
@@ -957,11 +957,12 @@ const styles = StyleSheet.create({
   tagGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: TAG_CARD_GAP,
+    columnGap: TAG_CARD_GAP,
+    rowGap: 15,
     marginTop: 20,
   },
   tagCard: {
-    width: TAG_CARD_W,
+    width: TAG_CARD_W - 10,
     height: 110,
     borderRadius: 15,
     overflow: "hidden",
