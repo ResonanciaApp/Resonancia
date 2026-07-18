@@ -168,8 +168,8 @@ export default function MiMezclaScreen() {
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
 
-  const { theme, activeSceneId } = useSceneTheme();
-  const bgGradient = (activeSceneId === "tibet" ? ["#2d4081", "#2d4081"] : theme.gradient) as readonly string[];
+  const { theme } = useSceneTheme();
+  const bgGradient = theme.gradient;
 
   const { presets, updatePresetMeta, loadedPresetId, isPlaying, togglePlay, deletePreset } = useMixer();
   const loadMix = useLoadMix();
@@ -217,14 +217,14 @@ export default function MiMezclaScreen() {
 
   if (!mix) {
     return (
-      <LinearGradient colors={bgGradient as [string, string, ...string[]]} style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <LinearGradient colors={bgGradient} style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Text style={{ color: MUTED }}>Mezcla no encontrada</Text>
       </LinearGradient>
     );
   }
 
   return (
-    <LinearGradient colors={bgGradient as [string, string, ...string[]]} style={{ flex: 1 }}>
+    <LinearGradient colors={bgGradient} style={{ flex: 1 }}>
       {/* Header */}
       <View style={[s.header, { paddingTop: insets.top + 12 }]}>
         <Pressable onPress={() => router.back()} hitSlop={12} style={s.iconBtn}>
@@ -393,9 +393,6 @@ const s = StyleSheet.create({
     right: 0,
     paddingHorizontal: 20,
     paddingTop: 12,
-    backgroundColor: "rgba(22,1,8,0.88)",
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "rgba(61,14,22,0.5)",
   },
   playBtn: {
     flexDirection: "row",

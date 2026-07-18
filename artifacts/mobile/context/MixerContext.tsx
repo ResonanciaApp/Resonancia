@@ -1814,12 +1814,14 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
           p.id === id
             ? {
                 ...p,
-                ...(meta.name !== undefined ? { name: meta.name.trim() || p.name } : {}),
-                ...(meta.description !== undefined ? { description: meta.description?.trim() || undefined } : {}),
-                ...(meta.image !== undefined ? { image: meta.image } : {}),
-                ...(meta.coverUri !== undefined ? { coverUri: meta.coverUri } : {}),
-                ...(meta.coverGeometryId !== undefined ? { coverGeometryId: meta.coverGeometryId } : {}),
-                ...(meta.coverCreationId !== undefined ? { coverCreationId: meta.coverCreationId } : {}),
+                ...('name' in meta ? { name: meta.name!.trim() || p.name } : {}),
+                ...('description' in meta ? { description: meta.description?.trim() || undefined } : {}),
+                ...('image' in meta ? { image: meta.image } : {}),
+                ...('coverUri' in meta ? { coverUri: meta.coverUri } : {}),
+                ...('coverGeometryId' in meta ? { coverGeometryId: meta.coverGeometryId } : {}),
+                ...('coverCreationId' in meta ? { coverCreationId: meta.coverCreationId } : {}),
+                ...('category' in meta ? { category: meta.category } : {}),
+                ...('categoryChosen' in meta ? { categoryChosen: meta.categoryChosen } : {}),
               }
             : p,
         ),
