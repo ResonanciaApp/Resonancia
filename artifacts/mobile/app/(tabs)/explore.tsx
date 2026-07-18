@@ -33,7 +33,7 @@ import { getGuide } from "@/data/guides";
 import { TEMAS } from "@/data/temas";
 import { TAG_CARDS } from "@/data/tags";
 import { CHAKRAS, isChakraTag, type Chakra } from "@/data/chakras";
-import { ChakraOrb } from "@/components/ChakraOrb";
+import { SacredGlyph } from "@/components/SacredGlyph";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
@@ -291,7 +291,7 @@ function ChakraBodyRow({ chakra, topPct, side }: { chakra: Chakra; topPct: numbe
       >
         <Animated.View style={[glowStyle, { left: 0 }]} />
         <View style={{ marginLeft: GLOW_R - CHAKRA_ORB_SIZE / 2 }}>
-          <ChakraOrb color={chakra.color} size={CHAKRA_ORB_SIZE} />
+          <SacredGlyph id={chakra.geometryId} color={chakra.color} size={CHAKRA_ORB_SIZE} />
         </View>
         <View style={{ width: CHAKRA_LINE_W, height: 1, backgroundColor: chakra.color, opacity: 0.5, marginLeft: 4 }} />
         <View style={{ marginLeft: 9 }}>
@@ -323,7 +323,7 @@ function ChakraBodyRow({ chakra, topPct, side }: { chakra: Chakra; topPct: numbe
     >
       <Animated.View style={[glowStyle, { right: 0 }]} />
       <View style={{ marginRight: GLOW_R - CHAKRA_ORB_SIZE / 2 }}>
-        <ChakraOrb color={chakra.color} size={CHAKRA_ORB_SIZE} />
+        <SacredGlyph id={chakra.geometryId} color={chakra.color} size={CHAKRA_ORB_SIZE} />
       </View>
       <View style={{ width: CHAKRA_LINE_W, height: 1, backgroundColor: chakra.color, opacity: 0.5, marginRight: 4 }} />
       <View style={{ marginRight: 9, alignItems: "flex-end" }}>
