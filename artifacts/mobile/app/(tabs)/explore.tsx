@@ -959,8 +959,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   tagCard: {
-    width: TEMA_COL_W,
-    height: 140,
+    width: TEMA_COL_W + 6,
+    height: 120,
     borderRadius: 15,
     overflow: "hidden",
     backgroundColor: "rgba(74,12,12,0.08)",
