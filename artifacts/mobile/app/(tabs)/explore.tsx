@@ -571,32 +571,25 @@ export default function ExploreScreen() {
                           <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Otras temáticas</Text>
                           <Feather name="chevron-right" size={18} color="#c2c2c2" />
                         </Pressable>
-                        <ScrollView
-                          horizontal
-                          showsHorizontalScrollIndicator={false}
-                          style={{ marginHorizontal: -H_PAD, marginTop: 20 }}
-                          contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 12 }}
-                        >
-                          {TAG_CARDS.map((tag) => (
+                        <View style={styles.tagGrid}>
+                          {TAG_CARDS.slice(0, 8).map((tag) => (
                             <Pressable
                               key={tag.id}
                               onPress={() => router.push(`/tag/${tag.id}` as never)}
                               style={({ pressed }) => [styles.tagCard, { opacity: pressed ? 0.85 : 1 }]}
                             >
-                              <View style={styles.tagCardImage}>
-                                <Image
-                                  source={tag.image}
-                                  style={StyleSheet.absoluteFill}
-                                  contentFit="cover"
-                                  cachePolicy="memory-disk"
-                                />
-                                <View style={styles.tagCardOverlay}>
-                                  <Text style={styles.tagCardLabel} numberOfLines={2}>{tag.label}</Text>
-                                </View>
+                              <Image
+                                source={tag.image}
+                                style={StyleSheet.absoluteFill}
+                                contentFit="cover"
+                                cachePolicy="memory-disk"
+                              />
+                              <View style={styles.tagCardOverlay}>
+                                <Text style={styles.tagCardLabel} numberOfLines={2}>{tag.label}</Text>
                               </View>
                             </Pressable>
                           ))}
-                        </ScrollView>
+                        </View>
                       </View>
                     </>
                   )}
@@ -824,22 +817,22 @@ const styles = StyleSheet.create({
     lineHeight: 17,
   },
 
-  // Otras temáticas
-  tagCard: {
-    width: CAT_CARD_W,
+  // Otras temáticas — grilla 2×4
+  tagGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: GAP,
+    marginTop: 20,
   },
-  tagCardImage: {
-    width: CAT_CARD_W,
-    height: Math.round(CAT_CARD_W * 1.25),
+  tagCard: {
+    width: TEMA_COL_W,
+    height: 140,
     borderRadius: 15,
     overflow: "hidden",
     backgroundColor: "rgba(74,12,12,0.08)",
+    justifyContent: "flex-end",
   },
   tagCardOverlay: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
     paddingHorizontal: 10,
     paddingVertical: 10,
     backgroundColor: "rgba(0,0,0,0.45)",
