@@ -1572,6 +1572,12 @@ uri = "file://attached_assets/tib-10.png"
 type = "image"
 title = "tib-10"
 
+[[generated]]
+id = "uaFDhNv7MO_eEcBSf793J"
+uri = "file://artifacts/mobile/assets/images/chakra-silhouette.png"
+type = "image"
+title = "meditation silhouette chakra"
+
 [[outputs]]
 id = "cS7DXlbngE0YcmglyoOWl"
 uri = "file://artifacts/mobile/assets/audio/sesion2_pad_mi_mayor.mp3"
@@ -2441,3 +2447,9 @@ id = "MJ0TubshM6zrH5Y9mIv7S"
 uri = "file://.local/outputs/RESONANCIA-Inversion-Slides4y5.pdf"
 type = "pdf"
 title = "RESONANCIA — Inversión · Slides 4 y 5 (PDF)"
+
+[[outputs]]
+id = "voab9ZgvucTMVKOVCBTgw"
+uri = "file://artifacts/mobile/assets/images/chakra-silhouette.png"
+type = "image"
+title = "Silueta meditando (fondo transparente)"
