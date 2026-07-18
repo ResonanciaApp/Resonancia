@@ -4,7 +4,6 @@
  */
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -28,11 +27,10 @@ import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { formatMixImageLabel, getMixImage, MIX_IMAGE_GALLERY } from "@/config/mix-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
-import { GEOMETRIES, type GeometryId } from "@/data/geometries";
-import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
+import { type GeometryId } from "@/data/geometries";
 import { useLoadMix } from "@/hooks/useLoadMix";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
-const BG_GRADIENT = ["#190913", "#190913"] as const;
 const GOLD = "#F7CB6B";
 const TEXT = "#FAF0EE";
 const MUTED = "#c2c2c2";
@@ -108,150 +106,58 @@ export function MixCover({
 }
 
 // ── Cover picker sheet ────────────────────────────────────────────────────────
-type CoverPickerProps = {
-  visible: boolean;
-  onClose: () => void;
-  onPickPreset: (key: string) => void;
-  onPickPhoto: () => void;
-  onPickGeometry: (geoId: string) => void;
-  onPickCreation: (creationId: string) => void;
-  onClearCover: () => void;
-};
-
 function CoverPickerSheet({
   visible,
   onClose,
   onPickPreset,
-  onPickPhoto,
-  onPickGeometry,
-  onPickCreation,
   onClearCover,
-}: CoverPickerProps) {
+}: {
+  visible: boolean;
+  onClose: () => void;
+  onPickPreset: (key: string) => void;
+  onClearCover: () => void;
+}) {
   const insets = useSafeAreaInsets();
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
-  const [view, setView] = useState<"menu" | "presets" | "geometrix">("menu");
-  const { creations } = useGeometrixCreations();
-
-  const handleClose = useCallback(() => {
-    setView("menu");
-    onClose();
-  }, [onClose]);
 
   if (!visible) return null;
 
-  if (view === "presets") {
-    return (
-      <Modal visible animationType="slide" transparent onRequestClose={() => { setView("menu"); onClose(); }}>
-        <Pressable style={ms.backdrop} onPress={() => { setView("menu"); onClose(); }} />
-        <LinearGradient colors={["#190913", "#190913"]} style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
-          <View style={ms.handle} />
-          <View style={ms.headerRow}>
-            <Pressable onPress={() => setView("menu")} hitSlop={12}>
-              <Feather name="arrow-left" size={20} color={MUTED} />
-            </Pressable>
-            <Text style={ms.sheetTitle}>Elige una imagen</Text>
-            <View style={{ width: 28 }} />
-          </View>
-          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: 12 }}>
-            <View style={ms.gridRow}>
-              {MIX_IMAGE_GALLERY.map((key) => {
-                const img = getMixImage(key);
-                return (
-                  <Pressable
-                    key={key}
-                    style={({ pressed }) => [ms.presetThumb, { opacity: pressed ? 0.7 : 1 }]}
-                    onPress={() => { onPickPreset(key); handleClose(); }}
-                  >
-                    {img ? (
-                      <Image source={img as number} style={ms.presetThumbImg} contentFit="cover" />
-                    ) : (
-                      <View style={[ms.presetThumbImg, { backgroundColor: "rgba(212,175,55,0.15)", alignItems: "center", justifyContent: "center" }]}>
-                        <Feather name="image" size={20} color={MUTED} />
-                      </View>
-                    )}
-                    <Text style={ms.presetLabel} numberOfLines={1}>{formatMixImageLabel(key)}</Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-          </ScrollView>
-        </LinearGradient>
-      </Modal>
-    );
-  }
-
-  if (view === "geometrix") {
-    return (
-      <Modal visible animationType="slide" transparent onRequestClose={() => { setView("menu"); onClose(); }}>
-        <Pressable style={ms.backdrop} onPress={() => { setView("menu"); onClose(); }} />
-        <LinearGradient colors={["#2D1B4E", "#0D0518"]} style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
-          <View style={ms.handle} />
-          <View style={ms.headerRow}>
-            <Pressable onPress={() => setView("menu")} hitSlop={12}>
-              <Feather name="arrow-left" size={20} color={MUTED} />
-            </Pressable>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flex: 1, justifyContent: "center" }}>
-              <Image source={require("@/assets/images/cubo-geometrix.png")} style={{ width: 22, height: 22 }} contentFit="contain" />
-              <Text style={ms.sheetTitle}>Portada Geometrix</Text>
-            </View>
-            <View style={{ width: 28 }} />
-          </View>
-          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: 12 }}>
-            {creations.length === 0 ? (
-              <View style={{ paddingVertical: 40, alignItems: "center" }}>
-                <Text style={{ color: MUTED, fontSize: 14 }}>No tienes creaciones aún</Text>
-                <Text style={{ color: MUTED, fontSize: 12, marginTop: 6, opacity: 0.7 }}>Ve a Geometrix y crea una</Text>
-              </View>
-            ) : (
-              <View style={ms.creationGrid}>
-                {creations.map((item) => (
-                  <Pressable
-                    key={item.id}
-                    style={({ pressed }) => [ms.creationItem2col, { opacity: pressed ? 0.7 : 1 }]}
-                    onPress={() => { onPickCreation(item.id); handleClose(); }}
-                  >
-                    <View style={ms.creationThumb2col}>
-                      <CreationCoverPreview creationId={item.id} size={150} />
-                    </View>
-                    <Text style={ms.geoName} numberOfLines={1}>{item.name}</Text>
-                  </Pressable>
-                ))}
-              </View>
-            )}
-          </ScrollView>
-        </LinearGradient>
-      </Modal>
-    );
-  }
-
   return (
-    <Modal visible animationType="slide" transparent onRequestClose={handleClose}>
-      <Pressable style={ms.backdrop} onPress={handleClose} />
+    <Modal visible animationType="slide" transparent onRequestClose={onClose}>
+      <Pressable style={ms.backdrop} onPress={onClose} />
       <LinearGradient colors={["#190913", "#190913"]} style={[ms.sheet, { paddingBottom: bottomPad + 8 }]}>
         <View style={ms.handle} />
-        <Text style={ms.sheetTitle}>Portada de la mezcla</Text>
-        <Pressable style={({ pressed }) => [ms.row, { opacity: pressed ? 0.7 : 1 }]} onPress={() => setView("presets")}>
-          <Feather name="image" size={22} color="#FFFFFF" />
-          <Text style={ms.rowText}>Imagen predefinida</Text>
-          <Feather name="chevron-right" size={16} color={MUTED} />
-        </Pressable>
-        <Pressable style={({ pressed }) => [ms.row, { opacity: pressed ? 0.7 : 1 }]} onPress={() => { onPickPhoto(); handleClose(); }}>
-          <Feather name="camera" size={22} color="#FFFFFF" />
-          <Text style={ms.rowText}>Foto del carrete</Text>
-          <Feather name="chevron-right" size={16} color={MUTED} />
-        </Pressable>
-        <Pressable style={({ pressed }) => [ms.row, { opacity: pressed ? 0.7 : 1, marginLeft: -2 }]} onPress={() => setView("geometrix")}>
-          <Image source={require("@/assets/images/cubo-geometrix.png")} style={{ width: 26, height: 26 }} contentFit="contain" />
-          <Text style={ms.rowText}>Portada Geometrix</Text>
-          <Feather name="chevron-right" size={16} color={MUTED} />
-        </Pressable>
-        <Pressable
-          style={({ pressed }) => [ms.row, { borderBottomWidth: 0, opacity: pressed ? 0.7 : 1 }]}
-          onPress={() => { onClearCover(); handleClose(); }}
-        >
-          <Feather name="x-circle" size={22} color={MUTED} />
-          <Text style={[ms.rowText, { color: MUTED }]}>Quitar portada</Text>
-        </Pressable>
+        <Text style={ms.sheetTitle}>Elige una imagen</Text>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: 12 }}>
+          <View style={ms.gridRow}>
+            {MIX_IMAGE_GALLERY.map((key) => {
+              const img = getMixImage(key);
+              return (
+                <Pressable
+                  key={key}
+                  style={({ pressed }) => [ms.presetThumb, { opacity: pressed ? 0.7 : 1 }]}
+                  onPress={() => { onPickPreset(key); onClose(); }}
+                >
+                  {img ? (
+                    <Image source={img as number} style={ms.presetThumbImg} contentFit="cover" />
+                  ) : (
+                    <View style={[ms.presetThumbImg, { backgroundColor: "rgba(212,175,55,0.15)", alignItems: "center", justifyContent: "center" }]}>
+                      <Feather name="image" size={20} color={MUTED} />
+                    </View>
+                  )}
+                  <Text style={ms.presetLabel} numberOfLines={1}>{formatMixImageLabel(key)}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+          <Pressable
+            style={({ pressed }) => [ms.row, { borderBottomWidth: 0, marginTop: 8, opacity: pressed ? 0.7 : 1 }]}
+            onPress={() => { onClearCover(); onClose(); }}
+          >
+            <Feather name="x-circle" size={20} color={MUTED} />
+            <Text style={[ms.rowText, { color: MUTED }]}>Quitar portada</Text>
+          </Pressable>
+        </ScrollView>
       </LinearGradient>
     </Modal>
   );
@@ -261,6 +167,9 @@ function CoverPickerSheet({
 export default function MiMezclaScreen() {
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
+
+  const { theme, activeSceneId } = useSceneTheme();
+  const bgGradient = (activeSceneId === "tibet" ? ["#2d4081", "#2d4081"] : theme.gradient) as readonly string[];
 
   const { presets, updatePresetMeta, loadedPresetId, isPlaying, togglePlay, deletePreset } = useMixer();
   const loadMix = useLoadMix();
@@ -292,28 +201,6 @@ export default function MiMezclaScreen() {
     }
   }, [mix, isThisLoaded, togglePlay, loadMix]);
 
-  const handlePickPhoto = useCallback(async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Permiso requerido", "Necesitamos acceso a tu galería para elegir una foto.");
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.85,
-    });
-    if (!result.canceled && result.assets[0]) {
-      save({
-        coverUri: result.assets[0].uri,
-        image: undefined,
-        coverGeometryId: undefined,
-        coverCreationId: undefined,
-      });
-    }
-  }, [save]);
-
   const handleDelete = useCallback(() => {
     Alert.alert("Eliminar mezcla", `¿Eliminar "${mix?.name}"?`, [
       { text: "Cancelar", style: "cancel" },
@@ -330,14 +217,14 @@ export default function MiMezclaScreen() {
 
   if (!mix) {
     return (
-      <LinearGradient colors={BG_GRADIENT} style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <LinearGradient colors={bgGradient as [string, string, ...string[]]} style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Text style={{ color: MUTED }}>Mezcla no encontrada</Text>
       </LinearGradient>
     );
   }
 
   return (
-    <LinearGradient colors={BG_GRADIENT} style={{ flex: 1 }}>
+    <LinearGradient colors={bgGradient as [string, string, ...string[]]} style={{ flex: 1 }}>
       {/* Header */}
       <View style={[s.header, { paddingTop: insets.top + 12 }]}>
         <Pressable onPress={() => router.back()} hitSlop={12} style={s.iconBtn}>
@@ -392,14 +279,7 @@ export default function MiMezclaScreen() {
                   save({ category: cat.id, categoryChosen: true });
                 }}
               >
-                <Image
-                  source={cat.image as number}
-                  style={s.catCellImg}
-                  contentFit="cover"
-                />
-                {selected && (
-                  <View style={s.catCellOverlay} />
-                )}
+                {selected && <View style={s.catCellOverlay} />}
                 <View style={s.catCellLabelRow}>
                   <Text style={[s.catCellLabel, selected && s.catCellLabelSelected]} numberOfLines={1}>
                     {cat.label}
@@ -430,13 +310,6 @@ export default function MiMezclaScreen() {
         onClose={() => setPickerVisible(false)}
         onPickPreset={(key) =>
           save({ image: key, coverUri: undefined, coverGeometryId: undefined, coverCreationId: undefined })
-        }
-        onPickPhoto={handlePickPhoto}
-        onPickGeometry={(geoId) =>
-          save({ coverGeometryId: geoId, image: undefined, coverUri: undefined, coverCreationId: undefined })
-        }
-        onPickCreation={(cId) =>
-          save({ coverCreationId: cId, image: undefined, coverUri: undefined, coverGeometryId: undefined })
         }
         onClearCover={() =>
           save({ image: undefined, coverUri: undefined, coverGeometryId: undefined, coverCreationId: undefined })
@@ -551,31 +424,30 @@ const s = StyleSheet.create({
     overflow: "hidden",
     borderWidth: 2,
     borderColor: "transparent",
+    backgroundColor: "rgba(74,12,12,0.35)",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 14,
+    minHeight: 50,
   },
   catCellSelected: {
     borderColor: GOLD,
   },
-  catCellImg: {
-    width: "100%",
-    aspectRatio: 1,
-  },
   catCellOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(212,175,55,0.18)",
+    backgroundColor: "rgba(212,175,55,0.10)",
   },
   catCellLabelRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 3,
-    backgroundColor: "rgba(22,1,8,0.72)",
+    gap: 4,
     paddingHorizontal: 4,
-    paddingVertical: 6,
   },
   catCellLabel: {
     fontFamily: "Manrope",
     color: MUTED,
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: "600",
     textAlign: "center",
   },

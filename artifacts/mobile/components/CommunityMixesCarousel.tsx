@@ -20,6 +20,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useGetSharedMixes, useReportSharedMix } from "@workspace/api-client-react";
 import type { SharedMix } from "@workspace/api-client-react";
+import { getMixImage } from "@/config/mix-images";
 
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { type MixCategory, MIX_CATEGORIES } from "@/data/mix-categories";
@@ -219,7 +220,7 @@ export function MixRow({
       style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}
     >
       {/* Portada de la mezcla */}
-      <MixCover category={mix.category} />
+      <MixCover image={mix.image} />
 
       {/* Info */}
       <View style={styles.info}>
@@ -262,14 +263,14 @@ export function MixRow({
 }
 
 // ── Portada de la mezcla ───────────────────────────────────────────
-function MixCover({ category }: { category?: string | null }) {
-  const catMeta = category ? MIX_CATEGORIES.find((c) => c.id === category) : undefined;
+function MixCover({ image }: { image?: string | null }) {
+  const resolvedImg = image ? getMixImage(image) : undefined;
 
   return (
     <View style={styles.avatarWrap}>
-      {catMeta ? (
+      {resolvedImg ? (
         <ExpoImage
-          source={catMeta.image as number}
+          source={resolvedImg as number}
           style={styles.coverImg}
           contentFit="cover"
         />
