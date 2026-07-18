@@ -22,6 +22,7 @@ import type { SharedMix } from "@workspace/api-client-react";
 
 import { GhostPill } from "@/components/GhostPill";
 import { MixContextMenu } from "@/components/CommunityMixesCarousel";
+import { getMixImage } from "@/config/mix-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
@@ -73,13 +74,13 @@ function Chip({ chip, sel, onPress }: { chip: ChipDef; sel: boolean; onPress: ()
 }
 
 function MixGridCard({ mix, onPress, onOptions }: { mix: SharedMix; onPress: () => void; onOptions: () => void }) {
-  const catMeta = MIX_CATEGORIES.find((c) => c.id === mix.category);
+  const resolvedImg = mix.image ? getMixImage(mix.image) : undefined;
 
   return (
     <Pressable onPress={onPress} onLongPress={onOptions} style={({ pressed }) => [gc.card, { width: CARD_W, opacity: pressed ? 0.85 : 1 }]}>
       <View style={gc.imgContainer}>
-        {catMeta ? (
-          <Image source={catMeta.image} style={gc.cardImage} contentFit="cover" />
+        {resolvedImg ? (
+          <Image source={resolvedImg as number} style={gc.cardImage} contentFit="cover" />
         ) : (
           <LinearGradient colors={["#1B060F", "#2E0A18"]} style={gc.cardImage}>
             <Feather name="music" size={26} color="rgba(212,175,55,0.55)" />
