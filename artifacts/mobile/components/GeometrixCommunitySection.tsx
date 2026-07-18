@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     overflow: "hidden",
   },
-  preview: { width: "100%", overflow: "hidden" },
+  preview: { width: "100%", overflow: "hidden", backgroundColor: "rgba(0,0,0,0.15)" },
   layerCenter: { alignItems: "center", justifyContent: "center" },
 
   playBtn: {

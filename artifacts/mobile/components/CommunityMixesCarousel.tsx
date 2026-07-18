@@ -151,7 +151,7 @@ export function CommunityMixesCarousel() {
 
       {/* ── Lista V2D ── */}
       {visible.length > 0 && (
-        <View style={{ marginTop: 0 }}>
+        <View style={{ marginTop: 0, gap: 15 }}>
           {visible.map((mix, i) => (
             <MixRow
               key={mix.id}
@@ -450,7 +450,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 12,
     borderRadius: 14,
-    backgroundColor: "rgba(0,0,0,0.15)",
+    backgroundColor: "rgba(255,255,255,0.07)",
   },
   info: { flex: 1, minWidth: 0 },
   nameRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 2 },
