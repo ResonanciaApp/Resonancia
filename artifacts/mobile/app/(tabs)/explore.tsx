@@ -595,7 +595,7 @@ export default function ExploreScreen() {
         )}
 
         {/* ── Chakras ── */}
-        <View style={{ marginTop: SECTION_GAP, marginBottom: SECTION_GAP }}>
+        <View style={{ marginTop: SECTION_GAP, marginBottom: SECTION_GAP + 40 }}>
           {/* Título encima */}
           <View style={{ paddingHorizontal: H_PAD, marginBottom: 28 }}>
             <Text style={{ fontFamily: "Manrope", fontSize: 22, fontWeight: "700", color: "#FBFBFB" }}>
@@ -606,16 +606,16 @@ export default function ExploreScreen() {
             </Text>
           </View>
 
-          {/* Panel de orbs */}
-          <View style={{
-            width: width - H_PAD * 2,
-            alignSelf: "center",
-            height: CHAKRA_PANEL_H,
-            position: "relative",
-            backgroundColor: "rgba(0,0,0,0.15)",
-            borderRadius: 25,
-            overflow: "hidden",
-          }}>
+          {/* Panel de orbs — ancho completo para que CHAKRA_ORB_CENTER_X calce */}
+          <View style={{ width, height: CHAKRA_PANEL_H, position: "relative" }}>
+            {/* Fondo redondeado inset */}
+            <View style={{
+              position: "absolute",
+              top: 0, bottom: 0,
+              left: H_PAD, right: H_PAD,
+              backgroundColor: "rgba(0,0,0,0.15)",
+              borderRadius: 25,
+            }} />
             {CHAKRAS_VISUAL.map((c, i) => (
               <ChakraBodyRow key={c.id} chakra={c} topPct={CHAKRA_TOP_PCTS[i]} side={i % 2 === 0 ? "right" : "left"} />
             ))}
