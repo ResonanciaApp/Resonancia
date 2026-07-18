@@ -665,7 +665,7 @@ export default function ExploreScreen() {
                   position: "absolute",
                   top: rowTop,
                   left: H_PAD + 8,
-                  right: width - CHAKRA_ORB_CENTER_X + 50,
+                  right: width - CHAKRA_ORB_CENTER_X + 62,
                   height: ROW_H,
                   justifyContent: "center",
                   alignItems: "flex-end",
