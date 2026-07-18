@@ -635,7 +635,7 @@ export default function ExploreScreen() {
         {/* ── Chakras ── */}
         <View style={{ marginTop: 0, marginBottom: SECTION_GAP + 40 }}>
           {/* Título encima */}
-          <View style={{ paddingHorizontal: H_PAD, marginBottom: 28 }}>
+          <View style={{ paddingHorizontal: H_PAD, marginTop: 7, marginBottom: 21 }}>
             <Text style={{ fontFamily: "Manrope", fontSize: 22, fontWeight: "700", color: "#FBFBFB" }}>
               Tus chakras, tu energía
             </Text>
