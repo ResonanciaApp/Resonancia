@@ -1354,7 +1354,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.04)",
+    backgroundColor: "rgba(255,255,255,0.053)",
   },
   pillSel: { borderWidth: 0 },
   pillText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "380", color: "#F4F4F4" },
