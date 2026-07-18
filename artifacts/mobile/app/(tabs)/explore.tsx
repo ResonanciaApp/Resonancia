@@ -58,6 +58,38 @@ function hexTint(hex: string, alpha: number): string {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
+/** Aumenta la saturación de un hex en `amount` (ej. 0.1 = +10%). */
+function saturateHex(hex: string, amount: number): string {
+  const h = hex.replace("#", "");
+  let r = parseInt(h.slice(0, 2), 16) / 255;
+  let g = parseInt(h.slice(2, 4), 16) / 255;
+  let b = parseInt(h.slice(4, 6), 16) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  if (max === min) return hex; // acromático
+  const d = max - min;
+  let s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+  s = Math.min(1, s * (1 + amount));
+  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  const p = 2 * l - q;
+  let hue = 0;
+  if (max === r) hue = (g - b) / d + (g < b ? 6 : 0);
+  else if (max === g) hue = (b - r) / d + 2;
+  else hue = (r - g) / d + 4;
+  hue /= 6;
+  const hue2rgb = (pp: number, qq: number, t: number) => {
+    if (t < 0) t += 1; if (t > 1) t -= 1;
+    if (t < 1/6) return pp + (qq - pp) * 6 * t;
+    if (t < 1/2) return qq;
+    if (t < 2/3) return pp + (qq - pp) * (2/3 - t) * 6;
+    return pp;
+  };
+  const rr = Math.round(hue2rgb(p, q, hue + 1/3) * 255);
+  const gg = Math.round(hue2rgb(p, q, hue) * 255);
+  const bb = Math.round(hue2rgb(p, q, hue - 1/3) * 255);
+  return `#${rr.toString(16).padStart(2,"0")}${gg.toString(16).padStart(2,"0")}${bb.toString(16).padStart(2,"0")}`;
+}
+
 const SQCARD_W = Math.round((width - H_PAD * 2) / 1.85);
 const CHAKRA_CARD = 110;
 const CHAKRA_GLYPH = 74;
@@ -513,9 +545,7 @@ export default function ExploreScreen() {
                 style={({ pressed }) => [{ width: CHAKRA_CARD, opacity: pressed ? 0.85 : 1 }]}
               >
                 <View style={styles.chakraCard}>
-                  <View style={{ filter: [{ saturate: 1.1 }] } as object}>
-                    <SacredGlyph id={c.geometryId} color={c.color} size={CHAKRA_GLYPH} />
-                  </View>
+                  <SacredGlyph id={c.geometryId} color={saturateHex(c.color, 0.1)} size={CHAKRA_GLYPH} />
                 </View>
                 <Text style={styles.chakraName} numberOfLines={1}>{c.name}</Text>
                 <Text style={styles.chakraSub} numberOfLines={1}>{c.tagLabel}</Text>
