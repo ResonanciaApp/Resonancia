@@ -822,7 +822,7 @@ const styles = StyleSheet.create({
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
 
-  sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 24 },
+  sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 21 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 21 },
 
   // Recomendado para ti
