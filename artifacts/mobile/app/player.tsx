@@ -578,9 +578,7 @@ export default function PlayerScreen() {
               }}
               hitSlop={8}
             >
-              {fav
-                ? <FontAwesome name="heart" size={20} color="#F7CB6B" />
-                : <Feather name="heart" size={22} color="rgba(255,255,255,0.92)" />}
+              <FontAwesome name="heart" size={20} color={fav ? "#F7CB6B" : "rgba(255,255,255,0.92)"} />
             </Pressable>
             <Pressable style={styles.actionBtn} onPress={handleShare} hitSlop={8}>
               <Feather name="share" size={22} color="rgba(255,255,255,0.92)" />
