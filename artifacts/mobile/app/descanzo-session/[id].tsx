@@ -363,19 +363,19 @@ export default function SessionDetailScreen() {
               ]}
             >
               <LinearGradient
-                colors={["#C4A8F5", "#A088D8"]}
+                colors={["#D6A45C", "#F7CB6B"]}
                 start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
+                end={{ x: 0, y: 1 }}
                 style={StyleSheet.absoluteFill}
               />
               <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                 <Svg width={18} height={18} viewBox="0 0 48 48">
                   <Path
                     d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
-                    fill={colors.primaryForeground}
+                    fill="#0d0c26"
                   />
                 </Svg>
-                <Text style={[styles.playBtnText, { color: colors.primaryForeground }]}>
+                <Text style={[styles.playBtnText, { color: "#0d0c26" }]}>
                   {isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora"}
                 </Text>
               </View>
@@ -778,14 +778,14 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 30,
     borderWidth: 1.5,
-    borderColor: "#FFFFFF",
+    borderColor: "#D6A45C",
     marginBottom: 14,
   },
   shareBtnText: {
     fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "600",
-    color: "#FFFFFF",
+    color: "#F7CB6B",
     letterSpacing: 0.5,
   },
   playsInline: {

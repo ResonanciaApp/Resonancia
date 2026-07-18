@@ -399,7 +399,7 @@ export default function SessionDetailScreen() {
                   onPress={handlePlayFromStart}
                   style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
                 >
-                  <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+                  <LinearGradient colors={["#D6A45C", "#F7CB6B"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
                   <Feather name="rotate-ccw" size={16} color="#0d0c26" />
                   <Text style={[styles.playBtnText, { color: "#0d0c26" }]}>Reiniciar</Text>
                 </Pressable>
@@ -411,7 +411,7 @@ export default function SessionDetailScreen() {
                   onPress={handleContinue}
                   style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
                 >
-                  <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+                  <LinearGradient colors={["#D6A45C", "#F7CB6B"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
                   <Svg width={16} height={16} viewBox="0 0 48 48">
                     <Path
                       d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
@@ -443,7 +443,7 @@ export default function SessionDetailScreen() {
                   { flex: 1, overflow: "hidden", opacity: pressed ? 0.88 : 1 },
                 ]}
               >
-                <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+                <LinearGradient colors={["#D6A45C", "#F7CB6B"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                   <Svg width={18} height={18} viewBox="0 0 48 48">
                     <Path
