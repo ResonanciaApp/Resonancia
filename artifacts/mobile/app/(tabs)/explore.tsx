@@ -498,27 +498,6 @@ export default function ExploreScreen() {
           </View>
         )}
 
-        {/* ── ¿Cuánto tiempo tienes hoy? ── */}
-        <View style={[styles.section, { marginBottom: 36, marginTop: featuredHoy ? 44 : 10 }]}>
-          <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>¿Cuánto tiempo tienes hoy?</Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{ marginHorizontal: -H_PAD }}
-            contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 10 }}
-          >
-            {DURATION_SLOTS.map((slot) => (
-              <Pressable
-                key={slot.label}
-                onPress={() => router.push(`/busqueda?tiempo=${encodeURIComponent(slot.label)}` as never)}
-                style={({ pressed }) => [styles.durPill, { opacity: pressed ? 0.75 : 1 }]}
-              >
-                <Text style={styles.durPillText}>{slot.label}</Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        </View>
-
         {/* ── Chakras ── */}
         <View style={{ marginTop: 0 }}>
           <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 24 }]}>Según cada Chakra</Text>
@@ -569,6 +548,27 @@ export default function ExploreScreen() {
             })}
           </>
         )}
+
+        {/* ── ¿Cuánto tiempo tienes hoy? ── */}
+        <View style={[styles.section, { marginBottom: 36, marginTop: 48 }]}>
+          <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>¿Cuánto tiempo tienes hoy?</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ marginHorizontal: -H_PAD }}
+            contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 10 }}
+          >
+            {DURATION_SLOTS.map((slot) => (
+              <Pressable
+                key={slot.label}
+                onPress={() => router.push(`/busqueda?tiempo=${encodeURIComponent(slot.label)}` as never)}
+                style={({ pressed }) => [styles.durPill, { opacity: pressed ? 0.75 : 1 }]}
+              >
+                <Text style={styles.durPillText}>{slot.label}</Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
       </ScrollView>
 
       <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} />
