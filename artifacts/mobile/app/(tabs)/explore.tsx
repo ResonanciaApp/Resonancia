@@ -247,7 +247,7 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
 const srStyles = StyleSheet.create({
   root:        { flex: 1, backgroundColor: "#190913" },
   overlay:     { flexDirection: "row", alignItems: "center", backgroundColor: "#190913", paddingHorizontal: H_PAD, paddingBottom: 14, gap: 10 },
-  bar:         { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.09)", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 11, borderWidth: 1, borderColor: "rgba(255,255,255,0.5)" },
+  bar:         { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.09)", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 11, borderWidth: 1, borderColor: "#ffffff" },
   input:       { fontFamily: "Manrope", flex: 1, fontSize: 14, color: "#FBFBFB" },
   cancel:      { paddingVertical: 6 },
   cancelText:  { fontFamily: "Manrope", color: "#F7CB6B", fontSize: 14, fontWeight: "600" },
@@ -559,7 +559,7 @@ export default function ExploreScreen() {
         </View>
         {/* Barra de búsqueda pegada al header */}
         <Pressable style={styles.searchWrap} onPress={() => setSearchVisible(true)}>
-          <View style={[styles.searchBox, { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(247,203,107,0.5)", borderWidth: 1 }]} pointerEvents="none">
+          <View style={[styles.searchBox, { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(247,203,107,0.2)", borderWidth: 1 }]} pointerEvents="none">
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <Text style={[styles.searchInput, { color: "#F4F4F4", flex: 1 }]} numberOfLines={1}>
               Titulo, voz guía, artista o tema
