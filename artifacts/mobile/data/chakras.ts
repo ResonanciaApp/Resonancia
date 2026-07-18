@@ -22,6 +22,14 @@ export type Chakra = {
   radialOuter: string;
   /** Descripción corta (2 líneas) en español neutro. */
   description: string;
+  /** Elemento tradicional (Tierra, Agua, Fuego…). */
+  element: string;
+  /** Nombre del color tradicional. */
+  colorName: string;
+  /** Mantra semilla (bija). */
+  mantra: string;
+  /** Ubicación en el cuerpo. */
+  location: string;
 };
 
 export const CHAKRAS: Chakra[] = [
@@ -37,6 +45,10 @@ export const CHAKRAS: Chakra[] = [
     radialCenter: "#5B1015",
     radialOuter: "#470F13",
     description: "Raíz y seguridad. Sesiones para anclarte a la tierra y sentirte a salvo en tu cuerpo.",
+    element: "Tierra",
+    colorName: "Rojo",
+    mantra: "LAM",
+    location: "Base de la columna",
   },
   {
     id: "chakra-2",
@@ -50,6 +62,10 @@ export const CHAKRAS: Chakra[] = [
     radialCenter: "#5B2D10",
     radialOuter: "#47250F",
     description: "Emoción y creatividad. Sesiones para fluir con tus emociones y despertar tu energía vital.",
+    element: "Agua",
+    colorName: "Naranja",
+    mantra: "VAM",
+    location: "Bajo el ombligo",
   },
   {
     id: "chakra-3",
@@ -63,6 +79,10 @@ export const CHAKRAS: Chakra[] = [
     radialCenter: "#5B4810",
     radialOuter: "#47390F",
     description: "Poder personal. Sesiones para fortalecer tu voluntad, tu confianza y tu determinación.",
+    element: "Fuego",
+    colorName: "Amarillo",
+    mantra: "RAM",
+    location: "Plexo solar",
   },
   {
     id: "chakra-4",
@@ -76,6 +96,10 @@ export const CHAKRAS: Chakra[] = [
     radialCenter: "#105B3C",
     radialOuter: "#0F4730",
     description: "Amor y compasión. Sesiones para abrir el corazón y cultivar la aceptación.",
+    element: "Aire",
+    colorName: "Verde",
+    mantra: "YAM",
+    location: "Centro del pecho",
   },
   {
     id: "chakra-5",
@@ -89,6 +113,10 @@ export const CHAKRAS: Chakra[] = [
     radialCenter: "#10415B",
     radialOuter: "#0F3447",
     description: "Expresión y verdad. Sesiones para liberar tu voz y comunicar desde la autenticidad.",
+    element: "Éter",
+    colorName: "Azul",
+    mantra: "HAM",
+    location: "Garganta",
   },
   {
     id: "chakra-6",
@@ -103,6 +131,10 @@ export const CHAKRAS: Chakra[] = [
     radialCenter: "#0E355C",
     radialOuter: "#100E48",
     description: "Intuición y visión. Sesiones para aquietar la mente y despertar la percepción interior.",
+    element: "Mente",
+    colorName: "Índigo",
+    mantra: "OM",
+    location: "Entrecejo",
   },
   {
     id: "chakra-7",
@@ -116,6 +148,10 @@ export const CHAKRAS: Chakra[] = [
     radialCenter: "#37105B",
     radialOuter: "#2C0F47",
     description: "Conexión y unidad. Sesiones para expandir la consciencia y unirte con el todo.",
+    element: "Consciencia",
+    colorName: "Violeta",
+    mantra: "Silencio",
+    location: "Coronilla",
   },
 ];
 
