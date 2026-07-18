@@ -20,7 +20,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useGetSharedMixes, useReportSharedMix } from "@workspace/api-client-react";
 import type { SharedMix } from "@workspace/api-client-react";
 
-import { GhostPill } from "@/components/GhostPill";
 import { MixContextMenu } from "@/components/CommunityMixesCarousel";
 import { getMixImage } from "@/config/mix-images";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
@@ -33,8 +32,6 @@ const H_PAD = 15;
 const GOLD = "#F7CB6B";
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
-const HERO_H = 238;
-const HERO_IMG = require("@/assets/images/sessions/session-1.jpg");
 
 const GRID_GAP = 12;
 const CARD_W = (width - H_PAD * 2 - GRID_GAP) / 2;
@@ -235,39 +232,21 @@ export default function MezclasComunidadScreen() {
   return (
     <View style={[styles.root, { backgroundColor: theme.gradient[1] }]}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={[theme.gradient[0], theme.gradient[1]]} style={{ position: "absolute", top: 0, left: 0, right: 0, height: HERO_H }} />
+
+      {/* ── Header ── */}
+      <View style={[styles.header, { paddingTop: topPad + 8 }]}>
+        <BackPill onPress={() => router.back()} />
+      </View>
 
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 60 + bottomPad }}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── Hero banner ── */}
-        <View style={styles.heroArea}>
-          <Image source={HERO_IMG} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" />
-          <LinearGradient
-            colors={["transparent", "rgba(0,0,0,0.28)", "rgba(0,0,0,0.60)"]}
-            locations={[0.5, 0.8, 1]}
-            style={StyleSheet.absoluteFill}
-          />
-          <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
-            <GhostPill style={{ backgroundColor: "#1B060F" }}>
-              <BackPill onPress={() => router.back()} />
-            </GhostPill>
-          </View>
-          <View style={styles.heroIconFloat}>
-            <View style={styles.heroIconGlow}>
-              <View style={styles.heroIconCircle}>
-                <Feather name="users" size={32} color="#F7CB6B" />
-              </View>
-            </View>
-          </View>
-        </View>
-
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
           <Text style={styles.profileTitle}>Mezclas de la comunidad</Text>
-          <Text style={styles.profileDesc} numberOfLines={2}>
+          <Text style={styles.profileDesc}>
             Explora entre universos sonoros
           </Text>
         </View>
@@ -337,28 +316,13 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#1B060F" },
   scroll: { flex: 1 },
 
-  heroOverlayLeft: { position: "absolute", left: H_PAD, zIndex: 10 },
-
-  /* ── Hero ── */
-  heroArea: { height: HERO_H, position: "relative" },
-  heroIconFloat: { position: "absolute", bottom: -17, left: 0, right: 0, alignItems: "center", zIndex: 2 },
-  heroIconGlow: { borderRadius: 36 },
-  heroIconCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: "#1B060F",
-    borderWidth: 2,
-    borderColor: "rgba(190,135,68,0.5)",
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-  },
+  /* ── Header ── */
+  header: { paddingHorizontal: H_PAD, paddingBottom: 8 },
 
   /* ── Profile card ── */
-  profileCard: { marginHorizontal: H_PAD, marginTop: 28, paddingBottom: 14, gap: 8, alignItems: "center" },
+  profileCard: { marginHorizontal: H_PAD, marginTop: 12, paddingBottom: 14, gap: 6, alignItems: "center" },
   profileTitle: { fontFamily: "Manrope", fontSize: 27, fontWeight: "800", color: TEXT, letterSpacing: 0.3, textAlign: "center" },
-  profileDesc: { fontFamily: "Manrope", fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginTop: 3, marginBottom: 8 },
+  profileDesc: { fontFamily: "Manrope", fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginBottom: 4 },
 
   /* ── Chips ── */
   chipsArea: { paddingTop: 10, paddingBottom: 15 },
