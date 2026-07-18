@@ -1207,7 +1207,6 @@ export default function HomeScreen2() {
                   { opacity: pressed ? 0.75 : 1 },
                 ]}
               >
-                <View style={[StyleSheet.absoluteFill, { borderRadius: 20, backgroundColor: cardBg }]} />
                 <Text
                   style={styles.durPillText}
                   numberOfLines={1}
@@ -2228,20 +2227,20 @@ const styles = StyleSheet.create({
     paddingBottom: 2,
   },
   durPill: {
-    borderRadius: 20,
-    paddingHorizontal: 10,
+    borderRadius: 999,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     minWidth: 80,
-    height: 42,
-    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.75)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.45)",
   },
   durPillText: {
     fontFamily: "Manrope",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "600",
-    color: "#FBFBFB",
-    letterSpacing: 0.2,
-    marginTop: -3,
+    color: "#f9f9f9",
   },
 });
