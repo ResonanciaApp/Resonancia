@@ -513,7 +513,9 @@ export default function ExploreScreen() {
                 style={({ pressed }) => [{ width: CHAKRA_CARD, opacity: pressed ? 0.85 : 1 }]}
               >
                 <View style={styles.chakraCard}>
-                  <SacredGlyph id={c.geometryId} color={c.color} size={CHAKRA_GLYPH} />
+                  <View style={{ filter: [{ saturate: 1.1 }] } as object}>
+                    <SacredGlyph id={c.geometryId} color={c.color} size={CHAKRA_GLYPH} />
+                  </View>
                 </View>
                 <Text style={styles.chakraName} numberOfLines={1}>{c.name}</Text>
                 <Text style={styles.chakraSub} numberOfLines={1}>{c.tagLabel}</Text>
@@ -630,7 +632,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.15)",
     alignItems: "center",
     justifyContent: "center",
-    filter: [{ saturate: 1.1 }],
   },
   chakraName: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", color: "#FBFBFB", marginTop: 10, textAlign: "center" },
   chakraSub:  { fontFamily: "Manrope", fontSize: 11, color: "#c2c2c2", marginTop: 3, textAlign: "center" },
