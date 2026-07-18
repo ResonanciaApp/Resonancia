@@ -651,7 +651,7 @@ export default function ExploreScreen() {
               position: "absolute",
               top: 0, bottom: 0,
               left: H_PAD, right: H_PAD,
-              backgroundColor: "rgba(0,0,0,0.15)",
+              backgroundColor: "rgba(255,255,255,0.07)",
               borderRadius: 25,
             }} />
             {CHAKRA_LEFT_LABELS.map((label, i) => {
