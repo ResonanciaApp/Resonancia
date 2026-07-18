@@ -103,7 +103,7 @@ export default function VideoTabScreen() {
         </View>
         {/* Search bar */}
         <View style={styles.searchWrap}>
-          <View style={[styles.searchBox, { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(247,203,107,0.2)", borderWidth: 1 }]}>
+          <View style={[styles.searchBox, { backgroundColor: "rgba(255,255,255,0.05)", borderColor: "rgba(247,203,107,0.5)", borderWidth: 1 }]}>
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
               value={query}
