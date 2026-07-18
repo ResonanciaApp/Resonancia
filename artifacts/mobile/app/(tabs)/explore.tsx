@@ -27,6 +27,7 @@ import { CardTint } from "@/components/CardTint";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SessionCard } from "@/components/SessionCard";
 import { SessionCarousel } from "@/components/SessionCarousel";
+import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 import { SESSIONS, getSessionById } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
@@ -790,6 +791,11 @@ export default function ExploreScreen() {
                             </Pressable>
                           ))}
                         </View>
+                      </View>
+
+                      {/* ── Mezclas de la comunidad ── */}
+                      <View style={{ paddingHorizontal: H_PAD, marginBottom: SECTION_GAP }}>
+                        <CommunityMixesCarousel />
                       </View>
                     </>
                   )}
