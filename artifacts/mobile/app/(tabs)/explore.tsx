@@ -1012,7 +1012,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-between",
     rowGap: 25,
-    marginTop: 20,
+    marginTop: 0,
   },
   tagCard: {
     width: TAG_CARD_W - 4,
