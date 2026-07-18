@@ -6,6 +6,8 @@ export type Chakra = {
   geometryId: GeometryId;
   /** Nombre sánscrito (Muladhara, Svadhisthana, …). */
   name: string;
+  /** Nombre corporal / anatómico (Raíz, Sacro, Corazón…). */
+  subtitle: string;
   /** Etiqueta Nivel 1 (themeTag) asociada en la DB. */
   tagLabel: string;
   /** Variantes de la etiqueta toleradas (typos existentes en la DB). */
@@ -27,6 +29,7 @@ export const CHAKRAS: Chakra[] = [
     id: "chakra-1",
     geometryId: "chakra-1",
     name: "Muladhara",
+    subtitle: "Raíz",
     tagLabel: "Primer Chakra",
     tagAliases: [],
     color: "#C65860",
@@ -39,6 +42,7 @@ export const CHAKRAS: Chakra[] = [
     id: "chakra-2",
     geometryId: "chakra-2",
     name: "Svadhisthana",
+    subtitle: "Sacro",
     tagLabel: "Segundo Chakra",
     tagAliases: [],
     color: "#DE9363",
@@ -51,6 +55,7 @@ export const CHAKRAS: Chakra[] = [
     id: "chakra-3",
     geometryId: "chakra-3",
     name: "Manipura",
+    subtitle: "Plexo Solar",
     tagLabel: "Tercer Chakra",
     tagAliases: [],
     color: "#DFC26B",
@@ -63,6 +68,7 @@ export const CHAKRAS: Chakra[] = [
     id: "chakra-4",
     geometryId: "chakra-4",
     name: "Anahata",
+    subtitle: "Corazón",
     tagLabel: "Cuarto Chakra",
     tagAliases: [],
     color: "#60A186",
@@ -75,6 +81,7 @@ export const CHAKRAS: Chakra[] = [
     id: "chakra-5",
     geometryId: "chakra-5",
     name: "Vishuddha",
+    subtitle: "Garganta",
     tagLabel: "Quinto Chakra",
     tagAliases: [],
     color: "#5998BB",
@@ -87,6 +94,7 @@ export const CHAKRAS: Chakra[] = [
     id: "chakra-6",
     geometryId: "chakra-6",
     name: "Ajna",
+    subtitle: "Tercer Ojo",
     tagLabel: "Sexto Chakra",
     // La DB tiene hoy la variante "Sexo Chakra"; se trata como "Sexto Chakra".
     tagAliases: ["Sexo Chakra"],
@@ -100,6 +108,7 @@ export const CHAKRAS: Chakra[] = [
     id: "chakra-7",
     geometryId: "chakra-7",
     name: "Sahasrara",
+    subtitle: "Corona",
     tagLabel: "Séptimo Chakra",
     tagAliases: [],
     color: "#A776D6",

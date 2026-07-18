@@ -32,8 +32,8 @@ import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { TEMAS } from "@/data/temas";
 import { TAG_CARDS } from "@/data/tags";
-import { CHAKRAS, isChakraTag } from "@/data/chakras";
-import { SacredGlyph } from "@/components/SacredGlyph";
+import { CHAKRAS, isChakraTag, type Chakra } from "@/data/chakras";
+import { ChakraOrb } from "@/components/ChakraOrb";
 import { usePremium } from "@/context/PremiumContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColors } from "@/hooks/useColors";
@@ -58,41 +58,13 @@ function hexTint(hex: string, alpha: number): string {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-/** Aumenta la saturación de un hex en `amount` (ej. 0.1 = +10%). */
-function saturateHex(hex: string, amount: number): string {
-  const h = hex.replace("#", "");
-  let r = parseInt(h.slice(0, 2), 16) / 255;
-  let g = parseInt(h.slice(2, 4), 16) / 255;
-  let b = parseInt(h.slice(4, 6), 16) / 255;
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  const l = (max + min) / 2;
-  if (max === min) return hex; // acromático
-  const d = max - min;
-  let s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-  s = Math.min(1, s * (1 + amount));
-  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-  const p = 2 * l - q;
-  let hue = 0;
-  if (max === r) hue = (g - b) / d + (g < b ? 6 : 0);
-  else if (max === g) hue = (b - r) / d + 2;
-  else hue = (r - g) / d + 4;
-  hue /= 6;
-  const hue2rgb = (pp: number, qq: number, t: number) => {
-    if (t < 0) t += 1; if (t > 1) t -= 1;
-    if (t < 1/6) return pp + (qq - pp) * 6 * t;
-    if (t < 1/2) return qq;
-    if (t < 2/3) return pp + (qq - pp) * (2/3 - t) * 6;
-    return pp;
-  };
-  const rr = Math.round(hue2rgb(p, q, hue + 1/3) * 255);
-  const gg = Math.round(hue2rgb(p, q, hue) * 255);
-  const bb = Math.round(hue2rgb(p, q, hue - 1/3) * 255);
-  return `#${rr.toString(16).padStart(2,"0")}${gg.toString(16).padStart(2,"0")}${bb.toString(16).padStart(2,"0")}`;
-}
-
 const SQCARD_W = Math.round((width - H_PAD * 2) / 1.85);
-const CHAKRA_CARD = 110;
-const CHAKRA_GLYPH = 74;
+const CHAKRA_PANEL_H = 660;
+const CHAKRA_ORB_SIZE = 38;
+const CHAKRA_ORB_CENTER_X = Math.round(width * 0.42);
+const CHAKRA_LINE_END_X = Math.round(width * 0.525);
+const CHAKRAS_VISUAL = [...CHAKRAS].reverse(); // Sahasrara (corona) primero → Muladhara (raíz) último
+const CHAKRA_TOP_PCTS = [0.09, 0.21, 0.33, 0.46, 0.58, 0.70, 0.83] as const;
 const TEMA_COL_W = Math.floor((width - H_PAD * 2 - GAP) / 2);
 const TEMA3_W    = Math.floor((width - H_PAD * 2 - TEMA_GAP * 2) / 3);
 
@@ -273,6 +245,79 @@ const srStyles = StyleSheet.create({
   resultTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FBFBFB", marginBottom: 3 },
   resultAuthor:{ fontFamily: "Manrope", fontSize: 12, color: "rgba(242,231,228,0.45)" },
 });
+
+// ── ChakraBodyRow ──────────────────────────────────────────────────────────────
+const GLOW_R = 34;
+const ROW_H = 46;
+
+function ChakraBodyRow({ chakra, topPct }: { chakra: Chakra; topPct: number }) {
+  const glowAnim = useRef(new Animated.Value(0)).current;
+
+  const handlePress = () => {
+    glowAnim.setValue(0);
+    Animated.sequence([
+      Animated.timing(glowAnim, { toValue: 1, duration: 160, useNativeDriver: true }),
+      Animated.timing(glowAnim, { toValue: 0, duration: 240, useNativeDriver: true }),
+    ]).start(() => router.push(`/chakra/${chakra.id}` as never));
+  };
+
+  const rowTop = Math.round(topPct * CHAKRA_PANEL_H) - ROW_H / 2;
+  const lineW = Math.max(0, CHAKRA_LINE_END_X - CHAKRA_ORB_CENTER_X - CHAKRA_ORB_SIZE / 2 - 2);
+
+  return (
+    <Pressable
+      onPress={handlePress}
+      hitSlop={6}
+      style={{
+        position: "absolute",
+        top: rowTop,
+        left: CHAKRA_ORB_CENTER_X - CHAKRA_ORB_SIZE / 2 - GLOW_R,
+        right: 0,
+        height: ROW_H,
+        flexDirection: "row",
+        alignItems: "center",
+      }}
+    >
+      {/* Glow burst (tap) */}
+      <Animated.View
+        style={{
+          position: "absolute",
+          left: 0,
+          top: ROW_H / 2 - GLOW_R,
+          width: GLOW_R * 2,
+          height: GLOW_R * 2,
+          borderRadius: GLOW_R,
+          backgroundColor: chakra.color,
+          opacity: glowAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 0.65] }),
+          transform: [{ scale: glowAnim.interpolate({ inputRange: [0, 1], outputRange: [0.5, 2.4] }) }],
+        }}
+      />
+      {/* Orb */}
+      <View style={{ marginLeft: GLOW_R - CHAKRA_ORB_SIZE / 2 }}>
+        <ChakraOrb color={chakra.color} size={CHAKRA_ORB_SIZE} />
+      </View>
+      {/* Connector line */}
+      <View
+        style={{
+          width: lineW,
+          height: 1,
+          backgroundColor: chakra.color,
+          opacity: 0.5,
+          marginLeft: 3,
+        }}
+      />
+      {/* Labels */}
+      <View style={{ marginLeft: 9 }}>
+        <Text style={{ color: "#FBFBFB", fontFamily: "Manrope", fontSize: 13, fontWeight: "700" }}>
+          {chakra.name}
+        </Text>
+        <Text style={{ color: "rgba(255,255,255,0.58)", fontFamily: "Manrope", fontSize: 11, marginTop: 2 }}>
+          {chakra.subtitle}
+        </Text>
+      </View>
+    </Pressable>
+  );
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -532,26 +577,31 @@ export default function ExploreScreen() {
 
         {/* ── Chakras ── */}
         <View style={{ marginTop: SECTION_GAP, marginBottom: SECTION_GAP }}>
-          <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 24 }]}>Según cada Chakra</Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 14 }}
-          >
-            {CHAKRAS.map((c) => (
-              <Pressable
-                key={c.id}
-                onPress={() => router.push(`/chakra/${c.id}` as never)}
-                style={({ pressed }) => [{ width: CHAKRA_CARD, opacity: pressed ? 0.85 : 1 }]}
-              >
-                <View style={styles.chakraCard}>
-                  <SacredGlyph id={c.geometryId} color={saturateHex(c.color, 0.1)} size={CHAKRA_GLYPH} />
-                </View>
-                <Text style={styles.chakraName} numberOfLines={1}>{c.name}</Text>
-                <Text style={styles.chakraSub} numberOfLines={1}>{c.tagLabel}</Text>
-              </Pressable>
+          <View style={{ width, height: CHAKRA_PANEL_H, position: "relative", overflow: "hidden" }}>
+            {/* Silueta de fondo */}
+            <Image
+              source={require("../../assets/images/chakras-body.png")}
+              style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+              contentFit="cover"
+            />
+            {/* Velo oscuro para contraste */}
+            <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(8,3,18,0.48)" }} />
+
+            {/* Título + descripción (esquina superior izquierda) */}
+            <View style={{ position: "absolute", top: 32, left: H_PAD, width: Math.round(width * 0.44) }}>
+              <Text style={{ fontFamily: "Manrope", fontSize: 26, fontWeight: "700", color: "#FBFBFB", lineHeight: 32 }}>
+                {"Tus chakras,\ntu energía"}
+              </Text>
+              <Text style={{ fontFamily: "Manrope", fontSize: 12, color: "rgba(255,255,255,0.60)", marginTop: 10, lineHeight: 18 }}>
+                {"Selecciona un chakra para comenzar tu armonización."}
+              </Text>
+            </View>
+
+            {/* Filas de chakras (Sahasrara arriba → Muladhara abajo) */}
+            {CHAKRAS_VISUAL.map((c, i) => (
+              <ChakraBodyRow key={c.id} chakra={c} topPct={CHAKRA_TOP_PCTS[i]} />
             ))}
-          </ScrollView>
+          </View>
         </View>
 
         {/* ── Carruseles por temática ── */}
@@ -654,17 +704,6 @@ const styles = StyleSheet.create({
 
   section:      { paddingHorizontal: H_PAD, marginBottom: SECTION_GAP },
 
-  // Chakras
-  chakraCard: {
-    width: CHAKRA_CARD,
-    height: CHAKRA_CARD,
-    borderRadius: 25,
-    backgroundColor: "rgba(0,0,0,0.15)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  chakraName: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", color: "#FBFBFB", marginTop: 10, textAlign: "center" },
-  chakraSub:  { fontFamily: "Manrope", fontSize: 11, color: "#c2c2c2", marginTop: 3, textAlign: "center" },
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 24 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 24 },
 
