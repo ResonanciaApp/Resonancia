@@ -294,7 +294,7 @@ function ChakraBodyRow({ chakra, topPct, side }: { chakra: Chakra; topPct: numbe
         <Animated.View style={[{ marginLeft: GLOW_R - CHAKRA_ORB_SIZE / 2 }, glyphAnimStyle]}>
           <SacredGlyph id={chakra.geometryId} color={chakra.color} size={CHAKRA_ORB_SIZE} />
         </Animated.View>
-        <View style={{ width: CHAKRA_LINE_W, height: 1, backgroundColor: chakra.color, opacity: 0.5, marginLeft: 4 }} />
+        <View style={{ width: CHAKRA_LINE_W, height: 1, backgroundColor: chakra.color, opacity: 0.3, marginLeft: 4 }} />
         <View style={{ marginLeft: 9 }}>
           <Text style={{ color: "#FBFBFB", fontFamily: "Manrope", fontSize: 13, fontWeight: "700" }}>
             {chakra.name}
@@ -325,7 +325,7 @@ function ChakraBodyRow({ chakra, topPct, side }: { chakra: Chakra; topPct: numbe
       <Animated.View style={[{ marginRight: GLOW_R - CHAKRA_ORB_SIZE / 2 }, glyphAnimStyle]}>
         <SacredGlyph id={chakra.geometryId} color={chakra.color} size={CHAKRA_ORB_SIZE} />
       </Animated.View>
-      <View style={{ width: CHAKRA_LINE_W, height: 1, backgroundColor: chakra.color, opacity: 0.5, marginRight: 4 }} />
+      <View style={{ width: CHAKRA_LINE_W, height: 1, backgroundColor: chakra.color, opacity: 0.3, marginRight: 4 }} />
       <View style={{ marginRight: 9, alignItems: "flex-end" }}>
         <Text style={{ color: "#FBFBFB", fontFamily: "Manrope", fontSize: 13, fontWeight: "700", textAlign: "right" }}>
           {chakra.name}
@@ -607,7 +607,7 @@ export default function ExploreScreen() {
           </View>
 
           {/* Panel de orbs — ancho completo para que CHAKRA_ORB_CENTER_X calce */}
-          <View style={{ width, height: CHAKRA_PANEL_H, position: "relative" }}>
+          <View style={{ width, height: CHAKRA_PANEL_H + 25, position: "relative" }}>
             {/* Fondo redondeado inset */}
             <View style={{
               position: "absolute",
@@ -617,7 +617,7 @@ export default function ExploreScreen() {
               borderRadius: 25,
             }} />
             {CHAKRAS_VISUAL.map((c, i) => (
-              <ChakraBodyRow key={c.id} chakra={c} topPct={CHAKRA_TOP_PCTS[i]} side={i % 2 === 0 ? "right" : "left"} />
+              <ChakraBodyRow key={c.id} chakra={c} topPct={CHAKRA_TOP_PCTS[i]} side="right" />
             ))}
           </View>
         </View>
