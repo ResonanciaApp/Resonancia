@@ -724,6 +724,45 @@ export default function ExploreScreen() {
                   />
                   {isFoco && (
                     <>
+                      {/* ── Descubre algo nuevo ── */}
+                      <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
+                        <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Descubre algo nuevo</Text>
+                        <ScrollView
+                          horizontal
+                          showsHorizontalScrollIndicator={false}
+                          style={{ marginHorizontal: -H_PAD }}
+                          contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 10 }}
+                        >
+                          {([
+                            ["Cuencos", "Meditaciones"],
+                            ["Energízate", "Gongs"],
+                            ["Rituales", "Paisajes sonoros"],
+                          ] as [string, string][]).map(([top, bottom]) => (
+                            <View key={top} style={{ gap: 10 }}>
+                              {[top, bottom].map((label) => (
+                                <View
+                                  key={label}
+                                  style={{
+                                    width: 148,
+                                    height: 70,
+                                    backgroundColor: "rgba(255,255,255,0.045)",
+                                    borderRadius: 12,
+                                    borderWidth: 1,
+                                    borderColor: "rgba(247,203,107,0.1)",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F9F9F9", textAlign: "center" }}>
+                                    {label}
+                                  </Text>
+                                </View>
+                              ))}
+                            </View>
+                          ))}
+                        </ScrollView>
+                      </View>
+
                       {/* ── Otras temáticas ── */}
                       <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
                         <Pressable
