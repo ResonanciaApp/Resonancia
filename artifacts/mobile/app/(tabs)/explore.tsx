@@ -670,7 +670,7 @@ export default function ExploreScreen() {
                   justifyContent: "center",
                   alignItems: "flex-end",
                 }}>
-                  <Animated.Text style={{ color: animColor, fontFamily: "Manrope", fontSize: 12, textAlign: "right" }}>
+                  <Animated.Text style={{ color: animColor, fontFamily: "Manrope", fontSize: 11, textAlign: "right" }}>
                     {label}
                   </Animated.Text>
                 </View>
