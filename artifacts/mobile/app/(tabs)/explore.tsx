@@ -721,17 +721,17 @@ export default function ExploreScreen() {
                             <Pressable
                               key={tag.id}
                               onPress={() => router.push(`/tag/${tag.id}` as never)}
-                              style={({ pressed }) => [styles.tagCard, { opacity: pressed ? 0.85 : 1 }]}
+                              style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1 }]}
                             >
-                              <Image
-                                source={tag.image}
-                                style={StyleSheet.absoluteFill}
-                                contentFit="cover"
-                                cachePolicy="memory-disk"
-                              />
-                              <View style={styles.tagCardOverlay}>
-                                <Text style={styles.tagCardLabel} numberOfLines={2}>{tag.label}</Text>
+                              <View style={styles.tagCard}>
+                                <Image
+                                  source={tag.image}
+                                  style={StyleSheet.absoluteFill}
+                                  contentFit="cover"
+                                  cachePolicy="memory-disk"
+                                />
                               </View>
+                              <Text style={styles.tagCardLabel} numberOfLines={2}>{tag.label}</Text>
                             </Pressable>
                           ))}
                         </View>
@@ -959,19 +959,15 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   tagCard: {
-    width: TEMA_COL_W + 6,
-    height: 120,
+    width: TEMA_COL_W + 13,
+    height: 110,
     borderRadius: 15,
     overflow: "hidden",
     backgroundColor: "rgba(74,12,12,0.08)",
-    justifyContent: "flex-end",
   },
-  tagCardOverlay: {
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    backgroundColor: "rgba(0,0,0,0.45)",
-  },
+  tagCardOverlay: {},
   tagCardLabel: {
+    marginTop: 7,
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
