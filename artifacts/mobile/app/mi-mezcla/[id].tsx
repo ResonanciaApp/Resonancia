@@ -309,7 +309,7 @@ export default function MiMezclaScreen() {
         visible={pickerVisible}
         onClose={() => setPickerVisible(false)}
         onPickPreset={(key) =>
-          save({ image: key, coverUri: undefined, coverGeometryId: undefined, coverCreationId: undefined })
+          save({ image: key, coverUri: undefined, coverGeometryId: undefined, coverCreationId: undefined, categoryChosen: true })
         }
         onClearCover={() =>
           save({ image: undefined, coverUri: undefined, coverGeometryId: undefined, coverCreationId: undefined })
