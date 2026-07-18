@@ -499,7 +499,7 @@ export default function ExploreScreen() {
         )}
 
         {/* ── Chakras ── */}
-        <View style={{ marginTop: 0, marginBottom: SECTION_GAP }}>
+        <View style={{ marginTop: SECTION_GAP, marginBottom: SECTION_GAP }}>
           <Text style={[styles.sectionTitle, { paddingHorizontal: H_PAD, marginBottom: 24 }]}>Según cada Chakra</Text>
           <ScrollView
             horizontal
