@@ -698,6 +698,8 @@ export default function ExploreScreen() {
                     onPress={(s) => handleSessionPress(s)}
                     style={tc.label === "Para la ansiedad"
                       ? { marginTop: -40, marginBottom: SECTION_GAP + 40 }
+                      : tc.label === "Energiza tus mañanas"
+                      ? { marginTop: -40, marginBottom: SECTION_GAP }
                       : { marginTop: 0, marginBottom: SECTION_GAP }}
                     cardWidth={tc.label === "Para la ansiedad" ? 299 : SQCARD_W}
                     cardHeight={tc.label === "Para la ansiedad" ? 187 : undefined}
