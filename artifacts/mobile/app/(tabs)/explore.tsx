@@ -252,41 +252,24 @@ const GLOW_R = 34;
 const ROW_H = 54;
 
 function ChakraBodyRow({ chakra, topPct, side }: { chakra: Chakra; topPct: number; side: "left" | "right" }) {
-  const glowAnim  = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const dimAnim   = useRef(new Animated.Value(0.42)).current;
 
   const handlePress = () => {
-    glowAnim.setValue(0);
     scaleAnim.setValue(1);
     Animated.parallel([
       Animated.sequence([
-        Animated.timing(glowAnim,  { toValue: 1,    duration: 150, useNativeDriver: true }),
-        Animated.timing(glowAnim,  { toValue: 0,    duration: 300, useNativeDriver: true }),
+        Animated.timing(scaleAnim, { toValue: 1.18, duration: 300, useNativeDriver: true }),
+        Animated.timing(scaleAnim, { toValue: 1,    duration: 300, useNativeDriver: true }),
       ]),
       Animated.sequence([
-        Animated.timing(scaleAnim, { toValue: 1.18, duration: 120, useNativeDriver: true }),
-        Animated.timing(scaleAnim, { toValue: 1,    duration: 200, useNativeDriver: true }),
-      ]),
-      Animated.sequence([
-        Animated.timing(dimAnim,   { toValue: 1,    duration: 120, useNativeDriver: true }),
+        Animated.timing(dimAnim,   { toValue: 1,    duration: 300, useNativeDriver: true }),
         Animated.timing(dimAnim,   { toValue: 0.42, duration: 500, useNativeDriver: true }),
       ]),
     ]).start(() => router.push(`/chakra/${chakra.id}` as never));
   };
 
   const rowTop = Math.round(topPct * CHAKRA_PANEL_H) - ROW_H / 2;
-
-  const glowStyle = {
-    position: "absolute" as const,
-    width: GLOW_R * 2,
-    height: GLOW_R * 2,
-    borderRadius: GLOW_R,
-    top: ROW_H / 2 - GLOW_R,
-    backgroundColor: chakra.color,
-    opacity: glowAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 0.65] }),
-    transform: [{ scale: glowAnim.interpolate({ inputRange: [0, 1], outputRange: [0.5, 2.6] }) }],
-  };
 
   const glyphAnimStyle = {
     transform: [{ scale: scaleAnim }],
@@ -308,7 +291,6 @@ function ChakraBodyRow({ chakra, topPct, side }: { chakra: Chakra; topPct: numbe
           alignItems: "center",
         }}
       >
-        <Animated.View style={[glowStyle, { left: 0 }]} />
         <Animated.View style={[{ marginLeft: GLOW_R - CHAKRA_ORB_SIZE / 2 }, glyphAnimStyle]}>
           <SacredGlyph id={chakra.geometryId} color={chakra.color} size={CHAKRA_ORB_SIZE} />
         </Animated.View>
@@ -340,7 +322,6 @@ function ChakraBodyRow({ chakra, topPct, side }: { chakra: Chakra; topPct: numbe
         alignItems: "center",
       }}
     >
-      <Animated.View style={[glowStyle, { right: 0 }]} />
       <Animated.View style={[{ marginRight: GLOW_R - CHAKRA_ORB_SIZE / 2 }, glyphAnimStyle]}>
         <SacredGlyph id={chakra.geometryId} color={chakra.color} size={CHAKRA_ORB_SIZE} />
       </Animated.View>
