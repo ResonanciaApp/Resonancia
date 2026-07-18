@@ -705,18 +705,22 @@ const styles = StyleSheet.create({
 
   // Pills de duración → /busqueda
   durPill: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.75)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.45)",
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    minWidth: 80,
+    height: 42,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.07)",
   },
   durPillText: {
     fontFamily: "Manrope",
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "600",
-    color: "#f9f9f9",
+    color: "#FBFBFB",
+    letterSpacing: 0.2,
+    marginTop: -3,
   },
 
   // Ejercicios de respiración
