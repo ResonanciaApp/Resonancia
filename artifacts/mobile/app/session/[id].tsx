@@ -393,7 +393,7 @@ export default function SessionDetailScreen() {
           {/* ── Botones Escuchar / Compartir ─────────────────────────── */}
           {hasProgress ? (
             <>
-              <View style={[styles.splitBtnRow, { marginTop: 18, marginBottom: 12 }]}>
+              <View style={[styles.splitBtnRow, { marginTop: 10, marginBottom: 12 }]}>
                 {/* Reiniciar */}
                 <Pressable
                   onPress={handlePlayFromStart}
@@ -435,7 +435,7 @@ export default function SessionDetailScreen() {
             </>
           ) : (
             /* Escuchar ahora + Compartir lado a lado */
-            <View style={{ flexDirection: "row", gap: 10, marginTop: 24, marginBottom: 26 }}>
+            <View style={{ flexDirection: "row", gap: 10, marginTop: 16, marginBottom: 26 }}>
               <Pressable
                 onPress={handlePlay}
                 style={({ pressed }) => [
