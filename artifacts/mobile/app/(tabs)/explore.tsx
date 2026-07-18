@@ -81,6 +81,8 @@ const TEMA3_W    = Math.floor((width - H_PAD * 2 - TEMA_GAP * 2) / 3);
 
 const CAT_CARD_GAP = 16;
 const CAT_CARD_W = Math.round(((width - H_PAD * 2 - CAT_CARD_GAP) / 2.2 - 30) * 1.625);
+const TAG_CARD_GAP = 6;
+const TAG_CARD_W = Math.floor((width - H_PAD * 2 - TAG_CARD_GAP) / 2);
 const HERO_HEIGHT = 270;
 
 const DURATION_SLOTS = [
@@ -721,7 +723,7 @@ export default function ExploreScreen() {
                             <Pressable
                               key={tag.id}
                               onPress={() => router.push(`/tag/${tag.id}` as never)}
-                              style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1, width: TEMA_COL_W + 13 }]}
+                              style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1, width: TAG_CARD_W }]}
                             >
                               <View style={styles.tagCard}>
                                 <Image
@@ -955,11 +957,11 @@ const styles = StyleSheet.create({
   tagGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: GAP,
+    gap: TAG_CARD_GAP,
     marginTop: 20,
   },
   tagCard: {
-    width: TEMA_COL_W + 13,
+    width: TAG_CARD_W,
     height: 110,
     borderRadius: 15,
     overflow: "hidden",
