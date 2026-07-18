@@ -607,16 +607,16 @@ export default function ExploreScreen() {
           </View>
 
           {/* Panel de orbs */}
-          <View style={{ width, height: CHAKRA_PANEL_H, position: "relative" }}>
+          <View style={{ width, height: CHAKRA_PANEL_H, position: "relative", overflow: "hidden" }}>
             {/* Silueta meditando — alineada con los centros energéticos */}
             <Image
               source={require("@/assets/images/chakra-silhouette.png")}
               style={{
                 position: "absolute",
-                width: 660,
-                height: 1860,
-                top: -18,
-                left: (width - 660) / 2,
+                width: 360,
+                height: 640,
+                top: -30,
+                left: (width - 360) / 2,
                 opacity: 0.18,
               }}
               contentFit="contain"
