@@ -1098,6 +1098,8 @@ export default function HomeScreen2() {
                   gap: 12,
                   overflow: "hidden" as const,
                   opacity: pressed ? 0.75 : 1,
+                  borderWidth: 1,
+                  borderColor: "rgba(247,203,107,0.1)",
                   ...corners[i],
                 }]}
               >
