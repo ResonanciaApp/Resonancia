@@ -528,6 +528,7 @@ export default function ExploreScreen() {
             <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
             {themeCarousels.map((tc, idx) => {
               const isLast = idx === themeCarousels.length - 1;
+              const isFoco = tc.label === "Foco y concentración";
               return (
                 <React.Fragment key={tc.label}>
                   <SessionCarousel
@@ -540,35 +541,38 @@ export default function ExploreScreen() {
                     cardHeight={tc.label === "Para la ansiedad" ? 187 : undefined}
                     titleSize={20}
                   />
-                  {!isLast && (
+                  {isFoco && (
+                    <View style={[styles.section, { marginBottom: 36, marginTop: 48 }]}>
+                      <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>¿Cuánto tiempo tienes hoy?</Text>
+                      <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        style={{ marginHorizontal: -H_PAD }}
+                        contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 10 }}
+                      >
+                        {DURATION_SLOTS.map((slot) => (
+                          <Pressable
+                            key={slot.label}
+                            onPress={() => router.push(`/busqueda?tiempo=${encodeURIComponent(slot.label)}` as never)}
+                            style={({ pressed }) => [styles.durPill, { opacity: pressed ? 0.75 : 1 }]}
+                          >
+                            <Text style={styles.durPillText}>{slot.label}</Text>
+                          </Pressable>
+                        ))}
+                      </ScrollView>
+                    </View>
+                  )}
+                  {!isLast && !isFoco && (
                     <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginTop: 20, marginBottom: 4 }} />
+                  )}
+                  {!isLast && isFoco && (
+                    <View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.06)", marginHorizontal: H_PAD, marginBottom: 4 }} />
                   )}
                 </React.Fragment>
               );
             })}
           </>
         )}
-
-        {/* ── ¿Cuánto tiempo tienes hoy? ── */}
-        <View style={[styles.section, { marginBottom: 36, marginTop: 48 }]}>
-          <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>¿Cuánto tiempo tienes hoy?</Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{ marginHorizontal: -H_PAD }}
-            contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 10 }}
-          >
-            {DURATION_SLOTS.map((slot) => (
-              <Pressable
-                key={slot.label}
-                onPress={() => router.push(`/busqueda?tiempo=${encodeURIComponent(slot.label)}` as never)}
-                style={({ pressed }) => [styles.durPill, { opacity: pressed ? 0.75 : 1 }]}
-              >
-                <Text style={styles.durPillText}>{slot.label}</Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        </View>
       </ScrollView>
 
       <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} />
