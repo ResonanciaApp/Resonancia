@@ -388,8 +388,8 @@ export default function CommunityMixScreen() {
             )}
           </View>
 
-          {/* Caja para escribir — sin borde */}
-          <View style={[styles.composer, { backgroundColor: "rgba(190,150,80,0.06)" }]}>
+          {/* Caja para escribir */}
+          <View style={styles.composer}>
             <TextInput
               value={draft}
               onChangeText={setDraft}
@@ -548,6 +548,9 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 16,
     marginBottom: 16,
+    backgroundColor: "rgba(255,255,255,0.07)",
+    borderWidth: 1,
+    borderColor: "rgba(247,203,107,0.1)",
   },
   input: {
     fontFamily: "Manrope",
