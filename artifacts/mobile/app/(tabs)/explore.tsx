@@ -634,6 +634,24 @@ export default function ExploreScreen() {
           </ScrollView>
         </View>
 
+        {/* ── Para la ansiedad (antes de chakras) ── */}
+        {(() => {
+          const tc = themeCarousels.find((c) => c.label === "Para la ansiedad");
+          if (!tc) return null;
+          return (
+            <SessionCarousel
+              title={tc.label}
+              sessions={tc.sessions}
+              isPremium={isPremium}
+              onPress={(s) => handleSessionPress(s)}
+              style={{ marginTop: 0, marginBottom: SECTION_GAP }}
+              cardWidth={299}
+              cardHeight={187}
+              titleSize={20}
+            />
+          );
+        })()}
+
         {/* ── Chakras ── */}
         <View style={{ marginTop: 0, marginBottom: SECTION_GAP + 40 }}>
           {/* Título encima */}
@@ -689,7 +707,7 @@ export default function ExploreScreen() {
         {/* ── Carruseles por temática ── */}
         {themeCarousels.length > 0 && (
           <>
-            {themeCarousels.map((tc) => {
+            {themeCarousels.filter((tc) => tc.label !== "Para la ansiedad").map((tc) => {
               const isFoco = tc.label === "Foco y concentración";
               return (
                 <React.Fragment key={tc.label}>
@@ -698,13 +716,10 @@ export default function ExploreScreen() {
                     sessions={tc.sessions}
                     isPremium={isPremium}
                     onPress={(s) => handleSessionPress(s)}
-                    style={tc.label === "Para la ansiedad"
-                      ? { marginTop: -40, marginBottom: SECTION_GAP + 40 }
-                      : tc.label === "Energiza tus mañanas"
+                    style={tc.label === "Energiza tus mañanas"
                       ? { marginTop: -40, marginBottom: SECTION_GAP }
                       : { marginTop: 0, marginBottom: SECTION_GAP }}
-                    cardWidth={tc.label === "Para la ansiedad" ? 299 : SQCARD_W}
-                    cardHeight={tc.label === "Para la ansiedad" ? 187 : undefined}
+                    cardWidth={SQCARD_W}
                     titleSize={20}
                   />
                   {isFoco && (
