@@ -721,7 +721,7 @@ export default function ExploreScreen() {
                             <Pressable
                               key={tag.id}
                               onPress={() => router.push(`/tag/${tag.id}` as never)}
-                              style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1 }]}
+                              style={({ pressed }) => [{ opacity: pressed ? 0.85 : 1, width: TEMA_COL_W + 13 }]}
                             >
                               <View style={styles.tagCard}>
                                 <Image
