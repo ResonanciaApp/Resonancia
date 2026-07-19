@@ -23,7 +23,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
-import { CardTint } from "@/components/CardTint";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SessionCard } from "@/components/SessionCard";
 import { SessionCarousel } from "@/components/SessionCarousel";
@@ -369,6 +368,11 @@ export default function ExploreScreen() {
   const { playSession, history } = usePlayer();
   const { version: catalogVersion } = useCatalog();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
+  const temaCardBg = activeSceneId === "indigo"
+    ? "rgba(255,255,255,0.045)"
+    : activeSceneId === "profundo"
+      ? "rgba(255,255,255,0.06)"
+      : "rgba(255,255,255,0.07)";
   // Animated values para el color de los textos izquierda de cada chakra
   const chakraColorAnims = useRef(CHAKRAS_VISUAL.map(() => new Animated.Value(0))).current;
 
@@ -663,7 +667,7 @@ export default function ExploreScreen() {
               >
                 {({ pressed }) => (
                   <>
-                    <CardTint />
+                    <View style={[StyleSheet.absoluteFill, { backgroundColor: temaCardBg }]} />
                     {pressed && <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(t.color, 0.22) }]} />}
                     {t.image != null ? (
                       <Image
