@@ -653,8 +653,26 @@ export default function ExploreScreen() {
           );
         })()}
 
+        {/* ── Energiza tus mañanas + Foco y concentración (antes de chakras) ── */}
+        {["Energiza tus mañanas", "Foco y concentración"].map((label) => {
+          const tc = themeCarousels.find((c) => c.label === label);
+          if (!tc) return null;
+          return (
+            <SessionCarousel
+              key={tc.label}
+              title={tc.label}
+              sessions={tc.sessions}
+              isPremium={isPremium}
+              onPress={(s) => handleSessionPress(s)}
+              style={{ marginTop: 0, marginBottom: SECTION_GAP }}
+              cardWidth={SQCARD_W}
+              titleSize={20}
+            />
+          );
+        })}
+
         {/* ── Chakras ── */}
-        <View style={{ marginTop: 0, marginBottom: SECTION_GAP + 40 }}>
+        <View style={{ marginTop: 0, marginBottom: SECTION_GAP }}>
           {/* Título encima */}
           <View style={{ paddingHorizontal: H_PAD, marginTop: 7, marginBottom: 21 }}>
             <Text style={{ fontFamily: "Manrope", fontSize: 22, fontWeight: "700", color: "#FBFBFB" }}>
@@ -708,23 +726,24 @@ export default function ExploreScreen() {
         {/* ── Carruseles por temática ── */}
         {themeCarousels.length > 0 && (
           <>
-            {themeCarousels.filter((tc) => tc.label !== "Para la ansiedad").map((tc) => {
-              const isFoco = tc.label === "Foco y concentración";
-              return (
-                <React.Fragment key={tc.label}>
-                  <SessionCarousel
-                    title={tc.label}
-                    sessions={tc.sessions}
-                    isPremium={isPremium}
-                    onPress={(s) => handleSessionPress(s)}
-                    style={tc.label === "Energiza tus mañanas"
-                      ? { marginTop: -40, marginBottom: SECTION_GAP }
-                      : { marginTop: 0, marginBottom: SECTION_GAP }}
-                    cardWidth={SQCARD_W}
-                    titleSize={20}
-                  />
-                  {isFoco && (
-                    <>
+            {themeCarousels
+              .filter((tc) =>
+                tc.label !== "Para la ansiedad" &&
+                tc.label !== "Energiza tus mañanas" &&
+                tc.label !== "Foco y concentración")
+              .map((tc) => (
+                <SessionCarousel
+                  key={tc.label}
+                  title={tc.label}
+                  sessions={tc.sessions}
+                  isPremium={isPremium}
+                  onPress={(s) => handleSessionPress(s)}
+                  style={{ marginTop: 0, marginBottom: SECTION_GAP }}
+                  cardWidth={SQCARD_W}
+                  titleSize={20}
+                />
+              ))}
+            <>
                       {/* ── Descubre algo nuevo ── */}
                       <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
                         <Text style={styles.sectionTitle}>Descubre algo nuevo</Text>
@@ -803,11 +822,7 @@ export default function ExploreScreen() {
                       <View style={{ marginBottom: SECTION_GAP }}>
                         <GeometrixCommunitySection />
                       </View>
-                    </>
-                  )}
-                </React.Fragment>
-              );
-            })}
+            </>
           </>
         )}
       </ScrollView>
