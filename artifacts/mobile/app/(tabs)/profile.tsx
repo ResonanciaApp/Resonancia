@@ -300,7 +300,11 @@ export default function ProfileScreen() {
       target.setDate(today.getDate() - (todayDow - d));
       weekActivity[d] = daysWithActivity.has(dayKey(target));
     }
-    return { currentStreak, maxStreak, weekActivity };
+    const totalSessions = statEvents.length;
+    const totalMinutes = Math.round(statEvents.reduce((s, e) => s + e.minutes, 0));
+    const timeDisplay =
+      totalMinutes >= 60 ? `${Math.floor(totalMinutes / 60)}h ${totalMinutes % 60}m` : `${totalMinutes} min`;
+    return { currentStreak, maxStreak, weekActivity, totalSessions, timeDisplay };
   }, [statEvents]);
 
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
@@ -891,17 +895,19 @@ export default function ProfileScreen() {
             })}
           </View>
 
-          <View style={[styles.rachaMaxRow, { borderTopColor: colors.border }]}>
-            <View style={[styles.rachaMaxIcon, { backgroundColor: "rgba(212,175,55,0.10)" }]}>
-              <Text style={{ fontSize: 16 }}>🛡️</Text>
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.rachaMaxLabel, { color: colors.foreground }]}>Racha máxima</Text>
-              <Text style={[styles.rachaMaxSub, { color: colors.mutedForeground }]}>Tu récord personal</Text>
-            </View>
-            <Text style={[styles.rachaMaxValue, { color: colors.primary }]}>
-              {rachaStats.maxStreak > 0 ? `${rachaStats.maxStreak} días` : "—"}
-            </Text>
+          <View style={[styles.rachaStatsRow, { borderTopWidth: 1, borderTopColor: colors.border, marginTop: 16 }]}>
+            {[
+              { icon: "🧘", value: rachaStats.totalSessions.toString(), label: "Sesiones\ntotales" },
+              { icon: "⏱️", value: rachaStats.timeDisplay, label: "Tiempo\ntotal" },
+              { icon: "🏆", value: rachaStats.maxStreak > 0 ? `${rachaStats.maxStreak} d` : "—", label: "Racha\nmáxima" },
+            ].map((s, i) => (
+              <View key={s.label} style={styles.rachaStatCol}>
+                {i > 0 && <View style={[styles.rachaStatDivider, { backgroundColor: colors.border }]} />}
+                <Text style={styles.rachaStatEmoji}>{s.icon}</Text>
+                <Text style={[styles.rachaStatVal, { color: colors.accent }]}>{s.value || "—"}</Text>
+                <Text style={[styles.rachaStatLabel, { color: colors.mutedForeground }]}>{s.label}</Text>
+              </View>
+            ))}
           </View>
         </View>
 
