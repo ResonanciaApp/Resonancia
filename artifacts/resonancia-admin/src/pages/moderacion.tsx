@@ -324,6 +324,7 @@ function EditDialog({
   const [sleepTag, setSleepTag] = useState(submission.sleepTag ?? "");
   const [themeTag, setThemeTag] = useState<string[]>(submission.themeTag ?? []);
   const [temaTag, setTemaTag] = useState<string[]>(submission.temaTag ?? []);
+  const [playerDescription, setPlayerDescription] = useState(submission.playerDescription ?? "");
 
   const mutation = useEditSubmission({
     mutation: {
@@ -400,6 +401,17 @@ function EditDialog({
                   onChange={(e) => setDescription(e.target.value)}
                   rows={3}
                   placeholder="Descripción de la sesión…"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-player-description">Descripción reproductor</Label>
+                <Textarea
+                  id="edit-player-description"
+                  value={playerDescription}
+                  onChange={(e) => setPlayerDescription(e.target.value)}
+                  rows={2}
+                  maxLength={300}
+                  placeholder="Texto que se muestra en el reproductor (opcional)…"
                 />
               </div>
             </div>
@@ -549,6 +561,7 @@ function EditDialog({
                   sleepTag: sleepTag || null,
                   themeTag,
                   temaTag,
+                  playerDescription: playerDescription.trim() ? playerDescription.trim() : null,
                 },
               });
             }}

@@ -1163,6 +1163,7 @@ export const GetCatalogResponse = zod.object({
   "role": zod.string(),
   "instagram": zod.string().nullish()
 })).nullish(),
+  "playerDescription": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
   "sortOrder": zod.number(),
   "audioFiles": zod.array(zod.object({
@@ -1242,6 +1243,7 @@ export const GetPinnedFeaturedResponse = zod.object({
   "role": zod.string(),
   "instagram": zod.string().nullish()
 })).nullish(),
+  "playerDescription": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
   "sortOrder": zod.number(),
   "audioFiles": zod.array(zod.object({
@@ -1342,6 +1344,7 @@ export const GetPopularSessionsResponse = zod.object({
   "role": zod.string(),
   "instagram": zod.string().nullish()
 })).nullish(),
+  "playerDescription": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
   "sortOrder": zod.number(),
   "audioFiles": zod.array(zod.object({
@@ -1491,6 +1494,7 @@ export const GetPendingSubmissionsResponse = zod.object({
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
+  "playerDescription": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
   "rejectionReason": zod.string().nullish(),
   "sortOrder": zod.number(),
@@ -1575,6 +1579,7 @@ export const GetMySubmissionsResponse = zod.object({
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
+  "playerDescription": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
   "rejectionReason": zod.string().nullish(),
   "sortOrder": zod.number(),
@@ -1649,6 +1654,7 @@ export const ApproveSubmissionResponse = zod.object({
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
+  "playerDescription": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
   "rejectionReason": zod.string().nullish(),
   "sortOrder": zod.number(),
@@ -1730,6 +1736,7 @@ export const RejectSubmissionResponse = zod.object({
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
+  "playerDescription": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
   "rejectionReason": zod.string().nullish(),
   "sortOrder": zod.number(),
@@ -1788,6 +1795,9 @@ export const editSubmissionBodyInstrumentsMax = 12;
 
 export const editSubmissionBodySkipDetailDefault = false;
 export const editSubmissionBodySkipMiniPlayerDefault = false;
+export const editSubmissionBodyPlayerDescriptionMax = 300;
+
+
 
 export const EditSubmissionBody = zod.object({
   "title": zod.string().min(1).max(editSubmissionBodyTitleMax).optional(),
@@ -1810,7 +1820,8 @@ export const EditSubmissionBody = zod.object({
   "soundTag": zod.string().nullish(),
   "sleepTag": zod.string().nullish(),
   "themeTag": zod.array(zod.string()).optional(),
-  "temaTag": zod.array(zod.string()).optional()
+  "temaTag": zod.array(zod.string()).optional(),
+  "playerDescription": zod.string().max(editSubmissionBodyPlayerDescriptionMax).nullish()
 })
 
 export const editSubmissionResponseSkipDetailDefault = false;
@@ -1849,6 +1860,7 @@ export const EditSubmissionResponse = zod.object({
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
+  "playerDescription": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
   "rejectionReason": zod.string().nullish(),
   "sortOrder": zod.number(),
@@ -1922,6 +1934,7 @@ export const HideSubmissionResponse = zod.object({
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
+  "playerDescription": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
   "rejectionReason": zod.string().nullish(),
   "sortOrder": zod.number(),
@@ -1995,6 +2008,7 @@ export const UnhideSubmissionResponse = zod.object({
   "voiceTag": zod.enum(['Guiada', 'Sin voz']).nullish(),
   "guideId": zod.string().nullish(),
   "artistId": zod.string().nullish(),
+  "playerDescription": zod.string().nullish(),
   "status": zod.enum(['draft', 'pending', 'published', 'rejected']),
   "rejectionReason": zod.string().nullish(),
   "sortOrder": zod.number(),

@@ -736,6 +736,7 @@ export interface CatalogSession {
   guideId?: string | null;
   artistId?: string | null;
   guests?: CatalogSessionGuest[] | null;
+  playerDescription?: string | null;
   status: CatalogSessionStatus;
   sortOrder: number;
   audioFiles: CatalogAudioFile[];
@@ -1086,6 +1087,7 @@ export interface Submission {
   voiceTag?: SubmissionVoiceTag;
   guideId?: string | null;
   artistId?: string | null;
+  playerDescription?: string | null;
   status: SubmissionStatus;
   rejectionReason?: string | null;
   sortOrder: number;
@@ -1171,6 +1173,8 @@ export interface ReviewEditBody {
   sleepTag?: string | null;
   themeTag?: string[];
   temaTag?: string[];
+  /** @maxLength 300 */
+  playerDescription?: string | null;
 }
 
 export type AdminUserRole = typeof AdminUserRole[keyof typeof AdminUserRole];

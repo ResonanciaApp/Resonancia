@@ -4243,6 +4243,9 @@ components:
           nullable: true
           items:
             $ref: "#/components/schemas/CatalogSessionGuest"
+        playerDescription:
+          type: string
+          nullable: true
         status:
           type: string
           enum: [draft, pending, published, rejected]
@@ -4723,6 +4726,9 @@ components:
         artistId:
           type: string
           nullable: true
+        playerDescription:
+          type: string
+          nullable: true
         status:
           type: string
           enum: [draft, pending, published, rejected]
@@ -4861,6 +4867,10 @@ components:
           type: array
           items:
             type: string
+        playerDescription:
+          type: string
+          maxLength: 300
+          nullable: true
     AdminUser:
       type: object
       properties:
