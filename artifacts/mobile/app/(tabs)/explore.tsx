@@ -265,7 +265,7 @@ const ROW_H = 72;
 
 function ChakraBodyRow({ chakra, topPct, side, colorAnim }: { chakra: Chakra; topPct: number; side: "left" | "right"; colorAnim: Animated.Value }) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
-  const dimAnim   = useRef(new Animated.Value(0.42)).current;
+  const dimAnim   = useRef(new Animated.Value(0.75)).current;
 
   const handlePress = () => {
     scaleAnim.setValue(1);
@@ -277,12 +277,12 @@ function ChakraBodyRow({ chakra, topPct, side, colorAnim }: { chakra: Chakra; to
     // Scale + dim (native driver)
     Animated.parallel([
       Animated.sequence([
-        Animated.timing(scaleAnim, { toValue: 1.18, duration: 300, useNativeDriver: true }),
-        Animated.timing(scaleAnim, { toValue: 1,    duration: 300, useNativeDriver: true }),
+        Animated.timing(scaleAnim, { toValue: 1.12, duration: 230, useNativeDriver: true }),
+        Animated.timing(scaleAnim, { toValue: 1,    duration: 230, useNativeDriver: true }),
       ]),
       Animated.sequence([
-        Animated.timing(dimAnim,   { toValue: 1,    duration: 300, useNativeDriver: true }),
-        Animated.timing(dimAnim,   { toValue: 0.42, duration: 500, useNativeDriver: true }),
+        Animated.timing(dimAnim,   { toValue: 1,    duration: 230, useNativeDriver: true }),
+        Animated.timing(dimAnim,   { toValue: 0.75, duration: 230, useNativeDriver: true }),
       ]),
     ]).start(() => router.push(`/chakra/${chakra.id}` as never));
   };
