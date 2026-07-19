@@ -28,9 +28,13 @@ import { resolveAvatarUrl } from "@/lib/avatar";
 import { useColors } from "@/hooks/useColors";
 
 
+import { Dimensions } from "react-native";
+
 const GOLD = "#F7CB6B";
 const STACK_THUMB = 93;
-const MAX_VISIBLE = 8;
+const MAX_VISIBLE = 9;
+const GRID_GAP = 10;
+const CELL_W = (Dimensions.get("window").width - 40 - GRID_GAP * 2) / 3;
 
 const DEFAULT_COVER: [string, string] = ["#1B060F", "#2E0A18"];
 
@@ -149,17 +153,16 @@ export function CommunityMixesCarousel() {
         </View>
       )}
 
-      {/* ── Lista V2D ── */}
+      {/* ── Grilla 3×3 ── */}
       {visible.length > 0 && (
-        <View style={{ marginTop: 0, gap: 15 }}>
-          {visible.map((mix, i) => (
-            <MixRow
+        <View style={styles.gridWrap}>
+          {visible.map((mix) => (
+            <MixGridCell
               key={mix.id}
               mix={mix}
               colors={colors}
               onPress={() => handleOpenMix(mix)}
-              onDotsPress={() => setMenuMix(mix)}
-              onAuthorPress={() => handleViewCreator(mix)}
+              onLongPress={() => setMenuMix(mix)}
             />
           ))}
         </View>
@@ -258,6 +261,56 @@ export function MixRow({
         </View>
       )}
 
+    </Pressable>
+  );
+}
+
+// ── Celda de grilla 3×3 ────────────────────────────────────────────
+function MixGridCell({
+  mix,
+  colors,
+  onPress,
+  onLongPress,
+}: {
+  mix: SharedMix;
+  colors: Colors;
+  onPress: () => void;
+  onLongPress: () => void;
+}) {
+  const resolvedImg = mix.image ? getMixImage(mix.image) : undefined;
+  const avatarUri = resolveAvatarUrl(mix.author.avatarUrl ?? null);
+  const initial = mix.author.displayName?.trim()?.[0]?.toUpperCase() ?? "·";
+
+  return (
+    <Pressable
+      onPress={onPress}
+      onLongPress={onLongPress}
+      style={({ pressed }) => [styles.gridCell, { opacity: pressed ? 0.6 : 1 }]}
+    >
+      {resolvedImg ? (
+        <ExpoImage source={resolvedImg as number} style={styles.gridCover} contentFit="cover" />
+      ) : (
+        <LinearGradient
+          colors={DEFAULT_COVER}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.gridCover, { alignItems: "center", justifyContent: "center" }]}
+        >
+          <Feather name="music" size={20} color="rgba(212,175,55,0.55)" />
+        </LinearGradient>
+      )}
+      <View style={styles.gridAuthorRow}>
+        {avatarUri ? (
+          <ExpoImage source={{ uri: avatarUri }} style={styles.gridAvatar} contentFit="cover" />
+        ) : (
+          <View style={[styles.gridAvatar, styles.avatarFallback]}>
+            <Text style={styles.gridAvatarInitial}>{initial}</Text>
+          </View>
+        )}
+        <Text style={[styles.gridAuthorName, { color: colors.foreground }]} numberOfLines={1}>
+          {mix.author.displayName}
+        </Text>
+      </View>
     </Pressable>
   );
 }
@@ -441,6 +494,30 @@ const styles = StyleSheet.create({
   },
   emptyText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600" },
   emptySub: { fontFamily: "Manrope", fontSize: 12, textAlign: "center", paddingHorizontal: 20 },
+
+  // Grilla 3×3
+  gridWrap: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: GRID_GAP,
+  },
+  gridCell: { width: CELL_W },
+  gridCover: {
+    width: CELL_W,
+    height: CELL_W,
+    borderRadius: 12,
+    overflow: "hidden",
+  },
+  gridAuthorRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 7,
+    paddingHorizontal: 2,
+  },
+  gridAvatar: { width: 18, height: 18, borderRadius: 9, overflow: "hidden", flexShrink: 0 },
+  gridAvatarInitial: { fontFamily: "Manrope", fontSize: 9, fontWeight: "700", color: GOLD },
+  gridAuthorName: { fontFamily: "Manrope", fontSize: 11.5, fontWeight: "600", flexShrink: 1 },
 
   // Fila
   row: {

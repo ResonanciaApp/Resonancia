@@ -38,6 +38,7 @@ import {
   type GeoSettings,
 } from "@/data/geometrix-creations";
 import { useColors } from "@/hooks/useColors";
+import { resolveAvatarUrl } from "@/lib/avatar";
 
 const GRID_PAD = 20;
 const GRID_GAP = 12;
@@ -169,6 +170,20 @@ function GlyphPreview({
   );
 }
 
+// ── Avatar del autor ──────────────────────────────────────────────────────────
+function AuthorAvatar({ avatarUrl, name }: { avatarUrl: string | null; name: string }) {
+  const uri = resolveAvatarUrl(avatarUrl);
+  const initial = name?.trim()?.[0]?.toUpperCase() ?? "·";
+  if (uri) {
+    return <Image source={{ uri }} style={styles.authorAvatar} />;
+  }
+  return (
+    <View style={[styles.authorAvatar, styles.authorAvatarFallback]}>
+      <Text style={styles.authorInitial}>{initial}</Text>
+    </View>
+  );
+}
+
 // ── Card individual ───────────────────────────────────────────────────────────
 function GlyphCard({
   glyph,
@@ -188,7 +203,7 @@ function GlyphCard({
   return (
     <Pressable
       onPress={() => router.push("/geometrix-comunidad" as never)}
-      style={[styles.card, { width: cardW, borderColor: "#151c3a" }]}
+      style={[styles.card, { width: cardW, borderColor: "rgba(255,255,255,0.75)" }]}
     >
       {/* Preview */}
       <View style={[styles.preview, { height: previewH }]}>
@@ -211,30 +226,24 @@ function GlyphCard({
         )}
       </View>
 
-      {/* Info */}
+      {/* Info: solo autor (foto + nombre) */}
       <View style={styles.info}>
-        <View style={{ flex: 1, minWidth: 0 }}>
+        <Pressable
+          onPress={(e) => {
+            e.stopPropagation();
+            router.push({ pathname: "/usuario/[id]", params: { id: glyph.author.id } } as never);
+          }}
+          hitSlop={6}
+          style={styles.authorRow}
+        >
+          <AuthorAvatar
+            avatarUrl={glyph.author.avatarUrl ?? null}
+            name={glyph.author.displayName ?? glyph.author.username}
+          />
           <Text style={[styles.cardName, { color: colors.foreground }]} numberOfLines={1}>
-            {glyph.name}
+            {glyph.author.displayName ?? glyph.author.username}
           </Text>
-          <Pressable
-            onPress={(e) => {
-              e.stopPropagation();
-              router.push({ pathname: "/usuario/[id]", params: { id: glyph.author.id } } as never);
-            }}
-            hitSlop={6}
-          >
-            <Text style={[styles.cardAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
-              {glyph.author.displayName ?? glyph.author.username}
-            </Text>
-          </Pressable>
-        </View>
-        {glyph.likes > 0 && (
-          <View style={styles.likes}>
-            <Feather name="heart" size={11} color="#F7CB6B" />
-            <Text style={[styles.likeCount, { color: colors.mutedForeground }]}>{glyph.likes}</Text>
-          </View>
-        )}
+        </Pressable>
       </View>
     </Pressable>
   );
@@ -266,7 +275,6 @@ export function GeometrixCommunitySection() {
         />
         <Text style={styles.sectionTitle}>Geometrix comunidad</Text>
       </View>
-      <Text style={styles.sectionSubtitle}>Ustedes crean, nosotros compartimos</Text>
 
       {/* Cargando */}
       {isLoading && (
@@ -369,9 +377,13 @@ const styles = StyleSheet.create({
     paddingTop: 7,
     paddingBottom: 9,
   },
-  cardName: { fontFamily: "Manrope", fontSize: 12, fontWeight: "700", marginBottom: 1 },
-  cardAuthor: { fontFamily: "Manrope", fontSize: 11 },
-
-  likes: { flexDirection: "row", alignItems: "center", gap: 3, flexShrink: 0 },
-  likeCount: { fontFamily: "Manrope", fontSize: 11 },
+  cardName: { fontFamily: "Manrope", fontSize: 12, fontWeight: "700", flexShrink: 1 },
+  authorRow: { flexDirection: "row", alignItems: "center", gap: 7, flex: 1, minWidth: 0 },
+  authorAvatar: { width: 20, height: 20, borderRadius: 10, overflow: "hidden", flexShrink: 0 },
+  authorAvatarFallback: {
+    backgroundColor: "rgba(212,175,55,0.20)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  authorInitial: { fontFamily: "Manrope", fontSize: 10, fontWeight: "700", color: "#F7CB6B" },
 });
