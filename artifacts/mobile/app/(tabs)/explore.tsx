@@ -735,32 +735,43 @@ export default function ExploreScreen() {
               {/* Aurora iridiscente — blobs radiales muy sutiles */}
               <Svg width="100%" height="100%" style={StyleSheet.absoluteFill} pointerEvents="none">
                 <Defs>
-                  <RadialGradient id="aurPink" cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor="#FF9AC4" stopOpacity={0.20} />
-                    <Stop offset="100%" stopColor="#FF9AC4" stopOpacity={0} />
+                  {/* Colores de los 7 chakras, corona (arriba) → raíz (abajo) */}
+                  <RadialGradient id="aurCorona" cx="50%" cy="50%" r="50%">
+                    <Stop offset="0%" stopColor="#A776D6" stopOpacity={0.20} />
+                    <Stop offset="100%" stopColor="#A776D6" stopOpacity={0} />
                   </RadialGradient>
-                  <RadialGradient id="aurViolet" cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor="#9B8CFF" stopOpacity={0.20} />
-                    <Stop offset="100%" stopColor="#9B8CFF" stopOpacity={0} />
+                  <RadialGradient id="aurTercerOjo" cx="50%" cy="50%" r="50%">
+                    <Stop offset="0%" stopColor="#6F68B6" stopOpacity={0.20} />
+                    <Stop offset="100%" stopColor="#6F68B6" stopOpacity={0} />
                   </RadialGradient>
-                  <RadialGradient id="aurCyan" cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor="#7FE7E0" stopOpacity={0.18} />
-                    <Stop offset="100%" stopColor="#7FE7E0" stopOpacity={0} />
+                  <RadialGradient id="aurGarganta" cx="50%" cy="50%" r="50%">
+                    <Stop offset="0%" stopColor="#5998BB" stopOpacity={0.18} />
+                    <Stop offset="100%" stopColor="#5998BB" stopOpacity={0} />
                   </RadialGradient>
-                  <RadialGradient id="aurBlue" cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor="#6FA8FF" stopOpacity={0.17} />
-                    <Stop offset="100%" stopColor="#6FA8FF" stopOpacity={0} />
+                  <RadialGradient id="aurCorazon" cx="50%" cy="50%" r="50%">
+                    <Stop offset="0%" stopColor="#60A186" stopOpacity={0.18} />
+                    <Stop offset="100%" stopColor="#60A186" stopOpacity={0} />
                   </RadialGradient>
-                  <RadialGradient id="aurGold" cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor="#F7CB6B" stopOpacity={0.17} />
-                    <Stop offset="100%" stopColor="#F7CB6B" stopOpacity={0} />
+                  <RadialGradient id="aurPlexo" cx="50%" cy="50%" r="50%">
+                    <Stop offset="0%" stopColor="#DFC26B" stopOpacity={0.17} />
+                    <Stop offset="100%" stopColor="#DFC26B" stopOpacity={0} />
+                  </RadialGradient>
+                  <RadialGradient id="aurSacro" cx="50%" cy="50%" r="50%">
+                    <Stop offset="0%" stopColor="#DE9363" stopOpacity={0.17} />
+                    <Stop offset="100%" stopColor="#DE9363" stopOpacity={0} />
+                  </RadialGradient>
+                  <RadialGradient id="aurRaiz" cx="50%" cy="50%" r="50%">
+                    <Stop offset="0%" stopColor="#C65860" stopOpacity={0.17} />
+                    <Stop offset="100%" stopColor="#C65860" stopOpacity={0} />
                   </RadialGradient>
                 </Defs>
-                <Ellipse cx="18%" cy="12%" rx="55%" ry="38%" fill="url(#aurViolet)" />
-                <Ellipse cx="85%" cy="22%" rx="50%" ry="36%" fill="url(#aurCyan)" />
-                <Ellipse cx="10%" cy="62%" rx="52%" ry="40%" fill="url(#aurPink)" />
-                <Ellipse cx="88%" cy="70%" rx="55%" ry="42%" fill="url(#aurBlue)" />
-                <Ellipse cx="50%" cy="98%" rx="60%" ry="36%" fill="url(#aurGold)" />
+                <Ellipse cx="20%" cy="4%"  rx="55%" ry="34%" fill="url(#aurCorona)" />
+                <Ellipse cx="85%" cy="18%" rx="52%" ry="34%" fill="url(#aurTercerOjo)" />
+                <Ellipse cx="14%" cy="34%" rx="52%" ry="34%" fill="url(#aurGarganta)" />
+                <Ellipse cx="86%" cy="50%" rx="52%" ry="34%" fill="url(#aurCorazon)" />
+                <Ellipse cx="14%" cy="66%" rx="52%" ry="34%" fill="url(#aurPlexo)" />
+                <Ellipse cx="86%" cy="82%" rx="52%" ry="34%" fill="url(#aurSacro)" />
+                <Ellipse cx="30%" cy="98%" rx="55%" ry="34%" fill="url(#aurRaiz)" />
               </Svg>
             </View>
             {CHAKRA_LEFT_LABELS.map((label, i) => {
