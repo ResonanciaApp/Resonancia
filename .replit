@@ -27,7 +27,7 @@ packages = ["eas-cli"]
 
 [userenv.shared]
 EXPO_PUBLIC_GIPHY_API_KEY = "nAHzNrm5z7fZdPj4bOeSUG3zUOXGqJXa"
-ADMIN_CLERK_USER_IDS = "user_3ECVn1xpKVsSPmgGfGtGsuoUfbg"
+ADMIN_CLERK_USER_IDS = "user_3ECVn1xpKVsSPmgGfGtGsuoUfbg,user_3GjPWZpGYJrY4mIT1xDFI6w3sZC"
 BUNNY_LIBRARY_ID = "688975"
 VITE_BUNNY_CDN_HOSTNAME = "vz-881ead65-839.b-cdn.net"
 EXPO_PUBLIC_BUNNY_CDN_HOSTNAME = "vz-881ead65-839.b-cdn.net"
