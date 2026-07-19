@@ -1,5 +1,5 @@
 import type { RequestHandler } from "express";
-import { getAuth } from "@clerk/express";
+import { clerkClient, getAuth } from "@clerk/express";
 import { db, usersTable, type User } from "@workspace/db";
 import { eq } from "drizzle-orm";
 
@@ -57,14 +57,37 @@ export const requireAuth: RequestHandler = async (req, res, next) => {
 
     if (!user) {
       const username = defaultUsername(clerkUserId);
+      let email: string | null = null;
+      try {
+        const clerkUser = await clerkClient.users.getUser(clerkUserId);
+        email = clerkUser.primaryEmailAddress?.emailAddress ?? null;
+      } catch (err) {
+        req.log.warn({ err }, "could not fetch email from Clerk");
+      }
       [user] = await db
         .insert(usersTable)
         .values({
           clerkUserId,
           username,
           displayName: username,
+          email,
         })
         .returning();
+    } else if (!user.email) {
+      // Backfill del email para usuarios creados antes de guardarlo.
+      try {
+        const clerkUser = await clerkClient.users.getUser(clerkUserId);
+        const email = clerkUser.primaryEmailAddress?.emailAddress ?? null;
+        if (email) {
+          [user] = await db
+            .update(usersTable)
+            .set({ email })
+            .where(eq(usersTable.id, user.id))
+            .returning();
+        }
+      } catch (err) {
+        req.log.warn({ err }, "could not backfill email from Clerk");
+      }
     }
 
     // Promote configured admins (idempotent; never demotes).
