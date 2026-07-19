@@ -159,6 +159,8 @@ function AccessDenied() {
   );
 }
 
+const MODERATOR_NAV_HREFS = ["/moderacion"];
+
 const NAV = [
   { href: "/", label: "Panel", icon: LayoutDashboard },
   { href: "/usuarios", label: "Usuarios", icon: Users },
@@ -180,10 +182,19 @@ function isActive(location: string, href: string) {
   return href === "/" ? location === "/" : location.startsWith(href);
 }
 
-function DashboardShell({ children }: { children: React.ReactNode }) {
+function DashboardShell({
+  children,
+  isModerator,
+}: {
+  children: React.ReactNode;
+  isModerator?: boolean;
+}) {
   const { user } = useUser();
   const { signOut } = useClerk();
   const [location] = useLocation();
+  const navItems = isModerator
+    ? NAV.filter((item) => MODERATOR_NAV_HREFS.includes(item.href))
+    : NAV;
 
   return (
     <div className="flex min-h-screen bg-background text-foreground">
@@ -195,7 +206,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
           </span>
         </div>
         <nav className="flex-1 px-4 space-y-1 mt-2">
-          {NAV.map(({ href, label, icon: Icon }) => (
+          {navItems.map(({ href, label, icon: Icon }) => (
             <Link
               key={href}
               href={href}
@@ -274,8 +285,24 @@ function AdminGate() {
     return <Redirect to="/sign-in" />;
   }
 
-  if (me?.role !== "admin") {
+  if (me?.role !== "admin" && me?.role !== "moderador") {
     return <AccessDenied />;
+  }
+
+  if (me.role === "moderador") {
+    return (
+      <DashboardShell isModerator>
+        <Switch>
+          <Route path="/moderacion">
+            <ModeracionPage isModerator />
+          </Route>
+          <Route path="/">
+            <Redirect to="/moderacion" />
+          </Route>
+          <Route component={NotFound} />
+        </Switch>
+      </DashboardShell>
+    );
   }
 
   return (
@@ -283,7 +310,9 @@ function AdminGate() {
       <Switch>
         <Route path="/" component={DashboardPage} />
         <Route path="/usuarios" component={UsuariosPage} />
-        <Route path="/moderacion" component={ModeracionPage} />
+        <Route path="/moderacion">
+          <ModeracionPage />
+        </Route>
         <Route path="/postulaciones" component={PostulacionesPage} />
         <Route path="/mezclas" component={MezclasPage} />
         <Route path="/categorias" component={CategoriasPage} />

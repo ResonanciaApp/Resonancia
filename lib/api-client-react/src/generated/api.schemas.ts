@@ -158,6 +158,7 @@ export const UserProfileRole = {
   user: 'user',
   creator: 'creator',
   admin: 'admin',
+  moderador: 'moderador',
   expansor: 'expansor',
   resonador: 'resonador',
 } as const;
@@ -415,6 +416,7 @@ export const PublicUserProfileRole = {
   user: 'user',
   creator: 'creator',
   admin: 'admin',
+  moderador: 'moderador',
   expansor: 'expansor',
   resonador: 'resonador',
 } as const;
@@ -439,6 +441,7 @@ export const UserRoleUpdateRole = {
   user: 'user',
   creator: 'creator',
   admin: 'admin',
+  moderador: 'moderador',
   expansor: 'expansor',
   resonador: 'resonador',
 } as const;
@@ -1184,6 +1187,7 @@ export const AdminUserRole = {
   user: 'user',
   creator: 'creator',
   admin: 'admin',
+  moderador: 'moderador',
   expansor: 'expansor',
   resonador: 'resonador',
 } as const;
@@ -1974,6 +1978,7 @@ export const GetAdminUsersRole = {
   user: 'user',
   creator: 'creator',
   admin: 'admin',
+  moderador: 'moderador',
   expansor: 'expansor',
   resonador: 'resonador',
 } as const;

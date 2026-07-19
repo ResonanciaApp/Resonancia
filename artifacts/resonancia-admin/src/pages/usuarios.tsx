@@ -41,6 +41,7 @@ const ROLE_LABEL: Record<AdminUserRole, string> = {
   user: "Usuario",
   creator: "Creador",
   admin: "Admin",
+  moderador: "Moderador",
   expansor: "Expansor",
   resonador: "Resonador",
 };
@@ -48,6 +49,7 @@ const ROLE_LABEL: Record<AdminUserRole, string> = {
 function RoleBadge({ role }: { role: AdminUserRole }) {
   const variant =
     role === "admin" ? "default"
+    : role === "moderador" ? "default"
     : role === "creator" ? "secondary"
     : role === "expansor" ? "secondary"
     : role === "resonador" ? "secondary"
@@ -85,6 +87,7 @@ function RoleSelect({ user }: { user: AdminUser }) {
         <SelectItem value="user">Usuario</SelectItem>
         <SelectItem value="creator">Creador</SelectItem>
         <SelectItem value="admin">Admin</SelectItem>
+        <SelectItem value="moderador">Moderador</SelectItem>
         <SelectItem value="expansor">Expansor</SelectItem>
         <SelectItem value="resonador">Resonador</SelectItem>
       </SelectContent>
@@ -154,6 +157,9 @@ export default function UsuariosPage() {
                 <SelectItem value="user">Usuario</SelectItem>
                 <SelectItem value="creator">Creador</SelectItem>
                 <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="moderador">Moderador</SelectItem>
+                <SelectItem value="expansor">Expansor</SelectItem>
+                <SelectItem value="resonador">Resonador</SelectItem>
               </SelectContent>
             </Select>
             <Button type="submit" variant="secondary">

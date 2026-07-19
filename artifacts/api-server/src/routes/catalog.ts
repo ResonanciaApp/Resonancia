@@ -291,7 +291,7 @@ router.get("/catalog/pinned-featured", async (req, res) => {
 router.put(
   "/admin/pinned-featured",
   requireAuth,
-  requireRole("admin"),
+  requireRole("admin", "moderador"),
   async (req, res) => {
     const { sessionId } = req.body as { sessionId: string | null };
 
@@ -539,7 +539,7 @@ router.get(
 router.get(
   "/catalog/submissions",
   requireAuth,
-  requireRole("admin"),
+  requireRole("admin", "moderador"),
   async (req, res) => {
     const parsed = GetPendingSubmissionsQueryParams.safeParse(req.query);
     if (!parsed.success) {
@@ -591,7 +591,7 @@ router.get(
 router.get(
   "/catalog/submissions/filter-options",
   requireAuth,
-  requireRole("admin"),
+  requireRole("admin", "moderador"),
   async (req, res) => {
     try {
       const rows = await db
@@ -648,7 +648,7 @@ router.get(
 router.post(
   "/catalog/submissions/:id/approve",
   requireAuth,
-  requireRole("admin"),
+  requireRole("admin", "moderador"),
   async (req, res) => {
     const id = String(req.params.id);
     const me = req.currentUser!;
@@ -690,7 +690,7 @@ router.post(
 router.post(
   "/catalog/submissions/:id/reject",
   requireAuth,
-  requireRole("admin"),
+  requireRole("admin", "moderador"),
   async (req, res) => {
     const id = String(req.params.id);
     const me = req.currentUser!;
@@ -736,7 +736,7 @@ router.post(
 router.patch(
   "/catalog/submissions/:id",
   requireAuth,
-  requireRole("admin"),
+  requireRole("admin", "moderador"),
   async (req, res) => {
     const id = String(req.params.id);
     const parsed = EditSubmissionBody.safeParse(req.body);
@@ -799,7 +799,7 @@ router.patch(
 router.post(
   "/catalog/submissions/:id/hide",
   requireAuth,
-  requireRole("admin"),
+  requireRole("admin", "moderador"),
   async (req, res) => {
     const id = String(req.params.id);
     try {
@@ -836,7 +836,7 @@ router.post(
 router.post(
   "/catalog/submissions/:id/unhide",
   requireAuth,
-  requireRole("admin"),
+  requireRole("admin", "moderador"),
   async (req, res) => {
     const id = String(req.params.id);
     try {

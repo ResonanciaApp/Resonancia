@@ -585,7 +585,7 @@ function EditDialog({
   );
 }
 
-function SubmissionCard({ submission }: { submission: Submission }) {
+function SubmissionCard({ submission, isModerator }: { submission: Submission; isModerator?: boolean }) {
   const qc = useQueryClient();
   const [rejectOpen, setRejectOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -706,14 +706,16 @@ function SubmissionCard({ submission }: { submission: Submission }) {
             >
               Editar
             </Button>
-            <Button
-              size="sm"
-              variant="destructive"
-              disabled={remove.isPending}
-              onClick={() => setDeleteOpen(true)}
-            >
-              Borrar
-            </Button>
+            {!isModerator && (
+              <Button
+                size="sm"
+                variant="destructive"
+                disabled={remove.isPending}
+                onClick={() => setDeleteOpen(true)}
+              >
+                Borrar
+              </Button>
+            )}
           </div>
         </div>
       </CardContent>
@@ -972,7 +974,7 @@ function FilterBar({
   );
 }
 
-function SubmissionList({ status, filters = {} }: { status: GetPendingSubmissionsStatus; filters?: ActiveFilters }) {
+function SubmissionList({ status, filters = {}, isModerator }: { status: GetPendingSubmissionsStatus; filters?: ActiveFilters; isModerator?: boolean }) {
   const params: GetPendingSubmissionsParams = {
     status,
     ...(filters.categoryId ? { categoryId: filters.categoryId } : {}),
@@ -1008,13 +1010,13 @@ function SubmissionList({ status, filters = {} }: { status: GetPendingSubmission
   return (
     <div className="space-y-3">
       {data.submissions.map((s) => (
-        <SubmissionCard key={s.id} submission={s} />
+        <SubmissionCard key={s.id} submission={s} isModerator={isModerator} />
       ))}
     </div>
   );
 }
 
-export default function ModeracionPage() {
+export default function ModeracionPage({ isModerator }: { isModerator?: boolean } = {}) {
   const [tab, setTab] = useState<GetPendingSubmissionsStatus>("pending");
   const [filters, setFilters] = useState<ActiveFilters>({});
 
@@ -1049,7 +1051,7 @@ export default function ModeracionPage() {
 
         {STATUS_TABS.map((t) => (
           <TabsContent key={t.value} value={t.value} className="mt-4">
-            {tab === t.value && <SubmissionList status={t.value} filters={filters} />}
+            {tab === t.value && <SubmissionList status={t.value} filters={filters} isModerator={isModerator} />}
           </TabsContent>
         ))}
       </Tabs>
