@@ -651,6 +651,39 @@ export default function ExploreScreen() {
           );
         })()}
 
+        {/* ── Explorar todo (TEMAS) ── */}
+        <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
+          <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Explorar todo</Text>
+          <View style={[styles.temaGrid, { marginTop: 0 }]}>
+            {TEMAS.map((t) => (
+              <Pressable
+                key={t.id}
+                onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
+                style={[styles.temaCell, { width: TEMA3_W, height: TEMA3_W, borderRadius: 11, overflow: "hidden" }]}
+              >
+                {({ pressed }) => (
+                  <>
+                    <CardTint />
+                    {pressed && <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(t.color, 0.22) }]} />}
+                    {t.image != null ? (
+                      <Image
+                        source={t.image}
+                        style={styles.temaCellIcon}
+                        contentFit="contain"
+                      />
+                    ) : (
+                      <MaterialCommunityIcons name={t.icon} size={28} color={t.color} />
+                    )}
+                    <Text style={[styles.temaCellLabel, { color: "#FBFBFB" }]} numberOfLines={2}>
+                      {t.label}
+                    </Text>
+                  </>
+                )}
+              </Pressable>
+            ))}
+          </View>
+        </View>
+
         {/* ── Descubre algo nuevo (después de Para la ansiedad) ── */}
         <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
           <Text style={styles.sectionTitle}>Descubre algo nuevo</Text>
