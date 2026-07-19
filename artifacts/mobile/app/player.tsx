@@ -385,6 +385,10 @@ export default function PlayerScreen() {
   // Color dominante extraído de la imagen de la sesión
   const imageColors = useImageDominantColor(currentSession?.image as any);
 
+  const scaleHeart    = useRef(new RNAnimated.Value(1)).current;
+  const scaleShare    = useRef(new RNAnimated.Value(1)).current;
+  const scalePlaylist = useRef(new RNAnimated.Value(1)).current;
+
   // ─────────────────────────────────────────────────────────────────────────
   const topPad = Platform.OS === "web" ? 20 : (insets.top || 12);
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -422,10 +426,6 @@ export default function PlayerScreen() {
   const totalSeconds = actualDurationSeconds || currentSession.duration * 60;
   const remaining = totalSeconds - elapsed;
   const fav = isFavorite(currentSession.id);
-
-  const scaleHeart    = useRef(new RNAnimated.Value(1)).current;
-  const scaleShare    = useRef(new RNAnimated.Value(1)).current;
-  const scalePlaylist = useRef(new RNAnimated.Value(1)).current;
 
   const bounce = (sv: RNAnimated.Value) => {
     sv.setValue(1);
