@@ -14,6 +14,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  type TextStyle,
   View,
 } from "react-native";
 import { Image } from "expo-image";
@@ -24,8 +25,16 @@ import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { TAG_CARDS } from "@/data/tags";
-import { SESSIONS } from "@/data/sessions";
+import { SESSIONS, type Session } from "@/data/sessions";
+import { getArtist } from "@/data/artists";
+import { getGuide } from "@/data/guides";
 import { useColors } from "@/hooks/useColors";
+
+function sessionAuthor(session: Session): string {
+  const guideId = session.guideIds?.[0] ?? session.guideId;
+  if (guideId) return getGuide(guideId).name;
+  return getArtist(session.artistId).name;
+}
 
 const { width } = Dimensions.get("window");
 const H_PAD = 20;
@@ -165,7 +174,7 @@ export default function TagScreen() {
         {/* TITLE + DESCRIPTION */}
         <View style={styles.intro}>
           <Text style={[styles.pageTitle, { color: colors.foreground }]}>{tag.label}</Text>
-          <Text style={[styles.pageDesc, { color: "#E0C9A8" }]}>{tag.description}</Text>
+          <Text style={[styles.pageDesc, { color: "#F4F4F4" }]}>{tag.description}</Text>
         </View>
 
         {/* DURATION FILTERS */}
@@ -178,15 +187,12 @@ export default function TagScreen() {
             onPress={() => setDurationFilter(null)}
             style={[
               styles.filterPill,
-              {
-                backgroundColor: !durationFilter ? undefined : colors.card,
-                overflow: "hidden",
-                borderColor: !durationFilter ? colors.primary : "rgba(212,175,55,0.25)",
-              },
+              !durationFilter ? styles.filterPillSel : styles.filterPillIdle,
+              { overflow: "hidden" },
             ]}
           >
             {!durationFilter && <GoldGradientFill />}
-            <Text style={[styles.filterLabel, { color: !durationFilter ? colors.primaryForeground : colors.foreground }]}>
+            <Text style={!durationFilter ? [styles.filterLabel, { color: colors.primaryForeground }] : styles.filterLabelIdle}>
               Todos
             </Text>
           </Pressable>
@@ -198,15 +204,12 @@ export default function TagScreen() {
                 onPress={() => setDurationFilter(active ? null : f.label)}
                 style={[
                   styles.filterPill,
-                  {
-                    backgroundColor: active ? undefined : colors.card,
-                    overflow: "hidden",
-                    borderColor: active ? colors.primary : "rgba(212,175,55,0.25)",
-                  },
+                  active ? styles.filterPillSel : styles.filterPillIdle,
+                  { overflow: "hidden" },
                 ]}
               >
                 {active && <GoldGradientFill />}
-                <Text style={[styles.filterLabel, { color: active ? colors.primaryForeground : colors.foreground }]}>
+                <Text style={active ? [styles.filterLabel, { color: colors.primaryForeground }] : styles.filterLabelIdle}>
                   {f.label}
                 </Text>
               </Pressable>
@@ -256,7 +259,7 @@ export default function TagScreen() {
                         {session.title}
                       </Text>
                       <Text style={[styles.hCardSub, { color: colors.mutedForeground }]} numberOfLines={1}>
-                        {session.categoryLabel}
+                        {session.categoryLabel} · {sessionAuthor(session)}
                       </Text>
                     </Pressable>
                     );
@@ -277,7 +280,7 @@ export default function TagScreen() {
                     onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
                     style={({ pressed }) => [
                       styles.listRow,
-                      { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.82 : 1 },
+                      { backgroundColor: "rgba(255,255,255,0.075)", opacity: pressed ? 0.82 : 1 },
                     ]}
                   >
                     <View style={[styles.listThumb, { backgroundColor: colors.card }]}>
@@ -298,7 +301,7 @@ export default function TagScreen() {
                         {session.title}
                       </Text>
                       <Text style={[styles.listSub, { color: colors.mutedForeground }]} numberOfLines={1}>
-                        {session.categoryLabel}
+                        {session.categoryLabel} · {sessionAuthor(session)}
                       </Text>
                     </View>
                   </Pressable>
@@ -387,14 +390,31 @@ const styles = StyleSheet.create({
   },
   filterPill: {
     paddingHorizontal: 18,
-    paddingVertical: 9,
-    borderRadius: 50,
+    borderRadius: 999,
+    height: 32,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  filterPillSel: {
     borderWidth: 0,
+  },
+  filterPillIdle: {
+    paddingHorizontal: 13,
+    backgroundColor: "rgba(255,255,255,0.053)",
+    borderWidth: 1,
+    borderColor: "rgba(247,203,107,0.1)",
   },
   filterLabel: {
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
+  },
+  filterLabelIdle: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "450" as TextStyle["fontWeight"],
+    letterSpacing: 0.3,
+    color: "#F4F4F4",
   },
 
   // Section
@@ -480,7 +500,7 @@ const styles = StyleSheet.create({
   },
   listTitle: {
     fontFamily: "Manrope",
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: "700",
     lineHeight: 20,
     marginBottom: 5,
