@@ -22,6 +22,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
+import Svg, { Defs, RadialGradient, Stop, Ellipse } from "react-native-svg";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { SessionCard } from "@/components/SessionCard";
@@ -729,7 +730,39 @@ export default function ExploreScreen() {
               borderRadius: 25,
               borderWidth: 1,
               borderColor: "rgba(255,255,255,0.07)",
-            }} />
+              overflow: "hidden",
+            }}>
+              {/* Aurora iridiscente — blobs radiales muy sutiles */}
+              <Svg width="100%" height="100%" style={StyleSheet.absoluteFill} pointerEvents="none">
+                <Defs>
+                  <RadialGradient id="aurPink" cx="50%" cy="50%" r="50%">
+                    <Stop offset="0%" stopColor="#FF9AC4" stopOpacity={0.10} />
+                    <Stop offset="100%" stopColor="#FF9AC4" stopOpacity={0} />
+                  </RadialGradient>
+                  <RadialGradient id="aurViolet" cx="50%" cy="50%" r="50%">
+                    <Stop offset="0%" stopColor="#9B8CFF" stopOpacity={0.10} />
+                    <Stop offset="100%" stopColor="#9B8CFF" stopOpacity={0} />
+                  </RadialGradient>
+                  <RadialGradient id="aurCyan" cx="50%" cy="50%" r="50%">
+                    <Stop offset="0%" stopColor="#7FE7E0" stopOpacity={0.09} />
+                    <Stop offset="100%" stopColor="#7FE7E0" stopOpacity={0} />
+                  </RadialGradient>
+                  <RadialGradient id="aurBlue" cx="50%" cy="50%" r="50%">
+                    <Stop offset="0%" stopColor="#6FA8FF" stopOpacity={0.08} />
+                    <Stop offset="100%" stopColor="#6FA8FF" stopOpacity={0} />
+                  </RadialGradient>
+                  <RadialGradient id="aurGold" cx="50%" cy="50%" r="50%">
+                    <Stop offset="0%" stopColor="#F7CB6B" stopOpacity={0.08} />
+                    <Stop offset="100%" stopColor="#F7CB6B" stopOpacity={0} />
+                  </RadialGradient>
+                </Defs>
+                <Ellipse cx="18%" cy="12%" rx="55%" ry="38%" fill="url(#aurViolet)" />
+                <Ellipse cx="85%" cy="22%" rx="50%" ry="36%" fill="url(#aurCyan)" />
+                <Ellipse cx="10%" cy="62%" rx="52%" ry="40%" fill="url(#aurPink)" />
+                <Ellipse cx="88%" cy="70%" rx="55%" ry="42%" fill="url(#aurBlue)" />
+                <Ellipse cx="50%" cy="98%" rx="60%" ry="36%" fill="url(#aurGold)" />
+              </Svg>
+            </View>
             {CHAKRA_LEFT_LABELS.map((label, i) => {
               const rowTop = Math.round(CHAKRA_TOP_PCTS[i] * CHAKRA_PANEL_H) - ROW_H / 2;
               const animColor = chakraColorAnims[i].interpolate({
