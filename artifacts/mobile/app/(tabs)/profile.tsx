@@ -25,6 +25,7 @@ import {
   Switch,
   Text,
   TextInput,
+  type TextStyle,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -89,6 +90,59 @@ function resizeImageForWeb(uri: string, maxSize: number): Promise<string> {
   });
 }
 
+
+function dayKey(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function daysAgoDate(n: number): Date {
+  const d = new Date();
+  d.setDate(d.getDate() - n);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+function isoDow(d: Date): number {
+  return (d.getDay() + 6) % 7;
+}
+
+function computeCurrentStreak(events: { playedAt: string }[]): number {
+  if (!events.length) return 0;
+  const days = new Set(events.map((e) => dayKey(new Date(e.playedAt))));
+  const today = new Date();
+  let cursor: Date;
+  if (days.has(dayKey(today))) cursor = daysAgoDate(0);
+  else if (days.has(dayKey(daysAgoDate(1)))) cursor = daysAgoDate(1);
+  else return 0;
+  let count = 0;
+  const walk = new Date(cursor);
+  while (days.has(dayKey(walk))) {
+    count++;
+    walk.setDate(walk.getDate() - 1);
+  }
+  return count;
+}
+
+function computeMaxStreak(events: { playedAt: string }[]): number {
+  if (!events.length) return 0;
+  const days = Array.from(new Set(events.map((e) => dayKey(new Date(e.playedAt))))).sort();
+  let max = 1;
+  let cur = 1;
+  for (let i = 1; i < days.length; i++) {
+    const prev = new Date(days[i - 1]);
+    const next = new Date(days[i]);
+    const diff = Math.round((next.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24));
+    if (diff === 1) {
+      cur++;
+      if (cur > max) max = cur;
+    } else {
+      cur = 1;
+    }
+  }
+  return max;
+}
+
+const WEEK_INITIALS = ["L", "M", "M", "J", "V", "S", "D"];
 
 type PerfilTab = "panel" | "biblioteca" | "historial" | "registros";
 
@@ -233,6 +287,21 @@ export default function ProfileScreen() {
     updateProfile,
     setPhotoUri,
   } = useUserProfile();
+
+  const rachaStats = useMemo(() => {
+    const currentStreak = computeCurrentStreak(statEvents);
+    const maxStreak = computeMaxStreak(statEvents);
+    const daysWithActivity = new Set(statEvents.map((e) => dayKey(new Date(e.playedAt))));
+    const weekActivity: boolean[] = Array(7).fill(false);
+    const today = new Date();
+    const todayDow = isoDow(today);
+    for (let d = 0; d <= todayDow; d++) {
+      const target = new Date(today);
+      target.setDate(today.getDate() - (todayDow - d));
+      weekActivity[d] = daysWithActivity.has(dayKey(target));
+    }
+    return { currentStreak, maxStreak, weekActivity };
+  }, [statEvents]);
 
   const expansorData = expansorId ? getExpansorById(expansorId) : undefined;
 
@@ -777,6 +846,64 @@ export default function ProfileScreen() {
 
         </View>
 
+        {/* ── Tu racha ── */}
+        <View style={[styles.rachaCard, { backgroundColor: "rgba(255,255,255,0.075)" }]}>
+          <View style={styles.rachaTop}>
+            <View style={[styles.rachaBubble, { backgroundColor: "rgba(212,175,55,0.12)" }]}>
+              <Text style={styles.rachaFlame}>{rachaStats.currentStreak > 0 ? "🔥" : "✨"}</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.rachaValue, { color: colors.foreground }]}>
+                {rachaStats.currentStreak > 0
+                  ? `${rachaStats.currentStreak} día${rachaStats.currentStreak !== 1 ? "s" : ""} de racha`
+                  : "Comienza tu racha"}
+              </Text>
+              <Text style={[styles.rachaSub, { color: colors.mutedForeground }]}>
+                {rachaStats.currentStreak > 0
+                  ? "Sigue así, no pierdas tu constancia"
+                  : "Escucha una sesión hoy para empezar"}
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.rachaWeekRow}>
+            {WEEK_INITIALS.map((label, i) => {
+              const done = rachaStats.weekActivity[i];
+              const isToday = i === isoDow(new Date());
+              return (
+                <View key={i} style={styles.rachaDayPill}>
+                  <Text style={[styles.rachaDayLabel, { color: isToday ? colors.foreground : colors.mutedForeground }]}>
+                    {label}
+                  </Text>
+                  <View
+                    style={[
+                      styles.rachaDayCircle,
+                      {
+                        backgroundColor: done ? colors.primary : "transparent",
+                        borderColor: done ? colors.primary : isToday ? colors.foreground : colors.border,
+                      },
+                    ]}
+                  >
+                    {done && <Feather name="check" size={13} color="#1B060F" />}
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+
+          <View style={[styles.rachaMaxRow, { borderTopColor: colors.border }]}>
+            <View style={[styles.rachaMaxIcon, { backgroundColor: "rgba(212,175,55,0.10)" }]}>
+              <Text style={{ fontSize: 16 }}>🛡️</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.rachaMaxLabel, { color: colors.foreground }]}>Racha máxima</Text>
+              <Text style={[styles.rachaMaxSub, { color: colors.mutedForeground }]}>Tu récord personal</Text>
+            </View>
+            <Text style={[styles.rachaMaxValue, { color: colors.primary }]}>
+              {rachaStats.maxStreak > 0 ? `${rachaStats.maxStreak} días` : "—"}
+            </Text>
+          </View>
+        </View>
 
         {/* ── Sección Expansor (solo si role === "expansor") ── */}
         {isExpansor && (
@@ -1347,7 +1474,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(247,203,107,0.1)",
   },
   pillSel: { borderWidth: 0 },
-  pillText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "450", letterSpacing: 0.3, color: "#F4F4F4" },
+  pillText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "450" as TextStyle["fontWeight"], letterSpacing: 0.3, color: "#F4F4F4" },
   pillTextSel: { fontFamily: "Manrope", color: "#2D0D3A", fontWeight: "500" },
 
   comingSoonWrap: {
