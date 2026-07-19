@@ -736,23 +736,23 @@ export default function ExploreScreen() {
               <Svg width="100%" height="100%" style={StyleSheet.absoluteFill} pointerEvents="none">
                 <Defs>
                   <RadialGradient id="aurPink" cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor="#FF9AC4" stopOpacity={0.10} />
+                    <Stop offset="0%" stopColor="#FF9AC4" stopOpacity={0.20} />
                     <Stop offset="100%" stopColor="#FF9AC4" stopOpacity={0} />
                   </RadialGradient>
                   <RadialGradient id="aurViolet" cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor="#9B8CFF" stopOpacity={0.10} />
+                    <Stop offset="0%" stopColor="#9B8CFF" stopOpacity={0.20} />
                     <Stop offset="100%" stopColor="#9B8CFF" stopOpacity={0} />
                   </RadialGradient>
                   <RadialGradient id="aurCyan" cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor="#7FE7E0" stopOpacity={0.09} />
+                    <Stop offset="0%" stopColor="#7FE7E0" stopOpacity={0.18} />
                     <Stop offset="100%" stopColor="#7FE7E0" stopOpacity={0} />
                   </RadialGradient>
                   <RadialGradient id="aurBlue" cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor="#6FA8FF" stopOpacity={0.08} />
+                    <Stop offset="0%" stopColor="#6FA8FF" stopOpacity={0.17} />
                     <Stop offset="100%" stopColor="#6FA8FF" stopOpacity={0} />
                   </RadialGradient>
                   <RadialGradient id="aurGold" cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor="#F7CB6B" stopOpacity={0.08} />
+                    <Stop offset="0%" stopColor="#F7CB6B" stopOpacity={0.17} />
                     <Stop offset="100%" stopColor="#F7CB6B" stopOpacity={0} />
                   </RadialGradient>
                 </Defs>
