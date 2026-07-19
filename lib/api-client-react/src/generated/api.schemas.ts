@@ -1949,6 +1949,10 @@ export const GetPendingSubmissionsStatus = {
   rejected: 'rejected',
 } as const;
 
+export type DeleteSubmission200 = {
+  ok: boolean;
+};
+
 export type GetAdminUsersParams = {
 q?: string;
 role?: GetAdminUsersRole;

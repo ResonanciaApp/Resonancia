@@ -50,6 +50,7 @@ import type {
   CreateTagOptionBody,
   CreateVideoBody,
   CreatorSubmissionInput,
+  DeleteSubmission200,
   DirectMessage,
   ErrorEnvelope,
   ErrorResponse,
@@ -5230,6 +5231,76 @@ export const useEditSubmission = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getEditSubmissionMutationOptions(options));
+    }
+
+export const getDeleteSubmissionUrl = (id: string,) => {
+
+
+
+
+  return `/api/catalog/submissions/${id}`
+}
+
+/**
+ * @summary Borrar una pieza definitivamente (admin) — irreversible
+ */
+export const deleteSubmission = async (id: string, options?: RequestInit): Promise<DeleteSubmission200> => {
+
+  return customFetch<DeleteSubmission200>(getDeleteSubmissionUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteSubmissionMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteSubmission>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteSubmission>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteSubmission'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteSubmission>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteSubmission(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteSubmissionMutationResult = NonNullable<Awaited<ReturnType<typeof deleteSubmission>>>
+
+    export type DeleteSubmissionMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Borrar una pieza definitivamente (admin) — irreversible
+ */
+export const useDeleteSubmission = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteSubmission>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteSubmission>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteSubmissionMutationOptions(options));
     }
 
 export const getHideSubmissionUrl = (id: string,) => {

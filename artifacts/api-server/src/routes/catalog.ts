@@ -869,6 +869,46 @@ router.post(
   },
 );
 
+// DELETE /catalog/submissions/:id — borrar una pieza definitivamente (admin).
+// Elimina la sesión y sus audios asociados (cascade). Irreversible.
+router.delete(
+  "/catalog/submissions/:id",
+  requireAuth,
+  requireRole("admin"),
+  async (req, res) => {
+    const id = String(req.params.id);
+    try {
+      const [current] = await db
+        .select()
+        .from(catalogSessionsTable)
+        .where(eq(catalogSessionsTable.id, id))
+        .limit(1);
+      if (!current) {
+        res.status(404).json({ error: "Pieza no encontrada" });
+        return;
+      }
+      await db.transaction(async (tx) => {
+        await tx
+          .delete(catalogSessionsTable)
+          .where(eq(catalogSessionsTable.id, id));
+        // Quitar el ID borrado de todas las playlists que lo referencien
+        await tx
+          .update(catalogPlaylistsTable)
+          .set({
+            sessionIds: sql`array_remove(${catalogPlaylistsTable.sessionIds}, ${id})`,
+            updatedAt: new Date(),
+          })
+          .where(sql`${id} = ANY(${catalogPlaylistsTable.sessionIds})`);
+      });
+      req.log.info({ submissionId: id }, "submission deleted");
+      res.json({ ok: true });
+    } catch (err) {
+      req.log.error({ err }, "error deleting submission");
+      res.status(500).json({ error: "Error al borrar la pieza" });
+    }
+  },
+);
+
 // ── Scene animations ────────────────────────────────────────────────────────
 
 function serializeScene(s: SceneAnimation) {

@@ -7,6 +7,7 @@ import {
   useEditSubmission,
   useHideSubmission,
   useUnhideSubmission,
+  useDeleteSubmission,
   useGetPinnedFeatured,
   useSetPinnedFeatured,
   getGetPendingSubmissionsQueryKey,
@@ -35,6 +36,16 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/tabs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   Dialog,
   DialogContent,
@@ -613,6 +624,17 @@ function SubmissionCard({ submission }: { submission: Submission }) {
       onError: () => toast.error("No se pudo mostrar."),
     },
   });
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const remove = useDeleteSubmission({
+    mutation: {
+      onSuccess: () => {
+        toast.success("Sesión borrada definitivamente.");
+        setDeleteOpen(false);
+        invalidate();
+      },
+      onError: () => toast.error("No se pudo borrar."),
+    },
+  });
 
   return (
     <Card>
@@ -684,9 +706,43 @@ function SubmissionCard({ submission }: { submission: Submission }) {
             >
               Editar
             </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              disabled={remove.isPending}
+              onClick={() => setDeleteOpen(true)}
+            >
+              Borrar
+            </Button>
           </div>
         </div>
       </CardContent>
+
+      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Borrar esta sesión?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Se eliminará definitivamente "{submission.title}" junto con sus
+              audios asociados. Esta acción no se puede deshacer.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={remove.isPending}>
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction
+              disabled={remove.isPending}
+              onClick={(e) => {
+                e.preventDefault();
+                remove.mutate({ id: submission.id });
+              }}
+            >
+              {remove.isPending ? "Borrando…" : "Borrar definitivamente"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <RejectDialog
         submission={submission}

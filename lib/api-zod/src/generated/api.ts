@@ -1892,6 +1892,18 @@ export const EditSubmissionResponse = zod.object({
 
 
 /**
+ * @summary Borrar una pieza definitivamente (admin) — irreversible
+ */
+export const DeleteSubmissionParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const DeleteSubmissionResponse = zod.object({
+  "ok": zod.boolean()
+})
+
+
+/**
  * @summary Ocultar una pieza publicada (admin) — la saca del catálogo público
  */
 export const HideSubmissionParams = zod.object({
