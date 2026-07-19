@@ -277,7 +277,7 @@ function ChakraBodyRow({ chakra, topPct, side, colorAnim }: { chakra: Chakra; to
     // Scale + dim (native driver)
     Animated.parallel([
       Animated.sequence([
-        Animated.timing(scaleAnim, { toValue: 1.12, duration: 230, useNativeDriver: true }),
+        Animated.timing(scaleAnim, { toValue: 1.07, duration: 230, useNativeDriver: true }),
         Animated.timing(scaleAnim, { toValue: 1,    duration: 230, useNativeDriver: true }),
       ]),
       Animated.sequence([
