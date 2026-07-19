@@ -49,13 +49,16 @@ export default function TemaScreen() {
   const tema = getTemaById(id ?? "");
   if (!tema) return null;
 
-  const sessions = tema.themeTagMatch?.length
-    ? SESSIONS.filter(
-        (s) =>
-          Array.isArray(s.themeTag) &&
-          s.themeTag.some((t) => tema.themeTagMatch!.includes(t)),
-      )
-    : [];
+  const sessions = SESSIONS.filter((s) => {
+    // Etiquetas Nivel 2 (admin): match por label exacto del tema.
+    if (Array.isArray(s.temaTag) && s.temaTag.includes(tema.label)) return true;
+    // Fallback legacy: match por themeTag (Etiquetas Nivel 1).
+    return (
+      !!tema.themeTagMatch?.length &&
+      Array.isArray(s.themeTag) &&
+      s.themeTag.some((t) => tema.themeTagMatch!.includes(t))
+    );
+  });
 
   const displaySessions =
     sessions.length > 0

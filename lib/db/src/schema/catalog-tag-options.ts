@@ -5,7 +5,7 @@ import { z } from "zod/v4";
 /**
  * Opciones de etiquetas/subcategorías configurables desde el panel admin.
  * type: "ancestral" | "meditation" | "sound" | "sonidos" | "podcast" |
- *       "sleep" | "theme" | "other_theme"
+ *       "sleep" | "theme" | "other_theme" | "tema"
  */
 export const catalogTagOptionsTable = pgTable("catalog_tag_options", {
   id: serial("id").primaryKey(),

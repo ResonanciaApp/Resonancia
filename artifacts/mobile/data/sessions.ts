@@ -68,6 +68,8 @@ export type Session = {
   podcastTag?: PodcastTag;
   sonidosTag?: SonidosTag;
   themeTag?: ThemeTag[];
+  /** Etiquetas Nivel 2 (Temas): vinculan la sesión a los bloques de "Explorar todo". */
+  temaTag?: string[];
   sleepTag?: SleepTag;
   descansoTag?: DescansoTag;
   /**
@@ -1308,6 +1310,7 @@ export type CatalogSessionSnapshot = {
   sonidosTag?: string | null;
   descansoTag?: string | null;
   themeTag?: string[] | null;
+  temaTag?: string[] | null;
   sleepTag?: string | null;
   voiceTag?: string | null;
   guideId?: string | null;
@@ -1373,6 +1376,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     local.sonidosTag = (r.sonidosTag ?? undefined) as SonidosTag | undefined;
     local.descansoTag = (r.descansoTag ?? undefined) as DescansoTag | undefined;
     local.themeTag = (r.themeTag ?? undefined) as ThemeTag[] | undefined;
+    local.temaTag = r.temaTag ?? undefined;
     local.sleepTag = (r.sleepTag ?? undefined) as SleepTag | undefined;
     // Sesión bundleada: solo sobrescribir si el admin fijó una etiqueta explícita.
     // Si el remoto viene vacío (null), dejar `undefined` para conservar el fallback
@@ -1435,6 +1439,7 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
       sonidosTag: (r.sonidosTag ?? undefined) as SonidosTag | undefined,
       descansoTag: (r.descansoTag ?? undefined) as DescansoTag | undefined,
       themeTag: (r.themeTag ?? undefined) as ThemeTag[] | undefined,
+      temaTag: r.temaTag ?? undefined,
       sleepTag: (r.sleepTag ?? undefined) as SleepTag | undefined,
       voiceTag: (r.voiceTag ?? null) as "Guiada" | "Sin voz" | null,
       guideId: r.guideId ?? undefined,

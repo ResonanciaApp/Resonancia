@@ -4220,6 +4220,11 @@ components:
           nullable: true
           items:
             type: string
+        temaTag:
+          type: array
+          nullable: true
+          items:
+            type: string
         sleepTag:
           type: string
           nullable: true
@@ -4526,6 +4531,11 @@ components:
           nullable: true
           items:
             type: string
+        temaTag:
+          type: array
+          nullable: true
+          items:
+            type: string
         guideId:
           type: string
           nullable: true
@@ -4695,6 +4705,11 @@ components:
           nullable: true
           items:
             type: string
+        temaTag:
+          type: array
+          nullable: true
+          items:
+            type: string
         sleepTag:
           type: string
           nullable: true
@@ -4839,6 +4854,10 @@ components:
           type: string
           nullable: true
         themeTag:
+          type: array
+          items:
+            type: string
+        temaTag:
           type: array
           items:
             type: string

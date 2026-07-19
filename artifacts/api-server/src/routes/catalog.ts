@@ -95,6 +95,7 @@ function serializeSession(s: CatalogSession, audioFiles: CatalogAudioFile[]) {
     sonidosTag: s.sonidosTag,
     descansoTag: s.descansoTag,
     themeTag: s.themeTag,
+    temaTag: s.temaTag,
     sleepTag: s.sleepTag,
     voiceTag: s.voiceTag,
     guideId: s.guideId,
@@ -475,6 +476,7 @@ router.post(
           sonidosTag: body.sonidosTag ?? null,
           descansoTag: body.descansoTag ?? null,
           themeTag: body.themeTag ?? null,
+          temaTag: body.temaTag ?? null,
           sleepTag: body.sleepTag ?? null,
           voiceTag: body.voiceTag ?? null,
           guideId: body.guideId ?? null,
@@ -768,6 +770,7 @@ router.patch(
     if (data.soundTag !== undefined) updates.soundTag = data.soundTag ?? null;
     if (data.sleepTag !== undefined) updates.sleepTag = data.sleepTag ?? null;
     if (data.themeTag !== undefined) updates.themeTag = data.themeTag;
+    if (data.temaTag !== undefined) updates.temaTag = data.temaTag;
 
     try {
       const [updated] = await db

@@ -294,6 +294,7 @@ const MEDITATION_DEFAULTS = ["Mindfulness","Visualización","Respiración","Yoga
 const SOUND_DEFAULTS = ["Lluvia","Océano","Bosque","Río","Fuego","Viento","Ballenas","Pájaros","Cueva","Tormenta"];
 const THEME_TAGS = ["Yoga","Respiración","Ansiedad","Rituales","Crecimiento","ASMR","Estrés","Spa","Familia"];
 const OTHER_THEME_TAGS = ["Para la ansiedad","Energiza tus mañanas","Foco y concentración","Suelto la Rabia","Crecimiento personal","Armonía familiar","Respiración consciente","Meditaciones Activas","Astrología"];
+const TEMA_TAGS = ["Yoga","Respiración","Ansiedad","Rituales","ASMR","Estrés","Spa","Familia","Insomnio"];
 const SLEEP_DEFAULTS = ["Sonidos Binaurales","Sonidos Ancestrales","ASMR Expansivos"];
 
 function EditDialog({
@@ -322,6 +323,7 @@ function EditDialog({
   const [soundTag, setSoundTag] = useState(submission.soundTag ?? "");
   const [sleepTag, setSleepTag] = useState(submission.sleepTag ?? "");
   const [themeTag, setThemeTag] = useState<string[]>(submission.themeTag ?? []);
+  const [temaTag, setTemaTag] = useState<string[]>(submission.temaTag ?? []);
 
   const mutation = useEditSubmission({
     mutation: {
@@ -350,6 +352,11 @@ function EditDialog({
 
   const toggleTheme = (tag: string) =>
     setThemeTag((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+
+  const toggleTema = (tag: string) =>
+    setTemaTag((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
 
@@ -484,6 +491,16 @@ function EditDialog({
               pill
             />
 
+            {/* Etiquetas Nivel 2 (Temas de "Explorar todo") */}
+            <TagOptionSelector
+              tagType="tema"
+              defaults={TEMA_TAGS}
+              label="Etiquetas Nivel 2 (opcional)"
+              selected={temaTag}
+              onToggle={toggleTema}
+              pill
+            />
+
             {/* Otras temáticas */}
             <TagOptionSelector
               tagType="other_theme"
@@ -531,6 +548,7 @@ function EditDialog({
                   ...(isMusic ? { soundTag: soundTag || null } : {}),
                   sleepTag: sleepTag || null,
                   themeTag,
+                  temaTag,
                 },
               });
             }}

@@ -60,6 +60,8 @@ export const catalogSessionsTable = pgTable("catalog_sessions", {
   /** Subcategoría de Dormir (ej. "Relajaciones", "Historias para dormir"). */
   descansoTag: text("descanso_tag"),
   themeTag: text("theme_tag").array(),
+  /** Etiquetas Nivel 2 (Temas): vinculan la sesión a los bloques de "Explorar todo". */
+  temaTag: text("tema_tag").array(),
   sleepTag: text("sleep_tag"),
   /** Etiqueta de voz mostrada en las cards ("Guiada" / "Sin voz"). Vacío = sin etiqueta. */
   voiceTag: text("voice_tag"),

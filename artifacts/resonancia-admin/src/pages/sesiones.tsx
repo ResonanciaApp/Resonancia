@@ -41,6 +41,7 @@ const PODCAST_TAGS = ["Espiritualidad","Salud y Bienestar","Disciplinas","Psicol
 const SLEEP_TAGS = ["Sonidos Binaurales","Sonidos Ancestrales","ASMR Expansivos"];
 const THEME_TAGS = ["Yoga","Respiración","Ansiedad","Rituales","Crecimiento","ASMR","Estrés","Spa","Familia"];
 const OTHER_THEME_TAGS = ["Para la ansiedad","Energiza tus mañanas","Foco y concentración","Suelto la Rabia","Crecimiento personal","Armonía familiar","Respiración consciente","Meditaciones Activas","Astrología"];
+const TEMA_TAGS = ["Yoga","Respiración","Ansiedad","Rituales","ASMR","Estrés","Spa","Familia","Insomnio"];
 const AUDIO_ROLES = ["main","voice","ambient","base","sound"] as const;
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -103,6 +104,7 @@ export default function SesionesPage() {
   const [podcastMode, setPodcastMode] = useState<"sonidos"|"podcast">("sonidos");
   const [sleepTag, setSleepTag] = useState("");
   const [themeTag, setThemeTag] = useState<string[]>([]);
+  const [temaTag, setTemaTag] = useState<string[]>([]);
   const [otherTagInput, setOtherTagInput] = useState("");
   const [guideIds, setGuideIds] = useState<string[]>([""]);
   const addGuideSlot = () => setGuideIds((p) => p.length < 4 ? [...p, ""] : p);
@@ -154,6 +156,11 @@ export default function SesionesPage() {
 
   const toggleTheme = (tag: string) =>
     setThemeTag((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
+    );
+
+  const toggleTema = (tag: string) =>
+    setTemaTag((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
     );
 
@@ -295,6 +302,7 @@ export default function SesionesPage() {
         benefits: benefits.length ? benefits : undefined,
         instruments: instruments.length ? instruments : undefined,
         themeTag: themeTag.length ? (themeTag as Parameters<typeof createSubmission>[0]["data"]["themeTag"]) : undefined,
+        temaTag: temaTag.length ? temaTag : undefined,
         sleepTag: sleepTag as Parameters<typeof createSubmission>[0]["data"]["sleepTag"] || undefined,
         ancestralTag: ancestralTag as Parameters<typeof createSubmission>[0]["data"]["ancestralTag"] || undefined,
         meditationTag: meditationTag as Parameters<typeof createSubmission>[0]["data"]["meditationTag"] || undefined,
@@ -337,7 +345,7 @@ export default function SesionesPage() {
     setDuration(""); setIsPremium(false); setSkipDetail(false); setSkipMiniPlayer(false); setFrequency(""); setVoiceTag("");
     setAncestralTag(""); setMeditationTag("");
     setSoundTag(""); setDescansoTag(""); setArtistId("");
-    setSonidosTag(""); setPodcastTag(""); setSleepTag(""); setThemeTag([]);
+    setSonidosTag(""); setPodcastTag(""); setSleepTag(""); setThemeTag([]); setTemaTag([]);
     setGuideIds([""]);
     setBenefits([]); setInstruments([]);
     setAudio1(emptyAudioSlot()); setAudio2(emptyAudioSlot()); setShowAudio2(false);
@@ -650,6 +658,15 @@ export default function SesionesPage() {
               label="Etiquetas Nivel 1 (opcional)"
               selected={themeTag}
               onToggle={toggleTheme}
+              pill
+            />
+
+            <TagOptionSelector
+              tagType="tema"
+              defaults={TEMA_TAGS}
+              label="Etiquetas Nivel 2 (opcional)"
+              selected={temaTag}
+              onToggle={toggleTema}
               pill
             />
 

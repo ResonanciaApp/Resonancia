@@ -730,6 +730,7 @@ export interface CatalogSession {
   sonidosTag?: string | null;
   descansoTag?: string | null;
   themeTag?: string[] | null;
+  temaTag?: string[] | null;
   sleepTag?: string | null;
   voiceTag?: CatalogSessionVoiceTag;
   guideId?: string | null;
@@ -942,6 +943,7 @@ export interface CreatorSubmissionInput {
   sleepTag?: string | null;
   voiceTag?: CreatorSubmissionInputVoiceTag;
   themeTag?: string[] | null;
+  temaTag?: string[] | null;
   guideId?: string | null;
   artistId?: string | null;
   /** @maxLength 300 */
@@ -1079,6 +1081,7 @@ export interface Submission {
   sonidosTag?: string | null;
   descansoTag?: string | null;
   themeTag?: string[] | null;
+  temaTag?: string[] | null;
   sleepTag?: string | null;
   voiceTag?: SubmissionVoiceTag;
   guideId?: string | null;
@@ -1167,6 +1170,7 @@ export interface ReviewEditBody {
   soundTag?: string | null;
   sleepTag?: string | null;
   themeTag?: string[];
+  temaTag?: string[];
 }
 
 export type AdminUserRole = typeof AdminUserRole[keyof typeof AdminUserRole];
