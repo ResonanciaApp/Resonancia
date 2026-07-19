@@ -38,7 +38,6 @@ import {
   type GeoSettings,
 } from "@/data/geometrix-creations";
 import { useColors } from "@/hooks/useColors";
-import { resolveAvatarUrl } from "@/lib/avatar";
 
 const GRID_PAD = 20;
 const GRID_GAP = 12;
@@ -170,20 +169,6 @@ function GlyphPreview({
   );
 }
 
-// ── Avatar del autor ──────────────────────────────────────────────────────────
-function AuthorAvatar({ avatarUrl, name }: { avatarUrl: string | null; name: string }) {
-  const uri = resolveAvatarUrl(avatarUrl);
-  const initial = name?.trim()?.[0]?.toUpperCase() ?? "·";
-  if (uri) {
-    return <Image source={{ uri }} style={styles.authorAvatar} />;
-  }
-  return (
-    <View style={[styles.authorAvatar, styles.authorAvatarFallback]}>
-      <Text style={styles.authorInitial}>{initial}</Text>
-    </View>
-  );
-}
-
 // ── Card individual ───────────────────────────────────────────────────────────
 function GlyphCard({
   glyph,
@@ -203,7 +188,7 @@ function GlyphCard({
   return (
     <Pressable
       onPress={() => router.push("/geometrix-comunidad" as never)}
-      style={[styles.card, { width: cardW, borderColor: "rgba(255,255,255,0.75)" }]}
+      style={[styles.card, { width: cardW, borderColor: "rgba(255,255,255,0.1)" }]}
     >
       {/* Preview */}
       <View style={[styles.preview, { height: previewH }]}>
@@ -236,10 +221,6 @@ function GlyphCard({
           hitSlop={6}
           style={styles.authorRow}
         >
-          <AuthorAvatar
-            avatarUrl={glyph.author.avatarUrl ?? null}
-            name={glyph.author.displayName ?? glyph.author.username}
-          />
           <Text style={[styles.cardName, { color: colors.foreground }]} numberOfLines={1}>
             {glyph.author.displayName ?? glyph.author.username}
           </Text>
@@ -377,13 +358,6 @@ const styles = StyleSheet.create({
     paddingTop: 7,
     paddingBottom: 9,
   },
-  cardName: { fontFamily: "Manrope", fontSize: 12, fontWeight: "700", flexShrink: 1 },
-  authorRow: { flexDirection: "row", alignItems: "center", gap: 7, flex: 1, minWidth: 0 },
-  authorAvatar: { width: 20, height: 20, borderRadius: 10, overflow: "hidden", flexShrink: 0 },
-  authorAvatarFallback: {
-    backgroundColor: "rgba(212,175,55,0.20)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  authorInitial: { fontFamily: "Manrope", fontSize: 10, fontWeight: "700", color: "#F7CB6B" },
+  cardName: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", flexShrink: 1 },
+  authorRow: { flexDirection: "row", alignItems: "center", flex: 1, minWidth: 0 },
 });
