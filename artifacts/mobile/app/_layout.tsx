@@ -224,6 +224,10 @@ function NavStack() {
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
+          name="coleccion/[id]"
+          options={{ headerShown: false, animation: "slide_from_right" }}
+        />
+        <Stack.Screen
           name="chakra/[id]"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
