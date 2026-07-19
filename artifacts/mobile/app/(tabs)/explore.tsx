@@ -684,45 +684,6 @@ export default function ExploreScreen() {
           </View>
         </View>
 
-        {/* ── Descubre algo nuevo (después de Para la ansiedad) ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
-          <Text style={styles.sectionTitle}>Descubre algo nuevo</Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{ marginHorizontal: -H_PAD }}
-            contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 10 }}
-          >
-            {([
-              ["Cuencos", "Meditaciones"],
-              ["Energízate", "Gongs"],
-              ["Rituales", "Paisajes sonoros"],
-            ] as [string, string][]).map(([top, bottom]) => (
-              <View key={top} style={{ gap: 10 }}>
-                {[top, bottom].map((label) => (
-                  <View
-                    key={label}
-                    style={{
-                      width: 148,
-                      height: 70,
-                      backgroundColor: "rgba(247,203,107,0.05)",
-                      borderRadius: 12,
-                      borderWidth: 2,
-                      borderColor: "rgba(247,203,107,0.2)",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F9F9F9", textAlign: "center" }}>
-                      {label}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            ))}
-          </ScrollView>
-        </View>
-
         {/* ── Energiza tus mañanas + Foco y concentración (antes de chakras) ── */}
         {["Energiza tus mañanas", "Foco y concentración"].map((label) => {
           const tc = themeCarousels.find((c) => c.label === label);
@@ -847,6 +808,45 @@ export default function ExploreScreen() {
             </>
           </>
         )}
+
+        {/* ── Descubre algo nuevo (al final de la página) ── */}
+        <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
+          <Text style={styles.sectionTitle}>Descubre algo nuevo</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ marginHorizontal: -H_PAD }}
+            contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 10 }}
+          >
+            {([
+              ["Cuencos", "Meditaciones"],
+              ["Energízate", "Gongs"],
+              ["Rituales", "Paisajes sonoros"],
+            ] as [string, string][]).map(([top, bottom]) => (
+              <View key={top} style={{ gap: 10 }}>
+                {[top, bottom].map((label) => (
+                  <View
+                    key={label}
+                    style={{
+                      width: 148,
+                      height: 70,
+                      backgroundColor: "rgba(247,203,107,0.05)",
+                      borderRadius: 12,
+                      borderWidth: 2,
+                      borderColor: "rgba(247,203,107,0.2)",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F9F9F9", textAlign: "center" }}>
+                      {label}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            ))}
+          </ScrollView>
+        </View>
       </ScrollView>
 
       <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} />
