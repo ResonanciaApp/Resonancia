@@ -116,7 +116,7 @@ export default function TagScreen() {
           styles.stickyHeader,
           {
             paddingTop: topPad,
-            backgroundColor: "#210911",
+            backgroundColor: activeTheme.gradient[0],
             borderBottomColor: "rgba(212,175,55,0.15)",
             opacity: headerOpacity,
           },
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
   },
   stickyTitle: {
     fontFamily: "Manrope",
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: "700",
     flex: 1,
     textAlign: "center",
