@@ -1237,7 +1237,7 @@ export default function HomeScreen2() {
 
         {/* ── FRASE DEL DÍA ── */}
         <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP }}>
-          <View style={{ borderRadius: 18, overflow: "hidden", padding: 20 }}>
+          <View style={{ borderRadius: 18, overflow: "hidden", padding: 20, borderWidth: 1, borderColor: "rgba(255,255,255,0.3)" }}>
             <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
             {/* Título + botón compartir */}
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>

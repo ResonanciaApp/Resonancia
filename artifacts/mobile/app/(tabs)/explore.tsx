@@ -837,7 +837,7 @@ export default function ExploreScreen() {
                       backgroundColor: "rgba(247,203,107,0.05)",
                       borderRadius: 12,
                       borderWidth: 2,
-                      borderColor: "rgba(247,203,107,0.2)",
+                      borderColor: "rgba(255,255,255,0.7)",
                       justifyContent: "center",
                       alignItems: "center",
                     }}
