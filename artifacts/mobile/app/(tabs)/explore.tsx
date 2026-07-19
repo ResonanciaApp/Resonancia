@@ -672,7 +672,7 @@ export default function ExploreScreen() {
                     style={{
                       width: 148,
                       height: 70,
-                      backgroundColor: "rgba(255,255,255,0.045)",
+                      backgroundColor: "rgba(247,203,107,0.05)",
                       borderRadius: 12,
                       borderWidth: 2,
                       borderColor: "rgba(247,203,107,0.2)",
