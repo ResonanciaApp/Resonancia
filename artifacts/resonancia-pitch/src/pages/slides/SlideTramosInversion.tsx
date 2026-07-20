@@ -4,11 +4,8 @@ export default function SlideTramosInversion() {
   const VAL_M12 = 1044; // millones CLP · 5.000 subs × $4.350 × 12 × 4×
 
   const tramos = [
-    { inv: 5,      equity: 4.0  },
-    { inv: 10,     equity: 9.0  },
-    { inv: 15,     equity: 15.0 },
-    { inv: 20,     equity: 21.5 },
-    { inv: 29.656, equity: 35.0 },
+    { inv: 5,  equity: 5.0  },
+    { inv: 10, equity: 11.0 },
   ].map(({ inv, equity }) => {
     const postMoney = inv / (equity / 100);
     const stakeM12 = (equity / 100) * VAL_M12;
@@ -57,7 +54,7 @@ export default function SlideTramosInversion() {
           </span>
         </div>
         <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.40)", marginTop: "0.7vh" }}>
-          Modelo de prima por escala · cada tramo mayor recibe más equity por peso invertido · ancla máxima $29,66M = 35%
+          Modelo de prima por escala · cada tramo mayor recibe más equity por peso invertido
         </div>
       </div>
 
@@ -90,7 +87,7 @@ export default function SlideTramosInversion() {
       {/* Rows */}
       <div style={{ display: "flex", flexDirection: "column", gap: "0.9vh", flex: 1 }}>
         {tramos.map((t, i) => {
-          const isHighlight = i === 4; // Tramo E ($29,66M)
+          const isHighlight = i === tramos.length - 1; // Tramo mayor ($10M)
           const rowBg = ["rgba(0,0,0,0.12)", "rgba(0,0,0,0.15)", "rgba(0,0,0,0.18)", "rgba(0,0,0,0.20)"];
           return (
             <div
@@ -110,16 +107,6 @@ export default function SlideTramosInversion() {
             >
               {/* Inversión */}
               <div style={{ display: "flex", alignItems: "center", gap: "0.8vw" }}>
-                {isHighlight && (
-                  <div style={{
-                    fontSize: "0.72vw", fontWeight: 700, letterSpacing: "0.08em",
-                    color: "#FFFFFF",
-                    border: "1px solid rgba(255,255,255,0.40)", borderRadius: "0.3vw",
-                    padding: "0.1vh 0.4vw", whiteSpace: "nowrap",
-                  }}>
-                    COMPLETO
-                  </div>
-                )}
                 <div style={{
                   fontSize: isHighlight ? "1.8vw" : "1.6vw",
                   fontWeight: 700,
