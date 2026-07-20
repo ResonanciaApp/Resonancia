@@ -96,8 +96,8 @@ export default function SlideAnexoInversion() {
             flexDirection: "column",
           }}>
             <div style={{ fontSize: "1.1vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.3vh" }}>VALORACIÓN PRE-MONEY</div>
-            <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1, marginBottom: "0.4vh" }}>$211,5M CLP</div>
-            <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.50)", marginBottom: "1.4vh" }}>doscientos once millones</div>
+            <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1, marginBottom: "0.4vh" }}>$55,1M CLP</div>
+            <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.50)", marginBottom: "1.4vh" }}>cincuenta y cinco millones</div>
 
             <div style={{ marginBottom: "1.4vh" }}>
               <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#F4F4F4", letterSpacing: "0.06em", marginBottom: "0.6vh" }}>POR QUÉ ES DEFENDIBLE</div>
@@ -109,13 +109,13 @@ export default function SlideAnexoInversion() {
 
             <div style={{ borderTop: "1px solid rgba(255,255,255,0.2)", paddingTop: "1vh", marginTop: "auto" }}>
               <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.5vh" }}>
-                $23,50M ÷ post-money $67,2M ={" "}
+                $29,66M ÷ post-money $84,7M ={" "}
                 <span style={{ color: "#FFFFFF", fontWeight: 700 }}>35,0%</span>
               </div>
               <div style={{ display: "flex", gap: "0.8vw" }}>
                 <div style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.45)" }}>Inversión</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$23,50M</div>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$29,66M</div>
                   <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)" }}>CLP</div>
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
@@ -126,7 +126,7 @@ export default function SlideAnexoInversion() {
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.45)" }}>Post-money</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$67,2M</div>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$84,7M</div>
                   <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)" }}>CLP</div>
                 </div>
               </div>
@@ -145,7 +145,7 @@ export default function SlideAnexoInversion() {
         <div style={{ flex: 1.7, display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", marginBottom: "1vh" }}>VALORACIÓN ESTIMADA · MES 12 (CLP)</div>
           <div style={{ display: "flex", gap: "1.1vw", flex: 1 }}>
-            {/* Base: 5.000 subs × $4.350 × 12 × 4× = $1.044B → 10% = $104.4M → 104.4/23.19 = 4.5× */}
+            {/* Base: 5.000 subs × $4.350 × 12 × 4× = $1.044B → 35% = $365M → 365/29.66 = 12.3× */}
             <ScenarioCard
               label="Base"
               highlight
@@ -154,9 +154,9 @@ export default function SlideAnexoInversion() {
               multiple="4× ARR"
               valuation="$1,044M"
               stakeVal="$365M CLP"
-              returnX="15,5×"
+              returnX="12,3×"
             />
-            {/* Optimista: 7.000 × $4.350 × 12 × 5× = $1.827B → 35% = $639.45M → 639/23.50 = 27.2× */}
+            {/* Optimista: 7.000 × $4.350 × 12 × 5× = $1.827B → 35% = $639.45M → 639/29.66 = 21.6× */}
             <ScenarioCard
               label="Optimista"
               subs="7.000"
@@ -164,9 +164,9 @@ export default function SlideAnexoInversion() {
               multiple="5× ARR"
               valuation="$1,827M"
               stakeVal="$639M CLP"
-              returnX="27,2×"
+              returnX="21,6×"
             />
-            {/* Agresivo: 10.000 × $4.350 × 12 × 6× = $3.132B → 35% = $1.096.2M → 1096/23.50 = 46.6× */}
+            {/* Agresivo: 10.000 × $4.350 × 12 × 6× = $3.132B → 35% = $1.096.2M → 1096/29.66 = 37.0× */}
             <ScenarioCard
               label="Agresivo"
               subs="10.000"
@@ -174,7 +174,7 @@ export default function SlideAnexoInversion() {
               multiple="6× ARR"
               valuation="$3,132M"
               stakeVal="$1.096M CLP"
-              returnX="46,6×"
+              returnX="37,0×"
             />
           </div>
         </div>

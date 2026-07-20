@@ -2,7 +2,7 @@ export default function SlideFinanzas2() {
   // Curva base: +400/mes; M11=4.400, M12=5.000 (+600 último mes)
   // ARPU neto blended $4.350/mes
   const ARPU = 4350;
-  const COLCHON = 0.5;
+  const COLCHON = 0.6;
 
   const meses = [
     { label: "M1",  subs: 400,  costos: 3.25 },
@@ -186,7 +186,7 @@ export default function SlideFinanzas2() {
           {/* Footnote — bajo el último gráfico */}
           <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)", lineHeight: 1.5, marginTop: "1.2vh" }}>
             Curva base: +400 subs/mes (M1=400…M11=4.400, M12=5.000) · ARPU neto blended ~$4.350/mes ·
-            Break-even operacional M3 · Caja incluye $0,5M colchón pre-lanzamiento ·
+            Break-even operacional M3 · Caja incluye $0,6M colchón pre-lanzamiento ·
             Optimista/Agresivo = curva más acelerada, mismos costos fijos.
           </div>
         </div>

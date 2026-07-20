@@ -23,7 +23,7 @@ export default function SlideFinanzas1() {
           Flujo de caja <span style={{ color: "#FFFFFF" }}>post-lanzamiento.</span>
         </div>
         <div style={{ fontSize: "1.45vw", color: "rgba(244,244,244,0.50)", marginTop: "1vh" }}>
-          En millones de CLP · escenario base · M1 = día del lanzamiento · inversión ya desplegada en los 3 meses previos
+          En millones de CLP · escenario base · M1 = día del lanzamiento · inversión ya desplegada en los 4 meses previos
         </div>
       </div>
 
@@ -40,7 +40,7 @@ export default function SlideFinanzas1() {
       }}>
         <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", flexShrink: 0 }}>PRE-LANZAMIENTO</div>
         <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.50)", lineHeight: 1.3 }}>
-          Los 3 meses previos (M–3 a M–1) cubiertos íntegramente por la inversión inicial ($27M CLP): equipo trabajando, catálogo producido, app lista.
+          Los 4 meses previos (M–4 a M–1) cubiertos íntegramente por la inversión inicial ($29,7M CLP): equipo trabajando, catálogo producido, app lista.
           <strong style={{ color: "#F4F4F4" }}> Break-even operacional: Mes 3.</strong>
         </div>
       </div>
@@ -103,7 +103,7 @@ export default function SlideFinanzas1() {
       {/* Footnote */}
       <div style={{ fontSize: "1.15vw", color: "rgba(244,244,244,0.45)", lineHeight: 1.5 }}>
         Curva: +400 subs/mes (M1=400…M11=4.400, M12=5.000) · ARPU neto blended ~$4.350/mes · Precio $8.990/mes (IVA incl.) o $59.990/año ·
-        Fijos M1-2: $3,25M/mes; M3+: $3,75-4,75M/mes (contenido + mkt) · Break-even operacional M3 · Inversión $27M ya incluida en pre-lanzamiento.
+        Fijos M1-2: $3,25M/mes; M3+: $3,75-4,75M/mes (contenido + mkt) · Break-even operacional M3 · Inversión $29,7M ya incluida en pre-lanzamiento.
       </div>
 
       {/* Pulso 4 · logo esquina */}
