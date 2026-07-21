@@ -300,6 +300,7 @@ function NavStack() {
           name="chat/[userId]"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
+        <Stack.Screen name="mi-perfil" options={{ headerShown: false, animation: drawerScreenAnim }} />
         <Stack.Screen name="diario" options={{ headerShown: false, animation: drawerScreenAnim }} />
         <Stack.Screen
           name="diario-entrada"

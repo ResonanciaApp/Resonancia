@@ -105,3 +105,4 @@
 - [Destacados por categoría](featured-category-flag.md) — isFeaturedCategory independiente de isFeatured; duplicado en grilla es deliberado; Noches/Mañanas no ven sesiones DB-only (constantes de módulo)
 - [Session tap three-state](session-tap-three-state.md) — prioridad skipMiniPlayer > skipDetail > detalle, duplicada en ~22 sitios incl. onPress inline de carruseles (SessionCard no los cubre)
 - [Catalog create vs edit field parity](catalog-create-vs-edit-fields.md) — INSERT de creación y PATCH de edición enumeran campos por separado; omitir uno lo pierde en silencio ("funciona al editar, no al crear")
+- [Perfil split](perfil-split.md) — Perfil de tabs = solo pills Biblioteca/Historial; contenido de perfil (Muro) vive en /mi-perfil (ProfileScreenBase dedicated); drawer "Ver Perfil" → /mi-perfil

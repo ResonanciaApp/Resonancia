@@ -155,7 +155,7 @@ export function DrawerMenu() {
                 {loggedIn ? (
                   <>
                     <Text style={styles.profileName} numberOfLines={1}>{fullName || "Mi perfil"}</Text>
-                    <Pressable onPress={() => navigate("/(tabs)/profile")} style={styles.verPerfilBtn}>
+                    <Pressable onPress={() => navigate("/mi-perfil")} style={styles.verPerfilBtn}>
                       <Text style={styles.verPerfilText}>Ver Perfil</Text>
                       <Feather name="chevron-right" size={11} color="#F7CB6B" />
                     </Pressable>
