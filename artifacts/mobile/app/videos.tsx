@@ -135,7 +135,7 @@ export default function VideosScreen() {
           style={[styles.searchWrap, { opacity: searchOpacity }]}
         >
           <BlurView intensity={40} tint="light" style={[styles.searchBar, { overflow: "hidden", borderColor: "rgba(255,255,255,0.7)", borderWidth: 1 }]}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.13)" }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.053)" }]} />
             <Feather name="search" size={16} color={colors.mutedForeground} />
             <TextInput
               style={[styles.searchInput, { color: colors.foreground }]}
