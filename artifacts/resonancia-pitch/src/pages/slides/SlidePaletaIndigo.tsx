@@ -79,7 +79,7 @@ export default function SlidePaletaIndigo() {
               width: "100%",
               height: "22vh",
               borderRadius: "1vw",
-              background: "linear-gradient(90deg, #F7CB6B 0%, #FBA980 100%)",
+              background: "linear-gradient(90deg, #F4C991 0%, #E6B261 100%)",
               border: "1px solid rgba(255,255,255,0.14)",
               boxShadow: "0 1vh 3vh rgba(0,0,0,0.35)",
             }}
@@ -88,7 +88,7 @@ export default function SlidePaletaIndigo() {
             Degradado dorado
           </div>
           <div style={{ fontSize: "0.85vw", letterSpacing: "0.14em", color: "rgba(255,255,255,0.5)", fontFamily: "monospace" }}>
-            #F7CB6B → #FBA980
+            #F4C991 → #E6B261
           </div>
         </div>
       </div>
