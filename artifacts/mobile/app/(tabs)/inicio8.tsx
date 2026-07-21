@@ -917,15 +917,17 @@ export default function HomeScreen2() {
       <View
         style={{
           position: "absolute",
-          top: topPad - 10,
+          top: 0,
           left: 0,
           right: 0,
           zIndex: 20,
           flexDirection: "row",
           alignItems: "center",
           paddingHorizontal: 14,
+          paddingTop: topPad - 10,
+          paddingBottom: 8,
+          backgroundColor: "#210911",
         }}
-        pointerEvents="box-none"
       >
         {/* Izquierda: Menú */}
         <View style={{ alignItems: "center", marginLeft: 3 }}>
