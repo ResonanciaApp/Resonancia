@@ -10,6 +10,7 @@ Las pantallas principales del tab bar fueron renombradas (05 jul 2026):
 | `musica` (Mezclador) | Mezclador | **Crear** (pasó brevemente por "Crea" antes de fijarse en "Crear") |
 | `explore` | Meditación | **Medita** |
 | `biblioteca` | Mi Espacio | **Universo** |
+| `profile` | Perfil | **Biblioteca** (21 jul 2026; icono books.vertical — la ruta `biblioteca` está en HIDDEN_ROUTES, no hay duplicado visible) |
 
 **Why:** decisión de producto del usuario para simplificar/renombrar el branding de las secciones principales.
 

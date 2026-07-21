@@ -74,7 +74,7 @@ const TAB_CONFIG: Record<
   biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark", image: require("@/assets/images/tab-icon-universo.png") },
   video:      { label: "Videos",     sfIcon: "video",               sfIconFill: "video.fill",           featherIcon: "video" },
   descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon" },
-  profile:    { label: "Perfil",     sfIcon: "person",              sfIconFill: "person.fill",          featherIcon: "user" },
+  profile:    { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
 };
 
 
@@ -501,7 +501,7 @@ function TabLayoutInner() {
         <Tabs.Screen name="musica3"        options={{ title: "Mi Música", href: null }} />
         <Tabs.Screen name="video"          options={{ title: "Videos" }} />
         <Tabs.Screen name="descanzo"       options={{ title: "Dormir" }} />
-        <Tabs.Screen name="profile"        options={{ title: "Perfil" }} />
+        <Tabs.Screen name="profile"        options={{ title: "Biblioteca" }} />
       </Tabs>
 
       {/* ── Mixer Drawer Panel — siempre montado, desliza desde la izquierda ── */}
