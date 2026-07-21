@@ -10,12 +10,12 @@ export default function SlideCoverPulso4() {
       {/* Center content */}
       <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "5vh" }}>
 
-        {/* Pulso 4 logo */}
+        {/* RESONANCIA logo */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "3vh" }}>
           <img
-            src={`${import.meta.env.BASE_URL}logo-pulso4.png`}
-            alt="Pulso 4"
-            style={{ width: "30vw", display: "block", opacity: 0.92 }}
+            src={`${import.meta.env.BASE_URL}logo-resonancia.png`}
+            alt="RESONANCIA"
+            style={{ width: "36vw", display: "block", opacity: 0.95 }}
           />
           <div style={{ width: "60%", height: "1.5px", backgroundColor: "rgba(255,255,255,0.20)" }} />
         </div>
@@ -23,10 +23,7 @@ export default function SlideCoverPulso4() {
         {/* Subtitle */}
         <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "1.2vh" }}>
           <div style={{ fontSize: "1.3vw", fontWeight: 400, letterSpacing: "0.35em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase" }}>
-            Presentación Privada · Inversionistas
-          </div>
-          <div style={{ fontSize: "1.0vw", fontWeight: 400, letterSpacing: "0.15em", color: "rgba(255,255,255,0.28)" }}>
-            Casa del Cuenco · 2026
+            Santuario de Sonidos
           </div>
         </div>
       </div>
