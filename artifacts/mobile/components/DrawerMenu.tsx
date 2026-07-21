@@ -12,15 +12,24 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   View,
 } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useAuth } from "@/context/AuthContext";
 import { useDrawer, DRAWER_W, DRAWER_PUSH } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
+import { useSelectedScene } from "@/context/SelectedSceneContext";
+import { SceneAnimationCard, type SceneItem } from "@/components/SceneAnimationCard";
+import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
+import type { GeometrixCreation } from "@/data/geometrix-creations";
+import type { SceneAnimation } from "@workspace/api-client-react";
+import { useGetSceneAnimations } from "@workspace/api-client-react";
 
 const ND = Platform.OS !== "web";
 
@@ -39,11 +48,36 @@ const MAIN_ITEMS: MenuItem[] = [
   { label: "Grupos",        icon: "globe",     route: "/grupos" },
 ];
 
-const SECONDARY_ITEMS: MenuItem[] = [
-  { label: "Invita a un amigo", icon: "share-2",    route: "/invitar" },
-  { label: "Ayuda",             icon: "help-circle", route: "/ayuda" },
-  { label: "Configuraciones",   icon: "settings",    route: "/configuraciones" },
-];
+// ── Sección Escenas (dentro del drawer) ──────────────────────────────────────
+const DRAWER_CONTENT_W = DRAWER_PUSH - 40; // paddingHorizontal 20 × 2
+const DRAWER_ANIM_CARD_SIZE = Math.floor((DRAWER_CONTENT_W - 12) / 2);
+const DRAWER_ANIM_CARD_H = Math.round(DRAWER_ANIM_CARD_SIZE * 1.32);
+
+/** Convierte una creación de Geometrix al shape mínimo que necesita SceneAnimationCard. */
+function creationToSceneItem(c: GeometrixCreation): SceneItem {
+  return {
+    name: c.name,
+    isPremium: false,
+    recipe: { active: c.active, master: c.master, settings: c.settings },
+  };
+}
+
+/** Convierte una creación de Geometrix al tipo SceneAnimation para el contexto. */
+function creationToSceneAnimation(c: GeometrixCreation): SceneAnimation {
+  return {
+    id: parseInt(c.id, 10) || 0,
+    name: c.name,
+    description: null,
+    phrase: null,
+    recipe: { active: c.active, master: c.master, settings: c.settings },
+    isActive: true,
+    isPremium: false,
+    sortOrder: 0,
+    submittedBy: null,
+    createdAt: c.createdAt,
+    updatedAt: c.updatedAt,
+  } as unknown as SceneAnimation;
+}
 
 // ── Drawer principal ──────────────────────────────────────────────────────────
 export function DrawerMenu() {
@@ -53,6 +87,11 @@ export function DrawerMenu() {
   const { user: clerkUser } = useUser();
   const { username, lastName, photoUri } = useUserProfile();
   const { theme: activeTheme } = useSceneTheme();
+  const { intencionDiariaEnabled, setIntencionDiariaEnabled } = useIntencionDiaria();
+  const { setBgScene } = useSelectedScene();
+  const { data: sceneAnimationsData } = useGetSceneAnimations();
+  const geoScenes = sceneAnimationsData?.scenes ?? [];
+  const { creations: geometrixCreations } = useGeometrixCreations();
 
   const loggedIn = isRegistered || isSignedIn;
   const clerkName =
@@ -218,19 +257,56 @@ export function DrawerMenu() {
 
             <View style={[styles.divider, { backgroundColor: "#F7CB6B10", marginVertical: 16 }]} />
 
-            <View style={[styles.itemGroup, { marginTop: 11 }]}>
-              {SECONDARY_ITEMS.map((item) => (
-                <Pressable
-                  key={item.label}
-                  onPress={() => navigate(item.route)}
-                  style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
-                >
-                  <View style={styles.itemIcon}>
-                    <Feather name={item.icon} size={17} color="rgba(255,255,255,0.7)" />
+            {/* ── Sección Escenas ── */}
+            <View style={styles.controlRow}>
+              <MaterialCommunityIcons name="feather" size={17} color="#F4F4F4" style={styles.controlIcon} />
+              <Text style={styles.controlLabel}>Activar intención diaria</Text>
+              <Switch
+                value={intencionDiariaEnabled}
+                onValueChange={setIntencionDiariaEnabled}
+                trackColor={{ false: "rgba(249,249,249,0.35)", true: "rgba(249,249,249,0.7)" }}
+                thumbColor="#f9f9f9"
+              />
+            </View>
+
+            <View style={{ marginTop: 18 }}>
+              <View style={styles.sceneTitleRow}>
+                <MaterialCommunityIcons name="star-four-points-outline" size={15} color="rgba(255,255,255,0.8)" />
+                <Text style={styles.sceneTitle}>Escenas animadas</Text>
+              </View>
+              <View style={styles.sceneGrid}>
+                {geoScenes.map((scene) => (
+                  <SceneAnimationCard
+                    key={`admin-${scene.id}`}
+                    scene={scene}
+                    size={DRAWER_ANIM_CARD_SIZE}
+                    height={DRAWER_ANIM_CARD_H}
+                    onPress={() => {
+                      setBgScene(scene);
+                      onClose();
+                    }}
+                  />
+                ))}
+                {geometrixCreations.length > 0 && (
+                  <View style={styles.sceneSectionRow}>
+                    <View style={styles.sceneSectionLine} />
+                    <Text style={styles.sceneSectionLabel}>Mis animaciones</Text>
+                    <View style={styles.sceneSectionLine} />
                   </View>
-                  <Text style={[styles.itemLabel, styles.itemLabelMuted]}>{item.label}</Text>
-                </Pressable>
-              ))}
+                )}
+                {geometrixCreations.map((creation) => (
+                  <SceneAnimationCard
+                    key={`user-${creation.id}`}
+                    scene={creationToSceneItem(creation)}
+                    size={DRAWER_ANIM_CARD_SIZE}
+                    height={DRAWER_ANIM_CARD_H}
+                    onPress={() => {
+                      setBgScene(creationToSceneAnimation(creation));
+                      onClose();
+                    }}
+                  />
+                ))}
+              </View>
             </View>
 
           </ScrollView>
@@ -372,5 +448,67 @@ const styles = StyleSheet.create({
     color: "rgba(255,255,255,0.7)",
     fontSize: 14,
     fontWeight: "400",
+  },
+
+  // ── Sección Escenas ──
+  controlRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    backgroundColor: "rgba(249,249,249,0.075)",
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginTop: 4,
+  },
+  controlIcon: { width: 20 },
+  controlLabel: {
+    fontFamily: "Manrope",
+    flex: 1,
+    fontSize: 14,
+    fontWeight: "400",
+    color: "#F9F9F9",
+  },
+  sceneTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+    marginBottom: 10,
+  },
+  sceneTitle: {
+    fontFamily: "Manrope",
+    fontSize: 15,
+    fontWeight: "600",
+    color: "rgba(255,255,255,0.9)",
+    letterSpacing: 0.2,
+  },
+  sceneGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 12,
+    justifyContent: "center",
+    paddingBottom: 12,
+  },
+  sceneSectionRow: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    paddingHorizontal: 4,
+    marginTop: 4,
+    marginBottom: 4,
+  },
+  sceneSectionLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "rgba(190,150,80,0.18)",
+  },
+  sceneSectionLabel: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    fontWeight: "600",
+    color: "rgba(190,150,80,0.65)",
+    letterSpacing: 1.1,
+    textTransform: "uppercase",
   },
 });
