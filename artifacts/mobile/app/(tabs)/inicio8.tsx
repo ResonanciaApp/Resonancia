@@ -913,9 +913,78 @@ export default function HomeScreen2() {
 
       <StatusBar barStyle="light-content" />
 
+      {/* ── Header fijo: Menú + Racha (sticky, fuera del scroll) ── */}
+      <View
+        style={{
+          position: "absolute",
+          top: topPad - 10,
+          left: 0,
+          right: 0,
+          zIndex: 20,
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 14,
+        }}
+        pointerEvents="box-none"
+      >
+        {/* Izquierda: Menú */}
+        <View style={{ alignItems: "center", marginLeft: 3 }}>
+          <Pressable
+            onPress={openDrawer}
+            hitSlop={10}
+            style={({ pressed }) => ({
+              opacity: pressed ? 0.7 : 1,
+              backgroundColor: "rgba(255,255,255,0.08)",
+              borderRadius: 18,
+              width: 36,
+              height: 36,
+              alignItems: "center",
+              justifyContent: "center",
+            })}
+          >
+            <Ionicons name="menu" size={24} color="#FFFFFF" />
+          </Pressable>
+        </View>
+
+        {/* Centro: espacio */}
+        <View style={{ flex: 1 }} pointerEvents="none" />
+
+        {/* Derecha: Racha */}
+        <Pressable
+          hitSlop={8}
+          style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginRight: 10, flexDirection: "row", alignItems: "center" }]}
+          onPressIn={() =>
+            Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
+          }
+          onPressOut={() => {
+            Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
+          }}
+          onPress={() => { if (rachaEnabled) setProgresoVisible(true); }}
+        >
+          <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
+            <View style={{
+              backgroundColor: "rgba(255,255,255,0.08)",
+              borderRadius: 20,
+              height: 36,
+              paddingHorizontal: 10,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 5,
+            }}>
+              {currentStreakDisplay > 0 && (
+                <Text style={{ fontSize: 14, fontWeight: "300", color: "#f9f9f9", fontFamily: "Manrope", lineHeight: 18 }}>
+                  {currentStreakDisplay}
+                </Text>
+              )}
+              <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" style={{ marginTop: 1 }} />
+            </View>
+          </Animated.View>
+        </Pressable>
+      </View>
+
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: topPad + 12 }}
+        contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: topPad + 38 }}
         showsVerticalScrollIndicator={false}
         onScroll={handleMainScroll}
         scrollEventThrottle={16}
@@ -928,70 +997,6 @@ export default function HomeScreen2() {
           updateStickyActive();
         }}
       >
-        {/* ── Logo + íconos superiores ── */}
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            paddingHorizontal: 14,
-            marginTop: 5,
-          }}
-        >
-          {/* Izquierda: Menú (en la posición donde estaba el ícono de Escenas) */}
-          <View style={{ alignItems: "center", marginLeft: 3, marginTop: -15 }}>
-            <Pressable
-              onPress={openDrawer}
-              hitSlop={10}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.7 : 1,
-                backgroundColor: "rgba(255,255,255,0.08)",
-                borderRadius: 18,
-                width: 36,
-                height: 36,
-                alignItems: "center",
-                justifyContent: "center",
-              })}
-            >
-              <Ionicons name="menu" size={24} color="#FFFFFF" />
-            </Pressable>
-          </View>
-
-          {/* Centro: espacio */}
-          <View style={{ flex: 1 }} />
-
-          {/* Derecha: Racha */}
-          <Pressable
-            hitSlop={8}
-            style={({ pressed }) => [styles.giftBtn, { opacity: pressed ? 0.8 : 1, marginRight: 10, marginTop: -15, flexDirection: "row", alignItems: "center" }]}
-            onPressIn={() =>
-              Animated.spring(giftScaleAnim, { toValue: 0.82, speed: 30, bounciness: 0, useNativeDriver: true }).start()
-            }
-            onPressOut={() => {
-              Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
-            }}
-            onPress={() => { if (rachaEnabled) setProgresoVisible(true); }}
-          >
-            <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
-              <View style={{
-                backgroundColor: "rgba(255,255,255,0.08)",
-                borderRadius: 20,
-                height: 36,
-                paddingHorizontal: 10,
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 5,
-              }}>
-                {currentStreakDisplay > 0 && (
-                  <Text style={{ fontSize: 14, fontWeight: "300", color: "#f9f9f9", fontFamily: "Manrope", lineHeight: 18 }}>
-                    {currentStreakDisplay}
-                  </Text>
-                )}
-                <MaterialCommunityIcons name="spa" size={20} color="#FFFFFF" style={{ marginTop: 1 }} />
-              </View>
-            </Animated.View>
-          </Pressable>
-        </View>
-
         {/* ── Escena animada o Intención diaria (según toggle en Escenas) ── */}
         {!intencionDiariaEnabled ? (
           /* Escena animada: fondo libre, pasa por debajo del contenido.
