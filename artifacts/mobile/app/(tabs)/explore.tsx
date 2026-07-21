@@ -896,7 +896,8 @@ export default function ExploreScreen() {
           </>
         )}
 
-        {/* ── Descubre algo nuevo (al final de la página) ── */}
+        {/* ── Descubre algo nuevo (al final de la página) — oculta a pedido del usuario ── */}
+        {false && (
         <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
           <Text style={styles.sectionTitle}>Descubre algo nuevo</Text>
           <ScrollView
@@ -934,6 +935,7 @@ export default function ExploreScreen() {
             ))}
           </ScrollView>
         </View>
+        )}
       </ScrollView>
 
       <SearchOverlay visible={searchVisible} onClose={() => setSearchVisible(false)} />
