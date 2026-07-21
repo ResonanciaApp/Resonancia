@@ -926,7 +926,6 @@ export default function HomeScreen2() {
           paddingHorizontal: 14,
           paddingTop: topPad - 10,
           paddingBottom: 8,
-          backgroundColor: "#210911",
           overflow: "hidden",
         }}
       >
@@ -934,7 +933,7 @@ export default function HomeScreen2() {
             para que el header se funda sin costura con el fondo de la pantalla */}
         <LinearGradient
           colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
-          style={{ position: "absolute", top: 25, left: 0, right: 0, height: height - 25 }}
+          style={{ position: "absolute", top: 0, left: 0, right: 0, height }}
           pointerEvents="none"
         />
         {/* Izquierda: Menú */}
