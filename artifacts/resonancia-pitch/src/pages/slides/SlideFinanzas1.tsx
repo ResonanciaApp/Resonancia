@@ -106,10 +106,6 @@ export default function SlideFinanzas1() {
         Fijos: $3,3M/mes (RRHH $1,8M + operacionales $1,5M) · M3+: + mkt $0,5-1,5M + contenido $1,5M · Break-even operacional M4 · Inversión $29,7M ya incluida en pre-lanzamiento.
       </div>
 
-      {/* Pulso 4 · logo esquina */}
-      <div style={{ position: "absolute", top: "3.5vh", right: "3vw", zIndex: 200, pointerEvents: "none" }}>
-        <img src={`${import.meta.env.BASE_URL}logo-pulso4.png`} alt="Pulso 4" style={{ height: "4.5vh", opacity: 0.50, display: "block" }} />
-      </div>
     </div>
   );
 }
