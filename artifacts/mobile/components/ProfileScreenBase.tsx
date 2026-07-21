@@ -147,7 +147,7 @@ const WEEK_INITIALS = ["L", "M", "M", "J", "V", "S", "D"];
 type PerfilTab = "biblioteca" | "historial";
 
 const PERFIL_TABS: { id: PerfilTab; label: string }[] = [
-  { id: "biblioteca",  label: "Biblioteca" },
+  { id: "biblioteca",  label: "Mi Espacio" },
   { id: "historial",   label: "Historial" },
 ];
 
@@ -748,21 +748,20 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
               <Feather name="chevron-left" size={28} color="#FBFBFB" />
             </Pressable>
           ) : (
-            <Pressable
-              onPress={() => router.push("/configuraciones")}
-              style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.7 : 1 }]}
-              hitSlop={10}
-            >
-              <Feather name="settings" size={25} color="#FBFBFB" />
-            </Pressable>
+            <View style={{ width: 25 }} />
           )}
-          <Text style={styles.stickyTitle}>{dedicated ? "Mi Perfil" : "Perfil"}</Text>
+          <Text style={styles.stickyTitle}>{dedicated ? "Mi Perfil" : "Biblioteca"}</Text>
           {dedicated ? (
-            <Pressable hitSlop={8} onPress={openEdit}>
-              <Feather name="edit-2" size={22} color="#FBFBFB" />
-            </Pressable>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
+              <Pressable hitSlop={8} onPress={openEdit}>
+                <Feather name="edit-2" size={22} color="#FBFBFB" />
+              </Pressable>
+              <Pressable hitSlop={8} onPress={() => router.push("/configuraciones")}>
+                <Feather name="settings" size={23} color="#FBFBFB" />
+              </Pressable>
+            </View>
           ) : (
-            <View style={{ width: 22 }} />
+            <View style={{ width: 25 }} />
           )}
         </View>
 
