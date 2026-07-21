@@ -31,6 +31,7 @@ import { SESSIONS, getSessionById } from "@/data/sessions";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import { TEMAS } from "@/data/temas";
+import { PLAYLISTS } from "@/data/playlists";
 import { TAG_CARDS } from "@/data/tags";
 import { CHAKRAS, isChakraTag, type Chakra } from "@/data/chakras";
 import { SacredGlyph } from "@/components/SacredGlyph";
@@ -374,6 +375,19 @@ export default function ExploreScreen() {
     : activeSceneId === "profundo"
       ? "rgba(255,255,255,0.06)"
       : "rgba(255,255,255,0.07)";
+  // Rituales para ti — playlists del catálogo (admin, showOnHome)
+  const ritualItems = useMemo(
+    () =>
+      PLAYLISTS.slice(0, 4).map((pl) => ({
+        id: pl.id,
+        title: pl.title,
+        durationLabel: pl.durationLabel,
+        image: pl.coverUrl ? { uri: pl.coverUrl } : (pl.cover as number),
+      })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [catalogVersion],
+  );
+
   // Animated values para el color de los textos izquierda de cada chakra
   const chakraColorAnims = useRef(CHAKRAS_VISUAL.map(() => new Animated.Value(0))).current;
 
@@ -689,6 +703,31 @@ export default function ExploreScreen() {
           </View>
         </View>
 
+        {/* ── Rituales para ti ── */}
+        {ritualItems.length > 0 && (
+          <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
+            <Text style={styles.sectionTitle}>Rituales para ti</Text>
+            <View style={styles.ritualGrid}>
+              {ritualItems.map((pl) => (
+                <Pressable
+                  key={pl.id}
+                  onPress={() => router.push(`/coleccion/${pl.id}` as never)}
+                  style={({ pressed }) => [styles.ritualCard, { opacity: pressed ? 0.8 : 1 }]}
+                >
+                  <View style={[StyleSheet.absoluteFill, { borderRadius: 14, backgroundColor: temaCardBg }]} />
+                  <Image source={pl.image} style={styles.ritualImage} contentFit="cover" />
+                  <View style={styles.ritualTextWrap}>
+                    <Text style={styles.ritualTitle} numberOfLines={2}>{pl.title}</Text>
+                    {!!pl.durationLabel && (
+                      <Text style={styles.ritualSub} numberOfLines={1}>{pl.durationLabel}</Text>
+                    )}
+                  </View>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+        )}
+
         {/* ── Energiza tus mañanas + Foco y concentración (antes de chakras) ── */}
         {["Energiza tus mañanas", "Foco y concentración"].map((label) => {
           const tc = themeCarousels.find((c) => c.label === label);
@@ -921,6 +960,40 @@ const styles = StyleSheet.create({
 
   sectionRow:   { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginBottom: 21 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", letterSpacing: 0.3, color: "#FBFBFB", marginBottom: 21 },
+  // Rituales para ti
+  ritualGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    rowGap: 14,
+  },
+  ritualCard: {
+    width: (width - H_PAD * 2 - 14) / 2,
+    borderRadius: 14,
+    overflow: "hidden",
+  },
+  ritualImage: {
+    width: "100%",
+    aspectRatio: 1.35,
+  },
+  ritualTextWrap: {
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  ritualTitle: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#FBFBFB",
+    lineHeight: 19,
+  },
+  ritualSub: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "400",
+    color: "rgba(255,255,255,0.60)",
+    marginTop: 3,
+  },
 
   // Recomendado para ti
   recoSection: {
