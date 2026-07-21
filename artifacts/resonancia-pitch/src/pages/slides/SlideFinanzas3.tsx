@@ -25,13 +25,13 @@ function CostRow({ label, sub, value }: { label: string; sub?: string; value: st
 }
 
 export default function SlideFinanzas3() {
-  // Fijos: $3.250.000 (RRHH $2.800.000 + hosting $250K + otros $200K)
+  // Fijos: $4.500.000 (RRHH $3.000.000 + operacionales $1.500.000)
   // Contenido $1.500.000 desde M3 (25 sesiones × $60.000)
   const phases = [
-    { fase: "Lanzamiento\nMes 1–2",  fijo: "$3.250.000", contenido: "$0",         mkt: "$0",         total: "$3.250.000",   note: "Mkt cubierto por\ninversión inicial" },
-    { fase: "Tracción\nMes 3–6",     fijo: "$3.250.000", contenido: "$1.500.000", mkt: "$500.000",   total: "$5.250.000",   note: "Pauta social\nbásica + orgánico" },
-    { fase: "Crecimiento\nMes 7–12", fijo: "$3.250.000", contenido: "$1.500.000", mkt: "$1,0M–$1,5M",total: "$5,75M–$6,25M", note: "Pauta + influencers\nnicho wellness" },
-    { fase: "Escala\nMes 13–24",     fijo: "$3.250.000", contenido: "$1.500.000", mkt: "$2,0M–$2,5M",total: "$6,75M–$7,25M", note: "Retargeting +\ncampañas LATAM" },
+    { fase: "Lanzamiento\nMes 1–2",  fijo: "$4.500.000", contenido: "$0",         mkt: "$0",         total: "$4.500.000",   note: "Mkt cubierto por\ninversión inicial" },
+    { fase: "Tracción\nMes 3–6",     fijo: "$4.500.000", contenido: "$1.500.000", mkt: "$500.000",   total: "$6.500.000",   note: "Pauta social\nbásica + orgánico" },
+    { fase: "Crecimiento\nMes 7–12", fijo: "$4.500.000", contenido: "$1.500.000", mkt: "$1,0M–$1,5M",total: "$7,0M–$7,5M", note: "Pauta + influencers\nnicho wellness" },
+    { fase: "Escala\nMes 13–24",     fijo: "$4.500.000", contenido: "$1.500.000", mkt: "$2,0M–$2,5M",total: "$8,0M–$8,5M", note: "Retargeting +\ncampañas LATAM" },
   ];
 
   return (
@@ -116,17 +116,17 @@ export default function SlideFinanzas3() {
 
         {/* Left: fixed + content costs */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", marginBottom: "0.5vh" }}>COSTOS FIJOS / MES</div>
-          <CostRow label="Gerente general" sub="Dirección estratégica y comercial" value="$600.000" />
-          <CostRow label="Programador Chief" sub="Desarrollo y mantención técnica" value="$700.000" />
-          <CostRow label="Coordinador/Contenidos" sub="Gestión operativa y de artistas" value="$500.000" />
-          <CostRow label="Ventas / Logística" sub="Crecimiento y operaciones" value="$500.000" />
-          <CostRow label="Super admin / Atención al cliente" sub="Soporte y comunidad" value="$500.000" />
+          <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", marginBottom: "0.5vh" }}>COSTOS FIJOS / MES · RRHH</div>
+          <CostRow label="Gerente general" sub="Dirección estratégica y comercial" value="$1.800.000" />
+          <CostRow label="Ventas / Logística" sub="Crecimiento y operaciones" value="$400.000" />
+          <CostRow label="Super admin / Atención al cliente" sub="Soporte y comunidad" value="$800.000" />
+          <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", margin: "0.8vh 0 0.5vh" }}>OPERACIONALES</div>
+          <CostRow label="Arriendo Casa" sub="Espacio de operación y grabación" value="$900.000" />
           <CostRow label="Hosting e infraestructura" sub="Replit + Postgres + Bunny.net CDN" value="$250.000" />
-          <CostRow label="Otros" sub="Admin, oficina, contingencias" value="$200.000" />
+          <CostRow label="Cuentas básicas" sub="Servicios y suministros" value="$350.000" />
           <div style={{ display: "flex", justifyContent: "space-between", padding: "0.6vh 0 0", borderTop: "1px solid rgba(255,255,255,0.3)", marginTop: "0.3vh" }}>
             <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#F4F4F4" }}>Total fijos</div>
-            <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#FFFFFF" }}>$3.250.000</div>
+            <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#FFFFFF" }}>$4.500.000</div>
           </div>
 
           <div style={{ marginTop: "0.8vh" }}>

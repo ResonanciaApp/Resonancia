@@ -5,18 +5,18 @@ export default function SlideFinanzas2() {
   const COLCHON = 0.6;
 
   const meses = [
-    { label: "M1",  subs: 400,  costos: 3.25 },
-    { label: "M2",  subs: 800,  costos: 3.25 },
-    { label: "M3",  subs: 1200, costos: 5.25 },
-    { label: "M4",  subs: 1600, costos: 5.25 },
-    { label: "M5",  subs: 2000, costos: 5.25 },
-    { label: "M6",  subs: 2400, costos: 5.25 },
-    { label: "M7",  subs: 2800, costos: 5.50 },
-    { label: "M8",  subs: 3200, costos: 5.50 },
-    { label: "M9",  subs: 3600, costos: 5.75 },
-    { label: "M10", subs: 4000, costos: 5.75 },
-    { label: "M11", subs: 4400, costos: 6.00 },
-    { label: "M12", subs: 5000, costos: 6.25 },
+    { label: "M1",  subs: 400,  costos: 4.50 },
+    { label: "M2",  subs: 800,  costos: 4.50 },
+    { label: "M3",  subs: 1200, costos: 6.50 },
+    { label: "M4",  subs: 1600, costos: 6.50 },
+    { label: "M5",  subs: 2000, costos: 6.50 },
+    { label: "M6",  subs: 2400, costos: 6.50 },
+    { label: "M7",  subs: 2800, costos: 6.75 },
+    { label: "M8",  subs: 3200, costos: 6.75 },
+    { label: "M9",  subs: 3600, costos: 7.00 },
+    { label: "M10", subs: 4000, costos: 7.00 },
+    { label: "M11", subs: 4400, costos: 7.25 },
+    { label: "M12", subs: 5000, costos: 7.50 },
   ];
 
   let cumulative = COLCHON;
@@ -35,9 +35,9 @@ export default function SlideFinanzas2() {
   const ZERO_PCT = (-minCum / cumRange) * 100;
 
   const scenarios = [
-    { label: "Base",      subs12: "5.000",  ingAnual: "~$136M", neto: "+$73M",  highlight: true },
-    { label: "Optimista", subs12: "7.000",  ingAnual: "~$200M", neto: "+$137M", highlight: false },
-    { label: "Agresivo",  subs12: "10.000", ingAnual: "~$280M", neto: "+$217M", highlight: false },
+    { label: "Base",      subs12: "5.000",  ingAnual: "~$136M", neto: "+$58M",  highlight: true },
+    { label: "Optimista", subs12: "7.000",  ingAnual: "~$200M", neto: "+$122M", highlight: false },
+    { label: "Agresivo",  subs12: "10.000", ingAnual: "~$280M", neto: "+$202M", highlight: false },
   ];
 
   return (
@@ -178,15 +178,15 @@ export default function SlideFinanzas2() {
               </div>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.3vh" }}>
-              <div style={{ fontSize: "0.8vw", color: "#F4F4F4" }}>Negativo M1–M3</div>
-              <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#6EC49A" }}>M12 ≈ $75M en caja</div>
+              <div style={{ fontSize: "0.8vw", color: "#F4F4F4" }}>Negativo M1–M5</div>
+              <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#6EC49A" }}>M12 ≈ $60M en caja</div>
             </div>
           </div>
 
           {/* Footnote — bajo el último gráfico */}
           <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)", lineHeight: 1.5, marginTop: "1.2vh" }}>
             Curva base: +400 subs/mes (M1=400…M11=4.400, M12=5.000) · ARPU neto blended ~$4.350/mes ·
-            Break-even operacional M3 · Caja incluye $0,6M colchón pre-lanzamiento ·
+            Break-even operacional M4 · Caja incluye $0,6M colchón pre-lanzamiento ·
             Optimista/Agresivo = curva más acelerada, mismos costos fijos.
           </div>
         </div>
@@ -238,7 +238,7 @@ export default function SlideFinanzas2() {
                 lineHeight: 1,
               }}
             >
-              ~$75M CLP
+              ~$60M CLP
             </div>
             <div style={{ fontSize: "0.9vw", color: "rgba(244,244,244,0.50)", marginTop: "0.4vh" }}>
               acumulados post-lanzamiento
