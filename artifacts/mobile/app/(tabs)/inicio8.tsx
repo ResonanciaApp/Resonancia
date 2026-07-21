@@ -1,5 +1,4 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { EscenasThemeButton } from "@/components/EscenasThemeButton";
 import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
@@ -952,8 +951,8 @@ export default function HomeScreen2() {
             marginTop: 5,
           }}
         >
-          {/* Izquierda: Menú + Escenas */}
-          <View style={{ alignItems: "center", marginLeft: -3, marginTop: -15 }}>
+          {/* Izquierda: Menú (en la posición donde estaba el ícono de Escenas) */}
+          <View style={{ alignItems: "center", marginLeft: -3, marginTop: 22 }}>
             <Pressable
               onPress={openDrawer}
               hitSlop={10}
@@ -961,7 +960,6 @@ export default function HomeScreen2() {
             >
               <Ionicons name="menu" size={24} color="#FFFFFF" />
             </Pressable>
-            <EscenasThemeButton onPress={openEscenasSheet} />
           </View>
 
           {/* Centro: espacio */}

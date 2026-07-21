@@ -767,7 +767,7 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
         </View>
 
         {!dedicated && (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.pillRowScroll} contentContainerStyle={styles.pillRow}>
+        <View style={[styles.pillRowScroll, styles.pillRow]}>
           {PERFIL_TABS.map((t) => {
             const sel = perfilTab === t.id;
             return (
@@ -783,7 +783,7 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
               </Pressable>
             );
           })}
-        </ScrollView>
+        </View>
         )}
       </View>
 
@@ -1448,6 +1448,7 @@ const styles = StyleSheet.create({
   pillBorder: {},
   pillBorderSel: {},
   pill: {
+    flex: 1,
     height: 32,
     paddingHorizontal: 13,
     borderRadius: 999,
