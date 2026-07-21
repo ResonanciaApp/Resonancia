@@ -38,6 +38,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { GreetingHeader } from "@/components/GreetingHeader";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
+import { useDrawer } from "@/context/DrawerContext";
 import { getWeeklyPhrase } from "@/data/greeting-phrases";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
@@ -353,6 +354,7 @@ export default function HomeScreen2() {
   const { presets, loadPreset, openSheet } = useMixer();
   const { openMixer } = useMixerPanel();
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
+  const { open: openDrawer } = useDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const cardBg = activeSceneId === "indigo"
     ? "rgba(255,255,255,0.045)"
@@ -950,11 +952,17 @@ export default function HomeScreen2() {
             marginTop: 5,
           }}
         >
-          {/* Izquierda: Escenas */}
-          <EscenasThemeButton
-            onPress={openEscenasSheet}
-            style={{ marginLeft: -3, marginTop: -15 }}
-          />
+          {/* Izquierda: Menú + Escenas */}
+          <View style={{ alignItems: "center", marginLeft: -3, marginTop: -15 }}>
+            <Pressable
+              onPress={openDrawer}
+              hitSlop={10}
+              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1, paddingVertical: 4 })}
+            >
+              <Ionicons name="menu" size={24} color="#FFFFFF" />
+            </Pressable>
+            <EscenasThemeButton onPress={openEscenasSheet} />
+          </View>
 
           {/* Centro: espacio */}
           <View style={{ flex: 1 }} />
