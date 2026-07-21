@@ -855,7 +855,8 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
 
         </View>
 
-        {/* ── Tu racha ── */}
+        {/* ── Tu racha (oculta a pedido del usuario) ── */}
+        {false && (
         <View style={[styles.rachaCard, { backgroundColor: "rgba(255,255,255,0.075)" }]}>
           <View style={styles.rachaTop}>
             <View style={[styles.rachaBubble, { backgroundColor: "rgba(212,175,55,0.12)" }]}>
@@ -915,6 +916,7 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
             ))}
           </View>
         </View>
+        )}
 
         {/* ── Sección Expansor (solo si role === "expansor") ── */}
         {isExpansor && (
