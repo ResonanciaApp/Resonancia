@@ -926,7 +926,7 @@ export default function HomeScreen2() {
           paddingHorizontal: 14,
           paddingTop: topPad - 10,
           paddingBottom: 8,
-          backgroundColor: "#210911",
+          backgroundColor: activeTheme.gradient[0],
         }}
       >
         {/* Izquierda: Menú */}
