@@ -952,11 +952,19 @@ export default function HomeScreen2() {
           }}
         >
           {/* Izquierda: Menú (en la posición donde estaba el ícono de Escenas) */}
-          <View style={{ alignItems: "center", marginLeft: -3, marginTop: -15 }}>
+          <View style={{ alignItems: "center", marginLeft: 7, marginTop: -15 }}>
             <Pressable
               onPress={openDrawer}
               hitSlop={10}
-              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1, paddingVertical: 4 })}
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.7 : 1,
+                backgroundColor: "rgba(255,255,255,0.08)",
+                borderRadius: 18,
+                width: 36,
+                height: 36,
+                alignItems: "center",
+                justifyContent: "center",
+              })}
             >
               <Ionicons name="menu" size={24} color="#FFFFFF" />
             </Pressable>
