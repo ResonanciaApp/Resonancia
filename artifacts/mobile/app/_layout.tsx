@@ -307,6 +307,7 @@ function NavStack() {
           options={{ headerShown: false, presentation: "modal", animation: "slide_from_bottom" }}
         />
         <Stack.Screen name="favorites" options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="favoritos-todos" options={{ headerShown: false, animation: "slide_from_right" }} />
         <Stack.Screen name="amigos" options={{ headerShown: false, animation: drawerScreenAnim }} />
         <Stack.Screen name="grupos" options={{ headerShown: false, animation: drawerScreenAnim }} />
         <Stack.Screen name="reflexiones" options={{ headerShown: false, animation: drawerScreenAnim }} />
