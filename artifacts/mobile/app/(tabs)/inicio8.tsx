@@ -952,7 +952,7 @@ export default function HomeScreen2() {
           }}
         >
           {/* Izquierda: Menú (en la posición donde estaba el ícono de Escenas) */}
-          <View style={{ alignItems: "center", marginLeft: -3, marginTop: 22 }}>
+          <View style={{ alignItems: "center", marginLeft: -3, marginTop: -15 }}>
             <Pressable
               onPress={openDrawer}
               hitSlop={10}
