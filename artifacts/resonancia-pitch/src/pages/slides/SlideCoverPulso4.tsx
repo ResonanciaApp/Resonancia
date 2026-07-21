@@ -15,7 +15,7 @@ export default function SlideCoverPulso4() {
           <img
             src={`${import.meta.env.BASE_URL}logo-resonancia.png`}
             alt="RESONANCIA"
-            style={{ width: "36vw", display: "block", opacity: 0.95 }}
+            style={{ width: "51vw", display: "block", opacity: 0.95 }}
           />
           <div style={{ width: "60%", height: "1.5px", backgroundColor: "rgba(255,255,255,0.20)" }} />
         </div>

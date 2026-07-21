@@ -10,11 +10,11 @@ export default function SlideContacto() {
       {/* Center block */}
       <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "6vh", maxWidth: "52vw", textAlign: "center" }}>
 
-        {/* Pulso 4 logo */}
+        {/* RESONANCIA logo */}
         <img
-          src={`${import.meta.env.BASE_URL}logo-pulso4.png`}
-          alt="Pulso 4"
-          style={{ width: "20vw", display: "block", opacity: 0.88 }}
+          src={`${import.meta.env.BASE_URL}logo-resonancia.png`}
+          alt="RESONANCIA"
+          style={{ width: "28vw", display: "block", opacity: 0.95 }}
         />
 
         {/* Heading */}
