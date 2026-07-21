@@ -2,7 +2,7 @@ export default function SlideContacto() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col items-center justify-center"
-      style={{ background: "linear-gradient(160deg, #2d1c52 0%, #24245d 33%, #1f2a62 66%, #2d4081 100%)", color: "#F4F4F4" }}
+      style={{ background: "linear-gradient(160deg, #211538 0%, #1E173E 33%, #181C3E 66%, #19233F 100%)", color: "#F4F4F4" }}
     >
       {/* Ambient glow */}
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 45%, rgba(255,255,255,0.05) 0%, transparent 60%)", zIndex: 0 }} />

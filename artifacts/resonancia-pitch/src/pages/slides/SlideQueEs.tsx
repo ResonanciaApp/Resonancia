@@ -18,7 +18,7 @@ export default function SlideQueEs() {
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col"
       style={{
-        background: "linear-gradient(160deg, #2d1c52 0%, #24245d 33%, #1f2a62 66%, #2d4081 100%)",
+        background: "linear-gradient(160deg, #211538 0%, #1E173E 33%, #181C3E 66%, #19233F 100%)",
         color: "#F4F4F4",
         padding: "9vh 8vw 7vh",
         boxSizing: "border-box",

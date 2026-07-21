@@ -17,7 +17,7 @@ function ScenarioCard({
   return (
     <div style={{
       flex: 1,
-      backgroundColor: highlight ? "#1f2a62" : "rgba(255,255,255,0.02)",
+      backgroundColor: highlight ? "#181C3E" : "rgba(255,255,255,0.02)",
       border: `1.5px solid ${highlight ? "#FFFFFF" : "rgba(255,255,255,0.08)"}`,
       borderRadius: "0.8vw",
       padding: "1.5vh 1.2vw",
@@ -67,7 +67,7 @@ export default function SlideAnexoInversion() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ background: "linear-gradient(160deg, #2d1c52 0%, #24245d 33%, #1f2a62 66%, #2d4081 100%)", color: "#F4F4F4", padding: "5vh 6vw 4.5vh", boxSizing: "border-box" }}
+      style={{ background: "linear-gradient(160deg, #211538 0%, #1E173E 33%, #181C3E 66%, #19233F 100%)", color: "#F4F4F4", padding: "5vh 6vw 4.5vh", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>

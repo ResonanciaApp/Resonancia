@@ -2,7 +2,7 @@ export default function Slide08Modelo() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
-      style={{ background: "linear-gradient(160deg, #2d1c52 0%, #24245d 33%, #1f2a62 66%, #2d4081 100%)", color: "#F4F4F4", padding: "9vh 6vw", boxSizing: "border-box" }}
+      style={{ background: "linear-gradient(160deg, #211538 0%, #1E173E 33%, #181C3E 66%, #19233F 100%)", color: "#F4F4F4", padding: "9vh 6vw", boxSizing: "border-box" }}
     >
       {/* Header */}
       <div>
@@ -41,7 +41,7 @@ export default function Slide08Modelo() {
           <div key={s.big} style={{ display: "flex", alignItems: "center", gap: "0.8vw", flex: 1 }}>
             <div style={{
               flex: 1,
-              backgroundColor: s.gold ? "rgba(0,0,0,0.27)" : "#1f2a62",
+              backgroundColor: s.gold ? "rgba(0,0,0,0.27)" : "#181C3E",
               border: s.gold ? "1.5px solid #FFFFFF" : "1px solid rgba(255,255,255,0.08)",
               borderRadius: "0.8vw",
               padding: "1.8vh 0.8vw",

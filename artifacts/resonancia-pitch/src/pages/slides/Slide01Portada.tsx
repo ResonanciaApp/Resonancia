@@ -4,7 +4,7 @@ export default function Slide01Portada() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden flex font-display"
-      style={{ background: "linear-gradient(160deg, #2d1c52 0%, #24245d 33%, #1f2a62 66%, #2d4081 100%)", color: "#F4F4F4" }}
+      style={{ background: "linear-gradient(160deg, #211538 0%, #1E173E 33%, #181C3E 66%, #19233F 100%)", color: "#F4F4F4" }}
     >
       {/* Left column */}
       <div
@@ -47,9 +47,9 @@ export default function Slide01Portada() {
       </div>
 
       {/* Right column — iPhone mockups, centered and larger */}
-      <div style={{ width: "50vw", height: "100vh", position: "relative", backgroundColor: "#2d1c52", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ width: "50vw", height: "100vh", position: "relative", backgroundColor: "#211538", display: "flex", alignItems: "center", justifyContent: "center" }}>
         {/* Ambient glow */}
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.07) 0%, rgba(45,28,82,0) 65%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.07) 0%, rgba(33,21,56,0) 65%)" }} />
 
         {/* Phone group — relative container so phones align relative to each other */}
         <div style={{ position: "relative", width: "36vw", height: "38vw", zIndex: 1 }}>
@@ -61,7 +61,7 @@ export default function Slide01Portada() {
             top: "10%",
             width: "14vw",
             height: "30.4vw",
-            backgroundColor: "#2d1c52",
+            backgroundColor: "#211538",
             borderRadius: "2.5vw",
             padding: "0.46vw",
             boxShadow: "0 1vw 3.5vw rgba(0,0,0,0.75)",
@@ -69,7 +69,7 @@ export default function Slide01Portada() {
             opacity: 0.6
           }}>
             <div style={{ position: "absolute", top: "1.2vw", left: "50%", transform: "translateX(-50%)", width: "3.3vw", height: "0.72vw", backgroundColor: "#000", borderRadius: "0.48vw", zIndex: 10 }} />
-            <div style={{ width: "100%", height: "100%", borderRadius: "2.1vw", overflow: "hidden", backgroundColor: "#2d1c52" }}>
+            <div style={{ width: "100%", height: "100%", borderRadius: "2.1vw", overflow: "hidden", backgroundColor: "#211538" }}>
               <img src={`${base}mockup-sonidos.jpg`} crossOrigin="anonymous" alt="Sonidos Ancestrales" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
             </div>
           </div>
@@ -88,7 +88,7 @@ export default function Slide01Portada() {
             zIndex: 2
           }}>
             <div style={{ position: "absolute", top: "1.4vw", left: "50%", transform: "translateX(-50%)", width: "4vw", height: "0.85vw", backgroundColor: "#000", borderRadius: "0.58vw", zIndex: 10 }} />
-            <div style={{ width: "100%", height: "100%", borderRadius: "2.55vw", overflow: "hidden", backgroundColor: "#2d1c52" }}>
+            <div style={{ width: "100%", height: "100%", borderRadius: "2.55vw", overflow: "hidden", backgroundColor: "#211538" }}>
               <img src={`${base}mockup-home.jpg`} crossOrigin="anonymous" alt="Inicio" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
             </div>
           </div>
@@ -96,7 +96,7 @@ export default function Slide01Portada() {
         </div>
 
         {/* Blend gradient on left edge */}
-        <div style={{ position: "absolute", top: 0, left: 0, width: "12%", height: "100%", background: "linear-gradient(90deg, #2d1c52 0%, rgba(45,28,82,0) 100%)", zIndex: 3 }} />
+        <div style={{ position: "absolute", top: 0, left: 0, width: "12%", height: "100%", background: "linear-gradient(90deg, #211538 0%, rgba(33,21,56,0) 100%)", zIndex: 3 }} />
       </div>
     </div>
   );

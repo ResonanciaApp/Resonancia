@@ -4,7 +4,7 @@ export default function Slide04Producto() {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden flex font-display"
-      style={{ background: "linear-gradient(160deg, #2d1c52 0%, #24245d 33%, #1f2a62 66%, #2d4081 100%)", color: "#F4F4F4" }}
+      style={{ background: "linear-gradient(160deg, #211538 0%, #1E173E 33%, #181C3E 66%, #19233F 100%)", color: "#F4F4F4" }}
     >
       {/* Left column — text */}
       <div
@@ -53,9 +53,9 @@ export default function Slide04Producto() {
       </div>
 
       {/* Right column — iPhones, centered and larger */}
-      <div style={{ width: "48vw", height: "100vh", position: "relative", backgroundColor: "#2d1c52", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ width: "48vw", height: "100vh", position: "relative", backgroundColor: "#211538", display: "flex", alignItems: "center", justifyContent: "center" }}>
         {/* Ambient glow */}
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.06) 0%, rgba(45,28,82,0) 65%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.06) 0%, rgba(33,21,56,0) 65%)" }} />
 
         {/* Single phone — Mi Música, centered and large */}
         <div style={{
@@ -69,13 +69,13 @@ export default function Slide04Producto() {
           zIndex: 1
         }}>
           <div style={{ position: "absolute", top: "1.65vw", left: "50%", transform: "translateX(-50%)", width: "4.7vw", height: "1vw", backgroundColor: "#000", borderRadius: "0.68vw", zIndex: 10 }} />
-          <div style={{ width: "100%", height: "100%", borderRadius: "3vw", overflow: "hidden", backgroundColor: "#2d1c52" }}>
+          <div style={{ width: "100%", height: "100%", borderRadius: "3vw", overflow: "hidden", backgroundColor: "#211538" }}>
             <img src={`${base}mockup-musica.jpg`} crossOrigin="anonymous" alt="Mi Música" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
           </div>
         </div>
 
         {/* Blend gradient on left edge */}
-        <div style={{ position: "absolute", top: 0, left: 0, width: "10%", height: "100%", background: "linear-gradient(90deg, #2d1c52 0%, rgba(45,28,82,0) 100%)", zIndex: 3 }} />
+        <div style={{ position: "absolute", top: 0, left: 0, width: "10%", height: "100%", background: "linear-gradient(90deg, #211538 0%, rgba(33,21,56,0) 100%)", zIndex: 3 }} />
       </div>
     </div>
   );
