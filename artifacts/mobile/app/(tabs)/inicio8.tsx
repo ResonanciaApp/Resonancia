@@ -1249,32 +1249,6 @@ export default function HomeScreen2() {
           titleSize={20}
         />
 
-        {/* ── FRASE DEL DÍA ── */}
-        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP }}>
-          <View style={{ borderRadius: 18, overflow: "hidden", padding: 20, borderWidth: 1, borderColor: "rgba(255,255,255,0.3)" }}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
-            {/* Título + botón compartir */}
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-              <Text style={{ fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#F7CB6B", letterSpacing: 1.2, textTransform: "uppercase" }}>
-                Frase del día
-              </Text>
-              <Pressable
-                hitSlop={8}
-                onPress={() => Share.share({ message: `"${getWeeklyPhrase()}" — Resonancia` })}
-                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-              >
-                <Feather name="share" size={16} color="#F7CB6B" />
-              </Pressable>
-            </View>
-            <Text style={{ fontFamily: "Manrope", fontSize: 16, fontStyle: "italic", color: "#f9f9f9", lineHeight: 24, letterSpacing: 0.2 }}>
-              "{getWeeklyPhrase()}"
-            </Text>
-            <Text style={{ fontFamily: "Manrope", fontSize: 14, color: "#f9f9f9", marginTop: 10 }}>
-              — Resonancia
-            </Text>
-          </View>
-        </View>
-
         {/* ── FAVORITOS ── */}
         <SessionCarousel
           title="Mis favoritos"
@@ -1421,6 +1395,32 @@ export default function HomeScreen2() {
               </Pressable>
             ))}
           </ScrollView>
+        </View>
+
+        {/* ── FRASE DEL DÍA ── */}
+        <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP }}>
+          <View style={{ borderRadius: 18, overflow: "hidden", padding: 20, borderWidth: 1, borderColor: "rgba(255,255,255,0.3)" }}>
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
+            {/* Título + botón compartir */}
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+              <Text style={{ fontFamily: "Manrope", fontSize: 11, fontWeight: "600", color: "#F7CB6B", letterSpacing: 1.2, textTransform: "uppercase" }}>
+                Frase del día
+              </Text>
+              <Pressable
+                hitSlop={8}
+                onPress={() => Share.share({ message: `"${getWeeklyPhrase()}" — Resonancia` })}
+                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+              >
+                <Feather name="share" size={16} color="#F7CB6B" />
+              </Pressable>
+            </View>
+            <Text style={{ fontFamily: "Manrope", fontSize: 16, fontStyle: "italic", color: "#f9f9f9", lineHeight: 24, letterSpacing: 0.2 }}>
+              "{getWeeklyPhrase()}"
+            </Text>
+            <Text style={{ fontFamily: "Manrope", fontSize: 14, color: "#f9f9f9", marginTop: 10 }}>
+              — Resonancia
+            </Text>
+          </View>
         </View>
 
         {/* ── BANNER PREMIUM ── */}
