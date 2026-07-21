@@ -926,9 +926,17 @@ export default function HomeScreen2() {
           paddingHorizontal: 14,
           paddingTop: topPad - 10,
           paddingBottom: 8,
-          backgroundColor: activeTheme.gradient[0],
+          backgroundColor: "#210911",
+          overflow: "hidden",
         }}
       >
+        {/* Réplica exacta del fondo: mismo degradado full-screen recortado,
+            para que el header se funda sin costura con el fondo de la pantalla */}
+        <LinearGradient
+          colors={activeTheme.gradient as unknown as [string, string, ...string[]]}
+          style={{ position: "absolute", top: 25, left: 0, right: 0, height: height - 25 }}
+          pointerEvents="none"
+        />
         {/* Izquierda: Menú */}
         <View style={{ alignItems: "center", marginLeft: 3 }}>
           <Pressable
