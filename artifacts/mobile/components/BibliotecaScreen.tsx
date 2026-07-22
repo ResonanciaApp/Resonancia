@@ -118,7 +118,7 @@ function MixRow({
 // ── Chip de tab (texto + línea subrayada, sin fondo de píldora) ──────────────
 // La línea crece desde el centro con una curva suave ("zen"): lenta,
 // sin rebote, como una respiración.
-function LibChip({ label, sel, onPress, side }: { label: string; sel: boolean; onPress: () => void; side?: "left" | "right" }) {
+function LibChip({ label, sel, onPress, icon }: { label: string; sel: boolean; onPress: () => void; icon?: keyof typeof MaterialCommunityIcons.glyphMap }) {
   const selAnim = useRef(new Animated.Value(sel ? 1 : 0)).current;
 
   useEffect(() => {
@@ -132,23 +132,26 @@ function LibChip({ label, sel, onPress, side }: { label: string; sel: boolean; o
 
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.6 : 1 }]}>
-      <View style={{ transform: [{ translateY: 2 }] }}>
-        <Animated.Text
-          style={[styles.chipText, { opacity: selAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}
-        >
-          {label}
-        </Animated.Text>
-        <Animated.Text
-          style={[styles.chipText, styles.chipTextSel, StyleSheet.absoluteFill, { opacity: selAnim }]}
-        >
-          {label}
-        </Animated.Text>
-        <Animated.View
-          style={[
-            styles.chipUnderline,
-            { opacity: selAnim, transform: [{ scaleX: selAnim }] },
-          ]}
-        />
+      <View style={{ transform: [{ translateY: 2 }], flexDirection: "row", alignItems: "center", gap: 7 }}>
+        {icon && <MaterialCommunityIcons name={icon} size={17} color="#f9f9f9" />}
+        <View>
+          <Animated.Text
+            style={[styles.chipText, { opacity: selAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}
+          >
+            {label}
+          </Animated.Text>
+          <Animated.Text
+            style={[styles.chipText, styles.chipTextSel, StyleSheet.absoluteFill, { opacity: selAnim }]}
+          >
+            {label}
+          </Animated.Text>
+          <Animated.View
+            style={[
+              styles.chipUnderline,
+              { opacity: selAnim, transform: [{ scaleX: selAnim }] },
+            ]}
+          />
+        </View>
       </View>
     </Pressable>
   );
@@ -301,7 +304,7 @@ function AnimatedChipRow({
               <LibChip
                 label={t.label}
                 sel={colorTab === t.id}
-                side={t.id === "playlists" ? "left" : t.id === "mezclas" ? "right" : undefined}
+                icon={t.id === "playlists" ? "playlist-music" : t.id === "mezclas" ? "tune-variant" : undefined}
                 onPress={() => (isSelected ? handleClear() : handleSelect(t.id))}
               />
             </Animated.View>
@@ -1918,7 +1921,7 @@ const styles = StyleSheet.create({
   chip: {
     paddingVertical: 6,
     width: (width - H_PAD * 2 - 12) / 2,
-    height: 32,
+    height: 48,
     marginTop: -2,
     borderRadius: 100,
     backgroundColor: "rgba(0,0,0,0.15)",
