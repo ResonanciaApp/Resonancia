@@ -307,6 +307,7 @@ export function DrawerMenu() {
                   />
                 ))}
                 {/* CTA: siempre al final */}
+                <View style={styles.ctaDivider} />
                 <SceneAnimationCtaCard
                   size={DRAWER_ANIM_CARD_SIZE}
                   height={DRAWER_ANIM_CARD_H}
@@ -490,6 +491,12 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "rgba(255,255,255,0.9)",
     letterSpacing: 0.2,
+  },
+  ctaDivider: {
+    width: "100%",
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.07)",
+    marginVertical: 4,
   },
   sceneGrid: {
     flexDirection: "row",
