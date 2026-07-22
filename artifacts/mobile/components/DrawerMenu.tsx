@@ -224,7 +224,7 @@ export function DrawerMenu() {
           <ScrollView
             showsVerticalScrollIndicator={false}
             style={{ flex: 1 }}
-            contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 5 }}
+            contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 5, paddingBottom: 32 }}
           >
             <View style={[styles.itemGroup, { marginTop: 8 }]}>
               {MAIN_ITEMS.map((item) => (
