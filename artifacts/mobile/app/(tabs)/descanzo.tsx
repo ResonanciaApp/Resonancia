@@ -17,7 +17,6 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Image as ExpoImage } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { DURATION, easeOutCubic } from "@/constants/motion";
@@ -457,11 +456,6 @@ export default function DescansoScreen() {
         {/* ── Hero ── */}
         <View style={styles.hero}>
           <Text style={[styles.heroTitle, { color: colors.foreground }]}>Dormir</Text>
-          <View style={styles.heroMoonWrap}>
-            <View style={styles.heroMoonCircle}>
-              <ExpoImage source={require("@/assets/images/cat-luna.png")} style={{ width: 20, height: 20 }} contentFit="contain" tintColor="#f9f9f9" />
-            </View>
-          </View>
         </View>
 
         {/* ── Tabs de modo ── */}
@@ -1113,22 +1107,6 @@ const styles = StyleSheet.create({
   heroIcon: {
     marginTop: 14,
     marginBottom: 14,
-  },
-  heroMoonWrap: {
-    height: 48,
-    justifyContent: "center",
-    paddingHorizontal: 10,
-  },
-  heroMoonCircle: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: "rgba(0,0,0,0.15)",
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.1)",
-    alignItems: "center",
-    justifyContent: "center",
-    transform: [{ translateY: -4 }],
   },
   heroTitle: {
     fontFamily: "Manrope",
