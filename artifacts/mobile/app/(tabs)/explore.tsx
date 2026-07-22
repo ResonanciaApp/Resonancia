@@ -169,7 +169,7 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
         {/* Barra */}
         <View style={[srStyles.overlay, { paddingTop: insets.top + 14 }]}>
           <View style={srStyles.bar}>
-            <Feather name="search" size={16} color="rgba(242,231,228,0.45)" />
+            <Feather name="search" size={16} color="#F9F9F9" />
             <TextInput
               ref={inputRef}
               style={srStyles.input}
