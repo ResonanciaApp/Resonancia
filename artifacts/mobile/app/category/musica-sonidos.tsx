@@ -474,7 +474,7 @@ export default function MusicaSonidosScreen() {
         <View style={styles.profileCard}>
           <Text style={styles.profileTitle}>Música</Text>
           <Pressable hitSlop={10} style={styles.catIconCircle} onPress={() => router.push("/musica-info" as never)}>
-            <Image source={require("@/assets/images/cat-musica.png")} style={{ width: 20, height: 20 }} contentFit="contain" />
+            <Image source={require("@/assets/images/cat-musica.png")} style={{ width: 20, height: 20 }} contentFit="contain" tintColor="#f9f9f9" />
           </Pressable>
         </View>
 
