@@ -458,7 +458,7 @@ export default function MeditacionesGuiadasScreen() {
       >
 
         {/* ── Hero banner ── */}
-        <View style={[styles.heroArea, { height: topPad + 63 }]}>
+        <View style={[styles.heroArea, { height: topPad + 48 }]}>
           {/* Flecha atrás flotante */}
           <View style={[styles.heroOverlayLeft, { top: topPad - 17 }]}>
             <View style={[styles.lotoBtn, { width: 40, height: 40, borderRadius: 20 }]}>

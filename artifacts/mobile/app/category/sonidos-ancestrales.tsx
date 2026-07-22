@@ -589,7 +589,7 @@ export default function SonidosAncestalesScreen() {
       >
 
         {/* ── Hero banner ── */}
-        <View style={[styles.heroArea, { height: topPad + 63 }]}>
+        <View style={[styles.heroArea, { height: topPad + 48 }]}>
           <View style={[styles.heroOverlayLeft, { top: topPad - 17 }]}>
             <View style={[styles.lotoBtn, { width: 40, height: 40, borderRadius: 20 }]}>
               <BackPill onPress={() => router.back()} size={28} style={{ transform: [{ translateX: -2 }] }} />
