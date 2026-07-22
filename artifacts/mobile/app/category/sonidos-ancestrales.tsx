@@ -626,15 +626,16 @@ export default function SonidosAncestalesScreen() {
       {/* ── Sticky header ── */}
       <Animated.View style={[styles.stickyHeader, { paddingTop: topPad + 8, opacity: stickyHeaderOpacity, backgroundColor: theme.gradient[0] }]} pointerEvents={stickyActive ? "auto" : "none"}>
         <View style={styles.stickyHeaderRow}>
-          <View style={styles.lotoBtn}>
-            <BackPill onPress={() => router.back()} size={31} />
-          </View>
+          <View style={{ width: 40 }} />
           <View style={styles.headerTitleCol}>
-            <Text style={styles.headerTitle}>Sesiones</Text>
+            <Text style={[styles.headerTitle, { fontWeight: "600", transform: [{ translateY: -4 }] }]}>Sesiones</Text>
           </View>
-          <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
-            <Feather name="book-open" size={21} color="rgba(255,255,255,0.85)" />
-          </Pressable>
+          <View style={{ width: 40 }} />
+        </View>
+        <View style={[styles.heroOverlayLeft, { top: topPad - 17 }]}>
+          <View style={[styles.lotoBtn, { width: 40, height: 40, borderRadius: 20 }]}>
+            <BackPill onPress={() => router.back()} size={28} style={{ transform: [{ translateX: -2 }] }} />
+          </View>
         </View>
         <ChipRow tabs={TABS} activeTab={activeTab} onSelect={setActiveTab} onClear={() => setActiveTab(null)} />
         <View style={styles.stickyTabsDivider} />
