@@ -523,7 +523,7 @@ export default function MusicaSonidosScreen() {
         <View style={styles.stickyHeaderRow}>
           <View style={{ width: 40 }} />
           <View style={styles.headerTitleCol}>
-            <Text style={[styles.headerTitle, { fontWeight: "600", fontSize: 17, transform: [{ translateY: -4 }] }]}>Música</Text>
+            <Text style={[styles.headerTitle, { fontWeight: "700", fontSize: 18, transform: [{ translateY: 1 }] }]}>Música</Text>
           </View>
           <View style={{ width: 40 }} />
         </View>

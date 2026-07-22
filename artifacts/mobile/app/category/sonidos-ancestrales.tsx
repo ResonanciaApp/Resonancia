@@ -628,7 +628,7 @@ export default function SonidosAncestalesScreen() {
         <View style={styles.stickyHeaderRow}>
           <View style={{ width: 40 }} />
           <View style={styles.headerTitleCol}>
-            <Text style={[styles.headerTitle, { fontWeight: "600", fontSize: 17, transform: [{ translateY: -4 }] }]}>Sesiones</Text>
+            <Text style={[styles.headerTitle, { fontWeight: "700", fontSize: 18, transform: [{ translateY: 1 }] }]}>Sesiones</Text>
           </View>
           <View style={{ width: 40 }} />
         </View>

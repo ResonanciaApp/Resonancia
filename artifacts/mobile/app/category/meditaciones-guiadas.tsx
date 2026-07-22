@@ -520,7 +520,7 @@ export default function MeditacionesGuiadasScreen() {
         <View style={styles.stickyHeaderRow}>
           <View style={{ width: 40 }} />
           <View style={styles.headerTitleCol}>
-            <Text style={[styles.headerTitle, { fontWeight: "600", fontSize: 17, transform: [{ translateY: -4 }] }]}>Meditaciones</Text>
+            <Text style={[styles.headerTitle, { fontWeight: "700", fontSize: 18, transform: [{ translateY: 1 }] }]}>Meditaciones</Text>
           </View>
           <View style={{ width: 40 }} />
         </View>
