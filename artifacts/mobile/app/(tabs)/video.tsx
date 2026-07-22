@@ -109,7 +109,7 @@ export default function VideoTabScreen() {
               value={query}
               onChangeText={setQuery}
               placeholder="Titulo, voz guía, artista o tema"
-              placeholderTextColor="#F4F4F4"
+              placeholderTextColor="#F9F9F9"
               style={[styles.searchInput, { color: colors.foreground }]}
               returnKeyType="search"
             />

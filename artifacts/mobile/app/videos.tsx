@@ -140,7 +140,7 @@ export default function VideosScreen() {
             <TextInput
               style={[styles.searchInput, { color: colors.foreground }]}
               placeholder="Buscar videos..."
-              placeholderTextColor="#F4F4F4"
+              placeholderTextColor="#F9F9F9"
               value={searchQuery}
               onChangeText={setSearchQuery}
             />
