@@ -1189,7 +1189,7 @@ export function BibliotecaScreen({
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
       return (
-        <View style={{ gap: 15 }}>
+        <View style={{ gap: 15, marginTop: 20 }}>
           {/* ── Carpetas y playlists del usuario (siempre al tope en vista general) ── */}
           {hasUserContent && (
             <>
@@ -1312,24 +1312,6 @@ export function BibliotecaScreen({
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
-            onPress={() => setNombreCarpetaVisible(true)}
-          >
-            <View style={styles.addResonadorIcon}>
-              <Feather name="folder" size={25} color={iconPlaceholderColor} />
-            </View>
-            <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
-          </Pressable>
-          <Pressable
-            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
-            onPress={() => { setAddResonadorQ(""); setAddResonadorVisible(true); }}
-          >
-            <View style={styles.addResonadorIcon}>
-              <Feather name="plus" size={24} color={iconPlaceholderColor} />
-            </View>
-            <Text style={styles.addResonadorLabel}>Agregar Resonador</Text>
-          </Pressable>
-          <Pressable
-            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={() => { openMixer(); router.navigate("/(tabs)/musica" as never); }}
           >
             <View style={styles.addResonadorIcon}>
@@ -1345,6 +1327,24 @@ export function BibliotecaScreen({
               <MaterialCommunityIcons name="hexagon-outline" size={24} color={iconPlaceholderColor} />
             </View>
             <Text style={styles.addResonadorLabel}>Crear Geometrix</Text>
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
+            onPress={() => { setAddResonadorQ(""); setAddResonadorVisible(true); }}
+          >
+            <View style={styles.addResonadorIcon}>
+              <Feather name="plus" size={24} color={iconPlaceholderColor} />
+            </View>
+            <Text style={styles.addResonadorLabel}>Agregar Resonador</Text>
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
+            onPress={() => setNombreCarpetaVisible(true)}
+          >
+            <View style={styles.addResonadorIcon}>
+              <Feather name="folder" size={25} color={iconPlaceholderColor} />
+            </View>
+            <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
           </Pressable>
         </View>
       );
