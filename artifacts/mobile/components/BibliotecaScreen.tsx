@@ -921,7 +921,7 @@ function GeometrixRow({ creation, onPress }: { creation: GeometrixCreation; onPr
           const geoId = baseOf(instId);
           const settings = creation.settings[instId];
           if (!settings) return null;
-          const layerSize = 36 + idx * 4;
+          const layerSize = 72 + idx * 8;
           return (
             <View
               key={instId}
@@ -948,7 +948,6 @@ function GeometrixRow({ creation, onPress }: { creation: GeometrixCreation; onPr
         </Text>
       </View>
 
-      <Feather name="chevron-right" size={18} color={MUTED} />
     </Pressable>
   );
 }
@@ -2153,13 +2152,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: H_PAD,
-    height: 62,
+    height: 124,
     marginBottom: 7,
     gap: 14,
   },
   geoThumb: {
-    width: 62,
-    height: 62,
+    width: 124,
+    height: 124,
     borderRadius: 10,
     overflow: "hidden",
     alignItems: "center",
