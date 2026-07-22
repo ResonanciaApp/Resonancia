@@ -17,6 +17,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Image as ExpoImage } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
 import { DURATION, easeOutCubic } from "@/constants/motion";
@@ -458,7 +459,7 @@ export default function DescansoScreen() {
           <Text style={[styles.heroTitle, { color: colors.foreground }]}>Dormir</Text>
           <View style={styles.heroMoonWrap}>
             <View style={styles.heroMoonCircle}>
-              <Image source={require("@/assets/images/cat-luna.png")} style={{ width: 20, height: 20, tintColor: "#f9f9f9" }} resizeMode="contain" />
+              <ExpoImage source={require("@/assets/images/cat-luna.png")} style={{ width: 20, height: 20 }} contentFit="contain" tintColor="#f9f9f9" />
             </View>
           </View>
         </View>
