@@ -1894,7 +1894,7 @@ const styles = StyleSheet.create({
   headerIconBtn: { width: 43, height: 43, alignItems: "center", justifyContent: "center" },
 
   animChipWrap: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
-  chipRowActions: { flexDirection: "row", alignItems: "center", gap: 2, position: "absolute", right: H_PAD, top: 0, bottom: 0, marginTop: -21, zIndex: 3 },
+  chipRowActions: { flexDirection: "row", alignItems: "center", gap: 2, position: "absolute", right: H_PAD, top: 0, bottom: 0, marginTop: -1, zIndex: 3 },
   chipActionBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center" },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, marginTop: -21, justifyContent: "center", zIndex: 3 },
   chipRow: { flexGrow: 0, marginTop: -21 },
