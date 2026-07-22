@@ -102,8 +102,8 @@ export default function SlideFinanzas1() {
 
       {/* Footnote */}
       <div style={{ fontSize: "1.15vw", color: "rgba(244,244,244,0.45)", lineHeight: 1.5 }}>
-        Curva: +400 subs/mes (M1=400…M11=4.400, M12=5.000) · ARPU neto blended ~$4.350/mes · Precio $8.990/mes (IVA incl.) o $59.990/año ·
-        Fijos: $3,3M/mes (RRHH $1,8M + operacionales $1,5M) · M3+: + mkt $0,5-1,5M + contenido $1,5M · Break-even operacional M4 · Inversión $29,7M ya incluida en pre-lanzamiento.
+        Curva: +400 subs/mes (M1=400…M11=4.400, M12=5.000) · ARPU neto blended ~$3.250/mes · Precio $6.990/mes (IVA incl.) o $39.990/año ·
+        Fijos: $3,9M/mes (RRHH $2,3M + operacionales $1,6M) · M3+: + mkt $0,5-1,5M + contenido $1,2-1,5M · Break-even operacional M4 · Inversión $25M ya incluida en pre-lanzamiento.
       </div>
 
     </div>

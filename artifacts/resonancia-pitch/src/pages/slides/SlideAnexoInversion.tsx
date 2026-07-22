@@ -104,7 +104,7 @@ export default function SlideAnexoInversion() {
               <Bullet text="+1.000.000 seguidores activos = distribución con costo de adquisición casi nulo" />
               <Bullet text="180 pistas de audio listas al lanzar (activo de contenido producido)" />
               <Bullet text="App funcional con auth, player, suscripciones y back-office construidos" />
-              <Bullet text="Precio premium ($8.990/mes IVA incl.) validado en el segmento objetivo" />
+              <Bullet text="Precio premium ($6.990/mes IVA incl.) validado en el segmento objetivo" />
             </div>
 
             <div style={{ borderTop: "1px solid rgba(255,255,255,0.2)", paddingTop: "1vh", marginTop: "auto" }}>
