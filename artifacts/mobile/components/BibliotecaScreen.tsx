@@ -245,15 +245,9 @@ function AnimatedChipRow({
         </Pressable>
       </Animated.View>
 
-      {/* Lupa + Más — a la derecha, se ocultan cuando hay tab seleccionado */}
+      {/* Lupa + Más — a la derecha, siempre visibles (también con tab seleccionado) */}
       {(onSearch || onAdd) && (
-        <Animated.View
-          pointerEvents={filtered ? "none" : "auto"}
-          style={[
-            styles.chipRowActions,
-            { opacity: progress.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) },
-          ]}
-        >
+        <Animated.View pointerEvents="auto" style={styles.chipRowActions}>
           {onSearch && (
             <Pressable onPress={onSearch} hitSlop={10} style={styles.chipActionBtn}>
               <Feather name="search" size={22} color="#f9f9f9" />
