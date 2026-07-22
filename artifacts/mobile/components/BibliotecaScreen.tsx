@@ -131,15 +131,7 @@ function LibChip({ label, sel, onPress, side }: { label: string; sel: boolean; o
   }, [sel]);
 
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.chip,
-        side === "left" && { borderTopLeftRadius: 15, borderBottomLeftRadius: 15 },
-        side === "right" && { borderTopRightRadius: 15, borderBottomRightRadius: 15 },
-        { opacity: pressed ? 0.6 : 1 },
-      ]}
-    >
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.6 : 1 }]}>
       <View style={{ transform: [{ translateY: 2 }] }}>
         <Animated.Text
           style={[styles.chipText, { opacity: selAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}
@@ -1928,7 +1920,7 @@ const styles = StyleSheet.create({
     width: (width - H_PAD * 2 - 12) / 2,
     height: 32,
     marginTop: -2,
-    borderRadius: 4,
+    borderRadius: 100,
     backgroundColor: "rgba(0,0,0,0.15)",
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.1)",
