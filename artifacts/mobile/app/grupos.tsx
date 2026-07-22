@@ -20,9 +20,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { type GrupoLocal, isAdminGrupo, useGrupos } from "@/hooks/useGrupos";
-
-const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 
 // ─── Image gallery (same as crear.tsx) ───────────────────────────────────────
 const GALLERY = [
@@ -122,6 +121,7 @@ function GroupAvatar({
 // ─── Create group sheet ───────────────────────────────────────────────────────
 function CreateGroupSheet({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
 
   const handleSelect = (tipo: "publico" | "privado") => {
@@ -132,48 +132,48 @@ function CreateGroupSheet({ visible, onClose }: { visible: boolean; onClose: () 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <Pressable style={styles.sheetOverlay} onPress={onClose} />
-      <View style={[styles.sheet, { backgroundColor: colors.card, paddingBottom: insets.bottom + 24 }]}>
-        <View style={[styles.sheetHandle, { backgroundColor: colors.border }]} />
+      <View style={[styles.sheet, { backgroundColor: sceneTheme.gradient[0], paddingBottom: insets.bottom + 24 }]}>
+        <View style={[styles.sheetHandle, { backgroundColor: "rgba(255,255,255,0.1)" }]} />
 
         <View style={styles.sheetCloseRow}>
-          <Text style={[styles.sheetTitle, { color: colors.foreground }]}>Crear un Grupo</Text>
+          <Text style={[styles.sheetTitle, { color: "#F9F9F9" }]}>Crear un Grupo</Text>
           <Pressable onPress={onClose} hitSlop={12}>
-            <View style={[styles.sheetCloseBtn, { backgroundColor: colors.background }]}>
-              <Feather name="x" size={16} color={colors.foreground} />
+            <View style={[styles.sheetCloseBtn, { backgroundColor: "rgba(255,255,255,0.08)" }]}>
+              <Feather name="x" size={16} color={"#F9F9F9"} />
             </View>
           </Pressable>
         </View>
 
         <Pressable
           onPress={() => handleSelect("publico")}
-          style={[styles.sheetOption, { backgroundColor: colors.background, borderColor: colors.border }]}
+          style={[styles.sheetOption, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" }]}
         >
-          <View style={[styles.sheetOptionIcon, { backgroundColor: "rgba(61,14,22,0.40)" }]}>
-            <Feather name="users" size={22} color={colors.foreground} />
+          <View style={[styles.sheetOptionIcon, { backgroundColor: "rgba(255,255,255,0.1)" }]}>
+            <Feather name="users" size={22} color={"#F9F9F9"} />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={[styles.sheetOptionTitle, { color: colors.foreground }]}>Público</Text>
-            <Text style={[styles.sheetOptionSub, { color: colors.mutedForeground }]}>
+            <Text style={[styles.sheetOptionTitle, { color: "#F9F9F9" }]}>Público</Text>
+            <Text style={[styles.sheetOptionSub, { color: "#F4F4F4" }]}>
               Cualquiera puede unirse a tu Grupo
             </Text>
           </View>
-          <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+          <Feather name="chevron-right" size={18} color={"#F4F4F4"} />
         </Pressable>
 
         <Pressable
           onPress={() => handleSelect("privado")}
-          style={[styles.sheetOption, { backgroundColor: colors.background, borderColor: colors.border }]}
+          style={[styles.sheetOption, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" }]}
         >
-          <View style={[styles.sheetOptionIcon, { backgroundColor: "rgba(61,14,22,0.40)" }]}>
-            <Feather name="lock" size={22} color={colors.foreground} />
+          <View style={[styles.sheetOptionIcon, { backgroundColor: "rgba(255,255,255,0.1)" }]}>
+            <Feather name="lock" size={22} color={"#F9F9F9"} />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={[styles.sheetOptionTitle, { color: colors.foreground }]}>Privado</Text>
-            <Text style={[styles.sheetOptionSub, { color: colors.mutedForeground }]}>
+            <Text style={[styles.sheetOptionTitle, { color: "#F9F9F9" }]}>Privado</Text>
+            <Text style={[styles.sheetOptionSub, { color: "#F4F4F4" }]}>
               Escoges quién se une a tu Grupo
             </Text>
           </View>
-          <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+          <Feather name="chevron-right" size={18} color={"#F4F4F4"} />
         </Pressable>
       </View>
     </Modal>
@@ -194,7 +194,7 @@ function TabOjear({
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
       {/* Grupos populares */}
       <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 14 }]}>
+        <Text style={[styles.sectionTitle, { color: "#F9F9F9", marginBottom: 14 }]}>
           Grupos populares
         </Text>
         {gruposAdmin.map((g) => (
@@ -203,24 +203,24 @@ function TabOjear({
             onPress={() => router.push(`/grupo/${g.id}` as never)}
             style={({ pressed }) => [
               styles.popularRow,
-              { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
+              { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
             ]}
           >
             <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
             <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
             <LocalGrupoAvatar grupo={g} size={54} />
             <View style={{ flex: 1 }}>
-              <Text style={[styles.popularTipo, { color: colors.mutedForeground }]}>
+              <Text style={[styles.popularTipo, { color: "#F4F4F4" }]}>
                 Círculo público
               </Text>
-              <Text style={[styles.popularName, { color: colors.foreground }]} numberOfLines={1}>
+              <Text style={[styles.popularName, { color: "#F9F9F9" }]} numberOfLines={1}>
                 {g.nombre}
               </Text>
-              <Text style={[styles.popularMembers, { color: colors.mutedForeground }]} numberOfLines={1}>
+              <Text style={[styles.popularMembers, { color: "#F4F4F4" }]} numberOfLines={1}>
                 Por {adminName}
               </Text>
             </View>
-            <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+            <Feather name="chevron-right" size={18} color={"#F4F4F4"} />
           </Pressable>
         ))}
       </View>
@@ -261,19 +261,19 @@ function TabMisGrupos({
       {/* Grupos que gestiono */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Grupos que gestiono</Text>
+          <Text style={[styles.sectionTitle, { color: "#F9F9F9" }]}>Grupos que gestiono</Text>
           <Pressable onPress={onCreatePress} hitSlop={8}>
-            <View style={[styles.addBtn, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(61,14,22,0.40)" }]}>
+            <View style={[styles.addBtn, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
               <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
               <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
-              <Feather name="plus" size={20} color={colors.foreground} />
+              <Feather name="plus" size={20} color={"#F9F9F9"} />
             </View>
           </Pressable>
         </View>
 
         {gruposCreados.length === 0 ? (
-          <View style={[styles.emptyBox, { borderColor: "rgba(61,14,22,0.40)" }]}>
-            <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+          <View style={[styles.emptyBox, { borderColor: "rgba(255,255,255,0.1)" }]}>
+            <Text style={[styles.emptyText, { color: "#F4F4F4" }]}>
               No gestionas ningún grupo todavía.{"\n"}¿Te apasiona algún tema? Crea un grupo público o privado hoy.
             </Text>
           </View>
@@ -284,7 +284,7 @@ function TabMisGrupos({
               onPress={() => router.push(`/grupo/${g.id}` as never)}
               style={({ pressed }) => [
                 styles.unitoRow,
-                { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
+                { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
               ]}
             >
               <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
@@ -292,33 +292,33 @@ function TabMisGrupos({
               <LocalGrupoAvatar grupo={g} size={54} />
               <View style={{ flex: 1 }}>
                 <View style={styles.grupoNameRow}>
-                  <Text style={[styles.popularName, { color: colors.foreground }]} numberOfLines={1}>
+                  <Text style={[styles.popularName, { color: "#F9F9F9" }]} numberOfLines={1}>
                     {g.nombre}
                   </Text>
                   <View style={[styles.adminBadge, { backgroundColor: colors.primary + "22" }]}>
                     <Text style={[styles.adminBadgeText, { color: colors.primary }]}>ADMIN</Text>
                   </View>
                 </View>
-                <Text style={[styles.popularMembers, { color: colors.mutedForeground }]}>
+                <Text style={[styles.popularMembers, { color: "#F4F4F4" }]}>
                   {g.privado ? "Privado" : "Público"} · Sin publicaciones aún
                 </Text>
               </View>
-              <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+              <Feather name="chevron-right" size={18} color={"#F4F4F4"} />
             </Pressable>
           ))
         )}
       </View>
 
       {/* Divider */}
-      <View style={[styles.divider, { backgroundColor: colors.border }]} />
+      <View style={[styles.divider, { backgroundColor: "rgba(255,255,255,0.1)" }]} />
 
       {/* Grupos unidos */}
       <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: colors.foreground, marginBottom: 12 }]}>
+        <Text style={[styles.sectionTitle, { color: "#F9F9F9", marginBottom: 12 }]}>
           Grupos a los que me he unido
         </Text>
         {GRUPOS_UNIDOS.length === 0 ? (
-          <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+          <Text style={[styles.emptyText, { color: "#F4F4F4" }]}>
             Aún no te has unido a ningún grupo.
           </Text>
         ) : (
@@ -328,21 +328,21 @@ function TabMisGrupos({
               onPress={() => router.push(`/grupo/${g.id}` as never)}
               style={({ pressed }) => [
                 styles.unitoRow,
-                { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
+                { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
               ]}
             >
               <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
               <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
               <GroupAvatar gradient={g.gradient} icon={g.icon} color={g.color} size={54} />
               <View style={{ flex: 1 }}>
-                <Text style={[styles.popularName, { color: colors.foreground }]} numberOfLines={1}>
+                <Text style={[styles.popularName, { color: "#F9F9F9" }]} numberOfLines={1}>
                   {g.name}
                 </Text>
-                <Text style={[styles.popularMembers, { color: colors.mutedForeground }]}>
+                <Text style={[styles.popularMembers, { color: "#F4F4F4" }]}>
                   Última publicación {g.lastActivity}
                 </Text>
               </View>
-              <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+              <Feather name="chevron-right" size={18} color={"#F4F4F4"} />
             </Pressable>
           ))
         )}
@@ -368,7 +368,7 @@ function TabTablon({ colors }: { colors: ReturnType<typeof useColors> }) {
       {FEED_POSTS.map((post) => (
         <View
           key={post.id}
-          style={[styles.feedCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(61,14,22,0.40)" }]}
+          style={[styles.feedCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}
         >
           <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
           <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
@@ -378,40 +378,40 @@ function TabTablon({ colors }: { colors: ReturnType<typeof useColors> }) {
               <Text style={[styles.feedInitials, { color: post.color }]}>{post.initials}</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={[styles.feedAuthor, { color: colors.foreground }]}>{post.author}</Text>
+              <Text style={[styles.feedAuthor, { color: "#F9F9F9" }]}>{post.author}</Text>
               <View style={styles.feedMeta}>
                 <GroupAvatar gradient={post.groupGradient} icon={post.groupIcon} color={post.groupColor} size={16} />
                 <Text style={[styles.feedGroup, { color: colors.primary }]} numberOfLines={1}>
                   {post.group}
                 </Text>
-                <Text style={[styles.feedTime, { color: colors.mutedForeground }]}>· {post.time}</Text>
+                <Text style={[styles.feedTime, { color: "#F4F4F4" }]}>· {post.time}</Text>
               </View>
             </View>
             <Pressable hitSlop={8}>
-              <Feather name="more-horizontal" size={18} color={colors.mutedForeground} />
+              <Feather name="more-horizontal" size={18} color={"#F4F4F4"} />
             </Pressable>
           </View>
 
           {/* Post body */}
-          <Text style={[styles.feedText, { color: colors.foreground }]}>{post.text}</Text>
+          <Text style={[styles.feedText, { color: "#F9F9F9" }]}>{post.text}</Text>
           {post.text.length > 180 && (
             <Text style={[styles.leerMas, { color: colors.primary }]}>Leer más</Text>
           )}
 
           {/* Post actions */}
-          <View style={[styles.feedActions, { borderTopColor: colors.border }]}>
+          <View style={[styles.feedActions, { borderTopColor: "rgba(255,255,255,0.1)" }]}>
             <Pressable onPress={() => toggle(post.id)} style={styles.feedAction}>
-              <Feather name="heart" size={16} color={liked.has(post.id) ? "#D4709A" : colors.mutedForeground} />
-              <Text style={[styles.feedActionText, { color: liked.has(post.id) ? "#D4709A" : colors.mutedForeground }]}>
+              <Feather name="heart" size={16} color={liked.has(post.id) ? "#D4709A" : "#F4F4F4"} />
+              <Text style={[styles.feedActionText, { color: liked.has(post.id) ? "#D4709A" : "#F4F4F4" }]}>
                 {post.likes + (liked.has(post.id) ? 1 : 0)}
               </Text>
             </Pressable>
             <Pressable style={styles.feedAction}>
-              <Feather name="message-circle" size={16} color={colors.mutedForeground} />
-              <Text style={[styles.feedActionText, { color: colors.mutedForeground }]}>{post.replies}</Text>
+              <Feather name="message-circle" size={16} color={"#F4F4F4"} />
+              <Text style={[styles.feedActionText, { color: "#F4F4F4" }]}>{post.replies}</Text>
             </Pressable>
             <Pressable style={styles.feedAction}>
-              <Feather name="more-horizontal" size={16} color={colors.mutedForeground} />
+              <Feather name="more-horizontal" size={16} color={"#F4F4F4"} />
             </Pressable>
           </View>
         </View>
@@ -425,6 +425,7 @@ type TabType = "ojear" | "misgrupos" | "tablon";
 
 export default function GruposScreen() {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const [tab, setTab] = useState<TabType>("ojear");
@@ -447,7 +448,7 @@ export default function GruposScreen() {
   return (
     <LinearGradient
       style={styles.root}
-      colors={BG_GRADIENT}
+      colors={sceneTheme.gradient}
       locations={[0, 0.5, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
@@ -467,11 +468,11 @@ export default function GruposScreen() {
       {/* Fixed header */}
       <View style={[styles.fixedHeader, { paddingTop: topPad + 52 }]}>
         <View style={{ paddingHorizontal: 20 }}>
-          <Text style={[styles.title, { color: colors.foreground }]}>Grupos</Text>
+          <Text style={[styles.title, { color: "#F9F9F9" }]}>Grupos</Text>
         </View>
 
         {/* Tabs */}
-        <View style={[styles.tabRow, { borderBottomColor: colors.border }]}>
+        <View style={[styles.tabRow, { borderBottomColor: "rgba(255,255,255,0.1)" }]}>
           {TABS.map((t) => (
             <Pressable
               key={t.key}
@@ -484,7 +485,7 @@ export default function GruposScreen() {
               <Text
                 style={[
                   styles.tabText,
-                  { color: tab === t.key ? colors.foreground : colors.mutedForeground },
+                  { color: tab === t.key ? "#F9F9F9" : "#F4F4F4" },
                   tab === t.key && { fontWeight: "700" },
                 ]}
               >

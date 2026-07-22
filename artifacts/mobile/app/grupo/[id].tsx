@@ -23,6 +23,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { formatRelativeTime, useGrupoPosts } from "@/hooks/useGrupoPosts";
 import { type GrupoLocal, useGrupos } from "@/hooks/useGrupos";
 
@@ -274,6 +275,7 @@ type TabType = "discusion" | "miembros" | "info";
 
 export default function GrupoDetailScreen() {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 0 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -401,20 +403,20 @@ export default function GrupoDetailScreen() {
 
   if (!grupo) {
     return (
-      <View style={[styles.root, { backgroundColor: colors.background, alignItems: "center", justifyContent: "center", padding: 32 }]}>
+      <View style={[styles.root, { backgroundColor: sceneTheme.gradient[0], alignItems: "center", justifyContent: "center", padding: 32 }]}>
         <StatusBar barStyle="light-content" />
-        <Feather name="alert-circle" size={32} color={colors.mutedForeground} />
-        <Text style={{ color: colors.foreground, fontSize: 16, fontWeight: "700", marginTop: 12 }}>
+        <Feather name="alert-circle" size={32} color={"#F4F4F4"} />
+        <Text style={{ color: "#F9F9F9", fontSize: 16, fontWeight: "700", marginTop: 12 }}>
           Grupo no encontrado
         </Text>
-        <Text style={{ color: colors.mutedForeground, fontSize: 13, marginTop: 6, textAlign: "center" }}>
+        <Text style={{ color: "#F4F4F4", fontSize: 13, marginTop: 6, textAlign: "center" }}>
           Este grupo ya no existe o fue eliminado.
         </Text>
         <Pressable
           onPress={() => router.back()}
-          style={{ marginTop: 24, paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border }}
+          style={{ marginTop: 24, paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12, backgroundColor: "rgba(255,255,255,0.06)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" }}
         >
-          <Text style={{ color: colors.foreground, fontWeight: "600" }}>Volver</Text>
+          <Text style={{ color: "#F9F9F9", fontWeight: "600" }}>Volver</Text>
         </Pressable>
       </View>
     );
@@ -422,11 +424,12 @@ export default function GrupoDetailScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: colors.background }}
+      style={{ flex: 1, backgroundColor: sceneTheme.gradient[0] }}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <View style={[styles.root, { backgroundColor: colors.background }]}>
+      <View style={styles.root}>
         <StatusBar barStyle="light-content" />
+        <LinearGradient colors={sceneTheme.gradient} locations={[0, 0.5, 1]} style={StyleSheet.absoluteFill} />
         <SacredBackground />
 
         {/* Header */}
@@ -483,10 +486,10 @@ export default function GrupoDetailScreen() {
               showsVerticalScrollIndicator={false}
             >
               {grupo.posts.length === 0 ? (
-                <View style={[styles.emptyState, { borderColor: colors.border }]}>
-                  <Feather name="message-square" size={28} color={colors.mutedForeground} />
-                  <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Sin publicaciones aún</Text>
-                  <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
+                <View style={[styles.emptyState, { borderColor: "rgba(255,255,255,0.1)" }]}>
+                  <Feather name="message-square" size={28} color={"#F4F4F4"} />
+                  <Text style={[styles.emptyTitle, { color: "#F9F9F9" }]}>Sin publicaciones aún</Text>
+                  <Text style={[styles.emptySub, { color: "#F4F4F4" }]}>
                     Sé el primero en escribir algo en este grupo.
                   </Text>
                 </View>
@@ -499,7 +502,7 @@ export default function GrupoDetailScreen() {
                       {
                         backgroundColor: "transparent",
                         overflow: "hidden",
-                        borderColor: post.pinned ? colors.primary + "44" : colors.border,
+                        borderColor: post.pinned ? colors.primary + "44" : "rgba(255,255,255,0.1)",
                       },
                     ]}
                   >
@@ -529,8 +532,8 @@ export default function GrupoDetailScreen() {
                           <Text style={[styles.postInitials, { color: post.color }]}>{post.initials}</Text>
                         </View>
                         <View style={{ flex: 1 }}>
-                          <Text style={[styles.postAuthor, { color: colors.foreground }]}>{post.author}</Text>
-                          <Text style={[styles.postTime, { color: colors.mutedForeground }]}>{post.time}</Text>
+                          <Text style={[styles.postAuthor, { color: "#F9F9F9" }]}>{post.author}</Text>
+                          <Text style={[styles.postTime, { color: "#F4F4F4" }]}>{post.time}</Text>
                         </View>
                       </Pressable>
                       {grupo.isLocalGroup && (
@@ -539,7 +542,7 @@ export default function GrupoDetailScreen() {
                           onPress={() => openPostMenu(post.id, post.author, post.text, grupo.name)}
                           style={styles.menuBtn}
                         >
-                          <Feather name="more-horizontal" size={18} color={colors.mutedForeground} />
+                          <Feather name="more-horizontal" size={18} color={"#F4F4F4"} />
                         </Pressable>
                       )}
                     </View>
@@ -553,16 +556,16 @@ export default function GrupoDetailScreen() {
                         }
                       }}
                     >
-                      <Text style={[styles.postText, { color: colors.foreground }]}>{post.text}</Text>
+                      <Text style={[styles.postText, { color: "#F9F9F9" }]}>{post.text}</Text>
                     </Pressable>
-                    <View style={[styles.postActions, { borderTopColor: colors.border }]}>
+                    <View style={[styles.postActions, { borderTopColor: "rgba(255,255,255,0.1)" }]}>
                       <Pressable onPress={() => toggleLike(post.id)} style={styles.actionBtn}>
                         <Feather
                           name="heart"
                           size={15}
-                          color={likedPosts.has(post.id) ? "#D4709A" : colors.mutedForeground}
+                          color={likedPosts.has(post.id) ? "#D4709A" : "#F4F4F4"}
                         />
-                        <Text style={[styles.actionText, { color: likedPosts.has(post.id) ? "#D4709A" : colors.mutedForeground }]}>
+                        <Text style={[styles.actionText, { color: likedPosts.has(post.id) ? "#D4709A" : "#F4F4F4" }]}>
                           {post.likes + (likedPosts.has(post.id) ? 1 : 0)}
                         </Text>
                       </Pressable>
@@ -577,8 +580,8 @@ export default function GrupoDetailScreen() {
                           }
                         }}
                       >
-                        <Feather name="message-square" size={15} color={colors.mutedForeground} />
-                        <Text style={[styles.actionText, { color: colors.mutedForeground }]}>{post.replies}</Text>
+                        <Feather name="message-square" size={15} color={"#F4F4F4"} />
+                        <Text style={[styles.actionText, { color: "#F4F4F4" }]}>{post.replies}</Text>
                       </Pressable>
                       <Pressable
                         style={styles.actionBtn}
@@ -592,7 +595,7 @@ export default function GrupoDetailScreen() {
                           }
                         }}
                       >
-                        <Feather name="share" size={15} color={colors.mutedForeground} />
+                        <Feather name="share" size={15} color={"#F4F4F4"} />
                       </Pressable>
                     </View>
                   </View>
@@ -601,27 +604,27 @@ export default function GrupoDetailScreen() {
             </ScrollView>
 
             {/* Compose bar */}
-            <View style={[styles.composeBar, { paddingBottom: bottomPad + 8, backgroundColor: colors.background, borderTopColor: colors.border }]}>
-              <View style={[styles.composeInput, { backgroundColor: "transparent", overflow: "hidden", borderColor: colors.border }]}>
+            <View style={[styles.composeBar, { paddingBottom: bottomPad + 8, backgroundColor: sceneTheme.gradient[0], borderTopColor: "rgba(255,255,255,0.1)" }]}>
+              <View style={[styles.composeInput, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
                 <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
                 <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
                 <TextInput
                   value={compose}
                   onChangeText={setCompose}
                   placeholder={grupo.isLocalGroup ? "Escribir en el grupo..." : "Solo el creador puede publicar"}
-                  placeholderTextColor={colors.mutedForeground}
-                  style={[styles.composeText, { color: colors.foreground }]}
+                  placeholderTextColor={"#F4F4F4"}
+                  style={[styles.composeText, { color: "#F9F9F9" }]}
                   multiline
                   editable={grupo.isLocalGroup}
                 />
               </View>
               <Pressable
-                style={[styles.sendBtn, { backgroundColor: compose.trim() && grupo.isLocalGroup ? undefined : colors.card, overflow: "hidden", borderColor: colors.border }]}
+                style={[styles.sendBtn, { backgroundColor: compose.trim() && grupo.isLocalGroup ? undefined : "rgba(255,255,255,0.06)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}
                 onPress={handleSend}
                 disabled={!grupo.isLocalGroup}
               >
                 {compose.trim() && grupo.isLocalGroup && <GoldGradientFill />}
-                <Feather name="send" size={17} color={compose.trim() && grupo.isLocalGroup ? "#080F0A" : colors.mutedForeground} />
+                <Feather name="send" size={17} color={compose.trim() && grupo.isLocalGroup ? "#080F0A" : "#F4F4F4"} />
               </Pressable>
             </View>
           </>
@@ -633,11 +636,11 @@ export default function GrupoDetailScreen() {
             contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: bottomPad + 40 }}
             showsVerticalScrollIndicator={false}
           >
-            <Text style={[styles.memberCount, { color: colors.mutedForeground }]}>
+            <Text style={[styles.memberCount, { color: "#F4F4F4" }]}>
               {grupo.members} {grupo.members === 1 ? "miembro" : "miembros"}
             </Text>
             {grupo.memberList.map((m) => (
-              <View key={m.name} style={[styles.memberRow, { backgroundColor: "transparent", overflow: "hidden", borderColor: colors.border }]}>
+              <View key={m.name} style={[styles.memberRow, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
                 <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
                 <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
                 <View style={{ position: "relative" }}>
@@ -647,22 +650,22 @@ export default function GrupoDetailScreen() {
                   {m.active && <View style={styles.onlineDot} />}
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={[styles.memberName, { color: colors.foreground }]}>{m.name}</Text>
-                  <Text style={[styles.memberRole, { color: m.role === "Moderadora" || m.role === "Moderador" || m.role === "Admin" ? colors.primary : colors.mutedForeground }]}>
+                  <Text style={[styles.memberName, { color: "#F9F9F9" }]}>{m.name}</Text>
+                  <Text style={[styles.memberRole, { color: m.role === "Moderadora" || m.role === "Moderador" || m.role === "Admin" ? colors.primary : "#F4F4F4" }]}>
                     {m.role}
                   </Text>
                 </View>
                 <Pressable hitSlop={8}>
-                  <Feather name="message-circle" size={18} color={colors.mutedForeground} />
+                  <Feather name="message-circle" size={18} color={"#F4F4F4"} />
                 </Pressable>
               </View>
             ))}
 
             {grupo.isLocalGroup && (
-              <View style={[styles.emptyState, { borderColor: colors.border, marginTop: 8 }]}>
-                <Feather name="user-plus" size={24} color={colors.mutedForeground} />
-                <Text style={[styles.emptyTitle, { color: colors.foreground }]}>Invita a más personas</Text>
-                <Text style={[styles.emptySub, { color: colors.mutedForeground }]}>
+              <View style={[styles.emptyState, { borderColor: "rgba(255,255,255,0.1)", marginTop: 8 }]}>
+                <Feather name="user-plus" size={24} color={"#F4F4F4"} />
+                <Text style={[styles.emptyTitle, { color: "#F9F9F9" }]}>Invita a más personas</Text>
+                <Text style={[styles.emptySub, { color: "#F4F4F4" }]}>
                   Comparte el enlace desde la pestaña Info para que se unan al grupo.
                 </Text>
               </View>
@@ -677,14 +680,14 @@ export default function GrupoDetailScreen() {
             showsVerticalScrollIndicator={false}
           >
             {/* About */}
-            <View style={[styles.infoCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: colors.border }]}>
+            <View style={[styles.infoCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
               <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
               <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
               <View style={styles.infoCardHeader}>
                 <Feather name="info" size={16} color={colors.primary} />
-                <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>Sobre el grupo</Text>
+                <Text style={[styles.infoCardTitle, { color: "#F9F9F9" }]}>Sobre el grupo</Text>
               </View>
-              <Text style={[styles.infoCardText, { color: colors.mutedForeground }]}>{grupo.description}</Text>
+              <Text style={[styles.infoCardText, { color: "#F4F4F4" }]}>{grupo.description}</Text>
               {grupo.isLocalGroup && (
                 <View style={styles.badgeRow}>
                   <View style={[styles.badge, { backgroundColor: colors.primary + "22" }]}>
@@ -698,12 +701,12 @@ export default function GrupoDetailScreen() {
             </View>
 
             {/* Moderator */}
-            <View style={[styles.infoCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: colors.border }]}>
+            <View style={[styles.infoCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
               <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
               <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
               <View style={styles.infoCardHeader}>
                 <Feather name="shield" size={16} color={colors.primary} />
-                <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>
+                <Text style={[styles.infoCardTitle, { color: "#F9F9F9" }]}>
                   {grupo.isLocalGroup ? "Administrador" : "Moderación"}
                 </Text>
               </View>
@@ -711,20 +714,20 @@ export default function GrupoDetailScreen() {
                 <View style={[styles.modAvatar, { backgroundColor: grupo.modColor + "30" }]}>
                   <Text style={[styles.modInitials, { color: grupo.modColor }]}>{grupo.modInitials}</Text>
                 </View>
-                <Text style={[styles.modName, { color: colors.foreground }]}>{grupo.moderator}</Text>
+                <Text style={[styles.modName, { color: "#F9F9F9" }]}>{grupo.moderator}</Text>
               </View>
             </View>
 
             {/* Invite link (local groups) */}
             {grupo.isLocalGroup && grupo.inviteCode && (
-              <View style={[styles.infoCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: colors.border }]}>
+              <View style={[styles.infoCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
                 <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
                 <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
                 <View style={styles.infoCardHeader}>
                   <Feather name="link" size={16} color={colors.primary} />
-                  <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>Enlace de invitación</Text>
+                  <Text style={[styles.infoCardTitle, { color: "#F9F9F9" }]}>Enlace de invitación</Text>
                 </View>
-                <View style={[styles.linkBox, { backgroundColor: colors.background, borderColor: colors.border }]}>
+                <View style={[styles.linkBox, { backgroundColor: sceneTheme.gradient[0], borderColor: "rgba(255,255,255,0.1)" }]}>
                   <Text style={[styles.linkText, { color: colors.primary }]} numberOfLines={1}>
                     {grupo.inviteCode}
                   </Text>
@@ -733,19 +736,19 @@ export default function GrupoDetailScreen() {
             )}
 
             {/* Rules */}
-            <View style={[styles.infoCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: colors.border }]}>
+            <View style={[styles.infoCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
               <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
               <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
               <View style={styles.infoCardHeader}>
                 <Feather name="book-open" size={16} color={colors.primary} />
-                <Text style={[styles.infoCardTitle, { color: colors.foreground }]}>Reglas del espacio</Text>
+                <Text style={[styles.infoCardTitle, { color: "#F9F9F9" }]}>Reglas del espacio</Text>
               </View>
               {grupo.rules.map((rule, i) => (
                 <View key={i} style={styles.ruleRow}>
                   <View style={[styles.ruleNum, { backgroundColor: colors.primary + "20" }]}>
                     <Text style={[styles.ruleNumText, { color: colors.primary }]}>{i + 1}</Text>
                   </View>
-                  <Text style={[styles.ruleText, { color: colors.foreground }]}>{rule}</Text>
+                  <Text style={[styles.ruleText, { color: "#F9F9F9" }]}>{rule}</Text>
                 </View>
               ))}
             </View>

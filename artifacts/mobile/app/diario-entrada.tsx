@@ -18,12 +18,15 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { usePremium } from "@/context/PremiumContext";
 import { useDiario } from "@/hooks/useDiario";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
+import { LinearGradient } from "expo-linear-gradient";
 import { FREE_DIARIO_LIMIT, showPremiumGate } from "@/lib/premiumGate";
 
 const MAX_CHARS = 5000;
 
 export default function DiarioEntradaScreen() {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 20 : insets.top;
   const bottomPad = Platform.OS === "web" ? 20 : insets.bottom;
@@ -89,29 +92,30 @@ export default function DiarioEntradaScreen() {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <StatusBar barStyle="light-content" />
+      <LinearGradient colors={sceneTheme.gradient} locations={[0, 0.5, 1]} style={StyleSheet.absoluteFill} />
       <SacredBackground />
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <Pressable onPress={handleClose} hitSlop={10} style={styles.headerSide}>
-          <Feather name="x" size={24} color={colors.foreground} />
+          <Feather name="x" size={24} color={"#F9F9F9"} />
         </Pressable>
 
-        <Text style={[styles.headerTitle, { color: colors.foreground }]}>
+        <Text style={[styles.headerTitle, { color: "#F9F9F9" }]}>
           {isEditing ? "Editar entrada" : "Nueva entrada"}
         </Text>
 
         <View style={[styles.headerSide, styles.headerRight]}>
           {isEditing ? (
             <Pressable onPress={handleDelete} hitSlop={10} style={styles.trashBtn}>
-              <Feather name="trash-2" size={20} color={colors.foreground} />
+              <Feather name="trash-2" size={20} color={"#F9F9F9"} />
             </Pressable>
           ) : (
             <Pressable onPress={handleSave} hitSlop={10} disabled={!canSave}>
               <Text
                 style={[
                   styles.saveText,
-                  { color: canSave ? colors.primary : colors.mutedForeground },
+                  { color: canSave ? colors.primary : "#F4F4F4" },
                 ]}
               >
                 Guardar
@@ -126,10 +130,10 @@ export default function DiarioEntradaScreen() {
         value={text}
         onChangeText={(t) => setText(t.slice(0, MAX_CHARS))}
         placeholder="Escribe aquí…"
-        placeholderTextColor="rgba(237,225,211,0.4)"
+        placeholderTextColor="rgba(244,244,244,0.4)"
         multiline
         autoFocus
-        style={[styles.input, { color: colors.foreground, paddingBottom: bottomPad + 16 }]}
+        style={[styles.input, { color: "#F9F9F9", paddingBottom: bottomPad + 16 }]}
         textAlignVertical="top"
       />
     </KeyboardAvoidingView>

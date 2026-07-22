@@ -19,6 +19,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { type DiarioEntry, useDiario } from "@/hooks/useDiario";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 function formatMonth(iso: string) {
   const d = new Date(iso);
@@ -65,10 +66,9 @@ function groupByDay(entries: DiarioEntry[]): DiarioDayGroup[] {
   return groups;
 }
 
-const BG_GRADIENT = ["#340D1A", "#190913"] as const;
-
 export default function DiarioScreen() {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -103,15 +103,15 @@ export default function DiarioScreen() {
   const renderGroup = (group: DiarioDayGroup) => (
     <View key={group.key} style={styles.dayRow}>
       <View style={styles.dateCol}>
-        <Text style={[styles.dateMonth, { color: colors.mutedForeground }]}>
+        <Text style={[styles.dateMonth, { color: "#F4F4F4" }]}>
           {formatMonth(group.createdAt)}
         </Text>
-        <Text style={[styles.dateDay, { color: colors.mutedForeground }]}>
+        <Text style={[styles.dateDay, { color: "#F4F4F4" }]}>
           {formatDay(group.createdAt)}
         </Text>
       </View>
 
-      <View style={[styles.entryDivider, { backgroundColor: "rgba(237,225,211,0.18)" }]} />
+      <View style={[styles.entryDivider, { backgroundColor: "rgba(255,255,255,0.1)" }]} />
 
       <View style={styles.dayEntries}>
         {group.entries.map((entry, i) => (
@@ -120,10 +120,10 @@ export default function DiarioScreen() {
             onPress={() => router.push(`/diario-entrada?id=${entry.id}` as never)}
             style={[styles.entryBody, i > 0 && styles.entryBodySpacing]}
           >
-            <Text style={[styles.entryTime, { color: colors.mutedForeground }]}>
+            <Text style={[styles.entryTime, { color: "#F4F4F4" }]}>
               {formatTime(entry.createdAt)}
             </Text>
-            <Text style={[styles.entryText, { color: colors.foreground }]} numberOfLines={2}>
+            <Text style={[styles.entryText, { color: "#F9F9F9" }]} numberOfLines={2}>
               {entry.text}
             </Text>
           </Pressable>
@@ -137,7 +137,7 @@ export default function DiarioScreen() {
 
       style={styles.root}
 
-      colors={BG_GRADIENT}
+      colors={sceneTheme.gradient}
 
       locations={[0, 0.5, 1]}
 
@@ -165,18 +165,18 @@ export default function DiarioScreen() {
       {/* Top bar (solo menú) */}
       <View style={[styles.topBar, { paddingTop: topPad + 4, justifyContent: "flex-end" }]}>
         <Pressable onPress={handleMenu} hitSlop={10} style={styles.topBtn}>
-          <Feather name="more-horizontal" size={22} color={colors.foreground} />
+          <Feather name="more-horizontal" size={22} color={"#F9F9F9"} />
         </Pressable>
       </View>
 
       {/* Title */}
-      <Text style={[styles.screenTitle, { color: colors.foreground }]}>Diario</Text>
+      <Text style={[styles.screenTitle, { color: "#F9F9F9" }]}>Diario</Text>
 
       {/* Body */}
       {entries.length === 0 ? (
         <View style={styles.emptyWrap}>
-          <Text style={[styles.emptyTitle, { color: colors.foreground }]}>No hay entradas</Text>
-          <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+          <Text style={[styles.emptyTitle, { color: "#F9F9F9" }]}>No hay entradas</Text>
+          <Text style={[styles.emptyText, { color: "#F4F4F4" }]}>
             Toca "Añade entrada" para comenzar una entrada en tu diario.
           </Text>
         </View>

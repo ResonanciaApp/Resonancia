@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { GoldGradientFill } from "@/components/GoldGradient";
+import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
@@ -20,6 +21,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { formatRelativeTime, useGrupoPosts } from "@/hooks/useGrupoPosts";
 
 function initialsFrom(name: string): string {
@@ -31,6 +33,7 @@ function initialsFrom(name: string): string {
 
 export default function GrupoPostScreen() {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { username } = useUserProfile();
   const params = useLocalSearchParams<{ postId?: string; grupoId?: string }>();
@@ -152,26 +155,27 @@ export default function GrupoPostScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: colors.background }}
+      style={{ flex: 1, backgroundColor: sceneTheme.gradient[0] }}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <View style={[styles.root, { backgroundColor: colors.background }]}>
+      <View style={styles.root}>
         <StatusBar barStyle="light-content" />
+        <LinearGradient colors={sceneTheme.gradient} locations={[0, 0.5, 1]} style={StyleSheet.absoluteFill} />
         <SacredBackground />
 
         {/* Header */}
-        <View style={[styles.header, { paddingTop: topPad + 8, borderBottomColor: colors.border }]}>
+        <View style={[styles.header, { paddingTop: topPad + 8, borderBottomColor: "rgba(255,255,255,0.1)" }]}>
           <Pressable onPress={() => router.back()} hitSlop={12} style={styles.backBtn}>
-            <Feather name="arrow-left" size={22} color={colors.foreground} />
+            <Feather name="arrow-left" size={22} color={"#F9F9F9"} />
           </Pressable>
-          <Text style={[styles.headerTitle, { color: colors.foreground }]}>Comentarios</Text>
+          <Text style={[styles.headerTitle, { color: "#F9F9F9" }]}>Comentarios</Text>
           <View style={{ width: 22 }} />
         </View>
 
         {!post ? (
           <View style={styles.notFound}>
-            <Feather name="alert-circle" size={28} color={colors.mutedForeground} />
-            <Text style={[styles.notFoundText, { color: colors.mutedForeground }]}>
+            <Feather name="alert-circle" size={28} color={"#F4F4F4"} />
+            <Text style={[styles.notFoundText, { color: "#F4F4F4" }]}>
               Publicación no encontrada
             </Text>
           </View>
@@ -183,52 +187,52 @@ export default function GrupoPostScreen() {
             showsVerticalScrollIndicator={false}
           >
             {/* Parent post */}
-            <View style={[styles.parentPost, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={[styles.parentPost, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" }]}>
               <View style={styles.postHeader}>
                 <View style={[styles.avatar, { backgroundColor: post.color + "30" }]}>
                   <Text style={[styles.avatarText, { color: post.color }]}>{post.initials}</Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={[styles.postAuthor, { color: colors.foreground }]}>{post.author}</Text>
-                  <Text style={[styles.postTime, { color: colors.mutedForeground }]}>
+                  <Text style={[styles.postAuthor, { color: "#F9F9F9" }]}>{post.author}</Text>
+                  <Text style={[styles.postTime, { color: "#F4F4F4" }]}>
                     {formatRelativeTime(post.createdAt)}
                   </Text>
                 </View>
                 <Pressable hitSlop={10} onPress={openPostMenu} style={{ padding: 4 }}>
-                  <Feather name="more-horizontal" size={18} color={colors.mutedForeground} />
+                  <Feather name="more-horizontal" size={18} color={"#F4F4F4"} />
                 </Pressable>
               </View>
-              <Text style={[styles.postText, { color: colors.foreground }]}>{post.text}</Text>
-              <View style={[styles.postMeta, { borderTopColor: colors.border }]}>
+              <Text style={[styles.postText, { color: "#F9F9F9" }]}>{post.text}</Text>
+              <View style={[styles.postMeta, { borderTopColor: "rgba(255,255,255,0.1)" }]}>
                 <Pressable onPress={handleTogglePostLike} hitSlop={6} style={styles.metaItem}>
                   <Feather
                     name="heart"
                     size={14}
-                    color={postLiked ? "#D4709A" : colors.mutedForeground}
+                    color={postLiked ? "#D4709A" : "#F4F4F4"}
                   />
                   <Text
                     style={[
                       styles.metaText,
-                      { color: postLiked ? "#D4709A" : colors.mutedForeground },
+                      { color: postLiked ? "#D4709A" : "#F4F4F4" },
                     ]}
                   >
                     {post.likes + (postLiked ? 1 : 0)}
                   </Text>
                 </Pressable>
                 <View style={styles.metaItem}>
-                  <Feather name="message-square" size={14} color={colors.mutedForeground} />
-                  <Text style={[styles.metaText, { color: colors.mutedForeground }]}>{comments.length}</Text>
+                  <Feather name="message-square" size={14} color={"#F4F4F4"} />
+                  <Text style={[styles.metaText, { color: "#F4F4F4" }]}>{comments.length}</Text>
                 </View>
                 <Pressable onPress={handleSharePost} hitSlop={6} style={styles.metaItem}>
-                  <Feather name="share" size={14} color={colors.mutedForeground} />
-                  <Text style={[styles.metaText, { color: colors.mutedForeground }]}>Compartir</Text>
+                  <Feather name="share" size={14} color={"#F4F4F4"} />
+                  <Text style={[styles.metaText, { color: "#F4F4F4" }]}>Compartir</Text>
                 </Pressable>
               </View>
             </View>
 
             {/* Comments section header */}
             <View style={styles.sectionHeaderRow}>
-              <Text style={[styles.sectionHeader, { color: colors.foreground }]}>
+              <Text style={[styles.sectionHeader, { color: "#F9F9F9" }]}>
                 {comments.length === 0
                   ? "Aún no hay respuestas"
                   : `${comments.length} ${comments.length === 1 ? "respuesta" : "respuestas"}`}
@@ -238,8 +242,8 @@ export default function GrupoPostScreen() {
             {/* Comments list */}
             {comments.length === 0 ? (
               <View style={styles.emptyState}>
-                <Feather name="message-circle" size={26} color={colors.mutedForeground} />
-                <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                <Feather name="message-circle" size={26} color={"#F4F4F4"} />
+                <Text style={[styles.emptyText, { color: "#F4F4F4" }]}>
                   Sé la primera persona en responder.
                 </Text>
               </View>
@@ -248,16 +252,16 @@ export default function GrupoPostScreen() {
                 {comments.map((c) => {
                   const liked = likedComments.has(c.id);
                   return (
-                    <View key={c.id} style={[styles.commentCard, { borderBottomColor: colors.border }]}>
+                    <View key={c.id} style={[styles.commentCard, { borderBottomColor: "rgba(255,255,255,0.1)" }]}>
                       <View style={[styles.commentAvatar, { backgroundColor: c.color + "30" }]}>
                         <Text style={[styles.commentInitials, { color: c.color }]}>{c.initials}</Text>
                       </View>
                       <View style={{ flex: 1 }}>
                         <View style={styles.commentHeader}>
-                          <Text style={[styles.commentAuthor, { color: colors.foreground }]} numberOfLines={1}>
+                          <Text style={[styles.commentAuthor, { color: "#F9F9F9" }]} numberOfLines={1}>
                             {c.author}
                           </Text>
-                          <Text style={[styles.commentTime, { color: colors.mutedForeground }]}>
+                          <Text style={[styles.commentTime, { color: "#F4F4F4" }]}>
                             {formatRelativeTime(c.createdAt)}
                           </Text>
                           <View style={{ flex: 1 }} />
@@ -265,10 +269,10 @@ export default function GrupoPostScreen() {
                             hitSlop={8}
                             onPress={() => openCommentMenu(c.id, c.author, c.text)}
                           >
-                            <Feather name="more-horizontal" size={16} color={colors.mutedForeground} />
+                            <Feather name="more-horizontal" size={16} color={"#F4F4F4"} />
                           </Pressable>
                         </View>
-                        <Text style={[styles.commentText, { color: colors.foreground }]}>{c.text}</Text>
+                        <Text style={[styles.commentText, { color: "#F9F9F9" }]}>{c.text}</Text>
                         <Pressable
                           onPress={() => toggleCommentLike(c.id)}
                           hitSlop={8}
@@ -277,12 +281,12 @@ export default function GrupoPostScreen() {
                           <Feather
                             name="heart"
                             size={13}
-                            color={liked ? "#D4709A" : colors.mutedForeground}
+                            color={liked ? "#D4709A" : "#F4F4F4"}
                           />
                           <Text
                             style={[
                               styles.commentLikeText,
-                              { color: liked ? "#D4709A" : colors.mutedForeground },
+                              { color: liked ? "#D4709A" : "#F4F4F4" },
                             ]}
                           >
                             {liked ? "1" : "Me gusta"}
@@ -304,18 +308,18 @@ export default function GrupoPostScreen() {
               styles.composeBar,
               {
                 paddingBottom: bottomPad + 8,
-                backgroundColor: colors.background,
-                borderTopColor: colors.border,
+                backgroundColor: sceneTheme.gradient[0],
+                borderTopColor: "rgba(255,255,255,0.1)",
               },
             ]}
           >
-            <View style={[styles.composeInput, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={[styles.composeInput, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" }]}>
               <TextInput
                 value={commentText}
                 onChangeText={setCommentText}
                 placeholder="Escribir una respuesta..."
-                placeholderTextColor={colors.mutedForeground}
-                style={[styles.composeText, { color: colors.foreground }]}
+                placeholderTextColor={"#F4F4F4"}
+                style={[styles.composeText, { color: "#F9F9F9" }]}
                 multiline
               />
             </View>
@@ -325,9 +329,9 @@ export default function GrupoPostScreen() {
               style={[
                 styles.sendBtn,
                 {
-                  backgroundColor: commentText.trim() ? undefined : colors.card,
+                  backgroundColor: commentText.trim() ? undefined : "rgba(255,255,255,0.06)",
                   overflow: "hidden",
-                  borderColor: colors.border,
+                  borderColor: "rgba(255,255,255,0.1)",
                 },
               ]}
             >
@@ -335,7 +339,7 @@ export default function GrupoPostScreen() {
               <Feather
                 name="send"
                 size={18}
-                color={commentText.trim() ? "#080F0A" : colors.mutedForeground}
+                color={commentText.trim() ? "#080F0A" : "#F4F4F4"}
               />
             </Pressable>
           </View>

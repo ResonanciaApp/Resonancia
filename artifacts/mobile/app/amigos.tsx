@@ -43,8 +43,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
-
-const BG_GRADIENT = ["#340D1A", "#190913"] as const;
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const AVATAR_PALETTE = ["#D4709A", "#8AAAD4", "#f4c993", "#A8C4A8", "#C8B4E0", "#EDD9B8"];
 
@@ -62,6 +61,7 @@ function colorFor(id: number): string {
 
 export default function AmigosScreen() {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -70,7 +70,7 @@ export default function AmigosScreen() {
   return (
     <LinearGradient
       style={styles.root}
-      colors={BG_GRADIENT}
+      colors={sceneTheme.gradient}
       locations={[0, 0.5, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
@@ -91,8 +91,8 @@ export default function AmigosScreen() {
         contentContainerStyle={{ paddingTop: topPad + 60, paddingBottom: bottomPad + 40, paddingHorizontal: 20 }}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={[styles.title, { color: colors.foreground }]}>Amigos</Text>
-        <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>
+        <Text style={[styles.title, { color: "#F9F9F9" }]}>Amigos</Text>
+        <Text style={[styles.subtitle, { color: "#F4F4F4" }]}>
           Conecta con practicantes de tu comunidad
         </Text>
 
@@ -113,12 +113,12 @@ export default function AmigosScreen() {
 function GuestPrompt() {
   const colors = useColors();
   return (
-    <View style={[styles.guestCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(61,14,22,0.40)" }]}>
+    <View style={[styles.guestCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
       <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
       <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
       <Feather name="users" size={28} color={colors.primary} />
-      <Text style={[styles.guestTitle, { color: colors.foreground }]}>Crea tu cuenta para agregar amigos</Text>
-      <Text style={[styles.guestText, { color: colors.mutedForeground }]}>
+      <Text style={[styles.guestTitle, { color: "#F9F9F9" }]}>Crea tu cuenta para agregar amigos</Text>
+      <Text style={[styles.guestText, { color: "#F4F4F4" }]}>
         Para conectarte con otros practicantes necesitas una cuenta con email. Es gratis y solo tarda un minuto. Tu
         perfil local y tus meditaciones siguen intactos.
       </Text>
@@ -204,32 +204,32 @@ function SignedInAmigos() {
 
   return (
     <>
-      <View style={[styles.searchRow, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(61,14,22,0.40)" }]}>
+      <View style={[styles.searchRow, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
         <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
         <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
-        <Feather name="search" size={16} color={colors.mutedForeground} />
+        <Feather name="search" size={16} color={"#F4F4F4"} />
         <TextInput
           value={search}
           onChangeText={setSearch}
           placeholder="Buscar por nombre o usuario..."
-          placeholderTextColor={colors.mutedForeground}
-          style={[styles.searchInput, { color: colors.foreground }]}
+          placeholderTextColor={"#F4F4F4"}
+          style={[styles.searchInput, { color: "#F9F9F9" }]}
           autoCapitalize="none"
           autoCorrect={false}
         />
         {search.length > 0 && (
           <Pressable onPress={() => setSearch("")} hitSlop={10}>
-            <Feather name="x" size={14} color={colors.mutedForeground} />
+            <Feather name="x" size={14} color={"#F4F4F4"} />
           </Pressable>
         )}
       </View>
 
       {showSearch && (
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Resultados</Text>
+          <Text style={[styles.sectionTitle, { color: "#F9F9F9" }]}>Resultados</Text>
           {searchQ.isLoading && <ActivityIndicator color={colors.primary} />}
           {noResults && (
-            <Text style={[styles.empty, { color: colors.mutedForeground }]}>
+            <Text style={[styles.empty, { color: "#F4F4F4" }]}>
               No encontramos a nadie con “{trimmed}”.
             </Text>
           )}
@@ -246,7 +246,7 @@ function SignedInAmigos() {
 
       {!showSearch && requests.length > 0 && (
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+          <Text style={[styles.sectionTitle, { color: "#F9F9F9" }]}>
             Solicitudes · {requests.length}
           </Text>
           {requests.map((r) => (
@@ -262,7 +262,7 @@ function SignedInAmigos() {
 
       {!showSearch && conversations.length > 0 && (
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Conversaciones</Text>
+          <Text style={[styles.sectionTitle, { color: "#F9F9F9" }]}>Conversaciones</Text>
           {conversations.map((c) => (
             <ConversationRow key={c.friend.id} conversation={c} />
           ))}
@@ -271,12 +271,12 @@ function SignedInAmigos() {
 
       {!showSearch && (
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+          <Text style={[styles.sectionTitle, { color: "#F9F9F9" }]}>
             Mis amigos · {friends.length}
           </Text>
           {friendsQ.isLoading && <ActivityIndicator color={colors.primary} />}
           {!friendsQ.isLoading && friends.length === 0 && (
-            <Text style={[styles.empty, { color: colors.mutedForeground }]}>
+            <Text style={[styles.empty, { color: "#F4F4F4" }]}>
               Aún no tienes amigos. Busca a alguien por nombre o usuario.
             </Text>
           )}
@@ -320,20 +320,20 @@ function SearchResultRow({
       onPress={onPress}
       style={({ pressed }) => [
         styles.friendRow,
-        { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.75 : 1 },
+        { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.75 : 1 },
       ]}
     >
       <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
       <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
       <Avatar user={user} />
       <View style={{ flex: 1 }}>
-        <Text style={[styles.friendName, { color: colors.foreground }]}>{user.displayName}</Text>
-        <Text style={[styles.friendSub, { color: colors.mutedForeground }]}>
+        <Text style={[styles.friendName, { color: "#F9F9F9" }]}>{user.displayName}</Text>
+        <Text style={[styles.friendSub, { color: "#F4F4F4" }]}>
           {user.location ?? `@${user.username}`}
         </Text>
       </View>
       {status === "pending_outgoing" && (
-        <Text style={[styles.statusBadge, { color: colors.mutedForeground }]}>Enviada</Text>
+        <Text style={[styles.statusBadge, { color: "#F4F4F4" }]}>Enviada</Text>
       )}
       {status === "pending_incoming" && (
         <Pressable onPress={(e) => { e.stopPropagation?.(); onAdd(); }} style={styles.acceptBtn}>
@@ -362,13 +362,13 @@ function RequestRow({
   const colors = useColors();
   const requester = request.requester;
   return (
-    <View style={[styles.requestCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(61,14,22,0.40)" }]}>
+    <View style={[styles.requestCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
       <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
       <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
       <Avatar user={requester} />
       <View style={{ flex: 1 }}>
-        <Text style={[styles.friendName, { color: colors.foreground }]}>{requester.displayName}</Text>
-        <Text style={[styles.friendSub, { color: colors.mutedForeground }]}>@{requester.username}</Text>
+        <Text style={[styles.friendName, { color: "#F9F9F9" }]}>{requester.displayName}</Text>
+        <Text style={[styles.friendSub, { color: "#F4F4F4" }]}>@{requester.username}</Text>
       </View>
       <View style={styles.requestBtns}>
         <Pressable style={styles.acceptBtn} onPress={onAccept}>
@@ -378,10 +378,10 @@ function RequestRow({
           </View>
         </Pressable>
         <Pressable
-          style={[styles.rejectBtn, { borderColor: colors.border }]}
+          style={[styles.rejectBtn, { borderColor: "rgba(255,255,255,0.1)" }]}
           onPress={onDecline}
         >
-          <Feather name="x" size={14} color={colors.mutedForeground} />
+          <Feather name="x" size={14} color={"#F4F4F4"} />
         </Pressable>
       </View>
     </View>
@@ -407,15 +407,15 @@ function FriendRow({
       delayLongPress={350}
       style={({ pressed }) => [
         styles.friendRow,
-        { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
+        { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
       ]}
     >
       <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
       <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
       <Avatar user={friend} />
       <View style={{ flex: 1 }}>
-        <Text style={[styles.friendName, { color: colors.foreground }]}>{friend.displayName}</Text>
-        <Text style={[styles.friendSub, { color: colors.mutedForeground }]} numberOfLines={1}>
+        <Text style={[styles.friendName, { color: "#F9F9F9" }]}>{friend.displayName}</Text>
+        <Text style={[styles.friendSub, { color: "#F4F4F4" }]} numberOfLines={1}>
           @{friend.username}
         </Text>
       </View>
@@ -440,7 +440,7 @@ function ConversationRow({ conversation }: { conversation: Conversation }) {
       onPress={() => router.push(`/chat/${friend.id}` as never)}
       style={({ pressed }) => [
         styles.friendRow,
-        { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.8 : 1 },
+        { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
       ]}
     >
       <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
@@ -448,15 +448,15 @@ function ConversationRow({ conversation }: { conversation: Conversation }) {
       <Avatar user={friend} />
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={[styles.friendName, { color: colors.foreground }]} numberOfLines={1}>
+          <Text style={[styles.friendName, { color: "#F9F9F9" }]} numberOfLines={1}>
             {friend.displayName}
           </Text>
-          <Text style={[styles.friendSub, { color: colors.mutedForeground }]}>{time}</Text>
+          <Text style={[styles.friendSub, { color: "#F4F4F4" }]}>{time}</Text>
         </View>
         <Text
           style={[
             styles.friendSub,
-            { color: unreadCount > 0 ? colors.foreground : colors.mutedForeground },
+            { color: unreadCount > 0 ? "#F9F9F9" : "#F4F4F4" },
           ]}
           numberOfLines={1}
         >

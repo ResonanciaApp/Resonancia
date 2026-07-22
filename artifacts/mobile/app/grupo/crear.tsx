@@ -21,9 +21,9 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useGrupos } from "@/hooks/useGrupos";
 
-const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 
 // ─── Image library ────────────────────────────────────────────────────────────
 const GALLERY = [
@@ -108,7 +108,7 @@ function GroupPreview({
 }
 
 const preview = StyleSheet.create({
-  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16, backgroundColor: "#210911" },
+  root: { alignItems: "center", paddingTop: 32, paddingBottom: 16,  },
   image: { width: 72, height: 72, borderRadius: 18, alignItems: "center", justifyContent: "center", marginBottom: 10 },
   initial: { fontFamily: "Manrope", fontSize: 28, fontWeight: "700", color: "#FFFFFF" },
   name: { fontFamily: "Manrope", color: "#FFFFFF", fontSize: 18, fontWeight: "700", marginBottom: 4 },
@@ -133,7 +133,7 @@ function BottomSheet({ children, colors }: { children: React.ReactNode; colors: 
     <Animated.View
       style={[
         sheet.root,
-        { backgroundColor: colors.card },
+        { backgroundColor: "rgba(255,255,255,0.06)" },
         { transform: [{ translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [300, 0] }) }] },
       ]}
     >
@@ -150,6 +150,7 @@ type Step = 1 | 2 | 3 | 4 | 5;
 
 export default function CrearGrupoScreen() {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 0 : insets.top;
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
@@ -211,7 +212,7 @@ export default function CrearGrupoScreen() {
         <StatusBar barStyle="light-content" />
         <LinearGradient
           style={StyleSheet.absoluteFill}
-          colors={BG_GRADIENT}
+          colors={sceneTheme.gradient}
           locations={[0, 0.5, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
@@ -226,19 +227,19 @@ export default function CrearGrupoScreen() {
 
           <Text style={styles.stepTitle}>¿Cómo se llamará tu grupo?</Text>
 
-          <View style={[styles.nameInputBox, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={[styles.nameInputBox, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" }]}>
             <TextInput
               ref={nameInputRef}
               value={nombre}
               onChangeText={(v) => setNombre(v.slice(0, 40))}
               placeholder="Nombre del Grupo"
-              placeholderTextColor={colors.mutedForeground}
-              style={[styles.nameInput, { color: colors.foreground }]}
+              placeholderTextColor={"#F4F4F4"}
+              style={[styles.nameInput, { color: "#F9F9F9" }]}
               maxLength={40}
               returnKeyType="done"
               onSubmitEditing={() => canNext1 && setStep(2)}
             />
-            <Text style={[styles.nameCounter, { color: remaining < 10 ? "#F7CB6B" : colors.mutedForeground }]}>
+            <Text style={[styles.nameCounter, { color: remaining < 10 ? "#F7CB6B" : "#F4F4F4" }]}>
               {remaining}
             </Text>
           </View>
@@ -248,11 +249,11 @@ export default function CrearGrupoScreen() {
         <View style={[styles.stepFooter, { paddingBottom: bottomPad + 12 }]}>
           <Pressable
             onPress={() => canNext1 && setStep(2)}
-            style={[styles.nextBtn, { backgroundColor: canNext1 ? undefined : colors.card }]}
+            style={[styles.nextBtn, { backgroundColor: canNext1 ? undefined : "rgba(255,255,255,0.06)" }]}
             disabled={!canNext1}
           >
             {canNext1 && <GoldGradientFill />}
-            <Text style={[styles.nextBtnText, { color: canNext1 ? "#070E09" : colors.mutedForeground }]}>
+            <Text style={[styles.nextBtnText, { color: canNext1 ? "#070E09" : "#F4F4F4" }]}>
               Terminar
             </Text>
           </Pressable>
@@ -271,7 +272,7 @@ export default function CrearGrupoScreen() {
       <StatusBar barStyle="light-content" />
         <LinearGradient
           style={StyleSheet.absoluteFill}
-          colors={BG_GRADIENT}
+          colors={sceneTheme.gradient}
           locations={[0, 0.5, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
@@ -296,20 +297,20 @@ export default function CrearGrupoScreen() {
           {step === 2 && (
             <>
               <View style={styles.sheetTopRow}>
-                <Text style={[styles.sheetTitle, { color: colors.foreground }]}>¡Grupo creado!</Text>
+                <Text style={[styles.sheetTitle, { color: "#F9F9F9" }]}>¡Grupo creado!</Text>
                 <Pressable onPress={() => setStep(3)} hitSlop={12}>
-                  <Text style={[styles.skipText, { color: colors.mutedForeground }]}>Omitir</Text>
+                  <Text style={[styles.skipText, { color: "#F4F4F4" }]}>Omitir</Text>
                 </Pressable>
               </View>
-              <Text style={[styles.sheetSub, { color: colors.mutedForeground }]}>
+              <Text style={[styles.sheetSub, { color: "#F4F4F4" }]}>
                 Agregá una breve descripción para que los demás sepan de qué se trata.
               </Text>
               <TextInput
                 value={descripcion}
                 onChangeText={setDescripcion}
                 placeholder="Agregar una descripción (Opcional)"
-                placeholderTextColor={colors.mutedForeground}
-                style={[styles.sheetTextarea, { backgroundColor: colors.background, color: colors.foreground, borderColor: colors.border }]}
+                placeholderTextColor={"#F4F4F4"}
+                style={[styles.sheetTextarea, { backgroundColor: "rgba(255,255,255,0.06)", color: "#F9F9F9", borderColor: "rgba(255,255,255,0.1)" }]}
                 multiline
                 numberOfLines={4}
                 maxLength={200}
@@ -329,9 +330,9 @@ export default function CrearGrupoScreen() {
           {step === 3 && (
             <>
               <View style={styles.sheetTopRow}>
-                <Text style={[styles.sheetTitle, { color: colors.foreground }]}>Imagen de Portada</Text>
+                <Text style={[styles.sheetTitle, { color: "#F9F9F9" }]}>Imagen de Portada</Text>
               </View>
-              <Text style={[styles.sheetSub, { color: colors.mutedForeground }]}>
+              <Text style={[styles.sheetSub, { color: "#F4F4F4" }]}>
                 Asegurate que tu Grupo destaque seleccionando una imagen relevante.
               </Text>
               <ScrollView style={{ maxHeight: 230 }} showsVerticalScrollIndicator={false}>
@@ -355,7 +356,7 @@ export default function CrearGrupoScreen() {
               </ScrollView>
               <View style={[styles.sheetNavRow, { marginTop: 14 }]}>
                 <Pressable onPress={() => setStep(2)} style={styles.prevBtn}>
-                  <Text style={[styles.prevBtnText, { color: colors.mutedForeground }]}>Anterior</Text>
+                  <Text style={[styles.prevBtnText, { color: "#F4F4F4" }]}>Anterior</Text>
                 </Pressable>
                 <Pressable
                   onPress={() => setStep(4)}
@@ -373,20 +374,20 @@ export default function CrearGrupoScreen() {
           {step === 4 && (
             <>
               <View style={styles.sheetTopRow}>
-                <Text style={[styles.sheetTitle, { color: colors.foreground }]}>Mensaje de Bienvenida</Text>
+                <Text style={[styles.sheetTitle, { color: "#F9F9F9" }]}>Mensaje de Bienvenida</Text>
                 <Pressable onPress={() => setStep(5)} hitSlop={12}>
-                  <Text style={[styles.skipText, { color: colors.mutedForeground }]}>Omitir</Text>
+                  <Text style={[styles.skipText, { color: "#F4F4F4" }]}>Omitir</Text>
                 </Pressable>
               </View>
-              <Text style={[styles.sheetSub, { color: colors.mutedForeground }]}>
+              <Text style={[styles.sheetSub, { color: "#F4F4F4" }]}>
                 Escribí un mensaje que verán las personas al unirse al grupo.
               </Text>
               <TextInput
                 value={bienvenida}
                 onChangeText={setBienvenida}
                 placeholder="Ej: Bienvenido/a al grupo. Aquí compartimos..."
-                placeholderTextColor={colors.mutedForeground}
-                style={[styles.sheetTextarea, { backgroundColor: colors.background, color: colors.foreground, borderColor: colors.border }]}
+                placeholderTextColor={"#F4F4F4"}
+                style={[styles.sheetTextarea, { backgroundColor: "rgba(255,255,255,0.06)", color: "#F9F9F9", borderColor: "rgba(255,255,255,0.1)" }]}
                 multiline
                 numberOfLines={4}
                 maxLength={300}
@@ -395,7 +396,7 @@ export default function CrearGrupoScreen() {
               />
               <View style={styles.sheetNavRow}>
                 <Pressable onPress={() => setStep(3)} style={styles.prevBtn}>
-                  <Text style={[styles.prevBtnText, { color: colors.mutedForeground }]}>Anterior</Text>
+                  <Text style={[styles.prevBtnText, { color: "#F4F4F4" }]}>Anterior</Text>
                 </Pressable>
                 <Pressable
                   onPress={() => setStep(5)}
@@ -417,15 +418,15 @@ export default function CrearGrupoScreen() {
                   <Feather name="check" size={28} color="#070E09" />
                 </GoldGradient>
               </View>
-              <Text style={[styles.sheetTitle, { color: colors.foreground, textAlign: "center", marginBottom: 8 }]}>
+              <Text style={[styles.sheetTitle, { color: "#F9F9F9", textAlign: "center", marginBottom: 8 }]}>
                 ¡Tu grupo está listo!
               </Text>
-              <Text style={[styles.sheetSub, { color: colors.mutedForeground, textAlign: "center", marginBottom: 20 }]}>
+              <Text style={[styles.sheetSub, { color: "#F4F4F4", textAlign: "center", marginBottom: 20 }]}>
                 Compartí el enlace para invitar personas a "{nombre}".
               </Text>
 
               {/* Invite link box */}
-              <View style={[styles.linkBox, { backgroundColor: colors.background, borderColor: colors.border }]}>
+              <View style={[styles.linkBox, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" }]}>
                 <Feather name="link" size={14} color={colors.primary} style={{ marginRight: 8 }} />
                 <Text style={[styles.linkText, { color: colors.primary }]} numberOfLines={1}>
                   {inviteCode}
@@ -444,7 +445,7 @@ export default function CrearGrupoScreen() {
                 onPress={() => router.back()}
                 style={{ marginTop: 12, alignItems: "center", paddingVertical: 12 }}
               >
-                <Text style={[styles.skipText, { color: colors.mutedForeground }]}>
+                <Text style={[styles.skipText, { color: "#F4F4F4" }]}>
                   Ir a Mis Grupos
                 </Text>
               </Pressable>

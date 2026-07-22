@@ -27,6 +27,7 @@ import {
   useGetMyLiveSessions,
 } from "@workspace/api-client-react";
 import { useAuth } from "@/context/AuthContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getGuide } from "@/data/guides";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { LiveSessionCard } from "@/components/LiveSessionCard";
@@ -38,14 +39,14 @@ import {
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
 const WARM_BLACK = "#1B060F";
-const BURGUNDY_MID = "#4A0C0C";
 const PRIMARY_GOLD = "#F7CB6B";
-const FOREGROUND = "#FFFFFF";
+const FOREGROUND = "#F9F9F9";
 const MUTED = "#F4F4F4";
-const BORDER = "#3D0E16";
+const BORDER = "rgba(255,255,255,0.1)";
 
 export default function MisSesionesScreen() {
   const insets = useSafeAreaInsets();
+  const { theme: sceneTheme } = useSceneTheme();
   const { isSignedIn, isRegistered } = useAuth();
   const authenticated = isSignedIn || isRegistered;
 
@@ -100,7 +101,7 @@ export default function MisSesionesScreen() {
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={sceneTheme.gradient} locations={[0, 0.5, 1]} style={StyleSheet.absoluteFill} />
 
       {/* Floating back */}
       <View style={{ position: "absolute", left: 16, top: topPad + 8, zIndex: 10 }} pointerEvents="box-none">
@@ -267,7 +268,7 @@ const pastStyles = StyleSheet.create({
 
 // ── Estilos ───────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#210911" },
+  root: { flex: 1 },
   header: {
     flexDirection: "row",
     alignItems: "center",

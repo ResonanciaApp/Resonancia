@@ -43,6 +43,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { uploadLocalFile } from "@/lib/upload";
 
 const AVATAR_PALETTE = ["#D4709A", "#8AAAD4", "#f4c993", "#A8C4A8", "#C8B4E0", "#EDD9B8"];
@@ -106,6 +107,7 @@ function formatDuration(ms: number): string {
 
 export default function ChatScreen() {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 18 : insets.bottom;
@@ -482,7 +484,7 @@ export default function ChatScreen() {
 
   if (!isLoaded) {
     return (
-      <View style={[styles.root, { backgroundColor: colors.background }]}>
+      <View style={[styles.root, { backgroundColor: sceneTheme.gradient[0] }]}>
         <ActivityIndicator color={colors.primary} style={{ marginTop: 80 }} />
       </View>
     );
@@ -493,11 +495,11 @@ export default function ChatScreen() {
 
   if (!isSignedIn || !Number.isFinite(otherId) || isForbidden) {
     return (
-      <View style={[styles.root, { backgroundColor: colors.background, paddingTop: topPad }]}>
+      <View style={[styles.root, { backgroundColor: sceneTheme.gradient[0], paddingTop: topPad }]}>
         <Pressable onPress={() => router.back()} style={{ padding: 16 }} hitSlop={12}>
-          <Feather name="arrow-left" size={22} color={colors.foreground} />
+          <Feather name="arrow-left" size={22} color={"#F9F9F9"} />
         </Pressable>
-        <Text style={[styles.empty, { color: colors.mutedForeground }]}>
+        <Text style={[styles.empty, { color: "#F4F4F4" }]}>
           {isForbidden
             ? "Ya no puedes escribirle a esta persona."
             : "No puedes ver este chat."}
@@ -510,19 +512,20 @@ export default function ChatScreen() {
   const friendTint = colorFor(otherId);
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={styles.root}>
       <StatusBar barStyle="light-content" />
+      <LinearGradient colors={sceneTheme.gradient} locations={[0, 0.5, 1]} style={StyleSheet.absoluteFill} />
       <SacredBackground />
 
       {/* Header */}
       <View
         style={[
           styles.header,
-          { paddingTop: topPad + 8, borderColor: colors.border, backgroundColor: "#080F0AEE" },
+          { paddingTop: topPad + 8, borderColor: "rgba(255,255,255,0.1)", backgroundColor: sceneTheme.gradient[0] },
         ]}
       >
         <Pressable onPress={() => router.back()} hitSlop={12} style={{ padding: 6 }}>
-          <Feather name="arrow-left" size={22} color={colors.foreground} />
+          <Feather name="arrow-left" size={22} color={"#F9F9F9"} />
         </Pressable>
         <View style={[styles.headerAvatar, { backgroundColor: friendTint + "33" }]}>
           {friend?.avatarUrl ? (
@@ -534,10 +537,10 @@ export default function ChatScreen() {
           )}
         </View>
         <View style={{ flex: 1 }}>
-          <Text style={[styles.headerName, { color: colors.foreground }]} numberOfLines={1}>
+          <Text style={[styles.headerName, { color: "#F9F9F9" }]} numberOfLines={1}>
             {friendName}
           </Text>
-          <Text style={[styles.headerSub, { color: colors.mutedForeground }]}>
+          <Text style={[styles.headerSub, { color: "#F4F4F4" }]}>
             {typingQ.data?.typing ? "escribiendo…" : friend ? `@${friend.username}` : ""}
           </Text>
         </View>
@@ -552,7 +555,7 @@ export default function ChatScreen() {
           <ActivityIndicator color={colors.primary} style={{ marginTop: 40 }} />
         ) : messages.length === 0 ? (
           <View style={styles.emptyWrap}>
-            <Text style={[styles.empty, { color: colors.mutedForeground }]}>
+            <Text style={[styles.empty, { color: "#F4F4F4" }]}>
               Aún no hay mensajes. Saludá a {friend?.displayName ?? "tu amigo"} 🌙
             </Text>
           </View>
@@ -611,8 +614,8 @@ export default function ChatScreen() {
             styles.inputBar,
             {
               paddingBottom: bottomPad + 8,
-              borderColor: colors.border,
-              backgroundColor: "#080F0AEE",
+              borderColor: "rgba(255,255,255,0.1)",
+              backgroundColor: sceneTheme.gradient[0],
             },
           ]}
         >
@@ -621,24 +624,24 @@ export default function ChatScreen() {
               <Pressable
                 onPress={cancelRecording}
                 hitSlop={10}
-                style={[styles.iconBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+                style={[styles.iconBtn, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" }]}
               >
                 <Feather name="x" size={16} color="#E07A7A" />
               </Pressable>
               <View
                 style={[
                   styles.recBar,
-                  { backgroundColor: colors.card, borderColor: colors.border },
+                  { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" },
                 ]}
               >
                 <View style={styles.recDot} />
-                <Text style={[styles.recTime, { color: colors.foreground }]}>
+                <Text style={[styles.recTime, { color: "#F9F9F9" }]}>
                   Grabando · {formatDuration(recElapsedMs)}
                 </Text>
               </View>
               <Pressable onPress={sendRecording} style={styles.sendBtn}>
-                <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={styles.sendGrad}>
-                  <Feather name="send" size={16} color="#080F0A" />
+                <LinearGradient colors={["#F7CB6B", "#FBA980"]} style={styles.sendGrad}>
+                  <Feather name="send" size={16} color="#1B060F" />
                 </LinearGradient>
               </Pressable>
             </>
@@ -649,7 +652,7 @@ export default function ChatScreen() {
                 hitSlop={10}
                 style={[
                   styles.iconBtn,
-                  { backgroundColor: colors.card, borderColor: colors.border },
+                  { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" },
                 ]}
               >
                 <Feather name="plus" size={18} color={colors.accent} />
@@ -658,13 +661,13 @@ export default function ChatScreen() {
                 value={draft}
                 onChangeText={onChangeDraft}
                 placeholder="Escribí un mensaje…"
-                placeholderTextColor={colors.mutedForeground}
+                placeholderTextColor={"#F4F4F4"}
                 style={[
                   styles.input,
                   {
-                    backgroundColor: colors.card,
-                    borderColor: colors.border,
-                    color: colors.foreground,
+                    backgroundColor: "rgba(255,255,255,0.06)",
+                    borderColor: "rgba(255,255,255,0.1)",
+                    color: "#F9F9F9",
                   },
                 ]}
                 multiline
@@ -676,8 +679,8 @@ export default function ChatScreen() {
                 disabled={draft.trim().length === 0 || sendMsg.isPending}
                 style={[styles.sendBtn, { opacity: draft.trim().length === 0 ? 0.5 : 1 }]}
               >
-                <LinearGradient colors={["#4A0C0C", "#27070E", "#1B060F"]} style={styles.sendGrad}>
-                  <Feather name="send" size={16} color="#080F0A" />
+                <LinearGradient colors={["#F7CB6B", "#FBA980"]} style={styles.sendGrad}>
+                  <Feather name="send" size={16} color="#1B060F" />
                 </LinearGradient>
               </Pressable>
             </>
@@ -743,6 +746,7 @@ function MessageBubble({
   isLastMine: boolean;
 }) {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   const session = message.sessionId != null
     ? SESSIONS.find((s) => Number(s.id) === message.sessionId)
     : undefined;
@@ -755,7 +759,7 @@ function MessageBubble({
   return (
     <View style={{ alignItems: isMine ? "flex-end" : "flex-start", marginBottom }}>
       {showTime && (
-        <Text style={[styles.timeLabel, { color: colors.mutedForeground }]}>
+        <Text style={[styles.timeLabel, { color: "#F4F4F4" }]}>
           {timeFor(message.createdAt)}
         </Text>
       )}
@@ -777,9 +781,9 @@ function MessageBubble({
           style={[
             styles.sessionCard,
             {
-              backgroundColor: isMine ? undefined : colors.card,
+              backgroundColor: isMine ? undefined : "rgba(255,255,255,0.06)",
               overflow: "hidden",
-              borderColor: isMine ? "transparent" : colors.border,
+              borderColor: isMine ? "transparent" : "rgba(255,255,255,0.1)",
             },
           ]}
         >
@@ -789,13 +793,13 @@ function MessageBubble({
             <Text
               style={[
                 styles.sessionLabel,
-                { color: isMine ? "#080F0A" : colors.mutedForeground },
+                { color: isMine ? "#080F0A" : "#F4F4F4" },
               ]}
             >
               {session.categoryLabel.toUpperCase()}
             </Text>
             <Text
-              style={[styles.sessionTitle, { color: isMine ? "#080F0A" : colors.foreground }]}
+              style={[styles.sessionTitle, { color: isMine ? "#080F0A" : "#F9F9F9" }]}
               numberOfLines={2}
             >
               {session.title}
@@ -803,7 +807,7 @@ function MessageBubble({
             <Text
               style={[
                 styles.sessionDuration,
-                { color: isMine ? "#080F0A" : colors.mutedForeground },
+                { color: isMine ? "#080F0A" : "#F4F4F4" },
               ]}
             >
               {session.durationLabel}
@@ -822,8 +826,8 @@ function MessageBubble({
                   borderBottomRightRadius: groupedWithNext ? compactRadius : tailRadius,
                 }
               : {
-                  backgroundColor: colors.card,
-                  borderColor: colors.border,
+                  backgroundColor: "rgba(255,255,255,0.06)",
+                  borderColor: "rgba(255,255,255,0.1)",
                   borderWidth: 1,
                   borderTopLeftRadius: groupedWithPrev ? compactRadius : 18,
                   borderBottomLeftRadius: groupedWithNext ? compactRadius : tailRadius,
@@ -834,7 +838,7 @@ function MessageBubble({
           <Text
             style={[
               styles.bubbleText,
-              { color: isMine ? "#080F0A" : colors.foreground },
+              { color: isMine ? "#080F0A" : "#F9F9F9" },
             ]}
           >
             {message.body}
@@ -846,9 +850,9 @@ function MessageBubble({
           <Feather
             name={message.readAt ? "check-circle" : "check"}
             size={11}
-            color={message.readAt ? "#F7CB6B" : colors.mutedForeground}
+            color={message.readAt ? "#F7CB6B" : "#F4F4F4"}
           />
-          <Text style={[styles.readText, { color: colors.mutedForeground }]}>
+          <Text style={[styles.readText, { color: "#F4F4F4" }]}>
             {message.readAt ? "Visto" : "Enviado"}
           </Text>
         </View>
@@ -859,6 +863,7 @@ function MessageBubble({
 
 function TypingBubble({ name, tint }: { name: string; tint: string }) {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   const dotAnim = useRef(0);
   const [step, setStep] = useState(0);
   useEffect(() => {
@@ -875,8 +880,8 @@ function TypingBubble({ name, tint }: { name: string; tint: string }) {
         style={[
           styles.bubble,
           {
-            backgroundColor: colors.card,
-            borderColor: colors.border,
+            backgroundColor: "rgba(255,255,255,0.06)",
+            borderColor: "rgba(255,255,255,0.1)",
             borderWidth: 1,
             borderBottomLeftRadius: 4,
             flexDirection: "row",
@@ -886,7 +891,7 @@ function TypingBubble({ name, tint }: { name: string; tint: string }) {
         ]}
       >
         <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: tint }} />
-        <Text style={[styles.bubbleText, { color: colors.mutedForeground, minWidth: 110 }]}>
+        <Text style={[styles.bubbleText, { color: "#F4F4F4", minWidth: 110 }]}>
           {name} está escribiendo{dots}
         </Text>
       </View>
@@ -904,6 +909,7 @@ function ShareSessionModal({
   onPick: (sessionId: number) => void;
 }) {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const [search, setSearch] = useState("");
   const trimmed = search.trim().toLowerCase();
@@ -918,23 +924,23 @@ function ShareSessionModal({
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-      <View style={[styles.modalRoot, { backgroundColor: colors.background, paddingTop: insets.top + 12 }]}>
+      <View style={[styles.modalRoot, { backgroundColor: sceneTheme.gradient[0], paddingTop: insets.top + 12 }]}>
         <View style={styles.modalHeader}>
-          <Text style={[styles.modalTitle, { color: colors.foreground }]}>Compartir sesión</Text>
+          <Text style={[styles.modalTitle, { color: "#F9F9F9" }]}>Compartir sesión</Text>
           <Pressable onPress={onClose} hitSlop={12}>
-            <Feather name="x" size={22} color={colors.foreground} />
+            <Feather name="x" size={22} color={"#F9F9F9"} />
           </Pressable>
         </View>
         <View
-          style={[styles.searchRow, { backgroundColor: colors.card, borderColor: colors.border }]}
+          style={[styles.searchRow, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" }]}
         >
-          <Feather name="search" size={16} color={colors.mutedForeground} />
+          <Feather name="search" size={16} color={"#F4F4F4"} />
           <TextInput
             value={search}
             onChangeText={setSearch}
             placeholder="Buscar sesión…"
-            placeholderTextColor={colors.mutedForeground}
-            style={[styles.searchInput, { color: colors.foreground }]}
+            placeholderTextColor={"#F4F4F4"}
+            style={[styles.searchInput, { color: "#F9F9F9" }]}
             autoCapitalize="none"
             autoCorrect={false}
           />
@@ -949,18 +955,18 @@ function ShareSessionModal({
               style={({ pressed }) => [
                 styles.pickerRow,
                 {
-                  backgroundColor: colors.card,
-                  borderColor: colors.border,
+                  backgroundColor: "rgba(255,255,255,0.06)",
+                  borderColor: "rgba(255,255,255,0.1)",
                   opacity: pressed ? 0.8 : 1,
                 },
               ]}
             >
               <Image source={item.image as never} style={styles.pickerImg} contentFit="cover" />
               <View style={{ flex: 1 }}>
-                <Text style={[styles.pickerLabel, { color: colors.mutedForeground }]}>
+                <Text style={[styles.pickerLabel, { color: "#F4F4F4" }]}>
                   {item.categoryLabel.toUpperCase()}
                 </Text>
-                <Text style={[styles.pickerTitle, { color: colors.foreground }]} numberOfLines={2}>
+                <Text style={[styles.pickerTitle, { color: "#F9F9F9" }]} numberOfLines={2}>
                   {item.title}
                 </Text>
               </View>
@@ -975,6 +981,7 @@ function ShareSessionModal({
 
 function PendingBubble({ item }: { item: PendingAttachment }) {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   return (
     <View style={{ alignItems: "flex-end", marginBottom: 8 }}>
       <View style={{ position: "relative", opacity: item.failed ? 0.55 : 0.85 }}>
@@ -1100,6 +1107,7 @@ function AudioAttachment({
   isMine: boolean;
 }) {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   const url = useMemo(() => resolveAttachmentUrl(objectPath), [objectPath]);
   const soundRef = useRef<Audio.Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -1241,8 +1249,8 @@ function AudioAttachment({
   };
 
   const progressPct = totalMs > 0 ? Math.min(1, positionMs / totalMs) : 0;
-  const fg = isMine ? "#080F0A" : colors.foreground;
-  const trackBg = isMine ? "#080F0A33" : colors.border;
+  const fg = isMine ? "#080F0A" : "#F9F9F9";
+  const trackBg = isMine ? "#080F0A33" : "rgba(255,255,255,0.1)";
   const trackFill = isMine ? "#080F0A" : colors.primary;
 
   return (
@@ -1250,9 +1258,9 @@ function AudioAttachment({
       style={[
         styles.audioBubble,
         {
-          backgroundColor: isMine ? undefined : colors.card,
+          backgroundColor: isMine ? undefined : "rgba(255,255,255,0.06)",
           overflow: isMine ? "hidden" : undefined,
-          borderColor: isMine ? "transparent" : colors.border,
+          borderColor: isMine ? "transparent" : "rgba(255,255,255,0.1)",
           borderWidth: isMine ? 0 : 1,
         },
       ]}
@@ -1300,6 +1308,7 @@ function AttachMenuModal({
   onShareSession: () => void;
 }) {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
@@ -1309,14 +1318,14 @@ function AttachMenuModal({
           style={[
             styles.attachSheet,
             {
-              backgroundColor: colors.background,
-              borderColor: colors.border,
+              backgroundColor: sceneTheme.gradient[0],
+              borderColor: "rgba(255,255,255,0.1)",
               paddingBottom: insets.bottom + 16,
             },
           ]}
         >
           <View style={styles.attachHandle} />
-          <Text style={[styles.attachTitle, { color: colors.foreground }]}>Adjuntar</Text>
+          <Text style={[styles.attachTitle, { color: "#F9F9F9" }]}>Adjuntar</Text>
           <AttachOption
             icon="image"
             label="Foto"
@@ -1365,14 +1374,15 @@ function AttachOption({
   onPress: () => void;
 }) {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   return (
     <Pressable
       onPress={onPress}
       style={({ pressed }) => [
         styles.attachOption,
         {
-          backgroundColor: colors.card,
-          borderColor: colors.border,
+          backgroundColor: "rgba(255,255,255,0.06)",
+          borderColor: "rgba(255,255,255,0.1)",
           opacity: pressed ? 0.85 : 1,
         },
       ]}
@@ -1381,10 +1391,10 @@ function AttachOption({
         <Feather name={icon} size={20} color={tint} />
       </View>
       <View style={{ flex: 1 }}>
-        <Text style={[styles.attachLabel, { color: colors.foreground }]}>{label}</Text>
-        <Text style={[styles.attachSub, { color: colors.mutedForeground }]}>{sublabel}</Text>
+        <Text style={[styles.attachLabel, { color: "#F9F9F9" }]}>{label}</Text>
+        <Text style={[styles.attachSub, { color: "#F4F4F4" }]}>{sublabel}</Text>
       </View>
-      <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+      <Feather name="chevron-right" size={18} color={"#F4F4F4"} />
     </Pressable>
   );
 }
@@ -1399,6 +1409,7 @@ function GifPickerModal({
   onPick: (gif: GiphyGif) => void;
 }) {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const [query, setQuery] = useState("");
   const [gifs, setGifs] = useState<GiphyGif[]>([]);
@@ -1452,14 +1463,14 @@ function GifPickerModal({
       <View
         style={[
           styles.pickerRoot,
-          { backgroundColor: colors.background, paddingTop: insets.top },
+          { backgroundColor: sceneTheme.gradient[0], paddingTop: insets.top },
         ]}
       >
         <View style={styles.pickerHeader}>
           <Pressable onPress={onClose} hitSlop={12}>
-            <Feather name="x" size={22} color={colors.foreground} />
+            <Feather name="x" size={22} color={"#F9F9F9"} />
           </Pressable>
-          <Text style={[styles.pickerHeaderTitle, { color: colors.foreground }]}>
+          <Text style={[styles.pickerHeaderTitle, { color: "#F9F9F9" }]}>
             Buscar GIF
           </Text>
           <View style={{ width: 22 }} />
@@ -1467,16 +1478,16 @@ function GifPickerModal({
         <View
           style={[
             styles.searchBox,
-            { backgroundColor: colors.card, borderColor: colors.border },
+            { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" },
           ]}
         >
-          <Feather name="search" size={16} color={colors.mutedForeground} />
+          <Feather name="search" size={16} color={"#F4F4F4"} />
           <TextInput
             value={query}
             onChangeText={setQuery}
             placeholder="Buscar en Giphy…"
-            placeholderTextColor={colors.mutedForeground}
-            style={[styles.searchInput, { color: colors.foreground }]}
+            placeholderTextColor={"#F4F4F4"}
+            style={[styles.searchInput, { color: "#F9F9F9" }]}
             autoCapitalize="none"
             autoCorrect={false}
             returnKeyType="search"
@@ -1510,7 +1521,7 @@ function GifPickerModal({
                   flex: 1,
                   borderRadius: 12,
                   overflow: "hidden",
-                  backgroundColor: colors.card,
+                  backgroundColor: "rgba(255,255,255,0.06)",
                   opacity: pressed ? 0.7 : 1,
                   aspectRatio: 1 / ratio,
                 })}
@@ -1526,7 +1537,7 @@ function GifPickerModal({
           ListFooterComponent={
             <Text
               style={{
-                color: colors.mutedForeground,
+                color: "#F4F4F4",
                 fontSize: 11,
                 textAlign: "center",
                 marginTop: 16,
