@@ -135,7 +135,7 @@ function LibChip({ label, sel, onPress, icon }: { label: string; sel: boolean; o
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.6 : 1 }]}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
-        {icon && <MaterialCommunityIcons name={icon} size={17} color="#f9f9f9" style={{ marginTop: -1 }} />}
+        {icon && <MaterialCommunityIcons name={icon} size={17} color="#f9f9f9" style={{ marginTop: icon === "hexagon-outline" ? -1 : 0 }} />}
         <View style={{ justifyContent: "center", transform: [{ translateY: -1 }] }}>
           <Animated.Text
             style={[styles.chipText, { opacity: selAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}
