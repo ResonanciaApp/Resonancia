@@ -1898,7 +1898,7 @@ const styles = StyleSheet.create({
   chipActionBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center" },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, marginTop: -21, justifyContent: "center", zIndex: 3 },
   chipRow: { flexGrow: 0, marginTop: -21 },
-  chipRowContent: { flexDirection: "row", gap: 12, paddingTop: 5, paddingBottom: 2, paddingLeft: H_PAD + 4, paddingRight: H_PAD },
+  chipRowContent: { flexDirection: "row", gap: 12, paddingTop: 5, paddingBottom: 2, paddingLeft: H_PAD, paddingRight: H_PAD },
   chipRowFiltered: {
     flexDirection: "row",
     alignItems: "center",
@@ -1916,7 +1916,7 @@ const styles = StyleSheet.create({
   },
   chip: {
     paddingVertical: 6,
-    width: (width - (H_PAD + 4) - H_PAD - 12) / 2,
+    width: (width - H_PAD * 2 - 12) / 2,
     height: 46,
     borderRadius: 15,
     backgroundColor: "rgba(0,0,0,0.1)",
