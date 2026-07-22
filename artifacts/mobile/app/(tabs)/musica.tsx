@@ -692,11 +692,6 @@ export default function MezcladorScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string }]}>
-      <LinearGradient
-        colors={theme.gradient as unknown as [string, string, ...string[]]}
-        style={StyleSheet.absoluteFill}
-        pointerEvents="none"
-      />
       <StatusBar barStyle="light-content" />
 
       <View style={styles.inner}>
