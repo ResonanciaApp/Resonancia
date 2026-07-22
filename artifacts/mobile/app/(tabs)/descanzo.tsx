@@ -1125,7 +1125,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.1)",
     alignItems: "center",
     justifyContent: "center",
-    transform: [{ translateX: -20 }, { translateY: -30 }],
+    transform: [{ translateX: -20 }, { translateY: -4 }],
   },
   heroTitle: {
     fontFamily: "Manrope",
