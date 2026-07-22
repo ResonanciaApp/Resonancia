@@ -168,7 +168,7 @@ export function DrawerMenu() {
         style={[styles.drawer, visible && styles.drawerShadow, { transform: [{ translateX: Animated.add(translateX, dragX) }], opacity: drawerOpacity }]}
       >
         <LinearGradient
-          style={[styles.drawerInner, { paddingBottom: bottomPad + 24 }]}
+          style={styles.drawerInner}
           colors={activeTheme.gradient}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
@@ -223,7 +223,7 @@ export function DrawerMenu() {
           <ScrollView
             showsVerticalScrollIndicator={false}
             style={{ flex: 1 }}
-            contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 5, paddingBottom: 32 }}
+            contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 5, paddingBottom: bottomPad + 40 }}
           >
             <View style={[styles.itemGroup, { marginTop: 8 }]}>
               {MAIN_ITEMS.map((item) => (
@@ -495,7 +495,7 @@ const styles = StyleSheet.create({
   ctaDivider: {
     width: "100%",
     height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(255,255,255,0.07)",
+    backgroundColor: "rgba(255,255,255,0.15)",
     marginVertical: 4,
   },
   sceneGrid: {
