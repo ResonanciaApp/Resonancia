@@ -628,7 +628,7 @@ export default function SonidosAncestalesScreen() {
         <View style={styles.stickyHeaderRow}>
           <View style={{ width: 40 }} />
           <View style={styles.headerTitleCol}>
-            <Text style={[styles.headerTitle, { fontWeight: "600", transform: [{ translateY: -4 }] }]}>Sesiones</Text>
+            <Text style={[styles.headerTitle, { fontWeight: "600", fontSize: 17, transform: [{ translateY: -4 }] }]}>Sesiones</Text>
           </View>
           <View style={{ width: 40 }} />
         </View>
@@ -637,7 +637,7 @@ export default function SonidosAncestalesScreen() {
             <BackPill onPress={() => router.back()} size={28} style={{ transform: [{ translateX: -2 }] }} />
           </View>
         </View>
-        <View style={{ marginTop: 20 }}>
+        <View style={{ marginTop: 14 }}>
           <ChipRow tabs={TABS} activeTab={activeTab} onSelect={setActiveTab} onClear={() => setActiveTab(null)} />
         </View>
         <View style={styles.stickyTabsDivider} />
