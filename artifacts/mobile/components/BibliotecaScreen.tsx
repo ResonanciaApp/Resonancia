@@ -1,6 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-import { GoldGradientFill } from "@/components/GoldGradient";
+import MaskedView from "@react-native-masked-view/masked-view";
+import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router, useFocusEffect } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -141,18 +142,23 @@ function LibChip({ label, sel, onPress, icon }: { label: string; sel: boolean; o
           >
             {label}
           </Animated.Text>
-          <Animated.Text
-            style={[styles.chipText, styles.chipTextSel, StyleSheet.absoluteFill, { opacity: selAnim }]}
-          >
-            {label}
-          </Animated.Text>
+          <Animated.View style={[StyleSheet.absoluteFill, { opacity: selAnim }]} pointerEvents="none">
+            <MaskedView
+              style={StyleSheet.absoluteFill}
+              maskElement={<Text style={[styles.chipText, styles.chipTextSel]}>{label}</Text>}
+            >
+              <GoldGradient style={StyleSheet.absoluteFill} />
+            </MaskedView>
+          </Animated.View>
           <Animated.View
             style={[
               styles.chipUnderline,
-              { position: "absolute", left: 0, right: 0, bottom: -4 },
+              { position: "absolute", left: 0, right: 0, bottom: -4, overflow: "hidden" },
               { opacity: selAnim, transform: [{ scaleX: selAnim }] },
             ]}
-          />
+          >
+            <GoldGradientFill />
+          </Animated.View>
         </View>
       </View>
     </Pressable>

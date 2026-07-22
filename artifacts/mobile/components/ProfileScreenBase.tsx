@@ -786,7 +786,7 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
                 style={({ pressed }) => [styles.pill, sel && styles.pillSel, { opacity: pressed ? 0.8 : 1 }]}
               >
                 {sel && (
-                  <LinearGradient colors={["#D6A45C", "#F7CB6B"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+                  <LinearGradient colors={["#F7CB6B", "#FBA980"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
                 )}
                 <Text style={[styles.pillText, sel && styles.pillTextSel]}>{t.label}</Text>
               </Pressable>
