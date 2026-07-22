@@ -41,7 +41,7 @@ export const AMBIENT_SCENES: AmbientScene[] = [
   {
     id: "indigo",
     label: "Índigo",
-    colors: ["#20123B", "#152143"] as const,
+    colors: ["#2F1C4D", "#222C54"] as const,
     icon: "layers",
     image: require("@/assets/images/ambient/zafiro.png"),
   },
