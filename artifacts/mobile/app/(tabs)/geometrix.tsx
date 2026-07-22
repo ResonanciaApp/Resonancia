@@ -2146,7 +2146,7 @@ export default function GeometrixScreen() {
 
   // Landing screen: se muestra al entrar con el canvas vacío. Se oculta al
   // tocar "Crear Geometría" o al cargar una creación existente.
-  const [showLanding, setShowLanding] = useState(true);
+  const [showLanding, setShowLanding] = useState(false);
   // Pausa todas las animaciones de Reanimated (withRepeat) cuando el usuario
   // abandona la pestaña. Las tabs quedan montadas en React Navigation, así que
   // sin esta guarda rot/pulse/fade/ripple/expansión siguen corriendo en el fondo
@@ -2630,10 +2630,7 @@ export default function GeometrixScreen() {
     useCallback(() => {
       // Marcar la pestaña como activa → las animaciones de Reanimated se reanudan.
       setTabFocused(true);
-      // Mostrar landing si el canvas está vacío (sin params de carga directa).
-      if (activeRef.current.length === 0 && !params.load && !params.new && !params.preloadId) {
-        setShowLanding(true);
-      }
+      // Landing oculto: el acceso va directo al lienzo.
       // Audio de intro sincronizado con el "logo reveal" (cubo-3): solo cuando
       // el lienzo está vacío, que es cuando aparece el logo.
       if (activeRef.current.length === 0) {

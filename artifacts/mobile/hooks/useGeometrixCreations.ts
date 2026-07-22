@@ -4,6 +4,20 @@ import { useCallback, useEffect, useState } from "react";
 import type { GeometrixCreation } from "@/data/geometrix-creations";
 
 const KEY = "@geometrix_creations";
+// Limpieza one-shot pedida por el usuario (jul 2026): borra todas las
+// composiciones guardadas una única vez por dispositivo.
+const WIPE_FLAG = "@geometrix_creations_wiped_v1";
+
+async function wipeOnce() {
+  try {
+    const done = await AsyncStorage.getItem(WIPE_FLAG);
+    if (done) return;
+    await AsyncStorage.removeItem(KEY);
+    await AsyncStorage.setItem(WIPE_FLAG, "1");
+  } catch {
+    // sin conexión al storage: se reintenta en el próximo load
+  }
+}
 
 /** Campos que aporta el editor al guardar (el resto los completa el hook). */
 export type NewCreation = Pick<
@@ -23,6 +37,7 @@ export function useGeometrixCreations() {
 
   const load = useCallback(async () => {
     try {
+      await wipeOnce();
       const raw = await AsyncStorage.getItem(KEY);
       setCreations(raw ? (JSON.parse(raw) as GeometrixCreation[]) : []);
     } catch {
