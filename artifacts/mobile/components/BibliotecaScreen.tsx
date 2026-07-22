@@ -1919,7 +1919,7 @@ const styles = StyleSheet.create({
     width: (width - H_PAD * 2 - 12) / 2,
     height: 32,
     marginTop: -2,
-    borderRadius: 15,
+    borderRadius: 4,
     backgroundColor: "rgba(0,0,0,0.15)",
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.1)",
