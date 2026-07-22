@@ -532,7 +532,9 @@ export default function MusicaSonidosScreen() {
             <BackPill onPress={() => router.back()} size={28} style={{ transform: [{ translateX: -2 }] }} />
           </View>
         </View>
-        <ChipRow tabs={TABS} activeTab={activeTab} onSelect={setActiveTab} onClear={() => setActiveTab(null)} />
+        <View style={{ marginTop: 20 }}>
+          <ChipRow tabs={TABS} activeTab={activeTab} onSelect={setActiveTab} onClear={() => setActiveTab(null)} />
+        </View>
         <View style={styles.stickyTabsDivider} />
       </Animated.View>
 
