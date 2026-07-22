@@ -250,12 +250,12 @@ function AnimatedChipRow({
         >
           {onSearch && (
             <Pressable onPress={onSearch} hitSlop={10} style={styles.chipActionBtn}>
-              <Feather name="search" size={18} color="#f9f9f9" />
+              <Feather name="search" size={22} color="#f9f9f9" />
             </Pressable>
           )}
           {onAdd && (
             <Pressable onPress={onAdd} hitSlop={10} style={styles.chipActionBtn}>
-              <Feather name="plus" size={20} color="#f9f9f9" />
+              <Feather name="plus" size={24} color="#f9f9f9" />
             </Pressable>
           )}
         </Animated.View>
@@ -1945,7 +1945,22 @@ const styles = StyleSheet.create({
   headerIconBtn: { width: 43, height: 43, alignItems: "center", justifyContent: "center" },
 
   animChipWrap: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
-  chipRowActions: { flexDirection: "row", alignItems: "center", gap: 2, position: "absolute", right: H_PAD, top: 0, bottom: 0, marginTop: 66, zIndex: 3 },
+  chipRowActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
+    position: "absolute",
+    right: H_PAD,
+    top: 0,
+    marginTop: 66,
+    zIndex: 3,
+    height: 48,
+    paddingHorizontal: 10,
+    borderRadius: 100,
+    backgroundColor: "rgba(0,0,0,0.15)",
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
+  },
   chipActionBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center" },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, marginTop: -21, justifyContent: "center", zIndex: 3 },
   chipRow: { flexGrow: 0, marginTop: -21 },
