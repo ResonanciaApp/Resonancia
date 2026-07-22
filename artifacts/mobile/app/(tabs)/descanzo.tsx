@@ -1118,7 +1118,7 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     fontFamily: "Manrope",
-    fontSize: 33,
+    fontSize: 27,
     fontWeight: "700",
     letterSpacing: 0.3,
     textAlign: "left",

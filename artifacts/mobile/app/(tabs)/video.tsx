@@ -96,7 +96,7 @@ export default function VideoTabScreen() {
       <GeoUniverseBackground />
 
       {/* ── Sticky header: normal flow — transparent over gradient ── */}
-      <View style={[styles.stickyHeader, { paddingTop: topPad }]}>
+      <View style={[styles.stickyHeader, { paddingTop: topPad + 2 }]}>
         {/* Title row — igual que Perfil */}
         <View style={styles.titleRow}>
           <Text style={[styles.pageTitle, { color: "#F4F4F4" }]}>Videos</Text>
@@ -223,8 +223,8 @@ const styles = StyleSheet.create({
   stickyHeader: {
     backgroundColor: "transparent",
   },
-  titleRow: { alignItems: "center", paddingHorizontal: 15, paddingBottom: 10, paddingTop: 6 },
-  pageTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center", marginTop: 10 },
+  titleRow: { alignItems: "flex-start", paddingHorizontal: 19, paddingBottom: 10, paddingTop: 0 },
+  pageTitle: { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "left", marginTop: 0, transform: [{ translateY: 1 }] },
 
   searchWrap: {
     paddingHorizontal: 20,
