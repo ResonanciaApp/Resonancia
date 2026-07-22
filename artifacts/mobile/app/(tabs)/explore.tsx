@@ -577,8 +577,8 @@ export default function ExploreScreen() {
         {/* Barra de búsqueda pegada al header */}
         <Pressable style={styles.searchWrap} onPress={() => setSearchVisible(true)}>
           <View style={[styles.searchBox, { backgroundColor: "rgba(0,0,0,0.2)", borderColor: "rgba(255,255,255,0.7)", borderWidth: 1 }]} pointerEvents="none">
-            <Feather name="search" size={16} color={colors.mutedForeground} />
-            <Text style={[styles.searchInput, { color: "#F4F4F4", flex: 1 }]} numberOfLines={1}>
+            <Feather name="search" size={16} color="#F9F9F9" />
+            <Text style={[styles.searchInput, { color: "#F9F9F9", flex: 1 }]} numberOfLines={1}>
               Titulo, voz guía, artista o tema
             </Text>
           </View>
