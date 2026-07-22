@@ -457,7 +457,9 @@ export default function DescansoScreen() {
         <View style={styles.hero}>
           <Text style={[styles.heroTitle, { color: colors.foreground }]}>Dormir</Text>
           <View style={styles.heroMoonWrap}>
-            <Image source={require("@/assets/images/cat-luna.png")} style={{ width: 32, height: 32, transform: [{ translateX: -20 }, { translateY: -30 }] }} resizeMode="contain" />
+            <View style={styles.heroMoonCircle}>
+              <Image source={require("@/assets/images/cat-luna.png")} style={{ width: 32, height: 32 }} resizeMode="contain" />
+            </View>
           </View>
         </View>
 
@@ -1115,6 +1117,15 @@ const styles = StyleSheet.create({
     height: 48,
     justifyContent: "center",
     paddingHorizontal: 10,
+  },
+  heroMoonCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+    transform: [{ translateX: -20 }, { translateY: -30 }],
   },
   heroTitle: {
     fontFamily: "Manrope",
