@@ -48,7 +48,7 @@ const MAIN_ITEMS: MenuItem[] = [
 ];
 
 // ── Sección Escenas (dentro del drawer) ──────────────────────────────────────
-const DRAWER_CONTENT_W = DRAWER_PUSH - 80; // paddingHorizontal 20 (drawerInner) + 20 (ScrollView) × 2 lados
+const DRAWER_CONTENT_W = DRAWER_W - 40; // paddingHorizontal 20 (ScrollView) × 2 lados
 const DRAWER_ANIM_CARD_SIZE = Math.floor((DRAWER_CONTENT_W - 12) / 2);
 const DRAWER_ANIM_CARD_H = Math.round(DRAWER_ANIM_CARD_SIZE * 1.32);
 
