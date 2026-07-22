@@ -596,9 +596,9 @@ export default function SonidosAncestalesScreen() {
             </View>
           </View>
           {/* Ícono de categoría alineado con la flecha */}
-          <View style={[styles.heroOverlayRight, { top: topPad - 16 }]}>
+          <View style={[styles.heroOverlayRight, { top: topPad - 18 }]}>
             <Pressable hitSlop={10} style={[styles.catIconCircle, { transform: [] }]} onPress={() => router.push("/ancestrales-info" as never)}>
-              <Image source={require("@/assets/images/cat-sesiones.png")} style={{ width: 18, height: 18 }} contentFit="contain" tintColor="#f9f9f9" />
+              <Image source={require("@/assets/images/cat-sesiones.png")} style={{ width: 20, height: 20 }} contentFit="contain" tintColor="#f9f9f9" />
             </Pressable>
           </View>
         </View>
@@ -692,7 +692,7 @@ const styles = StyleSheet.create({
   /* ── Profile card ── */
   profileCard: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 19, paddingBottom: 14 },
   profileTitle: { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", color: TEXT, letterSpacing: 0.3, textAlign: "left", transform: [{ translateY: -4 }] },
-  catIconCircle: { width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(0,0,0,0.15)", borderWidth: 2, borderColor: "rgba(255,255,255,0.1)", alignItems: "center", justifyContent: "center", transform: [{ translateY: -4 }] },
+  catIconCircle: { width: 42, height: 42, borderRadius: 21, backgroundColor: "rgba(0,0,0,0.15)", borderWidth: 2, borderColor: "rgba(255,255,255,0.1)", alignItems: "center", justifyContent: "center", transform: [{ translateY: -4 }] },
   profileDesc: { fontFamily: "Manrope", fontSize: 13, color: "rgba(255,255,255,0.90)", lineHeight: 18, textAlign: "center", maxWidth: 280, marginTop: -4, marginBottom: 28 },
 
   /* ── Tabs (línea subrayada) ── */
