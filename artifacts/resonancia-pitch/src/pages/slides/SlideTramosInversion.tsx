@@ -1,12 +1,11 @@
 export default function SlideTramosInversion() {
-  // Modelo acelerado: tasa de equity crece con el tamaño del cheque
-  // Anchor máximo: $29,656M → 35%
+  // Tramos simples: equity fijo por monto de inversión
   const VAL_M12 = 1044; // millones CLP · 5.000 subs × $4.350 × 12 × 4×
 
   const tramos = [
-    { inv: 5,  equity: 5.0  },
-    { inv: 7,  equity: 7.5  },
-    { inv: 10, equity: 11.0 },
+    { inv: 1,   equity: 1.0 },
+    { inv: 1.8, equity: 2.0 },
+    { inv: 2.7, equity: 3.0 },
   ].map(({ inv, equity }) => {
     const postMoney = inv / (equity / 100);
     const stakeM12 = (equity / 100) * VAL_M12;
@@ -20,8 +19,7 @@ export default function SlideTramosInversion() {
   const fmtPct = (n: number) => n.toFixed(1).replace(".", ",") + "%";
   const fmtX = (n: number) => n.toFixed(1).replace(".", ",") + "×";
   const fmtInv = (inv: number) => {
-    if (inv === 29.656) return "29,66";
-    return inv.toFixed(0);
+    return inv % 1 === 0 ? inv.toFixed(0) : inv.toFixed(1).replace(".", ",");
   };
 
   const COL_HEADERS = [
