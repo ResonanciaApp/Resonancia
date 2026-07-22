@@ -750,7 +750,7 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
           ) : (
             <View style={{ width: 25 }} />
           )}
-          <Text style={styles.stickyTitle}>{dedicated ? "Mi Perfil" : "Biblioteca"}</Text>
+          <Text style={[styles.stickyTitle, !dedicated && styles.stickyTitleBiblioteca]}>{dedicated ? "Mi Perfil" : "Biblioteca"}</Text>
           {dedicated ? (
             <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
               <Pressable hitSlop={8} onPress={openEdit}>
@@ -1439,7 +1439,8 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   stickyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3, flex: 1, textAlign: "center", marginLeft: -4, transform: [{ translateY: 4 }] },
-  pillRowScroll: { marginTop: 30 },
+  stickyTitleBiblioteca: { fontSize: 33, textAlign: "left", marginLeft: -25 },
+  pillRowScroll: { marginTop: 5 },
   pillRow: {
     flexDirection: "row",
     gap: 8,

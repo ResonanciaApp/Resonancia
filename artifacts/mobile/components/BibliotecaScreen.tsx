@@ -1312,6 +1312,24 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
             </View>
             <Text style={styles.addResonadorLabel}>Agregar Resonador</Text>
           </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
+            onPress={() => { openMixer(); router.navigate("/(tabs)/musica" as never); }}
+          >
+            <View style={styles.addResonadorIcon}>
+              <MaterialCommunityIcons name="tune-variant" size={24} color={iconPlaceholderColor} />
+            </View>
+            <Text style={styles.addResonadorLabel}>Crear una mezcla</Text>
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
+            onPress={() => router.navigate("/(tabs)/geometrix" as never)}
+          >
+            <View style={styles.addResonadorIcon}>
+              <MaterialCommunityIcons name="hexagon-outline" size={24} color={iconPlaceholderColor} />
+            </View>
+            <Text style={styles.addResonadorLabel}>Crear Geometrix</Text>
+          </Pressable>
         </View>
       );
     }
@@ -1951,7 +1969,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: H_PAD,
     top: 0,
-    marginTop: 51,
+    marginTop: 36,
     zIndex: 3,
     height: 48,
     paddingHorizontal: 10,
