@@ -1951,7 +1951,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: H_PAD,
     top: 0,
-    marginTop: 66,
+    marginTop: 51,
     zIndex: 3,
     height: 48,
     paddingHorizontal: 10,
