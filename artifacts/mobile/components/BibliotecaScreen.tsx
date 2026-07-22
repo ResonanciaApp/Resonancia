@@ -59,13 +59,14 @@ const DARK_BLUE = "#210911";
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
-type LibTab = "playlists" | "mezclas" | "favoritos" | "resonadores";
+type LibTab = "playlists" | "mezclas" | "geometrix" | "favoritos" | "resonadores";
 type SortMode = "recientes" | "agregado" | "alfabetico";
 type ViewMode = "list" | "grid";
 
 const LIB_TABS: { id: LibTab; label: string }[] = [
   { id: "playlists",   label: "Rituales" },
   { id: "mezclas",     label: "Mezclas" },
+  { id: "geometrix",   label: "Geometrix" },
 ];
 
 // ── Fila de mezcla guardada ───────────────────────────────────────────────────
@@ -305,7 +306,7 @@ function AnimatedChipRow({
               <LibChip
                 label={t.label}
                 sel={colorTab === t.id}
-                icon={t.id === "playlists" ? "playlist-music" : t.id === "mezclas" ? "tune-variant" : undefined}
+                icon={t.id === "playlists" ? "playlist-music" : t.id === "mezclas" ? "tune-variant" : t.id === "geometrix" ? "hexagon-outline" : undefined}
                 onPress={() => (isSelected ? handleClear() : handleSelect(t.id))}
               />
             </Animated.View>
@@ -1969,7 +1970,7 @@ const styles = StyleSheet.create({
   },
   chip: {
     paddingVertical: 6,
-    width: (width - H_PAD * 2 - 12) / 2,
+    width: (width - H_PAD * 2 - 12 * 2) / 3,
     height: 48,
     marginTop: -2,
     borderRadius: 100,
@@ -1979,7 +1980,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  chipText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#f9f9f9" },
+  chipText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: "#f9f9f9" },
   chipTextSel: { color: "#f9f9f9" },
   chipUnderline: {
     height: 2,
