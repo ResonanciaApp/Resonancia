@@ -589,7 +589,7 @@ export default function SonidosAncestalesScreen() {
       >
 
         {/* ── Hero banner ── */}
-        <View style={styles.heroArea}>
+        <View style={[styles.heroArea, { height: topPad + 63 }]}>
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
             <View style={styles.lotoBtn}>
               <BackPill onPress={() => router.back()} size={31} style={{ transform: [{ translateX: -2 }] }} />
@@ -604,8 +604,10 @@ export default function SonidosAncestalesScreen() {
 
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
-          <Image source={require("@/assets/images/cat-sesiones.png")} style={{ width: 34, height: 34 }} contentFit="contain" />
           <Text style={styles.profileTitle}>Sesiones</Text>
+          <View style={styles.catIconCircle}>
+            <Image source={require("@/assets/images/cat-sesiones.png")} style={{ width: 20, height: 20 }} contentFit="contain" />
+          </View>
         </View>
 
         {/* ── Tabs ── */}
@@ -689,8 +691,9 @@ const styles = StyleSheet.create({
   heroIconCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: "#1B060F", borderWidth: 2, borderColor: "rgba(255,255,255,0.1)", alignItems: "center", justifyContent: "center", overflow: "hidden" },
 
   /* ── Profile card ── */
-  profileCard: { marginHorizontal: H_PAD, marginTop: -67, paddingBottom: 14, gap: 8, alignItems: "center" },
-  profileTitle: { fontFamily: "Manrope", fontSize: 22, fontWeight: "700", color: TEXT, letterSpacing: 0.3 },
+  profileCard: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 19, paddingBottom: 14 },
+  profileTitle: { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", color: TEXT, letterSpacing: 0.3, textAlign: "left", transform: [{ translateY: -4 }] },
+  catIconCircle: { width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(0,0,0,0.15)", borderWidth: 2, borderColor: "rgba(255,255,255,0.1)", alignItems: "center", justifyContent: "center", transform: [{ translateY: -4 }] },
   profileDesc: { fontFamily: "Manrope", fontSize: 13, color: "rgba(255,255,255,0.90)", lineHeight: 18, textAlign: "center", maxWidth: 280, marginTop: -4, marginBottom: 28 },
 
   /* ── Tabs (línea subrayada) ── */
