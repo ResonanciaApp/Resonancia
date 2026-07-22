@@ -120,6 +120,7 @@ export default function VideosScreen() {
         >
           <Feather name="chevron-left" size={26} color={colors.foreground} />
         </Pressable>
+        <Text style={[styles.headerTitle, { color: "#F4F4F4" }]}>Videos</Text>
       </View>
 
       {/* ── Sticky area: search (hides) + pills (stick) ── */}
@@ -205,6 +206,14 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: "center",
     justifyContent: "center",
+  },
+  headerTitle: {
+    fontFamily: "Manrope",
+    fontSize: 33,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+    textAlign: "left",
+    transform: [{ translateY: 1 }],
   },
 
   stickyArea: {
