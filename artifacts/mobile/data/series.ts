@@ -33,7 +33,7 @@ export const SERIES: Series[] = [
     accentColor: "#f4c993",
     gradient: ["#7A5520", "#3E2208"],
     image: SESSIONS.find((s) => s.id === "2")?.image ?? SESSIONS[0].image,
-    sessionIds: ["2", "8", "9", "10"],
+    sessionIds: ["2", "8", "9"],
   },
   {
     id: "calma-la-ansiedad",

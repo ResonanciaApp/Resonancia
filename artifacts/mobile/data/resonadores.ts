@@ -76,7 +76,7 @@ export const RESONADORES: Resonador[] = [
     email: "hola@lunacosmica.com",
     instagram: "https://instagram.com/lunacosmica",
     donationUrl: "https://cafecito.app/lunacosmica",
-    sessionIds: ["1", "5", "7", "8", "9", "10"],
+    sessionIds: ["1", "5", "7", "8", "9"],
     projects: [
       { platform: "spotify", label: "Luna Cósmica en Spotify", url: "https://spotify.com" },
       { platform: "youtube", label: "Canal de YouTube", url: "https://youtube.com" },
