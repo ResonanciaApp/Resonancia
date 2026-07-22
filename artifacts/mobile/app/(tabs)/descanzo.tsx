@@ -226,7 +226,7 @@ function NightTimerSheet({
         <View style={styles.sheetHandle} />
 
         <View style={styles.sheetHeader}>
-          <Ionicons name="moon" size={20} color="#f9f9f9" />
+          <Ionicons name="moon" size={18} color="#f9f9f9" />
           <Text style={styles.sheetTitle}>Prepara tu noche</Text>
         </View>
 

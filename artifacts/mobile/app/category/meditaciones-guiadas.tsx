@@ -471,7 +471,7 @@ export default function MeditacionesGuiadasScreen() {
         <View style={styles.profileCard}>
           <Text style={styles.profileTitle}>Meditaciones</Text>
           <Pressable hitSlop={10} style={styles.catIconCircle} onPress={() => router.push("/meditaciones-info" as never)}>
-            <Image source={require("@/assets/images/cat-meditaciones.png")} style={{ width: 20, height: 20 }} contentFit="contain" tintColor="#f9f9f9" />
+            <Image source={require("@/assets/images/cat-meditaciones.png")} style={{ width: 18, height: 18 }} contentFit="contain" tintColor="#f9f9f9" />
           </Pressable>
         </View>
 
