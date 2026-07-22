@@ -107,7 +107,7 @@ export const RESONADORES: Resonador[] = [
     instagram: "https://instagram.com/kaiamara",
     linktree: "https://linktr.ee/kaiamara",
     donationUrl: "https://ko-fi.com/kaiamara",
-    sessionIds: ["20", "21", "22", "23", "24", "25"],
+    sessionIds: ["20", "21", "22", "24", "25"],
     projects: [
       { platform: "youtube", label: "Meditaciones en YouTube", url: "https://youtube.com" },
       { platform: "soundcloud", label: "SoundCloud", url: "https://soundcloud.com" },
