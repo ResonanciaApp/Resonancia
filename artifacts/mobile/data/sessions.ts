@@ -1257,6 +1257,96 @@ export type CatalogSessionSnapshot = {
   createdAt?: string | null;
 };
 
+/** Imágenes bundleadas por nombre de archivo (imageKey de la DB). */
+const BUNDLED_SESSION_IMAGES: Record<string, import("react-native").ImageSourcePropType> = {
+  "ancestral-instrumentos.jpg": require("@/assets/images/sessions/ancestral-instrumentos.jpg"),
+  "med-escaneo-corporal.jpg": require("@/assets/images/sessions/med-escaneo-corporal.jpg"),
+  "med-manifestacion.jpg": require("@/assets/images/sessions/med-manifestacion.jpg"),
+  "med-mantras.jpg": require("@/assets/images/sessions/med-mantras.jpg"),
+  "med-no-duales.jpg": require("@/assets/images/sessions/med-no-duales.jpg"),
+  "med-visualizaciones.jpg": require("@/assets/images/sessions/med-visualizaciones.jpg"),
+  "sab-aceptacion-flujo.jpg": require("@/assets/images/sessions/sab-aceptacion-flujo.jpg"),
+  "sab-atencion-plena.jpg": require("@/assets/images/sessions/sab-atencion-plena.jpg"),
+  "sab-condicionamiento.jpg": require("@/assets/images/sessions/sab-condicionamiento.jpg"),
+  "sab-oscuridad.jpg": require("@/assets/images/sessions/sab-oscuridad.jpg"),
+  "sab-silencio-interior.jpg": require("@/assets/images/sessions/sab-silencio-interior.jpg"),
+  "session-1.jpg": require("@/assets/images/sessions/session-1.jpg"),
+  "session-10.jpg": require("@/assets/images/sessions/session-10.jpg"),
+  "session-11.jpg": require("@/assets/images/sessions/session-11.jpg"),
+  "session-12.jpg": require("@/assets/images/sessions/session-12.jpg"),
+  "session-13.jpg": require("@/assets/images/sessions/session-13.jpg"),
+  "session-14.jpg": require("@/assets/images/sessions/session-14.jpg"),
+  "session-15.jpg": require("@/assets/images/sessions/session-15.jpg"),
+  "session-16.jpg": require("@/assets/images/sessions/session-16.jpg"),
+  "session-17.jpg": require("@/assets/images/sessions/session-17.jpg"),
+  "session-18.jpg": require("@/assets/images/sessions/session-18.jpg"),
+  "session-19.jpg": require("@/assets/images/sessions/session-19.jpg"),
+  "session-2-musica-dark.jpg": require("@/assets/images/sessions/session-2-musica-dark.jpg"),
+  "session-2.jpg": require("@/assets/images/sessions/session-2.jpg"),
+  "session-20-musica-dark.jpg": require("@/assets/images/sessions/session-20-musica-dark.jpg"),
+  "session-20.jpg": require("@/assets/images/sessions/session-20.jpg"),
+  "session-21.jpg": require("@/assets/images/sessions/session-21.jpg"),
+  "session-22.jpg": require("@/assets/images/sessions/session-22.jpg"),
+  "session-23.jpg": require("@/assets/images/sessions/session-23.jpg"),
+  "session-24.jpg": require("@/assets/images/sessions/session-24.jpg"),
+  "session-25.jpg": require("@/assets/images/sessions/session-25.jpg"),
+  "session-26.jpg": require("@/assets/images/sessions/session-26.jpg"),
+  "session-27-musica-dark.jpg": require("@/assets/images/sessions/session-27-musica-dark.jpg"),
+  "session-27.jpg": require("@/assets/images/sessions/session-27.jpg"),
+  "session-28.jpg": require("@/assets/images/sessions/session-28.jpg"),
+  "session-29.jpg": require("@/assets/images/sessions/session-29.jpg"),
+  "session-3-musica-dark.jpg": require("@/assets/images/sessions/session-3-musica-dark.jpg"),
+  "session-30.jpg": require("@/assets/images/sessions/session-30.jpg"),
+  "session-31.jpg": require("@/assets/images/sessions/session-31.jpg"),
+  "session-32.jpg": require("@/assets/images/sessions/session-32.jpg"),
+  "session-33.jpg": require("@/assets/images/sessions/session-33.jpg"),
+  "session-34.jpg": require("@/assets/images/sessions/session-34.jpg"),
+  "session-35.jpg": require("@/assets/images/sessions/session-35.jpg"),
+  "session-36.jpg": require("@/assets/images/sessions/session-36.jpg"),
+  "session-37.jpg": require("@/assets/images/sessions/session-37.jpg"),
+  "session-38.jpg": require("@/assets/images/sessions/session-38.jpg"),
+  "session-39.jpg": require("@/assets/images/sessions/session-39.jpg"),
+  "session-4.jpg": require("@/assets/images/sessions/session-4.jpg"),
+  "session-40.jpg": require("@/assets/images/sessions/session-40.jpg"),
+  "session-41.jpg": require("@/assets/images/sessions/session-41.jpg"),
+  "session-42.jpg": require("@/assets/images/sessions/session-42.jpg"),
+  "session-43.jpg": require("@/assets/images/sessions/session-43.jpg"),
+  "session-44.jpg": require("@/assets/images/sessions/session-44.jpg"),
+  "session-45.jpg": require("@/assets/images/sessions/session-45.jpg"),
+  "session-46.jpg": require("@/assets/images/sessions/session-46.jpg"),
+  "session-47.jpg": require("@/assets/images/sessions/session-47.jpg"),
+  "session-48.jpg": require("@/assets/images/sessions/session-48.jpg"),
+  "session-49.jpg": require("@/assets/images/sessions/session-49.jpg"),
+  "session-5-musica-dark.jpg": require("@/assets/images/sessions/session-5-musica-dark.jpg"),
+  "session-5.jpg": require("@/assets/images/sessions/session-5.jpg"),
+  "session-50.jpg": require("@/assets/images/sessions/session-50.jpg"),
+  "session-51.jpg": require("@/assets/images/sessions/session-51.jpg"),
+  "session-52.jpg": require("@/assets/images/sessions/session-52.jpg"),
+  "session-53.jpg": require("@/assets/images/sessions/session-53.jpg"),
+  "session-54.jpg": require("@/assets/images/sessions/session-54.jpg"),
+  "session-55.jpg": require("@/assets/images/sessions/session-55.jpg"),
+  "session-56.jpg": require("@/assets/images/sessions/session-56.jpg"),
+  "session-56.png": require("@/assets/images/sessions/session-56.png"),
+  "session-57.png": require("@/assets/images/sessions/session-57.png"),
+  "session-58.png": require("@/assets/images/sessions/session-58.png"),
+  "session-59.png": require("@/assets/images/sessions/session-59.png"),
+  "session-6-musica-dark.jpg": require("@/assets/images/sessions/session-6-musica-dark.jpg"),
+  "session-6.jpg": require("@/assets/images/sessions/session-6.jpg"),
+  "session-60.png": require("@/assets/images/sessions/session-60.png"),
+  "session-61.png": require("@/assets/images/sessions/session-61.png"),
+  "session-62.png": require("@/assets/images/sessions/session-62.png"),
+  "session-63.png": require("@/assets/images/sessions/session-63.png"),
+  "session-64.png": require("@/assets/images/sessions/session-64.png"),
+  "session-65.png": require("@/assets/images/sessions/session-65.png"),
+  "session-66.jpg": require("@/assets/images/sessions/session-66.jpg"),
+  "session-7-musica-dark.jpg": require("@/assets/images/sessions/session-7-musica-dark.jpg"),
+  "session-7.jpg": require("@/assets/images/sessions/session-7.jpg"),
+  "session-8-musica-dark.jpg": require("@/assets/images/sessions/session-8-musica-dark.jpg"),
+  "session-8.jpg": require("@/assets/images/sessions/session-8.jpg"),
+  "session-9-musica-dark.jpg": require("@/assets/images/sessions/session-9-musica-dark.jpg"),
+  "session-9.jpg": require("@/assets/images/sessions/session-9.jpg"),
+};
+
 /** Convierte un objectPath de storage en URL absoluta cargable. */
 function resolveObjectPath(path: string | null | undefined): string | undefined {
   if (!path) return undefined;
@@ -1341,7 +1431,10 @@ export function applyCatalogSnapshot(remote: CatalogSessionSnapshot[]): void {
     const main = r.audioFiles?.find((a) => a.role === "main" || a.role === "base") ?? r.audioFiles?.[0];
     const voice = r.audioFiles?.find((a) => a.role === "voice");
     const image: import("react-native").ImageSourcePropType = r.imageUrl
-      ? { uri: resolveObjectPath(r.imageUrl) }
+      ? (BUNDLED_SESSION_IMAGES[r.imageUrl] ??
+          (r.imageUrl.startsWith("/") || /^https?:/i.test(r.imageUrl)
+            ? { uri: resolveObjectPath(r.imageUrl) as string }
+            : require("@/assets/images/sessions/session-2.jpg")))
       : require("@/assets/images/sessions/session-2.jpg");
     SESSIONS.push({
       id: r.id,
