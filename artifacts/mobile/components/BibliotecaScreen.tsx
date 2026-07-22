@@ -2020,9 +2020,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   chip: {
-    paddingVertical: 6,
     width: (width - H_PAD * 2 - 12 * 2) / 3,
-    height: 48,
+    height: 32,
     marginTop: -2,
     borderRadius: 100,
     backgroundColor: "rgba(0,0,0,0.15)",
