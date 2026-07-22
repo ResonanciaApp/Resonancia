@@ -1095,7 +1095,7 @@ export default function HomeScreen2() {
               { id: "meditaciones-guiadas", label: "Meditaciones", color: "#C8A6FF", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cat-meditaciones.png")} style={{ width: 22, height: 22 }} contentFit="contain" /> },
               { id: "sonidos-ancestrales",  label: "Sesiones",   color: "#E7A36E", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cat-sesiones.png")} style={{ width: 26, height: 26 }} contentFit="contain" /> },
               { id: "musica-sonidos",        label: "Música",     color: "#6FD7D8", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cat-musica.png")} style={{ width: 26, height: 26 }} contentFit="contain" /> },
-              { id: "__descanzo__",           label: "Dormir",     color: "#8ED9FF", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cat-luna.png")} style={{ width: 22, height: 22 }} contentFit="contain" /> },
+              { id: "__descanzo__",           label: "Dormir",     color: "#8ED9FF", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cat-luna.png")} style={{ width: 22, height: 22 }} contentFit="contain" tintColor="#f9f9f9" /> },
               { id: "__mezcla__",             label: "Mezclador",  color: "#E6BE67", icon: (color: string) => <MaterialCommunityIcons name="tune-variant" size={24} color={color} /> },
               { id: "__geometrix__",          label: "Geometrix",  color: "#C4C8D4", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cubo-4.png")} style={{ width: 26, height: 26 }} contentFit="contain" /> },
             ] as const).map((c, i) => {

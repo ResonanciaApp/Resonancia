@@ -26,6 +26,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
 import { useSelectedScene } from "@/context/SelectedSceneContext";
 import { SceneAnimationCard, type SceneItem } from "@/components/SceneAnimationCard";
+import { SceneAnimationCtaCard } from "@/components/EscenasSheet";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import type { GeometrixCreation } from "@/data/geometrix-creations";
 import type { SceneAnimation } from "@workspace/api-client-react";
@@ -48,11 +49,9 @@ const MAIN_ITEMS: MenuItem[] = [
 ];
 
 // ── Sección Escenas (dentro del drawer) ──────────────────────────────────────
-const DRAWER_CONTENT_W = DRAWER_W - 40; // paddingHorizontal 20 (ScrollView) × 2 lados
-const DRAWER_ANIM_CARD_SIZE = Math.floor(((DRAWER_CONTENT_W - 12) / 2) * 1.1);
+const DRAWER_CONTENT_W = DRAWER_PUSH - 40; // ancho real del drawer − paddingHorizontal 20 (ScrollView) × 2 lados
+const DRAWER_ANIM_CARD_SIZE = Math.floor((DRAWER_CONTENT_W - 12) / 2);
 const DRAWER_ANIM_CARD_H = Math.round(DRAWER_ANIM_CARD_SIZE * 1.32);
-// Las cards agrandadas sobresalen del padding del ScrollView; se compensa con margen negativo
-const DRAWER_ANIM_GRID_OVERHANG = Math.max(0, (DRAWER_ANIM_CARD_SIZE * 2 + 12 - DRAWER_CONTENT_W) / 2);
 
 /** Convierte una creación de Geometrix al shape mínimo que necesita SceneAnimationCard. */
 function creationToSceneItem(c: GeometrixCreation): SceneItem {
@@ -275,7 +274,7 @@ export function DrawerMenu() {
                 <MaterialCommunityIcons name="star-four-points-outline" size={15} color="rgba(255,255,255,0.8)" />
                 <Text style={styles.sceneTitle}>Escenas animadas</Text>
               </View>
-              <View style={[styles.sceneGrid, { marginHorizontal: -DRAWER_ANIM_GRID_OVERHANG }]}>
+              <View style={styles.sceneGrid}>
                 {geoScenes.map((scene) => (
                   <SceneAnimationCard
                     key={`admin-${scene.id}`}
@@ -307,6 +306,15 @@ export function DrawerMenu() {
                     }}
                   />
                 ))}
+                {/* CTA: siempre al final */}
+                <SceneAnimationCtaCard
+                  size={DRAWER_ANIM_CARD_SIZE}
+                  height={DRAWER_ANIM_CARD_H}
+                  onPress={() => {
+                    onClose();
+                    router.navigate("/(tabs)/geometrix" as never);
+                  }}
+                />
               </View>
             </View>
 

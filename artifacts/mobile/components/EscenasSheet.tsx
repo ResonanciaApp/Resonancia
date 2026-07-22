@@ -96,7 +96,7 @@ function creationToSceneAnimation(c: GeometrixCreation): SceneAnimation {
 }
 
 // ── Card CTA "Crea tu animación" ──────────────────────────────────────────
-function SceneAnimationCtaCard({
+export function SceneAnimationCtaCard({
   size,
   height,
   onPress,
