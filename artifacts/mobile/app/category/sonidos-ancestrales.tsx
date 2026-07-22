@@ -595,19 +595,14 @@ export default function SonidosAncestalesScreen() {
               <BackPill onPress={() => router.back()} size={31} style={{ transform: [{ translateX: -2 }] }} />
             </View>
           </View>
-          <View style={[styles.heroOverlayRight, { top: topPad + 8 }]}>
-            <Pressable hitSlop={10} style={styles.headerBtn} onPress={() => router.push("/ancestrales-info" as never)}>
-              <Feather name="book-open" size={21} color="rgba(255,255,255,0.85)" />
-            </Pressable>
-          </View>
         </View>
 
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
           <Text style={styles.profileTitle}>Sesiones</Text>
-          <View style={styles.catIconCircle}>
+          <Pressable hitSlop={10} style={styles.catIconCircle} onPress={() => router.push("/ancestrales-info" as never)}>
             <Image source={require("@/assets/images/cat-sesiones.png")} style={{ width: 20, height: 20 }} contentFit="contain" />
-          </View>
+          </Pressable>
         </View>
 
         {/* ── Tabs ── */}
