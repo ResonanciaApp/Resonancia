@@ -465,14 +465,17 @@ export default function MeditacionesGuiadasScreen() {
               <BackPill onPress={() => router.back()} size={28} style={{ transform: [{ translateX: -2 }] }} />
             </View>
           </View>
+          {/* Ícono de categoría alineado con la flecha */}
+          <View style={[styles.heroOverlayRight, { top: topPad - 16 }]}>
+            <Pressable hitSlop={10} style={[styles.catIconCircle, { transform: [] }]} onPress={() => router.push("/meditaciones-info" as never)}>
+              <Image source={require("@/assets/images/cat-meditaciones.png")} style={{ width: 18, height: 18 }} contentFit="contain" tintColor="#f9f9f9" />
+            </Pressable>
+          </View>
         </View>
 
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
           <Text style={styles.profileTitle}>Meditaciones</Text>
-          <Pressable hitSlop={10} style={styles.catIconCircle} onPress={() => router.push("/meditaciones-info" as never)}>
-            <Image source={require("@/assets/images/cat-meditaciones.png")} style={{ width: 18, height: 18 }} contentFit="contain" tintColor="#f9f9f9" />
-          </Pressable>
         </View>
 
         {/* ── Tabs ── */}
