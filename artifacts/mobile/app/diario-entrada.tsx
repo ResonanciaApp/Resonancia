@@ -14,7 +14,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import { usePremium } from "@/context/PremiumContext";
 import { useDiario } from "@/hooks/useDiario";
 import { useColors } from "@/hooks/useColors";
@@ -92,8 +91,7 @@ export default function DiarioEntradaScreen() {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={sceneTheme.gradient} locations={[0, 0.5, 1]} style={StyleSheet.absoluteFill} />
-      <SacredBackground />
+      <LinearGradient colors={sceneTheme.gradient} style={StyleSheet.absoluteFill} />
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>

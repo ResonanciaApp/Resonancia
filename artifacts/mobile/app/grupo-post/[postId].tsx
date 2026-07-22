@@ -18,7 +18,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -160,8 +159,7 @@ export default function GrupoPostScreen() {
     >
       <View style={styles.root}>
         <StatusBar barStyle="light-content" />
-        <LinearGradient colors={sceneTheme.gradient} locations={[0, 0.5, 1]} style={StyleSheet.absoluteFill} />
-        <SacredBackground />
+        <LinearGradient colors={sceneTheme.gradient} style={StyleSheet.absoluteFill} />
 
         {/* Header */}
         <View style={[styles.header, { paddingTop: topPad + 8, borderBottomColor: "rgba(255,255,255,0.1)" }]}>
@@ -187,7 +185,7 @@ export default function GrupoPostScreen() {
             showsVerticalScrollIndicator={false}
           >
             {/* Parent post */}
-            <View style={[styles.parentPost, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" }]}>
+            <View style={[styles.parentPost, { backgroundColor: "rgba(255,255,255,0.075)", borderColor: "rgba(255,255,255,0.1)" }]}>
               <View style={styles.postHeader}>
                 <View style={[styles.avatar, { backgroundColor: post.color + "30" }]}>
                   <Text style={[styles.avatarText, { color: post.color }]}>{post.initials}</Text>
@@ -313,7 +311,7 @@ export default function GrupoPostScreen() {
               },
             ]}
           >
-            <View style={[styles.composeInput, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" }]}>
+            <View style={[styles.composeInput, { backgroundColor: "rgba(255,255,255,0.075)", borderColor: "rgba(255,255,255,0.1)" }]}>
               <TextInput
                 value={commentText}
                 onChangeText={setCommentText}
@@ -329,7 +327,7 @@ export default function GrupoPostScreen() {
               style={[
                 styles.sendBtn,
                 {
-                  backgroundColor: commentText.trim() ? undefined : "rgba(255,255,255,0.06)",
+                  backgroundColor: commentText.trim() ? undefined : "rgba(255,255,255,0.075)",
                   overflow: "hidden",
                   borderColor: "rgba(255,255,255,0.1)",
                 },

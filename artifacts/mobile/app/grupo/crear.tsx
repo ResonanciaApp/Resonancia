@@ -133,7 +133,7 @@ function BottomSheet({ children, colors }: { children: React.ReactNode; colors: 
     <Animated.View
       style={[
         sheet.root,
-        { backgroundColor: "rgba(255,255,255,0.06)" },
+        { backgroundColor: "rgba(255,255,255,0.075)" },
         { transform: [{ translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [300, 0] }) }] },
       ]}
     >
@@ -213,7 +213,6 @@ export default function CrearGrupoScreen() {
         <LinearGradient
           style={StyleSheet.absoluteFill}
           colors={sceneTheme.gradient}
-          locations={[0, 0.5, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
         />
@@ -227,7 +226,7 @@ export default function CrearGrupoScreen() {
 
           <Text style={styles.stepTitle}>¿Cómo se llamará tu grupo?</Text>
 
-          <View style={[styles.nameInputBox, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" }]}>
+          <View style={[styles.nameInputBox, { backgroundColor: "rgba(255,255,255,0.075)", borderColor: "rgba(255,255,255,0.1)" }]}>
             <TextInput
               ref={nameInputRef}
               value={nombre}
@@ -249,7 +248,7 @@ export default function CrearGrupoScreen() {
         <View style={[styles.stepFooter, { paddingBottom: bottomPad + 12 }]}>
           <Pressable
             onPress={() => canNext1 && setStep(2)}
-            style={[styles.nextBtn, { backgroundColor: canNext1 ? undefined : "rgba(255,255,255,0.06)" }]}
+            style={[styles.nextBtn, { backgroundColor: canNext1 ? undefined : "rgba(255,255,255,0.075)" }]}
             disabled={!canNext1}
           >
             {canNext1 && <GoldGradientFill />}
@@ -273,7 +272,6 @@ export default function CrearGrupoScreen() {
         <LinearGradient
           style={StyleSheet.absoluteFill}
           colors={sceneTheme.gradient}
-          locations={[0, 0.5, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
         />
@@ -310,7 +308,7 @@ export default function CrearGrupoScreen() {
                 onChangeText={setDescripcion}
                 placeholder="Agregar una descripción (Opcional)"
                 placeholderTextColor={"#F4F4F4"}
-                style={[styles.sheetTextarea, { backgroundColor: "rgba(255,255,255,0.06)", color: "#F9F9F9", borderColor: "rgba(255,255,255,0.1)" }]}
+                style={[styles.sheetTextarea, { backgroundColor: "rgba(255,255,255,0.075)", color: "#F9F9F9", borderColor: "rgba(255,255,255,0.1)" }]}
                 multiline
                 numberOfLines={4}
                 maxLength={200}
@@ -387,7 +385,7 @@ export default function CrearGrupoScreen() {
                 onChangeText={setBienvenida}
                 placeholder="Ej: Bienvenido/a al grupo. Aquí compartimos..."
                 placeholderTextColor={"#F4F4F4"}
-                style={[styles.sheetTextarea, { backgroundColor: "rgba(255,255,255,0.06)", color: "#F9F9F9", borderColor: "rgba(255,255,255,0.1)" }]}
+                style={[styles.sheetTextarea, { backgroundColor: "rgba(255,255,255,0.075)", color: "#F9F9F9", borderColor: "rgba(255,255,255,0.1)" }]}
                 multiline
                 numberOfLines={4}
                 maxLength={300}
@@ -426,7 +424,7 @@ export default function CrearGrupoScreen() {
               </Text>
 
               {/* Invite link box */}
-              <View style={[styles.linkBox, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" }]}>
+              <View style={[styles.linkBox, { backgroundColor: "rgba(255,255,255,0.075)", borderColor: "rgba(255,255,255,0.1)" }]}>
                 <Feather name="link" size={14} color={colors.primary} style={{ marginRight: 8 }} />
                 <Text style={[styles.linkText, { color: colors.primary }]} numberOfLines={1}>
                   {inviteCode}

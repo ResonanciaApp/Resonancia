@@ -40,7 +40,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -514,8 +513,7 @@ export default function ChatScreen() {
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={sceneTheme.gradient} locations={[0, 0.5, 1]} style={StyleSheet.absoluteFill} />
-      <SacredBackground />
+      <LinearGradient colors={sceneTheme.gradient} style={StyleSheet.absoluteFill} />
 
       {/* Header */}
       <View
@@ -624,14 +622,14 @@ export default function ChatScreen() {
               <Pressable
                 onPress={cancelRecording}
                 hitSlop={10}
-                style={[styles.iconBtn, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" }]}
+                style={[styles.iconBtn, { backgroundColor: "rgba(255,255,255,0.075)", borderColor: "rgba(255,255,255,0.1)" }]}
               >
                 <Feather name="x" size={16} color="#E07A7A" />
               </Pressable>
               <View
                 style={[
                   styles.recBar,
-                  { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" },
+                  { backgroundColor: "rgba(255,255,255,0.075)", borderColor: "rgba(255,255,255,0.1)" },
                 ]}
               >
                 <View style={styles.recDot} />
@@ -652,7 +650,7 @@ export default function ChatScreen() {
                 hitSlop={10}
                 style={[
                   styles.iconBtn,
-                  { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" },
+                  { backgroundColor: "rgba(255,255,255,0.075)", borderColor: "rgba(255,255,255,0.1)" },
                 ]}
               >
                 <Feather name="plus" size={18} color={colors.accent} />
@@ -665,7 +663,7 @@ export default function ChatScreen() {
                 style={[
                   styles.input,
                   {
-                    backgroundColor: "rgba(255,255,255,0.06)",
+                    backgroundColor: "rgba(255,255,255,0.075)",
                     borderColor: "rgba(255,255,255,0.1)",
                     color: "#F9F9F9",
                   },
@@ -781,7 +779,7 @@ function MessageBubble({
           style={[
             styles.sessionCard,
             {
-              backgroundColor: isMine ? undefined : "rgba(255,255,255,0.06)",
+              backgroundColor: isMine ? undefined : "rgba(255,255,255,0.075)",
               overflow: "hidden",
               borderColor: isMine ? "transparent" : "rgba(255,255,255,0.1)",
             },
@@ -826,7 +824,7 @@ function MessageBubble({
                   borderBottomRightRadius: groupedWithNext ? compactRadius : tailRadius,
                 }
               : {
-                  backgroundColor: "rgba(255,255,255,0.06)",
+                  backgroundColor: "rgba(255,255,255,0.075)",
                   borderColor: "rgba(255,255,255,0.1)",
                   borderWidth: 1,
                   borderTopLeftRadius: groupedWithPrev ? compactRadius : 18,
@@ -880,7 +878,7 @@ function TypingBubble({ name, tint }: { name: string; tint: string }) {
         style={[
           styles.bubble,
           {
-            backgroundColor: "rgba(255,255,255,0.06)",
+            backgroundColor: "rgba(255,255,255,0.075)",
             borderColor: "rgba(255,255,255,0.1)",
             borderWidth: 1,
             borderBottomLeftRadius: 4,
@@ -932,7 +930,7 @@ function ShareSessionModal({
           </Pressable>
         </View>
         <View
-          style={[styles.searchRow, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" }]}
+          style={[styles.searchRow, { backgroundColor: "rgba(255,255,255,0.075)", borderColor: "rgba(255,255,255,0.1)" }]}
         >
           <Feather name="search" size={16} color={"#F4F4F4"} />
           <TextInput
@@ -955,7 +953,7 @@ function ShareSessionModal({
               style={({ pressed }) => [
                 styles.pickerRow,
                 {
-                  backgroundColor: "rgba(255,255,255,0.06)",
+                  backgroundColor: "rgba(255,255,255,0.075)",
                   borderColor: "rgba(255,255,255,0.1)",
                   opacity: pressed ? 0.8 : 1,
                 },
@@ -1258,7 +1256,7 @@ function AudioAttachment({
       style={[
         styles.audioBubble,
         {
-          backgroundColor: isMine ? undefined : "rgba(255,255,255,0.06)",
+          backgroundColor: isMine ? undefined : "rgba(255,255,255,0.075)",
           overflow: isMine ? "hidden" : undefined,
           borderColor: isMine ? "transparent" : "rgba(255,255,255,0.1)",
           borderWidth: isMine ? 0 : 1,
@@ -1381,7 +1379,7 @@ function AttachOption({
       style={({ pressed }) => [
         styles.attachOption,
         {
-          backgroundColor: "rgba(255,255,255,0.06)",
+          backgroundColor: "rgba(255,255,255,0.075)",
           borderColor: "rgba(255,255,255,0.1)",
           opacity: pressed ? 0.85 : 1,
         },
@@ -1478,7 +1476,7 @@ function GifPickerModal({
         <View
           style={[
             styles.searchBox,
-            { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" },
+            { backgroundColor: "rgba(255,255,255,0.075)", borderColor: "rgba(255,255,255,0.1)" },
           ]}
         >
           <Feather name="search" size={16} color={"#F4F4F4"} />
@@ -1521,7 +1519,7 @@ function GifPickerModal({
                   flex: 1,
                   borderRadius: 12,
                   overflow: "hidden",
-                  backgroundColor: "rgba(255,255,255,0.06)",
+                  backgroundColor: "rgba(255,255,255,0.075)",
                   opacity: pressed ? 0.7 : 1,
                   aspectRatio: 1 / ratio,
                 })}

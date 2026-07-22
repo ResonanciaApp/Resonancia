@@ -16,7 +16,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import { type DiarioEntry, useDiario } from "@/hooks/useDiario";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -139,15 +138,12 @@ export default function DiarioScreen() {
 
       colors={sceneTheme.gradient}
 
-      locations={[0, 0.5, 1]}
-
       start={{ x: 0, y: 0 }}
 
       end={{ x: 0, y: 1 }}
 
     >
       <StatusBar barStyle="light-content" />
-      <SacredBackground />
 
       {/* Floating back */}
       <View style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 10 }} pointerEvents="box-none">

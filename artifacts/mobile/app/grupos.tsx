@@ -1,6 +1,5 @@
 import { Feather } from "@expo/vector-icons";
 import { GhostPill } from "@/components/GhostPill";
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
@@ -17,7 +16,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -146,7 +144,7 @@ function CreateGroupSheet({ visible, onClose }: { visible: boolean; onClose: () 
 
         <Pressable
           onPress={() => handleSelect("publico")}
-          style={[styles.sheetOption, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" }]}
+          style={[styles.sheetOption, { backgroundColor: "rgba(255,255,255,0.075)", borderColor: "rgba(255,255,255,0.1)" }]}
         >
           <View style={[styles.sheetOptionIcon, { backgroundColor: "rgba(255,255,255,0.1)" }]}>
             <Feather name="users" size={22} color={"#F9F9F9"} />
@@ -162,7 +160,7 @@ function CreateGroupSheet({ visible, onClose }: { visible: boolean; onClose: () 
 
         <Pressable
           onPress={() => handleSelect("privado")}
-          style={[styles.sheetOption, { backgroundColor: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.1)" }]}
+          style={[styles.sheetOption, { backgroundColor: "rgba(255,255,255,0.075)", borderColor: "rgba(255,255,255,0.1)" }]}
         >
           <View style={[styles.sheetOptionIcon, { backgroundColor: "rgba(255,255,255,0.1)" }]}>
             <Feather name="lock" size={22} color={"#F9F9F9"} />
@@ -203,11 +201,9 @@ function TabOjear({
             onPress={() => router.push(`/grupo/${g.id}` as never)}
             style={({ pressed }) => [
               styles.popularRow,
-              { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
+              { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
             ]}
           >
-            <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-            <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
             <LocalGrupoAvatar grupo={g} size={54} />
             <View style={{ flex: 1 }}>
               <Text style={[styles.popularTipo, { color: "#F4F4F4" }]}>
@@ -263,9 +259,7 @@ function TabMisGrupos({
         <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { color: "#F9F9F9" }]}>Grupos que gestiono</Text>
           <Pressable onPress={onCreatePress} hitSlop={8}>
-            <View style={[styles.addBtn, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
-              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
+            <View style={[styles.addBtn, { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
               <Feather name="plus" size={20} color={"#F9F9F9"} />
             </View>
           </Pressable>
@@ -284,11 +278,9 @@ function TabMisGrupos({
               onPress={() => router.push(`/grupo/${g.id}` as never)}
               style={({ pressed }) => [
                 styles.unitoRow,
-                { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
+                { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
               ]}
             >
-              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
               <LocalGrupoAvatar grupo={g} size={54} />
               <View style={{ flex: 1 }}>
                 <View style={styles.grupoNameRow}>
@@ -328,11 +320,9 @@ function TabMisGrupos({
               onPress={() => router.push(`/grupo/${g.id}` as never)}
               style={({ pressed }) => [
                 styles.unitoRow,
-                { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
+                { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
               ]}
             >
-              <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-              <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
               <GroupAvatar gradient={g.gradient} icon={g.icon} color={g.color} size={54} />
               <View style={{ flex: 1 }}>
                 <Text style={[styles.popularName, { color: "#F9F9F9" }]} numberOfLines={1}>
@@ -368,10 +358,8 @@ function TabTablon({ colors }: { colors: ReturnType<typeof useColors> }) {
       {FEED_POSTS.map((post) => (
         <View
           key={post.id}
-          style={[styles.feedCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}
+          style={[styles.feedCard, { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}
         >
-          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-          <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
           {/* Post header */}
           <View style={styles.feedHeader}>
             <View style={[styles.feedAvatar, { backgroundColor: post.color + "30" }]}>
@@ -449,12 +437,10 @@ export default function GruposScreen() {
     <LinearGradient
       style={styles.root}
       colors={sceneTheme.gradient}
-      locations={[0, 0.5, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
       <StatusBar barStyle="light-content" />
-      <SacredBackground variant="solid" />
 
       {/* Floating back */}
       <View style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 20 }} pointerEvents="box-none">

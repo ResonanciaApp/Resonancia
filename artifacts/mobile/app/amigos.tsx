@@ -22,7 +22,6 @@ import {
   type UserProfile,
   type UserSearchResult,
 } from "@workspace/api-client-react";
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router } from "expo-router";
@@ -41,7 +40,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
@@ -71,12 +69,10 @@ export default function AmigosScreen() {
     <LinearGradient
       style={styles.root}
       colors={sceneTheme.gradient}
-      locations={[0, 0.5, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
       <StatusBar barStyle="light-content" />
-      <SacredBackground variant="solid" />
 
       {/* Floating back */}
       <View style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 10 }} pointerEvents="box-none">
@@ -113,9 +109,7 @@ export default function AmigosScreen() {
 function GuestPrompt() {
   const colors = useColors();
   return (
-    <View style={[styles.guestCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
-      <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-      <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
+    <View style={[styles.guestCard, { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
       <Feather name="users" size={28} color={colors.primary} />
       <Text style={[styles.guestTitle, { color: "#F9F9F9" }]}>Crea tu cuenta para agregar amigos</Text>
       <Text style={[styles.guestText, { color: "#F4F4F4" }]}>
@@ -204,9 +198,7 @@ function SignedInAmigos() {
 
   return (
     <>
-      <View style={[styles.searchRow, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
-        <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-        <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
+      <View style={[styles.searchRow, { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
         <Feather name="search" size={16} color={"#F4F4F4"} />
         <TextInput
           value={search}
@@ -320,11 +312,9 @@ function SearchResultRow({
       onPress={onPress}
       style={({ pressed }) => [
         styles.friendRow,
-        { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.75 : 1 },
+        { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.75 : 1 },
       ]}
     >
-      <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-      <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
       <Avatar user={user} />
       <View style={{ flex: 1 }}>
         <Text style={[styles.friendName, { color: "#F9F9F9" }]}>{user.displayName}</Text>
@@ -362,9 +352,7 @@ function RequestRow({
   const colors = useColors();
   const requester = request.requester;
   return (
-    <View style={[styles.requestCard, { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
-      <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-      <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
+    <View style={[styles.requestCard, { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>
       <Avatar user={requester} />
       <View style={{ flex: 1 }}>
         <Text style={[styles.friendName, { color: "#F9F9F9" }]}>{requester.displayName}</Text>
@@ -407,11 +395,9 @@ function FriendRow({
       delayLongPress={350}
       style={({ pressed }) => [
         styles.friendRow,
-        { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
+        { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
       ]}
     >
-      <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-      <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
       <Avatar user={friend} />
       <View style={{ flex: 1 }}>
         <Text style={[styles.friendName, { color: "#F9F9F9" }]}>{friend.displayName}</Text>
@@ -440,11 +426,9 @@ function ConversationRow({ conversation }: { conversation: Conversation }) {
       onPress={() => router.push(`/chat/${friend.id}` as never)}
       style={({ pressed }) => [
         styles.friendRow,
-        { backgroundColor: "transparent", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
+        { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)", opacity: pressed ? 0.8 : 1 },
       ]}
     >
-      <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-      <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
       <Avatar user={friend} />
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>

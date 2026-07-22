@@ -5,7 +5,6 @@
  */
 import { Feather } from "@expo/vector-icons";
 import { GhostPill } from "@/components/GhostPill";
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useCallback } from "react";
@@ -101,7 +100,7 @@ export default function MisSesionesScreen() {
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient colors={sceneTheme.gradient} locations={[0, 0.5, 1]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={sceneTheme.gradient} style={StyleSheet.absoluteFill} />
 
       {/* Floating back */}
       <View style={{ position: "absolute", left: 16, top: topPad + 8, zIndex: 10 }} pointerEvents="box-none">
@@ -223,8 +222,6 @@ function PastSessionRow({ session }: { session: LiveSessionItem }) {
       >
         {!isCompleted && (
           <>
-            <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-            <LinearGradient colors={["rgba(255,255,255,0.07)","rgba(255,255,255,0)"]} style={StyleSheet.absoluteFill} />
           </>
         )}
         <Text
