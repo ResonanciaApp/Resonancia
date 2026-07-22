@@ -1122,6 +1122,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 0.3,
     textAlign: "left",
-    transform: [{ translateY: -2 }],
+    transform: [{ translateY: -4 }],
   },
 });
