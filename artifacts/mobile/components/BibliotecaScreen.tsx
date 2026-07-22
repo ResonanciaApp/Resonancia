@@ -1170,6 +1170,10 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       });
       const hasUserContent = sortedFoldersGeneral.length > 0 || sortedPlaylists.length > 0;
+      const mixIdsInFoldersGeneral = new Set(mixFolders.flatMap((f) => f.presetIds));
+      const sortedMixesGeneral = presets
+        .filter((p) => !mixIdsInFoldersGeneral.has(p.id))
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
       return (
         <View style={{ gap: 15 }}>
@@ -1222,6 +1226,50 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
             </>
           )}
 
+          {/* ── Mezclas del usuario (vista general) ── */}
+          {sortedMixesGeneral.length > 0 && (
+            viewMode === "grid" ? (
+              <View style={styles.gridWrap}>
+                {sortedMixesGeneral.map((mix) => {
+                  const isPlayingMix = loadedPresetId === mix.id && mixerPlaying;
+                  return (
+                    <View key={mix.id} style={{ width: cellW }}>
+                      <Pressable
+                        style={({ pressed }) => [{ opacity: pressed ? 0.75 : 1 }]}
+                        onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
+                      >
+                        <View style={[styles.gridThumb, { width: cellW, height: cellW, overflow: "hidden" }]}>
+                          <MixCover mix={mix} size={cellW} radius={8} />
+                          {isPlayingMix && (
+                            <View style={{ position: "absolute", bottom: 6, right: 6 }}>
+                              <EqualizerBars color={GOLD} size="sm" />
+                            </View>
+                          )}
+                        </View>
+                      </Pressable>
+                      <Pressable onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}>
+                        <Text style={styles.gridTitle} numberOfLines={2}>{mix.name}</Text>
+                      </Pressable>
+                    </View>
+                  );
+                })}
+              </View>
+            ) : (
+              <View style={{ gap: 14 }}>
+                {sortedMixesGeneral.map((mix) => (
+                  <MixRow
+                    key={mix.id}
+                    mix={mix}
+                    isPlayingThis={loadedPresetId === mix.id && mixerPlaying}
+                    onPress={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
+                    onLongPress={() => setMixMenuPreset(mix)}
+                    onPressThumb={() => { if (loadedPresetId !== mix.id) loadMix(mix); }}
+                    onPressMenu={() => setMixMenuPreset(mix)}
+                  />
+                ))}
+              </View>
+            )
+          )}
 
           {/* ── Resonadores seguidos ── */}
           {resonadores.map((r) => (
