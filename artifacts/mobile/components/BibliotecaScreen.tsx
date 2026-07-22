@@ -118,7 +118,7 @@ function MixRow({
 // ── Chip de tab (texto + línea subrayada, sin fondo de píldora) ──────────────
 // La línea crece desde el centro con una curva suave ("zen"): lenta,
 // sin rebote, como una respiración.
-function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress: () => void }) {
+function LibChip({ label, sel, onPress, side }: { label: string; sel: boolean; onPress: () => void; side?: "left" | "right" }) {
   const selAnim = useRef(new Animated.Value(sel ? 1 : 0)).current;
 
   useEffect(() => {
@@ -131,7 +131,15 @@ function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress
   }, [sel]);
 
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.6 : 1 }]}>
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.chip,
+        side === "left" && { borderTopLeftRadius: 15, borderBottomLeftRadius: 15 },
+        side === "right" && { borderTopRightRadius: 15, borderBottomRightRadius: 15 },
+        { opacity: pressed ? 0.6 : 1 },
+      ]}
+    >
       <View style={{ transform: [{ translateY: 2 }] }}>
         <Animated.Text
           style={[styles.chipText, { opacity: selAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}
@@ -301,6 +309,7 @@ function AnimatedChipRow({
               <LibChip
                 label={t.label}
                 sel={colorTab === t.id}
+                side={t.id === "playlists" ? "left" : t.id === "mezclas" ? "right" : undefined}
                 onPress={() => (isSelected ? handleClear() : handleSelect(t.id))}
               />
             </Animated.View>
