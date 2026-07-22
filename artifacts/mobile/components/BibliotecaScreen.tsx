@@ -1034,7 +1034,12 @@ function AnimatedTabContent({
 }
 
 // ── Pantalla principal ────────────────────────────────────────────────────────
-export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = {}) {
+export type LibHeaderActions = { onSearch: () => void; onAdd: () => void; hidden: boolean };
+
+export function BibliotecaScreen({
+  embedded = false,
+  onHeaderActions,
+}: { embedded?: boolean; onHeaderActions?: (state: LibHeaderActions | null) => void } = {}) {
   const insets = useSafeAreaInsets();
   const { photoUri } = useUserProfile();
   const { open: openDrawer } = useDrawer();
@@ -1089,6 +1094,17 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
 
   // Reset paginación al cambiar de tab
   useEffect(() => { setMixesLimit(12); setGeoLimit(8); setFavLimit(12); }, [activeTab]);
+
+  // Expone lupa/+ al header externo (píldora alineada con el título "Biblioteca").
+  useEffect(() => {
+    if (!onHeaderActions) return;
+    onHeaderActions({
+      onSearch: () => setSearchVisible(true),
+      onAdd: () => setCreateVisible(true),
+      hidden: activeTab !== null,
+    });
+    return () => onHeaderActions(null);
+  }, [onHeaderActions, activeTab]);
 
   const toggleView = () => setViewMode((v) => (v === "list" ? "grid" : "list"));
 
@@ -1784,8 +1800,8 @@ export function BibliotecaScreen({ embedded = false }: { embedded?: boolean } = 
             activeTab={activeTab}
             onSelect={(id) => setActiveTab(id)}
             onClear={() => setActiveTab(null)}
-            onSearch={() => setSearchVisible(true)}
-            onAdd={() => setCreateVisible(true)}
+            onSearch={onHeaderActions ? undefined : () => setSearchVisible(true)}
+            onAdd={onHeaderActions ? undefined : () => setCreateVisible(true)}
           />
         </View>
 

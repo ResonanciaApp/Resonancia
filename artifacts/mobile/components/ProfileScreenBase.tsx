@@ -57,7 +57,7 @@ import { resolveAvatarUrl } from "@/lib/avatar";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { InvitarSheet } from "@/components/InvitarSheet";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
-import { BibliotecaScreen } from "@/components/BibliotecaScreen";
+import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
 import { HistorialCalendar } from "@/components/HistorialCalendar";
 import {
   gradientColors,
@@ -311,6 +311,7 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const [perfilTab, setPerfilTab] = useState<PerfilTab>("biblioteca");
+  const [libActions, setLibActions] = useState<LibHeaderActions | null>(null);
 
   // ── Borde del sticky header: se activa a partir de unos pocos px de scroll ──
   // (umbral en píxeles, no en % del contenido — así funciona igual en tabs
@@ -760,6 +761,15 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
                 <Feather name="settings" size={23} color="#FBFBFB" />
               </Pressable>
             </View>
+          ) : perfilTab === "biblioteca" && libActions && !libActions.hidden ? (
+            <View style={styles.libActionsPill}>
+              <Pressable onPress={libActions.onSearch} hitSlop={10} style={styles.libActionBtn}>
+                <Feather name="search" size={22} color="#f9f9f9" />
+              </Pressable>
+              <Pressable onPress={libActions.onAdd} hitSlop={10} style={styles.libActionBtn}>
+                <Feather name="plus" size={24} color="#f9f9f9" />
+              </Pressable>
+            </View>
           ) : (
             <View style={{ width: 25 }} />
           )}
@@ -1130,7 +1140,7 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
       )}
 
 
-      {!dedicated && perfilTab === "biblioteca" && <BibliotecaScreen embedded />}
+      {!dedicated && perfilTab === "biblioteca" && <BibliotecaScreen embedded onHeaderActions={setLibActions} />}
 
       {!dedicated && perfilTab === "historial" && (
         <ScrollView
@@ -1440,6 +1450,18 @@ const styles = StyleSheet.create({
   },
   stickyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3, flex: 1, textAlign: "center", marginLeft: -4, transform: [{ translateY: 4 }] },
   stickyTitleBiblioteca: { fontSize: 33, textAlign: "left", marginLeft: -25 },
+  libActionsPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
+    height: 48,
+    paddingHorizontal: 10,
+    borderRadius: 100,
+    backgroundColor: "rgba(0,0,0,0.15)",
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.1)",
+  },
+  libActionBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center" },
   pillRowScroll: { marginTop: 5 },
   pillRow: {
     flexDirection: "row",
