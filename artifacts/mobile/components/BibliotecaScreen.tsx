@@ -1074,7 +1074,7 @@ export function BibliotecaScreen({
     onHeaderActions({
       onSearch: () => setSearchVisible(true),
       onAdd: () => setCreateVisible(true),
-      hidden: activeTab !== null,
+      hidden: false,
     });
     return () => onHeaderActions(null);
   }, [onHeaderActions, activeTab]);
