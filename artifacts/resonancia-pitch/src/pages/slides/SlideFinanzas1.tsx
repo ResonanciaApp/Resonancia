@@ -1,14 +1,14 @@
 export default function SlideFinanzas1() {
   // Curva: +400 subs/mes (M1=400 … M11=4400, M12=5000)
-  // ARPU neto blended $3.250/mes · Fijos $3,9M/mes · mkt: M3-6 $0,5M · M7-8 $1,0M · M9-10 $1,25M · M11-12 $1,5M
+  // ARPU neto blended $2.550/mes · Fijos $3,9M/mes · mkt: M3-6 $0,5M · M7-8 $1,0M · M9-10 $1,25M · M11-12 $1,5M
   // Contenido: M1-2 $0 · M3-6 $1,2M · M7-12 $1,5M
   const rows = [
-    { mes: "M1 Lanzamiento", subs: "400",   ingreso: "$1,3M",  costoFijo: "$3,9M", costoVar: "$0",    resultado: "–$2,6M", neg: true  },
-    { mes: "Mes 2",          subs: "800",   ingreso: "$2,6M",  costoFijo: "$3,9M", costoVar: "$0",    resultado: "–$1,3M", neg: true  },
-    { mes: "Mes 3",          subs: "1.200", ingreso: "$3,9M",  costoFijo: "$4,4M", costoVar: "$1,2M", resultado: "–$1,7M", neg: true  },
-    { mes: "Mes 6",          subs: "2.400", ingreso: "$7,8M",  costoFijo: "$4,4M", costoVar: "$1,2M", resultado: "+$2,2M", neg: false },
-    { mes: "Mes 9",          subs: "3.600", ingreso: "$11,7M", costoFijo: "$5,2M", costoVar: "$1,5M", resultado: "+$5,0M", neg: false },
-    { mes: "Mes 12",         subs: "5.000", ingreso: "$16,3M", costoFijo: "$5,4M", costoVar: "$1,5M", resultado: "+$9,4M", neg: false },
+    { mes: "M1 Lanzamiento", subs: "400",   ingreso: "$1,0M",  costoFijo: "$3,9M", costoVar: "$0",    resultado: "–$2,9M", neg: true  },
+    { mes: "Mes 2",          subs: "800",   ingreso: "$2,0M",  costoFijo: "$3,9M", costoVar: "$0",    resultado: "–$1,9M", neg: true  },
+    { mes: "Mes 3",          subs: "1.200", ingreso: "$3,1M",  costoFijo: "$4,4M", costoVar: "$1,2M", resultado: "–$2,5M", neg: true  },
+    { mes: "Mes 6",          subs: "2.400", ingreso: "$6,1M",  costoFijo: "$4,4M", costoVar: "$1,2M", resultado: "+$0,5M", neg: false },
+    { mes: "Mes 9",          subs: "3.600", ingreso: "$9,2M",  costoFijo: "$5,2M", costoVar: "$1,5M", resultado: "+$2,5M", neg: false },
+    { mes: "Mes 12",         subs: "5.000", ingreso: "$12,8M", costoFijo: "$5,4M", costoVar: "$1,5M", resultado: "+$5,9M", neg: false },
   ];
 
   return (
@@ -42,7 +42,7 @@ export default function SlideFinanzas1() {
         <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", flexShrink: 0 }}>PRE-LANZAMIENTO</div>
         <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.50)", lineHeight: 1.3 }}>
           Los 4 meses previos (M–4 a M–1) cubiertos íntegramente por la inversión inicial ($25M CLP): equipo trabajando, catálogo producido, app lista.
-          <strong style={{ color: "#F4F4F4" }}> Break-even operacional: Mes 5.</strong>
+          <strong style={{ color: "#F4F4F4" }}> Break-even operacional: Mes 6.</strong>
         </div>
       </div>
 
@@ -67,7 +67,7 @@ export default function SlideFinanzas1() {
               display: "grid",
               gridTemplateColumns: "1.4fr 1fr 1fr 1fr 1fr 1fr",
               padding: "1.5vh 1.2vw",
-              backgroundColor: (!r.neg && i > 0) ? "transparent" : (i % 2 === 0 ? "rgba(255,255,255,0.025)" : "transparent"),
+              backgroundColor: i % 2 === 0 ? "rgba(255,255,255,0.025)" : "transparent",
               borderRadius: "0.4vw",
               alignItems: "center",
               border: r.neg ? "1px solid rgba(224,112,112,0.14)" : "none",
@@ -94,17 +94,17 @@ export default function SlideFinanzas1() {
         }}>
           <div style={{ fontSize: "1.45vw", fontWeight: 700, color: "#FFFFFF" }}>AÑO 1 TOTAL</div>
           <div style={{ fontSize: "1.45vw", fontWeight: 700, color: "#F4F4F4" }}>5.000 al cierre</div>
-          <div style={{ fontSize: "1.45vw", fontWeight: 700, color: "#F4F4F4" }}>~$102M</div>
+          <div style={{ fontSize: "1.45vw", fontWeight: 700, color: "#F4F4F4" }}>~$80M</div>
           <div style={{ fontSize: "1.45vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>~$56M</div>
           <div style={{ fontSize: "1.45vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>~$14M</div>
-          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#6EC49A" }}>+$33M neto</div>
+          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#6EC49A" }}>+$10M neto</div>
         </div>
       </div>
 
       {/* Footnote */}
       <div style={{ fontSize: "1.15vw", color: "rgba(244,244,244,0.45)", lineHeight: 1.5 }}>
-        Curva: +400 subs/mes (M1=400…M11=4.400, M12=5.000) · ARPU neto blended ~$3.250/mes · Precio $6.990/mes (IVA incl.) o $39.990/año ·
-        Fijos: $3,9M/mes (RRHH $2,3M + operacionales $1,6M) · M3+: + mkt $0,5–1,5M + contenido $1,2–1,5M · Break-even operacional M5 · Inversión $25M ya incluida en pre-lanzamiento.
+        Curva: +400 subs/mes (M1=400…M11=4.400, M12=5.000) · ARPU neto blended ~$2.550/mes · Precio $4.990/mes (IVA incl.) o $39.990/año ·
+        Fijos: $3,9M/mes (RRHH $2,3M + operacionales $1,6M) · M3+: + mkt $0,5–1,5M + contenido $1,2–1,5M · Break-even operacional M6 · Inversión $25M ya incluida en pre-lanzamiento.
       </div>
 
     </div>

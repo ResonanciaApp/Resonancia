@@ -64,7 +64,7 @@ export default function SlideFinanzas3() {
         <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.50)", lineHeight: 1.3 }}>
           Precio usuario <strong style={{ color: "#F4F4F4" }}>incluye IVA</strong> (Ley 21.210, servicios digitales desde 2020).
           Apple/Google retienen y remiten al SII. Empresa recibe: <strong style={{ color: "#F4F4F4" }}>precio excl. IVA × 70%</strong> (comisión tienda 30%).
-          <span style={{ color: "#FFFFFF", fontWeight: 700 }}> → $6.990 = $4.112/mes neto</span>
+          <span style={{ color: "#FFFFFF", fontWeight: 700 }}> → $4.990 = $2.935/mes neto</span>
         </div>
       </div>
 
@@ -83,7 +83,7 @@ export default function SlideFinanzas3() {
 
         <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.3 }}>
           <div style={{ fontSize: "0.82vw", color: "rgba(244,244,244,0.50)" }}>Mensual · ~60% de usuarios</div>
-          <div style={{ fontSize: "1.0vw", color: "#F4F4F4" }}>$6.990/mes → <strong style={{ color: "#F4F4F4" }}>$4.112</strong> neto/mes</div>
+          <div style={{ fontSize: "1.0vw", color: "#F4F4F4" }}>$4.990/mes → <strong style={{ color: "#F4F4F4" }}>$2.935</strong> neto/mes</div>
         </div>
 
         <div style={{ width: "1px", alignSelf: "stretch", backgroundColor: "rgba(255,255,255,0.08)" }} />
@@ -107,7 +107,7 @@ export default function SlideFinanzas3() {
           flexShrink: 0,
         }}>
           <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.50)" }}>ARPU NETO BLENDED</div>
-          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1 }}>$3.250/mes</div>
+          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1 }}>$2.550/mes</div>
         </div>
       </div>
 

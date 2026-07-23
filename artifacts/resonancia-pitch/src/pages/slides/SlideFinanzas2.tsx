@@ -1,8 +1,8 @@
 export default function SlideFinanzas2() {
   // Curva base: +400/mes; M11=4.400, M12=5.000 (+600 último mes)
-  // ARPU neto blended $3.250/mes
+  // ARPU neto blended $2.550/mes
   // Costos: fijo $3,9M + mkt ramp + contenido
-  const ARPU = 3250;
+  const ARPU = 2550;
   const COLCHON = 0.6;
 
   const meses = [
@@ -36,9 +36,9 @@ export default function SlideFinanzas2() {
   const ZERO_PCT = (-minCum / cumRange) * 100;
 
   const scenarios = [
-    { label: "Base",      subs12: "5.000",  ingAnual: "~$102M", neto: "+$33M",  highlight: true },
-    { label: "Optimista", subs12: "7.000",  ingAnual: "~$148M", neto: "+$75M",  highlight: false },
-    { label: "Agresivo",  subs12: "10.000", ingAnual: "~$211M", neto: "+$138M", highlight: false },
+    { label: "Base",      subs12: "5.000",  ingAnual: "~$80M",  neto: "+$10M",  highlight: true },
+    { label: "Optimista", subs12: "7.000",  ingAnual: "~$112M", neto: "+$40M",  highlight: false },
+    { label: "Agresivo",  subs12: "10.000", ingAnual: "~$160M", neto: "+$90M",  highlight: false },
   ];
 
   return (
@@ -100,7 +100,6 @@ export default function SlideFinanzas2() {
               const isNeg = d.cumulative < 0;
               return (
                 <div key={d.label} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end" }}>
-                  {/* Positive bar above zero or negative below */}
                   <div style={{ width: "100%", position: "relative", height: `${(Math.abs(d.cumulative) / cumRange) * 100}%` }}>
                     <div style={{
                       position: "absolute",
@@ -133,7 +132,6 @@ export default function SlideFinanzas2() {
         {/* Right panel: scenarios + subs curve */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "1.5vh" }}>
 
-          {/* Subs curve label */}
           <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em" }}>SUSCRIPTORES PREMIUM — ESCENARIO BASE</div>
           <div style={{
             backgroundColor: "rgba(0,0,0,0.18)",
@@ -158,7 +156,6 @@ export default function SlideFinanzas2() {
             })}
           </div>
 
-          {/* Scenarios */}
           <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", marginTop: "0.5vh" }}>ESCENARIOS AÑO 1</div>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.6vh" }}>
             {scenarios.map((s) => (
@@ -190,7 +187,7 @@ export default function SlideFinanzas2() {
 
       {/* Footnote */}
       <div style={{ fontSize: "1.1vw", color: "rgba(244,244,244,0.40)", lineHeight: 1.5 }}>
-        ARPU neto blended $3.250/mes (60% mensual $6.990 · 40% anual $39.990 · desc. IVA 19% + comisión tienda 30%) ·
+        ARPU neto blended $2.550/mes (60% mensual $4.990 · 40% anual $39.990 · desc. IVA 19% + comisión tienda 30%) ·
         Costos: fijos $3,9M + mkt ramp ($0,5M→$1,5M) + contenido ($1,2M→$1,5M) · Retorno estimado, no garantizado.
       </div>
 
