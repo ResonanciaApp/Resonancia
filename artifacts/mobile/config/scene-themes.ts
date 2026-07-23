@@ -28,8 +28,8 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   tibet: {
     id: "tibet",
     label: "Universo",
-    gradient: ["#2D1C52", "#261F57", "#1F255A", "#1F2A62", "#283673", "#2D4082"],
-    solid: "#1E173E",
+    gradient: ["#1F0F3E","#1C1044","#151245","#121645"],
+    solid: "#1F0F3E",
   },
   profundo: {
     id: "profundo",
@@ -40,8 +40,8 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   indigo: {
     id: "indigo",
     label: "Índigo",
-    gradient: ["#1F0F3E","#1C1044","#151245","#121645"],
-    solid: "#1F0F3E",
+    gradient: ["#2D1C52", "#261F57", "#1F255A", "#1F2A62", "#283673", "#2D4082"],
+    solid: "#1E173E",
   },
 };
 
