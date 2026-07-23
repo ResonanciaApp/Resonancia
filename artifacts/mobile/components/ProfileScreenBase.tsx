@@ -7,6 +7,7 @@ import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
+import { BackPill } from "@/components/BackPill";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
@@ -741,7 +742,11 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
               <Feather name="chevron-left" size={28} color="#FBFBFB" />
             </Pressable>
           ) : (
-            <View style={{ width: 25 }} />
+            <BackPill
+              onPress={() => router.canGoBack() ? router.back() : router.navigate("/(tabs)/inicio8" as never)}
+              size={28}
+              style={{ transform: [{ translateX: -2 }] }}
+            />
           )}
           <Text style={[styles.stickyTitle, !dedicated && styles.stickyTitleBiblioteca]}>{dedicated ? "Mi Perfil" : "Biblioteca"}</Text>
           {dedicated ? (
