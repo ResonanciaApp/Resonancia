@@ -94,7 +94,7 @@ export const ENCUENTROS: Encuentro[] = [
       "Práctica guiada de respiración 4-7-8 y coherencia cardíaca para preparar el cuerpo y la mente antes de dormir.",
     fechaISO: "2026-09-05T20:00:00",
     horaTexto: "20:00 h",
-    imagen: require("@/assets/images/sessions/session-2.png"),
+    imagen: require("@/assets/images/sessions/sab-silencio-interior.jpg"),
     guia: {
       nombre: "Sofía Ramírez",
       encuentros: 18,
