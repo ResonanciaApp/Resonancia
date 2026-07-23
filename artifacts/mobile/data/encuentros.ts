@@ -87,6 +87,26 @@ export const ENCUENTROS: Encuentro[] = [
     ],
     inscritos: 88,
   },
+  {
+    id: "enc-4",
+    titulo: "Respiración consciente para el descanso",
+    descripcion:
+      "Práctica guiada de respiración 4-7-8 y coherencia cardíaca para preparar el cuerpo y la mente antes de dormir.",
+    fechaISO: "2026-09-05T20:00:00",
+    horaTexto: "20:00 h",
+    imagen: require("@/assets/images/sessions/session-2.png"),
+    guia: {
+      nombre: "Sofía Ramírez",
+      encuentros: 18,
+      avatarColor: "#5C7BBF",
+      iniciales: "SR",
+    },
+    participantes: [
+      { id: "p1", avatarColor: "#7C5CBF", iniciales: "AM" },
+      { id: "p2", avatarColor: "#4A8C6A", iniciales: "PL" },
+    ],
+    inscritos: 34,
+  },
 ];
 
 const MESES = [
