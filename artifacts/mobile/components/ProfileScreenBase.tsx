@@ -732,8 +732,8 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
         ]}
       >
         <Animated.View collapsable={false} style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
-        {dedicated ? (
-          <View style={styles.stickyHeaderRow}>
+        <View style={styles.stickyHeaderRow}>
+          {dedicated ? (
             <Pressable
               onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/profile" as never))}
               style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.7 : 1 }]}
@@ -741,7 +741,16 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
             >
               <Feather name="chevron-left" size={28} color="#FBFBFB" />
             </Pressable>
-            <Text style={styles.stickyTitle}>Mi Perfil</Text>
+          ) : (
+            <BackPill
+              onPress={() => router.canGoBack() ? router.back() : router.navigate("/(tabs)/inicio8" as never)}
+              size={28}
+              bgColor="rgba(255,255,255,0.1)"
+              style={{ transform: [{ translateX: -2 }] }}
+            />
+          )}
+          <Text style={[styles.stickyTitle, !dedicated && styles.stickyTitleBiblioteca]}>{dedicated ? "Mi Perfil" : "Biblioteca"}</Text>
+          {dedicated ? (
             <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
               <Pressable hitSlop={8} onPress={openEdit}>
                 <Feather name="edit-2" size={22} color="#FBFBFB" />
@@ -750,34 +759,19 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
                 <Feather name="settings" size={23} color="#FBFBFB" />
               </Pressable>
             </View>
-          </View>
-        ) : (
-          <View style={[styles.stickyHeaderRow, styles.stickyHeaderRowBiblioteca]}>
-            {/* Izquierda: chevron + título pegados al margen */}
-            <View style={styles.libHeaderLeft}>
-              <BackPill
-                onPress={() => router.canGoBack() ? router.back() : router.navigate("/(tabs)/inicio8" as never)}
-                size={28}
-                bgColor="rgba(255,255,255,0.1)"
-                style={{ transform: [{ translateX: -2 }, { translateY: -20 }] }}
-              />
-              <Text style={[styles.stickyTitle, styles.stickyTitleBiblioteca]}>Biblioteca</Text>
+          ) : libActions && !libActions.hidden ? (
+            <View style={styles.libActionsPill}>
+              <Pressable onPress={libActions.onSearch} hitSlop={10} style={styles.libActionBtn}>
+                <Feather name="search" size={22} color="#f9f9f9" />
+              </Pressable>
+              <Pressable onPress={libActions.onAdd} hitSlop={10} style={styles.libActionBtn}>
+                <Feather name="plus" size={24} color="#f9f9f9" />
+              </Pressable>
             </View>
-            {/* Derecha: acciones */}
-            {libActions && !libActions.hidden ? (
-              <View style={styles.libActionsPill}>
-                <Pressable onPress={libActions.onSearch} hitSlop={10} style={styles.libActionBtn}>
-                  <Feather name="search" size={22} color="#f9f9f9" />
-                </Pressable>
-                <Pressable onPress={libActions.onAdd} hitSlop={10} style={styles.libActionBtn}>
-                  <Feather name="plus" size={24} color="#f9f9f9" />
-                </Pressable>
-              </View>
-            ) : (
-              <View style={{ width: 25 }} />
-            )}
-          </View>
-        )}
+          ) : (
+            <View style={{ width: 25 }} />
+          )}
+        </View>
 
       </View>
 
@@ -1422,9 +1416,7 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   stickyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3, flex: 1, textAlign: "center", marginLeft: -4, transform: [{ translateY: 4 }] },
-  stickyTitleBiblioteca: { fontSize: 27, textAlign: "left", flex: 0, marginLeft: 4, transform: [{ translateY: -20 }] },
-  stickyHeaderRowBiblioteca: { justifyContent: "space-between", alignItems: "flex-end" },
-  libHeaderLeft: { flexDirection: "row", alignItems: "center" },
+  stickyTitleBiblioteca: { fontSize: 27, textAlign: "left", marginLeft: -25, transform: [{ translateY: -3 }] },
   libActionsPill: {
     flexDirection: "row",
     alignItems: "center",
