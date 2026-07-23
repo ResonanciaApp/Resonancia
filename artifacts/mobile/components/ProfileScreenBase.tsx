@@ -1416,7 +1416,7 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   stickyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3, flex: 1, textAlign: "center", marginLeft: -4, transform: [{ translateY: 4 }] },
-  stickyTitleBiblioteca: { fontSize: 27, textAlign: "left", marginLeft: -25, transform: [{ translateY: -3 }] },
+  stickyTitleBiblioteca: { fontSize: 27, textAlign: "left", flex: 0, marginLeft: 6, transform: [{ translateY: -3 }] },
   libActionsPill: {
     flexDirection: "row",
     alignItems: "center",
