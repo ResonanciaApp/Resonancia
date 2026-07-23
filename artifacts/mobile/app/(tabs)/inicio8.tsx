@@ -968,7 +968,7 @@ export default function HomeScreen2() {
           onPressOut={() => {
             Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
           }}
-          onPress={() => { if (rachaEnabled) setProgresoVisible(true); }}
+          onPress={() => setProgresoVisible(true)}
         >
           <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
             <View style={{
@@ -1042,7 +1042,7 @@ export default function HomeScreen2() {
 
         {/* ── 7 días de la semana ── */}
         <Pressable
-          onPress={() => { if (rachaEnabled) setProgresoVisible(true); }}
+          onPress={() => setProgresoVisible(true)}
           pointerEvents={rachaEnabled ? "auto" : "none"}
           style={({ pressed }) => ({
             marginHorizontal: GRID_PAD,
