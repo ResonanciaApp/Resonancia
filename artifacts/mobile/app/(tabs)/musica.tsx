@@ -161,7 +161,7 @@ const CHIP_ANIM_DURATION = 550;
 const PillTab = memo(function PillTab({
   tab, sel, onPress,
 }: { tab: (typeof MAIN_TABS)[0]; sel: boolean; onPress: () => void }) {
-  const fgColor = sel ? "#2D0D3A" : "#FBFBFB";
+  const fgColor = sel ? "#0D0A1E" : "#FBFBFB";
 
   return (
     <Pressable
@@ -170,7 +170,7 @@ const PillTab = memo(function PillTab({
     >
       {/* Fondo seleccionado */}
       {sel && (
-        <LinearGradient colors={["#F7CB6B", "#FBA980"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={[StyleSheet.absoluteFill, { borderRadius: 999 }]} />
+        <LinearGradient colors={["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={[StyleSheet.absoluteFill, { borderRadius: 999 }]} />
       )}
 
       {/* Ícono */}
@@ -764,8 +764,8 @@ export default function MezcladorScreen() {
                           onPress={() => setSubTab(sel ? null : catId)}
                           style={[styles.subTab, sel && styles.subTabSel]}
                         >
-                          {sel && <LinearGradient colors={["#F7CB6B", "#FBA980"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
-                          <Text style={[styles.subTabText, { color: sel ? "#2D0D3A" : "#FBFBFB" }]}>
+                          {sel && <LinearGradient colors={["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
+                          <Text style={[styles.subTabText, { color: sel ? "#0D0A1E" : "#FBFBFB" }]}>
                             {SUB_TAB_LABELS[catId] ?? cat.label}
                           </Text>
                         </Pressable>
@@ -1015,11 +1015,11 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.053)",
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: "rgba(247,203,107,0.1)",
   },
   pillTabLabel:   { fontFamily: "Manrope", fontSize: 14, fontWeight: "450", letterSpacing: 0.3, color: "#F4F4F4" },
-  pillTabLabelSel:{ color: "#2D0D3A" },
+  pillTabLabelSel:{ color: "#0D0A1E", fontWeight: "600" },
   pillTabUnderline: {},
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(0,0,0,0.07)", marginTop: -6 },
@@ -1094,7 +1094,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.053)",
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: "rgba(247,203,107,0.1)",
   },
   subTabSel: { borderWidth: 0 },

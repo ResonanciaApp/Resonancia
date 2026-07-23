@@ -89,7 +89,7 @@ function AnimatedTabContent({ animKey, children }: { animKey: string; children: 
 function Chip({ label, icon, sel, onPress }: { label: string; icon?: string; sel: boolean; onPress: ()=>void }) {
   return (
     <Pressable onPress={onPress} style={({pressed})=>[styles.chip, sel && styles.chipSel, {opacity:pressed?0.7:1}]}>
-      {sel && <LinearGradient colors={["#F7CB6B", "#FBA980"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
+      {sel && <LinearGradient colors={["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
       <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
     </Pressable>
   );
@@ -575,13 +575,13 @@ const styles = StyleSheet.create({
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.06)", marginTop: 11, marginHorizontal: H_PAD },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-  chip: { height: 32, paddingHorizontal: 13, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.053)", borderWidth: 1, borderColor: "rgba(247,203,107,0.1)" },
+  chip: { height: 32, paddingHorizontal: 13, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.053)", borderWidth: 1.5, borderColor: "rgba(247,203,107,0.1)" },
   chipBorder: {},
   chipBorderSel: {},
   chipUnsel: {},
   chipSel: { borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "450", letterSpacing: 0.3, color: TEXT, textAlign: "center" },
-  chipTextSel: { fontFamily: "Manrope", color: "#2D0D3A", fontWeight: "380" as import("react-native").TextStyle["fontWeight"] },
+  chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
 
   sectionLabel: { fontFamily: "Manrope", fontSize: 11, fontWeight: "400", color: TEXT, paddingHorizontal: H_PAD, paddingTop: 5, paddingBottom: 4 },
   scroll: { flex: 1 },

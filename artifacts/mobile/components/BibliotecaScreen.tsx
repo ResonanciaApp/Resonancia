@@ -126,7 +126,7 @@ function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress
     >
       {sel && (
         <LinearGradient
-          colors={["#F7CB6B", "#FBA980"]}
+          colors={["#FFFFFF", "#F5F5F5"]}
           start={{ x: 0, y: 0.5 }}
           end={{ x: 1, y: 0.5 }}
           style={StyleSheet.absoluteFill}
@@ -1967,13 +1967,13 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.053)",
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: "rgba(247,203,107,0.1)",
     justifyContent: "center",
   },
   chipSel: { borderWidth: 0 },
   chipText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "450", letterSpacing: 0.3, color: "#F4F4F4" },
-  chipTextSel: { fontFamily: "Manrope", color: "#2D0D3A", fontWeight: "500" },
+  chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
 
   controlRow: {
     flexDirection: "row",

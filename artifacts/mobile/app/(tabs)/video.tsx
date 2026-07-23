@@ -136,8 +136,8 @@ export default function VideoTabScreen() {
                   onPress={() => setActiveChip(chip)}
                   style={[styles.chip, sel && styles.chipSel]}
                 >
-                  {sel && <LinearGradient colors={["#F7CB6B", "#FBA980"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
-                  <Text style={[styles.chipText, { color: sel ? "#2D0D3A" : "#F4F4F4" }]}>
+                  {sel && <LinearGradient colors={["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />}
+                  <Text style={[styles.chipText, { color: sel ? "#0D0A1E" : "#F4F4F4" }]}>
                     {chip}
                   </Text>
                 </Pressable>
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.053)",
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: "rgba(247,203,107,0.1)",
   },
   chipSel: { borderWidth: 0 },
