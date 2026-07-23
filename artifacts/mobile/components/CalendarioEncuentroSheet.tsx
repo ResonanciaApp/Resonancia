@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Alert,
   Animated,
+  Linking,
   Modal,
   Pressable,
   StyleSheet,
@@ -188,30 +189,42 @@ export function CalendarioEncuentroSheet({ encuentro, visible, onClose }: Props)
       return;
     }
 
-    // Check sharing availability
-    const canShare = await Sharing.isAvailableAsync();
-    if (!canShare) {
-      setCalState("idle");
-      Alert.alert(
-        "No disponible",
-        "Tu dispositivo no puede compartir archivos en este momento.",
-        [{ text: "Entendido" }]
-      );
-      return;
+    // On iOS, try opening the .ics file directly — opens Calendar "New Event" screen
+    // without the generic share sheet. Fall back to expo-sharing if not supported.
+    let openedDirectly = false;
+    try {
+      const canOpen = await Linking.canOpenURL(filePath);
+      if (canOpen) {
+        await Linking.openURL(filePath);
+        openedDirectly = true;
+      }
+    } catch {
+      // proceed to sharing fallback
     }
 
-    // Share — user picks calendar app; dismiss = resolve (not throw)
-    try {
-      await Sharing.shareAsync(filePath, {
-        mimeType: "text/calendar",
-        dialogTitle: "Agregar al calendario",
-        UTI: "public.calendar-event",
-      });
-    } catch (e) {
-      // Dismissed or cancelled — not a real error
-      console.warn("[Calendario] shareAsync dismissed:", e);
-      setCalState("idle");
-      return;
+    if (!openedDirectly) {
+      const canShare = await Sharing.isAvailableAsync();
+      if (!canShare) {
+        setCalState("idle");
+        Alert.alert(
+          "No disponible",
+          "Tu dispositivo no puede compartir archivos en este momento.",
+          [{ text: "Entendido" }]
+        );
+        return;
+      }
+      try {
+        await Sharing.shareAsync(filePath, {
+          mimeType: "text/calendar",
+          dialogTitle: "Agregar al calendario",
+          UTI: "public.calendar-event",
+        });
+      } catch (e) {
+        // Dismissed or cancelled — not a real error
+        console.warn("[Calendario] shareAsync dismissed:", e);
+        setCalState("idle");
+        return;
+      }
     }
 
     // Persist & mark done
