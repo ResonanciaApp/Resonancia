@@ -858,19 +858,16 @@ function FavFolderRow({ folder, onPress, onLongPress }: { folder: FavFolder; onP
 }
 
 // ── Hoja de crear ────────────────────────────────────────────────────────────
-function CreateSheet({ visible, onClose, onCreatePlaylist, onCreateCarpeta, onGoMezclas, gradient }: {
+function CreateSheet({ visible, onClose, onCreateCarpeta, onAddResonador, gradient }: {
   visible: boolean;
   onClose: () => void;
-  onCreatePlaylist: () => void;
   onCreateCarpeta: () => void;
-  onGoMezclas: () => void;
+  onAddResonador: () => void;
   gradient: readonly string[];
 }) {
   const ITEMS = [
-    { icon: "list" as const,     title: "Crear un Ritual",        sub: "Crea un ritual con sesiones",           onPress: () => { onClose(); onCreatePlaylist(); } },
-    { icon: "sliders" as const,  title: "Crea tus mezclas",       sub: "Crea una mezcla de sonidos relajantes", onPress: () => { onClose(); onGoMezclas(); } },
-    { icon: "hexagon" as const,  title: "Crea tus Geometrix",     sub: "Crea y anima tus geometrías sagradas",  onPress: () => { onClose(); router.push("/geometrix" as never); } },
-    { icon: "folder" as const,   title: "Carpetas",               sub: "Organiza tus Rituales",                 onPress: () => { onClose(); onCreateCarpeta(); } },
+    { icon: "users" as const,    title: "Agregar Resonador",      sub: "Sigue a un resonador",                  onPress: () => { onClose(); onAddResonador(); } },
+    { icon: "folder" as const,   title: "Crear una carpeta",      sub: "Organiza tus Rituales",                 onPress: () => { onClose(); onCreateCarpeta(); } },
   ];
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
@@ -1833,9 +1830,8 @@ export function BibliotecaScreen({
       <CreateSheet
         visible={createVisible}
         onClose={() => setCreateVisible(false)}
-        onCreatePlaylist={() => setNombreVisible(true)}
         onCreateCarpeta={() => setNombreCarpetaVisible(true)}
-        onGoMezclas={() => { openMixer(); router.navigate("/(tabs)/musica" as never); }}
+        onAddResonador={() => { setAddResonadorQ(""); setAddResonadorVisible(true); }}
         gradient={sceneTheme.gradient}
       />
       <NombrePlaylistModal visible={nombreVisible} onClose={() => setNombreVisible(false)} bgColor={activeSceneId === "tibet" ? "#2d4081" : undefined} />
