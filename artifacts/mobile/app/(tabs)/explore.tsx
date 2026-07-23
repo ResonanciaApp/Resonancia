@@ -670,82 +670,6 @@ export default function ExploreScreen() {
           );
         })()}
 
-        {/* ── Explorar todo (TEMAS) ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: 0 }]}>
-          <Text style={[styles.sectionTitle, { marginBottom: 16 }]}>Explorar todo</Text>
-          <View style={[styles.temaGrid, { marginTop: 0 }]}>
-            {TEMAS.map((t) => (
-              <Pressable
-                key={t.id}
-                onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
-                style={[styles.temaCell, { width: TEMA3_W, height: TEMA3_W, borderRadius: 11, overflow: "hidden" }]}
-              >
-                {({ pressed }) => (
-                  <>
-                    <View style={[StyleSheet.absoluteFill, { backgroundColor: temaCardBg }]} />
-                    {pressed && <View style={[StyleSheet.absoluteFill, { backgroundColor: hexTint(t.color, 0.22) }]} />}
-                    {t.image != null ? (
-                      <Image
-                        source={t.image}
-                        style={styles.temaCellIcon}
-                        contentFit="contain"
-                      />
-                    ) : (
-                      <MaterialCommunityIcons name={t.icon} size={28} color={t.color} />
-                    )}
-                    <Text style={[styles.temaCellLabel, { color: "#FBFBFB" }]} numberOfLines={2}>
-                      {t.label}
-                    </Text>
-                  </>
-                )}
-              </Pressable>
-            ))}
-          </View>
-        </View>
-
-        {/* ── Rituales para ti ── */}
-        {ritualItems.length > 0 && (
-          <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
-            <Text style={styles.sectionTitle}>Rituales para ti</Text>
-            <View style={styles.ritualGrid}>
-              {ritualItems.map((pl) => (
-                <Pressable
-                  key={pl.id}
-                  onPress={() => router.push(`/coleccion/${pl.id}` as never)}
-                  style={({ pressed }) => [styles.ritualCard, { opacity: pressed ? 0.8 : 1 }]}
-                >
-                  <View style={[StyleSheet.absoluteFill, { borderRadius: 14, backgroundColor: temaCardBg }]} />
-                  <Image source={pl.image} style={styles.ritualImage} contentFit="cover" />
-                  <View style={styles.ritualTextWrap}>
-                    <Text style={styles.ritualTitle} numberOfLines={2}>{pl.title}</Text>
-                    {!!pl.durationLabel && (
-                      <Text style={styles.ritualSub} numberOfLines={1}>{pl.durationLabel}</Text>
-                    )}
-                  </View>
-                </Pressable>
-              ))}
-            </View>
-          </View>
-        )}
-
-        {/* ── Energiza tus mañanas + Foco y concentración (antes de chakras) ── */}
-        {["Energiza tus mañanas", "Foco y concentración"].map((label) => {
-          const tc = themeCarousels.find((c) => c.label === label);
-          if (!tc) return null;
-          return (
-            <SessionCarousel
-              key={tc.label}
-              title={tc.label}
-              sessions={tc.sessions}
-              isPremium={isPremium}
-              onPress={(s) => handleSessionPress(s)}
-              style={{ marginTop: 0, marginBottom: SECTION_GAP }}
-              cardWidth={SQCARD_W}
-              titleSize={20}
-            />
-          );
-        })}
-
         {/* ── Chakras ── */}
         <View style={{ marginTop: 0, marginBottom: SECTION_GAP }}>
           {/* Título encima */}
@@ -840,6 +764,49 @@ export default function ExploreScreen() {
             ))}
           </View>
         </View>
+
+        {/* ── Rituales para ti ── */}
+        {ritualItems.length > 0 && (
+          <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
+            <Text style={styles.sectionTitle}>Rituales para ti</Text>
+            <View style={styles.ritualGrid}>
+              {ritualItems.map((pl) => (
+                <Pressable
+                  key={pl.id}
+                  onPress={() => router.push(`/coleccion/${pl.id}` as never)}
+                  style={({ pressed }) => [styles.ritualCard, { opacity: pressed ? 0.8 : 1 }]}
+                >
+                  <View style={[StyleSheet.absoluteFill, { borderRadius: 14, backgroundColor: temaCardBg }]} />
+                  <Image source={pl.image} style={styles.ritualImage} contentFit="cover" />
+                  <View style={styles.ritualTextWrap}>
+                    <Text style={styles.ritualTitle} numberOfLines={2}>{pl.title}</Text>
+                    {!!pl.durationLabel && (
+                      <Text style={styles.ritualSub} numberOfLines={1}>{pl.durationLabel}</Text>
+                    )}
+                  </View>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+        )}
+
+        {/* ── Energiza tus mañanas + Foco y concentración (antes de chakras) ── */}
+        {["Energiza tus mañanas", "Foco y concentración"].map((label) => {
+          const tc = themeCarousels.find((c) => c.label === label);
+          if (!tc) return null;
+          return (
+            <SessionCarousel
+              key={tc.label}
+              title={tc.label}
+              sessions={tc.sessions}
+              isPremium={isPremium}
+              onPress={(s) => handleSessionPress(s)}
+              style={{ marginTop: 0, marginBottom: SECTION_GAP }}
+              cardWidth={SQCARD_W}
+              titleSize={20}
+            />
+          );
+        })}
 
         {/* ── Carruseles por temática ── */}
         {themeCarousels.length > 0 && (
