@@ -141,78 +141,92 @@ export function CalendarioEncuentroSheet({ encuentro, visible, onClose }: Props)
     if (!encuentro || calState === "loading" || calState === "done") return;
     setCalState("loading");
 
+    // Build ICS content
+    const start = new Date(encuentro.fechaISO);
+    const end = new Date(start.getTime() + 90 * 60 * 1000);
+
+    const fmt = (d: Date) =>
+      d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+
+    const uid = `${encuentro.id}-${Date.now()}@resonancia.app`;
+    const now = fmt(new Date());
+
+    const ics = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//RESONANCIA//Casa del Cuenco//ES",
+      "CALSCALE:GREGORIAN",
+      "METHOD:PUBLISH",
+      "BEGIN:VEVENT",
+      `UID:${uid}`,
+      `DTSTAMP:${now}`,
+      `DTSTART:${fmt(start)}`,
+      `DTEND:${fmt(end)}`,
+      `SUMMARY:${encuentro.titulo}`,
+      `DESCRIPTION:Encuentro en vivo · RESONANCIA\\nGuía: ${encuentro.guia.nombre}`,
+      "ORGANIZER:RESONANCIA Casa del Cuenco",
+      "BEGIN:VALARM",
+      "TRIGGER:-PT10M",
+      "ACTION:DISPLAY",
+      "DESCRIPTION:Tu encuentro en vivo está por comenzar",
+      "END:VALARM",
+      "END:VEVENT",
+      "END:VCALENDAR",
+    ].join("\r\n");
+
+    // Write file
+    const cacheDir = FileSystem.cacheDirectory ?? FileSystem.documentDirectory ?? "";
+    const filePath = cacheDir + `encuentro-${encuentro.id}.ics`;
+
     try {
-      const canShare = await Sharing.isAvailableAsync();
-      if (!canShare) {
-        Alert.alert(
-          "No disponible",
-          "Tu dispositivo no puede compartir archivos de calendario en este momento.",
-          [{ text: "Entendido", onPress: () => setCalState("idle") }]
-        );
-        return;
-      }
-
-      // Build ICS content
-      const start = new Date(encuentro.fechaISO);
-      const end = new Date(start.getTime() + 90 * 60 * 1000);
-
-      const fmt = (d: Date) =>
-        d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-
-      const uid = `${encuentro.id}-${Date.now()}@resonancia.app`;
-      const now = fmt(new Date());
-
-      const ics = [
-        "BEGIN:VCALENDAR",
-        "VERSION:2.0",
-        "PRODID:-//RESONANCIA//Casa del Cuenco//ES",
-        "CALSCALE:GREGORIAN",
-        "METHOD:PUBLISH",
-        "BEGIN:VEVENT",
-        `UID:${uid}`,
-        `DTSTAMP:${now}`,
-        `DTSTART:${fmt(start)}`,
-        `DTEND:${fmt(end)}`,
-        `SUMMARY:${encuentro.titulo}`,
-        `DESCRIPTION:Encuentro en vivo · RESONANCIA\\nGuía: ${encuentro.guia.nombre}`,
-        "ORGANIZER:RESONANCIA Casa del Cuenco",
-        "BEGIN:VALARM",
-        "TRIGGER:-PT10M",
-        "ACTION:DISPLAY",
-        "DESCRIPTION:Tu encuentro en vivo está por comenzar",
-        "END:VALARM",
-        "END:VEVENT",
-        "END:VCALENDAR",
-      ].join("\r\n");
-
-      // Write to temp file
-      const filePath =
-        (FileSystem.cacheDirectory ?? "") +
-        `encuentro-${encuentro.id}.ics`;
-
       await FileSystem.writeAsStringAsync(filePath, ics, {
         encoding: FileSystem.EncodingType.UTF8,
       });
+    } catch (e) {
+      console.error("[Calendario] writeAsStringAsync error:", e);
+      setCalState("error");
+      return;
+    }
 
-      // Share/open → iOS shows native "Add to Calendar" sheet
+    // Check sharing availability
+    const canShare = await Sharing.isAvailableAsync();
+    if (!canShare) {
+      setCalState("idle");
+      Alert.alert(
+        "No disponible",
+        "Tu dispositivo no puede compartir archivos en este momento.",
+        [{ text: "Entendido" }]
+      );
+      return;
+    }
+
+    // Share — user picks calendar app; dismiss = resolve (not throw)
+    try {
       await Sharing.shareAsync(filePath, {
         mimeType: "text/calendar",
         dialogTitle: "Agregar al calendario",
         UTI: "public.calendar-event",
       });
+    } catch (e) {
+      // Dismissed or cancelled — not a real error
+      console.warn("[Calendario] shareAsync dismissed:", e);
+      setCalState("idle");
+      return;
+    }
 
-      // Persist confirmation
+    // Persist & mark done
+    try {
       const raw = await AsyncStorage.getItem(STORAGE_KEY);
       const saved: string[] = raw ? JSON.parse(raw) : [];
       if (!saved.includes(encuentro.id)) {
         saved.push(encuentro.id);
         await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
       }
-
-      setCalState("done");
     } catch {
-      setCalState("error");
+      // storage error is non-fatal
     }
+
+    setCalState("done");
   }
 
   const isDone = calState === "done";
@@ -288,9 +302,11 @@ export function CalendarioEncuentroSheet({ encuentro, visible, onClose }: Props)
           </Pressable>
 
           {calState === "error" && (
-            <Text style={styles.errorText}>
-              No se pudo agregar el evento. Verificá los permisos del calendario.
-            </Text>
+            <Pressable onPress={() => setCalState("idle")}>
+              <Text style={styles.errorText}>
+                No se pudo generar el archivo. Tocá para intentar de nuevo.
+              </Text>
+            </Pressable>
           )}
         </Animated.View>
       </View>
