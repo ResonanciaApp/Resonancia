@@ -58,7 +58,6 @@ import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
 import { InvitarSheet } from "@/components/InvitarSheet";
 import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
 import { BibliotecaScreen, type LibHeaderActions } from "@/components/BibliotecaScreen";
-import { HistorialCalendar } from "@/components/HistorialCalendar";
 import {
   gradientColors,
   type GeoSettings,
@@ -144,12 +143,6 @@ function computeMaxStreak(events: { playedAt: string }[]): number {
 
 const WEEK_INITIALS = ["L", "M", "M", "J", "V", "S", "D"];
 
-type PerfilTab = "biblioteca" | "historial";
-
-const PERFIL_TABS: { id: PerfilTab; label: string }[] = [
-  { id: "biblioteca",  label: "Mi Espacio" },
-  { id: "historial",   label: "Historial" },
-];
 
 
 // ── BgGlyph: renderiza una capa de geometría animada en el fondo del perfil ─
@@ -310,7 +303,6 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const [perfilTab, setPerfilTab] = useState<PerfilTab>("biblioteca");
   const [libActions, setLibActions] = useState<LibHeaderActions | null>(null);
 
   // ── Borde del sticky header: se activa a partir de unos pocos px de scroll ──
@@ -761,7 +753,7 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
                 <Feather name="settings" size={23} color="#FBFBFB" />
               </Pressable>
             </View>
-          ) : perfilTab === "biblioteca" && libActions && !libActions.hidden ? (
+          ) : libActions && !libActions.hidden ? (
             <View style={styles.libActionsPill}>
               <Pressable onPress={libActions.onSearch} hitSlop={10} style={styles.libActionBtn}>
                 <Feather name="search" size={22} color="#f9f9f9" />
@@ -775,25 +767,6 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
           )}
         </View>
 
-        {!dedicated && (
-        <View style={[styles.pillRowScroll, styles.pillRow]}>
-          {PERFIL_TABS.map((t) => {
-            const sel = perfilTab === t.id;
-            return (
-              <Pressable
-                key={t.id}
-                onPress={() => setPerfilTab(t.id)}
-                style={({ pressed }) => [styles.pill, sel && styles.pillSel, { opacity: pressed ? 0.8 : 1 }]}
-              >
-                {sel && (
-                  <LinearGradient colors={["#F7CB6B", "#FBA980"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
-                )}
-                <Text style={[styles.pillText, sel && styles.pillTextSel]}>{t.label}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
-        )}
       </View>
 
       {dedicated && (
@@ -1140,19 +1113,7 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
       )}
 
 
-      {!dedicated && perfilTab === "biblioteca" && <BibliotecaScreen embedded onHeaderActions={setLibActions} />}
-
-      {!dedicated && perfilTab === "historial" && (
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={{ paddingBottom: 160 + bottomPad, paddingTop: 16, paddingHorizontal: 19 }}
-          showsVerticalScrollIndicator={false}
-          onScroll={handleHeaderScroll}
-          scrollEventThrottle={16}
-        >
-          <HistorialCalendar />
-        </ScrollView>
-      )}
+      {!dedicated && <BibliotecaScreen embedded onHeaderActions={setLibActions} />}
 
       {/* ── Invitar Sheet ── */}
       <InvitarSheet
