@@ -26,6 +26,7 @@ export default function EncuentrosScreen() {
   const insets = useSafeAreaInsets();
   const tabBarHeight = PILL_H + Math.max(8, insets.bottom - 10);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [calSheetEncuentro, setCalSheetEncuentro] = useState<Encuentro | null>(null);
   const { theme: activeTheme } = useSceneTheme();
 
   const onViewableItemsChanged = useRef(
@@ -41,8 +42,6 @@ export default function EncuentrosScreen() {
   function handleCardPress(enc: Encuentro) {
     router.push(`/encuentro/${enc.id}` as never);
   }
-
-  const [calSheetEncuentro, setCalSheetEncuentro] = useState<Encuentro | null>(null);
 
   function handleCalendarPress(enc: Encuentro) {
     setCalSheetEncuentro(enc);
