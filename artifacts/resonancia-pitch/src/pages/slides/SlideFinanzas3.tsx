@@ -34,6 +34,13 @@ export default function SlideFinanzas3() {
     { fase: "Escala\nMes 13–24",     fijo: "$3.900.000", contenido: "$1.500.000", mkt: "$2,0M–$2,5M",total: "$7,4M–$7,9M", note: "Retargeting +\ncampañas LATAM" },
   ];
 
+  // Pricing data
+  const pricingRows = [
+    { plan: "Mensual",  pct: "30%", launch: "$5.990", launchNeto: "$3.517/mes",  normal: "$7.990", normalNeto: "$4.700/mes" },
+    { plan: "Anual",    pct: "60%", launch: "$39.990", launchNeto: "$1.961/mes eq.", normal: "$49.990", normalNeto: "$2.451/mes eq." },
+    { plan: "Lifetime", pct: "10%", launch: "$99.990", launchNeto: "$58.817 único",  normal: "$149.990", normalNeto: "$88.229 único" },
+  ];
+
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col"
@@ -45,70 +52,79 @@ export default function SlideFinanzas3() {
           ANEXO FINANCIERO · HOJA 3 DE 3
         </div>
         <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Desglose de <span style={{ color: "#FFFFFF" }}>costos mensuales.</span>
+          Estrategia de precios + <span style={{ color: "#FFFFFF" }}>costos mensuales.</span>
         </div>
       </div>
 
-      {/* IVA banner */}
+      {/* Two-phase pricing table */}
       <div style={{
-        backgroundColor: "rgba(255,255,255,0.08)",
-        border: "1px solid rgba(255,255,255,0.35)",
-        borderRadius: "0.6vw",
-        padding: "0.8vh 1.4vw",
-        display: "flex",
-        alignItems: "center",
-        gap: "1.5vw",
+        backgroundColor: "rgba(0,0,0,0.18)",
+        border: "1px solid rgba(255,255,255,0.20)",
+        borderRadius: "0.7vw",
+        overflow: "hidden",
         flexShrink: 0,
       }}>
-        <div style={{ fontSize: "1.0vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", flexShrink: 0 }}>IVA 19% (Chile)</div>
-        <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.50)", lineHeight: 1.3 }}>
-          Precio usuario <strong style={{ color: "#F4F4F4" }}>incluye IVA</strong> (Ley 21.210, servicios digitales desde 2020).
-          Apple/Google retienen y remiten al SII. Empresa recibe: <strong style={{ color: "#F4F4F4" }}>precio excl. IVA × 70%</strong> (comisión tienda 30%).
-          <span style={{ color: "#FFFFFF", fontWeight: 700 }}> → $7.990 = $4.700/mes neto</span>
-        </div>
-      </div>
-
-      {/* Plan mix → blended ARPU */}
-      <div style={{
-        backgroundColor: "rgba(0,0,0,0.14)",
-        border: "1px solid rgba(255,255,255,0.18)",
-        borderRadius: "0.6vw",
-        padding: "0.85vh 1.4vw",
-        display: "flex",
-        alignItems: "center",
-        gap: "1.8vw",
-        flexShrink: 0,
-      }}>
-        <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", flexShrink: 0 }}>MEZCLA DE PLANES</div>
-
-        <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.3 }}>
-          <div style={{ fontSize: "0.82vw", color: "rgba(244,244,244,0.50)" }}>Mensual · ~45% de usuarios</div>
-          <div style={{ fontSize: "1.0vw", color: "#F4F4F4" }}>$7.990/mes → <strong style={{ color: "#F4F4F4" }}>$4.700</strong> neto/mes</div>
-        </div>
-
-        <div style={{ width: "1px", alignSelf: "stretch", backgroundColor: "rgba(255,255,255,0.08)" }} />
-
-        <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.3 }}>
-          <div style={{ fontSize: "0.82vw", color: "rgba(244,244,244,0.50)" }}>Anual · ~55% de usuarios (plan preferido)</div>
-          <div style={{ fontSize: "1.0vw", color: "#F4F4F4" }}>$49.990/año → <strong style={{ color: "#F4F4F4" }}>$2.451</strong> neto/mes equiv.</div>
-        </div>
-
-        <div style={{ fontSize: "1.6vw", color: "rgba(255,255,255,0.5)", margin: "0 0.3vw" }}>→</div>
-
+        {/* Header row */}
         <div style={{
-          marginLeft: "auto",
-          display: "flex",
-          alignItems: "baseline",
-          gap: "0.7vw",
-          backgroundColor: "rgba(255,255,255,0.1)",
-          border: "1px solid rgba(255,255,255,0.3)",
-          borderRadius: "0.5vw",
-          padding: "0.6vh 1vw",
-          flexShrink: 0,
+          display: "grid",
+          gridTemplateColumns: "0.9fr 0.5fr 1.1fr 1.1fr 1.1fr 1.1fr",
+          backgroundColor: "rgba(255,255,255,0.07)",
+          padding: "0.7vh 1.2vw",
+          borderBottom: "1px solid rgba(255,255,255,0.12)",
         }}>
-          <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.50)" }}>ARPU NETO BLENDED</div>
-          <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1 }}>$3.450/mes</div>
+          {["Plan", "Mix", "Precio lanzamiento (M1–M3)", "Neto empresa", "Precio normal (M4+)", "Neto empresa"].map((h, i) => (
+            <div key={i} style={{
+              fontSize: "0.82vw", fontWeight: 700, color: i >= 2 && i <= 3 ? "#BE9650" : i >= 4 ? "#6EC49A" : "#FFFFFF",
+              letterSpacing: "0.06em"
+            }}>{h}</div>
+          ))}
         </div>
+
+        {pricingRows.map((r, i) => (
+          <div
+            key={r.plan}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "0.9fr 0.5fr 1.1fr 1.1fr 1.1fr 1.1fr",
+              padding: "0.75vh 1.2vw",
+              backgroundColor: i % 2 === 0 ? "rgba(255,255,255,0.02)" : "transparent",
+              borderTop: i > 0 ? "1px solid rgba(255,255,255,0.05)" : "none",
+              alignItems: "center",
+            }}
+          >
+            <div style={{ fontSize: "1.05vw", fontWeight: 700, color: "#F4F4F4" }}>{r.plan}</div>
+            <div style={{ fontSize: "1.05vw", fontWeight: 700, color: "rgba(244,244,244,0.55)" }}>{r.pct}</div>
+            <div style={{ fontSize: "1.05vw", color: "#F4F4F4" }}>{r.launch}</div>
+            <div style={{ fontSize: "0.95vw", color: "#BE9650", fontWeight: 600 }}>{r.launchNeto}</div>
+            <div style={{ fontSize: "1.05vw", color: "#F4F4F4" }}>{r.normal}</div>
+            <div style={{ fontSize: "0.95vw", color: "#6EC49A", fontWeight: 600 }}>{r.normalNeto}</div>
+          </div>
+        ))}
+
+        {/* Blended ARPU footer */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "0.9fr 0.5fr 1.1fr 1.1fr 1.1fr 1.1fr",
+          padding: "0.75vh 1.2vw",
+          backgroundColor: "rgba(0,0,0,0.20)",
+          borderTop: "1px solid rgba(255,255,255,0.15)",
+          alignItems: "center",
+        }}>
+          <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(244,244,244,0.55)", gridColumn: "1/3" }}>ARPU RECURRENTE BLENDED</div>
+          <div style={{ gridColumn: "3/5", display: "flex", alignItems: "center", gap: "0.6vw" }}>
+            <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#BE9650" }}>~$2.232/mes/sub</div>
+            <div style={{ fontSize: "0.8vw", color: "rgba(244,244,244,0.40)" }}>+ $2.4M boost lifetime/mes</div>
+          </div>
+          <div style={{ gridColumn: "5/7", display: "flex", alignItems: "center", gap: "0.6vw" }}>
+            <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#6EC49A" }}>~$2.881/mes/sub</div>
+            <div style={{ fontSize: "0.8vw", color: "rgba(244,244,244,0.40)" }}>+ $3.5M boost lifetime/mes</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Note IVA */}
+      <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.40)", lineHeight: 1.3 }}>
+        Neto = precio ÷ 1,19 (IVA 19% Chile, Ley 21.210) × 70% (comisión Apple/Google 30%) · Mensual y anual = recurrente · Lifetime = pago único, no renueva.
       </div>
 
       {/* Main: two columns */}
