@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
   carouselContent: {
     paddingHorizontal: CARD_H_PADDING,
     gap: CARD_GAP,
+    paddingTop: 40,
   },
   cardWrap: {
     // width set inline
