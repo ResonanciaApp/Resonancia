@@ -62,21 +62,21 @@ export default function SlideProyeccion() {
         <ScenarioCard
           label="Base"
           highlight
-          installs="200.000"
-          subs="5.000"
-          revenue="$136M CLP"
+          installs="36.000"
+          subs="3.600"
+          revenue="+$25M CLP"
         />
         <ScenarioCard
           label="Optimista"
-          installs="250.000"
-          subs="7.000"
-          revenue="$200M CLP"
+          installs="45.000"
+          subs="4.500"
+          revenue="+$49M CLP"
         />
         <ScenarioCard
           label="Agresivo"
-          installs="300.000"
-          subs="10.000"
-          revenue="$280M CLP"
+          installs="60.000"
+          subs="6.000"
+          revenue="+$89M CLP"
         />
       </div>
 
@@ -110,7 +110,7 @@ export default function SlideProyeccion() {
         </div>
         {/* Short disclaimer */}
         <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.35)", lineHeight: 1.5 }}>
-          Base: 1M seguidores · 20% instala · 2,5% convierte a premium. Recuperación estimada mes 7–8. Escenarios ilustrativos.
+          Base: 300 nuevos suscriptores/mes · Break-even operacional M5 · Recuperación de caja acumulada M8. Escenarios ilustrativos, no garantizados.
         </div>
       </div>
 
