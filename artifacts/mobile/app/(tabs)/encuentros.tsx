@@ -52,7 +52,6 @@ export default function EncuentrosScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Encuentros</Text>
-        <Text style={styles.headerSub}>Próximos encuentros en vivo</Text>
       </View>
 
       {/* Carrusel */}
