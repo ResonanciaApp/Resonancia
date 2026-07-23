@@ -1,7 +1,7 @@
 export default function SlideFinanzas2() {
-  // Blend 35/60/5 — crecimiento 300 subs/mes — base 3.600 a M12
-  // M1-M3: ARPU rec $2.408 + lifetime $0.882M/mes (15 nuevos × $58.817)
-  // M4+ : ARPU rec $3.116 + lifetime $1.323M/mes (15 nuevos × $88.229)
+  // M1: 700 subs (lanzamiento) · M2+: +250/mes → 3.450 a M12
+  // M1: ARPU rec $2.408 + lifetime $0.882M/mes
+  // M2+: ARPU rec $3.116 + lifetime $1.323M/mes
   // Cursos M7+: neto $15.294/venta
   const ARPU_LAUNCH = 2408;
   const ARPU_NORMAL = 3116;
@@ -11,18 +11,18 @@ export default function SlideFinanzas2() {
   const COLCHON = 0.6;
 
   const meses = [
-    { label: "M1",  subs: 300,  launch: true,  costos: 3.90, cursos: 0   },
-    { label: "M2",  subs: 600,  launch: false, costos: 3.90, cursos: 0   },
-    { label: "M3",  subs: 900,  launch: false, costos: 5.60, cursos: 0   },
-    { label: "M4",  subs: 1200, launch: false, costos: 5.60, cursos: 0   },
-    { label: "M5",  subs: 1500, launch: false, costos: 5.60, cursos: 0   },
-    { label: "M6",  subs: 1800, launch: false, costos: 5.60, cursos: 0   },
-    { label: "M7",  subs: 2100, launch: false, costos: 6.40, cursos: 60  },
-    { label: "M8",  subs: 2400, launch: false, costos: 6.40, cursos: 80  },
+    { label: "M1",  subs: 700,  launch: true,  costos: 3.90, cursos: 0   },
+    { label: "M2",  subs: 950,  launch: false, costos: 3.90, cursos: 0   },
+    { label: "M3",  subs: 1200, launch: false, costos: 5.60, cursos: 0   },
+    { label: "M4",  subs: 1450, launch: false, costos: 5.60, cursos: 0   },
+    { label: "M5",  subs: 1700, launch: false, costos: 5.60, cursos: 0   },
+    { label: "M6",  subs: 1950, launch: false, costos: 5.60, cursos: 0   },
+    { label: "M7",  subs: 2200, launch: false, costos: 6.40, cursos: 60  },
+    { label: "M8",  subs: 2450, launch: false, costos: 6.40, cursos: 80  },
     { label: "M9",  subs: 2700, launch: false, costos: 6.65, cursos: 100 },
-    { label: "M10", subs: 3000, launch: false, costos: 6.65, cursos: 110 },
-    { label: "M11", subs: 3300, launch: false, costos: 6.90, cursos: 120 },
-    { label: "M12", subs: 3600, launch: false, costos: 6.90, cursos: 130 },
+    { label: "M10", subs: 2950, launch: false, costos: 6.65, cursos: 110 },
+    { label: "M11", subs: 3200, launch: false, costos: 6.90, cursos: 120 },
+    { label: "M12", subs: 3450, launch: false, costos: 6.90, cursos: 130 },
   ];
 
   let cumulative = COLCHON;
@@ -37,7 +37,7 @@ export default function SlideFinanzas2() {
     return { ...m, ingreso, ingresoUp, neto, cumulative: parseFloat(cumulative.toFixed(2)) };
   });
 
-  const maxSubs  = 3600;
+  const maxSubs  = 3450;
   const allCum   = data.map((d) => d.cumulative);
   const minCum   = Math.min(...allCum);
   const maxCum   = Math.max(...allCum);
@@ -45,9 +45,9 @@ export default function SlideFinanzas2() {
   const ZERO_PCT = (-minCum / cumRange) * 100;
 
   const scenarios = [
-    { label: "Base",      subs12: "3.600",  cursos6m: "600",    ingTotal: "~$95M",  neto: "+$25M",  highlight: true  },
-    { label: "Optimista", subs12: "4.500",  cursos6m: "~750",   ingTotal: "~$119M", neto: "+$49M",  highlight: false },
-    { label: "Agresivo",  subs12: "6.000",  cursos6m: "~1.000", ingTotal: "~$159M", neto: "+$89M",  highlight: false },
+    { label: "Base",      subs12: "3.450",  cursos6m: "600",    ingTotal: "~$102M", neto: "+$32M",  highlight: true  },
+    { label: "Optimista", subs12: "4.300",  cursos6m: "~750",   ingTotal: "~$127M", neto: "+$57M",  highlight: false },
+    { label: "Agresivo",  subs12: "5.750",  cursos6m: "~1.000", ingTotal: "~$170M", neto: "+$98M",  highlight: false },
   ];
 
   return (
@@ -63,7 +63,7 @@ export default function SlideFinanzas2() {
           Caja acumulada y <span style={{ color: "#FFFFFF" }}>escenarios.</span>
         </div>
         <div style={{ fontSize: "1.45vw", color: "rgba(244,244,244,0.50)", marginTop: "1vh" }}>
-          En millones de CLP · <span style={{ color: "#BE9650" }}>dorado</span> = lanzamiento M1 · <span style={{ color: "#6EC49A" }}>verde</span> = normal M2+ · Break-even caja: <strong style={{ color: "#FFFFFF" }}>M8</strong>
+          En millones de CLP · <span style={{ color: "#BE9650" }}>dorado</span> = lanzamiento M1 · <span style={{ color: "#6EC49A" }}>verde</span> = normal M2+ · Break-even caja: <strong style={{ color: "#FFFFFF" }}>M5</strong>
         </div>
       </div>
 

@@ -1,16 +1,16 @@
 export default function SlideFinanzas1() {
-  // Blend 35/60/5 — crecimiento 300 subs/mes — base 3.600 a M12
-  // M1-M3: ARPU rec $2.408 · lifetime boost $0.882M/mes (15 nuevos × $58.817)
-  // M4+ : ARPU rec $3.116 · lifetime boost $1.323M/mes (15 nuevos × $88.229)
+  // M1: 700 subs (lanzamiento) · M2+: +250/mes → 3.450 a M12
+  // M1: ARPU rec $2.408 · lifetime boost $0.882M/mes
+  // M2+: ARPU rec $3.116 · lifetime boost $1.323M/mes
   // Cursos M7+: $15.294/venta (post-tienda, post-tallerista/prod 35%)
 
   const rows = [
-    { mes: "M1 Lanzamiento", subs: "300",   fase: "lanzamiento", ingTotal: "$1,6M",  upsell: "—",      costos: "$3,9M",  resultado: "–$2,3M", neg: true  },
-    { mes: "Mes 3",          subs: "900",   fase: "normal",      ingTotal: "$4,1M",  upsell: "—",      costos: "$5,6M",  resultado: "–$1,5M", neg: true  },
-    { mes: "Mes 4",          subs: "1.200", fase: "normal",      ingTotal: "$5,1M",  upsell: "—",      costos: "$5,6M",  resultado: "–$0,5M", neg: true  },
-    { mes: "Mes 5",          subs: "1.500", fase: "normal",      ingTotal: "$6,0M",  upsell: "—",      costos: "$5,6M",  resultado: "+$0,4M", neg: false },
+    { mes: "M1 Lanzamiento", subs: "700",   fase: "lanzamiento", ingTotal: "$2,6M",  upsell: "—",      costos: "$3,9M",  resultado: "–$1,3M", neg: true  },
+    { mes: "Mes 3",          subs: "1.200", fase: "normal",      ingTotal: "$5,1M",  upsell: "—",      costos: "$5,6M",  resultado: "–$0,5M", neg: true  },
+    { mes: "Mes 4",          subs: "1.450", fase: "normal",      ingTotal: "$5,8M",  upsell: "—",      costos: "$5,6M",  resultado: "+$0,2M", neg: false },
+    { mes: "Mes 5",          subs: "1.700", fase: "normal",      ingTotal: "$6,6M",  upsell: "—",      costos: "$5,6M",  resultado: "+$1,0M", neg: false },
     { mes: "Mes 9",          subs: "2.700", fase: "normal",      ingTotal: "$9,7M",  upsell: "+$1,5M", costos: "$6,65M", resultado: "+$4,6M", neg: false },
-    { mes: "Mes 12",         subs: "3.600", fase: "normal",      ingTotal: "$12,5M", upsell: "+$2,0M", costos: "$6,9M",  resultado: "+$7,6M", neg: false },
+    { mes: "Mes 12",         subs: "3.450", fase: "normal",      ingTotal: "$12,1M", upsell: "+$2,0M", costos: "$6,9M",  resultado: "+$7,2M", neg: false },
   ];
 
   return (
@@ -27,7 +27,7 @@ export default function SlideFinanzas1() {
           Flujo de caja <span style={{ color: "#FFFFFF" }}>post-lanzamiento.</span>
         </div>
         <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.50)", marginTop: "0.4vh" }}>
-          En millones de CLP · 300 suscriptores nuevos/mes · Ingresos = recurrente + boost lifetime + up-sells
+          En millones de CLP · 700 suscriptores M1 · +250/mes desde M2 · Ingresos = recurrente + boost lifetime + up-sells
         </div>
       </div>
 
