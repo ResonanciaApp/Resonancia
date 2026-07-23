@@ -180,7 +180,7 @@ export function CalendarioEncuentroSheet({ encuentro, visible, onClose }: Props)
 
     try {
       await FileSystem.writeAsStringAsync(filePath, ics, {
-        encoding: FileSystem.EncodingType.UTF8,
+        encoding: "utf8" as const,
       });
     } catch (e) {
       console.error("[Calendario] writeAsStringAsync error:", e);
