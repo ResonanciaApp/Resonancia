@@ -15,6 +15,7 @@ import { Feather } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ENCUENTROS, formatearFechaDetalle } from "@/data/encuentros";
+import { CalendarioEncuentroSheet } from "@/components/CalendarioEncuentroSheet";
 
 const H_PAD = 22;
 const HERO_H = 300;
@@ -25,6 +26,7 @@ export default function EncuentroDetalle() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const encuentro = ENCUENTROS.find((e) => e.id === id);
   const [asistencia, setAsistencia] = useState(false);
+  const [calSheet, setCalSheet] = useState(false);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -158,8 +160,26 @@ export default function EncuentroDetalle() {
               <Text style={styles.asistenciaBtnText}>Confirmar asistencia</Text>
             )}
           </Pressable>
+
+          {/* Botón añadir al calendario */}
+          <Pressable
+            style={({ pressed }) => [styles.calBtn, { opacity: pressed ? 0.8 : 1 }]}
+            onPress={() => setCalSheet(true)}
+          >
+            <Feather name="calendar" size={16} color="#F7CB6B" style={{ marginRight: 8 }} />
+            <Text style={styles.calBtnText}>Añadir a mi calendario</Text>
+          </Pressable>
         </View>
       </ScrollView>
+
+      {/* Sheet de calendario */}
+      {encuentro && (
+        <CalendarioEncuentroSheet
+          encuentro={encuentro}
+          visible={calSheet}
+          onClose={() => setCalSheet(false)}
+        />
+      )}
     </View>
   );
 }
@@ -361,6 +381,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Manrope",
     fontWeight: "700",
+    letterSpacing: 0.2,
+  },
+
+  /* Botón calendario */
+  calBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(247,203,107,0.1)",
+    borderRadius: 30,
+    borderWidth: 1,
+    borderColor: "rgba(247,203,107,0.25)",
+    paddingVertical: 14,
+    marginTop: 10,
+  },
+  calBtnText: {
+    color: "#F7CB6B",
+    fontSize: 15,
+    fontFamily: "Manrope",
+    fontWeight: "600",
     letterSpacing: 0.2,
   },
 

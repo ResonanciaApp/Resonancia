@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { EncuentroCard } from "@/components/EncuentroCard";
+import { CalendarioEncuentroSheet } from "@/components/CalendarioEncuentroSheet";
 import { ENCUENTROS, type Encuentro } from "@/data/encuentros";
 
 const { width: SCREEN_W } = Dimensions.get("window");
@@ -41,8 +42,10 @@ export default function EncuentrosScreen() {
     router.push(`/encuentro/${enc.id}` as never);
   }
 
-  function handleCalendarPress(_enc: Encuentro) {
-    // TODO: abrir modal de calendario
+  const [calSheetEncuentro, setCalSheetEncuentro] = useState<Encuentro | null>(null);
+
+  function handleCalendarPress(enc: Encuentro) {
+    setCalSheetEncuentro(enc);
   }
 
   return (
@@ -93,6 +96,13 @@ export default function EncuentrosScreen() {
           />
         ))}
       </View>
+
+      {/* Sheet calendario */}
+      <CalendarioEncuentroSheet
+        encuentro={calSheetEncuentro}
+        visible={calSheetEncuentro !== null}
+        onClose={() => setCalSheetEncuentro(null)}
+      />
     </View>
   );
 }
