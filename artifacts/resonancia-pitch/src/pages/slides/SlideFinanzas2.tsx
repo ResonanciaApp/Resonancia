@@ -12,8 +12,8 @@ export default function SlideFinanzas2() {
 
   const meses = [
     { label: "M1",  subs: 300,  launch: true,  costos: 3.90, cursos: 0   },
-    { label: "M2",  subs: 600,  launch: true,  costos: 3.90, cursos: 0   },
-    { label: "M3",  subs: 900,  launch: true,  costos: 5.60, cursos: 0   },
+    { label: "M2",  subs: 600,  launch: false, costos: 3.90, cursos: 0   },
+    { label: "M3",  subs: 900,  launch: false, costos: 5.60, cursos: 0   },
     { label: "M4",  subs: 1200, launch: false, costos: 5.60, cursos: 0   },
     { label: "M5",  subs: 1500, launch: false, costos: 5.60, cursos: 0   },
     { label: "M6",  subs: 1800, launch: false, costos: 5.60, cursos: 0   },
@@ -63,7 +63,7 @@ export default function SlideFinanzas2() {
           Caja acumulada y <span style={{ color: "#FFFFFF" }}>escenarios.</span>
         </div>
         <div style={{ fontSize: "1.45vw", color: "rgba(244,244,244,0.50)", marginTop: "1vh" }}>
-          En millones de CLP · <span style={{ color: "#BE9650" }}>dorado</span> = lanzamiento · <span style={{ color: "#6EC49A" }}>verde</span> = normal · Break-even caja: <strong style={{ color: "#FFFFFF" }}>M8</strong>
+          En millones de CLP · <span style={{ color: "#BE9650" }}>dorado</span> = lanzamiento M1 · <span style={{ color: "#6EC49A" }}>verde</span> = normal M2+ · Break-even caja: <strong style={{ color: "#FFFFFF" }}>M8</strong>
         </div>
       </div>
 
@@ -137,7 +137,7 @@ export default function SlideFinanzas2() {
                 </div>
               ))}
             </div>
-            <div style={{ fontSize: "0.70vw", color: "rgba(190,150,80,0.7)", marginTop: "0.4vh" }}>■ dorado M1–M3 = lanzamiento · ■ verde M4+ = normal · ■ verde intenso = con cursos</div>
+            <div style={{ fontSize: "0.70vw", color: "rgba(190,150,80,0.7)", marginTop: "0.4vh" }}>■ dorado M1 = lanzamiento · ■ verde M2+ = normal · ■ verde intenso = con cursos</div>
           </div>
         </div>
       </div>

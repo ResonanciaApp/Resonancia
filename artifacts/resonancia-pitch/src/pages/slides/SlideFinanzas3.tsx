@@ -60,7 +60,7 @@ export default function SlideFinanzas3() {
           backgroundColor: "rgba(255,255,255,0.06)", padding: "0.55vh 1.1vw",
           borderBottom: "1px solid rgba(255,255,255,0.12)",
         }}>
-          {["Plan", "Mix", "Lanzamiento (M1–M3)", "Neto empresa", "Normal (M4+)", "Neto empresa"].map((h, i) => (
+          {["Plan", "Mix", "Lanzamiento (M1)", "Neto empresa", "Normal (M2+)", "Neto empresa"].map((h, i) => (
             <div key={i} style={{ fontSize: "0.78vw", fontWeight: 700, letterSpacing: "0.06em",
               color: i >= 2 && i <= 3 ? "#BE9650" : i >= 4 ? "#6EC49A" : "#FFFFFF" }}>{h}</div>
           ))}

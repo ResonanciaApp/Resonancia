@@ -6,7 +6,7 @@ export default function SlideFinanzas1() {
 
   const rows = [
     { mes: "M1 Lanzamiento", subs: "300",   fase: "lanzamiento", ingTotal: "$1,6M",  upsell: "—",      costos: "$3,9M",  resultado: "–$2,3M", neg: true  },
-    { mes: "Mes 3",          subs: "900",   fase: "lanzamiento", ingTotal: "$3,0M",  upsell: "—",      costos: "$5,6M",  resultado: "–$2,6M", neg: true  },
+    { mes: "Mes 3",          subs: "900",   fase: "normal",      ingTotal: "$4,1M",  upsell: "—",      costos: "$5,6M",  resultado: "–$1,5M", neg: true  },
     { mes: "Mes 4",          subs: "1.200", fase: "normal",      ingTotal: "$5,1M",  upsell: "—",      costos: "$5,6M",  resultado: "–$0,5M", neg: true  },
     { mes: "Mes 5",          subs: "1.500", fase: "normal",      ingTotal: "$6,0M",  upsell: "—",      costos: "$5,6M",  resultado: "+$0,4M", neg: false },
     { mes: "Mes 9",          subs: "2.700", fase: "normal",      ingTotal: "$9,7M",  upsell: "+$1,5M", costos: "$6,65M", resultado: "+$4,6M", neg: false },
@@ -34,11 +34,11 @@ export default function SlideFinanzas1() {
       {/* Phase legend */}
       <div style={{ display: "flex", gap: "1vw", flexShrink: 0 }}>
         <div style={{ flex: 1, backgroundColor: "rgba(190,150,80,0.09)", border: "1px solid rgba(190,150,80,0.30)", borderRadius: "0.5vw", padding: "0.55vh 1.1vw", display: "flex", alignItems: "baseline", gap: "0.8vw", flexWrap: "wrap" }}>
-          <span style={{ fontSize: "0.82vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.09em", flexShrink: 0 }}>LANZAMIENTO M1–M3</span>
+          <span style={{ fontSize: "0.82vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.09em", flexShrink: 0 }}>LANZAMIENTO M1</span>
           <span style={{ fontSize: "0.82vw", color: "rgba(244,244,244,0.50)" }}>ARPU rec. $2.408/sub · lifetime $0.882M/mes · precios $5.990 / $39.990 / $99.990</span>
         </div>
         <div style={{ flex: 1, backgroundColor: "rgba(110,196,154,0.06)", border: "1px solid rgba(110,196,154,0.25)", borderRadius: "0.5vw", padding: "0.55vh 1.1vw", display: "flex", alignItems: "baseline", gap: "0.8vw", flexWrap: "wrap" }}>
-          <span style={{ fontSize: "0.82vw", fontWeight: 700, color: "#6EC49A", letterSpacing: "0.09em", flexShrink: 0 }}>NORMAL M4+</span>
+          <span style={{ fontSize: "0.82vw", fontWeight: 700, color: "#6EC49A", letterSpacing: "0.09em", flexShrink: 0 }}>NORMAL M2+</span>
           <span style={{ fontSize: "0.82vw", color: "rgba(244,244,244,0.50)" }}>ARPU rec. $3.116/sub · lifetime $1.323M/mes · precios $7.990 / $49.990 / $149.990 · Cursos desde M7</span>
         </div>
       </div>
