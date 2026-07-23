@@ -223,8 +223,8 @@ const styles = StyleSheet.create({
   stickyHeader: {
     backgroundColor: "transparent",
   },
-  titleRow: { alignItems: "flex-start", paddingHorizontal: 19, paddingBottom: 10, paddingTop: 0 },
-  pageTitle: { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "left", marginTop: 0, transform: [{ translateY: 1 }] },
+  titleRow: { alignItems: "stretch", paddingHorizontal: 19, paddingBottom: 10, paddingTop: 0 },
+  pageTitle: { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center", marginTop: 0, transform: [{ translateY: 1 }] },
 
   searchWrap: {
     paddingHorizontal: 20,

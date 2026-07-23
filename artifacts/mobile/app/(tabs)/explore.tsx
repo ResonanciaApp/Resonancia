@@ -892,10 +892,10 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
 
   fixedHeader:  { zIndex: 10 },
-  titleRow:     { alignItems: "flex-start", paddingHorizontal: 19, paddingBottom: 10, paddingTop: 0 },
+  titleRow:     { alignItems: "stretch", paddingHorizontal: 19, paddingBottom: 10, paddingTop: 0 },
   header:       { paddingHorizontal: H_PAD, marginBottom: 0 },
   headerRow:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  pageTitle:    { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "left", marginTop: 0, transform: [{ translateY: 1 }] },
+  pageTitle:    { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center", marginTop: 0, transform: [{ translateY: 1 }] },
   searchWrap:   { paddingHorizontal: H_PAD, paddingTop: 16, paddingBottom: 15 },
   searchBox:    { flexDirection: "row" as "row", alignItems: "center" as "center", gap: 10, borderRadius: 999, borderWidth: 1.5, paddingHorizontal: 18, height: 45 },
   searchInput:  { fontFamily: "Manrope", flex: 1, fontSize: 15, fontWeight: "300", padding: 0 },

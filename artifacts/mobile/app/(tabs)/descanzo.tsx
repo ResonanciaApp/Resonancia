@@ -1113,7 +1113,8 @@ const styles = StyleSheet.create({
     fontSize: 27,
     fontWeight: "700",
     letterSpacing: 0.3,
-    textAlign: "left",
+    textAlign: "center",
+    flex: 1,
     transform: [{ translateY: 1 }],
   },
 });
