@@ -125,7 +125,7 @@ function TabItem({
       accessibilityState={{ selected: isFocused }}
     >
       <View style={styles.pillWrap}>
-        <View style={{ width: iconSize, height: iconSize }}>
+        <View style={{ width: iconSize, height: ICON_SIZE, alignItems: "center", justifyContent: "center", overflow: "visible" }}>
           {makeIcon(isFocused)}
         </View>
         <View style={[styles.labelWrap, { transform: [{ translateY: labelOffset }] }]}>
