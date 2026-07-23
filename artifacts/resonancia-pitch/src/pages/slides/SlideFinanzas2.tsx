@@ -1,8 +1,8 @@
 export default function SlideFinanzas2() {
   // Curva base: +400/mes; M11=4.400, M12=5.000 (+600 último mes)
-  // ARPU neto blended $3.750/mes (45% mensual $8.990 · 55% anual $49.990)
+  // ARPU neto blended $3.450/mes (45% mensual $7.990 · 55% anual $49.990)
   // Up-sells (cursos): M7+ neto $23.529/curso; curva M7=60 M8=80 M9=100 M10=110 M11=120 M12=130
-  const ARPU = 3750;
+  const ARPU = 3450;
   const NETO_CURSO = 23529;
   const COLCHON = 0.6;
 
@@ -38,11 +38,10 @@ export default function SlideFinanzas2() {
   const cumRange = maxCum - minCum;
   const ZERO_PCT = (-minCum / cumRange) * 100;
 
-  // Escenarios: up-sells escalan proporcionalmente a suscriptores
   const scenarios = [
-    { label: "Base",      subs12: "5.000",  cursos6m: "600",    ingSubs: "~$118M", ingCursos: "~$14M", total: "~$132M", neto: "+$62M",  highlight: true  },
-    { label: "Optimista", subs12: "7.000",  cursos6m: "~840",   ingSubs: "~$165M", ingCursos: "~$20M", total: "~$185M", neto: "+$105M", highlight: false },
-    { label: "Agresivo",  subs12: "10.000", cursos6m: "~1.200", ingSubs: "~$236M", ingCursos: "~$28M", total: "~$264M", neto: "+$174M", highlight: false },
+    { label: "Base",      subs12: "5.000",  cursos6m: "600",    ingSubs: "~$108M", ingCursos: "~$14M", total: "~$122M", neto: "+$52M",  highlight: true  },
+    { label: "Optimista", subs12: "7.000",  cursos6m: "~840",   ingSubs: "~$151M", ingCursos: "~$20M", total: "~$171M", neto: "+$91M",  highlight: false },
+    { label: "Agresivo",  subs12: "10.000", cursos6m: "~1.200", ingSubs: "~$216M", ingCursos: "~$28M", total: "~$244M", neto: "+$154M", highlight: false },
   ];
 
   return (
@@ -50,7 +49,6 @@ export default function SlideFinanzas2() {
       className="relative w-screen h-screen overflow-hidden font-display flex flex-col justify-between"
       style={{ background: "linear-gradient(160deg, #211538 0%, #1E173E 33%, #181C3E 66%, #19233F 100%)", color: "#F4F4F4", padding: "8vh 6vw 7vh", boxSizing: "border-box" }}
     >
-      {/* Header */}
       <div style={{ flexShrink: 0 }}>
         <div style={{ fontSize: "1.4vw", fontWeight: 600, color: "rgba(244,244,244,0.50)", letterSpacing: "0.14em", marginBottom: "1.2vh" }}>
           ANEXO FINANCIERO · HOJA 2 DE 3
@@ -64,37 +62,14 @@ export default function SlideFinanzas2() {
         </div>
       </div>
 
-      {/* Chart area */}
       <div style={{ flex: 1, display: "flex", gap: "3vw", minHeight: 0 }}>
 
         {/* Chart */}
         <div style={{ flex: 2, position: "relative", display: "flex", flexDirection: "column" }}>
-          <div style={{
-            position: "absolute",
-            left: 0, right: 0,
-            top: `${ZERO_PCT}%`,
-            height: "1px",
-            backgroundColor: "rgba(255,255,255,0.30)",
-            zIndex: 1,
-          }} />
-          <div style={{
-            position: "absolute",
-            left: 0,
-            top: `${ZERO_PCT}%`,
-            transform: "translateY(-50%)",
-            fontSize: "0.85vw",
-            color: "rgba(255,255,255,0.40)",
-            zIndex: 2,
-          }}>$0</div>
+          <div style={{ position: "absolute", left: 0, right: 0, top: `${ZERO_PCT}%`, height: "1px", backgroundColor: "rgba(255,255,255,0.30)", zIndex: 1 }} />
+          <div style={{ position: "absolute", left: 0, top: `${ZERO_PCT}%`, transform: "translateY(-50%)", fontSize: "0.85vw", color: "rgba(255,255,255,0.40)", zIndex: 2 }}>$0</div>
 
-          <div style={{
-            display: "flex",
-            alignItems: "flex-end",
-            height: "100%",
-            gap: "0.4vw",
-            paddingLeft: "2vw",
-            position: "relative",
-          }}>
+          <div style={{ display: "flex", alignItems: "flex-end", height: "100%", gap: "0.4vw", paddingLeft: "2vw", position: "relative" }}>
             {data.map((d) => {
               const heightPct = (Math.abs(d.cumulative) / cumRange) * 100;
               const isNeg = d.cumulative < 0;
@@ -126,7 +101,6 @@ export default function SlideFinanzas2() {
 
         {/* Right panel */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "1.2vh" }}>
-
           <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em" }}>ESCENARIOS AÑO 1 · INGRESOS TOTALES</div>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.8vh" }}>
             {scenarios.map((s) => (
@@ -150,19 +124,8 @@ export default function SlideFinanzas2() {
                   </div>
                 </div>
                 <div style={{ display: "flex", gap: "0.5vw" }}>
-                  {[
-                    { label: "Suscripciones", val: s.ingSubs },
-                    { label: "Cursos", val: s.ingCursos },
-                  ].map((item) => (
-                    <div key={item.label} style={{
-                      flex: 1,
-                      backgroundColor: "rgba(255,255,255,0.05)",
-                      borderRadius: "0.3vw",
-                      padding: "0.4vh 0.6vw",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}>
+                  {[{ label: "Suscripciones", val: s.ingSubs }, { label: "Cursos", val: s.ingCursos }].map((item) => (
+                    <div key={item.label} style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.05)", borderRadius: "0.3vw", padding: "0.4vh 0.6vw", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <span style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.45)" }}>{item.label}</span>
                       <span style={{ fontSize: "0.85vw", fontWeight: 700, color: "#F4F4F4" }}>{item.val}</span>
                     </div>
@@ -172,7 +135,6 @@ export default function SlideFinanzas2() {
             ))}
           </div>
 
-          {/* Mini curva */}
           <div style={{ marginTop: "auto" }}>
             <div style={{ fontSize: "0.85vw", fontWeight: 700, color: "rgba(244,244,244,0.55)", letterSpacing: "0.08em", marginBottom: "0.6vh" }}>CURVA BASE · SUSCRIPTORES</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.35vh" }}>
@@ -191,10 +153,9 @@ export default function SlideFinanzas2() {
         </div>
       </div>
 
-      {/* Footnote */}
       <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.40)", lineHeight: 1.5 }}>
-        ARPU subs $3.750/mes (45% mensual $8.990 · 55% anual $49.990 · desc. IVA 19% + Apple/Google 30%) ·
-        Cursos neto $23.529/venta · Escenario optimista/agresivo escala cursos proporcionalmente a suscriptores · Retorno estimado, no garantizado.
+        ARPU subs $3.450/mes (45% mensual $7.990 · 55% anual $49.990 · desc. IVA 19% + Apple/Google 30%) ·
+        Cursos neto $23.529/venta · Escenario optimista/agresivo escala cursos proporcionalmente · Retorno estimado, no garantizado.
       </div>
 
     </div>
