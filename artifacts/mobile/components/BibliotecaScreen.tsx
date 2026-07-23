@@ -117,50 +117,24 @@ function MixRow({
   );
 }
 
-// ── Chip de tab (texto + línea subrayada, sin fondo de píldora) ──────────────
-// La línea crece desde el centro con una curva suave ("zen"): lenta,
-// sin rebote, como una respiración.
-function LibChip({ label, sel, onPress, icon }: { label: string; sel: boolean; onPress: () => void; icon?: keyof typeof MaterialCommunityIcons.glyphMap }) {
-  const selAnim = useRef(new Animated.Value(sel ? 1 : 0)).current;
-
-  useEffect(() => {
-    Animated.timing(selAnim, {
-      toValue: sel ? 1 : 0,
-      duration: 550,
-      easing: Easing.inOut(Easing.cubic),
-      useNativeDriver: true,
-    }).start();
-  }, [sel]);
-
+// ── Chip de tab (píldora estilo Dormir, sin íconos) ──────────────────────────
+function LibChip({ label, sel, onPress }: { label: string; sel: boolean; onPress: () => void }) {
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.6 : 1 }]}>
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
-        {icon && <MaterialCommunityIcons name={icon} size={17} color="#f9f9f9" style={{ marginTop: icon === "hexagon-outline" ? -1 : 0 }} />}
-        <View style={{ justifyContent: "center", transform: [{ translateY: -1 }] }}>
-          <Animated.Text
-            style={[styles.chipText, { opacity: selAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}
-          >
-            {label}
-          </Animated.Text>
-          <Animated.View style={[StyleSheet.absoluteFill, { opacity: selAnim }]} pointerEvents="none">
-            <MaskedView
-              style={StyleSheet.absoluteFill}
-              maskElement={<Text style={[styles.chipText, styles.chipTextSel]}>{label}</Text>}
-            >
-              <GoldGradient style={StyleSheet.absoluteFill} />
-            </MaskedView>
-          </Animated.View>
-          <Animated.View
-            style={[
-              styles.chipUnderline,
-              { position: "absolute", left: 0, right: 0, bottom: -4, overflow: "hidden" },
-              { opacity: selAnim, transform: [{ scaleX: selAnim }] },
-            ]}
-          >
-            <GoldGradientFill />
-          </Animated.View>
-        </View>
-      </View>
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [styles.chip, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}
+    >
+      {sel && (
+        <LinearGradient
+          colors={["#F7CB6B", "#FBA980"]}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={StyleSheet.absoluteFill}
+        />
+      )}
+      <Text style={[styles.chipText, sel && styles.chipTextSel]} numberOfLines={1}>
+        {label}
+      </Text>
     </Pressable>
   );
 }
@@ -306,7 +280,6 @@ function AnimatedChipRow({
               <LibChip
                 label={t.label}
                 sel={colorTab === t.id}
-                icon={t.id === "playlists" ? "playlist-music" : t.id === "mezclas" ? "tune-variant" : t.id === "geometrix" ? "hexagon-outline" : undefined}
                 onPress={() => (isSelected ? handleClear() : handleSelect(t.id))}
               />
             </Animated.View>
@@ -1767,7 +1740,7 @@ export function BibliotecaScreen({
         }]}
       >
         {/* Fila 2: chips de tab (animados) */}
-        <View style={{ marginTop: -36, marginBottom: -54 }}>
+        <View style={{ marginTop: -17, marginBottom: -44 }}>
           <AnimatedChipRow
             tabs={LIB_TABS}
             activeTab={activeTab}
@@ -1969,8 +1942,8 @@ const styles = StyleSheet.create({
   },
   chipActionBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center" },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, marginTop: -21, justifyContent: "center", zIndex: 3 },
-  chipRow: { flexGrow: 0, marginTop: -21 },
-  chipRowContent: { flexDirection: "row", gap: 12, paddingTop: 5, paddingBottom: 2, paddingLeft: H_PAD, paddingRight: H_PAD },
+  chipRow: { flexGrow: 0 },
+  chipRowContent: { flexDirection: "row", gap: 8, paddingTop: 5, paddingBottom: 5, paddingLeft: H_PAD, paddingRight: H_PAD },
   chipRowFiltered: {
     flexDirection: "row",
     alignItems: "center",
@@ -1987,25 +1960,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   chip: {
-    width: (width - H_PAD * 2 - 12 * 2) / 3,
-    height: 32,
-    marginTop: -2,
-    borderRadius: 100,
-    backgroundColor: "rgba(0,0,0,0.15)",
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.1)",
+    flexDirection: "row",
     alignItems: "center",
+    height: 32,
+    paddingHorizontal: 13,
+    borderRadius: 999,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.053)",
+    borderWidth: 1,
+    borderColor: "rgba(247,203,107,0.1)",
     justifyContent: "center",
   },
-  chipText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: "#f9f9f9" },
-  chipTextSel: { color: "#f9f9f9" },
-  chipUnderline: {
-    height: 2,
-    borderRadius: 1,
-    backgroundColor: "#f9f9f9",
-    marginTop: 6,
-    alignSelf: "stretch",
-  },
+  chipSel: { borderWidth: 0 },
+  chipText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "450", letterSpacing: 0.3, color: "#F4F4F4" },
+  chipTextSel: { fontFamily: "Manrope", color: "#2D0D3A", fontWeight: "500" },
 
   controlRow: {
     flexDirection: "row",
