@@ -4,7 +4,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { router } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Animated,
   PanResponder,
@@ -92,7 +92,7 @@ export function DrawerMenu() {
   const { setBgScene } = useSelectedScene();
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const geoScenes = sceneAnimationsData?.scenes ?? [];
-  const { creations: geometrixCreations } = useGeometrixCreations();
+  const { creations: geometrixCreations, reload: reloadCreations } = useGeometrixCreations();
 
   const loggedIn = isRegistered || isSignedIn;
   const clerkName =
@@ -142,6 +142,10 @@ export function DrawerMenu() {
       },
     })
   ).current;
+
+  useEffect(() => {
+    if (visible) reloadCreations();
+  }, [visible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const localFullName = [username, lastName].filter(Boolean).join(" ");
   const hasLocalName = !!localFullName && localFullName !== "Explorador de Sonido";
