@@ -7,9 +7,9 @@ export default function Slide11Inversion() {
       items: [
         { label: "Contenido",                  monto: "$4.425.000" },
         { label: "Marketing",                  monto: "$2.500.000" },
-        { label: "Runway operativo (4 meses)", monto: "$6.156.000" },
+        { label: "Runway Operativo (4 meses)", monto: "$4.617.000" },
       ],
-      total: "$13.081.000",
+      total: "$11.542.000",
     },
     {
       titulo: "EXTERNOS",
@@ -32,7 +32,7 @@ export default function Slide11Inversion() {
       items: [
         { label: "Trámites legales", monto: "$900.000"   },
         { label: "Colchón",          monto: "$600.000"   },
-        { label: "Arriendo 3 meses", monto: "$1.500.000" },
+        { label: "50% Arriendo 3 meses", monto: "$1.500.000" },
       ],
       total: "$3.000.000",
     },
@@ -105,7 +105,7 @@ export default function Slide11Inversion() {
           <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
             Buscamos{" "}
             <span style={goldGrad}>
-              $24.981.000 CLP
+              $23.442.000 CLP
             </span>
           </div>
           <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.45)", marginTop: "0.5vh" }}>
@@ -114,7 +114,7 @@ export default function Slide11Inversion() {
         </div>
         <div style={{ textAlign: "right", flexShrink: 0 }}>
           <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.40)", letterSpacing: "0.1em" }}>TOTAL INVERSIÓN</div>
-          <div style={{ fontSize: "2.8vw", fontWeight: 700, ...goldGrad, lineHeight: 1.1 }}>$24.981.000</div>
+          <div style={{ fontSize: "2.8vw", fontWeight: 700, ...goldGrad, lineHeight: 1.1 }}>$23.442.000</div>
         </div>
       </div>
 
@@ -163,7 +163,7 @@ export default function Slide11Inversion() {
             <div style={{ fontSize: "1.2vw", fontWeight: 700, ...goldGrad }}>$1.539.000</div>
           </div>
           <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.35)", marginTop: "0.2vh" }}>
-            × 4 meses = $6.156.000 runway total
+            × 4 meses = $4.617.000 runway total
           </div>
         </div>
 
