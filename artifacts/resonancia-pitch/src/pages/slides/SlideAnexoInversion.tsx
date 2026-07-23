@@ -46,7 +46,7 @@ function ScenarioCard({
       </div>
 
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "0.7vh" }}>
-        <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.3vh" }}>STAKE 11,0% VALE</div>
+        <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.3vh" }}>STAKE 3,0% VALE</div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#6EC49A" }}>{stakeVal}</div>
           <div style={{
@@ -96,8 +96,8 @@ export default function SlideAnexoInversion() {
             flexDirection: "column",
           }}>
             <div style={{ fontSize: "1.1vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.3vh" }}>VALORACIÓN PRE-MONEY</div>
-            <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1, marginBottom: "0.4vh" }}>$80,9M CLP</div>
-            <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.50)", marginBottom: "1.4vh" }}>casi ochenta y un millones</div>
+            <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1, marginBottom: "0.4vh" }}>$87,3M CLP</div>
+            <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.50)", marginBottom: "1.4vh" }}>ochenta y siete millones</div>
 
             <div style={{ marginBottom: "1.4vh" }}>
               <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#F4F4F4", letterSpacing: "0.06em", marginBottom: "0.6vh" }}>POR QUÉ ES DEFENDIBLE</div>
@@ -109,24 +109,23 @@ export default function SlideAnexoInversion() {
 
             <div style={{ borderTop: "1px solid rgba(255,255,255,0.2)", paddingTop: "1vh", marginTop: "auto" }}>
               <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.5vh" }}>
-                $10M ÷ post-money $90,9M ={" "}
-                <span style={{ color: "#FFFFFF", fontWeight: 700 }}>11,0%</span>
+                $2,7M ÷ post-money $90M ={" "}
+                <span style={{ color: "#FFFFFF", fontWeight: 700 }}>3,0%</span> (tramo máx.)
               </div>
               <div style={{ display: "flex", gap: "0.8vw" }}>
                 <div style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
-                  <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.45)" }}>Inversión</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$10M</div>
+                  <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.45)" }}>Inversión máx.</div>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$2,7M</div>
                   <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)" }}>CLP</div>
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.45)" }}>Equity</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#FFFFFF" }}>11,0%</div>
-
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#FFFFFF" }}>3,0%</div>
                   <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)" }}>máx.</div>
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.45)" }}>Post-money</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$90,9M</div>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$90M</div>
                   <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)" }}>CLP</div>
                 </div>
               </div>
@@ -145,36 +144,36 @@ export default function SlideAnexoInversion() {
         <div style={{ flex: 1.7, display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", marginBottom: "1vh" }}>VALORACIÓN ESTIMADA · MES 12 (CLP)</div>
           <div style={{ display: "flex", gap: "1.1vw", flex: 1 }}>
-            {/* Base: 5.000 subs × $4.350 × 12 × 4× = $1.044B → 11% = $114,8M → 114,8/10 = 11,5× */}
+            {/* Base: 5.000 subs × $3.250 × 12 × 4× = $780M → 3% = $23.4M → 23.4/2.7 = 8.7× */}
             <ScenarioCard
               label="Base"
               highlight
               subs="5.000"
-              arr="$261M CLP"
+              arr="$195M CLP"
               multiple="4× ARR"
-              valuation="$1,044M"
-              stakeVal="$115M CLP"
-              returnX="11,5×"
+              valuation="$780M"
+              stakeVal="$23.4M CLP"
+              returnX="8,7×"
             />
-            {/* Optimista: 7.000 × $4.350 × 12 × 5× = $1.827B → 11% = $201M → 201/10 = 20,1× */}
+            {/* Optimista: 7.000 × $3.250 × 12 × 5× = $1.365M → 3% = $40.95M → 41/2.7 = 15.2× */}
             <ScenarioCard
               label="Optimista"
               subs="7.000"
-              arr="$365M CLP"
+              arr="$273M CLP"
               multiple="5× ARR"
-              valuation="$1,827M"
-              stakeVal="$201M CLP"
-              returnX="20,1×"
+              valuation="$1.365M"
+              stakeVal="$41.0M CLP"
+              returnX="15,2×"
             />
-            {/* Agresivo: 10.000 × $4.350 × 12 × 6× = $3.132B → 11% = $344,5M → 344,5/10 = 34,5× */}
+            {/* Agresivo: 10.000 × $3.250 × 12 × 6× = $2.340M → 3% = $70.2M → 70.2/2.7 = 26× */}
             <ScenarioCard
               label="Agresivo"
               subs="10.000"
-              arr="$522M CLP"
+              arr="$390M CLP"
               multiple="6× ARR"
-              valuation="$3,132M"
-              stakeVal="$345M CLP"
-              returnX="34,5×"
+              valuation="$2.340M"
+              stakeVal="$70.2M CLP"
+              returnX="26,0×"
             />
           </div>
         </div>
@@ -182,7 +181,7 @@ export default function SlideAnexoInversion() {
 
       {/* Footer */}
       <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.32)", lineHeight: 1.45, marginTop: "1.5vh" }}>
-        El % de equity depende solo de la valoración de entrada, no de los costos operativos. ARR neto = suscriptores M12 × ARPU neto $4.350 × 12 ·
+        El % de equity depende solo de la valoración de entrada, no de los costos operativos. ARR neto = suscriptores M12 × ARPU neto $3.250 × 12 ·
         Múltiplos de referencia para consumer subscription en etapa temprana (Calm valuó en ~4–8× ARR en rondas tempranas) ·
         Valoración estimada ilustrativa, no garantizada. El retorno real depende del exit y dilución en rondas futuras.
       </div>
