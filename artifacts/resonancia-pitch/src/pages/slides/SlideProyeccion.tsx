@@ -85,9 +85,9 @@ export default function SlideProyeccion() {
         {/* Key figures row */}
         <div style={{ display: "flex", gap: "1.2vw", alignItems: "stretch", marginBottom: "1.4vh" }}>
           {[
-            { label: "Mensual", value: "$4.990", note: "IVA incl. 19%" },
-            { label: "Anual",   value: "$39.990", note: "IVA incl. 19%" },
-            { label: "ARPU neto blended", value: "~$2.550/mes", note: "desc. IVA + comisión 30%" },
+            { label: "Mensual", value: "$8.990", note: "IVA incl. 19%" },
+            { label: "Anual",   value: "$49.990", note: "IVA incl. 19%" },
+            { label: "ARPU neto blended", value: "~$3.750/mes", note: "desc. IVA + comisión 30%" },
           ].map((k) => (
             <div
               key={k.label}

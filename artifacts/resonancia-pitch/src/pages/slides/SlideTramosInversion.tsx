@@ -1,6 +1,6 @@
 export default function SlideTramosInversion() {
   // Tramos simples: equity fijo por monto de inversión
-  const VAL_M12 = 612; // millones CLP · 5.000 subs × $2.550 × 12 × 4×
+  const VAL_M12 = 900; // millones CLP · 5.000 subs × $3.750 × 12 × 4×
 
   const tramos = [
     { inv: 1,   equity: 1.0 },
@@ -168,7 +168,7 @@ export default function SlideTramosInversion() {
       {/* Footer note */}
       <div style={{ flexShrink: 0, borderTop: "1px solid rgba(255,255,255,0.12)", paddingTop: "1.5vh" }}>
         <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.32)", lineHeight: 1.5 }}>
-          Stake M12 calculado sobre valoración base (5.000 suscriptores × $2.550 ARPU × 12 meses × 4× ARR = $612M CLP) · Retorno estimado ilustrativo, no garantizado · El retorno real depende del exit y dilución en rondas futuras.
+          Stake M12 calculado sobre valoración base (5.000 suscriptores × $3.750 ARPU × 12 meses × 4× ARR = $900M CLP) · Retorno estimado ilustrativo, no garantizado · El retorno real depende del exit y dilución en rondas futuras.
         </div>
       </div>
 
