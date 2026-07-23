@@ -133,7 +133,7 @@ function NightSky() {
   }, []);
 
   return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+    <View style={[StyleSheet.absoluteFill, { opacity: 0.3 }]} pointerEvents="none">
       {STARS.map((star, i) => (
         <Animated.View
           key={star.key}
@@ -1102,7 +1102,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 19,
-    paddingBottom: 28,
+    paddingBottom: 8,
   },
   heroIcon: {
     marginTop: 14,
