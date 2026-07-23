@@ -765,30 +765,6 @@ export default function ExploreScreen() {
           </View>
         </View>
 
-        {/* ── Rituales para ti ── */}
-        {ritualItems.length > 0 && (
-          <View style={[styles.section, { marginBottom: SECTION_GAP }]}>
-            <Text style={styles.sectionTitle}>Rituales para ti</Text>
-            <View style={styles.ritualGrid}>
-              {ritualItems.map((pl) => (
-                <Pressable
-                  key={pl.id}
-                  onPress={() => router.push(`/coleccion/${pl.id}` as never)}
-                  style={({ pressed }) => [styles.ritualCard, { opacity: pressed ? 0.8 : 1 }]}
-                >
-                  <View style={[StyleSheet.absoluteFill, { borderRadius: 14, backgroundColor: temaCardBg }]} />
-                  <Image source={pl.image} style={styles.ritualImage} contentFit="cover" />
-                  <View style={styles.ritualTextWrap}>
-                    <Text style={styles.ritualTitle} numberOfLines={2}>{pl.title}</Text>
-                    {!!pl.durationLabel && (
-                      <Text style={styles.ritualSub} numberOfLines={1}>{pl.durationLabel}</Text>
-                    )}
-                  </View>
-                </Pressable>
-              ))}
-            </View>
-          </View>
-        )}
 
         {/* ── Energiza tus mañanas + Foco y concentración (antes de chakras) ── */}
         {["Energiza tus mañanas", "Foco y concentración"].map((label) => {
