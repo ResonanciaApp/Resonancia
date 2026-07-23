@@ -224,6 +224,10 @@ function NavStack() {
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
+          name="encuentro/[id]"
+          options={{ headerShown: false, animation: "slide_from_right" }}
+        />
+        <Stack.Screen
           name="coleccion/[id]"
           options={{ headerShown: false, animation: "slide_from_right" }}
         />

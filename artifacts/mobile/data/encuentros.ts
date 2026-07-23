@@ -2,6 +2,14 @@ export type Participante = {
   id: string;
   avatarColor: string;
   iniciales: string;
+  foto?: number;
+};
+
+export type GuiaEncuentro = {
+  nombre: string;
+  encuentros: number;
+  avatarColor: string;
+  iniciales: string;
 };
 
 export type Encuentro = {
@@ -13,6 +21,7 @@ export type Encuentro = {
   imagen: number;
   participantes: Participante[];
   inscritos: number;
+  guia: GuiaEncuentro;
 };
 
 export const ENCUENTROS: Encuentro[] = [
@@ -24,6 +33,12 @@ export const ENCUENTROS: Encuentro[] = [
     fechaISO: "2026-08-07T10:00:00",
     horaTexto: "10:00 h",
     imagen: require("@/assets/images/sessions/session-10.jpg"),
+    guia: {
+      nombre: "Sofía Ramírez",
+      encuentros: 26,
+      avatarColor: "#7C5CBF",
+      iniciales: "SR",
+    },
     participantes: [
       { id: "p1", avatarColor: "#7C5CBF", iniciales: "SR" },
       { id: "p2", avatarColor: "#3D7EAA", iniciales: "ML" },
@@ -39,6 +54,12 @@ export const ENCUENTROS: Encuentro[] = [
     fechaISO: "2026-08-14T20:00:00",
     horaTexto: "20:00 h",
     imagen: require("@/assets/images/sessions/session-11.jpg"),
+    guia: {
+      nombre: "Mateo Luz",
+      encuentros: 14,
+      avatarColor: "#4A9E6F",
+      iniciales: "ML",
+    },
     participantes: [
       { id: "p1", avatarColor: "#4A9E6F", iniciales: "CR" },
       { id: "p2", avatarColor: "#C47B2B", iniciales: "PG" },
@@ -53,6 +74,12 @@ export const ENCUENTROS: Encuentro[] = [
     fechaISO: "2026-08-21T18:30:00",
     horaTexto: "18:30 h",
     imagen: require("@/assets/images/sessions/ancestral-instrumentos.jpg"),
+    guia: {
+      nombre: "Casa del Cuenco",
+      encuentros: 42,
+      avatarColor: "#C47B2B",
+      iniciales: "CC",
+    },
     participantes: [
       { id: "p1", avatarColor: "#7C5CBF", iniciales: "JM" },
       { id: "p2", avatarColor: "#B85C5C", iniciales: "SR" },
@@ -74,4 +101,11 @@ export function formatearFecha(isoStr: string): string {
   const num = d.getDate();
   const mes = MESES[d.getMonth()];
   return `${dia}. ${num}, ${mes}.`;
+}
+
+export function formatearFechaDetalle(isoStr: string, horaTexto: string): string {
+  const d = new Date(isoStr);
+  const num = d.getDate();
+  const mes = MESES[d.getMonth()];
+  return `${num} ${mes}. · ${horaTexto}`;
 }

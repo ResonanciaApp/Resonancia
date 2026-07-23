@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { router } from "expo-router";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { EncuentroCard } from "@/components/EncuentroCard";
 import { ENCUENTROS, type Encuentro } from "@/data/encuentros";
@@ -36,8 +37,8 @@ export default function EncuentrosScreen() {
 
   const viewabilityConfig = useRef({ itemVisiblePercentThreshold: 50 }).current;
 
-  function handleCardPress(_enc: Encuentro) {
-    // TODO: navegar a detalle del encuentro
+  function handleCardPress(enc: Encuentro) {
+    router.push(`/encuentro/${enc.id}` as never);
   }
 
   function handleCalendarPress(_enc: Encuentro) {
