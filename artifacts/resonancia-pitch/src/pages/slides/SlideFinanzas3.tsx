@@ -27,10 +27,10 @@ export default function SlideFinanzas3() {
   ];
 
   const phases = [
-    { fase: "M1–M2",    fijo: "$3,9M", cont: "$0",    mkt: "$0",    total: "$3,9M" },
-    { fase: "M3–M6",    fijo: "$3,9M", cont: "$1,2M", mkt: "$0,5M", total: "$5,6M" },
-    { fase: "M7–M12",   fijo: "$3,9M", cont: "$1,5M", mkt: "$1,0M–$1,5M", total: "$6,4M–$6,9M" },
-    { fase: "M13–M24",  fijo: "$3,9M", cont: "$1,5M", mkt: "$2,0M–$2,5M", total: "$7,4M–$7,9M" },
+    { fase: "M1–M2",    fijo: "$3,75M", cont: "$0",    mkt: "$0",    total: "$3,75M" },
+    { fase: "M3–M6",    fijo: "$3,75M", cont: "$1,2M", mkt: "$0,5M", total: "$5,45M" },
+    { fase: "M7–M12",   fijo: "$3,75M", cont: "$1,5M", mkt: "$1,0M–$1,5M", total: "$6,25M–$6,75M" },
+    { fase: "M13–M24",  fijo: "$3,75M", cont: "$1,5M", mkt: "$2,0M–$2,5M", total: "$7,25M–$7,75M" },
   ];
 
   return (
@@ -109,17 +109,18 @@ export default function SlideFinanzas3() {
         {/* Left: fixed costs */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: "0.82vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", marginBottom: "0.35vh" }}>COSTOS FIJOS / MES · RRHH</div>
-          <CostRow label="Gerente general" sub="Dirección y comercial" value="$700.000" />
-          <CostRow label="Ventas / Logística" sub="Crecimiento y ops" value="$300.000" />
-          <CostRow label="Admin / Atención al cliente" value="$600.000" />
-          <CostRow label="Desarrollo / TI" value="$700.000" />
+          <CostRow label="Gerente general" sub="Dirección estratégica y comercial" value="$840.000" />
+          <CostRow label="Ventas / Logística" sub="Crecimiento y operaciones" value="$360.000" />
+          <CostRow label="Super admin / Atención al cliente" sub="Soporte y comunidad" value="$720.000" />
+          <CostRow label="Desarrollo / TI" value="$480.000" />
           <div style={{ fontSize: "0.82vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", margin: "0.6vh 0 0.3vh" }}>OPERACIONALES</div>
-          <CostRow label="Arriendo Casa + servicios" sub="Espacio y suministros" value="$850.000" />
-          <CostRow label="Hosting + infraestructura" sub="Replit, Postgres, Bunny.net" value="$250.000" />
-          <CostRow label="Cuentas + otros" value="$500.000" />
+          <CostRow label="Arriendo Casa" value="$500.000" />
+          <CostRow label="Hosting e infraestructura" value="$250.000" />
+          <CostRow label="Cuentas Básicas" value="$250.000" />
+          <CostRow label="Otros" value="$350.000" />
           <div style={{ display: "flex", justifyContent: "space-between", padding: "0.5vh 0 0", borderTop: "1px solid rgba(255,255,255,0.28)", marginTop: "0.2vh" }}>
             <div style={{ fontSize: "1.0vw", fontWeight: 700, color: "#F4F4F4" }}>Total fijos</div>
-            <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#FFFFFF" }}>$3.900.000</div>
+            <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#FFFFFF" }}>$3.750.000</div>
           </div>
 
           <div style={{ fontSize: "0.82vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", margin: "0.7vh 0 0.35vh" }}>CONTENIDO / MES</div>
