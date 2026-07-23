@@ -101,11 +101,12 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontFamily: "Manrope",
-    fontSize: 30,
+    fontSize: 27,
     fontWeight: "800",
     color: "#F4F4F4",
     letterSpacing: 0.2,
     textAlign: "center",
+    marginTop: -9,
   },
   headerSub: {
     fontFamily: "Manrope",
