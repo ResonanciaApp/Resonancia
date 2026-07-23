@@ -87,7 +87,7 @@ export default function SlideProyeccion() {
           {[
             { label: "Lanzamiento M1–M3", value: "$5.990 / $39.990 / $99.990", note: "Mensual · Anual · Lifetime" },
             { label: "Normal M4+",        value: "$7.990 / $49.990 / $149.990", note: "Mensual · Anual · Lifetime" },
-            { label: "Blend (30/60/10%)", value: "~$2.881/mes/sub", note: "ARPU rec. + $3.5M/mes lifetime boost" },
+            { label: "Blend (35/60/5%)", value: "~$3.116/mes/sub", note: "ARPU rec. + $1.77M/mes lifetime boost" },
           ].map((k) => (
             <div
               key={k.label}
