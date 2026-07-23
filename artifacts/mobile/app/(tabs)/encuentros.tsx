@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: CARD_H_PADDING,
-    paddingTop: 12,
+    paddingTop: 19,
     paddingBottom: 20,
   },
   headerTitle: {

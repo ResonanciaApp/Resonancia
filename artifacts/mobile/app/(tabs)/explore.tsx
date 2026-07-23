@@ -892,7 +892,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
 
   fixedHeader:  { zIndex: 10 },
-  titleRow:     { alignItems: "stretch", paddingHorizontal: 19, paddingBottom: 10, paddingTop: 0 },
+  titleRow:     { alignItems: "stretch", paddingHorizontal: 19, paddingBottom: 10, paddingTop: 7 },
   header:       { paddingHorizontal: H_PAD, marginBottom: 0 },
   headerRow:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   pageTitle:    { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", letterSpacing: 0.3, color: "#F4F4F4", textAlign: "center", marginTop: 0, transform: [{ translateY: 1 }] },

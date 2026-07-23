@@ -1102,6 +1102,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 19,
+    paddingTop: 7,
     paddingBottom: 8,
   },
   heroIcon: {
