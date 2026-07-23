@@ -2,14 +2,18 @@ import React, { useRef, useState } from "react";
 import {
   Dimensions,
   FlatList,
+  StatusBar,
   StyleSheet,
   Text,
   View,
   ViewToken,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { EncuentroCard } from "@/components/EncuentroCard";
 import { ENCUENTROS, type Encuentro } from "@/data/encuentros";
+
 const { width: SCREEN_W } = Dimensions.get("window");
 const CARD_H_PADDING = 20;
 const CARD_GAP = 12;
@@ -20,6 +24,7 @@ export default function EncuentrosScreen() {
   const insets = useSafeAreaInsets();
   const tabBarHeight = PILL_H + Math.max(8, insets.bottom - 10);
   const [activeIndex, setActiveIndex] = useState(0);
+  const { theme: activeTheme } = useSceneTheme();
 
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
@@ -40,7 +45,10 @@ export default function EncuentrosScreen() {
   }
 
   return (
-    <View style={[styles.root, { paddingTop: insets.top }]}>
+    <View style={[styles.root, { backgroundColor: activeTheme.gradient[0] as string, paddingTop: insets.top }]}>
+      <LinearGradient colors={activeTheme.gradient} style={StyleSheet.absoluteFill} />
+      <StatusBar barStyle="light-content" />
+
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Encuentros</Text>
@@ -92,7 +100,6 @@ export default function EncuentrosScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#1B060F",
   },
   header: {
     paddingHorizontal: CARD_H_PADDING,
@@ -114,6 +121,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "rgba(244,218,213,0.6)",
     marginTop: 4,
+    textAlign: "center",
   },
   carouselContent: {
     paddingHorizontal: CARD_H_PADDING,
