@@ -1,44 +1,48 @@
 export default function SlideFinanzas2() {
   // Curva base: +400/mes; M11=4.400, M12=5.000 (+600 último mes)
   // ARPU neto blended $2.550/mes
-  // Costos: fijo $3,9M + mkt ramp + contenido
+  // Up-sells (cursos): M7+ neto $23.529/curso; curva M7=60 M8=80 M9=100 M10=110 M11=120 M12=130
   const ARPU = 2550;
+  const NETO_CURSO = 23529;
   const COLCHON = 0.6;
 
   const meses = [
-    { label: "M1",  subs: 400,  costos: 3.90 },
-    { label: "M2",  subs: 800,  costos: 3.90 },
-    { label: "M3",  subs: 1200, costos: 5.60 },
-    { label: "M4",  subs: 1600, costos: 5.60 },
-    { label: "M5",  subs: 2000, costos: 5.60 },
-    { label: "M6",  subs: 2400, costos: 5.60 },
-    { label: "M7",  subs: 2800, costos: 6.40 },
-    { label: "M8",  subs: 3200, costos: 6.40 },
-    { label: "M9",  subs: 3600, costos: 6.65 },
-    { label: "M10", subs: 4000, costos: 6.65 },
-    { label: "M11", subs: 4400, costos: 6.90 },
-    { label: "M12", subs: 5000, costos: 6.90 },
+    { label: "M1",  subs: 400,  costos: 3.90, cursos: 0   },
+    { label: "M2",  subs: 800,  costos: 3.90, cursos: 0   },
+    { label: "M3",  subs: 1200, costos: 5.60, cursos: 0   },
+    { label: "M4",  subs: 1600, costos: 5.60, cursos: 0   },
+    { label: "M5",  subs: 2000, costos: 5.60, cursos: 0   },
+    { label: "M6",  subs: 2400, costos: 5.60, cursos: 0   },
+    { label: "M7",  subs: 2800, costos: 6.40, cursos: 60  },
+    { label: "M8",  subs: 3200, costos: 6.40, cursos: 80  },
+    { label: "M9",  subs: 3600, costos: 6.65, cursos: 100 },
+    { label: "M10", subs: 4000, costos: 6.65, cursos: 110 },
+    { label: "M11", subs: 4400, costos: 6.90, cursos: 120 },
+    { label: "M12", subs: 5000, costos: 6.90, cursos: 130 },
   ];
 
   let cumulative = COLCHON;
   const data = meses.map((m) => {
-    const ingreso = (m.subs * ARPU) / 1_000_000;
-    const neto = ingreso - m.costos;
-    cumulative += neto;
-    return { ...m, ingreso, neto, cumulative: parseFloat(cumulative.toFixed(2)) };
+    const ingresoSubs  = (m.subs * ARPU) / 1_000_000;
+    const ingresoUp    = (m.cursos * NETO_CURSO) / 1_000_000;
+    const ingreso      = ingresoSubs + ingresoUp;
+    const neto         = ingreso - m.costos;
+    cumulative        += neto;
+    return { ...m, ingreso, ingresoUp, neto, cumulative: parseFloat(cumulative.toFixed(2)) };
   });
 
   const maxSubs = 5000;
-  const allCum = data.map((d) => d.cumulative);
-  const minCum = Math.min(...allCum);
-  const maxCum = Math.max(...allCum);
-  const cumRange = maxCum - minCum;
-  const ZERO_PCT = (-minCum / cumRange) * 100;
+  const allCum  = data.map((d) => d.cumulative);
+  const minCum  = Math.min(...allCum);
+  const maxCum  = Math.max(...allCum);
+  const cumRange   = maxCum - minCum;
+  const ZERO_PCT   = (-minCum / cumRange) * 100;
 
+  // Scenarios: scale up-sells proportionally with subscribers
   const scenarios = [
-    { label: "Base",      subs12: "5.000",  ingAnual: "~$80M",  neto: "+$10M",  highlight: true },
-    { label: "Optimista", subs12: "7.000",  ingAnual: "~$112M", neto: "+$40M",  highlight: false },
-    { label: "Agresivo",  subs12: "10.000", ingAnual: "~$160M", neto: "+$90M",  highlight: false },
+    { label: "Base",      subs12: "5.000",  cursos6m: "600",   ingSubs: "~$80M",  ingCursos: "~$14M", total: "~$94M",  neto: "+$24M", highlight: true  },
+    { label: "Optimista", subs12: "7.000",  cursos6m: "~840",  ingSubs: "~$112M", ingCursos: "~$20M", total: "~$132M", neto: "+$62M", highlight: false },
+    { label: "Agresivo",  subs12: "10.000", cursos6m: "~1.200",ingSubs: "~$160M", ingCursos: "~$28M", total: "~$188M", neto: "+$118M", highlight: false },
   ];
 
   return (
@@ -53,12 +57,10 @@ export default function SlideFinanzas2() {
         </div>
         <div style={{ fontSize: "3.8vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
           Caja acumulada y{" "}
-          <span style={{ color: "#FFFFFF" }}>
-            escenarios.
-          </span>
+          <span style={{ color: "#FFFFFF" }}>escenarios.</span>
         </div>
         <div style={{ fontSize: "1.45vw", color: "rgba(244,244,244,0.50)", marginTop: "1vh" }}>
-          En millones de CLP · línea sólida = escenario base · eje Y = caja neta acumulada
+          En millones de CLP · suscripciones + cursos · eje Y = caja neta acumulada
         </div>
       </div>
 
@@ -95,9 +97,10 @@ export default function SlideFinanzas2() {
             paddingLeft: "2vw",
             position: "relative",
           }}>
-            {data.map((d, i) => {
+            {data.map((d) => {
               const heightPct = (Math.abs(d.cumulative) / cumRange) * 100;
               const isNeg = d.cumulative < 0;
+              const hasUp = d.ingresoUp > 0;
               return (
                 <div key={d.label} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end" }}>
                   <div style={{ width: "100%", position: "relative", height: `${(Math.abs(d.cumulative) / cumRange) * 100}%` }}>
@@ -108,10 +111,9 @@ export default function SlideFinanzas2() {
                       left: 0, right: 0,
                       height: `${heightPct}%`,
                       minHeight: "2px",
-                      backgroundColor: isNeg ? "rgba(224,112,112,0.55)" : "rgba(110,196,154,0.55)",
+                      backgroundColor: isNeg ? "rgba(224,112,112,0.55)" : hasUp ? "rgba(110,196,154,0.70)" : "rgba(110,196,154,0.50)",
                       border: `1px solid ${isNeg ? "rgba(224,112,112,0.8)" : "rgba(110,196,154,0.8)"}`,
                       borderRadius: "0.3vw 0.3vw 0 0",
-                      transition: "height 0.3s",
                     }} />
                   </div>
                   <div style={{ fontSize: "0.82vw", color: "rgba(244,244,244,0.45)", marginTop: "0.5vh", textAlign: "center" }}>{d.label}</div>
@@ -129,66 +131,77 @@ export default function SlideFinanzas2() {
           </div>
         </div>
 
-        {/* Right panel: scenarios + subs curve */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "1.5vh" }}>
+        {/* Right panel: scenarios */}
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "1.2vh" }}>
 
-          <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em" }}>SUSCRIPTORES PREMIUM — ESCENARIO BASE</div>
-          <div style={{
-            backgroundColor: "rgba(0,0,0,0.18)",
-            border: "1px solid rgba(255,255,255,0.15)",
-            borderRadius: "0.6vw",
-            padding: "1.0vh 1.1vw",
-            display: "flex",
-            flexDirection: "column",
-            gap: "0.5vh",
-          }}>
-            {data.map((d) => {
-              const pct = (d.subs / maxSubs) * 100;
-              return (
-                <div key={d.label} style={{ display: "flex", alignItems: "center", gap: "0.6vw" }}>
-                  <div style={{ fontSize: "0.82vw", color: "rgba(244,244,244,0.45)", minWidth: "2.4vw" }}>{d.label}</div>
-                  <div style={{ flex: 1, height: "0.5vh", backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "9999px", overflow: "hidden" }}>
-                    <div style={{ width: `${pct}%`, height: "100%", backgroundColor: "#6EC49A", borderRadius: "9999px" }} />
-                  </div>
-                  <div style={{ fontSize: "0.82vw", color: "#F4F4F4", minWidth: "3.2vw", textAlign: "right" }}>{d.subs.toLocaleString()}</div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", marginTop: "0.5vh" }}>ESCENARIOS AÑO 1</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.6vh" }}>
+          <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em" }}>ESCENARIOS AÑO 1 · INGRESOS TOTALES</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.8vh" }}>
             {scenarios.map((s) => (
               <div
                 key={s.label}
                 style={{
-                  backgroundColor: s.highlight ? "rgba(110,196,154,0.10)" : "rgba(0,0,0,0.14)",
+                  backgroundColor: s.highlight ? "rgba(110,196,154,0.08)" : "rgba(0,0,0,0.14)",
                   border: s.highlight ? "1px solid rgba(110,196,154,0.40)" : "1px solid rgba(255,255,255,0.10)",
                   borderRadius: "0.6vw",
-                  padding: "0.9vh 1.1vw",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  padding: "1.0vh 1.1vw",
                 }}
               >
-                <div>
-                  <div style={{ fontSize: "1.0vw", fontWeight: 700, color: s.highlight ? "#6EC49A" : "#F4F4F4" }}>{s.label}</div>
-                  <div style={{ fontSize: "0.82vw", color: "rgba(244,244,244,0.45)" }}>{s.subs12} subs al M12</div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.6vh" }}>
+                  <div>
+                    <div style={{ fontSize: "1.1vw", fontWeight: 700, color: s.highlight ? "#6EC49A" : "#F4F4F4" }}>{s.label}</div>
+                    <div style={{ fontSize: "0.8vw", color: "rgba(244,244,244,0.45)" }}>{s.subs12} subs · {s.cursos6m} cursos</div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: "1.7vw", fontWeight: 700, color: "#F4F4F4" }}>{s.total}</div>
+                    <div style={{ fontSize: "1.05vw", fontWeight: 700, color: "#6EC49A" }}>{s.neto} neto</div>
+                  </div>
                 </div>
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: "1.6vw", fontWeight: 700, color: "#F4F4F4" }}>{s.ingAnual}</div>
-                  <div style={{ fontSize: "1.0vw", fontWeight: 700, color: "#6EC49A" }}>{s.neto}</div>
+                <div style={{ display: "flex", gap: "0.5vw" }}>
+                  {[
+                    { label: "Suscripciones", val: s.ingSubs },
+                    { label: "Cursos", val: s.ingCursos },
+                  ].map((item) => (
+                    <div key={item.label} style={{
+                      flex: 1,
+                      backgroundColor: "rgba(255,255,255,0.05)",
+                      borderRadius: "0.3vw",
+                      padding: "0.4vh 0.6vw",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}>
+                      <span style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.45)" }}>{item.label}</span>
+                      <span style={{ fontSize: "0.85vw", fontWeight: 700, color: "#F4F4F4" }}>{item.val}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Subs curve mini */}
+          <div style={{ marginTop: "auto" }}>
+            <div style={{ fontSize: "0.85vw", fontWeight: 700, color: "rgba(244,244,244,0.55)", letterSpacing: "0.08em", marginBottom: "0.6vh" }}>CURVA BASE · SUSCRIPTORES</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.35vh" }}>
+              {data.map((d) => (
+                <div key={d.label} style={{ display: "flex", alignItems: "center", gap: "0.5vw" }}>
+                  <div style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.40)", minWidth: "2.2vw" }}>{d.label}</div>
+                  <div style={{ flex: 1, height: "0.45vh", backgroundColor: "rgba(255,255,255,0.07)", borderRadius: "9999px", overflow: "hidden" }}>
+                    <div style={{ width: `${(d.subs / maxSubs) * 100}%`, height: "100%", backgroundColor: d.cursos > 0 ? "rgba(110,196,154,0.75)" : "rgba(110,196,154,0.45)", borderRadius: "9999px" }} />
+                  </div>
+                  <div style={{ fontSize: "0.75vw", color: "#F4F4F4", minWidth: "3vw", textAlign: "right" }}>{d.subs.toLocaleString()}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ fontSize: "0.72vw", color: "rgba(110,196,154,0.6)", marginTop: "0.5vh" }}>■ verde intenso = mes con cursos activos (M7+)</div>
           </div>
         </div>
       </div>
 
       {/* Footnote */}
-      <div style={{ fontSize: "1.1vw", color: "rgba(244,244,244,0.40)", lineHeight: 1.5 }}>
-        ARPU neto blended $2.550/mes (60% mensual $4.990 · 40% anual $39.990 · desc. IVA 19% + comisión tienda 30%) ·
-        Costos: fijos $3,9M + mkt ramp ($0,5M→$1,5M) + contenido ($1,2M→$1,5M) · Retorno estimado, no garantizado.
+      <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.40)", lineHeight: 1.5 }}>
+        ARPU subs $2.550/mes · Precio $4.990/mes o $39.990/año · Cursos neto $23.529/venta (desc. IVA 19% + Apple/Google 30%) ·
+        Escenario optimista/agresivo escala cursos proporcionalmente a suscriptores · Retorno estimado, no garantizado.
       </div>
 
     </div>
