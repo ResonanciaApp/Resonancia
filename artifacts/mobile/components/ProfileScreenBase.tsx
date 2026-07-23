@@ -732,7 +732,7 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
         ]}
       >
         <Animated.View collapsable={false} style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
-        <View style={styles.stickyHeaderRow}>
+        <View style={[styles.stickyHeaderRow, !dedicated && { paddingTop: 25 }]}>
           {dedicated ? (
             <Pressable
               onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/profile" as never))}
