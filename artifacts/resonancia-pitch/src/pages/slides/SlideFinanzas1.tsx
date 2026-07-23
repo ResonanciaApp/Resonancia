@@ -92,17 +92,17 @@ export default function SlideFinanzas1() {
           <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#FFFFFF" }}>AÑO 1 TOTAL</div>
           <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#F4F4F4" }}>3.600 cierre</div>
           <div />
-          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#F4F4F4" }}>~$86M</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#F4F4F4" }}>~$92M</div>
           <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#6EC49A" }}>~$9M</div>
           <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>~$70M</div>
-          <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#6EC49A" }}>+$25M neto</div>
+          <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#6EC49A" }}>+$32M neto</div>
         </div>
       </div>
 
       {/* Footnote */}
       <div style={{ flexShrink: 0, fontSize: "0.88vw", color: "rgba(244,244,244,0.42)", lineHeight: 1.45 }}>
         Blend 35/60/5% · 300 nuevos suscriptores/mes · Break-even operacional M5 · Recuperación de caja acumulada M8 ·
-        $86M subs+lifetime · $9M cursos · Total $95M · Costos $70M · Neto +$25M.
+        $92M subs+lifetime · $9M cursos · Total $101M · Costos $70M · Neto +$32M.
       </div>
     </div>
   );
