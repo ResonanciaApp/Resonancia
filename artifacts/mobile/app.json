@@ -115,13 +115,7 @@
         }
       ],
       "expo-video",
-      "react-native-audio-api",
-      [
-        "expo-calendar",
-        {
-          "calendarPermission": "RESONANCIA accede a tu calendario para guardar los encuentros en vivo y recordarte unos minutos antes de comenzar."
-        }
-      ]
+      "react-native-audio-api"
     ],
     "experiments": {
       "typedRoutes": true,

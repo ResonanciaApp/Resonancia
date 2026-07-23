@@ -2,9 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Alert,
   Animated,
-  Linking,
   Modal,
-  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -14,7 +12,8 @@ import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Calendar from "expo-calendar";
+import * as FileSystem from "expo-file-system";
+import * as Sharing from "expo-sharing";
 import type { Encuentro } from "@/data/encuentros";
 
 const STORAGE_KEY = "@cal_encuentros";
@@ -137,62 +136,72 @@ export function CalendarioEncuentroSheet({ encuentro, visible, onClose }: Props)
     ]).start(() => onClose());
   }, [slideAnim, dimAnim, onClose]);
 
-  // ── Calendar logic ────────────────────────────────────────────────────────
+  // ── Calendar logic (ICS file — no native rebuild needed) ─────────────────
   async function handleAddToCalendar() {
     if (!encuentro || calState === "loading" || calState === "done") return;
     setCalState("loading");
 
     try {
-      const { status } = await Calendar.requestCalendarPermissionsAsync();
-
-      if (status !== "granted") {
+      const canShare = await Sharing.isAvailableAsync();
+      if (!canShare) {
         Alert.alert(
-          "Sin acceso al calendario",
-          "Para agregar el encuentro, activa el acceso al calendario en Configuración.",
-          [
-            { text: "Cancelar", style: "cancel", onPress: () => setCalState("idle") },
-            {
-              text: "Abrir configuración",
-              onPress: () => {
-                Linking.openSettings();
-                setCalState("idle");
-              },
-            },
-          ]
+          "No disponible",
+          "Tu dispositivo no puede compartir archivos de calendario en este momento.",
+          [{ text: "Entendido", onPress: () => setCalState("idle") }]
         );
         return;
       }
 
-      let calendarId: string;
+      // Build ICS content
+      const start = new Date(encuentro.fechaISO);
+      const end = new Date(start.getTime() + 90 * 60 * 1000);
 
-      if (Platform.OS === "ios") {
-        const defaultCal = await Calendar.getDefaultCalendarAsync();
-        calendarId = defaultCal.id;
-      } else {
-        const cals = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
-        const writable = cals.find((c) => c.allowsModifications);
-        if (!writable) throw new Error("No writable calendar found");
-        calendarId = writable.id;
-      }
+      const fmt = (d: Date) =>
+        d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
 
-      const startDate = new Date(encuentro.fechaISO);
-      const endDate = new Date(startDate.getTime() + 90 * 60 * 1000);
+      const uid = `${encuentro.id}-${Date.now()}@resonancia.app`;
+      const now = fmt(new Date());
 
-      const tz =
-        typeof Intl !== "undefined"
-          ? Intl.DateTimeFormat().resolvedOptions().timeZone
-          : "America/Buenos_Aires";
+      const ics = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//RESONANCIA//Casa del Cuenco//ES",
+        "CALSCALE:GREGORIAN",
+        "METHOD:PUBLISH",
+        "BEGIN:VEVENT",
+        `UID:${uid}`,
+        `DTSTAMP:${now}`,
+        `DTSTART:${fmt(start)}`,
+        `DTEND:${fmt(end)}`,
+        `SUMMARY:${encuentro.titulo}`,
+        `DESCRIPTION:Encuentro en vivo · RESONANCIA\\nGuía: ${encuentro.guia.nombre}`,
+        "ORGANIZER:RESONANCIA Casa del Cuenco",
+        "BEGIN:VALARM",
+        "TRIGGER:-PT10M",
+        "ACTION:DISPLAY",
+        "DESCRIPTION:Tu encuentro en vivo está por comenzar",
+        "END:VALARM",
+        "END:VEVENT",
+        "END:VCALENDAR",
+      ].join("\r\n");
 
-      await Calendar.createEventAsync(calendarId, {
-        title: encuentro.titulo,
-        startDate,
-        endDate,
-        alarms: [{ relativeOffset: -10 }],
-        notes: `Encuentro en vivo · RESONANCIA\nGuía: ${encuentro.guia.nombre}`,
-        timeZone: tz,
+      // Write to temp file
+      const filePath =
+        (FileSystem.cacheDirectory ?? "") +
+        `encuentro-${encuentro.id}.ics`;
+
+      await FileSystem.writeAsStringAsync(filePath, ics, {
+        encoding: FileSystem.EncodingType.UTF8,
       });
 
-      // Persist
+      // Share/open → iOS shows native "Add to Calendar" sheet
+      await Sharing.shareAsync(filePath, {
+        mimeType: "text/calendar",
+        dialogTitle: "Agregar al calendario",
+        UTI: "public.calendar-event",
+      });
+
+      // Persist confirmation
       const raw = await AsyncStorage.getItem(STORAGE_KEY);
       const saved: string[] = raw ? JSON.parse(raw) : [];
       if (!saved.includes(encuentro.id)) {
