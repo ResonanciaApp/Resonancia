@@ -107,3 +107,4 @@
 - [Session tap three-state](session-tap-three-state.md) — prioridad skipMiniPlayer > skipDetail > detalle, duplicada en ~22 sitios incl. onPress inline de carruseles (SessionCard no los cubre)
 - [Catalog create vs edit field parity](catalog-create-vs-edit-fields.md) — INSERT de creación y PATCH de edición enumeran campos por separado; omitir uno lo pierde en silencio ("funciona al editar, no al crear")
 - [Perfil split](perfil-split.md) — Perfil de tabs = solo pills Biblioteca/Historial; contenido de perfil (Muro) vive en /mi-perfil (ProfileScreenBase dedicated); drawer "Ver Perfil" → /mi-perfil
+- [RN specs_DEPRECATED StubComponent patch](rn-specs-deprecated-stub-patch.md) — crash iOS "two views same name StubComponent": parchear src/private/specs_DEPRECATED/components/*.js con null en TODAS las instancias de RN en node_modules/.pnpm/

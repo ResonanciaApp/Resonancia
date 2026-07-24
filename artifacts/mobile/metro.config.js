@@ -3,25 +3,41 @@ const path = require("path");
 
 const config = getDefaultConfig(__dirname);
 
-// Intercept VirtualView imports from react-native@0.86.0 so they resolve to
-// a safe stub instead of triggering the incompatible codegen flow.
+const NULL_STUB = path.resolve(__dirname, "mocks/null-stub.js");
+
+// Redirect ANY react-native version's src/private/specs_DEPRECATED or
+// src/private/components/virtualview files to a null stub.
+// These are codegen-only schema files incompatible with the dev client's
+// bundled codegen version. Patching in-place (node_modules) is the primary
+// fix; this resolver acts as a second safety net.
 const originalResolveRequest = config.resolver?.resolveRequest;
+
 config.resolver = {
   ...config.resolver,
   resolveRequest: (context, moduleName, platform) => {
+    let resolved;
+    try {
+      if (originalResolveRequest) {
+        resolved = originalResolveRequest(context, moduleName, platform);
+      } else {
+        resolved = context.resolveRequest(context, moduleName, platform);
+      }
+    } catch (e) {
+      throw e;
+    }
+
     if (
-      moduleName.endsWith("VirtualViewNativeComponent") ||
-      moduleName.endsWith("VirtualViewExperimentalNativeComponent")
+      resolved &&
+      resolved.type === "sourceFile" &&
+      // Match any react-native version's incompatible private schema files
+      /node_modules[\\/]react-native[\\/]src[\\/]private[\\/](specs_DEPRECATED|components[\\/]virtualview)/.test(
+        resolved.filePath
+      )
     ) {
-      return {
-        filePath: path.resolve(__dirname, "mocks/VirtualViewNativeComponent.js"),
-        type: "sourceFile",
-      };
+      return { filePath: NULL_STUB, type: "sourceFile" };
     }
-    if (originalResolveRequest) {
-      return originalResolveRequest(context, moduleName, platform);
-    }
-    return context.resolveRequest(context, moduleName, platform);
+
+    return resolved;
   },
 };
 
