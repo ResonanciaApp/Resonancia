@@ -1,5 +1,4 @@
 'use strict';
-
-const { requireNativeComponent } = require('react-native');
-
-module.exports = requireNativeComponent('VirtualView');
+// Stub for react-native@0.86.0 VirtualView components
+// These don't exist in the RN@0.81.5 native runtime this dev client uses.
+module.exports = null;

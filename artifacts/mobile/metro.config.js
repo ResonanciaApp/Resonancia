@@ -3,14 +3,8 @@ const path = require("path");
 
 const config = getDefaultConfig(__dirname);
 
-// Custom Babel transformer: strips codegenNativeComponent from react-native@0.86.0
-// files before Babel processes them, preventing @react-native/codegen@0.81.5 crash.
-config.transformer = {
-  ...config.transformer,
-  babelTransformerPath: path.resolve(__dirname, "metro-babel-transformer.js"),
-};
-
-// Also intercept module resolution for VirtualView stubs
+// Intercept VirtualView imports from react-native@0.86.0 so they resolve to
+// a safe stub instead of triggering the incompatible codegen flow.
 const originalResolveRequest = config.resolver?.resolveRequest;
 config.resolver = {
   ...config.resolver,
