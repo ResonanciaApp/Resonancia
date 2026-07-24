@@ -6,6 +6,7 @@ const config = getDefaultConfig(__dirname);
 
 const NULL_STUB = path.resolve(__dirname, "mocks/null-stub.js");
 const NATIVE_LG_STUB = path.resolve(__dirname, "mocks/native-linear-gradient-stub.js");
+const EXPO_BLUR_STUB = path.resolve(__dirname, "mocks/expo-blur-stub.js");
 
 // Force all modules in the bundle to use the SAME React instance.
 // react-native-audio-api pulls in react-native@0.86.0 + react-worklets which
@@ -88,6 +89,14 @@ config.resolver = {
         /expo-linear-gradient[\\/]build[\\/]NativeLinearGradient\.ios\.js$/.test(fp)
       ) {
         return { filePath: NATIVE_LG_STUB, type: "sourceFile" };
+      }
+
+      // TEMPORARY: same ViewManager hash mismatch as LinearGradient, but for
+      // expo-blur (ViewManagerAdapter_ExpoBlurView_<hash>). Stub renders a
+      // semi-opaque tinted View instead of a native blur. Remove after the
+      // dev client is rebuilt with EAS.
+      if (/expo-blur[\\/]build[\\/]BlurView\.js$/.test(fp)) {
+        return { filePath: EXPO_BLUR_STUB, type: "sourceFile" };
       }
     }
 

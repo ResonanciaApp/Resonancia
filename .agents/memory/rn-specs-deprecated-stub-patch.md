@@ -71,6 +71,14 @@ Redirige `expo-linear-gradient/build/NativeLinearGradient.ios.js` →
 El stub usa el primer color del array como `backgroundColor` sólido.
 **Remover** la entrada de `NATIVE_LG_STUB` en metro.config.js después del rebuild.
 
+### También expo-blur (mismo patrón)
+`ViewManagerAdapter_ExpoBlurView_<hash>` — mismo hash mismatch. Redirect en
+metro.config.js: `expo-blur/build/BlurView.js` → `mocks/expo-blur-stub.js`
+(clase con `getAnimatableRef()` para Reanimated; renderiza View semi-opaco según
+`tint`, sin blur real). **Remover `EXPO_BLUR_STUB` tras el rebuild EAS.**
+Si aparecen más "View config getter callback must be a function" con otros módulos
+expo (ViewManagerAdapter_Expo*), aplicar el mismo patrón de stub.
+
 ## Fix 3 — Duplicate React instance / "useMemoCache/useContext of null" (RESUELTO)
 
 ### Problema
