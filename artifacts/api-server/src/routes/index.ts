@@ -19,6 +19,7 @@ import applicationsRouter from "./applications";
 import liveRouter from "./live";
 import videosRouter from "./videos";
 import descansoRouter from "./descanso";
+import calendarRouter from "./calendar";
 
 const router: IRouter = Router();
 
@@ -42,5 +43,6 @@ router.use(applicationsRouter);
 router.use(liveRouter);
 router.use(videosRouter);
 router.use(descansoRouter);
+router.use(calendarRouter);
 
 export default router;

@@ -13,8 +13,6 @@ import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as FileSystem from "expo-file-system/legacy";
-import * as Sharing from "expo-sharing";
 import type { Encuentro } from "@/data/encuentros";
 
 const STORAGE_KEY = "@cal_encuentros";
@@ -137,109 +135,56 @@ export function CalendarioEncuentroSheet({ encuentro, visible, onClose }: Props)
     ]).start(() => onClose());
   }, [slideAnim, dimAnim, onClose]);
 
-  // ── Calendar logic (ICS file — no native rebuild needed) ─────────────────
+  // ── Calendar logic via HTTPS ICS URL ──────────────────────────────────────
+  // iOS opens an HTTPS .ics URL directly in the native Calendar "Nuevo evento"
+  // screen — no share sheet, no native module, no rebuild needed.
   async function handleAddToCalendar() {
     if (!encuentro || calState === "loading" || calState === "done") return;
     setCalState("loading");
 
-    // Build ICS content
-    const start = new Date(encuentro.fechaISO);
-    const end = new Date(start.getTime() + 90 * 60 * 1000);
-
-    const fmt = (d: Date) =>
-      d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-
-    const uid = `${encuentro.id}-${Date.now()}@resonancia.app`;
-    const now = fmt(new Date());
-
-    const ics = [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "PRODID:-//RESONANCIA//Casa del Cuenco//ES",
-      "CALSCALE:GREGORIAN",
-      "METHOD:PUBLISH",
-      "BEGIN:VEVENT",
-      `UID:${uid}`,
-      `DTSTAMP:${now}`,
-      `DTSTART:${fmt(start)}`,
-      `DTEND:${fmt(end)}`,
-      `SUMMARY:${encuentro.titulo}`,
-      `DESCRIPTION:Encuentro en vivo · RESONANCIA\\nGuía: ${encuentro.guia.nombre}`,
-      "ORGANIZER:RESONANCIA Casa del Cuenco",
-      "BEGIN:VALARM",
-      "TRIGGER:-PT10M",
-      "ACTION:DISPLAY",
-      "DESCRIPTION:Tu encuentro en vivo está por comenzar",
-      "END:VALARM",
-      "END:VEVENT",
-      "END:VCALENDAR",
-    ].join("\r\n");
-
-    // Write file
-    const cacheDir = FileSystem.cacheDirectory ?? FileSystem.documentDirectory ?? "";
-    const filePath = cacheDir + `encuentro-${encuentro.id}.ics`;
-
     try {
-      await FileSystem.writeAsStringAsync(filePath, ics, {
-        encoding: "utf8" as const,
+      const apiBase = (
+        process.env.EXPO_PUBLIC_API_URL ?? ""
+      ).replace(/\/+$/, "");
+
+      const start = new Date(encuentro.fechaISO);
+      const end = new Date(start.getTime() + 90 * 60 * 1000);
+
+      const params = new URLSearchParams({
+        title: encuentro.titulo,
+        start: start.toISOString(),
+        end: end.toISOString(),
+        description: `Encuentro en vivo · RESONANCIA\nGuía: ${encuentro.guia.nombre}`,
+        uid: `${encuentro.id}-${Date.now()}@resonancia.app`,
       });
-    } catch (e) {
-      console.error("[Calendario] writeAsStringAsync error:", e);
-      setCalState("error");
-      return;
-    }
 
-    // On iOS, try opening the .ics file directly — opens Calendar "New Event" screen
-    // without the generic share sheet. Fall back to expo-sharing if not supported.
-    let openedDirectly = false;
-    try {
-      const canOpen = await Linking.canOpenURL(filePath);
-      if (canOpen) {
-        await Linking.openURL(filePath);
-        openedDirectly = true;
-      }
-    } catch {
-      // proceed to sharing fallback
-    }
+      const url = `${apiBase}/api/calendar/event.ics?${params.toString()}`;
 
-    if (!openedDirectly) {
-      const canShare = await Sharing.isAvailableAsync();
-      if (!canShare) {
-        setCalState("idle");
+      const supported = await Linking.canOpenURL(url);
+      if (!supported) {
         Alert.alert(
           "No disponible",
-          "Tu dispositivo no puede compartir archivos en este momento.",
-          [{ text: "Entendido" }]
+          "No se pudo abrir el calendario en este dispositivo.",
+          [{ text: "Entendido", onPress: () => setCalState("idle") }]
         );
         return;
       }
-      try {
-        await Sharing.shareAsync(filePath, {
-          mimeType: "text/calendar",
-          dialogTitle: "Agregar al calendario",
-          UTI: "public.calendar-event",
-        });
-      } catch (e) {
-        // Dismissed or cancelled — not a real error
-        console.warn("[Calendario] shareAsync dismissed:", e);
-        setCalState("idle");
-        return;
-      }
-    }
 
-    // Persist & mark done
-    try {
+      await Linking.openURL(url);
+
+      // Persist
       const raw = await AsyncStorage.getItem(STORAGE_KEY);
       const saved: string[] = raw ? JSON.parse(raw) : [];
       if (!saved.includes(encuentro.id)) {
         saved.push(encuentro.id);
         await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
       }
-    } catch {
-      // storage error is non-fatal
-    }
 
-    setCalState("done");
+      setCalState("done");
+    } catch (e) {
+      console.error("[Calendario] error:", e);
+      setCalState("error");
+    }
   }
 
   const isDone = calState === "done";
