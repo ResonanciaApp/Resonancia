@@ -9,6 +9,7 @@ import { SacredBackground } from "@/components/SacredBackground";
 import { useVideoById, getVideoSourceUri } from "@/hooks/useVideos";
 import { useColors } from "@/hooks/useColors";
 import { usePremium } from "@/context/PremiumContext";
+import { useVideosState } from "@/context/VideosContext";
 
 export default function VideoPlayerScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -26,6 +27,24 @@ export default function VideoPlayerScreen() {
   useEffect(() => {
     if (locked) router.replace("/membresia" as never);
   }, [locked]);
+
+  // Temporizador de reposo (VideosContext): al expirar, pausa el video
+  const { timerExpired, clearTimerExpired } = useVideosState();
+  // Descartar una expiración "vieja" (ocurrida sin pantalla de video activa)
+  useEffect(() => {
+    clearTimerExpired();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (timerExpired) {
+      try {
+        player.pause();
+      } catch {
+        // silent
+      }
+      clearTimerExpired();
+    }
+  }, [timerExpired, clearTimerExpired, player]);
 
   const topPad = Platform.OS === "web" ? 16 : insets.top;
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;

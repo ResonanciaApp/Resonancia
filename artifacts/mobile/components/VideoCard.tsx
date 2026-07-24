@@ -147,7 +147,18 @@ export function VideoCard({
             </Text>
           </View>
         </View>
-        <Feather name="chevron-right" size={18} color={colors.mutedForeground} style={{ marginRight: 14 }} />
+        {onOptionsPress ? (
+          <Pressable
+            hitSlop={10}
+            onPress={onOptionsPress}
+            accessibilityLabel="Más opciones"
+            style={{ marginRight: 14, padding: 4 }}
+          >
+            <Feather name="more-horizontal" size={20} color={colors.mutedForeground} />
+          </Pressable>
+        ) : (
+          <Feather name="chevron-right" size={18} color={colors.mutedForeground} style={{ marginRight: 14 }} />
+        )}
       </Pressable>
     );
   }

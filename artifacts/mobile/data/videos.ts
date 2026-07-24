@@ -60,6 +60,8 @@ export type VideoItem = {
   rating?: number;
   /** Tema real del video (uno de VIDEO_THEMES). Null/undefined = sin tema asignado, no aparece en ningún chip. */
   theme?: VideoTheme | null;
+  /** ID del guiador (data/guides.ts) que presenta el video. Sin guideId → sin acciones "Seguir/Ver perfil". */
+  guideId?: string;
 };
 
 export const VIDEOS: VideoItem[] = [
@@ -86,6 +88,7 @@ export const VIDEOS: VideoItem[] = [
     objectPath: "/objects/uploads/61890768-8f25-42f2-88a0-b389056b471a",
     author: "Casa del Cuenco",
     theme: "Respiración",
+    guideId: "sofia-ramirez",
   },
   {
     id: "3",
@@ -98,6 +101,7 @@ export const VIDEOS: VideoItem[] = [
     objectPath: "/objects/uploads/49bb34bb-fbce-4d71-a914-b5ee6d04d8d8",
     author: "Casa del Cuenco",
     theme: "Naturaleza",
+    guideId: "mateo-luz",
   },
 ];
 

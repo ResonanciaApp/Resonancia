@@ -51,6 +51,11 @@ import { gradientColors, type GeometrixCreation } from "@/data/geometrix-creatio
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { PlaylistActionsSheet } from "@/components/PlaylistActionsSheet";
 import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
+import { VideoCard } from "@/components/VideoCard";
+import { VideoActionsSheet } from "@/components/VideoActionsSheet";
+import { useVideosState, type VideoFolder } from "@/context/VideosContext";
+import { useVideos } from "@/hooks/useVideos";
+import { type VideoItem } from "@/data/videos";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -60,7 +65,7 @@ const DARK_BLUE = "#210911";
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
-type LibTab = "playlists" | "mezclas" | "geometrix" | "favoritos" | "resonadores";
+type LibTab = "playlists" | "mezclas" | "geometrix" | "videos" | "favoritos" | "resonadores";
 type SortMode = "recientes" | "agregado" | "alfabetico";
 type ViewMode = "list" | "grid";
 
@@ -68,6 +73,7 @@ const LIB_TABS: { id: LibTab; label: string }[] = [
   { id: "playlists",   label: "Rituales" },
   { id: "mezclas",     label: "Mezclas" },
   { id: "geometrix",   label: "Geometrix" },
+  { id: "videos",      label: "Videos" },
 ];
 
 // ── Fila de mezcla guardada ───────────────────────────────────────────────────
@@ -752,6 +758,64 @@ function NombreCarpetaMezclaModal({ visible, onClose }: { visible: boolean; onCl
   );
 }
 
+function NombreCarpetaVideoModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { videoFolders, createVideoFolder } = useVideosState();
+  const { activeSceneId } = useSceneTheme();
+  const [name, setName] = useState("");
+  const inputRef = useRef<TextInput>(null);
+
+  const suggestedName = `Mi carpeta n.° ${videoFolders.length + 1}`;
+
+  useEffect(() => {
+    if (visible) setName(suggestedName);
+  }, [visible]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleCreate = () => {
+    const trimmed = name.trim() || suggestedName;
+    const folder = createVideoFolder(trimmed);
+    onClose();
+    router.push(`/carpeta-video/${folder.id}` as never);
+  };
+
+  return (
+    <Modal
+      visible={visible}
+      animationType="slide"
+      transparent
+      onRequestClose={onClose}
+    >
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+        <View style={[styles.nameCard, activeSceneId === "tibet" ? { backgroundColor: "#2d4081" } : undefined]}>
+          <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
+            <Feather name="x" size={22} color={TEXT} />
+          </Pressable>
+          <Text style={styles.nameCardTitle}>Ponle un nombre a la carpeta</Text>
+          <View style={styles.nameInputWrap}>
+            <TextInput
+              ref={inputRef}
+              style={styles.nameInput}
+              value={name}
+              onChangeText={setName}
+              autoFocus
+              selectTextOnFocus
+              returnKeyType="done"
+              onSubmitEditing={handleCreate}
+              placeholderTextColor={MUTED}
+            />
+          </View>
+          <Pressable
+            style={({ pressed }) => [styles.nameCreateBtn, { opacity: pressed ? 0.85 : 1 }]}
+            onPress={handleCreate}
+          >
+            <GoldGradientFill />
+            <Text style={styles.nameCreateBtnText}>Crear</Text>
+          </Pressable>
+        </View>
+      </KeyboardAvoidingView>
+    </Modal>
+  );
+}
+
 function NombreCarpetaFavModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const { favFolders, createFavFolder } = useFoldersPlaylists();
   const [name, setName] = useState("");
@@ -1055,12 +1119,16 @@ export function BibliotecaScreen({
   const [nombreVisible, setNombreVisible] = useState(false);
   const [nombreCarpetaVisible, setNombreCarpetaVisible] = useState(false);
   const [nombreCarpetaMezclaVisible, setNombreCarpetaMezclaVisible] = useState(false);
+  const [nombreCarpetaVideoVisible, setNombreCarpetaVideoVisible] = useState(false);
+  const [videoActionsVideo, setVideoActionsVideo] = useState<VideoItem | null>(null);
   const [actionsItemId, setActionsItemId] = useState<string | null>(null);
   const [actionsItemKind, setActionsItemKind] = useState<"playlist" | "folder" | null>(null);
   const [nombreCarpetaFavVisible, setNombreCarpetaFavVisible] = useState(false);
   const [favActionsItemId, setFavActionsItemId] = useState<string | null>(null);
   const [favActionsItemKind, setFavActionsItemKind] = useState<"session" | "folder" | null>(null);
   const { playlists: userPlaylists, folders: userFolders, favFolders, pinnedFavoriteIds } = useFoldersPlaylists();
+  const { videoFolders } = useVideosState();
+  const { videos: allVideos } = useVideos();
 
   const { creations: geometrixCreations, reload: reloadCreations } = useGeometrixCreations();
   useFocusEffect(useCallback(() => { reloadCreations(); }, [reloadCreations]));
@@ -1494,6 +1562,100 @@ export function BibliotecaScreen({
       );
     }
 
+    if (activeTab === "videos") {
+      const sortedVideoFolders = [...videoFolders].sort((a, b) => {
+        if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
+      // Solo carpetas raíz (las subcarpetas se ven dentro de su carpeta madre)
+      const subIds = new Set(videoFolders.flatMap((f) => f.subFolderIds ?? []));
+      const rootFolders = sortedVideoFolders.filter((f) => !subIds.has(f.id));
+
+      const videoIdsInFolders = new Set(videoFolders.flatMap((f) => f.videoIds));
+      const savedVideos = allVideos.filter((v) => videoIdsInFolders.has(v.id));
+      const applySortV = (arr: VideoItem[]) => {
+        if (sort === "alfabetico") return [...arr].sort((a, b) => a.title.localeCompare(b.title, "es"));
+        return arr;
+      };
+      const displayVideos = applySortV(savedVideos);
+
+      const createButtons = (
+        <>
+          <Pressable
+            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
+            onPress={() => router.push("/videos" as never)}
+          >
+            <View style={styles.addResonadorIcon}>
+              <Feather name="video" size={24} color={iconPlaceholderColor} />
+            </View>
+            <Text style={styles.addResonadorLabel}>Explorar videos</Text>
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
+            onPress={() => setNombreCarpetaVideoVisible(true)}
+          >
+            <View style={styles.addResonadorIcon}>
+              <Feather name="folder" size={25} color={iconPlaceholderColor} />
+            </View>
+            <Text style={styles.addResonadorLabel}>Crear una carpeta</Text>
+          </Pressable>
+        </>
+      );
+
+      if (rootFolders.length === 0 && displayVideos.length === 0) {
+        return (
+          <View style={{ gap: 15 }}>
+            <View style={styles.emptyState}>
+              <Feather name="video" size={52} color={GOLD} style={{ marginBottom: 16 }} />
+              <Text style={styles.emptyTitle}>Tus videos aparecerán aquí</Text>
+              <Text style={styles.emptySub}>Guarda videos en carpetas desde el menú "..." de cualquier video.</Text>
+            </View>
+            {createButtons}
+          </View>
+        );
+      }
+
+      return (
+        <View style={{ gap: 15 }}>
+          <View style={{ gap: 9 }}>
+            {rootFolders.map((folder) => (
+              <Pressable
+                key={folder.id}
+                style={({ pressed }) => [{ flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 6, opacity: pressed ? 0.8 : 1 }]}
+                onPress={() => router.push(`/carpeta-video/${folder.id}` as never)}
+              >
+                <View style={{
+                  width: 52, height: 52, borderRadius: 8,
+                  backgroundColor: "rgba(212,175,55,0.08)",
+                  borderWidth: StyleSheet.hairlineWidth,
+                  borderColor: "rgba(212,175,55,0.18)",
+                  alignItems: "center", justifyContent: "center",
+                }}>
+                  <Feather name="folder" size={18} color={GOLD} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontFamily: "Manrope", color: TEXT, fontSize: 15, fontWeight: "600" }} numberOfLines={1}>{folder.name}</Text>
+                  <Text style={{ fontFamily: "Manrope", color: MUTED, fontSize: 12, marginTop: 2 }}>
+                    Carpeta · {(folder.subFolderIds ?? []).length + folder.videoIds.length} elemento{(folder.subFolderIds ?? []).length + folder.videoIds.length !== 1 ? "s" : ""}
+                  </Text>
+                </View>
+                <Feather name="chevron-right" size={18} color={MUTED} />
+              </Pressable>
+            ))}
+            {displayVideos.map((v) => (
+              <VideoCard
+                key={v.id}
+                video={v}
+                horizontal
+                onOptionsPress={() => setVideoActionsVideo(v)}
+              />
+            ))}
+          </View>
+          {createButtons}
+        </View>
+      );
+    }
+
     if (activeTab === "geometrix") {
       if (geometrixCreations.length === 0) {
         return (
@@ -1787,6 +1949,12 @@ export function BibliotecaScreen({
       <NombrePlaylistModal visible={nombreVisible} onClose={() => setNombreVisible(false)} bgColor={activeSceneId === "tibet" ? "#2d4081" : undefined} />
       <NombreCarpetaModal visible={nombreCarpetaVisible} onClose={() => setNombreCarpetaVisible(false)} bgColor={activeSceneId === "tibet" ? "#2d4081" : undefined} />
       <NombreCarpetaMezclaModal visible={nombreCarpetaMezclaVisible} onClose={() => setNombreCarpetaMezclaVisible(false)} />
+      <NombreCarpetaVideoModal visible={nombreCarpetaVideoVisible} onClose={() => setNombreCarpetaVideoVisible(false)} />
+      <VideoActionsSheet
+        video={videoActionsVideo}
+        visible={videoActionsVideo !== null}
+        onClose={() => setVideoActionsVideo(null)}
+      />
       <NombreCarpetaFavModal visible={nombreCarpetaFavVisible} onClose={() => setNombreCarpetaFavVisible(false)} />
       <PlaylistActionsSheet
         itemId={actionsItemId}

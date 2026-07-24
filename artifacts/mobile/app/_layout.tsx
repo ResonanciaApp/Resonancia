@@ -28,6 +28,7 @@ import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { preloadGeometrixIntro } from "@/lib/geometrixIntro";
 import { DiarioFavoritesProvider } from "@/context/DiarioFavoritesContext";
 import { FoldersPlaylistsProvider } from "@/context/FoldersPlaylistsContext";
+import { VideosProvider } from "@/context/VideosContext";
 import { DrawerProvider, useDrawer } from "@/context/DrawerContext";
 import { MixerPanelProvider } from "@/context/MixerPanelContext";
 import { GreetingVisibleProvider } from "@/context/GreetingVisibleContext";
@@ -421,6 +422,7 @@ export default function RootLayout() {
                       <GreetingVisibleProvider>
                       <IntencionProvider>
                         <FoldersPlaylistsProvider>
+                        <VideosProvider>
                         <DiarioFavoritesProvider>
                           <SceneThemeProvider initialSceneId={initialSceneId ?? undefined}>
                           <GeoUniverseProvider>
@@ -438,6 +440,7 @@ export default function RootLayout() {
                           </GeoUniverseProvider>
                           </SceneThemeProvider>
                         </DiarioFavoritesProvider>
+                        </VideosProvider>
                         </FoldersPlaylistsProvider>
                       </IntencionProvider>
                       </GreetingVisibleProvider>

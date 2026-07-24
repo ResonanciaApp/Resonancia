@@ -26,6 +26,8 @@ import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder
 import { PlaylistAddSessionsSheet } from "@/components/PlaylistAddSessionsSheet";
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { SessionActionsSheet } from "@/components/SessionActionsSheet";
+import { VideoActionsSheet } from "@/components/VideoActionsSheet";
+import { VideoCard } from "@/components/VideoCard";
 import { CreationCoverPreview } from "@/components/CreationCoverPreview";
 import { EqualizerBars } from "@/components/EqualizerBars";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
@@ -33,6 +35,8 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { usePremium } from "@/context/PremiumContext";
 import { SESSIONS, type Session } from "@/data/sessions";
+import { type VideoItem } from "@/data/videos";
+import { useVideos } from "@/hooks/useVideos";
 import { getGuideById } from "@/data/guides";
 import { getArtist } from "@/data/artists";
 import { type GeometryId } from "@/data/geometries";
@@ -102,7 +106,8 @@ export default function PlaylistDetailScreen() {
     ? `rgba(${darkestRgb[0]},${darkestRgb[1]},${darkestRgb[2]},0.96)`
     : "rgba(0,0,0,0.96)";
   const { isPremium } = usePremium();
-  const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistDescription, reorderPlaylist, setPlaylistCover, setPlaylistCoverColor, setPlaylistCoverGeometry, setPlaylistCoverCreation } = useFoldersPlaylists();
+  const { playlists, deletePlaylist, removeFromPlaylist, addToPlaylist, renamePlaylist, setPlaylistDescription, reorderPlaylist, setPlaylistCover, setPlaylistCoverColor, setPlaylistCoverGeometry, setPlaylistCoverCreation, removeVideoFromPlaylist } = useFoldersPlaylists();
+  const { videos: allVideos } = useVideos();
   const { playSession, pauseResume, isPlaying, currentSession } = usePlayer();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -141,6 +146,7 @@ export default function PlaylistDetailScreen() {
   const tabBarH = 31 + Math.round(bottomPad / 2) + bottomPad;
 
   const [actionsSession, setActionsSession] = useState<Session | null>(null);
+  const [actionsVideo, setActionsVideo] = useState<VideoItem | null>(null);
   const [addSheetVisible, setAddSheetVisible] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
   const [editOrderVisible, setEditOrderVisible] = useState(false);
@@ -167,6 +173,14 @@ export default function PlaylistDetailScreen() {
         .map((sid) => SESSIONS.find((s) => s.id === sid))
         .filter(Boolean) as Session[],
     [playlist?.sessionIds]
+  );
+
+  const playlistVideos = useMemo(
+    () =>
+      (playlist?.videoIds ?? [])
+        .map((vid) => allVideos.find((v) => v.id === vid))
+        .filter(Boolean) as VideoItem[],
+    [playlist?.videoIds, allVideos]
   );
 
   const recommended = useMemo(() => {
@@ -367,6 +381,30 @@ export default function PlaylistDetailScreen() {
         ))}
         </View>
 
+        {/* Videos de la playlist */}
+        {playlistVideos.length > 0 && (
+          <View style={{ paddingHorizontal: 16, marginTop: sessions.length > 0 ? 12 : 0 }}>
+            {playlistVideos.map((v) => (
+              <View key={v.id} style={{ flexDirection: "row", alignItems: "center" }}>
+                <View style={{ flex: 1 }}>
+                  <VideoCard
+                    video={v}
+                    horizontal
+                    onOptionsPress={() => setActionsVideo(v)}
+                  />
+                </View>
+                <Pressable
+                  onPress={() => removeVideoFromPlaylist(playlist.id, v.id)}
+                  hitSlop={10}
+                  style={{ width: 32, height: 32, alignItems: "center", justifyContent: "center", marginBottom: 12 }}
+                >
+                  <Feather name="x" size={16} color={MUTED} />
+                </Pressable>
+              </View>
+            ))}
+          </View>
+        )}
+
         {/* + Agregar a esta playlist */}
         <Pressable
           style={({ pressed }) => [styles.addBtn, { opacity: pressed ? 0.8 : 1 }]}
@@ -395,6 +433,11 @@ export default function PlaylistDetailScreen() {
         session={actionsSession}
         visible={actionsSession !== null}
         onClose={() => setActionsSession(null)}
+      />
+      <VideoActionsSheet
+        video={actionsVideo}
+        visible={actionsVideo !== null}
+        onClose={() => setActionsVideo(null)}
       />
       <PlaylistAddSessionsSheet
         visible={addSheetVisible}

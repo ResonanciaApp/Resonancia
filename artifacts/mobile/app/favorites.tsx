@@ -20,17 +20,23 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { SacredBackground } from "@/components/SacredBackground";
 import { SessionCard } from "@/components/SessionCard";
+import { VideoActionsSheet } from "@/components/VideoActionsSheet";
+import { VideoCard } from "@/components/VideoCard";
 import { getSoundImage } from "@/config/sound-images";
 import { usePlayer } from "@/context/PlayerContext";
 import { type MixPreset, useMixer } from "@/context/MixerContext";
+import { useVideosState } from "@/context/VideosContext";
 import { SESSIONS } from "@/data/sessions";
+import { type VideoItem } from "@/data/videos";
 import { useColors } from "@/hooks/useColors";
 import { useLoadMix } from "@/hooks/useLoadMix";
+import { useVideos } from "@/hooks/useVideos";
 
 // ── Constantes ────────────────────────────────────────────────────
 const TABS = [
   { id: "sesiones" as const, label: "Sesiones" },
   { id: "mezclas"  as const, label: "Mezclas"  },
+  { id: "videos"   as const, label: "Videos"   },
   { id: "musica"   as const, label: "Música"   },
 ];
 type TabId = (typeof TABS)[number]["id"];
@@ -122,6 +128,9 @@ export default function FavoritesScreen() {
   const { favorites } = usePlayer();
   const { presets } = useMixer();
   const loadMix = useLoadMix();
+  const { favoriteVideoIds } = useVideosState();
+  const { videos: allVideos } = useVideos();
+  const [actionsVideo, setActionsVideo] = useState<VideoItem | null>(null);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -164,6 +173,11 @@ export default function FavoritesScreen() {
   const favMixes = useMemo(
     () => presets.filter((p) => p.favorited),
     [presets],
+  );
+
+  const favVideos = useMemo(
+    () => allVideos.filter((v) => favoriteVideoIds.includes(v.id)),
+    [allVideos, favoriteVideoIds],
   );
 
   const [query, setQuery] = useState("");
@@ -295,6 +309,54 @@ export default function FavoritesScreen() {
     </View>
   );
 
+  const filteredVideos = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return favVideos;
+    return favVideos.filter((v) => {
+      const hay = [v.title, v.subtitle, v.description, v.author]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return hay.includes(q);
+    });
+  }, [favVideos, query]);
+
+  const renderVideos = () => (
+    <View>
+      {favVideos.length > 0 && searchBar}
+      {favVideos.length === 0 ? (
+        <View style={[styles.emptySmall, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
+          <Feather name="heart" size={20} color={colors.border} />
+          <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
+            Aún no guardaste videos favoritos
+          </Text>
+          <Pressable
+            onPress={() => router.push("/videos" as never)}
+            style={styles.emptyLink}
+          >
+            <Text style={[styles.emptyLinkText, { color: colors.accent }]}>Ver videos</Text>
+          </Pressable>
+        </View>
+      ) : filteredVideos.length === 0 ? (
+        <View style={[styles.emptySmall, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
+          <Feather name="search" size={18} color={colors.border} />
+          <Text style={[styles.emptySmallText, { color: colors.mutedForeground }]}>
+            Ningún video coincide con tu búsqueda.
+          </Text>
+        </View>
+      ) : (
+        filteredVideos.map((v) => (
+          <VideoCard
+            key={v.id}
+            video={v}
+            horizontal
+            onOptionsPress={() => setActionsVideo(v)}
+          />
+        ))
+      )}
+    </View>
+  );
+
   const renderMusica = () => (
     <View style={[styles.emptySmall, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
       <Feather name="music" size={20} color={colors.border} />
@@ -388,9 +450,16 @@ export default function FavoritesScreen() {
         <View style={{ marginTop: 20 }}>
           {activeTab === "sesiones" && renderSesiones()}
           {activeTab === "mezclas"  && renderMezclas()}
+          {activeTab === "videos"   && renderVideos()}
           {activeTab === "musica"   && renderMusica()}
         </View>
       </ScrollView>
+
+      <VideoActionsSheet
+        video={actionsVideo}
+        visible={actionsVideo !== null}
+        onClose={() => setActionsVideo(null)}
+      />
     </LinearGradient>
   );
 }

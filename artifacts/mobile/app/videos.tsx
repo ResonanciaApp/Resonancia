@@ -18,10 +18,11 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SacredBackground } from "@/components/SacredBackground";
+import { VideoActionsSheet } from "@/components/VideoActionsSheet";
 import { VideoCard } from "@/components/VideoCard";
 import { useVideos } from "@/hooks/useVideos";
 import { useColors } from "@/hooks/useColors";
-import { VIDEO_THEMES, type VideoTheme } from "@/data/videos";
+import { VIDEO_THEMES, type VideoItem, type VideoTheme } from "@/data/videos";
 
 const SEARCH_H = 60;  // search bar + vertical margins
 const PILLS_H  = 50;  // pills row + vertical margins
@@ -39,6 +40,7 @@ export default function VideosScreen() {
 
   const [selectedTheme, setSelectedTheme] = useState<VideoTheme | null>(null);
   const [searchQuery, setSearchQuery]     = useState("");
+  const [actionsVideo, setActionsVideo]   = useState<VideoItem | null>(null);
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -105,7 +107,14 @@ export default function VideosScreen() {
             </Text>
           </View>
         ) : (
-          filtered.map((v) => <VideoCard key={v.id} video={v} horizontal />)
+          filtered.map((v) => (
+            <VideoCard
+              key={v.id}
+              video={v}
+              horizontal
+              onOptionsPress={() => setActionsVideo(v)}
+            />
+          ))
         )}
       </Animated.ScrollView>
 
@@ -183,6 +192,13 @@ export default function VideosScreen() {
           ))}
         </ScrollView>
       </Animated.View>
+
+      {/* ── Menú "..." ── */}
+      <VideoActionsSheet
+        video={actionsVideo}
+        visible={actionsVideo !== null}
+        onClose={() => setActionsVideo(null)}
+      />
     </View>
   );
 }

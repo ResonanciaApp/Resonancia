@@ -34,6 +34,8 @@ export type Playlist = {
   name: string;
   description?: string;
   sessionIds: string[]; // ordered
+  /** IDs de videos (data/videos.ts) agregados a la playlist. */
+  videoIds?: string[];
   coverUri?: string;
   /** 'image' = foto del celular; 'geometrix' = geometría sagrada; 'creation' = composición propia */
   coverType?: "image" | "geometrix" | "creation";
@@ -74,6 +76,9 @@ interface FoldersPlaylistsCtx {
   removeFromPlaylist: (playlistId: string, sessionId: string) => void;
   deletePlaylist: (playlistId: string) => void;
   isInPlaylist: (playlistId: string, sessionId: string) => boolean;
+  addVideoToPlaylist: (playlistId: string, videoId: string) => void;
+  removeVideoFromPlaylist: (playlistId: string, videoId: string) => void;
+  isVideoInPlaylist: (playlistId: string, videoId: string) => boolean;
   togglePinPlaylist: (playlistId: string) => void;
   togglePinFolder: (folderId: string) => void;
   // Fav folders
@@ -352,6 +357,32 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
     [playlists]
   );
 
+  const addVideoToPlaylist = useCallback((playlistId: string, videoId: string) => {
+    updatePlaylists((prev) =>
+      prev.map((p) =>
+        p.id === playlistId && !(p.videoIds ?? []).includes(videoId)
+          ? { ...p, videoIds: [...(p.videoIds ?? []), videoId] }
+          : p
+      )
+    );
+  }, [updatePlaylists]);
+
+  const removeVideoFromPlaylist = useCallback((playlistId: string, videoId: string) => {
+    updatePlaylists((prev) =>
+      prev.map((p) =>
+        p.id === playlistId
+          ? { ...p, videoIds: (p.videoIds ?? []).filter((id) => id !== videoId) }
+          : p
+      )
+    );
+  }, [updatePlaylists]);
+
+  const isVideoInPlaylist = useCallback(
+    (playlistId: string, videoId: string) =>
+      (playlists.find((p) => p.id === playlistId)?.videoIds ?? []).includes(videoId),
+    [playlists]
+  );
+
   const togglePinPlaylist = useCallback((playlistId: string) => {
     updatePlaylists((prev) =>
       prev.map((p) => p.id === playlistId ? { ...p, pinned: !(p.pinned ?? false) } : p)
@@ -488,6 +519,9 @@ export function FoldersPlaylistsProvider({ children }: { children: React.ReactNo
         removeFromPlaylist,
         deletePlaylist,
         isInPlaylist,
+        addVideoToPlaylist,
+        removeVideoFromPlaylist,
+        isVideoInPlaylist,
         togglePinPlaylist,
         togglePinFolder,
         favFolders,
