@@ -13,6 +13,15 @@ patch_dir() {
     echo "[patch-rn-specs] Patching: $dir"
     for f in "$dir"/*.js; do
       [ -f "$f" ] || continue
+      # EXCEPCIÓN: RCTModalHostViewNativeComponent es la vista nativa detrás de
+      # <Modal>; stubbearlo hace que TODOS los Modals rendericen en la nada en
+      # silencio (visible=true, sin error). Debe cargar real.
+      case "$(basename "$f")" in
+        RCTModalHostViewNativeComponent.js)
+          echo "[patch-rn-specs] SKIP (Modal): $(basename "$f")"
+          continue
+          ;;
+      esac
       printf "'use strict';\nmodule.exports = null;\n" > "$f"
     done
   fi

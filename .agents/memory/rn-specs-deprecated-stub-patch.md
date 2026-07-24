@@ -12,6 +12,15 @@ parsear sus tipos Flow y los precompila con ese fallback. En runtime, múltiples
 intentan registrar el mismo nombre de vista → "Tried to register two views with the same
 name StubComponent".
 
+## ⚠️ EXCEPCIÓN CRÍTICA — RCTModalHostViewNativeComponent (jul 2026)
+
+`RCTModalHostViewNativeComponent.js` vive en `specs_DEPRECATED/components/` pero es la
+vista nativa detrás de `<Modal>` de react-native. Stubbearlo hace que TODOS los Modals
+de la app rendericen en la nada en silencio (visible=true, sin error, sin ventana).
+**NUNCA stubbearlo**: excluirlo del parche en disco Y del resolver de metro.config
+(`!fp.includes("RCTModalHostViewNativeComponent")`). Restaurar el original desde
+`npm pack react-native@0.81.5`. Detalle en `modal-null-stub-metro.md`.
+
 ## Fix 1 — StubComponent (RESUELTO)
 
 ### Stub correcto: función, NOT null

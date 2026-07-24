@@ -130,8 +130,13 @@ config.resolver = {
       // Intercept specs_DEPRECATED/components/ — codegen component schemas that
       // were compiled with StubComponent fallbacks incompatible with this dev client.
       // Do NOT intercept specs_DEPRECATED/modules/ (real TurboModules with getConstants etc.)
+      // EXCEPTION: RCTModalHostViewNativeComponent is the native view behind
+      // React Native's <Modal>; stubbing it makes every Modal render into
+      // nothing silently (visible=true but no window appears). It must load
+      // for real.
       if (
-        /node_modules[\\/]react-native[\\/]src[\\/]private[\\/](specs_DEPRECATED[\\/]components[\\/]|components[\\/]virtualview[\\/])/.test(fp)
+        /node_modules[\\/]react-native[\\/]src[\\/]private[\\/](specs_DEPRECATED[\\/]components[\\/]|components[\\/]virtualview[\\/])/.test(fp) &&
+        !fp.includes("RCTModalHostViewNativeComponent")
       ) {
         return { filePath: NULL_STUB, type: "sourceFile" };
       }
