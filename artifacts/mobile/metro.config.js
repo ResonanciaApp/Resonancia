@@ -29,8 +29,11 @@ config.resolver = {
     if (
       resolved &&
       resolved.type === "sourceFile" &&
-      // Match any react-native version's incompatible private schema files
-      /node_modules[\\/]react-native[\\/]src[\\/]private[\\/](specs_DEPRECATED|components[\\/]virtualview)/.test(
+      // Only intercept specs_DEPRECATED/components/ (visual component schemas that
+      // had requireNativeComponent('StubComponent') fallbacks).
+      // Do NOT intercept specs_DEPRECATED/modules/ — those are real TurboModules
+      // with getConstants() and other methods that must work at runtime.
+      /node_modules[\\/]react-native[\\/]src[\\/]private[\\/](specs_DEPRECATED[\\/]components[\\/]|components[\\/]virtualview[\\/])/.test(
         resolved.filePath
       )
     ) {
