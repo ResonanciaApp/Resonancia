@@ -20,6 +20,7 @@ import { VideoActionsSheet } from "@/components/VideoActionsSheet";
 import { usePlayer } from "@/context/PlayerContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useVideosState } from "@/context/VideosContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { getSessionById, type Session } from "@/data/sessions";
 import { type VideoItem } from "@/data/videos";
 import { useColors } from "@/hooks/useColors";
@@ -61,6 +62,7 @@ export default function FavoritosTodosScreen() {
   const { favorites, playSession, currentSession } = usePlayer();
   const { favFolders } = useFoldersPlaylists();
   const { favoriteVideoIds } = useVideosState();
+  const { theme: sceneTheme } = useSceneTheme();
   const { videos: allVideos } = useVideos();
   const [actionsVideo, setActionsVideo] = useState<VideoItem | null>(null);
 
@@ -99,8 +101,7 @@ export default function FavoritosTodosScreen() {
   return (
     <LinearGradient
       style={styles.root}
-      colors={["#340D1A", "#190913"]}
-      locations={[0, 1]}
+      colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
