@@ -517,6 +517,7 @@ export default function HomeScreen2() {
   const [sesAncestral,    setSesAncestral]    = useState(false);
   const [sesMeditacion,   setSesMeditacion]   = useState(false);
   const [progresoVisible, setProgresoVisible] = useState(false);
+  useEffect(() => { console.log("[DIAG] estado modales → progresoVisible:", progresoVisible, "moodSheetVisible:", moodSheetVisible); }, [progresoVisible, moodSheetVisible]);
   const { rachaEnabled } = useRacha();
   const { intencionDiariaEnabled } = useIntencionDiaria();
   const spacerWidthSV  = useSharedValue(0);
@@ -967,7 +968,7 @@ export default function HomeScreen2() {
           onPressOut={() => {
             Animated.spring(giftScaleAnim, { toValue: 1, speed: 8, bounciness: 16, useNativeDriver: true }).start();
           }}
-          onPress={() => setProgresoVisible(true)}
+          onPress={() => { console.log("[DIAG] racha onPress → setProgresoVisible(true)"); setProgresoVisible(true); }}
         >
           <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
             <View style={{
@@ -1311,7 +1312,7 @@ export default function HomeScreen2() {
           </Pressable>
         ) : (
           <Pressable
-            onPress={() => setMoodSheetVisible(true)}
+            onPress={() => { console.log("[DIAG] mood onPress → setMoodSheetVisible(true)"); setMoodSheetVisible(true); }}
             style={({ pressed }) => [styles.moodRow, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
           >
             <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
