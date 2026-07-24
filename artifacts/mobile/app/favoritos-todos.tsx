@@ -148,8 +148,8 @@ export default function FavoritosTodosScreen() {
         {/* Grilla */}
         {activeTab === "videos" ? (
           favVideos.length === 0 ? (
-            <View style={[styles.empty, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
-              <Feather name="heart" size={20} color={colors.border} />
+            <View style={[styles.empty, { backgroundColor: "rgba(255,255,255,0.075)" }]}>
+              <Feather name="heart" size={20} color="#f9f9f9" />
               <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
                 Aún no tienes videos favoritos.
               </Text>
@@ -167,8 +167,8 @@ export default function FavoritosTodosScreen() {
             </View>
           )
         ) : tabSessions.length === 0 ? (
-          <View style={[styles.empty, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
-            <Feather name="heart" size={20} color={colors.border} />
+          <View style={[styles.empty, { backgroundColor: "rgba(255,255,255,0.075)" }]}>
+            <Feather name="heart" size={20} color="#f9f9f9" />
             <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
               Aún no tienes favoritos en esta colección.
             </Text>
