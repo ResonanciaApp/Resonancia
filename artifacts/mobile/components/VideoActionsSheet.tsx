@@ -5,35 +5,27 @@
  *  1. Compartir
  *  2. Temporizador  → abre TimerSheet (timer de VideosContext)
  *  3. Marcar como favorito / Quitar de favoritos
- *  4. Añadir a una carpeta → sub-sheet de carpetas de videos
- *  5. Añadir al Playlist → AddVideoToPlaylistSheet
- *  6. Seguir profesor (solo si el video tiene guideId)
- *  7. Ver perfil del profesor (solo si el video tiene guideId)
+ *  4. Seguir profesor (solo si el video tiene guideId)
+ *  5. Ver perfil del profesor (solo si el video tiene guideId)
  */
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
-  KeyboardAvoidingView,
   Modal,
-  Platform,
   Pressable,
-  ScrollView,
   Share,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { TimerSheet } from "@/components/TimerSheet";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
-import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useVideosState } from "@/context/VideosContext";
 import { getGuideById } from "@/data/guides";
 import { type VideoItem } from "@/data/videos";
@@ -58,8 +50,6 @@ export function VideoActionsSheet({ video, visible, onClose }: Props) {
   } = useVideosState();
 
   const [showTimer, setShowTimer] = useState(false);
-  const [showFolder, setShowFolder] = useState(false);
-  const [showPlaylist, setShowPlaylist] = useState(false);
 
   // Seguir profesor
   const [followedIds, setFollowedIds] = useState<string[]>([]);
@@ -75,8 +65,6 @@ export function VideoActionsSheet({ video, visible, onClose }: Props) {
   useEffect(() => {
     if (visible) {
       setShowTimer(false);
-      setShowFolder(false);
-      setShowPlaylist(false);
       AsyncStorage.getItem(FOLLOWED_KEY).then((raw) => {
         if (raw) {
           try {
@@ -228,18 +216,6 @@ export function VideoActionsSheet({ video, visible, onClose }: Props) {
             iconColor={favorited ? "#E05C5C" : undefined}
             onPress={handleFavorite}
             colors={colors}
-          />
-          <ActionRow
-            icon="folder-plus"
-            label="Añadir a una carpeta"
-            onPress={() => setShowFolder(true)}
-            colors={colors}
-          />
-          <ActionRow
-            icon="list"
-            label="Añadir al Playlist"
-            onPress={() => setShowPlaylist(true)}
-            colors={colors}
             last={!guide}
           />
           {guide && (
@@ -296,281 +272,6 @@ export function VideoActionsSheet({ video, visible, onClose }: Props) {
           setSleepTimer={setVideoTimer}
         />
 
-        {/* Sub-sheet: Añadir a carpeta de videos */}
-        <AddVideoToFolderSheet
-          visible={showFolder}
-          videoId={video.id}
-          onClose={() => setShowFolder(false)}
-        />
-
-        {/* Sub-sheet: Añadir al Playlist */}
-        <AddVideoToPlaylistSheet
-          visible={showPlaylist}
-          videoId={video.id}
-          onClose={() => setShowPlaylist(false)}
-        />
-      </View>
-    </Modal>
-  );
-}
-
-// ─── AddVideoToFolderSheet ────────────────────────────────────────────────────
-
-function AddVideoToFolderSheet({
-  visible,
-  videoId,
-  onClose,
-}: {
-  visible: boolean;
-  videoId: string;
-  onClose: () => void;
-}) {
-  const colors = useColors();
-  const insets = useSafeAreaInsets();
-  const {
-    videoFolders,
-    createVideoFolder,
-    addVideoToFolder,
-    removeVideoFromFolder,
-    isVideoInFolder,
-  } = useVideosState();
-
-  const [step, setStep] = useState<"list" | "create">("list");
-  const [newName, setNewName] = useState("");
-
-  const handleClose = () => {
-    setStep("list");
-    setNewName("");
-    onClose();
-  };
-
-  const handleToggle = (folderId: string) => {
-    if (isVideoInFolder(folderId, videoId)) {
-      removeVideoFromFolder(folderId, videoId);
-    } else {
-      addVideoToFolder(folderId, videoId);
-    }
-  };
-
-  const handleCreate = () => {
-    const name = newName.trim();
-    if (!name) return;
-    const folder = createVideoFolder(name, videoId);
-    handleClose();
-    router.push(`/carpeta-video/${folder.id}` as never);
-  };
-
-  return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="slide"
-      onRequestClose={handleClose}
-      statusBarTranslucent
-    >
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
-        <Pressable style={subStyles.backdrop} onPress={handleClose} />
-
-        <View style={[subStyles.sheet, { paddingBottom: insets.bottom + 16 }]}>
-          <View style={subStyles.handle} />
-
-          {step === "list" && (
-            <>
-              <View style={subStyles.headerRow}>
-                <Text style={[subStyles.title, { color: colors.foreground }]}>
-                  Añadir a la carpeta
-                </Text>
-                <Pressable onPress={handleClose} style={subStyles.closeBtn}>
-                  <Feather name="x" size={20} color={colors.mutedForeground} />
-                </Pressable>
-              </View>
-
-              <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{ maxHeight: 300 }}>
-                {videoFolders.length === 0 && (
-                  <Text style={[subStyles.emptyText, { color: colors.mutedForeground }]}>
-                    Todavía no tienes ninguna carpeta de videos
-                  </Text>
-                )}
-                {videoFolders.map((folder) => {
-                  const inIt = isVideoInFolder(folder.id, videoId);
-                  return (
-                    <Pressable
-                      key={folder.id}
-                      onPress={() => handleToggle(folder.id)}
-                      style={({ pressed }) => [subStyles.row, { opacity: pressed ? 0.7 : 1 }]}
-                    >
-                      <View style={[subStyles.folderIcon, { backgroundColor: "rgba(212,175,55,0.12)" }]}>
-                        <Feather name="folder" size={18} color={colors.primary} />
-                      </View>
-                      <Text style={[subStyles.rowLabel, { color: colors.foreground }]} numberOfLines={1}>
-                        {folder.name}
-                      </Text>
-                      <Text style={[subStyles.rowCount, { color: colors.mutedForeground }]}>
-                        {folder.videoIds.length}
-                      </Text>
-                      {inIt ? (
-                        <Feather name="check-circle" size={20} color={colors.primary} />
-                      ) : (
-                        <Feather name="circle" size={20} color="rgba(255,255,255,0.25)" />
-                      )}
-                    </Pressable>
-                  );
-                })}
-              </ScrollView>
-
-              <Pressable
-                onPress={() => setStep("create")}
-                style={({ pressed }) => [
-                  subStyles.newRow,
-                  { borderTopColor: "rgba(61,14,22,0.40)", opacity: pressed ? 0.7 : 1 },
-                ]}
-              >
-                <GoldGradient style={subStyles.plusCircle}>
-                  <Feather name="plus" size={14} color="#1B060F" />
-                </GoldGradient>
-                <Text style={[subStyles.newLabel, { color: colors.foreground }]}>
-                  Nueva Carpeta
-                </Text>
-              </Pressable>
-            </>
-          )}
-
-          {step === "create" && (
-            <>
-              <View style={subStyles.headerRow}>
-                <Pressable onPress={() => setStep("list")} style={subStyles.closeBtn}>
-                  <Feather name="arrow-left" size={20} color={colors.foreground} />
-                </Pressable>
-                <Text style={[subStyles.title, { color: colors.foreground }]}>
-                  Nombre de la carpeta
-                </Text>
-                <Pressable onPress={handleClose} style={subStyles.closeBtn}>
-                  <Feather name="x" size={20} color={colors.mutedForeground} />
-                </Pressable>
-              </View>
-
-              <TextInput
-                value={newName}
-                onChangeText={setNewName}
-                placeholder="Ej: Rutinas, Respiración…"
-                placeholderTextColor={colors.mutedForeground}
-                style={[subStyles.input, {
-                  color: colors.foreground,
-                  borderColor: "rgba(61,14,22,0.40)",
-                  backgroundColor: "rgba(74,12,12,0.08)",
-                }]}
-                autoFocus
-                returnKeyType="done"
-                onSubmitEditing={handleCreate}
-                maxLength={40}
-              />
-
-              <Pressable
-                onPress={handleCreate}
-                disabled={!newName.trim()}
-                style={({ pressed }) => [
-                  subStyles.createBtn,
-                  {
-                    backgroundColor: newName.trim() ? undefined : "rgba(212,175,55,0.30)",
-                    opacity: pressed ? 0.8 : 1,
-                  },
-                ]}
-              >
-                {newName.trim() ? <GoldGradientFill /> : null}
-                <Text style={[subStyles.createBtnLabel, { color: "#1B060F" }]}>
-                  Crear carpeta
-                </Text>
-              </Pressable>
-            </>
-          )}
-        </View>
-      </KeyboardAvoidingView>
-    </Modal>
-  );
-}
-
-// ─── AddVideoToPlaylistSheet ──────────────────────────────────────────────────
-
-function AddVideoToPlaylistSheet({
-  visible,
-  videoId,
-  onClose,
-}: {
-  visible: boolean;
-  videoId: string;
-  onClose: () => void;
-}) {
-  const colors = useColors();
-  const insets = useSafeAreaInsets();
-  const { playlists, addVideoToPlaylist, removeVideoFromPlaylist, isVideoInPlaylist } =
-    useFoldersPlaylists();
-
-  const handleToggle = (playlistId: string) => {
-    if (isVideoInPlaylist(playlistId, videoId)) {
-      removeVideoFromPlaylist(playlistId, videoId);
-    } else {
-      addVideoToPlaylist(playlistId, videoId);
-    }
-  };
-
-  return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="slide"
-      onRequestClose={onClose}
-      statusBarTranslucent
-    >
-      <Pressable style={subStyles.backdrop} onPress={onClose} />
-
-      <View style={[subStyles.sheet, { paddingBottom: insets.bottom + 16 }]}>
-        <View style={subStyles.handle} />
-
-        <View style={subStyles.headerRow}>
-          <Text style={[subStyles.title, { color: colors.foreground }]}>
-            Añadir al Playlist
-          </Text>
-          <Pressable onPress={onClose} style={subStyles.closeBtn}>
-            <Feather name="x" size={20} color={colors.mutedForeground} />
-          </Pressable>
-        </View>
-
-        <ScrollView bounces={false} showsVerticalScrollIndicator={false} style={{ maxHeight: 340 }}>
-          {playlists.length === 0 && (
-            <Text style={[subStyles.emptyText, { color: colors.mutedForeground }]}>
-              Todavía no tienes ningún ritual. Créalo desde Biblioteca.
-            </Text>
-          )}
-          {playlists.map((pl) => {
-            const inIt = isVideoInPlaylist(pl.id, videoId);
-            const count = pl.sessionIds.length + (pl.videoIds ?? []).length;
-            return (
-              <Pressable
-                key={pl.id}
-                onPress={() => handleToggle(pl.id)}
-                style={({ pressed }) => [subStyles.row, { opacity: pressed ? 0.7 : 1 }]}
-              >
-                <View style={[subStyles.folderIcon, { backgroundColor: "rgba(212,175,55,0.12)" }]}>
-                  <Feather name="list" size={18} color={colors.primary} />
-                </View>
-                <Text style={[subStyles.rowLabel, { color: colors.foreground }]} numberOfLines={1}>
-                  {pl.name}
-                </Text>
-                <Text style={[subStyles.rowCount, { color: colors.mutedForeground }]}>
-                  {count}
-                </Text>
-                {inIt ? (
-                  <Feather name="check-circle" size={20} color={colors.primary} />
-                ) : (
-                  <Feather name="circle" size={20} color="rgba(255,255,255,0.25)" />
-                )}
-              </Pressable>
-            );
-          })}
-        </ScrollView>
       </View>
     </Modal>
   );
@@ -714,115 +415,3 @@ const styles = StyleSheet.create({
   },
 });
 
-const subStyles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.55)",
-  },
-  sheet: {
-    backgroundColor: "#340D1A",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingHorizontal: 20,
-    paddingTop: 12,
-  },
-  handle: {
-    width: 36,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: "rgba(74,12,12,0.35)",
-    alignSelf: "center",
-    marginBottom: 16,
-  },
-  headerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 16,
-    gap: 8,
-  },
-  title: {
-    fontFamily: "Manrope",
-    flex: 1,
-    fontSize: 17,
-    fontWeight: "700",
-  },
-  closeBtn: {
-    width: 32,
-    height: 32,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  emptyText: {
-    fontFamily: "Manrope",
-    fontSize: 14,
-    textAlign: "center",
-    paddingVertical: 20,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 12,
-    gap: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(61,14,22,0.40)",
-  },
-  folderIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  rowLabel: {
-    fontFamily: "Manrope",
-    flex: 1,
-    fontSize: 15,
-    fontWeight: "500",
-  },
-  rowCount: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    marginRight: 4,
-  },
-  newRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 16,
-    gap: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-  },
-  plusCircle: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  newLabel: {
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "600",
-  },
-  input: {
-    fontFamily: "Manrope",
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 16,
-    marginBottom: 16,
-  },
-  createBtn: {
-    borderRadius: 14,
-    paddingVertical: 16,
-    overflow: "hidden",
-    alignItems: "center",
-    marginBottom: 4,
-  },
-  createBtnLabel: {
-    fontFamily: "Manrope",
-    fontSize: 16,
-    fontWeight: "700",
-  },
-});
