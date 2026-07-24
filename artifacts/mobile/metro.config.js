@@ -3,17 +3,20 @@ const path = require("path");
 
 const config = getDefaultConfig(__dirname);
 
-// Workaround: RN 0.86.0 bug — VirtualViewExperimentalNativeComponent uses nested
-// Readonly<{}> types that @react-native/codegen@0.81.5 can't parse → bundling fails.
-// Redirect the module to a simple requireNativeComponent stub that skips codegen.
+// Workaround: RN 0.81.5 VirtualViewNativeComponent (and RN 0.86 Experimental variant)
+// use nested $ReadOnly<{}> / Readonly<{}> types that @react-native/codegen can't parse.
+// Redirect both to a stub that uses requireNativeComponent (no codegen trigger).
 const originalResolveRequest = config.resolver?.resolveRequest;
 
 config.resolver = {
   ...config.resolver,
   resolveRequest: (context, moduleName, platform) => {
-    if (moduleName.endsWith("VirtualViewExperimentalNativeComponent")) {
+    if (
+      moduleName.endsWith("VirtualViewNativeComponent") ||
+      moduleName.endsWith("VirtualViewExperimentalNativeComponent")
+    ) {
       return {
-        filePath: path.resolve(__dirname, "mocks/VirtualViewExperimentalNativeComponent.js"),
+        filePath: path.resolve(__dirname, "mocks/VirtualViewNativeComponent.js"),
         type: "sourceFile",
       };
     }
