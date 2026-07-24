@@ -3,11 +3,15 @@ const path = require("path");
 
 const config = getDefaultConfig(__dirname);
 
-// Workaround: RN 0.81.5 VirtualViewNativeComponent (and RN 0.86 Experimental variant)
-// use nested $ReadOnly<{}> / Readonly<{}> types that @react-native/codegen can't parse.
-// Redirect both to a stub that uses requireNativeComponent (no codegen trigger).
-const originalResolveRequest = config.resolver?.resolveRequest;
+// Custom Babel transformer: strips codegenNativeComponent from react-native@0.86.0
+// files before Babel processes them, preventing @react-native/codegen@0.81.5 crash.
+config.transformer = {
+  ...config.transformer,
+  babelTransformerPath: path.resolve(__dirname, "metro-babel-transformer.js"),
+};
 
+// Also intercept module resolution for VirtualView stubs
+const originalResolveRequest = config.resolver?.resolveRequest;
 config.resolver = {
   ...config.resolver,
   resolveRequest: (context, moduleName, platform) => {
