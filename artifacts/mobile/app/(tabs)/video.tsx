@@ -19,11 +19,13 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GeoUniverseBackground } from "@/components/GeoUniverseBackground";
+import { VideoActionsSheet } from "@/components/VideoActionsSheet";
 import { VideoCard } from "@/components/VideoCard";
 import { CardTint } from "@/components/CardTint";
 import { useVideos } from "@/hooks/useVideos";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import type { VideoItem } from "@/data/videos";
 
 const CHIP_BORDER = "rgba(255,255,255,0.1)";
 const FILTER_CHIPS = ["Todos", "Movimiento", "Respiración", "Naturaleza", "Música"] as const;
@@ -56,6 +58,7 @@ export default function VideoTabScreen() {
   const [activeChip, setActiveChip] = useState<(typeof FILTER_CHIPS)[number]>("Todos");
   const [sortOpen, setSortOpen]   = useState(false);
   const [sortBy, setSortBy]       = useState<SortOption>("popular");
+  const [actionsVideo, setActionsVideo] = useState<VideoItem | null>(null);
   const sortBtnRef  = useRef<View>(null);
   const [sortMenuPos, setSortMenuPos] = useState({ top: 0, right: 0 });
 
@@ -182,7 +185,9 @@ export default function VideoTabScreen() {
             </Text>
           </View>
         ) : (
-          filtered.map((v) => <VideoCard key={v.id} video={v} feed />)
+          filtered.map((v) => (
+            <VideoCard key={v.id} video={v} feed onOptionsPress={() => setActionsVideo(v)} />
+          ))
         )}
       </ScrollView>
 
@@ -213,6 +218,13 @@ export default function VideoTabScreen() {
           </View>
         </Pressable>
       </Modal>
+
+      {/* ── Menú "..." ── */}
+      <VideoActionsSheet
+        video={actionsVideo}
+        visible={actionsVideo !== null}
+        onClose={() => setActionsVideo(null)}
+      />
     </View>
   );
 }
