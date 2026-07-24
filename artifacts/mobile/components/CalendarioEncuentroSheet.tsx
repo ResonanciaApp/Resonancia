@@ -15,7 +15,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { Encuentro } from "@/data/encuentros";
 
-const STORAGE_KEY = "@cal_encuentros";
+const STORAGE_KEY = "@cal_encuentros_v2";
 const GOLD = "#F7CB6B";
 const WARM_BLACK = "#1B060F";
 
