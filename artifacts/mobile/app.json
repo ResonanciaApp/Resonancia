@@ -3,7 +3,9 @@
     "name": "Resonancia",
     "slug": "mobile",
     "version": "1.0.0",
-    "runtimeVersion": "1.0.0",  
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "resonancia",
@@ -119,7 +121,7 @@
     ],
     "experiments": {
       "typedRoutes": true,
-      "reactCompiler": true
+      "reactCompiler": false
     },
     "extra": {
       "eas": {
@@ -127,13 +129,9 @@
       }
     },
     "owner": "casadelcuenco",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
     "updates": {
       "url": "https://u.expo.dev/181736c1-cb71-4763-8d71-0b4ae2ce30a1",
       "enabled": false
     }
   }
 }
-

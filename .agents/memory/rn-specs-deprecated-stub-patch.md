@@ -71,7 +71,7 @@ Redirige `expo-linear-gradient/build/NativeLinearGradient.ios.js` →
 El stub usa el primer color del array como `backgroundColor` sólido.
 **Remover** la entrada de `NATIVE_LG_STUB` en metro.config.js después del rebuild.
 
-## Fix 3 — Duplicate React instance / "Cannot read property 'useMemoCache' of null" (APLICADO)
+## Fix 3 — Duplicate React instance / "Cannot read property 'useMemoCache' of null" (RESUELTO)
 
 ### Problema
 `react-native-audio-api@0.12.2` peer-depende de `react-native@0.86.0` que a su vez
