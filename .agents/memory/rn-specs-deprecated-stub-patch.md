@@ -71,38 +71,45 @@ Redirige `expo-linear-gradient/build/NativeLinearGradient.ios.js` →
 El stub usa el primer color del array como `backgroundColor` sólido.
 **Remover** la entrada de `NATIVE_LG_STUB` en metro.config.js después del rebuild.
 
-## Fix 3 — Duplicate React instance / "Cannot read property 'useMemoCache' of null" (RESUELTO)
+## Fix 3 — Duplicate React instance / "useMemoCache/useContext of null" (RESUELTO)
 
 ### Problema
 `react-native-audio-api@0.12.2` peer-depende de `react-native@0.86.0` que a su vez
-peer-depende de `react@19.2.8`. pnpm instala AMBAS versiones: `react@19.1.0` (app) y
-`react@19.2.8`. Con el React Compiler habilitado (`experiments.reactCompiler: true` en
-app.json), el `react/compiler-runtime` importa React con:
-```js
-var ReactSharedInternals = require("react").__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
-```
-Si `require("react")` resuelve a una SEGUNDA instancia (distinta de la que renderizó el
-componente), el dispatcher interno es `null` → "Cannot read property 'useMemoCache' of null".
+peer-depende de `react@19.2.8`. pnpm instala AMBAS versiones de React Y crea instancias
+GEMELAS de todo paquete que tenga react como peer:
+- `@tanstack+react-query@5.100.9_react@19.1.0` ← usa mobile
+- `@tanstack+react-query@5.100.9_react@19.2.8` ← usaba `lib/api-client-react` (!!)
 
-### Fix — extraNodeModules en metro.config.js
-Forzar que TODOS los módulos del bundle resuelvan 'react' y 'react-native' a la MISMA
-instancia vía `config.resolver.extraNodeModules`:
-```js
-config.resolver = {
-  ...config.resolver,
-  extraNodeModules: {
-    ...config.resolver?.extraNodeModules,
-    react: path.resolve(__dirname, "../../node_modules/.pnpm/react@19.1.0/node_modules/react"),
-    "react-native": path.resolve(__dirname, "../../node_modules/.pnpm/react-native@0.81.5_.../node_modules/react-native"),
-  },
-};
-```
-`extraNodeModules` tiene MENOR precedencia que el resolver custom (`resolveRequest`), así
-que los redirects de stubs siguen funcionando sobre él.
+El `api.ts` generado (lib/api-client-react) importaba `useQuery` de la variante
+_react@19.2.8, cuyo `require('react')` retorna la SEGUNDA copia de React. El renderer
+inicializa el dispatcher solo en la copia 19.1.0 → en la otra `ReactSharedInternals.H`
+es null → "Cannot read property 'useContext' of null" (o 'useMemoCache' con React
+Compiler habilitado — mismo root cause, distinto síntoma).
 
-**Why:** React Compiler runtime + React internals deben compartir la MISMA instancia o
-el dispatcher es null. `extraNodeModules` es la solución Metro correcta (vs. pnpm
-overrides que afectan toda la instalación y rompen otros packages).
+### Lo que NO funcionó
+- `extraNodeModules` — pnpm resuelve por symlinks del contexto de cada paquete; Metro
+  solo consulta extraNodeModules cuando la resolución normal falla. Inútil aquí.
+- Deshabilitar React Compiler (`experiments.reactCompiler: false` en app.json) — solo
+  cambió el síntoma de useMemoCache → useContext (React Query llama useContext). El
+  Compiler quedó deshabilitado igualmente; re-habilitar cuando se desee (era optimización).
+
+### Fix que SÍ funciona — rewrite de paths en resolveRequest
+En metro.config.js, después de la resolución normal, reescribir cualquier filePath que
+contenga `react@19.2.8` a su gemelo `react@19.1.0` (validando existencia con fs.existsSync):
+```js
+if (fp.includes("react@19.2.8")) {
+  const rewritten = fp.replace(/react@19\.2\.8/g, "react@19.1.0");
+  if (fs.existsSync(rewritten)) return { filePath: rewritten, type: "sourceFile" };
+}
+```
+Cubre `.pnpm/react@19.2.8/`, `.pnpm/@tanstack+react-query@..._react@19.2.8/`,
+`.pnpm/react-dom@..._react@19.2.8/`, etc. Las gemelas son la MISMA versión del paquete
+(solo difiere el peer), estructura de archivos idéntica → rewrite seguro.
+
+**Why:** en pnpm el dedup de peers duplicados NO se arregla con extraNodeModules ni
+alias de nombres — hay que reescribir los paths RESUELTOS. Diagnóstico rápido:
+`readlink <pkg>/node_modules/@tanstack/react-query` para ver qué variante usa cada
+workspace package.
 
 **Después de aplicar:** limpiar caché y RA.
 

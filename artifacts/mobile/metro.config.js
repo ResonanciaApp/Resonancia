@@ -1,5 +1,6 @@
 const { getDefaultConfig } = require("expo/metro-config");
 const path = require("path");
+const fs = require("fs");
 
 const config = getDefaultConfig(__dirname);
 
@@ -53,7 +54,22 @@ config.resolver = {
     }
 
     if (resolved && resolved.type === "sourceFile") {
-      const fp = resolved.filePath;
+      let fp = resolved.filePath;
+
+      // Deduplicate React: pnpm created twin instances keyed on react@19.2.8
+      // (pulled in by react-native-audio-api → react-native@0.86.0 peers).
+      // lib/api-client-react's @tanstack/react-query resolves to the
+      // _react@19.2.8 variant whose require('react') returns the SECOND React
+      // copy — its internal dispatcher is null (the renderer initialized the
+      // 19.1.0 copy) → "Cannot read property 'useContext' of null".
+      // Rewrite any file inside a react@19.2.8-keyed instance to its
+      // react@19.1.0 twin (same package versions, only the peer differs).
+      if (fp.includes("react@19.2.8")) {
+        const rewritten = fp.replace(/react@19\.2\.8/g, "react@19.1.0");
+        if (fs.existsSync(rewritten)) {
+          return { filePath: rewritten, type: "sourceFile" };
+        }
+      }
 
       // Intercept specs_DEPRECATED/components/ — codegen component schemas that
       // were compiled with StubComponent fallbacks incompatible with this dev client.
