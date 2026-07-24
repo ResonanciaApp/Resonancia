@@ -117,7 +117,7 @@ export default function FavoritosTodosScreen() {
           <Pressable
             onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
             hitSlop={10}
-            style={[styles.backBtn, { backgroundColor: "rgba(74,12,12,0.08)" }]}
+            style={[styles.backBtn, { backgroundColor: "rgba(255,255,255,0.06)" }]}
           >
             <Feather name="chevron-left" size={20} color={colors.foreground} />
           </Pressable>
