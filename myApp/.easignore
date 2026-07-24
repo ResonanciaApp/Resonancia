@@ -1,0 +1,10 @@
+node_modules
+.git
+.gitignore
+npm-debug.log
+yarn-error.log
+.expo
+dist
+build
+.cache
+*.log

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "myApp",
-    "slug": "myApp",
+    "slug": "myapp-dev-seun",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -18,7 +18,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.casadelcuenco2.myApp"
+      "package": "com.casadelcuenco2.myappdevseun"
     },
     "web": {
       "output": "static",
@@ -42,7 +42,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "bcb3c44f-4682-4bd3-9e0f-7a5960c35ee7"
+        "projectId": "807815a3-bd88-4f81-83ad-2c4a31160e00"
       }
     },
     "owner": "casadelcuenco-2"
