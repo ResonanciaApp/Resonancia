@@ -53,31 +53,36 @@ pnpm instala una instancia de RN por combinación de peers:
 **Why:** Parchear TODAS las instancias. Los patches se pierden al reinstalar — correr el
 script después de cada `pnpm install`.
 
-## Fix 2 — LinearGradient ViewManager (WORKAROUND TEMPORAL)
+## Fix 2 — "ViewManagerAdapter_<Module>_<hash> must be a function" (RESUELTO de raíz)
 
-### Problema
-`expo-linear-gradient` usa `requireNativeViewManager('ExpoLinearGradient')` → devuelve
-componente con nombre `ViewManagerAdapter_ExpoLinearGradient_<hash>`. El dev client no
-tiene ese hash en su ViewConfigRegistry → "View config getter callback must be a function
-(received undefined)". **Pre-existente** (expo-modules-core@3.0.30 era igual antes de
-agregar react-native-audio-api). Solo se volvió visible al resolver el crash de StubComponent.
+### Root cause REAL (no era pre-existente)
+react-native-audio-api instaló `expo-modules-core@57.x` (nuevo esquema de versionado
+para RN 0.86) además de la `3.0.30` del SDK 54. Los módulos expo (expo-blur,
+expo-symbols, expo-linear-gradient, …) importan `expo-modules-core` SIN tenerlo en su
+contexto pnpm propio → caen al fallback global `.pnpm/node_modules/expo-modules-core`,
+que apunta a la 57.x. Su `requireNativeViewManager()` genera nombres
+`ViewManagerAdapter_<Module>_<hash>` con un hash distinto al que registró el dev client
+(compilado contra 3.x) → "View config getter callback must be a function (received
+undefined)". Afectó en cadena a ExpoLinearGradient, ExpoBlurView y SymbolModule
+(mismo sufijo de hash en todos = misma causa).
 
-**Fix definitivo**: rebuild del dev client con EAS.
+### Fix — intercept del REQUEST en metro.config.js (no rewrite de paths)
+La 3.0.30 distribuye FUENTE (`main: src/index.ts`, build/ solo .d.ts) mientras la 57.x
+distribuye `build/*.js` compilado → reescribir paths resueltos NO funciona (el archivo
+gemelo no existe). En su lugar, en `resolveRequest`, si `moduleName` es
+`expo-modules-core` o subpath, se re-resuelve con `originModulePath` apuntando DENTRO
+de la instancia 3.x (detectada dinámicamente escaneando `.pnpm/expo-modules-core@3.*`).
+Todo el bundle comparte así la única copia que el dev client conoce.
 
-### Workaround JS en metro.config.js
-Redirige `expo-linear-gradient/build/NativeLinearGradient.ios.js` →
-`artifacts/mobile/mocks/native-linear-gradient-stub.js`.
+**Why:** cuando pnpm duplica un paquete cuya versión mala distribuye build y la buena
+distribuye fuente, el dedup en Metro debe interceptar el request (cambiar el origin de
+resolución), no el filePath resuelto.
 
-El stub usa el primer color del array como `backgroundColor` sólido.
-**Remover** la entrada de `NATIVE_LG_STUB` en metro.config.js después del rebuild.
-
-### También expo-blur (mismo patrón)
-`ViewManagerAdapter_ExpoBlurView_<hash>` — mismo hash mismatch. Redirect en
-metro.config.js: `expo-blur/build/BlurView.js` → `mocks/expo-blur-stub.js`
-(clase con `getAnimatableRef()` para Reanimated; renderiza View semi-opaco según
-`tint`, sin blur real). **Remover `EXPO_BLUR_STUB` tras el rebuild EAS.**
-Si aparecen más "View config getter callback must be a function" con otros módulos
-expo (ViewManagerAdapter_Expo*), aplicar el mismo patrón de stub.
+### Stubs previos (obsoletos, borrar si molestan)
+`mocks/native-linear-gradient-stub.js` y `mocks/expo-blur-stub.js` fueron workarounds
+mientras se creía que era un mismatch del dev client. Ya NO están cableados en
+metro.config.js. Con el dedup, gradientes/blur/symbols nativos REALES funcionan sin
+rebuild EAS.
 
 ## Fix 3 — Duplicate React instance / "useMemoCache/useContext of null" (RESUELTO)
 

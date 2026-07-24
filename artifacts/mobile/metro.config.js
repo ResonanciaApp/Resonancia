@@ -5,8 +5,38 @@ const fs = require("fs");
 const config = getDefaultConfig(__dirname);
 
 const NULL_STUB = path.resolve(__dirname, "mocks/null-stub.js");
-const NATIVE_LG_STUB = path.resolve(__dirname, "mocks/native-linear-gradient-stub.js");
-const EXPO_BLUR_STUB = path.resolve(__dirname, "mocks/expo-blur-stub.js");
+
+// Deduplicate expo-modules-core: react-native-audio-api pulls in
+// expo-modules-core@57.x (new versioning scheme for RN 0.86), and pnpm's
+// global fallback (.pnpm/node_modules) points at it. Expo SDK 54 modules
+// (expo-blur, expo-symbols, expo-linear-gradient, ...) import
+// "expo-modules-core" without having it in their own pnpm context, so they
+// fall through to the 57.x copy. Its requireNativeViewManager() generates
+// ViewManagerAdapter_<Module>_<hash> names whose hash doesn't match what the
+// dev client (built against 3.x) registered → "View config getter callback
+// must be a function (received undefined)".
+// Fix: intercept every "expo-modules-core" module request and resolve it
+// from inside the 3.x instance's own directory, so the whole bundle shares
+// the single copy the dev client was built with. (Note: 3.x ships source —
+// main: src/index.ts — while 57.x ships build/*.js, so rewriting resolved
+// file paths does NOT work; the request itself must be re-resolved.)
+const PNPM_DIR = path.resolve(__dirname, "../../node_modules/.pnpm");
+let EMC_GOOD_PKG = null;
+try {
+  const emcGoodDir = fs
+    .readdirSync(PNPM_DIR)
+    .find((d) => d.startsWith("expo-modules-core@3."));
+  if (emcGoodDir) {
+    EMC_GOOD_PKG = path.join(
+      PNPM_DIR,
+      emcGoodDir,
+      "node_modules",
+      "expo-modules-core"
+    );
+  }
+} catch (e) {
+  // .pnpm dir not found — leave redirect disabled
+}
 
 // Force all modules in the bundle to use the SAME React instance.
 // react-native-audio-api pulls in react-native@0.86.0 + react-worklets which
@@ -43,6 +73,31 @@ const originalResolveRequest = config.resolver?.resolveRequest;
 config.resolver = {
   ...config.resolver,
   resolveRequest: (context, moduleName, platform) => {
+    // Deduplicate expo-modules-core: force EVERY import of it to resolve from
+    // the 3.x instance's own context (the copy the dev client's native side
+    // was built with). Fixes the whole family of
+    // "ViewManagerAdapter_<Module>_<hash> must be a function" errors
+    // (ExpoBlurView, SymbolModule, ExpoLinearGradient, ...) caused by the
+    // 57.x copy that react-native-audio-api pulled in.
+    if (
+      EMC_GOOD_PKG &&
+      (moduleName === "expo-modules-core" ||
+        moduleName.startsWith("expo-modules-core/")) &&
+      !context.originModulePath.startsWith(EMC_GOOD_PKG)
+    ) {
+      const redirectedContext = {
+        ...context,
+        originModulePath: path.join(EMC_GOOD_PKG, "index.js"),
+      };
+      return originalResolveRequest
+        ? originalResolveRequest(redirectedContext, moduleName, platform)
+        : redirectedContext.resolveRequest(
+            redirectedContext,
+            moduleName,
+            platform
+          );
+    }
+
     let resolved;
     try {
       if (originalResolveRequest) {
@@ -81,23 +136,6 @@ config.resolver = {
         return { filePath: NULL_STUB, type: "sourceFile" };
       }
 
-      // TEMPORARY: redirect expo-linear-gradient's iOS native component to a solid-color
-      // fallback until the dev client is rebuilt with matching expo-modules-core version.
-      // The native ExpoLinearGradient ViewManager hash doesn't match what the dev client
-      // registered, causing "View config getter callback must be a function" at runtime.
-      if (
-        /expo-linear-gradient[\\/]build[\\/]NativeLinearGradient\.ios\.js$/.test(fp)
-      ) {
-        return { filePath: NATIVE_LG_STUB, type: "sourceFile" };
-      }
-
-      // TEMPORARY: same ViewManager hash mismatch as LinearGradient, but for
-      // expo-blur (ViewManagerAdapter_ExpoBlurView_<hash>). Stub renders a
-      // semi-opaque tinted View instead of a native blur. Remove after the
-      // dev client is rebuilt with EAS.
-      if (/expo-blur[\\/]build[\\/]BlurView\.js$/.test(fp)) {
-        return { filePath: EXPO_BLUR_STUB, type: "sourceFile" };
-      }
     }
 
     return resolved;
