@@ -15,10 +15,15 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { SessionCard } from "@/components/SessionCard";
+import { VideoCard } from "@/components/VideoCard";
+import { VideoActionsSheet } from "@/components/VideoActionsSheet";
 import { usePlayer } from "@/context/PlayerContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
+import { useVideosState } from "@/context/VideosContext";
 import { getSessionById, type Session } from "@/data/sessions";
+import { type VideoItem } from "@/data/videos";
 import { useColors } from "@/hooks/useColors";
+import { useVideos } from "@/hooks/useVideos";
 
 const H_PAD = 19;
 const { width: W } = Dimensions.get("window");
@@ -29,6 +34,7 @@ const FAV_TABS = [
   { id: "meditaciones", label: "Meditaciones", categoryId: "meditaciones-guiadas" },
   { id: "musica",       label: "Música",       categoryId: "musica-sonidos" },
   { id: "dormir",       label: "Dormir",       categoryId: "descanso" },
+  { id: "videos",       label: "Videos",       categoryId: null },
 ] as const;
 
 type FavTabId = typeof FAV_TABS[number]["id"];
@@ -54,6 +60,9 @@ export default function FavoritosTodosScreen() {
   const insets = useSafeAreaInsets();
   const { favorites, playSession, currentSession } = usePlayer();
   const { favFolders } = useFoldersPlaylists();
+  const { favoriteVideoIds } = useVideosState();
+  const { videos: allVideos } = useVideos();
+  const [actionsVideo, setActionsVideo] = useState<VideoItem | null>(null);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -74,6 +83,11 @@ export default function FavoritosTodosScreen() {
   const tabSessions = useMemo(
     () => favSessions.filter((s) => s.categoryId === activeCategory),
     [favSessions, activeCategory],
+  );
+
+  const favVideos = useMemo(
+    () => allVideos.filter((v) => favoriteVideoIds.includes(v.id)),
+    [allVideos, favoriteVideoIds],
   );
 
   const openSession = (s: Session) => {
@@ -131,7 +145,27 @@ export default function FavoritosTodosScreen() {
         </ScrollView>
 
         {/* Grilla */}
-        {tabSessions.length === 0 ? (
+        {activeTab === "videos" ? (
+          favVideos.length === 0 ? (
+            <View style={[styles.empty, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
+              <Feather name="heart" size={20} color={colors.border} />
+              <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                Aún no tienes videos favoritos.
+              </Text>
+            </View>
+          ) : (
+            <View style={{ paddingHorizontal: H_PAD, gap: 9 }}>
+              {favVideos.map((v) => (
+                <VideoCard
+                  key={v.id}
+                  video={v}
+                  horizontal
+                  onOptionsPress={() => setActionsVideo(v)}
+                />
+              ))}
+            </View>
+          )
+        ) : tabSessions.length === 0 ? (
           <View style={[styles.empty, { backgroundColor: "rgba(74,12,12,0.08)" }]}>
             <Feather name="heart" size={20} color={colors.border} />
             <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
@@ -155,6 +189,12 @@ export default function FavoritosTodosScreen() {
           </View>
         )}
       </ScrollView>
+
+      <VideoActionsSheet
+        video={actionsVideo}
+        visible={actionsVideo !== null}
+        onClose={() => setActionsVideo(null)}
+      />
     </LinearGradient>
   );
 }
