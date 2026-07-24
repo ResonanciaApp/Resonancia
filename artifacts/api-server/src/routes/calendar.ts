@@ -2,7 +2,7 @@ import { Router } from "express";
 
 const router = Router();
 
-router.get("/calendar/event.ics", (req, res) => {
+router.get(["/calendar/event", "/calendar/event.ics"], (req, res) => {
   const { title, start, end, description, uid } = req.query as Record<string, string>;
 
   if (!title || !start || !end) {
@@ -47,7 +47,7 @@ router.get("/calendar/event.ics", (req, res) => {
   ].join("\r\n");
 
   res.setHeader("Content-Type", "text/calendar; charset=utf-8");
-  res.setHeader("Content-Disposition", `attachment; filename="encuentro.ics"`);
+  res.setHeader("Content-Disposition", `inline; filename="encuentro.ics"`);
   res.send(ics);
 });
 

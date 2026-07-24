@@ -158,7 +158,7 @@ export function CalendarioEncuentroSheet({ encuentro, visible, onClose }: Props)
         uid: `${encuentro.id}-${Date.now()}@resonancia.app`,
       });
 
-      const url = `${apiBase}/api/calendar/event.ics?${params.toString()}`;
+      const url = `${apiBase}/api/calendar/event?${params.toString()}`;
 
       const supported = await Linking.canOpenURL(url);
       if (!supported) {
