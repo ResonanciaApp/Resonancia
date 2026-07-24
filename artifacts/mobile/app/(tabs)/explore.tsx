@@ -424,23 +424,36 @@ export default function ExploreScreen() {
   const { data: pinnedFeaturedData } = useGetPinnedFeatured();
 
   // ── Orden de carruseles desde la API ──
+  // null = todavía cargando (no mostrar nada aún)
+  // [] o array = respuesta recibida (respetar visibilidad)
   const [exploreSections, setExploreSections] = React.useState<
-    { slug: string; label: string; visible: boolean; sortOrder: number }[]
-  >([]);
+    { slug: string; label: string; visible: boolean; sortOrder: number }[] | null
+  >(null);
   React.useEffect(() => {
     const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "";
     fetch(`${API_URL}/api/explore-sections`)
       .then((r) => r.ok ? r.json() : null)
-      .then((data) => { if (data?.sections) setExploreSections(data.sections); })
-      .catch(() => {/* usa fallback */});
+      .then((data) => {
+        // Tanto si la API respondió con secciones como con lista vacía,
+        // establecer el estado para que el useMemo use la respuesta real.
+        setExploreSections(data?.sections ?? []);
+      })
+      .catch(() => {
+        // Si falla la red, tratar como lista vacía (no mostrar nada
+        // en lugar de mostrar todas las secciones sin filtrar).
+        setExploreSections([]);
+      });
   }, []);
 
   const themeCarousels = React.useMemo(() => {
+    // Mientras carga, no mostrar carruseles para evitar el flash de
+    // todas las temáticas sin filtrar de visibilidad.
+    if (exploreSections === null) return [];
+
     const sessionLabels: string[] = Array.from(
       new Set<string>(SESSIONS.flatMap((s) => s.themeTag ?? [])),
     ).filter((t) => !isChakraTag(t));
 
-    // Si ya cargó la config de la API, usarla
     if (exploreSections.length > 0) {
       const seen = new Set<string>();
       return exploreSections
@@ -458,7 +471,8 @@ export default function ExploreScreen() {
         }));
     }
 
-    // Fallback: orden de TAG_CARDS (mientras carga)
+    // API respondió con lista vacía: no hay configuración → mostrar todas
+    // las temáticas locales como fallback solo en este caso.
     const knownOrder = TAG_CARDS.map((tc) => tc.label as string);
     const allTags = [...sessionLabels].sort((a, b) => {
       const ia = knownOrder.indexOf(a);
