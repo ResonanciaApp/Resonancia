@@ -1,7 +1,6 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import MaskedView from "@react-native-masked-view/masked-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -1055,7 +1054,6 @@ export default function HomeScreen2() {
         >
           <WeekDayDots />
         </Pressable>
-        <ProgresoModal visible={progresoVisible} onClose={() => setProgresoVisible(false)} />
 
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
@@ -1462,6 +1460,8 @@ export default function HomeScreen2() {
 
       </Animated.View>{/* fin contenido desvanecible */}
 
+
+      <ProgresoModal visible={progresoVisible} onClose={() => setProgresoVisible(false)} />
 
       <MoodPickerSheet
         visible={moodSheetVisible}

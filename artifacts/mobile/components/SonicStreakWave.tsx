@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
@@ -215,7 +214,7 @@ export function SonicStreakWave() {
             borderRadius: (RING_SIZE + 18) / 2,
             overflow: "hidden",
           }]}>
-            <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(10,4,12,0.45)" }]} />
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(27,6,15,0.07)" }]} />
             <LinearGradient
               colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
