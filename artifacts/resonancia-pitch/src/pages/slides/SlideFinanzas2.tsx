@@ -8,7 +8,6 @@ export default function SlideFinanzas2() {
   const LT_LAUNCH = 0.882;
   const LT_NORMAL = 1.323;
   const NETO_CURSO = 15294;
-  const COLCHON = 0.6;
 
   const meses = [
     { label: "M1",  subs: 700,  launch: true,  costos: 4.71, cursos: 0   },
@@ -25,7 +24,7 @@ export default function SlideFinanzas2() {
     { label: "M12", subs: 3450, launch: false, costos: 7.71, cursos: 130 },
   ];
 
-  let cumulative = COLCHON;
+  let cumulative = 0;
   const data = meses.map((m) => {
     const arpu      = m.launch ? ARPU_LAUNCH : ARPU_NORMAL;
     const lt        = m.launch ? LT_LAUNCH : LT_NORMAL;
