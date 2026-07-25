@@ -5,7 +5,7 @@ export default function SlideTramosInversion() {
   const tramos = [
     { inv: 3,  equity: 2.0 },
     { inv: 6,  equity: 4.5 },
-    { inv: 8,  equity: 6.0 },
+    { inv: 8,  equity: 6.5 },
     { inv: 10, equity: 8.0 },
   ].map(({ inv, equity }) => {
     const postMoney = inv / (equity / 100);
