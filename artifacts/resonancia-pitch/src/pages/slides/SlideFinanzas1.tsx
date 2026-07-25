@@ -5,12 +5,12 @@ export default function SlideFinanzas1() {
   // Cursos M7+: $15.294/venta (post-tienda, post-tallerista/prod 35%)
 
   const rows = [
-    { mes: "M1 Lanzamiento", subs: "700",   fase: "lanzamiento", ingTotal: "$2,6M",  upsell: "—",      costos: "$3,9M",  resultado: "–$1,3M", neg: true  },
-    { mes: "Mes 3",          subs: "1.200", fase: "normal",      ingTotal: "$5,1M",  upsell: "—",      costos: "$5,6M",  resultado: "–$0,5M", neg: true  },
-    { mes: "Mes 4",          subs: "1.450", fase: "normal",      ingTotal: "$5,8M",  upsell: "—",      costos: "$5,6M",  resultado: "+$0,2M", neg: false },
-    { mes: "Mes 5",          subs: "1.700", fase: "normal",      ingTotal: "$6,6M",  upsell: "—",      costos: "$5,6M",  resultado: "+$1,0M", neg: false },
-    { mes: "Mes 9",          subs: "2.700", fase: "normal",      ingTotal: "$9,7M",  upsell: "+$1,5M", costos: "$6,65M", resultado: "+$4,6M", neg: false },
-    { mes: "Mes 12",         subs: "3.450", fase: "normal",      ingTotal: "$12,1M", upsell: "+$2,0M", costos: "$6,9M",  resultado: "+$7,2M", neg: false },
+    { mes: "M1 Lanzamiento", subs: "700",   fase: "lanzamiento", ingTotal: "$2,6M",  upsell: "—",      costos: "$4,7M",  resultado: "–$2,1M", neg: true  },
+    { mes: "Mes 3",          subs: "1.200", fase: "normal",      ingTotal: "$5,1M",  upsell: "—",      costos: "$6,4M",  resultado: "–$1,3M", neg: true  },
+    { mes: "Mes 4",          subs: "1.450", fase: "normal",      ingTotal: "$5,8M",  upsell: "—",      costos: "$6,4M",  resultado: "–$0,6M", neg: true  },
+    { mes: "Mes 5",          subs: "1.700", fase: "normal",      ingTotal: "$6,6M",  upsell: "—",      costos: "$6,4M",  resultado: "+$0,2M", neg: false },
+    { mes: "Mes 9",          subs: "2.700", fase: "normal",      ingTotal: "$9,7M",  upsell: "+$1,5M", costos: "$7,45M", resultado: "+$3,8M", neg: false },
+    { mes: "Mes 12",         subs: "3.450", fase: "normal",      ingTotal: "$12,1M", upsell: "+$2,0M", costos: "$7,7M",  resultado: "+$6,4M", neg: false },
   ];
 
   return (
@@ -94,15 +94,15 @@ export default function SlideFinanzas1() {
           <div />
           <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#F4F4F4" }}>~$92M</div>
           <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#6EC49A" }}>~$9M</div>
-          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>~$70M</div>
-          <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#6EC49A" }}>+$32M neto</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>~$80M</div>
+          <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#6EC49A" }}>+$22M neto</div>
         </div>
       </div>
 
       {/* Footnote */}
       <div style={{ flexShrink: 0, fontSize: "0.88vw", color: "rgba(244,244,244,0.42)", lineHeight: 1.45 }}>
         Blend 35/60/5% · 300 nuevos suscriptores/mes · Break-even operacional M5 · Recuperación de caja acumulada M8 ·
-        $92M subs+lifetime · $9M cursos · Total $101M · Costos $70M · Neto +$32M.
+        $92M subs+lifetime · $9M cursos · Total $101M · Costos $80M · Neto +$22M.
       </div>
     </div>
   );

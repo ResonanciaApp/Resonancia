@@ -11,18 +11,18 @@ export default function SlideFinanzas2() {
   const COLCHON = 0.6;
 
   const meses = [
-    { label: "M1",  subs: 700,  launch: true,  costos: 3.90, cursos: 0   },
-    { label: "M2",  subs: 950,  launch: false, costos: 3.90, cursos: 0   },
-    { label: "M3",  subs: 1200, launch: false, costos: 5.60, cursos: 0   },
-    { label: "M4",  subs: 1450, launch: false, costos: 5.60, cursos: 0   },
-    { label: "M5",  subs: 1700, launch: false, costos: 5.60, cursos: 0   },
-    { label: "M6",  subs: 1950, launch: false, costos: 5.60, cursos: 0   },
-    { label: "M7",  subs: 2200, launch: false, costos: 6.40, cursos: 60  },
-    { label: "M8",  subs: 2450, launch: false, costos: 6.40, cursos: 80  },
-    { label: "M9",  subs: 2700, launch: false, costos: 6.65, cursos: 100 },
-    { label: "M10", subs: 2950, launch: false, costos: 6.65, cursos: 110 },
-    { label: "M11", subs: 3200, launch: false, costos: 6.90, cursos: 120 },
-    { label: "M12", subs: 3450, launch: false, costos: 6.90, cursos: 130 },
+    { label: "M1",  subs: 700,  launch: true,  costos: 4.71, cursos: 0   },
+    { label: "M2",  subs: 950,  launch: false, costos: 4.71, cursos: 0   },
+    { label: "M3",  subs: 1200, launch: false, costos: 6.41, cursos: 0   },
+    { label: "M4",  subs: 1450, launch: false, costos: 6.41, cursos: 0   },
+    { label: "M5",  subs: 1700, launch: false, costos: 6.41, cursos: 0   },
+    { label: "M6",  subs: 1950, launch: false, costos: 6.41, cursos: 0   },
+    { label: "M7",  subs: 2200, launch: false, costos: 7.21, cursos: 60  },
+    { label: "M8",  subs: 2450, launch: false, costos: 7.21, cursos: 80  },
+    { label: "M9",  subs: 2700, launch: false, costos: 7.46, cursos: 100 },
+    { label: "M10", subs: 2950, launch: false, costos: 7.46, cursos: 110 },
+    { label: "M11", subs: 3200, launch: false, costos: 7.71, cursos: 120 },
+    { label: "M12", subs: 3450, launch: false, costos: 7.71, cursos: 130 },
   ];
 
   let cumulative = COLCHON;
@@ -45,9 +45,9 @@ export default function SlideFinanzas2() {
   const ZERO_PCT = (-minCum / cumRange) * 100;
 
   const scenarios = [
-    { label: "Base",      subs12: "3.450",  cursos6m: "600",    ingTotal: "~$102M", neto: "+$32M",  highlight: true  },
-    { label: "Optimista", subs12: "4.300",  cursos6m: "~750",   ingTotal: "~$127M", neto: "+$57M",  highlight: false },
-    { label: "Agresivo",  subs12: "5.750",  cursos6m: "~1.000", ingTotal: "~$170M", neto: "+$98M",  highlight: false },
+    { label: "Base",      subs12: "3.450",  cursos6m: "600",    ingTotal: "~$102M", neto: "+$22M",  highlight: true  },
+    { label: "Optimista", subs12: "4.300",  cursos6m: "~750",   ingTotal: "~$127M", neto: "+$47M",  highlight: false },
+    { label: "Agresivo",  subs12: "5.750",  cursos6m: "~1.000", ingTotal: "~$170M", neto: "+$88M",  highlight: false },
   ];
 
   return (
