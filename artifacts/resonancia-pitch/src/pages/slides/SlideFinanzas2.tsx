@@ -97,14 +97,14 @@ export default function SlideFinanzas2() {
         </div>
 
         {/* Right panel */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "1.2vh" }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "0.9vh", minHeight: 0, overflow: "hidden" }}>
           <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em" }}>ESCENARIOS AÑO 1 · TOTALES</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.8vh" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.6vh" }}>
             {scenarios.map((s) => (
               <div key={s.label} style={{
                 backgroundColor: s.highlight ? "rgba(110,196,154,0.08)" : "rgba(0,0,0,0.14)",
                 border: s.highlight ? "1px solid rgba(110,196,154,0.40)" : "1px solid rgba(255,255,255,0.10)",
-                borderRadius: "0.6vw", padding: "1.0vh 1.1vw",
+                borderRadius: "0.6vw", padding: "0.55vh 1.1vw",
                 display: "flex", justifyContent: "space-between", alignItems: "center",
               }}>
                 <div>
@@ -112,7 +112,7 @@ export default function SlideFinanzas2() {
                   <div style={{ fontSize: "0.8vw", color: "rgba(244,244,244,0.45)" }}>{s.subs12} subs · {s.cursos6m} cursos</div>
                 </div>
                 <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: "1.7vw", fontWeight: 700, color: "#F4F4F4" }}>{s.ingTotal}</div>
+                  <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#F4F4F4" }}>{s.ingTotal}</div>
                   <div style={{ fontSize: "1.05vw", fontWeight: 700, color: "#6EC49A" }}>{s.neto} neto</div>
                 </div>
               </div>
@@ -121,27 +121,26 @@ export default function SlideFinanzas2() {
 
           <div style={{ marginTop: "auto" }}>
             <div style={{ fontSize: "0.85vw", fontWeight: 700, color: "rgba(244,244,244,0.55)", letterSpacing: "0.08em", marginBottom: "0.6vh" }}>CURVA BASE · SUSCRIPTORES (+300/mes)</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.35vh" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.22vh" }}>
               {data.map((d) => (
                 <div key={d.label} style={{ display: "flex", alignItems: "center", gap: "0.5vw" }}>
-                  <div style={{ fontSize: "0.75vw", color: "rgba(244,244,244,0.40)", minWidth: "2.2vw" }}>{d.label}</div>
-                  <div style={{ flex: 1, height: "0.45vh", backgroundColor: "rgba(255,255,255,0.07)", borderRadius: "9999px", overflow: "hidden" }}>
+                  <div style={{ fontSize: "0.68vw", color: "rgba(244,244,244,0.40)", minWidth: "2.2vw" }}>{d.label}</div>
+                  <div style={{ flex: 1, height: "0.35vh", backgroundColor: "rgba(255,255,255,0.07)", borderRadius: "9999px", overflow: "hidden" }}>
                     <div style={{
                       width: `${(d.subs / maxSubs) * 100}%`, height: "100%",
                       backgroundColor: d.launch ? "rgba(190,150,80,0.70)" : d.cursos > 0 ? "rgba(110,196,154,0.80)" : "rgba(110,196,154,0.50)",
                       borderRadius: "9999px"
                     }} />
                   </div>
-                  <div style={{ fontSize: "0.75vw", color: "#F4F4F4", minWidth: "3vw", textAlign: "right" }}>{d.subs.toLocaleString()}</div>
+                  <div style={{ fontSize: "0.68vw", color: "#F4F4F4", minWidth: "3vw", textAlign: "right" }}>{d.subs.toLocaleString()}</div>
                 </div>
               ))}
             </div>
-            <div style={{ fontSize: "0.70vw", color: "rgba(190,150,80,0.7)", marginTop: "0.4vh" }}>■ dorado M1 = lanzamiento · ■ verde M2+ = normal · ■ verde intenso = con cursos</div>
           </div>
         </div>
       </div>
 
-      <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.40)", lineHeight: 1.5 }}>
+      <div style={{ fontSize: "0.9vw", color: "rgba(244,244,244,0.40)", lineHeight: 1.4, marginTop: "1vh" }}>
         Base: 300 nuevos subs/mes · Blend 35/60/5% · ARPU rec. $3.116 normal · Cursos $15.294/venta (post-tallerista/prod 35%) ·
         Break-even operacional M5 · Recuperación caja M8 · Escenarios ilustrativos, no garantizados.
       </div>
