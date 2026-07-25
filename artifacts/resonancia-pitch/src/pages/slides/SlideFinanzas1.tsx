@@ -6,10 +6,16 @@ export default function SlideFinanzas1() {
 
   const rows = [
     { mes: "M1 Lanzamiento", subs: "700",   fase: "lanzamiento", ingTotal: "$2,6M",  upsell: "—",      costos: "$4,7M",  resultado: "–$2,1M", neg: true  },
+    { mes: "Mes 2",          subs: "950",   fase: "normal",      ingTotal: "$4,3M",  upsell: "—",      costos: "$4,7M",  resultado: "–$0,4M", neg: true  },
     { mes: "Mes 3",          subs: "1.200", fase: "normal",      ingTotal: "$5,1M",  upsell: "—",      costos: "$6,4M",  resultado: "–$1,3M", neg: true  },
     { mes: "Mes 4",          subs: "1.450", fase: "normal",      ingTotal: "$5,8M",  upsell: "—",      costos: "$6,4M",  resultado: "–$0,6M", neg: true  },
     { mes: "Mes 5",          subs: "1.700", fase: "normal",      ingTotal: "$6,6M",  upsell: "—",      costos: "$6,4M",  resultado: "+$0,2M", neg: false },
+    { mes: "Mes 6",          subs: "1.950", fase: "normal",      ingTotal: "$7,4M",  upsell: "—",      costos: "$6,4M",  resultado: "+$1,0M", neg: false },
+    { mes: "Mes 7",          subs: "2.200", fase: "normal",      ingTotal: "$8,2M",  upsell: "+$0,9M", costos: "$7,2M",  resultado: "+$1,9M", neg: false },
+    { mes: "Mes 8",          subs: "2.450", fase: "normal",      ingTotal: "$9,0M",  upsell: "+$1,2M", costos: "$7,2M",  resultado: "+$3,0M", neg: false },
     { mes: "Mes 9",          subs: "2.700", fase: "normal",      ingTotal: "$9,7M",  upsell: "+$1,5M", costos: "$7,45M", resultado: "+$3,8M", neg: false },
+    { mes: "Mes 10",         subs: "2.950", fase: "normal",      ingTotal: "$10,5M", upsell: "+$1,7M", costos: "$7,45M", resultado: "+$4,7M", neg: false },
+    { mes: "Mes 11",         subs: "3.200", fase: "normal",      ingTotal: "$11,3M", upsell: "+$1,8M", costos: "$7,7M",  resultado: "+$5,4M", neg: false },
     { mes: "Mes 12",         subs: "3.450", fase: "normal",      ingTotal: "$12,1M", upsell: "+$2,0M", costos: "$7,7M",  resultado: "+$6,4M", neg: false },
   ];
 
@@ -61,21 +67,21 @@ export default function SlideFinanzas1() {
           <div key={r.mes} style={{
             display: "grid",
             gridTemplateColumns: "1.25fr 0.75fr 0.45fr 0.85fr 0.7fr 0.8fr 0.85fr",
-            padding: "0.95vh 0.9vw",
+            padding: "0.42vh 0.9vw",
             backgroundColor: i % 2 === 0 ? "rgba(255,255,255,0.025)" : "transparent",
             borderRadius: "0.4vw",
             alignItems: "center",
             border: r.neg ? "1px solid rgba(224,112,112,0.10)" : "none",
           }}>
-            <div style={{ fontSize: "1.15vw", fontWeight: 700, color: "#F4F4F4" }}>{r.mes}</div>
-            <div style={{ fontSize: "1.15vw", color: "#F4F4F4" }}>{r.subs}</div>
+            <div style={{ fontSize: "0.98vw", fontWeight: 700, color: "#F4F4F4" }}>{r.mes}</div>
+            <div style={{ fontSize: "0.98vw", color: "#F4F4F4" }}>{r.subs}</div>
             <div style={{ fontSize: "0.68vw", fontWeight: 700, color: r.fase === "lanzamiento" ? "#BE9650" : "#6EC49A", letterSpacing: "0.05em", textTransform: "uppercase" }}>
               {r.fase === "lanzamiento" ? "Lanz." : "Normal"}
             </div>
-            <div style={{ fontSize: "1.15vw", color: "#F4F4F4" }}>{r.ingTotal}</div>
-            <div style={{ fontSize: "1.05vw", color: r.upsell === "—" ? "rgba(244,244,244,0.28)" : "#6EC49A", fontWeight: r.upsell === "—" ? 400 : 700 }}>{r.upsell}</div>
-            <div style={{ fontSize: "1.15vw", color: "rgba(244,244,244,0.50)" }}>{r.costos}</div>
-            <div style={{ fontSize: "1.25vw", fontWeight: 700, color: r.neg ? "#F4F4F4" : "#6EC49A" }}>{r.resultado}</div>
+            <div style={{ fontSize: "0.98vw", color: "#F4F4F4" }}>{r.ingTotal}</div>
+            <div style={{ fontSize: "0.95vw", color: r.upsell === "—" ? "rgba(244,244,244,0.28)" : "#6EC49A", fontWeight: r.upsell === "—" ? 400 : 700 }}>{r.upsell}</div>
+            <div style={{ fontSize: "0.98vw", color: "rgba(244,244,244,0.50)" }}>{r.costos}</div>
+            <div style={{ fontSize: "1.05vw", fontWeight: 700, color: r.neg ? "#F4F4F4" : "#6EC49A" }}>{r.resultado}</div>
           </div>
         ))}
 
