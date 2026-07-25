@@ -54,7 +54,7 @@ export default function SlideFinanzas3() {
           <CostRow label="Super admin / Atención al cliente" value="$720.000" />
           <CostRow label="Desarrollo / Replit" value="$720.000" />
           <CostRow label="Diseñador" value="$570.000" />
-          <div style={{ fontSize: "0.82vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", margin: "0.6vh 0 0.3vh" }}>OPERACIONALES</div>
+          <div style={{ fontSize: "0.82vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", margin: "2.4vh 0 0.8vh" }}>OPERACIONALES</div>
           <CostRow label="Arriendo Casa" value="$500.000" />
           <CostRow label="Hosting e infraestructura" value="$250.000" />
           <CostRow label="Cuentas Básicas" value="$250.000" />
