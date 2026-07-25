@@ -46,7 +46,7 @@ function ScenarioCard({
       </div>
 
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: "0.7vh" }}>
-        <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.3vh" }}>STAKE 3,0% VALE</div>
+        <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.3vh" }}>STAKE 11,0% VALE</div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
           <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#6EC49A" }}>{stakeVal}</div>
           <div style={{
@@ -96,8 +96,8 @@ export default function SlideAnexoInversion() {
             flexDirection: "column",
           }}>
             <div style={{ fontSize: "1.1vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.3vh" }}>VALORACIÓN PRE-MONEY</div>
-            <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1, marginBottom: "0.4vh" }}>$87,3M CLP</div>
-            <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.50)", marginBottom: "1.4vh" }}>ochenta y siete millones</div>
+            <div style={{ fontSize: "3.2vw", fontWeight: 700, color: "#FFFFFF", lineHeight: 1, marginBottom: "0.4vh" }}>$80,9M CLP</div>
+            <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.50)", marginBottom: "1.4vh" }}>ochenta millones novecientos mil</div>
 
             <div style={{ marginBottom: "1.4vh" }}>
               <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#F4F4F4", letterSpacing: "0.06em", marginBottom: "0.6vh" }}>POR QUÉ ES DEFENDIBLE</div>
@@ -109,23 +109,23 @@ export default function SlideAnexoInversion() {
 
             <div style={{ borderTop: "1px solid rgba(255,255,255,0.2)", paddingTop: "1vh", marginTop: "auto" }}>
               <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.50)", marginBottom: "0.5vh" }}>
-                $2,7M ÷ post-money $90M ={" "}
-                <span style={{ color: "#FFFFFF", fontWeight: 700 }}>3,0%</span> (tramo máx.)
+                $10M ÷ post-money $90,9M ={" "}
+                <span style={{ color: "#FFFFFF", fontWeight: 700 }}>11,0%</span> (tramo máx.)
               </div>
               <div style={{ display: "flex", gap: "0.8vw" }}>
                 <div style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.45)" }}>Inversión máx.</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$2,7M</div>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$10M</div>
                   <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)" }}>CLP</div>
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.45)" }}>Equity</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#FFFFFF" }}>3,0%</div>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#FFFFFF" }}>11,0%</div>
                   <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)" }}>máx.</div>
                 </div>
                 <div style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.08)", borderRadius: "0.4vw", padding: "0.6vh 0.6vw", textAlign: "center" }}>
                   <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.45)" }}>Post-money</div>
-                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$90M</div>
+                  <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>$90,9M</div>
                   <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.35)" }}>CLP</div>
                 </div>
               </div>
@@ -144,7 +144,7 @@ export default function SlideAnexoInversion() {
         <div style={{ flex: 1.7, display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", marginBottom: "1vh" }}>VALORACIÓN ESTIMADA · MES 12 (CLP)</div>
           <div style={{ display: "flex", gap: "1.1vw", flex: 1 }}>
-            {/* Base: 3.600 subs × $3.116 × 12 × 4× = $537M → 3% = $16.1M → 16.1/2.7 = 6.0× */}
+            {/* Base: 3.600 subs × $3.116 × 12 × 4× = $537M → 11% = $59.1M → 59.1/10 = 5.9× */}
             <ScenarioCard
               label="Base"
               highlight
@@ -152,28 +152,28 @@ export default function SlideAnexoInversion() {
               arr="$134M CLP"
               multiple="4× ARR"
               valuation="$537M"
-              stakeVal="$16.1M CLP"
-              returnX="6,0×"
+              stakeVal="$59,1M CLP"
+              returnX="5,9×"
             />
-            {/* Optimista: 4.500 × $3.116 × 12 × 5× = $839M → 3% = $25.2M → 25.2/2.7 = 9.3× */}
+            {/* Optimista: 4.500 × $3.116 × 12 × 5× = $839M → 11% = $92.3M → 92.3/10 = 9.2× */}
             <ScenarioCard
               label="Optimista"
               subs="4.500"
               arr="$168M CLP"
               multiple="5× ARR"
               valuation="$839M"
-              stakeVal="$25.2M CLP"
-              returnX="9,3×"
+              stakeVal="$92,3M CLP"
+              returnX="9,2×"
             />
-            {/* Agresivo: 6.000 × $3.116 × 12 × 6× = $1.345M → 3% = $40.4M → 40.4/2.7 = 15.0× */}
+            {/* Agresivo: 6.000 × $3.116 × 12 × 6× = $1.345M → 11% = $148M → 148/10 = 14.8× */}
             <ScenarioCard
               label="Agresivo"
               subs="6.000"
               arr="$224M CLP"
               multiple="6× ARR"
               valuation="$1.345M"
-              stakeVal="$40.4M CLP"
-              returnX="15,0×"
+              stakeVal="$148M CLP"
+              returnX="14,8×"
             />
           </div>
         </div>
