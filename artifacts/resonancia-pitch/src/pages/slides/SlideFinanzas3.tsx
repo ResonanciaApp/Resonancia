@@ -13,14 +13,16 @@ function CostRow({ label, sub, value }: { label: string; sub?: string; value: st
 
 export default function SlideFinanzas3() {
   const mktRamp = [
-    { rango: "Mes 1–2",   valor: "$0",         desc: "Cubierto por campaña de lanzamiento ($3M upfront)" },
+    { rango: "Pre-lanzamiento", valor: "$1,5M", desc: "Pauta previa al lanzamiento (de la inversión inicial)" },
+    { rango: "Mes 1",     valor: "$1M",        desc: "Campaña de lanzamiento (de la inversión inicial)" },
+    { rango: "Mes 2",     valor: "$1M",        desc: "Campaña de lanzamiento (de la inversión inicial)" },
     { rango: "Mes 3–6",   valor: "$500.000",   desc: "Pauta social básica + orgánico" },
     { rango: "Mes 7–12",  valor: "$1M – $1,5M",desc: "Pauta + influencers nicho wellness" },
     { rango: "Mes 13–24", valor: "$2M – $2,5M",desc: "Retargeting + campañas LATAM" },
   ];
 
   const phases = [
-    { fase: "M1–M2",    fijo: "$3,75M", cont: "$0",    mkt: "$0",    total: "$3,75M" },
+    { fase: "M1–M2",    fijo: "$3,75M", cont: "$0",    mkt: "$1,0M*", total: "$4,75M" },
     { fase: "M3–M6",    fijo: "$3,75M", cont: "$1,2M", mkt: "$0,5M", total: "$5,45M" },
     { fase: "M7–M12",   fijo: "$3,75M", cont: "$1,5M", mkt: "$1,0M–$1,5M", total: "$6,25M–$6,75M" },
     { fase: "M13–M24",  fijo: "$3,75M", cont: "$1,5M", mkt: "$2,0M–$2,5M", total: "$7,25M–$7,75M" },
@@ -114,6 +116,9 @@ export default function SlideFinanzas3() {
                 </div>
               </div>
             ))}
+          </div>
+          <div style={{ fontSize: "0.72vw", color: "rgba(244,244,244,0.38)", marginTop: "0.4vh", lineHeight: 1.3 }}>
+            * Marketing M1–M2 financiado con la inversión inicial ($3,5M: $1,5M pre-lanzamiento + $1M mes 1 + $1M mes 2).
           </div>
         </div>
       </div>
