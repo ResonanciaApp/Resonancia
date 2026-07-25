@@ -48,7 +48,8 @@ export default function SlideFinanzas3() {
 
         {/* Left: fixed costs */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: "0.82vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", margin: "2.8vh 0 0.8vh" }}>COSTOS FIJOS / MES · RRHH</div>
+          <div style={{ fontSize: "0.82vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", margin: "2.8vh 0 0.2vh" }}>COSTOS FIJOS / MES · RRHH</div>
+          <div style={{ fontSize: "0.78vw", color: "rgba(244,244,244,0.45)", marginBottom: "0.8vh" }}>Incluye el 15% de retención por boletas de honorarios</div>
           <CostRow label="Gerente general" value="$840.000" />
           <CostRow label="Ventas / Logística / Coordinación contenidos" value="$360.000" />
           <CostRow label="Super admin / Atención al cliente" value="$720.000" />
