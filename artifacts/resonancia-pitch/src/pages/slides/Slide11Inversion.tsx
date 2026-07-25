@@ -77,6 +77,11 @@ export default function Slide11Inversion() {
     gap: "0.45vh",
   };
 
+  const tableCard: CSSProperties = {
+    ...card,
+    backgroundColor: "rgba(255,255,255,0.06)",
+  };
+
   const row: CSSProperties = {
     display: "flex",
     justifyContent: "space-between",
@@ -151,7 +156,7 @@ export default function Slide11Inversion() {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1.4fr", gap: "1.2vw", flex: 1 }}>
 
         {/* RH – Runway Operativo */}
-        <div style={card}>
+        <div style={tableCard}>
           <div style={colHdr}>RH · RUNWAY OPERATIVO</div>
           {rrhh.map((it) => (
             <div key={it.label} style={row}>
@@ -170,7 +175,7 @@ export default function Slide11Inversion() {
         </div>
 
         {/* Equipamiento */}
-        <div style={card}>
+        <div style={tableCard}>
           <div style={colHdr}>EQUIPAMIENTO · DESGLOSE</div>
           {equipos.map((it) => (
             <div key={it.label} style={row}>
@@ -189,7 +194,7 @@ export default function Slide11Inversion() {
         </div>
 
         {/* Contenido */}
-        <div style={card}>
+        <div style={tableCard}>
           <div style={colHdr}>CONTENIDO · DESGLOSE</div>
           {/* Sub-header */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: "0.6vw", marginBottom: "0.3vh" }}>
