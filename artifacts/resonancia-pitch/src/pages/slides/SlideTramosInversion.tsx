@@ -3,9 +3,9 @@ export default function SlideTramosInversion() {
   const VAL_M12 = 537; // millones CLP · 3.600 subs × $3.116 ARR rec. (blend 35/60/5%) × 12 × 4×
 
   const tramos = [
-    { inv: 1,   equity: 1.0 },
-    { inv: 1.8, equity: 2.0 },
-    { inv: 2.7, equity: 3.0 },
+    { inv: 3,  equity: 3.0 },
+    { inv: 6,  equity: 6.5 },
+    { inv: 10, equity: 11.0 },
   ].map(({ inv, equity }) => {
     const postMoney = inv / (equity / 100);
     const stakeM12 = (equity / 100) * VAL_M12;
