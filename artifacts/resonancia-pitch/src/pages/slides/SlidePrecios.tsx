@@ -29,11 +29,11 @@ export default function SlidePrecios() {
         flexShrink: 0,
         backgroundColor: "rgba(190,150,80,0.06)", border: "1px solid rgba(190,150,80,0.25)",
         borderRadius: "0.6vw", padding: "1.6vh 1.5vw",
-        fontSize: "1.15vw", color: "rgba(244,244,244,0.75)", lineHeight: 1.55,
+        fontSize: "1.35vw", color: "#FFFFFF", lineHeight: 1.55,
       }}>
         <strong style={{ color: "#FFFFFF" }}>Modelo freemium por suscripción:</strong> la app es gratis de descargar con un
         catálogo básico abierto, y el contenido completo (sesiones premium, mezclador avanzado y experiencias exclusivas) se
-        desbloquea con la suscripción <strong style={{ color: "#BE9650" }}>Premium</strong>. El ingreso principal es recurrente
+        desbloquea con la suscripción <strong style={{ color: "#FFFFFF" }}>Premium</strong>. El ingreso principal es recurrente
         y predecible: cada suscriptor paga mes a mes (o anual por adelantado), por lo que el negocio crece acumulando
         suscriptores activos, no ventas únicas. Tres planes según compromiso: mensual, anual y lifetime.
       </div>
