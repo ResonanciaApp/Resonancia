@@ -49,7 +49,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000014",
-    "position": 7,
+    "position": 8,
     "filepath": "src/pages/slides/SlideAnexoInversion.tsx",
     "title": "Anexo · Valoración estimada",
     "description": "Pre-money, post-money y escenarios de retorno al mes 12.",
@@ -57,7 +57,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000015",
-    "position": 8,
+    "position": 9,
     "filepath": "src/pages/slides/SlideFinanzas1.tsx",
     "title": "Anexo Financiero · Flujo de caja año 1",
     "description": "Tabla mes a mes: suscriptores, ingresos netos, up-sells de cursos, costos y resultado.",
@@ -65,7 +65,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000016",
-    "position": 9,
+    "position": 10,
     "filepath": "src/pages/slides/SlideFinanzas2.tsx",
     "title": "Anexo Financiero · Curva de crecimiento y escenarios",
     "description": "Gráfico de barras de caja acumulada + 3 escenarios con suscripciones y cursos.",
@@ -73,7 +73,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000017",
-    "position": 10,
+    "position": 11,
     "filepath": "src/pages/slides/SlideFinanzas3.tsx",
     "title": "Anexo Financiero · Desglose de costos mensuales",
     "description": "Costos fijos, variables (contenido), marketing ramp-up y totales por fase.",
@@ -81,7 +81,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000022",
-    "position": 11,
+    "position": 12,
     "filepath": "src/pages/slides/SlideUpSells.tsx",
     "title": "Segunda fuente · Cursos y talleres",
     "description": "Up-sells de cursos: desglose precio, curva de ventas M7-M12, impacto en flujo anual.",
@@ -89,10 +89,18 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000021",
-    "position": 12,
+    "position": 13,
     "filepath": "src/pages/slides/SlideContacto.tsx",
     "title": "Contacto",
     "description": "Slide de cierre con datos de contacto.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000030",
+    "position": 7,
+    "filepath": "src/pages/slides/SlidePrecios.tsx",
+    "title": "Estrategia de precios",
+    "description": "Precios de lanzamiento y normales por plan, netos para la empresa y ARPU blended.",
     "speakerNotes": ""
   }
 ]

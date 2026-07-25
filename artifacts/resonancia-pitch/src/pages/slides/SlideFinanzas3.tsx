@@ -12,13 +12,6 @@ function CostRow({ label, sub, value }: { label: string; sub?: string; value: st
 }
 
 export default function SlideFinanzas3() {
-  // Blend 35/60/5
-  const pricingRows = [
-    { plan: "Mensual",  pct: "35%", launch: "$5.990",   launchNeto: "$3.517/mes",     normal: "$7.990",   normalNeto: "$4.700/mes" },
-    { plan: "Anual",   pct: "60%", launch: "$39.990",  launchNeto: "$1.961/mes eq.", normal: "$49.990",  normalNeto: "$2.451/mes eq." },
-    { plan: "Lifetime",pct: "5%",  launch: "$99.990",  launchNeto: "$58.817 único",   normal: "$149.990", normalNeto: "$88.229 único" },
-  ];
-
   const mktRamp = [
     { rango: "Mes 1–2",   valor: "$0",         desc: "Cubierto por campaña de lanzamiento ($3M upfront)" },
     { rango: "Mes 3–6",   valor: "$500.000",   desc: "Pauta social básica + orgánico" },
@@ -44,63 +37,8 @@ export default function SlideFinanzas3() {
           ANEXO FINANCIERO · HOJA 3 DE 3
         </div>
         <div style={{ fontSize: "3.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Estrategia de precios + <span style={{ color: "#FFFFFF" }}>costos mensuales.</span>
+          Desglose de <span style={{ color: "#FFFFFF" }}>costos mensuales.</span>
         </div>
-      </div>
-
-      {/* Pricing table */}
-      <div style={{
-        flexShrink: 0,
-        backgroundColor: "rgba(0,0,0,0.18)", border: "1px solid rgba(255,255,255,0.18)",
-        borderRadius: "0.6vw", overflow: "hidden",
-      }}>
-        {/* Header */}
-        <div style={{
-          display: "grid", gridTemplateColumns: "0.9fr 0.45fr 1.05fr 1.0fr 1.05fr 1.0fr",
-          backgroundColor: "rgba(255,255,255,0.06)", padding: "0.55vh 1.1vw",
-          borderBottom: "1px solid rgba(255,255,255,0.12)",
-        }}>
-          {["Plan", "Mix", "Lanzamiento (M1)", "Neto empresa", "Normal (M2+)", "Neto empresa"].map((h, i) => (
-            <div key={i} style={{ fontSize: "0.78vw", fontWeight: 700, letterSpacing: "0.06em",
-              color: i >= 2 && i <= 3 ? "#BE9650" : i >= 4 ? "#6EC49A" : "#FFFFFF" }}>{h}</div>
-          ))}
-        </div>
-        {pricingRows.map((r, i) => (
-          <div key={r.plan} style={{
-            display: "grid", gridTemplateColumns: "0.9fr 0.45fr 1.05fr 1.0fr 1.05fr 1.0fr",
-            padding: "0.6vh 1.1vw", alignItems: "center",
-            backgroundColor: i % 2 === 0 ? "rgba(255,255,255,0.02)" : "transparent",
-            borderTop: i > 0 ? "1px solid rgba(255,255,255,0.05)" : "none",
-          }}>
-            <div style={{ fontSize: "0.97vw", fontWeight: 700, color: "#F4F4F4" }}>{r.plan}</div>
-            <div style={{ fontSize: "0.97vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>{r.pct}</div>
-            <div style={{ fontSize: "0.97vw", color: "#F4F4F4" }}>{r.launch}</div>
-            <div style={{ fontSize: "0.88vw", color: "#BE9650", fontWeight: 600 }}>{r.launchNeto}</div>
-            <div style={{ fontSize: "0.97vw", color: "#F4F4F4" }}>{r.normal}</div>
-            <div style={{ fontSize: "0.88vw", color: "#6EC49A", fontWeight: 600 }}>{r.normalNeto}</div>
-          </div>
-        ))}
-        {/* ARPU row */}
-        <div style={{
-          display: "grid", gridTemplateColumns: "0.9fr 0.45fr 1.05fr 1.0fr 1.05fr 1.0fr",
-          padding: "0.55vh 1.1vw", backgroundColor: "rgba(0,0,0,0.18)",
-          borderTop: "1px solid rgba(255,255,255,0.14)", alignItems: "center",
-        }}>
-          <div style={{ fontSize: "0.78vw", fontWeight: 700, color: "rgba(244,244,244,0.50)", gridColumn: "1/3" }}>ARPU RECURRENTE BLENDED</div>
-          <div style={{ gridColumn: "3/5", display: "flex", alignItems: "center", gap: "0.5vw" }}>
-            <span style={{ fontSize: "1.1vw", fontWeight: 700, color: "#BE9650" }}>$2.408/mes/sub</span>
-            <span style={{ fontSize: "0.72vw", color: "rgba(244,244,244,0.38)" }}>+ $1.18M boost lifetime/mes</span>
-          </div>
-          <div style={{ gridColumn: "5/7", display: "flex", alignItems: "center", gap: "0.5vw" }}>
-            <span style={{ fontSize: "1.1vw", fontWeight: 700, color: "#6EC49A" }}>$3.116/mes/sub</span>
-            <span style={{ fontSize: "0.72vw", color: "rgba(244,244,244,0.38)" }}>+ $1.77M boost lifetime/mes</span>
-          </div>
-        </div>
-      </div>
-
-      {/* IVA note */}
-      <div style={{ flexShrink: 0, fontSize: "0.77vw", color: "rgba(244,244,244,0.38)", lineHeight: 1.3 }}>
-        Neto = precio ÷ 1,19 (IVA 19% Chile, Ley 21.210) × 70% (comisión Apple/Google 30%) · Mensual y anual = recurrente · Lifetime = pago único, no renueva.
       </div>
 
       {/* Main columns */}
