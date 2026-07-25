@@ -47,9 +47,9 @@ export default function SlideTramosInversion() {
           TRAMOS DE INVERSIÓN
         </div>
         <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Más inversión,{" "}
+          Oportunidad de{" "}
           <span style={{ color: "#FFFFFF" }}>
-            mejor tasa.
+            inversión.
           </span>
         </div>
         <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.40)", marginTop: "0.7vh" }}>
