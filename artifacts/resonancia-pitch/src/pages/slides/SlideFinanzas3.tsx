@@ -95,7 +95,7 @@ export default function SlideFinanzas3() {
           </div>
 
           <div style={{ fontSize: "0.82vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", marginBottom: "0.35vh" }}>COSTO TOTAL MENSUAL POR FASE</div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "0.6vw", flex: 1 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "0.6vw", alignContent: "start" }}>
             {phases.map((p) => (
               <div key={p.fase} style={{
                 backgroundColor: "rgba(0,0,0,0.14)", border: "1px solid rgba(255,255,255,0.08)",
