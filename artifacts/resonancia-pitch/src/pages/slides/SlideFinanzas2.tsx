@@ -62,7 +62,7 @@ export default function SlideFinanzas2() {
           Caja acumulada y <span style={{ color: "#FFFFFF" }}>escenarios.</span>
         </div>
         <div style={{ fontSize: "1.45vw", color: "rgba(244,244,244,0.50)", marginTop: "1vh" }}>
-          En millones de CLP · <span style={{ color: "#BE9650" }}>dorado</span> = lanzamiento M1 · <span style={{ color: "#6EC49A" }}>verde</span> = normal M2+ · Break-even caja: <strong style={{ color: "#FFFFFF" }}>M5</strong>
+          Caja <strong style={{ color: "#FFFFFF" }}>acumulada desde M1</strong> (suma de los resultados mensuales de la hoja 1, no el resultado de cada mes) · <span style={{ color: "#BE9650" }}>dorado</span> = lanzamiento M1 · <span style={{ color: "#6EC49A" }}>verde</span> = normal M2+
         </div>
       </div>
 
