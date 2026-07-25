@@ -1,5 +1,5 @@
 export default function SlideFinanzas2() {
-  // M1: 700 subs (lanzamiento) · M2+: +250/mes → 3.450 a M12
+  // 300 subs nuevos/mes → 3.600 a M12
   // M1: ARPU rec $2.408 + lifetime $0.882M/mes
   // M2+: ARPU rec $3.116 + lifetime $1.323M/mes
   // Cursos M7+: neto $15.294/venta
@@ -10,18 +10,18 @@ export default function SlideFinanzas2() {
   const NETO_CURSO = 15294;
 
   const meses = [
-    { label: "M1",  subs: 700,  launch: true,  costos: 4.71, cursos: 0   },
-    { label: "M2",  subs: 950,  launch: false, costos: 4.71, cursos: 0   },
-    { label: "M3",  subs: 1200, launch: false, costos: 6.41, cursos: 0   },
-    { label: "M4",  subs: 1450, launch: false, costos: 6.41, cursos: 0   },
-    { label: "M5",  subs: 1700, launch: false, costos: 6.41, cursos: 0   },
-    { label: "M6",  subs: 1950, launch: false, costos: 6.41, cursos: 0   },
-    { label: "M7",  subs: 2200, launch: false, costos: 7.21, cursos: 60  },
-    { label: "M8",  subs: 2450, launch: false, costos: 7.21, cursos: 80  },
+    { label: "M1",  subs: 300,  launch: true,  costos: 4.71, cursos: 0   },
+    { label: "M2",  subs: 600,  launch: false, costos: 4.71, cursos: 0   },
+    { label: "M3",  subs: 900,  launch: false, costos: 5.31, cursos: 0   },
+    { label: "M4",  subs: 1200, launch: false, costos: 5.31, cursos: 0   },
+    { label: "M5",  subs: 1500, launch: false, costos: 5.31, cursos: 0   },
+    { label: "M6",  subs: 1800, launch: false, costos: 5.31, cursos: 0   },
+    { label: "M7",  subs: 2100, launch: false, costos: 7.21, cursos: 60  },
+    { label: "M8",  subs: 2400, launch: false, costos: 7.21, cursos: 80  },
     { label: "M9",  subs: 2700, launch: false, costos: 7.46, cursos: 100 },
-    { label: "M10", subs: 2950, launch: false, costos: 7.46, cursos: 110 },
-    { label: "M11", subs: 3200, launch: false, costos: 7.71, cursos: 120 },
-    { label: "M12", subs: 3450, launch: false, costos: 7.71, cursos: 130 },
+    { label: "M10", subs: 3000, launch: false, costos: 7.46, cursos: 110 },
+    { label: "M11", subs: 3300, launch: false, costos: 7.71, cursos: 120 },
+    { label: "M12", subs: 3600, launch: false, costos: 7.71, cursos: 130 },
   ];
 
   let cumulative = 0;
@@ -36,7 +36,7 @@ export default function SlideFinanzas2() {
     return { ...m, ingreso, ingresoUp, neto, cumulative: parseFloat(cumulative.toFixed(2)) };
   });
 
-  const maxSubs  = 3450;
+  const maxSubs  = 3600;
   const allCum   = data.map((d) => d.cumulative);
   const minCum   = Math.min(...allCum);
   const maxCum   = Math.max(...allCum);
@@ -44,9 +44,9 @@ export default function SlideFinanzas2() {
   const ZERO_PCT = (-minCum / cumRange) * 100;
 
   const scenarios = [
-    { label: "Base",      subs12: "3.450",  cursos6m: "600",    ingTotal: "~$102M", neto: "+$22M",  highlight: true  },
-    { label: "Optimista", subs12: "4.300",  cursos6m: "~750",   ingTotal: "~$127M", neto: "+$47M",  highlight: false },
-    { label: "Agresivo",  subs12: "5.750",  cursos6m: "~1.000", ingTotal: "~$170M", neto: "+$88M",  highlight: false },
+    { label: "Base",      subs12: "3.600",  cursos6m: "600",    ingTotal: "~$97M",  neto: "+$22M",  highlight: true  },
+    { label: "Optimista", subs12: "4.500",  cursos6m: "~750",   ingTotal: "~$121M", neto: "+$46M",  highlight: false },
+    { label: "Agresivo",  subs12: "6.000",  cursos6m: "~1.000", ingTotal: "~$162M", neto: "+$86M",  highlight: false },
   ];
 
   return (
