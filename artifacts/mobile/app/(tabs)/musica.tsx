@@ -878,7 +878,7 @@ export default function MezcladorScreen() {
           {
             transform: [{ translateY: menuSlide }],
             opacity: menuFade,
-            backgroundColor: theme?.id === "tibet" ? "#24245d" : "#1A1020",
+            backgroundColor: theme?.id === "tibet" ? "#24245d" : bgPalette.colors[0],
           },
         ]}
       >
@@ -893,44 +893,7 @@ export default function MezcladorScreen() {
         {(
           /* ── Filtros ── */
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.menuPanelBody}>
-            <Text style={styles.menuSectionTitle}>Tema</Text>
-            <View style={styles.swatchRow}>
-              {MIXER_BG_PALETTES.map((p) => {
-                const sel = bgPaletteId === p.id;
-                return (
-                  <Pressable
-                    key={p.id}
-                    onPress={() => {
-                      setBgPaletteId(p.id);
-                      emitBgPresetChange(p.id === "noche" ? "oscuro" : DEFAULT_BG_PRESET_ID);
-                    }}
-                    style={styles.swatchItem}
-                    hitSlop={6}
-                  >
-                    <LinearGradient
-                      colors={p.colors}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={[styles.swatchCircle, sel && styles.swatchCircleSel]}
-                    >
-                      {sel && <Text style={[styles.swatchCheck, { color: p.id === "noche" ? "#FFFFFF" : "#5C1A1A" }]}>✓</Text>}
-                    </LinearGradient>
-                    <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginTop: 6 }}>
-                      <MaterialCommunityIcons
-                        name={p.id === "arena" ? "white-balance-sunny" : "moon-waning-crescent"}
-                        size={11}
-                        color={sel ? GOLD : "rgba(255,255,255,0.5)"}
-                      />
-                      <Text style={[styles.swatchLabel, { color: sel ? GOLD : "rgba(255,255,255,0.5)" }, sel && styles.swatchLabelSel]} numberOfLines={1}>
-                        {p.label}
-                      </Text>
-                    </View>
-                  </Pressable>
-                );
-              })}
-            </View>
-
-            <Text style={[styles.menuSectionTitle, { marginTop: 22 }]}>Etiquetas</Text>
+            <Text style={styles.menuSectionTitle}>Etiquetas</Text>
             <View style={styles.menuChipWrap}>
               {SOUND_TAGS.map((tag) => {
                 const sel = tagFilters.includes(tag.id);
