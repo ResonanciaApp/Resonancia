@@ -24,6 +24,7 @@ import { useDrawer, DRAWER_W, DRAWER_PUSH } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
+import { FadeToggleSection } from "@/components/FadeToggleSection";
 import { useSelectedScene } from "@/context/SelectedSceneContext";
 import { SceneAnimationCard, type SceneItem } from "@/components/SceneAnimationCard";
 import { SceneAnimationCtaCard } from "@/components/EscenasSheet";
@@ -287,7 +288,7 @@ export function DrawerMenu() {
               />
             </View>
 
-            {escenasAnimadasEnabled && (
+            <FadeToggleSection visible={escenasAnimadasEnabled}>
             <View style={{ marginTop: 18 }}>
               <View style={styles.sceneGrid}>
                 {geoScenes.map((scene) => (
@@ -333,7 +334,7 @@ export function DrawerMenu() {
                 />
               </View>
             </View>
-            )}
+            </FadeToggleSection>
 
           </ScrollView>
         </LinearGradient>

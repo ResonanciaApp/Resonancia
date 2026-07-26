@@ -44,6 +44,7 @@ import { useGetSceneAnimations } from "@workspace/api-client-react";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useBrightness } from "@/context/BrightnessContext";
 import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
+import { FadeToggleSection } from "@/components/FadeToggleSection";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
@@ -483,8 +484,8 @@ export function EscenasSheet() {
             />
           </View>
 
-          {/* ── Escenas animadas: solo visibles con el toggle activo ── */}
-          {escenasAnimadasEnabled && (
+          {/* ── Escenas animadas: solo visibles con el toggle activo (fade) ── */}
+          <FadeToggleSection visible={escenasAnimadasEnabled}>
           <View style={{ marginTop: 25 }}>
             <View
               style={{
@@ -536,7 +537,7 @@ export function EscenasSheet() {
               />
             </View>
           </View>
-          )}
+          </FadeToggleSection>
         </ScrollView>
       </Animated.View>
 
