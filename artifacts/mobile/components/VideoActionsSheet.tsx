@@ -127,7 +127,6 @@ export function VideoActionsSheet({ video, visible, onClose }: Props) {
 
   const handleFavorite = () => {
     toggleVideoFavorite(video.id);
-    onClose();
   };
 
   const handleFollow = async () => {
