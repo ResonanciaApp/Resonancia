@@ -137,7 +137,6 @@ export function VideoCard({
           {locked && <LockStar />}
         </View>
         <View style={styles.hContent}>
-          <Text style={[styles.hKicker, { color: colors.accent }]}>VIDEO</Text>
           <Text style={[styles.hTitle, { color: colors.foreground }]} numberOfLines={2}>
             {video.title}
           </Text>
@@ -238,7 +237,6 @@ const styles = StyleSheet.create({
   hImageWrap: { width: 140, height: 96 },
   hImage: { width: 140, height: 96 },
   hContent: { flex: 1, paddingHorizontal: 14, paddingVertical: 12, justifyContent: "center" },
-  hKicker: { fontFamily: "Manrope", fontSize: 10, letterSpacing: 1, textTransform: "uppercase", marginBottom: 3 },
   hTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20, marginBottom: 5 },
   hMeta: { flexDirection: "row", alignItems: "center" },
   hDuration: { fontFamily: "Manrope", fontSize: 11 },
