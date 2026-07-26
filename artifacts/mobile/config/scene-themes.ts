@@ -34,12 +34,8 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   tibet: {
     id: "tibet",
     label: "Universo",
-    // Paleta del chakra Ajna (Tercer Ojo) — ver data/chakras.ts (chakra-6)
-    gradient: ["#04060E", "#0E1640", "#161E58"],
-    solid: "#0E1640",
-    accent: "#6F68B6",
-    radialCenter: "#0E355C",
-    radialOuter: "#100E48",
+    gradient: ["#340866", "#5B249D", "#45147F", "#2D0A5E", "#23044D"],
+    solid: "#2D0A5E",
   },
   profundo: {
     id: "profundo",

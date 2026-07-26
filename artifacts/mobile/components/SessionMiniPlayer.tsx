@@ -33,8 +33,8 @@ export function SessionMiniPlayer({ bottomOffset, topOffset, suppressed }: Props
   const startY = topOffset + 56 + PLAYER_H + bottomOffset - SCREEN_H;
 
   const { currentSession, isPlaying, pauseResume, stop, progress } = usePlayer();
-  const { activeSceneId, theme } = useSceneTheme();
-  const bgColor = activeSceneId === "tibet" ? theme.solid : "rgba(0,0,0,0.40)";
+  const { activeSceneId } = useSceneTheme();
+  const bgColor = activeSceneId === "tibet" ? "#160f28" : "rgba(0,0,0,0.40)";
 
   const opacity    = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(startY)).current;
