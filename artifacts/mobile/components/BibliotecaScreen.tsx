@@ -1750,7 +1750,7 @@ export function BibliotecaScreen({
         }]}
       >
         {/* Fila 2: chips de tab (animados) */}
-        <View style={{ marginTop: -77, marginBottom: -4 }}>
+        <View style={{ marginTop: -77, marginBottom: -29 }}>
           <AnimatedChipRow
             tabs={LIB_TABS}
             activeTab={activeTab}
@@ -1767,7 +1767,7 @@ export function BibliotecaScreen({
       {/* ── CONTENIDO ────────────────────────────────────────────────────── */}
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 8 }}
+        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 33 }}
         showsVerticalScrollIndicator={false}
         onScroll={handleHeaderScroll}
         scrollEventThrottle={16}
