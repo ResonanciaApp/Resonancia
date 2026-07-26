@@ -1324,7 +1324,7 @@ export function BibliotecaScreen({
 
       if (viewMode === "grid") {
         return (
-          <View style={styles.gridWrap}>
+          <View style={[styles.gridWrap, { marginTop: 10 }]}>
             {displayPl.map((pl) => (
               <Pressable key={pl.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                 onPress={() => router.push(`/playlist/${pl.id}` as never)}>
@@ -1351,7 +1351,7 @@ export function BibliotecaScreen({
       });
       const pinnedFirstPl = [...displayPl].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
       return (
-        <View style={{ gap: 9 }}>
+        <View style={{ gap: 9, marginTop: 10 }}>
           {sortedFolders.map((folder) => (
             <FolderRow
               key={folder.id}
@@ -1418,12 +1418,18 @@ export function BibliotecaScreen({
       const GRID_GAP = 10;
       const cellW = (width - H_PAD * 2 - GRID_GAP * 2) / 3;
       const mixIdsInFolders = new Set(mixFolders.flatMap((f) => f.presetIds));
-      const unfiledPresets = presets.filter((p) => !mixIdsInFolders.has(p.id));
+      const unfiledPresetsRaw = presets.filter((p) => !mixIdsInFolders.has(p.id));
+      const unfiledPresets =
+        sort === "alfabetico"
+          ? [...unfiledPresetsRaw].sort((a, b) => a.name.localeCompare(b.name, "es"))
+          : sort === "agregado"
+            ? [...unfiledPresetsRaw].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+            : unfiledPresetsRaw;
       const visibleMixes = unfiledPresets.slice(0, mixesLimit);
       const hasMixesMore = unfiledPresets.length > mixesLimit;
       if (viewMode === "grid") {
         return (
-          <View style={{ gap: 15 }}>
+          <View style={{ gap: 15, marginTop: 10 }}>
             <View style={styles.gridWrap}>
               {visibleMixes.map((mix) => {
                 const isPlaying = loadedPresetId === mix.id && mixerPlaying;
@@ -1462,7 +1468,7 @@ export function BibliotecaScreen({
         );
       }
       return (
-        <View style={{ gap: 15 }}>
+        <View style={{ gap: 15, marginTop: 10 }}>
           <View style={{ gap: 14 }}>
             {sortedMixFolders.map((folder) => (
               <MixFolderRow
@@ -1617,7 +1623,11 @@ export function BibliotecaScreen({
         if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       });
-      const pinnedFirstFav = [...favSessions].sort(
+      const favSorted =
+        sort === "alfabetico"
+          ? [...favSessions].sort((a, b) => a.title.localeCompare(b.title, "es"))
+          : favSessions;
+      const pinnedFirstFav = [...favSorted].sort(
         (a, b) => (pinnedFavoriteIds.includes(b.id) ? 1 : 0) - (pinnedFavoriteIds.includes(a.id) ? 1 : 0)
       );
 
@@ -1762,6 +1772,14 @@ export function BibliotecaScreen({
         onScroll={handleHeaderScroll}
         scrollEventThrottle={16}
       >
+        {(activeTab === null || activeTab === "playlists" || activeTab === "mezclas" || activeTab === "favoritos") && (
+          <View style={styles.sortTriggerRow}>
+            <Pressable style={styles.sortBtn} hitSlop={8} onPress={() => setSortVisible(true)}>
+              <Text style={styles.sortText}>{SORT_OPTIONS.find((o) => o.id === sort)?.label}</Text>
+              <Feather name="chevron-down" size={15} color={MUTED} />
+            </Pressable>
+          </View>
+        )}
         <AnimatedTabContent
           key={activeTab ?? "general"}
           animType={
@@ -1990,6 +2008,13 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   sortBtn: { flexDirection: "row", alignItems: "center", gap: 4 },
+  sortTriggerRow: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    paddingHorizontal: H_PAD,
+    marginTop: -3,
+    marginBottom: -8,
+  },
   sortText: { fontFamily: "Manrope", fontSize: 13, color: MUTED, fontWeight: "500" },
   viewToggleBtn: { padding: 2 },
 
