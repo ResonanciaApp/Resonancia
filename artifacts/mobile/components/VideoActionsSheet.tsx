@@ -126,13 +126,8 @@ export function VideoActionsSheet({ video, visible, onClose }: Props) {
   };
 
   const handleFavorite = () => {
-    const willAdd = !favorited;
     toggleVideoFavorite(video.id);
-    showToast(
-      willAdd ? "Guardado en Favoritos" : "Eliminado de Favoritos",
-      "heart",
-      willAdd ? "#E05C5C" : undefined,
-    );
+    onClose();
   };
 
   const handleFollow = async () => {
