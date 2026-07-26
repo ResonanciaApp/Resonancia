@@ -870,10 +870,7 @@ export default function MezcladorScreen() {
         </View>
       </View>
 
-      {/* ── Backdrop + panel inline ── */}
-      {menuOpen && (
-        <Pressable style={[StyleSheet.absoluteFill, { zIndex: 40, backgroundColor: "rgba(0,0,0,0.45)" }]} onPress={closeMenu} />
-      )}
+      {/* ── Panel inline (sin backdrop oscuro) ── */}
       <Animated.View
         pointerEvents={menuOpen ? "box-none" : "none"}
         style={[
