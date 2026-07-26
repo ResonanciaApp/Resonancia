@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import {
+  Animated,
   Dimensions,
   Platform,
   Pressable,
@@ -20,6 +21,7 @@ import { SacredGlyph } from "@/components/SacredGlyph";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
+import { getArtist } from "@/data/artists";
 import { chakraMatchesTag, getChakraById } from "@/data/chakras";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -39,6 +41,18 @@ export default function ChakraScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const chakra = getChakraById(id);
+
+  // ── Sticky header: aparece cuando el scroll oculta el hero (glifo + descripción) ──
+  const heroBottomRef = React.useRef(400);
+  const [stickyVisible, setStickyVisible] = React.useState(false);
+  const stickyAnim = React.useRef(new Animated.Value(0)).current;
+  React.useEffect(() => {
+    Animated.timing(stickyAnim, {
+      toValue: stickyVisible ? 1 : 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  }, [stickyVisible, stickyAnim]);
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -96,22 +110,31 @@ export default function ChakraScreen() {
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 120 + bottomPad, paddingTop: topPad + 8 }}
         showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={(e) => {
+          const visible = e.nativeEvent.contentOffset.y > heroBottomRef.current;
+          if (visible !== stickyVisible) setStickyVisible(visible);
+        }}
       >
         {/* Header: atrás + título centrado */}
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD }]}>
           <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
             <Feather name="arrow-left" size={22} color={colors.foreground} />
           </Pressable>
-          <View style={styles.headerCenter}>
-            <Text style={[styles.name, { color: colors.foreground }]}>{chakra.name}</Text>
-            <Text style={[styles.tagLabel, { color: chakra.color }]}>Chakra {chakra.subtitle}</Text>
-          </View>
+          <View style={styles.headerCenter} />
           <View style={styles.backBtn} />
         </View>
 
-        {/* Glifo centrado */}
-        <View style={styles.hero}>
+        {/* Glifo centrado + título + descripción */}
+        <View
+          style={styles.hero}
+          onLayout={(e) => {
+            heroBottomRef.current = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
+          }}
+        >
           <SacredGlyph id={chakra.geometryId} color={chakra.color} size={GLYPH_SIZE} />
+          <Text style={[styles.name, { color: colors.foreground, marginTop: 18 }]}>{chakra.name}</Text>
+          <Text style={[styles.tagLabel, { color: chakra.color }]}>Chakra {chakra.subtitle}</Text>
           <Text style={[styles.description, { color: colors.mutedForeground }]} numberOfLines={2}>
             {chakra.description}
           </Text>
@@ -135,11 +158,38 @@ export default function ChakraScreen() {
                 <Text style={styles.cardLabel} numberOfLines={2}>
                   {session.title}
                 </Text>
+                <Text style={styles.cardAuthor} numberOfLines={1}>
+                  {getArtist(session.artistId).name}
+                </Text>
               </Pressable>
             ))}
           </View>
         )}
       </ScrollView>
+
+      {/* ── Sticky header: título + descripción corta del chakra ── */}
+      <Animated.View
+        pointerEvents={stickyVisible ? "auto" : "none"}
+        style={[
+          styles.stickyHeader,
+          { paddingTop: topPad + 8, backgroundColor: chakra.radialOuter, opacity: stickyAnim },
+        ]}
+      >
+        <View style={[styles.headerRow, { paddingHorizontal: H_PAD, marginBottom: 10 }]}>
+          <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
+            <Feather name="arrow-left" size={22} color={colors.foreground} />
+          </Pressable>
+          <View style={styles.headerCenter}>
+            <Text style={[styles.stickyTitle, { color: colors.foreground }]} numberOfLines={1}>
+              {chakra.name}
+            </Text>
+            <Text style={[styles.stickySub, { color: chakra.color }]} numberOfLines={1}>
+              Chakra {chakra.subtitle}
+            </Text>
+          </View>
+          <View style={styles.backBtn} />
+        </View>
+      </Animated.View>
     </View>
   );
 }
@@ -152,7 +202,7 @@ const styles = StyleSheet.create({
 
   headerCenter: { flex: 1, alignItems: "center" },
 
-  hero: { alignItems: "center", paddingHorizontal: H_PAD, marginTop: 18, marginBottom: 26 },
+  hero: { alignItems: "center", paddingHorizontal: H_PAD, marginTop: -7, marginBottom: 26 },
 
   name: { fontFamily: "Manrope", fontSize: 22, fontWeight: "700", letterSpacing: 0.3 },
   tagLabel: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", letterSpacing: 0.4, marginTop: 3 },
@@ -182,6 +232,14 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   cardImage: { width: "100%", height: "100%" },
+  cardAuthor: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "400",
+    marginTop: 2,
+    paddingHorizontal: 2,
+    color: "rgba(244,244,244,0.6)",
+  },
   cardLabel: {
     fontFamily: "Manrope",
     fontSize: 13,
@@ -192,6 +250,17 @@ const styles = StyleSheet.create({
     color: "#FBFBFB",
   },
   empty: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21 },
+
+  stickyHeader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.1)",
+  },
+  stickyTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700", letterSpacing: 0.3 },
+  stickySub: { fontFamily: "Manrope", fontSize: 12, fontWeight: "700", letterSpacing: 0.4, marginTop: 2 },
 
   notFound: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, gap: 10 },
   notFoundTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700" },
