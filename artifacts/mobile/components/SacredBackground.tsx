@@ -1,6 +1,7 @@
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, View } from "react-native";
+import Svg, { Defs, RadialGradient as SvgRadialGradient, Rect, Stop } from "react-native-svg";
 
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
@@ -58,11 +59,22 @@ export function SacredBackground({ variant = "solid", solidColor, noImage = fals
       );
     }
     return (
-      <LinearGradient
-        colors={theme.gradient}
-        style={StyleSheet.absoluteFill}
-        pointerEvents="none"
-      />
+      <View style={StyleSheet.absoluteFill} pointerEvents="none">
+        <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} />
+        {/* Brillo radial del tema (ej. paleta Ajna en "Universo") */}
+        {theme.radialCenter != null && theme.radialOuter != null && (
+          <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+            <Defs>
+              <SvgRadialGradient id="sceneThemeGlow" cx="50" cy="52.5" r="72.5" gradientUnits="userSpaceOnUse">
+                <Stop offset="0" stopColor={theme.radialCenter} stopOpacity="0.55" />
+                <Stop offset="0.9" stopColor={theme.radialOuter} stopOpacity="0" />
+                <Stop offset="1" stopColor={theme.radialOuter} stopOpacity="0" />
+              </SvgRadialGradient>
+            </Defs>
+            <Rect x="0" y="0" width="100" height="100" fill="url(#sceneThemeGlow)" />
+          </Svg>
+        )}
+      </View>
     );
   }
 

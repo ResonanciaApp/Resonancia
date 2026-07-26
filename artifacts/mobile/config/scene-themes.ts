@@ -22,14 +22,24 @@ export type SceneTheme = {
   solid: string;
   /** Imagen de fondo opcional (require). Se muestra en variant="gradient" con overlay oscuro. */
   backgroundImage?: number;
+  /** Color de acento del tema (links, tags, detalles). */
+  accent?: string;
+  /** Brillo radial opcional (centro) — se dibuja sobre el degradado en variant="gradient". */
+  radialCenter?: string;
+  /** Brillo radial opcional (borde). */
+  radialOuter?: string;
 };
 
 export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   tibet: {
     id: "tibet",
     label: "Universo",
-    gradient: ["#340866", "#5B249D", "#45147F", "#2D0A5E", "#23044D"],
-    solid: "#2D0A5E",
+    // Paleta del chakra Ajna (Tercer Ojo) — ver data/chakras.ts (chakra-6)
+    gradient: ["#04060E", "#0E1640", "#161E58"],
+    solid: "#0E1640",
+    accent: "#6F68B6",
+    radialCenter: "#0E355C",
+    radialOuter: "#100E48",
   },
   profundo: {
     id: "profundo",
