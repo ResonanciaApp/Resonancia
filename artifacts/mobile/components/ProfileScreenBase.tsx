@@ -765,7 +765,7 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
                 <Feather name="search" size={22} color="#f9f9f9" />
               </Pressable>
               <Pressable onPress={libActions.onAdd} hitSlop={10} style={styles.libActionBtn}>
-                <Feather name="plus" size={24} color="#f9f9f9" />
+                <Feather name="plus" size={29} color="#f9f9f9" />
               </Pressable>
             </View>
           ) : (
