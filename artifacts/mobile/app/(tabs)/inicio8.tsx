@@ -786,10 +786,14 @@ export default function HomeScreen2() {
     }, [greetingVisible]),
   );
 
+  // Scroll-linked: replica del offset para la escena animada overlay (pasa por ENCIMA del header fijo)
+  const mainScrollY = useRef(new Animated.Value(0)).current;
+
   const handleMainScroll = useCallback(
     (e: { nativeEvent: { contentOffset: { y: number } } }) => {
       const y = e.nativeEvent.contentOffset.y;
       scrollYRef.current = y;
+      mainScrollY.setValue(y);
 
       updateStickyActive();
       // Scroll-linked: imagen visible en y=0, desaparece a los 280px de scroll
@@ -1007,17 +1011,13 @@ export default function HomeScreen2() {
       >
         {/* ── Escena animada o Intención diaria (según toggle en Escenas) ── */}
         {!intencionDiariaEnabled ? (
-          /* Escena animada: fondo libre, pasa por debajo del contenido.
-             El View mantiene el espacio en el flujo; la animación es absoluta para no cortar. */
-          <View style={{ height: 260, marginTop: -23, overflow: "visible" }} pointerEvents="box-none">
-            <SceneAnimationInline
-              scene={headerScene}
-              height={293}
-              onPress={headerScene ? toggleImmersive : undefined}
-              style={{ position: "absolute", top: 10, left: -16, right: -16 }}
-              paused={!tabFocused}
-            />
-          </View>
+          /* Escena animada: se dibuja en un overlay scroll-linked FUERA del ScrollView
+             (pasa por encima del header fijo). Este Pressable mantiene el espacio en
+             el flujo y conserva el tap para el modo inmersivo. */
+          <Pressable
+            onPress={headerScene ? toggleImmersive : undefined}
+            style={{ height: 260, marginTop: -23 }}
+          />
         ) : (
           /* Establece tu intención aquí (modo intención diaria) */
           <Pressable
@@ -1457,6 +1457,23 @@ export default function HomeScreen2() {
         </View>
 
       </ScrollView>
+
+      {/* ── Escena animada overlay — scroll-linked, por ENCIMA del header fijo (zIndex 30) ── */}
+      {!intencionDiariaEnabled && headerScene && (
+        <Animated.View
+          pointerEvents="none"
+          style={{
+            position: "absolute",
+            top: topPad + 25,
+            left: -16,
+            right: -16,
+            zIndex: 30,
+            transform: [{ translateY: Animated.multiply(mainScrollY, -1) }],
+          }}
+        >
+          <SceneAnimationInline scene={headerScene} height={293} paused={!tabFocused} />
+        </Animated.View>
+      )}
 
       </Animated.View>{/* fin contenido desvanecible */}
 
