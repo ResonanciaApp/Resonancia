@@ -161,6 +161,7 @@ export default function FavoritosTodosScreen() {
                   key={v.id}
                   video={v}
                   horizontal
+                  cardBg="rgba(255,255,255,0.045)"
                   onOptionsPress={() => setActionsVideo(v)}
                 />
               ))}
