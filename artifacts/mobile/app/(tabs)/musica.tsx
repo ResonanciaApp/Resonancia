@@ -884,7 +884,10 @@ export default function MezcladorScreen() {
       >
         {/* ── Header del panel (solo botón cerrar) ── */}
         <View style={styles.menuPanelHeader}>
-          <Text style={[styles.menuPanelTabText, styles.menuPanelTabTextSel, { flex: 1, paddingLeft: 4 }]}>Filtros</Text>
+          <View style={{ position: "absolute", left: 0, right: 0, bottom: 10, alignItems: "center", transform: [{ translateY: -10 }] }} pointerEvents="none">
+            <Text style={[styles.menuPanelTabText, { fontSize: 29, fontWeight: "700", color: "#f9f9f9" }]}>Filtros</Text>
+          </View>
+          <View style={{ flex: 1 }} />
           <Pressable onPress={closeMenu} hitSlop={10} style={styles.menuPanelClose}>
             <MaterialCommunityIcons name="close" size={20} color="rgba(255,255,255,0.55)" />
           </Pressable>
