@@ -1746,11 +1746,11 @@ export function BibliotecaScreen({
       {/* ── STICKY HEADER ────────────────────────────────────────────────── */}
       <View
         style={[styles.stickyHeader, {
-          paddingTop: topPad + 2,
+          paddingTop: topPad - 23,
         }]}
       >
         {/* Fila 2: chips de tab (animados) */}
-        <View style={{ marginTop: -77, marginBottom: -29 }}>
+        <View style={{ marginTop: -52, marginBottom: -4 }}>
           <AnimatedChipRow
             tabs={LIB_TABS}
             activeTab={activeTab}
