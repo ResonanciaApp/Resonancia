@@ -709,7 +709,7 @@ export default function MezcladorScreen() {
                   <MaterialCommunityIcons name="chevron-left" size={24} color="#FBFBFB" />
                 </Pressable>
                 <View style={{ position: "absolute", left: 0, right: 0, alignItems: "center" }} pointerEvents="none">
-                  <Text style={styles.pageTitle}>Mezclador</Text>
+                  <Text style={[styles.pageTitle, { fontSize: 25 }]}>Mezclador</Text>
                 </View>
                 <View style={{ flex: 1 }} />
                 <View style={[styles.headerActions, { flexDirection: "row", gap: 4 }]}>
