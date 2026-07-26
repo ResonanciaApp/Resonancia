@@ -1445,7 +1445,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.053)",
     borderWidth: 1,
-    borderColor: "rgba(247,203,107,0.1)",
+    borderColor: "rgba(255,255,255,0.1)",
   },
   pillSel: { borderWidth: 0 },
   pillText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "450" as TextStyle["fontWeight"], letterSpacing: 0.3, color: "#F4F4F4" },
