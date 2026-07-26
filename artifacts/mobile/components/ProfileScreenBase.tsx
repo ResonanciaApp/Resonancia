@@ -1422,7 +1422,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 2,
     height: 48,
-    paddingHorizontal: 10,
+    marginRight: -5,
     borderRadius: 100,
   },
   libActionBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center" },
