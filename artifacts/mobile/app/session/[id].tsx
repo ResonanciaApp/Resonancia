@@ -1,4 +1,4 @@
-import { Feather, FontAwesome } from "@expo/vector-icons";
+import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { captureRef } from "react-native-view-shot";
 import * as Sharing from "expo-sharing";
 import * as MediaLibrary from "expo-media-library";
@@ -46,6 +46,39 @@ import { CHAKRAS, chakraMatchesTag, isChakraTag } from "@/data/chakras";
 
 const { width } = Dimensions.get("window");
 const HEADER_H = 343;
+
+function AnimatedHeart({
+  favorited,
+  onToggle,
+  size = 20,
+}: {
+  favorited: boolean;
+  onToggle: () => void;
+  size?: number;
+}) {
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const handlePress = () => {
+    onToggle();
+    scale.setValue(1);
+    Animated.sequence([
+      Animated.timing(scale, { toValue: 1.1, duration: 120, useNativeDriver: true }),
+      Animated.spring(scale, { toValue: 1, friction: 3, tension: 140, useNativeDriver: true }),
+    ]).start();
+  };
+
+  return (
+    <Pressable onPress={handlePress} hitSlop={10}>
+      <Animated.View style={{ transform: [{ scale }] }}>
+        {favorited ? (
+          <Ionicons name="heart" size={size} color="rgba(255,255,255,0.95)" />
+        ) : (
+          <Ionicons name="heart-outline" size={size} color="rgba(255,255,255,0.9)" />
+        )}
+      </Animated.View>
+    </Pressable>
+  );
+}
 
 function GlowPill({ onPress, pillStyle, bgColor }: { onPress: () => void; pillStyle: object; bgColor?: string }) {
   const scale  = useRef(new Animated.Value(1)).current;
@@ -371,9 +404,7 @@ export default function SessionDetailScreen() {
               <Pressable onPress={() => setActionsSheetOpen(true)} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
                 <Feather name="more-horizontal" size={22} color="#FBFBFB" />
               </Pressable>
-              <Pressable onPress={handleFav} hitSlop={10} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-                <Feather name="heart" size={22} color={fav ? "#F7CB6B" : "#FBFBFB"} />
-              </Pressable>
+              <AnimatedHeart favorited={fav} onToggle={handleFav} size={22} />
             </View>
           </View>
 
