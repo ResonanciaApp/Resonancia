@@ -1,4 +1,4 @@
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -26,12 +26,15 @@ import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
 const GLYPH_SIZE = 120;
+const W = Dimensions.get("window").width;
+// Cards en 2 columnas — mismas medidas que la grilla de sonidos binaurales de Dormir
+const CARD_W = (W - H_PAD * 2 - 14) / 2;
 
 export default function ChakraScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { isPremium } = usePremium();
-  const { playSession, currentSession } = usePlayer();
+  const { playSession } = usePlayer();
   const { version: catalogVersion } = useCatalog();
   const { id } = useLocalSearchParams<{ id: string }>();
 
@@ -114,69 +117,26 @@ export default function ChakraScreen() {
           </Text>
         </View>
 
-        {/* Bloques informativos */}
-        <View style={styles.infoRow}>
-          <View style={styles.infoBlock}>
-            <Text style={styles.infoLabel}>Elemento</Text>
-            <MaterialCommunityIcons name="triangle-outline" size={17} color={chakra.color} style={styles.infoIcon} />
-            <Text style={[styles.infoValue, { color: colors.foreground }]}>{chakra.element}</Text>
-          </View>
-          <View style={styles.infoDivider} />
-          <View style={styles.infoBlock}>
-            <Text style={styles.infoLabel}>Color</Text>
-            <View style={[styles.infoDot, { backgroundColor: chakra.color }]} />
-            <Text style={[styles.infoValue, { color: colors.foreground }]}>{chakra.colorName}</Text>
-          </View>
-          <View style={styles.infoDivider} />
-          <View style={styles.infoBlock}>
-            <Text style={styles.infoLabel}>Mantra</Text>
-            <MaterialCommunityIcons name="waveform" size={17} color={chakra.color} style={styles.infoIcon} />
-            <Text style={[styles.infoValue, { color: colors.foreground }]}>{chakra.mantra}</Text>
-          </View>
-          <View style={styles.infoDivider} />
-          <View style={styles.infoBlock}>
-            <Text style={styles.infoLabel}>Ubicación</Text>
-            <MaterialCommunityIcons name="map-marker-outline" size={17} color={chakra.color} style={styles.infoIcon} />
-            <Text style={[styles.infoValue, { color: colors.foreground }]} numberOfLines={2}>
-              {chakra.location}
-            </Text>
-          </View>
-        </View>
-
-        {/* Sesiones recomendadas */}
-        <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Meditaciones recomendadas</Text>
-        </View>
-
         {sessions.length === 0 ? (
           <Text style={[styles.empty, { color: colors.mutedForeground, paddingHorizontal: H_PAD }]}>
             Todavía no hay sesiones para este chakra.
           </Text>
         ) : (
-          <View style={styles.sessionList}>
-            {sessions.map((session) => {
-              const playing = currentSession?.id === session.id;
-              return (
-                <Pressable
-                  key={session.id}
-                  onPress={() => handleSessionPress(session)}
-                  style={({ pressed }) => [styles.rowCard, { opacity: pressed ? 0.8 : 1 }]}
-                >
-                  <Image source={session.image} style={styles.rowImage} contentFit="cover" cachePolicy="memory-disk" />
-                  <View style={styles.rowInfo}>
-                    <Text style={[styles.rowTitle, { color: colors.foreground }]} numberOfLines={2}>
-                      {session.title}
-                    </Text>
-                    <Text style={[styles.rowMeta, { color: colors.mutedForeground }]} numberOfLines={1}>
-                      {session.categoryLabel} · {session.durationLabel}
-                    </Text>
-                  </View>
-                  <View style={[styles.rowPlay, { borderColor: playing ? chakra.color : "rgba(255,255,255,0.25)" }]}>
-                    <Feather name={playing ? "pause" : "play"} size={15} color={playing ? chakra.color : "#F4F4F4"} style={playing ? undefined : { marginLeft: 2 }} />
-                  </View>
-                </Pressable>
-              );
-            })}
+          <View style={styles.sessionGrid}>
+            {sessions.map((session) => (
+              <Pressable
+                key={session.id}
+                onPress={() => handleSessionPress(session)}
+                style={({ pressed }) => [{ width: CARD_W, opacity: pressed ? 0.85 : 1 }]}
+              >
+                <View style={[styles.cardImageWrap, { borderRadius: colors.radius - 4 }]}>
+                  <Image source={session.image} style={styles.cardImage} contentFit="cover" cachePolicy="memory-disk" />
+                </View>
+                <Text style={styles.cardLabel} numberOfLines={2}>
+                  {session.title}
+                </Text>
+              </Pressable>
+            ))}
           </View>
         )}
       </ScrollView>
@@ -194,22 +154,6 @@ const styles = StyleSheet.create({
 
   hero: { alignItems: "center", paddingHorizontal: H_PAD, marginTop: 18, marginBottom: 26 },
 
-  infoRow: {
-    flexDirection: "row",
-    alignItems: "stretch",
-    marginHorizontal: H_PAD,
-    marginBottom: 30,
-    borderRadius: 16,
-    backgroundColor: "rgba(0,0,0,0.18)",
-    paddingVertical: 14,
-    paddingHorizontal: 4,
-  },
-  infoBlock: { flex: 1, alignItems: "center", gap: 6, paddingHorizontal: 4 },
-  infoDivider: { width: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.12)" },
-  infoLabel: { fontFamily: "Manrope", fontSize: 11, fontWeight: "500", color: "rgba(244,244,244,0.6)", letterSpacing: 0.3 },
-  infoIcon: { height: 18 },
-  infoDot: { width: 13, height: 13, borderRadius: 7, marginVertical: 2.5 },
-  infoValue: { fontFamily: "Manrope", fontSize: 12.5, fontWeight: "600", textAlign: "center", lineHeight: 16 },
   name: { fontFamily: "Manrope", fontSize: 22, fontWeight: "700", letterSpacing: 0.3 },
   tagLabel: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", letterSpacing: 0.4, marginTop: 3 },
   description: {
@@ -220,30 +164,32 @@ const styles = StyleSheet.create({
     marginTop: 14,
   },
 
-  sectionHeader: { paddingHorizontal: H_PAD, marginBottom: 14 },
-  sectionTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", letterSpacing: 0.3 },
-
-  sessionList: { paddingHorizontal: H_PAD, gap: 14 },
-  rowCard: {
+  /* Grilla 2 columnas — mismo estilo que sonidos binaurales de Dormir */
+  sessionGrid: {
     flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-    backgroundColor: "rgba(0,0,0,0.15)",
-    borderRadius: 16,
-    padding: 10,
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    paddingHorizontal: H_PAD,
+    rowGap: 35,
+    marginBottom: 6,
   },
-  rowImage: { width: 74, height: 74, borderRadius: 12 },
-  rowInfo: { flex: 1, gap: 4 },
-  rowTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", lineHeight: 20 },
-  rowMeta: { fontFamily: "Manrope", fontSize: 12.5, fontWeight: "400" },
-  rowPlay: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    borderWidth: 1.2,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 4,
+  cardImageWrap: {
+    width: "100%",
+    aspectRatio: 1,
+    borderRadius: 17,
+    overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "transparent",
+  },
+  cardImage: { width: "100%", height: "100%" },
+  cardLabel: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "600",
+    lineHeight: 18,
+    marginTop: 8,
+    paddingHorizontal: 2,
+    color: "#FBFBFB",
   },
   empty: { fontFamily: "Manrope", fontSize: 14, lineHeight: 21 },
 
