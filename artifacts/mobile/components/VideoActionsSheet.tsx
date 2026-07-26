@@ -8,7 +8,7 @@
  *  4. Seguir profesor (solo si el video tiene guideId)
  *  5. Ver perfil del profesor (solo si el video tiene guideId)
  */
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -204,14 +204,7 @@ export function VideoActionsSheet({ video, visible, onClose }: Props) {
             onPress={() => setShowTimer(true)}
             colors={colors}
           />
-          <ActionRow
-            icon="heart"
-            label={favorited ? "Quitar de favoritos" : "Marcar como favorito"}
-            iconColor={favorited ? "#E05C5C" : undefined}
-            onPress={handleFavorite}
-            colors={colors}
-            last={!guide}
-          />
+          <FavoriteRow favorited={favorited} onPress={handleFavorite} colors={colors} />
           {guide && (
             <>
               <ActionRow
@@ -268,6 +261,48 @@ export function VideoActionsSheet({ video, visible, onClose }: Props) {
 
       </View>
     </Modal>
+  );
+}
+
+// ─── FavoriteRow (corazón estilo calendario de historial) ────────────────────
+
+function FavoriteRow({
+  favorited,
+  onPress,
+  colors,
+}: {
+  favorited: boolean;
+  onPress: () => void;
+  colors: Colors;
+}) {
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const handlePress = () => {
+    onPress();
+    scale.setValue(1);
+    Animated.sequence([
+      Animated.timing(scale, { toValue: 1.1, duration: 120, useNativeDriver: true }),
+      Animated.spring(scale, { toValue: 1, friction: 3, tension: 140, useNativeDriver: true }),
+    ]).start();
+  };
+
+  return (
+    <Pressable
+      onPress={handlePress}
+      style={({ pressed }) => [styles.actionRow, { opacity: pressed ? 0.7 : 1 }]}
+    >
+      <Animated.View style={[styles.actionIcon, { transform: [{ scale }] }]}>
+        {favorited ? (
+          <Ionicons name="heart" size={20} color="rgba(255,255,255,0.95)" />
+        ) : (
+          <Ionicons name="heart-outline" size={20} color="rgba(255,255,255,0.9)" />
+        )}
+      </Animated.View>
+      <Text style={[styles.actionLabel, { color: colors.foreground }]}>
+        {favorited ? "Quitar de favoritos" : "Marcar como favorito"}
+      </Text>
+      <Feather name="chevron-right" size={16} color="rgba(250,240,238,0.25)" />
+    </Pressable>
   );
 }
 
