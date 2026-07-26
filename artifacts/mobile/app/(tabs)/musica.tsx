@@ -878,7 +878,7 @@ export default function MezcladorScreen() {
           {
             transform: [{ translateY: menuSlide }],
             opacity: menuFade,
-            backgroundColor: theme?.id === "tibet" ? "#24245d" : bgPalette.colors[0],
+            backgroundColor: theme.gradient[theme.gradient.length - 1] as string,
           },
         ]}
       >
