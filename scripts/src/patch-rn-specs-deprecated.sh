@@ -21,6 +21,12 @@ patch_dir() {
           echo "[patch-rn-specs] SKIP (Modal): $(basename "$f")"
           continue
           ;;
+        # EXCEPCIÓN: SwitchNativeComponent (+ Android) es la vista nativa detrás
+        # de <Switch>; stubbearlo hace que todos los Switch rendericen en la nada.
+        SwitchNativeComponent.js|AndroidSwitchNativeComponent.js)
+          echo "[patch-rn-specs] SKIP (Switch): $(basename "$f")"
+          continue
+          ;;
       esac
       printf "'use strict';\nmodule.exports = null;\n" > "$f"
     done

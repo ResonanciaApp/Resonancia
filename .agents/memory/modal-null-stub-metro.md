@@ -14,3 +14,5 @@ description: Por qué todos los <Modal> pueden dejar de mostrarse en silencio en
 **Fix:** excluir `RCTModalHostViewNativeComponent` del regex en metro.config Y restaurar el archivo original en node_modules (bajar el tarball `npm pack react-native@0.81.5` y copiar el archivo).
 
 **Ojo:** el parche in-place se pierde con cada `pnpm install` que recree node_modules — pero también puede REAPARECER si alguien re-aplica el parche masivo. En ese dir también viven ActivityIndicator, Switch, PullToRefresh, SafeAreaView, InputAccessory: si alguno de esos deja de renderizar en silencio, es el mismo problema.
+
+**Actualización (26 jul 2026):** `SwitchNativeComponent.js` + `AndroidSwitchNativeComponent.js` también restaurados (el toggle "intención diaria" renderizaba solo la etiqueta, sin switch). Excluidos en metro.config.js Y en `scripts/src/patch-rn-specs-deprecated.sh` (case SKIP). Restaurar desde `npm pack react-native@0.81.5` si `pnpm install` los pisa.

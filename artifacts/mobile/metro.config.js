@@ -136,7 +136,10 @@ config.resolver = {
       // for real.
       if (
         /node_modules[\\/]react-native[\\/]src[\\/]private[\\/](specs_DEPRECATED[\\/]components[\\/]|components[\\/]virtualview[\\/])/.test(fp) &&
-        !fp.includes("RCTModalHostViewNativeComponent")
+        !fp.includes("RCTModalHostViewNativeComponent") &&
+        // EXCEPTION: SwitchNativeComponent (+ Android twin) is the native view
+        // behind <Switch>; stubbing it makes every Switch render nothing.
+        !/[\\/](Android)?SwitchNativeComponent\.js$/.test(fp)
       ) {
         return { filePath: NULL_STUB, type: "sourceFile" };
       }
