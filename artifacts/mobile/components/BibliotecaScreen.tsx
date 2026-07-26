@@ -1324,7 +1324,7 @@ export function BibliotecaScreen({
 
       if (viewMode === "grid") {
         return (
-          <View style={[styles.gridWrap, { marginTop: 18 }]}>
+          <View style={[styles.gridWrap, { marginTop: 20 }]}>
             {displayPl.map((pl) => (
               <Pressable key={pl.id} style={({ pressed }) => [{ width: cellW, opacity: pressed ? 0.8 : 1 }]}
                 onPress={() => router.push(`/playlist/${pl.id}` as never)}>
@@ -1351,7 +1351,7 @@ export function BibliotecaScreen({
       });
       const pinnedFirstPl = [...displayPl].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
       return (
-        <View style={{ gap: 9, marginTop: 18 }}>
+        <View style={{ gap: 9, marginTop: 20 }}>
           {sortedFolders.map((folder) => (
             <FolderRow
               key={folder.id}
@@ -1429,7 +1429,7 @@ export function BibliotecaScreen({
       const hasMixesMore = unfiledPresets.length > mixesLimit;
       if (viewMode === "grid") {
         return (
-          <View style={{ gap: 15, marginTop: 18 }}>
+          <View style={{ gap: 15, marginTop: 20 }}>
             <View style={styles.gridWrap}>
               {visibleMixes.map((mix) => {
                 const isPlaying = loadedPresetId === mix.id && mixerPlaying;
@@ -1468,7 +1468,7 @@ export function BibliotecaScreen({
         );
       }
       return (
-        <View style={{ gap: 15, marginTop: 18 }}>
+        <View style={{ gap: 15, marginTop: 20 }}>
           <View style={{ gap: 14 }}>
             {sortedMixFolders.map((folder) => (
               <MixFolderRow
