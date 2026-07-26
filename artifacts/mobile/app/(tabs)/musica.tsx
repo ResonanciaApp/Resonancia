@@ -715,12 +715,12 @@ export default function MezcladorScreen() {
                 <View style={[styles.headerActions, { flexDirection: "row", gap: 4 }]}>
                     <Pressable
                       onPress={() => openMenu()}
-                      style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center" }}
+                      style={{ width: 38, height: 38, alignItems: "center", justifyContent: "center" }}
                       hitSlop={8}
                       accessibilityRole="button"
                       accessibilityLabel="Menú del Mezclador"
                     >
-                      <MaterialCommunityIcons name="dots-horizontal" size={22} color="#FBFBFB" />
+                      <MaterialCommunityIcons name="tune-variant" size={22} color="#FBFBFB" />
                     </Pressable>
                 </View>
               </View>
