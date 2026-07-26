@@ -483,12 +483,9 @@ export function EscenasSheet() {
             />
           </View>
 
-          {/* ── Escenas animadas: admin curadas + creaciones del usuario + CTA ── */}
+          {/* ── Escenas animadas: solo visibles con el toggle activo ── */}
+          {escenasAnimadasEnabled && (
           <View style={{ marginTop: 25 }}>
-            <View style={[styles.sceneTitleRow, { marginTop: 10 }]}>
-              <MaterialCommunityIcons name="star-four-points-outline" size={16} color="rgba(255,255,255,0.8)" />
-              <Text style={styles.sceneTitle}>Escenas animadas</Text>
-            </View>
             <View
               style={{
                 flexDirection: "row",
@@ -539,6 +536,7 @@ export function EscenasSheet() {
               />
             </View>
           </View>
+          )}
         </ScrollView>
       </Animated.View>
 

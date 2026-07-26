@@ -287,11 +287,8 @@ export function DrawerMenu() {
               />
             </View>
 
+            {escenasAnimadasEnabled && (
             <View style={{ marginTop: 18 }}>
-              <View style={styles.sceneTitleRow}>
-                <MaterialCommunityIcons name="star-four-points-outline" size={15} color="rgba(255,255,255,0.8)" />
-                <Text style={styles.sceneTitle}>Escenas animadas</Text>
-              </View>
               <View style={styles.sceneGrid}>
                 {geoScenes.map((scene) => (
                   <SceneAnimationCard
@@ -336,6 +333,7 @@ export function DrawerMenu() {
                 />
               </View>
             </View>
+            )}
 
           </ScrollView>
         </LinearGradient>

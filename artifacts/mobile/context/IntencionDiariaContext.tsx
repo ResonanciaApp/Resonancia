@@ -44,14 +44,25 @@ export function IntencionDiariaProvider({ children }: { children: React.ReactNod
       });
   };
 
+  // Toggles mutuamente excluyentes: activar uno desactiva el otro.
   const setIntencionDiariaEnabled = (v: boolean) => {
     setEnabledState(v);
-    persist({ intencionDiariaEnabled: v });
+    if (v) {
+      setEscenasState(false);
+      persist({ intencionDiariaEnabled: true, escenasAnimadasEnabled: false });
+    } else {
+      persist({ intencionDiariaEnabled: false });
+    }
   };
 
   const setEscenasAnimadasEnabled = (v: boolean) => {
     setEscenasState(v);
-    persist({ escenasAnimadasEnabled: v });
+    if (v) {
+      setEnabledState(false);
+      persist({ escenasAnimadasEnabled: true, intencionDiariaEnabled: false });
+    } else {
+      persist({ escenasAnimadasEnabled: false });
+    }
   };
 
   return (
