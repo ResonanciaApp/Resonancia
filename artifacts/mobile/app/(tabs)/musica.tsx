@@ -491,10 +491,11 @@ export default function MezcladorScreen() {
   };
 
   const closeMenu = () => {
-    Animated.parallel([
-      Animated.timing(menuSlide, { toValue: 260, duration: 220, easing: Easing.in(Easing.quad), useNativeDriver: true }),
-      Animated.timing(menuFade,  { toValue: 0, duration: 180, useNativeDriver: true }),
-    ]).start(() => setMenuOpen(false));
+    // Una sola animación: el panel baja (sin fade sutil superpuesto).
+    Animated.timing(menuSlide, { toValue: 700, duration: 240, easing: Easing.in(Easing.quad), useNativeDriver: true }).start(() => {
+      menuFade.setValue(0);
+      setMenuOpen(false);
+    });
   };
 
   // ── Ajustes del Mezclador (filtros: tema + etiquetas) ──
