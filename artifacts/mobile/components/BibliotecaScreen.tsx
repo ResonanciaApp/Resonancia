@@ -2012,7 +2012,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     paddingHorizontal: H_PAD,
-    marginTop: -13,
+    marginTop: -10,
     marginBottom: -8,
   },
   sortText: { fontFamily: "Manrope", fontSize: 13, color: MUTED, fontWeight: "500" },
