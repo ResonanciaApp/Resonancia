@@ -215,7 +215,7 @@ function AnimatedChipRow({
         style={[styles.animCloseBtn, { opacity: progress }]}
       >
         <Pressable onPress={handleClear} hitSlop={10} style={styles.chipCloseBtn}>
-          <Feather name="x" size={15} color={MUTED} />
+          <Feather name="x" size={22} color={MUTED} />
         </Pressable>
       </Animated.View>
 
@@ -1959,7 +1959,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   chipActionBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center" },
-  animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
+  animCloseBtn: { position: "absolute", left: 4, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingTop: 5, paddingBottom: 5, paddingLeft: H_PAD, paddingRight: H_PAD },
   chipRowFiltered: {
