@@ -474,12 +474,14 @@ export default function MezcladorScreen() {
 
   // ── Menú inline (3 puntitos) ──
   const [menuOpen, setMenuOpen]   = useState(false);
+  const [menuScrolled, setMenuScrolled] = useState(false);
 
   const menuSlide = useRef(new Animated.Value(300)).current;
   const menuFade  = useRef(new Animated.Value(0)).current;
 
   const openMenu = () => {
     setMenuOpen(true);
+    setMenuScrolled(false);
     menuSlide.setValue(260);
     menuFade.setValue(0);
     Animated.parallel([
@@ -884,18 +886,25 @@ export default function MezcladorScreen() {
       >
         {/* ── Header del panel (solo botón cerrar) ── */}
         <View style={styles.menuPanelHeader}>
-          <View style={{ position: "absolute", left: 0, right: 0, bottom: 10, alignItems: "center", transform: [{ translateY: -10 }] }} pointerEvents="none">
-            <Text style={[styles.menuPanelTabText, { fontSize: 29, fontWeight: "700", color: "#f9f9f9" }]}>Filtros</Text>
+          <View style={{ position: "absolute", left: 0, right: 0, bottom: 10, alignItems: "center", transform: [{ translateY: -10 }, { translateX: -5 }] }} pointerEvents="none">
+            <Text style={[styles.menuPanelTabText, { fontSize: 24, fontWeight: "700", color: "#f9f9f9" }]}>Filtros</Text>
           </View>
           <View style={{ flex: 1 }} />
-          <Pressable onPress={closeMenu} hitSlop={10} style={styles.menuPanelClose}>
-            <MaterialCommunityIcons name="close" size={20} color="rgba(255,255,255,0.55)" />
+          <Pressable onPress={closeMenu} hitSlop={10} style={[styles.menuPanelClose, { transform: [{ translateX: -5 }, { translateY: -20 }] }]}>
+            <MaterialCommunityIcons name="close" size={26} color="rgba(255,255,255,0.55)" />
           </Pressable>
         </View>
+        {/* Divisor sticky: solo visible al hacer scroll */}
+        {menuScrolled && <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.10)" }} />}
 
         {(
           /* ── Filtros ── */
-          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.menuPanelBody}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.menuPanelBody}
+            onScroll={(e) => setMenuScrolled(e.nativeEvent.contentOffset.y > 2)}
+            scrollEventThrottle={16}
+          >
             <Text style={styles.menuSectionTitle}>Etiquetas</Text>
             <View style={styles.menuChipWrap}>
               {SOUND_TAGS.map((tag) => {
@@ -1107,8 +1116,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingTop: 114,
     paddingBottom: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.10)",
   },
   menuPanelTabs: { flex: 1, flexDirection: "row", gap: 6 },
   menuPanelTab: {
