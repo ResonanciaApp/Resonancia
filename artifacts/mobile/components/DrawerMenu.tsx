@@ -90,7 +90,7 @@ export function DrawerMenu() {
   const { user: clerkUser } = useUser();
   const { username, lastName, photoUri } = useUserProfile();
   const { theme: activeTheme } = useSceneTheme();
-  const { intencionDiariaEnabled, setIntencionDiariaEnabled } = useIntencionDiaria();
+  const { intencionDiariaEnabled, setIntencionDiariaEnabled, escenasAnimadasEnabled, setEscenasAnimadasEnabled } = useIntencionDiaria();
   const { setBgScene } = useSelectedScene();
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const geoScenes = sceneAnimationsData?.scenes ?? [];
@@ -271,6 +271,17 @@ export function DrawerMenu() {
               <Switch
                 value={intencionDiariaEnabled}
                 onValueChange={setIntencionDiariaEnabled}
+                trackColor={{ false: "rgba(249,249,249,0.35)", true: "rgba(249,249,249,0.7)" }}
+                thumbColor="#f9f9f9"
+              />
+            </View>
+
+            <View style={[styles.controlRow, { marginTop: 6 }]}>
+              <MaterialCommunityIcons name="star-four-points-outline" size={17} color="#F4F4F4" style={styles.controlIcon} />
+              <Text style={styles.controlLabel}>Activar escenas animadas</Text>
+              <Switch
+                value={escenasAnimadasEnabled}
+                onValueChange={setEscenasAnimadasEnabled}
                 trackColor={{ false: "rgba(249,249,249,0.35)", true: "rgba(249,249,249,0.7)" }}
                 thumbColor="#f9f9f9"
               />

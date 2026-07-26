@@ -6,40 +6,58 @@ const SETTINGS_KEY = "@resonance_settings";
 type IntencionDiariaContextValue = {
   intencionDiariaEnabled: boolean;
   setIntencionDiariaEnabled: (v: boolean) => void;
+  escenasAnimadasEnabled: boolean;
+  setEscenasAnimadasEnabled: (v: boolean) => void;
 };
 
 const IntencionDiariaContext = createContext<IntencionDiariaContextValue>({
-  intencionDiariaEnabled: false,
+  intencionDiariaEnabled: true,
   setIntencionDiariaEnabled: () => {},
+  escenasAnimadasEnabled: false,
+  setEscenasAnimadasEnabled: () => {},
 });
 
 export function IntencionDiariaProvider({ children }: { children: React.ReactNode }) {
-  const [intencionDiariaEnabled, setEnabledState] = useState(false);
+  // Intención diaria: ON por defecto; Escenas animadas (geometrías): OFF por defecto.
+  const [intencionDiariaEnabled, setEnabledState] = useState(true);
+  const [escenasAnimadasEnabled, setEscenasState] = useState(false);
 
   useEffect(() => {
     AsyncStorage.getItem(SETTINGS_KEY).then((raw) => {
       if (!raw) return;
       try {
         const parsed = JSON.parse(raw);
-        setEnabledState(parsed.intencionDiariaEnabled === true);
+        setEnabledState(parsed.intencionDiariaEnabled !== false);
+        setEscenasState(parsed.escenasAnimadasEnabled === true);
       } catch {}
     });
   }, []);
 
-  const setIntencionDiariaEnabled = (v: boolean) => {
-    setEnabledState(v);
+  const persist = (patch: Record<string, boolean>) => {
     AsyncStorage.getItem(SETTINGS_KEY)
       .then((raw) => {
         const prev = raw ? JSON.parse(raw) : {};
-        return AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...prev, intencionDiariaEnabled: v }));
+        return AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...prev, ...patch }));
       })
       .catch(() => {
-        AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify({ intencionDiariaEnabled: v })).catch(() => {});
+        AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(patch)).catch(() => {});
       });
   };
 
+  const setIntencionDiariaEnabled = (v: boolean) => {
+    setEnabledState(v);
+    persist({ intencionDiariaEnabled: v });
+  };
+
+  const setEscenasAnimadasEnabled = (v: boolean) => {
+    setEscenasState(v);
+    persist({ escenasAnimadasEnabled: v });
+  };
+
   return (
-    <IntencionDiariaContext.Provider value={{ intencionDiariaEnabled, setIntencionDiariaEnabled }}>
+    <IntencionDiariaContext.Provider
+      value={{ intencionDiariaEnabled, setIntencionDiariaEnabled, escenasAnimadasEnabled, setEscenasAnimadasEnabled }}
+    >
       {children}
     </IntencionDiariaContext.Provider>
   );

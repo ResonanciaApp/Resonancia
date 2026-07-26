@@ -207,7 +207,7 @@ export function EscenasSheet() {
   } = useAmbientPlayer();
 
   const [timerOpen, setTimerOpen] = useState(false);
-  const { intencionDiariaEnabled, setIntencionDiariaEnabled } = useIntencionDiaria();
+  const { intencionDiariaEnabled, setIntencionDiariaEnabled, escenasAnimadasEnabled, setEscenasAnimadasEnabled } = useIntencionDiaria();
   const { greetingVisible, setGreetingVisible } = useGreetingVisible();
   const { brightMode, setBrightMode } = useBrightness();
   // ID de la escena CONFIRMADA (la que muestra el borde blanco en el carrusel).
@@ -461,6 +461,23 @@ export function EscenasSheet() {
             <Switch
               value={intencionDiariaEnabled}
               onValueChange={setIntencionDiariaEnabled}
+              trackColor={{ false: "rgba(249,249,249,0.35)", true: "rgba(249,249,249,0.7)" }}
+              thumbColor="#f9f9f9"
+            />
+          </View>
+
+          {/* Escenas animadas (geometrías en Inicio) */}
+          <View style={[styles.controlRow, {
+            backgroundColor: "rgba(249,249,249,0.075)",
+            borderRadius: 14,
+            paddingHorizontal: 12,
+            marginTop: 12,
+          }]}>
+            <MaterialCommunityIcons name="star-four-points-outline" size={17} color="#F4F4F4" style={styles.controlIcon} />
+            <Text style={styles.controlLabel}>Activar escenas animadas</Text>
+            <Switch
+              value={escenasAnimadasEnabled}
+              onValueChange={setEscenasAnimadasEnabled}
               trackColor={{ false: "rgba(249,249,249,0.35)", true: "rgba(249,249,249,0.7)" }}
               thumbColor="#f9f9f9"
             />

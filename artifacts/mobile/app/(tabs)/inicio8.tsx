@@ -518,7 +518,8 @@ export default function HomeScreen2() {
   const [sesMeditacion,   setSesMeditacion]   = useState(false);
   const [progresoVisible, setProgresoVisible] = useState(false);
   const { rachaEnabled } = useRacha();
-  const { intencionDiariaEnabled } = useIntencionDiaria();
+  const { intencionDiariaEnabled, escenasAnimadasEnabled } = useIntencionDiaria();
+  const showAnimatedScene = !intencionDiariaEnabled && escenasAnimadasEnabled;
   const spacerWidthSV  = useSharedValue(0);
   const pillOpacitySV  = useSharedValue(0);
   const pillTranslateSV = useSharedValue(20);
@@ -1006,7 +1007,7 @@ export default function HomeScreen2() {
         }}
       >
         {/* ── Escena animada o Intención diaria (según toggle en Escenas) ── */}
-        {!intencionDiariaEnabled ? (
+        {showAnimatedScene ? (
           /* Escena animada: fondo libre, pasa por debajo del contenido.
              El View mantiene el espacio en el flujo; la animación es absoluta para no cortar. */
           <View style={{ height: 260, marginTop: -23, overflow: "visible" }} pointerEvents="box-none">
@@ -1045,7 +1046,7 @@ export default function HomeScreen2() {
           pointerEvents={rachaEnabled ? "auto" : "none"}
           style={({ pressed }) => ({
             marginHorizontal: GRID_PAD,
-            marginTop: intencionDiariaEnabled ? 24 : 54,
+            marginTop: showAnimatedScene ? 54 : 24,
             marginBottom: SECTION_GAP / 2 - 20,
             paddingVertical: 12,
             opacity: rachaEnabled ? (pressed ? 0.75 : 1) : 0,
@@ -1087,7 +1088,7 @@ export default function HomeScreen2() {
 
 
         {/* ── EXPLORA POR CONTENIDO ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP - 20, marginTop: intencionDiariaEnabled ? (rachaEnabled ? -18 : -74) : (rachaEnabled ? -12 : -68) }]}>
+        <View style={[styles.section, { marginBottom: SECTION_GAP - 20, marginTop: showAnimatedScene ? (rachaEnabled ? -12 : -68) : (rachaEnabled ? -18 : -74) }]}>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 7, marginTop: 20, justifyContent: "center" }}>
             {([
               { id: "meditaciones-guiadas", label: "Meditaciones", color: "#C8A6FF", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cat-meditaciones.png")} style={{ width: 22, height: 22 }} contentFit="contain" /> },
