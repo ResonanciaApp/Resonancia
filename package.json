@@ -17,6 +17,7 @@
     "@replit/revenuecat-sdk": "^4.2.0",
     "docx": "^9.7.1",
     "expo": "^57.0.8",
+    "expo-dev-client": "~57.0.9",
     "react": "^19.2.8",
     "react-native": "^0.86.0"
   }

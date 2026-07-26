@@ -1,23 +1,27 @@
-# EAS Build archive exclusions (monorepo root).
-# EAS archives from the workspace root, so heavy dev-only files must be
-# excluded here to keep uploads small and fast.
-
-# Dependencies (reinstalled on the build server)
-node_modules
-**/node_modules
-
-# Version control / Replit tooling
-.git
-.local
-.agents
-
-# Dev-only uploads & screenshots (NOT needed by the app)
-attached_assets
-
-# Build outputs / caches
-**/.expo
-**/dist
-**/build
-**/.tsbuildinfo
-*.log
-*.map
+.cache/
+**/.cache/
+**/dotslash/
+.local/
+**/.local/
+.config/
+**/.config/
+.upm/
+**/.upm/
+.local/
+**/.local/
+.config/
+**/.config/
+.upm/
+**/.upm/
+attached_assets/
+**/attached_assets/
+docs/
+exports/
+screenshots/
+artifacts/
+.pythonlibs/
+**/.pythonlibs/
+*.pdf
+*.zip
+my-app/
+/node_modules/
