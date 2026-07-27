@@ -19,6 +19,8 @@ export type Resonador = {
   clerkId?: string;
   name: string;
   photo: ImageSourcePropType;
+  /** Foto de portada del perfil (hero). Si falta, se usa `photo`. */
+  coverPhoto?: ImageSourcePropType;
   subtipo: ResonadorSubtipo;
   bio: string;
   city: string;
@@ -59,11 +61,12 @@ export const RESONADORES: Resonador[] = [
   {
     id: "luna-cosmica",
     clerkId: "user_3FNf8BwxG6rkcBWPpgFrxBzp88q",
-    name: "Luna Cósmica",
-    photo: require("@/assets/images/artists/luna-cosmica.png"),
+    name: "Nicolás Blanch",
+    photo: require("@/assets/images/artists/nicolas-blanch.jpg"),
+    coverPhoto: require("@/assets/images/artists/nicolas-blanch-cover.jpg"),
     subtipo: "Sonoterapeuta",
-    bio: "Terapeuta del sonido especializada en cuencos tibetanos y frecuencias binaurales. Creo espacios de sanación donde el sonido se convierte en medicina.",
-    city: "Santiago",
+    bio: "Terapeuta del sonido especializado en cuencos tibetanos y frecuencias binaurales. Creo espacios de sanación donde el sonido se convierte en medicina.",
+    city: "Santiago de Chile",
     country: "Chile",
     certified: true,
     specialty: ["Cuencos tibetanos", "Frecuencias binaurales", "Sanación sonora"],
@@ -78,7 +81,7 @@ export const RESONADORES: Resonador[] = [
     donationUrl: "https://cafecito.app/lunacosmica",
     sessionIds: ["1", "5", "7", "8", "9"],
     projects: [
-      { platform: "spotify", label: "Luna Cósmica en Spotify", url: "https://spotify.com" },
+      { platform: "spotify", label: "Nicolás Blanch en Spotify", url: "https://spotify.com" },
       { platform: "youtube", label: "Canal de YouTube", url: "https://youtube.com" },
     ],
     formacion: [

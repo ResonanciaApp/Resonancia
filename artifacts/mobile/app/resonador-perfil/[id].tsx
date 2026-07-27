@@ -112,7 +112,9 @@ export default function ResonadorPerfilScreen() {
 
 
   const flag = COUNTRY_FLAGS[resonador.country] ?? "";
-  const locationStr = `${flag} ${resonador.city}, ${resonador.country}`.trim();
+  const locationStr = resonador.city.includes(resonador.country)
+    ? `${flag} ${resonador.city}`.trim()
+    : `${flag} ${resonador.city}, ${resonador.country}`.trim();
   const hasContacts = !!(resonador.instagram || resonador.phone || resonador.email || resonador.linktree);
   const sessions = (resonador.sessionIds ?? [])
     .map((sid) => getSessionById(sid))
@@ -178,7 +180,7 @@ export default function ResonadorPerfilScreen() {
         {/* ── Hero banner + avatar flotante ── */}
         <View style={styles.heroArea}>
           <Image
-            source={resonador.photo}
+            source={resonador.coverPhoto ?? resonador.photo}
             style={styles.heroImg}
             contentFit="cover"
             placeholder={BLUR_PLACEHOLDER}
@@ -240,7 +242,7 @@ export default function ResonadorPerfilScreen() {
               </Text>
               <Text style={[styles.followCountLabel, { color: colors.mutedForeground }]}>seguidores</Text>
             </View>
-            <View style={[styles.followCountDivider, { backgroundColor: colors.border ?? "#3D0E16" }]} />
+            <View style={[styles.followCountDivider, { backgroundColor: "rgba(255,255,255,0.1)" }]} />
             <View style={styles.followCountItem}>
               <Text style={[styles.followCountNum, { color: colors.foreground }]}>
                 {resonador.followingCount ?? 0}
