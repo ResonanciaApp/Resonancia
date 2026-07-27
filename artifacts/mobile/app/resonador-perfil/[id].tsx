@@ -18,12 +18,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { DrawerStats } from "@/components/DrawerStats";
-import { WatercolorBtn } from "@/components/WatercolorBtn";
-import { GhostPill } from "@/components/GhostPill";
-import { SimplePersonalizeSheet } from "@/components/SimplePersonalizeSheet";
-import { GeometrixOverlay } from "@/components/GeometrixToggle";
-import { usePremium } from "@/context/PremiumContext";
-import { bgGradientColors } from "@/data/geometrix-creations";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
@@ -60,17 +54,13 @@ export default function ResonadorPerfilScreen() {
 
   const { clerkUserId, isSignedIn } = useAuth();
   const { data: me } = useGetMe({ query: { queryKey: getGetMeQueryKey(), enabled: isSignedIn } });
-  const { isPremium } = usePremium();
   const [following, setFollowing] = React.useState(false);
   const [friendRequested, setFriendRequested] = React.useState(false);
-  const [profileGeoActive, setProfileGeoActive] = React.useState(false);
-  const [profileBgId, setProfileBgId] = React.useState<string | null>(null);
-  const [personalizeVisible, setPersonalizeVisible] = React.useState(false);
   const [descExpanded, setDescExpanded] = React.useState(false);
   const [descOverflows, setDescOverflows] = React.useState(false);
   const [overrides, setOverrides] = React.useState<(Partial<Resonador> & { photoUri?: string }) | null>(null);
   const { theme: activeTheme } = useSceneTheme();
-  const bgColors: readonly string[] = bgGradientColors(profileBgId) ?? activeTheme.gradient;
+  const bgColors: readonly string[] = activeTheme.gradient;
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -153,7 +143,6 @@ export default function ResonadorPerfilScreen() {
     <View style={styles.root}>
       <StatusBar barStyle="light-content" />
       <LinearGradient colors={bgColors as [string, string, ...string[]]} style={StyleSheet.absoluteFill} />
-      <GeometrixOverlay active={profileGeoActive} />
 
       {/* ── Header ── */}
       <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
@@ -163,22 +152,7 @@ export default function ResonadorPerfilScreen() {
         <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
           <Feather name="arrow-left" size={22} color={colors.foreground} />
         </Pressable>
-        {isOwn ? (
-          <GhostPill>
-            <WatercolorBtn
-              isPremium={isPremium}
-              onPress={() => setPersonalizeVisible(true)}
-              size={20}
-            />
-            <Pressable
-              onPress={() => router.push(`/resonador-editar/${resonador.id}` as never)}
-              style={styles.pillBtn}
-              hitSlop={8}
-            >
-              <Feather name="edit-2" size={17} color={colors.foreground} />
-            </Pressable>
-          </GhostPill>
-        ) : resonador.donationUrl ? (
+        {resonador.donationUrl && !isOwn ? (
           <Pressable
             onPress={() => Linking.openURL(resonador.donationUrl!)}
             style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}
@@ -628,14 +602,6 @@ export default function ResonadorPerfilScreen() {
         </View>
       </ScrollView>
 
-      <SimplePersonalizeSheet
-        visible={personalizeVisible}
-        onClose={() => setPersonalizeVisible(false)}
-        selectedBgId={profileBgId}
-        onSelectBg={setProfileBgId}
-        geoActive={profileGeoActive}
-        onToggleGeo={setProfileGeoActive}
-      />
     </View>
   );
 }
