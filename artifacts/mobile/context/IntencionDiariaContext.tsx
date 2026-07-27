@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 const SETTINGS_KEY = "@resonance_settings";
 
@@ -22,16 +22,9 @@ export function IntencionDiariaProvider({ children }: { children: React.ReactNod
   const [intencionDiariaEnabled, setEnabledState] = useState(true);
   const [escenasAnimadasEnabled, setEscenasState] = useState(false);
 
-  useEffect(() => {
-    AsyncStorage.getItem(SETTINGS_KEY).then((raw) => {
-      if (!raw) return;
-      try {
-        const parsed = JSON.parse(raw);
-        setEnabledState(parsed.intencionDiariaEnabled !== false);
-        setEscenasState(parsed.escenasAnimadasEnabled === true);
-      } catch {}
-    });
-  }, []);
+  // Al entrar a la app, Intención diaria siempre arranca ACTIVADA
+  // (y Escenas animadas apagada, porque son mutuamente excluyentes).
+  // No se lee el valor guardado: el toggle es por-sesión.
 
   const persist = (patch: Record<string, boolean>) => {
     AsyncStorage.getItem(SETTINGS_KEY)
