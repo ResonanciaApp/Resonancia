@@ -144,8 +144,14 @@ export default function ResonadorPerfilScreen() {
       <StatusBar barStyle="light-content" />
       <LinearGradient colors={bgColors as [string, string, ...string[]]} style={StyleSheet.absoluteFill} />
 
-      {/* ── Header ── */}
-      <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
+      {/* ── Header (flotante sobre el hero) ── */}
+      <View
+        style={[
+          styles.headerRow,
+          styles.headerOverlay,
+          { paddingHorizontal: H_PAD, paddingTop: topPad + 8 },
+        ]}
+      >
         <View pointerEvents="none" style={[styles.headerTitleAbs, { top: topPad - 2 }]}>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>Perfil</Text>
         </View>
@@ -171,7 +177,7 @@ export default function ResonadorPerfilScreen() {
         contentContainerStyle={[styles.scroll, { paddingBottom: bottomPad + 40 }]}
       >
         {/* ── Hero banner + avatar flotante ── */}
-        <View style={styles.heroArea}>
+        <View style={[styles.heroArea, { height: 192 + topPad + 50 }]}>
           <Image
             source={resonador.coverPhoto ?? resonador.photo}
             style={styles.heroImg}
@@ -613,6 +619,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 4,
+  },
+  headerOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
   },
   headerTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700" },
   headerTitleAbs: {
