@@ -37,7 +37,7 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
         {/* Fila fecha + avatares */}
         <View style={styles.metaRow}>
           <View style={styles.fechaChip}>
-            <Feather name="calendar" size={12} color="#F7CB6B" style={{ marginRight: 5 }} />
+            <Feather name="calendar" size={12} color="#f9f9f9" style={{ marginRight: 5 }} />
             <Text style={styles.fechaText}>{fechaTexto}  {encuentro.horaTexto}</Text>
           </View>
 
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   fechaText: {
-    color: "#F4DAD5",
+    color: "#F4F4F4",
     fontSize: 12,
     fontFamily: "Manrope",
     fontWeight: "500",
