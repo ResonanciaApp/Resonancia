@@ -13,7 +13,7 @@ export default function QueTeOfrecemos() {
           Qué te ofrecemos
         </h2>
         <div className="mt-[6vh] grid grid-cols-3 gap-[2.5vw]">
-          <div className="rounded-sm px-[2vw] py-[4vh]" style={{ backgroundColor: 'rgba(190,150,80,0.07)', border: '1px solid rgba(190,150,80,0.22)' }}>
+          <div className="rounded-sm px-[2vw] py-[4vh] text-center" style={{ backgroundColor: 'rgba(190,150,80,0.07)', border: '1px solid rgba(190,150,80,0.22)' }}>
             <svg viewBox="0 0 24 24" fill="none" stroke="#f9f9f9" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: '3.2vw', height: '3.2vw', marginBottom: '2.4vh', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}>
               <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9" />
               <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5" />
@@ -26,7 +26,7 @@ export default function QueTeOfrecemos() {
               Transmisiones en directo dentro de la app: comparte tu práctica, responde preguntas y acerca tu trabajo a quienes desean conocerte en profundidad
             </p>
           </div>
-          <div className="rounded-sm px-[2vw] py-[4vh]" style={{ backgroundColor: 'rgba(190,150,80,0.07)', border: '1px solid rgba(190,150,80,0.22)' }}>
+          <div className="rounded-sm px-[2vw] py-[4vh] text-center" style={{ backgroundColor: 'rgba(190,150,80,0.07)', border: '1px solid rgba(190,150,80,0.22)' }}>
             <svg viewBox="0 0 24 24" fill="none" stroke="#f9f9f9" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: '3.2vw', height: '3.2vw', marginBottom: '2.4vh', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}>
               <rect x="3" y="4" width="18" height="18" rx="2" />
               <line x1="16" y1="2" x2="16" y2="6" />
@@ -39,7 +39,7 @@ export default function QueTeOfrecemos() {
               Un sistema de reservas integrado para que cualquier persona agende sesiones individuales o clases online contigo, sin intermediarios
             </p>
           </div>
-          <div className="rounded-sm px-[2vw] py-[4vh]" style={{ backgroundColor: 'rgba(190,150,80,0.07)', border: '1px solid rgba(190,150,80,0.22)' }}>
+          <div className="rounded-sm px-[2vw] py-[4vh] text-center" style={{ backgroundColor: 'rgba(190,150,80,0.07)', border: '1px solid rgba(190,150,80,0.22)' }}>
             <svg viewBox="0 0 24 24" fill="none" stroke="#f9f9f9" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: '3.2vw', height: '3.2vw', marginBottom: '2.4vh', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}>
               <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
               <circle cx="12" cy="12" r="3" />
