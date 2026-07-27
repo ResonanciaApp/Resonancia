@@ -325,7 +325,7 @@ export default function ResonadorPerfilScreen() {
 
           {/* ── Banner RESONADOR ── */}
           <LinearGradient
-            colors={["rgba(212,175,55,0.50)", "rgba(212,175,55,0.05)", "rgba(212,175,55,0.50)"]}
+            colors={["rgba(255,255,255,0.22)", "rgba(255,255,255,0.05)", "rgba(255,255,255,0.22)"]}
             locations={[0, 0.5, 1]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
@@ -335,10 +335,7 @@ export default function ResonadorPerfilScreen() {
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.15)" }]} />
             {/* Ícono circular izquierda */}
             <View style={styles.bannerIconCircle}>
-              <LinearGradient
-                colors={["rgba(212,175,55,0.20)", "rgba(184,134,11,0.12)"]}
-                style={StyleSheet.absoluteFill}
-              />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.08)" }]} />
               <Text style={styles.bannerIconText}>✦</Text>
             </View>
 
@@ -791,9 +788,9 @@ const styles = StyleSheet.create({
   resonadorBannerOuter: {
     borderRadius: 14,
     padding: 1,
-    shadowColor: "#F7CB6B",
+    shadowColor: "#000000",
     shadowOffset: { width: 0, height: -1 },
-    shadowOpacity: 0.45,
+    shadowOpacity: 0.25,
     shadowRadius: 2,
     elevation: 2,
   },
@@ -811,7 +808,7 @@ const styles = StyleSheet.create({
     height: 42,
     borderRadius: 21,
     borderWidth: 1.5,
-    borderColor: "rgba(212,175,55,0.35)",
+    borderColor: "rgba(255,255,255,0.25)",
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
