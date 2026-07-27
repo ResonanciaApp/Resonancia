@@ -32,8 +32,16 @@
     "speakerNotes": ""
   },
   {
-    "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e10",
+    "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e12",
     "position": 5,
+    "filepath": "src/pages/slides/ComoSeVeUnaSesion.tsx",
+    "title": "¿Cómo se ve una sesión?",
+    "description": "Mockups de la ficha de sesión y el reproductor",
+    "speakerNotes": ""
+  },
+  {
+    "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e10",
+    "position": 6,
     "filepath": "src/pages/slides/QueTeOfrecemos.tsx",
     "title": "Qué te ofrecemos",
     "description": "Encuentros en vivo, agenda online y visibilidad",
@@ -41,7 +49,7 @@
   },
   {
     "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e11",
-    "position": 6,
+    "position": 7,
     "filepath": "src/pages/slides/OfertaProductores.tsx",
     "title": "Oferta para productores",
     "description": "Tarifas Ambient y Psytrance, y condiciones de pago del EP",
@@ -49,7 +57,7 @@
   },
   {
     "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e09",
-    "position": 7,
+    "position": 8,
     "filepath": "src/pages/slides/ResonemosJuntos.tsx",
     "title": "Resonemos juntos",
     "description": "Cierre y contacto",
