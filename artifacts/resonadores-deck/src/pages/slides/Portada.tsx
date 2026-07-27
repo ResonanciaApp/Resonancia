@@ -15,7 +15,7 @@ export default function Portada() {
           <img
             src={`${import.meta.env.BASE_URL}isotipo.png`}
             alt="Isotipo RESONANCIA"
-            style={{ width: "13vw", display: "block" }}
+            style={{ width: "10vw", display: "block" }}
           />
           <img
             src={`${import.meta.env.BASE_URL}logo-resonancia.png`}
