@@ -2,6 +2,8 @@ import React, { useRef, useState } from "react";
 import {
   Dimensions,
   FlatList,
+  Pressable,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -9,6 +11,8 @@ import {
   ViewToken,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { Image as ExpoImage } from "expo-image";
+import { RESONADORES, COUNTRY_FLAGS } from "@/data/resonadores";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -57,44 +61,82 @@ export default function EncuentrosScreen() {
         <Text style={styles.headerTitle}>Encuentros</Text>
       </View>
 
-      {/* Carrusel */}
-      <FlatList
-        data={ENCUENTROS}
-        keyExtractor={(item) => item.id}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        snapToInterval={CARD_W + CARD_GAP}
-        snapToAlignment="start"
-        decelerationRate="fast"
-        contentContainerStyle={[
-          styles.carouselContent,
-          { paddingBottom: tabBarHeight + 24 },
-        ]}
-        onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={viewabilityConfig}
-        renderItem={({ item }) => (
-          <View style={[styles.cardWrap, { width: CARD_W }]}>
-            <EncuentroCard
-              encuentro={item}
-              onPress={() => handleCardPress(item)}
-              onCalendarPress={() => handleCalendarPress(item)}
-            />
-          </View>
-        )}
-      />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: tabBarHeight + 24 }}
+      >
+        {/* Carrusel */}
+        <FlatList
+          data={ENCUENTROS}
+          keyExtractor={(item) => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          snapToInterval={CARD_W + CARD_GAP}
+          snapToAlignment="start"
+          decelerationRate="fast"
+          contentContainerStyle={styles.carouselContent}
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={viewabilityConfig}
+          renderItem={({ item }) => (
+            <View style={[styles.cardWrap, { width: CARD_W }]}>
+              <EncuentroCard
+                encuentro={item}
+                onPress={() => handleCardPress(item)}
+                onCalendarPress={() => handleCalendarPress(item)}
+              />
+            </View>
+          )}
+        />
 
-      {/* Puntos de paginación */}
-      <View style={[styles.dots, { bottom: tabBarHeight + 8 }]}>
-        {ENCUENTROS.map((_, i) => (
-          <View
-            key={i}
-            style={[
-              styles.dot,
-              i === activeIndex ? styles.dotActive : styles.dotInactive,
-            ]}
-          />
-        ))}
-      </View>
+        {/* Puntos de paginación — 25px debajo de las cards */}
+        <View style={styles.dots}>
+          {ENCUENTROS.map((_, i) => (
+            <View
+              key={i}
+              style={[
+                styles.dot,
+                i === activeIndex ? styles.dotActive : styles.dotInactive,
+              ]}
+            />
+          ))}
+        </View>
+
+        {/* ── Carrusel Resonadores ── */}
+        <View style={{ marginTop: 36 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: CARD_H_PADDING, marginBottom: 16 }}>
+            <Text style={styles.sectionTitle}>Los Resonadores</Text>
+            <Pressable onPress={() => router.push("/resonadores" as never)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F7CB6B" }}>Ver todos</Text>
+            </Pressable>
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: CARD_H_PADDING, gap: 10 }}
+          >
+            {RESONADORES.map((r) => (
+              <Pressable
+                key={r.id}
+                onPress={() => router.push(`/resonador/${r.id}` as never)}
+                style={({ pressed }) => ({ alignItems: "center", opacity: pressed ? 0.75 : 1, width: 120 })}
+              >
+                <View style={{ width: 102, height: 102, borderRadius: 51, overflow: "hidden", borderWidth: 1.5, borderColor: "rgba(247,203,107,0.35)", marginBottom: 12 }}>
+                  <ExpoImage source={r.photo} style={{ width: 102, height: 102 }} contentFit="cover" />
+                </View>
+                <Text
+                  numberOfLines={2}
+                  style={{ fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: "#f9f9f9", textAlign: "center", lineHeight: 19 }}
+                >
+                  {r.name}
+                </Text>
+                <Text style={{ fontFamily: "Manrope", fontSize: 12, color: "rgba(249,249,249,0.55)", marginTop: 3, textAlign: "center" }}>
+                  {COUNTRY_FLAGS[r.country] ?? ""} {r.country}
+                </Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
+      </ScrollView>
 
       {/* Sheet calendario */}
       <CalendarioEncuentroSheet
@@ -140,10 +182,15 @@ const styles = StyleSheet.create({
   cardWrap: {
     // width set inline
   },
+  sectionTitle: {
+    flex: 1,
+    fontFamily: "Manrope",
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#f9f9f9",
+  },
   dots: {
-    position: "absolute",
-    left: 0,
-    right: 0,
+    marginTop: 25,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
