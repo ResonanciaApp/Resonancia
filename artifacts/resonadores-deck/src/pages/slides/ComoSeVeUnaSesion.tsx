@@ -9,7 +9,7 @@ export default function ComoSeVeUnaSesion() {
   return (
     <div className="w-screen h-screen overflow-hidden relative bg-bg" style={{ background: 'linear-gradient(160deg, #2D1C52 0%, #261F57 20%, #1F255A 40%, #1F2A62 60%, #283673 80%, #2D4082 100%)' }}>
       {/* Phone mockups */}
-      <div className="absolute left-0 top-0 h-full w-[48vw] flex items-center justify-center">
+      <div className="absolute right-0 top-0 h-full w-[48vw] flex items-center justify-center">
         <div className="flex items-center gap-[2.5vw]">
           {screens.map((s, i) => (
             <div
@@ -34,7 +34,7 @@ export default function ComoSeVeUnaSesion() {
           ))}
         </div>
       </div>
-      <div className="relative z-10 h-full flex items-center justify-end px-[6vw]">
+      <div className="relative z-10 h-full flex items-center justify-start px-[6vw]">
         <div className="w-[42vw]">
           <p className="font-body text-primary uppercase" style={{ fontSize: '1.2vw', letterSpacing: '0.4em', fontWeight: 600 }}>
             Tu obra en escena
