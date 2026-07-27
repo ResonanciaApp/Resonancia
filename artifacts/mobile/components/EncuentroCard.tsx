@@ -70,8 +70,14 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
           onPress={onCalendarPress}
           style={({ pressed }) => [styles.calBtn, { opacity: pressed ? 0.8 : 1 }]}
         >
+          <LinearGradient
+            colors={["#FFFFFF", "#F5F5F5"]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={StyleSheet.absoluteFill}
+          />
           <Text style={styles.calBtnText}>Añadir a mi calendario</Text>
-          <Feather name="calendar" size={16} color="#1B060F" style={{ marginLeft: 8 }} />
+          <Feather name="calendar" size={16} color="#0D0A1E" style={{ marginLeft: 8 }} />
         </Pressable>
       </View>
     </View>
@@ -114,10 +120,10 @@ const styles = StyleSheet.create({
   fechaChip: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(247,203,107,0.08)",
+    backgroundColor: "rgba(255,255,255,0.045)",
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "rgba(247,203,107,0.18)",
+    borderColor: "rgba(255,255,255,0.1)",
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
@@ -171,13 +177,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#F7CB6B",
     borderRadius: 30,
     paddingVertical: 13,
     marginTop: 4,
+    overflow: "hidden",
   },
   calBtnText: {
-    color: "#1B060F",
+    color: "#0D0A1E",
     fontSize: 15,
     fontFamily: "Manrope",
     fontWeight: "700",
