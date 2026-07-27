@@ -146,10 +146,10 @@ export default function ResonadorPerfilScreen() {
 
       {/* ── Header ── */}
       <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
-        <View pointerEvents="none" style={[styles.headerTitleAbs, { top: topPad + 8 }]}>
+        <View pointerEvents="none" style={[styles.headerTitleAbs, { top: topPad - 2 }]}>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>Perfil</Text>
         </View>
-        <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
+        <Pressable onPress={() => router.back()} style={[styles.backBtn, { marginTop: -10 }]} hitSlop={8}>
           <Feather name="arrow-left" size={22} color={colors.foreground} />
         </Pressable>
         {resonador.donationUrl && !isOwn ? (
@@ -614,7 +614,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 4,
   },
-  headerTitle: { fontFamily: "Manrope", fontSize: 17, fontWeight: "700" },
+  headerTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700" },
   headerTitleAbs: {
     position: "absolute",
     left: 0,
