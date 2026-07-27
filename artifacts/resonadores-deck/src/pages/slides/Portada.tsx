@@ -1,33 +1,40 @@
-const base = import.meta.env.BASE_URL;
-
 export default function Portada() {
   return (
-    <div className="w-screen h-screen overflow-hidden relative bg-bg" style={{ background: 'linear-gradient(160deg, #2D1C52 0%, #261F57 20%, #1F255A 40%, #1F2A62 60%, #283673 80%, #2D4082 100%)' }}>
-      <img
-        src={`${base}hero.jpg`}
-        crossOrigin="anonymous"
-        alt="Ondas doradas de sonido"
-        className="absolute inset-0 w-full h-full object-cover"
-      />
-      <div
-        className="absolute inset-0"
-        style={{ background: 'linear-gradient(180deg, rgba(38,28,85,0.55) 0%, rgba(38,28,85,0.25) 45%, rgba(38,28,85,0.82) 100%)' }}
-      />
-      <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-[10vw]">
-        <p className="font-body text-primary uppercase" style={{ fontSize: '1.6vw', letterSpacing: '0.55em', fontWeight: 600 }}>
-          Comunidad de Resonadores
-        </p>
-        <h1 className="font-display text-text mt-[3vh]" style={{ fontSize: '9vw', fontWeight: 500, letterSpacing: '0.14em', lineHeight: 1 }}>
-          RESONANCIA
-        </h1>
-        <div className="mt-[4vh] h-[1px] w-[16vw]" style={{ background: 'linear-gradient(90deg, transparent, #be9650, transparent)' }} />
-        <p className="font-display italic text-accent mt-[4vh]" style={{ fontSize: '2.6vw', fontWeight: 400 }}>
-          Donde el sonido se convierte en medicina
-        </p>
-        <p className="font-body text-text/75 mt-[2.5vh]" style={{ fontSize: '1.7vw', fontWeight: 400, textWrap: 'balance' }}>
-          Invitación a formar parte de nuestra comunidad de Resonadores
-        </p>
+    <div
+      className="relative w-screen h-screen overflow-hidden font-display flex flex-col items-center justify-center"
+      style={{ background: "linear-gradient(160deg, #211538 0%, #1E173E 33%, #181C3E 66%, #19233F 100%)", color: "#F4F4F4" }}
+    >
+      {/* Ambient radial glow */}
+      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.06) 0%, transparent 65%)", zIndex: 0 }} />
+
+      {/* Center content */}
+      <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "5vh" }}>
+
+        {/* RESONANCIA logo */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "3vh" }}>
+          <img
+            src={`${import.meta.env.BASE_URL}logo-resonancia.png`}
+            alt="RESONANCIA"
+            style={{ width: "51vw", display: "block", opacity: 0.95 }}
+          />
+          <div style={{ width: "60%", height: "1.5px", backgroundColor: "rgba(255,255,255,0.20)" }} />
+        </div>
+
+        {/* Subtitle */}
+        <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "1.2vh" }}>
+          <div style={{ fontSize: "1.3vw", fontWeight: 400, letterSpacing: "0.35em", color: "rgba(255,255,255,0.45)", textTransform: "uppercase" }}>
+            Santuario de Sonidos
+          </div>
+        </div>
       </div>
+
+      {/* Bottom brand */}
+      <div style={{ position: "absolute", bottom: "5vh", left: 0, right: 0, display: "flex", justifyContent: "center", zIndex: 1 }}>
+        <div style={{ fontSize: "0.85vw", fontWeight: 600, letterSpacing: "0.2em", color: "rgba(255,255,255,0.22)" }}>
+          CONFIDENCIAL · NO DISTRIBUIR
+        </div>
+      </div>
+
     </div>
   );
 }
