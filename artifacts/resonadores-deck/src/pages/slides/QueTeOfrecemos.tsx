@@ -16,19 +16,19 @@ export default function QueTeOfrecemos() {
           <div className="rounded-sm px-[2vw] py-[4vh]" style={{ backgroundColor: 'rgba(190,150,80,0.07)', border: '1px solid rgba(190,150,80,0.22)' }}>
             <p className="font-display text-accent" style={{ fontSize: '2.4vw', fontWeight: 500, lineHeight: 1.15 }}>Encuentros en vivo</p>
             <p className="font-body text-text/85 mt-[2vh]" style={{ fontSize: '1.7vw', lineHeight: 1.45 }}>
-              Streaming en vivo para la comunidad que quiera aprender más sobre ti
+              Transmisiones en directo dentro de la app: comparte tu práctica, responde preguntas y acerca tu trabajo a quienes desean conocerte en profundidad
             </p>
           </div>
           <div className="rounded-sm px-[2vw] py-[4vh]" style={{ backgroundColor: 'rgba(190,150,80,0.07)', border: '1px solid rgba(190,150,80,0.22)' }}>
             <p className="font-display text-accent" style={{ fontSize: '2.4vw', fontWeight: 500, lineHeight: 1.15 }}>Agenda online</p>
             <p className="font-body text-text/85 mt-[2vh]" style={{ fontSize: '1.7vw', lineHeight: 1.45 }}>
-              Las personas podrán agendar horas y clases online contigo
+              Un sistema de reservas integrado para que cualquier persona agende sesiones individuales o clases online contigo, sin intermediarios
             </p>
           </div>
           <div className="rounded-sm px-[2vw] py-[4vh]" style={{ backgroundColor: 'rgba(190,150,80,0.07)', border: '1px solid rgba(190,150,80,0.22)' }}>
             <p className="font-display text-accent" style={{ fontSize: '2.4vw', fontWeight: 500, lineHeight: 1.15 }}>Visibilidad</p>
             <p className="font-body text-text/85 mt-[2vh]" style={{ fontSize: '1.7vw', lineHeight: 1.45 }}>
-              Perfil destacado como vitrina de todos tus servicios
+              Un perfil destacado que funciona como vitrina profesional de tu obra, tus servicios y tu trayectoria ante toda la comunidad
             </p>
           </div>
         </div>
