@@ -81,7 +81,26 @@ export default function ResonadorPerfilScreen() {
     React.useCallback(() => {
       if (!id) return;
       AsyncStorage.getItem(`@resonancia_resonador_overrides_${id}`)
-        .then((raw) => { if (raw) setOverrides(JSON.parse(raw)); })
+        .then((raw) => {
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          // Migración: descartar identidad vieja guardada localmente
+          // ("Luna Cósmica" / México / Bolivia) para que manden los datos curados.
+          const stale =
+            parsed?.name === "Luna Cósmica" ||
+            parsed?.country === "Bolivia" ||
+            parsed?.country === "México";
+          if (stale) {
+            delete parsed.name;
+            delete parsed.city;
+            delete parsed.country;
+            AsyncStorage.setItem(
+              `@resonancia_resonador_overrides_${id}`,
+              JSON.stringify(parsed)
+            ).catch(() => {});
+          }
+          setOverrides(parsed);
+        })
         .catch(() => {});
     }, [id])
   );
