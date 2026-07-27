@@ -2,7 +2,7 @@ const base = import.meta.env.BASE_URL;
 
 export default function TuPerfilDeArtista() {
   return (
-    <div className="w-screen h-screen overflow-hidden relative bg-bg" style={{ background: 'linear-gradient(160deg, #340866 0%, #5B249D 28%, #45147F 55%, #2D0A5E 78%, #23044D 100%)' }}>
+    <div className="w-screen h-screen overflow-hidden relative bg-bg" style={{ background: 'linear-gradient(160deg, #2D1C52 0%, #261F57 20%, #1F255A 40%, #1F2A62 60%, #283673 80%, #2D4082 100%)' }}>
       <div className="absolute inset-0 flex">
         <div className="w-[44vw] h-full relative">
           <img
@@ -13,7 +13,7 @@ export default function TuPerfilDeArtista() {
           />
           <div
             className="absolute inset-0"
-            style={{ background: 'linear-gradient(90deg, rgba(35,4,77,0.1) 0%, rgba(35,4,77,0) 60%, #23044D 100%)' }}
+            style={{ background: 'linear-gradient(90deg, rgba(38,28,85,0.1) 0%, rgba(38,28,85,0) 60%, #1F2A62 100%)' }}
           />
         </div>
       </div>

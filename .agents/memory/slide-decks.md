@@ -16,8 +16,9 @@ El proyecto tiene cuatro artifacts de tipo `slides`, con propósitos distintos:
   Slide 7 tiene placeholders de contacto [tu correo]/[tu teléfono].
 - **resonadores-deck** — "RESONANCIA — Invitación Resonadores": deck de 9
   slides para invitar artistas/sonoterapeutas a ser Resonadores. NO usa la
-  paleta navy+dorado: por pedido del usuario usa el tema "Universo" (tibet)
-  de la app — degradado morado #340866→#5B249D→#45147F→#2D0A5E→#23044D,
+  paleta navy+dorado: usa el degradado de 6 colores que Inicio muestra con la
+  escena "Universo" (el override tibet de session/[id].tsx, NO el gradient de
+  scene-themes.ts): #2D1C52→#261F57→#1F255A→#1F2A62→#283673→#2D4082,
   acento dorado #F7CB6B, fuente Manrope (la de la app) en todo. Slide 2
   muestra el screenshot real de Inicio (public/app-screen.jpg) en marco de
   teléfono. Slide 9 tiene placeholder de contacto.

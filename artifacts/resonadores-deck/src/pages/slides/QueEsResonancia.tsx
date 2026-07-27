@@ -2,10 +2,10 @@ const base = import.meta.env.BASE_URL;
 
 export default function QueEsResonancia() {
   return (
-    <div className="w-screen h-screen overflow-hidden relative bg-bg" style={{ background: 'linear-gradient(160deg, #340866 0%, #5B249D 28%, #45147F 55%, #2D0A5E 78%, #23044D 100%)' }}>
+    <div className="w-screen h-screen overflow-hidden relative bg-bg" style={{ background: 'linear-gradient(160deg, #2D1C52 0%, #261F57 20%, #1F255A 40%, #1F2A62 60%, #283673 80%, #2D4082 100%)' }}>
       <div
         className="absolute inset-0"
-        style={{ background: 'radial-gradient(ellipse at 78% 55%, rgba(190,150,80,0.14) 0%, rgba(35,4,77,0) 55%)' }}
+        style={{ background: 'radial-gradient(ellipse at 78% 55%, rgba(190,150,80,0.14) 0%, rgba(38,28,85,0) 55%)' }}
       />
       <div className="relative z-10 h-full flex items-center px-[7vw] gap-[5vw]">
         <div className="flex-1">
