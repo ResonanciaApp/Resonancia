@@ -1,0 +1,27 @@
+kind = "slides"
+previewPath = "/resonadores-deck/"
+title = "RESONANCIA — Invitación Resonadores"
+version = "1.0.0"
+id = "artifacts/resonadores-deck"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/resonadores-deck/" ]
+localPort = 20208
+
+[services.development]
+run = "pnpm --filter @workspace/resonadores-deck run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/resonadores-deck", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/resonadores-deck/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20208"
+BASE_PATH = "/resonadores-deck/"

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e01",
+    "position": 1,
+    "filepath": "src/pages/slides/Portada.tsx",
+    "title": "RESONANCIA",
+    "description": "Portada — invitación a la comunidad de Resonadores",
+    "speakerNotes": ""
+  },
+  {
+    "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e02",
+    "position": 2,
+    "filepath": "src/pages/slides/QueEsResonancia.tsx",
+    "title": "¿Qué es RESONANCIA?",
+    "description": "La app de meditación, sueño y bienestar en español",
+    "speakerNotes": ""
+  },
+  {
+    "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e03",
+    "position": 3,
+    "filepath": "src/pages/slides/QueEsUnResonador.tsx",
+    "title": "¿Qué es un Resonador?",
+    "description": "El creador oficial de la plataforma",
+    "speakerNotes": ""
+  },
+  {
+    "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e04",
+    "position": 4,
+    "filepath": "src/pages/slides/TuPerfilDeArtista.tsx",
+    "title": "Tu perfil de artista",
+    "description": "Perfil, catálogo y seguidores dentro de la app",
+    "speakerNotes": ""
+  },
+  {
+    "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e05",
+    "position": 5,
+    "filepath": "src/pages/slides/Curaduria.tsx",
+    "title": "Curaduría, no algoritmo",
+    "description": "Revisión y calidad del catálogo",
+    "speakerNotes": ""
+  },
+  {
+    "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e06",
+    "position": 6,
+    "filepath": "src/pages/slides/EncuentrosEnVivo.tsx",
+    "title": "Encuentros en vivo",
+    "description": "Eventos y sesiones con la comunidad",
+    "speakerNotes": ""
+  },
+  {
+    "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e07",
+    "position": 7,
+    "filepath": "src/pages/slides/QueGanas.tsx",
+    "title": "¿Qué ganas como Resonador?",
+    "description": "Distribución, comunidad e ingresos",
+    "speakerNotes": ""
+  },
+  {
+    "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e08",
+    "position": 8,
+    "filepath": "src/pages/slides/ComoEmpezar.tsx",
+    "title": "¿Cómo empezar?",
+    "description": "Postulación en tres pasos",
+    "speakerNotes": ""
+  },
+  {
+    "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e09",
+    "position": 9,
+    "filepath": "src/pages/slides/ResonemosJuntos.tsx",
+    "title": "Resonemos juntos",
+    "description": "Cierre y contacto",
+    "speakerNotes": ""
+  }
+]
