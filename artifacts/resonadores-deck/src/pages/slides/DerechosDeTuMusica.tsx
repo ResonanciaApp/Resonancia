@@ -30,9 +30,9 @@ export default function DerechosDeTuMusica() {
               <rect x="4" y="10" width="16" height="10" rx="2" />
               <path d="M8 10V7a4 4 0 0 1 8 0v3" />
             </svg>
-            <p className="font-display text-accent" style={{ fontSize: '2vw', fontWeight: 500, lineHeight: 1.15 }}>Licencia para la app</p>
+            <p className="font-display text-accent" style={{ fontSize: '2vw', fontWeight: 500, lineHeight: 1.15 }}>Exclusiva por 18 meses</p>
             <p className="font-body text-text/85 mt-[1.8vh]" style={{ fontSize: '1.45vw', lineHeight: 1.45 }}>
-              RESONANCIA obtiene la licencia exclusiva para reproducir la obra encargada dentro de la plataforma
+              La obra encargada se escucha únicamente en RESONANCIA durante 18 meses desde su publicación
             </p>
           </div>
 
@@ -42,9 +42,9 @@ export default function DerechosDeTuMusica() {
               <path d="M21 3l-9 9" />
               <path d="M19 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6" />
             </svg>
-            <p className="font-display text-accent" style={{ fontSize: '2vw', fontWeight: 500, lineHeight: 1.15 }}>Tu carrera sigue libre</p>
+            <p className="font-display text-accent" style={{ fontSize: '2vw', fontWeight: 500, lineHeight: 1.15 }}>Después, es tuya</p>
             <p className="font-body text-text/85 mt-[1.8vh]" style={{ fontSize: '1.45vw', lineHeight: 1.45 }}>
-              El resto de tu catálogo y tus proyectos personales no quedan comprometidos: solo la obra encargada
+              Cumplido el plazo puedes vender y publicar la obra donde quieras; el resto de tu catálogo nunca queda comprometido
             </p>
           </div>
         </div>
