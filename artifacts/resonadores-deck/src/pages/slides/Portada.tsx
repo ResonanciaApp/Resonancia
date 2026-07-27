@@ -13,6 +13,11 @@ export default function Portada() {
         {/* RESONANCIA logo */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "3vh" }}>
           <img
+            src={`${import.meta.env.BASE_URL}isotipo.png`}
+            alt="Isotipo RESONANCIA"
+            style={{ width: "13vw", display: "block" }}
+          />
+          <img
             src={`${import.meta.env.BASE_URL}logo-resonancia.png`}
             alt="RESONANCIA"
             style={{ width: "51vw", display: "block", opacity: 0.95 }}
