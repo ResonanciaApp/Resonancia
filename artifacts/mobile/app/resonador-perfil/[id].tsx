@@ -332,12 +332,7 @@ export default function ResonadorPerfilScreen() {
             style={styles.resonadorBannerOuter}
           >
           <View style={styles.resonadorBanner}>
-            <LinearGradient
-              colors={["rgba(74,12,12,0.80)", "rgba(27,6,15,0.95)"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.15)" }]} />
             {/* Ícono circular izquierda */}
             <View style={styles.bannerIconCircle}>
               <LinearGradient
