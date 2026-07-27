@@ -40,11 +40,11 @@
     "speakerNotes": ""
   },
   {
-    "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e08",
+    "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e11",
     "position": 6,
-    "filepath": "src/pages/slides/ComoEmpezar.tsx",
-    "title": "¿Cómo empezar?",
-    "description": "Postulación en tres pasos",
+    "filepath": "src/pages/slides/OfertaProductores.tsx",
+    "title": "Oferta para productores",
+    "description": "Tarifas Ambient y Psytrance, y condiciones de pago del EP",
     "speakerNotes": ""
   },
   {
