@@ -11,12 +11,12 @@
 }
 
 :root {
-  --slide-primary: #be9650;
-  --slide-accent: #e9c46a;
-  --slide-bg: #060a0f;
-  --slide-text: #f4f4f4;
-  --slide-muted: #8d99ab;
-  --font-display-family: 'Cormorant Garamond', Georgia, serif;
+  --slide-primary: #f7cb6b;
+  --slide-accent: #f7cb6b;
+  --slide-bg: #2d0a5e;
+  --slide-text: #f9f9f9;
+  --slide-muted: #c3b8e0;
+  --font-display-family: 'Manrope', system-ui, sans-serif;
   --font-body-family: 'Manrope', system-ui, sans-serif;
   color-scheme: dark;
 }

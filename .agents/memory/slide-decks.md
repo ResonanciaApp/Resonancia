@@ -1,9 +1,9 @@
 ---
 name: Slide decks
-description: Los tres artifacts de slides del proyecto y para qué sirve cada uno
+description: Los cuatro artifacts de slides del proyecto y para qué sirve cada uno
 ---
 
-El proyecto tiene tres artifacts de tipo `slides`, con propósitos distintos:
+El proyecto tiene cuatro artifacts de tipo `slides`, con propósitos distintos:
 
 - **resonancia-deck** — "RESONANCIA — Brochure": presentación del producto
   (qué es la app, su experiencia). Es el deck de referencia estética.
@@ -14,6 +14,13 @@ El proyecto tiene tres artifacts de tipo `slides`, con propósitos distintos:
   venta). Reusa el slug interno `resonancia-plantilla` (antes era una
   plantilla de modelo de negocios) porque se alcanzó el tope de 7 artifacts.
   Slide 7 tiene placeholders de contacto [tu correo]/[tu teléfono].
+- **resonadores-deck** — "RESONANCIA — Invitación Resonadores": deck de 9
+  slides para invitar artistas/sonoterapeutas a ser Resonadores. NO usa la
+  paleta navy+dorado: por pedido del usuario usa el tema "Universo" (tibet)
+  de la app — degradado morado #340866→#5B249D→#45147F→#2D0A5E→#23044D,
+  acento dorado #F7CB6B, fuente Manrope (la de la app) en todo. Slide 2
+  muestra el screenshot real de Inicio (public/app-screen.jpg) en marco de
+  teléfono. Slide 9 tiene placeholder de contacto.
 
 **Por qué:** son audiencias y mensajes diferentes; no fusionarlos ni reusar
 uno como el otro. Si el usuario pide cambios a "las slides", preguntar a cuál

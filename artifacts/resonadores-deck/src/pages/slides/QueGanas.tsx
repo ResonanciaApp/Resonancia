@@ -1,9 +1,9 @@
 export default function QueGanas() {
   return (
-    <div className="w-screen h-screen overflow-hidden relative bg-bg">
+    <div className="w-screen h-screen overflow-hidden relative bg-bg" style={{ background: 'linear-gradient(160deg, #340866 0%, #5B249D 28%, #45147F 55%, #2D0A5E 78%, #23044D 100%)' }}>
       <div
         className="absolute inset-0"
-        style={{ background: 'radial-gradient(ellipse at 50% 100%, rgba(190,150,80,0.14) 0%, rgba(6,10,15,0) 55%)' }}
+        style={{ background: 'radial-gradient(ellipse at 50% 100%, rgba(190,150,80,0.14) 0%, rgba(35,4,77,0) 55%)' }}
       />
       <div className="relative z-10 h-full flex flex-col justify-center px-[9vw]">
         <p className="font-body text-primary uppercase" style={{ fontSize: '1.2vw', letterSpacing: '0.4em', fontWeight: 600 }}>

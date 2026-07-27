@@ -2,7 +2,7 @@ const base = import.meta.env.BASE_URL;
 
 export default function Portada() {
   return (
-    <div className="w-screen h-screen overflow-hidden relative bg-bg">
+    <div className="w-screen h-screen overflow-hidden relative bg-bg" style={{ background: 'linear-gradient(160deg, #340866 0%, #5B249D 28%, #45147F 55%, #2D0A5E 78%, #23044D 100%)' }}>
       <img
         src={`${base}hero.jpg`}
         crossOrigin="anonymous"
@@ -11,7 +11,7 @@ export default function Portada() {
       />
       <div
         className="absolute inset-0"
-        style={{ background: 'linear-gradient(180deg, rgba(6,10,15,0.55) 0%, rgba(6,10,15,0.25) 45%, rgba(6,10,15,0.82) 100%)' }}
+        style={{ background: 'linear-gradient(180deg, rgba(35,4,77,0.55) 0%, rgba(35,4,77,0.25) 45%, rgba(35,4,77,0.82) 100%)' }}
       />
       <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-[10vw]">
         <p className="font-body text-primary uppercase" style={{ fontSize: '1.6vw', letterSpacing: '0.55em', fontWeight: 600 }}>
