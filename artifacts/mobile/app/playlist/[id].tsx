@@ -96,7 +96,7 @@ export default function PlaylistDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
   const { theme: sceneTheme, activeSceneId } = useSceneTheme();
-  const BG_GRADIENT = activeSceneId === "tibet" ? sceneTheme.gradient : BG_GRADIENT_FALLBACK;
+  const BG_GRADIENT = sceneTheme.gradient;
   const darkestStop = BG_GRADIENT[BG_GRADIENT.length - 1];
   const darkestRgb  = hexToRgb(darkestStop);
   const menuBtnBg   = darkestRgb
@@ -243,7 +243,7 @@ export default function PlaylistDetailScreen() {
   };
 
   return (
-    <View style={[styles.root, activeSceneId === "tibet" ? { backgroundColor: "#2d4081" } : undefined]}>
+    <View style={[styles.root, { backgroundColor: sceneTheme.solid }]}>
       <LinearGradient
         colors={BG_GRADIENT}
         style={StyleSheet.absoluteFill}
