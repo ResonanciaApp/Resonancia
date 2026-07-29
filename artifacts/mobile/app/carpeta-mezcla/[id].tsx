@@ -260,7 +260,7 @@ function AddSheet({
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose} statusBarTranslucent>
       <Pressable style={styles.backdrop} onPress={onClose} />
-      <View style={[styles.sheet, { paddingBottom: bottomPad, maxHeight: "70%", backgroundColor: activeSceneId === "tibet" ? "#2d4081" : SHEET_BG }]}>
+      <View style={[styles.sheet, { paddingBottom: bottomPad, maxHeight: "70%", backgroundColor: "#2d4081" }]}>
         <View style={styles.sheetHandle} />
         <ScrollView showsVerticalScrollIndicator={false}>
           <Pressable
@@ -342,7 +342,7 @@ function NamingModal({
     >
       <View style={styles.nameOverlay}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
-        <View style={styles.nameCard}>
+        <View style={[styles.nameCard, { backgroundColor: "#2d4081" }]}>
           <Pressable style={styles.nameCloseBtn} onPress={onClose} hitSlop={12}>
             <Feather name="x" size={22} color={TEXT} />
           </Pressable>
