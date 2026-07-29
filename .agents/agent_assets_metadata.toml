@@ -2477,3 +2477,9 @@ id = "voab9ZgvucTMVKOVCBTgw"
 uri = "file://artifacts/mobile/assets/images/chakra-silhouette.png"
 type = "image"
 title = "Silueta meditando (fondo transparente)"
+
+[[outputs]]
+id = "B_mSqUVoQTdQCjE4sxhxX"
+uri = "file://.local/outputs/RESONANCIA---Invitaci-n-Resonadores.pdf"
+type = "pdf"
+title = "RESONANCIA — Invitación Resonadores.pdf"
