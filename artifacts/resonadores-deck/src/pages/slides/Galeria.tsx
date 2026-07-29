@@ -1,29 +1,4 @@
-const ROW1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-const ROW2 = [12, 13, 14, 15, 16, 17, 18, 19, 21, 23, 25];
-
-function Row({ nums }: { nums: number[] }) {
-  return (
-    <div style={{ display: "flex", justifyContent: "center", gap: "0.55vw" }}>
-      {nums.map((n) => (
-        <img
-          key={n}
-          src={`${import.meta.env.BASE_URL}fotos/${n}.jpg`}
-          alt=""
-          style={{
-            width: "7.6vw",
-            aspectRatio: "736 / 1600",
-            objectFit: "cover",
-            borderRadius: "0.55vw",
-            border: "1px solid rgba(190,150,80,0.35)",
-            display: "block",
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-export default function Galeria() {
+export function GaleriaRows({ rows }: { rows: number[][] }) {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-body"
@@ -40,13 +15,34 @@ export default function Galeria() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          gap: "1.6vh",
+          gap: "2.4vh",
           padding: "0 3vw",
         }}
       >
-        <Row nums={ROW1} />
-        <Row nums={ROW2} />
+        {rows.map((nums, i) => (
+          <div key={i} style={{ display: "flex", justifyContent: "center", gap: "1vw" }}>
+            {nums.map((n) => (
+              <img
+                key={n}
+                src={`${import.meta.env.BASE_URL}fotos/${n}.jpg`}
+                alt=""
+                style={{
+                  width: "10.8vw",
+                  aspectRatio: "736 / 1600",
+                  objectFit: "cover",
+                  borderRadius: "0.6vw",
+                  border: "1px solid rgba(190,150,80,0.35)",
+                  display: "block",
+                }}
+              />
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   );
+}
+
+export default function Galeria() {
+  return <GaleriaRows rows={[[1, 2, 3, 4, 5, 6], [7, 8, 9, 10, 11]]} />;
 }
