@@ -14,7 +14,7 @@ function Row({ nums }: { nums: number[] }) {
             aspectRatio: "736 / 1600",
             objectFit: "cover",
             borderRadius: "0.55vw",
-            border: "1px solid rgba(212,175,55,0.28)",
+            border: "1px solid rgba(190,150,80,0.35)",
             display: "block",
           }}
         />
@@ -23,13 +23,15 @@ function Row({ nums }: { nums: number[] }) {
   );
 }
 
-export default function PGaleria() {
+export default function Galeria() {
   return (
     <div
-      className="relative w-screen h-screen overflow-hidden font-display"
-      style={{ background: "linear-gradient(180deg, #2E0510 0%, #160108 100%)", color: "#F4DAD5" }}
+      className="relative w-screen h-screen overflow-hidden font-body"
+      style={{
+        background: "linear-gradient(160deg, #2D1C52 0%, #261F57 20%, #1F255A 40%, #1F2A62 60%, #283673 80%, #2D4082 100%)",
+        color: "#F4F4F4",
+      }}
     >
-      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 40%, rgba(212,175,55,0.06) 0%, transparent 60%)" }} />
       <div
         style={{
           position: "relative",
