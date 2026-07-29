@@ -38,3 +38,5 @@ given screen reads `useSceneTheme()`/uses `SacredBackground` before
 claiming it's themed. Cold-start flash is mitigated by resolving the
 persisted Scene id before the splash screen hides and passing it into
 `SceneThemeProvider` as `initialSceneId` (see `loadPersistedSceneId`).
+
+**Universo (tibet) gradient corregido (jul 2026):** el gradiente real de Universo es azul `#2D1C52→#261F57→#1F255A→#1F2A62→#283673→#2D4082`, solid `#2d4081`. El morado viejo (`#340866…#23044D`) quedó obsoleto; varias pantallas lo sobreescribían hardcodeado con el azul — al tocar temas, confiar en lo que se VE, no solo en config/scene-themes.ts; quedan overrides hardcodeados del azul (session/[id].tsx, carpetas) que ahora son redundantes.
