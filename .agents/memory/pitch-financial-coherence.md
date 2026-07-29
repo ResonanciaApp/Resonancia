@@ -32,3 +32,5 @@ Las cifras del modelo financiero NO están centralizadas: están hardcodeadas in
 ## How to apply
 
 Al tocar cualquier número financiero: (1) grep el set legacy (monto viejo, equity viejo, valores de stake/valoración) en `pages/slides/*.tsx` y en las `description` de `data/slides-manifest.json`; (2) recalcular con las fórmulas de arriba; (3) `pnpm --filter @workspace/resonancia-pitch run typecheck` + `run validate-slides`; (4) screenshot de las slides de inversión/valoración/valle para verificar visualmente.
+
+- Nuevas slides derivadas (jul 2026): SlideCAC.tsx (CAC ≈$3.600 = marketing año 1 ≈$13M ÷ 3.600 subs; payback 1,2 meses con ARPU $3.116) y SlideRetencion.tsx (sensibilidad churn 0/5/8%, LTV=ARPU÷churn, LTV/CAC 17x/11x). Si cambian el ramp-up de marketing, los 300 subs/mes o el ARPU, estas dos slides quedan incoherentes: recalcular.

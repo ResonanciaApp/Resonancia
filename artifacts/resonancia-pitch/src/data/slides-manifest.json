@@ -80,8 +80,16 @@
     "speakerNotes": ""
   },
   {
-    "id": "a1f4c2d0-1111-4a01-9c01-000000000019",
+    "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e20",
     "position": 11,
+    "filepath": "src/pages/slides/SlideRetencion.tsx",
+    "title": "Anexo Financiero · Retención",
+    "description": "Sensibilidad de churn: subs M12, LTV y LTV/CAC por escenario",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000019",
+    "position": 12,
     "filepath": "src/pages/slides/SlideTramosInversion.tsx",
     "title": "Oportunidad de inversión",
     "description": "Tabla de tramos: inversión, equity, post-money, valor del stake al mes 12 y retorno estimado.",
@@ -89,7 +97,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000014",
-    "position": 12,
+    "position": 13,
     "filepath": "src/pages/slides/SlideAnexoInversion.tsx",
     "title": "Anexo · Valoración estimada",
     "description": "Pre-money, post-money y escenarios de retorno al mes 12.",
@@ -97,7 +105,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000021",
-    "position": 13,
+    "position": 14,
     "filepath": "src/pages/slides/SlideContacto.tsx",
     "title": "Contacto",
     "description": "Slide de cierre con datos de contacto.",
