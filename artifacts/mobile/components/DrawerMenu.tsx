@@ -43,7 +43,7 @@ type MenuItem = {
 
 const MAIN_ITEMS: MenuItem[] = [
   { label: "Tu Premium",    icon: "star",      route: "/membresia" },
-  { label: "Biblioteca",    icon: "layers",    route: "/(tabs)/profile" },
+  { label: "Biblioteca",    icon: "layers",    route: "/biblioteca" },
   { label: "Mis sesiones",  icon: "calendar",  route: "/mis-sesiones" },
   { label: "Mis favoritos", icon: "heart",     route: "/favoritos-todos" },
   { label: "Historial",     icon: "clock",     route: "/historial" },

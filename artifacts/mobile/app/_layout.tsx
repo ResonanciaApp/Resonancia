@@ -307,6 +307,7 @@ function NavStack() {
         />
         <Stack.Screen name="mi-perfil" options={{ headerShown: false, animation: drawerScreenAnim }} />
         <Stack.Screen name="diario" options={{ headerShown: false, animation: drawerScreenAnim }} />
+        <Stack.Screen name="biblioteca" options={{ headerShown: false, animation: drawerScreenAnim }} />
         <Stack.Screen
           name="diario-entrada"
           options={{ headerShown: false, presentation: "modal", animation: "slide_from_bottom" }}
