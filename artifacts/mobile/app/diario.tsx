@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { GhostPill } from "@/components/GhostPill";
 import { router, useFocusEffect } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import { GoldGradientFill } from "@/components/GoldGradient";
+import { ListenGoldFill } from "@/components/GoldGradient";
 import React, { useCallback } from "react";
 import {
   Alert,
@@ -195,7 +195,7 @@ export default function DiarioScreen() {
             { overflow: "hidden", opacity: pressed ? 0.85 : 1 },
           ]}
         >
-          <GoldGradientFill />
+          <ListenGoldFill />
           <Text style={styles.addBtnText}>Añade entrada</Text>
         </Pressable>
       </View>

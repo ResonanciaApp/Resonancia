@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { GoldGradientFill } from "@/components/GoldGradient";
+import { ListenGoldFill } from "@/components/GoldGradient";
 import { GhostPill } from "@/components/GhostPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -191,7 +191,7 @@ export default function TagScreen() {
               { overflow: "hidden" },
             ]}
           >
-            {!durationFilter && <GoldGradientFill />}
+            {!durationFilter && <ListenGoldFill />}
             <Text style={!durationFilter ? [styles.filterLabel, { color: colors.primaryForeground }] : styles.filterLabelIdle}>
               Todos
             </Text>
@@ -208,7 +208,7 @@ export default function TagScreen() {
                   { overflow: "hidden" },
                 ]}
               >
-                {active && <GoldGradientFill />}
+                {active && <ListenGoldFill />}
                 <Text style={active ? [styles.filterLabel, { color: colors.primaryForeground }] : styles.filterLabelIdle}>
                   {f.label}
                 </Text>
