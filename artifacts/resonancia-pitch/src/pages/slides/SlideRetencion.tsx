@@ -1,7 +1,7 @@
 export default function SlideRetencion() {
   // 300 subs nuevos/mes · subs M12 = 300·(1-(1-c)^12)/c
-  // c=5%: ≈2.760 · c=8%: ≈2.370
-  // LTV = ARPU $3.116 / churn → 5%: ≈$62.300 · 8%: ≈$39.000
+  // c=15%: ≈1.720 · c=20%: ≈1.400
+  // LTV = ARPU $3.116 / churn → 15%: ≈$20.800 · 20%: ≈$15.600
   const scenarios = [
     {
       t: "CASO BASE ACTUAL",
@@ -13,21 +13,21 @@ export default function SlideRetencion() {
       highlight: false,
     },
     {
-      t: "CHURN MODERADO",
-      churn: "5% mensual",
-      subs: "≈ 2.760",
-      ltv: "≈ $62.000",
-      ratio: "≈ 17x",
-      note: "Benchmark de apps wellness bien ejecutadas (retención mensual 95%).",
+      t: "CHURN REALISTA",
+      churn: "15% mensual",
+      subs: "≈ 1.720",
+      ltv: "≈ $20.800",
+      ratio: "≈ 5,8x",
+      note: "Escenario realista para una app nueva de suscripción: retención mensual del 85%.",
       highlight: true,
     },
     {
       t: "CHURN EXIGENTE",
-      churn: "8% mensual",
-      subs: "≈ 2.370",
-      ltv: "≈ $39.000",
-      ratio: "≈ 11x",
-      note: "Escenario conservador: aun así, cada suscriptor devuelve 11 veces su costo de adquisición.",
+      churn: "20% mensual",
+      subs: "≈ 1.400",
+      ltv: "≈ $15.600",
+      ratio: "≈ 4,3x",
+      note: "Escenario de estrés: aun perdiendo 1 de cada 5 suscriptores al mes, cada uno devuelve más de 4 veces su costo de adquisición.",
       highlight: false,
     },
   ];
