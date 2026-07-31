@@ -2,7 +2,7 @@ export default function SlideConclusionFinanciera() {
   const fases = [
     {
       t: "ANTES DEL M1 · CONSTRUCCIÓN",
-      d: "Casi toda la ronda ($29,9M) se invierte antes del lanzamiento: desarrollo, contenido, estudio, equipamiento y legales. Solo $2,5M quedan reservados para marketing desde M1.",
+      d: "Casi toda la ronda ($29,9M) se invierte antes del lanzamiento: desarrollo, contenido, estudio, equipamiento y legales. Solo $2,5M quedan reservados para la campaña de lanzamiento: $1M en M1, $1M en M2 y $0,5M en M3.",
       tint: "rgba(224,112,112,0.9)",
     },
     {

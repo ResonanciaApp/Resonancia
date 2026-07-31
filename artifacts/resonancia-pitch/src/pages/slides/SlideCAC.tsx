@@ -70,7 +70,7 @@ export default function SlideCAC() {
 
       {/* Footnote */}
       <div style={{ marginTop: "auto", fontSize: "0.85vw", color: "rgba(244,244,244,0.38)", lineHeight: 1.45 }}>
-        CAC blended = marketing total año 1 (pre-lanzamiento $1,5M · M1–M2 $2M · M3–M6 $2M · M7–M12 $6M–$9M) ÷ 3.600 suscriptores del caso base.
+        CAC blended = marketing total año 1 (pre-lanzamiento $1M · M1–M3 $2,5M de la ronda · M4–M6 $0 orgánico · M7–M12 $6M–$9M) ÷ 3.600 suscriptores del caso base.
         Payback sobre ARPU recurrente blended $3.238 (neto de IVA y comisión de tienda). Cifras en CLP, consistentes con el anexo de flujo de caja.
       </div>
     </div>

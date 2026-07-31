@@ -13,18 +13,19 @@ function CostRow({ label, sub, value }: { label: string; sub?: string; value: st
 
 export default function SlideFinanzas3() {
   const mktRamp = [
-    { rango: "Pre-lanzamiento", valor: "$1,5M", desc: "Pauta previa al lanzamiento (de la inversión inicial)" },
-    { rango: "Mes 1",     valor: "$1M",        desc: "Campaña de lanzamiento (de la inversión inicial)" },
-    { rango: "Mes 2",     valor: "$1M",        desc: "Campaña de lanzamiento (de la inversión inicial)" },
-    { rango: "Mes 3–6",   valor: "$0",         desc: "Orgánico + comunidad (escalonado: sin pauta paga)" },
+    { rango: "Pre-lanzamiento", valor: "$1,0M", desc: "Pauta previa al lanzamiento (de la ronda)" },
+    { rango: "Mes 1",     valor: "$1M",        desc: "Campaña de lanzamiento (de la ronda)" },
+    { rango: "Mes 2",     valor: "$1M",        desc: "Campaña de lanzamiento (de la ronda)" },
+    { rango: "Mes 3",     valor: "$0,5M",      desc: "Cierre de la campaña de lanzamiento (de la ronda)" },
+    { rango: "Mes 4–6",   valor: "$0",         desc: "Orgánico + comunidad (escalonado: sin pauta paga)" },
     { rango: "Mes 7–8",   valor: "$1M",        desc: "Pauta + influencers nicho wellness" },
     { rango: "Mes 9–12",  valor: "$1,5M – $2M",desc: "Escala fuerte: la operación ya es rentable" },
     { rango: "Mes 13–24", valor: "$2M – $2,5M",desc: "Retargeting + campañas LATAM" },
   ];
 
   const phases = [
-    { fase: "M1–M2",    fijo: "$4,56M", cont: "$0",    mkt: "$1,0M*", total: "$5,56M" },
-    { fase: "M3–M6",    fijo: "$4,56M", cont: "$1,2M", mkt: "$0",    total: "$5,76M" },
+    { fase: "M1–M3",    fijo: "$4,56M", cont: "$0,4M", mkt: "$0,8M*", total: "$5,79M" },
+    { fase: "M4–M6",    fijo: "$4,56M", cont: "$1,2M", mkt: "$0",    total: "$5,76M" },
     { fase: "M7–M12",   fijo: "$4,56M", cont: "$1,5M", mkt: "$1,0M–$2,0M", total: "$7,06M–$8,06M" },
     { fase: "M13–M24",  fijo: "$4,56M", cont: "$1,5M", mkt: "$2,0M–$2,5M", total: "$8,06M–$8,56M" },
   ];
@@ -121,7 +122,7 @@ export default function SlideFinanzas3() {
             ))}
           </div>
           <div style={{ fontSize: "0.72vw", color: "rgba(244,244,244,0.38)", marginTop: "0.4vh", lineHeight: 1.3 }}>
-            * Marketing M1–M2 financiado con la inversión inicial ($3,5M: $1,5M pre-lanzamiento + $1M mes 1 + $1M mes 2). Ramp escalonado: el gasto fuerte de marketing parte en M9, cuando cada mes ya cierra en positivo.
+            * Marketing pre-lanzamiento a M3 financiado con la ronda ($3,5M: $1M pre-lanzamiento + $1M mes 1 + $1M mes 2 + $0,5M mes 3). Ramp escalonado: el gasto fuerte de marketing parte en M9, cuando cada mes ya cierra en positivo.
           </div>
         </div>
       </div>

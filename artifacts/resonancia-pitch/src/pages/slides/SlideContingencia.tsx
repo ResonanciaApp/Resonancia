@@ -8,7 +8,7 @@ export default function SlideContingencia() {
           El 65% de las altas elige el plan anual y lo paga <span style={{ color: "#FFFFFF", fontWeight: 700 }}>completo por adelantado</span>:
           ~195 anuales × $23.500 netos ≈ <span style={{ color: "#FFFFFF", fontWeight: 700 }}>$4,6M</span> + ~$0,4M de mensuales
           = <span style={{ color: "#FFFFFF", fontWeight: 700 }}>~$5,0M de ingreso real</span> contra $4,3M de costos.
-          El mes 1 prácticamente se paga solo, con $2,5M de marketing reservados de la ronda como respaldo.
+          El mes 1 prácticamente se paga solo, con la campaña de lanzamiento ($2,5M de la ronda: $1M + $1M + $0,5M en M1–M3) ya financiada.
         </>
       ),
     },
@@ -29,7 +29,7 @@ export default function SlideContingencia() {
       tint: "#BE9650",
       d: (
         <>
-          Línea comprometida de los socios por <span style={{ color: "#FFFFFF", fontWeight: 700 }}>~$6,3M</span> ($8,8M de valle − $2,5M ya reservados).
+          Línea comprometida de los socios por <span style={{ color: "#FFFFFF", fontWeight: 700 }}>~$6,3M</span> ($8,8M de valle − $2,5M de campaña ya financiados).
           Solo se gira si el mix anual no alcanza el 50% en los primeros 3 meses.
           <span style={{ color: "#FFFFFF", fontWeight: 700 }}> No es parte de la ronda ni diluye</span>: es un puente que la propia operación devuelve hacia M10–M11.
         </>

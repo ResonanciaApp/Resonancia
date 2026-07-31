@@ -7,7 +7,7 @@ export default function SlideFinanzas1() {
   const rows = [
     { mes: "M1 Lanzamiento", subs: "300",   fase: "lanzamiento", ingTotal: "$0,8M",  upsell: "—",      costos: "$4,3M",  mkt: "—", resultado: "–$3,6M", neg: true  },
     { mes: "Mes 2",          subs: "600",   fase: "normal",      ingTotal: "$1,9M",  upsell: "—",      costos: "$4,3M",  mkt: "—", resultado: "–$2,4M", neg: true  },
-    { mes: "Mes 3",          subs: "900",   fase: "normal",      ingTotal: "$2,9M",  upsell: "—",      costos: "$4,8M",  mkt: "$0", resultado: "–$2,0M", neg: true  },
+    { mes: "Mes 3",          subs: "900",   fase: "normal",      ingTotal: "$2,9M",  upsell: "—",      costos: "$4,8M",  mkt: "—", resultado: "–$2,0M", neg: true  },
     { mes: "Mes 4",          subs: "1.200", fase: "normal",      ingTotal: "$3,9M",  upsell: "—",      costos: "$4,8M",  mkt: "$0", resultado: "–$1,0M", neg: true  },
     { mes: "Mes 5",          subs: "1.500", fase: "normal",      ingTotal: "$4,9M",  upsell: "—",      costos: "$4,8M",  mkt: "$0", resultado: "–$0,1M", neg: true  },
     { mes: "Mes 6",          subs: "1.800", fase: "normal",      ingTotal: "$5,8M",  upsell: "—",      costos: "$4,8M",  mkt: "$0", resultado: "+$0,9M", neg: false },
@@ -110,7 +110,7 @@ export default function SlideFinanzas1() {
       {/* Footnote */}
       <div style={{ flexShrink: 0, fontSize: "0.88vw", color: "rgba(244,244,244,0.42)", lineHeight: 1.45 }}>
         Blend 35/65% (sin lifetime) · 300 nuevos suscriptores/mes · Marketing escalonado: el gasto fuerte parte en M9, cuando la operación ya es rentable ·
-        Break-even operacional M6 · Recuperación de caja acumulada M11 · $76M suscripciones · $9M cursos · Total $85M · Costos $66M + Marketing $10M = $76M · Neto +$9M · Marketing M1–M2 financiado con la inversión inicial (no aparece en la tabla) ·
+        Break-even operacional M6 · Recuperación de caja acumulada M11 · $76M suscripciones · $9M cursos · Total $85M · Costos $66M + Marketing $10M = $76M · Neto +$9M · Marketing M1–M3 financiado con la ronda ($1M + $1M + $0,5M, no aparece en la tabla) ·
         Vista conservadora: el plan anual (65%) se reconoce mes a mes; en caja real ese ingreso entra por adelantado.
       </div>
     </div>
