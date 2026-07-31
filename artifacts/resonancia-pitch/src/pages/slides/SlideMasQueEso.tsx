@@ -33,10 +33,10 @@ export default function SlideMasQueEso() {
       <div style={{ position: "relative", width: "4vw", height: "1px", backgroundColor: "rgba(190,150,80,0.5)" }} />
 
       <div style={{ position: "relative", fontSize: "1.75vw", fontWeight: 500, lineHeight: 1.65, color: "rgba(244,244,244,0.88)" }}>
-        Somos una herramienta de <span style={{ color: "#FFFFFF", fontWeight: 700 }}>expansión y autoconocimiento</span> que
-        nutre a nuestros usuarios con experiencias y contenido diseñados para fomentar la calma, la consciencia, el
-        bienestar y el desarrollo personal, acompañándolos en un camino de{" "}
-        <span style={{ color: "#BE9650", fontWeight: 700 }}>transformación interior</span>.
+        Somos una herramienta de <span style={{ color: "#FFFFFF", fontWeight: 700 }}>expansión, autoconocimiento y desarrollo espiritual</span> que
+        nutre a nuestros usuarios con experiencias y contenido diseñados para fomentar la calma, la consciencia y el
+        bienestar, especializándonos en los <span style={{ color: "#FFFFFF", fontWeight: 700 }}>sonidos milenarios de antiguas culturas</span> como
+        un camino hacia la <span style={{ color: "#BE9650", fontWeight: 700 }}>transformación interior</span>.
       </div>
     </div>
   );
