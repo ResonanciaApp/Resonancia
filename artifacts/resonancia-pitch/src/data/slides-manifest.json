@@ -23,8 +23,15 @@
     "description": "Casa del Cuenco (9 años en Sonoterapia y Meditaciones) al centro, rodeada de los roles del equipo: Voces guía, Productores, Sonoterapeutas y Músicos."
   },
   {
-    "id": "a1f4c2d0-1111-4a01-9c01-000000000013",
+    "id": "7788eb52-e4ef-4ce2-bc76-52226dd8a2e4",
     "position": 4,
+    "filepath": "src/pages/slides/SlideComunidad.tsx",
+    "title": "Comunidad · +839.000 seguidores",
+    "description": "Resumen del total de seguidores de Casa del Cuenco con capturas reales: Instagram 333 mil, TikTok 279 mil, Facebook 221 mil, YouTube 6.416."
+  },
+  {
+    "id": "a1f4c2d0-1111-4a01-9c01-000000000013",
+    "position": 5,
     "filepath": "src/pages/slides/SlideProyeccion.tsx",
     "title": "Proyección a 12 meses",
     "description": "Escenarios de ingresos para el primer año.",
@@ -32,7 +39,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000011",
-    "position": 5,
+    "position": 6,
     "filepath": "src/pages/slides/Slide11Inversion.tsx",
     "title": "La inversión",
     "description": "Monto, uso de fondos y contacto.",
@@ -40,7 +47,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000030",
-    "position": 6,
+    "position": 7,
     "filepath": "src/pages/slides/SlidePrecios.tsx",
     "title": "Estrategia de precios",
     "description": "Precios de lanzamiento y normales por plan, netos para la empresa y ARPU blended.",
@@ -48,7 +55,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000022",
-    "position": 7,
+    "position": 8,
     "filepath": "src/pages/slides/SlideUpSells.tsx",
     "title": "Segunda fuente · Cursos y talleres",
     "description": "Up-sells de cursos: desglose precio, curva de ventas M7-M12, impacto en flujo anual.",
@@ -56,7 +63,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000017",
-    "position": 8,
+    "position": 9,
     "filepath": "src/pages/slides/SlideFinanzas3.tsx",
     "title": "Anexo Financiero · Desglose de costos mensuales",
     "description": "Costos fijos, variables (contenido), marketing ramp-up y totales por fase.",
@@ -64,7 +71,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000015",
-    "position": 9,
+    "position": 10,
     "filepath": "src/pages/slides/SlideFinanzas1.tsx",
     "title": "Anexo Financiero · Flujo de caja año 1",
     "description": "Tabla mes a mes: suscriptores, ingresos netos, up-sells de cursos, costos y resultado.",
@@ -72,7 +79,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000016",
-    "position": 10,
+    "position": 11,
     "filepath": "src/pages/slides/SlideFinanzas2.tsx",
     "title": "Anexo Financiero · Curva de crecimiento y escenarios",
     "description": "Gráfico de barras de caja acumulada + 3 escenarios con suscripciones y cursos.",
@@ -80,7 +87,7 @@
   },
   {
     "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e19",
-    "position": 11,
+    "position": 12,
     "filepath": "src/pages/slides/SlideCAC.tsx",
     "title": "Anexo Financiero · Costo por adquisición",
     "description": "CAC blended año 1, payback y por qué se mantiene bajo",
@@ -88,7 +95,7 @@
   },
   {
     "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e20",
-    "position": 12,
+    "position": 13,
     "filepath": "src/pages/slides/SlideRetencion.tsx",
     "title": "Anexo Financiero · Retención",
     "description": "Sensibilidad de churn: subs M12, LTV y LTV/CAC por escenario",
@@ -96,7 +103,7 @@
   },
   {
     "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e21",
-    "position": 13,
+    "position": 14,
     "filepath": "src/pages/slides/SlideConclusionFinanciera.tsx",
     "title": "Anexo Financiero · Conclusión",
     "description": "La ronda construye y lanza la app; la operación se autofinancia vía prepagos anuales",
@@ -104,7 +111,7 @@
   },
   {
     "id": "0b6c2f10-6a4a-4c9e-9a4e-1a1e2c3d4e22",
-    "position": 14,
+    "position": 15,
     "filepath": "src/pages/slides/SlideContingencia.tsx",
     "title": "Anexo Financiero · Plan de contingencia",
     "description": "Caja real con prepagos anuales; línea de socios ~$6,3M solo si el mix anual < 50% en M1–M3",
@@ -112,7 +119,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000019",
-    "position": 15,
+    "position": 16,
     "filepath": "src/pages/slides/SlideTramosInversion.tsx",
     "title": "Oportunidad de inversión",
     "description": "Tabla de tramos: inversión, equity, post-money, valor del stake al mes 12 y retorno estimado.",
@@ -120,7 +127,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000014",
-    "position": 16,
+    "position": 17,
     "filepath": "src/pages/slides/SlideAnexoInversion.tsx",
     "title": "Anexo · Valoración estimada",
     "description": "Pre-money, post-money y escenarios de retorno al mes 12.",
@@ -128,7 +135,7 @@
   },
   {
     "id": "a1f4c2d0-1111-4a01-9c01-000000000021",
-    "position": 17,
+    "position": 18,
     "filepath": "src/pages/slides/SlideContacto.tsx",
     "title": "Contacto",
     "description": "Slide de cierre con datos de contacto.",

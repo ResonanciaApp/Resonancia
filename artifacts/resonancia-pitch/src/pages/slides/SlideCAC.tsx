@@ -2,7 +2,7 @@ export default function SlideCAC() {
   const drivers = [
     {
       t: "Comunidad propia",
-      d: "+1.000.000 de seguidores activos en redes: distribución orgánica con costo de adquisición casi nulo",
+      d: "+839.000 seguidores activos en redes: distribución orgánica con costo de adquisición casi nulo",
     },
     {
       t: "Nicho de alta intención",
