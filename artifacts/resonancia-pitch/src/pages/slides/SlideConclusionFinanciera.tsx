@@ -1,18 +1,18 @@
 export default function SlideConclusionFinanciera() {
   const fases = [
     {
-      t: "MESES 1–5 · EL VALLE",
-      d: "Pocos suscriptores y marketing contenido: la caja acumulada llega a ≈ −$8,8M entre M4 y M5. Ese hoyo es lo que financia la ronda ($10M lo cubre con holgura).",
+      t: "ANTES DEL M1 · CONSTRUCCIÓN",
+      d: "Casi toda la ronda ($29,9M) se invierte antes del lanzamiento: desarrollo, contenido, estudio, equipamiento y legales. Solo $2,5M quedan reservados para marketing desde M1.",
       tint: "rgba(224,112,112,0.9)",
     },
     {
-      t: "MESES 6–10 · EL CRUCE",
-      d: "Desde M6 los meses cierran en positivo y desde M7 entran los cursos: la caja acumulada empieza a recuperarse.",
+      t: "M1+ · OPERACIÓN AUTOFINANCIADA",
+      d: "El 65% paga el plan anual por adelantado: en caja real el mes 1 ingresa ~$5M contra $4,3M de costos. Break-even operacional en M6 y desde M7 entran los cursos.",
       tint: "#BE9650",
     },
     {
-      t: "MESES 11–12 · OPERACIÓN RENTABLE",
-      d: "La caja acumulada se vuelve positiva en M11 y el mes 12 cierra con ~$13,6M de ingreso contra $7,7M de costos.",
+      t: "AÑO 1 · RESULTADO",
+      d: "El año cierra con +$9M netos incluso en la vista conservadora, y el mes 12 factura ~$13,6M contra $8,4M de costos.",
       tint: "#6EC49A",
     },
   ];
@@ -31,7 +31,7 @@ export default function SlideConclusionFinanciera() {
         ANEXO FINANCIERO · CONCLUSIÓN
       </div>
       <div style={{ fontSize: "3.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.1, maxWidth: "62vw" }}>
-        La inversión no cubre pérdidas: <span style={{ color: "#FFFFFF" }}>cubre el arranque.</span>
+        La ronda construye y lanza la app: <span style={{ color: "#FFFFFF" }}>la operación se autofinancia.</span>
       </div>
 
       {/* Fases */}
@@ -60,7 +60,7 @@ export default function SlideConclusionFinanciera() {
         <div style={{ flex: 1, backgroundColor: "rgba(110,196,154,0.07)", border: "1px solid rgba(110,196,154,0.30)", borderRadius: "0.7vw", padding: "2.2vh 1.6vw" }}>
           <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#6EC49A", letterSpacing: "0.10em", marginBottom: "0.9vh" }}>CASO BASE (SIN CHURN)</div>
           <div style={{ fontSize: "1.1vw", color: "rgba(244,244,244,0.65)", lineHeight: 1.6 }}>
-            El año 1 cierra con <span style={{ color: "#FFFFFF", fontWeight: 700 }}>+$9M netos</span>: el valle inicial se recupera dentro del mismo año (caja acumulada positiva desde M11).
+            El año 1 cierra con <span style={{ color: "#FFFFFF", fontWeight: 700 }}>+$9M netos</span>. En la vista conservadora (anual mes a mes) hay un valle de ≈ −$8,8M que en caja real cubren los prepagos anuales — plan de contingencia en la siguiente lámina.
           </div>
         </div>
         <div style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.14)", border: "1px solid rgba(255,255,255,0.13)", borderRadius: "0.7vw", padding: "2.2vh 1.6vw" }}>
@@ -73,7 +73,7 @@ export default function SlideConclusionFinanciera() {
 
       <div style={{ marginTop: "auto", fontSize: "0.85vw", color: "rgba(244,244,244,0.38)", lineHeight: 1.45 }}>
         Lectura de los anexos anteriores: caja acumulada (hoja 2), CAC ≈ $3.600 con payback de 1,1 meses y sensibilidad de churn.
-        El rol de la ronda es financiar el valle de los primeros meses hasta que la base de suscriptores sostiene la operación. Cifras en CLP.
+        El rol de la ronda es construir y lanzar el producto; la operación se sostiene con los prepagos anuales desde el mes 1. Cifras en CLP.
       </div>
     </div>
   );
