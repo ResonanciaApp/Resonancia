@@ -29,7 +29,7 @@ export default function SlideCAC() {
         ANEXO FINANCIERO · COSTO POR ADQUISICIÓN
       </div>
       <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-        Cada suscriptor se paga <span style={{ color: "#FFFFFF" }}>en ~1,2 meses.</span>
+        Cada suscriptor se paga <span style={{ color: "#FFFFFF" }}>en ~1,1 meses.</span>
       </div>
 
       {/* KPI row */}
@@ -38,7 +38,7 @@ export default function SlideCAC() {
           { k: "CAC BLENDED AÑO 1", v: "≈ $3.600", s: "por suscriptor (rango $3.100–$4.000)" },
           { k: "INVERSIÓN EN MARKETING AÑO 1", v: "≈ $13M", s: "pre-lanzamiento + ramp-up M1–M12" },
           { k: "SUSCRIPTORES AÑO 1", v: "3.600", s: "300 nuevos subs/mes (caso base)" },
-          { k: "PAYBACK DEL CAC", v: "1,2 meses", s: "CAC ÷ ARPU recurrente $3.116/mes" },
+          { k: "PAYBACK DEL CAC", v: "1,1 meses", s: "CAC ÷ ARPU recurrente $3.238/mes" },
         ].map((c) => (
           <div
             key={c.k}
@@ -71,7 +71,7 @@ export default function SlideCAC() {
       {/* Footnote */}
       <div style={{ marginTop: "auto", fontSize: "0.85vw", color: "rgba(244,244,244,0.38)", lineHeight: 1.45 }}>
         CAC blended = marketing total año 1 (pre-lanzamiento $1,5M · M1–M2 $2M · M3–M6 $2M · M7–M12 $6M–$9M) ÷ 3.600 suscriptores del caso base.
-        Payback sobre ARPU recurrente blended $3.116 (neto de IVA y comisión de tienda). Cifras en CLP, consistentes con el anexo de flujo de caja.
+        Payback sobre ARPU recurrente blended $3.238 (neto de IVA y comisión de tienda). Cifras en CLP, consistentes con el anexo de flujo de caja.
       </div>
     </div>
   );

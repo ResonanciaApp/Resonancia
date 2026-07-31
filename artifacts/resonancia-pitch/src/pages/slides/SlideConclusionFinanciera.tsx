@@ -1,18 +1,18 @@
 export default function SlideConclusionFinanciera() {
   const fases = [
     {
-      t: "MESES 1–6 · EL VALLE",
+      t: "MESES 1–5 · EL VALLE",
       d: "Pocos suscriptores y costos corriendo completos: la caja acumulada es negativa. Este es el tramo que financia la ronda de inversión.",
       tint: "rgba(224,112,112,0.9)",
     },
     {
-      t: "MESES 7–11 · EL CRUCE",
-      d: "Entran los cursos y la base de suscriptores crece: los meses empiezan a cerrar en positivo y la caja acumulada se recupera.",
+      t: "MESES 6–10 · EL CRUCE",
+      d: "Desde M6 los meses cierran en positivo y desde M7 entran los cursos: la caja acumulada empieza a recuperarse.",
       tint: "#BE9650",
     },
     {
-      t: "MES 12 · OPERACIÓN RENTABLE",
-      d: "Incluso con 15% de churn: ~1.720 suscriptores generan $8–9M al mes contra $7,7M de costos. El negocio ya se paga solo, mes a mes.",
+      t: "MESES 11–12 · OPERACIÓN RENTABLE",
+      d: "La caja acumulada se vuelve positiva en M11 y el mes 12 cierra con ~$13,6M de ingreso contra $7,7M de costos.",
       tint: "#6EC49A",
     },
   ];
@@ -60,19 +60,19 @@ export default function SlideConclusionFinanciera() {
         <div style={{ flex: 1, backgroundColor: "rgba(110,196,154,0.07)", border: "1px solid rgba(110,196,154,0.30)", borderRadius: "0.7vw", padding: "2.2vh 1.6vw" }}>
           <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#6EC49A", letterSpacing: "0.10em", marginBottom: "0.9vh" }}>CASO BASE (SIN CHURN)</div>
           <div style={{ fontSize: "1.1vw", color: "rgba(244,244,244,0.65)", lineHeight: 1.6 }}>
-            El año 1 cierra con <span style={{ color: "#FFFFFF", fontWeight: 700 }}>+$22M netos</span>: el valle inicial se recupera dentro del mismo año (caja acumulada positiva desde M8).
+            El año 1 cierra con <span style={{ color: "#FFFFFF", fontWeight: 700 }}>+$9M netos</span>: el valle inicial se recupera dentro del mismo año (caja acumulada positiva desde M11).
           </div>
         </div>
         <div style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.14)", border: "1px solid rgba(255,255,255,0.13)", borderRadius: "0.7vw", padding: "2.2vh 1.6vw" }}>
           <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "rgba(244,244,244,0.55)", letterSpacing: "0.10em", marginBottom: "0.9vh" }}>ESCENARIO CHURN 15%</div>
           <div style={{ fontSize: "1.1vw", color: "rgba(244,244,244,0.65)", lineHeight: 1.6 }}>
-            El año acumula <span style={{ color: "#FFFFFF", fontWeight: 700 }}>−$7M</span>, pero no es una pérdida del mes 12: es el costo de arranque de los primeros meses. Al cierre del año la operación ya es <span style={{ color: "#6EC49A", fontWeight: 700 }}>rentable mes a mes</span>.
+            El año acumula <span style={{ color: "#FFFFFF", fontWeight: 700 }}>−$20M</span>: es el costo de arranque, no una pérdida permanente. Al mes 12 la operación llega <span style={{ color: "#6EC49A", fontWeight: 700 }}>al equilibrio mes a mes</span> (~$7,5M vs $7,7M) y el crecimiento posterior la vuelve rentable.
           </div>
         </div>
       </div>
 
       <div style={{ marginTop: "auto", fontSize: "0.85vw", color: "rgba(244,244,244,0.38)", lineHeight: 1.45 }}>
-        Lectura de los anexos anteriores: caja acumulada (hoja 2), CAC ≈ $3.600 con payback de 1,2 meses y sensibilidad de churn.
+        Lectura de los anexos anteriores: caja acumulada (hoja 2), CAC ≈ $3.600 con payback de 1,1 meses y sensibilidad de churn.
         El rol de la ronda es financiar el valle de los primeros meses hasta que la base de suscriptores sostiene la operación. Cifras en CLP.
       </div>
     </div>

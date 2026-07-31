@@ -1,12 +1,9 @@
 export default function SlideFinanzas2() {
-  // 300 subs nuevos/mes → 3.600 a M12
-  // M1: ARPU rec $2.408 + lifetime $0.882M/mes
-  // M2+: ARPU rec $3.116 + lifetime $1.323M/mes
+  // 300 subs nuevos/mes → 3.600 a M12 · blend 35/65 sin lifetime
+  // M1: ARPU rec $2.506 · M2+: ARPU rec $3.238
   // Cursos M7+: neto $15.294/venta
-  const ARPU_LAUNCH = 2408;
-  const ARPU_NORMAL = 3116;
-  const LT_LAUNCH = 0.882;
-  const LT_NORMAL = 1.323;
+  const ARPU_LAUNCH = 2506;
+  const ARPU_NORMAL = 3238;
   const NETO_CURSO = 15294;
 
   const meses = [
@@ -27,10 +24,9 @@ export default function SlideFinanzas2() {
   let cumulative = 0;
   const data = meses.map((m) => {
     const arpu      = m.launch ? ARPU_LAUNCH : ARPU_NORMAL;
-    const lt        = m.launch ? LT_LAUNCH : LT_NORMAL;
     const ingresoRec = (m.subs * arpu) / 1_000_000;
     const ingresoUp  = (m.cursos * NETO_CURSO) / 1_000_000;
-    const ingreso    = ingresoRec + lt + ingresoUp;
+    const ingreso    = ingresoRec + ingresoUp;
     const neto       = ingreso - m.costos;
     cumulative      += neto;
     return { ...m, ingreso, ingresoUp, neto, cumulative: parseFloat(cumulative.toFixed(2)) };
@@ -44,10 +40,10 @@ export default function SlideFinanzas2() {
   const ZERO_PCT = (-minCum / cumRange) * 100;
 
   const scenarios = [
-    { label: "Base",      subs12: "3.600",  cursos6m: "600",    ingTotal: "~$97M",  neto: "+$22M",  highlight: true  },
-    { label: "Optimista", subs12: "4.500",  cursos6m: "~750",   ingTotal: "~$121M", neto: "+$46M",  highlight: false },
-    { label: "Agresivo",  subs12: "6.000",  cursos6m: "~1.000", ingTotal: "~$162M", neto: "+$86M",  highlight: false },
-    { label: "Churn 15%", subs12: "≈1.720", cursos6m: "600",    ingTotal: "~$69M",  neto: "−$7M",   highlight: false, negative: true },
+    { label: "Base",      subs12: "3.600",  cursos6m: "600",    ingTotal: "~$85M",  neto: "+$9M",   highlight: true  },
+    { label: "Optimista", subs12: "4.500",  cursos6m: "~750",   ingTotal: "~$106M", neto: "+$30M",  highlight: false },
+    { label: "Agresivo",  subs12: "6.000",  cursos6m: "~1.000", ingTotal: "~$141M", neto: "+$66M",  highlight: false },
+    { label: "Churn 15%", subs12: "≈1.720", cursos6m: "600",    ingTotal: "~$55M",  neto: "−$20M",  highlight: false, negative: true },
   ];
 
   return (
@@ -142,8 +138,8 @@ export default function SlideFinanzas2() {
       </div>
 
       <div style={{ fontSize: "0.9vw", color: "rgba(244,244,244,0.40)", lineHeight: 1.4, marginTop: "1vh" }}>
-        Base: 300 nuevos subs/mes · Blend 35/60/5% · ARPU rec. $3.116 normal · Cursos $15.294/venta (post-tallerista/prod 35%) ·
-        Break-even operacional M5 · Recuperación caja M8 · "Churn 15%": 300 nuevos subs/mes con 15% de cancelación mensual (≈1.720 subs a M12), mismos costos — el año cierra cerca del equilibrio · Escenarios ilustrativos, no garantizados.
+        Base: 300 nuevos subs/mes · Blend 35/65% (sin lifetime) · ARPU rec. $3.238 normal · Cursos $15.294/venta (post-tallerista/prod 35%) ·
+        Break-even operacional M6 · Recuperación caja M11 · "Churn 15%": 300 nuevos subs/mes con 15% de cancelación mensual (≈1.720 subs a M12), mismos costos · Escenarios ilustrativos, no garantizados.
       </div>
     </div>
   );

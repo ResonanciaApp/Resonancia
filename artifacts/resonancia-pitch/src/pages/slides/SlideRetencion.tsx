@@ -1,7 +1,7 @@
 export default function SlideRetencion() {
   // 300 subs nuevos/mes · subs M12 = 300·(1-(1-c)^12)/c
   // c=15%: ≈1.720 · c=20%: ≈1.400
-  // LTV = ARPU $3.116 / churn → 15%: ≈$20.800 · 20%: ≈$15.600
+  // LTV = ARPU $3.238 / churn → 15%: ≈$21.600 · 20%: ≈$16.200
   const scenarios = [
     {
       t: "CASO BASE ACTUAL",
@@ -16,8 +16,8 @@ export default function SlideRetencion() {
       t: "CHURN REALISTA",
       churn: "15% mensual",
       subs: "≈ 1.720",
-      ltv: "≈ $20.800",
-      ratio: "≈ 5,8x",
+      ltv: "≈ $21.600",
+      ratio: "≈ 6,0x",
       note: "Escenario realista para una app nueva de suscripción: retención mensual del 85%.",
       highlight: true,
     },
@@ -25,8 +25,8 @@ export default function SlideRetencion() {
       t: "CHURN EXIGENTE",
       churn: "20% mensual",
       subs: "≈ 1.400",
-      ltv: "≈ $15.600",
-      ratio: "≈ 4,3x",
+      ltv: "≈ $16.200",
+      ratio: "≈ 4,5x",
       note: "Escenario de estrés: aun perdiendo 1 de cada 5 suscriptores al mes, cada uno devuelve más de 4 veces su costo de adquisición.",
       highlight: false,
     },
@@ -92,7 +92,7 @@ export default function SlideRetencion() {
 
       <div style={{ marginTop: "auto", fontSize: "0.85vw", color: "rgba(244,244,244,0.38)", lineHeight: 1.45 }}>
         Suscriptores M12 = 300 nuevos subs/mes acumulados con la tasa de churn de cada escenario · LTV = ARPU recurrente
-        blended $3.116 ÷ churn mensual · LTV/CAC sobre CAC blended ≈ $3.600 (diapositiva anterior). Cifras en CLP.
+        blended $3.238 ÷ churn mensual · LTV/CAC sobre CAC blended ≈ $3.600 (diapositiva anterior). Cifras en CLP.
       </div>
     </div>
   );

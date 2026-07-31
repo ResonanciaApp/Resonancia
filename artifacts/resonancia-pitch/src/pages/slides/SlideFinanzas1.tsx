@@ -1,22 +1,22 @@
 export default function SlideFinanzas1() {
   // 300 subs nuevos/mes → 3.600 a M12
-  // M1: ARPU rec $2.408 · lifetime boost $0.882M/mes
-  // M2+: ARPU rec $3.116 · lifetime boost $1.323M/mes
+  // Blend 35/65 sin lifetime
+  // M1: ARPU rec $2.506 · M2+: ARPU rec $3.238
   // Cursos M7+: $15.294/venta (post-tienda, post-tallerista/prod 35%)
 
   const rows = [
-    { mes: "M1 Lanzamiento", subs: "300",   fase: "lanzamiento", ingTotal: "$1,6M",  upsell: "—",      costos: "$4,7M",  resultado: "–$3,1M", neg: true  },
-    { mes: "Mes 2",          subs: "600",   fase: "normal",      ingTotal: "$3,2M",  upsell: "—",      costos: "$4,7M",  resultado: "–$1,5M", neg: true  },
-    { mes: "Mes 3",          subs: "900",   fase: "normal",      ingTotal: "$4,1M",  upsell: "—",      costos: "$5,3M",  resultado: "–$1,2M", neg: true  },
-    { mes: "Mes 4",          subs: "1.200", fase: "normal",      ingTotal: "$5,1M",  upsell: "—",      costos: "$5,3M",  resultado: "–$0,2M", neg: true  },
-    { mes: "Mes 5",          subs: "1.500", fase: "normal",      ingTotal: "$6,0M",  upsell: "—",      costos: "$5,3M",  resultado: "+$0,7M", neg: false },
-    { mes: "Mes 6",          subs: "1.800", fase: "normal",      ingTotal: "$6,9M",  upsell: "—",      costos: "$5,3M",  resultado: "+$1,6M", neg: false },
-    { mes: "Mes 7",          subs: "2.100", fase: "normal",      ingTotal: "$7,9M",  upsell: "+$0,9M", costos: "$7,2M",  resultado: "+$1,6M", neg: false },
-    { mes: "Mes 8",          subs: "2.400", fase: "normal",      ingTotal: "$8,8M",  upsell: "+$1,2M", costos: "$7,2M",  resultado: "+$2,8M", neg: false },
-    { mes: "Mes 9",          subs: "2.700", fase: "normal",      ingTotal: "$9,7M",  upsell: "+$1,5M", costos: "$7,45M", resultado: "+$3,8M", neg: false },
-    { mes: "Mes 10",         subs: "3.000", fase: "normal",      ingTotal: "$10,7M", upsell: "+$1,7M", costos: "$7,45M", resultado: "+$4,9M", neg: false },
-    { mes: "Mes 11",         subs: "3.300", fase: "normal",      ingTotal: "$11,6M", upsell: "+$1,8M", costos: "$7,7M",  resultado: "+$5,7M", neg: false },
-    { mes: "Mes 12",         subs: "3.600", fase: "normal",      ingTotal: "$12,5M", upsell: "+$2,0M", costos: "$7,7M",  resultado: "+$6,8M", neg: false },
+    { mes: "M1 Lanzamiento", subs: "300",   fase: "lanzamiento", ingTotal: "$0,8M",  upsell: "—",      costos: "$4,7M",  resultado: "–$4,0M", neg: true  },
+    { mes: "Mes 2",          subs: "600",   fase: "normal",      ingTotal: "$1,9M",  upsell: "—",      costos: "$4,7M",  resultado: "–$2,8M", neg: true  },
+    { mes: "Mes 3",          subs: "900",   fase: "normal",      ingTotal: "$2,9M",  upsell: "—",      costos: "$5,3M",  resultado: "–$2,4M", neg: true  },
+    { mes: "Mes 4",          subs: "1.200", fase: "normal",      ingTotal: "$3,9M",  upsell: "—",      costos: "$5,3M",  resultado: "–$1,4M", neg: true  },
+    { mes: "Mes 5",          subs: "1.500", fase: "normal",      ingTotal: "$4,9M",  upsell: "—",      costos: "$5,3M",  resultado: "–$0,5M", neg: true  },
+    { mes: "Mes 6",          subs: "1.800", fase: "normal",      ingTotal: "$5,8M",  upsell: "—",      costos: "$5,3M",  resultado: "+$0,5M", neg: false },
+    { mes: "Mes 7",          subs: "2.100", fase: "normal",      ingTotal: "$6,8M",  upsell: "+$0,9M", costos: "$7,2M",  resultado: "+$0,5M", neg: false },
+    { mes: "Mes 8",          subs: "2.400", fase: "normal",      ingTotal: "$7,8M",  upsell: "+$1,2M", costos: "$7,2M",  resultado: "+$1,8M", neg: false },
+    { mes: "Mes 9",          subs: "2.700", fase: "normal",      ingTotal: "$8,7M",  upsell: "+$1,5M", costos: "$7,45M", resultado: "+$2,8M", neg: false },
+    { mes: "Mes 10",         subs: "3.000", fase: "normal",      ingTotal: "$9,7M",  upsell: "+$1,7M", costos: "$7,45M", resultado: "+$3,9M", neg: false },
+    { mes: "Mes 11",         subs: "3.300", fase: "normal",      ingTotal: "$10,7M", upsell: "+$1,8M", costos: "$7,7M",  resultado: "+$4,8M", neg: false },
+    { mes: "Mes 12",         subs: "3.600", fase: "normal",      ingTotal: "$11,7M", upsell: "+$2,0M", costos: "$7,7M",  resultado: "+$5,9M", neg: false },
   ];
 
   return (
@@ -33,7 +33,7 @@ export default function SlideFinanzas1() {
           Flujo de caja <span style={{ color: "#FFFFFF" }}>post-lanzamiento.</span>
         </div>
         <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.50)", marginTop: "0.4vh" }}>
-          En millones de CLP · 300 suscriptores nuevos/mes · 3.600 al cierre · Ingresos = recurrente + boost lifetime + up-sells
+          En millones de CLP · 300 suscriptores nuevos/mes · 3.600 al cierre · Ingresos = recurrente + up-sells
         </div>
       </div>
 
@@ -41,11 +41,11 @@ export default function SlideFinanzas1() {
       <div style={{ display: "flex", gap: "1vw", flexShrink: 0 }}>
         <div style={{ flex: 1, backgroundColor: "rgba(190,150,80,0.09)", border: "1px solid rgba(190,150,80,0.30)", borderRadius: "0.5vw", padding: "0.55vh 1.1vw", display: "flex", alignItems: "baseline", gap: "0.8vw", flexWrap: "wrap" }}>
           <span style={{ fontSize: "0.82vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.09em", flexShrink: 0 }}>LANZAMIENTO M1</span>
-          <span style={{ fontSize: "0.82vw", color: "rgba(244,244,244,0.50)" }}>ARPU rec. $2.408/sub · lifetime $0.882M/mes · precios $5.990 / $39.990 / $99.990</span>
+          <span style={{ fontSize: "0.82vw", color: "rgba(244,244,244,0.50)" }}>ARPU rec. $2.506/sub · precios $5.990 / $39.990</span>
         </div>
         <div style={{ flex: 1, backgroundColor: "rgba(110,196,154,0.06)", border: "1px solid rgba(110,196,154,0.25)", borderRadius: "0.5vw", padding: "0.55vh 1.1vw", display: "flex", alignItems: "baseline", gap: "0.8vw", flexWrap: "wrap" }}>
           <span style={{ fontSize: "0.82vw", fontWeight: 700, color: "#6EC49A", letterSpacing: "0.09em", flexShrink: 0 }}>NORMAL M2+</span>
-          <span style={{ fontSize: "0.82vw", color: "rgba(244,244,244,0.50)" }}>ARPU rec. $3.116/sub · lifetime $1.323M/mes · precios $7.990 / $49.990 / $149.990 · Cursos desde M7</span>
+          <span style={{ fontSize: "0.82vw", color: "rgba(244,244,244,0.50)" }}>ARPU rec. $3.238/sub · precios $7.990 / $49.990 · Cursos desde M7</span>
         </div>
       </div>
 
@@ -98,17 +98,17 @@ export default function SlideFinanzas1() {
           <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#FFFFFF" }}>AÑO 1 TOTAL</div>
           <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#F4F4F4" }}>3.600 cierre</div>
           <div />
-          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#F4F4F4" }}>~$88M</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#F4F4F4" }}>~$76M</div>
           <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#6EC49A" }}>~$9M</div>
           <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>~$76M</div>
-          <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#6EC49A" }}>+$22M neto</div>
+          <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#6EC49A" }}>+$9M neto</div>
         </div>
       </div>
 
       {/* Footnote */}
       <div style={{ flexShrink: 0, fontSize: "0.88vw", color: "rgba(244,244,244,0.42)", lineHeight: 1.45 }}>
-        Blend 35/60/5% · 300 nuevos suscriptores/mes · Break-even operacional M5 · Recuperación de caja acumulada M8 ·
-        $88M subs+lifetime · $9M cursos · Total $97M · Costos $76M · Neto +$22M.
+        Blend 35/65% (sin lifetime) · 300 nuevos suscriptores/mes · Break-even operacional M6 · Recuperación de caja acumulada M11 ·
+        $76M suscripciones · $9M cursos · Total $85M · Costos $76M · Neto +$9M.
       </div>
     </div>
   );

@@ -104,7 +104,7 @@ export default function SlideAnexoInversion() {
               <Bullet text="+1.000.000 seguidores activos = distribución con costo de adquisición casi nulo" />
               <Bullet text="180 pistas de audio listas al lanzar (activo de contenido producido)" />
               <Bullet text="App funcional con auth, player, suscripciones y back-office construidos" />
-              <Bullet text="Precios $7.990/mes · $49.990/año · $149.990 lifetime (validados en segmento objetivo)" />
+              <Bullet text="Precios $7.990/mes · $49.990/año (validados en segmento objetivo)" />
             </div>
 
             <div style={{ borderTop: "1px solid rgba(255,255,255,0.2)", paddingTop: "1vh", marginTop: "auto" }}>
@@ -144,36 +144,36 @@ export default function SlideAnexoInversion() {
         <div style={{ flex: 1.7, display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.1em", marginBottom: "1vh" }}>VALORACIÓN ESTIMADA · MES 12 (CLP)</div>
           <div style={{ display: "flex", gap: "1.1vw", flex: 1 }}>
-            {/* Base: 3.600 subs × $3.116 × 12 × 4× = $537M → 8,5% = $45.6M → 45.6/10 = 4.6× */}
+            {/* Base: 3.600 subs × $3.238 × 12 × 4× = $560M → 8,5% = $47.6M → 47.6/10 = 4.8× */}
             <ScenarioCard
               label="Base"
               highlight
               subs="3.600"
-              arr="$134M CLP"
+              arr="$140M CLP"
               multiple="4× ARR"
-              valuation="$537M"
-              stakeVal="$45,6M CLP"
-              returnX="4,6×"
+              valuation="$560M"
+              stakeVal="$47,6M CLP"
+              returnX="4,8×"
             />
-            {/* Optimista: 4.500 × $3.116 × 12 × 5× = $839M → 8,5% = $71.3M → 71.3/10 = 7.1× */}
+            {/* Optimista: 4.500 × $3.238 × 12 × 5× = $874M → 8,5% = $74.3M → 74.3/10 = 7.4× */}
             <ScenarioCard
               label="Optimista"
               subs="4.500"
-              arr="$168M CLP"
+              arr="$175M CLP"
               multiple="5× ARR"
-              valuation="$839M"
-              stakeVal="$71,3M CLP"
-              returnX="7,1×"
+              valuation="$874M"
+              stakeVal="$74,3M CLP"
+              returnX="7,4×"
             />
-            {/* Agresivo: 6.000 × $3.116 × 12 × 6× = $1.345M → 8,5% = $114M → 114/10 = 11.4× */}
+            {/* Agresivo: 6.000 × $3.238 × 12 × 6× = $1.399M → 8,5% = $119M → 119/10 = 11.9× */}
             <ScenarioCard
               label="Agresivo"
               subs="6.000"
-              arr="$224M CLP"
+              arr="$233M CLP"
               multiple="6× ARR"
-              valuation="$1.345M"
-              stakeVal="$114M CLP"
-              returnX="11,4×"
+              valuation="$1.399M"
+              stakeVal="$119M CLP"
+              returnX="11,9×"
             />
           </div>
         </div>
@@ -181,7 +181,7 @@ export default function SlideAnexoInversion() {
 
       {/* Footer */}
       <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.32)", lineHeight: 1.45, marginTop: "1.5vh" }}>
-        El % de equity depende solo de la valoración de entrada, no de los costos operativos. ARR recurrente = suscriptores M12 × ARPU rec. $3.116 × 12 (blend 35/60/5% · excluye lifetime) · Base: 300 subs nuevos/mes ·
+        El % de equity depende solo de la valoración de entrada, no de los costos operativos. ARR recurrente = suscriptores M12 × ARPU rec. $3.238 × 12 (blend 35/65%, solo planes recurrentes) · Base: 300 subs nuevos/mes ·
         Múltiplos de referencia para consumer subscription en etapa temprana (Calm valuó en ~4–8× ARR en rondas tempranas) ·
         Valoración estimada ilustrativa, no garantizada. El retorno real depende del exit y dilución en rondas futuras.
       </div>

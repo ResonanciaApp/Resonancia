@@ -1,9 +1,8 @@
 export default function SlidePrecios() {
-  // Blend 35/60/5
+  // Blend 35/65 (sin lifetime)
   const pricingRows = [
     { plan: "Mensual",  pct: "35%", launch: "$5.990",   launchNeto: "$3.517/mes",     normal: "$7.990",   normalNeto: "$4.700/mes" },
-    { plan: "Anual",   pct: "60%", launch: "$39.990",  launchNeto: "$1.961/mes eq.", normal: "$49.990",  normalNeto: "$2.451/mes eq." },
-    { plan: "Lifetime",pct: "5%",  launch: "$99.990",  launchNeto: "$58.817 único",   normal: "$149.990", normalNeto: "$88.229 único" },
+    { plan: "Anual",   pct: "65%", launch: "$39.990",  launchNeto: "$1.961/mes eq.", normal: "$49.990",  normalNeto: "$2.451/mes eq." },
   ];
 
   return (
@@ -20,7 +19,7 @@ export default function SlidePrecios() {
           Estrategia de <span style={{ color: "#FFFFFF" }}>precios.</span>
         </div>
         <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.45)", marginTop: "0.6vh" }}>
-          Precio de lanzamiento el primer mes, precio normal desde el mes 2 · mix estimado 35/60/5.
+          Precio de lanzamiento el primer mes, precio normal desde el mes 2 · mix estimado 35/65.
         </div>
       </div>
 
@@ -35,7 +34,7 @@ export default function SlidePrecios() {
         catálogo básico abierto, y el contenido completo (sesiones premium, mezclador avanzado y experiencias exclusivas) se
         desbloquea con la suscripción <strong style={{ color: "#FFFFFF" }}>Premium</strong>. El ingreso principal es recurrente
         y predecible: cada suscriptor paga mes a mes (o anual por adelantado), por lo que el negocio crece acumulando
-        suscriptores activos, no ventas únicas. Tres planes según compromiso: mensual, anual y lifetime.
+        suscriptores activos, no ventas únicas. Dos planes según compromiso: mensual y anual.
       </div>
 
       {/* Pricing table */}
@@ -78,19 +77,17 @@ export default function SlidePrecios() {
         }}>
           <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "rgba(244,244,244,0.50)", gridColumn: "1/3" }}>ARPU RECURRENTE BLENDED</div>
           <div style={{ gridColumn: "3/5", display: "flex", alignItems: "center", gap: "0.5vw" }}>
-            <span style={{ fontSize: "1.35vw", fontWeight: 700, color: "#BE9650" }}>$2.408/mes/sub</span>
-            <span style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.38)" }}>+ $1.18M boost lifetime/mes</span>
+            <span style={{ fontSize: "1.35vw", fontWeight: 700, color: "#BE9650" }}>$2.506/mes/sub</span>
           </div>
           <div style={{ gridColumn: "5/7", display: "flex", alignItems: "center", gap: "0.5vw" }}>
-            <span style={{ fontSize: "1.35vw", fontWeight: 700, color: "#6EC49A" }}>$3.116/mes/sub</span>
-            <span style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.38)" }}>+ $1.77M boost lifetime/mes</span>
+            <span style={{ fontSize: "1.35vw", fontWeight: 700, color: "#6EC49A" }}>$3.238/mes/sub</span>
           </div>
         </div>
       </div>
 
       {/* IVA note */}
       <div style={{ flexShrink: 0, fontSize: "1.0vw", color: "rgba(244,244,244,0.38)", lineHeight: 1.45 }}>
-        Neto = precio ÷ 1,19 (IVA 19% Chile, Ley 21.210) × 70% (comisión Apple/Google 30%) · Mensual y anual = recurrente · Lifetime = pago único, no renueva.
+        Neto = precio ÷ 1,19 (IVA 19% Chile, Ley 21.210) × 70% (comisión Apple/Google 30%) · Ambos planes son recurrentes: el ingreso es 100% predecible.
       </div>
     </div>
   );

@@ -64,19 +64,19 @@ export default function SlideProyeccion() {
           highlight
           installs="36.000"
           subs="3.600"
-          revenue="+$22M CLP"
+          revenue="+$9M CLP"
         />
         <ScenarioCard
           label="Optimista"
           installs="45.000"
           subs="4.500"
-          revenue="+$46M CLP"
+          revenue="+$30M CLP"
         />
         <ScenarioCard
           label="Agresivo"
           installs="60.000"
           subs="6.000"
-          revenue="+$86M CLP"
+          revenue="+$66M CLP"
         />
       </div>
 
@@ -85,9 +85,9 @@ export default function SlideProyeccion() {
         {/* Key figures row */}
         <div style={{ display: "flex", gap: "1.2vw", alignItems: "stretch", marginBottom: "1.4vh" }}>
           {[
-            { label: "Lanzamiento M1",    value: "$5.990 / $39.990 / $99.990", note: "Mensual · Anual · Lifetime" },
-            { label: "Normal M2+",        value: "$7.990 / $49.990 / $149.990", note: "Mensual · Anual · Lifetime" },
-            { label: "Blend (35/60/5%)", value: "~$3.116/mes/sub", note: "ARPU rec. + $1.77M/mes lifetime boost" },
+            { label: "Lanzamiento M1",    value: "$5.990 / $39.990", note: "Mensual · Anual" },
+            { label: "Normal M2+",        value: "$7.990 / $49.990", note: "Mensual · Anual" },
+            { label: "Blend (35/65%)", value: "~$3.238/mes/sub", note: "ARPU recurrente blended (M2+)" },
           ].map((k) => (
             <div
               key={k.label}
@@ -110,7 +110,7 @@ export default function SlideProyeccion() {
         </div>
         {/* Short disclaimer */}
         <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.35)", lineHeight: 1.5 }}>
-          Base: 300 suscriptores nuevos/mes · Break-even operacional M5 · Recuperación de caja acumulada M8. Escenarios ilustrativos, no garantizados.
+          Base: 300 suscriptores nuevos/mes · Break-even operacional M6 · Recuperación de caja acumulada M11. Escenarios ilustrativos, no garantizados.
         </div>
       </div>
 

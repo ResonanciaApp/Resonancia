@@ -1,6 +1,6 @@
 export default function SlideTramosInversion() {
   // Tramos simples: equity fijo por monto de inversión
-  const VAL_M12 = 537; // millones CLP · 3.600 subs × $3.116 ARR rec. (blend 35/60/5%) × 12 × 4×
+  const VAL_M12 = 560; // millones CLP · 3.600 subs × $3.238 ARR rec. (blend 35/65%) × 12 × 4×
 
   const tramos = [
     { inv: 3,  equity: 2.0 },
@@ -169,7 +169,7 @@ export default function SlideTramosInversion() {
       {/* Footer note */}
       <div style={{ flexShrink: 0, borderTop: "1px solid rgba(255,255,255,0.12)", paddingTop: "1.5vh" }}>
         <div style={{ fontSize: "1.0vw", color: "rgba(244,244,244,0.32)", lineHeight: 1.5 }}>
-          Stake M12 calculado sobre ARR recurrente (3.600 suscriptores × $3.116 ARPU rec. × 12 meses × 4× = $537M CLP · blend 35/60/5% · 300 nuevos subs/mes) · Excluye lifetime (no recurrente) · Retorno estimado ilustrativo.
+          Stake M12 calculado sobre ARR recurrente (3.600 suscriptores × $3.238 ARPU rec. × 12 meses × 4× = $560M CLP · blend 35/65% · 300 nuevos subs/mes) · Retorno estimado ilustrativo.
         </div>
       </div>
 
