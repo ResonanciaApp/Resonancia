@@ -47,6 +47,7 @@ export default function SlideFinanzas2() {
     { label: "Base",      subs12: "3.600",  cursos6m: "600",    ingTotal: "~$97M",  neto: "+$22M",  highlight: true  },
     { label: "Optimista", subs12: "4.500",  cursos6m: "~750",   ingTotal: "~$121M", neto: "+$46M",  highlight: false },
     { label: "Agresivo",  subs12: "6.000",  cursos6m: "~1.000", ingTotal: "~$162M", neto: "+$86M",  highlight: false },
+    { label: "Churn 15%", subs12: "≈1.720", cursos6m: "600",    ingTotal: "~$69M",  neto: "−$7M",   highlight: false, negative: true },
   ];
 
   return (
@@ -113,7 +114,7 @@ export default function SlideFinanzas2() {
                 </div>
                 <div style={{ textAlign: "right" }}>
                   <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#F4F4F4" }}>{s.ingTotal}</div>
-                  <div style={{ fontSize: "1.05vw", fontWeight: 700, color: "#6EC49A" }}>{s.neto} neto</div>
+                  <div style={{ fontSize: "1.05vw", fontWeight: 700, color: (s as any).negative ? "rgba(224,112,112,0.9)" : "#6EC49A" }}>{s.neto} neto</div>
                 </div>
               </div>
             ))}
@@ -142,7 +143,7 @@ export default function SlideFinanzas2() {
 
       <div style={{ fontSize: "0.9vw", color: "rgba(244,244,244,0.40)", lineHeight: 1.4, marginTop: "1vh" }}>
         Base: 300 nuevos subs/mes · Blend 35/60/5% · ARPU rec. $3.116 normal · Cursos $15.294/venta (post-tallerista/prod 35%) ·
-        Break-even operacional M5 · Recuperación caja M8 · Escenarios ilustrativos, no garantizados.
+        Break-even operacional M5 · Recuperación caja M8 · "Churn 15%": 300 nuevos subs/mes con 15% de cancelación mensual (≈1.720 subs a M12), mismos costos — el año cierra cerca del equilibrio · Escenarios ilustrativos, no garantizados.
       </div>
     </div>
   );
