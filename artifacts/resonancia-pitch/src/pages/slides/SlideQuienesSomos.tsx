@@ -37,7 +37,7 @@ export default function SlideQuienesSomos() {
           QUIÉNES SOMOS
         </div>
         <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Un equipo que ya <span style={{ color: "#BE9650" }}>vive del sonido.</span>
+          Un equipo que ya <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>vive del sonido.</span>
         </div>
       </div>
 
@@ -51,7 +51,7 @@ export default function SlideQuienesSomos() {
           // [x1, y1] = punto en el borde del círculo central, [x2, y2] = hacia la card
           [39.1, 46.2, 24, 34], [60.9, 46.2, 76, 34], [38.9, 63.1, 24, 74], [61.1, 63.1, 76, 74],
         ].map(([x1, y1, x2, y2], i) => (
-          <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgba(190,150,80,0.22)" strokeWidth="0.12" />
+          <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgba(214,164,92,0.22)" strokeWidth="0.12" />
         ))}
       </svg>
 
@@ -65,9 +65,9 @@ export default function SlideQuienesSomos() {
           width: "24vw",
           height: "24vw",
           borderRadius: "50%",
-          background: "radial-gradient(circle at 50% 40%, rgba(190,150,80,0.16) 0%, rgba(190,150,80,0.05) 60%, rgba(190,150,80,0.02) 100%)",
-          border: "1px solid rgba(190,150,80,0.45)",
-          boxShadow: "0 0 6vw rgba(190,150,80,0.12)",
+          background: "radial-gradient(circle at 50% 40%, rgba(214,164,92,0.16) 0%, rgba(214,164,92,0.05) 60%, rgba(214,164,92,0.02) 100%)",
+          border: "1px solid rgba(214,164,92,0.45)",
+          boxShadow: "0 0 6vw rgba(214,164,92,0.12)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -77,15 +77,15 @@ export default function SlideQuienesSomos() {
           boxSizing: "border-box",
         }}
       >
-        <div style={{ fontSize: "0.85vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.18em", marginBottom: "0.8vh" }}>
+        <div style={{ fontSize: "0.85vw", fontWeight: 700, backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", letterSpacing: "0.18em", marginBottom: "0.8vh" }}>
           RESPALDO REAL
         </div>
         <div style={{ fontSize: "1.9vw", fontWeight: 700, lineHeight: 1.1, letterSpacing: "-0.02em" }}>
           Casa del Cuenco
         </div>
-        <div style={{ width: "3vw", height: "1px", backgroundColor: "rgba(190,150,80,0.5)", margin: "1.2vh 0" }} />
+        <div style={{ width: "3vw", height: "1px", backgroundColor: "rgba(214,164,92,0.5)", margin: "1.2vh 0" }} />
         <div style={{ fontSize: "1.05vw", color: "rgba(244,244,244,0.72)", lineHeight: 1.4 }}>
-          <span style={{ color: "#BE9650", fontWeight: 700 }}>9 años</span> de experiencia en Sonoterapia y Meditaciones
+          <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", fontWeight: 700 }}>9 años</span> de experiencia en Sonoterapia y Meditaciones
         </div>
       </div>
 
@@ -97,14 +97,14 @@ export default function SlideQuienesSomos() {
             position: "absolute",
             ...r.pos,
             width: "24vw",
-            backgroundColor: "rgba(190,150,80,0.05)",
-            border: "1px solid rgba(190,150,80,0.28)",
+            backgroundColor: "rgba(214,164,92,0.05)",
+            border: "1px solid rgba(214,164,92,0.28)",
             borderRadius: "0.7vw",
             padding: "1.6vh 1.3vw",
             boxSizing: "border-box",
           }}
         >
-          <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#BE9650", marginBottom: "0.6vh" }}>
+          <div style={{ fontSize: "1.25vw", fontWeight: 700, backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: "0.6vh" }}>
             {r.titulo}
           </div>
           <div style={{ fontSize: "0.95vw", color: "rgba(244,244,244,0.72)", lineHeight: 1.45 }}>

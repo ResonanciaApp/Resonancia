@@ -23,14 +23,14 @@ export default function SlideComunidad() {
             QUIÉNES SOMOS · COMUNIDAD
           </div>
           <div style={{ fontSize: "3.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-            No partimos de cero: <span style={{ color: "#BE9650" }}>+839.000 seguidores.</span>
+            No partimos de cero: <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>+839.000 seguidores.</span>
           </div>
           <div style={{ fontSize: "1.15vw", color: "rgba(244,244,244,0.55)", marginTop: "0.5vh" }}>
             Comunidad real de Casa del Cuenco, construida orgánicamente en 9 años — la audiencia de lanzamiento de la app.
           </div>
         </div>
-        <div style={{ flexShrink: 0, textAlign: "right", backgroundColor: "rgba(190,150,80,0.09)", border: "1px solid rgba(190,150,80,0.35)", borderRadius: "0.7vw", padding: "1.2vh 1.6vw" }}>
-          <div style={{ fontSize: "2.4vw", fontWeight: 700, color: "#BE9650", lineHeight: 1 }}>+839 mil</div>
+        <div style={{ flexShrink: 0, textAlign: "right", backgroundColor: "rgba(214,164,92,0.09)", border: "1px solid rgba(214,164,92,0.35)", borderRadius: "0.7vw", padding: "1.2vh 1.6vw" }}>
+          <div style={{ fontSize: "2.4vw", fontWeight: 700, backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", lineHeight: 1 }}>+839 mil</div>
           <div style={{ fontSize: "0.85vw", color: "rgba(244,244,244,0.55)", marginTop: "0.5vh" }}>seguidores totales · 4 plataformas</div>
         </div>
       </div>
@@ -38,10 +38,10 @@ export default function SlideComunidad() {
       {/* Grid 2x2 de screenshots */}
       <div style={{ flex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gridTemplateRows: "1fr 1fr", gap: "1.4vh 1.2vw", minHeight: 0 }}>
         {redes.map((r) => (
-          <div key={r.nombre} style={{ display: "flex", flexDirection: "column", backgroundColor: "rgba(190,150,80,0.05)", border: "1px solid rgba(190,150,80,0.25)", borderRadius: "0.7vw", overflow: "hidden", minHeight: 0 }}>
+          <div key={r.nombre} style={{ display: "flex", flexDirection: "column", backgroundColor: "rgba(214,164,92,0.05)", border: "1px solid rgba(214,164,92,0.25)", borderRadius: "0.7vw", overflow: "hidden", minHeight: 0 }}>
             <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", padding: "0.9vh 1.1vw", flexShrink: 0, gap: "1vw" }}>
               <div style={{ display: "flex", alignItems: "baseline", gap: "0.7vw", minWidth: 0 }}>
-                <span style={{ fontSize: "1.05vw", fontWeight: 700, color: "#BE9650" }}>{r.nombre}</span>
+                <span style={{ fontSize: "1.05vw", fontWeight: 700, backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{r.nombre}</span>
                 <span style={{ fontSize: "0.82vw", color: "rgba(244,244,244,0.45)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.handle}</span>
               </div>
               <div style={{ flexShrink: 0, display: "flex", alignItems: "baseline", gap: "0.5vw" }}>

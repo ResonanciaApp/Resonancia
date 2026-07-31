@@ -26,7 +26,7 @@ export default function SlideContingencia() {
     },
     {
       t: "LA CONTINGENCIA",
-      tint: "#BE9650",
+      tint: "#D6A45C",
       d: (
         <>
           Línea comprometida de los socios por <span style={{ color: "#FFFFFF", fontWeight: 700 }}>~$6,3M</span> ($8,8M de valle − $2,5M de campaña ya financiados).
@@ -76,8 +76,8 @@ export default function SlideContingencia() {
 
       {/* Trigger / monitoreo */}
       <div style={{ display: "flex", gap: "1.6vw", marginTop: "3vh" }}>
-        <div style={{ flex: 1, backgroundColor: "rgba(190,150,80,0.07)", border: "1px solid rgba(190,150,80,0.35)", borderRadius: "0.7vw", padding: "2.2vh 1.6vw" }}>
-          <div style={{ fontSize: "0.9vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.10em", marginBottom: "0.9vh" }}>GATILLO Y MONITOREO</div>
+        <div style={{ flex: 1, backgroundColor: "rgba(214,164,92,0.07)", border: "1px solid rgba(214,164,92,0.35)", borderRadius: "0.7vw", padding: "2.2vh 1.6vw" }}>
+          <div style={{ fontSize: "0.9vw", fontWeight: 700, backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", letterSpacing: "0.10em", marginBottom: "0.9vh" }}>GATILLO Y MONITOREO</div>
           <div style={{ fontSize: "1.1vw", color: "rgba(244,244,244,0.65)", lineHeight: 1.6 }}>
             Indicador único: <span style={{ color: "#FFFFFF", fontWeight: 700 }}>% de suscripciones anuales sobre altas nuevas</span>, revisado mes a mes en M1–M3.
             Si el mix es ≥ 50%, la línea no se usa y la operación se autofinancia de principio a fin.

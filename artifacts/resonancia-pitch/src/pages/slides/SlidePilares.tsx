@@ -1,4 +1,4 @@
-const GOLD = "#BE9650";
+const GOLD = "#D6A45C";
 
 function IconEscucha() {
   return (
@@ -82,8 +82,8 @@ export default function SlidePilares() {
             key={p.titulo}
             style={{
               flex: 1,
-              backgroundColor: "rgba(190,150,80,0.05)",
-              border: "1px solid rgba(190,150,80,0.28)",
+              backgroundColor: "rgba(214,164,92,0.05)",
+              border: "1px solid rgba(214,164,92,0.28)",
               borderRadius: "1vw",
               padding: "4vh 2vw",
               display: "flex",
@@ -96,8 +96,8 @@ export default function SlidePilares() {
                 width: "3.6vw",
                 height: "3.6vw",
                 borderRadius: "0.9vw",
-                backgroundColor: "rgba(190,150,80,0.12)",
-                border: "1px solid rgba(190,150,80,0.35)",
+                backgroundColor: "rgba(214,164,92,0.12)",
+                border: "1px solid rgba(214,164,92,0.35)",
                 padding: "0.8vw",
                 boxSizing: "border-box",
               }}

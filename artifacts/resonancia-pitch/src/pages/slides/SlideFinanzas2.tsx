@@ -59,7 +59,7 @@ export default function SlideFinanzas2() {
           Caja acumulada y <span style={{ color: "#FFFFFF" }}>escenarios.</span>
         </div>
         <div style={{ fontSize: "1.45vw", color: "rgba(244,244,244,0.50)", marginTop: "1vh" }}>
-          Caja <strong style={{ color: "#FFFFFF" }}>acumulada desde M1</strong> (suma de los resultados mensuales de la hoja 1, no el resultado de cada mes) · <span style={{ color: "#BE9650" }}>dorado</span> = lanzamiento M1 · <span style={{ color: "#6EC49A" }}>verde</span> = normal M2+
+          Caja <strong style={{ color: "#FFFFFF" }}>acumulada desde M1</strong> (suma de los resultados mensuales de la hoja 1, no el resultado de cada mes) · <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>dorado</span> = lanzamiento M1 · <span style={{ color: "#6EC49A" }}>verde</span> = normal M2+
         </div>
       </div>
 
@@ -72,8 +72,8 @@ export default function SlideFinanzas2() {
             {data.map((d) => {
               const isNeg      = d.cumulative < 0;
               const heightPct  = (Math.abs(d.cumulative) / cumRange) * 100;
-              const barColor   = isNeg ? "rgba(224,112,112,0.55)" : d.launch ? "rgba(190,150,80,0.65)" : "rgba(110,196,154,0.65)";
-              const borderColor= isNeg ? "rgba(224,112,112,0.8)"  : d.launch ? "rgba(190,150,80,0.9)"  : "rgba(110,196,154,0.8)";
+              const barColor   = isNeg ? "rgba(224,112,112,0.55)" : d.launch ? "rgba(214,164,92,0.65)" : "rgba(110,196,154,0.65)";
+              const borderColor= isNeg ? "rgba(224,112,112,0.8)"  : d.launch ? "rgba(214,164,92,0.9)"  : "rgba(110,196,154,0.8)";
               return (
                 <div key={d.label} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end" }}>
                   <div style={{ width: "100%", position: "relative", height: `${(Math.abs(d.cumulative) / cumRange) * 100}%` }}>
@@ -84,7 +84,7 @@ export default function SlideFinanzas2() {
                     }} />
                   </div>
                   <div style={{ fontSize: "0.82vw", color: "rgba(244,244,244,0.45)", marginTop: "0.5vh", textAlign: "center" }}>{d.label}</div>
-                  <div style={{ fontSize: "0.78vw", fontWeight: 700, color: isNeg ? "rgba(224,112,112,0.9)" : d.launch ? "#BE9650" : "#6EC49A", textAlign: "center" }}>
+                  <div style={{ fontSize: "0.78vw", fontWeight: 700, color: isNeg ? "rgba(224,112,112,0.9)" : d.launch ? "#D6A45C" : "#6EC49A", textAlign: "center" }}>
                     {d.cumulative > 0 ? "+" : ""}{d.cumulative.toFixed(1)}M
                   </div>
                 </div>
@@ -125,7 +125,7 @@ export default function SlideFinanzas2() {
                   <div style={{ flex: 1, height: "0.35vh", backgroundColor: "rgba(255,255,255,0.07)", borderRadius: "9999px", overflow: "hidden" }}>
                     <div style={{
                       width: `${(d.subs / maxSubs) * 100}%`, height: "100%",
-                      backgroundColor: d.launch ? "rgba(190,150,80,0.70)" : d.cursos > 0 ? "rgba(110,196,154,0.80)" : "rgba(110,196,154,0.50)",
+                      backgroundColor: d.launch ? "rgba(214,164,92,0.70)" : d.cursos > 0 ? "rgba(110,196,154,0.80)" : "rgba(110,196,154,0.50)",
                       borderRadius: "9999px"
                     }} />
                   </div>

@@ -8,7 +8,7 @@ export default function SlideConclusionFinanciera() {
     {
       t: "M1+ · OPERACIÓN AUTOFINANCIADA",
       d: "El 65% paga el plan anual por adelantado: en caja real el mes 1 ingresa ~$5M contra $4,3M de costos. Break-even operacional en M6 y desde M7 entran los cursos.",
-      tint: "#BE9650",
+      tint: "#D6A45C",
     },
     {
       t: "AÑO 1 · RESULTADO",

@@ -39,8 +39,8 @@ export default function SlideFinanzas1() {
 
       {/* Phase legend */}
       <div style={{ display: "flex", gap: "1vw", flexShrink: 0 }}>
-        <div style={{ flex: 1, backgroundColor: "rgba(190,150,80,0.09)", border: "1px solid rgba(190,150,80,0.30)", borderRadius: "0.5vw", padding: "0.55vh 1.1vw", display: "flex", alignItems: "baseline", gap: "0.8vw", flexWrap: "wrap" }}>
-          <span style={{ fontSize: "0.82vw", fontWeight: 700, color: "#BE9650", letterSpacing: "0.09em", flexShrink: 0 }}>LANZAMIENTO M1</span>
+        <div style={{ flex: 1, backgroundColor: "rgba(214,164,92,0.09)", border: "1px solid rgba(214,164,92,0.30)", borderRadius: "0.5vw", padding: "0.55vh 1.1vw", display: "flex", alignItems: "baseline", gap: "0.8vw", flexWrap: "wrap" }}>
+          <span style={{ fontSize: "0.82vw", fontWeight: 700, backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", letterSpacing: "0.09em", flexShrink: 0 }}>LANZAMIENTO M1</span>
           <span style={{ fontSize: "0.82vw", color: "rgba(244,244,244,0.50)" }}>ARPU rec. $2.506/sub · precios $5.990 / $39.990</span>
         </div>
         <div style={{ flex: 1, backgroundColor: "rgba(110,196,154,0.06)", border: "1px solid rgba(110,196,154,0.25)", borderRadius: "0.5vw", padding: "0.55vh 1.1vw", display: "flex", alignItems: "baseline", gap: "0.8vw", flexWrap: "wrap" }}>
@@ -75,13 +75,13 @@ export default function SlideFinanzas1() {
           }}>
             <div style={{ fontSize: "0.98vw", fontWeight: 700, color: "#F4F4F4" }}>{r.mes}</div>
             <div style={{ fontSize: "0.98vw", color: "#F4F4F4" }}>{r.subs}</div>
-            <div style={{ fontSize: "0.68vw", fontWeight: 700, color: r.fase === "lanzamiento" ? "#BE9650" : "#6EC49A", letterSpacing: "0.05em", textTransform: "uppercase" }}>
+            <div style={{ fontSize: "0.68vw", fontWeight: 700, color: r.fase === "lanzamiento" ? "#D6A45C" : "#6EC49A", letterSpacing: "0.05em", textTransform: "uppercase" }}>
               {r.fase === "lanzamiento" ? "Lanz." : "Normal"}
             </div>
             <div style={{ fontSize: "0.98vw", color: "#F4F4F4" }}>{r.ingTotal}</div>
             <div style={{ fontSize: "0.95vw", color: r.upsell === "—" ? "rgba(244,244,244,0.28)" : "#6EC49A", fontWeight: r.upsell === "—" ? 400 : 700 }}>{r.upsell}</div>
             <div style={{ fontSize: "0.98vw", color: "rgba(244,244,244,0.50)" }}>{r.costos}</div>
-            <div style={{ fontSize: "0.95vw", color: r.mkt === "—" || r.mkt === "$0" ? "rgba(244,244,244,0.28)" : "#BE9650", fontWeight: r.mkt === "—" || r.mkt === "$0" ? 400 : 700 }}>{r.mkt}</div>
+            <div style={{ fontSize: "0.95vw", color: r.mkt === "—" || r.mkt === "$0" ? "rgba(244,244,244,0.28)" : "#D6A45C", fontWeight: r.mkt === "—" || r.mkt === "$0" ? 400 : 700 }}>{r.mkt}</div>
             <div style={{ fontSize: "1.05vw", fontWeight: 700, color: r.neg ? "#F4F4F4" : "#6EC49A" }}>{r.resultado}</div>
           </div>
         ))}
@@ -102,7 +102,7 @@ export default function SlideFinanzas1() {
           <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#F4F4F4" }}>~$76M</div>
           <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#6EC49A" }}>~$9M</div>
           <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>~$66M</div>
-          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#BE9650" }}>~$10M</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 700, backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>~$10M</div>
           <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#6EC49A" }}>+$9M neto</div>
         </div>
       </div>

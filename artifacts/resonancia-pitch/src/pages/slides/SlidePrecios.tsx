@@ -26,7 +26,7 @@ export default function SlidePrecios() {
       {/* Explicación del modelo */}
       <div style={{
         flexShrink: 0,
-        backgroundColor: "rgba(190,150,80,0.06)", border: "1px solid rgba(190,150,80,0.25)",
+        backgroundColor: "rgba(214,164,92,0.06)", border: "1px solid rgba(214,164,92,0.25)",
         borderRadius: "0.6vw", padding: "1.6vh 1.5vw",
         fontSize: "1.35vw", color: "#FFFFFF", lineHeight: 1.55,
       }}>
@@ -51,7 +51,7 @@ export default function SlidePrecios() {
         }}>
           {["Plan", "Mix", "Lanzamiento (M1)", "Neto empresa", "Normal (M2+)", "Neto empresa"].map((h, i) => (
             <div key={i} style={{ fontSize: "0.95vw", fontWeight: 700, letterSpacing: "0.06em",
-              color: i >= 2 && i <= 3 ? "#BE9650" : i >= 4 ? "#6EC49A" : "#FFFFFF" }}>{h}</div>
+              color: i >= 2 && i <= 3 ? "#D6A45C" : i >= 4 ? "#6EC49A" : "#FFFFFF" }}>{h}</div>
           ))}
         </div>
         {pricingRows.map((r, i) => (
@@ -64,7 +64,7 @@ export default function SlidePrecios() {
             <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "#F4F4F4" }}>{r.plan}</div>
             <div style={{ fontSize: "1.25vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>{r.pct}</div>
             <div style={{ fontSize: "1.25vw", color: "#F4F4F4" }}>{r.launch}</div>
-            <div style={{ fontSize: "1.05vw", color: "#BE9650", fontWeight: 600 }}>{r.launchNeto}</div>
+            <div style={{ fontSize: "1.05vw", backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", fontWeight: 600 }}>{r.launchNeto}</div>
             <div style={{ fontSize: "1.25vw", color: "#F4F4F4" }}>{r.normal}</div>
             <div style={{ fontSize: "1.05vw", color: "#6EC49A", fontWeight: 600 }}>{r.normalNeto}</div>
           </div>
@@ -77,7 +77,7 @@ export default function SlidePrecios() {
         }}>
           <div style={{ fontSize: "0.95vw", fontWeight: 700, color: "rgba(244,244,244,0.50)", gridColumn: "1/3" }}>ARPU RECURRENTE BLENDED</div>
           <div style={{ gridColumn: "3/5", display: "flex", alignItems: "center", gap: "0.5vw" }}>
-            <span style={{ fontSize: "1.35vw", fontWeight: 700, color: "#BE9650" }}>$2.506/mes/sub</span>
+            <span style={{ fontSize: "1.35vw", fontWeight: 700, backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>$2.506/mes/sub</span>
           </div>
           <div style={{ gridColumn: "5/7", display: "flex", alignItems: "center", gap: "0.5vw" }}>
             <span style={{ fontSize: "1.35vw", fontWeight: 700, color: "#6EC49A" }}>$3.238/mes/sub</span>

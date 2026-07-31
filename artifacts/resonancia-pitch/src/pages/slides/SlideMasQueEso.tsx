@@ -21,22 +21,22 @@ export default function SlideMasQueEso() {
           width: "48vw",
           height: "48vw",
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(190,150,80,0.08) 0%, rgba(190,150,80,0.02) 55%, transparent 75%)",
+          background: "radial-gradient(circle, rgba(214,164,92,0.08) 0%, rgba(214,164,92,0.02) 55%, transparent 75%)",
           pointerEvents: "none",
         }}
       />
 
-      <div style={{ position: "relative", fontSize: "3.2vw", fontWeight: 700, letterSpacing: "-0.02em", color: "#BE9650" }}>
+      <div style={{ position: "relative", fontSize: "3.2vw", fontWeight: 700, letterSpacing: "-0.02em", backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
         Pero somos más que eso...
       </div>
 
-      <div style={{ position: "relative", width: "4vw", height: "1px", backgroundColor: "rgba(190,150,80,0.5)" }} />
+      <div style={{ position: "relative", width: "4vw", height: "1px", backgroundColor: "rgba(214,164,92,0.5)" }} />
 
       <div style={{ position: "relative", fontSize: "1.75vw", fontWeight: 500, lineHeight: 1.65, color: "rgba(244,244,244,0.88)" }}>
         Somos una herramienta de <span style={{ color: "#FFFFFF", fontWeight: 700 }}>expansión, autoconocimiento y desarrollo espiritual</span> que
         nutre a nuestros usuarios con experiencias y contenido diseñados para fomentar la calma, la consciencia y el
         bienestar, especializándonos en los <span style={{ color: "#FFFFFF", fontWeight: 700 }}>sonidos milenarios de antiguas culturas</span> como
-        un camino hacia la <span style={{ color: "#BE9650", fontWeight: 700 }}>transformación interior</span>.
+        un camino hacia la <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", fontWeight: 700 }}>transformación interior</span>.
       </div>
     </div>
   );
