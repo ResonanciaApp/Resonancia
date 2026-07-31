@@ -20,7 +20,7 @@ export default function SlideQueEs() {
           <div style={{ fontSize: "2.2vw", fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.3 }}>
             RESONANCIA es una app de meditación y sueño en español:{" "}
             <span style={{ color: "#FFFFFF" }}>
-              sonoterapia con cuencos, meditaciones guiadas, música ambient y sonidos de la naturaleza
+              sonoterapia con cuencos y gongs, meditaciones guiadas, música ambient y sonidos de la naturaleza
             </span>
             , en una sola experiencia inmersiva.
           </div>
