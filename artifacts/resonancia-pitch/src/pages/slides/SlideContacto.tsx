@@ -22,7 +22,7 @@ export default function SlideContacto() {
           <div style={{ fontSize: "3.5vw", fontWeight: 300, lineHeight: 1.1, letterSpacing: "-0.03em", color: "rgba(255,255,255,0.60)", marginBottom: "0.6vh" }}>
             Juntos expandimos
           </div>
-          <div style={{ fontSize: "3.5vw", fontWeight: 700, lineHeight: 1.1, letterSpacing: "-0.03em", color: "#FFFFFF" }}>
+          <div style={{ fontSize: "3.5vw", fontWeight: 700, lineHeight: 1.1, letterSpacing: "-0.03em", backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
             la vibración.
           </div>
         </div>

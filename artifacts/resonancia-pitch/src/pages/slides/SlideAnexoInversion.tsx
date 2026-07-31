@@ -75,7 +75,7 @@ export default function SlideAnexoInversion() {
           ANEXO · VALORACIÓN ESTIMADA
         </div>
         <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          ¿Cuánto vale esta empresa <span style={{ color: "#FFFFFF" }}>en 12 meses?</span>
+          ¿Cuánto vale esta empresa <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>en 12 meses?</span>
         </div>
       </div>
 

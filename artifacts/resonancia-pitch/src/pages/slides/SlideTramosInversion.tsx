@@ -49,7 +49,7 @@ export default function SlideTramosInversion() {
         </div>
         <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
           Oportunidad de{" "}
-          <span style={{ color: "#FFFFFF" }}>
+          <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
             inversión.
           </span>
         </div>

@@ -51,7 +51,7 @@ export default function SlideContingencia() {
         ANEXO FINANCIERO · PLAN DE CONTINGENCIA
       </div>
       <div style={{ fontSize: "3.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.1, maxWidth: "66vw" }}>
-        Sin préstamos: la operación se financia con <span style={{ color: "#FFFFFF" }}>prepagos anuales.</span>
+        Sin préstamos: la operación se financia con <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>prepagos anuales.</span>
       </div>
 
       <div style={{ display: "flex", gap: "1.6vw", marginTop: "4.2vh" }}>

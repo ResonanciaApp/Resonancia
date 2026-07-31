@@ -16,7 +16,7 @@ export default function SlidePrecios() {
           MODELO DE NEGOCIO
         </div>
         <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Estrategia de <span style={{ color: "#FFFFFF" }}>precios.</span>
+          Estrategia de <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>precios.</span>
         </div>
         <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.45)", marginTop: "0.6vh" }}>
           Precio de lanzamiento el primer mes, precio normal desde el mes 2 · mix estimado 35/65.

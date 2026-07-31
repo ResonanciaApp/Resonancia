@@ -41,7 +41,7 @@ export default function SlideUpSells() {
           SEGUNDA FUENTE DE INGRESOS
         </div>
         <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Cursos y talleres <span style={{ color: "#FFFFFF" }}>dentro de la app.</span>
+          Cursos y talleres <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>dentro de la app.</span>
         </div>
         <div style={{ fontSize: "1.3vw", color: "rgba(244,244,244,0.50)", marginTop: "0.8vh" }}>
           Up-sell directo a la base premium · sin costo de adquisición adicional · pago único por contenido

@@ -31,7 +31,7 @@ export default function SlideConclusionFinanciera() {
         ANEXO FINANCIERO · CONCLUSIÓN
       </div>
       <div style={{ fontSize: "3.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.1, maxWidth: "62vw" }}>
-        La ronda construye y lanza la app: <span style={{ color: "#FFFFFF" }}>la operación se autofinancia.</span>
+        La ronda construye y lanza la app: <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>la operación se autofinancia.</span>
       </div>
 
       {/* Fases */}

@@ -29,7 +29,7 @@ export default function SlideCAC() {
         ANEXO FINANCIERO · COSTO POR ADQUISICIÓN
       </div>
       <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-        Cada suscriptor se paga <span style={{ color: "#FFFFFF" }}>en ~1,1 meses.</span>
+        Cada suscriptor se paga <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>en ~1,1 meses.</span>
       </div>
 
       {/* KPI row */}

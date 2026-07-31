@@ -46,7 +46,7 @@ export default function SlideRetencion() {
         ANEXO FINANCIERO · RETENCIÓN
       </div>
       <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-        ¿Y si los usuarios cancelan? <span style={{ color: "#FFFFFF" }}>El modelo igual se sostiene.</span>
+        ¿Y si los usuarios cancelan? <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>El modelo igual se sostiene.</span>
       </div>
       <div style={{ fontSize: "1.15vw", color: "rgba(244,244,244,0.55)", marginTop: "1.6vh", lineHeight: 1.5, maxWidth: "58vw" }}>
         Las proyecciones del caso base asumen que ningún suscriptor cancela. Aquí sensibilizamos ese supuesto con

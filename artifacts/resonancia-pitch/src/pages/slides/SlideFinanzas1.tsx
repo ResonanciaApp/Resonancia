@@ -30,7 +30,7 @@ export default function SlideFinanzas1() {
           ANEXO FINANCIERO · HOJA 1 DE 3
         </div>
         <div style={{ fontSize: "3.4vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Flujo de caja <span style={{ color: "#FFFFFF" }}>post-lanzamiento.</span>
+          Flujo de caja <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>post-lanzamiento.</span>
         </div>
         <div style={{ fontSize: "1.2vw", color: "rgba(244,244,244,0.50)", marginTop: "0.4vh" }}>
           En millones de CLP · 300 suscriptores nuevos/mes · 3.600 al cierre · Ingresos = recurrente + up-sells

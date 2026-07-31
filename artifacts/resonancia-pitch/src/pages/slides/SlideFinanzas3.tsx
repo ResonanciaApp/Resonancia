@@ -41,7 +41,7 @@ export default function SlideFinanzas3() {
           ANEXO FINANCIERO · HOJA 3 DE 3
         </div>
         <div style={{ fontSize: "3.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-          Desglose de <span style={{ color: "#FFFFFF" }}>costos mensuales.</span>
+          Desglose de <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>costos mensuales.</span>
         </div>
       </div>
 

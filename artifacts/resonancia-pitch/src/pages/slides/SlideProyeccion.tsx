@@ -53,7 +53,7 @@ export default function SlideProyeccion() {
           PROYECCIÓN A 12 MESES
         </div>
         <div style={{ fontSize: "4.2vw", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.05, maxWidth: "66vw" }}>
-          Un primer año <span style={{ color: "#FFFFFF" }}>realista.</span>
+          Un primer año <span style={{ backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>realista.</span>
         </div>
       </div>
 
