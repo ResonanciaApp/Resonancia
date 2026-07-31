@@ -5,18 +5,18 @@ export default function SlideFinanzas1() {
   // Cursos M7+: $15.294/venta (post-tienda, post-tallerista/prod 35%)
 
   const rows = [
-    { mes: "M1 Lanzamiento", subs: "300",   fase: "lanzamiento", ingTotal: "$0,8M",  upsell: "—",      costos: "$4,3M",  resultado: "–$3,6M", neg: true  },
-    { mes: "Mes 2",          subs: "600",   fase: "normal",      ingTotal: "$1,9M",  upsell: "—",      costos: "$4,3M",  resultado: "–$2,4M", neg: true  },
-    { mes: "Mes 3",          subs: "900",   fase: "normal",      ingTotal: "$2,9M",  upsell: "—",      costos: "$4,8M",  resultado: "–$2,0M", neg: true  },
-    { mes: "Mes 4",          subs: "1.200", fase: "normal",      ingTotal: "$3,9M",  upsell: "—",      costos: "$4,8M",  resultado: "–$1,0M", neg: true  },
-    { mes: "Mes 5",          subs: "1.500", fase: "normal",      ingTotal: "$4,9M",  upsell: "—",      costos: "$4,8M",  resultado: "–$0,1M", neg: true  },
-    { mes: "Mes 6",          subs: "1.800", fase: "normal",      ingTotal: "$5,8M",  upsell: "—",      costos: "$4,8M",  resultado: "+$0,9M", neg: false },
-    { mes: "Mes 7",          subs: "2.100", fase: "normal",      ingTotal: "$6,8M",  upsell: "+$0,9M", costos: "$7,2M",  resultado: "+$0,5M", neg: false },
-    { mes: "Mes 8",          subs: "2.400", fase: "normal",      ingTotal: "$7,8M",  upsell: "+$1,2M", costos: "$7,2M",  resultado: "+$1,8M", neg: false },
-    { mes: "Mes 9",          subs: "2.700", fase: "normal",      ingTotal: "$8,7M",  upsell: "+$1,5M", costos: "$8,2M",  resultado: "+$2,1M", neg: false },
-    { mes: "Mes 10",         subs: "3.000", fase: "normal",      ingTotal: "$9,7M",  upsell: "+$1,7M", costos: "$8,2M",  resultado: "+$3,2M", neg: false },
-    { mes: "Mes 11",         subs: "3.300", fase: "normal",      ingTotal: "$10,7M", upsell: "+$1,8M", costos: "$8,4M",  resultado: "+$4,1M", neg: false },
-    { mes: "Mes 12",         subs: "3.600", fase: "normal",      ingTotal: "$11,7M", upsell: "+$2,0M", costos: "$8,4M",  resultado: "+$5,2M", neg: false },
+    { mes: "M1 Lanzamiento", subs: "300",   fase: "lanzamiento", ingTotal: "$0,8M",  upsell: "—",      costos: "$4,3M",  mkt: "—", resultado: "–$3,6M", neg: true  },
+    { mes: "Mes 2",          subs: "600",   fase: "normal",      ingTotal: "$1,9M",  upsell: "—",      costos: "$4,3M",  mkt: "—", resultado: "–$2,4M", neg: true  },
+    { mes: "Mes 3",          subs: "900",   fase: "normal",      ingTotal: "$2,9M",  upsell: "—",      costos: "$4,8M",  mkt: "$0", resultado: "–$2,0M", neg: true  },
+    { mes: "Mes 4",          subs: "1.200", fase: "normal",      ingTotal: "$3,9M",  upsell: "—",      costos: "$4,8M",  mkt: "$0", resultado: "–$1,0M", neg: true  },
+    { mes: "Mes 5",          subs: "1.500", fase: "normal",      ingTotal: "$4,9M",  upsell: "—",      costos: "$4,8M",  mkt: "$0", resultado: "–$0,1M", neg: true  },
+    { mes: "Mes 6",          subs: "1.800", fase: "normal",      ingTotal: "$5,8M",  upsell: "—",      costos: "$4,8M",  mkt: "$0", resultado: "+$0,9M", neg: false },
+    { mes: "Mes 7",          subs: "2.100", fase: "normal",      ingTotal: "$6,8M",  upsell: "+$0,9M", costos: "$6,2M",  mkt: "$1,0M", resultado: "+$0,5M", neg: false },
+    { mes: "Mes 8",          subs: "2.400", fase: "normal",      ingTotal: "$7,8M",  upsell: "+$1,2M", costos: "$6,2M",  mkt: "$1,0M", resultado: "+$1,8M", neg: false },
+    { mes: "Mes 9",          subs: "2.700", fase: "normal",      ingTotal: "$8,7M",  upsell: "+$1,5M", costos: "$6,4M",  mkt: "$1,8M", resultado: "+$2,1M", neg: false },
+    { mes: "Mes 10",         subs: "3.000", fase: "normal",      ingTotal: "$9,7M",  upsell: "+$1,7M", costos: "$6,4M",  mkt: "$1,8M", resultado: "+$3,2M", neg: false },
+    { mes: "Mes 11",         subs: "3.300", fase: "normal",      ingTotal: "$10,7M", upsell: "+$1,8M", costos: "$6,4M",  mkt: "$2,0M", resultado: "+$4,1M", neg: false },
+    { mes: "Mes 12",         subs: "3.600", fase: "normal",      ingTotal: "$11,7M", upsell: "+$2,0M", costos: "$6,4M",  mkt: "$2,0M", resultado: "+$5,2M", neg: false },
   ];
 
   return (
@@ -53,12 +53,12 @@ export default function SlideFinanzas1() {
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
         <div style={{
           display: "grid",
-          gridTemplateColumns: "1.25fr 0.75fr 0.45fr 0.85fr 0.7fr 0.8fr 0.85fr",
+          gridTemplateColumns: "1.15fr 0.7fr 0.42fr 0.8fr 0.62fr 0.7fr 0.72fr 0.8fr",
           padding: "0.7vh 0.9vw",
           borderBottom: "1px solid rgba(255,255,255,0.35)",
           marginBottom: "0.3vh",
         }}>
-          {["Período", "Suscriptores", "Fase", "Ing. totales", "Cursos", "Costos", "Resultado"].map((h) => (
+          {["Período", "Suscriptores", "Fase", "Ing. totales", "Cursos", "Costos", "Marketing", "Resultado"].map((h) => (
             <div key={h} style={{ fontSize: "0.9vw", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.05em" }}>{h}</div>
           ))}
         </div>
@@ -66,7 +66,7 @@ export default function SlideFinanzas1() {
         {rows.map((r, i) => (
           <div key={r.mes} style={{
             display: "grid",
-            gridTemplateColumns: "1.25fr 0.75fr 0.45fr 0.85fr 0.7fr 0.8fr 0.85fr",
+            gridTemplateColumns: "1.15fr 0.7fr 0.42fr 0.8fr 0.62fr 0.7fr 0.72fr 0.8fr",
             padding: "0.42vh 0.9vw",
             backgroundColor: i % 2 === 0 ? "rgba(255,255,255,0.025)" : "transparent",
             borderRadius: "0.4vw",
@@ -81,6 +81,7 @@ export default function SlideFinanzas1() {
             <div style={{ fontSize: "0.98vw", color: "#F4F4F4" }}>{r.ingTotal}</div>
             <div style={{ fontSize: "0.95vw", color: r.upsell === "—" ? "rgba(244,244,244,0.28)" : "#6EC49A", fontWeight: r.upsell === "—" ? 400 : 700 }}>{r.upsell}</div>
             <div style={{ fontSize: "0.98vw", color: "rgba(244,244,244,0.50)" }}>{r.costos}</div>
+            <div style={{ fontSize: "0.95vw", color: r.mkt === "—" || r.mkt === "$0" ? "rgba(244,244,244,0.28)" : "#BE9650", fontWeight: r.mkt === "—" || r.mkt === "$0" ? 400 : 700 }}>{r.mkt}</div>
             <div style={{ fontSize: "1.05vw", fontWeight: 700, color: r.neg ? "#F4F4F4" : "#6EC49A" }}>{r.resultado}</div>
           </div>
         ))}
@@ -88,7 +89,7 @@ export default function SlideFinanzas1() {
         {/* Totales */}
         <div style={{
           display: "grid",
-          gridTemplateColumns: "1.25fr 0.75fr 0.45fr 0.85fr 0.7fr 0.8fr 0.85fr",
+          gridTemplateColumns: "1.15fr 0.7fr 0.42fr 0.8fr 0.62fr 0.7fr 0.72fr 0.8fr",
           padding: "1.0vh 0.9vw",
           borderTop: "1px solid rgba(255,255,255,0.35)",
           marginTop: "0.5vh",
@@ -100,7 +101,8 @@ export default function SlideFinanzas1() {
           <div />
           <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#F4F4F4" }}>~$76M</div>
           <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#6EC49A" }}>~$9M</div>
-          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>~$76M</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "rgba(244,244,244,0.50)" }}>~$66M</div>
+          <div style={{ fontSize: "1.1vw", fontWeight: 700, color: "#BE9650" }}>~$10M</div>
           <div style={{ fontSize: "1.2vw", fontWeight: 700, color: "#6EC49A" }}>+$9M neto</div>
         </div>
       </div>
@@ -108,7 +110,7 @@ export default function SlideFinanzas1() {
       {/* Footnote */}
       <div style={{ flexShrink: 0, fontSize: "0.88vw", color: "rgba(244,244,244,0.42)", lineHeight: 1.45 }}>
         Blend 35/65% (sin lifetime) · 300 nuevos suscriptores/mes · Marketing escalonado: el gasto fuerte parte en M9, cuando la operación ya es rentable ·
-        Break-even operacional M6 · Recuperación de caja acumulada M11 · $76M suscripciones · $9M cursos · Total $85M · Costos $76M · Neto +$9M ·
+        Break-even operacional M6 · Recuperación de caja acumulada M11 · $76M suscripciones · $9M cursos · Total $85M · Costos $66M + Marketing $10M = $76M · Neto +$9M · Marketing M1–M2 financiado con la inversión inicial (no aparece en la tabla) ·
         Vista conservadora: el plan anual (65%) se reconoce mes a mes; en caja real ese ingreso entra por adelantado.
       </div>
     </div>
