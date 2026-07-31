@@ -89,7 +89,9 @@ export default function Slide11Inversion() {
   };
 
   const goldGrad: CSSProperties = {
-    color: "#FFFFFF",
+    backgroundImage: "linear-gradient(180deg, #D6A45C 0%, #F7CB6B 100%)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
   };
 
   return (
