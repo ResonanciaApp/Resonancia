@@ -44,7 +44,7 @@ export default function SlidePilares() {
     {
       titulo: "Crea",
       icon: <IconCrea />,
-      texto: "Mezclador de sonidos y experiencias interactivas para armar tu propio espacio de calma.",
+      texto: "Mezclador de sonidos y Geometrix, nuestra experiencia interactiva de geometría sagrada, para armar tu propio espacio de calma.",
     },
     {
       titulo: "Conecta",
