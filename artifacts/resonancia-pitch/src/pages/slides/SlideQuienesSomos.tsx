@@ -48,9 +48,10 @@ export default function SlideQuienesSomos() {
         preserveAspectRatio="none"
       >
         {[
-          [24, 34], [76, 34], [24, 74], [76, 74],
-        ].map(([x, y], i) => (
-          <line key={i} x1="50" y1="55" x2={x} y2={y} stroke="rgba(190,150,80,0.22)" strokeWidth="0.12" />
+          // [x1, y1] = punto en el borde del círculo central, [x2, y2] = hacia la card
+          [39.1, 46.2, 24, 34], [60.9, 46.2, 76, 34], [38.9, 63.1, 24, 74], [61.1, 63.1, 76, 74],
+        ].map(([x1, y1, x2, y2], i) => (
+          <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgba(190,150,80,0.22)" strokeWidth="0.12" />
         ))}
       </svg>
 
