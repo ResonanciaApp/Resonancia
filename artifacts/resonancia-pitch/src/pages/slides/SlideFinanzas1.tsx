@@ -5,18 +5,18 @@ export default function SlideFinanzas1() {
   // Cursos M7+: $15.294/venta (post-tienda, post-tallerista/prod 35%)
 
   const rows = [
-    { mes: "M1 Lanzamiento", subs: "300",   fase: "lanzamiento", ingTotal: "$0,8M",  upsell: "—",      costos: "$4,7M",  resultado: "–$4,0M", neg: true  },
-    { mes: "Mes 2",          subs: "600",   fase: "normal",      ingTotal: "$1,9M",  upsell: "—",      costos: "$4,7M",  resultado: "–$2,8M", neg: true  },
-    { mes: "Mes 3",          subs: "900",   fase: "normal",      ingTotal: "$2,9M",  upsell: "—",      costos: "$5,3M",  resultado: "–$2,4M", neg: true  },
-    { mes: "Mes 4",          subs: "1.200", fase: "normal",      ingTotal: "$3,9M",  upsell: "—",      costos: "$5,3M",  resultado: "–$1,4M", neg: true  },
-    { mes: "Mes 5",          subs: "1.500", fase: "normal",      ingTotal: "$4,9M",  upsell: "—",      costos: "$5,3M",  resultado: "–$0,5M", neg: true  },
-    { mes: "Mes 6",          subs: "1.800", fase: "normal",      ingTotal: "$5,8M",  upsell: "—",      costos: "$5,3M",  resultado: "+$0,5M", neg: false },
+    { mes: "M1 Lanzamiento", subs: "300",   fase: "lanzamiento", ingTotal: "$0,8M",  upsell: "—",      costos: "$4,3M",  resultado: "–$3,6M", neg: true  },
+    { mes: "Mes 2",          subs: "600",   fase: "normal",      ingTotal: "$1,9M",  upsell: "—",      costos: "$4,3M",  resultado: "–$2,4M", neg: true  },
+    { mes: "Mes 3",          subs: "900",   fase: "normal",      ingTotal: "$2,9M",  upsell: "—",      costos: "$4,8M",  resultado: "–$2,0M", neg: true  },
+    { mes: "Mes 4",          subs: "1.200", fase: "normal",      ingTotal: "$3,9M",  upsell: "—",      costos: "$4,8M",  resultado: "–$1,0M", neg: true  },
+    { mes: "Mes 5",          subs: "1.500", fase: "normal",      ingTotal: "$4,9M",  upsell: "—",      costos: "$4,8M",  resultado: "–$0,1M", neg: true  },
+    { mes: "Mes 6",          subs: "1.800", fase: "normal",      ingTotal: "$5,8M",  upsell: "—",      costos: "$4,8M",  resultado: "+$0,9M", neg: false },
     { mes: "Mes 7",          subs: "2.100", fase: "normal",      ingTotal: "$6,8M",  upsell: "+$0,9M", costos: "$7,2M",  resultado: "+$0,5M", neg: false },
     { mes: "Mes 8",          subs: "2.400", fase: "normal",      ingTotal: "$7,8M",  upsell: "+$1,2M", costos: "$7,2M",  resultado: "+$1,8M", neg: false },
-    { mes: "Mes 9",          subs: "2.700", fase: "normal",      ingTotal: "$8,7M",  upsell: "+$1,5M", costos: "$7,45M", resultado: "+$2,8M", neg: false },
-    { mes: "Mes 10",         subs: "3.000", fase: "normal",      ingTotal: "$9,7M",  upsell: "+$1,7M", costos: "$7,45M", resultado: "+$3,9M", neg: false },
-    { mes: "Mes 11",         subs: "3.300", fase: "normal",      ingTotal: "$10,7M", upsell: "+$1,8M", costos: "$7,7M",  resultado: "+$4,8M", neg: false },
-    { mes: "Mes 12",         subs: "3.600", fase: "normal",      ingTotal: "$11,7M", upsell: "+$2,0M", costos: "$7,7M",  resultado: "+$5,9M", neg: false },
+    { mes: "Mes 9",          subs: "2.700", fase: "normal",      ingTotal: "$8,7M",  upsell: "+$1,5M", costos: "$8,2M",  resultado: "+$2,1M", neg: false },
+    { mes: "Mes 10",         subs: "3.000", fase: "normal",      ingTotal: "$9,7M",  upsell: "+$1,7M", costos: "$8,2M",  resultado: "+$3,2M", neg: false },
+    { mes: "Mes 11",         subs: "3.300", fase: "normal",      ingTotal: "$10,7M", upsell: "+$1,8M", costos: "$8,4M",  resultado: "+$4,1M", neg: false },
+    { mes: "Mes 12",         subs: "3.600", fase: "normal",      ingTotal: "$11,7M", upsell: "+$2,0M", costos: "$8,4M",  resultado: "+$5,2M", neg: false },
   ];
 
   return (
@@ -107,8 +107,9 @@ export default function SlideFinanzas1() {
 
       {/* Footnote */}
       <div style={{ flexShrink: 0, fontSize: "0.88vw", color: "rgba(244,244,244,0.42)", lineHeight: 1.45 }}>
-        Blend 35/65% (sin lifetime) · 300 nuevos suscriptores/mes · Break-even operacional M6 · Recuperación de caja acumulada M11 ·
-        $76M suscripciones · $9M cursos · Total $85M · Costos $76M · Neto +$9M.
+        Blend 35/65% (sin lifetime) · 300 nuevos suscriptores/mes · Marketing escalonado: el gasto fuerte parte en M9, cuando la operación ya es rentable ·
+        Break-even operacional M6 · Recuperación de caja acumulada M11 · $76M suscripciones · $9M cursos · Total $85M · Costos $76M · Neto +$9M ·
+        Vista conservadora: el plan anual (65%) se reconoce mes a mes; en caja real ese ingreso entra por adelantado.
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ export default function SlideConclusionFinanciera() {
   const fases = [
     {
       t: "MESES 1–5 · EL VALLE",
-      d: "Pocos suscriptores y costos corriendo completos: la caja acumulada es negativa. Este es el tramo que financia la ronda de inversión.",
+      d: "Pocos suscriptores y marketing contenido: la caja acumulada llega a ≈ −$8,8M entre M4 y M5. Ese hoyo es lo que financia la ronda ($10M lo cubre con holgura).",
       tint: "rgba(224,112,112,0.9)",
     },
     {

@@ -7,18 +7,18 @@ export default function SlideFinanzas2() {
   const NETO_CURSO = 15294;
 
   const meses = [
-    { label: "M1",  subs: 300,  launch: true,  costos: 4.71, cursos: 0   },
-    { label: "M2",  subs: 600,  launch: false, costos: 4.71, cursos: 0   },
-    { label: "M3",  subs: 900,  launch: false, costos: 5.31, cursos: 0   },
-    { label: "M4",  subs: 1200, launch: false, costos: 5.31, cursos: 0   },
-    { label: "M5",  subs: 1500, launch: false, costos: 5.31, cursos: 0   },
-    { label: "M6",  subs: 1800, launch: false, costos: 5.31, cursos: 0   },
+    { label: "M1",  subs: 300,  launch: true,  costos: 4.31, cursos: 0   },
+    { label: "M2",  subs: 600,  launch: false, costos: 4.31, cursos: 0   },
+    { label: "M3",  subs: 900,  launch: false, costos: 4.81, cursos: 0   },
+    { label: "M4",  subs: 1200, launch: false, costos: 4.81, cursos: 0   },
+    { label: "M5",  subs: 1500, launch: false, costos: 4.81, cursos: 0   },
+    { label: "M6",  subs: 1800, launch: false, costos: 4.81, cursos: 0   },
     { label: "M7",  subs: 2100, launch: false, costos: 7.21, cursos: 60  },
     { label: "M8",  subs: 2400, launch: false, costos: 7.21, cursos: 80  },
-    { label: "M9",  subs: 2700, launch: false, costos: 7.46, cursos: 100 },
-    { label: "M10", subs: 3000, launch: false, costos: 7.46, cursos: 110 },
-    { label: "M11", subs: 3300, launch: false, costos: 7.71, cursos: 120 },
-    { label: "M12", subs: 3600, launch: false, costos: 7.71, cursos: 130 },
+    { label: "M9",  subs: 2700, launch: false, costos: 8.16, cursos: 100 },
+    { label: "M10", subs: 3000, launch: false, costos: 8.16, cursos: 110 },
+    { label: "M11", subs: 3300, launch: false, costos: 8.41, cursos: 120 },
+    { label: "M12", subs: 3600, launch: false, costos: 8.41, cursos: 130 },
   ];
 
   let cumulative = 0;
@@ -139,7 +139,7 @@ export default function SlideFinanzas2() {
 
       <div style={{ fontSize: "0.9vw", color: "rgba(244,244,244,0.40)", lineHeight: 1.4, marginTop: "1vh" }}>
         Base: 300 nuevos subs/mes · Blend 35/65% (sin lifetime) · ARPU rec. $3.238 normal · Cursos $15.294/venta (post-tallerista/prod 35%) ·
-        Break-even operacional M6 · Recuperación caja M11 · "Churn 15%": 300 nuevos subs/mes con 15% de cancelación mensual (≈1.720 subs a M12), mismos costos · Escenarios ilustrativos, no garantizados.
+        Marketing escalonado (gasto fuerte desde M9) · Valle máximo ≈ −$8,8M (M4–M5), dentro del tramo mayor de $10M · Break-even operacional M6 · Recuperación caja M11 · "Churn 15%": 300 nuevos subs/mes con 15% de cancelación mensual (≈1.720 subs a M12), mismos costos · Escenarios ilustrativos, no garantizados.
       </div>
     </div>
   );
