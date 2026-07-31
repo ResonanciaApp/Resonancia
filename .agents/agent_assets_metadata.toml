@@ -2483,3 +2483,9 @@ id = "B_mSqUVoQTdQCjE4sxhxX"
 uri = "file://.local/outputs/RESONANCIA---Invitaci-n-Resonadores.pdf"
 type = "pdf"
 title = "RESONANCIA — Invitación Resonadores.pdf"
+
+[[outputs]]
+id = "WuZrOOfb6Nb6sd8U1XAMd"
+uri = "file://.local/outputs/RESONANCIA---Pitch-Inversionistas.pdf"
+type = "pdf"
+title = "RESONANCIA — Pitch Inversionistas.pdf"
