@@ -1,19 +1,4 @@
 export default function SlideQueEs() {
-  const pilares = [
-    {
-      titulo: "Escucha",
-      texto: "Catálogo curado de sesiones de sonoterapia, meditación y descanso, producido en estudio propio.",
-    },
-    {
-      titulo: "Crea",
-      texto: "Mezclador de sonidos y experiencias interactivas para armar tu propio espacio de calma.",
-    },
-    {
-      titulo: "Conecta",
-      texto: "Sesiones en vivo con guiadores y una comunidad hispanohablante en torno al bienestar.",
-    },
-  ];
-
   return (
     <div
       className="relative w-screen h-screen overflow-hidden font-display flex"
@@ -41,29 +26,6 @@ export default function SlideQueEs() {
           </div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.6vh" }}>
-          {pilares.map((p) => (
-            <div
-              key={p.titulo}
-              style={{
-                backgroundColor: "rgba(0,0,0,0.16)",
-                border: "1px solid rgba(255,255,255,0.10)",
-                borderRadius: "0.9vw",
-                padding: "2.0vh 1.8vw",
-                display: "flex",
-                alignItems: "baseline",
-                gap: "1.4vw",
-              }}
-            >
-              <div style={{ fontSize: "1.5vw", fontWeight: 700, color: "#FFFFFF", minWidth: "8vw" }}>
-                {p.titulo}
-              </div>
-              <div style={{ fontSize: "1.1vw", color: "rgba(244,244,244,0.60)", lineHeight: 1.5 }}>
-                {p.texto}
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* Columna derecha: mockup de celular */}
