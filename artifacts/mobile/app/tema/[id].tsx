@@ -1,16 +1,14 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { GhostPill } from "@/components/GhostPill";
 import { router, useLocalSearchParams } from "expo-router";
-import { Image as ExpoImage } from "expo-image";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import {
-  Alert,
   Animated,
+  Dimensions,
   Platform,
   Pressable,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -18,24 +16,30 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { SessionActionsSheet } from "@/components/SessionActionsSheet";
-import { SessionRow } from "@/components/SessionRow";
-import { SESSIONS, type Session } from "@/data/sessions";
-import { getTemaById } from "@/data/temas";
-import { useColors } from "@/hooks/useColors";
+import { SessionCard } from "@/components/SessionCard";
+import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
+import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
-const H_PAD = 20;
-const STICKY_START = 180;
-const STICKY_END   = 300;
+import { useColors } from "@/hooks/useColors";
+import { SESSIONS } from "@/data/sessions";
+import { getTemaById } from "@/data/temas";
+
+const { width } = Dimensions.get("window");
+const H_PAD   = 20;
+const HERO_H  = 260;
+const CARD_W  = (width - H_PAD * 2 - 14) / 2;
+
+const STICKY_START = HERO_H - 60;
+const STICKY_END   = HERO_H;
 
 export default function TemaScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const colors = useColors();
-  const insets = useSafeAreaInsets();
+  const colors  = useColors();
+  const insets  = useSafeAreaInsets();
   const { theme: activeTheme } = useSceneTheme();
-  const [actionsSession, setActionsSession] = useState<Session | null>(null);
+  const { isPremium } = usePremium();
 
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
+  const topPad    = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -50,9 +54,7 @@ export default function TemaScreen() {
   if (!tema) return null;
 
   const sessions = SESSIONS.filter((s) => {
-    // Etiquetas Nivel 2 (admin): match por label exacto del tema.
     if (Array.isArray(s.temaTag) && s.temaTag.includes(tema.label)) return true;
-    // Fallback legacy: match por themeTag (Etiquetas Nivel 1).
     return (
       !!tema.themeTagMatch?.length &&
       Array.isArray(s.themeTag) &&
@@ -66,19 +68,16 @@ export default function TemaScreen() {
       : SESSIONS.filter((s) => s.isFeatured || s.isNew).slice(0, 10);
 
   return (
-    <LinearGradient
-      style={styles.root}
-      colors={activeTheme.gradient}
-    >
+    <LinearGradient style={styles.root} colors={activeTheme.gradient}>
       <StatusBar hidden />
 
-      {/* ── STICKY HEADER (fades in on scroll) ── */}
+      {/* ── STICKY HEADER ── */}
       <Animated.View
         style={[
           styles.stickyHeader,
           {
             paddingTop: topPad,
-            backgroundColor: "#210911",
+            backgroundColor: activeTheme.gradient[0],
             borderBottomColor: "rgba(212,175,55,0.15)",
             opacity: headerOpacity,
           },
@@ -86,34 +85,15 @@ export default function TemaScreen() {
         pointerEvents="box-none"
       >
         <View style={styles.stickyInner} pointerEvents="box-none">
-          <GhostPill>
-            <Pressable onPress={() => router.back()} hitSlop={10} style={styles.pillBtn}>
-              <Feather name="arrow-left" size={16} color="#FFFFFF" />
-            </Pressable>
-          </GhostPill>
+          <Pressable onPress={() => router.back()} hitSlop={10} style={styles.pillBtn}>
+            <Feather name="chevron-left" size={24} color="#FFFFFF" />
+          </Pressable>
           <Text style={[styles.stickyTitle, { color: colors.foreground }]} numberOfLines={1}>
             {tema.label}
           </Text>
-          <GhostPill>
-            <Pressable hitSlop={10} style={styles.pillBtn} onPress={() => Alert.alert(tema.label, tema.description ?? "")}>
-              <Feather name="info" size={16} color="rgba(255,255,255,0.85)" />
-            </Pressable>
-          </GhostPill>
+          <View style={{ width: 38 }} />
         </View>
       </Animated.View>
-
-      {/* ── Floating back button (always visible, on top of hero area) ── */}
-      <View style={[styles.floatingBack, { top: topPad + 8 }]} pointerEvents="box-none">
-        <GhostPill>
-          <Pressable
-            onPress={() => router.back()}
-            hitSlop={10}
-            style={({ pressed }) => [styles.pillBtn, { opacity: pressed ? 0.7 : 1 }]}
-          >
-            <Feather name="arrow-left" size={16} color="#FFFFFF" />
-          </Pressable>
-        </GhostPill>
-      </View>
 
       <Animated.ScrollView
         style={styles.scroll}
@@ -122,83 +102,84 @@ export default function TemaScreen() {
         scrollEventThrottle={16}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true }
+          { useNativeDriver: true },
         )}
       >
-        {/* Hero: icon + title + description */}
-        <View style={[styles.hero, { paddingTop: topPad + 56 }]}>
+        {/* ── HERO BANNER ── */}
+        <View style={[styles.hero, { height: HERO_H }]}>
           {tema.image != null ? (
-            <ExpoImage
-              source={tema.image}
-              style={styles.heroIcon}
-              contentFit="contain"
+            <Image
+              source={tema.image as number}
+              style={StyleSheet.absoluteFill}
+              contentFit="cover"
+              placeholder={BLUR_PLACEHOLDER}
+              transition={IMAGE_TRANSITION}
             />
           ) : (
-            <MaterialCommunityIcons
-              name={tema.icon}
-              size={56}
-              color={tema.color}
-            />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: tema.color + "33" }]} />
           )}
+          <LinearGradient
+            colors={["rgba(15,10,6,0)", "rgba(15,10,6,0.35)", "rgba(15,10,6,0.9)", activeTheme.gradient[0] as string]}
+            locations={[0, 0.5, 0.88, 1]}
+            style={StyleSheet.absoluteFill}
+          />
+          {/* Floating back button */}
+          <GhostPill style={{ position: "absolute", left: H_PAD, top: topPad + 8 }}>
+            <Pressable
+              onPress={() => router.back()}
+              hitSlop={10}
+              style={({ pressed }) => [styles.pillBtn, { opacity: pressed ? 0.7 : 1 }]}
+            >
+              <Feather name="arrow-left" size={16} color="#FFFFFF" />
+            </Pressable>
+          </GhostPill>
+        </View>
 
-          <Text style={[styles.title, { color: colors.foreground }]}>
-            {tema.label}
-          </Text>
-
-          <Text
-            style={[styles.description, { color: colors.mutedForeground }]}
-            numberOfLines={2}
-          >
+        {/* ── TITLE + DESCRIPTION ── */}
+        <View style={styles.intro}>
+          <Text style={[styles.pageTitle, { color: colors.foreground }]}>{tema.label}</Text>
+          <Text style={[styles.pageDesc, { color: "#F4F4F4" }]} numberOfLines={1}>
             {tema.description}
           </Text>
         </View>
 
-        {/* Session list */}
-        <View style={styles.list}>
+        {/* ── CARD GRID ── */}
+        <View style={styles.sessionGrid}>
           {displaySessions.map((s) => (
-            <SessionRow
+            <SessionCard
               key={s.id}
               session={s}
-              style={styles.row}
-              onActionsPress={() => setActionsSession(s)}
+              width={CARD_W}
+              style={{ marginRight: 0 }}
+              showDuration={false}
+              showAuthorAvatar={false}
+              overridePress={() => {
+                if (s.isPremium && !isPremium) { router.push("/membresia" as never); return; }
+                router.push(`/session/${s.id}` as never);
+              }}
             />
           ))}
-
-          {displaySessions.length === 0 && (
-            <View style={styles.empty}>
-              <Feather
-                name="inbox"
-                size={32}
-                color={colors.mutedForeground}
-                style={{ marginBottom: 12 }}
-              />
-              <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-                Proximamente
-              </Text>
-            </View>
-          )}
         </View>
-      </Animated.ScrollView>
 
-      <SessionActionsSheet
-        session={actionsSession}
-        visible={actionsSession !== null}
-        onClose={() => setActionsSession(null)}
-      />
+        {displaySessions.length === 0 && (
+          <View style={styles.empty}>
+            <Feather name="inbox" size={32} color={colors.mutedForeground} style={{ marginBottom: 12 }} />
+            <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>Próximamente</Text>
+          </View>
+        )}
+      </Animated.ScrollView>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1 },
+  root:   { flex: 1 },
   scroll: { flex: 1 },
 
   // Sticky header
   stickyHeader: {
     position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
+    top: 0, left: 0, right: 0,
     zIndex: 50,
     borderBottomWidth: 1,
   },
@@ -211,75 +192,52 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   pillBtn: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    width: 38,
+    height: 38,
     alignItems: "center",
     justifyContent: "center",
   },
   stickyTitle: {
     fontFamily: "Manrope",
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: "700",
     flex: 1,
     textAlign: "center",
     paddingHorizontal: 8,
   },
 
-  // Floating back (always visible on hero)
-  floatingBack: {
-    position: "absolute",
-    left: H_PAD,
-    zIndex: 10,
-  },
+  // Hero
+  hero: { width: "100%", overflow: "hidden" },
 
-  hero: {
-    alignItems: "center",
+  // Intro
+  intro: {
     paddingHorizontal: H_PAD,
-    paddingBottom: 32,
+    paddingTop: 20,
+    paddingBottom: 24,
   },
-  heroIcon: {
-    width: 64,
-    height: 64,
-    marginBottom: 20,
-  },
-  title: {
+  pageTitle: {
     fontFamily: "Manrope",
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: "700",
     letterSpacing: 0.2,
-    textAlign: "center",
-    marginBottom: 12,
+    marginBottom: 6,
   },
-  description: {
+  pageDesc: {
     fontFamily: "Manrope",
     fontSize: 14,
     lineHeight: 22,
-    textAlign: "center",
-    maxWidth: 300,
   },
 
-  divider: {
-    height: 1,
-    marginHorizontal: H_PAD,
-    marginBottom: 8,
-  },
-
-  list: {
+  // Session grid
+  sessionGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
     paddingHorizontal: H_PAD,
-    paddingTop: 8,
-  },
-  row: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(61,14,22,0.40)",
+    rowGap: 35,
+    marginBottom: 40,
   },
 
-  empty: {
-    alignItems: "center",
-    paddingVertical: 60,
-  },
-  emptyText: {
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "600",
-  },
+  empty: { alignItems: "center", paddingVertical: 60 },
+  emptyText: { fontFamily: "Manrope", fontSize: 15, fontWeight: "600" },
 });
