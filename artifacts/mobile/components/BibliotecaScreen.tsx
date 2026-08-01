@@ -1969,7 +1969,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   chipActionBtn: { width: 32, height: 32, justifyContent: "center", alignItems: "center" },
-  animCloseBtn: { position: "absolute", left: 4, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
+  animCloseBtn: { position: "absolute", left: H_PAD, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
   chipRow: { flexGrow: 0, marginTop: 20 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingTop: 5, paddingBottom: 5, paddingLeft: H_PAD, paddingRight: H_PAD },
   chipRowFiltered: {
