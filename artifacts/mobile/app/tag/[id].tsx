@@ -228,52 +228,8 @@ export default function TagScreen() {
           </View>
         ) : (
           <>
-            {/* LOS MÁS ESCUCHADOS */}
-            {!durationFilter && (
-              <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Los más escuchados</Text>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.hScroll}
-                >
-                  {topSessions.map((session) => {
-                    const locked = !!session.isPremium && !isPremium;
-                    return (
-                    <Pressable
-                      key={session.id}
-                      onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
-                      style={({ pressed }) => [styles.hCard, { opacity: pressed ? 0.82 : 1 }]}
-                    >
-                      <View style={[styles.hCardImg, { backgroundColor: colors.card }]}>
-                        <Image
-                          source={session.image as number}
-                          style={StyleSheet.absoluteFill}
-                          resizeMode="cover"
-                          placeholder={BLUR_PLACEHOLDER}
-                          transition={IMAGE_TRANSITION}
-                        />
-                        <View style={styles.durationBadge}>
-                          <Text style={styles.durationText}>{session.durationLabel}</Text>
-                        </View>
-                        <PremiumBadge session={session} />
-                      </View>
-                      <Text style={[styles.hCardTitle, { color: colors.foreground }]} numberOfLines={2}>
-                        {session.title}
-                      </Text>
-                      <Text style={[styles.hCardSub, { color: colors.mutedForeground }]} numberOfLines={1}>
-                        {sessionAuthor(session)}
-                      </Text>
-                    </Pressable>
-                    );
-                  })}
-                </ScrollView>
-              </View>
-            )}
-
             {/* TODOS */}
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Todos</Text>
               <View style={styles.list}>
                 {filteredSessions.map((session) => {
                   const locked = !!session.isPremium && !isPremium;
