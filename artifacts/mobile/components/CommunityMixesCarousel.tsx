@@ -23,6 +23,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import {
   useGetSharedMixes,
   useToggleSharedMixLike,
+  useReportSharedMix,
   getGetSharedMixesQueryKey,
 } from "@workspace/api-client-react";
 import type { SharedMix, SharedMixesPage } from "@workspace/api-client-react";
