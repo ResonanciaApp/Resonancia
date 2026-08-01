@@ -549,7 +549,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     marginBottom: 14,
-    marginTop: 22,
+    marginTop: 2,
   },
   sectionTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", letterSpacing: 0.5, flex: 1 },
   commentsCount: { fontFamily: "Manrope", fontSize: 10, fontWeight: "600" },
