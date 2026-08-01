@@ -5,7 +5,6 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback, useMemo, useState } from "react";
 import {
-  Alert,
   Dimensions,
   Platform,
   Pressable,
@@ -17,12 +16,11 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useGetSharedMixes, useReportSharedMix } from "@workspace/api-client-react";
+import { useGetSharedMixes } from "@workspace/api-client-react";
 import type { SharedMix } from "@workspace/api-client-react";
 
 import { MixContextMenu } from "@/components/CommunityMixesCarousel";
 import { getMixImage } from "@/config/mix-images";
-import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -145,38 +143,7 @@ export default function MezclasComunidadScreen() {
     activeCategory ? { category: activeCategory } : undefined,
   );
   const allMixes = data?.mixes ?? [];
-  const { importPreset, presets } = useMixer();
-  const reportMix = useReportSharedMix();
-
   const [menuMix, setMenuMix] = useState<SharedMix | null>(null);
-
-  const isFavorited = useCallback(
-    (mix: SharedMix) => presets.some((p) => p.id === `community-fav-${mix.id}`),
-    [presets],
-  );
-
-  const handleAddFavorite = useCallback(
-    (mix: SharedMix) => {
-      if (isFavorited(mix)) {
-        Alert.alert("Ya en favoritos", "Esta mezcla ya está en tus mezclas favoritas.");
-        return;
-      }
-      const preset: MixPreset = {
-        id: `community-fav-${mix.id}`,
-        name: mix.name,
-        description: mix.description ?? undefined,
-        image: mix.image ?? undefined,
-        category: mix.category as MixPreset["category"],
-        sounds: mix.sounds.map((s) => ({ id: s.id, volume: s.volume })),
-        createdAt: mix.createdAt,
-        favorited: true,
-      };
-      importPreset(preset);
-      setMenuMix(null);
-      Alert.alert("Guardada", `"${mix.name}" se agregó a tus mezclas favoritas.`);
-    },
-    [importPreset, isFavorited],
-  );
 
   const handleViewCreator = useCallback((mix: SharedMix) => {
     setMenuMix(null);
@@ -189,39 +156,6 @@ export default function MezclasComunidadScreen() {
   const handleOpenMix = useCallback((mix: SharedMix) => {
     router.push({ pathname: "/mezcla/[id]", params: { id: String(mix.id) } } as never);
   }, []);
-
-  const handleReport = useCallback(
-    (mix: SharedMix) => {
-      setMenuMix(null);
-      const reasons: { key: "spam" | "inapropiado" | "ofensivo" | "otro"; label: string }[] = [
-        { key: "spam", label: "Spam o engañosa" },
-        { key: "inapropiado", label: "Contenido inapropiado" },
-        { key: "ofensivo", label: "Lenguaje ofensivo" },
-        { key: "otro", label: "Otro motivo" },
-      ];
-      Alert.alert(
-        "Reportar mezcla",
-        `¿Por qué querés reportar "${mix.name}"?`,
-        [
-          ...reasons.map((r) => ({
-            text: r.label,
-            onPress: () =>
-              reportMix.mutate(
-                { id: mix.id, data: { reason: r.key } },
-                {
-                  onSuccess: () =>
-                    Alert.alert("Gracias", "Recibimos tu reporte. Nuestro equipo lo revisará."),
-                  onError: () =>
-                    Alert.alert("Ups", "No pudimos enviar el reporte. Intentá de nuevo."),
-                },
-              ),
-          })),
-          { text: "Cancelar", style: "cancel" as const },
-        ],
-      );
-    },
-    [reportMix],
-  );
 
   const rows = useMemo(() => {
     const out: SharedMix[][] = [];
@@ -303,9 +237,7 @@ export default function MezclasComunidadScreen() {
       <MixContextMenu
         mix={menuMix}
         onClose={() => setMenuMix(null)}
-        onAddFavorite={handleAddFavorite}
         onViewCreator={handleViewCreator}
-        onReport={handleReport}
         colors={colors}
       />
     </View>

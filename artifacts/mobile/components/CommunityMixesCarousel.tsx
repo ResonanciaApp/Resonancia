@@ -19,15 +19,19 @@ import {
 import { Image as ExpoImage } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useGetSharedMixes, useReportSharedMix } from "@workspace/api-client-react";
-import type { SharedMix } from "@workspace/api-client-react";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  useGetSharedMixes,
+  useToggleSharedMixLike,
+  getGetSharedMixesQueryKey,
+} from "@workspace/api-client-react";
+import type { SharedMix, SharedMixesPage } from "@workspace/api-client-react";
 import { getMixImage } from "@/config/mix-images";
 
-import { type MixPreset, useMixer } from "@/context/MixerContext";
-import { type MixCategory, MIX_CATEGORIES } from "@/data/mix-categories";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useAuth } from "@/context/AuthContext";
 
 
 import { Dimensions } from "react-native";
@@ -45,46 +49,75 @@ export function CommunityMixesCarousel() {
   const colors = useColors();
   const { data } = useGetSharedMixes();
   const allMixes = data?.mixes ?? [];
-  const { importPreset, presets } = useMixer();
-  const reportMix = useReportSharedMix();
+  const { isSignedIn } = useAuth();
+  const queryClient = useQueryClient();
+  const toggleLike = useToggleSharedMixLike();
+  const pendingLike = useRef<Record<number, boolean>>({});
 
-  // ── 3-dot menu state ──────────────────────────────────────────
-  const [menuMix, setMenuMix] = useState<SharedMix | null>(null);
 
   const visible = allMixes.slice(0, MAX_VISIBLE);
   const remaining = allMixes.length - visible.length;
 
-  // ── Helpers ───────────────────────────────────────────────────
-  const isFavorited = useCallback(
-    (mix: SharedMix) => presets.some((p) => p.id === `community-fav-${mix.id}`),
-    [presets],
+  // ── Like toggle ───────────────────────────────────────────────
+  const applyOptimistic = useCallback(
+    (mixId: number, liked: boolean) => {
+      queryClient.setQueryData<SharedMixesPage>(getGetSharedMixesQueryKey(), (prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          mixes: prev.mixes.map((m) =>
+            m.id === mixId
+              ? { ...m, likedByMe: liked, likes: Math.max(0, m.likes + (liked ? 1 : -1)) }
+              : m,
+          ),
+        };
+      });
+    },
+    [queryClient],
   );
 
-  const handleAddFavorite = useCallback(
+  const handleLike = useCallback(
     (mix: SharedMix) => {
-      if (isFavorited(mix)) {
-        Alert.alert("Ya en favoritos", "Esta mezcla ya está en tus mezclas favoritas.");
+      if (!isSignedIn) {
+        Alert.alert(
+          "Crea tu cuenta",
+          "Necesitas una cuenta para dar me gusta a las mezclas de la comunidad.",
+          [
+            { text: "Ahora no", style: "cancel" },
+            { text: "Registrarme", onPress: () => router.push("/(auth)/sign-up" as never) },
+          ],
+        );
         return;
       }
-      const preset: MixPreset = {
-        id: `community-fav-${mix.id}`,
-        name: mix.name,
-        description: mix.description ?? undefined,
-        image: mix.image ?? undefined,
-        category: mix.category as MixCategory,
-        sounds: mix.sounds.map((s) => ({ id: s.id, volume: s.volume })),
-        createdAt: mix.createdAt,
-        favorited: true,
-      };
-      importPreset(preset);
-      setMenuMix(null);
-      Alert.alert("Guardada", `"${mix.name}" se agregó a tus mezclas favoritas.`);
+      if (pendingLike.current[mix.id]) return;
+      pendingLike.current[mix.id] = true;
+      const nextLiked = !mix.likedByMe;
+      applyOptimistic(mix.id, nextLiked);
+      toggleLike.mutate(
+        { id: mix.id },
+        {
+          onError: () => applyOptimistic(mix.id, !nextLiked),
+          onSettled: () => { pendingLike.current[mix.id] = false; },
+          onSuccess: (updated) => {
+            queryClient.setQueryData<SharedMixesPage>(getGetSharedMixesQueryKey(), (prev) => {
+              if (!prev) return prev;
+              return {
+                ...prev,
+                mixes: prev.mixes.map((m) =>
+                  m.id === updated.id
+                    ? { ...m, likes: updated.likes, likedByMe: updated.likedByMe }
+                    : m,
+                ),
+              };
+            });
+          },
+        },
+      );
     },
-    [importPreset, isFavorited],
+    [isSignedIn, applyOptimistic, toggleLike, queryClient],
   );
 
   const handleViewCreator = useCallback((mix: SharedMix) => {
-    setMenuMix(null);
     router.push({
       pathname: "/mezcla-creador/[userId]",
       params: { userId: String(mix.author.id), name: mix.author.displayName },
@@ -94,42 +127,6 @@ export function CommunityMixesCarousel() {
   const handleOpenMix = useCallback((mix: SharedMix) => {
     router.push({ pathname: "/mezcla/[id]", params: { id: String(mix.id) } } as never);
   }, []);
-
-  const handleReport = useCallback(
-    (mix: SharedMix) => {
-      setMenuMix(null);
-      const reasons: { key: "spam" | "inapropiado" | "ofensivo" | "otro"; label: string }[] = [
-        { key: "spam", label: "Spam o engañosa" },
-        { key: "inapropiado", label: "Contenido inapropiado" },
-        { key: "ofensivo", label: "Lenguaje ofensivo" },
-        { key: "otro", label: "Otro motivo" },
-      ];
-      Alert.alert(
-        "Reportar mezcla",
-        `¿Por qué querés reportar "${mix.name}"?`,
-        [
-          ...reasons.map((r) => ({
-            text: r.label,
-            onPress: () =>
-              reportMix.mutate(
-                { id: mix.id, data: { reason: r.key } },
-                {
-                  onSuccess: () =>
-                    Alert.alert(
-                      "Gracias",
-                      "Recibimos tu reporte. Nuestro equipo lo revisará.",
-                    ),
-                  onError: () =>
-                    Alert.alert("Ups", "No pudimos enviar el reporte. Intentá de nuevo."),
-                },
-              ),
-          })),
-          { text: "Cancelar", style: "cancel" as const },
-        ],
-      );
-    },
-    [reportMix],
-  );
 
   // ── Render ────────────────────────────────────────────────────
   return (
@@ -164,10 +161,10 @@ export function CommunityMixesCarousel() {
               mix={mix}
               colors={colors}
               onPress={() => handleOpenMix(mix)}
-              onDotsPress={() => setMenuMix(mix)}
+              onDotsPress={() => {}}
               onAuthorPress={() => handleViewCreator(mix)}
-              favorited={isFavorited(mix)}
-              onHeartPress={() => handleAddFavorite(mix)}
+              favorited={mix.likedByMe ?? false}
+              onHeartPress={() => handleLike(mix)}
             />
           ))}
         </View>
@@ -189,15 +186,6 @@ export function CommunityMixesCarousel() {
       )}
       </View>
 
-      {/* ── 3-dot Menu Modal ── */}
-      <MixContextMenu
-        mix={menuMix}
-        onClose={() => setMenuMix(null)}
-        onAddFavorite={handleAddFavorite}
-        onViewCreator={handleViewCreator}
-        onReport={handleReport}
-        colors={colors}
-      />
     </View>
   );
 }
@@ -374,21 +362,18 @@ function MixCover({ image }: { image?: string | null }) {
 export function MixContextMenu({
   mix,
   onClose,
-  onAddFavorite,
   onViewCreator,
-  onReport,
   colors,
 }: {
   mix: SharedMix | null;
   onClose: () => void;
-  onAddFavorite: (mix: SharedMix) => void;
   onViewCreator: (mix: SharedMix) => void;
-  onReport: (mix: SharedMix) => void;
   colors: Colors;
 }) {
   const insets = useSafeAreaInsets();
   const { theme } = useSceneTheme();
   const sheetBg = theme.gradient[0] as string;
+  const reportMix = useReportSharedMix();
 
   if (!mix) return null;
 
@@ -424,20 +409,6 @@ export function MixContextMenu({
 
         <View style={[menuStyles.sep, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
 
-        {/* Agregar a favoritos */}
-        <Pressable
-          onPress={() => onAddFavorite(mix)}
-          style={({ pressed }) => [menuStyles.action, { opacity: pressed ? 0.7 : 1 }]}
-        >
-          <Feather name="heart" size={20} color={GOLD} style={menuStyles.actionIcon} />
-          <Text style={[menuStyles.actionLabel, { color: colors.foreground }]}>
-            Agregar a favoritos
-          </Text>
-          <Feather name="chevron-right" size={16} color="rgba(255,255,255,0.20)" />
-        </Pressable>
-
-        <View style={[menuStyles.sep, { backgroundColor: "rgba(61,14,22,0.40)" }]} />
-
         {/* Ver mezclas del creador */}
         <Pressable
           onPress={() => onViewCreator(mix)}
@@ -454,7 +425,32 @@ export function MixContextMenu({
 
         {/* Reportar mezcla */}
         <Pressable
-          onPress={() => onReport(mix)}
+          onPress={() => {
+            onClose();
+            const reasons: { key: "spam" | "inapropiado" | "ofensivo" | "otro"; label: string }[] = [
+              { key: "spam", label: "Spam o engañosa" },
+              { key: "inapropiado", label: "Contenido inapropiado" },
+              { key: "ofensivo", label: "Lenguaje ofensivo" },
+              { key: "otro", label: "Otro motivo" },
+            ];
+            Alert.alert(
+              "Reportar mezcla",
+              `¿Por qué querés reportar "${mix.name}"?`,
+              [
+                ...reasons.map((r) => ({
+                  text: r.label,
+                  onPress: () => reportMix.mutate(
+                    { id: mix.id, data: { reason: r.key } },
+                    {
+                      onSuccess: () => Alert.alert("Gracias", "Recibimos tu reporte. Nuestro equipo lo revisará."),
+                      onError: () => Alert.alert("Ups", "No pudimos enviar el reporte. Intentá de nuevo."),
+                    },
+                  ),
+                })),
+                { text: "Cancelar", style: "cancel" as const },
+              ],
+            );
+          }}
           style={({ pressed }) => [menuStyles.action, { opacity: pressed ? 0.7 : 1 }]}
         >
           <Feather name="flag" size={20} color="#D08B7A" style={menuStyles.actionIcon} />
