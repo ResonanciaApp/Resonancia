@@ -1100,7 +1100,7 @@ export default function HomeScreen2() {
               { id: "__mezcla__",             label: "Mezclador",  color: "#E6BE67", icon: (color: string) => <MaterialCommunityIcons name="tune-variant" size={24} color={color} /> },
               { id: "__geometrix__",          label: "Geometrix",  color: "#C4C8D4", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cubo-4.png")} style={{ width: 26, height: 26 }} contentFit="contain" /> },
             ] as const).map((c, i) => {
-              const R = 21;
+              const R = 22;
               const corners = [
                 { borderTopLeftRadius: R,    borderTopRightRadius: R,    borderBottomLeftRadius: R,    borderBottomRightRadius: 0 },
                 { borderTopLeftRadius: R,    borderTopRightRadius: R,    borderBottomLeftRadius: 0,    borderBottomRightRadius: R },
