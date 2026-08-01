@@ -255,7 +255,7 @@ function BgGlyph({
   );
 }
 
-export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }) {
+export function ProfileScreenBase({ dedicated = false, onBack }: { dedicated?: boolean; onBack?: () => void }) {
   const colors = useColors();
   const { theme: activeTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
@@ -743,7 +743,7 @@ export function ProfileScreenBase({ dedicated = false }: { dedicated?: boolean }
             </Pressable>
           ) : (
             <BackPill
-              onPress={() => router.canGoBack() ? router.back() : router.navigate("/(tabs)/inicio8" as never)}
+              onPress={onBack ?? (() => router.canGoBack() ? router.back() : router.navigate("/(tabs)/inicio8" as never))}
               size={28}
               bgColor="rgba(255,255,255,0.1)"
               style={{ transform: [{ translateX: -2 }, { translateY: -50 }] }}
