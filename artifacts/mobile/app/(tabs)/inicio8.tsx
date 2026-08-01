@@ -974,7 +974,7 @@ export default function HomeScreen2() {
         >
           <Animated.View style={{ transform: [{ scale: giftScaleAnim }] }}>
             <View style={{
-              backgroundColor: "rgba(255,255,255,0.08)",
+              backgroundColor: activeSceneId === "indigo" ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.08)",
               borderRadius: 20,
               height: 36,
               paddingHorizontal: 10,
