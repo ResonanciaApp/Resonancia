@@ -669,26 +669,6 @@ export default function ExploreScreen() {
           </View>
         </View>
 
-        {/* ── ¿Cuánto tiempo tienes hoy? ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: SECTION_GAP }]}>
-          <Text style={styles.sectionTitle}>¿Cuánto tiempo tienes hoy?</Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{ marginHorizontal: -H_PAD }}
-            contentContainerStyle={{ paddingHorizontal: H_PAD, gap: 10 }}
-          >
-            {DURATION_SLOTS.map((slot) => (
-              <Pressable
-                key={slot.label}
-                onPress={() => router.push(`/busqueda?tiempo=${encodeURIComponent(slot.label)}` as never)}
-                style={({ pressed }) => [styles.durPill, { opacity: pressed ? 0.75 : 1 }]}
-              >
-                <Text style={styles.durPillText}>{slot.label}</Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        </View>
 
         {/* ── Para la ansiedad (antes de chakras) ── */}
         {(() => {
