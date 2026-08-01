@@ -299,10 +299,6 @@ export function MixRow({
         onPress={onHeartPress ?? (() => {})}
       />
 
-      {/* Tres puntos */}
-      <Pressable onPress={onDotsPress} hitSlop={10} style={styles.dotsBtn}>
-        <Feather name="more-vertical" size={18} color="rgba(255,255,255,0.45)" />
-      </Pressable>
     </Pressable>
   );
 }
