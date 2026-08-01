@@ -645,6 +645,30 @@ export default function ExploreScreen() {
           </View>
         )}
 
+        {/* ── Explorar todo ── */}
+        <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: SECTION_GAP }]}>
+          <Text style={styles.sectionTitle}>Explorar todo</Text>
+          <View style={styles.temaGrid}>
+            {TEMAS.map((t) => (
+              <Pressable
+                key={t.id}
+                onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
+                style={({ pressed }) => [
+                  styles.temaCell,
+                  { width: TEMA3_W, backgroundColor: hexTint(t.color, 0.13), opacity: pressed ? 0.75 : 1 },
+                ]}
+              >
+                {t.image ? (
+                  <Image source={t.image as number} style={styles.temaCellIcon} contentFit="contain" />
+                ) : (
+                  <MaterialCommunityIcons name={t.icon} size={26} color={t.color} />
+                )}
+                <Text style={[styles.temaCellLabel, { color: "#FBFBFB" }]}>{t.label}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+
         {/* ── ¿Cuánto tiempo tienes hoy? ── */}
         <View style={[styles.section, { marginBottom: SECTION_GAP, marginTop: SECTION_GAP }]}>
           <Text style={styles.sectionTitle}>¿Cuánto tiempo tienes hoy?</Text>
