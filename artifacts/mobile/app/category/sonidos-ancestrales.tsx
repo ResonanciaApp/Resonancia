@@ -595,12 +595,6 @@ export default function SonidosAncestalesScreen() {
               <BackPill onPress={() => router.back()} size={28} style={{ transform: [{ translateX: -2 }] }} />
             </View>
           </View>
-          {/* Ícono de categoría alineado con la flecha */}
-          <View style={[styles.heroOverlayRight, { top: topPad - 18 }]}>
-            <Pressable hitSlop={10} style={[styles.catIconCircle, { transform: [] }]} onPress={() => router.push("/ancestrales-info" as never)}>
-              <Image source={require("@/assets/images/cat-sesiones.png")} style={{ width: 20, height: 20 }} contentFit="contain" tintColor="#f9f9f9" />
-            </Pressable>
-          </View>
         </View>
 
         {/* ── Título + Descripción ── */}
