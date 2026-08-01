@@ -249,16 +249,17 @@ const styles = StyleSheet.create({
   chip: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 14,
-    paddingVertical: 9,
+    height: 32,
+    paddingHorizontal: 13,
     borderRadius: 999,
     borderWidth: 1,
     gap: 5,
   },
   chipText: {
     fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "500",
+    fontSize: 14,
+    fontWeight: "450" as any,
+    letterSpacing: 0.3,
   },
   clearBtn: {
     marginTop: 16,
