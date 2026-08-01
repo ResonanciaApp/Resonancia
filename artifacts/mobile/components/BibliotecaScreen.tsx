@@ -1153,11 +1153,15 @@ export function BibliotecaScreen({
         if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       });
+      const sortedFavFoldersGeneral = [...favFolders].sort((a, b) => {
+        if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
       const sortedPlaylists = [...userPlaylists].sort((a, b) => {
         if ((b.pinned ? 1 : 0) !== (a.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       });
-      const hasUserContent = sortedFoldersGeneral.length > 0 || sortedPlaylists.length > 0;
+      const hasUserContent = sortedFoldersGeneral.length > 0 || sortedPlaylists.length > 0 || sortedFavFoldersGeneral.length > 0;
       const mixIdsInFoldersGeneral = new Set(mixFolders.flatMap((f) => f.presetIds));
       const sortedMixesGeneral = presets
         .filter((p) => !mixIdsInFoldersGeneral.has(p.id))
@@ -1193,6 +1197,14 @@ export function BibliotecaScreen({
                 </View>
               ) : (
                 <View style={{ gap: 15 }}>
+                  {sortedFavFoldersGeneral.map((folder) => (
+                    <FavFolderRow
+                      key={folder.id}
+                      folder={folder}
+                      onPress={() => router.push(`/carpeta-favorito/${folder.id}` as never)}
+                      onLongPress={() => { setFavActionsItemId(folder.id); setFavActionsItemKind("folder"); }}
+                    />
+                  ))}
                   {sortedFoldersGeneral.map((folder) => (
                     <FolderRow
                       key={folder.id}
@@ -1287,7 +1299,7 @@ export function BibliotecaScreen({
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
-            onPress={() => setNombreCarpetaVisible(true)}
+            onPress={() => setNombreCarpetaFavVisible(true)}
           >
             <View style={styles.addResonadorIcon}>
               <Feather name="folder" size={25} color={iconPlaceholderColor} />
