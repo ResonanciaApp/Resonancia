@@ -1113,7 +1113,7 @@ export default function HomeScreen2() {
               <Pressable
                 key={c.id}
                 onPress={() => {
-                  if (c.id === "__descanzo__") router.push("/dormir" as never);
+                  if (c.id === "__descanzo__") router.push("/(tabs)/descanzo" as never);
                   else if (c.id === "__mezcla__") openMixer();
                   else if (c.id === "__geometrix__") router.push("/(tabs)/geometrix" as never);
                   else router.push(`/category/${c.id}` as never);
