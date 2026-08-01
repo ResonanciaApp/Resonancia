@@ -1,27 +1,20 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Animated, Dimensions, StyleSheet } from "react-native";
+import React, { useEffect, useRef, useState, Suspense } from "react";
+import { Animated, Dimensions, StyleSheet, View } from "react-native";
 
 import { useDrawer } from "@/context/DrawerContext";
 import { BackOverrideProvider } from "@/context/BackOverrideContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 
-// Importamos las pantallas como componentes reutilizables
-import DiarioScreen from "@/app/diario";
-import AmigosScreen from "@/app/amigos";
-import GruposScreen from "@/app/grupos";
-import HistorialScreen from "@/app/historial";
-import FavoritosTodosScreen from "@/app/favoritos-todos";
-import MisSesionesScreen from "@/app/mis-sesiones";
-
 const W = Dimensions.get("window").width;
 
-const SCREENS: Record<string, React.ComponentType> = {
-  "/diario": DiarioScreen,
-  "/amigos": AmigosScreen,
-  "/grupos": GruposScreen,
-  "/historial": HistorialScreen,
-  "/favoritos-todos": FavoritosTodosScreen,
-  "/mis-sesiones": MisSesionesScreen,
+// Lazy imports para evitar dependencia circular con las rutas de Expo Router
+const SCREENS: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
+  "/diario":          React.lazy(() => import("@/app/diario")),
+  "/amigos":          React.lazy(() => import("@/app/amigos")),
+  "/grupos":          React.lazy(() => import("@/app/grupos")),
+  "/historial":       React.lazy(() => import("@/app/historial")),
+  "/favoritos-todos": React.lazy(() => import("@/app/favoritos-todos")),
+  "/mis-sesiones":    React.lazy(() => import("@/app/mis-sesiones")),
 };
 
 /**
@@ -70,7 +63,9 @@ export function DrawerScreenOverlay() {
   return (
     <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ translateX: slideAnim }] }]}>
       <BackOverrideProvider onBack={closeOverlay}>
-        <Screen />
+        <Suspense fallback={<View style={[StyleSheet.absoluteFill, { backgroundColor: "#1E173E" }]} />}>
+          <Screen />
+        </Suspense>
       </BackOverrideProvider>
     </Animated.View>
   );
