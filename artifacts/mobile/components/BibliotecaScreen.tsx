@@ -815,7 +815,7 @@ function NombreCarpetaFavModal({ visible, onClose }: { visible: boolean; onClose
 function FavFolderRow({ folder, onPress, onLongPress }: { folder: FavFolder; onPress: () => void; onLongPress?: () => void }) {
   const count = folder.sessionIds.length;
   return (
-    <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { marginBottom: 7, opacity: pressed ? 0.8 : 1 }]}>
+    <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={600} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.8 : 1 }]}>
       <View style={styles.userPlCover}>
         <Feather name="folder" size={26} color={folder.pinned ? GOLD : MUTED} />
       </View>
