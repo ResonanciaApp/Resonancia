@@ -1588,7 +1588,11 @@ export function BibliotecaScreen({
     }
 
     if (activeTab === "historial") {
-      return <HistorialCalendar />;
+      return (
+        <View style={{ paddingHorizontal: H_PAD }}>
+          <HistorialCalendar />
+        </View>
+      );
     }
 
     if (activeTab === "favoritos") {
