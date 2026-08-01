@@ -3,12 +3,13 @@
  * Diseño V2D (minimalista líneas): ranking, nombre, autor, 3-dot menu.
  * Tabs = píldoras (mismo diseño que "Mi Música").
  */
-import { AntDesign, Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   Alert,
+  Animated,
   Modal,
   Pressable,
   StyleSheet,
@@ -165,6 +166,8 @@ export function CommunityMixesCarousel() {
               onPress={() => handleOpenMix(mix)}
               onDotsPress={() => setMenuMix(mix)}
               onAuthorPress={() => handleViewCreator(mix)}
+              favorited={isFavorited(mix)}
+              onHeartPress={() => handleAddFavorite(mix)}
             />
           ))}
         </View>
@@ -199,6 +202,32 @@ export function CommunityMixesCarousel() {
   );
 }
 
+// ── Corazón animado ───────────────────────────────────────────────
+function AnimatedHeart({ favorited, onPress }: { favorited: boolean; onPress: () => void }) {
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const handlePress = () => {
+    onPress();
+    scale.setValue(1);
+    Animated.sequence([
+      Animated.timing(scale, { toValue: 1.35, duration: 120, useNativeDriver: true }),
+      Animated.spring(scale, { toValue: 1, friction: 3, tension: 140, useNativeDriver: true }),
+    ]).start();
+  };
+
+  return (
+    <Pressable onPress={handlePress} hitSlop={10} style={styles.heartBtn}>
+      <Animated.View style={{ transform: [{ scale }] }}>
+        {favorited ? (
+          <Ionicons name="heart" size={18} color="#f9f9f9" />
+        ) : (
+          <Ionicons name="heart-outline" size={18} color="#f9f9f9" />
+        )}
+      </Animated.View>
+    </Pressable>
+  );
+}
+
 // ── Fila de mezcla (V2D) ───────────────────────────────────────────
 export type Colors = ReturnType<typeof import("@/hooks/useColors").useColors>;
 
@@ -208,12 +237,16 @@ export function MixRow({
   onPress,
   onDotsPress,
   onAuthorPress,
+  favorited,
+  onHeartPress,
 }: {
   mix: SharedMix;
   colors: Colors;
   onPress: () => void;
   onDotsPress: () => void;
   onAuthorPress: () => void;
+  favorited?: boolean;
+  onHeartPress?: () => void;
 }) {
   const trending = mix.trending === true;
   const avatarUri = resolveAvatarUrl(mix.author.avatarUrl ?? null);
@@ -257,11 +290,14 @@ export function MixRow({
 
       {/* Likes */}
       {mix.likes > 0 && (
-        <View style={styles.likeChip}>
-          <AntDesign name="heart" size={14} color="#f9f9f9" />
-          <Text style={styles.likeCount}>{mix.likes}</Text>
-        </View>
+        <Text style={styles.likeCount}>{mix.likes}</Text>
       )}
+
+      {/* Corazón animado */}
+      <AnimatedHeart
+        favorited={favorited ?? false}
+        onPress={onHeartPress ?? (() => {})}
+      />
 
       {/* Tres puntos */}
       <Pressable onPress={onDotsPress} hitSlop={10} style={styles.dotsBtn}>
@@ -545,6 +581,13 @@ const styles = StyleSheet.create({
   mixCount: { fontFamily: "Manrope", fontSize: 12, fontWeight: "500" },
   likeChip: { flexDirection: "row", alignItems: "center", gap: 3, flexShrink: 0 },
   likeCount: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#f9f9f9" },
+  heartBtn: {
+    width: 32,
+    height: 32,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
   dotsBtn: {
     width: 32,
     height: 32,
