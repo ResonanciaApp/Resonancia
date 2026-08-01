@@ -20,6 +20,7 @@ import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PremiumBadge } from "@/components/PremiumBadge";
+import { SessionCard } from "@/components/SessionCard";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -229,44 +230,21 @@ export default function TagScreen() {
         ) : (
           <>
             {/* TODOS */}
-            <View style={styles.section}>
-              <View style={styles.list}>
-                {filteredSessions.map((session) => {
-                  const locked = !!session.isPremium && !isPremium;
-                  return (
-                  <Pressable
-                    key={session.id}
-                    onPress={() => router.push((locked ? "/membresia" : `/session/${session.id}`) as never)}
-                    style={({ pressed }) => [
-                      styles.listRow,
-                      { backgroundColor: "rgba(255,255,255,0.075)", opacity: pressed ? 0.82 : 1 },
-                    ]}
-                  >
-                    <View style={[styles.listThumb, { backgroundColor: colors.card }]}>
-                      <Image
-                        source={session.image as number}
-                        style={StyleSheet.absoluteFill}
-                        resizeMode="cover"
-                        placeholder={BLUR_PLACEHOLDER}
-                        transition={IMAGE_TRANSITION}
-                      />
-                      <View style={styles.durationBadge}>
-                        <Text style={styles.durationText}>{session.durationLabel}</Text>
-                      </View>
-                      <PremiumBadge session={session} />
-                    </View>
-                    <View style={styles.listMeta}>
-                      <Text style={[styles.listTitle, { color: colors.foreground }]} numberOfLines={2}>
-                        {session.title}
-                      </Text>
-                      <Text style={[styles.listSub, { color: colors.mutedForeground }]} numberOfLines={1}>
-                        {sessionAuthor(session)}
-                      </Text>
-                    </View>
-                  </Pressable>
-                  );
-                })}
-              </View>
+            <View style={styles.sessionGrid}>
+              {filteredSessions.map((session) => (
+                <SessionCard
+                  key={session.id}
+                  session={session}
+                  width={(width - H_PAD * 2 - 14) / 2}
+                  style={{ marginRight: 0 }}
+                  showDuration={false}
+                  showAuthorAvatar={false}
+                  overridePress={() => {
+                    if (!!session.isPremium && !isPremium) { router.push("/membresia" as never); return; }
+                    router.push(`/session/${session.id}` as never);
+                  }}
+                />
+              ))}
             </View>
           </>
         )}
@@ -305,6 +283,16 @@ const styles = StyleSheet.create({
   },
 
   scroll: { flex: 1 },
+
+  sessionGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    paddingHorizontal: H_PAD,
+    rowGap: 35,
+    marginTop: 8,
+    marginBottom: 40,
+  },
 
   // Hero
   hero: {
