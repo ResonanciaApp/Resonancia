@@ -302,6 +302,9 @@ function NavStack() {
           name="registro"
           options={{ headerShown: false, animation: "slide_from_bottom", presentation: "modal" }}
         />
+        <Stack.Screen name="category/musica-sonidos"       options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="category/meditaciones-guiadas"  options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="category/sonidos-ancestrales"   options={{ headerShown: false, animation: "slide_from_right" }} />
         <Stack.Screen name="videos"  options={{ headerShown: false, animation: "slide_from_right" }} />
         <Stack.Screen name="dev-reset" options={{ headerShown: false }} />
         <Stack.Screen
