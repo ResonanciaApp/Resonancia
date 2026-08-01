@@ -23,6 +23,8 @@ import { useAuth } from "@/context/AuthContext";
 import { useDrawer, DRAWER_W, DRAWER_PUSH } from "@/context/DrawerContext";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { SCENE_THEMES } from "@/config/scene-themes";
+import type { SceneId } from "@/context/AmbientPlayerContext";
 import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
 import { FadeToggleSection } from "@/components/FadeToggleSection";
 import { useSelectedScene } from "@/context/SelectedSceneContext";
@@ -90,7 +92,7 @@ export function DrawerMenu() {
   const { isRegistered, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
   const { username, lastName, photoUri } = useUserProfile();
-  const { theme: activeTheme } = useSceneTheme();
+  const { theme: activeTheme, activeSceneId, setActiveSceneWithFade } = useSceneTheme();
   const { intencionDiariaEnabled, setIntencionDiariaEnabled, escenasAnimadasEnabled, setEscenasAnimadasEnabled } = useIntencionDiaria();
   const { setBgScene } = useSelectedScene();
   const { data: sceneAnimationsData } = useGetSceneAnimations();
@@ -264,6 +266,32 @@ export function DrawerMenu() {
                   </Text>
                 </Pressable>
               ))}
+            </View>
+
+            {/* ── Selector de Escena (tema visual) ── */}
+            <View style={styles.sceneSwatch}>
+              <Text style={styles.sceneSwatchTitle}>Escena</Text>
+              <View style={styles.sceneSwatchRow}>
+                {(Object.values(SCENE_THEMES) as import("@/config/scene-themes").SceneTheme[]).map((t) => {
+                  const isActive = t.id === activeSceneId;
+                  return (
+                    <Pressable
+                      key={t.id}
+                      onPress={() => { setActiveSceneWithFade(t.id as SceneId); }}
+                      style={({ pressed }) => [styles.swatchItem, { opacity: pressed ? 0.7 : 1 }]}
+                    >
+                      <View style={[
+                        styles.swatchCircle,
+                        { backgroundColor: t.solid },
+                        isActive && styles.swatchCircleActive,
+                      ]} />
+                      <Text style={[styles.swatchLabel, isActive && styles.swatchLabelActive]}>
+                        {t.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
             </View>
 
             <View style={[styles.divider, { backgroundColor: "#F7CB6B10", marginVertical: 16 }]} />
@@ -456,6 +484,43 @@ const styles = StyleSheet.create({
   // ── Items ──
   itemGroup: { gap: 2 },
   divider: { height: 1, marginBottom: 8 },
+
+  // ── Swatches de Escena ──
+  sceneSwatch: { marginTop: 4, marginBottom: 4 },
+  sceneSwatchTitle: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    fontWeight: "600",
+    color: "rgba(249,249,249,0.5)",
+    letterSpacing: 1.1,
+    textTransform: "uppercase",
+    marginBottom: 10,
+    paddingHorizontal: 2,
+  },
+  sceneSwatchRow: { flexDirection: "row", gap: 10 },
+  swatchItem: { alignItems: "center", gap: 6 },
+  swatchCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: 2,
+    borderColor: "rgba(249,249,249,0.15)",
+  },
+  swatchCircleActive: {
+    borderWidth: 2.5,
+    borderColor: "#BE9650",
+    shadowColor: "#BE9650",
+    shadowOpacity: 0.6,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 0 },
+  },
+  swatchLabel: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    color: "rgba(249,249,249,0.5)",
+    fontWeight: "400",
+  },
+  swatchLabelActive: { color: "#BE9650", fontWeight: "600" },
   item: {
     flexDirection: "row",
     alignItems: "center",

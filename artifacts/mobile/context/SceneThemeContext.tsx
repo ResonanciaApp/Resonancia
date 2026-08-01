@@ -66,16 +66,11 @@ const SceneThemeContext = createContext<SceneThemeCtx | null>(null);
 export async function loadPersistedSceneId(): Promise<SceneId> {
   try {
     const saved = await AsyncStorage.getItem(SCENE_THEME_STORAGE_KEY);
-    if (saved && saved in SCENE_THEMES) {
-      // 🔧 TEMP: forzar indigo para pruebas — revertir después
-      if (saved === "tibet") return "indigo" as SceneId;
-      return saved as SceneId;
-    }
+    if (saved && saved in SCENE_THEMES) return saved as SceneId;
   } catch {
     // ignore — usa el default
   }
-  // 🔧 TEMP: default indigo para pruebas
-  return "indigo" as SceneId;
+  return DEFAULT_THEME_ID;
 }
 
 export function SceneThemeProvider({
