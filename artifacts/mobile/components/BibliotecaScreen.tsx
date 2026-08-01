@@ -1398,15 +1398,6 @@ export function BibliotecaScreen({
         <>
           <Pressable
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
-            onPress={() => { openMixer(); router.navigate("/(tabs)/musica" as never); }}
-          >
-            <View style={styles.addResonadorIcon}>
-              <MaterialCommunityIcons name="tune-variant" size={24} color={iconPlaceholderColor} />
-            </View>
-            <Text style={styles.addResonadorLabel}>Crear una mezcla</Text>
-          </Pressable>
-          <Pressable
-            style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={() => setNombreCarpetaMezclaVisible(true)}
           >
             <View style={styles.addResonadorIcon}>
