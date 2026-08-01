@@ -2056,7 +2056,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     backgroundColor: "#210911",
-    borderRadius: 14,
+    borderRadius: 22,
     paddingHorizontal: 16,
     paddingVertical: 14,
   },
