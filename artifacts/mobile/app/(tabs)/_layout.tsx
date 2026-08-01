@@ -501,7 +501,7 @@ function TabLayoutInner() {
         <Tabs.Screen name="musica2"        options={{ title: "Música 2", href: null }} />
         <Tabs.Screen name="musica3"        options={{ title: "Mi Música", href: null }} />
         <Tabs.Screen name="video"          options={{ title: "Videos" }} />
-        <Tabs.Screen name="descanzo"       options={{ title: "Dormir" }} />
+        <Tabs.Screen name="descanzo"       options={{ title: "Dormir", href: null }} />
         <Tabs.Screen name="profile"        options={{ title: "Biblioteca" }} />
       </Tabs>
 
