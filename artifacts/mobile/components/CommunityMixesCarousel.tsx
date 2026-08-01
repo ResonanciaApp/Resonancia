@@ -26,6 +26,7 @@ import { type MixPreset, useMixer } from "@/context/MixerContext";
 import { type MixCategory, MIX_CATEGORIES } from "@/data/mix-categories";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 
 import { Dimensions } from "react-native";
@@ -354,6 +355,8 @@ export function MixContextMenu({
   colors: Colors;
 }) {
   const insets = useSafeAreaInsets();
+  const { theme } = useSceneTheme();
+  const sheetBg = theme.gradient[0] as string;
 
   if (!mix) return null;
 
@@ -368,7 +371,7 @@ export function MixContextMenu({
       <View style={{ flex: 1, justifyContent: "flex-end" }}>
         <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.55)" }]} onPress={onClose} />
 
-      <View style={[menuStyles.sheet, { paddingBottom: insets.bottom + 8 }]}>
+      <View style={[menuStyles.sheet, { paddingBottom: insets.bottom + 8, backgroundColor: sheetBg }]}>
         {/* Handle */}
         <View style={menuStyles.handle} />
 
