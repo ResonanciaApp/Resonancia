@@ -658,11 +658,7 @@ export default function ExploreScreen() {
                   { width: TEMA3_W, height: TEMA3_W, backgroundColor: "rgba(255,255,255,0.03)", opacity: pressed ? 0.75 : 1 },
                 ]}
               >
-                {t.image ? (
-                  <Image source={t.image as number} style={styles.temaCellIcon} contentFit="contain" />
-                ) : (
-                  <MaterialCommunityIcons name={t.icon} size={26} color={t.color} />
-                )}
+                <MaterialCommunityIcons name={t.icon} size={26} color={t.color} />
                 <Text style={[styles.temaCellLabel, { color: "#FBFBFB" }]}>{t.label}</Text>
               </Pressable>
             ))}
