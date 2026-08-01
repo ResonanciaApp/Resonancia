@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { GhostPill } from "@/components/GhostPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
+import { useBackOverride } from "@/context/BackOverrideContext";
 import React from "react";
 import {
   Pressable,
@@ -19,6 +20,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 const FOREGROUND = "#F9F9F9";
 
 export default function HistorialScreen() {
+  const goBack = useBackOverride();
   const insets = useSafeAreaInsets();
   const { theme: sceneTheme } = useSceneTheme();
 
@@ -37,7 +39,7 @@ export default function HistorialScreen() {
       >
         <GhostPill>
           <Pressable
-            onPress={() => router.back()}
+            onPress={goBack ?? (() => router.back())}
             hitSlop={10}
             style={{
               paddingHorizontal: 12,

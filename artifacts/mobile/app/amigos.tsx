@@ -25,6 +25,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router } from "expo-router";
+import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -58,6 +59,7 @@ function colorFor(id: number): string {
 }
 
 export default function AmigosScreen() {
+  const goBack = useBackOverride();
   const colors = useColors();
   const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
@@ -77,7 +79,7 @@ export default function AmigosScreen() {
       {/* Floating back */}
       <View style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 10 }} pointerEvents="box-none">
         <GhostPill>
-          <Pressable onPress={() => router.back()} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
+          <Pressable onPress={goBack ?? (() => router.back())} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
             <Feather name="arrow-left" size={16} color="#FFFFFF" />
           </Pressable>
         </GhostPill>

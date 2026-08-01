@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { GhostPill } from "@/components/GhostPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
+import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useCallback, useState } from "react";
 import {
   Image,
@@ -412,6 +413,7 @@ function TabTablon({ colors }: { colors: ReturnType<typeof useColors> }) {
 type TabType = "ojear" | "misgrupos" | "tablon";
 
 export default function GruposScreen() {
+  const goBack = useBackOverride();
   const colors = useColors();
   const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
@@ -445,7 +447,7 @@ export default function GruposScreen() {
       {/* Floating back */}
       <View style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 20 }} pointerEvents="box-none">
         <GhostPill>
-          <Pressable onPress={() => router.back()} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
+          <Pressable onPress={goBack ?? (() => router.back())} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
             <Feather name="arrow-left" size={16} color="#FFFFFF" />
           </Pressable>
         </GhostPill>

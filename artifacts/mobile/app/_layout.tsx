@@ -13,6 +13,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { BibliotecaOverlay } from "@/components/BibliotecaOverlay";
+import { DrawerScreenOverlay } from "@/components/DrawerScreenOverlay";
 import { DrawerMenu } from "@/components/DrawerMenu";
 import { MixerSheet } from "@/components/MixerSheet";
 import { EscenasSheet } from "@/components/EscenasSheet";
@@ -348,6 +349,7 @@ function RootLayoutNav() {
           </PushWrapper>
           <DrawerMenu />
           <BibliotecaOverlay />
+          <DrawerScreenOverlay />
           <MixerSheet />
           <EscenasSheet />
           <GlobalSceneModal />

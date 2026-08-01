@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useMemo, useState } from "react";
 import {
   Dimensions,
@@ -57,6 +58,7 @@ function FavPill({
 }
 
 export default function FavoritosTodosScreen() {
+  const goBack = useBackOverride();
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { favorites, playSession, currentSession } = usePlayer();
@@ -115,7 +117,7 @@ export default function FavoritosTodosScreen() {
         {/* Back */}
         <View style={{ paddingHorizontal: H_PAD, marginBottom: 14 }}>
           <Pressable
-            onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
+            onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
             hitSlop={10}
             style={[styles.backBtn, { backgroundColor: "rgba(255,255,255,0.06)" }]}
           >

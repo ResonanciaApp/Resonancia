@@ -21,6 +21,10 @@ type DrawerCtx = {
   libOpen: boolean;
   openLib: () => void;
   closeLib: () => void;
+  /** Overlay genérico para otras pantallas del drawer (diario, amigos, etc.) */
+  overlayRoute: string | null;
+  openOverlay: (route: string) => void;
+  closeOverlay: () => void;
 };
 
 const Ctx = createContext<DrawerCtx | null>(null);
@@ -69,9 +73,13 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const openLib = useCallback(() => setLibOpen(true), []);
   const closeLib = useCallback(() => setLibOpen(false), []);
 
+  const [overlayRoute, setOverlayRoute] = useState<string | null>(null);
+  const openOverlay = useCallback((route: string) => setOverlayRoute(route), []);
+  const closeOverlay = useCallback(() => setOverlayRoute(null), []);
+
   const value = React.useMemo(
-    () => ({ isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, openLib, closeLib }),
-    [isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, openLib, closeLib],
+    () => ({ isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, openLib, closeLib, overlayRoute, openOverlay, closeOverlay }),
+    [isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, openLib, closeLib, overlayRoute, openOverlay, closeOverlay],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

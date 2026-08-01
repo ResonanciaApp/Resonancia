@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { GhostPill } from "@/components/GhostPill";
 import { router, useFocusEffect } from "expo-router";
+import { useBackOverride } from "@/context/BackOverrideContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { ListenGoldFill } from "@/components/GoldGradient";
 import React, { useCallback } from "react";
@@ -66,6 +67,7 @@ function groupByDay(entries: DiarioEntry[]): DiarioDayGroup[] {
 }
 
 export default function DiarioScreen() {
+  const goBack = useBackOverride();
   const colors = useColors();
   const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
@@ -149,7 +151,7 @@ export default function DiarioScreen() {
       <View style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 10 }} pointerEvents="box-none">
         <GhostPill>
           <Pressable
-            onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
+            onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
             hitSlop={10}
             style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}
           >

@@ -44,12 +44,12 @@ type MenuItem = {
 const MAIN_ITEMS: MenuItem[] = [
   { label: "Tu Premium",    icon: "star",      route: "/membresia" },
   { label: "Biblioteca",    icon: "layers",    route: "__biblioteca_overlay" },
-  { label: "Mis sesiones",  icon: "calendar",  route: "/mis-sesiones" },
-  { label: "Mis favoritos", icon: "heart",     route: "/favoritos-todos" },
-  { label: "Historial",     icon: "clock",     route: "/historial" },
-  { label: "Diario",        icon: "book-open", route: "/diario" },
-  { label: "Amigos",        icon: "users",     route: "/amigos" },
-  { label: "Grupos",        icon: "globe",     route: "/grupos" },
+  { label: "Mis sesiones",  icon: "calendar",  route: "__overlay:/mis-sesiones" },
+  { label: "Mis favoritos", icon: "heart",     route: "__overlay:/favoritos-todos" },
+  { label: "Historial",     icon: "clock",     route: "__overlay:/historial" },
+  { label: "Diario",        icon: "book-open", route: "__overlay:/diario" },
+  { label: "Amigos",        icon: "users",     route: "__overlay:/amigos" },
+  { label: "Grupos",        icon: "globe",     route: "__overlay:/grupos" },
 ];
 
 // ── Sección Escenas (dentro del drawer) ──────────────────────────────────────
@@ -85,7 +85,7 @@ function creationToSceneAnimation(c: GeometrixCreation): SceneAnimation {
 
 // ── Drawer principal ──────────────────────────────────────────────────────────
 export function DrawerMenu() {
-  const { isOpen: visible, drawerAnim, close: onClose, markInstantNav, openLib } = useDrawer();
+  const { isOpen: visible, drawerAnim, close: onClose, markInstantNav, openLib, openOverlay } = useDrawer();
   const insets = useSafeAreaInsets();
   const { isRegistered, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
@@ -157,11 +157,9 @@ export function DrawerMenu() {
   const initial = (fullName || clerkName || "").charAt(0).toUpperCase() || null;
 
   const navigate = (route: string) => {
-    // Biblioteca se desliza SOBRE el drawer (el menú queda abierto debajo)
-    if (route === "__biblioteca_overlay") {
-      openLib();
-      return;
-    }
+    // Overlays sobre el drawer (menú queda abierto debajo)
+    if (route === "__biblioteca_overlay") { openLib(); return; }
+    if (route.startsWith("__overlay:")) { openOverlay(route.replace("__overlay:", "")); return; }
     markInstantNav();
     onClose();
     router.push(route as never);

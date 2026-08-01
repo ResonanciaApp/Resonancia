@@ -7,6 +7,7 @@ import { Feather } from "@expo/vector-icons";
 import { GhostPill } from "@/components/GhostPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
+import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useCallback } from "react";
 import {
   ActivityIndicator,
@@ -44,6 +45,7 @@ const MUTED = "#F4F4F4";
 const BORDER = "rgba(255,255,255,0.1)";
 
 export default function MisSesionesScreen() {
+  const goBack = useBackOverride();
   const insets = useSafeAreaInsets();
   const { theme: sceneTheme } = useSceneTheme();
   const { isSignedIn, isRegistered } = useAuth();
@@ -105,7 +107,7 @@ export default function MisSesionesScreen() {
       {/* Floating back */}
       <View style={{ position: "absolute", left: 16, top: topPad + 8, zIndex: 10 }} pointerEvents="box-none">
         <GhostPill>
-          <Pressable onPress={() => router.back()} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
+          <Pressable onPress={goBack ?? (() => router.back())} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
             <Feather name="arrow-left" size={16} color="#FFFFFF" />
           </Pressable>
         </GhostPill>
