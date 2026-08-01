@@ -257,7 +257,7 @@ export function MixRow({
       {/* Likes */}
       {mix.likes > 0 && (
         <View style={styles.likeChip}>
-          <AntDesign name="heart" size={14} color="#F7CB6B" />
+          <AntDesign name="heart" size={14} color="#f9f9f9" />
           <Text style={styles.likeCount}>{mix.likes}</Text>
         </View>
       )}
@@ -541,7 +541,7 @@ const styles = StyleSheet.create({
   mixAuthor: { fontFamily: "Manrope", fontSize: 10, marginTop: 2 },
   mixCount: { fontFamily: "Manrope", fontSize: 12, fontWeight: "500" },
   likeChip: { flexDirection: "row", alignItems: "center", gap: 3, flexShrink: 0 },
-  likeCount: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F7CB6B" },
+  likeCount: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#f9f9f9" },
   dotsBtn: {
     width: 32,
     height: 32,
