@@ -1252,6 +1252,27 @@ export default function HomeScreen2() {
           </ScrollView>
         </View>
 
+        {/* ── VIDEOS DESTACADOS ── */}
+        {videos.length > 0 && (
+          <View style={{ marginBottom: SECTION_GAP }}>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 18 }}>
+              <Text style={[styles.sectionTitle, { fontSize: 20 }]}>Videos destacados</Text>
+              <Pressable hitSlop={8} onPress={() => router.push("/(tabs)/video" as never)}>
+                <Text style={{ color: "#F7CB6B", fontSize: 13, fontFamily: "Manrope" }}>Ver todos</Text>
+              </Pressable>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 14 }}
+            >
+              {videos.slice(0, 8).map((v) => (
+                <VideoCard key={v.id} video={v} width={VIDEO_HERO_W} />
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
         {/* ── ESCUCHADAS RECIENTEMENTE ── */}
         <SessionCarousel
           title="Escuchadas recientemente"
