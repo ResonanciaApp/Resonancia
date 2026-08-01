@@ -37,6 +37,7 @@ import {
   useTabBarVisibility,
 } from "@/context/TabBarVisibilityContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useDrawer } from "@/context/DrawerContext";
 import { useBrightness, applyBrightSat } from "@/context/BrightnessContext";
 
 const ACTIVE_COLOR   = "#F9F9F9";
