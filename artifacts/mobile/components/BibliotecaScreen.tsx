@@ -42,6 +42,7 @@ import { useLoadMix } from "@/hooks/useLoadMix";
 import { MixActionsSheet } from "@/components/MixActionsSheet";
 import { MixCover } from "@/app/mi-mezcla/[id]";
 import { useGeometrixCreations } from "@/hooks/useGeometrixCreations";
+import { HistorialCalendar } from "@/components/HistorialCalendar";
 import { ARTISTS, getArtist, type Artist } from "@/data/artists";
 import { GUIDES, getGuide, type Guide } from "@/data/guides";
 import { SESSIONS, getSessionById } from "@/data/sessions";
@@ -60,7 +61,7 @@ const DARK_BLUE = "#210911";
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
-type LibTab = "playlists" | "mezclas" | "geometrix" | "favoritos" | "resonadores";
+type LibTab = "playlists" | "mezclas" | "geometrix" | "historial" | "favoritos" | "resonadores";
 type SortMode = "recientes" | "agregado" | "alfabetico";
 type ViewMode = "list" | "grid";
 
@@ -68,6 +69,7 @@ const LIB_TABS: { id: LibTab; label: string }[] = [
   { id: "playlists",   label: "Rituales" },
   { id: "mezclas",     label: "Mezclas" },
   { id: "geometrix",   label: "Geometrix" },
+  { id: "historial",   label: "Historial" },
 ];
 
 // ── Fila de mezcla guardada ───────────────────────────────────────────────────
@@ -1585,6 +1587,10 @@ export function BibliotecaScreen({
       );
     }
 
+    if (activeTab === "historial") {
+      return <HistorialCalendar />;
+    }
+
     if (activeTab === "favoritos") {
       const sessionsInAnyFavFolder = new Set(favFolders.flatMap((f) => f.sessionIds));
       const favSessions = favorites
@@ -1772,7 +1778,7 @@ export function BibliotecaScreen({
         onScroll={handleHeaderScroll}
         scrollEventThrottle={16}
       >
-        {(activeTab === null || activeTab === "playlists" || activeTab === "mezclas" || activeTab === "favoritos") && (
+        {(activeTab === null || activeTab === "playlists" || activeTab === "mezclas" || activeTab === "favoritos") && activeTab !== "historial" && (
           <View style={styles.sortTriggerRow}>
             <Pressable style={styles.sortBtn} hitSlop={8} onPress={() => setSortVisible(true)}>
               <Text style={styles.sortText}>{SORT_OPTIONS.find((o) => o.id === sort)?.label}</Text>
