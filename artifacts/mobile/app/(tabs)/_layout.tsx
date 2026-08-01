@@ -148,7 +148,7 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const { openMixer } = useMixerPanel();
 
   // 8 px de separación con el borde inferior de la pantalla
-  const barBottom = Math.max(3, pb - 10 - 5) - 1 - 20;
+  const barBottom = Math.max(3, pb - 10 - 5) - 1;
   // Altura total que ocupa la píldora (para la animación de hide)
   const barHeight = PILL_H + barBottom + 40;
 
