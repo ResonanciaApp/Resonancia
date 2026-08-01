@@ -146,7 +146,7 @@ function DayCell({
   );
 }
 
-export function HistorialCalendar() {
+export function HistorialCalendar({ containerPadding = 0 }: { containerPadding?: number }) {
   const colors = useColors();
   const { history, isFavorite, toggleFavorite, playSession } = usePlayer();
 
@@ -184,10 +184,12 @@ export function HistorialCalendar() {
     setViewMonth((m) => new Date(m.getFullYear(), m.getMonth() + 1, 1));
   };
 
+  const p = containerPadding;
+
   return (
     <View>
       {/* ── Mi calendario ── */}
-      <View style={styles.sectionHeader}>
+      <View style={[styles.sectionHeader, p ? { paddingHorizontal: p } : undefined]}>
         <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi calendario</Text>
       </View>
 
@@ -230,19 +232,19 @@ export function HistorialCalendar() {
       </View>
 
       {/* ── Mi historial ── */}
-      <View style={[styles.sectionHeader, { marginTop: 28 }]}>
+      <View style={[styles.sectionHeader, { marginTop: 28 }, p ? { paddingHorizontal: p } : undefined]}>
         <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi historial</Text>
       </View>
 
       {isNewUser ? (
-        <View style={[styles.emptyWrap, { backgroundColor: colors.card }]}>
+        <View style={[styles.emptyWrap, { backgroundColor: colors.card }, p ? { marginHorizontal: p } : undefined]}>
           <Feather name="clock" size={26} color={colors.primary} style={{ marginBottom: 10 }} />
           <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
             Aquí aparecerán tu historial de Resonancia
           </Text>
         </View>
       ) : dayEntries.length === 0 ? (
-        <View style={[styles.emptyWrap, { backgroundColor: colors.card }]}>
+        <View style={[styles.emptyWrap, { backgroundColor: colors.card }, p ? { marginHorizontal: p } : undefined]}>
           <Feather name="clock" size={26} color={colors.primary} style={{ marginBottom: 10 }} />
           <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
             No hay sesiones registradas este día.
@@ -256,7 +258,7 @@ export function HistorialCalendar() {
           return (
             <Pressable
               key={`${entry.sessionId}-${entry.playedAt}-${i}`}
-              style={({ pressed }) => [styles.entryRow, { opacity: pressed ? 0.75 : 1 }]}
+              style={({ pressed }) => [styles.entryRow, p ? { paddingHorizontal: p } : undefined, { opacity: pressed ? 0.75 : 1 }]}
               onPress={() => {
                 if (session.skipMiniPlayer) {
                   playSession(session);
