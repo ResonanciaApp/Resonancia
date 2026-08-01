@@ -1,5 +1,5 @@
-import { BibliotecaScreen } from "@/components/BibliotecaScreen";
+import { ProfileScreenBase } from "@/components/ProfileScreenBase";
 
 export default function Biblioteca() {
-  return <BibliotecaScreen />;
+  return <ProfileScreenBase />;
 }
