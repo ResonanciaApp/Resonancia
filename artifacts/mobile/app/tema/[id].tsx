@@ -2,7 +2,6 @@ import { Feather } from "@expo/vector-icons";
 import { GhostPill } from "@/components/GhostPill";
 import { router, useLocalSearchParams } from "expo-router";
 import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef } from "react";
 import {
   Animated,
@@ -78,7 +77,7 @@ export default function TemaScreen() {
           {
             paddingTop: topPad,
             backgroundColor: activeTheme.gradient[0],
-            borderBottomColor: "rgba(212,175,55,0.15)",
+            borderBottomColor: "rgba(80,42,247,0.07)",
             opacity: headerOpacity,
           },
         ]}
@@ -118,11 +117,6 @@ export default function TemaScreen() {
           ) : (
             <View style={[StyleSheet.absoluteFill, { backgroundColor: tema.color + "33" }]} />
           )}
-          <LinearGradient
-            colors={["rgba(15,10,6,0)", "rgba(15,10,6,0.35)", "rgba(15,10,6,0.9)", activeTheme.gradient[0] as string]}
-            locations={[0, 0.5, 0.88, 1]}
-            style={StyleSheet.absoluteFill}
-          />
           {/* Floating back button */}
           <GhostPill style={{ position: "absolute", left: H_PAD, top: topPad + 8 }}>
             <Pressable
@@ -214,6 +208,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     paddingTop: 20,
     paddingBottom: 24,
+    alignItems: "center",
   },
   pageTitle: {
     fontFamily: "Manrope",
@@ -221,11 +216,13 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 0.2,
     marginBottom: 6,
+    textAlign: "center",
   },
   pageDesc: {
     fontFamily: "Manrope",
     fontSize: 14,
     lineHeight: 22,
+    textAlign: "center",
   },
 
   // Session grid

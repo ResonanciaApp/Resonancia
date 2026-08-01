@@ -20,7 +20,7 @@ export const TEMAS: TemaItem[] = [
     icon: "meditation",
     color: "#A0554A",
     description: "Movimiento consciente y posturas para unir cuerpo, mente y espíritu en armonía.",
-    image: require("@/assets/images/tema-yoga.png"),
+    image: require("@/assets/images/hero-yoga.jpg"),
     themeTagMatch: ["Yoga"],
   },
   {
@@ -29,6 +29,7 @@ export const TEMAS: TemaItem[] = [
     icon: "weather-windy",
     color: "#A8D8EA",
     description: "Técnicas y prácticas guiadas para reconectar con tu respiración y recuperar la calma.",
+    image: require("@/assets/images/hero-respiracion.jpg"),
     themeTagMatch: ["Respiración", "Respiración consciente"],
   },
   {
@@ -37,7 +38,7 @@ export const TEMAS: TemaItem[] = [
     icon: "weather-cloudy",
     color: "#C8A85C",
     description: "Acompañamiento sonoro y guiado para atravesar momentos de incertidumbre con serenidad.",
-    image: require("@/assets/images/tema-angustia.png"),
+    image: require("@/assets/images/hero-ansiedad.jpg"),
     themeTagMatch: ["Ansiedad"],
   },
   {
@@ -47,7 +48,7 @@ export const TEMAS: TemaItem[] = [
     color: "#0AA99A",
     description: "Sesiones diseñadas para calmar la mente y encontrar equilibrio en momentos de tensión.",
     themeTagMatch: ["Rituales", "Para la ansiedad"],
-    image: require("@/assets/images/cat-rituales.png"),
+    image: require("@/assets/images/hero-rituales.jpg"),
   },
   {
     id: "asmr",
@@ -55,7 +56,7 @@ export const TEMAS: TemaItem[] = [
     icon: "ear-hearing",
     color: "#4455C7",
     description: "Sonidos suaves y texturas auditivas que relajan el sistema nervioso con delicadeza.",
-    image: require("@/assets/images/tema-asmr.png"),
+    image: require("@/assets/images/hero-asmr.jpg"),
     themeTagMatch: ["ASMR"],
   },
   {
@@ -64,7 +65,7 @@ export const TEMAS: TemaItem[] = [
     icon: "lightning-bolt",
     color: "#C98A44",
     description: "Prácticas para liberar la tensión acumulada y restaurar tu energía interior.",
-    image: require("@/assets/images/tema-estres.png"),
+    image: require("@/assets/images/hero-estres.jpg"),
     themeTagMatch: ["Estrés"],
   },
   {
@@ -73,7 +74,7 @@ export const TEMAS: TemaItem[] = [
     icon: "spa",
     color: "#E06BAA",
     description: "Experiencias sensoriales profundas para descansar el cuerpo y renovar la mente.",
-    image: require("@/assets/images/tema-spa.png"),
+    image: require("@/assets/images/hero-spa.jpg"),
     themeTagMatch: ["Spa"],
   },
   {
@@ -82,7 +83,7 @@ export const TEMAS: TemaItem[] = [
     icon: "account-group",
     color: "#0AA99A",
     description: "Momentos de paz y presencia plena para compartir con quienes más queremos.",
-    image: require("@/assets/images/tema-familia.png"),
+    image: require("@/assets/images/hero-familia.jpg"),
     themeTagMatch: ["Familia"],
   },
   {
@@ -91,6 +92,7 @@ export const TEMAS: TemaItem[] = [
     icon: "weather-night",
     color: "#7C6FCD",
     description: "Sesiones diseñadas para calmar la mente y preparar el cuerpo para un sueño profundo.",
+    image: require("@/assets/images/hero-insomnio.jpg"),
     themeTagMatch: ["Insomnio", "Sueño"],
   },
 ];
