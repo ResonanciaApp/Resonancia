@@ -162,17 +162,19 @@ function BlinkingCursor({ color }: { color: string }) {
 
 function NavTabChip({ sel, label, icon, iconSel, onPress }: { sel: boolean; label: string; icon?: number; iconSel?: number; onPress: () => void }) {
   const selOpacity = useRef(new Animated.Value(sel ? 1 : 0)).current;
+  const { activeSceneId: chipSceneId } = useSceneTheme();
   useEffect(() => {
     Animated.timing(selOpacity, { toValue: sel ? 1 : 0, duration: 180, useNativeDriver: true }).start();
   }, [sel]);
 
   if (icon) {
+    const chipBg = chipSceneId === "indigo" ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.07)";
     return (
       <Pressable
         onPress={onPress}
         style={({ pressed }) => [styles.headerTabIconChip, { opacity: pressed ? 0.7 : 1 }]}
       >
-        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)", borderRadius: 999, borderWidth: 2, borderColor: "rgba(255,255,255,0.1)" }]} />
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: chipBg, borderRadius: 999, borderWidth: chipSceneId === "indigo" ? 0 : 2, borderColor: "rgba(255,255,255,0.1)" }]} />
         <View style={styles.headerTabIconImg}>
           <Image source={icon} style={[styles.headerTabIconImg, { position: "absolute" }]} resizeMode="contain" />
           {iconSel && (
@@ -943,7 +945,7 @@ export default function HomeScreen2() {
             hitSlop={10}
             style={({ pressed }) => ({
               opacity: pressed ? 0.7 : 1,
-              backgroundColor: "rgba(255,255,255,0.08)",
+              backgroundColor: activeSceneId === "indigo" ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.08)",
               borderRadius: 18,
               width: 36,
               height: 36,
