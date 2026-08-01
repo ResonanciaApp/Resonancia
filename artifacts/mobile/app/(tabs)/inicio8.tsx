@@ -354,7 +354,7 @@ export default function HomeScreen2() {
   const { open: openDrawer } = useDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const cardBg = activeSceneId === "indigo"
-    ? "rgba(255,255,255,0.045)"
+    ? "rgba(255,255,255,0.03)"
     : activeSceneId === "profundo"
       ? "rgba(255,255,255,0.06)"
       : "rgba(255,255,255,0.07)";
@@ -1125,7 +1125,7 @@ export default function HomeScreen2() {
                   gap: 12,
                   overflow: "hidden" as const,
                   opacity: pressed ? 0.75 : 1,
-                  borderWidth: 1,
+                  borderWidth: activeSceneId === "indigo" ? 0 : 1,
                   borderColor: "rgba(247,203,107,0.1)",
                   ...corners[i],
                 }]}
