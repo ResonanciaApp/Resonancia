@@ -126,7 +126,7 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar hidden />
       <View style={[styles.root, { paddingTop: insets.top }]}>
         {/* Imagen de la escena seleccionada — fondo muy sutil */}
         {activeBgPreset?.image && (
