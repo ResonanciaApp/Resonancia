@@ -3919,7 +3919,7 @@ export default function GeometrixScreen() {
         pointerEvents="none"
       />
       {/* Oculta la barra de estado en pantalla completa (View absoluto, no Modal). */}
-      <StatusBar hidden={fullscreenEdit} translucent />
+      <StatusBar hidden translucent />
 
       <View style={styles.content}>
         {/* ── Zona superior: header + carrusel ── */}
