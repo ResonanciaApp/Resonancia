@@ -455,7 +455,15 @@ export default function DescansoScreen() {
       >
         {/* ── Hero ── */}
         <View style={styles.hero}>
+          <Pressable
+            onPress={() => router.back()}
+            hitSlop={10}
+            style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginLeft: -6 }}
+          >
+            <Feather name="chevron-left" size={24} color="#FBFBFB" />
+          </Pressable>
           <Text style={[styles.heroTitle, { color: colors.foreground }]}>Dormir</Text>
+          <View style={{ width: 38 }} />
         </View>
 
         {/* ── Tabs de modo ── */}
@@ -685,7 +693,17 @@ export default function DescansoScreen() {
         pointerEvents={stickyVisible ? "auto" : "none"}
         onLayout={(e) => setHeaderH(e.nativeEvent.layout.height)}
       >
-        <Text style={[styles.stickyHeaderTitle, { color: colors.foreground }]}>Dormir</Text>
+        <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 13, width: "100%" }}>
+          <Pressable
+            onPress={() => router.back()}
+            hitSlop={10}
+            style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center" }}
+          >
+            <Feather name="chevron-left" size={24} color="#FBFBFB" />
+          </Pressable>
+          <Text style={[styles.stickyHeaderTitle, { color: colors.foreground, flex: 1, textAlign: "center" }]}>Dormir</Text>
+          <View style={{ width: 38 }} />
+        </View>
       </Animated.View>
 
       {/* ── Tabs sticky (se pegan debajo del título) ── */}
@@ -1067,8 +1085,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 20,
-    alignItems: "center",
-    justifyContent: "center",
     paddingBottom: 4,
     backgroundColor: "#0D0512",
   },
