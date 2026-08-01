@@ -4058,6 +4058,14 @@ export default function GeometrixScreen() {
                   accessibilityState={{ selected: on }}
                   accessibilityLabel={`Filtrar geometrías: ${c.label}`}
                 >
+                  {on && (
+                    <LinearGradient
+                      colors={["#FFFFFF", "#F5F5F5"]}
+                      start={{ x: 0, y: 0.5 }}
+                      end={{ x: 1, y: 0.5 }}
+                      style={StyleSheet.absoluteFill}
+                    />
+                  )}
                   <Text style={[styles.catChipText, on ? styles.catChipTextOn : null]} numberOfLines={1}>
                     {c.label}
                   </Text>
@@ -6554,6 +6562,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 13,
     height: 32,
     borderRadius: 999,
+    overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.2)",
@@ -6571,7 +6580,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   catChipTextOn: {
-    color: "#fbf9f1",
+    color: "#0D0A1E",
     fontWeight: "600",
   },
   grid: { flexGrow: 0 },
