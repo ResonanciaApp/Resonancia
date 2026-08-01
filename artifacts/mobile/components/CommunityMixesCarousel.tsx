@@ -153,16 +153,17 @@ export function CommunityMixesCarousel() {
         </View>
       )}
 
-      {/* ── Grilla 3×3 ── */}
+      {/* ── Lista vertical ── */}
       {visible.length > 0 && (
-        <View style={styles.gridWrap}>
+        <View style={styles.listWrap}>
           {visible.map((mix) => (
-            <MixGridCell
+            <MixRow
               key={mix.id}
               mix={mix}
               colors={colors}
               onPress={() => handleOpenMix(mix)}
-              onLongPress={() => setMenuMix(mix)}
+              onDotsPress={() => setMenuMix(mix)}
+              onAuthorPress={() => handleViewCreator(mix)}
             />
           ))}
         </View>
@@ -261,6 +262,10 @@ export function MixRow({
         </View>
       )}
 
+      {/* Tres puntos */}
+      <Pressable onPress={onDotsPress} hitSlop={10} style={styles.dotsBtn}>
+        <Feather name="more-vertical" size={18} color="rgba(255,255,255,0.45)" />
+      </Pressable>
     </Pressable>
   );
 }
@@ -486,12 +491,10 @@ const styles = StyleSheet.create({
   emptyText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "600" },
   emptySub: { fontFamily: "Manrope", fontSize: 12, textAlign: "center", paddingHorizontal: 20 },
 
-  // Grilla 3×3
-  gridWrap: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    columnGap: GRID_GAP,
-    rowGap: 15,
+  // Lista vertical
+  listWrap: {
+    flexDirection: "column",
+    gap: 8,
   },
   gridCell: { width: CELL_W },
   gridCover: {
