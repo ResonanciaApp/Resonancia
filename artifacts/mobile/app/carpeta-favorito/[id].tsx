@@ -152,6 +152,7 @@ export default function CarpetaFavoritoDetailScreen() {
                     thumbHeight={64}
                     thumbRadius={6}
                     showDuration={false}
+                    showAuthorAvatar={false}
                     onLongPress={() => { setActionsItemId(s.id); setActionsItemKind("session"); }}
                   />
                 </View>
