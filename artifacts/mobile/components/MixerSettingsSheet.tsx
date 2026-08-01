@@ -36,8 +36,8 @@ const SWATCH_SIZE = 34;
 const c = {
   fg:         "rgba(255,255,255,0.9)",
   mutedDim:   "rgba(255,255,255,0.6)",
-  chipBg:     "rgba(255,255,255,0.07)",
-  chipBorder: "rgba(255,255,255,0.18)",
+  chipBg:     "rgba(255,255,255,0.03)",
+  chipBorder: "rgba(80,42,247,0.07)",
   chipSel:    "rgba(190,150,80,0.22)",
 };
 
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 9,
     borderRadius: 999,
-    borderWidth: 1.5,
+    borderWidth: 1,
     gap: 5,
   },
   chipText: {
