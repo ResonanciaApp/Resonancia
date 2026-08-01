@@ -4,7 +4,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
-  Alert,
   Animated,
   Dimensions,
   Platform,
@@ -124,19 +123,13 @@ export default function TagScreen() {
         pointerEvents="box-none"
       >
         <View style={styles.stickyInner} pointerEvents="box-none">
-          <GhostPill>
-            <Pressable onPress={() => router.back()} hitSlop={10} style={styles.pillBtn}>
-              <Feather name="arrow-left" size={16} color="#FFFFFF" />
-            </Pressable>
-          </GhostPill>
+          <Pressable onPress={() => router.back()} hitSlop={10} style={styles.pillBtn}>
+            <Feather name="chevron-left" size={24} color="#FFFFFF" />
+          </Pressable>
           <Text style={[styles.stickyTitle, { color: colors.foreground }]} numberOfLines={1}>
             {tag.label}
           </Text>
-          <GhostPill>
-            <Pressable hitSlop={10} style={styles.pillBtn} onPress={() => Alert.alert(tag.label, tag.description)}>
-              <Feather name="info" size={16} color="rgba(255,255,255,0.85)" />
-            </Pressable>
-          </GhostPill>
+          <View style={{ width: 38 }} />
         </View>
       </Animated.View>
 
