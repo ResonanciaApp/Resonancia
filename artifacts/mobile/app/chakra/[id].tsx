@@ -15,13 +15,13 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Svg, { Defs, Rect, RadialGradient as SvgRadialGradient, Stop } from "react-native-svg";
 
 import { SacredGlyph } from "@/components/SacredGlyph";
 import { useCatalog } from "@/context/CatalogContext";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { getArtist } from "@/data/artists";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { chakraMatchesTag, getChakraById } from "@/data/chakras";
 import { SESSIONS, type Session } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
@@ -41,6 +41,9 @@ export default function ChakraScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const chakra = getChakraById(id);
+  const { theme: sceneTheme } = useSceneTheme();
+  // Mismo color de fondo que Inicio para el tema activo
+  const themeBg = sceneTheme.gradient[sceneTheme.gradient.length - 1] as string;
 
   // ── Sticky header: aparece cuando el scroll oculta el hero (glifo + descripción) ──
   const heroBottomRef = React.useRef(400);
@@ -93,18 +96,8 @@ export default function ChakraScreen() {
   }
 
   return (
-    <View style={[styles.root, { backgroundColor: chakra.radialOuter }]}>
+    <View style={[styles.root, { backgroundColor: themeBg }]}>
       <StatusBar barStyle="light-content" />
-      <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
-        <Defs>
-          <SvgRadialGradient id="chakraBg" cx="50" cy="52.5" r="72.5" gradientUnits="userSpaceOnUse">
-            <Stop offset="0" stopColor={chakra.radialCenter} stopOpacity="1" />
-            <Stop offset="0.9" stopColor={chakra.radialOuter} stopOpacity="1" />
-            <Stop offset="1" stopColor={chakra.radialOuter} stopOpacity="1" />
-          </SvgRadialGradient>
-        </Defs>
-        <Rect x="0" y="0" width="100" height="100" fill="url(#chakraBg)" />
-      </Svg>
 
       <ScrollView
         style={styles.scroll}
@@ -172,7 +165,7 @@ export default function ChakraScreen() {
         pointerEvents={stickyVisible ? "auto" : "none"}
         style={[
           styles.stickyHeader,
-          { paddingTop: topPad + 8, backgroundColor: chakra.radialOuter, opacity: stickyAnim },
+          { paddingTop: topPad + 8, backgroundColor: themeBg, opacity: stickyAnim },
         ]}
       >
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD, marginBottom: 10 }]}>
