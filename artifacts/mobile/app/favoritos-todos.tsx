@@ -231,9 +231,9 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     gap: 5,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.053)",
+    backgroundColor: "rgba(0,0,0,0.2)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(255,255,255,0.2)",
   },
   pillSel: { borderWidth: 0 },
   pillText: {
