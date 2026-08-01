@@ -463,7 +463,6 @@ export default function DescansoScreen() {
             <Feather name="chevron-left" size={24} color="#FBFBFB" />
           </Pressable>
           <Text style={[styles.heroTitle, { color: colors.foreground }]}>Dormir</Text>
-          <View style={{ width: 38 }} />
         </View>
 
         {/* ── Tabs de modo ── */}
@@ -1114,12 +1113,12 @@ const styles = StyleSheet.create({
 
   /* Hero */
   hero: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: "column",
+    alignItems: "flex-start",
     paddingHorizontal: 19,
     paddingTop: 7,
     paddingBottom: 8,
+    gap: 6,
   },
   heroIcon: {
     marginTop: 14,
@@ -1130,8 +1129,6 @@ const styles = StyleSheet.create({
     fontSize: 27,
     fontWeight: "700",
     letterSpacing: 0.3,
-    textAlign: "center",
-    flex: 1,
-    transform: [{ translateY: 1 }],
+    textAlign: "left",
   },
 });
