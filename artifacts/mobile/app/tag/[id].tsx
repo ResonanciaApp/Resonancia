@@ -400,9 +400,9 @@ const styles = StyleSheet.create({
   },
   filterPillIdle: {
     paddingHorizontal: 13,
-    backgroundColor: "rgba(255,255,255,0.053)",
+    backgroundColor: "rgba(255,255,255,0.03)",
     borderWidth: 1,
-    borderColor: "rgba(247,203,107,0.1)",
+    borderColor: "rgba(80,42,247,0.07)",
   },
   filterLabel: {
     fontFamily: "Manrope",
