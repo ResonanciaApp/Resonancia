@@ -431,7 +431,7 @@ export function MixContextMenu({
 
 // ── Estilos ────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  section: { paddingHorizontal: 0, paddingTop: 18 },
+  section: { paddingHorizontal: 20, paddingTop: 18 },
   panel: {
     backgroundColor: "transparent",
     borderRadius: 0,
