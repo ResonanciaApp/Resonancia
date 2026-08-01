@@ -29,7 +29,7 @@ type Step = "list" | "create";
 export function AddToFolderSheet({ visible, sessionId, onClose }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { folders, createFolder, addToFolder, removeFromFolder, isInFolder } =
+  const { favFolders: folders, createFavFolder: createFolder, addToFavFolder: addToFolder, removeFromFavFolder: removeFromFolder, isInFavFolder: isInFolder } =
     useFoldersPlaylists();
 
   const [step, setStep] = useState<Step>("list");
