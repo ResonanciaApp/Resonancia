@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import { ListenGoldFill } from "@/components/GoldGradient";
 import { GhostPill } from "@/components/GhostPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -191,8 +190,10 @@ export default function TagScreen() {
               { overflow: "hidden" },
             ]}
           >
-            {!durationFilter && <ListenGoldFill />}
-            <Text style={!durationFilter ? [styles.filterLabel, { color: colors.primaryForeground }] : styles.filterLabelIdle}>
+            {!durationFilter && (
+              <LinearGradient colors={["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
+            )}
+            <Text style={!durationFilter ? [styles.filterLabel, { color: "#0D0A1E" }] : styles.filterLabelIdle}>
               Todos
             </Text>
           </Pressable>
@@ -208,8 +209,10 @@ export default function TagScreen() {
                   { overflow: "hidden" },
                 ]}
               >
-                {active && <ListenGoldFill />}
-                <Text style={active ? [styles.filterLabel, { color: colors.primaryForeground }] : styles.filterLabelIdle}>
+                {active && (
+                  <LinearGradient colors={["#FFFFFF", "#F5F5F5"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
+                )}
+                <Text style={active ? [styles.filterLabel, { color: "#0D0A1E" }] : styles.filterLabelIdle}>
                   {f.label}
                 </Text>
               </Pressable>
