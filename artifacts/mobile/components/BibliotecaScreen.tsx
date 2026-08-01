@@ -2003,7 +2003,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "rgba(0,0,0,0.2)",
     borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(255,255,255,0.2)",
     justifyContent: "center",
   },
   chipSel: { borderWidth: 0 },
