@@ -391,7 +391,6 @@ export default function CommunityMixScreen() {
 
           {/* Comentarios */}
           <View style={styles.commentsHeader}>
-            <Feather name="message-circle" size={15} color={colors.accent} />
             <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
               Comentarios
             </Text>
@@ -562,9 +561,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 16,
     marginBottom: 16,
-    backgroundColor: "rgba(255,255,255,0.07)",
-    borderWidth: 1,
-    borderColor: "rgba(247,203,107,0.1)",
+    backgroundColor: "rgba(255,255,255,0.03)",
+    borderWidth: 0,
   },
   input: {
     fontFamily: "Manrope",
