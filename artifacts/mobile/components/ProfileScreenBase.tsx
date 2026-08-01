@@ -255,7 +255,7 @@ function BgGlyph({
   );
 }
 
-export function ProfileScreenBase({ dedicated = false, onBack }: { dedicated?: boolean; onBack?: () => void }) {
+export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: { dedicated?: boolean; onBack?: () => void; asTab?: boolean }) {
   const colors = useColors();
   const { theme: activeTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
@@ -732,8 +732,8 @@ export function ProfileScreenBase({ dedicated = false, onBack }: { dedicated?: b
         ]}
       >
         <Animated.View collapsable={false} style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
-        <View style={[styles.stickyHeaderRow, !dedicated && { paddingTop: 25 }]}>
-          {dedicated ? (
+        <View style={[styles.stickyHeaderRow, !dedicated && !asTab && { paddingTop: 25 }]}>
+          {!asTab && (dedicated ? (
             <Pressable
               onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/profile" as never))}
               style={({ pressed }) => [styles.gearBtn, { opacity: pressed ? 0.7 : 1 }]}
@@ -748,8 +748,8 @@ export function ProfileScreenBase({ dedicated = false, onBack }: { dedicated?: b
               bgColor="rgba(255,255,255,0.1)"
               style={{ transform: [{ translateX: -2 }, { translateY: -50 }] }}
             />
-          )}
-          <Text style={[styles.stickyTitle, !dedicated && styles.stickyTitleBiblioteca]}>{dedicated ? "Mi Perfil" : "Biblioteca"}</Text>
+          ))}
+          <Text style={[styles.stickyTitle, !dedicated && !asTab && styles.stickyTitleBiblioteca, asTab && styles.stickyTitleTab]}>{dedicated ? "Mi Perfil" : "Biblioteca"}</Text>
           {dedicated ? (
             <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
               <Pressable hitSlop={8} onPress={openEdit}>
@@ -1417,6 +1417,7 @@ const styles = StyleSheet.create({
   },
   stickyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#F4F4F4", letterSpacing: 0.3, flex: 1, textAlign: "center", marginLeft: -4, transform: [{ translateY: 4 }] },
   stickyTitleBiblioteca: { fontSize: 27, textAlign: "left", position: "absolute", left: 19, top: 25 },
+  stickyTitleTab: { fontSize: 27, fontWeight: "700", textAlign: "center", flex: 1, marginLeft: 0, transform: [{ translateY: 1 }] },
   libActionsPill: {
     flexDirection: "row",
     alignItems: "center",
