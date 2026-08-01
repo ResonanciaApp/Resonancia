@@ -19,6 +19,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { EncuentroCard } from "@/components/EncuentroCard";
 import { CalendarioEncuentroSheet } from "@/components/CalendarioEncuentroSheet";
 import { ENCUENTROS, type Encuentro } from "@/data/encuentros";
+import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
 
 const { width: SCREEN_W } = Dimensions.get("window");
 const CARD_H_PADDING = 20;
@@ -135,6 +136,11 @@ export default function EncuentrosScreen() {
               </Pressable>
             ))}
           </ScrollView>
+        </View>
+
+        {/* ── Mezclas de la comunidad ── */}
+        <View style={{ marginTop: 36 }}>
+          <CommunityMixesCarousel />
         </View>
       </ScrollView>
 
