@@ -4,7 +4,7 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import Svg, { Path } from "react-native-svg";
 import { BackPill } from "@/components/BackPill";
 import { SessionCarousel } from "@/components/SessionCarousel";
-import { router } from "expo-router";
+import { router, Stack } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useRef, useState, useEffect, useMemo } from "react";
@@ -566,6 +566,7 @@ export default function SonidosAncestalesScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string }]}>
+      <Stack.Screen options={{ headerShown: false, animation: "slide_from_right" }} />
       <LinearGradient
         colors={theme.gradient as unknown as [string, string, ...string[]]}
         style={StyleSheet.absoluteFill}
