@@ -262,7 +262,7 @@ export default function TagScreen() {
                         {session.title}
                       </Text>
                       <Text style={[styles.hCardSub, { color: colors.mutedForeground }]} numberOfLines={1}>
-                        {session.categoryLabel} · {sessionAuthor(session)}
+                        {sessionAuthor(session)}
                       </Text>
                     </Pressable>
                     );
@@ -304,7 +304,7 @@ export default function TagScreen() {
                         {session.title}
                       </Text>
                       <Text style={[styles.listSub, { color: colors.mutedForeground }]} numberOfLines={1}>
-                        {session.categoryLabel} · {sessionAuthor(session)}
+                        {sessionAuthor(session)}
                       </Text>
                     </View>
                   </Pressable>
