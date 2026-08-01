@@ -43,7 +43,7 @@ type MenuItem = {
 
 const MAIN_ITEMS: MenuItem[] = [
   { label: "Tu Premium",    icon: "star",      route: "/membresia" },
-  { label: "Biblioteca",    icon: "layers",    route: "/(tabs)/profile" },
+  { label: "Biblioteca",    icon: "layers",    route: "__biblioteca_overlay" },
   { label: "Mis sesiones",  icon: "calendar",  route: "/mis-sesiones" },
   { label: "Mis favoritos", icon: "heart",     route: "/favoritos-todos" },
   { label: "Historial",     icon: "clock",     route: "/historial" },
@@ -85,7 +85,7 @@ function creationToSceneAnimation(c: GeometrixCreation): SceneAnimation {
 
 // ── Drawer principal ──────────────────────────────────────────────────────────
 export function DrawerMenu() {
-  const { isOpen: visible, drawerAnim, close: onClose, markInstantNav } = useDrawer();
+  const { isOpen: visible, drawerAnim, close: onClose, markInstantNav, openLib } = useDrawer();
   const insets = useSafeAreaInsets();
   const { isRegistered, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
@@ -157,6 +157,11 @@ export function DrawerMenu() {
   const initial = (fullName || clerkName || "").charAt(0).toUpperCase() || null;
 
   const navigate = (route: string) => {
+    // Biblioteca se desliza SOBRE el drawer (el menú queda abierto debajo)
+    if (route === "__biblioteca_overlay") {
+      openLib();
+      return;
+    }
     markInstantNav();
     onClose();
     router.push(route as never);

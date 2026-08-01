@@ -16,6 +16,11 @@ type DrawerCtx = {
   instantNav: boolean;
   /** Activa instantNav por un instante (auto-reset) justo antes de navegar. */
   markInstantNav: () => void;
+  /** Overlay de Biblioteca que se desliza SOBRE el drawer (el drawer queda
+   *  abierto debajo; al cerrarse el overlay, el drawer sigue visible). */
+  libOpen: boolean;
+  openLib: () => void;
+  closeLib: () => void;
 };
 
 const Ctx = createContext<DrawerCtx | null>(null);
@@ -60,9 +65,13 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     animate(false);
   }, [animate]);
 
+  const [libOpen, setLibOpen] = useState(false);
+  const openLib = useCallback(() => setLibOpen(true), []);
+  const closeLib = useCallback(() => setLibOpen(false), []);
+
   const value = React.useMemo(
-    () => ({ isOpen, open, close, drawerAnim, instantNav, markInstantNav }),
-    [isOpen, open, close, drawerAnim, instantNav, markInstantNav],
+    () => ({ isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, openLib, closeLib }),
+    [isOpen, open, close, drawerAnim, instantNav, markInstantNav, libOpen, openLib, closeLib],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
