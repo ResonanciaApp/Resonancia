@@ -137,7 +137,7 @@ export default function ResonadorPostularScreen() {
 
   return (
     <LinearGradient colors={BG_GRADIENT} style={styles.root}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 10 }]}>

@@ -94,7 +94,7 @@ export default function VideoTabScreen() {
   return (
     <View style={styles.root}>
       <Stack.Screen options={{ headerShown: false }} />
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <LinearGradient colors={activeTheme.gradient} style={StyleSheet.absoluteFill} />
       <GeoUniverseBackground />
 

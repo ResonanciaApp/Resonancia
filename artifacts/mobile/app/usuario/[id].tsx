@@ -154,7 +154,7 @@ export default function UsuarioScreen() {
   if (isLoading) {
     return (
       <View style={styles.root}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar hidden />
         <LinearGradient colors={BG_GRADIENT} style={StyleSheet.absoluteFill} />
         {HeaderBar}
         <View style={styles.centered}>
@@ -167,7 +167,7 @@ export default function UsuarioScreen() {
   if (isError || !profile) {
     return (
       <View style={styles.root}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar hidden />
         <LinearGradient colors={BG_GRADIENT} style={StyleSheet.absoluteFill} />
         {HeaderBar}
         <View style={styles.centered}>
@@ -188,7 +188,7 @@ export default function UsuarioScreen() {
 
   return (
     <View style={styles.root}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <LinearGradient colors={BG_GRADIENT} style={StyleSheet.absoluteFill} />
 
       {HeaderBar}

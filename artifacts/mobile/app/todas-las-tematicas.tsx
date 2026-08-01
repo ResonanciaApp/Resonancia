@@ -32,7 +32,7 @@ export default function TodasLasTemáticasScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 12 }]}>

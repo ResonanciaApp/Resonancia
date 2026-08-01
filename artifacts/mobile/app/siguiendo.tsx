@@ -65,7 +65,7 @@ export default function SiguiendoScreen() {
       end={{ x: 0, y: 1 }}
 
     >
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <SacredBackground />
 
       {/* Header */}

@@ -248,7 +248,7 @@ export default function SessionDetailScreen() {
   return (
     <View style={[styles.root, { backgroundColor: catBg.solid }]}>
       <LinearGradient colors={catBg.gradient} style={StyleSheet.absoluteFill} />
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       <Animated.ScrollView
         style={styles.scroll}

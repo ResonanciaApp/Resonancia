@@ -39,7 +39,7 @@ export default function InvitarScreen() {
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <SacredBackground variant="solid" />
 
       <ScrollView

@@ -469,7 +469,7 @@ export default function ResonadoresScreen() {
         cachePolicy="memory-disk"
         transition={200}
       />
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <LinearGradient
         colors={["rgba(0,0,0,0.35)", "rgba(10,0,4,0.65)", "#0A0004"]}
         locations={[0, 0.5, 1]}

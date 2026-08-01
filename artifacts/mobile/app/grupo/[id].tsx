@@ -402,7 +402,7 @@ export default function GrupoDetailScreen() {
   if (!grupo) {
     return (
       <View style={[styles.root, { backgroundColor: sceneTheme.gradient[0], alignItems: "center", justifyContent: "center", padding: 32 }]}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar hidden />
         <Feather name="alert-circle" size={32} color={"#F4F4F4"} />
         <Text style={{ color: "#F9F9F9", fontSize: 16, fontWeight: "700", marginTop: 12 }}>
           Grupo no encontrado
@@ -426,7 +426,7 @@ export default function GrupoDetailScreen() {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <View style={styles.root}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar hidden />
         <LinearGradient colors={sceneTheme.gradient} style={StyleSheet.absoluteFill} />
 
         {/* Header */}

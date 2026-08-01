@@ -98,7 +98,7 @@ export default function ResonadorPerfilScreen() {
   if (!_resonador) {
     return (
       <View style={styles.root}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar hidden />
         <LinearGradient colors={activeTheme.gradient} style={StyleSheet.absoluteFill} />
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
           <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
@@ -141,7 +141,7 @@ export default function ResonadorPerfilScreen() {
 
   return (
     <View style={styles.root}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <LinearGradient colors={bgColors as [string, string, ...string[]]} style={StyleSheet.absoluteFill} />
 
       {/* ── Header (flotante sobre el hero) ── */}

@@ -82,7 +82,7 @@ export default function CarpetaFavoritoDetailScreen() {
 
   return (
     <LinearGradient style={styles.root} colors={bgColors}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>

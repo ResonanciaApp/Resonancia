@@ -38,7 +38,7 @@ export default function EncuentroDetalle() {
   if (!encuentro) {
     return (
       <View style={styles.root}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar hidden />
         <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} />
         <View style={[styles.navRow, { top: topPad + 8 }]}>
           <Pressable onPress={() => router.back()} style={styles.navBtn} hitSlop={8}>
@@ -56,7 +56,7 @@ export default function EncuentroDetalle() {
 
   return (
     <View style={styles.root}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <LinearGradient colors={["#2A0A14", "#1B060F"]} style={StyleSheet.absoluteFill} />
 
       <ScrollView

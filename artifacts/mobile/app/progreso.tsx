@@ -298,7 +298,7 @@ export default function ProgresoScreen() {
       end={{ x: 0, y: 1 }}
 
     >
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <SacredBackground />
 
       <ScrollView

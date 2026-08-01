@@ -70,7 +70,7 @@ export default function TemaScreen() {
       style={styles.root}
       colors={activeTheme.gradient}
     >
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       {/* ── STICKY HEADER (fades in on scroll) ── */}
       <Animated.View

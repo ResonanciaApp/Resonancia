@@ -101,7 +101,7 @@ export default function MisSesionesScreen() {
 
   return (
     <View style={styles.root}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <LinearGradient colors={sceneTheme.gradient} style={StyleSheet.absoluteFill} />
 
       {/* Floating back */}

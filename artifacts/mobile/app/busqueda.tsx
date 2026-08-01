@@ -231,7 +231,7 @@ export default function BusquedaScreen() {
       end={{ x: 0, y: 1 }}
       style={styles.root}
     >
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       {/* Header */}
       <View style={[styles.topBar, { paddingTop: topPad + 6 }]}>

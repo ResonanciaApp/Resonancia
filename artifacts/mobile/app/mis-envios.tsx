@@ -47,7 +47,7 @@ export default function MisEnviosScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <SacredBackground />
       <ScrollView
         contentContainerStyle={{

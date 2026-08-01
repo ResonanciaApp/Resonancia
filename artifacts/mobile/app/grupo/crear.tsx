@@ -209,7 +209,7 @@ export default function CrearGrupoScreen() {
         style={styles.root}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <StatusBar barStyle="light-content" />
+        <StatusBar hidden />
         <LinearGradient
           style={StyleSheet.absoluteFill}
           colors={sceneTheme.gradient}
@@ -268,7 +268,7 @@ export default function CrearGrupoScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={0}
     >
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
         <LinearGradient
           style={StyleSheet.absoluteFill}
           colors={sceneTheme.gradient}

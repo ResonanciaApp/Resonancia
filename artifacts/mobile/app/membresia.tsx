@@ -140,7 +140,7 @@ export default function MembresiaScreen() {
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <SacredBackground />
       <LinearGradient
         colors={["rgba(214,161,77,0.10)", "rgba(35,66,54,0.08)", "transparent"]}

@@ -54,7 +54,7 @@ export default function EncuentrosScreen() {
   return (
     <View style={[styles.root, { backgroundColor: activeTheme.gradient[0] as string, paddingTop: insets.top }]}>
       <LinearGradient colors={activeTheme.gradient} style={StyleSheet.absoluteFill} />
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       {/* Header */}
       <View style={styles.header}>

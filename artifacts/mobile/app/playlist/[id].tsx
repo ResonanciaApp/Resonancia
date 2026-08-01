@@ -248,7 +248,7 @@ export default function PlaylistDetailScreen() {
         colors={BG_GRADIENT}
         style={StyleSheet.absoluteFill}
       />
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       <ScrollView
         style={{ flex: 1 }}

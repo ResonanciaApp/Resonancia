@@ -72,7 +72,7 @@ export default function VideosScreen() {
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
       <Stack.Screen options={{ headerShown: false }} />
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <SacredBackground />
 
       {/* ── Scrollable content ── */}

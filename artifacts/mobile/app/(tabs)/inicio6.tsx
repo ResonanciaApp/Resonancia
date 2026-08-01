@@ -835,7 +835,7 @@ export default function HomeScreen2() {
         </Animated.View>
       )}
 
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       <ScrollView
         style={styles.scroll}

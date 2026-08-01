@@ -89,7 +89,7 @@ export default function RevisionScreen() {
   if (!isAdmin) {
     return (
       <View style={[styles.root, { backgroundColor: colors.background }]}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar hidden />
         <SacredBackground />
         <View style={[styles.empty, { paddingTop: topPad + 60 }]}>
           <Feather name="lock" size={40} color={colors.mutedForeground} />
@@ -109,7 +109,7 @@ export default function RevisionScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <SacredBackground />
       <ScrollView
         contentContainerStyle={{

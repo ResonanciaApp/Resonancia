@@ -122,7 +122,7 @@ export default function ActividadDetailScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <SacredBackground />
 
       {/* Hero header */}

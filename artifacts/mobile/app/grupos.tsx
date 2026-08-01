@@ -442,7 +442,7 @@ export default function GruposScreen() {
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       {/* Floating back */}
       <View style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 20 }} pointerEvents="box-none">

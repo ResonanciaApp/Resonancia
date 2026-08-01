@@ -128,7 +128,7 @@ export default function ReservarSesionScreen() {
   if (phase === "confirm") {
     return (
       <View style={[styles.root, { paddingTop: topPad, paddingBottom: bottomPad }]}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar hidden />
         <LinearGradient
           colors={[BURGUNDY_MID, WARM_BLACK, WARM_BLACK]}
           locations={[0, 0.4, 1]}
@@ -196,7 +196,7 @@ export default function ReservarSesionScreen() {
   // ── Fase: idle ────────────────────────────────────────────────────────────
   return (
     <View style={styles.root}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <LinearGradient
         colors={[BURGUNDY_MID, WARM_BLACK, WARM_BLACK]}
         locations={[0, 0.3, 1]}

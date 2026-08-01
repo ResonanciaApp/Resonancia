@@ -298,7 +298,7 @@ export default function Onboarding() {
         start={{ x: 0.3, y: 0 }}
         end={{ x: 0.7, y: 1 }}
       >
-        <StatusBar barStyle="light-content" />
+        <StatusBar hidden />
         <Animated.View
           style={[styles.welcomeContent, { opacity: welcomeOpacity, transform: [{ scale: logoScale }] }]}
         >
@@ -350,7 +350,7 @@ export default function Onboarding() {
         start={{ x: 0.3, y: 0 }}
         end={{ x: 0.7, y: 1 }}
       >
-        <StatusBar barStyle="light-content" />
+        <StatusBar hidden />
         <Animated.View style={[styles.closingContent, { transform: [{ translateY: stepSlideY }] }]}>
           {/* Animated ripple */}
           <View style={styles.rippleContainer}>
@@ -411,7 +411,7 @@ export default function Onboarding() {
       start={{ x: 0.3, y: 0 }}
       end={{ x: 0.7, y: 1 }}
     >
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       {/* Progress bar */}
       <View style={styles.progressBar}>

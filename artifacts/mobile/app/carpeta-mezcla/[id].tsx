@@ -99,7 +99,7 @@ export default function CarpetaMezclaDetailScreen() {
 
   return (
     <LinearGradient style={styles.root} colors={BG} locations={[0, 0.5, 1]}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>

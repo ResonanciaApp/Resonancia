@@ -46,7 +46,7 @@ export default function NuevasSessionesScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       <FlatList
         data={visibleSessions}

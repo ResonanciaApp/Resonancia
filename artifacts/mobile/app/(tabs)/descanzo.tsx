@@ -420,7 +420,7 @@ export default function DescansoScreen() {
       colors={bgGradient}
       style={styles.root}
     >
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <GeoUniverseBackground />
       <NightSky />
 

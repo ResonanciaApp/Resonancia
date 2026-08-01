@@ -256,7 +256,7 @@ export default function GeometrixComunidadScreen() {
 
   return (
     <View style={styles.root}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <LinearGradient
         colors={theme.gradient as unknown as [string, string, ...string[]]}
         start={{ x: 0.1, y: 0 }}

@@ -355,7 +355,7 @@ export default function SessionDetailScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: sessionGradient[sessionGradient.length - 1] }]}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       {/* Colchón de color fijo — cubre cualquier gap durante scroll rápido sin lag */}
       <View style={{ position: "absolute", top: HEADER_H - 2, left: 0, right: 0, height: 400, backgroundColor: sessionGradient[0], zIndex: 0 }} pointerEvents="none" />

@@ -231,7 +231,7 @@ export default function MezclasComunidadScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: theme.gradient[1] }]}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       {/* ── Header ── */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>

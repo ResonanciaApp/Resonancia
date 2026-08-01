@@ -400,7 +400,7 @@ export default function GeometrixCreacionesScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string }]}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       {/* Render oculto que se captura como póster. Queda detrás del degradado
           opaco de fondo (no visible) pero montado y medible para captureRef.

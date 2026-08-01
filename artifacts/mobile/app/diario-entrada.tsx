@@ -90,7 +90,7 @@ export default function DiarioEntradaScreen() {
       style={styles.root}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <LinearGradient colors={sceneTheme.gradient} style={StyleSheet.absoluteFill} />
 
       {/* Header */}

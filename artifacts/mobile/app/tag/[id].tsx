@@ -108,7 +108,7 @@ export default function TagScreen() {
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       {/* ── STICKY HEADER (fades in on scroll) ── */}
       <Animated.View

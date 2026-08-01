@@ -33,7 +33,7 @@ export default function ExpansorScreen() {
   if (!expansor) {
     return (
       <View style={[styles.root, { backgroundColor: "#210911" }]}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar hidden />
         <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} />
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
           <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
@@ -53,7 +53,7 @@ export default function ExpansorScreen() {
 
   return (
     <View style={styles.root}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <LinearGradient colors={["#340D1A", "#190913"]} style={StyleSheet.absoluteFill} />
 
       {/* Header */}

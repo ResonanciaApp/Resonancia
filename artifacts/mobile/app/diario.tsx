@@ -145,7 +145,7 @@ export default function DiarioScreen() {
       end={{ x: 0, y: 1 }}
 
     >
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       {/* Floating back */}
       <View style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 10 }} pointerEvents="box-none">

@@ -130,7 +130,7 @@ export default function ReflexionesScreen() {
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       {/* Header sticky animado */}
       <Animated.View style={[styles.stickyHeader, { paddingTop: topPad, opacity: headerOpacity }]}>

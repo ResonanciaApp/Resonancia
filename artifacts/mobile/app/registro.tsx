@@ -107,7 +107,7 @@ export default function RegistroScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <Animated.View style={[{ flex: 1 }, { opacity: fadeAnim }]}>
         {step === "choose" && (
           <ChooseStep

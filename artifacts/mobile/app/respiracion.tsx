@@ -179,7 +179,7 @@ export default function RespiracionScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <SacredBackground />
 
       <View style={[styles.header, { paddingTop: insets.top + 12 }]}>

@@ -76,7 +76,7 @@ export default function CrearContenidoScreen() {
   if (!isCreator) {
     return (
       <View style={[styles.root, { backgroundColor: colors.background }]}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar hidden />
         <SacredBackground />
         <View style={[styles.gate, { paddingTop: topPad + 40 }]}>
           <Feather name="lock" size={40} color={colors.mutedForeground} />
@@ -241,7 +241,7 @@ export default function CrearContenidoScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <SacredBackground />
       <KeyboardAvoidingView
         style={{ flex: 1 }}

@@ -93,7 +93,7 @@ export default function GeometrixAprendeDetalleScreen() {
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
       <LinearGradient colors={theme.gradient as unknown as [string, string, ...string[]]} style={StyleSheet.absoluteFill} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} />
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       {/* Header */}
       <View style={styles.header}>

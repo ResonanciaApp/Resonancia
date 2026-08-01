@@ -913,7 +913,7 @@ export default function HomeScreen2() {
         </Animated.View>
       )}
 
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       {/* ── Header fijo: Menú + Racha (sticky, fuera del scroll) ── */}
       <View

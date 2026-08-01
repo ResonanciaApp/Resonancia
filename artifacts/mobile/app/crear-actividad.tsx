@@ -48,7 +48,7 @@ export default function CrearActividadScreen() {
   if (step === "preview") {
     return (
       <View style={[styles.root, { backgroundColor: colors.background }]}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar hidden />
         <SacredBackground />
         <ScrollView
           contentContainerStyle={{ paddingTop: topPad + 8, paddingBottom: bottomPad + 40, paddingHorizontal: 20 }}
@@ -141,7 +141,7 @@ export default function CrearActividadScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <SacredBackground />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
         <ScrollView

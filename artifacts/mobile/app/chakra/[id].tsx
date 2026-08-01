@@ -77,7 +77,7 @@ export default function ChakraScreen() {
   if (!chakra) {
     return (
       <View style={[styles.root, { backgroundColor: "#210911" }]}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar hidden />
         <LinearGradient colors={["#340D1A", "#190913", "#0D0808"]} style={StyleSheet.absoluteFill} />
         <View style={[styles.headerRow, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
           <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
@@ -97,7 +97,7 @@ export default function ChakraScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: themeBg }]}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
 
       <ScrollView
         style={styles.scroll}

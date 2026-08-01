@@ -161,7 +161,7 @@ export default function MezclasIndexScreen() {
 
   return (
     <LinearGradient colors={BG_GRADIENT} style={styles.root} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <SacredBackground />
 
       <View style={[styles.inner, { paddingTop: topPad + 16 }]}>

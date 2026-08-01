@@ -122,7 +122,7 @@ export default function MensajesDelAlmaScreen() {
         end={{ x: 0, y: 1 }}
 
       >
-        <StatusBar barStyle="light-content" />
+        <StatusBar hidden />
         <SacredBackground />
 
         {/* Top bar */}

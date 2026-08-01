@@ -70,7 +70,7 @@ export default function VideoPlayerScreen() {
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
       <Stack.Screen options={{ headerShown: false }} />
-      <StatusBar barStyle="light-content" />
+      <StatusBar hidden />
       <SacredBackground />
 
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
