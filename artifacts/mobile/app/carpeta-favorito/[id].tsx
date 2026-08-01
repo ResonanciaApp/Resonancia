@@ -31,8 +31,8 @@ const SHEET_BG = "#1B060F";
 export default function CarpetaFavoritoDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
-  const { activeSceneId } = useSceneTheme();
-  const bgColors = activeSceneId === "tibet" ? (["#2d4081", "#2d4081"] as const) : BG;
+  const { theme } = useSceneTheme();
+  const bgColors = theme.gradient as unknown as [string, string];
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
