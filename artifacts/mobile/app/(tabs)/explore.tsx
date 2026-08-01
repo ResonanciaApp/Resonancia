@@ -586,7 +586,7 @@ export default function ExploreScreen() {
       {/* ── Header fijo — título + barra de búsqueda sticky ── */}
       <View style={[styles.fixedHeader, { paddingTop: topPad + 2 }]}>
         <View style={styles.titleRow}>
-          <Text style={styles.pageTitle}>Explorar</Text>
+          <Text style={styles.pageTitle}>Descubrir</Text>
         </View>
         {/* Barra de búsqueda pegada al header */}
         <Pressable style={styles.searchWrap} onPress={() => setSearchVisible(true)}>

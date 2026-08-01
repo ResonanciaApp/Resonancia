@@ -58,7 +58,7 @@ export default function EncuentrosScreen() {
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Encuentros</Text>
+        <Text style={styles.headerTitle}>Comunidad</Text>
       </View>
 
       <ScrollView
