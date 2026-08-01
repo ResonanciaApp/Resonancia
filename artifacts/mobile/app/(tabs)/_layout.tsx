@@ -146,7 +146,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
   const isWeb  = Platform.OS === "web";
   const pb     = isWeb ? 8 : insets.bottom;
   const { openMixer } = useMixerPanel();
-  const { openLib } = useDrawer();
 
   // 8 px de separación con el borde inferior de la pantalla
   const barBottom = Math.max(3, pb - 10 - 5) - 1;
@@ -312,10 +311,6 @@ function CustomTabBar({ state, navigation, descriptors }: TabBarProps) {
             const onPress   = () => {
               if (route.name === "musica") {
                 openMixer();
-                return;
-              }
-              if (route.name === "biblioteca") {
-                openLib();
                 return;
               }
               const event = navigation.emit({
