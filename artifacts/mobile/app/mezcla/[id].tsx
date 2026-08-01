@@ -2,7 +2,7 @@
  * Reproductor de una mezcla de la comunidad — diseño glassmorphism.
  * Grid 4 columnas de sonidos + panel glass + glow en play button.
  */
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
 
@@ -11,6 +11,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Animated,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -66,6 +67,7 @@ export default function CommunityMixScreen() {
   const queryClient = useQueryClient();
   const toggleLike = useToggleSharedMixLike();
   const pendingLike = useRef(false);
+  const heartScale = useRef(new Animated.Value(1)).current;
 
   const { data, isLoading } = useGetSharedMixes();
   const mix = data?.mixes.find((m) => m.id === mixId);
@@ -313,12 +315,24 @@ export default function CommunityMixScreen() {
               <Pressable onPress={handleShare} hitSlop={10}>
                 <Feather name="share" size={22} color="#FFFFFF" />
               </Pressable>
-              <Pressable onPress={handleLike} hitSlop={10}>
-                <Feather
-                  name="heart"
-                  size={22}
-                  color={mix.likedByMe ? "#F7CB6B" : "#FFFFFF"}
-                />
+              <Pressable
+                onPress={() => {
+                  heartScale.setValue(1);
+                  Animated.sequence([
+                    Animated.timing(heartScale, { toValue: 1.35, duration: 120, useNativeDriver: true }),
+                    Animated.spring(heartScale, { toValue: 1, friction: 3, tension: 140, useNativeDriver: true }),
+                  ]).start();
+                  handleLike();
+                }}
+                hitSlop={10}
+              >
+                <Animated.View style={{ transform: [{ scale: heartScale }] }}>
+                  {mix.likedByMe ? (
+                    <Ionicons name="heart" size={22} color="#f9f9f9" />
+                  ) : (
+                    <Ionicons name="heart-outline" size={22} color="#f9f9f9" />
+                  )}
+                </Animated.View>
               </Pressable>
             </View>
           </View>
