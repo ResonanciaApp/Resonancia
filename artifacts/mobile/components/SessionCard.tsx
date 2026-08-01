@@ -130,7 +130,9 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
           </View>
           {!!authorName && (
             <View style={styles.hAuthorRow}>
-              <Image source={authorPhoto} style={styles.hAuthorAvatar} contentFit="cover" />
+              {showAuthorAvatar && (
+                <Image source={authorPhoto} style={styles.hAuthorAvatar} contentFit="cover" />
+              )}
               <Text style={[styles.hAuthor, { color: colors.mutedForeground }]} numberOfLines={1}>
                 {authorName}
               </Text>
