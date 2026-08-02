@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#A8BFFF",
+    backgroundColor: "#884D80",
   },
   addBtnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: "#f9f9f9" },
 });
