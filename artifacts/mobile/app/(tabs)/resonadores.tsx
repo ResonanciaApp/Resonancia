@@ -334,7 +334,7 @@ const ResonadorCard = memo(function ResonadorCard({
         <Text style={styles.cardTag} numberOfLines={1}>
           {item.kind === "resonador"
             ? item.data.subtipo
-            : item.data.region ?? item.data.country}
+            : item.data.region ?? ""}
         </Text>
       </View>
     </Pressable>

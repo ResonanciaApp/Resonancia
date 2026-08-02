@@ -72,7 +72,7 @@ import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/d
 import { getMoodById, type Mood, type MoodId } from "@/data/moods";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
-import { RESONADORES, COUNTRY_FLAGS } from "@/data/resonadores";
+import { RESONADORES } from "@/data/resonadores";
 import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
@@ -1425,9 +1425,6 @@ export default function HomeScreen2() {
                   style={{ fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: "#f9f9f9", textAlign: "center", lineHeight: 19 }}
                 >
                   {r.name}
-                </Text>
-                <Text style={{ fontFamily: "Manrope", fontSize: 12, color: "rgba(249,249,249,0.55)", marginTop: 3, textAlign: "center" }}>
-                  {COUNTRY_FLAGS[r.country] ?? ""} {r.country}
                 </Text>
               </Pressable>
             ))}
