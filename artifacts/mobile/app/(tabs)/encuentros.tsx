@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Image as ExpoImage } from "expo-image";
-import { RESONADORES, COUNTRY_FLAGS } from "@/data/resonadores";
+import { RESONADORES } from "@/data/resonadores";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -129,9 +129,6 @@ export default function EncuentrosScreen() {
                   style={{ fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: "#f9f9f9", textAlign: "center", lineHeight: 19 }}
                 >
                   {r.name}
-                </Text>
-                <Text style={{ fontFamily: "Manrope", fontSize: 12, color: "rgba(249,249,249,0.55)", marginTop: 3, textAlign: "center" }}>
-                  {COUNTRY_FLAGS[r.country] ?? ""} {r.country}
                 </Text>
               </Pressable>
             ))}

@@ -22,7 +22,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GhostPill } from "@/components/GhostPill";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
-import { EXPANSORES, REGIONS_BY_COUNTRY, COUNTRY_FLAGS, type Expansor } from "@/data/expansores";
+import { EXPANSORES, REGIONS_BY_COUNTRY, type Expansor } from "@/data/expansores";
 import { RESONADORES, type Resonador } from "@/data/resonadores";
 import { useColors } from "@/hooks/useColors";
 import { useUserProfile } from "@/context/UserProfileContext";
@@ -189,7 +189,7 @@ function CountryChipRow({
       {countries.map((c) => (
         <ResoChip
           key={c}
-          label={`${COUNTRY_FLAGS[c] ?? ""} ${c}`}
+          label={c}
           sel={selected === c}
           onPress={() => onSelect(selected === c ? null : c)}
         />
@@ -232,9 +232,7 @@ function ExpansorChevronFilter({
   const dropOpacity  = anim;
   const dropScale    = anim.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] });
 
-  const label = selectedCountry
-    ? `${COUNTRY_FLAGS[selectedCountry] ?? ""} ${selectedCountry}`
-    : "Todos los países";
+  const label = selectedCountry ?? "Todos los países";
 
   return (
     <View style={styles.chevronWrap}>
@@ -269,7 +267,7 @@ function ExpansorChevronFilter({
               ]}
             >
               <Text style={[styles.chevronOptionText, selectedCountry === c && styles.chevronOptionTextSel]}>
-                {COUNTRY_FLAGS[c] ?? ""} {c}
+                {c}
               </Text>
               {selectedCountry === c && <Feather name="check" size={13} color="#FBA980" />}
             </Pressable>
