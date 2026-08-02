@@ -163,7 +163,7 @@ export default function SessionDetailScreen() {
     ? ["#884D80", "#884D80"]
     : ["#884D80", "#884D80"];
   const playBtnTextColor = "#0d0c26";
-  const shareBtnAccent = sceneTheme.id === "indigo" ? "#dad4ec" : accentColor;
+  const shareBtnAccent = sceneTheme.id === "indigo" ? "#dad4ec" : "#884D80";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
   const [showPlaylistSheet, setShowPlaylistSheet] = useState(false);

@@ -6,7 +6,7 @@ const colors = {
     foreground: "#FBFBFB",
     card: "rgba(74,12,12,0.08)",
     cardForeground: "#FBFBFB",
-    primary: "#dad4ec",
+    primary: "#884D80",
     primaryForeground: "#1B060F",
     secondary: "#27070E",
     secondaryForeground: "#FBFBFB",

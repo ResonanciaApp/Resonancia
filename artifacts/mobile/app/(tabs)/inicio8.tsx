@@ -1067,7 +1067,7 @@ export default function HomeScreen2() {
                 onPress={() => router.push("/mis-sesiones" as never)}
                 hitSlop={8}
               >
-                <Text style={{ color: "#dad4ec", fontSize: 13, fontFamily: "Manrope" }}>
+                <Text style={{ color: "#884D80", fontSize: 13, fontFamily: "Manrope" }}>
                   Ver todas
                 </Text>
               </Pressable>
@@ -1258,7 +1258,7 @@ export default function HomeScreen2() {
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 24 }}>
               <Text style={[styles.sectionTitle, { fontSize: 20, marginBottom: 0 }]}>Videos destacados</Text>
               <Pressable hitSlop={8} onPress={() => router.push("/videos" as never)}>
-                <Text style={{ color: "#C7BAFF", fontSize: 13, fontFamily: "Manrope", fontWeight: "600" }}>Ver todos</Text>
+                <Text style={{ color: "#884D80", fontSize: 13, fontFamily: "Manrope", fontWeight: "600" }}>Ver todos</Text>
               </Pressable>
             </View>
             <ScrollView
@@ -1398,7 +1398,7 @@ export default function HomeScreen2() {
           <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: GRID_PAD, marginBottom: 16 }}>
             <Text style={[styles.sectionTitle, { flex: 1, marginBottom: 0 }]}>Los Resonadores</Text>
             <Pressable onPress={() => router.push("/resonadores" as never)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#dad4ec" }}>Ver todos</Text>
+              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#884D80" }}>Ver todos</Text>
             </Pressable>
           </View>
           <ScrollView
