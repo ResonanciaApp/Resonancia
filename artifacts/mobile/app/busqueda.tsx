@@ -271,8 +271,8 @@ export default function BusquedaScreen() {
           style={({ pressed }) => [
             styles.filterPill,
             {
-              borderColor: selectedCat ? tc.accent : tc.borderFaint,
-              backgroundColor: selectedCat ? tc.pillActiveBg : "transparent",
+              borderColor: selectedCat ? tc.accent : "rgba(80,42,247,0.1)",
+              backgroundColor: selectedCat ? tc.pillActiveBg : "rgba(255,255,255,0.03)",
               opacity: pressed ? 0.75 : 1,
             },
           ]}
@@ -287,8 +287,8 @@ export default function BusquedaScreen() {
           style={({ pressed }) => [
             styles.filterPill,
             {
-              borderColor: selectedDur ? tc.accent : tc.borderFaint,
-              backgroundColor: selectedDur ? tc.pillActiveBg : "transparent",
+              borderColor: selectedDur ? tc.accent : "rgba(80,42,247,0.1)",
+              backgroundColor: selectedDur ? tc.pillActiveBg : "rgba(255,255,255,0.03)",
               opacity: pressed ? 0.75 : 1,
             },
           ]}
@@ -301,7 +301,7 @@ export default function BusquedaScreen() {
         <View style={{ flex: 1 }} />
         {hasFilters && (
           <Pressable onPress={clearAll} hitSlop={8} style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}>
-            <Text style={[styles.clearAllText, { color: tc.accent }]}>Borrar todo</Text>
+            <Text style={[styles.clearAllText, { color: "#f9f9f9" }]}>Borrar todo</Text>
           </Pressable>
         )}
       </View>
@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
   emptyTitle: { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#FBFBFB", textAlign: "center", marginBottom: 10 },
   emptySub: { fontFamily: "Manrope", fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
 
-  resultRow: { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 6 },
+  resultRow: { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 11 },
   thumb: { width: 75, height: 75, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.025)" },
   premiumBadge: {
     position: "absolute",
