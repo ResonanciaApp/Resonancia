@@ -430,9 +430,9 @@ export default function SessionDetailScreen() {
                   onPress={handlePlayFromStart}
                   style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
                 >
-                  <LinearGradient colors={["#D6A45C", "#F7CB6B"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
-                  <Feather name="rotate-ccw" size={16} color="#0d0c26" />
-                  <Text style={[styles.playBtnText, { color: "#0d0c26" }]}>Reiniciar</Text>
+                  <LinearGradient colors={["#715dd3", "#8769e9", "#7148b5"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+                  <Feather name="rotate-ccw" size={16} color="#ffffff" />
+                  <Text style={[styles.playBtnText, { color: "#ffffff" }]}>Reiniciar</Text>
                 </Pressable>
 
                 <View style={styles.splitDivider} />
@@ -442,14 +442,14 @@ export default function SessionDetailScreen() {
                   onPress={handleContinue}
                   style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
                 >
-                  <LinearGradient colors={["#D6A45C", "#F7CB6B"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+                  <LinearGradient colors={["#715dd3", "#8769e9", "#7148b5"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
                   <Svg width={16} height={16} viewBox="0 0 48 48">
                     <Path
                       d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
-                      fill="#0d0c26"
+                      fill="#ffffff"
                     />
                   </Svg>
-                  <Text style={[styles.playBtnText, { color: "#0d0c26" }]}>Continuar</Text>
+                  <Text style={[styles.playBtnText, { color: "#ffffff" }]}>Continuar</Text>
                 </Pressable>
               </View>
 
@@ -458,9 +458,10 @@ export default function SessionDetailScreen() {
                 onPress={handleShare}
                 style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, marginBottom: 26 })}
               >
-                <View style={[styles.shareBtnInner, { borderColor: accentColor }]}>
-                  <Text style={[styles.shareBtnText, { color: accentColor }]}>Compartir</Text>
-                  <Feather name="send" size={15} color={accentColor} />
+                <View style={[styles.shareBtnInner, { borderWidth: 0, overflow: "hidden" }]}>
+                  <LinearGradient colors={["#715dd3", "#8769e9", "#7148b5"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+                  <Text style={[styles.shareBtnText, { color: "#ffffff" }]}>Compartir</Text>
+                  <Feather name="send" size={15} color="#ffffff" />
                 </View>
               </Pressable>
             </>
@@ -474,15 +475,15 @@ export default function SessionDetailScreen() {
                   { flex: 1, overflow: "hidden", opacity: pressed ? 0.88 : 1 },
                 ]}
               >
-                <LinearGradient colors={["#D6A45C", "#F7CB6B"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+                <LinearGradient colors={["#715dd3", "#8769e9", "#7148b5"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                   <Svg width={18} height={18} viewBox="0 0 48 48">
                     <Path
                       d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
-                      fill="#0d0c26"
+                      fill="#ffffff"
                     />
                   </Svg>
-                  <Text style={[styles.playBtnText, { color: "#0d0c26" }]}>
+                  <Text style={[styles.playBtnText, { color: "#ffffff" }]}>
                     {isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora"}
                   </Text>
                 </View>
@@ -492,9 +493,10 @@ export default function SessionDetailScreen() {
                 onPress={handleShare}
                 style={({ pressed }) => ({ flex: 1, opacity: pressed ? 0.75 : 1 })}
               >
-                <View style={[styles.shareBtnInner, { borderColor: accentColor, flex: 1 }]}>
-                  <Text style={[styles.shareBtnText, { color: accentColor }]}>Compartir</Text>
-                  <Feather name="send" size={15} color={accentColor} />
+                <View style={[styles.shareBtnInner, { flex: 1, borderWidth: 0, overflow: "hidden" }]}>
+                  <LinearGradient colors={["#715dd3", "#8769e9", "#7148b5"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+                  <Text style={[styles.shareBtnText, { color: "#ffffff" }]}>Compartir</Text>
+                  <Feather name="send" size={15} color="#ffffff" />
                 </View>
               </Pressable>
             </View>
@@ -1157,7 +1159,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 10,
     borderRadius: 30,
-    shadowColor: "#F7CB6B",
+    shadowColor: "#8769e9",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,
