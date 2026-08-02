@@ -1258,7 +1258,7 @@ export default function HomeScreen2() {
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 24 }}>
               <Text style={[styles.sectionTitle, { fontSize: 20, marginBottom: 0 }]}>Videos destacados</Text>
               <Pressable hitSlop={8} onPress={() => router.push("/videos" as never)}>
-                <Text style={{ color: "#B4A3FF", fontSize: 13, fontFamily: "Manrope" }}>Ver todos</Text>
+                <Text style={{ color: "#C7BAFF", fontSize: 13, fontFamily: "Manrope" }}>Ver todos</Text>
               </Pressable>
             </View>
             <ScrollView
