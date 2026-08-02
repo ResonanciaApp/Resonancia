@@ -160,10 +160,10 @@ export default function SessionDetailScreen() {
   const catBg = { gradient: sessionGradient, solid: sceneTheme.solid };
   const stickyHeaderColor = sessionGradient[0];
   const playBtnColors: [string, string, ...string[]] = sceneTheme.id === "indigo"
-    ? ["#FFFFFF", "#F9F9F9"]
-    : ["#a1c4fd", "#c2e9fb"];
-  const playBtnTextColor = sceneTheme.id === "indigo" ? "#0d0c26" : "#0d0c26";
-  const shareBtnAccent = sceneTheme.id === "indigo" ? "#F9F9F9" : "#a1c4fd";
+    ? ["#a1c4fd", "#c2e9fb"]
+    : ["#D6A45C", "#F7CB6B"];
+  const playBtnTextColor = "#0d0c26";
+  const shareBtnAccent = sceneTheme.id === "indigo" ? "#a1c4fd" : accentColor;
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
   const [showPlaylistSheet, setShowPlaylistSheet] = useState(false);
