@@ -196,7 +196,7 @@ function NavTabChip({ sel, label, icon, iconSel, onPress }: { sel: boolean; labe
     >
       <Animated.View style={[StyleSheet.absoluteFill, { opacity: selOpacity }]}>
         <LinearGradient
-          colors={["#884D80", "#884D80"]}
+          colors={[colors.primary, colors.primary]}
           start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
@@ -1067,7 +1067,7 @@ export default function HomeScreen2() {
                 onPress={() => router.push("/mis-sesiones" as never)}
                 hitSlop={8}
               >
-                <Text style={{ color: "#884D80", fontSize: 13, fontFamily: "Manrope" }}>
+                <Text style={{ color: colors.primary, fontSize: 13, fontFamily: "Manrope" }}>
                   Ver todas
                 </Text>
               </Pressable>
@@ -1258,7 +1258,7 @@ export default function HomeScreen2() {
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 24 }}>
               <Text style={[styles.sectionTitle, { fontSize: 20, marginBottom: 0 }]}>Videos destacados</Text>
               <Pressable hitSlop={8} onPress={() => router.push("/videos" as never)}>
-                <Text style={{ color: "#884D80", fontSize: 13, fontFamily: "Manrope", fontWeight: "600" }}>Ver todos</Text>
+                <Text style={{ color: colors.primary, fontSize: 13, fontFamily: "Manrope", fontWeight: "600" }}>Ver todos</Text>
               </Pressable>
             </View>
             <ScrollView
@@ -1398,7 +1398,7 @@ export default function HomeScreen2() {
           <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: GRID_PAD, marginBottom: 16 }}>
             <Text style={[styles.sectionTitle, { flex: 1, marginBottom: 0 }]}>Los Resonadores</Text>
             <Pressable onPress={() => router.push("/resonadores" as never)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#884D80" }}>Ver todos</Text>
+              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: colors.primary }}>Ver todos</Text>
             </Pressable>
           </View>
           <ScrollView

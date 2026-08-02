@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 
+import { useColors } from "@/hooks/useColors";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
 import type { Session } from "@/data/sessions";
@@ -33,6 +34,7 @@ type SessionCarouselProps = {
 };
 
 export function SessionCarousel({ title, sessions, isPremium, onPress, style, titleOffset, cardWidth, cardHeight, titleSize, onViewAll }: SessionCarouselProps) {
+  const colors = useColors();
   if (sessions.length === 0) return null;
   const cw = cardWidth ?? CARD_W;
   const ch = cardHeight ?? cw;
@@ -45,7 +47,7 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 21 }}>
           <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: 0 }]}>{title}</Text>
           <Pressable onPress={onViewAll} hitSlop={8}>
-            <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#884D80" }}>Ver todos</Text>
+            <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: colors.primary }}>Ver todos</Text>
           </Pressable>
         </View>
       ) : (
