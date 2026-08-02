@@ -573,7 +573,7 @@ const styles = StyleSheet.create({
   mixAuthor: { fontFamily: "Manrope", fontSize: 10, marginTop: 2 },
   mixCount: { fontFamily: "Manrope", fontSize: 12, fontWeight: "500" },
   likeChip: { flexDirection: "row", alignItems: "center", gap: 3, flexShrink: 0 },
-  likeCount: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#f9f9f9" },
+  likeCount: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#f9f9f9", marginRight: -7 },
   heartBtn: {
     width: 32,
     height: 32,
