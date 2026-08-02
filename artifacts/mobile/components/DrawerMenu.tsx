@@ -270,7 +270,7 @@ export function DrawerMenu() {
             <View style={styles.sceneSwatch}>
               <Text style={styles.sceneSwatchTitle}>Escena</Text>
               <View style={styles.sceneSwatchRow}>
-                {(Object.values(SCENE_THEMES) as import("@/config/scene-themes").SceneTheme[]).map((t) => {
+                {(Object.values(SCENE_THEMES) as import("@/config/scene-themes").SceneTheme[]).filter((t) => t.id !== "profundo").map((t) => {
                   const isActive = t.id === activeSceneId;
                   return (
                     <Pressable
