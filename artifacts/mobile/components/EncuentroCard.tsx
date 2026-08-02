@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Image,
   Pressable,
   StyleSheet,
   Text,
@@ -23,13 +22,13 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
 
   return (
     <View style={styles.card}>
-      {/* Imagen hero */}
+      {/* Hero — fondo crema + avatar del guía */}
       <Pressable onPress={onPress} style={styles.heroWrap}>
-        <Image source={encuentro.imagen} style={styles.heroImage} resizeMode="cover" />
-        <LinearGradient
-          colors={["transparent", "rgba(15,4,8,0.72)"]}
-          style={styles.heroOverlay}
-        />
+        <View style={[styles.heroAvatar, { backgroundColor: encuentro.guia.avatarColor }]}>
+          <Text style={styles.heroAvatarText}>{encuentro.guia.iniciales}</Text>
+        </View>
+        <Text style={styles.heroGuideName} numberOfLines={1}>{encuentro.guia.nombre}</Text>
+        <Text style={styles.heroGuideCount}>{encuentro.guia.encuentros} encuentros</Text>
       </Pressable>
 
       {/* Contenido */}
@@ -86,7 +85,7 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "rgba(255,255,255,0.075)",
+    backgroundColor: "rgba(255,255,255,0.03)",
     borderRadius: 18,
     overflow: "hidden",
     borderWidth: 1,
@@ -95,18 +94,37 @@ const styles = StyleSheet.create({
   heroWrap: {
     width: "100%",
     height: 200,
-    position: "relative",
+    backgroundColor: "#EDE8DF",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
   },
-  heroImage: {
-    width: "100%",
-    height: "100%",
+  heroAvatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  heroOverlay: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 60,
+  heroAvatarText: {
+    color: "#fff",
+    fontSize: 26,
+    fontFamily: "Manrope",
+    fontWeight: "700",
+  },
+  heroGuideName: {
+    color: "#1A1025",
+    fontSize: 15,
+    fontFamily: "Manrope",
+    fontWeight: "700",
+    textAlign: "center",
+    paddingHorizontal: 16,
+  },
+  heroGuideCount: {
+    color: "rgba(26,16,37,0.5)",
+    fontSize: 12,
+    fontFamily: "Manrope",
+    fontWeight: "500",
   },
   body: {
     padding: 16,
