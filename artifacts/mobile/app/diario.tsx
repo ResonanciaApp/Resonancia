@@ -259,5 +259,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#8E37D7",
   },
-  addBtnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: "#1B060F" },
+  addBtnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: "#f9f9f9" },
 });
