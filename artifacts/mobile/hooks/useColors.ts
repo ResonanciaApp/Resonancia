@@ -15,7 +15,8 @@ export function useColors() {
       : colors.light;
 
   const { activeSceneId } = useSceneTheme();
-  const primary = activeSceneId === "tibet" ? "#F9F9F9" : palette.primary;
+  const primary =
+    activeSceneId === "tibet" || activeSceneId === "indigo" ? "#F9F9F9" : palette.primary;
 
   return { ...palette, primary, radius: colors.radius };
 }
