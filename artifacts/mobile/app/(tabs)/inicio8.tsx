@@ -356,7 +356,7 @@ export default function HomeScreen2() {
   const { open: openDrawer } = useDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const cardBg = activeSceneId === "indigo"
-    ? "rgba(255,255,255,0.03)"
+    ? "rgba(255,255,255,0.037)"
     : activeSceneId === "profundo"
       ? "rgba(255,255,255,0.06)"
       : "rgba(255,255,255,0.07)";
