@@ -196,7 +196,7 @@ function NavTabChip({ sel, label, icon, iconSel, onPress }: { sel: boolean; labe
     >
       <Animated.View style={[StyleSheet.absoluteFill, { opacity: selOpacity }]}>
         <LinearGradient
-          colors={["#dad4ec", "#f3e7e9"]}
+          colors={["#884D80", "#884D80"]}
           start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
         />

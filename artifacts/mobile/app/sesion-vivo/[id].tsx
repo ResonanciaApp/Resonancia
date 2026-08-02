@@ -312,7 +312,7 @@ export default function SesionVivoScreen() {
             disabled={savingRating}
           >
             <LinearGradient
-              colors={["#dad4ec", "#f3e7e9"]}
+              colors={["#884D80", "#884D80"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={StyleSheet.absoluteFill}
@@ -504,7 +504,7 @@ export default function SesionVivoScreen() {
               disabled={openingRoom}
             >
               <LinearGradient
-                colors={["#dad4ec", "#f3e7e9"]}
+                colors={["#884D80", "#884D80"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={StyleSheet.absoluteFill}

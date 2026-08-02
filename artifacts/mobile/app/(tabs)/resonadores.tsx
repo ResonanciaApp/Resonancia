@@ -50,7 +50,7 @@ function ResoChip({ label, sel, onPress }: { label: string; sel: boolean; onPres
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
       {sel && (
         <LinearGradient
-          colors={["#dad4ec", "#f3e7e9"]}
+          colors={["#884D80", "#884D80"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={StyleSheet.absoluteFill}
@@ -532,7 +532,7 @@ export default function ResonadoresScreen() {
               >
                 {isActive && (
                   <LinearGradient
-                    colors={["#dad4ec", "#f3e7e9"]}
+                    colors={["#884D80", "#884D80"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                     style={StyleSheet.absoluteFill}
