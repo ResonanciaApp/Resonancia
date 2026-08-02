@@ -196,7 +196,6 @@ export default function DiarioScreen() {
             { overflow: "hidden", opacity: pressed ? 0.85 : 1 },
           ]}
         >
-          <LinearGradient colors={["#2CD8D5", "#8E37D7"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
           <Text style={styles.addBtnText}>Añade entrada</Text>
         </Pressable>
       </View>
@@ -258,6 +257,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#8E37D7",
   },
   addBtnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: "#1B060F" },
 });
