@@ -1958,7 +1958,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: H_PAD,
     top: 0,
-    marginTop: 36,
+    marginTop: 38,
     zIndex: 3,
     height: 48,
     paddingHorizontal: 10,
