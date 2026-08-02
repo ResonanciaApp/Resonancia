@@ -3,7 +3,6 @@ import { GhostPill } from "@/components/GhostPill";
 import { router, useFocusEffect } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { LinearGradient } from "expo-linear-gradient";
-import { ListenGoldFill } from "@/components/GoldGradient";
 import React, { useCallback } from "react";
 import {
   Alert,
@@ -197,7 +196,7 @@ export default function DiarioScreen() {
             { overflow: "hidden", opacity: pressed ? 0.85 : 1 },
           ]}
         >
-          <ListenGoldFill />
+          <LinearGradient colors={["#a1c4fd", "#c2e9fb"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
           <Text style={styles.addBtnText}>Añade entrada</Text>
         </Pressable>
       </View>
