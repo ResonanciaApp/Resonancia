@@ -458,10 +458,9 @@ export default function SessionDetailScreen() {
                 onPress={handleShare}
                 style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, marginBottom: 26 })}
               >
-                <View style={[styles.shareBtnInner, { borderWidth: 0, overflow: "hidden" }]}>
-                  <LinearGradient colors={["#715dd3", "#8769e9", "#7148b5"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
-                  <Text style={[styles.shareBtnText, { color: "#ffffff" }]}>Compartir</Text>
-                  <Feather name="send" size={15} color="#ffffff" />
+                <View style={[styles.shareBtnInner, { borderColor: accentColor }]}>
+                  <Text style={[styles.shareBtnText, { color: accentColor }]}>Compartir</Text>
+                  <Feather name="send" size={15} color={accentColor} />
                 </View>
               </Pressable>
             </>
@@ -493,10 +492,9 @@ export default function SessionDetailScreen() {
                 onPress={handleShare}
                 style={({ pressed }) => ({ flex: 1, opacity: pressed ? 0.75 : 1 })}
               >
-                <View style={[styles.shareBtnInner, { flex: 1, borderWidth: 0, overflow: "hidden" }]}>
-                  <LinearGradient colors={["#715dd3", "#8769e9", "#7148b5"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
-                  <Text style={[styles.shareBtnText, { color: "#ffffff" }]}>Compartir</Text>
-                  <Feather name="send" size={15} color="#ffffff" />
+                <View style={[styles.shareBtnInner, { borderColor: accentColor, flex: 1 }]}>
+                  <Text style={[styles.shareBtnText, { color: accentColor }]}>Compartir</Text>
+                  <Feather name="send" size={15} color={accentColor} />
                 </View>
               </Pressable>
             </View>
