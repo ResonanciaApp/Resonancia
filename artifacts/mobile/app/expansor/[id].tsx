@@ -65,7 +65,7 @@ export default function ExpansorScreen() {
           onPress={() => router.push(`/expansor-perfil/${id}` as never)}
           style={({ pressed }) => [styles.verPerfilBtn, { opacity: pressed ? 0.7 : 1 }]}
         >
-          <Feather name="user" size={13} color="#F7CB6B" />
+          <Feather name="user" size={13} color="#dad4ec" />
           <Text style={styles.verPerfilText}>Ver perfil</Text>
         </Pressable>
       </View>
@@ -136,7 +136,7 @@ export default function ExpansorScreen() {
                   onPress={() => Linking.openURL(link.url)}
                   style={({ pressed }) => [styles.linkBtn, { opacity: pressed ? 0.7 : 1 }]}
                 >
-                  <Feather name="external-link" size={13} color="#F7CB6B" />
+                  <Feather name="external-link" size={13} color="#dad4ec" />
                   <Text style={styles.linkLabel}>{link.label}</Text>
                 </Pressable>
               ))}
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.25)",
   },
-  verPerfilText: { fontFamily: "Manrope", fontSize: 13, color: "#F7CB6B", fontWeight: "600" },
+  verPerfilText: { fontFamily: "Manrope", fontSize: 13, color: "#dad4ec", fontWeight: "600" },
   backBtn: {
     width: 38,
     height: 38,
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 4,
     right: 4,
-    backgroundColor: "#F7CB6B",
+    backgroundColor: "#dad4ec",
     borderRadius: 99,
     width: 22,
     height: 22,
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 5,
   },
-  certLabel: { fontFamily: "Manrope", fontSize: 12, color: "#F7CB6B", fontWeight: "600" },
+  certLabel: { fontFamily: "Manrope", fontSize: 12, color: "#dad4ec", fontWeight: "600" },
   locationRow: { flexDirection: "row", alignItems: "center", gap: 5, marginTop: 2 },
   location: { fontFamily: "Manrope", fontSize: 13, color: "#F4F4F4" },
 
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.25)",
   },
-  linkLabel: { fontFamily: "Manrope", fontSize: 13, color: "#F7CB6B", fontWeight: "600" },
+  linkLabel: { fontFamily: "Manrope", fontSize: 13, color: "#dad4ec", fontWeight: "600" },
 
   certCard: {
     borderRadius: 14,
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.20)",
     marginBottom: 8,
   },
-  certCardStar: { fontFamily: "Manrope", fontSize: 20, color: "#F7CB6B", marginTop: 2 },
-  certCardTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", color: "#F7CB6B", marginBottom: 4 },
+  certCardStar: { fontFamily: "Manrope", fontSize: 20, color: "#dad4ec", marginTop: 2 },
+  certCardTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", color: "#dad4ec", marginBottom: 4 },
   certCardSub: { fontFamily: "Manrope", fontSize: 12, color: "#F4F4F4", lineHeight: 18 },
 });

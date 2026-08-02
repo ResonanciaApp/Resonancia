@@ -8,7 +8,7 @@ import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "re
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { usePlayer } from "@/context/PlayerContext";
 
-const GOLD = "#F7CB6B";
+const GOLD = "#dad4ec";
 
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
@@ -141,7 +141,7 @@ export function WeeklyStreakStrip() {
   const { statEvents } = usePlayer();
   const { theme } = useSceneTheme();
 
-  const streakBorderColors: [string, string] = ["#F7CB6B", "#FBA980"];
+  const streakBorderColors: [string, string] = ["#dad4ec", "#FBA980"];
 
   const { activeFlags, activeCount, todayIndex } = useMemo(() => {
     const byDay = minutesByDay(statEvents);
@@ -199,7 +199,7 @@ export function WeeklyStreakStrip() {
           <Svg width={RING_SIZE} height={RING_SIZE}>
             <Defs>
               <SvgLinearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
-                <Stop offset="0" stopColor="#F7CB6B" />
+                <Stop offset="0" stopColor="#dad4ec" />
                 <Stop offset="1" stopColor="#FBA980" />
               </SvgLinearGradient>
             </Defs>

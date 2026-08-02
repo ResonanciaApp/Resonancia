@@ -133,7 +133,7 @@ export default function ExpansorPerfilScreen() {
               style={styles.pillBtn}
               hitSlop={8}
             >
-              <Feather name="edit-2" size={17} color="#F7CB6B" />
+              <Feather name="edit-2" size={17} color="#dad4ec" />
             </Pressable>
           </GhostPill>
         ) : (
@@ -212,7 +212,7 @@ export default function ExpansorPerfilScreen() {
               >
                 {following && (
                   <LinearGradient
-                    colors={["#D6AD5F", "#B47344"]}
+                    colors={["#dad4ec", "#f3e7e9"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                     style={StyleSheet.absoluteFill}
@@ -292,7 +292,7 @@ export default function ExpansorPerfilScreen() {
                 <MaskedView
                   maskElement={<Text style={styles.certBannerTitle}>EXPANSOR</Text>}
                 >
-                  <LinearGradient colors={["#F7CB6B", "#FBA980"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+                  <LinearGradient colors={["#dad4ec", "#FBA980"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
                     <Text style={[styles.certBannerTitle, { opacity: 0 }]}>EXPANSOR</Text>
                   </LinearGradient>
                 </MaskedView>
@@ -346,7 +346,7 @@ export default function ExpansorPerfilScreen() {
                     <Feather
                       name={descExpanded ? "chevron-up" : "chevron-down"}
                       size={13}
-                      color="#F7CB6B"
+                      color="#dad4ec"
                     />
                   </Pressable>
                 )}
@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: "#F7CB6B",
+    backgroundColor: "#dad4ec",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
@@ -598,7 +598,7 @@ const styles = StyleSheet.create({
   },
   certBannerTitle: {
     fontFamily: "Manrope",
-    fontSize: 14, fontWeight: "800", letterSpacing: 0.6, color: "#F7CB6B",
+    fontSize: 14, fontWeight: "800", letterSpacing: 0.6, color: "#dad4ec",
   },
   certBannerSub: {
     fontFamily: "Manrope",
@@ -656,7 +656,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
-    color: "#F7CB6B",
+    color: "#dad4ec",
   },
   specialtyWrap: { flexDirection: "row", gap: 8, alignItems: "center" },
   specialtyChip: {

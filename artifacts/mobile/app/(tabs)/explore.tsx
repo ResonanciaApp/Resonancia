@@ -194,7 +194,7 @@ function SearchOverlay({ visible, onClose }: { visible: boolean; onClose: () => 
         {/* Placeholder vacío */}
         {q.length === 0 && kbReady && (
           <Animated.View style={[srStyles.empty, { opacity: fadeAnim }]}>
-            <Feather name="headphones" size={48} color="#F7CB6B" style={{ marginBottom: 16 }} />
+            <Feather name="headphones" size={48} color="#dad4ec" style={{ marginBottom: 16 }} />
             <Text style={srStyles.emptyTitle}>Encuentra tus sesiones favoritas</Text>
             <Text style={srStyles.emptySub}>Busca meditaciones, sonidos, historias…</Text>
           </Animated.View>
@@ -249,7 +249,7 @@ const srStyles = StyleSheet.create({
   bar:         { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.09)", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 11, borderWidth: 1, borderColor: "#ffffff" },
   input:       { fontFamily: "Manrope", flex: 1, fontSize: 14, color: "#FBFBFB" },
   cancel:      { paddingVertical: 6 },
-  cancelText:  { fontFamily: "Manrope", color: "#F7CB6B", fontSize: 14, fontWeight: "600" },
+  cancelText:  { fontFamily: "Manrope", color: "#dad4ec", fontSize: 14, fontWeight: "600" },
   empty:       { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, paddingTop: 60 },
   emptyTitle:  { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#FBFBFB", textAlign: "center", marginBottom: 10 },
   emptySub:    { fontFamily: "Manrope", fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },
@@ -561,7 +561,7 @@ export default function ExploreScreen() {
                 />
                 {s.isPremium && (
                   <View style={styles.premiumBadge}>
-                    <Feather name="star" size={10} color="#F7CB6B" />
+                    <Feather name="star" size={10} color="#dad4ec" />
                   </View>
                 )}
               </View>
@@ -730,8 +730,8 @@ export default function ExploreScreen() {
                     <Stop offset="100%" stopColor="#60A186" stopOpacity={0} />
                   </RadialGradient>
                   <RadialGradient id="aurPlexo" cx="50%" cy="50%" r="50%">
-                    <Stop offset="0%" stopColor="#DFC26B" stopOpacity={0.17} />
-                    <Stop offset="100%" stopColor="#DFC26B" stopOpacity={0} />
+                    <Stop offset="0%" stopColor="#dad4ec" stopOpacity={0.17} />
+                    <Stop offset="100%" stopColor="#dad4ec" stopOpacity={0} />
                   </RadialGradient>
                   <RadialGradient id="aurSacro" cx="50%" cy="50%" r="50%">
                     <Stop offset="0%" stopColor="#DE9363" stopOpacity={0.17} />
@@ -875,7 +875,7 @@ export default function ExploreScreen() {
                     style={{
                       width: 148,
                       height: 70,
-                      backgroundColor: "rgba(247,203,107,0.05)",
+                      backgroundColor: "rgba(218,212,236,0.05)",
                       borderRadius: 12,
                       borderWidth: 2,
                       borderColor: "rgba(255,255,255,0.7)",

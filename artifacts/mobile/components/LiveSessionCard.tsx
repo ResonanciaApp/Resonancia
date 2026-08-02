@@ -8,7 +8,7 @@ import { type LiveSessionItem, canEnterLiveSession, formatLiveSessionDate } from
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
 const WARM_BLACK = "#1B060F";
-const PRIMARY_GOLD = "#F7CB6B";
+const PRIMARY_GOLD = "#dad4ec";
 const ACCENT_GOLD = "#FBA980";
 const FOREGROUND = "#FFFFFF";
 const MUTED = "#F4F4F4";
@@ -87,7 +87,7 @@ export function LiveSessionCard({ session, onEnter }: Props) {
           {canEnter ? (
             <>
               <LinearGradient
-                colors={["#D6AD5F", "#B47344"]}
+                colors={["#dad4ec", "#f3e7e9"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={StyleSheet.absoluteFill}

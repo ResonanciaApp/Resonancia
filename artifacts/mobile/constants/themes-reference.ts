@@ -16,7 +16,7 @@ export const THEME_A = {
   colors: {
     background:          "#070E09",
     card:                "#111E16",
-    primary:             "#F7CB6B",
+    primary:             "#dad4ec",
     primaryForeground:   "#070E09",
     foreground:          "#C8C1B5",
     cardForeground:      "#C8C1B5",
@@ -52,21 +52,21 @@ export const THEME_A = {
     historyIcon:   "#8AB894",
     modules: {
       misReflexiones: { accentColor: "#8AAAD4" },
-      ideasBrillantes: { accentColor: "#F0CC82" },
+      ideasBrillantes: { accentColor: "#dad4ec" },
     },
   },
 
   // ── components/MensajesAnonimosPanel.tsx ────────────────────────────────
   mensajesDelAlma: {
     gradient:           ["#5C1A3A", "#3A0D22"] as [string, string],  // rosa/púrpura
-    headerTitle:        "#C8A860",
+    headerTitle:        "#dad4ec",
     headerSubtitle:     "rgba(200,168,96,0.65)",
     cycleBadgeBg:       "rgba(212,175,55,0.18)",
-    cycleBadgeText:     "#C8A860",
-    clockIcon:          "#C8A860",
+    cycleBadgeText:     "#dad4ec",
+    clockIcon:          "#dad4ec",
     infoIcon:           "rgba(200,168,96,0.7)",
     iconBg:             "rgba(212,175,55,0.22)",
-    mainIcon:           "#F7CB6B",
+    mainIcon:           "#dad4ec",
   },
 
   // ── data/categories.ts — 3 Minutos de Sabiduría ─────────────────────────
@@ -91,7 +91,7 @@ export const THEME_B = {
   colors: {
     background:          "#070E09",
     card:                "#1A2A1E",
-    primary:             "#F7CB6B",
+    primary:             "#dad4ec",
     primaryForeground:   "#070E09",
     foreground:          "#C8C1B5",
     cardForeground:      "#C8C1B5",
@@ -130,7 +130,7 @@ export const THEME_B = {
     historyIcon:   "rgba(237,225,211,0.6)",
     modules: {
       misReflexiones:  { accentColor: "#8AAAD4" },
-      ideasBrillantes: { accentColor: "#F0CC82" },
+      ideasBrillantes: { accentColor: "#dad4ec" },
     },
     // sin borderWidth (bordes quitados en todos los módulos)
   },
@@ -146,7 +146,7 @@ export const THEME_B = {
     infoIcon:       "rgba(237,225,211,0.45)",
     iconBg:         "rgba(138,184,148,0.18)",
     mainIcon:       "#FFFFFF",        // ícono de personas — blanco
-    editIcon:       "#C8A860",        // lápiz estado vacío — dorado
+    editIcon:       "#dad4ec",        // lápiz estado vacío — dorado
     toggleChevron:  "#FFFFFF",        // flecha abrir/cerrar — blanca
   },
 

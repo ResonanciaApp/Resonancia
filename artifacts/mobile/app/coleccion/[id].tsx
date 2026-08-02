@@ -30,7 +30,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 const { width } = Dimensions.get("window");
 const SAVED_KEY = "@resonance_saved_colecciones";
 
-const GOLD = "#F7CB6B";
+const GOLD = "#dad4ec";
 const FG = "#FAF0EE";
 const MUTED = "#c2c2c2";
 

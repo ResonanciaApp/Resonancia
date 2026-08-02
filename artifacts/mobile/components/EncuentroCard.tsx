@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "rgba(247,203,107,0.12)",
+    borderColor: "rgba(218,212,236,0.12)",
   },
   heroWrap: {
     width: "100%",

@@ -48,7 +48,7 @@ export const GEOMETRIX_PRESETS: GeometrixCreation[] = [
     },
     settings: {
       "flor-vida": defaultGeo({
-        color: "#F7CB6B",
+        color: "#dad4ec",
         gradientId: "dorado-rosa",
         rotate: true,
         rotateSpeed: 0.28,

@@ -16,7 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { Encuentro } from "@/data/encuentros";
 
 const STORAGE_KEY = "@cal_encuentros_v2";
-const GOLD = "#F7CB6B";
+const GOLD = "#dad4ec";
 const WARM_BLACK = "#1B060F";
 
 type CalState = "idle" | "loading" | "done" | "error";
@@ -50,7 +50,7 @@ function PhoneMockup({ titulo, horaTexto }: { titulo: string; horaTexto: string 
           {/* App icon */}
           <View style={phone.appIcon}>
             <LinearGradient
-              colors={["#F7CB6B", "#FBA980"]}
+              colors={["#dad4ec", "#FBA980"]}
               style={phone.appIconGrad}
             >
               <Text style={phone.appIconText}>R</Text>
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 24,
     borderTopWidth: 1,
-    borderColor: "rgba(247,203,107,0.12)",
+    borderColor: "rgba(218,212,236,0.12)",
     alignItems: "center",
   },
   closeBtn: {

@@ -60,7 +60,7 @@ export default function CommunityMixScreen() {
   const { isSignedIn } = useAuth();
   const { photoUri } = useUserProfile();
   const { isPlaying, togglePlay, loadedPresetId, stopAll } = useMixer();
-  const accentColor = "rgb(247,203,107)";
+  const accentColor = "rgb(218,212,236)";
 
   useEffect(() => () => { stopAll(); }, []);
   const loadMix = useLoadMix();
@@ -303,7 +303,7 @@ export default function CommunityMixScreen() {
 
           {/* Categoría + título */}
           {categoryMeta && (
-            <Text style={[styles.category, { color: "#F7CB6B" }]}>
+            <Text style={[styles.category, { color: "#dad4ec" }]}>
               {categoryMeta.label.toUpperCase()}
             </Text>
           )}
@@ -358,7 +358,7 @@ export default function CommunityMixScreen() {
               ]}
             >
               <LinearGradient
-                colors={["#D6A45C", "#F7CB6B"]}
+                colors={["#dad4ec", "#f3e7e9"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 0, y: 1 }}
                 style={StyleSheet.absoluteFill}
@@ -417,7 +417,7 @@ export default function CommunityMixScreen() {
               disabled={!draft.trim() || addComment.isPending}
               style={{ opacity: draft.trim() && !addComment.isPending ? 1 : 0.3, padding: 4 }}
             >
-              <Feather name="corner-down-left" size={20} color="#F7CB6B" />
+              <Feather name="corner-down-left" size={20} color="#dad4ec" />
             </Pressable>
           </View>
 
@@ -512,7 +512,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 10,
     borderRadius: 30,
-    shadowColor: "#F7CB6B",
+    shadowColor: "#dad4ec",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,

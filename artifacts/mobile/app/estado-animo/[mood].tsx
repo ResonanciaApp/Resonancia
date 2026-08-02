@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 15,
     fontWeight: "600",
-    color: "#F7CB6B",
+    color: "#dad4ec",
   },
   chipClose: {
     marginLeft: 2,

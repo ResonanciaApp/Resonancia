@@ -27,7 +27,7 @@ const H_PAD = 20;
 const { width: W } = Dimensions.get("window");
 const cardW = (W - H_PAD * 2 - 20) / 2;
 const RECENT_CARD_W = Math.round((W - H_PAD * 2) / 1.85);
-const GOLD  = "#F7CB6B";
+const GOLD  = "#dad4ec";
 const TEXT  = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
@@ -415,8 +415,8 @@ export default function MeditacionesGuiadasScreen() {
             onPress={() => setAllVisible(true)}
             style={({ pressed }) => [{ flexDirection: "row", alignItems: "center", justifyContent: "center", paddingVertical: 18, gap: 6, marginTop: 4, opacity: pressed ? 0.7 : 1 }]}
           >
-            <Text style={{ fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#F7CB6B" }}>Todas las Meditaciones</Text>
-            <Feather name="chevron-right" size={16} color="#F7CB6B" />
+            <Text style={{ fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#dad4ec" }}>Todas las Meditaciones</Text>
+            <Feather name="chevron-right" size={16} color="#dad4ec" />
           </Pressable>
         )}
         {activeTab !== null && (

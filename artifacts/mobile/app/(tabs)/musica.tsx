@@ -64,7 +64,7 @@ const CARD_W   = Math.floor((SCREEN_W - 28 - 40) / 3); // padding 14×2 + gaps 2
 const IMG_SIZE  = Math.floor(CARD_W * 0.75) - 5;
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
-const GOLD  = "#F7CB6B";
+const GOLD  = "#dad4ec";
 const DARK  = "#1A1E2B";
 const MUTED = "#6B7A96";
 

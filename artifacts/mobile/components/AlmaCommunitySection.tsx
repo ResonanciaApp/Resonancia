@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 14,
     fontWeight: "700",
-    color: "#F7CB6B",
+    color: "#dad4ec",
   },
   msgBody: { flex: 1 },
   msgAuthor: { fontFamily: "Manrope", fontSize: 11, fontWeight: "600", marginBottom: 3, opacity: 0.75 },

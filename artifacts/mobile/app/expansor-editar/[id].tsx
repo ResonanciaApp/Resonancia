@@ -30,7 +30,7 @@ import {
 import { useColors } from "@/hooks/useColors";
 
 const H_PAD = 20;
-const GOLD = "#F7CB6B";
+const GOLD = "#dad4ec";
 const FG = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.50)";
 const CARD_BG = "rgba(74,12,12,0.12)";

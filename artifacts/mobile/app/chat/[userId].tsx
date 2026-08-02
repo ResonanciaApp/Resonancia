@@ -638,7 +638,7 @@ export default function ChatScreen() {
                 </Text>
               </View>
               <Pressable onPress={sendRecording} style={styles.sendBtn}>
-                <LinearGradient colors={["#F7CB6B", "#FBA980"]} style={styles.sendGrad}>
+                <LinearGradient colors={["#dad4ec", "#FBA980"]} style={styles.sendGrad}>
                   <Feather name="send" size={16} color="#1B060F" />
                 </LinearGradient>
               </Pressable>
@@ -677,7 +677,7 @@ export default function ChatScreen() {
                 disabled={draft.trim().length === 0 || sendMsg.isPending}
                 style={[styles.sendBtn, { opacity: draft.trim().length === 0 ? 0.5 : 1 }]}
               >
-                <LinearGradient colors={["#F7CB6B", "#FBA980"]} style={styles.sendGrad}>
+                <LinearGradient colors={["#dad4ec", "#FBA980"]} style={styles.sendGrad}>
                   <Feather name="send" size={16} color="#1B060F" />
                 </LinearGradient>
               </Pressable>
@@ -848,7 +848,7 @@ function MessageBubble({
           <Feather
             name={message.readAt ? "check-circle" : "check"}
             size={11}
-            color={message.readAt ? "#F7CB6B" : "#F4F4F4"}
+            color={message.readAt ? "#dad4ec" : "#F4F4F4"}
           />
           <Text style={[styles.readText, { color: "#F4F4F4" }]}>
             {message.readAt ? "Visto" : "Enviado"}

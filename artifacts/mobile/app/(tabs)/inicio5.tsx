@@ -171,7 +171,7 @@ function NavTabChip({ sel, label, icon, iconSel, onPress }: { sel: boolean; labe
     >
       <Animated.View style={[StyleSheet.absoluteFill, { opacity: selOpacity }]}>
         <LinearGradient
-          colors={["#D6A45C", "#F7CB6B"]}
+          colors={["#dad4ec", "#f3e7e9"]}
           start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
@@ -864,7 +864,7 @@ export default function HomeScreen2() {
                 onPress={() => router.push("/mis-sesiones" as never)}
                 hitSlop={8}
               >
-                <Text style={{ color: "#F7CB6B", fontSize: 13, fontFamily: "Manrope" }}>
+                <Text style={{ color: "#dad4ec", fontSize: 13, fontFamily: "Manrope" }}>
                   Ver todas
                 </Text>
               </Pressable>
@@ -905,7 +905,7 @@ export default function HomeScreen2() {
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.07)", borderRadius: 14, borderWidth: 1, borderColor: "rgba(255,255,255,0.22)" }]} />
             <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
               <LinearGradient
-                colors={["rgb(247,203,107)", "rgb(251,169,128)"]}
+                colors={["rgb(218,212,236)", "rgb(251,169,128)"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={{ width: 44, height: 44, borderRadius: 15, alignItems: "center", justifyContent: "center" }}
@@ -1009,7 +1009,7 @@ export default function HomeScreen2() {
                   }
                 >
                   <LinearGradient
-                    colors={["#F7CB6B", "#FBA980"]}
+                    colors={["#dad4ec", "#FBA980"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={{ width: 34, height: 34 }}
@@ -1156,7 +1156,7 @@ export default function HomeScreen2() {
                 <Text style={styles.premSub}>Desbloquea todo el contenido</Text>
               </View>
               <View style={styles.premChevron}>
-                <Feather name="chevron-right" size={14} color="#F7CB6B" />
+                <Feather name="chevron-right" size={14} color="#dad4ec" />
               </View>
             </Pressable>
           </View>
@@ -1369,7 +1369,7 @@ const styles = StyleSheet.create({
     width: 2,
     height: 26,
     borderRadius: 1,
-    backgroundColor: "#F7CB6B",
+    backgroundColor: "#dad4ec",
     marginRight: 6,
   },
   intencionText: {
@@ -1558,7 +1558,7 @@ const styles = StyleSheet.create({
   },
   avatarInitialText: {
     fontFamily: "Manrope",
-    color: "#F7CB6B",
+    color: "#dad4ec",
     fontSize: 14,
     fontWeight: "700",
     letterSpacing: 0.3,

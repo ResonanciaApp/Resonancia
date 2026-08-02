@@ -56,7 +56,7 @@ try {
 // ── Paleta (coherente con el resto de la app) ─────────────────────────────────
 const WARM_BLACK = "#1B060F";
 const BURGUNDY_MID = "#4A0C0C";
-const PRIMARY_GOLD = "#F7CB6B";
+const PRIMARY_GOLD = "#dad4ec";
 const ACCENT_GOLD = "#FBA980";
 const FOREGROUND = "#FFFFFF";
 const MUTED = "#F4F4F4";
@@ -312,7 +312,7 @@ export default function SesionVivoScreen() {
             disabled={savingRating}
           >
             <LinearGradient
-              colors={["#D6AD5F", "#B47344"]}
+              colors={["#dad4ec", "#f3e7e9"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={StyleSheet.absoluteFill}
@@ -504,7 +504,7 @@ export default function SesionVivoScreen() {
               disabled={openingRoom}
             >
               <LinearGradient
-                colors={["#D6AD5F", "#B47344"]}
+                colors={["#dad4ec", "#f3e7e9"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={StyleSheet.absoluteFill}

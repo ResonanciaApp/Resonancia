@@ -55,7 +55,7 @@ import { FavoriteActionsSheet } from "@/components/FavoriteActionsSheet";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
-const GOLD = "#F7CB6B";
+const GOLD = "#dad4ec";
 const NAVY = "#210911";
 const DARK_BLUE = "#210911";
 const TEXT = "#FBFBFB";
@@ -568,7 +568,7 @@ const blStyles = StyleSheet.create({
   bar:          { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: "rgba(255,255,255,0.09)", borderRadius: 12, paddingHorizontal: 12, paddingVertical: 11 },
   input:        { fontFamily: "Manrope", flex: 1, fontSize: 14, color: "#FBFBFB" },
   cancel:       { paddingVertical: 6 },
-  cancelText:   { fontFamily: "Manrope", color: "#F7CB6B", fontSize: 14, fontWeight: "600" },
+  cancelText:   { fontFamily: "Manrope", color: "#dad4ec", fontSize: 14, fontWeight: "600" },
   empty:        { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, paddingTop: 60 },
   emptyTitle:   { fontFamily: "Manrope", fontSize: 18, fontWeight: "700", color: "#FBFBFB", textAlign: "center", marginBottom: 10 },
   emptySub:     { fontFamily: "Manrope", fontSize: 14, color: "rgba(242,231,228,0.45)", textAlign: "center", lineHeight: 20 },

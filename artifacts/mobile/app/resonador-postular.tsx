@@ -24,7 +24,7 @@ import { uploadLocalFile } from "@/lib/upload";
 import type { ResonadorSubtipo } from "@/data/resonadores";
 
 const BG_GRADIENT = ["#340D1A", "#190913"] as const;
-const GOLD = "#F7CB6B";
+const GOLD = "#dad4ec";
 const APORTE_OPTIONS: ResonadorSubtipo[] = ["Voz guía", "Sonoterapeuta", "Músico", "Productor"];
 
 interface PickedAudio {
@@ -271,7 +271,7 @@ export default function ResonadorPostularScreen() {
             style={({ pressed }) => [styles.submitBtn, { opacity: pressed || busy ? 0.85 : 1 }]}
           >
             <LinearGradient
-              colors={["#D6AD5F", "#B47344"]}
+              colors={["#dad4ec", "#f3e7e9"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={StyleSheet.absoluteFill}

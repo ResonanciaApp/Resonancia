@@ -12,10 +12,10 @@ import { type DiarioEntry, type DiarioSection } from "@/hooks/useDiario";
 const FAV_KEY = "@diario_favorites";
 
 const SECTION_META: Record<DiarioSection, { title: string; accentColor: string }> = {
-  aprendizaje: { title: "Qué aprendí hoy",         accentColor: "#F7CB6B" },
+  aprendizaje: { title: "Qué aprendí hoy",         accentColor: "#dad4ec" },
   suenos:      { title: "Materializo mis sueños",   accentColor: "#E0B882" },
-  reflexiones: { title: "Mis reflexiones",          accentColor: "#D6A85B" },
-  ideas:       { title: "Ideas Brillantes",         accentColor: "#D6A85B" },
+  reflexiones: { title: "Mis reflexiones",          accentColor: "#dad4ec" },
+  ideas:       { title: "Ideas Brillantes",         accentColor: "#dad4ec" },
 };
 
 export type FavoriteDiarioEntry = DiarioEntry & {

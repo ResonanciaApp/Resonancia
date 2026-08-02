@@ -196,7 +196,7 @@ function NavTabChip({ sel, label, icon, iconSel, onPress }: { sel: boolean; labe
     >
       <Animated.View style={[StyleSheet.absoluteFill, { opacity: selOpacity }]}>
         <LinearGradient
-          colors={["#D6A45C", "#F7CB6B"]}
+          colors={["#dad4ec", "#f3e7e9"]}
           start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
@@ -1067,7 +1067,7 @@ export default function HomeScreen2() {
                 onPress={() => router.push("/mis-sesiones" as never)}
                 hitSlop={8}
               >
-                <Text style={{ color: "#F7CB6B", fontSize: 13, fontFamily: "Manrope" }}>
+                <Text style={{ color: "#dad4ec", fontSize: 13, fontFamily: "Manrope" }}>
                   Ver todas
                 </Text>
               </Pressable>
@@ -1128,7 +1128,7 @@ export default function HomeScreen2() {
                   overflow: "hidden" as const,
                   opacity: pressed ? 0.75 : 1,
                   borderWidth: activeSceneId === "indigo" ? 0 : 1,
-                  borderColor: "rgba(247,203,107,0.1)",
+                  borderColor: "rgba(218,212,236,0.1)",
                   ...corners[i],
                 }]}
               >
@@ -1398,7 +1398,7 @@ export default function HomeScreen2() {
           <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: GRID_PAD, marginBottom: 16 }}>
             <Text style={[styles.sectionTitle, { flex: 1, marginBottom: 0 }]}>Los Resonadores</Text>
             <Pressable onPress={() => router.push("/resonadores" as never)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F7CB6B" }}>Ver todos</Text>
+              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#dad4ec" }}>Ver todos</Text>
             </Pressable>
           </View>
           <ScrollView
@@ -1413,7 +1413,7 @@ export default function HomeScreen2() {
                 onPress={() => router.push(`/resonador/${r.id}` as never)}
                 style={({ pressed }) => ({ alignItems: "center", opacity: pressed ? 0.75 : 1, width: 120 })}
               >
-                <View style={{ width: 102, height: 102, borderRadius: 51, overflow: "hidden", borderWidth: 1.5, borderColor: "rgba(247,203,107,0.35)", marginBottom: 12 }}>
+                <View style={{ width: 102, height: 102, borderRadius: 51, overflow: "hidden", borderWidth: 1.5, borderColor: "rgba(218,212,236,0.35)", marginBottom: 12 }}>
                   <ExpoImage
                     source={r.photo}
                     style={{ width: 102, height: 102 }}
@@ -1459,7 +1459,7 @@ export default function HomeScreen2() {
                 <Text style={styles.premSub}>Desbloquea todo el contenido</Text>
               </View>
               <View style={styles.premChevron}>
-                <Feather name="chevron-right" size={14} color="#F7CB6B" />
+                <Feather name="chevron-right" size={14} color="#dad4ec" />
               </View>
             </Pressable>
           </View>
@@ -1638,7 +1638,7 @@ const styles = StyleSheet.create({
     width: 2,
     height: 26,
     borderRadius: 1,
-    backgroundColor: "#F7CB6B",
+    backgroundColor: "#dad4ec",
     marginRight: 6,
   },
   intencionText: {
@@ -1827,7 +1827,7 @@ const styles = StyleSheet.create({
   },
   avatarInitialText: {
     fontFamily: "Manrope",
-    color: "#F7CB6B",
+    color: "#dad4ec",
     fontSize: 14,
     fontWeight: "700",
     letterSpacing: 0.3,

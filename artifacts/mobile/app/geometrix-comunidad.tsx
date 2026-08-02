@@ -124,7 +124,7 @@ function GlyphLayer({
     <Animated.View style={[StyleSheet.absoluteFill, styles.layerCenter, aStyle]} pointerEvents="none">
       <SacredGlyph
         id={id}
-        color={settings.color ?? "#F7CB6B"}
+        color={settings.color ?? "#dad4ec"}
         gradient={gradientColors(settings.gradientId ?? null)}
         size={glyphSize}
         strokeWidth={1 + (settings.thickness ?? 0.5) * 2}
@@ -274,7 +274,7 @@ export default function GeometrixComunidadScreen() {
         }}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor="#F7CB6B" />
+          <RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor="#dad4ec" />
         }
       >
         {/* Header */}
@@ -307,7 +307,7 @@ export default function GeometrixComunidadScreen() {
         {/* Cargando */}
         {isLoading && (
           <View style={styles.centerState}>
-            <ActivityIndicator color="#F7CB6B" size="large" />
+            <ActivityIndicator color="#dad4ec" size="large" />
             <Text style={[styles.stateText, { color: "#a79fb8" }]}>Cargando…</Text>
           </View>
         )}
@@ -315,7 +315,7 @@ export default function GeometrixComunidadScreen() {
         {/* Empty state */}
         {!isLoading && glyphs.length === 0 && (
           <View style={styles.centerState}>
-            <Feather name="users" size={40} color="#F7CB6B" style={{ opacity: 0.4 }} />
+            <Feather name="users" size={40} color="#dad4ec" style={{ opacity: 0.4 }} />
             <Text style={[styles.stateTitle, { color: colors.foreground }]}>
               Todavía no hay composiciones
             </Text>
@@ -345,10 +345,10 @@ export default function GeometrixComunidadScreen() {
                       <Feather
                         name="heart"
                         size={13}
-                        color={g.likedByMe ? "#F7CB6B" : "rgba(250,240,238,0.5)"}
+                        color={g.likedByMe ? "#dad4ec" : "rgba(250,240,238,0.5)"}
                       />
                       {g.likes > 0 && (
-                        <Text style={[styles.likeCount, { color: g.likedByMe ? "#F7CB6B" : colors.mutedForeground }]}>
+                        <Text style={[styles.likeCount, { color: g.likedByMe ? "#dad4ec" : colors.mutedForeground }]}>
                           {g.likes}
                         </Text>
                       )}

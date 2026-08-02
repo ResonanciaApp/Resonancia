@@ -230,7 +230,7 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
                 value={videoEnabled}
                 onValueChange={setVideoEnabled}
                 disabled
-                trackColor={{ false: "#CCC", true: "#F7CB6B" }}
+                trackColor={{ false: "#CCC", true: "#dad4ec" }}
                 thumbColor="#FFF"
               />
             </View>
@@ -348,7 +348,7 @@ export function EscenasMixerContent({ onClose }: { onClose: () => void }) {
                 ]}
               >
                 {selectedId === previewScene.id && (
-                  <Feather name="check" size={17} color="#F7CB6B" style={{ marginRight: 6 }} />
+                  <Feather name="check" size={17} color="#dad4ec" style={{ marginRight: 6 }} />
                 )}
                 <Text style={[
                   styles.applyBtnText,
@@ -511,7 +511,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     borderRadius: 16,
     borderWidth: 3,
-    borderColor: "#F7CB6B",
+    borderColor: "#dad4ec",
   },
   activeOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -521,7 +521,7 @@ const styles = StyleSheet.create({
   },
   gradientFallback: { borderRadius: 14 },
   cardLabel: { fontFamily: "Manrope", marginTop: 6, fontSize: 11, color: "#555", fontWeight: "500", textAlign: "center" },
-  cardLabelActive: { fontFamily: "Manrope", color: "#F7CB6B", fontWeight: "700" },
+  cardLabelActive: { fontFamily: "Manrope", color: "#dad4ec", fontWeight: "700" },
 
   hint: {
     fontFamily: "Manrope",
@@ -640,8 +640,8 @@ const styles = StyleSheet.create({
   applyBtnActive: {
     backgroundColor: "rgba(212,175,55,0.15)",
     borderWidth: 1.5,
-    borderColor: "#F7CB6B",
+    borderColor: "#dad4ec",
   },
   applyBtnText: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: "#1A1A22" },
-  applyBtnTextActive: { color: "#F7CB6B" },
+  applyBtnTextActive: { color: "#dad4ec" },
 });

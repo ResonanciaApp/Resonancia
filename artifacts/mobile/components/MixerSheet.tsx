@@ -255,7 +255,7 @@ function DraggableTrackRow({
               accessibilityRole="button"
               accessibilityLabel="Respiración de volumen"
             >
-              <Feather name="activity" size={14} color={isBreathing ? "#F7CB6B" : palette.muted} />
+              <Feather name="activity" size={14} color={isBreathing ? "#dad4ec" : palette.muted} />
             </Pressable>
           </View>
         </View>
@@ -1251,7 +1251,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.06)",
   },
   breatheBtnActive: {
-    backgroundColor: "rgba(247,203,107,0.15)",
+    backgroundColor: "rgba(218,212,236,0.15)",
   },
   _reorderPill_unused: {
     flexDirection: "row",
@@ -1519,7 +1519,7 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   bgPresetCardSel: {
-    borderColor: "#F7CB6B",
+    borderColor: "#dad4ec",
   },
   bgPresetEmoji: {
     fontFamily: "Manrope",
@@ -1557,7 +1557,7 @@ const styles = StyleSheet.create({
   },
   bgPickerDoneText: {
     fontFamily: "Manrope",
-    color: "#F7CB6B",
+    color: "#dad4ec",
     fontSize: 15,
     fontWeight: "700",
     letterSpacing: 0.3,

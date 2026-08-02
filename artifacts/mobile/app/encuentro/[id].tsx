@@ -93,7 +93,7 @@ export default function EncuentroDetalle() {
           {/* Chip de fecha */}
           <View style={styles.fechaChipWrap}>
             <View style={styles.fechaChip}>
-              <Feather name="calendar" size={13} color="#F7CB6B" style={{ marginRight: 6 }} />
+              <Feather name="calendar" size={13} color="#dad4ec" style={{ marginRight: 6 }} />
               <Text style={styles.fechaText}>
                 {formatearFechaDetalle(encuentro.fechaISO, encuentro.horaTexto)}
               </Text>
@@ -166,7 +166,7 @@ export default function EncuentroDetalle() {
             style={({ pressed }) => [styles.calBtn, { opacity: pressed ? 0.8 : 1 }]}
             onPress={() => setCalSheet(true)}
           >
-            <Feather name="calendar" size={16} color="#F7CB6B" style={{ marginRight: 8 }} />
+            <Feather name="calendar" size={16} color="#dad4ec" style={{ marginRight: 8 }} />
             <Text style={styles.calBtnText}>Añadir a mi calendario</Text>
           </Pressable>
         </View>
@@ -242,15 +242,15 @@ const styles = StyleSheet.create({
   fechaChip: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(247,203,107,0.1)",
+    backgroundColor: "rgba(218,212,236,0.1)",
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: "rgba(247,203,107,0.2)",
+    borderColor: "rgba(218,212,236,0.2)",
     paddingHorizontal: 16,
     paddingVertical: 8,
   },
   fechaText: {
-    color: "#F7CB6B",
+    color: "#dad4ec",
     fontSize: 14,
     fontFamily: "Manrope",
     fontWeight: "600",
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.06)",
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: "rgba(247,203,107,0.1)",
+    borderColor: "rgba(218,212,236,0.1)",
     padding: 14,
     marginBottom: 28,
   },
@@ -367,13 +367,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#F7CB6B",
+    backgroundColor: "#dad4ec",
     borderRadius: 30,
     paddingVertical: 16,
     marginTop: 4,
   },
   asistenciaBtnConfirmed: {
-    backgroundColor: "#F7CB6B",
+    backgroundColor: "#dad4ec",
     opacity: 0.9,
   },
   asistenciaBtnText: {
@@ -389,15 +389,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(247,203,107,0.1)",
+    backgroundColor: "rgba(218,212,236,0.1)",
     borderRadius: 30,
     borderWidth: 1,
-    borderColor: "rgba(247,203,107,0.25)",
+    borderColor: "rgba(218,212,236,0.25)",
     paddingVertical: 14,
     marginTop: 10,
   },
   calBtnText: {
-    color: "#F7CB6B",
+    color: "#dad4ec",
     fontSize: 15,
     fontFamily: "Manrope",
     fontWeight: "600",

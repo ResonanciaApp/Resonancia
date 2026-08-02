@@ -107,7 +107,7 @@ export default function EncuentrosScreen() {
           <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: CARD_H_PADDING, marginBottom: 16 }}>
             <Text style={styles.sectionTitle}>Los Resonadores</Text>
             <Pressable onPress={() => router.push("/resonadores" as never)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F7CB6B" }}>Ver todos</Text>
+              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#dad4ec" }}>Ver todos</Text>
             </Pressable>
           </View>
           <ScrollView
@@ -121,7 +121,7 @@ export default function EncuentrosScreen() {
                 onPress={() => router.push(`/resonador/${r.id}` as never)}
                 style={({ pressed }) => ({ alignItems: "center", opacity: pressed ? 0.75 : 1, width: 120 })}
               >
-                <View style={{ width: 102, height: 102, borderRadius: 51, overflow: "hidden", borderWidth: 1.5, borderColor: "rgba(247,203,107,0.35)", marginBottom: 12 }}>
+                <View style={{ width: 102, height: 102, borderRadius: 51, overflow: "hidden", borderWidth: 1.5, borderColor: "rgba(218,212,236,0.35)", marginBottom: 12 }}>
                   <ExpoImage source={r.photo} style={{ width: 102, height: 102 }} contentFit="cover" />
                 </View>
                 <Text

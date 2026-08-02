@@ -279,7 +279,7 @@ export default function UsuarioScreen() {
                 >
                   {isFollowing && (
                     <LinearGradient
-                      colors={["#D6AD5F", "#B47344"]}
+                      colors={["#dad4ec", "#f3e7e9"]}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 0 }}
                       style={StyleSheet.absoluteFill}
@@ -326,7 +326,7 @@ export default function UsuarioScreen() {
                 >
                   {isFriend && (
                     <LinearGradient
-                      colors={["#D6AD5F", "#B47344"]}
+                      colors={["#dad4ec", "#f3e7e9"]}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 0 }}
                       style={StyleSheet.absoluteFill}
@@ -413,7 +413,7 @@ export default function UsuarioScreen() {
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6, paddingRight: 4 }}>
                   {(expansorProfile?.specialties ?? []).map((s) => (
                     <View key={s} style={[styles.epChip, { borderColor: "rgba(212,175,55,0.30)", backgroundColor: "rgba(212,175,55,0.07)" }]}>
-                      <Text style={[styles.epChipText, { color: "#F7CB6B" }]}>{s}</Text>
+                      <Text style={[styles.epChipText, { color: "#dad4ec" }]}>{s}</Text>
                     </View>
                   ))}
                 </ScrollView>
@@ -433,8 +433,8 @@ export default function UsuarioScreen() {
                 </Text>
                 {epDescOverflows && (
                   <Pressable onPress={() => setEpDescExpanded((v) => !v)} style={({ pressed }) => [styles.epReadMore, { opacity: pressed ? 0.7 : 1 }]}>
-                    <Text style={{ fontSize: 13, color: "#F7CB6B", fontWeight: "600" }}>{epDescExpanded ? "Leer menos" : "Leer más"}</Text>
-                    <Feather name={epDescExpanded ? "chevron-up" : "chevron-down"} size={13} color="#F7CB6B" />
+                    <Text style={{ fontSize: 13, color: "#dad4ec", fontWeight: "600" }}>{epDescExpanded ? "Leer menos" : "Leer más"}</Text>
+                    <Feather name={epDescExpanded ? "chevron-up" : "chevron-down"} size={13} color="#dad4ec" />
                   </Pressable>
                 )}
               </View>
@@ -653,7 +653,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "800",
     letterSpacing: 1.4,
-    color: "#F7CB6B",
+    color: "#dad4ec",
   },
   epCertBannerSub: { fontFamily: "Manrope", fontSize: 11, marginTop: 2 },
   epCertIconBorder: {
@@ -666,7 +666,7 @@ const styles = StyleSheet.create({
     alignItems: "center", justifyContent: "center",
     overflow: "hidden",
   },
-  epCertStar: { fontFamily: "Manrope", fontSize: 13, color: "#F7CB6B" },
+  epCertStar: { fontFamily: "Manrope", fontSize: 13, color: "#dad4ec" },
   epGalleryWrap: { marginTop: 12 },
   epGalleryGrid: {
     flexDirection: "row",

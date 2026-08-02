@@ -2034,7 +2034,7 @@ function LandingGradientIcon({ name }: { name: React.ComponentProps<typeof Feath
 /* ─── Crear Geometría Card — Crystal Nebula ──────────────────────────────── */
 const CB_BLUE  = "#6584d4";
 const CB_BLUE2 = "#c7caec";
-const CB_GOLD  = "#F7CB6B";
+const CB_GOLD  = "#dad4ec";
 
 // Puntos de estrella de 12 vértices (alternando r=16 y r=8)
 const STAR_PTS = Array.from({ length: 12 }, (_, i) => {
@@ -3844,7 +3844,7 @@ export default function GeometrixScreen() {
     borderColor: interpolateColor(
       pillCardinalSV.value,
       [0, 1],
-      ["rgba(255,255,255,0.12)", "#D6A85B"],
+      ["rgba(255,255,255,0.12)", "#dad4ec"],
     ),
   }));
   // Píldora de acciones: fondo azul (#171e5a) al llegar a ángulo cardinal.
@@ -6514,7 +6514,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 12,
   },
-  themeRowOn: { backgroundColor: hexAlpha("#F7CB6B", 0.08) },
+  themeRowOn: { backgroundColor: hexAlpha("#dad4ec", 0.08) },
   themeStopRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -6522,7 +6522,7 @@ const styles = StyleSheet.create({
     paddingVertical: 11,
     paddingHorizontal: 10,
     borderRadius: 12,
-    backgroundColor: hexAlpha("#F7CB6B", 0.1),
+    backgroundColor: hexAlpha("#dad4ec", 0.1),
     marginTop: 12,
   },
   themeRowIcon: {
@@ -7152,7 +7152,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     overflow: "hidden",
     zIndex: 30,
-    shadowColor: "#F7CB6B",
+    shadowColor: "#dad4ec",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.45,
     shadowRadius: 16,

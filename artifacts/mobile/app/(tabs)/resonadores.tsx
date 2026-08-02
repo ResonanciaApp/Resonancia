@@ -50,7 +50,7 @@ function ResoChip({ label, sel, onPress }: { label: string; sel: boolean; onPres
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
       {sel && (
         <LinearGradient
-          colors={["#D6AD5F", "#B47344"]}
+          colors={["#dad4ec", "#f3e7e9"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={StyleSheet.absoluteFill}
@@ -532,7 +532,7 @@ export default function ResonadoresScreen() {
               >
                 {isActive && (
                   <LinearGradient
-                    colors={["#D6AD5F", "#B47344"]}
+                    colors={["#dad4ec", "#f3e7e9"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                     style={StyleSheet.absoluteFill}
@@ -637,7 +637,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 1,
-    backgroundColor: "#F7CB6B",
+    backgroundColor: "#dad4ec",
     opacity: 0.5,
   },
   bannerTextWrap: {
@@ -868,7 +868,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 2,
     right: 2,
-    backgroundColor: "#F7CB6B",
+    backgroundColor: "#dad4ec",
     borderRadius: 99,
     width: 18,
     height: 18,
@@ -975,7 +975,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 5,
     right: 5,
-    backgroundColor: "#F7CB6B",
+    backgroundColor: "#dad4ec",
     borderRadius: 99,
     width: 16,
     height: 16,
@@ -1030,7 +1030,7 @@ const styles = StyleSheet.create({
   ctaIconText: {
     fontFamily: "Manrope",
     fontSize: 16,
-    color: "#F7CB6B",
+    color: "#dad4ec",
   },
   ctaTextWrap: {
     flex: 1,

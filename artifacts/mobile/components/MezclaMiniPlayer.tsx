@@ -134,7 +134,7 @@ export function MezclaMiniPlayer({ bottomOffset, topOffset }: Props) {
                   <Image source={src} style={styles.thumbImg} contentFit="cover" />
                 ) : (
                   <View style={[styles.thumbImg, styles.thumbFallback]}>
-                    <Feather name="music" size={12} color="#F7CB6B" />
+                    <Feather name="music" size={12} color="#dad4ec" />
                   </View>
                 )}
               </View>
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     height: THUMB_SZ,
   },
   thumbFallback: {
-    backgroundColor: "rgba(247,203,107,0.12)",
+    backgroundColor: "rgba(218,212,236,0.12)",
     alignItems: "center",
     justifyContent: "center",
   },

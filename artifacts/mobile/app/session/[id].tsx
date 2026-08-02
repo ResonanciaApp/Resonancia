@@ -130,7 +130,7 @@ export default function SessionDetailScreen() {
   const { playSession, isFavorite, toggleFavorite, currentSession, isPlaying, progress, getSessionProgress, clearSessionProgress } = usePlayer();
   const { theme: sceneTheme } = useSceneTheme();
 
-  const accentColor = "rgb(247,203,107)";
+  const accentColor = "rgb(218,212,236)";
 
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
   const topPad = Platform.OS === "web" ? 67 : insets.top;
@@ -161,7 +161,7 @@ export default function SessionDetailScreen() {
   const stickyHeaderColor = sessionGradient[0];
   const playBtnColors: [string, string, ...string[]] = sceneTheme.id === "indigo"
     ? ["#dad4ec", "#f3e7e9"]
-    : ["#D6A45C", "#F7CB6B"];
+    : ["#dad4ec", "#f3e7e9"];
   const playBtnTextColor = "#0d0c26";
   const shareBtnAccent = sceneTheme.id === "indigo" ? "#dad4ec" : accentColor;
   const [localFav, setLocalFav] = useState<boolean | null>(null);
@@ -568,7 +568,7 @@ export default function SessionDetailScreen() {
                   style={({ pressed }) => [styles.aboutProfileLink, { opacity: pressed ? 0.7 : 1 }]}
                 >
                   <Text style={styles.aboutProfileLinkText}>Ver perfil</Text>
-                  <Feather name="chevron-right" size={14} color="#D6A45C" />
+                  <Feather name="chevron-right" size={14} color="#dad4ec" />
                 </Pressable>
               </View>
             </View>
@@ -680,11 +680,11 @@ export default function SessionDetailScreen() {
               </Pressable>
               {/* Agregar a favoritos */}
               <Pressable style={styles.optRow} onPress={() => { handleFav(); }}>
-                <Feather name="heart" size={18} color={fav ? "#F7CB6B" : "#FBFBFB"} style={styles.optIcon} />
-                <Text style={[styles.optRowText, fav ? { color: "#F7CB6B" } : {}]}>
+                <Feather name="heart" size={18} color={fav ? "#dad4ec" : "#FBFBFB"} style={styles.optIcon} />
+                <Text style={[styles.optRowText, fav ? { color: "#dad4ec" } : {}]}>
                   {fav ? "En favoritos" : "Agregar a favoritos"}
                 </Text>
-                {fav && <Feather name="check" size={15} color="#F7CB6B" />}
+                {fav && <Feather name="check" size={15} color="#dad4ec" />}
               </Pressable>
               {/* Añadir a carpeta */}
               <Pressable
@@ -783,7 +783,7 @@ export default function SessionDetailScreen() {
                 >
                   <Text style={{
                     fontSize: 38,
-                    color: ratingStars >= star ? "#D6AD5F" : "rgba(255,255,255,0.25)",
+                    color: ratingStars >= star ? "#dad4ec" : "rgba(255,255,255,0.25)",
                     lineHeight: 44,
                   }}>
                     {ratingStars >= star ? "★" : "☆"}
@@ -816,7 +816,7 @@ export default function SessionDetailScreen() {
               ]}
             >
               <LinearGradient
-                colors={["#D6AD5F", "#B47344"]}
+                colors={["#dad4ec", "#f3e7e9"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={StyleSheet.absoluteFill}
@@ -846,12 +846,12 @@ export default function SessionDetailScreen() {
         />
         {/* Branding top */}
         <View style={{ position: "absolute", top: 64, left: 0, right: 0, alignItems: "center" }}>
-          <Text style={{ color: "#F7CB6B", fontSize: 11, letterSpacing: 5, fontWeight: "700" }}>RESONANCIA</Text>
+          <Text style={{ color: "#dad4ec", fontSize: 11, letterSpacing: 5, fontWeight: "700" }}>RESONANCIA</Text>
           <Text style={{ color: "#F4F4F4", fontSize: 10, letterSpacing: 2, marginTop: 3 }}>Casa del Cuenco</Text>
         </View>
         {/* Session info center */}
         <View style={{ position: "absolute", bottom: 190, left: 36, right: 36 }}>
-          <Text style={{ color: "#F7CB6B", fontSize: 11, letterSpacing: 2, textAlign: "center", marginBottom: 12, textTransform: "uppercase" }}>
+          <Text style={{ color: "#dad4ec", fontSize: 11, letterSpacing: 2, textAlign: "center", marginBottom: 12, textTransform: "uppercase" }}>
             {session.categoryLabel}
           </Text>
           <Text style={{ color: "#FAF0EE", fontSize: 26, fontWeight: "700", lineHeight: 34, textAlign: "center" }}>
@@ -1020,7 +1020,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 30,
     marginTop: 8,
-    shadowColor: "#F7CB6B",
+    shadowColor: "#dad4ec",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,
@@ -1031,7 +1031,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
     letterSpacing: 0.3,
-    color: "#D6AD5F",
+    color: "#dad4ec",
   },
 
   blockTitle: {
@@ -1056,7 +1056,7 @@ const styles = StyleSheet.create({
   aboutLocation: { fontFamily: "Manrope", fontSize: 12, color: "rgba(255,255,255,0.55)", marginTop: 2 },
   aboutBio: { fontFamily: "Manrope", fontSize: 13, color: "rgba(255,255,255,0.75)", lineHeight: 19 },
   aboutProfileLink: { flexDirection: "row", alignItems: "center", gap: 3, alignSelf: "flex-start", marginTop: 2 },
-  aboutProfileLinkText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#D6A45C" },
+  aboutProfileLinkText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#dad4ec" },
 
   // Related vertical list
   relatedBlock: { marginBottom: 20, marginTop: 4 },
@@ -1178,7 +1178,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderRadius: 30,
     overflow: "hidden",
-    shadowColor: "#F7CB6B",
+    shadowColor: "#dad4ec",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,
@@ -1209,7 +1209,7 @@ const styles = StyleSheet.create({
   playsText: {
     fontFamily: "Manrope",
     fontSize: 12,
-    color: "#F7CB6B",
+    color: "#dad4ec",
   },
 
   // Rating modal

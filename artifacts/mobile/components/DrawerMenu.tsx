@@ -197,7 +197,7 @@ export function DrawerMenu() {
                 </View>
               ) : (
                 <View style={[styles.profilePhotoFallback, !loggedIn && styles.profilePhotoGuest]}>
-                  <Feather name="user" size={22} color={loggedIn ? "#F7CB6B" : "#c2c2c2"} />
+                  <Feather name="user" size={22} color={loggedIn ? "#dad4ec" : "#c2c2c2"} />
                 </View>
               )}
 
@@ -207,7 +207,7 @@ export function DrawerMenu() {
                     <Text style={styles.profileName} numberOfLines={1}>{fullName || "Mi perfil"}</Text>
                     <Pressable onPress={() => navigate("/mi-perfil")} style={styles.verPerfilBtn}>
                       <Text style={styles.verPerfilText}>Ver Perfil</Text>
-                      <Feather name="chevron-right" size={11} color="#F7CB6B" />
+                      <Feather name="chevron-right" size={11} color="#dad4ec" />
                     </Pressable>
                   </>
                 ) : (
@@ -215,14 +215,14 @@ export function DrawerMenu() {
                     <Text style={styles.profileNameMuted}>No conectado</Text>
                     <Pressable onPress={() => navigate("/(auth)/sign-in")} style={styles.verPerfilBtn}>
                       <Text style={styles.verPerfilText}>Iniciar sesión</Text>
-                      <Feather name="chevron-right" size={11} color="#F7CB6B" />
+                      <Feather name="chevron-right" size={11} color="#dad4ec" />
                     </Pressable>
                   </>
                 )}
               </View>
 
               <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
-                <Feather name="x" size={20} color="#F7CB6B" />
+                <Feather name="x" size={20} color="#dad4ec" />
               </Pressable>
             </View>
 
@@ -257,7 +257,7 @@ export function DrawerMenu() {
                   <Text
                     style={[
                       styles.itemLabel,
-                      item.label === "Tu Premium" && { color: "#F7CB6B" },
+                      item.label === "Tu Premium" && { color: "#dad4ec" },
                     ]}
                   >
                     {item.label}
@@ -292,7 +292,7 @@ export function DrawerMenu() {
               </View>
             </View>
 
-            <View style={[styles.divider, { backgroundColor: "#F7CB6B10", marginVertical: 16 }]} />
+            <View style={[styles.divider, { backgroundColor: "#dad4ec10", marginVertical: 16 }]} />
 
             {/* ── Sección Escenas ── */}
             <View style={styles.controlRow}>
@@ -417,14 +417,14 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 24,
     borderWidth: 2,
-    borderColor: "#F7CB6B",
+    borderColor: "#dad4ec",
   },
   profilePhotoFallback: {
     width: 48,
     height: 48,
     borderRadius: 24,
     borderWidth: 2,
-    borderColor: "#F7CB6B",
+    borderColor: "#dad4ec",
     backgroundColor: "rgba(212,175,55,0.12)",
     alignItems: "center",
     justifyContent: "center",
@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
   },
   profileInitial: {
     fontFamily: "Manrope",
-    color: "#F7CB6B",
+    color: "#dad4ec",
     fontSize: 20,
     fontWeight: "700",
     letterSpacing: 0.5,
@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
   },
   verPerfilText: {
     fontFamily: "Manrope",
-    color: "#F7CB6B",
+    color: "#dad4ec",
     fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.3,
@@ -506,8 +506,8 @@ const styles = StyleSheet.create({
   },
   swatchCircleActive: {
     borderWidth: 2.5,
-    borderColor: "#BE9650",
-    shadowColor: "#BE9650",
+    borderColor: "#dad4ec",
+    shadowColor: "#dad4ec",
     shadowOpacity: 0.6,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 0 },
@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
     color: "rgba(249,249,249,0.5)",
     fontWeight: "400",
   },
-  swatchLabelActive: { color: "#BE9650", fontWeight: "600" },
+  swatchLabelActive: { color: "#dad4ec", fontWeight: "600" },
   item: {
     flexDirection: "row",
     alignItems: "center",

@@ -28,7 +28,7 @@ import { useColors } from "@/hooks/useColors";
 import { useGetMe, getGetMeQueryKey } from "@workspace/api-client-react";
 
 const H_PAD = 20;
-const GOLD = "#F7CB6B";
+const GOLD = "#dad4ec";
 const GOLD_MUTED = "rgba(212,175,55,0.70)";
 
 const PLATFORM_ICON: Record<ExternalProject["platform"], string> = {
@@ -278,7 +278,7 @@ export default function ResonadorPerfilScreen() {
                 >
                   {following && (
                     <LinearGradient
-                      colors={["#D6AD5F", "#B47344"]}
+                      colors={["#dad4ec", "#f3e7e9"]}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 0 }}
                       style={StyleSheet.absoluteFill}

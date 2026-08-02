@@ -30,7 +30,7 @@ type Props = {
   bgColor?: string;
 };
 
-const PRIMARY = "#F7CB6B";
+const PRIMARY = "#dad4ec";
 const SWATCH_SIZE = 34;
 
 const c = {

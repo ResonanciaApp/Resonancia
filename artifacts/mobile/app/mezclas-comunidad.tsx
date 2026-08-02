@@ -27,7 +27,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
-const GOLD = "#F7CB6B";
+const GOLD = "#dad4ec";
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 
@@ -55,7 +55,7 @@ function Chip({ chip, sel, onPress }: { chip: ChipDef; sel: boolean; onPress: ()
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
       <LinearGradient
-        colors={sel ? ["#D6A45C", "#F7CB6B"] : ["rgba(255,255,255,0.055)", "rgba(255,255,255,0.055)"]}
+        colors={sel ? ["#dad4ec", "#f3e7e9"] : ["rgba(255,255,255,0.055)", "rgba(255,255,255,0.055)"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFill}

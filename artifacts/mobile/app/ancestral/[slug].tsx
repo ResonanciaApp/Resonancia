@@ -6,7 +6,7 @@ import React from "react";
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const GOLD = "#F7CB6B";
+const GOLD = "#dad4ec";
 const TEXT = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.55)";
 

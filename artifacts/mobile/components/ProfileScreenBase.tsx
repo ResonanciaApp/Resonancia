@@ -793,7 +793,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
                 style={({ pressed }) => [styles.expansorEditIconBtn, { opacity: pressed ? 0.7 : 1 }]}
                 hitSlop={10}
               >
-                <Feather name="edit" size={17} color="#F7CB6B" />
+                <Feather name="edit" size={17} color="#dad4ec" />
               </Pressable>
             )}
           </View>
@@ -919,7 +919,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
               />
               <View style={{ flex: 1, paddingLeft: 12, paddingVertical: 10, justifyContent: "center" }}>
                 <MaskedView maskElement={<Text style={styles.dvCertBannerTitle}>EXPANSOR</Text>}>
-                  <LinearGradient colors={["#F7CB6B", "#FBA980"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+                  <LinearGradient colors={["#dad4ec", "#FBA980"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
                     <Text style={[styles.dvCertBannerTitle, { opacity: 0 }]}>EXPANSOR</Text>
                   </LinearGradient>
                 </MaskedView>
@@ -968,7 +968,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
                   {dvDescOverflows && (
                     <Pressable onPress={() => setDvDescExpanded((v) => !v)} style={({ pressed }) => [styles.dvReadMoreBtn, { opacity: pressed ? 0.7 : 1 }]}>
                       <Text style={styles.dvReadMoreText}>{dvDescExpanded ? "Leer menos" : "Leer más"}</Text>
-                      <Feather name={dvDescExpanded ? "chevron-up" : "chevron-down"} size={13} color="#F7CB6B" />
+                      <Feather name={dvDescExpanded ? "chevron-up" : "chevron-down"} size={13} color="#dad4ec" />
                     </Pressable>
                   )}
                 </View>
@@ -1005,7 +1005,7 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
               {/* Placeholder si el perfil está vacío */}
               {!expansorProfile && (
                 <Pressable onPress={openExpansorEdit} style={({ pressed }) => [styles.dvEmptyPrompt, { opacity: pressed ? 0.7 : 1 }]}>
-                  <Feather name="plus-circle" size={16} color="#F7CB6B" />
+                  <Feather name="plus-circle" size={16} color="#dad4ec" />
                   <Text style={styles.dvEmptyPromptText}>Completa tu perfil expansor</Text>
                 </Pressable>
               )}
@@ -1294,8 +1294,8 @@ export function ProfileScreenBase({ dedicated = false, onBack, asTab = false }: 
                         style={({ pressed }) => [styles.epPhotoAddBtn, { opacity: (pressed || epPhotoUploading) ? 0.6 : 1 }]}
                       >
                         {epPhotoUploading
-                          ? <ActivityIndicator size="small" color="#F7CB6B" />
-                          : <Feather name="plus" size={22} color="#F7CB6B" />
+                          ? <ActivityIndicator size="small" color="#dad4ec" />
+                          : <Feather name="plus" size={22} color="#dad4ec" />
                         }
                       </Pressable>
                     )}
@@ -1663,12 +1663,12 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "#F7CB6B",
+    backgroundColor: "#dad4ec",
     alignItems: "center",
     justifyContent: "center",
   },
   expansorBadgeStar: { fontFamily: "Manrope", fontSize: 14, color: "#1B060F", fontWeight: "800" },
-  expansorTitle: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", color: "#F7CB6B" },
+  expansorTitle: { fontFamily: "Manrope", fontSize: 14, fontWeight: "700", color: "#dad4ec" },
   expansorCertLabel: { fontFamily: "Manrope", fontSize: 11, color: "rgba(212,175,55,0.60)", marginTop: 1 },
   expansorViewBtn: {
     flexDirection: "row",
@@ -1679,7 +1679,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "rgba(212,175,55,0.10)",
   },
-  expansorViewText: { fontFamily: "Manrope", fontSize: 12, color: "#F7CB6B", fontWeight: "600" },
+  expansorViewText: { fontFamily: "Manrope", fontSize: 12, color: "#dad4ec", fontWeight: "600" },
   expansorSpecWrap: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   expansorChip: {
     paddingHorizontal: 12,
@@ -1703,7 +1703,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.20)",
   },
-  expansorLinkText: { fontFamily: "Manrope", fontSize: 12, color: "#F7CB6B", fontWeight: "600" },
+  expansorLinkText: { fontFamily: "Manrope", fontSize: 12, color: "#dad4ec", fontWeight: "600" },
 
   // ── Sección Daniela Vega (expansor) ──
   dvExpansorSection: {
@@ -1724,7 +1724,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(212,175,55,0.05)",
   },
   dvCertBannerBar: { width: 5 },
-  dvCertBannerTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "800", letterSpacing: 0.4, color: "#F7CB6B" },
+  dvCertBannerTitle: { fontFamily: "Manrope", fontSize: 13, fontWeight: "800", letterSpacing: 0.4, color: "#dad4ec" },
   dvCertBannerSub: { fontFamily: "Manrope", fontSize: 11, color: "rgba(255,255,255,0.90)", marginTop: 2 },
   dvCertBannerIconBorder: {
     width: 35, height: 35, borderRadius: 18,
@@ -1735,7 +1735,7 @@ const styles = StyleSheet.create({
   dvServiceTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.2 },
   dvServiceDesc: { fontFamily: "Manrope", fontSize: 13, lineHeight: 20, color: "#F4F4F4" },
   dvReadMoreBtn: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 6, alignSelf: "flex-start" },
-  dvReadMoreText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F7CB6B" },
+  dvReadMoreText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#dad4ec" },
   dvSpecialtyWrap: { flexDirection: "row", gap: 8, alignItems: "center" },
   dvSpecialtyChip: {
     borderRadius: 20, paddingHorizontal: 14, height: 34, overflow: "hidden",
@@ -1770,7 +1770,7 @@ const styles = StyleSheet.create({
     flexDirection: "row", alignItems: "center", gap: 8,
     paddingVertical: 12, justifyContent: "center",
   },
-  dvEmptyPromptText: { fontFamily: "Manrope", fontSize: 14, color: "#F7CB6B", fontWeight: "600" },
+  dvEmptyPromptText: { fontFamily: "Manrope", fontSize: 14, color: "#dad4ec", fontWeight: "600" },
   expansorEditIconBtn: {
     width: 34, height: 34, borderRadius: 17,
     backgroundColor: "rgba(212,175,55,0.10)",
@@ -1883,7 +1883,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "700",
-    color: "#F7CB6B",
+    color: "#dad4ec",
   },
 
   // ── Racha Stats Card ──────────────────────────────────────────────────────

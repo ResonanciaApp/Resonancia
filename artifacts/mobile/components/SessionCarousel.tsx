@@ -45,7 +45,7 @@ export function SessionCarousel({ title, sessions, isPremium, onPress, style, ti
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 21 }}>
           <Text style={[styles.sectionTitle, { fontSize: titleFontSize, marginBottom: 0 }]}>{title}</Text>
           <Pressable onPress={onViewAll} hitSlop={8}>
-            <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F7CB6B" }}>Ver todos</Text>
+            <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#dad4ec" }}>Ver todos</Text>
           </Pressable>
         </View>
       ) : (
@@ -130,7 +130,7 @@ export function CoverCarousel({ title, items, onPress }: CoverCarouselProps) {
                 <Image source={item.image} style={styles.thumb} resizeMode="cover" />
               ) : (
                 <View style={[styles.thumb, styles.thumbFallback]}>
-                  <Feather name="music" size={32} color="#F7CB6B" />
+                  <Feather name="music" size={32} color="#dad4ec" />
                 </View>
               )}
             </View>

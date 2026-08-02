@@ -92,7 +92,7 @@ const SEED_GRUPOS: Record<string, {
     name: "Cuencos y Frecuencias",
     description: "Todo sobre cuencos tibetanos, de cristal y terapia de sonido",
     moderator: "Casa del Cuenco",
-    modColor: "#F7CB6B",
+    modColor: "#dad4ec",
     modInitials: "CC",
     members: 567,
     icon: "disc",
@@ -100,7 +100,7 @@ const SEED_GRUPOS: Record<string, {
     gradient: ["#7A5520", "#3E2208"],
     rules: ["Compartir con generosidad y apertura", "Incluir fuente cuando sea posible", "Cero spam comercial"],
     memberList: [
-      { name: "Casa del Cuenco", role: "Moderador", color: "#F7CB6B", initials: "CC", active: true },
+      { name: "Casa del Cuenco", role: "Moderador", color: "#dad4ec", initials: "CC", active: true },
       { name: "Sofía Herrera", role: "Miembro", color: "#f4c993", initials: "SH", active: true },
       { name: "Luna Vega", role: "Miembro", color: "#C8B4E0", initials: "LV", active: true },
       { name: "Pablo Torres", role: "Miembro", color: "#8AAAD4", initials: "PT", active: false },
@@ -108,7 +108,7 @@ const SEED_GRUPOS: Record<string, {
       { name: "Tomás Blanco", role: "Miembro", color: "#A8C4A8", initials: "TB", active: false },
     ],
     posts: [
-      { id: "p1", author: "Casa del Cuenco", initials: "CC", color: "#F7CB6B", time: "Hoy · 11:00", text: "📌 Nueva sesión disponible en la app: 'El Lago de Cristal' — cuencos de cuarzo en sol mayor para la claridad mental. ¡A escucharla y compartir qué sienten! 🎶", likes: 41, replies: 12, pinned: true },
+      { id: "p1", author: "Casa del Cuenco", initials: "CC", color: "#dad4ec", time: "Hoy · 11:00", text: "📌 Nueva sesión disponible en la app: 'El Lago de Cristal' — cuencos de cuarzo en sol mayor para la claridad mental. ¡A escucharla y compartir qué sienten! 🎶", likes: 41, replies: 12, pinned: true },
       { id: "p2", author: "Luna Vega", initials: "LV", color: "#C8B4E0", time: "Hoy · 09:30", text: "Compartí unas fotos de mi set nuevo 🎶 Cuenco tibetano en FA, dos de cristal en SOL y RE. Tardé 3 años en armarlo y por fin está completo. ¿Alguien más colecciona?", likes: 33, replies: 9 },
       { id: "p3", author: "Pablo Torres", initials: "PT", color: "#8AAAD4", time: "Ayer · 20:15", text: "Pregunta para los que practican: ¿cada cuánto hacen sesiones personales en casa? Yo estoy tratando de instalar una rutina diaria de 20 minutos.", likes: 15, replies: 14 },
       { id: "p4", author: "Ana Quiroga", initials: "AQ", color: "#EDD9B8", time: "Ayer · 16:00", text: "Descubrí que el cuenco en nota SI tiene un efecto increíble cuando trabajo con el chakra corona en clientes. ¿Alguien más trabaja en sesiones terapéuticas?", likes: 19, replies: 6 },
@@ -145,7 +145,7 @@ const SEED_GRUPOS: Record<string, {
     modInitials: "MP",
     members: 421,
     icon: "sun",
-    color: "#F0CC82",
+    color: "#dad4ec",
     gradient: ["#C49A52", "#7A5C20"],
     rules: ["Compartir desde el corazón", "No hay respuestas correctas ni incorrectas", "Escuchar antes de responder"],
     memberList: [
@@ -214,7 +214,7 @@ function buildLocalViewModel(
   localPosts: ReturnType<typeof useGrupoPosts>["posts"],
 ): ViewModel {
   const userInitials = initialsFrom(userName);
-  const userColor = "#F7CB6B";
+  const userColor = "#dad4ec";
 
   // welcome aparece arriba (pinned); el resto, más recientes después.
   const welcome = localPosts.find((p) => p.id === "welcome");
@@ -243,8 +243,8 @@ function buildLocalViewModel(
     modInitials: userInitials,
     members: 1,
     icon: "users",
-    color: "#F7CB6B",
-    gradient: ["#F7CB6B", "#3E1010"],
+    color: "#dad4ec",
+    gradient: ["#dad4ec", "#3E1010"],
     rules: DEFAULT_RULES_LOCAL,
     memberList: [
       { name: `${userName} (vos)`, role: "Admin", color: userColor, initials: userInitials, active: true },
@@ -336,7 +336,7 @@ export default function GrupoDetailScreen() {
     ensureWelcomePost({
       author: userName,
       initials: initialsFrom(userName),
-      color: "#F7CB6B",
+      color: "#dad4ec",
       text: localGrupo.bienvenida,
     });
   }, [localGrupo, userName, ensureWelcomePost]);
@@ -374,7 +374,7 @@ export default function GrupoDetailScreen() {
     addPost({
       author: userName,
       initials: initialsFrom(userName),
-      color: "#F7CB6B",
+      color: "#dad4ec",
       text,
     });
     setCompose("");

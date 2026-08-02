@@ -122,7 +122,7 @@ function GlyphLayer({
     <Animated.View style={[StyleSheet.absoluteFill, styles.layerCenter, aStyle]} pointerEvents="none">
       <SacredGlyph
         id={id}
-        color={settings.color ?? "#F7CB6B"}
+        color={settings.color ?? "#dad4ec"}
         gradient={gradientColors(settings.gradientId ?? null)}
         size={glyphSize}
         strokeWidth={1 + (settings.thickness ?? 0.5) * 2}

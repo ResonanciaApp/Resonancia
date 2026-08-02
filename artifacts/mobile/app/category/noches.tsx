@@ -24,7 +24,7 @@ const { width: W } = Dimensions.get("window");
 const cardW   = (W - H_PAD * 2 - 20) / 2;
 const RECENT_CARD_W = Math.round((W - H_PAD * 2) / 1.85);
 const ICON_COLOR = "#C87BB5";
-const GOLD    = "#F7CB6B";
+const GOLD    = "#dad4ec";
 const TEXT    = "#FBFBFB";
 const MUTED   = "#c2c2c2";
 
@@ -73,7 +73,7 @@ function Chip({ label, sel, onPress }: { label: string; sel: boolean; onPress: (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, sel && styles.chipSel, { opacity: pressed ? 0.7 : 1 }]}>
       {sel && (chipTheme?.id === "tibet"
         ? <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F9F9F9" }]} />
-        : <LinearGradient colors={["rgb(247,203,107)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+        : <LinearGradient colors={["rgb(218,212,236)", "rgb(251,169,128)"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
       )}
       <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
     </Pressable>

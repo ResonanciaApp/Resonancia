@@ -79,7 +79,7 @@ function GlowPill({ onPress, pillStyle, gradientColors }: { onPress: () => void;
 
 
 function GradPillLabel({ icon, label, active }: { icon: React.ComponentProps<typeof Feather>["name"]; label: string; active?: boolean }) {
-  const iconColor = active ? "#F7CB6B" : "rgba(255,255,255,0.9)";
+  const iconColor = active ? "#dad4ec" : "rgba(255,255,255,0.9)";
   return (
     <View style={{ alignItems: "center", gap: 8 }}>
       <Feather name={icon} size={23} color={iconColor} />
@@ -363,7 +363,7 @@ export default function SessionDetailScreen() {
               ]}
             >
               <LinearGradient
-                colors={["#D6A45C", "#F7CB6B"]}
+                colors={["#dad4ec", "#f3e7e9"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 0, y: 1 }}
                 style={StyleSheet.absoluteFill}
@@ -666,7 +666,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 30,
     marginTop: 8,
-    shadowColor: "#F7CB6B",
+    shadowColor: "#dad4ec",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,
@@ -677,7 +677,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
     letterSpacing: 0.3,
-    color: "#D6AD5F",
+    color: "#dad4ec",
   },
 
   blockTitle: {
@@ -760,7 +760,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingVertical: 15,
     borderRadius: 30,
-    shadowColor: "#F7CB6B",
+    shadowColor: "#dad4ec",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,
@@ -778,14 +778,14 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 30,
     borderWidth: 1.5,
-    borderColor: "#D6A45C",
+    borderColor: "#dad4ec",
     marginBottom: 14,
   },
   shareBtnText: {
     fontFamily: "Manrope",
     fontSize: 16,
     fontWeight: "600",
-    color: "#F7CB6B",
+    color: "#dad4ec",
     letterSpacing: 0.5,
   },
   playsInline: {
@@ -832,7 +832,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     borderRadius: 30,
     overflow: "hidden",
-    shadowColor: "#F7CB6B",
+    shadowColor: "#dad4ec",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,

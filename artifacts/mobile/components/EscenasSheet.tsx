@@ -146,14 +146,14 @@ const ctaS = StyleSheet.create({
   },
   plus: {
     fontSize: 28,
-    color: "#F7CB6B",
+    color: "#dad4ec",
     opacity: 0.85,
   },
   label: {
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
-    color: "#F7CB6B",
+    color: "#dad4ec",
     textAlign: "center",
     lineHeight: 18,
     letterSpacing: 0.2,
@@ -676,7 +676,7 @@ const styles = StyleSheet.create({
   },
   timerDropItemTextActive: {
     fontFamily: "Manrope",
-    color: "#F7CB6B",
+    color: "#dad4ec",
     fontWeight: "700",
   },
   divider: {

@@ -23,7 +23,7 @@ import { useColors } from "@/hooks/useColors";
 import { EXPANSOR_SUBTIPO_OPTIONS, type ExpansorSubtipo } from "@/data/expansores";
 
 const BG_GRADIENT = ["#340D1A", "#190913"] as const;
-const GOLD = "#F7CB6B";
+const GOLD = "#dad4ec";
 
 export default function ExpansorPostularScreen() {
   const colors = useColors();
@@ -213,7 +213,7 @@ export default function ExpansorPostularScreen() {
             style={({ pressed }) => [styles.submitBtn, { opacity: pressed || busy ? 0.85 : 1 }]}
           >
             <LinearGradient
-              colors={["#D6AD5F", "#B47344"]}
+              colors={["#dad4ec", "#f3e7e9"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={StyleSheet.absoluteFill}

@@ -238,7 +238,7 @@ export default function CrearGrupoScreen() {
               returnKeyType="done"
               onSubmitEditing={() => canNext1 && setStep(2)}
             />
-            <Text style={[styles.nameCounter, { color: remaining < 10 ? "#F7CB6B" : "#F4F4F4" }]}>
+            <Text style={[styles.nameCounter, { color: remaining < 10 ? "#dad4ec" : "#F4F4F4" }]}>
               {remaining}
             </Text>
           </View>
@@ -494,7 +494,7 @@ const styles = StyleSheet.create({
   // Gallery
   galleryGrid: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
   galleryItem: { borderRadius: 10, overflow: "hidden", position: "relative" },
-  galleryItemSelected: { borderWidth: 2.5, borderColor: "#F7CB6B", borderRadius: 10 },
+  galleryItemSelected: { borderWidth: 2.5, borderColor: "#dad4ec", borderRadius: 10 },
   galleryImg: { width: 68, height: 68 },
   galleryCheck: { position: "absolute", bottom: 4, right: 4, overflow: "hidden", borderRadius: 10, width: 20, height: 20, alignItems: "center", justifyContent: "center" },
 

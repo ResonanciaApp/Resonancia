@@ -17,7 +17,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
-const GOLD = "#F7CB6B";
+const GOLD = "#dad4ec";
 const GOLD2 = "#FBA980";
 const TEXT = "#FAF0EE";
 const MUTED = "rgba(250,240,238,0.55)";
@@ -134,7 +134,7 @@ function RoleCard({ role, delay }: { role: RoleData; delay: number }) {
         style={({ pressed }) => [styles.ctaBtn, { opacity: pressed ? 0.85 : 1 }]}
       >
         <LinearGradient
-          colors={["#D6AD5F", "#B47344"]}
+          colors={["#dad4ec", "#f3e7e9"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={StyleSheet.absoluteFill}

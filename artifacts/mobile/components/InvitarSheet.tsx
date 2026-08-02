@@ -296,7 +296,7 @@ export function InvitarSheet({ visible, onClose }: InvitarSheetProps) {
             style={[styles.toast, { opacity: toastOpacity }]}
             pointerEvents="none"
           >
-            <Feather name="check-circle" size={14} color="#F7CB6B" />
+            <Feather name="check-circle" size={14} color="#dad4ec" />
             <Text style={styles.toastText}>Enlace copiado</Text>
           </Animated.View>
         )}
@@ -504,6 +504,6 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "600",
-    color: "#F7CB6B",
+    color: "#dad4ec",
   },
 });
