@@ -257,7 +257,7 @@ export function DrawerMenu() {
                   <Text
                     style={[
                       styles.itemLabel,
-                      item.label === "Tu Premium" && { color: "#dad4ec" },
+                      item.label === "Tu Premium" && { color: "#BE9650" },
                     ]}
                   >
                     {item.label}
