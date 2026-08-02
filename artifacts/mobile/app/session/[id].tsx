@@ -163,6 +163,7 @@ export default function SessionDetailScreen() {
     ? ["#FFFFFF", "#F9F9F9"]
     : ["#715dd3", "#8769e9", "#7148b5"];
   const playBtnTextColor = sceneTheme.id === "indigo" ? "#0d0c26" : "#ffffff";
+  const shareBtnAccent = sceneTheme.id === "indigo" ? "#F9F9F9" : accentColor;
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
   const [showPlaylistSheet, setShowPlaylistSheet] = useState(false);
@@ -462,9 +463,9 @@ export default function SessionDetailScreen() {
                 onPress={handleShare}
                 style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, marginBottom: 26 })}
               >
-                <View style={[styles.shareBtnInner, { borderColor: accentColor }]}>
-                  <Text style={[styles.shareBtnText, { color: accentColor }]}>Compartir</Text>
-                  <Feather name="send" size={15} color={accentColor} />
+                <View style={[styles.shareBtnInner, { borderColor: shareBtnAccent }]}>
+                  <Text style={[styles.shareBtnText, { color: shareBtnAccent }]}>Compartir</Text>
+                  <Feather name="send" size={15} color={shareBtnAccent} />
                 </View>
               </Pressable>
             </>
@@ -496,9 +497,9 @@ export default function SessionDetailScreen() {
                 onPress={handleShare}
                 style={({ pressed }) => ({ flex: 1, opacity: pressed ? 0.75 : 1 })}
               >
-                <View style={[styles.shareBtnInner, { borderColor: accentColor, flex: 1 }]}>
-                  <Text style={[styles.shareBtnText, { color: accentColor }]}>Compartir</Text>
-                  <Feather name="send" size={15} color={accentColor} />
+                <View style={[styles.shareBtnInner, { borderColor: shareBtnAccent, flex: 1 }]}>
+                  <Text style={[styles.shareBtnText, { color: shareBtnAccent }]}>Compartir</Text>
+                  <Feather name="send" size={15} color={shareBtnAccent} />
                 </View>
               </Pressable>
             </View>
