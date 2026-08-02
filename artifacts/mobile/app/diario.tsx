@@ -196,7 +196,7 @@ export default function DiarioScreen() {
             { overflow: "hidden", opacity: pressed ? 0.85 : 1 },
           ]}
         >
-          <LinearGradient colors={["#64b3f4", "#c2e59c"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={["#2CD8D5", "#8E37D7"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
           <Text style={styles.addBtnText}>Añade entrada</Text>
         </Pressable>
       </View>
