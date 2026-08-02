@@ -1255,7 +1255,7 @@ export default function HomeScreen2() {
         {/* ── VIDEOS DESTACADOS ── */}
         {videos.length > 0 && (
           <View style={{ marginBottom: SECTION_GAP }}>
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 18 }}>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: GRID_PAD, marginBottom: 24 }}>
               <Text style={[styles.sectionTitle, { fontSize: 20 }]}>Videos destacados</Text>
               <Pressable hitSlop={8} onPress={() => router.push("/videos" as never)}>
                 <Text style={{ color: "#F7CB6B", fontSize: 13, fontFamily: "Manrope" }}>Ver todos</Text>
