@@ -159,6 +159,10 @@ export default function SessionDetailScreen() {
     : sceneTheme.gradient;
   const catBg = { gradient: sessionGradient, solid: sceneTheme.solid };
   const stickyHeaderColor = sessionGradient[0];
+  const playBtnColors: [string, string, ...string[]] = sceneTheme.id === "indigo"
+    ? ["#FFFFFF", "#F9F9F9"]
+    : ["#715dd3", "#8769e9", "#7148b5"];
+  const playBtnTextColor = sceneTheme.id === "indigo" ? "#0d0c26" : "#ffffff";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
   const [showPlaylistSheet, setShowPlaylistSheet] = useState(false);
@@ -430,9 +434,9 @@ export default function SessionDetailScreen() {
                   onPress={handlePlayFromStart}
                   style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
                 >
-                  <LinearGradient colors={["#715dd3", "#8769e9", "#7148b5"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
-                  <Feather name="rotate-ccw" size={16} color="#ffffff" />
-                  <Text style={[styles.playBtnText, { color: "#ffffff" }]}>Reiniciar</Text>
+                  <LinearGradient colors={playBtnColors} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+                  <Feather name="rotate-ccw" size={16} color={playBtnTextColor} />
+                  <Text style={[styles.playBtnText, { color: playBtnTextColor }]}>Reiniciar</Text>
                 </Pressable>
 
                 <View style={styles.splitDivider} />
@@ -442,14 +446,14 @@ export default function SessionDetailScreen() {
                   onPress={handleContinue}
                   style={({ pressed }) => [styles.splitBtn, { opacity: pressed ? 0.85 : 1 }]}
                 >
-                  <LinearGradient colors={["#715dd3", "#8769e9", "#7148b5"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+                  <LinearGradient colors={playBtnColors} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
                   <Svg width={16} height={16} viewBox="0 0 48 48">
                     <Path
                       d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
-                      fill="#ffffff"
+                      fill={playBtnTextColor}
                     />
                   </Svg>
-                  <Text style={[styles.playBtnText, { color: "#ffffff" }]}>Continuar</Text>
+                  <Text style={[styles.playBtnText, { color: playBtnTextColor }]}>Continuar</Text>
                 </Pressable>
               </View>
 
@@ -474,15 +478,15 @@ export default function SessionDetailScreen() {
                   { flex: 1, overflow: "hidden", opacity: pressed ? 0.88 : 1 },
                 ]}
               >
-                <LinearGradient colors={["#715dd3", "#8769e9", "#7148b5"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+                <LinearGradient colors={playBtnColors} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                   <Svg width={18} height={18} viewBox="0 0 48 48">
                     <Path
                       d="M 13.2 7.1 Q 8 4 8 10 L 8 36 Q 8 42 13.2 38.9 L 34.8 26.1 Q 40 23 34.8 19.9 Z"
-                      fill="#ffffff"
+                      fill={playBtnTextColor}
                     />
                   </Svg>
-                  <Text style={[styles.playBtnText, { color: "#ffffff" }]}>
+                  <Text style={[styles.playBtnText, { color: playBtnTextColor }]}>
                     {isCurrentlyPlaying ? "Reproduciendo" : "Escuchar ahora"}
                   </Text>
                 </View>
