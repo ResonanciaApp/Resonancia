@@ -160,7 +160,7 @@ export default function SessionDetailScreen() {
   const catBg = { gradient: sessionGradient, solid: sceneTheme.solid };
   const stickyHeaderColor = sessionGradient[0];
   const playBtnColors: [string, string, ...string[]] = sceneTheme.id === "indigo"
-    ? ["#6F86D6", "#6F86D6"]
+    ? ["#30CFD0", "#30CFD0"]
     : sceneTheme.id === "tibet"
     ? ["#F9F9F9", "#F9F9F9"]
     : ["#884D80", "#884D80"];
