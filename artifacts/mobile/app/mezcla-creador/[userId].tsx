@@ -23,9 +23,9 @@ import type { SharedMix } from "@workspace/api-client-react";
 
 import { MIX_CATEGORIES } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { resolveAvatarUrl } from "@/lib/avatar";
 
-const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 const COVER_SIZE = 46;
 const GOLD = "#dad4ec";
 
@@ -49,6 +49,7 @@ function CategoryCover({ category }: { category?: string | null }) {
 
 export default function CreatorProfileScreen() {
   const colors = useColors();
+  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { userId, name } = useLocalSearchParams<{ userId: string; name?: string }>();
   const authorId = Number(userId);
@@ -65,7 +66,7 @@ export default function CreatorProfileScreen() {
   const totalLikes = mixes.reduce((sum, m) => sum + m.likes, 0);
 
   return (
-    <LinearGradient colors={BG_GRADIENT} style={styles.root}>
+    <LinearGradient colors={theme.gradient as unknown as [string, string]} style={styles.root}>
       <ScrollView
         contentContainerStyle={{
           paddingTop: insets.top + 8,
@@ -78,7 +79,7 @@ export default function CreatorProfileScreen() {
         <Pressable
           onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/explore" as never))}
           hitSlop={12}
-          style={[styles.backBtn, { backgroundColor: "rgba(74,12,12,0.25)", borderColor: colors.border }]}
+          style={[styles.backBtn, { backgroundColor: "rgba(0,0,0,0.25)", borderColor: colors.border }]}
         >
           <Feather name="chevron-left" size={22} color={colors.foreground} />
         </Pressable>
@@ -96,7 +97,7 @@ export default function CreatorProfileScreen() {
                 contentFit="cover"
               />
             ) : (
-              <View style={[styles.avatar, { backgroundColor: "rgba(74,12,12,0.35)", borderColor: colors.border }]}>
+              <View style={[styles.avatar, { backgroundColor: "rgba(0,0,0,0.35)", borderColor: colors.border }]}>
                 <Text style={[styles.avatarTxt, { color: GOLD }]}>{initial}</Text>
               </View>
             )}
