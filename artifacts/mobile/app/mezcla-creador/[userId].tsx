@@ -55,6 +55,7 @@ export default function CreatorProfileScreen() {
 
   const { data, isLoading } = useGetSharedMixes(
     Number.isFinite(authorId) ? { author: authorId } : undefined,
+    { query: { refetchOnMount: "always" } },
   );
   const mixes = data?.mixes ?? [];
   const author = mixes[0]?.author;
