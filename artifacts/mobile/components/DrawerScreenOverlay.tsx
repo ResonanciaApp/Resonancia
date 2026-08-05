@@ -4,6 +4,7 @@ import { Animated, Dimensions, StyleSheet, View } from "react-native";
 import { useDrawer } from "@/context/DrawerContext";
 import { BackOverrideProvider } from "@/context/BackOverrideContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const W = Dimensions.get("window").width;
 
@@ -23,6 +24,7 @@ const SCREENS: Record<string, React.LazyExoticComponent<React.ComponentType>> = 
  */
 export function DrawerScreenOverlay() {
   const { overlayRoute, closeOverlay } = useDrawer();
+  const { theme: sceneTheme } = useSceneTheme();
   const [rendered, setRendered] = useState(false);
   const [activeRoute, setActiveRoute] = useState<string | null>(null);
   const slideAnim = useRef(new Animated.Value(W)).current;
@@ -61,9 +63,14 @@ export function DrawerScreenOverlay() {
   if (!Screen) return null;
 
   return (
-    <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ translateX: slideAnim }] }]}>
+    <Animated.View
+      style={[
+        StyleSheet.absoluteFill,
+        { backgroundColor: sceneTheme.solid, transform: [{ translateX: slideAnim }] },
+      ]}
+    >
       <BackOverrideProvider onBack={closeOverlay}>
-        <Suspense fallback={<View style={[StyleSheet.absoluteFill, { backgroundColor: "#1E173E" }]} />}>
+        <Suspense fallback={<View style={[StyleSheet.absoluteFill, { backgroundColor: sceneTheme.solid }]} />}>
           <Screen />
         </Suspense>
       </BackOverrideProvider>
