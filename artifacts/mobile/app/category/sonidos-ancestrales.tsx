@@ -698,12 +698,12 @@ const styles = StyleSheet.create({
   chipRowBorder: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.06)", marginTop: 11, marginHorizontal: H_PAD },
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
-  chip: { height: 32, paddingHorizontal: 13, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.03)", borderWidth: 1, borderColor: "rgba(80,42,247,0.07)" },
+  chip: { height: 31, paddingHorizontal: 13, borderRadius: 999, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.05)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)" },
   chipBorder: {},
   chipBorderSel: {},
   chipUnsel: {},
   chipSel: { borderWidth: 0 },
-  chipText: { fontFamily: "Manrope", fontSize: 14, fontWeight: "450", letterSpacing: 0.3, color: TEXT, textAlign: "center" },
+  chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "450", letterSpacing: 0.3, color: TEXT, textAlign: "center" },
   chipTextSel: { fontFamily: "Manrope", color: "#0D0A1E", fontWeight: "600" },
 
   /* ── Content ── */
