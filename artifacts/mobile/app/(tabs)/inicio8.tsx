@@ -1333,7 +1333,7 @@ export default function HomeScreen2() {
             onPress={() => setMoodSheetVisible(true)}
             style={({ pressed }) => [styles.moodRow, { overflow: "hidden", opacity: pressed ? 0.78 : 1 }]}
           >
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.03)" }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.05)" }]} />
             <Text style={styles.moodEmoji}>🙂</Text>
             <Text style={styles.moodRowLabel}>Expresa tu emoción</Text>
             <Feather name="chevron-right" size={16} color="#f9f9f9" />
@@ -1349,7 +1349,7 @@ export default function HomeScreen2() {
         <View style={styles.recoSection}>
           {moodRecommended.map((s) => (
             <View key={s.id} style={styles.recoCard}>
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.03)" }]} />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.05)" }]} />
               <SessionRow
                 session={s}
                 imageSize={84}
