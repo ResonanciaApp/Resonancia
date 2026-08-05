@@ -117,7 +117,11 @@ export default function MisSesionesScreen() {
       <Text style={{ fontSize: 30, fontWeight: "700", color: FOREGROUND, letterSpacing: 0.3, paddingHorizontal: 20, paddingTop: topPad + 60, marginBottom: 8 }}>Mis sesiones</Text>
 
       {/* Contenido */}
-      {!authenticated ? (
+      {authLoading ? (
+        <View style={styles.emptyContainer}>
+          <ActivityIndicator color={PRIMARY_GOLD} size="large" />
+        </View>
+      ) : !authenticated ? (
         <View style={styles.emptyContainer}>
           <Feather name="lock" size={40} color={MUTED} />
           <Text style={styles.emptyTitle}>Inicia sesión</Text>
@@ -137,7 +141,7 @@ export default function MisSesionesScreen() {
             <Text style={styles.authBtnText}>Crear cuenta</Text>
           </Pressable>
         </View>
-      ) : authLoading || isLoading ? (
+      ) : isLoading ? (
         <View style={styles.emptyContainer}>
           <ActivityIndicator color={PRIMARY_GOLD} size="large" />
         </View>
