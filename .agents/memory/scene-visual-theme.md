@@ -27,10 +27,12 @@ backgrounds.
 `app/(tabs)/_layout.tsx`), `SacredBackground`'s fallback, the drawer menu,
 and several high-traffic tab screens (Inicio, Medita, Video, Colección,
 Perfil) read from the theme. Screens with their own dedicated decorative
-identity (e.g. the Mezclador tab's per-category `ImageBackground`, the
-Mezclador sheet's user-customizable preset backgrounds, Resonadores' hero
-image) are deliberately excluded — forcing the generic Scene theme onto
-them would clobber intentional, unrelated art direction. A long tail of
+identity (e.g. Resonadores' hero image) are deliberately excluded — forcing
+the generic Scene theme onto them would clobber intentional art direction.
+**Mezclador (musica.tsx) NOW INCLUDED (ago 2026):** root `<View>` uses
+`theme.solid` as backgroundColor + `LinearGradient absoluteFill` with
+`theme.gradient`; Ajustes/Filtros panel uses `theme.solid`. Previously
+excluded — now reacts to Scene changes. A long tail of
 lower-traffic screens/components still hardcodes brand hex backgrounds
 directly and will NOT react to a Scene change until migrated. Do not
 assume "global theme" means every screen already reacts — check whether a

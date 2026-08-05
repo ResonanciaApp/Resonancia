@@ -694,7 +694,13 @@ export default function MezcladorScreen() {
   }, [mainTab, subTab, popularSounds, subTabCategories, moodFilter, tagFilters, effectiveBpm]);
 
   return (
-    <View style={[styles.root, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string }]}>
+    <View style={[styles.root, { backgroundColor: theme.solid }]}>
+      <LinearGradient
+        colors={theme.gradient as [string, string, ...string[]]}
+        style={StyleSheet.absoluteFill}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      />
       <StatusBar hidden />
 
       <View style={styles.inner}>
@@ -878,7 +884,7 @@ export default function MezcladorScreen() {
           {
             transform: [{ translateY: menuSlide }],
             opacity: menuFade,
-            backgroundColor: theme.gradient[theme.gradient.length - 1] as string,
+            backgroundColor: theme.solid,
           },
         ]}
       >

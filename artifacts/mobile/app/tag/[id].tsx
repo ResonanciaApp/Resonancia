@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
   filterPill: {
     paddingHorizontal: 18,
     borderRadius: 999,
-    height: 32,
+    height: 31,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -340,9 +340,9 @@ const styles = StyleSheet.create({
   },
   filterPillIdle: {
     paddingHorizontal: 13,
-    backgroundColor: "rgba(255,255,255,0.03)",
+    backgroundColor: "rgba(255,255,255,0.05)",
     borderWidth: 1,
-    borderColor: "rgba(80,42,247,0.07)",
+    borderColor: "rgba(255,255,255,0.1)",
   },
   filterLabel: {
     fontFamily: "Manrope",
@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
   },
   filterLabelIdle: {
     fontFamily: "Manrope",
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "450" as TextStyle["fontWeight"],
     letterSpacing: 0.3,
     color: "#F4F4F4",
