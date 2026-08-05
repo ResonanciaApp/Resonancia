@@ -655,7 +655,7 @@ export default function ExploreScreen() {
                 onPress={() => router.push((t.route ?? `/tema/${t.id}`) as never)}
                 style={({ pressed }) => [
                   styles.temaCell,
-                  { width: TEMA3_W, height: TEMA3_W, backgroundColor: "rgba(255,255,255,0.03)", opacity: pressed ? 0.75 : 1 },
+                  { width: TEMA3_W, height: TEMA3_W, backgroundColor: "rgba(255,255,255,0.05)", opacity: pressed ? 0.75 : 1 },
                 ]}
               >
                 <MaterialCommunityIcons name={t.icon} size={26} color={t.color} />
