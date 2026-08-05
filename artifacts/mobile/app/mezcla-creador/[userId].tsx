@@ -193,6 +193,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingVertical: 12,
     paddingHorizontal: 14,
+    backgroundColor: "rgba(255,255,255,0.035)",
   },
   cover: {
     width: COVER_SIZE,
