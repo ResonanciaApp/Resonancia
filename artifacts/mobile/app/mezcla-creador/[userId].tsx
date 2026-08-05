@@ -23,7 +23,6 @@ import type { SharedMix } from "@workspace/api-client-react";
 
 import { MIX_CATEGORIES } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
-import { useSceneTheme } from "@/context/SceneThemeContext";
 import { resolveAvatarUrl } from "@/lib/avatar";
 
 const COVER_SIZE = 46;
@@ -49,7 +48,6 @@ function CategoryCover({ category }: { category?: string | null }) {
 
 export default function CreatorProfileScreen() {
   const colors = useColors();
-  const { theme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const { userId, name } = useLocalSearchParams<{ userId: string; name?: string }>();
   const authorId = Number(userId);
@@ -66,7 +64,7 @@ export default function CreatorProfileScreen() {
   const totalLikes = mixes.reduce((sum, m) => sum + m.likes, 0);
 
   return (
-    <LinearGradient colors={theme.gradient as unknown as [string, string]} style={styles.root}>
+    <LinearGradient colors={["#060A0F", "#0C1220", "#0A1020"]} style={styles.root}>
       <ScrollView
         contentContainerStyle={{
           paddingTop: insets.top + 8,
