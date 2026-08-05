@@ -355,11 +355,7 @@ export default function HomeScreen2() {
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
   const { open: openDrawer } = useDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
-  const cardBg = activeSceneId === "indigo"
-    ? "rgba(255,255,255,0.037)"
-    : activeSceneId === "profundo"
-      ? "rgba(255,255,255,0.06)"
-      : "rgba(255,255,255,0.07)";
+  const cardBg = "rgba(255,255,255,0.05)";
   // Fade de 300ms entre degradados de fondo al cambiar de Escena (loto en Inicio):
   // se mantiene el degradado anterior debajo y el nuevo se desvanece encima, en vez
   // de saltar de golpe de un color a otro.
@@ -1127,8 +1123,7 @@ export default function HomeScreen2() {
                   gap: 12,
                   overflow: "hidden" as const,
                   opacity: pressed ? 0.75 : 1,
-                  borderWidth: activeSceneId === "indigo" ? 0 : 1,
-                  borderColor: "rgba(218,212,236,0.1)",
+                  borderWidth: 0,
                   ...corners[i],
                 }]}
               >
