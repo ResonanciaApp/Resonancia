@@ -137,7 +137,7 @@ export default function CreatorProfileScreen() {
                 }
                 style={({ pressed }) => [
                   styles.mixRow,
-                  { backgroundColor: "rgba(74,12,12,0.20)", opacity: pressed ? 0.7 : 1 },
+                  { opacity: pressed ? 0.7 : 1 },
                 ]}
               >
                 <CategoryCover category={mix.category} />
