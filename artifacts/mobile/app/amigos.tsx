@@ -69,7 +69,7 @@ export default function AmigosScreen() {
 
   return (
     <LinearGradient
-      style={styles.root}
+      style={[styles.root, { backgroundColor: sceneTheme.solid }]}
       colors={sceneTheme.gradient}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
@@ -198,12 +198,12 @@ function SignedInAmigos() {
     ]);
   };
 
-  const initialLoading = friendsQ.isLoading && requestsQ.isLoading && conversationsQ.isLoading;
+  const initialLoading = friendsQ.isLoading || requestsQ.isLoading || conversationsQ.isLoading;
 
   if (initialLoading) {
     return (
       <View style={{ paddingTop: 48, alignItems: "center" }}>
-        <ActivityIndicator color={colors.primary} size="large" />
+        <ActivityIndicator color={"#F9F9F9"} size="large" />
       </View>
     );
   }

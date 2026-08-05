@@ -85,6 +85,7 @@ export function useGrupos() {
   const [loading, setLoading] = useState(true);
 
   const reload = useCallback(async () => {
+    setLoading(true);
     try {
       const raw = await AsyncStorage.getItem(STORAGE_KEY);
       const existing: GrupoLocal[] = raw ? (JSON.parse(raw) as GrupoLocal[]) : [];

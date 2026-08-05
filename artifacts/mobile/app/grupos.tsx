@@ -438,7 +438,7 @@ export default function GruposScreen() {
 
   return (
     <LinearGradient
-      style={styles.root}
+      style={[styles.root, { backgroundColor: sceneTheme.solid }]}
       colors={sceneTheme.gradient}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}

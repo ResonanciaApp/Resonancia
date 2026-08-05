@@ -136,7 +136,7 @@ export default function DiarioScreen() {
   return (
     <LinearGradient
 
-      style={styles.root}
+      style={[styles.root, { backgroundColor: sceneTheme.solid }]}
 
       colors={sceneTheme.gradient}
 

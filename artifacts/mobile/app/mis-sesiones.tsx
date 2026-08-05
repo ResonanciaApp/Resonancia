@@ -100,7 +100,7 @@ export default function MisSesionesScreen() {
   const bottomPad = insets.bottom + 24;
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: sceneTheme.solid }]}>
       <StatusBar hidden />
       <LinearGradient colors={sceneTheme.gradient} style={StyleSheet.absoluteFill} />
 

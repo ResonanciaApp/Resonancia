@@ -16,6 +16,7 @@ export function useDiario(section: DiarioSection) {
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
+    setLoading(true);
     try {
       const raw = await AsyncStorage.getItem(KEY(section));
       setEntries(raw ? (JSON.parse(raw) as DiarioEntry[]) : []);
