@@ -95,8 +95,8 @@ export default function AmigosScreen() {
         </Text>
 
         {!isLoaded ? (
-          <View style={{ paddingTop: 40, alignItems: "center" }}>
-            <ActivityIndicator color={colors.primary} />
+          <View style={{ paddingTop: 60, alignItems: "center" }}>
+            <ActivityIndicator color={"#F9F9F9"} size="large" />
           </View>
         ) : isSignedIn ? (
           <SignedInAmigos />

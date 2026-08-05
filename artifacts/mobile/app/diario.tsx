@@ -5,6 +5,7 @@ import { useBackOverride } from "@/context/BackOverrideContext";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Platform,
   Pressable,
@@ -73,7 +74,7 @@ export default function DiarioScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
-  const { entries, deleteAll, reload } = useDiario("reflexiones");
+  const { entries, loading, deleteAll, reload } = useDiario("reflexiones");
 
   // Recargar al volver de la pantalla de entrada (nueva/edición).
   useFocusEffect(
