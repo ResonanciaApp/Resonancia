@@ -82,6 +82,7 @@ const ADMIN_IDS = new Set(ADMIN_GRUPOS.map((g) => g.id));
 
 export function useGrupos() {
   const [grupos, setGrupos] = useState<GrupoLocal[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const reload = useCallback(async () => {
     try {
@@ -101,6 +102,7 @@ export function useGrupos() {
         setGrupos(existing);
       }
     } catch {}
+    finally { setLoading(false); }
   }, []);
 
   useEffect(() => {
@@ -123,7 +125,7 @@ export function useGrupos() {
     });
   }, []);
 
-  return { grupos, reload, saveGrupo, deleteGrupo };
+  return { grupos, loading, reload, saveGrupo, deleteGrupo };
 }
 
 export function isAdminGrupo(id: string): boolean {

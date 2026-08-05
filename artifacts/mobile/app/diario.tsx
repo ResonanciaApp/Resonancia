@@ -170,7 +170,11 @@ export default function DiarioScreen() {
       <Text style={[styles.screenTitle, { color: "#F9F9F9" }]}>Diario</Text>
 
       {/* Body */}
-      {entries.length === 0 ? (
+      {loading ? (
+        <View style={styles.emptyWrap}>
+          <ActivityIndicator color={"#F9F9F9"} size="large" />
+        </View>
+      ) : entries.length === 0 ? (
         <View style={styles.emptyWrap}>
           <Text style={[styles.emptyTitle, { color: "#F9F9F9" }]}>No hay entradas</Text>
           <Text style={[styles.emptyText, { color: "#F4F4F4" }]}>

@@ -198,6 +198,16 @@ function SignedInAmigos() {
     ]);
   };
 
+  const initialLoading = friendsQ.isLoading && requestsQ.isLoading && conversationsQ.isLoading;
+
+  if (initialLoading) {
+    return (
+      <View style={{ paddingTop: 48, alignItems: "center" }}>
+        <ActivityIndicator color={colors.primary} size="large" />
+      </View>
+    );
+  }
+
   return (
     <>
       <View style={[styles.searchRow, { backgroundColor: "rgba(255,255,255,0.075)", overflow: "hidden", borderColor: "rgba(255,255,255,0.1)" }]}>

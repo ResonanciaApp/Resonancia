@@ -5,6 +5,7 @@ import { router, useFocusEffect } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useCallback, useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   Modal,
   Platform,
@@ -420,7 +421,7 @@ export default function GruposScreen() {
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const [tab, setTab] = useState<TabType>("ojear");
   const [showCreate, setShowCreate] = useState(false);
-  const { grupos: gruposCreados, reload } = useGrupos();
+  const { grupos: gruposCreados, loading: gruposLoading, reload } = useGrupos();
   const { username } = useUserProfile();
 
   useFocusEffect(
@@ -486,21 +487,29 @@ export default function GruposScreen() {
 
       {/* Content */}
       <View style={styles.content}>
-        {tab === "ojear" && (
-          <TabOjear
-            colors={colors}
-            gruposAdmin={gruposCreados.filter((g) => isAdminGrupo(g.id))}
-            adminName={username || "ElSeñordelosCuencos"}
-          />
+        {gruposLoading ? (
+          <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+            <ActivityIndicator color={"#F9F9F9"} size="large" />
+          </View>
+        ) : (
+          <>
+            {tab === "ojear" && (
+              <TabOjear
+                colors={colors}
+                gruposAdmin={gruposCreados.filter((g) => isAdminGrupo(g.id))}
+                adminName={username || "ElSeñordelosCuencos"}
+              />
+            )}
+            {tab === "misgrupos" && (
+              <TabMisGrupos
+                colors={colors}
+                onCreatePress={() => setShowCreate(true)}
+                gruposCreados={gruposCreados.filter((g) => !isAdminGrupo(g.id))}
+              />
+            )}
+            {tab === "tablon" && <TabTablon colors={colors} />}
+          </>
         )}
-        {tab === "misgrupos" && (
-          <TabMisGrupos
-            colors={colors}
-            onCreatePress={() => setShowCreate(true)}
-            gruposCreados={gruposCreados.filter((g) => !isAdminGrupo(g.id))}
-          />
-        )}
-        {tab === "tablon" && <TabTablon colors={colors} />}
       </View>
 
       <CreateGroupSheet visible={showCreate} onClose={() => setShowCreate(false)} />

@@ -48,7 +48,7 @@ export default function MisSesionesScreen() {
   const goBack = useBackOverride();
   const insets = useSafeAreaInsets();
   const { theme: sceneTheme } = useSceneTheme();
-  const { isSignedIn, isRegistered } = useAuth();
+  const { isSignedIn, isRegistered, authLoading } = useAuth();
   const authenticated = isSignedIn || isRegistered;
 
   const { data, isLoading, refetch, isRefetching } = useGetMyLiveSessions({
@@ -137,7 +137,7 @@ export default function MisSesionesScreen() {
             <Text style={styles.authBtnText}>Crear cuenta</Text>
           </Pressable>
         </View>
-      ) : isLoading ? (
+      ) : authLoading || isLoading ? (
         <View style={styles.emptyContainer}>
           <ActivityIndicator color={PRIMARY_GOLD} size="large" />
         </View>
