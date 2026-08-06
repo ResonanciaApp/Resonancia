@@ -103,7 +103,7 @@ export default function EncuentrosScreen() {
         </View>
 
         {/* ── Carrusel Resonadores ── */}
-        <View style={{ marginTop: 36 }}>
+        <View style={{ marginTop: 61 }}>
           <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: CARD_H_PADDING, marginBottom: 16 }}>
             <Text style={styles.sectionTitle}>Los Resonadores</Text>
             <Pressable onPress={() => router.push("/resonadores" as never)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
