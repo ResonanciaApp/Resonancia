@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     flex: 1,
     fontFamily: "Manrope",
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "700",
     color: "#f9f9f9",
   },
