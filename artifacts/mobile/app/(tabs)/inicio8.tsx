@@ -1026,13 +1026,13 @@ export default function HomeScreen2() {
               { marginTop: -5, marginBottom: 0, transform: [], opacity: pressed ? 0.75 : 1 },
             ]}
           >
-            <Text style={styles.intencionSuper}>Hoy voy a...</Text>
+            <Text style={styles.intencionSuper}>Hoy quiero…</Text>
             <View style={styles.intencionRow}>
               <Animated.View style={[styles.intencionCursor, { opacity: cursorOpacity }]} />
               {currentIntencion ? (
                 <Text style={styles.intencionText} numberOfLines={2}>{currentIntencion}</Text>
               ) : (
-                <Text style={styles.intencionPlaceholder}>Establece tu intención aquí</Text>
+                <Text style={styles.intencionPlaceholder}>Proyecta tu propósito</Text>
               )}
             </View>
           </Pressable>
