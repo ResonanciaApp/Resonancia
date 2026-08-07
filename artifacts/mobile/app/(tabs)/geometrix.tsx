@@ -7055,7 +7055,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.04)",
     marginBottom: 14,
   },
-  sheetTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: CANVAS_ICON },
+  sheetTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: "#f4f4f4" },
   sheetEmpty: { alignItems: "center", gap: 10, paddingVertical: 40 },
   sheetEmptyText: { fontFamily: "Manrope", fontSize: 14, color: colors.mutedForeground, textAlign: "center" },
 
@@ -7095,7 +7095,7 @@ const styles = StyleSheet.create({
   },
 
   gradientLabel: { marginTop: 10 },
-  fieldLabel: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: CANVAS_ICON },
+  fieldLabel: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: "#f4f4f4" },
   fieldRow: {
     flexDirection: "row",
     alignItems: "center",
