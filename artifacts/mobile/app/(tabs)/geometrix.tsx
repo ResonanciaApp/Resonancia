@@ -1720,9 +1720,9 @@ function SettingsSection({
       >
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 7 }}>
           {SECTION_ICONS[title] != null && (
-            <Feather name={SECTION_ICONS[title]!} size={13} color={CANVAS_ICON} />
+            <Feather name={SECTION_ICONS[title]!} size={13} color="#f9f9f9" />
           )}
-          <Text style={{ fontSize: 12, fontWeight: "700", letterSpacing: 0.8, textTransform: "uppercase", color: CANVAS_ICON }}>
+          <Text style={{ fontSize: 12, fontWeight: "700", letterSpacing: 0.8, textTransform: "uppercase", color: "#f9f9f9" }}>
             {title}
           </Text>
         </View>
@@ -1740,7 +1740,7 @@ function SettingsSection({
           </Pressable>
         )}
         <Animated.View style={chevronStyle}>
-          <Feather name="chevron-down" size={15} color={CANVAS_ICON} />
+          <Feather name="chevron-down" size={15} color="#f9f9f9" />
         </Animated.View>
       </Pressable>
       {/* Línea separadora */}
@@ -5778,7 +5778,7 @@ export default function GeometrixScreen() {
           }}
           style={[
             styles.sheet,
-            { paddingBottom: insets.bottom + 16, backgroundColor: canvasBgColors[canvasBgColors.length - 1] as string },
+            { paddingBottom: insets.bottom + 16 },
             // Una vez congelado, alto FIJO: la vista previa (anclada a este alto)
             // no cambia de tamaño/posición y, al desplegar una sección, el
             // contenido scrollea dentro del sheet en vez de crecer hacia arriba.
@@ -5786,6 +5786,12 @@ export default function GeometrixScreen() {
             settingsGeo && frozenSheetH != null && { height: frozenSheetH },
           ]}
         >
+          <LinearGradient
+            colors={canvasBgColors}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={[StyleSheet.absoluteFill, styles.sheetGradient]}
+          />
           <View style={styles.sheetHeader}>
             <View style={styles.sheetHeaderLeft}>
               {settingsGeo ? (
