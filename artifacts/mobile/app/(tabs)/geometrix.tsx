@@ -5015,13 +5015,19 @@ export default function GeometrixScreen() {
           }}
           style={[
             styles.sheet,
-            { paddingBottom: insets.bottom + 16, backgroundColor: sheetBgColor },
+            { paddingBottom: insets.bottom + 16 },
             // Una vez congelado, alto FIJO: al desplegar una sección el contenido
             // scrollea dentro del sheet (arrastra hacia abajo) en vez de crecer
             // hacia arriba, y la vista previa mantiene tamaño y posición.
             frozenGeneralSheetH != null && { height: frozenGeneralSheetH },
           ]}
         >
+          <LinearGradient
+            colors={canvasBgColors}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={[StyleSheet.absoluteFill, styles.sheetGradient]}
+          />
           <View style={styles.sheetHeader}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
               <Text style={styles.sheetTitle}>Ajustes generales</Text>
