@@ -5778,7 +5778,7 @@ export default function GeometrixScreen() {
           }}
           style={[
             styles.sheet,
-            { paddingBottom: insets.bottom + 16, backgroundColor: sheetBgColor },
+            { paddingBottom: insets.bottom + 16, backgroundColor: canvasBgColors[canvasBgColors.length - 1] as string },
             // Una vez congelado, alto FIJO: la vista previa (anclada a este alto)
             // no cambia de tamaño/posición y, al desplegar una sección, el
             // contenido scrollea dentro del sheet en vez de crecer hacia arriba.
