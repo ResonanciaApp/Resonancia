@@ -1,0 +1,109 @@
+Inspect and fix my `artifacts/mobile/metro.config.js`.
+
+The primary goal is to fix:
+
+`ENOSPC: System limit for number of file watchers reached`
+
+### Critical requirement
+
+Keep this ENOSPC fix:
+
+```js
+config.watchFolders = (config.watchFolders ?? []).filter(
+  (folder) => !folder.includes("node_modules")
+);
+```
+
+This must remain immediately after:
+
+```js
+const config = getDefaultConfig(__dirname);
+```
+
+### Important
+
+The `metro.config.js` content may contain corrupted Markdown/escaping characters such as:
+
+* `\_dirname`
+* `\_modules`
+* `\*dirname*`
+* `\*`
+* malformed email-style paths such as `[babel+core...]`
+* other characters that are not valid JavaScript
+
+Clean those up and restore valid JavaScript syntax.
+
+For example, these must be valid:
+
+```js
+const config = getDefaultConfig(__dirname);
+```
+
+and:
+
+```js
+const REACT_PATH = path.resolve(
+  __dirname,
+  "../../node_modules/.pnpm/react@19.1.0/node_modules/react"
+);
+```
+
+Do NOT blindly replace the entire Metro configuration with a minimal config. Preserve the existing functionality for:
+
+1. `expo-modules-core` deduplication
+2. React deduplication
+3. React Native deduplication
+4. the `NULL_STUB` resolver
+5. `specs_DEPRECATED` handling
+6. `virtualview` handling
+7. the Modal exception
+8. the Switch exception
+9. the existing resolver logic
+
+### Also verify paths
+
+Before finalizing, inspect the actual pnpm directory:
+
+```bash
+ls node_modules/.pnpm | grep '^react@'
+ls node_modules/.pnpm | grep '^react-native@'
+ls node_modules/.pnpm | grep '^expo-modules-core@'
+```
+
+Do NOT assume the exact versions shown in the old config still exist.
+
+If the configured React, React Native, or expo-modules-core paths don't exist, update the paths to the actual installed versions rather than inventing paths.
+
+### Validate the configuration
+
+Run a JavaScript syntax check on `metro.config.js`.
+
+Then start Metro from:
+
+```bash
+cd artifacts/mobile
+```
+
+using the project's existing Expo development command.
+
+Confirm:
+
+1. Metro starts successfully.
+2. There is no `ENOSPC` error.
+3. `node_modules` is not present in `config.watchFolders`.
+4. React Native dependencies still resolve.
+5. Expo dependencies still resolve.
+6. The custom `resolveRequest` still works.
+7. Live JS/TS updates continue working.
+
+Do NOT upgrade or downgrade packages unless absolutely necessary for the Metro configuration to work.
+
+Do NOT change unrelated application code.
+
+At the end, give me:
+
+* the corrected `metro.config.js`
+* the exact commands used to validate it
+* whether Metro started successfully
+* whether ENOSPC is fixed
+* any remaining errors or warnings
