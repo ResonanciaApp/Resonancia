@@ -110,4 +110,3 @@
 - [Biblioteca overlay sobre drawer](biblioteca-drawer-overlay.md) — "Biblioteca" del menú no navega: overlay deslizante sobre el drawer (queda abierto debajo); patrón para pantallas "sobre el menú"
 - [Perfil split](perfil-split.md) — Perfil de tabs = solo pills Biblioteca/Historial; contenido de perfil (Muro) vive en /mi-perfil (ProfileScreenBase dedicated); drawer "Ver Perfil" → /mi-perfil
 - [RN specs_DEPRECATED StubComponent patch](rn-specs-deprecated-stub-patch.md) — crash iOS "two views same name StubComponent": parchear src/private/specs_DEPRECATED/components/*.js con null en TODAS las instancias de RN en node_modules/.pnpm/
-- [Root app.json breaks expo tunnel](repo-root-appjson-tunnel.md) — /app.json (raíz del repo) hace que expo start use projectRoot incorrecto; siempre ejecutar tunnel desde artifacts/mobile/
