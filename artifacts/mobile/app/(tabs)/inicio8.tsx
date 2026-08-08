@@ -1087,7 +1087,7 @@ export default function HomeScreen2() {
 
 
         {/* ── EXPLORA POR CONTENIDO ── */}
-        <View style={[styles.section, { marginBottom: SECTION_GAP - 20, marginTop: showAnimatedScene ? -12 : -18 }]}>
+        <View style={[styles.section, { marginBottom: SECTION_GAP - 20, marginTop: showAnimatedScene ? 28 : 22 }]}>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 7, marginTop: 20, justifyContent: "center" }}>
             {([
               { id: "meditaciones-guiadas", label: "Meditaciones", color: "#C8A6FF", icon: (_color: string) => <ExpoImage source={require("@/assets/images/cat-meditaciones.png")} style={{ width: 22, height: 22 }} contentFit="contain" /> },
