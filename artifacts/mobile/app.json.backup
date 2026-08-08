@@ -3,7 +3,9 @@
     "name": "Resonancia",
     "slug": "mobile",
     "version": "1.0.0",
-    "runtimeVersion": "1.0.0",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "resonancia",
@@ -26,10 +28,10 @@
         "UIBackgroundModes": [
           "audio"
         ],
-        "NSMicrophoneUsageDescription": "RESONANCIA usa el micr\u00f3fono para grabar tu Voz Interior y mensajes de voz en los chats.",
-        "NSPhotoLibraryUsageDescription": "RESONANCIA accede a tus fotos para que puedas elegir tu foto de perfil y compartir im\u00e1genes en los mensajes.",
-        "NSPhotoLibraryAddUsageDescription": "RESONANCIA guarda im\u00e1genes en tu galer\u00eda cuando las descarg\u00e1s.",
-        "NSCameraUsageDescription": "RESONANCIA usa la c\u00e1mara para que puedas sacarte una foto de perfil.",
+        "NSMicrophoneUsageDescription": "RESONANCIA usa el micrófono para grabar tu Voz Interior y mensajes de voz en los chats.",
+        "NSPhotoLibraryUsageDescription": "RESONANCIA accede a tus fotos para que puedas elegir tu foto de perfil y compartir imágenes en los mensajes.",
+        "NSPhotoLibraryAddUsageDescription": "RESONANCIA guarda imágenes en tu galería cuando las descargás.",
+        "NSCameraUsageDescription": "RESONANCIA usa la cámara para que puedas sacarte una foto de perfil.",
         "ITSAppUsesNonExemptEncryption": false
       }
     },
@@ -98,14 +100,14 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "RESONANCIA accede a tus fotos para que puedas elegir tu foto de perfil y compartir im\u00e1genes en los mensajes.",
-          "cameraPermission": "RESONANCIA usa la c\u00e1mara para que puedas sacarte una foto de perfil."
+          "photosPermission": "RESONANCIA accede a tus fotos para que puedas elegir tu foto de perfil y compartir imágenes en los mensajes.",
+          "cameraPermission": "RESONANCIA usa la cámara para que puedas sacarte una foto de perfil."
         }
       ],
       [
         "expo-av",
         {
-          "microphonePermission": "RESONANCIA usa el micr\u00f3fono para grabar tu Voz Interior y mensajes de voz en los chats."
+          "microphonePermission": "RESONANCIA usa el micrófono para grabar tu Voz Interior y mensajes de voz en los chats."
         }
       ],
       [

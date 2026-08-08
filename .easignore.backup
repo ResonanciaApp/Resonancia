@@ -18,6 +18,7 @@ attached_assets/
 docs/
 exports/
 screenshots/
+artifacts/
 .pythonlibs/
 **/.pythonlibs/
 *.pdf

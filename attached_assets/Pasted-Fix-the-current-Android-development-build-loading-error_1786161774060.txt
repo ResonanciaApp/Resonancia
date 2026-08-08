@@ -1,0 +1,90 @@
+Fix the current Android development build loading error without rebuilding the APK unless absolutely necessary.
+
+CURRENT STATUS:
+
+* Expo SDK: 54
+* Project: `/home/runner/workspace/artifacts/mobile`
+* Android development APK already builds and launches successfully.
+* `app.json` has `"runtimeVersion": "1.0.0"` and is valid.
+* `package.json` has `"main": "expo-router/entry"`.
+* Expo Router app directory exists at `/home/runner/workspace/artifacts/mobile/app`.
+* `app/(auth)/sign-up.tsx` exists.
+* Metro `projectRoot` is correctly `/home/runner/workspace/artifacts/mobile`.
+* Metro tunnel works:
+  `https://fcy1ktk-casadelcuenco-2-8082.exp.direct`
+* The phone reaches the development server, but the development client shows:
+
+`com.facebook.react.common.DebugServerException`
+
+with:
+
+`UnableToResolveError`
+
+and:
+
+`originModulePath: "/home/runner/workspace/."`
+
+IMPORTANT:
+Do NOT assume this is a networking problem. The tunnel is working.
+Do NOT change `.easignore`.
+Do NOT change `runtimeVersion`.
+Do NOT rebuild the APK initially.
+Do NOT upgrade Expo/React Native versions.
+
+INVESTIGATE THE CUSTOM `metro.config.js` FIRST.
+
+The current `metro.config.js` contains:
+
+1. A watchFolders filter removing node_modules.
+2. An `extraNodeModules` override forcing React to a specific pnpm path.
+3. An `extraNodeModules` override forcing React Native to a specific pnpm path.
+4. A custom `resolveRequest`.
+5. An `expo-modules-core` redirect.
+6. A React 19.2.8 → React 19.1.0 source-file rewrite.
+7. React Native `specs_DEPRECATED` and `virtualview` null stubs.
+
+The custom resolver is especially suspicious because it calls the original resolver/context resolver and rewrites source file paths.
+
+Please do the following:
+
+1. Back up the current `metro.config.js`.
+2. Inspect the current Expo SDK 54 Metro configuration.
+3. Determine exactly why the bundle request is producing:
+   `/home/runner/workspace/.`
+   as `originModulePath`.
+4. Check whether the custom `resolveRequest` is causing the incorrect resolution.
+5. Preserve the ENOSPC fix:
+   `config.watchFolders = (config.watchFolders ?? []).filter((f) => !f.includes("node_modules"));`
+6. Preserve only resolver customizations that are actually required for this project's native dependencies.
+7. Make the smallest safe change that allows Expo Router to resolve from:
+   `/home/runner/workspace/artifacts/mobile`
+8. Do not remove the `app` directory or change `"main": "expo-router/entry"`.
+9. Validate the resulting Metro config with:
+   `node --check metro.config.js`
+10. Verify:
+    `projectRoot === "/home/runner/workspace/artifacts/mobile"`
+11. Start Metro with:
+    `pnpm exec expo start --dev-client --tunnel --clear`
+12. Test that the development client can load the bundle.
+13. If it still fails, capture the exact `UnableToResolveError` including the module name/path before making another change.
+
+Also check whether the Replit-specific environment variables in the `dev` script are interfering with the Expo development client. The current package.json contains:
+
+`EXPO_PACKAGER_PROXY_URL=https://$REPLIT_EXPO_DEV_DOMAIN`
+`EXPO_PUBLIC_DOMAIN=$REPLIT_DEV_DOMAIN`
+`REACT_NATIVE_PACKAGER_HOSTNAME=$REPLIT_DEV_DOMAIN`
+
+Do not blindly use those variables with the Expo tunnel command if they override the tunnel URL.
+
+Goal:
+When the Android development APK connects to the tunnel, it must load the actual Expo Router application from `artifacts/mobile/app`, including the existing `(auth)/sign-up.tsx` screen.
+
+After fixing it, report:
+
+* exact file(s) changed
+* exact cause
+* exact fix
+* validation performed
+* whether the phone successfully loaded the app
+
+Do not make unrelated dependency upgrades.
