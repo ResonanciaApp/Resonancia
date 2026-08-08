@@ -1,0 +1,97 @@
+We have an important comparison point for the Expo Android development build.
+
+The project previously built successfully:
+
+Successful build:
+`9341847b-fd3e-4831-bb52-3dd807b62784`
+
+Failed build:
+`2c46d171-1807-49f6-ba03-8c1627f0c7bc`
+
+Both are:
+
+* Android
+* development profile
+* internal distribution
+* Expo SDK 54
+* Runtime 1.0.0
+* Version 1.0.0
+
+The successful build produced an APK.
+
+The failed build started at 12:49:59 AM and failed at 12:50:13 AM, so it lasted only about 14 seconds.
+
+### Goal
+
+Determine why the latest build failed without making speculative changes.
+
+Inspect the current project state and compare it with the commit associated with the successful build if the Git history is available.
+
+Successful build commit:
+
+`b24b364ae4edc411bef23cee32352acb13e5c5ed`
+
+Failed build commit:
+
+`1c4320af627d4dd0bc14de06d504600ccd478d71`
+
+Run appropriate Git comparisons such as:
+
+```bash
+git diff b24b364ae4edc411bef23cee32352acb13e5c5ed 1c4320af627d4dd0bc14de06d504600ccd478d71 -- artifacts/mobile
+```
+
+Also inspect:
+
+* `artifacts/mobile/metro.config.js`
+* `artifacts/mobile/eas.json`
+* `artifacts/mobile/app.json` / `app.config.*`
+* `package.json`
+* pnpm lockfile
+* any EAS build hooks
+* scripts referenced by `eas.json` or package.json
+
+### Critical
+
+The current `metro.config.js` already has a confirmed ENOSPC fix:
+
+```js
+config.watchFolders = (config.watchFolders ?? []).filter(
+  (folder) => !folder.includes("node_modules")
+);
+```
+
+Do NOT remove this.
+
+The current Metro configuration has also been validated with `node --check` and Metro starts successfully.
+
+Do NOT randomly change Expo, React Native, React, or other dependency versions.
+
+Do NOT publish the Replit project.
+
+Do NOT start another EAS build yet.
+
+### Most important
+
+Find the actual EAS failure reason for:
+
+`2c46d171-1807-49f6-ba03-8c1627f0c7bc`
+
+The CLI reports:
+
+`Android build failed: Unknown error. See logs of the Build complete hook build phase for more information.`
+
+Determine what the "Build complete hook" is executing and whether it is:
+
+* a custom EAS hook
+* an npm/pnpm script
+* a Metro/config validation issue
+* an environment/configuration issue
+* a dependency installation issue
+* another project script
+
+If the EAS logs are accessible from the CLI or project files, inspect them.
+
+Do not make changes until the root cause is identified.
+
+Report the exact cause and the smallest safe fix.
