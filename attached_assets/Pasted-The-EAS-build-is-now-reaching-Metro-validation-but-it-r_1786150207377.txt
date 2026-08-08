@@ -1,0 +1,79 @@
+The EAS build is now reaching Metro validation, but it reports these warnings:
+
+`Unknown option "watcher.unstable_workerThreads" with value false was found.`
+
+and:
+
+`It looks like that you are using a custom metro.config.js that does not extend @expo/metro-config.`
+
+I need you to inspect the actual `artifacts/mobile/metro.config.js` and fix ONLY the Metro configuration warnings without breaking the existing ENOSPC fix or the existing React/Expo compatibility workarounds.
+
+### Important
+
+The current config already starts with:
+
+```js
+const { getDefaultConfig } = require("expo/metro-config");
+const config = getDefaultConfig(__dirname);
+```
+
+So it DOES extend Expo's default Metro configuration.
+
+Do not replace the configuration with a minimal Metro config.
+
+### First
+
+Search the project for:
+
+```text
+watcher.unstable_workerThreads
+```
+
+and identify exactly where it is being configured.
+
+If it is present in `metro.config.js` and is unsupported by the installed Expo/Metro version, remove only that unsupported option.
+
+### Preserve these existing fixes
+
+1. The ENOSPC fix:
+
+```js
+config.watchFolders = (config.watchFolders ?? []).filter(
+  (folder) => !folder.includes("node_modules")
+);
+```
+
+2. `expo-modules-core` deduplication.
+
+3. React deduplication.
+
+4. React Native deduplication.
+
+5. The custom `resolveRequest`.
+
+6. The `NULL_STUB` handling.
+
+7. The `specs_DEPRECATED` and `virtualview` handling.
+
+8. The Modal and Switch exceptions.
+
+Do not upgrade or downgrade packages.
+
+### Validate
+
+After making the change:
+
+1. Run `node --check metro.config.js`.
+2. Confirm `getDefaultConfig(__dirname)` is still used.
+3. Confirm `node_modules` is still excluded from `watchFolders`.
+4. Start Metro and confirm it runs.
+5. Run the EAS build again:
+
+```bash
+cd artifacts/mobile
+eas build --profile development --platform android
+```
+
+If EAS still shows the "does not extend @expo/metro-config" warning but the config clearly calls `getDefaultConfig(__dirname)`, determine whether it is only a validation false positive rather than changing the working configuration unnecessarily.
+
+Do not modify unrelated files.

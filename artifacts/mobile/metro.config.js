@@ -4,6 +4,16 @@ const fs = require("fs");
 
 const config = getDefaultConfig(__dirname);
 
+// ── Remove unstable_workerThreads ─────────────────────────────────────────────
+// @expo/metro-config@54.x sets watcher.unstable_workerThreads = false, but
+// newer Metro versions (used in EAS build validation) don't recognise this key
+// → "Unknown option 'watcher.unstable_workerThreads' with value false".
+// Deleting it here suppresses the warning without affecting any behaviour —
+// the option was already false (disabled).
+if (config.watcher) {
+  delete config.watcher.unstable_workerThreads;
+}
+
 // ── inotify / ENOSPC fix ──────────────────────────────────────────────────────
 // In Linux environments without watchman (e.g. Replit), Metro uses
 // FallbackWatcher which opens one inotify watch per directory recursively.
