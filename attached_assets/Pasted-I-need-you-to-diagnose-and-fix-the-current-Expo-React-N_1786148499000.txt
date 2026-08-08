@@ -1,0 +1,61 @@
+I need you to diagnose and fix the current Expo/React Native project without removing or weakening the app's intended native functionality.
+
+Project goal:
+This is a meditation/audio app where users can layer calming sounds such as rain, singing bowls and gongs. Audio must continue playing when the Android screen is locked, lock-screen/media controls must work, sleep timers must reliably stop playback, and the new native audio engine must be used.
+
+Important:
+I need TWO things:
+1. A working Android development build (expo-dev-client) that supports the native audio functionality.
+2. Live JavaScript/TypeScript code updates through the development server while testing that development build.
+
+Do NOT switch the project back to Expo Go as the primary solution.
+Do NOT permanently remove react-native-audio-api.
+Do NOT disable background audio, lock-screen controls, notifications, or the audio engine just to make Expo Go work.
+
+First inspect the project before changing anything.
+
+Check:
+- package.json
+- pnpm-workspace.yaml
+- app.json/app.config.*
+- eas.json
+- all Expo/React Native dependencies
+- imports/usages of react-native-audio-api
+- imports/usages of expo-notifications
+- audio/background playback configuration
+- Android permissions/configuration
+- Expo Router configuration
+- whether expo-dev-client is installed correctly
+- whether the installed Expo SDK and React Native versions are compatible
+- whether the EAS project is correctly configured
+
+The project uses pnpm. Do NOT use npm for dependency installation because the project has a preinstall script that requires pnpm.
+
+Run appropriate diagnostics such as:
+pnpm install
+npx expo-doctor
+npx expo config --type public
+npx expo install --check
+
+If react-native-audio-api is required by the current implementation, keep it and make sure the development build includes its native code.
+
+If expo-notifications is installed, make sure it is configured correctly for a development build. Do not remove it merely because Expo Go cannot support the required native functionality.
+
+Check for stale imports or references to packages that are not installed, and fix them properly.
+
+Check the EAS development profile. It should produce an installable Android development client APK, not an Expo Go project.
+
+The development build must be able to connect to:
+npx expo start --dev-client
+
+Make the minimum necessary changes. Do not rewrite unrelated application code.
+
+Before making changes, explain what you found.
+After making changes, report:
+1. What was wrong
+2. What you changed
+3. Any remaining issues
+4. The exact commands I should run to create the development APK
+5. The exact command I should run afterward for live development
+
+Do not start an EAS build until the project configuration and dependency checks are clean.

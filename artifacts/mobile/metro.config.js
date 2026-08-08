@@ -4,6 +4,21 @@ const fs = require("fs");
 
 const config = getDefaultConfig(__dirname);
 
+// ── inotify / ENOSPC fix ──────────────────────────────────────────────────────
+// In Linux environments without watchman (e.g. Replit), Metro uses
+// FallbackWatcher which opens one inotify watch per directory recursively.
+// getDefaultConfig() adds the entire workspace node_modules root to
+// watchFolders, which includes node_modules/.pnpm (thousands of directories),
+// exhausting the kernel's fs.inotify.max_user_watches limit (65 536).
+//
+// Fix: strip any node_modules path from watchFolders. Module *resolution*
+// is handled by the resolver (not watchers), so this does not break imports.
+// Only hot-reload for changes inside node_modules is lost — which is never
+// needed during development.
+config.watchFolders = (config.watchFolders ?? []).filter(
+  (f) => !f.includes("node_modules")
+);
+
 const NULL_STUB = path.resolve(__dirname, "mocks/null-stub.js");
 
 // Deduplicate expo-modules-core: react-native-audio-api pulls in
