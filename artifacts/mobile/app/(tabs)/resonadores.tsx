@@ -1,8 +1,8 @@
 import { Feather } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { memo, useState, useMemo, useRef, useEffect } from "react";
+import { memo, useState, useMemo, useRef, useEffect, useCallback } from "react";
 import {
   Alert,
   Animated,
@@ -348,6 +348,22 @@ export default function ResonadoresScreen() {
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const { width: screenWidth } = useWindowDimensions();
+
+  // Animación de entrada: desliza de derecha a izquierda al enfocar la tab
+  const slideAnim = useRef(new Animated.Value(screenWidth)).current;
+  useFocusEffect(
+    useCallback(() => {
+      slideAnim.setValue(screenWidth);
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 340,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }).start();
+      return () => slideAnim.stopAnimation();
+    }, [slideAnim, screenWidth])
+  );
+
   const [activeTab, setActiveTab] = useState<"resonadores" | "expansores">("resonadores");
   const EXPANSOR_PAGE = 9;
   const [expansorLimit, setExpansorLimit] = useState(EXPANSOR_PAGE);
@@ -460,7 +476,7 @@ export default function ResonadoresScreen() {
   const cardW = Math.floor((screenWidth - SCREEN_PAD - CARD_GAP * 2) / numCols);
 
   return (
-    <View style={styles.root}>
+    <Animated.View style={[styles.root, { transform: [{ translateX: slideAnim }] }]}>
       <LinearGradient
         colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
         style={StyleSheet.absoluteFill}
@@ -471,6 +487,7 @@ export default function ResonadoresScreen() {
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <View style={styles.titleRow}>
           <View style={{ flex: 1 }}>
+            <Feather name="chevron-up" size={18} color="rgba(255,255,255,0.45)" style={{ marginBottom: 2, marginLeft: 2 }} />
             <Text style={[styles.title, { transform: [{ translateY: -6 }] }]}>Resonadores</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 6, transform: [{ translateX: 3 }, { translateY: -6 }] }}>
@@ -600,7 +617,7 @@ export default function ResonadoresScreen() {
         }
         renderItem={({ item }) => <ResonadorCard item={item} cardW={cardW} />}
       />
-    </View>
+    </Animated.View>
   );
 }
 
