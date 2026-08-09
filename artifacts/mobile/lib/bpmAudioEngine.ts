@@ -27,7 +27,7 @@
  * silencio, `isReady()` queda en false y MixerContext cae al camino expo-audio
  * de siempre. Nada crashea antes de reconstruir el dev client.
  */
-import { Platform } from "react-native";
+import { Platform, TurboModuleRegistry } from "react-native";
 
 import { SOUND_MAP } from "@/config/sound-map";
 
@@ -106,8 +106,33 @@ class BpmAudioEngine {
       this.available = false;
       return false;
     }
+    // COMPROBACIÓN PREVIA: verificar que el módulo nativo esté compilado en el
+    // dev client ANTES de cargar cualquier JS de react-native-audio-api.
+    //
+    // Por qué no basta con try-catch alrededor del import/require:
+    //   react-native-audio-api lanza en el cuerpo de nivel-módulo de
+    //   AudioAPIModule.ts. Expo transforma require() condicionales en bundles
+    //   lazy via `importAll` (asyncRequireModule.ts). Ese bundle se carga de
+    //   forma asíncrona y el error de inicialización escapa del try-catch de
+    //   init() como un unhandled Promise rejection. Incluso el await import()
+    //   tiene el mismo problema en Hermes.
+    //
+    // La solución correcta: comprobar TurboModuleRegistry ANTES de cargar la
+    // librería. Si el módulo nativo no está, paramos aquí sin tocar nada más.
+    // react-native-audio-api usa TurboModuleRegistry.get('AudioAPIModule')
+    // internamente; si get() devuelve null → el módulo nativo no existe en
+    // este build del dev client.
+    const hasNativeModule = !!TurboModuleRegistry.get("AudioAPIModule");
+    if (!hasNativeModule) {
+      this.available = false;
+      return false;
+    }
     try {
-      const mod = await import("react-native-audio-api");
+      // El módulo nativo está confirmado. require() síncrono para evitar que
+      // Expo cree un bundle lazy separado (importAll) que pueda escaparse del
+      // try-catch en versiones donde el Promise rejection no se propaga bien.
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const mod = require("react-native-audio-api") as RNAudioModule;
       // expo-audio es el dueño de la AVAudioSession: que esta lib no la toque.
       try {
         mod.AudioManager.disableSessionManagement();
@@ -125,7 +150,6 @@ class BpmAudioEngine {
       this.ready = true;
       return true;
     } catch {
-      // Módulo nativo ausente (build previo) / Expo Go / web → fallback expo.
       this.available = false;
       this.ready = false;
       this.ctx = null;
