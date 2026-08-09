@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
@@ -168,15 +169,7 @@ export default function MezclasIndexScreen() {
 
         {/* ── Header ── */}
         <View style={styles.header}>
-          <Pressable
-            onPress={() => router.back()}
-            hitSlop={12}
-            style={[styles.backBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
-            accessibilityRole="button"
-            accessibilityLabel="Volver"
-          >
-            <Feather name="chevron-left" size={20} color={FG} />
-          </Pressable>
+          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
           <View style={{ flex: 1 }}>
             <Text style={styles.pageTitle}>Mis Mezclas</Text>
             <Text style={styles.pageSub}>Mezclas guardadas</Text>

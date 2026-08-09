@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
@@ -124,13 +125,7 @@ export default function ColeccionScreen() {
             locations={[0.4, 1]}
             style={StyleSheet.absoluteFillObject}
           />
-          <Pressable
-            onPress={() => router.back()}
-            hitSlop={12}
-            style={[styles.backBtn, { top: topPad + 8 }]}
-          >
-            <Feather name="chevron-left" size={28} color="white" />
-          </Pressable>
+          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={[styles.backBtn, { top: topPad + 8 }]} />
           <Text style={styles.coverTitle}>{playlist.title}</Text>
         </View>
 

@@ -393,7 +393,7 @@ export default function NochesScreen() {
         <View style={styles.heroArea}>
           <View style={[styles.heroOverlayLeft, { top: topPad + 8 }]}>
             <View style={styles.lotoBtn}>
-              <BackPill onPress={() => router.back()} size={31} style={{ transform: [{ translateX: -2 }] }} />
+              <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
             </View>
           </View>
           <View style={[styles.heroIconFloat]}>
@@ -454,7 +454,7 @@ export default function NochesScreen() {
         pointerEvents={stickyActive ? "auto" : "none"}
       >
         <View style={styles.lotoBtn}>
-          <BackPill onPress={() => router.back()} size={31} />
+          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         </View>
         <View style={styles.headerTitleCol}>
           <Text style={styles.headerTitle}>Noches</Text>

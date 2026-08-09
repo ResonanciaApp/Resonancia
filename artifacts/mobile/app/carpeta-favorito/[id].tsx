@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { router, useLocalSearchParams } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradientFill } from "@/components/GoldGradient";
@@ -86,9 +87,7 @@ export default function CarpetaFavoritoDetailScreen() {
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        <Pressable onPress={() => router.back()} style={styles.iconBtn}>
-          <Feather name="chevron-left" size={26} color={TEXT} />
-        </Pressable>
+        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         <Text style={styles.headerName} numberOfLines={1}>{folder.name}</Text>
         <Pressable
           style={styles.iconBtn}

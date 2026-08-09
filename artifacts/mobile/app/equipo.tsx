@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -308,13 +309,7 @@ export default function EquipoScreen() {
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <View style={styles.titleRow}>
           <View style={{ flex: 1 }}>
-            <Pressable
-              onPress={backOverride ?? (() => router.back())}
-              hitSlop={12}
-              style={{ alignSelf: "flex-start" }}
-            >
-              <Feather name="chevron-left" size={28} color="#F9F9F9" style={{ marginBottom: 2, marginLeft: 2 }} />
-            </Pressable>
+            <BackPill onPress={backOverride ?? (() => router.back())} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
             <Text style={[styles.title, { transform: [{ translateY: 9 }] }]}>Resonadores</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 6, transform: [{ translateX: 3 }, { translateY: 14 }] }}>

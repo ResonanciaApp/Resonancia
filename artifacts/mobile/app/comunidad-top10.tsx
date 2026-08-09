@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { GoldGradientFill } from "@/components/GoldGradient";
 import { router } from "expo-router";
 import React, { useMemo } from "react";
@@ -50,13 +51,7 @@ export default function ComunidadTop10Screen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.headerTop}>
-          <Pressable
-            onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/profile" as never))}
-            hitSlop={10}
-            style={[styles.backBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
-          >
-            <Feather name="chevron-left" size={20} color={colors.foreground} />
-          </Pressable>
+          <BackPill onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/profile" as never))} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         </View>
 
         <View style={styles.header}>

@@ -10,6 +10,7 @@
  * computadas desde el valor de tiempo `t`.
  */
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useRef, useState } from "react";
 import {
@@ -468,9 +469,7 @@ export default function Caleidoscopio() {
         <>
           {/* Barra superior */}
           <View style={[styles.topBar, { paddingTop: insets.top + 8 }]}>
-            <Pressable onPress={() => router.back()} hitSlop={12} style={styles.iconBtn} accessibilityRole="button">
-              <Feather name="chevron-left" size={22} color="#FAF0EE" />
-            </Pressable>
+            <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
             <View style={styles.topCenter}>
               <Text style={styles.topTitle}>Caleidoscopio</Text>
               <Text style={styles.topSub}>{pattern.name} · {segments} seg · {theme.name}</Text>

@@ -1,11 +1,11 @@
 import { Feather } from "@expo/vector-icons";
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import { PressableScale } from "@/components/PressableScale";
 
 interface BackPillProps {
   onPress: () => void;
-  style?: object;
+  style?: StyleProp<ViewStyle>;
   color?: string;
   size?: number;
   hitSlop?: number;

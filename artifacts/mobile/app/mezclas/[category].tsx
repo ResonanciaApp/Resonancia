@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { router, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { Image as ExpoImage } from "expo-image";
 import React, { useCallback, useMemo, useState } from "react";
@@ -186,13 +187,7 @@ export default function CategoryMixesScreen() {
       >
         {/* Header */}
         <View style={styles.headerTop}>
-          <Pressable
-            onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/musica" as never))}
-            hitSlop={10}
-            style={[styles.backBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
-          >
-            <Feather name="chevron-left" size={20} color={colors.foreground} />
-          </Pressable>
+          <BackPill onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/musica" as never))} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         </View>
 
         {/* Hero de la categoría */}

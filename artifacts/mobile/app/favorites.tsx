@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { router } from "expo-router";
 import React, { useRef, useState, useMemo } from "react";
 import {
@@ -388,13 +389,7 @@ export default function FavoritesScreen() {
       >
         {/* Back */}
         <View style={styles.headerTop}>
-          <Pressable
-            onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
-            hitSlop={10}
-            style={[styles.backBtn, { backgroundColor: "rgba(74,12,12,0.08)" }]}
-          >
-            <Feather name="chevron-left" size={20} color={colors.foreground} />
-          </Pressable>
+          <BackPill onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         </View>
 
         {/* Título */}

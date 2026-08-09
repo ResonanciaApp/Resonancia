@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { router } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useMemo, useState } from "react";
@@ -116,13 +117,7 @@ export default function FavoritosTodosScreen() {
       >
         {/* Back */}
         <View style={{ paddingHorizontal: H_PAD, marginBottom: 14 }}>
-          <Pressable
-            onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
-            hitSlop={10}
-            style={[styles.backBtn, { backgroundColor: "rgba(255,255,255,0.06)" }]}
-          >
-            <Feather name="chevron-left" size={20} color={colors.foreground} />
-          </Pressable>
+          <BackPill onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         </View>
 
         {/* Título */}

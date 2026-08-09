@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { GhostPill } from "@/components/GhostPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -123,9 +124,7 @@ export default function TagScreen() {
         pointerEvents="box-none"
       >
         <View style={styles.stickyInner} pointerEvents="box-none">
-          <Pressable onPress={() => router.back()} hitSlop={10} style={styles.pillBtn}>
-            <Feather name="chevron-left" size={24} color="#FFFFFF" />
-          </Pressable>
+          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
           <Text style={[styles.stickyTitle, { color: colors.foreground }]} numberOfLines={1}>
             {tag.label}
           </Text>
@@ -153,15 +152,7 @@ export default function TagScreen() {
             style={StyleSheet.absoluteFill}
           />
           {/* Back button floating on hero */}
-          <GhostPill style={{ position: "absolute", left: H_PAD, top: topPad + 8 }}>
-            <Pressable
-              onPress={() => router.back()}
-              hitSlop={10}
-              style={({ pressed }) => [styles.pillBtn, { opacity: pressed ? 0.7 : 1 }]}
-            >
-              <Feather name="arrow-left" size={16} color="#FFFFFF" />
-            </Pressable>
-          </GhostPill>
+          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ position: "absolute", left: H_PAD, top: topPad + 8 }} />
         </View>
 
         {/* TITLE + DESCRIPTION */}

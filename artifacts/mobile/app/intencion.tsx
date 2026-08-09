@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 import { router } from "expo-router";
@@ -101,13 +102,7 @@ export default function IntencionScreen() {
 
         {/* ── Header ── */}
         <View style={[styles.topBar, { paddingTop: topPad + 6 }]}>
-          <Pressable
-            onPress={() => router.back()}
-            style={[styles.backBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
-            hitSlop={8}
-          >
-            <Feather name="chevron-left" size={20} color={colors.foreground} />
-          </Pressable>
+          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         </View>
 
         {/* ── Input area ── */}

@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { GhostPill } from "@/components/GhostPill";
 import { router, useLocalSearchParams } from "expo-router";
 import { Image } from "expo-image";
@@ -85,9 +86,7 @@ export default function TemaScreen() {
         pointerEvents="box-none"
       >
         <View style={styles.stickyInner} pointerEvents="box-none">
-          <Pressable onPress={() => router.back()} hitSlop={10} style={styles.pillBtn}>
-            <Feather name="chevron-left" size={24} color="#FFFFFF" />
-          </Pressable>
+          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
           <Text style={[styles.stickyTitle, { color: colors.foreground }]} numberOfLines={1}>
             {tema.label}
           </Text>
@@ -119,15 +118,7 @@ export default function TemaScreen() {
             <View style={[StyleSheet.absoluteFill, { backgroundColor: tema.color + "33" }]} />
           )}
           {/* Floating back button */}
-          <GhostPill style={{ position: "absolute", left: H_PAD, top: topPad + 8 }}>
-            <Pressable
-              onPress={() => router.back()}
-              hitSlop={10}
-              style={({ pressed }) => [styles.pillBtn, { opacity: pressed ? 0.7 : 1 }]}
-            >
-              <Feather name="arrow-left" size={16} color="#FFFFFF" />
-            </Pressable>
-          </GhostPill>
+          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ position: "absolute", left: H_PAD, top: topPad + 8 }} />
         </View>
 
         {/* ── TITLE + DESCRIPTION ── */}

@@ -4,6 +4,7 @@
  * Lista todas las mezclas públicas de ese autor usando el filtro `author`.
  */
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import { Image as ExpoImage } from "expo-image";
@@ -76,13 +77,7 @@ export default function CreatorProfileScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Header con botón volver */}
-        <Pressable
-          onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/explore" as never))}
-          hitSlop={12}
-          style={[styles.backBtn, { backgroundColor: "rgba(0,0,0,0.25)", borderColor: colors.border }]}
-        >
-          <Feather name="chevron-left" size={22} color={colors.foreground} />
-        </Pressable>
+        <BackPill onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/explore" as never))} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
 
         {/* Perfil */}
         <View style={styles.profile}>

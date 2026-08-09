@@ -276,7 +276,7 @@ export default function MananasScreen() {
         {!selectedTag && (
           <>
             <View style={[styles.header, { paddingHorizontal: H_PAD, paddingTop: topPad + 8 }]}>
-              <BackPill onPress={() => router.back()} color={colors.foreground} />
+              <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
               <View style={[styles.catIconCircle, { backgroundColor: ICON_COLOR + "1A" }]}>
                 <Image
                   source={require("../../assets/images/cat-mananas.png")}

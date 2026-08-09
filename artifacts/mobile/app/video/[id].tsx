@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { Stack, router, useLocalSearchParams } from "expo-router";
 import { useVideoPlayer, VideoView } from "expo-video";
 import React, { useEffect } from "react";
@@ -75,13 +76,7 @@ export default function VideoPlayerScreen() {
       <SacredBackground />
 
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        <Pressable
-          onPress={() => router.back()}
-          hitSlop={10}
-          style={({ pressed }) => [styles.backBtn, { opacity: pressed ? 0.7 : 1 }]}
-        >
-          <Feather name="chevron-left" size={26} color={colors.foreground} />
-        </Pressable>
+        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
       </View>
 
       <ScrollView

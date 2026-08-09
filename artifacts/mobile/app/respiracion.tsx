@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -183,9 +184,7 @@ export default function RespiracionScreen() {
       <SacredBackground />
 
       <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
-        <Pressable onPress={() => router.back()} hitSlop={14} style={styles.backBtn}>
-          <Feather name="chevron-left" size={26} color={colors.foreground} />
-        </Pressable>
+        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         <Text style={[styles.headerTitle, { color: colors.foreground }]}>Respiración</Text>
         <View style={{ width: 40 }} />
       </View>

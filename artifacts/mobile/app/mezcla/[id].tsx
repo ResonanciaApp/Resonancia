@@ -3,6 +3,7 @@
  * Grid 4 columnas de sonidos + panel glass + glow en play button.
  */
 import { Feather, Ionicons } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { useQueryClient } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
 
@@ -262,13 +263,7 @@ export default function CommunityMixScreen() {
       >
         {/* Botón volver */}
         <View style={[styles.topBar, { paddingTop: insets.top + 8 }]}>
-          <Pressable
-            onPress={() => router.back()}
-            hitSlop={12}
-            style={styles.backBtn}
-          >
-            <Feather name="chevron-left" size={26} color={colors.foreground} />
-          </Pressable>
+          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         </View>
 
         {/* Fila de sonidos — scroll horizontal, una sola fila */}

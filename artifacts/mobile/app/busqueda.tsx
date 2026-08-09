@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo, useState } from "react";
@@ -235,9 +236,7 @@ export default function BusquedaScreen() {
 
       {/* Header */}
       <View style={[styles.topBar, { paddingTop: topPad + 6 }]}>
-        <Pressable onPress={() => router.back()} hitSlop={10} style={styles.backBtn}>
-          <Feather name="chevron-left" size={24} color="#F4F4F4" />
-        </Pressable>
+        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         <Text style={styles.pageTitle}>Búsqueda</Text>
         <View style={styles.backBtn} />
       </View>
