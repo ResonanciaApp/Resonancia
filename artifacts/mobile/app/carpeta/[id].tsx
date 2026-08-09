@@ -121,7 +121,7 @@ export default function CarpetaDetailScreen() {
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={9} />
         {renaming ? (
           <TextInput
             style={styles.renameInput}
