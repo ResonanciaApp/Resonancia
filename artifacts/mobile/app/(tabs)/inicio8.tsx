@@ -1363,7 +1363,7 @@ export default function HomeScreen2() {
         <View style={{ marginBottom: 32, marginTop: 57 }}>
           <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: GRID_PAD, marginBottom: 16 }}>
             <Text style={[styles.sectionTitle, { flex: 1, marginBottom: 0 }]}>Los Resonadores</Text>
-            <Pressable onPress={() => router.push("/resonadores" as never)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+            <Pressable onPress={() => router.push("/equipo" as never)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
               <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: colors.primary }}>Ver todos</Text>
             </Pressable>
           </View>

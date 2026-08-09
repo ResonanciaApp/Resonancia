@@ -106,7 +106,7 @@ export default function EncuentrosScreen() {
         <View style={{ marginTop: 61 }}>
           <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: CARD_H_PADDING, marginBottom: 16 }}>
             <Text style={styles.sectionTitle}>Los Resonadores</Text>
-            <Pressable onPress={() => router.push("/resonadores" as never)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+            <Pressable onPress={() => router.push("/equipo" as never)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
               <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F9F9F9" }}>Ver todos</Text>
             </Pressable>
           </View>
