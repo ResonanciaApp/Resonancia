@@ -1,7 +1,7 @@
 const colors = {
   light: {
     text: "#FFFFFF",
-    tint: "#dad4ec",
+    tint: "#F9F9F9",
     background: "#4A0C0C",
     foreground: "#FBFBFB",
     card: "rgba(74,12,12,0.08)",
@@ -12,7 +12,7 @@ const colors = {
     secondaryForeground: "#FBFBFB",
     muted: "#27070E",
     mutedForeground: "#F4F4F4",
-    accent: "#FBA980",
+    accent: "#F9F9F9",
     accentForeground: "#1B060F",
     destructive: "#E63946",
     destructiveForeground: "#ffffff",
@@ -21,12 +21,12 @@ const colors = {
     warmIvory: "#FBFBFB",
     softSand: "#FBFBFB",
     acousticBronze: "rgba(250,240,238,0.45)",
-    premiumGold: "#dad4ec",
+    premiumGold: "#F9F9F9",
     deepBrown: "#27070E",
     darkChocolate: "rgba(74,12,12,0.08)",
     warmBlack: "#1B060F",
-    goldenGlow: "#dad4ec",
-    copperLight: "#FBA980",
+    goldenGlow: "#F9F9F9",
+    copperLight: "#F9F9F9",
   },
   radius: 22,
 };

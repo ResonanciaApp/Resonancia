@@ -28,7 +28,7 @@ const STATUS_META: Record<
   { label: string; icon: keyof typeof Feather.glyphMap; color: string }
 > = {
   draft: { label: "Borrador", icon: "edit-3", color: "#c2c2c2" },
-  pending: { label: "En revisión", icon: "clock", color: "#dad4ec" },
+  pending: { label: "En revisión", icon: "clock", color: "#F9F9F9" },
   published: { label: "Publicado", icon: "check-circle", color: "#5FAE7A" },
   rejected: { label: "Rechazado", icon: "x-circle", color: "#C46A6A" },
 };

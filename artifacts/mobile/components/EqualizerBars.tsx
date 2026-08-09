@@ -36,7 +36,7 @@ interface Props {
   size?: "sm" | "md";
 }
 
-export function EqualizerBars({ color = "#dad4ec", size = "md" }: Props) {
+export function EqualizerBars({ color = "#F9F9F9", size = "md" }: Props) {
   const scale = size === "sm" ? 0.75 : 1;
   return (
     <View style={[styles.wrap, { height: MAX_H * scale, gap: 3 * scale }]}>

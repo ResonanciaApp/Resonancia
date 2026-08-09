@@ -93,7 +93,7 @@ export default function EncuentroDetalle() {
           {/* Chip de fecha */}
           <View style={styles.fechaChipWrap}>
             <View style={styles.fechaChip}>
-              <Feather name="calendar" size={13} color="#dad4ec" style={{ marginRight: 6 }} />
+              <Feather name="calendar" size={13} color="#F9F9F9" style={{ marginRight: 6 }} />
               <Text style={styles.fechaText}>
                 {formatearFechaDetalle(encuentro.fechaISO, encuentro.horaTexto)}
               </Text>
@@ -166,7 +166,7 @@ export default function EncuentroDetalle() {
             style={({ pressed }) => [styles.calBtn, { opacity: pressed ? 0.8 : 1 }]}
             onPress={() => setCalSheet(true)}
           >
-            <Feather name="calendar" size={16} color="#dad4ec" style={{ marginRight: 8 }} />
+            <Feather name="calendar" size={16} color="#F9F9F9" style={{ marginRight: 8 }} />
             <Text style={styles.calBtnText}>Añadir a mi calendario</Text>
           </Pressable>
         </View>
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   fechaText: {
-    color: "#dad4ec",
+    color: "#F9F9F9",
     fontSize: 14,
     fontFamily: "Manrope",
     fontWeight: "600",
@@ -367,13 +367,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#dad4ec",
+    backgroundColor: "#F9F9F9",
     borderRadius: 30,
     paddingVertical: 16,
     marginTop: 4,
   },
   asistenciaBtnConfirmed: {
-    backgroundColor: "#dad4ec",
+    backgroundColor: "#F9F9F9",
     opacity: 0.9,
   },
   asistenciaBtnText: {
@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   calBtnText: {
-    color: "#dad4ec",
+    color: "#F9F9F9",
     fontSize: 15,
     fontFamily: "Manrope",
     fontWeight: "600",

@@ -197,7 +197,7 @@ export function DrawerMenu() {
                 </View>
               ) : (
                 <View style={[styles.profilePhotoFallback, !loggedIn && styles.profilePhotoGuest]}>
-                  <Feather name="user" size={22} color={loggedIn ? "#dad4ec" : "#c2c2c2"} />
+                  <Feather name="user" size={22} color={loggedIn ? "#F9F9F9" : "#c2c2c2"} />
                 </View>
               )}
 
@@ -207,7 +207,7 @@ export function DrawerMenu() {
                     <Text style={styles.profileName} numberOfLines={1}>{fullName || "Mi perfil"}</Text>
                     <Pressable onPress={() => navigate("/mi-perfil")} style={styles.verPerfilBtn}>
                       <Text style={styles.verPerfilText}>Ver Perfil</Text>
-                      <Feather name="chevron-right" size={11} color="#dad4ec" />
+                      <Feather name="chevron-right" size={11} color="#F9F9F9" />
                     </Pressable>
                   </>
                 ) : (
@@ -215,14 +215,14 @@ export function DrawerMenu() {
                     <Text style={styles.profileNameMuted}>No conectado</Text>
                     <Pressable onPress={() => navigate("/(auth)/sign-in")} style={styles.verPerfilBtn}>
                       <Text style={styles.verPerfilText}>Iniciar sesión</Text>
-                      <Feather name="chevron-right" size={11} color="#dad4ec" />
+                      <Feather name="chevron-right" size={11} color="#F9F9F9" />
                     </Pressable>
                   </>
                 )}
               </View>
 
               <Pressable onPress={onClose} hitSlop={12} style={styles.closeBtn}>
-                <Feather name="x" size={20} color="#dad4ec" />
+                <Feather name="x" size={20} color="#F9F9F9" />
               </Pressable>
             </View>
 
@@ -292,7 +292,7 @@ export function DrawerMenu() {
               </View>
             </View>
 
-            <View style={[styles.divider, { backgroundColor: "#dad4ec10", marginVertical: 16 }]} />
+            <View style={[styles.divider, { backgroundColor: "#F9F9F910", marginVertical: 16 }]} />
 
             {/* ── Sección Escenas ── */}
             <View style={styles.controlRow}>
@@ -417,14 +417,14 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 24,
     borderWidth: 2,
-    borderColor: "#dad4ec",
+    borderColor: "#F9F9F9",
   },
   profilePhotoFallback: {
     width: 48,
     height: 48,
     borderRadius: 24,
     borderWidth: 2,
-    borderColor: "#dad4ec",
+    borderColor: "#F9F9F9",
     backgroundColor: "rgba(212,175,55,0.12)",
     alignItems: "center",
     justifyContent: "center",
@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
   },
   profileInitial: {
     fontFamily: "Manrope",
-    color: "#dad4ec",
+    color: "#F9F9F9",
     fontSize: 20,
     fontWeight: "700",
     letterSpacing: 0.5,
@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
   },
   verPerfilText: {
     fontFamily: "Manrope",
-    color: "#dad4ec",
+    color: "#F9F9F9",
     fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.3,
@@ -506,8 +506,8 @@ const styles = StyleSheet.create({
   },
   swatchCircleActive: {
     borderWidth: 2.5,
-    borderColor: "#dad4ec",
-    shadowColor: "#dad4ec",
+    borderColor: "#F9F9F9",
+    shadowColor: "#F9F9F9",
     shadowOpacity: 0.6,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 0 },
@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
     color: "rgba(249,249,249,0.5)",
     fontWeight: "400",
   },
-  swatchLabelActive: { color: "#dad4ec", fontWeight: "600" },
+  swatchLabelActive: { color: "#F9F9F9", fontWeight: "600" },
   item: {
     flexDirection: "row",
     alignItems: "center",

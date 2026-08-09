@@ -592,7 +592,7 @@ export default function PlayerScreen() {
               hitSlop={8}
             >
               <RNAnimated.View style={{ transform: [{ scale: scaleHeart }] }}>
-                <FontAwesome name="heart" size={20} color={fav ? "#dad4ec" : "rgba(255,255,255,0.92)"} />
+                <FontAwesome name="heart" size={20} color={fav ? "#F9F9F9" : "rgba(255,255,255,0.92)"} />
               </RNAnimated.View>
             </Pressable>
             <Pressable
@@ -780,11 +780,11 @@ export default function PlayerScreen() {
                     <View style={styles.sliderTrack}>
                       <View
                         pointerEvents="none"
-                        style={[styles.sliderFill, { width: `${(hasAmbientTrack ? ambientVolume : voiceVolume) * 100}%` as any, backgroundColor: "#dad4ec" }]}
+                        style={[styles.sliderFill, { width: `${(hasAmbientTrack ? ambientVolume : voiceVolume) * 100}%` as any, backgroundColor: "#F9F9F9" }]}
                       />
                       <View
                         pointerEvents="none"
-                        style={[styles.sliderThumb, { left: `${(hasAmbientTrack ? ambientVolume : voiceVolume) * 100}%` as any, backgroundColor: "#dad4ec" }]}
+                        style={[styles.sliderThumb, { left: `${(hasAmbientTrack ? ambientVolume : voiceVolume) * 100}%` as any, backgroundColor: "#F9F9F9" }]}
                       />
                     </View>
                   </View>
@@ -811,11 +811,11 @@ export default function PlayerScreen() {
                     <View style={styles.sliderTrack}>
                       <View
                         pointerEvents="none"
-                        style={[styles.sliderFill, { width: `${mainVolume * 100}%` as any, backgroundColor: "#dad4ec" }]}
+                        style={[styles.sliderFill, { width: `${mainVolume * 100}%` as any, backgroundColor: "#F9F9F9" }]}
                       />
                       <View
                         pointerEvents="none"
-                        style={[styles.sliderThumb, { left: `${mainVolume * 100}%` as any, backgroundColor: "#dad4ec" }]}
+                        style={[styles.sliderThumb, { left: `${mainVolume * 100}%` as any, backgroundColor: "#F9F9F9" }]}
                       />
                     </View>
                   </View>
@@ -830,7 +830,7 @@ export default function PlayerScreen() {
                 <Feather name="music" size={18} color="#FBFBFB" style={styles.optIcon} />
                 <Text style={styles.optRowText}>Sonido ambiente</Text>
                 {selectedAmbientSoundId && (
-                  <Feather name="check-circle" size={15} color="#dad4ec" style={{ marginRight: 6 }} />
+                  <Feather name="check-circle" size={15} color="#F9F9F9" style={{ marginRight: 6 }} />
                 )}
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
               </Pressable>
@@ -863,11 +863,11 @@ export default function PlayerScreen() {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 }}
               >
-                <Feather name="heart" size={18} color={fav ? "#dad4ec" : "#FBFBFB"} style={styles.optIcon} />
-                <Text style={[styles.optRowText, fav && { color: "#dad4ec" }]}>
+                <Feather name="heart" size={18} color={fav ? "#F9F9F9" : "#FBFBFB"} style={styles.optIcon} />
+                <Text style={[styles.optRowText, fav && { color: "#F9F9F9" }]}>
                   {fav ? "En favoritos" : "Agregar a favoritos"}
                 </Text>
-                {fav && <Feather name="check" size={15} color="#dad4ec" />}
+                {fav && <Feather name="check" size={15} color="#F9F9F9" />}
               </Pressable>
 
               {/* Añadir a carpeta */}

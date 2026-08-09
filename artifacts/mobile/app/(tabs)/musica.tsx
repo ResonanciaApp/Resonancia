@@ -64,7 +64,7 @@ const CARD_W   = Math.floor((SCREEN_W - 28 - 40) / 3); // padding 14×2 + gaps 2
 const IMG_SIZE  = Math.floor(CARD_W * 0.75) - 5;
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
-const GOLD  = "#dad4ec";
+const GOLD  = "#F9F9F9";
 const DARK  = "#1A1E2B";
 const MUTED = "#6B7A96";
 
@@ -1056,7 +1056,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 10,
     fontWeight: "600",
-    color: "#FBA980",
+    color: "#F9F9F9",
     letterSpacing: 0.2,
   },
 

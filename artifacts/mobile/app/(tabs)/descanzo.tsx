@@ -621,10 +621,10 @@ export default function DescansoScreen() {
                 paddingVertical: 18, gap: 6, marginTop: 4, opacity: pressed ? 0.7 : 1,
               }]}
             >
-              <Text style={{ fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#dad4ec" }}>
+              <Text style={{ fontFamily: "Manrope", fontSize: 15, fontWeight: "600", color: "#F9F9F9" }}>
                 Todas las sesiones de Dormir
               </Text>
-              <Feather name="chevron-right" size={16} color="#dad4ec" />
+              <Feather name="chevron-right" size={16} color="#F9F9F9" />
             </Pressable>
           </View>
         ) : isSoundTab ? (

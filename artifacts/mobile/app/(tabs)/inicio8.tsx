@@ -1425,7 +1425,7 @@ export default function HomeScreen2() {
                 <Text style={styles.premSub}>Desbloquea todo el contenido</Text>
               </View>
               <View style={styles.premChevron}>
-                <Feather name="chevron-right" size={14} color="#dad4ec" />
+                <Feather name="chevron-right" size={14} color="#F9F9F9" />
               </View>
             </Pressable>
           </View>
@@ -1604,7 +1604,7 @@ const styles = StyleSheet.create({
     width: 2,
     height: 26,
     borderRadius: 1,
-    backgroundColor: "#dad4ec",
+    backgroundColor: "#F9F9F9",
     marginRight: 6,
   },
   intencionText: {
@@ -1793,7 +1793,7 @@ const styles = StyleSheet.create({
   },
   avatarInitialText: {
     fontFamily: "Manrope",
-    color: "#dad4ec",
+    color: "#F9F9F9",
     fontSize: 14,
     fontWeight: "700",
     letterSpacing: 0.3,

@@ -146,7 +146,7 @@ export default function GrupoPostScreen() {
     await addComment(postId, {
       author: userName,
       initials: initialsFrom(userName),
-      color: "#dad4ec",
+      color: "#F9F9F9",
       text: txt,
     });
     setCommentText("");

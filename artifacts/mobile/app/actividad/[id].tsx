@@ -82,7 +82,7 @@ const ACTIVITIES: Record<string, {
     description:
       "Un fin de semana de silencio, sonido y naturaleza en un entorno privilegiado de los Andes mendocinos. El programa incluye baños de cuencos, meditaciones guiadas, caminatas conscientes y momentos de silencio profundo.\n\nIncluye alojamiento y alimentación vegetariana. Cupos muy limitados.",
     gradient: ["#3A5438", "#1E2E1C"],
-    orgColor: "#dad4ec",
+    orgColor: "#F9F9F9",
     orgInitials: "CC",
     tags: ["Retiro", "Silencio", "Naturaleza", "Full weekend"],
   },

@@ -19,7 +19,7 @@ import { GhostPill } from "@/components/GhostPill";
 import { QUOTES, getQuoteOfTheDay, type Quote } from "@/data/quotes";
 
 const H_PAD   = 16;
-const GOLD    = "#dad4ec";
+const GOLD    = "#F9F9F9";
 const AUTHOR_COLORS: Record<string, string> = {
   "Jiddu Krishnamurti": "#7B4FA6",
   "Papaji":              "#C4A030",

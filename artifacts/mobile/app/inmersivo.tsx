@@ -19,7 +19,7 @@ import { getSoundImage } from "@/config/sound-images";
 import { useMixer } from "@/context/MixerContext";
 import { getSoundById, hasSoundFile } from "@/data/sounds";
 
-const ACCENT = "#dad4ec";
+const ACCENT = "#F9F9F9";
 const TRACK = "rgba(255,255,255,0.10)";
 
 function formatRemaining(seconds: number | null): string {

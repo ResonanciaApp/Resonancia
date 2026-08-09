@@ -8,8 +8,8 @@ import { type LiveSessionItem, canEnterLiveSession, formatLiveSessionDate } from
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
 const WARM_BLACK = "#1B060F";
-const PRIMARY_GOLD = "#dad4ec";
-const ACCENT_GOLD = "#FBA980";
+const PRIMARY_GOLD = "#F9F9F9";
+const ACCENT_GOLD = "#F9F9F9";
 const FOREGROUND = "#FFFFFF";
 const MUTED = "#F4F4F4";
 const BORDER = "#3D0E16";

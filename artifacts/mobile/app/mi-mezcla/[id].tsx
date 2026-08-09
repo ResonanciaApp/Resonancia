@@ -31,7 +31,7 @@ import { type GeometryId } from "@/data/geometries";
 import { useLoadMix } from "@/hooks/useLoadMix";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
-const GOLD = "#dad4ec";
+const GOLD = "#F9F9F9";
 const TEXT = "#FAF0EE";
 const MUTED = "#c2c2c2";
 

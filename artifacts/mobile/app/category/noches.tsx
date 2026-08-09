@@ -24,7 +24,7 @@ const { width: W } = Dimensions.get("window");
 const cardW   = (W - H_PAD * 2 - 20) / 2;
 const RECENT_CARD_W = Math.round((W - H_PAD * 2) / 1.85);
 const ICON_COLOR = "#C87BB5";
-const GOLD    = "#dad4ec";
+const GOLD    = "#F9F9F9";
 const TEXT    = "#FBFBFB";
 const MUTED   = "#c2c2c2";
 

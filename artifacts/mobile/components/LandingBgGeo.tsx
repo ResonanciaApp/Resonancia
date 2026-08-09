@@ -19,8 +19,8 @@ import Svg, { Circle, G, Line, Path } from "react-native-svg";
 
 const BLUE  = "#6584d4";
 const BLUE2 = "#c7caec";
-const GOLD  = "#dad4ec";
-const GOLD2 = "#dad4ec";
+const GOLD  = "#F9F9F9";
+const GOLD2 = "#F9F9F9";
 
 /* ─── hook: genera un loop de fade in / fade out ─────────────────── */
 function useFadeCycle(

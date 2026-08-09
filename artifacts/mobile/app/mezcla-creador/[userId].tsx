@@ -27,7 +27,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 import { resolveAvatarUrl } from "@/lib/avatar";
 
 const COVER_SIZE = 46;
-const GOLD = "#dad4ec";
+const GOLD = "#F9F9F9";
 
 function CategoryCover({ category }: { category?: string | null }) {
   const catMeta = category ? MIX_CATEGORIES.find((c) => c.id === category) : undefined;

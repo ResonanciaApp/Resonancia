@@ -112,13 +112,13 @@ export function MoodPickerSheet({ visible, onClose, onSelect }: Props) {
   );
 }
 
-const PRIMARY = "#dad4ec";
+const PRIMARY = "#F9F9F9";
 const FG = "#EDE1D3";
 const MUTED = "rgba(237,225,211,0.40)";
 const CARD_BG = "rgba(255,255,255,0.05)";
 const CARD_BORDER = "rgba(255,255,255,0.08)";
 const CARD_SELECTED_BG = "rgba(190,150,80,0.18)";
-const CARD_SELECTED_BORDER = "#dad4ec";
+const CARD_SELECTED_BORDER = "#F9F9F9";
 
 const styles = StyleSheet.create({
   container: {

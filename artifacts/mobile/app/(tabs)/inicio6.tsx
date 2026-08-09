@@ -866,7 +866,7 @@ export default function HomeScreen2() {
                 onPress={() => router.push("/mis-sesiones" as never)}
                 hitSlop={8}
               >
-                <Text style={{ color: "#dad4ec", fontSize: 13, fontFamily: "Manrope" }}>
+                <Text style={{ color: "#F9F9F9", fontSize: 13, fontFamily: "Manrope" }}>
                   Ver todas
                 </Text>
               </Pressable>
@@ -1026,7 +1026,7 @@ export default function HomeScreen2() {
                   }
                 >
                   <LinearGradient
-                    colors={["#dad4ec", "#FBA980"]}
+                    colors={["#F9F9F9", "#F9F9F9"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={{ width: 34, height: 34 }}
@@ -1186,7 +1186,7 @@ export default function HomeScreen2() {
                 <Text style={styles.premSub}>Desbloquea todo el contenido</Text>
               </View>
               <View style={styles.premChevron}>
-                <Feather name="chevron-right" size={14} color="#dad4ec" />
+                <Feather name="chevron-right" size={14} color="#F9F9F9" />
               </View>
             </Pressable>
           </View>
@@ -1399,7 +1399,7 @@ const styles = StyleSheet.create({
     width: 2,
     height: 26,
     borderRadius: 1,
-    backgroundColor: "#dad4ec",
+    backgroundColor: "#F9F9F9",
     marginRight: 6,
   },
   intencionText: {
@@ -1588,7 +1588,7 @@ const styles = StyleSheet.create({
   },
   avatarInitialText: {
     fontFamily: "Manrope",
-    color: "#dad4ec",
+    color: "#F9F9F9",
     fontSize: 14,
     fontWeight: "700",
     letterSpacing: 0.3,

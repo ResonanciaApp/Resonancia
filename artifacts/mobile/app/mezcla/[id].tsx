@@ -303,7 +303,7 @@ export default function CommunityMixScreen() {
 
           {/* Categoría + título */}
           {categoryMeta && (
-            <Text style={[styles.category, { color: "#dad4ec" }]}>
+            <Text style={[styles.category, { color: "#F9F9F9" }]}>
               {categoryMeta.label.toUpperCase()}
             </Text>
           )}
@@ -417,7 +417,7 @@ export default function CommunityMixScreen() {
               disabled={!draft.trim() || addComment.isPending}
               style={{ opacity: draft.trim() && !addComment.isPending ? 1 : 0.3, padding: 4 }}
             >
-              <Feather name="corner-down-left" size={20} color="#dad4ec" />
+              <Feather name="corner-down-left" size={20} color="#F9F9F9" />
             </Pressable>
           </View>
 
@@ -512,7 +512,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 10,
     borderRadius: 30,
-    shadowColor: "#dad4ec",
+    shadowColor: "#F9F9F9",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,

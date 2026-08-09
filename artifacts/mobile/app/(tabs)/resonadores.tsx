@@ -269,7 +269,7 @@ function ExpansorChevronFilter({
               <Text style={[styles.chevronOptionText, selectedCountry === c && styles.chevronOptionTextSel]}>
                 {c}
               </Text>
-              {selectedCountry === c && <Feather name="check" size={13} color="#FBA980" />}
+              {selectedCountry === c && <Feather name="check" size={13} color="#F9F9F9" />}
             </Pressable>
           ))}
         </Animated.View>
@@ -637,7 +637,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 1,
-    backgroundColor: "#dad4ec",
+    backgroundColor: "#F9F9F9",
     opacity: 0.5,
   },
   bannerTextWrap: {
@@ -808,7 +808,7 @@ const styles = StyleSheet.create({
   },
   chevronOptionTextSel: {
     fontFamily: "Manrope",
-    color: "#FBA980",
+    color: "#F9F9F9",
     fontWeight: "600",
   },
 
@@ -868,7 +868,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 2,
     right: 2,
-    backgroundColor: "#dad4ec",
+    backgroundColor: "#F9F9F9",
     borderRadius: 99,
     width: 18,
     height: 18,
@@ -975,7 +975,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 5,
     right: 5,
-    backgroundColor: "#dad4ec",
+    backgroundColor: "#F9F9F9",
     borderRadius: 99,
     width: 16,
     height: 16,
@@ -1030,7 +1030,7 @@ const styles = StyleSheet.create({
   ctaIconText: {
     fontFamily: "Manrope",
     fontSize: 16,
-    color: "#dad4ec",
+    color: "#F9F9F9",
   },
   ctaTextWrap: {
     flex: 1,

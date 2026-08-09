@@ -17,7 +17,7 @@ import { Feather } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SacredBackground } from "@/components/SacredBackground";
 
-const GOLD = "#dad4ec";
+const GOLD = "#F9F9F9";
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 const H_PAD = 15;

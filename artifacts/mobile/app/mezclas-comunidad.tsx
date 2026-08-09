@@ -27,7 +27,7 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
-const GOLD = "#dad4ec";
+const GOLD = "#F9F9F9";
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
 

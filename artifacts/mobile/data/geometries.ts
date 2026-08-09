@@ -96,7 +96,7 @@ export interface GeometryMeta {
  * se asigna recorriendo esta paleta de forma cíclica (intercalado).
  */
 export const PALETTE = [
-  "#dad4ec",
+  "#F9F9F9",
   "#EDE1D3",
   "#7FD1C0",
   "#7AA8E0",

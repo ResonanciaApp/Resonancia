@@ -126,7 +126,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             <Text style={[styles.hTitle, { color: colors.foreground, flexShrink: 1 }]} numberOfLines={2}>
               {session.title}
             </Text>
-            {pinned && <Feather name="bookmark" size={12} color="#dad4ec" />}
+            {pinned && <Feather name="bookmark" size={12} color="#F9F9F9" />}
           </View>
           {!!authorName && (
             <View style={styles.hAuthorRow}>

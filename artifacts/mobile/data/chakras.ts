@@ -74,7 +74,7 @@ export const CHAKRAS: Chakra[] = [
     subtitle: "Plexo Solar",
     tagLabel: "Tercer Chakra",
     tagAliases: [],
-    color: "#dad4ec",
+    color: "#F9F9F9",
     gradient: ["#16120A", "#6E520E", "#B08020"],
     radialCenter: "#5B4810",
     radialOuter: "#47390F",

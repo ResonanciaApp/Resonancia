@@ -31,7 +31,7 @@ import Svg, { Circle, ClipPath, Defs, G, LinearGradient, Path, Stop } from "reac
 // ── Paletas ───────────────────────────────────────────────────────────────────
 
 const THEMES = [
-  { name: "Dorado",  fill: ["#dad4ec","#FBA980","#FAF0EE","#C49F27","#dad4ec"], stroke: "#FAF0EE", glow: "#dad4ec" },
+  { name: "Dorado",  fill: ["#F9F9F9","#F9F9F9","#FAF0EE","#C49F27","#F9F9F9"], stroke: "#FAF0EE", glow: "#F9F9F9" },
   { name: "Violeta", fill: ["#B69BE0","#9B7FD4","#D4B0F0","#7AA8E0","#C4A8F0"], stroke: "#D4B0F0", glow: "#B69BE0" },
   { name: "Mar",     fill: ["#4B9EFF","#7FD1C0","#7AA8E0","#A0C8F0","#50D0C0"], stroke: "#A0E0F8", glow: "#4B9EFF" },
   { name: "Rosa",    fill: ["#E0989B","#FF8B9A","#F0C0C4","#D670A0","#FFAABB"], stroke: "#FFD0D8", glow: "#FF8B9A" },
@@ -495,7 +495,7 @@ export default function Caleidoscopio() {
                     style={[styles.patternBtn, on && styles.patternBtnOn]}
                     activeOpacity={0.75}
                   >
-                    <Feather name={p.icon} size={16} color={on ? "#dad4ec" : "#c2c2c2"} />
+                    <Feather name={p.icon} size={16} color={on ? "#F9F9F9" : "#c2c2c2"} />
                     <Text style={[styles.patternBtnText, on && styles.patternBtnTextOn]}>{p.name}</Text>
                   </TouchableOpacity>
                 );
@@ -557,7 +557,7 @@ export default function Caleidoscopio() {
 
             {/* Guardar */}
             <TouchableOpacity style={styles.saveBtn} onPress={() => {}} activeOpacity={0.8}>
-              <Feather name="download" size={15} color="#dad4ec" />
+              <Feather name="download" size={15} color="#F9F9F9" />
               <Text style={styles.saveBtnText}>Guardar como fondo</Text>
             </TouchableOpacity>
           </View>
@@ -588,23 +588,23 @@ const styles = StyleSheet.create({
   patternBtn:       { flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 20, backgroundColor: "rgba(74,12,12,0.08)", borderWidth: 1, borderColor: "rgba(61,14,22,0.40)", marginRight: 7 },
   patternBtnOn:     { backgroundColor: "rgba(212,175,55,0.15)", borderColor: "rgba(212,175,55,0.50)" },
   patternBtnText:   { fontFamily: "Manrope", color: "#c2c2c2", fontSize: 12 },
-  patternBtnTextOn: { fontFamily: "Manrope", color: "#dad4ec", fontWeight: "600" },
+  patternBtnTextOn: { fontFamily: "Manrope", color: "#F9F9F9", fontWeight: "600" },
   twoCol:           { flexDirection: "row", gap: 16, marginBottom: 10 },
   colBlock:         { flex: 1 },
   row:              { flexDirection: "row", gap: 6 },
   segBtn:           { flex: 1, height: 34, borderRadius: 9, backgroundColor: "rgba(74,12,12,0.08)", borderWidth: 1, borderColor: "rgba(61,14,22,0.40)", alignItems: "center", justifyContent: "center" },
   segBtnOn:         { backgroundColor: "rgba(212,175,55,0.18)", borderColor: "rgba(212,175,55,0.55)" },
   segBtnText:       { fontFamily: "Manrope", color: "#c2c2c2", fontSize: 13 },
-  segBtnTextOn:     { fontFamily: "Manrope", color: "#dad4ec", fontWeight: "700" },
+  segBtnTextOn:     { fontFamily: "Manrope", color: "#F9F9F9", fontWeight: "700" },
   colorBtn:         { flex: 1, height: 28, borderRadius: 7, opacity: 0.55, borderWidth: 2, borderColor: "transparent" },
   colorBtnOn:       { opacity: 1, borderColor: "rgba(255,255,255,0.8)" },
   speedRow:         { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 7 },
-  speedVal:         { fontFamily: "Manrope", color: "#dad4ec", fontSize: 10 },
+  speedVal:         { fontFamily: "Manrope", color: "#F9F9F9", fontSize: 10 },
   trackWrap:        { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 4 },
   speedDot:         { width: 11, height: 11, borderRadius: 6, backgroundColor: "rgba(74,12,12,0.35)", overflow: "hidden" },
   speedDotOn:       { transform: [{ scale: 1.3 }] },
   saveBtn:          { height: 42, borderRadius: 12, backgroundColor: "rgba(212,175,55,0.10)", borderWidth: 1, borderColor: "rgba(212,175,55,0.35)", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 },
-  saveBtnText:      { fontFamily: "Manrope", color: "#dad4ec", fontSize: 13, fontWeight: "600" },
+  saveBtnText:      { fontFamily: "Manrope", color: "#F9F9F9", fontSize: 13, fontWeight: "600" },
   tapHint:          { position: "absolute", alignSelf: "center", zIndex: 10 },
   tapHintText:      { fontFamily: "Manrope", color: "rgba(237,225,211,0.3)", fontSize: 11, letterSpacing: 0.5 },
 });

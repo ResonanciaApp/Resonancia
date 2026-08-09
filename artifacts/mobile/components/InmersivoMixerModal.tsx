@@ -215,7 +215,7 @@ export function InmersivoContent() {
               <MaterialCommunityIcons
                 name={sleepTimerRemaining != null ? "clock-check" : "clock-outline"}
                 size={14}
-                color={sleepTimerRemaining != null ? "#FBA980" : "#F4F4F4"}
+                color={sleepTimerRemaining != null ? "#F9F9F9" : "#F4F4F4"}
               />
               <Text style={[styles.timerText, sleepTimerRemaining != null && styles.timerTextActive]}>
                 {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "Timer"}
@@ -260,7 +260,7 @@ export function InmersivoContent() {
           >
             <Pressable onPress={(e) => e.stopPropagation()}>
               <View style={styles.timerPanelHeader}>
-                <MaterialCommunityIcons name="clock-outline" size={16} color="#FBA980" />
+                <MaterialCommunityIcons name="clock-outline" size={16} color="#F9F9F9" />
                 <Text style={styles.timerPanelTitle}>Temporizador de sueño</Text>
               </View>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.timerOptionsRow}>
@@ -281,7 +281,7 @@ export function InmersivoContent() {
               {sleepTimerRemaining != null && (
                 <View style={styles.timerCountdownRow}>
                   <View style={styles.timerCountdownBadge}>
-                    <MaterialCommunityIcons name="clock-check" size={13} color="#FBA980" />
+                    <MaterialCommunityIcons name="clock-check" size={13} color="#F9F9F9" />
                     <Text style={styles.timerCountdownText}>Apaga en {formatTimer(sleepTimerRemaining)}</Text>
                   </View>
                   <Pressable onPress={handleCancelTimer} style={styles.timerCancelBtn} hitSlop={8}>
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
   timerBadge: { flexDirection: "row", alignItems: "center", gap: 5, backgroundColor: "rgba(0,0,0,0.28)", borderRadius: 16, paddingHorizontal: 11, paddingVertical: 7, borderWidth: 1, borderColor: "rgba(255,255,255,0.10)" },
   timerBadgeActive: { backgroundColor: "rgba(212,175,55,0.12)", borderColor: "rgba(212,175,55,0.30)" },
   timerText: { fontFamily: "Manrope", color: "#F4F4F4", fontSize: 12, fontWeight: "600", fontVariant: ["tabular-nums"] },
-  timerTextActive: { color: "#FBA980" },
+  timerTextActive: { color: "#F9F9F9" },
   footer: { alignItems: "center", gap: 14, paddingHorizontal: 20 },
   soundsRow: { flexDirection: "row", flexWrap: "wrap", gap: 6, justifyContent: "center" },
   soundPill: { paddingHorizontal: 4, paddingVertical: 2 },
@@ -343,10 +343,10 @@ const styles = StyleSheet.create({
   timerOpt: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: "rgba(255,255,255,0.07)", borderWidth: 1, borderColor: "rgba(255,255,255,0.10)" },
   timerOptSel: { backgroundColor: "rgba(212,175,55,0.16)", borderColor: "rgba(212,175,55,0.40)" },
   timerOptText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F4F4F4" },
-  timerOptTextSel: { color: "#FBA980" },
+  timerOptTextSel: { color: "#F9F9F9" },
   timerCountdownRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 14, paddingBottom: 14, paddingTop: 2, gap: 8 },
   timerCountdownBadge: { flexDirection: "row", alignItems: "center", gap: 5, backgroundColor: "rgba(212,175,55,0.10)", borderRadius: 12, paddingHorizontal: 10, paddingVertical: 5 },
-  timerCountdownText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: "#FBA980", fontVariant: ["tabular-nums"] },
+  timerCountdownText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: "#F9F9F9", fontVariant: ["tabular-nums"] },
   timerCancelBtn: { flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 10, paddingVertical: 5 },
   timerCancelText: { fontFamily: "Manrope", fontSize: 12, color: "rgba(255,255,255,0.45)", fontWeight: "500" },
 });

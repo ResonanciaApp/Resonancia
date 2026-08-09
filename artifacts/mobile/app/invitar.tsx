@@ -20,7 +20,7 @@ const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 
 const SHARE_OPTIONS = [
   { icon: "message-circle" as const, label: "WhatsApp", color: "#25D366" },
-  { icon: "mail" as const, label: "Email", color: "#dad4ec" },
+  { icon: "mail" as const, label: "Email", color: "#F9F9F9" },
   { icon: "instagram" as const, label: "Instagram", color: "#E4405F" },
   { icon: "share-2" as const, label: "Más opciones", color: "#8AAAD4" },
 ];

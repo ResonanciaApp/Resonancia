@@ -3,7 +3,7 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import type { ViewProps } from "react-native";
 
-export const GOLD_GRAD = ["#dad4ec", "#FBA980"] as const;
+export const GOLD_GRAD = ["#F9F9F9", "#F9F9F9"] as const;
 export const GOLD_GRAD_START = { x: 0, y: 0.5 };
 export const GOLD_GRAD_END = { x: 1, y: 0.5 };
 
@@ -34,7 +34,7 @@ export function GoldGradient({ style, children, ...rest }: ViewProps) {
  *     <Text>Label</Text>
  *   </Pressable>
  */
-/** Degradado dorado del botón "Escuchar ahora" (detalle de sesión): vertical #dad4ec→#dad4ec. */
+/** Degradado dorado del botón "Escuchar ahora" (detalle de sesión): vertical #F9F9F9→#F9F9F9. */
 export const LISTEN_GOLD_GRAD = ["#884D80", "#884D80"] as const;
 
 /** Relleno absoluto con el degradado de "Escuchar ahora". El padre necesita overflow: 'hidden'. */

@@ -22,7 +22,7 @@ import { SESSIONS } from "@/data/sessions";
 import { useColors } from "@/hooks/useColors";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
 
-const GOLD = "#dad4ec";
+const GOLD = "#F9F9F9";
 
 type Props = {
   itemId: string | null;

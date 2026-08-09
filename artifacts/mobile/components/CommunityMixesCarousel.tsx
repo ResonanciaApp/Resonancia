@@ -37,7 +37,7 @@ import { useAuth } from "@/context/AuthContext";
 
 import { Dimensions } from "react-native";
 
-const GOLD = "#dad4ec";
+const GOLD = "#F9F9F9";
 const STACK_THUMB = 93;
 const MAX_VISIBLE = 9;
 const GRID_GAP = 10;

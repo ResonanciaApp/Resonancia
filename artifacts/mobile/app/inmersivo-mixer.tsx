@@ -230,7 +230,7 @@ export default function InmersivoMixerScreen() {
               <MaterialCommunityIcons
                 name={sleepTimerRemaining != null ? "clock-check" : "clock-outline"}
                 size={14}
-                color={sleepTimerRemaining != null ? "#FBA980" : "#F4F4F4"}
+                color={sleepTimerRemaining != null ? "#F9F9F9" : "#F4F4F4"}
               />
               <Text style={[styles.timerText, sleepTimerRemaining != null && styles.timerTextActive]}>
                 {sleepTimerRemaining != null ? formatTimer(sleepTimerRemaining) : "Timer"}
@@ -314,7 +314,7 @@ export default function InmersivoMixerScreen() {
             <Pressable onPress={(e) => e.stopPropagation()}>
               {/* Título */}
               <View style={styles.timerPanelHeader}>
-                <MaterialCommunityIcons name="clock-outline" size={16} color="#FBA980" />
+                <MaterialCommunityIcons name="clock-outline" size={16} color="#F9F9F9" />
                 <Text style={styles.timerPanelTitle}>Temporizador de sueño</Text>
               </View>
 
@@ -347,7 +347,7 @@ export default function InmersivoMixerScreen() {
               {sleepTimerRemaining != null && (
                 <View style={styles.timerCountdownRow}>
                   <View style={styles.timerCountdownBadge}>
-                    <MaterialCommunityIcons name="clock-check" size={13} color="#FBA980" />
+                    <MaterialCommunityIcons name="clock-check" size={13} color="#F9F9F9" />
                     <Text style={styles.timerCountdownText}>
                       Apaga en {formatTimer(sleepTimerRemaining)}
                     </Text>
@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
     fontVariant: ["tabular-nums"],
   },
   timerTextActive: {
-    color: "#FBA980",
+    color: "#F9F9F9",
   },
 
   // Footer
@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 11,
     fontWeight: "700",
-    color: "#FBA980",
+    color: "#F9F9F9",
     letterSpacing: 0.2,
   },
   soundsRow: {
@@ -565,7 +565,7 @@ const styles = StyleSheet.create({
     color: "#F4F4F4",
   },
   timerOptTextSel: {
-    color: "#FBA980",
+    color: "#F9F9F9",
   },
   timerCountdownRow: {
     flexDirection: "row",
@@ -589,7 +589,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "600",
-    color: "#FBA980",
+    color: "#F9F9F9",
     fontVariant: ["tabular-nums"],
   },
   timerCancelBtn: {

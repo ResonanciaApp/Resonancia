@@ -27,15 +27,15 @@ const P = {
   glow:       "#3D0E16",
   cardBg:     "#27070E",
   cardSelBg:  "#4A0C0C",
-  gold:       "#dad4ec",
-  goldSoft:   "#dad4ec",
-  goldHi:     "#FBA980",
+  gold:       "#F9F9F9",
+  goldSoft:   "#F9F9F9",
+  goldHi:     "#F9F9F9",
   textMain:   "#FAF0EE",
   textMuted:  "#FFFFFF",
   border:     "rgba(212,175,55,0.35)",
-  borderSel:  "#dad4ec",
+  borderSel:  "#F9F9F9",
   saveBg:     "#3D0E16",
-  saveText:   "#FBA980",
+  saveText:   "#F9F9F9",
 };
 
 const BENEFITS = [

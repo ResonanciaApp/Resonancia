@@ -15,8 +15,8 @@ import Animated, {
 } from "react-native-reanimated";
 import Svg, { Circle, G, Line, Path } from "react-native-svg";
 
-const GOLD  = "#dad4ec";
-const GOLD2 = "#dad4ec";
+const GOLD  = "#F9F9F9";
+const GOLD2 = "#F9F9F9";
 const CREAM = "#FAF0EE";
 
 // ─── Ícono del botón: Flor de Vida miniatura ─────────────────────

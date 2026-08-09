@@ -49,7 +49,7 @@ function GeometrixPatternBgImpl({
   opacity,
   tileSize,
   spacing = 1,
-  color = "#dad4ec",
+  color = "#F9F9F9",
 }: Props) {
   const uid = React.useId().replace(/:/g, "");
   const patId = `gpat-${uid}`;

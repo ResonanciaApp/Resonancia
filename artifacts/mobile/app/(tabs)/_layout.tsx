@@ -42,7 +42,7 @@ import { useBrightness, applyBrightSat } from "@/context/BrightnessContext";
 
 const ACTIVE_COLOR   = "#F9F9F9";
 const INACTIVE_COLOR = "#F4F4F4";
-const GRAD_END       = "#FBA980";
+const GRAD_END       = "#F9F9F9";
 const GHOST_PILL_BG  = "rgba(255,255,255,0.12)";
 
 const ICON_SIZE      = 27;
@@ -71,7 +71,7 @@ const TAB_CONFIG: Record<
 > = {
   inicio8:    { label: "Inicio",     sfIcon: "house",               sfIconFill: "house.fill",           featherIcon: "home" },
   explore:    { label: "Descubrir",  sfIcon: "magnifyingglass",     sfIconFill: "magnifyingglass",       featherIcon: "search" },
-  musica:     { label: "Mezclador",  mciIcon: "tune-variant", mciIconFill: "tune-variant", featherIcon: "sliders", activeColor: "#dad4ec" },
+  musica:     { label: "Mezclador",  mciIcon: "tune-variant", mciIconFill: "tune-variant", featherIcon: "sliders", activeColor: "#F9F9F9" },
   biblioteca: { label: "Biblioteca", sfIcon: "books.vertical",      sfIconFill: "books.vertical.fill",  featherIcon: "bookmark" },
   video:      { label: "Videos",     sfIcon: "video",               sfIconFill: "video.fill",           featherIcon: "video" },
   descanzo:   { label: "Dormir",     sfIcon: "moon",                sfIconFill: "moon.fill",             featherIcon: "moon" },
