@@ -626,7 +626,7 @@ export default function SessionDetailScreen() {
         pointerEvents="box-none"
         style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: stickyHeaderColor }]}
       >
-        <GhostPill noBorder style={{ backgroundColor: "rgba(255,255,255,0.10)", marginTop: -2, transform: [{ translateY: -4 }] }}>
+        <GhostPill noBorder style={{ backgroundColor: "rgba(255,255,255,0.10)", marginTop: -2, transform: [{ translateY: -3 }] }}>
           <BackPill onPress={() => router.back()} size={27} iconOffsetX={-2} />
         </GhostPill>
         <View style={{ flex: 1, alignItems: "center", paddingTop: 8 }}>
