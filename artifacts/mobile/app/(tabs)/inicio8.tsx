@@ -892,20 +892,7 @@ export default function HomeScreen2() {
             opacity: backdropAnim,
           }}
         >
-          <Animated.View style={{ paddingHorizontal: GRID_PAD, marginTop: -6, opacity: phraseAnim }}>
-            <Text
-              style={{
-                color: "#F6F6F6",
-                fontSize: 13,
-                fontFamily: "Manrope",
-                fontStyle: "italic",
-                textAlign: "center",
-                letterSpacing: 0.2,
-              }}
-            >
-              {"El presente es tu único lugar"}
-            </Text>
-          </Animated.View>
+          {/* frase oculta */}
         </Animated.View>
       )}
 
