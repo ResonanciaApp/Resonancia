@@ -8,6 +8,9 @@ import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const W = Dimensions.get("window").width;
 
+// Importaciones lazy: cada screen se convierte en un split-bundle separado,
+// lo que evita que el heap de Metro se llene al bundear las ~1800 dependencias
+// de cada pantalla dentro del bundle principal.
 const SCREENS: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
   "/category/meditaciones-guiadas": React.lazy(() => import("@/app/category/meditaciones-guiadas")),
   "/category/sonidos-ancestrales":  React.lazy(() => import("@/app/category/sonidos-ancestrales")),
@@ -25,16 +28,6 @@ export function CategoryOverlay() {
   const [rendered, setRendered] = useState(false);
   const [activeRoute, setActiveRoute] = useState<string | null>(null);
   const slideAnim = useRef(new Animated.Value(W)).current;
-
-  // Pre-cargar los módulos al montar para que el primer tap sea instantáneo
-  useEffect(() => {
-    void Promise.all([
-      import("@/app/category/meditaciones-guiadas"),
-      import("@/app/category/sonidos-ancestrales"),
-      import("@/app/category/musica-sonidos"),
-      import("@/app/(tabs)/descanzo"),
-    ]);
-  }, []);
 
   useEffect(() => {
     if (categoryRoute) {
