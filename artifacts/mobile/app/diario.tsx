@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { GhostPill } from "@/components/GhostPill";
-import { router, useFocusEffect } from "expo-router";
+import { router, Stack, useFocusEffect } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useCallback } from "react";
@@ -134,13 +135,15 @@ export default function DiarioScreen() {
   );
 
   return (
-    <LinearGradient
+    <>
+      <Stack.Screen options={{ contentStyle: { backgroundColor: sceneTheme.gradient[0] } }} />
+      <LinearGradient
 
-      style={[styles.root, { backgroundColor: sceneTheme.solid }]}
+        style={[styles.root, { backgroundColor: sceneTheme.solid }]}
 
-      colors={sceneTheme.gradient}
+        colors={sceneTheme.gradient}
 
-      start={{ x: 0, y: 0 }}
+        start={{ x: 0, y: 0 }}
 
       end={{ x: 0, y: 1 }}
 
@@ -148,17 +151,7 @@ export default function DiarioScreen() {
       <StatusBar hidden />
 
       {/* Floating back */}
-      <View style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 10 }} pointerEvents="box-none">
-        <GhostPill>
-          <Pressable
-            onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))}
-            hitSlop={10}
-            style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}
-          >
-            <Feather name="arrow-left" size={16} color="#FFFFFF" />
-          </Pressable>
-        </GhostPill>
-      </View>
+      <BackPill onPress={goBack ?? (() => router.canGoBack() ? router.back() : router.replace("/(tabs)" as never))} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 10 }} />
 
       {/* Top bar (solo menú) */}
       <View style={[styles.topBar, { paddingTop: topPad + 4, justifyContent: "flex-end" }]}>
@@ -204,7 +197,8 @@ export default function DiarioScreen() {
           <Text style={styles.addBtnText}>Añade entrada</Text>
         </Pressable>
       </View>
-    </LinearGradient>
+      </LinearGradient>
+    </>
   );
 }
 
@@ -220,7 +214,7 @@ const styles = StyleSheet.create({
   topBtn: { padding: 4 },
   screenTitle: {
     fontFamily: "Manrope",
-    fontSize: 32,
+    fontSize: 27,
     fontWeight: "700",
     letterSpacing: 0.3,
     paddingHorizontal: 20,

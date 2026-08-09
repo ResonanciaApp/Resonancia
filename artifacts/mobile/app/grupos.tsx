@@ -1,7 +1,8 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { GhostPill } from "@/components/GhostPill";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useFocusEffect } from "expo-router";
+import { router, Stack, useFocusEffect } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useCallback, useState } from "react";
 import {
@@ -437,27 +438,23 @@ export default function GruposScreen() {
   ];
 
   return (
-    <LinearGradient
-      style={[styles.root, { backgroundColor: sceneTheme.solid }]}
-      colors={sceneTheme.gradient}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
-      <StatusBar hidden />
+    <>
+      <Stack.Screen options={{ contentStyle: { backgroundColor: sceneTheme.gradient[0] } }} />
+      <LinearGradient
+        style={[styles.root, { backgroundColor: sceneTheme.solid }]}
+        colors={sceneTheme.gradient}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      >
+        <StatusBar hidden />
 
       {/* Floating back */}
-      <View style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 20 }} pointerEvents="box-none">
-        <GhostPill>
-          <Pressable onPress={goBack ?? (() => router.back())} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
-            <Feather name="arrow-left" size={16} color="#FFFFFF" />
-          </Pressable>
-        </GhostPill>
-      </View>
+      <BackPill onPress={goBack ?? (() => router.back())} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 20 }} />
 
       {/* Fixed header */}
       <View style={[styles.fixedHeader, { paddingTop: topPad + 52 }]}>
         <View style={{ paddingHorizontal: 20 }}>
-          <Text style={[styles.title, { color: "#F9F9F9" }]}>Grupos</Text>
+          <Text style={[styles.title, { color: "#F9F9F9", marginTop: 7 }]}>Grupos</Text>
         </View>
 
         {/* Tabs */}
@@ -513,7 +510,8 @@ export default function GruposScreen() {
       </View>
 
       <CreateGroupSheet visible={showCreate} onClose={() => setShowCreate(false)} />
-    </LinearGradient>
+      </LinearGradient>
+    </>
   );
 }
 
@@ -521,7 +519,7 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   fixedHeader: { zIndex: 10 },
   headerRow: { flexDirection: "row", alignItems: "center", height: 44 },
-  title: { fontFamily: "Manrope", fontSize: 26, fontWeight: "700", marginBottom: 10, marginTop: 2 },
+  title: { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", letterSpacing: 0.3, marginBottom: 10, marginTop: 2 },
   tabRow: {
     flexDirection: "row",
     paddingHorizontal: 20,

@@ -4,9 +4,10 @@
  * Acceso: cajón de navegación / link "Ver todas" desde Inicio.
  */
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { GhostPill } from "@/components/GhostPill";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { router, Stack } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useCallback } from "react";
 import {
@@ -100,21 +101,17 @@ export default function MisSesionesScreen() {
   const bottomPad = insets.bottom + 24;
 
   return (
-    <View style={[styles.root, { backgroundColor: sceneTheme.solid }]}>
-      <StatusBar hidden />
-      <LinearGradient colors={sceneTheme.gradient} style={StyleSheet.absoluteFill} />
+    <>
+      <Stack.Screen options={{ contentStyle: { backgroundColor: sceneTheme.gradient[0] } }} />
+      <View style={[styles.root, { backgroundColor: sceneTheme.solid }]}>
+        <StatusBar hidden />
+        <LinearGradient colors={sceneTheme.gradient} style={StyleSheet.absoluteFill} />
 
       {/* Floating back */}
-      <View style={{ position: "absolute", left: 16, top: topPad + 8, zIndex: 10 }} pointerEvents="box-none">
-        <GhostPill>
-          <Pressable onPress={goBack ?? (() => router.back())} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
-            <Feather name="arrow-left" size={16} color="#FFFFFF" />
-          </Pressable>
-        </GhostPill>
-      </View>
+      <BackPill onPress={goBack ?? (() => router.back())} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ position: "absolute", left: 16, top: topPad + 8, zIndex: 10 }} />
 
       {/* Page title */}
-      <Text style={{ fontSize: 30, fontWeight: "700", color: FOREGROUND, letterSpacing: 0.3, paddingHorizontal: 20, paddingTop: topPad + 60, marginBottom: 8 }}>Mis sesiones</Text>
+      <Text style={{ fontSize: 27, fontWeight: "700", color: FOREGROUND, letterSpacing: 0.3, paddingHorizontal: 20, paddingTop: topPad + 60, marginBottom: 8 }}>Mis sesiones</Text>
 
       {/* Contenido */}
       {authLoading ? (
@@ -194,6 +191,7 @@ export default function MisSesionesScreen() {
         </ScrollView>
       )}
     </View>
+  </>
   );
 }
 

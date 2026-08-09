@@ -240,7 +240,7 @@ export default function SessionDetailScreen() {
     outputRange: [1.12, 1],
     extrapolate: "clamp",
   });
-  const STICKY_START = HEADER_H + 140 - topPad;
+  const STICKY_START = HEADER_H + 68 - topPad;
   const STICKY_END   = STICKY_START + 40;
   const stickyOpacity = scrollY.interpolate({
     inputRange: [STICKY_START, STICKY_END],
@@ -1085,7 +1085,7 @@ const styles = StyleSheet.create({
   // Sticky header
   stickyHeader: {
     position: "absolute",
-    top: 0,
+    top: 1,
     left: 0,
     right: 0,
     flexDirection: "row",

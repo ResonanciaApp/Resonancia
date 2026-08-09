@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -136,13 +137,7 @@ export default function ResonadoresScreen() {
           colors={["#4A0C0C", "#27070E", "#1B060F"]}
           style={[styles.hero, { paddingTop: topPad + 16 }]}
         >
-          <Pressable
-            onPress={() => router.back()}
-            hitSlop={12}
-            style={styles.backBtn}
-          >
-            <Feather name="arrow-left" size={22} color={C.fg} />
-          </Pressable>
+          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ marginBottom: 16 }} />
 
           <View style={styles.heroCenter}>
             <View style={styles.heroIconWrap}>
@@ -272,10 +267,10 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     fontFamily: "Manrope",
-    fontSize: 30,
-    fontWeight: "800",
+    fontSize: 27,
+    fontWeight: "700",
     color: C.fg,
-    letterSpacing: 0.8,
+    letterSpacing: 0.3,
     marginBottom: 12,
     textAlign: "center",
   },

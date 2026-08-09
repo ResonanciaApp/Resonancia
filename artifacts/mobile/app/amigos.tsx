@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { GhostPill } from "@/components/GhostPill";
 import { useAuth as useClerkAuth } from "@clerk/expo";
 import { useQueryClient } from "@tanstack/react-query";
@@ -24,7 +25,7 @@ import {
 } from "@workspace/api-client-react";
 import { LinearGradient } from "expo-linear-gradient";
 import { GoldGradient, GoldGradientFill } from "@/components/GoldGradient";
-import { router } from "expo-router";
+import { router, Stack } from "expo-router";
 import { useBackOverride } from "@/context/BackOverrideContext";
 import React, { useMemo, useState } from "react";
 import {
@@ -68,22 +69,18 @@ export default function AmigosScreen() {
   const { isSignedIn, isLoaded } = useClerkAuth();
 
   return (
-    <LinearGradient
-      style={[styles.root, { backgroundColor: sceneTheme.solid }]}
-      colors={sceneTheme.gradient}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
-      <StatusBar hidden />
+    <>
+      <Stack.Screen options={{ contentStyle: { backgroundColor: sceneTheme.gradient[0] } }} />
+      <LinearGradient
+        style={[styles.root, { backgroundColor: sceneTheme.solid }]}
+        colors={sceneTheme.gradient}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      >
+        <StatusBar hidden />
 
       {/* Floating back */}
-      <View style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 10 }} pointerEvents="box-none">
-        <GhostPill>
-          <Pressable onPress={goBack ?? (() => router.back())} hitSlop={10} style={{ paddingHorizontal: 12, paddingVertical: 8, alignItems: "center", justifyContent: "center" }}>
-            <Feather name="arrow-left" size={16} color="#FFFFFF" />
-          </Pressable>
-        </GhostPill>
-      </View>
+      <BackPill onPress={goBack ?? (() => router.back())} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ position: "absolute", left: 20, top: topPad + 8, zIndex: 10 }} />
 
       <ScrollView
         contentContainerStyle={{ paddingTop: topPad + 60, paddingBottom: bottomPad + 40, paddingHorizontal: 20 }}
@@ -105,6 +102,7 @@ export default function AmigosScreen() {
         )}
       </ScrollView>
     </LinearGradient>
+  </>
   );
 }
 
@@ -482,7 +480,7 @@ function relativeShort(iso: string): string {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   headerRow: { flexDirection: "row", alignItems: "center", marginBottom: 16, height: 40 },
-  title: { fontFamily: "Manrope", fontSize: 26, fontWeight: "700", marginBottom: 6 },
+  title: { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", letterSpacing: 0.3, marginBottom: 6 },
   subtitle: { fontFamily: "Manrope", fontSize: 14, marginBottom: 20 },
   searchRow: {
     flexDirection: "row",
