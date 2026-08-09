@@ -1125,6 +1125,7 @@ const styles = StyleSheet.create({
     paddingTop: 3,
     paddingBottom: 8,
     gap: 6,
+    marginTop: -4,
   },
   heroIcon: {
     marginTop: 14,
