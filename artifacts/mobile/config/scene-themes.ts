@@ -28,6 +28,12 @@ export type SceneTheme = {
   radialCenter?: string;
   /** Brillo radial opcional (borde). */
   radialOuter?: string;
+  /**
+   * Stops del degradado radial SVG (N stops con color+opacidad).
+   * Cuando está presente reemplaza radialCenter/radialOuter.
+   * offset: 0–1, color: hex, opacity: 0–1.
+   */
+  radialStops?: Array<{ offset: number; color: string; opacity: number }>;
 };
 
 export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
@@ -46,8 +52,16 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
   indigo: {
     id: "indigo",
     label: "Índigo",
-    gradient: ["#0C0A1F", "#1E1448", "#3E1B62", "#29103E"],
-    solid: "#0C0A1F",
+    gradient: ["#13063A", "#190B41", "#221149", "#2B1852", "#3F225F", "#6F3E76"],
+    solid: "#2E1D54",
+    // Brillo radial centrado — replica el CSS:
+    // radial-gradient(ellipse 55% 50% at 50% 50%, ...)
+    radialStops: [
+      { offset: 0,    color: "#8C417D", opacity: 0.85 },
+      { offset: 0.28, color: "#692D6E", opacity: 0.55 },
+      { offset: 0.55, color: "#3C1E5A", opacity: 0.25 },
+      { offset: 0.80, color: "#2E1D54", opacity: 0    },
+    ],
   },
 };
 

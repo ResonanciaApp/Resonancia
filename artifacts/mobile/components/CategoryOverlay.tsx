@@ -6,17 +6,24 @@ import { BackOverrideProvider } from "@/context/BackOverrideContext";
 import { DURATION, easeOutCubic } from "@/constants/motion";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
-const W = Dimensions.get("window").width;
+// ─── Descanzo: import EAGER (es ruta de tab, no de root) ──────────────────────
+// Las rutas de tab son split-bundles de Expo Router. Si se lazy-importan con
+// React.lazy, SceneThemeContext.tsx se evalúa DOS VECES (una en el bundle
+// principal, otra en el split-bundle), creando dos objetos createContext
+// distintos → proveedor y consumidor no coinciden → crash.
+// Importarlo de forma eager lo incluye en el bundle principal desde el inicio
+// (el tamaño es manejable, ~400 módulos) y evita la doble evaluación.
+import DescanzoScreen from "@/app/(tabs)/descanzo";
 
-// Importaciones lazy: cada screen se convierte en un split-bundle separado,
-// lo que evita que el heap de Metro se llene al bundear las ~1800 dependencias
-// de cada pantalla dentro del bundle principal.
-const SCREENS: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
-  "/category/meditaciones-guiadas": React.lazy(() => import("@/app/category/meditaciones-guiadas")),
-  "/category/sonidos-ancestrales":  React.lazy(() => import("@/app/category/sonidos-ancestrales")),
-  "/category/musica-sonidos":       React.lazy(() => import("@/app/category/musica-sonidos")),
-  "/(tabs)/descanzo":               React.lazy(() => import("@/app/(tabs)/descanzo")),
-};
+// ─── Pantallas de categoría root-level: React.lazy es seguro ─────────────────
+// Estas viven en app/category/ (rutas root, no tab). Expo Router no las
+// empaqueta como split-bundles de tab, así que React.lazy crea UN SOLO
+// bundle sin duplicar SceneThemeContext.
+const LazyMeditaciones = React.lazy(() => import("@/app/category/meditaciones-guiadas"));
+const LazySonidos      = React.lazy(() => import("@/app/category/sonidos-ancestrales"));
+const LazyMusica       = React.lazy(() => import("@/app/category/musica-sonidos"));
+
+const W = Dimensions.get("window").width;
 
 /**
  * Overlay de categorías: desliza de derecha a izquierda SOBRE las tabs.
@@ -29,10 +36,9 @@ export function CategoryOverlay() {
   const [activeRoute, setActiveRoute] = useState<string | null>(null);
   const slideAnim = useRef(new Animated.Value(W)).current;
 
-  // Pre-cargar los módulos en segundo plano de forma SECUENCIAL con pausas.
-  // Importar los 4 en paralelo hace que Metro compile ~7000 módulos al mismo
-  // tiempo y se queda sin memoria (OOM). Escalonando a 3 s entre cada uno
-  // Metro termina cada split-bundle antes de empezar el siguiente.
+  // Pre-cargar las 3 pantallas root-level de forma secuencial con pausa.
+  // Así Metro compila un split-bundle a la vez sin saturar el heap.
+  // Descanzo NO se precarga porque ya está en el bundle principal (eager).
   useEffect(() => {
     const delay = (ms: number) => new Promise(r => setTimeout(r, ms));
     void (async () => {
@@ -41,8 +47,6 @@ export function CategoryOverlay() {
       await import("@/app/category/sonidos-ancestrales");
       await delay(3000);
       await import("@/app/category/musica-sonidos");
-      await delay(3000);
-      await import("@/app/(tabs)/descanzo");
     })();
   }, []);
 
@@ -76,20 +80,36 @@ export function CategoryOverlay() {
 
   if (!rendered || !activeRoute) return null;
 
-  const Screen = SCREENS[activeRoute];
-  if (!Screen) return null;
+  // Resolver el componente según la ruta activa.
+  // Descanzo: eager import → sin Suspense necesario.
+  // Categorías: React.lazy → envueltas en Suspense.
+  const isDescanzo = activeRoute === "/(tabs)/descanzo";
+  let ResolvedScreen: React.ComponentType | null = null;
+  if (!isDescanzo) {
+    if (activeRoute === "/category/meditaciones-guiadas") ResolvedScreen = LazyMeditaciones;
+    else if (activeRoute === "/category/sonidos-ancestrales") ResolvedScreen = LazySonidos;
+    else if (activeRoute === "/category/musica-sonidos") ResolvedScreen = LazyMusica;
+    if (!ResolvedScreen) return null;
+  }
+
+  const bg = sceneTheme.solid;
+  const Screen = ResolvedScreen;
 
   return (
     <Animated.View
       style={[
         StyleSheet.absoluteFill,
-        { backgroundColor: sceneTheme.solid, transform: [{ translateX: slideAnim }] },
+        { backgroundColor: bg, transform: [{ translateX: slideAnim }] },
       ]}
     >
       <BackOverrideProvider onBack={closeCategory}>
-        <Suspense fallback={<View style={[StyleSheet.absoluteFill, { backgroundColor: sceneTheme.solid }]} />}>
-          <Screen />
-        </Suspense>
+        {isDescanzo ? (
+          <DescanzoScreen />
+        ) : Screen ? (
+          <Suspense fallback={<View style={[StyleSheet.absoluteFill, { backgroundColor: bg }]} />}>
+            <Screen />
+          </Suspense>
+        ) : null}
       </BackOverrideProvider>
     </Animated.View>
   );

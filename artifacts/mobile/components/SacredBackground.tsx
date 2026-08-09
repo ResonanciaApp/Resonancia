@@ -61,8 +61,20 @@ export function SacredBackground({ variant = "solid", solidColor, noImage = fals
     return (
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
         <LinearGradient colors={theme.gradient} style={StyleSheet.absoluteFill} />
-        {/* Brillo radial del tema (ej. paleta Ajna en "Universo") */}
-        {theme.radialCenter != null && theme.radialOuter != null && (
+        {/* Brillo radial — N stops (radialStops) o 2 stops legacy (radialCenter/radialOuter) */}
+        {theme.radialStops != null ? (
+          <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+            <Defs>
+              {/* r=55 en viewBox 100×100 → elipse natural en pantalla portrait */}
+              <SvgRadialGradient id="sceneThemeGlowMulti" cx="50" cy="50" r="55" gradientUnits="userSpaceOnUse">
+                {theme.radialStops.map((s, i) => (
+                  <Stop key={i} offset={s.offset} stopColor={s.color} stopOpacity={s.opacity} />
+                ))}
+              </SvgRadialGradient>
+            </Defs>
+            <Rect x="0" y="0" width="100" height="100" fill="url(#sceneThemeGlowMulti)" />
+          </Svg>
+        ) : theme.radialCenter != null && theme.radialOuter != null ? (
           <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
             <Defs>
               <SvgRadialGradient id="sceneThemeGlow" cx="50" cy="52.5" r="72.5" gradientUnits="userSpaceOnUse">
@@ -73,7 +85,7 @@ export function SacredBackground({ variant = "solid", solidColor, noImage = fals
             </Defs>
             <Rect x="0" y="0" width="100" height="100" fill="url(#sceneThemeGlow)" />
           </Svg>
-        )}
+        ) : null}
       </View>
     );
   }

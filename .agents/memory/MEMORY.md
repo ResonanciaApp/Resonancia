@@ -95,6 +95,7 @@
 - [metro.config.js clobbered](metro-config-clobbered.md) — metro.config.js puede quedarse vacío (10 líneas) perdiendo monorepo config; backup en metro.config.js.bak; requiere projectRoot+watchFolders+extraNodeModules+resolveRequest
 - [ErrorFallback no context hooks](error-fallback-no-hooks.md) — ErrorBoundary vive encima de SceneThemeProvider/AuthProvider; ErrorFallback debe usar colores hardcoded (#060A0F/#BE9650) — ningún hook de contexto es seguro ahí
 - [pnpm add timeout deja node_modules corrupto](pnpm-add-timeout-corruption.md) — pnpm add interrumpido puede borrar binarios (expo) y desincronizar lockfile; fix = pnpm install --no-frozen-lockfile + mkdir tmp dir de Metro
+- [Tab route lazy import crash](tab-route-lazy-import-crash.md) — React.lazy de ruta (tabs) duplica SceneThemeContext → crash "must be inside Provider"; solo rutas root son lazy-safe
 - [Bunny Stream videos](bunny-videos.md) — catalog_videos DB + /videos + /admin/videos routes; mobile useVideos hook con fallback a STATIC_VIDEOS; EXPO_PUBLIC_BUNNY_CDN_HOSTNAME requerido para HLS; VITE_BUNNY_CDN_HOSTNAME para admin
 - [Mix folders pattern](mix-folders-pattern.md) — MixFolder mirrors playlist folders; "crear mezcla/carpeta" buttons live inside the mezclas tab itself (not a separate general view like Playlists)
 - [Lotus icon → Escenas panel](lotus-icon-escenas.md) — lotus icon on Inicio no longer opens /profile, opens EscenasSheet (ambient sound); Profile now only via DrawerMenu
