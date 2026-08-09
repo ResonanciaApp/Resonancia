@@ -134,7 +134,7 @@ function RoleCard({ role, delay }: { role: RoleData; delay: number }) {
         style={({ pressed }) => [styles.ctaBtn, { opacity: pressed ? 0.85 : 1 }]}
       >
         <LinearGradient
-          colors={["#884D80", "#884D80"]}
+          colors={["#F9F9F9", "#F9F9F9"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={StyleSheet.absoluteFill}

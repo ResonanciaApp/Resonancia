@@ -163,9 +163,9 @@ export default function SessionDetailScreen() {
     ? ["#F9F9F9", "#F9F9F9"]
     : sceneTheme.id === "tibet"
     ? ["#F9F9F9", "#F9F9F9"]
-    : ["#884D80", "#884D80"];
+    : ["#F9F9F9", "#F9F9F9"];
   const playBtnTextColor = "#0d0c26";
-  const shareBtnAccent = sceneTheme.id === "indigo" ? "#F9F9F9" : sceneTheme.id === "tibet" ? "#F9F9F9" : "#884D80";
+  const shareBtnAccent = sceneTheme.id === "indigo" ? "#F9F9F9" : sceneTheme.id === "tibet" ? "#F9F9F9" : "#F9F9F9";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
   const [showPlaylistSheet, setShowPlaylistSheet] = useState(false);
@@ -818,7 +818,7 @@ export default function SessionDetailScreen() {
               ]}
             >
               <LinearGradient
-                colors={["#884D80", "#884D80"]}
+                colors={["#F9F9F9", "#F9F9F9"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={StyleSheet.absoluteFill}

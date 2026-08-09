@@ -35,7 +35,7 @@ export function GoldGradient({ style, children, ...rest }: ViewProps) {
  *   </Pressable>
  */
 /** Degradado dorado del botón "Escuchar ahora" (detalle de sesión): vertical #F9F9F9→#F9F9F9. */
-export const LISTEN_GOLD_GRAD = ["#884D80", "#884D80"] as const;
+export const LISTEN_GOLD_GRAD = ["#F9F9F9", "#F9F9F9"] as const;
 
 /** Relleno absoluto con el degradado de "Escuchar ahora". El padre necesita overflow: 'hidden'. */
 export function ListenGoldFill() {
