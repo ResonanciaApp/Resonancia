@@ -487,7 +487,7 @@ export default function ResonadoresScreen() {
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <View style={styles.titleRow}>
           <View style={{ flex: 1 }}>
-            <Feather name="chevron-up" size={18} color="rgba(255,255,255,0.45)" style={{ marginBottom: 2, marginLeft: 2 }} />
+            <Feather name="chevron-left" size={28} color="rgba(255,255,255,0.45)" style={{ marginBottom: 2, marginLeft: 2 }} />
             <Text style={[styles.title, { transform: [{ translateY: -6 }] }]}>Resonadores</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 6, transform: [{ translateX: 3 }, { translateY: -6 }] }}>
