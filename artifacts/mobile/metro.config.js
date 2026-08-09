@@ -4,6 +4,12 @@ const fs = require("fs");
 
 const config = getDefaultConfig(__dirname);
 
+// ── Force projectRoot to THIS directory ───────────────────────────────────────
+// pnpm runs scripts from the workspace root; without this, Metro computes
+// the Expo Router virtual entry relative to process.cwd() (the workspace root)
+// and produces paths like "./node_modules/.pnpm/expo-router.../entry from /home/runner/workspace/."
+config.projectRoot = __dirname;
+
 // ── Remove unstable_workerThreads ─────────────────────────────────────────────
 // @expo/metro-config@54.x sets watcher.unstable_workerThreads = false, but
 // newer Metro versions (used in EAS build validation) don't recognise this key
