@@ -473,7 +473,7 @@ export default function ResonadoresScreen() {
           <View style={{ flex: 1 }}>
             <Text style={[styles.title, { transform: [{ translateY: -6 }] }]}>Resonadores</Text>
           </View>
-          <GhostPill style={{ transform: [{ translateX: 3 }, { translateY: -6 }], gap: 6 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 6, transform: [{ translateX: 3 }, { translateY: -6 }] }}>
             <Pressable onPress={toggleSearch} hitSlop={10} style={styles.searchIconBtn}>
               <Feather
                 name={searchVisible ? "x" : "search"}
@@ -488,7 +488,7 @@ export default function ResonadoresScreen() {
             >
               <Feather name="info" size={20} color="#FFFFFF" />
             </Pressable>
-          </GhostPill>
+          </View>
         </View>
 
         {searchVisible && (
@@ -708,7 +708,7 @@ const styles = StyleSheet.create({
     padding: 3,
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.12)",
-    marginTop: 40,
+    marginTop: 25,
   },
   tabBtn: {
     flex: 1,
