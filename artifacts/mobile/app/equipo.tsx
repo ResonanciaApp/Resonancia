@@ -317,7 +317,7 @@ export default function EquipoScreen() {
             </Pressable>
             <Text style={[styles.title, { transform: [{ translateY: 9 }] }]}>Resonadores</Text>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 6, transform: [{ translateX: 3 }] }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 6, transform: [{ translateX: 3 }, { translateY: 10 }] }}>
             <Pressable onPress={toggleSearch} hitSlop={10} style={styles.searchIconBtn}>
               <Feather
                 name={searchVisible ? "x" : "search"}
