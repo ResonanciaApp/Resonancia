@@ -27,6 +27,11 @@ config.resolver.extraNodeModules = {
 // resolveRequest: redirect react@19.2.x → 19.1.0, deduplicate expo-modules-core, null-stub specs_DEPRECATED
 ```
 
+## pnpm exec expo — workspace root binary hijack
+`pnpm exec expo` in a pnpm workspace resolves the `expo` binary from the workspace ROOT's `node_modules/.bin/expo` (which points to `expo@57` pulled in by `react-native-audio-api`), NOT mobile's local `expo@54`. This makes Expo CLI generate manifest bundle URLs relative to the workspace root → "Unable to resolve module ./node_modules/.pnpm/expo-router@6.0.24_<hash>/entry from /home/runner/workspace/."
+
+**Fix**: the `dev` script in `artifacts/mobile/package.json` must use `./node_modules/.bin/expo start` (explicit local path) instead of `pnpm exec expo start`.
+
 ## react-native path note
 The pnpm hash for react-native@0.81.5 changed from `@babel+core@7.29.0` to `@babel+core@7.29.7`. Always verify with:
 ```
