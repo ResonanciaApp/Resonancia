@@ -460,7 +460,7 @@ export default function DescansoScreen() {
           <Pressable
             onPress={backOverride ?? (() => router.back())}
             hitSlop={10}
-            style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginLeft: -5, transform: [{ translateY: -24 }] }}
+            style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginLeft: -5, transform: [{ translateY: -22 }] }}
           >
             <View style={{ transform: [{ translateX: -1 }] }}>
               <Feather name="chevron-left" size={28} color="#FBFBFB" />
@@ -700,7 +700,7 @@ export default function DescansoScreen() {
           <Pressable
             onPress={backOverride ?? (() => router.back())}
             hitSlop={10}
-            style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginLeft: 1, transform: [{ translateY: -24 }] }}
+            style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginLeft: 1, transform: [{ translateY: -22 }] }}
           >
             <View style={{ transform: [{ translateX: -1 }] }}>
               <Feather name="chevron-left" size={28} color="#FBFBFB" />
