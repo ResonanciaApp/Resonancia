@@ -29,6 +29,20 @@ export function DrawerScreenOverlay() {
   const [activeRoute, setActiveRoute] = useState<string | null>(null);
   const slideAnim = useRef(new Animated.Value(W)).current;
 
+  // Pre-cargar todos los módulos al montar el componente para que cuando el
+  // usuario toque un ítem del drawer el JS ya esté en caché y renderice
+  // inmediatamente (sin pasar por el fallback de Suspense).
+  useEffect(() => {
+    void Promise.all([
+      import("@/app/diario"),
+      import("@/app/amigos"),
+      import("@/app/grupos"),
+      import("@/app/historial"),
+      import("@/app/favoritos-todos"),
+      import("@/app/mis-sesiones"),
+    ]);
+  }, []);
+
   useEffect(() => {
     if (overlayRoute) {
       setActiveRoute(overlayRoute);
