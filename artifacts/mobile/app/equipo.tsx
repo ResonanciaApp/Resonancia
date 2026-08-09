@@ -315,9 +315,9 @@ export default function EquipoScreen() {
             >
               <Feather name="chevron-left" size={28} color="rgba(255,255,255,0.45)" style={{ marginBottom: 2, marginLeft: 2 }} />
             </Pressable>
-            <Text style={[styles.title, { transform: [{ translateY: -6 }] }]}>Resonadores</Text>
+            <Text style={[styles.title, { transform: [{ translateY: 9 }] }]}>Resonadores</Text>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 6, transform: [{ translateX: 3 }, { translateY: -6 }] }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 6, transform: [{ translateX: 3 }] }}>
             <Pressable onPress={toggleSearch} hitSlop={10} style={styles.searchIconBtn}>
               <Feather
                 name={searchVisible ? "x" : "search"}
@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
   },
   titleRow: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-end",
     gap: 10,
     paddingBottom: 4,
   },
