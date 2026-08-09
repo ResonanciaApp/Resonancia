@@ -376,7 +376,7 @@ export default function SessionDetailScreen() {
 
       {/* ── NavBar flotante — encima del ScrollView ────────────────────── */}
       <View style={[styles.navBar, { paddingTop: topPad, position: "absolute", top: 0, left: 0, right: 0, zIndex: 3 }]}>
-        <GhostPill noBorder style={{ backgroundColor: "rgba(27,6,15,0.5)" }}>
+        <GhostPill noBorder style={{ backgroundColor: "rgba(27,6,15,0.5)", transform: [{ translateX: -2 }, { translateY: 2 }] }}>
           <BackPill onPress={() => router.back()} size={27} />
         </GhostPill>
         <Pressable onPress={handleInstagramShare} hitSlop={10} style={({ pressed }) => [styles.igBtn, { opacity: pressed ? 0.6 : 1 }]}>
