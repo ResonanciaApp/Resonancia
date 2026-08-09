@@ -241,7 +241,7 @@ export function DrawerMenu() {
                 <Pressable
                   key={item.label}
                   onPress={() => navigate(item.route)}
-                  style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
+                  style={styles.item}
                 >
                   <View style={styles.itemIcon}>
                     {item.label === "Tu Premium" ? (
