@@ -20,20 +20,12 @@ if (config.watcher) {
   delete config.watcher.unstable_workerThreads;
 }
 
-// ── inotify / ENOSPC fix ──────────────────────────────────────────────────────
-// In Linux environments without watchman (e.g. Replit), Metro uses
-// FallbackWatcher which opens one inotify watch per directory recursively.
-// getDefaultConfig() adds the entire workspace node_modules root to
-// watchFolders, which includes node_modules/.pnpm (thousands of directories),
-// exhausting the kernel's fs.inotify.max_user_watches limit (65 536).
-//
-// Fix: strip any node_modules path from watchFolders. Module *resolution*
-// is handled by the resolver (not watchers), so this does not break imports.
-// Only hot-reload for changes inside node_modules is lost — which is never
-// needed during development.
-config.watchFolders = (config.watchFolders ?? []).filter(
-  (f) => !f.includes("node_modules")
-);
+// ── watchFolders ──────────────────────────────────────────────────────────────
+// getDefaultConfig() adds the workspace node_modules root + all workspace
+// packages to watchFolders so Metro can resolve cross-package imports.
+// Measured: ~6 000 dirs in .pnpm at depth 3 — well under the 65 536 inotify
+// limit. Keep all watchFolders as-is so Metro's HasteFS includes the pnpm
+// store; without it Metro can't find expo-router/entry from the bundle URL.
 
 const NULL_STUB = path.resolve(__dirname, "mocks/null-stub.js");
 

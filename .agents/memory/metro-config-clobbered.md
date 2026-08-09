@@ -8,16 +8,19 @@ The full metro.config.js lives at `artifacts/mobile/metro.config.js`. A backup i
 
 **Why:** Replit agent sessions or external tools occasionally overwrite the file with a minimal stub. Without the full config, two bugs appear immediately:
 1. `Cannot read property 'useContext' of null` — three React versions (19.1.0, 19.2.3, 19.2.8) in pnpm; the `resolveRequest` redirect that rewrites `react@19.2.x → react@19.1.0` is missing.
-2. `Unable to resolve module ./node_modules/.pnpm/expo-router.../entry from /home/runner/workspace/.` — `config.projectRoot = __dirname` is missing, so Metro uses process.cwd() (workspace root) as origin.
+2. `Unable to resolve module ./node_modules/.pnpm/expo-router.../entry from /home/runner/workspace/.` — Metro projectRoot resolves as workspace root; without `/home/runner/workspace/node_modules` in watchFolders, HasteFS can't find the pnpm store path for expo-router/entry.
+
+## watchFolders — do NOT filter node_modules
+Do NOT add a filter that removes paths containing "node_modules" from watchFolders. The pnpm store at `/home/runner/workspace/node_modules/.pnpm` has only ~6000 directories (well under the 65536 inotify limit). Filtering it out breaks Metro's HasteFS: it can no longer resolve the expo-router entry module when Metro uses the workspace root as its effective projectRoot.
+
+**Why the concern was wrong:** The original "inotify exhaustion" comment was overcautious. Measured: ~6000 dirs at depth 3 in the pnpm store — safe.
 
 ## Key config sections that must be present
 
 ```js
 config.projectRoot = __dirname;  // MUST be explicit
 
-config.watchFolders = (config.watchFolders ?? []).filter(
-  (f) => !f.includes("node_modules")  // prevent inotify exhaustion
-);
+// watchFolders: keep as-is (do NOT filter node_modules — see above)
 
 config.resolver.extraNodeModules = {
   react: REACT_PATH,        // → react@19.1.0 in pnpm store
