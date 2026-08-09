@@ -29,6 +29,18 @@ export function CategoryOverlay() {
   const [activeRoute, setActiveRoute] = useState<string | null>(null);
   const slideAnim = useRef(new Animated.Value(W)).current;
 
+  // Pre-cargar todos los módulos en segundo plano al montar el componente.
+  // Así Metro compila los split-bundles antes de que el usuario los abra,
+  // eliminando el delay de 3 s que aparece si se compilan bajo demanda.
+  useEffect(() => {
+    void Promise.all([
+      import("@/app/category/meditaciones-guiadas"),
+      import("@/app/category/sonidos-ancestrales"),
+      import("@/app/category/musica-sonidos"),
+      import("@/app/(tabs)/descanzo"),
+    ]);
+  }, []);
+
   useEffect(() => {
     if (categoryRoute) {
       setActiveRoute(categoryRoute);
