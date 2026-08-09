@@ -26,6 +26,9 @@ export function GhostPill({ children, style, noBorder = false }: Props) {
   const scale  = useRef(new Animated.Value(1)).current;
   const bright = useRef(new Animated.Value(0)).current;
 
+  // Separa transform del resto del style para fusionarlo con la animación de scale
+  const { transform: styleTransform, ...restStyle } = (style ?? {}) as ViewStyle & { transform?: object[] };
+
   function animateIn() {
     Animated.parallel([
       Animated.timing(scale,  { toValue: 0.97, duration: DURATION.BUTTON_PRESS,   easing: easeOutCubic, useNativeDriver: true }),
@@ -46,7 +49,7 @@ export function GhostPill({ children, style, noBorder = false }: Props) {
 
   return (
     <Animated.View
-      style={[styles.wrap, style, { transform: [{ scale }] }]}
+      style={[styles.wrap, restStyle, { transform: [...(styleTransform ?? []), { scale }] }]}
       onTouchStart={animateIn}
       onTouchEnd={animateOut}
       onTouchCancel={animateOut}
