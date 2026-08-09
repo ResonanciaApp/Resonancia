@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React from "react";
@@ -36,16 +37,7 @@ export default function TodasLasTemáticasScreen() {
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 12 }]}>
-        <Pressable
-          onPress={() => router.back()}
-          hitSlop={10}
-          style={({ pressed }) => [
-            styles.backBtn,
-            { backgroundColor: colors.card, borderColor: "rgba(212,175,55,0.20)", opacity: pressed ? 0.7 : 1 },
-          ]}
-        >
-          <Feather name="arrow-left" size={18} color={colors.foreground} />
-        </Pressable>
+        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(45,28,82,0.6)" iconOffsetX={-1} />
         <View style={styles.headerText}>
           <Text style={[styles.title, { color: colors.foreground }]}>Todas las Temáticas</Text>
           <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>

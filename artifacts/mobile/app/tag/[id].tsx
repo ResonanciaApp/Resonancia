@@ -152,7 +152,7 @@ export default function TagScreen() {
             style={StyleSheet.absoluteFill}
           />
           {/* Back button floating on hero */}
-          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ position: "absolute", left: H_PAD, top: topPad + 8 }} />
+          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(45,28,82,0.6)" iconOffsetX={-1} style={{ position: "absolute", left: H_PAD, top: topPad + 8 }} />
         </View>
 
         {/* TITLE + DESCRIPTION */}

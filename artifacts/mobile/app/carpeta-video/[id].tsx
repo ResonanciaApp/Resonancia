@@ -109,7 +109,7 @@ export default function CarpetaVideoDetailScreen() {
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
-        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={9} />
+        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ marginLeft: 10 }} />
         <Text style={styles.headerName} numberOfLines={1}>{folder.name}</Text>
         <Pressable style={styles.iconBtn} hitSlop={10} onPress={handleFolderMenu}>
           <Feather name="more-horizontal" size={22} color={TEXT} />
