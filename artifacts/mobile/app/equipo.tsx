@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
   chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400", color: "#FFFFFF" },
   chipTextSel: { fontFamily: "Manrope", color: "#1B060F", fontWeight: "700" },
   grid: { paddingHorizontal: H_PAD, paddingTop: 25 },
-  row: { gap: CARD_GAP, marginBottom: 16 },
+  row: { gap: CARD_GAP, marginBottom: 31 },
   card: {
     alignItems: "center",
     paddingVertical: 8,
