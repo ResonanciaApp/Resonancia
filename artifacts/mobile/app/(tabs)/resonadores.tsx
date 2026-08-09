@@ -26,11 +26,11 @@ import { EXPANSORES, REGIONS_BY_COUNTRY, type Expansor } from "@/data/expansores
 import { RESONADORES, type Resonador } from "@/data/resonadores";
 import { useColors } from "@/hooks/useColors";
 import { useUserProfile } from "@/context/UserProfileContext";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 const H_PAD = 18;
 const CARD_GAP = 10;
 const BG: [string, string] = ["#340D1A", "#190913"];
-const EQUIPO_BG = require("@/assets/images/equipo-bg.jpg");
 const MUTED = "#c2c2c2";
 const CHIP_ANIM_DURATION = 600;
 const CLOSE_SLOT = 38;
@@ -342,6 +342,7 @@ const ResonadorCard = memo(function ResonadorCard({
 // ── Pantalla principal ────────────────────────────────────────────────────────
 export default function ResonadoresScreen() {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -460,25 +461,17 @@ export default function ResonadoresScreen() {
 
   return (
     <View style={styles.root}>
-      <Image
-        source={EQUIPO_BG}
-        style={[StyleSheet.absoluteFill, { backgroundColor: "#210911" }]}
-        contentFit="cover"
-        cachePolicy="memory-disk"
-        transition={200}
-      />
-      <StatusBar hidden />
       <LinearGradient
-        colors={["rgba(0,0,0,0.35)", "rgba(10,0,4,0.65)", "#0A0004"]}
-        locations={[0, 0.5, 1]}
+        colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
         style={StyleSheet.absoluteFill}
       />
+      <StatusBar hidden />
 
       {/* ── Header ── */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <View style={styles.titleRow}>
           <View style={{ flex: 1 }}>
-            <Text style={[styles.title, { transform: [{ translateY: -6 }] }]}>Equipo</Text>
+            <Text style={[styles.title, { transform: [{ translateY: -6 }] }]}>Resonadores</Text>
           </View>
           <GhostPill style={{ transform: [{ translateX: 3 }, { translateY: -6 }], gap: 6 }}>
             <Pressable onPress={toggleSearch} hitSlop={10} style={styles.searchIconBtn}>
