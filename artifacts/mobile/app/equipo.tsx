@@ -313,7 +313,7 @@ export default function EquipoScreen() {
               hitSlop={12}
               style={{ alignSelf: "flex-start" }}
             >
-              <Feather name="chevron-left" size={28} color="rgba(255,255,255,0.45)" style={{ marginBottom: 2, marginLeft: 2 }} />
+              <Feather name="chevron-left" size={28} color="#F9F9F9" style={{ marginBottom: 2, marginLeft: 2 }} />
             </Pressable>
             <Text style={[styles.title, { transform: [{ translateY: 9 }] }]}>Resonadores</Text>
           </View>
@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
   },
   chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400", color: "#FFFFFF" },
   chipTextSel: { fontFamily: "Manrope", color: "#1B060F", fontWeight: "700" },
-  grid: { paddingHorizontal: H_PAD, paddingTop: 0 },
+  grid: { paddingHorizontal: H_PAD, paddingTop: 25 },
   row: { gap: CARD_GAP, marginBottom: 16 },
   card: {
     alignItems: "center",
