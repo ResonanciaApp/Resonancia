@@ -1038,23 +1038,6 @@ export default function HomeScreen2() {
           </Pressable>
         )}
 
-        {/* ── 7 días de la semana ── */}
-        {rachaEnabled && (
-          <Pressable
-            onPress={() => setProgresoVisible(true)}
-            style={({ pressed }) => ({
-              marginHorizontal: GRID_PAD,
-              marginTop: showAnimatedScene ? 54 : 24,
-              marginBottom: SECTION_GAP / 2 - 20,
-              paddingVertical: 12,
-              opacity: pressed ? 0.75 : 1,
-              transform: [{ translateX: -3 }],
-            })}
-          >
-            <WeekDayDots />
-          </Pressable>
-        )}
-
         {/* ── SESIÓN EN VIVO PRÓXIMA ── */}
         {nextLiveSession && (
           <View style={{ paddingHorizontal: GRID_PAD, marginBottom: SECTION_GAP }}>
