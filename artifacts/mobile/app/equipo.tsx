@@ -21,7 +21,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
-import { EXPANSORES, REGIONS_BY_COUNTRY, type Expansor } from "@/data/expansores";
 import { RESONADORES, type Resonador } from "@/data/resonadores";
 import { useColors } from "@/hooks/useColors";
 import { useUserProfile } from "@/context/UserProfileContext";
@@ -198,87 +197,8 @@ function CountryChipRow({
   );
 }
 
-// ── Filtro chevron expansores ──────────────────────────────────────────────────
-function ExpansorChevronFilter({
-  availableCountries,
-  selectedCountry,
-  onSelectCountry,
-}: {
-  availableCountries: string[];
-  selectedCountry: string | null;
-  onSelectCountry: (c: string | null) => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const anim = useRef(new Animated.Value(0)).current;
-
-  function toggle() {
-    const next = !open;
-    setOpen(next);
-    Animated.timing(anim, {
-      toValue: next ? 1 : 0,
-      duration: 200,
-      easing: Easing.out(Easing.quad),
-      useNativeDriver: false,
-    }).start();
-  }
-
-  function handleCountry(c: string) {
-    onSelectCountry(selectedCountry === c ? null : c);
-    setOpen(false);
-    Animated.timing(anim, { toValue: 0, duration: 160, easing: Easing.in(Easing.quad), useNativeDriver: false }).start();
-  }
-
-  const chevronRotate = anim.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "180deg"] });
-  const dropOpacity  = anim;
-  const dropScale    = anim.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] });
-
-  const label = selectedCountry ?? "Todos los países";
-
-  return (
-    <View style={styles.chevronWrap}>
-      <Pressable onPress={toggle} style={({ pressed }) => [styles.chevronTrigger, { opacity: pressed ? 0.75 : 1 }]}>
-        <Text style={styles.chevronTriggerText}>{label}</Text>
-        <Animated.View style={{ transform: [{ rotate: chevronRotate }] }}>
-          <Feather name="chevron-down" size={14} color="#F6F6F6" />
-        </Animated.View>
-      </Pressable>
-
-      {open && (
-        <Animated.View style={[styles.chevronDropdown, { opacity: dropOpacity, transform: [{ scale: dropScale }] }]}>
-          <Pressable
-            onPress={() => handleCountry("")}
-            style={[styles.chevronOption, !selectedCountry && styles.chevronOptionSel]}
-          >
-            <Text style={[styles.chevronOptionText, !selectedCountry && styles.chevronOptionTextSel]}>
-              Todos los países
-            </Text>
-          </Pressable>
-          {availableCountries.map((c, i) => (
-            <Pressable
-              key={c}
-              onPress={() => handleCountry(c)}
-              style={[
-                styles.chevronOption,
-                selectedCountry === c && styles.chevronOptionSel,
-                i < availableCountries.length - 1 && styles.chevronOptionDivider,
-              ]}
-            >
-              <Text style={[styles.chevronOptionText, selectedCountry === c && styles.chevronOptionTextSel]}>
-                {c}
-              </Text>
-              {selectedCountry === c && <Feather name="check" size={13} color="#F9F9F9" />}
-            </Pressable>
-          ))}
-        </Animated.View>
-      )}
-    </View>
-  );
-}
-
 // ── Card de Resonador ─────────────────────────────────────────────────────────
-type CardItem =
-  | { kind: "expansor"; data: Expansor }
-  | { kind: "resonador"; data: Resonador };
+type CardItem = { kind: "resonador"; data: Resonador };
 
 const ResonadorCard = memo(function ResonadorCard({
   item,
@@ -347,17 +267,7 @@ export default function EquipoScreen() {
 
   const { width: screenWidth } = useWindowDimensions();
 
-  const [activeTab, setActiveTab] = useState<"resonadores" | "expansores">("resonadores");
-  const EXPANSOR_PAGE = 9;
-  const [expansorLimit, setExpansorLimit] = useState(EXPANSOR_PAGE);
-
-  // Resonadores filter
   const [activeFilter, setActiveFilter] = useState("Todos");
-
-  // Expansores filters — cascada país → región
-  const [selectedCountry, setSelectedCountry] = useState<string | null>("Chile");
-  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
-
   const [query, setQuery] = useState("");
   const [searchVisible, setSearchVisible] = useState(false);
 
@@ -366,70 +276,21 @@ export default function EquipoScreen() {
     setSearchVisible((v) => !v);
   }
 
-  // Países presentes en EXPANSORES, ordenados alfabéticamente
-  const availableCountries = useMemo(() => {
-    const set = new Set(EXPANSORES.map((e) => e.country));
-    return [...set].sort((a, b) => {
-      if (a === "Chile") return -1;
-      if (b === "Chile") return 1;
-      return a.localeCompare(b);
-    });
-  }, []);
-
-  // Regiones del país seleccionado
-  const regionTabs = useMemo(() => {
-    if (!selectedCountry) return [];
-    return (REGIONS_BY_COUNTRY[selectedCountry] ?? []).map((r) => ({ id: r, label: r }));
-  }, [selectedCountry]);
-
-  function handleSelectCountry(c: string | null) {
-    setSelectedCountry(c);
-    setSelectedRegion(null);
-  }
-
-  const activeFilterKey = activeFilter === "Todos" ? null : activeFilter;
-
-  function switchTab(t: "resonadores" | "expansores") {
-    setActiveTab(t);
-    setActiveFilter("Todos");
-    setSelectedCountry(null);
-    setSelectedRegion(null);
-    setQuery("");
-    setExpansorLimit(EXPANSOR_PAGE);
-  }
-
   const items: CardItem[] = useMemo(() => {
     const q = query.toLowerCase().trim();
-    if (activeTab === "resonadores") {
-      return RESONADORES.filter((r) => {
-        if (activeFilter !== "Todos" && r.subtipo !== activeFilter) return false;
-        if (q) {
-          return (
-            r.name.toLowerCase().includes(q) ||
-            r.subtipo.toLowerCase().includes(q) ||
-            r.city.toLowerCase().includes(q) ||
-            r.specialty.some((s) => s.toLowerCase().includes(q))
-          );
-        }
-        return true;
-      }).map((r) => ({ kind: "resonador" as const, data: r }));
-    } else {
-      return EXPANSORES.filter((e) => {
-        if (selectedCountry && e.country !== selectedCountry) return false;
-        if (selectedRegion && e.region !== selectedRegion) return false;
-        if (q) {
-          return (
-            e.name.toLowerCase().includes(q) ||
-            e.city.toLowerCase().includes(q) ||
-            (e.region ?? "").toLowerCase().includes(q) ||
-            e.country.toLowerCase().includes(q) ||
-            e.specialty.some((s) => s.toLowerCase().includes(q))
-          );
-        }
-        return true;
-      }).map((e) => ({ kind: "expansor" as const, data: e }));
-    }
-  }, [activeTab, activeFilter, selectedCountry, selectedRegion, query]);
+    return RESONADORES.filter((r) => {
+      if (activeFilter !== "Todos" && r.subtipo !== activeFilter) return false;
+      if (q) {
+        return (
+          r.name.toLowerCase().includes(q) ||
+          r.subtipo.toLowerCase().includes(q) ||
+          r.city.toLowerCase().includes(q) ||
+          r.specialty.some((s) => s.toLowerCase().includes(q))
+        );
+      }
+      return true;
+    }).map((r) => ({ kind: "resonador" as const, data: r }));
+  }, [activeFilter, query]);
 
   const numCols = 3;
   const SCREEN_PAD = H_PAD * 2;
@@ -480,7 +341,7 @@ export default function EquipoScreen() {
             <TextInput
               value={query}
               onChangeText={setQuery}
-              placeholder={activeTab === "resonadores" ? "Buscar resonador..." : "Buscar por nombre, ciudad o país..."}
+              placeholder="Buscar resonador..."
               placeholderTextColor="rgba(255,255,255,0.30)"
               style={styles.searchInput}
               returnKeyType="search"
@@ -494,73 +355,6 @@ export default function EquipoScreen() {
           </View>
         )}
 
-        {/* Tab switcher */}
-        <View style={styles.tabPill}>
-          {(["resonadores", "expansores"] as const).map((t) => {
-            const isActive = activeTab === t;
-            const label   = t === "resonadores" ? "Resonadores" : "Expansores";
-            const bajada  = t === "resonadores" ? "La esencia de Resonancia" : "Los que expanden la vibración";
-            return (
-              <Pressable
-                key={t}
-                onPress={() => switchTab(t)}
-                style={[styles.tabBtn, isActive && styles.tabBtnActive]}
-              >
-                {isActive && (
-                  <LinearGradient
-                    colors={["#F9F9F9", "#F9F9F9"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    style={StyleSheet.absoluteFill}
-                  />
-                )}
-                <Text style={[styles.tabBtnText, isActive && styles.tabBtnTextActive]}>{label}</Text>
-                <Text style={[styles.tabBtnBajada, isActive && styles.tabBtnBajadaActive]}>{bajada}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
-      </View>
-
-      {/* ── Filtro chevron expansores ── */}
-      {activeTab === "expansores" && (
-        <ExpansorChevronFilter
-          availableCountries={availableCountries}
-          selectedCountry={selectedCountry}
-          onSelectCountry={handleSelectCountry}
-        />
-      )}
-
-      {/* ── Filtros ── (oculto) */}
-      <View style={[styles.filtersScroll, { display: "none" }]}>
-        {activeTab === "resonadores" ? (
-          <AnimatedFilterRow
-            key="resonadores"
-            tabs={ARTISTA_FILTER_TABS}
-            activeFilter={activeFilterKey}
-            onSelect={(id) => setActiveFilter(id)}
-            onClear={() => setActiveFilter("Todos")}
-          />
-        ) : (
-          <View style={styles.expansorFilters}>
-            <CountryChipRow
-              countries={availableCountries}
-              selected={selectedCountry}
-              onSelect={handleSelectCountry}
-            />
-            {selectedCountry && regionTabs.length > 0 && (
-              <View style={styles.regionRow}>
-                <AnimatedFilterRow
-                  key={selectedCountry}
-                  tabs={regionTabs}
-                  activeFilter={selectedRegion}
-                  onSelect={(id) => setSelectedRegion(id)}
-                  onClear={() => setSelectedRegion(null)}
-                />
-              </View>
-            )}
-          </View>
-        )}
       </View>
 
       {/* ── Grid ── */}
@@ -643,94 +437,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
   },
-  tabBtnActive: {},
-  tabBtnText: {
-    fontFamily: "Manrope",
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#F6F6F6",
-  },
-  tabBtnTextActive: {
-    fontFamily: "Manrope",
-    color: "#1B060F",
-    fontWeight: "700",
-  },
-  tabBtnBajada: {
-    fontFamily: "Manrope",
-    fontSize: 9,
-    fontWeight: "400",
-    color: "rgba(255,255,255,0.50)",
-    textAlign: "center",
-    marginTop: 1,
-    letterSpacing: 0.2,
-  },
-  tabBtnBajadaActive: {
-    color: "rgba(27,6,15,0.65)",
-  },
-  chevronWrap: {
-    marginHorizontal: H_PAD,
-    marginTop: -5,
-    marginBottom: 4,
-    zIndex: 100,
-  },
-  chevronTrigger: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "rgba(0,0,0,0.40)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    borderRadius: 999,
-    paddingHorizontal: 16,
-    paddingVertical: 9,
-  },
-  chevronTriggerText: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "500",
-    color: "rgba(255,255,255,0.85)",
-    letterSpacing: 0.2,
-  },
-  chevronDropdown: {
-    position: "absolute",
-    top: 44,
-    left: 0,
-    right: 0,
-    backgroundColor: "rgba(18,6,12,0.97)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.12)",
-    borderRadius: 14,
-    overflow: "hidden",
-    zIndex: 200,
-  },
-  chevronOption: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  chevronOptionSel: {
-    backgroundColor: "rgba(212,175,55,0.12)",
-  },
-  chevronOptionDivider: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.08)",
-  },
-  chevronOptionText: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    fontWeight: "400",
-    color: "rgba(255,255,255,0.80)",
-  },
-  chevronOptionTextSel: {
-    fontFamily: "Manrope",
-    color: "#F9F9F9",
-    fontWeight: "600",
-  },
-  filtersScroll: { paddingHorizontal: H_PAD, paddingBottom: 6 },
-  expansorFilters: { gap: 6 },
-  regionRow: { marginTop: 2 },
   animChipWrap: { flexDirection: "row", alignItems: "center" },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
   chipCloseBtn: {
