@@ -467,7 +467,7 @@ export default function MusicaSonidosScreen() {
           {/* Flecha atrás flotante */}
           <View style={[styles.heroOverlayLeft, { top: topPad - 17 }]}>
             <View style={[styles.lotoBtn, { width: 40, height: 40, borderRadius: 20 }]}>
-              <BackPill onPress={backOverride ?? (() => router.back())} size={28} bgColor="rgba(255,255,255,0.10)" style={{ transform: [{ translateX: 2 }] }} />
+              <BackPill onPress={backOverride ?? (() => router.back())} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ transform: [{ translateX: 1 }] }} />
             </View>
           </View>
         </View>
@@ -525,7 +525,7 @@ export default function MusicaSonidosScreen() {
         </View>
         <View style={[styles.heroOverlayLeft, { top: topPad - 17 }]}>
           <View style={[styles.lotoBtn, { width: 40, height: 40, borderRadius: 20 }]}>
-            <BackPill onPress={backOverride ?? (() => router.back())} size={28} bgColor="rgba(255,255,255,0.10)" style={{ transform: [{ translateX: 2 }] }} />
+            <BackPill onPress={backOverride ?? (() => router.back())} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ transform: [{ translateX: 1 }] }} />
           </View>
         </View>
         <View style={{ marginTop: 14 }}>

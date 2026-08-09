@@ -460,9 +460,11 @@ export default function DescansoScreen() {
           <Pressable
             onPress={backOverride ?? (() => router.back())}
             hitSlop={10}
-            style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginLeft: -2 }}
+            style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginLeft: -3 }}
           >
-            <Feather name="chevron-left" size={24} color="#FBFBFB" />
+            <View style={{ transform: [{ translateX: -1 }] }}>
+              <Feather name="chevron-left" size={24} color="#FBFBFB" />
+            </View>
           </Pressable>
           <Text style={[styles.heroTitle, { color: colors.foreground }]}>Dormir</Text>
         </View>
@@ -698,9 +700,11 @@ export default function DescansoScreen() {
           <Pressable
             onPress={backOverride ?? (() => router.back())}
             hitSlop={10}
-            style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginLeft: 4 }}
+            style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.10)", alignItems: "center", justifyContent: "center", marginLeft: 3 }}
           >
-            <Feather name="chevron-left" size={24} color="#FBFBFB" />
+            <View style={{ transform: [{ translateX: -1 }] }}>
+              <Feather name="chevron-left" size={24} color="#FBFBFB" />
+            </View>
           </Pressable>
           <Text style={[styles.stickyHeaderTitle, { color: colors.foreground, flex: 1, textAlign: "center" }]}>Dormir</Text>
           <View style={{ width: 38 }} />
