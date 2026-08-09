@@ -13,15 +13,26 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useColors } from "@/hooks/useColors";
-
 export type ErrorFallbackProps = {
   error: Error;
   resetError: () => void;
 };
 
+// Hardcoded brand palette — ErrorFallback renders outside ALL context providers
+// (ErrorBoundary wraps the entire tree, above SceneThemeProvider, AuthProvider, etc.)
+// so NO context hooks (useColors, useSceneTheme, useAuth…) are safe here.
+const EC = {
+  background: "#060A0F",
+  foreground: "#F9F9F9",
+  mutedForeground: "rgba(249,249,249,0.55)",
+  card: "rgba(255,255,255,0.06)",
+  border: "rgba(255,255,255,0.10)",
+  primary: "#BE9650",
+  primaryForeground: "#060A0F",
+} as const;
+
 export function ErrorFallback({ error, resetError }: ErrorFallbackProps) {
-  const colors = useColors();
+  const colors = EC;
   const insets = useSafeAreaInsets();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
