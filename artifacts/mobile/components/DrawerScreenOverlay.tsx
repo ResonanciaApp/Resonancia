@@ -16,6 +16,7 @@ const SCREENS: Record<string, React.LazyExoticComponent<React.ComponentType>> = 
   "/historial":       React.lazy(() => import("@/app/historial")),
   "/favoritos-todos": React.lazy(() => import("@/app/favoritos-todos")),
   "/mis-sesiones":    React.lazy(() => import("@/app/mis-sesiones")),
+  "/equipo":          React.lazy(() => import("@/app/equipo")),
 };
 
 /**
@@ -40,6 +41,7 @@ export function DrawerScreenOverlay() {
       import("@/app/historial"),
       import("@/app/favoritos-todos"),
       import("@/app/mis-sesiones"),
+      import("@/app/equipo"),
     ]);
   }, []);
 

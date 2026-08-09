@@ -46,7 +46,7 @@ type MenuItem = {
 const MAIN_ITEMS: MenuItem[] = [
   { label: "Tu Premium",    icon: "star",      route: "/membresia" },
   { label: "Mis sesiones",  icon: "calendar",  route: "__overlay:/mis-sesiones" },
-
+  { label: "Resonadores",   icon: "users",     route: "__overlay:/equipo" },
   { label: "Diario",        icon: "book-open", route: "__overlay:/diario" },
   { label: "Amigos",        icon: "users",     route: "__overlay:/amigos" },
   { label: "Grupos",        icon: "globe",     route: "__overlay:/grupos" },

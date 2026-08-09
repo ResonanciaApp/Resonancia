@@ -1,8 +1,8 @@
 import { Feather } from "@expo/vector-icons";
-import { router, useFocusEffect } from "expo-router";
+import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { memo, useState, useMemo, useRef, useEffect, useCallback } from "react";
+import { memo, useState, useMemo, useRef, useEffect } from "react";
 import {
   Alert,
   Animated,
@@ -20,13 +20,13 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { GhostPill } from "@/components/GhostPill";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { EXPANSORES, REGIONS_BY_COUNTRY, type Expansor } from "@/data/expansores";
 import { RESONADORES, type Resonador } from "@/data/resonadores";
 import { useColors } from "@/hooks/useColors";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useBackOverride } from "@/context/BackOverrideContext";
 
 const H_PAD = 18;
 const CARD_GAP = 10;
@@ -236,7 +236,6 @@ function ExpansorChevronFilter({
 
   return (
     <View style={styles.chevronWrap}>
-      {/* Pill trigger */}
       <Pressable onPress={toggle} style={({ pressed }) => [styles.chevronTrigger, { opacity: pressed ? 0.75 : 1 }]}>
         <Text style={styles.chevronTriggerText}>{label}</Text>
         <Animated.View style={{ transform: [{ rotate: chevronRotate }] }}>
@@ -244,10 +243,8 @@ function ExpansorChevronFilter({
         </Animated.View>
       </Pressable>
 
-      {/* Dropdown flotante — posición absoluta bajo la pill */}
       {open && (
         <Animated.View style={[styles.chevronDropdown, { opacity: dropOpacity, transform: [{ scale: dropScale }] }]}>
-          {/* "Todos" option */}
           <Pressable
             onPress={() => handleCountry("")}
             style={[styles.chevronOption, !selectedCountry && styles.chevronOptionSel]}
@@ -340,29 +337,15 @@ const ResonadorCard = memo(function ResonadorCard({
 });
 
 // ── Pantalla principal ────────────────────────────────────────────────────────
-export default function ResonadoresScreen() {
+export default function EquipoScreen() {
   const colors = useColors();
   const { theme: sceneTheme } = useSceneTheme();
+  const backOverride = useBackOverride();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
   const { width: screenWidth } = useWindowDimensions();
-
-  // Animación de entrada: desliza de derecha a izquierda al enfocar la tab
-  const slideAnim = useRef(new Animated.Value(screenWidth)).current;
-  useFocusEffect(
-    useCallback(() => {
-      slideAnim.setValue(screenWidth);
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 340,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
-      }).start();
-      return () => slideAnim.stopAnimation();
-    }, [slideAnim, screenWidth])
-  );
 
   const [activeTab, setActiveTab] = useState<"resonadores" | "expansores">("resonadores");
   const EXPANSOR_PAGE = 9;
@@ -382,29 +365,6 @@ export default function ResonadoresScreen() {
     if (searchVisible) { setQuery(""); }
     setSearchVisible((v) => !v);
   }
-
-  // Texto cinemático sobre el banner: aparece al 0.6s, fade in, 4s, fade out
-  const bannerTextOpacity = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-    const seq = Animated.sequence([
-      Animated.delay(600),
-      Animated.timing(bannerTextOpacity, {
-        toValue: 1,
-        duration: 1200,
-        easing: Easing.out(Easing.ease),
-        useNativeDriver: true,
-      }),
-      Animated.delay(4000),
-      Animated.timing(bannerTextOpacity, {
-        toValue: 0,
-        duration: 1200,
-        easing: Easing.in(Easing.ease),
-        useNativeDriver: true,
-      }),
-    ]);
-    seq.start();
-    return () => seq.stop();
-  }, [bannerTextOpacity]);
 
   // Países presentes en EXPANSORES, ordenados alfabéticamente
   const availableCountries = useMemo(() => {
@@ -476,7 +436,7 @@ export default function ResonadoresScreen() {
   const cardW = Math.floor((screenWidth - SCREEN_PAD - CARD_GAP * 2) / numCols);
 
   return (
-    <Animated.View style={[styles.root, { transform: [{ translateX: slideAnim }] }]}>
+    <View style={styles.root}>
       <LinearGradient
         colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
         style={StyleSheet.absoluteFill}
@@ -487,7 +447,11 @@ export default function ResonadoresScreen() {
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <View style={styles.titleRow}>
           <View style={{ flex: 1 }}>
-            <Pressable onPress={() => router.back()} hitSlop={12} style={{ alignSelf: "flex-start" }}>
+            <Pressable
+              onPress={backOverride ?? (() => router.back())}
+              hitSlop={12}
+              style={{ alignSelf: "flex-start" }}
+            >
               <Feather name="chevron-left" size={28} color="rgba(255,255,255,0.45)" style={{ marginBottom: 2, marginLeft: 2 }} />
             </Pressable>
             <Text style={[styles.title, { transform: [{ translateY: -6 }] }]}>Resonadores</Text>
@@ -579,14 +543,11 @@ export default function ResonadoresScreen() {
           />
         ) : (
           <View style={styles.expansorFilters}>
-            {/* Nivel 1: Países */}
             <CountryChipRow
               countries={availableCountries}
               selected={selectedCountry}
               onSelect={handleSelectCountry}
             />
-
-            {/* Nivel 2: Regiones (solo cuando hay país seleccionado) */}
             {selectedCountry && regionTabs.length > 0 && (
               <View style={styles.regionRow}>
                 <AnimatedFilterRow
@@ -619,7 +580,7 @@ export default function ResonadoresScreen() {
         }
         renderItem={({ item }) => <ResonadorCard item={item} cardW={cardW} />}
       />
-    </Animated.View>
+    </View>
   );
 }
 
@@ -629,57 +590,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: H_PAD,
     paddingBottom: 12,
   },
-  banner: {
-    width: undefined,
-    aspectRatio: 1536 / 508,
-    marginHorizontal: -H_PAD,
-    marginTop: -15,
-    marginBottom: 14,
-    overflow: "hidden",
-    transform: [{ translateY: 20 }],
-  },
-  bannerTint: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "#7A1212",
-    opacity: 0.15,
-  },
-  bannerBorderBottom: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 1,
-    backgroundColor: "#F9F9F9",
-    opacity: 0.5,
-  },
-  bannerTextWrap: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 28,
-    transform: [{ translateY: -5 }],
-  },
-  bannerText: {
-    fontFamily: "Manrope",
-    fontSize: 17,
-    fontWeight: "600",
-    color: "#FFFFFF",
-    textAlign: "center",
-    letterSpacing: 0.5,
-    textShadowColor: "rgba(0,0,0,0.6)",
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 8,
-  },
   titleRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
     paddingBottom: 4,
-  },
-  titleIcons: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
   },
   searchIconBtn: {
     width: 43,
@@ -694,13 +609,6 @@ const styles = StyleSheet.create({
     color: "#FAF0EE",
     letterSpacing: 0.5,
   },
-  subtitle: {
-    fontFamily: "Manrope",
-    fontSize: 13,
-    color: "rgba(255,255,255,0.45)",
-    marginBottom: 10,
-  },
-
   searchWrap: {
     flexDirection: "row",
     alignItems: "center",
@@ -719,7 +627,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     paddingVertical: 0,
   },
-
   tabPill: {
     flexDirection: "row",
     backgroundColor: "rgba(0,0,0,0.40)",
@@ -760,8 +667,6 @@ const styles = StyleSheet.create({
   tabBtnBajadaActive: {
     color: "rgba(27,6,15,0.65)",
   },
-
-  // ── Chevron filter ──────────────────────────────────────────────────────────
   chevronWrap: {
     marginHorizontal: H_PAD,
     marginTop: -5,
@@ -823,14 +728,9 @@ const styles = StyleSheet.create({
     color: "#F9F9F9",
     fontWeight: "600",
   },
-
   filtersScroll: { paddingHorizontal: H_PAD, paddingBottom: 6 },
-
-  // Expansores: dos niveles de filtro
   expansorFilters: { gap: 6 },
   regionRow: { marginTop: 2 },
-
-  // Chips
   animChipWrap: { flexDirection: "row", alignItems: "center" },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
   chipCloseBtn: {
@@ -854,12 +754,8 @@ const styles = StyleSheet.create({
   },
   chipText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "400", color: "#FFFFFF" },
   chipTextSel: { fontFamily: "Manrope", color: "#1B060F", fontWeight: "700" },
-
-  // Grid
   grid: { paddingHorizontal: H_PAD, paddingTop: 0 },
   row: { gap: CARD_GAP, marginBottom: 16 },
-
-  // Card
   card: {
     alignItems: "center",
     paddingVertical: 8,
@@ -876,18 +772,6 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.50)",
     position: "relative",
   },
-  certBadge: {
-    position: "absolute",
-    bottom: 2,
-    right: 2,
-    backgroundColor: "#F9F9F9",
-    borderRadius: 99,
-    width: 18,
-    height: 18,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  certStar: { fontFamily: "Manrope", fontSize: 9, color: "#1B060F", fontWeight: "800" },
   cardInfo: { alignItems: "center", paddingHorizontal: 6 },
   cardName: {
     fontFamily: "Manrope",
@@ -905,159 +789,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 3,
   },
-  cardSub: {
-    fontFamily: "Manrope",
-    fontSize: 10,
-    color: "rgba(212,175,55,0.75)",
-    marginBottom: 4,
-    textAlign: "center",
-  },
-  locationRow: { flexDirection: "row", alignItems: "center", gap: 3 },
-  cardLocation: { fontFamily: "Manrope", fontSize: 10, color: "rgba(255,255,255,0.40)", textAlign: "center" },
-
   empty: { alignItems: "center", paddingTop: 60, gap: 12 },
   emptyText: { fontFamily: "Manrope", fontSize: 14, color: "rgba(255,255,255,0.30)" },
-  loadMoreBtn: {
-    alignSelf: "center",
-    marginTop: 8,
-    marginBottom: 8,
-    paddingHorizontal: 36,
-    paddingVertical: 12,
-    borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.20)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.30)",
-  },
-  loadMoreText: {
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#FFFFFF",
-    letterSpacing: 0.5,
-  },
-
-  // ── Footer sections ──────────────────────────────────────────────────────────
-  footerSections: {
-    marginTop: 24,
-    paddingBottom: 16,
-  },
-
-  // Recent sessions header
-  recentHeader: {
-    marginBottom: 14,
-  },
-  recentTitle: {
-    fontFamily: "Manrope",
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#FAF0EE",
-    letterSpacing: 0.2,
-  },
-  recentSub: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    color: "rgba(255,255,255,0.45)",
-    marginTop: 3,
-  },
-
-  // Recent sessions carousel
-  recentScrollWrap: {
-    marginHorizontal: -H_PAD,
-  },
-  recentScrollContent: {
-    paddingHorizontal: H_PAD,
-    gap: 10,
-    paddingBottom: 4,
-  },
-  recentCard: {
-    width: 164,
-  },
-  recentImgWrap: {
-    width: 164,
-    height: 122,
-    borderRadius: 10,
-    overflow: "hidden",
-    marginBottom: 7,
-  },
-  recentImg: {
-    width: 164,
-    height: 122,
-  },
-  recentPremiumBadge: {
-    position: "absolute",
-    top: 5,
-    right: 5,
-    backgroundColor: "#F9F9F9",
-    borderRadius: 99,
-    width: 16,
-    height: 16,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  recentPremiumStar: {
-    fontFamily: "Manrope",
-    fontSize: 8,
-    color: "#1B060F",
-    fontWeight: "800",
-  },
-  recentCardTitle: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    fontWeight: "600",
-    color: "#FAF0EE",
-    lineHeight: 15,
-  },
-  recentCardCat: {
-    fontFamily: "Manrope",
-    fontSize: 10,
-    color: "rgba(212,175,55,0.70)",
-    marginTop: 2,
-  },
-
-  // CTA button
-  ctaBtn: {
-    marginTop: 22,
-    borderRadius: 14,
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.35)",
-  },
-  ctaInner: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 18,
-    paddingVertical: 16,
-    gap: 14,
-  },
-  ctaIconCircle: {
-    width: 38,
-    height: 38,
-    borderRadius: 99,
-    backgroundColor: "rgba(212,175,55,0.12)",
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.35)",
-  },
-  ctaIconText: {
-    fontFamily: "Manrope",
-    fontSize: 16,
-    color: "#F9F9F9",
-  },
-  ctaTextWrap: {
-    flex: 1,
-  },
-  ctaQuestion: {
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#FAF0EE",
-    letterSpacing: 0.2,
-  },
-  ctaHint: {
-    fontFamily: "Manrope",
-    fontSize: 11,
-    color: "rgba(255,255,255,0.50)",
-    marginTop: 2,
-  },
 });
