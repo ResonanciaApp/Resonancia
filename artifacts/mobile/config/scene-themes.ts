@@ -54,14 +54,6 @@ export const SCENE_THEMES: Record<SceneId, SceneTheme> = {
     label: "Índigo",
     gradient: ["#13063A", "#190B41", "#221149", "#2B1852", "#3F225F", "#6F3E76"],
     solid: "#2E1D54",
-    // Brillo radial centrado — replica el CSS:
-    // radial-gradient(ellipse 55% 50% at 50% 50%, ...)
-    radialStops: [
-      { offset: 0,    color: "#8C417D", opacity: 0.85 },
-      { offset: 0.28, color: "#692D6E", opacity: 0.55 },
-      { offset: 0.55, color: "#3C1E5A", opacity: 0.25 },
-      { offset: 0.80, color: "#2E1D54", opacity: 0    },
-    ],
   },
 };
 
