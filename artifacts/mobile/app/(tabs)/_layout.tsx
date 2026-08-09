@@ -39,6 +39,8 @@ import {
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { useDrawer } from "@/context/DrawerContext";
 import { useBrightness, applyBrightSat } from "@/context/BrightnessContext";
+import { CategoryOverlayProvider } from "@/context/CategoryOverlayContext";
+import { CategoryOverlay } from "@/components/CategoryOverlay";
 
 const ACTIVE_COLOR   = "#F9F9F9";
 const INACTIVE_COLOR = "#F4F4F4";
@@ -560,15 +562,20 @@ function TabLayoutInner() {
         bottomOffset={miniPlayerBottom}
         topOffset={topPad}
       />
+
+      {/* ── Overlay de categorías (meditaciones / sesiones / música / dormir) ── */}
+      <CategoryOverlay />
     </View>
   );
 }
 
 export default function TabLayout() {
   return (
-    <TabBarVisibilityProvider>
-      <TabLayoutInner />
-    </TabBarVisibilityProvider>
+    <CategoryOverlayProvider>
+      <TabBarVisibilityProvider>
+        <TabLayoutInner />
+      </TabBarVisibilityProvider>
+    </CategoryOverlayProvider>
   );
 }
 

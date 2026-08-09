@@ -29,6 +29,7 @@ import { SessionCarousel } from "@/components/SessionCarousel";
 import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useBackOverride } from "@/context/BackOverrideContext";
 
 /* ─── Descanso tabs ─────────────────────────────────────────────────── */
 const SLEEP_TABS = [
@@ -340,6 +341,7 @@ export default function DescansoScreen() {
   } = usePlayer();
 
   const { isPremium } = usePremium();
+  const backOverride = useBackOverride();
 
   const isSoundTab = activeTab !== null && SOUND_TAB_IDS.includes(activeTab);
   const visibleSounds = isSoundTab
@@ -456,7 +458,7 @@ export default function DescansoScreen() {
         {/* ── Hero ── */}
         <View style={styles.hero}>
           <Pressable
-            onPress={() => router.back()}
+            onPress={backOverride ?? (() => router.back())}
             hitSlop={10}
             style={{ width: 38, height: 38, alignItems: "center", justifyContent: "center", marginLeft: -6 }}
           >
@@ -694,7 +696,7 @@ export default function DescansoScreen() {
       >
         <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 13, width: "100%" }}>
           <Pressable
-            onPress={() => router.back()}
+            onPress={backOverride ?? (() => router.back())}
             hitSlop={10}
             style={{ width: 38, height: 38, alignItems: "center", justifyContent: "center" }}
           >

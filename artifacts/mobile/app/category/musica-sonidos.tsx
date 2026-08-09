@@ -21,6 +21,7 @@ import { getGuide } from "@/data/guides";
 import { SESSIONS, getSessionById, type Session } from "@/data/sessions";
 import { useCatalog } from "@/context/CatalogContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useBackOverride } from "@/context/BackOverrideContext";
 import { hexToRgba } from "@/utils/color";
 
 const H_PAD = 20;
@@ -255,6 +256,7 @@ export default function MusicaSonidosScreen() {
   const { theme } = useSceneTheme();
   const { history, playSession, favorites } = usePlayer();
   const { isPremium } = usePremium();
+  const backOverride = useBackOverride();
 
   const TABS = useMemo(() => {
     const uniqueTags = [...new Set(
@@ -465,7 +467,7 @@ export default function MusicaSonidosScreen() {
           {/* Flecha atrás flotante */}
           <View style={[styles.heroOverlayLeft, { top: topPad - 17 }]}>
             <View style={[styles.lotoBtn, { width: 40, height: 40, borderRadius: 20 }]}>
-              <BackPill onPress={() => router.back()} size={28} style={{ transform: [{ translateX: -2 }] }} />
+              <BackPill onPress={backOverride ?? (() => router.back())} size={28} style={{ transform: [{ translateX: -2 }] }} />
             </View>
           </View>
         </View>
@@ -523,7 +525,7 @@ export default function MusicaSonidosScreen() {
         </View>
         <View style={[styles.heroOverlayLeft, { top: topPad - 17 }]}>
           <View style={[styles.lotoBtn, { width: 40, height: 40, borderRadius: 20 }]}>
-            <BackPill onPress={() => router.back()} size={28} style={{ transform: [{ translateX: -2 }] }} />
+            <BackPill onPress={backOverride ?? (() => router.back())} size={28} style={{ transform: [{ translateX: -2 }] }} />
           </View>
         </View>
         <View style={{ marginTop: 14 }}>

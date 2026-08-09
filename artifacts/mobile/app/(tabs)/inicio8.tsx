@@ -37,6 +37,7 @@ import { AlmaCommunitySection } from "@/components/AlmaCommunitySection";
 import { GreetingHeader } from "@/components/GreetingHeader";
 import { useGreetingVisible } from "@/context/GreetingVisibleContext";
 import { useDrawer } from "@/context/DrawerContext";
+import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 import { getWeeklyPhrase } from "@/data/greeting-phrases";
 import { MessageDeck } from "@/components/MessageDeck";
 import { GlowRing } from "@/components/GlowRing";
@@ -352,6 +353,7 @@ export default function HomeScreen2() {
   const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
   const { openMixer } = useMixerPanel();
+  const { openCategory } = useCategoryOverlay();
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
   const { open: openDrawer } = useDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
@@ -1080,10 +1082,10 @@ export default function HomeScreen2() {
               <Pressable
                 key={c.id}
                 onPress={() => {
-                  if (c.id === "__descanzo__") router.push("/(tabs)/descanzo" as never);
+                  if (c.id === "__descanzo__") openCategory("/(tabs)/descanzo");
                   else if (c.id === "__mezcla__") openMixer();
                   else if (c.id === "__geometrix__") router.push("/(tabs)/geometrix" as never);
-                  else router.push(`/category/${c.id}` as never);
+                  else openCategory(`/category/${c.id}`);
                 }}
                 style={({ pressed }) => [{
                   width: "48%",

@@ -50,6 +50,7 @@ import { useCatalog } from "@/context/CatalogContext";
 import { useFoldersPlaylists } from "@/context/FoldersPlaylistsContext";
 import { useMixer } from "@/context/MixerContext";
 import { useMixerPanel } from "@/context/MixerPanelContext";
+import { useCategoryOverlay } from "@/context/CategoryOverlayContext";
 // voiceLabel no usado en hero
 import { getSoundImage } from "@/config/sound-images";
 import { usePlayer } from "@/context/PlayerContext";
@@ -306,6 +307,7 @@ export default function HomeScreen2() {
   const { playlists } = useFoldersPlaylists();
   const { presets, loadPreset, openSheet } = useMixer();
   const { openMixer } = useMixerPanel();
+  const { openCategory } = useCategoryOverlay();
   const { openSheet: openEscenasSheet } = useAmbientPlayer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   // Fade de 300ms entre degradados de fondo al cambiar de Escena (loto en Inicio):
@@ -986,7 +988,7 @@ export default function HomeScreen2() {
             ] as const).map((c) => (
               <Pressable
                 key={c.id}
-                onPress={() => router.push(`/category/${c.id}` as never)}
+                onPress={() => openCategory(`/category/${c.id}`)}
                 style={({ pressed }) => [{
                   flex: 1,
                   paddingVertical: 22,

@@ -21,6 +21,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { usePremium } from "@/context/PremiumContext";
 import { useCatalog } from "@/context/CatalogContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useBackOverride } from "@/context/BackOverrideContext";
 import { hexToRgba } from "@/utils/color";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
@@ -375,6 +376,7 @@ export default function SonidosAncestalesScreen() {
   const { isPremium } = usePremium();
   const { version } = useCatalog();
   const { theme } = useSceneTheme();
+  const backOverride = useBackOverride();
 
   // TABS dinámicas: un chip por cada ancestralTag distinto en las sesiones
   const TABS = useMemo(() => {
@@ -592,7 +594,7 @@ export default function SonidosAncestalesScreen() {
         <View style={[styles.heroArea, { height: topPad + 48 }]}>
           <View style={[styles.heroOverlayLeft, { top: topPad - 17 }]}>
             <View style={[styles.lotoBtn, { width: 40, height: 40, borderRadius: 20 }]}>
-              <BackPill onPress={() => router.back()} size={28} style={{ transform: [{ translateX: -2 }] }} />
+              <BackPill onPress={backOverride ?? (() => router.back())} size={28} style={{ transform: [{ translateX: -2 }] }} />
             </View>
           </View>
         </View>
@@ -628,7 +630,7 @@ export default function SonidosAncestalesScreen() {
         </View>
         <View style={[styles.heroOverlayLeft, { top: topPad - 17 }]}>
           <View style={[styles.lotoBtn, { width: 40, height: 40, borderRadius: 20 }]}>
-            <BackPill onPress={() => router.back()} size={28} style={{ transform: [{ translateX: -2 }] }} />
+            <BackPill onPress={backOverride ?? (() => router.back())} size={28} style={{ transform: [{ translateX: -2 }] }} />
           </View>
         </View>
         <View style={{ marginTop: 14 }}>
