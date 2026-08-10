@@ -174,7 +174,7 @@ export default function MezclasComunidadScreen() {
       >
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
-          <Text style={styles.profileTitle}>Mezclas de la comunidad</Text>
+          <Text style={styles.profileTitle}>Todas las creaciones</Text>
           <Text style={styles.profileDesc}>
             Explora entre universos sonoros
           </Text>
