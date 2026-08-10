@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
   header: { paddingHorizontal: H_PAD, paddingBottom: 8 },
 
   /* ── Profile card ── */
-  profileCard: { marginHorizontal: H_PAD, marginTop: 12, paddingBottom: 14, gap: 6, alignItems: "center" },
+  profileCard: { marginHorizontal: H_PAD, marginTop: -13, paddingBottom: 14, gap: 6, alignItems: "center" },
   profileTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "800", color: TEXT, letterSpacing: 0.3, textAlign: "center" },
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, paddingBottom: 14, alignItems: "center", justifyContent: "flex-end", zIndex: 10 },
   stickyTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
