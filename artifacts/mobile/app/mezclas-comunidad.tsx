@@ -164,8 +164,8 @@ export default function MezclasComunidadScreen() {
     [{ nativeEvent: { contentOffset: { y: scrollY } } }],
     { useNativeDriver: true },
   );
-  const STICKY_START = 35;
-  const STICKY_END   = 60;
+  const STICKY_START = 20;
+  const STICKY_END   = STICKY_START + 40;
   const stickyOpacity = scrollY.interpolate({
     inputRange: [STICKY_START, STICKY_END],
     outputRange: [0, 1],
@@ -176,16 +176,9 @@ export default function MezclasComunidadScreen() {
     <View style={[styles.root, { backgroundColor: theme.gradient[1] }]}>
       <StatusBar hidden />
 
-      {/* ── Header ── */}
+      {/* ── Header fijo (BackPill siempre visible) ── */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
-        <Animated.Text
-          style={[styles.stickyTitle, { opacity: stickyOpacity, position: "absolute", left: 0, right: 0, bottom: 10, textAlign: "center" }]}
-          numberOfLines={1}
-          pointerEvents="none"
-        >
-          Todas las creaciones
-        </Animated.Text>
       </View>
 
       <Animated.ScrollView
@@ -252,6 +245,18 @@ export default function MezclasComunidadScreen() {
         )}
       </Animated.ScrollView>
 
+      {/* ── Sticky header (aparece al scrollear) ── */}
+      <Animated.View
+        pointerEvents="box-none"
+        style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: theme.gradient[0] }]}
+      >
+        <BackPill onPress={() => router.back()} size={27} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+        <View style={{ flex: 1, alignItems: "center", paddingTop: 8 }}>
+          <Text style={styles.stickyTitle} numberOfLines={1}>Todas las creaciones</Text>
+        </View>
+        <View style={{ width: 36 }} />
+      </Animated.View>
+
       <MixContextMenu
         mix={menuMix}
         onClose={() => setMenuMix(null)}
@@ -267,12 +272,25 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
 
   /* ── Header ── */
-  header: { paddingHorizontal: H_PAD, paddingBottom: 0 },
+  header: { paddingHorizontal: H_PAD, paddingBottom: 8 },
 
   /* ── Profile card ── */
   profileCard: { marginHorizontal: H_PAD, marginTop: 0, paddingBottom: 14, gap: 6, alignItems: "center" },
   profileTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "800", color: TEXT, letterSpacing: 0.3, textAlign: "center" },
-  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, paddingBottom: 14, alignItems: "center", justifyContent: "flex-end", zIndex: 10 },
+  stickyHeader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingBottom: 18,
+    gap: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.07)",
+    zIndex: 10,
+  },
   stickyTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
   profileDesc: { fontFamily: "Manrope", fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginBottom: 4 },
 
