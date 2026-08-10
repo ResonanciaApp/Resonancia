@@ -177,7 +177,7 @@ export default function MezclasComunidadScreen() {
       <StatusBar hidden />
 
       {/* ── Header fijo (BackPill siempre visible) ── */}
-      <View style={[styles.header, { paddingTop: topPad + 8 }]}>
+      <View style={[styles.header, { paddingTop: topPad + 4 }]}>
         <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
       </View>
 
