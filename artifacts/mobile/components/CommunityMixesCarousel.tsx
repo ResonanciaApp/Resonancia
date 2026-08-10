@@ -39,7 +39,7 @@ import { Dimensions } from "react-native";
 
 const GOLD = "#F9F9F9";
 const STACK_THUMB = 93;
-const MAX_VISIBLE = 9;
+const MAX_VISIBLE = 10;
 const GRID_GAP = 10;
 const CELL_W = (Dimensions.get("window").width - 40 - GRID_GAP * 2) / 3;
 
@@ -56,8 +56,9 @@ export function CommunityMixesCarousel() {
   const pendingLike = useRef<Record<number, boolean>>({});
 
 
-  const visible = allMixes.slice(0, MAX_VISIBLE);
-  const remaining = allMixes.length - visible.length;
+  const sorted = [...allMixes].sort((a, b) => (b.likes ?? 0) - (a.likes ?? 0));
+  const visible = sorted.slice(0, MAX_VISIBLE);
+  const remaining = sorted.length - visible.length;
 
   // ── Like toggle ───────────────────────────────────────────────
   const applyOptimistic = useCallback(
@@ -135,8 +136,14 @@ export function CommunityMixesCarousel() {
       {/* Header */}
       <View style={styles.headerRow}>
         <Text style={[styles.sectionTitle, { color: "#FFFFFF" }]}>
-          Mezclas de la comunidad
+          Top 10 Comunidad
         </Text>
+        <Pressable
+          onPress={() => router.push("/mezclas-comunidad" as never)}
+          style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+        >
+          <Text style={[styles.verTodas, { color: "rgba(255,255,255,0.55)" }]}>Ver todos →</Text>
+        </Pressable>
       </View>
 
       <View style={styles.panel}>
