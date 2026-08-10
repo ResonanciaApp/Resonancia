@@ -3,7 +3,7 @@ import { BackPill } from "@/components/BackPill";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -164,13 +164,18 @@ export default function MezclasComunidadScreen() {
     [{ nativeEvent: { contentOffset: { y: scrollY } } }],
     { useNativeDriver: true },
   );
-  const STICKY_START = 40;
+  const STICKY_START = 80;
   const STICKY_END   = STICKY_START + 40;
   const stickyOpacity = scrollY.interpolate({
     inputRange: [STICKY_START, STICKY_END],
     outputRange: [0, 1],
     extrapolate: "clamp",
   });
+  const [stickyVisible, setStickyVisible] = useState(false);
+  useEffect(() => {
+    const id = scrollY.addListener(({ value }) => setStickyVisible(value >= STICKY_START));
+    return () => scrollY.removeListener(id);
+  }, [scrollY]);
 
   return (
     <View style={[styles.root, { backgroundColor: theme.gradient[1] }]}>
@@ -247,14 +252,35 @@ export default function MezclasComunidadScreen() {
 
       {/* ── Sticky header (aparece al scrollear) ── */}
       <Animated.View
-        pointerEvents="box-none"
+        pointerEvents={stickyVisible ? "box-none" : "none"}
         style={[styles.stickyHeader, { paddingTop: topPad, opacity: stickyOpacity, backgroundColor: theme.gradient[0] }]}
       >
-        <BackPill onPress={() => router.back()} size={27} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
-        <View style={{ flex: 1, alignItems: "center", paddingTop: 8 }}>
-          <Text style={styles.stickyTitle} numberOfLines={1}>Todas las creaciones</Text>
+        {/* fila título */}
+        <View style={styles.stickyHeaderRow}>
+          <BackPill onPress={() => router.back()} size={27} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+          <View style={{ flex: 1, alignItems: "center", paddingTop: 8 }}>
+            <Text style={styles.stickyTitle} numberOfLines={1}>Todas las creaciones</Text>
+          </View>
+          <View style={{ width: 36 }} />
         </View>
-        <View style={{ width: 36 }} />
+        {/* fila chips */}
+        <View style={styles.stickyChipsArea}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.chipRow}
+            contentContainerStyle={styles.chipRowContent}
+          >
+            {CHIPS.map((chip) => (
+              <Chip
+                key={chip.id}
+                chip={chip}
+                sel={activeCategory === chip.id}
+                onPress={() => setActiveCategory((cur) => (cur === chip.id ? null : chip.id))}
+              />
+            ))}
+          </ScrollView>
+        </View>
       </Animated.View>
 
       <MixContextMenu
@@ -282,15 +308,19 @@ const styles = StyleSheet.create({
     top: 4,
     left: -1,
     right: 0,
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingBottom: 18,
-    gap: 12,
+    flexDirection: "column",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255,255,255,0.07)",
     zIndex: 10,
   },
+  stickyHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingBottom: 6,
+    gap: 12,
+  },
+  stickyChipsArea: { paddingBottom: 10 },
   stickyTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
   profileDesc: { fontFamily: "Manrope", fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginBottom: 4 },
 
