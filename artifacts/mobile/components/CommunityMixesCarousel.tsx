@@ -142,7 +142,7 @@ export function CommunityMixesCarousel() {
           onPress={() => router.push("/mezclas-comunidad" as never)}
           style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
         >
-          <Text style={[styles.verTodas, { color: "rgba(255,255,255,0.55)" }]}>Ver todos →</Text>
+          <Text style={[styles.verTodas, { color: "rgba(255,255,255,0.55)" }]}>Ver todos</Text>
         </Pressable>
       </View>
 
