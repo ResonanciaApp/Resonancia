@@ -178,7 +178,12 @@ export default function MezclasComunidadScreen() {
   }, [scrollY]);
 
   return (
-    <View style={[styles.root, { backgroundColor: theme.gradient[1] }]}>
+    <View style={[styles.root, { backgroundColor: theme.gradient[theme.gradient.length - 1] as string }]}>
+      <LinearGradient
+        colors={theme.gradient as unknown as [string, string, ...string[]]}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
       <StatusBar hidden />
 
       {/* ── Header fijo (BackPill siempre visible) ── */}
