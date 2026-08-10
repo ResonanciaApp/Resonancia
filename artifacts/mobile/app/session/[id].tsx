@@ -1085,7 +1085,7 @@ const styles = StyleSheet.create({
   // Sticky header
   stickyHeader: {
     position: "absolute",
-    top: 1,
+    top: 0,
     left: 0,
     right: 0,
     flexDirection: "row",
