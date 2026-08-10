@@ -164,7 +164,7 @@ export default function MezclasComunidadScreen() {
     [{ nativeEvent: { contentOffset: { y: scrollY } } }],
     { useNativeDriver: true },
   );
-  const STICKY_START = 20;
+  const STICKY_START = 40;
   const STICKY_END   = STICKY_START + 40;
   const stickyOpacity = scrollY.interpolate({
     inputRange: [STICKY_START, STICKY_END],
