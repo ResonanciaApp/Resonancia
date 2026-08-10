@@ -179,15 +179,14 @@ export default function MezclasComunidadScreen() {
       {/* ── Header ── */}
       <View style={[styles.header, { paddingTop: topPad + 8 }]}>
         <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+        <Animated.Text
+          style={[styles.stickyTitle, { opacity: stickyOpacity, position: "absolute", left: 0, right: 0, bottom: 10, textAlign: "center" }]}
+          numberOfLines={1}
+          pointerEvents="none"
+        >
+          Todas las creaciones
+        </Animated.Text>
       </View>
-
-      {/* ── Sticky header ── */}
-      <Animated.View
-        pointerEvents="none"
-        style={[styles.stickyHeader, { paddingTop: topPad, backgroundColor: theme.gradient[1], opacity: stickyOpacity }]}
-      >
-        <Text style={styles.stickyTitle} numberOfLines={1}>Todas las creaciones</Text>
-      </Animated.View>
 
       <Animated.ScrollView
         style={styles.scroll}
