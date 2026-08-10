@@ -87,11 +87,6 @@ function MixGridCard({ mix, onPress, onOptions }: { mix: SharedMix; onPress: () 
             <Text style={gc.likeBadgeText}>{mix.likes}</Text>
           </View>
         )}
-        <Pressable onPress={onOptions} hitSlop={10} style={gc.dotsBtn}>
-          <View style={gc.dot} />
-          <View style={gc.dot} />
-          <View style={gc.dot} />
-        </Pressable>
       </View>
       <Text style={gc.cardTitle} numberOfLines={2}>{mix.name}</Text>
       <Text style={gc.cardAuthor} numberOfLines={1}>{mix.author.displayName}</Text>
