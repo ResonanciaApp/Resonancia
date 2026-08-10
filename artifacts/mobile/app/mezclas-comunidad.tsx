@@ -3,8 +3,9 @@ import { BackPill } from "@/components/BackPill";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
+  Animated,
   Dimensions,
   Platform,
   Pressable,
@@ -158,6 +159,19 @@ export default function MezclasComunidadScreen() {
     return out;
   }, [allMixes]);
 
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const handleScroll = Animated.event(
+    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+    { useNativeDriver: true },
+  );
+  const STICKY_START = 50;
+  const STICKY_END   = 90;
+  const stickyOpacity = scrollY.interpolate({
+    inputRange: [STICKY_START, STICKY_END],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
+
   return (
     <View style={[styles.root, { backgroundColor: theme.gradient[1] }]}>
       <StatusBar hidden />
@@ -167,10 +181,20 @@ export default function MezclasComunidadScreen() {
         <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
       </View>
 
-      <ScrollView
+      {/* ── Sticky header ── */}
+      <Animated.View
+        pointerEvents="none"
+        style={[styles.stickyHeader, { paddingTop: topPad, backgroundColor: theme.gradient[1], opacity: stickyOpacity }]}
+      >
+        <Text style={styles.stickyTitle} numberOfLines={1}>Todas las creaciones</Text>
+      </Animated.View>
+
+      <Animated.ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: 60 + bottomPad }}
         showsVerticalScrollIndicator={false}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
       >
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
@@ -227,7 +251,7 @@ export default function MezclasComunidadScreen() {
             ))}
           </View>
         )}
-      </ScrollView>
+      </Animated.ScrollView>
 
       <MixContextMenu
         mix={menuMix}
@@ -248,7 +272,9 @@ const styles = StyleSheet.create({
 
   /* ── Profile card ── */
   profileCard: { marginHorizontal: H_PAD, marginTop: 12, paddingBottom: 14, gap: 6, alignItems: "center" },
-  profileTitle: { fontFamily: "Manrope", fontSize: 27, fontWeight: "800", color: TEXT, letterSpacing: 0.3, textAlign: "center" },
+  profileTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "800", color: TEXT, letterSpacing: 0.3, textAlign: "center" },
+  stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, paddingBottom: 14, alignItems: "center", justifyContent: "flex-end", zIndex: 10 },
+  stickyTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
   profileDesc: { fontFamily: "Manrope", fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginBottom: 4 },
 
   /* ── Chips ── */
