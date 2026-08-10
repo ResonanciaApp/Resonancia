@@ -164,8 +164,8 @@ export default function MezclasComunidadScreen() {
     [{ nativeEvent: { contentOffset: { y: scrollY } } }],
     { useNativeDriver: true },
   );
-  const STICKY_START = 90;
-  const STICKY_END   = 120;
+  const STICKY_START = 35;
+  const STICKY_END   = 60;
   const stickyOpacity = scrollY.interpolate({
     inputRange: [STICKY_START, STICKY_END],
     outputRange: [0, 1],
@@ -267,10 +267,10 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
 
   /* ── Header ── */
-  header: { paddingHorizontal: H_PAD, paddingBottom: 8 },
+  header: { paddingHorizontal: H_PAD, paddingBottom: 0 },
 
   /* ── Profile card ── */
-  profileCard: { marginHorizontal: H_PAD, marginTop: -13, paddingBottom: 14, gap: 6, alignItems: "center" },
+  profileCard: { marginHorizontal: H_PAD, marginTop: 0, paddingBottom: 14, gap: 6, alignItems: "center" },
   profileTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "800", color: TEXT, letterSpacing: 0.3, textAlign: "center" },
   stickyHeader: { position: "absolute", top: 0, left: 0, right: 0, paddingBottom: 14, alignItems: "center", justifyContent: "flex-end", zIndex: 10 },
   stickyTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
