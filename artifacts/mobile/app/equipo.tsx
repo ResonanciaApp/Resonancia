@@ -395,9 +395,11 @@ const styles = StyleSheet.create({
   chipRow: { flexGrow: 0 },
   chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    height: 31,
+    paddingHorizontal: 13,
     borderRadius: 999,
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.045)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.10)",
