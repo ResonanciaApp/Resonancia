@@ -4,6 +4,7 @@ import {
   Dimensions,
   FlatList,
   Pressable,
+  RefreshControl,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -35,7 +36,7 @@ export default function EncuentrosScreen() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [calSheetEncuentro, setCalSheetEncuentro] = useState<Encuentro | null>(null);
   const { theme: activeTheme } = useSceneTheme();
-  const { events, loading: feedLoading } = useCommunityFeed();
+  const { events, loading: feedLoading, refresh, refreshing } = useCommunityFeed();
 
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
@@ -68,6 +69,14 @@ export default function EncuentrosScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: tabBarHeight + 24 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={refresh}
+            tintColor="rgba(190,150,80,0.8)"
+            colors={["rgba(190,150,80,0.8)"]}
+          />
+        }
       >
         {/* Carrusel */}
         <FlatList

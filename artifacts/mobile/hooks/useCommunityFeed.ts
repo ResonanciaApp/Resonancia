@@ -6,6 +6,7 @@ const POLL_MS = 60_000;
 export interface UseCommunityFeedResult {
   events: CommunityFeedEvent[];
   loading: boolean;
+  refreshing: boolean;
   refresh: () => void;
 }
 
@@ -16,18 +17,28 @@ export interface UseCommunityFeedResult {
 export function useCommunityFeed(): UseCommunityFeedResult {
   const [events, setEvents] = useState<CommunityFeedEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const mountedRef = useRef(true);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (isPullRefresh = false) => {
+    if (isPullRefresh) {
+      if (mountedRef.current) setRefreshing(true);
+    }
     try {
       const data = await fetchCommunityFeed();
       if (mountedRef.current) setEvents(data);
     } catch {
       // Keep stale data on error — don't blank the feed.
     } finally {
-      if (mountedRef.current) setLoading(false);
+      if (mountedRef.current) {
+        setLoading(false);
+        setRefreshing(false);
+      }
     }
   }, []);
+
+  // Pull-to-refresh callback (passed to RefreshControl).
+  const refresh = useCallback(() => { void load(true); }, [load]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -39,5 +50,5 @@ export function useCommunityFeed(): UseCommunityFeedResult {
     };
   }, [load]);
 
-  return { events, loading, refresh: load };
+  return { events, loading, refreshing, refresh };
 }
