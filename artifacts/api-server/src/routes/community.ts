@@ -116,7 +116,7 @@ router.post("/community/activity/event", requireAuth, async (req, res) => {
  * joined with user profile. Live events appear first. No auth required.
  */
 router.get("/community/feed", async (req, res) => {
-  const liveThreshold = new Date(Date.now() - 2 * 60 * 1000);
+  const liveThreshold = new Date(Date.now() - 5 * 60 * 1000);
   const discreteThreshold = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
   try {
