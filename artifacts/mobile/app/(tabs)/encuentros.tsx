@@ -1,6 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Animated,
   Dimensions,
   FlatList,
   Pressable,
@@ -40,6 +41,20 @@ export default function EncuentrosScreen() {
   const { clerkUserId } = useAuth();
   const { events, loading: feedLoading, refresh, refreshing } = useCommunityFeed(clerkUserId);
 
+  // Fade las cards al completar un refresh
+  const feedOpacity = useRef(new Animated.Value(1)).current;
+  const prevRefreshing = useRef(false);
+  useEffect(() => {
+    if (prevRefreshing.current && !refreshing) {
+      // Acaba de terminar: parpadeo rápido
+      Animated.sequence([
+        Animated.timing(feedOpacity, { toValue: 0.2, duration: 120, useNativeDriver: true }),
+        Animated.timing(feedOpacity, { toValue: 1, duration: 220, useNativeDriver: true }),
+      ]).start();
+    }
+    prevRefreshing.current = refreshing;
+  }, [refreshing, feedOpacity]);
+
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
       if (viewableItems.length > 0 && viewableItems[0].index != null) {
@@ -75,8 +90,8 @@ export default function EncuentrosScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={refresh}
-            tintColor="rgba(190,150,80,0.8)"
-            colors={["rgba(190,150,80,0.8)"]}
+            tintColor="#BE9650"
+            colors={["#BE9650"]}
           />
         }
       >
@@ -124,15 +139,10 @@ export default function EncuentrosScreen() {
 
         {/* ── Ahora en RESONANCIA ── */}
         <View style={styles.feedSection}>
-          <View style={styles.feedHeader}>
-            <Text style={styles.feedTitle}>Ahora en RESONANCIA</Text>
-            {refreshing && (
-              <ActivityIndicator color="rgba(190,150,80,0.8)" size="small" />
-            )}
-          </View>
+          <Text style={styles.feedTitle}>Ahora en RESONANCIA</Text>
           {feedLoading ? (
             <View style={styles.feedLoadingWrap}>
-              <ActivityIndicator color="rgba(190,150,80,0.9)" size="large" />
+              <ActivityIndicator color="#BE9650" size="large" />
               <Text style={styles.feedLoadingText}>Conectando con la comunidad…</Text>
             </View>
           ) : events.length === 0 ? (
@@ -143,12 +153,14 @@ export default function EncuentrosScreen() {
               </Text>
             </View>
           ) : (
-            events.map((event, i) => (
-              <React.Fragment key={event.id}>
-                {i > 0 && <View style={styles.feedDivider} />}
-                <ActivityFeedCard event={event} />
-              </React.Fragment>
-            ))
+            <Animated.View style={{ opacity: feedOpacity }}>
+              {events.map((event, i) => (
+                <React.Fragment key={event.id}>
+                  {i > 0 && <View style={styles.feedDivider} />}
+                  <ActivityFeedCard event={event} />
+                </React.Fragment>
+              ))}
+            </Animated.View>
           )}
         </View>
       </ScrollView>
@@ -208,12 +220,6 @@ const styles = StyleSheet.create({
     marginTop: 36,
     paddingHorizontal: CARD_H_PADDING,
     paddingBottom: 8,
-  },
-  feedHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 14,
   },
   feedTitle: {
     fontFamily: "Manrope",
