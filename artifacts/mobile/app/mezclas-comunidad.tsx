@@ -256,7 +256,7 @@ export default function MezclasComunidadScreen() {
       >
         {/* fila título */}
         <View style={styles.stickyHeaderRow}>
-          <BackPill onPress={() => router.back()} size={27} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+          <BackPill onPress={() => router.back()} size={27} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ transform: [{ translateY: -10 }] }} />
           <View style={{ flex: 1, alignItems: "center", paddingTop: 0, marginTop: -1 }}>
             <Text style={styles.stickyTitle} numberOfLines={1}>Creaciones</Text>
           </View>
@@ -310,6 +310,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255,255,255,0.07)",
     zIndex: 10,
+    paddingTop: 10,
   },
   stickyHeaderRow: {
     flexDirection: "row",
