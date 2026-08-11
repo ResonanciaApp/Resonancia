@@ -27,6 +27,7 @@ import { usePremium } from "@/context/PremiumContext";
 import { syncActivity } from "@/lib/cloudSync";
 import { sessionMiniPlayerEvents } from "@/lib/miniPlayerEvents";
 import { FREE_FAVORITES_LIMIT, FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
+import { sendHeartbeat } from "@/lib/communityApi";
 
 export interface HistoryEntry {
   sessionId: string;
@@ -792,6 +793,20 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       accumulateListened();
     }
   }, [isPlaying, accumulateListened]);
+
+  // ── Community heartbeat: report listening activity every 60 s ────────────
+  useEffect(() => {
+    if (!isPlaying || !currentSession) return;
+    const payload = {
+      sessionId: currentSession.id,
+      sessionName: currentSession.title,
+      category: currentSession.categoryLabel ?? currentSession.categoryId ?? "",
+    };
+    void sendHeartbeat("session_play", payload);
+    const id = setInterval(() => void sendHeartbeat("session_play", payload), 60_000);
+    return () => clearInterval(id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlaying, currentSession?.id]);
 
   /** Configure lock-screen now-playing info for the current session */
   const activateLockScreen = useCallback(

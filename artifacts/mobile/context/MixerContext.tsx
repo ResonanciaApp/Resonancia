@@ -14,6 +14,7 @@ import { DEFAULT_MIXER_BG_PALETTE, getMixerBgPalette, type MixerBgPaletteId } fr
 import { SOUND_MAP } from "@/config/sound-map";
 import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
 import { bpmAudioEngine } from "@/lib/bpmAudioEngine";
+import { sendHeartbeat } from "@/lib/communityApi";
 import { getSoundById, soundMatchesBpm, resolveSoundBpm } from "@/data/sounds";
 import { getMixImage } from "@/config/mix-images";
 import type { MixCategory } from "@/data/mix-categories";
@@ -2060,6 +2061,14 @@ export function MixerProvider({ children }: { children: React.ReactNode }) {
     const sub = AppState.addEventListener("change", handleAppState);
     return () => sub.remove();
   }, []);
+
+  // ── Community heartbeat: report mixer activity every 60 s ─────────
+  useEffect(() => {
+    if (activeSounds.length === 0) return;
+    void sendHeartbeat("mixer_active");
+    const id = setInterval(() => void sendHeartbeat("mixer_active"), 60_000);
+    return () => clearInterval(id);
+  }, [activeSounds.length > 0]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Registrar la mezcla como "stoppable" por la sesión ────────────
   // (PlayerContext llama stopMixPlayback() al iniciar una sesión)

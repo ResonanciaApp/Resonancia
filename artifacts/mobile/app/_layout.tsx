@@ -3,6 +3,7 @@ import { ClerkProvider, ClerkLoaded, useAuth as useClerkAuth } from "@clerk/expo
 import { tokenCache } from "@clerk/expo/token-cache";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { setAuthTokenGetter, setBaseUrl } from "@workspace/api-client-react";
+import { setCommunityTokenGetter } from "@/lib/communityApi";
 import { router, Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
@@ -79,11 +80,12 @@ SplashScreen.preventAutoHideAsync().catch(() => {});
 
 const queryClient = new QueryClient();
 
-/** Attach Clerk session token to all generated API client requests. */
+/** Attach Clerk session token to all generated API client requests and community helpers. */
 function ApiAuthBridge() {
   const { getToken } = useClerkAuth();
   useEffect(() => {
     setAuthTokenGetter(() => getToken());
+    setCommunityTokenGetter(() => getToken());
   }, [getToken]);
   return null;
 }

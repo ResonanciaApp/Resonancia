@@ -99,6 +99,7 @@ import {
   type GlobalSettings,
 } from "@/data/geometrix-creations";
 import { usePremium } from "@/context/PremiumContext";
+import { sendHeartbeat } from "@/lib/communityApi";
 import { usePlayer } from "@/context/PlayerContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -2156,6 +2157,16 @@ export default function GeometrixScreen() {
   // `active` guarda IDs de instancia (ver `baseOf`): el original de cada
   // geometría usa el id base pelado; los duplicados usan `${base}::${sufijo}`.
   const [active, setActive] = useState<string[]>([]);
+
+  // ── Community heartbeat: report Geometrix activity every 60 s ──────────
+  // Only fires when the tab is focused AND at least one layer is active.
+  useEffect(() => {
+    if (!tabFocused || active.length === 0) return;
+    void sendHeartbeat("geometrix_active");
+    const id = setInterval(() => void sendHeartbeat("geometrix_active"), 60_000);
+    return () => clearInterval(id);
+  }, [tabFocused, active.length > 0]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Card que se está arrastrando (long-press + drag) para reordenar. Mientras
   // hay un drag activo se desactiva el scroll horizontal del carrusel.
   const [draggingId, setDraggingId] = useState<string | null>(null);

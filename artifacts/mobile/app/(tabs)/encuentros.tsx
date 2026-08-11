@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
   Pressable,
@@ -19,6 +20,8 @@ import { EncuentroCard } from "@/components/EncuentroCard";
 import { CalendarioEncuentroSheet } from "@/components/CalendarioEncuentroSheet";
 import { ENCUENTROS, type Encuentro } from "@/data/encuentros";
 import { CommunityMixesCarousel } from "@/components/CommunityMixesCarousel";
+import { ActivityFeedCard } from "@/components/ActivityFeedCard";
+import { useCommunityFeed } from "@/hooks/useCommunityFeed";
 
 const { width: SCREEN_W } = Dimensions.get("window");
 const CARD_H_PADDING = 20;
@@ -32,6 +35,7 @@ export default function EncuentrosScreen() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [calSheetEncuentro, setCalSheetEncuentro] = useState<Encuentro | null>(null);
   const { theme: activeTheme } = useSceneTheme();
+  const { events, loading: feedLoading } = useCommunityFeed();
 
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
@@ -106,6 +110,22 @@ export default function EncuentrosScreen() {
         <View style={{ marginTop: 36 }}>
           <CommunityMixesCarousel />
         </View>
+
+        {/* ── Ahora en RESONANCIA ── */}
+        <View style={styles.feedSection}>
+          <Text style={styles.feedTitle}>Ahora en RESONANCIA</Text>
+          {feedLoading ? (
+            <ActivityIndicator color="rgba(190,150,80,0.7)" style={{ marginTop: 12 }} />
+          ) : events.length === 0 ? (
+            <Text style={styles.feedEmpty}>
+              La comunidad está en silencio por ahora ·  vuelve pronto ✦
+            </Text>
+          ) : (
+            events.map((event) => (
+              <ActivityFeedCard key={event.id} event={event} />
+            ))
+          )}
+        </View>
       </ScrollView>
 
       {/* Sheet calendario */}
@@ -158,6 +178,25 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
     color: "#f9f9f9",
+  },
+  feedSection: {
+    marginTop: 36,
+    paddingHorizontal: CARD_H_PADDING,
+  },
+  feedTitle: {
+    fontFamily: "Manrope",
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#f9f9f9",
+    marginBottom: 14,
+  },
+  feedEmpty: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "400",
+    color: "rgba(244,244,244,0.4)",
+    textAlign: "center",
+    paddingVertical: 20,
   },
   dots: {
     marginTop: 25,
