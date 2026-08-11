@@ -1852,11 +1852,12 @@ export function BibliotecaScreen({
         transparent
         onRequestClose={() => { setAddResonadorVisible(false); setAddResonadorQ(""); }}
       >
-        <KeyboardAvoidingView
-          behavior="height"
-          style={{ flex: 1 }}
-        >
-        <View style={styles.addResModalBg}>
+        <View style={{ flex: 1 }}>
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.65)" }]} pointerEvents="none" />
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ flex: 1, justifyContent: "flex-end" }}
+          >
           <LinearGradient
             colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
             style={styles.addResModalSheet}
@@ -1910,8 +1911,8 @@ export function BibliotecaScreen({
                 })}
             </ScrollView>
           </LinearGradient>
+          </KeyboardAvoidingView>
         </View>
-        </KeyboardAvoidingView>
       </Modal>
     </Wrapper>
   );
