@@ -68,6 +68,7 @@ import { useIntencionDiaria } from "@/context/IntencionDiariaContext";
 import { useSelectedScene } from "@/context/SelectedSceneContext";
 import { useTabBarVisibility } from "@/context/TabBarVisibilityContext";
 import { SceneAnimationInline } from "@/components/SceneAnimationInline";
+import { EscenasAnimSheet } from "@/components/EscenasAnimSheet";
 import { WeekDayDots } from "@/components/WeekDayDots";
 import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/data/sessions";
 import { getMoodById, type Mood, type MoodId } from "@/data/moods";
@@ -459,23 +460,106 @@ export default function HomeScreen2() {
   const { data: pinnedFeaturedData } = useGetPinnedFeatured();
   const { data: sceneAnimationsData } = useGetSceneAnimations();
   const activeScenes = sceneAnimationsData?.scenes ?? [];
-  const { setSelectedScene, bgScene } = useSelectedScene();
+  const { setSelectedScene, bgScene, setBgScene } = useSelectedScene();
   const { requestHide, showMenu } = useTabBarVisibility();
 
   // Escena activa en el header (persistida entre sesiones)
   const HEADER_SCENE_KEY = "@resonancia_header_scene_id";
   const [headerSceneId, setHeaderSceneId] = useState<number | null>(null);
+
+  // ── Estado de la animación inline ────────────────────────────────────────
+  // animRevealed: true = escena guardada o usuario presionó "Pulsación"
+  const [animRevealed, setAnimRevealed] = useState(false);
+  const animRevealFade = useRef(new Animated.Value(0)).current;
+  const [phraseVisible, setPhraseVisible] = useState(false);
+  const [shuffleBgColor, setShuffleBgColor] = useState<string | null>(null);
+  const [animSheetOpen, setAnimSheetOpen] = useState(false);
+  // Evita que el efecto de bgScene se dispare después de selecciones locales
+  // (esas ya gestionan animRevealFade ellas mismas con la duración correcta).
+  const bgSceneHydratedRef = useRef(false);
+
   useEffect(() => {
     AsyncStorage.getItem(HEADER_SCENE_KEY).then((raw) => {
-      if (raw) setHeaderSceneId(parseInt(raw, 10));
+      if (raw) {
+        setHeaderSceneId(parseInt(raw, 10));
+        // Había selección guardada → mostrar animación de inmediato
+        bgSceneHydratedRef.current = true; // marca también hidratación de ID
+        setAnimRevealed(true);
+        animRevealFade.setValue(1);
+      }
     });
-  }, []);
-  const headerScene = bgScene ?? activeScenes.find((s) => s.id === headerSceneId) ?? activeScenes[0] ?? null;
+  }, [animRevealFade]);
+
+  // Si bgScene (cache full offline-first) llega antes que el ID → revelar sin Pulsación.
+  // Solo durante la hidratación inicial; las selecciones locales NO deben
+  // pasar por aquí o cancelarían el fade en curso.
+  useEffect(() => {
+    if (bgScene && !bgSceneHydratedRef.current) {
+      bgSceneHydratedRef.current = true;
+      setAnimRevealed(true);
+      animRevealFade.setValue(1);
+    }
+  }, [bgScene, animRevealFade]);
+
+  // Solo la escena elegida explícitamente; sin fallback a la primera de la lista.
+  const headerScene =
+    bgScene ??
+    (headerSceneId != null ? activeScenes.find((s) => s.id === headerSceneId) ?? null : null);
 
   function selectHeaderScene(scene: SceneAnimation) {
     setHeaderSceneId(scene.id);
+    setBgScene(scene);
     AsyncStorage.setItem(HEADER_SCENE_KEY, String(scene.id));
   }
+
+  /** Primera activación: revela la primera escena disponible con fade de 2 400 ms. */
+  const handlePulsacion = useCallback(() => {
+    const first = activeScenes[0] ?? null;
+    if (!first) return;
+    // Marcar hidratación ANTES de setBgScene para que el efecto de bgScene
+    // no cancele el fade que empezamos aquí.
+    bgSceneHydratedRef.current = true;
+    selectHeaderScene(first);
+    setSelectedScene(first);
+    animRevealFade.setValue(0);
+    setAnimRevealed(true);
+    Animated.timing(animRevealFade, {
+      toValue: 1,
+      duration: 2400,
+      easing: RNEasing.out(RNEasing.cubic),
+      useNativeDriver: true,
+    }).start();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeScenes, animRevealFade]);
+
+  /** Selección desde el sheet: cambia escena con fade de 400 ms. */
+  const handleAnimSceneSelect = useCallback((scene: SceneAnimation) => {
+    // Marcar hidratación ANTES de setBgScene para que el efecto de bgScene
+    // no cancele el fade de 400 ms que empezamos aquí.
+    bgSceneHydratedRef.current = true;
+    selectHeaderScene(scene);
+    setSelectedScene(scene);
+    setShuffleBgColor(null); // resetear color shuffle al cambiar de escena
+    animRevealFade.setValue(0);
+    Animated.timing(animRevealFade, {
+      toValue: 1,
+      duration: 400,
+      easing: RNEasing.out(RNEasing.cubic),
+      useNativeDriver: true,
+    }).start();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animRevealFade]);
+
+  /** Shuffle: genera un fondo aleatorio en el mismo tono que el tema activo. */
+  const handleShuffle = useCallback(() => {
+    const base = (activeTheme.gradient[0] as string) || "#060A0F";
+    const h = base.replace("#", "");
+    const r0 = parseInt(h.slice(0, 2), 16) || 6;
+    const g0 = parseInt(h.slice(2, 4), 16) || 10;
+    const b0 = parseInt(h.slice(4, 6), 16) || 15;
+    const vary = (v: number) => Math.max(0, Math.min(200, Math.floor(v + (Math.random() - 0.5) * 70)));
+    setShuffleBgColor(`rgba(${vary(r0)},${vary(g0)},${vary(b0)},0.92)`);
+  }, [activeTheme]);
 
   const featuredSession = React.useMemo(() => {
     // Si el admin pineó una sesión, usarla directamente.
@@ -998,13 +1082,135 @@ export default function HomeScreen2() {
           /* Escena animada: fondo libre, pasa por debajo del contenido.
              El View mantiene el espacio en el flujo; la animación es absoluta para no cortar. */
           <View style={{ height: 260, marginTop: -23, overflow: "visible" }} pointerEvents="box-none">
-            <SceneAnimationInline
-              scene={headerScene}
-              height={293}
-              onPress={headerScene ? toggleImmersive : undefined}
-              style={{ position: "absolute", top: 10, left: -16, right: -16 }}
-              paused={!tabFocused}
-            />
+
+            {/* Botón "Pulsación" — solo si el usuario nunca activó ninguna escena */}
+            {!animRevealed && (
+              <Pressable
+                onPress={handlePulsacion}
+                style={({ pressed }) => ({
+                  position: "absolute",
+                  top: 72,
+                  left: 0,
+                  right: 0,
+                  alignItems: "center" as const,
+                  opacity: pressed ? 0.72 : 1,
+                })}
+              >
+                <LinearGradient
+                  colors={["rgba(190,150,80,0.22)", "rgba(190,150,80,0.07)"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{
+                    paddingVertical: 14,
+                    paddingHorizontal: 38,
+                    borderRadius: 50,
+                    borderWidth: 1,
+                    borderColor: "rgba(190,150,80,0.42)",
+                  }}
+                >
+                  <Text style={{
+                    fontFamily: "Manrope",
+                    fontSize: 16,
+                    fontWeight: "600",
+                    color: "#F0DFB0",
+                    letterSpacing: 2,
+                    textTransform: "uppercase" as const,
+                  }}>
+                    Pulsación
+                  </Text>
+                </LinearGradient>
+              </Pressable>
+            )}
+
+            {/* Animación (visible tras revelar con Pulsación o desde escena guardada) */}
+            <Animated.View
+              style={{
+                opacity: animRevealFade,
+                position: "absolute",
+                top: 10,
+                left: -16,
+                right: -16,
+              }}
+              pointerEvents={animRevealed ? "box-none" : "none"}
+            >
+              <SceneAnimationInline
+                scene={headerScene}
+                height={293}
+                onPress={() => setAnimSheetOpen(true)}
+                paused={!tabFocused}
+                bgOverride={shuffleBgColor}
+                noInternalFade
+              />
+
+              {/* Controles: Frase · Shuffle · Grid ── esquina superior izquierda */}
+              <View
+                style={{ position: "absolute", top: 22, left: 22, flexDirection: "row", gap: 8 }}
+                pointerEvents="box-none"
+              >
+                <Pressable
+                  onPress={() => setPhraseVisible((v) => !v)}
+                  hitSlop={8}
+                  style={({ pressed }) => [
+                    ctrlBtnStyles.base,
+                    phraseVisible && ctrlBtnStyles.active,
+                    { opacity: pressed ? 0.72 : 1 },
+                  ]}
+                >
+                  <Feather
+                    name="message-circle"
+                    size={15}
+                    color={phraseVisible ? "#F0DFB0" : "rgba(255,255,255,0.78)"}
+                  />
+                </Pressable>
+                <Pressable
+                  onPress={handleShuffle}
+                  hitSlop={8}
+                  style={({ pressed }) => [ctrlBtnStyles.base, { opacity: pressed ? 0.72 : 1 }]}
+                >
+                  <Feather name="shuffle" size={15} color="rgba(255,255,255,0.78)" />
+                </Pressable>
+                <Pressable
+                  onPress={() => setAnimSheetOpen(true)}
+                  hitSlop={8}
+                  style={({ pressed }) => [ctrlBtnStyles.base, { opacity: pressed ? 0.72 : 1 }]}
+                >
+                  <Feather name="grid" size={15} color="rgba(255,255,255,0.78)" />
+                </Pressable>
+              </View>
+
+              {/* Frase overlay — centrada sobre la animación */}
+              {phraseVisible && (
+                <View
+                  style={{
+                    position: "absolute",
+                    left: 28,
+                    right: 28,
+                    top: 60,
+                    bottom: 20,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  pointerEvents="none"
+                >
+                  <Text
+                    style={{
+                      fontFamily: "Manrope",
+                      fontSize: 14,
+                      fontWeight: "500",
+                      color: "rgba(255,255,255,0.90)",
+                      textAlign: "center",
+                      lineHeight: 21,
+                      textShadowColor: "rgba(0,0,0,0.65)",
+                      textShadowOffset: { width: 0, height: 1 },
+                      textShadowRadius: 5,
+                    }}
+                    numberOfLines={4}
+                  >
+                    {headerScene?.phrase ?? weeklyPhrase}
+                  </Text>
+                </View>
+              )}
+            </Animated.View>
           </View>
         ) : (
           /* Establece tu intención aquí (modo intención diaria) */
@@ -1451,6 +1657,14 @@ export default function HomeScreen2() {
       </Animated.View>{/* fin contenido desvanecible */}
 
 
+      <EscenasAnimSheet
+        visible={animSheetOpen}
+        scenes={activeScenes}
+        activeSceneId={headerSceneId}
+        onSelect={handleAnimSceneSelect}
+        onClose={() => setAnimSheetOpen(false)}
+      />
+
       <ProgresoModal visible={progresoVisible} onClose={() => setProgresoVisible(false)} />
 
       <MoodPickerSheet
@@ -1491,6 +1705,24 @@ export default function HomeScreen2() {
     </View>
   );
 }
+
+// Botones de control sobre la animación inline (Frase / Shuffle / Grid)
+const ctrlBtnStyles = StyleSheet.create({
+  base: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "rgba(0,0,0,0.38)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.14)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  active: {
+    backgroundColor: "rgba(190,150,80,0.32)",
+    borderColor: "rgba(190,150,80,0.50)",
+  },
+});
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#210911" },

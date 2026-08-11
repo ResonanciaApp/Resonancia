@@ -307,10 +307,22 @@ interface Props {
   /** SharedValue del zoom vivo por pinch. Si se pasa, el glifo redibuja al tamaño real
    *  en el UI thread (sin transform:scale en el contenedor → sin pixelación). */
   liveScaleSV?: SharedValue<number>;
+  /**
+   * Color de fondo temporal (Shuffle). Se muestra DETRÁS de las geometrías sin
+   * persistirse ni modificar la receta. null/undefined = sin override.
+   */
+  bgOverride?: string | null;
+  /**
+   * Cuando true, desactiva el fade interno (6 000 ms por cambio de escena) y
+   * deja que el padre controle la transición de opacidad con su propio Animated.Value.
+   * Usar siempre que el padre envuelva el componente en un Animated.View con opacity.
+   */
+  noInternalFade?: boolean;
 }
 
-export function SceneAnimationInline({ scene, height, onPress, style, paused, liveScaleSV }: Props) {
-  const fadeAnim = useRef(new Animated.Value(scene ? 0 : 1)).current;
+export function SceneAnimationInline({ scene, height, onPress, style, paused, liveScaleSV, bgOverride, noInternalFade }: Props) {
+  // Si noInternalFade=true el padre controla la opacidad → arrancar en 1 siempre.
+  const fadeAnim = useRef(new Animated.Value(noInternalFade ? 1 : scene ? 0 : 1)).current;
   const prevSceneId = useRef<number | null>(null);
 
   // strokeModeMap: geometryId → "thin" | "natural", desde el catálogo del servidor.
@@ -322,6 +334,8 @@ export function SceneAnimationInline({ scene, height, onPress, style, paused, li
   );
 
   useEffect(() => {
+    // Si el padre controla el fade, saltar el interno completamente.
+    if (noInternalFade) return;
     if (!scene) return;
     if (scene.id === prevSceneId.current) return;
     prevSceneId.current = scene.id;
@@ -332,7 +346,7 @@ export function SceneAnimationInline({ scene, height, onPress, style, paused, li
       easing: RNEasing.out(RNEasing.cubic),
       useNativeDriver: true,
     }).start();
-  }, [scene?.id]);
+  }, [scene?.id, noInternalFade]);
 
   if (!scene) return <View style={[{ height }, style]} />;
 
@@ -354,6 +368,12 @@ export function SceneAnimationInline({ scene, height, onPress, style, paused, li
 
   return (
     <Animated.View style={[{ opacity: fadeAnim }, style]}>
+      {!!bgOverride && (
+        <View
+          style={[StyleSheet.absoluteFill, { backgroundColor: bgOverride }]}
+          pointerEvents="none"
+        />
+      )}
       <Pressable
         onPress={onPress}
         style={[s.container, { height }, hasBg && s.containerBg]}
