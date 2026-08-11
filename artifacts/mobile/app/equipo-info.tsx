@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: "rgba(255,255,255,0.045)",
     borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.18)",
+    borderColor: "rgba(255,255,255,0.1)",
     overflow: "hidden",
   },
   bannerWrap: {
