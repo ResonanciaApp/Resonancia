@@ -137,7 +137,11 @@ export default function EncuentrosScreen() {
   );
 
   const renderItem = useCallback(
-    ({ item }: { item: CommunityFeedEvent }) => <ActivityFeedCard event={item} />,
+    ({ item }: { item: CommunityFeedEvent }) => (
+      <View style={styles.feedItemPad}>
+        <ActivityFeedCard event={item} />
+      </View>
+    ),
     [],
   );
 
@@ -164,7 +168,7 @@ export default function EncuentrosScreen() {
         ItemSeparatorComponent={ItemSeparator}
         ListHeaderComponent={ListHeader}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: CARD_H_PADDING, paddingBottom: tabBarHeight + 24 }}
+        contentContainerStyle={{ paddingBottom: tabBarHeight + 24 }}
         style={{ opacity: feedOpacity }}
         refreshControl={
           <RefreshControl
@@ -231,7 +235,11 @@ const styles = StyleSheet.create({
   },
   feedSection: {
     marginTop: 36,
+    paddingHorizontal: CARD_H_PADDING,
     paddingBottom: 8,
+  },
+  feedItemPad: {
+    paddingHorizontal: CARD_H_PADDING,
   },
   feedTitle: {
     fontFamily: "Manrope",
