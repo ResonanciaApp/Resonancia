@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   profileTitle: { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", color: "#F9F9F9", letterSpacing: 0.5 },
   stickyHeader: {
     position: "absolute",
-    top: 4,
+    top: -6,
     left: -1,
     right: 0,
     flexDirection: "column",
