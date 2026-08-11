@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     marginHorizontal: H_PAD,
     marginBottom: 22,
     borderRadius: 20,
-    backgroundColor: "rgba(74,12,12,0.20)",
+    backgroundColor: "rgba(255,255,255,0.045)",
     borderWidth: 1,
     borderColor: "rgba(212,175,55,0.18)",
     overflow: "hidden",
