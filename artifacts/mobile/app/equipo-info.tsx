@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -158,9 +159,7 @@ export default function EquipoInfoScreen() {
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
-        <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
-          <Feather name="arrow-left" size={22} color={TEXT} />
-        </Pressable>
+        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         <View pointerEvents="none" style={[styles.headerTitleAbs, { top: insets.top + 10 }]}>
           <Text style={styles.headerTitle}>Únete a Resonancia</Text>
         </View>

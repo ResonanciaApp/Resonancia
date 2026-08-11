@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { BackPill } from "@/components/BackPill";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -92,9 +93,7 @@ export default function ExpansorPostularScreen() {
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPad + 10 }]}>
-        <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
-          <Feather name="arrow-left" size={22} color={colors.foreground} />
-        </Pressable>
+        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
         <View pointerEvents="none" style={[styles.headerTitleAbs, { top: topPad + 10 }]}>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>Postúlate como Expansor</Text>
         </View>
