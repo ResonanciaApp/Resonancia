@@ -243,7 +243,7 @@ export default function MezclasComunidadScreen() {
               ]}
               start={{ x: 0.5, y: 0 }}
               end={{ x: 0.5, y: 1 }}
-              style={[styles.creaBorder, { transform: [{ translateY: 22 }] }]}
+              style={[styles.creaBorder, { transform: [{ translateY: 27 }] }]}
             >
               <Pressable
                 hitSlop={10}
