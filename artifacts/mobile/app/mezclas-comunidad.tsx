@@ -245,7 +245,7 @@ export default function MezclasComunidadScreen() {
             >
               <Pressable
                 hitSlop={10}
-                onPress={() => { openMixer(); router.navigate("/(tabs)/musica" as never); }}
+                onPress={() => { openMixer(); router.back(); }}
                 style={[styles.creaBtn, { backgroundColor: theme.gradient[0] as string }]}
               >
                 <Text style={styles.creaBtnText}>Crea</Text>
