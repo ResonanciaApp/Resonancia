@@ -826,7 +826,6 @@ export default function ExploreScreen() {
                           style={({ pressed }) => [styles.sectionRow, { opacity: pressed ? 0.7 : 1 }]}
                         >
                           <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Otras temáticas</Text>
-                          <Feather name="chevron-right" size={18} color="#c2c2c2" />
                         </Pressable>
                         <View style={styles.tagGrid}>
                           {TAG_CARDS.filter((t) => !themeCarousels.some((tc) => tc.label === t.label)).slice(0, 8).map((tag) => (
