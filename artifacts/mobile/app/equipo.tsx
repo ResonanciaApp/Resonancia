@@ -342,15 +342,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 8,
     borderRadius: 999,
-    backgroundColor: "rgba(190,150,80,0.15)",
+    backgroundColor: "rgba(255,255,255,0.45)",
     borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.45)",
+    borderColor: "rgba(255,255,255,0.1)",
   },
   uneteBtnText: {
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
-    color: "#BE9650",
+    color: "#F9F9F9",
     letterSpacing: 0.4,
   },
   title: {
