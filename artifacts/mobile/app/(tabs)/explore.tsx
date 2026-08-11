@@ -689,7 +689,7 @@ export default function ExploreScreen() {
           {/* Título encima */}
           <View style={{ paddingHorizontal: H_PAD, marginTop: 7, marginBottom: 21 }}>
             <Text style={{ fontFamily: "Manrope", fontSize: 22, fontWeight: "700", color: "#FBFBFB" }}>
-              Tus chakras, tu energía
+              Armoniza tus chakras
             </Text>
             <Text style={{ fontFamily: "Manrope", fontSize: 13, color: "rgba(255,255,255,0.58)", marginTop: 3, lineHeight: 19 }}>
               Selecciona un chakra para comenzar tu armonización.
