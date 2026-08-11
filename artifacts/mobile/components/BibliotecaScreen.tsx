@@ -1879,7 +1879,7 @@ export function BibliotecaScreen({
                 autoFocus
               />
             </View>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 48 }}>
               {allResonadores
                 .filter((r) => addResonadorQ.length === 0 || r.name.toLowerCase().includes(addResonadorQ.toLowerCase()))
                 .map((r) => {
@@ -2338,7 +2338,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     paddingTop: 18,
-    paddingBottom: 48,
     height: "92%",
   },
   addResModalHeader: {
