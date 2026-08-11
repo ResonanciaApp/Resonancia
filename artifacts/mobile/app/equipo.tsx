@@ -337,7 +337,7 @@ export default function EquipoScreen() {
             ]}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
-            style={[styles.uneteBorder, { transform: [{ translateX: 3 }, { translateY: 4 }] }]}
+            style={[styles.uneteBorder, { transform: [{ translateX: 3 }, { translateY: 0 }] }]}
           >
             <Pressable
               hitSlop={10}
