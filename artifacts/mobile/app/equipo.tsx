@@ -52,7 +52,7 @@ function ResoChip({ label, sel, onPress }: { label: string; sel: boolean; onPres
           colors={["#F9F9F9", "#F9F9F9"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          style={StyleSheet.absoluteFill}
+          style={[StyleSheet.absoluteFill, { margin: -1 }]}
         />
       )}
       <Text style={[styles.chipText, sel && styles.chipTextSel]}>{label}</Text>
