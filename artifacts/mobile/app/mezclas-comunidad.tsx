@@ -25,6 +25,7 @@ import { getMixImage } from "@/config/mix-images";
 import { MIX_CATEGORIES, type MixCategory } from "@/data/mix-categories";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useMixerPanel } from "@/context/MixerPanelContext";
 
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
@@ -161,6 +162,7 @@ const gc = StyleSheet.create({
 export default function MezclasComunidadScreen() {
   const colors = useColors();
   const { theme } = useSceneTheme();
+  const { openMixer } = useMixerPanel();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 0 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -243,7 +245,7 @@ export default function MezclasComunidadScreen() {
             >
               <Pressable
                 hitSlop={10}
-                onPress={() => router.navigate("/(tabs)/musica" as never)}
+                onPress={() => { openMixer(); router.navigate("/(tabs)/musica" as never); }}
                 style={[styles.creaBtn, { backgroundColor: theme.gradient[0] as string }]}
               >
                 <Text style={styles.creaBtnText}>Crea</Text>
