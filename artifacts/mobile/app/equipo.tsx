@@ -296,7 +296,7 @@ export default function EquipoScreen() {
           </View>
           <Pressable
             hitSlop={10}
-            onPress={() => router.push("/resonador-postular" as never)}
+            onPress={() => {}}
             style={[styles.uneteBtn, { transform: [{ translateX: 3 }, { translateY: 4 }] }]}
           >
             <Text style={styles.uneteBtnText}>Únete</Text>
