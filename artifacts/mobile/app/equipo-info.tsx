@@ -15,6 +15,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 // ── Paleta ────────────────────────────────────────────────────────────────────
 const GOLD = "#F9F9F9";
@@ -149,10 +150,11 @@ function RoleCard({ role, delay }: { role: RoleData; delay: number }) {
 // ── Pantalla ──────────────────────────────────────────────────────────────────
 export default function EquipoInfoScreen() {
   const insets = useSafeAreaInsets();
+  const { theme: sceneTheme } = useSceneTheme();
 
   return (
-    <View style={styles.root}>
-      <LinearGradient colors={BG} style={StyleSheet.absoluteFill} />
+    <View style={[styles.root, { backgroundColor: sceneTheme.gradient[0] as string }]}>
+      <LinearGradient colors={sceneTheme.gradient as unknown as [string, string, ...string[]]} style={StyleSheet.absoluteFill} />
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
