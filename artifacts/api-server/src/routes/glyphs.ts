@@ -11,6 +11,7 @@ import {
   type User,
 } from "@workspace/db";
 import { requireAuth } from "../middlewares/requireAuth";
+import { recordCommunityEvent } from "../lib/communityActivity";
 
 const router: IRouter = Router();
 const PAGE_SIZE = 20;
@@ -144,6 +145,9 @@ router.post("/glyphs", requireAuth, async (req, res) => {
       .insert(sharedGlyphsTable)
       .values({ ...parsed.data, authorId: me.id })
       .returning();
+
+    // Fire-and-forget: record community event for the feed.
+    void recordCommunityEvent(me.id, "glyph_shared", { glyphId: glyph.id, glyphName: glyph.name });
 
     res.status(201).json(serialize(glyph, me, false, me.id));
   } catch (err) {

@@ -2,6 +2,7 @@ import type { RequestHandler } from "express";
 import { clerkClient, getAuth } from "@clerk/express";
 import { db, usersTable, type User } from "@workspace/db";
 import { eq } from "drizzle-orm";
+import { recordCommunityEvent } from "../lib/communityActivity";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -73,6 +74,9 @@ export const requireAuth: RequestHandler = async (req, res, next) => {
           email,
         })
         .returning();
+
+      // Fire-and-forget: welcome event in community feed.
+      void recordCommunityEvent(user.id, "user_joined");
     } else if (!user.email) {
       // Backfill del email para usuarios creados antes de guardarlo.
       try {

@@ -49,3 +49,4 @@ export * from "./catalog-videos";
 export * from "./descanso-sounds";
 export * from "./scene-animations";
 export * from "./explore-sections";
+export * from "./community-activity-events";

@@ -19,6 +19,7 @@ import {
 } from "@workspace/db";
 import { requireAuth } from "../middlewares/requireAuth";
 import { sendPushToUsers } from "../lib/push";
+import { recordCommunityEvent } from "../lib/communityActivity";
 
 const router: IRouter = Router();
 const PAGE_SIZE = 20;
@@ -296,6 +297,10 @@ router.post("/mixes", requireAuth, async (req, res) => {
       .insert(sharedMixesTable)
       .values({ ...parsed.data, authorId: me.id })
       .returning();
+
+    // Fire-and-forget: record community event for the feed.
+    void recordCommunityEvent(me.id, "mix_shared", { mixId: mix.id, mixName: mix.name });
+
     res.status(201).json(serialize(mix, me, false, me.id));
   } catch (err) {
     req.log.error(err);
