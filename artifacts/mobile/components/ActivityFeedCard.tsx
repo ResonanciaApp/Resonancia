@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "600",
     color: "rgba(244,244,244,0.55)",
+    transform: [{ translateY: 1 }],
   },
   action: {
     fontFamily: "Manrope",
