@@ -240,6 +240,7 @@ const styles = StyleSheet.create({
   },
   feedItemPad: {
     paddingHorizontal: CARD_H_PADDING,
+    paddingVertical: 2.5,
   },
   feedTitle: {
     fontFamily: "Manrope",
@@ -276,7 +277,7 @@ const styles = StyleSheet.create({
   },
   feedDivider: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(255,255,255,0.14)",
     marginHorizontal: CARD_H_PADDING,
   },
 });
