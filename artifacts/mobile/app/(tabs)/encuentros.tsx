@@ -143,8 +143,11 @@ export default function EncuentrosScreen() {
               </Text>
             </View>
           ) : (
-            events.map((event) => (
-              <ActivityFeedCard key={event.id} event={event} />
+            events.map((event, i) => (
+              <React.Fragment key={event.id}>
+                {i > 0 && <View style={styles.feedDivider} />}
+                <ActivityFeedCard event={event} />
+              </React.Fragment>
             ))
           )}
         </View>
@@ -237,6 +240,10 @@ const styles = StyleSheet.create({
   feedEmptyIcon: {
     fontSize: 22,
     color: "rgba(190,150,80,0.5)",
+  },
+  feedDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255,255,255,0.08)",
   },
   feedEmpty: {
     fontFamily: "Manrope",
