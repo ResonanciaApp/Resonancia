@@ -162,9 +162,9 @@ const styles = StyleSheet.create({
   },
   name: {
     fontFamily: "Manrope",
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: "600",
-    color: "rgba(244,244,244,0.9)",
+    color: "rgba(244,244,244,0.55)",
   },
   action: {
     fontFamily: "Manrope",
