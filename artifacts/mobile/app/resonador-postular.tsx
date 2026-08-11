@@ -16,6 +16,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 
 import { useCreateApplication } from "@workspace/api-client-react";
 
@@ -37,6 +38,7 @@ interface PickedAudio {
 export default function ResonadorPostularScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const { theme: sceneTheme } = useSceneTheme();
   const topPad = Platform.OS === "web" ? 24 : insets.top;
   const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
 
@@ -136,7 +138,7 @@ export default function ResonadorPostularScreen() {
   }
 
   return (
-    <LinearGradient colors={BG_GRADIENT} style={styles.root}>
+    <LinearGradient colors={sceneTheme.gradient as unknown as [string, string, ...string[]]} style={styles.root}>
       <StatusBar hidden />
 
       {/* Header */}
