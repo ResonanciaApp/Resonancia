@@ -248,7 +248,7 @@ export default function MezclasComunidadScreen() {
               <Pressable
                 hitSlop={10}
                 onPress={() => router.push("/(tabs)/musica" as never)}
-                style={[styles.creaBtn, { backgroundColor: "rgba(255,255,255,0.045)" }]}
+                style={[styles.creaBtn, { backgroundColor: theme.gradient[0] as string }]}
               >
                 <Text style={styles.creaBtnText}>Crea</Text>
               </Pressable>
