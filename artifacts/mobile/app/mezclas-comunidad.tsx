@@ -200,9 +200,9 @@ export default function MezclasComunidadScreen() {
       >
         {/* ── Título + Descripción ── */}
         <View style={styles.profileCard}>
-          <Text style={styles.profileTitle}>Todas las creaciones</Text>
+          <Text style={styles.profileTitle}>Creaciones</Text>
           <Text style={styles.profileDesc}>
-            Explora entre universos sonoros
+            Las mezclas de la comunidad
           </Text>
         </View>
 
@@ -264,7 +264,7 @@ export default function MezclasComunidadScreen() {
         <View style={styles.stickyHeaderRow}>
           <BackPill onPress={() => router.back()} size={27} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
           <View style={{ flex: 1, alignItems: "center", paddingTop: 0, marginTop: -1 }}>
-            <Text style={styles.stickyTitle} numberOfLines={1}>Todas las creaciones</Text>
+            <Text style={styles.stickyTitle} numberOfLines={1}>Creaciones</Text>
           </View>
           <View style={{ width: 36 }} />
         </View>
