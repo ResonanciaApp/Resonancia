@@ -111,7 +111,7 @@ export default function ExpansorPostularScreen() {
         >
           {/* Nombre */}
           <Text style={[styles.label, { color: "rgba(255,255,255,0.8)" }]}>¿Cómo te llamas?</Text>
-          <View style={[styles.inputRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={[styles.inputRow, { backgroundColor: "rgba(255,255,255,0.035)", borderColor: "rgba(255,255,255,0.1)" }]}>
             <Feather name="user" size={15} color={colors.mutedForeground} />
             <TextInput
               value={name}
@@ -125,7 +125,7 @@ export default function ExpansorPostularScreen() {
 
           {/* Ubicación */}
           <Text style={[styles.label, { color: "rgba(255,255,255,0.8)" }]}>¿De dónde eres?</Text>
-          <View style={[styles.inputRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={[styles.inputRow, { backgroundColor: "rgba(255,255,255,0.035)", borderColor: "rgba(255,255,255,0.1)" }]}>
             <Feather name="map-pin" size={15} color={colors.mutedForeground} />
             <TextInput
               value={location}
@@ -139,7 +139,7 @@ export default function ExpansorPostularScreen() {
 
           {/* Teléfono */}
           <Text style={[styles.label, { color: "rgba(255,255,255,0.8)" }]}>Teléfono</Text>
-          <View style={[styles.inputRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={[styles.inputRow, { backgroundColor: "rgba(255,255,255,0.035)", borderColor: "rgba(255,255,255,0.1)" }]}>
             <Feather name="phone" size={15} color={colors.mutedForeground} />
             <TextInput
               value={phone}
@@ -156,7 +156,7 @@ export default function ExpansorPostularScreen() {
           <Text style={[styles.label, { color: "rgba(255,255,255,0.8)" }]}>¿Cómo te gustaría aportar?</Text>
           <Pressable
             onPress={() => setDropdownOpen((v) => !v)}
-            style={[styles.inputRow, { backgroundColor: colors.card, borderColor: colors.border }]}
+            style={[styles.inputRow, { backgroundColor: "rgba(255,255,255,0.035)", borderColor: "rgba(255,255,255,0.1)" }]}
           >
             <Feather name="award" size={15} color={colors.mutedForeground} />
             <Text
@@ -170,7 +170,7 @@ export default function ExpansorPostularScreen() {
             <Feather name={dropdownOpen ? "chevron-up" : "chevron-down"} size={18} color={colors.mutedForeground} />
           </Pressable>
           {dropdownOpen && (
-            <View style={[styles.dropdown, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={[styles.dropdown, { backgroundColor: "rgba(255,255,255,0.035)", borderColor: "rgba(255,255,255,0.1)" }]}>
               {EXPANSOR_SUBTIPO_OPTIONS.map((opt, i) => (
                 <Pressable
                   key={opt}
@@ -195,7 +195,7 @@ export default function ExpansorPostularScreen() {
 
           {/* Describe tus servicios */}
           <Text style={[styles.label, { color: "rgba(255,255,255,0.8)" }]}>Describe tus servicios</Text>
-          <View style={[styles.textareaRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={[styles.textareaRow, { backgroundColor: "rgba(255,255,255,0.035)", borderColor: "rgba(255,255,255,0.1)" }]}>
             <TextInput
               value={services}
               onChangeText={setServices}

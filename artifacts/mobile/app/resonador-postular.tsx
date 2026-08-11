@@ -162,7 +162,7 @@ export default function ResonadorPostularScreen() {
         >
           {/* Nombre */}
           <Text style={[styles.label, { color: "rgba(255,255,255,0.8)" }]}>¿Cómo te llamas?</Text>
-          <View style={[styles.inputRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={[styles.inputRow, { backgroundColor: "rgba(255,255,255,0.035)", borderColor: "rgba(255,255,255,0.1)" }]}>
             <Feather name="user" size={15} color={colors.mutedForeground} />
             <TextInput
               value={name}
@@ -176,7 +176,7 @@ export default function ResonadorPostularScreen() {
 
           {/* Teléfono */}
           <Text style={[styles.label, { color: "rgba(255,255,255,0.8)" }]}>Teléfono</Text>
-          <View style={[styles.inputRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={[styles.inputRow, { backgroundColor: "rgba(255,255,255,0.035)", borderColor: "rgba(255,255,255,0.1)" }]}>
             <Feather name="phone" size={15} color={colors.mutedForeground} />
             <TextInput
               value={phone}
@@ -193,7 +193,7 @@ export default function ResonadorPostularScreen() {
           <Text style={[styles.label, { color: "rgba(255,255,255,0.8)" }]}>¿Cómo te gustaría aportar?</Text>
           <Pressable
             onPress={() => setDropdownOpen((v) => !v)}
-            style={[styles.inputRow, { backgroundColor: colors.card, borderColor: colors.border }]}
+            style={[styles.inputRow, { backgroundColor: "rgba(255,255,255,0.035)", borderColor: "rgba(255,255,255,0.1)" }]}
           >
             <Feather name="music" size={15} color={colors.mutedForeground} />
             <Text
@@ -207,7 +207,7 @@ export default function ResonadorPostularScreen() {
             <Feather name={dropdownOpen ? "chevron-up" : "chevron-down"} size={18} color={colors.mutedForeground} />
           </Pressable>
           {dropdownOpen && (
-            <View style={[styles.dropdown, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={[styles.dropdown, { backgroundColor: "rgba(255,255,255,0.035)", borderColor: "rgba(255,255,255,0.1)" }]}>
               {APORTE_OPTIONS.map((opt, i) => (
                 <Pressable
                   key={opt}
@@ -229,7 +229,7 @@ export default function ResonadorPostularScreen() {
 
           {/* Describe tus servicios */}
           <Text style={[styles.label, { color: "rgba(255,255,255,0.8)" }]}>Describe tus servicios</Text>
-          <View style={[styles.textareaRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={[styles.textareaRow, { backgroundColor: "rgba(255,255,255,0.035)", borderColor: "rgba(255,255,255,0.1)" }]}>
             <TextInput
               value={services}
               onChangeText={setServices}
@@ -246,7 +246,7 @@ export default function ResonadorPostularScreen() {
           <Text style={[styles.label, { color: "rgba(255,255,255,0.8)" }]}>Muéstranos tu arte</Text>
           <Pressable
             onPress={pickAudio}
-            style={[styles.audioRow, { backgroundColor: colors.card, borderColor: colors.border }]}
+            style={[styles.audioRow, { backgroundColor: "rgba(255,255,255,0.035)", borderColor: "rgba(255,255,255,0.1)" }]}
           >
             <View style={[styles.audioIcon, { backgroundColor: colors.primary + "18" }]}>
               <Feather name="music" size={16} color={colors.primary} />
