@@ -306,8 +306,8 @@ const styles = StyleSheet.create({
   header: { paddingHorizontal: H_PAD, paddingBottom: 8 },
 
   /* ── Profile card ── */
-  profileCard: { marginHorizontal: H_PAD, marginTop: 0, paddingBottom: 14, gap: 6, alignItems: "center" },
-  profileTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "800", color: TEXT, letterSpacing: 0.3, textAlign: "center" },
+  profileCard: { marginHorizontal: H_PAD, marginTop: 0, paddingBottom: 14, gap: 6, alignItems: "flex-start" },
+  profileTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "800", color: TEXT, letterSpacing: 0.3, textAlign: "left" },
   stickyHeader: {
     position: "absolute",
     top: 4,
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
   },
   stickyChipsArea: { paddingBottom: 10 },
   stickyTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
-  profileDesc: { fontFamily: "Manrope", fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "center", maxWidth: 280, marginBottom: 4 },
+  profileDesc: { fontFamily: "Manrope", fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "left", marginBottom: 4 },
 
   /* ── Chips ── */
   chipsArea: { paddingTop: 10, paddingBottom: 15 },
