@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "400",
-    color: "rgba(244,244,244,0.55)",
+    color: "rgba(249,249,249,0.9)",
   },
   actionGold: {
     fontFamily: "Manrope",
