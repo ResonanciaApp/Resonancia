@@ -1853,7 +1853,7 @@ export function BibliotecaScreen({
         onRequestClose={() => { setAddResonadorVisible(false); setAddResonadorQ(""); }}
       >
         <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          behavior="height"
           style={{ flex: 1 }}
         >
         <View style={styles.addResModalBg}>
