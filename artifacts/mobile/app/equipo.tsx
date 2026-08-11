@@ -15,7 +15,6 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -269,29 +268,12 @@ export default function EquipoScreen() {
   const { width: screenWidth } = useWindowDimensions();
 
   const [activeFilter, setActiveFilter] = useState("Todos");
-  const [query, setQuery] = useState("");
-  const [searchVisible, setSearchVisible] = useState(false);
-
-  function toggleSearch() {
-    if (searchVisible) { setQuery(""); }
-    setSearchVisible((v) => !v);
-  }
-
   const items: CardItem[] = useMemo(() => {
-    const q = query.toLowerCase().trim();
     return RESONADORES.filter((r) => {
       if (activeFilter !== "Todos" && r.subtipo !== activeFilter) return false;
-      if (q) {
-        return (
-          r.name.toLowerCase().includes(q) ||
-          r.subtipo.toLowerCase().includes(q) ||
-          r.city.toLowerCase().includes(q) ||
-          r.specialty.some((s) => s.toLowerCase().includes(q))
-        );
-      }
       return true;
     }).map((r) => ({ kind: "resonador" as const, data: r }));
-  }, [activeFilter, query]);
+  }, [activeFilter]);
 
   const numCols = 3;
   const SCREEN_PAD = H_PAD * 2;
@@ -312,43 +294,14 @@ export default function EquipoScreen() {
             <BackPill onPress={backOverride ?? (() => router.back())} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ transform: [{ translateY: -23 }] }} />
             <Text style={[styles.title, { transform: [{ translateY: 4 }] }]}>Resonadores</Text>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 6, transform: [{ translateX: 3 }, { translateY: 4 }] }}>
-            <Pressable onPress={toggleSearch} hitSlop={10} style={styles.searchIconBtn}>
-              <Feather
-                name={searchVisible ? "x" : "search"}
-                size={25}
-                color="#FFFFFF"
-              />
-            </Pressable>
-            <Pressable
-              hitSlop={10}
-              style={styles.searchIconBtn}
-              onPress={() => router.push("/equipo-info" as never)}
-            >
-              <Feather name="info" size={20} color="#FFFFFF" />
-            </Pressable>
-          </View>
+          <Pressable
+            hitSlop={10}
+            onPress={() => router.push("/resonador-postular" as never)}
+            style={[styles.uneteBtn, { transform: [{ translateX: 3 }, { translateY: 4 }] }]}
+          >
+            <Text style={styles.uneteBtnText}>Únete</Text>
+          </Pressable>
         </View>
-
-        {searchVisible && (
-          <View style={styles.searchWrap}>
-            <Feather name="search" size={14} color="rgba(212,175,55,0.55)" style={{ marginRight: 8 }} />
-            <TextInput
-              value={query}
-              onChangeText={setQuery}
-              placeholder="Buscar resonador..."
-              placeholderTextColor="rgba(255,255,255,0.30)"
-              style={styles.searchInput}
-              returnKeyType="search"
-              autoFocus
-            />
-            {query.length > 0 && (
-              <Pressable onPress={() => setQuery("")} hitSlop={8}>
-                <Feather name="x" size={14} color="rgba(255,255,255,0.45)" />
-              </Pressable>
-            )}
-          </View>
-        )}
 
       </View>
 
@@ -385,11 +338,20 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingBottom: 4,
   },
-  searchIconBtn: {
-    width: 43,
-    height: 43,
-    alignItems: "center",
-    justifyContent: "center",
+  uneteBtn: {
+    paddingHorizontal: 18,
+    paddingVertical: 8,
+    borderRadius: 999,
+    backgroundColor: "rgba(190,150,80,0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.45)",
+  },
+  uneteBtnText: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#BE9650",
+    letterSpacing: 0.4,
   },
   title: {
     fontFamily: "Manrope",
@@ -397,24 +359,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#FAF0EE",
     letterSpacing: 0.5,
-  },
-  searchWrap: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "rgba(74,12,12,0.30)",
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.12)",
-    paddingHorizontal: 12,
-    height: 38,
-    marginBottom: 12,
-  },
-  searchInput: {
-    fontFamily: "Manrope",
-    flex: 1,
-    color: "#FAF0EE",
-    fontSize: 13,
-    paddingVertical: 0,
   },
   tabPill: {
     flexDirection: "row",
