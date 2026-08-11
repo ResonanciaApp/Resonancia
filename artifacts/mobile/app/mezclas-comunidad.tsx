@@ -186,9 +186,11 @@ export default function MezclasComunidadScreen() {
       />
       <StatusBar hidden />
 
-      {/* ── Header fijo (BackPill siempre visible) ── */}
+      {/* ── Header fijo ── */}
       <View style={[styles.header, { paddingTop: topPad + 4 }]}>
-        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
+        <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ transform: [{ translateY: -23 }] }} />
+        <Text style={[styles.profileTitle, { transform: [{ translateY: 4 }] }]}>Creaciones</Text>
+        <Text style={[styles.profileDesc,  { transform: [{ translateY: 4 }] }]}>Las mezclas de la comunidad</Text>
       </View>
 
       <Animated.ScrollView
@@ -198,14 +200,6 @@ export default function MezclasComunidadScreen() {
         onScroll={handleScroll}
         scrollEventThrottle={16}
       >
-        {/* ── Título + Descripción ── */}
-        <View style={styles.profileCard}>
-          <Text style={styles.profileTitle}>Creaciones</Text>
-          <Text style={styles.profileDesc}>
-            Las mezclas de la comunidad
-          </Text>
-        </View>
-
         {/* ── Chips de categoría ── */}
         <View style={styles.chipsArea}>
           <ScrollView
@@ -306,8 +300,7 @@ const styles = StyleSheet.create({
   header: { paddingHorizontal: H_PAD, paddingBottom: 8 },
 
   /* ── Profile card ── */
-  profileCard: { marginHorizontal: H_PAD, marginTop: 0, paddingBottom: 14, gap: 6, alignItems: "flex-start" },
-  profileTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "800", color: TEXT, letterSpacing: 0.3, textAlign: "left" },
+  profileTitle: { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", color: "#F9F9F9", letterSpacing: 0.5 },
   stickyHeader: {
     position: "absolute",
     top: 4,
@@ -327,7 +320,7 @@ const styles = StyleSheet.create({
   },
   stickyChipsArea: { paddingBottom: 10 },
   stickyTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
-  profileDesc: { fontFamily: "Manrope", fontSize: 14, color: "rgba(255,255,255,0.90)", lineHeight: 19, textAlign: "left", marginBottom: 4 },
+  profileDesc: { fontFamily: "Manrope", fontSize: 12, fontWeight: "400", color: "rgba(249,249,249,0.50)", letterSpacing: 0.2, marginTop: 2 },
 
   /* ── Chips ── */
   chipsArea: { paddingTop: 10, paddingBottom: 15 },
