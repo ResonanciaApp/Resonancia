@@ -87,7 +87,6 @@ function ChipIcon({ icon, iconFamily, color, size = 15 }: { icon: string; iconFa
 }
 
 function Chip({ chip, sel, onPress }: { chip: ChipDef; sel: boolean; onPress: () => void }) {
-  const iconColor = sel ? "#1B060F" : GOLD;
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [styles.chip, { opacity: pressed ? 0.7 : 1 }]}>
       <LinearGradient
@@ -96,10 +95,7 @@ function Chip({ chip, sel, onPress }: { chip: ChipDef; sel: boolean; onPress: ()
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-        <ChipIcon icon={chip.icon} iconFamily={chip.iconFamily} color={iconColor} />
-        <Text style={[styles.chipText, sel && styles.chipTextSel]}>{chip.label}</Text>
-      </View>
+      <Text style={[styles.chipText, sel && styles.chipTextSel]}>{chip.label}</Text>
     </Pressable>
   );
 }
