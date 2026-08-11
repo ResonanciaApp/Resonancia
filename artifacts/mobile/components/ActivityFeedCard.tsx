@@ -193,9 +193,9 @@ const styles = StyleSheet.create({
     color: "rgba(249,249,249,0.9)",
   },
   thumb: {
-    width: 42,
-    height: 42,
-    borderRadius: 8,
+    width: 52,
+    height: 52,
+    borderRadius: 10,
     backgroundColor: "rgba(255,255,255,0.05)",
   },
 });
