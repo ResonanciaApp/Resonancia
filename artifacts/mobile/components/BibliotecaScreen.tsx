@@ -1857,7 +1857,10 @@ export function BibliotecaScreen({
           style={{ flex: 1 }}
         >
         <View style={styles.addResModalBg}>
-          <View style={styles.addResModalSheet}>
+          <LinearGradient
+            colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
+            style={styles.addResModalSheet}
+          >
             <View style={styles.addResModalHeader}>
               <Text style={styles.addResModalTitle}>Buscar Resonador</Text>
               <Pressable hitSlop={10} onPress={() => { setAddResonadorVisible(false); setAddResonadorQ(""); }}>
@@ -1906,7 +1909,7 @@ export function BibliotecaScreen({
                   );
                 })}
             </ScrollView>
-          </View>
+          </LinearGradient>
         </View>
         </KeyboardAvoidingView>
       </Modal>
@@ -2331,7 +2334,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   addResModalSheet: {
-    backgroundColor: "#190913",
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     paddingTop: 18,
