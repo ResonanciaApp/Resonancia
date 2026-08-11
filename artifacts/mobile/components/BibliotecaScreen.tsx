@@ -1858,6 +1858,8 @@ export function BibliotecaScreen({
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={{ flex: 1, justifyContent: "flex-end" }}
           >
+          {/* Rellena el hueco de los border-radius superiores del sheet */}
+          <View style={{ height: 22, backgroundColor: sceneTheme.gradient[0] as string }} pointerEvents="none" />
           <LinearGradient
             colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
             style={styles.addResModalSheet}
