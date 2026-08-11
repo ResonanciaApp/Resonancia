@@ -178,20 +178,6 @@ export function CommunityMixesCarousel() {
         </View>
       )}
 
-      {/* Ver más */}
-      {remaining > 0 && (
-        <Pressable
-          onPress={() => router.push("/mezclas-comunidad" as never)}
-          style={({ pressed }) => [
-            styles.verMasBtn,
-            { borderColor: "rgba(212,175,55,0.20)", opacity: pressed ? 0.7 : 1 },
-          ]}
-        >
-          <Text style={[styles.verMasText, { color: colors.mutedForeground }]}>
-            Ver las {allMixes.length} mezclas →
-          </Text>
-        </Pressable>
-      )}
       </View>
 
     </View>
