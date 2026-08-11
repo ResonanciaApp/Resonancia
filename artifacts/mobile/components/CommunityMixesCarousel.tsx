@@ -533,7 +533,7 @@ const styles = StyleSheet.create({
   // Lista vertical
   listWrap: {
     flexDirection: "column",
-    gap: 5,
+    gap: 11,
   },
   gridCell: { width: CELL_W },
   gridCover: {
