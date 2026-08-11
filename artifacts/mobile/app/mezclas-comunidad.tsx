@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     gap: 12,
   },
-  stickyChipsArea: { paddingBottom: 10 },
+  stickyChipsArea: { paddingTop: 10, paddingBottom: 16 },
   stickyTitle: { fontFamily: "Manrope", fontSize: 16, fontWeight: "700", color: TEXT, letterSpacing: 0.2 },
   profileDesc: { fontFamily: "Manrope", fontSize: 12, fontWeight: "400", color: "rgba(249,249,249,0.50)", letterSpacing: 0.2, marginTop: 2 },
 
