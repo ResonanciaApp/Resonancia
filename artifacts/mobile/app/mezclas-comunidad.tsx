@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
 
   /* ── Cabecera desplazable ── */
   scrollHeader: { paddingHorizontal: H_PAD, paddingBottom: 8 },
-  titleRow: { flexDirection: "row", alignItems: "center" },
+  titleRow: { flexDirection: "row", alignItems: "flex-end" },
   creaBorder: { borderRadius: 999, padding: 2, alignSelf: "center" },
   creaBtn: { paddingHorizontal: 18, paddingVertical: 8, borderRadius: 999 },
   creaBtnText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", color: "#F9F9F9", letterSpacing: 0.4 },
