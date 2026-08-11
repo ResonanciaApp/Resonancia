@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: C.fg,
     letterSpacing: 0.3,
-    marginTop: 7,
+    marginTop: 22,
     marginBottom: 12,
     textAlign: "center",
   },
