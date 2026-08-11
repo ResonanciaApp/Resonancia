@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.35)",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 16,
+    marginBottom: 53,
   },
   heroTitle: {
     fontFamily: "Manrope",
@@ -271,7 +271,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: C.fg,
     letterSpacing: 0.3,
-    marginTop: 52,
     marginBottom: 12,
     textAlign: "center",
   },
