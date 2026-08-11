@@ -6,14 +6,9 @@ import type { CommunityFeedEvent } from "@/lib/communityApi";
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
-function actionText(event: CommunityFeedEvent): string {
+function plainActionText(event: CommunityFeedEvent): string {
   const { eventType, payload } = event;
   switch (eventType) {
-    case "session_play": {
-      const name = payload.sessionName ?? "una sesión";
-      const cat = payload.category ? ` · ${payload.category}` : "";
-      return `está escuchando "${name}"${cat}`;
-    }
     case "mixer_active":
       return "está creando en el Mezclador";
     case "geometrix_active":
@@ -64,11 +59,38 @@ interface Props {
   event: CommunityFeedEvent;
 }
 
+function ActionText({ event }: { event: CommunityFeedEvent }) {
+  const { eventType, payload } = event;
+
+  if (eventType === "session_play") {
+    const sessionName = payload.sessionName ?? "una sesión";
+    const artistName = payload.artistName;
+    return (
+      <Text style={styles.action} numberOfLines={2}>
+        <Text style={styles.actionMuted}>{"está escuchando la sesión "}</Text>
+        <Text style={styles.actionGold}>{sessionName}</Text>
+        {artistName ? (
+          <>
+            <Text style={styles.actionMuted}>{" de "}</Text>
+            <Text style={styles.actionBright}>{artistName}</Text>
+          </>
+        ) : null}
+      </Text>
+    );
+  }
+
+  return (
+    <Text style={styles.action} numberOfLines={2}>
+      {plainActionText(event)}
+    </Text>
+  );
+}
+
 export function ActivityFeedCard({ event }: Props) {
   const { user, isLive } = event;
   const thumb = sessionThumbnail(event.payload.sessionId);
   const nameLine = user.location
-    ? `${user.displayName} · ${user.location}`
+    ? `${user.displayName} en ${user.location}`
     : user.displayName;
 
   return (
@@ -89,9 +111,7 @@ export function ActivityFeedCard({ event }: Props) {
         <Text style={styles.name} numberOfLines={1}>
           {nameLine}
         </Text>
-        <Text style={styles.action} numberOfLines={2}>
-          {actionText(event)}
-        </Text>
+        <ActionText event={event} />
       </View>
 
       {/* Session thumbnail (only for session_play) */}
@@ -150,8 +170,26 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "400",
-    color: "rgba(190,150,80,0.9)",
-    lineHeight: 16,
+    color: "rgba(244,244,244,0.55)",
+    lineHeight: 17,
+  },
+  actionMuted: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "400",
+    color: "rgba(244,244,244,0.55)",
+  },
+  actionGold: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#BE9650",
+  },
+  actionBright: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "500",
+    color: "rgba(249,249,249,0.9)",
   },
   thumb: {
     width: 42,

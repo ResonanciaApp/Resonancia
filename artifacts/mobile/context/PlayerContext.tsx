@@ -28,6 +28,7 @@ import { syncActivity } from "@/lib/cloudSync";
 import { sessionMiniPlayerEvents } from "@/lib/miniPlayerEvents";
 import { FREE_FAVORITES_LIMIT, FREE_TIMER_MAX_MINUTES, showPremiumGate } from "@/lib/premiumGate";
 import { sendHeartbeat } from "@/lib/communityApi";
+import { getArtist } from "@/data/artists";
 
 export interface HistoryEntry {
   sessionId: string;
@@ -797,9 +798,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   // ── Community heartbeat: report listening activity every 60 s ────────────
   useEffect(() => {
     if (!isPlaying || !currentSession) return;
+    const artist = getArtist(currentSession.artistId);
     const payload = {
       sessionId: currentSession.id,
       sessionName: currentSession.title,
+      artistName: artist.name,
       category: currentSession.categoryLabel ?? currentSession.categoryId ?? "",
     };
     void sendHeartbeat("session_play", payload);

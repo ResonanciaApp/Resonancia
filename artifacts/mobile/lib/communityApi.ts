@@ -27,6 +27,7 @@ export type CommunityEventType =
 export interface CommunityPayload {
   sessionId?: string;
   sessionName?: string;
+  artistName?: string;
   category?: string;
   mixId?: number;
   mixName?: string;
