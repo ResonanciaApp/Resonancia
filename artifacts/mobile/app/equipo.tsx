@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 27,
     fontWeight: "700",
-    color: "#FAF0EE",
+    color: "#F9F9F9",
     letterSpacing: 0.5,
   },
   tabPill: {
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
   },
-  animChipWrap: { flexDirection: "row", alignItems: "center" },
+  animChipWrap: { flexDirection: "row", alignItems: "center", marginTop: 15 },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
   chipCloseBtn: {
     width: 30,
@@ -398,7 +398,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 999,
-    backgroundColor: "rgba(0,0,0,0.50)",
+    backgroundColor: "rgba(255,255,255,0.045)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.10)",
     overflow: "hidden",
