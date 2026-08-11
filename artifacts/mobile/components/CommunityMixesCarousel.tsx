@@ -136,7 +136,7 @@ export function CommunityMixesCarousel() {
       {/* Header */}
       <View style={styles.headerRow}>
         <Text style={[styles.sectionTitle, { color: "#FFFFFF" }]}>
-          Top 10 Comunidad
+          Top 10 Creaciones
         </Text>
         <Pressable
           onPress={() => router.push("/mezclas-comunidad" as never)}

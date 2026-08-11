@@ -55,7 +55,7 @@ export default function ComunidadTop10Screen() {
         </View>
 
         <View style={styles.header}>
-          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Top 10 Comunidad</Text>
+          <Text style={[styles.pageTitle, { color: colors.foreground }]}>Top 10 Creaciones</Text>
           <Text style={[styles.pageSub, { color: colors.mutedForeground }]}>
             Las sesiones más escuchadas por la comunidad esta semana
           </Text>
