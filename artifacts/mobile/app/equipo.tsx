@@ -328,6 +328,7 @@ export default function EquipoScreen() {
           <View style={{ flex: 1 }}>
             <BackPill onPress={backOverride ?? (() => router.back())} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ transform: [{ translateY: -23 }] }} />
             <Text style={[styles.title, { transform: [{ translateY: 4 }] }]}>Resonadores</Text>
+            <Text style={[styles.titleSub, { transform: [{ translateY: 4 }] }]}>La esencia de Resonancia</Text>
           </View>
           <LinearGradient
             colors={[
@@ -412,6 +413,14 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#F9F9F9",
     letterSpacing: 0.5,
+  },
+  titleSub: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "400",
+    color: "rgba(249,249,249,0.50)",
+    letterSpacing: 0.2,
+    marginTop: 2,
   },
   tabPill: {
     flexDirection: "row",
