@@ -294,13 +294,20 @@ export default function EquipoScreen() {
             <BackPill onPress={backOverride ?? (() => router.back())} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ transform: [{ translateY: -23 }] }} />
             <Text style={[styles.title, { transform: [{ translateY: 4 }] }]}>Resonadores</Text>
           </View>
-          <Pressable
-            hitSlop={10}
-            onPress={() => router.push("/equipo-info" as never)}
-            style={[styles.uneteBtn, { transform: [{ translateX: 3 }, { translateY: 4 }] }]}
+          <LinearGradient
+            colors={["#F9F9F9", "#F9F9F9"]}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={[styles.uneteBorder, { transform: [{ translateX: 3 }, { translateY: 4 }] }]}
           >
-            <Text style={styles.uneteBtnText}>Únete</Text>
-          </Pressable>
+            <Pressable
+              hitSlop={10}
+              onPress={() => router.push("/equipo-info" as never)}
+              style={styles.uneteBtn}
+            >
+              <Text style={styles.uneteBtnText}>Únete</Text>
+            </Pressable>
+          </LinearGradient>
         </View>
 
         <AnimatedFilterRow
@@ -344,13 +351,15 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingBottom: 4,
   },
+  uneteBorder: {
+    borderRadius: 999,
+    padding: 2,
+  },
   uneteBtn: {
     paddingHorizontal: 18,
     paddingVertical: 8,
     borderRadius: 999,
     backgroundColor: "rgba(255,255,255,0.045)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
   },
   uneteBtnText: {
     fontFamily: "Manrope",
