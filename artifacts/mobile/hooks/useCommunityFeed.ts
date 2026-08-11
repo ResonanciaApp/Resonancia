@@ -13,8 +13,9 @@ export interface UseCommunityFeedResult {
 /**
  * Polls GET /community/feed on mount and every 60 seconds.
  * Returns live events (isLive: true) first, then discrete events.
+ * Pass myClerkUserId to exclude the current user from the feed.
  */
-export function useCommunityFeed(): UseCommunityFeedResult {
+export function useCommunityFeed(myClerkUserId?: string | null): UseCommunityFeedResult {
   const [events, setEvents] = useState<CommunityFeedEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -26,7 +27,10 @@ export function useCommunityFeed(): UseCommunityFeedResult {
     }
     try {
       const data = await fetchCommunityFeed();
-      if (mountedRef.current) setEvents(data);
+      const filtered = myClerkUserId
+        ? data.filter((e) => e.user.clerkUserId !== myClerkUserId)
+        : data;
+      if (mountedRef.current) setEvents(filtered);
     } catch {
       // Keep stale data on error — don't blank the feed.
     } finally {

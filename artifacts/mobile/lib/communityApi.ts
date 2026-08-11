@@ -43,6 +43,7 @@ export interface CommunityFeedEvent {
   isLive: boolean;
   user: {
     id: number;
+    clerkUserId: string;
     displayName: string;
     avatarUrl: string;
     location: string | null;

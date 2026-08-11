@@ -17,6 +17,7 @@ import { Image as ExpoImage } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { useSceneTheme } from "@/context/SceneThemeContext";
+import { useAuth } from "@/context/AuthContext";
 import { EncuentroCard } from "@/components/EncuentroCard";
 import { CalendarioEncuentroSheet } from "@/components/CalendarioEncuentroSheet";
 import { ENCUENTROS, type Encuentro } from "@/data/encuentros";
@@ -36,7 +37,8 @@ export default function EncuentrosScreen() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [calSheetEncuentro, setCalSheetEncuentro] = useState<Encuentro | null>(null);
   const { theme: activeTheme } = useSceneTheme();
-  const { events, loading: feedLoading, refresh, refreshing } = useCommunityFeed();
+  const { clerkUserId } = useAuth();
+  const { events, loading: feedLoading, refresh, refreshing } = useCommunityFeed(clerkUserId);
 
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {

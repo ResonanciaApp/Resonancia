@@ -132,6 +132,7 @@ router.get("/community/feed", async (req, res) => {
           AND ${communityActivityEventsTable.lastHeartbeatAt} > ${liveThreshold}
         )`,
         userId: usersTable.id,
+        clerkUserId: usersTable.clerkUserId,
         displayName: usersTable.displayName,
         avatarUrl: usersTable.avatarUrl,
         location: usersTable.location,
@@ -176,6 +177,7 @@ router.get("/community/feed", async (req, res) => {
         isLive: Boolean(r.isLive),
         user: {
           id: r.userId,
+          clerkUserId: r.clerkUserId,
           displayName: r.displayName,
           avatarUrl: r.avatarUrl,
           location: r.location ?? null,
