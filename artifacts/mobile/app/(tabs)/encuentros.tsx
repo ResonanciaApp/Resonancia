@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Image as ExpoImage } from "expo-image";
-import { RESONADORES } from "@/data/resonadores";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { useSceneTheme } from "@/context/SceneThemeContext";
@@ -102,38 +101,6 @@ export default function EncuentrosScreen() {
           ))}
         </View>
 
-        {/* ── Carrusel Resonadores ── */}
-        <View style={{ marginTop: 61 }}>
-          <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: CARD_H_PADDING, marginBottom: 16 }}>
-            <Text style={styles.sectionTitle}>Los Resonadores</Text>
-            <Pressable onPress={() => router.push("/equipo" as never)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F9F9F9" }}>Ver todos</Text>
-            </Pressable>
-          </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: CARD_H_PADDING, gap: 10 }}
-          >
-            {RESONADORES.map((r) => (
-              <Pressable
-                key={r.id}
-                onPress={() => router.push(`/resonador/${r.id}` as never)}
-                style={({ pressed }) => ({ alignItems: "center", opacity: pressed ? 0.75 : 1, width: 120 })}
-              >
-                <View style={{ width: 102, height: 102, borderRadius: 51, overflow: "hidden", borderWidth: 1.5, borderColor: "rgba(218,212,236,0.35)", marginBottom: 12 }}>
-                  <ExpoImage source={r.photo} style={{ width: 102, height: 102 }} contentFit="cover" />
-                </View>
-                <Text
-                  numberOfLines={2}
-                  style={{ fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: "#f9f9f9", textAlign: "center", lineHeight: 19 }}
-                >
-                  {r.name}
-                </Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        </View>
 
         {/* ── Mezclas de la comunidad ── */}
         <View style={{ marginTop: 36 }}>

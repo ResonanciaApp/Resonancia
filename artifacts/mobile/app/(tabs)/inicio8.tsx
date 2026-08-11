@@ -1361,6 +1361,44 @@ export default function HomeScreen2() {
         </Pressable>
 
 
+        {/* ── CARRUSEL RESONADORES ── */}
+        <View style={{ marginBottom: 32, marginTop: 57 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: GRID_PAD, marginBottom: 16 }}>
+            <Text style={[styles.sectionTitle, { flex: 1, marginBottom: 0 }]}>Los Resonadores</Text>
+            <Pressable onPress={() => router.push("/equipo" as never)} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+              <Text style={{ fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: colors.primary }}>Ver todos</Text>
+            </Pressable>
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ marginTop: 20 }}
+            contentContainerStyle={{ paddingHorizontal: GRID_PAD, gap: 10 }}
+          >
+            {RESONADORES.map((r) => (
+              <Pressable
+                key={r.id}
+                onPress={() => router.push(`/resonador/${r.id}` as never)}
+                style={({ pressed }) => ({ alignItems: "center", opacity: pressed ? 0.75 : 1, width: 120 })}
+              >
+                <View style={{ width: 102, height: 102, borderRadius: 51, overflow: "hidden", borderWidth: 1.5, borderColor: "rgba(218,212,236,0.35)", marginBottom: 12 }}>
+                  <ExpoImage
+                    source={r.photo}
+                    style={{ width: 102, height: 102 }}
+                    contentFit="cover"
+                  />
+                </View>
+                <Text
+                  numberOfLines={2}
+                  style={{ fontFamily: "Manrope", fontSize: 14, fontWeight: "600", color: "#f9f9f9", textAlign: "center", lineHeight: 19 }}
+                >
+                  {r.name}
+                </Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
+
         {/* ── BANNER PREMIUM ── */}
         {!isPremium && (
           <View style={styles.premBannerOuter}>
