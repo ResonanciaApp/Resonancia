@@ -122,13 +122,24 @@ export default function EncuentrosScreen() {
 
         {/* ── Ahora en RESONANCIA ── */}
         <View style={styles.feedSection}>
-          <Text style={styles.feedTitle}>Ahora en RESONANCIA</Text>
+          <View style={styles.feedHeader}>
+            <Text style={styles.feedTitle}>Ahora en RESONANCIA</Text>
+            {refreshing && (
+              <ActivityIndicator color="rgba(190,150,80,0.8)" size="small" />
+            )}
+          </View>
           {feedLoading ? (
-            <ActivityIndicator color="rgba(190,150,80,0.7)" style={{ marginTop: 12 }} />
+            <View style={styles.feedLoadingWrap}>
+              <ActivityIndicator color="rgba(190,150,80,0.9)" size="large" />
+              <Text style={styles.feedLoadingText}>Conectando con la comunidad…</Text>
+            </View>
           ) : events.length === 0 ? (
-            <Text style={styles.feedEmpty}>
-              La comunidad está en silencio por ahora ·  vuelve pronto ✦
-            </Text>
+            <View style={styles.feedEmptyWrap}>
+              <Text style={styles.feedEmptyIcon}>✦</Text>
+              <Text style={styles.feedEmpty}>
+                La comunidad está en silencio{"\n"}vuelve pronto
+              </Text>
+            </View>
           ) : (
             events.map((event) => (
               <ActivityFeedCard key={event.id} event={event} />
@@ -191,21 +202,47 @@ const styles = StyleSheet.create({
   feedSection: {
     marginTop: 36,
     paddingHorizontal: CARD_H_PADDING,
+    paddingBottom: 8,
+  },
+  feedHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 14,
   },
   feedTitle: {
     fontFamily: "Manrope",
     fontSize: 20,
     fontWeight: "700",
     color: "#f9f9f9",
-    marginBottom: 14,
+  },
+  feedLoadingWrap: {
+    alignItems: "center",
+    paddingVertical: 28,
+    gap: 12,
+  },
+  feedLoadingText: {
+    fontFamily: "Manrope",
+    fontSize: 13,
+    fontWeight: "400",
+    color: "rgba(190,150,80,0.7)",
+  },
+  feedEmptyWrap: {
+    alignItems: "center",
+    paddingVertical: 28,
+    gap: 8,
+  },
+  feedEmptyIcon: {
+    fontSize: 22,
+    color: "rgba(190,150,80,0.5)",
   },
   feedEmpty: {
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "400",
-    color: "rgba(244,244,244,0.4)",
+    color: "rgba(244,244,244,0.6)",
     textAlign: "center",
-    paddingVertical: 20,
+    lineHeight: 20,
   },
   dots: {
     marginTop: 25,
