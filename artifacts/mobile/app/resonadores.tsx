@@ -137,7 +137,7 @@ export default function ResonadoresScreen() {
           colors={["#4A0C0C", "#27070E", "#1B060F"]}
           style={[styles.hero, { paddingTop: topPad + 16 }]}
         >
-          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ marginBottom: 16 }} />
+          <BackPill onPress={() => router.back()} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} style={{ marginBottom: 16, marginTop: -20 }} />
 
           <View style={styles.heroCenter}>
             <View style={styles.heroIconWrap}>
@@ -271,6 +271,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: C.fg,
     letterSpacing: 0.3,
+    marginTop: 7,
     marginBottom: 12,
     textAlign: "center",
   },
