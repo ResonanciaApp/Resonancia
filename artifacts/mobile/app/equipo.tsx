@@ -38,9 +38,9 @@ const CLOSE_SLOT = 38;
 type FilterId = string;
 const ARTISTA_FILTER_TABS: { id: FilterId; label: string }[] = [
   { id: "Sonoterapeuta", label: "Sonoterapeuta" },
-  { id: "Productor", label: "Productor" },
-  { id: "Músico", label: "Músico" },
-  { id: "Voz guía", label: "Voz guía" },
+  { id: "Voz guía",      label: "Voz Guía" },
+  { id: "Productor",     label: "Productor" },
+  { id: "Músico",        label: "Músico" },
 ];
 
 // ── Chip individual ───────────────────────────────────────────────────────────
@@ -267,10 +267,10 @@ export default function EquipoScreen() {
 
   const { width: screenWidth } = useWindowDimensions();
 
-  const [activeFilter, setActiveFilter] = useState("Todos");
+  const [activeFilter, setActiveFilter] = useState<FilterId | null>(null);
   const items: CardItem[] = useMemo(() => {
     return RESONADORES.filter((r) => {
-      if (activeFilter !== "Todos" && r.subtipo !== activeFilter) return false;
+      if (activeFilter !== null && r.subtipo !== activeFilter) return false;
       return true;
     }).map((r) => ({ kind: "resonador" as const, data: r }));
   }, [activeFilter]);
@@ -303,6 +303,12 @@ export default function EquipoScreen() {
           </Pressable>
         </View>
 
+        <AnimatedFilterRow
+          tabs={ARTISTA_FILTER_TABS}
+          activeFilter={activeFilter}
+          onSelect={(id) => setActiveFilter(id)}
+          onClear={() => setActiveFilter(null)}
+        />
       </View>
 
       {/* ── Grid ── */}
