@@ -73,6 +73,7 @@ import { SESSIONS, getFeaturedSessions, getSessionById, type Session } from "@/d
 import { getMoodById, type Mood, type MoodId } from "@/data/moods";
 import { getArtist } from "@/data/artists";
 import { getGuide } from "@/data/guides";
+import { RESONADORES } from "@/data/resonadores";
 import { usePremium } from "@/context/PremiumContext";
 import { useColors } from "@/hooks/useColors";
 import PremiumBanner from "@/components/PremiumBanner";
