@@ -143,6 +143,7 @@ export default function ResonadoresScreen() {
             <View style={styles.heroIconWrap}>
               <Feather name="award" size={28} color={C.gold} />
             </View>
+            <View style={{ height: 37 }} />
             <Text style={styles.heroTitle}>Resonadores</Text>
             <Text style={styles.heroSub}>
               Las voces, los artistas y los guías que dan vida a esta experiencia. Cada uno aporta su esencia para acompañarte en el camino.
@@ -263,7 +264,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(212,175,55,0.35)",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 53,
+    marginBottom: 16,
   },
   heroTitle: {
     fontFamily: "Manrope",
