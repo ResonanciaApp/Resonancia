@@ -1051,6 +1051,12 @@ export function BibliotecaScreen({
   const [geoLimit, setGeoLimit] = useState(8);
   const [addResonadorVisible, setAddResonadorVisible] = useState(false);
   const [addResonadorQ, setAddResonadorQ] = useState("");
+  const [addResKbHeight, setAddResKbHeight] = useState(0);
+  useEffect(() => {
+    const show = Keyboard.addListener("keyboardWillShow", (e) => setAddResKbHeight(e.endCoordinates.height));
+    const hide = Keyboard.addListener("keyboardWillHide", () => setAddResKbHeight(0));
+    return () => { show.remove(); hide.remove(); };
+  }, []);
   const [favLimit, setFavLimit] = useState(12);
   const [searchVisible, setSearchVisible] = useState(false);
   const [createVisible, setCreateVisible] = useState(false);
@@ -1853,13 +1859,11 @@ export function BibliotecaScreen({
         onRequestClose={() => { setAddResonadorVisible(false); setAddResonadorQ(""); }}
       >
         <View style={{ flex: 1 }}>
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.65)" }]} pointerEvents="none" />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.65)", bottom: addResKbHeight }]} pointerEvents="none" />
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={{ flex: 1, justifyContent: "flex-end" }}
           >
-          {/* Rellena el hueco de los border-radius superiores del sheet */}
-          <View style={{ height: 22, backgroundColor: sceneTheme.gradient[0] as string }} pointerEvents="none" />
           <LinearGradient
             colors={sceneTheme.gradient as unknown as [string, string, ...string[]]}
             style={styles.addResModalSheet}
