@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
   },
   uneteBtn: {
     paddingHorizontal: 18,
-    paddingVertical: 8,
+    paddingVertical: 6,
     borderRadius: 999,
     backgroundColor: "rgba(255,255,255,0.045)",
   },
