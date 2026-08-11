@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
   },
-  animChipWrap: { flexDirection: "row", alignItems: "center", marginTop: 15 },
+  animChipWrap: { flexDirection: "row", alignItems: "center", marginTop: 15, marginHorizontal: -H_PAD },
   animCloseBtn: { position: "absolute", left: 0, top: 0, bottom: 0, justifyContent: "center", zIndex: 3 },
   chipCloseBtn: {
     width: 30,
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   chipRow: { flexGrow: 0 },
-  chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2 },
+  chipRowContent: { flexDirection: "row", gap: 8, paddingVertical: 2, paddingHorizontal: H_PAD },
   chip: {
     paddingHorizontal: 14,
     paddingVertical: 8,
