@@ -310,7 +310,7 @@ export default function EquipoScreen() {
         <View style={styles.titleRow}>
           <View style={{ flex: 1 }}>
             <BackPill onPress={backOverride ?? (() => router.back())} size={28} bgColor="rgba(255,255,255,0.10)" iconOffsetX={-1} />
-            <Text style={[styles.title, { transform: [{ translateY: 9 }] }]}>Resonadores</Text>
+            <Text style={[styles.title, { transform: [{ translateY: 61 }] }]}>Resonadores</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 6, transform: [{ translateX: 3 }, { translateY: 14 }] }}>
             <Pressable onPress={toggleSearch} hitSlop={10} style={styles.searchIconBtn}>
