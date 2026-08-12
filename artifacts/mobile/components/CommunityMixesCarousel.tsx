@@ -171,7 +171,7 @@ export function CommunityMixesCarousel() {
               onPress={() => handleOpenMix(mix)}
               onDotsPress={() => {}}
               onAuthorPress={() => handleViewCreator(mix)}
-              favorited={mix.likedByMe ?? false}
+              favorited={(mix.likedByMe ?? false) || (mix.likes ?? 0) > 0}
               onHeartPress={() => handleLike(mix)}
             />
           ))}
