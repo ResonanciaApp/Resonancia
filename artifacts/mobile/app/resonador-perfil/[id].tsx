@@ -849,9 +849,9 @@ const styles = StyleSheet.create({
   /* ── Bloque Agenda online ── */
   agendaBlock: {
     borderWidth: 1,
-    borderColor: "rgba(190,150,80,0.28)",
+    borderColor: "#8260B5",
     borderRadius: 16,
-    backgroundColor: "rgba(190,150,80,0.07)",
+    backgroundColor: "rgba(130,96,181,0.03)",
     padding: 16,
     gap: 10,
     marginTop: 16,
