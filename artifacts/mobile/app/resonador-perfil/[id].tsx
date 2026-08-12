@@ -377,6 +377,30 @@ export default function ResonadorPerfilScreen() {
           </Pressable>
         )}
 
+        {/* ── Botón Agenda una hora ── */}
+        {resonador.bookingUrl && (
+          <Pressable
+            onPress={() => router.push(`/resonador-servicio/${resonador.id}` as never)}
+            style={({ pressed }) => ({
+              marginTop: 16,
+              marginHorizontal: H_PAD,
+              flexDirection: "row" as const,
+              alignItems: "center" as const,
+              justifyContent: "center" as const,
+              gap: 6,
+              paddingVertical: 12,
+              borderRadius: 100,
+              borderWidth: 1.5,
+              borderColor: "rgba(249,249,249,0.5)",
+              backgroundColor: pressed ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.05)",
+            })}
+          >
+            <Text style={{ fontFamily: "Manrope", fontSize: 14, color: "#f9f9f9", fontWeight: "500" }}>
+              Agenda una hora
+            </Text>
+          </Pressable>
+        )}
+
         {/* ── Sección Resonador ── */}
         <View style={[styles.resonadorSection, { marginHorizontal: H_PAD, marginTop: 42 }]}>
 
