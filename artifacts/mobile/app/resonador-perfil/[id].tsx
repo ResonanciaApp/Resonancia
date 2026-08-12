@@ -360,13 +360,7 @@ export default function ResonadorPerfilScreen() {
         <View style={[styles.resonadorSection, { marginHorizontal: H_PAD, marginTop: -18 }]}>
 
           {/* ── Banner RESONADOR ── */}
-          <LinearGradient
-            colors={["rgba(255,255,255,0.22)", "rgba(255,255,255,0.05)", "rgba(255,255,255,0.22)"]}
-            locations={[0, 0.5, 1]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.resonadorBannerOuter}
-          >
+          <View style={styles.resonadorBannerOuter}>
           <View style={styles.resonadorBanner}>
             <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.15)" }]} />
             {/* Ícono circular izquierda */}
@@ -388,7 +382,7 @@ export default function ResonadorPerfilScreen() {
               <Text style={styles.bannerVerified}>Verificado por Resonancia</Text>
             </View>
           </View>
-          </LinearGradient>
+          </View>
 
           {/* Me especializo en */}
           <View style={styles.sectionBlock}>
