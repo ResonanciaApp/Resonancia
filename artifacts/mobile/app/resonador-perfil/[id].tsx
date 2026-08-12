@@ -357,7 +357,7 @@ export default function ResonadorPerfilScreen() {
 
 
         {/* ── Sección Resonador ── */}
-        <View style={[styles.resonadorSection, { marginHorizontal: H_PAD, marginTop: -3 }]}>
+        <View style={[styles.resonadorSection, { marginHorizontal: H_PAD, marginTop: 7 }]}>
 
           {/* Me especializo en */}
           <View style={styles.sectionBlock}>
