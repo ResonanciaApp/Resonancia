@@ -494,11 +494,11 @@ export default function ResonadorPerfilScreen() {
           return null;
         })()}
 
-        {/* ── SECCIÓN 1: Mi obra en Resonancia ── */}
+        {/* ── SECCIÓN 1: Mis sesiones ── */}
         {sessions.length > 0 && (
           <View style={[styles.card, { marginHorizontal: H_PAD, backgroundColor: "transparent", paddingHorizontal: 0, marginTop: 31 }]}>
             <View style={[styles.cardHeader, { paddingHorizontal: 0 }]}>
-              <Text style={styles.cardTitle}>Mi obra en Resonancia</Text>
+              <Text style={styles.cardTitle}>Mis sesiones</Text>
               <Pressable
                 onPress={() => {/* TODO: nav a catálogo del resonador */}}
                 hitSlop={8}
