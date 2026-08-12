@@ -551,7 +551,7 @@ export default function ResonadorPerfilScreen() {
 
         {/* ── SECCIÓN 4: Proyectos externos ── */}
         {resonador.projects && resonador.projects.length > 0 && (
-          <View style={[styles.card, { marginHorizontal: H_PAD, marginTop: -15 }]}>
+          <View style={[styles.card, { marginHorizontal: H_PAD, marginTop: 31 }]}>
             <Text style={styles.cardTitle}>Proyectos externos</Text>
             <View style={styles.projectsList}>
               {resonador.projects.map((proj, i) => (
