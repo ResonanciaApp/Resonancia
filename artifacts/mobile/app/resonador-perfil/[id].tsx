@@ -824,6 +824,8 @@ const styles = StyleSheet.create({
   resonadorBannerOuter: {
     borderRadius: 14,
     padding: 1,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
     shadowColor: "#000000",
     shadowOffset: { width: 0, height: -1 },
     shadowOpacity: 0.25,
@@ -838,8 +840,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     gap: 14,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
   },
   bannerIconCircle: {
     width: 42,
@@ -871,7 +871,7 @@ const styles = StyleSheet.create({
   bannerVerified: {
     fontFamily: "Manrope",
     fontSize: 10,
-    color: "rgba(212,175,55,0.55)",
+    color: "#F9F9F9",
     marginTop: 2,
     letterSpacing: 0.2,
   },
