@@ -478,7 +478,6 @@ export default function SessionDetailScreen() {
                 style={({ pressed }) => [
                   styles.playBtn,
                   { flex: 1, overflow: "hidden", opacity: pressed ? 0.88 : 1 },
-                  isIndigoPlayBtn && { borderWidth: 1.5, borderColor: "rgba(249,249,249,0.5)" },
                 ]}
               >
                 <LinearGradient colors={playBtnColors} start={{ x: 0, y: 0 }} end={isIndigoPlayBtn ? { x: 1, y: 0 } : { x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
