@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   descripcion: {
-    color: "rgba(244,218,213,0.75)",
+    color: "#F4F4F4",
     fontSize: 13,
     fontFamily: "Manrope",
     fontWeight: "400",
