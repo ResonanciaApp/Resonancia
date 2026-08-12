@@ -113,4 +113,5 @@
 - [RN Modal null-stub](modal-null-stub-metro.md) — si NINGÚN <Modal> aparece (estado true, sin error): specs_DEPRECATED/components stubbeado a null en metro.config + parche in-place; RCTModalHostViewNativeComponent debe cargar real
 - [Biblioteca overlay sobre drawer](biblioteca-drawer-overlay.md) — "Biblioteca" del menú no navega: overlay deslizante sobre el drawer (queda abierto debajo); patrón para pantallas "sobre el menú"
 - [Perfil split](perfil-split.md) — Perfil de tabs = solo pills Biblioteca/Historial; contenido de perfil (Muro) vive en /mi-perfil (ProfileScreenBase dedicated); drawer "Ver Perfil" → /mi-perfil
+- [FlatList header remount](flatlist-header-remount.md) — ListHeaderComponent como useCallback con deps cambiantes remonta el header y resetea carruseles internos; pasar elemento JSX
 - [RN specs_DEPRECATED StubComponent patch](rn-specs-deprecated-stub-patch.md) — crash iOS "two views same name StubComponent": parchear src/private/specs_DEPRECATED/components/*.js con null en TODAS las instancias de RN en node_modules/.pnpm/
