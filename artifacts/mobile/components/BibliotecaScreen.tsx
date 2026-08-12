@@ -1761,7 +1761,7 @@ export function BibliotecaScreen({
       {/* ── STICKY HEADER ────────────────────────────────────────────────── */}
       <View
         style={[styles.stickyHeader, {
-          paddingTop: topPad - 23,
+          paddingTop: topPad - 38,
         }]}
       >
         {/* Fila 2: chips de tab (animados) */}
