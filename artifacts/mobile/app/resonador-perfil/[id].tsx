@@ -364,7 +364,7 @@ export default function ResonadorPerfilScreen() {
           >
             <View style={styles.agendaTopRow}>
               <View style={styles.agendaIconCircle}>
-                <Feather name="calendar" size={18} color="#8260B5" />
+                <Feather name="calendar" size={18} color="#F9F9F9" />
               </View>
               <Text style={styles.agendaAvailText}>Disponible para sesiones</Text>
               <LinearGradient
