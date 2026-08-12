@@ -6,6 +6,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
+  Animated,
   Linking,
   Platform,
   Pressable,
@@ -133,6 +134,18 @@ export default function ResonadorPerfilScreen() {
   const [sessionLimit, setSessionLimit] = useState(SESSION_PAGE);
   const [sessionSort, setSessionSort] = useState<"recientes" | "escuchadas">("recientes");
 
+  // ── Sticky header gradient ─────────────────────────────────────────────────
+  const scrollY = React.useRef(new Animated.Value(0)).current;
+  const handleScroll = Animated.event(
+    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+    { useNativeDriver: false },
+  );
+  const headerBgOpacity = scrollY.interpolate({
+    inputRange: [60, 130],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
+
   const sortedSessions = [...sessions].sort((a, b) => {
     if (sessionSort === "recientes") return parseInt(b.id) - parseInt(a.id);
     // "escuchadas": mantener orden original (sin datos reales de escuchas)
@@ -152,6 +165,14 @@ export default function ResonadorPerfilScreen() {
           { paddingHorizontal: H_PAD, paddingTop: topPad + 8 },
         ]}
       >
+        {/* Fondo degradado — aparece al scrollear */}
+        <Animated.View style={[StyleSheet.absoluteFill, { opacity: headerBgOpacity }]} pointerEvents="none">
+          <LinearGradient
+            colors={[bgColors[0] as string, bgColors[1] as string, `${bgColors[0]}00`]}
+            locations={[0, 0.7, 1]}
+            style={StyleSheet.absoluteFill}
+          />
+        </Animated.View>
         <View pointerEvents="none" style={[styles.headerTitleAbs, { top: topPad - 2 }]}>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>Perfil</Text>
         </View>
@@ -172,9 +193,11 @@ export default function ResonadorPerfilScreen() {
         )}
       </View>
 
-      <ScrollView
+      <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[styles.scroll, { paddingBottom: bottomPad + 40 }]}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
       >
         {/* ── Hero banner + avatar flotante ── */}
         <View style={[styles.heroArea, { height: 192 + topPad + 50 }]}>
@@ -606,7 +629,7 @@ export default function ResonadorPerfilScreen() {
         <View style={{ marginHorizontal: H_PAD }}>
           <DrawerStats />
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
 
     </View>
   );
