@@ -206,7 +206,7 @@ export default function MezclasComunidadScreen() {
               style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, alignSelf: "center" as const, transform: [{ translateY: 27 }] })}
             >
               <LinearGradient
-                colors={["#8260B5", "#5B427F"]}
+                colors={["#5C5BA5", "#474491"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.creaBtn}
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
   /* ── Cabecera desplazable ── */
   scrollHeader: { paddingHorizontal: H_PAD, paddingBottom: 8 },
   titleRow: { flexDirection: "row", alignItems: "flex-end" },
-  creaBtn: { paddingHorizontal: 18, paddingVertical: 8, borderRadius: 999, borderWidth: 1.5, borderColor: "rgba(249,249,249,0.5)" },
+  creaBtn: { paddingHorizontal: 18, paddingVertical: 8, borderRadius: 999, borderWidth: 1, borderColor: "#E5D6FF" },
   creaBtnText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", color: "#F9F9F9", letterSpacing: 0.4 },
 
   /* ── Profile card ── */
