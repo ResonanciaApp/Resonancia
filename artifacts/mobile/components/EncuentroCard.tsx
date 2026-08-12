@@ -81,7 +81,7 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
           style={({ pressed }) => [styles.calBtn, { opacity: pressed ? 0.8 : 1 }]}
         >
           <LinearGradient
-            colors={["#5C5BA5", "#474491"]}
+            colors={["#8260B5", "#5B427F"]}
             start={{ x: 0, y: 0.5 }}
             end={{ x: 1, y: 0.5 }}
             style={StyleSheet.absoluteFill}
@@ -231,8 +231,8 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     marginTop: 4,
     overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "#E5D6FF",
+    borderWidth: 1.5,
+    borderColor: "rgba(249,249,249,0.5)",
   },
   calBtnText: {
     color: "#F9F9F9",
