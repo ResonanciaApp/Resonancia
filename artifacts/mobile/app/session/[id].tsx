@@ -499,7 +499,7 @@ export default function SessionDetailScreen() {
                 onPress={handleShare}
                 style={({ pressed }) => ({ flex: 1, opacity: pressed ? 0.75 : 1 })}
               >
-                <View style={[styles.shareBtnInner, { borderColor: shareBtnAccent, flex: 1 }]}>
+                <View style={[styles.shareBtnInner, { borderColor: isIndigoPlayBtn ? "#8260B5" : shareBtnAccent, flex: 1 }]}>
                   <Text style={[styles.shareBtnText, { color: shareBtnAccent }]}>Compartir</Text>
                   <Feather name="send" size={15} color={shareBtnAccent} />
                 </View>
