@@ -967,7 +967,7 @@ const styles = StyleSheet.create({
   },
 
   /* ── Sección 1: Sesiones ── */
-  verTodasText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: "#E5D6FF", letterSpacing: 0.2 },
+  verTodasText: { fontFamily: "Manrope", fontSize: 12, fontWeight: "600", color: GOLD, letterSpacing: 0.2 },
   sessionSortBtn: { flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 4, alignSelf: "flex-start" },
   sessionSortText: { fontFamily: "Manrope", fontSize: 12, color: "rgba(250,240,238,0.40)", fontWeight: "500" },
   sessionList: { gap: 4 },
