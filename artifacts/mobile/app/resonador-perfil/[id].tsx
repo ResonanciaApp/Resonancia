@@ -784,7 +784,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "400",
-    color: "#F9F9F9",
+    color: "#B391E6",
     textAlign: "center",
     marginTop: -2,
   },
