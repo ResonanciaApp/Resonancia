@@ -21,6 +21,8 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import { DrawerStats } from "@/components/DrawerStats";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
+import { BackPill } from "@/components/BackPill";
+import { GhostPill } from "@/components/GhostPill";
 import { BLUR_PLACEHOLDER, IMAGE_TRANSITION } from "@/constants/imagePlaceholder";
 import { COUNTRY_FLAGS, getResonadorById, type ExternalProject, type Resonador } from "@/data/resonadores";
 import { getSessionById } from "@/data/sessions";
@@ -175,9 +177,9 @@ export default function ResonadorPerfilScreen() {
         <View pointerEvents="none" style={[styles.headerTitleAbs, { top: topPad - 2 }]}>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>Perfil</Text>
         </View>
-        <Pressable onPress={() => router.back()} style={[styles.backBtn, { marginTop: -10 }]} hitSlop={8}>
-          <Feather name="arrow-left" size={22} color={colors.foreground} />
-        </Pressable>
+        <GhostPill noBorder style={{ backgroundColor: "rgba(27,6,15,0.5)", marginTop: -2, transform: [{ translateY: 2 }] }}>
+          <BackPill onPress={() => router.back()} size={27} iconOffsetX={-2} />
+        </GhostPill>
         {resonador.donationUrl && !isOwn ? (
           <Pressable
             onPress={() => Linking.openURL(resonador.donationUrl!)}
