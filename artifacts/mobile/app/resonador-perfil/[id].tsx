@@ -839,7 +839,7 @@ const styles = StyleSheet.create({
   actionPillTextSent: { color: "#c2c2c2" },
   contactRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   contactGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  contactPill: { flexBasis: "47%", flexGrow: 1, justifyContent: "center" },
+  contactPill: { flexBasis: "30%", flexGrow: 1, justifyContent: "center", paddingHorizontal: 8 },
 
   /* ── Bloque Agenda online ── */
   agendaBlock: {
