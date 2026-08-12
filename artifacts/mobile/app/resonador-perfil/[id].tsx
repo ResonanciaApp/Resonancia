@@ -498,7 +498,7 @@ export default function ResonadorPerfilScreen() {
         {sessions.length > 0 && (
           <View style={[styles.card, { marginHorizontal: H_PAD, backgroundColor: "transparent", paddingHorizontal: 0, marginTop: 31 }]}>
             <View style={[styles.cardHeader, { paddingHorizontal: 0 }]}>
-              <Text style={styles.cardTitle}>Mis sesiones</Text>
+              <Text style={[styles.cardTitle, { fontSize: 25 }]}>Mis sesiones</Text>
               <Pressable
                 onPress={() => {/* TODO: nav a catálogo del resonador */}}
                 hitSlop={8}
