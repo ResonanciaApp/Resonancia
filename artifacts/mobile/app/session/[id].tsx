@@ -500,8 +500,8 @@ export default function SessionDetailScreen() {
                 style={({ pressed }) => ({ flex: 1, opacity: pressed ? 0.75 : 1 })}
               >
                 <View style={[styles.shareBtnInner, { borderColor: isIndigoPlayBtn ? "#8260B5" : shareBtnAccent, flex: 1 }]}>
-                  <Text style={[styles.shareBtnText, { color: shareBtnAccent }]}>Compartir</Text>
-                  <Feather name="send" size={15} color={shareBtnAccent} />
+                  <Text style={[styles.shareBtnText, { color: isIndigoPlayBtn ? "#D9BFFF" : shareBtnAccent }]}>Compartir</Text>
+                  <Feather name="send" size={15} color={isIndigoPlayBtn ? "#D9BFFF" : shareBtnAccent} />
                 </View>
               </Pressable>
             </View>
