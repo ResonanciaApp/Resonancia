@@ -203,7 +203,7 @@ export default function MezclasComunidadScreen() {
             <Pressable
               hitSlop={10}
               onPress={() => { openMixer(); router.back(); }}
-              style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, transform: [{ translateY: 27 }] })}
+              style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, alignSelf: "center" as const, transform: [{ translateY: 27 }] })}
             >
               <LinearGradient
                 colors={["#8260B5", "#5B427F"]}
