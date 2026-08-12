@@ -532,7 +532,7 @@ export default function ResonadorPerfilScreen() {
                   showAuthor={false}
                   showDuration={false}
                   showMetaBelow
-                  titleFontSize={12}
+                  titleFontSize={14}
                   thumbWidth={94}
                   thumbRadius={21}
                 />
