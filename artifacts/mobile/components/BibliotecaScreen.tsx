@@ -2034,7 +2034,7 @@ const styles = StyleSheet.create({
   sortTriggerRow: {
     flexDirection: "row",
     justifyContent: "flex-start",
-    marginTop: -10,
+    marginTop: -20,
     paddingHorizontal: H_PAD,
     marginTop: -10,
     marginBottom: -8,
