@@ -362,7 +362,7 @@ export default function ResonadorPerfilScreen() {
           {/* ── Banner RESONADOR ── */}
           <View style={styles.resonadorBannerOuter}>
           <View style={styles.resonadorBanner}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.15)" }]} />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.25)" }]} />
             {/* Ícono circular izquierda */}
             <View style={styles.bannerIconCircle}>
               <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.08)" }]} />
@@ -838,6 +838,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     gap: 14,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
   bannerIconCircle: {
     width: 42,
