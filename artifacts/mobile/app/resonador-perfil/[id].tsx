@@ -174,7 +174,7 @@ export default function ResonadorPerfilScreen() {
             style={StyleSheet.absoluteFill}
           />
         </Animated.View>
-        <Animated.View pointerEvents="none" style={[styles.headerTitleAbs, { top: topPad - 2, opacity: headerBgOpacity }]}>
+        <Animated.View pointerEvents="none" style={[styles.headerTitleAbs, { top: topPad + 8, opacity: headerBgOpacity }]}>
           <Text style={styles.headerNameTitle} numberOfLines={1}>{resonador.name}</Text>
         </Animated.View>
         <GhostPill noBorder style={{ backgroundColor: "rgba(255,255,255,0.045)", marginTop: -2, transform: [{ translateY: 2 }] }}>
