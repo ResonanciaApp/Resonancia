@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: "Manrope",
     fontWeight: "600",
-    marginBottom: 2,
+    marginBottom: 4,
   },
   titleRow: {
     flexDirection: "row",
