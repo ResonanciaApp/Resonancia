@@ -876,9 +876,9 @@ const styles = StyleSheet.create({
   sectionTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.5 },
   chipRow: { flexDirection: "row", gap: 8, alignItems: "center" },
   specialtyChip: {
-    borderRadius: 20,
-    paddingHorizontal: 14,
-    height: 34,
+    borderRadius: 999,
+    paddingHorizontal: 13,
+    height: 31,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.07)",
     alignItems: "center",
