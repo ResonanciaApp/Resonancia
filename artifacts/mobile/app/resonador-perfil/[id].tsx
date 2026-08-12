@@ -368,9 +368,9 @@ export default function ResonadorPerfilScreen() {
               </View>
               <Text style={styles.agendaAvailText}>Disponible para sesiones</Text>
               <LinearGradient
-                colors={["#FFE8A3", "#E1B94F"]}
+                colors={["#FFD88A", "#D4A017"]}
                 start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
+                end={{ x: 1, y: 0 }}
                 style={styles.agendaBtn}
               >
                 <Text style={styles.agendaBtnText}>Agenda online</Text>
