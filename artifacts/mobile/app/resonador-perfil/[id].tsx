@@ -17,7 +17,6 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import MaskedView from "@react-native-masked-view/masked-view";
 import { DrawerStats } from "@/components/DrawerStats";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 
@@ -359,31 +358,6 @@ export default function ResonadorPerfilScreen() {
 
         {/* ── Sección Resonador ── */}
         <View style={[styles.resonadorSection, { marginHorizontal: H_PAD, marginTop: -18 }]}>
-
-          {/* ── Banner RESONADOR ── */}
-          <View style={styles.resonadorBannerOuter}>
-          <View style={styles.resonadorBanner}>
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(0,0,0,0.25)" }]} />
-            {/* Ícono circular izquierda */}
-            <View style={styles.bannerIconCircle}>
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.08)" }]} />
-              <Text style={styles.bannerIconText}>✦</Text>
-            </View>
-
-            {/* Texto */}
-            <View style={styles.bannerTextWrap}>
-              <MaskedView
-                maskElement={<Text style={styles.bannerTitle}>RESONADOR</Text>}
-              >
-                <LinearGradient colors={[GOLD, "#F9F9F9"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-                  <Text style={[styles.bannerTitle, { opacity: 0 }]}>RESONADOR</Text>
-                </LinearGradient>
-              </MaskedView>
-              <Text style={styles.bannerSubtipo}>{resonador.subtipo}</Text>
-              <Text style={styles.bannerVerified}>Verificado por Resonancia</Text>
-            </View>
-          </View>
-          </View>
 
           {/* Me especializo en */}
           <View style={styles.sectionBlock}>
@@ -826,60 +800,6 @@ const styles = StyleSheet.create({
   },
 
   /* Banner */
-  resonadorBannerOuter: {
-    borderRadius: 14,
-    padding: 1,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: -1 },
-    shadowOpacity: 0.25,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  resonadorBanner: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 13,
-    overflow: "hidden",
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    gap: 14,
-  },
-  bannerIconCircle: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.25)",
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-    flexShrink: 0,
-  },
-  bannerIconText: { fontFamily: "Manrope", fontSize: 18, color: GOLD, fontWeight: "800" },
-  bannerTextWrap: { flex: 1, gap: 1 },
-  bannerTitle: {
-    fontFamily: "Manrope",
-    fontSize: 14,
-    fontWeight: "800",
-    letterSpacing: 0.6,
-    color: GOLD,
-  },
-  bannerSubtipo: {
-    fontFamily: "Manrope",
-    fontSize: 12,
-    fontWeight: "600",
-    color: "rgba(255,255,255,0.85)",
-    marginTop: 1,
-  },
-  bannerVerified: {
-    fontFamily: "Manrope",
-    fontSize: 10,
-    color: "#F9F9F9",
-    marginTop: 2,
-    letterSpacing: 0.2,
-  },
 
   sectionBlock: { gap: 10 },
   sectionTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.5 },
