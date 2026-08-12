@@ -644,6 +644,8 @@ export default function ResonadorPerfilScreen() {
               marginHorizontal: H_PAD,
               borderRadius: 100,
               overflow: "hidden" as const,
+              borderWidth: 1.5,
+              borderColor: "rgba(249,249,249,0.5)",
               opacity: pressed ? 0.85 : 1,
             })}
           >
