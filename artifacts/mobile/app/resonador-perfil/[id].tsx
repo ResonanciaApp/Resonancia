@@ -873,7 +873,7 @@ const styles = StyleSheet.create({
   },
 
   sectionBlock: { gap: 10 },
-  sectionTitle: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.5 },
+  sectionTitle: { fontFamily: "Manrope", fontSize: 15, fontWeight: "700", color: "#FAF0EE", letterSpacing: 0.5 },
   chipRow: { flexDirection: "row", gap: 8, alignItems: "center" },
   specialtyChip: {
     borderRadius: 20,
