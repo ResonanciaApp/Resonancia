@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   guideNameBody: {
-    color: "rgba(244,218,213,0.8)",
+    color: "#F4F4F4",
     fontSize: 12,
     fontFamily: "Manrope",
     fontWeight: "600",
