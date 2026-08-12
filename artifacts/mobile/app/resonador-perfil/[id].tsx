@@ -631,10 +631,6 @@ export default function ResonadorPerfilScreen() {
           </View>
         ) : null}
 
-        {/* ── Stats del usuario ── */}
-        <View style={{ marginHorizontal: H_PAD }}>
-          <DrawerStats />
-        </View>
       </Animated.ScrollView>
 
     </View>
