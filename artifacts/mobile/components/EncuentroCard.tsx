@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   },
   fechaText: {
     color: "#F4F4F4",
-    fontSize: 12,
+    fontSize: 13,
     fontFamily: "Manrope",
     fontWeight: "500",
   },
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   },
   titulo: {
     color: "#F4F4F4",
-    fontSize: 18,
+    fontSize: 19,
     fontFamily: "Manrope",
     fontWeight: "700",
     lineHeight: 24,
