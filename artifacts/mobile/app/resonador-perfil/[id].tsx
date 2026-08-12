@@ -175,6 +175,7 @@ export default function ResonadorPerfilScreen() {
         </Animated.View>
         <Animated.View pointerEvents="none" style={[styles.headerTitleAbs, { top: topPad + 8, opacity: headerBgOpacity }]}>
           <Text style={styles.headerNameTitle} numberOfLines={1}>{resonador.name}</Text>
+          <Text style={styles.headerVerificadoSub} numberOfLines={1}>Resonador Verificado</Text>
         </Animated.View>
         <GhostPill noBorder style={{ backgroundColor: "rgba(255,255,255,0.045)", borderWidth: 1, borderColor: "rgba(255,255,255,0.1)", marginTop: -2, transform: [{ translateY: 2 }] }}>
           <BackPill onPress={() => router.back()} size={27} iconOffsetX={-2} />
@@ -697,6 +698,14 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#F9F9F9",
     textAlign: "center",
+  },
+  headerVerificadoSub: {
+    fontFamily: "Manrope",
+    fontSize: 11,
+    fontWeight: "400",
+    color: "#E5D6FF",
+    textAlign: "center",
+    marginTop: 1,
   },
   headerTitleAbs: {
     position: "absolute",
