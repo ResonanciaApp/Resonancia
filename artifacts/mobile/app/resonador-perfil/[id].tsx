@@ -525,7 +525,16 @@ export default function ResonadorPerfilScreen() {
 
             <View style={styles.sessionList}>
               {sortedSessions.slice(0, sessionLimit).map((session) => (
-                <SessionCard key={session.id} session={session} horizontal showAuthorAvatar={false} />
+                <SessionCard
+                  key={session.id}
+                  session={session}
+                  horizontal
+                  showAuthor={false}
+                  showDuration={false}
+                  showMetaBelow
+                  thumbWidth={94}
+                  thumbRadius={21}
+                />
               ))}
             </View>
             {sortedSessions.length > sessionLimit && (

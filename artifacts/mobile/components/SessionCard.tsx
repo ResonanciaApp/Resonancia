@@ -36,6 +36,8 @@ type Props = {
   thumbRadius?: number;
   showDuration?: boolean;
   showAuthorAvatar?: boolean;
+  showAuthor?: boolean;
+  showMetaBelow?: boolean;
   pinned?: boolean;
   style?: StyleProp<ViewStyle>;
   /** Overrides the default tap behavior (navigate to /session/[id]) — e.g. play immediately in place */
@@ -79,7 +81,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, pinned = false, style, overridePress, playing = false }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, pinned = false, style, overridePress, playing = false }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -99,6 +101,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
   const authorObj = session.guideId ? getGuide(session.guideId) : getArtist(session.artistId);
   const authorName  = authorObj.name;
   const authorPhoto = authorObj.photo;
+  const categoryLabel = CATEGORIES.find(c => c.id === session.categoryId)?.title ?? "";
 
   if (horizontal) {
     return (
@@ -128,7 +131,12 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
             </Text>
             {pinned && <Feather name="bookmark" size={12} color="#F9F9F9" />}
           </View>
-          {!!authorName && (
+          {showMetaBelow && (
+            <Text style={styles.hMetaBelow} numberOfLines={1}>
+              {[session.durationLabel, categoryLabel].filter(Boolean).join(" · ")}
+            </Text>
+          )}
+          {showAuthor && !!authorName && (
             <View style={styles.hAuthorRow}>
               {showAuthorAvatar && (
                 <Image source={authorPhoto} style={styles.hAuthorAvatar} contentFit="cover" />
@@ -271,6 +279,13 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.85)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
+  },
+  hMetaBelow: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "400",
+    color: "rgba(249,249,249,0.55)",
+    marginTop: 4,
   },
   hAuthorRow: {
     flexDirection: "row",
