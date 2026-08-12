@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import type { Encuentro } from "@/data/encuentros";
 import { formatearFecha } from "@/data/encuentros";
 
@@ -79,7 +80,12 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
           onPress={onCalendarPress}
           style={({ pressed }) => [styles.calBtn, { opacity: pressed ? 0.8 : 1 }]}
         >
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#7354A0" }]} />
+          <LinearGradient
+            colors={["#8584D1", "#5C5BA5"]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={StyleSheet.absoluteFill}
+          />
           <Text style={styles.calBtnText}>Añadir a mi calendario</Text>
           <Feather name="calendar" size={16} color="#F9F9F9" style={{ marginLeft: 8 }} />
         </Pressable>
