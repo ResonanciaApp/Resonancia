@@ -886,7 +886,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "700",
-    color: "#060A0F",
+    color: "#FFFFFF",
   },
   agendaTagline: {
     fontFamily: "Manrope",
