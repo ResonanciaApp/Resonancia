@@ -1762,6 +1762,12 @@ export function BibliotecaScreen({
       <View
         style={[styles.stickyHeader, {
           paddingTop: topPad - 23,
+          backgroundColor: sceneTheme.solid,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.12,
+          shadowRadius: 8,
+          elevation: 4,
         }]}
       >
         {/* Fila 2: chips de tab (animados) */}
@@ -1776,7 +1782,7 @@ export function BibliotecaScreen({
           />
         </View>
 
-        <Animated.View collapsable={false} style={[styles.stickyHeaderBorder, { opacity: headerBorderAnim }]} />
+        <View collapsable={false} style={styles.stickyHeaderBorder} />
       </View>
 
       {/* ── CONTENIDO ────────────────────────────────────────────────────── */}
@@ -1937,7 +1943,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     height: 1,
-    backgroundColor: "rgba(255,255,255,0.035)",
+    backgroundColor: "rgba(255,255,255,0.1)",
   },
   stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.025)", marginTop: 10, marginHorizontal: -15 },
   headerRow: {
@@ -2029,6 +2035,7 @@ const styles = StyleSheet.create({
   sortTriggerRow: {
     flexDirection: "row",
     justifyContent: "flex-start",
+    marginTop: -10,
     paddingHorizontal: H_PAD,
     marginTop: -10,
     marginBottom: -8,
