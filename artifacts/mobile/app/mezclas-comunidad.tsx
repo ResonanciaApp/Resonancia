@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
   /* ── Cabecera desplazable ── */
   scrollHeader: { paddingHorizontal: H_PAD, paddingBottom: 8 },
   titleRow: { flexDirection: "row", alignItems: "flex-end" },
-  creaBtn: { paddingHorizontal: 18, paddingVertical: 8, borderRadius: 999 },
+  creaBtn: { paddingHorizontal: 18, paddingVertical: 8, borderRadius: 999, borderWidth: 1.5, borderColor: "rgba(249,249,249,0.5)" },
   creaBtnText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", color: "#F9F9F9", letterSpacing: 0.4 },
 
   /* ── Profile card ── */

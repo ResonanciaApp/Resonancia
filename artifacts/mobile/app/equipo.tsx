@@ -357,6 +357,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 8,
     borderRadius: 999,
+    borderWidth: 1.5,
+    borderColor: "rgba(249,249,249,0.5)",
   },
   uneteBtnText: {
     fontFamily: "Manrope",
