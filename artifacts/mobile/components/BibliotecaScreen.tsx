@@ -1776,7 +1776,11 @@ export function BibliotecaScreen({
           />
         </View>
 
-        <View collapsable={false} style={styles.stickyHeaderBorder} />
+        <LinearGradient
+          colors={["rgba(0,0,0,0.28)", "rgba(0,0,0,0)"]}
+          style={styles.stickyHeaderShadow}
+          pointerEvents="none"
+        />
       </View>
 
       {/* ── CONTENIDO ────────────────────────────────────────────────────── */}
@@ -1931,18 +1935,12 @@ const styles = StyleSheet.create({
   stickyHeader: {
     zIndex: 10,
   },
-  stickyHeaderBorder: {
+  stickyHeaderShadow: {
     position: "absolute",
     left: 0,
     right: 0,
-    bottom: 0,
-    height: 1,
-    backgroundColor: "rgba(255,255,255,0.1)",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 3,
+    top: "100%",
+    height: 12,
   },
   stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.025)", marginTop: 10, marginHorizontal: -15 },
   headerRow: {
