@@ -30,40 +30,6 @@ import { useMixerPanel } from "@/context/MixerPanelContext";
 const { width } = Dimensions.get("window");
 const H_PAD = 15;
 
-function brightenHex(hex: string, amount: number): string {
-  const clean = hex.replace("#", "");
-  const r = parseInt(clean.slice(0, 2), 16) / 255;
-  const g = parseInt(clean.slice(2, 4), 16) / 255;
-  const b = parseInt(clean.slice(4, 6), 16) / 255;
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  let h = 0, s = 0;
-  const l = (max + min) / 2;
-  if (max !== min) {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
-      case g: h = ((b - r) / d + 2) / 6; break;
-      case b: h = ((r - g) / d + 4) / 6; break;
-    }
-  }
-  const newL = Math.min(1, l + amount / 100);
-  const hue2rgb = (p: number, q: number, t: number) => {
-    let tt = t; if (tt < 0) tt += 1; if (tt > 1) tt -= 1;
-    if (tt < 1 / 6) return p + (q - p) * 6 * tt;
-    if (tt < 1 / 2) return q;
-    if (tt < 2 / 3) return p + (q - p) * (2 / 3 - tt) * 6;
-    return p;
-  };
-  let rr: number, gg: number, bb: number;
-  if (s === 0) { rr = gg = bb = newL; } else {
-    const q2 = newL < 0.5 ? newL * (1 + s) : newL + s - newL * s;
-    const p2 = 2 * newL - q2;
-    rr = hue2rgb(p2, q2, h + 1 / 3); gg = hue2rgb(p2, q2, h); bb = hue2rgb(p2, q2, h - 1 / 3);
-  }
-  const toHex = (x: number) => Math.round(x * 255).toString(16).padStart(2, "0");
-  return `#${toHex(rr)}${toHex(gg)}${toHex(bb)}`;
-}
 const GOLD = "#F9F9F9";
 const TEXT = "#FBFBFB";
 const MUTED = "#c2c2c2";
@@ -234,23 +200,20 @@ export default function MezclasComunidadScreen() {
               <Text style={[styles.profileTitle, { transform: [{ translateY: 4 }] }]}>Creaciones</Text>
               <Text style={[styles.profileDesc,  { transform: [{ translateY: 4 }] }]}>Las mezclas de la comunidad</Text>
             </View>
-            <LinearGradient
-              colors={[
-                brightenHex(theme.gradient[0] as string, 62),
-                brightenHex(theme.gradient[0] as string, 18),
-              ]}
-              start={{ x: 0.5, y: 0 }}
-              end={{ x: 0.5, y: 1 }}
-              style={[styles.creaBorder, { transform: [{ translateY: 27 }] }]}
+            <Pressable
+              hitSlop={10}
+              onPress={() => { openMixer(); router.back(); }}
+              style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, transform: [{ translateY: 27 }] })}
             >
-              <Pressable
-                hitSlop={10}
-                onPress={() => { openMixer(); router.back(); }}
-                style={[styles.creaBtn, { backgroundColor: theme.gradient[0] as string }]}
+              <LinearGradient
+                colors={["#8260B5", "#5B427F"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.creaBtn}
               >
                 <Text style={styles.creaBtnText}>Crea</Text>
-              </Pressable>
-            </LinearGradient>
+              </LinearGradient>
+            </Pressable>
           </View>
         </View>
 
@@ -353,7 +316,6 @@ const styles = StyleSheet.create({
   /* ── Cabecera desplazable ── */
   scrollHeader: { paddingHorizontal: H_PAD, paddingBottom: 8 },
   titleRow: { flexDirection: "row", alignItems: "flex-end" },
-  creaBorder: { borderRadius: 999, padding: 2, alignSelf: "center" },
   creaBtn: { paddingHorizontal: 18, paddingVertical: 8, borderRadius: 999 },
   creaBtnText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", color: "#F9F9F9", letterSpacing: 0.4 },
 
