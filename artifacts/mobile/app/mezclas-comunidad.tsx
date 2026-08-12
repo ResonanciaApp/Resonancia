@@ -200,20 +200,6 @@ export default function MezclasComunidadScreen() {
               <Text style={[styles.profileTitle, { transform: [{ translateY: 4 }] }]}>Creaciones</Text>
               <Text style={[styles.profileDesc,  { transform: [{ translateY: 4 }] }]}>Las mezclas de la comunidad</Text>
             </View>
-            <Pressable
-              hitSlop={10}
-              onPress={() => { openMixer(); router.back(); }}
-              style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, alignSelf: "center" as const, transform: [{ translateY: 27 }] })}
-            >
-              <LinearGradient
-                colors={["#8260B5", "#5B427F"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.creaBtn}
-              >
-                <Text style={styles.creaBtnText}>Crea</Text>
-              </LinearGradient>
-            </Pressable>
           </View>
         </View>
 
@@ -316,8 +302,6 @@ const styles = StyleSheet.create({
   /* ── Cabecera desplazable ── */
   scrollHeader: { paddingHorizontal: H_PAD, paddingBottom: 8 },
   titleRow: { flexDirection: "row", alignItems: "flex-end" },
-  creaBtn: { paddingHorizontal: 18, paddingVertical: 8, borderRadius: 999, borderWidth: 1.5, borderColor: "rgba(249,249,249,0.5)" },
-  creaBtnText: { fontFamily: "Manrope", fontSize: 13, fontWeight: "700", color: "#F9F9F9", letterSpacing: 0.4 },
 
   /* ── Profile card ── */
   profileTitle: { fontFamily: "Manrope", fontSize: 27, fontWeight: "700", color: "#F9F9F9", letterSpacing: 0.5 },
