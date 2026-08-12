@@ -168,12 +168,10 @@ export default function ResonadorPerfilScreen() {
         ]}
       >
         {/* Fondo degradado — aparece al scrollear */}
-        <Animated.View style={[StyleSheet.absoluteFill, { bottom: -25, opacity: headerBgOpacity }]} pointerEvents="none">
-          <LinearGradient
-            colors={[bgColors[0] as string, bgColors[1] as string]}
-            style={StyleSheet.absoluteFill}
-          />
-        </Animated.View>
+        <Animated.View
+          style={[StyleSheet.absoluteFill, { bottom: -25, backgroundColor: "rgba(255,255,255,0.045)", opacity: headerBgOpacity }]}
+          pointerEvents="none"
+        />
         <View pointerEvents="none" style={[styles.headerTitleAbs, { top: topPad - 2 }]}>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>Perfil</Text>
         </View>
