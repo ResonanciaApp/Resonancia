@@ -166,10 +166,9 @@ export default function ResonadorPerfilScreen() {
         ]}
       >
         {/* Fondo degradado — aparece al scrollear */}
-        <Animated.View style={[StyleSheet.absoluteFill, { opacity: headerBgOpacity }]} pointerEvents="none">
+        <Animated.View style={[StyleSheet.absoluteFill, { bottom: -25, opacity: headerBgOpacity }]} pointerEvents="none">
           <LinearGradient
-            colors={[bgColors[0] as string, bgColors[1] as string, `${bgColors[0]}00`]}
-            locations={[0, 0.7, 1]}
+            colors={[bgColors[0] as string, bgColors[1] as string]}
             style={StyleSheet.absoluteFill}
           />
         </Animated.View>
