@@ -71,7 +71,7 @@ export function AlmaCommunitySection() {
           { opacity: pressed ? 0.75 : 1 },
         ]}
       >
-        <Text style={[styles.composeChipText, { color: colors.primary }]}>Publicar</Text>
+        <Text style={[styles.composeChipText, { color: "#0d0c26" }]}>Publicar</Text>
       </Pressable>
 
       {/* Messages preview */}
@@ -157,8 +157,7 @@ const styles = StyleSheet.create({
   composeTap: {
     alignSelf: "center",
     borderRadius: 15,
-    borderWidth: 1,
-    borderColor: "rgba(212,175,55,0.35)",
+    backgroundColor: "#F9F9F9",
     paddingHorizontal: 28,
     paddingVertical: 9,
     marginBottom: 16,
