@@ -79,7 +79,7 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
           onPress={onCalendarPress}
           style={({ pressed }) => [styles.calBtn, { opacity: pressed ? 0.8 : 1 }]}
         >
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#5B427F" }]} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#7354A0" }]} />
           <Text style={styles.calBtnText}>Añadir a mi calendario</Text>
           <Feather name="calendar" size={16} color="#F9F9F9" style={{ marginLeft: 8 }} />
         </Pressable>
@@ -225,6 +225,8 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     marginTop: 4,
     overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#E5D6FF",
   },
   calBtnText: {
     color: "#F9F9F9",
