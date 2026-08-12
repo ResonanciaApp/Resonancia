@@ -378,7 +378,7 @@ export default function ResonadorPerfilScreen() {
         )}
 
         {/* ── Sección Resonador ── */}
-        <View style={[styles.resonadorSection, { marginHorizontal: H_PAD, marginTop: 7 }]}>
+        <View style={[styles.resonadorSection, { marginHorizontal: H_PAD, marginTop: 27 }]}>
 
           {/* Me especializo en */}
           <View style={styles.sectionBlock}>
@@ -812,6 +812,8 @@ const styles = StyleSheet.create({
     height: 34,
     overflow: "hidden",
     backgroundColor: "rgba(255,255,255,0.07)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
   actionPillActive: { backgroundColor: "transparent" },
   actionPillSent: { backgroundColor: "rgba(255,255,255,0.04)" },
