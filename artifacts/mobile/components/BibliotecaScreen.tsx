@@ -1782,7 +1782,7 @@ export function BibliotecaScreen({
       {/* ── CONTENIDO ────────────────────────────────────────────────────── */}
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 33 }}
+        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 13 }}
         showsVerticalScrollIndicator={false}
         onScroll={handleHeaderScroll}
         scrollEventThrottle={16}
@@ -2034,7 +2034,6 @@ const styles = StyleSheet.create({
   sortTriggerRow: {
     flexDirection: "row",
     justifyContent: "flex-start",
-    marginTop: -20,
     paddingHorizontal: H_PAD,
     marginTop: -10,
     marginBottom: -8,
