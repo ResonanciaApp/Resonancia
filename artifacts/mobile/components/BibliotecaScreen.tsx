@@ -1782,7 +1782,7 @@ export function BibliotecaScreen({
       {/* ── CONTENIDO ────────────────────────────────────────────────────── */}
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 13 }}
+        contentContainerStyle={{ paddingBottom: 140 + bottomPad, paddingTop: 23 }}
         showsVerticalScrollIndicator={false}
         onScroll={handleHeaderScroll}
         scrollEventThrottle={16}
