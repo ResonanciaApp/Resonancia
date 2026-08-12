@@ -80,14 +80,9 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
           onPress={onCalendarPress}
           style={({ pressed }) => [styles.calBtn, { opacity: pressed ? 0.8 : 1 }]}
         >
-          <LinearGradient
-            colors={["#FFFFFF", "#F5F5F5"]}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
-            style={StyleSheet.absoluteFill}
-          />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: "#5B427F" }]} />
           <Text style={styles.calBtnText}>Añadir a mi calendario</Text>
-          <Feather name="calendar" size={16} color="#0D0A1E" style={{ marginLeft: 8 }} />
+          <Feather name="calendar" size={16} color="#F9F9F9" style={{ marginLeft: 8 }} />
         </Pressable>
       </View>
     </View>
@@ -233,7 +228,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   calBtnText: {
-    color: "#0D0A1E",
+    color: "#F9F9F9",
     fontSize: 15,
     fontFamily: "Manrope",
     fontWeight: "700",
