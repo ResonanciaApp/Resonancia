@@ -630,13 +630,6 @@ export default function ResonadorPerfilScreen() {
           </View>
         )}
 
-        {/* Quote */}
-        {resonador.quote ? (
-          <View style={[styles.quoteWrap, { marginHorizontal: H_PAD, marginTop: 1 }]}>
-            <Text style={styles.quoteText}>"{resonador.quote}"</Text>
-          </View>
-        ) : null}
-
       </Animated.ScrollView>
 
     </View>
@@ -1036,15 +1029,4 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
 
-  /* ── Quote ── */
-  quoteWrap: { alignItems: "center", paddingVertical: 8, paddingHorizontal: 8 },
-  quoteText: {
-    fontFamily: "Manrope",
-    fontSize: 18,
-    fontStyle: "italic",
-    color: "#F6F6F6",
-    textAlign: "center",
-    lineHeight: 28,
-    letterSpacing: 0.2,
-  },
 });
