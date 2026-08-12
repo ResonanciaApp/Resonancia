@@ -174,33 +174,35 @@ export default function ResonadorPerfilScreen() {
             style={StyleSheet.absoluteFill}
           />
         </Animated.View>
-        <View pointerEvents="none" style={[styles.headerTitleAbs, { top: topPad - 2 }]}>
+        <Animated.View pointerEvents="none" style={[styles.headerTitleAbs, { top: topPad - 2, opacity: headerBgOpacity }]}>
           <Text style={styles.headerNameTitle} numberOfLines={1}>{resonador.name}</Text>
-        </View>
+        </Animated.View>
         <GhostPill noBorder style={{ backgroundColor: "rgba(255,255,255,0.045)", marginTop: -2, transform: [{ translateY: 2 }] }}>
           <BackPill onPress={() => router.back()} size={27} iconOffsetX={-2} />
         </GhostPill>
-        {isOwn ? (
-          <Pressable
-            onPress={() => router.push(`/resonador-editar/${resonador.id}` as never)}
-            style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}
-          >
-            <View style={styles.apoyaloChip}>
-              <Text style={styles.apoyaloChipText}>Editar</Text>
-            </View>
-          </Pressable>
-        ) : resonador.donationUrl ? (
-          <Pressable
-            onPress={() => Linking.openURL(resonador.donationUrl!)}
-            style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}
-          >
-            <View style={styles.apoyaloChip}>
-              <Text style={styles.apoyaloChipText}>Apóyalo</Text>
-            </View>
-          </Pressable>
-        ) : (
-          <View style={{ width: 38 }} />
-        )}
+        <Animated.View style={{ opacity: headerBgOpacity }}>
+          {isOwn ? (
+            <Pressable
+              onPress={() => router.push(`/resonador-editar/${resonador.id}` as never)}
+              style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}
+            >
+              <View style={styles.apoyaloChip}>
+                <Text style={styles.apoyaloChipText}>Editar</Text>
+              </View>
+            </Pressable>
+          ) : resonador.donationUrl ? (
+            <Pressable
+              onPress={() => Linking.openURL(resonador.donationUrl!)}
+              style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}
+            >
+              <View style={styles.apoyaloChip}>
+                <Text style={styles.apoyaloChipText}>Apóyalo</Text>
+              </View>
+            </Pressable>
+          ) : (
+            <View style={{ width: 38 }} />
+          )}
+        </Animated.View>
       </View>
 
       <Animated.ScrollView
