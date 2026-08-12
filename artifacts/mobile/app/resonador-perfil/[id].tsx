@@ -496,7 +496,7 @@ export default function ResonadorPerfilScreen() {
 
         {/* ── SECCIÓN 1: Mi obra en Resonancia ── */}
         {sessions.length > 0 && (
-          <View style={[styles.card, { marginHorizontal: H_PAD, backgroundColor: "transparent", paddingHorizontal: 0, marginTop: -9 }]}>
+          <View style={[styles.card, { marginHorizontal: H_PAD, backgroundColor: "transparent", paddingHorizontal: 0, marginTop: 31 }]}>
             <View style={[styles.cardHeader, { paddingHorizontal: 0 }]}>
               <Text style={styles.cardTitle}>Mi obra en Resonancia</Text>
               <Pressable
