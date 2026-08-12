@@ -175,12 +175,21 @@ export default function ResonadorPerfilScreen() {
           />
         </Animated.View>
         <View pointerEvents="none" style={[styles.headerTitleAbs, { top: topPad - 2 }]}>
-          <Text style={[styles.headerTitle, { color: colors.foreground }]}>Perfil</Text>
+          <Text style={styles.headerNameTitle} numberOfLines={1}>{resonador.name}</Text>
         </View>
         <GhostPill noBorder style={{ backgroundColor: "rgba(255,255,255,0.045)", marginTop: -2, transform: [{ translateY: 2 }] }}>
           <BackPill onPress={() => router.back()} size={27} iconOffsetX={-2} />
         </GhostPill>
-        {resonador.donationUrl && !isOwn ? (
+        {isOwn ? (
+          <Pressable
+            onPress={() => router.push(`/resonador-editar/${resonador.id}` as never)}
+            style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}
+          >
+            <View style={styles.apoyaloChip}>
+              <Text style={styles.apoyaloChipText}>Editar</Text>
+            </View>
+          </Pressable>
+        ) : resonador.donationUrl ? (
           <Pressable
             onPress={() => Linking.openURL(resonador.donationUrl!)}
             style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}
@@ -652,6 +661,13 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   headerTitle: { fontFamily: "Manrope", fontSize: 21, fontWeight: "700" },
+  headerNameTitle: {
+    fontFamily: "Manrope",
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#F9F9F9",
+    textAlign: "center",
+  },
   headerTitleAbs: {
     position: "absolute",
     left: 0,
