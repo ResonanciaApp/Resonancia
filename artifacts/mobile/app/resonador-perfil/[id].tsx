@@ -743,7 +743,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.045)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.1)",
-    marginTop: 2,
+    marginTop: 6,
   },
   subtipoText: {
     fontFamily: "Manrope",
