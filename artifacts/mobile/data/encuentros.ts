@@ -10,10 +10,12 @@ export type GuiaEncuentro = {
   encuentros: number;
   avatarColor: string;
   iniciales: string;
+  foto?: number;
 };
 
 export type Encuentro = {
   id: string;
+  heroImagen?: number;
   titulo: string;
   descripcion: string;
   fechaISO: string;
@@ -27,6 +29,7 @@ export type Encuentro = {
 export const ENCUENTROS: Encuentro[] = [
   {
     id: "enc-1",
+    heroImagen: require("@/assets/images/encuentros/enc-1.jpg"),
     titulo: "Cultivar la aceptación momento a momento",
     descripcion:
       "Cerramos juntos el reto Explorando tu universo interior con una sesión en vivo para integrar todo lo aprendido y abrir un espacio de conversación.",
@@ -38,6 +41,7 @@ export const ENCUENTROS: Encuentro[] = [
       encuentros: 26,
       avatarColor: "#7C5CBF",
       iniciales: "SR",
+      foto: require("@/assets/images/avatar-fundador.png"),
     },
     participantes: [
       { id: "p1", avatarColor: "#7C5CBF", iniciales: "SR" },
@@ -48,6 +52,7 @@ export const ENCUENTROS: Encuentro[] = [
   },
   {
     id: "enc-2",
+    heroImagen: require("@/assets/images/encuentros/enc-2.jpg"),
     titulo: "Doorway to deep sleep — respiración y relajación",
     descripcion:
       "Técnicas de respiración consciente para entrar en un estado de relajación profunda. Trae tu cojín y una manta.",
@@ -59,6 +64,7 @@ export const ENCUENTROS: Encuentro[] = [
       encuentros: 14,
       avatarColor: "#4A9E6F",
       iniciales: "ML",
+      foto: require("@/assets/images/avatar-fundador.png"),
     },
     participantes: [
       { id: "p1", avatarColor: "#4A9E6F", iniciales: "CR" },
@@ -68,6 +74,7 @@ export const ENCUENTROS: Encuentro[] = [
   },
   {
     id: "enc-3",
+    heroImagen: require("@/assets/images/encuentros/enc-3.jpg"),
     titulo: "Sonidos ancestrales en vivo — cuencos tibetanos",
     descripcion:
       "Un baño de sonido guiado con cuencos tibetanos, gongs y campanillas para limpiar el espacio interno y conectar con el presente.",
@@ -79,6 +86,7 @@ export const ENCUENTROS: Encuentro[] = [
       encuentros: 42,
       avatarColor: "#C47B2B",
       iniciales: "CC",
+      foto: require("@/assets/images/avatar-fundador.png"),
     },
     participantes: [
       { id: "p1", avatarColor: "#7C5CBF", iniciales: "JM" },
@@ -89,6 +97,7 @@ export const ENCUENTROS: Encuentro[] = [
   },
   {
     id: "enc-4",
+    heroImagen: require("@/assets/images/encuentros/enc-4.jpg"),
     titulo: "Respiración consciente para el descanso",
     descripcion:
       "Práctica guiada de respiración 4-7-8 y coherencia cardíaca para preparar el cuerpo y la mente antes de dormir.",
@@ -100,6 +109,7 @@ export const ENCUENTROS: Encuentro[] = [
       encuentros: 18,
       avatarColor: "#5C7BBF",
       iniciales: "SR",
+      foto: require("@/assets/images/avatar-fundador.png"),
     },
     participantes: [
       { id: "p1", avatarColor: "#7C5CBF", iniciales: "AM" },

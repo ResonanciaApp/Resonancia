@@ -74,6 +74,9 @@ export default function EncuentrosScreen() {
   const ListHeader = useCallback(
     () => (
       <View>
+        {/* Título del carrusel */}
+        <Text style={styles.carouselTitle}>Encuentros Resonadores</Text>
+
         {/* Carrusel de encuentros — FlatList horizontal propio */}
         <FlatList
           data={ENCUENTROS}
@@ -208,10 +211,18 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: -9,
   },
+  carouselTitle: {
+    fontFamily: "Manrope",
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#F4F4F4",
+    paddingHorizontal: CARD_H_PADDING,
+    marginTop: 40,
+  },
   carouselContent: {
     paddingHorizontal: CARD_H_PADDING,
     gap: CARD_GAP,
-    paddingTop: 40,
+    paddingTop: 24,
   },
   dots: {
     marginTop: 25,

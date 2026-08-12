@@ -6,6 +6,7 @@ import {
   View,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import type { Encuentro } from "@/data/encuentros";
 import { formatearFecha } from "@/data/encuentros";
@@ -22,13 +23,18 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
 
   return (
     <View style={styles.card}>
-      {/* Hero — fondo crema + avatar del guía */}
+      {/* Hero — imagen del tema + avatar del guía */}
       <Pressable onPress={onPress} style={styles.heroWrap}>
+        {encuentro.heroImagen ? (
+          <Image source={encuentro.heroImagen} style={StyleSheet.absoluteFill} contentFit="cover" />
+        ) : null}
         <View style={[styles.heroAvatar, { backgroundColor: encuentro.guia.avatarColor }]}>
-          <Text style={styles.heroAvatarText}>{encuentro.guia.iniciales}</Text>
+          {encuentro.guia.foto ? (
+            <Image source={encuentro.guia.foto} style={styles.heroAvatarImg} contentFit="cover" />
+          ) : (
+            <Text style={styles.heroAvatarText}>{encuentro.guia.iniciales}</Text>
+          )}
         </View>
-        <Text style={styles.heroGuideName} numberOfLines={1}>{encuentro.guia.nombre}</Text>
-        <Text style={styles.heroGuideCount}>{encuentro.guia.encuentros} encuentros</Text>
       </Pressable>
 
       {/* Contenido */}
@@ -58,7 +64,8 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
           </View>
         </View>
 
-        {/* Título */}
+        {/* Guía + Título */}
+        <Text style={styles.guideNameBody} numberOfLines={1}>{encuentro.guia.nombre}</Text>
         <Text style={styles.titulo} numberOfLines={2}>{encuentro.titulo}</Text>
 
         {/* Descripción */}
@@ -94,10 +101,10 @@ const styles = StyleSheet.create({
   heroWrap: {
     width: "100%",
     height: 200,
-    backgroundColor: "#EDE8DF",
+    backgroundColor: "rgba(255,255,255,0.05)",
     alignItems: "center",
     justifyContent: "center",
-    gap: 10,
+    overflow: "hidden",
   },
   heroAvatar: {
     width: 80,
@@ -105,6 +112,13 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.85)",
+  },
+  heroAvatarImg: {
+    width: "100%",
+    height: "100%",
   },
   heroAvatarText: {
     color: "#fff",
@@ -112,19 +126,12 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontWeight: "700",
   },
-  heroGuideName: {
-    color: "#1A1025",
-    fontSize: 15,
-    fontFamily: "Manrope",
-    fontWeight: "700",
-    textAlign: "center",
-    paddingHorizontal: 16,
-  },
-  heroGuideCount: {
-    color: "rgba(26,16,37,0.5)",
+  guideNameBody: {
+    color: "rgba(244,218,213,0.8)",
     fontSize: 12,
     fontFamily: "Manrope",
-    fontWeight: "500",
+    fontWeight: "600",
+    marginBottom: -6,
   },
   body: {
     padding: 16,
