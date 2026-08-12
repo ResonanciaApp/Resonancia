@@ -246,6 +246,7 @@ export default function ResonadorPerfilScreen() {
         <View style={[styles.profileCard, { marginTop: -1 }]}>
 
           <Text style={[styles.userName, { color: colors.foreground }]}>{resonador.name}</Text>
+          <Text style={styles.resonadorVerificadoLabel}>Resonador Verificado</Text>
 
           {/* Subtipo pill */}
           <View style={styles.subtipoPill}>
@@ -752,6 +753,14 @@ const styles = StyleSheet.create({
   },
   certBadgeStar: { fontFamily: "Manrope", fontSize: 10, color: "#1B060F", fontWeight: "800" },
   userName: { fontFamily: "Manrope", fontSize: 20, fontWeight: "700", textAlign: "center" },
+  resonadorVerificadoLabel: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "400",
+    color: "#F9F9F9",
+    textAlign: "center",
+    marginTop: -2,
+  },
 
   subtipoPill: {
     borderRadius: 20,
