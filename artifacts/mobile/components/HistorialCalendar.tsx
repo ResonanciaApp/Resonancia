@@ -193,7 +193,7 @@ export function HistorialCalendar({ containerPadding = 0 }: { containerPadding?:
         <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Mi calendario</Text>
       </View>
 
-      <View style={[styles.calendarCard, { backgroundColor: "rgba(0,0,0,0.27)" }]}>
+      <View style={[styles.calendarCard, { backgroundColor: "rgba(0,0,0,0.27)" }, p ? { marginHorizontal: p } : undefined]}>
         <View style={styles.calendarNav}>
           <Pressable onPress={goPrevMonth} hitSlop={10} style={styles.navBtn}>
             <Feather name="chevron-left" size={18} color={colors.foreground} />
