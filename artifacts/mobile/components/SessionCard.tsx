@@ -38,6 +38,7 @@ type Props = {
   showAuthorAvatar?: boolean;
   showAuthor?: boolean;
   showMetaBelow?: boolean;
+  titleFontSize?: number;
   pinned?: boolean;
   style?: StyleProp<ViewStyle>;
   /** Overrides the default tap behavior (navigate to /session/[id]) — e.g. play immediately in place */
@@ -81,7 +82,7 @@ function LockStar() {
 }
 
 
-export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, pinned = false, style, overridePress, playing = false }: Props) {
+export function SessionCard({ session, width = 200, horizontal = false, tint, cardBg, noBorder, onLongPress, destRoute, thumbWidth = 129, thumbHeight = 94, thumbRadius = 8, showDuration = true, showAuthorAvatar = true, showAuthor = true, showMetaBelow = false, titleFontSize, pinned = false, style, overridePress, playing = false }: Props) {
   const tintOverlay =
     tint === "terracotta" ? "rgba(184,86,46,0.11)" : "transparent";
   const colors = useColors();
@@ -126,7 +127,7 @@ export function SessionCard({ session, width = 200, horizontal = false, tint, ca
         </View>
         <View style={styles.hContent}>
           <View style={styles.hTitleRow}>
-            <Text style={[styles.hTitle, { color: colors.foreground, flexShrink: 1 }]} numberOfLines={2}>
+            <Text style={[styles.hTitle, { color: colors.foreground, flexShrink: 1 }, titleFontSize ? { fontSize: titleFontSize } : undefined]} numberOfLines={2}>
               {session.title}
             </Text>
             {pinned && <Feather name="bookmark" size={12} color="#F9F9F9" />}
