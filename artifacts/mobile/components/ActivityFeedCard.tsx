@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, StyleSheet, Text, View } from "react-native";
+import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import { Image as ExpoImage } from "expo-image";
+import { router } from "expo-router";
 import { SESSIONS } from "@/data/sessions";
 import type { CommunityFeedEvent } from "@/lib/communityApi";
 
@@ -114,14 +115,19 @@ export function ActivityFeedCard({ event }: Props) {
         <ActionText event={event} />
       </View>
 
-      {/* Session thumbnail (only for session_play) */}
-      {thumb && (
-        <ExpoImage
-          source={thumb}
-          style={styles.thumb}
-          contentFit="cover"
-          cachePolicy="memory-disk"
-        />
+      {/* Session thumbnail — tappable, navega a la sesión */}
+      {thumb && event.payload.sessionId && (
+        <Pressable
+          onPress={() => router.push(`/session/${event.payload.sessionId}` as never)}
+          hitSlop={8}
+        >
+          <ExpoImage
+            source={thumb}
+            style={styles.thumb}
+            contentFit="cover"
+            cachePolicy="memory-disk"
+          />
+        </Pressable>
       )}
     </View>
   );
