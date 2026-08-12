@@ -217,6 +217,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   descripcion: {
+    marginTop: 15,
     color: "#F4F4F4",
     fontSize: 13,
     fontFamily: "Manrope",
@@ -229,7 +230,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 30,
     paddingVertical: 13,
-    marginTop: 4,
+    marginTop: 19,
     overflow: "hidden",
     borderWidth: 1.5,
     borderColor: "rgba(249,249,249,0.5)",
