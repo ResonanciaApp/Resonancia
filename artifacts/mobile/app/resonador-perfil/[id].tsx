@@ -252,7 +252,7 @@ export default function ResonadorPerfilScreen() {
             <Text style={styles.subtipoText}>{resonador.subtipo}</Text>
           </View>
 
-          <View style={styles.locationRow}>
+          <View style={[styles.locationRow, { marginTop: 4 }]}>
             <Feather name="map-pin" size={12} color={colors.mutedForeground} />
             <Text style={[styles.locationText, { color: colors.mutedForeground }]}>{locationStr}</Text>
           </View>
