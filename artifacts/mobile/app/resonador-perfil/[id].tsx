@@ -367,9 +367,14 @@ export default function ResonadorPerfilScreen() {
                 <Feather name="calendar" size={18} color="#BE9650" />
               </View>
               <Text style={styles.agendaAvailText}>Disponible para sesiones</Text>
-              <View style={styles.agendaBtn}>
+              <LinearGradient
+                colors={["#FFE8A3", "#E1B94F"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.agendaBtn}
+              >
                 <Text style={styles.agendaBtnText}>Agenda online</Text>
-              </View>
+              </LinearGradient>
             </View>
             {resonador.bookingTagline ? (
               <Text style={styles.agendaTagline}>{resonador.bookingTagline}</Text>
