@@ -70,9 +70,10 @@ export default function EncuentrosScreen() {
     setCalSheetEncuentro(enc);
   }
 
-  // ── Header component (carrusel + dots + mezclas + feed title/state) ──────
-  const ListHeader = useCallback(
-    () => (
+  // ── Header element (carrusel + dots + mezclas + feed title/state) ──────
+  // Nota: se pasa como ELEMENTO (no componente) para que el FlatList del
+  // carrusel no se re-monte cuando cambia activeIndex (perdía el scroll).
+  const listHeaderElement = (
       <View>
         {/* Título del carrusel */}
         <Text style={styles.carouselTitle}>Encuentros Resonadores</Text>
@@ -134,9 +135,6 @@ export default function EncuentrosScreen() {
           )}
         </View>
       </View>
-    ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeIndex, feedLoading, events.length],
   );
 
   const renderItem = useCallback(
@@ -169,7 +167,7 @@ export default function EncuentrosScreen() {
         keyExtractor={(item) => String(item.id)}
         renderItem={renderItem}
         ItemSeparatorComponent={ItemSeparator}
-        ListHeaderComponent={ListHeader}
+        ListHeaderComponent={listHeaderElement}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: tabBarHeight + 24 }}
         style={{ opacity: feedOpacity }}
