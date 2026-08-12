@@ -159,12 +159,11 @@ export default function SessionDetailScreen() {
     : sceneTheme.gradient;
   const catBg = { gradient: sessionGradient, solid: sceneTheme.solid };
   const stickyHeaderColor = sessionGradient[0];
-  const playBtnColors: [string, string, ...string[]] = sceneTheme.id === "indigo"
-    ? ["#F9F9F9", "#F9F9F9"]
-    : sceneTheme.id === "tibet"
-    ? ["#F9F9F9", "#F9F9F9"]
+  const isIndigoPlayBtn = sceneTheme.id === "indigo";
+  const playBtnColors: [string, string, ...string[]] = isIndigoPlayBtn
+    ? ["#8260B5", "#5B427F"]
     : ["#F9F9F9", "#F9F9F9"];
-  const playBtnTextColor = "#0d0c26";
+  const playBtnTextColor = isIndigoPlayBtn ? "#FFFFFF" : "#0d0c26";
   const shareBtnAccent = sceneTheme.id === "indigo" ? "#F9F9F9" : sceneTheme.id === "tibet" ? "#F9F9F9" : "#F9F9F9";
   const [localFav, setLocalFav] = useState<boolean | null>(null);
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
@@ -479,9 +478,10 @@ export default function SessionDetailScreen() {
                 style={({ pressed }) => [
                   styles.playBtn,
                   { flex: 1, overflow: "hidden", opacity: pressed ? 0.88 : 1 },
+                  isIndigoPlayBtn && { borderWidth: 1.5, borderColor: "rgba(249,249,249,0.5)" },
                 ]}
               >
-                <LinearGradient colors={playBtnColors} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+                <LinearGradient colors={playBtnColors} start={{ x: 0, y: 0 }} end={isIndigoPlayBtn ? { x: 1, y: 0 } : { x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                   <Svg width={18} height={18} viewBox="0 0 48 48">
                     <Path
