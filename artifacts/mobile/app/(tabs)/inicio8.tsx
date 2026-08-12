@@ -359,6 +359,8 @@ export default function HomeScreen2() {
   const { open: openDrawer } = useDrawer();
   const { theme: activeTheme, activeSceneId } = useSceneTheme();
   const cardBg = "rgba(255,255,255,0.05)";
+  // Solo tema Índigo: fondo púrpura translúcido para los 6 bloques de categoría
+  const catBlockBg = activeSceneId === "indigo" ? "rgba(130,96,181,0.045)" : cardBg;
   // Fade de 300ms entre degradados de fondo al cambiar de Escena (loto en Inicio):
   // se mantiene el degradado anterior debajo y el nuevo se desvanece encima, en vez
   // de saltar de golpe de un color a otro.
@@ -1306,7 +1308,7 @@ export default function HomeScreen2() {
                   ...corners[i],
                 }]}
               >
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: cardBg }]} />
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: catBlockBg }]} />
                 <View style={{ width: 26, alignItems: "center", justifyContent: "center" }}>
                   {c.icon(c.color)}
                 </View>
