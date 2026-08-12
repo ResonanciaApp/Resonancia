@@ -1762,12 +1762,6 @@ export function BibliotecaScreen({
       <View
         style={[styles.stickyHeader, {
           paddingTop: topPad - 23,
-          backgroundColor: sceneTheme.solid,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.12,
-          shadowRadius: 8,
-          elevation: 4,
         }]}
       >
         {/* Fila 2: chips de tab (animados) */}
@@ -1944,6 +1938,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     height: 1,
     backgroundColor: "rgba(255,255,255,0.1)",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 3,
   },
   stickyDivider: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.025)", marginTop: 10, marginHorizontal: -15 },
   headerRow: {
