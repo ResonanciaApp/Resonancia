@@ -32,6 +32,10 @@ export type Resonador = {
   followingCount?: number;
   certified?: boolean;
   servicesDescription?: string;
+  bookingUrl?: string;
+  bookingTagline?: string;
+  bookingPrice?: string;
+  bookingModality?: "online" | "presencial" | "ambas";
   phone?: string;
   email?: string;
   instagram?: string;
@@ -75,6 +79,10 @@ export const RESONADORES: Resonador[] = [
     followersCount: 1842,
     followingCount: 234,
     servicesDescription: "Ofrezco sesiones individuales y grupales de sonoterapia. Cada experiencia es diseñada para liberar bloqueos emocionales y restaurar el equilibrio energético a través de frecuencias específicas.",
+    bookingUrl: "https://calendly.com/lunacosmica",
+    bookingTagline: "Sesiones individuales de sonoterapia · 60 min",
+    bookingPrice: "USD 45",
+    bookingModality: "online",
     phone: "+54 11 4567-8901",
     email: "hola@lunacosmica.com",
     instagram: "https://instagram.com/lunacosmica",
@@ -105,6 +113,10 @@ export const RESONADORES: Resonador[] = [
     followersCount: 3210,
     followingCount: 187,
     servicesDescription: "Guío meditaciones personalizadas para individuos y empresas. También ofrezco retiros de silencio y talleres de mindfulness aplicado al estrés y la ansiedad.",
+    bookingUrl: "https://calendly.com/kaiamara",
+    bookingTagline: "Meditación personalizada individual y grupal · 50 min",
+    bookingPrice: "USD 35",
+    bookingModality: "ambas",
     phone: "+52 55 1234-5678",
     email: "kai@kaiamara.com",
     instagram: "https://instagram.com/kaiamara",
@@ -165,6 +177,10 @@ export const RESONADORES: Resonador[] = [
     followersCount: 2180,
     followingCount: 309,
     servicesDescription: "Realizo conciertos de cuencos y gongs en formato individual, grupal y ceremonial. Cada sesión es diseñada según la intención del grupo, desde la relajación profunda hasta la activación energética.",
+    bookingUrl: "https://calendly.com/arbolsagrado",
+    bookingTagline: "Conciertos de cuencos individuales y grupales · 75 min",
+    bookingPrice: "USD 60",
+    bookingModality: "presencial",
     instagram: "https://instagram.com/arbolsagrado",
     sessionIds: ["32", "33", "34", "35", "36", "37"],
     projects: [

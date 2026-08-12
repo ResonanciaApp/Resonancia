@@ -356,6 +356,27 @@ export default function ResonadorPerfilScreen() {
         </View>
 
 
+        {/* ── Bloque Agenda online ── */}
+        {resonador.bookingUrl && (
+          <Pressable
+            onPress={() => router.push(`/resonador-servicio/${resonador.id}` as never)}
+            style={({ pressed }) => [styles.agendaBlock, { marginHorizontal: H_PAD, opacity: pressed ? 0.82 : 1 }]}
+          >
+            <View style={styles.agendaTopRow}>
+              <View style={styles.agendaIconCircle}>
+                <Feather name="calendar" size={18} color="#BE9650" />
+              </View>
+              <Text style={styles.agendaAvailText}>Disponible para sesiones</Text>
+              <View style={styles.agendaBtn}>
+                <Text style={styles.agendaBtnText}>Agenda online</Text>
+              </View>
+            </View>
+            {resonador.bookingTagline ? (
+              <Text style={styles.agendaTagline}>{resonador.bookingTagline}</Text>
+            ) : null}
+          </Pressable>
+        )}
+
         {/* ── Sección Resonador ── */}
         <View style={[styles.resonadorSection, { marginHorizontal: H_PAD, marginTop: 7 }]}>
 
@@ -800,6 +821,55 @@ const styles = StyleSheet.create({
   contactRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   contactGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   contactPill: { flexBasis: "47%", flexGrow: 1, justifyContent: "center" },
+
+  /* ── Bloque Agenda online ── */
+  agendaBlock: {
+    borderWidth: 1,
+    borderColor: "rgba(190,150,80,0.28)",
+    borderRadius: 16,
+    backgroundColor: "rgba(190,150,80,0.07)",
+    padding: 16,
+    gap: 10,
+    marginTop: 16,
+  },
+  agendaTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  agendaIconCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "rgba(190,150,80,0.14)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  agendaAvailText: {
+    fontFamily: "Manrope",
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#F9F9F9",
+    flex: 1,
+  },
+  agendaBtn: {
+    backgroundColor: "#BE9650",
+    borderRadius: 20,
+    paddingHorizontal: 13,
+    paddingVertical: 6,
+  },
+  agendaBtnText: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#060A0F",
+  },
+  agendaTagline: {
+    fontFamily: "Manrope",
+    fontSize: 12,
+    color: "rgba(249,249,249,0.5)",
+    paddingLeft: 46,
+  },
 
   /* ── Sección Resonador ── */
   resonadorSection: {
