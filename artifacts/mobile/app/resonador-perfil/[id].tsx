@@ -450,7 +450,7 @@ export default function ResonadorPerfilScreen() {
           const customPhotos = resonador.photos ?? [];
           if (customPhotos.length > 0) {
             return (
-              <View style={[styles.photoGrid, { marginHorizontal: H_PAD, marginTop: 9 }]}>
+              <View style={[styles.photoGrid, { marginHorizontal: H_PAD, marginTop: 31 }]}>
                 {customPhotos.slice(0, 6).map((uri, i) => (
                   <View key={i} style={styles.photoCell}>
                     <Image
@@ -467,7 +467,7 @@ export default function ResonadorPerfilScreen() {
           }
           if (sessions.length > 0) {
             return (
-              <View style={[styles.photoGrid, { marginHorizontal: H_PAD, marginTop: 9 }]}>
+              <View style={[styles.photoGrid, { marginHorizontal: H_PAD, marginTop: 31 }]}>
                 {sessions.slice(0, 6).map((session, i) => (
                   <Pressable
                     key={session.id}
