@@ -330,23 +330,20 @@ export default function EquipoScreen() {
             <Text style={[styles.title, { transform: [{ translateY: 4 }] }]}>Resonadores</Text>
             <Text style={[styles.titleSub, { transform: [{ translateY: 4 }] }]}>La esencia de Resonancia</Text>
           </View>
-          <LinearGradient
-            colors={[
-              brightenHex(sceneTheme.gradient[0] as string, 62),
-              brightenHex(sceneTheme.gradient[0] as string, 18),
-            ]}
-            start={{ x: 0.5, y: 0 }}
-            end={{ x: 0.5, y: 1 }}
-            style={[styles.uneteBorder, { transform: [{ translateX: 3 }, { translateY: 0 }] }]}
+          <Pressable
+            hitSlop={10}
+            onPress={() => router.push("/equipo-info" as never)}
+            style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, transform: [{ translateX: 3 }] })}
           >
-            <Pressable
-              hitSlop={10}
-              onPress={() => router.push("/equipo-info" as never)}
-              style={[styles.uneteBtn, { backgroundColor: sceneTheme.gradient[0] as string }]}
+            <LinearGradient
+              colors={["#8260B5", "#5B427F"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.uneteBtn}
             >
               <Text style={styles.uneteBtnText}>Únete</Text>
-            </Pressable>
-          </LinearGradient>
+            </LinearGradient>
+          </Pressable>
         </View>
 
         <AnimatedFilterRow
@@ -390,21 +387,16 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingBottom: 4,
   },
-  uneteBorder: {
-    borderRadius: 999,
-    padding: 2,
-  },
   uneteBtn: {
     paddingHorizontal: 18,
     paddingVertical: 8,
     borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.045)",
   },
   uneteBtnText: {
     fontFamily: "Manrope",
     fontSize: 13,
     fontWeight: "700",
-    color: "#F9F9F9",
+    color: "#FFFFFF",
     letterSpacing: 0.4,
   },
   title: {
