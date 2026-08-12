@@ -23,18 +23,11 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
 
   return (
     <View style={styles.card}>
-      {/* Hero — imagen del tema + avatar del guía */}
+      {/* Hero — imagen del tema */}
       <Pressable onPress={onPress} style={styles.heroWrap}>
         {encuentro.heroImagen ? (
           <Image source={encuentro.heroImagen} style={StyleSheet.absoluteFill} contentFit="cover" />
         ) : null}
-        <View style={[styles.heroAvatar, { backgroundColor: encuentro.guia.avatarColor }]}>
-          {encuentro.guia.foto ? (
-            <Image source={encuentro.guia.foto} style={styles.heroAvatarImg} contentFit="cover" />
-          ) : (
-            <Text style={styles.heroAvatarText}>{encuentro.guia.iniciales}</Text>
-          )}
-        </View>
       </Pressable>
 
       {/* Contenido */}
@@ -64,9 +57,20 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
           </View>
         </View>
 
-        {/* Guía + Título */}
-        <Text style={styles.guideNameBody} numberOfLines={1}>{encuentro.guia.nombre}</Text>
-        <Text style={styles.titulo} numberOfLines={2}>{encuentro.titulo}</Text>
+        {/* Guía + Título con avatar */}
+        <View style={styles.titleRow}>
+          <View style={[styles.titleAvatar, { backgroundColor: encuentro.guia.avatarColor }]}>
+            {encuentro.guia.foto ? (
+              <Image source={encuentro.guia.foto} style={styles.heroAvatarImg} contentFit="cover" />
+            ) : (
+              <Text style={styles.titleAvatarText}>{encuentro.guia.iniciales}</Text>
+            )}
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.guideNameBody} numberOfLines={1}>{encuentro.guia.nombre}</Text>
+            <Text style={styles.titulo} numberOfLines={2}>{encuentro.titulo}</Text>
+          </View>
+        </View>
 
         {/* Descripción */}
         <Text style={styles.descripcion} numberOfLines={3}>{encuentro.descripcion}</Text>
@@ -131,7 +135,28 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: "Manrope",
     fontWeight: "600",
-    marginBottom: -6,
+    marginBottom: 2,
+  },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  titleAvatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    borderWidth: 1.5,
+    borderColor: "rgba(255,255,255,0.5)",
+  },
+  titleAvatarText: {
+    color: "#fff",
+    fontSize: 16,
+    fontFamily: "Manrope",
+    fontWeight: "700",
   },
   body: {
     padding: 16,
