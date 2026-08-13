@@ -226,8 +226,6 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     marginTop: 19,
     overflow: "hidden",
-    borderWidth: 1.5,
-    borderColor: "rgba(249,249,249,0.5)",
   },
   calBtnText: {
     color: "#F9F9F9",
