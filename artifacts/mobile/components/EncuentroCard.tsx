@@ -154,6 +154,7 @@ const styles = StyleSheet.create({
   },
   body: {
     padding: 16,
+    paddingBottom: 26,
     gap: 10,
   },
   metaRow: {
