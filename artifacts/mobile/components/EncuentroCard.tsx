@@ -57,15 +57,8 @@ export function EncuentroCard({ encuentro, onPress, onCalendarPress }: Props) {
           </View>
         </View>
 
-        {/* Guía + Título con avatar */}
+        {/* Guía + Título */}
         <View style={styles.titleRow}>
-          <View style={[styles.titleAvatar, { backgroundColor: encuentro.guia.avatarColor }]}>
-            {encuentro.guia.foto ? (
-              <Image source={encuentro.guia.foto} style={styles.heroAvatarImg} contentFit="cover" />
-            ) : (
-              <Text style={styles.titleAvatarText}>{encuentro.guia.iniciales}</Text>
-            )}
-          </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.guideNameBody} numberOfLines={1}>{encuentro.guia.nombre}</Text>
             <Text style={styles.titulo} numberOfLines={2}>{encuentro.titulo}</Text>
