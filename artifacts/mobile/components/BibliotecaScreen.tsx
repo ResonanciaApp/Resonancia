@@ -2181,9 +2181,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.025)",
   },
-  geoInfo: { marginTop: 7 },
-  geoName: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600" },
-  geoSub:  { fontFamily: "Manrope", color: MUTED, fontSize: 12, marginTop: 3 },
+  geoInfo: { marginTop: 7, alignItems: "center" },
+  geoName: { fontFamily: "Manrope", color: TEXT, fontSize: 14, fontWeight: "600", textAlign: "center" },
+  geoSub:  { fontFamily: "Manrope", color: MUTED, fontSize: 12, marginTop: 3, textAlign: "center" },
 
   // ── User playlist cover ──────────────────────────────────────────────────────
   userPlCover: {
