@@ -170,7 +170,7 @@ export default function MensajesDelAlmaScreen() {
                 {remaining}
               </Text>
               <View style={styles.composeFooterRight}>
-                <View style={[styles.infoBadge, { borderColor: "rgba(61,14,22,0.40)" }]}>
+                <View style={[styles.infoBadge, { borderColor: "rgba(255,255,255,0.08)" }]}>
                   <Feather name="clock" size={10} color={colors.mutedForeground} />
                   <Text style={[styles.infoBadgeText, { color: colors.mutedForeground }]}>24 h</Text>
                 </View>
