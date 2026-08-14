@@ -1317,7 +1317,7 @@ export function BibliotecaScreen({
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.addResonadorBtn, { opacity: pressed ? 0.7 : 1 }]}
-            onPress={() => { openMixer(); router.navigate("/(tabs)/musica" as never); }}
+            onPress={() => openMixer()}
           >
             <View style={styles.addResonadorIcon}>
               <Feather name="sliders" size={25} color={iconPlaceholderColor} />
