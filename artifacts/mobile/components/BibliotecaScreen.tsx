@@ -896,7 +896,7 @@ function GeometrixRow({ creation, onPress }: { creation: GeometrixCreation; onPr
           const geoId = baseOf(instId);
           const settings = creation.settings[instId];
           if (!settings) return null;
-          const layerSize = Math.round((72 + idx * 8) * 1.3);
+          const layerSize = Math.round((72 + idx * 8) * 1.82);
           return (
             <View
               key={instId}
