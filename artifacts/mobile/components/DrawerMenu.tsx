@@ -48,6 +48,7 @@ const MAIN_ITEMS: MenuItem[] = [
   { label: "Mis sesiones",  icon: "calendar",  route: "__overlay:/mis-sesiones" },
   { label: "Resonadores",   icon: "users",     route: "__overlay:/equipo" },
   { label: "Diario",        icon: "book-open", route: "__overlay:/diario" },
+  { label: "Historial",     icon: "clock",     route: "__overlay:/historial" },
   { label: "Amigos",        icon: "users",     route: "__overlay:/amigos" },
   { label: "Grupos",        icon: "globe",     route: "__overlay:/grupos" },
 ];
