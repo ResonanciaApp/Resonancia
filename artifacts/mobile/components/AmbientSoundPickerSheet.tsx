@@ -287,7 +287,7 @@ export function AmbientSoundPickerSheet({
                     sound={sound}
                     selected={localSelected === sound.id}
                     fav={true}
-                    size={Math.floor(CARD_SIZE * 0.75)}
+                    size={Math.floor(CARD_SIZE * 0.70)}
                     onPress={() => { setLocalSelected(sound.id); onPreviewStart?.(sound.id); }}
                     onLongPress={() => openPopup(sound)}
                   />
@@ -339,6 +339,7 @@ export function AmbientSoundPickerSheet({
                   sound={sound}
                   selected={localSelected === sound.id}
                   fav={favIds.has(sound.id)}
+                  size={Math.floor(CARD_SIZE * 0.85)}
                   onPress={() => { setLocalSelected(sound.id); onPreviewStart?.(sound.id); }}
                   onLongPress={() => openPopup(sound)}
                 />
