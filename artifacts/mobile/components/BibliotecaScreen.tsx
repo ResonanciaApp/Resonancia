@@ -1790,7 +1790,8 @@ export function BibliotecaScreen({
       >
         {(activeTab === null || activeTab === "playlists" || activeTab === "mezclas" || activeTab === "favoritos") &&
           !(activeTab === "playlists" && userPlaylists.length === 0 && userFolders.length === 0) &&
-          !(activeTab === "mezclas" && presets.length === 0 && mixFolders.length === 0) && (
+          !(activeTab === "mezclas" && presets.length === 0 && mixFolders.length === 0) &&
+          !(activeTab === null && userPlaylists.length === 0 && userFolders.length === 0 && presets.length === 0 && mixFolders.length === 0) && (
           <View style={styles.sortTriggerRow}>
             <Pressable style={styles.sortBtn} hitSlop={8} onPress={() => setSortVisible(true)}>
               <Text style={styles.sortText}>{SORT_OPTIONS.find((o) => o.id === sort)?.label}</Text>
