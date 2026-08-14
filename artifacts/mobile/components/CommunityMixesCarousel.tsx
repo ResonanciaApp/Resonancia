@@ -483,7 +483,15 @@ const styles = StyleSheet.create({
   verTodas: { fontFamily: "Manrope", fontSize: 13, fontWeight: "600", color: "#F9F9F9" },
 
   // Portada / Avatar
-  avatarWrap: { flexShrink: 0 },
+  avatarWrap: {
+    flexShrink: 0,
+    width: 68,
+    height: 68,
+    borderRadius: 12,
+    overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "rgba(212,175,55,0.3)",
+  },
   avatarImg: {
     width: STACK_THUMB,
     height: STACK_THUMB,
@@ -491,10 +499,8 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   coverImg: {
-    width: STACK_THUMB,
-    height: STACK_THUMB,
-    borderRadius: 10,
-    overflow: "hidden",
+    width: "100%",
+    height: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -544,9 +550,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 14,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 14,
+    padding: 16,
+    borderRadius: 18,
     backgroundColor: "rgba(255,255,255,0.03)",
   },
   info: { flex: 1, minWidth: 0 },
