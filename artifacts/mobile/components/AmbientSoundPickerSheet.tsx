@@ -449,7 +449,14 @@ export function AmbientSoundPickerSheet({
           </View>
 
           {/* Bottom controls panel */}
-          <View style={[styles.controlesPanel, { paddingBottom: bottomPad + 16 }]}>
+          <View
+            style={[
+              styles.controlesPanel,
+              { paddingBottom: bottomPad + 16 },
+              sceneTheme.id === "tibet" && { backgroundColor: (sceneTheme.gradient[2] ?? themeBg) as string },
+              sceneTheme.id === "indigo" && { backgroundColor: themeBg },
+            ]}
+          >
             <Text style={styles.controlesTitulo}>Controles</Text>
 
             <TrackRow
