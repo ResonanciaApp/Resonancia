@@ -1330,12 +1330,10 @@ export function BibliotecaScreen({
 
       if (displayPl.length === 0 && userFolders.length === 0) {
         return (
-          <View style={[styles.emptyState, { flexDirection: "row", alignItems: "center", gap: 16, paddingTop: 40 }]}>
-            <Feather name="music" size={40} color={GOLD} />
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.emptyTitle, { textAlign: "left", marginBottom: 4 }]}>Tus playlists aparecerán aquí</Text>
-              <Text style={[styles.emptySub, { textAlign: "left" }]}>Crea una playlist para organizar tus sesiones favoritas.</Text>
-            </View>
+          <View style={styles.emptyState}>
+            <Feather name="music" size={52} color={GOLD} style={{ marginBottom: 16 }} />
+            <Text style={styles.emptyTitle}>Tus playlists aparecerán aquí</Text>
+            <Text style={styles.emptySub}>Crea una playlist para organizar tus sesiones favoritas.</Text>
           </View>
         );
       }
