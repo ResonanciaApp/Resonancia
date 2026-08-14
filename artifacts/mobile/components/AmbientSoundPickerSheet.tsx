@@ -606,10 +606,6 @@ function SoundCard({
           pointerEvents="none"
         />
 
-        {/* Fav indicator (small dot, no button) */}
-        {fav && (
-          <View style={styles.favDot} pointerEvents="none" />
-        )}
       </Pressable>
 
       {/* Name below the card */}
