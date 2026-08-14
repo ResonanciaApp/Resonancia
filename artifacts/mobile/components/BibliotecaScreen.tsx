@@ -1019,7 +1019,7 @@ export function BibliotecaScreen({
   const { photoUri } = useUserProfile();
   const { open: openDrawer } = useDrawer();
   const { activeSceneId, theme: sceneTheme } = useSceneTheme();
-  const iconPlaceholderColor = "#fefefe";
+  const iconPlaceholderColor = "#BEA3E6";
 
   // ── Borde bajo los chips (Playlists/Mezclas/Favoritos/Resonadores) ──────
   // se activa a partir de unos pocos px de scroll dentro de ESTA pantalla
