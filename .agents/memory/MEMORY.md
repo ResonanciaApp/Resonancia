@@ -30,6 +30,7 @@
 - [Listen-time stats](listen-time-stats.md) — stat minutes = wall-clock accumulator gated on isPlaying, NEVER elapsed/position (seek corrupts position; loop interval ticks while paused)
 - [Streak fire animation](streak-fire.md) — NotificationBell = racha; meta = GOAL_MINUTES/día; fuego en reposo 0.2, anima 1×/día al abrir Inicio cumplida la meta (número solo con animación)
 - [Profile name sync to server](profile-name-sync.md) — username local (AsyncStorage) NO se sincroniza solo; ProfileSync empuja a displayName del server o las features sociales muestran el ID de Clerk
+- [expo-router debe seguir la línea del SDK](expo-router-cli-float.md) — con SDK 57, expo-router 6.x crashea (@expo/cli flotado pide internal/routing); pinear 57.x y verificar versión instalada
 - [Expo pkg versions = SDK](expo-package-versions-sdk-match.md) — usar `expo install`, no versiones adivinadas; mismatch → "Cannot find native module" SOLO en builds de device; fix: expo install --fix + rebuild dev client
 - [UserProfile serializer contract](userprofile-serializer-contract.md) — `toProfile` está duplicado en varios routes; hacer requerido un campo en un schema OpenAPI compartido obliga a actualizar TODAS las copias (typecheck no lo atrapa)
 - [Admin web panel auth](admin-web-auth.md) — resonancia-admin usa Clerk cookie same-origin (NO Bearer/setBaseUrl como mobile); gating real solo server requireRole("admin"), front es UX
