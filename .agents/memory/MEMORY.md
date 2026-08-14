@@ -1,3 +1,4 @@
+- [GitHub push via GHPUSH_TOKEN](github-push-token.md) — askpass del workspace da token vacío; push con secreto GHPUSH_TOKEN en la URL (sanear con sed); PAT necesita Contents read/write
 - [Agenda block palette](agenda-block-palette.md) — bloque de agendamiento del perfil resonador es PÚRPURA #8260B5 deliberado (no dorado); no "corregir" en pasadas de consistencia
 - [Tab screen renames](tab-screen-renames.md) — Mezclador→Crear, Meditación→Medita, Mi Espacio→Universo, Perfil→Biblioteca (tab profile, jul 21); solo labels visibles, rutas/nombres de archivo no cambiaron
 - [SceneAnimationInline focus gate](scene-animation-inline-focus.md) — SceneAnimationInline necesita prop paused={!tabFocused}; sin él los withRepeat de cada capa corren 60fps en todas las tabs siempre
