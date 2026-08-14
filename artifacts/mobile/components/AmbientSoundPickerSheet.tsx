@@ -713,7 +713,7 @@ const styles = StyleSheet.create({
     fontFamily: "Manrope",
     fontSize: 12,
     fontWeight: "700",
-    color: "rgba(255,255,255,0.40)",
+    color: "#F9F9F9",
     letterSpacing: 0.9,
     textTransform: "uppercase",
     marginBottom: 12,
