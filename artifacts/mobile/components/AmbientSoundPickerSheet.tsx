@@ -332,7 +332,7 @@ export function AmbientSoundPickerSheet({
             </ScrollView>
 
             {/* Sounds grid */}
-            <View style={[styles.grid, { marginTop: 15, columnGap: EXPLORE_GAP }]}>
+            <View style={[styles.grid, { marginTop: 15, columnGap: EXPLORE_GAP, rowGap: GRID_GAP + 10 }]}>
               {filteredSounds.map((sound) => (
                 <SoundCard
                   key={sound.id}
