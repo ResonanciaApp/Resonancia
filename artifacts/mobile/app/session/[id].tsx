@@ -687,15 +687,6 @@ export default function SessionDetailScreen() {
                 </Text>
                 {fav && <Feather name="check" size={15} color="#F9F9F9" />}
               </Pressable>
-              {/* Añadir a carpeta */}
-              <Pressable
-                style={styles.optRow}
-                onPress={() => { setActionsSheetOpen(false); setTimeout(() => setShowFolderSheet(true), 300); }}
-              >
-                <Feather name="folder-plus" size={18} color="#FBFBFB" style={styles.optIcon} />
-                <Text style={styles.optRowText}>Añadir a carpeta</Text>
-                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
-              </Pressable>
               {/* Añadir a playlist */}
               <Pressable
                 style={styles.optRow}
