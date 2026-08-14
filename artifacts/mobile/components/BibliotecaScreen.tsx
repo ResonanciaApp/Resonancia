@@ -1416,13 +1416,10 @@ export function BibliotecaScreen({
 
       if (presets.length === 0 && sortedMixFolders.length === 0) {
         return (
-          <View style={{ gap: 15 }}>
-            <View style={styles.emptyState}>
-              <MaterialCommunityIcons name="tune-variant" size={52} color={GOLD} style={{ marginBottom: 16 }} />
-              <Text style={styles.emptyTitle}>Tus mezclas aparecerán aquí</Text>
-              <Text style={styles.emptySub}>Guarda una mezcla desde el Mezclador para verla en tu biblioteca.</Text>
-            </View>
-            {createButtons}
+          <View style={styles.emptyState}>
+            <MaterialCommunityIcons name="tune-variant" size={52} color={GOLD} style={{ marginBottom: 16 }} />
+            <Text style={styles.emptyTitle}>Tus mezclas aparecerán aquí</Text>
+            <Text style={styles.emptySub}>Guarda una mezcla desde el Mezclador para verla en tu biblioteca.</Text>
           </View>
         );
       }
@@ -1792,7 +1789,8 @@ export function BibliotecaScreen({
         scrollEventThrottle={16}
       >
         {(activeTab === null || activeTab === "playlists" || activeTab === "mezclas" || activeTab === "favoritos") &&
-          !(activeTab === "playlists" && userPlaylists.length === 0 && userFolders.length === 0) && (
+          !(activeTab === "playlists" && userPlaylists.length === 0 && userFolders.length === 0) &&
+          !(activeTab === "mezclas" && presets.length === 0 && mixFolders.length === 0) && (
           <View style={styles.sortTriggerRow}>
             <Pressable style={styles.sortBtn} hitSlop={8} onPress={() => setSortVisible(true)}>
               <Text style={styles.sortText}>{SORT_OPTIONS.find((o) => o.id === sort)?.label}</Text>
