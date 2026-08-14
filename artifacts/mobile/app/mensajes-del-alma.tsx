@@ -29,6 +29,7 @@ import {
 } from "@workspace/api-client-react";
 import { SacredBackground } from "@/components/SacredBackground";
 import { useColors } from "@/hooks/useColors";
+import { useSceneTheme } from "@/context/SceneThemeContext";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { useUserProfile } from "@/context/UserProfileContext";
 import { useQueryClient } from "@tanstack/react-query";
@@ -70,6 +71,7 @@ const BG_GRADIENT = ["#340D1A", "#190913"] as const;
 
 export default function MensajesDelAlmaScreen() {
   const colors = useColors();
+  const { theme: sceneTheme } = useSceneTheme();
   const insets = useSafeAreaInsets();
   const topPad = Platform.OS === "web" ? 56 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
@@ -114,7 +116,7 @@ export default function MensajesDelAlmaScreen() {
 
         style={styles.root}
 
-        colors={BG_GRADIENT}
+        colors={sceneTheme.gradient as [string, string, ...string[]]}
 
         locations={[0, 0.5, 1]}
 
@@ -149,21 +151,21 @@ export default function MensajesDelAlmaScreen() {
           }
         >
           {/* Compose card */}
-          <View style={[styles.composeCard, { backgroundColor: "rgba(74,12,12,0.08)", borderColor: "rgba(212,175,55,0.18)" }]}>
+          <View style={[styles.composeCard, { backgroundColor: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", borderWidth: 2 }]}>
             <View style={styles.composeTop}>
               <AuthorAvatar uri={photoUri} name={username} size={36} />
               <TextInput
                 ref={inputRef}
                 value={text}
                 onChangeText={(t) => setText(t.slice(0, MAX_CHARS))}
-                placeholder="¿Qué querés compartir hoy?"
-                placeholderTextColor={colors.mutedForeground + "80"}
+                placeholder="¿Qué te gustaría compartir hoy?"
+                placeholderTextColor="#F9F9F9"
                 multiline
                 style={[styles.composeInput, { color: colors.foreground }]}
                 selectionColor={colors.primary}
               />
             </View>
-            <View style={[styles.composeFooter, { borderTopColor: "rgba(61,14,22,0.40)" }]}>
+            <View style={[styles.composeFooter, { borderTopColor: "rgba(255,255,255,0.1)" }]}>
               <Text style={[styles.charCount, { color: remaining < 40 ? "#D07060" : colors.mutedForeground }]}>
                 {remaining}
               </Text>
@@ -199,11 +201,11 @@ export default function MensajesDelAlmaScreen() {
 
           {/* Divider label */}
           <View style={styles.dividerRow}>
-            <View style={[styles.dividerLine, { backgroundColor: colors.border }]} />
+            <View style={[styles.dividerLine, { backgroundColor: "rgba(255,255,255,0.1)" }]} />
             <Text style={[styles.dividerLabel, { color: colors.mutedForeground }]}>
               {isLoading ? "CARGANDO..." : "HOY"}
             </Text>
-            <View style={[styles.dividerLine, { backgroundColor: colors.border }]} />
+            <View style={[styles.dividerLine, { backgroundColor: "rgba(255,255,255,0.1)" }]} />
           </View>
 
           {/* Feed */}
