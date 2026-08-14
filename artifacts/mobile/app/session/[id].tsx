@@ -37,6 +37,10 @@ import { getArtist } from "@/data/artists";
 import { useColors } from "@/hooks/useColors";
 import { useSceneTheme } from "@/context/SceneThemeContext";
 import { hexToRgba } from "@/utils/color";
+import { createAudioPlayer, type AudioPlayer } from "expo-audio";
+import { SOUND_MAP } from "@/config/sound-map";
+import { REMOTE_SOUND_MAP } from "@/lib/remoteSoundMap";
+import { AmbientSoundPickerSheet } from "@/components/AmbientSoundPickerSheet";
 import { AddToPlaylistSheet } from "@/components/AddToPlaylistSheet";
 import { AddToFolderSheet } from "@/components/AddToFolderSheet";
 import { BackPill } from "@/components/BackPill";
@@ -169,6 +173,53 @@ export default function SessionDetailScreen() {
   const [actionsSheetOpen, setActionsSheetOpen] = useState(false);
   const [showPlaylistSheet, setShowPlaylistSheet] = useState(false);
   const [showFolderSheet, setShowFolderSheet] = useState(false);
+
+  // ── Sonido ambiente (mismo picker que el reproductor) ─────────────────────
+  const [showAmbientPicker, setShowAmbientPicker] = useState(false);
+  const [selectedAmbientSoundId, setSelectedAmbientSoundId] = useState<string | null>(null);
+  const [ambientOverlayVolume, setAmbientOverlayVolume] = useState(0.5);
+  const ambientOverlayRef = useRef<AudioPlayer | null>(null);
+
+  useEffect(() => {
+    if (!ambientOverlayRef.current) {
+      ambientOverlayRef.current = createAudioPlayer(null);
+    }
+    const p = ambientOverlayRef.current;
+    if (!selectedAmbientSoundId) {
+      p.pause();
+      return;
+    }
+    const file: Parameters<typeof p.replace>[0] | null =
+      SOUND_MAP[selectedAmbientSoundId] ??
+      (REMOTE_SOUND_MAP[selectedAmbientSoundId]
+        ? { uri: REMOTE_SOUND_MAP[selectedAmbientSoundId] }
+        : null);
+    if (!file) {
+      p.pause();
+      return;
+    }
+    p.loop = true;
+    p.volume = ambientOverlayVolume;
+    p.replace(file);
+    p.play();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedAmbientSoundId]);
+
+  useEffect(() => {
+    if (ambientOverlayRef.current) {
+      ambientOverlayRef.current.volume = ambientOverlayVolume;
+    }
+  }, [ambientOverlayVolume]);
+
+  useEffect(() => {
+    return () => {
+      try {
+        ambientOverlayRef.current?.pause();
+        ambientOverlayRef.current?.remove();
+      } catch {}
+      ambientOverlayRef.current = null;
+    };
+  }, []);
 
   // ── Rating modal ────────────────────────────────────────────────────────────
   const RATINGS_KEY = "@resonance_ratings";
@@ -696,6 +747,18 @@ export default function SessionDetailScreen() {
                 <Text style={styles.optRowText}>Añadir a playlist</Text>
                 <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
               </Pressable>
+              {/* Sonido ambiente */}
+              <Pressable
+                style={styles.optRow}
+                onPress={() => { setActionsSheetOpen(false); setTimeout(() => setShowAmbientPicker(true), 300); }}
+              >
+                <Feather name="music" size={18} color="#FBFBFB" style={styles.optIcon} />
+                <Text style={styles.optRowText}>Sonido ambiente</Text>
+                {selectedAmbientSoundId && (
+                  <Feather name="check-circle" size={15} color="#F9F9F9" style={{ marginRight: 6 }} />
+                )}
+                <Feather name="chevron-right" size={15} color="rgba(255,255,255,0.35)" />
+              </Pressable>
               {/* Seguir al guía (si aplica) */}
               {authors[0]?.profilePath && (
                 <Pressable
@@ -721,6 +784,27 @@ export default function SessionDetailScreen() {
 
       <AddToPlaylistSheet visible={showPlaylistSheet} sessionId={session.id} onClose={() => setShowPlaylistSheet(false)} />
       <AddToFolderSheet visible={showFolderSheet} sessionId={session.id} onClose={() => setShowFolderSheet(false)} />
+      <AmbientSoundPickerSheet
+        visible={showAmbientPicker}
+        selectedSoundId={selectedAmbientSoundId}
+        session={{ title: session.title, image: session.image }}
+        onClose={() => setShowAmbientPicker(false)}
+        initialStep={selectedAmbientSoundId ? "controles" : "pick"}
+        initialAmbientVolume={ambientOverlayVolume}
+        onPreviewStart={(sid) => setSelectedAmbientSoundId(sid)}
+        onAmbientVolumeChange={(vol) => {
+          setAmbientOverlayVolume(vol);
+          if (ambientOverlayRef.current) ambientOverlayRef.current.volume = vol;
+        }}
+        onSelect={(sid, vol) => {
+          setSelectedAmbientSoundId(sid);
+          setAmbientOverlayVolume(vol);
+        }}
+        onRemoveConfirm={() => {
+          setSelectedAmbientSoundId(null);
+          setShowAmbientPicker(false);
+        }}
+      />
 
       {/* ── Modal de valoración ──────────────────────────────────────────── */}
       <Modal
