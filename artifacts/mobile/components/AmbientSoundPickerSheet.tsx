@@ -145,10 +145,10 @@ export function AmbientSoundPickerSheet({
   const openPopup = (sound: MixSound) => {
     setFavPopupSound(sound);
     popupOpacity.setValue(0);
-    Animated.timing(popupOpacity, { toValue: 1, duration: 450, useNativeDriver: true }).start();
+    Animated.timing(popupOpacity, { toValue: 1, duration: 350, useNativeDriver: true }).start();
   };
   const closePopup = () => {
-    Animated.timing(popupOpacity, { toValue: 0, duration: 450, useNativeDriver: true }).start(({ finished }) => {
+    Animated.timing(popupOpacity, { toValue: 0, duration: 350, useNativeDriver: true }).start(({ finished }) => {
       if (finished) setFavPopupSound(null);
     });
   };
